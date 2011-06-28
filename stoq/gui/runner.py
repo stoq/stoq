@@ -67,8 +67,7 @@ class ApplicationRunner(object):
             self._hidden_apps.append('financial')
 
     def _load_app(self, appdesc):
-        module = __import__("stoq.gui.%s.%s" % (appdesc.name,
-                                                appdesc.name),
+        module = __import__("stoq.gui.%s" % (appdesc.name, ),
                             globals(), locals(), [''])
         window = appdesc.name.capitalize() + 'App'
         window_class = getattr(module, window, None)

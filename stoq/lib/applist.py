@@ -24,26 +24,54 @@
 ##
 """ Listing and importing applications """
 
+import gettext
+
 from kiwi.component import implements
 from stoqlib.lib.interfaces import IApplicationDescriptions
 
+_ = gettext.gettext
+_APPLICATIONS = {
+    'admin': ( _('Administrative'),
+               _("""Administrative application."""),
+               'stoq-admin-app'),
+    'financial' : (_('Financial'),
+                   _("""Financial application."""),
+                   'stoq-payable-app'),
+    'inventory' : (_('Inventory'),
+                   _("""Inventory application."""),
+                   'stoq-inventory-app'),
+    'payable' : (_('Accounts Payable'),
+                 _("""Accounts Payable application."""),
+                 'stoq-payable-app'),
+    'pos' : (_('Point of Sales'),
+             _("""Point Of Sale application."""),
+             'stoq-pos-app'),
+    'production' : (_('Production'),
+                    _('Production application.'),
+                    'stoq-production-app'),
+    'purchase' : (_('Purchase'),
+                  _("""Purchase application."""),
+                  'stoq-purchase-app'),
+    'receivable' : (_('Accounts Receivable'),
+                    _("""Accounts Receivable application."""),
+                    'stoq-bills'),
+    'sales' : (_('Sales'),
+               _("""Sales application."""),
+               'stoq-sales-app'),
+    'stock' : (_('Stock'),
+               _("""Stock application."""),
+               'stoq-stock-app'),
+    'till' : (_('Till'),
+              _("""Till application."""),
+              'stoq-till-app'),
+}
 
 def get_application_names():
     """Get a list of application names, useful for launcher programs
 
     @returns: application names
     """
-    return ['admin',
-            'financial',
-            'inventory',
-            'payable',
-            'pos',
-            'production',
-            'purchase',
-            'receivable',
-            'sales',
-            'stock',
-            'till']
+    return _APPLICATIONS.keys()
 
 
 class ApplicationDescriptions:
@@ -54,18 +82,9 @@ class ApplicationDescriptions:
         return get_application_names()
 
     def get_descriptions(self):
-        applications = self.get_application_names()
         app_desc = []
-        for name in applications:
-            module = __import__("stoq.gui.%s" % (name,),
-                                globals(), locals(), ' ')
-            if not hasattr(module, "application"):
-                raise ValueError('Module %r must have an application attribute'
-                                 % module)
-            icon = getattr(module, 'icon_name', None)
-            description = getattr(module, 'description', None)
-            app_desc.append((name,
-                             module.application, icon, description))
+        for name, (label, description, icon) in _APPLICATIONS.items():
+            app_desc.append((name, label, icon, description))
         return app_desc
 
 
