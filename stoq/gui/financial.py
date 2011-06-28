@@ -209,14 +209,12 @@ class FinancialApp(AppWindow):
         self._pages = {}
 
         self.accounts = AccountTree()
-        self._create_ui()
 
         AppWindow.__init__(self, app)
         self.search_holder.add(self.accounts)
         self.accounts.show()
         self._refresh_accounts()
         self._tills_account = sysparam(self.conn).TILLS_ACCOUNT
-        self._attach_toolbar()
         self._create_initial_page()
 
     #
@@ -232,7 +230,7 @@ class FinancialApp(AppWindow):
     # Private
     #
 
-    def _create_ui(self):
+    def create_actions(self):
         ui_string = """<ui>
           <menubar action="menubar">
             <menu action="FinancialMenu">
@@ -279,7 +277,7 @@ class FinancialApp(AppWindow):
         self.add_help_ui(_("Financial help"), 'financial-inicio')
         self.add_user_ui()
 
-    def _attach_toolbar(self):
+    def create_ui(self):
         self._update_actions()
 
         menubar = self.uimanager.get_widget('/menubar')
