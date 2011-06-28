@@ -109,18 +109,12 @@ class PosApp(AppWindow):
 
     def __init__(self, app):
         AppWindow.__init__(self, app)
-        self._printer = FiscalPrinterHelper(self.conn,
-                                            parent=self.get_toplevel())
-        self._printer.connect('till-status-changed',
-                              self._on_PrinterHelper__till_status_changed)
-        self._printer.connect('ecf-changed',
-                              self._on_PrinterHelper__ecf_changed)
         self._delivery = None
         self.param = sysparam(self.conn)
         self.max_results = self.param.MAX_SEARCH_RESULTS
         self._coupon = None
         self._scale_settings = DeviceSettings.get_scale_settings(self.conn)
-        self._printer.check_till()
+        self._setup_printer()
         self.check_open_inventory()
         self._setup_widgets()
         self._setup_proxies()
@@ -256,6 +250,15 @@ class PosApp(AppWindow):
     #
     # Private
     #
+
+    def _setup_printer(self):
+        self._printer = FiscalPrinterHelper(self.conn,
+                                            parent=self.get_toplevel())
+        self._printer.connect('till-status-changed',
+                              self._on_PrinterHelper__till_status_changed)
+        self._printer.connect('ecf-changed',
+                              self._on_PrinterHelper__ecf_changed)
+        self._printer.check_till()
 
     def _set_product_on_sale(self):
         sellable = self._get_sellable()

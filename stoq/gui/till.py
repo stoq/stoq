@@ -71,14 +71,9 @@ class TillApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
-        self._printer = FiscalPrinterHelper(self.conn,
-                                            parent=self.get_toplevel())
-        self._printer.connect('till-status-changed',
-                              self._on_PrinterHelper__till_status_changed)
-        self._printer.connect('ecf-changed',
-                              self._on_PrinterHelper__ecf_changed)
-        self._printer.check_till()
+
         self.current_branch = get_current_branch(self.conn)
+        self._setup_printer()
         self._setup_widgets()
         self.refresh()
 
@@ -209,6 +204,15 @@ class TillApp(SearchableAppWindow):
     #
     # Private
     #
+
+    def _setup_printer(self):
+        self._printer = FiscalPrinterHelper(self.conn,
+                                            parent=self.get_toplevel())
+        self._printer.connect('till-status-changed',
+                              self._on_PrinterHelper__till_status_changed)
+        self._printer.connect('ecf-changed',
+                              self._on_PrinterHelper__ecf_changed)
+        self._printer.check_till()
 
     def _get_status_values(self):
         statuses = [(v, k) for k, v in Sale.statuses.items()]
