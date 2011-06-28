@@ -55,6 +55,7 @@ from stoqlib.lib.defaults import quantize
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
+from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import (SaleSearch, DeliverySearch,
@@ -108,12 +109,18 @@ class PosApp(AppWindow):
 
     def __init__(self, app):
         AppWindow.__init__(self, app)
+        self._printer = FiscalPrinterHelper(self.conn,
+                                            parent=self.get_toplevel())
+        self._printer.connect('till-status-changed',
+                              self._on_PrinterHelper__till_status_changed)
+        self._printer.connect('ecf-changed',
+                              self._on_PrinterHelper__ecf_changed)
         self._delivery = None
         self.param = sysparam(self.conn)
         self.max_results = self.param.MAX_SEARCH_RESULTS
         self._coupon = None
         self._scale_settings = DeviceSettings.get_scale_settings(self.conn)
-        self.check_till()
+        self._printer.check_till()
         self.check_open_inventory()
         self._setup_widgets()
         self._setup_proxies()
@@ -380,7 +387,7 @@ class PosApp(AppWindow):
             # support
             self.sale_items.select(self.sale_items[0])
 
-    def till_status_changed(self, closed, blocked=False):
+    def _till_status_changed(self, closed, blocked):
         self.TillOpen.set_sensitive(closed)
         self.TillClose.set_sensitive(not closed or blocked)
         self.barcode.set_sensitive(not closed and not blocked)
@@ -395,14 +402,6 @@ class PosApp(AppWindow):
         self.quantity.set_sensitive(False)
         self.sale_items.set_sensitive(False)
         self.advanced_search.set_sensitive(False)
-
-    def validated_ecf(self, has_ecf):
-        self.TillOpen.set_sensitive(has_ecf)
-        self.TillClose.set_sensitive(has_ecf)
-        self.barcode.set_sensitive(has_ecf)
-        self.quantity.set_sensitive(has_ecf)
-        self.sale_items.set_sensitive(has_ecf)
-        self.advanced_search.set_sensitive(has_ecf)
 
     def _update_widgets(self):
         has_sale_items = len(self.sale_items) >= 1
@@ -765,10 +764,10 @@ class PosApp(AppWindow):
         self._create_delivery()
 
     def on_TillClose__activate(self, action):
-        self.close_till()
+        self._printer.close_till()
 
     def on_TillOpen__activate(self, action):
-        self.open_till()
+        self._printer.open_till()
 
     #
     # Other callbacks
@@ -826,3 +825,14 @@ class PosApp(AppWindow):
 
     def on_sale_items__row_activated(self, sale_items, sale_item):
         self._edit_sale_item(sale_item)
+
+    def _on_PrinterHelper__till_status_changed(self, printer, closed, blocked):
+        self._till_status_changed(closed, blocked)
+
+    def _on_PrinterHelper__ecf_changed(self, printer, has_ecf):
+        self.TillOpen.set_sensitive(has_ecf)
+        self.TillClose.set_sensitive(has_ecf)
+        self.barcode.set_sensitive(has_ecf)
+        self.quantity.set_sensitive(has_ecf)
+        self.sale_items.set_sensitive(has_ecf)
+        self.advanced_search.set_sensitive(has_ecf)

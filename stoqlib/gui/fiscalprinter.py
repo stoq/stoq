@@ -26,6 +26,7 @@ import sys
 
 import gobject
 import gtk
+from kiwi.component import get_utility
 from kiwi.log import Logger
 from kiwi.utils import gsignal
 from stoqdrivers.exceptions import (DriverError, CouponOpenError,
@@ -46,9 +47,11 @@ from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.tilleditor import TillOpeningEditor, TillClosingEditor
 from stoqlib.gui.events import CouponCreatedEvent
-from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
+from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
+
 
 _ = stoqlib_gettext
 
@@ -67,13 +70,17 @@ def _flush_interface():
     while gtk.events_pending():
         gtk.main_iteration()
 
-class FiscalPrinterHelper:
+class FiscalPrinterHelper(gobject.GObject):
+
+    gsignal('till-status-changed', bool, bool)
+    gsignal('ecf-changed', bool)
 
     def __init__(self, conn, parent):
         """ Creates a new FiscalPrinterHelper object
         @param conn:
         @param parent: a gtk.Window subclass or None
         """
+        gobject.GObject.__init__(self)
         self.conn = conn
         self._parent = parent
 
@@ -94,15 +101,27 @@ class FiscalPrinterHelper:
 
         retval = finish_transaction(trans, model)
         trans.close()
+        if retval:
+            self._till_status_changed(closed=False, blocked=False)
         return retval
 
-    def close_till(self, previous_day=False, close_db=True, close_ecf=True):
+    def close_till(self, close_db=True, close_ecf=True):
         """Closes the till
-        @param previous_day: if the till wasn't closed a previous day
         @param close_db: If the till in the DB should be closed
         @param close_ecf: If the till in the ECF should be closed
         @returns: True if the till was closed, otherwise False
         """
+
+        if not self._previous_day:
+            if not yesno(_(u"You can only close the till once per day. "
+                           "You won't be able to make any more sales today."
+                           "\n\nClose the till?"),
+                         gtk.RESPONSE_NO, _("Close Till"), _(u"Not now")):
+                return
+        else:
+            # When closing from a previous day, close only what is needed.
+            close_db = self._close_db
+            close_ecf = self._close_ecf
 
         if close_db:
             till = Till.get_last_opened(self.conn)
@@ -110,7 +129,7 @@ class FiscalPrinterHelper:
 
         trans = new_transaction()
         model = run_dialog(TillClosingEditor, self._parent, trans,
-                           previous_day=previous_day, close_db=close_db,
+                           previous_day=self._previous_day, close_db=close_db,
                            close_ecf=close_ecf)
 
         if not model:
@@ -120,6 +139,8 @@ class FiscalPrinterHelper:
         # TillClosingEditor closes the till
         retval = finish_transaction(trans, model)
         trans.close()
+        if retval:
+            self._till_status_changed(closed=True, blocked=False)
         return retval
 
     def needs_closing(self):
@@ -164,6 +185,56 @@ class FiscalPrinterHelper:
             coupon = None
 
         return coupon
+
+    def _till_status_changed(self, closed, blocked):
+        self.emit('till-status-changed', closed, blocked)
+
+    def _check_needs_closing(self):
+        needs_closing = self.needs_closing()
+
+        # DB and ECF are ok
+        if needs_closing is CLOSE_TILL_NONE:
+            self._previous_day = False
+            # We still need to check if the till is open or closed.
+            till = Till.get_current(self.conn)
+            self._till_status_changed(closed=not till, blocked=False)
+            return True
+
+        close_db = needs_closing in (CLOSE_TILL_DB, CLOSE_TILL_BOTH)
+        close_ecf = needs_closing in (CLOSE_TILL_ECF, CLOSE_TILL_BOTH)
+
+        # DB or ECF is open from a previous day
+        self._till_status_changed(closed=False, blocked=True)
+        self._previous_day = True
+
+        # Save this statuses in case the user chooses not to close now.
+        self._close_db = close_db
+        self._close_ecf = close_ecf
+
+        manager = get_utility(IPluginManager)
+        manager.is_active('ecf')
+        if close_db and (close_ecf or not manager.is_active('ecf')):
+            msg = _(u"You need to close the till from the previous day before "
+                     "creating a new order.\n\nClose the Till?")
+        elif close_db and not close_ecf:
+            msg = _(u"The till in Stoq is opened, but in ECF "
+                     "is closed.\n\nClose the till in Stoq?")
+        elif close_ecf and not close_db:
+            msg = _(u"The till in stoq is closed, but in ECF "
+                     "is opened.\n\nClose the till in ECF?")
+
+        if yesno(msg, gtk.RESPONSE_NO, _(u"Close Till"), _(u"Not now")):
+            return self.close_till(close_db, close_ecf)
+
+        return False
+
+    def check_till(self):
+        try:
+            self._check_needs_closing()
+            self.emit('ecf-changed', True)
+        except (DeviceError), e:
+            warning(e)
+            self.emit('ecf-changed', False)
 
 
 class FiscalCoupon(gobject.GObject):

@@ -49,6 +49,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
+from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch, SoldItemsByBranchSearch
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
@@ -70,8 +71,14 @@ class TillApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
+        self._printer = FiscalPrinterHelper(self.conn,
+                                            parent=self.get_toplevel())
+        self._printer.connect('till-status-changed',
+                              self._on_PrinterHelper__till_status_changed)
+        self._printer.connect('ecf-changed',
+                              self._on_PrinterHelper__ecf_changed)
+        self._printer.check_till()
         self.current_branch = get_current_branch(self.conn)
-        self.check_till()
         self._setup_widgets()
         self.refresh()
 
@@ -270,9 +277,6 @@ class TillApp(SearchableAppWindow):
         for sale_item in sale.get_items():
             coupon.add_item(sale_item)
 
-    def _summary(self):
-        self._printer.summarize()
-
     def _update_total(self):
         balance = currency(self._get_till_balance())
         text = _(u"Total: %s") % converter.as_string(currency, balance)
@@ -313,7 +317,39 @@ class TillApp(SearchableAppWindow):
         self.confirm_order_button.set_sensitive(can_confirm)
         self.return_button.set_sensitive(can_return)
 
-    def till_status_changed(self, closed, blocked=False):
+    def _check_selected(self):
+        sale_view = self.results.get_selected()
+        if not sale_view:
+            raise StoqlibError("You should have a selected item at "
+                               "this point")
+        return sale_view
+
+    def _run_search_dialog(self, dialog_type, **kwargs):
+        trans = new_transaction()
+        self.run_dialog(dialog_type, trans, **kwargs)
+        trans.close()
+
+    def _run_details_dialog(self):
+        sale_view = self._check_selected()
+        run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+
+    def _return_sale(self):
+        sale_view = self._check_selected()
+        retval = return_sale(self.get_toplevel(), sale_view, self.conn)
+        if finish_transaction(self.conn, retval):
+            self._update_total()
+
+    def _update_ecf(self, has_ecf):
+        self.TillOpen.set_sensitive(has_ecf)
+        self.TillClose.set_sensitive(has_ecf)
+        self.TillAddCash.set_sensitive(has_ecf)
+        self.TillRemoveCash.set_sensitive(has_ecf)
+        self.SearchTillHistory.set_sensitive(has_ecf)
+        self.app_vbox.set_sensitive(has_ecf)
+        text = _(u"Till operations requires a connected fiscal printer")
+        self.till_status_label.set_text(text)
+
+    def _update_till_status(self, closed, blocked):
         # Three different situations;
         #
         # - Till is closed
@@ -342,38 +378,6 @@ class TillApp(SearchableAppWindow):
         self._update_toolbar_buttons()
         self._update_total()
 
-    def validated_ecf(self, has_ecf):
-        self.TillOpen.set_sensitive(has_ecf)
-        self.TillClose.set_sensitive(has_ecf)
-        self.TillAddCash.set_sensitive(has_ecf)
-        self.TillRemoveCash.set_sensitive(has_ecf)
-        self.SearchTillHistory.set_sensitive(has_ecf)
-        self.app_vbox.set_sensitive(has_ecf)
-        text = _(u"Till operations requires a connected fiscal printer")
-        self.till_status_label.set_text(text)
-
-    def _check_selected(self):
-        sale_view = self.results.get_selected()
-        if not sale_view:
-            raise StoqlibError("You should have a selected item at "
-                               "this point")
-        return sale_view
-
-    def _run_search_dialog(self, dialog_type, **kwargs):
-        trans = new_transaction()
-        self.run_dialog(dialog_type, trans, **kwargs)
-        trans.close()
-
-    def _run_details_dialog(self):
-        sale_view = self._check_selected()
-        run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
-
-    def _return_sale(self):
-        sale_view = self._check_selected()
-        retval = return_sale(self.get_toplevel(), sale_view, self.conn)
-        if finish_transaction(self.conn, retval):
-            self._update_total()
-
     #
     # Callbacks
     #
@@ -397,13 +401,19 @@ class TillApp(SearchableAppWindow):
     def on_return_button__clicked(self, button):
         self._return_sale()
 
+    def _on_PrinterHelper__till_status_changed(self, printer, closed, blocked):
+        self._update_till_status(closed, blocked)
+
+    def _on_PrinterHelper__ecf_changed(self, printer, ecf):
+        self._update_ecf(ecf)
+
     # Till
 
     def on_TillClose__activate(self, button):
-        self.close_till()
+        self._printer.close_till()
 
     def on_TillOpen__activate(self, button):
-        self.open_till()
+        self._printer.open_till()
 
     def on_TillAddCash__activate(self, action):
         model = run_dialog(CashInEditor, self, self.conn)

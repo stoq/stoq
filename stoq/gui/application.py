@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -35,17 +35,13 @@ from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       finish_transaction, get_connection,
                                       get_current_branch)
-from stoqlib.lib.interfaces import (IAppInfo, ICookieFile, IStoqConfig,
-                                    IPluginManager)
-from stoqlib.lib.message import yesno, warning
+from stoqlib.lib.interfaces import IAppInfo, ICookieFile, IStoqConfig
+from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
-from stoqlib.gui.fiscalprinter import (FiscalPrinterHelper, CLOSE_TILL_NONE,
-                                       CLOSE_TILL_ECF, CLOSE_TILL_DB,
-                                       CLOSE_TILL_BOTH)
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
@@ -53,8 +49,6 @@ from stoqlib.gui.slaves.userslave import PasswordEditor
 from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import PersonAdaptToCompany
-from stoqlib.domain.till import Till
-from stoqlib.exceptions import DeviceError
 
 import stoq
 
@@ -100,8 +94,6 @@ class AppWindow(BaseAppWindow):
             self.add_debug_ui()
 
         BaseAppWindow.__init__(self, app)
-        self._printer = FiscalPrinterHelper(
-            self.conn, parent=self.get_toplevel())
         self.get_toplevel().add_accel_group(self.uimanager.get_accel_group())
         self.create_ui()
         self.setup_focus()
@@ -253,69 +245,8 @@ class AppWindow(BaseAppWindow):
         print_report(report_class, *args, **kwargs)
 
     #
-    # Till Methods
+    # Overridables
     #
-
-    def close_till(self, close_db=True, close_ecf=True):
-        """Closes the till.
-
-        close_db and close_ecf should be different than True only when
-        fixing an conflicting status: If the DB is open but the ECF is
-        closed, or the other way around.
-
-        @param close_db: Indicates if we should close the till in the
-                         database
-        @param close_ecf: Indicates if we should close the till in the ECF.
-
-        """
-        # We are closing the till from the current day. Show a warning to
-        # the user, telling he wont be able to make any sales today
-        if not self._previous_day:
-            if not yesno(_(u"You can only close the till once per day. "
-                           "You won't be able to make any more sales today."
-                           "\n\nClose the till?"),
-                         gtk.RESPONSE_NO, _("Close Till"), _(u"Not now")):
-                return
-        else:
-            # When closing from a previous day, close only what is needed.
-            close_db = self._close_db
-            close_ecf = self._close_ecf
-
-        retval = self._printer.close_till(self._previous_day, close_db, close_ecf)
-        if retval:
-            self.till_status_changed(closed=True)
-        return retval
-
-    def open_till(self):
-        if self._printer.open_till():
-            self.till_status_changed(closed=False)
-
-    def check_till(self):
-        try:
-            self._check_needs_closing()
-            self._check_open_till()
-        except (DeviceError), e:
-            warning(e)
-            self.validated_ecf(has_ecf=False)
-            return
-
-    def validated_ecf(self, has_ecf):
-        """This is called when check_till method detect not has a connected
-        fiscal printer in current station.
-        @param has_ecf: Indicates if has a connected fiscal printer
-        """
-
-    def till_status_changed(self, closed, blocked=False):
-        """Subclasses should override this if they call open_till,
-        close_till or check_till.
-
-        This will be called to indicate the status of the till.
-
-        @param closed: Indicates if the till is open or closed
-        @param blocked: Indicates that the till is blocked (A till
-                        opened from a previous day)
-        """
-        raise NotImplementedError
 
     def create_actions(self):
         """This is called before the BaseWindow constructor, so we
@@ -325,52 +256,39 @@ class AppWindow(BaseAppWindow):
         """This is called when the UI such as GtkWidgets should be
         created"""
 
-    def _check_open_till(self):
-        # FIXME: implement this verification:
-        # If the till in stoq is open, check that the ecf is also open.
-        pass
+    def setup_focus(self):
+        """Define this method on child when it's needed."""
 
-    def _check_needs_closing(self):
-        needs_closing = self._printer.needs_closing()
+    def activate(self):
+        """This is called when you switch to an application, can
+        be overridden in a subclass"""
 
-        # DB and ECF are ok
-        if needs_closing is CLOSE_TILL_NONE:
-            self._previous_day = False
-            # We still need to check if the till is open or closed.
-            till = Till.get_current(self.conn)
-            if till:
-                self.till_status_changed(closed=False)
-            else:
-                self.till_status_changed(closed=True)
-            return True
+    def get_title(self):
+        # This method must be redefined in child when it's needed
+        return _('Stoq - %s') % self.app_name
 
-        close_db = needs_closing in (CLOSE_TILL_DB, CLOSE_TILL_BOTH)
-        close_ecf = needs_closing in (CLOSE_TILL_ECF, CLOSE_TILL_BOTH)
+    def can_change_application(self):
+        """Define if we can change the current application or not.
 
-        # DB or ECF is open from a previous day
-        self.till_status_changed(closed=False, blocked=True)
-        self._previous_day = True
+        @returns: True if we can change the application, False otherwise.
+        """
+        return True
 
-        # Save this statuses in case the user chooses not to close now.
-        self._close_db = close_db
-        self._close_ecf = close_ecf
+    def can_close_application(self):
+        """Define if we can close the current application or not.
 
-        manager = get_utility(IPluginManager)
-        manager.is_active('ecf')
-        if close_db and (close_ecf or not manager.is_active('ecf')):
-            msg = _(u"You need to close the till from the previous day before "
-                     "creating a new order.\n\nClose the Till?")
-        elif close_db and not close_ecf:
-            msg = _(u"The till in Stoq is opened, but in ECF "
-                     "is closed.\n\nClose the till in Stoq?")
-        elif close_ecf and not close_db:
-            msg = _(u"The till in stoq is closed, but in ECF "
-                     "is opened.\n\nClose the till in ECF?")
+        @returns: True if we can close the application, False otherwise.
+        """
+        return True
 
-        if yesno(msg, gtk.RESPONSE_NO, _(u"Close Till"), _(u"Not now")):
-            return self.close_till(close_db, close_ecf)
+    def set_open_inventory(self):
+        """ Subclasses should overide this if they call
+        check_open_inventory.
 
-        return False
+        This method will be called it there is an open inventory, so the
+        application can disable some funcionalities
+        """
+        raise NotImplementedError
 
     #
     # Public API
@@ -468,40 +386,6 @@ class AppWindow(BaseAppWindow):
             self._display_open_inventory_message()
             self.set_open_inventory()
 
-    def set_open_inventory(self):
-        """ Subclasses should overide this if they call
-        check_open_inventory.
-
-        This method will be called it there is an open inventory, so the
-        application can disable some funcionalities
-        """
-        raise NotImplementedError
-
-    def get_columns(self):
-        raise NotImplementedError('You should define this method on parent')
-
-    def setup_focus(self):
-        """Define this method on child when it's needed."""
-        pass
-
-    def get_title(self):
-        # This method must be redefined in child when it's needed
-        return _('Stoq - %s') % self.app_name
-
-    def can_change_application(self):
-        """Define if we can change the current application or not.
-
-        @returns: True if we can change the application, False otherwise.
-        """
-        return True
-
-    def can_close_application(self):
-        """Define if we can close the current application or not.
-
-        @returns: True if we can close the application, False otherwise.
-        """
-        return True
-
     def add_info_bar(self, message_type, label, action_widget=None):
         """Show an information bar to the user.
         @param message_type: message type, a gtk.MessageType
@@ -521,10 +405,6 @@ class AppWindow(BaseAppWindow):
 
         self.main_vbox.pack_start(bar, False, False, 0)
         self.main_vbox.reorder_child(bar, 1)
-
-    def activate(self):
-        """This is called when you switch to an application, can
-        be overridden in a subclass"""
 
     #
     # BaseAppWindow
