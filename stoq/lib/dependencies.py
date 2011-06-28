@@ -29,7 +29,6 @@ import gettext
 _ = gettext.gettext
 
 DATEUTIL_REQUIRED = (1, 4, 1)
-GAZPACHO_REQUIRED = (0, 6, 6)
 GTK_REQUIRED = (2, 16, 0)
 GUDEV_REQUIRED = (147, )
 KIWI_REQUIRED = (1, 9, 27)
