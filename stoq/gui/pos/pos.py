@@ -53,6 +53,7 @@ from stoqlib.lib.message import warning, info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import quantize
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
+from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
@@ -62,7 +63,6 @@ from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 
 from stoq.gui.application import AppWindow
-from stoq.gui.pos.deliveryeditor import DeliveryEditor
 
 _ = gettext.gettext
 log = Logger('stoq.pos')
