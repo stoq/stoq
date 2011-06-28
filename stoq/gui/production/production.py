@@ -54,7 +54,6 @@ class ProductionApp(SearchableAppWindow):
     gladefile = "production"
     search_table = ProductionOrder
     search_label = _(u'matching:')
-    klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)

@@ -238,7 +238,6 @@ class AdminApp(AppWindow):
     app_name = _('Administrative')
     app_icon_name = 'stoq-admin-app'
     gladefile = "admin"
-    klist_name = None
 
     def __init__(self, app):
         self.tasks = Tasks(self)

@@ -66,7 +66,6 @@ class PayableApp(SearchableAppWindow):
     gladefile = 'payable'
     search_table = OutPaymentView
     search_label = _('matching:')
-    klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)

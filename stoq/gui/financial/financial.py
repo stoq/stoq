@@ -204,7 +204,6 @@ class FinancialApp(AppWindow):
     app_name = _('Financial')
     app_icon_name = 'stoq-financial-app'
     gladefile = 'financial'
-    klist_name = 'accounts'
 
     def __init__(self, app):
         self._pages = {}

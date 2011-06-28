@@ -236,7 +236,7 @@ class SalesApp(SearchableAppWindow):
         self.sale_toolbar.connect('sale-edited',
                                   self._on_sale_toolbar__sale_edited)
         self.attach_slave("list_toolbar_holder", self.sale_toolbar)
-        self._klist.connect("selection-changed",
+        self.results.connect("selection-changed",
                             self._update_toolbar)
         self._update_toolbar()
 
@@ -246,7 +246,7 @@ class SalesApp(SearchableAppWindow):
         return bool(view and view.status == Sale.STATUS_QUOTE)
 
     def _update_toolbar(self, *args):
-        sale_view = self._klist.get_selected()
+        sale_view = self.results.get_selected()
         #FIXME: Disable invoice printing if the sale was returned. Remove this
         #       when we add proper support for returned sales invoice.
         can_print_invoice = bool(sale_view and
@@ -261,7 +261,7 @@ class SalesApp(SearchableAppWindow):
         self.sale_toolbar.set_report_filters(self.search.get_search_filters())
 
     def _print_invoice(self):
-        sale_view = self._klist.get_selected()
+        sale_view = self.results.get_selected()
         assert sale_view
         sale = Sale.get(sale_view.id, connection=self.conn)
         station = get_current_station(self.conn)
@@ -299,7 +299,7 @@ class SalesApp(SearchableAppWindow):
                 col.visible = True
                 break
 
-        self._klist.set_columns(self._columns)
+        self.results.set_columns(self._columns)
         # Adding summary label again and make it properly aligned with the
         # new columns setup
         self._create_summary_label()
@@ -340,7 +340,7 @@ class SalesApp(SearchableAppWindow):
                  gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel Quote")):
             return
         trans = new_transaction()
-        sale_view = self._klist.get_selected()
+        sale_view = self.results.get_selected()
         sale = trans.get(sale_view.sale)
         sale.cancel()
         finish_transaction(trans, True)

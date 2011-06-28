@@ -69,7 +69,6 @@ class StockApp(SearchableAppWindow):
     gladefile = "stock"
     search_table = ProductFullStockView
     search_labels = _('Matching:')
-    klist_selection_mode = gtk.SELECTION_MULTIPLE
     pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
 
     def __init__(self, app):

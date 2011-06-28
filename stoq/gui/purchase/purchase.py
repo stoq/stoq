@@ -72,7 +72,6 @@ class PurchaseApp(SearchableAppWindow):
     gladefile = "purchase"
     search_table = PurchaseOrderView
     search_label = _('matching:')
-    klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
@@ -176,6 +175,7 @@ class PurchaseApp(SearchableAppWindow):
         self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
         self.list_vbox.pack_start(self.main_toolbar, False, False)
         self.list_vbox.reorder_child(self.main_toolbar, 0)
+        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
 
     def create_filters(self):
         self.set_text_field_columns(['supplier_name'])
