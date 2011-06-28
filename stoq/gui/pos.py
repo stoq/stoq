@@ -829,7 +829,7 @@ class PosApp(AppWindow):
     def _on_PrinterHelper__till_status_changed(self, printer, closed, blocked):
         self._till_status_changed(closed, blocked)
 
-    def _on_PrinterHelper__ecf_changed(self, printer, ecf):
+    def _on_PrinterHelper__ecf_changed(self, printer, has_ecf):
         self.TillOpen.set_sensitive(has_ecf)
         self.TillClose.set_sensitive(has_ecf)
         self.barcode.set_sensitive(has_ecf)
