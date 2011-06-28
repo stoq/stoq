@@ -44,7 +44,6 @@ from stoqlib.domain.interfaces import IDelivery, ISalesPerson
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.product import IStorable
-from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sale import Sale, DeliveryItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.drivers.scale import read_scale_info
@@ -106,14 +105,12 @@ class POSApp(AppWindow):
     app_name = _('Point of Sales')
     app_icon_name = 'stoq-pos-app'
     gladefile = "pos"
-    klist_name = 'sale_items'
 
     def __init__(self, app):
         AppWindow.__init__(self, app)
         self._delivery = None
         self.param = sysparam(self.conn)
         self.max_results = self.param.MAX_SEARCH_RESULTS
-        self.client_table = PersonAdaptToClient
         self._coupon = None
         self._scale_settings = DeviceSettings.get_scale_settings(self.conn)
         self.check_till()
@@ -189,6 +186,9 @@ class POSApp(AppWindow):
 
         self.main_vbox.pack_start(self.menubar, False, False)
         self.main_vbox.reorder_child(self.menubar, 0)
+
+        self.sale_items.set_columns(self.get_columns())
+        self.sale_items.set_selection_mode(gtk.SELECTION_BROWSE)
 
     #
     # AppWindow Hooks

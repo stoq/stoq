@@ -80,15 +80,10 @@ class AppWindow(BaseAppWindow):
                     translated. This list is going to be used when
                     creating new user profiles.
 
-    @cvar klist_name: The name of the kiwi list instance used by our
-                       application
-    @cvar klist_selection_mode: The selection mode for the kiwi list
-
     """
 
+    app_name = None
     app_icon_name = None
-    klist_name = 'klist'
-    klist_selection_mode = gtk.SELECTION_BROWSE
     search = None
 
     def __init__(self, app):
@@ -106,11 +101,6 @@ class AppWindow(BaseAppWindow):
         BaseAppWindow.__init__(self, app)
         self._printer = FiscalPrinterHelper(
             self.conn, parent=self.get_toplevel())
-        if self.klist_name:
-            self._klist = getattr(self, self.klist_name)
-            if not len(self._klist.get_columns()):
-                self._klist.set_columns(self.get_columns())
-                self._klist.set_selection_mode(self.klist_selection_mode)
         self.get_toplevel().add_accel_group(self.uimanager.get_accel_group())
         self.create_ui()
         self.setup_focus()
@@ -200,37 +190,18 @@ class AppWindow(BaseAppWindow):
         self._version_checker.check_new_version()
 
     def _store_cookie(self, *args):
-        u = get_current_user(self.conn)
-        # XXX: encrypt and ask for password it again
-        get_utility(ICookieFile).store(u.username, u.password)
-        if hasattr(self, 'user_menu'):
-            self._reset_user_menu()
+        user = get_current_user(self.conn)
+        get_utility(ICookieFile).store(user.username,
+                                       user.password)
 
     def _clear_cookie(self, *args):
         get_utility(ICookieFile).clear()
-        if hasattr(self, 'user_menu'):
-            self._reset_user_menu()
 
     def _change_password(self):
         trans = new_transaction()
         user = get_current_user(trans)
         retval = self.run_dialog(PasswordEditor, trans, user)
         finish_transaction(trans, retval)
-
-    def _reset_user_menu(self):
-        assert self.user_menu
-#         label = self.user_menu.children()[0]
-#         username = runtime.get_current_user().username
-#         if self.app.config.check_cookie():
-#             self.clear_cookie_menuitem.set_sensitive(1)
-#             self.save_cookie_menuitem.set_sensitive(0)
-#             star = " [$]"
-#         else:
-#             # A fixed width to avoid changes in the menu width
-#             star = "    "
-#             self.clear_cookie_menuitem.set_sensitive(0)
-#             self.save_cookie_menuitem.set_sensitive(1)
-#         label.set_text("user: %s%s" % (username, star))
 
     def _read_resource(self, domain, name):
         try:
@@ -629,7 +600,6 @@ class SearchableAppWindow(AppWindow):
 
     search_table = None
     search_label = _('Search:')
-    klist_name = 'results'
 
     def __init__(self, app):
         if self.search_table is None:

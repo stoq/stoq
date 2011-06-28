@@ -54,7 +54,6 @@ class InventoryApp(SearchableAppWindow):
     gladefile = "inventory"
     search_table = Inventory
     search_labels = _('Matching:')
-    klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
