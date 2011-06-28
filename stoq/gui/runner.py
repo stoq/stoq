@@ -66,18 +66,15 @@ class ApplicationRunner(object):
         if not 'financial' in sys.argv:
             self._hidden_apps.append('financial')
 
-    def _import(self, appname):
-        module = __import__("stoq.gui.%s.app" % appname,
-                            globals(), locals(), [''])
-        if not hasattr(module, "main"):
-            raise RuntimeError(
-                "Application %s must have a app.main() function")
-        return module
-
     def _load_app(self, appdesc):
-        module = self._import(appdesc.name)
-        window_class = module.main(self._login)
-
+        module = __import__("stoq.gui.%s.%s" % (appdesc.name,
+                                                appdesc.name),
+                            globals(), locals(), [''])
+        window = appdesc.name.capitalize() + 'App'
+        window_class = getattr(module, window, None)
+        if window_class is None:
+            raise SystemExit("%s app misses a %r attribute" % (
+                appdesc.name, window))
         from stoq.gui.application import App
         app = App(window_class, self._login, self._options, self)
 
