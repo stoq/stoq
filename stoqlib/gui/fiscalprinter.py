@@ -71,8 +71,22 @@ def _flush_interface():
         gtk.main_iteration()
 
 class FiscalPrinterHelper(gobject.GObject):
+    """
 
+    Signals
+    =======
+      - B{till-status-changed} (bool, bool):
+        - Emitted when the status of the till has changed. it can be
+          open/closed, and while open/closed, it can be blocked
+
+      - B{ecf-changed} (bool):
+        - Emitted fater the check_till method is called, indicating if a
+          ecf printer is present and functional.
+
+    """
+                                # Closed, Blocked
     gsignal('till-status-changed', bool, bool)
+                        # has_ecf
     gsignal('ecf-changed', bool)
 
     def __init__(self, conn, parent):
@@ -107,6 +121,11 @@ class FiscalPrinterHelper(gobject.GObject):
 
     def close_till(self, close_db=True, close_ecf=True):
         """Closes the till
+
+        close_db and close_ecf should be different than True only when
+        fixing an conflicting status: If the DB is open but the ECF is
+        closed, or the other way around.
+
         @param close_db: If the till in the DB should be closed
         @param close_ecf: If the till in the ECF should be closed
         @returns: True if the till was closed, otherwise False
