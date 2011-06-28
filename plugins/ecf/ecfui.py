@@ -240,6 +240,7 @@ class ECFUI(object):
         return retval
 
     def _has_pending_reduce(self):
+        self._validate_printer()
         return self._printer.has_pending_reduce()
 
     def _close_till(self, till, previous_day):

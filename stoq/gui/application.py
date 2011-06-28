@@ -37,7 +37,7 @@ from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       get_current_branch)
 from stoqlib.lib.interfaces import (IAppInfo, ICookieFile, IStoqConfig,
                                     IPluginManager)
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
@@ -54,6 +54,7 @@ from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import PersonAdaptToCompany
 from stoqlib.domain.till import Till
+from stoqlib.exceptions import DeviceError
 
 import stoq
 
@@ -290,8 +291,19 @@ class AppWindow(BaseAppWindow):
             self.till_status_changed(closed=False)
 
     def check_till(self):
-        self._check_needs_closing()
-        self._check_open_till()
+        try:
+            self._check_needs_closing()
+            self._check_open_till()
+        except (DeviceError), e:
+            warning(e)
+            self.validated_ecf(has_ecf=False)
+            return
+
+    def validated_ecf(self, has_ecf):
+        """This is called when check_till method detect not has a connected
+        fiscal printer in current station.
+        @param has_ecf: Indicates if has a connected fiscal printer
+        """
 
     def till_status_changed(self, closed, blocked=False):
         """Subclasses should override this if they call open_till,

@@ -396,6 +396,14 @@ class PosApp(AppWindow):
         self.sale_items.set_sensitive(False)
         self.advanced_search.set_sensitive(False)
 
+    def validated_ecf(self, has_ecf):
+        self.TillOpen.set_sensitive(has_ecf)
+        self.TillClose.set_sensitive(has_ecf)
+        self.barcode.set_sensitive(has_ecf)
+        self.quantity.set_sensitive(has_ecf)
+        self.sale_items.set_sensitive(has_ecf)
+        self.advanced_search.set_sensitive(has_ecf)
+
     def _update_widgets(self):
         has_sale_items = len(self.sale_items) >= 1
         self.set_sensitive((self.checkout_button, self.remove_item_button,

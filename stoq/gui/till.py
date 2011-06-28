@@ -342,6 +342,16 @@ class TillApp(SearchableAppWindow):
         self._update_toolbar_buttons()
         self._update_total()
 
+    def validated_ecf(self, has_ecf):
+        self.TillOpen.set_sensitive(has_ecf)
+        self.TillClose.set_sensitive(has_ecf)
+        self.TillAddCash.set_sensitive(has_ecf)
+        self.TillRemoveCash.set_sensitive(has_ecf)
+        self.SearchTillHistory.set_sensitive(has_ecf)
+        self.app_vbox.set_sensitive(has_ecf)
+        text = _(u"Till operations requires a connected fiscal printer")
+        self.till_status_label.set_text(text)
+
     def _check_selected(self):
         sale_view = self.results.get_selected()
         if not sale_view:

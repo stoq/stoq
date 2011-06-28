@@ -34,6 +34,7 @@ from stoqdrivers.enum import PaymentMethodType, TaxType
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.sellable import SellableTaxConstant
+from stoqlib.domain.till import Till
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.dialogs.progressdialog import ProgressDialog
@@ -127,6 +128,12 @@ class ECFEditor(BaseEditor):
         serial = self.model.device_serial
         printers = ECFPrinter.selectBy(is_active=True,
                                        station=get_current_station(self.conn))
+        till = Till.selectOneBy(status=Till.STATUS_OPEN,
+                             station=get_current_station(self.conn))
+        if till and printers:
+            warning(_("You need to close the till opened at %s before "
+                      "changing this printer." % till.opening_date.date()))
+            return False
         for p in printers:
             if p.device_serial != serial and self.model.is_active:
                 warning(_(u'The ECF %s is already active for this '
