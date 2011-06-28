@@ -50,7 +50,8 @@ from stoqlib.lib.defaults import stoqlib_gettext
 from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import error, info
 from stoqlib.lib.parameters import (check_parameter_presence,
-                                    ensure_system_parameters)
+                                    ensure_system_parameters,
+                                    is_developer_mode)
 
 _ = stoqlib_gettext
 log = Logger('stoqlib.database.migration')
@@ -331,7 +332,8 @@ class StoqlibSchemaMigration(SchemaMigration):
             except Exception, e:
                 exc = sys.exc_info()
                 tb_str = ''.join(traceback.format_exception(*exc))
-                collect_traceback(exc, submit=True)
+                if not is_developer_mode():
+                    collect_traceback(exc, submit=True)
                 create_log.info("ERROR:%s" % (tb_str,))
 
                 if backup:
