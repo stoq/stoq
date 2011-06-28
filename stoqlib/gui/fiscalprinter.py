@@ -72,9 +72,8 @@ def _flush_interface():
 
 class FiscalPrinterHelper(gobject.GObject):
 
-    closed = gobject.property(type=bool, default=False)
-    blocked = gobject.property(type=bool, default=False)
-    has_ecf = gobject.property(type=bool, default=False)
+    gsignal('till-status-changed', bool, bool)
+    gsignal('ecf-changed', bool)
 
     def __init__(self, conn, parent):
         """ Creates a new FiscalPrinterHelper object
@@ -155,7 +154,7 @@ class FiscalPrinterHelper(gobject.GObject):
             - CLOSE_TILL_NONE if both ECF and DB are consistent (they may be
                   closed, or open for the current day)
         """
-/        ecf_needs_closing = HasPendingReduceZ.emit()
+        ecf_needs_closing = HasPendingReduceZ.emit()
 
         last_till = Till.get_last(self.conn)
         if last_till:
@@ -187,7 +186,7 @@ class FiscalPrinterHelper(gobject.GObject):
 
         return coupon
 
-    def _till_status_changed(self, closed, blocked)
+    def _till_status_changed(self, closed, blocked):
         self.emit('till-status-changed', closed, blocked)
 
     def _check_needs_closing(self):
@@ -232,10 +231,10 @@ class FiscalPrinterHelper(gobject.GObject):
     def check_till(self):
         try:
             self._check_needs_closing()
-            self.emit('ecf-changed', False)
+            self.emit('ecf-changed', True)
         except (DeviceError), e:
             warning(e)
-            self.emit('ecf-changed', True)
+            self.emit('ecf-changed', False)
 
 
 class FiscalCoupon(gobject.GObject):
