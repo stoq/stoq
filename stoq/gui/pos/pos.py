@@ -100,7 +100,7 @@ class _SaleItem(object):
         return '%s %s' % (qtd_string, self.unit)
 
 
-class POSApp(AppWindow):
+class PosApp(AppWindow):
 
     app_name = _('Point of Sales')
     app_icon_name = 'stoq-pos-app'
