@@ -21,7 +21,6 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkEventBox" id="search_holder">
-                <property name="border_width">5</property>
                 <property name="visible">True</property>
               </object>
             </child>
