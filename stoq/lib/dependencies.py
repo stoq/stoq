@@ -40,7 +40,6 @@ PSYCOPG_REQUIRED = (2, 0, 5)
 PYGTK_REQUIRED = (2, 16, 0)
 REPORTLAB_REQUIRED = (2, 4)
 STOQDRIVERS_REQUIRED = (0, 9, 8)
-STOQLIB_REQUIRED = (0, 9, 15, 99)
 TRML2PDF_REQUIRED = (1, 2)
 VTE_REQUIRED = (0, 23)
 ZOPE_INTERFACE_REQUIRED = (3, 0)
@@ -73,7 +72,6 @@ class DependencyChecker(object):
         self._check_trml2pdf(TRML2PDF_REQUIRED)
         self._check_dateutil(DATEUTIL_REQUIRED)
         self._check_mako(MAKO_REQUIRED)
-        self._check_stoqlib(STOQLIB_REQUIRED)
         self._check_stoqdrivers(STOQDRIVERS_REQUIRED)
 
     def _error(self, title, msg):
@@ -248,21 +246,6 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://www.stoq.com.br',
                           found=_tuple2str(stoqdrivers_version),
                           required=version)
-
-    def _check_stoqlib(self, version):
-        try:
-            import stoqlib
-        except ImportError:
-            self._missing(project="Stoqlib",
-                          url='http://www.stoq.com.br',
-                          version=version)
-
-        stoqlib_version = tuple(stoqlib.version.split('.'))
-        if stoqlib_version < version:
-            self._too_old(project="Stoqlib",
-                          url='http://www.stoq.com.br',
-                          required=version,
-                          found=stoqlib_version)
 
     def _check_pil(self, version):
         try:
