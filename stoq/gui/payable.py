@@ -381,7 +381,7 @@ class PayableApp(SearchableAppWindow):
         self.CancelPayment.set_sensitive(self._can_cancel_payment(selected))
         self.edit_button.set_sensitive(self._can_edit(selected))
         self.pay_order_button.set_sensitive(self._can_pay(selected))
-        self.print_button.set_sensitive(bool(self.results))
+        self.print_button.set_sensitive(bool(len(self.results)))
         self.Receipt.set_sensitive(self._are_paid(selected, respect_purchase=True))
         self.SetNotPaid.set_sensitive(self._are_paid(selected, respect_purchase=False))
 
