@@ -154,7 +154,7 @@ class FieldGrid(gtk.Layout):
 
     def __init__(self, font, width, height):
         gtk.Layout.__init__(self)
-        self.set_flags(self.flags() | gtk.CAN_FOCUS)
+        self.set_can_focus(True)
         self.drag_dest_set(
             gtk.DEST_DEFAULT_ALL,
             [('OBJECTLIST_ROW', 0, 10),
@@ -226,7 +226,7 @@ class FieldGrid(gtk.Layout):
 
         field.x, field.y = x, y
 
-        if field.widget.flags() & gtk.VISIBLE:
+        if field.widget.get_visible():
             self.queue_resize()
         self.emit('selection-changed', field)
 
@@ -238,7 +238,7 @@ class FieldGrid(gtk.Layout):
 
         field.width, field.height = width, height
 
-        if field.widget.flags() & gtk.VISIBLE:
+        if field.widget.get_visible():
             self.queue_resize()
         self.emit('selection-changed', field)
 
@@ -352,7 +352,7 @@ class FieldGrid(gtk.Layout):
     def do_expose_event(self, event):
         window = event.window
 
-        if not self.flags() & gtk.REALIZED:
+        if not self.get_realized():
             return
 
         for c in self._fields:
@@ -463,9 +463,9 @@ class FieldGrid(gtk.Layout):
         context.finish(False, False, time)
 
     def do_focus(self, direction):
-        self.set_flags(~self.flags() & gtk.CAN_FOCUS)
+        self.set_can_focus(False)
         res = gtk.Layout.do_focus(self, direction)
-        self.set_flags(self.flags() | gtk.CAN_FOCUS)
+        self.set_can_focus(True)
 
         return res
 
