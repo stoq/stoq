@@ -134,19 +134,10 @@ class FieldGrid(gtk.Layout):
         - Emitted when a field is added to the grid
       - B{field-removed} (object):
         - Emitted when a field is removed from the grid
-      - B{move-field} (int, int):
-        - Emitted when a field is moved by the user.
-      - B{remove-field} ():
-        - Emitted when a field is removed by the user.
       - B{selection-changed} (object):
         - Emitted when a field is selected or deselected by the user.
     """
 
-    # bindings
-    gsignal('move-field', int, int,
-            flags=gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION)
-    gsignal('remove-field',
-            flags=gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION)
     gsignal('selection-changed', object,
             flags=gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION)
     gsignal('field-added', object)
@@ -191,6 +182,11 @@ class FieldGrid(gtk.Layout):
             if field.find_at(window_x, window_y):
                 return field
         return None
+
+    def _remove_selected_field(self):
+        field = self._selected_field
+        if field:
+            self._remove_field(field)
 
     def _remove_field(self, field):
         if field == self._selected_field:
@@ -305,6 +301,22 @@ class FieldGrid(gtk.Layout):
         """
         return (int(float(x) / (self._field_width + 1)),
                 int(float(y) / (self._field_height + 1)))
+
+    def _move_field(self, movement_type, delta):
+        field = self._selected_field
+        if not field:
+            return True
+
+        x = field.x
+        y = field.y
+        if movement_type == FIELD_MOVEMENT_VERTICAL:
+            y += delta
+        elif movement_type == FIELD_MOVEMENT_HORIZONTAL:
+            x += delta
+        else:
+            raise AssertionError
+
+        self._set_field_position(field, x, y)
 
     def _on_field__size_allocate(self, label, event, field):
         field.allocate(self._field_width + 1, self._field_height + 1)
@@ -437,6 +449,17 @@ class FieldGrid(gtk.Layout):
         if self._moving_field:
             return
 
+        if event.keyval == keysyms.Up:
+            self._move_field(FIELD_MOVEMENT_VERTICAL, -1)
+        elif event.keyval == keysyms.Down:
+            self._move_field(FIELD_MOVEMENT_VERTICAL, 1)
+        elif event.keyval == keysyms.Left:
+            self._move_field(FIELD_MOVEMENT_HORIZONTAL, -1)
+        elif event.keyval == keysyms.Right:
+            self._move_field(FIELD_MOVEMENT_HORIZONTAL, 1)
+        elif event.keyval == keysyms.Delete:
+            self._remove_selected_field()
+
         if gtk.Layout.do_key_press_event(self, event):
             return True
 
@@ -468,31 +491,6 @@ class FieldGrid(gtk.Layout):
         self.set_can_focus(True)
 
         return res
-
-    #
-    # FieldGrid
-    #
-
-    def do_move_field(self, movement_type, delta):
-        field = self._selected_field
-        if not field:
-            return True
-
-        x = field.x
-        y = field.y
-        if movement_type == FIELD_MOVEMENT_VERTICAL:
-            y += delta
-        elif movement_type == FIELD_MOVEMENT_HORIZONTAL:
-            x += delta
-        else:
-            raise AssertionError
-
-        self._set_field_position(field, x, y)
-
-    def do_remove_field(self):
-        field = self._selected_field
-        if field:
-            self._remove_field(field)
 
     #
     # Public API
@@ -552,12 +550,3 @@ class FieldGrid(gtk.Layout):
         self.queue_resize()
 
 gobject.type_register(FieldGrid)
-gtk.binding_entry_add_signal(FieldGrid, keysyms.Up, 0, "move_field",
-                             int, FIELD_MOVEMENT_VERTICAL, int, -1)
-gtk.binding_entry_add_signal(FieldGrid, keysyms.Down, 0, "move_field",
-                             int, FIELD_MOVEMENT_VERTICAL, int, 1)
-gtk.binding_entry_add_signal(FieldGrid, keysyms.Left, 0, "move_field",
-                             int, FIELD_MOVEMENT_HORIZONTAL, int, -1)
-gtk.binding_entry_add_signal(FieldGrid, keysyms.Right, 0, "move_field",
-                             int, FIELD_MOVEMENT_HORIZONTAL, int, 1)
-gtk.binding_entry_add_signal(FieldGrid, keysyms.Delete, 0, "remove_field")
