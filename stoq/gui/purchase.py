@@ -89,7 +89,7 @@ class PurchaseApp(SearchableAppWindow):
           <menuitem action="AddOrder"/>
           <menuitem action="QuoteOrder"/>
           <menuitem action="FinishOrder"/>
-          <menuitem action="SendToSupplier"/>
+          <menuitem action="Confirm"/>
           <menuitem action="stock_cost_action"/>
           <menuitem action="Production"/>
           <separator name="sep"/>
@@ -134,7 +134,7 @@ class PurchaseApp(SearchableAppWindow):
             ("AddOrder", gtk.STOCK_NEW, _("Add Order..."), "<Control>o"),
             ("QuoteOrder", gtk.STOCK_INDEX, _("Quote Order..."), "<Control>e"),
             ("FinishOrder", None, _("Finish Order...")),
-            ("SendToSupplier", 'stoq-delivery', _("Send to Supplier...")),
+            ("Confirm", 'stoq-delivery', _("Confirm Order...")),
             ("stock_cost_action", None, _("_Stock Cost")),
             ("Production", gtk.STOCK_JUSTIFY_FILL,  _("Production..."), "<Control>r"),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
@@ -214,8 +214,8 @@ class PurchaseApp(SearchableAppWindow):
                                       label=_('<b>Orders Total:</b>'),
                                       format='<b>%s</b>')
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
-        self.SendToSupplier.set_sensitive(False)
-        self.send_to_supplier.set_sensitive(False)
+        self.Confirm.set_sensitive(False)
+        self.confirm.set_sensitive(False)
         # FIXME: enable before release.
         # XXX: Figure out if ideale still needs this. otherwise, remove the
         # related code
@@ -252,8 +252,8 @@ class PurchaseApp(SearchableAppWindow):
 
         self.cancel_button.set_sensitive(can_cancel)
         self.edit_button.set_sensitive(can_edit)
-        self.SendToSupplier.set_sensitive(can_send_supplier)
-        self.send_to_supplier.set_sensitive(can_send_supplier)
+        self.Confirm.set_sensitive(can_send_supplier)
+        self.confirm.set_sensitive(can_send_supplier)
         self.details_button.set_sensitive(one_selected)
         self.FinishOrder.set_sensitive(can_finish)
 
@@ -398,7 +398,7 @@ class PurchaseApp(SearchableAppWindow):
     def on_cancel_button__clicked(self, button):
         self._cancel_order()
 
-    def on_send_to_supplier__clicked(self, button):
+    def on_confirm__clicked(self, button):
         self._send_selected_items_to_supplier()
 
     # Order
@@ -416,7 +416,7 @@ class PurchaseApp(SearchableAppWindow):
     def on_stock_cost_action__activate(self, action):
         self.run_dialog(StockCostDialog, self.conn, None)
 
-    def on_SendToSupplier__activate(self, action):
+    def on_Confirm__activate(self, action):
         self._send_selected_items_to_supplier()
 
     # Consignment
