@@ -25,11 +25,14 @@ from decimal import Decimal
 import os
 import sys
 
+from kiwi.component import get_utility
+
 import stoqlib
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib import test
 from stoqlib.lib.diffutils import diff_files
+from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.pluginmanager import provide_plugin_manager
 
 # This test should really be inside plugins/ecf, bug that is not supported yet.
@@ -95,7 +98,9 @@ class Cat52Test(DomainTest):
         f = CATFile(printer)
         f.software_version = '6.6.6' # kiko sends <3
 
-        f.add_software_house(async, stoqlib)
+        appinfo = get_utility(IAppInfo)
+        f.add_software_house(async, appinfo.get('name'),
+                             appinfo.get('version'))
         # Cant call add_ecf_identification, since it depends on a
         # conected printer
         #f.add_ecf_identification()
