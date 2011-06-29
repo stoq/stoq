@@ -33,6 +33,7 @@
             </child>
             <child>
               <object class="ProxyButton" id="show_all_button">
+                <property name="use_underline">True</property>
                 <property name="data_type">str</property>
                 <property context="yes" name="label" translatable="yes">_Show All</property>
                 <property name="model_attribute">show_all</property>
