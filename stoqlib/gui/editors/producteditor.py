@@ -576,7 +576,6 @@ class ProductionProductEditor(ProductEditor):
 class ProductStockEditor(BaseEditor):
     model_name = _('Product')
     model_type = Product
-    size = (500, -1)
     gladefile = 'HolderTemplate'
 
     def setup_slaves(self):
