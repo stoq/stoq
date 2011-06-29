@@ -236,6 +236,9 @@ class StockTransferFinishStep(BaseWizardStep):
         self.source_responsible.prefill(employees)
         self.destination_responsible.prefill(employees)
 
+        self.transfer_order.source_branch = self.branch
+        self.transfer_order.destination_branch = branches[0][1]
+
     #
     # WizardStep hooks
     #
@@ -249,15 +252,6 @@ class StockTransferFinishStep(BaseWizardStep):
 
     def has_next_step(self):
         return False
-
-    def validate_step(self):
-        # since this is the last step, this method is used like a
-        # callback for the finish button
-        dest_branch = self.proxy.model.destination_branch
-        assert dest_branch is not None
-
-        self.transfer_order.source_branch = self.branch
-        return True
 
     #
     # Kiwi callbacks
