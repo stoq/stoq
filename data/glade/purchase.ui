@@ -54,25 +54,24 @@
                     <property name="spacing">5</property>
                     <property name="layout_style">start</property>
                     <child>
-                      <object class="GtkButton" id="cancel_button">
+                      <object class="GtkButton" id="confirm">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="is_focus">True</property>
-                        <property name="receives_default">False</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
                         <property name="use_action_appearance">False</property>
                         <child>
-                          <object class="GtkAlignment" id="alignment41">
+                          <object class="GtkAlignment" id="alignment1">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkVBox" id="vbox21">
+                              <object class="GtkVBox" id="vbox1">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
-                                  <object class="GtkImage" id="image11">
+                                  <object class="GtkImage" id="image1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="stock">stoq-remove</property>
+                                    <property name="stock">stoq-delivery</property>
                                   </object>
                                   <packing>
                                     <property name="expand">True</property>
@@ -81,10 +80,10 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="label21">
+                                  <object class="GtkLabel" id="label1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">_Cancel</property>
+                                    <property name="label" translatable="yes">Confirm</property>
                                     <property name="use_underline">True</property>
                                   </object>
                                   <packing>
@@ -258,24 +257,24 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="send_to_supplier">
+                      <object class="GtkButton" id="cancel_button">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_action_appearance">False</property>
                         <child>
-                          <object class="GtkAlignment" id="alignment1">
+                          <object class="GtkAlignment" id="alignment41">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkVBox" id="vbox1">
+                              <object class="GtkVBox" id="vbox21">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
-                                  <object class="GtkImage" id="image1">
+                                  <object class="GtkImage" id="image11">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="stock">stoq-delivery</property>
+                                    <property name="stock">stoq-remove</property>
                                   </object>
                                   <packing>
                                     <property name="expand">True</property>
@@ -284,10 +283,10 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="label1">
+                                  <object class="GtkLabel" id="label21">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Send to Supplier</property>
+                                    <property name="label" translatable="yes">_Cancel</property>
                                     <property name="use_underline">True</property>
                                   </object>
                                   <packing>
