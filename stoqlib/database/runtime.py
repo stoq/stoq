@@ -34,7 +34,7 @@ from stoqlib.database.interfaces import (
     ICurrentBranchStation, ICurrentUser)
 from stoqlib.database.orm import ORMObject, Transaction
 from stoqlib.database.orm import sqlIdentifier, const, Update, IN
-from stoqlib.exceptions import StoqlibError
+from stoqlib.exceptions import LoginError, StoqlibError
 from stoqlib.lib.message import error, yesno, info
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -206,7 +206,11 @@ def _register_branch(station_name):
 
     from stoqlib.gui.login import LoginHelper
     h = LoginHelper(username="admin")
-    user = h.validate_user()
+    try:
+        user = h.validate_user()
+    except LoginError, e:
+        error(e)
+
     if not user:
         error(_("Must login as 'admin'"))
 

@@ -283,7 +283,9 @@ class LoginHelper:
             except (LoginError, UserProfileError), e:
                 # We don't hide the dialog here; it's kept open so the
                 # next loop we just can call run() and display the error
-                get_utility(ICookieFile).clear()
+                cookie = get_utility(ICookieFile, None)
+                if cookie:
+                    cookie.clear()
                 retry += 1
                 retry_msg = str(e)
             except DatabaseError, e:
