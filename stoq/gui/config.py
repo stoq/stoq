@@ -106,7 +106,7 @@ class DatabaseSettingsStep(WizardEditorStep):
         self._update_widgets()
 
     def _update_widgets(self):
-        logo = environ.find_resource('pixmaps', 'stoq_logo.png')
+        logo = environ.find_resource('pixmaps', 'stoq_logo.svg')
         self.image1.set_from_file(logo)
         self.title_label.set_size('xx-large')
         self.title_label.set_bold(True)

@@ -64,7 +64,7 @@ class LoginDialog(GladeDelegate, RunnableView):
         self.get_toplevel().set_size_request(*self.size)
         self.notification_label.set_text('')
         self.notification_label.set_color('black')
-        filename = environ.find_resource("pixmaps", "stoq_logo.png")
+        filename = environ.find_resource("pixmaps", "stoq_logo.svg")
 
         gtkimage = gtk.Image()
         gtkimage.set_from_file(filename)
@@ -144,7 +144,7 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
 
         self.logo.set_from_file(environ.find_resource("pixmaps",
-                                                      "stoq_logo.png"))
+                                                      "stoq_logo.svg"))
 
         self.main_dialog = BasicWrappingDialog(self, self.title,
                                                size=self.size)

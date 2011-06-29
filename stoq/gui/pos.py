@@ -101,6 +101,9 @@ class _SaleItem(object):
         return '%s %s' % (qtd_string, self.unit)
 
 
+LOGO_WIDTH = 114
+LOGO_HEIGHT= 40
+
 class PosApp(AppWindow):
 
     app_name = _('Point of Sales')
@@ -285,8 +288,10 @@ class PosApp(AppWindow):
             button_set_image_with_label(self.checkout_button,
                                         'confirm24px.png', _('Close'))
 
-        logo = environ.find_resource('pixmaps', 'stoq_logo.png')
-        self.stoq_logo.set_from_file(logo)
+        logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
+        logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
+                                                    LOGO_HEIGHT)
+        self.stoq_logo.set_from_pixbuf(logo)
 
         self.order_total_label.set_size('xx-large')
         self.order_total_label.set_bold(True)

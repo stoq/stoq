@@ -60,6 +60,9 @@ from stoq.gui.application import SearchableAppWindow
 _ = gettext.gettext
 log = Logger('stoq.till')
 
+LOGO_WIDTH = 114
+LOGO_HEIGHT = 40
+
 
 class TillApp(SearchableAppWindow):
 
@@ -299,8 +302,10 @@ class TillApp(SearchableAppWindow):
         return till.get_balance()
 
     def _setup_widgets(self):
-        logo = environ.find_resource('pixmaps', 'stoq_logo_small.png')
-        self.stoq_logo.set_from_file(logo)
+        logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
+        logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
+                                                    LOGO_HEIGHT)
+        self.stoq_logo.set_from_pixbuf(logo)
         self.total_label.set_size('xx-large')
         self.total_label.set_bold(True)
         self.till_status_label.set_size('large')
@@ -451,3 +456,4 @@ class TillApp(SearchableAppWindow):
 
     def on_SearchFiscalTillOperations__activate(self, button):
         self._run_search_dialog(TillFiscalOperationsSearch)
+

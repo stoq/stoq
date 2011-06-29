@@ -46,7 +46,7 @@ class UpdateWelcomeStep(BaseWizardStep):
     def post_init(self):
         self.title_label.set_size('xx-large')
         self.title_label.set_bold(True)
-        logo = environ.find_resource('pixmaps', 'stoq_logo.png')
+        logo = environ.find_resource('pixmaps', 'stoq_logo.svg')
         self.logo.set_from_file(logo)
 
     def next_step(self):

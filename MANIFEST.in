@@ -1,7 +1,7 @@
 recursive-include data/csv *.csv
 recursive-include data/fonts *.ttf
 recursive-include data/glade *.glade
-recursive-include data/pixmaps *.png
+recursive-include data/pixmaps *.png *.svg
 recursive-include data/sql *.sql *.py
 recursive-include data/template *.rml
 recursive-include docs *
