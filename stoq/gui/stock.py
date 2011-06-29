@@ -259,7 +259,7 @@ class StockApp(SearchableAppWindow):
         if pixbuf:
             self.image.set_from_pixbuf(pixbuf)
         else:
-            self.image.set_from_stock(gtk.STOCK_EDIT, gtk.ICON_SIZE_DIALOG)
+            self.image.set_from_stock('stoq-edit', gtk.ICON_SIZE_DIALOG)
 
         self.image_button.set_sensitive(bool(item))
         self.history_button.set_sensitive(bool(item) and is_main_branch)
