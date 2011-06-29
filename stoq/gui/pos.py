@@ -833,6 +833,11 @@ class PosApp(AppWindow):
         self._till_status_changed(closed, blocked)
 
     def _on_PrinterHelper__ecf_changed(self, printer, has_ecf):
+        # If we have an ecf, let the other events decide what to disable.
+        if has_ecf:
+            return
+
+        # We dont have an ecf. Disable till related operations
         self.TillOpen.set_sensitive(has_ecf)
         self.TillClose.set_sensitive(has_ecf)
         self.barcode.set_sensitive(has_ecf)
