@@ -155,6 +155,7 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     utilities.clean()
     provide_utility(ISystemNotifier, TestsuiteNotifier(), replace=True)
     provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
+    _provide_app_info()
 
     db_settings = DatabaseSettings(
         address=address, port=port, dbname=dbname, username=username,
@@ -187,7 +188,6 @@ def provide_utilities(station_name, branch_name=None):
     _provide_current_user()
     _provide_current_station(station_name, branch_name)
     _provide_payment_operation_manager()
-    _provide_app_info()
 
 def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
                         password="", station_name=None, quick=False):
