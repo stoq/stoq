@@ -305,9 +305,10 @@ class PurchaseApp(SearchableAppWindow):
             msg = (_("The %d selected orders will be marked as sent.")
                    % len(valid_order_views))
         else:
-            msg = _('The selected order will be marked as sent. Are you sure?')
+            msg = _("The selected order will be confirmed and marked "
+                    "as 'Sent to the Supplier'. Are you sure?")
         if yesno(msg, gtk.RESPONSE_NO,
-                 _(u"Don't Send"), _(u"Send to Supplier")):
+                 _(u"Don't Confirm"), _(u"Confirm")):
             return
 
         trans = new_transaction()

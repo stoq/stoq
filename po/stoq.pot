@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-29 13:25-0300\n"
+"POT-Creation-Date: 2011-06-29 13:44-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -631,7 +631,7 @@ msgstr ""
 #. if not items:
 #. raise ValueError('You should have at least one branch at '
 #. 'this point')
-#: ../stoq/gui/payable.py:390 ../stoq/gui/purchase.py:344
+#: ../stoq/gui/payable.py:390 ../stoq/gui/purchase.py:345
 #: ../stoq/gui/production.py:142 ../stoq/gui/sales.py:311
 #: ../stoq/gui/inventory.py:145 ../stoq/gui/receivable.py:185
 #: ../stoq/gui/till.py:219 ../stoqlib/gui/base/search.py:376
@@ -1077,7 +1077,7 @@ msgstr ""
 msgid "This will cancel the current order. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/pos.py:575 ../stoq/gui/purchase.py:331 ../stoq/gui/sales.py:340
+#: ../stoq/gui/pos.py:575 ../stoq/gui/purchase.py:332 ../stoq/gui/sales.py:340
 #: ../stoq/gui/inventory.py:209 ../stoqlib/gui/slaves/saleslave.py:342
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:506
 msgid "Don't Cancel"
@@ -1252,22 +1252,24 @@ msgid "The %d selected orders will be marked as sent."
 msgstr ""
 
 #: ../stoq/gui/purchase.py:308
-msgid "The selected order will be marked as sent. Are you sure?"
+msgid ""
+"The selected order will be confirmed and marked as 'Sent to the Supplier'. "
+"Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/purchase.py:310
-msgid "Don't Send"
+#: ../stoq/gui/purchase.py:311 ../stoq/gui/till.py:232
+msgid "Don't Confirm"
 msgstr ""
 
-#: ../stoq/gui/purchase.py:310
-msgid "Send to Supplier"
-msgstr ""
-
-#: ../stoq/gui/purchase.py:330
-msgid "The selected order(s) will be cancelled."
+#: ../stoq/gui/purchase.py:311 ../data/glade/purchase.ui.h:1
+msgid "Confirm"
 msgstr ""
 
 #: ../stoq/gui/purchase.py:331
+msgid "The selected order(s) will be cancelled."
+msgstr ""
+
+#: ../stoq/gui/purchase.py:332
 msgid "Cancel Order(s)"
 msgstr ""
 
@@ -1791,10 +1793,6 @@ msgstr ""
 
 #: ../stoq/gui/till.py:232
 msgid "Confirm Quote"
-msgstr ""
-
-#: ../stoq/gui/till.py:232
-msgid "Don't Confirm"
 msgstr ""
 
 #: ../stoq/gui/till.py:251
@@ -10375,10 +10373,6 @@ msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:3
 msgid "Parent:"
-msgstr ""
-
-#: ../data/glade/purchase.ui.h:1
-msgid "Confirm"
 msgstr ""
 
 #: ../data/glade/purchase.ui.h:3
