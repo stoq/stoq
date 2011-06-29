@@ -118,7 +118,6 @@ def _check_dependencies():
 def _check_version_policy():
     # No need to bother version checking when not running in developer mode
     from stoqlib.lib.parameters import is_developer_mode
-    from stoq.lib.dependencies import STOQLIB_REQUIRED
     if not is_developer_mode():
         return
 
@@ -129,17 +128,6 @@ def _check_version_policy():
     # All these policies here are made so that stoqlib version is tightly
     # tied to the stoq versioning
     #
-    # All series of Stoq must:
-    # 1) Depend on the same major/micro/minor version of stoqlib
-    #
-    if (stoq.major_version,
-        stoq.minor_version,
-        stoq.micro_version) != tuple(STOQLIB_REQUIRED[:3]):
-        versions = ((stoq.major_version, stoq.minor_version,
-                     stoq.micro_version) + STOQLIB_REQUIRED[:3])
-        raise SystemExit(
-            "stoq series (%d.%d.%d) need to require at least the same "
-            "series (major/minor/micro) of stoqlib (%d.%d.%d)" % versions)
 
     # We reserve the first 89 for the stable series.
     FIRST_UNSTABLE_EXTRA_VERSION = 90
@@ -154,13 +142,6 @@ def _check_version_policy():
                 "Stable stoq release should set extra_version to %d or lower" % (
                 FIRST_UNSTABLE_EXTRA_VERSION, ))
 
-        if (len(STOQLIB_REQUIRED) >= 4 and
-            STOQLIB_REQUIRED[3] >= FIRST_UNSTABLE_EXTRA_VERSION):
-            raise SystemExit(
-                "Stable stoq (%s) cannot depend on "
-                "unstable stoqlib (%s)" % (
-                stoq.version, '.'.join(map(str, STOQLIB_REQUIRED))))
-
     # Unstable series of Stoq must have:
     # 1) have extra_version set to >= 90
     # 2) Must depend stoqlib version with extra_version >= 90
@@ -171,10 +152,6 @@ def _check_version_policy():
                "Unstable stoq (%s) must set extra_version to %d or higher, "
                "or did you forget to set stoq.stable to True?" % (
                stoq.version, FIRST_UNSTABLE_EXTRA_VERSION))
-
-        if (len(STOQLIB_REQUIRED) < 4 or
-            STOQLIB_REQUIRED[3] < FIRST_UNSTABLE_EXTRA_VERSION):
-            raise SystemExit("Unstable stoq needs to depend on unstable stoqlib")
 
 
 def _run_first_time_wizard(options, config=None):

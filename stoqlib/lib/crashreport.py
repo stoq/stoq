@@ -97,13 +97,6 @@ def collect_report():
         stoqdrivers_version += ' r' + stoqdrivers.library.get_revision()
     text += "Stoqdrivers version: %s\n" % (stoqdrivers_version, )
 
-    # Stoqlib version
-    import stoqlib
-    stoqlib_version = stoqlib.version
-    if hasattr(stoqlib.library, 'get_revision'):
-        stoqlib_version += ' r' + stoqlib.library.get_revision()
-    text += "Stoqlib version: %s\n" % (stoqlib_version, )
-
     # App version
     if info and info.get('name'):
         text += "%s version: %s\n" % (info.get('name'),
