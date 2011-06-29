@@ -11,7 +11,7 @@
         <property name="xscale">0.0</property>
         <child>
           <object class="GtkHButtonBox" id="hbuttonbox1">
-            <property name="spacing">5</property>
+            <property name="spacing">6</property>
             <property name="visible">True</property>
             <child>
               <object class="GtkButton" id="return_sale_button">

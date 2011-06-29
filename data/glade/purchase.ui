@@ -50,8 +50,8 @@
                   <object class="GtkHButtonBox" id="hbuttonbox1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="border_width">5</property>
-                    <property name="spacing">5</property>
+                    <property name="border_width">0</property>
+                    <property name="spacing">6</property>
                     <property name="layout_style">start</property>
                     <child>
                       <object class="GtkButton" id="confirm">
