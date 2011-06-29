@@ -61,7 +61,7 @@ class SplashScreen(gtk.Window):
         frame.add(darea)
 
         self.show_all()
-        filename = environ.find_resource("pixmaps", "splash.jpg")
+        filename = environ.find_resource("pixmaps", "splash.png")
         self._pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
 
     def _get_label(self):
