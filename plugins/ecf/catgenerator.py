@@ -27,7 +27,7 @@
 import os
 import string
 
-import stoqlib
+from kiwi.component import get_utility
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.orm import AND, const
@@ -35,6 +35,7 @@ from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.interfaces import ICompany, IOutPayment
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
+from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -114,7 +115,9 @@ class StoqlibCATGenerator(object):
                 connection=self.conn)
 
     def _add_registers(self):
-        self.cat.add_software_house(async, stoqlib)
+        appinfo = get_utility(IAppInfo)
+        self.cat.add_software_house(async, appinfo.get('name'),
+                                    appinfo.get('version'))
 
         self._add_ecf_identification()
         self._add_z_reduction_information()

@@ -93,12 +93,12 @@ class CATFile(object):
         self._registers.append(register)
 
     # E00
-    def add_software_house(self, soft_house, software):
+    def add_software_house(self, soft_house, software_name, software_version):
         """
         @param soft_house: Information from the software house: cnpj,
           ie, im, name
-        @param software: Information about this piece of software: name
-          and version
+        @param software_name: Name of the software
+        @param software_version: Version of the software
 
         Acording to the cat52/07, coo, software_number, line01 and
         line02 should be filled with blanks
@@ -115,9 +115,9 @@ class CATFile(object):
                                 ie=soft_house.ie,
                                 im=soft_house.im,
                                 soft_house=soft_house.name,
-                                soft_name=software.program_name,
+                                soft_name=software_name,
                                 soft_version=(self.software_version or
-                                              software.version),
+                                              software_version),
                                 line01=" ",
                                 line02=" "))
 

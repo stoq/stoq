@@ -116,6 +116,15 @@ def _provide_current_station(station_name=None, branch_name=None):
     provide_utility(ICurrentBranchStation, station)
     trans.commit(close=True)
 
+def _provide_app_info():
+    from kiwi.component import provide_utility
+    from stoqlib.lib.interfaces import IAppInfo
+    from stoqlib.lib.appinfo import AppInfo
+    info = AppInfo()
+    info.set("name", "Stoqlib")
+    info.set("version", "1.0.0")
+    provide_utility(IAppInfo, info)
+
 # Public API
 
 def provide_database_settings(dbname=None, address=None, port=None, username=None,
@@ -178,6 +187,7 @@ def provide_utilities(station_name, branch_name=None):
     _provide_current_user()
     _provide_current_station(station_name, branch_name)
     _provide_payment_operation_manager()
+    _provide_app_info()
 
 def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
                         password="", station_name=None, quick=False):
