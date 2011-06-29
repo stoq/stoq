@@ -217,7 +217,7 @@ class AppWindow(BaseAppWindow):
         about.set_copyright('Copyright (C) 2005-2011 Async Open Source')
 
         # Logo
-        icon_file = environ.find_resource('pixmaps', 'stoq_logo.png')
+        icon_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
         logo = gtk.gdk.pixbuf_new_from_file(icon_file)
         about.set_logo(logo)
 

@@ -88,6 +88,7 @@ data_files = [
     ('$datadir/fonts', listfiles('data', 'fonts', '*.ttf')),
     ('$datadir/misc', listfiles('data/misc', '*.*')),
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.png')),
+    ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.svg')),
     ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
     ('$datadir/sql', listfiles('data', 'sql', '*.py')),
     ('$datadir/template', listfiles('data', 'template', '*.rml')),

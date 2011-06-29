@@ -37,7 +37,7 @@ from kiwi.environ import environ
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.translation import stoqlib_gettext
 
-WIDTH = 392
+WIDTH = 400
 HEIGHT = 260
 BORDER = 8 # This includes shadow out border from GtkFrame
 _ = stoqlib_gettext
