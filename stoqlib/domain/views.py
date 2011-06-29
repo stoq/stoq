@@ -77,6 +77,7 @@ class ProductFullStockView(Viewable):
                 ProductStockItem.q.stock_cost*ProductStockItem.q.quantity),
         stock=const.SUM(ProductStockItem.q.quantity +
                         ProductStockItem.q.logic_quantity),
+        unit=SellableUnit.q.description,
         )
 
     joins = [
@@ -88,6 +89,9 @@ class ProductFullStockView(Viewable):
         # Category
         LEFTJOINOn(None, SellableCategory,
                    SellableCategory.q.id == Sellable.q.categoryID),
+        # SellableUnit
+        LEFTJOINOn(None, SellableUnit,
+                   Sellable.q.unitID == SellableUnit.q.id),
         # Product
         INNERJOINOn(None, Product,
                     Product.q.sellableID == Sellable.q.id),
