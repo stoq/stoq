@@ -155,9 +155,9 @@ class AppWindow(BaseAppWindow):
         if hasattr(gtk, 'InfoBar'):
             bar = gtk.InfoBar()
             bar.get_content_area().add(label)
-            bar.add_action_widget(hide_button, 0)
+            bar.add_action_widget(button, 0)
             if is_developer_mode():
-                bar.add_action_widget(button, 1)
+                bar.add_action_widget(hide_button, 1)
             bar.set_message_type(gtk.MESSAGE_WARNING)
             bar.show_all()
         else:
