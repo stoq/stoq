@@ -412,10 +412,11 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     toplevel = dialog.get_toplevel()
     add_current_toplevel(toplevel)
 
-    if parent:
-        if isinstance(parent, gtk.Window):
-            toplevel.set_transient_for(parent)
+    if parent and isinstance(parent, gtk.Window) and parent.get_visible():
+        toplevel.set_transient_for(parent)
         toplevel.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+    else:
+        toplevel.set_position(gtk.WIN_POS_CENTER)
 
     log.info("%s: Opening" % dialog_name)
     toplevel.run()
