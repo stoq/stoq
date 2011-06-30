@@ -1,168 +1,241 @@
-<?xml version="1.0"?>
-<!--*- mode: xml -*-->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <requires lib="gtk+" version="2.20"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="LoginDialog">
-    <property name="role"/>
-    <property context="yes" name="title" translatable="yes">Access Control</property>
+    <property name="width_request">280</property>
+    <property name="height_request">230</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes" context="yes">Access Control</property>
     <property name="window_position">center-always</property>
     <child>
       <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">5</property>
         <property name="spacing">5</property>
-        <property name="visible">True</property>
+        <child>
+          <object class="GtkEventBox" id="logo_container">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="padding">5</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
         <child>
           <object class="GtkHBox" id="hbox1">
-            <property name="spacing">6</property>
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
-              <object class="GtkEventBox" id="applist_holder">
+              <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
               <object class="GtkVBox" id="vbox2">
-                <property name="spacing">12</property>
                 <property name="visible">True</property>
-                <child>
-                  <object class="GtkEventBox" id="logo_container">
-                    <property name="visible">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                  </packing>
-                </child>
+                <property name="can_focus">False</property>
+                <property name="spacing">12</property>
                 <child>
                   <object class="GtkTable" id="table1">
-                    <property name="border_width">5</property>
-                    <property name="column_spacing">4</property>
-                    <property name="n_columns">2</property>
-                    <property name="n_rows">2</property>
-                    <property name="row_spacing">9</property>
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">5</property>
+                    <property name="n_rows">2</property>
+                    <property name="n_columns">2</property>
+                    <property name="column_spacing">4</property>
+                    <property name="row_spacing">9</property>
                     <child>
                       <object class="GtkLabel" id="label1">
-                        <property context="yes" name="label" translatable="yes">_Username:</property>
-                        <property name="use_underline">True</property>
                         <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
+                        <property name="can_focus">False</property>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes" context="yes">_Username:</property>
+                        <property name="use_underline">True</property>
                       </object>
                       <packing>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options">GTK_FILL</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkLabel" id="label2">
-                        <property context="yes" name="label" translatable="yes">_Password:</property>
-                        <property name="use_underline">True</property>
                         <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
+                        <property name="can_focus">False</property>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes" context="yes">_Password:</property>
+                        <property name="use_underline">True</property>
                       </object>
                       <packing>
-                        <property name="bottom_attach">2</property>
                         <property name="top_attach">1</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options">GTK_FILL</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkEntry" id="username">
                         <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">•</property>
                         <property name="width_chars">16</property>
+                        <property name="invisible_char_set">True</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="x_options">fill</property>
+                        <property name="x_options">GTK_FILL</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkEntry" id="password">
-                        <property name="visibility">False</property>
                         <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="visibility">False</property>
+                        <property name="invisible_char">•</property>
                         <property name="width_chars">16</property>
+                        <property name="invisible_char_set">True</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
                       </object>
                       <packing>
-                        <property name="bottom_attach">2</property>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
-                        <property name="x_options">fill</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="x_options">GTK_FILL</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="ProxyLabel" id="kiwilabel4">
-                    <property name="visible">True</property>
-                  </object>
-                  <packing>
-                    <property name="position">2</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
               </object>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkLabel" id="label5">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
           </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
         </child>
         <child>
           <object class="ProxyLabel" id="notification_label">
-            <property name="data_type">unicode</property>
-            <property name="justify">center</property>
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="yalign">0</property>
+            <property name="justify">center</property>
             <property name="wrap">True</property>
-            <property name="yalign">0.0</property>
+            <property name="data_type">unicode</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="position">1</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
           </packing>
         </child>
         <child>
           <object class="GtkHBox" id="hbox2">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
-              <object class="ProxyLabel" id="kiwilabel2">
+              <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
               <object class="GtkHButtonBox" id="hbuttonbox1">
-                <property name="spacing">5</property>
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="spacing">5</property>
+                <property name="layout_style">end</property>
                 <child>
                   <object class="GtkButton" id="quit_button">
                     <property name="label">gtk-quit</property>
-                    <property name="use_stock">True</property>
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="use_stock">True</property>
                   </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="ok_button">
                     <property name="label">gtk-ok</property>
-                    <property name="use_stock">True</property>
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="use_stock">True</property>
                   </object>
                   <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
               </object>
               <packing>
                 <property name="expand">False</property>
+                <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="position">2</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>
