@@ -11,7 +11,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="label1">
-            <property context="yes" name="label" translatable="yes">&lt;b&gt;Payments to pay will be cancelled and new ones will be created to match the remaining value.&lt;/b&gt;</property>
+            <property name="label" translatable="yes">&lt;b&gt;Payments to pay will be cancelled and new ones will be created to match the remaining value.&lt;/b&gt;</property>
             <property name="use_markup">True</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
@@ -38,14 +38,14 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="label2">
-                <property context="yes" name="label" translatable="yes">Total Received:</property>
+                <property name="label" translatable="yes">Total Received:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
             </child>
             <child>
               <object class="GtkLabel" id="label3">
-                <property context="yes" name="label" translatable="yes">Total Paid:</property>
+                <property name="label" translatable="yes">Total Paid:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -56,7 +56,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="missing_label">
-                <property context="yes" name="label" translatable="yes">Missing:</property>
+                <property name="label" translatable="yes">Missing:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -68,7 +68,7 @@
             <child>
               <object class="ProxyLabel" id="received_value">
                 <property name="data_type">currency</property>
-                <property context="yes" name="label" translatable="yes">kiwilabel1</property>
+                <property name="label" translatable="yes">kiwilabel1</property>
                 <property name="model_attribute">received_value</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -82,7 +82,7 @@
             <child>
               <object class="ProxyLabel" id="paid_value">
                 <property name="data_type">currency</property>
-                <property context="yes" name="label" translatable="yes">kiwilabel2</property>
+                <property name="label" translatable="yes">kiwilabel2</property>
                 <property name="model_attribute">paid_value</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -98,7 +98,7 @@
             <child>
               <object class="ProxyLabel" id="missing_value">
                 <property name="data_type">currency</property>
-                <property context="yes" name="label" translatable="yes">kiwilabel3</property>
+                <property name="label" translatable="yes">kiwilabel3</property>
                 <property name="model_attribute">missing_value</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>

@@ -20,7 +20,7 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="label10">
-                <property context="yes" name="label" translatable="yes">Branch:</property>
+                <property name="label" translatable="yes">Branch:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
                 <property name="yalign">0.0</property>
@@ -32,7 +32,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="purchase_supplier_label">
-                <property context="yes" name="label" translatable="yes">Supplier:</property>
+                <property name="label" translatable="yes">Supplier:</property>
                 <property name="model_attribute"/>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -47,7 +47,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="purchase_number_label">
-                <property context="yes" name="label" translatable="yes">Order Number:</property>
+                <property name="label" translatable="yes">Order Number:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -60,7 +60,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label8">
-                <property context="yes" name="label" translatable="yes">Invoice Number:</property>
+                <property name="label" translatable="yes">Invoice Number:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -73,7 +73,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label9">
-                <property context="yes" name="label" translatable="yes">C.F.O.P:</property>
+                <property name="label" translatable="yes">C.F.O.P:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -86,7 +86,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label2">
-                <property context="yes" name="label" translatable="yes">Transporter:</property>
+                <property name="label" translatable="yes">Transporter:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -99,7 +99,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label4">
-                <property context="yes" name="label" translatable="yes">Responsible:</property>
+                <property name="label" translatable="yes">Responsible:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -112,7 +112,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label3">
-                <property context="yes" name="label" translatable="yes">Freight:</property>
+                <property name="label" translatable="yes">Freight:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -282,7 +282,7 @@
                 <child>
                   <object class="GtkButton" id="notes_button">
                     <property name="is_focus">True</property>
-                    <property context="yes" name="label" translatable="yes">Notes...</property>
+                    <property name="label" translatable="yes">Notes...</property>
                     <property name="visible">True</property>
                     <property name="xalign">0.0</property>
                     <property name="yalign">1.0</property>
@@ -299,7 +299,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel4">
-                <property context="yes" name="label" translatable="yes">Products Total ($CURRENCY):</property>
+                <property name="label" translatable="yes">Products Total ($CURRENCY):</property>
                 <property name="model_attribute">kiwilabel4</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -312,7 +312,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel54">
-                <property context="yes" name="label" translatable="yes">Freight ($CURRENCY):</property>
+                <property name="label" translatable="yes">Freight ($CURRENCY):</property>
                 <property name="model_attribute">kiwilabel54</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -328,7 +328,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel6">
-                <property context="yes" name="label" translatable="yes">IPI ($CURRENCY):</property>
+                <property name="label" translatable="yes">IPI ($CURRENCY):</property>
                 <property name="model_attribute"/>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -343,7 +343,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel200">
-                <property context="yes" name="label" translatable="yes">ICMS Total ($CURRENCY):</property>
+                <property name="label" translatable="yes">ICMS Total ($CURRENCY):</property>
                 <property name="model_attribute"/>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -359,7 +359,7 @@
             <child>
               <object class="ProxyLabel" id="discount_label">
                 <property name="data_type">currency</property>
-                <property context="yes" name="label" translatable="yes">Discount ($CURRENCY):</property>
+                <property name="label" translatable="yes">Discount ($CURRENCY):</property>
                 <property name="model_attribute">discount_label</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -374,7 +374,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
-                <property context="yes" name="label" translatable="yes">Secure ($CURRENCY):</property>
+                <property name="label" translatable="yes">Secure ($CURRENCY):</property>
                 <property name="model_attribute">kiwilabel2</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -389,7 +389,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel3">
-                <property context="yes" name="label" translatable="yes">Others Expenditures ($CURRENCY):</property>
+                <property name="label" translatable="yes">Others Expenditures ($CURRENCY):</property>
                 <property name="model_attribute">kiwilabel3</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -404,7 +404,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel11">
-                <property context="yes" name="label" translatable="yes">Invoice Total ($CURRENCY):</property>
+                <property name="label" translatable="yes">Invoice Total ($CURRENCY):</property>
                 <property name="model_attribute"/>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>

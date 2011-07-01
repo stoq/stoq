@@ -3,7 +3,7 @@
 <interface>
   <object class="GtkWindow" id="CompanyDocumentsSlave">
     <property name="role"/>
-    <property context="yes" name="title" translatable="yes"/>
+    <property name="title" translatable="yes"/>
     <child>
       <object class="GtkTable" id="table1">
         <property name="column_spacing">5</property>
@@ -13,7 +13,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="label1">
-            <property context="yes" name="label" translatable="yes">Fancy Name:</property>
+            <property name="label" translatable="yes">Fancy Name:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -23,7 +23,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label2">
-            <property context="yes" name="label" translatable="yes">CNPJ:</property>
+            <property name="label" translatable="yes">CNPJ:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -35,7 +35,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label4">
-            <property context="yes" name="label" translatable="yes">City Registry:</property>
+            <property name="label" translatable="yes">City Registry:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -62,9 +62,9 @@
           <object class="ProxyEntry" id="cnpj">
             <property name="data_type">unicode</property>
             <property name="is_focus">True</property>
-            <property context="yes" name="mask" translatable="yes">00.000.000/0000-00</property>
+            <property name="mask" translatable="yes">00.000.000/0000-00</property>
             <property name="model_attribute">cnpj</property>
-            <property context="yes" name="text" translatable="yes">  .   .   /    -  </property>
+            <property name="text" translatable="yes">  .   .   /    -  </property>
             <property name="visible">True</property>
           </object>
           <packing>
@@ -92,7 +92,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label3">
-            <property context="yes" name="label" translatable="yes">State Registry:</property>
+            <property name="label" translatable="yes">State Registry:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>

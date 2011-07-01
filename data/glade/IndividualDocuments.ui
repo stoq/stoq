@@ -3,7 +3,7 @@
 <interface>
   <object class="GtkWindow" id="IndividualDocuments">
     <property name="role"/>
-    <property context="yes" name="title" translatable="yes">client_id_slave</property>
+    <property name="title" translatable="yes">client_id_slave</property>
     <child>
       <object class="GtkTable" id="table2">
         <property name="column_spacing">5</property>
@@ -13,7 +13,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="cpf_lbl">
-            <property context="yes" name="label" translatable="yes">CPF:</property>
+            <property name="label" translatable="yes">CPF:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
             <property name="xpad">2</property>
@@ -26,7 +26,7 @@
         <child>
           <object class="GtkLabel" id="rg_expedition_local_lbl">
             <property name="justify">right</property>
-            <property context="yes" name="label" translatable="yes">RG Expedition
+            <property name="label" translatable="yes">RG Expedition
 Local:</property>
             <property name="visible">True</property>
             <property name="wrap">True</property>
@@ -43,9 +43,9 @@ Local:</property>
           <object class="ProxyEntry" id="cpf">
             <property name="data_type">unicode</property>
             <property name="is_focus">True</property>
-            <property context="yes" name="mask" translatable="yes">000.000.000-00</property>
+            <property name="mask" translatable="yes">000.000.000-00</property>
             <property name="model_attribute">cpf</property>
-            <property context="yes" name="text" translatable="yes">   .   .   -  </property>
+            <property name="text" translatable="yes">   .   .   -  </property>
             <property name="visible">True</property>
           </object>
           <packing>
@@ -68,7 +68,7 @@ Local:</property>
         </child>
         <child>
           <object class="GtkLabel" id="rg_number_lbl">
-            <property context="yes" name="label" translatable="yes">RG Number:</property>
+            <property name="label" translatable="yes">RG Number:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
             <property name="xpad">2</property>
@@ -82,7 +82,7 @@ Local:</property>
         <child>
           <object class="GtkLabel" id="rg_expedition_date_lbl">
             <property name="justify">right</property>
-            <property context="yes" name="label" translatable="yes">RG Expedition
+            <property name="label" translatable="yes">RG Expedition
 Date:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>

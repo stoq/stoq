@@ -3,7 +3,7 @@
 <interface>
   <object class="GtkWindow" id="Warnbox">
     <property name="role"/>
-    <property context="yes" name="title" translatable="yes"/>
+    <property name="title" translatable="yes"/>
     <property name="visible">True</property>
     <child>
       <object class="GtkHBox" id="hbox1">
@@ -30,7 +30,7 @@
         <child>
           <object class="ProxyLabel" id="label">
             <property name="data_type">unicode</property>
-            <property context="yes" name="label" translatable="yes">label</property>
+            <property name="label" translatable="yes">label</property>
             <property name="visible">True</property>
             <property name="xalign">0.02</property>
           </object>

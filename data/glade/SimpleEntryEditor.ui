@@ -15,7 +15,7 @@
         <child>
           <object class="ProxyLabel" id="name_entry_label">
             <property name="data_type">unicode</property>
-            <property context="yes" name="label" translatable="yes">label: </property>
+            <property name="label" translatable="yes">label: </property>
             <property name="model_attribute">name_label</property>
             <property name="visible">True</property>
             <property name="xpad">1</property>

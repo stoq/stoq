@@ -262,23 +262,23 @@ _parameter_info = dict(
     ICMS_TAX=ParameterDetails(
     _('Sales'),
     _('Default ICMS tax'),
-    _('Default ICMS to be applied on all the products of a sale. '
-      'Note that this a percentage value and must be set as the '
-      '0 &amp;lt; value &amp;lt; 100. E.g: 18, which means 18% of tax.')),
+    _('Default ICMS to be applied on all the products of a sale. ') +
+      ' ' + _('This a percentage value and must be between 0 and 100.') + ' '
+      + _('E.g: 18, which means 18% of tax.')),
 
     ISS_TAX=ParameterDetails(
     _('Sales'),
     _('Default ISS tax'),
-    _('Default ISS to be applied on all the services of a sale. '
-      'Note that this a percentage value and must be set as the '
-      '0 &amp;lt; value &amp;lt; 100. E.g: 12, which means 12% of tax.')),
+    _('Default ISS to be applied on all the services of a sale. ') +
+      ' ' + _('This a percentage value and must be between 0 and 100.') + ' '
+      + _('E.g: 12, which means 12% of tax.')),
 
     SUBSTITUTION_TAX=ParameterDetails(
     _('Sales'),
     _('Default Substitution tax'),
-    _('The tax applied on all sale products with substitution tax type. '
-      'Note that this a percentage value and must be set as the format: '
-      '0 &amp;lt; value &amp;lt; 100. E.g: 16, which means 16% of tax.')),
+    _('The tax applied on all sale products with substitution tax type.') +
+      ' ' + _('This a percentage value and must be between 0 and 100.') + ' '
+      + _('E.g: 16, which means 16% of tax.')),
 
     DEFAULT_AREA_CODE=ParameterDetails(
     _('General'),

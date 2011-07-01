@@ -3,7 +3,7 @@
 <interface domain="stoq">
   <object class="GtkWindow" id="sales_app">
     <property name="height_request">570</property>
-    <property context="yes" name="title" translatable="yes">sales</property>
+    <property name="title" translatable="yes">sales</property>
     <property name="width_request">800</property>
     <property name="window_position">center</property>
     <child>

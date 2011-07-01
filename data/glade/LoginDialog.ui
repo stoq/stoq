@@ -7,7 +7,7 @@
     <property name="width_request">280</property>
     <property name="height_request">230</property>
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes" context="yes">Access Control</property>
+    <property name="title" context="yes">Access Control</property>
     <property name="window_position">center-always</property>
     <child>
       <object class="GtkVBox" id="vbox1">

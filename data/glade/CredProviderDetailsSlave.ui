@@ -92,7 +92,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel3">
                 <property name="data_type">unicode</property>
-                <property context="yes" name="label" translatable="yes">Provider Id:</property>
+                <property name="label" translatable="yes">Provider Id:</property>
                 <property name="model_attribute">kiwilabel3</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -100,7 +100,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label3">
-                <property context="yes" name="label" translatable="yes">Max Installments:</property>
+                <property name="label" translatable="yes">Max Installments:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -111,7 +111,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label1">
-                <property context="yes" name="label" translatable="yes">Payment Day:</property>
+                <property name="label" translatable="yes">Payment Day:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -122,7 +122,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label4">
-                <property context="yes" name="label" translatable="yes">Credit Fee:</property>
+                <property name="label" translatable="yes">Credit Fee:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -133,7 +133,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label8">
-                <property context="yes" name="label" translatable="yes">Credit Installments Store Fee:</property>
+                <property name="label" translatable="yes">Credit Installments Store Fee:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -144,7 +144,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label12">
-                <property context="yes" name="label" translatable="yes">Credit Installment Provider Fee:</property>
+                <property name="label" translatable="yes">Credit Installment Provider Fee:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -172,7 +172,7 @@
                 <property name="adjustment">adjustment1</property>
                 <property name="data_type">int</property>
                 <property name="model_attribute">max_installments</property>
-                <property context="yes" name="text" translatable="yes">0</property>
+                <property name="text" translatable="yes">0</property>
                 <property name="visible">True</property>
               </object>
               <packing>
@@ -187,7 +187,7 @@
                 <property name="adjustment">adjustment2</property>
                 <property name="data_type">int</property>
                 <property name="model_attribute">payment_day</property>
-                <property context="yes" name="text" translatable="yes">1</property>
+                <property name="text" translatable="yes">1</property>
                 <property name="visible">True</property>
               </object>
               <packing>
@@ -215,7 +215,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="label5">
-                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="label" translatable="yes">%</property>
                     <property name="visible">True</property>
                     <property name="xalign">0.0</property>
                   </object>
@@ -251,7 +251,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="label9">
-                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="label" translatable="yes">%</property>
                     <property name="visible">True</property>
                     <property name="xalign">0.0</property>
                   </object>
@@ -287,7 +287,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="label13">
-                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="label" translatable="yes">%</property>
                     <property name="visible">True</property>
                     <property name="xalign">0.0</property>
                   </object>
@@ -308,7 +308,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel4">
                 <property name="data_type">unicode</property>
-                <property context="yes" name="label" translatable="yes">Short Name:</property>
+                <property name="label" translatable="yes">Short Name:</property>
                 <property name="model_attribute">kiwilabel4</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -321,7 +321,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel5">
                 <property name="data_type">unicode</property>
-                <property context="yes" name="label" translatable="yes">Open Contract Date:</property>
+                <property name="label" translatable="yes">Open Contract Date:</property>
                 <property name="model_attribute"/>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -335,7 +335,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label2">
-                <property context="yes" name="label" translatable="yes">Closing Day:</property>
+                <property name="label" translatable="yes">Closing Day:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -348,7 +348,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label6">
-                <property context="yes" name="label" translatable="yes">Debit Fee:</property>
+                <property name="label" translatable="yes">Debit Fee:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -361,7 +361,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label10">
-                <property context="yes" name="label" translatable="yes">Debit Pre-Dated Fee:</property>
+                <property name="label" translatable="yes">Debit Pre-Dated Fee:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -374,7 +374,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label15">
-                <property context="yes" name="label" translatable="yes">Monthly Fee ($):</property>
+                <property name="label" translatable="yes">Monthly Fee ($):</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -416,7 +416,7 @@
                 <property name="data_type">int</property>
                 <property name="is_focus">True</property>
                 <property name="model_attribute">closing_day</property>
-                <property context="yes" name="text" translatable="yes">1</property>
+                <property name="text" translatable="yes">1</property>
                 <property name="visible">True</property>
               </object>
               <packing>
@@ -444,7 +444,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="label7">
-                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="label" translatable="yes">%</property>
                     <property name="visible">True</property>
                     <property name="xalign">0.0</property>
                   </object>
@@ -480,7 +480,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="label11">
-                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="label" translatable="yes">%</property>
                     <property name="visible">True</property>
                     <property name="xalign">0.0</property>
                   </object>
@@ -516,7 +516,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="label14">
-                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="label" translatable="yes">%</property>
                     <property name="visible">True</property>
                     <property name="xalign">0.0</property>
                   </object>

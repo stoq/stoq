@@ -30,7 +30,7 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkLabel" id="label7">
-                    <property context="yes" name="label" translatable="yes">Estimated Fix Date:</property>
+                    <property name="label" translatable="yes">Estimated Fix Date:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                     <property name="ypad">5</property>
@@ -52,7 +52,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="label8">
-                    <property context="yes" name="label" translatable="yes">  Price:</property>
+                    <property name="label" translatable="yes">  Price:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -89,7 +89,7 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="label9">
-                <property context="yes" name="label" translatable="yes">Service Details:</property>
+                <property name="label" translatable="yes">Service Details:</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>
               </object>

@@ -11,7 +11,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="header_label">
-            <property context="yes" name="label" translatable="yes">Select one or more quoted items to compose an order:</property>
+            <property name="label" translatable="yes">Select one or more quoted items to compose an order:</property>
             <property name="use_markup">True</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
@@ -36,14 +36,14 @@
             <child>
               <object class="GtkButton" id="select_all_button">
                 <property name="is_focus">True</property>
-                <property context="yes" name="label" translatable="yes">_Select All</property>
+                <property name="label" translatable="yes">_Select All</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
               </object>
             </child>
             <child>
               <object class="GtkButton" id="unselect_all_button">
-                <property context="yes" name="label" translatable="yes">_Unselect All</property>
+                <property name="label" translatable="yes">_Unselect All</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
               </object>
@@ -54,7 +54,7 @@
             <child>
               <object class="GtkButton" id="create_order_button">
                 <property name="is_focus">True</property>
-                <property context="yes" name="label" translatable="yes">C_reate Orders</property>
+                <property name="label" translatable="yes">C_reate Orders</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
               </object>
@@ -65,7 +65,7 @@
             <child>
               <object class="GtkButton" id="cancel_group_button">
                 <property name="is_focus">True</property>
-                <property context="yes" name="label" translatable="yes">Cancel _Group</property>
+                <property name="label" translatable="yes">Cancel _Group</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
               </object>

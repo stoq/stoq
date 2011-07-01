@@ -17,7 +17,7 @@
             <property name="visible">True</property>
             <child>
               <object class="ProxyLabel" id="kiwilabel3">
-                <property context="yes" name="label" translatable="yes">Sending branch:</property>
+                <property name="label" translatable="yes">Sending branch:</property>
                 <property name="model_attribute">kiwilabel3</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -28,7 +28,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
-                <property context="yes" name="label" translatable="yes">Open date:</property>
+                <property name="label" translatable="yes">Open date:</property>
                 <property name="model_attribute">kiwilabel1</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -41,7 +41,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel5">
-                <property context="yes" name="label" translatable="yes">Sender:</property>
+                <property name="label" translatable="yes">Sender:</property>
                 <property name="model_attribute">kiwilabel5</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -96,7 +96,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel4">
-                <property context="yes" name="label" translatable="yes">Receiving branch:</property>
+                <property name="label" translatable="yes">Receiving branch:</property>
                 <property name="model_attribute">kiwilabel4</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -109,7 +109,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
-                <property context="yes" name="label" translatable="yes">Receival date:</property>
+                <property name="label" translatable="yes">Receival date:</property>
                 <property name="model_attribute">kiwilabel2</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -124,7 +124,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel6">
-                <property context="yes" name="label" translatable="yes">Receiver:</property>
+                <property name="label" translatable="yes">Receiver:</property>
                 <property name="model_attribute">kiwilabel6</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>

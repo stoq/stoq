@@ -30,7 +30,7 @@
                 <child>
                   <object class="ProxyLabel" id="kiwilabel4">
                     <property name="data_type">unicode</property>
-                    <property context="yes" name="label" translatable="yes">Credit Provider:</property>
+                    <property name="label" translatable="yes">Credit Provider:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -41,7 +41,7 @@
                 <child>
                   <object class="ProxyLabel" id="kiwilabel2">
                     <property name="data_type">unicode</property>
-                    <property context="yes" name="label" translatable="yes">Payment Type:</property>
+                    <property name="label" translatable="yes">Payment Type:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -54,7 +54,7 @@
                 <child>
                   <object class="ProxyLabel" id="kiwilabel3">
                     <property name="data_type">unicode</property>
-                    <property context="yes" name="label" translatable="yes">Number of Installments:</property>
+                    <property name="label" translatable="yes">Number of Installments:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -104,7 +104,7 @@
                         <property name="adjustment">adjustment1</property>
                         <property name="data_type">int</property>
                         <property name="model_attribute">installments_number</property>
-                        <property context="yes" name="text" translatable="yes">0</property>
+                        <property name="text" translatable="yes">0</property>
                         <property name="visible">True</property>
                       </object>
                     </child>

@@ -15,7 +15,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel9">
                 <property name="data_type">unicode</property>
-                <property context="yes" name="label" translatable="yes">Discount:</property>
+                <property name="label" translatable="yes">Discount:</property>
                 <property name="model_attribute">kiwilabel9</property>
                 <property name="visible">True</property>
               </object>
@@ -39,7 +39,7 @@
               <object class="ProxyRadioButton" id="discount_perc_ck">
                 <property name="data_type">bool</property>
                 <property name="is_focus">True</property>
-                <property context="yes" name="label" translatable="yes"/>
+                <property name="label" translatable="yes"/>
                 <property name="model_attribute">discount_perc_ck</property>
                 <property name="visible">True</property>
               </object>
@@ -82,7 +82,7 @@
                 <child>
                   <object class="ProxyLabel" id="kiwilabel1">
                     <property name="data_type">unicode</property>
-                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="label" translatable="yes">%</property>
                     <property name="model_attribute"/>
                     <property name="visible">True</property>
                   </object>

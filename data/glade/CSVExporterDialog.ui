@@ -11,7 +11,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="label1">
-            <property context="yes" name="label" translatable="yes">Select the encoding to use when save the CSV file:</property>
+            <property name="label" translatable="yes">Select the encoding to use when save the CSV file:</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
           </object>
@@ -25,7 +25,7 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="label2">
-                <property context="yes" name="label" translatable="yes">Encoding:</property>
+                <property name="label" translatable="yes">Encoding:</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>
               </object>

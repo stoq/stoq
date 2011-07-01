@@ -15,7 +15,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="label1">
-            <property context="yes" name="label" translatable="yes">Group:</property>
+            <property name="label" translatable="yes">Group:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -26,7 +26,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label2">
-            <property context="yes" name="label" translatable="yes">Parameter Name:</property>
+            <property name="label" translatable="yes">Parameter Name:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
             <property name="yalign">0.0</property>
@@ -40,7 +40,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label3">
-            <property context="yes" name="label" translatable="yes">Current Value:</property>
+            <property name="label" translatable="yes">Current Value:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -53,7 +53,7 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel1">
             <property name="data_type">str</property>
-            <property context="yes" name="label" translatable="yes">General</property>
+            <property name="label" translatable="yes">General</property>
             <property name="model_attribute">field_name</property>
             <property name="use_markup">False</property>
             <property name="visible">True</property>

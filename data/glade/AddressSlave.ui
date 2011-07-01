@@ -10,7 +10,7 @@
   </object>
   <object class="GtkWindow" id="AddressSlave">
     <property name="role"/>
-    <property context="yes" name="title" translatable="yes"/>
+    <property name="title" translatable="yes"/>
     <child>
       <object class="GtkTable" id="table2">
         <property name="column_spacing">6</property>
@@ -20,7 +20,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="address_lbl">
-            <property context="yes" name="label" translatable="yes">Street:</property>
+            <property name="label" translatable="yes">Street:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -45,7 +45,7 @@
                 <property name="focus_on_click">False</property>
                 <property name="height_request">0</property>
                 <property name="is_focus">True</property>
-                <property context="yes" name="label" translatable="yes">Number:</property>
+                <property name="label" translatable="yes">Number:</property>
                 <property name="model_attribute">streetnumber_check</property>
                 <property name="relief">none</property>
                 <property name="visible">True</property>
@@ -65,7 +65,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="complement_lbl">
-            <property context="yes" name="label" translatable="yes">Complement:</property>
+            <property name="label" translatable="yes">Complement:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -77,7 +77,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="state_lbl">
-            <property context="yes" name="label" translatable="yes">State:</property>
+            <property name="label" translatable="yes">State:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -120,7 +120,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="postal_code_lbl">
-                <property context="yes" name="label" translatable="yes">Postal Code:</property>
+                <property name="label" translatable="yes">Postal Code:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
                 <property name="xpad">6</property>
@@ -132,9 +132,9 @@
             <child>
               <object class="ProxyEntry" id="postal_code">
                 <property name="data_type">unicode</property>
-                <property context="yes" name="mask" translatable="yes">00000-000</property>
+                <property name="mask" translatable="yes">00000-000</property>
                 <property name="model_attribute">postal_code</property>
-                <property context="yes" name="text" translatable="yes">     -   </property>
+                <property name="text" translatable="yes">     -   </property>
                 <property name="visible">True</property>
                 <property name="width_chars">9</property>
               </object>
@@ -182,7 +182,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="district_lbl">
-            <property context="yes" name="label" translatable="yes">District:</property>
+            <property name="label" translatable="yes">District:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -196,7 +196,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="city_lbl">
-            <property context="yes" name="label" translatable="yes">City:</property>
+            <property name="label" translatable="yes">City:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -210,7 +210,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="country_lbl">
-            <property context="yes" name="label" translatable="yes">Country:</property>
+            <property name="label" translatable="yes">Country:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>

@@ -35,7 +35,7 @@
         <child>
           <object class="GtkFrame" id="frame6">
             <property name="border_width">2</property>
-            <property context="yes" name="label" translatable="yes">Admission Data</property>
+            <property name="label" translatable="yes">Admission Data</property>
             <property name="visible">True</property>
             <child>
               <object class="GtkTable" id="table7">
@@ -47,7 +47,7 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkLabel" id="admission_date_label">
-                    <property context="yes" name="label" translatable="yes">Date:</property>
+                    <property name="label" translatable="yes">Date:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -57,7 +57,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="registry_number_label">
-                    <property context="yes" name="label" translatable="yes">Registry:</property>
+                    <property name="label" translatable="yes">Registry:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -69,7 +69,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="expire_vacation_label">
-                    <property context="yes" name="label" translatable="yes">Vacation:</property>
+                    <property name="label" translatable="yes">Vacation:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -127,7 +127,7 @@
         <child>
           <object class="GtkFrame" id="frame1">
             <property name="border_width">2</property>
-            <property context="yes" name="label" translatable="yes">Work Permit</property>
+            <property name="label" translatable="yes">Work Permit</property>
             <property name="visible">True</property>
             <child>
               <object class="GtkTable" id="table2">
@@ -139,7 +139,7 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkLabel" id="workpermit_number_label">
-                    <property context="yes" name="label" translatable="yes">Number:</property>
+                    <property name="label" translatable="yes">Number:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -149,7 +149,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="workpermit_serie_label">
-                    <property context="yes" name="label" translatable="yes">Serie:</property>
+                    <property name="label" translatable="yes">Serie:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -198,7 +198,7 @@
         <child>
           <object class="GtkFrame" id="frame4">
             <property name="border_width">2</property>
-            <property context="yes" name="label" translatable="yes">Bank Information</property>
+            <property name="label" translatable="yes">Bank Information</property>
             <property name="visible">True</property>
             <child>
               <object class="GtkTable" id="table8">
@@ -210,7 +210,7 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkLabel" id="bank_label">
-                    <property context="yes" name="label" translatable="yes">Bank ID:</property>
+                    <property name="label" translatable="yes">Bank ID:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -220,7 +220,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="bank_agency_label">
-                    <property context="yes" name="label" translatable="yes">Branch Number:</property>
+                    <property name="label" translatable="yes">Branch Number:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -232,7 +232,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="bank_account_label">
-                    <property context="yes" name="label" translatable="yes">Account:</property>
+                    <property name="label" translatable="yes">Account:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -297,7 +297,7 @@
         <child>
           <object class="GtkFrame" id="frame2">
             <property name="border_width">2</property>
-            <property context="yes" name="label" translatable="yes">PIS</property>
+            <property name="label" translatable="yes">PIS</property>
             <property name="visible">True</property>
             <child>
               <object class="GtkTable" id="table3">
@@ -309,7 +309,7 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkLabel" id="pis_number_label">
-                    <property context="yes" name="label" translatable="yes">Number:</property>
+                    <property name="label" translatable="yes">Number:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -319,7 +319,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="pis_registry_date_label">
-                    <property context="yes" name="label" translatable="yes">Date:</property>
+                    <property name="label" translatable="yes">Date:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -331,7 +331,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="pis_bank_label">
-                    <property context="yes" name="label" translatable="yes">Bank:</property>
+                    <property name="label" translatable="yes">Bank:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -394,7 +394,7 @@
         <child>
           <object class="GtkFrame" id="frame7">
             <property name="border_width">2</property>
-            <property context="yes" name="label" translatable="yes">Personal Details</property>
+            <property name="label" translatable="yes">Personal Details</property>
             <property name="visible">True</property>
             <child>
               <object class="GtkTable" id="table5">
@@ -407,7 +407,7 @@
                 <child>
                   <object class="GtkLabel" id="education_level_label">
                     <property name="justify">right</property>
-                    <property context="yes" name="label" translatable="yes">Education 
+                    <property name="label" translatable="yes">Education 
 Level:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
@@ -419,7 +419,7 @@ Level:</property>
                 <child>
                   <object class="GtkLabel" id="person_dependent_number_label">
                     <property name="justify">right</property>
-                    <property context="yes" name="label" translatable="yes">Dependent 
+                    <property name="label" translatable="yes">Dependent 
 Number:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>

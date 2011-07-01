@@ -14,7 +14,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="label1">
-            <property context="yes" name="label" translatable="yes">Description:</property>
+            <property name="label" translatable="yes">Description:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -25,7 +25,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label2">
-            <property context="yes" name="label" translatable="yes">Device name:</property>
+            <property name="label" translatable="yes">Device name:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -38,7 +38,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label3">
-            <property context="yes" name="label" translatable="yes">Computer:</property>
+            <property name="label" translatable="yes">Computer:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -51,7 +51,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label4">
-            <property context="yes" name="label" translatable="yes">Layout:</property>
+            <property name="label" translatable="yes">Layout:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>

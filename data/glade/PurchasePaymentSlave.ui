@@ -37,7 +37,7 @@
                 <child>
                   <object class="ProxyLabel" id="kiwilabel1">
                     <property name="data_type">unicode</property>
-                    <property context="yes" name="label" translatable="yes">Number of installments:</property>
+                    <property name="label" translatable="yes">Number of installments:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -48,7 +48,7 @@
                 <child>
                   <object class="ProxyLabel" id="kiwilabel5">
                     <property name="data_type">unicode</property>
-                    <property context="yes" name="label" translatable="yes">Based on intervals of:</property>
+                    <property name="label" translatable="yes">Based on intervals of:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -63,7 +63,7 @@
                     <property name="data_type">long</property>
                     <property name="is_focus">True</property>
                     <property name="model_attribute">installments_number</property>
-                    <property context="yes" name="text" translatable="yes">1</property>
+                    <property name="text" translatable="yes">1</property>
                     <property name="visible">True</property>
                     <property name="width_request">90</property>
                   </object>
@@ -80,7 +80,7 @@
                     <property name="data_type">int</property>
                     <property name="is_focus">True</property>
                     <property name="model_attribute">intervals</property>
-                    <property context="yes" name="text" translatable="yes">0</property>
+                    <property name="text" translatable="yes">0</property>
                     <property name="visible">True</property>
                     <property name="width_request">90</property>
                   </object>

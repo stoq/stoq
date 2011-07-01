@@ -15,7 +15,7 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel1">
             <property name="data_type">unicode</property>
-            <property context="yes" name="label" translatable="yes">Transporter Status:</property>
+            <property name="label" translatable="yes">Transporter Status:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -23,7 +23,7 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel2">
             <property name="data_type">unicode</property>
-            <property context="yes" name="label" translatable="yes">Open Contract Date:</property>
+            <property name="label" translatable="yes">Open Contract Date:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -49,7 +49,7 @@
               <object class="ProxyRadioButton" id="active_radio">
                 <property name="data_type">bool</property>
                 <property name="data_value">True</property>
-                <property context="yes" name="label" translatable="yes">Active</property>
+                <property name="label" translatable="yes">Active</property>
                 <property name="model_attribute">is_active</property>
                 <property name="visible">True</property>
               </object>
@@ -60,7 +60,7 @@
                 <property name="data_type">bool</property>
                 <property name="data_value">False</property>
                 <property name="group">active_radio</property>
-                <property context="yes" name="label" translatable="yes">Inactive</property>
+                <property name="label" translatable="yes">Inactive</property>
                 <property name="model_attribute">is_active</property>
                 <property name="visible">True</property>
               </object>
@@ -90,7 +90,7 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel3">
             <property name="data_type">unicode</property>
-            <property context="yes" name="label" translatable="yes">Freight:</property>
+            <property name="label" translatable="yes">Freight:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -118,7 +118,7 @@
         <child>
           <object class="ProxyLabel" id="kiwilabel4">
             <property name="data_type">unicode</property>
-            <property context="yes" name="label" translatable="yes">%</property>
+            <property name="label" translatable="yes">%</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
           </object>

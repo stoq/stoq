@@ -43,7 +43,7 @@
                       <object class="ProxyLabel" id="installments_number_lbl">
                         <property name="data_type">unicode</property>
                         <property name="justify">right</property>
-                        <property context="yes" name="label" translatable="yes">Installments:</property>
+                        <property name="label" translatable="yes">Installments:</property>
                         <property name="model_attribute">installments_number_lbl</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -55,7 +55,7 @@
                         <property name="data_type">int</property>
                         <property name="is_focus">True</property>
                         <property name="model_attribute">installments_number</property>
-                        <property context="yes" name="text" translatable="yes">0</property>
+                        <property name="text" translatable="yes">0</property>
                         <property name="visible">True</property>
                         <property name="width_chars">3</property>
                         <property name="width_request">90</property>
@@ -73,7 +73,7 @@
                     <child>
                       <object class="GtkLabel" id="bank_label">
                         <property name="justify">right</property>
-                        <property context="yes" name="label" translatable="yes">Default Bank:</property>
+                        <property name="label" translatable="yes">Default Bank:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                       </object>
@@ -120,7 +120,7 @@
                           <object class="ProxyLabel" id="first_duedate_lbl">
                             <property name="data_type">unicode</property>
                             <property name="justify">right</property>
-                            <property context="yes" name="label" translatable="yes">Start at:</property>
+                            <property name="label" translatable="yes">Start at:</property>
                             <property name="model_attribute">first_duedate_lbl</property>
                             <property name="visible">True</property>
                             <property name="xalign">1.0</property>
@@ -146,7 +146,7 @@
                           <object class="ProxyLabel" id="intervals_lbl">
                             <property name="data_type">unicode</property>
                             <property name="justify">right</property>
-                            <property context="yes" name="label" translatable="yes">With intervals of:</property>
+                            <property name="label" translatable="yes">With intervals of:</property>
                             <property name="model_attribute">intervals_lbl</property>
                             <property name="visible">True</property>
                             <property name="xalign">1.0</property>
@@ -158,7 +158,7 @@
                             <property name="data_type">int</property>
                             <property name="is_focus">True</property>
                             <property name="model_attribute">intervals</property>
-                            <property context="yes" name="text" translatable="yes">0</property>
+                            <property name="text" translatable="yes">0</property>
                             <property name="visible">True</property>
                             <property name="width_chars">3</property>
                             <property name="width_request">90</property>

@@ -5,7 +5,7 @@
     <property name="destroy_with_parent">True</property>
     <property name="height_request">570</property>
     <property name="role"/>
-    <property context="yes" name="title" translatable="yes">production</property>
+    <property name="title" translatable="yes">production</property>
     <property name="width_request">800</property>
     <property name="window_position">center</property>
     <child>
@@ -52,7 +52,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkLabel" id="label2">
-                                    <property context="yes" name="label" translatable="yes">Start Production</property>
+                                    <property name="label" translatable="yes">Start Production</property>
                                     <property name="use-underline">True</property>
                                     <property name="visible">True</property>
                                   </object>
@@ -84,7 +84,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkLabel" id="label61">
-                                    <property context="yes" name="label" translatable="yes">Ed_it...</property>
+                                    <property name="label" translatable="yes">Ed_it...</property>
                                     <property name="use-underline">True</property>
                                     <property name="visible">True</property>
                                   </object>
@@ -120,7 +120,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkLabel" id="label3">
-                                    <property context="yes" name="label" translatable="yes">_Details</property>
+                                    <property name="label" translatable="yes">_Details</property>
                                     <property name="use-underline">True</property>
                                     <property name="visible">True</property>
                                   </object>
@@ -157,7 +157,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkLabel" id="label34">
-                                    <property context="yes" name="label" translatable="yes">_Print</property>
+                                    <property name="label" translatable="yes">_Print</property>
                                     <property name="use-underline">True</property>
                                     <property name="visible">True</property>
                                   </object>
