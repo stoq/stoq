@@ -170,6 +170,8 @@ class BaseMethodSelectionStep(object):
 
         self.cash_change_slave = CashChangeSlave(self.conn, self.model)
         self.attach_slave('cash_change_holder', self.cash_change_slave)
+        self.cash_change_slave.received_value.connect(
+            'activate', lambda entry: self.wizard.go_to_next())
 
     def next_step(self):
         selected_method = self.get_selected_method()
@@ -177,6 +179,9 @@ class BaseMethodSelectionStep(object):
             if not self.cash_change_slave.can_finish():
                 warning(_(u"Invalid value, please verify if it was "
                           "properly typed."))
+                self.cash_change_slave.received_value.select_region(
+                    0, len(self.cash_change_slave.received_value.get_text()))
+                self.cash_change_slave.received_value.grab_focus()
                 return self
 
             # We have to modify the payment, so the fiscal printer can
@@ -381,6 +386,10 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.wizard.payment_group.clear_unused()
         self.register_validate_function(self.wizard.refresh_next)
         self._update_next_step(self.get_selected_method())
+
+        if hasattr(self, 'cash_change_slave'):
+            self.cash_change_slave.received_value.grab_focus()
+
         self.force_validation()
 
     def setup_slaves(self):
@@ -459,6 +468,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             return ValidationError(_(u'Invoice number already used.'))
         trans.close()
 
+
 #
 # Wizards for sales
 #
@@ -490,7 +500,6 @@ class ConfirmSaleWizard(BaseWizard):
             # POS interface
             if self.model.can_order():
                 self.model.order()
-        self.next_button.grab_focus()
 
     def _check_payment_group(self, model, conn):
         if not isinstance(model, Sale):
