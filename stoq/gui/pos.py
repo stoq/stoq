@@ -458,7 +458,7 @@ class PosApp(AppWindow):
         data = read_scale_info(self.conn)
         self.quantity.set_value(data.weight)
 
-    def _run_advanced_search(self, search_str=None):
+    def _run_advanced_search(self, search_str=None, message=None):
         sellable_view_item = self.run_dialog(
             SellableSearch,
             self.conn,
@@ -466,7 +466,8 @@ class PosApp(AppWindow):
             search_str=search_str,
             sale_items=self.sale_items,
             quantity=self.sellableitem_proxy.model.quantity,
-            double_click_confirm=True)
+            double_click_confirm=True,
+            info_message=message)
         if not sellable_view_item:
             return
 
@@ -500,9 +501,9 @@ class PosApp(AppWindow):
         sellable = self._get_sellable()
         self.add_button.set_sensitive(sellable is not None)
         if not sellable:
-            info(_(u'The barcode %s does not exist.') %
-                    self.barcode.get_text())
-            self._run_advanced_search(search_str)
+            message = (_('The barcode %r does not exist. Searching for a product instead.') %
+                       self.barcode.get_text())
+            self._run_advanced_search(search_str, message)
             return
 
         quantity = self.quantity.get_value()
