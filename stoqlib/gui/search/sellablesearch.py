@@ -72,6 +72,7 @@ class SellableSearch(SearchEditor):
         @param double_click_confirm: If double click a item in the list should
             automatically confirm
         """
+        self._first_search = True
         self.quantity = quantity
         self._delivery_sellable = sysparam(conn).DELIVERY_SERVICE.sellable
 
@@ -103,11 +104,7 @@ class SellableSearch(SearchEditor):
         self.set_ok_label(self.footer_ok_label)
 
         if info_message:
-            from stoqlib.gui.base.messagebar import MessageBar
-            bar = MessageBar(info_message, message_type=gtk.MESSAGE_INFO)
-            bar.show_all()
-            self.main_vbox.pack_start(bar, False, False)
-            self.main_vbox.reorder_child(bar, 0)
+            self.add_message_bar(info_message, gtk.MESSAGE_INFO)
 
         if search_str:
             self.set_searchbar_search_string(search_str)
@@ -151,6 +148,21 @@ class SellableSearch(SearchEditor):
             self.ok_button.set_sensitive(False)
         else:
             self.ok_button.set_sensitive(True)
+
+    def search_completed(self, results):
+        # This is tricky,
+        # 1) If we show a message, select and focus the first item
+        # 2) If we search after showing a message, remove the message
+        #    and focus the search entry
+        # 3) If no message was specified, always focus search entry
+        if not self._first_search:
+            self.remove_message_bar()
+        if self.has_message_bar() and len(results) >= 1:
+            results.select(results[0])
+            results.grab_focus()
+        else:
+            self.search.focus_search_entry()
+        self._first_search = False
 
     #
     # Private

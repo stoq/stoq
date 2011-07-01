@@ -40,12 +40,13 @@ from stoqlib.database.runtime import (get_connection, new_transaction,
                                       finish_transaction, get_current_user)
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
+from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.cachestore import CacheStore
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.cachestore import CacheStore
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -404,12 +405,7 @@ class SearchDialog(BasicDialog):
     #
 
     def _on_search__search_completed(self, search, results):
-        results.grab_focus()
-        if len(results) >= 1:
-            results.select(results[0])
-            results.grab_focus()
-        else:
-            self.search.focus_search_entry()
+        self.search_completed(results)
 
     def _on_results__cell_edited(self, results, obj, attr):
         """Override this method on child when it's needed to perform some
@@ -535,6 +531,7 @@ class SearchEditor(SearchDialog):
         """
 
         self.interface = interface
+        self._message_bar = None
 
         SearchDialog.__init__(self, conn, table, search_table,
                               hide_footer=hide_footer, title=title,
@@ -573,6 +570,27 @@ class SearchEditor(SearchDialog):
         self.attach_slave('extra_holder', self._toolbar)
 
     # Public API
+
+    def add_message_bar(self, message, message_type=gtk.MESSAGE_INFO):
+        """Adds a message bar to the top of the search results
+        @message: message to add
+        @message_type: type of message to add
+        """
+        self._message_bar = MessageBar(message, message_type)
+        self.main_vbox.pack_start(self._message_bar, False, False)
+        self.main_vbox.reorder_child(self._message_bar, 0)
+        self._message_bar.show_all()
+        return self._message_bar
+
+    def remove_message_bar(self):
+        """Removes the message bar if there was one added"""
+        if not self._message_bar:
+            return
+        self._message_bar.destroy()
+        self._message_bar = None
+
+    def has_message_bar(self):
+        return self._message_bar is not None
 
     @argcheck(bool)
     def set_edit_button_sensitive(self, value):
