@@ -501,7 +501,7 @@ class PosApp(AppWindow):
         sellable = self._get_sellable()
         self.add_button.set_sensitive(sellable is not None)
         if not sellable:
-            message = (_('The barcode %r does not exist. Searching for a product instead.') %
+            message = (_("The barcode '%s' does not exist. Searching for a product instead.") %
                        self.barcode.get_text())
             self._run_advanced_search(search_str, message)
             return
