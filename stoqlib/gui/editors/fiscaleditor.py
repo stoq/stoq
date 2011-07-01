@@ -35,7 +35,7 @@ _ = stoqlib_gettext
 
 
 class CfopEditor(BaseEditor):
-    model_name = _('C.F.O.P')
+    model_name = _('C.F.O.P.')
     model_type = CfopData
     gladefile = 'CfopEditor'
     proxy_widgets = ('code', 'description')
@@ -60,7 +60,7 @@ class CfopEditor(BaseEditor):
 
     def on_code__validate(self, widget, value):
         if not validate_cfop(value):
-            return ValidationError(_(u"'%s' is not a valid C.F.O.P code."
+            return ValidationError(_(u"'%s' is not a valid C.F.O.P. code."
                                      % value))
 
 class FiscalBookEntryEditor(BaseEditor):

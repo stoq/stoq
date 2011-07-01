@@ -80,7 +80,7 @@ class Tasks(object):
                   'stoq-clients'),
                  (_('Clients'), 'clients',
                   'stoq-clients'),
-                 (_('C.F.O.P'), 'cfop',
+                 (_('C.F.O.P.'), 'cfop',
                   'calc'),
                  (_('Computers'), 'stations',
                   'system'),

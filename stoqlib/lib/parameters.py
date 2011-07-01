@@ -231,32 +231,32 @@ _parameter_info = dict(
     # XXX: These parameters are Brazil-specific
     ASK_SALES_CFOP=ParameterDetails(
     _('Sales'),
-    _('Ask for Sale Order C.F.O.P'),
-    _('Once this parameter is set to True we will ask for the C.F.O.P '
+    _('Ask for Sale Order C.F.O.P.'),
+    _('Once this parameter is set to True we will ask for the C.F.O.P. '
       'when creating new sale orders')),
 
     DEFAULT_SALES_CFOP=ParameterDetails(
     _('Sales'),
-    _('Default Sales C.F.O.P'),
-    _('Default C.F.O.P (Fiscal Code of Operations) used when generating '
+    _('Default Sales C.F.O.P.'),
+    _('Default C.F.O.P. (Fiscal Code of Operations) used when generating '
       'fiscal book entries.')),
 
     DEFAULT_RETURN_SALES_CFOP=ParameterDetails(
     _('Sales'),
-    _('Default Return Sales C.F.O.P'),
-    _('Default C.F.O.P (Fiscal Code of Operations) used when returning '
+    _('Default Return Sales C.F.O.P.'),
+    _('Default C.F.O.P. (Fiscal Code of Operations) used when returning '
       'sale orders ')),
 
     DEFAULT_RECEIVING_CFOP=ParameterDetails(
     _('Purchase'),
-    _('Default Receiving C.F.O.P'),
-    _('Default C.F.O.P (Fiscal Code of Operations) used when receiving '
+    _('Default Receiving C.F.O.P.'),
+    _('Default C.F.O.P. (Fiscal Code of Operations) used when receiving '
       'products in the stock application.')),
 
     DEFAULT_STOCK_DECREASE_CFOP=ParameterDetails(
     _('Stock'),
-    _('Default C.F.O.P for Stock Decreases'),
-    _('Default C.F.O.P (Fiscal Code of Operations) used when performing a '
+    _('Default C.F.O.P. for Stock Decreases'),
+    _('Default C.F.O.P. (Fiscal Code of Operations) used when performing a '
       'manual stock decrease.')),
 
     ICMS_TAX=ParameterDetails(
