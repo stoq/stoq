@@ -26,6 +26,10 @@
 import string
 
 from stoqlib.chart.chart import Chart
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
+
 
 
 class YearlyPaymentsChart(Chart):
