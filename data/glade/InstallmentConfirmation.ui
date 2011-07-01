@@ -1,23 +1,27 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface domain="stoqlib">
-  <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="InstallmentConfirmation">
+    <property name="can_focus">False</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="spacing">11</property>
         <child>
           <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="spacing">11</property>
             <child>
               <object class="GtkTable" id="table1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="n_rows">7</property>
                 <property name="n_columns">2</property>
                 <property name="column_spacing">6</property>
@@ -25,6 +29,7 @@
                 <child>
                   <object class="GtkLabel" id="date_lbl">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Paid date:</property>
                   </object>
@@ -32,6 +37,7 @@
                 <child>
                   <object class="ProxyLabel" id="label4">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Installment value:</property>
                     <property name="model_attribute">label4</property>
@@ -44,6 +50,7 @@
                 <child>
                   <object class="ProxyLabel" id="label3">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Penalty ($CURRENCY):</property>
                   </object>
@@ -55,6 +62,7 @@
                 <child>
                   <object class="ProxyLabel" id="label2">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Interest ($CURRENCY):</property>
                   </object>
@@ -66,6 +74,7 @@
                 <child>
                   <object class="ProxyLabel" id="discount_label">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Discount ($CURRENCY):</property>
                   </object>
@@ -77,6 +86,7 @@
                 <child>
                   <object class="GtkLabel" id="label1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Total value:</property>
                   </object>
@@ -88,9 +98,10 @@
                 <child>
                   <object class="ProxyDateEntry" id="close_date">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="data_type">date</property>
-                    <property name="model_attribute">close_date</property>
                     <property name="mandatory">True</property>
+                    <property name="model_attribute">close_date</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -101,9 +112,10 @@
                 <child>
                   <object class="ProxyLabel" id="installment_value">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
-                    <property name="model_attribute">installment_value</property>
                     <property name="data_type">currency</property>
+                    <property name="model_attribute">installment_value</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -115,9 +127,14 @@
                 <child>
                   <object class="ProxyEntry" id="penalty">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
-                    <property name="model_attribute">penalty</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">currency</property>
+                    <property name="model_attribute">penalty</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -130,9 +147,14 @@
                 <child>
                   <object class="ProxyEntry" id="interest">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
-                    <property name="model_attribute">interest</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">currency</property>
+                    <property name="model_attribute">interest</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -145,9 +167,14 @@
                 <child>
                   <object class="ProxyEntry" id="discount">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
-                    <property name="model_attribute">discount</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">currency</property>
+                    <property name="model_attribute">discount</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -160,9 +187,10 @@
                 <child>
                   <object class="ProxyLabel" id="total_value">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
-                    <property name="model_attribute">total_value</property>
                     <property name="data_type">currency</property>
+                    <property name="model_attribute">total_value</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -182,9 +210,11 @@
             <child>
               <object class="GtkVBox" id="details_box">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkTable" id="table2">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="n_rows">3</property>
                     <property name="n_columns">2</property>
                     <property name="column_spacing">6</property>
@@ -192,6 +222,7 @@
                     <child>
                       <object class="GtkLabel" id="label5">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Order number:</property>
                       </object>
@@ -199,6 +230,7 @@
                     <child>
                       <object class="GtkLabel" id="person_label">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Client:</property>
                         <property name="justify">right</property>
@@ -212,9 +244,10 @@
                     <child>
                       <object class="ProxyLabel" id="order_number">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">0</property>
-                        <property name="model_attribute">order_number</property>
                         <property name="data_type">int</property>
+                        <property name="model_attribute">order_number</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -224,11 +257,12 @@
                     <child>
                       <object class="ProxyLabel" id="person_name">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">0</property>
                         <property name="ypad">2</property>
                         <property name="width_chars">24</property>
-                        <property name="model_attribute">person_name</property>
                         <property name="data_type">unicode</property>
+                        <property name="model_attribute">person_name</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -240,6 +274,7 @@
                     <child>
                       <object class="GtkLabel" id="label6">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Account:</property>
                       </object>
@@ -251,8 +286,9 @@
                     <child>
                       <object class="ProxyComboBox" id="account">
                         <property name="visible">True</property>
-                        <property name="model_attribute">account</property>
+                        <property name="can_focus">False</property>
                         <property name="data_type">object</property>
+                        <property name="model_attribute">account</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -271,24 +307,29 @@
                 <child>
                   <object class="GtkExpander" id="expander">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="is_focus">True</property>
                     <child>
                       <object class="GtkVBox" id="vbox3">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
                         <child>
                           <object class="ProxyCheckButton" id="pay_penalty">
                             <property name="label" translatable="yes">Pay penalty</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="active">True</property>
-                            <property name="draw_indicator">False</property>
+                            <property name="draw_indicator">True</property>
                             <property name="data_type">bool</property>
                             <property name="model_attribute">pay_penalty</property>
                           </object>
                           <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
@@ -296,14 +337,17 @@
                           <object class="ProxyCheckButton" id="pay_interest">
                             <property name="label" translatable="yes">Pay interest</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="active">True</property>
-                            <property name="draw_indicator">False</property>
+                            <property name="draw_indicator">True</property>
                             <property name="data_type">bool</property>
                             <property name="model_attribute">pay_interest</property>
                           </object>
                           <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
@@ -318,6 +362,8 @@
                 </child>
               </object>
               <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -335,12 +381,15 @@
             <property name="selection_mode">multiple</property>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
           <object class="GtkHButtonBox" id="hbuttonbox1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="layout_style">start</property>
             <child>
               <object class="GtkButton" id="details_button">
@@ -348,28 +397,37 @@
                 <property name="can_focus">False</property>
                 <property name="is_focus">True</property>
                 <property name="receives_default">False</property>
+                <property name="use_action_appearance">False</property>
                 <property name="xalign">0</property>
                 <child>
                   <object class="GtkAlignment" id="alignment4">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">0</property>
                     <child>
                       <object class="GtkHBox" id="hbox3">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <child>
                           <object class="GtkImage" id="image2">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                           </object>
                           <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
                           <object class="GtkLabel" id="label12">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Details...</property>
                           </object>
                           <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
