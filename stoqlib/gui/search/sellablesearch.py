@@ -56,7 +56,8 @@ class SellableSearch(SearchEditor):
 
     def __init__(self, conn, hide_footer=False, hide_toolbar=True,
                  selection_mode=gtk.SELECTION_MULTIPLE, search_str=None,
-                 sale_items=None, quantity=None, double_click_confirm=False):
+                 sale_items=None, quantity=None, double_click_confirm=False,
+                 info_message=None):
         """
         Create a new SellableSearch object.
         @param conn: a orm Transaction instance
@@ -100,6 +101,14 @@ class SellableSearch(SearchEditor):
         self.set_searchbar_labels(_('Show items matching:'))
         self.set_result_strings(*self.searchbar_result_strings)
         self.set_ok_label(self.footer_ok_label)
+
+        if info_message:
+            from stoqlib.gui.base.messagebar import MessageBar
+            bar = MessageBar(info_message, message_type=gtk.MESSAGE_INFO)
+            bar.show_all()
+            self.main_vbox.pack_start(bar, False, False)
+            self.main_vbox.reorder_child(bar, 0)
+
         if search_str:
             self.set_searchbar_search_string(search_str)
             self.search.refresh()
