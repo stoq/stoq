@@ -118,7 +118,7 @@ class TillFiscalOperationsSearch(SearchDialog):
                              data_type=str, expand=True),
                 SearchColumn('station_name', title=_('Station'), data_type=str,
                              width=120),
-                SearchColumn('cfop', title=_(u"Cfop"), data_type=str,
+                SearchColumn('cfop', title=_('C.F.O.P.'), data_type=str,
                              width=100, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('value', _('Value'), data_type=currency,
                              width=80)]

@@ -84,7 +84,7 @@ class StockDecreaseReceipt(BaseStoqReport):
     def _add_cfop(self):
         details_str = self.order.cfop.get_description()
 
-        self.add_paragraph(("Cfop"), style='Normal-Bold')
+        self.add_paragraph(_('C.F.O.P.'), style='Normal-Bold')
         self.add_preformatted_text(details_str, style='Normal-Notes')
 
     def _get_table_columns(self):

@@ -148,9 +148,9 @@ def validate_cnpj(cnpj):
     return True
 
 def validate_cfop(cfop):
-    """Validates C.F.O.P code
+    """Validates C.F.O.P. code
 
-    Valid C.F.O.P format: '9.999', where 9 is any digit in 0-9.
+    Valid C.F.O.P. format: '9.999', where 9 is any digit in 0-9.
     """
     if not isinstance(cfop, basestring):
         return False
