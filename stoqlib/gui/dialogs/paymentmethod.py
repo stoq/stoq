@@ -62,7 +62,7 @@ class PaymentMethodsDialog(BasicDialog):
         self.attach_slave("extra_holder", self._toolbar_slave)
 
     def _setup_list(self):
-        methods = PaymentMethod.select(connection=self.conn)
+        methods = PaymentMethod.select(connection=self.conn).orderBy('description')
         self.klist = ObjectList(self._get_columns(), methods,
                                 gtk.SELECTION_BROWSE)
         self.klist.connect("selection-changed",
@@ -75,7 +75,7 @@ class PaymentMethodsDialog(BasicDialog):
 
     def _get_columns(self):
         return [Column('description', title=_('Payment Method'), data_type=str,
-                       expand=True, sorted=True),
+                       expand=True),
                 Column('is_active', title=_('Active'), data_type=bool,
                        editable=True)]
 
