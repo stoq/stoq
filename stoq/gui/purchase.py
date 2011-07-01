@@ -131,7 +131,7 @@ class PurchaseApp(SearchableAppWindow):
 
             # Purchase
             ("PurchaseMenu", None, _("_Order")),
-            ("AddOrder", gtk.STOCK_NEW, _("Add Order..."), "<Control>o"),
+            ("AddOrder", gtk.STOCK_NEW, _("New Order..."), "<Control>o"),
             ("QuoteOrder", gtk.STOCK_INDEX, _("Quote Order..."), "<Control>e"),
             ("FinishOrder", None, _("Finish Order...")),
             ("Confirm", 'stoq-delivery', _("Confirm Order...")),
@@ -164,6 +164,10 @@ class PurchaseApp(SearchableAppWindow):
         ]
 
         self.add_ui_actions(ui_string, actions)
+        self.AddOrder.set_short_label(_("New Order"))
+        self.QuoteOrder.set_short_label(_("New Quote"))
+        self.Products.set_short_label(_("Products"))
+        self.Suppliers.set_short_label(_("Suppliers"))
         self.add_help_ui(_("Purchase help"), 'compras-inicio')
         self.add_user_ui()
 

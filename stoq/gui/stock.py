@@ -153,6 +153,8 @@ class StockApp(SearchableAppWindow):
         ]
 
         self.add_ui_actions(ui_string, actions)
+        self.StockReceive.set_short_label(_("Receive"))
+        self.StockTransfer.set_short_label(_("Transfer"))
         self.add_help_ui(_("Stock help"), 'vendas-inicio')
         self.add_user_ui()
 

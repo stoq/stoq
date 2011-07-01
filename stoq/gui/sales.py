@@ -132,7 +132,7 @@ class SalesApp(SearchableAppWindow):
 
             # Production
             ("TillMenu", None, _("_Till")),
-            ("TillQuote", gtk.STOCK_NEW, _("New Quote")),
+            ("TillQuote", gtk.STOCK_NEW, _("New Sale Quote")),
             ("TillCancel", None, _("Cancel Quote")),
             ("TillPrintInvoice", gtk.STOCK_PRINT, _("_Print invoice...")),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
@@ -158,6 +158,11 @@ class SalesApp(SearchableAppWindow):
         ]
 
         self.add_ui_actions(ui_string, actions)
+        self.TillQuote.set_short_label(_("New Sale Quote"))
+        self.SearchClient.set_short_label(_("Clients"))
+        self.SearchProduct.set_short_label(_("Products"))
+        self.SearchService.set_short_label(_("Services"))
+        self.SearchDelivery.set_short_label(_("Deliveries"))
         self.add_help_ui(_("Sales help"), 'vendas-inicio')
         self.add_user_ui()
 
