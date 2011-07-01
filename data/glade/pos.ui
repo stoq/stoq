@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.20"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
+  <requires lib="gtk+" version="2.20"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="pos">
     <property name="width_request">800</property>
@@ -14,9 +14,6 @@
       <object class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <child>
-          <placeholder/>
-        </child>
         <child>
           <object class="GtkVBox" id="pos_vbox">
             <property name="visible">True</property>
@@ -542,7 +539,7 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">3</property>
+            <property name="position">0</property>
           </packing>
         </child>
       </object>
