@@ -147,10 +147,10 @@ class AppWindow(BaseAppWindow):
         label.set_use_markup(True)
 
         if is_developer_mode():
-            button = gtk.Button(_(u'Remove examples'))
-            button.connect('clicked', self._on_remove_examples__clicked)
+            hide_button = gtk.Button(_('Hide'))
 
-        hide_button = gtk.Button(_('Hide'))
+        button = gtk.Button(_(u'Remove examples'))
+        button.connect('clicked', self._on_remove_examples__clicked)
 
         if hasattr(gtk, 'InfoBar'):
             bar = gtk.InfoBar()
@@ -173,7 +173,8 @@ class AppWindow(BaseAppWindow):
             bar.add(hbox)
             bar.show_all()
 
-        hide_button.connect('clicked', self._on_hide__clicked, bar)
+        if is_developer_mode():
+            hide_button.connect('clicked', self._on_hide__clicked, bar)
 
         self.main_vbox.pack_start(bar, False, False, 0)
         self.main_vbox.reorder_child(bar, 1)
