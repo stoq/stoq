@@ -30,6 +30,7 @@ import pango
 import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.argcheck import argcheck
+from kiwi.component import get_utility
 from kiwi.environ import environ
 from kiwi.log import Logger
 from kiwi.python import Settable
@@ -49,9 +50,10 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TaxError
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
+from stoqlib.lib.defaults import quantize
+from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import warning, info, yesno
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.defaults import quantize
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
@@ -676,8 +678,9 @@ class PosApp(AppWindow):
 
             ordered = self._coupon.confirm(sale, trans)
             if not finish_transaction(trans, ordered):
-                # TEF specific. Figure out how to handle it properly after.
-                self._cancel_order(show_confirmation=False)
+                # FIXME: Move to TEF plugin
+                if get_utility(IPluginManager).is_active('tef'):
+                    self._cancel_order(show_confirmation=False)
                 trans.close()
                 return
 
