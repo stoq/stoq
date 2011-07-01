@@ -808,10 +808,12 @@ class PosApp(AppWindow):
         self._add_sale_item()
 
     def on_barcode__activate(self, entry):
-        if not self._has_barcode_str():
-            return
         search_str = self.barcode.get_text()
-        self._add_sale_item(search_str)
+        if search_str == '':
+            if len(self.sale_items) >= 1:
+                self._checkout()
+        else:
+            self._add_sale_item(search_str)
 
     def after_barcode__changed(self, editable):
         self._update_add_button()
