@@ -25,7 +25,7 @@
 
 import string
 
-from stoqlib.chart.chartreports import Chart
+from stoqlib.chart.chart import Chart
 
 
 class YearlyPaymentsChart(Chart):
