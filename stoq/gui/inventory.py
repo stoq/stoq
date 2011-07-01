@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -86,15 +86,17 @@ class InventoryApp(SearchableAppWindow):
             # Inventory
             ("InventoryMenu", None, _("Inventory")),
             ('new_inventory', None, _('Open I_nventry...'), '<Control>i'),
-            ('counting_action', gtk.STOCK_INDEX, _('_Counting'),
+            ('counting_action', gtk.STOCK_INDEX, _('_Count inventory...'),
                 '<Control>a'),
-              ('adjust_action', gtk.STOCK_CONVERT, _('_Adjust'),
+              ('adjust_action', gtk.STOCK_CONVERT, _('_Adjust inventory...'),
                 '<Control>c'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
             ("Quit", gtk.STOCK_QUIT),
 
         ]
         self.add_ui_actions(ui_string, actions)
+        self.adjust_action.set_short_label(_("Adjust"))
+        self.counting_action.set_short_label(_("Count"))
         self.add_help_ui(_("Inventory help"), 'inventario-inicio')
         self.add_user_ui()
 
