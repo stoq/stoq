@@ -224,17 +224,15 @@ class PosApp(AppWindow):
 
         # Setting up the toolbar area
         self.toolbar_vbox.set_focus_chain([self.toolbar_button_box])
-        self.toolbar_button_box.set_focus_chain([self.remove_item_button,
+        self.toolbar_button_box.set_focus_chain([self.checkout_button,
                                                  self.delivery_button,
-                                                 self.checkout_button])
+                                                 self.edit_item_button,
+                                                 self.remove_item_button,])
 
         # Setting up the barcode area
-        self.list_header_hbox.set_focus_chain([self.search_box,
-                                               self.stoq_logo])
         self.item_hbox.set_focus_chain([self.barcode, self.quantity,
                                         self.item_button_box])
-        self.item_button_box.set_focus_chain([self.barcode, self.quantity,
-                                              self.add_button,
+        self.item_button_box.set_focus_chain([self.add_button,
                                               self.advanced_search])
 
     def get_columns(self):
