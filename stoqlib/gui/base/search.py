@@ -442,6 +442,10 @@ class SearchDialog(BasicDialog):
         also when a list item is selected. """
 
 
+    def search_completed(self, results):
+        pass
+
+
 class SearchEditorToolBar(GladeSlaveDelegate):
     """ Slave for internal use of SearchEditor, offering an eventbox for a
     toolbar and managing the 'New' and 'Edit' buttons. """
