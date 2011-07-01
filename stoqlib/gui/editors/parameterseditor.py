@@ -110,6 +110,7 @@ class SystemParameterEditor(BaseEditor):
         widget = ProxyComboEntry()
         widget.model_attribute = "field_value"
         widget.data_type = unicode
+        widget.mandatory = True
         field_type = sysparam(self.conn).get_parameter_type(self.model.field_name)
         result = field_type.select(connection=self.conn)
         data = [(res.get_description(), str(res.id)) for res in result]
@@ -117,6 +118,8 @@ class SystemParameterEditor(BaseEditor):
         self.proxy.add_widget("field_value", widget)
         self.container.add(widget)
         widget.show()
+        widget.connect('validation-changed',
+                       self._on_entry__validation_changed)
 
     def _setup_radio_slave(self):
         box = gtk.HBox()
