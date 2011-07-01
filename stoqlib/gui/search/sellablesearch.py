@@ -123,19 +123,19 @@ class SellableSearch(SearchEditor):
         """Hook called by SearchEditor"""
         return [SearchColumn('code', title=_('Code'), data_type=str,
                               sort_func=sort_sellable_code,
-                              sorted=True, width=90),
-                SearchColumn('barcode', title=_('Barcode'), data_type=str, width=90,
+                              sorted=True),
+                SearchColumn('barcode', title=_('Barcode'), data_type=str,
                               visible=False),
                 SearchColumn('description', title= _('Description'), data_type=str,
                               expand=True),
-                SearchColumn('price', title=_('Price'), data_type=currency, width=80,
+                SearchColumn('price', title=_('Price'), data_type=currency,
                               justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('category_description', title=_('Category'),
                              data_type=str, visible=False),
                 AccessorColumn('stock', title=_(u'Stock'),
                                 accessor=self._get_available_stock,
                                 format_func=format_quantity,
-                                data_type=Decimal, width=80),]
+                                data_type=Decimal),]
 
     def update_widgets(self):
         sellable_view = self.results.get_selected()
