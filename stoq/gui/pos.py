@@ -202,16 +202,22 @@ class PosApp(AppWindow):
         # Block POS application if we are in the middle of a sale.
         can_change_application = self._coupon is None
         if not can_change_application:
-            info(_(u'You must finish the current sale before you change to '
-                    'another application.'))
+            if yesno(_('You must finish the current sale before you change to '
+                       'another application.'),
+                     gtk.RESPONSE_NO, _("Cancel sale"), _("Finish sale")):
+                self._cancel_coupon()
+                return True
 
         return can_change_application
 
     def can_close_application(self):
         can_close_application = self._coupon is None
         if not can_close_application:
-            info(_(u'You must finish or cancel the current sale before you '
-                    'leave the POS application.'))
+            if yesno(_('You must finish or cancel the current sale before you can close the '
+                       'POS application.'),
+                     gtk.RESPONSE_NO, _("Cancel sale"), _("Finish sale")):
+                self._cancel_coupon()
+                return True
         return can_close_application
 
     def setup_focus(self):
