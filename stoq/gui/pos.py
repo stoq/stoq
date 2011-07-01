@@ -102,7 +102,7 @@ class _SaleItem(object):
 
 
 LOGO_WIDTH = 114
-LOGO_HEIGHT= 40
+LOGO_HEIGHT = 40
 
 class PosApp(AppWindow):
 
