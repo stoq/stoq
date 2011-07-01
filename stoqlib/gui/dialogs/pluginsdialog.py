@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2009-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -24,6 +24,7 @@
 ##
 """ Dialogs for payment method management"""
 
+import operator
 import gtk
 
 from kiwi.component import get_utility
@@ -86,6 +87,7 @@ class PluginManagerDialog(BasicDialog):
         self.ok_button.set_sensitive(False)
         plugins = [_PluginModel(p, self.conn)
                             for p in self._manager.get_plugin_names()]
+        plugins = sorted(plugins, key=operator.attrgetter('name'))
         self.klist = ObjectList(self._get_columns(), plugins,
                                 gtk.SELECTION_BROWSE)
         self.klist.connect("selection-changed",
@@ -96,7 +98,7 @@ class PluginManagerDialog(BasicDialog):
 
     def _get_columns(self):
         return [Column('name', title=_('Plugin'), data_type=str,
-                       expand=True, sorted=True),
+                       expand=True),
                 Column('is_active', title=_('Active'), data_type=bool)]
 
     def _enable_plugin(self, plugin):
