@@ -87,21 +87,6 @@ class _TillClosingModel(object):
         return currency(self.till.get_balance() - self.value)
 
 
-class _BaseCashModel(object):
-    def __init__(self, model):
-        self.model = model
-
-    def get_balance(self):
-        return currency(self.model.till.get_balance() - self.value)
-
-    def _get_value(self):
-        return self.model.value
-
-    def _set_value(self, value):
-        self.model.value = value
-    value = property(_get_value, _set_value)
-
-
 class TillOpeningEditor(BaseEditor):
     """An editor to open a till.
     You can add cash to the till in the editor and it also shows
@@ -310,7 +295,7 @@ class BaseCashSlave(BaseEditorSlave):
     Cash Amount: [        ]
     """
 
-    model_type = _BaseCashModel
+    model_type = Settable
     gladefile = 'BaseCashSlave'
     proxy_widgets = ('value', 'balance')
 
@@ -332,25 +317,13 @@ class BaseCashSlave(BaseEditorSlave):
         if value <= zero:
             return ValidationError(_("Value cannot be zero or less than zero"))
 
-    def on_value__content_changed(self, entry):
-        try:
-            value_read = entry.read()
-        except ValidationError:
-            value_read = ValueUnset
-
-        value = self.model.get_balance()
-        if not (value_read < 0 or value_read == ValueUnset):
-            value += self.model.value
-        self.proxy.update('balance', currency(value))
-
 
 class RemoveCashSlave(BaseCashSlave):
 
     def on_value__validate(self, widget, value):
-        retval = BaseCashSlave.on_value__validate(self, widget, value)
-        if retval:
-            return retval
-        if value > self.model.get_balance():
+        if value <= currency(0):
+            return ValidationError(_("Value cannot be zero or less than zero"))
+        if value > self.model.balance:
             return ValidationError(
                 _("Value cannot be more than the total Till balance"))
 
@@ -382,15 +355,17 @@ class CashAdvanceEditor(BaseEditor):
     #
 
     def create_model(self, conn):
+        till=Till.get_current(self.conn)
         return Settable(employee=None,
                         payment=None,
                         open_date=None,
-                        till=Till.get_current(self.conn),
+                        till=till,
+                        balance=till.get_balance(),
                         value=currency(0))
 
     def setup_slaves(self):
         self.cash_slave = RemoveCashSlave(self.conn,
-                                          _BaseCashModel(self.model))
+                                          self.model)
         self.cash_slave.value.connect('content-changed',
                                       self._on_cash_slave__value_changed)
         self.attach_slave("base_cash_holder", self.cash_slave)
@@ -448,13 +423,14 @@ class CashOutEditor(BaseEditor):
     #
 
     def create_model(self, conn):
+        till = Till.get_current(conn)
         return Settable(value=currency(0),
                         reason='',
-                        till=Till.get_current(conn))
+                        till=till,
+                        balance=till.get_balance())
 
     def setup_slaves(self):
-        self.cash_slave = RemoveCashSlave(
-            self.conn, _BaseCashModel(self.model))
+        self.cash_slave = RemoveCashSlave(self.conn, self.model)
         self.cash_slave.value.connect('content-changed',
                                       self._on_cash_slave__value_changed)
         self.attach_slave("base_cash_holder", self.cash_slave)
@@ -507,13 +483,14 @@ class CashInEditor(BaseEditor):
     #
 
     def create_model(self, conn):
+        till=Till.get_current(conn)
         return Settable(value=currency(0),
-                        reason='',
-                        till=Till.get_current(conn))
+                        reason='', 
+                        till=till,
+                        balance=till.get_balance())
 
     def setup_slaves(self):
-        self.cash_slave = BaseCashSlave(
-            self.conn, _BaseCashModel(self.model))
+        self.cash_slave = BaseCashSlave(self.conn, self.model)
         self.attach_slave("base_cash_holder", self.cash_slave)
 
     def validate_confirm(self):
