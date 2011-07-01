@@ -1,0 +1,40 @@
+Reports:
+* Payment
+  * Over time (day, monthly, yearly)
+  * Per payment method
+* Sales
+  * Over time (day, monthly, yearly)
+  * Per salesperson
+  * Per weekday
+* Transfers
+  * Per account/group
+* Check with Async's budget to see what's needed
+* Ask some customers what the need
+
+UI:
+* Finish ReportDialog
+  * Mostly basic ui
+  * Preview?
+* Write a proper chart viewer
+  * Refresh button?
+* Figure out printing
+
+Stoq integration:
+* Require twisted & webkit in debian/dependencies
+* Change gtk.main() to use reactor.run()
+* Cleanup tcp port allocation, allow several stoq to run at the same time
+* Use new template module for reports
+
+Misc:
+* Write a few more reports
+* Design chart arguments properly
+* Copy jquery/flot into stoq
+* move css to a file, to reduce html size
+* Consider AJAX for quering chart data
+
+Tests:
+* Reporting really needs to be tested properly
+* Easy to test, pre-define html files, assume html renders fine for now
+
+Reports:
+* Prettify, look at others for nice styles (colors, borders etc)
