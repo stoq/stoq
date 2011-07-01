@@ -13,7 +13,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="label2">
-            <property context="yes" name="label" translatable="yes">Role:</property>
+            <property name="label" translatable="yes">Role:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -47,7 +47,7 @@
             <child>
               <object class="GtkButton" id="role_editor_button">
                 <property name="is_focus">True</property>
-                <property context="yes" name="label" translatable="yes">A_dd/Edit Role...</property>
+                <property name="label" translatable="yes">A_dd/Edit Role...</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
               </object>
@@ -64,7 +64,7 @@
         </child>
         <child>
           <object class="ProxyLabel" id="label3">
-            <property context="yes" name="label" translatable="yes">Salary ($CURRENCY):</property>
+            <property name="label" translatable="yes">Salary ($CURRENCY):</property>
             <property name="model_attribute"/>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>

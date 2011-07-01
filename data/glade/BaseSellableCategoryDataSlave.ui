@@ -20,7 +20,7 @@
         <child>
           <object class="GtkLabel" id="label3">
             <property name="justify">right</property>
-            <property context="yes" name="label" translatable="yes">Description:</property>
+            <property name="label" translatable="yes">Description:</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
           </object>
@@ -44,7 +44,7 @@
         <child>
           <object class="GtkLabel" id="label4">
             <property name="justify">right</property>
-            <property context="yes" name="label" translatable="yes">Suggested Markup:</property>
+            <property name="label" translatable="yes">Suggested Markup:</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
           </object>
@@ -58,7 +58,7 @@
         <child>
           <object class="GtkLabel" id="label6">
             <property name="justify">right</property>
-            <property context="yes" name="label" translatable="yes">Tax:</property>
+            <property name="label" translatable="yes">Tax:</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
           </object>
@@ -102,7 +102,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label2">
-                <property context="yes" name="label" translatable="yes">%</property>
+                <property name="label" translatable="yes">%</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>
               </object>

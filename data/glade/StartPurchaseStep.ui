@@ -23,7 +23,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
                 <property name="data_type">unicode</property>
-                <property context="yes" name="label" translatable="yes">Open Date:</property>
+                <property name="label" translatable="yes">Open Date:</property>
                 <property name="model_attribute"/>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -32,7 +32,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel4">
                 <property name="data_type">unicode</property>
-                <property context="yes" name="label" translatable="yes">Branch:</property>
+                <property name="label" translatable="yes">Branch:</property>
                 <property name="model_attribute">kiwilabel4</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -45,7 +45,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
                 <property name="data_type">unicode</property>
-                <property context="yes" name="label" translatable="yes">Supplier:</property>
+                <property name="label" translatable="yes">Supplier:</property>
                 <property name="model_attribute">kiwilabel2</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -58,7 +58,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel5">
                 <property name="data_type">unicode</property>
-                <property context="yes" name="label" translatable="yes">Freight Type:</property>
+                <property name="label" translatable="yes">Freight Type:</property>
                 <property name="model_attribute"/>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -115,7 +115,7 @@
                 <child>
                   <object class="GtkRadioButton" id="cif_radio">
                     <property name="is_focus">True</property>
-                    <property context="yes" name="label" translatable="yes">CIF (Cost Insurance Freight)</property>
+                    <property name="label" translatable="yes">CIF (Cost Insurance Freight)</property>
                     <property name="visible">True</property>
                   </object>
                 </child>
@@ -136,7 +136,7 @@
                     <property name="active">False</property>
                     <property name="group">cif_radio</property>
                     <property name="is_focus">True</property>
-                    <property context="yes" name="label" translatable="yes">FOB (Free On Board)</property>
+                    <property name="label" translatable="yes">FOB (Free On Board)</property>
                     <property name="visible">True</property>
                   </object>
                 </child>
@@ -151,7 +151,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel3">
                 <property name="data_type">unicode</property>
-                <property context="yes" name="label" translatable="yes">Order Number:</property>
+                <property name="label" translatable="yes">Order Number:</property>
                 <property name="model_attribute"/>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -164,7 +164,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel6">
                 <property name="data_type">unicode</property>
-                <property context="yes" name="label" translatable="yes">Expected Freight:</property>
+                <property name="label" translatable="yes">Expected Freight:</property>
                 <property name="model_attribute">kiwilabel6</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -204,7 +204,7 @@
             <child>
               <object class="GtkButton" id="supplier_button">
                 <property name="is_focus">True</property>
-                <property context="yes" name="label" translatable="yes">A_dd/Edit Supplier...</property>
+                <property name="label" translatable="yes">A_dd/Edit Supplier...</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
               </object>
@@ -226,7 +226,7 @@
                     <child>
                       <object class="ProxyLabel" id="kiwilabel7">
                         <property name="data_type">unicode</property>
-                        <property context="yes" name="label" translatable="yes">$CURRENCY</property>
+                        <property name="label" translatable="yes">$CURRENCY</property>
                         <property name="model_attribute">kiwilabel7</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>

@@ -10,7 +10,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkFrame" id="frame1">
-            <property context="yes" name="label" translatable="yes">Method of Payment</property>
+            <property name="label" translatable="yes">Method of Payment</property>
             <property name="visible">True</property>
             <child>
               <object class="GtkHBox" id="methods_box">
@@ -21,7 +21,7 @@
                   <object class="ProxyRadioButton" id="cash_check">
                     <property name="data_type">bool</property>
                     <property name="is_focus">True</property>
-                    <property context="yes" name="label" translatable="yes">C_ash</property>
+                    <property name="label" translatable="yes">C_ash</property>
                     <property name="model_attribute">cash_check</property>
                     <property name="use_underline">True</property>
                     <property name="visible">True</property>

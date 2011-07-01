@@ -18,7 +18,7 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="label6">
-                <property context="yes" name="label" translatable="yes">Client:</property>
+                <property name="label" translatable="yes">Client:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -43,7 +43,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label1">
-            <property context="yes" name="label" translatable="yes">&lt;b&gt;The following payments will be renegotiated.&lt;/b&gt;</property>
+            <property name="label" translatable="yes">&lt;b&gt;The following payments will be renegotiated.&lt;/b&gt;</property>
             <property name="use_markup">True</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
@@ -79,14 +79,14 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkLabel" id="label2">
-                    <property context="yes" name="label" translatable="yes">Subtotal:</property>
+                    <property name="label" translatable="yes">Subtotal:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label3">
-                    <property context="yes" name="label" translatable="yes">Discount:</property>
+                    <property name="label" translatable="yes">Discount:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -97,7 +97,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="label4">
-                    <property context="yes" name="label" translatable="yes">Surcharge:</property>
+                    <property name="label" translatable="yes">Surcharge:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -108,7 +108,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="label5">
-                    <property context="yes" name="label" translatable="yes">Total:</property>
+                    <property name="label" translatable="yes">Total:</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>

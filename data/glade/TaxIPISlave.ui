@@ -30,7 +30,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="cst_label">
-            <property context="yes" name="label" translatable="yes">CST:</property>
+            <property name="label">CST:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -40,7 +40,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="cnpj_prod_label">
-            <property context="yes" name="label" translatable="yes">CNPJ do Produtor:</property>
+            <property name="label">CNPJ do Produtor:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -51,7 +51,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="q_selo_label">
-            <property context="yes" name="label" translatable="yes">Quantidade do
+            <property name="label">Quantidade do
 selo de controle:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -63,7 +63,7 @@ selo de controle:</property>
         </child>
         <child>
           <object class="GtkLabel" id="calculo_label">
-            <property context="yes" name="label" translatable="yes">C&#xE1;lculo do IPI:</property>
+            <property name="label">C&#xE1;lculo do IPI:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -74,7 +74,7 @@ selo de controle:</property>
         </child>
         <child>
           <object class="GtkLabel" id="v_bc_label">
-            <property context="yes" name="label" translatable="yes">BC IPI:</property>
+            <property name="label">BC IPI:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -85,7 +85,7 @@ selo de controle:</property>
         </child>
         <child>
           <object class="GtkLabel" id="v_unid_label">
-            <property context="yes" name="label" translatable="yes">Valor por unidade
+            <property name="label">Valor por unidade
 tribut&#xE1;vel:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -124,7 +124,7 @@ tribut&#xE1;vel:</property>
             <property name="adjustment">adjustment1</property>
             <property name="data_type">int</property>
             <property name="model_attribute">q_selo</property>
-            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="text" translatable="yes">0</property>
             <property name="visible">True</property>
           </object>
           <packing>
@@ -179,7 +179,7 @@ tribut&#xE1;vel:</property>
         </child>
         <child>
           <object class="GtkLabel" id="cl_enq_label">
-            <property context="yes" name="label" translatable="yes">Classe de Enquadramento
+            <property name="label">Classe de Enquadramento
 Para cigarros e bebidas:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -192,7 +192,7 @@ Para cigarros e bebidas:</property>
         </child>
         <child>
           <object class="GtkLabel" id="c_selo_label">
-            <property context="yes" name="label" translatable="yes">C&#xF3;digo do selo
+            <property name="label">C&#xF3;digo do selo
 de controle IPI:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -206,7 +206,7 @@ de controle IPI:</property>
         </child>
         <child>
           <object class="GtkLabel" id="c_enq_label">
-            <property context="yes" name="label" translatable="yes">C&#xF3;digo de enquadramento
+            <property name="label">C&#xF3;digo de enquadramento
 legal do ipi:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -220,7 +220,7 @@ legal do ipi:</property>
         </child>
         <child>
           <object class="GtkLabel" id="p_ipi_label">
-            <property context="yes" name="label" translatable="yes">Al&#xED;quota do IPI:</property>
+            <property name="label">Al&#xED;quota do IPI:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -233,7 +233,7 @@ legal do ipi:</property>
         </child>
         <child>
           <object class="GtkLabel" id="q_unid_label">
-            <property context="yes" name="label" translatable="yes">Quantidade total:</property>
+            <property name="label">Quantidade total:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -246,7 +246,7 @@ legal do ipi:</property>
         </child>
         <child>
           <object class="GtkLabel" id="v_ipi_label">
-            <property context="yes" name="label" translatable="yes">Valor do IPI</property>
+            <property name="label">Valor do IPI</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -302,7 +302,7 @@ legal do ipi:</property>
             <property name="data_type">Decimal</property>
             <property name="is_focus">True</property>
             <property name="model_attribute">p_ipi</property>
-            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="text">0</property>
             <property name="visible">True</property>
           </object>
           <packing>

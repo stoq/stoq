@@ -31,7 +31,7 @@
                         </child>
                         <child>
                           <object class="GtkLabel" id="label2">
-                            <property context="yes" name="label" translatable="yes">_Return</property>
+                            <property name="label" translatable="yes">_Return</property>
                             <property name="use-underline">True</property>
                             <property name="visible">True</property>
                           </object>
@@ -63,7 +63,7 @@
                         </child>
                         <child>
                           <object class="GtkLabel" id="label3">
-                            <property context="yes" name="label" translatable="yes">Ed_it</property>
+                            <property name="label" translatable="yes">Ed_it</property>
                             <property name="use-underline">True</property>
                             <property name="visible">True</property>
                           </object>
@@ -98,7 +98,7 @@
                         </child>
                         <child>
                           <object class="GtkLabel" id="label5">
-                            <property context="yes" name="label" translatable="yes">_Details</property>
+                            <property name="label" translatable="yes">_Details</property>
                             <property name="use-underline">True</property>
                             <property name="visible">True</property>
                           </object>
@@ -133,7 +133,7 @@
                         </child>
                         <child>
                           <object class="GtkLabel" id="label51">
-                            <property context="yes" name="label" translatable="yes">_Print</property>
+                            <property name="label" translatable="yes">_Print</property>
                             <property name="use-underline">True</property>
                             <property name="visible">True</property>
                           </object>

@@ -16,13 +16,13 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkButton" id="till_out_button">
-                    <property context="yes" name="label" translatable="yes">Till Out...</property>
+                    <property name="label" translatable="yes">Till Out...</property>
                     <property name="visible">True</property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkButton" id="resume_button">
-                    <property context="yes" name="label" translatable="yes">Resume</property>
+                    <property name="label" translatable="yes">Resume</property>
                     <property name="visible">True</property>
                   </object>
                   <packing>

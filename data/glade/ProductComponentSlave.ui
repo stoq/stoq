@@ -25,7 +25,7 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkLabel" id="label1">
-                    <property context="yes" name="label" translatable="yes">Component:</property>
+                    <property name="label" translatable="yes">Component:</property>
                     <property name="visible">True</property>
                     <property name="xalign">0.0</property>
                   </object>
@@ -61,7 +61,7 @@
             <child>
               <object class="ProxyCheckButton" id="sort_components_check">
                 <property name="data_type">bool</property>
-                <property context="yes" name="label" translatable="yes">Sort components by category</property>
+                <property name="label" translatable="yes">Sort components by category</property>
                 <property name="model_attribute">sort_components_check</property>
                 <property name="visible">True</property>
               </object>

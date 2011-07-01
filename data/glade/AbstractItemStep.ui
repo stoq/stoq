@@ -41,7 +41,7 @@
                   <object class="ProxyLabel" id="item_lbl">
                     <property name="data_type">unicode</property>
                     <property name="is_focus">True</property>
-                    <property context="yes" name="label" translatable="yes">Item:</property>
+                    <property name="label" translatable="yes">Item:</property>
                     <property name="model_attribute">item_lbl</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
@@ -87,7 +87,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
-                <property context="yes" name="label" translatable="yes">Quantity:</property>
+                <property name="label" translatable="yes">Quantity:</property>
                 <property name="model_attribute">kiwilabel2</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -100,7 +100,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label1">
-                <property context="yes" name="label" translatable="yes">Minimum:</property>
+                <property name="label" translatable="yes">Minimum:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -119,7 +119,7 @@
                 <property name="is_focus">True</property>
                 <property name="model_attribute">quantity</property>
                 <property name="numeric">True</property>
-                <property context="yes" name="text" translatable="yes">1.00</property>
+                <property name="text" translatable="yes">1.00</property>
                 <property name="visible">True</property>
                 <property name="wrap">True</property>
               </object>
@@ -163,7 +163,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="cost_label">
-                <property context="yes" name="label" translatable="yes">Cost:</property>
+                <property name="label" translatable="yes">Cost:</property>
                 <property name="model_attribute">cost_label</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -176,7 +176,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label2">
-                <property context="yes" name="label" translatable="yes">Stock:</property>
+                <property name="label" translatable="yes">Stock:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>

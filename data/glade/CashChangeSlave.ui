@@ -16,7 +16,7 @@
             <property name="visible">True</property>
             <child>
               <object class="ProxyLabel" id="title_lbl">
-                <property context="yes" name="label" translatable="yes">Cash Change</property>
+                <property name="label" translatable="yes">Cash Change</property>
                 <property name="model_attribute">title_lbl</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>
@@ -27,7 +27,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
-                <property context="yes" name="label" translatable="yes">Received: ($CURRENCY)</property>
+                <property name="label" translatable="yes">Received: ($CURRENCY)</property>
                 <property name="model_attribute">kiwilabel1</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>
@@ -40,7 +40,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
-                <property context="yes" name="label" translatable="yes">Change:</property>
+                <property name="label" translatable="yes">Change:</property>
                 <property name="model_attribute">kiwilabel2</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>

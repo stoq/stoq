@@ -51,7 +51,7 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="order_lbl">
-                <property context="yes" name="label" translatable="yes">Order:</property>
+                <property name="label" translatable="yes">Order:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -62,7 +62,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label2">
-                <property context="yes" name="label" translatable="yes">Description:</property>
+                <property name="label" translatable="yes">Description:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -75,7 +75,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="sold_lbl">
-                <property context="yes" name="label" translatable="yes">Sold Quantity:</property>
+                <property name="label" translatable="yes">Sold Quantity:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -88,7 +88,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="cost_lbl">
-                <property context="yes" name="label" translatable="yes">Cost:</property>
+                <property name="label" translatable="yes">Cost:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -99,7 +99,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="expected_lbl">
-                <property context="yes" name="label" translatable="yes">Expected receival:</property>
+                <property name="label" translatable="yes">Expected receival:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -142,7 +142,7 @@
                 <property name="data_type">Decimal</property>
                 <property name="is_focus">True</property>
                 <property name="model_attribute">quantity_sold</property>
-                <property context="yes" name="text" translatable="yes">0</property>
+                <property name="text" translatable="yes">0</property>
                 <property name="visible">True</property>
               </object>
               <packing>
@@ -160,7 +160,7 @@
                 <property name="data_type">currency</property>
                 <property name="is_focus">True</property>
                 <property name="model_attribute">cost</property>
-                <property context="yes" name="text" translatable="yes">0</property>
+                <property name="text" translatable="yes">0</property>
                 <property name="visible">True</property>
               </object>
               <packing>
@@ -190,7 +190,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="returned_lbl">
-                <property context="yes" name="label" translatable="yes">Returned Quantity:</property>
+                <property name="label" translatable="yes">Returned Quantity:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -203,7 +203,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label5">
-                <property context="yes" name="label" translatable="yes">Quantity:</property>
+                <property name="label" translatable="yes">Quantity:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -216,7 +216,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="total_lbl">
-                <property context="yes" name="label" translatable="yes">Total:</property>
+                <property name="label" translatable="yes">Total:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -233,7 +233,7 @@
                 <property name="adjustment">adjustment3</property>
                 <property name="data_type">Decimal</property>
                 <property name="model_attribute">quantity_returned</property>
-                <property context="yes" name="text" translatable="yes">0</property>
+                <property name="text" translatable="yes">0</property>
                 <property name="visible">True</property>
               </object>
               <packing>
@@ -251,7 +251,7 @@
                 <property name="digits">2</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">quantity</property>
-                <property context="yes" name="text" translatable="yes">1.00</property>
+                <property name="text" translatable="yes">1.00</property>
                 <property name="update_policy">if-valid</property>
                 <property name="visible">True</property>
               </object>

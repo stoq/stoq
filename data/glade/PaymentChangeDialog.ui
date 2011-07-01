@@ -23,7 +23,7 @@
             <property name="visible">True</property>
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
-                <property context="yes" name="label" translatable="yes">Order Number:</property>
+                <property name="label" translatable="yes">Order Number:</property>
                 <property name="model_attribute">kiwilabel1</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -34,7 +34,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="client_supplier_lbl">
-                <property context="yes" name="label" translatable="yes">Client:</property>
+                <property name="label" translatable="yes">Client:</property>
                 <property name="model_attribute">client_supplier_lbl</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -116,7 +116,7 @@
             <property name="visible">True</property>
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
-                <property context="yes" name="label" translatable="yes">Status:</property>
+                <property name="label" translatable="yes">Status:</property>
                 <property name="model_attribute">kiwilabel2</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -138,7 +138,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="status_lbl2">
-                <property context="yes" name="label" translatable="yes">Change to:</property>
+                <property name="label" translatable="yes">Change to:</property>
                 <property name="model_attribute">status_lbl2</property>
                 <property name="xalign">0.0</property>
               </object>
@@ -169,7 +169,7 @@
             <property name="visible">True</property>
             <child>
               <object class="ProxyLabel" id="kiwilabel5">
-                <property context="yes" name="label" translatable="yes">Reason:</property>
+                <property name="label" translatable="yes">Reason:</property>
                 <property name="model_attribute">kiwilabel5</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>

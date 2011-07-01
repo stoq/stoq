@@ -15,7 +15,7 @@
             <property name="visible">True</property>
             <child>
               <object class="ProxyLabel" id="title_label">
-                <property context="yes" name="label" translatable="yes">Update Database</property>
+                <property name="label" translatable="yes">Update Database</property>
                 <property name="model_attribute">title_label</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>
@@ -46,7 +46,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="body">
-            <property context="yes" name="label" translatable="yes">Stoq was already updated, but we still need to update the database schema.
+            <property name="label" translatable="yes">Stoq was already updated, but we still need to update the database schema.
 
 
 Click &lt;b&gt;Forward&lt;/b&gt; to start database schema update.

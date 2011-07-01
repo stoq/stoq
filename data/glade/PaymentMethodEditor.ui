@@ -39,7 +39,7 @@
             <property name="visible">True</property>
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
-                <property context="yes" name="label" translatable="yes">Default Account:</property>
+                <property name="label" translatable="yes">Default Account:</property>
                 <property name="model_attribute"/>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -73,7 +73,7 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="ProxyLabel" id="kiwilabel2">
-                    <property context="yes" name="label" translatable="yes">Maximum Installments:</property>
+                    <property name="label" translatable="yes">Maximum Installments:</property>
                     <property name="model_attribute"/>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
@@ -84,7 +84,7 @@
                 </child>
                 <child>
                   <object class="ProxyLabel" id="kiwilabel11">
-                    <property context="yes" name="label" translatable="yes">Interest:</property>
+                    <property name="label" translatable="yes">Interest:</property>
                     <property name="model_attribute"/>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
@@ -96,7 +96,7 @@
                 </child>
                 <child>
                   <object class="ProxyLabel" id="kiwilabel5">
-                    <property context="yes" name="label" translatable="yes">Daily Penalty:</property>
+                    <property name="label" translatable="yes">Daily Penalty:</property>
                     <property name="model_attribute"/>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
@@ -112,7 +112,7 @@
                     <property name="data_type">int</property>
                     <property name="is_focus">True</property>
                     <property name="model_attribute">max_installments</property>
-                    <property context="yes" name="text" translatable="yes">0</property>
+                    <property name="text" translatable="yes">0</property>
                     <property name="visible">True</property>
                   </object>
                   <packing>
@@ -152,7 +152,7 @@
                 </child>
                 <child>
                   <object class="ProxyLabel" id="kiwilabel3">
-                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="label" translatable="yes">%</property>
                     <property name="model_attribute">kiwilabel3</property>
                     <property name="visible">True</property>
                     <property name="xalign">0.0</property>
@@ -166,7 +166,7 @@
                 </child>
                 <child>
                   <object class="ProxyLabel" id="kiwilabel4">
-                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="label" translatable="yes">%</property>
                     <property name="model_attribute"/>
                     <property name="visible">True</property>
                     <property name="xalign">0.0</property>

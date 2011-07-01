@@ -22,7 +22,7 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="label1">
-                <property context="yes" name="label" translatable="yes">&lt;b&gt;Method:&lt;/b&gt;</property>
+                <property name="label" translatable="yes">&lt;b&gt;Method:&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>
@@ -39,7 +39,7 @@
                 <child>
                   <object class="GtkRadioButton" id="cash_radio">
                     <property name="is_focus">True</property>
-                    <property context="yes" name="label" translatable="yes">_Cash</property>
+                    <property name="label" translatable="yes">_Cash</property>
                     <property name="use_underline">True</property>
                     <property name="visible">True</property>
                   </object>
@@ -55,7 +55,7 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="ProxyLabel" id="currency">
-                    <property context="yes" name="label" translatable="yes">&lt;b&gt;$CURRENCY:&lt;/b&gt;</property>
+                    <property name="label" translatable="yes">&lt;b&gt;$CURRENCY:&lt;/b&gt;</property>
                     <property name="model_attribute"/>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
@@ -120,14 +120,14 @@
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkLabel" id="label11">
-                        <property context="yes" name="label" translatable="yes">Payments:</property>
+                        <property name="label" translatable="yes">Payments:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkLabel" id="label12">
-                        <property context="yes" name="label" translatable="yes">Total:</property>
+                        <property name="label" translatable="yes">Total:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                       </object>
@@ -147,7 +147,7 @@
                     </child>
                     <child>
                       <object class="GtkLabel" id="missing_change">
-                        <property context="yes" name="label" translatable="yes">Missing:</property>
+                        <property name="label" translatable="yes">Missing:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                       </object>

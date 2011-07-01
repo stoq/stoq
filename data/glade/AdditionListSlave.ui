@@ -3,7 +3,7 @@
 <interface>
   <object class="GtkWindow" id="AdditionListSlave">
     <property name="role"/>
-    <property context="yes" name="title" translatable="yes"/>
+    <property name="title" translatable="yes"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="border_width">6</property>
@@ -53,7 +53,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkLabel" id="label1">
-                                    <property context="yes" name="label" translatable="yes">New...</property>
+                                    <property name="label" translatable="yes">New...</property>
                                     <property name="visible">True</property>
                                   </object>
                                   <packing>
@@ -87,7 +87,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkLabel" id="GtkLabel12">
-                                    <property context="yes" name="label" translatable="yes">_Delete</property>
+                                    <property name="label" translatable="yes">_Delete</property>
                                     <property name="use-underline">True</property>
                                     <property name="visible">True</property>
                                   </object>
@@ -123,7 +123,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkLabel" id="GtkLabel1">
-                                    <property context="yes" name="label" translatable="yes">_Edit...</property>
+                                    <property name="label" translatable="yes">_Edit...</property>
                                     <property name="use_underline">True</property>
                                     <property name="visible">True</property>
                                   </object>

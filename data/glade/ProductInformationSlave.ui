@@ -62,7 +62,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="label1">
-            <property context="yes" name="label" translatable="yes">Location:</property>
+            <property name="label" translatable="yes">Location:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -73,7 +73,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="part_number_lbl">
-            <property context="yes" name="label" translatable="yes">Part-Number:</property>
+            <property name="label" translatable="yes">Part-Number:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -86,7 +86,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label2">
-            <property context="yes" name="label" translatable="yes">Width:</property>
+            <property name="label" translatable="yes">Width:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -99,7 +99,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label4">
-            <property context="yes" name="label" translatable="yes">Depth:</property>
+            <property name="label" translatable="yes">Depth:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -112,7 +112,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="stock_label">
-            <property context="yes" name="label" translatable="yes">&lt;b&gt;Stock Details&lt;/b&gt;</property>
+            <property name="label" translatable="yes">&lt;b&gt;Stock Details&lt;/b&gt;</property>
             <property name="use_markup">True</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
@@ -127,7 +127,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="min_label">
-            <property context="yes" name="label" translatable="yes">Minimum:</property>
+            <property name="label" translatable="yes">Minimum:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -139,7 +139,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label5">
-            <property context="yes" name="label" translatable="yes">&lt;b&gt;Mercosul Details&lt;/b&gt;</property>
+            <property name="label" translatable="yes">&lt;b&gt;Mercosul Details&lt;/b&gt;</property>
             <property name="use_markup">True</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
@@ -153,7 +153,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label6">
-            <property context="yes" name="label" translatable="yes">NCM:</property>
+            <property name="label" translatable="yes">NCM:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -165,7 +165,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label10">
-            <property context="yes" name="label" translatable="yes">G&#xEA;nero:</property>
+            <property name="label" translatable="yes">G&#xEA;nero:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -208,7 +208,7 @@
             <property name="adjustment">adjustment1</property>
             <property name="data_type">Decimal</property>
             <property name="model_attribute">width</property>
-            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="text" translatable="yes">0</property>
             <property name="visible">True</property>
           </object>
           <packing>
@@ -224,7 +224,7 @@
             <property name="adjustment">adjustment2</property>
             <property name="data_type">Decimal</property>
             <property name="model_attribute">depth</property>
-            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="text" translatable="yes">0</property>
             <property name="visible">True</property>
           </object>
           <packing>
@@ -251,7 +251,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="min_unit">
-                <property context="yes" name="label" translatable="yes">Un</property>
+                <property name="label" translatable="yes">Un</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>
               </object>
@@ -300,7 +300,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="manufacturer_lbl">
-            <property context="yes" name="label" translatable="yes">Manufacturer:</property>
+            <property name="label" translatable="yes">Manufacturer:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -315,7 +315,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label3">
-            <property context="yes" name="label" translatable="yes">Height:</property>
+            <property name="label" translatable="yes">Height:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -330,7 +330,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label7">
-            <property context="yes" name="label" translatable="yes">Weight:</property>
+            <property name="label" translatable="yes">Weight:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -345,7 +345,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="max_label">
-            <property context="yes" name="label" translatable="yes">Maximum:</property>
+            <property name="label" translatable="yes">Maximum:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -359,7 +359,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label9">
-            <property context="yes" name="label" translatable="yes">EX TIPI:</property>
+            <property name="label" translatable="yes">EX TIPI:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -391,7 +391,7 @@
             <property name="adjustment">adjustment4</property>
             <property name="data_type">Decimal</property>
             <property name="model_attribute">height</property>
-            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="text" translatable="yes">0</property>
             <property name="visible">True</property>
           </object>
           <packing>
@@ -418,7 +418,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label8">
-                <property context="yes" name="label" translatable="yes">Kg</property>
+                <property name="label" translatable="yes">Kg</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>
               </object>
@@ -452,7 +452,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="max_unit">
-                <property context="yes" name="label" translatable="yes">Un</property>
+                <property name="label" translatable="yes">Un</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>
               </object>

@@ -22,7 +22,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="username_lbl">
-            <property context="yes" name="label" translatable="yes">Username:</property>
+            <property name="label" translatable="yes">Username:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -45,7 +45,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="profile_lbl">
-            <property context="yes" name="label" translatable="yes">Profile:</property>
+            <property name="label" translatable="yes">Profile:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -58,7 +58,7 @@
         </child>
         <child>
           <object class="ProxyLabel" id="kiwilabel1">
-            <property context="yes" name="label" translatable="yes">Role:</property>
+            <property name="label" translatable="yes">Role:</property>
             <property name="model_attribute">kiwilabel1</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -132,7 +132,7 @@
                     </child>
                     <child>
                       <object class="GtkLabel" id="GtkLabel1">
-                        <property context="yes" name="label" translatable="yes">Change Password...</property>
+                        <property name="label" translatable="yes">Change Password...</property>
                         <property name="visible">True</property>
                       </object>
                       <packing>

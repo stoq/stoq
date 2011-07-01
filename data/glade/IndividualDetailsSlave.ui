@@ -3,7 +3,7 @@
 <interface>
   <object class="GtkWindow" id="IndividualDetailsSlave">
     <property name="role"/>
-    <property context="yes" name="title" translatable="yes"/>
+    <property name="title" translatable="yes"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -17,14 +17,14 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="gender_lbl">
-                <property context="yes" name="label" translatable="yes">Gender:</property>
+                <property name="label" translatable="yes">Gender:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
             </child>
             <child>
               <object class="GtkLabel" id="occupation_lbl">
-                <property context="yes" name="label" translatable="yes">Occupation:</property>
+                <property name="label" translatable="yes">Occupation:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
                 <property name="xpad">2</property>
@@ -36,7 +36,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label6">
-                <property context="yes" name="label" translatable="yes">Mother's name:</property>
+                <property name="label" translatable="yes">Mother's name:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
                 <property name="xpad">2</property>
@@ -48,7 +48,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label5">
-                <property context="yes" name="label" translatable="yes">Father's Name:</property>
+                <property name="label" translatable="yes">Father's Name:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
                 <property name="xpad">2</property>
@@ -60,7 +60,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="marital_status_lbl">
-                <property context="yes" name="label" translatable="yes">Marital Status:</property>
+                <property name="label" translatable="yes">Marital Status:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
                 <property name="xpad">2</property>
@@ -75,7 +75,7 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkRadioButton" id="male_check">
-                    <property context="yes" name="label" translatable="yes">Male</property>
+                    <property name="label" translatable="yes">Male</property>
                     <property name="visible">True</property>
                   </object>
                 </child>
@@ -83,7 +83,7 @@
                   <object class="GtkRadioButton" id="female_check">
                     <property name="active">False</property>
                     <property name="group">male_check</property>
-                    <property context="yes" name="label" translatable="yes">Female</property>
+                    <property name="label" translatable="yes">Female</property>
                     <property name="visible">True</property>
                   </object>
                   <packing>
@@ -153,7 +153,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label1">
-                <property context="yes" name="label" translatable="yes">Birth Date:</property>
+                <property name="label" translatable="yes">Birth Date:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
                 <property name="xpad">2</property>
@@ -165,7 +165,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label4">
-                <property context="yes" name="label" translatable="yes">Birth State:</property>
+                <property name="label" translatable="yes">Birth State:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
                 <property name="xpad">2</property>
@@ -179,7 +179,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label3">
-                <property context="yes" name="label" translatable="yes">Birth City:</property>
+                <property name="label" translatable="yes">Birth City:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
                 <property name="xpad">2</property>
@@ -193,7 +193,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="label2">
-                <property context="yes" name="label" translatable="yes">Birth Country:</property>
+                <property name="label" translatable="yes">Birth Country:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
                 <property name="xpad">2</property>
@@ -207,7 +207,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="spouse_lbl">
-                <property context="yes" name="label" translatable="yes">Spouse:</property>
+                <property name="label" translatable="yes">Spouse:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
                 <property name="xpad">2</property>

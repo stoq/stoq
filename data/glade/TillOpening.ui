@@ -5,7 +5,7 @@
     <property name="border_width">6</property>
     <property name="default_height">250</property>
     <property name="default_width">440</property>
-    <property context="yes" name="title" translatable="yes">Till Opening</property>
+    <property name="title" translatable="yes">Till Opening</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -19,7 +19,7 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="label1">
-                <property context="yes" name="label" translatable="yes">Balance:</property>
+                <property name="label" translatable="yes">Balance:</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>
@@ -31,7 +31,7 @@
             <child>
               <object class="ProxyLabel" id="label2">
                 <property name="justify">right</property>
-                <property context="yes" name="label" translatable="yes">Cash to add ($CURRENCY):</property>
+                <property name="label" translatable="yes">Cash to add ($CURRENCY):</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
               </object>

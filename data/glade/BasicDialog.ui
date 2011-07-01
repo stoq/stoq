@@ -4,7 +4,7 @@
     <object class="GtkDialog" id="BasicDialog">
         <property name="has_separator">False</property>
         <property name="role"></property>
-        <property name="title" context="yes" translatable="yes"></property>
+        <property name="title" translatable="yes"></property>
         <property name="type_hint">normal</property>
         <property name="window_position">center-always</property>
         <child internal-child="vbox">
@@ -21,7 +21,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <object class="GtkLabel" id="header_label">
-                                        <property name="label" context="yes" translatable="yes">header</property>
+                                        <property name="label" translatable="yes">header</property>
                                         <property name="visible">True</property>
                                     </object>
                                 </child>
@@ -56,7 +56,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <object class="GtkLabel" id="main_label">
-                                        <property name="label" context="yes" translatable="yes">label</property>
+                                        <property name="label" translatable="yes">label</property>
                                         <property name="visible">True</property>
                                     </object>
                                 </child>

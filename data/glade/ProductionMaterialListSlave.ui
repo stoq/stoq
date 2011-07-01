@@ -11,7 +11,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="label1">
-            <property context="yes" name="label" translatable="yes">&lt;b&gt;Listing all the components needed by the production:&lt;/b&gt;</property>
+            <property name="label" translatable="yes">&lt;b&gt;Listing all the components needed by the production:&lt;/b&gt;</property>
             <property name="use_markup">True</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
@@ -49,7 +49,7 @@
             <child>
               <object class="ProxyCheckButton" id="start_production_check">
                 <property name="data_type">bool</property>
-                <property context="yes" name="label" translatable="yes">Start Production even if there are missing components</property>
+                <property name="label" translatable="yes">Start Production even if there are missing components</property>
                 <property name="model_attribute">start_production_check</property>
                 <property name="visible">True</property>
               </object>
