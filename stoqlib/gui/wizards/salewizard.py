@@ -490,7 +490,7 @@ class ConfirmSaleWizard(BaseWizard):
             # POS interface
             if self.model.can_order():
                 self.model.order()
-
+        self.next_button.grab_focus()
 
     def _check_payment_group(self, model, conn):
         if not isinstance(model, Sale):
