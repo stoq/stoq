@@ -407,7 +407,9 @@ class SearchDialog(BasicDialog):
         results.grab_focus()
         if len(results) >= 1:
             results.select(results[0])
-        results.grab_focus()
+            results.grab_focus()
+        else:
+            self.search.focus_search_entry()
 
     def _on_results__cell_edited(self, results, obj, attr):
         """Override this method on child when it's needed to perform some
