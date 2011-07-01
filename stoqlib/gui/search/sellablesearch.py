@@ -73,6 +73,23 @@ class SellableSearch(SearchEditor):
         """
         self.quantity = quantity
         self._delivery_sellable = sysparam(conn).DELIVERY_SERVICE.sellable
+
+        # FIXME: This dictionary should be used to deduct from the
+        #        current stock (in the current branch) and not others
+        self.current_sale_stock = {}
+        if sale_items:
+            if selection_mode == gtk.SELECTION_MULTIPLE:
+                raise TypeError("gtk.SELECTION_MULTIPLE is not supported "
+                                "when supplying an order")
+            if self.quantity is None:
+                raise TypeError("You need to specify a quantity "
+                                "when supplying an order")
+            for item in sale_items:
+                if IStorable(item.sellable.product, None):
+                    quantity = self.current_sale_stock.get(item.sellable.id, 0)
+                    quantity += item.quantity
+                    self.current_sale_stock[item.sellable.id] = quantity
+
         SearchEditor.__init__(self, conn, table=self.table,
                               search_table=self.search_table,
                               editor_class=self.editor_class,
@@ -87,22 +104,6 @@ class SellableSearch(SearchEditor):
             self.set_searchbar_search_string(search_str)
             self.search.refresh()
 
-        # FIXME: This dictionary should be used to deduct from the
-        #        current stock (in the current branch) and not others
-        self.current_sale_stock = {}
-
-        if sale_items:
-            if selection_mode == gtk.SELECTION_MULTIPLE:
-                raise TypeError("gtk.SELECTION_MULTIPLE is not supported "
-                                "when supplying an order")
-            if self.quantity is None:
-                raise TypeError("You need to specify a quantity "
-                                "when supplying an order")
-            for item in sale_items:
-                if IStorable(item.sellable.product, None):
-                    quantity = self.current_sale_stock.get(item.sellable.id, 0)
-                    quantity += item.quantity
-                    self.current_sale_stock[item.sellable.id] = quantity
 
     #
     # Hooks
