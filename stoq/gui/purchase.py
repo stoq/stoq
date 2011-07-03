@@ -86,7 +86,7 @@ class PurchaseApp(SearchableAppWindow):
         ui_string = """<ui>
       <menubar action="menubar">
         <menu action="PurchaseMenu">
-          <menuitem action="AddOrder"/>
+          <menuitem action="NewOrder"/>
           <menuitem action="QuoteOrder"/>
           <menuitem action="FinishOrder"/>
           <menuitem action="Confirm"/>
@@ -119,7 +119,7 @@ class PurchaseApp(SearchableAppWindow):
         <placeholder name="ExtraMenu"/>
       </menubar>
       <toolbar action="main_toolbar">
-        <toolitem action="AddOrder"/>
+        <toolitem action="NewOrder"/>
         <toolitem action="QuoteOrder"/>
         <toolitem action="Products"/>
         <toolitem action="Suppliers"/>
@@ -131,7 +131,7 @@ class PurchaseApp(SearchableAppWindow):
 
             # Purchase
             ("PurchaseMenu", None, _("_Order")),
-            ("AddOrder", gtk.STOCK_NEW, _("New Order..."), "<Control>o"),
+            ("NewOrder", gtk.STOCK_NEW, _("New Order..."), "<Control>o"),
             ("QuoteOrder", gtk.STOCK_INDEX, _("Quote Order..."), "<Control>e"),
             ("FinishOrder", None, _("Finish Order...")),
             ("Confirm", 'stoq-delivery', _("Confirm Order...")),
@@ -164,7 +164,7 @@ class PurchaseApp(SearchableAppWindow):
         ]
 
         self.add_ui_actions(ui_string, actions)
-        self.AddOrder.set_short_label(_("New Order"))
+        self.NewOrder.set_short_label(_("New Order"))
         self.QuoteOrder.set_short_label(_("New Quote"))
         self.Products.set_short_label(_("Products"))
         self.Suppliers.set_short_label(_("Suppliers"))
@@ -261,7 +261,7 @@ class PurchaseApp(SearchableAppWindow):
         self.details_button.set_sensitive(one_selected)
         self.FinishOrder.set_sensitive(can_finish)
 
-    def _open_order(self, order=None, edit_mode=False):
+    def _new_order(self, order=None, edit_mode=False):
         trans = new_transaction()
         order = trans.get(order)
         model = self.run_dialog(PurchaseWizard, trans, order,
@@ -279,7 +279,7 @@ class PurchaseApp(SearchableAppWindow):
                              'got %d instead' % qty )
         purchase = selected[0].purchase
         if purchase.status == PurchaseOrder.ORDER_PENDING:
-            self._open_order(purchase, edit_mode=False)
+            self._new_order(purchase, edit_mode=False)
         else:
             self._quote_order(purchase)
         self.refresh()
@@ -376,7 +376,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def key_control_a(self, *args):
         # FIXME Remove this method after gazpacho bug fix.
-        self._open_order()
+        self._new_order()
 
     def on_results__row_activated(self, klist, purchase_order_view):
         self._run_details_dialog()
@@ -407,8 +407,8 @@ class PurchaseApp(SearchableAppWindow):
 
     # Order
 
-    def on_AddOrder__activate(self, action):
-        self._open_order()
+    def on_NewOrder__activate(self, action):
+        self._new_order()
         self.refresh()
 
     def on_QuoteOrder__activate(self, action):
