@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--*- mode: xml -*-->
-<interface domain="stoq">
+<interface>
   <object class="GtkWindow" id="UpdateSchemaStep">
     <property name="default_height">250</property>
     <property name="default_width">440</property>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--*- mode: xml -*-->
-<interface domain="stoq">
+<interface>
   <object class="GtkWindow" id="production">
     <property name="destroy_with_parent">True</property>
     <property name="height_request">570</property>
