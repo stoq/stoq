@@ -121,15 +121,12 @@ def collect_traceback(tb, output=True, submit=False):
     @output: if it is to be printed
     @submit: if it is to be submitted immediately
     """
-    if is_developer_mode():
-        return
-
     _tracebacks.append(tb)
 
     if output:
         traceback.print_exception(*tb)
 
-    if submit:
+    if is_developer_mode() and submit:
         report()
 
 def has_tracebacks():
