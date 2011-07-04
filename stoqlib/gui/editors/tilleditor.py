@@ -49,13 +49,9 @@ _ = stoqlib_gettext
 
 def _create_transaction(conn, till_entry):
     till = till_entry.till
-    account = Account.get_by_station(conn, till.station)
-    if account is None:
-        account = Account.create_for_station(conn, till.station)
-
     AccountTransaction(description=till_entry.description,
                        source_account=sysparam(conn).IMBALANCE_ACCOUNT,
-                       account=account,
+                       account=sysparam(conn).TILLS_ACCOUNT,
                        value=-till_entry.value,
                        code=str(till_entry.id),
                        date=const.NOW(),

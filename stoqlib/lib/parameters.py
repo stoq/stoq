@@ -336,7 +336,7 @@ _parameter_info = dict(
     TILLS_ACCOUNT=ParameterDetails(
     _('Accounts'),
     _('Parent Till Account'),
-    _('Newly created Till accounts will be placed under this account')),
+    _('Till account transfers will be placed under this account')),
 
     IMBALANCE_ACCOUNT=ParameterDetails(
     _('Accounts'),

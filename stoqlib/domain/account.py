@@ -135,30 +135,6 @@ class Account(Domain):
                     (station, ))
         return cls.selectOneBy(connection=conn, station=station)
 
-    @classmethod
-    def create_for_station(cls, conn, station):
-        """Creates a new till account for a station
-        @param conn: a connnection
-        @param station: a BranchStation
-        Returns: the account
-        """
-        if station is None:
-            raise TypeError("station cannot be None")
-        if not isinstance(station, BranchStation):
-            raise TypeError("station must be a BranchStation, not %r" %
-                    (station, ))
-
-        if cls.get_by_station(conn, station):
-            raise ValueError("Station %r has a till account already" % (
-                station, ))
-
-        return cls(station=station,
-                   description=station.name,
-                   code=_("Till account for %s") % station.name,
-                   parent=sysparam(conn).TILLS_ACCOUNT,
-                   account_type=Account.TYPE_CASH,
-                   connection=conn)
-
     @property
     def long_description(self):
         """Get a long description, including all the parent accounts,
