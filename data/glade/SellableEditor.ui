@@ -46,7 +46,7 @@
                   <object class="GtkLabel" id="label10">
                     <property name="visible">True</property>
                     <property name="xalign">1</property>
-                    <property name="label" translatable="yes">Default Sale C.F.O.P.:</property>
+                    <property name="label" translatable="yes">Default Sales C.F.O.P.:</property>
                   </object>
                   <packing>
                     <property name="top_attach">2</property>
