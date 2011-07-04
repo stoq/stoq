@@ -1,41 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.20"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
+  <requires lib="gtk+" version="2.20"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="pos">
     <property name="width_request">800</property>
     <property name="height_request">570</property>
+    <property name="can_focus">False</property>
     <property name="title" translatable="yes">STOQ - POS Application</property>
     <property name="window_position">center</property>
     <property name="destroy_with_parent">True</property>
     <child>
       <object class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <child>
           <object class="GtkVBox" id="pos_vbox">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="spacing">4</property>
             <child>
               <object class="GtkHBox" id="list_header_hbox">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkAlignment" id="alignment1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="top_padding">4</property>
                     <property name="left_padding">6</property>
                     <property name="right_padding">6</property>
                     <child>
                       <object class="GtkHBox" id="search_box">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="spacing">6</property>
                         <child>
                           <object class="GtkHBox" id="item_hbox">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="spacing">6</property>
                             <child>
                               <object class="GtkLabel" id="label2">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Barcode:</property>
                               </object>
@@ -65,6 +73,7 @@
                             <child>
                               <object class="ProxyLabel" id="kiwilabel2">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="xalign">1</property>
                                 <property name="label" translatable="yes">Quantity:</property>
                               </object>
@@ -98,17 +107,20 @@
                             <child>
                               <object class="GtkHButtonBox" id="item_button_box">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="spacing">6</property>
                                 <child>
                                   <object class="GtkButton" id="add_button">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="tooltip_text" translatable="yes">Add a product or service by barcode</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
                                     <child>
                                       <object class="GtkImage" id="image2">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                         <property name="stock">gtk-add</property>
                                         <property name="icon-size">1</property>
                                       </object>
@@ -125,10 +137,12 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="tooltip_text" translatable="yes">Search for products and services by barcode or name</property>
                                     <property name="use_action_appearance">False</property>
                                     <child>
                                       <object class="GtkImage" id="image3">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                         <property name="stock">gtk-find</property>
                                         <property name="icon-size">1</property>
                                       </object>
@@ -157,6 +171,7 @@
                         <child>
                           <object class="GtkImage" id="stoq_logo">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -184,10 +199,12 @@
             <child>
               <object class="GtkVBox" id="list_vbox">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="ObjectList" id="sale_items">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="is_focus">True</property>
                     <property name="vscrollbar_policy">automatic</property>
                     <property name="shadow_type">in</property>
@@ -201,6 +218,7 @@
                 <child>
                   <object class="GtkAlignment" id="alignment2">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="top_padding">6</property>
                     <property name="bottom_padding">6</property>
                     <property name="left_padding">6</property>
@@ -208,12 +226,15 @@
                     <child>
                       <object class="GtkHBox" id="footer_hbox">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <child>
                           <object class="GtkVBox" id="toolbar_vbox">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <child>
                               <object class="GtkHButtonBox" id="toolbar_button_box">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="spacing">6</property>
                                 <child>
                                   <object class="GtkButton" id="checkout_button">
@@ -224,12 +245,15 @@
                                     <child>
                                       <object class="GtkAlignment" id="alignment37">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                         <child>
                                           <object class="GtkVBox" id="vbox5">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <child>
                                               <object class="GtkImage" id="image6">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="stock">stoq-confirm</property>
                                               </object>
                                               <packing>
@@ -241,6 +265,7 @@
                                             <child>
                                               <object class="GtkLabel" id="label6">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="label" translatable="yes">_Checkout</property>
                                                 <property name="use_underline">True</property>
                                               </object>
@@ -270,12 +295,15 @@
                                     <child>
                                       <object class="GtkAlignment" id="alignment36">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                         <child>
                                           <object class="GtkVBox" id="vbox3">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <child>
                                               <object class="GtkImage" id="image5">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="stock">stoq-delivery</property>
                                               </object>
                                               <packing>
@@ -287,6 +315,7 @@
                                             <child>
                                               <object class="GtkLabel" id="label5">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="label" translatable="yes">_Delivery</property>
                                                 <property name="use_underline">True</property>
                                               </object>
@@ -316,12 +345,15 @@
                                     <child>
                                       <object class="GtkAlignment" id="alignment8">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                         <child>
                                           <object class="GtkVBox" id="vbox1">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <child>
                                               <object class="GtkImage" id="image1">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="stock">stoq-edit</property>
                                               </object>
                                               <packing>
@@ -333,6 +365,7 @@
                                             <child>
                                               <object class="GtkLabel" id="label8">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="label" translatable="yes">Ed_it</property>
                                                 <property name="use_underline">True</property>
                                               </object>
@@ -362,12 +395,15 @@
                                     <child>
                                       <object class="GtkAlignment" id="alignment16">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                         <child>
                                           <object class="GtkVBox" id="vbox2">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <child>
                                               <object class="GtkImage" id="image4">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="stock">stoq-remove</property>
                                               </object>
                                               <packing>
@@ -379,6 +415,7 @@
                                             <child>
                                               <object class="GtkLabel" id="label46">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="label" translatable="yes">_Remove</property>
                                                 <property name="use_underline">True</property>
                                               </object>
@@ -416,6 +453,7 @@
                         <child>
                           <object class="ProxyLabel" id="order_total_label">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xalign">1</property>
                             <property name="yalign">1</property>
                             <property name="use_markup">True</property>
