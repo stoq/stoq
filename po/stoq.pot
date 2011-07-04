@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-04 10:40-0300\n"
+"POT-Creation-Date: 2011-07-04 11:11-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -9451,8 +9451,9 @@ msgstr ""
 msgid "Return Value:"
 msgstr ""
 
-#: ../data/glade/production.ui.h:1 ../data/glade/purchase.ui.h:2
-msgid "Ed_it..."
+#: ../data/glade/production.ui.h:1 ../data/glade/pos.ui.h:3
+#: ../data/glade/SaleListToolbar.ui.h:1
+msgid "Ed_it"
 msgstr ""
 
 #: ../data/glade/production.ui.h:3 ../data/glade/receivable.ui.h:2
@@ -10133,10 +10134,6 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: ../data/glade/pos.ui.h:3 ../data/glade/SaleListToolbar.ui.h:1
-msgid "Ed_it"
-msgstr ""
-
 #: ../data/glade/pos.ui.h:5
 msgid "STOQ - POS Application"
 msgstr ""
@@ -10302,6 +10299,10 @@ msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:3
 msgid "Parent:"
+msgstr ""
+
+#: ../data/glade/purchase.ui.h:2
+msgid "Ed_it..."
 msgstr ""
 
 #: ../data/glade/purchase.ui.h:3
