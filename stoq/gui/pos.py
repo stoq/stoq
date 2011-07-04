@@ -103,8 +103,8 @@ class _SaleItem(object):
         return '%s %s' % (qtd_string, self.unit)
 
 
-LOGO_WIDTH = 114
-LOGO_HEIGHT = 40
+LOGO_WIDTH = 91
+LOGO_HEIGHT = 32
 
 class PosApp(AppWindow):
 
