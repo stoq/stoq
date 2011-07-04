@@ -25,6 +25,7 @@
 """ Purchase receiving slaves implementation"""
 
 from kiwi.datatypes import ValidationError, ValueUnset
+from kiwi.utils import gsignal
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.fiscal import CfopData
@@ -58,6 +59,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                      'discount_value',
                      'secure_value',
                      'expense_value')
+
+    gsignal('activate')
 
     #
     # BaseEditorSlave hooks
@@ -166,6 +169,27 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     #
     # Callbacks
     #
+
+    def on_invoice_number__activate(self, widget):
+        self.emit('activate')
+
+    def on_freight__activate(self, widget):
+        self.emit('activate')
+
+    def on_ipi__activate(self, widget):
+        self.emit('activate')
+
+    def on_icms_total__activate(self, widget):
+        self.emit('activate')
+
+    def on_discount_value__activate(self, widget):
+        self.emit('activate')
+
+    def on_secure_value__activate(self, widget):
+        self.emit('activate')
+
+    def on_expense_value__activate(self, widget):
+        self.emit('activate')
 
     def _positive_validator(self, widget, value):
         if value < 0:
