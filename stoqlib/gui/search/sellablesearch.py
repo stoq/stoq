@@ -73,6 +73,7 @@ class SellableSearch(SearchEditor):
             automatically confirm
         """
         self._first_search = True
+        self._first_search_string = search_str
         self.quantity = quantity
         self._delivery_sellable = sysparam(conn).DELIVERY_SERVICE.sellable
 
@@ -115,6 +116,18 @@ class SellableSearch(SearchEditor):
     # Hooks
     #
 
+    def key_shift_Return(self):
+        self.confirm()
+
+    def key_control_Return(self):
+        self.confirm()
+
+    def key_shift_KP_Enter(self):
+        self.confirm()
+
+    def key_control_KP_Enter(self):
+        self.confirm()
+
     def create_filters(self):
         self.set_text_field_columns(['description'])
         self.executer.set_query(self._executer_query)
@@ -150,18 +163,14 @@ class SellableSearch(SearchEditor):
             self.ok_button.set_sensitive(True)
 
     def search_completed(self, results):
-        # This is tricky,
-        # 1) If we show a message, select and focus the first item
-        # 2) If we search after showing a message, remove the message
-        #    and focus the search entry
-        # 3) If no message was specified, always focus search entry
         if not self._first_search:
-            self.remove_message_bar()
-        if self.has_message_bar() and len(results) >= 1:
+            if self._first_search_string != self.get_searchbar_search_string():
+                self.remove_message_bar()
+
+        if len(results) >= 1:
             results.select(results[0])
-            results.grab_focus()
-        else:
-            self.search.focus_search_entry()
+
+        self.search.focus_search_entry()
         self._first_search = False
 
     #
