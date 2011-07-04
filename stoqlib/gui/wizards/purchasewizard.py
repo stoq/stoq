@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -70,12 +70,13 @@ _ = stoqlib_gettext
 class StartPurchaseStep(WizardEditorStep):
     gladefile = 'StartPurchaseStep'
     model_type = PurchaseOrder
-    proxy_widgets = ('open_date',
+    proxy_widgets = ['open_date',
                      'order_number',
                      'supplier',
                      'branch',
                      'expected_freight',
-                     )
+                     ]
+
     def __init__(self, wizard, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model)
 
@@ -85,6 +86,7 @@ class StartPurchaseStep(WizardEditorStep):
         suppliers = table.get_active_suppliers(self.conn)
         items = [(s.person.name, s) for s in suppliers]
         self.supplier.prefill(sorted(items))
+        self.edit_supplier.set_sensitive(len(items))
 
     def _fill_branch_combo(self):
         # FIXME: Implement and use IDescribable on PersonAdaptToBranch
@@ -108,6 +110,26 @@ class StartPurchaseStep(WizardEditorStep):
             self.model.freight_type = self.model_type.FREIGHT_CIF
         else:
             self.model.freight_type = self.model_type.FREIGHT_FOB
+
+    def _run_supplier_dialog(self, supplier):
+        trans = new_transaction()
+        if supplier is not None:
+            supplier = trans.get(self.model.supplier)
+        model = run_person_role_dialog(SupplierEditor, self, trans,
+                                       supplier)
+        retval = finish_transaction(trans, model)
+        if retval:
+            model = self.conn.get(model)
+            self._fill_supplier_combo()
+            self.supplier.select(model)
+        trans.close()
+
+    def _add_supplier(self):
+        self._run_supplier_dialog(supplier=None)
+
+    def _edit_supplier(self):
+        supplier = self.supplier.get_selected()
+        self._run_supplier_dialog(supplier)
 
     #
     # WizardStep hooks
@@ -140,34 +162,11 @@ class StartPurchaseStep(WizardEditorStep):
     def on_fob_radio__toggled(self, *args):
         self._update_widgets()
 
-    def on_supplier_button__clicked(self, *args):
-        trans = new_transaction()
-        supplier = trans.get(self.model.supplier)
+    def on_add_supplier__clicked(self, button):
+        self._add_supplier()
 
-        # Since self.model.supplier always will exist here, we can't use
-        # it to determine when add a new supplier or edit a selected
-        # one. So, we check the supplier combo entry to determine that.
-        if not self.supplier.get_text():
-            supplier = None
-
-        model = run_person_role_dialog(SupplierEditor, self, trans,
-                                       supplier)
-        retval = finish_transaction(trans, model)
-        if retval:
-            model = self.conn.get(model)
-            self._fill_supplier_combo()
-            self.supplier.select(model)
-        trans.close()
-
-    def on_supplier__validate(self, widget, supplier):
-        if not supplier:
-            return
-
-        supplier_infos = ProductSupplierInfo.get_info_by_supplier(
-                    self.conn, supplier, consigned=self.model.consigned)
-        if supplier_infos.count() == 0:
-            return ValidationError(_(u'The supplier does not have any '
-                                      'products associated.'))
+    def on_edit_supplier__clicked(self, button):
+        self._edit_supplier()
 
     def on_open_date__validate(self, widget, date):
         if sysparam(self.conn).ALLOW_OUTDATED_PURCHASES:
@@ -296,8 +295,8 @@ class PurchaseItemStep(SellableItemStep):
         product = sellable.product
         supplier = self.model.supplier
         return ProductSupplierInfo.selectOneBy(product=product,
-                                                supplier=supplier,
-                                                connection=self.conn)
+                                               supplier=supplier,
+                                               connection=self.conn)
 
     #
     # Callbacks
