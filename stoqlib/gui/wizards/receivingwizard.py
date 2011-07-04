@@ -318,6 +318,8 @@ class ReceivingInvoiceStep(WizardEditorStep):
     def post_init(self):
         self.invoice_slave = ReceivingInvoiceSlave(self.conn, self.model)
         self.attach_slave("place_holder", self.invoice_slave)
+        # Slaves must be focused after being attached
+        self.invoice_slave.invoice_number.grab_focus()
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
         if not self.has_next_step():
