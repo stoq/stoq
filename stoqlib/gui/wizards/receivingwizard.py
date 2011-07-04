@@ -316,11 +316,13 @@ class ReceivingInvoiceStep(WizardEditorStep):
         return False
 
     def post_init(self):
+        self._is_valid = False
         self.invoice_slave = ReceivingInvoiceSlave(self.conn, self.model)
+        self.invoice_slave.connect('activate', self._on_invoice_slave__activate)
         self.attach_slave("place_holder", self.invoice_slave)
         # Slaves must be focused after being attached
         self.invoice_slave.invoice_number.grab_focus()
-        self.register_validate_function(self.wizard.refresh_next)
+        self.register_validate_function(self._validate_func)
         self.force_validation()
         if not self.has_next_step():
             self.wizard.enable_finish()
@@ -328,9 +330,17 @@ class ReceivingInvoiceStep(WizardEditorStep):
     def validate_step(self):
         create_freight_payment = self.invoice_slave.create_freight_payment()
         self.model.update_payments(create_freight_payment)
-
         return self.model
 
+    # Callbacks
+
+    def _validate_func(self, is_valid):
+        self._is_valid = is_valid
+        self.wizard.refresh_next(is_valid)
+
+    def _on_invoice_slave__activate(self, slave):
+        if self._is_valid:
+            self.wizard.finish()
 
 #
 # Main wizard
