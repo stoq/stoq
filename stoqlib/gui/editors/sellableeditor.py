@@ -226,6 +226,20 @@ class SellableEditor(BaseEditor):
         if not self.code.read():
             code = u'%d' % self._sellable.id
             self.code.update(code)
+
+        self.description.grab_focus()
+        self.table.set_focus_chain([self.code,
+                                    self.barcode,
+                                    self.default_sale_cfop,
+                                    self.description,
+                                    self.cost_hbox,
+                                    self.price_hbox,
+                                    self.consignment_box,
+                                    self.statuses_combo,
+                                    self.category_combo,
+                                    self.tax_hbox,
+                                    self.unit_combo,
+                                    ])
         self.setup_widgets()
 
         self.set_description(
@@ -433,6 +447,15 @@ class SellableEditor(BaseEditor):
 
     def on_unit_combo__changed(self, combo):
         self.update_requires_weighing_label()
+
+    def on_description__activate(self, entry):
+        self.confirm()
+
+    def on_cost__activate(self, entry):
+        self.confirm()
+
+    def on_price__activate(self, entry):
+        self.confirm()
 
     def on_sale_price_button__clicked(self, button):
         self.edit_sale_price()

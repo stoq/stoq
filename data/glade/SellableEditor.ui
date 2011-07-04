@@ -1,5 +1,6 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
@@ -10,7 +11,6 @@
     <child>
       <object class="GtkNotebook" id="sellable_notebook">
         <property name="visible">True</property>
-        <property name="is_focus">True</property>
         <property name="show_tabs">False</property>
         <property name="show_border">False</property>
         <child>
@@ -18,7 +18,7 @@
             <property name="visible">True</property>
             <property name="border_width">6</property>
             <child>
-              <object class="GtkTable" id="table2">
+              <object class="GtkTable" id="table">
                 <property name="visible">True</property>
                 <property name="n_rows">9</property>
                 <property name="n_columns">4</property>
@@ -115,10 +115,9 @@
                 <child>
                   <object class="ProxyEntry" id="code">
                     <property name="visible">True</property>
-                    <property name="is_focus">True</property>
                     <property name="width_chars">12</property>
-                    <property name="model_attribute">code</property>
                     <property name="data_type">unicode</property>
+                    <property name="model_attribute">code</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -128,10 +127,9 @@
                 <child>
                   <object class="ProxyEntry" id="barcode">
                     <property name="visible">True</property>
-                    <property name="is_focus">True</property>
                     <property name="width_chars">12</property>
-                    <property name="model_attribute">barcode</property>
                     <property name="data_type">unicode</property>
+                    <property name="model_attribute">barcode</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -156,10 +154,10 @@
                 <child>
                   <object class="ProxyEntry" id="description">
                     <property name="visible">True</property>
-                    <property name="is_focus">True</property>
-                    <property name="model_attribute">base_sellable_info.description</property>
-                    <property name="mandatory">True</property>
+                    <property name="has_focus">True</property>
                     <property name="data_type">unicode</property>
+                    <property name="mandatory">True</property>
+                    <property name="model_attribute">base_sellable_info.description</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -169,18 +167,19 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkHBox" id="hbox3">
+                  <object class="GtkHBox" id="cost_hbox">
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
                       <object class="ProxySpinButton" id="cost">
                         <property name="visible">True</property>
-                        <property name="is_focus">True</property>
                         <property name="digits">2</property>
                         <property name="data_type">currency</property>
                         <property name="model_attribute">cost</property>
                       </object>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -191,6 +190,8 @@
                         <property name="label" translatable="yes">Stock Cost:</property>
                       </object>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -198,10 +199,12 @@
                       <object class="ProxyLabel" id="stock_total_lbl">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
-                        <property name="model_attribute">stock_total_lbl</property>
                         <property name="data_type">currency</property>
+                        <property name="model_attribute">stock_total_lbl</property>
                       </object>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">2</property>
                       </packing>
                     </child>
@@ -214,7 +217,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkHBox" id="hbox2">
+                  <object class="GtkHBox" id="price_hbox">
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -226,19 +229,26 @@
                       </object>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkButton" id="sale_price_button">
-                        <property name="label" translatable="yes">...</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="is_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="relief">none</property>
+                        <child>
+                          <object class="GtkImage" id="image1">
+                            <property name="visible">True</property>
+                            <property name="stock">gtk-edit</property>
+                            <property name="icon-size">1</property>
+                          </object>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -266,6 +276,8 @@
                         <property name="model_attribute">consignment_yes_button</property>
                       </object>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -277,10 +289,12 @@
                         <property name="receives_default">False</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
-                        <property name="model_attribute">consignment</property>
                         <property name="data_type">bool</property>
+                        <property name="model_attribute">consignment</property>
                       </object>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -380,7 +394,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkHBox" id="hbox1">
+                  <object class="GtkHBox" id="tax_hbox">
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -391,6 +405,7 @@
                       </object>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -402,8 +417,8 @@
                           <object class="ProxyLabel" id="tax_value">
                             <property name="visible">True</property>
                             <property name="xalign">1</property>
-                            <property name="model_attribute">tax_constant.tax_value</property>
                             <property name="data_type">Decimal</property>
+                            <property name="model_attribute">tax_constant.tax_value</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -419,12 +434,14 @@
                           </object>
                           <packing>
                             <property name="expand">False</property>
+                            <property name="fill">True</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -437,7 +454,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkHBox" id="hbox4">
+                  <object class="GtkHBox" id="unit_hbox">
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -447,6 +464,8 @@
                         <property name="model_attribute">unit</property>
                       </object>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -461,7 +480,6 @@
                 <child>
                   <object class="ProxyLabel" id="requires_weighing_label">
                     <property name="visible">True</property>
-                    <property name="is_focus">True</property>
                     <property name="no_show_all">True</property>
                     <property name="xalign">1</property>
                     <property name="single_line_mode">True</property>
@@ -495,6 +513,7 @@
               </object>
               <packing>
                 <property name="expand">False</property>
+                <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
