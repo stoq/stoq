@@ -333,8 +333,14 @@ class SearchDialog(BasicDialog):
         search_filter.set_label(args[0])
 
     def set_searchbar_search_string(self, string):
+        if string == self.get_searchbar_search_string():
+            return
         search_filter = self.search.get_primary_filter()
         search_filter.entry.set_text(string)
+
+    def get_searchbar_search_string(self):
+        search_filter = self.search.get_primary_filter()
+        return search_filter.get_state().text
 
     def set_result_strings(self, *args):
         pass
