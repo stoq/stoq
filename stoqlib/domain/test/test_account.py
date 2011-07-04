@@ -50,21 +50,6 @@ class TestAccount(DomainTest):
         self.assertRaises(TypeError, Account.get_by_station,
                           self.trans, object())
 
-    def testAccountCreateForStation(self):
-        station = self.create_station()
-        account = Account.create_for_station(self.trans, station)
-        self.failUnless(account)
-        self.assertEquals(account.station, station)
-        self.assertEquals(account.parent, sysparam(self.trans).TILLS_ACCOUNT)
-
-        self.assertRaises(ValueError, Account.create_for_station,
-                          self.trans, station)
-
-        self.assertRaises(TypeError, Account.create_for_station,
-                          self.trans, None)
-        self.assertRaises(TypeError, Account.create_for_station,
-                          self.trans, object())
-
     def testAccountLongDescription(self):
         a1 = self.create_account()
         a1.description = "first"
