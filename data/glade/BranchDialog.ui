@@ -213,7 +213,6 @@
                 <property name="visible">True</property>
                 <property name="is_focus">True</property>
                 <property name="data_type">unicode</property>
-                <property name="mandatory">True</property>
                 <property name="model_attribute">state_registry</property>
               </object>
               <packing>
