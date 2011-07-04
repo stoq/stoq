@@ -105,7 +105,7 @@ class PayableApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Payable
-            ('PayableMenu', None, 'Accounts _Payable'),
+            ('PayableMenu', None, _('Accounts _Payable')),
             ('AddPayment', gtk.STOCK_ADD, _('Add payment...'), '<Control>p'),
             ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel Payment ...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
