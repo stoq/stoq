@@ -192,7 +192,7 @@ class BaseEditor(BaseEditorSlave):
         if self.hide_footer or self.visual_mode:
             self.main_dialog.hide_footer()
 
-        self.register_validate_function(self.refresh_ok)
+        self.register_validate_function(self._validation_function)
         self.force_validation()
 
     def _get_title_format(self):
@@ -249,6 +249,7 @@ class BaseEditor(BaseEditorSlave):
             raise TypeError("You need to provide a label or a stock argument")
 
         button = gtk.Button(label=label, stock=stock)
+        button.props.can_focus = True
         self.main_dialog.action_area.pack_start(button, False, False)
         self.main_dialog.action_area.reorder_child(button, 0)
         button.show()
@@ -264,6 +265,8 @@ class BaseEditor(BaseEditorSlave):
         """
         Confirm the dialog.
         """
+        if not self.is_valid:
+            return
         self.main_dialog.confirm()
 
     def enable_ok(self):
@@ -290,6 +293,12 @@ class BaseEditor(BaseEditorSlave):
         """
         self.main_dialog.set_confirm_widget(widget_name)
 
+
+    # Callbacks
+
+    def _validation_function(self, is_valid):
+        self.refresh_ok(is_valid)
+        self.is_valid = is_valid
 
 class BaseRelationshipEditorSlave(GladeSlaveDelegate):
     """An editor for relationships between objects
