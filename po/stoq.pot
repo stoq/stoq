@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-01 16:26-0300\n"
+"POT-Creation-Date: 2011-07-04 10:40-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -335,8 +335,8 @@ msgstr ""
 msgid "This will delete the current database and configuration. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/application.py:470 ../stoq/gui/financial.py:541
-#: ../stoq/gui/financial.py:556 ../stoqlib/gui/editors/producteditor.py:266
+#: ../stoq/gui/application.py:470 ../stoq/gui/financial.py:537
+#: ../stoq/gui/financial.py:552 ../stoqlib/gui/editors/producteditor.py:266
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:398
 msgid "Don't Remove"
 msgstr ""
@@ -702,88 +702,79 @@ msgid "Financial"
 msgstr ""
 
 #. Financial
-#: ../stoq/gui/financial.py:256
+#: ../stoq/gui/financial.py:255
 msgid "_Financial"
 msgstr ""
 
-#: ../stoq/gui/financial.py:257
+#: ../stoq/gui/financial.py:256
 msgid "Import..."
 msgstr ""
 
-#: ../stoq/gui/financial.py:258
+#: ../stoq/gui/financial.py:257
 msgid "Import a GnuCash or OFX file"
 msgstr ""
 
-#: ../stoq/gui/financial.py:263 ../stoq/gui/pos.py:295
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:79
-msgid "Close"
-msgstr ""
-
-#: ../stoq/gui/financial.py:264
-msgid "Close the current tab"
-msgstr ""
-
-#: ../stoq/gui/financial.py:265
+#: ../stoq/gui/financial.py:262
 msgid "Edit Account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:266
+#: ../stoq/gui/financial.py:263
 msgid "Change the currently selected account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:267 ../stoq/gui/financial.py:268
+#: ../stoq/gui/financial.py:264 ../stoq/gui/financial.py:265
 msgid "Create New Account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:269 ../stoq/gui/financial.py:270
+#: ../stoq/gui/financial.py:266 ../stoq/gui/financial.py:267
 msgid "Delete Account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:271 ../stoq/gui/financial.py:272
+#: ../stoq/gui/financial.py:268 ../stoq/gui/financial.py:269
 msgid "Create New Transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:273 ../stoq/gui/financial.py:274
+#: ../stoq/gui/financial.py:270 ../stoq/gui/financial.py:271
 msgid "Delete Transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:277
+#: ../stoq/gui/financial.py:274
 msgid "Financial help"
 msgstr ""
 
-#: ../stoq/gui/financial.py:305 ../stoq/gui/financial.py:394
+#: ../stoq/gui/financial.py:301 ../stoq/gui/financial.py:390
 #: ../stoqlib/lib/parameters.py:331 ../stoqlib/lib/parameters.py:337
 #: ../stoqlib/lib/parameters.py:342 ../data/glade/financial.ui.h:1
 msgid "Accounts"
 msgstr ""
 
-#: ../stoq/gui/financial.py:428
+#: ../stoq/gui/financial.py:424
 msgid "All supported formats"
 msgstr ""
 
-#: ../stoq/gui/financial.py:435
+#: ../stoq/gui/financial.py:431
 msgid "Open Financial Exchange (OFX)"
 msgstr ""
 
-#: ../stoq/gui/financial.py:440
+#: ../stoq/gui/financial.py:436
 msgid "GNUCash xml format"
 msgstr ""
 
-#: ../stoq/gui/financial.py:538
+#: ../stoq/gui/financial.py:534
 #, python-format
 msgid "Are you sure you want to remove account \"%s\" ?"
 msgstr ""
 
-#: ../stoq/gui/financial.py:541
+#: ../stoq/gui/financial.py:537
 msgid "Remove account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:553
+#: ../stoq/gui/financial.py:549
 #, python-format
 msgid "Are you sure you want to remove transaction \"%s\" ?"
 msgstr ""
 
-#: ../stoq/gui/financial.py:556
+#: ../stoq/gui/financial.py:552
 msgid "Remove transaction"
 msgstr ""
 
@@ -1050,6 +1041,10 @@ msgstr ""
 #: ../stoqlib/gui/search/salesearch.py:86
 #: ../stoqlib/gui/search/salesearch.py:185
 msgid "Total"
+msgstr ""
+
+#: ../stoq/gui/pos.py:295 ../stoqlib/gui/dialogs/crashreportdialog.py:79
+msgid "Close"
 msgstr ""
 
 #: ../stoq/gui/pos.py:325 ../stoq/gui/till.py:289
@@ -2116,27 +2111,27 @@ msgid ""
 "connection settings you have set and try again."
 msgstr ""
 
-#: ../stoqlib/database/migration.py:308
+#: ../stoqlib/database/migration.py:307
 msgid "Could not connect to the database using command line tool! Aborting."
 msgstr ""
 
-#: ../stoqlib/database/migration.py:310
+#: ../stoqlib/database/migration.py:309
 msgid "Please, check if you can connect to the database using:"
 msgstr ""
 
-#: ../stoqlib/database/migration.py:312
+#: ../stoqlib/database/migration.py:311
 msgid "psql -l -h <server> -p <port> -U <username>"
 msgstr ""
 
-#: ../stoqlib/database/migration.py:321
+#: ../stoqlib/database/migration.py:320
 msgid "Could not create backup! Aborting."
 msgstr ""
 
-#: ../stoqlib/database/migration.py:322
+#: ../stoqlib/database/migration.py:321
 msgid "Please contact stoq team to inform this problem.\n"
 msgstr ""
 
-#: ../stoqlib/database/migration.py:380
+#: ../stoqlib/database/migration.py:378
 msgid "Unsupported database version, you need to reinstall"
 msgstr ""
 
@@ -2246,6 +2241,7 @@ msgid "Charge"
 msgstr ""
 
 #: ../stoqlib/domain/account.py:91 ../stoqlib/domain/account.py:101
+#: ../stoqlib/chart/paymentcharts.py:157
 msgid "Expense"
 msgstr ""
 
@@ -3488,6 +3484,30 @@ msgstr ""
 #: ../stoqlib/reporting/base/printing.py:98
 #, python-format
 msgid "Page % 2d"
+msgstr ""
+
+#: ../stoqlib/chart/chartserver.py:45
+msgid "Stoq Chart Server"
+msgstr ""
+
+#: ../stoqlib/chart/paymentcharts.py:36 ../stoqlib/chart/paymentcharts.py:90
+msgid "Monthly payments"
+msgstr ""
+
+#: ../stoqlib/chart/paymentcharts.py:38
+msgid "Total revenue, expenses and profit for all years"
+msgstr ""
+
+#: ../stoqlib/chart/paymentcharts.py:91
+msgid "Total revenue, expenses and profit for all months in a year"
+msgstr ""
+
+#: ../stoqlib/chart/paymentcharts.py:156
+msgid "Revenue"
+msgstr ""
+
+#: ../stoqlib/chart/paymentcharts.py:158
+msgid "Profit"
 msgstr ""
 
 #: ../stoqlib/importers/saleimporter.py:111
@@ -7164,11 +7184,17 @@ msgid "Default ICMS tax"
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:265
+msgid "Default ICMS to be applied on all the products of a sale. "
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:266 ../stoqlib/lib/parameters.py:273
+#: ../stoqlib/lib/parameters.py:280
+msgid "This a percentage value and must be between 0 and 100."
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:267
 #, python-format
-msgid ""
-"Default ICMS to be applied on all the products of a sale. Note that this a "
-"percentage value and must be set as the 0 &amp;lt; value &amp;lt; 100. E.g: "
-"18, which means 18% of tax."
+msgid "E.g: 18, which means 18% of tax."
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:271
@@ -7176,11 +7202,12 @@ msgid "Default ISS tax"
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:272
+msgid "Default ISS to be applied on all the services of a sale. "
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:274
 #, python-format
-msgid ""
-"Default ISS to be applied on all the services of a sale. Note that this a "
-"percentage value and must be set as the 0 &amp;lt; value &amp;lt; 100. E.g: "
-"12, which means 12% of tax."
+msgid "E.g: 12, which means 12% of tax."
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:278
@@ -7188,11 +7215,12 @@ msgid "Default Substitution tax"
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:279
+msgid "The tax applied on all sale products with substitution tax type."
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:281
 #, python-format
-msgid ""
-"The tax applied on all sale products with substitution tax type. Note that "
-"this a percentage value and must be set as the format: 0 &amp;lt; value &amp;"
-"lt; 100. E.g: 16, which means 16% of tax."
+msgid "E.g: 16, which means 16% of tax."
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:285
@@ -9188,15 +9216,10 @@ msgstr ""
 
 #: ../data/glade/LoginDialog.ui.h:1
 msgctxt "yes"
-msgid "Access Control"
-msgstr ""
-
-#: ../data/glade/LoginDialog.ui.h:2
-msgctxt "yes"
 msgid "_Password:"
 msgstr ""
 
-#: ../data/glade/LoginDialog.ui.h:3
+#: ../data/glade/LoginDialog.ui.h:2
 msgctxt "yes"
 msgid "_Username:"
 msgstr ""
@@ -9330,64 +9353,6 @@ msgstr ""
 msgid "State Registry:"
 msgstr ""
 
-#: ../data/glade/TaxIPISlave.ui.h:2
-msgid "Al&#xED;quota do IPI:"
-msgstr ""
-
-#: ../data/glade/TaxIPISlave.ui.h:3
-msgid "BC IPI:"
-msgstr ""
-
-#: ../data/glade/TaxIPISlave.ui.h:4
-msgid "C&#xE1;lculo do IPI:"
-msgstr ""
-
-#: ../data/glade/TaxIPISlave.ui.h:5
-msgid ""
-"C&#xF3;digo de enquadramento\n"
-"legal do ipi:"
-msgstr ""
-
-#: ../data/glade/TaxIPISlave.ui.h:7
-msgid ""
-"C&#xF3;digo do selo\n"
-"de controle IPI:"
-msgstr ""
-
-#: ../data/glade/TaxIPISlave.ui.h:9
-msgid "CNPJ do Produtor:"
-msgstr ""
-
-#: ../data/glade/TaxIPISlave.ui.h:10 ../data/glade/TaxICMSSlave.ui.h:16
-msgid "CST:"
-msgstr ""
-
-#: ../data/glade/TaxIPISlave.ui.h:11
-msgid ""
-"Classe de Enquadramento\n"
-"Para cigarros e bebidas:"
-msgstr ""
-
-#: ../data/glade/TaxIPISlave.ui.h:13
-msgid ""
-"Quantidade do\n"
-"selo de controle:"
-msgstr ""
-
-#: ../data/glade/TaxIPISlave.ui.h:15
-msgid "Quantidade total:"
-msgstr ""
-
-#: ../data/glade/TaxIPISlave.ui.h:16
-msgid "Valor do IPI"
-msgstr ""
-
-#: ../data/glade/TaxIPISlave.ui.h:17
-msgid ""
-"Valor por unidade\n"
-"tribut&#xE1;vel:"
-msgstr ""
-
 #: ../data/glade/EmployeeStatusSlave.ui.h:1
 msgid "Employee Status:"
 msgstr ""
@@ -9430,92 +9395,8 @@ msgstr ""
 msgid "To:"
 msgstr ""
 
-#: ../data/glade/TaxICMSSlave.ui.h:2
-#, no-c-format
-msgid "% MVA ICMS ST:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:4
-#, no-c-format
-msgid "% Redu&#xE7;&#xE3;o BC ICMS"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:6
-#, no-c-format
-msgid "% Redu&#xE7;&#xE3;o BC ICMS ST:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:7
-msgid "<b>Simples Nacional</b>"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:8
-msgid "Al&#xED;quota ICMS SN:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:9
-msgid "Al&#xED;quota ICMS ST:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:10
-msgid "Al&#xED;quota ICMS:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:11
-msgid "Al&#xED;quota v&#xE1;lida at&#xE9;:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:12
-msgid "BC ICMS ST Retido:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:13
-msgid "BC ICMS ST:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:14
-msgid "BC ICMS:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:15
-msgid "CSOSN:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:17
-msgid "ICMS ST Retido:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:18
-msgid "ICMS ST:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:19 ../data/glade/BranchDialog.ui.h:8
-#: ../data/glade/ProductSupplierEditor.ui.h:8
-msgid "ICMS:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:20
-msgid "Incluir IPI na BC"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:21
-msgid "Incluir IPI na BC ST"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:22
-msgid "Modalidade BC ICMS ST:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:23
-msgid "Modalidade BC ICMS:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:24
+#: ../data/glade/TaxICMSSlave.ui.h:1
 msgid "Origin:"
-msgstr ""
-
-#: ../data/glade/TaxICMSSlave.ui.h:25
-msgid "Valor ICMS SN:"
 msgstr ""
 
 #: ../data/glade/CommissionDataSlave.ui.h:1
@@ -9577,7 +9458,7 @@ msgstr ""
 #: ../data/glade/production.ui.h:3 ../data/glade/receivable.ui.h:2
 #: ../data/glade/purchase.ui.h:4 ../data/glade/payable.ui.h:2
 #: ../data/glade/PurchaseSelectionStep.ui.h:1
-#: ../data/glade/SaleListToolbar.ui.h:2 ../data/glade/financial.ui.h:2
+#: ../data/glade/SaleListToolbar.ui.h:2
 msgid "_Details"
 msgstr ""
 
@@ -10040,6 +9921,11 @@ msgstr ""
 msgid "Fax:"
 msgstr ""
 
+#: ../data/glade/BranchDialog.ui.h:8
+#: ../data/glade/ProductSupplierEditor.ui.h:8
+msgid "ICMS:"
+msgstr ""
+
 #: ../data/glade/BranchDialog.ui.h:9
 msgid "ISS:"
 msgstr ""
@@ -10482,7 +10368,7 @@ msgstr ""
 msgid "P_ay order"
 msgstr ""
 
-#: ../data/glade/payable.ui.h:3
+#: ../data/glade/payable.ui.h:3 ../data/glade/financial.ui.h:2
 msgid "_Edit"
 msgstr ""
 
