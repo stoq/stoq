@@ -369,6 +369,18 @@ class ProductSupplierEditor(BaseEditor):
         if not value or value <= currency(0):
             return ValidationError("Value must be greater than zero.")
 
+    def on_base_cost__activate(self, button):
+        self.confirm()
+
+    def on_icms__activate(self, button):
+        self.confirm()
+
+    def on_lead_time__activate(self, button):
+        self.confirm()
+
+    def on_minimum_purchase__activate(self, button):
+        self.confirm()
+
     def on_lead_time__validate(self, entry, value):
         if value < 1:
             return ValidationError("Lead time must be greater or equal one day")
@@ -418,6 +430,7 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
         model = ProductSupplierInfo(product=product,
                                     supplier=supplier,
                                     connection=self.conn)
+        model.base_cost = product.sellable.cost
         return model
 
 
