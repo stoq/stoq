@@ -84,7 +84,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkLabel" id="label61">
-                                    <property name="label" translatable="yes">Ed_it...</property>
+                                    <property name="label" translatable="yes">Ed_it</property>
                                     <property name="use-underline">True</property>
                                     <property name="visible">True</property>
                                   </object>
