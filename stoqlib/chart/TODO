@@ -8,6 +8,8 @@ Reports:
   * Per weekday
 * Transfers
   * Per account/group
+* Stock
+  * Total value over time
 * Check with Async's budget to see what's needed
 * Ask some customers what the need
 
@@ -15,8 +17,9 @@ UI:
 * Finish ReportDialog
   * Mostly basic ui
   * Preview?
-* Write a proper chart viewer
+* Write a proper chart viewer widget
   * Refresh button?
+  * Copy URL menu popup + link
 * Figure out printing
 
 Stoq integration:
@@ -26,11 +29,11 @@ Stoq integration:
 * Use new template module for reports
 
 Misc:
-* Write a few more reports
 * Design chart arguments properly
 * Copy jquery/flot into stoq
 * move css to a file, to reduce html size
 * Consider AJAX for quering chart data
+* Chart overlays? Esp. interesting for specific time intervals
 
 Tests:
 * Reporting really needs to be tested properly
