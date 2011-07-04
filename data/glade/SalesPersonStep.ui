@@ -132,6 +132,7 @@
                 <child>
                   <object class="GtkImage" id="image1">
                     <property name="visible">True</property>
+                    <property name="tooltip_text" translatable="yes">Add a new client</property>
                     <property name="stock">gtk-add</property>
                     <property name="icon-size">1</property>
                   </object>
@@ -156,6 +157,7 @@
                 <child>
                   <object class="GtkImage" id="image2">
                     <property name="visible">True</property>
+                    <property name="tooltip_text" translatable="yes">Add a new transporter</property>
                     <property name="stock">gtk-add</property>
                     <property name="icon-size">1</property>
                   </object>
@@ -266,6 +268,7 @@
                 <child>
                   <object class="GtkImage" id="image3">
                     <property name="visible">True</property>
+                    <property name="tooltip_text" translatable="yes">Add a new C.F.O.P.</property>
                     <property name="stock">gtk-add</property>
                     <property name="icon-size">1</property>
                   </object>
