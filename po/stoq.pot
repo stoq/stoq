@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-04 11:11-0300\n"
+"POT-Creation-Date: 2011-07-04 11:35-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3620,6 +3620,7 @@ msgstr ""
 
 #: ../stoqlib/gui/fiscalprinter.py:461 ../stoqlib/gui/fiscalprinter.py:502
 #: ../stoqlib/gui/fiscalprinter.py:546 ../stoqlib/gui/fiscalprinter.py:572
+#: ../plugins/tef/vespague.py:381
 msgid "Erro na impressão. Deseja tentar novamente?"
 msgstr ""
 
@@ -3702,7 +3703,7 @@ msgstr ""
 msgid "Do you really want to cancel this sale ?"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/saleslave.py:342
+#: ../stoqlib/gui/slaves/saleslave.py:342 ../plugins/tef/tefui.py:102
 msgid "Cancel Sale"
 msgstr ""
 
@@ -7189,7 +7190,7 @@ msgstr ""
 
 #: ../stoqlib/lib/parameters.py:266 ../stoqlib/lib/parameters.py:273
 #: ../stoqlib/lib/parameters.py:280
-msgid "This a percentage value and must be between 0 and 100."
+msgid "This is a percentage value and must be between 0 and 100."
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:267
@@ -8349,6 +8350,148 @@ msgstr ""
 msgid "You need to have a State Registry set on Company %s"
 msgstr ""
 
+#: ../plugins/tef/vespague.py:244
+msgid ""
+"\n"
+"Tente novamente."
+msgstr ""
+
+#: ../plugins/tef/vespague.py:314
+#, python-format
+msgid ""
+"\n"
+"(Valor padrão: %s)"
+msgstr ""
+
+#: ../plugins/tef/vespague.py:382
+msgid "Tentar novamente"
+msgstr ""
+
+#: ../plugins/tef/vespague.py:383
+msgid "Cancelar"
+msgstr ""
+
+#: ../plugins/tef/vespague.py:473
+msgid ""
+"\n"
+"(I - Ilegível / N - Não possui)"
+msgstr ""
+
+#: ../plugins/tef/vespague.py:572
+#, python-format
+msgid ""
+"%s: %s\n"
+"%s: %s\n"
+"%s: %s\n"
+"\n"
+"Confirmar Cancelamento?"
+msgstr ""
+
+#: ../plugins/tef/vespague.py:574
+msgid "Cancelar Venda"
+msgstr ""
+
+#: ../plugins/tef/vespague.py:575
+msgid "Não Cancelar Venda"
+msgstr ""
+
+#: ../plugins/tef/vespague.py:685
+msgid "TEF Stoq"
+msgstr ""
+
+#: ../plugins/tef/vespague.py:710 ../plugins/tef/vespague.py:1102
+msgid ""
+"\n"
+"(Pressione ESC para cancelar)"
+msgstr ""
+
+#: ../plugins/tef/vespague.py:789
+msgid ""
+"(Pressione ENTER para confirmar)\n"
+"(Pressione ESC para cancelar)"
+msgstr ""
+
+#: ../plugins/tef/vespague.py:918
+#, python-format
+msgid "Limite de cartões alcançado: %d"
+msgstr ""
+
+#: ../plugins/tef/vespague.py:1028
+#, python-format
+msgid ""
+"The credit provider: %s was created. You should edit the provider "
+"information in the Admnistrative application."
+msgstr ""
+
+#: ../plugins/tef/vespague.py:1097
+msgid "Aguardando TEF ..."
+msgstr ""
+
+#: ../plugins/tef/vespague.py:1195
+msgid "Ultima transação TEF não foi completada com sucesso."
+msgstr ""
+
+#: ../plugins/tef/vespague.py:1197
+#, python-format
+msgid "Ultimas %s transações TEF não foram completadas com sucesso."
+msgstr ""
+
+#: ../plugins/tef/vespague.py:1200
+msgid "Favor, reter o cupom fiscal"
+msgstr ""
+
+#: ../plugins/tef/tefplugin.py:73
+msgid "Plugin ECF should be active to enable the TEF plugin."
+msgstr ""
+
+#: ../plugins/tef/tefclientdialog.py:39
+msgid "TEF Client"
+msgstr ""
+
+#: ../plugins/tef/tefclientdialog.py:69
+msgid "The TEF client must be a .jar file."
+msgstr ""
+
+#: ../plugins/tef/tefui.py:99 ../plugins/tef/tefui.py:124
+msgid "TEF"
+msgstr ""
+
+#: ../plugins/tef/tefui.py:100
+msgid "Reprint Sale"
+msgstr ""
+
+#: ../plugins/tef/tefui.py:104
+msgid "Pending Transactions"
+msgstr ""
+
+#: ../plugins/tef/tefui.py:125
+msgid "Configure TEF client ..."
+msgstr ""
+
+#: ../plugins/tef/tefui.py:142
+msgid "Check the TEF client settings, they failed to start."
+msgstr ""
+
+#: ../plugins/tef/tefui.py:167
+msgid "Esperando TEF iniciar"
+msgstr ""
+
+#: ../plugins/tef/tefui.py:182
+msgid "Card payment can not be done, check the TEF client settings."
+msgstr ""
+
+#: ../plugins/tef/tefui.py:193
+msgid "Cancel sale can not be done, check the TEF client settings."
+msgstr ""
+
+#: ../plugins/tef/tefui.py:203
+msgid "Reprint sale can not be done, check the TEF client settings."
+msgstr ""
+
+#: ../plugins/tef/tefui.py:213
+msgid "Peding Transactions can not be done, check the TEF client settings."
+msgstr ""
+
 #: ../plugins/books/booksui.py:72 ../plugins/books/booksui.py:88
 #: ../plugins/books/booksui.py:102
 msgid "Books"
@@ -8895,53 +9038,49 @@ msgid "EX TIPI:"
 msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:6
-msgid "G&#xEA;nero:"
-msgstr ""
-
-#: ../data/glade/ProductInformationSlave.ui.h:7
 #: ../data/glade/InvoiceLayoutEditor.ui.h:4
 msgid "Height:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:8
+#: ../data/glade/ProductInformationSlave.ui.h:7
 msgid "Kg"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:9
+#: ../data/glade/ProductInformationSlave.ui.h:8
 #: ../data/glade/ProductionItemEditor.ui.h:3
 msgid "Location:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:10
+#: ../data/glade/ProductInformationSlave.ui.h:9
 msgid "Manufacturer:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:11
+#: ../data/glade/ProductInformationSlave.ui.h:10
 msgid "Maximum:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:12
+#: ../data/glade/ProductInformationSlave.ui.h:11
 #: ../data/glade/AbstractItemStep.ui.h:4
 msgid "Minimum:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:13
+#: ../data/glade/ProductInformationSlave.ui.h:12
 msgid "NCM:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:14
+#: ../data/glade/ProductInformationSlave.ui.h:13
 msgid "Part-Number:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:15
+#: ../data/glade/ProductInformationSlave.ui.h:14
 msgid "Un"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:16
+#: ../data/glade/ProductInformationSlave.ui.h:15
 msgid "Weight:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:17
+#: ../data/glade/ProductInformationSlave.ui.h:16
 #: ../data/glade/InvoiceLayoutEditor.ui.h:8
 msgid "Width:"
 msgstr ""
@@ -10024,7 +10163,7 @@ msgid "Cost ($CURRENCY):"
 msgstr ""
 
 #: ../data/glade/SellableEditor.ui.h:9
-msgid "Default Sale C.F.O.P.:"
+msgid "Default Sales C.F.O.P.:"
 msgstr ""
 
 #: ../data/glade/SellableEditor.ui.h:14
