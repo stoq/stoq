@@ -37,6 +37,7 @@ from kiwi.utils import gsignal
 from stoqlib.exceptions import StoqlibError
 from stoqlib.database.runtime import get_connection
 from stoqlib.lib.interfaces import IAppInfo
+from stoqlib.lib.parameters import is_developer_mode
 from stoqlib.lib.uptime import get_uptime
 from stoqlib.lib.webservice import WebService
 
@@ -120,6 +121,9 @@ def collect_traceback(tb, output=True, submit=False):
     @output: if it is to be printed
     @submit: if it is to be submitted immediately
     """
+    if is_developer_mode():
+        return
+
     _tracebacks.append(tb)
 
     if output:
