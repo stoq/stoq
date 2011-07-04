@@ -519,6 +519,7 @@ class ProductEditor(SellableEditor):
         self.consignment_yes_button.set_active(self.model.consignment)
         self.consignment_yes_button.set_sensitive(self._model_created)
         self.consignment_no_button.set_sensitive(self._model_created)
+        self.description.grab_focus()
 
     def create_model(self, conn):
         self._model_created = True
