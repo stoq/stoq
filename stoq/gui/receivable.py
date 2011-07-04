@@ -130,7 +130,7 @@ class ReceivableApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Payable
-            ('Menu', None, 'Accounts _Receivable'),
+            ('Menu', None, _('Accounts _Receivable')),
             ('AddReceiving', gtk.STOCK_ADD, _('Add receiving...'), '<Control>p'),
             ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel Payment ...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
