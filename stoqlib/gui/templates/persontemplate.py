@@ -52,6 +52,11 @@ class _PersonEditorTemplate(BaseEditorSlave):
                      'mobile_number',
                      'email')
 
+    def __init__(self, conn, model, visual_mode, parent):
+        self._parent = parent
+        super(self.__class__, self).__init__(conn, model,
+                                             visual_mode=visual_mode)
+
     #
     # BaseEditorSlave hooks
     #
@@ -118,7 +123,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
             warning(msg)
             return
 
-        result = run_dialog(AddressAdditionDialog, self, self.conn,
+        result = run_dialog(AddressAdditionDialog, self._parent, self.conn,
                             person=self.model)
         if not result:
             return
@@ -128,7 +133,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
             self.address_slave.set_model(new_main_address)
 
     def on_contacts_button__clicked(self, button):
-        run_dialog(LiaisonListDialog, self, self.conn,
+        run_dialog(LiaisonListDialog, self._parent, self.conn,
                    person=self.model)
 
     #
@@ -226,8 +231,10 @@ class BasePersonRoleEditor(BaseEditor):
         company = ICompany(self.model.person, None)
         assert individual or company
 
-        self._person_slave = _PersonEditorTemplate(
-            self.conn, self.model.person, visual_mode=self.visual_mode)
+        self._person_slave = _PersonEditorTemplate(self.conn,
+                                                   self.model.person,
+                                                   visual_mode=self.visual_mode,
+                                                   parent=self)
 
         if individual:
             slave = IndividualEditorTemplate(self.conn,
