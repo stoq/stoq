@@ -273,12 +273,14 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         clients = clients[:max_results]
         items = [(c.name, c.client) for c in clients]
         self.client.prefill(sorted(items))
+        self.client.set_sensitive(len(items))
 
     def _fill_transporter_combo(self):
         table = Person.getAdapterClass(ITransporter)
         transporters = table.get_active_transporters(self.conn)
         items = [(t.person.name, t) for t in transporters]
         self.transporter.prefill(items)
+        self.transporter.set_sensitive(len(items))
 
     def _fill_cfop_combo(self):
         cfops = [(cfop.get_description(), cfop)
