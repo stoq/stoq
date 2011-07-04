@@ -380,7 +380,7 @@ class CreateDatabaseStep(BaseWizardStep):
             # 0.4 - 0.7 patches
             patch = float(line.split(':', 1)[1])
             value = 0.4 + (patch / self.n_patches) * 0.3
-            text = _("Creating schema, applying patch %d ..." % (patch+1, ))
+            text = _("Creating schema, applying patch %d ...") % (patch+1, )
         elif line == 'INIT START':
             text = _("Creating additional database objects ...")
             value = 0.8
