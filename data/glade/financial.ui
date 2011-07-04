@@ -46,23 +46,24 @@
                         <property name="can_focus">False</property>
                         <property name="spacing">5</property>
                         <child>
-                          <object class="GtkButton" id="details_button">
+                          <object class="GtkButton" id="edit_button">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_action_appearance">False</property>
                             <child>
-                              <object class="GtkAlignment" id="alignment6">
+                              <object class="GtkAlignment" id="alignment1">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
-                                  <object class="GtkVBox" id="vbox1">
+                                  <object class="GtkVBox" id="vbox2">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <child>
-                                      <object class="GtkImage" id="image1">
+                                      <object class="GtkImage" id="image2">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
+                                        <property name="stock">stoq-edit</property>
                                       </object>
                                       <packing>
                                         <property name="expand">True</property>
@@ -71,10 +72,10 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="label4">
+                                      <object class="GtkLabel" id="label1">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">_Details</property>
+                                        <property name="label" translatable="yes">_Edit</property>
                                         <property name="use_underline">True</property>
                                       </object>
                                       <packing>

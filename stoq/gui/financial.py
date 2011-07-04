@@ -240,7 +240,6 @@ class FinancialApp(AppWindow):
             </menu>
           </menubar>
           <toolbar action="toolbar">
-            <toolitem action="CloseTab"/>
             <toolitem action="AddAccount"/>
             <toolitem action="DeleteAccount"/>
             <separator/>
@@ -260,8 +259,6 @@ class FinancialApp(AppWindow):
 
             # Toolbar
             ('toolbar', None, ''),
-            ('CloseTab', gtk.STOCK_CLOSE, _('Close'), '<control>w',
-             _('Close the current tab')),
             ('EditAccount', gtk.STOCK_EDIT, _('Edit Account'),
              '<control>e', _('Change the currently selected account')),
             ('AddAccount', gtk.STOCK_ADD, _('Create New Account'),
@@ -290,14 +287,13 @@ class FinancialApp(AppWindow):
         self.main_vbox.reorder_child(toolbar, 1)
 
     def _update_actions(self):
-        self.CloseTab.set_sensitive(self._can_close_tab())
         self.AddAccount.set_sensitive(self._can_add_account())
         self.EditAccount.set_sensitive(self._can_edit_account())
         self.DeleteAccount.set_sensitive(self._can_delete_account())
         self.AddTransaction.set_sensitive(self._can_add_transaction())
         self.DeleteTransaction.set_sensitive(self._can_delete_transaction())
 
-        self.details_button.set_sensitive(self._can_show_details())
+        self.edit_button.set_sensitive(self._can_edit_account())
 
     def _create_initial_page(self):
         pixbuf = self.accounts.render_icon('stoq-money', gtk.ICON_SIZE_MENU)
@@ -466,7 +462,7 @@ class FinancialApp(AppWindow):
 
         self.accounts.refresh_accounts(self.conn)
 
-    def _can_show_details(self):
+    def _can_edit_account():
         if not self._is_accounts_tab():
             return False
 
@@ -589,7 +585,7 @@ class FinancialApp(AppWindow):
     def on_accounts__selection_changed(self, ktree, account_view):
         self._update_actions()
 
-    def on_details_button__clicked(self, button):
+    def on_edit_button__clicked(self, button):
         account_view = self.accounts.get_selected()
         self._edit_existing_account(account_view)
 
