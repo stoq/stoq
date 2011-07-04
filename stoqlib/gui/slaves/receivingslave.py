@@ -110,6 +110,17 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         cfop_items = [(item.get_description(), item)
                       for item in CfopData.select(connection=self.conn)]
         self.cfop.prefill(cfop_items)
+        self.table.set_focus_chain([self.invoice_hbox,
+                                    self.cfop,
+                                    self.transporter,
+                                    self.freight_combo,
+                                    self.notes_box,
+                                    self.freight,
+                                    self.ipi,
+                                    self.icms_total,
+                                    self.discount_value,
+                                    self.secure_value,
+                                    self.expense_value])
 
     def create_freight_payment(self):
         """Tells if we should create a separate payment for freight or not
@@ -150,6 +161,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             self.transporter.update(purchase.transporter)
 
         self.proxy.update('total')
+
 
     #
     # Callbacks
