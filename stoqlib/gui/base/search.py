@@ -40,6 +40,7 @@ from stoqlib.database.runtime import (get_connection, new_transaction,
                                       finish_transaction, get_current_user)
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
+from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.cachestore import CacheStore
@@ -287,13 +288,16 @@ class SearchDialog(BasicDialog):
         @param stock: the gtk stock id to be used in the button.
         @param image: the image filename.
         """
-        button = gtk.Button(label=label, stock=stock)
+        button = gtk.Button()
         if image:
+            button.set_label(label)
             image_widget = gtk.Image()
             image_widget.set_from_file(
                 environ.find_resource('pixmaps', image))
             image_widget.show()
             button.set_image(image_widget)
+        else:
+            button_set_image_with_label(button, stock, label)
         self.action_area.set_layout(gtk.BUTTONBOX_START)
         self.action_area.pack_start(button, False, False, 6)
         return button

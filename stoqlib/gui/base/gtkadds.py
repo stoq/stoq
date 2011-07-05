@@ -143,7 +143,8 @@ def button_set_image_with_label(button, stock_id, text):
     """
 
     # Base on code in gazpacho by Lorenzo Gil Sanchez.
-    button.remove(button.child)
+    if button.child:
+        button.remove(button.child)
 
     align = gtk.Alignment(0.5, 0.5, 1.0, 1.0)
     box = gtk.VBox()
