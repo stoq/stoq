@@ -91,7 +91,7 @@ class _BaseBillCheckSearch(SearchDialog):
                 SearchColumn('value', title=_('Value'), data_type=currency)]
 
     def _print_report(self):
-        print_report(BillCheckPaymentReport, self.results,
+        print_report(BillCheckPaymentReport, self.results, list(self.results),
                      filters=self.search.get_search_filters())
 
     #
@@ -171,7 +171,7 @@ class CardPaymentSearch(SearchDialog):
                                                     connection=conn)
 
     def _print_report(self):
-        print_report(CardPaymentReport, self.results,
+        print_report(CardPaymentReport, self.results, list(self.results),
                      filters=self.search.get_search_filters())
 
     def on_selection_changed(self, results, selected):

@@ -41,9 +41,9 @@ class ServiceReport(ObjectListReport):
     filter_format_string = _("on branch <u>%s</u>")
     main_object_name = _("services")
 
-    def __init__(self, filename, services, *args, **kwargs):
+    def __init__(self, filename, objectlist, services, *args, **kwargs):
         self._services = services
-        ObjectListReport.__init__(self, filename, services,
+        ObjectListReport.__init__(self, filename, objectlist, services,
                                   ServiceReport.report_name,
                                   landscape=True,
                                   *args, **kwargs)

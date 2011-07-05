@@ -159,7 +159,7 @@ class ProductionItemsSearch(SearchDialog):
         self._run_editor(ProductionItemLostEditor)
 
     def _on_print_button__clicked(self, widget):
-        print_report(ProductionItemReport, self.results,
+        print_report(ProductionItemReport, self.results, list(self.results),
                      filters=self.search.get_search_filters(),)
 
 
@@ -168,5 +168,5 @@ class ProductionHistorySearch(ProductSearchQuantity):
     show_production_columns = True
 
     def _on_print_button__clicked(self, widget):
-        print_report(ProductionItemReport, self.results,
+        print_report(ProductionItemReport, self.results, list(self.results),
                      filters=self.search.get_search_filters(),)

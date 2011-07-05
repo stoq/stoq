@@ -107,7 +107,7 @@ class ProductSearch(SearchEditor):
         self.results.connect('has-rows', self._has_rows)
 
     def on_print_button_clicked(self, button):
-        print_report(ProductReport, self.results,
+        print_report(ProductReport, self.results, list(self.results),
                      filters=self.search.get_search_filters(),
                      branch_name=self.branch_filter.combo.get_active_text())
 
@@ -225,7 +225,7 @@ class ProductSearchQuantity(SearchDialog):
     show_production_columns = False
 
     def on_print_button_clicked(self, button):
-        print_report(ProductQuantityReport, self.results,
+        print_report(ProductQuantityReport, self.results, list(self.results),
                      filters=self.search.get_search_filters())
 
     #
@@ -289,7 +289,7 @@ class ProductsSoldSearch(SearchDialog):
     advanced_search = False
 
     def on_print_button_clicked(self, button):
-        print_report(ProductsSoldReport, self.results,
+        print_report(ProductsSoldReport, self.results, list(self.results),
                      filters=self.search.get_search_filters())
 
     #
@@ -377,7 +377,7 @@ class ProductStockSearch(SearchEditor):
         self.branch_filter = branch_filter
 
     def on_print_button_clicked(self, widget):
-        print_report(ProductStockReport, self.results,
+        print_report(ProductStockReport, self.results, list(self.results),
                      filters=self.search.get_search_filters())
 
     #

@@ -450,7 +450,8 @@ class ReceivableApp(SearchableAppWindow):
         self._receive(self.results.get_selected_rows())
 
     def on_print_button__clicked(self, button):
-        self.print_report(ReceivablePaymentReport, self.results)
+        self.print_report(ReceivablePaymentReport, self.results,
+                          list(self.results))
 
     def on_Comments__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]

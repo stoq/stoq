@@ -322,8 +322,8 @@ class PurchaseApp(SearchableAppWindow):
         self.refresh()
 
     def _print_selected_items(self):
-        items = self.results.get_selected_rows() or self.results
-        self.print_report(PurchaseReport, items,
+        items = self.results.get_selected_rows() or list(self.results)
+        self.print_report(PurchaseReport, self.results, items,
                           self.status_filter.get_state().value)
 
     def _cancel_order(self):

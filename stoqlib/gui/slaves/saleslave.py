@@ -233,7 +233,8 @@ class SaleListToolbar(GladeSlaveDelegate):
         self._show_details(self.sales.get_selected())
 
     def on_print_button__clicked(self, button):
-        print_report(SalesReport, self.sales, filters=self._report_filters)
+        print_report(SalesReport, self.sales, list(self.sales),
+                     filters=self._report_filters)
 
 
 class SaleReturnSlave(BaseEditorSlave):

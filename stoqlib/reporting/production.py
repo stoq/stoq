@@ -46,9 +46,10 @@ class ProductionItemReport(ObjectListReport):
     report_name = _("Production Item Listing")
     filter_format_string = _("on branch <u>%s</u>")
 
-    def __init__(self, filename, production_items, *args, **kwargs):
+    def __init__(self, filename, objectlist, production_items,
+                 *args, **kwargs):
         self._production_items = production_items
-        ObjectListReport.__init__(self, filename, production_items,
+        ObjectListReport.__init__(self, filename, objectlist, production_items,
                                   ProductionItemReport.report_name,
                                   landscape=True, *args, **kwargs)
         self._setup_items_table()
@@ -72,8 +73,9 @@ class ProductionReport(ObjectListReport):
     main_object_name = _(u'orders')
     filter_format_string = _(u'with status <u>%s</u>')
 
-    def __init__(self, filename, productions, status, *args, **kwargs):
-        ObjectListReport.__init__(self, filename, productions,
+    def __init__(self, filename, objectlist, productions, status,
+                 *args, **kwargs):
+        ObjectListReport.__init__(self, filename, objectlist, productions,
                                   ProductionReport.report_name, landscape=True,
                                   *args, **kwargs)
         self.add_object_table(productions, self.get_columns())

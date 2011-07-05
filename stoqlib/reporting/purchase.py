@@ -51,10 +51,11 @@ class PurchaseReport(ObjectListReport):
     # bug 2517
     obj_type = PurchaseOrderView
 
-    def __init__(self, filename, purchases, status, *args, **kwargs):
+    def __init__(self, filename, objectlist, purchases, status,
+                 *args, **kwargs):
         self.show_status_column = status == ALL_ITEMS_INDEX
         self._purchases = purchases
-        ObjectListReport.__init__(self, filename, purchases,
+        ObjectListReport.__init__(self, filename, objectlist, purchases,
                                   PurchaseReport.report_name,
                                   landscape=1, *args, **kwargs)
         self._setup_table()
@@ -83,10 +84,11 @@ class PurchasedItemsReport(ObjectListReport):
     main_object_name = _("purchased items")
     obj_type = PurchaseItemView
 
-    def __init__(self, filename, purchases, *args, **kwargs):
+    def __init__(self, filename, objectlist, purchases, *args, **kwargs):
         self._purchases = purchases
-        ObjectListReport.__init__(self, filename, purchases, self.report_name,
-                                  landscape=True, *args, **kwargs)
+        ObjectListReport.__init__(self, filename, objectlist, purchases,
+                                  self.report_name, landscape=True,
+                                  *args, **kwargs)
         self._setup_table()
 
     def _setup_table(self):

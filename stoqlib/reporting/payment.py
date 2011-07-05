@@ -37,9 +37,9 @@ class _BasePaymentReport(ObjectListReport):
     report_name = _("Payment Report")
     main_object_name = "payments"
 
-    def __init__(self, filename, payments, *args, **kwargs):
+    def __init__(self, filename, objectlist, payments, *args, **kwargs):
         self._payments = payments
-        ObjectListReport.__init__(self, filename, payments,
+        ObjectListReport.__init__(self, filename, objectlist, payments,
                                   _BasePaymentReport.report_name,
                                   landscape=True, *args, **kwargs)
         self._setup_table()

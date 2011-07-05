@@ -200,7 +200,7 @@ class SoldItemsByBranchSearch(SearchDialog):
                                                 connection=conn)
 
     def _print_report(self):
-        print_report(SoldItemsByBranchReport, self.results,
+        print_report(SoldItemsByBranchReport, self.results, list(self.results),
                      filters=self.search.get_search_filters())
 
     #

@@ -47,11 +47,11 @@ class ProductReport(ObjectListReport):
     report_name = _("Product Listing")
     filter_format_string = _("on branch <u>%s</u>")
 
-    def __init__(self, filename, products, *args, **kwargs):
+    def __init__(self, filename, objectlist, products, *args, **kwargs):
         self._products = products
         ProductReport.main_object_name = _("products from branch %s") % \
             (kwargs['branch_name'],)
-        ObjectListReport.__init__(self, filename, products,
+        ObjectListReport.__init__(self, filename, objectlist, products,
                                   ProductReport.report_name,
                                   landscape=True,
                                   *args, **kwargs)
@@ -75,21 +75,20 @@ class SimpleProductReport(ObjectListReport):
     report_name = _("Product Listing")
     filter_format_string = _("on branch <u>%s</u>")
 
-    def __init__(self, filename, products, *args, **kwargs):
+    def __init__(self, filename, objectlist, products, *args, **kwargs):
         self._products = products
         SimpleProductReport.main_object_name = _("products from branch %s") % \
             (kwargs['branch_name'],)
-        ObjectListReport.__init__(self, filename, products,
+        ObjectListReport.__init__(self, filename, objectlist, products,
                                   ProductReport.report_name,
                                   landscape=True,
                                   *args, **kwargs)
         self._setup_items_table()
 
     def _setup_items_table(self):
-        products = self._products.get_selected_rows() or self._products
-        total = sum([p.stock for p in products], Decimal(0))
+        total = sum([p.stock for p in self._products], Decimal(0))
         self.add_summary_by_column(_(u'Quantity'), format_quantity(total))
-        self.add_object_table(products, self.get_columns(),
+        self.add_object_table(self._products, self.get_columns(),
                               summary_row=self.get_summary_row())
 
 
@@ -117,9 +116,9 @@ class ProductQuantityReport(ObjectListReport):
     report_name = _("Product Listing")
     main_object_name = _("products")
 
-    def __init__(self, filename, products, *args, **kwargs):
+    def __init__(self, filename, objectlist, products, *args, **kwargs):
         self._products = products
-        ObjectListReport.__init__(self, filename, products,
+        ObjectListReport.__init__(self, filename, objectlist, products,
                                   ProductReport.report_name,
                                   landscape=True,
                                   *args, **kwargs)
@@ -155,9 +154,9 @@ class ProductsSoldReport(ObjectListReport):
     report_name = _("Products Sold Listing")
     main_object_name = _("products sold")
 
-    def __init__(self, filename, products, *args, **kwargs):
+    def __init__(self, filename, objectlist, products, *args, **kwargs):
         self._products = products
-        ObjectListReport.__init__(self, filename, products,
+        ObjectListReport.__init__(self, filename, objectlist, products,
                                   self.report_name,
                                   landscape=True,
                                   *args, **kwargs)
@@ -212,9 +211,9 @@ class ProductStockReport(ObjectListReport):
     main_object_name = _("products")
     obj_type = ProductFullStockItemView
 
-    def __init__(self, filename, stock_products, *args, **kwargs):
+    def __init__(self, filename, objectlist, stock_products, *args, **kwargs):
         self._stock_products = stock_products
-        ObjectListReport.__init__(self, filename, stock_products,
+        ObjectListReport.__init__(self, filename, objectlist, stock_products,
                                   ProductStockReport.report_name,
                                   landscape=1, *args, **kwargs)
         self._setup_table()

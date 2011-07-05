@@ -221,8 +221,13 @@ class SearchResultsReport(BaseStoqReport):
 
 
 class ObjectListReport(SearchResultsReport):
-    def __init__(self, filename, data, report_name, *args, **kwargs):
+    def __init__(self, filename, objectlist, data, report_name,
+                 *args, **kwargs):
         self._columns = []
+        if not isinstance(objectlist, ObjectList):
+            raise TypeError("objectlist must be a ObjectList, not a %r" % (
+                objectlist, ))
+        self.objectlist = objectlist
         self._summary_row = {}
         SearchResultsReport.__init__(self, filename, data, report_name,
                                      *args, **kwargs)
@@ -254,10 +259,9 @@ class ObjectListReport(SearchResultsReport):
                    truncate=truncate, width=width, expand=column.expand)
 
     def _setup_columns_from_list(self):
-        assert isinstance(self._data, ObjectList)
 
         report_columns = []
-        for column in self._data.get_columns():
+        for column in self.objectlist.get_columns():
             if not column.treeview_column.get_visible():
                 continue
             # Not supported columns.
