@@ -408,6 +408,8 @@ class PosApp(AppWindow):
         self.quantity.set_sensitive(not closed and not blocked)
         self.sale_items.set_sensitive(not closed and not blocked)
         self.advanced_search.set_sensitive(not closed and not blocked)
+        if not closed and not blocked:
+            self.barcode.grab_focus()
 
     def set_open_inventory(self):
         self.TillOpen.set_sensitive(False)
