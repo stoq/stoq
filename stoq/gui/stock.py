@@ -212,6 +212,7 @@ class StockApp(SearchableAppWindow):
 
     def activate(self):
         self.check_open_inventory()
+        self._update_widgets()
 
     #
     # Private API
