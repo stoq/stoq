@@ -292,7 +292,7 @@ class PosApp(AppWindow):
                 proxy.hide()
         if self.param.CONFIRM_SALES_ON_TILL:
             button_set_image_with_label(self.checkout_button,
-                                        'stoq-confirm', _('Close'))
+                                        'gtk-apply', _('Close'))
 
         logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
         logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
