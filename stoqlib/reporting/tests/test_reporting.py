@@ -149,7 +149,7 @@ class TestReport(DomainTest):
         for column in search.results.get_columns():
             column.width = 90
 
-        self.checkPDF(BillCheckPaymentReport, search.results,
+        self.checkPDF(BillCheckPaymentReport, search.results, list(search.results),
                       date=datetime.date(2007, 1, 1))
 
     def testReceivableBillCheckPaymentReport(self):
@@ -165,7 +165,7 @@ class TestReport(DomainTest):
         for column in search.results.get_columns():
             column.width = 90
 
-        self.checkPDF(BillCheckPaymentReport, search.results,
+        self.checkPDF(BillCheckPaymentReport, search.results, list(search.results),
                       date=datetime.date(2007, 1, 1))
 
     def testTransferOrderReceipt(self):
@@ -187,7 +187,7 @@ class TestReport(DomainTest):
                                        .orderBy('id')
         search.results.add_list(products, clear=True)
         branch_name = self.create_branch('Any').person.name
-        self.checkPDF(ProductReport, search.results,
+        self.checkPDF(ProductReport, search.results, list(search.results),
                       branch_name=branch_name,
                       date=datetime.date(2007, 1, 1))
 
@@ -235,7 +235,7 @@ class TestReport(DomainTest):
             item.date = datetime.date(2007, 1, 1)
             dialog.results.append(item)
 
-        self.checkPDF(TillHistoryReport, till_entries=dialog.results,
+        self.checkPDF(TillHistoryReport, dialog.results, list(dialog.results),
                       date=datetime.date(2007, 1, 1))
 
     def testSalesPersonReport(self):
