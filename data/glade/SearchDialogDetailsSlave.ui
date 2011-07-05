@@ -32,7 +32,7 @@
                             <property name="visible">True</property>
                             <child>
                               <object class="GtkImage" id="image1">
-                                <property name="stock">stoq-find</property>
+                                <property name="stock">gtk-find</property>
                                 <property name="visible">True</property>
                               </object>
                             </child>

@@ -121,7 +121,7 @@
                                   <object class="GtkImage" id="image11">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="stock">stoq-remove</property>
+                                    <property name="stock">gtk-remove</property>
                                   </object>
                                   <packing>
                                     <property name="expand">True</property>
@@ -171,7 +171,7 @@
                                   <object class="GtkImage" id="image4">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="stock">stoq-edit</property>
+                                    <property name="stock">gtk-edit</property>
                                   </object>
                                   <packing>
                                     <property name="expand">True</property>
@@ -221,7 +221,7 @@
                                   <object class="GtkImage" id="image21">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="stock">stoq-find</property>
+                                    <property name="stock">gtk-find</property>
                                   </object>
                                   <packing>
                                     <property name="expand">True</property>
