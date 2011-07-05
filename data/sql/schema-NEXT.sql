@@ -898,7 +898,7 @@ CREATE TABLE payment (
     value numeric(10, 2) CONSTRAINT positive_value
         CHECK (value >= 0),
     interest numeric(10, 2) CONSTRAINT interest_percent
-        CHECK (interest >= 0 AND interest <= 100),
+        CHECK (interest >= 0),
     discount numeric(10, 2) CONSTRAINT positive_discount
         CHECK (discount >= 0),
     description text,
