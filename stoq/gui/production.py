@@ -206,7 +206,7 @@ class ProductionApp(SearchableAppWindow):
 
     def on_print_button__clicked(self, widget):
         items = self.results
-        self.print_report(ProductionReport, items,
+        self.print_report(ProductionReport, items, list(items),
                           self.status_filter.get_state().value)
 
     def on_results__selection_changed(self, results, selected):

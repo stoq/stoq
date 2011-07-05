@@ -37,9 +37,9 @@ class TillHistoryReport(ObjectListReport):
     report_name = _("Till History Listing")
     main_object_name = _("till history")
 
-    def __init__(self, filename, till_entries, *args, **kwargs):
+    def __init__(self, filename, objectlist, till_entries, *args, **kwargs):
         self._till_entries = till_entries
-        ObjectListReport.__init__(self, filename, till_entries,
+        ObjectListReport.__init__(self, filename, objectlist, till_entries,
                                   TillHistoryReport.report_name,
                                   *args, **kwargs)
         self._setup_items_table()

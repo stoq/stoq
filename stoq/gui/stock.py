@@ -299,7 +299,8 @@ class StockApp(SearchableAppWindow):
 
     def on_print_button__clicked(self, button):
         branch_name = self.branch_filter.combo.get_active_text()
-        self.print_report(SimpleProductReport, self.results,
+        products = self.results.get_selected_rows() or list(self.results)
+        self.print_report(SimpleProductReport, self.results, products,
                           branch_name=branch_name)
 
     def on_history_button__clicked(self, button):

@@ -169,9 +169,9 @@ class SalesReport(ObjectListReport):
     main_object_name = _("sales")
     filter_format_string = _("with status <u>%s</u>")
 
-    def __init__(self, filename, sale_list, *args, **kwargs):
+    def __init__(self, filename, objectlist, sale_list, *args, **kwargs):
         self.sale_list = sale_list
-        ObjectListReport.__init__(self, filename, sale_list,
+        ObjectListReport.__init__(self, filename, objectlist, sale_list,
                                   SalesReport.report_name,
                                   landscape=True,
                                   *args, **kwargs)
@@ -192,9 +192,9 @@ class SoldItemsByBranchReport(ObjectListReport):
     obj_type = SoldItemsByBranchView
     report_name = _("Sold Items by Branch Report")
 
-    def __init__(self, filename, items, *args, **kwargs):
+    def __init__(self, filename, objectlist, items, *args, **kwargs):
         self._items = items
-        ObjectListReport.__init__(self, filename, items,
+        ObjectListReport.__init__(self, filename, objectlist, items,
                                   SoldItemsByBranchReport.report_name,
                                   landscape=True,
                                   *args, **kwargs)

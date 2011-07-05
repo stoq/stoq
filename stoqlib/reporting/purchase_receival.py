@@ -34,9 +34,9 @@ class PurchaseReceivalReport(ObjectListReport):
     report_name = _("Purchase Receival Report")
     main_object_name = _("purchase receivals")
 
-    def __init__(self, filename, receivings, *args, **kwargs):
+    def __init__(self, filename, objectlist, receivings, *args, **kwargs):
         self._receivings = receivings
-        ObjectListReport.__init__(self, filename, receivings,
+        ObjectListReport.__init__(self, filename, objectlist, receivings,
                                   PurchaseReceivalReport.report_name,
                                   landscape=True, *args, **kwargs)
         self._setup_table()

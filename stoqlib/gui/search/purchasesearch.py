@@ -55,7 +55,7 @@ class PurchasedItemsSearch(SearchEditor):
         return [Any, Today, ThisWeek, NextWeek, ThisMonth, NextMonth]
 
     def on_print_button_clicked(self, button):
-        print_report(PurchasedItemsReport, self.results,
+        print_report(PurchasedItemsReport, self.results, list(self.results),
                      filters = self.search.get_search_filters())
 
     #
