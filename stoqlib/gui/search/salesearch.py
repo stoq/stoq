@@ -53,7 +53,7 @@ _ = stoqlib_gettext
 
 class SaleSearch(SearchDialog):
     title = _("Search for Sales")
-    size = (750, 450)
+    size = (-1, 450)
     search_table = SaleView
     searching_by_date = True
 
