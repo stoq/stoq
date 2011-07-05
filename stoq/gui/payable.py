@@ -139,7 +139,7 @@ class PayableApp(SearchableAppWindow):
     def create_filters(self):
         self.set_text_field_columns(['description', 'supplier_name'])
         self.add_filter(
-            ComboSearchFilter(_('Show payments with status'),
+            ComboSearchFilter(_('Show payments'),
                               self._get_status_values()),
             SearchFilterPosition.TOP, ['status'])
 
@@ -156,17 +156,18 @@ class PayableApp(SearchableAppWindow):
                         visible=False),
                 SearchColumn('description', title=_('Description'),
                               data_type=str, ellipsize=pango.ELLIPSIZE_END,
-                              expand=True, column='color'),
+                              width=200, column='color'),
                 SearchColumn('supplier_name', title=_('Supplier'),
-                             data_type=str, expand=True,
+                             data_type=str, width=110,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('due_date', title=_('Due Date'),
-                             data_type=datetime.date, width=90),
+                             data_type=datetime.date, width=120),
                 SearchColumn('paid_date', title=_('Paid Date'),
-                             data_type=datetime.date, width=90),
-                SearchColumn('status_str', title=_('Status'), width=80,
-                              data_type=str, search_attribute='status',
-                              valid_values=self._get_status_values()),
+                             data_type=datetime.date, width=120),
+                SearchColumn('status_str', title=_('Status'), width=100,
+                             data_type=str, search_attribute='status',
+                             valid_values=self._get_status_values(),
+                             visible=False),
                 SearchColumn('value', title=_('Value'), data_type=currency,
                              width=80),
                 SearchColumn('paid_value', title=_('Paid'), data_type=currency,

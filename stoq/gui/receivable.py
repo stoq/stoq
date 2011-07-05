@@ -192,7 +192,7 @@ class ReceivableApp(SearchableAppWindow):
     def create_filters(self):
         self.set_text_field_columns(['description', 'drawee'])
         self.add_filter(
-            ComboSearchFilter(_('Show payments with status'),
+            ComboSearchFilter(_('Show payments'),
                               self._get_status_values()),
             SearchFilterPosition.TOP, ['status'])
 
@@ -205,17 +205,18 @@ class ReceivableApp(SearchableAppWindow):
                 Column('payment.comments_number', title=_(u'Comments'),
                         visible=False),
                 SearchColumn('description', title=_('Description'),
-                              data_type=str, expand=True,
-                              ellipsize=pango.ELLIPSIZE_END, column='color'),
+                              data_type=str, ellipsize=pango.ELLIPSIZE_END, column='color',
+                             width=200),
                 SearchColumn('drawee', title=_('Drawee'), data_type=str,
-                             expand=True, ellipsize=pango.ELLIPSIZE_END),
+                             ellipsize=pango.ELLIPSIZE_END, width=110),
                 SearchColumn('due_date', title=_('Due Date'),
-                             data_type=datetime.date, width=90),
+                             data_type=datetime.date, width=120),
                 SearchColumn('paid_date', title=_('Paid Date'),
-                             data_type=datetime.date, width=90),
-                SearchColumn('status_str', title=_('Status'), width=80,
+                             data_type=datetime.date, width=120),
+                SearchColumn('status_str', title=_('Status'), width=100,
                              data_type=str, search_attribute='status',
-                             valid_values=self._get_status_values()),
+                             valid_values=self._get_status_values(),
+                             visible=False),
                 SearchColumn('value', title=_('Value'), data_type=currency,
                              width=80),
                 SearchColumn('paid_value', title=_('Paid'),

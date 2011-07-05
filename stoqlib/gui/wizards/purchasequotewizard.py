@@ -358,7 +358,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
                 Column('group_id', title=_('Group'), data_type=int,
                         format="%04d"),
                 Column('supplier_name', title=_('Supplier'), data_type=str,
-                        expand=True),
+                        width=300),
                 Column('open_date', title=_('Open Date'),
                         data_type=datetime.date),
                 Column('deadline', title=_('Deadline'),

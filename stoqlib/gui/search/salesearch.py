@@ -71,7 +71,7 @@ class SaleSearch(SearchDialog):
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('Number'), width=80,
+        return [SearchColumn('id', title=_('Number'), width=120,
                              data_type=int, sorted=True, order=gtk.SORT_DESCENDING),
                 SearchColumn('open_date', title=_('Date Started'), width=90,
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
@@ -79,9 +79,9 @@ class SaleSearch(SearchDialog):
                              data_type=str, width=200,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('salesperson_name', title=_('Salesperson'),
-                             data_type=str, width=200, expand=True),
+                             data_type=str, width=180),
                 SearchColumn('total_quantity', title=_('Items'),
-                             data_type=Decimal, width=60,
+                             data_type=Decimal, width=100,
                              format_func=format_quantity),
                 SearchColumn('total', title=_('Total'), data_type=currency,
                              width=90)]
@@ -147,7 +147,7 @@ class SoldItemsByBranchSearch(SearchDialog):
     title = _(u'Sold Items by Branch')
     search_table = SoldItemsByBranchView
     searching_by_date = True
-    size = (750, 450)
+    size = (800, 450)
 
     def setup_widgets(self):
         self.csv_button = self.add_button(label=_(u'Export CSV...'))
@@ -177,9 +177,9 @@ class SoldItemsByBranchSearch(SearchDialog):
         return [SearchColumn('code', title=_('Code'), data_type=str,
                              sorted=True, order=gtk.SORT_DESCENDING),
                 SearchColumn('description', title=_('Product'), data_type=str,
-                             expand=True),
+                             width=300),
                 SearchColumn('branch_name', title=_('Branch'), data_type=str,
-                             expand=True),
+                             width=150),
                 Column('quantity', title=_('Quantity'), data_type=Decimal,
                              format_func=format_quantity),
                 Column('total', title=_('Total'), data_type=currency)

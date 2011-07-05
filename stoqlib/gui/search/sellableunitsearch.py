@@ -41,7 +41,7 @@ class SellableUnitSearch(SearchEditor):
     """A search for L{stoqlib.domain.sellable.SellableUnit}"""
 
     title = _("Search for Units")
-    size = (600, 450)
+    size = (-1, 450)
     table = search_table = SellableUnit
     editor_class = SellableUnitEditor
     searchbar_result_strings = _("Unit"), _("Units")
@@ -73,8 +73,9 @@ class SellableUnitSearch(SearchEditor):
 
     def get_columns(self):
         return [SearchColumn('description', title=_('Description'),
-                             data_type=str, expand=True, sorted=True),
-                Column('unit_index', title=_('System Primitive'),
-                       format_func=self._format_unit_index, data_type=bool),
-                SearchColumn('allow_fraction', title=_('Allow Fraction'),
+                             data_type=str, width=150, sorted=True),
+                Column('unit_index', title=_('System'),
+                       format_func=self._format_unit_index, data_type=bool,
+                       width=100),
+                SearchColumn('allow_fraction', title=_('Fraction'),
                              data_type=bool)]

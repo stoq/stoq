@@ -171,7 +171,7 @@ class StockApp(SearchableAppWindow):
         self.executer.set_query(self.query)
         self.set_text_field_columns(['description'])
         self.branch_filter = ComboSearchFilter(
-            _('Show products at:'), self._get_branches())
+            _('Show by:'), self._get_branches())
         self.branch_filter.select(get_current_branch(self.conn))
         self.add_filter(self.branch_filter, position=SearchFilterPosition.TOP)
 
@@ -180,18 +180,18 @@ class StockApp(SearchableAppWindow):
                              sort_func=sort_sellable_code,
                              data_type=str, width=100),
                 SearchColumn('barcode', title=_("Barcode"), data_type=str,
-                             width=100),
+                             width=150),
                 SearchColumn('category_description', title=_("Category"),
                              data_type=str, width=100, visible=False),
                 SearchColumn('description', title=_("Description"),
-                             data_type=str, expand=True,
+                             data_type=str, width=240,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('location', title=_("Location"), data_type=str,
                              width=100, visible=False),
                 SearchColumn('stock', title=_('Quantity'),
-                             data_type=decimal.Decimal, width=80),
+                             data_type=decimal.Decimal, width=130),
                 SearchColumn('unit', title=_("Unit"), data_type=str,
-                             width=40),
+                             width=40, visible=False),
                 Column('product.has_image', title=_('Picture'),
                        data_type=bool),
                  ]

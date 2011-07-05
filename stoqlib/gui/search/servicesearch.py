@@ -48,7 +48,7 @@ class ServiceSearch(SearchEditor):
     title = _('Service Search')
     table = Service
     search_table = ServiceView
-    size = (750, 450)
+    size = (-1, 450)
     editor_class = ServiceEditor
     model_list_lookup_attr = 'service_id'
     footer_ok_label = _('Add services')
@@ -88,7 +88,7 @@ class ServiceSearch(SearchEditor):
         self.set_text_field_columns(['description', 'barcode'])
         items = [(v, k) for k, v in Sellable.statuses.items()]
         items.insert(0, (_('Any'), None))
-        service_filter = ComboSearchFilter(_('Show services with status'),
+        service_filter = ComboSearchFilter(_('Show services'),
                                           items)
         service_filter.select(None)
         self.executer.add_query_callback(self._get_query)
@@ -108,7 +108,7 @@ class ServiceSearch(SearchEditor):
                    SearchColumn('barcode', title=_('Barcode'), data_type=str,
                                 visible=True, width=130),
                    SearchColumn('description', title=_('Description'), data_type=str,
-                                expand=True)]
+                                width=300)]
 
         if not self.hide_cost_column:
             columns.append(SearchColumn('cost', _('Cost'), data_type=currency,
