@@ -256,6 +256,10 @@ class PosApp(AppWindow):
                 Column('total', title=_('Total'), data_type=currency,
                        justify=gtk.JUSTIFY_RIGHT, width=100)]
 
+
+    def set_open_inventory(self):
+        self._disable_inventory_ui()
+
     #
     # Private
     #
@@ -411,13 +415,28 @@ class PosApp(AppWindow):
         if value:
             self.barcode.grab_focus()
 
+    def _disable_inventory_ui(self):
+        self.TillOpen.set_sensitive(False)
+        self.Sales.set_sensitive(False)
+        self._disable_sale_ui()
+
+    def _disable_printer_ui(self):
+        # We dont have an ecf. Disable till related operations
+        self._disable_sale_ui()
+        self.TillOpen.set_sensitive(False)
+        self.TillClose.set_sensitive(False)
+
+        # It's possible to do a Sangria from the Sale search,
+        # disable it for now
+        self.Sales.set_sensitive(False)
+
+    def _disable_sale_ui(self):
+        self._set_sale_sensitive(False)
+
     def _till_status_changed(self, closed, blocked):
         self.TillOpen.set_sensitive(closed)
         self.TillClose.set_sensitive(not closed or blocked)
         self._set_sale_sensitive(not closed and not blocked)
-
-    def set_open_inventory(self):
-        self._set_sale_sensitive(False)
 
     def _update_widgets(self):
         has_sale_items = len(self.sale_items) >= 1
@@ -854,10 +873,4 @@ class PosApp(AppWindow):
         if has_ecf:
             return
 
-        # We dont have an ecf. Disable till related operations
-        self._set_sale_sensitive(False)
-        self.TillOpen.set_sensitive(False)
-
-        # It's possible to do a Sangria from the Sale search,
-        # disable it for now
-        self.Sales.set_sensitive(False)
+        self._disable_printer_ui()
