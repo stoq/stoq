@@ -61,6 +61,7 @@ class _TemporaryOutPayment(object):
         self.id = payment.id
         self.description = payment.description
         self.method.description = payment.method.description
+        self.method.method_name = payment.method.method_name
         self.due_date = payment.due_date
         self.paid_date = payment.paid_date
         self.status_str = payment.get_status_str()
@@ -138,7 +139,7 @@ class SaleDetailsDialog(BaseEditor):
         self.payments_info_list.add_list(changes)
 
         has_bills = any([p.method.method_name == 'bill'
-                                    for p in self.payments_list])
+                         for p in self.payments_list])
         if not has_bills:
             self.print_bills.hide()
 
