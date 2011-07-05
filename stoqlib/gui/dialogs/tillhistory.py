@@ -103,7 +103,7 @@ class TillHistoryDialog(SearchDialog):
     #
 
     def _add_editor_button(self, name, editor_class, stock):
-        button = self.add_button(name, stock=filename)
+        button = self.add_button(name, stock=stock)
         button.connect('clicked', lambda b: self._run_editor(editor_class))
         button.show()
 
