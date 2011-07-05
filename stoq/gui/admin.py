@@ -176,9 +176,8 @@ class Tasks(object):
 
     def _open_invoice_printers(self):
         if not InvoiceLayout.select(connection=self.app.conn):
-            info(_(
-                "You must create at least one invoice layout before adding an"
-                "invoice printer"))
+            info(_("You must create at least one invoice layout "
+                   "before adding an invoice printer"))
             return
 
         self.app.run_dialog(InvoicePrinterDialog, self.app.conn)

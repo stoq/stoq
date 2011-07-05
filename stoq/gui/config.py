@@ -126,8 +126,8 @@ class DatabaseSettingsStep(WizardEditorStep):
 
     def validate_step(self):
         if not self.model.check_database_address():
-            msg = _("The database address '%s' is invalid. Please fix the "
-                    "address you have set and try again"
+            msg = _("The database address '%s' is invalid. "
+                    "Please fix it and try again"
                     % self.model.address)
             warning(_(u'Invalid database address'), msg)
             # '' is not strictly invalid, since it's an alias for

@@ -100,7 +100,7 @@ class UpdateSchemaStep(BaseWizardStep):
             text = _("Database backup restored")
             longer = _(
                 'Stoq database update failed but the database was restored.\n'
-                'An automatic crash report was submitted, please '
+                'An automatic crash report was submitted. Please, '
                 'enter in contact at <b>stoq-users@stoq.com.br</b> for '
                 'assistance in recovering your database and making it '
                 'possible to use Stoq %s again.\n\n'
@@ -126,7 +126,7 @@ class UpdateSchemaStep(BaseWizardStep):
             self.progressbar.set_fraction(0.0)
         else:
             self.wizard.cancel_button.set_sensitive(True)
-            self.progressbar.set_text(_("Done, click 'Forward' to continue"))
+            self.progressbar.set_text(_("Done. Click 'Forward' to continue"))
             self.progressbar.set_fraction(1.0)
             self.wizard.enable_next()
 

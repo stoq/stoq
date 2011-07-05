@@ -64,7 +64,7 @@ class ClientCategoryEditor(BaseEditor):
     def on_name__validate(self, widget, new_name):
         if not new_name:
             return ValidationError(
-                _(u"The client category should have name."))
+                _(u"The client category should have a name."))
         if self._category_name_exists(new_name):
             return ValidationError(
                 _(u"The client category '%s' already exists.") % new_name)
