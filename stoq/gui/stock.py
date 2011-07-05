@@ -210,6 +210,9 @@ class StockApp(SearchableAppWindow):
         self.LoanNew.set_sensitive(False)
         self.LoanClose.set_sensitive(False)
 
+    def activate(self):
+        self.check_open_inventory()
+
     #
     # Private API
     #

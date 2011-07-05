@@ -154,6 +154,9 @@ class TillApp(SearchableAppWindow):
                                           self.return_button,
                                           self.details_button])
 
+    def activate(self):
+        self._printer.check_till()
+
     def create_filters(self):
         self.executer.set_query(self._query_executer)
         self.set_text_field_columns(['client_name', 'salesperson_name'])

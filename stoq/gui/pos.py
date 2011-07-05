@@ -196,10 +196,6 @@ class PosApp(AppWindow):
         self.sale_items.set_columns(self.get_columns())
         self.sale_items.set_selection_mode(gtk.SELECTION_BROWSE)
 
-    #
-    # AppWindow Hooks
-    #
-
     def can_change_application(self):
         # Block POS application if we are in the middle of a sale.
         can_change_application = self._coupon is None
@@ -242,6 +238,10 @@ class PosApp(AppWindow):
                                         self.item_button_box])
         self.item_button_box.set_focus_chain([self.add_button,
                                               self.advanced_search])
+
+    def activate(self):
+        self._printer.check_till()
+        self.check_open_inventory()
 
     def get_columns(self):
         return [Column('code', title=_('Reference'),
