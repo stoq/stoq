@@ -225,6 +225,9 @@ class SalesApp(SearchableAppWindow):
     def set_open_inventory(self):
         self._open_inventory = True
 
+    def activate(self):
+        self.check_open_inventory()
+
     #
     # Private
     #
