@@ -63,7 +63,7 @@
                                       <object class="GtkImage" id="image2">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
-                                        <property name="stock">stoq-edit</property>
+                                        <property name="stock">gtk-edit</property>
                                       </object>
                                       <packing>
                                         <property name="expand">True</property>

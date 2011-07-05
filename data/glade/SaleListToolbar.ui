@@ -25,7 +25,7 @@
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkImage" id="image1">
-                            <property name="stock">stoq-remove</property>
+                            <property name="stock">gtk-remove</property>
                             <property name="visible">True</property>
                           </object>
                         </child>
@@ -57,7 +57,7 @@
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkImage" id="image2">
-                            <property name="stock">stoq-edit</property>
+                            <property name="stock">gtk-edit</property>
                             <property name="visible">True</property>
                           </object>
                         </child>
@@ -92,7 +92,7 @@
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkImage" id="image4">
-                            <property name="stock">stoq-find</property>
+                            <property name="stock">gtk-find</property>
                             <property name="visible">True</property>
                           </object>
                         </child>
