@@ -52,15 +52,17 @@ class Table(RTable):
     """ Extension of Reportlab Table """
     def __init__(self, data, colWidths=None, rowHeights=None, style=None,
                  repeatRows=0, repeatCols=0, splitByRow=True,
-                 emptyTableAction=None, hAlign=None, vAlign=None,
-                 width=None, align=CENTER):
+                 emptyTableAction=None, ident=None, hAlign=None, vAlign=None,
+                 normalizedData=False, cellStyles=None, width=None,
+                 align=CENTER):
         """ This class extend Reportlab table supplying extra checks on its
         methods, what is an extra utility to the developer.
         """
         hAlign = hAlign or align
         self._width = width
         RTable.__init__(self, data, colWidths, rowHeights, style, repeatRows,
-                        repeatCols, splitByRow, emptyTableAction)
+                        repeatCols, splitByRow, emptyTableAction,
+                        normalizedData=normalizedData, cellStyles=cellStyles)
         if vAlign:
             self.vAlign = vAlign
         self.hAlign = hAlign
