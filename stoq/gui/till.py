@@ -60,8 +60,8 @@ from stoq.gui.application import SearchableAppWindow
 _ = gettext.gettext
 log = Logger('stoq.till')
 
-LOGO_WIDTH = 114
-LOGO_HEIGHT = 40
+LOGO_WIDTH = 91
+LOGO_HEIGHT = 32
 
 
 class TillApp(SearchableAppWindow):
@@ -308,8 +308,6 @@ class TillApp(SearchableAppWindow):
         self.stoq_logo.set_from_pixbuf(logo)
         self.total_label.set_size('xx-large')
         self.total_label.set_bold(True)
-        self.till_status_label.set_size('large')
-        self.till_status_label.set_bold(True)
 
     def _update_toolbar_buttons(self):
         sale_view = self.results.get_selected()
@@ -385,9 +383,9 @@ class TillApp(SearchableAppWindow):
             text = _(u"Till blocked from previous day")
         else:
             till = Till.get_current(self.conn)
-            text = _(u"Till opened on %s") % till.opening_date.strftime('%x')
+            text = _(u"Till opened on <b>%s</b>") % till.opening_date.strftime('%x')
 
-        self.till_status_label.set_text(text)
+        self.till_status_label.set_markup(text)
 
         self._update_toolbar_buttons()
         self._update_total()
