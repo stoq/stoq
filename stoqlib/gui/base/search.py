@@ -288,15 +288,14 @@ class SearchDialog(BasicDialog):
         @param stock: the gtk stock id to be used in the button.
         @param image: the image filename.
         """
-        button = gtk.Button()
+        button = gtk.Button(label=label)
         if image:
-            button.set_label(label)
             image_widget = gtk.Image()
             image_widget.set_from_file(
                 environ.find_resource('pixmaps', image))
             image_widget.show()
             button.set_image(image_widget)
-        else:
+        elif stock:
             button_set_image_with_label(button, stock, label)
         self.action_area.set_layout(gtk.BUTTONBOX_START)
         self.action_area.pack_start(button, False, False, 6)
