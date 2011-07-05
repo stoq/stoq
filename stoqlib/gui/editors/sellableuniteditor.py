@@ -40,7 +40,7 @@ class SellableUnitEditor(BaseEditor):
 
     gladefile = 'SellableUnitEditor'
     model_type = SellableUnit
-    model_name = _('Product Units')
+    model_name = _('Product Unit')
     proxy_widgets = ('description',
                      'allow_fraction')
 

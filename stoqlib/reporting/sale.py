@@ -257,6 +257,7 @@ class SalesPersonReport(SearchResultsReport):
         SalesPersonReport.main_object_name = _("sales on branch %s") % (
             branch.get_description())
         if salesperson_name is not None:
+            # TRANSLATORS: The first %s is the Sales Person name
             SalesPersonReport.main_object_name = _("sales from %s "
                 "on branch %s" % (salesperson_name, branch.get_description()))
         SearchResultsReport.__init__(self, filename, salesperson_list,

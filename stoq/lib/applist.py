@@ -30,39 +30,47 @@ from kiwi.component import implements
 from stoqlib.lib.interfaces import IApplicationDescriptions
 
 _ = gettext.gettext
+
+# FIXME: Find a better description for apps. I just put here the
+#        english translation/adaptation of the brazilian portuguese
+#        translation on launchpad. hackedbellini 05-06-2011
 _APPLICATIONS = {
-    'admin': ( _('Administrative'),
-               _("""Administrative application."""),
+    'admin' : (_("Administrative"),
+               _("Application for system administration "
+                 "and configuration."),
                'stoq-admin-app'),
-    'financial' : (_('Financial'),
-                   _("""Financial application."""),
+    'financial' : (_("Financial"),
+                   _("Application for financial management."),
                    'stoq-payable-app'),
-    'inventory' : (_('Inventory'),
-                   _("""Inventory application."""),
+    'inventory' : (_("Inventory"),
+                   _("Application for stock auditing and adjustment."),
                    'stoq-inventory-app'),
-    'payable' : (_('Accounts Payable'),
-                 _("""Accounts Payable application."""),
+    'payable' : (_("Accounts Payable"),
+                 _("Application for management of payments to pay."),
                  'stoq-payable-app'),
-    'pos' : (_('Point of Sales'),
-             _("""Point Of Sale application."""),
+    'pos' : (_("Point of Sales"),
+             _("Application for selling products/services and "
+               "fiscal coupon emission."),
              'stoq-pos-app'),
-    'production' : (_('Production'),
-                    _('Production application.'),
+    'production' : (_("Production"),
+                    _("Application for management of the production process."),
                     'stoq-production-app'),
-    'purchase' : (_('Purchase'),
-                  _("""Purchase application."""),
-                  'stoq-purchase-app'),
-    'receivable' : (_('Accounts Receivable'),
-                    _("""Accounts Receivable application."""),
+    'purchase' : (_("Purchase"),
+                  _("Application for management of purchases "
+                  "and product/service registration"),
+                    'stoq-purchase-app'),
+    'receivable' : (_("Accounts Receivable"),
+                    _("Application for management of payments to receive."),
                     'stoq-bills'),
-    'sales' : (_('Sales'),
-               _("""Sales application."""),
+    'sales' : (_("Sales"),
+               _("Application for quotes management and creation "
+                 "and commission calculation."),
                'stoq-sales-app'),
-    'stock' : (_('Stock'),
-               _("""Stock application."""),
+    'stock' : (_("Stock"),
+               _("Application for stock management."),
                'stoq-stock-app'),
-    'till' : (_('Till'),
-              _("""Till application."""),
+    'till' : (_("Till"),
+              _("Application for till management."),
               'stoq-till-app'),
 }
 

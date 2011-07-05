@@ -465,8 +465,8 @@ class AppWindow(BaseAppWindow):
     def _on_remove_examples__clicked(self, button):
         if not self.can_close_application():
             return
-        if yesno(_(u'This will delete the current database and '
-                    'configuration. Are you sure?'),
+        if yesno(_("This will delete the current database and "
+                   "it's configuration. Are you sure?"),
                  gtk.RESPONSE_NO,_(u"Don't Remove"),  _(u"Remove Examples")):
             return
 

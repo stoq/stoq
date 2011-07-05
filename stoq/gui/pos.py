@@ -137,7 +137,7 @@ class PosApp(AppWindow):
                 <menuitem action="CancelOrder"/>
                 <separator name="sep"/>
                 <menuitem action="NewDelivery"/>
-                <menuitem action="OrderCheckout"/>
+                <menuitem action="ConfirmOrder"/>
                 <separator name="sep2"/>
                 <menuitem action="Quit"/>
              </menu>
@@ -164,7 +164,7 @@ class PosApp(AppWindow):
             ("SalesMenu", None, _("Sal_es")),
             ('CancelOrder', None, _('Cancel Order'), '<Control><Alt>o'),
             ('NewDelivery', None, _('New Delivery...'), '<Control>F5'),
-            ('OrderCheckout', None, _('Order Checkout...'), '<Control>F10'),
+            ('ConfirmOrder', None, _('Confirm Order...'), '<Control>F10'),
             ("Quit", gtk.STOCK_QUIT),
 
             # Search
@@ -211,8 +211,8 @@ class PosApp(AppWindow):
     def can_close_application(self):
         can_close_application = self._coupon is None
         if not can_close_application:
-            if yesno(_('You must finish or cancel the current sale before you can close the '
-                       'POS application.'),
+            if yesno(_('You must finish or cancel the current sale before you '
+                       'can close the POS application.'),
                      gtk.RESPONSE_NO, _("Cancel sale"), _("Finish sale")):
                 self._cancel_coupon()
                 return True
@@ -361,8 +361,8 @@ class PosApp(AppWindow):
             # It's not a common operation to add more than one item at
             # a time, it's also problematic since you'd have to show
             # one dialog per service item. See #3092
-            info(_(u"Only one service was added since its not possible to"
-                   "add more than one service to an order at a time."))
+            info(_("It's not possible to add more than one service "
+                   "at a time to an order. So, only one was added."))
 
         sale_item = _SaleItem(sellable=sellable,
                               quantity=quantity)
@@ -442,7 +442,7 @@ class PosApp(AppWindow):
         has_sale_items = len(self.sale_items) >= 1
         self.set_sensitive((self.checkout_button, self.remove_item_button,
                             self.NewDelivery,
-                            self.OrderCheckout), has_sale_items)
+                            self.ConfirmOrder), has_sale_items)
         # We can cancel an order whenever we have a coupon opened.
         self.CancelOrder.set_sensitive(self._coupon is not None)
         has_products = False
@@ -464,7 +464,7 @@ class PosApp(AppWindow):
         self.edit_item_button.set_sensitive(can_edit)
 
         self.set_sensitive((self.checkout_button,
-                            self.OrderCheckout), has_products or has_services)
+                            self.ConfirmOrder), has_products or has_services)
         self._update_totals()
         self._update_add_button()
 
@@ -522,8 +522,9 @@ class PosApp(AppWindow):
         sellable = self._get_sellable()
         self.add_button.set_sensitive(sellable is not None)
         if not sellable:
-            message = (_("The barcode '%s' does not exist. Searching for a product instead.") %
-                       self.barcode.get_text())
+            message = (_("The barcode '%s' does not exist. "
+                         "Searching for a product instead...")
+                       % self.barcode.get_text())
             self._run_advanced_search(search_str, message)
             return
 
@@ -545,8 +546,8 @@ class PosApp(AppWindow):
         storable = IStorable(sellable.product, None)
         if storable is not None:
             if not self._check_available_stock(storable, sellable):
-                info(_("You cannot sell more items of product %s, "
-                       "the available quantities are not enough." %
+                info(_("You cannot sell more items of product %s. "
+                       "The available quantity is not enough." %
                         sellable.get_description()))
                 self.barcode.set_text('')
                 self.barcode.grab_focus()
@@ -794,7 +795,7 @@ class PosApp(AppWindow):
     def on_DeliverySearch__activate(self, action):
         self.run_dialog(DeliverySearch, self.conn)
 
-    def on_OrderCheckout__activate(self, action):
+    def on_ConfirmOrder__activate(self, action):
         self._checkout()
 
     def on_NewDelivery__activate(self, action):

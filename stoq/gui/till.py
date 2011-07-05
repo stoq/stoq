@@ -254,9 +254,10 @@ class TillApp(SearchableAppWindow):
         for storable in prod_sold.keys():
             stock = storable.get_full_balance(branch)
             if stock < prod_sold[storable]:
-                warning(_(u'There is only %d items of "%s" and this sale '
-                           'has %d items.') % (stock,
-                                    prod_desc[storable], prod_sold[storable]))
+                warning(_("This sale has %d items of %s, but there is only "
+                          "%d available on stock") % (stock,
+                                                      prod_sold[storable],
+                                                      prod_desc[storable]))
                 return
 
         coupon = self._open_coupon()
@@ -275,10 +276,10 @@ class TillApp(SearchableAppWindow):
 
         if coupon:
             while not coupon.open():
-                if not yesno(
-                    _(u"It is not possible to confirm the sale if the "
-                       "fiscal coupon cannot be opened."),
-                    gtk.RESPONSE_YES, _(u"Try Again"), _(u"Cancel")):
+                if not yesno(_("Failed to open the fiscal coupon.\n"
+                               "Until it is opened, it's not possible to "
+                               "confirm the sale. Do you want to try again?"),
+                             gtk.RESPONSE_YES, _("Try Again"), _("Cancel")):
                     break
 
         return coupon

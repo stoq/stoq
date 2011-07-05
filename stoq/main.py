@@ -220,9 +220,10 @@ def _check_main_branch():
         from stoqlib.gui.dialogs.branchdialog import BranchDialog
         from stoqlib.lib.message import info
         if _ran_wizard:
-            info(_("You need to register a company before using Stoq"))
+            info(_("You need to register a company before start using Stoq"))
         else:
-            info(_("Couldn't find a company, You'll need to register one before using Stoq"))
+            info(_("Could not find a company. You'll need to register one "
+                   "before start using Stoq"))
         trans = new_transaction()
         person = run_dialog(BranchDialog, None, trans)
         if not person:
@@ -291,7 +292,7 @@ def _initialize(options):
         conn_uri = settings.get_connection_uri()
     except:
         type, value, trace = sys.exc_info()
-        error(_('Could not open database config file'),
+        error(_("Could not open the database config file"),
               _("Invalid config file settings, got error '%s', "
                 "of type '%s'" % (value, type)))
 
@@ -308,7 +309,7 @@ def _initialize(options):
         if needs_schema_update():
             _run_update_wizard()
     except (StoqlibError, PostgreSQLError), e:
-        error(_('Could not connect to database'),
+        error(_('Could not connect to the database'),
               'error=%s uri=%s' % (str(e), conn_uri))
         raise SystemExit("Error: bad connection settings provided")
 
