@@ -94,7 +94,7 @@ class ProductionApp(SearchableAppWindow):
             ("ProductionMenu", None, _("_Production")),
             ('ProductionNew', gtk.STOCK_NEW, _('New Production Order...'), '<Control>o'),
             ('ProductionStart', 'stoq-transfer', _('Start Production...'), '<Control>t'),
-            ('ProductionPurchaseQuote', 'stoq-purchase-quote', _('Purchase Quote...'),
+            ('ProductionPurchaseQuote', 'stoq-purchase-app', _('Purchase Quote...'),
              '<Control>p'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
             ("Quit", gtk.STOCK_QUIT),

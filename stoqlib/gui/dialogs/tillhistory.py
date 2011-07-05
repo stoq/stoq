@@ -84,11 +84,11 @@ class TillHistoryDialog(SearchDialog):
         self.results.connect('has-rows', self._has_rows)
 
         self._add_editor_button(_('Cash _Add...'), CashAdvanceEditor,
-                                'money24px.png')
+                                'stoq-money')
         self._add_editor_button(_('Cash _In...'), CashInEditor,
-                                'money_add24px.png')
+                                'stoq-money-add')
         self._add_editor_button(_('Cash _Out...'), CashOutEditor,
-                                'money_delete24px.png')
+                                'stoq-money-remove')
 
         self.print_button = gtk.Button(None, gtk.STOCK_PRINT, True)
         self.print_button.set_property("use-stock", True)
@@ -102,8 +102,8 @@ class TillHistoryDialog(SearchDialog):
     # Private API
     #
 
-    def _add_editor_button(self, name, editor_class, filename):
-        button = self.add_button(name, image=filename)
+    def _add_editor_button(self, name, editor_class, stock):
+        button = self.add_button(name, stock=filename)
         button.connect('clicked', lambda b: self._run_editor(editor_class))
         button.show()
 

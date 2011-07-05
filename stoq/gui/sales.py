@@ -151,7 +151,7 @@ class SalesApp(SearchableAppWindow):
              "<Control><Alt>a"),
             ("SearchProduct", 'stoq-products', _("Products..."), "<Control><Alt>p"),
             ("SearchService", 'stoq-services', _("Services..."), "<Control><Alt>s"),
-            ("SearchDelivery", 'stoq-deliveries', _("Deliveries..."), "<Control><Alt>e"),
+            ("SearchDelivery", 'stoq-delivery', _("Deliveries..."), "<Control><Alt>e"),
             ("SearchClient", 'stoq-clients', _("Clients..."), "<Control><Alt>c"),
             ("SearchCommission", None, _("Commissions..."), "<Control><Alt>o"),
 

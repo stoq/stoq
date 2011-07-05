@@ -26,6 +26,7 @@
 
 from decimal import Decimal
 
+import gtk
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import ComboSearchFilter
@@ -89,14 +90,14 @@ class ProductionItemsSearch(SearchDialog):
 
     def setup_widgets(self):
         self._produced_button = self.add_button(_(u'_Produced...'),
-                                                image='add24px.png')
+                                                stock=gtk.STOCK_ADD)
         self._produced_button.connect('clicked',
                                       self._on_produced_button__clicked)
         self._produced_button.set_sensitive(False)
         self._produced_button.show()
 
         self._lost_button = self.add_button(_(u'_Lost...'),
-                                            image='remove24px.png')
+                                            stock=gtk.STOCK_REMOVE)
         self._lost_button.connect('clicked', self._on_lost_button__clicked)
         self._lost_button.set_sensitive(False)
         self._lost_button.show()
