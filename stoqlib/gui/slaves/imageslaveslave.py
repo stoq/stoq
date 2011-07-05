@@ -30,15 +30,12 @@ import tempfile
 
 from kiwi.ui.dialogs import open, save
 from kiwi.datatypes import converter
-from kiwi.environ import environ
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-
-default_filename = environ.find_resource("pixmaps", "remove48px.png")
 
 # TODO: Currently the database doesn't deal with pixbufs,
 #       despite kiwi does. So, we are not going to use proxies
@@ -67,7 +64,7 @@ class ImageSlave(BaseEditorSlave):
         self.model = model
         # if the image is not set in the model, show a default image
         if not model.image:
-            self._show_image(default_filename, sensitive=False)
+            self._show_image(stock_id=gtk.STOCK_DIALOG_ERROR, sensitive=False)
         else:
             self.image.set_from_pixbuf(
                 self.pixbuf_converter.from_string(model.image))
@@ -108,10 +105,13 @@ class ImageSlave(BaseEditorSlave):
             os._exit(-1)
         return
 
-    def _show_image(self, filename, sensitive):
+    def _show_image(self, filename=None, stock_id=None, sensitive=None):
         """Show an image from filename"""
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, 64, 64)
-        self.image.set_from_pixbuf(pixbuf)
+        if filename:
+            pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, 64, 64)
+            self.image.set_from_pixbuf(pixbuf)
+        elif stock_id:
+            self.image.set_from_stock(stock_id, gtk.ICON_SIZE_DIALOG)
         self.erase_item.set_sensitive(sensitive)
         self.view_item.set_sensitive(sensitive)
         self.save_item.set_sensitive(sensitive)
@@ -149,7 +149,7 @@ class ImageSlave(BaseEditorSlave):
     def _on_popup_erase__activate(self, menu):
         self.model.image = ''
         self.model.full_image = ''
-        self._show_image(default_filename, sensitive=False)
+        self._show_image(stock_id=gtk.STOCK_DIALOG_ERROR, sensitive=False)
 
     def _on_popup_save__activate(self, menu):
         filename = save(current_name='stoq-product-%s.png' % self.model.id,

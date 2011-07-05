@@ -124,7 +124,7 @@ class StockApp(SearchableAppWindow):
             # Stock
             ("StockMenu", None, _("_Stock")),
             ("StockReceive", 'stoq-receiving', _("_Receive..."), '<Control>r'),
-            ('StockTransfer', 'stoq-transfer', _('Transfer...'), '<Control>t'),
+            ('StockTransfer', 'stoq-convert', _('Transfer...'), '<Control>t'),
             ('StockDecrease', None, _('Decrease stock...')),
             ('StockInitial', 'gtk-go-up', _('Register initial stock...')),
             ('StockPictureViewer', None, _('Toggle picture viewer...'),

@@ -3,13 +3,11 @@ import gettext
 import gtk
 
 from kiwi.ui.delegates import GladeDelegate
-from kiwi.environ import environ
 from kiwi.datatypes import converter
 from stoqlib.gui.base.dialogs import RunnableView
 
 _ = gettext.gettext
 
-DEFAULT_FILENAME = environ.find_resource("pixmaps", "remove48px.png")
 PIXBUF_CONVERTER = converter.get_converter(gtk.gdk.Pixbuf)
 
 class ProductImageViewer(GladeDelegate, RunnableView):
@@ -37,11 +35,11 @@ class ProductImageViewer(GladeDelegate, RunnableView):
     def set_product(self, product):
         self.product = product
         if not product.full_image:
-            pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                DEFAULT_FILENAME, 64, 64)
+            self.image.set_from_stock(gtk.STOCK_DIALOG_ERROR,
+                                      gtk.ICON_SIZE_DIALOG)
         else:
             pixbuf = PIXBUF_CONVERTER.from_string(product.full_image)
             width, height = ProductImageViewer.size
             pixbuf = pixbuf.scale_simple(
                 width, height, gtk.gdk.INTERP_BILINEAR)
-        self.image.set_from_pixbuf(pixbuf)
+            self.image.set_from_pixbuf(pixbuf)

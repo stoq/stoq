@@ -38,95 +38,83 @@ from kiwi.environ import environ
 def register_iconsets():
     icon_info = [
         ("stoq-admin-app",
-         { gtk.ICON_SIZE_MENU: "admin_16.png",
-           gtk.ICON_SIZE_LARGE_TOOLBAR: "admin_24.png",
-           gtk.ICON_SIZE_DND: "admin_32.png",
-           gtk.ICON_SIZE_DIALOG: "admin_48.png" }),
+         { gtk.ICON_SIZE_MENU: "stoq-admin-16x16.png",
+           gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-admin-24x24.png",
+           gtk.ICON_SIZE_DND: "stoq-admin-32x32.png",
+           gtk.ICON_SIZE_DIALOG: "stoq-admin-48x48.png" }),
         ("stoq-bills",
-         { gtk.ICON_SIZE_DIALOG: "gnome-money48px.png" }),
+         { gtk.ICON_SIZE_DIALOG: "stoq-bills-48x48.png" }),
         ("stoq-clients",
-         { gtk.ICON_SIZE_DIALOG: "config-users48px.png" }),
+         { gtk.ICON_SIZE_DIALOG: "stoq-clients-48x48.png" }),
         ("stoq-conference",
-         { gtk.ICON_SIZE_DIALOG: "gtk-stock-book48px.png" }),
+         { gtk.ICON_SIZE_DIALOG: "stoq-conference-48x48.png" }),
         ("stoq-confirm",
-         { gtk.ICON_SIZE_MENU: "confirm16px.png",
-           gtk.ICON_SIZE_LARGE_TOOLBAR: "confirm24px.png",
-           gtk.ICON_SIZE_DIALOG: "confirm48px.png" }),
+         { gtk.ICON_SIZE_MENU: "stoq-confirm-16x16.png",
+           gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-confirm-24x24.png",
+           gtk.ICON_SIZE_DIALOG: "stoq-confirm-48x48.png" }),
         ("stoq-convert",
-         { gtk.ICON_SIZE_LARGE_TOOLBAR: "a-convert24px.png",
-           gtk.ICON_SIZE_DIALOG: "a-convert48px.png" }),
+         { gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-convert-24x24.png",
+           gtk.ICON_SIZE_DIALOG: "stoq-convert-48x48.png" }),
         ("stoq-delivery",
-         { gtk.ICON_SIZE_MENU: "delivery16px.png",
-           gtk.ICON_SIZE_LARGE_TOOLBAR: "delivery24px.png",
-           gtk.ICON_SIZE_DIALOG: "delivery48px.png" }),
-        ("stoq-deliveries",
-         { gtk.ICON_SIZE_LARGE_TOOLBAR: "delivery24px.png" }),
+         { gtk.ICON_SIZE_MENU: "stoq-delivery-16x16.png",
+           gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-delivery-24x24.png",
+           gtk.ICON_SIZE_DIALOG: "stoq-delivery-48x48.png" }),
         ("stoq-hr",
-         { gtk.ICON_SIZE_MENU: "hr_16.png",
-           gtk.ICON_SIZE_LARGE_TOOLBAR: "hr_24.png",
-           gtk.ICON_SIZE_DND: "hr_32.png",
-           gtk.ICON_SIZE_DIALOG: "hr_48.png" }),
+         { gtk.ICON_SIZE_MENU: "stoq-hr-16x16.png",
+           gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-hr-24x24.png",
+           gtk.ICON_SIZE_DND: "stoq-hr-32x32.png",
+           gtk.ICON_SIZE_DIALOG: "stoq-hr-48x48.png" }),
         ("stoq-inventory-app",
-         { gtk.ICON_SIZE_LARGE_TOOLBAR: "inventory_24.png" }),
+         { gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-inventory-24x24.png" }),
         ("stoq-lock",
-         { gtk.ICON_SIZE_MENU: "panel-lockscreen16px.png" }),
+         { gtk.ICON_SIZE_MENU: "stoq-lock-16x16.png" }),
         ("stoq-money",
-         { gtk.ICON_SIZE_MENU: "money24px.png",
-           gtk.ICON_SIZE_DIALOG: "money.png" }),
+         { gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-money-24x24.png",
+           gtk.ICON_SIZE_DIALOG: "stoq-money-48x48.png" }),
+        ("stoq-money-add",
+         { gtk.ICON_SIZE_MENU: "stoq-money-add-16x16.png",
+           gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-money-add-24x24.png" }),
+        ("stoq-money-remove",
+         { gtk.ICON_SIZE_MENU: "stoq-money-remove-16x16.png",
+           gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-money-remove-24x24.png" }),
         ("stoq-payable-app",
-         { gtk.ICON_SIZE_DIALOG: "gnome-money-red48px.png" }),
+         { gtk.ICON_SIZE_DIALOG: "stoq-payable-app-48x48.png" }),
         ("stoq-pos-app",
-         { gtk.ICON_SIZE_MENU: "pos_16.png",
-           gtk.ICON_SIZE_LARGE_TOOLBAR: "pos_24.png",
-           gtk.ICON_SIZE_DND: "pos_32.png",
-           gtk.ICON_SIZE_DIALOG: "pos_48.png" }),
+         { gtk.ICON_SIZE_MENU: "stoq-pos-app-16x16.png",
+           gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-pos-app-24x24.png",
+           gtk.ICON_SIZE_DND: "stoq-pos-app-32x32.png",
+           gtk.ICON_SIZE_DIALOG: "stoq-pos-app-48x48.png" }),
         ("stoq-production-app",
          { gtk.ICON_SIZE_DIALOG: "stoq-production-app.png" }),
         ("stoq-products",
-         { gtk.ICON_SIZE_MENU: "products_16.png",
-           gtk.ICON_SIZE_LARGE_TOOLBAR: "products_24.png",
-           gtk.ICON_SIZE_DND: "products_32.png",
-           gtk.ICON_SIZE_DIALOG: "products_48.png" }),
+         { gtk.ICON_SIZE_MENU: "stoq-products-16x16.png",
+           gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-products-24x24.png",
+           gtk.ICON_SIZE_DND: "stoq-products-32x32.png",
+           gtk.ICON_SIZE_DIALOG: "stoq-products-48x48.png" }),
         ("stoq-purchase-app",
-         { gtk.ICON_SIZE_DIALOG: "gnome-gnomine48px.png" }),
-        ("stoq-purchase-quote",
-         { gtk.ICON_SIZE_LARGE_TOOLBAR: "gnome-gnomine24px.png",
-           gtk.ICON_SIZE_DIALOG: "gnome-gnomine48px.png" }),
+        { gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-purchase-app-24x24.png",
+          gtk.ICON_SIZE_DIALOG: "stoq-purchase-app-48x48.png" }),
         ("stoq-receiving",
-         { gtk.ICON_SIZE_DIALOG: "emblem-documentation48px.png" }),
+         { gtk.ICON_SIZE_DIALOG: "stoq-receiving-48x48.png" }),
         ("stoq-sales-app",
-         { gtk.ICON_SIZE_DIALOG: "gnome-log48px.png" }),
-        ("stoq-searchtool-icon1",
-         { gtk.ICON_SIZE_DIALOG:
-           "searchtool-animation1.png" }),
-        ("stoq-searchtool-icon2",
-         { gtk.ICON_SIZE_DIALOG:
-           "searchtool-animation2.png" }),
-        ("stoq-searchtool-icon3",
-         { gtk.ICON_SIZE_DIALOG:
-         "searchtool-animation3.png" }),
-        ("stoq-searchtool-icon4",
-         { gtk.ICON_SIZE_DIALOG:
-           "searchtool-animation4.png" }),
+         { gtk.ICON_SIZE_DIALOG: "stoq-sales-app-48x48.png" }),
         ("stoq-services",
-         { gtk.ICON_SIZE_DIALOG: "gconf-editor48px.png" }),
+         { gtk.ICON_SIZE_DIALOG: "stoq-services-48x48.png" }),
         ("stoq-stock-app",
-         { gtk.ICON_SIZE_MENU: "warehouse_16.png",
-           gtk.ICON_SIZE_LARGE_TOOLBAR: "warehouse_24.png",
-           gtk.ICON_SIZE_DND: "warehouse_32.png",
-           gtk.ICON_SIZE_DIALOG: "warehouse_48.png" }),
+         { gtk.ICON_SIZE_MENU: "stoq-stock-app-16x16.png",
+           gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-stock-app-24x24.png",
+           gtk.ICON_SIZE_DND: "stoq-stock-app-32x32.png",
+           gtk.ICON_SIZE_DIALOG: "stoq-stock-app-48x48.png" }),
         ("stoq-suppliers",
-         { gtk.ICON_SIZE_DIALOG: "kuser48px.png" }),
+         { gtk.ICON_SIZE_DIALOG: "stoq-suppliers-48x48.png" }),
         ("stoq-till-app",
-         { gtk.ICON_SIZE_MENU: "till_16.png",
-           gtk.ICON_SIZE_LARGE_TOOLBAR: "till_24.png",
-           gtk.ICON_SIZE_DND: "till_32.png",
-           gtk.ICON_SIZE_DIALOG: "till_48.png" }),
-        ("stoq-transfer",
-         { gtk.ICON_SIZE_DIALOG: "a-convert48px.png" }),
+         { gtk.ICON_SIZE_MENU: "stoq-till-app-16x16.png",
+           gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-till-app-24x24.png",
+           gtk.ICON_SIZE_DND: "stoq-till-app-32x32.png",
+           gtk.ICON_SIZE_DIALOG: "stoq-till-app-48x48.png" }),
         ("stoq-users",
-         { gtk.ICON_SIZE_MENU: "user-small.png",
-           gtk.ICON_SIZE_DIALOG: "users.png" }),
+         { gtk.ICON_SIZE_MENU: "stoq-users-16x16.png",
+           gtk.ICON_SIZE_DIALOG: "stoq-users-48x48.png" }),
         ]
 
     iconfactory = gtk.IconFactory()
@@ -154,22 +142,21 @@ def change_button_appearance(button, icon=None, text=None):
     if text is not None:
         label.set_text_with_mnemonic(text)
 
-def button_set_image_with_label(button, filename, text):
+def button_set_image_with_label(button, stock_id, text):
     """Sets an image above the text
     @param button:
-    @param filename:
+    @param stock_id:
     @param text:
     """
 
     # Base on code in gazpacho by Lorenzo Gil Sanchez.
     button.remove(button.child)
-    filename = environ.find_resource('pixmaps', filename)
 
     align = gtk.Alignment(0.5, 0.5, 1.0, 1.0)
     box = gtk.VBox()
     align.add(box)
     image = gtk.Image()
-    image.set_from_file(filename)
+    image.set_from_stock(stock_id, gtk.ICON_SIZE_LARGE_TOOLBAR)
     label = gtk.Label(text)
     if '_' in text:
         label.set_use_underline(True)
