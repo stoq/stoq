@@ -46,7 +46,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                   <object class="GtkImage" id="image1">
-                                    <property name="stock">stoq-convert</property>
+                                    <property name="stock">gtk-convert</property>
                                     <property name="visible">True</property>
                                   </object>
                                 </child>
