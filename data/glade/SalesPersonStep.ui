@@ -464,10 +464,16 @@
                   <object class="GtkExpander" id="subtotal_expander">
                     <property name="width_request">25</property>
                     <property name="visible">True</property>
-                    <property name="is_focus">True</property>
+                    <property name="can_focus">True</property>
                     <child>
                       <object class="GtkEventBox" id="discount_surcharge_slave">
                         <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child type="label">
+                      <object class="GtkLabel" id="label2">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Order Details</property>
                       </object>
                     </child>
                   </object>
