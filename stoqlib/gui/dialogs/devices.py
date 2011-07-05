@@ -40,18 +40,18 @@ class DeviceSettingsDialog(ModelListDialog):
     # ModelListDialog
     model_type = DeviceSettings
     title = _('Device settings')
-    size = (620, 300)
+    size = (800, 300)
 
     # ListDialog
     columns =  [
         Column('device_type_name', title=_('Device Type'),
-               data_type=str, sorted=True, width=120),
+               data_type=str, sorted=True, width=200),
         Column('description', title=_('Description'),
-               data_type=str, expand=True),
+               data_type=str, width=200,),
         Column('station.name', title=_('Computer'),
                data_type=str, width=150, searchable=True),
         Column('is_active', title=_("Active"),
-               data_type=bool, width=100)]
+               data_type=bool, width=70)]
 
     def _populate(self):
         return DeviceSettings.select(connection=self.trans)

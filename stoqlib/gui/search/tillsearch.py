@@ -112,7 +112,7 @@ class TillFiscalOperationsSearch(SearchDialog):
         return [SearchColumn('id', title=_('#'), width=60,
                              justify=gtk.JUSTIFY_RIGHT, format="%05d",
                              data_type=int, sorted=True),
-                SearchColumn('date', title=_('Date'), width=80,
+                SearchColumn('date', title=_('Date'), width=100,
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('description', title=_('Description'),
                              data_type=str, expand=True),

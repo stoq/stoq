@@ -183,7 +183,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def create_filters(self):
         self.set_text_field_columns(['supplier_name'])
-        self.status_filter = ComboSearchFilter(_('Show orders with status'),
+        self.status_filter = ComboSearchFilter(_('Show orders'),
                                                self._get_status_values())
         self.status_filter.select(PurchaseOrder.ORDER_CONFIRMED)
         self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])
@@ -191,23 +191,23 @@ class PurchaseApp(SearchableAppWindow):
     def get_columns(self):
         return [SearchColumn('id', title=_('Number'), sorted=True,
                              data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                             width=80),
+                             width=100),
                 Column('status_str', title=_(u'Status'), data_type=str,
                        visible=False),
                 SearchColumn('open_date', title=_('Opened'),
                               long_title='Date Opened',
                               data_type=datetime.date),
                 SearchColumn('supplier_name', title=_('Supplier'),
-                             data_type=str, searchable=True, width=200,
-                             expand=True, ellipsize=pango.ELLIPSIZE_END),
+                             data_type=str, searchable=True, width=230,
+                             ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('ordered_quantity', title=_('Ordered'),
-                             data_type=Decimal, width=90,
+                             data_type=Decimal, width=110,
                              format_func=format_quantity),
                 SearchColumn('received_quantity', title=_('Received'),
-                             data_type=Decimal, width=90,
+                             data_type=Decimal, width=110,
                              format_func=format_quantity),
                 SearchColumn('total', title=_('Total'),
-                             data_type=currency, width=110)]
+                             data_type=currency, width=130)]
 
     #
     # Private

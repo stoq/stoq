@@ -37,7 +37,7 @@ _ = stoqlib_gettext
 
 class ConsignmentItemSearch(SearchDialog):
     title = _(u'Consignment Items Search')
-    size = (780, 450)
+    size = (-1, 450)
     table = search_table = ConsignedItemAndStockView
 
     #
@@ -53,11 +53,11 @@ class ConsignmentItemSearch(SearchDialog):
 
     def get_columns(self):
         return [SearchColumn('id', title=_(u'#'), data_type=int,
-                             format='%03d'),
+                             format='%03d', width=40),
                 SearchColumn('order_id', title=_(u'Order'), data_type=int,
-                             format='%03d', sorted=True),
+                             format='%03d'),
                 SearchColumn('description', title=_(u'Description'),
-                             data_type=str, expand=True),
+                             data_type=str, width=250),
                 SearchColumn('stocked', title=_(u'Stock'),
                              data_type=Decimal),
                 SearchColumn('received', title=_(u'Consigned'),

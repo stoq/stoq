@@ -58,7 +58,7 @@ class CfopSearch(SearchEditor):
     title = _("C.F.O.P. Search")
     table = CfopData
     editor_class = CfopEditor
-    size = (465, 390)
+    size = (-1, 390)
     searchbar_result_strings = _("C.F.O.P."), _("C.F.O.P.s")
 
     #
@@ -77,7 +77,7 @@ class CfopSearch(SearchEditor):
 
 class FiscalBookEntrySearch(SearchDialog):
     title = _("Search for fiscal entries")
-    size = (750, 450)
+    size = (-1, 450)
     search_table = IcmsIpiView
     searching_by_date = True
     searchbar_result_strings = _("fiscal entry"), _("fiscal entries")
@@ -120,7 +120,7 @@ class FiscalBookEntrySearch(SearchDialog):
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), width=80,
                              data_type=int, sorted=True),
-                SearchColumn('date', title=_('Date'), width=80,
+                SearchColumn('date', title=_('Date'), width=120,
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('invoice_number', title=_('Invoice'),
                              data_type=int, width=110),

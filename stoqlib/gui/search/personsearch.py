@@ -57,7 +57,7 @@ _ = stoqlib_gettext
 
 
 class BasePersonSearch(SearchEditor):
-    size = (750, 500)
+    size = (-1, 500)
     title = _('Person Search')
     editor_class = None
     table = None
@@ -108,11 +108,10 @@ class EmployeeSearch(BasePersonSearch):
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [SearchColumn('name', _('Name'), str, width=250, expand=True),
+        return [SearchColumn('name', _('Name'), str, width=300),
                 SearchColumn('role', _('Role'), str, width=250,
                              valid_values=self._get_role_values()),
-                SearchColumn('registry_number', _('Registry Number'), str,
-                             width=150),
+                SearchColumn('registry_number', _('Registry Number'), str),
                 SearchColumn('status_string', _('Status'), str,
                              valid_values=self._get_status_values(),
                              search_attribute='status')]
@@ -124,7 +123,7 @@ class EmployeeSearch(BasePersonSearch):
 class SupplierSearch(BasePersonSearch):
     title = _('Supplier Search')
     editor_class = SupplierEditor
-    size = (750, 450)
+    size = (800, 450)
     table = SupplierView
     search_lbl_text = _('Suppliers Matching:')
     result_strings = _('supplier'), _('suppliers')
@@ -322,7 +321,6 @@ class EmployeeRoleSearch(SearchEditor):
 
 
 class BranchSearch(BasePersonSearch):
-    size = (750, 500)
     title = _('Branch Search')
     editor_class = BranchEditor
     table = BranchView
