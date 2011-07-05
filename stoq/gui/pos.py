@@ -401,23 +401,23 @@ class PosApp(AppWindow):
             # support
             self.sale_items.select(self.sale_items[0])
 
+    def _set_sale_sensitive(self, value):
+        # Enable/disable the part of the ui that is used for sales,
+        # usually manipulated when printer information changes.
+        self.barcode.set_sensitive(value)
+        self.quantity.set_sensitive(value)
+        self.sale_items.set_sensitive(value)
+        self.advanced_search.set_sensitive(value)
+        if value:
+            self.barcode.grab_focus()
+
     def _till_status_changed(self, closed, blocked):
         self.TillOpen.set_sensitive(closed)
         self.TillClose.set_sensitive(not closed or blocked)
-        self.barcode.set_sensitive(not closed and not blocked)
-        self.quantity.set_sensitive(not closed and not blocked)
-        self.sale_items.set_sensitive(not closed and not blocked)
-        self.advanced_search.set_sensitive(not closed and not blocked)
-        if not closed and not blocked:
-            self.barcode.grab_focus()
+        self._set_sale_sensitive(not closed and not blocked)
 
     def set_open_inventory(self):
-        self.TillOpen.set_sensitive(False)
-        self.Sales.set_sensitive(False)
-        self.barcode.set_sensitive(False)
-        self.quantity.set_sensitive(False)
-        self.sale_items.set_sensitive(False)
-        self.advanced_search.set_sensitive(False)
+        self._set_sale_sensitive(False)
 
     def _update_widgets(self):
         has_sale_items = len(self.sale_items) >= 1
@@ -855,9 +855,9 @@ class PosApp(AppWindow):
             return
 
         # We dont have an ecf. Disable till related operations
-        self.TillOpen.set_sensitive(has_ecf)
-        self.TillClose.set_sensitive(has_ecf)
-        self.barcode.set_sensitive(has_ecf)
-        self.quantity.set_sensitive(has_ecf)
-        self.sale_items.set_sensitive(has_ecf)
-        self.advanced_search.set_sensitive(has_ecf)
+        self._set_sale_sensitive(False)
+        self.TillOpen.set_sensitive(False)
+
+        # It's possible to do a Sangria from the Sale search,
+        # disable it for now
+        self.Sales.set_sensitive(False)
