@@ -55,9 +55,10 @@
                                 <property name="label" translatable="yes"></property>
                                 <property name="visible">True</property>
                                 <property name="wrap">True</property>
+                                <property name="wrap-mode">word</property>
                                 <property name="xalign">0.1</property>
                                 <property name="yalign">0.1</property>
-                                <property name="width_chars">35</property>
+                                <property name="width_chars">40</property>
                             </object>
                             <packing>
                                 <property name="position">1</property>

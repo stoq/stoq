@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -31,46 +31,40 @@ from stoqlib.lib.interfaces import IApplicationDescriptions
 
 _ = gettext.gettext
 
-# FIXME: Find a better description for apps. I just put here the
-#        english translation/adaptation of the brazilian portuguese
-#        translation on launchpad. hackedbellini 05-06-2011
 _APPLICATIONS = {
     'admin' : (_("Administrative"),
-               _("Application for system administration "
-                 "and configuration."),
+               _("Administer the branches, users, employees and configure system "
+                 "parameters."),
                'stoq-admin-app'),
     'financial' : (_("Financial"),
-                   _("Application for financial management."),
+                   _("Control accounts and financial transactions."),
                    'stoq-payable-app'),
     'inventory' : (_("Inventory"),
-                   _("Application for stock auditing and adjustment."),
+                   _("Audit and adjust the product stock."),
                    'stoq-inventory-app'),
     'payable' : (_("Accounts Payable"),
-                 _("Application for management of payments to pay."),
+                 _("Manage payment that needs to be paid."),
                  'stoq-payable-app'),
     'pos' : (_("Point of Sales"),
-             _("Application for selling products/services and "
-               "fiscal coupon emission."),
+             _("Terminal and cash register for selling products and services."),
              'stoq-pos-app'),
     'production' : (_("Production"),
-                    _("Application for management of the production process."),
+                    _("Manage the production process."),
                     'stoq-production-app'),
     'purchase' : (_("Purchase"),
-                  _("Application for management of purchases "
-                  "and product/service registration"),
+                  _("Create purchase orders and quotes"),
                     'stoq-purchase-app'),
     'receivable' : (_("Accounts Receivable"),
-                    _("Application for management of payments to receive."),
+                    _("Manage payments that needs to be received."),
                     'stoq-bills'),
     'sales' : (_("Sales"),
-               _("Application for quotes management and creation "
-                 "and commission calculation."),
+               _("Quotes management and commission calculation."),
                'stoq-sales-app'),
     'stock' : (_("Stock"),
-               _("Application for stock management."),
+               _("Stock management, receive products and transfer them between branches."),
                'stoq-stock-app'),
     'till' : (_("Till"),
-              _("Application for till management."),
+              _("Control tills and their workflow."),
               'stoq-till-app'),
 }
 
