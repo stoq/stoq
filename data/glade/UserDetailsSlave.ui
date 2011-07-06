@@ -1,15 +1,6 @@
 <?xml version="1.0"?>
 <!--*- mode: xml -*-->
 <interface>
-  <object class="GtkSizeGroup" id="userdetails_size_group">
-    <property name="mode">horizontal</property>
-    <widgets>
-      <widget name="username_lbl"/>
-      <widget name="kiwilabel1"/>
-      <widget name="profile"/>
-      <widget name="role"/>
-    </widgets>
-  </object>
   <object class="GtkWindow" id="UserDetailsSlave">
     <property name="default_height">250</property>
     <property name="default_width">440</property>
@@ -57,9 +48,8 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyLabel" id="kiwilabel1">
+          <object class="ProxyLabel" id="role_lbl">
             <property name="label" translatable="yes">Role:</property>
-            <property name="model_attribute">kiwilabel1</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
