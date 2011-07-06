@@ -67,7 +67,6 @@
             <child>
               <object class="ProxyEntry" id="salesperson_name">
                 <property name="data_type">unicode</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">salesperson_name</property>
                 <property name="visible">True</property>
               </object>
@@ -89,7 +88,6 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="transporter_button">
-                    <property name="is_focus">True</property>
                     <property name="label" translatable="yes">A_dd/Edit Transporter...</property>
                     <property name="use_underline">True</property>
                     <property name="visible">True</property>
@@ -150,7 +148,6 @@
                 <child>
                   <object class="ProxyTextView" id="notes">
                     <property name="data_type">unicode</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">notes</property>
                     <property name="visible">True</property>
                   </object>
@@ -170,7 +167,6 @@
                 <property name="xscale">0.0</property>
                 <child>
                   <object class="GtkButton" id="print_button">
-                    <property name="is_focus">True</property>
                     <property name="label">gtk-print</property>
                     <property name="use_stock">True</property>
                     <property name="visible">True</property>
@@ -187,7 +183,6 @@
             </child>
             <child>
               <object class="GtkCheckButton" id="receive_now">
-                <property name="is_focus">True</property>
                 <property name="label" translatable="yes">Receive all products now.</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>

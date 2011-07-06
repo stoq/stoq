@@ -43,7 +43,6 @@
           <object class="GtkRadioButton" id="reductions_radio_button">
             <property name="active">False</property>
             <property name="group">date_radio_button</property>
-            <property name="is_focus">True</property>
             <property name="label" translatable="yes">Reductions</property>
             <property name="visible">True</property>
           </object>
@@ -137,7 +136,6 @@
               <object class="ProxySpinButton" id="start_reductions_number">
                 <property name="adjustment">adjustment1</property>
                 <property name="data_type">int</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">start_reductions_number</property>
                 <property name="numeric">True</property>
                 <property name="text" translatable="yes">1</property>

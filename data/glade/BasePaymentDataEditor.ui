@@ -67,7 +67,6 @@
             <child>
               <object class="ProxyEntry" id="value">
                 <property name="data_type">Decimal</property>
-                <property name="is_focus">True</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">value</property>
                 <property name="visible">True</property>
@@ -85,7 +84,6 @@
             <child>
               <object class="ProxyEntry" id="payment_number">
                 <property name="data_type">str</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">payment_number</property>
                 <property name="visible">True</property>
                 <property name="width_chars">10</property>

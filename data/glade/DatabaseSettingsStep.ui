@@ -95,7 +95,6 @@
                 <child>
                   <object class="ProxyEntry" id="address">
                     <property name="visible">True</property>
-                    <property name="is_focus">True</property>
                     <property name="width_chars">14</property>
                     <property name="model_attribute">address</property>
                     <property name="data_type">str</property>
@@ -113,7 +112,6 @@
                     <child>
                       <object class="ProxyEntry" id="port">
                         <property name="visible">True</property>
-                        <property name="is_focus">True</property>
                         <property name="width_chars">5</property>
                         <property name="xalign">1</property>
                         <property name="model_attribute">port</property>
@@ -173,7 +171,6 @@
                 <child>
                   <object class="ProxyEntry" id="dbname">
                     <property name="visible">True</property>
-                    <property name="is_focus">True</property>
                     <property name="width_chars">13</property>
                     <property name="model_attribute">dbname</property>
                     <property name="data_type">str</property>
@@ -188,7 +185,6 @@
                 <child>
                   <object class="ProxyEntry" id="username">
                     <property name="visible">True</property>
-                    <property name="is_focus">True</property>
                     <property name="width_chars">14</property>
                     <property name="model_attribute">username</property>
                     <property name="data_type">str</property>
@@ -230,7 +226,6 @@
                 <child>
                   <object class="ProxyEntry" id="password">
                     <property name="visible">True</property>
-                    <property name="is_focus">True</property>
                     <property name="visibility">False</property>
                     <property name="width_chars">10</property>
                     <property name="model_attribute">password</property>

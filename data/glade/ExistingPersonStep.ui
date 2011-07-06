@@ -49,7 +49,6 @@
             </child>
             <child>
               <object class="GtkRadioButton" id="existing_person_check">
-                <property name="is_focus">True</property>
                 <property name="label" translatable="yes">Existing client</property>
                 <property name="visible">True</property>
               </object>
@@ -60,7 +59,6 @@
             </child>
             <child>
               <object class="ObjectList" id="person_list">
-                <property name="is_focus">True</property>
                 <property name="selection_mode">single</property>
                 <property name="shadow_type">in</property>
                 <property name="vscrollbar_policy">automatic</property>

@@ -268,7 +268,6 @@
             <child>
               <object class="ObjectList" id="payment_info_list">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
               </object>
             </child>
           </object>

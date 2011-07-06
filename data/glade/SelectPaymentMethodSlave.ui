@@ -20,7 +20,6 @@
                 <child>
                   <object class="ProxyRadioButton" id="cash_check">
                     <property name="data_type">bool</property>
-                    <property name="is_focus">True</property>
                     <property name="label" translatable="yes">C_ash</property>
                     <property name="model_attribute">cash_check</property>
                     <property name="use_underline">True</property>

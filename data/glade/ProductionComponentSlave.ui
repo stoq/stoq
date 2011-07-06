@@ -30,7 +30,6 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkButton" id="export_csv_button">
-                <property name="is_focus">True</property>
                 <property name="label" translatable="yes">CSV...</property>
                 <property name="visible">True</property>
               </object>

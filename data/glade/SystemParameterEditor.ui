@@ -84,7 +84,6 @@
               <object class="ProxyLabel" id="parameter_desc">
                 <property name="can_focus">True</property>
                 <property name="data_type">str</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">long_desc</property>
                 <property name="selectable">True</property>
                 <property name="use_markup">False</property>

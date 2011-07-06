@@ -31,7 +31,6 @@
                 <property name="active">True</property>
                 <property name="border_width">1</property>
                 <property name="data_type">bool</property>
-                <property name="is_focus">True</property>
                 <property name="label" translatable="yes"> No Commission</property>
                 <property name="model_attribute">commission_check_btn</property>
                 <property name="visible">True</property>
@@ -63,7 +62,6 @@
                         <property name="adjustment">adjustment1</property>
                         <property name="data_type">Decimal</property>
                         <property name="digits">2</property>
-                        <property name="is_focus">True</property>
                         <property name="model_attribute">commission_spin</property>
                         <property name="sensitive">False</property>
                         <property name="visible">True</property>

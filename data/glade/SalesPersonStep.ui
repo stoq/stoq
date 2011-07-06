@@ -125,7 +125,6 @@
             <child>
               <object class="GtkButton" id="create_client">
                 <property name="visible">True</property>
-                <property name="is_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_action_appearance">False</property>
                 <property name="relief">none</property>
@@ -150,7 +149,6 @@
             <child>
               <object class="GtkButton" id="create_transporter">
                 <property name="visible">True</property>
-                <property name="is_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_action_appearance">False</property>
                 <property name="relief">none</property>
@@ -213,7 +211,6 @@
             <child>
               <object class="ProxySpinButton" id="invoice_number">
                 <property name="visible">True</property>
-                <property name="is_focus">True</property>
                 <property name="progress_pulse_step">1</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
@@ -261,7 +258,6 @@
             <child>
               <object class="GtkButton" id="create_cfop">
                 <property name="visible">True</property>
-                <property name="is_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_action_appearance">False</property>
                 <property name="relief">none</property>
@@ -409,7 +405,6 @@
                       <object class="GtkButton" id="notes_button">
                         <property name="label" translatable="yes">Notes...</property>
                         <property name="visible">True</property>
-                        <property name="is_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="use_action_appearance">False</property>
                       </object>

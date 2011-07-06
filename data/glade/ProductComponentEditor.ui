@@ -59,7 +59,6 @@
             <property name="adjustment">adjustment1</property>
             <property name="data_type">Decimal</property>
             <property name="digits">2</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">quantity</property>
             <property name="visible">True</property>
           </object>

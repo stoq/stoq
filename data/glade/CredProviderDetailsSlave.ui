@@ -157,7 +157,6 @@
               <object class="ProxyEntry" id="provider_id">
                 <property name="data_type">unicode</property>
                 <property name="editable">False</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">provider_id</property>
                 <property name="sensitive">False</property>
                 <property name="visible">True</property>
@@ -207,7 +206,6 @@
                     <property name="climb_rate">1.0</property>
                     <property name="data_type">Decimal</property>
                     <property name="digits">2</property>
-                    <property name="is_focus">True</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">credit_fee</property>
                     <property name="visible">True</property>
@@ -243,7 +241,6 @@
                     <property name="climb_rate">1.0</property>
                     <property name="data_type">Decimal</property>
                     <property name="digits">2</property>
-                    <property name="is_focus">True</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">credit_installments_store_fee</property>
                     <property name="visible">True</property>
@@ -279,7 +276,6 @@
                     <property name="climb_rate">1.0</property>
                     <property name="data_type">Decimal</property>
                     <property name="digits">2</property>
-                    <property name="is_focus">True</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">credit_installments_provider_fee</property>
                     <property name="visible">True</property>
@@ -414,7 +410,6 @@
               <object class="ProxySpinButton" id="closing_day">
                 <property name="adjustment">adjustment6</property>
                 <property name="data_type">int</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">closing_day</property>
                 <property name="text" translatable="yes">1</property>
                 <property name="visible">True</property>
@@ -436,7 +431,6 @@
                     <property name="climb_rate">1.0</property>
                     <property name="data_type">Decimal</property>
                     <property name="digits">2</property>
-                    <property name="is_focus">True</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">debit_fee</property>
                     <property name="visible">True</property>
@@ -472,7 +466,6 @@
                     <property name="climb_rate">1.0</property>
                     <property name="data_type">Decimal</property>
                     <property name="digits">2</property>
-                    <property name="is_focus">True</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">debit_pre_dated_fee</property>
                     <property name="visible">True</property>
@@ -508,7 +501,6 @@
                     <property name="climb_rate">1.0</property>
                     <property name="data_type">Decimal</property>
                     <property name="digits">2</property>
-                    <property name="is_focus">True</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">monthly_fee</property>
                     <property name="visible">True</property>

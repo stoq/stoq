@@ -167,7 +167,6 @@
                 <child>
                   <object class="ProxyTextView" id="reason">
                     <property name="data_type">unicode</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">reason</property>
                     <property name="visible">True</property>
                   </object>

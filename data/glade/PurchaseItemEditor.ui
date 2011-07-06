@@ -140,7 +140,6 @@
               <object class="ProxySpinButton" id="quantity_sold">
                 <property name="adjustment">adjustment1</property>
                 <property name="data_type">Decimal</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">quantity_sold</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="visible">True</property>
@@ -158,7 +157,6 @@
               <object class="ProxySpinButton" id="cost">
                 <property name="adjustment">adjustment2</property>
                 <property name="data_type">currency</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">cost</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="visible">True</property>

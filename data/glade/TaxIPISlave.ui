@@ -165,7 +165,6 @@ tribut&#xE1;vel:</property>
         <child>
           <object class="ProxyEntry" id="v_unid">
             <property name="data_type">Decimal</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">v_unid</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -260,7 +259,6 @@ legal do ipi:</property>
         <child>
           <object class="ProxyEntry" id="cl_enq">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">cl_enq</property>
             <property name="visible">True</property>
           </object>
@@ -285,7 +283,6 @@ legal do ipi:</property>
         <child>
           <object class="ProxyEntry" id="c_enq">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">c_enq</property>
             <property name="visible">True</property>
           </object>
@@ -300,7 +297,6 @@ legal do ipi:</property>
           <object class="ProxySpinButton" id="p_ipi">
             <property name="adjustment">adjustment2</property>
             <property name="data_type">Decimal</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">p_ipi</property>
             <property name="text">0</property>
             <property name="visible">True</property>
@@ -315,7 +311,6 @@ legal do ipi:</property>
         <child>
           <object class="ProxyEntry" id="q_unid">
             <property name="data_type">Decimal</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">q_unid</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -331,7 +326,6 @@ legal do ipi:</property>
           <object class="ProxyEntry" id="v_ipi">
             <property name="data_type">currency</property>
             <property name="editable">False</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">v_ipi</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>

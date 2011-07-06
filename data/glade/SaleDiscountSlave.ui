@@ -38,7 +38,6 @@
             <child>
               <object class="ProxyRadioButton" id="discount_perc_ck">
                 <property name="data_type">bool</property>
-                <property name="is_focus">True</property>
                 <property name="label" translatable="yes"/>
                 <property name="model_attribute">discount_perc_ck</property>
                 <property name="visible">True</property>
@@ -52,7 +51,6 @@
                 <property name="active">False</property>
                 <property name="data_type">bool</property>
                 <property name="group">discount_perc_ck</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">discount_value_ck</property>
                 <property name="visible">True</property>
               </object>
@@ -69,7 +67,6 @@
                 <child>
                   <object class="ProxyEntry" id="discount_perc">
                     <property name="data_type">Decimal</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">discount_percentage</property>
                     <property name="visible">True</property>
                     <property name="width_request">80</property>
@@ -104,7 +101,6 @@
                 <child>
                   <object class="ProxyEntry" id="discount_value">
                     <property name="data_type">currency</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">discount_value</property>
                     <property name="visible">True</property>
                     <property name="width_request">80</property>

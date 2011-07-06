@@ -14,7 +14,6 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkButton" id="print_price_button">
-            <property name="is_focus">True</property>
             <property name="label">gtk-print</property>
             <property name="use_stock">True</property>
             <property name="visible">True</property>

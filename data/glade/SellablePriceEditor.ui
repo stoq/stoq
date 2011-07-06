@@ -174,7 +174,6 @@
             <child>
               <object class="ProxyEntry" id="price">
                 <property name="data_type">currency</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">price</property>
                 <property name="visible">True</property>
                 <property name="width_chars">5</property>
@@ -209,7 +208,6 @@
                     <property name="adjustment">adjustment2</property>
                     <property name="data_type">Decimal</property>
                     <property name="digits">2</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">max_discount</property>
                     <property name="visible">True</property>
                     <property name="width_chars">6</property>

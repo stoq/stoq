@@ -60,7 +60,6 @@
             <child>
               <object class="ProxyEntry" id="reason">
                 <property name="data_type">unicode</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">description</property>
                 <property name="visible">True</property>
               </object>

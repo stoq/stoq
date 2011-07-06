@@ -178,7 +178,6 @@
         <child>
           <object class="ProxyEntry" id="location">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">location</property>
             <property name="visible">True</property>
           </object>
@@ -191,7 +190,6 @@
         <child>
           <object class="ProxyEntry" id="part_number">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">part_number</property>
             <property name="visible">True</property>
           </object>
@@ -244,7 +242,6 @@
                 <property name="adjustment">adjustment3</property>
                 <property name="data_type">Decimal</property>
                 <property name="digits">2</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">minimum_quantity</property>
                 <property name="visible">True</property>
               </object>
@@ -272,7 +269,6 @@
         <child>
           <object class="ProxyEntry" id="ncm">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">ncm</property>
             <property name="visible">True</property>
           </object>
@@ -374,7 +370,6 @@
         <child>
           <object class="ProxyEntry" id="manufacturer">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">manufacturer</property>
             <property name="visible">True</property>
           </object>
@@ -411,7 +406,6 @@
                 <property name="adjustment">adjustment5</property>
                 <property name="data_type">Decimal</property>
                 <property name="digits">3</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">weight</property>
                 <property name="visible">True</property>
               </object>
@@ -445,7 +439,6 @@
                 <property name="adjustment">adjustment6</property>
                 <property name="data_type">Decimal</property>
                 <property name="digits">2</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">maximum_quantity</property>
                 <property name="visible">True</property>
               </object>
@@ -473,7 +466,6 @@
         <child>
           <object class="ProxyEntry" id="ex_tipi">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">ex_tipi</property>
             <property name="visible">True</property>
           </object>

@@ -99,7 +99,6 @@
             <child>
               <object class="ProxyEntry" id="occupation">
                 <property name="data_type">unicode</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">occupation</property>
                 <property name="visible">True</property>
               </object>
@@ -113,7 +112,6 @@
             <child>
               <object class="ProxyEntry" id="mother_name">
                 <property name="data_type">unicode</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">mother_name</property>
                 <property name="visible">True</property>
               </object>
@@ -127,7 +125,6 @@
             <child>
               <object class="ProxyEntry" id="father_name">
                 <property name="data_type">unicode</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">father_name</property>
                 <property name="visible">True</property>
               </object>
@@ -233,7 +230,6 @@
             <child>
               <object class="ProxyEntry" id="birth_state">
                 <property name="data_type">unicode</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">birth_state</property>
                 <property name="visible">True</property>
               </object>
@@ -247,7 +243,6 @@
             <child>
               <object class="ProxyEntry" id="birth_city">
                 <property name="data_type">unicode</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">birth_city</property>
                 <property name="visible">True</property>
               </object>
@@ -261,7 +256,6 @@
             <child>
               <object class="ProxyEntry" id="birth_country">
                 <property name="data_type">unicode</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">birth_country</property>
                 <property name="visible">True</property>
               </object>
@@ -275,7 +269,6 @@
             <child>
               <object class="ProxyEntry" id="spouse_name">
                 <property name="data_type">unicode</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">spouse_name</property>
                 <property name="visible">True</property>
               </object>

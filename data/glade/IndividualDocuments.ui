@@ -42,7 +42,6 @@ Local:</property>
         <child>
           <object class="ProxyEntry" id="cpf">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="mask" translatable="yes">000.000.000-00</property>
             <property name="model_attribute">cpf</property>
             <property name="text" translatable="yes">   .   .   -  </property>

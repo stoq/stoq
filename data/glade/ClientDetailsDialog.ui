@@ -4,18 +4,15 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="ClientDetailsDialog">
-    <property name="can_focus">False</property>
     <property name="border_width">6</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <child>
           <object class="GtkTable" id="table1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="n_rows">2</property>
             <property name="n_columns">4</property>
             <property name="column_spacing">6</property>
@@ -23,7 +20,6 @@
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Client:</property>
               </object>
@@ -31,7 +27,6 @@
             <child>
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Last Purchase Date:</property>
               </object>
@@ -43,7 +38,6 @@
             <child>
               <object class="ProxyLabel" id="client">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">name</property>
@@ -56,7 +50,6 @@
             <child>
               <object class="ProxyLabel" id="last_purchase_date">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="data_type">date</property>
                 <property name="model_attribute">last_purchase_date</property>
@@ -71,7 +64,6 @@
             <child>
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Status:</property>
               </object>
@@ -83,7 +75,6 @@
             <child>
               <object class="ProxyLabel" id="status">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">status_string</property>
@@ -96,13 +87,10 @@
             <child>
               <object class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkButton" id="further_details_button">
                     <property name="label" translatable="yes">Further Details</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="is_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_action_appearance">False</property>
                   </object>
@@ -137,7 +125,6 @@
             <child>
               <object class="GtkVBox" id="sales_vbox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <child>
                   <object class="ObjectList" id="sales_list">
                     <property name="visible">True</property>
@@ -156,7 +143,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Sales</property>
               </object>
               <packing>
@@ -177,7 +163,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label5">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Products</property>
               </object>
               <packing>
@@ -199,7 +184,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label6">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Services</property>
               </object>
               <packing>
@@ -221,7 +205,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label7">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Payments</property>
               </object>
               <packing>

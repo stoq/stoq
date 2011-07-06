@@ -4,7 +4,6 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="SaleQuoteItemEditor">
-    <property name="can_focus">False</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <property name="mnemonics_visible">False</property>
@@ -15,13 +14,11 @@
         <child>
           <object class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="border_width">6</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkTable" id="table1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="n_rows">5</property>
                 <property name="n_columns">4</property>
                 <property name="column_spacing">6</property>
@@ -29,7 +26,6 @@
                 <child>
                   <object class="GtkLabel" id="label3">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Order:</property>
                   </object>
@@ -41,7 +37,6 @@
                 <child>
                   <object class="GtkLabel" id="label2">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Description:</property>
                   </object>
@@ -55,7 +50,6 @@
                 <child>
                   <object class="GtkLabel" id="sale_quantity_lbl">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Sale Quantity:</property>
                   </object>
@@ -69,7 +63,6 @@
                 <child>
                   <object class="GtkLabel" id="label4">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Price:</property>
                   </object>
@@ -81,7 +74,6 @@
                 <child>
                   <object class="GtkLabel" id="cfop_label">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">CFOP:</property>
                   </object>
@@ -93,7 +85,6 @@
                 <child>
                   <object class="GtkLabel" id="sale">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">0</property>
                   </object>
                   <packing>
@@ -106,7 +97,6 @@
                 <child>
                   <object class="ProxyLabel" id="description">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">0</property>
                     <property name="use_markup">True</property>
                     <property name="model_attribute">description</property>
@@ -164,7 +154,6 @@
                 <child>
                   <object class="ProxyComboEntry" id="cfop">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="data_type">object</property>
                     <property name="model_attribute">cfop</property>
                   </object>
@@ -178,7 +167,6 @@
                 <child>
                   <object class="GtkLabel" id="return_quantity_lbl">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Return Quantity:</property>
                   </object>
@@ -193,7 +181,6 @@
                 <child>
                   <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Quantity:</property>
                   </object>
@@ -208,7 +195,6 @@
                 <child>
                   <object class="GtkLabel" id="label6">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Total:</property>
                   </object>
@@ -269,7 +255,6 @@
                 <child>
                   <object class="ProxyLabel" id="total">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="use_markup">True</property>
                     <property name="data_type">currency</property>
@@ -294,7 +279,6 @@
         <child type="tab">
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="label" translatable="yes">Basic</property>
           </object>
           <packing>

@@ -37,7 +37,6 @@
         <child>
           <object class="ProxyEntry" id="description">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">description</property>
             <property name="visible">True</property>
@@ -51,7 +50,6 @@
         <child>
           <object class="ProxyEntry" id="tax_value">
             <property name="data_type">Decimal</property>
-            <property name="is_focus">True</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">tax_value</property>
             <property name="visible">True</property>

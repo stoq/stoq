@@ -80,7 +80,6 @@
                 <child>
                   <object class="ProxyEntry" id="invoice_number">
                     <property name="data_type">int</property>
-                    <property name="is_focus">True</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">invoice_number</property>
                     <property name="visible">True</property>
@@ -174,7 +173,6 @@
             <child>
               <object class="ProxyButton" id="adjust_button">
                 <property name="data_type">str</property>
-                <property name="is_focus">True</property>
                 <property name="label" translatable="yes">_Adjust</property>
                 <property name="model_attribute">adjust_button</property>
                 <property name="use_underline">True</property>

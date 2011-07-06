@@ -6,19 +6,16 @@
   <object class="GtkWindow" id="LoginDialog">
     <property name="width_request">280</property>
     <property name="height_request">230</property>
-    <property name="can_focus">False</property>
     <property name="title" context="yes">Access Control</property>
     <property name="window_position">center-always</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="border_width">5</property>
         <property name="spacing">5</property>
         <child>
           <object class="GtkEventBox" id="logo_container">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -33,11 +30,9 @@
         <child>
           <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <child>
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -48,12 +43,10 @@
             <child>
               <object class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="spacing">12</property>
                 <child>
                   <object class="GtkTable" id="table1">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="border_width">5</property>
                     <property name="n_rows">2</property>
                     <property name="n_columns">2</property>
@@ -62,7 +55,6 @@
                     <child>
                       <object class="GtkLabel" id="label1">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes" context="yes">_Username:</property>
                         <property name="use_underline">True</property>
@@ -75,7 +67,6 @@
                     <child>
                       <object class="GtkLabel" id="label2">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes" context="yes">_Password:</property>
                         <property name="use_underline">True</property>
@@ -143,7 +134,6 @@
             <child>
               <object class="GtkLabel" id="label5">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -161,7 +151,6 @@
         <child>
           <object class="ProxyLabel" id="notification_label">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="yalign">0</property>
             <property name="justify">center</property>
             <property name="wrap">True</property>
@@ -176,11 +165,9 @@
         <child>
           <object class="GtkHBox" id="hbox2">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <child>
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -191,14 +178,12 @@
             <child>
               <object class="GtkHButtonBox" id="hbuttonbox1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="spacing">5</property>
                 <property name="layout_style">end</property>
                 <child>
                   <object class="GtkButton" id="quit_button">
                     <property name="label">gtk-quit</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="receives_default">False</property>
                     <property name="use_action_appearance">False</property>
                     <property name="use_stock">True</property>
@@ -213,7 +198,6 @@
                   <object class="GtkButton" id="ok_button">
                     <property name="label">gtk-ok</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="receives_default">False</property>
                     <property name="use_action_appearance">False</property>
                     <property name="use_stock">True</property>

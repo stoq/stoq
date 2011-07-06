@@ -73,7 +73,6 @@
         <child>
           <object class="ProxyEntry" id="username">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">username</property>
             <property name="visible">True</property>
@@ -116,7 +115,6 @@
         </child>
         <child>
           <object class="GtkButton" id="change_password_button">
-            <property name="is_focus">True</property>
             <property name="visible">True</property>
             <child>
               <object class="GtkAlignment" id="GtkAlignment1">

@@ -48,7 +48,6 @@
         <child>
           <object class="ProxyEntry" id="fancy_name">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">fancy_name</property>
             <property name="visible">True</property>
           </object>
@@ -61,7 +60,6 @@
         <child>
           <object class="ProxyEntry" id="cnpj">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="mask" translatable="yes">00.000.000/0000-00</property>
             <property name="model_attribute">cnpj</property>
             <property name="text" translatable="yes">  .   .   /    -  </property>
@@ -78,7 +76,6 @@
         <child>
           <object class="ProxyEntry" id="city_registry">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">city_registry</property>
             <property name="visible">True</property>
           </object>

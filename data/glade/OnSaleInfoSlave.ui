@@ -50,7 +50,6 @@
                 <child>
                   <object class="ProxyEntry" id="on_sale_price">
                     <property name="data_type">currency</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">on_sale_price</property>
                     <property name="visible">True</property>
                     <property name="width_chars">5</property>
