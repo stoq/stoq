@@ -42,7 +42,6 @@
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkButton" id="history_button">
-                        <property name="is_focus">True</property>
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkAlignment" id="alignment2">
@@ -74,7 +73,6 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="print_button">
-                        <property name="is_focus">True</property>
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkAlignment" id="alignment6">

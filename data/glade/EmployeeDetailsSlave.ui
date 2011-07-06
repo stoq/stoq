@@ -94,7 +94,6 @@
                 <child>
                   <object class="ProxyEntry" id="registry_number">
                     <property name="data_type">unicode</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">registry_number</property>
                     <property name="visible">True</property>
                   </object>
@@ -162,7 +161,6 @@
                 <child>
                   <object class="ProxyEntry" id="workpermit_number">
                     <property name="data_type">unicode</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">number</property>
                     <property name="visible">True</property>
                   </object>
@@ -175,7 +173,6 @@
                 <child>
                   <object class="ProxyEntry" id="workpermit_serie">
                     <property name="data_type">unicode</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">series_number</property>
                     <property name="visible">True</property>
                   </object>
@@ -245,7 +242,6 @@
                 <child>
                   <object class="ProxyEntry" id="name">
                     <property name="data_type">int</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">bank_id</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
@@ -259,7 +255,6 @@
                 <child>
                   <object class="ProxyEntry" id="branch">
                     <property name="data_type">unicode</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">branch</property>
                     <property name="visible">True</property>
                   </object>
@@ -274,7 +269,6 @@
                 <child>
                   <object class="ProxyEntry" id="account">
                     <property name="data_type">unicode</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">account</property>
                     <property name="visible">True</property>
                   </object>
@@ -344,7 +338,6 @@
                 <child>
                   <object class="ProxyEntry" id="pis_number">
                     <property name="data_type">unicode</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">pis_number</property>
                     <property name="visible">True</property>
                   </object>
@@ -371,7 +364,6 @@
                 <child>
                   <object class="ProxyEntry" id="pis_bank">
                     <property name="data_type">unicode</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">pis_bank</property>
                     <property name="visible">True</property>
                   </object>
@@ -433,7 +425,6 @@ Number:</property>
                 <child>
                   <object class="ProxyEntry" id="education_level">
                     <property name="data_type">unicode</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">education_level</property>
                     <property name="visible">True</property>
                   </object>
@@ -446,7 +437,6 @@ Number:</property>
                 <child>
                   <object class="ProxyEntry" id="dependent_person_number">
                     <property name="data_type">int</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">dependent_person_number</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>

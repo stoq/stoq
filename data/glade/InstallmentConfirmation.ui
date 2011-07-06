@@ -283,7 +283,6 @@
                 <child>
                   <object class="GtkExpander" id="expander">
                     <property name="visible">True</property>
-                    <property name="is_focus">True</property>
                     <child>
                       <object class="GtkVBox" id="vbox3">
                         <property name="visible">True</property>
@@ -364,7 +363,6 @@
             <child>
               <object class="GtkButton" id="details_button">
                 <property name="visible">True</property>
-                <property name="is_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_action_appearance">False</property>
                 <property name="xalign">0</property>

@@ -87,7 +87,6 @@
         <child>
           <object class="ProxyEntry" id="description">
             <property name="visible">True</property>
-            <property name="is_focus">True</property>
             <property name="xalign">1</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">description</property>
@@ -117,7 +116,6 @@
         <child>
           <object class="ProxyEntry" id="value">
             <property name="visible">True</property>
-            <property name="is_focus">True</property>
             <property name="xalign">1</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">value</property>

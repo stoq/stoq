@@ -45,7 +45,6 @@
         <child>
           <object class="ProxyColorButton" id="color">
             <property name="data_type">str</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">color</property>
             <property name="visible">True</property>
           </object>

@@ -92,7 +92,6 @@
             <child>
               <object class="ProxyEntry" id="name">
                 <property name="visible">True</property>
-                <property name="is_focus">True</property>
                 <property name="data_type">unicode</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">name</property>
@@ -105,7 +104,6 @@
             <child>
               <object class="ProxyEntry" id="phone_number">
                 <property name="visible">True</property>
-                <property name="is_focus">True</property>
                 <property name="width_chars">6</property>
                 <property name="xalign">1</property>
                 <property name="data_type">unicode</property>
@@ -211,7 +209,6 @@
             <child>
               <object class="ProxyEntry" id="state_registry">
                 <property name="visible">True</property>
-                <property name="is_focus">True</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">state_registry</property>
               </object>
@@ -282,7 +279,6 @@
                 <child>
                   <object class="ProxyEntry" id="iss">
                     <property name="visible">True</property>
-                    <property name="is_focus">True</property>
                     <property name="max_length">6</property>
                     <property name="width_chars">3</property>
                     <property name="xalign">1</property>

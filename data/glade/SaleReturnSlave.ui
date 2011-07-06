@@ -260,7 +260,6 @@
             <child>
               <object class="ProxyEntry" id="invoice_number">
                 <property name="data_type">int</property>
-                <property name="is_focus">True</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">invoice_number</property>
                 <property name="visible">True</property>
@@ -279,7 +278,6 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkButton" id="new_order_button">
-                    <property name="is_focus">True</property>
                     <property name="label" translatable="yes">Details</property>
                     <property name="visible">True</property>
                   </object>
@@ -300,7 +298,6 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkButton" id="cancellation_details_button">
-                    <property name="is_focus">True</property>
                     <property name="label" translatable="yes">Details</property>
                     <property name="visible">True</property>
                   </object>
@@ -322,14 +319,12 @@
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="hscrollbar_policy">never</property>
-            <property name="is_focus">True</property>
             <property name="shadow_type">in</property>
             <property name="visible">True</property>
             <property name="vscrollbar_policy">automatic</property>
             <child>
               <object class="ProxyTextView" id="reason">
                 <property name="data_type">unicode</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">reason</property>
                 <property name="visible">True</property>
                 <property name="wrap_mode">word</property>

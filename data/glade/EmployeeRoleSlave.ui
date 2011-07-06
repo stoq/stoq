@@ -46,7 +46,6 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkButton" id="role_editor_button">
-                <property name="is_focus">True</property>
                 <property name="label" translatable="yes">A_dd/Edit Role...</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
@@ -81,7 +80,6 @@
         <child>
           <object class="ProxyEntry" id="salary">
             <property name="data_type">currency</property>
-            <property name="is_focus">True</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">salary</property>
             <property name="visible">True</property>

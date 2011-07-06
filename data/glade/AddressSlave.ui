@@ -44,7 +44,6 @@
                 <property name="data_type">bool</property>
                 <property name="focus_on_click">False</property>
                 <property name="height_request">0</property>
-                <property name="is_focus">True</property>
                 <property name="label" translatable="yes">Number:</property>
                 <property name="model_attribute">streetnumber_check</property>
                 <property name="relief">none</property>
@@ -90,7 +89,6 @@
         <child>
           <object class="ProxyEntry" id="street">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">street</property>
             <property name="visible">True</property>
@@ -106,7 +104,6 @@
             <child>
               <object class="ProxyEntry" id="streetnumber">
                 <property name="data_type">int</property>
-                <property name="is_focus">True</property>
                 <property name="mandatory">True</property>
                 <property name="max_length">9</property>
                 <property name="model_attribute">streetnumber</property>
@@ -168,7 +165,6 @@
           <object class="ProxyEntry" id="state">
             <property name="completion">True</property>
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">state</property>
             <property name="visible">True</property>

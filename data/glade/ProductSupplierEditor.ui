@@ -81,7 +81,6 @@ Information:</property>
             <property name="adjustment">adjustment1</property>
             <property name="data_type">currency</property>
             <property name="digits">2</property>
-            <property name="is_focus">True</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">base_cost</property>
             <property name="visible">True</property>
@@ -100,7 +99,6 @@ Information:</property>
               <object class="ProxySpinButton" id="lead_time">
                 <property name="adjustment">adjustment2</property>
                 <property name="data_type">int</property>
-                <property name="is_focus">True</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">lead_time</property>
                 <property name="text" translatable="yes">1</property>
@@ -222,7 +220,6 @@ Information:</property>
                 <property name="adjustment">adjustment3</property>
                 <property name="data_type">Decimal</property>
                 <property name="digits">2</property>
-                <property name="is_focus">True</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">minimum_purchase</property>
                 <property name="text" translatable="yes">1.00</property>

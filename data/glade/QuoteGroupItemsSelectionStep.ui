@@ -35,7 +35,6 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkButton" id="select_all_button">
-                <property name="is_focus">True</property>
                 <property name="label" translatable="yes">_Select All</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
@@ -53,7 +52,6 @@
             </child>
             <child>
               <object class="GtkButton" id="create_order_button">
-                <property name="is_focus">True</property>
                 <property name="label" translatable="yes">C_reate Orders</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
@@ -64,7 +62,6 @@
             </child>
             <child>
               <object class="GtkButton" id="cancel_group_button">
-                <property name="is_focus">True</property>
                 <property name="label" translatable="yes">Cancel _Group</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>

@@ -188,8 +188,6 @@
                   <object class="GtkButton" id="details_button">
                     <property name="label" translatable="yes">Details</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="is_focus">True</property>
                     <property name="receives_default">False</property>
                   </object>
                   <packing>
@@ -212,8 +210,6 @@
                   <object class="GtkButton" id="status_details_button">
                     <property name="label" translatable="yes">Details</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="is_focus">True</property>
                     <property name="receives_default">False</property>
                   </object>
                   <packing>

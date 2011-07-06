@@ -15,7 +15,6 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkButton" id="return_sale_button">
-                <property name="is_focus">True</property>
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkAlignment" id="alignment3">
@@ -47,7 +46,6 @@
             </child>
             <child>
               <object class="GtkButton" id="edit_button">
-                <property name="is_focus">True</property>
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkAlignment" id="alignmenta">
@@ -82,7 +80,6 @@
             </child>
             <child>
               <object class="GtkButton" id="details_button">
-                <property name="is_focus">True</property>
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkAlignment" id="alignment6">
@@ -117,7 +114,6 @@
             </child>
             <child>
               <object class="GtkButton" id="print_button">
-                <property name="is_focus">True</property>
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkAlignment" id="alignment61">

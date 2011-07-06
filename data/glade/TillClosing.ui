@@ -133,7 +133,6 @@
             <child>
               <object class="ProxyEntry" id="value">
                 <property name="data_type">currency</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">value</property>
                 <property name="visible">True</property>
                 <property name="width_chars">6</property>

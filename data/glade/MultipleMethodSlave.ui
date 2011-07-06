@@ -38,7 +38,6 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkRadioButton" id="cash_radio">
-                    <property name="is_focus">True</property>
                     <property name="label" translatable="yes">_Cash</property>
                     <property name="use_underline">True</property>
                     <property name="visible">True</property>
@@ -67,7 +66,6 @@
                 <child>
                   <object class="ProxyEntry" id="base_value">
                     <property name="data_type">Decimal</property>
-                    <property name="is_focus">True</property>
                     <property name="model_attribute">base_value</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>

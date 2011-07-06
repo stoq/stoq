@@ -84,7 +84,6 @@
         <child>
           <object class="ProxyEntry" id="constant_name">
             <property name="data_type">unicode</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">constant_name</property>
             <property name="visible">True</property>
           </object>
@@ -128,7 +127,6 @@
         <child>
           <object class="ProxyEntry" id="device_value_hex">
             <property name="data_type">str</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">device_value_hex</property>
             <property name="visible">True</property>
           </object>

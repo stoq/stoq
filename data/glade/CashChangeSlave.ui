@@ -54,7 +54,6 @@
             <child>
               <object class="ProxyEntry" id="received_value">
                 <property name="data_type">currency</property>
-                <property name="is_focus">True</property>
                 <property name="model_attribute">received_value</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>

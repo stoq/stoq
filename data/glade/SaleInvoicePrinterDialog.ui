@@ -28,7 +28,6 @@
           <object class="ProxySpinButton" id="invoice_number">
             <property name="adjustment">adjustment1</property>
             <property name="data_type">int</property>
-            <property name="is_focus">True</property>
             <property name="model_attribute">invoice_number</property>
             <property name="text" translatable="yes">1</property>
             <property name="visible">True</property>

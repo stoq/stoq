@@ -49,7 +49,6 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="view_products_button">
-                    <property name="is_focus">True</property>
                     <property name="label" translatable="yes">_View Products</property>
                     <property name="sensitive">False</property>
                     <property name="use_underline">True</property>
@@ -80,7 +79,6 @@
               <object class="ProxyCheckButton" id="include_all_products">
                 <property name="active">True</property>
                 <property name="data_type">bool</property>
-                <property name="is_focus">True</property>
                 <property name="label" translatable="yes">Include all products in quotes</property>
                 <property name="model_attribute">include_all_products</property>
                 <property name="visible">True</property>

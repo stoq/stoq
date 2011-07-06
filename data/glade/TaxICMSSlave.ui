@@ -200,7 +200,6 @@
         <child>
           <object class="ProxySpinButton" id="p_icms">
             <property name="visible">True</property>
-            <property name="is_focus">True</property>
             <property name="adjustment"></property>
             <property name="model_attribute">p_icms</property>
             <property name="data_type">Decimal</property>
@@ -246,7 +245,6 @@
         <child>
           <object class="ProxyEntry" id="v_icms">
             <property name="visible">True</property>
-            <property name="is_focus">True</property>
             <property name="editable">False</property>
             <property name="invisible_char"> </property>
             <property name="xalign">1</property>
@@ -264,7 +262,6 @@
         <child>
           <object class="ProxySpinButton" id="p_cred_sn">
             <property name="visible">True</property>
-            <property name="is_focus">True</property>
             <property name="invisible_char"> </property>
             <property name="invisible_char_set">True</property>
             <property name="adjustment"></property>
@@ -294,7 +291,6 @@
         <child>
           <object class="ProxyEntry" id="v_cred_icms_sn">
             <property name="visible">True</property>
-            <property name="is_focus">True</property>
             <property name="invisible_char"> </property>
             <property name="xalign">1</property>
             <property name="invisible_char_set">True</property>
@@ -456,7 +452,6 @@
         <child>
           <object class="ProxySpinButton" id="p_mva_st">
             <property name="visible">True</property>
-            <property name="is_focus">True</property>
             <property name="adjustment"></property>
             <property name="model_attribute">p_mva_st</property>
             <property name="data_type">Decimal</property>
@@ -488,7 +483,6 @@
         <child>
           <object class="ProxyEntry" id="v_icms_st">
             <property name="visible">True</property>
-            <property name="is_focus">True</property>
             <property name="editable">False</property>
             <property name="invisible_char"> </property>
             <property name="xalign">1</property>

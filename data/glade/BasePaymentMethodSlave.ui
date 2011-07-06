@@ -53,7 +53,6 @@
                       <object class="ProxySpinButton" id="installments_number">
                         <property name="adjustment">adjustment1</property>
                         <property name="data_type">int</property>
-                        <property name="is_focus">True</property>
                         <property name="model_attribute">installments_number</property>
                         <property name="text" translatable="yes">0</property>
                         <property name="visible">True</property>
@@ -156,7 +155,6 @@
                           <object class="ProxySpinButton" id="intervals">
                             <property name="adjustment">adjustment2</property>
                             <property name="data_type">int</property>
-                            <property name="is_focus">True</property>
                             <property name="model_attribute">intervals</property>
                             <property name="text" translatable="yes">0</property>
                             <property name="visible">True</property>

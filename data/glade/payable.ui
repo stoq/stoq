@@ -5,24 +5,20 @@
   <object class="GtkWindow" id="payable">
     <property name="width_request">800</property>
     <property name="height_request">570</property>
-    <property name="can_focus">False</property>
     <property name="title" translatable="yes">payable</property>
     <property name="window_position">center</property>
     <child>
       <object class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <child>
           <placeholder/>
         </child>
         <child>
           <object class="GtkVBox" id="list_vbox">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <child>
               <object class="GtkEventBox" id="search_holder">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -33,13 +29,11 @@
             <child>
               <object class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="border_width">5</property>
                 <property name="spacing">5</property>
                 <child>
                   <object class="GtkHButtonBox" id="hbuttonbox1">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="spacing">5</property>
                     <child>
                       <object class="GtkButton" id="pay_order_button">
@@ -50,15 +44,12 @@
                         <child>
                           <object class="GtkAlignment" id="alignment4">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <child>
                               <object class="GtkVBox" id="vbox2">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <child>
                                   <object class="GtkImage" id="image2">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="stock">gtk-apply</property>
                                   </object>
                                   <packing>
@@ -70,7 +61,6 @@
                                 <child>
                                   <object class="GtkLabel" id="label3">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">P_ay order</property>
                                     <property name="use_underline">True</property>
                                   </object>
@@ -100,15 +90,12 @@
                         <child>
                           <object class="GtkAlignment" id="alignment1">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <child>
                               <object class="GtkVBox" id="vbox3">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <child>
                                   <object class="GtkImage" id="image3">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="stock">gtk-edit</property>
                                   </object>
                                   <packing>
@@ -120,7 +107,6 @@
                                 <child>
                                   <object class="GtkLabel" id="label1">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">_Edit</property>
                                     <property name="use_underline">True</property>
                                   </object>
@@ -150,15 +136,12 @@
                         <child>
                           <object class="GtkAlignment" id="alignment6">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <child>
                               <object class="GtkVBox" id="vbox1">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <child>
                                   <object class="GtkImage" id="image1">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="stock">gtk-find</property>
                                   </object>
                                   <packing>
@@ -170,7 +153,6 @@
                                 <child>
                                   <object class="GtkLabel" id="label2">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">_Details</property>
                                     <property name="use_underline">True</property>
                                   </object>
@@ -200,15 +182,12 @@
                         <child>
                           <object class="GtkAlignment" id="alignment2">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <child>
                               <object class="GtkVBox" id="vbox4">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <child>
                                   <object class="GtkImage" id="image4">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="stock">gtk-print</property>
                                   </object>
                                   <packing>
@@ -220,7 +199,6 @@
                                 <child>
                                   <object class="GtkLabel" id="label4">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">_Print</property>
                                     <property name="use_underline">True</property>
                                   </object>
