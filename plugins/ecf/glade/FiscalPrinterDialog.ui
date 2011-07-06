@@ -14,7 +14,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="label1">
-            <property context="yes" name="label" translatable="yes">Printer:</property>
+            <property name="label" translatable="yes">Printer:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -25,7 +25,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label2">
-            <property context="yes" name="label" translatable="yes">Port:</property>
+            <property name="label" translatable="yes">Port:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -38,7 +38,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="device_serial_label">
-            <property context="yes" name="label" translatable="yes">Serial:</property>
+            <property name="label" translatable="yes">Serial:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -51,7 +51,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label6">
-            <property context="yes" name="label" translatable="yes">User Number:</property>
+            <property name="label" translatable="yes">User Number:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -64,7 +64,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label4">
-            <property context="yes" name="label" translatable="yes">Register Date:</property>
+            <property name="label" translatable="yes">Register Date:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -75,7 +75,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label5">
-            <property context="yes" name="label" translatable="yes">Register CRO:</property>
+            <property name="label" translatable="yes">Register CRO:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
           </object>
@@ -129,7 +129,7 @@
         </child>
         <child>
           <object class="GtkLabel" id="label7">
-            <property context="yes" name="label" translatable="yes">&lt;b&gt;You can get the following information on a fiscal memory read from the printer&lt;/b&gt;</property>
+            <property name="label" translatable="yes">&lt;b&gt;You can get the following information on a fiscal memory read from the printer&lt;/b&gt;</property>
             <property name="use_markup">True</property>
             <property name="visible">True</property>
             <property name="wrap">True</property>
@@ -194,7 +194,7 @@
             <child>
               <object class="GtkButton" id="edit_constants">
                 <property name="is_focus">True</property>
-                <property context="yes" name="label" translatable="yes">Edit Constants ...</property>
+                <property name="label" translatable="yes">Edit Constants ...</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>
               </object>
@@ -211,7 +211,7 @@
           <object class="ProxyCheckButton" id="is_active">
             <property name="data_type">bool</property>
             <property name="is_focus">True</property>
-            <property context="yes" name="label" translatable="yes">Active</property>
+            <property name="label" translatable="yes">Active</property>
             <property name="model_attribute">is_active</property>
             <property name="visible">True</property>
           </object>
