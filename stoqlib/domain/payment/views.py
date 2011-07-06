@@ -352,3 +352,24 @@ class PaymentChangeHistoryView(Viewable):
             return converter.as_string(datetime.date, self.new_due_date)
         elif self.new_status:
             return Payment.statuses[self.new_status]
+
+class PaymentMethodView(Viewable):
+    columns = dict(
+        id=PaymentMethod.q.id,
+        method_name=PaymentMethod.q.method_name,
+        description=PaymentMethod.q.description,
+        is_active=PaymentMethod.q.is_active
+    )
+
+    joins = []
+
+    @classmethod
+    def get_by_name(cls, conn, name):
+        results = cls.select(PaymentMethod.q.method_name == name,
+                             limit=2,
+                             connection=conn)
+        return results[0]
+
+    @property
+    def method(self):
+        return PaymentMethod.get(self.id, connection=self.get_connection())
