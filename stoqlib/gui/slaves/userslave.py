@@ -26,6 +26,7 @@
 
 """ User editor slaves implementation.  """
 
+import gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.database.orm import const
@@ -169,6 +170,11 @@ class PasswordEditor(BaseEditor):
                                                   visual_mode=self.visual_mode)
         self.attach_slave('password_holder', self.password_slave)
 
+        self._sizegroup = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        self._sizegroup.add_widget(self.current_password_lbl)
+        self._sizegroup.add_widget(self.password_slave.password_lbl)
+        self._sizegroup.add_widget(self.password_slave.confirm_password_lbl)
+
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
                                     PasswordEditor.proxy_widgets)
@@ -224,6 +230,14 @@ class UserDetailsSlave(BaseEditorSlave):
     def _attach_slaves(self):
         self.password_slave = PasswordEditorSlave(self.conn)
         self.attach_slave('password_holder', self.password_slave)
+
+        self._sizegroup = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        self._sizegroup.add_widget(self.username_lbl)
+        self._sizegroup.add_widget(self.role_lbl)
+        self._sizegroup.add_widget(self.profile)
+        self._sizegroup.add_widget(self.role)
+        self._sizegroup.add_widget(self.password_slave.password_lbl)
+        self._sizegroup.add_widget(self.password_slave.confirm_password_lbl)
 
     #
     # BaseEditorSlave Hooks
