@@ -29,6 +29,7 @@ import time
 _start_time = None
 
 def set_initial():
+    global _start_time
     _start_time = time.time()
 
 def get_uptime():
@@ -36,5 +37,5 @@ def get_uptime():
     Returns: number of seconds the application has been running
     """
     if not _start_time:
-        return 0
-    return int(time.time() - _start_time)
+        return 0.0
+    return float(time.time() - _start_time)
