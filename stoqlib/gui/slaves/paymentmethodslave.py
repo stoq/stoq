@@ -29,8 +29,9 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.database.runtime import get_connection
-from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.views import PaymentMethodView
 from stoqlib.exceptions import StoqlibError
+from stoqlib.lib.message import marker
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -51,15 +52,19 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
     def __init__(self, connection=None, available_methods=[],
                  default_method=None):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
-        self._options = {}
 
-        self.conn = connection or get_connection()
+        self.conn = connection
+        self._options = {}
+        self._methods = {}
+        for method in list(PaymentMethodView.select(connection=self.conn)):
+            self._methods[method.method_name] = method
+
         self._setup_widgets()
         self.cash_check.set_active(True)
         self._setup_payment_methods(available_methods, default_method)
 
     def _setup_payment_methods(self, available_methods, default_method):
-        self._selected_method = PaymentMethod.get_by_name(self.conn, 'money')
+        self._selected_method = self._methods['money']
         self.cash_check.connect('toggled', self._on_method__toggled)
         self.cash_check.set_data('method', self._selected_method)
         self.cash_check.set_sensitive('money' in available_methods)
@@ -75,7 +80,7 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
                                       method_name in available_methods)
 
     def _add_payment_method(self, method_name, set_active=False):
-        method = PaymentMethod.get_by_name(self.conn, method_name)
+        method = self._methods[method_name]
         if not method.is_active:
             return
 
@@ -89,7 +94,7 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         self._options[method_name] = radio
 
     def _setup_widgets(self):
-        money_method = PaymentMethod.get_by_name(self.conn, 'money')
+        money_method = self._methods['money']
         if not money_method.is_active:
             raise StoqlibError("The money payment method should be always "
                                "available")
@@ -98,8 +103,11 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
     #   Public API
     #
 
+    def get_method(self, name):
+        return self._methods[name]
+
     def get_selected_method(self):
-        return self._selected_method
+        return self._selected_method.method
 
     def method_set_sensitive(self, method_name, sensitive):
         if method_name in self._options.keys():

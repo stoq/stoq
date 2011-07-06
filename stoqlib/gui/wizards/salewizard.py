@@ -33,14 +33,15 @@ from kiwi.datatypes import currency, ValidationError
 from kiwi.python import Settable
 
 from stoqlib.database.exceptions import IntegrityError
+from stoqlib.database.orm import AND
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import IPluginManager
-from stoqlib.lib.message import warning
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.message import warning, marker
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard, BaseWizardStep
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
@@ -129,7 +130,6 @@ class BaseMethodSelectionStep(object):
     #   Private API
     #
 
-    @argcheck(PaymentMethod)
     def _update_next_step(self, method):
         if method and method.method_name == 'money':
             self.wizard.enable_finish()
@@ -164,10 +164,13 @@ class BaseMethodSelectionStep(object):
 
     def setup_slaves(self):
         methods = SelectPaymentMethodSlave.AVAILABLE_METHODS
-        self.pm_slave = SelectPaymentMethodSlave(available_methods=methods)
+        marker('SelectPaymentMethodSlave')
+        self.pm_slave = SelectPaymentMethodSlave(connection=self.conn,
+                                                 available_methods=methods)
         self.pm_slave.connect('method-changed', self.on_payment_method_changed)
         self.attach_slave('select_method_holder', self.pm_slave)
 
+        marker('CashChangeSlave')
         self.cash_change_slave = CashChangeSlave(self.conn, self.model)
         self.attach_slave('cash_change_holder', self.cash_change_slave)
         self.cash_change_slave.received_value.connect(
@@ -249,7 +252,9 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.invoice_model = invoice_model
 
         self.payment_group = payment_group
+        marker("WizardEditorStep.__init__")
         WizardEditorStep.__init__(self, conn, wizard, model)
+        marker("BaseMethodSelectionStep.__init__")
         BaseMethodSelectionStep.__init__(self)
         self.update_discount_and_surcharge()
 
@@ -268,24 +273,30 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.pm_slave.method_set_sensitive('bill', has_client)
 
     def _fill_clients_combo(self):
+        marker('Filling clients')
         clients = ClientView.get_active_clients(self.conn)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         clients = clients[:max_results]
         items = [(c.name, c.client) for c in clients]
         self.client.prefill(sorted(items))
         self.client.set_sensitive(len(items))
+        marker('Filled clients')
 
     def _fill_transporter_combo(self):
+        marker('Filling transporters')
         table = Person.getAdapterClass(ITransporter)
         transporters = table.get_active_transporters(self.conn)
         items = [(t.person.name, t) for t in transporters]
         self.transporter.prefill(items)
         self.transporter.set_sensitive(len(items))
+        marker('Filled transporters')
 
     def _fill_cfop_combo(self):
+        marker('Filling CFOPs')
         cfops = [(cfop.get_description(), cfop)
                     for cfop in CfopData.select(connection=self.conn)]
         self.cfop.prefill(cfops)
+        marker('Filled CFOPs')
 
     def _create_client(self):
         trans = new_transaction()
@@ -320,6 +331,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     #
 
     def update_discount_and_surcharge(self):
+        marker("update_discount_and_surcharge")
         # Here we need avoid to reset sale data defined when creating the
         # Sale in the POS application, i.e, we should not reset the
         # discount and surcharge if they are already set (this is the
@@ -329,6 +341,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.model.surcharge_value = currency(0)
 
     def setup_widgets(self):
+        marker('Setting up widgets')
         # Only quotes have expire date.
         self.expire_date.hide()
         self.expire_label.hide()
@@ -346,15 +359,21 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             mandatory_client = manager.is_active('nfe')
             self.client.set_property('mandatory', mandatory_client)
 
+        marker('Filling sales persons')
         salespersons = Person.iselect(ISalesPerson, connection=self.conn)
         items = [(s.person.name, s) for s in salespersons]
         self.salesperson.prefill(items)
+        marker('Finished filling sales persons')
+
+        marker('Read parameter')
         if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
             self.salesperson.set_sensitive(False)
         else:
             self.salesperson.grab_focus()
+        marker('Finished reading parameter')
         self._fill_clients_combo()
         self._fill_transporter_combo()
+
         if sysparam(self.conn).ASK_SALES_CFOP:
             self._fill_cfop_combo()
         else:
@@ -367,11 +386,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             gtk.Adjustment(lower=1, upper=999999999, step_incr=1))
 
         if not self.model.invoice_number:
-            # we need to use a new transaction, so any query will not count
-            # the current sale object.
-            trans = new_transaction()
-            new_invoice_number = Sale.get_last_invoice_number(trans) + 1
-            trans.close()
+            new_invoice_number = Sale.get_last_invoice_number(self.conn) + 1
             self.invoice_model.invoice_number = new_invoice_number
         else:
             new_invoice_number = self.model.invoice_number
@@ -379,12 +394,14 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.invoice_number.set_sensitive(False)
 
         self.invoice_model.original_invoice = new_invoice_number
+        marker('Finished setting up widgets')
 
     #
     # WizardStep hooks
     #
 
     def post_init(self):
+        marker('Entering post_init')
         self.wizard.payment_group.clear_unused()
         self.register_validate_function(self.wizard.refresh_next)
         self._update_next_step(self.get_selected_method())
@@ -393,24 +410,33 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.cash_change_slave.received_value.grab_focus()
 
         self.force_validation()
+        marker('Leaving post_init')
 
     def setup_slaves(self):
+        marker('Setting up slaves')
         BaseMethodSelectionStep.setup_slaves(self)
+        marker('Finished parent')
+
         self.pm_slave.method_set_sensitive('store_credit',
                                            bool(self.client.read()))
         self.pm_slave.method_set_sensitive('bill',
                                            bool(self.client.read()))
 
+        marker('Setting discount')
         self.discount_slave = SaleDiscountSlave(self.conn, self.model,
                                                 self.model_type)
+        marker('Finshed setting up discount')
+
         self.discount_slave.connect('discount-changed',
                                     self.on_discount_slave_changed)
         slave_holder = 'discount_surcharge_slave'
         if self.get_slave(slave_holder):
             self.detach_slave(slave_holder)
         self.attach_slave(slave_holder, self.discount_slave)
+        marker('Finished setting up slaves')
 
     def setup_proxies(self):
+        marker('Setting up proxies')
         self.setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     SalesPersonStep.proxy_widgets)
@@ -421,6 +447,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.create_client.set_sensitive(False)
         if sysparam(self.conn).ASK_SALES_CFOP:
             self.add_proxy(self.model, SalesPersonStep.cfop_widgets)
+        marker('Finished setting up proxies')
 
     #
     # Callbacks
@@ -433,7 +460,6 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self._create_client()
 
     def on_create_transporter__clicked(self, button):
-        trans = new_transaction()
         transporter = trans.get(self.model.transporter)
         model =  run_person_role_dialog(TransporterEditor, self, trans,
                                         transporter)
@@ -462,13 +488,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         if value > 999999999:
             return ValidationError(_(u'Invoice number should be lesser '
                                       'than 999999999.'))
-        # we need to use a new transaction or the selectOneBy will also
-        # include the current object.
-        trans = new_transaction()
-        exists = Sale.selectOneBy(invoice_number=value, connection=trans)
-        if exists:
+        exists = Sale.select(AND(Sale.q.invoice_number == value,
+                                 Sale.q.id != self.model.id),
+                             connection=self.conn)
+        if exists.count() > 0:
             return ValidationError(_(u'Invoice number already used.'))
-        trans.close()
 
 
 #
@@ -484,6 +508,7 @@ class ConfirmSaleWizard(BaseWizard):
     title = _("Sale Checkout")
 
     def __init__(self, conn, model):
+        marker('ConfirmSaleWizard')
         self._check_payment_group(model, conn)
         register_payment_operations()
 
@@ -491,8 +516,10 @@ class ConfirmSaleWizard(BaseWizard):
         # than one checkout may try to use the same invoice number.
         self.invoice_model = Settable(invoice_number=None,
                                      original_invoice=None)
+        marker('running SalesPersonStep')
         first_step = self.first_step(self, conn, model, self.payment_group,
                                      self.invoice_model)
+        marker('finished creating SalesPersonStep')
         BaseWizard.__init__(self, conn, first_step, model)
 
         if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
@@ -502,6 +529,8 @@ class ConfirmSaleWizard(BaseWizard):
             # POS interface
             if self.model.can_order():
                 self.model.order()
+
+        marker('leaving ConfirmSaleWizard.__init__')
 
     def _check_payment_group(self, model, conn):
         if not isinstance(model, Sale):
