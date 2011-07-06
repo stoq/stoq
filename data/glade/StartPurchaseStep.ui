@@ -303,7 +303,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="hbox4">
+              <object class="GtkHBox" id="supplier_buttons">
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
                 <child>

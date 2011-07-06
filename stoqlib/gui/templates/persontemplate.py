@@ -115,6 +115,9 @@ class _PersonEditorTemplate(BaseEditorSlave):
     # Kiwi handlers
     #
 
+    def on_name__map(self, entry):
+        self.name.grab_focus()
+
     def on_address_button__clicked(self, button):
         main_address = self.model.get_main_address()
         if not main_address.is_valid_model():

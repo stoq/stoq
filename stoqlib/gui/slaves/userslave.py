@@ -262,6 +262,9 @@ class UserDetailsSlave(BaseEditorSlave):
     # Kiwi handlers
     #
 
+    def on_username__map(self, widget):
+        self.username.grab_focus()
+
     def on_username__validate(self, widget, value):
         # FIXME: Move to Person/IUser
         user_table = Person.getAdapterClass(IUser)

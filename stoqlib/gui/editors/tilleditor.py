@@ -182,6 +182,7 @@ class TillClosingEditor(BaseEditor):
         self.value.update(value)
 
         self.day_history.set_columns(self._get_columns())
+        self.day_history.connect('row-activated', lambda olist, row: self.confirm())
         self.day_history.add_list(self._get_day_history())
         summary_day_history = SummaryLabel(
                 klist=self.day_history,
@@ -214,7 +215,7 @@ class TillClosingEditor(BaseEditor):
 
     def _get_columns(self):
         return [Column('description', title=_('Description'), data_type=str,
-                        expand=True, sorted=True),
+                        width=300, sorted=True),
                 ColoredColumn('value', title=_('Amount'), data_type=currency,
                                color='red', data_func=lambda x: x < 0),]
 
