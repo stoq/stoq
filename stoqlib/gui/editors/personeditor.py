@@ -72,7 +72,6 @@ class ClientEditor(BasePersonRoleEditor):
                                               visual_mode=self.visual_mode)
         self.main_slave.attach_person_slave(self.status_slave)
 
-
 class UserEditor(BasePersonRoleEditor):
     model_name = _('User')
     title = _('New User')

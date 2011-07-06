@@ -137,9 +137,11 @@ class StartPurchaseStep(WizardEditorStep):
 
     def post_init(self):
         self.open_date.grab_focus()
-        self.table.set_focus_chain([self.open_date, self.order_number,
-                                    self.branch, self.supplier,
-                                    self.radio_hbox, self.expected_freight])
+        self.table.set_focus_chain([
+            self.open_date,
+            self.branch,
+            self.supplier, self.supplier_buttons,
+            self.radio_hbox, self.expected_freight])
         self.radio_hbox.set_focus_chain([self.cif_radio, self.fob_radio])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()

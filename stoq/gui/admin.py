@@ -330,6 +330,7 @@ class AdminApp(AppWindow):
         self.iconview.grab_focus()
         self.iconview.connect('item-activated', self.tasks.on_item_activated)
         self.tasks.add_defaults(self.model)
+        self.iconview.select_path(self.model[0].path)
 
     #
     # Callbacks
