@@ -23,11 +23,13 @@
 ##
 """ Notifications and messages for stoqlib applications"""
 
+import os
 import sys
 
 from zope.interface import implements
 from kiwi.component import get_utility, provide_utility
 from stoqlib.lib.interfaces import ISystemNotifier
+from stoqlib.lib.uptime import get_uptime
 
 class DefaultSystemNotifier:
     implements(ISystemNotifier)
@@ -69,3 +71,7 @@ def error(short, description=None):
 def yesno(text, default=-1, *verbs):
     sn = get_utility(ISystemNotifier)
     return sn.yesno(text, default, *verbs)
+
+def marker(msg):
+    if os.environ.get('STOQ_DEBUG'):
+        print '[%.3f] %s' % (get_uptime(), msg, )
