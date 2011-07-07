@@ -42,8 +42,6 @@ def _query_server_time(conn):
     # Be careful, this opens up a new connection, queries the server
     # and closes the connection. That takes ~150ms
     settings = get_utility(IDatabaseSettings)
-    conn = settings.get_default_connection()
-
     if settings.rdbms == 'postgres':
         return conn.queryAll("SELECT NOW();")[0][0]
     else:
