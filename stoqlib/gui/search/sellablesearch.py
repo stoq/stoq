@@ -139,15 +139,15 @@ class SellableSearch(SearchEditor):
                               sorted=True),
                 SearchColumn('barcode', title=_('Barcode'), data_type=str,
                               visible=False),
-                SearchColumn('description', title= _('Description'), data_type=str,
-                              width=400),
+                SearchColumn('description', title= _('Description'),
+                             data_type=str, expand=True),
                 SearchColumn('price', title=_('Price'), data_type=currency,
-                              justify=gtk.JUSTIFY_RIGHT),
+                              justify=gtk.JUSTIFY_RIGHT, width=90),
                 SearchColumn('category_description', title=_('Category'),
                              data_type=str, visible=False),
                 AccessorColumn('stock', title=_(u'Stock'),
                                 accessor=self._get_available_stock,
-                                format_func=format_quantity,
+                                format_func=format_quantity, width=80,
                                 data_type=Decimal),]
 
     def update_widgets(self):
