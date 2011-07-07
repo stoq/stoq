@@ -210,11 +210,6 @@ class SellableEditor(BaseEditor):
         self._requires_weighing_text = ("<b>%s</b>"
                                         % _(u"This unit type requires "
                                             "weighing"))
-        self._status_unavailable_text = ("<b>%s</b>"
-                                         % _(u"This status changes "
-                                         "automatically when the\n product is "
-                                         "purchased or an inicial stock is "
-                                         "added."))
         BaseEditor.__init__(self, conn, model)
         self.enable_window_controls()
 
@@ -324,13 +319,6 @@ class SellableEditor(BaseEditor):
         else:
             self.requires_weighing_label.set_text("")
 
-    def update_status_unavailable_label(self):
-        if self.statuses_combo.read() == Sellable.STATUS_UNAVAILABLE:
-            self.status_unavailable_label.set_text(
-                                                 self._status_unavailable_text)
-        else:
-            self.status_unavailable_label.set_text("")
-
     def _update_tax_value(self):
         if not hasattr(self, 'tax_proxy'):
             return
@@ -393,7 +381,6 @@ class SellableEditor(BaseEditor):
                                              SellableEditor.sellable_widgets)
 
         self.update_requires_weighing_label()
-        self.update_status_unavailable_label()
 
     #
     # Kiwi handlers
