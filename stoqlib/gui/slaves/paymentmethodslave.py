@@ -34,8 +34,7 @@ from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import marker
 from stoqlib.lib.translation import stoqlib_gettext
 
-_ = stoqlib_gettext
-
+N_ = _ = stoqlib_gettext
 
 class SelectPaymentMethodSlave(GladeSlaveDelegate):
     """ This slave show a radion button group with three payment method options:
@@ -84,9 +83,7 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         if not method.is_active:
             return
 
-        # FIXME: The _() is a workarround to get the translated methods name.
-        #        See if there's a better way of doing this.
-        radio = gtk.RadioButton(self.cash_check, _(method.description))
+        radio = gtk.RadioButton(self.cash_check, N_(method.description))
         self.methods_box.pack_start(radio)
         radio.connect('toggled', self._on_method__toggled)
         radio.set_data('method', method)
