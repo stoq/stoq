@@ -52,7 +52,7 @@ from stoqlib.exceptions import StoqlibError, TaxError
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.interfaces import IPluginManager
-from stoqlib.lib.message import warning, info, yesno
+from stoqlib.lib.message import warning, info, yesno, marker
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
@@ -830,6 +830,7 @@ class PosApp(AppWindow):
         self._add_sale_item()
 
     def on_barcode__activate(self, entry):
+        marker("enter pressed")
         search_str = self.barcode.get_text()
         if search_str == '':
             if len(self.sale_items) >= 1:
