@@ -68,7 +68,7 @@ _ = stoqlib_gettext
 
 def can_generate_bill():
     config = get_utility(IStoqConfig)
-    if config.get('banco', section='Boleto') is None:
+    if config.get('Boleto', 'banco') is None:
         warning(_(u"Looks like you didn't configure stoq yet to "
                    "generate bills. Check the manual to see how."))
         return False
