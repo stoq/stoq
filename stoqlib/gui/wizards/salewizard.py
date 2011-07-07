@@ -460,6 +460,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self._create_client()
 
     def on_create_transporter__clicked(self, button):
+        trans = new_transaction()
         transporter = trans.get(self.model.transporter)
         model =  run_person_role_dialog(TransporterEditor, self, trans,
                                         transporter)
