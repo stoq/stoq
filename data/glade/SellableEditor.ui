@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
-  <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-requires kiwiwidgets 0.0 -->
+  <requires lib="gtk+" version="2.18"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="SellableEditor">
     <property name="default_width">440</property>
@@ -116,6 +115,10 @@
                   <object class="ProxyEntry" id="code">
                     <property name="visible">True</property>
                     <property name="width_chars">12</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">unicode</property>
                     <property name="model_attribute">code</property>
                   </object>
@@ -128,6 +131,10 @@
                   <object class="ProxyEntry" id="barcode">
                     <property name="visible">True</property>
                     <property name="width_chars">12</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">unicode</property>
                     <property name="model_attribute">barcode</property>
                   </object>
@@ -155,6 +162,10 @@
                   <object class="ProxyEntry" id="description">
                     <property name="visible">True</property>
                     <property name="has_focus">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">unicode</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">base_sellable_info.description</property>
@@ -167,62 +178,16 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkHBox" id="cost_hbox">
-                    <property name="visible">True</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="ProxySpinButton" id="cost">
-                        <property name="visible">True</property>
-                        <property name="digits">2</property>
-                        <property name="data_type">currency</property>
-                        <property name="model_attribute">cost</property>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="stock_lbl">
-                        <property name="visible">True</property>
-                        <property name="xalign">1</property>
-                        <property name="label" translatable="yes">Stock Cost:</property>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="ProxyLabel" id="stock_total_lbl">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="data_type">currency</property>
-                        <property name="model_attribute">stock_total_lbl</property>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">4</property>
-                    <property name="bottom_attach">5</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkHBox" id="price_hbox">
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
                       <object class="ProxySpinButton" id="price">
                         <property name="visible">True</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
                         <property name="digits">2</property>
                         <property name="data_type">currency</property>
                         <property name="model_attribute">price</property>
@@ -237,6 +202,7 @@
                       <object class="GtkButton" id="sale_price_button">
                         <property name="visible">True</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="relief">none</property>
                         <child>
                           <object class="GtkImage" id="image1">
@@ -270,6 +236,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">consignment_no_button</property>
@@ -287,6 +254,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <property name="data_type">bool</property>
@@ -509,6 +477,27 @@
                 </child>
                 <child>
                   <placeholder/>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="cost">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">●</property>
+                    <property name="xalign">1</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="digits">2</property>
+                    <property name="data_type">currency</property>
+                    <property name="model_attribute">cost</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">4</property>
+                    <property name="bottom_attach">5</property>
+                  </packing>
                 </child>
               </object>
               <packing>

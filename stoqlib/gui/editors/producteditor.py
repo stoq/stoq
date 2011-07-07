@@ -525,8 +525,6 @@ class ProductEditor(SellableEditor):
         return extra_tabs
 
     def setup_widgets(self):
-        self.stock_total_lbl.show()
-        self.stock_lbl.show()
         if sysparam(self.conn).USE_FOUR_PRECISION_DIGITS:
             self.cost.set_digits(4)
         self.consignment_yes_button.set_active(self.model.consignment)

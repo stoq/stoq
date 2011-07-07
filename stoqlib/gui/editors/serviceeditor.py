@@ -94,8 +94,6 @@ class ServiceEditor(SellableEditor):
     def setup_widgets(self):
         self.sellable_notebook.set_tab_label_text(self.sellable_tab,
                                                   _(u'Service'))
-        self.stock_total_lbl.hide()
-        self.stock_lbl.hide()
         self.consignment_lbl.hide()
         self.consignment_box.hide()
         self.statuses_combo.set_sensitive(True)
