@@ -203,7 +203,7 @@ class PosApp(AppWindow):
             if yesno(_('You must finish the current sale before you change to '
                        'another application.'),
                      gtk.RESPONSE_NO, _("Cancel sale"), _("Finish sale")):
-                self._cancel_coupon()
+                self._cancel_order(show_confirmation=False)
                 return True
 
         return can_change_application
@@ -214,7 +214,7 @@ class PosApp(AppWindow):
             if yesno(_('You must finish or cancel the current sale before you '
                        'can close the POS application.'),
                      gtk.RESPONSE_NO, _("Cancel sale"), _("Finish sale")):
-                self._cancel_coupon()
+                self._cancel_order(show_confirmation=False)
                 return True
         return can_close_application
 
@@ -609,8 +609,10 @@ class PosApp(AppWindow):
                      gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel Order")):
                 return False
 
-        self._cancel_coupon()
+        # self._clear_order should be called before self._cancel_coupon
+        # because the second one takes a lot more time.
         self._clear_order()
+        self._cancel_coupon()
 
         return True
 
