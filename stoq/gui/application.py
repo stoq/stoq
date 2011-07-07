@@ -238,6 +238,10 @@ class AppWindow(BaseAppWindow):
         about.run()
         about.destroy()
 
+    def _show_uri(self, uri):
+        toplevel = self.get_toplevel()
+        gtk.show_uri(toplevel.get_screen(), uri, gtk.gdk.CURRENT_TIME)
+
     def print_report(self, report_class, *args, **kwargs):
         filters = self.search.get_search_filters()
         if filters:
@@ -310,6 +314,9 @@ class AppWindow(BaseAppWindow):
               <menuitem action="HelpContents"/>
               <menuitem action="HelpHelp"/>
               <separator name="HelpSeparator"/>
+              <menuitem action="HelpSupport"/>
+              <menuitem action="HelpTranslate"/>
+              <separator name="HelpSeparator2"/>
               <menuitem action="HelpAbout"/>
             </menu>
           </menubar>
@@ -319,10 +326,14 @@ class AppWindow(BaseAppWindow):
 
         help_actions = [
             ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
+            ("HelpContents", gtk.STOCK_HELP, _("Contents"), '<Shift>F1'),
             ("HelpHelp", None, help_label, 'F1',
              _("Show help for this Application"),
              on_HelpHelp__activate),
+            ("HelpTranslate", None, _("Translate Stoq..."), None,
+             _("Translate this application online")),
+            ("HelpSupport", None, _("Get support online..."), None,
+             _("Get support for Stoq online")),
             ("HelpAbout", gtk.STOCK_ABOUT),
             ]
         self.add_ui_actions(ui_string, help_actions, 'HelpActions')
@@ -453,8 +464,14 @@ class AppWindow(BaseAppWindow):
     def on_HelpContents__activate(self, action):
         show_contents()
 
+    def on_HelpTranslate__activate(self, action):
+        self._show_uri("https://translations.launchpad.net/stoq")
+
+    def on_HelpSupport__activate(self, action):
+        self._show_uri("http://www.stoq.com.br/support")
+
     def on_HelpAbout__activate(self, action):
-         self._run_about()
+        self._run_about()
 
     # Debug
 
