@@ -205,8 +205,6 @@ class SellableEditor(BaseEditor):
                         'unit_combo')
     proxy_widgets = (sellable_tax_widgets + sellable_widgets)
 
-    storable_widgets = ('stock_total_lbl',)
-
     def __init__(self, conn, model=None):
         self._sellable = None
         self._requires_weighing_text = ("<b>%s</b>"
@@ -232,8 +230,8 @@ class SellableEditor(BaseEditor):
                                     self.barcode,
                                     self.default_sale_cfop,
                                     self.description,
-                                    self.cost_hbox,
                                     self.price_hbox,
+                                    self.cost,
                                     self.consignment_box,
                                     self.statuses_combo,
                                     self.category_combo,
@@ -305,7 +303,6 @@ class SellableEditor(BaseEditor):
         for widget in (self.cost, self.price):
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
                                                  step_incr=1))
-        self.stock_total_lbl.set_data_format('%.02f')
         self.requires_weighing_label.set_size("small")
         self.requires_weighing_label.set_text("")
         self.status_unavailable_label.set_size("small")
@@ -394,11 +391,6 @@ class SellableEditor(BaseEditor):
 
         self.sellable_proxy = self.add_proxy(self._sellable,
                                              SellableEditor.sellable_widgets)
-
-        storable = IStorable(self.model, None)
-        if storable is not None:
-            self.add_proxy(storable,
-                           SellableEditor.storable_widgets)
 
         self.update_requires_weighing_label()
         self.update_status_unavailable_label()
