@@ -4,7 +4,6 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkAdjustment" id="adjustment1">
-    <property name="lower">1</property>
     <property name="upper">99999</property>
     <property name="value">1</property>
     <property name="step_increment">1</property>

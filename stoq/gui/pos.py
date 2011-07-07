@@ -242,6 +242,7 @@ class PosApp(AppWindow):
     def activate(self):
         self._printer.check_till()
         self.check_open_inventory()
+        self._update_widgets()
 
     def get_columns(self):
         return [Column('code', title=_('Reference'),
@@ -571,19 +572,11 @@ class PosApp(AppWindow):
         for widget in (self.search_box, self.list_vbox,
                        self.CancelOrder):
             widget.set_sensitive(True)
-        self._coupon = None
         self._delivery = None
 
         self._reset_quantity_proxy()
         self.barcode.set_text('')
         self._update_widgets()
-
-    def _cancel_coupon(self):
-        log.info("Cancelling coupon")
-        if not self.param.CONFIRM_SALES_ON_TILL:
-            if self._coupon:
-                self._coupon.cancel()
-        self._coupon = None
 
     def _edit_sale_item(self, sale_item):
         if sale_item.sellable.service:
@@ -609,10 +602,13 @@ class PosApp(AppWindow):
                      gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel Order")):
                 return False
 
-        # self._clear_order should be called before self._cancel_coupon
-        # because the second one takes a lot more time.
         self._clear_order()
-        self._cancel_coupon()
+
+        log.info("Cancelling coupon")
+        if not self.param.CONFIRM_SALES_ON_TILL:
+            if self._coupon:
+                self._coupon.cancel()
+        self._coupon = None
 
         return True
 
@@ -716,6 +712,7 @@ class PosApp(AppWindow):
             # the objects from trans into self.conn
             self.conn.commit()
         self._clear_order()
+        self._coupon = None
 
     def _remove_selected_item(self):
         sale_item = self.sale_items.get_selected()
