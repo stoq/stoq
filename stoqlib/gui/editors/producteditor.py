@@ -490,6 +490,15 @@ class ProductEditor(SellableEditor):
         return [(c.description, c) for c in constants
                                    if c.tax_type != TaxType.SERVICE]
 
+    def update_status_unavailable_label(self):
+        text = ''
+        if self.statuses_combo.read() == Sellable.STATUS_UNAVAILABLE:
+            text = ("<b>%s</b>"
+                    % _("This status changes automatically when the\n"
+                        "product is purchased or an inicial stock is added."))
+
+        self.status_unavailable_label.set_text(text)
+
     def _get_plugin_tabs(self):
         manager = get_utility(IPluginManager, None)
         if manager:
@@ -530,6 +539,7 @@ class ProductEditor(SellableEditor):
         self.consignment_yes_button.set_active(self.model.consignment)
         self.consignment_yes_button.set_sensitive(self._model_created)
         self.consignment_no_button.set_sensitive(self._model_created)
+        self.update_status_unavailable_label()
         self.description.grab_focus()
 
     def create_model(self, conn):
