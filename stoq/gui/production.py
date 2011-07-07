@@ -110,7 +110,7 @@ class ProductionApp(SearchableAppWindow):
         ]
 
         self.add_ui_actions(ui_string, actions)
-        self.ProductionNew.set_short_label(_("New"))
+        self.ProductionNew.set_short_label(_("New Production"))
         self.ProductionPurchaseQuote.set_short_label(_("Purchase"))
         self.SearchProductionItem.set_short_label(_("Search items"))
         self.add_help_ui(_("Production help"), 'producao-inicio')
