@@ -84,7 +84,9 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         if not method.is_active:
             return
 
-        radio = gtk.RadioButton(self.cash_check, method.description)
+        # FIXME: The _() is a workarround to get the translated methods name.
+        #        See if there's a better way of doing this.
+        radio = gtk.RadioButton(self.cash_check, _(method.description))
         self.methods_box.pack_start(radio)
         radio.connect('toggled', self._on_method__toggled)
         radio.set_data('method', method)
