@@ -146,7 +146,7 @@ class FiscalBookEntrySearch(SearchDialog):
     #
 
     def setup_widgets(self):
-        self.edit_button = self.add_button('Edit', stock='gtk-edit')
+        self.edit_button = self.add_button('Edit')
         self.edit_button.connect('clicked', self._on_edit_button__clicked)
         self.edit_button.show()
         self.edit_button.set_sensitive(False)
