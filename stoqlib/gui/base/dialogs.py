@@ -380,7 +380,7 @@ def get_dialog(parent, dialog, *args, **kwargs):
     # window. This is a bit of a hack :-/
     if isinstance(parent, BaseView):
         parent = parent.get_toplevel().get_toplevel()
-        if parent:
+        if parent and not _fullscreen:
             dialog.set_transient_for(parent)
     return dialog
 
@@ -412,7 +412,9 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     toplevel = dialog.get_toplevel()
     add_current_toplevel(toplevel)
 
-    if parent and isinstance(parent, gtk.Window) and parent.get_visible():
+    if _fullscreen is not None:
+        toplevel.set_position(gtk.WIN_POS_CENTER)
+    elif parent and isinstance(parent, gtk.Window) and parent.get_visible():
         toplevel.set_transient_for(parent)
         toplevel.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
     else:
@@ -426,6 +428,17 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
 
     _pop_current_toplevel()
     return retval
+
+_fullscreen = None
+
+def push_fullscreen(window):
+    global _fullscreen
+    assert not _fullscreen
+    _fullscreen = window
+
+def pop_fullscreen(window):
+    global _fullscreen
+    _fullscreen = None
 
 def notify_if_raises(win, check_func, exceptions=ModelDataError,
                      text="An error ocurred: %s"):
