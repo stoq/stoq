@@ -97,7 +97,7 @@ class DeliveryEditor(BaseEditor):
 
     def _get_sale_items_columns(self):
         return [Column('code', title=_('Code'),
-                       data_type=str, sorted=True),
+                       data_type=str),
                 Column('description', title=_('Description'),
                        data_type=str, expand=True),
                 Column('quantity', title=_('Quantity'),
