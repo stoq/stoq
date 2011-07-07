@@ -25,9 +25,8 @@
 
 from zope.interface.interface import adapter_hooks
 
-from stoqlib.database.database import query_server_time
 from stoqlib.database.orm import orm_name, ForeignKey, IntCol
-from stoqlib.database.orm import ORMObject
+from stoqlib.database.orm import ORMObject, const
 from stoqlib.database.runtime import (StoqlibTransaction,
                                       get_current_user, get_current_station)
 from stoqlib.domain.system import TransactionEntry
@@ -139,11 +138,10 @@ class AbstractModel(object):
         station = get_current_station(conn)
         conn.unblock_implicit_flushes()
 
-        timestamp = query_server_time(conn)
         for entry, entry_type in [('te_created', TransactionEntry.CREATED),
                                   ('te_modified', TransactionEntry.MODIFIED)]:
             kwargs[entry] = TransactionEntry(
-                te_time=timestamp,
+                te_time=const.NOW(),
                 user_id=user and user.id,
                 station_id=station and station.id,
                 type=entry_type,

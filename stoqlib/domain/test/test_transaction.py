@@ -26,16 +26,28 @@
 import datetime
 from decimal import Decimal
 
-from stoqlib.database.database import query_server_time
+from kiwi.component import get_utility
+
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_station,
                                       new_transaction)
 from stoqlib.domain.person import Person
 from stoqlib.domain.system import TransactionEntry
-
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.database.interfaces import IDatabaseSettings
 
 NAME = 'dummy transaction test'
+
+def _query_server_time(conn):
+    # Be careful, this opens up a new connection, queries the server
+    # and closes the connection. That takes ~150ms
+    settings = get_utility(IDatabaseSettings)
+    conn = settings.get_default_connection()
+
+    if settings.rdbms == 'postgres':
+        return conn.queryAll("SELECT NOW();")[0][0]
+    else:
+        raise NotImplementedError
 
 class TestTransaction(DomainTest):
     def testTimestamp(self):
@@ -43,11 +55,11 @@ class TestTransaction(DomainTest):
         # might be out of sync, datetime.dateime.now() is client side
         # while te_time is set on the server side, we should ideally move
         # everything to the server side
-        before = query_server_time(self.trans)
+        before = _query_server_time(self.trans)
 
         person = Person(name='dummy', connection=self.trans)
 
-        created = query_server_time(self.trans)
+        created = _query_server_time(self.trans)
 
         self.trans.commit()
         self.assertEqual(person.te_created.te_time,
@@ -59,7 +71,7 @@ class TestTransaction(DomainTest):
         self.assertNotEqual(person.te_created.te_time,
                             person.te_modified.te_time)
 
-        updated = query_server_time(self.trans)
+        updated = _query_server_time(self.trans)
 
         dates = [
             ('before create', before),
