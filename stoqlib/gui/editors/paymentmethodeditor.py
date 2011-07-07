@@ -37,7 +37,6 @@ _ = stoqlib_gettext
 
 class PaymentMethodEditor(BaseEditor):
     model_name = _('Payment Method')
-    size = (450, 225)
     gladefile = 'PaymentMethodEditor'
     proxy_widgets = ('account',
                      'max_installments',
