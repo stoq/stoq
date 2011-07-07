@@ -54,6 +54,7 @@ from stoqlib.lib.defaults import quantize
 from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import warning, info, yesno, marker
 from stoqlib.lib.parameters import sysparam
+from stoqlib.gui.base.dialogs import push_fullscreen, pop_fullscreen
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
@@ -242,6 +243,7 @@ class PosApp(AppWindow):
     def activate(self):
         self._printer.check_till()
         self.check_open_inventory()
+        self._update_parameter_widgets()
         self._update_widgets()
 
     def get_columns(self):
@@ -287,18 +289,29 @@ class PosApp(AppWindow):
         self.sellableitem_proxy = self.add_proxy(
             Settable(quantity=Decimal(1)), ['quantity'])
 
-    def _setup_widgets(self):
-        if not self.param.HAS_DELIVERY_MODE:
-            self.delivery_button.hide()
-        if self.param.POS_FULL_SCREEN:
-            self.get_toplevel().fullscreen()
-        if self.param.POS_SEPARATE_CASHIER:
-            for proxy in self.TillMenu.get_proxies():
-                proxy.hide()
-        if self.param.CONFIRM_SALES_ON_TILL:
-            button_set_image_with_label(self.checkout_button,
-                                        'gtk-apply', _('Close'))
+    def _update_parameter_widgets(self):
+        self.delivery_button.set_visible(self.param.HAS_DELIVERY_MODE)
 
+        window = self.get_toplevel()
+        if self.param.POS_FULL_SCREEN:
+            window.fullscreen()
+            push_fullscreen(window)
+        else:
+            pop_fullscreen(window)
+            window.unfullscreen()
+
+        for proxy in self.TillMenu.get_proxies():
+            proxy.set_visible(not self.param.POS_SEPARATE_CASHIER)
+
+        if self.param.CONFIRM_SALES_ON_TILL:
+            confirm_label = _("_Close")
+        else:
+            confirm_label = _("_Checkout")
+        button_set_image_with_label(self.checkout_button,
+                                    'gtk-apply', confirm_label)
+
+    def _setup_widgets(self):
+        self._update_parameter_widgets()
         logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
         logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
                                                     LOGO_HEIGHT)
