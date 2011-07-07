@@ -255,9 +255,9 @@ class TillApp(SearchableAppWindow):
             stock = storable.get_full_balance(branch)
             if stock < prod_sold[storable]:
                 warning(_("This sale has %d items of %s, but there is only "
-                          "%d available on stock") % (stock,
-                                                      prod_sold[storable],
-                                                      prod_desc[storable]))
+                          "%d available on stock") % (prod_sold[storable],
+                                                      prod_desc[storable],
+                                                      stock))
                 return
 
         coupon = self._open_coupon()
