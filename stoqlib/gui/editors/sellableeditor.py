@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -47,6 +47,10 @@ from stoqlib.lib.formatters import get_price_format_str
 
 _ = stoqlib_gettext
 
+_DEMO_BAR_CODES = ['2368694135945', '6234564656756', '6985413595971',
+                   '2692149835416', '1595843695465', '8596458216412',
+                   '9586249534513', '7826592136954', '5892458629421',
+                   '1598756984265', '1598756984265', '']
 _DEMO_PRODUCT_LIMIT = 30
 
 #
@@ -209,13 +213,14 @@ class SellableEditor(BaseEditor):
 
     def __init__(self, conn, model=None):
         self._sellable = None
+        self._demo_mode = sysparam(conn).DEMO_MODE
         self._requires_weighing_text = ("<b>%s</b>"
                                         % _(u"This unit type requires "
                                             "weighing"))
         BaseEditor.__init__(self, conn, model)
         self.enable_window_controls()
-
-        self._maybe_add_demo_warning()
+        if self._demo_mode:
+            self._add_demo_warning()
 
         # code suggestion
         edit_code_product = sysparam(self.conn).EDIT_CODE_PRODUCT
@@ -253,9 +258,7 @@ class SellableEditor(BaseEditor):
     #  Private API
     #
 
-    def _maybe_add_demo_warning(self):
-        if not sysparam(self.conn).DEMO_MODE:
-            return
+    def _add_demo_warning(self):
         self.add_message_bar(
             _("This is a demostration mode of Stoq, you cannot create more than %d products.\n"
               "To avoid this limitation, enable production mode.") % (
@@ -466,6 +469,8 @@ class SellableEditor(BaseEditor):
             return ValidationError(_(u'Barcode must have 14 digits or less.'))
         if self.model.sellable.check_barcode_exists(value):
             return ValidationError(_('The barcode %s already exists') % value)
+        if self._demo_mode and value not in _DEMO_BAR_CODES:
+            return ValidationError(_("Cannot create new barcodes in demo mode"))
 
     def on_price__validate(self, entry, value):
         if value <= 0:
