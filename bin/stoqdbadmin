@@ -158,6 +158,7 @@ class StoqCommandHandler:
         from stoqlib.database.runtime import new_transaction
         trans = new_transaction()
         trans.query("UPDATE parameter_data SET field_value = '1' WHERE field_name = 'DEMO_MODE';")
+        trans.commit()
 
     def _enable_plugins(self, plugin_names):
         from stoqlib.lib.pluginmanager import provide_plugin_manager
