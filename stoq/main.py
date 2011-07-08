@@ -283,7 +283,7 @@ def _initialize(options):
     if options.wizard or not os.path.exists(config_file):
         _run_first_time_wizard(options)
 
-    if config.get('Database', 'remove_examples') == 'True':
+    if config.get('Database', 'enable_production') == 'True':
         _run_first_time_wizard(options, config)
 
     settings = config.get_settings()

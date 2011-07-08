@@ -291,7 +291,7 @@ class CreateDatabaseStep(BaseWizardStep):
         return FinishInstallationStep(self.wizard)
 
     def _maybe_create_database(self):
-        if self.wizard.remove_examples:
+        if self.wizard.enable_production:
             self._launch_stoqdbadmin()
             return
 
@@ -352,7 +352,7 @@ class CreateDatabaseStep(BaseWizardStep):
                 '--no-load-config',
                 '--no-register-station',
                 '-v']
-        if self.wizard.create_examples and not self.wizard.remove_examples:
+        if self.wizard.create_examples and not self.wizard.enable_production:
             args.append('--demo')
         if self.wizard.plugins:
             args.append('--enable-plugins')
@@ -455,15 +455,15 @@ class FirstTimeConfigWizard(BaseWizard):
 
         self.create_examples = False
         self.config = config
-        self.remove_examples = False
+        self.enable_production = False
         self.has_installed_db = False
         self.options = options
         self.plugins = []
 
-        if config.get('Database', 'remove_examples') == 'True':
-            self.remove_examples = True
+        if config.get('Database', 'enable_production') == 'True':
+            self.enable_production = True
 
-        if self.remove_examples:
+        if self.enable_production:
             first_step = PluginStep(self)
         else:
             first_step = DatabaseSettingsStep(self)
@@ -518,8 +518,8 @@ class FirstTimeConfigWizard(BaseWizard):
             trans.commit()
 
         # Write configuration to disk
-        if self.remove_examples:
-            self.config.set('Database', 'remove_examples', 'False')
+        if self.enable_production:
+            self.config.set('Database', 'enable_production', 'False')
         self.config.flush()
 
         self.close()
