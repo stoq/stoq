@@ -734,6 +734,7 @@ class PosApp(AppWindow):
         self._check_delivery_removed(sale_item)
         self._select_first_item()
         self._update_widgets()
+        self.barcode.grab_focus()
 
 
     #
