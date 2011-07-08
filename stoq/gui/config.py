@@ -353,7 +353,7 @@ class CreateDatabaseStep(BaseWizardStep):
                 '--no-register-station',
                 '-v']
         if self.wizard.create_examples and not self.wizard.remove_examples:
-            args.append('--create-examples')
+            args.append('--demo')
         if self.wizard.plugins:
             args.append('--enable-plugins')
             args.append(','.join(self.wizard.plugins))
