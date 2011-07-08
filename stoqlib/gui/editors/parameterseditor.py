@@ -49,10 +49,13 @@ class SystemParameterEditor(BaseEditor):
     def __init__(self, conn, model):
         if not model:
             raise ValueError("This editor can't be called without a model")
+        self.sensitive = True
+        if model.field_name in ['DEMO_MODE']:
+            self.sensitive = False
+
         self._parameter_details = get_parameter_details(model.field_name)
         BaseEditor.__init__(self, conn, model)
         self._setup_widgets()
-
     #
     # Helper methods
     #
@@ -77,6 +80,7 @@ class SystemParameterEditor(BaseEditor):
                        self._on_entry__validation_changed)
 
         self._entry = widget
+        widget.props.sensitive = self.sensitive
 
     def _setup_text_entry_slave(self):
         widget = ProxyTextView()
@@ -88,6 +92,7 @@ class SystemParameterEditor(BaseEditor):
 
         widget.show()
         self._entry = widget
+        widget.props.sensitive = self.sensitive
 
     def _setup_entry_with_filechooser_button_slave(self, dir_only=False):
         hbox = gtk.HBox(spacing=6)
@@ -105,6 +110,7 @@ class SystemParameterEditor(BaseEditor):
 
         self.container.add(hbox)
         hbox.show()
+        hbox.props.sensitive = self.sensitive
 
     def _setup_comboboxentry_slave(self):
         widget = ProxyComboEntry()
@@ -120,6 +126,7 @@ class SystemParameterEditor(BaseEditor):
         widget.show()
         widget.connect('validation-changed',
                        self._on_entry__validation_changed)
+        widget.props.sensitive = self.sensitive
 
     def _setup_radio_slave(self):
         box = gtk.HBox()
@@ -138,6 +145,7 @@ class SystemParameterEditor(BaseEditor):
         no_widget.set_active(self.model.field_value == "0")
         yes_widget.set_active(self.model.field_value == "1")
         box.show()
+        box.props.sensitive = self.sensitive
 
     def _setup_options_combo_slave(self):
         widget = ProxyComboBox()
@@ -150,6 +158,7 @@ class SystemParameterEditor(BaseEditor):
         self.proxy.add_widget("field_value", widget)
         self.container.add(widget)
         widget.show()
+        widget.props.sensitive = self.sensitive
 
     #
     # BaseEditor hooks
