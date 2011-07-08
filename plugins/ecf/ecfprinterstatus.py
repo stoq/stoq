@@ -64,8 +64,9 @@ class ECFAsyncPrinterStatus(gobject.GObject):
         self.printer = printer
 
         self._add_timeout()
-        gobject.io_add_watch(port, gobject.IO_OUT, self._fd_watch_out)
-        gobject.io_add_watch(port, gobject.IO_IN, self._fd_watch_in)
+        if port is not None:
+            gobject.io_add_watch(port, gobject.IO_OUT, self._fd_watch_out)
+            gobject.io_add_watch(port, gobject.IO_IN, self._fd_watch_in)
 
     def _create_port(self):
         port = SerialPort(device=self._device_name)
@@ -83,6 +84,10 @@ class ECFAsyncPrinterStatus(gobject.GObject):
 
     def _fd_watch_out(self, port, condition):
         value = self.printer.query_status()
+        if value is None:
+            self._remove_timeout()
+            self.emit('reply', self._reply)
+            return False
         os.write(port.fileno(), value)
         return False
 
