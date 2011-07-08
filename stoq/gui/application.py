@@ -46,9 +46,7 @@ from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.slaves.userslave import PasswordEditor
-from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.inventory import Inventory
-from stoqlib.domain.person import PersonAdaptToCompany
 
 import stoq
 
@@ -97,7 +95,7 @@ class AppWindow(BaseAppWindow):
         self.get_toplevel().add_accel_group(self.uimanager.get_accel_group())
         self.create_ui()
         self.setup_focus()
-        self._check_examples_database()
+        self._check_demo_mode()
         self._check_version()
         self._usability_hacks()
 
@@ -128,29 +126,22 @@ class AppWindow(BaseAppWindow):
 
         self.main_toolbar.set_style(gtk.TOOLBAR_BOTH)
 
-    def _check_examples_database(self):
-        async_comp = PersonAdaptToCompany.selectOneBy(
-                            cnpj='03.852.995/0001-07',
-                            connection=self.conn)
-        if not async_comp:
+    def _check_demo_mode(self):
+        if not sysparam(self.conn).DEMO_MODE:
             return
 
-        async_branch = IBranch(async_comp.person, None)
-        if not async_branch:
+        if self._config.get('UI', 'hide_demo_warning') == 'True':
             return
 
-        if self._config.get('UI', 'hide_example_warning') == 'True':
-            return
-
-        msg = _(u'<b>You are using the examples database.</b>')
+        msg = _(u'<b>You are using Stoq in demonstration mode.</b>')
         label = gtk.Label(msg)
         label.set_use_markup(True)
 
         if is_developer_mode():
             hide_button = gtk.Button(_('Hide'))
 
-        button = gtk.Button(_(u'Remove examples'))
-        button.connect('clicked', self._on_remove_examples__clicked)
+        button = gtk.Button(_(u'Enable production'))
+        button.connect('clicked', self._on_enable_production__clicked)
 
         if hasattr(gtk, 'InfoBar'):
             bar = gtk.InfoBar()
@@ -479,7 +470,7 @@ class AppWindow(BaseAppWindow):
         window = self.get_toplevel()
         introspect_slaves(window)
 
-    def _on_remove_examples__clicked(self, button):
+    def _on_enable_production__clicked(self, button):
         if not self.can_close_application():
             return
         if yesno(_("This will delete the current database and "
@@ -489,14 +480,14 @@ class AppWindow(BaseAppWindow):
 
         from stoq.main import restart_stoq_atexit
         restart_stoq_atexit()
-        self._config.set('Database', 'remove_examples', 'True')
+        self._config.set('Database', 'enable_production', 'True')
         self._config.flush()
         self.shutdown_application()
 
     def _on_hide__clicked(self, button, bar):
         bar.parent.remove(bar)
         bar.destroy()
-        self._config.set('UI', 'hide_example_warning', 'True')
+        self._config.set('UI', 'hide_demo_warning', 'True')
         self._config.flush()
 
 
