@@ -70,6 +70,7 @@ class Importer(object):
         """Feeds csv data from filename to the importer
         @param filename: filename
         """
+        self.filename = filename
         self.feed(open(filename), filename)
 
     def set_items_per_commit(self, items):
