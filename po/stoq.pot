@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-07 18:06-0300\n"
+"POT-Creation-Date: 2011-07-08 10:25-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -505,7 +505,7 @@ msgstr ""
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:8
 #: ../data/glade/PaymentChangeDialog.ui.h:5
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:11
-#: ../data/glade/SaleDetailsDialog.ui.h:14
+#: ../data/glade/SaleDetailsDialog.ui.h:15
 #: ../data/glade/SellableEditor.ui.h:12
 #: ../data/glade/SupplierDetailsDialog.ui.h:6
 #: ../data/glade/UserStatusSlave.ui.h:3 ../stoqlib/reporting/purchase.py:256
@@ -1231,7 +1231,7 @@ msgstr ""
 #: ../data/glade/PurchaseItemEditor.ui.h:10
 #: ../data/glade/ReceivingItemEditor.ui.h:8
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:14
-#: ../data/glade/SaleDetailsDialog.ui.h:18
+#: ../data/glade/SaleDetailsDialog.ui.h:19
 #: ../data/glade/SaleQuoteItemEditor.ui.h:9
 #: ../data/glade/SalesPersonStep.ui.h:14
 #: ../stoqlib/gui/dialogs/clientdetails.py:136
@@ -1350,7 +1350,7 @@ msgstr ""
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:4
 #: ../data/glade/PurchaseDetailsDialog.ui.h:21
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:12
-#: ../data/glade/SaleDetailsDialog.ui.h:15
+#: ../data/glade/SaleDetailsDialog.ui.h:16
 #: ../data/glade/SalesPersonStep.ui.h:13
 msgid "Subtotal:"
 msgstr ""
@@ -1358,7 +1358,7 @@ msgstr ""
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:5
 #: ../data/glade/PurchaseDetailsDialog.ui.h:23
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:13
-#: ../data/glade/SaleDetailsDialog.ui.h:16
+#: ../data/glade/SaleDetailsDialog.ui.h:17
 msgid "Surcharge:"
 msgstr ""
 
@@ -1673,7 +1673,7 @@ msgid "Received Freight Value:"
 msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:20
-#: ../data/glade/SaleDetailsDialog.ui.h:13
+#: ../data/glade/SaleDetailsDialog.ui.h:14
 #: ../data/glade/SalesPersonStep.ui.h:12
 msgid "Salesperson:"
 msgstr ""
@@ -1690,7 +1690,7 @@ msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:24
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:3
-#: ../data/glade/SaleDetailsDialog.ui.h:17
+#: ../data/glade/SaleDetailsDialog.ui.h:18
 #: ../data/glade/SaleReturnSlave.ui.h:11
 msgid "Total Paid:"
 msgstr ""
@@ -1864,6 +1864,10 @@ msgstr ""
 
 #: ../data/glade/SaleDetailsDialog.ui.h:1
 msgid "<b>Sale Number:</b>"
+msgstr ""
+
+#: ../data/glade/SaleDetailsDialog.ui.h:13
+msgid "Print Bills"
 msgstr ""
 
 #: ../data/glade/SaleInvoicePrinterDialog.ui.h:2
@@ -10668,60 +10672,6 @@ msgstr ""
 msgid "Transfer Receipt"
 msgstr ""
 
-#: ../data/template/transfer.rml.extracted.h:1
-msgid "CODE"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:2
-msgid "DESCRIPTION"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:3
-msgid "DESTINATION"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:4
-#: ../data/template/receipt.rml.extracted.h:9
-msgid "NUMBER:"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:5
-msgid "OPEN:"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:6
-msgid "QUANTITY"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:7
-msgid "RECEIVAL:"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:8
-msgid "RESPONSIBLE"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:9
-#: ../data/template/receipt.rml.extracted.h:12
-msgid "SIGNATURE:"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:10
-msgid "SOURCE"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:11
-msgid "TOTAL:"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:12
-msgid "TRANSFER PRODUCTS"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:13
-msgid "TRANSFER RECEIPT"
-msgstr ""
-
 #: ../data/template/receipt.rml.extracted.h:1
 msgid "ADDRESS:"
 msgstr ""
@@ -10754,6 +10704,11 @@ msgstr ""
 msgid "I/WE RECEIVED FROM"
 msgstr ""
 
+#: ../data/template/receipt.rml.extracted.h:9
+#: ../data/template/transfer.rml.extracted.h:4
+msgid "NUMBER:"
+msgstr ""
+
 #: ../data/template/receipt.rml.extracted.h:10
 msgid "RECEIPT"
 msgstr ""
@@ -10762,10 +10717,59 @@ msgstr ""
 msgid "REFERRING TO:"
 msgstr ""
 
+#: ../data/template/receipt.rml.extracted.h:12
+#: ../data/template/transfer.rml.extracted.h:9
+msgid "SIGNATURE:"
+msgstr ""
+
 #: ../data/template/receipt.rml.extracted.h:13
 msgid "THE IMPORTANCE OF:"
 msgstr ""
 
 #: ../data/template/receipt.rml.extracted.h:14
 msgid "VALUE:"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:1
+msgid "CODE"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:2
+msgid "DESCRIPTION"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:3
+msgid "DESTINATION"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:5
+msgid "OPEN:"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:6
+msgid "QUANTITY"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:7
+msgid "RECEIVAL:"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:8
+msgid "RESPONSIBLE"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:10
+msgid "SOURCE"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:11
+msgid "TOTAL:"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:12
+msgid "TRANSFER PRODUCTS"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:13
+msgid "TRANSFER RECEIPT"
 msgstr ""
