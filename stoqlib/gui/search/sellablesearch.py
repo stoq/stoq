@@ -128,6 +128,12 @@ class SellableSearch(SearchEditor):
     def key_control_KP_Enter(self):
         self.confirm()
 
+    def confirm(self):
+        # FIXME: This is a hack, we need to do proper validation in the parent
+        if not self.ok_button.props.sensitive:
+            return
+        super(SellableSearch, self).confirm()
+
     def create_filters(self):
         self.set_text_field_columns(['description'])
         self.executer.set_query(self._executer_query)
