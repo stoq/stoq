@@ -33,14 +33,15 @@ from stoqdrivers.exceptions import (DriverError, CouponOpenError,
                                     OutofPaperError, PrinterOfflineError)
 from zope.interface import implements
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.database.runtime import (get_current_branch, new_transaction,
+                                      finish_transaction)
 from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
                                    CardPaymentReceiptPrintedEvent,
                                    GerencialReportPrintEvent,
                                    GerencialReportCancelEvent,
                                    CancelPendingPaymentsEvent,
                                    HasPendingReduceZ)
-from stoqlib.domain.interfaces import IContainer
+from stoqlib.domain.interfaces import ICompany, IContainer
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.exceptions import DeviceError, TillError
@@ -49,8 +50,11 @@ from stoqlib.gui.editors.tilleditor import TillOpeningEditor, TillClosingEditor
 from stoqlib.gui.events import CouponCreatedEvent
 from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
+
+from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 
 
 _ = stoqlib_gettext
@@ -195,6 +199,12 @@ class FiscalPrinterHelper(gobject.GObject):
         @returns: a new coupon
         """
 
+        if sysparam(self.conn).DEMO_MODE:
+            branch = get_current_branch(self.conn)
+            company = ICompany(branch.person, None)
+            if company and company.cnpj not in ['24.198.774/7322-35',
+                                                '13.832.995/1231-07']:
+                warning(_('Not allowed to sell in branches not created by the demo'))
         coupon = FiscalCoupon(self._parent)
 
         try:
