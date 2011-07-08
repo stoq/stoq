@@ -847,6 +847,6 @@ def ensure_system_parameters(update=False):
     trans.commit(close=True)
 
 def is_developer_mode():
-    if 'STOQLIB_DISABLE_DEVELOPER_MODE' in os.environ:
+    if os.environ.get('STOQ_DEVELOPER_MODE') == '0':
         return
     return stoqlib.library.uninstalled
