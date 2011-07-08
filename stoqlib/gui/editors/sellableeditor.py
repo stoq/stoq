@@ -47,6 +47,8 @@ from stoqlib.lib.formatters import get_price_format_str
 
 _ = stoqlib_gettext
 
+_DEMO_PRODUCT_LIMIT = 30
+
 #
 # Editors
 #
@@ -213,6 +215,8 @@ class SellableEditor(BaseEditor):
         BaseEditor.__init__(self, conn, model)
         self.enable_window_controls()
 
+        self._maybe_add_demo_warning()
+
         # code suggestion
         edit_code_product = sysparam(self.conn).EDIT_CODE_PRODUCT
         self.code.set_sensitive(not edit_code_product)
@@ -248,6 +252,16 @@ class SellableEditor(BaseEditor):
     #
     #  Private API
     #
+
+    def _maybe_add_demo_warning(self):
+        if not sysparam(self.conn).DEMO_MODE:
+            return
+        self.add_message_bar(
+            _("This is a demostration mode of Stoq, you cannot create more than %d products.\n"
+              "To avoid this limitation, enable production mode.") % (
+            _DEMO_PRODUCT_LIMIT))
+        if Sellable.select(connection=self.conn).count() > _DEMO_PRODUCT_LIMIT:
+            self.disable_ok()
 
     def _add_extra_button(self, label, stock=None,
                           callback_func=None, connect_on='clicked'):
