@@ -91,7 +91,8 @@ class _BaseBillCheckSearch(SearchDialog):
                 SearchColumn('value', title=_('Value'), data_type=currency)]
 
     def _print_report(self):
-        print_report(BillCheckPaymentReport, self.results, list(self.results),
+        payments = self.results.get_selected_rows() or list(self.results)
+        print_report(BillCheckPaymentReport, self.results, payments,
                      filters=self.search.get_search_filters())
 
     #
