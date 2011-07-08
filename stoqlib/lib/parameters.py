@@ -342,6 +342,11 @@ _parameter_info = dict(
     _('Accounts'),
     _('Imbalance Account'),
     _('Account used for unbalanced transactions')),
+
+    DEMO_MODE=ParameterDetails(
+    _('General'),
+    _('Demo Mode'),
+    _('If Stoq is used in a demonstration mode')),
 )
 
 class ParameterAttr:
@@ -486,6 +491,7 @@ class ParameterAccess(ClassInittableObject):
                                ),
         ParameterAttr('SCALE_BARCODE_FORMAT', int, initial=0,
                       options=BarcodeInfo.options),
+        ParameterAttr('DEMO_MODE', bool, initial=False),
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('DEFAULT_SALES_CFOP', 'fiscal.CfopData'),
