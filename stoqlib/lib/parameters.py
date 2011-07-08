@@ -564,6 +564,8 @@ class ParameterAccess(ClassInittableObject):
 
     @argcheck(str, object)
     def update_parameter(self, parameter_name, value):
+        if parameter_name in ['DEMO_MODE']:
+            raise AssertionError
         param = get_parameter_by_field(parameter_name, self.conn)
         param.field_value = str(value)
         self.rebuild_cache_for(parameter_name)
