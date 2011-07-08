@@ -34,6 +34,7 @@ from kiwi.ui.widgets.label import ProxyLabel
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
+from stoqlib.gui.base.messagebar import MessageBar
 
 log = Logger('stoqlib.gui.editors')
 
@@ -179,8 +180,11 @@ class BaseEditor(BaseEditorSlave):
     hide_footer = False
 
     def __init__(self, conn, model=None, visual_mode=False):
+        self._message_bar = None
+        self._confirm_disabled = False
         BaseEditorSlave.__init__(self, conn, model,
                                  visual_mode=visual_mode)
+
 
         # We can not use self.model for get_title since we will create a new
         # one in BaseEditorSlave if model is None.
@@ -233,6 +237,8 @@ class BaseEditor(BaseEditorSlave):
     def refresh_ok(self, validation_value):
         """ Refreshes ok button sensitivity according to widget validators
         status """
+        if self._confirm_disabled:
+            return
         self.main_dialog.ok_button.set_sensitive(validation_value)
 
     def add_button(self, label=None, stock=None):
@@ -265,7 +271,7 @@ class BaseEditor(BaseEditorSlave):
         """
         Confirm the dialog.
         """
-        if not self.is_valid:
+        if not self.is_valid or self._confirm_disabled:
             return
         self.main_dialog.confirm()
 
@@ -275,6 +281,15 @@ class BaseEditor(BaseEditorSlave):
         to close/confirm the dialog.
         """
         self.main_dialog.enable_ok()
+        self._confirm_disabled = False
+
+    def disable_ok(self):
+        """
+        Enable the ok button of the dialog, eg makes it possible
+        to close/confirm the dialog.
+        """
+        self.main_dialog.disable_ok()
+        self._confirm_disabled = True
 
     def enable_normal_window(self):
         """
@@ -293,6 +308,28 @@ class BaseEditor(BaseEditorSlave):
         """
         self.main_dialog.set_confirm_widget(widget_name)
 
+    def add_message_bar(self, message, message_type=gtk.MESSAGE_INFO):
+        """Adds a message bar to the top of the search results
+        @message: message to add
+        @message_type: type of message to add
+        """
+        self._message_bar = MessageBar(message, message_type)
+        toplevel = self.main_dialog.get_toplevel()
+        widget = toplevel.get_child()
+        widget.pack_start(self._message_bar, False, False)
+        widget.reorder_child(self._message_bar, 0)
+        self._message_bar.show_all()
+        return self._message_bar
+
+    def remove_message_bar(self):
+        """Removes the message bar if there was one added"""
+        if not self._message_bar:
+            return
+        self._message_bar.destroy()
+        self._message_bar = None
+
+    def has_message_bar(self):
+        return self._message_bar is not None
 
     # Callbacks
 
