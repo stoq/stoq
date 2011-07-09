@@ -130,6 +130,8 @@ class ApplicationRunner(object):
 
         from stoqlib.gui.base.dialogs import run_dialog
         from stoqlib.gui.login import SelectApplicationsDialog
+        from stoqlib.gui.splash import hide_splash
+        hide_splash()
 
         return run_dialog(SelectApplicationsDialog(self._appname,
                                                    available_applications),

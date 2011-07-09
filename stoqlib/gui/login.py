@@ -37,6 +37,7 @@ from stoqlib.domain.interfaces import IUser
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.dialogs import (BasicWrappingDialog, run_dialog,
                                       RunnableView)
+from stoqlib.gui.splash import hide_splash
 from stoqlib.lib.interfaces import CookieError, ICookieFile
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -131,7 +132,7 @@ class LoginDialog(GladeDelegate, RunnableView):
 
 class SelectApplicationsDialog(GladeSlaveDelegate):
     gladefile = "SelectApplicationsSlave"
-    title = _('Choose application')
+    title = _('Stoq - Choose application')
     size = (-1, 380)
 
     def __init__(self, appname=None, applications=None):
@@ -157,9 +158,6 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
             if model.name == appname:
                 self.klist.select(model)
                 break
-
-    def get_toplevl(self):
-        return self.main_dialog.get_toplevel()
 
     def _setup_applist(self):
         self.klist.get_treeview().set_headers_visible(False)
@@ -249,12 +247,15 @@ class LoginHelper:
         retry = 0
         retry_msg = None
         dialog = None
+
+        hide_splash()
+
         while retry < RETRY_NUMBER:
             username = self._force_username
             password = None
 
             if not dialog:
-                dialog = LoginDialog(_("Access Control"))
+                dialog = LoginDialog(_("Stoq - Access Control"))
             if self._force_username:
                 dialog.force_username(username)
 
