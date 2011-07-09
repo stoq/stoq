@@ -133,22 +133,22 @@ class AppWindow(BaseAppWindow):
         if self._config.get('UI', 'hide_demo_warning') == 'True':
             return
 
-        msg = _(u'<b>You are using Stoq in demonstration mode.</b>')
-        label = gtk.Label(msg)
+        button_label = _('Enable production')
+        title = _('You are using Stoq in demonstration mode.')
+        desc = _('Some features are limited due to fiscal reasons, click on \'%s\' '
+                 'mode to remove the limitations and examples.') % (button_label, )
+        label = gtk.Label('<b>%s</b>\n%s' % (title, desc))
         label.set_use_markup(True)
+        label.set_line_wrap(True)
+        label.set_width_chars(100)
 
-        if is_developer_mode():
-            hide_button = gtk.Button(_('Hide'))
-
-        button = gtk.Button(_(u'Enable production'))
+        button = gtk.Button(button_label)
         button.connect('clicked', self._on_enable_production__clicked)
 
         if hasattr(gtk, 'InfoBar'):
             bar = gtk.InfoBar()
             bar.get_content_area().add(label)
             bar.add_action_widget(button, 0)
-            if is_developer_mode():
-                bar.add_action_widget(hide_button, 1)
             bar.set_message_type(gtk.MESSAGE_WARNING)
             bar.show_all()
         else:
@@ -157,15 +157,10 @@ class AppWindow(BaseAppWindow):
 
             hbox.pack_start(label)
             hbox.pack_start(button, False, False, 6)
-            if is_developer_mode():
-                hbox.pack_start(hide_button, False, False, 6)
 
             bar.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("red"))
             bar.add(hbox)
             bar.show_all()
-
-        if is_developer_mode():
-            hide_button.connect('clicked', self._on_hide__clicked, bar)
 
         self.main_vbox.pack_start(bar, False, False, 0)
         self.main_vbox.reorder_child(bar, 1)
@@ -473,9 +468,9 @@ class AppWindow(BaseAppWindow):
     def _on_enable_production__clicked(self, button):
         if not self.can_close_application():
             return
-        if yesno(_("This will delete the current database and "
+        if yesno(_("This will enable production mode. delete the current database and "
                    "it's configuration. Are you sure?"),
-                 gtk.RESPONSE_NO,_(u"Don't Remove"),  _(u"Remove Examples")):
+                 gtk.RESPONSE_NO, _("Don't Remove"),  _("Remove Examples")):
             return
 
         from stoq.main import restart_stoq_atexit
@@ -483,12 +478,6 @@ class AppWindow(BaseAppWindow):
         self._config.set('Database', 'enable_production', 'True')
         self._config.flush()
         self.shutdown_application()
-
-    def _on_hide__clicked(self, button, bar):
-        bar.parent.remove(bar)
-        bar.destroy()
-        self._config.set('UI', 'hide_demo_warning', 'True')
-        self._config.flush()
 
 
 class SearchableAppWindow(AppWindow):
