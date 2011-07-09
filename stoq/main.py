@@ -194,8 +194,12 @@ def _setup_ui_dialogs():
     from stoqlib.gui.base.dialogs import DialogSystemNotifier
     from stoqlib.lib.interfaces import ISystemNotifier
     from kiwi.component import provide_utility
-
     provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
+
+    import gtk
+    from kiwi.environ import environ
+    stock_app = environ.find_resource('pixmaps', 'stoq-stock-app-24x24.png')
+    gtk.window_set_default_icon_from_file(stock_app)
 
 def _setup_cookiefile():
     log.debug('setting up cookie file')
