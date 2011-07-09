@@ -23,14 +23,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-07 18:06-0300\n"
-"PO-Revision-Date: 2011-07-07 15:20+0000\n"
+"POT-Creation-Date: 2011-07-08 10:25-0300\n"
+"PO-Revision-Date: 2011-07-08 14:02+0000\n"
 "Last-Translator: Thiago Bellini <thiago.bellini@hackedbellini.org>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-07-08 04:51+0000\n"
+"X-Launchpad-Export-Date: 2011-07-09 05:02+0000\n"
 "X-Generator: Launchpad (build 13168)\n"
 "Language: \n"
 
@@ -232,7 +232,7 @@ msgstr "Quantia ($CURRENCY):"
 #: ../data/glade/BasePaymentEditor.ui.h:3
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:3
 msgid "Due date:"
-msgstr "Data de vencimento:"
+msgstr "Vencimento:"
 
 #: ../data/glade/BasePaymentDataEditor.ui.h:3
 #: ../data/glade/BasePaymentEditor.ui.h:7
@@ -527,7 +527,7 @@ msgstr "Serviços"
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:8
 #: ../data/glade/PaymentChangeDialog.ui.h:5
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:11
-#: ../data/glade/SaleDetailsDialog.ui.h:14
+#: ../data/glade/SaleDetailsDialog.ui.h:15
 #: ../data/glade/SellableEditor.ui.h:12
 #: ../data/glade/SupplierDetailsDialog.ui.h:6
 #: ../data/glade/UserStatusSlave.ui.h:3 ../stoqlib/reporting/purchase.py:256
@@ -1274,7 +1274,7 @@ msgstr "Pagamentos:"
 #: ../data/glade/PurchaseItemEditor.ui.h:10
 #: ../data/glade/ReceivingItemEditor.ui.h:8
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:14
-#: ../data/glade/SaleDetailsDialog.ui.h:18
+#: ../data/glade/SaleDetailsDialog.ui.h:19
 #: ../data/glade/SaleQuoteItemEditor.ui.h:9
 #: ../data/glade/SalesPersonStep.ui.h:14
 #: ../stoqlib/gui/dialogs/clientdetails.py:136
@@ -1394,7 +1394,7 @@ msgstr "<b>Os seguintes pagamentos serão renegociados.</b>"
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:4
 #: ../data/glade/PurchaseDetailsDialog.ui.h:21
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:12
-#: ../data/glade/SaleDetailsDialog.ui.h:15
+#: ../data/glade/SaleDetailsDialog.ui.h:16
 #: ../data/glade/SalesPersonStep.ui.h:13
 msgid "Subtotal:"
 msgstr "Subtotal:"
@@ -1402,7 +1402,7 @@ msgstr "Subtotal:"
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:5
 #: ../data/glade/PurchaseDetailsDialog.ui.h:23
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:13
-#: ../data/glade/SaleDetailsDialog.ui.h:16
+#: ../data/glade/SaleDetailsDialog.ui.h:17
 msgid "Surcharge:"
 msgstr "Acréscimo:"
 
@@ -1725,7 +1725,7 @@ msgid "Received Freight Value:"
 msgstr "Valor de frete recebido:"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:20
-#: ../data/glade/SaleDetailsDialog.ui.h:13
+#: ../data/glade/SaleDetailsDialog.ui.h:14
 #: ../data/glade/SalesPersonStep.ui.h:12
 msgid "Salesperson:"
 msgstr "Vendedor:"
@@ -1742,7 +1742,7 @@ msgstr "Fornecedor:"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:24
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:3
-#: ../data/glade/SaleDetailsDialog.ui.h:17
+#: ../data/glade/SaleDetailsDialog.ui.h:18
 #: ../data/glade/SaleReturnSlave.ui.h:11
 msgid "Total Paid:"
 msgstr "Total pago:"
@@ -1919,6 +1919,10 @@ msgstr "Detalhes"
 #: ../data/glade/SaleDetailsDialog.ui.h:1
 msgid "<b>Sale Number:</b>"
 msgstr "<b>Número de venda:</b>"
+
+#: ../data/glade/SaleDetailsDialog.ui.h:13
+msgid "Print Bills"
+msgstr "Imprimir boletos"
 
 #: ../data/glade/SaleInvoicePrinterDialog.ui.h:2
 msgid "<b>Invoice Number:</b>"
@@ -3417,7 +3421,7 @@ msgstr "_Ajuda"
 
 #: ../stoq/gui/application.py:329
 msgid "Contents"
-msgstr ""
+msgstr "Conteúdo"
 
 #: ../stoq/gui/application.py:331
 msgid "Show help for this Application"
@@ -3425,19 +3429,19 @@ msgstr "Exibir ajuda para este aplicativo"
 
 #: ../stoq/gui/application.py:333
 msgid "Translate Stoq..."
-msgstr ""
+msgstr "Traduza o Stoq..."
 
 #: ../stoq/gui/application.py:334
 msgid "Translate this application online"
-msgstr ""
+msgstr "Traduza este aplicativo online"
 
 #: ../stoq/gui/application.py:335
 msgid "Get support online..."
-msgstr ""
+msgstr "Encontre suporte online..."
 
 #: ../stoq/gui/application.py:336
 msgid "Get support for Stoq online"
-msgstr ""
+msgstr "Encontre suporte online para o Stoq"
 
 #: ../stoq/gui/application.py:358
 #, python-format
@@ -4025,7 +4029,7 @@ msgstr "Fornecedor"
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:89
 #: ../stoqlib/reporting/payment.py:157
 msgid "Due Date"
-msgstr "Data de vencimento"
+msgstr "Vencimento"
 
 #: ../stoq/gui/payable.py:165 ../stoq/gui/receivable.py:214
 #: ../stoqlib/gui/dialogs/purchasedetails.py:206
@@ -4195,7 +4199,7 @@ msgstr "Total"
 
 #: ../stoq/gui/pos.py:307
 msgid "_Close"
-msgstr ""
+msgstr "Fe_char"
 
 #: ../stoq/gui/pos.py:343 ../stoq/gui/till.py:293
 #, python-format
@@ -4291,7 +4295,7 @@ msgstr "Compras"
 
 #: ../stoq/gui/production.py:115
 msgid "Search items"
-msgstr "Procurar itens"
+msgstr "Pesquisa de itens"
 
 #: ../stoq/gui/production.py:116
 msgid "Production help"
@@ -4533,11 +4537,11 @@ msgstr "Fechar empréstimo..."
 
 #: ../stoq/gui/sales.py:145 ../stoq/gui/stock.py:139
 msgid "Search loans..."
-msgstr "Pesquisar empréstimos..."
+msgstr "Pesquisa de empréstimos..."
 
 #: ../stoq/gui/sales.py:146 ../stoq/gui/stock.py:140
 msgid "Search loan items..."
-msgstr "Pesquisar itens emprestados..."
+msgstr "Pesquisa de itens emprestados..."
 
 #: ../stoq/gui/sales.py:156
 msgid "Commissions..."
@@ -6913,6 +6917,8 @@ msgid ""
 "This status changes automatically when the\n"
 "product is purchased or an inicial stock is added."
 msgstr ""
+"Esta situação é atualizada automaticamente quando o\n"
+"produto é comprado ou um estoque inicial é adicionado."
 
 #: ../stoqlib/gui/editors/producteditor.py:563
 msgid "Cost must be greater than the sum of the components."
@@ -7440,7 +7446,7 @@ msgstr "categorias base"
 
 #: ../stoqlib/gui/search/commissionsearch.py:46
 msgid "Search for Commissions"
-msgstr "Procurar por comissões"
+msgstr "Pesquisa de comissões"
 
 #: ../stoqlib/gui/search/commissionsearch.py:62
 msgid "Anyone"
@@ -7582,7 +7588,7 @@ msgstr "Fornecedor de crédito"
 #: ../stoqlib/gui/search/paymentsearch.py:155
 #: ../stoqlib/reporting/purchase.py:242
 msgid "Due date"
-msgstr "Data de vencimento"
+msgstr "Vencimento"
 
 #: ../stoqlib/gui/search/paymentsearch.py:157
 #: ../stoqlib/gui/slaves/installmentslave.py:247
@@ -7786,7 +7792,7 @@ msgstr "Gerente"
 
 #: ../stoqlib/gui/search/personsearch.py:369
 msgid "User Search"
-msgstr "Pesquisar por usuário"
+msgstr "Pesquisa de usuário"
 
 #: ../stoqlib/gui/search/personsearch.py:373
 msgid "Users Matching:"
@@ -8029,7 +8035,7 @@ msgstr "Exibir itens contendo:"
 
 #: ../stoqlib/gui/search/sellableunitsearch.py:43
 msgid "Search for Units"
-msgstr "Pesquisar unidades"
+msgstr "Pesquisa de unidades"
 
 #: ../stoqlib/gui/search/sellableunitsearch.py:77
 msgid "System"
@@ -8041,7 +8047,7 @@ msgstr "Fração"
 
 #: ../stoqlib/gui/search/servicesearch.py:48
 msgid "Service Search"
-msgstr "Pesquisa de serviço"
+msgstr "Pesquisa de serviços"
 
 #: ../stoqlib/gui/search/servicesearch.py:54
 msgid "Add services"
@@ -8070,7 +8076,7 @@ msgstr "Pesquisa de computador"
 
 #: ../stoqlib/gui/search/stockdecreasesearch.py:46
 msgid "Manual Stock Decrease Search"
-msgstr "Pesquisa de saída manual"
+msgstr "Pesquisa de saídas manuais"
 
 #: ../stoqlib/gui/search/stockdecreasesearch.py:50
 msgid "manual stock decrease"
@@ -8086,7 +8092,7 @@ msgstr "Itens removidos"
 
 #: ../stoqlib/gui/search/taxclasssearch.py:105
 msgid "Tax Classes Search"
-msgstr "Pesquisa de classe de taxas"
+msgstr "Pesquisa de classe de impostos"
 
 #: ../stoqlib/gui/search/taxclasssearch.py:107
 msgid "Class Matching:"
@@ -9943,7 +9949,7 @@ msgstr "Número de parcelas"
 
 #: ../stoqlib/lib/invoice.py:564
 msgid "Payment due dates"
-msgstr "Data de vencimento dos pagamentos"
+msgstr "Vencimento dos pagamentos"
 
 #: ../stoqlib/lib/invoice.py:575
 msgid "Payment values"
@@ -10654,7 +10660,7 @@ msgstr "Número: %s - emprestado em %s"
 
 #: ../stoqlib/reporting/payment.py:37
 msgid "Payment Report"
-msgstr "Relatório de pagamento"
+msgstr "Relatório de pagamentos"
 
 #: ../stoqlib/reporting/payment.py:98
 msgid "Payment Flow History"
@@ -10767,7 +10773,7 @@ msgstr "Relatório de compras"
 
 #: ../stoqlib/reporting/purchase.py:83
 msgid "Purchases Items Report"
-msgstr "Relatório de compras"
+msgstr "Relatório de itens comprados"
 
 #: ../stoqlib/reporting/purchase.py:84
 msgid "purchased items"
@@ -10982,7 +10988,7 @@ msgstr "Inscrição estadual: %s"
 
 #: ../stoqlib/reporting/template.py:200
 msgid "Listing"
-msgstr "Listagem"
+msgstr "Listando"
 
 #: ../stoqlib/reporting/template.py:204
 #, python-format
@@ -11009,60 +11015,6 @@ msgstr "histórico de caixa"
 #: ../stoqlib/reporting/transfer_receipt.py:39
 msgid "Transfer Receipt"
 msgstr "Recibo de transferência"
-
-#: ../data/template/transfer.rml.extracted.h:1
-msgid "CODE"
-msgstr "CÓDIGO"
-
-#: ../data/template/transfer.rml.extracted.h:2
-msgid "DESCRIPTION"
-msgstr "DESCRIÇÃO"
-
-#: ../data/template/transfer.rml.extracted.h:3
-msgid "DESTINATION"
-msgstr "DESTINO"
-
-#: ../data/template/transfer.rml.extracted.h:4
-#: ../data/template/receipt.rml.extracted.h:9
-msgid "NUMBER:"
-msgstr "NÚMERO:"
-
-#: ../data/template/transfer.rml.extracted.h:5
-msgid "OPEN:"
-msgstr "ABERTO:"
-
-#: ../data/template/transfer.rml.extracted.h:6
-msgid "QUANTITY"
-msgstr "QUANTIDADE"
-
-#: ../data/template/transfer.rml.extracted.h:7
-msgid "RECEIVAL:"
-msgstr "RECEBIDO:"
-
-#: ../data/template/transfer.rml.extracted.h:8
-msgid "RESPONSIBLE"
-msgstr "RESPONSÁVEL"
-
-#: ../data/template/transfer.rml.extracted.h:9
-#: ../data/template/receipt.rml.extracted.h:12
-msgid "SIGNATURE:"
-msgstr "ASSINATURA:"
-
-#: ../data/template/transfer.rml.extracted.h:10
-msgid "SOURCE"
-msgstr "ORIGEM"
-
-#: ../data/template/transfer.rml.extracted.h:11
-msgid "TOTAL:"
-msgstr "TOTAL:"
-
-#: ../data/template/transfer.rml.extracted.h:12
-msgid "TRANSFER PRODUCTS"
-msgstr "TRANSFERÊNCIA DE PRODUTOS"
-
-#: ../data/template/transfer.rml.extracted.h:13
-msgid "TRANSFER RECEIPT"
-msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #: ../data/template/receipt.rml.extracted.h:1
 msgid "ADDRESS:"
@@ -11096,6 +11048,11 @@ msgstr "EMITENTE:"
 msgid "I/WE RECEIVED FROM"
 msgstr "EU/NÓS RECEBI(EMOS) DE"
 
+#: ../data/template/receipt.rml.extracted.h:9
+#: ../data/template/transfer.rml.extracted.h:4
+msgid "NUMBER:"
+msgstr "NÚMERO:"
+
 #: ../data/template/receipt.rml.extracted.h:10
 msgid "RECEIPT"
 msgstr "RECIBO"
@@ -11104,6 +11061,11 @@ msgstr "RECIBO"
 msgid "REFERRING TO:"
 msgstr "REFERENTE A:"
 
+#: ../data/template/receipt.rml.extracted.h:12
+#: ../data/template/transfer.rml.extracted.h:9
+msgid "SIGNATURE:"
+msgstr "ASSINATURA:"
+
 #: ../data/template/receipt.rml.extracted.h:13
 msgid "THE IMPORTANCE OF:"
 msgstr "A IMPORTÂNCIA DE:"
@@ -11111,6 +11073,50 @@ msgstr "A IMPORTÂNCIA DE:"
 #: ../data/template/receipt.rml.extracted.h:14
 msgid "VALUE:"
 msgstr "VALOR:"
+
+#: ../data/template/transfer.rml.extracted.h:1
+msgid "CODE"
+msgstr "CÓDIGO"
+
+#: ../data/template/transfer.rml.extracted.h:2
+msgid "DESCRIPTION"
+msgstr "DESCRIÇÃO"
+
+#: ../data/template/transfer.rml.extracted.h:3
+msgid "DESTINATION"
+msgstr "DESTINO"
+
+#: ../data/template/transfer.rml.extracted.h:5
+msgid "OPEN:"
+msgstr "ABERTO:"
+
+#: ../data/template/transfer.rml.extracted.h:6
+msgid "QUANTITY"
+msgstr "QUANTIDADE"
+
+#: ../data/template/transfer.rml.extracted.h:7
+msgid "RECEIVAL:"
+msgstr "RECEBIDO:"
+
+#: ../data/template/transfer.rml.extracted.h:8
+msgid "RESPONSIBLE"
+msgstr "RESPONSÁVEL"
+
+#: ../data/template/transfer.rml.extracted.h:10
+msgid "SOURCE"
+msgstr "ORIGEM"
+
+#: ../data/template/transfer.rml.extracted.h:11
+msgid "TOTAL:"
+msgstr "TOTAL:"
+
+#: ../data/template/transfer.rml.extracted.h:12
+msgid "TRANSFER PRODUCTS"
+msgstr "TRANSFERÊNCIA DE PRODUTOS"
+
+#: ../data/template/transfer.rml.extracted.h:13
+msgid "TRANSFER RECEIPT"
+msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #, python-format
 #~ msgid "%s not found"
