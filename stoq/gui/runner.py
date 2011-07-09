@@ -74,10 +74,11 @@ class ApplicationRunner(object):
         if window_class is None:
             raise SystemExit("%s app misses a %r attribute" % (
                 appdesc.name, window))
-        from stoq.gui.application import App
-        app = App(window_class, self._login, self._options, self)
 
         hide_splash()
+
+        from stoq.gui.application import App
+        app = App(window_class, self._login, self._options, self)
 
         toplevel = app.main_window.get_toplevel()
         icon = toplevel.render_icon(appdesc.icon, gtk.ICON_SIZE_MENU)
