@@ -333,8 +333,10 @@ class StoqCommandHandler:
             return 1
         import subprocess
         import os
-        args = ['gksudo',
-                '-k',
+        for envname in ['PGUSER', 'PGHOST']:
+            if envname in os.environ:
+                del os.environ[envname]
+        args = ['pkexec',
                 '-u', 'postgres',
                 os.path.join(os.path.dirname(__file__), 'stoqcreatedbuser'),
                 options.new_username]
