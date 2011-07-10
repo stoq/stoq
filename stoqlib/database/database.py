@@ -167,20 +167,20 @@ def start_shell():
 
 def test_local_database():
     """Check and see if we postgres running locally"""
-    PGDIR = '/var/run/postgresql/'
-    if (not os.path.exists(PGDIR) and
-        not os.path.isdir(PGDIR)):
-        return False
 
-    files = os.listdir(PGDIR)
-    if not files:
-        return False
+    # ubuntu/debian is /var/run/postgresl
+    # fedora is /tmp
+    for pgdir in ['/var/run/postgresql', '/tmp']:
+        if (not os.path.exists(pgdir) and
+            not os.path.isdir(pgdir)):
+            continue 
 
-    for filename in files:
-        if filename.endswith('.pid'):
+        # Check for the default unix socket which
+        # we will later use to create a database user
+        fname = os.path.join(pgdir, '.s.PGSQL.5432')
+        if os.path.exists(fname):
             return True
-    else:
-        return False
+    return False
 
 def test_connection():
     """Test database connectivity for using command line tools
