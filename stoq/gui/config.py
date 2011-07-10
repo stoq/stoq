@@ -387,6 +387,9 @@ class CreateDatabaseStep(BaseWizardStep):
                 self._launch_stoqdbadmin()
             else:
                 warning(_("Something went wrong while trying to install PostgreSQL"))
+
+        self.label.set_label(
+            _("Installing PostgreSQL database server."))
         api = AptPackageInstaller(parent=self.wizard.get_toplevel())
         api.install('postgresql')
         api.connect('done', done)
@@ -416,9 +419,13 @@ class CreateDatabaseStep(BaseWizardStep):
             self.wizard.config.load_settings(self.wizard.settings)
         dbargs = self.wizard.settings.get_command_line_arguments()
         args.extend(dbargs)
-        self.process_view.execute_command(args)
+        self.label.set_label(
+            _("Creating a new database for Stoq, depending on the speed of "
+              "your computer and the server it may take a couple of "
+              "minutes to finish."))
         self.progressbar.set_text(_("Creating database..."))
         self.progressbar.set_fraction(0.05)
+        self.process_view.execute_command(args)
 
     def _parse_process_line(self, line):
         LOG_CATEGORY = 'stoqlib.database.create'
