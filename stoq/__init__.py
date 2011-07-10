@@ -39,7 +39,8 @@ if extra_version > 0:
 try:
     from kiwi.environ import Library
 except ImportError:
-    raise SystemExit("Could not find kiwi")
+    from stoq.lib.dependencies import check_dependencies
+    check_dependencies()
 
 # XXX: Use Application
 library = Library('stoq')
