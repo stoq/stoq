@@ -1,0 +1,8 @@
+stoq-1.0:
+  * Improved installation
+  * Financial application
+  * TEF support (with plugin)
+  * Uses GtkBuilder instead of gazpacho
+  * Automatic crash-reporting
+  * Much improved translation
+  * Many bugs fixed

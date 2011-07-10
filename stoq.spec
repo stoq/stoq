@@ -2,16 +2,28 @@
 
 Summary: A powerful retail system
 Name: stoq
-Version: 0.9.8.2
-Release: 4
+Version: 1.0.0
+Release: 1
 License: GPL
 Group: System Environment/Libraries
 URL: http://www.stoq.com.br/
-Source: http://download.stoq.com.br/sources/0.9.1/stoq-%{version}.tar.gz
+Source: http://download.stoq.com.br/sources/1.0/stoq-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: python-kiwi >= 1.9.24, stoqlib >= 0.9.8
+Requires: postgresql >= 8.4
+Requires: pygtk2 >= 2.16
+Requires: pypoppler >= 0.12.1
 Requires: python-abi = %(%{__python} -c "import sys; print sys.version[:3]")
-BuildRequires: python-kiwi >= 1.9.24, stoqlib >= 0.9.8
+Requires: python-dateutil >= 1.4.1
+Requires: python-imaging >= 1.1.5
+Requires: python-gudev >= 147
+Requires: python-kiwi >= 1.9.28
+Requires: python-mako >= 0.2.5
+Requires: python-psycopg2 >= 2.0.5
+Requires: python-reportlab >= 2.4
+Requires: python-zope-interface >= 3.0.1
+Requires: stoqdrivers >= 0.9.12
+Requires: vte >= 0.28.0
+BuildRequires: python-kiwi >= 1.9.28
 BuildArch: noarch
 
 %description
@@ -25,6 +37,7 @@ usability, good devices support, and useful features for retails.
 %{__python} setup.py build
 
 %install
+sed -i -e 's|share/doc/stoqlib|share/doc/%{name}-%{version}|' setup.py
 sed -i -e 's|share/doc/stoq|share/doc/%{name}-%{version}|' setup.py
 mkdir -p %{_etcdir}/stoq
 rm -rf %{buildroot}
@@ -38,15 +51,30 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %defattr(-, root, root, 0755)
 %doc AUTHORS CONTRIBUTORS COPYING README NEWS
 %{_bindir}/stoq
+%{_bindir}/stoqcreatedbuser
 %{_bindir}/stoqdbadmin
+%{_bindir}/stoqruncmd
+%{_libdir}/python*/site-packages/*.egg-info
+%{_libdir}/stoqlib
 %{_sysconfdir}/stoq
-%{_datadir}/locale/*/LC_MESSAGES/stoq.mo
+%{_datadir}/icons/hicolor/48x48/apps/stoq.png
+%{_datadir}/polkit-1/actions/br.com.stoq.createdatabase.policy
+%{_datadir}/stoq/csv
+%{_datadir}/stoq/fonts
 %{_datadir}/stoq/glade
+%{_datadir}/stoq/misc
 %{_datadir}/stoq/pixmaps
+%{_datadir}/stoq/sql
+%{_datadir}/stoq/template
+%{_datadir}/locale/*/LC_MESSAGES/stoq.mo
 %{_datadir}/applications/stoq.desktop
 %{python_sitelib}/stoq
+%{python_sitelib}/stoqlib
 
 %changelog
+* Thu Jul 14 2011 Johan Dahlin <jdahlin@async.com.br> 1.0.0-1
+- Release 1.0
+
 * Wed Feb 11 2008 Fabio Morbec <fabio@async.com.br> 0.9.4-4
 - Fix
 
@@ -73,4 +101,3 @@ rm -rf %{buildroot}%{_defaultdocdir}
 
 * Tue Feb 03 2007 Johan Dahlin <jdahlin@async.com.br> 0.8.9-1
 - Initial RPM release.
-

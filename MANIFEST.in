@@ -1,14 +1,14 @@
+recursive-include data/config *.cfg
 recursive-include data/csv *.csv
 recursive-include data/fonts *.ttf
-recursive-include data/glade *.glade
+recursive-include data/glade *.ui
 recursive-include data/pixmaps *.png *.svg
 recursive-include data/sql *.sql *.py
 recursive-include data/template *.rml
 recursive-include docs *
 recursive-include external *.py *jpg *gif
-recursive-include locale stoqlib.mo
 recursive-include po *.po *.pot POTFILES.list
-recursive-include plugins *.csv *.py *.glade *.sql *.plugin
+recursive-include plugins *.csv *.py *.ui *.sql *.plugin
 recursive-include stoqlib *.pdf *.txt
 include debian/changelog debian/compat debian/copyright debian/control debian/rules
 include debian/pycompat debian/pyversions
@@ -17,8 +17,8 @@ include COPYING
 include MANIFEST.in
 include README
 include INSTALL
+include NEWS
 include CONTRIBUTORS
 include stoqlib.spec
-recursive-include locale stoq.mo
 include stoq.desktop
 include stoq.spec
