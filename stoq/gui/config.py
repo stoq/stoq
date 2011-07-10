@@ -52,6 +52,7 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.wizard import WizardStep
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME, ensure_admin_user
+from stoqlib.database.database import test_local_database
 from stoqlib.database.interfaces import (ICurrentBranchStation,
                                          ICurrentBranch)
 from stoqlib.database.runtime import new_transaction
@@ -307,7 +308,10 @@ class CreateDatabaseStep(BaseWizardStep):
         return FinishInstallationStep(self.wizard)
 
     def _maybe_create_database(self):
-        if self.wizard.enable_production or self.wizard.db_is_local:
+        if self.wizard.db_is_local:
+            self._local_installation()
+            return
+        elif self.wizard.enable_production:
             self._launch_stoqdbadmin()
             return
 
@@ -362,6 +366,31 @@ class CreateDatabaseStep(BaseWizardStep):
         open(pgpass, 'w').write('\n'.join(lines))
         os.chmod(pgpass, 0600)
 
+    def _local_installation(self):
+        if test_local_database():
+            self._launch_stoqdbadmin()
+        else:
+            self._install_postgres()
+
+    def _install_postgres(self):
+        try:
+            import aptdaemon
+        except ImportError:
+            warning(_("You need to install and start PostgreSQL."
+                      "When done click 'OK' to continue"))
+            self._local_installation()
+            return
+
+        from stoqlib.gui.aptpackageinstaller import AptPackageInstaller
+        def done(api, error):
+            if error is None:
+                self._launch_stoqdbadmin()
+            else:
+                warning(_("Something went wrong while trying to install PostgreSQL"))
+        api = AptPackageInstaller(parent=self.wizard.get_toplevel())
+        api.install('postgresql')
+        api.connect('done', done)
+
     def _launch_stoqdbadmin(self):
         self.wizard.disable_back()
         self.wizard.disable_next()
@@ -382,6 +411,9 @@ class CreateDatabaseStep(BaseWizardStep):
             args.append('--database-username')
             args.append(os.environ['USER'])
 
+        if self.wizard.db_is_local:
+            self.wizard.settings.address = "" # Unix socket really
+            self.wizard.config.load_settings(self.wizard.settings)
         dbargs = self.wizard.settings.get_command_line_arguments()
         args.extend(dbargs)
         self.process_view.execute_command(args)
