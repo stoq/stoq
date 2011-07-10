@@ -327,35 +327,21 @@ class StoqCommandHandler:
                          help="Filename to import",
                          dest="filename")
 
-    def cmd_create(self, options):
-        if not options.new_username:
-            print 'ERROR: need a username'
-            return 1
+    def cmd_createdatabase(self, options, username):
         import subprocess
         import os
         for envname in ['PGUSER', 'PGHOST']:
             if envname in os.environ:
                 del os.environ[envname]
+        dirname = os.path.abspath(os.path.dirname(__file__))
         args = ['pkexec',
                 '-u', 'postgres',
-                os.path.join(os.path.dirname(__file__), 'stoqcreatedbuser'),
-                options.new_username]
+                os.path.join(dirname, 'stoqcreatedatabase'),
+                username]
         proc = subprocess.Popen(args)
         proc.communicate()
         if proc.returncode != 0:
             raise SystemExit("Failed to run %r" % (args, ))
-
-        args = ['createdb', options.new_username]
-        proc = subprocess.Popen(args)
-        proc.communicate()
-        if proc.returncode != 0:
-            raise SystemExit("Failed to run %r" % (args, ))
-
-    def opt_create(self, parser, group):
-        group.add_option('', '--new-username',
-                         action="store",
-                         help="Username to create",
-                         dest="new_username")
 
 def main(args):
     pname = args[0]

@@ -29,26 +29,40 @@
 # PostgreSQL installation without a modified pg_hba.conf
 #
 
+SHNAME=`basename $0`
 USERNAME=$1
-SQLQUERY="SELECT usename FROM pg_user WHERE usename = '$USERNAME';"
+DATABASE=$1
 
 unset PGUSER
 unset PGHOST
 unset PGDATABASE
 
-echo "Creating $USERNAME"
+SQLQUERY="SELECT usename FROM pg_user WHERE usename = '$USERNAME';"
 HASUSER=`psql -c "$SQLQUERY"|grep -c $USERNAME`
 if test "$HASUSER" = "1"; then
-   exit 0;
+    echo "$SHNAME: '$USERNAME' exists, making sure it can create databases"
+    psql -c "ALTER USER \"$USERNAME\" CREATEDB";
+else
+    # Create a user which is:
+    # - allowed to create new databases (-d)
+    # - not a superuser (-S)
+    # - not allowed to create other roles (-R)
+    #
+    # All of the options above needs to be passed in to avoid entering
+    # interactive mode for createuser.
+    echo "$SHNAME: Creating user '$USERNAME'"
+    createuser -dSR $USERNAME
 fi
 
-# Create a user which is:
-# - allowed to create new databases (-d)
-# - not a superuser (-S)
-# - not allowed to create other roles (-R)
-#
-# All of the options above needs to be passed in to avoid entering
-# interactive mode for createuser.
 
-createuser -dSR $USERNAME
+SQLQUERY="SELECT datname FROM pg_database WHERE datname = '$DATABASE';"
+HASDATABASE=`psql -c "$SQLQUERY"|grep -c $DATABASE`
+if test "$HASDATABASE" = "1"; then
+    echo "$SHNAME: '$DATABASE' exists, making sure '$USERNAME' is the dba"
+    psql -c "ALTER DATABASE \"$DATABASE\" OWNER TO \"$USERNAME\";"
+else
+    echo "$SHNAME: Creating database '$DATABASE'"
+    createdb $USERNAME
+fi
+
 exit 0
