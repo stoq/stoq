@@ -58,7 +58,7 @@ class AptPackageInstaller(gobject.GObject):
                                      error_handler=self._error_handler)
 
     def _on_transaction__finished(self, transaction, exitcode):
-        if exitcode not in [0, 'done-success']:
+        if exitcode not in [0, 'exit-success']:
             error = exitcode
         else:
             error = None
