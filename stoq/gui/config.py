@@ -50,7 +50,7 @@ from kiwi.python import Settable
 from kiwi.ui.dialogs import info
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.wizard import WizardStep
-from stoqlib.exceptions import  DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME, ensure_admin_user
 from stoqlib.database.interfaces import (ICurrentBranchStation,
                                          ICurrentBranch)
@@ -92,6 +92,22 @@ class BaseWizardStep(WizardStep, GladeSlaveDelegate):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
 
 
+class DatabaseLocationStep(WizardEditorStep):
+    gladefile = 'DatabaseLocationStep'
+    model_type = DatabaseSettings
+
+    def __init__(self, wizard):
+        self.wizard = wizard
+        WizardEditorStep.__init__(self, None, wizard, wizard.settings)
+
+    def next_step(self):
+        self.wizard.db_is_local = self.radio_local.get_active()
+        if self.wizard.db_is_local:
+            return ExampleDatabaseStep(self.wizard, self)
+        else:
+            return DatabaseSettingsStep(self.wizard, self)
+
+
 class DatabaseSettingsStep(WizardEditorStep):
     gladefile = 'DatabaseSettingsStep'
     model_type = DatabaseSettings
@@ -101,8 +117,9 @@ class DatabaseSettingsStep(WizardEditorStep):
                      'password',
                      'dbname')
 
-    def __init__(self, wizard):
-        WizardEditorStep.__init__(self, None, wizard, wizard.settings)
+    def __init__(self, wizard, previous):
+        WizardEditorStep.__init__(self, None, wizard, wizard.settings,
+                                  previous)
         self._update_widgets()
 
     def _update_widgets(self):
@@ -202,7 +219,6 @@ class DatabaseSettingsStep(WizardEditorStep):
         self._update_widgets()
 
 
-
 class ExampleDatabaseStep(BaseWizardStep):
     gladefile = "ExampleDatabaseStep"
     model_type = object
@@ -291,7 +307,7 @@ class CreateDatabaseStep(BaseWizardStep):
         return FinishInstallationStep(self.wizard)
 
     def _maybe_create_database(self):
-        if self.wizard.enable_production:
+        if self.wizard.enable_production or self.wizard.db_is_local:
             self._launch_stoqdbadmin()
             return
 
@@ -357,6 +373,14 @@ class CreateDatabaseStep(BaseWizardStep):
         if self.wizard.plugins:
             args.append('--enable-plugins')
             args.append(','.join(self.wizard.plugins))
+        if self.wizard.db_is_local:
+            args.append('--create-database')
+            # FIXME: Allow developers to specify another database
+            #        is_developer_mode() or STOQ_DATABASE_NAME
+            args.append('stoq')
+            args.append('--database-username')
+            args.append(os.environ['USER'])
+
         dbargs = self.wizard.settings.get_command_line_arguments()
         args.extend(dbargs)
         self.process_view.execute_command(args)
@@ -398,6 +422,9 @@ class CreateDatabaseStep(BaseWizardStep):
         self.progressbar.set_text(text)
 
     def _finish(self, returncode):
+        # FIXME: Handle specific errors, such as authentication failure
+        #        caused when not knowing the sudo password or pressing
+        #        cancel to pkexec
         if returncode:
             self.expander.set_expanded(True)
             warning(_("Something went wrong while trying to create "
@@ -459,6 +486,7 @@ class FirstTimeConfigWizard(BaseWizard):
         self.has_installed_db = False
         self.options = options
         self.plugins = []
+        self.db_is_local = True
 
         if config.get('Database', 'enable_production') == 'True':
             self.enable_production = True
@@ -466,7 +494,7 @@ class FirstTimeConfigWizard(BaseWizard):
         if self.enable_production:
             first_step = PluginStep(self)
         else:
-            first_step = DatabaseSettingsStep(self)
+            first_step = DatabaseLocationStep(self)
         BaseWizard.__init__(self, None, first_step, title=self.title)
 
     def _create_station(self, trans):
