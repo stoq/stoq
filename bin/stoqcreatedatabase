@@ -30,8 +30,8 @@
 #
 
 SHNAME=`basename $0`
-USERNAME=$1
 DATABASE=$1
+USERNAME=$2
 
 unset PGUSER
 unset PGHOST
