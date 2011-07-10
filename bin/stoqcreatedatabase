@@ -51,7 +51,7 @@ else
     # All of the options above needs to be passed in to avoid entering
     # interactive mode for createuser.
     echo "$SHNAME: Creating user '$USERNAME'"
-    createuser -dSR $USERNAME
+    createuser -dSR "$USERNAME"
 fi
 
 
@@ -62,7 +62,7 @@ if test "$HASDATABASE" = "1"; then
     psql -c "ALTER DATABASE \"$DATABASE\" OWNER TO \"$USERNAME\";"
 else
     echo "$SHNAME: Creating database '$DATABASE'"
-    createdb $USERNAME
+    createdb "$DATABASE" --owner "$USERNAME"
 fi
 
 exit 0
