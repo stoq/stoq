@@ -83,7 +83,6 @@ import os
 if os.environ.get('LIBOVERLAY_SCROLLBAR') != '1':
     os.environ['LIBOVERLAY_SCROLLBAR'] = '0'
 
-import stoqlib
 from stoq import main
 
 try:
