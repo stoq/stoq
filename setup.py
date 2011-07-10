@@ -79,7 +79,7 @@ packages.extend(listpackages('stoqlib', exclude='stoqlib.tests'))
 
 scripts = [
     'bin/stoq',
-    'bin/stoqcreatedbuser',
+    'bin/stoqcreatedatabase',
     'bin/stoqdbadmin',
     'bin/stoqruncmd',
     ]
