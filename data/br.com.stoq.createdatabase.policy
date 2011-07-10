@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
+<policyconfig>
+
+  <vendor>Stoq Project</vendor>
+  <vendor_url>http://www.stoq.com.br/</vendor_url>
+  <icon_name>stoq</icon_name>
+
+  <action id="br.com.stoq.create-database">
+    <description>Creating a new database for Stoq</description>
+    <description xml:lang="pt_BR">Criando um novo banco de dados para Stoq</description>
+    <message>System policy prevents creating of a database</message>
+    <message xml:lang="pt_BR">A política do sistema impede criação de banco de dados para Stoq</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+  <annotate key="org.freedesktop.policykit.exec.path">/usr/bin/stoqcreatedatabase</annotate>
+  </action>
+</policyconfig>
