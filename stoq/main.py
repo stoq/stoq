@@ -30,12 +30,7 @@ import optparse
 import os
 import sys
 
-from stoqlib.lib.uptime import set_initial
-set_initial()
-from stoqlib.lib.osutils import get_application_dir
 
-from stoq.lib.applist import get_application_names
-from stoq.lib.options import get_option_parser
 
 _ = gettext.gettext
 _log_filename = None
@@ -209,6 +204,7 @@ def _setup_cookiefile():
     from kiwi.component import provide_utility
     from stoqlib.lib.cookie import Base64CookieFile
     from stoqlib.lib.interfaces import ICookieFile
+    from stoqlib.lib.osutils import get_application_dir
     app_dir = get_application_dir()
     cookiefile = os.path.join(app_dir, "cookie")
     provide_utility(ICookieFile, Base64CookieFile(cookiefile))
@@ -245,6 +241,7 @@ def _check_main_branch():
 def _prepare_logfiles():
     global _log_filename, _stream
 
+    from stoqlib.lib.osutils import get_application_dir
     stoqdir = get_application_dir()
 
     import time
@@ -357,8 +354,11 @@ def run_app(options, appname):
     log.info("Shutting down %s application" % appname)
 
 def _parse_command_line(args):
+    from stoqlib.lib.uptime import set_initial
+    set_initial()
 
     log.info('parsing command line arguments: %s ' % (args,))
+    from stoq.lib.options import get_option_parser
     parser = get_option_parser()
 
     group = optparse.OptionGroup(parser, 'Stoq')
@@ -376,6 +376,7 @@ def _parse_command_line(args):
 
     options, args = parser.parse_args(args)
 
+    from stoq.lib.applist import get_application_names
     apps = get_application_names()
     if len(args) < 2:
         appname = None
@@ -391,7 +392,11 @@ def _parse_command_line(args):
     return options, appname
 
 def main(args):
-    options, appname = _parse_command_line(args)
+    try:
+        options, appname = _parse_command_line(args)
+    except ImportError:
+        _check_dependencies()
+        raise
 
     # Do this as soon as possible, before we attempt to use the
     # external libraries/resources
