@@ -1,5 +1,6 @@
-#!/bin/bash
-#
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
 ## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
@@ -23,11 +24,15 @@
 
 import gtk
 
-from aptdaemon.client import AptClient
-from aptdaemon.enums import ERROR_UNKNOWN
-from aptdaemon.errors import NotAuthorizedError, TransactionFailed
-from aptdaemon.gtkwidgets import (AptConfirmDialog, AptErrorDialog,
-                                  AptProgressDialog)
+try:
+    from aptdaemon.client import AptClient
+    from aptdaemon.enums import ERROR_UNKNOWN
+    from aptdaemon.errors import NotAuthorizedError, TransactionFailed
+    from aptdaemon.gtkwidgets import (AptConfirmDialog, AptErrorDialog,
+                                      AptProgressDialog)
+    has_apt = True
+except ImportError:
+    has_apt = False
 
 class AptPackageInstaller(object):
     def __init__(self, parent=None):
