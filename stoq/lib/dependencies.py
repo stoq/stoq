@@ -24,6 +24,9 @@
 ##
 """ Check Stoq dependencies"""
 
+# FIXME: Display all missing dependencies as once in an ObjectList
+# FIXME: Integrate with package installer
+
 import gettext
 
 _ = gettext.gettext
