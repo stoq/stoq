@@ -95,7 +95,10 @@ data_files = [
     ('$datadir/template', listfiles('data', 'template', '*.rml')),
     ('$sysconfdir/stoq',  ''),
     ('share/doc/stoq',
-     ('AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.stoqlib', 'README'))]
+     ('AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.stoqlib', 'README')),
+    ('share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
+    ('share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
+    ]
 data_files += listexternal()
 templates = [
     ('share/applications', ['stoq.desktop'])]
