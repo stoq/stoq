@@ -10,7 +10,6 @@
         <child>
           <object class="GtkLabel" id="label">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Creating a new database for Stoq, depending on the speed of your computer and the server it may take a couple of minutes to finish.</property>
             <property name="use_markup">True</property>
             <property name="wrap">True</property>
           </object>
