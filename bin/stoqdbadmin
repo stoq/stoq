@@ -107,8 +107,10 @@ class StoqCommandHandler:
             if not options.database_username:
                 raise SystemExit(
                     "This option requires a --database-username set")
-            self._create_database(options.create_database,
-                                  options.database_username)
+            retval = self._create_database(options.create_database,
+                                           options.database_username)
+            if retval != 0:
+                return retval
         config = self._read_config(options, register_station=False,
                                    check_schema=False,
                                    load_plugins=False)
@@ -231,6 +233,7 @@ class StoqCommandHandler:
         if proc.returncode != 0:
             print "ERROR: Failed to run %r" % (args, )
             return 30
+        return 0
 
     def opt_updateschema(self, parser, group):
         group.add_option('-b', '--disable-backup',
