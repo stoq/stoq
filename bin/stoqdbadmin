@@ -103,6 +103,8 @@ class StoqCommandHandler:
     def cmd_init(self, options):
         from stoq.lib.startup import clean_database
 
+        if options.create_database:
+            self._create_database(options.create_database)
         config = self._read_config(options, register_station=False,
                                    check_schema=False,
                                    load_plugins=False)
@@ -137,6 +139,9 @@ class StoqCommandHandler:
         group.add_option('', '--demo',
                          action='store_true',
                          dest='demo')
+        group.add_option('', '--create-database',
+                         action='store',
+                         dest='create_database')
 
     def cmd_configure(self, options):
         if not options.dbname:
@@ -201,6 +206,22 @@ class StoqCommandHandler:
             raise SystemExit("ERROR: %s" % e)
 
         trans.commit()
+
+    def _create_database(self, username):
+        import subprocess
+        import os
+        for envname in ['PGUSER', 'PGHOST']:
+            if envname in os.environ:
+                del os.environ[envname]
+        dirname = os.path.abspath(os.path.dirname(__file__))
+        args = ['pkexec',
+                '-u', 'postgres',
+                os.path.join(dirname, 'stoqcreatedatabase'),
+                username]
+        proc = subprocess.Popen(args)
+        proc.communicate()
+        if proc.returncode != 0:
+            raise SystemExit("Failed to run %r" % (args, ))
 
     def opt_updateschema(self, parser, group):
         group.add_option('-b', '--disable-backup',
@@ -326,22 +347,6 @@ class StoqCommandHandler:
                          action="store",
                          help="Filename to import",
                          dest="filename")
-
-    def cmd_createdatabase(self, options, username):
-        import subprocess
-        import os
-        for envname in ['PGUSER', 'PGHOST']:
-            if envname in os.environ:
-                del os.environ[envname]
-        dirname = os.path.abspath(os.path.dirname(__file__))
-        args = ['pkexec',
-                '-u', 'postgres',
-                os.path.join(dirname, 'stoqcreatedatabase'),
-                username]
-        proc = subprocess.Popen(args)
-        proc.communicate()
-        if proc.returncode != 0:
-            raise SystemExit("Failed to run %r" % (args, ))
 
 def main(args):
     pname = args[0]
