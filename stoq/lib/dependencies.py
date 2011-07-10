@@ -28,6 +28,8 @@
 # FIXME: Integrate with package installer
 
 import gettext
+import os
+import platform
 
 _ = gettext.gettext
 
@@ -39,6 +41,7 @@ MAKO_REQUIRED = (0, 2, 5)
 PIL_REQUIRED = (1, 1, 5)
 PYCAIRO_REQUIRED = (1, 8, 8)
 PYPOPPLER_REQUIRED = (0, 12, 1)
+PSQL_REQUIRED = (8, 4)
 PSYCOPG_REQUIRED = (2, 0, 5)
 PYGTK_REQUIRED = (2, 16, 0)
 REPORTLAB_REQUIRED = (2, 4)
@@ -68,6 +71,7 @@ class DependencyChecker(object):
         self._check_gudev(GUDEV_REQUIRED)
         self._check_pypoppler(PYPOPPLER_REQUIRED)
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
+        self._check_psql(PSQL_REQUIRED)
         self._check_psycopg(PSYCOPG_REQUIRED)
         self._check_pil(PIL_REQUIRED)
         self._check_reportlab(REPORTLAB_REQUIRED)
@@ -214,6 +218,19 @@ You can find an older version of %s on it's homepage at\n%s""") % (
         except ImportError:
             self._missing(project='ZopeInterface',
                           url='http://www.zope.org/Products/ZopeInterface',
+                          version=version)
+
+    def _check_psql(self, version):
+        executable = 'psql'
+        if platform.system() == 'Windows':
+            executable += '.exe'
+        for path in os.environ['PATH'].split(os.pathsep):
+            full = os.path.join(path, executable)
+            if os.path.exists(full):
+                break
+        else:
+            self._missing(project="PostgreSQL",
+                          url='http://www.postgresql.org/',
                           version=version)
 
     def _check_psycopg(self, version):
