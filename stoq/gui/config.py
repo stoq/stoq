@@ -509,7 +509,13 @@ class CreateDatabaseStep(BaseWizardStep):
             aptdaemon # pyflakes
         except ImportError:
             warning(_("You need to install and start PostgreSQL. "
-                      "When done click 'OK' to continue"))
+                      "When done click 'OK' to continue"),
+                    _("PostgreSQL isn't properly running on this computer."
+                      "It needs to be installed and started for Stoq to be " 
+                      "able to run. Note that some distributions such as "
+                      "Fedora requires you to create the database cluster "
+                      "before PostgreSQL can be started, please consult "
+                      "the distribution documentation for more information."))
             self._local_installation()
             return
 
