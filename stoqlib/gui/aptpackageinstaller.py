@@ -28,8 +28,7 @@ try:
     from aptdaemon.client import AptClient
     from aptdaemon.enums import ERROR_UNKNOWN
     from aptdaemon.errors import NotAuthorizedError, TransactionFailed
-    from aptdaemon.gtkwidgets import (AptConfirmDialog, AptErrorDialog,
-                                      AptProgressDialog)
+    from aptdaemon.gtkwidgets import AptErrorDialog, AptProgressDialog
     has_apt = True
 except ImportError:
     has_apt = False
@@ -42,7 +41,8 @@ class AptPackageInstaller(object):
         def reply(transaction):
             transaction.connect("finished", self._on_transaction__finished)
             self._transaction = transaction
-            for p in transaction.dependencies:
+            # dependencis not available on lucid
+            for p in getattr(transaction, 'dependencies', []):
                 if p:
                     self._confirm()
                     break
@@ -53,6 +53,7 @@ class AptPackageInstaller(object):
                                      error_handler=self._error_handler)
 
     def _on_transaction__finished(self, transaction, exitcode):
+        # exitcode is int on lucid, str on natty
         print 'DONE', repr(exitcode)
         gtk.main_quit()
 
@@ -71,6 +72,7 @@ class AptPackageInstaller(object):
         dia.destroy()
 
     def _confirm(self):
+        from aptdaemon.gtkwidgets import AptConfirmDialog
         dia = AptConfirmDialog(self._transaction,
                                parent=self.parent)
         respone = dia.run()
