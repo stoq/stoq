@@ -168,9 +168,9 @@ def start_shell():
 def test_local_database():
     """Check and see if we postgres running locally"""
 
-    # ubuntu/debian is /var/run/postgresl
-    # fedora is /tmp
-    for pgdir in ['/var/run/postgresql', '/tmp']:
+    # default location for unix socket files is /tmp,
+    # ubuntu/debian patches that to /var/run/postgresl
+    for pgdir in ['/tmp', '/var/run/postgresql']:
         if (not os.path.exists(pgdir) and
             not os.path.isdir(pgdir)):
             continue 
