@@ -288,7 +288,7 @@ class AdminPasswordStep(BaseWizardStep):
         return good_pass
 
     def next_step(self):
-        return CreateDatabaseStep(self.wizard)
+        return CreateDatabaseStep(self.wizard, self)
 
 
 class CreateDatabaseStep(BaseWizardStep):
@@ -363,6 +363,7 @@ class CreateDatabaseStep(BaseWizardStep):
         os.chmod(pgpass, 0600)
 
     def _launch_stoqdbadmin(self):
+        self.wizard.disable_back()
         self.wizard.disable_next()
         args = ['stoqdbadmin', 'init',
                 '--no-load-config',
@@ -422,13 +423,25 @@ class CreateDatabaseStep(BaseWizardStep):
         self.progressbar.set_text(text)
 
     def _finish(self, returncode):
-        # FIXME: Handle specific errors, such as authentication failure
-        #        caused when not knowing the sudo password or pressing
-        #        cancel to pkexec
         if returncode:
-            self.expander.set_expanded(True)
-            warning(_("Something went wrong while trying to create "
-                      "the Stoq database"))
+            self.wizard.enable_back()
+            # Failed to execute/create database
+            if returncode == 30:
+                # This probably happened because the user either;
+                # - pressed cancel in the authentication popup
+                # - user erred the password 3 times
+                # Allow him to try again
+                if yesno(_("Something went wrong while trying to create"
+                           "the database. Try again?"),
+                         gtk.RESPONSE_NO, _("Change settings"), _("Try Again")):
+                    return
+                self._launch_stoqdbadmin()
+                return
+            else:
+                # Unknown error, just inform user that something went wrong.
+                self.expander.set_expanded(True)
+                warning(_("Something went wrong while trying to create "
+                          "the Stoq database"))
             return
         self.wizard.load_config_and_call_setup()
         set_default_profile_settings()
