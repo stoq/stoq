@@ -44,6 +44,7 @@ PYPOPPLER_REQUIRED = (0, 12, 1)
 PSQL_REQUIRED = (8, 4)
 PSYCOPG_REQUIRED = (2, 0, 5)
 PYGTK_REQUIRED = (2, 16, 0)
+PYSERIAL_REQUIRED = (2, 1)
 REPORTLAB_REQUIRED = (2, 4)
 STOQDRIVERS_REQUIRED = (0, 9, 8)
 VTE_REQUIRED = (0, 23)
@@ -78,6 +79,7 @@ class DependencyChecker(object):
         self._check_dateutil(DATEUTIL_REQUIRED)
         self._check_mako(MAKO_REQUIRED)
         self._check_stoqdrivers(STOQDRIVERS_REQUIRED)
+        self._check_pyserial(PYSERIAL_REQUIRED)
 
     def _error(self, title, msg):
         if self.text_mode:
@@ -322,6 +324,15 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://www.makotemplates.org/',
                           required=version,
                           found=mako.__version__)
+
+    def _check_pyserial(self, version):
+        try:
+            import serial
+            serial # pyflakes
+        except ImportError:
+            self._missing(project='pySerial',
+                          url='http://pyserial.sourceforge.net/',
+                          version=version)
 
 def check_dependencies(text_mode=False):
     dp = DependencyChecker()
