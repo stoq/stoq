@@ -22,7 +22,10 @@
 ##
 ##
 
+import gobject
 import gtk
+
+from kiwi.utils import gsignal
 
 try:
     from aptdaemon.client import AptClient
@@ -33,8 +36,10 @@ try:
 except ImportError:
     has_apt = False
 
-class AptPackageInstaller(object):
+class AptPackageInstaller(gobject.GObject):
+    gsignal('done', object)
     def __init__(self, parent=None):
+        gobject.GObject.__init__(self)
         self.client = AptClient()
         self.parent = parent
     def install(self, package):
@@ -53,9 +58,11 @@ class AptPackageInstaller(object):
                                      error_handler=self._error_handler)
 
     def _on_transaction__finished(self, transaction, exitcode):
-        # exitcode is int on lucid, str on natty
-        print 'DONE', repr(exitcode)
-        gtk.main_quit()
+        if exitcode not in [0, 'done-success']:
+            error = exitcode
+        else:
+            error = None
+        self.emit('done', error)
 
     def _error_handler(self, error):
         try:
