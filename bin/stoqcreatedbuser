@@ -1,0 +1,54 @@
+#!/bin/bash
+#
+## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+## Author(s): Stoq Team <stoq-devel@async.com.br>
+##
+##
+
+#
+# This is a script that creates a new PostgreSQL user.
+# It'll be run as the default 'postgres' user and will create the username specified on the
+# command line.
+# The reason for doing is this is to be able to create a username that can connect to a default
+# PostgreSQL installation without a modified pg_hba.conf
+#
+
+USERNAME=$1
+SQLQUERY="SELECT usename FROM pg_user WHERE usename = '$USERNAME';"
+
+unset PGUSER
+unset PGHOST
+unset PGDATABASE
+
+echo "Creating $USERNAME"
+HASUSER=`psql -c "$SQLQUERY"|grep -c $USERNAME`
+if test "$HASUSER" = "1"; then
+   exit 0;
+fi
+
+# Create a user which is:
+# - allowed to create new databases (-d)
+# - not a superuser (-S)
+# - not allowed to create other roles (-R)
+#
+# All of the options above needs to be passed in to avoid entering
+# interactive mode for createuser.
+
+createuser -dSR $USERNAME
+exit 0

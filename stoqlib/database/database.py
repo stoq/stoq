@@ -26,6 +26,7 @@
 
 # FIXME: Refactor this to other files
 
+import os
 import platform
 import subprocess
 import time
@@ -163,6 +164,23 @@ def start_dbshell():
         proc.wait()
     else:
         raise NotImplementedError(settings.rdbms)
+
+def test_local_database():
+    """Check and see if we postgres running locally"""
+    PGDIR = '/var/run/postgresql/'
+    if (not os.path.exists(PGDIR) and
+        not os.path.isdir(PGDIR)):
+        return False
+
+    files = os.listdir(PGDIR)
+    if not files:
+        return False
+
+    for filename in files:
+        if filename.endswith('.pid'):
+            return True
+    else:
+        return False
 
 def test_connection():
     """Test database connectivity for using command line tools
