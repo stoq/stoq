@@ -323,15 +323,6 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           required=version,
                           found=mako.__version__)
 
-    def _check_trml2pdf(self, version):
-        try:
-            import trml2pdf
-            trml2pdf # pyflakes
-        except ImportError:
-            self._missing(project="trml2pdf",
-                          url='pypi.python.org/pypi/trml2pdf/',
-                          version=version)
-
 def check_dependencies(text_mode=False):
     dp = DependencyChecker()
     dp.text_mode = text_mode
