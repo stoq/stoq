@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-11 17:21-0300\n"
+"POT-Creation-Date: 2011-07-11 17:28-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -516,11 +516,6 @@ msgstr ""
 msgid "Financial Status:"
 msgstr ""
 
-#: ../data/glade/ClientStatusSlave.ui.h:5
-#: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:6
-msgid "kiwilabel2"
-msgstr ""
-
 #: ../data/glade/CommissionDataSlave.ui.h:1
 msgid " No Commission"
 msgstr ""
@@ -1018,15 +1013,15 @@ msgid "<b></b>"
 msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:1
-msgid "<b>Database initialization</b>"
-msgstr ""
-
-#: ../data/glade/InstallationModeStep.ui.h:2
 msgid "Create a database with example in demonstration mode."
 msgstr ""
 
-#: ../data/glade/InstallationModeStep.ui.h:3
+#: ../data/glade/InstallationModeStep.ui.h:2
 msgid "Create an empty database for production use."
+msgstr ""
+
+#: ../data/glade/InstallationModeStep.ui.h:3
+msgid "Database initialization"
 msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:5
@@ -1737,14 +1732,6 @@ msgstr ""
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:4
 #: ../stoqlib/gui/wizards/receivingwizard.py:201
 msgid "Total Received:"
-msgstr ""
-
-#: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:5
-msgid "kiwilabel1"
-msgstr ""
-
-#: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:7
-msgid "kiwilabel3"
 msgstr ""
 
 #: ../data/glade/PurchaseFinishProductListStep.ui.h:1
