@@ -24,13 +24,17 @@
 
 import datetime
 
+import gobject
 import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
+from kiwi.utils import gsignal
 
+from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.paymenteditor import get_dialog_for_payment
 from stoqlib.lib.parameters import sysparam
@@ -84,6 +88,8 @@ class AccountTransactionEditor(BaseEditor):
     model_type = _AccountTransactionTemporary
     title = _("Account Editor")
 
+    gsignal('account-added')
+
     def __init__(self, conn, model, account):
         self.parent_account = account
         self.new = False
@@ -118,13 +124,13 @@ class AccountTransactionEditor(BaseEditor):
             account=self.parent_account,
             source_account=sysparam(conn).IMBALANCE_ACCOUNT)
 
-    def _setup_widgets(self):
+    def _populate_accounts(self):
         accounts = Account.select(connection=self.conn)
         items = [(a.long_description, a) for a in accounts]
         self.account.prefill(sorted(items))
 
     def setup_proxies(self):
-        self._setup_widgets()
+        self._populate_accounts()
         self.add_proxy(self.model, AccountTransactionEditor.proxy_widgets)
         if self.model.account == self.parent_account:
             account = self.model.source_account
@@ -165,7 +171,20 @@ class AccountTransactionEditor(BaseEditor):
     def _on_payment_button__clicked(self, button):
         self._show_payment()
 
+    def on_add_account__clicked(self, button):
+        self._add_account()
+
     def _show_payment(self):
         dialog_class = get_dialog_for_payment(self.model.payment)
         run_dialog(dialog_class, self,
                    self.conn, self.model.payment)
+
+    def _add_account(self):
+        trans = new_transaction()
+        model = run_dialog(AccountEditor, self, self.conn)
+        if finish_transaction(trans, model):
+            account = Account.get(model.id, connection=self.conn)
+            self._populate_accounts()
+            self.account.select(account)
+            self.emit('account-added')
+        trans.close()

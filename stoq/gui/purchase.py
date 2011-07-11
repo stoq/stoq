@@ -188,25 +188,25 @@ class PurchaseApp(SearchableAppWindow):
         self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('Number'), sorted=True,
+        return [SearchColumn('id', title=_('#'), sorted=True,
                              data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                             width=100),
+                             width=60),
                 Column('status_str', title=_(u'Status'), data_type=str,
                        visible=False),
                 SearchColumn('open_date', title=_('Opened'),
-                              long_title='Date Opened',
+                              long_title='Date Opened', width=90,
                               data_type=datetime.date),
                 SearchColumn('supplier_name', title=_('Supplier'),
-                             data_type=str, searchable=True, width=230,
+                             data_type=str, searchable=True, expand=True,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('ordered_quantity', title=_('Ordered'),
-                             data_type=Decimal, width=110,
+                             data_type=Decimal, width=90,
                              format_func=format_quantity),
                 SearchColumn('received_quantity', title=_('Received'),
-                             data_type=Decimal, width=110,
+                             data_type=Decimal, width=90,
                              format_func=format_quantity),
                 SearchColumn('total', title=_('Total'),
-                             data_type=currency, width=130)]
+                             data_type=currency, width=120)]
 
     #
     # Private

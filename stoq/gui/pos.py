@@ -31,6 +31,7 @@ import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
+from kiwi.datatypes import ValidationError
 from kiwi.environ import environ
 from kiwi.log import Logger
 from kiwi.python import Settable
@@ -480,14 +481,25 @@ class PosApp(AppWindow):
         self.set_sensitive((self.checkout_button,
                             self.ConfirmOrder), has_products or has_services)
         self._update_totals()
-        self._update_add_button()
+        self._update_buttons()
 
     def _has_barcode_str(self):
         return self.barcode.get_text().strip() != ''
 
-    def _update_add_button(self):
+    def _update_buttons(self):
         has_barcode = self._has_barcode_str()
-        self.add_button.set_sensitive(has_barcode)
+        has_quantity = self._read_quantity() > 0
+        self.add_button.set_sensitive(has_barcode and has_quantity)
+        self.advanced_search.set_sensitive(has_quantity)
+
+    def _read_quantity(self):
+        quantity_text = self.quantity.get_text()
+        try:
+            quantity = self.quantity.read()
+        except ValidationError:
+            quantity = 0
+
+        return quantity
 
     def _read_scale(self, sellable):
         data = read_scale_info(self.conn)
@@ -531,7 +543,8 @@ class PosApp(AppWindow):
     #
 
     def _add_sale_item(self, search_str=None):
-        if not self.add_button.get_property('sensitive'):
+        quantity = self._read_quantity()
+        if quantity == 0:
             return
 
         sellable = self._get_sellable()
@@ -542,7 +555,6 @@ class PosApp(AppWindow):
             self._run_advanced_search(search_str, message)
             return
 
-        quantity = self.quantity.get_value()
         if not sellable.is_valid_quantity(quantity):
             warning(_(u"You cannot sell fractions of this product. "
                       u"The '%s' unit does not allow that") %
@@ -853,10 +865,15 @@ class PosApp(AppWindow):
             self._add_sale_item(search_str)
 
     def after_barcode__changed(self, editable):
-        self._update_add_button()
+        self._update_buttons()
 
     def on_quantity__activate(self, entry):
         self._add_sale_item()
+
+    def on_quantity__validate(self, entry, value):
+        self._update_buttons()
+        if value == 0:
+            return ValidationError(_("Quantity must be a positive number"))
 
     def on_sale_items__selection_changed(self, sale_items, sale_item):
         self._update_widgets()

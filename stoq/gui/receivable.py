@@ -198,30 +198,30 @@ class ReceivableApp(SearchableAppWindow):
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), long_title="Payment ID",
-                             width=46, data_type=int, sorted=True,
+                             width=60, data_type=int, sorted=True,
                              format='%04d'),
                 Column('color', title=_('Description'), width=20,
                        data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
                 Column('payment.comments_number', title=_(u'Comments'),
                         visible=False),
                 SearchColumn('description', title=_('Description'),
-                              data_type=str, ellipsize=pango.ELLIPSIZE_END, column='color',
-                             width=200),
+                              data_type=str, ellipsize=pango.ELLIPSIZE_END,
+                             column='color', expand=True),
                 SearchColumn('drawee', title=_('Drawee'), data_type=str,
-                             ellipsize=pango.ELLIPSIZE_END, width=110),
+                             ellipsize=pango.ELLIPSIZE_END, width=140),
                 SearchColumn('due_date', title=_('Due date'),
-                             data_type=datetime.date, width=120),
+                             data_type=datetime.date, width=100),
                 SearchColumn('paid_date', title=_('Paid date'),
-                             data_type=datetime.date, width=120),
+                             data_type=datetime.date, width=100),
                 SearchColumn('status_str', title=_('Status'), width=100,
                              data_type=str, search_attribute='status',
                              valid_values=self._get_status_values(),
                              visible=False),
                 SearchColumn('value', title=_('Value'), data_type=currency,
-                             width=80),
+                             width=90),
                 SearchColumn('paid_value', title=_('Paid'),
                              long_title='Paid value',
-                             data_type=currency, width=80)]
+                             data_type=currency, width=90)]
 
     #
     # Private

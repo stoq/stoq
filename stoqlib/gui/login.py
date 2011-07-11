@@ -133,7 +133,7 @@ class LoginDialog(GladeDelegate, RunnableView):
 class SelectApplicationsDialog(GladeSlaveDelegate):
     gladefile = "SelectApplicationsSlave"
     title = _('Stoq - Choose application')
-    size = (-1, 380)
+    size = (-1, 405)
 
     def __init__(self, appname=None, applications=None):
         """ Creates a new SelectApplicationsDialog object

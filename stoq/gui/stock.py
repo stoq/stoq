@@ -178,22 +178,22 @@ class StockApp(SearchableAppWindow):
     def get_columns(self):
         return [SearchColumn('code', title=_('Code'), sorted=True,
                              sort_func=sort_sellable_code,
-                             data_type=str, width=100),
+                             data_type=str, width=130),
                 SearchColumn('barcode', title=_("Barcode"), data_type=str,
-                             width=150),
+                             width=130),
                 SearchColumn('category_description', title=_("Category"),
                              data_type=str, width=100, visible=False),
                 SearchColumn('description', title=_("Description"),
-                             data_type=str, width=240,
+                             data_type=str, expand=True,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('location', title=_("Location"), data_type=str,
                              width=100, visible=False),
                 SearchColumn('stock', title=_('Quantity'),
-                             data_type=decimal.Decimal, width=130),
+                             data_type=decimal.Decimal, width=100),
                 SearchColumn('unit', title=_("Unit"), data_type=str,
                              width=40, visible=False),
                 Column('product.has_image', title=_('Picture'),
-                       data_type=bool),
+                       data_type=bool, width=80),
                  ]
 
     def query(self, query, having, conn):

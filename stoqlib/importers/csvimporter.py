@@ -89,7 +89,7 @@ class CSVImporter(Importer):
         item = self.rows[item_no]
         if not item or item[0].startswith('%'):
             self.lineno += 1
-            return
+            return False
         if len(item) < len(self.fields):
             raise ValueError(
                 "line %d in file %s has %d fields, but we need at "
@@ -121,6 +121,7 @@ class CSVImporter(Importer):
                 t = t2
 
         self.lineno += 1
+        return True
 
     def parse_date(self, data):
         return datetime.datetime(*map(int, data.split('-')))

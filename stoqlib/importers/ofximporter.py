@@ -178,24 +178,32 @@ class OFXImporter(Importer):
         # Do not import transactions with broken dates
         if date is None:
             self.skipped += 1
-            return
+            return False
 
         value = self._parse_number(t['trnamt'])
         if value == 0:
             self.skipped += 1
             # We can't import transactions with a value = 0, skip it.
-            return
+            return False
         source_account = Account.get(self.source_account_id, trans)
         account = Account.get(self.account_id, trans)
+
+        code = self._parse_string(t['checknum'])
+        if AccountTransaction.selectBy(date=date, code=code,
+                                       connection=trans):
+            # Skip already present transactions
+            self.skipped += 1
+            return False
         t = AccountTransaction(source_account=source_account,
                                account=account,
                                description=self._parse_string(t['memo']),
-                               code=self._parse_string(t['checknum']),
+                               code=code,
                                value=value,
                                date=date,
                                connection=trans)
         last_date = date
         t.sync()
+        return True
 
     def when_done(self, trans):
         log.info("Imported %d transactions" % (len(self.tp.transactions),))

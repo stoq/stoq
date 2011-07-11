@@ -54,7 +54,7 @@ class ImporterDialog(BasicDialog):
         self.vbox.pack_start(self.progressbar, False, False)
         self.progressbar.show()
 
-        self.expander = gtk.Expander()
+        self.expander = gtk.Expander(label=_("Details.."))
         self.expander.set_expanded(False)
         self.vbox.pack_start(self.expander, True, True)
         self.expander.show()
@@ -87,6 +87,10 @@ class ImporterDialog(BasicDialog):
             value = 0
             self.n_items = int(line.split(':', 1)[1])
             text = _("Importing ...")
+        elif line.startswith('IMPORTED-ITEMS:'):
+            value = 1
+            self.imported_items = int(line.split(':', 1)[1])
+            text = _("Imported %d items ..." % (self.imported_items, ))
         elif line.startswith('ITEM:'):
             item = float(line.split(':', 1)[1])
             value = item / self.n_items
@@ -101,7 +105,8 @@ class ImporterDialog(BasicDialog):
             self.expander.set_expanded(True)
             warning(_("Something went wrong while trying to import"))
             return
-        self.progressbar.set_text(_("Done, %d items imported") % (self.n_items, ))
+        self.progressbar.set_text(_("Done, %d items imported, %d skipped") % (
+            self.imported_items, self.n_items - self.imported_items))
         self.progressbar.set_fraction(1.0)
         self.enable_ok()
 

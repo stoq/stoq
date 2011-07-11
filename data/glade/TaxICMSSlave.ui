@@ -200,7 +200,6 @@
         <child>
           <object class="ProxySpinButton" id="p_icms">
             <property name="visible">True</property>
-            <property name="adjustment"></property>
             <property name="model_attribute">p_icms</property>
             <property name="data_type">Decimal</property>
           </object>
@@ -214,7 +213,6 @@
         <child>
           <object class="ProxySpinButton" id="p_red_bc">
             <property name="visible">True</property>
-            <property name="adjustment"></property>
             <property name="model_attribute">p_red_bc</property>
             <property name="data_type">Decimal</property>
           </object>
@@ -264,7 +262,6 @@
             <property name="visible">True</property>
             <property name="invisible_char"> </property>
             <property name="invisible_char_set">True</property>
-            <property name="adjustment"></property>
             <property name="model_attribute">p_cred_sn</property>
             <property name="data_type">Decimal</property>
           </object>
@@ -424,7 +421,6 @@
         <child>
           <object class="ProxySpinButton" id="p_icms_st">
             <property name="visible">True</property>
-            <property name="adjustment"></property>
             <property name="model_attribute">p_icms_st</property>
             <property name="data_type">Decimal</property>
           </object>
@@ -438,7 +434,6 @@
         <child>
           <object class="ProxySpinButton" id="p_red_bc_st">
             <property name="visible">True</property>
-            <property name="adjustment"></property>
             <property name="model_attribute">p_red_bc_st</property>
             <property name="data_type">Decimal</property>
           </object>
@@ -452,7 +447,6 @@
         <child>
           <object class="ProxySpinButton" id="p_mva_st">
             <property name="visible">True</property>
-            <property name="adjustment"></property>
             <property name="model_attribute">p_mva_st</property>
             <property name="data_type">Decimal</property>
           </object>

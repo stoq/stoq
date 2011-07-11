@@ -34,7 +34,9 @@ from stoqdrivers.enum import TaxType
 
 import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
+from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.validators import validate_cnpj
 from stoqlib.enums import NFeDanfeOrientation
 
 
@@ -141,9 +143,12 @@ class NFeGenerator(object):
     def _get_cnpj(self, person):
         company = ICompany(person, None)
         assert company is not None
+
         #FIXME: fix get_cnpj_number method (fails if start with zero).
-        cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
-        assert len(cnpj) == 14
+        cnpj = company.get_cnpj_number()
+        if not validate_cnpj(cnpj):
+            raise ModelDataError(_("The CNPJ of this company is not valid."))
+
         return cnpj
 
     def _get_address_data(self, person):

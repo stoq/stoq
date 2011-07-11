@@ -399,13 +399,13 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
 
     parent = getattr(parent, 'main_dialog', parent)
     parent = parent or get_current_toplevel()
-    orig_dialog = dialog
     if inspect.isclass(dialog):
         dialog_name = dialog.__name__
     else:
         dialog_name = dialog.__class__.__name__
 
     dialog = get_dialog(parent, dialog, *args, **kwargs)
+    orig_dialog = dialog
     if hasattr(dialog, 'main_dialog'):
         dialog = dialog.main_dialog
 
@@ -419,6 +419,9 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
         toplevel.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
     else:
         toplevel.set_position(gtk.WIN_POS_CENTER)
+
+    if hasattr(parent, 'on_dialog__opened'):
+        parent.on_dialog__opened(orig_dialog)
 
     log.info("%s: Opening" % dialog_name)
     toplevel.run()
