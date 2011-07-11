@@ -30,6 +30,9 @@ import gettext as gettext_
 def stoqlib_gettext(message):
     return dgettext('stoq', message)
 
+def stoqlib_ngettext(singular, plural, n):
+    return gettext_.dngettext('stoq', singular, plural, n)
+
 def dgettext(domain, message):
     is_unicode = False
     if type(message) == unicode:
