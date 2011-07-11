@@ -469,7 +469,8 @@ class SellableEditor(BaseEditor):
         if self.model.sellable.check_barcode_exists(value):
             return ValidationError(_('The barcode %s already exists') % value)
         if self._demo_mode and value not in _DEMO_BAR_CODES:
-            return ValidationError(_("Cannot create new barcodes in demo mode"))
+            return ValidationError(_("Cannot create new barcodes in "
+                                     "demonstration mode"))
 
     def on_price__validate(self, entry, value):
         if value <= 0:

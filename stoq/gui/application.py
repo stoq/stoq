@@ -133,10 +133,11 @@ class AppWindow(BaseAppWindow):
         if self._config.get('UI', 'hide_demo_warning') == 'True':
             return
 
-        button_label = _('Enable production')
+        button_label = _('Enable production mode')
         title = _('You are using Stoq in demonstration mode.')
-        desc = _('Some features are limited due to fiscal reasons, click on \'%s\' '
-                 'mode to remove the limitations and examples.') % (button_label, )
+        desc = _("Some features are limited due to fiscal reasons. "
+                 "Click on '%s' to remove the limitations and examples.")
+                 % button_label
         label = gtk.Label('<b>%s</b>\n%s' % (title, desc))
         label.set_use_markup(True)
         label.set_line_wrap(True)
@@ -471,7 +472,7 @@ class AppWindow(BaseAppWindow):
         if yesno(_("This will enable production mode and delete all examples. "
                    "Are you sure?"),
                  gtk.RESPONSE_NO,
-                 _("Continue testing demo"),
+                 _("Continue testing"),
                  _("Enable production mode")):
             return
 

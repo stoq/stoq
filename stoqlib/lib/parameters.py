@@ -345,7 +345,7 @@ _parameter_info = dict(
 
     DEMO_MODE=ParameterDetails(
     _('General'),
-    _('Demo Mode'),
+    _('Demonstration Mode'),
     _('If Stoq is used in a demonstration mode')),
 )
 

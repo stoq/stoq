@@ -204,7 +204,9 @@ class FiscalPrinterHelper(gobject.GObject):
             company = ICompany(branch.person, None)
             if company and company.cnpj not in ['24.198.774/7322-35',
                                                 '13.832.995/1231-07']:
-                warning(_('Not allowed to sell in branches not created by the demo'))
+                # FIXME: Find a better description for the warning bellow.
+                warning(_("You are not allowed to sell in branches not "
+                          "created by the demonstration mode"))
         coupon = FiscalCoupon(self._parent)
 
         try:
