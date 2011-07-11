@@ -468,9 +468,11 @@ class AppWindow(BaseAppWindow):
     def _on_enable_production__clicked(self, button):
         if not self.can_close_application():
             return
-        if yesno(_("This will enable production mode. delete the current database and "
-                   "it's configuration. Are you sure?"),
-                 gtk.RESPONSE_NO, _("Don't Remove"),  _("Remove Examples")):
+        if yesno(_("This will enable production mode and delete all examples. "
+                   "Are you sure?"),
+                 gtk.RESPONSE_NO,
+                 _("Continue testing demo"),
+                 _("Enable production mode")):
             return
 
         from stoq.main import restart_stoq_atexit
