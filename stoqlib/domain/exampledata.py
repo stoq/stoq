@@ -159,6 +159,7 @@ class ExampleCreator(object):
             'EmployeeRole': self.create_employee_role,
             'FiscalBookEntry' : self.create_fiscal_book_entry,
             'IClient': self.create_client,
+            'ICompany': self.create_company,
             'IBranch': self.create_branch,
             'IEmployee': self.create_employee,
             'IIndividual': self.create_individual,
@@ -191,8 +192,11 @@ class ExampleCreator(object):
             'ReceivingOrderItem' : self.create_receiving_order_item,
             'RenegotiationData' : self.create_renegotiation_data,
             'Sale': self.create_sale,
+            'SaleItem': self.create_sale_item,
             'SaleItemIcms': self.create_sale_item_icms,
+            'SaleItemIpi': self.create_sale_item_ipi,
             'Sellable' : self.create_sellable,
+            'SellableCategory' : self.create_sellable_category,
             'SellableUnit' : self.create_sellable_unit,
             'Service': self.create_service,
             'StockDecrease': self.create_stock_decrease,
@@ -206,6 +210,9 @@ class ExampleCreator(object):
             'LoanItem': self.create_loan_item,
             'Account': self.create_account,
             'AccountTransaction': self.create_account_transaction,
+            'TransferOrder': self.create_transfer,
+            'PaymentCategory': self.create_payment_category,
+            'FiscalDayHistory': self.create_fiscal_day_history,
             }
         if isinstance(model_type, basestring):
             model_name = model_type
@@ -314,6 +321,11 @@ class ExampleCreator(object):
                             description=description,
                             allow_fraction=allow_fraction)
 
+    def create_sellable_category(self):
+        from stoqlib.domain.sellable import SellableCategory
+        return SellableCategory(description="Category",
+                                connection=self.trans)
+
     def create_sale(self):
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.till import Till
@@ -331,9 +343,22 @@ class ExampleCreator(object):
                     group=group,
                     connection=self.trans)
 
+    def create_sale_item(self):
+        from stoqlib.domain.sale import SaleItem
+        sellable = self.create_sellable()
+        return SaleItem(connection=self.trans,
+                        quantity=1,
+                        price=100,
+                        sale=self.create_sale(),
+                        sellable=sellable)
+
     def create_sale_item_icms(self):
         from stoqlib.domain.taxes import SaleItemIcms
         return SaleItemIcms(connection=self.trans)
+
+    def create_sale_item_ipi(self):
+        from stoqlib.domain.taxes import SaleItemIpi
+        return SaleItemIpi(connection=self.trans)
 
     def create_stock_decrease(self):
         from stoqlib.domain.stockdecrease import StockDecrease
@@ -557,6 +582,8 @@ class ExampleCreator(object):
                                open_contract_date=datetime.date(2006, 01, 01))
 
     def create_payment(self, date=None):
+        if not date:
+            date = datetime.date.today()
         from stoqlib.domain.payment.payment import Payment
         return Payment(group=None,
                        open_date=date,
@@ -702,3 +729,32 @@ class ExampleCreator(object):
                                   account=account,
                                   source_account=sysparam(self.trans).IMBALANCE_ACCOUNT,
                                   connection=self.trans)
+
+    def create_transfer(self):
+        from stoqlib.domain.transfer import TransferOrder
+        return TransferOrder(source_branch=self.create_branch(),
+                             destination_branch=self.create_branch(),
+                             source_responsible=self.create_employee(),
+                             destination_responsible=self.create_employee(),
+                             connection=self.trans)
+
+    def create_payment_category(self):
+        from stoqlib.domain.payment.category import PaymentCategory
+        return PaymentCategory(name="category",
+                               color='#ff0000',
+                               connection=self.trans)
+
+    def create_fiscal_day_history(self):
+        from stoqlib.domain.devices import FiscalDayHistory
+        return FiscalDayHistory(emission_date=datetime.datetime.today(),
+                                reduction_date=datetime.datetime.today(),
+                                serial="123456",
+                                serial_id=12345,
+                                coupon_start=1,
+                                coupon_end=100,
+                                cro=1,
+                                crz=1,
+                                period_total=100,
+                                total=100,
+                                station=self.create_station(),
+                                connection=self.trans)

@@ -70,6 +70,7 @@ class TransactionSearchContainer(SearchContainer):
 
     def __init__(self, page, columns):
         self.page = page
+        self.model = page.model
         SearchContainer.__init__(self, columns)
 
     def add_results(self, results):
@@ -106,12 +107,16 @@ class TransactionPage(object):
 
         self.refresh()
 
+    def get_toplevel(self):
+        return self.parent_window
+
     def _create_search(self):
         self.search = TransactionSearchContainer(
             self, columns=self._get_columns(self.model.kind))
         self.query = SQLObjectQueryExecuter()
         self.search.set_query_executer(self.query)
         self.search.results.connect('row-activated', self._on_row__activated)
+        self.results = self.search.results
         tree_view = self.search.results.get_treeview()
         tree_view.set_rules_hint(True)
         tree_view.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
@@ -266,7 +271,7 @@ class TransactionPage(object):
             account_transaction = trans.get(item.transaction)
         model = getattr(self.model, 'account', self.model)
 
-        transaction = run_dialog(AccountTransactionEditor, self.parent_window,
+        transaction = run_dialog(AccountTransactionEditor, self,
                                  trans, account_transaction, model)
 
         if transaction:
@@ -275,14 +280,21 @@ class TransactionPage(object):
                                      transaction.edited_account.description,
                                      transaction.value)
             self._update_totals()
-            self.update(item)
+            self.search.results.update(item)
         finish_transaction(trans, transaction)
+
+    def on_dialog__opened(self, dialog):
+        dialog.connect('account-added', self.on_dialog__account_added)
+
+    def on_dialog__account_added(self, dialog):
+         self.app.accounts.refresh_accounts(self.app.conn)
 
     def add_transaction_dialog(self):
         trans = new_transaction()
         model = getattr(self.model, 'account', self.model)
         model = trans.get(model)
-        transaction = run_dialog(AccountTransactionEditor, self.parent_window,
+
+        transaction = run_dialog(AccountTransactionEditor, self,
                                  trans, None, model)
         if transaction:
             transaction.sync()
@@ -450,7 +462,10 @@ class FinancialApp(AppWindow):
 
     def _get_current_page_widget(self):
         page_id = self.notebook.get_current_page()
-        return self.notebook.get_children()[page_id]
+        page = self.notebook.get_children()[page_id]
+        if isinstance(page, TransactionSearchContainer):
+            return page.page
+        return page
 
     def _close_page(self, page):
         # Do not allow the initial page to be removed
@@ -459,7 +474,6 @@ class FinancialApp(AppWindow):
                 break
         self.notebook.remove_page(page_id)
         del self._pages[page.account_view]
-        self._update_actions()
 
     def _is_accounts_tab(self):
         page_id = self.notebook.get_current_page()
@@ -564,10 +578,10 @@ class FinancialApp(AppWindow):
         self.accounts.refresh_accounts(self.conn)
 
     def _can_add_account(self):
-        if not self._is_accounts_tab():
-            return False
+        if self._is_accounts_tab():
+            return True
 
-        return True
+        return False
 
     def _can_edit_account(self):
         if not self._is_accounts_tab():
@@ -598,10 +612,9 @@ class FinancialApp(AppWindow):
         return account_view.account.can_remove()
 
     def _can_add_transaction(self):
-        if not self._is_transaction_tab():
-            return False
-
-        return True
+        if self._is_transaction_tab():
+            return True
+        return False
 
     def _can_delete_transaction(self):
         if not self._is_transaction_tab():
@@ -641,7 +654,7 @@ class FinancialApp(AppWindow):
             return
 
         account_transactions = self._get_current_page_widget()
-        account_transactions.remove(item)
+        account_transactions.results.remove(item)
 
         trans = new_transaction()
         if isinstance(item.transaction, AccountTransactionView):
@@ -677,7 +690,7 @@ class FinancialApp(AppWindow):
         account_view = self.accounts.get_selected()
         self._edit_existing_account(account_view)
 
-    def on_notebook__switch_page(self, notebook, page, page_id):
+    def after_notebook__switch_page(self, notebook, page, page_id):
         self._update_actions()
 
     # Toolbar
@@ -691,7 +704,7 @@ class FinancialApp(AppWindow):
 
     def on_DeleteTransaction__activate(self, action):
         transactions = self._get_current_page_widget()
-        transaction = transactions.get_selected()
+        transaction = transactions.results.get_selected()
         self._delete_transaction(transaction)
 
     def on_AddTransaction__activate(self, action):

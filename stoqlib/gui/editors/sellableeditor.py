@@ -96,9 +96,8 @@ class SellableTaxConstantsDialog(ModelListDialog):
 
     # ListDialog
     columns = [
-        Column('description', _('Description'), data_type=str,
-               width=200),
-        Column('value', _('Tax rate'), data_type=str),
+        Column('description', _('Description'), data_type=str, expand=True),
+        Column('value', _('Tax rate'), data_type=str, width=150),
     ]
 
     def selection_changed(self, constant):
@@ -233,8 +232,8 @@ class SellableEditor(BaseEditor):
                                     self.barcode,
                                     self.default_sale_cfop,
                                     self.description,
+                                    self.cost_hbox,
                                     self.price_hbox,
-                                    self.cost,
                                     self.consignment_box,
                                     self.statuses_combo,
                                     self.category_combo,

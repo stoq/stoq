@@ -108,8 +108,8 @@ class EmployeeSearch(BasePersonSearch):
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [SearchColumn('name', _('Name'), str, width=300),
-                SearchColumn('role', _('Role'), str, width=250,
+        return [SearchColumn('name', _('Name'), str, expand=True),
+                SearchColumn('role', _('Role'), str, width=225,
                              valid_values=self._get_role_values()),
                 SearchColumn('registry_number', _('Registry Number'), str),
                 SearchColumn('status_string', _('Status'), str,
@@ -137,7 +137,7 @@ class SupplierSearch(BasePersonSearch):
 
     def get_columns(self):
         return [SearchColumn('name', _('Name'), str,
-                             sorted=True, width=250, expand=True),
+                             sorted=True, expand=True),
                 SearchColumn('phone_number', _('Phone Number'), str,
                              format_func=format_phone_number, width=110),
                 SearchColumn('fancy_name', _('Fancy Name'), str,
@@ -189,10 +189,10 @@ class AbstractCreditProviderSearch(BasePersonSearch):
                              width=90, visible=False),
                 SearchColumn('credit_installments_store_fee',
                              _('Credit installments store Fee'), data_type=Decimal,
-                             width=190, expand=True, visible=False),
+                             expand=True, visible=False),
                 SearchColumn('credit_installments_provider_fee',
-                             _('Credit installments provider Fee'), data_type=Decimal,
-                             width=190, expand=True, visible=False),
+                             _('Credit installments provider Fee'),
+                             data_type=Decimal, expand=True, visible=False),
                 SearchColumn('debit_pre_dated_fee', _('Debit pre-dated fee'),
                              data_type=Decimal, width=190, visible=False),
                 SearchColumn('monthly_fee', _('Fixed fee'),
@@ -241,7 +241,7 @@ class ClientSearch(BasePersonSearch):
 
     def get_columns(self):
         return [SearchColumn('name', _('Name'), str,
-                             sorted=True, width=250, expand=True),
+                             sorted=True, expand=True),
                 SearchColumn('client_category', _('Category'), str,
                              width=150, visible=False),
                 SearchColumn('phone_number', _('Phone Number'), str,
@@ -285,8 +285,7 @@ class TransporterSearch(BasePersonSearch):
 
     def get_columns(self):
         return [SearchColumn('name', title=_('Name'),
-                             data_type=str, sorted=True, width=300,
-                             expand=True),
+                             data_type=str, sorted=True, expand=True),
                 SearchColumn('phone_number', _('Phone Number'), str,
                              format_func=format_phone_number, width=180),
                 SearchColumn('freight_percentage', _('Freight (%)'), float,
@@ -317,7 +316,7 @@ class EmployeeRoleSearch(SearchEditor):
         self.set_searchbar_labels(_('Role Matching'))
 
     def get_columns(self):
-        return [Column('name', _('Role'), str, sorted=True)]
+        return [Column('name', _('Role'), str, sorted=True, expand=True)]
 
 
 class BranchSearch(BasePersonSearch):
@@ -344,7 +343,7 @@ class BranchSearch(BasePersonSearch):
         self.search.add_filter(status_filter, SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('name', _('Name'), str, width=200, expand=True),
+        return [SearchColumn('name', _('Name'), str, expand=True),
                 SearchColumn('phone_number', _('Phone Number'), str,
                              width=150),
                 SearchColumn('manager_name', _('Manager'), str,
@@ -384,11 +383,12 @@ class UserSearch(BasePersonSearch):
         return [SearchColumn('username', title=_('Login Name'), sorted=True,
                               data_type=str, width=150, searchable=True),
                 SearchColumn('profile_name', title=_('Profile'),
-                             data_type=str, width=150, expand=True,
+                             data_type=str, width=120,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('name', title=_('Name'), data_type=str,
-                             width=300),
-                Column('status_str', title=_('Status'), data_type=str)]
+                             expand=True),
+                Column('status_str', title=_('Status'), data_type=str,
+                       width=80)]
 
     def on_details_button_clicked(self, *args):
         selected = self.results.get_selected()

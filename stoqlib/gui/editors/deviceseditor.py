@@ -33,6 +33,7 @@ from stoqlib.database.runtime import get_connection, get_current_station
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.person import BranchStation
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.devicemanager import DeviceManager
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -51,6 +52,7 @@ class DeviceSettingsEditor(BaseEditor):
     def __init__(self, conn, model=None, station=None):
         if station is not None and not isinstance(station, BranchStation):
             raise TypeError("station should be a BranchStation")
+        self._device_manager = DeviceManager()
         self.printers_dict = get_supported_printers()
         self._branch_station = station
         # This attribute is set to True when setup_proxies is finished
@@ -75,17 +77,16 @@ class DeviceSettingsEditor(BaseEditor):
                  for station in BranchStation.select(connection=self.conn)])
 
     def setup_device_port_combo(self):
-        device_types = (DeviceSettings.DEVICE_SERIAL1,
-                        DeviceSettings.DEVICE_SERIAL2,
-                        DeviceSettings.DEVICE_PARALLEL)
-        items = [(self.model.get_device_description(device), device)
-                     for device in device_types]
+        items = [(_("Choose..."), None)]
+        items.extend([(device.device_name, device.device_name) for device
+                      in self._device_manager.get_serial_devices()])
         self.device_combo.prefill(items)
 
     def setup_device_types_combo(self):
         items = [(_("Choose..."), None)]
-        device_types = (DeviceSettings.SCALE_DEVICE,
-                        DeviceSettings.CHEQUE_PRINTER_DEVICE)
+        device_types = (# TODO: Reenable when we have cheque printers working.
+                        #DeviceSettings.CHEQUE_PRINTER_DEVICE,
+                        DeviceSettings.SCALE_DEVICE,)
         items.extend([(self.model.get_device_type_name(t), t)
                       for t in device_types])
         self.type_combo.prefill(items)
@@ -146,7 +147,7 @@ class DeviceSettingsEditor(BaseEditor):
         self._is_initialized = True
 
     def create_model(self, conn):
-        return DeviceSettings(device=DeviceSettings.DEVICE_SERIAL1,
+        return DeviceSettings(device_name=None,
                               station=get_current_station(conn),
                               brand=None,
                               model=None,

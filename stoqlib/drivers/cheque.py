@@ -43,7 +43,7 @@ def get_current_cheque_printer_settings(conn):
                         "get_current_cheque_printer_settings")
     return ChequePrinter(brand=res.brand,
                          model=res.model,
-                         device=res.get_port_name())
+                         device=res.device_name)
 
 def print_cheques_for_payment_group(conn, group):
     """ Given a instance that implements the PaymentGroup interface, iterate

@@ -68,9 +68,10 @@ def _create_domain_test():
     TODO = {
         'ReceivingOrder': 'invalid invoice number',
         'CommissionSource': '',
-        'Commission': '',
         'PurchaseItem': 'quantity_return cant be random',
         'PaymentMethod' : 'missing account',
+        'FiscalDayTax' : 'invalid code',
+        'SaleItemAdaptToDelivery' : 'missing quantity',
         }
 
     namespace = dict(_test_domain=_test_domain)

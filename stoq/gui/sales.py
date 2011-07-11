@@ -188,7 +188,7 @@ class SalesApp(SearchableAppWindow):
         self._status_col = Column('status_name', title=_('Status'),
                                   data_type=str, width=80, visible=False)
 
-        cols = [SearchColumn('id', title=_('Number'), width=80,
+        cols = [SearchColumn('id', title=_('#'), width=80,
                              format='%05d', data_type=int, sorted=True),
                 SearchColumn('open_date', title=_('Open date'), width=120,
                              data_type=date, justify=gtk.JUSTIFY_RIGHT,

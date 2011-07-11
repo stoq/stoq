@@ -75,10 +75,10 @@ class StockCostDialog(BaseEditor):
 
     def _get_columns(self):
         return [Column("code", title=_(u"Code"), data_type=str,
-                        sorted=True),
+                        sorted=True, width=120),
                 Column("description", title=_(u"Description"),
                         data_type=str, expand=True),
-                Column("stock_cost", title=_(u"Stock Cost"), width=100,
+                Column("stock_cost", title=_(u"Stock Cost"), width=120,
                         data_type=currency, format_func=self._format_func,
                         editable=True)]
 

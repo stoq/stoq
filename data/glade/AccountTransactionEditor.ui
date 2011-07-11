@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
@@ -9,7 +9,7 @@
         <property name="visible">True</property>
         <property name="border_width">6</property>
         <property name="n_rows">5</property>
-        <property name="n_columns">2</property>
+        <property name="n_columns">3</property>
         <property name="column_spacing">6</property>
         <property name="row_spacing">6</property>
         <child>
@@ -40,9 +40,13 @@
           <object class="ProxyEntry" id="description">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="invisible_char">&#x25CF;</property>
-            <property name="model_attribute">description</property>
+            <property name="invisible_char">●</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
+            <property name="model_attribute">description</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -54,9 +58,13 @@
           <object class="ProxyEntry" id="code">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="invisible_char">&#x25CF;</property>
-            <property name="model_attribute">code</property>
+            <property name="invisible_char">●</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
             <property name="data_type">unicode</property>
+            <property name="model_attribute">code</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -94,8 +102,8 @@
         <child>
           <object class="ProxyDateEntry" id="date">
             <property name="visible">True</property>
-            <property name="model_attribute">date</property>
             <property name="data_type">datetime</property>
+            <property name="model_attribute">date</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -134,17 +142,58 @@
           <object class="ProxyEntry" id="value">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="invisible_char">&#x25CF;</property>
+            <property name="invisible_char">●</property>
             <property name="xalign">1</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">currency</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">value</property>
-            <property name="data_type">currency</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
             <property name="top_attach">2</property>
             <property name="bottom_attach">3</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <object class="GtkButton" id="add_account">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Add a new account</property>
+            <property name="use_action_appearance">False</property>
+            <property name="relief">none</property>
+            <child>
+              <object class="GtkImage" id="image1">
+                <property name="visible">True</property>
+                <property name="stock">gtk-add</property>
+                <property name="icon-size">1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">4</property>
+            <property name="bottom_attach">5</property>
+            <property name="x_options"></property>
             <property name="y_options"></property>
           </packing>
         </child>

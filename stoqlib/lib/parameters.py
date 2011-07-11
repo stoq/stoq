@@ -330,8 +330,7 @@ _parameter_info = dict(
     BANKS_ACCOUNT=ParameterDetails(
     _('Accounts'),
     _('Parent bank account'),
-    _('Newly nank accounts will be placed under this account, '
-       'for accounts imported via OFX will be created below this')),
+    _('Newly created bank accounts will be placed under this account.')),
 
     TILLS_ACCOUNT=ParameterDetails(
     _('Accounts'),

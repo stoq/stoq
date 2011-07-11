@@ -101,7 +101,7 @@ class ProductTaxTemplateEditor(BaseEditor):
 
 
 class TaxTemplatesSearch(SearchEditor):
-    size = (450, 300)
+    size = (480, 300)
     title = _('Tax Classes Search')
 
     searchbar_label = _('Class Matching:')
@@ -122,7 +122,7 @@ class TaxTemplatesSearch(SearchEditor):
         return [
             SearchColumn("name", _("Class name"), data_type=str,
                          sorted=True, expand=True),
-            Column("tax_type_str", _("type"), data_type=str, width=80),
+            Column("tax_type_str", _("Type"), data_type=str, width=80),
             ]
 
     def get_editor_model(self, view_item):

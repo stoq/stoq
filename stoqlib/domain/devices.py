@@ -52,29 +52,13 @@ class DeviceSettings(Domain):
     type = IntCol()
     brand = UnicodeCol()
     model = UnicodeCol()
-    device = IntCol()
+    device_name = UnicodeCol()
     station = ForeignKey("BranchStation")
     is_active = BoolCol(default=True)
-
-    (DEVICE_SERIAL1,
-     DEVICE_SERIAL2,
-     DEVICE_PARALLEL) = range(1, 4)
 
     (SCALE_DEVICE,
      _UNUSED,
      CHEQUE_PRINTER_DEVICE) = range(1, 4)
-
-    device_descriptions = {DEVICE_SERIAL1: _('Serial port 1'),
-                           DEVICE_SERIAL2: _('Serial port 2'),
-                           DEVICE_PARALLEL: _('Parallel port')}
-
-    port_names = {DEVICE_SERIAL1: '/dev/ttyS0',
-                  DEVICE_SERIAL2: '/dev/ttyS1',
-                  DEVICE_PARALLEL: '/dev/parport'}
-    if platform.system() == 'Windows':
-        port_names[DEVICE_SERIAL1] = 'COM1'
-        port_names[DEVICE_SERIAL2] = 'COM2'
-        port_names[DEVICE_PARALLEL] = 'LPT1'
 
     device_types = {SCALE_DEVICE: _('Scale'),
                     CHEQUE_PRINTER_DEVICE: _('Cheque Printer')}
@@ -86,13 +70,6 @@ class DeviceSettings(Domain):
     def get_printer_description(self):
         return "%s %s" % (self.brand.capitalize(), self.model)
 
-    def get_device_description(self, device=None):
-        return DeviceSettings.device_descriptions[device or self.device]
-
-    # TODO: rename to get_device_name
-    def get_port_name(self, device=None):
-        return DeviceSettings.port_names[device or self.device]
-
     def get_device_type_name(self, type=None):
         return DeviceSettings.device_types[type or self.type]
 
@@ -101,13 +78,13 @@ class DeviceSettings(Domain):
         """ Based on the column values instantiate the stoqdrivers interface
         for the device itself.
         """
-        port = SerialPort(device=self.get_port_name())
+        port = SerialPort(device=self.device_name)
 
         if self.type == DeviceSettings.CHEQUE_PRINTER_DEVICE:
             return ChequePrinter(brand=self.brand, model=self.model, port=port)
         elif self.type == DeviceSettings.SCALE_DEVICE:
             return Scale(brand=self.brand, model=self.model,
-                         device=self.get_port_name())
+                         device=self.device_name)
         raise DatabaseInconsistency("The device type referred by this "
                                     "record (%r) is invalid, given %r."
                                     % (self, self.type))
@@ -116,7 +93,7 @@ class DeviceSettings(Domain):
         return self.type == DeviceSettings.CHEQUE_PRINTER_DEVICE
 
     def is_valid(self):
-        return (None not in (self.model, self.device, self.brand, self.station)
+        return (all((self.model, self.device_name, self.brand, self.station))
                 and self.type in DeviceSettings.device_types)
 
     @classmethod
