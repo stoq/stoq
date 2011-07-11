@@ -135,9 +135,9 @@ class AppWindow(BaseAppWindow):
 
         button_label = _('Enable production mode')
         title = _('You are using Stoq in demonstration mode.')
-        desc = _("Some features are limited due to fiscal reasons. "
-                 "Click on '%s' to remove the limitations and examples.")
-                 % button_label
+        desc = (_("Some features are limited due to fiscal reasons. "
+                  "Click on '%s' to remove the limitations and examples.")
+                % button_label)
         label = gtk.Label('<b>%s</b>\n%s' % (title, desc))
         label.set_use_markup(True)
         label.set_line_wrap(True)
