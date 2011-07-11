@@ -60,6 +60,18 @@
             <property name="position">2</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkLabel" id="done_label">
+            <property name="wrap">True</property>
+            <property name="visible">True</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+          </packing>
+        </child>
       </object>
     </child>
   </object>

@@ -15,7 +15,7 @@
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
             <property name="xalign">0</property>
-            <property name="label" translatable="yes">&lt;b&gt;Stoq was successfully installed in your system!&lt;/b&gt;</property>
+            <property name="label" translatable="yes">&lt;b&gt;Installation complete&lt;/b&gt;</property>
             <property name="use_markup">True</property>
           </object>
           <packing>
@@ -42,14 +42,14 @@
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0.49000000953674316</property>
-                <property name="label" translatable="yes">Remember to check out the manual at each application, it's normal to feel a little bit
-lost in the beginning, if you never used Stoq before. The manual is also &lt;a href="http://doc.stoq.com.br/manual/"&gt;available online&lt;/a&gt;.
+                <property name="label" translatable="yes">Stoq was successfully installed in your system!
 
-If you're having trouble with the installation, need help importing your
-database from another application or would like to customize Stoq, 
-don't hesitate to &lt;a href="http://www.stoq.com.br/pt-br/more/contact"&gt;contact us&lt;/a&gt;.</property>
+Remember to check out the manual in each application, it's normal to feel a little bit lost in the beginning if you never used Stoq before. The manual is also &lt;a href="http://doc.stoq.com.br/manual/"&gt;available online&lt;/a&gt;.
+
+If you're having trouble with the installation, need help importing your database from another application or would like to customize Stoq, don't hesitate to &lt;a href="http://www.stoq.com.br/pt-br/more/contact"&gt;contact us&lt;/a&gt;.</property>
                 <property name="use_markup">True</property>
                 <property name="model_attribute">kiwilabel2</property>
+                <property name="wrap">True</property>
               </object>
             </child>
           </object>

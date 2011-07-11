@@ -140,8 +140,9 @@ Select the plugins you want to enable:</property>
           <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
             <property name="xalign">0</property>
-            <property name="label" translatable="yes">Click &lt;b&gt;Forward&lt;/b&gt; to continue.</property>
+            <property name="label" translatable="yes">Select the plugins you would like to enable and then click &lt;b&gt;Forward&lt;/b&gt; to continue.</property>
             <property name="use_markup">True</property>
+            <property name="wrap">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
