@@ -73,11 +73,12 @@ class WebService(object):
         self.data += data
         stream.read_async(4096, self._on_stream_read_async, user_data=response)
 
-    def _do_request(self, name, **params):
+    def _do_request(self, method_name, **params):
         response = AsyncResponse()
         url = '%s/%s?q=%s' % (
-            self.API_SERVER, name, urllib.quote(json.dumps(params)))
+            self.API_SERVER, method_name, urllib.quote(json.dumps(params)))
 
+        log.debug('Requesting: %r' % method_name)
         # GWinHttpRequest on Win32 is broken, do it synchronously instead.
         if platform.system() == 'Windows':
             import urllib2
@@ -143,3 +144,11 @@ class WebService(object):
             return response
 
         return self._do_request('bugreport.json', **params)
+
+    def tef_request(self, name, email, phone):
+        params = {
+            'name': name,
+            'email': email,
+            'phone': phone,
+        }
+        return self._do_request('tefrequest.json', **params)

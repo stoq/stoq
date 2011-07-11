@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
+  <requires lib="gtk+" version="2.20"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkWindow" id="PluginStep">
-    <property name="default_width">440</property>
-    <property name="default_height">250</property>
-    <property name="mnemonics_visible">False</property>
+  <object class="GtkWindow" id="InstallationModeStep">
     <child>
-      <object class="GtkVBox" id="vbox1">
+      <object class="GtkVBox" id="vbox2">
         <property name="visible">True</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
         <child>
-          <object class="GtkLabel" id="label2">
+          <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
             <property name="xalign">0</property>
-            <property name="label" translatable="yes">&lt;b&gt;Plugins&lt;/b&gt;</property>
+            <property name="label" translatable="yes">&lt;b&gt;Database initialization&lt;/b&gt;</property>
             <property name="use_markup">True</property>
           </object>
           <packing>
@@ -36,13 +33,11 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label1">
+          <object class="GtkLabel" id="label63">
             <property name="visible">True</property>
             <property name="xalign">0</property>
-            <property name="label" translatable="yes">Once a plugin is activated it will not be possible to disable it.
-
-Select the plugins you want to enable:</property>
-            <property name="use_markup">True</property>
+            <property name="label" translatable="yes">Would you like to:</property>
+            <property name="wrap">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -51,12 +46,12 @@ Select the plugins you want to enable:</property>
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox2">
+          <object class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <object class="ProxyCheckButton" id="enable_ecf">
-                <property name="label" translatable="yes">ECF (Fiscal printer support)</property>
+              <object class="ProxyRadioButton" id="empty_database_radio">
+                <property name="label" translatable="yes">Create an empty database for production use.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -64,7 +59,6 @@ Select the plugins you want to enable:</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
                 <property name="data_type">bool</property>
-                <property name="model_attribute">enable_ecf</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -73,14 +67,14 @@ Select the plugins you want to enable:</property>
               </packing>
             </child>
             <child>
-              <object class="ProxyCheckButton" id="enable_tef">
-                <property name="label" translatable="yes">TEF (Credit card support)</property>
+              <object class="ProxyRadioButton" id="example_database_radio">
+                <property name="label" translatable="yes">Use demonstration mode with a set of examples.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_action_appearance">False</property>
-                <property name="active">True</property>
                 <property name="draw_indicator">True</property>
+                <property name="group">empty_database_radio</property>
                 <property name="data_type">bool</property>
               </object>
               <packing>
@@ -90,33 +84,19 @@ Select the plugins you want to enable:</property>
               </packing>
             </child>
             <child>
-              <object class="ProxyCheckButton" id="enable_nfe">
-                <property name="label" translatable="yes">NF-e (Eletronic Invoices)</property>
+              <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
-                <property name="draw_indicator">True</property>
-                <property name="data_type">bool</property>
-                <property name="model_attribute">enable_ecf</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Want to import your data from another software or from spreadsheets? We can help you.
+
+&lt;a href="http://www.stoq.com.br/pt-br/more/contact"&gt;Send the data&lt;/a&gt; you want imported to us, and we will give an response within 2 business days.</property>
+                <property name="use_markup">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label80">
-                <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="label" translatable="yes">If you just want to test Stoq it is recommended to select no plugin.</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="padding">6</property>
-                <property name="position">3</property>
               </packing>
             </child>
           </object>

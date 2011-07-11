@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-requires kiwiwidgets 0.0 -->
@@ -8,35 +8,17 @@
       <object class="GtkVBox" id="dbsettings_vbox">
         <property name="visible">True</property>
         <property name="border_width">6</property>
-        <property name="spacing">10</property>
+        <property name="spacing">6</property>
         <child>
-          <object class="GtkHBox" id="hbox2">
+          <object class="ProxyLabel" id="title_label">
             <property name="visible">True</property>
-            <child>
-              <object class="ProxyLabel" id="title_label">
-                <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="label" translatable="yes">Welcome to Stoq</property>
-                <property name="use_markup">True</property>
-              </object>
-              <packing>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="image1">
-                <property name="visible">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">&lt;b&gt;Database Settings&lt;/b&gt;</property>
+            <property name="use_markup">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="padding">5</property>
+            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -46,19 +28,19 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <object class="ProxyLabel" id="header_label">
+          <object class="GtkLabel" id="header_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
-            <property name="label" translatable="yes">Please, fill some important informations before start using the applications</property>
+            <property name="label" translatable="yes">Please, fill the details about your database.</property>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="padding">5</property>
+            <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -71,7 +53,7 @@
                 <property name="visible">True</property>
                 <property name="border_width">6</property>
                 <property name="n_rows">3</property>
-                <property name="n_columns">6</property>
+                <property name="n_columns">4</property>
                 <property name="column_spacing">6</property>
                 <property name="row_spacing">6</property>
                 <child>
@@ -96,9 +78,13 @@
                   <object class="ProxyEntry" id="address">
                     <property name="visible">True</property>
                     <property name="width_chars">14</property>
-                    <property name="model_attribute">address</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">str</property>
                     <property name="mandatory">True</property>
+                    <property name="model_attribute">address</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -114,12 +100,17 @@
                         <property name="visible">True</property>
                         <property name="width_chars">5</property>
                         <property name="xalign">1</property>
-                        <property name="model_attribute">port</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
                         <property name="data_type">int</property>
                         <property name="mandatory">True</property>
+                        <property name="model_attribute">port</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -129,17 +120,6 @@
                     <property name="right_attach">2</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label5">
-                    <property name="visible">True</property>
-                    <property name="xalign">1</property>
-                    <property name="label" translatable="yes">Database Name:</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
                   </packing>
                 </child>
                 <child>
@@ -156,39 +136,16 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="ProxyLabel" id="kiwilabel3">
-                    <property name="visible">True</property>
-                    <property name="xalign">1</property>
-                    <property name="label" translatable="yes">Authentication Type:</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="ProxyEntry" id="dbname">
-                    <property name="visible">True</property>
-                    <property name="width_chars">13</property>
-                    <property name="model_attribute">dbname</property>
-                    <property name="data_type">str</property>
-                    <property name="mandatory">True</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">3</property>
-                    <property name="right_attach">4</property>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="ProxyEntry" id="username">
                     <property name="visible">True</property>
                     <property name="width_chars">14</property>
-                    <property name="model_attribute">username</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">str</property>
                     <property name="mandatory">True</property>
+                    <property name="model_attribute">username</property>
                   </object>
                   <packing>
                     <property name="left_attach">3</property>
@@ -199,9 +156,31 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="ProxyComboBox" id="authentication_type">
+                  <object class="ProxyLabel" id="passwd_label">
                     <property name="visible">True</property>
-                    <property name="data_type">int</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Password:</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxyEntry" id="password">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="visibility">False</property>
+                    <property name="invisible_char">•</property>
+                    <property name="width_chars">10</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="data_type">str</property>
+                    <property name="model_attribute">password</property>
                   </object>
                   <packing>
                     <property name="left_attach">3</property>
@@ -211,58 +190,90 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="ProxyLabel" id="passwd_label">
+                  <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
                     <property name="xalign">1</property>
-                    <property name="label" translatable="yes">Password:</property>
+                    <property name="label" translatable="yes">Database Name:</property>
                   </object>
                   <packing>
-                    <property name="left_attach">4</property>
-                    <property name="right_attach">5</property>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="ProxyEntry" id="password">
+                  <object class="ProxyEntry" id="dbname">
                     <property name="visible">True</property>
-                    <property name="visibility">False</property>
-                    <property name="width_chars">10</property>
-                    <property name="model_attribute">password</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="width_chars">13</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">str</property>
+                    <property name="mandatory">True</property>
+                    <property name="model_attribute">dbname</property>
                   </object>
                   <packing>
-                    <property name="left_attach">5</property>
-                    <property name="right_attach">6</property>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="ProxyLabel" id="kiwilabel3">
+                    <property name="visible">True</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Authentication:</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
+                  </packing>
                 </child>
                 <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
+                  <object class="ProxyComboBox" id="authentication_type">
+                    <property name="visible">True</property>
+                    <property name="data_type">int</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="right_attach">4</property>
+                  </packing>
                 </child>
               </object>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="padding">5</property>
             <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label2">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property name="visible">True</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Click &lt;b&gt;Forward&lt;/b&gt; to continue.</property>
+            <property name="use_markup">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
           </packing>
         </child>
       </object>

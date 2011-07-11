@@ -604,6 +604,7 @@ class F(InvoiceFieldDescription):
     def fetch(self, width, height):
         total = Decimal(0)
         for sale_item in self.sale.products:
+            # FIXME: Use the same information we already added for NF-e
             tax = sale_item.sellable.get_tax_constant()
             if tax and tax.tax_value:
                 total += sale_item.get_total() * (tax.tax_value / 100)
