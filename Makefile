@@ -1,10 +1,8 @@
-VERSION=$(shell egrep ^version stoqlib/__init__.py|cut -d\" -f2)
-PACKAGE=stoqlib
+VERSION=$(shell BUILD=1 python -c "import stoq; print stoq.version")
+PACKAGE=stoq
 DEBPACKAGE=python-kiwi
 WEBDOC_DIR=/mondo/htdocs/stoq.com.br/doc/devel
 SCHEMADIR=/mondo/htdocs/stoq.com.br/devel/schema/
-
-include common/async.mk
 
 stoqlib.pickle:
 	pydoctor --project-name="Stoqlib" \
@@ -35,5 +33,7 @@ pyflakes:
 
 check:
 	LC_ALL=C trial stoq stoqlib
+
+include async.mk
 
 .PHONY: stoqlib.pickle TAGS

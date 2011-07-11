@@ -19,6 +19,5 @@ include README
 include INSTALL
 include NEWS
 include CONTRIBUTORS
-include stoqlib.spec
 include stoq.desktop
 include stoq.spec
