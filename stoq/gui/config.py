@@ -225,7 +225,7 @@ class ExampleDatabaseStep(BaseWizardStep):
     model_type = object
 
     def next_step(self):
-        self.wizard.create_examples = not self.empty_database_radio.get_active()
+        self.wizard.enable_production = not self.empty_database_radio.get_active()
         return PluginStep(self.wizard, self)
 
 
@@ -311,7 +311,7 @@ class CreateDatabaseStep(BaseWizardStep):
         if self.wizard.db_is_local:
             self._local_installation()
             return
-        elif self.wizard.enable_production:
+        elif self.wizard.remove_demo:
             self._launch_stoqdbadmin()
             return
 
@@ -401,7 +401,7 @@ class CreateDatabaseStep(BaseWizardStep):
                 '--no-load-config',
                 '--no-register-station',
                 '-v']
-        if self.wizard.create_examples and not self.wizard.enable_production:
+        if self.wizard.enable_production and not self.wizard.remove_demo:
             args.append('--demo')
         if self.wizard.plugins:
             args.append('--enable-plugins')
@@ -448,7 +448,7 @@ class CreateDatabaseStep(BaseWizardStep):
         elif line == 'INIT START':
             text = _("Creating additional database objects ...")
             value = 0.8
-        elif line == 'INIT DONE' and self.wizard.create_examples:
+        elif line == 'INIT DONE' and self.wizard.enable_production:
             text = _("Creating examples ...")
             value = 0.85
         elif line.startswith('PLUGIN'):
@@ -532,25 +532,25 @@ class FirstTimeConfigWizard(BaseWizard):
             config = StoqConfig()
         self.settings = config.get_settings()
 
-        self.create_examples = False
-        self.config = config
         self.enable_production = False
+        self.config = config
+        self.remove_demo = False
         self.has_installed_db = False
         self.options = options
         self.plugins = []
         self.db_is_local = False
 
         if config.get('Database', 'enable_production') == 'True':
-            self.enable_production = True
+            self.remove_demo = True
 
-        if self.enable_production:
+        if self.remove_demo:
             first_step = PluginStep(self)
         else:
             first_step = DatabaseLocationStep(self)
         BaseWizard.__init__(self, None, first_step, title=self.title)
 
     def _create_station(self, trans):
-        if self.create_examples:
+        if self.enable_production:
             branch = sysparam(trans).MAIN_COMPANY
             assert branch
             provide_utility(ICurrentBranch, branch)
@@ -598,7 +598,7 @@ class FirstTimeConfigWizard(BaseWizard):
             trans.commit()
 
         # Write configuration to disk
-        if self.enable_production:
+        if self.remove_demo:
             self.config.set('Database', 'enable_production', 'False')
         self.config.flush()
 
