@@ -45,7 +45,7 @@ _ = stoqlib_gettext
 
 class PurchaseReport(ObjectListReport):
     report_name = _("Purchase Order Report")
-    main_object_name = _("orders")
+    main_object_name = (_("order"), _("orders"))
     filter_format_string = _("with status <u>%s</u>")
     # This should be properly verified on SearchResultsReport. Waiting for
     # bug 2517
@@ -81,7 +81,6 @@ class PurchaseReport(ObjectListReport):
 
 class PurchasedItemsReport(ObjectListReport):
     report_name = _("Purchases Items Report")
-    main_object_name = _("purchased items")
     obj_type = PurchaseItemView
 
     def __init__(self, filename, objectlist, purchases, *args, **kwargs):

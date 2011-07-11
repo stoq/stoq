@@ -26,6 +26,7 @@
 
 from decimal import Decimal
 
+from stoqlib.database.runtime import get_connection, get_current_branch
 from stoqlib.reporting.template import (SearchResultsReport, PriceReport,
                                         ObjectListReport)
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
@@ -49,8 +50,9 @@ class ProductReport(ObjectListReport):
 
     def __init__(self, filename, objectlist, products, *args, **kwargs):
         self._products = products
-        ProductReport.main_object_name = _("products from branch %s") % \
-            (kwargs['branch_name'],)
+        branch_name = kwargs['branch_name']
+        self.main_object_name = (_("product from branch %s") % branch_name,
+                                 _("products from branch %s") % branch_name)
         ObjectListReport.__init__(self, filename, objectlist, products,
                                   ProductReport.report_name,
                                   landscape=True,
@@ -77,8 +79,9 @@ class SimpleProductReport(ObjectListReport):
 
     def __init__(self, filename, objectlist, products, *args, **kwargs):
         self._products = products
-        SimpleProductReport.main_object_name = _("products from branch %s") % \
-            (kwargs['branch_name'],)
+        branch_name = kwargs['branch_name']
+        self.main_object_name = (_("product from branch %s") % branch_name,
+                                 _("products from branch %s") % branch_name)
         ObjectListReport.__init__(self, filename, objectlist, products,
                                   ProductReport.report_name,
                                   landscape=True,
@@ -100,11 +103,10 @@ class ProductPriceReport(PriceReport):
     filter_format_string = _("on branch <u>%s</u>")
 
     def __init__(self, filename, products, *args, **kwargs):
-        # XXX: We should not change main_object_name here
-        PriceReport.main_object_name = _("products from branch %s") % \
-            (kwargs['branch_name'],)
+        branch_name = kwargs['branch_name']
+        self.main_object_name = (_("product from branch %s") % branch_name,
+                                 _("products from branch %s") % branch_name)
         PriceReport.__init__(self, filename, products, *args, **kwargs)
-
 
 class ProductQuantityReport(ObjectListReport):
     """ This report show a list of all products returned by a SearchBar,
@@ -114,7 +116,7 @@ class ProductQuantityReport(ObjectListReport):
     # bug 2517
     obj_type = ProductHistory
     report_name = _("Product Listing")
-    main_object_name = _("products")
+    main_object_name = (_("product"), _("products"))
 
     def __init__(self, filename, objectlist, products, *args, **kwargs):
         self._products = products
@@ -152,7 +154,7 @@ class ProductsSoldReport(ObjectListReport):
     """
     obj_type = SoldItemView
     report_name = _("Products Sold Listing")
-    main_object_name = _("products sold")
+    main_object_name = (_("product sold"), _("products sold"))
 
     def __init__(self, filename, objectlist, products, *args, **kwargs):
         self._products = products
@@ -173,7 +175,7 @@ class ProductCountingReport(SearchResultsReport):
     """
     obj_type = ProductFullStockView
     report_name = _("Product Counting")
-    main_object_name =  _("Inventory Product Counting")
+    main_object_name = (_("product"), _("products"))
 
     def __init__(self, filename, products, *args, **kwargs):
         self._products = products
@@ -208,7 +210,7 @@ def format_data(data):
 
 class ProductStockReport(ObjectListReport):
     report_name = _("Product Stock Report")
-    main_object_name = _("products")
+    main_object_name = (_("product"), _("products"))
     obj_type = ProductFullStockItemView
 
     def __init__(self, filename, objectlist, stock_products, *args, **kwargs):
@@ -240,7 +242,7 @@ class ProductStockReport(ObjectListReport):
 
 class ProductClosedStockReport(ProductStockReport):
     report_name = _("Closed Product Stock Report")
-    main_object_name = _("closed products")
+    main_object_name = (_("product"), _("products"))
     obj_type = ProductClosedStockView
 
     def _setup_table(self):
