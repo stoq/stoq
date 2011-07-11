@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-11 17:28-0300\n"
+"POT-Creation-Date: 2011-07-11 17:35-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1227,24 +1227,20 @@ msgid "Penalty:"
 msgstr ""
 
 #: ../data/glade/MultipleMethodSlave.ui.h:1
-msgid "<b>$CURRENCY:</b>"
-msgstr ""
-
-#: ../data/glade/MultipleMethodSlave.ui.h:2
 msgid "<b>Method:</b>"
 msgstr ""
 
-#: ../data/glade/MultipleMethodSlave.ui.h:3
+#: ../data/glade/MultipleMethodSlave.ui.h:2
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:2
 #: ../stoqlib/gui/slaves/paymentslave.py:986
 msgid "Missing:"
 msgstr ""
 
-#: ../data/glade/MultipleMethodSlave.ui.h:4
+#: ../data/glade/MultipleMethodSlave.ui.h:3
 msgid "Payments:"
 msgstr ""
 
-#: ../data/glade/MultipleMethodSlave.ui.h:5
+#: ../data/glade/MultipleMethodSlave.ui.h:4
 #: ../data/glade/PaymentListSlave.ui.h:3
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:6
 #: ../data/glade/PurchaseDetailsDialog.ui.h:25
@@ -1270,7 +1266,7 @@ msgstr ""
 msgid "Total:"
 msgstr ""
 
-#: ../data/glade/MultipleMethodSlave.ui.h:6
+#: ../data/glade/MultipleMethodSlave.ui.h:5
 msgid "_Cash"
 msgstr ""
 
