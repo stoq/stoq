@@ -21,7 +21,6 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <object class="GtkLabel" id="header_label">
-                                        <property name="label" translatable="yes">header</property>
                                         <property name="visible">True</property>
                                     </object>
                                 </child>
@@ -56,7 +55,6 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <object class="GtkLabel" id="main_label">
-                                        <property name="label" translatable="yes">label</property>
                                         <property name="visible">True</property>
                                     </object>
                                 </child>
