@@ -103,7 +103,17 @@ class DatabaseLocationStep(WizardEditorStep):
 
     def next_step(self):
         self.wizard.db_is_local = self.radio_local.get_active()
+
+        settings = self.wizard.settings
         if self.wizard.db_is_local:
+            settings.address = "" # Unix socket really
+            self.wizard.config.load_settings(self.wizard.settings)
+
+        if (test_local_database() and
+            self.wizard.try_connect(settings) and
+            self.wizard.has_installed_db):
+            return FinishInstallationStep(self.wizard)
+        elif self.wizard.db_is_local:
             return ExampleDatabaseStep(self.wizard, self)
         else:
             return DatabaseSettingsStep(self.wizard, self)
@@ -167,7 +177,7 @@ class DatabaseSettingsStep(WizardEditorStep):
             if not self._try_connect(settings, warn=False):
                 settings.address = ''
 
-        if not self._try_connect(settings):
+        if not self.wizard.try_connect(settings):
             # Restore it
             settings.address = 'localhost'
             return False
@@ -177,19 +187,6 @@ class DatabaseSettingsStep(WizardEditorStep):
             self.wizard.config.load_settings(settings)
 
         self.wizard.auth_type = self.authentication_type.get_selected()
-
-        return True
-
-    def _try_connect(self, settings, warn=True):
-        try:
-            if settings.has_database():
-                conn = settings.get_connection()
-                self.wizard.has_installed_db = SystemTable.is_available(conn)
-                conn.close()
-        except DatabaseError, e:
-            if warn:
-                warning(e.short, e.msg)
-            return False
 
         return True
 
@@ -367,10 +364,11 @@ class CreateDatabaseStep(BaseWizardStep):
         os.chmod(pgpass, 0600)
 
     def _local_installation(self):
-        if test_local_database():
-            self._launch_stoqdbadmin()
-        else:
+        if not test_local_database():
             self._install_postgres()
+            return
+
+        self._launch_stoqdbadmin()
 
     def _install_postgres(self):
         try:
@@ -414,9 +412,6 @@ class CreateDatabaseStep(BaseWizardStep):
             args.append('--database-username')
             args.append(os.environ['USER'])
 
-        if self.wizard.db_is_local:
-            self.wizard.settings.address = "" # Unix socket really
-            self.wizard.config.load_settings(self.wizard.settings)
         dbargs = self.wizard.settings.get_command_line_arguments()
         args.extend(dbargs)
         self.label.set_label(
@@ -571,6 +566,20 @@ class FirstTimeConfigWizard(BaseWizard):
                 ("You should have a user with username: %s"
                  % USER_ADMIN_DEFAULT_NAME))
         adminuser.password = self.login_password
+
+    def try_connect(self, settings, warn=True):
+        try:
+            if settings.has_database():
+                conn = settings.get_connection()
+                self.has_installed_db = SystemTable.is_available(conn)
+                conn.close()
+        except DatabaseError, e:
+            if warn:
+                warning(e.short, e.msg)
+            return False
+
+        return True
+
 
     def load_config_and_call_setup(self):
         dbargs = self.settings.get_command_line_arguments()
