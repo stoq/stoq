@@ -166,7 +166,7 @@ class SalesReport(ObjectListReport):
     # bug 2517
     obj_type = SaleView
     report_name = _("Sales Report")
-    main_object_name = _("sales")
+    main_object_name = (_("sale"), _("sales"))
     filter_format_string = _("with status <u>%s</u>")
 
     def __init__(self, filename, objectlist, sale_list, *args, **kwargs):
@@ -252,14 +252,20 @@ class SalesPersonReport(SearchResultsReport):
 
     def __init__(self, filename, salesperson_list, salesperson_name,
                  *args, **kwargs):
-        branch = get_current_branch(get_connection())
+        branch = get_current_branch(get_connection()).get_description()
         self.salesperson_list = salesperson_list
-        SalesPersonReport.main_object_name = _("sales on branch %s") % (
-            branch.get_description())
-        if salesperson_name is not None:
-            # TRANSLATORS: The first %s is the Sales Person name
-            SalesPersonReport.main_object_name = _("sales from %s "
-                "on branch %s" % (salesperson_name, branch.get_description()))
+
+        if salesperson_name:
+            singular = _("sale from {salesperson} on branch {branch}").format(
+                         salesperson=salesperson_name, branch=branch)
+            plural = _("sales from {salesperson} on branch {branch}").format(
+                       salesperson=salesperson_name, branch=branch)
+        else:
+            singular = _("sale on branch %s") % branch
+            plural = _("sales on branch %s") % branch
+
+        self.main_object_name = (singular, plural)
+
         SearchResultsReport.__init__(self, filename, salesperson_list,
                                      SalesPersonReport.report_name,
                                      landscape=(salesperson_name is None),

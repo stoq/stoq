@@ -42,7 +42,7 @@ from stoqlib.database.runtime import (get_current_branch, get_connection,
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 from stoqlib.lib.formatters import format_phone_number, format_quantity
 from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
@@ -176,12 +176,16 @@ class SearchResultsReport(BaseStoqReport):
     the BaseStoqReport title's notes with the search criteria defined by
     the user on the GUI.
     """
-    main_object_name = None
+    # Translators: e.g: Product Listing - Listing 34 of a total of 45 products
+    summary = _("{title} - Listing {rows} of a total of {total_rows} {item}")
+
+    main_object_name = (_("item"), _("items"))
     filter_format_string = ""
 
-    def __init__(self, filename, data, report_name, blocked_records=None,
-                 status_name=None, filter_strings=[], status=None, *args, **kwargs):
-        self._blocked_records = None
+    def __init__(self, filename, data, report_name, blocked_records=0,
+                 status_name=None, filter_strings=[], status=None,
+                 *args, **kwargs):
+        self._blocked_records = blocked_records
         self._status_name = status_name
         self._status = status
         self._filter_strings = filter_strings
@@ -196,17 +200,13 @@ class SearchResultsReport(BaseStoqReport):
         """ This method build the report title based on the arguments sent
         by SearchBar to its class constructor.
         """
-        title = self.report_name.capitalize()
-        title += " - %s " % _("Listing")
-        main_object_name = (self.main_object_name or "")
-        if self._blocked_records > 0:
-            rows_qty = len(self._data)
-            title += (_("%d of a total of %d %s")
-                      % (rows_qty, rows_qty + self._blocked_records,
-                         main_object_name))
-        else:
-            if main_object_name:
-                title += _("all %s") % main_object_name
+        rows = len(self._data)
+        total_rows = rows + self._blocked_records
+        item = stoqlib_ngettext(self.main_object_name[0],
+                                self.main_object_name[1], total_rows)
+        title = self.summary.format(title=self.report_name, rows=rows,
+                                    total_rows=total_rows, item=item)
+
         base_note = ""
         if self.filter_format_string and self._status_name:
             base_note += self.filter_format_string % self._status_name.lower()
