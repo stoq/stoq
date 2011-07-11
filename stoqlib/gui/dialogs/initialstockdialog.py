@@ -89,10 +89,10 @@ class InitialStockDialog(BaseEditor):
                 Column("category_description", title=_(u"Category"),
                        data_type=str, width=100),
                 Column("description", title=_(u"Description"),
-                       data_type=str, expand=True, width=300),
+                       data_type=str, width=300),
                 Column("initial_stock", title=_(u"Initial Stock"),
                        data_type=Decimal, format_func=self._format_qty,
-                       editable=True, spin_adjustment=adj, width=60)]
+                       editable=True, spin_adjustment=adj, width=115)]
 
     def _format_qty(self, quantity):
         if quantity is ValueUnset:
