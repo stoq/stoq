@@ -48,28 +48,29 @@ if sys.hexversion < int('%02x%02x0000' % REQUIRED_VERSION, 16):
 currentdir = os.path.dirname(os.path.abspath(sys.argv[0]))
 basedir = os.path.abspath(os.path.join(currentdir, '..'))
 
+pythondirs = []
 # Add the base directory where the application is installed in to sys.path
 if os.path.exists(os.path.join(basedir, 'lib')):
-    if sys.version_info < (2, 6):
-        site = 'site-packages'
-    else:
-        site = 'dist-packages'
+    for site in ['site-packages', 'dist-packages']:
+        if sys.platform == 'win32':
+            pythondir = os.path.join(basedir, 'Lib', site)
+        else:
+            pythondir = os.path.join(basedir, 'lib',
+                                     'python%d.%d' % sys.version_info[:2], site)
+        if os.path.exists(pythondir):
+            pythondirs.append(pythondir)
 
-    if sys.platform == 'win32':
-        pythondir = os.path.join(basedir, 'Lib', site)
-    else:
-        pythondir = os.path.join(basedir, 'lib',
-                                 'python%d.%d' % sys.version_info[:2], site)
-    if not os.path.exists(pythondir):
+    if not pythondirs:
         raise SystemExit("ERROR: Could not find required directory: %s" %
-                         pythondir)
+                         ','.join(pythondirs))
 elif not os.path.exists(os.path.join(basedir, dirname)):
     raise SystemExit("ERROR: Could not find required directory: %s" %
                      os.path.join(basedir, dirname))
 else:
-    pythondir = basedir
+    pythondirs.append(basedir)
 
-sys.path.insert(0, pythondir)
+for pythondir in pythondirs:
+    sys.path.insert(0, pythondir)
 
 try:
     import pkg_resources
