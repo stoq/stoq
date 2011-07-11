@@ -24,7 +24,7 @@
             <property name="data_type">date</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">date</property>
-            <property name="text" translatable="yes">  -  -    </property>
+            <property name="text">  -  -    </property>
             <property name="visible">True</property>
             <property name="width_chars">12</property>
           </object>
@@ -49,7 +49,7 @@
             <property name="data_type">time</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">time</property>
-            <property name="text" translatable="yes">  :  </property>
+            <property name="text">  :  </property>
             <property name="visible">True</property>
             <property name="width_chars">10</property>
           </object>

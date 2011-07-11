@@ -60,9 +60,9 @@
         <child>
           <object class="ProxyEntry" id="cnpj">
             <property name="data_type">unicode</property>
-            <property name="mask" translatable="yes">00.000.000/0000-00</property>
+            <property name="mask">00.000.000/0000-00</property>
             <property name="model_attribute">cnpj</property>
-            <property name="text" translatable="yes">  .   .   /    -  </property>
+            <property name="text">  .   .   /    -  </property>
             <property name="visible">True</property>
           </object>
           <packing>

@@ -129,9 +129,9 @@
             <child>
               <object class="ProxyEntry" id="postal_code">
                 <property name="data_type">unicode</property>
-                <property name="mask" translatable="yes">00000-000</property>
+                <property name="mask">00000-000</property>
                 <property name="model_attribute">postal_code</property>
-                <property name="text" translatable="yes">     -   </property>
+                <property name="text">     -   </property>
                 <property name="visible">True</property>
                 <property name="width_chars">9</property>
               </object>
