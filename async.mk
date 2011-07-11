@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+# Copyright (C) 2007-2011 Async Open Source <http://www.async.com.br>
 # All rights reserved
 #
 # This program is free software; you can redistribute it and/or modify
@@ -45,14 +45,7 @@ sdist:
 	python setup.py -q sdist
 
 rpm: sdist
-	mkdir -p build
-	rpmbuild --define="_sourcedir `pwd`/dist" \
-	         --define="_srcrpmdir `pwd`/dist" \
-	         --define="_rpmdir `pwd`/dist" \
-	         --define="_builddir `pwd`/build" \
-             -ba --sign $(PACKAGE).spec
-	mv dist/noarch/* dist
-	rm -fr dist/noarch
+	rpmbuild -ta --sign dist/$(TARBALL)
 
 upload:
 	scp dist/$(TARBALL) async.com.br:$(TARBALL_DIR)
@@ -75,15 +68,11 @@ release-deb:
 	debchange -v $(VERSION)-1 "New release"
 
 release-tag:
-	svn cp -m "Tag $(VERSION)" . svn+ssh://async.com.br/pub/$(PACKAGE)/tags/$(PACKAGE)-$(VERSION)
+	bzr tag $(VERSION)
 
 ubuntu-package: deb
 	cp /mondo/pbuilder/edgy/result/$(PACKAGE)_$(DEBVERSION)_all.deb $(DOWNLOADWEBDIR)/ubuntu
 	$(UPDATEAPTDIR) $(DOWNLOADWEBDIR)/ubuntu
-
-clean:
-	rm -fr $(BUILDDIR)
-	rm -f MANIFEST
 
 tags:
 	find -name \*.py|xargs ctags
