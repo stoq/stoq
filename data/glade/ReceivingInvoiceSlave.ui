@@ -314,7 +314,7 @@
               <object class="ProxyLabel" id="kiwilabel4">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Products Total ($CURRENCY):</property>
+                <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Products Total ($CURRENCY):</property>
                 <property name="model_attribute">kiwilabel4</property>
               </object>
               <packing>
@@ -328,7 +328,7 @@
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
                 <property name="yalign">0</property>
-                <property name="label" translatable="yes">Freight ($CURRENCY):</property>
+                <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Freight ($CURRENCY):</property>
                 <property name="model_attribute">kiwilabel54</property>
               </object>
               <packing>
@@ -343,7 +343,7 @@
               <object class="ProxyLabel" id="kiwilabel6">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">IPI ($CURRENCY):</property>
+                <property name="label" translatable="yes" comments="Do not translate $CURRENCY">IPI ($CURRENCY):</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -357,7 +357,7 @@
               <object class="ProxyLabel" id="kiwilabel200">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">ICMS Total ($CURRENCY):</property>
+                <property name="label" translatable="yes" comments="Do not translate $CURRENCY">ICMS Total ($CURRENCY):</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -371,7 +371,7 @@
               <object class="ProxyLabel" id="discount_label">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Discount ($CURRENCY):</property>
+                <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Discount ($CURRENCY):</property>
                 <property name="data_type">currency</property>
                 <property name="model_attribute">discount_label</property>
               </object>
@@ -387,7 +387,7 @@
               <object class="ProxyLabel" id="kiwilabel2">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Secure ($CURRENCY):</property>
+                <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Secure ($CURRENCY):</property>
                 <property name="model_attribute">kiwilabel2</property>
               </object>
               <packing>
@@ -402,7 +402,7 @@
               <object class="ProxyLabel" id="kiwilabel3">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Others Expenditures ($CURRENCY):</property>
+                <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Others Expenditures ($CURRENCY):</property>
                 <property name="model_attribute">kiwilabel3</property>
               </object>
               <packing>
@@ -417,7 +417,7 @@
               <object class="ProxyLabel" id="kiwilabel11">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Invoice Total ($CURRENCY):</property>
+                <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Invoice Total ($CURRENCY):</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>

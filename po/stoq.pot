@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-11 17:45-0300\n"
+"POT-Creation-Date: 2011-07-11 17:51-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,7 +75,7 @@ msgstr ""
 
 #. Date
 #: ../data/glade/AccountTransactionEditor.ui.h:3
-#: ../data/glade/BaseCashSlave.ui.h:3
+#: ../data/glade/BaseCashSlave.ui.h:4
 #: ../data/glade/EmployeeDetailsSlave.ui.h:7
 #: ../data/glade/FiscalBookEntryEditor.ui.h:2
 #: ../data/glade/ProductsAdjustment.ui.h:3
@@ -105,7 +105,8 @@ msgstr ""
 #: ../data/glade/ReceivingItemEditor.ui.h:3
 #: ../data/glade/SaleQuoteItemEditor.ui.h:3
 #: ../data/glade/SellableCategoryDataSlave.ui.h:4
-#: ../data/glade/SellableEditor.ui.h:9 ../data/glade/SellableUnitEditor.ui.h:2
+#: ../data/glade/SellableEditor.ui.h:10
+#: ../data/glade/SellableUnitEditor.ui.h:2
 msgid "Description:"
 msgstr ""
 
@@ -186,7 +187,8 @@ msgstr ""
 msgid "Balance:"
 msgstr ""
 
-#: ../data/glade/BaseCashSlave.ui.h:2
+#. Do not translate $CURRENCY
+#: ../data/glade/BaseCashSlave.ui.h:3
 msgid "Cash Amount ($CURRENCY):"
 msgstr ""
 
@@ -196,8 +198,9 @@ msgstr ""
 msgid "Due date:"
 msgstr ""
 
-#: ../data/glade/BasePaymentDataEditor.ui.h:3
-#: ../data/glade/BasePaymentEditor.ui.h:7
+#. Do not translate $CURRENCY
+#: ../data/glade/BasePaymentDataEditor.ui.h:4
+#: ../data/glade/BasePaymentEditor.ui.h:8
 msgid "Value ($CURRENCY):"
 msgstr ""
 
@@ -384,14 +387,15 @@ msgstr ""
 msgid "Change:"
 msgstr ""
 
-#: ../data/glade/CashChangeSlave.ui.h:3
+#. Do not translate $CURRENCY
+#: ../data/glade/CashChangeSlave.ui.h:4
 msgid "Received: ($CURRENCY)"
 msgstr ""
 
 #: ../data/glade/CashInEditor.ui.h:1 ../data/glade/CashOutEditor.ui.h:1
 #: ../data/glade/PaymentChangeDialog.ui.h:4
 #: ../data/glade/ProductAdjustmentDialog.ui.h:4
-#: ../data/glade/SaleReturnSlave.ui.h:7
+#: ../data/glade/SaleReturnSlave.ui.h:8
 #: ../data/glade/StartStockDecreaseStep.ui.h:4
 msgid "Reason:"
 msgstr ""
@@ -485,7 +489,7 @@ msgstr ""
 #: ../data/glade/PaymentChangeDialog.ui.h:5
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:11
 #: ../data/glade/SaleDetailsDialog.ui.h:15
-#: ../data/glade/SellableEditor.ui.h:12
+#: ../data/glade/SellableEditor.ui.h:14
 #: ../data/glade/SupplierDetailsDialog.ui.h:6
 #: ../data/glade/UserStatusSlave.ui.h:3 ../stoqlib/reporting/purchase.py:255
 msgid "Status:"
@@ -495,11 +499,12 @@ msgstr ""
 msgid "Available Credit:"
 msgstr ""
 
-#: ../data/glade/ClientStatusSlave.ui.h:3
+#. Do not translate $CURRENCY
+#: ../data/glade/ClientStatusSlave.ui.h:4
 msgid "Credit Limit ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/ClientStatusSlave.ui.h:4
+#: ../data/glade/ClientStatusSlave.ui.h:5
 msgid "Financial Status:"
 msgstr ""
 
@@ -687,19 +692,20 @@ msgstr ""
 msgid "Create..."
 msgstr ""
 
-#: ../data/glade/DeliveryEditor.ui.h:6
+#. Do not translate $CURRENCY
+#: ../data/glade/DeliveryEditor.ui.h:7
 msgid "Delivery cost ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/DeliveryEditor.ui.h:7
+#: ../data/glade/DeliveryEditor.ui.h:8
 msgid "Estimated Delivery _Date:"
 msgstr ""
 
-#: ../data/glade/DeliveryEditor.ui.h:8
+#: ../data/glade/DeliveryEditor.ui.h:9
 msgid "Products to Deliver:"
 msgstr ""
 
-#: ../data/glade/DeliveryEditor.ui.h:9
+#: ../data/glade/DeliveryEditor.ui.h:10
 msgid "There is Additional Instructions"
 msgstr ""
 
@@ -788,7 +794,8 @@ msgstr ""
 msgid "Role:"
 msgstr ""
 
-#: ../data/glade/EmployeeRoleSlave.ui.h:3
+#. Do not translate $CURRENCY
+#: ../data/glade/EmployeeRoleSlave.ui.h:4
 msgid "Salary ($CURRENCY):"
 msgstr ""
 
@@ -855,7 +862,7 @@ msgstr ""
 
 #: ../data/glade/FinishPurchaseStep.ui.h:6
 #: ../data/glade/PurchaseDetailsDialog.ui.h:26
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:17
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:25
 #: ../data/glade/SalesPersonStep.ui.h:15 ../stoqlib/reporting/purchase.py:187
 #: ../stoqlib/reporting/purchase.py:325
 msgid "Transporter:"
@@ -863,7 +870,7 @@ msgstr ""
 
 #: ../data/glade/FiscalBookEntryEditor.ui.h:3
 #: ../data/glade/ProductsAdjustment.ui.h:4
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:8
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:12
 #: ../data/glade/SaleDetailsDialog.ui.h:7 ../data/glade/SalesPersonStep.ui.h:8
 msgid "Invoice Number:"
 msgstr ""
@@ -904,7 +911,7 @@ msgid "Start Date:"
 msgstr ""
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:8
-#: ../data/glade/OnSaleInfoSlave.ui.h:4
+#: ../data/glade/OnSaleInfoSlave.ui.h:5
 msgid "To:"
 msgstr ""
 
@@ -1016,41 +1023,44 @@ msgstr ""
 msgid "Details..."
 msgstr ""
 
-#: ../data/glade/InstallmentConfirmation.ui.h:4
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:3
+#. Do not translate $CURRENCY
+#: ../data/glade/InstallmentConfirmation.ui.h:5
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:4
 msgid "Discount ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/InstallmentConfirmation.ui.h:5
+#: ../data/glade/InstallmentConfirmation.ui.h:6
 msgid "Installment value:"
 msgstr ""
 
-#: ../data/glade/InstallmentConfirmation.ui.h:6
+#. Do not translate $CURRENCY
+#: ../data/glade/InstallmentConfirmation.ui.h:8
 msgid "Interest ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/InstallmentConfirmation.ui.h:7
+#: ../data/glade/InstallmentConfirmation.ui.h:9
 msgid "Order number:"
 msgstr ""
 
-#: ../data/glade/InstallmentConfirmation.ui.h:8
+#: ../data/glade/InstallmentConfirmation.ui.h:10
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:5
 msgid "Paid date:"
 msgstr ""
 
-#: ../data/glade/InstallmentConfirmation.ui.h:9
+#: ../data/glade/InstallmentConfirmation.ui.h:11
 msgid "Pay interest"
 msgstr ""
 
-#: ../data/glade/InstallmentConfirmation.ui.h:10
+#: ../data/glade/InstallmentConfirmation.ui.h:12
 msgid "Pay penalty"
 msgstr ""
 
-#: ../data/glade/InstallmentConfirmation.ui.h:11
+#. Do not translate $CURRENCY
+#: ../data/glade/InstallmentConfirmation.ui.h:14
 msgid "Penalty ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/InstallmentConfirmation.ui.h:12
+#: ../data/glade/InstallmentConfirmation.ui.h:15
 msgid "Total value:"
 msgstr ""
 
@@ -1103,7 +1113,7 @@ msgstr ""
 #: ../data/glade/ProductsAdjustment.ui.h:1
 #: ../data/glade/PurchaseDetailsDialog.ui.h:3
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:1
-#: ../data/glade/StartPurchaseStep.ui.h:3 ../data/glade/StartQuoteStep.ui.h:1
+#: ../data/glade/StartPurchaseStep.ui.h:4 ../data/glade/StartQuoteStep.ui.h:1
 #: ../data/glade/StartStockDecreaseStep.ui.h:1
 #: ../data/glade/StationEditor.ui.h:2
 #: ../data/glade/StockDecreaseDetails.ui.h:1 ../stoqlib/gui/base/search.py:392
@@ -1128,7 +1138,7 @@ msgstr ""
 #: ../data/glade/PurchaseDetailsDialog.ui.h:10
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:8
 #: ../data/glade/SaleDetailsDialog.ui.h:10
-#: ../data/glade/StartPurchaseStep.ui.h:9 ../data/glade/TillClosing.ui.h:5
+#: ../data/glade/StartPurchaseStep.ui.h:10 ../data/glade/TillClosing.ui.h:6
 #: ../stoqlib/reporting/loanreceipt.py:72
 #: ../stoqlib/reporting/production.py:120 ../stoqlib/reporting/purchase.py:254
 #: ../stoqlib/reporting/purchase.py:333
@@ -1140,9 +1150,9 @@ msgstr ""
 #: ../data/glade/OpenProductionOrderStep.ui.h:6
 #: ../data/glade/ProductionDetailsDialog.ui.h:8
 #: ../data/glade/PurchaseDetailsDialog.ui.h:19
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:14
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:21
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:10
-#: ../data/glade/SaleReturnSlave.ui.h:8
+#: ../data/glade/SaleReturnSlave.ui.h:9
 #: ../data/glade/StockDecreaseDetails.ui.h:7
 #: ../data/glade/TransferOrderDetails.ui.h:4
 #: ../stoqlib/gui/wizards/loanwizard.py:86
@@ -1245,8 +1255,9 @@ msgstr ""
 msgid "<u>Currently on Sale:</u>"
 msgstr ""
 
-#: ../data/glade/OnSaleInfoSlave.ui.h:3 ../data/glade/PriceEntrySlave.ui.h:1
-#: ../data/glade/PriceLabelSlave.ui.h:1
+#. Do not translate $CURRENCY
+#: ../data/glade/OnSaleInfoSlave.ui.h:4 ../data/glade/PriceEntrySlave.ui.h:2
+#: ../data/glade/PriceLabelSlave.ui.h:2
 msgid "Price ($CURRENCY):"
 msgstr ""
 
@@ -1296,8 +1307,8 @@ msgstr ""
 #: ../data/glade/PaymentChangeDialog.ui.h:3
 #: ../data/glade/ProductionDetailsDialog.ui.h:6
 #: ../data/glade/PurchaseDetailsDialog.ui.h:11
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:11
-#: ../data/glade/StartPurchaseStep.ui.h:10
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:16
+#: ../data/glade/StartPurchaseStep.ui.h:11
 msgid "Order Number:"
 msgstr ""
 
@@ -1596,7 +1607,7 @@ msgid "Production:"
 msgstr ""
 
 #: ../data/glade/ProductionItemEditor.ui.h:6
-#: ../data/glade/SellableEditor.ui.h:14
+#: ../data/glade/SellableEditor.ui.h:16
 msgid "Unit:"
 msgstr ""
 
@@ -1670,8 +1681,8 @@ msgid "Salesperson:"
 msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:22
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:16
-#: ../data/glade/StartPurchaseStep.ui.h:11
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:24
+#: ../data/glade/StartPurchaseStep.ui.h:12
 #: ../data/glade/SupplierDetailsDialog.ui.h:7
 #: ../stoqlib/gui/dialogs/paymentchangedialog.py:73
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:342
@@ -1682,7 +1693,7 @@ msgstr ""
 #: ../data/glade/PurchaseDetailsDialog.ui.h:24
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:3
 #: ../data/glade/SaleDetailsDialog.ui.h:18
-#: ../data/glade/SaleReturnSlave.ui.h:11
+#: ../data/glade/SaleReturnSlave.ui.h:12
 msgid "Total Paid:"
 msgstr ""
 
@@ -1770,42 +1781,49 @@ msgstr ""
 msgid "_View Products"
 msgstr ""
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:4
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:6
 msgid "Freight ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:5
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:7
 #: ../data/glade/TransporterDataSlave.ui.h:4
 #: ../stoqlib/reporting/purchase.py:326
 msgid "Freight:"
 msgstr ""
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:6
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:9
 msgid "ICMS Total ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:7
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:11
 msgid "IPI ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:9
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:14
 msgid "Invoice Total ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:10
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:15
 #: ../data/glade/SalesPersonStep.ui.h:9
 msgid "Notes..."
 msgstr ""
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:12
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:18
 msgid "Others Expenditures ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:13
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:20
 msgid "Products Total ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:15
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:23
 msgid "Secure ($CURRENCY):"
 msgstr ""
 
@@ -1840,7 +1858,7 @@ msgid "<b>Renegotiation Number:</b>"
 msgstr ""
 
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:4
-#: ../data/glade/SaleDetailsDialog.ui.h:4 ../data/glade/SaleReturnSlave.ui.h:5
+#: ../data/glade/SaleDetailsDialog.ui.h:4 ../data/glade/SaleReturnSlave.ui.h:6
 #: ../data/glade/SearchDialogDetailsSlave.ui.h:1
 #: ../stoqlib/gui/editors/producteditor.py:522
 msgid "Details"
@@ -1907,19 +1925,20 @@ msgstr ""
 msgid "Cancellation Type:"
 msgstr ""
 
-#: ../data/glade/SaleReturnSlave.ui.h:4
+#. Do not translate $CURRENCY
+#: ../data/glade/SaleReturnSlave.ui.h:5
 msgid "Deduction ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/SaleReturnSlave.ui.h:6
+#: ../data/glade/SaleReturnSlave.ui.h:7
 msgid "Order Total:"
 msgstr ""
 
-#: ../data/glade/SaleReturnSlave.ui.h:9
+#: ../data/glade/SaleReturnSlave.ui.h:10
 msgid "Return Invoice Number:"
 msgstr ""
 
-#: ../data/glade/SaleReturnSlave.ui.h:10
+#: ../data/glade/SaleReturnSlave.ui.h:11
 msgid "Return Value:"
 msgstr ""
 
@@ -1989,32 +2008,34 @@ msgstr ""
 msgid "Consignment:"
 msgstr ""
 
-#: ../data/glade/SellableEditor.ui.h:7
+#. Do not translate $CURRENCY
+#: ../data/glade/SellableEditor.ui.h:8
 msgid "Cost ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/SellableEditor.ui.h:8
+#: ../data/glade/SellableEditor.ui.h:9
 msgid "Default Sales C.F.O.P.:"
 msgstr ""
 
-#: ../data/glade/SellableEditor.ui.h:10 ../stoqlib/gui/base/dialogs.py:470
+#: ../data/glade/SellableEditor.ui.h:11 ../stoqlib/gui/base/dialogs.py:470
 #: ../stoqlib/gui/dialogs/productiondialog.py:157
 #: ../stoqlib/gui/editors/parameterseditor.py:140
 #: ../stoqlib/gui/search/parametersearch.py:95
 msgid "No"
 msgstr ""
 
-#: ../data/glade/SellableEditor.ui.h:11
-#: ../data/glade/SellablePriceEditor.ui.h:11
+#. Do not translate $CURRENCY
+#: ../data/glade/SellableEditor.ui.h:13
+#: ../data/glade/SellablePriceEditor.ui.h:12
 msgid "Sale Price ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/SellableEditor.ui.h:13
+#: ../data/glade/SellableEditor.ui.h:15
 #: ../data/glade/TributarySituationSlave.ui.h:3
 msgid "Tributary Situation:"
 msgstr ""
 
-#: ../data/glade/SellableEditor.ui.h:15 ../stoqlib/gui/base/dialogs.py:470
+#: ../data/glade/SellableEditor.ui.h:17 ../stoqlib/gui/base/dialogs.py:470
 #: ../stoqlib/gui/dialogs/productiondialog.py:156
 #: ../stoqlib/gui/editors/parameterseditor.py:134
 #: ../stoqlib/gui/search/parametersearch.py:95
@@ -2067,31 +2088,32 @@ msgstr ""
 msgid "label: "
 msgstr ""
 
-#: ../data/glade/StartPurchaseStep.ui.h:1
+#. Do not translate $CURRENCY
+#: ../data/glade/StartPurchaseStep.ui.h:2
 msgid "$CURRENCY"
 msgstr ""
 
-#: ../data/glade/StartPurchaseStep.ui.h:2
+#: ../data/glade/StartPurchaseStep.ui.h:3
 msgid "Add a new supplier"
 msgstr ""
 
-#: ../data/glade/StartPurchaseStep.ui.h:4
+#: ../data/glade/StartPurchaseStep.ui.h:5
 msgid "CIF (Cost Insurance Freight)"
 msgstr ""
 
-#: ../data/glade/StartPurchaseStep.ui.h:5
+#: ../data/glade/StartPurchaseStep.ui.h:6
 msgid "Edit selected supplier"
 msgstr ""
 
-#: ../data/glade/StartPurchaseStep.ui.h:6
+#: ../data/glade/StartPurchaseStep.ui.h:7
 msgid "Expected Freight:"
 msgstr ""
 
-#: ../data/glade/StartPurchaseStep.ui.h:7
+#: ../data/glade/StartPurchaseStep.ui.h:8
 msgid "FOB (Free On Board)"
 msgstr ""
 
-#: ../data/glade/StartPurchaseStep.ui.h:8
+#: ../data/glade/StartPurchaseStep.ui.h:9
 msgid "Freight Type:"
 msgstr ""
 
@@ -2236,15 +2258,16 @@ msgstr ""
 msgid "<b>General Details:</b>"
 msgstr ""
 
-#: ../data/glade/TillClosing.ui.h:3
+#. Do not translate $CURRENCY
+#: ../data/glade/TillClosing.ui.h:4
 msgid "Amount Removed ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/TillClosing.ui.h:4
+#: ../data/glade/TillClosing.ui.h:5
 msgid "Float Remaining:"
 msgstr ""
 
-#: ../data/glade/TillClosing.ui.h:6
+#: ../data/glade/TillClosing.ui.h:7
 msgid "Till Closing"
 msgstr ""
 
@@ -2257,11 +2280,12 @@ msgstr ""
 msgid "Till Out..."
 msgstr ""
 
-#: ../data/glade/TillOpening.ui.h:2
+#. Do not translate $CURRENCY
+#: ../data/glade/TillOpening.ui.h:3
 msgid "Cash to add ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/TillOpening.ui.h:3 ../stoqlib/gui/editors/tilleditor.py:94
+#: ../data/glade/TillOpening.ui.h:4 ../stoqlib/gui/editors/tilleditor.py:94
 msgid "Till Opening"
 msgstr ""
 

@@ -59,7 +59,7 @@
                   <object class="ProxyLabel" id="currency">
                     <property name="visible">True</property>
                     <property name="xalign">1</property>
-                    <property name="label">$CURRENCY:</property>
+                    <property name="label" comments="Do not translate $CURRENCY">$CURRENCY:</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>

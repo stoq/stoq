@@ -30,7 +30,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
                 <property name="data_type">unicode</property>
-                <property name="label" translatable="yes">Value ($CURRENCY):</property>
+                <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Value ($CURRENCY):</property>
                 <property name="model_attribute">kiwilabel2</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>

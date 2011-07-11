@@ -80,7 +80,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="label4">
-                <property name="label" translatable="yes">Sale Price ($CURRENCY):</property>
+                <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Sale Price ($CURRENCY):</property>
                 <property name="model_attribute">label4</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>

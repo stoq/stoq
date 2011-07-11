@@ -99,7 +99,7 @@
             </child>
             <child>
               <object class="ProxyLabel" id="label2">
-                <property name="label" translatable="yes">Delivery cost ($CURRENCY):</property>
+                <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Delivery cost ($CURRENCY):</property>
                 <property name="mnemonic_widget">price</property>
                 <property name="model_attribute">label2</property>
                 <property name="use_underline">True</property>
