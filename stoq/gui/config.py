@@ -544,6 +544,8 @@ class FirstTimeConfigWizard(BaseWizard):
             first_step = DatabaseLocationStep(self)
         BaseWizard.__init__(self, None, first_step, title=self.title)
 
+        self.get_toplevel().set_deletable(False)
+
     def _create_station(self, trans):
         if self.enable_production:
             branch = sysparam(trans).MAIN_COMPANY
