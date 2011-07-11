@@ -135,6 +135,9 @@ class DatabaseLocationStep(BaseWizardStep):
         settings = self.wizard.settings
         if self.wizard.db_is_local:
             settings.address = "" # Unix socket really
+            # FIXME: Allow developers to specify another database
+            #        is_developer_mode() or STOQ_DATABASE_NAME
+            settings.dbname = "stoq"
             self.wizard.config.load_settings(self.wizard.settings)
 
         if (test_local_database() and
@@ -514,12 +517,7 @@ class CreateDatabaseStep(BaseWizardStep):
             args.append('--enable-plugins')
             args.append(','.join(self.wizard.plugins))
         if self.wizard.db_is_local:
-            args.append('--create-database')
-            # FIXME: Allow developers to specify another database
-            #        is_developer_mode() or STOQ_DATABASE_NAME
-            args.append('stoq')
-            args.append('--database-username')
-            args.append(os.environ['USER'])
+            args.append('--create-dbuser')
 
         dbargs = self.wizard.settings.get_command_line_arguments()
         args.extend(dbargs)

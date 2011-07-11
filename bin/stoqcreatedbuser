@@ -30,8 +30,7 @@
 #
 
 SHNAME=`basename $0`
-DATABASE=$1
-USERNAME=$2
+USERNAME=$1
 
 unset PGUSER
 unset PGHOST
@@ -52,17 +51,6 @@ else
     # interactive mode for createuser.
     echo "$SHNAME: Creating user '$USERNAME'"
     createuser -dSR "$USERNAME"
-fi
-
-
-SQLQUERY="SELECT datname FROM pg_database WHERE datname = '$DATABASE';"
-HASDATABASE=`psql -c "$SQLQUERY"|grep -c $DATABASE`
-if test "$HASDATABASE" = "1"; then
-    echo "$SHNAME: '$DATABASE' exists, making sure '$USERNAME' is the dba"
-    psql -c "ALTER DATABASE \"$DATABASE\" OWNER TO \"$USERNAME\";"
-else
-    echo "$SHNAME: Creating database '$DATABASE'"
-    createdb "$DATABASE" --owner "$USERNAME"
 fi
 
 exit 0
