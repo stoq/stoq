@@ -117,7 +117,6 @@ class WelcomeStep(BaseWizardStep):
         logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
                                                     LOGO_HEIGHT)
         self.image1.set_from_pixbuf(logo)
-        self.title_label.set_size('xx-large')
         self.title_label.set_bold(True)
 
     def next_step(self):
@@ -126,6 +125,9 @@ class WelcomeStep(BaseWizardStep):
 
 class DatabaseLocationStep(BaseWizardStep):
     gladefile = 'DatabaseLocationStep'
+
+    def post_init(self):
+        self.radio_local.grab_focus()
 
     def next_step(self):
         self.wizard.db_is_local = self.radio_local.get_active()
@@ -172,6 +174,7 @@ class DatabaseSettingsStep(WizardEditorStep):
     def post_init(self):
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
+        self.address.grab_focus()
 
     def validate_step(self):
         if not self.model.check_database_address():
@@ -242,6 +245,9 @@ class InstallationModeStep(BaseWizardStep):
     gladefile = "InstallationModeStep"
     model_type = object
 
+    def post_init(self):
+        self.empty_database_radio.grab_focus()
+
     def next_step(self):
         self.wizard.enable_production = not self.empty_database_radio.get_active()
         return PluginStep(self.wizard, self)
@@ -252,6 +258,7 @@ class PluginStep(BaseWizardStep):
 
     def post_init(self):
         self.wizard.plugins = []
+        self.enable_ecf.grab_focus()
 
     def next_step(self):
         if self.enable_ecf.get_active():
@@ -354,10 +361,10 @@ class AdminPasswordStep(BaseWizardStep):
         self.setup_slaves()
 
     def get_title_label(self):
-        return _("<b>Administrator Account Creation</b>")
+        return '<b>%s</b>' % _("Administrator account")
 
     def get_description_label(self):
-        return _("I'm adding a user called <b>%s</b> which will "
+        return _("I'm adding a user account called <b>%s</b> which will "
                  "have administrator privilegies.\n\nTo be "
                  "able to create other users you need to login "
                  "with this user in the admin application and "
@@ -400,6 +407,7 @@ class CreateDatabaseStep(BaseWizardStep):
         self.process_view.connect('read-line', self._on_processview__readline)
         self.process_view.connect('finished', self._on_processview__finished)
         self.expander.add(self.process_view)
+        self.expander.grab_focus()
         self._maybe_create_database()
 
     def next_step(self):
@@ -522,6 +530,8 @@ class CreateDatabaseStep(BaseWizardStep):
         self.progressbar.set_text(_("Creating database..."))
         self.progressbar.set_fraction(0.05)
         self.process_view.execute_command(args)
+        self.done_label.set_markup(
+            _("Please wait while the database is being created."))
 
     def _parse_process_line(self, line):
         LOG_CATEGORY = 'stoqlib.database.create'
@@ -581,9 +591,11 @@ class CreateDatabaseStep(BaseWizardStep):
         self.wizard.load_config_and_call_setup()
         set_default_profile_settings()
         ensure_admin_user(self.wizard.config.get_password())
-        self.progressbar.set_text(_("Done, click 'Forward' to continue"))
+        self.progressbar.set_text(_("Done."))
         self.progressbar.set_fraction(1.0)
         self.wizard.enable_next()
+        self.done_label.set_markup(
+            _("Installation successful, click <b>Forward</b> to continue."))
 
     # Callbacks
 
@@ -619,8 +631,8 @@ class FinishInstallationStep(BaseWizardStep):
 
 
 class FirstTimeConfigWizard(BaseWizard):
-    title = _("Setting up Stoq")
-    size = (560, 320)
+    title = _("Stoq - Installation")
+    size = (580, 320)
     tef_request_done = False
 
     def __init__(self, options, config=None):

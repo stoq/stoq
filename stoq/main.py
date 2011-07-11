@@ -169,7 +169,6 @@ def _run_update_wizard():
     from stoqlib.gui.base.dialogs import run_dialog
     from stoq.gui.update import SchemaUpdateWizard
     from stoqlib.gui.splash import hide_splash
-
     hide_splash()
     retval = run_dialog(SchemaUpdateWizard, None)
     if not retval:
