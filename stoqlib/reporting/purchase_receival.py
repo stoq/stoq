@@ -32,7 +32,7 @@ from stoqlib.lib.formatters import get_formatted_price
 
 class PurchaseReceivalReport(ObjectListReport):
     report_name = _("Purchase Receival Report")
-    main_object_name = _("purchase receivals")
+    main_object_name = (_("purchase"), _("purchases"))
 
     def __init__(self, filename, objectlist, receivings, *args, **kwargs):
         self._receivings = receivings
