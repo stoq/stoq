@@ -374,7 +374,7 @@ class CreateDatabaseStep(BaseWizardStep):
         try:
             import aptdaemon
         except ImportError:
-            warning(_("You need to install and start PostgreSQL."
+            warning(_("You need to install and start PostgreSQL. "
                       "When done click 'OK' to continue"))
             self._local_installation()
             return
