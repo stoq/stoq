@@ -148,7 +148,7 @@ def execute_sql(filename):
         raise NotImplementedError(settings.rdbms)
 
 
-def start_dbshell():
+def start_shell():
     """Runs a database shell using the current settings
     """
     settings = get_utility(IDatabaseSettings)
