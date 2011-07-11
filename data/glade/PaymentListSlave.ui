@@ -34,7 +34,6 @@
             <child>
               <object class="ProxyLabel" id="difference_label">
                 <property name="data_type">currency</property>
-                <property name="label" translatable="yes">$0.00</property>
                 <property name="model_attribute">difference_label</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -67,7 +66,6 @@
             <child>
               <object class="ProxyLabel" id="total_label">
                 <property name="data_type">currency</property>
-                <property name="label" translatable="yes">$0.00</property>
                 <property name="model_attribute">total_label</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>

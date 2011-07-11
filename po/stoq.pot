@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-11 17:51-0300\n"
+"POT-Creation-Date: 2011-07-11 17:55-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -266,14 +266,6 @@ msgstr ""
 #: ../data/glade/BaseSellableCategoryDataSlave.ui.h:5
 #: ../data/glade/ProductTaxTemplateEditor.ui.h:2
 msgid "Tax:"
-msgstr ""
-
-#: ../data/glade/BasicDialog.ui.h:1
-msgid "header"
-msgstr ""
-
-#: ../data/glade/BasicDialog.ui.h:2 ../data/glade/Warnbox.ui.h:1
-msgid "label"
 msgstr ""
 
 #: ../data/glade/BranchDetailsSlave.ui.h:1
@@ -580,24 +572,25 @@ msgstr ""
 msgid "Max Installments:"
 msgstr ""
 
-#: ../data/glade/CredProviderDetailsSlave.ui.h:12
-msgid "Monthly Fee ($):"
+#. Do not translate $CURRENCY
+#: ../data/glade/CredProviderDetailsSlave.ui.h:13
+msgid "Monthly Fee ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/CredProviderDetailsSlave.ui.h:13
+#: ../data/glade/CredProviderDetailsSlave.ui.h:14
 #: ../data/glade/TransporterDataSlave.ui.h:6
 msgid "Open Contract Date:"
 msgstr ""
 
-#: ../data/glade/CredProviderDetailsSlave.ui.h:14
+#: ../data/glade/CredProviderDetailsSlave.ui.h:15
 msgid "Payment Day:"
 msgstr ""
 
-#: ../data/glade/CredProviderDetailsSlave.ui.h:15
+#: ../data/glade/CredProviderDetailsSlave.ui.h:16
 msgid "Provider Id:"
 msgstr ""
 
-#: ../data/glade/CredProviderDetailsSlave.ui.h:16
+#: ../data/glade/CredProviderDetailsSlave.ui.h:17
 msgid "Short Name:"
 msgstr ""
 
@@ -1218,7 +1211,7 @@ msgid "Payments:"
 msgstr ""
 
 #: ../data/glade/MultipleMethodSlave.ui.h:4
-#: ../data/glade/PaymentListSlave.ui.h:3
+#: ../data/glade/PaymentListSlave.ui.h:2
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:6
 #: ../data/glade/PurchaseDetailsDialog.ui.h:25
 #: ../data/glade/PurchaseItemEditor.ui.h:10
@@ -1317,10 +1310,6 @@ msgid "<b>Select a date or a range to be visualised in the report:</b>"
 msgstr ""
 
 #: ../data/glade/PaymentListSlave.ui.h:1
-msgid "$0.00"
-msgstr ""
-
-#: ../data/glade/PaymentListSlave.ui.h:2
 #: ../stoqlib/gui/slaves/paymentslave.py:268
 msgid "Outstanding:"
 msgstr ""
@@ -2082,10 +2071,6 @@ msgstr ""
 
 #: ../data/glade/ServiceItemEditor.ui.h:3
 msgid "Service Details:"
-msgstr ""
-
-#: ../data/glade/SimpleEntryEditor.ui.h:1
-msgid "label: "
 msgstr ""
 
 #. Do not translate $CURRENCY
