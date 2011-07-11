@@ -509,8 +509,7 @@ class FinishInstallationStep(BaseWizardStep):
     def _cancel(self):
         # This is the last step, so we will finish the installation
         # before we quit
-        self.wizard.finish()
-        self.wizard.retval = None
+        self.wizard.finish(run=False)
 
 
 #
@@ -598,7 +597,7 @@ class FirstTimeConfigWizard(BaseWizard):
     # WizardStep hooks
     #
 
-    def finish(self):
+    def finish(self, run=True):
         if self.has_installed_db:
             self.load_config_and_call_setup()
         else:
@@ -614,4 +613,5 @@ class FirstTimeConfigWizard(BaseWizard):
         self.config.flush()
 
         self.close()
-        run_app(self.options, 'admin')
+        if run:
+            run_app(self.options, 'admin')
