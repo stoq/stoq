@@ -103,12 +103,12 @@ class StoqCommandHandler:
     def cmd_init(self, options):
         from stoq.lib.startup import clean_database
 
-        if options.create_database:
-            if not options.database_username:
+        # Create a database user before trying to connect
+        if options.create_dbuser:
+            if not options.username:
                 raise SystemExit(
-                    "This option requires a --database-username set")
-            retval = self._create_database(options.create_database,
-                                           options.database_username)
+                    "This option requires a --username set")
+            retval = self._create_dbuser(options.username)
             if retval != 0:
                 return retval
         config = self._read_config(options, register_station=False,
@@ -145,12 +145,9 @@ class StoqCommandHandler:
         group.add_option('', '--demo',
                          action='store_true',
                          dest='demo')
-        group.add_option('', '--create-database',
-                         action='store',
-                         dest='create_database')
-        group.add_option('', '--database-username',
-                         action='store',
-                         dest='database_username')
+        group.add_option('', '--create-dbuser',
+                         action='store_true',
+                         dest='create_dbuser')
 
     def cmd_configure(self, options):
         if not options.dbname:
@@ -216,17 +213,24 @@ class StoqCommandHandler:
 
         trans.commit()
 
-    def _create_database(self, database, username):
+    def _create_dbuser(self, username):
         import subprocess
         import os
         for envname in ['PGUSER', 'PGHOST']:
             if envname in os.environ:
                 del os.environ[envname]
+
+        # See if we can connect to the database
+        args = ['psql', 'postgres', username, '-c', 'SELECT 1;']
+        proc = subprocess.Popen(args, stdout=subprocess.PIPE)
+        proc.communicate()
+        if proc.returncode == 0:
+            return 0
+
         dirname = os.path.abspath(os.path.dirname(__file__))
         args = ['pkexec',
                 '-u', 'postgres',
-                os.path.join(dirname, 'stoqcreatedatabase'),
-                database,
+                os.path.join(dirname, 'stoqcreatedbuser'),
                 username]
         proc = subprocess.Popen(args)
         proc.communicate()

@@ -9,15 +9,15 @@
   <icon_name>stoq</icon_name>
 
   <action id="br.com.stoq.create-database">
-    <description>Creation a new database for Stoq</description>
-    <description xml:lang="pt_BR">Criando um novo banco de dados para Stoq</description>
-    <message>System policy prevents the creation of a database</message>
-    <message xml:lang="pt_BR">A política do sistema impede criação de banco de dados para Stoq</message>
+    <description>Creation of a database user for Stoq</description>
+    <description xml:lang="pt_BR">Criação de um usuário para banco de dados do Stoq</description>
+    <message>System policy prevents the creation of a database user</message>
+    <message xml:lang="pt_BR">A política do sistema impede criação de um usuário banco de dados do Stoq</message>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>auth_admin</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
-  <annotate key="org.freedesktop.policykit.exec.path">/usr/bin/stoqcreatedatabase</annotate>
+  <annotate key="org.freedesktop.policykit.exec.path">/usr/bin/stoqcreatedbuser</annotate>
   </action>
 </policyconfig>
