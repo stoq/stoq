@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-11 15:48-0300\n"
+"POT-Creation-Date: 2011-07-11 17:21-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -173,16 +173,8 @@ msgstr ""
 msgid "Street:"
 msgstr ""
 
-#: ../data/glade/AdminPasswordStep.ui.h:1 ../stoq/gui/config.py:256
-msgid "<b>Administrator Account Creation</b>"
-msgstr ""
-
-#: ../data/glade/AdminPasswordStep.ui.h:2
-msgid ""
-"I'm adding a user called `admin' which will have administrator privilegies.\n"
-"\n"
-"To be able to create other users you need to login with this user in the "
-"admin application and create them."
+#: ../data/glade/AdminPasswordStep.ui.h:1
+msgid "Enter the password and then click <b>Forward</b> to continue."
 msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:1
@@ -436,7 +428,7 @@ msgstr ""
 #: ../data/glade/PersonEditorTemplate.ui.h:11
 #: ../data/glade/ProductTaxTemplateEditor.ui.h:1
 #: ../data/glade/SellableTaxConstantEditor.ui.h:1
-#: ../data/glade/StationEditor.ui.h:3
+#: ../data/glade/StationEditor.ui.h:3 ../data/glade/TefStep.ui.h:9
 msgid "Name:"
 msgstr ""
 
@@ -559,7 +551,13 @@ msgid ""
 "b>"
 msgstr ""
 
-#: ../data/glade/CreateDatabaseStep.ui.h:1
+#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:527
+msgid ""
+"Creating a new database for Stoq, depending on the speed of your computer "
+"and the server it may take a couple of minutes to finish."
+msgstr ""
+
+#: ../data/glade/CreateDatabaseStep.ui.h:2
 msgid "Show details"
 msgstr ""
 
@@ -633,58 +631,66 @@ msgid "Payment Type:"
 msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:1
-msgid "Database location"
+msgid "<b>Database location</b>"
 msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:2
-msgid "I want to connect to another database over the network."
+msgid "I want to manualy configure the database connection."
 msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:3
-msgid "I want to use Stoq on this computer."
+msgid "I want to use Stoq just on this computer."
 msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:4
+#: ../data/glade/InstallationModeStep.ui.h:4
+msgid "Select an option above and then click <b>Forward</b> to continue."
+msgstr ""
+
+#: ../data/glade/DatabaseLocationStep.ui.h:5
 msgid ""
 "To be able to use Stoq we need make sure that there is a database that we "
 "can connect to."
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:1 ../stoqlib/reporting/sale.py:82
+#: ../data/glade/DatabaseSettingsStep.ui.h:1
+msgid "<b>Database Settings</b>"
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:2 ../stoqlib/reporting/sale.py:82
 msgid "Address:"
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:2
-msgid "Authentication Type:"
+#: ../data/glade/DatabaseSettingsStep.ui.h:3
+msgid "Authentication:"
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:3
+#: ../data/glade/DatabaseSettingsStep.ui.h:4 ../data/glade/WelcomeStep.ui.h:1
+msgid "Click <b>Forward</b> to continue."
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:5
 msgid "Database Name:"
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:4
+#: ../data/glade/DatabaseSettingsStep.ui.h:6
 #: ../data/glade/PasswordEditorSlave.ui.h:2
 msgid "Password:"
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:5
-msgid ""
-"Please, fill some important informations before start using the applications"
+#: ../data/glade/DatabaseSettingsStep.ui.h:7
+msgid "Please, fill the details about your database."
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:6
+#: ../data/glade/DatabaseSettingsStep.ui.h:8
 #: ../data/glade/DeviceSettingsEditor.ui.h:6
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:4
 msgid "Port:"
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:7
+#: ../data/glade/DatabaseSettingsStep.ui.h:9
 #: ../data/glade/UserDetailsSlave.ui.h:4
 msgid "Username:"
-msgstr ""
-
-#: ../data/glade/DatabaseSettingsStep.ui.h:8
-msgid "Welcome to Stoq"
 msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:1
@@ -812,26 +818,6 @@ msgstr ""
 msgid "Employee Status:"
 msgstr ""
 
-#: ../data/glade/ExampleDatabaseStep.ui.h:1
-msgid "<b>Database initialization</b>"
-msgstr ""
-
-#: ../data/glade/ExampleDatabaseStep.ui.h:2
-msgid "Create an empty database"
-msgstr ""
-
-#: ../data/glade/ExampleDatabaseStep.ui.h:3
-msgid "Create an example database"
-msgstr ""
-
-#: ../data/glade/ExampleDatabaseStep.ui.h:4
-msgid ""
-"You can choose to initialize the system with an empty database or with a "
-"simple examples database.\n"
-"\n"
-"Would you like to:\n"
-msgstr ""
-
 #: ../data/glade/ExistingPersonStep.ui.h:1
 msgid "Existing client"
 msgstr ""
@@ -845,19 +831,21 @@ msgid "No, it's a new client"
 msgstr ""
 
 #: ../data/glade/FinishInstallationStep.ui.h:1
-msgid "<b>Stoq was successfully installed in your system!</b>"
+msgid "<b>Installation complete</b>"
 msgstr ""
 
 #: ../data/glade/FinishInstallationStep.ui.h:2
 msgid ""
-"Stoq was installed in your system and now you are going to finish this "
-"wizard.\n"
+"Stoq was successfully installed in your system!\n"
 "\n"
-"Click in the finish button and you will be able to select one of Stoq "
-"applications.\n"
+"Remember to check out the manual in each application, it's normal to feel a "
+"little bit lost in the beginning if you never used Stoq before. The manual "
+"is also <a href=\"http://doc.stoq.com.br/manual/\">available online</a>.\n"
 "\n"
-"Depending on your choices you will be logged or will be prompted to log as "
-"admin user.\n"
+"If you're having trouble with the installation, need help importing your "
+"database from another application or would like to customize Stoq, don't "
+"hesitate to <a href=\"http://www.stoq.com.br/pt-br/more/contact\">contact "
+"us</a>."
 msgstr ""
 
 #: ../data/glade/FinishPurchaseStep.ui.h:1
@@ -1027,6 +1015,31 @@ msgstr ""
 
 #: ../data/glade/InitialStockDialog.ui.h:1
 msgid "<b></b>"
+msgstr ""
+
+#: ../data/glade/InstallationModeStep.ui.h:1
+msgid "<b>Database initialization</b>"
+msgstr ""
+
+#: ../data/glade/InstallationModeStep.ui.h:2
+msgid "Create a database with example in demonstration mode."
+msgstr ""
+
+#: ../data/glade/InstallationModeStep.ui.h:3
+msgid "Create an empty database for production use."
+msgstr ""
+
+#: ../data/glade/InstallationModeStep.ui.h:5
+msgid ""
+"Want to import your data from another software or from spreadsheets? We can "
+"help you.\n"
+"\n"
+"<a href=\"http://www.stoq.com.br/pt-br/more/contact\">Send the data</a> you "
+"want imported to us, and we will give an response within 2 business days."
+msgstr ""
+
+#: ../data/glade/InstallationModeStep.ui.h:8
+msgid "Would you like to:"
 msgstr ""
 
 #: ../data/glade/InstallmentConfirmation.ui.h:3
@@ -1432,24 +1445,32 @@ msgid "<b>Plugins</b>"
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:2
-msgid "ECF (Fiscal Printer support)"
+msgid "ECF (Fiscal printer support)"
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:3
-msgid "For testing purposes it is recommended to select \"No plugins\"."
+msgid "If you just want to test Stoq it is recommended to select no plugin."
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:4
+msgid "NF-e (Eletronic Invoices)"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:5
 msgid ""
-"Most of the plugins are specific to the brazilian market and once\n"
-"a plugin is activated it will not be possible to disable it.\n"
+"Once a plugin is activated it will not be possible to disable it.\n"
 "\n"
-"\n"
-"<b>Select the plugins you want to enable:</b>"
+"Select the plugins you want to enable:"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:8
+msgid ""
+"Select the plugins you would like to enable and then click <b>Forward</b> to "
+"continue."
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:9
-msgid "NF-e (Eletronic Invoices)"
+msgid "TEF (Credit card support)"
 msgstr ""
 
 #: ../data/glade/ProductAdjustmentDialog.ui.h:2
@@ -2224,6 +2245,39 @@ msgstr ""
 msgid "Origin:"
 msgstr ""
 
+#: ../data/glade/TefStep.ui.h:1
+msgid "<b>TEF Plugin</b>"
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:2
+msgid ""
+"An error ocurred sending your details. Please <a href=\"http://www.stoq.com."
+"br/pt-br/more/contact\">contact us</a>."
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:3
+msgid "Email:"
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:4
+msgid ""
+"Enabling TEF requires installing additional software.\n"
+"\n"
+"Please fill in your details and will contact you within two business days:"
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:7
+msgid "Enviando Dados..."
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:8
+msgid "Fill in the form above and then click <b>Forward</b> to continue."
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:10
+msgid "Phone:"
+msgstr ""
+
 #: ../data/glade/TillClosing.ui.h:1
 msgid "<b>Cash Amounts:</b>"
 msgstr ""
@@ -2307,6 +2361,23 @@ msgstr ""
 
 #: ../data/glade/UserProfileEditor.ui.h:2
 msgid "Profile Name:"
+msgstr ""
+
+#: ../data/glade/WelcomeStep.ui.h:2
+msgid ""
+"Thank you for installing Stoq, you'll be ready to use it in just a few "
+"minutes.\n"
+"\n"
+"This assistant will help you configure Stoq to create a new database or "
+"connect to an existing.\n"
+"\n"
+"If you're having trouble with the installation or need help importing your "
+"database from another application, don't hesitate to <a href=\"http://www."
+"stoq.com.br/pt-br/more/contact\">contact us</a>."
+msgstr ""
+
+#: ../data/glade/WelcomeStep.ui.h:7
+msgid "Welcome to the Stoq installation wizard."
 msgstr ""
 
 #: ../data/glade/admin.ui.h:1
@@ -3092,7 +3163,7 @@ msgid "The CPF is not valid."
 msgstr ""
 
 #: ../plugins/ecf/paulistainvoicedialog.py:104
-#: ../stoqlib/gui/dialogs/branchdialog.py:163
+#: ../stoqlib/gui/dialogs/branchdialog.py:167
 #: ../stoqlib/gui/templates/companytemplate.py:52
 msgid "The CNPJ is not valid."
 msgstr ""
@@ -3433,101 +3504,113 @@ msgstr ""
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr ""
 
-#: ../stoq/gui/config.py:157
+#: ../stoq/gui/config.py:181
 #, python-format
 msgid "The database address '%s' is invalid. Please fix it and try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:160 ../stoq/gui/config.py:165
+#: ../stoq/gui/config.py:184 ../stoq/gui/config.py:189
 msgid "Invalid database address"
 msgstr ""
 
-#: ../stoq/gui/config.py:195
+#: ../stoq/gui/config.py:219
 msgid "Needs Password"
 msgstr ""
 
-#: ../stoq/gui/config.py:196
+#: ../stoq/gui/config.py:220
 msgid "Trust"
 msgstr ""
 
-#: ../stoq/gui/config.py:259
+#: ../stoq/gui/config.py:324 ../stoqlib/gui/dialogs/crashreportdialog.py:99
+msgid "Sending..."
+msgstr ""
+
+#: ../stoq/gui/config.py:339
+#, python-format
+msgid "%s is not a valid email"
+msgstr ""
+
+#: ../stoq/gui/config.py:364
+msgid "Administrator account"
+msgstr ""
+
+#: ../stoq/gui/config.py:367
 #, python-format
 msgid ""
-"I'm adding a user called `%s' which will have administrator privilegies.\n"
+"I'm adding a user account called <b>%s</b> which will have administrator "
+"privilegies.\n"
 "\n"
 "To be able to create other users you need to login with this user in the "
 "admin application and create them."
 msgstr ""
 
-#: ../stoq/gui/config.py:324
+#: ../stoq/gui/config.py:433
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
 msgstr ""
 
-#: ../stoq/gui/config.py:331
+#: ../stoq/gui/config.py:440
 #, python-format
 msgid ""
 "The specifed database '%s' does not exist.\n"
 "Do you want to create it?"
 msgstr ""
 
-#: ../stoq/gui/config.py:333
+#: ../stoq/gui/config.py:442
 msgid "Don't create"
 msgstr ""
 
-#: ../stoq/gui/config.py:333
+#: ../stoq/gui/config.py:442
 msgid "Create database"
 msgstr ""
 
-#: ../stoq/gui/config.py:377
+#: ../stoq/gui/config.py:486
 msgid ""
 "You need to install and start PostgreSQL. When done click 'OK' to continue"
 msgstr ""
 
-#: ../stoq/gui/config.py:387
+#: ../stoq/gui/config.py:496
 msgid "Something went wrong while trying to install PostgreSQL"
 msgstr ""
 
-#: ../stoq/gui/config.py:390
+#: ../stoq/gui/config.py:499
 msgid "Installing PostgreSQL database server."
 msgstr ""
 
-#: ../stoq/gui/config.py:418
-msgid ""
-"Creating a new database for Stoq, depending on the speed of your computer "
-"and the server it may take a couple of minutes to finish."
-msgstr ""
-
-#: ../stoq/gui/config.py:421
+#: ../stoq/gui/config.py:530
 msgid "Creating database..."
 msgstr ""
 
-#: ../stoq/gui/config.py:433
+#: ../stoq/gui/config.py:534
+msgid "Please wait while the database is being created."
+msgstr ""
+
+#: ../stoq/gui/config.py:544
 msgid "Creating base schema..."
 msgstr ""
 
-#: ../stoq/gui/config.py:437
+#: ../stoq/gui/config.py:548
 msgid "Creating schema, applying patches..."
 msgstr ""
 
-#: ../stoq/gui/config.py:442
+#: ../stoq/gui/config.py:553
 #, python-format
 msgid "Creating schema, applying patch %d ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:444
+#: ../stoq/gui/config.py:555
 msgid "Creating additional database objects ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:447
+#: ../stoq/gui/config.py:558
 msgid "Creating examples ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:450
+#: ../stoq/gui/config.py:561
 msgid "Activating plugins ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:452
+#: ../stoq/gui/config.py:563
 msgid "This may take some time."
 msgstr ""
 
@@ -3535,32 +3618,36 @@ msgstr ""
 #. - pressed cancel in the authentication popup
 #. - user erred the password 3 times
 #. Allow him to try again
-#: ../stoq/gui/config.py:468
+#: ../stoq/gui/config.py:579
 msgid "Something went wrong while trying to create the database. Try again?"
 msgstr ""
 
-#: ../stoq/gui/config.py:470
+#: ../stoq/gui/config.py:581
 msgid "Change settings"
 msgstr ""
 
-#: ../stoq/gui/config.py:470 ../stoq/gui/pos.py:752 ../stoq/gui/till.py:282
+#: ../stoq/gui/config.py:581 ../stoq/gui/pos.py:752 ../stoq/gui/till.py:282
 msgid "Try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:477
+#: ../stoq/gui/config.py:588
 msgid "Something went wrong while trying to create the Stoq database"
 msgstr ""
 
-#: ../stoq/gui/config.py:483
-msgid "Done, click 'Forward' to continue"
+#: ../stoq/gui/config.py:594
+msgid "Done."
 msgstr ""
 
-#: ../stoq/gui/config.py:507
+#: ../stoq/gui/config.py:598
+msgid "Installation successful, click <b>Forward</b> to continue."
+msgstr ""
+
+#: ../stoq/gui/config.py:620
 msgid "Run Stoq"
 msgstr ""
 
-#: ../stoq/gui/config.py:521
-msgid "Setting up Stoq"
+#: ../stoq/gui/config.py:634
+msgid "Stoq - Installation"
 msgstr ""
 
 #: ../stoq/gui/financial.py:204 ../stoq/lib/applist.py:39
@@ -4907,25 +4994,25 @@ msgstr ""
 msgid "You need to call setup() before checking the database schema."
 msgstr ""
 
-#: ../stoq/main.py:231
+#: ../stoq/main.py:230
 msgid "You need to register a company before start using Stoq"
 msgstr ""
 
-#: ../stoq/main.py:233
+#: ../stoq/main.py:232
 msgid ""
 "Could not find a company. You'll need to register one before start using Stoq"
 msgstr ""
 
-#: ../stoq/main.py:303
+#: ../stoq/main.py:302
 msgid "Could not open the database config file"
 msgstr ""
 
-#: ../stoq/main.py:304
+#: ../stoq/main.py:303
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr ""
 
-#: ../stoq/main.py:320
+#: ../stoq/main.py:319
 msgid "Could not connect to the database"
 msgstr ""
 
@@ -5603,27 +5690,27 @@ msgstr ""
 msgid "Last month"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/branchdialog.py:143
+#: ../stoqlib/gui/dialogs/branchdialog.py:147
 msgid "ICMS can not be greater than 100"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/branchdialog.py:145
+#: ../stoqlib/gui/dialogs/branchdialog.py:149
 msgid "ICMS can not be less than 0"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/branchdialog.py:149
+#: ../stoqlib/gui/dialogs/branchdialog.py:153
 msgid "ISS can not be greater than 100"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/branchdialog.py:151
+#: ../stoqlib/gui/dialogs/branchdialog.py:155
 msgid "ISS can not be less than 0"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/branchdialog.py:155
+#: ../stoqlib/gui/dialogs/branchdialog.py:159
 msgid "ICMS Substitution can not be greater than 100"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/branchdialog.py:158
+#: ../stoqlib/gui/dialogs/branchdialog.py:162
 msgid "ICMS Substitution can not be less than 0"
 msgstr ""
 
@@ -5694,10 +5781,6 @@ msgstr ""
 
 #: ../stoqlib/gui/dialogs/crashreportdialog.py:91
 msgid "Failed to submit bugreport"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:99
-msgid "Sending..."
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/csvexporterdialog.py:46
@@ -9805,91 +9888,91 @@ msgstr ""
 msgid "Payment values"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:681
+#: ../stoqlib/lib/invoice.py:682
 msgid "Service item code / description"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:697
+#: ../stoqlib/lib/invoice.py:698
 msgid "Service item description"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:710
+#: ../stoqlib/lib/invoice.py:711
 msgid "Service item code"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:724
+#: ../stoqlib/lib/invoice.py:725
 msgid "Service item unit"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:737
+#: ../stoqlib/lib/invoice.py:738
 msgid "Service item quantity"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:750
+#: ../stoqlib/lib/invoice.py:751
 msgid "Service item price"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:763
+#: ../stoqlib/lib/invoice.py:764
 msgid "Service item total (price * quantity)"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:776
+#: ../stoqlib/lib/invoice.py:777
 msgid "Service item tax"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:887
+#: ../stoqlib/lib/invoice.py:888
 msgid "Product item counter"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:899
+#: ../stoqlib/lib/invoice.py:900
 msgid "Product item code / description"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:915
+#: ../stoqlib/lib/invoice.py:916
 msgid "Product item description"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:928
+#: ../stoqlib/lib/invoice.py:929
 msgid "Product item code"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:942
+#: ../stoqlib/lib/invoice.py:943
 msgid "Product item situation"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:955
+#: ../stoqlib/lib/invoice.py:956
 msgid "Product item unit"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:968
+#: ../stoqlib/lib/invoice.py:969
 msgid "Product item quantity"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:981
+#: ../stoqlib/lib/invoice.py:982
 msgid "Product item price"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:994
+#: ../stoqlib/lib/invoice.py:995
 msgid "Product item total (price * quantity)"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:1007
+#: ../stoqlib/lib/invoice.py:1008
 msgid "Product item tax"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:1025
+#: ../stoqlib/lib/invoice.py:1026
 msgid "Invoice Type"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:1046
+#: ../stoqlib/lib/invoice.py:1047
 msgid "State registry number"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:1056
+#: ../stoqlib/lib/invoice.py:1057
 msgid "City registry number"
 msgstr ""
 
-#: ../stoqlib/lib/invoice.py:1074
+#: ../stoqlib/lib/invoice.py:1075
 msgid "Invoice number"
 msgstr ""
 
