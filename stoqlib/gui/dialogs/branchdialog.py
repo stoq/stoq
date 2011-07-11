@@ -42,6 +42,10 @@ _ = stoqlib_gettext
 
 
 class BranchDialog(BaseEditor):
+    """Register new branch after creating a database.
+
+    This dialog is only used after the database is created.
+    """
     gladefile = 'BranchDialog'
     person_widgets = ('name',
                       'phone_number',

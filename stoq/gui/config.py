@@ -28,14 +28,20 @@ Stoq Configuration dialogs
 
 Current flow of the database steps:
 
--> DatabaseSettingsStep
-    If Existing DB -> ExistingAdminPasswordStep
-        -> PluginStep
-    If New DB -> AdminPasswordStep
-        -> ExampleDatabaseStep
-        -> PluginStep
-        -> DatabasePage
--> FinishInstallationStep
+> WelcomeStep
+> DatabaseLocationStep
+if network database:
+    > DatabaseSettingsStep
+    if has installed db:
+        > FinishInstallationStep
+        break.
+> InstallationModeStep
+> PluginStep
+if activate tef:
+    > TefStep
+> AdminPasswordStep
+> CreateDatabaseStep
+> FinishInstallationStep
 
 """
 
@@ -44,7 +50,9 @@ import os
 import socket
 
 import gtk
+import gobject
 from kiwi.component import provide_utility
+from kiwi.datatypes import ValidationError
 from kiwi.environ import environ
 from kiwi.python import Settable
 from kiwi.ui.dialogs import info
@@ -67,6 +75,8 @@ from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.processview import ProcessView
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.validators import validate_email
+from stoqlib.lib.webservice import WebService
 
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.options import get_option_parser
@@ -75,6 +85,8 @@ from stoq.main import run_app
 
 _ = gettext.gettext
 
+LOGO_WIDTH = 91
+LOGO_HEIGHT = 32
 
 #
 # Wizard Steps
@@ -93,13 +105,27 @@ class BaseWizardStep(WizardStep, GladeSlaveDelegate):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
 
 
-class DatabaseLocationStep(WizardEditorStep):
-    gladefile = 'DatabaseLocationStep'
-    model_type = DatabaseSettings
+class WelcomeStep(BaseWizardStep):
+    gladefile = "WelcomeStep"
 
     def __init__(self, wizard):
-        self.wizard = wizard
-        WizardEditorStep.__init__(self, None, wizard, wizard.settings)
+        BaseWizardStep.__init__(self, wizard)
+        self._update_widgets()
+
+    def _update_widgets(self):
+        logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
+        logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
+                                                    LOGO_HEIGHT)
+        self.image1.set_from_pixbuf(logo)
+        self.title_label.set_size('xx-large')
+        self.title_label.set_bold(True)
+
+    def next_step(self):
+        return DatabaseLocationStep(self.wizard, self)
+
+
+class DatabaseLocationStep(BaseWizardStep):
+    gladefile = 'DatabaseLocationStep'
 
     def next_step(self):
         self.wizard.db_is_local = self.radio_local.get_active()
@@ -114,7 +140,7 @@ class DatabaseLocationStep(WizardEditorStep):
             self.wizard.has_installed_db):
             return FinishInstallationStep(self.wizard)
         elif self.wizard.db_is_local:
-            return ExampleDatabaseStep(self.wizard, self)
+            return InstallationModeStep(self.wizard, self)
         else:
             return DatabaseSettingsStep(self.wizard, self)
 
@@ -134,11 +160,6 @@ class DatabaseSettingsStep(WizardEditorStep):
         self._update_widgets()
 
     def _update_widgets(self):
-        logo = environ.find_resource('pixmaps', 'stoq_logo.svg')
-        self.image1.set_from_file(logo)
-        self.title_label.set_size('xx-large')
-        self.title_label.set_bold(True)
-        self.title_label.set_color('blue')
         selected = self.authentication_type.get_selected_data()
         need_password = selected == PASSWORD_AUTHENTICATION
         self.password.set_sensitive(need_password)
@@ -174,7 +195,7 @@ class DatabaseSettingsStep(WizardEditorStep):
         # postgres configuration doesn't allow you to connect via localhost,
         # only unix socket.
         if settings.address == 'localhost':
-            if not self.wizard._try_connect(settings, warn=False):
+            if not self.wizard.try_connect(settings, warn=False):
                 settings.address = ''
 
         if not self.wizard.try_connect(settings):
@@ -207,7 +228,7 @@ class DatabaseSettingsStep(WizardEditorStep):
         if self.wizard.has_installed_db:
             return FinishInstallationStep(self.wizard)
         else:
-            return ExampleDatabaseStep(self.wizard, self)
+            return InstallationModeStep(self.wizard, self)
 
     #
     # Callbacks
@@ -217,8 +238,8 @@ class DatabaseSettingsStep(WizardEditorStep):
         self._update_widgets()
 
 
-class ExampleDatabaseStep(BaseWizardStep):
-    gladefile = "ExampleDatabaseStep"
+class InstallationModeStep(BaseWizardStep):
+    gladefile = "InstallationModeStep"
     model_type = object
 
     def next_step(self):
@@ -238,7 +259,87 @@ class PluginStep(BaseWizardStep):
         if self.enable_nfe.get_active():
             self.wizard.plugins.append('nfe')
 
+        if self.enable_tef.get_active() and not self.wizard.tef_request_done:
+            return TefStep(self.wizard, self)
         return AdminPasswordStep(self.wizard, self)
+
+
+class TefStep(WizardEditorStep):
+    """Since we are going to sell the TEF funcionality, we cant enable the
+    plugin right away. Just ask for some user information and we will
+    contact.
+    """
+    gladefile = 'TefStep'
+    model_type = Settable
+    proxy_widgets = ('name', 'email', 'phone')
+
+    def __init__(self, wizard, previous):
+        model = Settable(name='', email='', phone='')
+        WizardEditorStep.__init__(self, None, wizard, model, previous)
+        self._setup_widgets()
+
+    #
+    #   Private API
+    #
+
+    def _setup_widgets(self):
+        self.send_progress.hide()
+        self.send_error_label.hide()
+
+    def _pulse(self):
+        self.send_progress.pulse()
+        return not self.wizard.tef_request_done
+
+    #
+    #   WizardStep
+    #
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+        self.name.grab_focus()
+
+    def setup_proxies(self):
+        self.add_proxy(self.model, TefStep.proxy_widgets)
+
+    def next_step(self):
+        # We already sent the details, but may still be on the same step.
+        if self.wizard.tef_request_done:
+            return AdminPasswordStep(self.wizard, self.previous)
+
+        api = WebService()
+        response = api.tef_request(self.model.name, self.model.email,
+                                   self.model.phone)
+        response.ifError(self._on_response_error)
+        response.whenDone(self._on_response_done)
+
+        self.send_progress.show()
+        self.send_progress.set_text(_('Sending...'))
+        self.send_progress.set_pulse_step(0.05)
+        self.details_table.set_sensitive(False)
+        self.wizard.next_button.set_sensitive(False)
+        gobject.timeout_add(50, self._pulse)
+
+        # Stay on the same step while sending the details
+        return self
+
+    #
+    #   Callbacks
+    #
+
+    def on_email__validate(self, widget, value):
+        if not validate_email(value):
+            return ValidationError(_('%s is not a valid email') % value)
+
+    def _on_response_done(self, response, details):
+        self.wizard.tef_request_done = True
+        self.wizard.go_to_next()
+
+    def _on_response_error(self, response, details):
+        self.wizard.tef_request_done = True
+        self.send_progress.hide()
+        self.send_error_label.show()
+        self.wizard.next_button.set_sensitive(True)
 
 
 class AdminPasswordStep(BaseWizardStep):
@@ -256,7 +357,7 @@ class AdminPasswordStep(BaseWizardStep):
         return _("<b>Administrator Account Creation</b>")
 
     def get_description_label(self):
-        return _("I'm adding a user called `%s' which will "
+        return _("I'm adding a user called <b>%s</b> which will "
                  "have administrator privilegies.\n\nTo be "
                  "able to create other users you need to login "
                  "with this user in the admin application and "
@@ -519,7 +620,8 @@ class FinishInstallationStep(BaseWizardStep):
 
 class FirstTimeConfigWizard(BaseWizard):
     title = _("Setting up Stoq")
-    size = (550, 450)
+    size = (560, 320)
+    tef_request_done = False
 
     def __init__(self, options, config=None):
         if not config:
@@ -540,7 +642,7 @@ class FirstTimeConfigWizard(BaseWizard):
         if self.remove_demo:
             first_step = PluginStep(self)
         else:
-            first_step = DatabaseLocationStep(self)
+            first_step = WelcomeStep(self)
         BaseWizard.__init__(self, None, first_step, title=self.title)
 
         self.get_toplevel().set_deletable(False)

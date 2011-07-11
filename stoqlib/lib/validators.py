@@ -216,3 +216,9 @@ def validate_percentage(value):
             return False
 
     return 0 <= value <= 100
+
+def validate_email(value):
+    """Try to validate an email address.
+    """
+    exp = "^[^@]+@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$"
+    return re.match(exp, value) is not None

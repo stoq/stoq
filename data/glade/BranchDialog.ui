@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-requires gtk+ 2.6 -->
+  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="BranchDialog">
     <property name="border_width">6</property>
@@ -19,6 +19,8 @@
             <property name="label" translatable="yes">Company Details</property>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -28,6 +30,7 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -92,6 +95,10 @@
             <child>
               <object class="ProxyEntry" id="name">
                 <property name="visible">True</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
                 <property name="data_type">unicode</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">name</property>
@@ -106,6 +113,10 @@
                 <property name="visible">True</property>
                 <property name="width_chars">6</property>
                 <property name="xalign">1</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">phone_number</property>
               </object>
@@ -126,11 +137,17 @@
                     <property name="max_length">6</property>
                     <property name="width_chars">3</property>
                     <property name="xalign">1</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">Decimal</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">icms</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -142,6 +159,7 @@
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -209,6 +227,10 @@
             <child>
               <object class="ProxyEntry" id="state_registry">
                 <property name="visible">True</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">state_registry</property>
               </object>
@@ -225,6 +247,10 @@
                 <property name="visible">True</property>
                 <property name="width_chars">6</property>
                 <property name="xalign">1</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">fax_number</property>
               </object>
@@ -245,11 +271,17 @@
                     <property name="max_length">6</property>
                     <property name="width_chars">3</property>
                     <property name="xalign">1</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">Decimal</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">substitution_icms</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -261,6 +293,7 @@
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -282,11 +315,17 @@
                     <property name="max_length">6</property>
                     <property name="width_chars">3</property>
                     <property name="xalign">1</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">Decimal</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">iss</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -298,6 +337,7 @@
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -310,23 +350,15 @@
               </packing>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
               <object class="ProxyEntry" id="cnpj">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
                 <property name="text" translatable="yes">  .   .   /    -  </property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
                 <property name="mask">00.000.000/0000-00</property>
                 <property name="data_type">unicode</property>
                 <property name="mandatory">True</property>
@@ -339,9 +371,22 @@
                 <property name="bottom_attach">2</property>
               </packing>
             </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -362,11 +407,11 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">3</property>
           </packing>
         </child>
       </object>
     </child>
   </object>
-  <object class="GtkSizeGroup" id="left_group"/>
 </interface>

@@ -1,23 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 2.6 -->
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkWindow" id="AdminPasswordStep">
+  <object class="GtkWindow" id="WelcomeStep">
     <child>
-      <object class="GtkVBox" id="vbox2">
+      <object class="GtkVBox" id="dbsettings_vbox">
         <property name="visible">True</property>
         <property name="border_width">6</property>
-        <property name="spacing">6</property>
+        <property name="spacing">10</property>
         <child>
-          <object class="GtkLabel" id="title_label">
+          <object class="GtkHBox" id="hbox2">
             <property name="visible">True</property>
-            <property name="xalign">0</property>
-            <property name="label" translatable="yes">&lt;b&gt;Administrator Account Creation&lt;/b&gt;</property>
-            <property name="use_markup">True</property>
+            <child>
+              <object class="ProxyLabel" id="title_label">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Welcome to Stoq</property>
+                <property name="use_markup">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="image1">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
+            <property name="fill">False</property>
+            <property name="padding">5</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -32,11 +54,16 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="description_label">
+          <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
             <property name="xalign">0</property>
+            <property name="label" translatable="yes">Thank you for installing Stoq, you'll be ready to use it in just a few minutes.
+
+This assistant will help you configure Stoq to create a new database or connect to an existing.
+
+If you're having trouble with the installation or need help importing your
+database from another application, don't hesitate to &lt;a href="http://www.stoq.com.br/pt-br/more/contact"&gt;contact us&lt;/a&gt;.</property>
             <property name="use_markup">True</property>
-            <property name="wrap">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -45,30 +72,17 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEventBox" id="password_holder">
+          <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
-            <child>
-              <placeholder/>
-            </child>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">3</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="label1">
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Click &lt;b&gt;Forward&lt;/b&gt; to continue.</property>
@@ -77,7 +91,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">5</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>
