@@ -68,7 +68,6 @@
             <child>
               <object class="ProxyLabel" id="received_value">
                 <property name="data_type">currency</property>
-                <property name="label" translatable="yes">kiwilabel1</property>
                 <property name="model_attribute">received_value</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -82,7 +81,6 @@
             <child>
               <object class="ProxyLabel" id="paid_value">
                 <property name="data_type">currency</property>
-                <property name="label" translatable="yes">kiwilabel2</property>
                 <property name="model_attribute">paid_value</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
@@ -98,7 +96,6 @@
             <child>
               <object class="ProxyLabel" id="missing_value">
                 <property name="data_type">currency</property>
-                <property name="label" translatable="yes">kiwilabel3</property>
                 <property name="model_attribute">missing_value</property>
                 <property name="visible">True</property>
                 <property name="xalign">1.0</property>
