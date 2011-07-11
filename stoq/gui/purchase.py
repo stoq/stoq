@@ -61,7 +61,6 @@ from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
 from stoqlib.gui.dialogs.productiondialog import ProductionDialog
 from stoqlib.reporting.purchase import PurchaseReport
 from stoqlib.lib.formatters import format_quantity
-
 from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
@@ -302,16 +301,18 @@ class PurchaseApp(SearchableAppWindow):
                       if order.status == PurchaseOrder.ORDER_PENDING]
 
         if not valid_order_views:
-            warning(_("There are no orders with status "
-                      "pending in the selection"))
+            warning(_("There are no pending orders selected."))
             return
-        elif len(valid_order_views) > 1:
-            msg = (_("The %d selected orders will be marked as sent.")
-                   % len(valid_order_views))
-        else:
-            msg = _("Are you sure you want to confirm the order?")
-        if yesno(msg, gtk.RESPONSE_NO,
-                 _(u"Don't Confirm"), _(u"Confirm")):
+
+        msg = gettext.ngettext(
+            _("The selected order will be marked as sent."),
+            _("The %d selected orders will be marked as sent.")
+            % len(valid_order_views),
+            len(valid_order_views))
+        confirm_label = gettext.ngettext(_("Confirm order"),
+                                         _("Confirm orders"),
+                                         len(valid_order_views))
+        if yesno(msg, gtk.RESPONSE_NO, _("Don't confirm"), confirm_label):
             return
 
         trans = new_transaction()
@@ -330,9 +331,13 @@ class PurchaseApp(SearchableAppWindow):
         register_payment_operations()
         order_views = self.results.get_selected_rows()
         assert all(ov.purchase.can_cancel() for ov in order_views)
-        if yesno(
-            _('The selected order(s) will be cancelled.'),
-            gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel Order(s)")):
+        cancel_label = gettext.ngettext(_("Cancel order"),
+                                        _("Cancel orders"), len(order_views))
+        select_label = gettext.ngettext(_('The selected order will be cancelled.'),
+                                        _('The selected orders will be cancelled.'),
+                                        len(order_views))
+        if yesno(select_label, gtk.RESPONSE_NO,
+                 _("Don't cancel"), cancel_label):
             return
         trans = new_transaction()
         for order_view in order_views:
