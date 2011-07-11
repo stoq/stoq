@@ -538,7 +538,7 @@ class FirstTimeConfigWizard(BaseWizard):
         self.has_installed_db = False
         self.options = options
         self.plugins = []
-        self.db_is_local = True
+        self.db_is_local = False
 
         if config.get('Database', 'enable_production') == 'True':
             self.enable_production = True
