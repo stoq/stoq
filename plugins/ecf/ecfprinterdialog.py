@@ -171,9 +171,9 @@ class ECFEditor(BaseEditor):
         if not self._populate_ecf_printer(status):
             return
 
-        if not yesno(_(u"An ECF Printer was added. You need to restart Stoq "
-                       u"before using it. Would you like to restart it now?"),
-                     gtk.RESPONSE_NO, _(u"Restart Later"), _(u"Restart Now")):
+        if not yesno(_("An ECF Printer was added. You need to restart Stoq "
+                       "before using it. Would you like to restart it now?"),
+                     gtk.RESPONSE_NO, _("Restart later"), _("Restart now")):
             self.conn.commit()
             raise SystemExit
 

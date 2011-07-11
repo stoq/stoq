@@ -429,8 +429,8 @@ class NewLoanWizard(BaseWizard):
 
     def _print_receipt(self, order):
         # we can only print the receipt if the loan was confirmed.
-        if yesno(_(u'Would you like to print the receipt now?'),
-                 gtk.RESPONSE_YES, _(u"Print Receipt"), _(u"Don't Print")):
+        if yesno(_('Would you like to print the receipt now?'),
+                 gtk.RESPONSE_YES, _("Print receipt"), _("Don't print")):
             print_report(LoanReceipt, order)
 
     #

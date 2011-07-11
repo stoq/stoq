@@ -339,8 +339,8 @@ class SaleReturnSlave(BaseEditorSlave):
 # helper functions
 
 def cancel_sale(sale):
-    msg = _(u'Do you really want to cancel this sale ?')
-    if yesno(msg, gtk.RESPONSE_NO, _(u"Cancel Sale"), _(u"Don't Cancel")):
+    msg = _('Do you really want to cancel this sale ?')
+    if yesno(msg, gtk.RESPONSE_NO, _("Cancel sale"), _("Don't cancel sale")):
         sale.cancel()
         return True
     return False

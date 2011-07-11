@@ -200,7 +200,7 @@ def _register_branch(station_name):
                "Do you want to register it "
                "(requires administrator access) ?") %
              (station_name, settings.address),
-             gtk.RESPONSE_NO, _(u"Quit"), _(u"Register Computer")):
+             gtk.RESPONSE_NO, _("Quit"), _("Register computer")):
         raise SystemExit
 
     from stoqlib.gui.login import LoginHelper

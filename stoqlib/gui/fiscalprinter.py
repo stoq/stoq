@@ -136,10 +136,10 @@ class FiscalPrinterHelper(gobject.GObject):
         """
 
         if not self._previous_day:
-            if not yesno(_(u"You can only close the till once per day. "
-                           "You won't be able to make any more sales today."
-                           "\n\nClose the till?"),
-                         gtk.RESPONSE_NO, _("Close Till"), _(u"Not now")):
+            if not yesno(_("You can only close the till once per day. "
+                           "You won't be able to make any more sales today.\n\n"
+                           "Close the till?"),
+                         gtk.RESPONSE_NO, _("Close Till"), _("Not now")):
                 return
         else:
             # When closing from a previous day, close only what is needed.
@@ -243,16 +243,16 @@ class FiscalPrinterHelper(gobject.GObject):
         manager = get_utility(IPluginManager)
         manager.is_active('ecf')
         if close_db and (close_ecf or not manager.is_active('ecf')):
-            msg = _(u"You need to close the till from the previous day before "
-                     "creating a new order.\n\nClose the Till?")
+            msg = _("You need to close the till from the previous day before "
+                    "creating a new order.\n\nClose the Till?")
         elif close_db and not close_ecf:
-            msg = _(u"The till in Stoq is opened, but in ECF "
-                     "is closed.\n\nClose the till in Stoq?")
+            msg = _("The till in Stoq is opened, but in ECF "
+                    "is closed.\n\nClose the till in Stoq?")
         elif close_ecf and not close_db:
-            msg = _(u"The till in stoq is closed, but in ECF "
-                     "is opened.\n\nClose the till in ECF?")
+            msg = _("The till in stoq is closed, but in ECF "
+                    "is opened.\n\nClose the till in ECF?")
 
-        if yesno(msg, gtk.RESPONSE_NO, _(u"Close Till"), _(u"Not now")):
+        if yesno(msg, gtk.RESPONSE_NO, _("Close Till"), _("Not now")):
             return self.close_till(close_db, close_ecf)
 
         return False
@@ -373,9 +373,9 @@ class FiscalCoupon(gobject.GObject):
                     return False
             except OutofPaperError:
                 if not yesno(
-                    _(u"The fiscal printer has run out of paper.\nAdd more paper "
+                    _("The fiscal printer has run out of paper.\nAdd more paper "
                       "before continuing."),
-                    gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
+                    gtk.RESPONSE_YES, _("Resume"), _("Confirm later")):
                     return False
                 return self.open()
             except PrinterOfflineError:

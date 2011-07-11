@@ -611,8 +611,8 @@ class PosApp(AppWindow):
         @returns: True if the order was canceled, otherwise false
         """
         if len(self.sale_items) and show_confirmation:
-            if yesno(_(u"This will cancel the current order. Are you sure?"),
-                     gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel Order")):
+            if yesno(_("This will cancel the current order. Are you sure?"),
+                     gtk.RESPONSE_NO, _("Don't cancel"), _(u"Cancel order")):
                 return False
 
         self._clear_order()
@@ -747,9 +747,9 @@ class PosApp(AppWindow):
         if coupon:
             while not coupon.open():
                 if not yesno(
-                    _(u"It is not possible to start a new sale if the "
+                    _("It is not possible to start a new sale if the "
                       "fiscal coupon cannot be opened."),
-                    gtk.RESPONSE_YES, _(u"Try Again"), _(u"Cancel")):
+                    gtk.RESPONSE_YES, _("Try again"), _("Cancel sale")):
                     self.app.shutdown()
                     break
 

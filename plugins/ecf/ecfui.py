@@ -406,7 +406,7 @@ class ECFUI(object):
                         last_doc.last_till_entry.id,
                         last_doc.last_till_entry.value))
         return yesno(msg, gtk.RESPONSE_NO, _("Cancel Last Document"),
-                     _(u"Not now"))
+                     _("Not now"))
 
     def _cancel_last_till_entry(self, last_doc, trans):
         till_entry = trans.get(last_doc.last_till_entry)
