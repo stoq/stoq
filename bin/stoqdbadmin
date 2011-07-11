@@ -337,11 +337,11 @@ class StoqCommandHandler:
         from stoqlib.lib.sintegragenerator import generate
         generate(filename, start, end)
 
-    def cmd_dbshell(self, options):
-        from stoqlib.database.database import start_dbshell
+    def cmd_shell(self, options):
+        from stoqlib.database.database import start_shell
         self._read_config(options, register_station=False,
                           check_schema=False)
-        start_dbshell()
+        start_shell()
 
     def cmd_import(self, options):
         self._read_config(options, register_station=False)
