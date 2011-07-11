@@ -36,7 +36,7 @@ from stoqlib.exceptions import SelectionError, StoqlibError
 from stoqlib.gui.base.dialogs import run_dialog, get_dialog, BasicDialog
 from stoqlib.gui.base.wizards import BaseWizard
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 from stoqlib.lib.message import yesno
 
 _ = stoqlib_gettext
@@ -329,11 +329,20 @@ class AdditionListSlave(GladeSlaveDelegate):
         if qty < 1:
             raise SelectionError('There are no objects selected')
 
-        if qty > 1:
-            msg = _(u'Delete these %d items?') % qty
-        else:
-            msg = _(u'Delete this item?')
-        if yesno(msg, gtk.RESPONSE_NO, _(u"Don't Delete"), _(u"Delete Items")):
+        msg = stoqlib_ngettext(
+            _('Delete this item?'),
+            _('Delete these %d items?') % qty,
+            qty)
+        delete_label = stoqlib_ngettext(
+            _("Delete item"),
+            _("Delete items"),
+            qty)
+
+        keep_label = stoqlib_ngettext(
+            _("Keep it"),
+            _("Keep them"),
+            qty)
+        if yesno(msg, gtk.RESPONSE_NO, keep_label, delete_label):
             return
         self.emit('before-delete-items', objs)
         if qty == len(self.klist):
