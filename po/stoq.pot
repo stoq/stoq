@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-11 17:35-0300\n"
+"POT-Creation-Date: 2011-07-11 17:45-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -130,46 +130,38 @@ msgid "_Edit..."
 msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:1
-msgid "     -   "
-msgstr ""
-
-#: ../data/glade/AddressSlave.ui.h:2
-msgid "00000-000"
-msgstr ""
-
-#: ../data/glade/AddressSlave.ui.h:3
 msgid "City:"
 msgstr ""
 
-#: ../data/glade/AddressSlave.ui.h:4
+#: ../data/glade/AddressSlave.ui.h:2
 msgid "Complement:"
 msgstr ""
 
-#: ../data/glade/AddressSlave.ui.h:5
+#: ../data/glade/AddressSlave.ui.h:3
 #: ../plugins/books/glade/ProductBookSlave.ui.h:3
 msgid "Country:"
 msgstr ""
 
-#: ../data/glade/AddressSlave.ui.h:6
+#: ../data/glade/AddressSlave.ui.h:4
 msgid "District:"
 msgstr ""
 
-#: ../data/glade/AddressSlave.ui.h:7
+#: ../data/glade/AddressSlave.ui.h:5
 #: ../data/glade/BasePaymentDataEditor.ui.h:2
 #: ../data/glade/EmployeeDetailsSlave.ui.h:12
 #: ../data/glade/OpenProductionOrderStep.ui.h:4
 msgid "Number:"
 msgstr ""
 
-#: ../data/glade/AddressSlave.ui.h:8
+#: ../data/glade/AddressSlave.ui.h:6
 msgid "Postal Code:"
 msgstr ""
 
-#: ../data/glade/AddressSlave.ui.h:9
+#: ../data/glade/AddressSlave.ui.h:7
 msgid "State:"
 msgstr ""
 
-#: ../data/glade/AddressSlave.ui.h:10
+#: ../data/glade/AddressSlave.ui.h:8
 msgid "Street:"
 msgstr ""
 
@@ -249,7 +241,7 @@ msgid "With intervals of:"
 msgstr ""
 
 #: ../data/glade/BaseSellableCategoryDataSlave.ui.h:2
-#: ../data/glade/BranchDialog.ui.h:3 ../data/glade/CommissionDataSlave.ui.h:3
+#: ../data/glade/BranchDialog.ui.h:2 ../data/glade/CommissionDataSlave.ui.h:3
 #: ../data/glade/CredProviderDetailsSlave.ui.h:2
 #: ../data/glade/PaymentMethodEditor.ui.h:2
 #: ../data/glade/ProductSupplierEditor.ui.h:2
@@ -328,51 +320,46 @@ msgstr ""
 msgid "Tax Polity:"
 msgstr ""
 
-#: ../data/glade/BranchDialog.ui.h:1
+#: ../data/glade/BranchDialog.ui.h:3
 #: ../data/glade/CompanyDocumentsSlave.ui.h:1
-msgid "  .   .   /    -  "
-msgstr ""
-
-#: ../data/glade/BranchDialog.ui.h:4
-#: ../data/glade/CompanyDocumentsSlave.ui.h:3
 #: ../data/glade/ProductsAdjustment.ui.h:2
 #: ../plugins/ecf/paulistainvoicedialog.py:69
 msgid "CNPJ:"
 msgstr ""
 
-#: ../data/glade/BranchDialog.ui.h:5
+#: ../data/glade/BranchDialog.ui.h:4
 msgid "Company Details"
 msgstr ""
 
-#: ../data/glade/BranchDialog.ui.h:6
+#: ../data/glade/BranchDialog.ui.h:5
 msgid "Company Name:"
 msgstr ""
 
-#: ../data/glade/BranchDialog.ui.h:7 ../data/glade/PersonEditorTemplate.ui.h:5
+#: ../data/glade/BranchDialog.ui.h:6 ../data/glade/PersonEditorTemplate.ui.h:5
 msgid "Fax:"
 msgstr ""
 
-#: ../data/glade/BranchDialog.ui.h:8
+#: ../data/glade/BranchDialog.ui.h:7
 #: ../data/glade/ProductSupplierEditor.ui.h:8
 msgid "ICMS:"
 msgstr ""
 
-#: ../data/glade/BranchDialog.ui.h:9
+#: ../data/glade/BranchDialog.ui.h:8
 msgid "ISS:"
 msgstr ""
 
-#: ../data/glade/BranchDialog.ui.h:10 ../data/glade/ContactEditor.ui.h:2
+#: ../data/glade/BranchDialog.ui.h:9 ../data/glade/ContactEditor.ui.h:2
 #: ../data/glade/PersonEditorTemplate.ui.h:12
 msgid "Phone Number:"
 msgstr ""
 
-#: ../data/glade/BranchDialog.ui.h:11
-#: ../data/glade/CompanyDocumentsSlave.ui.h:6
+#: ../data/glade/BranchDialog.ui.h:10
+#: ../data/glade/CompanyDocumentsSlave.ui.h:4
 #: ../data/glade/ProductsAdjustment.ui.h:5
 msgid "State Registry:"
 msgstr ""
 
-#: ../data/glade/BranchDialog.ui.h:12
+#: ../data/glade/BranchDialog.ui.h:11
 msgid "Substitution ICMS:"
 msgstr ""
 
@@ -529,14 +516,10 @@ msgid "In Installments:"
 msgstr ""
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:2
-msgid "00.000.000/0000-00"
-msgstr ""
-
-#: ../data/glade/CompanyDocumentsSlave.ui.h:4
 msgid "City Registry:"
 msgstr ""
 
-#: ../data/glade/CompanyDocumentsSlave.ui.h:5
+#: ../data/glade/CompanyDocumentsSlave.ui.h:3
 msgid "Fancy Name:"
 msgstr ""
 
@@ -974,37 +957,29 @@ msgid "Spouse:"
 msgstr ""
 
 #: ../data/glade/IndividualDocuments.ui.h:1
-msgid "   .   .   -  "
-msgstr ""
-
-#: ../data/glade/IndividualDocuments.ui.h:2
-msgid "000.000.000-00"
-msgstr ""
-
-#: ../data/glade/IndividualDocuments.ui.h:3
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:3
 #: ../plugins/ecf/paulistainvoicedialog.py:63
 #: ../stoqlib/reporting/loanreceipt.py:153
 msgid "CPF:"
 msgstr ""
 
-#: ../data/glade/IndividualDocuments.ui.h:4
+#: ../data/glade/IndividualDocuments.ui.h:2
 msgid ""
 "RG Expedition\n"
 "Date:"
 msgstr ""
 
-#: ../data/glade/IndividualDocuments.ui.h:6
+#: ../data/glade/IndividualDocuments.ui.h:4
 msgid ""
 "RG Expedition\n"
 "Local:"
 msgstr ""
 
-#: ../data/glade/IndividualDocuments.ui.h:8
+#: ../data/glade/IndividualDocuments.ui.h:6
 msgid "RG Number:"
 msgstr ""
 
-#: ../data/glade/IndividualDocuments.ui.h:9
+#: ../data/glade/IndividualDocuments.ui.h:7
 msgid "client_id_slave"
 msgstr ""
 
@@ -1080,18 +1055,10 @@ msgid "Total value:"
 msgstr ""
 
 #: ../data/glade/InvoiceDetailsEditor.ui.h:1
-msgid "  -  -    "
-msgstr ""
-
-#: ../data/glade/InvoiceDetailsEditor.ui.h:2
-msgid "  :  "
-msgstr ""
-
-#: ../data/glade/InvoiceDetailsEditor.ui.h:3
 msgid "Expedition Date:"
 msgstr ""
 
-#: ../data/glade/InvoiceDetailsEditor.ui.h:4
+#: ../data/glade/InvoiceDetailsEditor.ui.h:2
 #: ../data/glade/OpenInventoryDialog.ui.h:4
 msgid "Time:"
 msgstr ""
