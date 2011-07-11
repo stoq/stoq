@@ -67,7 +67,7 @@
                   <object class="ProxyLabel" id="label4">
                     <property name="visible">True</property>
                     <property name="xalign">1</property>
-                    <property name="label" translatable="yes">Cost ($CURRENCY):</property>
+                    <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Cost ($CURRENCY):</property>
                     <property name="model_attribute">label4</property>
                   </object>
                   <packing>
@@ -79,7 +79,7 @@
                   <object class="ProxyLabel" id="label5">
                     <property name="visible">True</property>
                     <property name="xalign">1</property>
-                    <property name="label" translatable="yes">Sale Price ($CURRENCY):</property>
+                    <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Sale Price ($CURRENCY):</property>
                     <property name="model_attribute">label5</property>
                   </object>
                   <packing>

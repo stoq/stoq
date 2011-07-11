@@ -39,7 +39,7 @@
           <object class="ProxyLabel" id="kiwilabel1">
             <property name="visible">True</property>
             <property name="xalign">1</property>
-            <property name="label" translatable="yes">Value ($CURRENCY):</property>
+            <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Value ($CURRENCY):</property>
             <property name="model_attribute">kiwilabel1</property>
           </object>
           <packing>
