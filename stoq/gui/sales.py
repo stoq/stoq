@@ -345,7 +345,7 @@ class SalesApp(SearchableAppWindow):
 
     def on_TillCancel__activate(self, action):
         if yesno(_('This will cancel the selected quote. Are you sure?'),
-                 gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel Quote")):
+                 gtk.RESPONSE_NO, _("Don't cancel"), _("Cancel quote")):
             return
         trans = new_transaction()
         sale_view = self.results.get_selected()

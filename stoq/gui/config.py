@@ -329,8 +329,8 @@ class CreateDatabaseStep(BaseWizardStep):
         # Secondly, ask the user if he really wants to create the database,
         dbname = settings.dbname
         if not yesno(_("The specifed database '%s' does not exist.\n"
-                   "Do you want to create it?") % dbname,
-                 gtk.RESPONSE_NO, _("Don't Create"), _("Create Database")):
+                       "Do you want to create it?") % dbname,
+                     gtk.RESPONSE_NO, _("Don't create"), _("Create database")):
             self.process_view.feed("** Creating database\r\n")
             self._launch_stoqdbadmin()
         else:
@@ -465,9 +465,9 @@ class CreateDatabaseStep(BaseWizardStep):
                 # - pressed cancel in the authentication popup
                 # - user erred the password 3 times
                 # Allow him to try again
-                if yesno(_("Something went wrong while trying to create"
+                if yesno(_("Something went wrong while trying to create "
                            "the database. Try again?"),
-                         gtk.RESPONSE_NO, _("Change settings"), _("Try Again")):
+                         gtk.RESPONSE_NO, _("Change settings"), _("Try again")):
                     return
                 self._launch_stoqdbadmin()
                 return

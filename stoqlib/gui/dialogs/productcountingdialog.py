@@ -106,11 +106,11 @@ class ProductCountingDialog(BaseEditor):
         # We will close only if the user really wants to.
         # This give the option to the user update the product
         # counting before the adjustment be done.
-        msg = _(u'You have finished the product counting and none '
+        msg = _('You have finished the product counting and none '
                 'of the products need to be adjusted.\n\n'
                 'Would you like to close this inventory now ?')
-        if yesno(msg, gtk.RESPONSE_NO, _(u'Close Inventory'),
-                                       _(u'Continue Counting')):
+        if yesno(msg, gtk.RESPONSE_NO, _('Close inventory'),
+                                       _('Continue counting')):
             trans = new_transaction()
             inventory = trans.get(self.model)
             inventory.close()

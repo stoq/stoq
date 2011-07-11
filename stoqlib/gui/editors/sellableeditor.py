@@ -214,9 +214,8 @@ class SellableEditor(BaseEditor):
     def __init__(self, conn, model=None):
         self._sellable = None
         self._demo_mode = sysparam(conn).DEMO_MODE
-        self._requires_weighing_text = ("<b>%s</b>"
-                                        % _(u"This unit type requires "
-                                            "weighing"))
+        self._requires_weighing_text = (
+            "<b>%s</b>" % _("This unit type requires weighing"))
         BaseEditor.__init__(self, conn, model)
         self.enable_window_controls()
         if self._demo_mode:
@@ -404,9 +403,9 @@ class SellableEditor(BaseEditor):
     #
 
     def _on_delete_button__clicked(self, button, parent_button_label=None):
-        msg = _(u"This will delete '%s' from the database. Are you sure?"
+        msg = _("This will delete '%s' from the database. Are you sure?"
                 % self._sellable.get_description())
-        if not yesno(msg, gtk.RESPONSE_NO, _(u"Delete"), _(u"Don't Delete")):
+        if not yesno(msg, gtk.RESPONSE_NO, _("Delete"), _("Keep")):
             return
 
         self._sellable.remove()
@@ -416,11 +415,11 @@ class SellableEditor(BaseEditor):
 
     def _on_close_sellable_button__clicked(self, button,
                                            parent_button_label=None):
-        msg = _(u"Do you really want to close '%s'?\n"
-                u"Please note that when it's closed, you won't be able to "
-                u"commercialize it anymore." % self._sellable.get_description())
+        msg = _("Do you really want to close '%s'?\n"
+                "Please note that when it's closed, you won't be able to "
+                "commercialize it anymore." % self._sellable.get_description())
         if not yesno(msg, gtk.RESPONSE_NO,
-                      parent_button_label, _(u"Don't Close")):
+                      parent_button_label, _("Don't close")):
             return
 
         self._sellable.close()
@@ -428,11 +427,11 @@ class SellableEditor(BaseEditor):
 
     def _on_reopen_sellable_button__clicked(self, button,
                                             parent_button_label=None):
-        msg = _(u"Do you really want to reopen '%s'?\n"
-                u"Note that when it's opened, you will be able to "
-                u"commercialize it again." % self._sellable.get_description())
+        msg = _("Do you really want to reopen '%s'?\n"
+                "Note that when it's opened, you will be able to "
+                "commercialize it again." % self._sellable.get_description())
         if not yesno(msg, gtk.RESPONSE_NO,
-                      parent_button_label, _(u"Keep Closed")):
+                     parent_button_label, ("Keep closed")):
             return
 
         self._sellable.set_unavailable()

@@ -238,9 +238,9 @@ class StockDecreaseWizard(BaseWizard):
                              connection=conn)
 
     def _receipt_dialog(self):
-        msg = _(u'Would you like to print a receipt?')
+        msg = _('Would you like to print a receipt?')
         if yesno(msg, gtk.RESPONSE_YES,
-                 _(u"Print Receipt"), _("Don't Print")):
+                 _("Print receipt"), _("Don't print")):
             print_report(StockDecreaseReceipt, self.model)
         return
 

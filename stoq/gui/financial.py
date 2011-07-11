@@ -531,10 +531,10 @@ class FinancialApp(AppWindow):
         page.add_transaction_dialog()
 
     def _delete_account(self, account_view):
-        msg = _(u'Are you sure you want to remove account "%s" ?' %
+        msg = _('Are you sure you want to remove account "%s" ?' %
                 (account_view.description, ))
         if yesno(msg, gtk.RESPONSE_YES,
-                 _("Don't Remove"), _(u"Remove account")):
+                 _("Keep account"), _("Remove account")):
             return
 
         self.accounts.remove(account_view)
@@ -546,10 +546,10 @@ class FinancialApp(AppWindow):
         trans.commit(close=True)
 
     def _delete_transaction(self, item):
-        msg = _(u'Are you sure you want to remove transaction "%s" ?' %
+        msg = _('Are you sure you want to remove transaction "%s" ?' %
                 (item.description))
         if yesno(msg, gtk.RESPONSE_YES,
-                 _("Don't Remove"), _(u"Remove transaction")):
+                 _("Keep transaction"), _("Remove transaction")):
             return
 
         account_transactions = self._get_current_page_widget()

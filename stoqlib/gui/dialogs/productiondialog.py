@@ -464,12 +464,12 @@ class ProductionDialog(GladeSlaveDelegate):
         for component in self.component_slave.get_components():
             if component.can_purchase():
                 if not component.has_valid_purchase_quantity():
-                    msg = _(u'The quantity needed of some components is bigger'
-                            ' than the quantity you will purchase.\n\n'
+                    msg = _('The quantity needed of some components is bigger '
+                            'than the quantity you will purchase.\n\n'
                             'Would you like to continue the purchase ?')
                     return not yesno(msg, gtk.RESPONSE_NO,
-                                     _(u"Don't Continue "),
-                                     _(u"Continue Purchase"))
+                                     _("Abort purchase"),
+                                     _("Continue purchase"))
         return True
 
     def _create_purchase_order(self, trans):
