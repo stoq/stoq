@@ -39,7 +39,7 @@ class ServiceReport(ObjectListReport):
     obj_type = ServiceView
     report_name = _("Service Listing")
     filter_format_string = _("on branch <u>%s</u>")
-    main_object_name = _("services")
+    main_object_name = (_("service"), _("services"))
 
     def __init__(self, filename, objectlist, services, *args, **kwargs):
         self._services = services
@@ -60,8 +60,5 @@ class ServiceReport(ObjectListReport):
 class ServicePriceReport(PriceReport):
     """This report show a list of services and it's prices."""
     report_name = _("Service Listing")
+    main_object_name = (_("service"), _("services"))
 
-    def __init__(self, filename, services, *args, **kwargs):
-        # XXX: We should not change main_object_name here
-        PriceReport.main_object_name = ''
-        PriceReport.__init__(self, filename, services, *args, **kwargs)

@@ -70,7 +70,7 @@ class ProductionItemReport(ObjectListReport):
 
 class ProductionReport(ObjectListReport):
     report_name = _(u'Production Order Report')
-    main_object_name = _(u'orders')
+    main_object_name = (_("order"), _("orders"))
     filter_format_string = _(u'with status <u>%s</u>')
 
     def __init__(self, filename, objectlist, productions, status,

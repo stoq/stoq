@@ -35,7 +35,7 @@ from stoqlib.lib.formatters import get_formatted_price
 class _BasePaymentReport(ObjectListReport):
     """Base report for Payable and Receivable reports"""
     report_name = _("Payment Report")
-    main_object_name = "payments"
+    main_object_name = (_("payment"), _("payments"))
 
     def __init__(self, filename, objectlist, payments, *args, **kwargs):
         self._payments = payments
