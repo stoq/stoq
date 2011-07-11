@@ -174,7 +174,7 @@ class DatabaseSettingsStep(WizardEditorStep):
         # postgres configuration doesn't allow you to connect via localhost,
         # only unix socket.
         if settings.address == 'localhost':
-            if not self._try_connect(settings, warn=False):
+            if not self.wizard._try_connect(settings, warn=False):
                 settings.address = ''
 
         if not self.wizard.try_connect(settings):
