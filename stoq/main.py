@@ -157,8 +157,10 @@ def _check_version_policy():
 def _run_first_time_wizard(options, config=None):
     from stoqlib.gui.base.dialogs import run_dialog
     from stoq.gui.config import FirstTimeConfigWizard
+    from stoqlib.gui.splash import hide_splash
     global _ran_wizard
     _ran_wizard = True
+    hide_splash()
     # This may run Stoq
     run_dialog(FirstTimeConfigWizard, None, options, config)
     raise SystemExit()
@@ -166,7 +168,9 @@ def _run_first_time_wizard(options, config=None):
 def _run_update_wizard():
     from stoqlib.gui.base.dialogs import run_dialog
     from stoq.gui.update import SchemaUpdateWizard
+    from stoqlib.gui.splash import hide_splash
 
+    hide_splash()
     retval = run_dialog(SchemaUpdateWizard, None)
     if not retval:
         raise SystemExit()
