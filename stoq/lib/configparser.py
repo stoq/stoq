@@ -223,6 +223,10 @@ class StoqConfig:
 
         return self._config.get(section, option)
 
+    def remove(self, section, option):
+        if self._config.has_section(section):
+            self._config.remove_option(section, option)
+
     def items(self, section):
         return self._config.items(section)
 

@@ -599,7 +599,7 @@ class FirstTimeConfigWizard(BaseWizard):
 
         # Write configuration to disk
         if self.remove_demo:
-            self.config.set('Database', 'enable_production', 'False')
+            self.config.remove('Database', 'enable_production')
         self.config.flush()
 
         self.close()
