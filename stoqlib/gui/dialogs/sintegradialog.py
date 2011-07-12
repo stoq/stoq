@@ -41,6 +41,8 @@ _ = stoqlib_gettext
 
 N_ = lambda x: x
 
+# FIXME: Move out of here, Financial also uses it
+
 month_names = {
     1: N_('January'),
     2: N_('February'),
