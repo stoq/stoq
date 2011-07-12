@@ -45,7 +45,7 @@ style "transaction-treeview-style"
     GtkTreeView::grid-line-pattern = "ÿ" # \xff\x01
     GtkTreeView::grid-line-width = 1
 }
-widget_class "*TransactionPage*" style "transaction-treeview-style"
+widget_class "*FinancialSearchResults*" style "transaction-treeview-style"
 
 #
 # Notebook buttons should have less padding then a normal
