@@ -66,6 +66,7 @@ class SystemParameterEditor(BaseEditor):
 
     def _setup_entry_slave(self, box=None):
         widget = ProxyEntry()
+        widget.props.sensitive = self.sensitive
         widget.data_type = unicode
         widget.model_attribute = "field_value"
         self.proxy.add_widget("field_value", widget)
@@ -80,10 +81,10 @@ class SystemParameterEditor(BaseEditor):
                        self._on_entry__validation_changed)
 
         self._entry = widget
-        widget.props.sensitive = self.sensitive
 
     def _setup_text_entry_slave(self):
         widget = ProxyTextView()
+        widget.props.sensitive = self.sensitive
         widget.data_type = unicode
         widget.model_attribute = "field_value"
         widget.set_wrap_mode(gtk.WRAP_WORD)
@@ -92,10 +93,10 @@ class SystemParameterEditor(BaseEditor):
 
         widget.show()
         self._entry = widget
-        widget.props.sensitive = self.sensitive
 
     def _setup_entry_with_filechooser_button_slave(self, dir_only=False):
         hbox = gtk.HBox(spacing=6)
+        hbox.props.sensitive = self.sensitive
         self._setup_entry_slave(hbox)
         title = _(u'Cat 52 directory selection')
         filechooser_button = gtk.FileChooserButton(title)
@@ -110,10 +111,10 @@ class SystemParameterEditor(BaseEditor):
 
         self.container.add(hbox)
         hbox.show()
-        hbox.props.sensitive = self.sensitive
 
     def _setup_comboboxentry_slave(self):
         widget = ProxyComboEntry()
+        widget.props.sensitive = self.sensitive
         widget.model_attribute = "field_value"
         widget.data_type = unicode
         widget.mandatory = True
@@ -126,10 +127,10 @@ class SystemParameterEditor(BaseEditor):
         widget.show()
         widget.connect('validation-changed',
                        self._on_entry__validation_changed)
-        widget.props.sensitive = self.sensitive
 
     def _setup_radio_slave(self):
         box = gtk.HBox()
+        box.props.sensitive = self.sensitive
         yes_widget = gtk.RadioButton()
         yes_widget.set_label(_("Yes"))
         yes_widget.connect("toggled", self._on_yes_radio__toggled)
@@ -145,10 +146,10 @@ class SystemParameterEditor(BaseEditor):
         no_widget.set_active(self.model.field_value == "0")
         yes_widget.set_active(self.model.field_value == "1")
         box.show()
-        box.props.sensitive = self.sensitive
 
     def _setup_options_combo_slave(self):
         widget = ProxyComboBox()
+        widget.props.sensitive = self.sensitive
         widget.model_attribute = "field_value"
         widget.data_type = unicode
 
@@ -158,7 +159,6 @@ class SystemParameterEditor(BaseEditor):
         self.proxy.add_widget("field_value", widget)
         self.container.add(widget)
         widget.show()
-        widget.props.sensitive = self.sensitive
 
     #
     # BaseEditor hooks
