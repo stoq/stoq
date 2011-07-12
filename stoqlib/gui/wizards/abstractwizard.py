@@ -493,6 +493,9 @@ class SellableItemStep(WizardEditorStep):
             self._add_sellable()
 
     def on_quantity__validate(self, entry, value):
+        if not self.proxy.model.sellable:
+            return
+
         # only support positive quantities
         if value <= 0:
             return ValidationError(_(u'The quantity must be positive'))
@@ -504,5 +507,8 @@ class SellableItemStep(WizardEditorStep):
                                      sellable.get_unit_description())
 
     def on_cost__validate(self, widget, value):
+        if not self.proxy.model.sellable:
+            return
+
         if value <= 0:
             return ValidationError(_(u'Cost must be greater than zero.'))

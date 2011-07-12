@@ -219,7 +219,6 @@ class PurchaseItemStep(SellableItemStep):
         self.hide_add_button()
 
         self.cost.set_editable(True)
-        self.cost.connect('validate', self._on_cost__validate)
         self.quantity.connect('validate', self._on_quantity__validate)
 
     #
@@ -304,11 +303,10 @@ class PurchaseItemStep(SellableItemStep):
     # Callbacks
     #
 
-    def _on_cost__validate(self, widget, value):
-        if value <= Decimal(0):
-            return ValidationError(_(u"The cost must be greater than zero."))
-
     def _on_quantity__validate(self, widget, value):
+        if not self.proxy.model.sellable:
+            return
+
         supplier_info = self._get_supplier_info()
         if supplier_info and value < supplier_info.minimum_purchase:
             return ValidationError(_(u'Quantity below the minimum required '
