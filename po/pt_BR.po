@@ -23,14 +23,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-08 10:25-0300\n"
-"PO-Revision-Date: 2011-07-08 14:02+0000\n"
+"POT-Creation-Date: 2011-07-11 17:57-0300\n"
+"PO-Revision-Date: 2011-07-11 21:19+0000\n"
 "Last-Translator: Thiago Bellini <thiago.bellini@hackedbellini.org>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-07-09 05:02+0000\n"
+"X-Launchpad-Export-Date: 2011-07-12 04:48+0000\n"
 "X-Generator: Launchpad (build 13168)\n"
 "Language: \n"
 
@@ -92,7 +92,7 @@ msgstr "Código:"
 
 #. Date
 #: ../data/glade/AccountTransactionEditor.ui.h:3
-#: ../data/glade/BaseCashSlave.ui.h:3
+#: ../data/glade/BaseCashSlave.ui.h:4
 #: ../data/glade/EmployeeDetailsSlave.ui.h:7
 #: ../data/glade/FiscalBookEntryEditor.ui.h:2
 #: ../data/glade/ProductsAdjustment.ui.h:3
@@ -122,7 +122,8 @@ msgstr "Data:"
 #: ../data/glade/ReceivingItemEditor.ui.h:3
 #: ../data/glade/SaleQuoteItemEditor.ui.h:3
 #: ../data/glade/SellableCategoryDataSlave.ui.h:4
-#: ../data/glade/SellableEditor.ui.h:9 ../data/glade/SellableUnitEditor.ui.h:2
+#: ../data/glade/SellableEditor.ui.h:10
+#: ../data/glade/SellableUnitEditor.ui.h:2
 msgid "Description:"
 msgstr "Descrição:"
 
@@ -147,65 +148,44 @@ msgid "_Edit..."
 msgstr "_Editar..."
 
 #: ../data/glade/AddressSlave.ui.h:1
-msgid "     -   "
-msgstr "     -   "
-
-#: ../data/glade/AddressSlave.ui.h:2
-msgid "00000-000"
-msgstr "00000-000"
-
-#: ../data/glade/AddressSlave.ui.h:3
 msgid "City:"
 msgstr "Cidade:"
 
-#: ../data/glade/AddressSlave.ui.h:4
+#: ../data/glade/AddressSlave.ui.h:2
 msgid "Complement:"
 msgstr "Complemento:"
 
-#: ../data/glade/AddressSlave.ui.h:5
+#: ../data/glade/AddressSlave.ui.h:3
 #: ../plugins/books/glade/ProductBookSlave.ui.h:3
 msgid "Country:"
 msgstr "País:"
 
-#: ../data/glade/AddressSlave.ui.h:6
+#: ../data/glade/AddressSlave.ui.h:4
 msgid "District:"
 msgstr "Bairro:"
 
-#: ../data/glade/AddressSlave.ui.h:7
+#: ../data/glade/AddressSlave.ui.h:5
 #: ../data/glade/BasePaymentDataEditor.ui.h:2
 #: ../data/glade/EmployeeDetailsSlave.ui.h:12
 #: ../data/glade/OpenProductionOrderStep.ui.h:4
 msgid "Number:"
 msgstr "Número:"
 
-#: ../data/glade/AddressSlave.ui.h:8
+#: ../data/glade/AddressSlave.ui.h:6
 msgid "Postal Code:"
 msgstr "CEP:"
 
-#: ../data/glade/AddressSlave.ui.h:9
+#: ../data/glade/AddressSlave.ui.h:7
 msgid "State:"
 msgstr "Estado:"
 
-#: ../data/glade/AddressSlave.ui.h:10
+#: ../data/glade/AddressSlave.ui.h:8
 msgid "Street:"
 msgstr "Endereço:"
 
-#: ../data/glade/AdminPasswordStep.ui.h:1 ../stoq/gui/config.py:242
-msgid "<b>Administrator Account Creation</b>"
-msgstr "<b>Criação da conta do administrador</b>"
-
-#: ../data/glade/AdminPasswordStep.ui.h:2
-msgid ""
-"I'm adding a user called `admin' which will have administrator privilegies.\n"
-"\n"
-"To be able to create other users you need to login with this user in the "
-"admin application and create them."
+#: ../data/glade/AdminPasswordStep.ui.h:1
+msgid "Enter the password and then click <b>Forward</b> to continue."
 msgstr ""
-"Estou adicionando um usuário nomeado `admin' que terá privilégios de de "
-"administrador.\n"
-"\n"
-"Para ser capaz de criar outros usuários, você precisa autenticar-se com esse "
-"usuário no aplicativo 'admin' e criá-los."
 
 #: ../data/glade/BankDataSlave.ui.h:1
 msgid "Bank Account:"
@@ -224,7 +204,8 @@ msgstr "Número do banco:"
 msgid "Balance:"
 msgstr "Balanço:"
 
-#: ../data/glade/BaseCashSlave.ui.h:2
+#. Do not translate $CURRENCY
+#: ../data/glade/BaseCashSlave.ui.h:3
 msgid "Cash Amount ($CURRENCY):"
 msgstr "Quantia ($CURRENCY):"
 
@@ -234,8 +215,9 @@ msgstr "Quantia ($CURRENCY):"
 msgid "Due date:"
 msgstr "Vencimento:"
 
-#: ../data/glade/BasePaymentDataEditor.ui.h:3
-#: ../data/glade/BasePaymentEditor.ui.h:7
+#. Do not translate $CURRENCY
+#: ../data/glade/BasePaymentDataEditor.ui.h:4
+#: ../data/glade/BasePaymentEditor.ui.h:8
 msgid "Value ($CURRENCY):"
 msgstr "Valor ($CURRENCY):"
 
@@ -266,7 +248,7 @@ msgid "Default Bank:"
 msgstr "Banco padrão:"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:3
-#: ../stoqlib/reporting/purchase.py:351
+#: ../stoqlib/reporting/purchase.py:350
 msgid "Installments:"
 msgstr "Parcelas:"
 
@@ -279,7 +261,7 @@ msgid "With intervals of:"
 msgstr "Com intervalos de:"
 
 #: ../data/glade/BaseSellableCategoryDataSlave.ui.h:2
-#: ../data/glade/BranchDialog.ui.h:3 ../data/glade/CommissionDataSlave.ui.h:3
+#: ../data/glade/BranchDialog.ui.h:2 ../data/glade/CommissionDataSlave.ui.h:3
 #: ../data/glade/CredProviderDetailsSlave.ui.h:2
 #: ../data/glade/PaymentMethodEditor.ui.h:2
 #: ../data/glade/ProductSupplierEditor.ui.h:2
@@ -302,14 +284,6 @@ msgstr "Marcação sugerida:"
 #: ../data/glade/ProductTaxTemplateEditor.ui.h:2
 msgid "Tax:"
 msgstr "Imposto:"
-
-#: ../data/glade/BasicDialog.ui.h:1
-msgid "header"
-msgstr "cabeçalho"
-
-#: ../data/glade/BasicDialog.ui.h:2 ../data/glade/Warnbox.ui.h:1
-msgid "label"
-msgstr "rótulo"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:1
 #: ../data/glade/DeviceSettingsEditor.ui.h:1
@@ -358,51 +332,46 @@ msgstr "Gerente:"
 msgid "Tax Polity:"
 msgstr "Regime tributário:"
 
-#: ../data/glade/BranchDialog.ui.h:1
+#: ../data/glade/BranchDialog.ui.h:3
 #: ../data/glade/CompanyDocumentsSlave.ui.h:1
-msgid "  .   .   /    -  "
-msgstr "  .   .   /    -  "
-
-#: ../data/glade/BranchDialog.ui.h:4
-#: ../data/glade/CompanyDocumentsSlave.ui.h:3
 #: ../data/glade/ProductsAdjustment.ui.h:2
 #: ../plugins/ecf/paulistainvoicedialog.py:69
 msgid "CNPJ:"
 msgstr "CNPJ:"
 
-#: ../data/glade/BranchDialog.ui.h:5
+#: ../data/glade/BranchDialog.ui.h:4
 msgid "Company Details"
 msgstr "Detalhes da empresa"
 
-#: ../data/glade/BranchDialog.ui.h:6
+#: ../data/glade/BranchDialog.ui.h:5
 msgid "Company Name:"
 msgstr "Nome da empresa"
 
-#: ../data/glade/BranchDialog.ui.h:7 ../data/glade/PersonEditorTemplate.ui.h:5
+#: ../data/glade/BranchDialog.ui.h:6 ../data/glade/PersonEditorTemplate.ui.h:5
 msgid "Fax:"
 msgstr "Fax:"
 
-#: ../data/glade/BranchDialog.ui.h:8
+#: ../data/glade/BranchDialog.ui.h:7
 #: ../data/glade/ProductSupplierEditor.ui.h:8
 msgid "ICMS:"
 msgstr "ICMS:"
 
-#: ../data/glade/BranchDialog.ui.h:9
+#: ../data/glade/BranchDialog.ui.h:8
 msgid "ISS:"
 msgstr "ISS:"
 
-#: ../data/glade/BranchDialog.ui.h:10 ../data/glade/ContactEditor.ui.h:2
+#: ../data/glade/BranchDialog.ui.h:9 ../data/glade/ContactEditor.ui.h:2
 #: ../data/glade/PersonEditorTemplate.ui.h:12
 msgid "Phone Number:"
 msgstr "Telefone:"
 
-#: ../data/glade/BranchDialog.ui.h:11
-#: ../data/glade/CompanyDocumentsSlave.ui.h:6
+#: ../data/glade/BranchDialog.ui.h:10
+#: ../data/glade/CompanyDocumentsSlave.ui.h:4
 #: ../data/glade/ProductsAdjustment.ui.h:5
 msgid "State Registry:"
 msgstr "Inscrição estadual:"
 
-#: ../data/glade/BranchDialog.ui.h:12
+#: ../data/glade/BranchDialog.ui.h:11
 msgid "Substitution ICMS:"
 msgstr "ICMS por substituição:"
 
@@ -427,14 +396,15 @@ msgstr "Troco dinheiro"
 msgid "Change:"
 msgstr "Troco:"
 
-#: ../data/glade/CashChangeSlave.ui.h:3
+#. Do not translate $CURRENCY
+#: ../data/glade/CashChangeSlave.ui.h:4
 msgid "Received: ($CURRENCY)"
 msgstr "Valor recebido: ($CURRENCY)"
 
 #: ../data/glade/CashInEditor.ui.h:1 ../data/glade/CashOutEditor.ui.h:1
 #: ../data/glade/PaymentChangeDialog.ui.h:4
 #: ../data/glade/ProductAdjustmentDialog.ui.h:4
-#: ../data/glade/SaleReturnSlave.ui.h:7
+#: ../data/glade/SaleReturnSlave.ui.h:8
 #: ../data/glade/StartStockDecreaseStep.ui.h:4
 msgid "Reason:"
 msgstr "Razão:"
@@ -458,7 +428,7 @@ msgstr "C.F.O.P.:"
 #: ../data/glade/PersonEditorTemplate.ui.h:11
 #: ../data/glade/ProductTaxTemplateEditor.ui.h:1
 #: ../data/glade/SellableTaxConstantEditor.ui.h:1
-#: ../data/glade/StationEditor.ui.h:3
+#: ../data/glade/StationEditor.ui.h:3 ../data/glade/TefStep.ui.h:9
 msgid "Name:"
 msgstr "Nome:"
 
@@ -469,7 +439,7 @@ msgstr "Nome:"
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:2
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:3
 #: ../data/glade/SaleDetailsDialog.ui.h:3 ../data/glade/SalesPersonStep.ui.h:6
-#: ../stoqlib/gui/search/paymentsearch.py:138
+#: ../stoqlib/gui/search/paymentsearch.py:139
 #: ../stoqlib/reporting/loanreceipt.py:82 ../stoqlib/reporting/sale.py:79
 msgid "Client:"
 msgstr "Cliente:"
@@ -495,7 +465,7 @@ msgstr "Pagamentos"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:5
 #: ../data/glade/StockDecreaseDetails.ui.h:4
-#: ../data/glade/SupplierDetailsDialog.ui.h:4 ../stoq/gui/purchase.py:169
+#: ../data/glade/SupplierDetailsDialog.ui.h:4 ../stoq/gui/purchase.py:168
 #: ../stoq/gui/sales.py:163
 msgid "Products"
 msgstr "Produtos"
@@ -528,9 +498,9 @@ msgstr "Serviços"
 #: ../data/glade/PaymentChangeDialog.ui.h:5
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:11
 #: ../data/glade/SaleDetailsDialog.ui.h:15
-#: ../data/glade/SellableEditor.ui.h:12
+#: ../data/glade/SellableEditor.ui.h:14
 #: ../data/glade/SupplierDetailsDialog.ui.h:6
-#: ../data/glade/UserStatusSlave.ui.h:3 ../stoqlib/reporting/purchase.py:256
+#: ../data/glade/UserStatusSlave.ui.h:3 ../stoqlib/reporting/purchase.py:255
 msgid "Status:"
 msgstr "Situação:"
 
@@ -538,18 +508,14 @@ msgstr "Situação:"
 msgid "Available Credit:"
 msgstr "Crédito disponível:"
 
-#: ../data/glade/ClientStatusSlave.ui.h:3
+#. Do not translate $CURRENCY
+#: ../data/glade/ClientStatusSlave.ui.h:4
 msgid "Credit Limit ($CURRENCY):"
 msgstr "Limite de crédito ($CURRENCY):"
 
-#: ../data/glade/ClientStatusSlave.ui.h:4
+#: ../data/glade/ClientStatusSlave.ui.h:5
 msgid "Financial Status:"
 msgstr "Situação financeira:"
-
-#: ../data/glade/ClientStatusSlave.ui.h:5
-#: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:6
-msgid "kiwilabel2"
-msgstr "label"
 
 #: ../data/glade/CommissionDataSlave.ui.h:1
 msgid " No Commission"
@@ -564,14 +530,10 @@ msgid "In Installments:"
 msgstr "Parceladas"
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:2
-msgid "00.000.000/0000-00"
-msgstr "00.000.000/0000-00"
-
-#: ../data/glade/CompanyDocumentsSlave.ui.h:4
 msgid "City Registry:"
 msgstr "Registro municipal:"
 
-#: ../data/glade/CompanyDocumentsSlave.ui.h:5
+#: ../data/glade/CompanyDocumentsSlave.ui.h:3
 msgid "Fancy Name:"
 msgstr "Nome fantasia:"
 
@@ -583,7 +545,7 @@ msgstr ""
 "<b>Itens consignados - Preencha as quantidades vendidas e retornadas deste "
 "item:</b>"
 
-#: ../data/glade/CreateDatabaseStep.ui.h:1
+#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:527
 msgid ""
 "Creating a new database for Stoq, depending on the speed of your computer "
 "and the server it may take a couple of minutes to finish."
@@ -631,24 +593,25 @@ msgstr "Taxa de débito pré-datado:"
 msgid "Max Installments:"
 msgstr "Máximo de parcelas:"
 
-#: ../data/glade/CredProviderDetailsSlave.ui.h:12
-msgid "Monthly Fee ($):"
-msgstr "Taxa mensal ($):"
-
+#. Do not translate $CURRENCY
 #: ../data/glade/CredProviderDetailsSlave.ui.h:13
+msgid "Monthly Fee ($CURRENCY):"
+msgstr ""
+
+#: ../data/glade/CredProviderDetailsSlave.ui.h:14
 #: ../data/glade/TransporterDataSlave.ui.h:6
 msgid "Open Contract Date:"
 msgstr "Data de abertura do contrato:"
 
-#: ../data/glade/CredProviderDetailsSlave.ui.h:14
+#: ../data/glade/CredProviderDetailsSlave.ui.h:15
 msgid "Payment Day:"
 msgstr "Dia de pagamento:"
 
-#: ../data/glade/CredProviderDetailsSlave.ui.h:15
+#: ../data/glade/CredProviderDetailsSlave.ui.h:16
 msgid "Provider Id:"
 msgstr "Id do fornecedor"
 
-#: ../data/glade/CredProviderDetailsSlave.ui.h:16
+#: ../data/glade/CredProviderDetailsSlave.ui.h:17
 msgid "Short Name:"
 msgstr "Nome curto:"
 
@@ -664,44 +627,68 @@ msgstr "Número de parcelas:"
 msgid "Payment Type:"
 msgstr "Tipo do pagamento:"
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:1 ../stoqlib/reporting/sale.py:82
+#: ../data/glade/DatabaseLocationStep.ui.h:1
+msgid "<b>Database location</b>"
+msgstr ""
+
+#: ../data/glade/DatabaseLocationStep.ui.h:2
+msgid "I want to manualy configure the database connection."
+msgstr ""
+
+#: ../data/glade/DatabaseLocationStep.ui.h:3
+msgid "I want to use Stoq just on this computer."
+msgstr ""
+
+#: ../data/glade/DatabaseLocationStep.ui.h:4
+#: ../data/glade/InstallationModeStep.ui.h:4
+msgid "Select an option above and then click <b>Forward</b> to continue."
+msgstr ""
+
+#: ../data/glade/DatabaseLocationStep.ui.h:5
+msgid ""
+"To be able to use Stoq we need make sure that there is a database that we "
+"can connect to."
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:1
+msgid "<b>Database Settings</b>"
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:2 ../stoqlib/reporting/sale.py:82
 msgid "Address:"
 msgstr "Endereço:"
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:2
-msgid "Authentication Type:"
-msgstr "Tipo de autenticação:"
-
 #: ../data/glade/DatabaseSettingsStep.ui.h:3
+msgid "Authentication:"
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:4 ../data/glade/WelcomeStep.ui.h:1
+msgid "Click <b>Forward</b> to continue."
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:5
 msgid "Database Name:"
 msgstr "Nome da base de dados:"
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:4
+#: ../data/glade/DatabaseSettingsStep.ui.h:6
 #: ../data/glade/PasswordEditorSlave.ui.h:2
 msgid "Password:"
 msgstr "Senha:"
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:5
-msgid ""
-"Please, fill some important informations before start using the applications"
+#: ../data/glade/DatabaseSettingsStep.ui.h:7
+msgid "Please, fill the details about your database."
 msgstr ""
-"Por favor, preencha algumas informações importantes antes de iniciar o "
-"sistema"
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:6
+#: ../data/glade/DatabaseSettingsStep.ui.h:8
 #: ../data/glade/DeviceSettingsEditor.ui.h:6
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:4
 msgid "Port:"
 msgstr "Porta:"
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:7
+#: ../data/glade/DatabaseSettingsStep.ui.h:9
 #: ../data/glade/UserDetailsSlave.ui.h:4
 msgid "Username:"
 msgstr "Usuário:"
-
-#: ../data/glade/DatabaseSettingsStep.ui.h:8
-msgid "Welcome to Stoq"
-msgstr "Bem-vindo ao Stoq"
 
 #: ../data/glade/DeliveryEditor.ui.h:1
 msgid "<b>Delivery Address:</b>"
@@ -719,19 +706,20 @@ msgstr "_Alterar endereço"
 msgid "Create..."
 msgstr "Criar..."
 
-#: ../data/glade/DeliveryEditor.ui.h:6
+#. Do not translate $CURRENCY
+#: ../data/glade/DeliveryEditor.ui.h:7
 msgid "Delivery cost ($CURRENCY):"
 msgstr "Custo de entrega ($CURRENCY):"
 
-#: ../data/glade/DeliveryEditor.ui.h:7
+#: ../data/glade/DeliveryEditor.ui.h:8
 msgid "Estimated Delivery _Date:"
 msgstr "_Data estimada da entrega:"
 
-#: ../data/glade/DeliveryEditor.ui.h:8
+#: ../data/glade/DeliveryEditor.ui.h:9
 msgid "Products to Deliver:"
 msgstr "Produtos a entregar:"
 
-#: ../data/glade/DeliveryEditor.ui.h:9
+#: ../data/glade/DeliveryEditor.ui.h:10
 msgid "There is Additional Instructions"
 msgstr "Há instruções adicionais"
 
@@ -822,37 +810,14 @@ msgstr "A_dicionar/Editar cargo..."
 msgid "Role:"
 msgstr "Cargo:"
 
-#: ../data/glade/EmployeeRoleSlave.ui.h:3
+#. Do not translate $CURRENCY
+#: ../data/glade/EmployeeRoleSlave.ui.h:4
 msgid "Salary ($CURRENCY):"
 msgstr "Salário ($CURRENCY):"
 
 #: ../data/glade/EmployeeStatusSlave.ui.h:1
 msgid "Employee Status:"
 msgstr "Situação do funcionário:"
-
-#: ../data/glade/ExampleDatabaseStep.ui.h:1
-msgid "<b>Database initialization</b>"
-msgstr "<b>Inicialização da base de dados</b>"
-
-#: ../data/glade/ExampleDatabaseStep.ui.h:2
-msgid "Create an empty database"
-msgstr "Criar uma base de dados vazia"
-
-#: ../data/glade/ExampleDatabaseStep.ui.h:3
-msgid "Create an example database"
-msgstr "Criar uma base de dados de exemplo"
-
-#: ../data/glade/ExampleDatabaseStep.ui.h:4
-msgid ""
-"You can choose to initialize the system with an empty database or with a "
-"simple examples database.\n"
-"\n"
-"Would you like to:\n"
-msgstr ""
-"Você pode escolher entre inicializar o sistema com uma base de dados vazia "
-"ou com simples exemplos.\n"
-"\n"
-"Você gostaria de:\n"
 
 #: ../data/glade/ExistingPersonStep.ui.h:1
 msgid "Existing client"
@@ -867,27 +832,22 @@ msgid "No, it's a new client"
 msgstr "Não, é um novo cliente"
 
 #: ../data/glade/FinishInstallationStep.ui.h:1
-msgid "<b>Stoq was successfully installed in your system!</b>"
-msgstr "<b>O Stoq foi instalado com sucesso em seu sistema!</b>"
+msgid "<b>Installation complete</b>"
+msgstr ""
 
 #: ../data/glade/FinishInstallationStep.ui.h:2
 msgid ""
-"Stoq was installed in your system and now you are going to finish this "
-"wizard.\n"
+"Stoq was successfully installed in your system!\n"
 "\n"
-"Click in the finish button and you will be able to select one of Stoq "
-"applications.\n"
+"Remember to check out the manual in each application, it's normal to feel a "
+"little bit lost in the beginning if you never used Stoq before. The manual "
+"is also <a href=\"http://doc.stoq.com.br/manual/\">available online</a>.\n"
 "\n"
-"Depending on your choices you will be logged or will be prompted to log as "
-"admin user.\n"
+"If you're having trouble with the installation, need help importing your "
+"database from another application or would like to customize Stoq, don't "
+"hesitate to <a href=\"http://www.stoq.com.br/pt-br/more/contact\">contact "
+"us</a>."
 msgstr ""
-"Stoq foi instalado com sucesso em seu sistema, para clique sair para "
-"finalizar este wizard.\n"
-"\n"
-"clique em rodar Stoq, você irá logar para escolher um dos aplicativos Stoq.\n"
-"\n"
-"Dependendo de suas escolhas você será conectado ou será solicitado a "
-"registrar como usuário administrativo.\n"
 
 #: ../data/glade/FinishPurchaseStep.ui.h:1
 msgid "A_dd/Edit Transporter..."
@@ -895,7 +855,7 @@ msgstr "A_dicionar/Editar Transportadora..."
 
 #: ../data/glade/FinishPurchaseStep.ui.h:2
 #: ../data/glade/PurchaseDetailsDialog.ui.h:7
-#: ../stoqlib/reporting/purchase.py:196
+#: ../stoqlib/reporting/purchase.py:195
 msgid "Expected Receival Date:"
 msgstr "Data esperada de recebimento:"
 
@@ -918,15 +878,15 @@ msgstr "Vendedor:"
 
 #: ../data/glade/FinishPurchaseStep.ui.h:6
 #: ../data/glade/PurchaseDetailsDialog.ui.h:26
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:17
-#: ../data/glade/SalesPersonStep.ui.h:15 ../stoqlib/reporting/purchase.py:188
-#: ../stoqlib/reporting/purchase.py:326
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:25
+#: ../data/glade/SalesPersonStep.ui.h:15 ../stoqlib/reporting/purchase.py:187
+#: ../stoqlib/reporting/purchase.py:325
 msgid "Transporter:"
 msgstr "Transportadora:"
 
 #: ../data/glade/FiscalBookEntryEditor.ui.h:3
 #: ../data/glade/ProductsAdjustment.ui.h:4
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:8
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:12
 #: ../data/glade/SaleDetailsDialog.ui.h:7 ../data/glade/SalesPersonStep.ui.h:8
 msgid "Invoice Number:"
 msgstr "Nota fiscal:"
@@ -967,7 +927,7 @@ msgid "Start Date:"
 msgstr "Data inicial:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:8
-#: ../data/glade/OnSaleInfoSlave.ui.h:4
+#: ../data/glade/OnSaleInfoSlave.ui.h:5
 msgid "To:"
 msgstr "Até:"
 
@@ -1020,37 +980,29 @@ msgid "Spouse:"
 msgstr "Cônjuge:"
 
 #: ../data/glade/IndividualDocuments.ui.h:1
-msgid "   .   .   -  "
-msgstr "   .   .   -  "
-
-#: ../data/glade/IndividualDocuments.ui.h:2
-msgid "000.000.000-00"
-msgstr "000.000.000-00"
-
-#: ../data/glade/IndividualDocuments.ui.h:3
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:3
 #: ../plugins/ecf/paulistainvoicedialog.py:63
 #: ../stoqlib/reporting/loanreceipt.py:153
 msgid "CPF:"
 msgstr "CPF:"
 
-#: ../data/glade/IndividualDocuments.ui.h:4
+#: ../data/glade/IndividualDocuments.ui.h:2
 msgid ""
 "RG Expedition\n"
 "Date:"
 msgstr "Data de expedição do RG:"
 
-#: ../data/glade/IndividualDocuments.ui.h:6
+#: ../data/glade/IndividualDocuments.ui.h:4
 msgid ""
 "RG Expedition\n"
 "Local:"
 msgstr "Local de expedição do RG:"
 
-#: ../data/glade/IndividualDocuments.ui.h:8
+#: ../data/glade/IndividualDocuments.ui.h:6
 msgid "RG Number:"
 msgstr "Número do RG:"
 
-#: ../data/glade/IndividualDocuments.ui.h:9
+#: ../data/glade/IndividualDocuments.ui.h:7
 msgid "client_id_slave"
 msgstr "client_id_slave"
 
@@ -1058,61 +1010,81 @@ msgstr "client_id_slave"
 msgid "<b></b>"
 msgstr "<b></b>"
 
+#: ../data/glade/InstallationModeStep.ui.h:1
+msgid "Create a database with example in demonstration mode."
+msgstr ""
+
+#: ../data/glade/InstallationModeStep.ui.h:2
+msgid "Create an empty database for production use."
+msgstr ""
+
+#: ../data/glade/InstallationModeStep.ui.h:3
+msgid "Database initialization"
+msgstr ""
+
+#: ../data/glade/InstallationModeStep.ui.h:5
+msgid ""
+"Want to import your data from another software or from spreadsheets? We can "
+"help you.\n"
+"\n"
+"<a href=\"http://www.stoq.com.br/pt-br/more/contact\">Send the data</a> you "
+"want imported to us, and we will give a response within 2 business days."
+msgstr ""
+
+#: ../data/glade/InstallationModeStep.ui.h:8
+msgid "Would you like to:"
+msgstr ""
+
 #: ../data/glade/InstallmentConfirmation.ui.h:3
 msgid "Details..."
 msgstr "Detalhes..."
 
-#: ../data/glade/InstallmentConfirmation.ui.h:4
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:3
+#. Do not translate $CURRENCY
+#: ../data/glade/InstallmentConfirmation.ui.h:5
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:4
 msgid "Discount ($CURRENCY):"
 msgstr "Desconto ($CURRENCY):"
 
-#: ../data/glade/InstallmentConfirmation.ui.h:5
+#: ../data/glade/InstallmentConfirmation.ui.h:6
 msgid "Installment value:"
 msgstr "Valor das parcelas:"
 
-#: ../data/glade/InstallmentConfirmation.ui.h:6
+#. Do not translate $CURRENCY
+#: ../data/glade/InstallmentConfirmation.ui.h:8
 msgid "Interest ($CURRENCY):"
 msgstr "Juros ($CURRENCY):"
 
-#: ../data/glade/InstallmentConfirmation.ui.h:7
+#: ../data/glade/InstallmentConfirmation.ui.h:9
 msgid "Order number:"
 msgstr "Número do pedido:"
 
-#: ../data/glade/InstallmentConfirmation.ui.h:8
+#: ../data/glade/InstallmentConfirmation.ui.h:10
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:5
 msgid "Paid date:"
 msgstr "Data do pagamento:"
 
-#: ../data/glade/InstallmentConfirmation.ui.h:9
+#: ../data/glade/InstallmentConfirmation.ui.h:11
 msgid "Pay interest"
 msgstr "Pagar juros"
 
-#: ../data/glade/InstallmentConfirmation.ui.h:10
+#: ../data/glade/InstallmentConfirmation.ui.h:12
 msgid "Pay penalty"
 msgstr "Pagar multa"
 
-#: ../data/glade/InstallmentConfirmation.ui.h:11
+#. Do not translate $CURRENCY
+#: ../data/glade/InstallmentConfirmation.ui.h:14
 msgid "Penalty ($CURRENCY):"
 msgstr "Multa ($CURRENCY):"
 
-#: ../data/glade/InstallmentConfirmation.ui.h:12
+#: ../data/glade/InstallmentConfirmation.ui.h:15
 msgid "Total value:"
 msgstr "Valor total:"
 
 #: ../data/glade/InvoiceDetailsEditor.ui.h:1
-msgid "  -  -    "
-msgstr "  -  -    "
-
-#: ../data/glade/InvoiceDetailsEditor.ui.h:2
-msgid "  :  "
-msgstr "  :  "
-
-#: ../data/glade/InvoiceDetailsEditor.ui.h:3
 msgid "Expedition Date:"
 msgstr "Data de expedição:"
 
-#: ../data/glade/InvoiceDetailsEditor.ui.h:4
+#: ../data/glade/InvoiceDetailsEditor.ui.h:2
 #: ../data/glade/OpenInventoryDialog.ui.h:4
 msgid "Time:"
 msgstr "Hora:"
@@ -1157,13 +1129,13 @@ msgstr "Leiaute:"
 #: ../data/glade/ProductsAdjustment.ui.h:1
 #: ../data/glade/PurchaseDetailsDialog.ui.h:3
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:1
-#: ../data/glade/StartPurchaseStep.ui.h:3 ../data/glade/StartQuoteStep.ui.h:1
+#: ../data/glade/StartPurchaseStep.ui.h:4 ../data/glade/StartQuoteStep.ui.h:1
 #: ../data/glade/StartStockDecreaseStep.ui.h:1
 #: ../data/glade/StationEditor.ui.h:2
 #: ../data/glade/StockDecreaseDetails.ui.h:1 ../stoqlib/gui/base/search.py:392
 #: ../stoqlib/reporting/loanreceipt.py:83
-#: ../stoqlib/reporting/production.py:125 ../stoqlib/reporting/purchase.py:258
-#: ../stoqlib/reporting/purchase.py:338
+#: ../stoqlib/reporting/production.py:125 ../stoqlib/reporting/purchase.py:257
+#: ../stoqlib/reporting/purchase.py:337
 #: ../stoqlib/reporting/stockdecreasereceipt.py:69
 msgid "Branch:"
 msgstr "Filial:"
@@ -1182,10 +1154,10 @@ msgstr "Data de expiração:"
 #: ../data/glade/PurchaseDetailsDialog.ui.h:10
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:8
 #: ../data/glade/SaleDetailsDialog.ui.h:10
-#: ../data/glade/StartPurchaseStep.ui.h:9 ../data/glade/TillClosing.ui.h:5
+#: ../data/glade/StartPurchaseStep.ui.h:10 ../data/glade/TillClosing.ui.h:6
 #: ../stoqlib/reporting/loanreceipt.py:72
-#: ../stoqlib/reporting/production.py:120 ../stoqlib/reporting/purchase.py:255
-#: ../stoqlib/reporting/purchase.py:334
+#: ../stoqlib/reporting/production.py:120 ../stoqlib/reporting/purchase.py:254
+#: ../stoqlib/reporting/purchase.py:333
 msgid "Open Date:"
 msgstr "Data de abertura:"
 
@@ -1194,9 +1166,9 @@ msgstr "Data de abertura:"
 #: ../data/glade/OpenProductionOrderStep.ui.h:6
 #: ../data/glade/ProductionDetailsDialog.ui.h:8
 #: ../data/glade/PurchaseDetailsDialog.ui.h:19
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:14
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:21
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:10
-#: ../data/glade/SaleReturnSlave.ui.h:8
+#: ../data/glade/SaleReturnSlave.ui.h:9
 #: ../data/glade/StockDecreaseDetails.ui.h:7
 #: ../data/glade/TransferOrderDetails.ui.h:4
 #: ../stoqlib/gui/wizards/loanwizard.py:86
@@ -1250,25 +1222,21 @@ msgid "Penalty:"
 msgstr "Multa:"
 
 #: ../data/glade/MultipleMethodSlave.ui.h:1
-msgid "<b>$CURRENCY:</b>"
-msgstr "<b>$CURRENCY:</b>"
-
-#: ../data/glade/MultipleMethodSlave.ui.h:2
 msgid "<b>Method:</b>"
 msgstr "<b>Forma:</b>"
 
-#: ../data/glade/MultipleMethodSlave.ui.h:3
+#: ../data/glade/MultipleMethodSlave.ui.h:2
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:2
 #: ../stoqlib/gui/slaves/paymentslave.py:986
 msgid "Missing:"
 msgstr "Faltando:"
 
-#: ../data/glade/MultipleMethodSlave.ui.h:4
+#: ../data/glade/MultipleMethodSlave.ui.h:3
 msgid "Payments:"
 msgstr "Pagamentos:"
 
-#: ../data/glade/MultipleMethodSlave.ui.h:5
-#: ../data/glade/PaymentListSlave.ui.h:3
+#: ../data/glade/MultipleMethodSlave.ui.h:4
+#: ../data/glade/PaymentListSlave.ui.h:2
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:6
 #: ../data/glade/PurchaseDetailsDialog.ui.h:25
 #: ../data/glade/PurchaseItemEditor.ui.h:10
@@ -1289,11 +1257,11 @@ msgstr "Pagamentos:"
 #: ../stoqlib/gui/wizards/productionwizard.py:129
 #: ../stoqlib/gui/wizards/productionwizard.py:218
 #: ../stoqlib/reporting/loanreceipt.py:131 ../stoqlib/reporting/sale.py:128
-#: ../stoqlib/reporting/sale.py:303 ../stoqlib/reporting/template.py:338
+#: ../stoqlib/reporting/sale.py:309 ../stoqlib/reporting/template.py:338
 msgid "Total:"
 msgstr "Total:"
 
-#: ../data/glade/MultipleMethodSlave.ui.h:6
+#: ../data/glade/MultipleMethodSlave.ui.h:5
 msgid "_Cash"
 msgstr "_Dinheiro"
 
@@ -1305,8 +1273,9 @@ msgstr "Notas:"
 msgid "<u>Currently on Sale:</u>"
 msgstr "<u>Preço de promoção:</u>"
 
-#: ../data/glade/OnSaleInfoSlave.ui.h:3 ../data/glade/PriceEntrySlave.ui.h:1
-#: ../data/glade/PriceLabelSlave.ui.h:1
+#. Do not translate $CURRENCY
+#: ../data/glade/OnSaleInfoSlave.ui.h:4 ../data/glade/PriceEntrySlave.ui.h:2
+#: ../data/glade/PriceLabelSlave.ui.h:2
 msgid "Price ($CURRENCY):"
 msgstr "Preço ($CURRENCY):"
 
@@ -1356,8 +1325,8 @@ msgstr "Alterar para:"
 #: ../data/glade/PaymentChangeDialog.ui.h:3
 #: ../data/glade/ProductionDetailsDialog.ui.h:6
 #: ../data/glade/PurchaseDetailsDialog.ui.h:11
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:11
-#: ../data/glade/StartPurchaseStep.ui.h:10
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:16
+#: ../data/glade/StartPurchaseStep.ui.h:11
 msgid "Order Number:"
 msgstr "Número do pedido:"
 
@@ -1367,10 +1336,6 @@ msgstr ""
 "<b>Selecione uma data ou um intervalo para ser visualizado no relatório:</b>"
 
 #: ../data/glade/PaymentListSlave.ui.h:1
-msgid "$0.00"
-msgstr "$0.00"
-
-#: ../data/glade/PaymentListSlave.ui.h:2
 #: ../stoqlib/gui/slaves/paymentslave.py:268
 msgid "Outstanding:"
 msgstr "A pagar:"
@@ -1464,30 +1429,33 @@ msgid "<b>Plugins</b>"
 msgstr "<b>Plugins</b>"
 
 #: ../data/glade/PluginStep.ui.h:2
-msgid "ECF (Fiscal Printer support)"
-msgstr "ECF (Impressora fiscal)"
+msgid "ECF (Fiscal printer support)"
+msgstr "ECF (Suporte a impressoras fiscais)"
 
 #: ../data/glade/PluginStep.ui.h:3
-msgid "For testing purposes it is recommended to select \"No plugins\"."
-msgstr "Para fins de teste, é recomendado escolher a opção \"Sem plugins\"."
+msgid "If you just want to test Stoq it is recommended to select no plugin."
+msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:4
-msgid ""
-"Most of the plugins are specific to the brazilian market and once\n"
-"a plugin is activated it will not be possible to disable it.\n"
-"\n"
-"\n"
-"<b>Select the plugins you want to enable:</b>"
-msgstr ""
-"A maioria dos plugins são especificas para o mercado Brasileiro\n"
-"uma vez ativado, não será possível sua desativação.\n"
-"\n"
-"\n"
-"<b>Selecione o plugin que deseja habilitar:</b>"
-
-#: ../data/glade/PluginStep.ui.h:9
 msgid "NF-e (Eletronic Invoices)"
 msgstr "NF-e (Nota fiscal eletrônica)"
+
+#: ../data/glade/PluginStep.ui.h:5
+msgid ""
+"Once a plugin is activated it will not be possible to disable it.\n"
+"\n"
+"Select the plugins you want to enable:"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:8
+msgid ""
+"Select the plugins you would like to enable and then click <b>Forward</b> to "
+"continue."
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:9
+msgid "TEF (Credit card support)"
+msgstr ""
 
 #: ../data/glade/ProductAdjustmentDialog.ui.h:2
 #: ../data/glade/ProductStockHistoryDialog.ui.h:4
@@ -1593,8 +1561,8 @@ msgid ""
 "Additional \n"
 "Information:"
 msgstr ""
-"Informação \n"
-"Adicional:"
+"Informações \n"
+"adicionais:"
 
 #: ../data/glade/ProductSupplierEditor.ui.h:7
 msgid "Day(s)"
@@ -1625,7 +1593,7 @@ msgid "CSV..."
 msgstr "CSV..."
 
 #: ../data/glade/ProductionComponentSlave.ui.h:2
-#: ../stoqlib/gui/editors/producteditor.py:574
+#: ../stoqlib/gui/editors/producteditor.py:576
 msgid "Components"
 msgstr "Componentes"
 
@@ -1656,7 +1624,7 @@ msgid "Production:"
 msgstr "Produção:"
 
 #: ../data/glade/ProductionItemEditor.ui.h:6
-#: ../data/glade/SellableEditor.ui.h:14
+#: ../data/glade/SellableEditor.ui.h:16
 msgid "Unit:"
 msgstr "Unidade:"
 
@@ -1683,7 +1651,7 @@ msgstr "Procurando dispositivo..."
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:1
 msgid "Additional Info"
-msgstr "Informação adicional"
+msgstr "Informações adicionais"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:2
 msgid "Agreed Freight Type:"
@@ -1699,7 +1667,7 @@ msgstr "Alterações"
 msgid "Expected Freight Value:"
 msgstr "Valor previsto de transporte"
 
-#: ../data/glade/PurchaseDetailsDialog.ui.h:13 ../stoq/gui/purchase.py:203
+#: ../data/glade/PurchaseDetailsDialog.ui.h:13 ../stoq/gui/purchase.py:202
 #: ../stoqlib/domain/sale.py:352
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:82
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:480
@@ -1707,12 +1675,12 @@ msgstr "Valor previsto de transporte"
 msgid "Ordered"
 msgstr "Pedido"
 
-#: ../data/glade/PurchaseDetailsDialog.ui.h:16 ../stoq/gui/purchase.py:206
+#: ../data/glade/PurchaseDetailsDialog.ui.h:16 ../stoq/gui/purchase.py:205
 #: ../stoqlib/gui/search/productsearch.py:268
 #: ../stoqlib/gui/search/purchasesearch.py:88
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:84
-#: ../stoqlib/reporting/payment.py:134 ../stoqlib/reporting/product.py:138
-#: ../stoqlib/reporting/purchase.py:70 ../stoqlib/reporting/purchase.py:100
+#: ../stoqlib/reporting/payment.py:134 ../stoqlib/reporting/product.py:140
+#: ../stoqlib/reporting/purchase.py:70 ../stoqlib/reporting/purchase.py:99
 msgid "Received"
 msgstr "Recebido"
 
@@ -1731,19 +1699,19 @@ msgid "Salesperson:"
 msgstr "Vendedor:"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:22
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:16
-#: ../data/glade/StartPurchaseStep.ui.h:11
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:24
+#: ../data/glade/StartPurchaseStep.ui.h:12
 #: ../data/glade/SupplierDetailsDialog.ui.h:7
 #: ../stoqlib/gui/dialogs/paymentchangedialog.py:73
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:342
-#: ../stoqlib/reporting/purchase.py:257 ../stoqlib/reporting/purchase.py:337
+#: ../stoqlib/reporting/purchase.py:256 ../stoqlib/reporting/purchase.py:336
 msgid "Supplier:"
 msgstr "Fornecedor:"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:24
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:3
 #: ../data/glade/SaleDetailsDialog.ui.h:18
-#: ../data/glade/SaleReturnSlave.ui.h:11
+#: ../data/glade/SaleReturnSlave.ui.h:12
 msgid "Total Paid:"
 msgstr "Total pago:"
 
@@ -1759,14 +1727,6 @@ msgstr ""
 #: ../stoqlib/gui/wizards/receivingwizard.py:201
 msgid "Total Received:"
 msgstr "Total recebido:"
-
-#: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:5
-msgid "kiwilabel1"
-msgstr "label"
-
-#: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:7
-msgid "kiwilabel3"
-msgstr "label"
 
 #: ../data/glade/PurchaseFinishProductListStep.ui.h:1
 msgid "<b>Products not received will be cancelled.</b>"
@@ -1805,6 +1765,7 @@ msgid "_Details"
 msgstr "_Detalhes"
 
 #: ../data/glade/PurchaseSelectionStep.ui.h:2 ../data/glade/purchase.ui.h:6
+#: ../stoqlib/reporting/purchase_receival.py:35
 msgid "purchase"
 msgstr "compra"
 
@@ -1840,42 +1801,49 @@ msgstr "_Produtos faltando"
 msgid "_View Products"
 msgstr "_Visualizar produtos"
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:4
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:6
 msgid "Freight ($CURRENCY):"
 msgstr "Frete ($CURRENCY):"
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:5
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:7
 #: ../data/glade/TransporterDataSlave.ui.h:4
-#: ../stoqlib/reporting/purchase.py:327
+#: ../stoqlib/reporting/purchase.py:326
 msgid "Freight:"
 msgstr "Frete:"
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:6
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:9
 msgid "ICMS Total ($CURRENCY):"
 msgstr "Total ICMS ($CURRENCY):"
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:7
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:11
 msgid "IPI ($CURRENCY):"
 msgstr "IPI ($CURRENCY):"
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:9
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:14
 msgid "Invoice Total ($CURRENCY):"
 msgstr "Total da nota fiscal ($CURRENCY):"
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:10
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:15
 #: ../data/glade/SalesPersonStep.ui.h:9
 msgid "Notes..."
 msgstr "Notas..."
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:12
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:18
 msgid "Others Expenditures ($CURRENCY):"
 msgstr "Outras despesas ($CURRENCY):"
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:13
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:20
 msgid "Products Total ($CURRENCY):"
 msgstr "Total dos produtos ($CURRENCY):"
 
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:15
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:23
 msgid "Secure ($CURRENCY):"
 msgstr "Seguro ($CURRENCY):"
 
@@ -1897,7 +1865,7 @@ msgstr "Produtos recebidos"
 
 #: ../data/glade/ReceivingOrderDetailsDialog.ui.h:3
 #: ../stoqlib/gui/editors/paymenteditor.py:319
-#: ../stoqlib/reporting/purchase.py:284
+#: ../stoqlib/reporting/purchase.py:283
 msgid "Receiving Details"
 msgstr "Detalhes de recebimentos"
 
@@ -1910,9 +1878,9 @@ msgid "<b>Renegotiation Number:</b>"
 msgstr "<b>Renegociação número:</b>"
 
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:4
-#: ../data/glade/SaleDetailsDialog.ui.h:4 ../data/glade/SaleReturnSlave.ui.h:5
+#: ../data/glade/SaleDetailsDialog.ui.h:4 ../data/glade/SaleReturnSlave.ui.h:6
 #: ../data/glade/SearchDialogDetailsSlave.ui.h:1
-#: ../stoqlib/gui/editors/producteditor.py:520
+#: ../stoqlib/gui/editors/producteditor.py:522
 msgid "Details"
 msgstr "Detalhes"
 
@@ -1977,19 +1945,20 @@ msgstr "Data de cancelamento:"
 msgid "Cancellation Type:"
 msgstr "Tipo de cancelamento:"
 
-#: ../data/glade/SaleReturnSlave.ui.h:4
+#. Do not translate $CURRENCY
+#: ../data/glade/SaleReturnSlave.ui.h:5
 msgid "Deduction ($CURRENCY):"
 msgstr "Dedução ($CURRENCY):"
 
-#: ../data/glade/SaleReturnSlave.ui.h:6
+#: ../data/glade/SaleReturnSlave.ui.h:7
 msgid "Order Total:"
 msgstr "Total do Pedido:"
 
-#: ../data/glade/SaleReturnSlave.ui.h:9
+#: ../data/glade/SaleReturnSlave.ui.h:10
 msgid "Return Invoice Number:"
 msgstr "Número da nota fiscal de devolução:"
 
-#: ../data/glade/SaleReturnSlave.ui.h:10
+#: ../data/glade/SaleReturnSlave.ui.h:11
 msgid "Return Value:"
 msgstr "Valor estornado:"
 
@@ -2059,34 +2028,36 @@ msgstr "Código de barras:"
 msgid "Consignment:"
 msgstr "Consignação:"
 
-#: ../data/glade/SellableEditor.ui.h:7
+#. Do not translate $CURRENCY
+#: ../data/glade/SellableEditor.ui.h:8
 msgid "Cost ($CURRENCY):"
 msgstr "Custo ($CURRENCY):"
 
-#: ../data/glade/SellableEditor.ui.h:8
+#: ../data/glade/SellableEditor.ui.h:9
 msgid "Default Sales C.F.O.P.:"
 msgstr "C.F.O.P. padrão para vendas:"
 
-#: ../data/glade/SellableEditor.ui.h:10 ../stoqlib/gui/base/dialogs.py:470
+#: ../data/glade/SellableEditor.ui.h:11 ../stoqlib/gui/base/dialogs.py:470
 #: ../stoqlib/gui/dialogs/productiondialog.py:157
-#: ../stoqlib/gui/editors/parameterseditor.py:133
+#: ../stoqlib/gui/editors/parameterseditor.py:140
 #: ../stoqlib/gui/search/parametersearch.py:95
 msgid "No"
 msgstr "Não"
 
-#: ../data/glade/SellableEditor.ui.h:11
-#: ../data/glade/SellablePriceEditor.ui.h:11
+#. Do not translate $CURRENCY
+#: ../data/glade/SellableEditor.ui.h:13
+#: ../data/glade/SellablePriceEditor.ui.h:12
 msgid "Sale Price ($CURRENCY):"
 msgstr "Preço de venda ($CURRENCY):"
 
-#: ../data/glade/SellableEditor.ui.h:13
+#: ../data/glade/SellableEditor.ui.h:15
 #: ../data/glade/TributarySituationSlave.ui.h:3
 msgid "Tributary Situation:"
 msgstr "Situação tributária:"
 
-#: ../data/glade/SellableEditor.ui.h:15 ../stoqlib/gui/base/dialogs.py:470
+#: ../data/glade/SellableEditor.ui.h:17 ../stoqlib/gui/base/dialogs.py:470
 #: ../stoqlib/gui/dialogs/productiondialog.py:156
-#: ../stoqlib/gui/editors/parameterseditor.py:127
+#: ../stoqlib/gui/editors/parameterseditor.py:134
 #: ../stoqlib/gui/search/parametersearch.py:95
 #: ../stoqlib/gui/wizards/personwizard.py:97
 msgid "Yes"
@@ -2133,40 +2104,37 @@ msgstr "Data estimada de resolução:"
 msgid "Service Details:"
 msgstr "Detalhes do serviço:"
 
-#: ../data/glade/SimpleEntryEditor.ui.h:1
-msgid "label: "
-msgstr "rótulo: "
-
-#: ../data/glade/StartPurchaseStep.ui.h:1
+#. Do not translate $CURRENCY
+#: ../data/glade/StartPurchaseStep.ui.h:2
 msgid "$CURRENCY"
 msgstr "$CURRENCY"
 
-#: ../data/glade/StartPurchaseStep.ui.h:2
+#: ../data/glade/StartPurchaseStep.ui.h:3
 msgid "Add a new supplier"
 msgstr "Adicionar um novo fornecedor"
 
-#: ../data/glade/StartPurchaseStep.ui.h:4
+#: ../data/glade/StartPurchaseStep.ui.h:5
 msgid "CIF (Cost Insurance Freight)"
 msgstr "CIF (Custo, seguro e frete)"
 
-#: ../data/glade/StartPurchaseStep.ui.h:5
+#: ../data/glade/StartPurchaseStep.ui.h:6
 msgid "Edit selected supplier"
 msgstr "Editar o fornecedor selecionado"
 
-#: ../data/glade/StartPurchaseStep.ui.h:6
+#: ../data/glade/StartPurchaseStep.ui.h:7
 msgid "Expected Freight:"
 msgstr "Previsão para frete:"
 
-#: ../data/glade/StartPurchaseStep.ui.h:7
+#: ../data/glade/StartPurchaseStep.ui.h:8
 msgid "FOB (Free On Board)"
 msgstr "FOB (Livre a bordo)"
 
-#: ../data/glade/StartPurchaseStep.ui.h:8
+#: ../data/glade/StartPurchaseStep.ui.h:9
 msgid "Freight Type:"
 msgstr "Tipo de frete:"
 
 #. To be filled
-#: ../data/glade/StartQuoteStep.ui.h:2 ../stoqlib/reporting/purchase.py:336
+#: ../data/glade/StartQuoteStep.ui.h:2 ../stoqlib/reporting/purchase.py:335
 msgid "Deadline:"
 msgstr "Prazo:"
 
@@ -2253,7 +2221,7 @@ msgstr "Valor atual:"
 #: ../stoqlib/lib/parameters.py:156 ../stoqlib/lib/parameters.py:162
 #: ../stoqlib/lib/parameters.py:168 ../stoqlib/lib/parameters.py:186
 #: ../stoqlib/lib/parameters.py:284 ../stoqlib/lib/parameters.py:296
-#: ../stoqlib/lib/parameters.py:301
+#: ../stoqlib/lib/parameters.py:301 ../stoqlib/lib/parameters.py:347
 msgid "General"
 msgstr "Geral"
 
@@ -2269,6 +2237,39 @@ msgstr "Nome do parâmetro:"
 msgid "Origin:"
 msgstr "Origem:"
 
+#: ../data/glade/TefStep.ui.h:1
+msgid "<b>TEF Plugin</b>"
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:2
+msgid ""
+"An error ocurred sending your details. Please <a "
+"href=\"http://www.stoq.com.br/pt-br/more/contact\">contact us</a>."
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:3
+msgid "Email:"
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:4
+msgid ""
+"Enabling TEF requires installing additional software.\n"
+"\n"
+"Please fill in your details and will contact you within two business days:"
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:7
+msgid "Enviando Dados..."
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:8
+msgid "Fill in the form above and then click <b>Forward</b> to continue."
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:10
+msgid "Phone:"
+msgstr ""
+
 #: ../data/glade/TillClosing.ui.h:1
 msgid "<b>Cash Amounts:</b>"
 msgstr "<b>Quantia:</b>"
@@ -2277,20 +2278,21 @@ msgstr "<b>Quantia:</b>"
 msgid "<b>General Details:</b>"
 msgstr "<b>Detalhes gerais:</b>"
 
-#: ../data/glade/TillClosing.ui.h:3
+#. Do not translate $CURRENCY
+#: ../data/glade/TillClosing.ui.h:4
 msgid "Amount Removed ($CURRENCY):"
 msgstr "Quantia retirada ($CURRENCY):"
 
-#: ../data/glade/TillClosing.ui.h:4
+#: ../data/glade/TillClosing.ui.h:5
 msgid "Float Remaining:"
 msgstr "Fundo de caixa:"
 
-#: ../data/glade/TillClosing.ui.h:6
+#: ../data/glade/TillClosing.ui.h:7
 msgid "Till Closing"
 msgstr "Fechamento de caixa"
 
 #: ../data/glade/TillFiscalOperationsToolbar.ui.h:1
-#: ../stoqlib/gui/fiscalprinter.py:368 ../stoqlib/gui/fiscalprinter.py:375
+#: ../stoqlib/gui/fiscalprinter.py:380 ../stoqlib/gui/fiscalprinter.py:387
 msgid "Resume"
 msgstr "Resumir"
 
@@ -2298,11 +2300,12 @@ msgstr "Resumir"
 msgid "Till Out..."
 msgstr "Saída de caixa..."
 
-#: ../data/glade/TillOpening.ui.h:2
+#. Do not translate $CURRENCY
+#: ../data/glade/TillOpening.ui.h:3
 msgid "Cash to add ($CURRENCY):"
 msgstr "Valor a adicionar ($CURRENCY):"
 
-#: ../data/glade/TillOpening.ui.h:3 ../stoqlib/gui/editors/tilleditor.py:94
+#: ../data/glade/TillOpening.ui.h:4 ../stoqlib/gui/editors/tilleditor.py:94
 msgid "Till Opening"
 msgstr "Abertura de caixa"
 
@@ -2364,6 +2367,23 @@ msgstr "Aplicativos disponíveis:"
 msgid "Profile Name:"
 msgstr "Nome do perfil:"
 
+#: ../data/glade/WelcomeStep.ui.h:2
+msgid ""
+"Thank you for installing Stoq, you'll be ready to use it in just a few "
+"minutes.\n"
+"\n"
+"This assistant will help you configure Stoq to create a new database or "
+"connect to an existing.\n"
+"\n"
+"If you're having trouble with the installation or need help importing your "
+"database from another application, don't hesitate to <a "
+"href=\"http://www.stoq.com.br/pt-br/more/contact\">contact us</a>."
+msgstr ""
+
+#: ../data/glade/WelcomeStep.ui.h:7
+msgid "Welcome to the Stoq installation wizard."
+msgstr ""
+
 #: ../data/glade/admin.ui.h:1
 msgctxt "yes"
 msgid "admin"
@@ -2384,7 +2404,7 @@ msgid "payable"
 msgstr "Contas a pagar"
 
 #: ../data/glade/inventory.ui.h:1 ../plugins/ecf/ecfui.py:230
-#: ../plugins/ecf/ecfui.py:283 ../stoq/gui/pos.py:751 ../stoq/gui/till.py:282
+#: ../plugins/ecf/ecfui.py:283
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -2429,7 +2449,7 @@ msgstr "Iniciar produção"
 msgid "production"
 msgstr "produção"
 
-#: ../data/glade/purchase.ui.h:1 ../stoq/gui/purchase.py:314
+#: ../data/glade/purchase.ui.h:1
 msgid "Confirm"
 msgstr "Confirmar"
 
@@ -2518,12 +2538,12 @@ msgstr "Na filial:"
 #. 'this point')
 #: ../plugins/books/bookssearch.py:73 ../plugins/books/publishersearch.py:72
 #: ../stoq/gui/inventory.py:147 ../stoq/gui/payable.py:391
-#: ../stoq/gui/production.py:145 ../stoq/gui/purchase.py:348
+#: ../stoq/gui/production.py:145 ../stoq/gui/purchase.py:353
 #: ../stoq/gui/receivable.py:185 ../stoq/gui/sales.py:319
 #: ../stoq/gui/till.py:225 ../stoqlib/gui/base/search.py:389
 #: ../stoqlib/gui/base/search.py:404 ../stoqlib/gui/search/loansearch.py:60
 #: ../stoqlib/gui/search/paymentsearch.py:63
-#: ../stoqlib/gui/search/paymentsearch.py:133
+#: ../stoqlib/gui/search/paymentsearch.py:134
 #: ../stoqlib/gui/search/personsearch.py:91
 #: ../stoqlib/gui/search/personsearch.py:97
 #: ../stoqlib/gui/search/personsearch.py:236
@@ -2545,7 +2565,7 @@ msgstr "com situação:"
 #: ../plugins/books/bookssearch.py:84 ../stoq/gui/stock.py:182
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:87
 #: ../stoqlib/gui/search/productsearch.py:165
-#: ../stoqlib/gui/search/sellablesearch.py:140
+#: ../stoqlib/gui/search/sellablesearch.py:146
 #: ../stoqlib/gui/search/servicesearch.py:108
 #: ../stoqlib/gui/wizards/abstractwizard.py:108
 msgid "Barcode"
@@ -2576,7 +2596,7 @@ msgstr "Código de barras"
 #: ../stoqlib/gui/search/productsearch.py:337
 #: ../stoqlib/gui/search/productsearch.py:391
 #: ../stoqlib/gui/search/salesearch.py:177
-#: ../stoqlib/gui/search/sellablesearch.py:137
+#: ../stoqlib/gui/search/sellablesearch.py:143
 #: ../stoqlib/gui/search/servicesearch.py:106
 #: ../stoqlib/gui/slaves/productionslave.py:165
 #: ../stoqlib/gui/wizards/abstractwizard.py:107
@@ -2586,7 +2606,7 @@ msgstr "Código de barras"
 #: ../stoqlib/gui/wizards/productionwizard.py:260
 #: ../stoqlib/gui/wizards/purchasewizard.py:259
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:162
-#: ../stoqlib/reporting/loanreceipt.py:99 ../stoqlib/reporting/product.py:187
+#: ../stoqlib/reporting/loanreceipt.py:99 ../stoqlib/reporting/product.py:189
 #: ../stoqlib/reporting/sale.py:98
 #: ../stoqlib/reporting/stockdecreasereceipt.py:91
 #: ../stoqlib/reporting/template.py:327
@@ -2607,7 +2627,7 @@ msgstr "Código"
 #: ../stoqlib/gui/search/productionsearch.py:123
 #: ../stoqlib/gui/search/productsearch.py:167
 #: ../stoqlib/gui/search/productsearch.py:394
-#: ../stoqlib/gui/search/sellablesearch.py:146
+#: ../stoqlib/gui/search/sellablesearch.py:152
 #: ../stoqlib/gui/slaves/productionslave.py:166
 #: ../stoqlib/gui/wizards/abstractwizard.py:111
 #: ../stoqlib/gui/wizards/productionwizard.py:183
@@ -2617,7 +2637,7 @@ msgstr "Código"
 #: ../stoqlib/gui/wizards/salequotewizard.py:210
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:165
 #: ../stoqlib/reporting/loanreceipt.py:101
-#: ../stoqlib/reporting/purchase.py:126 ../stoqlib/reporting/purchase.py:313
+#: ../stoqlib/reporting/purchase.py:125 ../stoqlib/reporting/purchase.py:312
 msgid "Category"
 msgstr "Categoria"
 
@@ -2661,7 +2681,7 @@ msgstr "Idioma"
 #: ../stoqlib/gui/dialogs/quotedialog.py:95
 #: ../stoqlib/gui/dialogs/receivingdialog.py:86
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:85
-#: ../stoqlib/gui/editors/producteditor.py:417
+#: ../stoqlib/gui/editors/producteditor.py:419
 #: ../stoqlib/gui/search/productsearch.py:178
 #: ../stoqlib/gui/search/servicesearch.py:114
 #: ../stoqlib/gui/wizards/consignmentwizard.py:162
@@ -2671,8 +2691,8 @@ msgstr "Idioma"
 #: ../stoqlib/gui/wizards/purchasewizard.py:270
 #: ../stoqlib/gui/wizards/receivingwizard.py:290
 #: ../stoqlib/gui/wizards/salequotewizard.py:218
-#: ../stoqlib/reporting/product.py:65 ../stoqlib/reporting/purchase.py:135
-#: ../stoqlib/reporting/purchase.py:320 ../stoqlib/reporting/service.py:54
+#: ../stoqlib/reporting/product.py:67 ../stoqlib/reporting/purchase.py:134
+#: ../stoqlib/reporting/purchase.py:319 ../stoqlib/reporting/service.py:54
 msgid "Cost"
 msgstr "Custo"
 
@@ -2681,16 +2701,16 @@ msgstr "Custo"
 #: ../stoqlib/gui/dialogs/saledetails.py:176
 #: ../stoqlib/gui/search/loansearch.py:87
 #: ../stoqlib/gui/search/productsearch.py:181
-#: ../stoqlib/gui/search/sellablesearch.py:144
+#: ../stoqlib/gui/search/sellablesearch.py:150
 #: ../stoqlib/gui/search/servicesearch.py:118
 #: ../stoqlib/gui/wizards/loanwizard.py:338
 #: ../stoqlib/gui/wizards/salequotewizard.py:222
-#: ../stoqlib/reporting/loanreceipt.py:108 ../stoqlib/reporting/product.py:66
+#: ../stoqlib/reporting/loanreceipt.py:108 ../stoqlib/reporting/product.py:68
 #: ../stoqlib/reporting/sale.py:105 ../stoqlib/reporting/template.py:330
 msgid "Price"
 msgstr "Preço"
 
-#: ../plugins/books/bookssearch.py:116 ../stoqlib/reporting/product.py:67
+#: ../plugins/books/bookssearch.py:116 ../stoqlib/reporting/product.py:69
 msgid "Stock Total"
 msgstr "Estoque total"
 
@@ -2787,7 +2807,7 @@ msgstr "editoras"
 #: ../stoqlib/gui/search/personsearch.py:389
 #: ../stoqlib/gui/search/stationsearch.py:56
 #: ../stoqlib/gui/slaves/liaisonslave.py:47
-#: ../stoqlib/gui/wizards/personwizard.py:107 ../stoqlib/reporting/sale.py:273
+#: ../stoqlib/gui/wizards/personwizard.py:107 ../stoqlib/reporting/sale.py:279
 msgid "Name"
 msgstr "Nome"
 
@@ -2829,7 +2849,7 @@ msgstr "Constante de dispositivo"
 #: ../stoqlib/gui/dialogs/supplierdetails.py:149
 #: ../stoqlib/gui/dialogs/tillhistory.py:67
 #: ../stoqlib/gui/search/paymentsearch.py:91
-#: ../stoqlib/gui/search/paymentsearch.py:162
+#: ../stoqlib/gui/search/paymentsearch.py:163
 #: ../stoqlib/gui/search/tillsearch.py:123
 #: ../stoqlib/gui/slaves/installmentslave.py:248
 #: ../stoqlib/gui/slaves/paymentslave.py:250
@@ -2837,8 +2857,8 @@ msgstr "Constante de dispositivo"
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:134
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:92
 #: ../stoqlib/reporting/payment.py:50 ../stoqlib/reporting/payment.py:89
-#: ../stoqlib/reporting/payment.py:151 ../stoqlib/reporting/purchase.py:244
-#: ../stoqlib/reporting/sale.py:283 ../stoqlib/reporting/till.py:49
+#: ../stoqlib/reporting/payment.py:151 ../stoqlib/reporting/purchase.py:243
+#: ../stoqlib/reporting/sale.py:289 ../stoqlib/reporting/till.py:49
 msgid "Value"
 msgstr "Valor"
 
@@ -2891,7 +2911,7 @@ msgstr "A impressora fiscal não tem a constante para o imposto '%s'"
 #: ../stoqlib/gui/wizards/receivingwizard.py:288
 #: ../stoqlib/gui/wizards/salequotewizard.py:214
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:169
-#: ../stoqlib/reporting/product.py:194 ../stoqlib/reporting/production.py:151
+#: ../stoqlib/reporting/product.py:196 ../stoqlib/reporting/production.py:151
 #: ../stoqlib/reporting/production.py:183
 #: ../stoqlib/reporting/production.py:208
 msgid "Unit"
@@ -2956,11 +2976,11 @@ msgstr ""
 "utiliza-lo. Gostaria de reiniciar agora?"
 
 #: ../plugins/ecf/ecfprinterdialog.py:176
-msgid "Restart Later"
-msgstr "Reiniciar depois"
+msgid "Restart later"
+msgstr ""
 
 #: ../plugins/ecf/ecfprinterdialog.py:176
-msgid "Restart Now"
+msgid "Restart now"
 msgstr "Reiniciar agora"
 
 #: ../plugins/ecf/ecfprinterdialog.py:186
@@ -3032,7 +3052,6 @@ msgid "Ignore"
 msgstr "Ignorar"
 
 #: ../plugins/ecf/ecfui.py:232 ../plugins/ecf/ecfui.py:285
-#: ../stoq/gui/pos.py:751 ../stoq/gui/till.py:282
 msgid "Try Again"
 msgstr "Tentar novamente"
 
@@ -3081,8 +3100,8 @@ msgid ""
 msgstr ""
 "Você deseja realmente cancelar a última sangria número %d com valor %.2f ?"
 
-#: ../plugins/ecf/ecfui.py:409 ../stoqlib/gui/fiscalprinter.py:138
-#: ../stoqlib/gui/fiscalprinter.py:245
+#: ../plugins/ecf/ecfui.py:409 ../stoqlib/gui/dialogs/pluginsdialog.py:119
+#: ../stoqlib/gui/fiscalprinter.py:142 ../stoqlib/gui/fiscalprinter.py:257
 msgid "Not now"
 msgstr "Não agora"
 
@@ -3167,7 +3186,7 @@ msgid "The CPF is not valid."
 msgstr "O CPF não é válido"
 
 #: ../plugins/ecf/paulistainvoicedialog.py:104
-#: ../stoqlib/gui/dialogs/branchdialog.py:163
+#: ../stoqlib/gui/dialogs/branchdialog.py:167
 #: ../stoqlib/gui/templates/companytemplate.py:52
 msgid "The CNPJ is not valid."
 msgstr "O CNPJ não é válido"
@@ -3224,7 +3243,7 @@ msgstr "Categorias de pagamento"
 
 #: ../stoq/gui/admin.py:99
 msgid "Payment Methods"
-msgstr "Formas de pagamentos"
+msgstr "Formas de pagamento"
 
 #: ../stoq/gui/admin.py:101
 msgid "Parameters"
@@ -3234,14 +3253,14 @@ msgstr "Parâmetros"
 msgid "Plugins"
 msgstr "Plugins"
 
-#: ../stoq/gui/admin.py:105 ../stoqlib/gui/editors/producteditor.py:533
-#: ../stoqlib/gui/editors/producteditor.py:575
-#: ../stoqlib/gui/editors/sellableeditor.py:89
+#: ../stoq/gui/admin.py:105 ../stoqlib/gui/editors/producteditor.py:535
+#: ../stoqlib/gui/editors/producteditor.py:577
+#: ../stoqlib/gui/editors/sellableeditor.py:95
 msgid "Taxes"
 msgstr "Impostos"
 
-#: ../stoq/gui/admin.py:107 ../stoq/gui/purchase.py:170
-#: ../stoqlib/gui/editors/producteditor.py:530
+#: ../stoq/gui/admin.py:107 ../stoq/gui/purchase.py:169
+#: ../stoqlib/gui/editors/producteditor.py:532
 msgid "Suppliers"
 msgstr "Fornecedores"
 
@@ -3283,7 +3302,7 @@ msgstr "Admin"
 
 #. Search
 #: ../stoq/gui/admin.py:290 ../stoq/gui/payable.py:122 ../stoq/gui/pos.py:172
-#: ../stoq/gui/production.py:103 ../stoq/gui/purchase.py:150
+#: ../stoq/gui/production.py:103 ../stoq/gui/purchase.py:149
 #: ../stoq/gui/receivable.py:149 ../stoq/gui/sales.py:149
 #: ../stoq/gui/stock.py:143 ../stoq/gui/till.py:126
 msgid "_Search"
@@ -3374,7 +3393,7 @@ msgstr "Parâmetros..."
 msgid "Admin help"
 msgstr "Ajuda do admin"
 
-#: ../stoq/gui/application.py:109
+#: ../stoq/gui/application.py:107
 msgid ""
 "You are currently using an <b>unstable version</b> of Stoq that is under "
 "development,\n"
@@ -3387,7 +3406,7 @@ msgstr ""
 "mesmo corromper os seus dados\n"
 "<b>Não utilize em produção.</b>"
 
-#: ../stoq/gui/application.py:115
+#: ../stoq/gui/application.py:113
 msgid ""
 "There is an inventory process open at the moment.\n"
 "While that inventory is open, you will be unable to do operations that "
@@ -3397,174 +3416,178 @@ msgstr ""
 "Enquanto esse inventário é aberto, você não será capaz de realizar operações "
 "que modifiquem seu estoque."
 
-#: ../stoq/gui/application.py:145
-msgid "<b>You are using the examples database.</b>"
-msgstr "<b>Você está usando a base de exemplos.</b>"
+#: ../stoq/gui/application.py:136 ../stoq/gui/application.py:476
+msgid "Enable production mode"
+msgstr ""
 
-#: ../stoq/gui/application.py:150
-msgid "Hide"
-msgstr "Ocultar"
+#: ../stoq/gui/application.py:137
+msgid "You are using Stoq in demonstration mode."
+msgstr ""
 
-#: ../stoq/gui/application.py:152
-msgid "Remove examples"
-msgstr "Remover exemplos"
+#: ../stoq/gui/application.py:138
+#, python-format
+msgid ""
+"Some features are limited due to fiscal reasons. Click on '%s' to remove the "
+"limitations and examples."
+msgstr ""
 
 #. This method must be redefined in child when it's needed
-#: ../stoq/gui/application.py:273
+#: ../stoq/gui/application.py:260
 #, python-format
 msgid "Stoq - %s"
 msgstr "Stoq - %s"
 
-#: ../stoq/gui/application.py:328
+#: ../stoq/gui/application.py:315
 msgid "_Help"
 msgstr "_Ajuda"
 
-#: ../stoq/gui/application.py:329
+#: ../stoq/gui/application.py:316
 msgid "Contents"
 msgstr "Conteúdo"
 
-#: ../stoq/gui/application.py:331
+#: ../stoq/gui/application.py:318
 msgid "Show help for this Application"
 msgstr "Exibir ajuda para este aplicativo"
 
-#: ../stoq/gui/application.py:333
+#: ../stoq/gui/application.py:320
 msgid "Translate Stoq..."
 msgstr "Traduza o Stoq..."
 
-#: ../stoq/gui/application.py:334
+#: ../stoq/gui/application.py:321
 msgid "Translate this application online"
 msgstr "Traduza este aplicativo online"
 
-#: ../stoq/gui/application.py:335
+#: ../stoq/gui/application.py:322
 msgid "Get support online..."
 msgstr "Encontre suporte online..."
 
-#: ../stoq/gui/application.py:336
+#: ../stoq/gui/application.py:323
 msgid "Get support for Stoq online"
 msgstr "Encontre suporte online para o Stoq"
 
-#: ../stoq/gui/application.py:358
+#: ../stoq/gui/application.py:345
 #, python-format
 msgid "%s User"
 msgstr "Usuário %s"
 
-#: ../stoq/gui/application.py:359
+#: ../stoq/gui/application.py:346
 msgid "_Store"
 msgstr "_Gravar"
 
-#: ../stoq/gui/application.py:360
+#: ../stoq/gui/application.py:347
 msgid "Store a cookie"
 msgstr "Gravar cookie"
 
-#: ../stoq/gui/application.py:361
+#: ../stoq/gui/application.py:348
 msgid "_Clear"
 msgstr "_Limpar"
 
-#: ../stoq/gui/application.py:362
+#: ../stoq/gui/application.py:349
 msgid "Clear the cookie"
 msgstr "Limpar cookie"
 
-#: ../stoq/gui/application.py:363
+#: ../stoq/gui/application.py:350
 msgid "Chan_ge Password"
 msgstr "Alterar _senha"
 
-#: ../stoq/gui/application.py:364
+#: ../stoq/gui/application.py:351
 msgid "Change the password"
 msgstr "Alterar a senha"
 
-#: ../stoq/gui/application.py:365
+#: ../stoq/gui/application.py:352
 msgid "C_hange User"
 msgstr "_Trocar usuário"
 
-#: ../stoq/gui/application.py:366
+#: ../stoq/gui/application.py:353
 msgid "Change user"
 msgstr "Trocar usuário"
 
-#: ../stoq/gui/application.py:367
+#: ../stoq/gui/application.py:354
 msgid "Change Application"
 msgstr "Alternar aplicativo"
 
-#: ../stoq/gui/application.py:368
+#: ../stoq/gui/application.py:355
 msgid "Change application"
 msgstr "Alternar aplicativo"
 
-#: ../stoq/gui/application.py:389
+#: ../stoq/gui/application.py:376
 msgid "Debug"
 msgstr "Debug"
 
-#: ../stoq/gui/application.py:390
+#: ../stoq/gui/application.py:377
 msgid "Introspect slaves"
 msgstr "Introspectar slave"
 
-#: ../stoq/gui/application.py:485
+#: ../stoq/gui/application.py:472
 msgid ""
-"This will delete the current database and it's configuration. Are you sure?"
+"This will enable production mode and delete all examples. Are you sure?"
 msgstr ""
-"Isto irá remover a base de dados corrente e suas configurações. Você tem "
-"certeza?"
 
-#: ../stoq/gui/application.py:487 ../stoq/gui/financial.py:537
-#: ../stoq/gui/financial.py:552 ../stoqlib/gui/editors/producteditor.py:266
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:398
-msgid "Don't Remove"
-msgstr "Não remover"
+#: ../stoq/gui/application.py:475
+msgid "Continue testing"
+msgstr ""
 
-#: ../stoq/gui/application.py:487
-msgid "Remove Examples"
-msgstr "Remover exemplos"
-
-#: ../stoq/gui/application.py:512
+#: ../stoq/gui/application.py:495
 msgid "Search:"
 msgstr "Pesquisar:"
 
-#: ../stoq/gui/application.py:616
+#: ../stoq/gui/application.py:599
 msgid "Learn More..."
 msgstr "Saiba mais..."
 
-#: ../stoq/gui/application.py:617
+#: ../stoq/gui/application.py:600
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr "<b>Está disponível uma nova versão do Stoq (%s)</b>"
 
-#: ../stoq/gui/config.py:129
+#: ../stoq/gui/config.py:181
 #, python-format
 msgid "The database address '%s' is invalid. Please fix it and try again"
 msgstr ""
 "O endereço '%s' da base de dados é inválido. Por favor, conserte ele e tente "
 "de novo"
 
-#: ../stoq/gui/config.py:132 ../stoq/gui/config.py:137
+#: ../stoq/gui/config.py:184 ../stoq/gui/config.py:189
 msgid "Invalid database address"
 msgstr "Endereço da base de dados inválido"
 
-#: ../stoq/gui/config.py:180
+#: ../stoq/gui/config.py:219
 msgid "Needs Password"
 msgstr "Necessita de senha"
 
-#: ../stoq/gui/config.py:181
+#: ../stoq/gui/config.py:220
 msgid "Trust"
 msgstr "Confiável"
 
-#: ../stoq/gui/config.py:245
+#: ../stoq/gui/config.py:324 ../stoqlib/gui/dialogs/crashreportdialog.py:99
+msgid "Sending..."
+msgstr "Enviando..."
+
+#: ../stoq/gui/config.py:339
+#, python-format
+msgid "%s is not a valid email"
+msgstr "%s não é um email válido"
+
+#: ../stoq/gui/config.py:364
+msgid "Administrator account"
+msgstr ""
+
+#: ../stoq/gui/config.py:367
 #, python-format
 msgid ""
-"I'm adding a user called `%s' which will have administrator privilegies.\n"
+"I'm adding a user account called <b>%s</b> which will have administrator "
+"privilegies.\n"
 "\n"
 "To be able to create other users you need to login with this user in the "
 "admin application and create them."
 msgstr ""
-"Eu estou adicionando um usuário chamado `%s' que vai possuir privilégios de "
-"administrador.\n"
-"\n"
-"Para estar apto a criar outros usuários você precisa logar com este usuário "
-"na aplicação 'Administrativo' e criá-los."
 
-#: ../stoq/gui/config.py:307
+#: ../stoq/gui/config.py:433
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
 msgstr "Stoq requer PostgresSQL 8.1 ou posterior, mas %s foi encontrado"
 
-#: ../stoq/gui/config.py:314
+#: ../stoq/gui/config.py:440
 #, python-format
 msgid ""
 "The specifed database '%s' does not exist.\n"
@@ -3573,62 +3596,99 @@ msgstr ""
 "A base de dados '%s' não existe.\n"
 "Você deseja criá-la?"
 
-#: ../stoq/gui/config.py:316
-msgid "Don't Create"
+#: ../stoq/gui/config.py:442
+msgid "Don't create"
 msgstr "Não criar"
 
-#: ../stoq/gui/config.py:316
-msgid "Create Database"
-msgstr "Criar base de dados"
+#: ../stoq/gui/config.py:442
+msgid "Create database"
+msgstr ""
 
-#: ../stoq/gui/config.py:363
+#: ../stoq/gui/config.py:486
+msgid ""
+"You need to install and start PostgreSQL. When done click 'OK' to continue"
+msgstr ""
+
+#: ../stoq/gui/config.py:496
+msgid "Something went wrong while trying to install PostgreSQL"
+msgstr ""
+
+#: ../stoq/gui/config.py:499
+msgid "Installing PostgreSQL database server."
+msgstr ""
+
+#: ../stoq/gui/config.py:530
 msgid "Creating database..."
 msgstr "Criando base de dados..."
 
-#: ../stoq/gui/config.py:374
+#: ../stoq/gui/config.py:534
+msgid "Please wait while the database is being created."
+msgstr ""
+
+#: ../stoq/gui/config.py:544
 msgid "Creating base schema..."
 msgstr "Criando esquema da base de dados..."
 
-#: ../stoq/gui/config.py:378
+#: ../stoq/gui/config.py:548
 msgid "Creating schema, applying patches..."
 msgstr "Criando esquema, aplicando patches..."
 
-#: ../stoq/gui/config.py:383
+#: ../stoq/gui/config.py:553
 #, python-format
 msgid "Creating schema, applying patch %d ..."
 msgstr "Criando esquema, aplicando patch %d ..."
 
-#: ../stoq/gui/config.py:385
+#: ../stoq/gui/config.py:555
 msgid "Creating additional database objects ..."
 msgstr "Criando objetos adicionais da base de dados ..."
 
-#: ../stoq/gui/config.py:388
+#: ../stoq/gui/config.py:558
 msgid "Creating examples ..."
 msgstr "Criando exemplos ..."
 
-#: ../stoq/gui/config.py:391
+#: ../stoq/gui/config.py:561
 msgid "Activating plugins ..."
 msgstr "Ativando plugins ..."
 
-#: ../stoq/gui/config.py:393
+#: ../stoq/gui/config.py:563
 msgid "This may take some time."
 msgstr "Este processo pode levar algum tempo."
 
-#: ../stoq/gui/config.py:403
+#. This probably happened because the user either;
+#. - pressed cancel in the authentication popup
+#. - user erred the password 3 times
+#. Allow him to try again
+#: ../stoq/gui/config.py:579
+msgid "Something went wrong while trying to create the database. Try again?"
+msgstr ""
+
+#: ../stoq/gui/config.py:581
+msgid "Change settings"
+msgstr ""
+
+#: ../stoq/gui/config.py:581 ../stoq/gui/pos.py:752 ../stoq/gui/till.py:282
+msgid "Try again"
+msgstr ""
+
+#: ../stoq/gui/config.py:588
 msgid "Something went wrong while trying to create the Stoq database"
 msgstr "Algo deu errado ao tentar criar a base de dados do Stoq"
 
-#: ../stoq/gui/config.py:409
-msgid "Done, click 'Forward' to continue"
-msgstr "Feito, clique em 'Avançar' para continuar"
+#: ../stoq/gui/config.py:594
+msgid "Done."
+msgstr ""
 
-#: ../stoq/gui/config.py:433
+#: ../stoq/gui/config.py:598
+msgid "Installation successful, click <b>Forward</b> to continue."
+msgstr ""
+
+#: ../stoq/gui/config.py:620
 msgid "Run Stoq"
 msgstr "Rodar o Stoq"
 
-#: ../stoq/gui/config.py:448
-msgid "Setting up Stoq"
-msgstr "Configurando o Stoq"
+#: ../stoq/gui/config.py:634
+msgid "Stoq - Installation"
+msgstr ""
 
 #: ../stoq/gui/financial.py:204 ../stoq/lib/applist.py:39
 msgid "Financial"
@@ -3693,6 +3753,10 @@ msgid "Are you sure you want to remove account \"%s\" ?"
 msgstr "Você tem certeza que deseja remover a conta \"%s\" ?"
 
 #: ../stoq/gui/financial.py:537
+msgid "Keep account"
+msgstr ""
+
+#: ../stoq/gui/financial.py:537
 msgid "Remove account"
 msgstr "Remover conta"
 
@@ -3700,6 +3764,10 @@ msgstr "Remover conta"
 #, python-format
 msgid "Are you sure you want to remove transaction \"%s\" ?"
 msgstr "Você tem certeza que deseja remover a transação \"%s\" ?"
+
+#: ../stoq/gui/financial.py:552
+msgid "Keep transaction"
+msgstr ""
 
 #: ../stoq/gui/financial.py:552
 msgid "Remove transaction"
@@ -3728,7 +3796,7 @@ msgid "_Adjust inventory..."
 msgstr "_Ajustar inventário"
 
 #: ../stoq/gui/inventory.py:93 ../stoq/gui/payable.py:118
-#: ../stoq/gui/production.py:99 ../stoq/gui/purchase.py:140
+#: ../stoq/gui/production.py:99 ../stoq/gui/purchase.py:139
 #: ../stoq/gui/receivable.py:145 ../stoq/gui/sales.py:138
 #: ../stoq/gui/stock.py:132 ../stoq/gui/till.py:122
 #: ../stoqlib/gui/dialogs/csvexporterdialog.py:94
@@ -3755,7 +3823,7 @@ msgid "Show inventories at:"
 msgstr "Exibir inventários em:"
 
 #: ../stoq/gui/inventory.py:128 ../stoq/gui/payable.py:167
-#: ../stoq/gui/production.py:179 ../stoq/gui/purchase.py:195
+#: ../stoq/gui/production.py:179 ../stoq/gui/purchase.py:194
 #: ../stoq/gui/receivable.py:216 ../stoq/gui/sales.py:188
 #: ../stoq/gui/till.py:194 ../stoqlib/domain/payment/views.py:340
 #: ../stoqlib/gui/dialogs/clientdetails.py:153
@@ -3766,7 +3834,7 @@ msgstr "Exibir inventários em:"
 #: ../stoqlib/gui/dialogs/supplierdetails.py:121
 #: ../stoqlib/gui/dialogs/supplierdetails.py:147
 #: ../stoqlib/gui/search/paymentsearch.py:88
-#: ../stoqlib/gui/search/paymentsearch.py:159
+#: ../stoqlib/gui/search/paymentsearch.py:160
 #: ../stoqlib/gui/search/personsearch.py:115
 #: ../stoqlib/gui/search/personsearch.py:352
 #: ../stoqlib/gui/search/personsearch.py:391
@@ -3787,7 +3855,7 @@ msgid "Branch"
 msgstr "Filial"
 
 #: ../stoq/gui/inventory.py:134 ../stoq/gui/production.py:185
-#: ../stoq/gui/purchase.py:197 ../stoqlib/domain/inventory.py:167
+#: ../stoq/gui/purchase.py:196 ../stoqlib/domain/inventory.py:167
 #: ../stoqlib/domain/loan.py:119 ../stoqlib/domain/production.py:64
 #: ../stoqlib/domain/sale.py:348 ../stoqlib/domain/stockdecrease.py:104
 #: ../stoqlib/domain/till.py:85
@@ -3815,15 +3883,13 @@ msgid "Are you sure you want to cancel this inventory ?"
 msgstr "Você tem certeza que deseja cancelar este inventário?"
 
 #: ../stoq/gui/inventory.py:211 ../stoq/gui/pos.py:615
-#: ../stoq/gui/purchase.py:335 ../stoq/gui/sales.py:348
-#: ../stoqlib/gui/slaves/saleslave.py:343
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:506
-msgid "Don't Cancel"
-msgstr "Não cancelar"
+#: ../stoq/gui/purchase.py:340 ../stoq/gui/sales.py:348
+msgid "Don't cancel"
+msgstr ""
 
 #: ../stoq/gui/inventory.py:211
-msgid "Cancel Inventory"
-msgstr "Cancelar inventário"
+msgid "Cancel inventory"
+msgstr ""
 
 #: ../stoq/gui/payable.py:64 ../stoq/lib/applist.py:45
 #: ../stoqlib/gui/accounttree.py:139
@@ -3831,7 +3897,7 @@ msgid "Accounts Payable"
 msgstr "Contas a pagar"
 
 #: ../stoq/gui/payable.py:68 ../stoq/gui/production.py:56
-#: ../stoq/gui/purchase.py:74 ../stoq/gui/receivable.py:92
+#: ../stoq/gui/purchase.py:73 ../stoq/gui/receivable.py:92
 #: ../stoq/gui/sales.py:68 ../stoq/gui/till.py:73
 #: ../stoqlib/gui/search/commissionsearch.py:57
 #: ../stoqlib/gui/search/loansearch.py:129
@@ -3907,12 +3973,12 @@ msgstr "Exibir pagamentos"
 #: ../stoqlib/gui/search/loansearch.py:67
 #: ../stoqlib/gui/search/loansearch.py:136
 #: ../stoqlib/gui/search/paymentsearch.py:76
-#: ../stoqlib/gui/search/paymentsearch.py:147
+#: ../stoqlib/gui/search/paymentsearch.py:148
 #: ../stoqlib/gui/search/stockdecreasesearch.py:89
 #: ../stoqlib/gui/search/tillsearch.py:112
 #: ../stoqlib/gui/search/transfersearch.py:89
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:86
-#: ../stoqlib/reporting/purchase.py:236
+#: ../stoqlib/reporting/purchase.py:235
 msgid "#"
 msgstr "#"
 
@@ -3954,20 +4020,20 @@ msgstr "#"
 #: ../stoqlib/gui/editors/invoiceeditor.py:229
 #: ../stoqlib/gui/editors/invoiceeditor.py:287
 #: ../stoqlib/gui/editors/producteditor.py:124
-#: ../stoqlib/gui/editors/sellableeditor.py:93
+#: ../stoqlib/gui/editors/sellableeditor.py:99
 #: ../stoqlib/gui/editors/tilleditor.py:217
 #: ../stoqlib/gui/search/categorysearch.py:62
 #: ../stoqlib/gui/search/consignmentsearch.py:59
 #: ../stoqlib/gui/search/fiscalsearch.py:74
 #: ../stoqlib/gui/search/loansearch.py:79
-#: ../stoqlib/gui/search/paymentsearch.py:149
+#: ../stoqlib/gui/search/paymentsearch.py:150
 #: ../stoqlib/gui/search/productionsearch.py:125
 #: ../stoqlib/gui/search/productsearch.py:169
 #: ../stoqlib/gui/search/productsearch.py:260
 #: ../stoqlib/gui/search/productsearch.py:339
 #: ../stoqlib/gui/search/productsearch.py:396
 #: ../stoqlib/gui/search/purchasesearch.py:84
-#: ../stoqlib/gui/search/sellablesearch.py:142
+#: ../stoqlib/gui/search/sellablesearch.py:148
 #: ../stoqlib/gui/search/sellableunitsearch.py:75
 #: ../stoqlib/gui/search/servicesearch.py:110
 #: ../stoqlib/gui/search/tillsearch.py:117
@@ -3990,10 +4056,10 @@ msgstr "#"
 #: ../stoqlib/gui/wizards/salequotewizard.py:208
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:163
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:123
-#: ../stoqlib/reporting/payment.py:149 ../stoqlib/reporting/product.py:188
+#: ../stoqlib/reporting/payment.py:149 ../stoqlib/reporting/product.py:190
 #: ../stoqlib/reporting/production.py:149
 #: ../stoqlib/reporting/production.py:181
-#: ../stoqlib/reporting/production.py:206 ../stoqlib/reporting/purchase.py:240
+#: ../stoqlib/reporting/production.py:206 ../stoqlib/reporting/purchase.py:239
 #: ../stoqlib/reporting/template.py:328
 msgid "Description"
 msgstr "Descrição"
@@ -4002,11 +4068,11 @@ msgstr "Descrição"
 msgid "Comments"
 msgstr "Comentários"
 
-#: ../stoq/gui/payable.py:160 ../stoq/gui/purchase.py:200
+#: ../stoq/gui/payable.py:160 ../stoq/gui/purchase.py:199
 #: ../stoqlib/gui/dialogs/productstockdetails.py:141
 #: ../stoqlib/gui/editors/personeditor.py:244
-#: ../stoqlib/gui/editors/producteditor.py:392
-#: ../stoqlib/gui/editors/producteditor.py:412
+#: ../stoqlib/gui/editors/producteditor.py:394
+#: ../stoqlib/gui/editors/producteditor.py:414
 #: ../stoqlib/gui/search/receivingsearch.py:81
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:193
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:360
@@ -4057,7 +4123,7 @@ msgstr "Ponto de vendas"
 msgid "Sal_es"
 msgstr "V_endas"
 
-#: ../stoq/gui/pos.py:166 ../stoq/gui/pos.py:615
+#: ../stoq/gui/pos.py:166
 msgid "Cancel Order"
 msgstr "Cancelar pedido"
 
@@ -4065,7 +4131,7 @@ msgstr "Cancelar pedido"
 msgid "New Delivery..."
 msgstr "Nova entrega..."
 
-#: ../stoq/gui/pos.py:168 ../stoq/gui/purchase.py:137
+#: ../stoq/gui/pos.py:168 ../stoq/gui/purchase.py:136
 msgid "Confirm Order..."
 msgstr "Confirmar pedido..."
 
@@ -4082,12 +4148,12 @@ msgid "Clients..."
 msgstr "Clientes..."
 
 #: ../stoq/gui/pos.py:177 ../stoq/gui/production.py:104
-#: ../stoq/gui/purchase.py:153 ../stoq/gui/sales.py:152
+#: ../stoq/gui/purchase.py:152 ../stoq/gui/sales.py:152
 msgid "Products..."
 msgstr "Produtos..."
 
 #: ../stoq/gui/pos.py:178 ../stoq/gui/production.py:105
-#: ../stoq/gui/purchase.py:155 ../stoq/gui/sales.py:153
+#: ../stoq/gui/purchase.py:154 ../stoq/gui/sales.py:153
 msgid "Services..."
 msgstr "Serviços..."
 
@@ -4119,7 +4185,8 @@ msgid ""
 "You must finish the current sale before you change to another application."
 msgstr "Você deve finalizar a venda atual antes de alternar de aplicativo."
 
-#: ../stoq/gui/pos.py:206 ../stoq/gui/pos.py:217
+#: ../stoq/gui/pos.py:206 ../stoq/gui/pos.py:217 ../stoq/gui/pos.py:752
+#: ../stoqlib/gui/slaves/saleslave.py:343
 msgid "Cancel sale"
 msgstr "Cancelar a venda"
 
@@ -4164,15 +4231,15 @@ msgstr "Referência"
 #: ../stoqlib/gui/wizards/receivingwizard.py:284
 #: ../stoqlib/gui/wizards/salequotewizard.py:212
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:167
-#: ../stoqlib/reporting/loanreceipt.py:106 ../stoqlib/reporting/product.py:90
-#: ../stoqlib/reporting/product.py:192 ../stoqlib/reporting/production.py:153
-#: ../stoqlib/reporting/production.py:210 ../stoqlib/reporting/purchase.py:321
+#: ../stoqlib/reporting/loanreceipt.py:106 ../stoqlib/reporting/product.py:93
+#: ../stoqlib/reporting/product.py:194 ../stoqlib/reporting/production.py:153
+#: ../stoqlib/reporting/production.py:210 ../stoqlib/reporting/purchase.py:320
 #: ../stoqlib/reporting/sale.py:103 ../stoqlib/reporting/sale.py:229
 #: ../stoqlib/reporting/stockdecreasereceipt.py:96
 msgid "Quantity"
 msgstr "Quantidade"
 
-#: ../stoq/gui/pos.py:259 ../stoq/gui/purchase.py:209 ../stoq/gui/sales.py:221
+#: ../stoq/gui/pos.py:259 ../stoq/gui/purchase.py:208 ../stoq/gui/sales.py:221
 #: ../stoq/gui/till.py:207 ../stoqlib/gui/dialogs/clientdetails.py:155
 #: ../stoqlib/gui/dialogs/purchasedetails.py:136
 #: ../stoqlib/gui/dialogs/purchasedetails.py:179
@@ -4190,8 +4257,8 @@ msgstr "Quantidade"
 #: ../stoqlib/gui/wizards/receivingwizard.py:292
 #: ../stoqlib/gui/wizards/salequotewizard.py:227
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:129
-#: ../stoqlib/reporting/purchase.py:72 ../stoqlib/reporting/purchase.py:139
-#: ../stoqlib/reporting/purchase.py:144 ../stoqlib/reporting/purchase.py:323
+#: ../stoqlib/reporting/purchase.py:72 ../stoqlib/reporting/purchase.py:138
+#: ../stoqlib/reporting/purchase.py:143 ../stoqlib/reporting/purchase.py:322
 #: ../stoqlib/reporting/sale.py:182 ../stoqlib/reporting/sale.py:230
 #: ../stoqlib/reporting/sale.py:240
 msgid "Total"
@@ -4243,7 +4310,11 @@ msgstr ""
 msgid "This will cancel the current order. Are you sure?"
 msgstr "Isto irá cancelar o pedido selecionado. Você tem certeza?"
 
-#: ../stoq/gui/pos.py:749
+#: ../stoq/gui/pos.py:615 ../stoq/gui/purchase.py:334
+msgid "Cancel order"
+msgstr ""
+
+#: ../stoq/gui/pos.py:750
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
@@ -4285,7 +4356,7 @@ msgstr "Histórico de produção..."
 msgid "New Production"
 msgstr "Nova produção"
 
-#: ../stoq/gui/production.py:114 ../stoq/gui/purchase.py:70
+#: ../stoq/gui/production.py:114 ../stoq/gui/purchase.py:69
 #: ../stoq/lib/applist.py:54 ../stoqlib/lib/invoice.py:317
 #: ../stoqlib/lib/parameters.py:98 ../stoqlib/lib/parameters.py:104
 #: ../stoqlib/lib/parameters.py:110 ../stoqlib/lib/parameters.py:116
@@ -4318,111 +4389,111 @@ msgstr "# "
 #: ../stoqlib/gui/dialogs/productstockdetails.py:175
 #: ../stoqlib/gui/search/receivingsearch.py:83
 #: ../stoqlib/gui/wizards/loanwizard.py:221
-#: ../stoqlib/reporting/purchase.py:366
+#: ../stoqlib/reporting/purchase.py:365
 #: ../stoqlib/reporting/stockdecreasereceipt.py:114
 msgid "Responsible"
 msgstr "Responsável"
 
 #. Purchase
-#: ../stoq/gui/purchase.py:133
+#: ../stoq/gui/purchase.py:132
 msgid "_Order"
 msgstr "_Pedido"
 
-#: ../stoq/gui/purchase.py:134
+#: ../stoq/gui/purchase.py:133
 msgid "New Order..."
 msgstr "Novo pedido..."
 
-#: ../stoq/gui/purchase.py:135
+#: ../stoq/gui/purchase.py:134
 msgid "Quote Order..."
 msgstr "Cotação..."
 
-#: ../stoq/gui/purchase.py:136
+#: ../stoq/gui/purchase.py:135
 msgid "Finish Order..."
 msgstr "Finalizar pedido..."
 
-#: ../stoq/gui/purchase.py:138
+#: ../stoq/gui/purchase.py:137
 msgid "_Stock Cost"
 msgstr "Custo do e_stoque"
 
-#: ../stoq/gui/purchase.py:139
+#: ../stoq/gui/purchase.py:138
 msgid "Production..."
 msgstr "Produção..."
 
 #. Consignment
-#: ../stoq/gui/purchase.py:144
+#: ../stoq/gui/purchase.py:143
 msgid "_Consignment"
 msgstr "_Consignação"
 
-#: ../stoq/gui/purchase.py:145
+#: ../stoq/gui/purchase.py:144
 msgid "New Consignment..."
 msgstr "Nova consignação..."
 
-#: ../stoq/gui/purchase.py:146
+#: ../stoq/gui/purchase.py:145
 msgid "Close Consigment..."
 msgstr "Fechar consignação..."
 
-#: ../stoq/gui/purchase.py:147
+#: ../stoq/gui/purchase.py:146
 msgid "Search Consigment Items..."
 msgstr "Pesquisa de itens consignados..."
 
-#: ../stoq/gui/purchase.py:151
+#: ../stoq/gui/purchase.py:150
 msgid "Base Categories..."
 msgstr "Categorias de base..."
 
-#: ../stoq/gui/purchase.py:152
+#: ../stoq/gui/purchase.py:151
 msgid "Categories..."
 msgstr "Categorias..."
 
-#: ../stoq/gui/purchase.py:154
+#: ../stoq/gui/purchase.py:153
 msgid "Product units..."
 msgstr "Unidades de produtos..."
 
-#: ../stoq/gui/purchase.py:156
+#: ../stoq/gui/purchase.py:155
 msgid "Stock Items..."
 msgstr "Itens em estoque..."
 
-#: ../stoq/gui/purchase.py:157
+#: ../stoq/gui/purchase.py:156
 msgid "Closed Stock Items..."
 msgstr "Itens de estoque fechados..."
 
-#: ../stoq/gui/purchase.py:159
+#: ../stoq/gui/purchase.py:158
 msgid "Suppliers..."
 msgstr "Fornecedores..."
 
-#: ../stoq/gui/purchase.py:160
+#: ../stoq/gui/purchase.py:159
 msgid "Transporters..."
 msgstr "Transportadoras..."
 
-#: ../stoq/gui/purchase.py:161
+#: ../stoq/gui/purchase.py:160
 msgid "Quotes..."
 msgstr "Cotações..."
 
-#: ../stoq/gui/purchase.py:162
+#: ../stoq/gui/purchase.py:161
 msgid "Purchased Items..."
 msgstr "Itens comprados..."
 
-#: ../stoq/gui/purchase.py:163
+#: ../stoq/gui/purchase.py:162
 msgid "Products Sold..."
 msgstr "Produtos vendidos..."
 
-#: ../stoq/gui/purchase.py:167 ../stoqlib/gui/wizards/purchasewizard.py:556
+#: ../stoq/gui/purchase.py:166 ../stoqlib/gui/wizards/purchasewizard.py:556
 msgid "New Order"
 msgstr "Novo pedido"
 
-#: ../stoq/gui/purchase.py:168
+#: ../stoq/gui/purchase.py:167
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:632
 msgid "New Quote"
 msgstr "Nova cotação"
 
-#: ../stoq/gui/purchase.py:171
+#: ../stoq/gui/purchase.py:170
 msgid "Purchase help"
 msgstr "Ajuda do compras"
 
-#: ../stoq/gui/purchase.py:186 ../stoq/gui/till.py:163
+#: ../stoq/gui/purchase.py:185 ../stoq/gui/till.py:163
 msgid "Show orders"
 msgstr "Exibir pedidos"
 
-#: ../stoq/gui/purchase.py:192 ../stoq/gui/sales.py:191
+#: ../stoq/gui/purchase.py:191 ../stoq/gui/sales.py:191
 #: ../stoq/gui/till.py:192 ../stoqlib/gui/dialogs/tillhistory.py:60
 #: ../stoqlib/gui/search/paymentsearch.py:80
 #: ../stoqlib/gui/search/salesearch.py:74
@@ -4432,13 +4503,17 @@ msgstr "Exibir pedidos"
 msgid "Number"
 msgstr "Número"
 
-#: ../stoq/gui/purchase.py:218
+#: ../stoq/gui/purchase.py:217
 msgid "<b>Orders Total:</b>"
 msgstr "<b>Total dos pedidos:</b>"
 
-#: ../stoq/gui/purchase.py:305
-msgid "There are no orders with status pending in the selection"
-msgstr "Não há nenhum pedido com situação pendente na seleção"
+#: ../stoq/gui/purchase.py:304
+msgid "There are no pending orders selected."
+msgstr ""
+
+#: ../stoq/gui/purchase.py:308
+msgid "The selected order will be marked as sent."
+msgstr "O pedido selecionado será marcado como enviado."
 
 #: ../stoq/gui/purchase.py:309
 #, python-format
@@ -4446,20 +4521,28 @@ msgid "The %d selected orders will be marked as sent."
 msgstr "Os %d pedidos selecionados serão marcados como enviados."
 
 #: ../stoq/gui/purchase.py:312
-msgid "Are you sure you want to confirm the order?"
-msgstr "Você tem certeza que quer confirmar a ordem?"
+msgid "Confirm order"
+msgstr ""
 
-#: ../stoq/gui/purchase.py:314 ../stoq/gui/till.py:238
-msgid "Don't Confirm"
-msgstr "Não Confirmar"
+#: ../stoq/gui/purchase.py:313
+msgid "Confirm orders"
+msgstr ""
 
-#: ../stoq/gui/purchase.py:334
-msgid "The selected order(s) will be cancelled."
-msgstr "O pedido selecionado será cancelado."
+#: ../stoq/gui/purchase.py:315 ../stoq/gui/till.py:238
+msgid "Don't confirm"
+msgstr ""
 
 #: ../stoq/gui/purchase.py:335
-msgid "Cancel Order(s)"
-msgstr "Cancelar pedido(s)"
+msgid "Cancel orders"
+msgstr ""
+
+#: ../stoq/gui/purchase.py:336
+msgid "The selected order will be cancelled."
+msgstr ""
+
+#: ../stoq/gui/purchase.py:337
+msgid "The selected orders will be cancelled."
+msgstr ""
 
 #: ../stoq/gui/receivable.py:67 ../stoqlib/gui/base/search.py:791
 msgid "Next month"
@@ -4496,11 +4579,11 @@ msgid "Accounts Receivable help"
 msgstr "Ajuda do contas a receber"
 
 #: ../stoq/gui/receivable.py:210 ../stoqlib/gui/search/fiscalsearch.py:128
-#: ../stoqlib/gui/search/paymentsearch.py:151
+#: ../stoqlib/gui/search/paymentsearch.py:152
 msgid "Drawee"
 msgstr "Sacado"
 
-#: ../stoq/gui/runner.py:144
+#: ../stoq/gui/runner.py:147
 #, python-format
 msgid ""
 "This user lacks credentials \n"
@@ -4514,7 +4597,7 @@ msgstr ""
 msgid "New Sale Quote"
 msgstr "Nova cotação"
 
-#: ../stoq/gui/sales.py:136 ../stoq/gui/sales.py:348
+#: ../stoq/gui/sales.py:136
 msgid "Cancel Quote"
 msgstr "Cancelar cotação"
 
@@ -4612,10 +4695,14 @@ msgstr "Não há nenhuma impressora fiscal configurada para esta estação"
 msgid "This will cancel the selected quote. Are you sure?"
 msgstr "Isto irá cancelar a cotação selecionada. Você tem certeza?"
 
+#: ../stoq/gui/sales.py:348
+msgid "Cancel quote"
+msgstr "Cancelar Cotação"
+
 #: ../stoq/gui/stock.py:67 ../stoq/lib/applist.py:63
 #: ../stoqlib/gui/search/consignmentsearch.py:61
 #: ../stoqlib/gui/search/productsearch.py:185
-#: ../stoqlib/gui/search/sellablesearch.py:148
+#: ../stoqlib/gui/search/sellablesearch.py:154
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:125
 #: ../stoqlib/lib/parameters.py:127 ../stoqlib/lib/parameters.py:257
 msgid "Stock"
@@ -4652,7 +4739,7 @@ msgstr "Compras recebidas..."
 
 #: ../stoq/gui/stock.py:146
 msgid "Product history..."
-msgstr "Histórico de Produtos..."
+msgstr "Histórico de produtos..."
 
 #: ../stoq/gui/stock.py:147
 msgid "Stock decreases..."
@@ -4744,8 +4831,8 @@ msgid "This quote has expired. Confirm it anyway?"
 msgstr "Esta cotação está expirada. Confirmar assim mesmo?"
 
 #: ../stoq/gui/till.py:238
-msgid "Confirm Quote"
-msgstr "Confirmar cotação"
+msgid "Confirm quote"
+msgstr ""
 
 #: ../stoq/gui/till.py:257
 #, python-format
@@ -4762,6 +4849,10 @@ msgstr ""
 "Falha ao abrir o cupom fiscal\n"
 "Até que ele seja aberto, não é possível confirmar a venda. Deseja tentar de "
 "novo?"
+
+#: ../stoq/gui/till.py:282
+msgid "Cancel coupon"
+msgstr ""
 
 #: ../stoq/gui/till.py:365
 msgid "Till operations requires a connected fiscal printer"
@@ -4895,7 +4986,7 @@ msgstr ""
 msgid "Control tills and their workflow."
 msgstr "Controle de caixa e seu fluxo."
 
-#: ../stoq/lib/configparser.py:242
+#: ../stoq/lib/configparser.py:246
 msgid ""
 "Error: Stoq configuration is not avaiable. Check that the current user has a "
 "configuration file (~/.stoq/stoq.conf)."
@@ -4903,7 +4994,7 @@ msgstr ""
 "Erro: configuração do Stoq não disponível. Verifique se o usuário possui um "
 "arquivo de configuração (~/.stoq/stoq.conf)."
 
-#: ../stoq/lib/configparser.py:245
+#: ../stoq/lib/configparser.py:249
 msgid ""
 "\n"
 "\n"
@@ -4913,7 +5004,7 @@ msgstr ""
 "\n"
 "Você está executando o Stoq usando sudo. Isso não é recomendado."
 
-#: ../stoq/lib/dependencies.py:91
+#: ../stoq/lib/dependencies.py:98
 #, python-format
 msgid ""
 "<b>%s</b> could not be found on your system.\n"
@@ -4928,11 +5019,11 @@ msgstr ""
 "Você pode encontrar uma versão recente de %s na sua página em\n"
 " %s"
 
-#: ../stoq/lib/dependencies.py:98
+#: ../stoq/lib/dependencies.py:105
 msgid "Missing dependency"
 msgstr "Faltando dependência"
 
-#: ../stoq/lib/dependencies.py:101
+#: ../stoq/lib/dependencies.py:108
 #, python-format
 msgid ""
 "<b>%s</b> was found on your system, but it is too old for Stoq to be able to "
@@ -4947,11 +5038,11 @@ msgstr ""
 "Você pode encontrar uma versão recente de %s na sua página em\n"
 " %s"
 
-#: ../stoq/lib/dependencies.py:107
+#: ../stoq/lib/dependencies.py:114
 msgid "Out-dated dependency"
 msgstr "Dependência desatualizada"
 
-#: ../stoq/lib/dependencies.py:110
+#: ../stoq/lib/dependencies.py:117
 #, python-format
 msgid ""
 "<b>%s</b> was found on your system, but its version, %s incompatible with "
@@ -4966,7 +5057,7 @@ msgstr ""
 "Você pode encontrar uma versão mais antiga de %s na sua página em\n"
 " %s"
 
-#: ../stoq/lib/dependencies.py:116
+#: ../stoq/lib/dependencies.py:123
 msgid "Incompatible dependency"
 msgstr "Dependência incompatível"
 
@@ -5001,28 +5092,28 @@ msgid "You need to call setup() before checking the database schema."
 msgstr ""
 "Você precisa chamar setup() antes de verificar o esquema da base de dados."
 
-#: ../stoq/main.py:223
+#: ../stoq/main.py:230
 msgid "You need to register a company before start using Stoq"
 msgstr "Você precisa registar uma empresa antes de começar a utilizar o Stoq"
 
-#: ../stoq/main.py:225
+#: ../stoq/main.py:232
 msgid ""
 "Could not find a company. You'll need to register one before start using Stoq"
 msgstr ""
 "Não foi possível encontrar uma empresa. Você precisa registrar uma antes de "
 "começar a utilizar o Stoq"
 
-#: ../stoq/main.py:295
+#: ../stoq/main.py:302
 msgid "Could not open the database config file"
 msgstr "Não foi possível abrir o arquivo de configuração da base de dados"
 
-#: ../stoq/main.py:296
+#: ../stoq/main.py:303
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr ""
 "Dados inválidos do arquivo de configuração, obtido erro '%s', do tipo '%s'"
 
-#: ../stoq/main.py:312
+#: ../stoq/main.py:319
 msgid "Could not connect to the database"
 msgstr "Não foi possível conectar na base de dados"
 
@@ -5132,8 +5223,8 @@ msgid "Quit"
 msgstr "Sair"
 
 #: ../stoqlib/database/runtime.py:203
-msgid "Register Computer"
-msgstr "Registrar Computador"
+msgid "Register computer"
+msgstr ""
 
 #: ../stoqlib/database/runtime.py:214
 msgid "Must login as 'admin'"
@@ -5564,8 +5655,8 @@ msgid "\"%s\" Estimated Fix Date: %s"
 msgstr "Data estimada de resolução de \"%s\": %s"
 
 #. First line.
-#: ../stoqlib/domain/sale.py:679 ../stoqlib/reporting/purchase.py:182
-#: ../stoqlib/reporting/purchase.py:195
+#: ../stoqlib/domain/sale.py:679 ../stoqlib/reporting/purchase.py:181
+#: ../stoqlib/reporting/purchase.py:194
 msgid "Not Specified"
 msgstr "Não especificado"
 
@@ -5670,22 +5761,29 @@ msgid "Notification"
 msgstr "Notificação"
 
 #: ../stoqlib/gui/base/lists.py:333
+msgid "Delete this item?"
+msgstr "Excluir este item?"
+
+#: ../stoqlib/gui/base/lists.py:334
 #, python-format
 msgid "Delete these %d items?"
 msgstr "Excluir estes %d itens?"
 
-#: ../stoqlib/gui/base/lists.py:335
-msgid "Delete this item?"
-msgstr "Excluir este item?"
+#: ../stoqlib/gui/base/lists.py:337
+msgid "Delete item"
+msgstr "Remover item"
 
-#: ../stoqlib/gui/base/lists.py:336
-#: ../stoqlib/gui/editors/sellableeditor.py:392
-msgid "Don't Delete"
-msgstr "Não excluir"
+#: ../stoqlib/gui/base/lists.py:338
+msgid "Delete items"
+msgstr "Apagar itens"
 
-#: ../stoqlib/gui/base/lists.py:336
-msgid "Delete Items"
-msgstr "Excluir itens"
+#: ../stoqlib/gui/base/lists.py:342
+msgid "Keep it"
+msgstr ""
+
+#: ../stoqlib/gui/base/lists.py:343
+msgid "Keep them"
+msgstr ""
 
 #: ../stoqlib/gui/base/search.py:214
 msgid "Se_lect Items"
@@ -5693,7 +5791,7 @@ msgstr "S_elecione Itens"
 
 #. Provider
 #: ../stoqlib/gui/base/search.py:407
-#: ../stoqlib/gui/search/paymentsearch.py:142
+#: ../stoqlib/gui/search/paymentsearch.py:143
 msgid "Provider:"
 msgstr "Fornecedor:"
 
@@ -5717,27 +5815,27 @@ msgstr "Este mês"
 msgid "Last month"
 msgstr "Mês passado"
 
-#: ../stoqlib/gui/dialogs/branchdialog.py:143
+#: ../stoqlib/gui/dialogs/branchdialog.py:147
 msgid "ICMS can not be greater than 100"
 msgstr "ICMS não pode ser maior que 100"
 
-#: ../stoqlib/gui/dialogs/branchdialog.py:145
+#: ../stoqlib/gui/dialogs/branchdialog.py:149
 msgid "ICMS can not be less than 0"
 msgstr "ICMS não pode ser menor que 0"
 
-#: ../stoqlib/gui/dialogs/branchdialog.py:149
+#: ../stoqlib/gui/dialogs/branchdialog.py:153
 msgid "ISS can not be greater than 100"
 msgstr "ISS não pode ser maior que 100"
 
-#: ../stoqlib/gui/dialogs/branchdialog.py:151
+#: ../stoqlib/gui/dialogs/branchdialog.py:155
 msgid "ISS can not be less than 0"
 msgstr "ISS não pode ser maior que 0"
 
-#: ../stoqlib/gui/dialogs/branchdialog.py:155
+#: ../stoqlib/gui/dialogs/branchdialog.py:159
 msgid "ICMS Substitution can not be greater than 100"
 msgstr "ICMS substituto não pode ser maior que 100"
 
-#: ../stoqlib/gui/dialogs/branchdialog.py:158
+#: ../stoqlib/gui/dialogs/branchdialog.py:162
 msgid "ICMS Substitution can not be less than 0"
 msgstr "ICMS substituto não pode ser menor que 0"
 
@@ -5814,10 +5912,6 @@ msgstr "Relatório %s aberto com sucesso"
 msgid "Failed to submit bugreport"
 msgstr "Falha ao enviar o relatório de erros"
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:99
-msgid "Sending..."
-msgstr "Enviando..."
-
 #: ../stoqlib/gui/dialogs/csvexporterdialog.py:46
 msgid "CSV Exporter Dialog"
 msgstr "Dialogo de exportação CSV"
@@ -5886,13 +5980,13 @@ msgstr "Estoque inicial"
 msgid "Save data before close the dialog ?"
 msgstr "Salve os dados antes de fechar o dialogo ?"
 
-#: ../stoqlib/gui/dialogs/initialstockdialog.py:135
-msgid "Save Data"
-msgstr "Salvar dados"
+#: ../stoqlib/gui/dialogs/initialstockdialog.py:136
+msgid "Save data"
+msgstr ""
 
-#: ../stoqlib/gui/dialogs/initialstockdialog.py:135
-msgid "Don't Save"
-msgstr "Não salvar"
+#: ../stoqlib/gui/dialogs/initialstockdialog.py:137
+msgid "Don't save"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/loandetails.py:38
 msgid "Loan Details"
@@ -5906,7 +6000,7 @@ msgstr "Detalhes do empréstimo"
 #: ../stoqlib/gui/search/productsearch.py:341
 #: ../stoqlib/gui/wizards/consignmentwizard.py:158
 #: ../stoqlib/gui/wizards/loanwizard.py:334
-#: ../stoqlib/reporting/product.py:137
+#: ../stoqlib/reporting/product.py:139
 msgid "Sold"
 msgstr "Vendido"
 
@@ -6024,12 +6118,8 @@ msgstr ""
 "Por favor note que, uma vez ativado, você não será capaz de desativá-lo."
 
 #: ../stoqlib/gui/dialogs/pluginsdialog.py:119
-msgid "Not Now"
-msgstr "Não agora"
-
-#: ../stoqlib/gui/dialogs/pluginsdialog.py:119
-msgid "Activate Plugin"
-msgstr "Ativar plugin"
+msgid "Activate plugin"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/productadjustmentdialog.py:48
 msgid "Products Adjustment"
@@ -6040,7 +6130,7 @@ msgid "_Finish Inventory"
 msgstr "_Fechar inventário"
 
 #: ../stoqlib/gui/dialogs/productadjustmentdialog.py:107
-#: ../stoqlib/reporting/product.py:190
+#: ../stoqlib/reporting/product.py:192
 msgid "Fiscal Class"
 msgstr "Classe Fiscal"
 
@@ -6070,7 +6160,7 @@ msgid "You can not adjust a product without a reason!"
 msgstr "Não é possível ajustar um produto sem uma razão!"
 
 #: ../stoqlib/gui/dialogs/productcountingdialog.py:58
-#: ../stoqlib/reporting/product.py:175
+#: ../stoqlib/reporting/product.py:177
 msgid "Product Counting"
 msgstr "Contagem de produtos"
 
@@ -6090,12 +6180,12 @@ msgstr ""
 "Você gostaria de encerrar este inventário agora ?"
 
 #: ../stoqlib/gui/dialogs/productcountingdialog.py:112
-msgid "Close Inventory"
-msgstr "Fechar inventário"
+msgid "Close inventory"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/productcountingdialog.py:113
-msgid "Continue Counting"
-msgstr "Continuar contando"
+msgid "Continue counting"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/productimage.py:14
 msgid "Product Image Viewer"
@@ -6108,7 +6198,7 @@ msgstr "Detalhes da produção"
 #: ../stoqlib/gui/dialogs/productiondetails.py:72
 #: ../stoqlib/gui/search/productionsearch.py:131
 #: ../stoqlib/gui/search/productsearch.py:271
-#: ../stoqlib/reporting/product.py:141 ../stoqlib/reporting/production.py:63
+#: ../stoqlib/reporting/product.py:143 ../stoqlib/reporting/production.py:63
 #: ../stoqlib/reporting/production.py:155
 msgid "Produced"
 msgstr "Produzido"
@@ -6117,7 +6207,7 @@ msgstr "Produzido"
 #: ../stoqlib/gui/dialogs/productiondetails.py:86
 #: ../stoqlib/gui/search/productionsearch.py:133
 #: ../stoqlib/gui/search/productsearch.py:280
-#: ../stoqlib/reporting/product.py:143 ../stoqlib/reporting/production.py:65
+#: ../stoqlib/reporting/product.py:145 ../stoqlib/reporting/production.py:65
 #: ../stoqlib/reporting/production.py:157
 #: ../stoqlib/reporting/production.py:187
 msgid "Lost"
@@ -6157,13 +6247,13 @@ msgstr "código"
 #: ../stoqlib/gui/search/purchasesearch.py:90
 #: ../stoqlib/gui/slaves/productionslave.py:174
 #: ../stoqlib/gui/wizards/abstractwizard.py:117
-#: ../stoqlib/reporting/product.py:232 ../stoqlib/reporting/purchase.py:102
+#: ../stoqlib/reporting/product.py:234 ../stoqlib/reporting/purchase.py:101
 msgid "In Stock"
 msgstr "Em estoque"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:325
 #: ../stoqlib/gui/search/productsearch.py:407
-#: ../stoqlib/reporting/payment.py:130 ../stoqlib/reporting/product.py:234
+#: ../stoqlib/reporting/payment.py:130 ../stoqlib/reporting/product.py:236
 msgid "To Receive"
 msgstr "A receber"
 
@@ -6192,12 +6282,12 @@ msgstr ""
 "Você gostaria de continuar a compra ?"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:471
-msgid "Don't Continue "
-msgstr "Não continuar "
+msgid "Abort purchase"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:472
-msgid "Continue Purchase"
-msgstr "Continuar a compra"
+msgid "Continue purchase"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/productionquotedialog.py:92
 msgid "Purchase Production"
@@ -6227,7 +6317,7 @@ msgid "Product History"
 msgstr "Histórico de produtos"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:139
-#: ../stoqlib/reporting/purchase.py:110
+#: ../stoqlib/reporting/purchase.py:109
 msgid "Purchase Order"
 msgstr "Pedido de compra"
 
@@ -6247,7 +6337,7 @@ msgstr "Destino"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:177
 #: ../stoqlib/gui/search/productsearch.py:265
-#: ../stoqlib/reporting/product.py:139
+#: ../stoqlib/reporting/product.py:141
 msgid "Transfered"
 msgstr "Transferido"
 
@@ -6528,17 +6618,17 @@ msgstr "Estado"
 msgid "Select an address"
 msgstr "Selecione um endereço"
 
-#: ../stoqlib/gui/editors/baseeditor.py:200
+#: ../stoqlib/gui/editors/baseeditor.py:204
 #, python-format
 msgid "Details of %s"
 msgstr "Detalhes de %s"
 
-#: ../stoqlib/gui/editors/baseeditor.py:202
+#: ../stoqlib/gui/editors/baseeditor.py:206
 #, python-format
 msgid "Edit Details of \"%s\""
 msgstr "Editar detalhes de \"%s\""
 
-#: ../stoqlib/gui/editors/baseeditor.py:203
+#: ../stoqlib/gui/editors/baseeditor.py:207
 #, python-format
 msgid "Add %s"
 msgstr "Adicionar %s"
@@ -6554,7 +6644,7 @@ msgstr "Categorias base"
 
 #: ../stoqlib/gui/editors/categoryeditor.py:120
 #: ../stoqlib/gui/editors/categoryeditor.py:136
-#: ../stoqlib/gui/editors/sellableeditor.py:159
+#: ../stoqlib/gui/editors/sellableeditor.py:165
 #, python-format
 msgid "Calculate Commission From: %s"
 msgstr "Calcular comissão de: %s"
@@ -6595,7 +6685,7 @@ msgstr "Quantidade deve ser maior que a quantidade em estoque."
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:54
 #: ../stoqlib/gui/editors/deliveryeditor.py:58
-#: ../stoqlib/lib/parameters.py:732
+#: ../stoqlib/lib/parameters.py:740
 msgid "Delivery"
 msgstr "Entrega"
 
@@ -6729,11 +6819,11 @@ msgstr "Não é possível retirar esta quantidade."
 msgid "Sale and return quantity is greater than the total quantity."
 msgstr "Venda e quantidade de retorno é maior que a quantidade total."
 
-#: ../stoqlib/gui/editors/parameterseditor.py:95
+#: ../stoqlib/gui/editors/parameterseditor.py:100
 msgid "Cat 52 directory selection"
 msgstr "Selectione o diretório"
 
-#: ../stoqlib/gui/editors/parameterseditor.py:159
+#: ../stoqlib/gui/editors/parameterseditor.py:168
 #, python-format
 msgid "Edit '%s' Parameter"
 msgstr "Alterar parâmetros '%s'"
@@ -6868,51 +6958,54 @@ msgstr ""
 msgid "This will remove the component \"%s\". Are you sure?"
 msgstr "Isto irá remover o componente \"%s\". Você tem certeza?"
 
-#: ../stoqlib/gui/editors/producteditor.py:266
-#: ../stoqlib/gui/editors/sellableeditor.py:259
-msgid "Remove"
-msgstr "Remover"
+#: ../stoqlib/gui/editors/producteditor.py:267
+msgid "Remove component"
+msgstr ""
 
-#: ../stoqlib/gui/editors/producteditor.py:328
+#: ../stoqlib/gui/editors/producteditor.py:268
+msgid "Keep component"
+msgstr ""
+
+#: ../stoqlib/gui/editors/producteditor.py:330
 msgid "Product Supplier"
 msgstr "Fornecedor de produtos"
 
-#: ../stoqlib/gui/editors/producteditor.py:338
+#: ../stoqlib/gui/editors/producteditor.py:340
 #: ../stoqlib/gui/slaves/productslave.py:55
 msgid "Unit(s)"
 msgstr "Unidade(s)"
 
-#: ../stoqlib/gui/editors/producteditor.py:414
+#: ../stoqlib/gui/editors/producteditor.py:416
 msgid "Lead time"
 msgstr "Tempo de obtenção"
 
-#: ../stoqlib/gui/editors/producteditor.py:415
+#: ../stoqlib/gui/editors/producteditor.py:417
 msgid "Minimum Purchase"
 msgstr "Mínimo para compras"
 
-#: ../stoqlib/gui/editors/producteditor.py:426
+#: ../stoqlib/gui/editors/producteditor.py:428
 #, python-format
 msgid "%s is already supplied by %s"
 msgstr "%s já é fornecido por %s"
 
-#: ../stoqlib/gui/editors/producteditor.py:445
+#: ../stoqlib/gui/editors/producteditor.py:447
 msgid "Product Component"
 msgstr "Componente do produto"
 
 #. FIXME: value < upper bound
-#: ../stoqlib/gui/editors/producteditor.py:478
+#: ../stoqlib/gui/editors/producteditor.py:480
 msgid "The component quantity must be greater than zero."
 msgstr "A quantidade do componente deve ser maior que zero."
 
-#: ../stoqlib/gui/editors/producteditor.py:483
-#: ../stoqlib/gui/editors/producteditor.py:517
-#: ../stoqlib/gui/editors/producteditor.py:599
+#: ../stoqlib/gui/editors/producteditor.py:485
+#: ../stoqlib/gui/editors/producteditor.py:519
+#: ../stoqlib/gui/editors/producteditor.py:601
 #: ../stoqlib/gui/search/salesearch.py:179
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:254
 msgid "Product"
 msgstr "Produto"
 
-#: ../stoqlib/gui/editors/producteditor.py:497
+#: ../stoqlib/gui/editors/producteditor.py:499
 msgid ""
 "This status changes automatically when the\n"
 "product is purchased or an inicial stock is added."
@@ -6920,15 +7013,15 @@ msgstr ""
 "Esta situação é atualizada automaticamente quando o\n"
 "produto é comprado ou um estoque inicial é adicionado."
 
-#: ../stoqlib/gui/editors/producteditor.py:563
+#: ../stoqlib/gui/editors/producteditor.py:565
 msgid "Cost must be greater than the sum of the components."
 msgstr "O custo deve ser maior que do que a soma dos componentes."
 
-#: ../stoqlib/gui/editors/producteditor.py:584
+#: ../stoqlib/gui/editors/producteditor.py:586
 msgid "There is no component in this product."
 msgstr "Não há nenhum componente para este produto."
 
-#: ../stoqlib/gui/editors/producteditor.py:593
+#: ../stoqlib/gui/editors/producteditor.py:595
 msgid "Cost cannot be zero or negative."
 msgstr "Custo não pode ser zero ou negativo."
 
@@ -7064,15 +7157,15 @@ msgstr "A unidade do produto (%s) não suporta frações"
 msgid "Max discount for this product is %.2f%%"
 msgstr "O desconto máximo para este produto é %.2f%%"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:56
+#: ../stoqlib/gui/editors/sellableeditor.py:62
 msgid "Taxes and Tax rates"
 msgstr "Impostos e taxa de impostos"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:95
+#: ../stoqlib/gui/editors/sellableeditor.py:101
 msgid "Tax rate"
 msgstr "Taxa de imposto"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:109
+#: ../stoqlib/gui/editors/sellableeditor.py:115
 #, python-format
 msgid ""
 "You can't remove this tax, since %d products or services are taxed with '%s'."
@@ -7080,48 +7173,64 @@ msgstr ""
 "Não é possível remover esta taxa, existem %d produtos ou serviços com a taxa "
 "'%s'."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:118
+#: ../stoqlib/gui/editors/sellableeditor.py:124
 msgid "Product Price"
 msgstr "Preço do produto"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:139
+#: ../stoqlib/gui/editors/sellableeditor.py:145
 msgid "Price settings"
 msgstr "Ajustes de preço"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:211
+#: ../stoqlib/gui/editors/sellableeditor.py:218
 msgid "This unit type requires weighing"
 msgstr "Este tipo de unidade requer pesagem"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:264
+#: ../stoqlib/gui/editors/sellableeditor.py:262
+#, python-format
+msgid ""
+"This is a demostration mode of Stoq, you cannot create more than %d "
+"products.\n"
+"To avoid this limitation, enable production mode."
+msgstr ""
+
+#: ../stoqlib/gui/editors/sellableeditor.py:275
+msgid "Remove"
+msgstr "Remover"
+
+#: ../stoqlib/gui/editors/sellableeditor.py:280
 msgid "Close Product"
 msgstr "Fechar produto"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:266
+#: ../stoqlib/gui/editors/sellableeditor.py:282
 msgid "Close Service"
 msgstr "Fechar serviço"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:273
+#: ../stoqlib/gui/editors/sellableeditor.py:289
 msgid "Reopen Product"
 msgstr "Reabrir produto"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:275
+#: ../stoqlib/gui/editors/sellableeditor.py:291
 msgid "Reopen Service"
 msgstr "Reabrir serviço"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:363
+#: ../stoqlib/gui/editors/sellableeditor.py:379
 msgid "No unit"
 msgstr "Sem unidade"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:390
+#: ../stoqlib/gui/editors/sellableeditor.py:406
 #, python-format
 msgid "This will delete '%s' from the database. Are you sure?"
 msgstr "Isto irá excluir '%s' do banco de dados. Você tem certeza?"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:392
+#: ../stoqlib/gui/editors/sellableeditor.py:408
 msgid "Delete"
 msgstr "Excluir"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:402
+#: ../stoqlib/gui/editors/sellableeditor.py:408
+msgid "Keep"
+msgstr ""
+
+#: ../stoqlib/gui/editors/sellableeditor.py:418
 #, python-format
 msgid ""
 "Do you really want to close '%s'?\n"
@@ -7132,12 +7241,12 @@ msgstr ""
 "Por favor note que quando este estiver fechado, não será mais possível "
 "comercializá-lo."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:406
+#: ../stoqlib/gui/editors/sellableeditor.py:422
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:546
-msgid "Don't Close"
-msgstr "Não fechar"
+msgid "Don't close"
+msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:414
+#: ../stoqlib/gui/editors/sellableeditor.py:430
 #, python-format
 msgid ""
 "Do you really want to reopen '%s'?\n"
@@ -7147,33 +7256,33 @@ msgstr ""
 "Por favor note que quando este estiver aberto, será possível comercializá-lo "
 "novamente."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:418
-msgid "Keep Closed"
-msgstr "Manter fechado"
-
-#: ../stoqlib/gui/editors/sellableeditor.py:444
+#: ../stoqlib/gui/editors/sellableeditor.py:460
 msgid "The code can not be empty."
 msgstr "O código não pode ser vazio."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:446
+#: ../stoqlib/gui/editors/sellableeditor.py:462
 #, python-format
 msgid "The code %s already exists."
 msgstr "O código %s já existe!"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:452
+#: ../stoqlib/gui/editors/sellableeditor.py:468
 msgid "Barcode must have 14 digits or less."
 msgstr "O código de barras deve ter 14 dígitos ou menos."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:454
+#: ../stoqlib/gui/editors/sellableeditor.py:470
 #, python-format
 msgid "The barcode %s already exists"
 msgstr "O código de barras %s já existe!"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:458
+#: ../stoqlib/gui/editors/sellableeditor.py:472
+msgid "Cannot create new barcodes in demonstration mode"
+msgstr ""
+
+#: ../stoqlib/gui/editors/sellableeditor.py:477
 msgid "Price cannot be zero or negative"
 msgstr "Preço não pode ser zero ou negativo."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:462
+#: ../stoqlib/gui/editors/sellableeditor.py:481
 msgid "Cost cannot be zero or negative"
 msgstr "Custo não pode ser zero ou negativo."
 
@@ -7279,7 +7388,7 @@ msgstr "Despesa: %s"
 msgid "Cash in: %s"
 msgstr "Suprimento: %s"
 
-#: ../stoqlib/gui/fiscalprinter.py:135
+#: ../stoqlib/gui/fiscalprinter.py:139
 msgid ""
 "You can only close the till once per day. You won't be able to make any more "
 "sales today.\n"
@@ -7291,11 +7400,17 @@ msgstr ""
 "\n"
 "Fechar o caixa?"
 
-#: ../stoqlib/gui/fiscalprinter.py:138 ../stoqlib/gui/fiscalprinter.py:245
+#: ../stoqlib/gui/fiscalprinter.py:142 ../stoqlib/gui/fiscalprinter.py:257
 msgid "Close Till"
 msgstr "Fechar o caixa"
 
-#: ../stoqlib/gui/fiscalprinter.py:236
+#. FIXME: Find a better description for the warning bellow.
+#: ../stoqlib/gui/fiscalprinter.py:208
+msgid ""
+"You are not allowed to sell in branches not created by the demonstration mode"
+msgstr ""
+
+#: ../stoqlib/gui/fiscalprinter.py:248
 msgid ""
 "You need to close the till from the previous day before creating a new "
 "order.\n"
@@ -7307,7 +7422,7 @@ msgstr ""
 "\n"
 "Fechar o Caixa?"
 
-#: ../stoqlib/gui/fiscalprinter.py:239
+#: ../stoqlib/gui/fiscalprinter.py:251
 msgid ""
 "The till in Stoq is opened, but in ECF is closed.\n"
 "\n"
@@ -7317,7 +7432,7 @@ msgstr ""
 "\n"
 "Fechar o caixa no Stoq?"
 
-#: ../stoqlib/gui/fiscalprinter.py:242
+#: ../stoqlib/gui/fiscalprinter.py:254
 msgid ""
 "The till in stoq is closed, but in ECF is opened.\n"
 "\n"
@@ -7327,7 +7442,7 @@ msgstr ""
 "\n"
 "Fechar o caixa na ECF?"
 
-#: ../stoqlib/gui/fiscalprinter.py:366
+#: ../stoqlib/gui/fiscalprinter.py:378
 msgid ""
 "The fiscal printer has run out of paper.\n"
 "Add more paper before continuing."
@@ -7335,60 +7450,60 @@ msgstr ""
 "A impressora fiscal está sem papel.\n"
 "Adicione mais papel antes de continuar."
 
-#: ../stoqlib/gui/fiscalprinter.py:368 ../stoqlib/gui/fiscalprinter.py:375
+#: ../stoqlib/gui/fiscalprinter.py:380 ../stoqlib/gui/fiscalprinter.py:387
 msgid "Confirm later"
 msgstr "Confirmar depois"
 
-#: ../stoqlib/gui/fiscalprinter.py:373
+#: ../stoqlib/gui/fiscalprinter.py:385
 msgid "The fiscal printer is offline, turn it on and try again"
 msgstr "A impressora fiscal está desligada, ligue-a e tente novamente"
 
-#: ../stoqlib/gui/fiscalprinter.py:379
+#: ../stoqlib/gui/fiscalprinter.py:391
 msgid "It is not possible to emit the coupon"
 msgstr "Não é possível emitir o coupon"
 
-#: ../stoqlib/gui/fiscalprinter.py:461 ../stoqlib/gui/fiscalprinter.py:502
-#: ../stoqlib/gui/fiscalprinter.py:546 ../stoqlib/gui/fiscalprinter.py:572
+#: ../stoqlib/gui/fiscalprinter.py:473 ../stoqlib/gui/fiscalprinter.py:514
+#: ../stoqlib/gui/fiscalprinter.py:558 ../stoqlib/gui/fiscalprinter.py:584
 msgid "Erro na impressão. Deseja tentar novamente?"
 msgstr "Erro na impressão. Deseja tentar novamente?"
 
-#: ../stoqlib/gui/fiscalprinter.py:463 ../stoqlib/gui/fiscalprinter.py:504
-#: ../stoqlib/gui/fiscalprinter.py:520 ../stoqlib/gui/fiscalprinter.py:548
-#: ../stoqlib/gui/fiscalprinter.py:574
+#: ../stoqlib/gui/fiscalprinter.py:475 ../stoqlib/gui/fiscalprinter.py:516
+#: ../stoqlib/gui/fiscalprinter.py:532 ../stoqlib/gui/fiscalprinter.py:560
+#: ../stoqlib/gui/fiscalprinter.py:586
 msgid "Sim"
 msgstr "Sim"
 
-#: ../stoqlib/gui/fiscalprinter.py:463 ../stoqlib/gui/fiscalprinter.py:504
-#: ../stoqlib/gui/fiscalprinter.py:520 ../stoqlib/gui/fiscalprinter.py:548
-#: ../stoqlib/gui/fiscalprinter.py:574
+#: ../stoqlib/gui/fiscalprinter.py:475 ../stoqlib/gui/fiscalprinter.py:516
+#: ../stoqlib/gui/fiscalprinter.py:532 ../stoqlib/gui/fiscalprinter.py:560
+#: ../stoqlib/gui/fiscalprinter.py:586
 msgid "Não"
 msgstr "Não"
 
-#: ../stoqlib/gui/fiscalprinter.py:518
+#: ../stoqlib/gui/fiscalprinter.py:530
 msgid "Erro cancelando cupom. Deseja tentar novamente?"
 msgstr "Erro cancelando cupom. Deseja tentar novamente?"
 
-#: ../stoqlib/gui/login.py:116
+#: ../stoqlib/gui/login.py:117
 msgid " Authenticating user..."
 msgstr " Autenticando usuário..."
 
-#: ../stoqlib/gui/login.py:134
-msgid "Choose application"
-msgstr "Escolha um aplicativo"
+#: ../stoqlib/gui/login.py:135
+msgid "Stoq - Choose application"
+msgstr ""
 
-#: ../stoqlib/gui/login.py:217 ../stoqlib/gui/login.py:223
+#: ../stoqlib/gui/login.py:212 ../stoqlib/gui/login.py:218
 msgid "Invalid user or password"
 msgstr "Usuário ou senha inválidos"
 
-#: ../stoqlib/gui/login.py:220
+#: ../stoqlib/gui/login.py:215
 msgid "This user is inactive"
 msgstr "Este usuário está inativo"
 
-#: ../stoqlib/gui/login.py:260
-msgid "Access Control"
-msgstr "Controle de acesso"
+#: ../stoqlib/gui/login.py:258
+msgid "Stoq - Access Control"
+msgstr ""
 
-#: ../stoqlib/gui/login.py:278
+#: ../stoqlib/gui/login.py:276
 msgid "specify an username"
 msgstr "especifique um usuário"
 
@@ -7457,7 +7572,7 @@ msgid "Sold By:"
 msgstr "Vendido por:"
 
 #: ../stoqlib/gui/search/commissionsearch.py:69 ../stoqlib/lib/invoice.py:309
-#: ../stoqlib/lib/parameters.py:474
+#: ../stoqlib/lib/parameters.py:479
 msgid "Sale"
 msgstr "Venda"
 
@@ -7573,33 +7688,33 @@ msgid "Bill or check number:"
 msgstr "Número do boleto ou cheque:"
 
 #: ../stoqlib/gui/search/paymentsearch.py:78
-#: ../stoqlib/reporting/purchase.py:238
+#: ../stoqlib/reporting/purchase.py:237
 msgid "Method"
 msgstr "Forma"
 
-#: ../stoqlib/gui/search/paymentsearch.py:115
+#: ../stoqlib/gui/search/paymentsearch.py:116
 msgid "Card Payment Search"
 msgstr "Pesquisa de pagamentos em cartão"
 
-#: ../stoqlib/gui/search/paymentsearch.py:153
+#: ../stoqlib/gui/search/paymentsearch.py:154
 msgid "Credit provider"
 msgstr "Fornecedor de crédito"
 
-#: ../stoqlib/gui/search/paymentsearch.py:155
-#: ../stoqlib/reporting/purchase.py:242
+#: ../stoqlib/gui/search/paymentsearch.py:156
+#: ../stoqlib/reporting/purchase.py:241
 msgid "Due date"
 msgstr "Vencimento"
 
-#: ../stoqlib/gui/search/paymentsearch.py:157
+#: ../stoqlib/gui/search/paymentsearch.py:158
 #: ../stoqlib/gui/slaves/installmentslave.py:247
 msgid "Paid date"
 msgstr "Data do pagamento"
 
-#: ../stoqlib/gui/search/paymentsearch.py:163
+#: ../stoqlib/gui/search/paymentsearch.py:164
 msgid "% Fee"
 msgstr "% Taxa"
 
-#: ../stoqlib/gui/search/paymentsearch.py:165
+#: ../stoqlib/gui/search/paymentsearch.py:166
 #: ../stoqlib/reporting/payment.py:91
 msgid "Fee"
 msgstr "Taxa"
@@ -7706,7 +7821,7 @@ msgstr "fornecedores"
 
 #: ../stoqlib/gui/search/personsearch.py:223
 msgid "Client Search"
-msgstr "Pesquisa de cliente"
+msgstr "Pesquisa de clientes"
 
 #: ../stoqlib/gui/search/personsearch.py:227
 msgid "client"
@@ -7855,12 +7970,15 @@ msgstr "Adicionar produtos"
 
 #: ../stoqlib/gui/search/productsearch.py:69
 #: ../stoqlib/gui/search/productsearch.py:355
+#: ../stoqlib/reporting/product.py:119 ../stoqlib/reporting/product.py:178
+#: ../stoqlib/reporting/product.py:213 ../stoqlib/reporting/product.py:245
 msgid "product"
 msgstr "produto"
 
 #: ../stoqlib/gui/search/productsearch.py:69
 #: ../stoqlib/gui/search/productsearch.py:355
-#: ../stoqlib/reporting/product.py:117 ../stoqlib/reporting/product.py:211
+#: ../stoqlib/reporting/product.py:119 ../stoqlib/reporting/product.py:178
+#: ../stoqlib/reporting/product.py:213 ../stoqlib/reporting/product.py:245
 msgid "products"
 msgstr "produtos"
 
@@ -7873,7 +7991,7 @@ msgid "Product History Search"
 msgstr "Pesquisa de histórico de produtos"
 
 #: ../stoqlib/gui/search/productsearch.py:274
-#: ../stoqlib/reporting/product.py:142
+#: ../stoqlib/reporting/product.py:144
 msgid "Consumed"
 msgstr "Consumido"
 
@@ -7899,12 +8017,12 @@ msgid "The DIFFERENCE column is equal IN STOCK minus MINIMUM columns"
 msgstr "A DIFERENÇA é igual a coluna EM ESTOQUE menos a coluna MÍNIMO"
 
 #: ../stoqlib/gui/search/productsearch.py:400
-#: ../stoqlib/reporting/product.py:230
+#: ../stoqlib/reporting/product.py:232
 msgid "Maximum"
 msgstr "Máximo"
 
 #: ../stoqlib/gui/search/productsearch.py:403
-#: ../stoqlib/reporting/product.py:231
+#: ../stoqlib/reporting/product.py:233
 msgid "Minimum"
 msgstr "Mínimo"
 
@@ -7930,7 +8048,7 @@ msgid "Purchased Items Search"
 msgstr "Pesquisa de itens comprados"
 
 #: ../stoqlib/gui/search/purchasesearch.py:86
-#: ../stoqlib/reporting/purchase.py:98
+#: ../stoqlib/reporting/purchase.py:97
 msgid "Purchased"
 msgstr "Comprado"
 
@@ -7990,7 +8108,7 @@ msgstr "Itens contendo:"
 
 #: ../stoqlib/gui/search/salesearch.py:133
 #: ../stoqlib/reporting/loanreceipt.py:103
-#: ../stoqlib/reporting/purchase.py:128 ../stoqlib/reporting/purchase.py:315
+#: ../stoqlib/reporting/purchase.py:127 ../stoqlib/reporting/purchase.py:314
 #: ../stoqlib/reporting/sale.py:100
 #: ../stoqlib/reporting/stockdecreasereceipt.py:93
 msgid "Item"
@@ -8054,11 +8172,12 @@ msgid "Add services"
 msgstr "Adicionar serviços"
 
 #: ../stoqlib/gui/search/servicesearch.py:55
+#: ../stoqlib/reporting/service.py:42 ../stoqlib/reporting/service.py:63
 msgid "service"
 msgstr "serviço"
 
 #: ../stoqlib/gui/search/servicesearch.py:55
-#: ../stoqlib/reporting/service.py:42
+#: ../stoqlib/reporting/service.py:42 ../stoqlib/reporting/service.py:63
 msgid "services"
 msgstr "serviços"
 
@@ -8354,7 +8473,7 @@ msgstr "Este campo não pode ser negativo."
 #: ../stoqlib/gui/wizards/salequotewizard.py:162
 #: ../stoqlib/gui/wizards/salewizard.py:478 ../stoqlib/reporting/sale.py:139
 msgid "Additional Information"
-msgstr "Informação adicional"
+msgstr "Informações adicionais"
 
 #: ../stoqlib/gui/slaves/receivingslave.py:210
 msgid "Receiving order number must be between 1 and 999999"
@@ -8415,8 +8534,8 @@ msgid "Do you really want to cancel this sale ?"
 msgstr "Você está certo que deseja cancelar esta venda ?"
 
 #: ../stoqlib/gui/slaves/saleslave.py:343
-msgid "Cancel Sale"
-msgstr "Cancelar venda"
+msgid "Don't cancel sale"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/sellableslave.py:61
 msgid "Sale price can not be 0"
@@ -8586,15 +8705,15 @@ msgstr "Você gostaria de imprimir o recibo agora?"
 #: ../stoqlib/gui/wizards/loanwizard.py:433
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:243
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:293
-msgid "Print Receipt"
-msgstr "Imprimir recibo"
+msgid "Print receipt"
+msgstr ""
 
 #: ../stoqlib/gui/wizards/loanwizard.py:433
 #: ../stoqlib/gui/wizards/salequotewizard.py:326
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:243
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:293
-msgid "Don't Print"
-msgstr "Não imprimir"
+msgid "Don't print"
+msgstr ""
 
 #: ../stoqlib/gui/wizards/loanwizard.py:451
 msgid "Close Loan Wizard"
@@ -8689,8 +8808,12 @@ msgid "Are you sure you want to remove \"%s\" ?"
 msgstr "Tem certeza que deseja remover \"%s\" ?"
 
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:398
-msgid "Remove Quote"
-msgstr "Remover cotação"
+msgid "Remove quote"
+msgstr ""
+
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:398
+msgid "Don't remove"
+msgstr ""
 
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:503
 msgid "This will cancel the group and related quotes. Are you sure?"
@@ -8698,8 +8821,12 @@ msgstr ""
 "Isto irá cancelar o grupo e as cotações relacionadas. Você tem certeza?"
 
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:506
-msgid "Cancel Group"
-msgstr "Cancelar grupo"
+msgid "Cancel group"
+msgstr ""
+
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:506
+msgid "Don't Cancel"
+msgstr "Não cancelar"
 
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:544
 msgid "Should we close the quotes used to compose the purchase order ?"
@@ -8707,8 +8834,8 @@ msgstr ""
 "Deseja fechar as cotações utilizadas para compor uma ordem de compra ?"
 
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:546
-msgid "Close Quotes"
-msgstr "Fechar cotações"
+msgid "Close quotes"
+msgstr ""
 
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:633
 msgid "Edit Quote"
@@ -8755,7 +8882,7 @@ msgid "Qty Ordered"
 msgstr "Qtde pedida"
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:105
-#: ../stoqlib/reporting/purchase.py:142
+#: ../stoqlib/reporting/purchase.py:141
 msgid "Qty Received"
 msgstr "Qtde recebida"
 
@@ -8793,8 +8920,8 @@ msgid "Would you like to print the quote details now?"
 msgstr "Você gostaria de imprimir detalhes da cotação agora?"
 
 #: ../stoqlib/gui/wizards/salequotewizard.py:326
-msgid "Print Quote Details"
-msgstr "Imprimir detalhes da cotação"
+msgid "Print quote details"
+msgstr ""
 
 #: ../stoqlib/gui/wizards/salereturnwizard.py:90
 msgid "Return Sale Order"
@@ -9955,91 +10082,91 @@ msgstr "Vencimento dos pagamentos"
 msgid "Payment values"
 msgstr "Valor dos pagamentos"
 
-#: ../stoqlib/lib/invoice.py:681
+#: ../stoqlib/lib/invoice.py:682
 msgid "Service item code / description"
 msgstr "Código de serviço / Descrição"
 
-#: ../stoqlib/lib/invoice.py:697
+#: ../stoqlib/lib/invoice.py:698
 msgid "Service item description"
 msgstr "Descrição de serviço"
 
-#: ../stoqlib/lib/invoice.py:710
+#: ../stoqlib/lib/invoice.py:711
 msgid "Service item code"
 msgstr "Código de serviço"
 
-#: ../stoqlib/lib/invoice.py:724
+#: ../stoqlib/lib/invoice.py:725
 msgid "Service item unit"
 msgstr "Unidade de serviço"
 
-#: ../stoqlib/lib/invoice.py:737
+#: ../stoqlib/lib/invoice.py:738
 msgid "Service item quantity"
 msgstr "Quantidade de serviço"
 
-#: ../stoqlib/lib/invoice.py:750
+#: ../stoqlib/lib/invoice.py:751
 msgid "Service item price"
 msgstr "Preço do serviço"
 
-#: ../stoqlib/lib/invoice.py:763
+#: ../stoqlib/lib/invoice.py:764
 msgid "Service item total (price * quantity)"
 msgstr "Total de serviço (preço * quantidade)"
 
-#: ../stoqlib/lib/invoice.py:776
+#: ../stoqlib/lib/invoice.py:777
 msgid "Service item tax"
 msgstr "Taxa de serviço"
 
-#: ../stoqlib/lib/invoice.py:887
+#: ../stoqlib/lib/invoice.py:888
 msgid "Product item counter"
 msgstr "Contador de produtos"
 
-#: ../stoqlib/lib/invoice.py:899
+#: ../stoqlib/lib/invoice.py:900
 msgid "Product item code / description"
 msgstr "Código de produto / Descrição"
 
-#: ../stoqlib/lib/invoice.py:915
+#: ../stoqlib/lib/invoice.py:916
 msgid "Product item description"
 msgstr "Descrição de produto"
 
-#: ../stoqlib/lib/invoice.py:928
+#: ../stoqlib/lib/invoice.py:929
 msgid "Product item code"
 msgstr "Código do produtos"
 
-#: ../stoqlib/lib/invoice.py:942
+#: ../stoqlib/lib/invoice.py:943
 msgid "Product item situation"
 msgstr "Situação do produto"
 
-#: ../stoqlib/lib/invoice.py:955
+#: ../stoqlib/lib/invoice.py:956
 msgid "Product item unit"
 msgstr "Unidade do produto"
 
-#: ../stoqlib/lib/invoice.py:968
+#: ../stoqlib/lib/invoice.py:969
 msgid "Product item quantity"
 msgstr "Quantidade de produto"
 
-#: ../stoqlib/lib/invoice.py:981
+#: ../stoqlib/lib/invoice.py:982
 msgid "Product item price"
 msgstr "Preço do produto"
 
-#: ../stoqlib/lib/invoice.py:994
+#: ../stoqlib/lib/invoice.py:995
 msgid "Product item total (price * quantity)"
 msgstr "Total produto (preço * quantidade)"
 
-#: ../stoqlib/lib/invoice.py:1007
+#: ../stoqlib/lib/invoice.py:1008
 msgid "Product item tax"
 msgstr "ICMS do produto"
 
-#: ../stoqlib/lib/invoice.py:1025
+#: ../stoqlib/lib/invoice.py:1026
 msgid "Invoice Type"
 msgstr "Tipo da nota"
 
-#: ../stoqlib/lib/invoice.py:1046
+#: ../stoqlib/lib/invoice.py:1047
 msgid "State registry number"
 msgstr "Inscrição estadual"
 
-#: ../stoqlib/lib/invoice.py:1056
+#: ../stoqlib/lib/invoice.py:1057
 msgid "City registry number"
 msgstr "Inscrição municipal"
 
-#: ../stoqlib/lib/invoice.py:1074
+#: ../stoqlib/lib/invoice.py:1075
 msgid "Invoice number"
 msgstr "Número da nota fiscal"
 
@@ -10557,20 +10684,28 @@ msgstr "Conta de desequilíbrio"
 msgid "Account used for unbalanced transactions"
 msgstr "Conta usada para transações de desequilíbrio"
 
-#: ../stoqlib/lib/parameters.py:377
+#: ../stoqlib/lib/parameters.py:348
+msgid "Demonstration Mode"
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:349
+msgid "If Stoq is used in a demonstration mode"
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:382
 msgid "This parameter only accepts integer values."
 msgstr "Este parâmetro só aceita valores inteiros."
 
-#: ../stoqlib/lib/parameters.py:383
+#: ../stoqlib/lib/parameters.py:388
 msgid "This parameter only accepts decimal values."
 msgstr "Este parâmetro só aceita valores decimais."
 
-#: ../stoqlib/lib/parameters.py:389
+#: ../stoqlib/lib/parameters.py:394
 #, python-format
 msgid "'%s is not a valid path.'"
 msgstr "'%s não é um caminho válido.'"
 
-#: ../stoqlib/lib/parameters.py:394
+#: ../stoqlib/lib/parameters.py:399
 #, python-format
 msgid ""
 "'%s' is not a valid area code.\n"
@@ -10579,25 +10714,25 @@ msgstr ""
 "'%s' não é um código de área válido.\n"
 "Códigos de área válidos estão entre 10-99."
 
-#: ../stoqlib/lib/parameters.py:401
+#: ../stoqlib/lib/parameters.py:406
 #, python-format
 msgid "'%s' is not a valid percentage."
 msgstr "'%s' não é um percentual válido."
 
-#: ../stoqlib/lib/parameters.py:407
+#: ../stoqlib/lib/parameters.py:412
 #, python-format
 msgid "'%s' is not a valid state."
 msgstr "'%s' não é um estado válido."
 
-#: ../stoqlib/lib/parameters.py:484
+#: ../stoqlib/lib/parameters.py:489
 msgid "Portrait"
 msgstr "Retrato"
 
-#: ../stoqlib/lib/parameters.py:485
+#: ../stoqlib/lib/parameters.py:490
 msgid "Landscape"
 msgstr "Paisagem"
 
-#: ../stoqlib/lib/parameters.py:803
+#: ../stoqlib/lib/parameters.py:811
 #, python-format
 msgid "There is no defined %s parameter datain the database."
 msgstr "Não há nenhum dado do parametro %s definido na base de dados."
@@ -10662,6 +10797,14 @@ msgstr "Número: %s - emprestado em %s"
 msgid "Payment Report"
 msgstr "Relatório de pagamentos"
 
+#: ../stoqlib/reporting/payment.py:38
+msgid "payment"
+msgstr "pagamentos"
+
+#: ../stoqlib/reporting/payment.py:38
+msgid "payments"
+msgstr "pagamentos"
+
 #: ../stoqlib/reporting/payment.py:98
 msgid "Payment Flow History"
 msgstr "Histórico de pagamentos"
@@ -10691,48 +10834,49 @@ msgstr "Pago/Recebido"
 msgid "Payment receipt"
 msgstr "Recibo de pagamento"
 
-#: ../stoqlib/reporting/product.py:47 ../stoqlib/reporting/product.py:75
-#: ../stoqlib/reporting/product.py:99 ../stoqlib/reporting/product.py:116
+#: ../stoqlib/reporting/product.py:48 ../stoqlib/reporting/product.py:77
+#: ../stoqlib/reporting/product.py:102 ../stoqlib/reporting/product.py:118
 msgid "Product Listing"
 msgstr "Listagem de produtos"
 
-#: ../stoqlib/reporting/product.py:48 ../stoqlib/reporting/product.py:76
-#: ../stoqlib/reporting/product.py:100 ../stoqlib/reporting/production.py:47
+#: ../stoqlib/reporting/product.py:49 ../stoqlib/reporting/product.py:78
+#: ../stoqlib/reporting/product.py:103 ../stoqlib/reporting/production.py:47
 #: ../stoqlib/reporting/service.py:41
 #, python-format
 msgid "on branch <u>%s</u>"
 msgstr "na filial <u>%s</u>"
 
-#. XXX: We should not change main_object_name here
-#: ../stoqlib/reporting/product.py:52 ../stoqlib/reporting/product.py:80
-#: ../stoqlib/reporting/product.py:104
+#: ../stoqlib/reporting/product.py:54 ../stoqlib/reporting/product.py:83
+#: ../stoqlib/reporting/product.py:107
+#, python-format
+msgid "product from branch %s"
+msgstr ""
+
+#: ../stoqlib/reporting/product.py:55 ../stoqlib/reporting/product.py:84
+#: ../stoqlib/reporting/product.py:108
 #, python-format
 msgid "products from branch %s"
 msgstr "produtos da filial %s"
 
-#: ../stoqlib/reporting/product.py:154
+#: ../stoqlib/reporting/product.py:156
 msgid "Products Sold Listing"
 msgstr "Listagem de produtos vendidos"
 
-#: ../stoqlib/reporting/product.py:155
+#: ../stoqlib/reporting/product.py:157
+msgid "product sold"
+msgstr ""
+
+#: ../stoqlib/reporting/product.py:157
 msgid "products sold"
 msgstr "produtos vendidos"
 
-#: ../stoqlib/reporting/product.py:176
-msgid "Inventory Product Counting"
-msgstr "Inventário de produtos"
-
-#: ../stoqlib/reporting/product.py:210
+#: ../stoqlib/reporting/product.py:212
 msgid "Product Stock Report"
 msgstr "Relatório de estoque de produtos"
 
-#: ../stoqlib/reporting/product.py:242
+#: ../stoqlib/reporting/product.py:244
 msgid "Closed Product Stock Report"
 msgstr "Relatório de estoque de produtos fechados"
-
-#: ../stoqlib/reporting/product.py:243
-msgid "closed products"
-msgstr "produtos fechados"
 
 #: ../stoqlib/reporting/production.py:46
 msgid "Production Item Listing"
@@ -10741,6 +10885,10 @@ msgstr "Listagem de itens para produção"
 #: ../stoqlib/reporting/production.py:72
 msgid "Production Order Report"
 msgstr "Relatório de ordem de produção"
+
+#: ../stoqlib/reporting/production.py:73 ../stoqlib/reporting/purchase.py:48
+msgid "order"
+msgstr "pedido"
 
 #: ../stoqlib/reporting/production.py:73 ../stoqlib/reporting/purchase.py:48
 msgid "orders"
@@ -10762,7 +10910,7 @@ msgstr "Responsável:"
 
 #: ../stoqlib/reporting/production.py:141
 #: ../stoqlib/reporting/production.py:172
-#: ../stoqlib/reporting/production.py:199 ../stoqlib/reporting/purchase.py:158
+#: ../stoqlib/reporting/production.py:199 ../stoqlib/reporting/purchase.py:157
 #: ../stoqlib/reporting/template.py:307
 msgid "Totals:"
 msgstr "Totais:"
@@ -10775,79 +10923,75 @@ msgstr "Relatório de compras"
 msgid "Purchases Items Report"
 msgstr "Relatório de itens comprados"
 
-#: ../stoqlib/reporting/purchase.py:84
-msgid "purchased items"
-msgstr "Itens de compra"
-
-#: ../stoqlib/reporting/purchase.py:137
+#: ../stoqlib/reporting/purchase.py:136
 msgid "Qty"
 msgstr "Qtde"
 
-#: ../stoqlib/reporting/purchase.py:166
+#: ../stoqlib/reporting/purchase.py:165
 msgid "Purchase Ordered Items"
 msgstr "Itens do pedido de compra"
 
-#: ../stoqlib/reporting/purchase.py:184 ../stoqlib/reporting/purchase.py:209
+#: ../stoqlib/reporting/purchase.py:183 ../stoqlib/reporting/purchase.py:208
 #, python-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../stoqlib/reporting/purchase.py:189
+#: ../stoqlib/reporting/purchase.py:188
 msgid "Agreed Freight:"
 msgstr "Frete aceito:"
 
-#: ../stoqlib/reporting/purchase.py:213
+#: ../stoqlib/reporting/purchase.py:212
 #, python-format
 msgid "Mixed (%s)"
 msgstr "Misto (%s)"
 
-#: ../stoqlib/reporting/purchase.py:215
+#: ../stoqlib/reporting/purchase.py:214
 msgid "Received Freight:"
 msgstr "Frete recebido:"
 
-#: ../stoqlib/reporting/purchase.py:226
+#: ../stoqlib/reporting/purchase.py:225
 #, python-format
 msgid "Payments: %d installments"
 msgstr "Pagamentos: %d parcelas"
 
-#: ../stoqlib/reporting/purchase.py:229
+#: ../stoqlib/reporting/purchase.py:228
 msgid "Payments: 1 installment"
 msgstr "Pagamento: 1 parcela"
 
-#: ../stoqlib/reporting/purchase.py:231
+#: ../stoqlib/reporting/purchase.py:230
 msgid "There are no payments defined for this order."
 msgstr "Não há pagamentos definidos neste pedido."
 
-#: ../stoqlib/reporting/purchase.py:276
+#: ../stoqlib/reporting/purchase.py:275
 msgid "Purchase Notes"
 msgstr "Notas da compra"
 
-#: ../stoqlib/reporting/purchase.py:294
+#: ../stoqlib/reporting/purchase.py:293
 #, python-format
 msgid "Purchase Order #%s"
 msgstr "Pedido de compra #%s"
 
-#: ../stoqlib/reporting/purchase.py:300
+#: ../stoqlib/reporting/purchase.py:299
 msgid "Quote Request"
 msgstr "Pedido de cotação"
 
-#: ../stoqlib/reporting/purchase.py:347
+#: ../stoqlib/reporting/purchase.py:346
 msgid "Payment Settings"
 msgstr "Configuração de pagamento"
 
-#: ../stoqlib/reporting/purchase.py:351
+#: ../stoqlib/reporting/purchase.py:350
 msgid "Payment Method:"
 msgstr "Forma de pagamento:"
 
-#: ../stoqlib/reporting/purchase.py:352
+#: ../stoqlib/reporting/purchase.py:351
 msgid "Intervals:"
 msgstr "Intervalos:"
 
-#: ../stoqlib/reporting/purchase.py:352
+#: ../stoqlib/reporting/purchase.py:351
 msgid "Obs:"
 msgstr "Obs:"
 
-#: ../stoqlib/reporting/purchase.py:359
+#: ../stoqlib/reporting/purchase.py:358
 msgid "Quoting Items"
 msgstr "Itens cotados"
 
@@ -10856,8 +11000,8 @@ msgid "Purchase Receival Report"
 msgstr "Relatório de recebimento de compras"
 
 #: ../stoqlib/reporting/purchase_receival.py:35
-msgid "purchase receivals"
-msgstr "recebimentos de compra"
+msgid "purchases"
+msgstr ""
 
 #: ../stoqlib/reporting/receival_receipt.py:39
 msgid "Receival receipt"
@@ -10900,6 +11044,10 @@ msgstr "Número: %s - Venda %s em %s"
 msgid "Sales Report"
 msgstr "Relatório de vendas"
 
+#: ../stoqlib/reporting/sale.py:169
+msgid "sale"
+msgstr "venda"
+
 #: ../stoqlib/reporting/sale.py:193
 msgid "Sold Items by Branch Report"
 msgstr "Relatório de Itens vendidos por filial"
@@ -10908,47 +11056,54 @@ msgstr "Relatório de Itens vendidos por filial"
 msgid "Totals by Branch"
 msgstr "Totais por filial"
 
-#: ../stoqlib/reporting/sale.py:257
+#: ../stoqlib/reporting/sale.py:259
+msgid "sale from {salesperson} on branch {branch}"
+msgstr ""
+
+#: ../stoqlib/reporting/sale.py:261
+msgid "sales from {salesperson} on branch {branch}"
+msgstr ""
+
+#: ../stoqlib/reporting/sale.py:264
+#, python-format
+msgid "sale on branch %s"
+msgstr ""
+
+#: ../stoqlib/reporting/sale.py:265
 #, python-format
 msgid "sales on branch %s"
 msgstr "vendas na filial %s"
 
-#. TRANSLATORS: The first %s is the Sales Person name
-#: ../stoqlib/reporting/sale.py:261
-#, python-format
-msgid "sales from %s on branch %s"
-msgstr "vendas de %s na filial %s"
-
-#: ../stoqlib/reporting/sale.py:276
+#: ../stoqlib/reporting/sale.py:282
 msgid "Total Amount"
 msgstr "Quantia total"
 
-#: ../stoqlib/reporting/sale.py:278
+#: ../stoqlib/reporting/sale.py:284
 msgid "P/A"
 msgstr "Q/P"
 
-#: ../stoqlib/reporting/sale.py:280
+#: ../stoqlib/reporting/sale.py:286
 msgid "Percentage"
 msgstr "Porcentagem"
 
-#: ../stoqlib/reporting/sale.py:285
+#: ../stoqlib/reporting/sale.py:291
 msgid "S/P"
 msgstr "I/V"
 
-#: ../stoqlib/reporting/sale.py:320
+#: ../stoqlib/reporting/sale.py:326
 #, python-format
 msgid "Sold value per sales %s"
 msgstr "Valor médio por venda %s"
 
-#: ../stoqlib/reporting/sale.py:327
+#: ../stoqlib/reporting/sale.py:333
 msgid "P/A: Payment Amount"
 msgstr "Q/P: Quantia do pagamento"
 
-#: ../stoqlib/reporting/sale.py:328
+#: ../stoqlib/reporting/sale.py:334
 msgid "S/P: Sellables sold per sale"
 msgstr "I/V: Itens vendidos por venda"
 
-#: ../stoqlib/reporting/sale.py:331
+#: ../stoqlib/reporting/sale.py:337
 #, python-format
 msgid "Total of sales: %d"
 msgstr "Total de vendas: %d"
@@ -10986,19 +11141,18 @@ msgstr "CNPJ: %s"
 msgid "State Registry: %s"
 msgstr "Inscrição estadual: %s"
 
-#: ../stoqlib/reporting/template.py:200
-msgid "Listing"
-msgstr "Listando"
+#. Translators: e.g: Product Listing - Listing 34 of a total of 45 products
+#: ../stoqlib/reporting/template.py:180
+msgid "{title} - Listing {rows} of a total of {total_rows} {item}"
+msgstr ""
 
-#: ../stoqlib/reporting/template.py:204
-#, python-format
-msgid "%d of a total of %d %s"
-msgstr "%d de um total de %d %s"
+#: ../stoqlib/reporting/template.py:182
+msgid "item"
+msgstr "item"
 
-#: ../stoqlib/reporting/template.py:209
-#, python-format
-msgid "all %s"
-msgstr "todos %s"
+#: ../stoqlib/reporting/template.py:182
+msgid "items"
+msgstr "itens"
 
 #: ../stoqlib/reporting/template.py:350
 msgid "Untitled"
@@ -11009,8 +11163,12 @@ msgid "Till History Listing"
 msgstr "Relatório de histórico de caixa"
 
 #: ../stoqlib/reporting/till.py:38
-msgid "till history"
-msgstr "histórico de caixa"
+msgid "till entry"
+msgstr ""
+
+#: ../stoqlib/reporting/till.py:38
+msgid "till entries"
+msgstr ""
 
 #: ../stoqlib/reporting/transfer_receipt.py:39
 msgid "Transfer Receipt"
@@ -11175,9 +11333,6 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ "A base de dados especificada `%s' não existe.\n"
 #~ "Você deseja cria-la?"
 
-#~ msgid "Don't create"
-#~ msgstr "Não criar"
-
 #~ msgid "Create"
 #~ msgstr "Criar"
 
@@ -11227,6 +11382,9 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "The password supplied is not valid."
 #~ msgstr "A senha fornecida não é válida."
 
+#~ msgid "Setting up Stoq"
+#~ msgstr "Configurando o Stoq"
+
 #~ msgid "Purchase application."
 #~ msgstr ""
 #~ "Aplicativo para execução dos pedidos\n"
@@ -11235,14 +11393,14 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "Show orders with status"
 #~ msgstr "Exibir pedidos com situação"
 
-#~ msgid "The selected order will be marked as sent."
-#~ msgstr "O pedido selecionado será marcado como enviado."
-
 #~ msgid "Don't Send"
 #~ msgstr "Não Enviar"
 
 #~ msgid "Send to supplier"
 #~ msgstr "Enviar ao Fornecedor"
+
+#~ msgid "The selected order(s) will be cancelled."
+#~ msgstr "O pedido selecionado será cancelado."
 
 #~ msgid "Cancel order(s)"
 #~ msgstr "Cancelar Pedido(s)"
@@ -11281,9 +11439,6 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #~ msgid "The selected quote will be cancelled."
 #~ msgstr "O cotação selecionada será cancelado."
-
-#~ msgid "Cancel quote"
-#~ msgstr "Cancelar Cotação"
 
 #~ msgid ""
 #~ "You must finish or cancel the current sale before you leave the POS "
@@ -11366,6 +11521,26 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ "'stoqdbadmin updateschema` para atualizar o esquema para a última versão "
 #~ "disponível."
 
+#~ msgid "<b>Database initialization</b>"
+#~ msgstr "<b>Inicialização da base de dados</b>"
+
+#~ msgid "Create an empty database"
+#~ msgstr "Criar uma base de dados vazia"
+
+#~ msgid "Create an example database"
+#~ msgstr "Criar uma base de dados de exemplo"
+
+#~ msgid ""
+#~ "You can choose to initialize the system with an empty database or with a "
+#~ "simple examples database.\n"
+#~ "\n"
+#~ "Would you like to:\n"
+#~ msgstr ""
+#~ "Você pode escolher entre inicializar o sistema com uma base de dados vazia "
+#~ "ou com simples exemplos.\n"
+#~ "\n"
+#~ "Você gostaria de:\n"
+
 #~ msgid "About"
 #~ msgstr "Sobre"
 
@@ -11434,6 +11609,27 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #~ msgid "_Print Invoice ..."
 #~ msgstr "Im_primir Nota Fiscal..."
+
+#~ msgid "<b>Stoq was successfully installed in your system!</b>"
+#~ msgstr "<b>O Stoq foi instalado com sucesso em seu sistema!</b>"
+
+#~ msgid ""
+#~ "Stoq was installed in your system and now you are going to finish this "
+#~ "wizard.\n"
+#~ "\n"
+#~ "Click in the finish button and you will be able to select one of Stoq "
+#~ "applications.\n"
+#~ "\n"
+#~ "Depending on your choices you will be logged or will be prompted to log as "
+#~ "admin user.\n"
+#~ msgstr ""
+#~ "Stoq foi instalado com sucesso em seu sistema, para clique sair para "
+#~ "finalizar este wizard.\n"
+#~ "\n"
+#~ "clique em rodar Stoq, você irá logar para escolher um dos aplicativos Stoq.\n"
+#~ "\n"
+#~ "Dependendo de suas escolhas você será conectado ou será solicitado a "
+#~ "registrar como usuário administrativo.\n"
 
 #~ msgid "A_dmin"
 #~ msgstr "A_dmin"
@@ -11544,6 +11740,19 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "_Payable"
 #~ msgstr "Contas a _Pagar"
 
+#~ msgid ""
+#~ "Most of the plugins are specific to the brazilian market and once\n"
+#~ "a plugin is activated it will not be possible to disable it.\n"
+#~ "\n"
+#~ "\n"
+#~ "<b>Select the plugins you want to enable:</b>"
+#~ msgstr ""
+#~ "A maioria dos plugins são especificas para o mercado Brasileiro\n"
+#~ "uma vez ativado, não será possível sua desativação.\n"
+#~ "\n"
+#~ "\n"
+#~ "<b>Selecione o plugin que deseja habilitar:</b>"
+
 #~ msgid "NF-e (Eletronic Invoices - POS application will be disabled)"
 #~ msgstr "NF-e (Nota Fiscal Eletronica - Aplicação PDV será desabilitada)"
 
@@ -11561,6 +11770,12 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #~ msgid "_Inventory"
 #~ msgstr "_Inventário"
+
+#~ msgid "  .   .   /    -  "
+#~ msgstr "  .   .   /    -  "
+
+#~ msgid "00.000.000/0000-00"
+#~ msgstr "00.000.000/0000-00"
 
 #~ msgid "Main Address"
 #~ msgstr "Endereço Principal"
@@ -11633,6 +11848,12 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #~ msgid "Select:"
 #~ msgstr "Selecione:"
+
+#~ msgid ""
+#~ "Please, fill some important informations before start using the applications"
+#~ msgstr ""
+#~ "Por favor, preencha algumas informações importantes antes de iniciar o "
+#~ "sistema"
 
 #~ msgid "PostgreSQL Database Settings"
 #~ msgstr "Configurações do banco de dados Postgres"
@@ -11734,6 +11955,9 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "Tax Constants"
 #~ msgstr "Constantes de Impostos"
 
+#~ msgid "Access Control"
+#~ msgstr "Controle de acesso"
+
 #~ msgid "Do you really want to cancel the last document?"
 #~ msgstr "Você está certo que deseja cancelar o ultimo?"
 
@@ -11763,15 +11987,6 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #~ msgid "Can not sell this product"
 #~ msgstr "Não é possivel vender este produto"
-
-#~ msgid "payments"
-#~ msgstr "pagamentos"
-
-#~ msgid "order"
-#~ msgstr "pedido"
-
-#~ msgid "sale"
-#~ msgstr "venda"
 
 #~ msgid "You need to open the till before start doing sales."
 #~ msgstr "Você precisa abrir o caixa antes de começar as vendas."
@@ -12380,12 +12595,6 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "transaction"
 #~ msgstr "transação"
 
-#~ msgid "items"
-#~ msgstr "itens"
-
-#~ msgid "item"
-#~ msgstr "item"
-
 #~ msgid ""
 #~ "\n"
 #~ "Warning: It has %d cancelled %s in your selection."
@@ -12655,8 +12864,17 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid " Done."
 #~ msgstr " Feito"
 
+#~ msgid "<b>You are using the examples database.</b>"
+#~ msgstr "<b>Você está usando a base de exemplos.</b>"
+
 #~ msgid "Please, start stoq again to configure new database"
 #~ msgstr "Por favor, reinicie o Stoq para configurar o novo banco de dados"
+
+#~ msgid "Hide"
+#~ msgstr "Ocultar"
+
+#~ msgid "Done, click 'Forward' to continue"
+#~ msgstr "Feito, clique em 'Avançar' para continuar"
 
 #~ msgid "Close the current tab"
 #~ msgstr "Fechar a aba atual"
@@ -12700,15 +12918,41 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "You need to register a company before using Stoq"
 #~ msgstr "Você precisa registrar uma empresa antes de utilizar o Stoq"
 
+#~ msgid "Don't Confirm"
+#~ msgstr "Não Confirmar"
+
 #~ msgid "R_eceipt"
 #~ msgstr "R_ecibo"
 
 #~ msgid "C.F.O.P"
 #~ msgstr "C.F.O.P"
 
+#~ msgid "There are no orders with status pending in the selection"
+#~ msgstr "Não há nenhum pedido com situação pendente na seleção"
+
 #, python-format
 #~ msgid "Till account for %s"
 #~ msgstr "Conta caixa para %s"
+
+#~ msgid "Listing"
+#~ msgstr "Listando"
+
+#, python-format
+#~ msgid "%d of a total of %d %s"
+#~ msgstr "%d de um total de %d %s"
+
+#, python-format
+#~ msgid "all %s"
+#~ msgstr "todos %s"
+
+#~ msgid "closed products"
+#~ msgstr "produtos fechados"
+
+#~ msgid "purchase receivals"
+#~ msgstr "recebimentos de compra"
+
+#~ msgid "till history"
+#~ msgstr "histórico de caixa"
 
 #~ msgid "Product Units"
 #~ msgstr "Unidades de Produtos"
@@ -12780,6 +13024,9 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ "A base de dados foi restaurada com o nome %s.\n"
 #~ "\n"
 
+#~ msgid "Register Computer"
+#~ msgstr "Registrar Computador"
+
 #~ msgid "Default Sales C.F.O.P"
 #~ msgstr "C.F.O.P Padrão para Venda"
 
@@ -12814,6 +13061,15 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #~ msgid "C.F.O.P:"
 #~ msgstr "C.F.O.P:"
+
+#~ msgid "   .   .   -  "
+#~ msgstr "   .   .   -  "
+
+#~ msgid "000.000.000-00"
+#~ msgstr "000.000.000-00"
+
+#~ msgid "kiwilabel2"
+#~ msgstr "label"
 
 #~ msgid "Alíquota do IPI:"
 #~ msgstr "Alíquota do IPI:"
@@ -12871,6 +13127,12 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ "Valor por unidade\n"
 #~ "tributável:"
 
+#~ msgid "<b>$CURRENCY:</b>"
+#~ msgstr "<b>$CURRENCY:</b>"
+
+#~ msgid "  -  -    "
+#~ msgstr "  -  -    "
+
 #~ msgid "At any date"
 #~ msgstr "Em qualquer data"
 
@@ -12882,6 +13144,12 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #~ msgid "to"
 #~ msgstr "até"
+
+#~ msgid "kiwilabel1"
+#~ msgstr "label"
+
+#~ msgid "kiwilabel3"
+#~ msgstr "label"
 
 #~ msgid "_Receivable"
 #~ msgstr "_Recebimento"
@@ -12901,8 +13169,17 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "To file:"
 #~ msgstr "Para arquivo:"
 
+#~ msgid "  :  "
+#~ msgstr "  :  "
+
 #~ msgid "<b>What kind of item do you want to add?</b>"
 #~ msgstr "<b>Que tipo de cliente você deseja adicionar?</b>"
+
+#~ msgid "     -   "
+#~ msgstr "     -   "
+
+#~ msgid "00000-000"
+#~ msgstr "00000-000"
 
 #~ msgid "Gênero:"
 #~ msgstr "Gênero:"
@@ -13044,9 +13321,6 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ "Tem certeza que deseja ativar este plugin ?\n"
 #~ "Uma vez ativado, não será permitida a desabilitação do mesmo."
 
-#~ msgid "Delete items"
-#~ msgstr "Apagar itens"
-
 #~ msgid "Base Price"
 #~ msgstr "Valor base"
 
@@ -13123,9 +13397,6 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #~ msgid "Continue"
 #~ msgstr "Continuar"
-
-#~ msgid "Restart now"
-#~ msgstr "Reiniciar agora"
 
 #~ msgid "POS can not be used within NF-e plugin."
 #~ msgstr "O PDV não pode ser usado se o plugin NF-e estiver habilitado."
@@ -13599,9 +13870,6 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "You cannot open the till with a negative amount."
 #~ msgstr "Não é possível abrir o caixa com quantia negativa."
 
-#~ msgid "payment"
-#~ msgstr "pagamentos"
-
 #~ msgid "Reverse Items"
 #~ msgstr "Reverter itens"
 
@@ -13981,6 +14249,9 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "Default Sale C.F.O.P:"
 #~ msgstr "C.F.O.P Padrão para venda:"
 
+#~ msgid "Are you sure you want to confirm the order?"
+#~ msgstr "Você tem certeza que quer confirmar a ordem?"
+
 #, python-format
 #~ msgid "The barcode '%s' does not exist. Searching for a product instead."
 #~ msgstr "O código de barras '%s' não existe. Procurando por um produto."
@@ -13992,6 +14263,10 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "Access Control"
 #~ msgstr "Controle de acesso"
 
+#, python-format
+#~ msgid "sales from %s on branch %s"
+#~ msgstr "vendas de %s na filial %s"
+
 #~ msgid "Could not open database config file"
 #~ msgstr "Não foi possível abrir o arquivo de configuração do banco de dados"
 
@@ -14000,6 +14275,9 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgstr ""
 #~ "Não foi possível localizar uma empresa, você precisa registrar uma antes de "
 #~ "utilizar o Stoq"
+
+#~ msgid "Cancel Order(s)"
+#~ msgstr "Cancelar pedido(s)"
 
 #, python-format
 #~ msgid ""
@@ -14017,6 +14295,9 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ "\n"
 #~ "Um backup da base de dados foi criado em <b>%s</b>"
 
+#~ msgid "Cancel Inventory"
+#~ msgstr "Cancelar inventário"
+
 #, python-format
 #~ msgid "There is only %d items of \"%s\" and this sale has %d items."
 #~ msgstr "Existem apenas %d itens de \"%s\" e esta venda possui %d itens."
@@ -14027,8 +14308,39 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ "Não é possível confirmar a venda enquanto o cupom fiscal não puder ser "
 #~ "aberto."
 
+#~ msgid "Confirm Quote"
+#~ msgstr "Confirmar cotação"
+
 #~ msgid "Order Checkout..."
 #~ msgstr "Confirmar pedido..."
+
+#~ msgid "Don't Remove"
+#~ msgstr "Não remover"
+
+#~ msgid "<b>Administrator Account Creation</b>"
+#~ msgstr "<b>Criação da conta do administrador</b>"
+
+#, python-format
+#~ msgid ""
+#~ "I'm adding a user called `%s' which will have administrator privilegies.\n"
+#~ "\n"
+#~ "To be able to create other users you need to login with this user in the "
+#~ "admin application and create them."
+#~ msgstr ""
+#~ "Eu estou adicionando um usuário chamado `%s' que vai possuir privilégios de "
+#~ "administrador.\n"
+#~ "\n"
+#~ "Para estar apto a criar outros usuários você precisa logar com este usuário "
+#~ "na aplicação 'Administrativo' e criá-los."
+
+#~ msgid "Don't Create"
+#~ msgstr "Não criar"
+
+#~ msgid "Create Database"
+#~ msgstr "Criar base de dados"
+
+#~ msgid "Remove examples"
+#~ msgstr "Remover exemplos"
 
 #~ msgid ""
 #~ "This will delete the current database and configuration. Are you sure?"
@@ -14038,5 +14350,125 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "Financial application."
 #~ msgstr "Aplicativo financeiro"
 
+#~ msgid "Remove Examples"
+#~ msgstr "Remover exemplos"
+
+#~ msgid ""
+#~ "This will delete the current database and it's configuration. Are you sure?"
+#~ msgstr ""
+#~ "Isto irá remover a base de dados corrente e suas configurações. Você tem "
+#~ "certeza?"
+
+#~ msgid ""
+#~ "I'm adding a user called `admin' which will have administrator privilegies.\n"
+#~ "\n"
+#~ "To be able to create other users you need to login with this user in the "
+#~ "admin application and create them."
+#~ msgstr ""
+#~ "Estou adicionando um usuário nomeado `admin' que terá privilégios de de "
+#~ "administrador.\n"
+#~ "\n"
+#~ "Para ser capaz de criar outros usuários, você precisa autenticar-se com esse "
+#~ "usuário no aplicativo 'admin' e criá-los."
+
+#~ msgid "label"
+#~ msgstr "rótulo"
+
+#~ msgid "header"
+#~ msgstr "cabeçalho"
+
+#~ msgid "Monthly Fee ($):"
+#~ msgstr "Taxa mensal ($):"
+
+#~ msgid "Authentication Type:"
+#~ msgstr "Tipo de autenticação:"
+
+#~ msgid "Welcome to Stoq"
+#~ msgstr "Bem-vindo ao Stoq"
+
+#~ msgid "$0.00"
+#~ msgstr "$0.00"
+
+#~ msgid "For testing purposes it is recommended to select \"No plugins\"."
+#~ msgstr "Para fins de teste, é recomendado escolher a opção \"Sem plugins\"."
+
+#~ msgid "ECF (Fiscal Printer support)"
+#~ msgstr "ECF (Impressora fiscal)"
+
 #~ msgid "Stock Cost:"
 #~ msgstr "Custo no estoque:"
+
+#~ msgid "label: "
+#~ msgstr "rótulo: "
+
+#~ msgid "Restart Now"
+#~ msgstr "Reiniciar agora"
+
+#~ msgid "Restart Later"
+#~ msgstr "Reiniciar depois"
+
+#~ msgid "Don't Save"
+#~ msgstr "Não salvar"
+
+#~ msgid "Save Data"
+#~ msgstr "Salvar dados"
+
+#~ msgid "Delete Items"
+#~ msgstr "Excluir itens"
+
+#~ msgid "Don't Delete"
+#~ msgstr "Não excluir"
+
+#~ msgid "Activate Plugin"
+#~ msgstr "Ativar plugin"
+
+#~ msgid "Not Now"
+#~ msgstr "Não agora"
+
+#~ msgid "Continue Counting"
+#~ msgstr "Continuar contando"
+
+#~ msgid "Close Inventory"
+#~ msgstr "Fechar inventário"
+
+#~ msgid "Continue Purchase"
+#~ msgstr "Continuar a compra"
+
+#~ msgid "Don't Continue "
+#~ msgstr "Não continuar "
+
+#~ msgid "Keep Closed"
+#~ msgstr "Manter fechado"
+
+#~ msgid "Don't Close"
+#~ msgstr "Não fechar"
+
+#~ msgid "Choose application"
+#~ msgstr "Escolha um aplicativo"
+
+#~ msgid "Cancel Sale"
+#~ msgstr "Cancelar venda"
+
+#~ msgid "Print Receipt"
+#~ msgstr "Imprimir recibo"
+
+#~ msgid "Don't Print"
+#~ msgstr "Não imprimir"
+
+#~ msgid "Remove Quote"
+#~ msgstr "Remover cotação"
+
+#~ msgid "Close Quotes"
+#~ msgstr "Fechar cotações"
+
+#~ msgid "Cancel Group"
+#~ msgstr "Cancelar grupo"
+
+#~ msgid "Print Quote Details"
+#~ msgstr "Imprimir detalhes da cotação"
+
+#~ msgid "Inventory Product Counting"
+#~ msgstr "Inventário de produtos"
+
+#~ msgid "purchased items"
+#~ msgstr "Itens de compra"
