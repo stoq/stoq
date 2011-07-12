@@ -76,6 +76,7 @@ from stoqlib.gui.processview import ProcessView
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import validate_email
+from stoqlib.lib.formatters import raw_phone_number
 from stoqlib.lib.webservice import WebService
 
 from stoq.lib.configparser import StoqConfig
@@ -295,10 +296,21 @@ class TefStep(WizardEditorStep):
     def _setup_widgets(self):
         self.send_progress.hide()
         self.send_error_label.hide()
+        # Setting mask in glade file is not working properly.
+        self.phone.set_mask('(00) 0000-0000')
 
     def _pulse(self):
         self.send_progress.pulse()
         return not self.wizard.tef_request_done
+
+    def _cancel_request(self):
+        self._show_error()
+
+    def _show_error(self):
+        self.wizard.tef_request_done = True
+        self.send_progress.hide()
+        self.send_error_label.show()
+        self.wizard.next_button.set_sensitive(True)
 
     #
     #   WizardStep
@@ -330,6 +342,9 @@ class TefStep(WizardEditorStep):
         self.wizard.next_button.set_sensitive(False)
         gobject.timeout_add(50, self._pulse)
 
+        # Cancel the request after 5 seconds without a reply
+        gobject.timeout_add(5000, self._cancel_request)
+
         # Stay on the same step while sending the details
         return self
 
@@ -341,15 +356,17 @@ class TefStep(WizardEditorStep):
         if not validate_email(value):
             return ValidationError(_('%s is not a valid email') % value)
 
+    def on_phone__validate(self, widget, value):
+        if len(raw_phone_number(value)) != 10:
+            return ValidationError(_('%s is not a valid phone') % value)
+
     def _on_response_done(self, response, details):
-        self.wizard.tef_request_done = True
-        self.wizard.go_to_next()
+        if not self.wizard.tef_request_done:
+            self.wizard.tef_request_done = True
+            self.wizard.go_to_next()
 
     def _on_response_error(self, response, details):
-        self.wizard.tef_request_done = True
-        self.send_progress.hide()
-        self.send_error_label.show()
-        self.wizard.next_button.set_sensitive(True)
+        self._show_error()
 
 
 class AdminPasswordStep(BaseWizardStep):
