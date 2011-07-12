@@ -99,6 +99,15 @@ class BasePaymentEditor(BaseEditor):
     def setup_proxies(self):
         self._fill_category_combo()
         self._populate_person()
+        self.add_category.set_tooltip_text(_("Add a new payment category"))
+        self.edit_category.set_tooltip_text(_("Edit the payment category"))
+        if self.person_iface == ISupplier:
+            self.add_person.set_tooltip_text(_("Add a new supplier"))
+            self.edit_person.set_tooltip_text(_("Edit the selected supplier"))
+        else:
+            self.add_person.set_tooltip_text(_("Add a new client"))
+            self.edit_person.set_tooltip_text(_("Edit the selected client"))
+        self.edit_category.set_tooltip_text(_("Edit the payment category"))
         self.add_proxy(self.model, BasePaymentEditor.proxy_widgets)
 
     def validate_confirm(self):
@@ -125,9 +134,11 @@ class BasePaymentEditor(BaseEditor):
 
     def can_edit_details(self):
         for widget in [self.value, self.due_date, self.person,
-                       self.add_person, self.edit_person]:
+                       self.add_person]:
             widget.set_sensitive(True)
         self.details_button.hide()
+        if self.person.get_selected():
+            self.edit_person.set_sensitive(True)
 
     # Private
 
@@ -140,7 +151,6 @@ class BasePaymentEditor(BaseEditor):
         if facets:
             self.person.prefill(sorted([(f.person.name, f)
                                         for f in facets]))
-            self.edit_person.set_sensitive(True)
         else:
             self.person.set_sensitive(False)
 
@@ -148,7 +158,6 @@ class BasePaymentEditor(BaseEditor):
         if person:
             facet = self.person_iface(person)
             self.person.select(facet)
-            self.edit_person.set_sensitive(True)
 
     def _run_payment_category_editor(self, category=None):
         trans = new_transaction()
@@ -224,10 +233,10 @@ class BasePaymentEditor(BaseEditor):
             return ValidationError(_("The value must be greater than zero."))
 
     def on_category__content_changed(self, category):
-        self.edit_category.set_sensitive(True)
+        self.edit_category.set_sensitive(bool(self.category.get_selected()))
 
-    def on_person__content_changed(self, category):
-        self.edit_person.set_sensitive(True)
+    def on_person__content_changed(self, person):
+        self.edit_person.set_sensitive(bool(self.person.get_selected()))
 
     def on_add_category__clicked(self, widget):
         self._run_payment_category_editor()
