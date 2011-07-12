@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-11 17:57-0300\n"
+"POT-Creation-Date: 2011-07-12 13:27-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,7 +57,7 @@ msgstr ""
 msgid "Parent:"
 msgstr ""
 
-#: ../data/glade/AccountEditor.ui.h:4 ../data/glade/BasePaymentEditor.ui.h:6
+#: ../data/glade/AccountEditor.ui.h:4 ../data/glade/BasePaymentEditor.ui.h:5
 #: ../data/glade/DeviceConstantEditor.ui.h:4
 msgid "Type:"
 msgstr ""
@@ -118,7 +118,6 @@ msgid "Value:"
 msgstr ""
 
 #: ../data/glade/AdditionListSlave.ui.h:1
-#: ../data/glade/BasePaymentEditor.ui.h:5
 msgid "New..."
 msgstr ""
 
@@ -200,7 +199,7 @@ msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/BasePaymentDataEditor.ui.h:4
-#: ../data/glade/BasePaymentEditor.ui.h:8
+#: ../data/glade/BasePaymentEditor.ui.h:7
 msgid "Value ($CURRENCY):"
 msgstr ""
 
@@ -526,7 +525,7 @@ msgid ""
 "b>"
 msgstr ""
 
-#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:527
+#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:525
 msgid ""
 "Creating a new database for Stoq, depending on the speed of your computer "
 "and the server it may take a couple of minutes to finish."
@@ -1833,7 +1832,7 @@ msgid "Received Products"
 msgstr ""
 
 #: ../data/glade/ReceivingOrderDetailsDialog.ui.h:3
-#: ../stoqlib/gui/editors/paymenteditor.py:319
+#: ../stoqlib/gui/editors/paymenteditor.py:362
 #: ../stoqlib/reporting/purchase.py:283
 msgid "Receiving Details"
 msgstr ""
@@ -1849,6 +1848,8 @@ msgstr ""
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:4
 #: ../data/glade/SaleDetailsDialog.ui.h:4 ../data/glade/SaleReturnSlave.ui.h:6
 #: ../data/glade/SearchDialogDetailsSlave.ui.h:1
+#: ../stoqlib/gui/editors/paymenteditor.py:200
+#: ../stoqlib/gui/editors/paymenteditor.py:202
 #: ../stoqlib/gui/editors/producteditor.py:522
 msgid "Details"
 msgstr ""
@@ -1941,6 +1942,7 @@ msgid "Add a new C.F.O.P."
 msgstr ""
 
 #: ../data/glade/SalesPersonStep.ui.h:3
+#: ../stoqlib/gui/editors/paymenteditor.py:108
 msgid "Add a new client"
 msgstr ""
 
@@ -2079,6 +2081,7 @@ msgid "$CURRENCY"
 msgstr ""
 
 #: ../data/glade/StartPurchaseStep.ui.h:3
+#: ../stoqlib/gui/editors/paymenteditor.py:105
 msgid "Add a new supplier"
 msgstr ""
 
@@ -2139,7 +2142,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/purchasedetails.py:232
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:155
 #: ../stoqlib/gui/dialogs/saledetails.py:191
-#: ../stoqlib/gui/editors/paymenteditor.py:305
+#: ../stoqlib/gui/editors/paymenteditor.py:348
 #: ../stoqlib/reporting/stockdecreasereceipt.py:81
 msgid "Reason"
 msgstr ""
@@ -2873,8 +2876,8 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/purchasedetails.py:223
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:146
 #: ../stoqlib/gui/dialogs/saledetails.py:182
-#: ../stoqlib/gui/editors/paymenteditor.py:61
-#: ../stoqlib/gui/editors/paymenteditor.py:296
+#: ../stoqlib/gui/editors/paymenteditor.py:65
+#: ../stoqlib/gui/editors/paymenteditor.py:339
 #: ../stoqlib/gui/slaves/paymentslave.py:848
 msgid "Payment"
 msgstr ""
@@ -3463,37 +3466,37 @@ msgstr ""
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr ""
 
-#: ../stoq/gui/config.py:181
+#: ../stoq/gui/config.py:184
 #, python-format
 msgid "The database address '%s' is invalid. Please fix it and try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:184 ../stoq/gui/config.py:189
+#: ../stoq/gui/config.py:187 ../stoq/gui/config.py:192
 msgid "Invalid database address"
 msgstr ""
 
-#: ../stoq/gui/config.py:219
+#: ../stoq/gui/config.py:222
 msgid "Needs Password"
 msgstr ""
 
-#: ../stoq/gui/config.py:220
+#: ../stoq/gui/config.py:223
 msgid "Trust"
 msgstr ""
 
-#: ../stoq/gui/config.py:324 ../stoqlib/gui/dialogs/crashreportdialog.py:99
+#: ../stoq/gui/config.py:327 ../stoqlib/gui/dialogs/crashreportdialog.py:99
 msgid "Sending..."
 msgstr ""
 
-#: ../stoq/gui/config.py:339
+#: ../stoq/gui/config.py:342
 #, python-format
 msgid "%s is not a valid email"
 msgstr ""
 
-#: ../stoq/gui/config.py:364
+#: ../stoq/gui/config.py:367
 msgid "Administrator account"
 msgstr ""
 
-#: ../stoq/gui/config.py:367
+#: ../stoq/gui/config.py:370
 #, python-format
 msgid ""
 "I'm adding a user account called <b>%s</b> which will have administrator "
@@ -3503,73 +3506,73 @@ msgid ""
 "admin application and create them."
 msgstr ""
 
-#: ../stoq/gui/config.py:433
+#: ../stoq/gui/config.py:436
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
 msgstr ""
 
-#: ../stoq/gui/config.py:440
+#: ../stoq/gui/config.py:443
 #, python-format
 msgid ""
 "The specifed database '%s' does not exist.\n"
 "Do you want to create it?"
 msgstr ""
 
-#: ../stoq/gui/config.py:442
+#: ../stoq/gui/config.py:445
 msgid "Don't create"
 msgstr ""
 
-#: ../stoq/gui/config.py:442
+#: ../stoq/gui/config.py:445
 msgid "Create database"
 msgstr ""
 
-#: ../stoq/gui/config.py:486
+#: ../stoq/gui/config.py:489
 msgid ""
 "You need to install and start PostgreSQL. When done click 'OK' to continue"
 msgstr ""
 
-#: ../stoq/gui/config.py:496
+#: ../stoq/gui/config.py:499
 msgid "Something went wrong while trying to install PostgreSQL"
 msgstr ""
 
-#: ../stoq/gui/config.py:499
+#: ../stoq/gui/config.py:502
 msgid "Installing PostgreSQL database server."
 msgstr ""
 
-#: ../stoq/gui/config.py:530
+#: ../stoq/gui/config.py:528
 msgid "Creating database..."
 msgstr ""
 
-#: ../stoq/gui/config.py:534
+#: ../stoq/gui/config.py:532
 msgid "Please wait while the database is being created."
 msgstr ""
 
-#: ../stoq/gui/config.py:544
+#: ../stoq/gui/config.py:542
 msgid "Creating base schema..."
 msgstr ""
 
-#: ../stoq/gui/config.py:548
+#: ../stoq/gui/config.py:546
 msgid "Creating schema, applying patches..."
 msgstr ""
 
-#: ../stoq/gui/config.py:553
+#: ../stoq/gui/config.py:551
 #, python-format
 msgid "Creating schema, applying patch %d ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:555
+#: ../stoq/gui/config.py:553
 msgid "Creating additional database objects ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:558
+#: ../stoq/gui/config.py:556
 msgid "Creating examples ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:561
+#: ../stoq/gui/config.py:559
 msgid "Activating plugins ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:563
+#: ../stoq/gui/config.py:561
 msgid "This may take some time."
 msgstr ""
 
@@ -3577,35 +3580,35 @@ msgstr ""
 #. - pressed cancel in the authentication popup
 #. - user erred the password 3 times
 #. Allow him to try again
-#: ../stoq/gui/config.py:579
+#: ../stoq/gui/config.py:577
 msgid "Something went wrong while trying to create the database. Try again?"
 msgstr ""
 
-#: ../stoq/gui/config.py:581
+#: ../stoq/gui/config.py:579
 msgid "Change settings"
 msgstr ""
 
-#: ../stoq/gui/config.py:581 ../stoq/gui/pos.py:752 ../stoq/gui/till.py:282
+#: ../stoq/gui/config.py:579 ../stoq/gui/pos.py:752 ../stoq/gui/till.py:282
 msgid "Try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:588
+#: ../stoq/gui/config.py:586
 msgid "Something went wrong while trying to create the Stoq database"
 msgstr ""
 
-#: ../stoq/gui/config.py:594
+#: ../stoq/gui/config.py:592
 msgid "Done."
 msgstr ""
 
-#: ../stoq/gui/config.py:598
+#: ../stoq/gui/config.py:596
 msgid "Installation successful, click <b>Forward</b> to continue."
 msgstr ""
 
-#: ../stoq/gui/config.py:620
+#: ../stoq/gui/config.py:618
 msgid "Run Stoq"
 msgstr ""
 
-#: ../stoq/gui/config.py:634
+#: ../stoq/gui/config.py:632
 msgid "Stoq - Installation"
 msgstr ""
 
@@ -4081,9 +4084,7 @@ msgid "Deliveries..."
 msgstr ""
 
 #. Till
-#. Production
-#. Till
-#: ../stoq/gui/pos.py:182 ../stoq/gui/sales.py:134 ../stoq/gui/till.py:117
+#: ../stoq/gui/pos.py:182 ../stoq/gui/till.py:117
 msgid "_Till"
 msgstr ""
 
@@ -4498,6 +4499,11 @@ msgstr ""
 msgid ""
 "This user lacks credentials \n"
 "for application %s"
+msgstr ""
+
+#. Production
+#: ../stoq/gui/sales.py:134
+msgid "_Sales"
 msgstr ""
 
 #: ../stoq/gui/sales.py:135 ../stoq/gui/sales.py:161
@@ -6199,28 +6205,28 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/purchasedetails.py:221
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:144
 #: ../stoqlib/gui/dialogs/saledetails.py:180
-#: ../stoqlib/gui/editors/paymenteditor.py:294
+#: ../stoqlib/gui/editors/paymenteditor.py:337
 msgid "When"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:226
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:149
 #: ../stoqlib/gui/dialogs/saledetails.py:185
-#: ../stoqlib/gui/editors/paymenteditor.py:299
+#: ../stoqlib/gui/editors/paymenteditor.py:342
 msgid "Changed"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:228
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:151
 #: ../stoqlib/gui/dialogs/saledetails.py:187
-#: ../stoqlib/gui/editors/paymenteditor.py:301
+#: ../stoqlib/gui/editors/paymenteditor.py:344
 msgid "From"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:230
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:153
 #: ../stoqlib/gui/dialogs/saledetails.py:189
-#: ../stoqlib/gui/editors/paymenteditor.py:303
+#: ../stoqlib/gui/editors/paymenteditor.py:346
 msgid "To"
 msgstr ""
 
@@ -6659,28 +6665,44 @@ msgstr ""
 msgid "The payment category '%s' already exists."
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymenteditor.py:146
+#: ../stoqlib/gui/editors/paymenteditor.py:102
+msgid "Add a new payment category"
+msgstr ""
+
+#: ../stoqlib/gui/editors/paymenteditor.py:103
+msgid "Edit the selected payment category"
+msgstr ""
+
+#: ../stoqlib/gui/editors/paymenteditor.py:106
+msgid "Edit the selected supplier"
+msgstr ""
+
+#: ../stoqlib/gui/editors/paymenteditor.py:109
+msgid "Edit the selected client"
+msgstr ""
+
+#: ../stoqlib/gui/editors/paymenteditor.py:196
+msgid "Sale details"
+msgstr ""
+
+#: ../stoqlib/gui/editors/paymenteditor.py:198
+msgid "Purchase details"
+msgstr ""
+
+#: ../stoqlib/gui/editors/paymenteditor.py:232
 #: ../stoqlib/gui/slaves/paymentslave.py:1175
 msgid "The value must be greater than zero."
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymenteditor.py:160
-msgid "Sale details"
-msgstr ""
-
-#: ../stoqlib/gui/editors/paymenteditor.py:161
+#: ../stoqlib/gui/editors/paymenteditor.py:261
 msgid "Payer:"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymenteditor.py:209
-msgid "Order details"
-msgstr ""
-
-#: ../stoqlib/gui/editors/paymenteditor.py:210
+#: ../stoqlib/gui/editors/paymenteditor.py:282
 msgid "Recipient:"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymenteditor.py:322
+#: ../stoqlib/gui/editors/paymenteditor.py:365
 msgid "Payment Details"
 msgstr ""
 

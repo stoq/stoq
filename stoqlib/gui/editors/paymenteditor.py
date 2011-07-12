@@ -100,14 +100,13 @@ class BasePaymentEditor(BaseEditor):
         self._fill_category_combo()
         self._populate_person()
         self.add_category.set_tooltip_text(_("Add a new payment category"))
-        self.edit_category.set_tooltip_text(_("Edit the payment category"))
+        self.edit_category.set_tooltip_text(_("Edit the selected payment category"))
         if self.person_iface == ISupplier:
             self.add_person.set_tooltip_text(_("Add a new supplier"))
             self.edit_person.set_tooltip_text(_("Edit the selected supplier"))
         else:
             self.add_person.set_tooltip_text(_("Add a new client"))
             self.edit_person.set_tooltip_text(_("Edit the selected client"))
-        self.edit_category.set_tooltip_text(_("Edit the payment category"))
         self.add_proxy(self.model, BasePaymentEditor.proxy_widgets)
 
     def validate_confirm(self):
