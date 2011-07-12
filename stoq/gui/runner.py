@@ -63,8 +63,6 @@ class ApplicationRunner(object):
         self._user = None
         self._blocked_apps = []
         self._hidden_apps = []
-        if not 'financial' in sys.argv:
-            self._hidden_apps.append('financial')
 
     def _load_app(self, appdesc):
         module = __import__("stoq.gui.%s" % (appdesc.name, ),
