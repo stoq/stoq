@@ -203,10 +203,11 @@ class TransactionPage(object):
             color_func = lambda x: False
         else:
             color_func = lambda x: x < 0
-        return [Column('date', data_type=datetime.date, sorted=True),
-                Column('code', data_type=unicode),
-                Column('description', data_type=unicode, expand=True),
-                Column('account', data_type=unicode),
+        return [Column('date', title=_("Date"), data_type=datetime.date, sorted=True),
+                Column('code', title=_("Code"), data_type=unicode),
+                Column('description', title=_("Description"),
+                       data_type=unicode, expand=True),
+                Column('account', title=_("Account"), data_type=unicode),
                 Column('value',
                        title=self.model.account.get_type_label(out=False),
                        data_type=currency,
@@ -215,15 +216,15 @@ class TransactionPage(object):
                        title=self.model.account.get_type_label(out=True),
                        data_type=currency,
                        format_func=format_withdrawal),
-                ColoredColumn('total', data_type=currency,
+                ColoredColumn('total', title=_("Total"), data_type=currency,
                               color='red',
                               data_func=color_func)]
 
     def _get_payment_columns(self):
-        return [Column('due_date', data_type=datetime.date, sorted=True),
+        return [Column('due_date', title=_("Due date"), data_type=datetime.date, sorted=True),
                 Column('id', title=_("Code"), data_type=unicode),
-                Column('description', data_type=unicode, expand=True),
-                Column('value',
+                Column('description', title=_("Description"), data_type=unicode, expand=True),
+                Column('value', title=_("Value"),
                        data_type=currency)]
 
     def append_transactions(self, transactions):
