@@ -124,21 +124,21 @@ class PaymentFlowHistoryReport(BaseStoqReport):
 
     def _get_payment_history_columns(self):
         return [
-            OTC(_(u'Last Balance'), lambda obj:
+            OTC(_(u'Last balance'), lambda obj:
                 '%s' % get_formatted_price(obj.get_last_day_real_balance()),
                 align=RIGHT),
-            OTC(_(u'To Receive'), lambda obj:
+            OTC(_(u'To receive'), lambda obj:
                     '%s' % get_formatted_price(obj.to_receive), align=RIGHT),
-            OTC(_(u'To Pay'), lambda obj:
+            OTC(_(u'To pay'), lambda obj:
                     '%s' % get_formatted_price(obj.to_pay), align=RIGHT),
             OTC(_(u'Received'), lambda obj:
                     '%s' % get_formatted_price(obj.received), align=RIGHT),
             OTC(_(u'Paid'), lambda obj: '%s' % get_formatted_price(obj.paid),
                 align=RIGHT),
-            OTC(_(u'Bal. Expected'), lambda obj:
+            OTC(_(u'Bal. expected'), lambda obj:
                     '%s' % get_formatted_price(obj.balance_expected),
                     align=RIGHT),
-            OTC(_(u'Bal. Real'), lambda obj:
+            OTC(_(u'Bal. real'), lambda obj:
                     '%s' % get_formatted_price(obj.balance_real), align=RIGHT)]
 
     def _get_payment_columns(self):
@@ -154,9 +154,9 @@ class PaymentFlowHistoryReport(BaseStoqReport):
             OTC(_(u'Paid/Received'), lambda obj:
                     '%s' % get_formatted_price(obj.paid_value or Decimal(0)),
                     align=RIGHT, width=120),
-            OTC(_(u'Due Date'), lambda obj:
+            OTC(_(u'Due date'), lambda obj:
                     '%s' % obj.due_date.strftime('%x'), width=80),
-            OTC(_(u'Paid Date'), lambda obj:
+            OTC(_(u'Paid date'), lambda obj:
                     '%s' % obj.get_paid_date_string(), width=80),
         ]
 

@@ -128,9 +128,9 @@ class SupplierDetailsDialog(BaseEditor):
                         sorted=True),
                 Column("description", title=_("Description"), data_type=str,
                        expand=True, searchable=True),
-                Column("qty_str", title=_("Total Quantity"),
+                Column("qty_str", title=_("Total quantity"),
                        data_type=str, width=120, justify=gtk.JUSTIFY_RIGHT),
-                Column("total_value", title=_("Total Value"), width=80,
+                Column("total_value", title=_("Total value"), width=80,
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT,)]
 
     def _get_payments_columns(self):
@@ -142,7 +142,7 @@ class SupplierDetailsDialog(BaseEditor):
                 Column("description", title=_("Description"),
                        data_type=str, searchable=True, width=190,
                        expand=True),
-                Column("due_date", title=_("Due Date"), width=110,
+                Column("due_date", title=_("Due date"), width=110,
                        data_type=datetime.date, sorted=True),
                 Column("status_str", title=_("Status"), width=80,
                        data_type=str),

@@ -130,41 +130,41 @@ class PurchaseApp(SearchableAppWindow):
 
             # Purchase
             ("PurchaseMenu", None, _("_Order")),
-            ("NewOrder", gtk.STOCK_NEW, _("New Order..."), "<Control>o"),
-            ("QuoteOrder", gtk.STOCK_INDEX, _("Quote Order..."), "<Control>e"),
-            ("FinishOrder", None, _("Finish Order...")),
-            ("Confirm", 'stoq-delivery', _("Confirm Order...")),
-            ("stock_cost_action", None, _("_Stock Cost")),
+            ("NewOrder", gtk.STOCK_NEW, _("New order..."), "<Control>o"),
+            ("QuoteOrder", gtk.STOCK_INDEX, _("Quote order..."), "<Control>e"),
+            ("FinishOrder", None, _("Finish order...")),
+            ("Confirm", 'stoq-delivery', _("Confirm order...")),
+            ("stock_cost_action", None, _("_Stock cost")),
             ("Production", gtk.STOCK_JUSTIFY_FILL,  _("Production..."), "<Control>r"),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
             ("Quit", gtk.STOCK_QUIT),
 
             # Consignment
             ("ConsignmentMenu", None, _("_Consignment")),
-            ("NewConsignment", None, _("New Consignment...")),
-            ("CloseInConsignment", None, _("Close Consigment...")),
-            ("SearchInConsignmentItems", None, _("Search Consigment Items...")),
+            ("NewConsignment", None, _("New consignment...")),
+            ("CloseInConsignment", None, _("Close consigment...")),
+            ("SearchInConsignmentItems", None, _("Search consigment items...")),
 
             # Search
             ("SearchMenu", None, _("_Search")),
-            ("BaseCategories", None, _("Base Categories..."), "<Control>b"),
+            ("BaseCategories", None, _("Base categories..."), "<Control>b"),
             ("Categories", None, _("Categories..."), "<Control>c"),
             ("Products", 'stoq-products', _("Products..."), "<Control>d"),
             ("ProductUnits", None, _("Product units..."), "<Control>u"),
             ("Services", None, _("Services..."), "<Control>s"),
-            ("SearchStockItems", None, _("Stock Items..."), "<Control>i"),
-            ("SearchClosedStockItems", None, _("Closed Stock Items..."),
+            ("SearchStockItems", None, _("Stock items..."), "<Control>i"),
+            ("SearchClosedStockItems", None, _("Closed stock items..."),
              "<Control><Alt>c"),
             ("Suppliers", 'stoq-suppliers', _("Suppliers..."), "<Control>u"),
             ("Transporter", None, _("Transporters..."), "<Control>t"),
             ("SearchQuotes", None, _("Quotes..."), "<Control>e"),
-            ("SearchPurchasedItems", None, _("Purchased Items..."), "<Control>p"),
-            ("ProductsSoldSearch", None, _("Products Sold..."), ""),
+            ("SearchPurchasedItems", None, _("Purchased items..."), "<Control>p"),
+            ("ProductsSoldSearch", None, _("Products sold..."), ""),
         ]
 
         self.add_ui_actions(ui_string, actions)
-        self.NewOrder.set_short_label(_("New Order"))
-        self.QuoteOrder.set_short_label(_("New Quote"))
+        self.NewOrder.set_short_label(_("New order"))
+        self.QuoteOrder.set_short_label(_("New quote"))
         self.Products.set_short_label(_("Products"))
         self.Suppliers.set_short_label(_("Suppliers"))
         self.add_help_ui(_("Purchase help"), 'compras-inicio')
@@ -214,7 +214,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def _setup_widgets(self):
         self.search.set_summary_label(column='total',
-                                      label=_('<b>Orders Total:</b>'),
+                                      label=_('<b>Orders total:</b>'),
                                       format='<b>%s</b>')
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.Confirm.set_sensitive(False)

@@ -74,9 +74,9 @@ class PurchaseReceivingSearch(SearchDialog):
                         position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('purchase_id', _('Purchase Order #'),
+        return [SearchColumn('purchase_id', _('Purchase order #'),
                              data_type=int, width=120),
-                SearchColumn('receival_date', _('Receival Date'),
+                SearchColumn('receival_date', _('Receival date'),
                              data_type=datetime.date, sorted=True, width=110),
                 SearchColumn('supplier_name', _('Supplier'), data_type=str,
                              expand=True),
@@ -86,7 +86,7 @@ class PurchaseReceivingSearch(SearchDialog):
                              data_type=str, visible=False, expand=True),
                 SearchColumn('invoice_number', _('Invoice #'), data_type=int,
                              width=80),
-                SearchColumn('invoice_total', _('Invoice Total'),
+                SearchColumn('invoice_total', _('Invoice total'),
                              data_type=currency, width=120)]
 
     #

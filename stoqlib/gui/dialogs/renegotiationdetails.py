@@ -118,17 +118,17 @@ class RenegotiationDetailsDialog(BaseEditor):
                        data_type=str, width=60),
                 Column('description', _("Description"), data_type=str,
                        width=150, expand=True),
-                Column('due_date', _("Due Date"), sorted=True,
+                Column('due_date', _("Due date"), sorted=True,
                        data_type=datetime.date, width=90,
                        justify=gtk.JUSTIFY_RIGHT),
-                Column('paid_date', _("Paid Date"),
+                Column('paid_date', _("Paid date"),
                        data_type=datetime.date, width=90),
                 Column('status_str', _("Status"), data_type=str, width=80),
                 ColoredColumn('base_value', _("Value"), data_type=currency,
                               width=90, color='red',
                               justify=gtk.JUSTIFY_RIGHT,
                               data_func=payment_value_colorize),
-                ColoredColumn('paid_value', _("Paid Value"), data_type=currency,
+                ColoredColumn('paid_value', _("Paid value"), data_type=currency,
                               width=92, color='red',
                               justify=gtk.JUSTIFY_RIGHT,
                               data_func=payment_value_colorize)]
@@ -136,7 +136,7 @@ class RenegotiationDetailsDialog(BaseEditor):
     def _get_items_columns(self):
         return [Column('description', _("Description"), sorted=True,
                        data_type=unicode, expand=True),
-                Column('open_date', _("Open Date"), data_type=datetime.date,
+                Column('open_date', _("Open date"), data_type=datetime.date,
                        width=90),
                 Column('total_amount', _("Total"), data_type=currency, width=100)]
 

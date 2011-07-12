@@ -125,7 +125,7 @@ class _TempDateModel(object):
 
 class PaymentDueDateChangeDialog(BasePaymentChangeDialog):
     """This dialog is responsible to change a payment due date"""
-    title = _(u"Change Payment Due Date")
+    title = _(u"Change payment due date")
 
     def _setup_widgets(self):
         BasePaymentChangeDialog._setup_widgets(self)

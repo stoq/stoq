@@ -68,9 +68,9 @@ class LoanItemSearch(SearchDialog):
                              format='%03d'),
                 SearchColumn('loan_id', title=_(u'Loan'), data_type=int,
                              format='%03d', sorted=True),
-                SearchColumn('opened', title=_(u'Open Date'),
+                SearchColumn('opened', title=_(u'Open date'),
                              data_type=datetime.date, visible=False),
-                SearchColumn('closed', title=_(u'Close Date'),
+                SearchColumn('closed', title=_(u'Close date'),
                              data_type=datetime.date,),
                 SearchColumn('code', title=_(u'Code'), data_type=str,
                              visible=False),
@@ -134,15 +134,15 @@ class LoanSearch(SearchDialog):
 
     def get_columns(self):
         return [Column('id', _('#'), data_type=int, width=50),
-                Column('open_date', _('Open Date'),
+                Column('open_date', _('Open date'),
                        data_type=datetime.date, sorted=True, width=100),
-                Column('expire_date', _('Expire Date'),
+                Column('expire_date', _('Expire date'),
                        data_type=datetime.date, width=100),
                 Column('branch_name', _('Branch'),
                        data_type=unicode, expand=True),
                 Column('client_name', _('Client'),
                        data_type=unicode, width=120),
-                Column('removed_by', _('Removed By'), data_type=unicode,
+                Column('removed_by', _('Removed by'), data_type=unicode,
                        width=120),
                        ]
 

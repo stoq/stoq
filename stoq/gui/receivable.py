@@ -84,7 +84,7 @@ class NextMonthOption(DateSearchOption):
 
 class ReceivableApp(SearchableAppWindow):
 
-    app_name = _('Accounts Receivable')
+    app_name = _('Accounts receivable')
     app_icon_name = 'stoq-bills'
     gladefile = 'receivable'
 
@@ -130,28 +130,28 @@ class ReceivableApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Payable
-            ('Menu', None, _('Accounts _Receivable')),
+            ('Menu', None, _('Accounts _receivable')),
             ('AddReceiving', gtk.STOCK_ADD, _('Add receiving...'), '<Control>p'),
-            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel Payment ...')),
+            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment ...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
-            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change Due Date...')),
+            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...')),
             ('Comments', None, _('Comments...')),
-            ('PrintBill', gtk.STOCK_PRINT, _('Print Bill...')),
+            ('PrintBill', gtk.STOCK_PRINT, _('Print bill...')),
 
-            ('Renegotiate', None, _('Renegotiate Payments...')),
+            ('Renegotiate', None, _('Renegotiate payments...')),
             ('Receipt', None, _('_Receipt'), '<Control>r'),
-            ('PaymentFlowHistory', None, _('Payment _Flow History ...'), '<Control>f'),
+            ('PaymentFlowHistory', None, _('Payment _flow history ...'), '<Control>f'),
 
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
             ("Quit", gtk.STOCK_QUIT),
 
             # Search
             ('SearchMenu', None, _('_Search')),
-            ('BillCheckSearch', None, _('Bill and Check...')),
-            ('CardPaymentSearch', None, _('Card Payment...')),
+            ('BillCheckSearch', None, _('Bill and check...')),
+            ('CardPaymentSearch', None, _('Card payment...')),
         ]
         self.add_ui_actions(ui_string, actions)
-        self.add_help_ui(_("Accounts Receivable help"), 'receber-inicio')
+        self.add_help_ui(_("Accounts receivable help"), 'receber-inicio')
         self.add_user_ui()
 
     def create_ui(self):
@@ -209,9 +209,9 @@ class ReceivableApp(SearchableAppWindow):
                              width=200),
                 SearchColumn('drawee', title=_('Drawee'), data_type=str,
                              ellipsize=pango.ELLIPSIZE_END, width=110),
-                SearchColumn('due_date', title=_('Due Date'),
+                SearchColumn('due_date', title=_('Due date'),
                              data_type=datetime.date, width=120),
-                SearchColumn('paid_date', title=_('Paid Date'),
+                SearchColumn('paid_date', title=_('Paid date'),
                              data_type=datetime.date, width=120),
                 SearchColumn('status_str', title=_('Status'), width=100,
                              data_type=str, search_attribute='status',
@@ -220,7 +220,7 @@ class ReceivableApp(SearchableAppWindow):
                 SearchColumn('value', title=_('Value'), data_type=currency,
                              width=80),
                 SearchColumn('paid_value', title=_('Paid'),
-                             long_title='Paid Value',
+                             long_title='Paid value',
                              data_type=currency, width=80)]
 
     #

@@ -360,16 +360,16 @@ class FinancialApp(AppWindow):
 
             # Toolbar
             ('toolbar', None, ''),
-            ('EditAccount', gtk.STOCK_EDIT, _('Edit Account'),
+            ('EditAccount', gtk.STOCK_EDIT, _('Edit account'),
              '<control>e', _('Change the currently selected account')),
-            ('AddAccount', gtk.STOCK_ADD, _('Create New Account'),
-             '<control>a', _('Create New Account')),
-            ('DeleteAccount', gtk.STOCK_DELETE, _('Delete Account'),
-             '', _('Delete Account')),
-            ('AddTransaction', gtk.STOCK_ADD, _('Create New Transaction'),
-             '<control>t', _('Create New Transaction')),
-            ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete Transaction'),
-             '', _('Delete Transaction')),
+            ('AddAccount', gtk.STOCK_ADD, _('Create new account'),
+             '<control>a', _('Create new account')),
+            ('DeleteAccount', gtk.STOCK_DELETE, _('Delete account'),
+             '', _('Delete account')),
+            ('AddTransaction', gtk.STOCK_ADD, _('Create new transaction'),
+             '<control>t', _('Create new transaction')),
+            ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete transaction'),
+             '', _('Delete transaction')),
             ]
         self.add_ui_actions(ui_string, actions)
         self.add_help_ui(_("Financial help"), 'financial-inicio')

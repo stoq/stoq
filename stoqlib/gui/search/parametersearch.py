@@ -66,9 +66,9 @@ class ParameterSearch(BaseEditor):
     def _get_columns(self):
         return [Column('group', title=_('Group'), data_type=str, width=100,
                        sorted=True),
-                Column('short_description', title=_('Parameter Name'),
+                Column('short_description', title=_('Parameter'),
                        data_type=str, expand=True),
-                AccessorColumn('field_value', title=_('Current Value'),
+                AccessorColumn('field_value', title=_('Current value'),
                                accessor=self._get_parameter_value,
                                data_type=str, width=200)]
 

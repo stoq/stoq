@@ -72,7 +72,7 @@ class PurchaseOrderReport(ReportTemplate):
                 OTC("Description", lambda o: o.get_description(), width=150,
                     truncate=1),
                 OTC("Price", lambda o: o.get_price(), width=80),
-                OTC("Total Value", lambda o: o.get_total_value(), width=80)]
+                OTC("Total value", lambda o: o.get_total_value(), width=80)]
         objects = self.get_objects()
         self.add_object_table(objects, cols, align=RIGHT)
         self.add_summary(objects)
@@ -84,11 +84,11 @@ class PurchaseOrderReport(ReportTemplate):
         values = [object.total_value for object in objects]
         total_value = reduce(operator.add, values, 0.0)
         total_value = '$ %.2f' % total_value
-        self.add_data_table((('Total Value:', total_value),),
+        self.add_data_table((('Total value:', total_value),),
                              align=RIGHT)
 
     def build_signatures(self):
-        labels = ['Company Manager', 'Purchase Supervisor']
+        labels = ['Company manager', 'Purchase supervisor']
         self.add_signatures(labels, align=CENTER)
 
 
