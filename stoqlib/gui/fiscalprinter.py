@@ -263,7 +263,7 @@ class FiscalPrinterHelper(gobject.GObject):
         try:
             self._check_needs_closing()
             self.emit('ecf-changed', True)
-        except (DeviceError), e:
+        except (DeviceError, DriverError), e:
             warning(e)
             self.emit('ecf-changed', False)
 

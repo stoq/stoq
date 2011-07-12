@@ -106,8 +106,6 @@ class ECFUI(object):
         if not self._printer_verified:
             domain = self._printer.get_printer()
             driver = self._printer.get_driver()
-            self._status = ECFAsyncPrinterStatus(domain.device_name,
-                                                 printer=driver)
 
             if not self._printer.check_serial():
                 raise DeviceError(
