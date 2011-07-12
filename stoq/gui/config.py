@@ -361,6 +361,10 @@ class TefStep(WizardEditorStep):
             return ValidationError(_('%s is not a valid phone') % value)
 
     def _on_response_done(self, response, details):
+        if details['response'] != 'success':
+            self._show_error()
+            return
+
         if not self.wizard.tef_request_done:
             self.wizard.tef_request_done = True
             self.wizard.go_to_next()
