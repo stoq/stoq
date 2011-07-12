@@ -40,8 +40,7 @@ from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
-                                          PaymentChangeHistoryView)
+from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.person import PersonAdaptToClient, PersonAdaptToSupplier
 from stoqlib.domain.sale import SaleView
 from stoqlib.gui.base.dialogs import run_dialog
@@ -50,6 +49,8 @@ from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor
+from stoqlib.gui.editors.personeditor import ClientEditor, SupplierEditor
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -58,11 +59,14 @@ _ = stoqlib_gettext
 class BasePaymentEditor(BaseEditor):
     gladefile = "BasePaymentEditor"
     model_type = Payment
-    title = _(u"Payment")
+    person_editor = None
+    person_class = None
+    person_iface = None
+    title = _("Payment")
     proxy_widgets = ['value',
                      'description',
                      'due_date',
-                     'category']
+                     ]
 
     def __init__(self, conn, model=None):
         """ A base class for additional payments
@@ -72,7 +76,7 @@ class BasePaymentEditor(BaseEditor):
 
         """
         BaseEditor.__init__(self, conn, model)
-        self.setup_widgets()
+        self._setup_widgets()
 
     #
     # BaseEditor hooks
@@ -92,32 +96,16 @@ class BasePaymentEditor(BaseEditor):
                        category=None,
                        connection=trans)
 
-    def on_due_date__activate(self, date):
-        self.confirm()
-
     def setup_proxies(self):
         self._fill_category_combo()
-        self.populate_person()
+        self._populate_person()
         self.add_proxy(self.model, BasePaymentEditor.proxy_widgets)
 
-    def _fill_category_combo(self):
-        categories = PaymentCategory.select(
-            connection=self.trans).orderBy('name')
-        self.category.set_sensitive(bool(categories))
-        self.category.prefill([(c.name, c) for c in categories])
-
-    def setup_widgets(self):
-        self.person_label.set_label(self._person_label)
-        self.details_button = self.add_button(self.details_button_label)
-        self.details_button.connect('clicked',
-                                    self._on_details_button__clicked)
-        for widget in [self.value, self.due_date, self.person]:
-            widget.set_sensitive(False)
-
     def validate_confirm(self):
-        # FIXME: the kiwi view should export it's state and it shoul
+        # FIXME: the kiwi view should export it's state and it should
         #        be used by default
-        return bool(self.model.description and self.model.due_date and
+        return bool(self.model.description and
+                    self.model.due_date and
                     self.model.value)
 
     def on_confirm(self):
@@ -130,35 +118,140 @@ class BasePaymentEditor(BaseEditor):
             setattr(self.model.group,
                     self.person_attribute,
                     person.person)
+        category = self.category.get_selected()
+        if category is not None:
+            self.model.category = category
         return self.model
 
     def can_edit_details(self):
-        for widget in [self.value, self.due_date, self.person]:
+        for widget in [self.value, self.due_date, self.person,
+                       self.add_person, self.edit_person]:
             widget.set_sensitive(True)
         self.details_button.hide()
+
+    # Private
+
+    def _populate_person(self):
+        if self.person_class == PersonAdaptToSupplier:
+            facets = self.person_class.get_active_suppliers(self.trans)
+        else:
+            facets = self.person_class.get_active_clients(self.trans)
+
+        if facets:
+            self.person.prefill(sorted([(f.person.name, f)
+                                        for f in facets]))
+            self.edit_person.set_sensitive(True)
+        else:
+            self.person.set_sensitive(False)
+
+        person = getattr(self.model.group, self.person_attribute)
+        if person:
+            facet = self.person_iface(person)
+            self.person.select(facet)
+            self.edit_person.set_sensitive(True)
+
+    def _run_payment_category_editor(self, category=None):
+        trans = new_transaction()
+        category = trans.get(category)
+        model = run_dialog(PaymentCategoryEditor, self, trans, category)
+        rv = finish_transaction(trans, model)
+        category = PaymentCategory.get(model.id, connection=self.conn)
+        trans.close()
+        if rv:
+            self._fill_category_combo()
+            if category is not None:
+                self.category.select(category)
+
+    def _run_person_editor(self, person=None):
+        trans = new_transaction()
+        person = trans.get(person)
+        model = run_person_role_dialog(self.person_editor, self, trans, person)
+        rv = finish_transaction(trans, model)
+        person_facet = self.person_class.get(model.id, connection=self.conn)
+        trans.close()
+        if rv:
+            self._populate_person()
+            self.person.select(person_facet)
+
+    def _fill_category_combo(self):
+        categories = PaymentCategory.select(
+            connection=self.trans).orderBy('name')
+        self.category.set_sensitive(bool(categories))
+        self.category.prefill([(c.name, c) for c in categories])
+        if self.model.category:
+            self.category.select(self.model.category)
+        self.edit_category.set_sensitive(False)
+
+    def _setup_widgets(self):
+        self.person_label.set_label(self._person_label)
+        if self.model.group.sale:
+            label = _("Sale details")
+        elif self.model.group.purchase:
+            label = _("Purchase details")
+        elif self.model.group._renegotiation:
+            label = _("Details")
+        else:
+            label = _("Details")
+        self.details_button = self.add_button(label)
+        self.details_button.connect('clicked',
+                                    self._on_details_button__clicked)
+        for widget in [self.value, self.due_date, self.person,
+                       self.add_person, self.edit_person]:
+            widget.set_sensitive(False)
+
+    def _show_order_dialog(self):
+        group = self.model.group
+        if group.sale:
+            sale_view = SaleView.select(SaleView.q.id == group.sale.id)[0]
+            run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+        elif group.purchase:
+            run_dialog(PurchaseDetailsDialog, self, self.conn, group.purchase)
+        elif group._renegotiation:
+            run_dialog(RenegotiationDetailsDialog, self, self.conn,
+                       group._renegotiation)
+        else:
+            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, self.model)
 
     #
     # Kiwi Callbacks
     #
 
+    def on_due_date__activate(self, date):
+        self.confirm()
+
     def on_value__validate(self, widget, newvalue):
         if newvalue is None or newvalue <= 0:
-            return ValidationError(_(u"The value must be greater than zero."))
+            return ValidationError(_("The value must be greater than zero."))
 
-    def on_create_category__clicked(self, widget):
-        trans = new_transaction()
-        model = run_dialog(PaymentCategoryEditor, self, trans)
-        rv = finish_transaction(trans, model)
-        trans.close()
-        if rv:
-            self._fill_category_combo()
-            self.category.update(model)
+    def on_category__content_changed(self, category):
+        self.edit_category.set_sensitive(True)
+
+    def on_person__content_changed(self, category):
+        self.edit_person.set_sensitive(True)
+
+    def on_add_category__clicked(self, widget):
+        self._run_payment_category_editor()
+
+    def on_edit_category__clicked(self, widget):
+        self._run_payment_category_editor(self.category.get_selected())
+
+    def on_add_person__clicked(self, widget):
+        self._run_person_editor()
+
+    def on_edit_person__clicked(self, widget):
+        self._run_person_editor(self.person.get_selected())
+
+    def _on_details_button__clicked(self, widget):
+        self._show_order_dialog()
 
 
 class InPaymentEditor(BasePaymentEditor):
     person_attribute = 'payer'
-    details_button_label = _("Sale details")
+    person_editor = ClientEditor
+    person_class = PersonAdaptToClient
+    person_iface = IClient
     _person_label = _("Payer:")
+
     def __init__(self, conn, model=None):
         """ This dialog is responsible to create additional payments with
         IInPayment facet.
@@ -172,42 +265,14 @@ class InPaymentEditor(BasePaymentEditor):
             self.model.addFacet(IInPayment, connection=self.conn)
             self.can_edit_details()
 
-    def populate_person(self):
-        clients = PersonAdaptToClient.get_active_clients(self.trans)
-        if clients:
-            self.person.prefill(sorted([(c.person.name, c)
-                                        for c in clients]))
-        else:
-            self.person.set_sensitive(False)
-
-        payer = self.model.group.payer
-        if payer:
-            client = IClient(payer)
-            self.person.select(client)
-
-    def show_receivable_details(self, receivable_view):
-        if receivable_view.sale_id is not None:
-            sale_view = SaleView.select(
-                    SaleView.q.id == receivable_view.sale_id)[0]
-            run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
-        elif receivable_view.renegotiation_id is not None:
-            run_dialog(RenegotiationDetailsDialog, self, self.conn,
-                       receivable_view.renegotiation)
-        else:
-            payment = receivable_view.payment
-            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
-
-    def _on_details_button__clicked(self, widget):
-        payment = self.model
-        receivable_view = InPaymentView.select(
-                            InPaymentView.q.id == payment.id)[0]
-        self.show_receivable_details(receivable_view)
-
 
 class OutPaymentEditor(BasePaymentEditor):
     person_attribute = 'recipient'
-    details_button_label = _(u"Order details")
+    person_editor = SupplierEditor
+    person_class = PersonAdaptToSupplier
+    person_iface = ISupplier
     _person_label = _("Recipient:")
+
     def __init__(self, conn, model=None):
         """ This dialog is responsible to create additional payments with
         IOutPayment facet.
@@ -220,36 +285,6 @@ class OutPaymentEditor(BasePaymentEditor):
         if not IOutPayment(model, None):
             self.model.addFacet(IOutPayment, connection=self.conn)
             self.can_edit_details()
-
-    def populate_person(self):
-        suppliers = PersonAdaptToSupplier.get_active_suppliers(self.trans)
-        if suppliers:
-            self.person.prefill(sorted([(s.person.name, s)
-                                        for s in suppliers]))
-        else:
-            self.person.set_sensitive(False)
-
-        supplier = self.model.group.recipient
-        if supplier:
-            supplier  = ISupplier(supplier)
-            self.person.select(supplier)
-
-    def show_payable_details(self, payable_view):
-        if payable_view.purchase:
-            run_dialog(PurchaseDetailsDialog, self,
-                       self.conn, payable_view.purchase)
-        elif payable_view.sale:
-            run_dialog(SaleDetailsDialog, self,
-                       self.conn, payable_view.sale)
-        else:
-            payment = payable_view.payment
-            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
-
-    def _on_details_button__clicked(self, widget):
-        payment = self.model
-        payable_view = OutPaymentView.select(
-                            OutPaymentView.q.id == payment.id)[0]
-        self.show_payable_details(payable_view)
 
 
 class LonelyPaymentDetailsDialog(BaseEditor):
@@ -291,18 +326,18 @@ class LonelyPaymentDetailsDialog(BaseEditor):
         return currency(penalty)
 
     def _get_columns(self):
-        return [Column('change_date', _(u"When"),
+        return [Column('change_date', _("When"),
                         data_type=datetime.date, sorted=True,),
-                Column('description', _(u"Payment"),
+                Column('description', _("Payment"),
                         data_type=str, expand=True,
                         ellipsize=pango.ELLIPSIZE_END),
-                Column('changed_field', _(u"Changed"),
+                Column('changed_field', _("Changed"),
                         data_type=str, justify=gtk.JUSTIFY_RIGHT),
-                Column('from_value', _(u"From"),
+                Column('from_value', _("From"),
                     data_type=str, justify=gtk.JUSTIFY_RIGHT),
-                Column('to_value', _(u"To"),
+                Column('to_value', _("To"),
                         data_type=str, justify=gtk.JUSTIFY_RIGHT),
-                Column('reason', _(u"Reason"),
+                Column('reason', _("Reason"),
                         data_type=str, expand=True,
                         ellipsize=pango.ELLIPSIZE_END)]
 
@@ -316,10 +351,10 @@ class LonelyPaymentDetailsDialog(BaseEditor):
 
     def get_title(self, model):
         if IInPayment(model, None):
-            return _(u'Receiving Details')
+            return _('Receiving Details')
 
         if IOutPayment(model, None):
-            return _(u'Payment Details')
+            return _('Payment Details')
 
 def get_dialog_for_payment(payment):
     if IInPayment(payment, None):

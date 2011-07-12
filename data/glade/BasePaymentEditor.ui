@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-requires kiwiwidgets 0.0 -->
@@ -10,7 +10,7 @@
       <object class="GtkTable" id="table1">
         <property name="visible">True</property>
         <property name="n_rows">6</property>
-        <property name="n_columns">3</property>
+        <property name="n_columns">4</property>
         <property name="column_spacing">6</property>
         <property name="row_spacing">6</property>
         <child>
@@ -87,10 +87,14 @@
         <child>
           <object class="ProxyEntry" id="description">
             <property name="visible">True</property>
-            <property name="xalign">1</property>
+            <property name="xalign">0</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">unicode</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">description</property>
-            <property name="data_type">unicode</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -101,9 +105,9 @@
         <child>
           <object class="ProxyComboEntry" id="person">
             <property name="visible">True</property>
-            <property name="model_attribute">person</property>
             <property name="data_type">object</property>
             <property name="mandatory">True</property>
+            <property name="model_attribute">person</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -117,9 +121,13 @@
           <object class="ProxyEntry" id="value">
             <property name="visible">True</property>
             <property name="xalign">1</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+            <property name="data_type">currency</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">value</property>
-            <property name="data_type">currency</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -133,8 +141,8 @@
           <object class="ProxyDateEntry" id="due_date">
             <property name="visible">True</property>
             <property name="data_type">date</property>
-            <property name="model_attribute">due_date</property>
             <property name="mandatory">True</property>
+            <property name="model_attribute">due_date</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -147,8 +155,8 @@
         <child>
           <object class="ProxyComboEntry" id="category">
             <property name="visible">True</property>
-            <property name="model_attribute">category</property>
             <property name="data_type">object</property>
+            <property name="model_attribute">category</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -173,18 +181,53 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="create_category">
-            <property name="label" translatable="yes">New...</property>
+          <object class="GtkButton" id="add_category">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="resize_mode">queue</property>
+            <property name="use_action_appearance">False</property>
+            <property name="relief">none</property>
+            <child>
+              <object class="GtkImage" id="image1">
+                <property name="visible">True</property>
+                <property name="stock">gtk-add</property>
+                <property name="icon-size">1</property>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="left_attach">2</property>
             <property name="right_attach">3</property>
             <property name="top_attach">4</property>
             <property name="bottom_attach">5</property>
+            <property name="x_options"></property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="add_person">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="resize_mode">queue</property>
+            <property name="use_action_appearance">False</property>
+            <property name="relief">none</property>
+            <child>
+              <object class="GtkImage" id="image2">
+                <property name="visible">True</property>
+                <property name="stock">gtk-add</property>
+                <property name="icon-size">1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">1</property>
+            <property name="bottom_attach">2</property>
+            <property name="x_options"></property>
+            <property name="y_options"></property>
           </packing>
         </child>
         <child>
@@ -201,6 +244,63 @@
         </child>
         <child>
           <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <object class="GtkButton" id="edit_person">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_action_appearance">False</property>
+            <property name="relief">none</property>
+            <child>
+              <object class="GtkImage" id="image3">
+                <property name="visible">True</property>
+                <property name="stock">gtk-edit</property>
+                <property name="icon-size">1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">1</property>
+            <property name="bottom_attach">2</property>
+            <property name="x_options"></property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="edit_category">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_action_appearance">False</property>
+            <property name="relief">none</property>
+            <child>
+              <object class="GtkImage" id="image4">
+                <property name="visible">True</property>
+                <property name="stock">gtk-edit</property>
+                <property name="icon-size">1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">4</property>
+            <property name="bottom_attach">5</property>
+            <property name="x_options"></property>
+            <property name="y_options"></property>
+          </packing>
         </child>
       </object>
     </child>
