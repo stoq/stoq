@@ -148,8 +148,6 @@ class ProductionServiceStep(SellableItemStep):
         self.cost_label.hide()
         self.cost.hide()
 
-        self.quantity.connect('validate', self._on_quantity__validate)
-
     def _get_production_service_by_sellable(self, sellable):
         service = sellable.service
         for item in self.slave.klist:
@@ -202,14 +200,6 @@ class ProductionServiceStep(SellableItemStep):
     def next_step(self):
         return ProductionItemStep(self.wizard, self, self.conn, self.model)
 
-    #
-    # Callbacks
-    #
-
-    def _on_quantity__validate(self, widget, value):
-        if not value or value <= Decimal(0):
-            return ValidationError(_(u'Quantity must be greater than zero'))
-
 
 class ProductionItemStep(SellableItemStep):
     """ Wizard step for production items selection """
@@ -231,8 +221,6 @@ class ProductionItemStep(SellableItemStep):
         self.hide_add_button()
         self.cost_label.hide()
         self.cost.hide()
-
-        self.quantity.connect('validate', self._on_quantity__validate)
 
     def _get_production_item_by_sellable(self, sellable):
         product = sellable.product
@@ -278,14 +266,6 @@ class ProductionItemStep(SellableItemStep):
     def next_step(self):
         return FinishOpenProductionOrderStep(self.wizard, self, self.conn,
                                              self.model)
-
-    #
-    # Callbacks
-    #
-
-    def _on_quantity__validate(self, widget, value):
-        if not value or value <= Decimal(0):
-            return ValidationError(_(u'Quantity must be greater than zero'))
 
 
 class FinishOpenProductionOrderStep(BaseWizardStep):

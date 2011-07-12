@@ -191,10 +191,13 @@ class DecreaseItemStep(SellableItemStep):
     #
 
     def _on_quantity__validate(self, widget, value):
+        sellable = self.proxy.model.sellable
+        if not sellable:
+            return
+
         if not value or value <= Decimal(0):
             return ValidationError(_(u'Quantity must be greater than zero'))
 
-        sellable = self.proxy.model.sellable
         storable = IStorable(sellable.product, None)
         assert storable
         balance = storable.get_stock_item(self.model.branch).quantity

@@ -276,6 +276,9 @@ class SaleQuoteItemStep(SellableItemStep):
     #
 
     def on_cost__validate(self, widget, value):
+        if not self.proxy.model.sellable:
+            return
+
         if value <= Decimal(0):
             return ValidationError(_(u"The price must be greater than zero."))
         return self._validate_sellable_price(value)
