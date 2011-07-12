@@ -359,7 +359,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
                         format="%04d"),
                 Column('supplier_name', title=_('Supplier'), data_type=str,
                         width=300),
-                Column('open_date', title=_('Open Date'),
+                Column('open_date', title=_('Open date'),
                         data_type=datetime.date),
                 Column('deadline', title=_('Deadline'),
                         data_type=datetime.date),]

@@ -70,8 +70,8 @@ _parameter_info = dict(
 
     MAIN_COMPANY=ParameterDetails(
     _('General'),
-    _('Main Company'),
-    _('The main company which is the owner of all other branch companies')),
+    _('Primary company'),
+    _('The primary company which is the owner of all other branch companies')),
 
     CUSTOM_LOGO_FOR_REPORTS=ParameterDetails(
     _('General'),
@@ -83,32 +83,32 @@ _parameter_info = dict(
 
     DISABLE_COOKIES=ParameterDetails(
     _('General'),
-    _('Disable Cookies'),
+    _('Disable cookies'),
     _('Disable the ability to use cookies in order to automatic log in '
       'the system. If so, all the users will have to provide the password '
       'everytime they log in. Requires restart to take effect.')),
 
     DEFAULT_SALESPERSON_ROLE=ParameterDetails(
     _('Sales'),
-    _('Default Salesperson Role'),
+    _('Default salesperson role'),
     _('Defines which of the employee roles existent in the system is the '
       'salesperson role')),
 
     SUGGESTED_SUPPLIER=ParameterDetails(
     _('Purchase'),
-    _('Suggested Supplier'),
+    _('Suggested supplier'),
     _('The supplier suggested when we are adding a new product in the '
       'system')),
 
     SUGGESTED_UNIT=ParameterDetails(
     _('Purchase'),
-    _('Suggested Unit'),
+    _('Suggested unit'),
     _('The unit suggested when we are adding a new product in the '
       'system')),
 
     DEFAULT_BASE_CATEGORY=ParameterDetails(
     _('Purchase'),
-    _('Default Base Sellable Category'),
+    _('Default base sellable category'),
     _('A default base sellable category which we always get as a '
       'suggestion when adding a new Sellable on the system')),
 
@@ -120,12 +120,12 @@ _parameter_info = dict(
 
     DELIVERY_SERVICE=ParameterDetails(
     _('Sales'),
-    _('Delivery Service'),
+    _('Delivery service'),
     _('The default delivery service in the system.')),
 
     USE_LOGIC_QUANTITY=ParameterDetails(
     _('Stock'),
-    _('Use Logic Quantity'),
+    _('Use logic quantity'),
     _('An integer that defines if the company can work or not with '
       'logic quantities during stock operations. See StockItem '
       'documentation.')),
@@ -134,7 +134,7 @@ _parameter_info = dict(
     # in a better way?
     POS_FULL_SCREEN=ParameterDetails(
     _('Sales'),
-    _('Show POS Application Full Screen'),
+    _('Show POS application in Fullscreen'),
     _('Once this parameter is set the Point of Sale application '
       'will be showed as full screen')),
 
@@ -148,31 +148,31 @@ _parameter_info = dict(
 
     ENABLE_PAULISTA_INVOICE=ParameterDetails(
     _('Sales'),
-    _('Enable Paulista Invoice'),
+    _('Enable paulista invoice'),
     _('Once this parameter is set, we will be able to join to the '
       'Sao Paulo state program of fiscal commitment.')),
 
     CITY_SUGGESTED=ParameterDetails(
     _('General'),
-    _('City Suggested'),
+    _('Default city'),
     _('When adding a new address for a certain person we will always '
       'suggest this city.')),
 
     STATE_SUGGESTED=ParameterDetails(
     _('General'),
-    _('State Suggested'),
+    _('Default state'),
     _('When adding a new address for a certain person we will always '
       'suggest this state.')),
 
     COUNTRY_SUGGESTED=ParameterDetails(
     _('General'),
-    _('Country Suggested'),
+    _('Default country'),
     _('When adding a new address for a certain person we will always '
       'suggest this country.')),
 
     HAS_DELIVERY_MODE=ParameterDetails(
     _('Sales'),
-    _('Has Delivery Mode'),
+    _('Has delivery mode'),
     _('Does this branch work with delivery service? If not, the '
       'delivery option will be disable on Point of Sales Application.')),
 
@@ -184,27 +184,27 @@ _parameter_info = dict(
 
     MAX_SEARCH_RESULTS=ParameterDetails(
     _('General'),
-    _('Max Search Results'),
+    _('Max search results'),
     _('The maximum number of results we must show after searching '
       'in any dialog.')),
 
     CONFIRM_SALES_ON_TILL=ParameterDetails(
     _('Sales'),
-    _('Confirm Sales on Till'),
+    _('Confirm sales in Till'),
     _('Once this parameter is set, the sales confirmation are only made '
       'on till application and the fiscal coupon will be printed on '
       'that application instead of Point of Sales')),
 
     ACCEPT_CHANGE_SALESPERSON=ParameterDetails(
     _('Sales'),
-    _('Accept Change Salesperson'),
+    _('Change salesperson'),
     _('Once this parameter is set to true, the user will be '
       'able to change the salesperson of an opened '
       'order on sale checkout dialog')),
 
     RETURN_MONEY_ON_SALES=ParameterDetails(
     _('Sales'),
-    _('Return Money On Sales'),
+    _('Return money on sales'),
     _('Once this parameter is set the salesperson can return '
       'money to clients when there is overpaid values in sales '
       'with gift certificates as payment method.')),
@@ -305,7 +305,7 @@ _parameter_info = dict(
 
     SCALE_BARCODE_FORMAT=ParameterDetails(
     _('Sales'),
-    _('Scale Barcode Format'),
+    _('Scale barcode format'),
     _('Format used by the barcode printed by the scale. This format always'
        ' starts with 2 followed by 4,5 or 6 digits product code and by a 5'
        ' digit weight or a 6 digit price. Check or scale documentation and'
@@ -329,23 +329,23 @@ _parameter_info = dict(
 
     BANKS_ACCOUNT=ParameterDetails(
     _('Accounts'),
-    _('Parent Bank Account'),
-    _('Newly Bank accounts will be placed under this account, '
+    _('Parent bank account'),
+    _('Newly nank accounts will be placed under this account, '
        'for accounts imported via OFX will be created below this')),
 
     TILLS_ACCOUNT=ParameterDetails(
     _('Accounts'),
-    _('Parent Till Account'),
+    _('Parent till account'),
     _('Till account transfers will be placed under this account')),
 
     IMBALANCE_ACCOUNT=ParameterDetails(
     _('Accounts'),
-    _('Imbalance Account'),
+    _('Imbalance account'),
     _('Account used for unbalanced transactions')),
 
     DEMO_MODE=ParameterDetails(
     _('General'),
-    _('Demonstration Mode'),
+    _('Demonstration mode'),
     _('If Stoq is used in a demonstration mode')),
 )
 

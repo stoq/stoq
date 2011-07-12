@@ -60,7 +60,7 @@ class CommissionSearch(SearchDialog):
                    Person.iselect(ISalesPerson, connection=self.conn)]
         persons = zip(persons, persons)
         persons.insert(0, (_('Anyone'), None))
-        salesperson_filter = ComboSearchFilter(_('Sold By:'), persons)
+        salesperson_filter = ComboSearchFilter(_('Sold by:'), persons)
         self.add_filter(salesperson_filter, SearchFilterPosition.TOP,
                         ['salesperson_name'])
         self._salesperson_filter = salesperson_filter
@@ -80,9 +80,9 @@ class CommissionSearch(SearchDialog):
                                data_type=currency),
                 SearchColumn('open_date', title=_('Date'),
                              data_type=datetime.date),
-                Column('payment_amount', title=_('Payment Value'),
+                Column('payment_amount', title=_('Payment value'),
                        data_type=currency),
-                Column('total_amount', title=_('Sale Total'),
+                Column('total_amount', title=_('Sale total'),
                        data_type=currency)]
 
     def on_print_button_clicked(self, button):

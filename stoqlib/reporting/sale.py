@@ -235,7 +235,7 @@ class SoldItemsByBranchReport(ObjectListReport):
 
     def _setup_branch_table(self):
         branches_columns = [OTC(_("Branch"), lambda obj: obj),
-                            OTC(_("Total Quantity"), lambda obj:
+                            OTC(_("Total quantity"), lambda obj:
                                   format_quantity(self.branch_quantity[obj])),
                             OTC(_("Total"), lambda obj:
                                   get_formatted_price(self.branch_total[obj]))]

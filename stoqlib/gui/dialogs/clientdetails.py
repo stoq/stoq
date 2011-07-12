@@ -160,11 +160,11 @@ class ClientDetailsDialog(BaseEditor):
                        justify=gtk.JUSTIFY_RIGHT, width=130, sorted=True),
                 Column("description", title=_("Description"), data_type=str,
                        expand=True, searchable=True),
-                Column("qty_str", title=_("Total Quantity"),
+                Column("qty_str", title=_("Total quantity"),
                        data_type=str, width=120, justify=gtk.JUSTIFY_RIGHT),
-                Column("avg_value", title=_("Average Value"),
+                Column("avg_value", title=_("Average value"),
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT),
-                Column("total_value", title=_("Total Value"), width=80,
+                Column("total_value", title=_("Total value"), width=80,
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT,)]
 
     def _get_services_columns(self):
@@ -173,7 +173,7 @@ class ClientDetailsDialog(BaseEditor):
                 Column("sellable.base_sellable_info.description",
                        title=_("Description"), data_type=str, expand=True,
                        searchable=True),
-                Column("estimated_fix_date", title=_("Estimated Fix Date"),
+                Column("estimated_fix_date", title=_("Estimated fix date"),
                        width=130,data_type=datetime.date)]
 
     def _get_payments_columns(self):
@@ -185,7 +185,7 @@ class ClientDetailsDialog(BaseEditor):
                 Column("description", title=_("Description"),
                        data_type=str, searchable=True, width=190,
                        expand=True),
-                Column("due_date", title=_("Due Date"), width=110,
+                Column("due_date", title=_("Due date"), width=110,
                        data_type=datetime.date, sorted=True),
                 Column("status_str", title=_("Status"), width=80,
                        data_type=str),

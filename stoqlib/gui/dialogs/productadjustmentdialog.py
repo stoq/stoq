@@ -104,11 +104,11 @@ class ProductsAdjustmentDialog(BaseEditor):
                         data_type=str, expand=True),
                 Column('unit_description', title=_(u"Unit"),
                         data_type=str),
-                Column('fiscal_description', title=_(u"Fiscal Class"),
+                Column('fiscal_description', title=_(u"Fiscal class"),
                         data_type=str),
-                Column('recorded_quantity', title=_(u"Recorded Quantity"),
+                Column('recorded_quantity', title=_(u"Recorded quantity"),
                         data_type=Decimal),
-                Column('actual_quantity', title=_(u"Actual Quantity"),
+                Column('actual_quantity', title=_(u"Actual quantity"),
                         data_type=Decimal)]
 
     def _has_rows(self):

@@ -234,10 +234,10 @@ class PaymentListSlave(GladeSlaveDelegate):
                                    title=_('Bank ID'),
                                    data_type=int, justify=gtk.JUSTIFY_RIGHT),
                             Column('bank_data.bank_branch',
-                                   title=_('Bank Branch'),
+                                   title=_('Bank branch'),
                                    data_type=str, justify=gtk.JUSTIFY_RIGHT),
                             Column('bank_data.bank_account',
-                                   title=_('Bank Account'),
+                                   title=_('Bank account'),
                                    data_type=str, justify=gtk.JUSTIFY_RIGHT)])
 
         # Money methods doesn't have a payment_number related with it.
@@ -245,7 +245,7 @@ class PaymentListSlave(GladeSlaveDelegate):
             columns.append(Column('payment_number', title=_('Number'),
                                   data_type=str, justify=gtk.JUSTIFY_RIGHT))
 
-        columns.extend([Column('due_date', title=_('Due Date'),
+        columns.extend([Column('due_date', title=_('Due date'),
                                data_type=datetime.date),
                         Column('value', title=_('Value'), data_type=currency,
                                justify=gtk.JUSTIFY_RIGHT)])
@@ -993,7 +993,7 @@ class MultipleMethodSlave(BaseEditorSlave):
                 Column('status_str', title=_('Status'), data_type=str,
                        width=80),
                 Column('value', title=_(u'Value'), data_type=currency),
-                Column('due_date', title=_('Due Date'),
+                Column('due_date', title=_('Due date'),
                         data_type=datetime.date),]
 
     def _add_method(self, payment_method):

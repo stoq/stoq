@@ -74,7 +74,7 @@ class ProductCountingDialog(BaseEditor):
                         sorted=True),
                 Column("description", title=_(u"Description"),
                         data_type=str, expand=True),
-                Column("actual_quantity", title=_(u"Actual Quantity"),
+                Column("actual_quantity", title=_(u"Actual quantity"),
                         data_type=Decimal, format_func=self._format_qty,
                         editable=True, spin_adjustment=adj)]
 

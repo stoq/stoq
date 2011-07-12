@@ -61,7 +61,7 @@ _ = gettext.gettext
 
 class PayableApp(SearchableAppWindow):
 
-    app_name = _('Accounts Payable')
+    app_name = _('Accounts payable')
     app_icon_name = 'stoq-payable-app'
     gladefile = 'payable'
     search_table = OutPaymentView
@@ -105,26 +105,26 @@ class PayableApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Payable
-            ('PayableMenu', None, _('Accounts _Payable')),
+            ('PayableMenu', None, _('Accounts _payable')),
             ('AddPayment', gtk.STOCK_ADD, _('Add payment...'), '<Control>p'),
-            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel Payment ...')),
+            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment ...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
-            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change Due Date...')),
+            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...')),
             ('Comments', None, _('Comments...')),
 
             ('Receipt', None, _('_Receipt'), '<Control>r'),
-            ('PaymentFlowHistory', None, _('Payment _Flow History ...'), '<Control>f'),
+            ('PaymentFlowHistory', None, _('Payment _flow history ...'), '<Control>f'),
 
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
             ("Quit", gtk.STOCK_QUIT),
 
             # Search
             ('SearchMenu', None, _('_Search')),
-            ('BillCheckSearch', None, _('Bill and Check...')),
+            ('BillCheckSearch', None, _('Bill and check...')),
 
         ]
         self.add_ui_actions(ui_string, actions)
-        self.add_help_ui(_("Accounts Payable help"), 'pagar-inicio')
+        self.add_help_ui(_("Accounts payable help"), 'pagar-inicio')
         self.add_user_ui()
 
     def create_ui(self):
@@ -160,9 +160,9 @@ class PayableApp(SearchableAppWindow):
                 SearchColumn('supplier_name', title=_('Supplier'),
                              data_type=str, width=110,
                              ellipsize=pango.ELLIPSIZE_END),
-                SearchColumn('due_date', title=_('Due Date'),
+                SearchColumn('due_date', title=_('Due date'),
                              data_type=datetime.date, width=120),
-                SearchColumn('paid_date', title=_('Paid Date'),
+                SearchColumn('paid_date', title=_('Paid date'),
                              data_type=datetime.date, width=120),
                 SearchColumn('status_str', title=_('Status'), width=100,
                              data_type=str, search_attribute='status',
@@ -171,7 +171,7 @@ class PayableApp(SearchableAppWindow):
                 SearchColumn('value', title=_('Value'), data_type=currency,
                              width=80),
                 SearchColumn('paid_value', title=_('Paid'), data_type=currency,
-                              long_title='Paid Value', width=80)]
+                              long_title='Paid value', width=80)]
 
     #
     # Private

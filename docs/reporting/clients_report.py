@@ -26,7 +26,7 @@ class ClientsReport(ReportTemplate):
                 TC("District", width=80),
                 TC("City", width=80),
                 TC("State", width=50),
-                TC("Birth Date", width=85)]
+                TC("Birth date", width=85)]
         return cols
 
     def get_rows(self):

@@ -87,7 +87,7 @@ class TransferOrderSearch(SearchDialog):
 
     def get_columns(self):
         return [Column('id', _('#'), data_type=int, width=50),
-                Column('open_date', _('Open Date'),
+                Column('open_date', _('Open date'),
                        data_type=datetime.date, sorted=True, width=100),
                 Column('source_branch_name', _('Source'),
                        data_type=unicode, expand=True),
