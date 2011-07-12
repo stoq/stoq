@@ -92,11 +92,11 @@ class SalesApp(SearchableAppWindow):
     def create_actions(self):
         ui_string = """<ui>
       <menubar action="menubar">
-        <menu action="TillMenu">
-          <menuitem action="TillQuote"/>
-          <menuitem action="TillCancel"/>
+        <menu action="SalesMenu">
+          <menuitem action="SalesQuote"/>
+          <menuitem action="SalesCancel"/>
           <separator/>
-          <menuitem action="TillPrintInvoice"/>
+          <menuitem action="SalesPrintInvoice"/>
           <separator/>
           <menuitem action="ExportCSV"/>
           <menuitem action="Quit"/>
@@ -119,7 +119,7 @@ class SalesApp(SearchableAppWindow):
         <placeholder name="ExtraMenu"/>
       </menubar>
       <toolbar action="main_toolbar">
-        <toolitem action="TillQuote"/>
+        <toolitem action="SalesQuote"/>
         <toolitem action="SearchClient"/>
         <toolitem action="SearchProduct"/>
         <toolitem action="SearchService"/>
@@ -131,10 +131,10 @@ class SalesApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Production
-            ("TillMenu", None, _("_Till")),
-            ("TillQuote", gtk.STOCK_NEW, _("New Sale Quote")),
-            ("TillCancel", None, _("Cancel Quote")),
-            ("TillPrintInvoice", gtk.STOCK_PRINT, _("_Print invoice...")),
+            ("SalesMenu", None, _("_Sales")),
+            ("SalesQuote", gtk.STOCK_NEW, _("New Sale Quote")),
+            ("SalesCancel", None, _("Cancel Quote")),
+            ("SalesPrintInvoice", gtk.STOCK_PRINT, _("_Print invoice...")),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
             ("Quit", gtk.STOCK_QUIT),
 
@@ -158,7 +158,7 @@ class SalesApp(SearchableAppWindow):
         ]
 
         self.add_ui_actions(ui_string, actions)
-        self.TillQuote.set_short_label(_("New Sale Quote"))
+        self.SalesQuote.set_short_label(_("New Sale Quote"))
         self.SearchClient.set_short_label(_("Clients"))
         self.SearchProduct.set_short_label(_("Products"))
         self.SearchService.set_short_label(_("Services"))
@@ -260,8 +260,8 @@ class SalesApp(SearchableAppWindow):
         can_print_invoice = bool(sale_view and
                                  sale_view.client_name is not None and
                                  sale_view.status != Sale.STATUS_RETURNED)
-        self.TillPrintInvoice.set_sensitive(can_print_invoice)
-        self.TillCancel.set_sensitive(self._can_cancel(sale_view))
+        self.SalesPrintInvoice.set_sensitive(can_print_invoice)
+        self.SalesCancel.set_sensitive(self._can_cancel(sale_view))
 
         can_return = bool(sale_view and sale_view.sale.can_return() and not
                           self._open_inventory)
@@ -335,15 +335,15 @@ class SalesApp(SearchableAppWindow):
     def _on_sale_toolbar__sale_edited(self, toolbar, sale):
         self.search.refresh()
 
-    # Till
+    # Sales
 
-    def on_TillQuote__activate(self, action):
+    def on_SalesQuote__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(SaleQuoteWizard, trans)
         finish_transaction(trans, model)
         trans.close()
 
-    def on_TillCancel__activate(self, action):
+    def on_SalesCancel__activate(self, action):
         if yesno(_('This will cancel the selected quote. Are you sure?'),
                  gtk.RESPONSE_NO, _("Don't cancel"), _("Cancel quote")):
             return
@@ -354,7 +354,7 @@ class SalesApp(SearchableAppWindow):
         finish_transaction(trans, True)
         self.search.refresh()
 
-    def on_TillPrintInvoice__activate(self, action):
+    def on_SalesPrintInvoice__activate(self, action):
         return self._print_invoice()
 
     # Loan
