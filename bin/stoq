@@ -77,6 +77,12 @@ try:
 except ImportError:
     pass
 
+# Disable Ubuntus scrollbar, if it's not set, users can
+# force it by setting LIBOVERLAY_SCROLLBAR=1
+import os
+if os.environ.get('LIBOVERLAY_SCROLLBAR') != '1':
+    os.environ['LIBOVERLAY_SCROLLBAR'] = '0'
+
 import stoqlib
 from stoq import main
 
