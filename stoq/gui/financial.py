@@ -31,23 +31,29 @@ import datetime
 import decimal
 import gettext
 
+from dateutil.relativedelta import relativedelta
 import gobject
 import gtk
+from kiwi.currency import currency
+from kiwi.db.query import DateQueryState, DateIntervalQueryState
+from kiwi.db.sqlobj import SQLObjectQueryExecuter
 from kiwi.python import Settable
 from kiwi.ui.dialogs import open as open_dialog
 from kiwi.ui.objectlist import ColoredColumn, Column, ObjectList
+from kiwi.ui.search import Any, DateSearchFilter, DateSearchOption, SearchContainer
+from stoqlib.database.orm import const, OR, AND
 from stoqlib.database.runtime import new_transaction, finish_transaction
-from stoqlib.domain.account import Account, AccountTransactionView
+from stoqlib.domain.account import Account, AccountTransaction, AccountTransactionView
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
+from stoqlib.gui.dialogs.sintegradialog import month_names
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
 from stoq.gui.application import AppWindow
-from kiwi.currency import currency
 
 _ = gettext.gettext
 
@@ -55,7 +61,37 @@ class NotebookCloseButton(gtk.Button):
     pass
 gobject.type_register(NotebookCloseButton)
 
-class TransactionPage(ObjectList):
+class FinancialSearchResults(ObjectList):
+    pass
+gobject.type_register(FinancialSearchResults)
+
+class TransactionSearchContainer(SearchContainer):
+    results_class = FinancialSearchResults
+
+    def __init__(self, page, columns):
+        self.page = page
+        SearchContainer.__init__(self, columns)
+
+    def add_results(self, results):
+        self.page.search.results.clear()
+        if self.page.query.table == AccountTransactionView:
+            self.page.append_transactions(results)
+        else:
+            self.page.search.results.extend(results)
+
+
+class MonthOption(DateSearchOption):
+    name = None
+    year = None
+    month = None
+
+    def get_interval(self):
+        start = datetime.date(self.year, self.month, 1)
+        end = start + relativedelta(months=1, days=-1)
+        return start, end
+
+
+class TransactionPage(object):
     # shows either a list of:
     #   - transactions
     #   - payments
@@ -64,21 +100,87 @@ class TransactionPage(ObjectList):
         self.app = app
         self.parent_window = parent
         self._block = False
-        ObjectList.__init__(self, columns=self._get_columns(model.kind))
-        self.connect('row-activated', self._on_row__activated)
-        tree_view = self.get_treeview()
-        tree_view.set_rules_hint(True)
-        tree_view.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+
+        self._create_search()
+        self._add_date_filter()
+
         self.refresh()
 
+    def _create_search(self):
+        self.search = TransactionSearchContainer(
+            self, columns=self._get_columns(self.model.kind))
+        self.query = SQLObjectQueryExecuter()
+        self.search.set_query_executer(self.query)
+        self.search.results.connect('row-activated', self._on_row__activated)
+        tree_view = self.search.results.get_treeview()
+        tree_view.set_rules_hint(True)
+        tree_view.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+
+    def _add_date_filter(self):
+        self.date_filter = DateSearchFilter(_('Date:'))
+        self.date_filter.clear_options()
+        self.date_filter.add_option(Any, 0)
+        year = datetime.datetime.today().year
+        for i in range(1, 13):
+            name = month_names[i]
+            option = type(name + 'Option', (MonthOption,),
+                          { 'name': gettext.gettext(name),
+                            'month': i,
+                            'year': year })
+            self.date_filter.add_option(option, i)
+        self.date_filter.add_custom_options()
+        self.date_filter.mode.select_item_by_position(0)
+        self.search.add_filter(self.date_filter)
+
+    def _append_date_query(self, field):
+        date = self.date_filter.get_state()
+        queries = []
+        if isinstance(date, DateQueryState) and date.date is not None:
+            queries.append(field == date.date)
+        elif isinstance(date, DateIntervalQueryState):
+            queries.append(const.DATE(field) >= date.start)
+            queries.append(const.DATE(field) <= date.end)
+        return queries
+
+    def _payment_query(self, query, having, conn):
+        queries = []
+        queries.extend(self._append_date_query(self.query.table.q.due_date))
+        if query:
+            queries.append(query)
+        return self.query.table.select(AND(*queries), connection=conn)
+
+    def _transaction_query(self, query, having, conn):
+        queries = [OR(self.model.id == AccountTransaction.q.accountID,
+                      self.model.id == AccountTransaction.q.source_accountID)]
+
+        queries.extend(self._append_date_query(AccountTransaction.q.date))
+
+        if query:
+            queries.append(query)
+        return AccountTransactionView.select(AND(*queries), connection=conn)
+
+    def show(self):
+        self.search.show()
+
     def refresh(self):
-        self.clear()
         if self.model.kind == 'account':
-            self._populate_transactions()
+            transactions = AccountTransactionView.get_for_account(self.model, self.app.conn)
+            self.append_transactions(transactions)
+            self.query.set_table(AccountTransactionView)
+            self.search.set_text_field_columns(['description'])
+            self.query.set_query(self._transaction_query)
         elif self.model.kind == 'payable':
+            self.search.results.clear()
+            self.search.set_text_field_columns(['description', 'supplier_name'])
             self._populate_payable_payments(OutPaymentView)
+            self.query.set_table(OutPaymentView)
+            self.query.set_query(self._payment_query)
         elif self.model.kind == 'receivable':
+            self.search.results.clear()
+            self.search.set_text_field_columns(['description', 'drawee'])
             self._populate_payable_payments(InPaymentView)
+            self.query.set_table(InPaymentView)
+            self.query.set_query(self._payment_query)
         else:
             raise TypeError("unknown model kind: %r" % (self.model.kind, ))
 
@@ -104,8 +206,7 @@ class TransactionPage(ObjectList):
         return [Column('date', data_type=datetime.date, sorted=True),
                 Column('code', data_type=unicode),
                 Column('description', data_type=unicode, expand=True),
-                Column('account', data_type=unicode,
-                       justify=gtk.JUSTIFY_RIGHT),
+                Column('account', data_type=unicode),
                 Column('value',
                        title=self.model.account.get_type_label(out=False),
                        data_type=currency,
@@ -119,15 +220,14 @@ class TransactionPage(ObjectList):
                               data_func=color_func)]
 
     def _get_payment_columns(self):
-        return [Column('paid_date', data_type=datetime.date, sorted=True),
+        return [Column('due_date', data_type=datetime.date, sorted=True),
                 Column('id', title=_("Code"), data_type=unicode),
                 Column('description', data_type=unicode, expand=True),
                 Column('value',
                        data_type=currency)]
 
-    def _populate_transactions(self):
-        for transaction in AccountTransactionView.get_for_account(
-            self.model, self.app.conn):
+    def append_transactions(self, transactions):
+        for transaction in transactions:
             description = transaction.get_account_description(self.model)
             value = transaction.get_value(self.model)
             self._add_transaction(transaction, description, value)
@@ -136,12 +236,12 @@ class TransactionPage(ObjectList):
     def _populate_payable_payments(self, view_class):
         for view in view_class.select():
             view.kind = self.model.kind
-            self.append(view)
+            self.search.results.append(view)
 
     def _add_transaction(self, transaction, description, value):
         item = Settable(transaction=transaction, kind=self.model.kind)
         self._update_transaction(item, transaction, description, value)
-        self.append(item)
+        self.search.results.append(item)
         return item
 
     def _update_transaction(self, item, transaction, description, value):
@@ -153,7 +253,7 @@ class TransactionPage(ObjectList):
 
     def _update_totals(self):
         total = decimal.Decimal('0')
-        for item in self:
+        for item in self.search.results:
             total += item.value
             item.total = total
 
@@ -191,7 +291,7 @@ class TransactionPage(ObjectList):
                 value = -value
             item = self._add_transaction(transaction, other.description, value)
             self._update_totals()
-            self.update(item)
+            self.search.results.update(item)
         finish_transaction(trans, transaction)
 
     def _on_row__activated(self, objectlist, item):
@@ -406,10 +506,10 @@ class FinancialApp(AppWindow):
             pixbuf = self.accounts.get_pixbuf(account_view)
             page = TransactionPage(account_view,
                                    self, self.get_toplevel())
-            page.connect('selection-changed',
-                         self._on_transaction__selection_changed)
+            page.search.results.connect('selection-changed',
+                                        self._on_transaction__selection_changed)
             hbox = self._create_tab_label(account_view.description, pixbuf, page)
-            page_id = self.notebook.append_page(page, hbox)
+            page_id = self.notebook.append_page(page.search, hbox)
             page.show()
             page.account_view = account_view
             self._pages[account_view] = page
@@ -520,7 +620,7 @@ class FinancialApp(AppWindow):
             return False
 
         page = self._get_current_page_widget()
-        transaction = page.get_selected()
+        transaction = page.results.get_selected()
         if transaction is None:
             return False
 
