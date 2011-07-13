@@ -24,7 +24,6 @@
 
 import gettext
 import operator
-import sys
 
 import gtk
 from kiwi.component import get_utility
