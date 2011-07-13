@@ -46,7 +46,7 @@ class TestPaymentGroup(DomainTest):
     def testConfirm(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
-        item = sale.add_sellable(sellable, price=150)
+        sale.add_sellable(sellable, price=150)
 
         method = PaymentMethod.get_by_name(self.trans, 'bill')
         payment = method.create_inpayment(sale.group, Decimal(10))
@@ -61,14 +61,14 @@ class TestPaymentGroup(DomainTest):
         sale = self.create_sale()
         sellable = self.add_product(sale, price=300)
         sale.order()
-        source = CommissionSource(sellable=sellable,
-                                  direct_value=12,
-                                  installments_value=5,
-                                  connection=self.trans)
+        CommissionSource(sellable=sellable,
+                         direct_value=12,
+                         installments_value=5,
+                         connection=self.trans)
 
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        payment1 = method.create_inpayment(sale.group, Decimal(100))
-        payment2 = method.create_inpayment(sale.group, Decimal(200))
+        method.create_inpayment(sale.group, Decimal(100))
+        method.create_inpayment(sale.group, Decimal(200))
         self.failIf(Commission.selectBy(sale=sale, connection=self.trans))
         sale.confirm()
         self.failUnless(Commission.selectBy(sale=sale, connection=self.trans))
@@ -99,9 +99,9 @@ class TestPaymentGroup(DomainTest):
                          connection=self.trans)
 
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        payment1 = method.create_inpayment(sale.group, Decimal(300))
-        payment2 = method.create_inpayment(sale.group, Decimal(450))
-        payment3 = method.create_inpayment(sale.group, Decimal(150))
+        method.create_inpayment(sale.group, Decimal(300))
+        method.create_inpayment(sale.group, Decimal(450))
+        method.create_inpayment(sale.group, Decimal(150))
         self.failIf(Commission.selectBy(sale=sale, connection=self.trans))
 
         sale.confirm()
@@ -127,12 +127,12 @@ class TestPaymentGroup(DomainTest):
         self._payComissionWhenConfirmed()
         sale = self.create_sale()
         sellable = self.create_sellable()
-        source = CommissionSource(sellable=sellable,
-                                  direct_value=12,
-                                  installments_value=5,
-                                  connection=self.trans)
+        CommissionSource(sellable=sellable,
+                         direct_value=12,
+                        installments_value=5,
+                         connection=self.trans)
 
-        item = sale.add_sellable(sellable, quantity=3, price=300)
+        sale.add_sellable(sellable, quantity=3, price=300)
         product = sellable.product
         product.addFacet(IStorable, connection=self.trans)
         storable = IStorable(sellable.product)
@@ -173,7 +173,7 @@ class TestPaymentGroup(DomainTest):
         storable.increase_stock(100, get_current_branch(self.trans))
         sale.order()
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        payment = method.create_inpayment(sale.group, Decimal(900))
+        method.create_inpayment(sale.group, Decimal(900))
         sale.confirm()
         self.assertEqual(group.get_total_value(), 3 * 300)
 

@@ -57,7 +57,7 @@ class TestReceivingOrder(DomainTest):
 
     def testGetTotal(self):
         order = self.create_receiving_order()
-        order_item = self.create_receiving_order_item(order)
+        self.create_receiving_order_item(order)
         self.assertEqual(order.get_total(), currency(1000))
 
         order.discount_value = 10
@@ -99,7 +99,6 @@ class TestReceivingOrder(DomainTest):
         self.assertEquals(stock_item.quantity, 8)
         order.purchase.confirm()
         order.confirm()
-        total = order.get_total()
         installment_count = order.payments.count()
         for pay in order.payments:
             self.assertEqual(pay.value,
@@ -124,7 +123,7 @@ class TestReceivingOrder(DomainTest):
 
         receiving_order = self.create_receiving_order(purchase_order)
         receiving_order.branch = get_current_branch(self.trans)
-        receiving_order_item = self.create_receiving_order_item(
+        self.create_receiving_order_item(
             receiving_order=receiving_order,
             sellable=product.sellable,
             purchase_item=purchase_item,
@@ -138,7 +137,7 @@ class TestReceivingOrder(DomainTest):
         self.assertEquals(product_stock_item.quantity, 1)
 
         sale = self.create_sale()
-        sale_item = sale.add_sellable(product.sellable)
+        sale.add_sellable(product.sellable)
         sale.order()
         method = PaymentMethod.get_by_name(self.trans, 'check')
         method.create_inpayment(sale.group, Decimal(100))
@@ -147,13 +146,12 @@ class TestReceivingOrder(DomainTest):
 
     def testUpdatePaymentValues(self):
         order = self.create_receiving_order()
-        order_item = self.create_receiving_order_item(order)
+        self.create_receiving_order_item(order)
         self.assertEqual(order.get_total(), currency(1000))
 
         for item in order.purchase.get_items():
             item.quantity_received = 0
         order.purchase.status = order.purchase.ORDER_PENDING
-        total = order.get_total()
         order.purchase.confirm()
 
         installment_count = order.payments.count()
@@ -176,13 +174,12 @@ class TestReceivingOrder(DomainTest):
 
     def testUpdatePaymentValuesWithFreightPayment(self):
         order = self.create_receiving_order()
-        order_item = self.create_receiving_order_item(order)
+        self.create_receiving_order_item(order)
         self.assertEqual(order.get_total(), currency(1000))
 
         for item in order.purchase.get_items():
             item.quantity_received = 0
         order.purchase.status = order.purchase.ORDER_PENDING
-        total = order.get_total()
         order.purchase.confirm()
 
         installment_count = order.payments.count()

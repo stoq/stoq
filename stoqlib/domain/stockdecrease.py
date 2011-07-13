@@ -61,7 +61,6 @@ class StockDecreaseItem(Domain):
         Domain._create(self, id, **kw)
 
     def decrease(self, branch):
-        conn = self.get_connection()
         assert branch
 
         storable = IStorable(self.sellable.product, None)

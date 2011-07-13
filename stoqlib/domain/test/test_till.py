@@ -135,8 +135,8 @@ class TestTill(DomainTest):
         payment.due_date = till.opening_date
         payment.till = till
         payment.set_pending()
-        entry = TillEntry(description='test', value=payment.value, till=till,
-                          payment=payment, connection=self.trans)
+        TillEntry(description='test', value=payment.value, till=till,
+                  payment=payment, connection=self.trans)
         payment.pay()
         self.assertEqual(till.get_cash_amount(), old + 5 + payment.value)
 

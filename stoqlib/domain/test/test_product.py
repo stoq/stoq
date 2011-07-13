@@ -135,7 +135,7 @@ class TestProduct(DomainTest):
 
         self.assertEqual(product.is_supplied_by(supplier), True)
 
-    def test_can_remove(self):
+    def testCanRemove(self):
         product = self.create_product()
         storable = product.addFacet(IStorable, connection=self.trans)
         self.assertTrue(product.can_remove())
@@ -154,20 +154,19 @@ class TestProduct(DomainTest):
 
         self.assertFalse(product.can_remove())
 
-    def test_remove(self):
+    def testRemove(self):
         product = self.create_product()
-        storable = product.addFacet(IStorable, connection=self.trans)
-        product_id = product.id
+        product.addFacet(IStorable, connection=self.trans)
 
-        total = Product.selectBy(id=product_id, connection=self.trans).count()
+        total = Product.selectBy(id=product.id, connection=self.trans).count()
         self.assertEquals(total, 1)
 
         product.remove()
-        total = Product.selectBy(id=product_id, connection=self.trans).count()
+        total = Product.selectBy(id=product.id, connection=self.trans).count()
         self.assertEquals(total, 0)
 
 
-    def test_increase_decrease_stock(self):
+    def testIncreaseDecreaseStock(self):
         branch = get_current_branch(self.trans)
         product = self.create_product()
         storable = product.addFacet(IStorable, connection=self.trans)

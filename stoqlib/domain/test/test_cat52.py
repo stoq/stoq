@@ -27,7 +27,6 @@ import sys
 
 from kiwi.component import get_utility
 
-import stoqlib
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib import test

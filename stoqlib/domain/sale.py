@@ -121,7 +121,6 @@ class SaleItem(Domain):
 
     def sell(self, branch):
         conn = self.get_connection()
-        sparam = sysparam(conn)
         if not (branch and
                 branch.id == get_current_branch(conn).id):
             raise SellError(_(u"Stoq still doesn't support sales for "
@@ -999,7 +998,6 @@ class SaleAdaptToPaymentTransaction(object):
                               applied over all sale items
         """
         icms_total = Decimal(0)
-        conn = self.sale.get_connection()
         for item in self.sale.products:
             price = item.price + av_difference
             sellable = item.sellable

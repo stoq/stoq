@@ -31,13 +31,11 @@ from stoqlib.domain.sellable import (BaseSellableInfo,
                                      Sellable,
                                      SellableCategory)
 from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.product import Product
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import (ProductFullStockView,
                                   ProductFullWithClosedStockView,
                                   ProductClosedStockView)
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.lib.parameters import sysparam
 
 
@@ -114,7 +112,6 @@ class TestSellable(DomainTest):
                             cost=100,
                             category=self._category,
                             connection=self.trans)
-        product = Product(sellable=sellable, connection=self.trans)
         self.failUnless(sellable.markup == self._category.get_markup(),
                         ("Expected markup: %r, got %r"
                          % (self._category.get_markup(),
@@ -136,7 +133,6 @@ class TestSellable(DomainTest):
                             markup=markup,
                             cost=100,
                             connection=self.trans)
-        product = Product(sellable=sellable, connection=self.trans)
         self.failUnless(sellable.markup == markup,
                         ("Expected markup: %r, got %r"
                          % (markup, sellable.markup)))
@@ -152,7 +148,6 @@ class TestSellable(DomainTest):
         sellable = Sellable(base_sellable_info=sellable_info,
                             category=self._category,
                             connection=self.trans)
-        product = Product(sellable=sellable, connection=self.trans)
         self.failUnless(sellable.commission
                         == self._category.salesperson_commission,
                         ("Expected salesperson commission: %r, got %r"
@@ -166,7 +161,6 @@ class TestSellable(DomainTest):
         sellable = Sellable(category=self._category, cost=50,
                             base_sellable_info=sellable_info,
                             connection=self.trans)
-        product = Product(sellable=sellable, connection=self.trans)
         self.failUnless(sellable.price == 100,
                         "Expected price: %r, got %r" % (100, sellable.price))
         self.failUnless(sellable.markup == 100,
@@ -185,7 +179,6 @@ class TestSellable(DomainTest):
         sellable = Sellable(markup=10, cost=50,
                             base_sellable_info=sellable_info,
                             connection=self.trans)
-        product = Product(sellable=sellable, connection=self.trans)
         self.failUnless(sellable.price == 100)
 
         # A simple test: product without cost and price, markup must be 0

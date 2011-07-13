@@ -69,7 +69,7 @@ class TestFacet(DomainTest):
     def testAddHook(self):
         ding = Ding(connection=self.trans)
         self.assertEqual(ding.called, False)
-        dong = ding.addFacet(IDong, connection=self.trans)
+        ding.addFacet(IDong, connection=self.trans)
         self.assertEqual(ding.called, True)
 
     def testGetFacets(self):
@@ -98,7 +98,7 @@ class TestSelect(DomainTest):
         self.assertEquals(Ding.selectOne(connection=self.trans), None)
         ding1 = Ding(connection=self.trans)
         self.assertEquals(Ding.selectOne(connection=self.trans), ding1)
-        ding2 = Ding(connection=self.trans)
+        Ding(connection=self.trans)
         self.assertRaises(ORMObjectMoreThanOneResultError,
                           Ding.selectOne, connection=self.trans)
 
@@ -110,7 +110,7 @@ class TestSelect(DomainTest):
         ding1 = Ding(connection=self.trans, field=1)
         self.assertEquals(
             ding1, Ding.selectOneBy(field=1, connection=self.trans))
-        ding2 = Ding(connection=self.trans, field=1)
+        Ding(connection=self.trans, field=1)
         self.assertRaises(
             ORMObjectMoreThanOneResultError,
             Ding.selectOneBy, field=1, connection=self.trans)

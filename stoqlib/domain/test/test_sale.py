@@ -336,7 +336,7 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         self.failIf(sale.can_return())
 
-        product = self.add_product(sale, price=300)
+        self.add_product(sale, price=300)
         sale.order()
         self.failIf(sale.can_return())
 
@@ -379,8 +379,8 @@ class TestSale(DomainTest):
 
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment1 = method.create_inpayment(sale.group, Decimal(100))
-        payment2 = method.create_inpayment(sale.group, Decimal(100))
-        payment3 = method.create_inpayment(sale.group, Decimal(100))
+        method.create_inpayment(sale.group, Decimal(100))
+        method.create_inpayment(sale.group, Decimal(100))
         sale.confirm()
         payment = payment1.get_adapted()
         payment.pay()
@@ -422,8 +422,8 @@ class TestSale(DomainTest):
         # Add 3 check payments of 100 each
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment1 = method.create_inpayment(sale.group, Decimal(100))
-        payment2 = method.create_inpayment(sale.group, Decimal(100))
-        payment3 = method.create_inpayment(sale.group, Decimal(100))
+        method.create_inpayment(sale.group, Decimal(100))
+        method.create_inpayment(sale.group, Decimal(100))
         sale.confirm()
 
         # We should have three payments in the sale
@@ -643,10 +643,10 @@ class TestSale(DomainTest):
     def testCommissionAmount(self):
         sale = self.create_sale()
         sellable = self.add_product(sale, price=200)
-        source = CommissionSource(sellable=sellable,
-                                  direct_value=10,
-                                  installments_value=5,
-                                  connection=self.trans)
+        CommissionSource(sellable=sellable,
+                         direct_value=10,
+                         installments_value=5,
+                         connection=self.trans)
         sale.order()
         # payment method: money
         # installments number: 1
@@ -662,15 +662,15 @@ class TestSale(DomainTest):
     def testCommissionAmountMultiple(self):
         sale = self.create_sale()
         sellable = self.add_product(sale, price=200)
-        source = CommissionSource(sellable=sellable,
-                                  direct_value=10,
-                                  installments_value=5,
-                                  connection=self.trans)
+        CommissionSource(sellable=sellable,
+                         direct_value=10,
+                         installments_value=5,
+                         connection=self.trans)
         sellable = self.add_product(sale, price=300)
-        source = CommissionSource(sellable=sellable,
-                                  direct_value=12,
-                                  installments_value=5,
-                                  connection=self.trans)
+        CommissionSource(sellable=sellable,
+                         direct_value=12,
+                         installments_value=5,
+                         connection=self.trans)
         sale.order()
         # payment method: money
         # installments number: 1
@@ -686,10 +686,10 @@ class TestSale(DomainTest):
     def testCommissionAmountWhenSaleReturn(self):
         sale = self.create_sale()
         sellable = self.add_product(sale, price=200)
-        source = CommissionSource(sellable=sellable,
-                                  direct_value=10,
-                                  installments_value=5,
-                                  connection=self.trans)
+        CommissionSource(sellable=sellable,
+                         direct_value=10,
+                         installments_value=5,
+                         connection=self.trans)
         sale.order()
         # payment method: money
         # installments number: 1

@@ -66,8 +66,7 @@ class TestService(DomainTest):
         self.assertTrue(service.can_remove())
 
         sale = self.create_sale()
-        service_item = sale.add_sellable(service.sellable, quantity=1,
-                                         price=10)
+        sale.add_sellable(service.sellable, quantity=1, price=10)
         self.assertFalse(service.sellable.can_remove())
 
 class TestServiceView(DomainTest):
