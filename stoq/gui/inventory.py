@@ -41,7 +41,6 @@ from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
 from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
-from stoqlib.gui.help import show_contents, show_section
 from stoqlib.lib.message import yesno
 from stoqlib.reporting.product import ProductCountingReport
 
