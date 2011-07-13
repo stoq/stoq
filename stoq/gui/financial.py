@@ -563,19 +563,6 @@ class FinancialApp(AppWindow):
 
         self.accounts.refresh_accounts(self.conn)
 
-    def _can_edit_account():
-        if not self._is_accounts_tab():
-            return False
-
-        account_view = self.accounts.get_selected()
-        if account_view is None:
-            return False
-
-        if account_view.kind != 'account':
-            return False
-
-        return True
-
     def _can_add_account(self):
         if not self._is_accounts_tab():
             return False
