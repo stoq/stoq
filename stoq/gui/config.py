@@ -506,6 +506,7 @@ class CreateDatabaseStep(BaseWizardStep):
     def _install_postgres(self):
         try:
             import aptdaemon
+            aptdaemon # pyflakes
         except ImportError:
             warning(_("You need to install and start PostgreSQL. "
                       "When done click 'OK' to continue"))
