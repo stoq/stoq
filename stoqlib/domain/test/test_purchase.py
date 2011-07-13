@@ -129,7 +129,7 @@ class TestPurchaseOrder(DomainTest):
         order.cancel()
         self.assertEqual(order.can_cancel(), False)
         sellable = self.create_sellable()
-        purchase_item = order.add_item(sellable, 2)
+        order.add_item(sellable, 2)
 
     def testConfirmSupplier(self):
         order = self.create_purchase_order()
@@ -196,7 +196,7 @@ class TestQuoteGroup(DomainTest):
         quote = QuoteGroup(connection=self.trans)
         order = self.create_purchase_order()
         order.status = PurchaseOrder.ORDER_QUOTING
-        quotation = quote.add_item(order)
+        quote.add_item(order)
 
         self.assertEqual(order.status, PurchaseOrder.ORDER_QUOTING)
         order.cancel()
@@ -206,7 +206,7 @@ class TestQuoteGroup(DomainTest):
         quote = QuoteGroup(connection=self.trans)
         order = self.create_purchase_order()
         order.status = PurchaseOrder.ORDER_QUOTING
-        quotation = quote.add_item(order)
+        quote.add_item(order)
 
         self.assertEqual(order.status, PurchaseOrder.ORDER_QUOTING)
         quotations = quote.get_items()

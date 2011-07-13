@@ -69,9 +69,8 @@ class TestProfileSettings(DomainTest):
         table = UserProfile
         self.boss_profile = table.create_profile_template(self.trans,
                                                           profile_name,
-                                                          has_full_permission=
-                                                          True)
-        items = self.boss_profile.profile_settings
+                                                          has_full_permission=True)
+        self.failIf(self.boss_profile.profile_settings)
 
     def test_check_app_permission(self):
         profile = UserProfile(connection=self.trans, name='boss')

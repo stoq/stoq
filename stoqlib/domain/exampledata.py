@@ -305,8 +305,7 @@ class ExampleCreator(object):
                             base_sellable_info=base_sellable_info,
                             on_sale_info=on_sale_info,
                             connection=self.trans)
-        product = Product(sellable=sellable,
-                          connection=self.trans)
+        Product(sellable=sellable, connection=self.trans)
         return sellable
 
     def create_sellable_unit(self, description=u'', allow_fraction=True):

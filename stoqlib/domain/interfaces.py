@@ -271,14 +271,6 @@ class ISupplier(IPersonFacet):
         @returns: a list of PurchaseOrderViews.
         """
 
-    def get_last_purchase_date():
-        """Fetch the date of the last purchase order to this supplier.
-        None is returned if there are no order yet made to the supplier.
-
-        @returns: the date of the last order purchase
-        @rtype: datetime.date or None
-        """
-
 
 class IEmployee(IPersonFacet):
     """An individual who performs work for an employer under a verbal

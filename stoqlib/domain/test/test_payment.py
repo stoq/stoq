@@ -230,8 +230,7 @@ class TestPaymentFlowHistory(DomainTest):
             self.trans, today)
         yesterday_history = PaymentFlowHistory.get_or_create_flow_history(
             self.trans, yesterday)
-        tomorrow_history = PaymentFlowHistory.get_or_create_flow_history(
-            self.trans, tomorrow)
+        PaymentFlowHistory.get_or_create_flow_history(self.trans, tomorrow)
 
         self.failUnless(PaymentFlowHistory.get_last_day(self.trans, today) is
                         yesterday_history)

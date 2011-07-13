@@ -73,7 +73,7 @@ class TestEmployeeRoleHistory(DomainTest):
 
 
 class TestEmployeeRole(DomainTest):
-    def test_get_description(self):
+    def testGetdescription(self):
         role = self.create_employee_role()
         role.name =  'manager'
         self.assertEquals(role.name, role.get_description())
@@ -89,9 +89,9 @@ class TestPerson(DomainTest):
         ctloc = ctlocs[0]
         address = Address(connection=self.trans, person=person,
                           city_location=ctloc, is_main_address=True)
-        assert person.get_main_address() is not None
+        self.assertEquals(person.get_main_address(), address)
 
-    def test_get_address_string(self):
+    def testGetaddressString(self):
         person = self.create_person()
         ctloc = CityLocation(connection=self.trans)
         address = Address(connection=self.trans, person=person,
@@ -105,12 +105,12 @@ class TestPerson(DomainTest):
         try:
             person._check_individual_or_company_facets()
         # yuck.
-        except TypeError, e:
+        except TypeError:
             return False
         else:
             return True
 
-    def test_check_individual_or_company_facets(self):
+    def testCheckIndividualOrCompanyFacets(self):
         #First Person testcase without facets
         person = self.create_person()
         assert not self._check_has_individual_or_company_facets(person)
@@ -135,35 +135,35 @@ class TestPerson(DomainTest):
         try:
             person.addFacet(iface, connection=self.trans, **kwargs)
         # yuck.
-        except (TypeError, ValueError), e:
+        except (TypeError, ValueError):
             # Ok, it should actually fail since we did not create an
             # individual or company facets
             return True
         else:
             return False
 
-    def test_facet_IClient_add(self):
+    def testFacetIClientAdd(self):
         person = self.create_person()
         assert self._check_create_facet_fails(person, IClient)
         assert not self._check_create_facet_fails(person, IIndividual)
         assert not self._check_create_facet_fails(person, IClient)
         assert not self._check_create_facet_fails(person, ICompany)
 
-    def test_facet_ITransporter_add(self):
+    def testFacetITransporterAdd(self):
         person = self.create_person()
         assert self._check_create_facet_fails(person, ITransporter)
         assert not self._check_create_facet_fails(person, ICompany)
         assert not self._check_create_facet_fails(person, ITransporter)
         assert not self._check_create_facet_fails(person, IIndividual)
 
-    def test_facet_ISupplier_add(self):
+    def testFacetISupplierAdd(self):
         person = self.create_person()
         assert self._check_create_facet_fails(person, ISupplier)
         assert not self._check_create_facet_fails(person, IIndividual)
         assert not self._check_create_facet_fails(person, ISupplier)
         assert not self._check_create_facet_fails(person, ICompany)
 
-    def test_facet_ICreditProvider_add(self):
+    def testFacetICreditProviderAdd(self):
         person = self.create_person()
         short_name = 'Credicard'
         date = datetime.date(2006, 06, 01)
@@ -176,7 +176,7 @@ class TestPerson(DomainTest):
                                                   open_contract_date=date)
         assert not self._check_create_facet_fails(person, IIndividual)
 
-    def test_facet_IEmployee_add(self, **kwargs):
+    def testFacetIEmployeeAdd(self, **kwargs):
         person = self.create_person()
         assert self._check_create_facet_fails(person, IEmployee)
         assert not self._check_create_facet_fails(person, IIndividual)
@@ -193,7 +193,7 @@ class TestPerson(DomainTest):
                                                   bank_account=bank_account)
         assert not self._check_create_facet_fails(person, ICompany)
 
-    def test_facet_IUser_add(self, **kwargs):
+    def testFacetIUserAdd(self, **kwargs):
         person = self.create_person()
         assert self._check_create_facet_fails(person, IUser)
         assert not self._check_create_facet_fails(person, IIndividual)
@@ -204,14 +204,14 @@ class TestPerson(DomainTest):
                                                   profile=profile)
         assert not self._check_create_facet_fails(person, ICompany)
 
-    def test_facet_IBranch_add(self, **kwargs):
+    def testFacetIBranchAdd(self, **kwargs):
         person = self.create_person()
         assert self._check_create_facet_fails(person, IBranch)
         assert not self._check_create_facet_fails(person, ICompany)
         assert not self._check_create_facet_fails(person, IBranch)
         assert not self._check_create_facet_fails(person, IIndividual)
 
-    def test_facet_ISalesPerson_add(self, **kwargs):
+    def testFacetISalesPersonAdd(self, **kwargs):
         person = self.create_person()
         assert self._check_create_facet_fails(person, ISalesPerson)
         assert not self._check_create_facet_fails(person, IIndividual)
@@ -320,18 +320,18 @@ class TestCompany(_PersonFacetTest, DomainTest):
 class TestClient(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToClient
 
-    def test_get_name(self):
+    def testGetname(self):
         client = self.create_client()
         client.person.name = u'Laun'
         self.assertEquals(client.get_name(), u'Laun')
 
-    def test_get_status_string(self):
+    def testGetStatusString(self):
         client = self.create_client()
         status = client.status
         status = client.statuses[status]
         self.assertEquals(client.get_status_string(), status)
 
-    def test_get_active_clients(self):
+    def testGetactiveClients(self):
         table = PersonAdaptToClient
         active_clients = table.get_active_clients(self.trans).count()
         client = self.create_client()
@@ -339,17 +339,15 @@ class TestClient(_PersonFacetTest, DomainTest):
         one_more_active_client = table.get_active_clients(self.trans).count()
         self.assertEquals(active_clients + 1, one_more_active_client)
 
-    def test_get_client_sales(self):
+    def testGetclient_sales(self):
         client = PersonAdaptToClient.select(connection=self.trans)
         assert client
         client = client[0]
-        cfop = CfopData(code='123', description='bla', connection=self.trans)
+        CfopData(code='123', description='bla', connection=self.trans)
         branches = PersonAdaptToBranch.select(connection=self.trans)
         assert branches
-        branch = branches[0]
         people = PersonAdaptToSalesPerson.select(connection=self.trans)
         assert people
-        salesperson = people[0]
         count_sales = client.get_client_sales().count()
         sale = self.create_sale()
         sale.client = client
@@ -391,7 +389,7 @@ class TestSupplier(_PersonFacetTest, DomainTest):
 
         order = self.create_receiving_order()
         order.purchase.supplier = supplier
-        order_item = self.create_receiving_order_item(order)
+        self.create_receiving_order_item(order)
         order.purchase.status = PurchaseOrder.ORDER_PENDING
         order.purchase.confirm()
         order.confirm()
@@ -402,42 +400,35 @@ class TestSupplier(_PersonFacetTest, DomainTest):
 class TestEmployee(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToEmployee
 
-    def test_role_history(self):
+    def testRoleHistory(self):
         #this test depends bug 2457
-        role_name = 'crazypaper'
         employee = self.create_employee()
-        history = EmployeeRoleHistory(role=employee.role,
-                                      employee=employee,
-                                      connection=self.trans,
-                                      salary=currency(500),
-                                      is_active=False)
+        EmployeeRoleHistory(role=employee.role,
+                            employee=employee,
+                            connection=self.trans,
+                            salary=currency(500),
+                            is_active=False)
         old_count = employee.get_role_history().count()
-        history = EmployeeRoleHistory(role=employee.role,
-                                      employee=employee,
-                                      connection=self.trans,
-                                      salary=currency(900))
+        EmployeeRoleHistory(role=employee.role,
+                            employee=employee,
+                            connection=self.trans,
+                            salary=currency(900))
         new_count = employee.get_role_history().count()
         self.assertEquals(old_count + 1, new_count)
 
-    def test_get_active_role_history(self):
-        role_name = 'boss'
+    def testGetActiveRoleHistory(self):
         employee = self.create_employee()
 
         #creating 2 active role history, asserting it fails
-        history = EmployeeRoleHistory(role=employee.role,
-                                      employee=employee,
-                                      connection=self.trans,
-                                      salary=currency(230))
-        history2 = EmployeeRoleHistory(role=employee.role,
-                                      employee=employee,
-                                      connection=self.trans,
-                                      salary=currency(320))
-        history_validated = False
-        try:
-            employee.get_active_role_history()
-        except ORMObjectMoreThanOneResultError, e:
-            history_validated = True
-        assert history_validated
+        EmployeeRoleHistory(role=employee.role,
+                            employee=employee,
+                            connection=self.trans,
+                            salary=currency(230))
+        EmployeeRoleHistory(role=employee.role,
+                            employee=employee,
+                            connection=self.trans,
+                            salary=currency(320))
+        self.assertRaises(ORMObjectMoreThanOneResultError, employee.get_active_role_history)
 
         #now with one employeerolehistory
         #FIXME: this breaks in buildbot, figure out why.
@@ -447,7 +438,7 @@ class TestEmployee(_PersonFacetTest, DomainTest):
 class TestUser(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToUser
 
-    def test_get_status_str(self):
+    def testGetstatusStr(self):
         users = PersonAdaptToUser.select(connection=self.trans)
         assert users
         user = users[0]
@@ -458,7 +449,7 @@ class TestUser(_PersonFacetTest, DomainTest):
 class TestBranch(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToBranch
 
-    def test_get_status_str(self):
+    def testGetstatusStr(self):
         branches = PersonAdaptToBranch.select(connection=self.trans)
         assert branches
         branch = branches[0]
@@ -466,7 +457,7 @@ class TestBranch(_PersonFacetTest, DomainTest):
         string = branch.get_status_string()
         self.assertEquals(string, _(u'Inactive'))
 
-    def test_get_active_branches(self):
+    def testGetactiveBranches(self):
         person = self.create_person()
         person.addFacet(ICompany, connection=self.trans)
         count = PersonAdaptToBranch.get_active_branches(self.trans).count()
@@ -492,13 +483,13 @@ class SalesPersonTest(_PersonFacetTest, DomainTest):
 
     facet = PersonAdaptToSalesPerson
 
-    def test_get_active_salespersons(self):
+    def testGetactiveSalespersons(self):
         count = PersonAdaptToSalesPerson.get_active_salespersons(self.trans).count()
         salesperson = self.create_sales_person()
         one_more = salesperson.get_active_salespersons(self.trans).count()
         assert count + 1 == one_more
 
-    def test_get_status_string(self):
+    def testGetStatusString(self):
         salesperson = self.create_sales_person()
         string = salesperson.get_status_string()
         self.assertEquals(string, _(u'Active'))
