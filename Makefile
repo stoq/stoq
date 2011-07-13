@@ -27,12 +27,7 @@ web: apidocs
 	ssh async.com.br mv $(WEBDOC_DIR)/stoqlib-tmp $(WEBDOC_DIR)/stoqlib
 	scp stoqlib.pickle async.com.br:$(WEBDOC_DIR)/stoqlib
 
-clean:
-	rm -fr $(BUILDDIR)
-	rm -f MANIFEST
-	rm -fr stoqdrivers.pickle
-
 tests:
 	tools/runtests
 
-.PHONY: stoqlib.pickle
+.PHONY: stoqlib.pickle TAGS
