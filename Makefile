@@ -27,7 +27,13 @@ web: apidocs
 	ssh async.com.br mv $(WEBDOC_DIR)/stoqlib-tmp $(WEBDOC_DIR)/stoqlib
 	scp stoqlib.pickle async.com.br:$(WEBDOC_DIR)/stoqlib
 
-tests:
-	tools/runtests
+pep8:
+	pep8 stoq stoqlib
+
+pyflakes:
+	pyflakes stoq stoqlib
+
+check:
+	LC_ALL=C trial stoq stoqlib
 
 .PHONY: stoqlib.pickle TAGS
