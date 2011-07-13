@@ -124,14 +124,6 @@ class StoqConfig:
         self._config.write(fd)
         fd.close()
 
-    def remove(self):
-        if not self._filename:
-            return
-        if not os.access(self._filename, os.R_OK):
-            raise FilePermissionError("%s is not readable." % (
-                self._filename, ))
-        os.remove(self._filename)
-
     def get_filename(self):
         config_dir = self.get_config_directory()
         return os.path.join(config_dir, 'stoq.conf')
