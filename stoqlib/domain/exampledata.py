@@ -339,7 +339,11 @@ class ExampleCreator(object):
     def create_sale_item(self):
         from stoqlib.domain.sale import SaleItem
         sellable = self.create_sellable()
-        return SaleItem(connection=self.trans, sellable=sellable)
+        return SaleItem(connection=self.trans,
+                        quantity=1,
+                        price=100,
+                        sale=self.create_sale(),
+                        sellable=sellable)
 
     def create_sale_item_icms(self):
         from stoqlib.domain.taxes import SaleItemIcms
