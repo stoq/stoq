@@ -585,7 +585,7 @@ class ExampleCreator(object):
         if not date:
             date = datetime.date.today()
         from stoqlib.domain.payment.payment import Payment
-        p = Payment(group=None,
+        return Payment(group=None,
                        open_date=date,
                        due_date=date,
                        value=Decimal(10),
@@ -593,8 +593,6 @@ class ExampleCreator(object):
                        method=self.get_payment_method(),
                        category=None,
                        connection=self.trans)
-        p.set_pending()
-        return p
 
     def create_payment_group(self):
         from stoqlib.domain.payment.group import PaymentGroup
