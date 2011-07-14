@@ -106,6 +106,9 @@ class TransactionPage(object):
 
         self.refresh()
 
+    def get_toplevel(self):
+        return self.parent_window
+
     def _create_search(self):
         self.search = TransactionSearchContainer(
             self, columns=self._get_columns(self.model.kind))
@@ -266,7 +269,7 @@ class TransactionPage(object):
             account_transaction = trans.get(item.transaction)
         model = getattr(self.model, 'account', self.model)
 
-        transaction = run_dialog(AccountTransactionEditor, self.parent_window,
+        transaction = run_dialog(AccountTransactionEditor, self,
                                  trans, account_transaction, model)
 
         if transaction:
@@ -275,15 +278,23 @@ class TransactionPage(object):
                                      transaction.edited_account.description,
                                      transaction.value)
             self._update_totals()
-            self.update(item)
+            self.search.results.update(item)
         finish_transaction(trans, transaction)
+
+    def on_dialog__opened(self, dialog):
+        dialog.connect('account-added', self.on_dialog__account_added)
+
+    def on_dialog__account_added(self, dialog):
+         self.app.accounts.refresh_accounts(self.app.conn)
 
     def add_transaction_dialog(self):
         trans = new_transaction()
         model = getattr(self.model, 'account', self.model)
         model = trans.get(model)
-        transaction = run_dialog(AccountTransactionEditor, self.parent_window,
-                                 trans, None, model)
+
+        transaction = run_dialog(AccountTransactionEditor, self,
+                                 trans, None, model,
+                                 dialog_opened=dialog_opened)
         if transaction:
             transaction.sync()
             value = transaction.value
