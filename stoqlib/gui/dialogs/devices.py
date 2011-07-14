@@ -40,14 +40,14 @@ class DeviceSettingsDialog(ModelListDialog):
     # ModelListDialog
     model_type = DeviceSettings
     title = _('Device settings')
-    size = (800, 300)
+    size = (750, 300)
 
     # ListDialog
     columns =  [
         Column('device_type_name', title=_('Device Type'),
-               data_type=str, sorted=True, width=200),
+               data_type=str, sorted=True, width=180),
         Column('description', title=_('Description'),
-               data_type=str, width=200,),
+               data_type=str, expand=True),
         Column('station.name', title=_('Computer'),
                data_type=str, width=150, searchable=True),
         Column('is_active', title=_("Active"),

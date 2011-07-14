@@ -175,17 +175,17 @@ class ProductionApp(SearchableAppWindow):
 
     def get_columns(self):
         return [SearchColumn('id', title=_(u'# '), sorted=True, data_type=int,
-                             format='%04d'),
+                             format='%04d', width=80),
                 Column('status_string', title=_(u'Status'), data_type=str,
                         visible=False),
                 SearchColumn('description', title=_(u'Description'),
                              data_type=str, expand=True),
                 Column('responsible.person.name', title=_(u'Responsible'),
-                       data_type=str, expand=True),
+                       data_type=str, width=150),
                 SearchColumn('open_date', title=_(u'Opened'),
-                             data_type=datetime.date),
+                             data_type=datetime.date, width=80),
                 SearchColumn('close_date', title=_(u'Closed'),
-                             data_type=datetime.date),]
+                             data_type=datetime.date, width=80)]
 
     #
     # Kiwi Callbacks

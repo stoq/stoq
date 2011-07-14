@@ -161,13 +161,12 @@ class ProductSearch(SearchEditor):
     def get_columns(self):
         cols = [SearchColumn('code', title=_('Code'), data_type=str,
                               sort_func=sort_sellable_code,
-                              sorted=True, width=110),
-                SearchColumn('barcode', title=_('Barcode'), data_type=str,
-                             width=130),
+                              sorted=True),
+                SearchColumn('barcode', title=_('Barcode'), data_type=str),
                 SearchColumn('category_description', title=_(u'Category'),
-                             data_type=str, width=100),
+                             data_type=str, width=120),
                 SearchColumn('description', title=_(u'Description'),
-                             width=220, data_type=str),
+                             expand=True, data_type=str),
                 SearchColumn('location', title=_('Location'), data_type=str,
                               visible=False)]
         # The price/cost columns must be controlled by hide_cost_column and
@@ -184,7 +183,7 @@ class ProductSearch(SearchEditor):
 
         cols.append(SearchColumn('stock', title=_('Stock'),
                                  format_func=format_quantity,
-                                 data_type=Decimal, width=100))
+                                 data_type=Decimal, width=80))
         return cols
 
     def executer_query(self, query, having, conn):
@@ -389,10 +388,9 @@ class ProductStockSearch(SearchEditor):
 
     def get_columns(self):
         return [SearchColumn('code', title=_('Code'), data_type=str,
-                             sort_func=sort_sellable_code,
-                             width=80),
+                             sort_func=sort_sellable_code),
                 SearchColumn('category_description', title=_('Category'),
-                             data_type=str, width=120),
+                             data_type=str, width=100),
                 SearchColumn('description', title=_('Description'), data_type=str,
                              expand=True, sorted=True),
                 SearchColumn('location', title=_('Location'), data_type=str,

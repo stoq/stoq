@@ -148,30 +148,30 @@ class PayableApp(SearchableAppWindow):
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), long_title='Payment ID',
-                              width=46, data_type=int,
-                              format='%04d'),
+                             width=60, data_type=int,
+                             format='%04d'),
                 Column('color', title=_('Description'), width=20,
                        data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
                 Column('payment.comments_number', title=_(u'Comments'),
                         visible=False),
                 SearchColumn('description', title=_('Description'),
                               data_type=str, ellipsize=pango.ELLIPSIZE_END,
-                              width=200, column='color'),
+                              expand=True, column='color'),
                 SearchColumn('supplier_name', title=_('Supplier'),
-                             data_type=str, width=110,
+                             data_type=str, width=140,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('due_date', title=_('Due date'),
-                             data_type=datetime.date, width=120),
+                             data_type=datetime.date, width=100),
                 SearchColumn('paid_date', title=_('Paid date'),
-                             data_type=datetime.date, width=120),
+                             data_type=datetime.date, width=100),
                 SearchColumn('status_str', title=_('Status'), width=100,
                              data_type=str, search_attribute='status',
                              valid_values=self._get_status_values(),
                              visible=False),
                 SearchColumn('value', title=_('Value'), data_type=currency,
-                             width=80),
+                             width=90),
                 SearchColumn('paid_value', title=_('Paid'), data_type=currency,
-                              long_title='Paid value', width=80)]
+                              long_title='Paid value', width=90)]
 
     #
     # Private

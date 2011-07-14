@@ -107,8 +107,8 @@ class ServiceSearch(SearchEditor):
                                 sort_func=sort_sellable_code, width=130),
                    SearchColumn('barcode', title=_('Barcode'), data_type=str,
                                 visible=True, width=130),
-                   SearchColumn('description', title=_('Description'), data_type=str,
-                                width=300)]
+                   SearchColumn('description', title=_('Description'),
+                                data_type=str, expand=True)]
 
         if not self.hide_cost_column:
             columns.append(SearchColumn('cost', _('Cost'), data_type=currency,

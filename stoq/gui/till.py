@@ -189,23 +189,23 @@ class TillApp(SearchableAppWindow):
         return _('Stoq - Till for Branch %03d') % get_current_branch(self.conn).id
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('Number'), width=100,
+        return [SearchColumn('id', title=_('#'), width=60,
                              data_type=int, format='%05d', sorted=True),
                 Column('status_name', title=_(u'Status'), data_type=str,
                         visible=False),
                 SearchColumn('open_date', title=_('Date Started'), width=110,
                              data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('client_name', title=_('Client'),
-                             data_type=str, width=160, expand=True,
+                             data_type=str, expand=True,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('salesperson_name', title=_('Salesperson'),
-                             data_type=str, width=160,
+                             data_type=str, width=180,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('total_quantity', title=_('Quantity'),
-                             data_type=decimal.Decimal, width=120,
+                             data_type=decimal.Decimal, width=100,
                              format_func=format_quantity),
                 SearchColumn('total', title=_('Total'), data_type=currency,
-                             width=120)]
+                             width=100)]
 
     #
     # Private

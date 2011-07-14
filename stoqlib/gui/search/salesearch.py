@@ -71,17 +71,17 @@ class SaleSearch(SearchDialog):
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('Number'), width=120,
-                             data_type=int, sorted=True, order=gtk.SORT_DESCENDING),
-                SearchColumn('open_date', title=_('Date Started'), width=90,
+        return [SearchColumn('id', title=_('#'), width=50, data_type=int,
+                             sorted=True, order=gtk.SORT_DESCENDING),
+                SearchColumn('open_date', title=_('Date Started'), width=110,
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('client_name', title=_('Client'),
-                             data_type=str, width=200,
+                             data_type=str, expand=True,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('salesperson_name', title=_('Salesperson'),
-                             data_type=str, width=180),
+                             data_type=str, width=150),
                 SearchColumn('total_quantity', title=_('Items'),
-                             data_type=Decimal, width=100,
+                             data_type=Decimal, width=60,
                              format_func=format_quantity),
                 SearchColumn('total', title=_('Total'), data_type=currency,
                              width=90)]
@@ -177,12 +177,12 @@ class SoldItemsByBranchSearch(SearchDialog):
         return [SearchColumn('code', title=_('Code'), data_type=str,
                              sorted=True, order=gtk.SORT_DESCENDING),
                 SearchColumn('description', title=_('Product'), data_type=str,
-                             width=300),
+                             expand=True),
                 SearchColumn('branch_name', title=_('Branch'), data_type=str,
-                             width=150),
+                             width=200),
                 Column('quantity', title=_('Quantity'), data_type=Decimal,
-                             format_func=format_quantity),
-                Column('total', title=_('Total'), data_type=currency)
+                       format_func=format_quantity, width=100),
+                Column('total', title=_('Total'), data_type=currency, width=80)
                ]
 
     def executer_query(self, query, having, conn):

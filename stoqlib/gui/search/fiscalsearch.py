@@ -93,7 +93,7 @@ class FiscalBookEntrySearch(SearchDialog):
         col = SearchColumn('icms_value',
                            title=_('ICMS Total'),
                            justify=gtk.JUSTIFY_RIGHT,
-                           data_type=currency, width=120)
+                           data_type=currency, width=100)
         self._setup_columns(col, IcmsIpiView, 'icms_value',
                             _("ICMS Total:"))
 
@@ -101,7 +101,7 @@ class FiscalBookEntrySearch(SearchDialog):
         col = SearchColumn('ipi_value',
                            title=_('IPI Total'),
                            justify=gtk.JUSTIFY_RIGHT,
-                           data_type=currency, width=120)
+                           data_type=currency, width=100)
         self._setup_columns(col, IcmsIpiView, 'ipi_value',
                             _("IPI Total:"))
 
@@ -109,7 +109,7 @@ class FiscalBookEntrySearch(SearchDialog):
         col = SearchColumn('iss_value',
                            title=_('ISS Total'),
                            justify=gtk.JUSTIFY_RIGHT,
-                           data_type=currency, width=120)
+                           data_type=currency, width=100)
         self._setup_columns(col, IssView, 'iss_value',
                             _("ISS Total:"))
 
@@ -120,11 +120,12 @@ class FiscalBookEntrySearch(SearchDialog):
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), width=80,
                              data_type=int, sorted=True),
-                SearchColumn('date', title=_('Date'), width=120,
+                SearchColumn('date', title=_('Date'), width=80,
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('invoice_number', title=_('Invoice'),
-                             data_type=int, width=110),
-                SearchColumn('cfop_code', title=_('C.F.O.P.'), data_type=str, width=90),
+                             data_type=int, width=100),
+                SearchColumn('cfop_code', title=_('C.F.O.P.'),
+                             data_type=str, width=75),
                 SearchColumn('drawee_name', title=_('Drawee'),
                              data_type=str, expand=True)]
 

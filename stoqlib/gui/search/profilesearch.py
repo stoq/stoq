@@ -55,4 +55,5 @@ class UserProfileSearch(SearchEditor):
     #
 
     def get_columns(self):
-        return [Column('name', _('Profile'), data_type=str, sorted=True)]
+        return [Column('name', _('Profile'), data_type=str,
+                       expand=True, sorted=True)]

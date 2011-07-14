@@ -63,14 +63,15 @@ class AccountTree(ObjectTree):
         self._accounts = {}
 
         columns = [StockTextColumn('description', title=_("Account name"),
-                                   data_type=str, pack_end=True,
+                                   data_type=str, pack_end=True, expand=True,
                                    sorted=True, sort_func=sort_models)]
         if with_code:
-            columns.append(Column('code', title=_("Code"), data_type=str))
+            columns.append(Column('code', title=_("Code"), data_type=str,
+                                  width=120))
         if not create_mode:
             def colorize(x):
                 return x < 0
-            columns.append(ColoredColumn('total', title=_("Total"),
+            columns.append(ColoredColumn('total', title=_("Total"), width=100,
                                          data_type=currency,
                                          color='red',
                                          data_func=colorize))
