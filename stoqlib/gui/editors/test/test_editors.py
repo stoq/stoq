@@ -148,6 +148,8 @@ def _create_slave_test():
         'SaleReturnDetailsDialog': ' ',
         'TillClosingEditor': 'requires an open till',
         'AccountTransactionEditor': 'needs to set a value',
+        'PurchaseInstallmentConfirmationSlave': 'pending payment',
+        'SaleInstallmentConfirmationSlave': 'pending payment',
         }
     namespace = dict(_test_slave=_test_slave)
 
