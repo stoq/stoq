@@ -159,6 +159,7 @@ class ExampleCreator(object):
             'EmployeeRole': self.create_employee_role,
             'FiscalBookEntry' : self.create_fiscal_book_entry,
             'IClient': self.create_client,
+            'ICompany': self.create_company,
             'IBranch': self.create_branch,
             'IEmployee': self.create_employee,
             'IIndividual': self.create_individual,
@@ -195,6 +196,7 @@ class ExampleCreator(object):
             'SaleItemIcms': self.create_sale_item_icms,
             'SaleItemIpi': self.create_sale_item_ipi,
             'Sellable' : self.create_sellable,
+            'SellableCategory' : self.create_sellable_category,
             'SellableUnit' : self.create_sellable_unit,
             'Service': self.create_service,
             'StockDecrease': self.create_stock_decrease,
@@ -318,6 +320,11 @@ class ExampleCreator(object):
         return SellableUnit(connection=self.trans,
                             description=description,
                             allow_fraction=allow_fraction)
+
+    def create_sellable_category(self):
+        from stoqlib.domain.sellable import SellableCategory
+        return SellableCategory(description="Category",
+                                connection=self.trans)
 
     def create_sale(self):
         from stoqlib.domain.sale import Sale
@@ -575,8 +582,10 @@ class ExampleCreator(object):
                                open_contract_date=datetime.date(2006, 01, 01))
 
     def create_payment(self, date=None):
+        if not date:
+            date = datetime.date.today()
         from stoqlib.domain.payment.payment import Payment
-        return Payment(group=None,
+        p = Payment(group=None,
                        open_date=date,
                        due_date=date,
                        value=Decimal(10),
@@ -584,6 +593,8 @@ class ExampleCreator(object):
                        method=self.get_payment_method(),
                        category=None,
                        connection=self.trans)
+        p.set_pending()
+        return p
 
     def create_payment_group(self):
         from stoqlib.domain.payment.group import PaymentGroup

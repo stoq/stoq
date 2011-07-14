@@ -56,13 +56,17 @@ def get_all_slaves():
     return slaves
 
 def _test_slave(self, slave):
-    args = inspect.getargspec(slave.__init__)[0]
+    args, varargs, varkw, defaults = inspect.getargspec(slave.__init__)
     if not args:
         return
 
+    defaults = defaults or []
     send = []
-    for arg in args[1:]:
-        if arg == 'conn':
+    for i, arg in enumerate(args[1:]):
+        n = len(args) - i - 2
+        has_default = n < len(defaults)
+        def_idx = i - (len(args) - len(defaults)) + 1
+        if arg in ['conn', 'trans']:
             value = self.trans
         elif arg == 'model':
             if slave.model_type is None:
@@ -88,14 +92,24 @@ def _test_slave(self, slave):
             value = get_current_user(self.trans)
         elif arg == 'person':
             value = self.create_person()
+        elif arg == 'branch':
+            value = self.create_branch()
+        elif arg == 'branches':
+            value = [self.create_branch()]
         elif arg == 'product':
             value = self.create_product()
         elif arg == 'sale':
             value = self.create_sale()
         elif arg == 'employee':
             value = self.create_employee()
+        elif arg == 'payments':
+            value = [self.create_payment()]
+        elif arg == 'sale_items':
+            value = [self.create_sale_item()]
         elif arg == 'products':
             value = [self.create_product()]
+        elif arg == 'account':
+            value = self.create_account()
         elif arg == 'visual_mode':
             value = True
         elif arg == 'edit_mode':
@@ -106,6 +120,8 @@ def _test_slave(self, slave):
             value = None
         elif arg == 'role_type':
             value = Person.ROLE_INDIVIDUAL
+        elif has_default:
+            value = defaults[def_idx]
         else:
             raise SkipTest('unknown argument: %s' % (arg,))
         send.append(value)
@@ -116,28 +132,22 @@ def _test_slave(self, slave):
 def _create_slave_test():
     TODO = {}
     SKIP = {
-        'CashOutEditor': ' ',
-        'CashInEditor': ' ',
-        'CashAdvanceEditor': '.glade warnings',
-        'ProductStockHistoryDialog': ' ',
-        'ProductSupplierEditor' : ' ',
-        'EmployeeRoleSlave': 'duplicated role histories',
-        'SaleReturnDetailsDialog': ' ',
-        'SellableCategoryEditor': 'glade warnings',
+        'BasePaymentEditor': 'Base Class for other editors',
+        'BranchDialog': 'cannot provide ICurrentBranch twice',
         'BranchEditor': ' ',
         'CreditProviderEditor': ' ',
-        'UserEditor': ' ',
-        'TillClosingEditor': 'requires an open till',
-        'InvoicePrinterEditor' : '',
-        'BasePaymentAddition': ' ',
-        'PaymentsEditor': 'IDomainSlaveMapper missing',
-        'InConsignmentItemEditor': ' ',
         'ICMSTemplateSlave': 'Unkown type',
         'IPITemplateSlave': 'Unkown type',
-        'ProductTaxSlave': 'Unkown type',
+        'InConsignmentItemEditor': ' ',
+        'IndividualEditorTemplate' : 'Missing slave',
+        'CompanyEditorTemplate' : 'Missing slave',
+        'LoanItemEditor' : 'weird',
+        'ProductStockHistoryDialog': ' ',
         'SaleItemICMSSlave': 'Unkown type',
         'SaleItemIPISlave': 'Unkown type',
-        'BasePaymentEditor': 'Base Class for other editors',
+        'SaleReturnDetailsDialog': ' ',
+        'TillClosingEditor': 'requires an open till',
+        'AccountTransactionEditor': 'needs to set a value',
         }
     namespace = dict(_test_slave=_test_slave)
 
