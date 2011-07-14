@@ -227,8 +227,8 @@ class InvoiceLayoutDialog(ModelListDialog):
     # ListDialog
     columns = [
         Column('description', _('Description'), data_type=str,
-               width=200, sorted=True),
-        Column('size', _('Size'), data_type=str,
+               expand=True, sorted=True),
+        Column('size', _('Size'), data_type=str, width=90,
                format_func=lambda (w, h): '%dx%d' % (w, h)),
     ]
 
@@ -285,10 +285,10 @@ class InvoicePrinterDialog(ModelListDialog):
     # ListDialog
     columns = [
         Column('description', _('Description'), data_type=str,
-               width=180, sorted=True),
-        Column('device_name', _('Device name'), data_type=str),
-        Column('station.name', _('Station'), data_type=str),
-        Column('layout.description', _('Layout'), data_type=str),
+               expand=True, sorted=True),
+        Column('device_name', _('Device name'), data_type=str, width=150),
+        Column('station.name', _('Station'), data_type=str, width=80),
+        Column('layout.description', _('Layout'), data_type=str, width=120),
     ]
 
 

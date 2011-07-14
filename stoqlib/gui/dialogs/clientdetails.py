@@ -157,14 +157,14 @@ class ClientDetailsDialog(BaseEditor):
 
     def _get_product_columns(self):
         return [Column("code", title=_("Code"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT, width=130, sorted=True),
+                       justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
                 Column("description", title=_("Description"), data_type=str,
                        expand=True, searchable=True),
                 Column("qty_str", title=_("Total quantity"),
                        data_type=str, width=120, justify=gtk.JUSTIFY_RIGHT),
-                Column("avg_value", title=_("Average value"),
+                Column("avg_value", title=_("Avg. value"), width=100,
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT),
-                Column("total_value", title=_("Total value"), width=80,
+                Column("total_value", title=_("Total value"), width=100,
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT,)]
 
     def _get_services_columns(self):
@@ -174,7 +174,7 @@ class ClientDetailsDialog(BaseEditor):
                        title=_("Description"), data_type=str, expand=True,
                        searchable=True),
                 Column("estimated_fix_date", title=_("Estimated fix date"),
-                       width=130,data_type=datetime.date)]
+                       width=150, data_type=datetime.date)]
 
     def _get_payments_columns(self):
         return [Column("id", title=_("#"),

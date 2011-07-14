@@ -96,9 +96,8 @@ class SellableTaxConstantsDialog(ModelListDialog):
 
     # ListDialog
     columns = [
-        Column('description', _('Description'), data_type=str,
-               width=200),
-        Column('value', _('Tax rate'), data_type=str),
+        Column('description', _('Description'), data_type=str, expand=True),
+        Column('value', _('Tax rate'), data_type=str, width=150),
     ]
 
     def selection_changed(self, constant):
