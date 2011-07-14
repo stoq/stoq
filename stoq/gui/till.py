@@ -36,7 +36,8 @@ from kiwi.environ import environ
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
-from stoqlib.exceptions import StoqlibError, TillError, SellError
+from stoqlib.exceptions import (StoqlibError, TillError, SellError,
+                                ModelDataError)
 from stoqlib.database.orm import AND, OR, const
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       rollback_and_begin, finish_transaction)
@@ -269,6 +270,8 @@ class TillApp(SearchableAppWindow):
                 self.conn.commit()
                 self.refresh()
         except SellError as err:
+            warning(err)
+        except ModelDataError as err:
             warning(err)
 
     def _open_coupon(self):
