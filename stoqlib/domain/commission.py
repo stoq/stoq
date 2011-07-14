@@ -123,7 +123,11 @@ class Commission(Domain):
 
     def _get_payment_percentage(self):
         """Return the payment percentage of sale"""
-        return self.payment.value / self.sale.get_sale_subtotal()
+        total = self.sale.get_sale_subtotal()
+        if total == 0:
+            return 0
+        else:
+            return self.payment.value / total
 
     def _get_commission(self, sellable):
         """Return the properly commission percentage to be used to
