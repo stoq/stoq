@@ -293,8 +293,7 @@ class TransactionPage(object):
         model = trans.get(model)
 
         transaction = run_dialog(AccountTransactionEditor, self,
-                                 trans, None, model,
-                                 dialog_opened=dialog_opened)
+                                 trans, None, model)
         if transaction:
             transaction.sync()
             value = transaction.value
