@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-15 15:23-0300\n"
+"POT-Creation-Date: 2011-07-15 17:00-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,7 +84,7 @@ msgstr ""
 #: ../data/glade/FiscalBookEntryEditor.ui.h:2
 #: ../data/glade/ProductsAdjustment.ui.h:3
 #: ../data/glade/StartStockDecreaseStep.ui.h:3
-#: ../data/glade/StockDecreaseDetails.ui.h:3 ../stoq/gui/financial.py:123
+#: ../data/glade/StockDecreaseDetails.ui.h:3 ../stoq/gui/financial.py:125
 #: ../stoqlib/gui/dialogs/paymentflowhistorydialog.py:80
 #: ../stoqlib/gui/dialogs/tillhistory.py:74
 #: ../stoqlib/gui/search/loansearch.py:132
@@ -871,7 +871,7 @@ msgstr ""
 msgid "Invoice Number:"
 msgstr ""
 
-#: ../data/glade/FiscalMemoryEditor.ui.h:2 ../stoq/gui/financial.py:209
+#: ../data/glade/FiscalMemoryEditor.ui.h:2 ../stoq/gui/financial.py:211
 #: ../stoqlib/gui/dialogs/clientdetails.py:149
 #: ../stoqlib/gui/dialogs/paymentcommentsdialog.py:18
 #: ../stoqlib/gui/dialogs/productstockdetails.py:137
@@ -2351,8 +2351,8 @@ msgctxt "yes"
 msgid "admin"
 msgstr ""
 
-#: ../data/glade/financial.ui.h:1 ../stoq/gui/financial.py:412
-#: ../stoq/gui/financial.py:501 ../stoqlib/lib/parameters.py:331
+#: ../data/glade/financial.ui.h:1 ../stoq/gui/financial.py:414
+#: ../stoq/gui/financial.py:505 ../stoqlib/lib/parameters.py:331
 #: ../stoqlib/lib/parameters.py:337 ../stoqlib/lib/parameters.py:342
 msgid "Accounts"
 msgstr ""
@@ -2534,8 +2534,8 @@ msgid "Barcode"
 msgstr ""
 
 #. XXX Bug #2430 will improve this part
-#: ../plugins/books/bookssearch.py:86 ../stoq/gui/financial.py:210
-#: ../stoq/gui/financial.py:228 ../stoq/gui/inventory.py:124
+#: ../plugins/books/bookssearch.py:86 ../stoq/gui/financial.py:212
+#: ../stoq/gui/financial.py:230 ../stoq/gui/inventory.py:124
 #: ../stoq/gui/stock.py:179 ../stoqlib/gui/accounttree.py:69
 #: ../stoqlib/gui/dialogs/clientdetails.py:159
 #: ../stoqlib/gui/dialogs/clientdetails.py:171
@@ -2802,7 +2802,7 @@ msgstr ""
 msgid "Device constant"
 msgstr ""
 
-#: ../plugins/ecf/deviceconstanteditor.py:136 ../stoq/gui/financial.py:230
+#: ../plugins/ecf/deviceconstanteditor.py:136 ../stoq/gui/financial.py:232
 #: ../stoq/gui/payable.py:171 ../stoq/gui/receivable.py:220
 #: ../stoqlib/gui/dialogs/clientdetails.py:192
 #: ../stoqlib/gui/dialogs/purchasedetails.py:209
@@ -3635,7 +3635,7 @@ msgstr ""
 msgid "Stoq - Installation"
 msgstr ""
 
-#: ../stoq/gui/financial.py:211 ../stoq/gui/financial.py:229
+#: ../stoq/gui/financial.py:213 ../stoq/gui/financial.py:231
 #: ../stoq/gui/payable.py:153 ../stoq/gui/payable.py:157
 #: ../stoq/gui/pos.py:254 ../stoq/gui/production.py:181
 #: ../stoq/gui/receivable.py:203 ../stoq/gui/receivable.py:207
@@ -3718,11 +3718,11 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: ../stoq/gui/financial.py:213
+#: ../stoq/gui/financial.py:215
 msgid "Account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:222 ../stoq/gui/pos.py:260
+#: ../stoq/gui/financial.py:224 ../stoq/gui/pos.py:260
 #: ../stoq/gui/purchase.py:208 ../stoq/gui/sales.py:221
 #: ../stoq/gui/till.py:208 ../stoqlib/gui/accounttree.py:74
 #: ../stoqlib/gui/dialogs/clientdetails.py:155
@@ -3749,7 +3749,7 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
-#: ../stoq/gui/financial.py:227 ../stoq/gui/payable.py:163
+#: ../stoq/gui/financial.py:229 ../stoq/gui/payable.py:163
 #: ../stoq/gui/receivable.py:212 ../stoqlib/gui/dialogs/clientdetails.py:188
 #: ../stoqlib/gui/dialogs/purchasedetails.py:203
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:121
@@ -3765,86 +3765,86 @@ msgstr ""
 msgid "Due date"
 msgstr ""
 
-#: ../stoq/gui/financial.py:315 ../stoq/lib/applist.py:39
+#: ../stoq/gui/financial.py:317 ../stoq/lib/applist.py:39
 msgid "Financial"
 msgstr ""
 
 #. Financial
-#: ../stoq/gui/financial.py:366
+#: ../stoq/gui/financial.py:368
 msgid "_Financial"
 msgstr ""
 
-#: ../stoq/gui/financial.py:367
+#: ../stoq/gui/financial.py:369
 msgid "Import..."
 msgstr ""
 
-#: ../stoq/gui/financial.py:368
+#: ../stoq/gui/financial.py:370
 msgid "Import a GnuCash or OFX file"
 msgstr ""
 
-#: ../stoq/gui/financial.py:373
+#: ../stoq/gui/financial.py:375
 msgid "Edit account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:374
+#: ../stoq/gui/financial.py:376
 msgid "Change the currently selected account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:375 ../stoq/gui/financial.py:376
+#: ../stoq/gui/financial.py:377 ../stoq/gui/financial.py:378
 msgid "Create new account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:377 ../stoq/gui/financial.py:378
+#: ../stoq/gui/financial.py:379 ../stoq/gui/financial.py:380
 msgid "Delete account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:379 ../stoq/gui/financial.py:380
+#: ../stoq/gui/financial.py:381 ../stoq/gui/financial.py:382
 msgid "Create new transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:381 ../stoq/gui/financial.py:382
+#: ../stoq/gui/financial.py:383 ../stoq/gui/financial.py:384
 msgid "Delete transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:385
+#: ../stoq/gui/financial.py:387
 msgid "Financial help"
 msgstr ""
 
-#: ../stoq/gui/financial.py:535
+#: ../stoq/gui/financial.py:539
 msgid "All supported formats"
 msgstr ""
 
-#: ../stoq/gui/financial.py:542
+#: ../stoq/gui/financial.py:546
 msgid "Open Financial Exchange (OFX)"
 msgstr ""
 
-#: ../stoq/gui/financial.py:547
+#: ../stoq/gui/financial.py:551
 msgid "GNUCash xml format"
 msgstr ""
 
-#: ../stoq/gui/financial.py:632
+#: ../stoq/gui/financial.py:635
 #, python-format
 msgid "Are you sure you want to remove account \"%s\" ?"
 msgstr ""
 
-#: ../stoq/gui/financial.py:635
+#: ../stoq/gui/financial.py:638
 msgid "Keep account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:635
+#: ../stoq/gui/financial.py:638
 msgid "Remove account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:647
+#: ../stoq/gui/financial.py:650
 #, python-format
 msgid "Are you sure you want to remove transaction \"%s\" ?"
 msgstr ""
 
-#: ../stoq/gui/financial.py:650
+#: ../stoq/gui/financial.py:653
 msgid "Keep transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:650
+#: ../stoq/gui/financial.py:653
 msgid "Remove transaction"
 msgstr ""
 
@@ -5817,16 +5817,21 @@ msgstr ""
 
 #: ../stoqlib/gui/dialogs/importerdialog.py:93
 #, python-format
+msgid "Imported %d items ..."
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/importerdialog.py:97
+#, python-format
 msgid "Importing item %d ..."
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/importerdialog.py:102
+#: ../stoqlib/gui/dialogs/importerdialog.py:106
 msgid "Something went wrong while trying to import"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/importerdialog.py:104
+#: ../stoqlib/gui/dialogs/importerdialog.py:108
 #, python-format
-msgid "Done, %d items imported"
+msgid "Done, %d items imported, %d skipped"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:60

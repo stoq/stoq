@@ -105,7 +105,8 @@ class ImporterDialog(BasicDialog):
             self.expander.set_expanded(True)
             warning(_("Something went wrong while trying to import"))
             return
-        self.progressbar.set_text(_("Done, %d items imported") % (self.imported_items, ))
+        self.progressbar.set_text(_("Done, %d items imported, %d skipped") % (
+            self.imported_items, self.n_items - self.imported_items))
         self.progressbar.set_fraction(1.0)
         self.enable_ok()
 
