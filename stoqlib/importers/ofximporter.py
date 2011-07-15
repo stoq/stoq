@@ -187,10 +187,17 @@ class OFXImporter(Importer):
             return
         source_account = Account.get(self.source_account_id, trans)
         account = Account.get(self.account_id, trans)
+
+        code = self._parse_string(t['checknum']),
+        if AccountTransaction.selectBy(date=date, code=code,
+                                       connection=trans):
+            # Skip already present transactions
+            self.skipped += 1
+            return
         t = AccountTransaction(source_account=source_account,
                                account=account,
                                description=self._parse_string(t['memo']),
-                               code=self._parse_string(t['checknum']),
+                               code=code,
                                value=value,
                                date=date,
                                connection=trans)
