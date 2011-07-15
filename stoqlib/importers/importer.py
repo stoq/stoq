@@ -95,12 +95,14 @@ class Importer(object):
         create_log.info('ITEMS:%d' % (n_items, ))
         t1 = time.time()
 
+        imported_items = 0
         if not trans:
             trans = new_transaction()
         self.before_start(trans)
         for i in range(n_items):
-            self.process_item(trans, i)
-            create_log.info('ITEM:%d' % (i+1, ))
+            if self.process_item(trans, i):
+                create_log.info('ITEM:%d' % (i+1, ))
+                imported_items += 1
             if not self.dry and i+1 % 100 == 0:
                 trans.commit(close=True)
                 trans = new_transaction()
@@ -118,6 +120,7 @@ class Importer(object):
         log.info('%s Imported %d entries in %2.2f sec' % (
             datetime.datetime.now().strftime('%T'), n_items,
             t2-t1))
+        create_log.info('IMPORTED-ITEMS:%d' % (imported_items, ))
 
 
     #
@@ -135,6 +138,9 @@ class Importer(object):
         raise NotImplementedError
 
     def process_item(self, transaction, item_no):
+        """
+        @returns True if the item was imported, False if not
+        """
         raise NotImplementedError
 
     #

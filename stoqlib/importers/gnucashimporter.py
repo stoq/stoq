@@ -125,6 +125,7 @@ class GnuCashXMLImporter(Importer):
         elif node.tag == _gncns('transaction'):
             self._import_transaction(trans, node)
 
+        return True
     # Private
 
     def _parse_date(self, data):
