@@ -510,11 +510,11 @@ class CreateDatabaseStep(BaseWizardStep):
         except ImportError:
             warning(_("You need to install and start PostgreSQL. "
                       "When done click 'OK' to continue"),
-                    _("PostgreSQL isn't properly running on this computer."
+                    _("PostgreSQL isn't properly running on this computer. "
                       "It needs to be installed and started for Stoq to be " 
-                      "able to run. Note that some distributions such as "
-                      "Fedora requires you to create the database cluster "
-                      "before PostgreSQL can be started, please consult "
+                      "able to run. Note that some distributions, such as "
+                      "Fedora, requires you to create the database cluster "
+                      "before PostgreSQL can be started. Please consult "
                       "the distribution documentation for more information."))
             self._local_installation()
             return
