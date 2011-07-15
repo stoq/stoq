@@ -182,10 +182,9 @@ class AccountTransactionEditor(BaseEditor):
     def _add_account(self):
         trans = new_transaction()
         model = run_dialog(AccountEditor, self, self.conn)
-        rv = finish_transaction(trans, model)
-        account = Account.get(model.id, connection=self.conn)
-        trans.close()
-        if rv:
+        if finish_transaction(trans, model):
+            account = Account.get(model.id, connection=self.conn)
             self._populate_accounts()
             self.account.select(account)
             self.emit('account-added')
+        trans.close()
