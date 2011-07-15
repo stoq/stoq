@@ -70,6 +70,7 @@ class TransactionSearchContainer(SearchContainer):
 
     def __init__(self, page, columns):
         self.page = page
+        self.model = page.model
         SearchContainer.__init__(self, columns)
 
     def add_results(self, results):
@@ -115,6 +116,7 @@ class TransactionPage(object):
         self.query = SQLObjectQueryExecuter()
         self.search.set_query_executer(self.query)
         self.search.results.connect('row-activated', self._on_row__activated)
+        self.results = self.search.results
         tree_view = self.search.results.get_treeview()
         tree_view.set_rules_hint(True)
         tree_view.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
@@ -460,7 +462,10 @@ class FinancialApp(AppWindow):
 
     def _get_current_page_widget(self):
         page_id = self.notebook.get_current_page()
-        return self.notebook.get_children()[page_id]
+        page = self.notebook.get_children()[page_id]
+        if isinstance(page, TransactionSearchContainer):
+            return page.page
+        return page
 
     def _close_page(self, page):
         # Do not allow the initial page to be removed
@@ -469,7 +474,6 @@ class FinancialApp(AppWindow):
                 break
         self.notebook.remove_page(page_id)
         del self._pages[page.account_view]
-        self._update_actions()
 
     def _is_accounts_tab(self):
         page_id = self.notebook.get_current_page()
@@ -574,10 +578,10 @@ class FinancialApp(AppWindow):
         self.accounts.refresh_accounts(self.conn)
 
     def _can_add_account(self):
-        if not self._is_accounts_tab():
-            return False
+        if self._is_accounts_tab():
+            return True
 
-        return True
+        return False
 
     def _can_edit_account(self):
         if not self._is_accounts_tab():
@@ -608,10 +612,9 @@ class FinancialApp(AppWindow):
         return account_view.account.can_remove()
 
     def _can_add_transaction(self):
-        if not self._is_transaction_tab():
-            return False
-
-        return True
+        if self._is_transaction_tab():
+            return True
+        return False
 
     def _can_delete_transaction(self):
         if not self._is_transaction_tab():
@@ -687,7 +690,7 @@ class FinancialApp(AppWindow):
         account_view = self.accounts.get_selected()
         self._edit_existing_account(account_view)
 
-    def on_notebook__switch_page(self, notebook, page, page_id):
+    def after_notebook__switch_page(self, notebook, page, page_id):
         self._update_actions()
 
     # Toolbar
