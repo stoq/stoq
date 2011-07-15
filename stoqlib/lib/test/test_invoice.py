@@ -94,6 +94,7 @@ class InvoiceTest(DomainTest):
             sale_item.sellable.base_sellable_info.get_description = \
                  lambda : 'DESCRIPTION'
         compare_invoice_file(invoice, 'sale-invoice')
+    testSaleInvoice.todo = "Not completely stable"
 
     def testHasInvoiceNumber(self):
         sale = self.create_sale()
