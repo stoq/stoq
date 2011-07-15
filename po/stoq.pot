@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-15 17:00-0300\n"
+"POT-Creation-Date: 2011-07-15 17:47-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2193,7 +2193,7 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:156 ../stoqlib/lib/parameters.py:162
 #: ../stoqlib/lib/parameters.py:168 ../stoqlib/lib/parameters.py:186
 #: ../stoqlib/lib/parameters.py:284 ../stoqlib/lib/parameters.py:296
-#: ../stoqlib/lib/parameters.py:301 ../stoqlib/lib/parameters.py:347
+#: ../stoqlib/lib/parameters.py:301 ../stoqlib/lib/parameters.py:346
 msgid "General"
 msgstr ""
 
@@ -2353,7 +2353,7 @@ msgstr ""
 
 #: ../data/glade/financial.ui.h:1 ../stoq/gui/financial.py:414
 #: ../stoq/gui/financial.py:505 ../stoqlib/lib/parameters.py:331
-#: ../stoqlib/lib/parameters.py:337 ../stoqlib/lib/parameters.py:342
+#: ../stoqlib/lib/parameters.py:336 ../stoqlib/lib/parameters.py:341
 msgid "Accounts"
 msgstr ""
 
@@ -5811,6 +5811,10 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
+#: ../stoqlib/gui/dialogs/importerdialog.py:57
+msgid "Details.."
+msgstr ""
+
 #: ../stoqlib/gui/dialogs/importerdialog.py:89
 msgid "Importing ..."
 msgstr ""
@@ -6548,7 +6552,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:54
 #: ../stoqlib/gui/editors/deliveryeditor.py:58
-#: ../stoqlib/lib/parameters.py:740
+#: ../stoqlib/lib/parameters.py:739
 msgid "Delivery"
 msgstr ""
 
@@ -7419,7 +7423,7 @@ msgid "Sold by:"
 msgstr ""
 
 #: ../stoqlib/gui/search/commissionsearch.py:69 ../stoqlib/lib/invoice.py:309
-#: ../stoqlib/lib/parameters.py:479
+#: ../stoqlib/lib/parameters.py:478
 msgid "Sale"
 msgstr ""
 
@@ -10405,74 +10409,72 @@ msgid "Parent bank account"
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:333
-msgid ""
-"Newly bank accounts will be placed under this account, for accounts imported "
-"via OFX will be created below this"
+msgid "Newly created bank accounts will be placed under this account."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:338
+#: ../stoqlib/lib/parameters.py:337
 msgid "Parent till account"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:339
+#: ../stoqlib/lib/parameters.py:338
 msgid "Till account transfers will be placed under this account"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:343
+#: ../stoqlib/lib/parameters.py:342
 msgid "Imbalance account"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:344
+#: ../stoqlib/lib/parameters.py:343
 msgid "Account used for unbalanced transactions"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:348
+#: ../stoqlib/lib/parameters.py:347
 msgid "Demonstration mode"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:349
+#: ../stoqlib/lib/parameters.py:348
 msgid "If Stoq is used in a demonstration mode"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:382
+#: ../stoqlib/lib/parameters.py:381
 msgid "This parameter only accepts integer values."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:388
+#: ../stoqlib/lib/parameters.py:387
 msgid "This parameter only accepts decimal values."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:394
+#: ../stoqlib/lib/parameters.py:393
 #, python-format
 msgid "'%s is not a valid path.'"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:399
+#: ../stoqlib/lib/parameters.py:398
 #, python-format
 msgid ""
 "'%s' is not a valid area code.\n"
 "Valid area codes are on 10-99 range."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:406
+#: ../stoqlib/lib/parameters.py:405
 #, python-format
 msgid "'%s' is not a valid percentage."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:412
+#: ../stoqlib/lib/parameters.py:411
 #, python-format
 msgid "'%s' is not a valid state."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:489
+#: ../stoqlib/lib/parameters.py:488
 msgid "Portrait"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:490
+#: ../stoqlib/lib/parameters.py:489
 msgid "Landscape"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:811
+#: ../stoqlib/lib/parameters.py:810
 #, python-format
 msgid "There is no defined %s parameter datain the database."
 msgstr ""
