@@ -48,7 +48,7 @@ def _get_scale(conn):
     if settings and settings.is_active:
         _scale = Scale(brand=settings.brand,
                        model=settings.model,
-                       device=settings.get_port_name())
+                       device=settings.device_name)
     else:
         warning(_(u"There is no scale configured"),
                _(u"There is no scale configured for this station "
