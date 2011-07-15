@@ -654,7 +654,7 @@ class FinancialApp(AppWindow):
             return
 
         account_transactions = self._get_current_page_widget()
-        account_transactions.remove(item)
+        account_transactions.results.remove(item)
 
         trans = new_transaction()
         if isinstance(item.transaction, AccountTransactionView):
@@ -704,7 +704,7 @@ class FinancialApp(AppWindow):
 
     def on_DeleteTransaction__activate(self, action):
         transactions = self._get_current_page_widget()
-        transaction = transactions.get_selected()
+        transaction = transactions.results.get_selected()
         self._delete_transaction(transaction)
 
     def on_AddTransaction__activate(self, action):
