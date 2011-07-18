@@ -27,8 +27,11 @@ BuildRequires: python-kiwi >= 1.9.28
 BuildArch: noarch
 
 %description
-Stoq is an advanced retails system which has as main goals the
-usability, good devices support, and useful features for retails.
+Stoq is a suite of Retail Management System applications.
+It includes the following applications;
+Point of Sales, Cash register, Sales, Purchase Orders, Inventory control,
+Customer Relationship Management (CRM), Financial Accounting, Accounts Payable and
+Accounts Receivable, Printable Reports, Employees and Suppliers registry.
 
 %prep
 %setup -q -n stoq-%{version}
