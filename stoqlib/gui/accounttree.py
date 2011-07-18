@@ -22,10 +22,11 @@
 import gtk
 
 from kiwi.currency import currency
+from kiwi.datatypes import converter
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ColoredColumn, Column, ObjectTree
 from stoqlib.database.runtime import get_connection
-from stoqlib.domain.views import AccountView
+from stoqlib.domain.views import Account, AccountView
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -69,12 +70,26 @@ class AccountTree(ObjectTree):
             columns.append(Column('code', title=_("Code"), data_type=str,
                                   width=120))
         if not create_mode:
-            def colorize(x):
-                return x < 0
+            # FIXME: Kiwi should allow us to return a currency, so
+            #        return currency(abs(value)) works
+            conv = converter.get_converter(currency)
+            def format_func(value):
+                return conv.as_string(abs(value))
+
+            # FIXME: This needs to be much better colorized, and moved to the
+            #        domain classes
+            def colorize(account):
+                if (account.kind == 'account' and
+                    account.account_type == Account.TYPE_INCOME):
+                    return False
+                else:
+                    return account.total < 0
             columns.append(ColoredColumn('total', title=_("Total"), width=100,
                                          data_type=currency,
                                          color='red',
-                                         data_func=colorize))
+                                         data_func=colorize,
+                                         format_func=format_func,
+                                         use_data_model=True))
         ObjectTree.__init__(self, columns,
                             mode=gtk.SELECTION_SINGLE)
 
