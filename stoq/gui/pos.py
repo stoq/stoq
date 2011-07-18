@@ -438,7 +438,6 @@ class PosApp(AppWindow):
         self._disable_sale_ui()
 
     def _disable_printer_ui(self):
-        # We dont have an ecf. Disable till related operations
         self._disable_sale_ui()
         self.TillOpen.set_sensitive(False)
         self.TillClose.set_sensitive(False)
@@ -908,4 +907,5 @@ class PosApp(AppWindow):
         if has_ecf:
             return
 
+        # We dont have an ecf. Disable till related operations
         self._disable_printer_ui()
