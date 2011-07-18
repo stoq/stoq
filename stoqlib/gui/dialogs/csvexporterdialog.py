@@ -131,7 +131,8 @@ class CSVExporterDialog(BaseEditor):
         encoding = self.encoding.get_selected()
         try:
             with open(filename, 'w') as csv_file:
-                writer = csv.writer(csv_file, doublequote=True,
+                writer = csv.writer(csv_file, delimiter=';',
+                                    doublequote=True,
                                     quoting=csv.QUOTE_ALL)
                 writer.writerows(self._get_csv_content(encoding))
         except IOError as err:
