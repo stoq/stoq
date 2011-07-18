@@ -526,6 +526,8 @@ class CreateDatabaseStep(BaseWizardStep):
             else:
                 warning(_("Something went wrong while trying to install PostgreSQL"))
 
+        self.wizard.disable_back()
+        self.wizard.disable_next()
         self.label.set_label(
             _("Installing PostgreSQL database server."))
         api = AptPackageInstaller(parent=self.wizard.get_toplevel())
