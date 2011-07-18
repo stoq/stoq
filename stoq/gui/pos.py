@@ -242,10 +242,13 @@ class PosApp(AppWindow):
                                               self.advanced_search])
 
     def activate(self):
-        self._printer.check_till()
         self.check_open_inventory()
         self._update_parameter_widgets()
         self._update_widgets()
+        # This is important to do after the other calls, since
+        # it emits signals that disable UI which might otherwise
+        # be enabled.
+        self._printer.check_till()
 
     def get_columns(self):
         return [Column('code', title=_('Reference'),
