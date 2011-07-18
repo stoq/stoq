@@ -63,14 +63,20 @@ class AccountEditor(BaseEditor):
             ignore = self.model
         else:
             ignore = None
+
+        self.account_type.prefill(Account.account_type_descriptions)
+        account_type = self.model.account_type
+
         self.parent_accounts.insert_initial(self.conn, ignore=ignore)
         if self.parent_account:
             account = self.parent_accounts.get_account_by_id(
                 self.parent_account.id)
             self.parent_accounts.select(account)
+            if not self.existing:
+                account_type = account.account_type
+        self.account_type.select(account_type)
         self.parent_accounts.show()
 
-        self.account_type.prefill(Account.account_type_descriptions)
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -90,6 +96,7 @@ class AccountEditor(BaseEditor):
             new_parent = new_parent.account
         if new_parent != self.model:
             self.model.parent = new_parent
+        self.model.account_type = self.account_type.get_selected()
         return self.model
 
     def _on_parent_accounts__selection_changed(self, objectlist, account):
