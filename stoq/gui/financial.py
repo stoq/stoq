@@ -49,6 +49,7 @@ from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
+from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
 from stoqlib.gui.dialogs.sintegradialog import month_names
 from stoqlib.lib.message import yesno
@@ -359,6 +360,7 @@ class FinancialApp(AppWindow):
             <menu action="FinancialMenu">
               <menuitem action="AddAccount"/>
               <menuitem action="Import"/>
+              <menuitem action="ExportCSV"/>
               <menuitem action="Quit"/>
             </menu>
           </menubar>
@@ -378,6 +380,7 @@ class FinancialApp(AppWindow):
             ('FinancialMenu', None, _("_Financial")),
             ('Import', gtk.STOCK_ADD, _('Import...'),
              '<control>i', _('Import a GnuCash or OFX file')),
+            ('ExportCSV', None, _('Export CSV...'), '<control>F10'),
             ("Quit", gtk.STOCK_QUIT),
 
             # Toolbar
@@ -415,7 +418,7 @@ class FinancialApp(AppWindow):
         self.DeleteAccount.set_sensitive(self._can_delete_account())
         self.AddTransaction.set_sensitive(self._can_add_transaction())
         self.DeleteTransaction.set_sensitive(self._can_delete_transaction())
-
+        self.ExportCSV.set_sensitive(self._can_export_csv())
         self.edit_button.set_sensitive(self._can_edit_account())
 
     def _create_initial_page(self):
@@ -591,6 +594,15 @@ class FinancialApp(AppWindow):
         for page in self._pages.values():
             page.refresh()
 
+    def _export_csv(self):
+        """Runs a dialog to export the current search results to a CSV file.
+        """
+        assert not self._is_accounts_tab()
+
+        page = self._get_current_page_widget()
+        self.run_dialog(CSVExporterDialog, self, AccountTransactionView,
+                        page.results)
+
     def _can_add_account(self):
         if self._is_accounts_tab():
             return True
@@ -640,6 +652,9 @@ class FinancialApp(AppWindow):
             return False
 
         return True
+
+    def _can_export_csv(self):
+        return not self._is_accounts_tab()
 
     def _add_transaction(self):
         page = self._get_current_page_widget()
@@ -729,3 +744,5 @@ class FinancialApp(AppWindow):
     def on_Import__activate(self, action):
         self._import()
 
+    def on_ExportCSV__activate(self, action):
+        self._export_csv()
