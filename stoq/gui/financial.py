@@ -105,6 +105,7 @@ class TransactionPage(object):
         self._create_search()
         self._add_date_filter()
 
+        self._setup_search()
         self.refresh()
 
     def get_toplevel(self):
@@ -167,25 +168,31 @@ class TransactionPage(object):
     def show(self):
         self.search.show()
 
-    def refresh(self):
+    def _setup_search(self):
         if self.model.kind == 'account':
-            transactions = AccountTransactionView.get_for_account(self.model, self.app.conn)
-            self.append_transactions(transactions)
             self.query.set_table(AccountTransactionView)
             self.search.set_text_field_columns(['description'])
             self.query.set_query(self._transaction_query)
         elif self.model.kind == 'payable':
-            self.search.results.clear()
             self.search.set_text_field_columns(['description', 'supplier_name'])
-            self._populate_payable_payments(OutPaymentView)
             self.query.set_table(OutPaymentView)
             self.query.set_query(self._payment_query)
         elif self.model.kind == 'receivable':
-            self.search.results.clear()
             self.search.set_text_field_columns(['description', 'drawee'])
-            self._populate_payable_payments(InPaymentView)
             self.query.set_table(InPaymentView)
             self.query.set_query(self._payment_query)
+        else:
+            raise TypeError("unknown model kind: %r" % (self.model.kind, ))
+
+    def refresh(self):
+        self.search.results.clear()
+        if self.model.kind == 'account':
+            transactions = AccountTransactionView.get_for_account(self.model, self.app.conn)
+            self.append_transactions(transactions)
+        elif self.model.kind == 'payable':
+            self._populate_payable_payments(OutPaymentView)
+        elif self.model.kind == 'receivable':
+            self._populate_payable_payments(InPaymentView)
         else:
             raise TypeError("unknown model kind: %r" % (self.model.kind, ))
 
@@ -579,7 +586,10 @@ class FinancialApp(AppWindow):
 
         run_dialog(ImporterDialog, self.financial, format, filename)
 
+        # Refresh everthing after an import
         self.accounts.refresh_accounts(self.conn)
+        for page in self._pages.values():
+            page.refresh()
 
     def _can_add_account(self):
         if self._is_accounts_tab():
