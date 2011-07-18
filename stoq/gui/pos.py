@@ -122,11 +122,11 @@ class PosApp(AppWindow):
         self._coupon = None
         self._scale_settings = DeviceSettings.get_scale_settings(self.conn)
         self._setup_printer()
-        self.check_open_inventory()
         self._setup_widgets()
         self._setup_proxies()
         self._clear_order()
-        self._update_widgets()
+        # FIXME: Do this in application.py
+        self.activate()
 
     #
     # Application
@@ -275,7 +275,6 @@ class PosApp(AppWindow):
                               self._on_PrinterHelper__till_status_changed)
         self._printer.connect('ecf-changed',
                               self._on_PrinterHelper__ecf_changed)
-        self._printer.check_till()
 
     def _set_product_on_sale(self):
         sellable = self._get_sellable()
@@ -312,7 +311,6 @@ class PosApp(AppWindow):
                                     'gtk-apply', confirm_label)
 
     def _setup_widgets(self):
-        self._update_parameter_widgets()
         logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
         logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
                                                     LOGO_HEIGHT)
