@@ -658,7 +658,7 @@ class FinishInstallationStep(BaseWizardStep):
 
 class FirstTimeConfigWizard(BaseWizard):
     title = _("Stoq - Installation")
-    size = (580, 320)
+    size = (580, 350)
     tef_request_done = False
 
     def __init__(self, options, config=None):
