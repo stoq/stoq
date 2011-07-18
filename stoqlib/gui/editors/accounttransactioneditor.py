@@ -129,14 +129,16 @@ class AccountTransactionEditor(BaseEditor):
         items = [(a.long_description, a) for a in accounts]
         self.account.prefill(sorted(items))
 
+    def _get_account(self):
+        if self.model.account == self.parent_account:
+            return self.model.source_account
+        else:
+            return self.model.account
+
     def setup_proxies(self):
         self._populate_accounts()
         self.add_proxy(self.model, AccountTransactionEditor.proxy_widgets)
-        if self.model.account == self.parent_account:
-            account = self.model.source_account
-        else:
-            account = self.model.account
-        self.account.select(account)
+        self.account.select(self._get_account())
 
     def validate_confirm(self):
         return self.model.value != 0
@@ -181,7 +183,9 @@ class AccountTransactionEditor(BaseEditor):
 
     def _add_account(self):
         trans = new_transaction()
-        model = run_dialog(AccountEditor, self, trans)
+        parent_account = trans.get(self.account.get_selected())
+        model = run_dialog(AccountEditor, self, trans,
+                           parent_account=parent_account)
         if finish_transaction(trans, model):
             account = Account.get(model.id, connection=self.conn)
             self._populate_accounts()
