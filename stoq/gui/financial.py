@@ -468,10 +468,11 @@ class FinancialApp(AppWindow):
         return page
 
     def _close_page(self, page):
-        # Do not allow the initial page to be removed
         for page_id, child in enumerate(self.notebook.get_children()):
-            if child == page:
-                break
+             if getattr(child, 'page', None) == page:
+                  break
+        else:
+             raise AssertionError(page)
         self.notebook.remove_page(page_id)
         del self._pages[page.account_view]
 
