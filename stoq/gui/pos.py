@@ -636,6 +636,7 @@ class PosApp(AppWindow):
             if self._coupon:
                 self._coupon.cancel()
         self._coupon = None
+        self.CancelOrder.set_sensitive(False)
 
         return True
 
