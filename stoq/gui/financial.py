@@ -288,17 +288,15 @@ class TransactionPage(object):
                                      transaction.edited_account.description,
                                      transaction.value)
             self._update_totals()
-            if transaction.edited_account != model:
-                self.search.results.remove(item)
-            else:
-                self.search.results.update(item)
+            self.search.results.update(item)
+            self.app.accounts.refresh_accounts(self.app.conn)
         finish_transaction(trans, transaction)
 
     def on_dialog__opened(self, dialog):
         dialog.connect('account-added', self.on_dialog__account_added)
 
     def on_dialog__account_added(self, dialog):
-         self.app.accounts.refresh_accounts(self.app.conn)
+        self.app.accounts.refresh_accounts(self.app.conn)
 
     def add_transaction_dialog(self):
         trans = new_transaction()
@@ -316,6 +314,7 @@ class TransactionPage(object):
             item = self._add_transaction(transaction, other.description, value)
             self._update_totals()
             self.search.results.update(item)
+            self.app.accounts.refresh_accounts(self.app.conn)
         finish_transaction(trans, transaction)
 
     def _on_row__activated(self, objectlist, item):
