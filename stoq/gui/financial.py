@@ -280,7 +280,10 @@ class TransactionPage(object):
                                      transaction.edited_account.description,
                                      transaction.value)
             self._update_totals()
-            self.search.results.update(item)
+            if transaction.edited_account != model:
+                self.search.results.remove(item)
+            else:
+                self.search.results.update(item)
         finish_transaction(trans, transaction)
 
     def on_dialog__opened(self, dialog):
