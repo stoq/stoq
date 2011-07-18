@@ -5,7 +5,7 @@ Maintainer: Ronaldo Francisco Maia <romaia@async.com.br>
 Build-Depends: debhelper (>= 5.0.32), cdbs, python, python-support, python-all
 Build-Depends-Indep: python-dev (>= 2.4), python-kiwi (>= 1.9.26)
 Standards-Version: 3.8.3
-Homepage: http://www.stoq.com.br
+Homepage: http://www.stoq.com.br/
 
 Package: stoq
 Architecture: all
@@ -13,11 +13,13 @@ Provides: stoqlib
 Replaces: stoqlib
 Breaks: stoqlib
 Depends: ${misc:Depends}, ${shlibs:Depends}, python, python-gtk2 (>= 2.16), python-zope.interface (>= 3.5.2)|python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.27), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 0.9.11), python-imaging (>= 1.1.5), python-reportlab (>= 2.4), python-vte, postgresql-client-common, python-dateutil (>= 1.4.1), python-mako (>= 0.2.5), python-gudev, python-poppler (>= 0.12.1)
-Description: A powerful retail system library
- Stoqlib offers many special tools for retail system applications
- such reports infrastructure, basic dialogs and searchbars and
- domain data in a persistent level.
+Description: Stoq the Retail System
+ Stoq is a suite of Retail Management System applications.
+ It includes the following applications;
+ Point of Sales, Cash register, Sales, Purchase Orders, Inventory control,
+ Customer Relationship Management (CRM), Financial Accounting, Accounts Payable and
+ Accounts Receivable, Printable Reports, Employees and Suppliers registry.
  .
- Homepage: http://www.stoq.com.br
+ Homepage: http://www.stoq.com.br/
 
 
