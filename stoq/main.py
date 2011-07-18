@@ -37,6 +37,7 @@ _log_filename = None
 _stream = None
 _ran_wizard = False
 _restart = False
+_cur_exit_func = None
 
 # To avoid kiwi dependency at startup
 log = logging.getLogger('stoq.main')
@@ -77,12 +78,17 @@ def _debug_hook(exctype, value, tb):
     import pdb
     pdb.pm()
 
+
+# FIXME: this logic should be inside stoqlib.
 def _exit_func():
     from stoqlib.lib.crashreport import has_tracebacks
     if has_tracebacks() and not 'STOQ_DISABLE_CRASHREPORT' in os.environ:
         from stoqlib.gui.dialogs.crashreportdialog import show_dialog
         show_dialog()
         raise SystemExit
+
+    if _cur_exit_func:
+        _cur_exit_func()
 
     if _restart:
         import subprocess
@@ -272,6 +278,10 @@ def _initialize(options):
         hook = _write_exception_hook
     sys.excepthook = hook
 
+    # Save any exiting exitfunc already set.
+    if hasattr(sys, 'exitfunc'):
+        global _cur_exit_func
+        _cur_exit_func = sys.exitfunc
     sys.exitfunc = _exit_func
 
     from stoqlib.lib.message import error
