@@ -73,6 +73,7 @@ class CSVExporterDialog(BaseEditor):
         filename = self._run_filechooser()
         if filename:
             self._save(filename)
+            #self._show(filename)
             return True
         return False
 
@@ -141,3 +142,9 @@ class CSVExporterDialog(BaseEditor):
                           u"to save on that folder."))
             else:
                 raise
+
+    def _show(self, filename):
+        import gio
+        app_info = gio.app_info_get_default_for_type('text/csv', True)
+        gfile = gio.File(path=filename)
+        app_info.launch([gfile])
