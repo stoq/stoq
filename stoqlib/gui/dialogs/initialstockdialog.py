@@ -89,7 +89,7 @@ class InitialStockDialog(BaseEditor):
                 Column("category_description", title=_(u"Category"),
                        data_type=str, width=100),
                 Column("description", title=_(u"Description"),
-                       data_type=str, width=300),
+                       data_type=str, expand=True),
                 Column("initial_stock", title=_(u"Initial Stock"),
                        data_type=Decimal, format_func=self._format_qty,
                        editable=True, spin_adjustment=adj, width=115)]
