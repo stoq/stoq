@@ -24,13 +24,13 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-15 18:41-0300\n"
-"PO-Revision-Date: 2011-07-15 20:43+0000\n"
+"PO-Revision-Date: 2011-07-18 20:13+0000\n"
 "Last-Translator: Thiago Bellini <thiago.bellini@hackedbellini.org>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-07-16 05:03+0000\n"
+"X-Launchpad-Export-Date: 2011-07-19 04:47+0000\n"
 "X-Generator: Launchpad (build 13405)\n"
 "Language: \n"
 
@@ -87,7 +87,7 @@ msgstr "Conta:"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:2
 msgid "Add a new account"
-msgstr ""
+msgstr "Adicionar uma nova conta"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:3
 #: ../data/glade/SellableEditor.ui.h:5
@@ -636,7 +636,7 @@ msgstr "<b>Localização da base de dados</b>"
 
 #: ../data/glade/DatabaseLocationStep.ui.h:2
 msgid "I want to manualy configure the database connection."
-msgstr "Eu quero configurar a conexão da base de dados manualmente"
+msgstr "Eu quero configurar a conexão da base de dados manualmente."
 
 #: ../data/glade/DatabaseLocationStep.ui.h:3
 msgid "I want to use Stoq just on this computer."
@@ -3243,7 +3243,7 @@ msgstr "O CNPJ não é válido"
 
 #: ../plugins/nfe/nfegenerator.py:150
 msgid "The CNPJ of this company is not valid."
-msgstr ""
+msgstr "O CNPJ desta empresa não é válido."
 
 #: ../stoq/gui/admin.py:77
 msgid "Branches"
@@ -3629,7 +3629,7 @@ msgstr "%s não é um email válido"
 #: ../stoq/gui/config.py:361
 #, python-format
 msgid "%s is not a valid phone"
-msgstr ""
+msgstr "%s não é um telefone válido"
 
 #: ../stoq/gui/config.py:388
 msgid "Administrator account"
@@ -4413,7 +4413,7 @@ msgstr ""
 
 #: ../stoq/gui/pos.py:876
 msgid "Quantity must be a positive number"
-msgstr ""
+msgstr "Quantidade deve ser um número positivo."
 
 #: ../stoq/gui/production.py:52 ../stoq/lib/applist.py:51
 #: ../stoqlib/gui/dialogs/startproduction.py:35
@@ -4552,7 +4552,7 @@ msgstr "Itens de estoque..."
 
 #: ../stoq/gui/purchase.py:156
 msgid "Closed stock items..."
-msgstr ""
+msgstr "Itens fechados no estoque..."
 
 #: ../stoq/gui/purchase.py:158
 msgid "Suppliers..."
@@ -5945,7 +5945,7 @@ msgstr "Quantidade total"
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:165
 msgid "Avg. value"
-msgstr ""
+msgstr "Valor médio"
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:167
 #: ../stoqlib/gui/dialogs/supplierdetails.py:133
@@ -6038,7 +6038,7 @@ msgstr "Concluído"
 
 #: ../stoqlib/gui/dialogs/importerdialog.py:57
 msgid "Details.."
-msgstr ""
+msgstr "Detalhes..."
 
 #: ../stoqlib/gui/dialogs/importerdialog.py:89
 msgid "Importing ..."
@@ -6047,7 +6047,7 @@ msgstr "Importando ..."
 #: ../stoqlib/gui/dialogs/importerdialog.py:93
 #, python-format
 msgid "Imported %d items ..."
-msgstr ""
+msgstr "%d itens importados ..."
 
 #: ../stoqlib/gui/dialogs/importerdialog.py:97
 #, python-format
@@ -6061,7 +6061,7 @@ msgstr "Algo errado aconteceu ao tentar importar"
 #: ../stoqlib/gui/dialogs/importerdialog.py:108
 #, python-format
 msgid "Done, %d items imported, %d skipped"
-msgstr ""
+msgstr "Concluído, %d itens importados, %d ignorados"
 
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:60
 msgid "Product  - Initial Stock"
@@ -10287,11 +10287,11 @@ msgstr "Número da nota fiscal"
 
 #: ../stoqlib/lib/parameters.py:73
 msgid "Primary company"
-msgstr ""
+msgstr "Empresa principal"
 
 #: ../stoqlib/lib/parameters.py:74
 msgid "The primary company which is the owner of all other branch companies"
-msgstr ""
+msgstr "A empresa principal, que é dona de todas as outras empresas filiais."
 
 #: ../stoqlib/lib/parameters.py:78
 msgid "Custom logotype for reports"
@@ -10323,7 +10323,7 @@ msgstr ""
 
 #: ../stoqlib/lib/parameters.py:93
 msgid "Default salesperson role"
-msgstr ""
+msgstr "Cargo de vendedor padrão"
 
 #: ../stoqlib/lib/parameters.py:94
 msgid ""
@@ -10467,7 +10467,7 @@ msgstr ""
 
 #: ../stoqlib/lib/parameters.py:175
 msgid "Has delivery mode"
-msgstr ""
+msgstr "Possui modo de entrega"
 
 #: ../stoqlib/lib/parameters.py:176
 msgid ""
@@ -10777,7 +10777,7 @@ msgstr "Conta bancária pai"
 
 #: ../stoqlib/lib/parameters.py:333
 msgid "Newly created bank accounts will be placed under this account."
-msgstr ""
+msgstr "Novas contas de banco serão inseridas sob esta conta."
 
 #: ../stoqlib/lib/parameters.py:337
 msgid "Parent till account"
@@ -10789,7 +10789,7 @@ msgstr "Transferências do caixa serão criados nesta conta"
 
 #: ../stoqlib/lib/parameters.py:342
 msgid "Imbalance account"
-msgstr ""
+msgstr "Conta de desequilíbrio"
 
 #: ../stoqlib/lib/parameters.py:343
 msgid "Account used for unbalanced transactions"
@@ -10939,11 +10939,11 @@ msgstr "A pagar"
 
 #: ../stoqlib/reporting/payment.py:138
 msgid "Bal. expected"
-msgstr ""
+msgstr "Bal. esperado"
 
 #: ../stoqlib/reporting/payment.py:141
 msgid "Bal. real"
-msgstr ""
+msgstr "Bal. real"
 
 #: ../stoqlib/reporting/payment.py:154
 msgid "Paid/Received"
