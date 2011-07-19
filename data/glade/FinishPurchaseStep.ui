@@ -1,79 +1,85 @@
-<?xml version="1.0"?>
-<!--*- mode: xml -*-->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="FinishPurchaseStep">
-    <property name="default_height">250</property>
     <property name="default_width">440</property>
+    <property name="default_height">250</property>
     <child>
       <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
-        <property name="visible">True</property>
         <child>
           <object class="GtkTable" id="table">
-            <property name="border_width">5</property>
-            <property name="column_spacing">5</property>
-            <property name="n_columns">2</property>
-            <property name="n_rows">6</property>
-            <property name="row_spacing">10</property>
             <property name="visible">True</property>
+            <property name="border_width">5</property>
+            <property name="n_rows">6</property>
+            <property name="n_columns">2</property>
+            <property name="column_spacing">5</property>
+            <property name="row_spacing">10</property>
             <child>
               <object class="GtkLabel" id="label1">
-                <property name="label" translatable="yes">Salesperson Name:</property>
                 <property name="visible">True</property>
-                <property name="xalign">1.0</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Salesperson Name:</property>
               </object>
               <packing>
-                <property name="x_options">fill</property>
-                <property name="y_options">fill</property>
+                <property name="x_options">GTK_FILL</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label2">
-                <property name="label" translatable="yes">Transporter:</property>
                 <property name="visible">True</property>
-                <property name="xalign">1.0</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Transporter:</property>
               </object>
               <packing>
-                <property name="bottom_attach">2</property>
                 <property name="top_attach">1</property>
-                <property name="y_options">fill</property>
+                <property name="bottom_attach">2</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label3">
-                <property name="label" translatable="yes">Expected Receival Date:</property>
                 <property name="visible">True</property>
-                <property name="xalign">1.0</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Expected Receival Date:</property>
               </object>
               <packing>
-                <property name="bottom_attach">3</property>
                 <property name="top_attach">2</property>
-                <property name="y_options">fill</property>
+                <property name="bottom_attach">3</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label4">
-                <property name="label" translatable="yes">Notes</property>
                 <property name="visible">True</property>
-                <property name="xalign">1.0</property>
-                <property name="yalign">0.0</property>
+                <property name="xalign">1</property>
+                <property name="yalign">0</property>
+                <property name="label" translatable="yes">Notes</property>
               </object>
               <packing>
-                <property name="bottom_attach">4</property>
                 <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
               </packing>
             </child>
             <child>
               <object class="ProxyEntry" id="salesperson_name">
+                <property name="visible">True</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">salesperson_name</property>
-                <property name="visible">True</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="y_options">fill</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
@@ -81,29 +87,65 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="ProxyComboEntry" id="transporter">
+                    <property name="visible">True</property>
                     <property name="data_type">object</property>
                     <property name="model_attribute">transporter</property>
-                    <property name="visible">True</property>
                   </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="transporter_button">
-                    <property name="label" translatable="yes">A_dd/Edit Transporter...</property>
-                    <property name="use_underline">True</property>
+                  <object class="GtkButton" id="add_transporter">
                     <property name="visible">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="relief">none</property>
+                    <property name="use_underline">True</property>
+                    <child>
+                      <object class="GtkImage" id="image1">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-add</property>
+                        <property name="icon-size">1</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="edit_transporter">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="relief">none</property>
+                    <child>
+                      <object class="GtkImage" id="image2">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-edit</property>
+                        <property name="icon-size">1</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
               <packing>
-                <property name="bottom_attach">2</property>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
                 <property name="top_attach">1</property>
-                <property name="y_options">fill</property>
+                <property name="bottom_attach">2</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
@@ -111,91 +153,110 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="ProxyDateEntry" id="expected_receival_date">
+                    <property name="visible">True</property>
                     <property name="data_type">date</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">expected_receival_date</property>
-                    <property name="visible">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="ProxyLabel" id="kiwilabel5">
-                    <property name="data_type">unicode</property>
-                    <property name="model_attribute"/>
                     <property name="visible">True</property>
+                    <property name="data_type">unicode</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
               </object>
               <packing>
-                <property name="bottom_attach">3</property>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
                 <property name="top_attach">2</property>
-                <property name="y_options">fill</property>
+                <property name="bottom_attach">3</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="GtkScrolledWindow" id="scrolled_notes_window">
-                <property name="hscrollbar_policy">automatic</property>
-                <property name="shadow_type">in</property>
                 <property name="visible">True</property>
+                <property name="hscrollbar_policy">automatic</property>
                 <property name="vscrollbar_policy">automatic</property>
+                <property name="shadow_type">in</property>
                 <child>
                   <object class="ProxyTextView" id="notes">
+                    <property name="visible">True</property>
                     <property name="data_type">unicode</property>
                     <property name="model_attribute">notes</property>
-                    <property name="visible">True</property>
                   </object>
                 </child>
               </object>
               <packing>
-                <property name="bottom_attach">4</property>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
                 <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
               </packing>
             </child>
             <child>
               <object class="GtkAlignment" id="alignment1">
                 <property name="visible">True</property>
-                <property name="xalign">1.0</property>
-                <property name="xscale">0.0</property>
+                <property name="xalign">1</property>
+                <property name="xscale">0</property>
                 <child>
                   <object class="GtkButton" id="print_button">
                     <property name="label">gtk-print</property>
-                    <property name="use_stock">True</property>
                     <property name="visible">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="use_stock">True</property>
                   </object>
                 </child>
               </object>
               <packing>
-                <property name="bottom_attach">5</property>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
                 <property name="top_attach">4</property>
-                <property name="y_options">fill</property>
+                <property name="bottom_attach">5</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="GtkCheckButton" id="receive_now">
                 <property name="label" translatable="yes">Receive all products now.</property>
                 <property name="visible">True</property>
-                <property name="xalign">1.0</property>
+                <property name="receives_default">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="xalign">1</property>
+                <property name="draw_indicator">False</property>
               </object>
               <packing>
-                <property name="bottom_attach">6</property>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
                 <property name="top_attach">5</property>
-                <property name="y_options">fill</property>
+                <property name="bottom_attach">6</property>
+                <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
           </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
         </child>
       </object>
     </child>
