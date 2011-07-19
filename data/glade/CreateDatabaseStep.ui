@@ -50,7 +50,7 @@
             <child type="label">
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Show details</property>
+                <property name="label" translatable="yes">Show details...</property>
               </object>
             </child>
           </object>
