@@ -70,12 +70,6 @@ class AccountTree(ObjectTree):
             columns.append(Column('code', title=_("Code"), data_type=str,
                                   width=120))
         if not create_mode:
-            # FIXME: Kiwi should allow us to return a currency, so
-            #        return currency(abs(value)) works
-            conv = converter.get_converter(currency)
-            def format_func(value):
-                return conv.as_string(abs(value))
-
             # FIXME: This needs to be much better colorized, and moved to the
             #        domain classes
             def colorize(account):
@@ -88,7 +82,6 @@ class AccountTree(ObjectTree):
                                          data_type=currency,
                                          color='red',
                                          data_func=colorize,
-                                         format_func=format_func,
                                          use_data_model=True))
         ObjectTree.__init__(self, columns,
                             mode=gtk.SELECTION_SINGLE)
