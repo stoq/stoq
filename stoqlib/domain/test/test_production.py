@@ -80,34 +80,58 @@ class TestProductionItem(DomainTest):
         self.assertFalse(item.can_produce(2))
 
     def testProduce(self):
-        item = self.create_production_item()
+        item = self.create_production_item(quantity=2)
         branch = item.order.branch
         item.product.addFacet(IStorable, connection=self.trans)
         for material in item.order.get_material_items():
             storable = material.product.addFacet(IStorable,
                                                  connection=self.trans)
-            storable.increase_stock(1, branch)
+            storable.increase_stock(2, branch)
+
+        order = item.order
+
+        self.assertEqual(order.status, ProductionOrder.ORDER_OPENED)
+        item.order.start_production()
+        self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)
 
         item.produce(1)
+        self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)
         self.assertEqual(item.produced, 1)
 
+        item.produce(1)
+
+        # When the total produced reaches the total quantity to produce, 
+        # order automatically changes the status.
+        self.assertEqual(order.status, ProductionOrder.ORDER_CLOSED)
+        self.assertEqual(item.produced, 2)
+
     def testAddLost(self):
-        item = self.create_production_item()
+        item = self.create_production_item(quantity=2)
         order = item.order
         branch = order.branch
         item.product.addFacet(IStorable, connection=self.trans)
         for component in item.get_components():
             storable = component.component.addFacet(IStorable,
                                                     connection=self.trans)
-            storable.increase_stock(1, branch)
+            storable.increase_stock(2, branch)
 
+        self.assertEqual(order.status, ProductionOrder.ORDER_OPENED)
         order.start_production()
+        self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)
 
         self.assertRaises(AssertionError, item.add_lost, 0)
 
         item.add_lost(1)
+        self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)
         self.assertEqual(item.lost, 1)
-        self.assertRaises(ValueError, item.add_lost, 1)
+        self.assertRaises(ValueError, item.add_lost, 2)
+
+        # When the total produced reaches the total quantity to produce, 
+        # order automatically changes the status.
+        item.add_lost(1)
+        self.assertEqual(order.status, ProductionOrder.ORDER_CLOSED)
+        self.assertEqual(item.lost, 2)
+        self.assertRaises(ValueError, item.add_lost, 2)
 
         item = self.create_production_item()
         invalid_qty = item.quantity + 1
@@ -193,6 +217,8 @@ class TestProductionMaterial(DomainTest):
             storable = material.product.addFacet(IStorable,
                                                  connection=self.trans)
             storable.increase_stock(10, branch)
+
+        item.order.start_production()
 
         # Trigger the consume of materials
         item.produce(1)

@@ -437,7 +437,7 @@ class ExampleCreator(object):
                                description='production',
                                connection=self.trans)
 
-    def create_production_item(self):
+    def create_production_item(self, quantity=1):
         from stoqlib.domain.product import ProductComponent
         from stoqlib.domain.production import (ProductionItem,
                                                ProductionMaterial)
@@ -451,10 +451,12 @@ class ExampleCreator(object):
         component = list(product.get_components())[0]
         ProductionMaterial(product=component.component,
                            order=order,
+                           needed=quantity,
                            connection=self.trans)
 
         return ProductionItem(product=product,
                               order=order,
+                              quantity=quantity,
                               connection=self.trans)
 
     def create_production_material(self):
