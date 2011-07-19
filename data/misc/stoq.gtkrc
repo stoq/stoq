@@ -42,7 +42,8 @@ style "transaction-treeview-style"
 {
     GtkTreeView::odd-row-color = "#c2e7c4"
     GtkTreeView::even-row-color = "#f5ffe0"
-    GtkTreeView::grid-line-pattern = "ÿ" # \xff\x01
+    # \xXX\xYY is replaced when loading the file
+    GtkTreeView::grid-line-pattern = "\x7f\x01"
     GtkTreeView::grid-line-width = 1
 }
 widget_class "*FinancialSearchResults*" style "transaction-treeview-style"
