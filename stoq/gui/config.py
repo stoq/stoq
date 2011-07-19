@@ -418,7 +418,85 @@ class AdminPasswordStep(BaseWizardStep):
         return good_pass
 
     def next_step(self):
-        return CreateDatabaseStep(self.wizard, self)
+        if not test_local_database():
+            return InstallPostgresStep(self.wizard, self)
+        else:
+            return CreateDatabaseStep(self.wizard, self)
+
+
+class InstallPostgresStep(BaseWizardStep):
+    """Since we are going to sell the TEF funcionality, we cant enable the
+    plugin right away. Just ask for some user information and we will
+    contact.
+    """
+    gladefile = 'InstallPostgresStep'
+
+    def __init__(self, wizard, previous):
+        self.done = False
+        BaseWizardStep.__init__(self, wizard, previous)
+        self._setup_widgets()
+
+    def _setup_widgets(self):
+        forward_label = '<b>%s</b>' % (_("Forward"), )
+
+        if self._can_install():
+            self.description.props.label += (
+                "\n\n" +
+                _("The installation guide will now install the packages for you "
+                  "using apt, it may ask you for your password to continue."))
+
+            # Translators: %s is the string "Forward"
+            label = _("Click %s to begin installing the "
+                      "PostgreSQL server.") % (
+                forward_label, )
+        else:
+            # Translators: %s is the string "Forward"
+            label = _("Click %s to continue when you have installed "
+                      "PostgreSQL server on this machine.") % (
+                forward_label, )
+        self.label.set_markup(label)
+
+    def _can_install(self):
+        try:
+            import aptdaemon
+            aptdaemon # pyflakes
+            return True
+        except ImportError:
+            return False
+
+    def _install_postgres(self):
+        from stoqlib.gui.aptpackageinstaller import AptPackageInstaller
+        self.wizard.disable_back()
+        self.wizard.disable_next()
+        api = AptPackageInstaller(parent=self.wizard.get_toplevel())
+        api.install('postgresql')
+        api.connect('done', self._on_apt_install__done)
+
+        self.label.set_markup(
+            _("Please wait while the package installation is completing."))
+    #
+    #   WizardStep
+    #
+    def next_step(self):
+        if self.done or test_local_database():
+            return CreateDatabaseStep(self.wizard, self)
+
+        self._install_postgres()
+
+        return self
+
+    #
+    #   Callbacks
+    #
+
+    def _on_apt_install__done(self, api, error):
+        if error is not None:
+            warning(_("Something went wrong while trying to install "
+                      "the PostgreSQL server."))
+            self.wizard.enable_back()
+        else:
+            self.done = True
+            self.wizard.go_to_next()
 
 
 class CreateDatabaseStep(BaseWizardStep):
@@ -439,7 +517,7 @@ class CreateDatabaseStep(BaseWizardStep):
 
     def _maybe_create_database(self):
         if self.wizard.db_is_local:
-            self._local_installation()
+            self._launch_stoqdbadmin()
             return
         elif self.wizard.remove_demo:
             self._launch_stoqdbadmin()
@@ -495,44 +573,6 @@ class CreateDatabaseStep(BaseWizardStep):
         lines.append(line)
         open(pgpass, 'w').write('\n'.join(lines))
         os.chmod(pgpass, 0600)
-
-    def _local_installation(self):
-        if not test_local_database():
-            self._install_postgres()
-            return
-
-        self._launch_stoqdbadmin()
-
-    def _install_postgres(self):
-        try:
-            import aptdaemon
-            aptdaemon # pyflakes
-        except ImportError:
-            warning(_("You need to install and start PostgreSQL. "
-                      "When done click 'OK' to continue"),
-                    _("PostgreSQL isn't properly running on this computer. "
-                      "It needs to be installed and started for Stoq to be " 
-                      "able to run. Note that some distributions, such as "
-                      "Fedora, requires you to create the database cluster "
-                      "before PostgreSQL can be started. Please consult "
-                      "the distribution documentation for more information."))
-            self._local_installation()
-            return
-
-        from stoqlib.gui.aptpackageinstaller import AptPackageInstaller
-        def done(api, error):
-            if error is None:
-                self._launch_stoqdbadmin()
-            else:
-                warning(_("Something went wrong while trying to install PostgreSQL"))
-
-        self.wizard.disable_back()
-        self.wizard.disable_next()
-        self.label.set_label(
-            _("Installing PostgreSQL database server."))
-        api = AptPackageInstaller(parent=self.wizard.get_toplevel())
-        api.install('postgresql')
-        api.connect('done', done)
 
     def _launch_stoqdbadmin(self):
         self.wizard.disable_back()
@@ -660,7 +700,7 @@ class FinishInstallationStep(BaseWizardStep):
 
 class FirstTimeConfigWizard(BaseWizard):
     title = _("Stoq - Installation")
-    size = (580, 350)
+    size = (580, 380)
     tef_request_done = False
 
     def __init__(self, options, config=None):
