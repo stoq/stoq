@@ -10,7 +10,7 @@
         <property name="visible">True</property>
         <child>
           <object class="GtkFrame" id="frame1">
-            <property name="label" translatable="yes">Method of Payment</property>
+            <property name="label" translatable="yes">Payment method:</property>
             <property name="visible">True</property>
             <child>
               <object class="GtkHBox" id="methods_box">
