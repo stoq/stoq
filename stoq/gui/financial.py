@@ -528,8 +528,8 @@ class FinancialApp(AppWindow):
 
     def _new_page(self, account_view):
         if account_view in self._pages:
-            page = self._pages[account_view.account]
-            page_id = self.notebook.get_children().index(page)
+            page = self._pages[account_view]
+            page_id = self.notebook.page_num(page.search)
         else:
             pixbuf = self.accounts.get_pixbuf(account_view)
             page = TransactionPage(account_view,
