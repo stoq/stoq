@@ -452,7 +452,7 @@ class InstallPostgresStep(BaseWizardStep):
         else:
             # Translators: %s is the string "Forward"
             label = _("Click %s to continue when you have installed "
-                      "PostgreSQL server on this machine.") % (
+                      "PostgreSQL server on this computer.") % (
                 forward_label, )
         self.label.set_markup(label)
 
