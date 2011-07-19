@@ -28,7 +28,7 @@ import gtk
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import finish_transaction
+from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.search import SearchEditorToolBar
@@ -36,7 +36,6 @@ from stoqlib.gui.editors.paymentmethodeditor import (PaymentMethodEditor,
                                                      CardPaymentMethodEditor,
                                                      MoneyPaymentMethodEditor,)
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.message import warning
 
 _ = stoqlib_gettext
 
@@ -46,10 +45,17 @@ class PaymentMethodsDialog(BasicDialog):
     size = (400, 400)
     title = _("Payment Method Settings")
 
+    # TODO: implement editor for 'multiple' payment method.
+    METHOD_EDITORS = {'card' : CardPaymentMethodEditor,
+                      'money' : MoneyPaymentMethodEditor,
+                      'check' : PaymentMethodEditor,
+                      'bill' : PaymentMethodEditor}
+
     def __init__(self, conn):
         BasicDialog.__init__(self)
         self._initialize(hide_footer=True, size=PaymentMethodsDialog.size,
                          title=PaymentMethodsDialog.title)
+        self._can_edit = False
         self.conn = conn
         self._setup_list()
         self._setup_slaves()
@@ -79,42 +85,17 @@ class PaymentMethodsDialog(BasicDialog):
                 Column('is_active', title=_('Active'), data_type=bool,
                        editable=True)]
 
-    def _get_dialog(self, method):
-        method_editors = {
-            # Keep these around since the payment method is not
-            # actually gone when migrating from old databases
-            'giftcertificate': NotImplementedError,
-            'finance': NotImplementedError,
-            # TODO: implement editor for 'multiple' payment method.
-            'multiple': NotImplementedError,
-            'store_credit': NotImplementedError,
-            'card': (CardPaymentMethodEditor, method),
-            'money': (MoneyPaymentMethodEditor, method),
-            'check': (PaymentMethodEditor, method),
-            'bill': (PaymentMethodEditor, method),
-            }
-        dialog = method_editors.get(method.method_name)
-        if dialog is None:
-            raise TypeError(
-                'Invalid payment method adapter: %s' % (
-                method.method_name,))
-        elif dialog is NotImplementedError:
-            warning(_('Editor for %s is not implemented') % (
-                method.description))
-            return None
-
-        return dialog
-
     def _edit_item(self, item):
-        dialog = self._get_dialog(item)
-        if dialog is None:
-            return
-        dialog_args = [self, self.conn]
-        if isinstance(dialog, tuple):
-            dialog, model = dialog
-            dialog_args.append(model)
-        res = run_dialog(dialog, *dialog_args)
-        finish_transaction(self.conn, res)
+        editor = self.METHOD_EDITORS.get(item.method_name, None)
+
+        if not editor:
+            raise TypeError('Invalid payment method adapter: %s'
+                            % item.method_name)
+
+        trans = new_transaction()
+        item = trans.get(item)
+        retval = run_dialog(editor, self, trans, item)
+        finish_transaction(trans, retval)
 
     #
     # Callbacks
@@ -130,10 +111,16 @@ class PaymentMethodsDialog(BasicDialog):
             obj.is_active = True
 
     def _on_klist__selection_changed(self, list, data):
-        self._toolbar_slave.edit_button.set_sensitive(data is not None)
+        self._can_edit = (data and
+                          data.method_name in self.METHOD_EDITORS.keys())
+        self._toolbar_slave.edit_button.set_sensitive(self._can_edit)
 
     def _on_edit_button__clicked(self, toolbar_slave):
+        assert self._can_edit
         self._edit_item(self.klist.get_selected())
 
     def _on_klist__row_activated(self, list, data):
+        if not self._can_edit:
+            return
+
         self._edit_item(data)
