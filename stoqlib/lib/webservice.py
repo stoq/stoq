@@ -126,6 +126,7 @@ class WebService(object):
             'time': datetime.datetime.today().isoformat(),
             'uname': platform.uname(),
             'version': app_version,
+            'demo': sysparam(conn).DEMO_MODE,
         }
         return self._do_request('version.json', **params)
 
