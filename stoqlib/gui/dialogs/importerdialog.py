@@ -54,7 +54,7 @@ class ImporterDialog(BasicDialog):
         self.vbox.pack_start(self.progressbar, False, False)
         self.progressbar.show()
 
-        self.expander = gtk.Expander(label=_("Details.."))
+        self.expander = gtk.Expander(label=_("Details..."))
         self.expander.set_expanded(False)
         self.vbox.pack_start(self.expander, True, True)
         self.expander.show()
