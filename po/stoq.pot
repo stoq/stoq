@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-19 13:44-0300\n"
+"POT-Creation-Date: 2011-07-19 19:15-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -284,7 +284,7 @@ msgstr ""
 #: ../stoqlib/domain/station.py:101 ../stoqlib/domain/test/test_person.py:495
 #: ../stoqlib/domain/test/test_person.py:504
 #: ../stoqlib/gui/dialogs/devices.py:53
-#: ../stoqlib/gui/dialogs/paymentmethod.py:79
+#: ../stoqlib/gui/dialogs/paymentmethod.py:85
 #: ../stoqlib/gui/dialogs/pluginsdialog.py:102
 #: ../stoqlib/gui/search/personsearch.py:184
 #: ../stoqlib/gui/search/personsearch.py:277
@@ -830,16 +830,12 @@ msgid ""
 msgstr ""
 
 #: ../data/glade/FinishPurchaseStep.ui.h:1
-msgid "A_dd/Edit Transporter..."
-msgstr ""
-
-#: ../data/glade/FinishPurchaseStep.ui.h:2
 #: ../data/glade/PurchaseDetailsDialog.ui.h:7
 #: ../stoqlib/reporting/purchase.py:195
 msgid "Expected Receival Date:"
 msgstr ""
 
-#: ../data/glade/FinishPurchaseStep.ui.h:3
+#: ../data/glade/FinishPurchaseStep.ui.h:2
 #: ../data/glade/PurchaseDetailsDialog.ui.h:9
 #: ../data/glade/ReceivingOrderDetailsDialog.ui.h:1
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:7
@@ -848,15 +844,15 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-#: ../data/glade/FinishPurchaseStep.ui.h:4
+#: ../data/glade/FinishPurchaseStep.ui.h:3
 msgid "Receive all products now."
 msgstr ""
 
-#: ../data/glade/FinishPurchaseStep.ui.h:5
+#: ../data/glade/FinishPurchaseStep.ui.h:4
 msgid "Salesperson Name:"
 msgstr ""
 
-#: ../data/glade/FinishPurchaseStep.ui.h:6
+#: ../data/glade/FinishPurchaseStep.ui.h:5
 #: ../data/glade/PurchaseDetailsDialog.ui.h:26
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:25
 #: ../data/glade/SalesPersonStep.ui.h:15 ../stoqlib/reporting/purchase.py:187
@@ -1952,6 +1948,7 @@ msgid "Add a new client"
 msgstr ""
 
 #: ../data/glade/SalesPersonStep.ui.h:4
+#: ../stoqlib/gui/wizards/purchasewizard.py:429
 msgid "Add a new transporter"
 msgstr ""
 
@@ -1981,7 +1978,7 @@ msgid "C_ash"
 msgstr ""
 
 #: ../data/glade/SelectPaymentMethodSlave.ui.h:2
-msgid "Method of Payment"
+msgid "Payment method:"
 msgstr ""
 
 #: ../data/glade/SellableCategoryDataSlave.ui.h:3
@@ -3742,7 +3739,7 @@ msgstr ""
 
 #: ../stoq/gui/financial.py:232 ../stoq/gui/pos.py:263
 #: ../stoq/gui/purchase.py:208 ../stoq/gui/sales.py:221
-#: ../stoq/gui/till.py:208 ../stoqlib/gui/accounttree.py:87
+#: ../stoq/gui/till.py:208 ../stoqlib/gui/accounttree.py:81
 #: ../stoqlib/gui/dialogs/clientdetails.py:155
 #: ../stoqlib/gui/dialogs/purchasedetails.py:136
 #: ../stoqlib/gui/dialogs/purchasedetails.py:179
@@ -3804,7 +3801,7 @@ msgstr ""
 #: ../stoq/gui/payable.py:118 ../stoq/gui/production.py:99
 #: ../stoq/gui/purchase.py:139 ../stoq/gui/receivable.py:145
 #: ../stoq/gui/sales.py:138 ../stoq/gui/stock.py:132 ../stoq/gui/till.py:123
-#: ../stoqlib/gui/dialogs/csvexporterdialog.py:94
+#: ../stoqlib/gui/dialogs/csvexporterdialog.py:95
 #: ../stoqlib/gui/search/fiscalsearch.py:155
 #: ../stoqlib/gui/search/productsearch.py:128
 #: ../stoqlib/gui/search/salesearch.py:153
@@ -4890,7 +4887,7 @@ msgstr ""
 msgid "Audit and adjust the product stock."
 msgstr ""
 
-#: ../stoq/lib/applist.py:45 ../stoqlib/gui/accounttree.py:157
+#: ../stoq/lib/applist.py:45 ../stoqlib/gui/accounttree.py:150
 msgid "Accounts Payable"
 msgstr ""
 
@@ -4910,7 +4907,7 @@ msgstr ""
 msgid "Create purchase orders and quotes"
 msgstr ""
 
-#: ../stoq/lib/applist.py:57 ../stoqlib/gui/accounttree.py:162
+#: ../stoq/lib/applist.py:57 ../stoqlib/gui/accounttree.py:155
 msgid "Accounts Receivable"
 msgstr ""
 
@@ -5010,25 +5007,25 @@ msgstr ""
 msgid "You need to call setup() before checking the database schema."
 msgstr ""
 
-#: ../stoq/main.py:232
+#: ../stoq/main.py:247
 msgid "You need to register a company before start using Stoq"
 msgstr ""
 
-#: ../stoq/main.py:234
+#: ../stoq/main.py:249
 msgid ""
 "Could not find a company. You'll need to register one before start using Stoq"
 msgstr ""
 
-#: ../stoq/main.py:309
+#: ../stoq/main.py:324
 msgid "Could not open the database config file"
 msgstr ""
 
-#: ../stoq/main.py:310
+#: ../stoq/main.py:325
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr ""
 
-#: ../stoq/main.py:326
+#: ../stoq/main.py:341
 msgid "Could not connect to the database"
 msgstr ""
 
@@ -5800,11 +5797,11 @@ msgstr ""
 msgid "CSV Exporter Dialog"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/csvexporterdialog.py:101
+#: ../stoqlib/gui/dialogs/csvexporterdialog.py:102
 msgid "CSV Files"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/csvexporterdialog.py:140
+#: ../stoqlib/gui/dialogs/csvexporterdialog.py:141
 msgid "You do not have enought permissions to save on that folder."
 msgstr ""
 
@@ -5968,18 +5965,13 @@ msgstr ""
 msgid "No payment history found."
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/paymentmethod.py:47
+#: ../stoqlib/gui/dialogs/paymentmethod.py:46
 msgid "Payment Method Settings"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/paymentmethod.py:77
+#: ../stoqlib/gui/dialogs/paymentmethod.py:83
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:39
 msgid "Payment Method"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/paymentmethod.py:102
-#, python-format
-msgid "Editor for %s is not implemented"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/pluginsdialog.py:65
@@ -7179,7 +7171,7 @@ msgid "Service"
 msgstr ""
 
 #: ../stoqlib/gui/editors/serviceeditor.py:77
-#: ../stoqlib/gui/wizards/purchasewizard.py:508
+#: ../stoqlib/gui/wizards/purchasewizard.py:527
 msgid "Expected receival date must be set to a future date"
 msgstr ""
 
@@ -8707,11 +8699,15 @@ msgstr ""
 msgid "Quantity below the minimum required by the supplier"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/purchasewizard.py:554
+#: ../stoqlib/gui/wizards/purchasewizard.py:430
+msgid "Edit the selected transporter"
+msgstr ""
+
+#: ../stoqlib/gui/wizards/purchasewizard.py:571
 msgid "New Order"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/purchasewizard.py:555
+#: ../stoqlib/gui/wizards/purchasewizard.py:572
 msgid "Edit Order"
 msgstr ""
 

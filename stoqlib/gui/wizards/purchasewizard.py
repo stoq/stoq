@@ -38,7 +38,7 @@ from stoqlib.database.runtime import (get_current_branch, new_transaction,
 from stoqlib.domain.interfaces import IBranch, ITransporter, ISupplier
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, PersonAdaptToTransporter
 from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
@@ -426,11 +426,16 @@ class FinishPurchaseStep(WizardEditorStep):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
 
     def _setup_transporter_entry(self):
+        self.add_transporter.set_tooltip_text(_("Add a new transporter"))
+        self.edit_transporter.set_tooltip_text(_("Edit the selected transporter"))
+
         # FIXME: Implement and use IDescribable on PersonAdaptToTransporter
         table = Person.getAdapterClass(ITransporter)
         transporters = table.get_active_transporters(self.conn)
         items = [(t.person.name, t) for t in transporters]
         self.transporter.prefill(items)
+        self.transporter.set_sensitive(bool(items))
+        self.edit_transporter.set_sensitive(bool(items))
 
     def _set_receival_date_suggestion(self):
         receival_date = self.model.get_items().max('expected_receival_date')
@@ -499,6 +504,20 @@ class FinishPurchaseStep(WizardEditorStep):
         self._setup_transporter_entry()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
+    def _run_transporter_editor(self, transporter=None):
+        trans = new_transaction()
+        transporter = trans.get(transporter)
+        model =  run_person_role_dialog(TransporterEditor, self, trans,
+                                        transporter)
+        rv = finish_transaction(trans, model)
+        transporter = PersonAdaptToTransporter.get(model.id, connection=self.conn)
+        trans.close()
+        if rv:
+            self._setup_transporter_entry()
+            if transporter is not None:
+                self.transporter.select(transporter)
+
+
     #
     # Kiwi callbacks
     #
@@ -507,16 +526,14 @@ class FinishPurchaseStep(WizardEditorStep):
         if date < datetime.date.today():
             return ValidationError(_("Expected receival date must be set to a future date"))
 
-    def on_transporter_button__clicked(self, button):
-        trans = new_transaction()
-        transporter = trans.get(self.model.transporter)
-        model =  run_person_role_dialog(TransporterEditor, self, trans,
-                                        transporter)
-        rv = finish_transaction(trans, model)
-        trans.close()
-        if rv:
-            self._setup_transporter_entry()
-            self.transporter.select(model)
+    def on_add_transporter__clicked(self, button):
+        self._run_transporter_editor()
+
+    def on_edit_transporter__clicked(self, button):
+        self._run_transporter_editor(self.transporter.get_selected())
+
+    def on_transporter__content_changed(self, category):
+        self.edit_transporter.set_sensitive(bool(self.transporter.get_selected()))
 
     def on_receive_now__toggled(self, widget):
         if self.receive_now.get_active():
