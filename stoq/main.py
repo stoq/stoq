@@ -182,8 +182,23 @@ def _show_splash():
 def _setup_gtk():
     import gtk
     from kiwi.environ import environ
+
+    # Total madness to make sure we can draw treeview lines,
+    # this affects the GtkTreeView::grid-line-pattern style property
+    #
+    # Two bytes are sent in, see gtk_tree_view_set_grid_lines in gtktreeview.c
+    # Byte 1 should be as high as possible, gtk+ 0x7F appears to be
+    #        the highest allowed for Gtk+ 2.22 while 0xFF worked in
+    #        earlier versions
+    # Byte 2 should ideally be allowed to be 0, but neither C nor Python
+    #        allows that.
+    #
     stoq_rc = environ.find_resource("misc", "stoq.gtkrc")
-    gtk.rc_parse(stoq_rc)
+    data = open(stoq_rc).read()
+    data = data.replace('\\x7f\\x01', '\x7f\x01')
+
+    gtk.rc_parse_string(data)
+
     # Creating a button as a temporary workaround for bug
     # https://bugzilla.gnome.org/show_bug.cgi?id=632538, until gtk 3.0
     gtk.Button()
