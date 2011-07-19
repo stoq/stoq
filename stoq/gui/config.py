@@ -474,6 +474,7 @@ class InstallPostgresStep(BaseWizardStep):
 
         self.label.set_markup(
             _("Please wait while the package installation is completing."))
+
     #
     #   WizardStep
     #
@@ -493,6 +494,10 @@ class InstallPostgresStep(BaseWizardStep):
         if error is not None:
             warning(_("Something went wrong while trying to install "
                       "the PostgreSQL server."))
+            self.label.set_markup(
+                _("Sorry, something went wrong while installing PostgreSQL, "
+                  "try again manually or go back and configure Stoq to connect "
+                  "to another."))
             self.wizard.enable_back()
         else:
             self.done = True
