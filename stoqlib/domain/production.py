@@ -127,6 +127,17 @@ class ProductionOrder(Domain):
         self.start_date = datetime.date.today()
         self.status = ProductionOrder.ORDER_PRODUCING
 
+    def try_finalize_production(self):
+        """When all items are completely produced, change the status of the
+        production to CLOSED.
+        """
+        assert self.status == ProductionOrder.ORDER_PRODUCING
+
+        # All items must be completely produced.
+        if all([i.is_completely_produced() for i in self.get_items()]):
+            self.close_date = datetime.date.today()
+            self.status = ProductionOrder.ORDER_CLOSED
+
     def set_production_waiting(self):
         assert self.status == ProductionOrder.ORDER_OPENED
 
@@ -208,6 +219,9 @@ class ProductionItem(Domain):
 
         return self.produced + quantity + self.lost <= self.quantity
 
+    def is_completely_produced(self):
+        return self.quantity == self.produced + self.lost
+
     def produce(self, quantity):
         """Sets a certain quantity as produced. The quantity will be marked as
         produced only if there are enough materials allocated, otherwise a
@@ -233,6 +247,7 @@ class ProductionItem(Domain):
         storable = IStorable(self.product, None)
         storable.increase_stock(quantity, self.order.branch)
         self.produced += quantity
+        self.order.try_finalize_production()
         ProductHistory.add_produced_item(conn, self.order.branch, self)
 
     def add_lost(self, quantity):
@@ -257,6 +272,7 @@ class ProductionItem(Domain):
                 raise
 
         self.lost += quantity
+        self.order.try_finalize_production()
         ProductHistory.add_lost_item(conn, self.order.branch, self)
 
 
