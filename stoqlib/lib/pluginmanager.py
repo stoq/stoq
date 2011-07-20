@@ -99,6 +99,10 @@ class PluginManager(object):
 
     def _get_plugin(self, plugin_name):
         if not plugin_name in self._plugin_descriptions:
+            # Temporary workaround for TEF demonstration on livecd. Figure
+            # out how to handle this properly.
+            if plugin_name == 'tef':
+                return None
             raise PluginError("%s plugin not found" % (plugin_name,))
 
         if not plugin_name in self._plugins:
@@ -126,7 +130,9 @@ class PluginManager(object):
         installed_plugins = InstalledPlugin.select(connection=get_connection())
         for installed_plugin in installed_plugins:
             plugin = self._get_plugin(installed_plugin.plugin_name)
-            plugin.activate()
+            # Plugin may have been uninstalled.
+            if plugin:
+                plugin.activate()
 
     def enable_plugin(self, plugin_name):
         """Enables a plugin.
@@ -154,7 +160,12 @@ class PluginManager(object):
         @returns: a sequence of plugins
         """
         for p in InstalledPlugin.select(connection=get_connection()):
-            yield self._get_plugin(p.plugin_name)
+            # FIXME: If the plugin is no longer available, remove it from
+            # database.
+            plugin = self._get_plugin(p.plugin_name)
+            if not plugin:
+                continue
+            yield plugin
 
     def has_plugin(self, plugin_name):
         """Verify if the plugin is available or not.
