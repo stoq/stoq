@@ -163,6 +163,10 @@ class Product(Domain):
     def has_image(self):
         return self.image != ''
 
+    @property
+    def description(self):
+        return self.sellable.base_sellable_info.description
+
     def remove(self):
         """Deletes this product from the database.
         """
