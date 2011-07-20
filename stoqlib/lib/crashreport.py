@@ -37,7 +37,7 @@ from kiwi.utils import gsignal
 from stoqlib.exceptions import StoqlibError
 from stoqlib.database.runtime import get_connection
 from stoqlib.lib.interfaces import IAppInfo
-from stoqlib.lib.parameters import is_developer_mode
+from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.uptime import get_uptime
 from stoqlib.lib.webservice import WebService
 
@@ -189,5 +189,8 @@ class ReportSubmitter(gobject.GObject):
 
 
 def report():
+    conn = get_connection()
+    if not sysparam(conn).ONLINE_SERVICES:
+        return
     rs = ReportSubmitter()
     rs.submit_in_mainloop()

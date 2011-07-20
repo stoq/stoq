@@ -230,7 +230,7 @@ def _setup_cookiefile():
     cookiefile = os.path.join(app_dir, "cookie")
     provide_utility(ICookieFile, Base64CookieFile(cookiefile))
 
-def _check_main_branch():
+def _check_param_main_branch():
     from stoqlib.database.runtime import (get_connection, new_transaction,
                                           get_current_station)
     from stoqlib.domain.person import Person
@@ -258,6 +258,30 @@ def _check_main_branch():
         trans.commit()
 
     return
+
+def _check_param_online_services():
+    from stoqlib.database.runtime import new_transaction
+    from stoqlib.lib.parameters import sysparam
+
+    trans = new_transaction()
+    sparam = sysparam(trans)
+    val = sparam.ONLINE_SERVICES
+    if val is None:
+        import gtk
+        from kiwi.ui.dialogs import messagedialog
+        retval = messagedialog(
+            gtk.MESSAGE_WARNING,
+            _('Do you want to enable Stoq online services?'),
+            long=_("One of the new features of Stoq 1.0 is support for online "
+                   "services. Features using the online services include: automatic "
+                   "bug report, update notifications. We will collect a limited set of "
+                   "data including CNPJ and ip address to be able to provide a better "
+                   "service."),
+            buttons=((_("Not right now"), gtk.RESPONSE_NO),
+                     (_("Enable online services"), gtk.RESPONSE_YES)),
+            default=gtk.RESPONSE_YES)
+        sparam.ONLINE_SERVICES = bool(retval == gtk.RESPONSE_YES)
+    trans.commit()
 
 def _prepare_logfiles():
     global _log_filename, _stream
@@ -361,7 +385,8 @@ def run_app(options, appname):
     except LoginError, e:
         error(e)
 
-    _check_main_branch()
+    _check_param_main_branch()
+    _check_param_online_services()
 
     if appname:
         app = runner.get_app_by_name(appname)

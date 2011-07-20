@@ -167,6 +167,8 @@ class AppWindow(BaseAppWindow):
         self.main_vbox.reorder_child(bar, 1)
 
     def _check_version(self):
+        if not sysparam(self.conn).ONLINE_SERVICES:
+            return
         self._version_checker = VersionChecker(self.conn, self)
         self._version_checker.check_new_version()
 

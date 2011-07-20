@@ -48,8 +48,8 @@ Remember to check out the manual in each application, it's normal to feel a litt
 
 If you're having trouble with the installation, need help importing your database from another application or would like to customize Stoq, don't hesitate to &lt;a href="http://www.stoq.com.br/pt-br/more/contact"&gt;contact us&lt;/a&gt;.</property>
                 <property name="use_markup">True</property>
-                <property name="model_attribute">kiwilabel2</property>
                 <property name="wrap">True</property>
+                <property name="model_attribute">kiwilabel2</property>
               </object>
             </child>
           </object>
@@ -60,7 +60,53 @@ If you're having trouble with the installation, need help importing your databas
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkHBox" id="hbox1">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkCheckButton" id="online_services">
+                <property name="label" translatable="yes">Enable online services</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHButtonBox" id="hbuttonbox1">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkButton" id="online_info">
+                    <property name="label" translatable="yes">More information...</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">3</property>
+          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="label3">
