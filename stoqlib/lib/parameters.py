@@ -94,6 +94,7 @@ _parameter_info = dict(
     _('Defines which of the employee roles existent in the system is the '
       'salesperson role')),
 
+    # FIXME: s/SUGGESTED/DEFAULT/
     SUGGESTED_SUPPLIER=ParameterDetails(
     _('Purchase'),
     _('Suggested supplier'),
@@ -557,6 +558,30 @@ class ParameterAccess(ClassInittableObject):
         else:
             data.field_value = field_value
 
+    def _set_default_value(self, constant):
+        if constant.initial is None:
+            return
+
+        if constant.type is bool:
+            value = int(constant.initial)
+        else:
+            value = constant.initial
+        self._set_schema(constant.key, value)
+
+    def _create_default_values(self):
+        # Create default values for parameters that take objects
+        self._create_default_sales_cfop()
+        self._create_default_return_sales_cfop()
+        self._create_default_receiving_cfop()
+        self._create_default_stock_decrease_cfop()
+        self._create_suggested_supplier()
+        self._create_suggested_unit()
+        self._create_default_base_category()
+        self._create_default_salesperson_role()
+        self._create_main_company()
+        self._create_delivery_service()
+        self._create_product_tax_constant()
+
     #
     # Public API
     #
@@ -645,57 +670,40 @@ class ParameterAccess(ClassInittableObject):
         self._cache[field_name] = param
         return param
 
-    def set_defaults(self, update=False):
+    def update(self):
         self._remove_unused_parameters()
-        constants = [c for c in self.constants if c.initial is not None]
-
-        # Creating constants
-        for obj in constants:
-            if (update and self.get_parameter_by_field(obj.key, obj.type)
-                is not None):
+        for constant in self.constants:
+            param = self.get_parameter_by_field(constant.key, constant.type)
+            if update and param is not None:
                 continue
+            self._set_default_value(constant)
+        self._create_default_values()
 
-            if obj.type is bool:
-                # Convert Bool to int here
-                value = int(obj.initial)
-            else:
-                value = obj.initial
-            self._set_schema(obj.key, value)
-
-        # Creating system objects
-        # When creating new methods for system objects creation add them
-        # always here
-        self.ensure_default_sales_cfop()
-        self.ensure_default_return_sales_cfop()
-        self.ensure_default_receiving_cfop()
-        self.ensure_default_stock_decrease_cfop()
-        self.ensure_suggested_supplier()
-        self.ensure_suggested_unit()
-        self.ensure_default_base_category()
-        self.ensure_default_salesperson_role()
-        self.ensure_main_company()
-        self.ensure_delivery_service()
-        self.ensure_product_tax_constant()
+    def set_defaults(self):
+        self._remove_unused_parameters()
+        for constant in self.constants:
+            self._set_default_value(constant)
+        self._create_default_values()
 
     #
     # Methods for system objects creation
     #
 
-    def ensure_suggested_supplier(self):
+    def _create_suggested_supplier(self):
         key = "SUGGESTED_SUPPLIER"
         from stoqlib.domain.person import Person
         if self.get_parameter_by_field(key, Person.getAdapterClass(ISupplier)):
             return
         self._set_schema(key, None)
 
-    def ensure_suggested_unit(self):
+    def _create_suggested_unit(self):
         key = "SUGGESTED_UNIT"
         from stoqlib.domain.sellable import SellableUnit
         if self.get_parameter_by_field(key, SellableUnit):
             return
         self._set_schema(key, None)
 
-    def ensure_default_base_category(self):
+    def _create_default_base_category(self):
         from stoqlib.domain.sellable import SellableCategory
         key = "DEFAULT_BASE_CATEGORY"
         if self.get_parameter_by_field(key, SellableCategory):
@@ -704,7 +712,7 @@ class ParameterAccess(ClassInittableObject):
                                          connection=self.conn)
         self._set_schema(key, base_category.id)
 
-    def ensure_default_salesperson_role(self):
+    def _create_default_salesperson_role(self):
         from stoqlib.domain.person import EmployeeRole
         key = "DEFAULT_SALESPERSON_ROLE"
         if self.get_parameter_by_field(key, EmployeeRole):
@@ -713,14 +721,14 @@ class ParameterAccess(ClassInittableObject):
                             connection=self.conn)
         self._set_schema(key, role.id, is_editable=False)
 
-    def ensure_main_company(self):
+    def _create_main_company(self):
         from stoqlib.domain.person import Person
         key = "MAIN_COMPANY"
         if self.get_parameter_by_field(key, Person.getAdapterClass(IBranch)):
             return
         self._set_schema(key, None)
 
-    def ensure_delivery_service(self):
+    def _create_delivery_service(self):
         from stoqlib.domain.service import Service
         key = "DELIVERY_SERVICE"
         if self.get_parameter_by_field(key, Service):
@@ -743,7 +751,7 @@ class ParameterAccess(ClassInittableObject):
         service = Service(sellable=sellable, connection=self.conn)
         self._set_schema(key, service.id)
 
-    def _ensure_cfop(self, key, description, code):
+    def _create_cfop(self, key, description, code):
         from stoqlib.domain.fiscal import CfopData
         if self.get_parameter_by_field(key, CfopData):
             return
@@ -753,28 +761,28 @@ class ParameterAccess(ClassInittableObject):
                             connection=self.conn)
         self._set_schema(key, data.id)
 
-    def ensure_default_return_sales_cfop(self):
-        self._ensure_cfop("DEFAULT_RETURN_SALES_CFOP",
+    def _create_default_return_sales_cfop(self):
+        self._create_cfop("DEFAULT_RETURN_SALES_CFOP",
                           "Devolucao",
                           "5.202")
 
-    def ensure_default_sales_cfop(self):
-        self._ensure_cfop("DEFAULT_SALES_CFOP",
+    def _create_default_sales_cfop(self):
+        self._create_cfop("DEFAULT_SALES_CFOP",
                           "Venda de Mercadoria Adquirida",
                           "5.102")
 
-    def ensure_default_receiving_cfop(self):
-        self._ensure_cfop("DEFAULT_RECEIVING_CFOP",
+    def _create_default_receiving_cfop(self):
+        self._create_cfop("DEFAULT_RECEIVING_CFOP",
                           "Compra para Comercializacao",
                           "1.102")
 
-    def ensure_default_stock_decrease_cfop(self):
-        self._ensure_cfop("DEFAULT_STOCK_DECREASE_CFOP",
+    def _create_default_stock_decrease_cfop(self):
+        self._create_cfop("DEFAULT_STOCK_DECREASE_CFOP",
                           "Outra saída de mercadoria ou "
                           "prestação de serviço não especificado",
                           "5.949")
 
-    def ensure_product_tax_constant(self):
+    def _create_product_tax_constant(self):
         from stoqlib.domain.sellable import SellableTaxConstant
         key = "DEFAULT_PRODUCT_TAX_CONSTANT"
         if self.get_parameter_by_field(key, SellableTaxConstant):
@@ -839,10 +847,15 @@ def check_parameter_presence(conn):
     return results.count() == len(_parameter_info)
 
 def ensure_system_parameters(update=False):
+    # This is called when creating a new database or
+    # updating an existing one
     log.info("Creating default system parameters")
     trans = new_transaction()
     param = sysparam(trans)
-    param.set_defaults(update)
+    if update:
+        param.update()
+    else:
+        param.set_defaults()
     trans.commit(close=True)
 
 def is_developer_mode():
