@@ -41,6 +41,7 @@ from stoqlib.gui.dialogs.progressdialog import ProgressDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.devicemanager import DeviceManager
 from stoqlib.lib.message import info, yesno, warning
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 from ecfprinterstatus import ECFAsyncPrinterStatus
@@ -197,6 +198,12 @@ class ECFEditor(BaseEditor):
             for printer_class in printer_classes:
                 printer = _PrinterModel(brand, printer_class)
                 printers.append((printer.get_description(), printer))
+
+        if sysparam(self.conn).DEMO_MODE:
+            from stoqdrivers.printers.virtual.Simple import Simple
+            printer = _PrinterModel('virtual', Simple)
+            printers.append((printer.get_description(), printer))
+
         self.printer.prefill(sorted(printers))
 
     def _populate_serial_ports(self):
