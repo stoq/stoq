@@ -184,7 +184,6 @@ class SearchDialog(BasicDialog):
 
         @param conn:
         @param table:
-        @param editor_class:
         @param search_table:
         @param hide_footer:
         @param title:
@@ -315,8 +314,14 @@ class SearchDialog(BasicDialog):
             return self.results.get_selected()
         return self.results.get_selected_rows()
 
-    def confirm(self):
-        self.retval = self.get_selection()
+    def confirm(self, retval=None):
+        """Confirms the dialog
+        @retval: optional parameter which will be selected when the
+          dialog is closed
+        """
+        if retval is None:
+            retval = self.get_selection()
+        self.retval = retval
         self.search.save_columns()
         self.close()
 
