@@ -120,7 +120,8 @@ class TillApp(SearchableAppWindow):
             ('TillClose', None, _('Close till...'), '<Control>F7'),
             ('TillAddCash', None, _('Add cash...'), '<Control>s'),
             ('TillRemoveCash', None, _('Remove cash...'), '<Control>j'),
-            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV'), '<Control>F10'),
+            ('ExportCSV', gtk.STOCK_SAVE_AS,
+             _('Export CSV...'), '<Control>F10'),
             ("Quit", gtk.STOCK_QUIT),
 
             # Search
