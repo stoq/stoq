@@ -283,7 +283,7 @@ class AdminApp(AppWindow):
         actions = [
             ('menubar', None, ''),
             # Admin
-            ("AdminMenu", None, _("Admin")),
+            ("AdminMenu", None, _("_Admin")),
             ("Quit", gtk.STOCK_QUIT),
 
             # Search
