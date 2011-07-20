@@ -127,7 +127,7 @@ class StockApp(SearchableAppWindow):
             ('StockTransfer', 'gtk-convert', _('Transfer...'), '<Control>t'),
             ('StockDecrease', None, _('Decrease stock...')),
             ('StockInitial', 'gtk-go-up', _('Register initial stock...')),
-            ('StockPictureViewer', None, _('Toggle picture viewer...'),
+            ('StockPictureViewer', None, _('Toggle picture viewer'),
              '<Control><Alt>v'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
             ("Quit", gtk.STOCK_QUIT),

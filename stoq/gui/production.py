@@ -66,11 +66,13 @@ class ProductionApp(SearchableAppWindow):
         ui_string = """<ui>
       <menubar action="menubar">
         <menu action="ProductionMenu">
-          <menuitem action="ProductionNew"/>
           <menuitem action="ProductionStart"/>
-          <menuitem action="ProductionPurchaseQuote"/>
           <separator name="sep"/>
+          <menuitem action="ProductionNew"/>
+          <menuitem action="ProductionPurchaseQuote"/>
+          <separator name="sep2"/>
           <menuitem action="ExportCSV"/>
+          <separator name="sep3"/>
           <menuitem action="Quit"/>
         </menu>
         <menu action="SearchMenu">
@@ -92,9 +94,12 @@ class ProductionApp(SearchableAppWindow):
 
             # Production
             ("ProductionMenu", None, _("_Production")),
-            ('ProductionNew', gtk.STOCK_NEW, _('New Production Order...'), '<Control>o'),
-            ('ProductionStart', 'stoq-transfer', _('Start Production...'), '<Control>t'),
-            ('ProductionPurchaseQuote', 'stoq-purchase-app', _('Purchase Quote...'),
+            ('ProductionNew', gtk.STOCK_NEW,
+             _('New production order...'), '<Control>o'),
+            ('ProductionStart', 'stoq-transfer',
+             _('Start production...'), '<Control>t'),
+            ('ProductionPurchaseQuote', 'stoq-purchase-app',
+             _('New Purchase Quote...'),
              '<Control>p'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
             ("Quit", gtk.STOCK_QUIT),

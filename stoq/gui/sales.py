@@ -99,6 +99,7 @@ class SalesApp(SearchableAppWindow):
           <menuitem action="SalesPrintInvoice"/>
           <separator/>
           <menuitem action="ExportCSV"/>
+          <separator/>
           <menuitem action="Quit"/>
         </menu>
         <menu action="LoanMenu">

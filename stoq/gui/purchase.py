@@ -85,14 +85,17 @@ class PurchaseApp(SearchableAppWindow):
         ui_string = """<ui>
       <menubar action="menubar">
         <menu action="PurchaseMenu">
+          <menuitem action="Confirm"/>
+          <menuitem action="FinishOrder"/>
+          <separator name="sep"/>
           <menuitem action="NewOrder"/>
           <menuitem action="QuoteOrder"/>
-          <menuitem action="FinishOrder"/>
-          <menuitem action="Confirm"/>
-          <menuitem action="stock_cost_action"/>
+          <separator name="sep2"/>
+          <menuitem action="StockCost"/>
           <menuitem action="Production"/>
-          <separator name="sep"/>
+          <separator name="sep3"/>
           <menuitem action="ExportCSV"/>
+          <separator name="sep4"/>
           <menuitem action="Quit"/>
         </menu>
         <menu action="ConsignmentMenu">
@@ -131,11 +134,12 @@ class PurchaseApp(SearchableAppWindow):
             # Purchase
             ("PurchaseMenu", None, _("_Order")),
             ("NewOrder", gtk.STOCK_NEW, _("New order..."), "<Control>o"),
-            ("QuoteOrder", gtk.STOCK_INDEX, _("Quote order..."), "<Control>e"),
+            ("QuoteOrder", gtk.STOCK_INDEX, _("New quote..."), "<Control>e"),
             ("FinishOrder", None, _("Finish order...")),
             ("Confirm", 'stoq-delivery', _("Confirm order...")),
-            ("stock_cost_action", None, _("_Stock cost")),
-            ("Production", gtk.STOCK_JUSTIFY_FILL,  _("Production..."), "<Control>r"),
+            ("StockCost", None, _("_Stock cost...")),
+            ("Production", gtk.STOCK_JUSTIFY_FILL,  _("Production..."),
+             "<Control>r"),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
             ("Quit", gtk.STOCK_QUIT),
 
@@ -422,7 +426,7 @@ class PurchaseApp(SearchableAppWindow):
     def on_FinishOrder__activate(self, action):
         self._finish_order()
 
-    def on_stock_cost_action__activate(self, action):
+    def on_StockCost__activate(self, action):
         self.run_dialog(StockCostDialog, self.conn, None)
 
     def on_Confirm__activate(self, action):

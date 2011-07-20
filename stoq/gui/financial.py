@@ -359,7 +359,9 @@ class FinancialApp(AppWindow):
             <menu action="FinancialMenu">
               <menuitem action="AddAccount"/>
               <menuitem action="Import"/>
+              <separator name="sep"/>
               <menuitem action="ExportCSV"/>
+              <separator name="sep2"/>
               <menuitem action="Quit"/>
             </menu>
           </menubar>

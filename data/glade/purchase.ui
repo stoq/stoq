@@ -164,7 +164,7 @@
                                 <child>
                                   <object class="GtkLabel" id="label6">
                                     <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Ed_it...</property>
+                                    <property name="label" translatable="yes">Ed_it</property>
                                     <property name="use_underline">True</property>
                                   </object>
                                   <packing>
