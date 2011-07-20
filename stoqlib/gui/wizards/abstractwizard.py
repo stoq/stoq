@@ -45,7 +45,7 @@ from stoqlib.database.runtime import (new_transaction,
 
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.product import ProductSupplierInfo
+from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.views import ProductFullStockItemView
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.dialogs import run_dialog
@@ -82,6 +82,11 @@ class _ProductSearch(SearchEditor):
         if search_str:
             self.set_searchbar_search_string(search_str)
             self.search.refresh()
+
+        if selection_mode == gtk.SELECTION_MULTIPLE:
+            self.set_ok_label(_('_Select products'))
+        else:
+            self.set_ok_label(_('_Select product'))
 
     #
     # SearchDialog Hooks
@@ -144,7 +149,13 @@ class _ProductSearch(SearchEditor):
             # the right connection
             if isinstance(product, ORMObject):
                 product = type(product).get(product.id, connection=self.conn)
+
+            # If we created a new object, confirm the dialog automatically
+            if obj is None:
+                self.confirm(product)
+                return
         trans.close()
+
         return product
 
 
@@ -381,7 +392,13 @@ class SellableItemStep(WizardEditorStep):
         if not ret:
             return
 
-        sellable = Sellable.get(ret.id, connection=self.conn)
+        # We receive different items depend on if we
+        # - selected an item in the search
+        # - created a new item and it closed the dialog for us
+        if not isinstance(ret, (Product, ProductFullStockItemView)):
+            raise AssertionError(sellable)
+
+        sellable = ret.sellable
         if not self.can_add_sellable(sellable):
             return
         self.barcode.set_text(sellable.barcode)
