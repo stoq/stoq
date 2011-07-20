@@ -25,7 +25,7 @@
 import datetime
 from stoqdrivers.constants import describe_constant
 from stoqdrivers.printers.fiscal import FiscalPrinter
-from stoqdrivers.serialbase import SerialPort
+from stoqdrivers.serialbase import VirtualPort, SerialPort
 from stoqdrivers.enum import PaymentMethodType, UnitType, TaxType
 from zope.interface import implements
 
@@ -179,9 +179,11 @@ class ECFPrinter(Domain):
         return constant
 
     def get_fiscal_driver(self):
-        port = SerialPort(device=self.device_name)
+        if self.brand == 'virtual':
+            port = VirtualPort()
+        else:
+            port = SerialPort(device=self.device_name)
         return FiscalPrinter(brand=self.brand, model=self.model, port=port)
-
 
     def set_user_info(self, user_info):
         self.user_number = user_info.user_number

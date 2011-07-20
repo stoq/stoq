@@ -314,3 +314,9 @@ class ECFListDialog(ModelListDialog):
         return ECFPrinter.selectBy(
             station=get_current_station(self.conn),
             connection=self.conn)
+
+    def edit_item(self, item):
+        if item.brand == 'virtual':
+            info(_("Cant edit a virtual printer"))
+            return False
+        return ModelListDialog.edit_item(self, item)
