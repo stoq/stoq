@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-19 19:15-0300\n"
+"POT-Creation-Date: 2011-07-19 21:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1109,7 +1109,7 @@ msgstr ""
 #: ../data/glade/StartPurchaseStep.ui.h:4 ../data/glade/StartQuoteStep.ui.h:1
 #: ../data/glade/StartStockDecreaseStep.ui.h:1
 #: ../data/glade/StationEditor.ui.h:2
-#: ../data/glade/StockDecreaseDetails.ui.h:1 ../stoqlib/gui/base/search.py:392
+#: ../data/glade/StockDecreaseDetails.ui.h:1 ../stoqlib/gui/base/search.py:397
 #: ../stoqlib/reporting/loanreceipt.py:83
 #: ../stoqlib/reporting/production.py:125 ../stoqlib/reporting/purchase.py:257
 #: ../stoqlib/reporting/purchase.py:337
@@ -2500,8 +2500,8 @@ msgstr ""
 #: ../stoq/gui/inventory.py:146 ../stoq/gui/payable.py:391
 #: ../stoq/gui/production.py:145 ../stoq/gui/purchase.py:353
 #: ../stoq/gui/receivable.py:185 ../stoq/gui/sales.py:319
-#: ../stoq/gui/till.py:226 ../stoqlib/gui/base/search.py:389
-#: ../stoqlib/gui/base/search.py:404 ../stoqlib/gui/search/loansearch.py:60
+#: ../stoq/gui/till.py:226 ../stoqlib/gui/base/search.py:394
+#: ../stoqlib/gui/base/search.py:409 ../stoqlib/gui/search/loansearch.py:60
 #: ../stoqlib/gui/search/paymentsearch.py:63
 #: ../stoqlib/gui/search/paymentsearch.py:134
 #: ../stoqlib/gui/search/personsearch.py:91
@@ -2527,7 +2527,7 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:165
 #: ../stoqlib/gui/search/sellablesearch.py:146
 #: ../stoqlib/gui/search/servicesearch.py:108
-#: ../stoqlib/gui/wizards/abstractwizard.py:108
+#: ../stoqlib/gui/wizards/abstractwizard.py:113
 msgid "Barcode"
 msgstr ""
 
@@ -2560,7 +2560,7 @@ msgstr ""
 #: ../stoqlib/gui/search/sellablesearch.py:143
 #: ../stoqlib/gui/search/servicesearch.py:106
 #: ../stoqlib/gui/slaves/productionslave.py:165
-#: ../stoqlib/gui/wizards/abstractwizard.py:107
+#: ../stoqlib/gui/wizards/abstractwizard.py:112
 #: ../stoqlib/gui/wizards/consignmentwizard.py:153
 #: ../stoqlib/gui/wizards/loanwizard.py:329
 #: ../stoqlib/gui/wizards/productionwizard.py:180
@@ -2590,7 +2590,7 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:392
 #: ../stoqlib/gui/search/sellablesearch.py:152
 #: ../stoqlib/gui/slaves/productionslave.py:166
-#: ../stoqlib/gui/wizards/abstractwizard.py:111
+#: ../stoqlib/gui/wizards/abstractwizard.py:116
 #: ../stoqlib/gui/wizards/productionwizard.py:181
 #: ../stoqlib/gui/wizards/productionwizard.py:249
 #: ../stoqlib/gui/wizards/purchasewizard.py:261
@@ -3710,7 +3710,7 @@ msgstr ""
 #: ../stoqlib/gui/slaves/paymentslave.py:229
 #: ../stoqlib/gui/slaves/paymentslave.py:991
 #: ../stoqlib/gui/slaves/productionslave.py:168
-#: ../stoqlib/gui/wizards/abstractwizard.py:113
+#: ../stoqlib/gui/wizards/abstractwizard.py:118
 #: ../stoqlib/gui/wizards/consignmentwizard.py:154
 #: ../stoqlib/gui/wizards/loanwizard.py:330
 #: ../stoqlib/gui/wizards/productionwizard.py:183
@@ -4501,7 +4501,7 @@ msgstr ""
 msgid "The selected orders will be cancelled."
 msgstr ""
 
-#: ../stoq/gui/receivable.py:67 ../stoqlib/gui/base/search.py:791
+#: ../stoq/gui/receivable.py:67 ../stoqlib/gui/base/search.py:796
 msgid "Next month"
 msgstr ""
 
@@ -5669,33 +5669,33 @@ msgstr ""
 msgid "Keep them"
 msgstr ""
 
-#: ../stoqlib/gui/base/search.py:214
+#: ../stoqlib/gui/base/search.py:213
 msgid "Se_lect Items"
 msgstr ""
 
 #. Provider
-#: ../stoqlib/gui/base/search.py:407
+#: ../stoqlib/gui/base/search.py:412
 #: ../stoqlib/gui/search/paymentsearch.py:143
 msgid "Provider:"
 msgstr ""
 
-#: ../stoqlib/gui/base/search.py:736
+#: ../stoqlib/gui/base/search.py:741
 msgid "This week"
 msgstr ""
 
-#: ../stoqlib/gui/base/search.py:748
+#: ../stoqlib/gui/base/search.py:753
 msgid "Last Week"
 msgstr ""
 
-#: ../stoqlib/gui/base/search.py:760
+#: ../stoqlib/gui/base/search.py:765
 msgid "Next week"
 msgstr ""
 
-#: ../stoqlib/gui/base/search.py:771
+#: ../stoqlib/gui/base/search.py:776
 msgid "This month"
 msgstr ""
 
-#: ../stoqlib/gui/base/search.py:781
+#: ../stoqlib/gui/base/search.py:786
 msgid "Last month"
 msgstr ""
 
@@ -6120,7 +6120,7 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:403
 #: ../stoqlib/gui/search/purchasesearch.py:90
 #: ../stoqlib/gui/slaves/productionslave.py:174
-#: ../stoqlib/gui/wizards/abstractwizard.py:117
+#: ../stoqlib/gui/wizards/abstractwizard.py:122
 #: ../stoqlib/reporting/product.py:234 ../stoqlib/reporting/purchase.py:101
 msgid "In Stock"
 msgstr ""
@@ -7028,7 +7028,7 @@ msgid "IPI"
 msgstr ""
 
 #: ../stoqlib/gui/editors/saleeditor.py:97
-#: ../stoqlib/gui/wizards/abstractwizard.py:505
+#: ../stoqlib/gui/wizards/abstractwizard.py:522
 #, python-format
 msgid "This product unit (%s) does not support fractions."
 msgstr ""
@@ -8459,15 +8459,23 @@ msgstr ""
 msgid "%i More Addresses..."
 msgstr ""
 
-#: ../stoqlib/gui/wizards/abstractwizard.py:115
+#: ../stoqlib/gui/wizards/abstractwizard.py:87
+msgid "_Select products"
+msgstr ""
+
+#: ../stoqlib/gui/wizards/abstractwizard.py:89
+msgid "_Select product"
+msgstr ""
+
+#: ../stoqlib/gui/wizards/abstractwizard.py:120
 msgid "Minimum Qty"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/abstractwizard.py:501
+#: ../stoqlib/gui/wizards/abstractwizard.py:518
 msgid "The quantity must be positive"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/abstractwizard.py:514
+#: ../stoqlib/gui/wizards/abstractwizard.py:531
 msgid "Cost must be greater than zero."
 msgstr ""
 
