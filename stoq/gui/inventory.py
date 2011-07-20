@@ -71,6 +71,7 @@ class InventoryApp(SearchableAppWindow):
               <menuitem action="adjust_action"/>
               <separator name="sep"/>
               <menuitem action="ExportCSV"/>
+              <separator name="sep2"/>
               <menuitem action="Quit"/>
             </menu>
          </menubar>
@@ -84,11 +85,11 @@ class InventoryApp(SearchableAppWindow):
             ('menubar', None, ''),
             # Inventory
             ("InventoryMenu", None, _("Inventory")),
-            ('new_inventory', None, _('Open I_nventry...'), '<Control>i'),
+            ('new_inventory', None, _('Open I_nventry'), '<Control>i'),
             ('counting_action', gtk.STOCK_INDEX, _('_Count inventory...'),
-                '<Control>a'),
-              ('adjust_action', gtk.STOCK_CONVERT, _('_Adjust inventory...'),
-                '<Control>c'),
+             '<Control>a'),
+            ('adjust_action', gtk.STOCK_CONVERT, _('_Adjust inventory...'),
+             '<Control>c'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
             ("Quit", gtk.STOCK_QUIT),
 

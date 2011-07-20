@@ -116,22 +116,23 @@ class TillApp(SearchableAppWindow):
 
             # Till
             ("TillMenu", None, _("_Till")),
-            ('TillOpen', None, _('Open Till...'), '<Control>F6'),
-            ('TillClose', None, _('Close Till...'), '<Control>F7'),
-            ('TillAddCash', None, _('Add Cash...'), '<Control>s'),
-            ('TillRemoveCash', None, _('Remove Cash...'), '<Control>j'),
-            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
+            ('TillOpen', None, _('Open till...'), '<Control>F6'),
+            ('TillClose', None, _('Close till...'), '<Control>F7'),
+            ('TillAddCash', None, _('Add cash...'), '<Control>s'),
+            ('TillRemoveCash', None, _('Remove cash...'), '<Control>j'),
+            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV'), '<Control>F10'),
             ("Quit", gtk.STOCK_QUIT),
 
             # Search
             ("SearchMenu", None, _("_Search")),
             ("SearchClient", None, _("Clients..."), '<Control><Alt>c'),
             ("SearchSale", None, _("Sales..."), '<Contrl><Alt>a'),
-            ("SearchSoldItemsByBranch", None, _("Sold Items by Branch..."),
+            ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
              '<Control><Alt>d'),
-            ("SearchTillHistory", None, _("Till history..."), '<Control><Alt>t'),
+            ("SearchTillHistory", None,
+             _("Till history..."), '<Control><Alt>t'),
             ("SearchFiscalTillOperations", None,
-             _("Fiscal Till Operations..."), '<Contro><Alt>f'),
+             _("Fiscal till operations..."), '<Contro><Alt>f'),
 
         ]
 

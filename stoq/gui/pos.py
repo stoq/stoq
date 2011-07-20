@@ -136,10 +136,10 @@ class PosApp(AppWindow):
         ui_string = """<ui>
          <menubar action="menubar">
              <menu action="SalesMenu">
+                <menuitem action="ConfirmOrder"/>
                 <menuitem action="CancelOrder"/>
                 <separator name="sep"/>
                 <menuitem action="NewDelivery"/>
-                <menuitem action="ConfirmOrder"/>
                 <separator name="sep2"/>
                 <menuitem action="Quit"/>
              </menu>

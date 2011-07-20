@@ -72,7 +72,7 @@ class PayableApp(SearchableAppWindow):
         self._setup_widgets()
         self._update_widgets()
         self.pay_order_button.set_sensitive(False)
-        self.Receipt.set_sensitive(False)
+        self.PrintReceipt.set_sensitive(False)
         self.results.connect('has-rows', self._has_rows)
 
     #
@@ -89,10 +89,11 @@ class PayableApp(SearchableAppWindow):
               <menuitem action="ChangeDueDate"/>
               <menuitem action="Comments"/>
               <separator name="sep"/>
-              <menuitem action="Receipt"/>
+              <menuitem action="PrintReceipt"/>
               <menuitem action="PaymentFlowHistory"/>
               <separator name="sep2"/>
               <menuitem action="ExportCSV"/>
+              <separator name="sep3"/>
               <menuitem action="Quit"/>
             </menu>
             <menu action="SearchMenu">
@@ -107,13 +108,14 @@ class PayableApp(SearchableAppWindow):
             # Payable
             ('PayableMenu', None, _('Accounts _payable')),
             ('AddPayment', gtk.STOCK_ADD, _('Add payment...'), '<Control>p'),
-            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment ...')),
+            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
             ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...')),
             ('Comments', None, _('Comments...')),
 
-            ('Receipt', None, _('_Receipt'), '<Control>r'),
-            ('PaymentFlowHistory', None, _('Payment _flow history ...'), '<Control>f'),
+            ('PrintReceipt', None, _('Print _receipt'), '<Control>r'),
+            ('PaymentFlowHistory', None, _('Payment _flow history...'),
+             '<Control>f'),
 
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
             ("Quit", gtk.STOCK_QUIT),
@@ -383,7 +385,8 @@ class PayableApp(SearchableAppWindow):
         self.edit_button.set_sensitive(self._can_edit(selected))
         self.pay_order_button.set_sensitive(self._can_pay(selected))
         self.print_button.set_sensitive(bool(len(self.results)))
-        self.Receipt.set_sensitive(self._are_paid(selected, respect_purchase=True))
+        self.PrintReceipt.set_sensitive(self._are_paid(selected,
+                                                       respect_purchase=True))
         self.SetNotPaid.set_sensitive(self._are_paid(selected, respect_purchase=False))
 
     def _get_status_values(self):
@@ -424,7 +427,7 @@ class PayableApp(SearchableAppWindow):
         self.print_report(PayablePaymentReport, self.results,
                           payments, do_footer=False)
 
-    def on_Receipt__activate(self, action):
+    def on_PrintReceipt__activate(self, action):
         payment_views = self.results.get_selected_rows()
         payments = [v.payment for v in payment_views]
         print_report(PaymentReceipt, payments=payments,

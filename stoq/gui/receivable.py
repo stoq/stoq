@@ -109,14 +109,16 @@ class ReceivableApp(SearchableAppWindow):
               <menuitem action="CancelPayment"/>
               <menuitem action="SetNotPaid"/>
               <menuitem action="ChangeDueDate"/>
-              <menuitem action="Comments"/>
-              <menuitem action="PrintBill"/>
-              <separator name="sep"/>
               <menuitem action="Renegotiate"/>
-              <menuitem action="Receipt"/>
+              <menuitem action="Comments"/>
+              <separator name="sep"/>
+              <menuitem action="PrintBill"/>
+              <menuitem action="PrintReceipt"/>
               <menuitem action="PaymentFlowHistory"/>
               <separator name="sep2"/>
+              <separator name="sep3"/>
               <menuitem action="ExportCSV"/>
+              <separator name="sep4"/>
               <menuitem action="Quit"/>
             </menu>
             <menu action="SearchMenu">
@@ -131,16 +133,18 @@ class ReceivableApp(SearchableAppWindow):
 
             # Payable
             ('Menu', None, _('Accounts _receivable')),
-            ('AddReceiving', gtk.STOCK_ADD, _('Add receiving...'), '<Control>p'),
-            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment ...')),
+            ('AddReceiving', gtk.STOCK_ADD,
+             _('Add receiving...'), '<Control>p'),
+            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
             ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...')),
-            ('Comments', None, _('Comments...')),
             ('PrintBill', gtk.STOCK_PRINT, _('Print bill...')),
+            ('Comments', None, _('Comments...')),
 
             ('Renegotiate', None, _('Renegotiate payments...')),
-            ('Receipt', None, _('_Receipt'), '<Control>r'),
-            ('PaymentFlowHistory', None, _('Payment _flow history ...'), '<Control>f'),
+            ('PrintReceipt', None, _('Print _receipt'), '<Control>r'),
+            ('PaymentFlowHistory', None,
+             _('Payment _flow history...'), '<Control>f'),
 
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
             ("Quit", gtk.STOCK_QUIT),
@@ -172,7 +176,7 @@ class ReceivableApp(SearchableAppWindow):
         self.Renegotiate.set_sensitive(self._can_renegotiate(selected))
         self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
         self.CancelPayment.set_sensitive(self._can_cancel_payment(selected))
-        self.Receipt.set_sensitive(self._can_emit_receipt(selected))
+        self.PrintReceipt.set_sensitive(self._can_emit_receipt(selected))
         self.SetNotPaid.set_sensitive(
             self._can_change_payment_status(selected))
         self.PrintBill.set_sensitive(self._can_print_bill(selected))
@@ -457,7 +461,7 @@ class ReceivableApp(SearchableAppWindow):
         receivable_view = self.results.get_selected_rows()[0]
         self._show_comments(receivable_view)
 
-    def on_Receipt__activate(self, action):
+    def on_PrintReceipt__activate(self, action):
         receivable_views = self.results.get_selected_rows()
         payments = [v.payment for v in receivable_views]
         print_report(ReceivalReceipt, payments=payments,
