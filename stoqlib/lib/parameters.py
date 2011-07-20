@@ -57,7 +57,7 @@ class DirectoryParameter(object):
 class ParameterDetails(object):
     def __init__(self, key, group, short_desc, long_desc, type,
                  initial=None, options=None,
-                 multiline=False, validator=None):
+                 multiline=False, validator=None, onupgrade=None):
         self.key = key
         self.group = group
         self.short_desc = short_desc
@@ -67,6 +67,9 @@ class ParameterDetails(object):
         self.options = options
         self.multiline = multiline
         self.validator = validator
+        if onupgrade is None:
+            onupgrade = initial
+        self.onupgrade = onupgrade
 
     #
     #  Public API
@@ -522,6 +525,19 @@ _details = [
         _('Demonstration mode'),
         _('If Stoq is used in a demonstration mode'),
         bool, initial=False),
+
+    # This parameter is tricky, we want to ask the user to fill it in when
+    # upgrading from a previous version, but not if the user installed Stoq
+    # from scratch. Some of the hacks involved with having 3 boolean values
+    # ("", True, False) can be removed if we always allow None and treat it like
+    # and unset value in the database.
+    ParameterDetails(
+        'ONLINE_SERVICES',
+        _('General'),
+        _('Online services'),
+        _('If online services such as upgrade notifications, automatic crash reports '
+          'should be enabled.'),
+        bool, initial=True, onupgrade=''),
 ]
 
 
@@ -577,14 +593,14 @@ class ParameterAccess(ClassInittableObject):
         else:
             data.field_value = field_value
 
-    def _set_default_value(self, detail):
-        if detail.initial is None:
+    def _set_default_value(self, detail, initial):
+        if initial is None:
             return
 
+        value = initial
         if detail.type is bool:
-            value = int(detail.initial)
-        else:
-            value = detail.initial
+            if value != "":
+                value = int(initial)
         self._set_schema(detail.key, value)
 
     def _create_default_values(self):
@@ -764,12 +780,16 @@ class ParameterAccess(ClassInittableObject):
             value = value.field_value
             if field_type is bool:
                 if value == 'True':
-                    value = True
+                    param = True
                 elif value == 'False':
-                    value = False
+                    param = False
+                # This is a pre-1.0 migration specific hack
+                elif value == "":
+                    param = None
                 else:
-                    value = bool(int(value))
-            param = field_type(value)
+                    param = bool(int(value))
+            else:
+                param = field_type(value)
         self._cache[field_name] = param
         return param
 
@@ -778,16 +798,16 @@ class ParameterAccess(ClassInittableObject):
         self._remove_unused_parameters()
         for detail in _details:
             param = self.get_parameter_by_field(detail.key, detail.type)
-            if update and param is not None:
+            if param is not None:
                 continue
-            self._set_default_value(detail)
+            self._set_default_value(detail, detail.onupgrade)
         self._create_default_values()
 
     def set_defaults(self):
         """Called when creating a new database"""
         self._remove_unused_parameters()
         for detail in _details:
-            self._set_default_value(detail)
+            self._set_default_value(detail, detail.initial)
         self._create_default_values()
 
     def create_delivery_service(self):

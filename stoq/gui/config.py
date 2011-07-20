@@ -150,6 +150,12 @@ class DatabaseLocationStep(BaseWizardStep):
         else:
             return DatabaseSettingsStep(self.wizard, self)
 
+    def on_radio_local__activate(self, radio):
+        self.wizard.go_to_next()
+
+    def on_radio_network__activate(self, radio):
+        self.wizard.go_to_next()
+
 
 class DatabaseSettingsStep(WizardEditorStep):
     gladefile = 'DatabaseSettingsStep'
@@ -255,6 +261,12 @@ class InstallationModeStep(BaseWizardStep):
     def next_step(self):
         self.wizard.enable_production = not self.empty_database_radio.get_active()
         return PluginStep(self.wizard, self)
+
+    def on_empty_database_radio__activate(self, radio):
+        self.wizard.go_to_next()
+
+    def on_example_database_radio__activate(self, radio):
+        self.wizard.go_to_next()
 
 
 class PluginStep(BaseWizardStep):
@@ -692,11 +704,33 @@ class FinishInstallationStep(BaseWizardStep):
         self.wizard.cancel = self._cancel
         self.wizard.next_button.set_label(_(u'Run Stoq'))
 
+        self.online_services.set_active(self.wizard.enable_online_services)
+
+        if self.wizard.has_installed_db:
+            self.online_services.hide()
+            self.online_info.hide()
+
     def _cancel(self):
         # This is the last step, so we will finish the installation
         # before we quit
         self.wizard.finish(run=False)
 
+    def on_online_services__toggled(self, check):
+        self.wizard.enable_online_services = check.get_active()
+
+    def on_online_info__clicked(self, button):
+        dialog = gtk.MessageDialog(parent=None, flags=0,
+                                   type=gtk.MESSAGE_ERROR,
+                                   buttons=gtk.BUTTONS_OK,
+                                   message_format=_("Online services"))
+        dialog.format_secondary_markup(
+            _("One of the new features of Stoq 1.0 is support for online "
+              "services. Features using the online services include: automatic "
+              "bug report, update notifications. We will collect a limited set of "
+              "data including CNPJ and ip address to be able to provide a better "
+              "service."))
+        dialog.run()
+        dialog.destroy()
 
 #
 # Main wizard
@@ -720,6 +754,7 @@ class FirstTimeConfigWizard(BaseWizard):
         self.options = options
         self.plugins = []
         self.db_is_local = False
+        self.enable_online_services = True
 
         if config.get('Database', 'enable_production') == 'True':
             self.remove_demo = True
@@ -731,6 +766,7 @@ class FirstTimeConfigWizard(BaseWizard):
         BaseWizard.__init__(self, None, first_step, title=self.title)
 
         self.get_toplevel().set_deletable(False)
+        self.next_button.grab_focus()
 
     def _create_station(self, trans):
         if self.enable_production:
@@ -755,6 +791,9 @@ class FirstTimeConfigWizard(BaseWizard):
                  % USER_ADMIN_DEFAULT_NAME))
         adminuser.password = self.login_password
 
+    def _set_online_services(self, trans):
+        sysparam(trans).ONLINE_SERVICES = self.enable_online_services
+
     def try_connect(self, settings, warn=True):
         try:
             if settings.has_database():
@@ -767,7 +806,6 @@ class FirstTimeConfigWizard(BaseWizard):
             return False
 
         return True
-
 
     def load_config_and_call_setup(self):
         dbargs = self.settings.get_command_line_arguments()
@@ -792,6 +830,7 @@ class FirstTimeConfigWizard(BaseWizard):
             trans = new_transaction()
             self._set_admin_password(trans)
             self._create_station(trans)
+            self._set_online_services(trans)
             trans.commit()
 
         # Write configuration to disk
