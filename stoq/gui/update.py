@@ -48,6 +48,7 @@ class UpdateWelcomeStep(BaseWizardStep):
         self.title_label.set_bold(True)
         logo = environ.find_resource('pixmaps', 'stoq_logo.svg')
         self.logo.set_from_file(logo)
+        self.wizard.next_button.grab_focus()
 
     def next_step(self):
         return UpdateSchemaStep(None, self.wizard)
@@ -129,6 +130,7 @@ class UpdateSchemaStep(BaseWizardStep):
             self.progressbar.set_text(_("Done. Click 'Forward' to continue"))
             self.progressbar.set_fraction(1.0)
             self.wizard.enable_next()
+            self.wizard.next_button.grab_focus()
 
     # Callbacks
 
