@@ -418,7 +418,7 @@ class AdminPasswordStep(BaseWizardStep):
         return good_pass
 
     def next_step(self):
-        if not test_local_database():
+        if self.wizard.db_is_local and not test_local_database():
             return InstallPostgresStep(self.wizard, self)
         else:
             return CreateDatabaseStep(self.wizard, self)
