@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-21 16:44-0300\n"
+"POT-Creation-Date: 2011-07-21 18:07-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -529,7 +529,7 @@ msgid ""
 "b>"
 msgstr ""
 
-#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:629
+#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:641
 msgid ""
 "Creating a new database for Stoq, depending on the speed of your computer "
 "and the server it may take a couple of minutes to finish."
@@ -614,7 +614,7 @@ msgid "<b>Database location</b>"
 msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:2
-msgid "I want to manualy configure the database connection."
+msgid "I want to manually configure the database connection."
 msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:3
@@ -3483,42 +3483,42 @@ msgstr ""
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr ""
 
-#: ../stoq/gui/config.py:197
+#: ../stoq/gui/config.py:202
 #, python-format
 msgid "The database address '%s' is invalid. Please fix it and try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:200 ../stoq/gui/config.py:205
+#: ../stoq/gui/config.py:205 ../stoq/gui/config.py:210
 msgid "Invalid database address"
 msgstr ""
 
-#: ../stoq/gui/config.py:235
+#: ../stoq/gui/config.py:240
 msgid "Needs Password"
 msgstr ""
 
-#: ../stoq/gui/config.py:236
+#: ../stoq/gui/config.py:241
 msgid "Trust"
 msgstr ""
 
-#: ../stoq/gui/config.py:361 ../stoqlib/gui/dialogs/crashreportdialog.py:99
+#: ../stoq/gui/config.py:365 ../stoqlib/gui/dialogs/crashreportdialog.py:99
 msgid "Sending..."
-msgstr ""
-
-#: ../stoq/gui/config.py:379
-#, python-format
-msgid "%s is not a valid email"
 msgstr ""
 
 #: ../stoq/gui/config.py:383
 #, python-format
+msgid "%s is not a valid email"
+msgstr ""
+
+#: ../stoq/gui/config.py:387
+#, python-format
 msgid "%s is not a valid phone"
 msgstr ""
 
-#: ../stoq/gui/config.py:414
+#: ../stoq/gui/config.py:418
 msgid "Administrator account"
 msgstr ""
 
-#: ../stoq/gui/config.py:417
+#: ../stoq/gui/config.py:421
 #, python-format
 msgid ""
 "I'm adding a user account called <b>%s</b> which will have administrator "
@@ -3528,98 +3528,102 @@ msgid ""
 "admin application and create them."
 msgstr ""
 
-#: ../stoq/gui/config.py:466
+#: ../stoq/gui/config.py:470
 msgid "Forward"
 msgstr ""
 
-#: ../stoq/gui/config.py:471
+#: ../stoq/gui/config.py:475
 msgid ""
 "The installation guide will now install the packages for you using apt, it "
 "may ask you for your password to continue."
 msgstr ""
 
 #. Translators: %s is the string "Forward"
-#: ../stoq/gui/config.py:475
+#: ../stoq/gui/config.py:479
 #, python-format
 msgid "Click %s to begin installing the PostgreSQL server."
 msgstr ""
 
 #. Translators: %s is the string "Forward"
-#: ../stoq/gui/config.py:480
+#: ../stoq/gui/config.py:484
 #, python-format
 msgid ""
 "Click %s to continue when you have installed PostgreSQL server on this "
 "computer."
 msgstr ""
 
-#: ../stoq/gui/config.py:502
+#: ../stoq/gui/config.py:507
 msgid "Please wait while the package installation is completing."
 msgstr ""
 
-#: ../stoq/gui/config.py:521
+#: ../stoq/gui/config.py:526
 msgid "Something went wrong while trying to install the PostgreSQL server."
 msgstr ""
 
-#: ../stoq/gui/config.py:524
+#: ../stoq/gui/config.py:529
 msgid ""
 "Sorry, something went wrong while installing PostgreSQL, try again manually "
 "or go back and configure Stoq to connect to another."
 msgstr ""
 
-#: ../stoq/gui/config.py:569
+#: ../stoq/gui/config.py:544
+msgid "Authorization failed, try again or connect to another database"
+msgstr ""
+
+#: ../stoq/gui/config.py:580
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
 msgstr ""
 
-#: ../stoq/gui/config.py:576
+#: ../stoq/gui/config.py:587
 #, python-format
 msgid ""
 "The specifed database '%s' does not exist.\n"
 "Do you want to create it?"
 msgstr ""
 
-#: ../stoq/gui/config.py:578
+#: ../stoq/gui/config.py:589
 msgid "Don't create"
 msgstr ""
 
-#: ../stoq/gui/config.py:578
+#: ../stoq/gui/config.py:589
 msgid "Create database"
 msgstr ""
 
-#: ../stoq/gui/config.py:632
+#: ../stoq/gui/config.py:644
 msgid "Creating database..."
 msgstr ""
 
-#: ../stoq/gui/config.py:636
+#: ../stoq/gui/config.py:648
 msgid "Please wait while the database is being created."
 msgstr ""
 
-#: ../stoq/gui/config.py:646
+#: ../stoq/gui/config.py:658
 msgid "Creating base schema..."
 msgstr ""
 
-#: ../stoq/gui/config.py:650
+#: ../stoq/gui/config.py:662
 msgid "Creating schema, applying patches..."
 msgstr ""
 
-#: ../stoq/gui/config.py:655
+#: ../stoq/gui/config.py:667
 #, python-format
 msgid "Creating schema, applying patch %d ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:657
+#: ../stoq/gui/config.py:669
 msgid "Creating additional database objects ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:660
+#: ../stoq/gui/config.py:672
 msgid "Creating examples ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:663
+#: ../stoq/gui/config.py:675
 msgid "Activating plugins ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:665
+#: ../stoq/gui/config.py:677
 msgid "This may take some time."
 msgstr ""
 
@@ -3627,47 +3631,47 @@ msgstr ""
 #. - pressed cancel in the authentication popup
 #. - user erred the password 3 times
 #. Allow him to try again
-#: ../stoq/gui/config.py:681
+#: ../stoq/gui/config.py:693
 msgid "Something went wrong while trying to create the database. Try again?"
 msgstr ""
 
-#: ../stoq/gui/config.py:683
+#: ../stoq/gui/config.py:695
 msgid "Change settings"
 msgstr ""
 
-#: ../stoq/gui/config.py:683 ../stoq/gui/pos.py:766 ../stoq/gui/till.py:287
+#: ../stoq/gui/config.py:695 ../stoq/gui/pos.py:766 ../stoq/gui/till.py:287
 msgid "Try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:690
+#: ../stoq/gui/config.py:702
 msgid "Something went wrong while trying to create the Stoq database"
 msgstr ""
 
-#: ../stoq/gui/config.py:696
+#: ../stoq/gui/config.py:708
 msgid "Done."
 msgstr ""
 
-#: ../stoq/gui/config.py:700
+#: ../stoq/gui/config.py:712
 msgid "Installation successful, click <b>Forward</b> to continue."
 msgstr ""
 
-#: ../stoq/gui/config.py:722
+#: ../stoq/gui/config.py:734
 msgid "Run Stoq"
 msgstr ""
 
-#: ../stoq/gui/config.py:742 ../stoqlib/lib/parameters.py:537
+#: ../stoq/gui/config.py:754 ../stoqlib/lib/parameters.py:537
 msgid "Online services"
 msgstr ""
 
-#: ../stoq/gui/config.py:753
+#: ../stoq/gui/config.py:765
 msgid "Stoq - Installation"
 msgstr ""
 
-#: ../stoq/gui/config.py:839
+#: ../stoq/gui/config.py:852
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 
-#: ../stoq/gui/config.py:845
+#: ../stoq/gui/config.py:858
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
 "database server {address}, however it is not a Stoq database or it was "
