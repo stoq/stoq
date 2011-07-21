@@ -2,7 +2,7 @@ body {
     margin: 0;
     padding: 0;
     background: #FFFFFF url(top.png) repeat-x;
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-family: Ubuntu, "Trebuchet MS", Arial, Helvetica, sans-serif;
     font-size: 13px;
     color: #666666;
 }
@@ -30,7 +30,7 @@ p {
 
 #header {
     width: 750px;
-    height: 160px;
+    height: 120px;
     margin: 0 auto;
     position: relative;
 }
@@ -47,7 +47,7 @@ p {
 }
 
 #logo h1 {
-    padding-top: 40px;
+    padding-top: 20px;
     font-size: 4em;
     color: #554D49;
 }
@@ -61,30 +61,14 @@ p {
 
 /* Menu */
 
-#menu {
+#welcome {
     float: right;
-    background: transparent url(menu.png) no-repeat;
-    background-position: 0px 58px;
-    width: 650px;
-}
-
-#menu ul {
     margin: 0;
-    padding: 52px 0 0 0;
-    list-style: none;
-}
-
-#menu li {
-    display: inline;
+    margin-top: 40px;
+    padding-right: 40px;
     display: block;
-    float: left;
-    width: 650px;
-    height: 70px;
-    padding-top: 15px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 1.3em;
-    color: white !important;
+    font-size: 2em;
+    font-weight: bold;
 }
 
 /* Page */
@@ -95,21 +79,17 @@ p {
     padding-top: 20px;
 }
 
-#main-content {
-    float: left;
-    width: 400px;
-}
-
 #right-content {
     float: right;
     width: 200px;
-    padding: 12px 0 0 30px;
+    padding: 0 0 0 30px;
     border-left: 1px dashed #ccc;
     margin-bottom: 25px;
+    margin-left: 25px;
+    border-bottom: 1px dashed #ccc;
 }
 
 #right-content .post {
-    border-bottom: 1px dashed #ccc;
     margin-bottom: 15px;
 }
 
@@ -133,71 +113,6 @@ p {
 #right-content .icon {
    float: left;
    margin-right: 5px;
-}
-
-/* sections */
-
-#sections {
-    clear: both;
-    width: 750px;
-    margin-top: 20px;
-
-    border-top: 1px dashed #ccc;
-}
-
-#sections ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-#sections li {
-    display: block;
-    float: left;
-    width: 180px;
-    padding-top: 10px;
-}
-
-#sections ul.first > li {
-    height: 200px;
-}
-
-#sections ul.first > li div{
-    height: 100%;
-    padding-top: 10px;
-}
-
-#sections li ul {
-    line-height: 1.8em;
-    margin-left: 30px;
-}
-
-#sections li li {
-    display: list-item;
-    float: none;
-    width: auto;
-    padding: 0;
-}
-
-#sections h2 {
-    margin: 0 0 15px 0;
-    color: #3465a4;
-    font-size: 1.2em;
-}
-
-#sections h2 a {
-    color: #3465a4;
-}
-
-#sections a {
-    text-decoration: none;
-    font-weight: bold;
-    color: #729fcf;
-}
-
-#sections .icon {
-   float: left;
-   margin-right: 7px;
 }
 
 /* Footer */
