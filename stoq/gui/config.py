@@ -82,7 +82,7 @@ from stoqlib.lib.webservice import WebService
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import setup, set_default_profile_settings
-from stoq.main import run_app
+from stoq.main import PRIVACY_STRING, run_app
 
 _ = gettext.gettext
 
@@ -736,12 +736,7 @@ class FinishInstallationStep(BaseWizardStep):
                                    type=gtk.MESSAGE_ERROR,
                                    buttons=gtk.BUTTONS_OK,
                                    message_format=_("Online services"))
-        dialog.format_secondary_markup(
-            _("One of the new features of Stoq 1.0 is support for online "
-              "services. Features using the online services include: automatic "
-              "bug report, update notifications. We will collect a limited set of "
-              "data including CNPJ and ip address to be able to provide a better "
-              "service."))
+        dialog.format_secondary_markup(PRIVACY_STRING)
         dialog.run()
         dialog.destroy()
 
