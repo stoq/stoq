@@ -48,7 +48,7 @@ class WelcomeDialog(gtk.Dialog):
             self._on_view__navigation_policy_decision_requested)
         sw.add(self._view)
 
-        self.button = self.add_button(_("Start using Stoq"), gtk.RESPONSE_OK)
+        self.button = self.add_button(_("_Start using Stoq"), gtk.RESPONSE_OK)
 
         self.set_title(_("Welcome to Stoq"))
         self.show_all()
