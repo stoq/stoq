@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-21 15:59-0300\n"
+"POT-Creation-Date: 2011-07-21 16:44-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3663,11 +3663,11 @@ msgstr ""
 msgid "Stoq - Installation"
 msgstr ""
 
-#: ../stoq/gui/config.py:838
+#: ../stoq/gui/config.py:839
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 
-#: ../stoq/gui/config.py:844
+#: ../stoq/gui/config.py:845
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
 "database server {address}, however it is not a Stoq database or it was "
@@ -4906,11 +4906,11 @@ msgstr ""
 msgid "Updating Stoq"
 msgstr ""
 
-#: ../stoq/gui/welcomedialog.py:47
-msgid "Start using Stoq"
+#: ../stoq/gui/welcomedialog.py:51
+msgid "_Start using Stoq"
 msgstr ""
 
-#: ../stoq/gui/welcomedialog.py:49
+#: ../stoq/gui/welcomedialog.py:53
 msgid "Welcome to Stoq"
 msgstr ""
 
@@ -5076,16 +5076,16 @@ msgstr ""
 msgid "Do you want to enable Stoq online services?"
 msgstr ""
 
-#: ../stoq/main.py:376
+#: ../stoq/main.py:373
 msgid "Could not open the database config file"
 msgstr ""
 
-#: ../stoq/main.py:377
+#: ../stoq/main.py:374
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr ""
 
-#: ../stoq/main.py:393
+#: ../stoq/main.py:390
 msgid "Could not connect to the database"
 msgstr ""
 
@@ -7121,11 +7121,11 @@ msgstr ""
 msgid "Price settings"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:217
+#: ../stoqlib/gui/editors/sellableeditor.py:218
 msgid "This unit type requires weighing"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:261
+#: ../stoqlib/gui/editors/sellableeditor.py:264
 #, python-format
 msgid ""
 "This is a demostration mode of Stoq, you cannot create more than %d "
@@ -7133,44 +7133,44 @@ msgid ""
 "To avoid this limitation, enable production mode."
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:274
+#: ../stoqlib/gui/editors/sellableeditor.py:277
 msgid "Remove"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:279
+#: ../stoqlib/gui/editors/sellableeditor.py:282
 msgid "Close Product"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:281
+#: ../stoqlib/gui/editors/sellableeditor.py:284
 msgid "Close Service"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:288
+#: ../stoqlib/gui/editors/sellableeditor.py:291
 msgid "Reopen Product"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:290
+#: ../stoqlib/gui/editors/sellableeditor.py:293
 msgid "Reopen Service"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:378
+#: ../stoqlib/gui/editors/sellableeditor.py:381
 msgid "No unit"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:405
+#: ../stoqlib/gui/editors/sellableeditor.py:408
 #, python-format
 msgid "This will delete '%s' from the database. Are you sure?"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:407
+#: ../stoqlib/gui/editors/sellableeditor.py:410
 msgid "Delete"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:407
+#: ../stoqlib/gui/editors/sellableeditor.py:410
 msgid "Keep"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:417
+#: ../stoqlib/gui/editors/sellableeditor.py:420
 #, python-format
 msgid ""
 "Do you really want to close '%s'?\n"
@@ -7178,49 +7178,49 @@ msgid ""
 "anymore."
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:422
+#: ../stoqlib/gui/editors/sellableeditor.py:425
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:546
 msgid "Don't close"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:430
+#: ../stoqlib/gui/editors/sellableeditor.py:433
 #, python-format
 msgid ""
 "Do you really want to reopen '%s'?\n"
 "Note that when it's opened, you will be able to commercialize it again."
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:434
+#: ../stoqlib/gui/editors/sellableeditor.py:437
 msgid "Keep closed"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:460
+#: ../stoqlib/gui/editors/sellableeditor.py:463
 msgid "The code can not be empty."
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:462
+#: ../stoqlib/gui/editors/sellableeditor.py:465
 #, python-format
 msgid "The code %s already exists."
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:468
+#: ../stoqlib/gui/editors/sellableeditor.py:471
 msgid "Barcode must have 14 digits or less."
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:470
+#: ../stoqlib/gui/editors/sellableeditor.py:473
 #, python-format
 msgid "The barcode %s already exists"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:472
+#: ../stoqlib/gui/editors/sellableeditor.py:475
 msgid "Cannot create new barcodes in demonstration mode"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:477
+#: ../stoqlib/gui/editors/sellableeditor.py:480
 msgid "Price cannot be zero or negative"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:481
+#: ../stoqlib/gui/editors/sellableeditor.py:484
 msgid "Cost cannot be zero or negative"
 msgstr ""
 
