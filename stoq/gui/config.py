@@ -821,11 +821,18 @@ class FirstTimeConfigWizard(BaseWizard):
         return True
 
     def check_incomplete_database(self):
+        # If we don't have postgres installed we cannot have
+        # an incomplete database
         if self.db_is_local and not test_local_database():
             return False
 
+        # a database which doesn't exist isn't incomplete
         if not self.settings.has_database():
             return False
+
+        # okay, we have a database which exists and doesn't have
+        # the "SystemTable" SQL table present, means that we cannot use
+        # it and should warn the user
 
         # Not 100% correct, should perhaps say "unix socket"
         address = self.settings.address or "localhost"
