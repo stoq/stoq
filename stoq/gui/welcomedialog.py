@@ -42,6 +42,7 @@ class WelcomeDialog(gtk.Dialog):
         self.get_content_area().pack_start(sw)
 
         self._view = webkit.WebView()
+        self._view.connect('navigation-policy-decision-requested', self._on_view__navigation_requested)
         sw.add(self._view)
 
         self.button = self.add_button(_("Start using Stoq"), gtk.RESPONSE_OK)
@@ -57,3 +58,9 @@ class WelcomeDialog(gtk.Dialog):
         self._view.load_uri('file://' + content)
         self.button.grab_focus()
         return super(WelcomeDialog, self).run()
+
+    def _on_view__navigation_requested(self, view, frame, request, action, policy):
+        uri = request.props.uri
+        if not uri.startswith('file:///'):
+            policy.ignore()
+            gtk.show_uri(self.get_screen(), uri, gtk.get_current_event_time())
