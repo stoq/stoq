@@ -92,7 +92,7 @@ class NFeUI(object):
         widget = uimanager.get_widget('/menubar/TillMenu/TillPrintInvoice')
         widget.hide()
 
-    def _disable_invoice_configuration(self, uimanager):
+    def _disable_invoice_configuration(self, app, uimanager):
         # since the nfe plugin was enabled, the user must not be able to edit
         # an invoice layout or configure a printer.
         base_ui = '/menubar/ConfigureMenu/'
@@ -100,6 +100,7 @@ class NFeUI(object):
         invoice_layout.hide()
         invoice_printer = uimanager.get_widget(base_ui + 'ConfigureInvoicePrinters')
         invoice_printer.hide()
+        app.main_window.tasks.hide_item('invoice_printers')
 
     #
     # Events
@@ -109,7 +110,7 @@ class NFeUI(object):
         if appname == 'sales':
             self._disable_print_invoice(app.main_window.uimanager)
         if appname == 'admin':
-            self._disable_invoice_configuration(app.main_window.uimanager)
+            self._disable_invoice_configuration(app, app.main_window.uimanager)
 
 
     def _on_SaleConfirm(self, sale, trans):
