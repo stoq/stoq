@@ -50,6 +50,7 @@ if library.uninstalled:
     library.add_global_resource('docs', '.')
     library.add_global_resource('fonts', 'data/fonts')
     library.add_global_resource('glade', 'data/glade')
+    library.add_global_resource('html', 'data/html')
     library.add_global_resource('misc', 'data/misc')
     library.add_global_resource('pixmaps', 'data/pixmaps')
     library.add_global_resource('sql', 'data/sql')
