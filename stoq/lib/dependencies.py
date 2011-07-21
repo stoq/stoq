@@ -44,6 +44,7 @@ PYPOPPLER_REQUIRED = (0, 12, 1)
 PSQL_REQUIRED = (8, 4)
 PSYCOPG_REQUIRED = (2, 0, 5)
 PYGTK_REQUIRED = (2, 16, 0)
+PYGTKWEBKIT_REQUIRED = (1, 1, 7)
 PYSERIAL_REQUIRED = (2, 1)
 REPORTLAB_REQUIRED = (2, 4)
 STOQDRIVERS_REQUIRED = (0, 9, 8)
@@ -71,6 +72,7 @@ class DependencyChecker(object):
         self._check_vte(VTE_REQUIRED)
         self._check_gudev(GUDEV_REQUIRED)
         self._check_pypoppler(PYPOPPLER_REQUIRED)
+        self._check_pygtkwebkit(PYGTKWEBKIT_REQUIRED)
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
         self._check_psql(PSQL_REQUIRED)
         self._check_psycopg(PSYCOPG_REQUIRED)
@@ -213,6 +215,15 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           found=_tuple2str(pypoppler_version),
                           required=version)
 
+    def _check_pygtkwebkit(self, version):
+        try:
+            import webkit
+            webkit # pyflakes
+        except ImportError:
+            self._missing(project='pywebkitgtk',
+                          url='http://code.google.com/p/pywebkitgtk/',
+                          version=version)
+
     def _check_zope_interface(self, version):
         try:
             import zope.interface
@@ -333,6 +344,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._missing(project='pySerial',
                           url='http://pyserial.sourceforge.net/',
                           version=version)
+
 
 def check_dependencies(text_mode=False):
     dp = DependencyChecker()
