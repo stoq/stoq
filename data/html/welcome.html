@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <link rel="stylesheet" type="text/css" href="welcome.css"/>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <title>Stoq - Open Source Business Management</title>
+  <script>
+  function _load() {
+    if (document.URL.indexOf("?")) {
+        var param = document.URL.split("?")[1];
+        if (param == 'demo-mode') {
+          document.getElementById('livecd_link').style.display = 'block';
+          document.getElementById('livecd_section').style.display = 'block';
+        }
+    }
+  }
+  </script>
+</head>
+
+<body onLoad="_load()">
+  <div id="header">
+    <div id="logo">
+      <h1>
+        <img alt="Stoq" src="stoq.png"/>
+      </h1>
+      <h2>Open Source Business Management</h2>
+    </div>
+    <div id="welcome">
+        Welcome to Stoq
+    </div>
+  </div>
+
+  <div id="page">
+      <div id="right-content">
+        <div class="post">
+          <img class="icon" alt="Stoq LiveCD" src="media-cdrom.png"/>
+          <h2>Stoq LiveCD</h2>
+          <ul>
+            <div id="livecd_link" style="display: none;">
+            <li ><a href="#livecd">About this Live CD</a></li>
+            </div>
+            <li><a href="#comercial">Business contact</a></li>
+            <li><a href="#tecnico">Technical contact</a></li>
+            <li><a href="#licenca">License</a></li>
+          </ul>
+        </div>
+      </div>
+
+    <div id="content">
+      <div id="main-content" class="post">
+        <div class="entry">
+          <div class="section" id="livecd_section" style="display: none;">
+          <h3><a name="livecd">About this Live CD</a></h3>
+          <p>
+            This Live CD contains an installation of Stoq in demonstration mode which
+            you can use to test the software.
+          </p>
+
+          <p>While using the Live CD, the plugins ECF and TEF are enabled and uses two
+          emulators to give a better idea how Stoq works with real hardware.
+          </p>
+
+          <p>After installing and enabling production mode the plugins will be disabled, the
+            limitations and emulators will be removed.</p>
+
+            <p>
+              In case the username and password are asked::
+            </p>
+
+            <ul>
+              <li>username: <b>admin</b></li>
+              <li>password: <b>admin</b></li>
+            </ul>
+          </div>
+
+          <div class="section">
+            <h3><a id="comercial" name="contato">Business contact</a></h3>
+            <p>For business related subjects, sending a proposal or scheduling a visit,
+              contact our comercial department at
+            <strong>&lt;comercial@stoq.com.br&gt;</strong>.</p>
+
+            <p>Or call us at <b>+55 16 3376-0125</b></p>
+          </div>
+
+          <div class="section">
+            <h3><a id="tecnico" name="tecnico">Technical contact</a></h3>
+            <p>To contact the Stoq team, ask a question or send a
+              suggestion, check out the <a class="reference"
+              href="http://www.stoq.com.br/pt-br/more/contact">mailing
+              list</a>.</p>
+
+            <p>
+              For questions about the development, architecture or usability, it's recommended
+              to talk with Christian Reis at
+              <strong>&lt;comercial@stoq.com.br&gt;</strong>.
+            </p>
+
+            <p>
+              To enter in contact with the team, open the menus and run: <b>Aplicativos</b> &gt;
+              <b>Internet</b>
+              &gt; <b>XChat IRC.</b></p>
+
+            <p>Chose a nickname to identify yourself, connect to <b>Freenode</b>. After that you
+              should enter the <b>#stoq</b> channel.
+            </p>
+
+          </div>
+
+          <div class="section">
+            <h3><a id="licenca" name="licenca">License</a></h3>
+            <p>
+              Stoq is licensed under GPL 2.0, for more information, see <a class="reference"
+              href="http://www.gnu.org/copyleft/gpl.html">General Public License</a>.
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div style="clear: both"><div>
+
+  <div id="footer">
+    <p id="legal">
+    © 2001-2011 Async Open Source. All Rights Reserved
+    </p>
+  </div>
+
+</body>
+</html>
