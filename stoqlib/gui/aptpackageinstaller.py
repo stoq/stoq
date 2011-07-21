@@ -38,10 +38,13 @@ except ImportError:
 
 class AptPackageInstaller(gobject.GObject):
     gsignal('done', object)
+    gsignal('auth-failed')
+
     def __init__(self, parent=None):
         gobject.GObject.__init__(self)
         self.client = AptClient()
         self.parent = parent
+
     def install(self, package):
         def reply(transaction):
             transaction.connect("finished", self._on_transaction__finished)
@@ -58,6 +61,7 @@ class AptPackageInstaller(gobject.GObject):
                                      error_handler=self._error_handler)
 
     def _on_transaction__finished(self, transaction, exitcode):
+        print transaction, exitcode
         if exitcode not in [0, 'exit-success']:
             error = exitcode
         else:
@@ -69,6 +73,7 @@ class AptPackageInstaller(gobject.GObject):
             raise error
         except NotAuthorizedError:
             # Silently ignore auth failures
+            self.emit('auth-failed')
             return
         except TransactionFailed, error:
             pass
