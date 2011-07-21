@@ -70,7 +70,7 @@
             </child>
             <child>
               <object class="ProxyRadioButton" id="example_database_radio">
-                <property name="label" translatable="yes">Create a database with example in demonstration mode.</property>
+                <property name="label" translatable="yes">Create a database with examples in demonstration mode.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
