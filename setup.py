@@ -149,7 +149,7 @@ setup(name='stoq',
       usability, good devices support, and useful features for retails.
       """,
       url=website,
-      license="GNU LGPL 2.1 (see COPYING)",
+      license="GNU GPL 2.0 and GNU LGPL 2.1 (see COPYING and COPYING.stoqlib)",
       packages=packages,
       data_files=data_files,
       scripts=scripts,
