@@ -139,9 +139,8 @@ class DatabaseLocationStep(BaseWizardStep):
             # FIXME: Allow developers to specify another database
             #        is_developer_mode() or STOQ_DATABASE_NAME
             settings.dbname = "stoq"
-            self.wizard.config.load_settings(self.wizard.settings)
             self.wizard.try_connect(settings, warn=False)
-        elif not self.wizard.try_connect(settings):
+        elif self.wizard.try_connect(settings, warn=False):
             return DatabaseSettingsStep(self.wizard, self)
 
         if self.wizard.has_installed_db:
@@ -150,6 +149,7 @@ class DatabaseLocationStep(BaseWizardStep):
         if self.wizard.check_incomplete_database():
             settings.dbname = ""
             return DatabaseSettingsStep(self.wizard, self, focus_dbname=True)
+
         return InstallationModeStep(self.wizard, self)
 
     def on_radio_local__activate(self, radio):
@@ -587,6 +587,7 @@ class CreateDatabaseStep(BaseWizardStep):
             self._launch_stoqdbadmin()
         else:
             self.process_view.feed("** Not creating database\r\n")
+            self.wizard.disable_next()
 
     def _setup_pgpass(self):
         # There's no way to pass in the password to psql, so we need
@@ -815,6 +816,7 @@ class FirstTimeConfigWizard(BaseWizard):
         sysparam(trans).ONLINE_SERVICES = self.enable_online_services
 
     def try_connect(self, settings, warn=True):
+        self.config.load_settings(settings)
         try:
             if settings.has_database():
                 conn = settings.get_connection()
