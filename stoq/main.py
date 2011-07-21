@@ -274,15 +274,24 @@ def _check_param_online_services():
     val = sparam.ONLINE_SERVICES
     if val is None:
         import gtk
-        from kiwi.ui.dialogs import messagedialog
-        retval = messagedialog(
-            gtk.MESSAGE_WARNING,
-            _('Do you want to enable Stoq online services?'),
-            long=PRIVACY_STRING,
-            buttons=((_("Not right now"), gtk.RESPONSE_NO),
-                     (_("Enable online services"), gtk.RESPONSE_YES)),
-            default=gtk.RESPONSE_YES)
-        sparam.ONLINE_SERVICES = bool(retval == gtk.RESPONSE_YES)
+        from kiwi.ui.dialogs import HIGAlertDialog
+        # FIXME: All of this is to avoid having to set markup as the default
+        #        in kiwi/ui/dialogs:HIGAlertDialog.set_details, after 1.0
+        #        this can be simplified when we fix so that all descriptions
+        #        sent to these dialogs are properly escaped
+        dialog = HIGAlertDialog(
+            parent=None,
+            flags=gtk.DIALOG_MODAL,
+            type=gtk.MESSAGE_WARNING)
+        dialog.add_button(_("Not right now"), gtk.RESPONSE_NO)
+        dialog.add_button(_("Enable online services"), gtk.RESPONSE_YES)
+
+        dialog.set_primary(_('Do you want to enable Stoq online services?'))
+        dialog.set_details(PRIVACY_STRING, use_markup=True)
+        dialog.set_default_response(gtk.RESPONSE_YES)
+        response = dialog.run()
+        dialog.destroy()
+        sparam.ONLINE_SERVICES = bool(response == gtk.RESPONSE_YES)
     trans.commit()
 
 def _maybe_show_welcome_dialog():
