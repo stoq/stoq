@@ -382,6 +382,10 @@ class TefStep(WizardEditorStep):
         if len(raw_phone_number(value)) != 10:
             return ValidationError(_('%s is not a valid phone') % value)
 
+    def on_phone__activate(self, widget):
+        if self.wizard.next_button.get_sensitive():
+            self.wizard.go_to_next()
+
     def _on_response_done(self, response, details):
         if details['response'] != 'success':
             self._show_error()
