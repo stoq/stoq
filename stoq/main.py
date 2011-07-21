@@ -297,15 +297,12 @@ def _check_param_online_services():
 def _maybe_show_welcome_dialog():
     from kiwi.component import get_utility
     from stoqlib.lib.interfaces import IStoqConfig
-    from stoqlib.lib.parameters import is_developer_mode
 
-    #if is_developer_mode():
-    #    return
-
-    #config = get_utility(IStoqConfig)
-    #if config.get('Database', 'show_welcome_dialog') == 'False':
-    #    return
-    #config.set('Database', 'show_welcome_dialog', 'False')
+    config = get_utility(IStoqConfig)
+    if config.get('Database', 'show_welcome_dialog') == 'False':
+        return
+    config.set('Database', 'show_welcome_dialog', 'False')
+    config.flush()
 
     from stoq.gui.welcomedialog import WelcomeDialog
     from stoqlib.gui.base.dialogs import run_dialog
