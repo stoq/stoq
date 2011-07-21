@@ -211,6 +211,7 @@ class SellableEditor(BaseEditor):
     proxy_widgets = (sellable_tax_widgets + sellable_widgets)
 
     def __init__(self, conn, model=None):
+        is_new = not model
         self._sellable = None
         self._demo_mode = sysparam(conn).DEMO_MODE
         self._requires_weighing_text = (
@@ -245,12 +246,14 @@ class SellableEditor(BaseEditor):
         self.set_description(
             self.model.sellable.base_sellable_info.description)
 
-        if self._sellable.can_remove():
-            self._add_delete_button()
-        elif self._sellable.can_close():
-            self._add_close_button()
-        elif self._sellable.is_closed():
-            self._add_reopen_button()
+        if not is_new:
+            if self._sellable.is_closed():
+                self._add_reopen_button()
+            elif self._sellable.can_close():
+                self._add_close_button()
+
+            if self._sellable.can_remove():
+                self._add_delete_button()
 
     #
     #  Private API
