@@ -25,6 +25,7 @@
 
 import datetime
 import gettext
+import locale
 
 import gtk
 from kiwi.component import get_utility
@@ -213,7 +214,11 @@ class AppWindow(BaseAppWindow):
 
         # License
 
-        fp = self._read_resource('docs', 'COPYING')
+        if locale.getlocale()[0] == 'pt_BR':
+            filename = 'COPYING.pt_BR'
+        else:
+            filename = 'COPYING'
+        fp = self._read_resource('docs', filename)
         about.set_license(fp.read())
 
         # Authors & Contributors

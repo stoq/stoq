@@ -14,6 +14,7 @@ include debian/changelog debian/compat debian/copyright debian/control debian/ru
 include debian/pycompat debian/pyversions
 include AUTHORS
 include COPYING
+include COPYING.pt_BR
 include MANIFEST.in
 include README
 include INSTALL
