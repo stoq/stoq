@@ -767,6 +767,7 @@ class FirstTimeConfigWizard(BaseWizard):
         self.plugins = []
         self.db_is_local = False
         self.enable_online_services = True
+        self.auth_type = TRUST_AUTHENTICATION
 
         if config.get('Database', 'enable_production') == 'True':
             self.remove_demo = True
