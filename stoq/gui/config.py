@@ -140,18 +140,16 @@ class DatabaseLocationStep(BaseWizardStep):
             #        is_developer_mode() or STOQ_DATABASE_NAME
             settings.dbname = "stoq"
             self.wizard.config.load_settings(self.wizard.settings)
-            if self.wizard.try_connect(settings, warn=False):
-                #if not self.has_installed_db:
-                #    return CorruptedDatabaseStep(self.wizard, self)
-                pass
+            self.wizard.try_connect(settings, warn=False)
         elif not self.wizard.try_connect(settings):
             return DatabaseSettingsStep(self.wizard, self)
 
         if self.wizard.has_installed_db:
             return FinishInstallationStep(self.wizard)
-        #else:
-        #    return CorruptedDatabaseStep(self.wizard, self)
 
+        if self.wizard.check_incomplete_database():
+            settings.dbname = ""
+            return DatabaseSettingsStep(self.wizard, self, focus_dbname=True)
         return InstallationModeStep(self.wizard, self)
 
     def on_radio_local__activate(self, radio):
@@ -170,7 +168,8 @@ class DatabaseSettingsStep(WizardEditorStep):
                      'password',
                      'dbname')
 
-    def __init__(self, wizard, previous):
+    def __init__(self, wizard, previous, focus_dbname=True):
+        self.focus_dbname = focus_dbname
         WizardEditorStep.__init__(self, None, wizard, wizard.settings,
                                   previous)
         self._update_widgets()
@@ -188,7 +187,10 @@ class DatabaseSettingsStep(WizardEditorStep):
     def post_init(self):
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
-        self.address.grab_focus()
+        if self.focus_dbname:
+            self.dbname.grab_focus()
+        else:
+            self.address.grab_focus()
 
     def validate_step(self):
         if not self.model.check_database_address():
@@ -242,6 +244,10 @@ class DatabaseSettingsStep(WizardEditorStep):
         self.add_proxy(self.model.stoq_user_data)
 
     def next_step(self):
+        if self.wizard.check_incomplete_database():
+            self.dbname.grab_focus()
+            return self
+
         if self.wizard.has_installed_db:
             return FinishInstallationStep(self.wizard)
         else:
@@ -812,6 +818,29 @@ class FirstTimeConfigWizard(BaseWizard):
                 warning(e.short, e.msg)
             return False
 
+        return True
+
+    def check_incomplete_database(self):
+        if self.db_is_local and not test_local_database():
+            return False
+
+        if not self.settings.has_database():
+            return False
+
+        # Not 100% correct, should perhaps say "unix socket"
+        address = self.settings.address or "localhost"
+        msg = _("Database {dbname} at {address}:{port} is not "
+                "a Stoq database.").format(
+            dbname=self.settings.dbname,
+            address=address,
+            port=self.settings.port)
+        description = _(
+            "Stoq was able to succesfully connect to the database "
+            "{dbname} at the database server {address}, however it "
+            "is not a Stoq database or it was corrupted, please select "
+            "another one.").format(dbname=self.settings.dbname,
+                                   address=self.settings.address or "localhost")
+        warning(msg, description)
         return True
 
     def load_config_and_call_setup(self):
