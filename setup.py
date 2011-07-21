@@ -124,6 +124,7 @@ global_resources = dict(
     docs='$prefix/share/doc/stoq',
     fonts='$datadir/fonts',
     glade='$datadir/glade',
+    html='$datadir/html',
     misc='$datadir/misc',
     pixmaps='$datadir/pixmaps',
     sql='$datadir/sql',
