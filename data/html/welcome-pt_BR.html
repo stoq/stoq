@@ -6,15 +6,19 @@
   <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
   <title>Stoq - Gestão comercial open source</title>
   <script>
-    if (document.URL.search('?')) {
-        var param = document.URL.split('?')[1];
+  function _load() {
+    if (document.URL.indexOf("?")) {
+        var param = document.URL.split("?")[1];
         if (param == 'demo-mode') {
+          document.getElementById('livecd_link').style.display = 'block';
+          document.getElementById('livecd_section').style.display = 'block';
         }
     }
+  }
   </script>
 </head>
 
-<body>
+<body onLoad="_load()">
   <div id="header">
     <div id="logo">
       <h1>
@@ -33,7 +37,9 @@
           <img class="icon" alt="Stoq LiveCD" src="media-cdrom.png"/>
           <h2>Stoq LiveCD</h2>
           <ul>
-            <li><a id="livecd_link" href="#livecd">Sobre o Live CD</a></li>
+            <div id="livecd_link" style="display: none;">
+            <li ><a href="#livecd">Sobre o Live CD</a></li>
+            </div>
             <li><a href="#comercial">Contato Comercial</a></li>
             <li><a href="#tecnico">Contato Técnico</a></li>
             <li><a href="#licenca">Licença</a></li>
@@ -44,7 +50,7 @@
     <div id="content">
       <div id="main-content" class="post">
         <div class="entry">
-          <div class="section" id="livecd_section">
+          <div class="section" id="livecd_section" style="display: none;">
           <h3><a name="livecd">Sobre o Live CD</a></h3>
           <p>
             Este Live CD possui uma instalação de demonstração do Stoq, para
