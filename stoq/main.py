@@ -299,9 +299,9 @@ def _maybe_show_welcome_dialog():
     from stoqlib.lib.interfaces import IStoqConfig
 
     config = get_utility(IStoqConfig)
-    if config.get('Database', 'show_welcome_dialog') == 'False':
+    if config.get('General', 'show_welcome_dialog') == 'False':
         return
-    config.set('Database', 'show_welcome_dialog', 'False')
+    config.set('General', 'show_welcome_dialog', 'False')
     config.flush()
 
     from stoq.gui.welcomedialog import WelcomeDialog
