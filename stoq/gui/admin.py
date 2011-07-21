@@ -137,6 +137,12 @@ class Tasks(object):
         name = self.model[path][COL_NAME]
         self.run_task(name)
 
+    def hide_item(self, name):
+        for row in self.model:
+            if row[COL_NAME] == name:
+                del self.model[row.iter]
+                break
+
     def run_task(self, name):
         func = getattr(self, '_open_%s' % name, None)
         if not func:
