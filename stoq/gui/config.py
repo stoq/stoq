@@ -132,23 +132,28 @@ class DatabaseLocationStep(BaseWizardStep):
 
     def next_step(self):
         self.wizard.db_is_local = self.radio_local.get_active()
-
-        settings = self.wizard.settings
-        if self.wizard.db_is_local:
-            settings.address = "" # Unix socket really
-            # FIXME: Allow developers to specify another database
-            #        is_developer_mode() or STOQ_DATABASE_NAME
-            settings.dbname = "stoq"
-            self.wizard.try_connect(settings, warn=False)
-        elif self.wizard.try_connect(settings, warn=False):
+        # If we're not connecting to a local, ask for the
+        # connection settings
+        if not self.wizard.db_is_local:
             return DatabaseSettingsStep(self.wizard, self)
 
-        if self.wizard.has_installed_db:
-            return FinishInstallationStep(self.wizard)
+        settings = self.wizard.settings
+        settings.address = "" # Unix socket really
+        # FIXME: Allow developers to specify another database
+        #        is_developer_mode() or STOQ_DATABASE_NAME
+        settings.dbname = "stoq"
 
+        # Try to connect, we don't care if we can connect,
+        # we just want to know if it's properly installed
+        self.wizard.try_connect(settings, warn=False)
+
+        # Corrupted or a non-Stoq database
         if self.wizard.check_incomplete_database():
             settings.dbname = ""
             return DatabaseSettingsStep(self.wizard, self, focus_dbname=True)
+
+        if self.wizard.has_installed_db:
+            return FinishInstallationStep(self.wizard)
 
         return InstallationModeStep(self.wizard, self)
 
@@ -244,12 +249,11 @@ class DatabaseSettingsStep(WizardEditorStep):
         self.add_proxy(self.model.stoq_user_data)
 
     def next_step(self):
-        if self.wizard.check_incomplete_database():
-            self.dbname.grab_focus()
-            return self
-
         if self.wizard.has_installed_db:
             return FinishInstallationStep(self.wizard)
+        elif self.wizard.check_incomplete_database():
+            self.dbname.grab_focus()
+            return self
         else:
             return InstallationModeStep(self.wizard, self)
 
