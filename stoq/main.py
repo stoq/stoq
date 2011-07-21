@@ -30,14 +30,20 @@ import optparse
 import os
 import sys
 
-
-
 _ = gettext.gettext
 _log_filename = None
 _stream = None
 _ran_wizard = False
 _restart = False
 _cur_exit_func = None
+PRIVACY_STRING = _(
+    "One of the new features of Stoq 1.0 is support for online "
+    "services. Features using the online services include automatic "
+    "bug report and update notifications. More services are under development."
+    "To be able to provide a better service and properly identify the user "
+    "we will collect the CNPJ of the primary branch and the ip address.\n\n"
+    "<b>We will not disclose the collected information and we are committed "
+    "to keeping your privacy intact.</b>")
 
 # To avoid kiwi dependency at startup
 log = logging.getLogger('stoq.main')
@@ -272,11 +278,7 @@ def _check_param_online_services():
         retval = messagedialog(
             gtk.MESSAGE_WARNING,
             _('Do you want to enable Stoq online services?'),
-            long=_("One of the new features of Stoq 1.0 is support for online "
-                   "services. Features using the online services include: automatic "
-                   "bug report, update notifications. We will collect a limited set of "
-                   "data including CNPJ and ip address to be able to provide a better "
-                   "service."),
+            long=PRIVACY_STRING,
             buttons=((_("Not right now"), gtk.RESPONSE_NO),
                      (_("Enable online services"), gtk.RESPONSE_YES)),
             default=gtk.RESPONSE_YES)
