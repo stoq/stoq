@@ -18,26 +18,47 @@
   <div id="header">
     <div id="logo">
       <h1>
-        <a href="http://www.stoq.com.br/">
-          <img alt="Stoq" src="stoq.png"/>
-        </a>
+        <img alt="Stoq" src="stoq.png"/>
       </h1>
       <h2>Gestão comercial open source</h2>
     </div>
-    <div id="menu">
-      <ul>
-        <li>Bem vindo ao Stoq LiveCD</li>
-      </ul>
+    <div id="welcome">
+        Bem vindo ao Stoq LiveCD
     </div>
   </div>
 
   <div id="page">
+      <div id="right-content">
+        <div class="post">
+          <img class="icon" alt="Stoq LiveCD" src="media-cdrom.png"/>
+          <h2>Stoq LiveCD</h2>
+          <ul>
+            <li><a id="livecd_link" href="#livecd">Sobre o Live CD</a></li>
+            <li><a href="#comercial">Contato Comercial</a></li>
+            <li><a href="#tecnico">Contato Técnico</a></li>
+            <li><a href="#licenca">Licença</a></li>
+          </ul>
+        </div>
+      </div>
+
     <div id="content">
       <div id="main-content" class="post">
         <div class="entry">
-          <div class="section">
-            Este Live CD possui uma instalação exemplo do Stoq, para
+          <div class="section" id="livecd_section">
+          <h3><a name="livecd">Sobre o Live CD</a></h3>
+          <p>
+            Este Live CD possui uma instalação de demonstração do Stoq, para
             que você possa fazer um test-drive.
+          </p>
+
+          <p>Durante o uso do Live CD, os plugins ECF e TEF estão
+          habilitados e utilizarão dois emuladores (impressora fiscal e
+          pinpad) para que o usuário tenha a sensação de como é o sistema
+          em produção.
+          </p>
+
+          <p>Após a instalação e a habilitação do modo de produção, os
+          plugins, emuladores e limitações são removidos.</p>
 
             <p>
               Caso seja solicitado o nome do usuário e senha, estes
@@ -48,14 +69,51 @@
               <li>usuário: <b>admin</b></li>
               <li>senha: <b>admin</b></li>
             </ul>
-            <p>
-              Escolha uma das aplicações disponíveis e clique em Ok.
-            </p>
           </div>
 
           <div class="section">
-            <a name="licenca"></a>
-            <h3><a id="contato-t-cnico" name="contato-t-cnico">Licença</a></h3>
+            <h3><a id="comercial" name="contato">Contato Comercial</a></h3>
+            <p>Para tratar assuntos comerciais, fazer um primeiro contato para uma
+            proposta nova ou agendar uma visita, entre em contato com nosso
+            departamento comercial
+            <strong>&lt;comercial@stoq.com.br&gt;</strong>.</p>
+
+            <p>O telefone para contato é <b>(16) 3376-0125</b></p>
+          </div>
+
+          <div class="section">
+            <h3><a id="tecnico" name="tecnico">Contato Técnico</a></h3>
+            <p>Para contactar a equipe do projeto Stoq, ou para encaminhar dúvidas,
+            sugestões ou soluções utilize as <a class="reference"
+            target='blank'
+            href="http://www.stoq.com.br/lists.html">listas de discussão</a>.</p>
+
+            <p>
+              Para tratar de assuntos técnicos como desenvolvimento, arquitetura e
+              usabilidade,
+              é recomendado falar com o responsável pelo projeto, Christian Reis
+              <strong>&lt;comercial@stoq.com.br&gt;</strong>.
+            </p>
+
+            <p>
+              Caso possua uma conexão à internet disponível, você pode entrar em contato
+              pelo IRC.
+            </p>
+
+            <p>
+              Execute o programa localizado em: <b>Aplicativos</b> &gt;
+              <b>Internet</b>
+              &gt; <b>XChat IRC.</b></p>
+
+            <p>Escolha um apelido
+              para identificar-se, e conecte-se ao <b>Freenode</b>. Após isso, você deverá
+              entrar no canal <b>#stoq</b>.
+            </p>
+
+          </div>
+
+          <div class="section">
+            <h3><a id="licenca" name="licenca">Licença</a></h3>
             <p>
               Este software é coberto pela <a class="reference"
               href="http://www.gnu.org/copyleft/gpl.html" target="blank">GPL
@@ -84,78 +142,21 @@
             </p>
           </div>
 
-          <div class="section">
-            <a name="comercial"></a>
-            <h3><a id="contato-comercial" name="contato-comercial">Contato Comercial</a></h3>
-            <p>Para tratar assuntos comerciais, fazer um primeiro contato para uma
-            proposta nova, e agendar uma visita, entre em contato com nossa divisão comercial
-            <strong>&lt;comercial &#64; stoq.com.br&gt;</strong>.</p>
 
-            <p>Os telefones para contato são <strong>(16) 3376-0125</strong> e
-
-            <strong>(16) 9165-0344</strong>.</p>
-          </div>
-
-          <div class="section">
-            <a name="tecnico"></a>
-            <h3><a id="contato-t-cnico" name="contato-t-cnico">Contato Técnico</a></h3>
-            <p>Para contactar a equipe do projeto Stoq, ou para encaminhar dúvidas,
-            sugestões ou soluções utilize as <a class="reference"
-            href="http://www.stoq.com.br/lists.html">listas de discussão</a>.</p>
-
-            <p>
-              Para tratar de assuntos técnicos como desenvolvimento, arquitetura e
-              usabilidade,
-              é recomendado falar com o responsável pelo projeto, Christian Reis
-              <strong>&lt;comercial-stoq &#64; async.com.br&gt;</strong>.  Comentários
-              sobre o site ou alguma das páginas Web que o compõem devem também ser
-              enviados para este mesmo e-mail.
-            </p>
-
-            <p>
-              Caso possua uma conexão à internet disponível, você pode entrar em contato
-              pelo IRC.
-            </p>
-
-            <p>
-              No menu aplicações, internet, execute o programa XChat IRC. Escolha um Nick
-              name para identificar-se, e conecte-se ao Freenode. Após isso, você deverá
-              entrar no canal #stoq.
-            </p>
-
-            <p>
-              Por fim, deseje um bom dia para os desenvolveres que estiverem disponíveis
-              no canal, faça alguns elogios e tire suas dúvidas :-).
-            </p>
-
-          </div>
         </div>
+
+
       </div>
 
-      <div id="right-content">
-        <div class="entry"></div>
-
-        <div class="post">
-          <img class="icon" alt="Stoq LiveCD" src="media-cdrom.png"/>
-          <h2>Stoq LiveCD</h2>
-          <ul>
-            <li><a href="#executando">Executando o sistema</a></li>
-            <li><a href="#licenca">Licença</a></li>
-            <li><a href="#comercial">Contato Comercial</a></li>
-            <li><a href="#tecnico">Contato Técnico</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div id="sections">
-      <div style="clear: both;">&nbsp;</div>
     </div>
 
   </div>
 
+  <div style="clear: both"><div>
+
   <div id="footer">
     <p id="legal">
-    ©2011 Async Open Source. Todos os direitos reservados.
+    © 2001-2011 Async Open Source. Todos os direitos reservados.
     </p>
   </div>
 
