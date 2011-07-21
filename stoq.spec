@@ -53,7 +53,7 @@ rm -rf %{buildroot}%{_defaultdocdir}
 
 %files
 %defattr(-, root, root, 0755)
-%doc AUTHORS CONTRIBUTORS COPYING README NEWS
+%doc AUTHORS CONTRIBUTORS COPYING COPYING.pt_BR README NEWS
 %{_bindir}/stoq
 %{_bindir}/stoqcreatedbuser
 %{_bindir}/stoqdbadmin
