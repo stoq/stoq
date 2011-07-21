@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-21 15:01-0300\n"
+"POT-Creation-Date: 2011-07-21 15:59-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -529,7 +529,7 @@ msgid ""
 "b>"
 msgstr ""
 
-#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:625
+#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:629
 msgid ""
 "Creating a new database for Stoq, depending on the speed of your computer "
 "and the server it may take a couple of minutes to finish."
@@ -815,7 +815,7 @@ msgstr ""
 msgid "<b>Installation complete</b>"
 msgstr ""
 
-#: ../data/glade/FinishInstallationStep.ui.h:2 ../stoq/main.py:281
+#: ../data/glade/FinishInstallationStep.ui.h:2 ../stoq/main.py:287
 msgid "Enable online services"
 msgstr ""
 
@@ -995,7 +995,7 @@ msgid "<b></b>"
 msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:1
-msgid "Create a database with example in demonstration mode."
+msgid "Create a database with examples in demonstration mode."
 msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:2
@@ -3514,11 +3514,11 @@ msgstr ""
 msgid "%s is not a valid phone"
 msgstr ""
 
-#: ../stoq/gui/config.py:410
+#: ../stoq/gui/config.py:414
 msgid "Administrator account"
 msgstr ""
 
-#: ../stoq/gui/config.py:413
+#: ../stoq/gui/config.py:417
 #, python-format
 msgid ""
 "I'm adding a user account called <b>%s</b> which will have administrator "
@@ -3528,98 +3528,98 @@ msgid ""
 "admin application and create them."
 msgstr ""
 
-#: ../stoq/gui/config.py:462
+#: ../stoq/gui/config.py:466
 msgid "Forward"
 msgstr ""
 
-#: ../stoq/gui/config.py:467
+#: ../stoq/gui/config.py:471
 msgid ""
 "The installation guide will now install the packages for you using apt, it "
 "may ask you for your password to continue."
 msgstr ""
 
 #. Translators: %s is the string "Forward"
-#: ../stoq/gui/config.py:471
+#: ../stoq/gui/config.py:475
 #, python-format
 msgid "Click %s to begin installing the PostgreSQL server."
 msgstr ""
 
 #. Translators: %s is the string "Forward"
-#: ../stoq/gui/config.py:476
+#: ../stoq/gui/config.py:480
 #, python-format
 msgid ""
 "Click %s to continue when you have installed PostgreSQL server on this "
 "computer."
 msgstr ""
 
-#: ../stoq/gui/config.py:498
+#: ../stoq/gui/config.py:502
 msgid "Please wait while the package installation is completing."
 msgstr ""
 
-#: ../stoq/gui/config.py:517
+#: ../stoq/gui/config.py:521
 msgid "Something went wrong while trying to install the PostgreSQL server."
 msgstr ""
 
-#: ../stoq/gui/config.py:520
+#: ../stoq/gui/config.py:524
 msgid ""
 "Sorry, something went wrong while installing PostgreSQL, try again manually "
 "or go back and configure Stoq to connect to another."
 msgstr ""
 
-#: ../stoq/gui/config.py:565
+#: ../stoq/gui/config.py:569
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
 msgstr ""
 
-#: ../stoq/gui/config.py:572
+#: ../stoq/gui/config.py:576
 #, python-format
 msgid ""
 "The specifed database '%s' does not exist.\n"
 "Do you want to create it?"
 msgstr ""
 
-#: ../stoq/gui/config.py:574
+#: ../stoq/gui/config.py:578
 msgid "Don't create"
 msgstr ""
 
-#: ../stoq/gui/config.py:574
+#: ../stoq/gui/config.py:578
 msgid "Create database"
 msgstr ""
 
-#: ../stoq/gui/config.py:628
+#: ../stoq/gui/config.py:632
 msgid "Creating database..."
 msgstr ""
 
-#: ../stoq/gui/config.py:632
+#: ../stoq/gui/config.py:636
 msgid "Please wait while the database is being created."
 msgstr ""
 
-#: ../stoq/gui/config.py:642
+#: ../stoq/gui/config.py:646
 msgid "Creating base schema..."
 msgstr ""
 
-#: ../stoq/gui/config.py:646
+#: ../stoq/gui/config.py:650
 msgid "Creating schema, applying patches..."
 msgstr ""
 
-#: ../stoq/gui/config.py:651
+#: ../stoq/gui/config.py:655
 #, python-format
 msgid "Creating schema, applying patch %d ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:653
+#: ../stoq/gui/config.py:657
 msgid "Creating additional database objects ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:656
+#: ../stoq/gui/config.py:660
 msgid "Creating examples ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:659
+#: ../stoq/gui/config.py:663
 msgid "Activating plugins ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:661
+#: ../stoq/gui/config.py:665
 msgid "This may take some time."
 msgstr ""
 
@@ -3627,59 +3627,51 @@ msgstr ""
 #. - pressed cancel in the authentication popup
 #. - user erred the password 3 times
 #. Allow him to try again
-#: ../stoq/gui/config.py:677
+#: ../stoq/gui/config.py:681
 msgid "Something went wrong while trying to create the database. Try again?"
 msgstr ""
 
-#: ../stoq/gui/config.py:679
+#: ../stoq/gui/config.py:683
 msgid "Change settings"
 msgstr ""
 
-#: ../stoq/gui/config.py:679 ../stoq/gui/pos.py:766 ../stoq/gui/till.py:287
+#: ../stoq/gui/config.py:683 ../stoq/gui/pos.py:766 ../stoq/gui/till.py:287
 msgid "Try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:686
+#: ../stoq/gui/config.py:690
 msgid "Something went wrong while trying to create the Stoq database"
 msgstr ""
 
-#: ../stoq/gui/config.py:692
+#: ../stoq/gui/config.py:696
 msgid "Done."
 msgstr ""
 
-#: ../stoq/gui/config.py:696
+#: ../stoq/gui/config.py:700
 msgid "Installation successful, click <b>Forward</b> to continue."
 msgstr ""
 
-#: ../stoq/gui/config.py:718
+#: ../stoq/gui/config.py:722
 msgid "Run Stoq"
 msgstr ""
 
-#: ../stoq/gui/config.py:738 ../stoqlib/lib/parameters.py:537
+#: ../stoq/gui/config.py:742 ../stoqlib/lib/parameters.py:537
 msgid "Online services"
 msgstr ""
 
-#: ../stoq/gui/config.py:740 ../stoq/main.py:275
-msgid ""
-"One of the new features of Stoq 1.0 is support for online services. Features "
-"using the online services include: automatic bug report, update "
-"notifications. We will collect a limited set of data including CNPJ and ip "
-"address to be able to provide a better service."
-msgstr ""
-
-#: ../stoq/gui/config.py:754
+#: ../stoq/gui/config.py:753
 msgid "Stoq - Installation"
 msgstr ""
 
-#: ../stoq/gui/config.py:825
-msgid "Database {dbname} at {address}:{port} is not a Stoq database"
+#: ../stoq/gui/config.py:838
+msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 
-#: ../stoq/gui/config.py:831
+#: ../stoq/gui/config.py:844
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
 "database server {address}, however it is not a Stoq database or it was "
-"corrupted, please select another one"
+"corrupted, please select another one."
 msgstr ""
 
 #: ../stoq/gui/financial.py:221 ../stoq/gui/financial.py:239
@@ -5055,33 +5047,45 @@ msgstr ""
 msgid "You need to call setup() before checking the database schema."
 msgstr ""
 
-#: ../stoq/main.py:247
+#: ../stoq/main.py:40
+msgid ""
+"One of the new features of Stoq 1.0 is support for online services. Features "
+"using the online services include automatic bug report and update "
+"notifications. More services are under development.To be able to provide a "
+"better service and properly identify the user we will collect the CNPJ of "
+"the primary branch and the ip address.\n"
+"\n"
+"<b>We will not disclose the collected information and we are committed to "
+"keeping your privacy intact.</b>"
+msgstr ""
+
+#: ../stoq/main.py:253
 msgid "You need to register a company before start using Stoq"
 msgstr ""
 
-#: ../stoq/main.py:249
+#: ../stoq/main.py:255
 msgid ""
 "Could not find a company. You'll need to register one before start using Stoq"
 msgstr ""
 
-#: ../stoq/main.py:274
-msgid "Do you want to enable Stoq online services?"
-msgstr ""
-
-#: ../stoq/main.py:280
+#: ../stoq/main.py:286
 msgid "Not right now"
 msgstr ""
 
-#: ../stoq/main.py:365
+#: ../stoq/main.py:289
+msgid "Do you want to enable Stoq online services?"
+msgstr ""
+
+#: ../stoq/main.py:376
 msgid "Could not open the database config file"
 msgstr ""
 
-#: ../stoq/main.py:366
+#: ../stoq/main.py:377
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr ""
 
-#: ../stoq/main.py:382
+#: ../stoq/main.py:393
 msgid "Could not connect to the database"
 msgstr ""
 
@@ -7174,45 +7178,49 @@ msgid ""
 "anymore."
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:421
+#: ../stoqlib/gui/editors/sellableeditor.py:422
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:546
 msgid "Don't close"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:429
+#: ../stoqlib/gui/editors/sellableeditor.py:430
 #, python-format
 msgid ""
 "Do you really want to reopen '%s'?\n"
 "Note that when it's opened, you will be able to commercialize it again."
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:459
+#: ../stoqlib/gui/editors/sellableeditor.py:434
+msgid "Keep closed"
+msgstr ""
+
+#: ../stoqlib/gui/editors/sellableeditor.py:460
 msgid "The code can not be empty."
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:461
+#: ../stoqlib/gui/editors/sellableeditor.py:462
 #, python-format
 msgid "The code %s already exists."
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:467
+#: ../stoqlib/gui/editors/sellableeditor.py:468
 msgid "Barcode must have 14 digits or less."
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:469
+#: ../stoqlib/gui/editors/sellableeditor.py:470
 #, python-format
 msgid "The barcode %s already exists"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:471
+#: ../stoqlib/gui/editors/sellableeditor.py:472
 msgid "Cannot create new barcodes in demonstration mode"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:476
+#: ../stoqlib/gui/editors/sellableeditor.py:477
 msgid "Price cannot be zero or negative"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellableeditor.py:480
+#: ../stoqlib/gui/editors/sellableeditor.py:481
 msgid "Cost cannot be zero or negative"
 msgstr ""
 

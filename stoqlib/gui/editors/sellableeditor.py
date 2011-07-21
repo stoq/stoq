@@ -402,8 +402,8 @@ class SellableEditor(BaseEditor):
     #
 
     def _on_delete_button__clicked(self, button, parent_button_label=None):
-        msg = _("This will delete '%s' from the database. Are you sure?"
-                % self._sellable.get_description())
+        msg = (_("This will delete '%s' from the database. Are you sure?")
+                 % self._sellable.get_description())
         if not yesno(msg, gtk.RESPONSE_NO, _("Delete"), _("Keep")):
             return
 
@@ -414,9 +414,10 @@ class SellableEditor(BaseEditor):
 
     def _on_close_sellable_button__clicked(self, button,
                                            parent_button_label=None):
-        msg = _("Do you really want to close '%s'?\n"
-                "Please note that when it's closed, you won't be able to "
-                "commercialize it anymore." % self._sellable.get_description())
+        msg = (_("Do you really want to close '%s'?\n"
+                 "Please note that when it's closed, you won't be able to "
+                 "commercialize it anymore.")
+                 % self._sellable.get_description())
         if not yesno(msg, gtk.RESPONSE_NO,
                       parent_button_label, _("Don't close")):
             return
@@ -426,11 +427,11 @@ class SellableEditor(BaseEditor):
 
     def _on_reopen_sellable_button__clicked(self, button,
                                             parent_button_label=None):
-        msg = _("Do you really want to reopen '%s'?\n"
-                "Note that when it's opened, you will be able to "
-                "commercialize it again." % self._sellable.get_description())
+        msg = (_("Do you really want to reopen '%s'?\n"
+                 "Note that when it's opened, you will be able to "
+                 "commercialize it again.") % self._sellable.get_description())
         if not yesno(msg, gtk.RESPONSE_NO,
-                     parent_button_label, ("Keep closed")):
+                     parent_button_label, _("Keep closed")):
             return
 
         self._sellable.set_unavailable()
