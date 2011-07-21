@@ -167,7 +167,7 @@ class DatabaseSettings(object):
 
     # FIXME: Remove/Rethink
     def check_database_address(self):
-        if not self.address == "":
+        if not self.address:
             return True
 
         try:
