@@ -68,7 +68,7 @@
             </child>
             <child>
               <object class="GtkRadioButton" id="radio_network">
-                <property name="label" translatable="yes">I want to manualy configure the database connection.</property>
+                <property name="label" translatable="yes">I want to manually configure the database connection.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
