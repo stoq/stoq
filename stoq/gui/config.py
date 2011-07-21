@@ -140,15 +140,19 @@ class DatabaseLocationStep(BaseWizardStep):
             #        is_developer_mode() or STOQ_DATABASE_NAME
             settings.dbname = "stoq"
             self.wizard.config.load_settings(self.wizard.settings)
-
-        if (test_local_database() and
-            self.wizard.try_connect(settings) and
-            self.wizard.has_installed_db):
-            return FinishInstallationStep(self.wizard)
-        elif self.wizard.db_is_local:
-            return InstallationModeStep(self.wizard, self)
-        else:
+            if self.wizard.try_connect(settings, warn=False):
+                #if not self.has_installed_db:
+                #    return CorruptedDatabaseStep(self.wizard, self)
+                pass
+        elif not self.wizard.try_connect(settings):
             return DatabaseSettingsStep(self.wizard, self)
+
+        if self.wizard.has_installed_db:
+            return FinishInstallationStep(self.wizard)
+        #else:
+        #    return CorruptedDatabaseStep(self.wizard, self)
+
+        return InstallationModeStep(self.wizard, self)
 
     def on_radio_local__activate(self, radio):
         self.wizard.go_to_next()
@@ -513,6 +517,9 @@ class InstallPostgresStep(BaseWizardStep):
             self.wizard.enable_back()
         else:
             self.done = True
+            # FIXME: Update label and enable_back/next instead
+            #        of doing it automatically for the user,
+            #        to tell him that postgres installation succeeded.
             self.wizard.go_to_next()
 
 
