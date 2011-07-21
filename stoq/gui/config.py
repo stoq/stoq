@@ -497,6 +497,7 @@ class InstallPostgresStep(BaseWizardStep):
         api = AptPackageInstaller(parent=self.wizard.get_toplevel())
         api.install('postgresql')
         api.connect('done', self._on_apt_install__done)
+        api.connect('auth-failed', self._on_apt_install__auth_failed)
 
         self.label.set_markup(
             _("Please wait while the package installation is completing."))
@@ -532,6 +533,12 @@ class InstallPostgresStep(BaseWizardStep):
             #        to tell him that postgres installation succeeded.
             self.wizard.go_to_next()
 
+    def _on_apt_install__auth_failed(self, api):
+        self.wizard.enable_back()
+        self.wizard.enable_next()
+        self.label.set_markup(
+            _("Authorization failed, try again or connect to "
+              "another database"))
 
 class CreateDatabaseStep(BaseWizardStep):
     gladefile = 'CreateDatabaseStep'
