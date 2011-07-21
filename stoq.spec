@@ -66,6 +66,7 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{_datadir}/stoq/csv
 %{_datadir}/stoq/fonts
 %{_datadir}/stoq/glade
+%{_datadir}/stoq/html
 %{_datadir}/stoq/misc
 %{_datadir}/stoq/pixmaps
 %{_datadir}/stoq/sql

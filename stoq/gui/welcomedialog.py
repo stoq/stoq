@@ -21,6 +21,7 @@
 ##
 
 import gettext
+import locale
 
 from kiwi.environ import environ
 import gtk
@@ -53,7 +54,10 @@ class WelcomeDialog(gtk.Dialog):
         self.show_all()
 
     def run(self):
-        content = environ.find_resource('html', 'welcome-pt_BR.html')
+        if locale.getlocale()[0] == 'pt_BR':
+            content = environ.find_resource('html', 'welcome-pt_BR.html')
+        else:
+            content = environ.find_resource('html', 'welcome.html')
 
         if sysparam(get_connection()).DEMO_MODE:
             content += '?demo-mode'
