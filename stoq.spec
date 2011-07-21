@@ -23,6 +23,7 @@ Requires: python-reportlab >= 2.4
 Requires: python-zope-interface >= 3.0.1
 Requires: stoqdrivers >= 0.9.12
 Requires: vte >= 0.28.0
+Requires: pywebkitgtk >= 1.1.7
 BuildRequires: python-kiwi >= 1.9.28
 BuildArch: noarch
 
