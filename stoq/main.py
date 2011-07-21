@@ -283,6 +283,23 @@ def _check_param_online_services():
         sparam.ONLINE_SERVICES = bool(retval == gtk.RESPONSE_YES)
     trans.commit()
 
+def _maybe_show_welcome_dialog():
+    from kiwi.component import get_utility
+    from stoqlib.lib.interfaces import IStoqConfig
+    from stoqlib.lib.parameters import is_developer_mode
+
+    #if is_developer_mode():
+    #    return
+
+    #config = get_utility(IStoqConfig)
+    #if config.get('Database', 'show_welcome_dialog') == 'False':
+    #    return
+    #config.set('Database', 'show_welcome_dialog', 'False')
+
+    from stoq.gui.welcomedialog import WelcomeDialog
+    from stoqlib.gui.base.dialogs import run_dialog
+    run_dialog(WelcomeDialog)
+
 def _prepare_logfiles():
     global _log_filename, _stream
 
@@ -387,6 +404,7 @@ def run_app(options, appname):
 
     _check_param_main_branch()
     _check_param_online_services()
+    _maybe_show_welcome_dialog()
 
     if appname:
         app = runner.get_app_by_name(appname)
