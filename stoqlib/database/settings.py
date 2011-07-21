@@ -167,6 +167,9 @@ class DatabaseSettings(object):
 
     # FIXME: Remove/Rethink
     def check_database_address(self):
+        if not self.address == "":
+            return True
+
         try:
             socket.getaddrinfo(self.address, None)
         except socket.gaierror:
