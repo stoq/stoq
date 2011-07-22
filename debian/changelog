@@ -1,6 +1,12 @@
+stoq (1.0.0) lucid; urgency=low
+
+  * New stable release
+
+ -- Johan <jdahlin@async.com.br>  Fri, 22 Jul 2011 00:58:58 +1000
+
 stoq (0.9.15.99) lucid; urgency=low
 
-  * New development release 
+  * New development release
 
  -- Johan <jdahlin@async.com.br>  Fri, 06 May 2011 00:58:58 +1000
 

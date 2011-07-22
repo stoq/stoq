@@ -2,17 +2,17 @@ Stoq
 ====
 
 Stoq's homepage is located at:
-http://www.stoq.com.br
+
+  http://www.stoq.com.br/
 
 It's sourcecode is avaliable through a bazaar repository at:
     http://launchpad.net/stoq
     bzr branch lp:stoq
 
-
 If you have any enhancements or bug reports, please fill them in Async's
 bugzilla:
 
-http://bugs.async.com.br
+  http://bugs.async.com.br/
 
 Please select the product name Stoq
 
@@ -20,14 +20,13 @@ Please select the product name Stoq
 Requirements
 ============
 
-Stoqlib 0.9.15 or higher
 Python 2.5 or higher
 PyGTK 2.16 or higher
 PostgresSQL 8.1 or higher
 Psycopg 2.0.5 or higher
 zope.interface 3.5.2 or higher
-Kiwi 1.9.27
-Stoqdrivers 0.9.11
+Kiwi 1.9.28
+Stoqdrivers 0.9.12
 Python Imaging Library (PIL) 1.1.5 or higher
 Reportlab 1.20
 
@@ -39,10 +38,11 @@ If you want to install Stoq just follow the instructions in the INSTALL
 file.
 
 You will probably need to set your PYTHONPATH if your system does not
-have pygtk 2.8.1 in the default python site-packages directory.
+have pygtk in the default python site-packages directory.
 
 Once you have Stoq installed, then to run it:
-[evandro@localhost]$ stoq
+
+  $ stoq
 
 If you just type bin/stoq you will get a list of available applications.
 You must also type the application name to run it properly like: bin/stoq pos
