@@ -25,12 +25,12 @@
 
 program_name    = "Stoq"
 website         = 'http://www.stoq.com.br'
-major_version   = 0
-minor_version   = 9
-micro_version   = 15
-extra_version   = 99
-release_date    = (2011, 2, 9)
-stable          = False
+major_version   = 1
+minor_version   = 0
+micro_version   = 0
+extra_version   = 0
+release_date    = (2011, 7, 22)
+stable          = True
 
 version         = '%d.%d.%d' % (major_version, minor_version, micro_version)
 if extra_version > 0:
