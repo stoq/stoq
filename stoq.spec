@@ -3,7 +3,7 @@
 Summary: A powerful retail system
 Name: stoq
 Version: 1.0.0
-Release: 1
+Release: 2
 License: GPL
 Group: System Environment/Libraries
 URL: http://www.stoq.com.br/
@@ -16,12 +16,12 @@ Requires: python-abi = %(%{__python} -c "import sys; print sys.version[:3]")
 Requires: python-dateutil >= 1.4.1
 Requires: python-imaging >= 1.1.5
 Requires: python-gudev >= 147
-Requires: python-kiwi >= 1.9.28
+Requires: python-kiwi >= 1.9.29
 Requires: python-mako >= 0.2.5
 Requires: python-psycopg2 >= 2.0.5
 Requires: python-reportlab >= 2.4
 Requires: python-zope-interface >= 3.0.1
-Requires: stoqdrivers >= 0.9.12
+Requires: stoqdrivers >= 0.9.13
 Requires: vte >= 0.28.0
 Requires: pywebkitgtk >= 1.1.7
 BuildRequires: python-kiwi >= 1.9.28
@@ -77,6 +77,9 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{python_sitelib}/stoqlib
 
 %changelog
+* Thu Jul 14 2011 Johan Dahlin <jdahlin@async.com.br> 1.0.0-2
+- Bump Stoqdrivers and kiwi dependencies
+
 * Thu Jul 14 2011 Johan Dahlin <jdahlin@async.com.br> 1.0.0-1
 - Release 1.0
 
