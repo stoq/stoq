@@ -155,15 +155,6 @@ class ApplicationRunner(object):
             self._application_cache[appdesc.name] = app
         else:
             app.main_window.activate()
-            # Possibly correct window position (livecd workaround for small
-            # screens)
-            manager = get_utility(IPluginManager)
-            if (sysparam(get_connection()).DEMO_MODE
-                and manager.is_active('ecf')):
-                pos = app.main_window.toplevel.get_position()
-                if pos[0] < 220:
-                    app.main_window.toplevel.move(220, pos[1])
-
 
         self._current_app = app
         self._appname = appdesc.name
@@ -174,6 +165,16 @@ class ApplicationRunner(object):
             return
 
         app.run()
+
+        # Possibly correct window position (livecd workaround for small
+        # screens)
+        manager = get_utility(IPluginManager)
+        if (sysparam(get_connection()).DEMO_MODE
+            and manager.is_active('ecf')):
+            pos = app.main_window.toplevel.get_position()
+            if pos[0] < 220:
+                app.main_window.toplevel.move(220, pos[1])
+
 
     def login(self, try_cookie=True):
         """
