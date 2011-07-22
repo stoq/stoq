@@ -510,12 +510,10 @@ class FinishPurchaseStep(WizardEditorStep):
         model =  run_person_role_dialog(TransporterEditor, self, trans,
                                         transporter)
         rv = finish_transaction(trans, model)
-        transporter = PersonAdaptToTransporter.get(model.id, connection=self.conn)
         trans.close()
         if rv:
             self._setup_transporter_entry()
-            if transporter is not None:
-                self.transporter.select(transporter)
+            self.transporter.select(model)
 
 
     #

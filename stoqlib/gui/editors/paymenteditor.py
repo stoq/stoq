@@ -163,23 +163,20 @@ class BasePaymentEditor(BaseEditor):
         category = trans.get(category)
         model = run_dialog(PaymentCategoryEditor, self, trans, category)
         rv = finish_transaction(trans, model)
-        category = PaymentCategory.get(model.id, connection=self.conn)
         trans.close()
         if rv:
             self._fill_category_combo()
-            if category is not None:
-                self.category.select(category)
+            self.category.select(model)
 
     def _run_person_editor(self, person=None):
         trans = new_transaction()
         person = trans.get(person)
         model = run_person_role_dialog(self.person_editor, self, trans, person)
         rv = finish_transaction(trans, model)
-        person_facet = self.person_class.get(model.id, connection=self.conn)
         trans.close()
         if rv:
             self._populate_person()
-            self.person.select(person_facet)
+            self.person.select(model)
 
     def _fill_category_combo(self):
         categories = PaymentCategory.select(
