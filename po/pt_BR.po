@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-21 18:07-0300\n"
-"PO-Revision-Date: 2011-07-21 20:25+0000\n"
-"Last-Translator: Thiago Bellini <thiago.bellini@hackedbellini.org>\n"
+"PO-Revision-Date: 2011-07-22 20:56+0000\n"
+"Last-Translator: Ronaldo Maia <mainha+lp@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-07-22 04:45+0000\n"
-"X-Generator: Launchpad (build 13405)\n"
+"X-Launchpad-Export-Date: 2011-07-22 21:08+0000\n"
+"X-Generator: Launchpad (build 13483)\n"
 "Language: \n"
 
 #: ../data/glade/AbstractItemStep.ui.h:1
@@ -636,7 +636,7 @@ msgstr "<b>Localização da base de dados</b>"
 
 #: ../data/glade/DatabaseLocationStep.ui.h:2
 msgid "I want to manually configure the database connection."
-msgstr ""
+msgstr "Quero configurar manualmente a conexão com a base de dados."
 
 #: ../data/glade/DatabaseLocationStep.ui.h:3
 msgid "I want to use Stoq just on this computer."
@@ -674,7 +674,7 @@ msgstr "Clique <b>Avançar</b> para continuar."
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:5
 msgid "Database Name:"
-msgstr "Nome da base de dados:"
+msgstr "Nome do Banco:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:6
 #: ../data/glade/PasswordEditorSlave.ui.h:2
@@ -843,11 +843,11 @@ msgstr "<b>Instalação completa</b>"
 
 #: ../data/glade/FinishInstallationStep.ui.h:2 ../stoq/main.py:287
 msgid "Enable online services"
-msgstr ""
+msgstr "Habilitar serviços online"
 
 #: ../data/glade/FinishInstallationStep.ui.h:3
 msgid "More information..."
-msgstr ""
+msgstr "Mais informações..."
 
 #: ../data/glade/FinishInstallationStep.ui.h:4
 msgid ""
@@ -1032,7 +1032,7 @@ msgstr "<b></b>"
 
 #: ../data/glade/InstallationModeStep.ui.h:1
 msgid "Create a database with examples in demonstration mode."
-msgstr ""
+msgstr "Criar uma base de dados com exemplos, em modo de demonstração"
 
 #: ../data/glade/InstallationModeStep.ui.h:2
 msgid "Create an empty database for production use."
@@ -2042,7 +2042,7 @@ msgstr "_Dinheiro"
 
 #: ../data/glade/SelectPaymentMethodSlave.ui.h:2
 msgid "Payment method:"
-msgstr ""
+msgstr "Forma de pagamento:"
 
 #: ../data/glade/SellableCategoryDataSlave.ui.h:3
 msgid "Base Category:"
@@ -3067,7 +3067,7 @@ msgstr "Computador"
 
 #: ../plugins/ecf/ecfprinterdialog.py:327
 msgid "Cant edit a virtual printer"
-msgstr ""
+msgstr "Não é permitido editar a impressora virtual"
 
 #: ../plugins/ecf/ecfui.py:86
 msgid "Summary"
@@ -3708,6 +3708,7 @@ msgstr ""
 #: ../stoq/gui/config.py:544
 msgid "Authorization failed, try again or connect to another database"
 msgstr ""
+"Autorização falhou, tente novamente ou conecte em uma outra base de dados"
 
 #: ../stoq/gui/config.py:580
 #, python-format
@@ -3804,7 +3805,7 @@ msgstr "Rodar o Stoq"
 
 #: ../stoq/gui/config.py:754 ../stoqlib/lib/parameters.py:537
 msgid "Online services"
-msgstr ""
+msgstr "Serviços online"
 
 #: ../stoq/gui/config.py:765
 msgid "Stoq - Installation"
@@ -3813,6 +3814,7 @@ msgstr "Stoq - Instalação"
 #: ../stoq/gui/config.py:852
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
+"A base de dados {dbname} em {address}:{port}  não é uma base do Stoq."
 
 #: ../stoq/gui/config.py:858
 msgid ""
@@ -3820,6 +3822,9 @@ msgid ""
 "database server {address}, however it is not a Stoq database or it was "
 "corrupted, please select another one."
 msgstr ""
+"O Stoq conseguiu conectar na base de dados {dbname} do servidor {address} "
+"com sucesso, porém, esta não é uma base do Stoq ou ela esta corrompida. Por "
+"favor, selecione outra."
 
 #: ../stoq/gui/financial.py:221 ../stoq/gui/financial.py:239
 #: ../stoq/gui/payable.py:155 ../stoq/gui/payable.py:159
@@ -4057,7 +4062,7 @@ msgstr "contendo:"
 
 #: ../stoq/gui/inventory.py:88
 msgid "Open I_nventry"
-msgstr ""
+msgstr "Abrir _inventário"
 
 #: ../stoq/gui/inventory.py:89
 msgid "_Count inventory..."
@@ -4185,7 +4190,7 @@ msgstr "Adicionar pagamento..."
 
 #: ../stoq/gui/payable.py:111 ../stoq/gui/receivable.py:138
 msgid "Cancel payment..."
-msgstr ""
+msgstr "Cancelar pagamento..."
 
 #: ../stoq/gui/payable.py:112 ../stoq/gui/receivable.py:139
 msgid "Set as not paid..."
@@ -4201,15 +4206,15 @@ msgstr "Comentários..."
 
 #: ../stoq/gui/payable.py:116 ../stoq/gui/receivable.py:145
 msgid "Print _receipt"
-msgstr ""
+msgstr "Imprimir _recibo"
 
 #: ../stoq/gui/payable.py:117 ../stoq/gui/receivable.py:147
 msgid "Payment _flow history..."
-msgstr ""
+msgstr "Histórico de _fluxo de pagamentos"
 
 #: ../stoq/gui/payable.py:125 ../stoq/gui/receivable.py:154
 msgid "Bill and check..."
-msgstr "Boleto e cheque..."
+msgstr "Boletos e cheques..."
 
 #: ../stoq/gui/payable.py:129
 msgid "Accounts payable help"
@@ -4477,15 +4482,15 @@ msgstr "_Produção"
 
 #: ../stoq/gui/production.py:98
 msgid "New production order..."
-msgstr ""
+msgstr "Nova ordem de produção..."
 
 #: ../stoq/gui/production.py:100
 msgid "Start production..."
-msgstr ""
+msgstr "Iniciar produção..."
 
 #: ../stoq/gui/production.py:102
 msgid "New Purchase Quote..."
-msgstr ""
+msgstr "Nova cotação de compra..."
 
 #: ../stoq/gui/production.py:111
 msgid "Production items..."
@@ -4549,7 +4554,7 @@ msgstr "Novo pedido..."
 
 #: ../stoq/gui/purchase.py:137
 msgid "New quote..."
-msgstr ""
+msgstr "Nova cotação..."
 
 #: ../stoq/gui/purchase.py:138
 msgid "Finish order..."
@@ -4561,7 +4566,7 @@ msgstr "Confirmar pedido..."
 
 #: ../stoq/gui/purchase.py:140
 msgid "_Stock cost..."
-msgstr ""
+msgstr "Custo do e_stoque..."
 
 #: ../stoq/gui/purchase.py:141
 msgid "Production..."
@@ -4708,7 +4713,7 @@ msgstr "Renegociar pagamentos..."
 
 #: ../stoq/gui/receivable.py:155
 msgid "Card payment..."
-msgstr "Pagamento com cartão..."
+msgstr "Pagamentos com cartão..."
 
 #: ../stoq/gui/receivable.py:158
 msgid "Accounts receivable help"
@@ -4875,7 +4880,7 @@ msgstr "Registrar estoque inicial..."
 
 #: ../stoq/gui/stock.py:130
 msgid "Toggle picture viewer"
-msgstr ""
+msgstr "Alternar visualizador de imagens"
 
 #: ../stoq/gui/stock.py:144
 msgid "Received purchases..."
@@ -4933,11 +4938,11 @@ msgstr "Caixa"
 
 #: ../stoq/gui/till.py:119
 msgid "Open till..."
-msgstr ""
+msgstr "Abrir caixa..."
 
 #: ../stoq/gui/till.py:120
 msgid "Close till..."
-msgstr ""
+msgstr "Fechar caixa..."
 
 #: ../stoq/gui/till.py:121
 msgid "Add cash..."
@@ -4953,7 +4958,7 @@ msgstr "Histórico do caixa..."
 
 #: ../stoq/gui/till.py:136
 msgid "Fiscal till operations..."
-msgstr ""
+msgstr "Operações fiscais do caixa..."
 
 #: ../stoq/gui/till.py:141
 msgid "Till help"
@@ -5081,7 +5086,7 @@ msgstr "Atualizando o Stoq"
 
 #: ../stoq/gui/welcomedialog.py:51
 msgid "_Start using Stoq"
-msgstr ""
+msgstr "_Começar a usar Stoq"
 
 #: ../stoq/gui/welcomedialog.py:53
 msgid "Welcome to Stoq"
@@ -5263,6 +5268,14 @@ msgid ""
 "<b>We will not disclose the collected information and we are committed to "
 "keeping your privacy intact.</b>"
 msgstr ""
+"Uma das novas funcionalidades do Stoq 1.0 é o suporte a serviços online. "
+"Funcionalidades utilizando os serviços online incluem relatórios de erros e "
+"notificações de atualização. Mais serviços estão em desenvolvimento. Para "
+"podermos oferecer um serviço melhor e identificar devidamente o usuário, nós "
+"iremos coletar o CNPJ da empresa principal e o endereço de ip.\n"
+"\n"
+"<b>Nós não iremos divulgar as informações coletadas e estamos comprometidos "
+"em manter a sua privacidade intacta.</b>"
 
 #: ../stoq/main.py:253
 msgid "You need to register a company before start using Stoq"
@@ -5277,11 +5290,11 @@ msgstr ""
 
 #: ../stoq/main.py:286
 msgid "Not right now"
-msgstr ""
+msgstr "Não agora"
 
 #: ../stoq/main.py:289
 msgid "Do you want to enable Stoq online services?"
-msgstr ""
+msgstr "Você gostaria de habilitar os serviços online do Stoq?"
 
 #: ../stoq/main.py:373
 msgid "Could not open the database config file"
@@ -6255,7 +6268,7 @@ msgstr "Comentário do pagamento"
 
 #: ../stoqlib/gui/dialogs/paymentflowhistorydialog.py:44
 msgid "Payment Flow History Dialog"
-msgstr "Histórico de fluxo de pagamento"
+msgstr "Histórico de fluxo de pagamentos"
 
 #: ../stoqlib/gui/dialogs/paymentflowhistorydialog.py:71
 msgid "No payment history found."
@@ -7459,7 +7472,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/sellableeditor.py:437
 msgid "Keep closed"
-msgstr ""
+msgstr "Manter fechado"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:463
 msgid "The code can not be empty."
@@ -8815,11 +8828,11 @@ msgstr "Mais %i endereços..."
 
 #: ../stoqlib/gui/wizards/abstractwizard.py:87
 msgid "_Select products"
-msgstr ""
+msgstr "_Selecionar produtos"
 
 #: ../stoqlib/gui/wizards/abstractwizard.py:89
 msgid "_Select product"
-msgstr ""
+msgstr "_Selecionar produto"
 
 #: ../stoqlib/gui/wizards/abstractwizard.py:120
 msgid "Minimum Qty"
@@ -9075,7 +9088,7 @@ msgstr "Quantidade abaixo do mínimo requirido pelo fornecedor"
 
 #: ../stoqlib/gui/wizards/purchasewizard.py:430
 msgid "Edit the selected transporter"
-msgstr ""
+msgstr "Editar a transportadora selecionada"
 
 #: ../stoqlib/gui/wizards/purchasewizard.py:571
 msgid "New Order"
@@ -10941,6 +10954,8 @@ msgid ""
 "If online services such as upgrade notifications, automatic crash reports "
 "should be enabled."
 msgstr ""
+"Se serviços online, como notificações de atualização e relatórios "
+"automáticos de erros devem ser habilitados."
 
 #: ../stoqlib/lib/parameters.py:853
 #, python-format
