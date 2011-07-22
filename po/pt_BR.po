@@ -23,14 +23,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-20 15:41-0300\n"
-"PO-Revision-Date: 2011-07-19 20:53+0000\n"
+"POT-Creation-Date: 2011-07-21 18:07-0300\n"
+"PO-Revision-Date: 2011-07-21 20:25+0000\n"
 "Last-Translator: Thiago Bellini <thiago.bellini@hackedbellini.org>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-07-21 04:43+0000\n"
+"X-Launchpad-Export-Date: 2011-07-22 04:45+0000\n"
 "X-Generator: Launchpad (build 13405)\n"
 "Language: \n"
 
@@ -292,7 +292,7 @@ msgstr "Imposto:"
 #: ../data/glade/DeviceSettingsEditor.ui.h:1
 #: ../data/glade/TransporterDataSlave.ui.h:3
 #: ../data/glade/UserStatusSlave.ui.h:1 ../plugins/books/booksdomain.py:47
-#: ../plugins/ecf/ecfdomain.py:205 ../plugins/ecf/ecfprinterdialog.py:302
+#: ../plugins/ecf/ecfdomain.py:205 ../plugins/ecf/ecfprinterdialog.py:309
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:2
 #: ../stoqlib/domain/devices.py:137 ../stoqlib/domain/payment/method.py:154
 #: ../stoqlib/domain/person.py:374 ../stoqlib/domain/person.py:621
@@ -475,17 +475,17 @@ msgstr "Produtos"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:6
 #: ../data/glade/ProductStockHistoryDialog.ui.h:6 ../stoq/gui/sales.py:64
-#: ../stoq/lib/applist.py:60 ../stoqlib/lib/parameters.py:92
-#: ../stoqlib/lib/parameters.py:122 ../stoqlib/lib/parameters.py:136
-#: ../stoqlib/lib/parameters.py:142 ../stoqlib/lib/parameters.py:150
-#: ../stoqlib/lib/parameters.py:174 ../stoqlib/lib/parameters.py:180
-#: ../stoqlib/lib/parameters.py:192 ../stoqlib/lib/parameters.py:199
-#: ../stoqlib/lib/parameters.py:206 ../stoqlib/lib/parameters.py:213
-#: ../stoqlib/lib/parameters.py:218 ../stoqlib/lib/parameters.py:226
-#: ../stoqlib/lib/parameters.py:233 ../stoqlib/lib/parameters.py:239
-#: ../stoqlib/lib/parameters.py:245 ../stoqlib/lib/parameters.py:263
-#: ../stoqlib/lib/parameters.py:270 ../stoqlib/lib/parameters.py:277
-#: ../stoqlib/lib/parameters.py:290 ../stoqlib/lib/parameters.py:307
+#: ../stoq/lib/applist.py:60 ../stoqlib/lib/parameters.py:177
+#: ../stoqlib/lib/parameters.py:218 ../stoqlib/lib/parameters.py:236
+#: ../stoqlib/lib/parameters.py:244 ../stoqlib/lib/parameters.py:254
+#: ../stoqlib/lib/parameters.py:286 ../stoqlib/lib/parameters.py:294
+#: ../stoqlib/lib/parameters.py:309 ../stoqlib/lib/parameters.py:318
+#: ../stoqlib/lib/parameters.py:327 ../stoqlib/lib/parameters.py:336
+#: ../stoqlib/lib/parameters.py:344 ../stoqlib/lib/parameters.py:354
+#: ../stoqlib/lib/parameters.py:362 ../stoqlib/lib/parameters.py:370
+#: ../stoqlib/lib/parameters.py:378 ../stoqlib/lib/parameters.py:402
+#: ../stoqlib/lib/parameters.py:412 ../stoqlib/lib/parameters.py:422
+#: ../stoqlib/lib/parameters.py:442 ../stoqlib/lib/parameters.py:465
 #: ../stoqlib/reporting/sale.py:251
 msgid "Sales"
 msgstr "Vendas"
@@ -548,7 +548,7 @@ msgstr ""
 "<b>Itens consignados - Preencha as quantidades vendidas e retornadas deste "
 "item:</b>"
 
-#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:600
+#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:641
 msgid ""
 "Creating a new database for Stoq, depending on the speed of your computer "
 "and the server it may take a couple of minutes to finish."
@@ -635,8 +635,8 @@ msgid "<b>Database location</b>"
 msgstr "<b>Localização da base de dados</b>"
 
 #: ../data/glade/DatabaseLocationStep.ui.h:2
-msgid "I want to manualy configure the database connection."
-msgstr "Eu quero configurar a conexão da base de dados manualmente."
+msgid "I want to manually configure the database connection."
+msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:3
 msgid "I want to use Stoq just on this computer."
@@ -841,7 +841,15 @@ msgstr "Não, é um novo cliente"
 msgid "<b>Installation complete</b>"
 msgstr "<b>Instalação completa</b>"
 
-#: ../data/glade/FinishInstallationStep.ui.h:2
+#: ../data/glade/FinishInstallationStep.ui.h:2 ../stoq/main.py:287
+msgid "Enable online services"
+msgstr ""
+
+#: ../data/glade/FinishInstallationStep.ui.h:3
+msgid "More information..."
+msgstr ""
+
+#: ../data/glade/FinishInstallationStep.ui.h:4
 msgid ""
 "Stoq was successfully installed in your system!\n"
 "\n"
@@ -1023,8 +1031,8 @@ msgid "<b></b>"
 msgstr "<b></b>"
 
 #: ../data/glade/InstallationModeStep.ui.h:1
-msgid "Create a database with example in demonstration mode."
-msgstr "Criar uma base de dados com exemplos no modo de demonstração."
+msgid "Create a database with examples in demonstration mode."
+msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:2
 msgid "Create an empty database for production use."
@@ -2063,7 +2071,9 @@ msgstr "Custo ($CURRENCY):"
 
 #: ../data/glade/SellableEditor.ui.h:9
 msgid "Default Sales C.F.O.P.:"
-msgstr "C.F.O.P. padrão para vendas:"
+msgstr ""
+"C.F.O.P. padrão\r\n"
+"para vendas:"
 
 #: ../data/glade/SellableEditor.ui.h:11 ../stoqlib/gui/base/dialogs.py:473
 #: ../stoqlib/gui/dialogs/productiondialog.py:157
@@ -2245,12 +2255,13 @@ msgstr "Situação do fornecedor:"
 msgid "Current Value:"
 msgstr "Valor atual:"
 
-#: ../data/glade/SystemParameterEditor.ui.h:2 ../stoqlib/lib/parameters.py:72
-#: ../stoqlib/lib/parameters.py:77 ../stoqlib/lib/parameters.py:85
-#: ../stoqlib/lib/parameters.py:156 ../stoqlib/lib/parameters.py:162
-#: ../stoqlib/lib/parameters.py:168 ../stoqlib/lib/parameters.py:186
-#: ../stoqlib/lib/parameters.py:284 ../stoqlib/lib/parameters.py:296
-#: ../stoqlib/lib/parameters.py:301 ../stoqlib/lib/parameters.py:346
+#: ../data/glade/SystemParameterEditor.ui.h:2 ../stoqlib/lib/parameters.py:151
+#: ../stoqlib/lib/parameters.py:159 ../stoqlib/lib/parameters.py:168
+#: ../stoqlib/lib/parameters.py:262 ../stoqlib/lib/parameters.py:270
+#: ../stoqlib/lib/parameters.py:278 ../stoqlib/lib/parameters.py:301
+#: ../stoqlib/lib/parameters.py:433 ../stoqlib/lib/parameters.py:450
+#: ../stoqlib/lib/parameters.py:457 ../stoqlib/lib/parameters.py:524
+#: ../stoqlib/lib/parameters.py:536
 msgid "General"
 msgstr "Geral"
 
@@ -2436,8 +2447,8 @@ msgid "admin"
 msgstr "admin"
 
 #: ../data/glade/financial.ui.h:1 ../stoq/gui/financial.py:428
-#: ../stoq/gui/financial.py:520 ../stoqlib/lib/parameters.py:331
-#: ../stoqlib/lib/parameters.py:336 ../stoqlib/lib/parameters.py:341
+#: ../stoq/gui/financial.py:520 ../stoqlib/lib/parameters.py:503
+#: ../stoqlib/lib/parameters.py:510 ../stoqlib/lib/parameters.py:517
 msgid "Accounts"
 msgstr "Contas"
 
@@ -2987,22 +2998,22 @@ msgstr "A data final deve ser anterior a data atual"
 msgid "This number must be positive and greater than 0"
 msgstr "Este número deve ser positivo e maior que 0"
 
-#: ../plugins/ecf/ecfprinterdialog.py:67
+#: ../plugins/ecf/ecfprinterdialog.py:68
 msgid "Fiscal Printer"
 msgstr "Impressora fiscal"
 
-#: ../plugins/ecf/ecfprinterdialog.py:122
+#: ../plugins/ecf/ecfprinterdialog.py:123
 #, python-format
 msgid "Probing for a %s printer on %s"
 msgstr "Procurando por uma impressora %s em %s"
 
-#: ../plugins/ecf/ecfprinterdialog.py:134
+#: ../plugins/ecf/ecfprinterdialog.py:135
 #, python-format
 msgid "You need to close the till opened at %s before changing this printer."
 msgstr ""
 "Você precisa fechar o caixa aberto em %s antes de mudar essa impressora."
 
-#: ../plugins/ecf/ecfprinterdialog.py:139
+#: ../plugins/ecf/ecfprinterdialog.py:140
 #, python-format
 msgid ""
 "The ECF %s is already active for this station. Deactivate that printer "
@@ -3011,7 +3022,7 @@ msgstr ""
 "A ECF %s já está ativada para esta estação. Desative primeiro esta "
 "impressora, para depois ativar uma outra"
 
-#: ../plugins/ecf/ecfprinterdialog.py:174
+#: ../plugins/ecf/ecfprinterdialog.py:175
 msgid ""
 "An ECF Printer was added. You need to restart Stoq before using it. Would "
 "you like to restart it now?"
@@ -3019,42 +3030,42 @@ msgstr ""
 "Uma impressora fiscal foi adicionada. Você precisa reiniciar o Stoq antes de "
 "utiliza-lo. Gostaria de reiniciar agora?"
 
-#: ../plugins/ecf/ecfprinterdialog.py:176
+#: ../plugins/ecf/ecfprinterdialog.py:177
 msgid "Restart later"
 msgstr "Reiniciar depois"
 
-#: ../plugins/ecf/ecfprinterdialog.py:176
+#: ../plugins/ecf/ecfprinterdialog.py:177
 msgid "Restart now"
 msgstr "Reiniciar agora"
 
-#: ../plugins/ecf/ecfprinterdialog.py:186
+#: ../plugins/ecf/ecfprinterdialog.py:187
 #, python-format
 msgid "Could not find a %s printer connected to %s"
 msgstr "Não foi possível encontrar uma impressora %s conectada em %s"
 
-#: ../plugins/ecf/ecfprinterdialog.py:215
+#: ../plugins/ecf/ecfprinterdialog.py:222
 msgid "This printer is already known to the system"
 msgstr "Esta impressora já está instalada no sistema"
 
-#: ../plugins/ecf/ecfprinterdialog.py:294 ../plugins/ecf/ecfui.py:124
+#: ../plugins/ecf/ecfprinterdialog.py:301 ../plugins/ecf/ecfui.py:124
 msgid "Fiscal Printers"
 msgstr "Impressoras fiscais"
 
-#: ../plugins/ecf/ecfprinterdialog.py:299
+#: ../plugins/ecf/ecfprinterdialog.py:306
 msgid "Model"
 msgstr "Modelo"
 
-#: ../plugins/ecf/ecfprinterdialog.py:300
+#: ../plugins/ecf/ecfprinterdialog.py:307
 msgid "Serial"
 msgstr "Serial"
 
-#: ../plugins/ecf/ecfprinterdialog.py:301 ../stoqlib/gui/dialogs/devices.py:51
+#: ../plugins/ecf/ecfprinterdialog.py:308 ../stoqlib/gui/dialogs/devices.py:51
 #: ../stoqlib/gui/editors/stationeditor.py:36
 #: ../stoqlib/gui/search/stationsearch.py:41
 msgid "Computer"
 msgstr "Computador"
 
-#: ../plugins/ecf/ecfprinterdialog.py:320
+#: ../plugins/ecf/ecfprinterdialog.py:327
 msgid "Cant edit a virtual printer"
 msgstr ""
 
@@ -3349,7 +3360,7 @@ msgstr "Administrativo"
 
 #. Admin
 #: ../stoq/gui/admin.py:286
-msgid "Admin"
+msgid "_Admin"
 msgstr "Admin"
 
 #. Search
@@ -3445,7 +3456,7 @@ msgstr "Parâmetros..."
 msgid "Admin help"
 msgstr "Ajuda do admin"
 
-#: ../stoq/gui/application.py:107
+#: ../stoq/gui/application.py:108
 msgid ""
 "You are currently using an <b>unstable version</b> of Stoq that is under "
 "development,\n"
@@ -3458,7 +3469,7 @@ msgstr ""
 "mesmo corromper os seus dados\n"
 "<b>Não utilize em produção.</b>"
 
-#: ../stoq/gui/application.py:113
+#: ../stoq/gui/application.py:114
 msgid ""
 "There is an inventory process open at the moment.\n"
 "While that inventory is open, you will be unable to do operations that "
@@ -3468,15 +3479,15 @@ msgstr ""
 "Enquanto esse inventário é aberto, você não será capaz de realizar operações "
 "que modifiquem seu estoque."
 
-#: ../stoq/gui/application.py:136 ../stoq/gui/application.py:476
+#: ../stoq/gui/application.py:137 ../stoq/gui/application.py:483
 msgid "Enable production mode"
 msgstr "Habilitar modo de produção"
 
-#: ../stoq/gui/application.py:137
+#: ../stoq/gui/application.py:138
 msgid "You are using Stoq in demonstration mode."
 msgstr "Você está utilizando o Stoq em modo de demonstração"
 
-#: ../stoq/gui/application.py:138
+#: ../stoq/gui/application.py:139
 #, python-format
 msgid ""
 "Some features are limited due to fiscal reasons. Click on '%s' to remove the "
@@ -3486,154 +3497,154 @@ msgstr ""
 "remover essas limitações e os exemplos."
 
 #. This method must be redefined in child when it's needed
-#: ../stoq/gui/application.py:260
+#: ../stoq/gui/application.py:267
 #, python-format
 msgid "Stoq - %s"
 msgstr "Stoq - %s"
 
-#: ../stoq/gui/application.py:315
+#: ../stoq/gui/application.py:322
 msgid "_Help"
 msgstr "_Ajuda"
 
-#: ../stoq/gui/application.py:316
+#: ../stoq/gui/application.py:323
 msgid "Contents"
 msgstr "Conteúdo"
 
-#: ../stoq/gui/application.py:318
+#: ../stoq/gui/application.py:325
 msgid "Show help for this Application"
 msgstr "Exibir ajuda para este aplicativo"
 
-#: ../stoq/gui/application.py:320
+#: ../stoq/gui/application.py:327
 msgid "Translate Stoq..."
 msgstr "Traduza o Stoq..."
 
-#: ../stoq/gui/application.py:321
+#: ../stoq/gui/application.py:328
 msgid "Translate this application online"
 msgstr "Traduza este aplicativo online"
 
-#: ../stoq/gui/application.py:322
+#: ../stoq/gui/application.py:329
 msgid "Get support online..."
 msgstr "Encontre suporte online..."
 
-#: ../stoq/gui/application.py:323
+#: ../stoq/gui/application.py:330
 msgid "Get support for Stoq online"
 msgstr "Encontre suporte online para o Stoq"
 
-#: ../stoq/gui/application.py:345
+#: ../stoq/gui/application.py:352
 #, python-format
 msgid "%s User"
 msgstr "Usuário %s"
 
-#: ../stoq/gui/application.py:346
+#: ../stoq/gui/application.py:353
 msgid "_Store"
 msgstr "_Gravar"
 
-#: ../stoq/gui/application.py:347
+#: ../stoq/gui/application.py:354
 msgid "Store a cookie"
 msgstr "Gravar cookie"
 
-#: ../stoq/gui/application.py:348
+#: ../stoq/gui/application.py:355
 msgid "_Clear"
 msgstr "_Limpar"
 
-#: ../stoq/gui/application.py:349
+#: ../stoq/gui/application.py:356
 msgid "Clear the cookie"
 msgstr "Limpar cookie"
 
-#: ../stoq/gui/application.py:350
+#: ../stoq/gui/application.py:357
 msgid "Chan_ge Password"
 msgstr "Alterar _senha"
 
-#: ../stoq/gui/application.py:351
+#: ../stoq/gui/application.py:358
 msgid "Change the password"
 msgstr "Alterar a senha"
 
-#: ../stoq/gui/application.py:352
+#: ../stoq/gui/application.py:359
 msgid "C_hange User"
 msgstr "_Trocar usuário"
 
-#: ../stoq/gui/application.py:353
+#: ../stoq/gui/application.py:360
 msgid "Change user"
 msgstr "Trocar usuário"
 
-#: ../stoq/gui/application.py:354
+#: ../stoq/gui/application.py:361
 msgid "Change Application"
 msgstr "Alternar aplicativo"
 
-#: ../stoq/gui/application.py:355
+#: ../stoq/gui/application.py:362
 msgid "Change application"
 msgstr "Alternar aplicativo"
 
-#: ../stoq/gui/application.py:376
+#: ../stoq/gui/application.py:383
 msgid "Debug"
 msgstr "Debug"
 
-#: ../stoq/gui/application.py:377
+#: ../stoq/gui/application.py:384
 msgid "Introspect slaves"
 msgstr "Introspectar slave"
 
-#: ../stoq/gui/application.py:472
+#: ../stoq/gui/application.py:479
 msgid ""
 "This will enable production mode and delete all examples. Are you sure?"
 msgstr ""
 "Isto irá habilitar o modo de produção e deletar todos os exemplos. Você tem "
 "certeza?"
 
-#: ../stoq/gui/application.py:475
+#: ../stoq/gui/application.py:482
 msgid "Continue testing"
 msgstr "Continuar testando"
 
-#: ../stoq/gui/application.py:495
+#: ../stoq/gui/application.py:502
 msgid "Search:"
 msgstr "Pesquisar:"
 
-#: ../stoq/gui/application.py:599
+#: ../stoq/gui/application.py:606
 msgid "Learn More..."
 msgstr "Saiba mais..."
 
-#: ../stoq/gui/application.py:600
+#: ../stoq/gui/application.py:607
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr "<b>Está disponível uma nova versão do Stoq (%s)</b>"
 
-#: ../stoq/gui/config.py:185
+#: ../stoq/gui/config.py:202
 #, python-format
 msgid "The database address '%s' is invalid. Please fix it and try again"
 msgstr ""
 "O endereço '%s' da base de dados é inválido. Por favor, conserte ele e tente "
 "de novo"
 
-#: ../stoq/gui/config.py:188 ../stoq/gui/config.py:193
+#: ../stoq/gui/config.py:205 ../stoq/gui/config.py:210
 msgid "Invalid database address"
 msgstr "Endereço da base de dados inválido"
 
-#: ../stoq/gui/config.py:223
+#: ../stoq/gui/config.py:240
 msgid "Needs Password"
 msgstr "Necessita de senha"
 
-#: ../stoq/gui/config.py:224
+#: ../stoq/gui/config.py:241
 msgid "Trust"
 msgstr "Confiável"
 
-#: ../stoq/gui/config.py:339 ../stoqlib/gui/dialogs/crashreportdialog.py:99
+#: ../stoq/gui/config.py:365 ../stoqlib/gui/dialogs/crashreportdialog.py:99
 msgid "Sending..."
 msgstr "Enviando..."
 
-#: ../stoq/gui/config.py:357
+#: ../stoq/gui/config.py:383
 #, python-format
 msgid "%s is not a valid email"
 msgstr "%s não é um email válido"
 
-#: ../stoq/gui/config.py:361
+#: ../stoq/gui/config.py:387
 #, python-format
 msgid "%s is not a valid phone"
 msgstr "%s não é um telefone válido"
 
-#: ../stoq/gui/config.py:388
+#: ../stoq/gui/config.py:418
 msgid "Administrator account"
 msgstr "Conta de administrador"
 
-#: ../stoq/gui/config.py:391
+#: ../stoq/gui/config.py:421
 #, python-format
 msgid ""
 "I'm adding a user account called <b>%s</b> which will have administrator "
@@ -3648,11 +3659,11 @@ msgstr ""
 "Para poder criar outros usuários, você precisa fazer login com este usuário "
 "no aplicativo admin e criá-los."
 
-#: ../stoq/gui/config.py:440
+#: ../stoq/gui/config.py:470
 msgid "Forward"
 msgstr "Avançar"
 
-#: ../stoq/gui/config.py:445
+#: ../stoq/gui/config.py:475
 msgid ""
 "The installation guide will now install the packages for you using apt, it "
 "may ask you for your password to continue."
@@ -3661,13 +3672,13 @@ msgstr ""
 "pode perguntar a sua senha para continuar."
 
 #. Translators: %s is the string "Forward"
-#: ../stoq/gui/config.py:449
+#: ../stoq/gui/config.py:479
 #, python-format
 msgid "Click %s to begin installing the PostgreSQL server."
-msgstr "Clique em %s para iniciar a instalação do servidor PotgreSQL."
+msgstr "Clique em %s para iniciar a instalação do servidor PostgreSQL."
 
 #. Translators: %s is the string "Forward"
-#: ../stoq/gui/config.py:454
+#: ../stoq/gui/config.py:484
 #, python-format
 msgid ""
 "Click %s to continue when you have installed PostgreSQL server on this "
@@ -3676,16 +3687,16 @@ msgstr ""
 "Quando a instalação do servidor PostgreSQL neste computador terminar, clique "
 "em %s para continuar ."
 
-#: ../stoq/gui/config.py:476
+#: ../stoq/gui/config.py:507
 msgid "Please wait while the package installation is completing."
 msgstr ""
 "Por favor espere enquanto a instalação do pacote está sendo realizada."
 
-#: ../stoq/gui/config.py:495
+#: ../stoq/gui/config.py:526
 msgid "Something went wrong while trying to install the PostgreSQL server."
 msgstr "Algo deu errado enquanto tentava-se instalar o servidor PostgreSQL."
 
-#: ../stoq/gui/config.py:498
+#: ../stoq/gui/config.py:529
 msgid ""
 "Sorry, something went wrong while installing PostgreSQL, try again manually "
 "or go back and configure Stoq to connect to another."
@@ -3694,12 +3705,16 @@ msgstr ""
 "novamente manualmente ou retorne e configure o Stoq para se conectar em "
 "outro."
 
-#: ../stoq/gui/config.py:540
+#: ../stoq/gui/config.py:544
+msgid "Authorization failed, try again or connect to another database"
+msgstr ""
+
+#: ../stoq/gui/config.py:580
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
 msgstr "Stoq requer PostgresSQL 8.1 ou posterior, mas %s foi encontrado"
 
-#: ../stoq/gui/config.py:547
+#: ../stoq/gui/config.py:587
 #, python-format
 msgid ""
 "The specifed database '%s' does not exist.\n"
@@ -3708,48 +3723,48 @@ msgstr ""
 "A base de dados '%s' não existe.\n"
 "Você deseja criá-la?"
 
-#: ../stoq/gui/config.py:549
+#: ../stoq/gui/config.py:589
 msgid "Don't create"
 msgstr "Não criar"
 
-#: ../stoq/gui/config.py:549
+#: ../stoq/gui/config.py:589
 msgid "Create database"
 msgstr "Criar base de dados"
 
-#: ../stoq/gui/config.py:603
+#: ../stoq/gui/config.py:644
 msgid "Creating database..."
 msgstr "Criando base de dados..."
 
-#: ../stoq/gui/config.py:607
+#: ../stoq/gui/config.py:648
 msgid "Please wait while the database is being created."
 msgstr "Por favor espere enquanto a base de dados está sendo criada."
 
-#: ../stoq/gui/config.py:617
+#: ../stoq/gui/config.py:658
 msgid "Creating base schema..."
 msgstr "Criando esquema da base de dados..."
 
-#: ../stoq/gui/config.py:621
+#: ../stoq/gui/config.py:662
 msgid "Creating schema, applying patches..."
 msgstr "Criando esquema, aplicando patches..."
 
-#: ../stoq/gui/config.py:626
+#: ../stoq/gui/config.py:667
 #, python-format
 msgid "Creating schema, applying patch %d ..."
 msgstr "Criando esquema, aplicando patch %d ..."
 
-#: ../stoq/gui/config.py:628
+#: ../stoq/gui/config.py:669
 msgid "Creating additional database objects ..."
 msgstr "Criando objetos adicionais da base de dados ..."
 
-#: ../stoq/gui/config.py:631
+#: ../stoq/gui/config.py:672
 msgid "Creating examples ..."
 msgstr "Criando exemplos ..."
 
-#: ../stoq/gui/config.py:634
+#: ../stoq/gui/config.py:675
 msgid "Activating plugins ..."
 msgstr "Ativando plugins ..."
 
-#: ../stoq/gui/config.py:636
+#: ../stoq/gui/config.py:677
 msgid "This may take some time."
 msgstr "Este processo pode levar algum tempo."
 
@@ -3757,39 +3772,54 @@ msgstr "Este processo pode levar algum tempo."
 #. - pressed cancel in the authentication popup
 #. - user erred the password 3 times
 #. Allow him to try again
-#: ../stoq/gui/config.py:652
+#: ../stoq/gui/config.py:693
 msgid "Something went wrong while trying to create the database. Try again?"
 msgstr ""
 "Algo deu errado ao tentar criar a base de dados. Deseja tentar de novo?"
 
-#: ../stoq/gui/config.py:654
+#: ../stoq/gui/config.py:695
 msgid "Change settings"
 msgstr "Editar configurações"
 
-#: ../stoq/gui/config.py:654 ../stoq/gui/pos.py:766 ../stoq/gui/till.py:287
+#: ../stoq/gui/config.py:695 ../stoq/gui/pos.py:766 ../stoq/gui/till.py:287
 msgid "Try again"
 msgstr "Tentar novamente"
 
-#: ../stoq/gui/config.py:661
+#: ../stoq/gui/config.py:702
 msgid "Something went wrong while trying to create the Stoq database"
 msgstr "Algo deu errado ao tentar criar a base de dados do Stoq"
 
-#: ../stoq/gui/config.py:667
+#: ../stoq/gui/config.py:708
 msgid "Done."
 msgstr "Concluído."
 
-#: ../stoq/gui/config.py:671
+#: ../stoq/gui/config.py:712
 msgid "Installation successful, click <b>Forward</b> to continue."
 msgstr ""
 "Instalação realizada com sucesso, clique em <b>Avançar</b> para continuar."
 
-#: ../stoq/gui/config.py:693
+#: ../stoq/gui/config.py:734
 msgid "Run Stoq"
 msgstr "Rodar o Stoq"
 
-#: ../stoq/gui/config.py:707
+#: ../stoq/gui/config.py:754 ../stoqlib/lib/parameters.py:537
+msgid "Online services"
+msgstr ""
+
+#: ../stoq/gui/config.py:765
 msgid "Stoq - Installation"
 msgstr "Stoq - Instalação"
+
+#: ../stoq/gui/config.py:852
+msgid "Database {dbname} at {address}:{port} is not a Stoq database."
+msgstr ""
+
+#: ../stoq/gui/config.py:858
+msgid ""
+"Stoq was able to succesfully connect to the database {dbname} at the "
+"database server {address}, however it is not a Stoq database or it was "
+"corrupted, please select another one."
+msgstr ""
 
 #: ../stoq/gui/financial.py:221 ../stoq/gui/financial.py:239
 #: ../stoq/gui/payable.py:155 ../stoq/gui/payable.py:159
@@ -4472,9 +4502,9 @@ msgstr "Nova produção"
 
 #: ../stoq/gui/production.py:119 ../stoq/gui/purchase.py:69
 #: ../stoq/lib/applist.py:54 ../stoqlib/lib/invoice.py:317
-#: ../stoqlib/lib/parameters.py:98 ../stoqlib/lib/parameters.py:104
-#: ../stoqlib/lib/parameters.py:110 ../stoqlib/lib/parameters.py:116
-#: ../stoqlib/lib/parameters.py:251
+#: ../stoqlib/lib/parameters.py:186 ../stoqlib/lib/parameters.py:194
+#: ../stoqlib/lib/parameters.py:202 ../stoqlib/lib/parameters.py:210
+#: ../stoqlib/lib/parameters.py:386
 msgid "Purchase"
 msgstr "Compras"
 
@@ -4689,7 +4719,7 @@ msgstr "Ajuda do contas a receber"
 msgid "Drawee"
 msgstr "Sacado"
 
-#: ../stoq/gui/runner.py:144
+#: ../stoq/gui/runner.py:145
 #, python-format
 msgid ""
 "This user lacks credentials \n"
@@ -4818,7 +4848,7 @@ msgstr "Isto irá cancelar a cotação selecionada. Você tem certeza?"
 #: ../stoqlib/gui/search/productsearch.py:184
 #: ../stoqlib/gui/search/sellablesearch.py:154
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:125
-#: ../stoqlib/lib/parameters.py:127 ../stoqlib/lib/parameters.py:257
+#: ../stoqlib/lib/parameters.py:225 ../stoqlib/lib/parameters.py:394
 msgid "Stock"
 msgstr "Estoque"
 
@@ -4985,24 +5015,24 @@ msgstr "Caixa bloqueado de um dia anterior"
 msgid "Till opened on <b>%s</b>"
 msgstr "Caixa aberto em <b>%s</b>"
 
-#: ../stoq/gui/update.py:88
+#: ../stoq/gui/update.py:89
 #, python-format
 msgid "Applying patch %s ..."
 msgstr "Aplicando patch %s"
 
-#: ../stoq/gui/update.py:90
+#: ../stoq/gui/update.py:91
 msgid "Creating a database backup"
 msgstr "Criando backup da base de dados."
 
-#: ../stoq/gui/update.py:91
+#: ../stoq/gui/update.py:92
 msgid "Creating a database backup in case anything goes wrong."
 msgstr "Criando um backup da base de dados caso algum erro aconteça."
 
-#: ../stoq/gui/update.py:93
+#: ../stoq/gui/update.py:94
 msgid "Restoring database backup"
 msgstr "Restaurando backup da base de dados"
 
-#: ../stoq/gui/update.py:95
+#: ../stoq/gui/update.py:96
 msgid ""
 "Stoq update failed.\n"
 "\n"
@@ -5016,11 +5046,11 @@ msgstr ""
 "\n"
 "Isso pode levar algum tempo"
 
-#: ../stoq/gui/update.py:100
+#: ../stoq/gui/update.py:101
 msgid "Database backup restored"
 msgstr "Backup da base de dados restaurado"
 
-#: ../stoq/gui/update.py:102
+#: ../stoq/gui/update.py:103
 #, python-format
 msgid ""
 "Stoq database update failed but the database was restored.\n"
@@ -5037,17 +5067,25 @@ msgstr ""
 "\n"
 "Um backup da base de dados foi criado em <b>%s</b>"
 
-#: ../stoq/gui/update.py:120
+#: ../stoq/gui/update.py:121
 msgid "Applying database patches..."
 msgstr "Aplicando patches da base de dados..."
 
-#: ../stoq/gui/update.py:129
+#: ../stoq/gui/update.py:130
 msgid "Done. Click 'Forward' to continue"
 msgstr "Concluído. Clique em 'Avançar' para continuar"
 
-#: ../stoq/gui/update.py:154
+#: ../stoq/gui/update.py:156
 msgid "Updating Stoq"
 msgstr "Atualizando o Stoq"
+
+#: ../stoq/gui/welcomedialog.py:51
+msgid "_Start using Stoq"
+msgstr ""
+
+#: ../stoq/gui/welcomedialog.py:53
+msgid "Welcome to Stoq"
+msgstr "Bem-vindo ao Stoq"
 
 #: ../stoq/lib/applist.py:36
 msgid ""
@@ -5126,7 +5164,7 @@ msgstr ""
 "\n"
 "Você está executando o Stoq usando sudo. Isso não é recomendado."
 
-#: ../stoq/lib/dependencies.py:100
+#: ../stoq/lib/dependencies.py:102
 #, python-format
 msgid ""
 "<b>%s</b> could not be found on your system.\n"
@@ -5141,11 +5179,11 @@ msgstr ""
 "Você pode encontrar uma versão recente de %s na sua página em\n"
 " %s"
 
-#: ../stoq/lib/dependencies.py:107
+#: ../stoq/lib/dependencies.py:109
 msgid "Missing dependency"
 msgstr "Faltando dependência"
 
-#: ../stoq/lib/dependencies.py:110
+#: ../stoq/lib/dependencies.py:112
 #, python-format
 msgid ""
 "<b>%s</b> was found on your system, but it is too old for Stoq to be able to "
@@ -5160,11 +5198,11 @@ msgstr ""
 "Você pode encontrar uma versão recente de %s na sua página em\n"
 " %s"
 
-#: ../stoq/lib/dependencies.py:116
+#: ../stoq/lib/dependencies.py:118
 msgid "Out-dated dependency"
 msgstr "Dependência desatualizada"
 
-#: ../stoq/lib/dependencies.py:119
+#: ../stoq/lib/dependencies.py:121
 #, python-format
 msgid ""
 "<b>%s</b> was found on your system, but its version, %s incompatible with "
@@ -5179,7 +5217,7 @@ msgstr ""
 "Você pode encontrar uma versão mais antiga de %s na sua página em\n"
 " %s"
 
-#: ../stoq/lib/dependencies.py:125
+#: ../stoq/lib/dependencies.py:127
 msgid "Incompatible dependency"
 msgstr "Dependência incompatível"
 
@@ -5214,28 +5252,48 @@ msgid "You need to call setup() before checking the database schema."
 msgstr ""
 "Você precisa chamar setup() antes de verificar o esquema da base de dados."
 
-#: ../stoq/main.py:247
+#: ../stoq/main.py:40
+msgid ""
+"One of the new features of Stoq 1.0 is support for online services. Features "
+"using the online services include automatic bug report and update "
+"notifications. More services are under development.To be able to provide a "
+"better service and properly identify the user we will collect the CNPJ of "
+"the primary branch and the ip address.\n"
+"\n"
+"<b>We will not disclose the collected information and we are committed to "
+"keeping your privacy intact.</b>"
+msgstr ""
+
+#: ../stoq/main.py:253
 msgid "You need to register a company before start using Stoq"
 msgstr "Você precisa registar uma empresa antes de começar a utilizar o Stoq"
 
-#: ../stoq/main.py:249
+#: ../stoq/main.py:255
 msgid ""
 "Could not find a company. You'll need to register one before start using Stoq"
 msgstr ""
 "Não foi possível encontrar uma empresa. Você precisa registrar uma antes de "
 "começar a utilizar o Stoq"
 
-#: ../stoq/main.py:324
+#: ../stoq/main.py:286
+msgid "Not right now"
+msgstr ""
+
+#: ../stoq/main.py:289
+msgid "Do you want to enable Stoq online services?"
+msgstr ""
+
+#: ../stoq/main.py:373
 msgid "Could not open the database config file"
 msgstr "Não foi possível abrir o arquivo de configuração da base de dados"
 
-#: ../stoq/main.py:325
+#: ../stoq/main.py:374
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr ""
 "Dados inválidos do arquivo de configuração, obtido erro '%s', do tipo '%s'"
 
-#: ../stoq/main.py:341
+#: ../stoq/main.py:390
 msgid "Could not connect to the database"
 msgstr "Não foi possível conectar na base de dados"
 
@@ -6808,7 +6866,7 @@ msgstr "Quantidade deve ser maior que a quantidade em estoque."
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:54
 #: ../stoqlib/gui/editors/deliveryeditor.py:58
-#: ../stoqlib/lib/parameters.py:739
+#: ../stoqlib/lib/parameters.py:821
 msgid "Delivery"
 msgstr "Entrega"
 
@@ -7321,11 +7379,11 @@ msgstr "Preço do produto"
 msgid "Price settings"
 msgstr "Ajustes de preço"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:217
+#: ../stoqlib/gui/editors/sellableeditor.py:218
 msgid "This unit type requires weighing"
 msgstr "Este tipo de unidade requer pesagem"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:261
+#: ../stoqlib/gui/editors/sellableeditor.py:264
 #, python-format
 msgid ""
 "This is a demostration mode of Stoq, you cannot create more than %d "
@@ -7336,44 +7394,44 @@ msgstr ""
 "produtos.\n"
 "Para evitar essa limitação, habilite o modo de produção."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:274
+#: ../stoqlib/gui/editors/sellableeditor.py:277
 msgid "Remove"
 msgstr "Remover"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:279
+#: ../stoqlib/gui/editors/sellableeditor.py:282
 msgid "Close Product"
 msgstr "Fechar produto"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:281
+#: ../stoqlib/gui/editors/sellableeditor.py:284
 msgid "Close Service"
 msgstr "Fechar serviço"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:288
+#: ../stoqlib/gui/editors/sellableeditor.py:291
 msgid "Reopen Product"
 msgstr "Reabrir produto"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:290
+#: ../stoqlib/gui/editors/sellableeditor.py:293
 msgid "Reopen Service"
 msgstr "Reabrir serviço"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:378
+#: ../stoqlib/gui/editors/sellableeditor.py:381
 msgid "No unit"
 msgstr "Sem unidade"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:405
+#: ../stoqlib/gui/editors/sellableeditor.py:408
 #, python-format
 msgid "This will delete '%s' from the database. Are you sure?"
 msgstr "Isto irá excluir '%s' do banco de dados. Você tem certeza?"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:407
+#: ../stoqlib/gui/editors/sellableeditor.py:410
 msgid "Delete"
 msgstr "Excluir"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:407
+#: ../stoqlib/gui/editors/sellableeditor.py:410
 msgid "Keep"
 msgstr "Manter"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:417
+#: ../stoqlib/gui/editors/sellableeditor.py:420
 #, python-format
 msgid ""
 "Do you really want to close '%s'?\n"
@@ -7384,12 +7442,12 @@ msgstr ""
 "Por favor note que quando este estiver fechado, não será mais possível "
 "comercializá-lo."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:421
+#: ../stoqlib/gui/editors/sellableeditor.py:425
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:546
 msgid "Don't close"
 msgstr "Não fechar"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:429
+#: ../stoqlib/gui/editors/sellableeditor.py:433
 #, python-format
 msgid ""
 "Do you really want to reopen '%s'?\n"
@@ -7399,33 +7457,37 @@ msgstr ""
 "Por favor note que quando este estiver aberto, será possível comercializá-lo "
 "novamente."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:459
+#: ../stoqlib/gui/editors/sellableeditor.py:437
+msgid "Keep closed"
+msgstr ""
+
+#: ../stoqlib/gui/editors/sellableeditor.py:463
 msgid "The code can not be empty."
 msgstr "O código não pode ser vazio."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:461
+#: ../stoqlib/gui/editors/sellableeditor.py:465
 #, python-format
 msgid "The code %s already exists."
 msgstr "O código %s já existe!"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:467
+#: ../stoqlib/gui/editors/sellableeditor.py:471
 msgid "Barcode must have 14 digits or less."
 msgstr "O código de barras deve ter 14 dígitos ou menos."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:469
+#: ../stoqlib/gui/editors/sellableeditor.py:473
 #, python-format
 msgid "The barcode %s already exists"
 msgstr "O código de barras %s já existe!"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:471
+#: ../stoqlib/gui/editors/sellableeditor.py:475
 msgid "Cannot create new barcodes in demonstration mode"
 msgstr "Não é possível criar novos códigos de barra no modo de demonstração"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:476
+#: ../stoqlib/gui/editors/sellableeditor.py:480
 msgid "Price cannot be zero or negative"
 msgstr "Preço não pode ser zero ou negativo."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:480
+#: ../stoqlib/gui/editors/sellableeditor.py:484
 msgid "Cost cannot be zero or negative"
 msgstr "Custo não pode ser zero ou negativo."
 
@@ -7717,7 +7779,7 @@ msgid "Sold by:"
 msgstr "Vendido por:"
 
 #: ../stoqlib/gui/search/commissionsearch.py:69 ../stoqlib/lib/invoice.py:309
-#: ../stoqlib/lib/parameters.py:478
+#: ../stoqlib/lib/parameters.py:358
 msgid "Sale"
 msgstr "Venda"
 
@@ -10316,19 +10378,51 @@ msgstr "Inscrição municipal"
 msgid "Invoice number"
 msgstr "Número da nota fiscal"
 
-#: ../stoqlib/lib/parameters.py:73
+#: ../stoqlib/lib/parameters.py:94
+msgid "This parameter only accepts integer values."
+msgstr "Este parâmetro só aceita valores inteiros."
+
+#: ../stoqlib/lib/parameters.py:100
+msgid "This parameter only accepts decimal values."
+msgstr "Este parâmetro só aceita valores decimais."
+
+#: ../stoqlib/lib/parameters.py:106
+#, python-format
+msgid "'%s is not a valid path.'"
+msgstr "'%s não é um caminho válido.'"
+
+#: ../stoqlib/lib/parameters.py:111
+#, python-format
+msgid ""
+"'%s' is not a valid area code.\n"
+"Valid area codes are on 10-99 range."
+msgstr ""
+"'%s' não é um código de área válido.\n"
+"Códigos de área válidos estão entre 10-99."
+
+#: ../stoqlib/lib/parameters.py:118
+#, python-format
+msgid "'%s' is not a valid percentage."
+msgstr "'%s' não é um percentual válido."
+
+#: ../stoqlib/lib/parameters.py:124
+#, python-format
+msgid "'%s' is not a valid state."
+msgstr "'%s' não é um estado válido."
+
+#: ../stoqlib/lib/parameters.py:152
 msgid "Primary company"
 msgstr "Empresa principal"
 
-#: ../stoqlib/lib/parameters.py:74
+#: ../stoqlib/lib/parameters.py:153
 msgid "The primary company which is the owner of all other branch companies"
 msgstr "A empresa principal, que é dona de todas as outras empresas filiais."
 
-#: ../stoqlib/lib/parameters.py:78
+#: ../stoqlib/lib/parameters.py:160
 msgid "Custom logotype for reports"
 msgstr "Logotipo customizado para relatórios"
 
-#: ../stoqlib/lib/parameters.py:79
+#: ../stoqlib/lib/parameters.py:161
 msgid ""
 "Defines a custom logo for all the reports generated by Stoq. The recommended "
 "image dimension is 171x59 (pixels), if needed, the image will be resized. In "
@@ -10338,11 +10432,11 @@ msgstr ""
 "Imagens nas dimensões de 171x59 (pixels), se necessário a imagem deve ser "
 "redimensionada. Para utilizar o logotipo padrão deixe o campo em branco."
 
-#: ../stoqlib/lib/parameters.py:86
+#: ../stoqlib/lib/parameters.py:169
 msgid "Disable cookies"
 msgstr "Desabilitar cookies"
 
-#: ../stoqlib/lib/parameters.py:87
+#: ../stoqlib/lib/parameters.py:170
 msgid ""
 "Disable the ability to use cookies in order to automatic log in the system. "
 "If so, all the users will have to provide the password everytime they log "
@@ -10352,11 +10446,11 @@ msgstr ""
 "no sistema. Se sim, todos os usuários devem digitar a senha ao logar no "
 "sistema. Requer reiniciar o sistema para que as alterações tenham efeito."
 
-#: ../stoqlib/lib/parameters.py:93
+#: ../stoqlib/lib/parameters.py:178
 msgid "Default salesperson role"
 msgstr "Cargo de vendedor padrão"
 
-#: ../stoqlib/lib/parameters.py:94
+#: ../stoqlib/lib/parameters.py:179
 msgid ""
 "Defines which of the employee roles existent in the system is the "
 "salesperson role"
@@ -10364,27 +10458,27 @@ msgstr ""
 "Define qual cargo de funcionário no sistema é equivalente ao cargo de "
 "vendedor"
 
-#: ../stoqlib/lib/parameters.py:99
+#: ../stoqlib/lib/parameters.py:187
 msgid "Suggested supplier"
 msgstr "Fornecedor sugerido"
 
-#: ../stoqlib/lib/parameters.py:100
+#: ../stoqlib/lib/parameters.py:188
 msgid "The supplier suggested when we are adding a new product in the system"
 msgstr "O fornecedor sugerido quando adicionamos um novo produto no sistema"
 
-#: ../stoqlib/lib/parameters.py:105
+#: ../stoqlib/lib/parameters.py:195
 msgid "Suggested unit"
 msgstr "Unidade sugerida"
 
-#: ../stoqlib/lib/parameters.py:106
+#: ../stoqlib/lib/parameters.py:196
 msgid "The unit suggested when we are adding a new product in the system"
 msgstr "A unidade que é sugerida ao adicionar um novo produto no sistema"
 
-#: ../stoqlib/lib/parameters.py:111
+#: ../stoqlib/lib/parameters.py:203
 msgid "Default base sellable category"
 msgstr "Categoria de base padrão"
 
-#: ../stoqlib/lib/parameters.py:112
+#: ../stoqlib/lib/parameters.py:204
 msgid ""
 "A default base sellable category which we always get as a suggestion when "
 "adding a new Sellable on the system"
@@ -10392,29 +10486,29 @@ msgstr ""
 "Uma categoria de base que sempre iremos sugerir ao adicionar um novo produto "
 "ou serviço ao sistema"
 
-#: ../stoqlib/lib/parameters.py:117
+#: ../stoqlib/lib/parameters.py:211
 msgid "Allow outdated purchases"
 msgstr "Permitir datas anteriores para compras"
 
-#: ../stoqlib/lib/parameters.py:118
+#: ../stoqlib/lib/parameters.py:212
 msgid ""
 "Allows the inclusion of purchases done previously than the current date."
 msgstr ""
 "Permite a inclusão das compras feitas anteriormente do que a data atual."
 
-#: ../stoqlib/lib/parameters.py:123
+#: ../stoqlib/lib/parameters.py:219
 msgid "Delivery service"
 msgstr "Serviço de entrega"
 
-#: ../stoqlib/lib/parameters.py:124
+#: ../stoqlib/lib/parameters.py:220
 msgid "The default delivery service in the system."
 msgstr "O serviço de entrega padrão no sistema."
 
-#: ../stoqlib/lib/parameters.py:128
+#: ../stoqlib/lib/parameters.py:226
 msgid "Use logic quantity"
 msgstr "Utilizar quantidade lógica"
 
-#: ../stoqlib/lib/parameters.py:129
+#: ../stoqlib/lib/parameters.py:227
 msgid ""
 "An integer that defines if the company can work or not with logic quantities "
 "during stock operations. See StockItem documentation."
@@ -10422,11 +10516,11 @@ msgstr ""
 "Um inteiro que define se a empresa pode trabalhar ou não com quantidade "
 "logica durante operações de estoque. Veja a documentação de StockItem."
 
-#: ../stoqlib/lib/parameters.py:137
+#: ../stoqlib/lib/parameters.py:237
 msgid "Show POS application in Fullscreen"
 msgstr "Exibir o aplicativo PDV em tela cheia"
 
-#: ../stoqlib/lib/parameters.py:138
+#: ../stoqlib/lib/parameters.py:238
 msgid ""
 "Once this parameter is set the Point of Sale application will be showed as "
 "full screen"
@@ -10434,11 +10528,11 @@ msgstr ""
 "Uma vez que este parâmetro esteja definido o aplicativo 'Ponto de vendas' "
 "será carregada em tela cheia"
 
-#: ../stoqlib/lib/parameters.py:143
+#: ../stoqlib/lib/parameters.py:245
 msgid "Exclude cashier operations in Point of Sale"
 msgstr "Excluir operações de caixa no Ponto de vendas"
 
-#: ../stoqlib/lib/parameters.py:144
+#: ../stoqlib/lib/parameters.py:246
 msgid ""
 "If you have a computer that will be a Point of Sales and have a fiscal "
 "printer connected, set this False, so the Till menu will appear on POS. If "
@@ -10448,11 +10542,11 @@ msgstr ""
 "impressora conectada, escolha Falso, então o menu Caixa aparecerá na POS. Se "
 "você prefere separar o menu Caixa da POS escolha Verdadeiro."
 
-#: ../stoqlib/lib/parameters.py:151
+#: ../stoqlib/lib/parameters.py:255
 msgid "Enable paulista invoice"
 msgstr "Habilitar nota fiscal paulista"
 
-#: ../stoqlib/lib/parameters.py:152
+#: ../stoqlib/lib/parameters.py:256
 msgid ""
 "Once this parameter is set, we will be able to join to the Sao Paulo state "
 "program of fiscal commitment."
@@ -10460,11 +10554,11 @@ msgstr ""
 "Uma vez que este parâmetro esteja definido, vamos ter a possibilidade de "
 "aderir ao Programa Nota Fiscal Paulista do estado São Paulo."
 
-#: ../stoqlib/lib/parameters.py:157
+#: ../stoqlib/lib/parameters.py:263
 msgid "Default city"
 msgstr "Cidade padrão"
 
-#: ../stoqlib/lib/parameters.py:158
+#: ../stoqlib/lib/parameters.py:264
 msgid ""
 "When adding a new address for a certain person we will always suggest this "
 "city."
@@ -10472,11 +10566,11 @@ msgstr ""
 "Quando adicionando novos endereços para uma determinada pessoa essa cidade "
 "será sempre sugerida."
 
-#: ../stoqlib/lib/parameters.py:163
+#: ../stoqlib/lib/parameters.py:271
 msgid "Default state"
 msgstr "Estado padrão"
 
-#: ../stoqlib/lib/parameters.py:164
+#: ../stoqlib/lib/parameters.py:272
 msgid ""
 "When adding a new address for a certain person we will always suggest this "
 "state."
@@ -10484,11 +10578,11 @@ msgstr ""
 "Quando adicionando um novo endereço para uma determinada pessoa esse estado "
 "será sempre sugerido."
 
-#: ../stoqlib/lib/parameters.py:169
+#: ../stoqlib/lib/parameters.py:279
 msgid "Default country"
 msgstr "País padrão"
 
-#: ../stoqlib/lib/parameters.py:170
+#: ../stoqlib/lib/parameters.py:280
 msgid ""
 "When adding a new address for a certain person we will always suggest this "
 "country."
@@ -10496,11 +10590,11 @@ msgstr ""
 "Quando adicionando um novo endereço para uma determinada pessoa esse país "
 "será sempre sugerido"
 
-#: ../stoqlib/lib/parameters.py:175
+#: ../stoqlib/lib/parameters.py:287
 msgid "Has delivery mode"
 msgstr "Possui modo de entrega"
 
-#: ../stoqlib/lib/parameters.py:176
+#: ../stoqlib/lib/parameters.py:288
 msgid ""
 "Does this branch work with delivery service? If not, the delivery option "
 "will be disable on Point of Sales Application."
@@ -10508,31 +10602,31 @@ msgstr ""
 "Esta filial trabalha com serviços de entrega? Em caso negativo, a opção de "
 "entrega será desabilitada no aplicativo Ponto de vendas"
 
-#: ../stoqlib/lib/parameters.py:181
+#: ../stoqlib/lib/parameters.py:295
 msgid "Show cost column in sales"
 msgstr "Exibir coluna custo na venda"
 
-#: ../stoqlib/lib/parameters.py:182
+#: ../stoqlib/lib/parameters.py:296
 msgid "should the cost column be displayed when creating a new sale quote."
 msgstr ""
 "a coluna custo será exibida quando for criada um nova cotação de venda."
 
-#: ../stoqlib/lib/parameters.py:187
+#: ../stoqlib/lib/parameters.py:302
 msgid "Max search results"
 msgstr "Máximo de resultados em pesquisas"
 
-#: ../stoqlib/lib/parameters.py:188
+#: ../stoqlib/lib/parameters.py:303
 msgid ""
 "The maximum number of results we must show after searching in any dialog."
 msgstr ""
 "O número máximo de resultados que exibiremos após uma pesquisa em qualquer "
 "diálogo"
 
-#: ../stoqlib/lib/parameters.py:193
+#: ../stoqlib/lib/parameters.py:310
 msgid "Confirm sales in Till"
 msgstr "Confirmar vendas no caixa"
 
-#: ../stoqlib/lib/parameters.py:194
+#: ../stoqlib/lib/parameters.py:311
 msgid ""
 "Once this parameter is set, the sales confirmation are only made on till "
 "application and the fiscal coupon will be printed on that application "
@@ -10542,11 +10636,11 @@ msgstr ""
 "exclusivamente no aplicativo 'Caixa' e o cupom fiscal será também impresso "
 "neste no lugar do aplicativo 'Ponto de vendas'."
 
-#: ../stoqlib/lib/parameters.py:200
+#: ../stoqlib/lib/parameters.py:319
 msgid "Change salesperson"
 msgstr "Alterar vendedor"
 
-#: ../stoqlib/lib/parameters.py:201
+#: ../stoqlib/lib/parameters.py:320
 msgid ""
 "Once this parameter is set to true, the user will be able to change the "
 "salesperson of an opened order on sale checkout dialog"
@@ -10554,11 +10648,11 @@ msgstr ""
 "Uma vez que este parâmetro esteja definido, o usuário será capaz de alterar "
 "o vendedor de uma venda através do diálogo de confirmação de vendas"
 
-#: ../stoqlib/lib/parameters.py:207
+#: ../stoqlib/lib/parameters.py:328
 msgid "Return money on sales"
 msgstr "Retornar dinheiro nas vendas"
 
-#: ../stoqlib/lib/parameters.py:208
+#: ../stoqlib/lib/parameters.py:329
 msgid ""
 "Once this parameter is set the salesperson can return money to clients when "
 "there is overpaid values in sales with gift certificates as payment method."
@@ -10567,19 +10661,19 @@ msgstr ""
 "para clientes quando houver valores sobrepagos em vendas usando vale compras "
 "como forma de pagamento."
 
-#: ../stoqlib/lib/parameters.py:214
+#: ../stoqlib/lib/parameters.py:337
 msgid "Max discount for sales"
 msgstr "Desconto máximo para vendas"
 
-#: ../stoqlib/lib/parameters.py:215
+#: ../stoqlib/lib/parameters.py:338
 msgid "The max discount for salesperson in a sale"
 msgstr "O desconto máximo para um vendedor em uma venda"
 
-#: ../stoqlib/lib/parameters.py:219
+#: ../stoqlib/lib/parameters.py:345
 msgid "Commission Payment At Sale Confirmation"
 msgstr "Pagamento de comissão na confirmação da venda"
 
-#: ../stoqlib/lib/parameters.py:220
+#: ../stoqlib/lib/parameters.py:346
 msgid ""
 "Define whether the commission is paid when a sale is confirmed. If True pay "
 "the commission when a sale is confirmed, if False, pay a relative commission "
@@ -10590,22 +10684,22 @@ msgstr ""
 "pagamento relativo a comissão deve ser gerado que um pagamento em uma venda "
 "for confimado."
 
-#: ../stoqlib/lib/parameters.py:227
+#: ../stoqlib/lib/parameters.py:355
 msgid "Default operation nature"
 msgstr "Natureza da operação padrão"
 
-#: ../stoqlib/lib/parameters.py:228
+#: ../stoqlib/lib/parameters.py:356
 msgid ""
 "When adding a new sale quote, we will always suggest this operation nature"
 msgstr ""
 "Ao adicionar uma nova cotação de venda, será sempre sugerida esta natureza "
 "de operação"
 
-#: ../stoqlib/lib/parameters.py:234
+#: ../stoqlib/lib/parameters.py:363
 msgid "Ask for Sale Order C.F.O.P."
 msgstr "Pedir por C.F.O.P. nas ordens de venda"
 
-#: ../stoqlib/lib/parameters.py:235
+#: ../stoqlib/lib/parameters.py:364
 msgid ""
 "Once this parameter is set to True we will ask for the C.F.O.P. when "
 "creating new sale orders"
@@ -10613,11 +10707,11 @@ msgstr ""
 "Uma vez que este parâmetro é habilitado, vamos pedir o C.F.O.P. na criação "
 "de novas ordens de venda"
 
-#: ../stoqlib/lib/parameters.py:240
+#: ../stoqlib/lib/parameters.py:371
 msgid "Default Sales C.F.O.P."
 msgstr "C.F.O.P. padrão para vendas"
 
-#: ../stoqlib/lib/parameters.py:241
+#: ../stoqlib/lib/parameters.py:372
 msgid ""
 "Default C.F.O.P. (Fiscal Code of Operations) used when generating fiscal "
 "book entries."
@@ -10625,22 +10719,22 @@ msgstr ""
 "C.F.O.P Padrão (Código de Operações Fiscais) utilizado na geração de "
 "entradas do livro fiscal."
 
-#: ../stoqlib/lib/parameters.py:246
+#: ../stoqlib/lib/parameters.py:379
 msgid "Default Return Sales C.F.O.P."
 msgstr "C.F.O.P. padrão para vendas devolvidas"
 
-#: ../stoqlib/lib/parameters.py:247
+#: ../stoqlib/lib/parameters.py:380
 msgid ""
 "Default C.F.O.P. (Fiscal Code of Operations) used when returning sale orders "
 msgstr ""
 "C.F.O.P Padrão (Código de Operações Fiscais) utilizado quando uma ordem de "
 "venda é retornada. "
 
-#: ../stoqlib/lib/parameters.py:252
+#: ../stoqlib/lib/parameters.py:387
 msgid "Default Receiving C.F.O.P."
 msgstr "C.F.O.P. padrão para recebimento"
 
-#: ../stoqlib/lib/parameters.py:253
+#: ../stoqlib/lib/parameters.py:388
 msgid ""
 "Default C.F.O.P. (Fiscal Code of Operations) used when receiving products in "
 "the stock application."
@@ -10648,11 +10742,11 @@ msgstr ""
 "C.F.O.P. Padrão (Código de Operações Fiscais) utilizado quando receber "
 "produtos no aplicativo estoque."
 
-#: ../stoqlib/lib/parameters.py:258
+#: ../stoqlib/lib/parameters.py:395
 msgid "Default C.F.O.P. for Stock Decreases"
 msgstr "C.F.O.P. padrão para diminuição de estoque"
 
-#: ../stoqlib/lib/parameters.py:259
+#: ../stoqlib/lib/parameters.py:396
 msgid ""
 "Default C.F.O.P. (Fiscal Code of Operations) used when performing a manual "
 "stock decrease."
@@ -10660,59 +10754,59 @@ msgstr ""
 "C.F.O.P. Padrão (Código de Operações Fiscais) utilizado em uma saída manual "
 "do estoque."
 
-#: ../stoqlib/lib/parameters.py:264
+#: ../stoqlib/lib/parameters.py:403
 msgid "Default ICMS tax"
 msgstr "Taxa padrão de ICMS"
 
-#: ../stoqlib/lib/parameters.py:265
+#: ../stoqlib/lib/parameters.py:404
 msgid "Default ICMS to be applied on all the products of a sale. "
 msgstr ""
 "Taxa padrão de ICMS que será aplicado em todos os produtos de uma venda "
 
-#: ../stoqlib/lib/parameters.py:266 ../stoqlib/lib/parameters.py:273
-#: ../stoqlib/lib/parameters.py:280
+#: ../stoqlib/lib/parameters.py:405 ../stoqlib/lib/parameters.py:415
+#: ../stoqlib/lib/parameters.py:426
 msgid "This is a percentage value and must be between 0 and 100."
 msgstr "Este valor é percentual e deve estar entre 0 e 100."
 
-#: ../stoqlib/lib/parameters.py:267
+#: ../stoqlib/lib/parameters.py:406
 #, python-format
 msgid "E.g: 18, which means 18% of tax."
 msgstr "P.e: 18, que significa 18% de taxa"
 
-#: ../stoqlib/lib/parameters.py:271
+#: ../stoqlib/lib/parameters.py:413
 msgid "Default ISS tax"
 msgstr "Taxa padrão de ISS"
 
-#: ../stoqlib/lib/parameters.py:272
+#: ../stoqlib/lib/parameters.py:414
 msgid "Default ISS to be applied on all the services of a sale. "
 msgstr ""
 "Taxa padrão de ICMS que será aplicado em todos os serviços de uma venda "
 
-#: ../stoqlib/lib/parameters.py:274
+#: ../stoqlib/lib/parameters.py:416
 #, python-format
 msgid "E.g: 12, which means 12% of tax."
 msgstr "P.e: 12, que significa 12% de taxa"
 
-#: ../stoqlib/lib/parameters.py:278
+#: ../stoqlib/lib/parameters.py:423
 msgid "Default Substitution tax"
 msgstr "Taxa de substituição padrão"
 
-#: ../stoqlib/lib/parameters.py:279
+#: ../stoqlib/lib/parameters.py:424
 msgid "The tax applied on all sale products with substitution tax type."
 msgstr ""
 "A taxa aplicada sobre todos os produtos de venda cujo tipo de imposto é "
 "substituição."
 
-#: ../stoqlib/lib/parameters.py:281
+#: ../stoqlib/lib/parameters.py:427
 #, python-format
 msgid "E.g: 16, which means 16% of tax."
 msgstr "P.e: 16, que significa 16% de taxa"
 
-#: ../stoqlib/lib/parameters.py:285
+#: ../stoqlib/lib/parameters.py:434
 msgid "Default area code"
 msgstr "Código de área padrão"
 
-#: ../stoqlib/lib/parameters.py:286
+#: ../stoqlib/lib/parameters.py:435
 msgid ""
 "This is the default area code which will be used when registering new "
 "clients, users and more to the system"
@@ -10720,11 +10814,11 @@ msgstr ""
 "Este é o código de área padrão que será usado para cadastrar novos clientes, "
 "usúarios e outros no sistema"
 
-#: ../stoqlib/lib/parameters.py:291
+#: ../stoqlib/lib/parameters.py:443
 msgid "Default tax constant for products"
 msgstr "Constante de imposto padrão para produtos"
 
-#: ../stoqlib/lib/parameters.py:292
+#: ../stoqlib/lib/parameters.py:444
 msgid ""
 "This is the default tax constant which will be used when adding new products "
 "to the system"
@@ -10732,19 +10826,19 @@ msgstr ""
 "Esta é a constante de impostos padrão que será usada quando adicionar novos "
 "produtos no sistema"
 
-#: ../stoqlib/lib/parameters.py:297
+#: ../stoqlib/lib/parameters.py:451
 msgid "Cat 52 destination directory"
 msgstr "Diretório de destino do Cat 52"
 
-#: ../stoqlib/lib/parameters.py:298
+#: ../stoqlib/lib/parameters.py:452
 msgid "Where the file generated after a Z-reduction should be saved."
 msgstr "Onde o arquivo gerado após uma redução Z deve ser salvo"
 
-#: ../stoqlib/lib/parameters.py:302
+#: ../stoqlib/lib/parameters.py:458
 msgid "Use four precision digits"
 msgstr "Usar quatro dígitos de precisão"
 
-#: ../stoqlib/lib/parameters.py:303
+#: ../stoqlib/lib/parameters.py:459
 msgid ""
 "Once this parameter is set, the products cost will be expressed using four "
 "precision digits."
@@ -10752,11 +10846,11 @@ msgstr ""
 "Quando este parâmetro está definido, o custo do produto deverá será definido "
 "com quatro dígitos de precisão."
 
-#: ../stoqlib/lib/parameters.py:308
+#: ../stoqlib/lib/parameters.py:466
 msgid "Scale barcode format"
 msgstr "Formato do código de barras da balança"
 
-#: ../stoqlib/lib/parameters.py:309
+#: ../stoqlib/lib/parameters.py:467
 msgid ""
 "Format used by the barcode printed by the scale. This format always starts "
 "with 2 followed by 4,5 or 6 digits product code and by a 5 digit weight or a "
@@ -10768,16 +10862,16 @@ msgstr ""
 "de 5 dígitos ou um preço de 6 dígitos. Verifique a documentação da balança "
 "para ver a melhor opção."
 
-#: ../stoqlib/lib/parameters.py:315 ../stoqlib/lib/parameters.py:321
-#: ../stoqlib/lib/parameters.py:326
+#: ../stoqlib/lib/parameters.py:476 ../stoqlib/lib/parameters.py:484
+#: ../stoqlib/lib/parameters.py:493
 msgid "NF-e"
 msgstr "NF-e"
 
-#: ../stoqlib/lib/parameters.py:316
+#: ../stoqlib/lib/parameters.py:477
 msgid "Fiscal document serial number"
 msgstr "Número de série do documento fiscal"
 
-#: ../stoqlib/lib/parameters.py:317
+#: ../stoqlib/lib/parameters.py:478
 msgid ""
 "Fiscal document serial number. Fill with 0 if the NF-e have no series. This "
 "parameter only has effect if the nfe plugin is enabled."
@@ -10785,86 +10879,14 @@ msgstr ""
 "Número de série do documento fiscal. Preencher com 0 se a não tem série. "
 "Este parâmetro só tem efeito se o plugin NF-e estiver habilitado."
 
-#: ../stoqlib/lib/parameters.py:322
+#: ../stoqlib/lib/parameters.py:485
 msgid "Danfe printing orientation"
 msgstr "Orientação de impressão da Danfe"
 
-#: ../stoqlib/lib/parameters.py:323
+#: ../stoqlib/lib/parameters.py:486
 msgid "Orientation to use for printing danfe. Portrait or Landscape"
 msgstr ""
 "Orientação para utilização de impressão da Danfe. Retrato ou Paisagem"
-
-#: ../stoqlib/lib/parameters.py:327
-msgid "Additional Information for the Fisco"
-msgstr "Informações adicionais para o Fisco"
-
-#: ../stoqlib/lib/parameters.py:328
-msgid "Additional information to add to the NF-e for the Fisco"
-msgstr "Informações adicionais para adicionar na NF-e para o Fisco"
-
-#: ../stoqlib/lib/parameters.py:332
-msgid "Parent bank account"
-msgstr "Conta bancária pai"
-
-#: ../stoqlib/lib/parameters.py:333
-msgid "Newly created bank accounts will be placed under this account."
-msgstr "Novas contas de banco serão inseridas sob esta conta."
-
-#: ../stoqlib/lib/parameters.py:337
-msgid "Parent till account"
-msgstr "Conta de caixa pai"
-
-#: ../stoqlib/lib/parameters.py:338
-msgid "Till account transfers will be placed under this account"
-msgstr "Transferências do caixa serão criados nesta conta"
-
-#: ../stoqlib/lib/parameters.py:342
-msgid "Imbalance account"
-msgstr "Conta de desequilíbrio"
-
-#: ../stoqlib/lib/parameters.py:343
-msgid "Account used for unbalanced transactions"
-msgstr "Conta usada para transações de desequilíbrio"
-
-#: ../stoqlib/lib/parameters.py:347
-msgid "Demonstration mode"
-msgstr "Modo de demonstração"
-
-#: ../stoqlib/lib/parameters.py:348
-msgid "If Stoq is used in a demonstration mode"
-msgstr "Se o Stoq é utilizado em um modo de demonstração"
-
-#: ../stoqlib/lib/parameters.py:381
-msgid "This parameter only accepts integer values."
-msgstr "Este parâmetro só aceita valores inteiros."
-
-#: ../stoqlib/lib/parameters.py:387
-msgid "This parameter only accepts decimal values."
-msgstr "Este parâmetro só aceita valores decimais."
-
-#: ../stoqlib/lib/parameters.py:393
-#, python-format
-msgid "'%s is not a valid path.'"
-msgstr "'%s não é um caminho válido.'"
-
-#: ../stoqlib/lib/parameters.py:398
-#, python-format
-msgid ""
-"'%s' is not a valid area code.\n"
-"Valid area codes are on 10-99 range."
-msgstr ""
-"'%s' não é um código de área válido.\n"
-"Códigos de área válidos estão entre 10-99."
-
-#: ../stoqlib/lib/parameters.py:405
-#, python-format
-msgid "'%s' is not a valid percentage."
-msgstr "'%s' não é um percentual válido."
-
-#: ../stoqlib/lib/parameters.py:411
-#, python-format
-msgid "'%s' is not a valid state."
-msgstr "'%s' não é um estado válido."
 
 #: ../stoqlib/lib/parameters.py:488
 msgid "Portrait"
@@ -10874,7 +10896,53 @@ msgstr "Retrato"
 msgid "Landscape"
 msgstr "Paisagem"
 
-#: ../stoqlib/lib/parameters.py:810
+#: ../stoqlib/lib/parameters.py:494
+msgid "Additional Information for the Fisco"
+msgstr "Informações adicionais para o Fisco"
+
+#: ../stoqlib/lib/parameters.py:495
+msgid "Additional information to add to the NF-e for the Fisco"
+msgstr "Informações adicionais para adicionar na NF-e para o Fisco"
+
+#: ../stoqlib/lib/parameters.py:504
+msgid "Parent bank account"
+msgstr "Conta bancária pai"
+
+#: ../stoqlib/lib/parameters.py:505
+msgid "Newly created bank accounts will be placed under this account."
+msgstr "Novas contas de banco serão inseridas sob esta conta."
+
+#: ../stoqlib/lib/parameters.py:511
+msgid "Parent till account"
+msgstr "Conta de caixa pai"
+
+#: ../stoqlib/lib/parameters.py:512
+msgid "Till account transfers will be placed under this account"
+msgstr "Transferências do caixa serão criados nesta conta"
+
+#: ../stoqlib/lib/parameters.py:518
+msgid "Imbalance account"
+msgstr "Conta de desequilíbrio"
+
+#: ../stoqlib/lib/parameters.py:519
+msgid "Account used for unbalanced transactions"
+msgstr "Conta usada para transações de desequilíbrio"
+
+#: ../stoqlib/lib/parameters.py:525
+msgid "Demonstration mode"
+msgstr "Modo de demonstração"
+
+#: ../stoqlib/lib/parameters.py:526
+msgid "If Stoq is used in a demonstration mode"
+msgstr "Se o Stoq é utilizado em um modo de demonstração"
+
+#: ../stoqlib/lib/parameters.py:538
+msgid ""
+"If online services such as upgrade notifications, automatic crash reports "
+"should be enabled."
+msgstr ""
+
+#: ../stoqlib/lib/parameters.py:853
 #, python-format
 msgid "There is no defined %s parameter datain the database."
 msgstr "Não há nenhum dado do parametro %s definido na base de dados."
@@ -14201,9 +14269,6 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "Settin_gs"
 #~ msgstr "Configurações"
 
-#~ msgid "_Admin"
-#~ msgstr "Admin"
-
 #~ msgid "Gift Certificate Types..."
 #~ msgstr "Tipo de Vale Compra..."
 
@@ -14485,6 +14550,9 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "_Stock Cost"
 #~ msgstr "Custo do e_stoque"
 
+#~ msgid "Admin"
+#~ msgstr "Admin"
+
 #~ msgid "Are you sure you want to confirm the order?"
 #~ msgstr "Você tem certeza que quer confirmar a ordem?"
 
@@ -14730,9 +14798,6 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "Authentication Type:"
 #~ msgstr "Tipo de autenticação:"
 
-#~ msgid "Welcome to Stoq"
-#~ msgstr "Bem-vindo ao Stoq"
-
 #~ msgid "Return Date"
 #~ msgstr "Data de devolução"
 
@@ -14952,6 +15017,9 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 #~ msgid "Toggle picture viewer..."
 #~ msgstr "Alternar visualizador de imagens..."
 
+#~ msgid "Create a database with example in demonstration mode."
+#~ msgstr "Criar uma base de dados com exemplos no modo de demonstração."
+
 #~ msgid "Quote order..."
 #~ msgstr "Cotar pedido..."
 
@@ -14963,6 +15031,9 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #~ msgid "Payment _flow history ..."
 #~ msgstr "Histórico de _fluxo de pagamento ..."
+
+#~ msgid "I want to manualy configure the database connection."
+#~ msgstr "Eu quero configurar a conexão da base de dados manualmente."
 
 #~ msgid "Details.."
 #~ msgstr "Detalhes..."
