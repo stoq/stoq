@@ -1,3 +1,9 @@
+stoq (1.0.0-1) natty; urgency=low
+
+  * Bump stoqdrivers and kiwi dependencies
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Fri, 22 Jul 2011 17:46:20 -0300
+
 stoq (1.0.0) lucid; urgency=low
 
   * New stable release
