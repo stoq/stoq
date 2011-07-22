@@ -427,7 +427,6 @@ class PosApp(AppWindow):
         self.barcode.set_sensitive(value)
         self.quantity.set_sensitive(value)
         self.sale_items.set_sensitive(value)
-        self.add_button.set_sensitive(value)
         self.advanced_search.set_sensitive(value)
         if value:
             self.barcode.grab_focus()
