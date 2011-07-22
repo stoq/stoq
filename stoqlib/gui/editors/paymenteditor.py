@@ -30,7 +30,7 @@ import datetime
 import gtk
 import pango
 
-from kiwi.datatypes import currency, ValidationError
+from kiwi.datatypes import currency, ValidationError, ValueUnset
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.database.runtime import new_transaction, finish_transaction
@@ -98,7 +98,6 @@ class BasePaymentEditor(BaseEditor):
 
     def setup_proxies(self):
         self._fill_category_combo()
-        self._populate_person()
         self.add_category.set_tooltip_text(_("Add a new payment category"))
         self.edit_category.set_tooltip_text(_("Edit the selected payment category"))
         if self.person_iface == ISupplier:
@@ -122,7 +121,7 @@ class BasePaymentEditor(BaseEditor):
             self.model.set_pending()
         self.model.base_value = self.model.value
         person = self.person.get_selected_data()
-        if person is not None:
+        if person is not None and person is not ValueUnset:
             setattr(self.model.group,
                     self.person_attribute,
                     person.person)
@@ -132,12 +131,12 @@ class BasePaymentEditor(BaseEditor):
         return self.model
 
     def can_edit_details(self):
-        for widget in [self.value, self.due_date, self.person,
+        for widget in [self.value, self.due_date,
                        self.add_person]:
             widget.set_sensitive(True)
         self.details_button.hide()
-        if self.person.get_selected():
-            self.edit_person.set_sensitive(True)
+        self.edit_person.set_sensitive(bool(self.person.get_selected()))
+        self._populate_person()
 
     # Private
 
@@ -150,8 +149,7 @@ class BasePaymentEditor(BaseEditor):
         if facets:
             self.person.prefill(sorted([(f.person.name, f)
                                         for f in facets]))
-        else:
-            self.person.set_sensitive(False)
+        self.person.set_sensitive(bool(facets))
 
         person = getattr(self.model.group, self.person_attribute)
         if person:
