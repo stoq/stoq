@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-21 18:07-0300\n"
-"PO-Revision-Date: 2011-07-22 20:56+0000\n"
-"Last-Translator: Ronaldo Maia <mainha+lp@gmail.com>\n"
+"PO-Revision-Date: 2011-07-22 21:12+0000\n"
+"Last-Translator: Johan Dahlin <jdahlin@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-07-22 21:08+0000\n"
-"X-Generator: Launchpad (build 13483)\n"
+"X-Launchpad-Export-Date: 2011-07-23 05:03+0000\n"
+"X-Generator: Launchpad (build 13405)\n"
 "Language: \n"
 
 #: ../data/glade/AbstractItemStep.ui.h:1
@@ -674,7 +674,7 @@ msgstr "Clique <b>Avançar</b> para continuar."
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:5
 msgid "Database Name:"
-msgstr "Nome do Banco:"
+msgstr "Nome do banco:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:6
 #: ../data/glade/PasswordEditorSlave.ui.h:2
