@@ -330,7 +330,9 @@ class TefStep(WizardEditorStep):
         return not self.wizard.tef_request_done
 
     def _cancel_request(self):
-        self._show_error()
+        if not self.wizard.tef_request_done:
+            self._show_error()
+        return False
 
     def _show_error(self):
         self.wizard.tef_request_done = True
@@ -749,7 +751,7 @@ class FinishInstallationStep(BaseWizardStep):
 
     def on_online_info__clicked(self, button):
         dialog = gtk.MessageDialog(parent=None, flags=0,
-                                   type=gtk.MESSAGE_ERROR,
+                                   type=gtk.MESSAGE_INFO,
                                    buttons=gtk.BUTTONS_OK,
                                    message_format=_("Online services"))
         dialog.format_secondary_markup(PRIVACY_STRING)
