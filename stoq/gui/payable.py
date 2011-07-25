@@ -38,6 +38,7 @@ from kiwi.python import all
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.domain.purchase import PurchaseOrder
@@ -428,6 +429,7 @@ class PayableApp(SearchableAppWindow):
                           payments, do_footer=False)
 
     def on_PrintReceipt__activate(self, action):
+        register_payment_operations()
         payment_views = self.results.get_selected_rows()
         payments = [v.payment for v in payment_views]
         print_report(PaymentReceipt, payments=payments,
