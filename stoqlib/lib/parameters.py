@@ -785,7 +785,7 @@ class ParameterAccess(ClassInittableObject):
                     param = False
                 # This is a pre-1.0 migration specific hack
                 elif value == "":
-                    param = None
+                    return None
                 else:
                     param = bool(int(value))
             else:
