@@ -34,7 +34,7 @@ from stoqlib.database.interfaces import (
 from stoqlib.database.orm import ORMObject, Transaction
 from stoqlib.database.orm import sqlIdentifier, const, Update, IN
 from stoqlib.exceptions import LoginError, StoqlibError
-from stoqlib.lib.message import error, yesno, info
+from stoqlib.lib.message import error, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -192,34 +192,41 @@ def finish_transaction(trans, commit):
 #
 # User methods
 #
-def _register_branch(station_name):
+def _register_branch(conn, station_name):
     import gtk
-    settings = get_utility(IDatabaseSettings)
-    if yesno(_("The computer <u>%s</u> is not registered to the Stoq "
-               "server at %s.\n\n"
-               "Do you want to register it "
-               "(requires administrator access) ?") %
-             (station_name, settings.address),
-             gtk.RESPONSE_NO, _("Quit"), _("Register computer")):
-        raise SystemExit
+    from stoqlib.lib.parameters import sysparam
 
-    from stoqlib.gui.login import LoginHelper
-    h = LoginHelper(username="admin")
-    try:
-        user = h.validate_user()
-    except LoginError, e:
-        error(e)
+    trans = new_transaction()
+    if not sysparam(trans).DEMO_MODE:
+        settings = get_utility(IDatabaseSettings)
+        if yesno(_("The computer <u>%s</u> is not registered to the Stoq "
+                   "server at %s.\n\n"
+                   "Do you want to register it "
+                   "(requires administrator access) ?") %
+                 (station_name, settings.address),
+                 gtk.RESPONSE_NO, _("Quit"), _("Register computer")):
+            trans.close()
+            raise SystemExit
 
-    if not user:
-        error(_("Must login as 'admin'"))
+        from stoqlib.gui.login import LoginHelper
+        h = LoginHelper(username="admin")
+        try:
+            user = h.validate_user()
+        except LoginError, e:
+            trans.close()
+            error(e)
+
+        if not user:
+            trans.close()
+            error(_("Must login as 'admin'"))
 
     from stoqlib.domain.interfaces import IBranch
     from stoqlib.domain.person import Person
     from stoqlib.domain.station import BranchStation
 
-    trans = new_transaction()
     branches = Person.iselect(IBranch, connection=trans)
     if not branches:
+        trans.close()
         error(_("Schema error, no branches found"))
 
     # TODO
@@ -235,7 +242,10 @@ def _register_branch(station_name):
     except StoqlibError, e:
         error(_("ERROR: %s" % e))
 
+    station_id = station.id
     trans.commit(close=True)
+
+    return BranchStation.get(station_id, connection=conn)
 
 def set_current_branch_station(conn, station_name):
     """Registers the current station and the branch of the station
@@ -246,9 +256,7 @@ def set_current_branch_station(conn, station_name):
     from stoqlib.domain.station import BranchStation
     station = BranchStation.selectOneBy(name=station_name, connection=conn)
     if station is None:
-        _register_branch(station_name)
-        info(_("%s was registered in Stoq.\n\nPlease restart." % (station_name,)))
-        raise SystemExit
+        station = _register_branch(conn, station_name)
 
     if not station.is_active:
         error(_("The computer <u>%s</u> is not active in Stoq") %
