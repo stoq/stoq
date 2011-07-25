@@ -87,11 +87,6 @@ class InPaymentView(Viewable):
         return self.status not in [Payment.STATUS_PAID,
                                    Payment.STATUS_CANCELLED]
 
-    def can_change_payment_status(self):
-        # cash receivings can't be changed
-        return (self.method_name != 'money' and
-                self.status == Payment.STATUS_PAID)
-
     def can_cancel_payment(self):
         if self.sale:
             return False
