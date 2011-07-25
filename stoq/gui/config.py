@@ -796,6 +796,11 @@ class FirstTimeConfigWizard(BaseWizard):
         self.next_button.grab_focus()
 
     def _create_station(self, trans):
+        # FIXME: This is fishy, we can probably simplify this significantly by
+        #        allowing users to connect to the initial database without
+        #        having a branch station nor branch registered.
+        #        The whole BranchStation/Branch creation is weird, it should
+        #        be done at the same place.
         if self.enable_production:
             branch = sysparam(trans).MAIN_COMPANY
             assert branch
@@ -804,7 +809,9 @@ class FirstTimeConfigWizard(BaseWizard):
             branch = None
 
         station_name = socket.gethostname()
-        if BranchStation.get_station(trans, branch, station_name):
+        if BranchStation.selectOneBy(name=station_name,
+                                     branch=branch,
+                                     connection=trans):
             return
         station = BranchStation(connection=trans,
                                 is_active=True,
