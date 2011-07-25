@@ -38,6 +38,7 @@ from kiwi.python import all
 from kiwi.ui.search import ComboSearchFilter, DateSearchOption
 from kiwi.ui.objectlist import SearchColumn, Column
 from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.till import Till
@@ -455,6 +456,7 @@ class ReceivableApp(SearchableAppWindow):
         self._show_comments(receivable_view)
 
     def on_PrintReceipt__activate(self, action):
+        register_payment_operations()
         receivable_views = self.results.get_selected_rows()
         payments = [v.payment for v in receivable_views]
         print_report(ReceivalReceipt, payments=payments,
