@@ -819,7 +819,7 @@ class FirstTimeConfigWizard(BaseWizard):
         adminuser.password = self.login_password
 
     def _set_online_services(self, trans):
-        sysparam(trans).ONLINE_SERVICES = self.enable_online_services
+        sysparam(trans).ONLINE_SERVICES = int(self.enable_online_services)
 
     def try_connect(self, settings, warn=True):
         self.config.load_settings(settings)
