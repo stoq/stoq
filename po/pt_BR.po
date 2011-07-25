@@ -24,13 +24,13 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-25 11:13-0300\n"
-"PO-Revision-Date: 2011-07-25 14:47+0000\n"
-"Last-Translator: Gabriel Gerga  <Unknown>\n"
+"PO-Revision-Date: 2011-07-25 16:30+0000\n"
+"Last-Translator: Thiago Bellini <thiago.bellini@hackedbellini.org>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-07-25 15:36+0000\n"
+"X-Launchpad-Export-Date: 2011-07-25 16:32+0000\n"
 "X-Generator: Launchpad (build 13503)\n"
 "Language: \n"
 
@@ -1049,7 +1049,7 @@ msgid ""
 "the distribution documentation for more information."
 msgstr ""
 "O servidor PostgreSQL não está rodando nesse computador. É necessário "
-"instala-lo e inicia-lo para o Stoq poder executar.\n"
+"instalá-lo e iniciá-lo para o Stoq poder executar.\n"
 "\n"
 "Note que algumas distribuições, como Fedora, exigem que você crie o cluster "
 "do banco de dados antes de iniciar o PostgreSQL. Consulte a documentação da "
@@ -1531,7 +1531,7 @@ msgstr "Componente:"
 
 #: ../data/glade/ProductComponentSlave.ui.h:2
 msgid "Sort components by category"
-msgstr "Ordenar os componetes por categoria"
+msgstr "Ordenar os componentes por categoria"
 
 #: ../data/glade/ProductImageViewer.ui.h:1
 msgid "Product Picture Viewer"
@@ -2417,7 +2417,7 @@ msgstr ""
 "dados.\n"
 "\n"
 "\n"
-"É sempre uma boa idéia <b>criar um backup</b> da sua base de dados antes de "
+"É sempre uma boa ideia <b>criar um backup</b> da sua base de dados antes de "
 "atualizar."
 
 #: ../data/glade/UpdateWelcomeStep.ui.h:8
@@ -3053,7 +3053,7 @@ msgid ""
 "you like to restart it now?"
 msgstr ""
 "Uma impressora fiscal foi adicionada. Você precisa reiniciar o Stoq antes de "
-"utiliza-lo. Gostaria de reiniciar agora?"
+"utilizá-lo. Gostaria de reiniciar agora?"
 
 #: ../plugins/ecf/ecfprinterdialog.py:177
 msgid "Restart later"
@@ -3243,7 +3243,7 @@ msgstr "Serial:"
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:9
 msgid "User Number:"
-msgstr "Número do úsuário:"
+msgstr "Número do usuário:"
 
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:1
 #: ../stoqlib/gui/search/personsearch.py:145
@@ -5424,7 +5424,7 @@ msgstr "Por favor contate a equipe do Stoq para informar o problema.\n"
 
 #: ../stoqlib/database/migration.py:378
 msgid "Unsupported database version, you need to reinstall"
-msgstr "Versão da base de dados na suportada, você precisa reinstala-la"
+msgstr "Versão da base de dados na suportada, você precisa reinstalá-la"
 
 #: ../stoqlib/database/runtime.py:198
 #, python-format
@@ -6510,7 +6510,7 @@ msgstr "Compra para produção"
 
 #: ../stoqlib/gui/dialogs/productionquotedialog.py:101
 msgid "Create _Quote"
-msgstr "Criar cotaçao"
+msgstr "Criar cotação"
 
 #: ../stoqlib/gui/dialogs/productionquotedialog.py:120
 #: ../stoqlib/gui/search/consignmentsearch.py:57
@@ -7042,7 +7042,7 @@ msgstr "Venda e quantidade de retorno é maior que a quantidade total."
 
 #: ../stoqlib/gui/editors/parameterseditor.py:101
 msgid "Cat 52 directory selection"
-msgstr "Selectione o diretório"
+msgstr "Selecione o diretório"
 
 #: ../stoqlib/gui/editors/parameterseditor.py:168
 #, python-format
@@ -7322,7 +7322,7 @@ msgstr "Quantidade a produzir:"
 
 #: ../stoqlib/gui/editors/productioneditor.py:165
 msgid "Quantity to purchase:"
-msgstr "Quantida a comprar:"
+msgstr "Quantidade a comprar:"
 
 #: ../stoqlib/gui/editors/profileeditor.py:43
 msgid "User Profile"
@@ -8601,7 +8601,7 @@ msgstr "A data prevista para o vencimento deve ser uma data futura"
 
 #: ../stoqlib/gui/slaves/paymentslave.py:153
 msgid "The value must be a positive number"
-msgstr "O valor deve ser um número positívo"
+msgstr "O valor deve ser um número positivo"
 
 #: ../stoqlib/gui/slaves/paymentslave.py:234
 msgid "Bank ID"
@@ -8915,7 +8915,7 @@ msgid ""
 "A sale was created from loan items. You can confirm the sale in the Till "
 "application."
 msgstr ""
-"A venda foi criada a partir de itens de empréstimo. Você podeconfirmar a "
+"A venda foi criada a partir de itens de empréstimo. Você pode confirmá-la a "
 "venda no caixa."
 
 #: ../stoqlib/gui/wizards/loanwizard.py:381
@@ -9147,7 +9147,7 @@ msgstr "Recebimento de compra"
 
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:139
 msgid "Payments Renegotiation Wizard"
-msgstr "Wizard de renegociação de parcelas"
+msgstr "Assistente de renegociação de parcelas"
 
 #: ../stoqlib/gui/wizards/salequotewizard.py:223
 msgid "CFOP"
@@ -9245,11 +9245,11 @@ msgstr "Código de 4 dígitos com Peso"
 
 #: ../stoqlib/lib/barcode.py:48
 msgid "5 Digits Code with Weight"
-msgstr "Código de 5 digitos com Peso"
+msgstr "Código de 5 dígitos com Peso"
 
 #: ../stoqlib/lib/barcode.py:49
 msgid "6 Digits Code with Weight"
-msgstr "Código de 6 digitos com Peso"
+msgstr "Código de 6 dígitos com Peso"
 
 #: ../stoqlib/lib/boleto.py:72
 msgid ""
@@ -10235,7 +10235,7 @@ msgstr "Semanas"
 
 #: ../stoqlib/lib/defaults.py:59
 msgid "Months"
-msgstr "Mêses"
+msgstr "Meses"
 
 #: ../stoqlib/lib/defaults.py:60
 msgid "Years"
@@ -10303,7 +10303,7 @@ msgstr "Estado do cliente"
 
 #: ../stoqlib/lib/invoice.py:510
 msgid "Clients state registry number or document number"
-msgstr "Incrição estadual ou documento do cliente"
+msgstr "Inscrição estadual ou documento do cliente"
 
 #: ../stoqlib/lib/invoice.py:524
 msgid "Emission date"
@@ -10721,7 +10721,7 @@ msgstr ""
 "Definir se a comissão é paga quando a venda é confirmada. Se verdadeiro a "
 "comissão deve ser gerada quando a venda for confirmada, se falso, o "
 "pagamento relativo a comissão deve ser gerado que um pagamento em uma venda "
-"for confimado."
+"for confirmado."
 
 #: ../stoqlib/lib/parameters.py:355
 msgid "Default operation nature"
@@ -10986,7 +10986,7 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:853
 #, python-format
 msgid "There is no defined %s parameter datain the database."
-msgstr "Não há nenhum dado do parametro %s definido na base de dados."
+msgstr "Não há nenhum dado do parâmetro %s definido na base de dados."
 
 #: ../stoqlib/lib/sintegragenerator.py:123
 #, python-format
@@ -11033,7 +11033,7 @@ msgstr ""
 
 #: ../stoqlib/reporting/loanreceipt.py:143
 msgid "Loan Notice"
-msgstr "Aviso de emprestimo"
+msgstr "Aviso de empréstimo"
 
 #: ../stoqlib/reporting/loanreceipt.py:153
 msgid "RG:"
