@@ -802,10 +802,14 @@ class FirstTimeConfigWizard(BaseWizard):
             provide_utility(ICurrentBranch, branch)
         else:
             branch = None
+
+        station_name = socket.gethostname()
+        if BranchStation.get_station(trans, branch, station_name):
+            return
         station = BranchStation(connection=trans,
                                 is_active=True,
                                 branch=branch,
-                                name=socket.gethostname())
+                                name=station_name)
         provide_utility(ICurrentBranchStation, station)
 
     def _set_admin_password(self, trans):
