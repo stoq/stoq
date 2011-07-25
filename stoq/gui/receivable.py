@@ -176,9 +176,10 @@ class ReceivableApp(SearchableAppWindow):
         self.Renegotiate.set_sensitive(self._can_renegotiate(selected))
         self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
         self.CancelPayment.set_sensitive(self._can_cancel_payment(selected))
-        self.PrintReceipt.set_sensitive(self._can_emit_receipt(selected))
-        self.SetNotPaid.set_sensitive(
-            self._can_change_payment_status(selected))
+        self.PrintReceipt.set_sensitive(self._are_paid(selected,
+                                                       respect_sale=True))
+        self.SetNotPaid.set_sensitive(self._are_paid(selected,
+                                                     respect_sale=False))
         self.PrintBill.set_sensitive(self._can_print_bill(selected))
 
     def _has_rows(self, result_list, has_rows):
@@ -311,19 +312,19 @@ class ReceivableApp(SearchableAppWindow):
 
         trans.close()
 
-    def _can_emit_receipt(self, receivable_views):
+    def _are_paid(self, receivable_views, respect_sale=True):
         """
-        Determines if we can emit the receipt for a list of
-        receivable views.
+        Determines if a list of receivable_views are paid.
         To do so they must meet the following conditions:
           - Be in the same sale
+            (This will be satistied only if respect_sale is True)
           - The payment status needs to be set to PAID
         """
         if not receivable_views:
             return False
 
         sale = receivable_views[0].sale
-        if sale is None:
+        if sale is None and respect_sale:
             return False
         return all(view.sale == sale and view.payment.is_paid()
                    for view in receivable_views)
@@ -374,14 +375,6 @@ class ReceivableApp(SearchableAppWindow):
                    view.get_parent().client is client and
                    view.get_parent().can_set_renegotiated()
                    for view in receivable_views)
-
-    def _can_change_payment_status(self, receivable_views):
-        """whether or not we can change the paid status
-        """
-        if len(receivable_views) != 1:
-            return False
-
-        return receivable_views[0].can_change_payment_status()
 
     def _can_cancel_payment(self, receivable_views):
         """whether or not we can cancel the receiving.
