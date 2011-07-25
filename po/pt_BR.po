@@ -24,13 +24,13 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-07-25 11:13-0300\n"
-"PO-Revision-Date: 2011-07-25 16:30+0000\n"
+"PO-Revision-Date: 2011-07-25 16:53+0000\n"
 "Last-Translator: Thiago Bellini <thiago.bellini@hackedbellini.org>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-07-25 16:32+0000\n"
+"X-Launchpad-Export-Date: 2011-07-25 16:56+0000\n"
 "X-Generator: Launchpad (build 13503)\n"
 "Language: \n"
 
@@ -196,7 +196,7 @@ msgstr "Conta bancária:"
 
 #: ../data/glade/BankDataSlave.ui.h:2
 msgid "Bank Branch:"
-msgstr "Agência:"
+msgstr "Agência bancária:"
 
 #: ../data/glade/BankDataSlave.ui.h:3
 #: ../data/glade/EmployeeDetailsSlave.ui.h:3
@@ -1342,7 +1342,7 @@ msgstr "Usuário:"
 #: ../data/glade/ProductionQuoteDialog.ui.h:2
 #: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:5
 msgid "_Unselect All"
-msgstr "_Deselecionar todos"
+msgstr "_Desselecionar todos"
 
 #: ../data/glade/OpenProductionOrderStep.ui.h:3
 #: ../stoqlib/reporting/production.py:121
@@ -2492,7 +2492,7 @@ msgstr "Cancelar"
 
 #: ../data/glade/inventory.ui.h:2
 msgid "STOQ - Inventory Application"
-msgstr "STOQ - Apliativo Inventário"
+msgstr "STOQ - Aplicativo Inventário"
 
 #: ../data/glade/payable.ui.h:1
 msgid "P_ay order"
@@ -4488,8 +4488,7 @@ msgstr "Cancelar pedido"
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
-"Não é possível iniciar uma nova venda se o coupon fiscal não puder ser "
-"aberto."
+"Não é possível iniciar uma nova venda se o cupom fiscal não puder ser aberto."
 
 #: ../stoq/gui/pos.py:877
 msgid "Quantity must be a positive number"
@@ -5021,8 +5020,8 @@ msgid ""
 "try again?"
 msgstr ""
 "Falha ao abrir o cupom fiscal\n"
-"Até que ele seja aberto, não é possível confirmar a venda. Deseja tentar de "
-"novo?"
+"Até que ele esteja aberto, não é possível confirmar a venda. Deseja tentar "
+"de novo?"
 
 #: ../stoq/gui/till.py:287
 msgid "Cancel coupon"
@@ -6524,7 +6523,7 @@ msgid ""
 "The quote group was succesfully created and it is available in the Purchase "
 "application."
 msgstr ""
-"O grupo de cotações foi criado com sucesso e já é possível acessa-lo no "
+"O grupo de cotações foi criado com sucesso e já está disponível no "
 "aplicativo compras."
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:53
@@ -9343,7 +9342,7 @@ msgstr "Barbados"
 
 #: ../stoqlib/lib/countries.py:49
 msgid "Belarus"
-msgstr "Beielorússia"
+msgstr "Bielorrússia"
 
 #: ../stoqlib/lib/countries.py:50
 msgid "Belgium"
@@ -9967,7 +9966,7 @@ msgstr "Porto Rico"
 
 #: ../stoqlib/lib/countries.py:206
 msgid "Qatar"
-msgstr "Qatar"
+msgstr "Catar"
 
 #: ../stoqlib/lib/countries.py:207
 msgid "Reunion"
@@ -10851,7 +10850,7 @@ msgid ""
 "clients, users and more to the system"
 msgstr ""
 "Este é o código de área padrão que será usado para cadastrar novos clientes, "
-"usúarios e outros no sistema"
+"usuários e outros no sistema"
 
 #: ../stoqlib/lib/parameters.py:443
 msgid "Default tax constant for products"
@@ -11011,7 +11010,7 @@ msgstr "Recebimento"
 #: ../stoqlib/reporting/stockdecreasereceipt.py:104
 #, python-format
 msgid "%s items"
-msgstr "%s ítens"
+msgstr "%s itens"
 
 #: ../stoqlib/reporting/loanreceipt.py:118 ../stoqlib/reporting/sale.py:118
 #: ../stoqlib/reporting/stockdecreasereceipt.py:106
