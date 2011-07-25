@@ -255,6 +255,8 @@ def register_payment_operations():
         from stoqlib.lib.payment import PaymentOperationManager
         pmm = PaymentOperationManager()
         provide_utility(IPaymentOperationManager, pmm)
+
+    # FIXME: maybe we should be doing this just once
     pmm.register('money', MoneyPaymentOperation())
     pmm.register('check', CheckPaymentOperation())
     pmm.register('bill', BillPaymentOperation())
