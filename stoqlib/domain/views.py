@@ -75,8 +75,8 @@ class ProductFullStockView(Viewable):
         category_description=SellableCategory.q.description,
         total_stock_cost = const.SUM(
                 ProductStockItem.q.stock_cost*ProductStockItem.q.quantity),
-        stock=const.SUM(ProductStockItem.q.quantity +
-                        ProductStockItem.q.logic_quantity),
+        stock=const.COALESCE(const.SUM(ProductStockItem.q.quantity +
+                                       ProductStockItem.q.logic_quantity), 0),
         unit=SellableUnit.q.description,
         )
 
