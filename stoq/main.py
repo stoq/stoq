@@ -291,7 +291,7 @@ def _check_param_online_services():
         dialog.set_default_response(gtk.RESPONSE_YES)
         response = dialog.run()
         dialog.destroy()
-        sparam.ONLINE_SERVICES = bool(response == gtk.RESPONSE_YES)
+        sparam.ONLINE_SERVICES = int(bool(response == gtk.RESPONSE_YES))
     trans.commit()
 
 def _maybe_show_welcome_dialog():
