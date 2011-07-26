@@ -59,7 +59,7 @@ class DeliveryEditor(BaseEditor):
     model_type = object
     gladefile = 'DeliveryEditor'
     title = _('New Delivery')
-    size = (600, 500)
+    size = (700, 500)
 
     proxy_widgets = [
         'client',
