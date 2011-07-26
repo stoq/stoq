@@ -866,6 +866,12 @@ class FirstTimeConfigWizard(BaseWizard):
         if not self.settings.has_database():
             return False
 
+        # If we have the SystemTable we are pretty much there,
+        # could verify a few more tables in the future, including
+        # row content of the tables.
+        if SystemTable.is_available(self.settings.get_connection()):
+            return False
+
         # okay, we have a database which exists and doesn't have
         # the "SystemTable" SQL table present, means that we cannot use
         # it and should warn the user
