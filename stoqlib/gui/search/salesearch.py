@@ -133,14 +133,17 @@ class DeliverySearch(SearchDialog):
                 SearchColumn('description', title=_('Item'),
                              data_type=str, expand=True),
                 SearchColumn('client_name', title=_('Client'),
-                             data_type=str, expand=True,
+                             data_type=str,
+                             ellipsize=pango.ELLIPSIZE_END,
+                             visible=False),
+                SearchColumn('address', title=_('Address'),
+                             data_type=str, width=250,
                              ellipsize=pango.ELLIPSIZE_END),
-                SearchColumn('estimated_fix_date', title=_('Estimated date'),
+                SearchColumn('estimated_fix_date', title=_('Estimated'),
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                SearchColumn('completion_date', title=_('Completion date'),
-                             data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                SearchColumn('quantity', title=_('Quantity'), data_type=Decimal,
-                             format_func=format_quantity),]
+                SearchColumn('quantity', title=_('Qty'), data_type=Decimal,
+                             format_func=format_quantity),
+                ]
 
 
 class SoldItemsByBranchSearch(SearchDialog):
