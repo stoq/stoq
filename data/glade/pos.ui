@@ -195,9 +195,39 @@
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
                 <child>
-                  <object class="ProxyLabel" id="till_status_label">
+                  <object class="GtkVBox" id="till_status_box">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Checkout Free</property>
+                    <child>
+                      <object class="GtkHSeparator" id="hseparator1">
+                        <property name="visible">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="ProxyLabel" id="till_status_label">
+                        <property name="visible">True</property>
+                        <property name="label">till status</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHSeparator" id="hseparator2">
+                        <property name="visible">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">True</property>
