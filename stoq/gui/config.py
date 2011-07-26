@@ -78,6 +78,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import validate_email
 from stoqlib.lib.formatters import raw_phone_number
 from stoqlib.lib.webservice import WebService
+from twisted.internet import reactor
 
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.options import get_option_parser
@@ -326,6 +327,11 @@ class TefStep(WizardEditorStep):
         self.phone.set_mask('(00) 0000-0000')
 
     def _pulse(self):
+        # FIXME: This is a hack, remove it when we can avoid
+        #        calling dialog.run()
+        reactor.doIteration(0.1)
+        reactor.runUntilCurrent()
+
         self.send_progress.pulse()
         return not self.wizard.tef_request_done
 
@@ -360,8 +366,12 @@ class TefStep(WizardEditorStep):
         api = WebService()
         response = api.tef_request(self.model.name, self.model.email,
                                    self.model.phone)
-        response.ifError(self._on_response_error)
-        response.whenDone(self._on_response_done)
+        response.addCallback(self._on_response_done)
+        response.addErrback(self._on_response_error)
+
+        # FIXME: This is a hack, remove it when we can avoid
+        #        calling dialog.run()
+        reactor.startRunning()
 
         self.send_progress.show()
         self.send_progress.set_text(_('Sending...'))
@@ -370,8 +380,8 @@ class TefStep(WizardEditorStep):
         self.wizard.next_button.set_sensitive(False)
         gobject.timeout_add(50, self._pulse)
 
-        # Cancel the request after 5 seconds without a reply
-        gobject.timeout_add(5000, self._cancel_request)
+        # Cancel the request after 30 seconds without a reply
+        gobject.timeout_add(30000, self._cancel_request)
 
         # Stay on the same step while sending the details
         return self
@@ -392,7 +402,7 @@ class TefStep(WizardEditorStep):
         if self.wizard.next_button.get_sensitive():
             self.wizard.go_to_next()
 
-    def _on_response_done(self, response, details):
+    def _on_response_done(self, details):
         if details['response'] != 'success':
             self._show_error()
             return
@@ -401,7 +411,7 @@ class TefStep(WizardEditorStep):
             self.wizard.tef_request_done = True
             self.wizard.go_to_next()
 
-    def _on_response_error(self, response, details):
+    def _on_response_error(self, error):
         self._show_error()
 
 

@@ -211,6 +211,10 @@ def _setup_gtk():
     settings = gtk.settings_get_default()
     settings.props.gtk_button_images = True
 
+def _setup_twisted():
+    from twisted.internet import gtk2reactor
+    gtk2reactor.install()
+
 def _setup_ui_dialogs():
     # This needs to be here otherwise we can't install the dialog
     if 'STOQ_TEST_MODE' in os.environ:
@@ -423,10 +427,9 @@ def run_app(options, appname):
 
     runner.run(app)
 
-    import gtk
-    log.debug("Entering main loop")
-    gtk.main()
-
+    log.debug("Entering reactor")
+    from twisted.internet import reactor
+    reactor.run()
     log.info("Shutting down %s application" % appname)
 
 def _parse_command_line(args):
@@ -481,6 +484,7 @@ def main(args):
     _check_dependencies()
     _show_splash()
     _setup_gtk()
+    _setup_twisted()
     _check_version_policy()
     _setup_ui_dialogs()
 

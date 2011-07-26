@@ -49,6 +49,7 @@ PYSERIAL_REQUIRED = (2, 1)
 REPORTLAB_REQUIRED = (2, 4)
 STOQDRIVERS_REQUIRED = (0, 9, 8)
 VTE_REQUIRED = (0, 23)
+TWISTED_REQUIRED = (10, 0)
 ZOPE_INTERFACE_REQUIRED = (3, 0)
 
 
@@ -82,6 +83,7 @@ class DependencyChecker(object):
         self._check_mako(MAKO_REQUIRED)
         self._check_stoqdrivers(STOQDRIVERS_REQUIRED)
         self._check_pyserial(PYSERIAL_REQUIRED)
+        self._check_twisted(TWISTED_REQUIRED)
 
     def _error(self, title, msg):
         if self.text_mode:
@@ -345,6 +347,20 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://pyserial.sourceforge.net/',
                           version=version)
 
+    def _check_twisted(self, version):
+        try:
+            import twisted
+            twisted # pyflakes
+        except ImportError:
+            self._missing(project='twisted',
+                          url='http://twistedmatrix.com/',
+                          version=version)
+
+        if map(int, twisted.version.base().split('.')) < list(version):
+            self._too_old(project="twisted",
+                          url='http://www.twistedmatrix.com/',
+                          required=version,
+                          found=twisted.version.base())
 
 def check_dependencies(text_mode=False):
     dp = DependencyChecker()

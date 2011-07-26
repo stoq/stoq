@@ -27,6 +27,7 @@ import gtk
 
 from kiwi.component import get_utility
 from kiwi.ui.dialogs import HIGAlertDialog
+from twisted.internet import reactor
 
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.lib.crashreport import ReportSubmitter
@@ -47,6 +48,7 @@ class CrashReportDialog(object):
         self._report_submitter.connect('failed',
                                        self._on_report__failed)
         self._create_dialog()
+        self.submitted = False
 
     def _create_dialog(self):
         self._dialog = HIGAlertDialog(parent=self._parent,
@@ -101,20 +103,34 @@ class CrashReportDialog(object):
             self._parent.destroy()
 
         self._report_submitter.submit()
-        self._dialog.run()
+
+    def _on_dialog__response(self, dialog, response):
+        if response == gtk.RESPONSE_YES:
+            if self.submitted:
+                self._destroy()
+
+            self._submit_report()
+            return
+
+        self._destroy()
+
+    def _destroy(self):
+        self._dialog.destroy()
+        reactor.stop()
+        raise SystemExit
 
     def run(self):
-        response = self._dialog.run()
-        if response == gtk.RESPONSE_YES:
-            self._submit_report()
-            return True
-        return False
+        self._dialog.connect('response', self._on_dialog__response)
+        self._dialog.show_all()
+        reactor.run()
 
-    def _on_report__failed(self, response, args):
+    def _on_report__failed(self, response, failure):
         self._show_error()
+        self.submitted = True
 
     def _on_report__submitted(self, response, data):
         self._show_report(data)
+        self.submitted = True
 
 
 def show_dialog(interactive=True):

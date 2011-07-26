@@ -142,21 +142,12 @@ class ReportSubmitter(gobject.GObject):
         self._api = WebService()
         self._report = collect_report()
         self._count = 0
-        self._loop = None
-
-    def _maybe_quit(self):
-        log.info('maybe quit: %r' % (self._loop, ))
-        if self._loop and self._loop.is_running():
-            log.info('quit!')
-            self._loop.quit()
 
     def _done(self, args):
         self.emit('submitted', args)
-        self._maybe_quit()
 
     def _error(self, args):
         self.emit('failed', args)
-        self._maybe_quit()
 
     @property
     def report(self):
@@ -164,28 +155,21 @@ class ReportSubmitter(gobject.GObject):
 
     def submit(self):
         response = self._api.bug_report(self._report)
-        response.whenDone(self._on_report__callback)
-        response.ifError(self._on_report__errback)
+        response.addCallback(self._on_report__callback)
+        response.addErrback(self._on_report__errback)
+        return response
 
-        if self._loop and not self._loop.is_running():
-            self._loop.run()
+    def _on_report__callback(self, data):
+        log.info('Finished sending bugreport: %r' % (data, ))
+        self._done(data)
 
-    def submit_in_mainloop(self):
-        self._loop = gobject.MainLoop()
-        self.submit()
-
-    def _on_report__errback(self, response, args):
+    def _on_report__errback(self, failure):
         log.info('Failed to report bug: %r count=%d' % (args, self._count))
         if self._count < _N_TRIES:
             self.submit()
-        elif self._loop:
-            self._error(args)
-            return
+        else:
+            self._error(failure)
         self._count += 1
-
-    def _on_report__callback(self, response, data):
-        log.info('Finished sending bugreport: %r' % (data, ))
-        self._done(data)
 
 
 def report():
@@ -193,4 +177,6 @@ def report():
     if not sysparam(conn).ONLINE_SERVICES:
         return
     rs = ReportSubmitter()
-    rs.submit_in_mainloop()
+    d = rs.submit()
+    while not d.called:
+        reactor.iterate(delay=1)

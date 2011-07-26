@@ -620,9 +620,9 @@ class VersionChecker(object):
         log.debug('Downloading new version information')
         api = WebService()
         response = api.version(self.conn, stoq.version)
-        response.whenDone(self._on_response_done)
+        response.addCallback(self._on_response_done)
 
-    def _on_response_done(self, response, details):
+    def _on_response_done(self, details):
         self._check_details(details['version'])
         config = get_utility(IStoqConfig)
         config.set('General', 'last-version-check',
@@ -637,6 +637,7 @@ class VersionChecker(object):
     def check_new_version(self):
         if is_developer_mode():
             return
+        log.debug('Checking version')
         config = get_utility(IStoqConfig)
         date = config.get('General', 'last-version-check')
         if date:
