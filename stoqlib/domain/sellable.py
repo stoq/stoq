@@ -320,12 +320,12 @@ class Sellable(Domain):
 
     def _set_code(self, code):
         if self.check_code_exists(code):
-            raise SellableError("The code %s already exists" % code)
+            raise SellableError(_("The code %s already exists") % code)
         self._SO_set_code(code)
 
     def _set_barcode(self, barcode):
         if self.check_barcode_exists(barcode):
-            raise SellableError("The barcode %s already exists" % barcode)
+            raise SellableError(_("The barcode %s already exists") % barcode)
         self._SO_set_barcode(barcode)
 
     #
@@ -337,8 +337,8 @@ class Sellable(Domain):
 
     def _get_status_string(self):
         if not self.statuses.has_key(self.status):
-            raise DatabaseInconsistency('Invalid status for product got '
-                                        '%d' % self.status)
+            raise DatabaseInconsistency(_('Invalid status for product got %d')
+                                        % self.status)
         return self.statuses[self.status]
 
     #
@@ -548,11 +548,11 @@ class Sellable(Domain):
         elif not icms_template.is_p_cred_sn_valid():
             # Translators: ICMS tax rate credit = Alíquota de crédito do ICMS
             raise TaxError(_("You cannot sell this item before updating "
-                              "the 'ICMS tax rate credit' field on '%s' "
-                              "Tax Class.\n"
-                              "If you don't know what this means, contact "
-                              "the system administrator."
-                              % icms_template.product_tax_template.name))
+                             "the 'ICMS tax rate credit' field on '%s' "
+                             "Tax Class.\n"
+                             "If you don't know what this means, contact "
+                             "the system administrator.")
+                              % icms_template.product_tax_template.name)
 
     def is_valid_quantity(self, new_quantity):
         """Whether the new quantity is valid for this sellable or not.
@@ -685,7 +685,7 @@ class Sellable(Domain):
         if sellable is None:
             raise BarcodeDoesNotExists(
                 _("The sellable with barcode '%s' doesn't exists or is "
-                  "not available to be sold" % barcode))
+                  "not available to be sold") % barcode)
         return sellable
 
     @classmethod

@@ -391,18 +391,18 @@ class ECFUI(object):
 
         if last_doc.last_sale:
             msg = _("Do you really want to cancel the sale number %d "
-                     "and value %.2f ?" % (last_doc.last_sale.id,
-                                           last_doc.last_sale.total_amount))
+                    "and value %.2f ?") % (last_doc.last_sale.id,
+                                           last_doc.last_sale.total_amount)
         elif last_doc.last_till_entry.value > 0:
             msg = _("Do you really want to cancel the last cash added "
-                    "number %d and value %.2f ?" % (
+                    "number %d and value %.2f ?") % (
                         last_doc.last_till_entry.id,
-                        last_doc.last_till_entry.value))
+                        last_doc.last_till_entry.value)
         else:
             msg = _("Do you really want to cancel the last cash removed "
-                    "number %d and value %.2f ?" % (
+                    "number %d and value %.2f ?") % (
                         last_doc.last_till_entry.id,
-                        last_doc.last_till_entry.value))
+                        last_doc.last_till_entry.value)
         return yesno(msg, gtk.RESPONSE_NO, _("Cancel Last Document"),
                      _("Not now"))
 

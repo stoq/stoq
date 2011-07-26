@@ -133,7 +133,7 @@ class SellableCategoryEditor(BaseEditor):
     def on_category__content_changed(self, widget):
         slave = self.get_slave('on_commission_data_holder')
         cat = self.category.get_selected_label()
-        slave.change_label(_('Calculate Commission From: %s' % cat))
+        slave.change_label(_('Calculate Commission From: %s') % cat)
 
     def on_confirm(self):
         slave = self.get_slave('on_commission_data_holder')

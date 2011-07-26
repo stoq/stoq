@@ -133,7 +133,7 @@ class BasePaymentDataEditor(BaseEditor):
     #
 
     def get_title(self, model):
-        return _(u"Edit '%s'" % model.description)
+        return _(u"Edit '%s'") % model.description
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -593,8 +593,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         max_installments = self.method.max_installments
         if value > max_installments:
             return ValidationError(_("The number of installments "
-                                     "must be less then %d" %
-                                     max_installments))
+                                     "must be less then %d") %
+                                     max_installments)
 
     def on_first_duedate__validate(self, widget, value):
         if value < datetime.date.today():

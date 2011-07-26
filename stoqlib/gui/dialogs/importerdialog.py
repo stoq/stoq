@@ -90,11 +90,11 @@ class ImporterDialog(BasicDialog):
         elif line.startswith('IMPORTED-ITEMS:'):
             value = 1
             self.imported_items = int(line.split(':', 1)[1])
-            text = _("Imported %d items ..." % (self.imported_items, ))
+            text = _("Imported %d items ...") % (self.imported_items, )
         elif line.startswith('ITEM:'):
             item = float(line.split(':', 1)[1])
             value = item / self.n_items
-            text = _("Importing item %d ..." % (item+1, ))
+            text = _("Importing item %d ...") % (item+1, )
         else:
             return
         self.progressbar.set_fraction(value)

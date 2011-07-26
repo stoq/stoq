@@ -111,8 +111,8 @@ class Till(Domain):
         if till and till.needs_closing():
             raise TillError(
                 _("You need to close the till opened at %s before "
-                  "doing any fiscal operations" % (
-                till.opening_date.date(),)))
+                  "doing any fiscal operations") % (
+                till.opening_date.date(),))
 
         return till
 

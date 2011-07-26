@@ -115,7 +115,7 @@ class Loan(Domain):
      STATUS_CLOSED) = range(2)
 
     statuses = {STATUS_OPEN:     _(u"Opened"),
-                STATUS_CLOSED:     _(u"Closed"),}
+                STATUS_CLOSED:     _(u"Closed"),}a
 
     status = IntCol(default=STATUS_OPEN)
     notes = UnicodeCol(default='')
@@ -134,7 +134,7 @@ class Loan(Domain):
     @classmethod
     def get_status_name(cls, status):
         if not status in cls.statuses:
-            raise DatabaseInconsistency("Invalid status %d" % status)
+            raise DatabaseInconsistency(_("Invalid status %d") % status)
         return cls.statuses[status]
 
     #

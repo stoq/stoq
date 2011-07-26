@@ -103,7 +103,7 @@ class ParameterDetails(object):
     @staticmethod
     def validate_directory(path):
         if not validate_directory(path):
-            return ValidationError(_("'%s is not a valid path.'" % path))
+            return ValidationError(_("'%s is not a valid path.'") % path)
 
     @staticmethod
     def validate_area_code(code):
@@ -645,7 +645,7 @@ class ParameterAccess(ClassInittableObject):
         key = "DEFAULT_SALESPERSON_ROLE"
         if self.get_parameter_by_field(key, EmployeeRole):
             return
-        role = EmployeeRole(name='Salesperson',
+        role = EmployeeRole(name=_('Salesperson'),
                             connection=self.conn)
         self._set_schema(key, role.id, is_editable=False)
 
@@ -851,7 +851,7 @@ def get_foreign_key_parameter(field_name, conn):
     parameter = get_parameter_by_field(field_name, conn)
     if not (parameter and parameter.foreign_key):
         msg = _('There is no defined %s parameter data'
-                'in the database.' % field_name)
+                'in the database.') % field_name
         raise DatabaseInconsistency(msg)
     return parameter
 

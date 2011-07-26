@@ -120,7 +120,7 @@ class StockDecrease(Domain):
     @classmethod
     def get_status_name(cls, status):
         if not status in cls.statuses:
-            raise DatabaseInconsistency("Invalid status %d" % status)
+            raise DatabaseInconsistency(_("Invalid status %d") % status)
         return cls.statuses[status]
 
 
