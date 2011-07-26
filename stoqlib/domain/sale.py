@@ -653,16 +653,16 @@ class Sale(Domain):
             if delivery_added is False:
                 delivery = IDelivery(sale_item, None)
             if delivery is not None:
-                details.append(_(u'Delivery Address: %s' % delivery.address))
+                details.append(_('Delivery Address: %s') % delivery.address)
                 # At the moment, we just support only one delivery per sale.
                 delivery_added = True
                 delivery = None
             else:
                 if sale_item.notes:
-                    details.append(_(u'"%s" Notes: %s' % (
-                        sale_item.get_description(), sale_item.notes)))
+                    details.append(_('"%s" Notes: %s') % (
+                        sale_item.get_description(), sale_item.notes))
             if sale_item.is_service() and sale_item.estimated_fix_date:
-                details.append(_(u'"%s" Estimated Fix Date: %s') % (
+                details.append(_('"%s" Estimated Fix Date: %s') % (
                                  sale_item.get_description(),
                                  sale_item.estimated_fix_date.strftime('%x')))
         return u'\n'.join(details)
