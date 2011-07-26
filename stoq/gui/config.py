@@ -744,8 +744,9 @@ class FinishInstallationStep(BaseWizardStep):
         # self._cancel will be a callback for the quit button
         self.wizard.cancel = self._cancel
         self.wizard.next_button.set_label(_(u'Run Stoq'))
-
         self.online_services.set_active(self.wizard.enable_online_services)
+
+        self.wizard.next_button.grab_focus()
 
         if self.wizard.has_installed_db:
             self.online_services.hide()
