@@ -128,7 +128,7 @@ class DeliverySearch(SearchDialog):
         self.set_searchbar_labels(_('Items matching:'))
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('# '), data_type=int, sorted=True,
+        return [SearchColumn('id', title=_('#'), data_type=int,
                              order=gtk.SORT_DESCENDING),
                 SearchColumn('description', title=_('Item'),
                              data_type=str, expand=True),
