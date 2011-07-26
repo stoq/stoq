@@ -182,6 +182,7 @@ class BasePersonRoleEditor(BaseEditor):
     @ivar individual_slave:
     @ivar company_slave:
     """
+    size = (700, -1)
 
     def __init__(self, conn, model=None, role_type=None, person=None,
                  visual_mode=False):
