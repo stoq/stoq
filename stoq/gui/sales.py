@@ -96,6 +96,7 @@ class SalesApp(SearchableAppWindow):
           <menuitem action="SalesQuote"/>
           <menuitem action="SalesCancel"/>
           <separator/>
+          <!-- Must update nfe plugin if this changes -->
           <menuitem action="SalesPrintInvoice"/>
           <separator/>
           <menuitem action="ExportCSV"/>
