@@ -491,7 +491,7 @@ class PosApp(AppWindow):
 
         self.set_sensitive((self.checkout_button,
                             self.ConfirmOrder), has_products or has_services)
-        self.till_status_label.set_visible(self._coupon is None)
+        self.till_status_box.set_visible(self._coupon is None)
         self.sale_items.set_visible(self._coupon is not None)
 
         self._update_totals()
