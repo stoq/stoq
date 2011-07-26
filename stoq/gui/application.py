@@ -137,7 +137,7 @@ class AppWindow(BaseAppWindow):
         button_label = _('Enable production mode')
         title = _('You are using Stoq in demonstration mode.')
         desc = (_("Some features are limited due to fiscal reasons. "
-                  "Click on '%s' to remove the limitations and examples.")
+                  "Click on '%s' to remove the limitations and finish the demonstration.")
                 % button_label)
         label = gtk.Label('<b>%s</b>\n%s' % (title, desc))
         label.set_use_markup(True)
@@ -476,7 +476,7 @@ class AppWindow(BaseAppWindow):
     def _on_enable_production__clicked(self, button):
         if not self.can_close_application():
             return
-        if yesno(_("This will enable production mode and delete all examples. "
+        if yesno(_("This will enable production mode and finish the demonstration. "
                    "Are you sure?"),
                  gtk.RESPONSE_NO,
                  _("Continue testing"),
