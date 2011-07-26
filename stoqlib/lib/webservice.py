@@ -57,7 +57,6 @@ class JsonDownloader(Protocol):
     def connectionLost(self, reason):
         self.finished.callback(json.loads(self.data))
 
-
 class StringProducer(object):
     implements(IBodyProducer)
 
@@ -75,6 +74,8 @@ class StringProducer(object):
     def stopProducing(self):
         pass
 
+    def resumeProducing(self):
+        pass
 
 class WebService(object):
     API_SERVER = os.environ.get('STOQ_API_HOST', 'http://api.stoq.com.br')
