@@ -319,6 +319,9 @@ class PosApp(AppWindow):
                                                     LOGO_HEIGHT)
         self.stoq_logo.set_from_pixbuf(logo)
 
+        self.till_status_label.set_size('xx-large')
+        self.till_status_label.set_bold(True)
+
         self.order_total_label.set_size('xx-large')
         self.order_total_label.set_bold(True)
         self._create_context_menu()
@@ -449,6 +452,14 @@ class PosApp(AppWindow):
         self._set_sale_sensitive(False)
 
     def _till_status_changed(self, closed, blocked):
+        if closed:
+            text = _(u"Till closed")
+        elif blocked:
+            text = _(u"Till blocked")
+        else:
+            text = _(u"Till open")
+        self.till_status_label.set_text(text)
+
         self.TillOpen.set_sensitive(closed)
         self.TillClose.set_sensitive(not closed or blocked)
         self._set_sale_sensitive(not closed and not blocked)
@@ -480,6 +491,9 @@ class PosApp(AppWindow):
 
         self.set_sensitive((self.checkout_button,
                             self.ConfirmOrder), has_products or has_services)
+        self.till_status_label.set_visible(self._coupon is None)
+        self.sale_items.set_visible(self._coupon is not None)
+
         self._update_totals()
         self._update_buttons()
 
@@ -627,14 +641,12 @@ class PosApp(AppWindow):
                      gtk.RESPONSE_NO, _("Don't cancel"), _(u"Cancel order")):
                 return False
 
-        self._clear_order()
-
         log.info("Cancelling coupon")
         if not self.param.CONFIRM_SALES_ON_TILL:
             if self._coupon:
                 self._coupon.cancel()
         self._coupon = None
-        self.CancelOrder.set_sensitive(False)
+        self._clear_order()
 
         return True
 
@@ -737,8 +749,8 @@ class PosApp(AppWindow):
             # self.conn is infact a transaction, do a commit to bring
             # the objects from trans into self.conn
             self.conn.commit()
-        self._clear_order()
         self._coupon = None
+        self._clear_order()
 
     def _remove_selected_item(self):
         sale_item = self.sale_items.get_selected()
