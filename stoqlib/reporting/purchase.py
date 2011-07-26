@@ -204,9 +204,8 @@ class PurchaseOrderReport(BaseStoqReport):
 
             freight = get_formatted_price(freight)
             if len(freight_types) == 1:
-                received_freight = _(u"%s (%s)") %
-                                     (freight_names[freight_types[0]],
-                                      freight)
+                received_freight = _(u"%s (%s)") % (
+                    freight_names[freight_types[0]], freight)
             else:
                 self.received_freight_type = _(u'Mixed (%s)') % freight
 
