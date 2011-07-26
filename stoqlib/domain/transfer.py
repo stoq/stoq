@@ -101,8 +101,8 @@ class TransferOrder(Domain):
     @argcheck(TransferOrderItem)
     def remove_item(self, item):
         if item.transfer_order is not self:
-            raise ValueError('The item does not belong to this '
-                             'transfer order')
+            raise ValueError(_('The item does not belong to this '
+                               'transfer order'))
         TransferOrderItem.delete(item.id,
                                  connection=self.get_connection())
 

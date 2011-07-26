@@ -240,7 +240,7 @@ def _register_branch(conn, station_name):
                                        branch=branch,
                                        name=station_name)
     except StoqlibError, e:
-        error(_("ERROR: %s" % e))
+        error(_("ERROR: %s") % e)
 
     station_id = station.id
     trans.commit(close=True)

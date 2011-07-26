@@ -231,8 +231,8 @@ class Payment(Domain):
         # it's possible. Bug 2598
         if self.status not in [Payment.STATUS_PREVIEW, Payment.STATUS_PENDING,
                                Payment.STATUS_PAID]:
-            raise StoqlibError("Invalid status for cancel operation, "
-                                "got %s" % self.get_status_str())
+            raise StoqlibError(_("Invalid status for cancel operation, "
+                                 "got %s") % self.get_status_str())
 
         if self.status == Payment.STATUS_PAID:
             PaymentFlowHistory.remove_paid_payment(self.get_connection(),
@@ -254,8 +254,8 @@ class Payment(Domain):
         @rtype: datetime.date
         """
         if self.status in [Payment.STATUS_PAID, Payment.STATUS_CANCELLED]:
-            raise StoqlibError("Invalid status for change_due_date operation, "
-                                "got %s" % self.get_status_str())
+            raise StoqlibError(_("Invalid status for change_due_date operation, "
+                                 "got %s") % self.get_status_str())
         conn = self.get_connection()
         PaymentFlowHistory.remove_payment(conn, self, self.due_date)
         PaymentFlowHistory.add_payment(conn, self, new_due_date)
@@ -289,9 +289,9 @@ class Payment(Domain):
         if not date:
             date = datetime.date.today()
         elif date < self.open_date.date():
-            raise ValueError("Date can not be less then open date")
+            raise ValueError(_("Date can not be less then open date"))
         elif date > datetime.date.today():
-            raise ValueError("Date can not be greather then future date")
+            raise ValueError(_("Date can not be greather then future date"))
 
         if not self.method.daily_penalty:
             return currency(0)
@@ -311,9 +311,9 @@ class Payment(Domain):
         if not date:
             date = datetime.date.today()
         elif date < self.open_date.date():
-            raise ValueError("Date can not be less then open date")
+            raise ValueError(_("Date can not be less then open date"))
         elif date > datetime.date.today():
-            raise ValueError("Date can not be greather then future date")
+            raise ValueError(_("Date can not be greather then future date"))
         if not self.method.interest:
             return currency(0)
 
@@ -674,7 +674,7 @@ class PaymentAdaptToOutPayment(ModelAdapter):
 
     def pay(self):
         if not self.payment.status == Payment.STATUS_PENDING:
-            raise ValueError("This payment is already paid.")
+            raise ValueError(_("This payment is already paid."))
         self.payment.pay()
 
 Payment.registerFacet(PaymentAdaptToOutPayment, IOutPayment)

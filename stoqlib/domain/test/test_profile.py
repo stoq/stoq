@@ -26,8 +26,10 @@
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.profile import ProfileSettings
 from stoqlib.domain.profile import update_profile_applications
-
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
 
 class TestUserProfile(DomainTest):
     """C{UserProfile} TestCase
@@ -43,7 +45,7 @@ class TestUserProfile(DomainTest):
     def test_get_default(self):
         profile = UserProfile.get_default(self.trans)
         self.failUnless(isinstance(profile, UserProfile))
-        self.assertEquals(profile.name, 'Salesperson')
+        self.assertEquals(profile.name, _('Salesperson'))
 
 
 class TestProfileSettings(DomainTest):

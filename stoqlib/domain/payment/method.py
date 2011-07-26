@@ -184,8 +184,8 @@ class PaymentMethod(Domain):
             maximum = self.max_installments
         if installments_number > maximum:
             raise ValueError(
-                'The number of installments can not be greater than %d '
-                'for payment method %r' % (maximum, self))
+                _('The number of installments can not be greater than %d '
+                  'for payment method %r') % (maximum, self))
 
     def _check_interest_value(self, interest):
         interest = interest or Decimal(0)
@@ -194,15 +194,15 @@ class PaymentMethod(Domain):
                             'or Decimal, got %s instead'
                             % type(interest))
         if not (0 <= interest <= 100):
-            raise ValueError("Argument interest must be "
-                             "between 0 and 100, got %s"
+            raise ValueError(_("Argument interest must be "
+                               "between 0 and 100, got %s")
                              % interest)
 
     def _calculate_payment_value(self, total_value, installments_number,
                                 iface, interest=None):
         if not installments_number:
-            raise ValueError('The payment_qty argument must be greater '
-                             'than zero')
+            raise ValueError(_('The payment_qty argument must be greater '
+                               'than zero'))
 
         if iface is IInPayment:
             self._check_installments_number(installments_number)
@@ -254,13 +254,13 @@ class PaymentMethod(Domain):
                                 connection=self.get_connection()).count()
             if payment_count == self.max_installments:
                 raise PaymentMethodError(
-                    'You can not create more inpayments for this payment '
-                    'group since the maximum allowed for this payment '
-                    'method is %d' % self.max_installments)
+                    _('You can not create more inpayments for this payment '
+                      'group since the maximum allowed for this payment '
+                      'method is %d') % self.max_installments)
             elif payment_count > self.max_installments:
                 raise DatabaseInconsistency(
-                    'You have more inpayments in database than the maximum '
-                    'allowed for this payment method')
+                    _('You have more inpayments in database than the maximum '
+                      'allowed for this payment method'))
 
         if not description:
             description = self.describe_payment(payment_group)

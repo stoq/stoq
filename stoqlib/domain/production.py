@@ -90,9 +90,9 @@ class ProductionOrder(Domain):
 
     def remove_item(self, item):
         if item.order is not self:
-            raise ValueError('Argument item must have an order attribute '
-                             'associated with the current production '
-                             'order instance.')
+            raise ValueError(_('Argument item must have an order attribute '
+                               'associated with the current production '
+                               'order instance.'))
         ProductionItem.delete(item.id, connection=self.get_connection())
 
     #
@@ -258,7 +258,7 @@ class ProductionItem(Domain):
         """
         if self.lost + quantity > self.quantity - self.produced:
             raise ValueError(
-                u'Can not lost more items than the total production quantity.')
+                _('Can not lost more items than the total production quantity.'))
 
         conn = self.get_connection()
         conn.savepoint('before_lose')
@@ -323,7 +323,7 @@ class ProductionMaterial(Domain):
             else:
                 quantity = stock
         elif quantity > stock:
-            raise ValueError('Can not allocate this quantity.')
+            raise ValueError(_('Can not allocate this quantity.'))
 
         if quantity > 0:
             self.allocated += quantity
@@ -339,7 +339,7 @@ class ProductionMaterial(Domain):
         assert quantity > 0
 
         if self.lost + quantity > self.needed - self.consumed:
-            raise ValueError(u'Can not lost this quantity.')
+            raise ValueError(_('Cannot loose this quantity.'))
 
         required = self.consumed + self.lost + quantity
         if required > self.allocated:
@@ -359,7 +359,7 @@ class ProductionMaterial(Domain):
         assert quantity > 0
 
         if self.consumed + quantity > self.needed - self.lost:
-            raise ValueError(u'Can not consume this quantity.')
+            raise ValueError(_('Can not consume this quantity.'))
 
         required = self.consumed + self.lost + quantity
         if required > self.allocated:

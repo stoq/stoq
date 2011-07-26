@@ -243,8 +243,8 @@ class TillClosingEditor(BaseEditor):
             assert self._close_ecf
             TillRemoveCashEvent.emit(till=till, value=removed)
             till_entry = till.add_debit_entry(removed,
-                                 _(u'Amount removed from Till on %s' %
-                                   till.opening_date.strftime('%x')))
+                                 _(u'Amount removed from Till on %s') %
+                                   till.opening_date.strftime('%x'))
             _create_transaction(self.conn, till_entry)
 
         if self._close_ecf:

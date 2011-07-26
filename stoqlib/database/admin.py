@@ -263,7 +263,7 @@ def _create_procedural_languages():
 
     if not user_has_usesuper(trans):
         raise StoqlibError(
-            "The current database user does not have super user rights")
+            _("The current database user does not have super user rights"))
 
     # Create the plpgsql language
     trans.query('CREATE LANGUAGE plpgsql')
@@ -303,9 +303,9 @@ def create_default_profiles():
     trans = new_transaction()
 
     log.info("Creating user default profiles")
-    UserProfile.create_profile_template(trans, 'Administrator', True)
-    UserProfile.create_profile_template(trans, 'Manager', True)
-    UserProfile.create_profile_template(trans, 'Salesperson', False)
+    UserProfile.create_profile_template(trans, _('Administrator'), True)
+    UserProfile.create_profile_template(trans, _('Manager'), True)
+    UserProfile.create_profile_template(trans, _('Salesperson'), False)
 
     trans.commit(close=True)
 

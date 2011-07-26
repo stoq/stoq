@@ -257,7 +257,7 @@ class QuoteSupplierStep(WizardEditorStep):
     def _show_products(self):
         selected = self.quoting_list.get_selected()
         columns = self._get_product_columns()
-        title = _(u'Products supplied by %s' % selected.supplier.person.name)
+        title = _(u'Products supplied by %s') % selected.supplier.person.name
         run_dialog(SimpleListDialog, self, columns, selected.items,
                    title=title)
 

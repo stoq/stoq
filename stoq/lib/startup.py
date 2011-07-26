@@ -176,7 +176,7 @@ def clean_database(config, options=None):
 
 def set_default_profile_settings():
     trans = new_transaction()
-    profile = UserProfile.selectOneBy(name='Salesperson', connection=trans)
+    profile = UserProfile.selectOneBy(name=_('Salesperson'), connection=trans)
     assert profile
     ProfileSettings.set_permission(trans, profile, 'pos', True)
     ProfileSettings.set_permission(trans, profile, 'sales', True)

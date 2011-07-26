@@ -213,9 +213,8 @@ class Person(Domain):
     #        calls a TypeError will automatically be issued
     def _check_individual_or_company_facets(self):
         if not self.has_individual_or_company_facets():
-            raise TypeError(
-                'The person you want to adapt must have at '
-                'least an individual or a company facet')
+            raise TypeError('The person you want to adapt must have at '
+                            'least an individual or a company facet')
 
     @property
     def address(self):

@@ -437,7 +437,7 @@ class ProductAdaptToStorable(ModelAdapter):
         if sysparam(self.get_connection()).USE_LOGIC_QUANTITY:
             return
         raise StockError(
-            "This company doesn't allow logic quantity operations")
+            _("This company doesn't allow logic quantity operations"))
 
     def _check_rejected_stocks(self, stocks, quantity, check_logic=False):
         for stock_item in stocks:
@@ -446,8 +446,8 @@ class ProductAdaptToStorable(ModelAdapter):
             else:
                 base_qty = stock_item.quantity
             if base_qty < quantity:
-                raise StockError('Quantity to decrease is greater than available '
-                                 'stock.')
+                raise StockError(
+                    _('Quantity to decrease is greater than available stock.'))
 
     def _has_qty_available(self, quantity, branch):
         logic_qty = self.get_logic_balance(branch)
@@ -456,8 +456,8 @@ class ProductAdaptToStorable(ModelAdapter):
         logic_qty_ok = quantity <= self.get_full_balance(branch)
         has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
         if not qty_ok and not (has_logic_qty and logic_qty_ok):
-            raise StockError('Quantity to sell is greater than the available '
-                             'stock.')
+            raise StockError(
+                _('Quantity to sell is greater than the available stock.'))
         return qty_ok
 
     @argcheck(Person.getAdapterClass(IBranch))
@@ -501,7 +501,7 @@ class ProductAdaptToStorable(ModelAdapter):
 
     def increase_stock(self, quantity, branch, unit_cost=None):
         if quantity <= 0:
-            raise ValueError("quantity must be a positive number")
+            raise ValueError(_("quantity must be a positive number"))
 
         stock_item = self.get_stock_item(branch)
         if stock_item is None:
@@ -542,7 +542,7 @@ class ProductAdaptToStorable(ModelAdapter):
 
         stock_item.quantity -= quantity
         if stock_item.quantity < 0:
-            raise ValueError("Quantity cannot be negative")
+            raise ValueError(_("Quantity cannot be negative"))
 
         # We emptied the entire stock, we need to change the status of the
         # sellable, but only if there is no stock in any other branch.
@@ -606,9 +606,9 @@ class ProductAdaptToStorable(ModelAdapter):
         if not qty:
             return False
         elif qty > 1:
-            raise DatabaseInconsistency("You should have only one stock "
-                                        "item for this branch, got %d"
-                                        % qty)
+            raise DatabaseInconsistency(
+                _("You should have only one stock item for this branch, "
+                  "got %d") % qty)
         stock = stock[0]
         return stock.quantity + stock.logic_quantity > 0
 

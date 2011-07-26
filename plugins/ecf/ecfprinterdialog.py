@@ -120,8 +120,8 @@ class ECFEditor(BaseEditor):
                                        self.model.printer_class)
         self._status.connect('reply', self._printer_status__reply)
         self._status.connect('timeout', self._printer_status__timeout)
-        self.progress_dialog.set_label(_("Probing for a %s printer on %s" % (
-            self.model.model_name, self._status.get_device_name())))
+        self.progress_dialog.set_label(_("Probing for a %s printer on %s") % (
+            self.model.model_name, self._status.get_device_name()))
         self.progress_dialog.start()
         return False
 
@@ -133,7 +133,7 @@ class ECFEditor(BaseEditor):
                              station=get_current_station(self.conn))
         if till and printers:
             warning(_("You need to close the till opened at %s before "
-                      "changing this printer." % till.opening_date.date()))
+                      "changing this printer.") % till.opening_date.date())
             return False
         for p in printers:
             if p.device_serial != serial and self.model.is_active:

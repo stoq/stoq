@@ -128,8 +128,8 @@ class SaleItem(Domain):
                               u"current one"))
 
         if not self.sellable.can_be_sold():
-            raise SellError(_(u"%r does not have enough stock to be sold."
-                              % self.sellable.get_description()))
+            raise SellError(_(u"%r does not have enough stock to be sold.")
+                              % self.sellable.get_description())
 
         storable = IStorable(self.sellable.product, None)
         if storable:
@@ -246,7 +246,7 @@ class DeliveryItem(Domain):
     def create_from_sellable_item(cls, sale_item):
         if not sale_item.sellable.product:
             raise SellError(
-                "It's only possible to deliver products, not %r" % (
+                _("It's only possible to deliver products, not %r") % (
                 type(sale_item),))
 
         quantity = sale_item.quantity - sale_item.get_quantity_delivered()
@@ -392,7 +392,7 @@ class Sale(Domain):
     @classmethod
     def get_status_name(cls, status):
         if not status in cls.statuses:
-            raise DatabaseInconsistency("Invalid status %d" % status)
+            raise DatabaseInconsistency(_("Invalid status %d") % status)
         return cls.statuses[status]
 
     @classmethod
@@ -494,10 +494,10 @@ class Sale(Domain):
         assert self.can_order()
 
         if not self.get_items():
-            raise SellError('The sale must have sellable items')
+            raise SellError(_('The sale must have sellable items'))
         if self.client and not self.client.is_active:
-            raise SellError('Unable to make sales for clients with status '
-                            '%s' % self.client.get_status_string())
+            raise SellError(_('Unable to make sales for clients with status '
+                              '%s') % self.client.get_status_string())
         self.status = Sale.STATUS_ORDERED
 
     def confirm(self):
@@ -539,8 +539,8 @@ class Sale(Domain):
         for payment in self.group.payments:
             if not payment.is_paid():
                 raise StoqlibError(
-                    "You cannot close a sale without paying all the payment. "
-                    "Payment %r is still not paid" % (payment,))
+                    _("You cannot close a sale without paying all the payment. "
+                      "Payment %r is still not paid") % (payment,))
 
         transaction = IPaymentTransaction(self)
         transaction.pay()
@@ -688,8 +688,9 @@ class Sale(Domain):
             return None
         client_role = self.client.person.has_individual_or_company_facets()
         if client_role is None:
-            raise DatabaseInconsistency("The sale %r have a client but no "
-                                        "client_role defined." % self)
+            raise DatabaseInconsistency(
+                _("The sale %r have a client but no "
+                  "client_role defined.") % self)
 
         return client_role
 
@@ -902,7 +903,7 @@ class SaleAdaptToPaymentTransaction(object):
         payments = self.sale.payments
         if not payments.count():
             raise ValueError(
-                'You must have at least one payment for each payment group')
+                _('You must have at least one payment for each payment group'))
 
         till = Till.get_current(self.sale.get_connection())
         for payment in payments:
@@ -1041,12 +1042,12 @@ class SaleAdaptToPaymentTransaction(object):
         sale = self.sale
         if not sale.get_items().count():
             raise DatabaseInconsistency(
-                "Sale orders must have items, which means products or "
-                "services")
+                _("Sale orders must have items, which means products or "
+                  "services"))
         total_quantity = sale.get_items_total_quantity()
         if not total_quantity:
-            raise DatabaseInconsistency("Sale total quantity should never "
-                                        "be zero")
+            raise DatabaseInconsistency(
+                _("Sale total quantity should never be zero"))
         # If there is a discount or a surcharge applied in the whole total
         # sale amount, we must share it between all the item values
         # otherwise the icms and iss won't be calculated properly

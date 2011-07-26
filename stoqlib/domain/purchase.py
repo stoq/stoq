@@ -191,8 +191,8 @@ class PurchaseOrder(Domain):
     def remove_item(self, item):
         conn = self.get_connection()
         if item.order is not self:
-            raise ValueError('Argument item must have an order attribute '
-                             'associated with the current purchase instance')
+            raise ValueError(_('Argument item must have an order attribute '
+                               'associated with the current purchase instance'))
         PurchaseItem.delete(item.id, connection=conn)
 
     def add_item(self, sellable, quantity=Decimal(1)):
@@ -313,9 +313,9 @@ class PurchaseOrder(Domain):
         if self.status not in [PurchaseOrder.ORDER_PENDING,
                                PurchaseOrder.ORDER_CONSIGNED]:
             raise ValueError(
-                'Invalid order status, it should be '
-                'ORDER_PENDING or ORDER_CONSIGNED, got %s' % (
-                                            self.get_status_str(),))
+                _('Invalid order status, it should be '
+                  'ORDER_PENDING or ORDER_CONSIGNED, got %s') % (
+                self.get_status_str(),))
 
         transaction = IPaymentTransaction(self)
         transaction.confirm()
@@ -330,8 +330,8 @@ class PurchaseOrder(Domain):
     def set_consigned(self):
         if self.status != PurchaseOrder.ORDER_PENDING:
             raise ValueError(
-                'Invalid order status, it should be '
-                'ORDER_PENDING, got %s' % (self.get_status_str(),))
+                _('Invalid order status, it should be '
+                  'ORDER_PENDING, got %s') % (self.get_status_str(),))
 
         self.responsible = get_current_user(self.get_connection())
         self.status = PurchaseOrder.ORDER_CONSIGNED
@@ -340,8 +340,8 @@ class PurchaseOrder(Domain):
         """Closes the purchase order
         """
         if self.status != PurchaseOrder.ORDER_CONFIRMED:
-            raise ValueError('Invalid status, it should be confirmed '
-                             'got %s instead' % self.get_status_str())
+            raise ValueError(_('Invalid status, it should be confirmed '
+                               'got %s instead') % self.get_status_str())
         self.status = self.ORDER_CLOSED
 
     def cancel(self):
@@ -357,13 +357,13 @@ class PurchaseOrder(Domain):
 
     def receive_item(self, item, quantity_to_receive):
         if not item in self.get_pending_items():
-            raise StoqlibError('This item is not pending, hence '
-                               'cannot be received')
+            raise StoqlibError(_('This item is not pending, hence '
+                                 'cannot be received'))
         quantity = item.quantity - item.quantity_received
         if quantity < quantity_to_receive:
-            raise StoqlibError('The quantity that you want to receive '
-                               'is greater than the total quantity of '
-                               'this item %r' % item)
+            raise StoqlibError(_('The quantity that you want to receive '
+                                 'is greater than the total quantity of '
+                                 'this item %r') % item)
         self.increase_quantity_received(item, quantity_to_receive)
 
     def increase_quantity_received(self, purchase_item, quantity_received):
@@ -372,8 +372,8 @@ class PurchaseOrder(Domain):
                     if item.sellable.id == sellable.id]
         qty = len(items)
         if not qty:
-            raise ValueError('There is no purchase item for '
-                             'sellable %r' % sellable)
+            raise ValueError(_('There is no purchase item for '
+                               'sellable %r') % sellable)
 
         purchase_item.quantity_received += quantity_received
 
@@ -382,8 +382,8 @@ class PurchaseOrder(Domain):
 
     def get_freight_type_name(self):
         if not self.freight_type in self.freight_types.keys():
-            raise DatabaseInconsistency('Invalid freight_type, got %d'
-                                        % self.freight_type)
+            raise DatabaseInconsistency(_('Invalid freight_type, got %d')
+                                          % self.freight_type)
         return self.freight_types[self.freight_type]
 
     def get_branch_name(self):
@@ -414,7 +414,7 @@ class PurchaseOrder(Domain):
         subtotal = self.get_purchase_subtotal()
         total = subtotal - self.discount_value + self.surcharge_value
         if total < 0:
-            raise ValueError('Purchase total can not be lesser than zero')
+            raise ValueError(_('Purchase total can not be lesser than zero'))
         #XXX: Since the purchase_total value must have two digits
         # (at the moment) we need to format the value to a 2-digit number and
         # then convert it to currency data type, because the subtotal value
@@ -469,8 +469,8 @@ class PurchaseOrder(Domain):
     @classmethod
     def translate_status(cls, status):
         if not cls.statuses.has_key(status):
-            raise DatabaseInconsistency('Got an unexpected status value: '
-                                        '%s' % status)
+            raise DatabaseInconsistency(_('Got an unexpected status value: '
+                                          '%s') % status)
         return cls.statuses[status]
 
 
@@ -518,8 +518,8 @@ class QuoteGroup(Domain):
     def remove_item(self, item):
         conn = self.get_connection()
         if item.group is not self:
-            raise ValueError('You can not remove an item which does not '
-                             'belong to this group.')
+            raise ValueError(_('You can not remove an item which does not '
+                               'belong to this group.'))
 
         order = item.purchase
         Quotation.delete(item.id, connection=conn)

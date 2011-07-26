@@ -134,11 +134,11 @@ class SchemaMigration(object):
     def __init__(self):
         if self.patch_resource is None:
             raise ValueError(
-                "%s needs to have the patch_resource class variable set" % (
+                _("%s needs to have the patch_resource class variable set") % (
                 self.__class__.__name__))
         if self.patch_patterns is None:
             raise ValueError(
-                "%s needs to have the patch_patterns class variable set" % (
+                _("%s needs to have the patch_patterns class variable set") % (
                 self.__class__.__name__))
         self.conn = get_connection()
 
@@ -218,8 +218,8 @@ class SchemaMigration(object):
             current = "(%d.%d)" % current_version
             latest = "(%d.%d)" % latest_available
             raise DatabaseInconsistency(
-                'The current version of database %s is greater than the '
-                'latest available version %s' % (current, latest))
+                _('The current version of database %s is greater than the '
+                  'latest available version %s') % (current, latest))
 
         return False
 

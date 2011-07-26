@@ -60,8 +60,8 @@ class CfopEditor(BaseEditor):
 
     def on_code__validate(self, widget, value):
         if not validate_cfop(value):
-            return ValidationError(_(u"'%s' is not a valid C.F.O.P. code."
-                                     % value))
+            return ValidationError(_(u"'%s' is not a valid C.F.O.P. code.")
+                                     % value)
 
 class FiscalBookEntryEditor(BaseEditor):
     model_type = FiscalBookEntry

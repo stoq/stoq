@@ -372,7 +372,7 @@ def _initialize(options):
         type, value, trace = sys.exc_info()
         error(_("Could not open the database config file"),
               _("Invalid config file settings, got error '%s', "
-                "of type '%s'" % (value, type)))
+                "of type '%s'") % (value, type))
 
     from stoqlib.exceptions import StoqlibError
     from stoqlib.database.exceptions import PostgreSQLError

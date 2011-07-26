@@ -180,9 +180,8 @@ class PurchaseOrderReport(BaseStoqReport):
         # First line.
         transporter = self._order.get_transporter_name() or _(u"Not Specified")
         freight = get_formatted_price(self._order.expected_freight)
-        agreed_freight = _(u"%s (%s)" %
-                           (freight_names[self._order.freight_type],
-                            freight))
+        agreed_freight = _(u"%s (%s)") % (
+            freight_names[self._order.freight_type], freight)
 
         lines.append([_(u"Transporter:"), transporter,
                       _(u"Agreed Freight:"), agreed_freight])
@@ -205,11 +204,11 @@ class PurchaseOrderReport(BaseStoqReport):
 
             freight = get_formatted_price(freight)
             if len(freight_types) == 1:
-                received_freight = _(u"%s (%s)" %
+                received_freight = _(u"%s (%s)") %
                                      (freight_names[freight_types[0]],
-                                      freight))
+                                      freight)
             else:
-                self.received_freight_type = _(u'Mixed (%s)' % freight)
+                self.received_freight_type = _(u'Mixed (%s)') % freight
 
             second_line.extend([_("Received Freight:"), received_freight])
         else:

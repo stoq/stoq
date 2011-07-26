@@ -156,7 +156,7 @@ class DeviceSettingsEditor(BaseEditor):
 
     def get_title(self, *args):
         if self.edit_mode:
-            return _("Edit Device for %s" % self.model.station.name)
+            return _("Edit Device for %s") % self.model.station.name
         else:
             return _("Add Device")
 
@@ -168,9 +168,9 @@ class DeviceSettingsEditor(BaseEditor):
                 type=self.model.type)
             if settings:
                 self.station.set_invalid(
-                    _(u"A %s already exists for station \"%s\""
+                    _(u"A %s already exists for station \"%s\"")
                       % (self.model.get_device_type_name(),
-                         self.model.station.name)))
+                         self.model.station.name))
                 return False
         return True
 

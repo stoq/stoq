@@ -152,8 +152,8 @@ class CouponPrinter(object):
     def check_serial(self):
         driver_serial = self._driver.get_serial()
         if self._printer.device_serial != driver_serial:
-            warning(_("Invalid serial number for fiscal printer connected to %s" % (
-                self._printer.device_name)))
+            warning(_("Invalid serial number for fiscal printer connected to %s") % (
+                self._printer.device_name))
             return False
 
         return True
@@ -342,7 +342,7 @@ class Coupon(object):
         if not constant:
             raise DeviceError(
                 _("The payment method used in this sale (%s) is not "
-                  "configured in the fiscal printer." % (payment.method.method_name,)))
+                  "configured in the fiscal printer.") % (payment.method.method_name,))
 
         return constant
 

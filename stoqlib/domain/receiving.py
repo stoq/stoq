@@ -232,8 +232,8 @@ class ReceivingOrder(Domain):
         else:
             group = self.purchase.group
 
-        description = _(u'Freight for purchase %s' %
-                        self.purchase.get_order_number_str())
+        description = _(u'Freight for purchase %s') %
+                        self.purchase.get_order_number_str()
         out_payment = money_method.create_outpayment(
             group, self.freight_total,
             due_date=datetime.datetime.today(),
