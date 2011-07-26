@@ -10,8 +10,8 @@
     if (document.URL.indexOf("?")) {
         var param = document.URL.split("?")[1];
         if (param == 'demo-mode') {
-          document.getElementById('livecd_link').style.display = 'block';
-          document.getElementById('livecd_section').style.display = 'block';
+          document.getElementById('demo_link').style.display = 'block';
+          document.getElementById('demo_section').style.display = 'block';
         }
     }
   }
@@ -34,11 +34,11 @@
   <div id="page">
       <div id="right-content">
         <div class="post">
-          <img class="icon" alt="Stoq LiveCD" src="media-cdrom.png"/>
+          <img class="icon" alt="Stoq" src="media-cdrom.png"/>
           <h2>Conteúdo</h2>
           <ul>
-            <div id="livecd_link" style="display: none;">
-            <li ><a href="#livecd">Sobre o Live CD</a></li>
+            <div id="demo_link" style="display: none;">
+              <li><a href="#demo">Sobre o Stoq</a></li>
             </div>
             <li><a href="#comercial">Contato Comercial</a></li>
             <li><a href="#tecnico">Contato Técnico</a></li>
@@ -50,17 +50,20 @@
     <div id="content">
       <div id="main-content" class="post">
         <div class="entry">
-          <div class="section" id="livecd_section" style="display: none;">
-          <h3><a name="livecd">Sobre o Live CD</a></h3>
+          <div class="section" id="demo_section" style="display: none;">
+          <h3><a name="demo">Sobre o Stoq</a></h3>
+
           <p>
-            Este Live CD possui uma instalação de demonstração do Stoq, para
-            que você possa fazer um test-drive.
+            <strong>Bem-vindo ao Stoq!</strong>
           </p>
 
-          <p>Durante o uso do Live CD, os plugins ECF e TEF estão
-          habilitados e utilizarão dois emuladores (impressora fiscal e
-          pinpad) para que o usuário tenha a sensação de como é o sistema
-          em produção.
+          <p>Stoq está configurado em modo de demonstração, para
+          que você possa fazer um test-drive.</p>
+
+          <p>Durante o uso do modo de demonstração, os plugins ECF e
+          TEF estarão habilitados e utilizarão dois emuladores
+          (impressora fiscal e pinpad) para que o usuário tenha a
+          sensação de como é o sistema em produção.
           </p>
 
           <p>Após a instalação e a habilitação do modo de produção, os

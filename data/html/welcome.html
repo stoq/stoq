@@ -10,8 +10,8 @@
     if (document.URL.indexOf("?")) {
         var param = document.URL.split("?")[1];
         if (param == 'demo-mode') {
-          document.getElementById('livecd_link').style.display = 'block';
-          document.getElementById('livecd_section').style.display = 'block';
+          document.getElementById('demo_link').style.display = 'block';
+          document.getElementById('demo_section').style.display = 'block';
         }
     }
   }
@@ -34,11 +34,11 @@
   <div id="page">
       <div id="right-content">
         <div class="post">
-          <img class="icon" alt="Stoq LiveCD" src="media-cdrom.png"/>
+          <img class="icon" alt="Stoq Demo" src="media-cdrom.png"/>
           <h2>Contents</h2>
           <ul>
-            <div id="livecd_link" style="display: none;">
-            <li ><a href="#livecd">About this Live CD</a></li>
+            <div id="demo_link" style="display: none;">
+            <li ><a href="#demo">About Stoq</a></li>
             </div>
             <li><a href="#comercial">Business contact</a></li>
             <li><a href="#tecnico">Technical contact</a></li>
@@ -50,14 +50,13 @@
     <div id="content">
       <div id="main-content" class="post">
         <div class="entry">
-          <div class="section" id="livecd_section" style="display: none;">
-          <h3><a name="livecd">About this Live CD</a></h3>
+          <div class="section" id="demo_section" style="display: none;">
+          <h3><a name="demo">About Stoq</a></h3>
           <p>
-            This Live CD contains an installation of Stoq in demonstration mode which
-            you can use to test the software.
+            Stoq is configured in demonstration mode which you can use to test the software.
           </p>
 
-          <p>While using the Live CD, the plugins ECF and TEF are enabled and uses two
+          <p>While using the Stoq in demonstration mode, the plugins ECF and TEF are enabled and uses two
           emulators to give a better idea how Stoq works with real hardware.
           </p>
 
