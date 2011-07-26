@@ -26,6 +26,7 @@
 import gtk
 from kiwi.ui.delegates import GladeDelegate
 from kiwi.argcheck import argcheck
+from twisted.internet import reactor
 
 from stoqlib.gui.base.dialogs import (get_dialog, run_dialog,
                                       add_current_toplevel)
@@ -60,7 +61,7 @@ class BaseApp:
         self.main_window.show()
 
     def shutdown(self, *args):
-        gtk.main_quit()
+        reactor.stop()
 
 
 

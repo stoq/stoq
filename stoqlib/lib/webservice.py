@@ -26,20 +26,55 @@
 import datetime
 import json
 import os
-import platform
 import urllib
+import platform
+import sys
 
-import gobject
-import gio
+from zope.interface import implements
+from kiwi.component import get_utility
 from kiwi.log import Logger
-
-from stoqlib.domain.interfaces import ICompany
+from twisted.internet import reactor
+from twisted.internet.defer import succeed, Deferred
+from twisted.internet.protocol import Protocol
+from twisted.web.client import Agent
+from twisted.web.http_headers import Headers
+from twisted.web.iweb import IBodyProducer
 from stoqlib.database.runtime import get_connection
-from stoqlib.lib.asyncresponse import AsyncResponse
+from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
 
 log = Logger('stoqlib.webservice')
+
+class JsonDownloader(Protocol):
+    def __init__(self, finished):
+        self.finished = finished
+        self.data = ''
+
+    def dataReceived(self, bytes):
+        self.data += bytes
+
+    def connectionLost(self, reason):
+        self.finished.callback(json.loads(self.data))
+
+
+class StringProducer(object):
+    implements(IBodyProducer)
+
+    def __init__(self, body):
+        self.body = body
+        self.length = len(body)
+
+    def startProducing(self, consumer):
+        consumer.write(self.body)
+        return succeed(None)
+
+    def pauseProducing(self):
+        pass
+
+    def stopProducing(self):
+        pass
+
 
 class WebService(object):
     API_SERVER = os.environ.get('STOQ_API_HOST', 'http://api.stoq.com.br')
@@ -48,48 +83,40 @@ class WebService(object):
     #   Private API
     #
 
-    def _on_file_read_async(self, gfile, result, response):
-        try:
-            stream = gfile.read_finish(result)
-        except gobject.GError, e:
-            response.error(e)
-            return
+    def _get_headers(self):
+        user_agent = 'Stoq'
+        app_info = get_utility(IAppInfo, None)
+        if app_info:
+            user_agent += ' %s' % (app_info.get('version'), )
+        headers = {'User-Agent': [user_agent]}
 
-        self.data = ''
-        stream.read_async(4096, self._on_stream_read_async, user_data=response)
+        return headers
 
-    def _on_stream_read_async(self, stream, result, response):
-        data = stream.read_finish(result)
-        if not data:
-            try:
-                decoded = json.loads(self.data)
-            except ValueError:
-                log.debug('Error parsing json: %r' % (self.data, ))
-                response.error(self.data)
-                return
-            response.done(decoded)
-            return
+    def _do_request(self, method, document, **params):
+        url = '%s/%s' % (self.API_SERVER, document)
+        log.info("Doing a %s on %r" % (method, document))
 
-        self.data += data
-        stream.read_async(4096, self._on_stream_read_async, user_data=response)
+        headers = self._get_headers()
 
-    def _do_request(self, method_name, **params):
-        response = AsyncResponse()
-        url = '%s/%s?q=%s' % (
-            self.API_SERVER, method_name, urllib.quote(json.dumps(params)))
-
-        log.debug('Requesting: %r' % method_name)
-        # GWinHttpRequest on Win32 is broken, do it synchronously instead.
-        if platform.system() == 'Windows':
-            import urllib2
-            fd = urllib2.urlopen(url)
-            data = fd.read()
-            gobject.idle_add(lambda : response.done(data))
+        if method == 'GET':
+            # FIXME: Remove q=
+            url += '?q=' + urllib.quote(json.dumps(params))
+            producer = None
+        elif method == 'POST':
+            producer = StringProducer(urllib.urlencode(params))
+            headers['Content-Type'] =  ['application/x-www-form-urlencoded']
         else:
-            gfile = gio.File(url)
-            gfile.read_async(self._on_file_read_async, user_data=response)
+            raise AssertionError(method)
 
-        return response
+        agent = Agent(reactor)
+        d = agent.request(method, url, Headers(headers), producer)
+
+        def dataReceived(response):
+            finished = Deferred()
+            response.deliverBody(JsonDownloader(finished))
+            return finished
+        d.addCallback(dataReceived)
+        return d
 
     def _get_cnpj(self):
         # We avoid using SQLObject, otherwise crash-reporting will break
@@ -117,7 +144,7 @@ class WebService(object):
         """Fetches the latest version
         @param conn: connection
         @param app_version: application version
-        @returns: an AsyncResponse object with the version_string as a parameter
+        @returns: a deferred with the version_string as a parameter
         """
         params = {
             'dist': platform.dist(),
@@ -128,7 +155,7 @@ class WebService(object):
             'version': app_version,
             'demo': sysparam(conn).DEMO_MODE,
         }
-        return self._do_request('version.json', **params)
+        return self._do_request('GET', 'version.json', **params)
 
     def bug_report(self, report):
         params = {
@@ -136,15 +163,13 @@ class WebService(object):
             'report': report,
         }
         if os.environ.get('STOQ_DISABLE_CRASHREPORT'):
-            response = AsyncResponse()
-            import sys
+            d = Deferred()
             print >> sys.stderr, params
-            gobject.idle_add(lambda : response.done({
-                'report-url': '<not submitted>',
-                'report': '<none>'}))
-            return response
+            d.callback({'report-url': '<not submitted>',
+                        'report': '<none>'})
+            return d
 
-        return self._do_request('bugreport.json', **params)
+        return self._do_request('POST', 'bugreport.json', **params)
 
     def tef_request(self, name, email, phone):
         params = {
@@ -152,4 +177,4 @@ class WebService(object):
             'email': email,
             'phone': phone,
         }
-        return self._do_request('tefrequest.json', **params)
+        return self._do_request('GET', 'tefrequest.json', **params)
