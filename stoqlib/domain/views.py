@@ -313,8 +313,8 @@ class SellableFullStockView(Viewable):
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
         category_description=SellableCategory.q.description,
-        stock=const.SUM(ProductStockItem.q.quantity +
-                       ProductStockItem.q.logic_quantity),
+        stock=const.COALESCE(const.SUM(ProductStockItem.q.quantity +
+                                       ProductStockItem.q.logic_quantity), 0),
         )
 
     joins = [
