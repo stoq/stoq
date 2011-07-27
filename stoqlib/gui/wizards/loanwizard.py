@@ -294,11 +294,16 @@ class LoanItemSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(value)
 
     def _edit_item(self, item):
-        retval = run_dialog(LoanItemEditor, self, self.conn, item,
+        trans = new_transaction()
+        item = trans.get(item)
+        retval = run_dialog(LoanItemEditor, self, trans, item,
                             expanded_edition=True)
+        retval = finish_transaction(trans, retval)
         if retval:
+            item = self.conn.get(item)
             self.loan_items.update(item)
             self._validate_step(True)
+        trans.close()
 
     def _create_sale(self, sale_items):
         user = get_current_user(self.conn)
