@@ -23,15 +23,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-26 16:05-0300\n"
-"PO-Revision-Date: 2011-07-26 19:44+0000\n"
-"Last-Translator: Thiago Bellini <thiago.bellini@hackedbellini.org>\n"
+"POT-Creation-Date: 2011-07-27 16:53-0300\n"
+"PO-Revision-Date: 2011-07-27 20:31+0000\n"
+"Last-Translator: Ronaldo Maia <mainha+lp@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-07-27 04:38+0000\n"
-"X-Generator: Launchpad (build 13405)\n"
+"X-Launchpad-Export-Date: 2011-07-27 20:37+0000\n"
+"X-Generator: Launchpad (build 13503)\n"
 "Language: \n"
 
 #: ../data/glade/AbstractItemStep.ui.h:1
@@ -632,11 +632,11 @@ msgstr "Tipo do pagamento:"
 
 #: ../data/glade/DatabaseLocationStep.ui.h:1
 msgid "<b>Database location</b>"
-msgstr "<b>Localização da base de dados</b>"
+msgstr "<b>Localização do banco de dados</b>"
 
 #: ../data/glade/DatabaseLocationStep.ui.h:2
 msgid "I want to manually configure the database connection."
-msgstr "Quero configurar manualmente a conexão com a base de dados."
+msgstr "Quero configurar manualmente a conexão com o banco de dados."
 
 #: ../data/glade/DatabaseLocationStep.ui.h:3
 msgid "I want to use Stoq just on this computer."
@@ -653,12 +653,12 @@ msgid ""
 "To be able to use Stoq we need make sure that there is a database that we "
 "can connect to."
 msgstr ""
-"Para utilizar o Stoq, é preciso ter certeza de que existe uma base de dados "
+"Para utilizar o Stoq, é preciso ter certeza de que existe um banco de dados "
 "que nós conseguimos conectar."
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:1
 msgid "<b>Database Settings</b>"
-msgstr "<b>Configurações da base de dados</b>"
+msgstr "<b>Configurações do banco de dados</b>"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:2 ../stoqlib/reporting/sale.py:82
 msgid "Address:"
@@ -683,7 +683,7 @@ msgstr "Senha:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:7
 msgid "Please, fill the details about your database."
-msgstr "Por favor, preencha os detalhes sobre a sua base de dados."
+msgstr "Por favor, preencha os detalhes sobre o seu banco de dados."
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:8
 #: ../data/glade/DeviceSettingsEditor.ui.h:6
@@ -1048,7 +1048,7 @@ msgid ""
 "database cluster before the PostgreSQL server can be started. Please consult "
 "the distribution documentation for more information."
 msgstr ""
-"O servidor PostgreSQL não está rodando nesse computador. É necessário "
+"O servidor PostgreSQL não está rodando neste computador. É necessário "
 "instalá-lo e iniciá-lo para o Stoq poder executar.\n"
 "\n"
 "Note que algumas distribuições, como Fedora, exigem que você crie o cluster "
@@ -1057,15 +1057,15 @@ msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:1
 msgid "Create a database in demonstration mode."
-msgstr ""
+msgstr "Criar um banco de dados em modo de demonstração."
 
 #: ../data/glade/InstallationModeStep.ui.h:2
 msgid "Create an empty database for production use."
-msgstr "Criar uma base de dados vazia para uso em produção."
+msgstr "Criar um banco de dados vazio para uso em produção."
 
 #: ../data/glade/InstallationModeStep.ui.h:3
 msgid "Database initialization"
-msgstr "Inicialização da base de dados"
+msgstr "Inicialização do banco de dados"
 
 #: ../data/glade/InstallationModeStep.ui.h:5
 msgid ""
@@ -1725,7 +1725,7 @@ msgid "Expected Freight Value:"
 msgstr "Valor previsto de transporte"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:13 ../stoq/gui/purchase.py:206
-#: ../stoqlib/domain/sale.py:351
+#: ../stoqlib/domain/sale.py:352
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:82
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:480
 #: ../stoqlib/reporting/purchase.py:68
@@ -2409,15 +2409,15 @@ msgid ""
 "It is always a good idea to <b>create a backup</b> of your database before "
 "updating."
 msgstr ""
-"O Stoq já foi atualizado, mas ainda é preciso atualizar o esquema da base de "
+"O Stoq já foi atualizado, mas ainda é preciso atualizar o esquema do banco "
+"de dados.\n"
+"\n"
+"\n"
+"Clique em <b>Avançar</b> para iniciar a atualização do esquema do banco de "
 "dados.\n"
 "\n"
 "\n"
-"Clique <b>Avançar</b> para iniciar a atualização do esquema da base de "
-"dados.\n"
-"\n"
-"\n"
-"É sempre uma boa ideia <b>criar um backup</b> da sua base de dados antes de "
+"É sempre uma boa ideia <b>criar um backup</b> de seu banco de dados antes de "
 "atualizar."
 
 #: ../data/glade/UpdateWelcomeStep.ui.h:8
@@ -2455,11 +2455,11 @@ msgstr ""
 "Obrigado por instalar o Stoq, você vai estar pronto para utilizá-lo em "
 "alguns minutos.\n"
 "\n"
-"Este assistente irá ajudá-lo a configurar o Stoq para criar uma nova base de "
-"dados ou conectar em uma existente.\n"
+"Este assistente irá ajudá-lo a configurar o Stoq para criar um novo banco de "
+"dados ou conectar em um existente.\n"
 "\n"
 "Se você estiver tendo problemas com a instalação ou precisa de ajuda para "
-"importar a sua base de dados de outro aplicativo, não hesite em <a "
+"importar o seus dados de outro aplicativo, não hesite em <a "
 "href=\"http://www.stoq.com.br/pt-br/more/contact\">nos contactar</a>."
 
 #: ../data/glade/WelcomeStep.ui.h:7
@@ -3518,6 +3518,8 @@ msgid ""
 "Some features are limited due to fiscal reasons. Click on '%s' to remove the "
 "limitations and finish the demonstration."
 msgstr ""
+"Alguns recursos estão limitados por razões fiscais. Clique em '%s' para "
+"remover essas limitações e finalizar a demonstração."
 
 #. This method must be redefined in child when it's needed
 #: ../stoq/gui/application.py:267
@@ -3610,6 +3612,8 @@ msgstr "Introspectar slave"
 msgid ""
 "This will enable production mode and finish the demonstration. Are you sure?"
 msgstr ""
+"Isto irá habilitar o modo de produção e finalizar a demonstração. Você tem "
+"certeza?"
 
 #: ../stoq/gui/application.py:482
 msgid "Continue testing"
@@ -3632,7 +3636,7 @@ msgstr "<b>Está disponível uma nova versão do Stoq (%s)</b>"
 #, python-format
 msgid "The database address '%s' is invalid. Please fix it and try again"
 msgstr ""
-"O endereço '%s' da base de dados é inválido. Por favor, conserte ele e tente "
+"O endereço '%s' do banco de dados é inválido. Por favor, corrija ele e tente "
 "de novo"
 
 #: ../stoq/gui/config.py:206 ../stoq/gui/config.py:211
@@ -3729,7 +3733,8 @@ msgstr ""
 #: ../stoq/gui/config.py:556
 msgid "Authorization failed, try again or connect to another database"
 msgstr ""
-"Autorização falhou, tente novamente ou conecte em uma outra base de dados"
+"A autorização falhou, tente novamente ou conecte-se em um outro banco de "
+"dados"
 
 #: ../stoq/gui/config.py:592
 #, python-format
@@ -3751,7 +3756,7 @@ msgstr "Não criar"
 
 #: ../stoq/gui/config.py:601
 msgid "Create database"
-msgstr "Criar base de dados"
+msgstr "Criar banco de dados"
 
 #: ../stoq/gui/config.py:656
 msgid "Creating database..."
@@ -3759,7 +3764,7 @@ msgstr "Criando base de dados..."
 
 #: ../stoq/gui/config.py:660
 msgid "Please wait while the database is being created."
-msgstr "Por favor espere enquanto a base de dados está sendo criada."
+msgstr "Por favor espere enquanto o banco de dados está sendo criado."
 
 #: ../stoq/gui/config.py:670
 msgid "Creating base schema..."
@@ -3776,7 +3781,7 @@ msgstr "Criando esquema, aplicando patch %d ..."
 
 #: ../stoq/gui/config.py:681
 msgid "Creating additional database objects ..."
-msgstr "Criando objetos adicionais da base de dados ..."
+msgstr "Criando objetos adicionais do banco de dados ..."
 
 #: ../stoq/gui/config.py:684
 msgid "Creating examples ..."
@@ -3797,19 +3802,19 @@ msgstr "Este processo pode levar algum tempo."
 #: ../stoq/gui/config.py:705
 msgid "Something went wrong while trying to create the database. Try again?"
 msgstr ""
-"Algo deu errado ao tentar criar a base de dados. Deseja tentar de novo?"
+"Algo deu errado ao tentar criar o banco de dados. Deseja tentar novamente?"
 
 #: ../stoq/gui/config.py:707
 msgid "Change settings"
 msgstr "Editar configurações"
 
-#: ../stoq/gui/config.py:707 ../stoq/gui/pos.py:777 ../stoq/gui/till.py:287
+#: ../stoq/gui/config.py:707 ../stoq/gui/pos.py:780 ../stoq/gui/till.py:287
 msgid "Try again"
 msgstr "Tentar novamente"
 
 #: ../stoq/gui/config.py:714
 msgid "Something went wrong while trying to create the Stoq database"
-msgstr "Algo deu errado ao tentar criar a base de dados do Stoq"
+msgstr "Algo deu errado ao tentar criar o banco de dados do Stoq"
 
 #: ../stoq/gui/config.py:720
 msgid "Done."
@@ -3824,28 +3829,29 @@ msgstr ""
 msgid "Run Stoq"
 msgstr "Rodar o Stoq"
 
-#: ../stoq/gui/config.py:766 ../stoqlib/lib/parameters.py:537
+#: ../stoq/gui/config.py:767 ../stoqlib/lib/parameters.py:537
 msgid "Online services"
 msgstr "Serviços online"
 
-#: ../stoq/gui/config.py:777
+#: ../stoq/gui/config.py:778
 msgid "Stoq - Installation"
 msgstr "Stoq - Instalação"
 
-#: ../stoq/gui/config.py:875
+#: ../stoq/gui/config.py:882
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
-"A base de dados {dbname} em {address}:{port}  não é uma base do Stoq."
+"O banco de dados {dbname} em {address}:{port}  não é um banco de dados do "
+"Stoq."
 
-#: ../stoq/gui/config.py:881
+#: ../stoq/gui/config.py:888
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
 "database server {address}, however it is not a Stoq database or it was "
 "corrupted, please select another one."
 msgstr ""
-"O Stoq conseguiu conectar na base de dados {dbname} do servidor {address} "
-"com sucesso, porém, esta não é uma base do Stoq ou ela esta corrompida. Por "
-"favor, selecione outra."
+"O Stoq conseguiu conectar no banco de dados {dbname} do servidor {address} "
+"com sucesso, porém, este está corrompido ou não é um banco de dados do Stoq. "
+"Por favor, selecione outro."
 
 #: ../stoq/gui/financial.py:221 ../stoq/gui/financial.py:239
 #: ../stoq/gui/payable.py:156 ../stoq/gui/payable.py:160
@@ -4144,7 +4150,7 @@ msgstr "Filial"
 #: ../stoq/gui/inventory.py:134 ../stoq/gui/production.py:190
 #: ../stoq/gui/purchase.py:200 ../stoqlib/domain/inventory.py:167
 #: ../stoqlib/domain/loan.py:117 ../stoqlib/domain/production.py:64
-#: ../stoqlib/domain/sale.py:347 ../stoqlib/domain/stockdecrease.py:103
+#: ../stoqlib/domain/sale.py:348 ../stoqlib/domain/stockdecrease.py:103
 #: ../stoqlib/domain/till.py:85
 #: ../stoqlib/gui/dialogs/productionquotedialog.py:126
 #: ../stoqlib/gui/dialogs/productstockdetails.py:183
@@ -4169,7 +4175,7 @@ msgstr "Todas as filiais"
 msgid "Are you sure you want to cancel this inventory ?"
 msgstr "Você tem certeza que deseja cancelar este inventário?"
 
-#: ../stoq/gui/inventory.py:211 ../stoq/gui/pos.py:641
+#: ../stoq/gui/inventory.py:211 ../stoq/gui/pos.py:644
 #: ../stoq/gui/purchase.py:344 ../stoq/gui/sales.py:350
 msgid "Don't cancel"
 msgstr "Não cancelar"
@@ -4262,6 +4268,7 @@ msgstr "Exibir pagamentos"
 #: ../stoqlib/gui/search/paymentsearch.py:76
 #: ../stoqlib/gui/search/paymentsearch.py:148
 #: ../stoqlib/gui/search/salesearch.py:74
+#: ../stoqlib/gui/search/salesearch.py:131
 #: ../stoqlib/gui/search/stockdecreasesearch.py:89
 #: ../stoqlib/gui/search/tillsearch.py:112
 #: ../stoqlib/gui/search/transfersearch.py:89
@@ -4302,7 +4309,7 @@ msgstr "Data do pagamento"
 
 #: ../stoq/gui/payable.py:176 ../stoq/gui/receivable.py:228
 #: ../stoqlib/domain/payment/payment.py:79
-#: ../stoqlib/domain/payment/renegotiation.py:56 ../stoqlib/domain/sale.py:349
+#: ../stoqlib/domain/payment/renegotiation.py:56 ../stoqlib/domain/sale.py:350
 #: ../stoqlib/reporting/payment.py:136
 msgid "Paid"
 msgstr "Pago"
@@ -4376,7 +4383,7 @@ msgid ""
 "You must finish the current sale before you change to another application."
 msgstr "Você deve finalizar a venda atual antes de alternar de aplicativo."
 
-#: ../stoq/gui/pos.py:207 ../stoq/gui/pos.py:218 ../stoq/gui/pos.py:777
+#: ../stoq/gui/pos.py:207 ../stoq/gui/pos.py:218 ../stoq/gui/pos.py:780
 #: ../stoqlib/gui/slaves/saleslave.py:343
 msgid "Cancel sale"
 msgstr "Cancelar a venda"
@@ -4449,32 +4456,36 @@ msgstr ""
 "Não é possível adicionar mais que um serviço a um pedido ao mesmo tempo. "
 "Então, apenas um foi adicionado."
 
-#: ../stoq/gui/pos.py:456 ../stoq/gui/till.py:388
+#: ../stoq/gui/pos.py:451
+msgid "POS operations requires a connected fiscal printer."
+msgstr "As operações do PDV requerem uma impressora fiscal conectada."
+
+#: ../stoq/gui/pos.py:459 ../stoq/gui/till.py:388
 msgid "Till closed"
 msgstr "Caixa fechado"
 
-#: ../stoq/gui/pos.py:458
+#: ../stoq/gui/pos.py:461
 msgid "Till blocked"
-msgstr ""
+msgstr "Caixa bloqueado"
 
-#: ../stoq/gui/pos.py:460
+#: ../stoq/gui/pos.py:463
 msgid "Till open"
-msgstr ""
+msgstr "Caixa aberto"
 
-#: ../stoq/gui/pos.py:566
+#: ../stoq/gui/pos.py:569
 #, python-format
 msgid "The barcode '%s' does not exist. Searching for a product instead..."
 msgstr ""
 "O código de barras '%s' não existe. Pesquisando por um produto no lugar..."
 
-#: ../stoq/gui/pos.py:573
+#: ../stoq/gui/pos.py:576
 #, python-format
 msgid ""
 "You cannot sell fractions of this product. The '%s' unit does not allow that"
 msgstr ""
 "Você não pode vender frações deste produto. A unidade '%s' não permite isto."
 
-#: ../stoq/gui/pos.py:589
+#: ../stoq/gui/pos.py:592
 #, python-format
 msgid ""
 "You cannot sell more items of product %s. The available quantity is not "
@@ -4483,21 +4494,21 @@ msgstr ""
 "Você não pode vender mais itens do produto %s. A quantidade disponível não é "
 "o bastante."
 
-#: ../stoq/gui/pos.py:640
+#: ../stoq/gui/pos.py:643
 msgid "This will cancel the current order. Are you sure?"
 msgstr "Isto irá cancelar o pedido selecionado. Você tem certeza?"
 
-#: ../stoq/gui/pos.py:641 ../stoq/gui/purchase.py:338
+#: ../stoq/gui/pos.py:644 ../stoq/gui/purchase.py:338
 msgid "Cancel order"
 msgstr "Cancelar pedido"
 
-#: ../stoq/gui/pos.py:775
+#: ../stoq/gui/pos.py:778
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 "Não é possível iniciar uma nova venda se o cupom fiscal não puder ser aberto."
 
-#: ../stoq/gui/pos.py:889
+#: ../stoq/gui/pos.py:892
 msgid "Quantity must be a positive number"
 msgstr "Quantidade deve ser um número positivo."
 
@@ -4557,7 +4568,6 @@ msgid "Show productions with status"
 msgstr "Exibir produções com situação"
 
 #: ../stoq/gui/production.py:182 ../stoqlib/gui/search/purchasesearch.py:82
-#: ../stoqlib/gui/search/salesearch.py:131
 #: ../stoqlib/gui/wizards/loanwizard.py:327
 #: ../stoqlib/reporting/payment.py:146
 msgid "# "
@@ -4865,7 +4875,7 @@ msgid "Client"
 msgstr "Cliente"
 
 #: ../stoq/gui/sales.py:217 ../stoq/gui/till.py:204 ../stoq/lib/startup.py:179
-#: ../stoqlib/database/admin.py:308 ../stoqlib/domain/test/test_profile.py:48
+#: ../stoqlib/database/admin.py:313 ../stoqlib/domain/test/test_profile.py:48
 #: ../stoqlib/gui/dialogs/clientdetails.py:151
 #: ../stoqlib/gui/search/commissionsearch.py:71
 #: ../stoqlib/gui/search/salesearch.py:81 ../stoqlib/lib/parameters.py:648
@@ -5055,15 +5065,15 @@ msgstr "Aplicando patch %s"
 
 #: ../stoq/gui/update.py:91
 msgid "Creating a database backup"
-msgstr "Criando backup da base de dados."
+msgstr "Criando backup do banco de dados."
 
 #: ../stoq/gui/update.py:92
 msgid "Creating a database backup in case anything goes wrong."
-msgstr "Criando um backup da base de dados caso algum erro aconteça."
+msgstr "Criando um backup do banco de dados caso algum erro aconteça."
 
 #: ../stoq/gui/update.py:94
 msgid "Restoring database backup"
-msgstr "Restaurando backup da base de dados"
+msgstr "Restaurando backup do banco de dados"
 
 #: ../stoq/gui/update.py:96
 msgid ""
@@ -5073,15 +5083,15 @@ msgid ""
 "\n"
 "This may take some time."
 msgstr ""
-"Atualização do Stoq falhou.\n"
+"A atualização do Stoq falhou.\n"
 "\n"
-"Nós vamos tentar restaurar a base de dados atual.\n"
+"Nós vamos tentar restaurar o banco de dados atual.\n"
 "\n"
-"Isso pode levar algum tempo"
+"Isto pode levar algum tempo"
 
 #: ../stoq/gui/update.py:101
 msgid "Database backup restored"
-msgstr "Backup da base de dados restaurado"
+msgstr "Backup do banco de dados restaurado"
 
 #: ../stoq/gui/update.py:103
 #, python-format
@@ -5093,16 +5103,16 @@ msgid ""
 "\n"
 "A backup database was created as <b>%s</b>"
 msgstr ""
-"A atualização da base de dados do Stoq falhou mas ela foi restaurada.\n"
-"Um relatório automático do erro foi enviado. Por favor, entre em contato com "
-"<b>stoq-users@stoq.com.br</b> para assistência na recuperação da base de "
-"dados e para tornar o uso do Stoq %s possível novamente.\n"
+"A atualização do banco de dados do Stoq falhou, mas ele foi restaurado.\n"
+"Um relatório automático do erros foi enviado. Por favor, entre em contato "
+"com <b>stoq-users@stoq.com.br</b> para assistência na recuperação do banco "
+"de dados e para tornar o uso do Stoq %s possível novamente.\n"
 "\n"
-"Um backup da base de dados foi criado em <b>%s</b>"
+"Um backup do banco dados foi criado em <b>%s</b>"
 
 #: ../stoq/gui/update.py:121
 msgid "Applying database patches..."
-msgstr "Aplicando patches da base de dados..."
+msgstr "Aplicando patches do banco de dados..."
 
 #: ../stoq/gui/update.py:130
 msgid "Done. Click 'Forward' to continue"
@@ -5256,15 +5266,16 @@ msgstr "Dependência incompatível"
 
 #: ../stoq/lib/startup.py:57 ../stoq/lib/startup.py:129
 msgid "Database schema error"
-msgstr "Erro de esquema na base de dados"
+msgstr "Erro de esquema no banco de dados"
 
 #: ../stoq/lib/startup.py:58
 msgid ""
-"Table `system_table' does not exist.\n"
+"Table 'system_table' does not exist.\n"
 "Consult your database administrator to solve this problem."
 msgstr ""
-"A tabela `system_table' não existe.\n"
-"Consulte o administrador da base de dados para resolver este problema."
+"Tabela 'system_table' não existe.\n"
+"\n"
+"Consulte o seu administrador de banco de dados para resolver esse problema."
 
 #: ../stoq/lib/startup.py:130
 msgid ""
@@ -5272,7 +5283,7 @@ msgid ""
 "'stoqdbadmin updateschema` to update the schema  to the latest available "
 "version."
 msgstr ""
-"O esquema da base de dados mudou, mas esta ainda não foi atualizada. Rode "
+"O esquema do banco de dados mudou, mas este ainda não foi atualizado. Rode "
 "'stoqdbadmin updateschema` para atualizar o esquema para a última versão "
 "disponível."
 
@@ -5283,7 +5294,7 @@ msgstr "Erro de atualização"
 #: ../stoq/lib/startup.py:152
 msgid "You need to call setup() before checking the database schema."
 msgstr ""
-"Você precisa chamar setup() antes de verificar o esquema da base de dados."
+"Você precisa chamar setup() antes de verificar o esquema do banco de dados."
 
 #: ../stoq/main.py:40
 msgid ""
@@ -5327,7 +5338,7 @@ msgstr "Você gostaria de habilitar os serviços online do Stoq?"
 
 #: ../stoq/main.py:377
 msgid "Could not open the database config file"
-msgstr "Não foi possível abrir o arquivo de configuração da base de dados"
+msgstr "Não foi possível abrir o arquivo de configuração do banco de dados"
 
 #: ../stoq/main.py:378
 #, python-format
@@ -5337,7 +5348,7 @@ msgstr ""
 
 #: ../stoq/main.py:394
 msgid "Could not connect to the database"
-msgstr "Não foi possível conectar na base de dados"
+msgstr "Não foi possível conectar no banco de dados"
 
 #: ../stoqlib/chart/chartserver.py:45
 msgid "Stoq Chart Server"
@@ -5368,62 +5379,63 @@ msgstr "Despesas"
 msgid "Profit"
 msgstr "Lucro"
 
+#: ../stoqlib/database/admin.py:76 ../stoqlib/database/admin.py:92
+#: ../stoqlib/database/admin.py:311
+msgid "Administrator"
+msgstr "Administrador"
+
 #. Dependencies to create an user.
 #: ../stoqlib/database/admin.py:79
 msgid "System Administrator"
 msgstr "Administrador do Sistema"
 
-#: ../stoqlib/database/admin.py:164
+#: ../stoqlib/database/admin.py:169
 msgid "Assets"
 msgstr "Ativos"
 
-#: ../stoqlib/database/admin.py:165 ../stoqlib/database/admin.py:181
+#: ../stoqlib/database/admin.py:170 ../stoqlib/database/admin.py:186
 msgid "Banks"
 msgstr "Bancos"
 
-#: ../stoqlib/database/admin.py:166 ../stoqlib/domain/account.py:102
+#: ../stoqlib/database/admin.py:171 ../stoqlib/domain/account.py:102
 msgid "Equity"
 msgstr "Equidade"
 
-#: ../stoqlib/database/admin.py:167
+#: ../stoqlib/database/admin.py:172
 msgid "Expenses"
 msgstr "Despesas"
 
-#: ../stoqlib/database/admin.py:168 ../stoqlib/database/admin.py:185
+#: ../stoqlib/database/admin.py:173 ../stoqlib/database/admin.py:190
 msgid "Imbalance"
 msgstr "Desequilíbrio"
 
-#: ../stoqlib/database/admin.py:169 ../stoqlib/domain/account.py:90
+#: ../stoqlib/database/admin.py:174 ../stoqlib/domain/account.py:90
 #: ../stoqlib/domain/account.py:100
 msgid "Income"
 msgstr "Renda"
 
-#: ../stoqlib/database/admin.py:170 ../stoqlib/database/admin.py:183
+#: ../stoqlib/database/admin.py:175 ../stoqlib/database/admin.py:188
 msgid "Tills"
 msgstr "Caixas"
 
-#: ../stoqlib/database/admin.py:266
+#: ../stoqlib/database/admin.py:271
 msgid "The current database user does not have super user rights"
 msgstr ""
 "O atual usuário do banco de dados não possui direitos de super usuário"
 
-#: ../stoqlib/database/admin.py:306
-msgid "Administrator"
-msgstr "Administrador"
-
-#: ../stoqlib/database/admin.py:307 ../stoqlib/gui/search/personsearch.py:349
+#: ../stoqlib/database/admin.py:312 ../stoqlib/gui/search/personsearch.py:349
 msgid "Manager"
 msgstr "Gerente"
 
 #: ../stoqlib/database/migration.py:137
 #, python-format
 msgid "%s needs to have the patch_resource class variable set"
-msgstr ""
+msgstr "%s precisa ter definida a variável de classe patch_resource"
 
 #: ../stoqlib/database/migration.py:141
 #, python-format
 msgid "%s needs to have the patch_patterns class variable set"
-msgstr ""
+msgstr "%s precisa ter definida a variável de classe patch_patterns"
 
 #: ../stoqlib/database/migration.py:221
 #, python-format
@@ -5431,6 +5443,7 @@ msgid ""
 "The current version of database %s is greater than the latest available "
 "version %s"
 msgstr ""
+"A versão atual do banco de dados %s é maior que a última versão disponível %s"
 
 #: ../stoqlib/database/migration.py:307
 msgid "Could not connect to the database using command line tool! Aborting."
@@ -5457,7 +5470,7 @@ msgstr "Por favor contate a equipe do Stoq para informar o problema.\n"
 
 #: ../stoqlib/database/migration.py:378
 msgid "Unsupported database version, you need to reinstall"
-msgstr "Versão da base de dados na suportada, você precisa reinstalá-la"
+msgstr "Versão do banco de dados não suportada, você precisa reinstalá-lo"
 
 #: ../stoqlib/database/runtime.py:202
 #, python-format
@@ -5521,8 +5534,8 @@ msgid ""
 "Trust was selected but the database does only support password "
 "authentication."
 msgstr ""
-"Modo de autenticação confiável foi selecionado mas a base de dados suporta "
-"somente autenticação baseada em senha."
+"O modo confiável selecionado, mas o banco de dados suporta apenas "
+"autenticação por senha."
 
 #: ../stoqlib/database/settings.py:138
 #, python-format
@@ -5592,15 +5605,15 @@ msgstr "Impressora de cheque"
 
 #: ../stoqlib/domain/inventory.py:169 ../stoqlib/domain/payment/group.py:63
 #: ../stoqlib/domain/payment/payment.py:82 ../stoqlib/domain/purchase.py:149
-#: ../stoqlib/domain/sale.py:350
+#: ../stoqlib/domain/sale.py:351
 msgid "Cancelled"
 msgstr "Cancelada"
 
-#: ../stoqlib/domain/loan.py:137 ../stoqlib/domain/sale.py:395
+#: ../stoqlib/domain/loan.py:137 ../stoqlib/domain/sale.py:396
 #: ../stoqlib/domain/stockdecrease.py:123
 #, python-format
 msgid "Invalid status %d"
-msgstr ""
+msgstr "Estado inválido %d"
 
 #: ../stoqlib/domain/payment/group.py:60
 #: ../stoqlib/domain/payment/payment.py:77
@@ -5610,7 +5623,7 @@ msgstr "Avaliação"
 #: ../stoqlib/domain/payment/group.py:61
 #: ../stoqlib/domain/payment/payment.py:81
 #: ../stoqlib/domain/payment/renegotiation.py:55
-#: ../stoqlib/domain/purchase.py:152 ../stoqlib/domain/sale.py:348
+#: ../stoqlib/domain/purchase.py:152 ../stoqlib/domain/sale.py:349
 #: ../stoqlib/domain/stockdecrease.py:104
 msgid "Confirmed"
 msgstr "Confirmado"
@@ -5655,15 +5668,16 @@ msgstr "Cartão de débito pré-datado"
 msgid ""
 "The number of installments can not be greater than %d for payment method %r"
 msgstr ""
+"O número de parcelas não pode ser maior que %d para a forma de pagamento %r"
 
 #: ../stoqlib/domain/payment/method.py:197
 #, python-format
 msgid "Argument interest must be between 0 and 100, got %s"
-msgstr ""
+msgstr "O argumento do juro deve estar entre 0 e 100,  recebeu %s"
 
 #: ../stoqlib/domain/payment/method.py:204
 msgid "The payment_qty argument must be greater than zero"
-msgstr ""
+msgstr "O argumento payment_qty deve ser maior que zero"
 
 #: ../stoqlib/domain/payment/method.py:257
 #, python-format
@@ -5671,12 +5685,16 @@ msgid ""
 "You can not create more inpayments for this payment group since the maximum "
 "allowed for this payment method is %d"
 msgstr ""
+"Você não pode criar mais pagamentos de entrada para este grupo de "
+"pagamentos, já que o máximo permitido para esta forma de pagamento é %d"
 
 #: ../stoqlib/domain/payment/method.py:262
 msgid ""
 "You have more inpayments in database than the maximum allowed for this "
 "payment method"
 msgstr ""
+"Você tem mais pagamentos de entrada no banco de dados que o máximo permitido "
+"para esta forma de pagamento"
 
 #: ../stoqlib/domain/payment/method.py:348
 #, python-format
@@ -5714,22 +5732,22 @@ msgstr "Revisão"
 #: ../stoqlib/domain/payment/payment.py:234
 #, python-format
 msgid "Invalid status for cancel operation, got %s"
-msgstr ""
+msgstr "Estado inválido para a operação cancel, recebeu %s"
 
 #: ../stoqlib/domain/payment/payment.py:257
 #, python-format
 msgid "Invalid status for change_due_date operation, got %s"
-msgstr ""
+msgstr "Estado inválido para a operação change_due_date, recebeu %s"
 
 #: ../stoqlib/domain/payment/payment.py:292
 #: ../stoqlib/domain/payment/payment.py:314
 msgid "Date can not be less then open date"
-msgstr ""
+msgstr "Data não pode ser menor que a data de abertura"
 
 #: ../stoqlib/domain/payment/payment.py:294
 #: ../stoqlib/domain/payment/payment.py:316
 msgid "Date can not be greather then future date"
-msgstr ""
+msgstr "Data não pode ser maior que a data futura"
 
 #: ../stoqlib/domain/payment/payment.py:357
 msgid "NOT PAID"
@@ -5737,9 +5755,9 @@ msgstr "A PAGAR"
 
 #: ../stoqlib/domain/payment/payment.py:677
 msgid "This payment is already paid."
-msgstr ""
+msgstr "Este pagamento já está pago."
 
-#: ../stoqlib/domain/payment/renegotiation.py:57 ../stoqlib/domain/sale.py:353
+#: ../stoqlib/domain/payment/renegotiation.py:57 ../stoqlib/domain/sale.py:354
 msgid "Renegotiated"
 msgstr "Renegociada"
 
@@ -5845,28 +5863,28 @@ msgstr "Dias"
 
 #: ../stoqlib/domain/product.py:440
 msgid "This company doesn't allow logic quantity operations"
-msgstr ""
+msgstr "Esta empresa não permite operações com quantidade lógica"
 
 #: ../stoqlib/domain/product.py:450
 msgid "Quantity to decrease is greater than available stock."
-msgstr ""
+msgstr "A quantidade a diminuir é maior que a quantidade disponível."
 
 #: ../stoqlib/domain/product.py:460
 msgid "Quantity to sell is greater than the available stock."
-msgstr ""
+msgstr "A quantidade a ser vendida é maior que a disponível em estoque."
 
 #: ../stoqlib/domain/product.py:504
 msgid "quantity must be a positive number"
-msgstr ""
+msgstr "quantidade deve ser um número positivo"
 
 #: ../stoqlib/domain/product.py:545
 msgid "Quantity cannot be negative"
-msgstr ""
+msgstr "A quantidade não pode ser negativa"
 
 #: ../stoqlib/domain/product.py:610
 #, python-format
 msgid "You should have only one stock item for this branch, got %d"
-msgstr ""
+msgstr "Você deve ter apenas um item de estoque para esta filial, recebeu %d"
 
 #: ../stoqlib/domain/production.py:65
 msgid "Waiting"
@@ -5881,24 +5899,26 @@ msgid ""
 "Argument item must have an order attribute associated with the current "
 "production order instance."
 msgstr ""
+"Argumento item deve ter um atributo ordem associado com a ordem de produção "
+"atual"
 
 #: ../stoqlib/domain/production.py:261
 msgid "Can not lost more items than the total production quantity."
-msgstr ""
+msgstr "Não é possível perder mais itens do que o total a produzir."
 
 #: ../stoqlib/domain/production.py:326
 msgid "Can not allocate this quantity."
-msgstr ""
+msgstr "Não pode alocar esta quantidade."
 
 #: ../stoqlib/domain/production.py:342
 msgid "Cannot loose this quantity."
-msgstr ""
+msgstr "Não pode perder esta quantidade."
 
 #: ../stoqlib/domain/production.py:362
 msgid "Can not consume this quantity."
-msgstr ""
+msgstr "Não pode consumir esta quantidade."
 
-#: ../stoqlib/domain/purchase.py:150 ../stoqlib/domain/sale.py:354
+#: ../stoqlib/domain/purchase.py:150 ../stoqlib/domain/sale.py:355
 msgid "Quoting"
 msgstr "Cotação"
 
@@ -5926,26 +5946,30 @@ msgid ""
 "Argument item must have an order attribute associated with the current "
 "purchase instance"
 msgstr ""
+"O argumento item deve ter um atributo order associado com a instância da "
+"compra atual"
 
 #: ../stoqlib/domain/purchase.py:316
 #, python-format
 msgid ""
 "Invalid order status, it should be ORDER_PENDING or ORDER_CONSIGNED, got %s"
 msgstr ""
+"Estado inválido de order, ele deve ser ORDER_PENDING ou ORDER_CONSIGNED, "
+"recebeu %s"
 
 #: ../stoqlib/domain/purchase.py:333
 #, python-format
 msgid "Invalid order status, it should be ORDER_PENDING, got %s"
-msgstr ""
+msgstr "Estado inválido de order, ele deve ser ORDER_PENDING, recebeu %s"
 
 #: ../stoqlib/domain/purchase.py:343
 #, python-format
 msgid "Invalid status, it should be confirmed got %s instead"
-msgstr ""
+msgstr "Estado inválido, ele deve ser confirmado, ao invés, recebeu %s"
 
 #: ../stoqlib/domain/purchase.py:360
 msgid "This item is not pending, hence cannot be received"
-msgstr ""
+msgstr "Este item não está pendente, logo, não pode ser recebido"
 
 #: ../stoqlib/domain/purchase.py:364
 #, python-format
@@ -5953,29 +5977,31 @@ msgid ""
 "The quantity that you want to receive is greater than the total quantity of "
 "this item %r"
 msgstr ""
+"A quantidade que você quer receber é maior que a quantidade total deste item "
+"%r"
 
 #: ../stoqlib/domain/purchase.py:375
 #, python-format
 msgid "There is no purchase item for sellable %r"
-msgstr ""
+msgstr "Não existe um item de compra para o item %r"
 
 #: ../stoqlib/domain/purchase.py:385
 #, python-format
 msgid "Invalid freight_type, got %d"
-msgstr ""
+msgstr "freight_type inválido, recebeu %d"
 
 #: ../stoqlib/domain/purchase.py:417
 msgid "Purchase total can not be lesser than zero"
-msgstr ""
+msgstr "Total da compra não pode ser menor que zero"
 
 #: ../stoqlib/domain/purchase.py:472
 #, python-format
 msgid "Got an unexpected status value: %s"
-msgstr ""
+msgstr "Recebeu um valor de estado inesperado: %s"
 
 #: ../stoqlib/domain/purchase.py:521
 msgid "You can not remove an item which does not belong to this group."
-msgstr ""
+msgstr "Você não pode remover um item que não pertence a este grupo."
 
 #: ../stoqlib/domain/purchase.py:540
 #, python-format
@@ -6019,12 +6045,12 @@ msgstr "O Stoq ainda não suporta vendas para filiais diferentes da atual."
 msgid "%r does not have enough stock to be sold."
 msgstr "%r não tem estoque suficiente para ser vendido."
 
-#: ../stoqlib/domain/sale.py:249
+#: ../stoqlib/domain/sale.py:250
 #, python-format
 msgid "It's only possible to deliver products, not %r"
-msgstr ""
+msgstr "É possível apenas entregar produtos, não %r"
 
-#: ../stoqlib/domain/sale.py:352 ../stoqlib/gui/dialogs/loandetails.py:68
+#: ../stoqlib/domain/sale.py:353 ../stoqlib/gui/dialogs/loandetails.py:68
 #: ../stoqlib/gui/dialogs/productstockdetails.py:192
 #: ../stoqlib/gui/search/consignmentsearch.py:67
 #: ../stoqlib/gui/search/loansearch.py:85
@@ -6033,76 +6059,79 @@ msgstr ""
 msgid "Returned"
 msgstr "Devolvida"
 
-#: ../stoqlib/domain/sale.py:497
+#: ../stoqlib/domain/sale.py:498
 msgid "The sale must have sellable items"
-msgstr ""
+msgstr "A venda deve ter itens vendáveis"
 
-#: ../stoqlib/domain/sale.py:499
+#: ../stoqlib/domain/sale.py:500
 #, python-format
 msgid "Unable to make sales for clients with status %s"
-msgstr ""
+msgstr "Incapaz de fazer vendas para clientes com estado %s"
 
-#: ../stoqlib/domain/sale.py:542
+#: ../stoqlib/domain/sale.py:543
 #, python-format
 msgid ""
 "You cannot close a sale without paying all the payment. Payment %r is still "
 "not paid"
 msgstr ""
+"Você não pode fechar uma venda sem ter pago todos os pagamentos. O pagamento "
+"%r ainda não foi pago"
 
-#: ../stoqlib/domain/sale.py:650
+#: ../stoqlib/domain/sale.py:651
 #, python-format
 msgid "Sale Details: %s"
 msgstr "Detalhes da venda: %s"
 
-#: ../stoqlib/domain/sale.py:656
+#: ../stoqlib/domain/sale.py:657
 #, python-format
 msgid "Delivery Address: %s"
 msgstr "Endereço de entrega: %s"
 
-#: ../stoqlib/domain/sale.py:662
+#: ../stoqlib/domain/sale.py:663
 #, python-format
 msgid "\"%s\" Notes: %s"
 msgstr "Notas de \"%s\": %s"
 
-#: ../stoqlib/domain/sale.py:665
+#: ../stoqlib/domain/sale.py:666
 #, python-format
 msgid "\"%s\" Estimated Fix Date: %s"
 msgstr "Data estimada de resolução de \"%s\": %s"
 
 #. First line.
-#: ../stoqlib/domain/sale.py:678 ../stoqlib/reporting/purchase.py:181
+#: ../stoqlib/domain/sale.py:679 ../stoqlib/reporting/purchase.py:181
 #: ../stoqlib/reporting/purchase.py:193
 msgid "Not Specified"
 msgstr "Não especificado"
 
-#: ../stoqlib/domain/sale.py:692
+#: ../stoqlib/domain/sale.py:693
 #, python-format
 msgid "The sale %r have a client but no client_role defined."
-msgstr ""
+msgstr "A venda %r tem um cliente, mas nenhum client_role definido."
 
-#: ../stoqlib/domain/sale.py:906
+#: ../stoqlib/domain/sale.py:907
 msgid "You must have at least one payment for each payment group"
-msgstr ""
+msgstr "Você deve ter pelo menos um pagamento para cada grupo de pagamentos"
 
 #. The sale was not entirely paid, so we have to payback the
 #. till, because the sale amount have already been added in there
-#: ../stoqlib/domain/sale.py:961
+#: ../stoqlib/domain/sale.py:962
 #, python-format
 msgid "Debit on Till: Sale %d Returned"
 msgstr "Débito no caixa: Venda %d devolvida"
 
-#: ../stoqlib/domain/sale.py:971
+#: ../stoqlib/domain/sale.py:972
 #, python-format
 msgid "%s Money Returned for Sale %d"
 msgstr "%s Dinheiro devolvido da venda %d"
 
-#: ../stoqlib/domain/sale.py:1045
+#: ../stoqlib/domain/sale.py:1046
 msgid "Sale orders must have items, which means products or services"
 msgstr ""
+"Pedidos de venda devem ter itens, o que significa produtos ou serviços"
 
-#: ../stoqlib/domain/sale.py:1050
+#: ../stoqlib/domain/sale.py:1051
 msgid "Sale total quantity should never be zero"
-msgstr ""
+msgstr "O total da quantidade de venda deve nunca ser zero"
 
 #: ../stoqlib/domain/sellable.py:269
 msgid "Available"
@@ -6115,7 +6144,7 @@ msgstr "Indisponível"
 #: ../stoqlib/domain/sellable.py:323
 #, python-format
 msgid "The code %s already exists"
-msgstr ""
+msgstr "O código %s já existe"
 
 #: ../stoqlib/domain/sellable.py:328
 #: ../stoqlib/gui/editors/sellableeditor.py:473
@@ -6126,7 +6155,7 @@ msgstr "O código de barras %s já existe!"
 #: ../stoqlib/domain/sellable.py:340
 #, python-format
 msgid "Invalid status for product got %d"
-msgstr ""
+msgstr "Estado inválido para produto, recebeu %d"
 
 #. Translators: ICMS tax rate credit = Alíquota de crédito do ICMS
 #: ../stoqlib/domain/sellable.py:550
@@ -6152,7 +6181,7 @@ msgstr ""
 #: ../stoqlib/domain/station.py:70
 #, python-format
 msgid "There is already a station registered as `%s'."
-msgstr ""
+msgstr "Já existe uma estação registrada como `%s'."
 
 #: ../stoqlib/domain/test/test_person.py:100
 #, python-format
@@ -6189,7 +6218,7 @@ msgstr "O saldo de caixa está negativo"
 
 #: ../stoqlib/domain/transfer.py:104
 msgid "The item does not belong to this transfer order"
-msgstr ""
+msgstr "O item não pertence à este pedido de transferência"
 
 #: ../stoqlib/drivers/cheque.py:76
 #, python-format
@@ -7273,7 +7302,7 @@ msgstr "A quantidade vendida deve ser positiva."
 
 #: ../stoqlib/gui/editors/loaneditor.py:112
 msgid "Quantity not available in stock."
-msgstr "Quantidade disponível em estoque."
+msgstr "Quantidade não disponível em estoque."
 
 #: ../stoqlib/gui/editors/loaneditor.py:116
 #: ../stoqlib/gui/editors/loaneditor.py:124
@@ -8593,7 +8622,7 @@ msgstr "Item"
 
 #: ../stoqlib/gui/search/salesearch.py:142
 msgid "Estimated"
-msgstr ""
+msgstr "Estimado"
 
 #: ../stoqlib/gui/search/salesearch.py:144
 #: ../stoqlib/reporting/purchase.py:136
@@ -11225,7 +11254,7 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:853
 #, python-format
 msgid "There is no defined %s parameter datain the database."
-msgstr "Não há nenhum dado do parâmetro %s definido na base de dados."
+msgstr "Não há nenhum dado do parâmetro %s definido no banco de dados."
 
 #: ../stoqlib/lib/sintegragenerator.py:123
 #, python-format
@@ -15050,6 +15079,13 @@ msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #~ msgid "Remove Examples"
 #~ msgstr "Remover exemplos"
+
+#~ msgid ""
+#~ "Table `system_table' does not exist.\n"
+#~ "Consult your database administrator to solve this problem."
+#~ msgstr ""
+#~ "A tabela `system_table' não existe.\n"
+#~ "Consulte o administrador da base de dados para resolver este problema."
 
 #~ msgid ""
 #~ "This will delete the current database and it's configuration. Are you sure?"
