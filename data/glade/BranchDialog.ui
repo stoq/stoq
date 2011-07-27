@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 2.6 -->
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="BranchDialog">
-    <property name="border_width">6</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <child>
@@ -13,13 +12,16 @@
         <property name="border_width">6</property>
         <property name="spacing">6</property>
         <child>
-          <object class="ProxyLabel" id="title_label">
+          <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">Company Details</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
@@ -38,7 +40,7 @@
           <object class="GtkTable" id="table1">
             <property name="visible">True</property>
             <property name="n_rows">5</property>
-            <property name="n_columns">5</property>
+            <property name="n_columns">4</property>
             <property name="column_spacing">6</property>
             <property name="row_spacing">6</property>
             <child>
@@ -83,16 +85,6 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label12">
-                <property name="visible">True</property>
-                <property name="xalign">1</property>
-              </object>
-              <packing>
-                <property name="top_attach">4</property>
-                <property name="bottom_attach">5</property>
-              </packing>
-            </child>
-            <child>
               <object class="ProxyEntry" id="name">
                 <property name="visible">True</property>
                 <property name="primary_icon_activatable">False</property>
@@ -105,7 +97,7 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="right_attach">5</property>
+                <property name="right_attach">4</property>
               </packing>
             </child>
             <child>
@@ -122,7 +114,7 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="right_attach">3</property>
+                <property name="right_attach">2</property>
                 <property name="top_attach">2</property>
                 <property name="bottom_attach">3</property>
               </packing>
@@ -172,30 +164,25 @@
               </packing>
             </child>
             <child>
-              <object class="ProxyLabel" id="kiwilabel2">
+              <object class="ProxyEntry" id="cnpj">
                 <property name="visible">True</property>
-                <property name="xalign">1</property>
-                <property name="label" translatable="yes">State Registry:</property>
-                <property name="model_attribute">kiwilabel2</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">●</property>
+                <property name="text">  .   .   /    -  </property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="mask">00.000.000/0000-00</property>
+                <property name="data_type">unicode</property>
+                <property name="mandatory">True</property>
+                <property name="model_attribute">cnpj</property>
               </object>
               <packing>
-                <property name="left_attach">3</property>
-                <property name="right_attach">4</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label10">
-                <property name="visible">True</property>
-                <property name="xalign">1</property>
-                <property name="label" translatable="yes">Fax:</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="right_attach">4</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
               </packing>
             </child>
             <child>
@@ -205,60 +192,8 @@
                 <property name="label" translatable="yes">Substitution ICMS:</property>
               </object>
               <packing>
-                <property name="left_attach">3</property>
-                <property name="right_attach">4</property>
-                <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label5">
-                <property name="visible">True</property>
-                <property name="xalign">1</property>
-                <property name="label" translatable="yes">ISS:</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="right_attach">4</property>
                 <property name="top_attach">4</property>
                 <property name="bottom_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="ProxyEntry" id="state_registry">
-                <property name="visible">True</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
-                <property name="primary_icon_sensitive">True</property>
-                <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
-                <property name="model_attribute">state_registry</property>
-              </object>
-              <packing>
-                <property name="left_attach">4</property>
-                <property name="right_attach">5</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-                <property name="y_options">GTK_FILL</property>
-              </packing>
-            </child>
-            <child>
-              <object class="ProxyEntry" id="fax_number">
-                <property name="visible">True</property>
-                <property name="width_chars">6</property>
-                <property name="xalign">1</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
-                <property name="primary_icon_sensitive">True</property>
-                <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">unicode</property>
-                <property name="model_attribute">fax_number</property>
-              </object>
-              <packing>
-                <property name="left_attach">4</property>
-                <property name="right_attach">5</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
               </packing>
             </child>
             <child>
@@ -268,7 +203,9 @@
                 <child>
                   <object class="ProxyEntry" id="substitution_icms">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
                     <property name="max_length">6</property>
+                    <property name="invisible_char">•</property>
                     <property name="width_chars">3</property>
                     <property name="xalign">1</property>
                     <property name="primary_icon_activatable">False</property>
@@ -299,10 +236,91 @@
                 </child>
               </object>
               <packing>
-                <property name="left_attach">4</property>
-                <property name="right_attach">5</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel2">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">State Registry:</property>
+                <property name="model_attribute">kiwilabel2</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label10">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Fax:</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label5">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">ISS:</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
                 <property name="top_attach">3</property>
                 <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="state_registry">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">state_registry</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+                <property name="y_options">GTK_FILL</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="fax_number">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="width_chars">6</property>
+                <property name="xalign">1</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">fax_number</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
               </packing>
             </child>
             <child>
@@ -312,9 +330,12 @@
                 <child>
                   <object class="ProxyEntry" id="iss">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
                     <property name="max_length">6</property>
+                    <property name="invisible_char">•</property>
                     <property name="width_chars">3</property>
                     <property name="xalign">1</property>
+                    <property name="invisible_char_set">True</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
@@ -343,39 +364,11 @@
                 </child>
               </object>
               <packing>
-                <property name="left_attach">4</property>
-                <property name="right_attach">5</property>
-                <property name="top_attach">4</property>
-                <property name="bottom_attach">5</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
               </packing>
-            </child>
-            <child>
-              <object class="ProxyEntry" id="cnpj">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
-                <property name="text">  .   .   /    -  </property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
-                <property name="primary_icon_sensitive">True</property>
-                <property name="secondary_icon_sensitive">True</property>
-                <property name="mask">00.000.000/0000-00</property>
-                <property name="data_type">unicode</property>
-                <property name="mandatory">True</property>
-                <property name="model_attribute">cnpj</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
             </child>
             <child>
               <placeholder/>
