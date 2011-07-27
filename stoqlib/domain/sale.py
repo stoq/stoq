@@ -245,6 +245,7 @@ class DeliveryItem(Domain):
     @classmethod
     def create_from_sellable_item(cls, sale_item):
         if not sale_item.sellable.product:
+            # FIXME: Maybe we should allow delivering services as well.
             raise SellError(
                 _("It's only possible to deliver products, not %r") % (
                 type(sale_item),))
