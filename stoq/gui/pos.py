@@ -448,6 +448,9 @@ class PosApp(AppWindow):
         # disable it for now
         self.Sales.set_sensitive(False)
 
+        text = _(u"POS operations requires a connected fiscal printer.")
+        self.till_status_label.set_text(text)
+
     def _disable_sale_ui(self):
         self._set_sale_sensitive(False)
 
