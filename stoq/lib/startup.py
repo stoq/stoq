@@ -55,7 +55,7 @@ def _check_tables():
     if not conn.tableExists('system_table'):
         error(
             _("Database schema error"),
-            _("Table `system_table' does not exist.\n"
+            _("Table 'system_table' does not exist.\n"
               "Consult your database administrator to solve this problem."))
 
 def setup(config=None, options=None, register_station=True, check_schema=True,
