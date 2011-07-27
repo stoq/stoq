@@ -73,7 +73,7 @@ def ensure_admin_user(administrator_password):
     user = get_admin_user(conn)
     if user is None:
         trans = new_transaction()
-        person = Person(name='Administrator', connection=trans)
+        person = Person(name=_('Administrator'), connection=trans)
 
         # Dependencies to create an user.
         role = EmployeeRole(name=_('System Administrator'), connection=trans)
@@ -89,7 +89,12 @@ def ensure_admin_user(administrator_password):
         # must have all the facets.
         person.addFacet(ISalesPerson, connection=trans)
 
-        profile = UserProfile.selectOneBy(name='Administrator', connection=trans)
+        profile = UserProfile.selectOneBy(name=_('Administrator'), connection=trans)
+        # Backwards compatibility. this profile used to be in english
+        # FIXME: Maybe its safe to assume the first profile in the table is
+        # the admin.
+        if not profile:
+            profile = UserProfile.selectOneBy(name='Administrator', connection=trans)
 
         log.info("Attaching IUser facet (%s)" % (USER_ADMIN_DEFAULT_NAME,))
         person.addFacet(IUser, username=USER_ADMIN_DEFAULT_NAME,
