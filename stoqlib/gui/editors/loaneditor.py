@@ -106,6 +106,8 @@ class LoanItemEditor(BaseEditor):
             return ValidationError(_(u'The price must be greater than zero.'))
 
     def on_quantity__validate(self, widget, value):
+        if not self._expanded_edition:
+            return
         if value <= 0:
             return ValidationError(_(u'The quantity should be positive.'))
         if value and not self._has_stock(value):
@@ -114,7 +116,7 @@ class LoanItemEditor(BaseEditor):
     def on_sale_quantity__validate(self, widget, value):
         if value < self._original_sale_qty:
             return ValidationError(_(u'Can not decrease this quantity.'))
-        total = value + self.return_quantity.read()
+        total = value + self.model.return_quantity
         if total > self.model.quantity:
             return ValidationError(_(u'Sale and return quantity is greater '
                                       'than the total quantity.'))
@@ -122,7 +124,7 @@ class LoanItemEditor(BaseEditor):
     def on_return_quantity__validate(self, widget, value):
         if value < self._original_return_qty:
             return ValidationError(_(u'Can not decrease this quantity.'))
-        total = value + self.sale_quantity.read()
+        total = value + self.model.sale_quantity
         if total > self.model.quantity:
             return ValidationError(_(u'Sale and return quantity is greater '
                                       'than the total quantity.'))
