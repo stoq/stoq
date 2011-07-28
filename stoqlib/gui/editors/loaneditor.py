@@ -106,7 +106,7 @@ class LoanItemEditor(BaseEditor):
             return ValidationError(_(u'The price must be greater than zero.'))
 
     def on_quantity__validate(self, widget, value):
-        if not self._expanded_edition:
+        if self._expanded_edition:
             return
         if value <= 0:
             return ValidationError(_(u'The quantity should be positive.'))
