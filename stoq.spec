@@ -3,7 +3,7 @@
 Summary: A powerful retail system
 Name: stoq
 Version: 1.0.0
-Release: 2
+Release: 3
 License: GPL
 Group: System Environment/Libraries
 URL: http://www.stoq.com.br/
@@ -21,7 +21,7 @@ Requires: python-mako >= 0.2.5
 Requires: python-psycopg2 >= 2.0.5
 Requires: python-reportlab >= 2.4
 Requires: python-zope-interface >= 3.0.1
-Requires: stoqdrivers >= 0.9.13
+Requires: stoqdrivers >= 0.9.14
 Requires: vte >= 0.28.0
 Requires: pywebkitgtk >= 1.1.7
 Requires: python-twisted-core >= 10.0.0
@@ -79,6 +79,9 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{python_sitelib}/stoqlib
 
 %changelog
+* Thu Jul 28 2011 Ronaldo Maia <romaia@async.com.br> 1.0.0-3
+- Bugfixes
+
 * Thu Jul 14 2011 Johan Dahlin <jdahlin@async.com.br> 1.0.0-2
 - Bump Stoqdrivers and kiwi dependencies
 
