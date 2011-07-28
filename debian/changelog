@@ -1,3 +1,9 @@
+stoq (1.0.0-2) natty; urgency=low
+
+  * Bugfixes release.
+
+ -- Ronaldo Maia <romaia@async.com.br>  Thu, 28 Jul 2011 11:51:04 -0300
+
 stoq (1.0.0-1) natty; urgency=low
 
   * Bump stoqdrivers and kiwi dependencies
