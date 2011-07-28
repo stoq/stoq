@@ -36,6 +36,7 @@ import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.validators import validate_cnpj
 from stoqlib.enums import NFeDanfeOrientation
 
@@ -145,11 +146,12 @@ class NFeGenerator(object):
         assert company is not None
 
         #FIXME: fix get_cnpj_number method (fails if start with zero).
-        cnpj = company.get_cnpj_number()
+        cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
         if not validate_cnpj(cnpj):
-            raise ModelDataError(_("The CNPJ of this company is not valid."))
+            raise ModelDataError(_("The CNPJ of %s is not valid.")
+                                   % person.person.name)
 
-        return '%0d' % cnpj
+        return cnpj
 
     def _get_address_data(self, person):
         """Returns a tuple in the following format:

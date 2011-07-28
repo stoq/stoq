@@ -121,6 +121,11 @@ def validate_cpf(cpf):
     return True
 
 def validate_cnpj(cnpj):
+    """Validates a cnpj.
+    
+    @param cnpj: the cnpj to validate. Can be a string or number. If its a
+    string, only the digits will be used.
+    """
     cnpj = ''.join(re.findall('\d', str(cnpj)))
 
     if not cnpj or len(cnpj) < 14:
