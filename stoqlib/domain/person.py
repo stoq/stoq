@@ -472,6 +472,7 @@ class PersonAdaptToCompany(PersonAdapter):
         @returns: the cnpj number as a number
         @rtype: integer
         """
+        # FIXME: We should return cnpj as strings, since it can begin with 0
         num = ''.join([c for c in self.cnpj if c in '1234567890'])
         if num:
             return int(num)

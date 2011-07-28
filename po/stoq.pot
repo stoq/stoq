@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-27 16:53-0300\n"
+"POT-Creation-Date: 2011-07-28 11:13-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -278,9 +278,9 @@ msgstr ""
 #: ../plugins/ecf/ecfdomain.py:205 ../plugins/ecf/ecfprinterdialog.py:309
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:2
 #: ../stoqlib/domain/devices.py:137 ../stoqlib/domain/payment/method.py:154
-#: ../stoqlib/domain/person.py:373 ../stoqlib/domain/person.py:620
-#: ../stoqlib/domain/person.py:709 ../stoqlib/domain/person.py:749
-#: ../stoqlib/domain/person.py:1151 ../stoqlib/domain/person.py:1193
+#: ../stoqlib/domain/person.py:373 ../stoqlib/domain/person.py:621
+#: ../stoqlib/domain/person.py:710 ../stoqlib/domain/person.py:750
+#: ../stoqlib/domain/person.py:1152 ../stoqlib/domain/person.py:1194
 #: ../stoqlib/domain/station.py:101 ../stoqlib/domain/test/test_person.py:495
 #: ../stoqlib/domain/test/test_person.py:504
 #: ../stoqlib/gui/dialogs/devices.py:53
@@ -301,9 +301,9 @@ msgstr ""
 #: ../data/glade/UserStatusSlave.ui.h:2 ../plugins/books/booksdomain.py:48
 #: ../plugins/ecf/ecfdomain.py:206 ../stoqlib/domain/devices.py:138
 #: ../stoqlib/domain/payment/method.py:155 ../stoqlib/domain/person.py:374
-#: ../stoqlib/domain/person.py:528 ../stoqlib/domain/person.py:621
-#: ../stoqlib/domain/person.py:710 ../stoqlib/domain/person.py:750
-#: ../stoqlib/domain/person.py:1153 ../stoqlib/domain/person.py:1195
+#: ../stoqlib/domain/person.py:529 ../stoqlib/domain/person.py:622
+#: ../stoqlib/domain/person.py:711 ../stoqlib/domain/person.py:751
+#: ../stoqlib/domain/person.py:1154 ../stoqlib/domain/person.py:1196
 #: ../stoqlib/domain/station.py:102 ../stoqlib/domain/test/test_person.py:447
 #: ../stoqlib/domain/test/test_person.py:458
 #: ../stoqlib/gui/search/personsearch.py:278
@@ -2585,7 +2585,7 @@ msgstr ""
 #: ../stoqlib/gui/slaves/productionslave.py:165
 #: ../stoqlib/gui/wizards/abstractwizard.py:113
 #: ../stoqlib/gui/wizards/consignmentwizard.py:153
-#: ../stoqlib/gui/wizards/loanwizard.py:329
+#: ../stoqlib/gui/wizards/loanwizard.py:334
 #: ../stoqlib/gui/wizards/productionwizard.py:180
 #: ../stoqlib/gui/wizards/productionwizard.py:248
 #: ../stoqlib/gui/wizards/purchasewizard.py:258
@@ -2687,7 +2687,7 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:180
 #: ../stoqlib/gui/search/sellablesearch.py:150
 #: ../stoqlib/gui/search/servicesearch.py:118
-#: ../stoqlib/gui/wizards/loanwizard.py:338
+#: ../stoqlib/gui/wizards/loanwizard.py:343
 #: ../stoqlib/gui/wizards/salequotewizard.py:222
 #: ../stoqlib/reporting/loanreceipt.py:108 ../stoqlib/reporting/product.py:68
 #: ../stoqlib/reporting/sale.py:105 ../stoqlib/reporting/template.py:330
@@ -3161,8 +3161,9 @@ msgstr ""
 msgid "The CNPJ is not valid."
 msgstr ""
 
-#: ../plugins/nfe/nfegenerator.py:150
-msgid "The CNPJ of this company is not valid."
+#: ../plugins/nfe/nfegenerator.py:151
+#, python-format
+msgid "The CNPJ of %s is not valid."
 msgstr ""
 
 #: ../stoq/gui/admin.py:77
@@ -3759,7 +3760,7 @@ msgstr ""
 #: ../stoqlib/gui/slaves/productionslave.py:168
 #: ../stoqlib/gui/wizards/abstractwizard.py:119
 #: ../stoqlib/gui/wizards/consignmentwizard.py:154
-#: ../stoqlib/gui/wizards/loanwizard.py:330
+#: ../stoqlib/gui/wizards/loanwizard.py:335
 #: ../stoqlib/gui/wizards/productionwizard.py:183
 #: ../stoqlib/gui/wizards/productionwizard.py:251
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:80
@@ -4404,7 +4405,7 @@ msgid "Show productions with status"
 msgstr ""
 
 #: ../stoq/gui/production.py:182 ../stoqlib/gui/search/purchasesearch.py:82
-#: ../stoqlib/gui/wizards/loanwizard.py:327
+#: ../stoqlib/gui/wizards/loanwizard.py:332
 #: ../stoqlib/reporting/payment.py:146
 msgid "# "
 msgstr ""
@@ -5545,67 +5546,67 @@ msgstr ""
 msgid "Cohabitation"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:525
+#: ../stoqlib/domain/person.py:526
 msgid "Solvent"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:526
+#: ../stoqlib/domain/person.py:527
 msgid "Indebted"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:527
+#: ../stoqlib/domain/person.py:528
 msgid "Insolvent"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:622 ../stoqlib/domain/sellable.py:272
+#: ../stoqlib/domain/person.py:623 ../stoqlib/domain/sellable.py:272
 msgid "Blocked"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:669
+#: ../stoqlib/domain/person.py:670
 msgid "Normal"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:670
+#: ../stoqlib/domain/person.py:671
 msgid "Away"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:671
+#: ../stoqlib/domain/person.py:672
 msgid "Vacation"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:672
+#: ../stoqlib/domain/person.py:673
 msgid "Off"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:833 ../stoqlib/gui/editors/personeditor.py:157
+#: ../stoqlib/domain/person.py:834 ../stoqlib/gui/editors/personeditor.py:157
 msgid "Card Provider"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:915
+#: ../stoqlib/domain/person.py:916
 msgid "Globally"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:916
+#: ../stoqlib/domain/person.py:917
 msgid "By Salesperson"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:917
+#: ../stoqlib/domain/person.py:918
 msgid "By Sellable"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:918
+#: ../stoqlib/domain/person.py:919
 msgid "By Payment Method"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:919
+#: ../stoqlib/domain/person.py:920
 msgid "By Base Sellable Category"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:922
+#: ../stoqlib/domain/person.py:923
 msgid "By Sellable Category"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:924
+#: ../stoqlib/domain/person.py:925
 msgid "By Sale Total"
 msgstr ""
 
@@ -5803,7 +5804,7 @@ msgstr ""
 #: ../stoqlib/gui/search/consignmentsearch.py:67
 #: ../stoqlib/gui/search/loansearch.py:85
 #: ../stoqlib/gui/wizards/consignmentwizard.py:160
-#: ../stoqlib/gui/wizards/loanwizard.py:336
+#: ../stoqlib/gui/wizards/loanwizard.py:341
 msgid "Returned"
 msgstr ""
 
@@ -6226,7 +6227,7 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:261
 #: ../stoqlib/gui/search/productsearch.py:340
 #: ../stoqlib/gui/wizards/consignmentwizard.py:158
-#: ../stoqlib/gui/wizards/loanwizard.py:334
+#: ../stoqlib/gui/wizards/loanwizard.py:339
 #: ../stoqlib/reporting/product.py:139
 msgid "Sold"
 msgstr ""
@@ -6557,7 +6558,7 @@ msgstr ""
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:191
 #: ../stoqlib/gui/wizards/loanwizard.py:229
-#: ../stoqlib/gui/wizards/loanwizard.py:332
+#: ../stoqlib/gui/wizards/loanwizard.py:337
 msgid "Loaned"
 msgstr ""
 
@@ -7015,23 +7016,23 @@ msgstr ""
 msgid "The price must be greater than zero."
 msgstr ""
 
-#: ../stoqlib/gui/editors/loaneditor.py:110
+#: ../stoqlib/gui/editors/loaneditor.py:112
 msgid "The quantity should be positive."
 msgstr ""
 
-#: ../stoqlib/gui/editors/loaneditor.py:112
+#: ../stoqlib/gui/editors/loaneditor.py:114
 msgid "Quantity not available in stock."
 msgstr ""
 
-#: ../stoqlib/gui/editors/loaneditor.py:116
-#: ../stoqlib/gui/editors/loaneditor.py:124
+#: ../stoqlib/gui/editors/loaneditor.py:118
+#: ../stoqlib/gui/editors/loaneditor.py:126
 #: ../stoqlib/gui/editors/purchaseeditor.py:139
 #: ../stoqlib/gui/editors/purchaseeditor.py:148
 msgid "Can not decrease this quantity."
 msgstr ""
 
-#: ../stoqlib/gui/editors/loaneditor.py:119
-#: ../stoqlib/gui/editors/loaneditor.py:127
+#: ../stoqlib/gui/editors/loaneditor.py:121
+#: ../stoqlib/gui/editors/loaneditor.py:129
 msgid "Sale and return quantity is greater than the total quantity."
 msgstr ""
 
@@ -8853,46 +8854,46 @@ msgstr ""
 msgid "The quantity is greater than the quantity in stock."
 msgstr ""
 
-#: ../stoqlib/gui/wizards/loanwizard.py:378
+#: ../stoqlib/gui/wizards/loanwizard.py:383
 msgid ""
 "A sale was created from loan items. You can confirm the sale in the Till "
 "application."
 msgstr ""
 
-#: ../stoqlib/gui/wizards/loanwizard.py:381
+#: ../stoqlib/gui/wizards/loanwizard.py:386
 msgid ""
 "\n"
 "Some products have returned to stock. You can check the stock of the items "
 "in the Stock application."
 msgstr ""
 
-#: ../stoqlib/gui/wizards/loanwizard.py:384
+#: ../stoqlib/gui/wizards/loanwizard.py:389
 msgid "Close loan details..."
 msgstr ""
 
-#: ../stoqlib/gui/wizards/loanwizard.py:423
+#: ../stoqlib/gui/wizards/loanwizard.py:428
 msgid "New Loan Wizard"
 msgstr ""
 
 #. we can only print the receipt if the loan was confirmed.
-#: ../stoqlib/gui/wizards/loanwizard.py:432
+#: ../stoqlib/gui/wizards/loanwizard.py:437
 msgid "Would you like to print the receipt now?"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/loanwizard.py:433
+#: ../stoqlib/gui/wizards/loanwizard.py:438
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:246
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:293
 msgid "Print receipt"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/loanwizard.py:433
+#: ../stoqlib/gui/wizards/loanwizard.py:438
 #: ../stoqlib/gui/wizards/salequotewizard.py:329
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:246
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:293
 msgid "Don't print"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/loanwizard.py:451
+#: ../stoqlib/gui/wizards/loanwizard.py:456
 msgid "Close Loan Wizard"
 msgstr ""
 
