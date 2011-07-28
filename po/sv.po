@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-26 16:05-0300\n"
-"PO-Revision-Date: 2011-07-11 20:42+0000\n"
+"POT-Creation-Date: 2011-07-27 16:53-0300\n"
+"PO-Revision-Date: 2011-07-27 04:45+0000\n"
 "Last-Translator: Johan Dahlin <jdahlin@gmail.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-07-27 04:37+0000\n"
+"X-Launchpad-Export-Date: 2011-07-28 04:39+0000\n"
 "X-Generator: Launchpad (build 13405)\n"
 "Language: sv\n"
 
@@ -48,7 +48,7 @@ msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account code:"
-msgstr ""
+msgstr "Kontokod:"
 
 #: ../data/glade/AccountEditor.ui.h:2
 msgid "Account name:"
@@ -71,7 +71,7 @@ msgstr "Konto:"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:2
 msgid "Add a new account"
-msgstr ""
+msgstr "Lägg till ett nytt konto"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:3
 #: ../data/glade/SellableEditor.ui.h:5
@@ -260,7 +260,7 @@ msgstr ""
 #: ../data/glade/TributarySituationSlave.ui.h:2
 #, no-c-format
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #: ../data/glade/BaseSellableCategoryDataSlave.ui.h:4
 #: ../data/glade/SellableCategoryDataSlave.ui.h:5
@@ -313,7 +313,7 @@ msgstr "Inaktiv"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:4
 msgid "Manager:"
-msgstr ""
+msgstr "Hanterare:"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:5
 msgid "Tax Polity:"
@@ -381,7 +381,7 @@ msgstr ""
 #: ../data/glade/CashChangeSlave.ui.h:2
 #: ../stoqlib/gui/slaves/paymentslave.py:988
 msgid "Change:"
-msgstr ""
+msgstr "Växel:"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/CashChangeSlave.ui.h:4
@@ -398,14 +398,14 @@ msgstr "Anledning:"
 
 #: ../data/glade/CfopEditor.ui.h:1
 msgid "0.000"
-msgstr ""
+msgstr "0.000"
 
 #: ../data/glade/CfopEditor.ui.h:2 ../data/glade/FiscalBookEntryEditor.ui.h:1
 #: ../data/glade/ProductAdjustmentDialog.ui.h:1
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:2
 #: ../data/glade/SalesPersonStep.ui.h:5
 msgid "C.F.O.P.:"
-msgstr ""
+msgstr "C.F.O.P:"
 
 #: ../data/glade/ClientCategoryEditor.ui.h:1
 #: ../data/glade/ContactEditor.ui.h:1
@@ -514,11 +514,11 @@ msgstr ""
 
 #: ../data/glade/CommissionDataSlave.ui.h:5
 msgid "In Installments:"
-msgstr ""
+msgstr "I delbetalningar:"
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:2
 msgid "City Registry:"
-msgstr ""
+msgstr "Stadsregister:"
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:3
 msgid "Fancy Name:"
@@ -1666,7 +1666,7 @@ msgid "Expected Freight Value:"
 msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:13 ../stoq/gui/purchase.py:206
-#: ../stoqlib/domain/sale.py:351
+#: ../stoqlib/domain/sale.py:352
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:82
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:480
 #: ../stoqlib/reporting/purchase.py:68
@@ -3664,7 +3664,7 @@ msgstr ""
 msgid "Change settings"
 msgstr ""
 
-#: ../stoq/gui/config.py:707 ../stoq/gui/pos.py:777 ../stoq/gui/till.py:287
+#: ../stoq/gui/config.py:707 ../stoq/gui/pos.py:780 ../stoq/gui/till.py:287
 msgid "Try again"
 msgstr ""
 
@@ -3684,19 +3684,19 @@ msgstr ""
 msgid "Run Stoq"
 msgstr "Kör Stoq"
 
-#: ../stoq/gui/config.py:766 ../stoqlib/lib/parameters.py:537
+#: ../stoq/gui/config.py:767 ../stoqlib/lib/parameters.py:537
 msgid "Online services"
 msgstr ""
 
-#: ../stoq/gui/config.py:777
+#: ../stoq/gui/config.py:778
 msgid "Stoq - Installation"
 msgstr ""
 
-#: ../stoq/gui/config.py:875
+#: ../stoq/gui/config.py:882
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 
-#: ../stoq/gui/config.py:881
+#: ../stoq/gui/config.py:888
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
 "database server {address}, however it is not a Stoq database or it was "
@@ -4000,7 +4000,7 @@ msgstr "Avdelning"
 #: ../stoq/gui/inventory.py:134 ../stoq/gui/production.py:190
 #: ../stoq/gui/purchase.py:200 ../stoqlib/domain/inventory.py:167
 #: ../stoqlib/domain/loan.py:117 ../stoqlib/domain/production.py:64
-#: ../stoqlib/domain/sale.py:347 ../stoqlib/domain/stockdecrease.py:103
+#: ../stoqlib/domain/sale.py:348 ../stoqlib/domain/stockdecrease.py:103
 #: ../stoqlib/domain/till.py:85
 #: ../stoqlib/gui/dialogs/productionquotedialog.py:126
 #: ../stoqlib/gui/dialogs/productstockdetails.py:183
@@ -4025,7 +4025,7 @@ msgstr "Alla avdelningar"
 msgid "Are you sure you want to cancel this inventory ?"
 msgstr ""
 
-#: ../stoq/gui/inventory.py:211 ../stoq/gui/pos.py:641
+#: ../stoq/gui/inventory.py:211 ../stoq/gui/pos.py:644
 #: ../stoq/gui/purchase.py:344 ../stoq/gui/sales.py:350
 msgid "Don't cancel"
 msgstr ""
@@ -4118,6 +4118,7 @@ msgstr ""
 #: ../stoqlib/gui/search/paymentsearch.py:76
 #: ../stoqlib/gui/search/paymentsearch.py:148
 #: ../stoqlib/gui/search/salesearch.py:74
+#: ../stoqlib/gui/search/salesearch.py:131
 #: ../stoqlib/gui/search/stockdecreasesearch.py:89
 #: ../stoqlib/gui/search/tillsearch.py:112
 #: ../stoqlib/gui/search/transfersearch.py:89
@@ -4158,7 +4159,7 @@ msgstr ""
 
 #: ../stoq/gui/payable.py:176 ../stoq/gui/receivable.py:228
 #: ../stoqlib/domain/payment/payment.py:79
-#: ../stoqlib/domain/payment/renegotiation.py:56 ../stoqlib/domain/sale.py:349
+#: ../stoqlib/domain/payment/renegotiation.py:56 ../stoqlib/domain/sale.py:350
 #: ../stoqlib/reporting/payment.py:136
 msgid "Paid"
 msgstr "Betald"
@@ -4232,7 +4233,7 @@ msgid ""
 "You must finish the current sale before you change to another application."
 msgstr ""
 
-#: ../stoq/gui/pos.py:207 ../stoq/gui/pos.py:218 ../stoq/gui/pos.py:777
+#: ../stoq/gui/pos.py:207 ../stoq/gui/pos.py:218 ../stoq/gui/pos.py:780
 #: ../stoqlib/gui/slaves/saleslave.py:343
 msgid "Cancel sale"
 msgstr ""
@@ -4302,50 +4303,54 @@ msgid ""
 "only one was added."
 msgstr ""
 
-#: ../stoq/gui/pos.py:456 ../stoq/gui/till.py:388
+#: ../stoq/gui/pos.py:451
+msgid "POS operations requires a connected fiscal printer."
+msgstr ""
+
+#: ../stoq/gui/pos.py:459 ../stoq/gui/till.py:388
 msgid "Till closed"
 msgstr "Kassa stängd"
 
-#: ../stoq/gui/pos.py:458
+#: ../stoq/gui/pos.py:461
 msgid "Till blocked"
 msgstr ""
 
-#: ../stoq/gui/pos.py:460
+#: ../stoq/gui/pos.py:463
 msgid "Till open"
 msgstr ""
 
-#: ../stoq/gui/pos.py:566
+#: ../stoq/gui/pos.py:569
 #, python-format
 msgid "The barcode '%s' does not exist. Searching for a product instead..."
 msgstr ""
 
-#: ../stoq/gui/pos.py:573
+#: ../stoq/gui/pos.py:576
 #, python-format
 msgid ""
 "You cannot sell fractions of this product. The '%s' unit does not allow that"
 msgstr ""
 
-#: ../stoq/gui/pos.py:589
+#: ../stoq/gui/pos.py:592
 #, python-format
 msgid ""
 "You cannot sell more items of product %s. The available quantity is not "
 "enough."
 msgstr ""
 
-#: ../stoq/gui/pos.py:640
+#: ../stoq/gui/pos.py:643
 msgid "This will cancel the current order. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/pos.py:641 ../stoq/gui/purchase.py:338
+#: ../stoq/gui/pos.py:644 ../stoq/gui/purchase.py:338
 msgid "Cancel order"
 msgstr ""
 
-#: ../stoq/gui/pos.py:775
+#: ../stoq/gui/pos.py:778
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 
-#: ../stoq/gui/pos.py:889
+#: ../stoq/gui/pos.py:892
 msgid "Quantity must be a positive number"
 msgstr ""
 
@@ -4405,7 +4410,6 @@ msgid "Show productions with status"
 msgstr ""
 
 #: ../stoq/gui/production.py:182 ../stoqlib/gui/search/purchasesearch.py:82
-#: ../stoqlib/gui/search/salesearch.py:131
 #: ../stoqlib/gui/wizards/loanwizard.py:327
 #: ../stoqlib/reporting/payment.py:146
 msgid "# "
@@ -4711,7 +4715,7 @@ msgid "Client"
 msgstr "Klient"
 
 #: ../stoq/gui/sales.py:217 ../stoq/gui/till.py:204 ../stoq/lib/startup.py:179
-#: ../stoqlib/database/admin.py:308 ../stoqlib/domain/test/test_profile.py:48
+#: ../stoqlib/database/admin.py:313 ../stoqlib/domain/test/test_profile.py:48
 #: ../stoqlib/gui/dialogs/clientdetails.py:151
 #: ../stoqlib/gui/search/commissionsearch.py:71
 #: ../stoqlib/gui/search/salesearch.py:81 ../stoqlib/lib/parameters.py:648
@@ -5066,11 +5070,9 @@ msgstr "Databasschemafel"
 
 #: ../stoq/lib/startup.py:58
 msgid ""
-"Table `system_table' does not exist.\n"
+"Table 'system_table' does not exist.\n"
 "Consult your database administrator to solve this problem."
 msgstr ""
-"Tabellen 'sytem_table' existerar inte.\n"
-"Rådfråga din databasadministratör för att lösa detta problemet."
 
 #: ../stoq/lib/startup.py:130
 msgid ""
@@ -5158,49 +5160,50 @@ msgstr "Kostnad"
 msgid "Profit"
 msgstr ""
 
+#: ../stoqlib/database/admin.py:76 ../stoqlib/database/admin.py:92
+#: ../stoqlib/database/admin.py:311
+msgid "Administrator"
+msgstr ""
+
 #. Dependencies to create an user.
 #: ../stoqlib/database/admin.py:79
 msgid "System Administrator"
 msgstr ""
 
-#: ../stoqlib/database/admin.py:164
+#: ../stoqlib/database/admin.py:169
 msgid "Assets"
 msgstr "Tillgångar"
 
-#: ../stoqlib/database/admin.py:165 ../stoqlib/database/admin.py:181
+#: ../stoqlib/database/admin.py:170 ../stoqlib/database/admin.py:186
 msgid "Banks"
 msgstr "Banker"
 
-#: ../stoqlib/database/admin.py:166 ../stoqlib/domain/account.py:102
+#: ../stoqlib/database/admin.py:171 ../stoqlib/domain/account.py:102
 msgid "Equity"
 msgstr "Värdeökning"
 
-#: ../stoqlib/database/admin.py:167
+#: ../stoqlib/database/admin.py:172
 msgid "Expenses"
 msgstr "Utgifter"
 
-#: ../stoqlib/database/admin.py:168 ../stoqlib/database/admin.py:185
+#: ../stoqlib/database/admin.py:173 ../stoqlib/database/admin.py:190
 msgid "Imbalance"
 msgstr "Obalans"
 
-#: ../stoqlib/database/admin.py:169 ../stoqlib/domain/account.py:90
+#: ../stoqlib/database/admin.py:174 ../stoqlib/domain/account.py:90
 #: ../stoqlib/domain/account.py:100
 msgid "Income"
 msgstr "Intäkt"
 
-#: ../stoqlib/database/admin.py:170 ../stoqlib/database/admin.py:183
+#: ../stoqlib/database/admin.py:175 ../stoqlib/database/admin.py:188
 msgid "Tills"
 msgstr ""
 
-#: ../stoqlib/database/admin.py:266
+#: ../stoqlib/database/admin.py:271
 msgid "The current database user does not have super user rights"
 msgstr ""
 
-#: ../stoqlib/database/admin.py:306
-msgid "Administrator"
-msgstr ""
-
-#: ../stoqlib/database/admin.py:307 ../stoqlib/gui/search/personsearch.py:349
+#: ../stoqlib/database/admin.py:312 ../stoqlib/gui/search/personsearch.py:349
 msgid "Manager"
 msgstr ""
 
@@ -5370,11 +5373,11 @@ msgstr "Checkskrivare"
 
 #: ../stoqlib/domain/inventory.py:169 ../stoqlib/domain/payment/group.py:63
 #: ../stoqlib/domain/payment/payment.py:82 ../stoqlib/domain/purchase.py:149
-#: ../stoqlib/domain/sale.py:350
+#: ../stoqlib/domain/sale.py:351
 msgid "Cancelled"
 msgstr "Avbruten"
 
-#: ../stoqlib/domain/loan.py:137 ../stoqlib/domain/sale.py:395
+#: ../stoqlib/domain/loan.py:137 ../stoqlib/domain/sale.py:396
 #: ../stoqlib/domain/stockdecrease.py:123
 #, python-format
 msgid "Invalid status %d"
@@ -5388,7 +5391,7 @@ msgstr "Förhandsgranska"
 #: ../stoqlib/domain/payment/group.py:61
 #: ../stoqlib/domain/payment/payment.py:81
 #: ../stoqlib/domain/payment/renegotiation.py:55
-#: ../stoqlib/domain/purchase.py:152 ../stoqlib/domain/sale.py:348
+#: ../stoqlib/domain/purchase.py:152 ../stoqlib/domain/sale.py:349
 #: ../stoqlib/domain/stockdecrease.py:104
 msgid "Confirmed"
 msgstr "Bekräftad"
@@ -5517,7 +5520,7 @@ msgstr "INTE BETALAD"
 msgid "This payment is already paid."
 msgstr ""
 
-#: ../stoqlib/domain/payment/renegotiation.py:57 ../stoqlib/domain/sale.py:353
+#: ../stoqlib/domain/payment/renegotiation.py:57 ../stoqlib/domain/sale.py:354
 msgid "Renegotiated"
 msgstr ""
 
@@ -5676,7 +5679,7 @@ msgstr ""
 msgid "Can not consume this quantity."
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:150 ../stoqlib/domain/sale.py:354
+#: ../stoqlib/domain/purchase.py:150 ../stoqlib/domain/sale.py:355
 msgid "Quoting"
 msgstr "Citering"
 
@@ -5797,12 +5800,12 @@ msgstr ""
 msgid "%r does not have enough stock to be sold."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:249
+#: ../stoqlib/domain/sale.py:250
 #, python-format
 msgid "It's only possible to deliver products, not %r"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:352 ../stoqlib/gui/dialogs/loandetails.py:68
+#: ../stoqlib/domain/sale.py:353 ../stoqlib/gui/dialogs/loandetails.py:68
 #: ../stoqlib/gui/dialogs/productstockdetails.py:192
 #: ../stoqlib/gui/search/consignmentsearch.py:67
 #: ../stoqlib/gui/search/loansearch.py:85
@@ -5811,74 +5814,74 @@ msgstr ""
 msgid "Returned"
 msgstr "Återlämnad"
 
-#: ../stoqlib/domain/sale.py:497
+#: ../stoqlib/domain/sale.py:498
 msgid "The sale must have sellable items"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:499
+#: ../stoqlib/domain/sale.py:500
 #, python-format
 msgid "Unable to make sales for clients with status %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:542
+#: ../stoqlib/domain/sale.py:543
 #, python-format
 msgid ""
 "You cannot close a sale without paying all the payment. Payment %r is still "
 "not paid"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:650
+#: ../stoqlib/domain/sale.py:651
 #, python-format
 msgid "Sale Details: %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:656
+#: ../stoqlib/domain/sale.py:657
 #, python-format
 msgid "Delivery Address: %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:662
+#: ../stoqlib/domain/sale.py:663
 #, python-format
 msgid "\"%s\" Notes: %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:665
+#: ../stoqlib/domain/sale.py:666
 #, python-format
 msgid "\"%s\" Estimated Fix Date: %s"
 msgstr ""
 
 #. First line.
-#: ../stoqlib/domain/sale.py:678 ../stoqlib/reporting/purchase.py:181
+#: ../stoqlib/domain/sale.py:679 ../stoqlib/reporting/purchase.py:181
 #: ../stoqlib/reporting/purchase.py:193
 msgid "Not Specified"
 msgstr "Ej Specifierad"
 
-#: ../stoqlib/domain/sale.py:692
+#: ../stoqlib/domain/sale.py:693
 #, python-format
 msgid "The sale %r have a client but no client_role defined."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:906
+#: ../stoqlib/domain/sale.py:907
 msgid "You must have at least one payment for each payment group"
 msgstr ""
 
 #. The sale was not entirely paid, so we have to payback the
 #. till, because the sale amount have already been added in there
-#: ../stoqlib/domain/sale.py:961
+#: ../stoqlib/domain/sale.py:962
 #, python-format
 msgid "Debit on Till: Sale %d Returned"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:971
+#: ../stoqlib/domain/sale.py:972
 #, python-format
 msgid "%s Money Returned for Sale %d"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1045
+#: ../stoqlib/domain/sale.py:1046
 msgid "Sale orders must have items, which means products or services"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1050
+#: ../stoqlib/domain/sale.py:1051
 msgid "Sale total quantity should never be zero"
 msgstr ""
 
@@ -11439,6 +11442,13 @@ msgstr ""
 
 #~ msgid "<b>Administrator Account Creation</b>"
 #~ msgstr "<b>Skapande av Administrationskonto</b>"
+
+#~ msgid ""
+#~ "Table `system_table' does not exist.\n"
+#~ "Consult your database administrator to solve this problem."
+#~ msgstr ""
+#~ "Tabellen 'sytem_table' existerar inte.\n"
+#~ "Rådfråga din databasadministratör för att lösa detta problemet."
 
 #~ msgid "Create an empty database"
 #~ msgstr "Skapa en tom databas"
