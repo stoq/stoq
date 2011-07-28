@@ -149,7 +149,7 @@ class NFeGenerator(object):
         if not validate_cnpj(cnpj):
             raise ModelDataError(_("The CNPJ of this company is not valid."))
 
-        return cnpj
+        return '%0d' % cnpj
 
     def _get_address_data(self, person):
         """Returns a tuple in the following format:
