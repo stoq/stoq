@@ -669,6 +669,7 @@ class PosApp(AppWindow):
         If there's no delivery, create one.
         @returns: The delivery
         """
+        #FIXME: Canceling the editor still saves the changes.
         return self.run_dialog(DeliveryEditor, self.conn,
                                self._delivery,
                                sale_items=self._get_deliverable_items())

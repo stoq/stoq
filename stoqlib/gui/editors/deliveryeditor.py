@@ -90,6 +90,8 @@ class DeliveryEditor(BaseEditor):
         self.refresh_ok(validation_value)
 
     def _update_widgets(self):
+        has_selected_client = bool(self.client.get_selected())
+        self.refresh_ok(has_selected_client)
         if self.model.notes:
             self.additional_info_label.show()
         else:
@@ -122,8 +124,16 @@ class DeliveryEditor(BaseEditor):
         finish_transaction(trans, client)
 
         if client is not None:
-            self.client.append_item(str(client.person.name), client)
+            self._populate_person()
             self.client.select(client)
+
+    def _populate_person(self):
+        clients = ClientView.get_active_clients(self.conn)
+        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
+        clients = clients[:max_results]
+        items = [(c.name, c.client) for c in clients]
+        self.client.prefill(sorted(items))
+        self.client.set_sensitive(len(items))
 
     #
     # Callbacks
@@ -149,9 +159,9 @@ class DeliveryEditor(BaseEditor):
 
     def on_client__content_changed(self, combo):
         client = combo.get_selected_data()
+        self.change_address_button.set_sensitive(bool(client))
         if client:
             self._update_address(client.person.get_main_address())
-            self.change_address_button.set_sensitive(True)
 
     def on_create_client__clicked(self, button):
         self._create_client()
@@ -167,12 +177,7 @@ class DeliveryEditor(BaseEditor):
         return Delivery()
 
     def setup_proxies(self):
-        clients = ClientView.get_active_clients(self.conn)
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        clients = clients[:max_results]
-        items = [(c.name, c.client) for c in clients]
-        self.client.prefill(sorted(items))
-
+        self._populate_person()
         self.proxy = self.add_proxy(self.model, DeliveryEditor.proxy_widgets)
         if not self.model.client:
             self.change_address_button.set_sensitive(False)
