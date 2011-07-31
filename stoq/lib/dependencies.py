@@ -198,8 +198,8 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             import gudev
             gudev # pyflakes
         except ImportError:
-            self._missing(project="Gudev",
-                          url='http://www.kernel.org/pub/linux/utils/kernel/hotplug/gudev/',
+            self._missing(project="python-gudev",
+                          url='https://github.com/nzjrs/python-gudev/',
                           version=version)
 
     def _check_pypoppler(self, version):
