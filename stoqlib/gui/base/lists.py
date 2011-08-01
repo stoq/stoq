@@ -254,6 +254,12 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
                               clicks on add_button or edit_button.
         @type: editor_class:  a L{stoqlib.gui.editors.BaseEditor} subclass
         @param klist_objects: initial objects to insert into the list
+        @param visual_mode:   if we are working on visual mode, that means,
+                              not possible to edit the model on this object
+        type visual_mode:     bool
+        @param restore_name:  the name used to save and restore the columns
+                              on a cache system (e.g. pickle)
+        @type restore_name:   basestring
         """
         columns = columns or self.get_columns()
         StoqlibSearchSlaveDelegate.__init__(self, columns=columns,
