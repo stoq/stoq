@@ -1,0 +1,4 @@
+debian/tmp/usr/lib  usr
+debian/tmp/usr/bin  usr
+debian/tmp/usr/share  usr
+debian/tmp/etc/stoq etc
