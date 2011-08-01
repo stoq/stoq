@@ -334,6 +334,14 @@ class SellableItemStep(WizardEditorStep):
     def next_step(self):
         raise NotImplementedError('This method must be defined on child')
 
+    def validate_step(self):
+        # FIXME: This should NOT be done here.
+        #        Find another way of saving the columns when exiting this
+        #        step, without having to depend on next_step, that should
+        #        raise NotImplementedError.
+        self.slave.save_columns()
+        return True
+
     def post_init(self):
         self.barcode.grab_focus()
         self.item_table.set_focus_chain([self.barcode,
@@ -349,7 +357,8 @@ class SellableItemStep(WizardEditorStep):
     def setup_slaves(self):
         self.slave = AdditionListSlave(
             self.conn, self.get_columns(),
-            klist_objects=self.get_saved_items())
+            klist_objects=self.get_saved_items(),
+            restore_name=self.__class__.__name__)
         self.slave.connect('before-delete-items',
                            self._on_list_slave__before_delete_items)
         self.slave.connect('after-delete-items',

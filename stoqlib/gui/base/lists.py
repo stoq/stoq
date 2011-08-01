@@ -34,6 +34,7 @@ from stoqlib.database.runtime import (new_transaction, finish_transaction,
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import SelectionError, StoqlibError
 from stoqlib.gui.base.dialogs import run_dialog, get_dialog, BasicDialog
+from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.base.wizards import BaseWizard
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
@@ -227,7 +228,7 @@ class ModelListDialog(gtk.Dialog, ModelListSlave):
         self.vbox.pack_start(self.listcontainer)
 
 
-class AdditionListSlave(GladeSlaveDelegate):
+class AdditionListSlave(StoqlibSearchSlaveDelegate):
     """A slave that offers a simple list and its management.
     """
 
@@ -243,7 +244,7 @@ class AdditionListSlave(GladeSlaveDelegate):
     gsignal('after-delete-items')
 
     def __init__(self, conn, columns=None, editor_class=None,
-                 klist_objects=None, visual_mode=False):
+                 klist_objects=None, visual_mode=False, restore_name=None):
         """ Creates a new AdditionListSlave object
 
         @param conn:          a connection
@@ -254,8 +255,9 @@ class AdditionListSlave(GladeSlaveDelegate):
         @type: editor_class:  a L{stoqlib.gui.editors.BaseEditor} subclass
         @param klist_objects: initial objects to insert into the list
         """
-        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
-        self._columns = columns or self.get_columns()
+        columns = columns or self.get_columns()
+        StoqlibSearchSlaveDelegate.__init__(self, columns=columns,
+                                            restore_name=restore_name)
         if not self._columns:
             raise StoqlibError("columns must be specified")
         self.visual_mode = visual_mode
