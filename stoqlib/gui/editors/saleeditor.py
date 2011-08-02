@@ -117,9 +117,9 @@ class SaleQuoteItemEditor(BaseEditor):
     #
 
     def after_price__changed(self, widget):
-        if self.model.icms_info:
+        if self.icms_slave:
             self.icms_slave.update_values()
-        if self.model.ipi_info:
+        if self.ipi_slave:
             self.ipi_slave.update_values()
 
     def on_price__validate(self, widget, value):
