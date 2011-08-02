@@ -328,7 +328,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
                                      "%s and today") % (self.model.open_date,))
 
     def after_penalty__content_changed(self, proxy_entry):
-        if proxy_entry.read() == ValueUnset:
+        if proxy_entry.is_valid() and proxy_entry.read() == ValueUnset:
             self.model.set_penalty(currency(0))
         self._update_total_value()
 
@@ -337,7 +337,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
             return ValidationError(_("Penalty can not be less than zero"))
 
     def after_interest__content_changed(self, proxy_entry):
-        if proxy_entry.read() == ValueUnset:
+        if proxy_entry.is_valid() and proxy_entry.read() == ValueUnset:
             self.model.set_interest(currency(0))
         self._update_total_value()
 
@@ -346,7 +346,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
             return ValidationError(_("Interest can not be less than zero"))
 
     def after_discount__content_changed(self, proxy_entry):
-        if proxy_entry.read() == ValueUnset:
+        if proxy_entry.is_valid() and proxy_entry.read() == ValueUnset:
             self.model.set_discount(currency(0))
         self._update_total_value()
 
