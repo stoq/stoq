@@ -132,11 +132,11 @@ class ParameterDetails(object):
         p_type = self.get_parameter_type()
 
         if issubclass(p_type, int):
-            return ParameterAttr.validate_int
+            return ParameterDetails.validate_int
         elif issubclass(p_type, Decimal):
-            return ParameterAttr.validate_decimal
+            return ParameterDetails.validate_decimal
         elif issubclass(p_type, DirectoryParameter):
-            return ParameterAttr.validate_directory
+            return ParameterDetails.validate_directory
 
 _details = [
     ParameterDetails(
