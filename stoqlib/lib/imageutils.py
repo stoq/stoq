@@ -67,6 +67,12 @@ class ImageHelper(object):
         """Returns True if the image is supported by Stoq, False
         otherwise.
         """
+        # FIXME: self._image should not be created here. As the name
+        #        of this method says, it should only check for valid
+        #        images.
+        #        We should either rename this method name and change
+        #        the logic to do what it's doing now, or create a new
+        #        one to do that and make this behave like it should.
         try:
             if not self._check_image_type():
                 return False
@@ -84,4 +90,6 @@ class ImageHelper(object):
             w, h = size
             self._image = self._image.scale_simple(
                 w, h, gtk.gdk.INTERP_BILINEAR)
-            self._save_image()
+            # FIXME: See bug 4510
+            #self._save_image()
+
