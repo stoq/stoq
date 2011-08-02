@@ -114,7 +114,10 @@ class AppWindow(BaseAppWindow):
         msg = _(u'There is an inventory process open at the moment.\n'
                 'While that inventory is open, you will be unable to do '
                 'operations that modify your stock.')
-        self.add_info_bar(gtk.MESSAGE_WARNING, msg)
+        self.inventory_bar = self.add_info_bar(gtk.MESSAGE_WARNING, msg)
+
+    def _remove_open_inventory_message(self):
+        self.inventory_bar.hide()
 
     def _usability_hacks(self):
         """Adds some workarounds to improve stoq usability.
@@ -391,12 +394,15 @@ class AppWindow(BaseAppWindow):
         if Inventory.has_open(self.conn, get_current_branch(self.conn)):
             self._display_open_inventory_message()
             self.set_open_inventory()
+        elif hasattr(self, 'inventory_bar'):
+            self._remove_open_inventory_message()
 
     def add_info_bar(self, message_type, label, action_widget=None):
         """Show an information bar to the user.
         @param message_type: message type, a gtk.MessageType
         @param label: label to display
         @param action_widget: optional, most likely a button
+        @returns: the infobar
         """
         label = gtk.Label(label)
         label.set_use_markup(True)
@@ -411,6 +417,8 @@ class AppWindow(BaseAppWindow):
 
         self.main_vbox.pack_start(bar, False, False, 0)
         self.main_vbox.reorder_child(bar, 1)
+
+        return bar
 
     #
     # BaseAppWindow
