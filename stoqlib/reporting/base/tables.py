@@ -76,13 +76,15 @@ class Table(RTable):
             log.warning("The column width (%f) is greater than the available "
                         "space (%r), diff = %f" % (total_width, avail_width,
                                                    total_width - avail_width))
-            percentages = [(100.0 * w) / total_width for w in self._colWidths]
-            diff = float(total_width - avail_width)
-            new_col_widths = []
-            for percent, width in zip(percentages, self._colWidths):
-                new_width = width - ((diff * percent) / 100.0)
-                new_col_widths.append(new_width)
-            self._argW = self._colWidths = new_col_widths
+
+            for i, width in enumerate(self._colWidths):
+                if width in (None, '*'):
+                    continue
+
+                self._colWidths[i] = (width / total_width) * avail_width
+
+            self._argW = self._colWidths
+
         return RTable.wrap(self, self._width or avail_width, avail_height)
 
     def identity(self):
