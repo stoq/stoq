@@ -765,6 +765,13 @@ class PosApp(AppWindow):
         self._update_widgets()
         self.barcode.grab_focus()
 
+    def _checkout_or_add_item(self):
+        search_str = self.barcode.get_text()
+        if search_str == '':
+            if len(self.sale_items) >= 1:
+                self._checkout()
+        else:
+            self._add_sale_item(search_str)
 
     #
     # Coupon related
@@ -874,18 +881,13 @@ class PosApp(AppWindow):
 
     def on_barcode__activate(self, entry):
         marker("enter pressed")
-        search_str = self.barcode.get_text()
-        if search_str == '':
-            if len(self.sale_items) >= 1:
-                self._checkout()
-        else:
-            self._add_sale_item(search_str)
+        self._checkout_or_add_item()
 
     def after_barcode__changed(self, editable):
         self._update_buttons()
 
     def on_quantity__activate(self, entry):
-        self._add_sale_item()
+        self._checkout_or_add_item()
 
     def on_quantity__validate(self, entry, value):
         self._update_buttons()
