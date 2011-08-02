@@ -26,6 +26,7 @@
 """Settings required to access the database, hostname, username etc
 """
 import os
+import urllib
 import sys
 import socket
 
@@ -91,7 +92,7 @@ class DatabaseSettings(object):
             if filter_password:
                 password += '*****'
             else:
-                password += self.password
+                password += urllib.quote_plus(self.password)
         else:
             password = ""
         authority = '%s%s@%s:%s' % (
