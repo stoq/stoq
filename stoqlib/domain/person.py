@@ -1020,13 +1020,17 @@ class ClientView(Viewable):
     def cnpj_or_cpf(self):
         return self.cnpj or self.cpf
 
+    def get_description(self):
+        return self.name + (self.fancy_name
+                                and " (%s)" % self.fancy_name or "")
+
     @classmethod
     def get_active_clients(cls, conn):
         """Return a list of active clients.
         An active client is a person who are authorized to make new sales
         """
         return cls.select(cls.q.status == PersonAdaptToClient.STATUS_SOLVENT,
-                          connection=conn)
+                          connection=conn).orderBy('name')
 
 
 class EmployeeView(Viewable):

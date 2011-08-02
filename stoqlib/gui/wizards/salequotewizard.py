@@ -90,15 +90,6 @@ class StartSaleQuoteStep(WizardEditorStep):
         else:
             self.salesperson.grab_focus()
 
-        # Clients combo
-        clients = ClientView.get_active_clients(self.conn)
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        clients = clients[:max_results]
-        items = [(c.name + (c.fancy_name and " (%s)" % c.fancy_name or ""),
-                 c.client) for c in clients]
-
-        self.client.prefill(sorted(items))
-
         # CFOP combo
         if sysparam(self.conn).ASK_SALES_CFOP:
             cfops = [(cfop.get_description(), cfop)
@@ -112,6 +103,16 @@ class StartSaleQuoteStep(WizardEditorStep):
         self.transporter_lbl.hide()
         self.transporter.hide()
         self.create_transporter.hide()
+
+        self._fill_clients_combo()
+
+    def _fill_clients_combo(self):
+        # Clients combo
+        clients = ClientView.get_active_clients(self.conn)
+        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
+        clients = clients[:max_results]
+        items = [(c.get_description(), c.client) for c in clients]
+        self.client.prefill(items)
 
     #
     # WizardStep hooks
@@ -146,10 +147,7 @@ class StartSaleQuoteStep(WizardEditorStep):
         trans.close()
         if not retval:
             return
-        if len(self.client) == 0:
-            self._fill_clients_combo()
-        else:
-            self.client.append_item(client.person.name, client)
+        self._fill_clients_combo()
         self.client.select(client)
 
     def on_expire_date__validate(self, widget, value):
