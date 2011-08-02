@@ -90,6 +90,9 @@ class _ProductSearch(SearchEditor):
         else:
             self.set_ok_label(_('_Select product'))
 
+        self.set_edit_button_sensitive(False)
+        self.results.connect('selection-changed', self.on_selection_changed)
+
     #
     # SearchDialog Hooks
     #
@@ -160,6 +163,13 @@ class _ProductSearch(SearchEditor):
 
         return product
 
+    #
+    # Callbacks
+    #
+
+    def on_selection_changed(self, results, selected):
+        can_edit = bool(selected)
+        self.set_edit_button_sensitive(can_edit)
 
 
 #
