@@ -151,7 +151,7 @@ class PayableApp(SearchableAppWindow):
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), long_title='Payment ID',
-                             width=60, data_type=int,
+                             width=60, data_type=int, sorted=True,
                              format='%04d'),
                 Column('color', title=_('Description'), width=20,
                        data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
