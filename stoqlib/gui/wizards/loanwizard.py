@@ -38,7 +38,8 @@ from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_branch, get_current_user,
                                       new_transaction, finish_transaction)
 from stoqlib.domain.interfaces import IStorable, ISalesPerson
-from stoqlib.domain.person import ClientView, PersonAdaptToUser
+from stoqlib.domain.person import (ClientView, PersonAdaptToUser,
+                                   ClientCategory)
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.sale import Sale
@@ -70,8 +71,8 @@ _ = stoqlib_gettext
 class StartNewLoanStep(WizardEditorStep):
     gladefile = 'SalesPersonStep'
     model_type = Loan
-    proxy_widgets = ['client', 'salesperson', 'expire_date']
-    cfop_widgets = ('cfop',)
+    proxy_widgets = ['client', 'salesperson', 'expire_date',
+                     'client_category']
 
     def _setup_widgets(self):
         # Hide total and subtotal
@@ -90,13 +91,8 @@ class StartNewLoanStep(WizardEditorStep):
         self.salesperson.prefill(items)
         self.salesperson.set_sensitive(False)
 
-        # Clients combo
-        clients = ClientView.get_active_clients(self.conn)
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        clients = clients[:max_results]
-        items = [(c.name, c.client) for c in clients]
-        self.client.prefill(sorted(items))
-        self.client.set_property('mandatory', True)
+        self._fill_clients_combo()
+        self._fill_clients_category_combo()
 
         self.expire_date.set_property('mandatory', True)
 
@@ -121,14 +117,31 @@ class StartNewLoanStep(WizardEditorStep):
         self.operation_nature.hide()
         self.nature_lbl.hide()
 
+    def _fill_clients_combo(self):
+        clients = ClientView.get_active_clients(self.conn)
+        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
+        clients = clients[:max_results]
+        items = [(c.name, c.client) for c in clients]
+        self.client.prefill(sorted(items))
+        self.client.set_property('mandatory', True)
+
+    def _fill_clients_category_combo(self):
+        cats = ClientCategory.select(connection=self.conn).orderBy('name')
+        items = [(c.get_description(), c) for c in cats]
+        items.insert(0, ['', None])
+        self.client_category.prefill(items)
+
     def _replace_widget(self, old_widget, new_widget):
         # retrieve the position, since we will replace two widgets later.
-        top = self.table2.child_get_property(old_widget, 'top-attach')
-        bottom = self.table2.child_get_property(old_widget, 'bottom-attach')
-        left = self.table2.child_get_property(old_widget, 'left-attach')
-        right = self.table2.child_get_property(old_widget, 'right-attach')
-        self.table2.remove(old_widget)
-        self.table2.attach(self.removed_by, left, right, top, bottom)
+        parent = old_widget.get_parent()
+        top = parent.child_get_property(old_widget, 'top-attach')
+        bottom = parent.child_get_property(old_widget, 'bottom-attach')
+        left = parent.child_get_property(old_widget, 'left-attach')
+        right = parent.child_get_property(old_widget, 'right-attach')
+        parent.remove(old_widget)
+        parent.attach(new_widget, left, right, top, bottom)
+        parent.child_set_property(new_widget, 'y-padding', 3)
+        parent.child_set_property(new_widget, 'x-padding', 3)
 
     #
     # WizardStep hooks
@@ -161,11 +174,14 @@ class StartNewLoanStep(WizardEditorStep):
         trans.close()
         if not retval:
             return
-        if len(self.client) == 0:
-            self._fill_clients_combo()
-        else:
-            self.client.append_item(client.person.name, client)
+        self._fill_clients_combo()
         self.client.select(client)
+
+    def on_client__changed(self, widget):
+        client = self.client.get_selected_data()
+        if not client:
+            return
+        self.client_category.select(client.category)
 
     def on_expire_date__validate(self, widget, value):
         if value < datetime.date.today():

@@ -350,6 +350,10 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.operation_nature.hide()
         self.nature_lbl.hide()
 
+        # Hide client category widgets
+        self.client_category_lbl.hide()
+        self.client_category.hide()
+
         # if the NF-e plugin is active, the client is mandantory in this
         # wizard (in this situation, we have only quote sales).
         if self.model.status == Sale.STATUS_QUOTE:
