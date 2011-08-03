@@ -50,7 +50,7 @@ def main(args):
         raise SystemExit("Need a filename")
 
     config = StoqConfig()
-    config.load()
+    config.load_default()
     setup(config, options, register_station=False, check_schema=False)
 
     conn = get_connection()
