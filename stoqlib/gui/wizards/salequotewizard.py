@@ -38,7 +38,7 @@ from stoqlib.domain.interfaces import ISalesPerson
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
-from stoqlib.domain.person import Person, ClientView
+from stoqlib.domain.person import Person, ClientView, ClientCategory
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
@@ -70,7 +70,7 @@ class StartSaleQuoteStep(WizardEditorStep):
     gladefile = 'SalesPersonStep'
     model_type = Sale
     proxy_widgets = ('client', 'salesperson', 'expire_date',
-                     'operation_nature')
+                     'operation_nature', 'client_category')
     cfop_widgets = ('cfop',)
 
     def _setup_widgets(self):
@@ -105,14 +105,21 @@ class StartSaleQuoteStep(WizardEditorStep):
         self.create_transporter.hide()
 
         self._fill_clients_combo()
+        self._fill_clients_category_combo()
 
     def _fill_clients_combo(self):
-        # Clients combo
         clients = ClientView.get_active_clients(self.conn)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         clients = clients[:max_results]
         items = [(c.get_description(), c.client) for c in clients]
         self.client.prefill(items)
+
+    def _fill_clients_category_combo(self):
+        cats = ClientCategory.select(connection=self.conn).orderBy('name')
+        items = [(c.get_description(), c) for c in cats]
+        items.insert(0, ['', None])
+        self.client_category.prefill(items)
+
 
     #
     # WizardStep hooks
@@ -149,6 +156,12 @@ class StartSaleQuoteStep(WizardEditorStep):
             return
         self._fill_clients_combo()
         self.client.select(client)
+
+    def on_client__changed(self, widget):
+        client = self.client.get_selected_data()
+        if not client:
+            return
+        self.client_category.select(client.category)
 
     def on_expire_date__validate(self, widget, value):
         if value < datetime.date.today():
@@ -230,7 +243,9 @@ class SaleQuoteItemStep(SellableItemStep):
     def sellable_selected(self, sellable):
         SellableItemStep.sellable_selected(self, sellable)
         if sellable:
-            self.cost.set_text("%s" % sellable.price)
+            price = sellable.get_price_for_category(
+                                    self.model.client_category)
+            self.cost.set_text("%s" % price)
             self.proxy.update('cost')
 
     #
@@ -265,7 +280,7 @@ class SaleQuoteItemStep(SellableItemStep):
 
     def _validate_sellable_price(self, price):
         s = self.proxy.model.sellable
-        if not s.is_valid_price(price):
+        if not s.is_valid_price(price, self.model.client_category):
             return ValidationError(
                 _(u'Max discount for this product is %.2f%%') % s.max_discount)
 

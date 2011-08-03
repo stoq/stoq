@@ -233,6 +233,26 @@ class BaseSellableInfo(Domain):
         return self.description
 
 
+class ClientCategoryPrice(Domain):
+    sellable = ForeignKey('Sellable')
+    category = ForeignKey('ClientCategory')
+    price = PriceCol(default=0)
+    max_discount = DecimalCol(default=0)
+
+    def _get_markup(self):
+        if self.sellable.cost == 0:
+            return Decimal(0)
+        return ((self.price / self.sellable.cost) - 1) * 100
+
+    def _set_markup(self, markup):
+        self.price = self.sellable._get_price_by_markup(markup)
+
+    markup = property(_get_markup, _set_markup)
+
+    @property
+    def category_name(self):
+        return self.category.name
+
 
 class Sellable(Domain):
     """ Sellable information of a certain item such a product
@@ -523,6 +543,36 @@ class Sellable(Domain):
         if self.category:
             return self.category.get_tax_constant()
 
+    def get_category_prices(self):
+        """Returns all client category prices associated with this sellable.
+        """
+        return ClientCategoryPrice.selectBy(sellable=self,
+                                            connection=self.get_connection())
+
+    def get_category_price_info(self, category):
+        """Returns the L{ClientCategoryPrice} information for the given
+        L{ClientCategory} and this sellabe.
+
+        @returns: the L{ClientCategoryPrice} or None
+        """
+        info = ClientCategoryPrice.selectOneBy(sellable=self,
+                                        category=category,
+                                        connection=self.get_connection())
+        return info
+
+    def get_price_for_category(self, category):
+        """Given the L{ClientCategory}, returns the price for that category
+        or the default sellable price.
+
+        @param category: a L{ClientCategory}
+        @returns: The value that should be used as a price for this
+        sellable.
+        """
+        info = self.get_category_price_info(category)
+        if info:
+            return info.price
+        return self.price
+
     def check_code_exists(self, code):
         """Returns True if we already have a sellable with the given code
         in the database.
@@ -571,11 +621,20 @@ class Sellable(Domain):
 
         return True
 
-    def is_valid_price(self, newprice):
+    def is_valid_price(self, newprice, category=None):
         """Returns True if the new price respects the maximum discount
         configured for the sellable, otherwise returns False.
+
+        @param newprice: The new price that we are trying to sell this
+        sellable for.
+        @param category: Optionally define a category that we will get the
+        price info from.
         """
-        info = self.base_sellable_info
+        info = None
+        if category:
+            info = self.get_category_price_info(category)
+        if not info:
+            info = self.base_sellable_info
         if newprice < info.price - (info.price * info.max_discount/100):
             return False
         return True
