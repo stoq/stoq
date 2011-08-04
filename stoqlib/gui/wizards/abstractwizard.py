@@ -212,8 +212,8 @@ class SellableItemStep(WizardEditorStep):
     and should also provede an acessor that returns the sellable object.
 
     """
-    # FIXME: Rename to SellableItemStep
-    gladefile = 'AbstractItemStep'
+
+    gladefile = 'SellableItemStep'
     proxy_widgets = ('quantity',
                      'unit_label',
                      'cost',
