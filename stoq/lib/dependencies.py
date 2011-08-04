@@ -70,20 +70,30 @@ class DependencyChecker(object):
         self._check_pygtk(PYGTK_REQUIRED, GTK_REQUIRED)
         self._check_kiwi(KIWI_REQUIRED)
         self._check_pycairo(PYCAIRO_REQUIRED)
-        self._check_vte(VTE_REQUIRED)
-        self._check_gudev(GUDEV_REQUIRED)
-        self._check_pypoppler(PYPOPPLER_REQUIRED)
         self._check_pygtkwebkit(PYGTKWEBKIT_REQUIRED)
+        self._check_vte(VTE_REQUIRED)
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
+        self._check_dateutil(DATEUTIL_REQUIRED)
+        self._check_twisted(TWISTED_REQUIRED)
+
+        # Postgres
         self._check_psql(PSQL_REQUIRED)
         self._check_psycopg(PSYCOPG_REQUIRED)
+
+        # Printing
+        # FIXME: might be interesting to allow to run Stoq with printing
+        #        disabled, would need a global somewhere and refactor
+        #        printing imports.
         self._check_pil(PIL_REQUIRED)
         self._check_reportlab(REPORTLAB_REQUIRED)
-        self._check_dateutil(DATEUTIL_REQUIRED)
         self._check_mako(MAKO_REQUIRED)
-        self._check_stoqdrivers(STOQDRIVERS_REQUIRED)
+        self._check_pypoppler(PYPOPPLER_REQUIRED)
+
+        # ECF
+        # FIXME: makes sense to allow Stoq to run with all of these disabled.
         self._check_pyserial(PYSERIAL_REQUIRED)
-        self._check_twisted(TWISTED_REQUIRED)
+        self._check_stoqdrivers(STOQDRIVERS_REQUIRED)
+        self._check_gudev(GUDEV_REQUIRED)
 
     def _error(self, title, msg):
         if self.text_mode:
