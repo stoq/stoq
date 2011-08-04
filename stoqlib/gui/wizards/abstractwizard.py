@@ -63,7 +63,7 @@ _ = stoqlib_gettext
 
 
 
-class _ProductSearch(SearchEditor):
+class _SellableSearch(SearchEditor):
 
     title = _('Item search')
     size = (800, 450)
@@ -406,7 +406,7 @@ class SellableItemStep(WizardEditorStep):
         has_supplier = hasattr(self.model, 'supplier')
         if has_supplier:
             supplier = self.model.supplier
-        ret = run_dialog(_ProductSearch, self.wizard,
+        ret = run_dialog(_SellableSearch, self.wizard,
                          self.conn,
                          search_str=search_str,
                          table=self.sellable_view,
