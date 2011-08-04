@@ -114,7 +114,9 @@ class InventoryApp(SearchableAppWindow):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(["id"])
+        # Disable string search right now, until we use a proper Viewable
+        # for this application
+        self.disable_search_entry()
         self.branch_filter = ComboSearchFilter(
             _('Show inventories at:'), self._get_branches_for_filter())
         self.add_filter(self.branch_filter,
