@@ -103,7 +103,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         try:
             conn = get_connection()
         except DatabaseError, e:
-            error(e.short, e.msg)
+            error(e.short, str(e.msg))
 
         orm_startup()
         # For LTSP systems we cannot use the hostname as stoq is run
