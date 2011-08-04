@@ -852,7 +852,7 @@ class FirstTimeConfigWizard(BaseWizard):
                 conn.close()
         except DatabaseError, e:
             if warn:
-                warning(e.short, e.msg)
+                warning(e.short, str(e.msg))
             return False
 
         return True
@@ -864,8 +864,14 @@ class FirstTimeConfigWizard(BaseWizard):
             return False
 
         # a database which doesn't exist isn't incomplete
-        if not self.settings.has_database():
-            return False
+        try:
+            if not self.settings.has_database():
+                return False
+        except DatabaseError, e:
+            msg = (_('It was not possible to connect to the database.') +
+                  '\n' + _('Check the server configuration and try again.'))
+            warning(msg, str(e))
+            return True
 
         # If we have the SystemTable we are pretty much there,
         # could verify a few more tables in the future, including

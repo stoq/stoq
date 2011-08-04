@@ -116,23 +116,9 @@ class DatabaseSettings(object):
         try:
             conn = connectionForURI(conn_uri)
             conn.makeConnection()
-        # FIXME: Remove and display the messages to the user.
         except OperationalError, e:
             log.info('OperationalError: %s' % e)
-            if 'password authentication failed for user' in e.args[0]:
-                raise DatabaseError(
-                    _("Password authentication failed"),
-                    _("The provided password for user %s was not correct") %
-                    self.username)
-            elif 'no password supplied' in e.args[0]:
-                raise DatabaseError(
-                    _("Invalid authentication mechanism"),
-                    _("Trust was selected but the database does "
-                      "only support password authentication."))
-
-            # Raise the exception otherwise to avoid swallowing unexpected
-            # exceptions.
-            raise
+            raise DatabaseError(e)
         except Exception, e:
             value = sys.exc_info()[1]
             raise DatabaseError(
