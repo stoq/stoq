@@ -30,6 +30,7 @@ from stoqlib.database.admin import get_admin_user
 from stoqlib.database.interfaces import ICurrentUser
 from stoqlib.database.runtime import get_connection
 from stoqlib.importers.csvimporter import CSVImporter
+from stoqlib.importers.importer import get_by_type
 
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.options import get_option_parser
@@ -56,7 +57,7 @@ def main(args):
     conn = get_connection()
     provide_utility(ICurrentUser, get_admin_user(conn))
 
-    importer = CSVImporter.get_by_type(options.type)
+    importer = get_by_type(options.type)
     importer.feed_file(args[1])
 
 if __name__ == '__main__':
