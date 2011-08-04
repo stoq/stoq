@@ -39,7 +39,8 @@ from stoqlib.database.runtime import (get_connection,
                                       new_transaction)
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.profile import ProfileSettings
-from stoqlib.exceptions import DatabaseError, StoqlibError
+from stoqlib.exceptions import (DatabaseError, StoqlibError,
+                                DatabaseInconsistency)
 from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.interfaces import  IApplicationDescriptions
 from stoqlib.lib.message import error
@@ -152,7 +153,10 @@ def needs_schema_update():
              _("You need to call setup() before checking the database "
                "schema."))
 
-    update = not (migration.check_uptodate() and migration.check_plugins())
+    try:
+        update = not (migration.check_uptodate() and migration.check_plugins())
+    except DatabaseInconsistency, e:
+        error(str(e))
     return update
 
 
