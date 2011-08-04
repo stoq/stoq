@@ -64,7 +64,8 @@ _ = stoqlib_gettext
 
 
 class _ProductSearch(SearchEditor):
-    title = _('Product Stock Search')
+
+    title = _('Item search')
     size = (800, 450)
     has_new_button = True
     editor_class = ProductEditor
@@ -85,10 +86,7 @@ class _ProductSearch(SearchEditor):
             self.set_searchbar_search_string(search_str)
             self.search.refresh()
 
-        if selection_mode == gtk.SELECTION_MULTIPLE:
-            self.set_ok_label(_('_Select products'))
-        else:
-            self.set_ok_label(_('_Select product'))
+        self.set_ok_label(_('_Select item'))
 
         self.set_edit_button_sensitive(False)
         self.results.connect('selection-changed', self.on_selection_changed)
@@ -114,18 +112,24 @@ class _ProductSearch(SearchEditor):
         self.ok_button.set_sensitive(bool(sellable_view))
 
     def get_columns(self):
-        return [SearchColumn('code', title=_(u'Code'), data_type=str),
-                SearchColumn('barcode', title=_('Barcode'), data_type=str,
-                             sort_func=sort_sellable_code,
-                             width=80),
-                SearchColumn('category_description', title=_('Category'),
-                             data_type=str, width=120),
-                SearchColumn('description', title=_('Description'), data_type=str,
-                             expand=True, sorted=True),
-                SearchColumn('minimum_quantity', title=_(u'Minimum Qty'),
-                             data_type=Decimal, visible=False),
-                SearchColumn('stock', title=_(u'In Stock'), data_type=Decimal),
-              ]
+        columns = [SearchColumn('code', title=_(u'Code'), data_type=str),
+                   SearchColumn('barcode', title=_('Barcode'), data_type=str,
+                                sort_func=sort_sellable_code, width=80),
+                   SearchColumn('category_description', title=_('Category'),
+                                data_type=str, width=120),
+                   SearchColumn('description', title=_('Description'),
+                                data_type=str, expand=True, sorted=True)]
+
+        if hasattr(self.table, 'minimum_quantity'):
+            columns.append(SearchColumn('minimum_quantity',
+                                        title=_(u'Minimum Qty'),
+                                        data_type=Decimal, visible=False))
+
+        if hasattr(self.table, 'stock'):
+            columns.append(SearchColumn('stock', title=_(u'In Stock'),
+                                        data_type=Decimal))
+
+        return columns
 
     #
     # SearchEditor Hooks
