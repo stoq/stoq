@@ -562,6 +562,9 @@ class SearchableAppWindow(AppWindow):
         search_filter = self.search.get_primary_filter()
         search_filter.set_label(label)
 
+    def disable_search_entry(self):
+        self.search.disable_search_entry()
+
     def refresh(self):
         """
         See L{kiwi.ui.search.SearchSlaveDelegate.refresh}
