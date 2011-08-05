@@ -365,6 +365,10 @@ class Sellable(Domain):
         return self.base_sellable_info.price
 
     def _set_price(self, price):
+        if price < 0:
+            # Just a precaution for gui validation fails.
+            price = 0
+
         if self.on_sale_info.on_sale_price:
             today = datetime.datetime.today()
             start_date = self.on_sale_info.on_sale_start_date
