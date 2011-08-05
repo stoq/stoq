@@ -23,6 +23,8 @@
 ##
 """ Editor dialog for station objects """
 
+from kiwi.datatypes import  ValidationError
+
 from stoqlib.database.runtime import get_current_station
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.station import BranchStation
@@ -71,3 +73,9 @@ class StationEditor(BaseEditor):
         # FIXME: This is a hack, figure out why it's not set by the proxy
         self.model.branch = self.branch.get_selected_data()
         return self.model
+
+    def on_name__validate(self, entry, value):
+        if self.model.check_station_exists(value):
+            msg = (_("There is already a station registered as `%s'.") %
+                    value)
+            return ValidationError(msg)

@@ -71,6 +71,13 @@ class BranchStation(Domain):
         return cls(name=name, is_active=True, branch=branch,
                    connection=conn)
 
+    def check_station_exists(self, name):
+        """Returns True if we already have a station with the given name
+        """
+        # FIXME: We should allow computers with the same on different
+        # branches.
+        return self._check_unique_value_exists('name', name)
+
     @classmethod
     def get_station(cls, conn, branch, name):
         """Fetches a station from a branch
