@@ -138,6 +138,15 @@ class BasePriceEditor(BaseEditor):
     def get_title(self, *args):
         return _('Price settings')
 
+    def setup_proxies(self):
+        self.set_widget_formats()
+        self.main_proxy = self.add_proxy(self.model, self.proxy_widgets)
+        if self.model.markup is not None:
+            return
+        sellable = self.model.sellable
+        self.model.markup = sellable.get_suggested_markup()
+        self.main_proxy.update('markup')
+
     #
     # Kiwi handlers
     #
@@ -160,16 +169,6 @@ class BasePriceEditor(BaseEditor):
 class SellablePriceEditor(BasePriceEditor):
     model_name = _(u'Product Price')
     model_type = Sellable
-
-    def setup_proxies(self):
-        self.set_widget_formats()
-        self.main_proxy = self.add_proxy(self.model,
-                                         SellablePriceEditor.proxy_widgets)
-        if self.model.markup is not None:
-            return
-        sellable = self.model.sellable
-        self.model.markup = sellable.get_suggested_markup()
-        self.main_proxy.update('markup')
 
     def setup_slaves(self):
         slave = OnSaleInfoSlave(self.conn, self.model.on_sale_info)
@@ -195,16 +194,9 @@ class CategoryPriceEditor(BasePriceEditor):
     proxy_widgets = ('markup', 'max_discount', 'price')
 
     def setup_proxies(self):
-        self.set_widget_formats()
         self.sellable_proxy = self.add_proxy(self.model.sellable,
-                                         CategoryPriceEditor.sellable_widgets)
-        self.main_proxy = self.add_proxy(self.model,
-                                         CategoryPriceEditor.proxy_widgets)
-        if self.model.markup is not None:
-            return
-        sellable = self.model.sellable
-        self.model.markup = sellable.get_suggested_markup()
-        self.main_proxy.update('markup')
+                                             self.sellable_widgets)
+        BasePriceEditor.setup_proxies(self)
 
 
 #
