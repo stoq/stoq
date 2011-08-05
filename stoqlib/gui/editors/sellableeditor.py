@@ -168,6 +168,10 @@ class SellablePriceEditor(BaseEditor):
     # Kiwi handlers
     #
 
+    def on_price__validate(self, entry, value):
+        if value <= 0:
+            return ValidationError(_("Price cannot be zero or negative"))
+
     def after_price__content_changed(self, entry_box):
         self.handler_block(self.markup, 'changed')
         self.main_proxy.update("markup")
