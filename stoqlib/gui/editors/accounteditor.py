@@ -57,7 +57,8 @@ class AccountEditor(BaseEditor):
         self.parent_accounts = AccountTree(with_code=False, create_mode=True)
         self.parent_accounts.connect('selection-changed',
                                      self._on_parent_accounts__selection_changed)
-        self.table.attach(self.parent_accounts, 1, 2, 3, 4)
+        self.tree_box.pack_start(self.parent_accounts)
+        self.tree_box.reorder_child(self.parent_accounts, 0)
 
         if not self.existing:
             ignore = self.model
