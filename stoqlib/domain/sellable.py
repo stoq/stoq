@@ -234,6 +234,14 @@ class BaseSellableInfo(Domain):
 
 
 class ClientCategoryPrice(Domain):
+    """A table that stores special prices for clients based on their
+    category.
+
+    @ivar sellable: The sellable that has a special price
+    @ivar category: The category that has the special price
+    @ivar price: The price for this (sellable, category)
+    @ivar max_discount: The max discount that may be applied.
+    """
     sellable = ForeignKey('Sellable')
     category = ForeignKey('ClientCategory')
     price = PriceCol(default=0)
