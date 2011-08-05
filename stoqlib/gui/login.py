@@ -217,6 +217,15 @@ class LoginHelper:
         if user.password is not None and user.password != password:
             raise LoginError(_("Invalid user or password"))
 
+        # Dont know why, but some users have this empty. Prevent user from
+        # login in, since it will break later
+        if not user.profile:
+            msg = (_("User '%s' has no profile set, "
+                    "but this should not happen.") % user.username + '\n\n' +
+                _("Please contact your system administrator or Stoq team."))
+            warning(msg)
+            raise LoginError(_("User does not have a profile"))
+
         # ICurrentUser might already be provided which is the case when
         # creating a new database, thus we need to replace it.
         provide_utility(ICurrentUser, user, replace=True)
