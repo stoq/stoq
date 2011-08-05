@@ -249,11 +249,10 @@ class TransactionPage(object):
 
     def _populate_payable_payments(self, view_class):
         for view in view_class.select():
-            view.kind = self.model.kind
             self.search.results.append(view)
 
     def _add_transaction(self, transaction, description, value):
-        item = Settable(transaction=transaction, kind=self.model.kind)
+        item = Settable(transaction=transaction)
         self._update_transaction(item, transaction, description, value)
         self.search.results.append(item)
         return item
@@ -318,7 +317,7 @@ class TransactionPage(object):
         finish_transaction(trans, transaction)
 
     def _on_row__activated(self, objectlist, item):
-        if item.kind == 'account':
+        if self.model.kind == 'account':
             self._edit_transaction_dialog(item)
 
 
