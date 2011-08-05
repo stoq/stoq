@@ -112,6 +112,10 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         if method_name in self._options.keys():
             self._options[method_name].set_sensitive(sensitive)
 
+            if self._options[method_name].get_active():
+                # Active the money method as a fallback.
+                self.cash_check.set_active(True)
+
     #
     # Kiwi callbacks
     #
