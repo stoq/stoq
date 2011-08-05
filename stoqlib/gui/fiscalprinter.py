@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
 import sys
 
 import gobject
@@ -217,6 +218,17 @@ class FiscalPrinterHelper(gobject.GObject):
 
         return coupon
 
+    def _setup_midnight_check(self):
+        now = datetime.datetime.now()
+        tomorrow = now + datetime.timedelta(1)
+
+        # Get the delta between now and tomorrow (midnight)
+        midnight = tomorrow.replace(hour=0, minute=0, second=0)
+        delta = midnight - now
+
+        # Call check_till at the first seconds of the next day.
+        gobject.timeout_add(delta.seconds * 1000, self.check_till)
+
     def _till_status_changed(self, closed, blocked):
         self.emit('till-status-changed', closed, blocked)
 
@@ -266,6 +278,8 @@ class FiscalPrinterHelper(gobject.GObject):
         except (DeviceError, DriverError), e:
             warning(e)
             self.emit('ecf-changed', False)
+
+        self._setup_midnight_check()
 
 
 class FiscalCoupon(gobject.GObject):
