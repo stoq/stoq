@@ -890,7 +890,12 @@ class MultipleMethodSlave(BaseEditorSlave):
     model_type = object
 
     def __init__(self, wizard, parent, conn, order, payment_method,
-                 outstanding_value=currency(0)):
+                 outstanding_value=currency(0), finish_on_total=True):
+        """
+        @param finish_on_total: finalize the payment when the total value is
+                                reached.
+        """
+        self.finish_on_total = finish_on_total
         # We need a temporary object to hold the value that will be read from
         # the user. We will set a proxy with this temporary object to help
         # with the validation.
@@ -904,6 +909,12 @@ class MultipleMethodSlave(BaseEditorSlave):
                                    self._get_total_amount())
         self._total_value = self._outstanding_value
         self._setup_widgets()
+        self.register_validate_function(self._refresh_next)
+        
+    def _refresh_next(self, valid=True):
+        can_add_payment = valid and self._outstanding_value > 0
+        self.add_button.set_sensitive(can_add_payment)
+        self._wizard.refresh_next(valid)
 
     def setup_proxies(self):
         self._proxy = self.add_proxy(self._holder, ['base_value',])
@@ -977,6 +988,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.base_value.grab_focus()
 
     def _update_missing_or_change_value(self):
+        #FIXME: Change not shown to user.
         received = self.received_value.read()
         if received == ValueUnset:
             received = currency(0)
@@ -1064,8 +1076,10 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         self._update_payment_list()
         self.update_view()
-        if self._outstanding_value == 0:
+        # Exigência do TEF: Deve finalizar ao chegar no total da venda.
+        if self.finish_on_total and self._outstanding_value == 0:
             self._wizard.finish()
+        self.force_validation()
 
     def _remove_payment(self, payment):
         if payment.is_preview():
@@ -1160,6 +1174,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         for payment in payments:
             if not payment.is_cancelled():
                 self._remove_payment(payment)
+                self.force_validation()
 
     def on_payments__selection_changed(self, objectlist, payment):
         has_payments = len(objectlist) > 0
@@ -1187,8 +1202,6 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         self._holder.value = value
         self._update_missing_or_change_value()
-        can_add_payment = retval is None and self._outstanding_value > 0
-        self.add_button.set_sensitive(can_add_payment)
         return retval
 
 

@@ -233,7 +233,8 @@ class CloseConsignmentPaymentStep(BaseWizardStep):
     def _setup_slaves(self):
         self.slave = MultipleMethodSlave(self.wizard, self, self.conn,
                                          self.conn.get(self._consignment),
-                                         None, self._outstanding_value)
+                                         None, self._outstanding_value,
+                                         finish_on_total=False)
         self.attach_slave('place_holder', self.slave)
 
     def _validate_step(self,value):

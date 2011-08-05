@@ -53,7 +53,8 @@ class PaymentsEditor(BaseEditor):
 
     def setup_slaves(self):
         self.slave = MultipleMethodSlave(self, self, self.conn,
-                                         self.model, None, currency(0))
+                                         self.model, None, currency(0),
+                                         finish_on_total=False)
         self.slave.enable_remove()
         self.attach_slave('place_holder', self.slave)
 
