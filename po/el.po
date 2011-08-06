@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-07-29 04:50+0000\n"
-"X-Generator: Launchpad (build 13405)\n"
+"X-Launchpad-Export-Date: 2011-08-06 05:01+0000\n"
+"X-Generator: Launchpad (build 13613)\n"
 "Language: el\n"
 
 #: ../data/glade/AbstractItemStep.ui.h:1
@@ -11399,115 +11399,3 @@ msgstr ""
 #: ../data/template/transfer.rml.extracted.h:13
 msgid "TRANSFER RECEIPT"
 msgstr ""
-
-#~ msgid "Kiwi too old"
-#~ msgstr "Kiwi πολύ παλιά"
-
-#, python-format
-#~ msgid "kiwi version too old, needs %s but found %s"
-#~ msgstr "kiwi  έκδοση πολύ παλιά, χρειάζεται  %s   αλλά βρέθηκε %s"
-
-#~ msgid "Stoqlib too old"
-#~ msgstr "Stoqlib πολύ παλιά"
-
-#, python-format
-#~ msgid "stoqlib version too old, needs %s but found %s"
-#~ msgstr "stoqlib έκδοση πολύ παλιά, χρειάζεται  %s   αλλά βρέθηκε %s"
-
-#~ msgid "Gazpacho too old"
-#~ msgstr "Gazpacho πολύ παλιά"
-
-#, python-format
-#~ msgid "Gazpacho %s is required but %s found"
-#~ msgstr "Gazpacho χρειάζεται  %s   αλλά βρέθηκε %s"
-
-#, python-format
-#~ msgid "Could not find the required python module %s on your system"
-#~ msgstr "Δεν βρέθηκε το απαιτούμενη μονάδα python %s στο σύστημά σας"
-
-#, python-format
-#~ msgid "PyGTK version too old, needs %s but found %s"
-#~ msgstr "PyGTK έκδοση πολύ παλιά, χρειάζεται  %s   αλλά βρέθηκε %s"
-
-#~ msgid "PyGTK too old"
-#~ msgstr "PyGTK πολύ παλιά"
-
-#, python-format
-#~ msgid "%s not found"
-#~ msgstr "μη υπαρκτό %s"
-
-#~ msgid "<b>You are using the examples database.</b>"
-#~ msgstr "<b>Χρήση δοκιμαστικής βάσης δεδομένων.</b>"
-
-#~ msgid "Reportlab too old"
-#~ msgstr "Reportlab πολύ παλιά"
-
-#~ msgid "Could not open database config file"
-#~ msgstr "Δεν μπόρεσε να ανοίξει αρχείο ρυθμίσεων  βάση δεδομένων"
-
-#~ msgid "You need to register a company before using Stoq"
-#~ msgstr "Πρέπει να καταχωρήσετε μια επιχείρηση πριν από τη χρήση Stoq"
-
-#~ msgid "Remove examples"
-#~ msgstr "Αφαιρέστε παραδείγματα"
-
-#, python-format
-#~ msgid "reportlab %s is required but %s found"
-#~ msgstr "reportlab  %s απαιτείται όμως   βρέθηκε %s"
-
-#~ msgid "Could not connect to database"
-#~ msgstr "Δεν ήταν δυνατή η σύνδεση με βάση δεδομένων"
-
-#~ msgid ""
-#~ "Couldn't find a company, You'll need to register one before using Stoq"
-#~ msgstr ""
-#~ "Δεν βρέθηκε εταιρία, Θα χρειαστεί να καταχωρήσετε μια πριν από τη χρήση Stoq"
-
-#~ msgid "Hide"
-#~ msgstr "Απόκρυψη"
-
-#~ msgid ""
-#~ "This will delete the current database and configuration. Are you sure?"
-#~ msgstr ""
-#~ "Αυτό θα διαγράψει την τρέχουσα βάση δεδομένων και τη διαμόρφωση. Είσαι "
-#~ "σίγουρος;"
-
-#~ msgid "Don't Remove"
-#~ msgstr "Μην αφαιρείτε"
-
-#~ msgid "Remove Examples"
-#~ msgstr "Αφαιρέστε Παραδείγματα"
-
-#~ msgid "Don't Create"
-#~ msgstr "Να μη δημιουργηθεί"
-
-#~ msgid "<b>Administrator Account Creation</b>"
-#~ msgstr "<b>Δημιουργία λογαριασμού Διαχειριστή</b>"
-
-#, python-format
-#~ msgid ""
-#~ "I'm adding a user called `%s' which will have administrator privilegies.\n"
-#~ "\n"
-#~ "To be able to create other users you need to login with this user in the "
-#~ "admin application and create them."
-#~ msgstr ""
-#~ "Έκανα προσθήκη ενός χρήστη που ονομάζεται `%s' που θα έχει δικαιώματα "
-#~ "διαχειριστή.\n"
-#~ "\n"
-#~ "Για να είναι σε θέση να δημιουργήσει άλλους χρήστες που χρειάζεστε για να "
-#~ "συνδεθείτε με αυτόν το χρήστη στην διαχείρισή τις εφαρμογής και να τους "
-#~ "δημιουργείστε."
-
-#, python-format
-#~ msgid ""
-#~ "The database address '%s' is invalid. Please fix the address you have set "
-#~ "and try again"
-#~ msgstr ""
-#~ "Η διεύθυνση βάσης δεδομένων '%s' είναι άκυρη. Παρακαλώ διορθώστε τη "
-#~ "διεύθυνση που έχετε ορίσει και προσπαθήστε ξανά"
-
-#~ msgid "Done, click 'Forward' to continue"
-#~ msgstr "Τελείωσε, \"Εμπρός\" κάντε κλικ για να συνεχίσει"
-
-#~ msgid "Create Database"
-#~ msgstr "Δημιουργία βάσης δεδομένων"
