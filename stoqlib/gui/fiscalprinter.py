@@ -219,6 +219,15 @@ class FiscalPrinterHelper(gobject.GObject):
         return coupon
 
     def _setup_midnight_check(self):
+        """Check the till after the day changes.
+
+        If Stoq is open, the day changes, and the user tries to
+        confirma a sale (or do any other fiscal operation), an
+        error will happen.
+
+        This method will call check_till that will eventually,
+        disable that interface.
+        """
         now = datetime.datetime.now()
         tomorrow = now + datetime.timedelta(1)
 
