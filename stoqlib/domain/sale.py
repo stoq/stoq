@@ -332,6 +332,8 @@ class Sale(Domain):
     @ivar service_invoice_number:
     @ivar cfop:
     @ivar invoice_number: the sale invoice number.
+    @ivar client_category: The L{ClientCategory} that was used for price
+        determination.
     """
 
     implements(IContainer)
@@ -375,6 +377,7 @@ class Sale(Domain):
     branch = ForeignKey('PersonAdaptToBranch', default=None)
     transporter = ForeignKey('PersonAdaptToTransporter', default=None)
     group = ForeignKey('PaymentGroup')
+    client_category = ForeignKey('ClientCategory', default=None)
 
     #
     # ORMObject hooks
