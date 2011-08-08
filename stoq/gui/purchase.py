@@ -39,6 +39,8 @@ from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
+from stoqlib.gui.dialogs.productiondialog import ProductionDialog
+from stoqlib.gui.dialogs.sellablepricedialog import SellablePriceDialog
 from stoqlib.gui.search.consignmentsearch import ConsignmentItemSearch
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
@@ -58,7 +60,6 @@ from stoqlib.gui.search.productsearch import (ProductSearch,
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
-from stoqlib.gui.dialogs.productiondialog import ProductionDialog
 from stoqlib.reporting.purchase import PurchaseReport
 from stoqlib.lib.formatters import format_quantity
 from stoq.gui.application import SearchableAppWindow
@@ -107,8 +108,8 @@ class PurchaseApp(SearchableAppWindow):
         <menu action="SearchMenu">
           <menuitem action="BaseCategories"/>
           <menuitem action="Categories"/>
-          <menuitem action="Products"/>
           <menuitem action="ProductUnits"/>
+          <menuitem action="Products"/>
           <menuitem action="Services"/>
           <menuitem action="SearchStockItems"/>
           <menuitem action="SearchClosedStockItems"/>
@@ -117,6 +118,7 @@ class PurchaseApp(SearchableAppWindow):
           <menuitem action="SearchQuotes"/>
           <menuitem action="SearchPurchasedItems"/>
           <menuitem action="ProductsSoldSearch"/>
+          <menuitem action="ProductsPriceSearch"/>
         </menu>
         <placeholder name="ExtraMenu"/>
       </menubar>
@@ -164,6 +166,7 @@ class PurchaseApp(SearchableAppWindow):
             ("SearchQuotes", None, _("Quotes..."), "<Control>e"),
             ("SearchPurchasedItems", None, _("Purchased items..."), "<Control>p"),
             ("ProductsSoldSearch", None, _("Products sold..."), ""),
+            ("ProductsPriceSearch", None, _("Prices editor..."), ""),
         ]
 
         self.add_ui_actions(ui_string, actions)
@@ -490,3 +493,9 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_ProductsSoldSearch__activate(self, action):
         self.run_dialog(ProductsSoldSearch, self.conn)
+
+    def on_ProductsPriceSearch__activate(self, action):
+        trans = new_transaction()
+        retval = self.run_dialog(SellablePriceDialog, trans)
+        finish_transaction(trans, retval)
+        trans.close()
