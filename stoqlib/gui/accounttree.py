@@ -147,12 +147,16 @@ class AccountTree(ObjectTree):
             self.add_account(account.parentID, account)
 
         selectable = not self.create_mode
+
+        # Tabs cache requires unique ids
         self.append(None, Settable(description=_("Accounts Payable"),
+                                   id=-1,
                                    parent=None,
                                    kind='payable',
                                    selectable=selectable,
                                    total=None))
         self.append(None, Settable(description=_("Accounts Receivable"),
+                                   id=-2,
                                    parent=None,
                                    kind='receivable',
                                    selectable=selectable,
