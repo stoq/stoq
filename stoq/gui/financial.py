@@ -668,6 +668,10 @@ class FinancialApp(AppWindow):
                  _("Keep account"), _("Remove account")):
             return
 
+        if account_view.id in self._pages:
+            account_page = self._pages[account_view.id]
+            self._close_page(account_page)
+
         self.accounts.remove(account_view)
         self.accounts.flush()
 
