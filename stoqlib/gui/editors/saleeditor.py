@@ -127,7 +127,8 @@ class SaleQuoteItemEditor(BaseEditor):
             return ValidationError(_(u"The price must be greater than zero."))
 
         sellable = self.model.sellable
-        if not sellable.is_valid_price(value):
+        if not sellable.is_valid_price(value,
+                                self.model.sale.client_category):
             return ValidationError(
                         _(u"Max discount for this product is %.2f%%") %
                             sellable.max_discount)
