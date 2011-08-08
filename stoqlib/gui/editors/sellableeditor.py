@@ -26,24 +26,27 @@
 import sys
 
 import gtk
-from kiwi.datatypes import ValidationError
+from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType, UnitType
 
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.fiscal import CfopData
+from stoqlib.domain.person import ClientCategory
 from stoqlib.domain.sellable import (SellableCategory, Sellable,
                                      SellableUnit,
-                                     SellableTaxConstant)
+                                     SellableTaxConstant,
+                                     ClientCategoryPrice)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import ModelListDialog
-from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.baseeditor import (BaseEditor,
+                                            BaseRelationshipEditorSlave)
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formatters import get_price_format_str
+from stoqlib.lib.formatters import get_price_format_str, get_formatted_cost
 
 _ = stoqlib_gettext
 
@@ -119,20 +122,12 @@ class SellableTaxConstantsDialog(ModelListDialog):
             SellableTaxConstant.delete(model.id, connection=trans)
 
 
-class SellablePriceEditor(BaseEditor):
-    model_name = _(u'Product Price')
-    model_type = Sellable
+class BasePriceEditor(BaseEditor):
     gladefile = 'SellablePriceEditor'
-
-    proxy_widgets = ('cost',
-                     'markup',
-                     'max_discount',
-                     'price')
-
-    general_widgets = ('base_markup',)
+    proxy_widgets = ('cost', 'markup', 'max_discount', 'price')
 
     def set_widget_formats(self):
-        widgets = (self.markup, self.base_markup, self.max_discount)
+        widgets = (self.markup, self.max_discount)
         for widget in widgets:
             widget.set_data_format(get_price_format_str())
 
@@ -145,24 +140,12 @@ class SellablePriceEditor(BaseEditor):
 
     def setup_proxies(self):
         self.set_widget_formats()
-        self.main_proxy = self.add_proxy(self.model,
-                                         SellablePriceEditor.proxy_widgets)
+        self.main_proxy = self.add_proxy(self.model, self.proxy_widgets)
         if self.model.markup is not None:
             return
         sellable = self.model.sellable
         self.model.markup = sellable.get_suggested_markup()
         self.main_proxy.update('markup')
-
-    def setup_slaves(self):
-        slave = OnSaleInfoSlave(self.conn, self.model.on_sale_info)
-        self.attach_slave('on_sale_holder', slave)
-
-        commission_slave = CommissionSlave(self.conn, self.model)
-        self.attach_slave('on_commission_data_holder', commission_slave)
-        if self.model.category:
-            desc = self.model.category.description
-            label = _('Calculate Commission From: %s') % desc
-            commission_slave.change_label(label)
 
     #
     # Kiwi handlers
@@ -182,10 +165,91 @@ class SellablePriceEditor(BaseEditor):
         self.main_proxy.update("price")
         self.handler_unblock(self.price, 'changed')
 
+
+class SellablePriceEditor(BasePriceEditor):
+    model_name = _(u'Product Price')
+    model_type = Sellable
+
+    def setup_slaves(self):
+        slave = OnSaleInfoSlave(self.conn, self.model.on_sale_info)
+        self.attach_slave('on_sale_holder', slave)
+
+        commission_slave = CommissionSlave(self.conn, self.model)
+        self.attach_slave('on_commission_data_holder', commission_slave)
+        if self.model.category:
+            desc = self.model.category.description
+            label = _('Calculate Commission From: %s') % desc
+            commission_slave.change_label(label)
+
     def on_confirm(self):
         slave = self.get_slave('on_commission_data_holder')
         slave.confirm()
         return self.model
+
+
+class CategoryPriceEditor(BasePriceEditor):
+    model_name = _(u'Category Price')
+    model_type = ClientCategoryPrice
+    sellable_widgets = ('cost',)
+    proxy_widgets = ('markup', 'max_discount', 'price')
+
+    def setup_proxies(self):
+        self.sellable_proxy = self.add_proxy(self.model.sellable,
+                                             self.sellable_widgets)
+        BasePriceEditor.setup_proxies(self)
+
+
+#
+# Slaves
+#
+
+class CategoryPriceSlave(BaseRelationshipEditorSlave):
+    """A slave for changing the suppliers for a product.
+    """
+    target_name = _(u'Category')
+    editor = CategoryPriceEditor
+    model_type = ClientCategoryPrice
+
+    def __init__(self, conn, sellable):
+        self._sellable = sellable
+        BaseRelationshipEditorSlave.__init__(self, conn)
+
+    def get_targets(self):
+        cats = ClientCategory.select(connection=self.conn).orderBy('name')
+        return [(c.get_description(), c) for c in cats]
+
+    def get_relations(self):
+        return self._sellable.get_category_prices()
+
+    def _format_markup(self, obj):
+        return '%0.2f%%' % obj
+
+    def get_columns(self):
+        return [Column('category_name', title=_(u'Category'),
+                       data_type=str, expand=True, sorted=True),
+                Column('price', title=_(u'Price'), data_type=currency,
+                       format_func=get_formatted_cost, width=150),
+                Column('markup', title=_(u'Markup'), data_type=str,
+                       width=100, format_func=self._format_markup),
+                        ]
+
+    def create_model(self):
+        sellable = self._sellable
+        category = self.target_combo.get_selected_data()
+
+        if sellable.get_category_price_info(category):
+            product_desc = sellable.get_description()
+            info(_(u'%s already have a price for category %s' % (product_desc,
+                                                      category.get_description())))
+            return
+
+        model = ClientCategoryPrice(sellable=sellable,
+                                    category=category,
+                                    price=sellable.price,
+                                    max_discount=sellable.max_discount,
+                                    connection=self.conn)
+        return model
+
 
 #
 # Editors
@@ -258,6 +322,11 @@ class SellableEditor(BaseEditor):
 
             if self._sellable.can_remove():
                 self._add_delete_button()
+
+        self.set_main_tab_label(self.model_name)
+        price_slave = CategoryPriceSlave(self.conn, self.model.sellable)
+        self.add_extra_tab(_(u'Category Prices'), price_slave)
+
 
     #
     #  Private API
@@ -378,7 +447,6 @@ class SellableEditor(BaseEditor):
         self.default_sale_cfop.prefill(cfop_items)
 
         self.setup_unit_combo()
-
 
     def setup_unit_combo(self):
         units = SellableUnit.select(connection=self.conn)

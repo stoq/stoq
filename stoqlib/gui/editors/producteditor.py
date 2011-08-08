@@ -516,8 +516,6 @@ class ProductEditor(SellableEditor):
     #
 
     def setup_slaves(self):
-        self.set_main_tab_label(_('Product'))
-
         details_slave = ProductDetailsSlave(self.conn, self.model.sellable)
         self.add_extra_tab(_(u'Details'), details_slave)
 
