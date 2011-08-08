@@ -27,9 +27,8 @@ from decimal import Decimal
 from kiwi.datatypes import currency
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.sellable import (BaseSellableInfo,
-                                     Sellable,
-                                     SellableCategory)
+from stoqlib.domain.sellable import (BaseSellableInfo, Sellable,
+                                     SellableCategory, ClientCategoryPrice)
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
@@ -37,7 +36,6 @@ from stoqlib.domain.views import (ProductFullStockView,
                                   ProductFullWithClosedStockView,
                                   ProductClosedStockView)
 from stoqlib.lib.parameters import sysparam
-
 
 class TestSellableCategory(DomainTest):
     def setUp(self):
@@ -88,6 +86,7 @@ class TestSellableCategory(DomainTest):
         constant2 = self.create_sellable_tax_constant()
         category.tax_constant = constant2
         self.assertEquals(category.get_tax_constant(), constant2)
+
 
 class TestSellable(DomainTest):
     def setUp(self):
@@ -218,12 +217,19 @@ class TestSellable(DomainTest):
         sellable = Sellable(category=self._category, cost=50,
                             base_sellable_info=sellable_info,
                             connection=self.trans)
+        cat = self.create_client_category('Cat 1')
+        cat_price = ClientCategoryPrice(sellable=sellable, category=cat,
+                                        price=150, max_discount=0,
+                                        connection=self.trans)
+
+        # without a category, and max_discount = 0
         self.assertFalse(sellable.is_valid_price(0))
         self.assertFalse(sellable.is_valid_price(-10))
         self.assertFalse(sellable.is_valid_price(99))
         self.assertTrue(sellable.is_valid_price(101))
         self.assertTrue(sellable.is_valid_price(100))
 
+        # without a category, and max_discount = 10%
         sellable.base_sellable_info.max_discount = 10
         self.assertFalse(sellable.is_valid_price(0))
         self.assertFalse(sellable.is_valid_price(-1))
@@ -232,6 +238,19 @@ class TestSellable(DomainTest):
         self.assertTrue(sellable.is_valid_price(95))
         self.assertTrue(sellable.is_valid_price(99))
         self.assertTrue(sellable.is_valid_price(101))
+
+        # Now with a category, max_discount = 0
+        self.assertFalse(sellable.is_valid_price(0, cat))
+        self.assertFalse(sellable.is_valid_price(-10, cat))
+        self.assertFalse(sellable.is_valid_price(149.99, cat))
+        self.assertTrue(sellable.is_valid_price(150, cat))
+        self.assertTrue(sellable.is_valid_price(151, cat))
+
+        # Now with a category, max_discount = 10%
+        cat_price.max_discount = 10
+        self.assertTrue(sellable.is_valid_price(149.99, cat))
+        self.assertTrue(sellable.is_valid_price(135, cat))
+        self.assertFalse(sellable.is_valid_price(134, cat))
 
     def testGetTaxConstant(self):
         base_category = SellableCategory(description="Monitor",
@@ -334,3 +353,19 @@ class TestSellable(DomainTest):
         # The delivery service cannot be removed.
         sellable = sysparam(self.trans).DELIVERY_SERVICE.sellable
         self.failIf(sellable.can_remove())
+
+    def test_category_price(self):
+        sellable = self.create_sellable(price=100)
+        category1 = self.create_client_category('Cat 1')
+        category_price = ClientCategoryPrice(sellable=sellable,
+                                             category=category1,
+                                             price=155,
+                                             connection=self.trans)
+        category2 = self.create_client_category('Cat 2')
+
+        cats = sellable.get_category_prices()
+        self.assertEquals(cats.count(), 1)
+        self.assertTrue(cats[0] == category_price)
+
+        self.assertEquals(sellable.get_price_for_category(category1), 155)
+        self.assertEquals(sellable.get_price_for_category(category2), 100)

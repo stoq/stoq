@@ -360,6 +360,10 @@ class ExampleCreator(object):
         from stoqlib.domain.taxes import SaleItemIpi
         return SaleItemIpi(connection=self.trans)
 
+    def create_client_category(self, name='Category 1'):
+        from stoqlib.domain.person import ClientCategory
+        return ClientCategory(name=name, connection=self.trans)
+
     def create_stock_decrease(self):
         from stoqlib.domain.stockdecrease import StockDecrease
 
