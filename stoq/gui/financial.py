@@ -487,7 +487,7 @@ class FinancialApp(AppWindow):
         else:
              raise AssertionError(page)
         self.notebook.remove_page(page_id)
-        del self._pages[page.account_view]
+        del self._pages[page.account_view.id]
 
     def _is_accounts_tab(self):
         page_id = self.notebook.get_current_page()
@@ -528,8 +528,8 @@ class FinancialApp(AppWindow):
         return hbox
 
     def _new_page(self, account_view):
-        if account_view in self._pages:
-            page = self._pages[account_view]
+        if account_view.id in self._pages:
+            page = self._pages[account_view.id]
             page_id = self.notebook.page_num(page.search)
         else:
             pixbuf = self.accounts.get_pixbuf(account_view)
@@ -541,7 +541,7 @@ class FinancialApp(AppWindow):
             page_id = self.notebook.append_page(page.search, hbox)
             page.show()
             page.account_view = account_view
-            self._pages[account_view] = page
+            self._pages[account_view.id] = page
 
         self.notebook.set_current_page(page_id)
         self._update_actions()
@@ -659,6 +659,7 @@ class FinancialApp(AppWindow):
     def _add_transaction(self):
         page = self._get_current_page_widget()
         page.add_transaction_dialog()
+        self._refresh_accounts()
 
     def _delete_account(self, account_view):
         msg = _('Are you sure you want to remove account "%s" ?' %
