@@ -278,6 +278,7 @@ class PosApp(AppWindow):
                               self._on_PrinterHelper__till_status_changed)
         self._printer.connect('ecf-changed',
                               self._on_PrinterHelper__ecf_changed)
+        self._printer.setup_midnight_check()
 
     def _set_product_on_sale(self):
         sellable = self._get_sellable()

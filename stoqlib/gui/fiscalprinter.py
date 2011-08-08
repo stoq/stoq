@@ -75,6 +75,7 @@ def _flush_interface():
     while gtk.events_pending():
         gtk.main_iteration()
 
+# FIXME: Maybe this should be a singleton
 class FiscalPrinterHelper(gobject.GObject):
     """
 
@@ -218,15 +219,15 @@ class FiscalPrinterHelper(gobject.GObject):
 
         return coupon
 
-    def _setup_midnight_check(self):
+    def setup_midnight_check(self):
         """Check the till after the day changes.
 
         If Stoq is open, the day changes, and the user tries to
-        confirma a sale (or do any other fiscal operation), an
+        confirm a sale (or do any other fiscal operation), an
         error will happen.
 
         This method will call check_till that will eventually,
-        disable that interface.
+        disable fiscal related interface.
         """
         now = datetime.datetime.now()
         tomorrow = now + datetime.timedelta(1)
@@ -287,8 +288,6 @@ class FiscalPrinterHelper(gobject.GObject):
         except (DeviceError, DriverError), e:
             warning(e)
             self.emit('ecf-changed', False)
-
-        self._setup_midnight_check()
 
 
 class FiscalCoupon(gobject.GObject):

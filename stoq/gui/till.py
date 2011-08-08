@@ -221,6 +221,7 @@ class TillApp(SearchableAppWindow):
                               self._on_PrinterHelper__till_status_changed)
         self._printer.connect('ecf-changed',
                               self._on_PrinterHelper__ecf_changed)
+        self._printer.setup_midnight_check()
         self._printer.check_till()
 
     def _get_status_values(self):
