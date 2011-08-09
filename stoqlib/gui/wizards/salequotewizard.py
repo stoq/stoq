@@ -280,9 +280,16 @@ class SaleQuoteItemStep(SellableItemStep):
 
     def _validate_sellable_price(self, price):
         s = self.proxy.model.sellable
-        if not s.is_valid_price(price, self.model.client_category):
+        category = self.model.client_category
+        if not s.is_valid_price(price, category):
+            info = None
+            if category:
+                info = s.get_category_price_info(category)
+            if not info:
+                info = s.base_sellable_info
             return ValidationError(
-                _(u'Max discount for this product is %.2f%%') % s.max_discount)
+                _(u'Max discount for this product is %.2f%%') % 
+                                                            info.max_discount)
 
     #
     # Callbacks
