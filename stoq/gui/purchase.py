@@ -495,6 +495,11 @@ class PurchaseApp(SearchableAppWindow):
         self.run_dialog(ProductsSoldSearch, self.conn)
 
     def on_ProductsPriceSearch__activate(self, action):
+        from stoqlib.domain.person import ClientCategory
+        if not ClientCategory.select(connection=self.conn).count():
+            warning(_("Can't use prices editor without client categories"))
+            return
+
         trans = new_transaction()
         retval = self.run_dialog(SellablePriceDialog, trans)
         finish_transaction(trans, retval)
