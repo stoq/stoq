@@ -239,6 +239,16 @@ class AccountTransaction(Domain):
     @ivar date: date the transaction was done
     @ivar payment: payment this transaction relates to, can be None
     """
+
+    # FIXME: It's way to tricky to calculate the direction and it's
+    #        values for an AccountTransaction due to the fact that
+    #        we're only store one value. We should store two values,
+    #        one for how much the current account should be increased
+    #        with and another one which is how much the other account
+    #        should be increased with. For split transaction we might
+    #        want to store more values, so it might make sense to allow
+    #        N values per transaction.
+
     account = ForeignKey('Account')
     source_account = ForeignKey('Account')
     description = UnicodeCol()
