@@ -52,10 +52,20 @@ class _AccountTransactionTemporary(Settable):
 
     @classmethod
     def from_domain(cls, conn, transaction):
+        value = currency(transaction.value)
+        is_incoming = value > 0
+
+        if not is_incoming:
+            # FIXME: For some reason, (value * -1) and (value * currency(-1),
+            #        both returns Decimal, but we need currency here.
+            value *= -1
+            value = currency(value)
+
         return cls(code=transaction.code,
                    description=transaction.description,
                    date=transaction.date,
-                   value=transaction.value,
+                   value=value,
+                   is_incoming=is_incoming,
                    conn=conn,
                    payment=transaction.payment,
                    account=transaction.account,
@@ -63,6 +73,9 @@ class _AccountTransactionTemporary(Settable):
                    transaction=transaction)
 
     def to_domain(self):
+        if not self.is_incoming:
+            self.value *= currency(-1)
+
         fields = dict(code=self.code,
                       description=self.description,
                       date=self.date,
@@ -84,7 +97,7 @@ class _AccountTransactionTemporary(Settable):
 class AccountTransactionEditor(BaseEditor):
     """ Account Transaction Editor """
     gladefile = "AccountTransactionEditor"
-    proxy_widgets = ['description', 'code', 'date', 'value']
+    proxy_widgets = ['description', 'code', 'date', 'value', 'is_incoming']
     model_type = _AccountTransactionTemporary
     title = _("Account Editor")
 
@@ -104,6 +117,11 @@ class AccountTransactionEditor(BaseEditor):
         box.pack_start(payment_button, False, False)
         box.reorder_child(payment_button, 0)
 
+        # Setup the label, according to the type of transaction
+        account_labels = Account.account_labels[account.account_type]
+        self.is_incoming.set_label(account_labels[0])
+        self.is_outgoing.set_label(account_labels[1])
+
         payment_button.set_sensitive(self.model.payment is not None)
         payment_button.show()
 
@@ -118,6 +136,7 @@ class AccountTransactionEditor(BaseEditor):
             conn=conn,
             code=u"",
             description=u"",
+            is_incoming=True,
             value=currency(0),
             payment=None,
             date=datetime.datetime.today(),
@@ -167,8 +186,8 @@ class AccountTransactionEditor(BaseEditor):
             self.confirm()
 
     def on_value__validate(self, entry, value):
-        if value == 0:
-            return ValidationError(_("Value cannot be zero"))
+        if value <= 0:
+            return ValidationError(_("Value must be greater than zero"))
 
     def _on_payment_button__clicked(self, button):
         self._show_payment()
