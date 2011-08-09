@@ -2,8 +2,8 @@
 
 Summary: A powerful retail system
 Name: stoq
-Version: 1.0.0
-Release: 3
+Version: 1.0.1
+Release: 1
 License: GPL
 Group: System Environment/Libraries
 URL: http://www.stoq.com.br/
@@ -79,6 +79,9 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{python_sitelib}/stoqlib
 
 %changelog
+* Thu Aug 08 2011 Ronaldo Maia <romaia@async.com.br> 1.0.1-1
+- Bugfixes release
+
 * Thu Jul 28 2011 Ronaldo Maia <romaia@async.com.br> 1.0.0-3
 - Bugfixes
 

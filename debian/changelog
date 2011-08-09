@@ -1,3 +1,9 @@
+stoq (1.0.1) natty; urgency=low
+
+  * Bugfixes Release
+
+ -- Ronaldo Maia <romaia@async.com.br>  Mon, 08 Aug 2011 12:11:45 -0300
+
 stoq (1.0.0-3) natty; urgency=low
 
   * Create dummy transitional package for stoqlib.

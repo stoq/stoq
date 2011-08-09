@@ -239,8 +239,8 @@ class CategoryPriceSlave(BaseRelationshipEditorSlave):
 
         if sellable.get_category_price_info(category):
             product_desc = sellable.get_description()
-            info(_(u'%s already have a price for category %s' % (product_desc,
-                                                      category.get_description())))
+            info(_(u'%s already have a price for category %s') % (product_desc,
+                                                      category.get_description()))
             return
 
         model = ClientCategoryPrice(sellable=sellable,
