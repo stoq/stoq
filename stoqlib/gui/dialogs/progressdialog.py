@@ -45,12 +45,14 @@ class ProgressDialog(GladeDelegate):
 
     gsignal('cancel')
 
-    def __init__(self, label=''):
+    def __init__(self, label='', pulse=True):
         """
         Create a new ProgressDialog object.
         @param label: initial content of the label
         """
         GladeDelegate.__init__(self, gladefile=self.gladefile)
+        self.set_title(label)
+        self._pulse = pulse
         self._timeout_id = -1
         self._start_id = -1
         self.label.set_label(label)
@@ -61,7 +63,8 @@ class ProgressDialog(GladeDelegate):
         @param wait: how many ms to wait before showing the dialog, defaults
           to 50
         """
-        self._timeout_id = gobject.timeout_add(100, self._pulse_timeout)
+        if self._pulse:
+            self._timeout_id = gobject.timeout_add(100, self._pulse_timeout)
         self._start_id = gobject.timeout_add(wait, self._real_start)
 
     def stop(self):
@@ -80,7 +83,6 @@ class ProgressDialog(GladeDelegate):
         @param label: the new content of the label
         """
         self.label.set_label(label)
-
 
     #
     # Private and callbacks

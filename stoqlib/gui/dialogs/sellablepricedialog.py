@@ -23,76 +23,96 @@
 """ Dialog to set the price for sellables"""
 
 from decimal import Decimal
-from sys import maxint as MAXINT
 
 import gtk
 
-from kiwi import ValueUnset
 from kiwi.datatypes import currency
 from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
-from stoqlib.database.runtime import (new_transaction, finish_transaction,
-                                      get_current_branch)
-from stoqlib.domain.sellable import Sellable, ClientCategoryPrice
-from stoqlib.domain.views import SellableFullStockView
+from stoqlib.database.orm import LEFTJOINOn
+from stoqlib.domain.sellable import (Sellable, ClientCategoryPrice,
+                                     BaseSellableInfo, SellableCategory)
 from stoqlib.domain.person import ClientCategory
+from stoqlib.gui.dialogs.progressdialog import ProgressDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import marker
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+from stoqlib.database.orm import Viewable
 
-class _TemporarySellableItem(object):
-    def __init__(self, sellable_view, categories):
-        self.sellable_view = sellable_view
-        self.sellable = sellable_view.sellable
-        self.code = sellable_view.code
-        self.barcode = sellable_view.barcode
-        self.category_description = sellable_view.category_description
-        self.description = sellable_view.description
-        self.cost = sellable_view.cost
-        self.price = sellable_view.price
-        self.max_discount = sellable_view.max_discount
 
+class CategoryPriceView(Viewable):
+    columns = dict(
+        id=ClientCategoryPrice.q.id,
+        sellable_id=ClientCategoryPrice.q.sellableID,
+        category_id=ClientCategoryPrice.q.categoryID,
+        price=ClientCategoryPrice.q.price,
+        max_discount=ClientCategoryPrice.q.max_discount,
+    )
+
+    joins = []
+
+
+class SellableView(Viewable):
+    columns = dict(
+        id=Sellable.q.id,
+        code=Sellable.q.code,
+        barcode=Sellable.q.barcode,
+        status=Sellable.q.status,
+        cost=Sellable.q.cost,
+        category_description=SellableCategory.q.description,
+        description=BaseSellableInfo.q.description,
+        price = BaseSellableInfo.q.price,
+        max_discount = BaseSellableInfo.q.max_discount,
+    )
+
+    joins = [
+        LEFTJOINOn(None, BaseSellableInfo,
+                   BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID),
+        # Category
+        LEFTJOINOn(None, SellableCategory,
+                   SellableCategory.q.id == Sellable.q.categoryID),
+    ]
+
+
+    def __init__(self, *args, **kargs):
         self._new_prices = {}
-        for info in self.sellable.get_category_prices():
-            self.set_price(info.category, info.price)
+        Viewable.__init__(self, *args, **kargs)
 
     def set_markup(self, category, markup):
         price = self.cost + self.cost * markup / 100
         if price <= 0:
             price = Decimal('0.01')
-        self.set_price(category, currency(price))
+        self.set_price(category.id, currency(price))
 
-    def set_price(self, category, price):
-        self._new_prices[category] = price
-        if category:
-            setattr(self, 'price_%s' % category.id, price)
-        else:
-            self.price = price
+    def set_price(self, category_id, price):
+        self._new_prices[category_id] = price
+        setattr(self, 'price_%s' % category_id, price)
 
     def save_changes(self):
         for cat, value in self._new_prices.items():
-            info = self.sellable.get_category_price_info(cat)
+            info = ClientCategoryPrice.selectOneBy(sellableID=self.id,
+                                                category=cat,
+                                                connection=self.get_connection())
             if not info:
-                info = ClientCategoryPrice(sellable=self.sellable,
+                info = ClientCategoryPrice(sellableID=self.id,
                                            category=cat,
                                            max_discount=self.max_discount,
                                            price=value,
-                                           connection=self.sellable.get_connection())
+                                           connection=self.get_connection())
             else:
                 info.price = value
-            print 'updating', cat, value
 
 
 class SellablePriceDialog(BaseEditor):
     gladefile = "SellablePriceDialog"
     model_type = object
     title = _(u"Price Change Dialog")
-    size = (750, 450)
+    size = (850, 450)
 
     def __init__(self, conn):
         self.categories = ClientCategory.select(connection=conn)
@@ -103,22 +123,36 @@ class SellablePriceDialog(BaseEditor):
 
     def _setup_widgets(self):
         cats = [(i.get_description(), i) for i in self.categories]
-        cats.insert(0, ('Default Price', None))
         self.category.prefill(cats)
-        self._sellables = [_TemporarySellableItem(s, self.categories)
-            for s in SellableFullStockView.select(connection=self.conn)]
-        self.slave.listcontainer.add_items(self._sellables)
+
+        prices = CategoryPriceView.select(connection=self.conn)
+        category_prices = {}
+        for p in prices:
+            c = category_prices.setdefault(p.sellable_id, {})
+            c[p.category_id] = p.price
+
+        marker('SellableView')
+        sellables = SellableView.select(connection=self.conn)
+        self._sellables = sellables
+
+        marker('add_items')
+        for s in sellables:
+            for category_id, price in category_prices.get(s.id, {}).items():
+                s.set_price(category_id, price)
+            self.slave.listcontainer.list.append(s)
+        marker('Done add_items')
 
     def _get_columns(self):
+        marker('_get_columns')
         self._price_columns = {}
         columns = [Column("code", title=_(u"Code"), data_type=str,
-                       sorted=True, width=100),
-                Column("barcode", title=_(u"Barcode"), data_type=str,
                        width=100),
+                Column("barcode", title=_(u"Barcode"), data_type=str,
+                       width=100, visible=False),
                 Column("category_description", title=_(u"Category"),
                        data_type=str, width=100),
                 Column("description", title=_(u"Description"),
-                       data_type=str, expand=True),
+                       data_type=str, width=200),
                 Column("cost", title=_(u"Cost"),
                        data_type=currency, width=90),
                 Column("price", title=_(u"Default Price"),
@@ -129,22 +163,11 @@ class SellablePriceDialog(BaseEditor):
         for cat in self.categories:
             columns.append(Column('price_%s' % (cat.id,),
                                title=cat.get_description(), data_type=currency,
-                               width=90, visible=False))
+                               width=90, visible=True))
             self._price_columns[cat.id] = columns[-1]
         self._columns = columns
+        marker('Done _get_columns')
         return columns
-
-    def _format_qty(self, quantity):
-        if quantity is ValueUnset:
-            return None
-        if quantity >= 0:
-            return quantity
-
-    def _validate_initial_stock_quantity(self, item, trans):
-        positive = item.initial_stock > 0
-        if item.initial_stock is not ValueUnset and positive:
-            storable = trans.get(item.obj)
-            #storable.increase_stock(item.initial_stock, self._branch)
 
     #
     # BaseEditorSlave
@@ -155,9 +178,34 @@ class SellablePriceDialog(BaseEditor):
         self.slave.set_list_type(ListType.READONLY)
         self.attach_slave("on_slave_holder" , self.slave)
 
+    def on_cancel(self):
+        # Call clear on objectlist before destruction. Workaround for a bug
+        # when destructing the dialog taking to long
+        self.slave.listcontainer.list.clear()
+        return False
+
     def on_confirm(self):
-        for i in self._sellables:
-            i.save_changes()
+        marker('Saving prices')
+        # FIXME: Improve this part. This is just a quick workaround to
+        # release the bugfix asap
+        self.main_dialog.ok_button.set_sensitive(False)
+        self.main_dialog.cancel_button.set_sensitive(False)
+        d = ProgressDialog(_('Updating items'), pulse=False)
+        d.set_transient_for(self.main_dialog)
+        d.start(wait=0)
+        d.cancel.hide()
+
+        total = len(self.slave.listcontainer.list)
+        for i, s in enumerate(self.slave.listcontainer.list):
+            s.save_changes()
+            d.progressbar.set_text('%s/%s' % (i+1, total))
+            d.progressbar.set_fraction((i+1)/float(total))
+            while gtk.events_pending():
+                gtk.main_iteration(False)
+
+        d.stop()
+        marker('Done saving prices')
+        self.slave.listcontainer.list.clear()
         return True
 
     #
@@ -167,17 +215,8 @@ class SellablePriceDialog(BaseEditor):
     def on_apply__clicked(self, button):
         markup = self.markup.read()
         cat = self.category.read()
-        for i in self._sellables:
+        marker('Updating prices')
+        for i in self.slave.listcontainer.list:
             i.set_markup(cat, markup)
             self.slave.listcontainer.list.refresh(i)
-
-    def on_category__changed(self, widget):
-        cat = self.category.read()
-        self._price_columns[self._last_cat].visible = False
-        if cat:
-            self._price_columns[cat.id].visible = True
-            self._last_cat = cat.id
-        else:
-            self._price_columns[None].visible = True
-            self._last_cat = None
-        self.slave.listcontainer.list.set_columns(self._columns)
+        marker('Done updating prices')
