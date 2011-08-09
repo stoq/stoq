@@ -313,6 +313,8 @@ class SellableFullStockView(Viewable):
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
         category_description=SellableCategory.q.description,
+        base_price = BaseSellableInfo.q.price,
+        max_discount = BaseSellableInfo.q.max_discount,
         stock=const.COALESCE(const.SUM(ProductStockItem.q.quantity +
                                        ProductStockItem.q.logic_quantity), 0),
         )
