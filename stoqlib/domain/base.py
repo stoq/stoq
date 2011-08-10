@@ -184,7 +184,7 @@ class BaseDomain(AbstractModel, ORMObject):
     """An abstract mixin class for domain classes"""
 
     def check_unique_value_exists(self, attribute, value,
-                                   case_sensitive=True):
+                                  case_sensitive=True):
         """Returns True if we already have the given attribute
         and value in the database, but ignoring myself.
 
@@ -202,7 +202,8 @@ class BaseDomain(AbstractModel, ORMObject):
             query = const.UPPER(getattr(self.q, attribute)) == value.upper()
 
         # Remove ourself from the results.
-        query = AND(query, self.q.id != self.id)
+        if hasattr(self, 'id'):
+            query = AND(query, self.q.id != self.id)
         return self.select(query, connection=self.get_connection()).count() > 0
 
 #
