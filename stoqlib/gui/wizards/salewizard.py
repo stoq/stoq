@@ -197,7 +197,7 @@ class BaseMethodSelectionStep(object):
             # what we need
             return None
         elif selected_method.method_name == 'store_credit':
-            client = self.client.read()
+            client = self.model.client
             credit = client.remaining_store_credit
             total = self._get_total_amount()
 
@@ -268,7 +268,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.cash_change_slave.update_total_sale_amount()
 
     def _update_widgets(self):
-        has_client = bool(self.client.read())
+        has_client = bool(self.model.client)
         self.pm_slave.method_set_sensitive('store_credit', has_client)
         self.pm_slave.method_set_sensitive('bill', has_client)
 
@@ -422,9 +422,9 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         marker('Finished parent')
 
         self.pm_slave.method_set_sensitive('store_credit',
-                                           bool(self.client.read()))
+                                           bool(self.model.client))
         self.pm_slave.method_set_sensitive('bill',
-                                           bool(self.client.read()))
+                                           bool(self.model.client))
 
         marker('Setting discount')
         self.discount_slave = SaleDiscountSlave(self.conn, self.model,
