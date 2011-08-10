@@ -26,7 +26,7 @@
 
 import datetime
 
-from kiwi.datatypes import currency
+from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.database.runtime import (get_current_branch, get_current_user)
@@ -111,6 +111,8 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
     def post_init(self):
         self.model.group.clear_unused()
         self._update_next_step(self.pm_slave.get_selected_method())
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -121,6 +123,19 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
     #
     #   Callbacks
     #
+
+    def on_surcharge_value__validate(self, entry, value):
+        if value < 0:
+            return ValidationError(
+                    _('Surcharge must be greater than 0'))
+
+    def on_discount_value__validate(self, entry, value):
+        if value < 0:
+            return ValidationError(
+                    _('Discount must be greater than 0'))
+        if value >= self._subtotal:
+            return ValidationError(
+                    _('Discount can not be greater than total amount'))
 
     def after_surcharge_value__changed(self, entry):
         self._update_totals()

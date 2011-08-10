@@ -25,6 +25,7 @@
 
 from kiwi import ValueUnset
 from kiwi.datatypes import currency, ValidationError
+from kiwi.python import Settable
 
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
@@ -40,6 +41,7 @@ class CashChangeSlave(BaseEditorSlave):
 
     gladefile = 'CashChangeSlave'
     model_type = object
+    proxy_widgets = ('received_value',)
 
     def __init__(self, conn, model):
         BaseEditorSlave.__init__(self, conn, model)
@@ -57,6 +59,11 @@ class CashChangeSlave(BaseEditorSlave):
             return self.model.total
         else:
             raise TypeError
+
+    def setup_proxies(self):
+        # Add a proxy just so the validation disables the wizard/editor
+        fake_model = Settable(received_value=self._get_total_amount())
+        self._proxy = self.add_proxy(fake_model, self.proxy_widgets)
 
     #
     # Public API
