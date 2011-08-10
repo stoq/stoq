@@ -53,6 +53,6 @@ class ClientCategoryEditor(BaseEditor):
         if not new_name:
             return ValidationError(
                 _(u"The client category should have a name."))
-        if self.model._check_unique_value_exists('name', new_name):
+        if self.model.check_unique_value_exists('name', new_name):
             return ValidationError(
                 _(u"The client category '%s' already exists.") % new_name)
