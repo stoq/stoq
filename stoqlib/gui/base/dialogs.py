@@ -161,6 +161,7 @@ class BasicDialog(AbstractDialog):
         This is so that this dialog doesn't get confirmed in case the ok
         button was specifically disabled.
         """
+        # FIXME: There should be a better way to findout valid status
         if self.ok_button.get_sensitive():
             self.confirm()
 
