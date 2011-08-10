@@ -120,6 +120,9 @@ class PosApp(AppWindow):
         self.param = sysparam(self.conn)
         self.max_results = self.param.MAX_SEARCH_RESULTS
         self._coupon = None
+        # Cant use self._coupon to verify if there is a sale, since
+        # CONFIRM_SALES_ON_TILL doesnt create a coupon
+        self._sale_started = False
         self._scale_settings = DeviceSettings.get_scale_settings(self.conn)
         self._setup_printer()
         self._setup_widgets()
@@ -200,7 +203,7 @@ class PosApp(AppWindow):
 
     def can_change_application(self):
         # Block POS application if we are in the middle of a sale.
-        can_change_application = self._coupon is None
+        can_change_application = not self._sale_started
         if not can_change_application:
             if yesno(_('You must finish the current sale before you change to '
                        'another application.'),
@@ -211,7 +214,7 @@ class PosApp(AppWindow):
         return can_change_application
 
     def can_close_application(self):
-        can_close_application = self._coupon is None
+        can_close_application = not self._sale_started
         if not can_close_application:
             if yesno(_('You must finish or cancel the current sale before you '
                        'can close the POS application.'),
@@ -474,7 +477,7 @@ class PosApp(AppWindow):
                             self.NewDelivery,
                             self.ConfirmOrder), has_sale_items)
         # We can cancel an order whenever we have a coupon opened.
-        self.CancelOrder.set_sensitive(self._coupon is not None)
+        self.CancelOrder.set_sensitive(self._sale_started)
         has_products = False
         has_services = False
         for sale_item in self.sale_items:
@@ -495,8 +498,8 @@ class PosApp(AppWindow):
 
         self.set_sensitive((self.checkout_button,
                             self.ConfirmOrder), has_products or has_services)
-        self.till_status_box.set_visible(self._coupon is None)
-        self.sale_items.set_visible(self._coupon is not None)
+        self.till_status_box.set_visible(not self._sale_started)
+        self.sale_items.set_visible(self._sale_started)
 
         self._update_totals()
         self._update_buttons()
@@ -611,6 +614,7 @@ class PosApp(AppWindow):
 
     def _clear_order(self):
         log.info("Clearing order")
+        self._sale_started = False
         self.sale_items.clear()
         for widget in (self.search_box, self.list_vbox,
                        self.CancelOrder):
@@ -800,6 +804,7 @@ class PosApp(AppWindow):
 
         See L{stoqlib.gui.fiscalprinter.FiscalCoupon} for more information
         """
+        self._sale_started = True
         if self.param.CONFIRM_SALES_ON_TILL:
             return
 
