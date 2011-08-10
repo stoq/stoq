@@ -100,6 +100,7 @@ class AccountTransactionEditor(BaseEditor):
     proxy_widgets = ['description', 'code', 'date', 'value', 'is_incoming']
     model_type = _AccountTransactionTemporary
     title = _("Account Editor")
+    confirm_widgets = ['description', 'code', 'value']
 
     gsignal('account-added')
 
@@ -172,18 +173,6 @@ class AccountTransactionEditor(BaseEditor):
     def on_description__validate(self, entry, value):
         if value is None:
             return ValidationError(_("Description must be filled in"))
-
-    def on_description__activate(self, entry):
-        if self.validate_confirm():
-            self.confirm()
-
-    def on_code__activate(self, entry):
-        if self.validate_confirm():
-            self.confirm()
-
-    def on_value__activate(self, entry):
-        if self.validate_confirm():
-            self.confirm()
 
     def on_value__validate(self, entry, value):
         if value <= 0:

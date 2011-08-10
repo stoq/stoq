@@ -171,6 +171,8 @@ class BaseEditor(BaseEditorSlave):
        be merely the attribute __name__ of the object for usability reasons.
        Call sites will decide what could be the best name applicable in each
        situation.
+    @cvar confirm_widgets: a list of widget names that when activated will
+        confirm the dialog
     """
 
     model_name = None
@@ -178,6 +180,7 @@ class BaseEditor(BaseEditorSlave):
     size = ()
     title = None
     hide_footer = False
+    confirm_widgets = ()
 
     def __init__(self, conn, model=None, visual_mode=False):
         self._message_bar = None
@@ -185,16 +188,15 @@ class BaseEditor(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, model,
                                  visual_mode=visual_mode)
 
-
-        # We can not use self.model for get_title since we will create a new
-        # one in BaseEditorSlave if model is None.
         self.main_dialog = BasicWrappingDialog(self,
                                                self.get_title(self.model),
                                                self.header, self.size)
 
-
         if self.hide_footer or self.visual_mode:
             self.main_dialog.hide_footer()
+
+        for name in self.confirm_widgets:
+            self.set_confirm_widget(getattr(self, name))
 
         self.register_validate_function(self._validation_function)
         self.force_validation()
