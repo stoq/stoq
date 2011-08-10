@@ -27,6 +27,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 class SimpleEntryEditor(BaseEditor):
     """Editor that offers a generic entry to input a string value."""
     gladefile = "SimpleEntryEditor"
+    confirm_widgets = ['name_entry']
 
     def __init__(self, conn, model, attr_name, name_entry_label='Name:',
                  title='', visual_mode=False):
@@ -34,9 +35,6 @@ class SimpleEntryEditor(BaseEditor):
         self.attr_name = attr_name
         BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
         self.name_entry_label.set_text(name_entry_label)
-
-    def on_name_entry__activate(self, entry):
-        self.confirm()
 
     def setup_proxies(self):
         assert self.model

@@ -25,7 +25,6 @@
 
 import datetime
 
-from kiwi import ValueUnset
 from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
@@ -94,12 +93,9 @@ class TillOpeningEditor(BaseEditor):
     title = _(u'Till Opening')
     model_type = _TillOpeningModel
     gladefile = 'TillOpening'
+    confirm_widgets = ['value']
     proxy_widgets = ('value',
                      'balance')
-
-    def __init__(self, conn, model=None, visual_mode=False):
-        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
-        self.set_confirm_widget(self.value)
 
     #
     # BaseEditorSlave
@@ -153,6 +149,7 @@ class TillClosingEditor(BaseEditor):
     title = _(u'Closing Opened Till')
     model_type = _TillClosingModel
     gladefile = 'TillClosing'
+    confirm_widgets = ['value']
     proxy_widgets = ('value',
                      'balance',
                      'opening_date')
@@ -172,7 +169,6 @@ class TillClosingEditor(BaseEditor):
         self._setup_widgets()
 
     def _setup_widgets(self):
-        self.set_confirm_widget(self.value)
         # We cant remove cash if closing till from a previous day
         self.value.set_sensitive(not self._previous_day)
         if self._previous_day:

@@ -92,9 +92,6 @@ class InvoiceLayoutEditor(BaseEditor):
         else:
             self.grid.grab_focus()
 
-    def on_confirm(self):
-        return self.model
-
     # Callbacks
 
     def on_width__validate(self, widget, value):

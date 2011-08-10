@@ -333,6 +333,7 @@ class ProductSupplierEditor(BaseEditor):
 
     proxy_widgets = ('base_cost', 'icms', 'notes', 'lead_time',
                      'minimum_purchase',)
+    confirm_widgets = ['base_cost', 'icms', 'lead_time', 'minimum_purchase']
 
     def _setup_widgets(self):
         unit = self.model.product.sellable.unit
@@ -370,18 +371,6 @@ class ProductSupplierEditor(BaseEditor):
     def on_base_cost__validate(self, entry, value):
         if not value or value <= currency(0):
             return ValidationError("Value must be greater than zero.")
-
-    def on_base_cost__activate(self, button):
-        self.confirm()
-
-    def on_icms__activate(self, button):
-        self.confirm()
-
-    def on_lead_time__activate(self, button):
-        self.confirm()
-
-    def on_minimum_purchase__activate(self, button):
-        self.confirm()
 
     def on_lead_time__validate(self, entry, value):
         if value < 1:

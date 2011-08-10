@@ -63,6 +63,7 @@ class BasePaymentEditor(BaseEditor):
     person_class = None
     person_iface = None
     title = _("Payment")
+    confirm_widgets = ['due_date']
     proxy_widgets = ['value',
                      'description',
                      'due_date',
@@ -218,9 +219,6 @@ class BasePaymentEditor(BaseEditor):
     #
     # Kiwi Callbacks
     #
-
-    def on_due_date__activate(self, date):
-        self.confirm()
 
     def on_value__validate(self, widget, newvalue):
         if newvalue is None or newvalue <= 0:

@@ -30,7 +30,6 @@ from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType, UnitType
 
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import ClientCategory
 from stoqlib.domain.sellable import (SellableCategory, Sellable,
@@ -69,8 +68,6 @@ class SellableTaxConstantEditor(BaseEditor):
     def __init__(self, conn, model=None):
         BaseEditor.__init__(self, conn, model)
 
-
-
     #
     # BaseEditor
     #
@@ -80,9 +77,6 @@ class SellableTaxConstantEditor(BaseEditor):
                                    tax_value=None,
                                    description=u'',
                                    connection=conn)
-
-    def on_confirm(self):
-        return self.model
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
@@ -266,6 +260,8 @@ class SellableEditor(BaseEditor):
     model_type = None
 
     gladefile = 'SellableEditor'
+    confirm_widgets = ['description', 'cost', 'price']
+
     sellable_tax_widgets = ('tax_constant', 'tax_value',)
     sellable_widgets = ('code',
                         'barcode',
@@ -517,15 +513,6 @@ class SellableEditor(BaseEditor):
 
     def on_unit_combo__changed(self, combo):
         self.update_requires_weighing_label()
-
-    def on_description__activate(self, entry):
-        self.confirm()
-
-    def on_cost__activate(self, entry):
-        self.confirm()
-
-    def on_price__activate(self, entry):
-        self.confirm()
 
     def on_sale_price_button__clicked(self, button):
         self.edit_sale_price()

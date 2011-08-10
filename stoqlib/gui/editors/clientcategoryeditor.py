@@ -36,13 +36,7 @@ class ClientCategoryEditor(BaseEditor):
     model_name = _('Client Category')
     model_type = ClientCategory
     gladefile = 'ClientCategoryEditor'
-
-    def _category_name_exists(self, name):
-        category = ClientCategory.selectOneBy(name=name,
-                                              connection=self.conn)
-        if category is self.model:
-            return False
-        return category is not None
+    confirm_widgets = ['name']
 
     def create_model(self, trans):
         return ClientCategory(name='', connection=trans)
@@ -50,12 +44,6 @@ class ClientCategoryEditor(BaseEditor):
     def setup_proxies(self):
         self.name.grab_focus()
         self.add_proxy(self.model, ['name'])
-
-    def on_confirm(self):
-        return self.model
-
-    def on_name__activate(self, entry):
-        self.confirm()
 
     #
     #Kiwi Callbacks
@@ -65,6 +53,6 @@ class ClientCategoryEditor(BaseEditor):
         if not new_name:
             return ValidationError(
                 _(u"The client category should have a name."))
-        if self._category_name_exists(new_name):
+        if self.model._check_unique_value_exists('name', new_name):
             return ValidationError(
                 _(u"The client category '%s' already exists.") % new_name)

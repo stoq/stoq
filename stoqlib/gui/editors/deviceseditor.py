@@ -174,9 +174,6 @@ class DeviceSettingsEditor(BaseEditor):
                 return False
         return True
 
-    def on_confirm(self):
-        return self.model
-
     #
     # Kiwi callbacks
     #
