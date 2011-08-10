@@ -155,6 +155,15 @@ class BasicDialog(AbstractDialog):
             self.hide_footer()
         self.ok_button.set_use_underline(True)
 
+    def _try_confirm(self, *args):
+        """Only confirm if ok button is actually enabled.
+
+        This is so that this dialog doesn't get confirmed in case the ok
+        button was specifically disabled.
+        """
+        if self.ok_button.get_sensitive():
+            self.confirm()
+
     def setup_keyactions(self):
         self.keyactions = {keysyms.Escape: self.cancel}
 
@@ -196,7 +205,7 @@ class BasicDialog(AbstractDialog):
         if not widget.is_ancestor(dialog):
             raise ValueError("dialog %r is not an ancestor of widget %r" % (
                 dialog, widget))
-        widget.connect('activate', self.confirm)
+        widget.connect('activate', self._try_confirm)
 
     def set_cancel_widget(self, widget):
         """Enables widget as a cancel widget, the dialog will be closed as
