@@ -122,12 +122,8 @@ class EmployeeRole(Domain):
         @param name: name of the role to check
         @returns: True if it exists, otherwise False
         """
-        conn = self.get_connection()
-        results = EmployeeRole.select(
-            AND(const.UPPER(EmployeeRole.q.name) == name.upper(),
-                EmployeeRole.q.id != self.id),
-            connection=conn)
-        return results.count() > 0
+        return self.check_unique_value_exists('name', name,
+                                    case_sensitive=False)
 
 # WorkPermitData, MilitaryData, and VoterData are Brazil-specific information.
 class WorkPermitData(Domain):
@@ -446,7 +442,7 @@ class PersonAdaptToIndividual(PersonAdapter):
         """Returns True if we already have a Individual with the given CPF
         in the database.
         """
-        return self._check_unique_value_exists('cpf', cpf)
+        return self.check_unique_value_exists('cpf', cpf)
 
 Person.registerFacet(PersonAdaptToIndividual, IIndividual)
 
@@ -492,7 +488,7 @@ class PersonAdaptToCompany(PersonAdapter):
         """Returns True if we already have a Company with the given CNPJ
         in the database.
         """
-        return self._check_unique_value_exists('cnpj', cnpj)
+        return self.check_unique_value_exists('cnpj', cnpj)
 
 Person.registerFacet(PersonAdaptToCompany, ICompany)
 

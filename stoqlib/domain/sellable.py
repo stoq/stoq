@@ -585,13 +585,13 @@ class Sellable(Domain):
         """Returns True if we already have a sellable with the given code
         in the database.
         """
-        return self._check_unique_value_exists('code', code)
+        return self.check_unique_value_exists('code', code)
 
     def check_barcode_exists(self, barcode):
         """Returns True if we already have a sellable with the given barcode
         in the database.
         """
-        return self._check_unique_value_exists('barcode', barcode)
+        return self.check_unique_value_exists('barcode', barcode)
 
     def check_taxes_validity(self):
         """Check if icms taxes are valid.
