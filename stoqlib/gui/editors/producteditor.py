@@ -210,7 +210,7 @@ class ProductComponentSlave(BaseEditorSlave):
         update = True
         if product_component is None:
             update = False
-            component = self.component_combo.read()
+            component = self.component_combo.get_selected_data()
             product_component = _TemporaryProductComponent(
                 product=self._product, component=component)
             # If we try to add a component which is already in tree,
