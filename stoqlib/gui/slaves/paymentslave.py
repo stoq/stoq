@@ -909,12 +909,6 @@ class MultipleMethodSlave(BaseEditorSlave):
                                    self._get_total_amount())
         self._total_value = self._outstanding_value
         self._setup_widgets()
-        self.register_validate_function(self._refresh_next)
-        
-    def _refresh_next(self, valid=True):
-        can_add_payment = valid and self._outstanding_value > 0
-        self.add_button.set_sensitive(can_add_payment)
-        self._wizard.refresh_next(valid)
 
     def setup_proxies(self):
         self._proxy = self.add_proxy(self._holder, ['base_value',])
@@ -1030,10 +1024,15 @@ class MultipleMethodSlave(BaseEditorSlave):
         radio.show()
 
     def _can_add_payment(self):
+        if self.base_value.read() is ValueUnset:
+            return False
+
+        if self._outstanding_value <= 0:
+            return False
+
         payments = self.model.group.get_valid_payments()
         payment_count = payments.filter(
             Payment.q.methodID==self._method.id).count()
-
         if payment_count >= self._method.max_installments:
             info(_(u'You can not add more payments using the %s '
                    'payment method.') % self._method.description)
@@ -1075,11 +1074,13 @@ class MultipleMethodSlave(BaseEditorSlave):
                 self._run_payment_editor()
 
         self._update_payment_list()
-        self.update_view()
         # Exigência do TEF: Deve finalizar ao chegar no total da venda.
         if self.finish_on_total and self._outstanding_value == 0:
             self._wizard.finish()
+        # Keep update_view after force_validation, since it can disable 
+        # next/finish even if validation is ok
         self.force_validation()
+        self.update_view()
 
     def _remove_payment(self, payment):
         if payment.is_preview():
@@ -1096,6 +1097,9 @@ class MultipleMethodSlave(BaseEditorSlave):
             payment.cancel()
 
         self._update_payment_list()
+        # Keep update_view after force_validation, since it can disable 
+        # next/finish even if validation is ok
+        self.force_validation()
         self.update_view()
 
     def _setup_cash_payment(self):
@@ -1174,7 +1178,6 @@ class MultipleMethodSlave(BaseEditorSlave):
         for payment in payments:
             if not payment.is_cancelled():
                 self._remove_payment(payment)
-                self.force_validation()
 
     def on_payments__selection_changed(self, objectlist, payment):
         has_payments = len(objectlist) > 0
@@ -1202,6 +1205,7 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         self._holder.value = value
         self._update_missing_or_change_value()
+        self.add_button.set_sensitive(not bool(retval))
         return retval
 
 
