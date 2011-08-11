@@ -23,11 +23,14 @@
 ##
 """ Base classes for wizards """
 
+from kiwi.log import Logger
 from kiwi.ui.wizard import PluggableWizard, WizardStep
 from kiwi.ui.delegates import GladeSlaveDelegate
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.base.dialogs import RunnableView
+
+logger = Logger('stoqlib.gui.base.wizard')
 
 
 class BaseWizardStep(WizardStep, GladeSlaveDelegate):
@@ -35,6 +38,7 @@ class BaseWizardStep(WizardStep, GladeSlaveDelegate):
     gladefile = None
 
     def __init__(self, conn, wizard, previous=None):
+        logger.info('Entering wizard step: %s' % self.__class__.__name__)
         self.conn = conn
         self.wizard = wizard
         WizardStep.__init__(self, previous)
@@ -46,6 +50,7 @@ class WizardEditorStep(BaseEditorSlave, WizardStep):
     edited or created"""
 
     def __init__(self, conn, wizard, model=None, previous=None):
+        logger.info('Entering wizard step: %s' % self.__class__.__name__)
         self.wizard = wizard
         WizardStep.__init__(self, previous)
         BaseEditorSlave.__init__(self, conn, model)
@@ -58,6 +63,7 @@ class BaseWizard(PluggableWizard, RunnableView):
 
     def __init__(self, conn, first_step, model=None, title=None,
                  size=None, edit_mode=False):
+        logger.info('Entering wizard: %s' % self.__class__.__name__)
         self.conn = conn
         self.model = model
         size = size or self.size
@@ -69,6 +75,7 @@ class BaseWizard(PluggableWizard, RunnableView):
         self.enable_window_controls()
 
     def cancel(self):
+        logger.info('Canceling wizard: %s' % self.__class__.__name__)
         PluggableWizard.cancel(self)
         self.close()
 

@@ -54,10 +54,12 @@ import gobject
 from kiwi.component import provide_utility
 from kiwi.datatypes import ValidationError
 from kiwi.environ import environ
+from kiwi.log import Logger
 from kiwi.python import Settable
 from kiwi.ui.dialogs import info
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.wizard import WizardStep
+
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME, ensure_admin_user
 from stoqlib.database.database import test_local_database
@@ -87,6 +89,9 @@ from stoq.main import PRIVACY_STRING, run_app
 
 _ = gettext.gettext
 
+logger = Logger('stoq.gui.config')
+
+
 LOGO_WIDTH = 91
 LOGO_HEIGHT = 32
 
@@ -102,6 +107,7 @@ class BaseWizardStep(WizardStep, GladeSlaveDelegate):
     gladefile = None
 
     def __init__(self, wizard, previous=None):
+        logger.info('Entering step: %s' % self.__class__.__name__)
         self.wizard = wizard
         WizardStep.__init__(self, previous)
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
@@ -573,6 +579,8 @@ class CreateDatabaseStep(BaseWizardStep):
         return FinishInstallationStep(self.wizard)
 
     def _maybe_create_database(self):
+        logger.log('_maybe_create_database (db_is_local=%s, remove_demo=%s)'
+                    % (self.wizard.db_is_local, self.wizard.remove_demo))
         if self.wizard.db_is_local:
             self._launch_stoqdbadmin()
             return
@@ -606,6 +614,7 @@ class CreateDatabaseStep(BaseWizardStep):
             self.wizard.disable_next()
 
     def _setup_pgpass(self):
+        logger.info('_setup_pgpass')
         # There's no way to pass in the password to psql, so we need
         # to setup a ~/.pgpass where we store the password entered here
         directory = os.environ.get('HOME', os.environ.get('APPDATA'))
@@ -633,6 +642,7 @@ class CreateDatabaseStep(BaseWizardStep):
         os.chmod(pgpass, 0600)
 
     def _launch_stoqdbadmin(self):
+        logger.info('_launch_stoqdbadmin')
         self.wizard.disable_back()
         self.wizard.disable_next()
         args = ['stoqdbadmin', 'init',
@@ -655,6 +665,7 @@ class CreateDatabaseStep(BaseWizardStep):
               "minutes to finish."))
         self.progressbar.set_text(_("Creating database..."))
         self.progressbar.set_fraction(0.05)
+        logger.info(' '.join(args))
         self.process_view.execute_command(args)
         self.done_label.set_markup(
             _("Please wait while the database is being created."))
@@ -694,6 +705,7 @@ class CreateDatabaseStep(BaseWizardStep):
         self.progressbar.set_text(text)
 
     def _finish(self, returncode):
+        self.log('CreateDatabaseStep._finish (returncode=%s)' % returncode)
         if returncode:
             self.wizard.enable_back()
             # Failed to execute/create database
@@ -812,6 +824,7 @@ class FirstTimeConfigWizard(BaseWizard):
         #        having a branch station nor branch registered.
         #        The whole BranchStation/Branch creation is weird, it should
         #        be done at the same place.
+        logger.info('_create_station')
         if self.enable_production:
             branch = sysparam(trans).MAIN_COMPANY
             assert branch
@@ -819,6 +832,7 @@ class FirstTimeConfigWizard(BaseWizard):
         else:
             branch = None
 
+        # FIXME: what about LTSP
         station_name = socket.gethostname()
         if BranchStation.selectOneBy(name=station_name,
                                      branch=branch,
@@ -831,6 +845,7 @@ class FirstTimeConfigWizard(BaseWizard):
         provide_utility(ICurrentBranchStation, station)
 
     def _set_admin_password(self, trans):
+        logger.info('_set_admin_password')
         adminuser = Person.iselectOneBy(IUser,
                                         username=USER_ADMIN_DEFAULT_NAME,
                                         connection=trans)
@@ -841,9 +856,14 @@ class FirstTimeConfigWizard(BaseWizard):
         adminuser.password = self.login_password
 
     def _set_online_services(self, trans):
+        logger.info('_set_online_services (%s)' %
+                            self.enable_online_services)
         sysparam(trans).ONLINE_SERVICES = int(self.enable_online_services)
 
     def try_connect(self, settings, warn=True):
+        logger.info('try_connect (warn=%s)' % (warn))
+        logger.info('settings: address=%s username=%s, dbname=%s' % (
+                        settings.address, settings.username, settings.dbname))
         self.config.load_settings(settings)
         try:
             if settings.has_database():
@@ -853,11 +873,14 @@ class FirstTimeConfigWizard(BaseWizard):
         except DatabaseError, e:
             if warn:
                 warning(e.short, str(e.msg))
+            logger.info('Failed to connect')
             return False
 
+        logger.info('Connected')
         return True
 
     def check_incomplete_database(self):
+        logger.info('check_incomplete_database')
         # If we don't have postgres installed we cannot have
         # an incomplete database
         if self.db_is_local and not test_local_database():
