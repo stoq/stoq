@@ -444,9 +444,13 @@ class NewLoanWizard(BaseWizard):
             return _('New Loan Wizard')
 
     def _create_model(self, conn):
-        return Loan(responsible=get_current_user(conn),
+        loan = Loan(responsible=get_current_user(conn),
                     branch=get_current_branch(conn),
                     connection=conn)
+        # Temporarily save the client_category, so it works fine with
+        # SaleQuoteItemStep
+        loan.client_category = None
+        return loan
 
     def _print_receipt(self, order):
         # we can only print the receipt if the loan was confirmed.
