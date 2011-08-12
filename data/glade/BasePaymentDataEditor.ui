@@ -57,6 +57,7 @@
               <object class="ProxyDateEntry" id="due_date">
                 <property name="data_type">date</property>
                 <property name="model_attribute">due_date</property>
+                <property name="mandatory">True</property>
                 <property name="visible">True</property>
               </object>
               <packing>
