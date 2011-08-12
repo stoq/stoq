@@ -30,6 +30,7 @@ from stoqlib.database.orm import (orm_name, UnicodeCol, ForeignKey,
                                   MultipleJoin, BoolCol)
 from stoqlib.domain.base import Domain
 from stoqlib.lib.interfaces import IApplicationDescriptions
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 
 class ProfileSettings(Domain):
@@ -77,7 +78,18 @@ class UserProfile(Domain):
 
     @classmethod
     def get_default(cls, conn):
-        return cls.selectOneBy(name='Salesperson', connection=conn)
+        # FIXME: We need a way to set the default profile in the interface,
+        # instead of relying on the name (the user may change it)
+        profile = cls.selectOneBy(name=_('Salesperson'), connection=conn)
+        # regression: check if it was not created in english.
+        if not profile:
+            profile = cls.selectOneBy(name='Salesperson', connection=conn)
+
+        # Just return any other profile, so that the user is created with
+        # one.
+        if not profile:
+            profile = cls.select(connection=conn)[0]
+        return profile
 
     def add_application_reference(self, app_name, has_permission=False):
         conn = self.get_connection()

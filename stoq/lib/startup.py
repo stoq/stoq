@@ -181,6 +181,10 @@ def clean_database(config, options=None):
 def set_default_profile_settings():
     trans = new_transaction()
     profile = UserProfile.selectOneBy(name=_('Salesperson'), connection=trans)
+    # Not sure what is happening. If it doesnt exist, check if it was not
+    # created in english. workaround for crash report 207 (bug 4587)
+    if not profile:
+        profile = UserProfile.selectOneBy(name='Salesperson', connection=trans)
     assert profile
     ProfileSettings.set_permission(trans, profile, 'pos', True)
     ProfileSettings.set_permission(trans, profile, 'sales', True)
