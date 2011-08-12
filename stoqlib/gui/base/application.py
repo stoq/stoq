@@ -61,7 +61,8 @@ class BaseApp:
         self.main_window.show()
 
     def shutdown(self, *args):
-        reactor.stop()
+        if reactor.running:
+            reactor.stop()
 
 
 
