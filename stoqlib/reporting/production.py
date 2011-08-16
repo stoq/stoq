@@ -101,7 +101,7 @@ class ProductionOrderReport(BaseStoqReport):
         self._setup_service_items_table()
 
     def _setup_production_details_table(self):
-        cols = [TC('', width=100), TC('', width=280, expand=True,
+        cols = [TC('', width=100), TC('', width=230, expand=True,
                                       truncate=True),
                 TC('', width=150), TC('', width=230, expand=True,
                                       truncate=True),

@@ -149,7 +149,7 @@ class LoanReceipt(BaseStoqReport):
         else:
             name = self.order.client.person.name
         self.add_signatures([name])
-        cols = [TC('', width=600, align=RIGHT), TC('', width=200, align=RIGHT)]
+        cols = [TC('', width=500, align=RIGHT), TC('', width=200, align=RIGHT)]
         data = [[_(u'RG:'), ''], [_(u'CPF:'), '']]
         self.add_column_table(data, cols, do_header=False, align=RIGHT,
                               highlight=HIGHLIGHT_NEVER,
