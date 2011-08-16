@@ -705,7 +705,7 @@ class CreateDatabaseStep(BaseWizardStep):
         self.progressbar.set_text(text)
 
     def _finish(self, returncode):
-        self.log('CreateDatabaseStep._finish (returncode=%s)' % returncode)
+        logger.info('CreateDatabaseStep._finish (returncode=%s)' % returncode)
         if returncode:
             self.wizard.enable_back()
             # Failed to execute/create database
