@@ -28,7 +28,7 @@ website         = 'http://www.stoq.com.br'
 major_version   = 1
 minor_version   = 0
 micro_version   = 2
-extra_version   = 0
+extra_version   = 1
 release_date    = (2011, 8, 12)
 stable          = True
 
