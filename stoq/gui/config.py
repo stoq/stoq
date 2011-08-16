@@ -579,7 +579,7 @@ class CreateDatabaseStep(BaseWizardStep):
         return FinishInstallationStep(self.wizard)
 
     def _maybe_create_database(self):
-        logger.log('_maybe_create_database (db_is_local=%s, remove_demo=%s)'
+        logger.info('_maybe_create_database (db_is_local=%s, remove_demo=%s)'
                     % (self.wizard.db_is_local, self.wizard.remove_demo))
         if self.wizard.db_is_local:
             self._launch_stoqdbadmin()
