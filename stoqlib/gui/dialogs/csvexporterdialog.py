@@ -91,6 +91,14 @@ class CSVExporterDialog(BaseEditor):
                      ('Latin-1', 'latin1')]
         self.encoding.prefill(encodings)
 
+        # (Name, character)
+        opts = [(_('Comma'), ','),
+                (_('Semicolon'), ';'),
+                (_('Tab'), '\t'),
+                (_('Colon'), ':'),]
+        self.separator.prefill(opts)
+
+
     def _run_filechooser(self):
         chooser = gtk.FileChooserDialog(_(u"Export CSV..."), None,
                                         gtk.FILE_CHOOSER_ACTION_SAVE,
@@ -130,9 +138,10 @@ class CSVExporterDialog(BaseEditor):
 
     def _save(self, filename):
         encoding = self.encoding.get_selected()
+        sep = self.separator.get_selected()
         try:
             with open(filename, 'w') as csv_file:
-                writer = csv.writer(csv_file, delimiter=';',
+                writer = csv.writer(csv_file, delimiter=sep,
                                     doublequote=True,
                                     quoting=csv.QUOTE_ALL)
                 writer.writerows(self._get_csv_content(encoding))
