@@ -245,9 +245,9 @@ class PurchaseOrderReport(BaseStoqReport):
             self.add_object_table(list(payments), payment_columns)
 
     def _setup_order_details_table(self):
-        cols = [TC("", width=100), TC("", width=285, expand=True,
+        cols = [TC("", width=100), TC("", width=250, expand=True,
                                       truncate=True),
-                TC("", width=120), TC("", width=285, expand=True,
+                TC("", width=120), TC("", width=250, expand=True,
                                      truncate=True)]
         data = [[_("Open Date:"), self._order.get_open_date_as_string(),
                  _("Status:"), self._order.get_status_str()],
