@@ -48,7 +48,8 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.views import (ProductFullStockItemView,
-                                  ProductComponentView, SellableFullStockView)
+                                  ProductComponentView, SellableFullStockView,
+                                  ProductWithStockView)
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
@@ -422,7 +423,7 @@ class SellableItemStep(WizardEditorStep):
         # - created a new item and it closed the dialog for us
         if not isinstance(ret, (Product, ProductFullStockItemView,
                                 ProductComponentView, SellableFullStockView,
-                                ServiceView)):
+                                ServiceView, ProductWithStockView)):
             raise AssertionError(ret)
 
         sellable = ret.sellable
