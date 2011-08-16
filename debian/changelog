@@ -1,3 +1,9 @@
+stoq (1.0.2.1) natty; urgency=low
+
+  * Fix a bug in configuration wizard.
+
+ -- Ronaldo Maia <romaia@async.com.br>  Tue, 16 Aug 2011 10:02:15 -0300
+
 stoq (1.0.2) natty; urgency=low
 
   * Bugfixes Release
