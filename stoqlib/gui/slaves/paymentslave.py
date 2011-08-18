@@ -966,10 +966,21 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.remove_button.set_sensitive(False)
         self._update_values()
 
+    def toggle_new_payments(self):
+        """Toggle new payments addition interface.
+
+        This method verifies if its possible to add more payments (if the
+        total value is already reached), and enables or disables the value
+        entry and add button.
+        """
+        self.base_value.set_sensitive(not self.can_confirm())
+        self.add_button.set_sensitive(not self.can_confirm())
+
     def _update_values(self):
         payments = self.model.group.get_valid_payments()
-        total_payments = payments.sum('value') or Decimal(0)
+        total_payments = payments.sum('base_value') or Decimal(0)
         self._outstanding_value = self._total_value - total_payments
+        self.toggle_new_payments()
 
         if self._outstanding_value > 0:
             self.base_value.update(self._outstanding_value)
@@ -982,13 +993,20 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.base_value.grab_focus()
 
     def _update_missing_or_change_value(self):
-        #FIXME: Change not shown to user.
         received = self.received_value.read()
         if received == ValueUnset:
             received = currency(0)
-        value = received - self._total_value
+
+        new_payment = self.base_value.read()
+        if new_payment == ValueUnset:
+            new_payment = currency(0)
+
+        total_received = received + new_payment
+
+        # The total value may be less than total received.
+        value = self._total_value - total_received
         self.missing_value.update(abs(value))
-        if value <= 0:
+        if value > 0:
             self.missing_change.set_text(_(u'Missing:'))
         else:
             self.missing_change.set_text(_(u'Change:'))
@@ -1187,6 +1205,13 @@ class MultipleMethodSlave(BaseEditorSlave):
         if self.add_button.get_sensitive():
             self._add_payment()
 
+    def on_base_value__changed(self, entry):
+        try:
+            entry.read()
+        except ValidationError, e:
+            return e
+        self._update_missing_or_change_value()
+
     def on_base_value__validate(self, entry, value):
         retval = None
         if value < 0:
@@ -1204,8 +1229,10 @@ class MultipleMethodSlave(BaseEditorSlave):
             retval = ValidationError(_(u'You must provide a payment value.'))
 
         self._holder.value = value
-        self._update_missing_or_change_value()
-        self.add_button.set_sensitive(not bool(retval))
+        self.toggle_new_payments()
+        if not self.can_confirm():
+            self.add_button.set_sensitive(not bool(retval))
+
         return retval
 
 
