@@ -95,6 +95,9 @@ class CacheStore(object):
         try:
             fd = open(self._get_full_file_path())
         except IOError as e:
+            # Permission denied
+            if e.errno == errno.EACCES:
+                return
             if e.errno == errno.ENOENT:
                 return
             else:
