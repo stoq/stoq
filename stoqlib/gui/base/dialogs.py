@@ -449,7 +449,6 @@ _fullscreen = None
 
 def push_fullscreen(window):
     global _fullscreen
-    assert not _fullscreen
     _fullscreen = window
 
 def pop_fullscreen(window):
