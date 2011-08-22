@@ -104,7 +104,7 @@ class TillHistoryDialog(SearchDialog):
 
     def _add_editor_button(self, name, editor_class, stock):
         button = self.add_button(name, stock=stock)
-        button.connect('clicked', lambda b: self._run_editor(editor_class))
+        button.connect('clicked', self._run_editor, editor_class)
         button.show()
 
     def _print_button_clicked(self, button):
@@ -112,7 +112,7 @@ class TillHistoryDialog(SearchDialog):
         print_report(TillHistoryReport, self.results, till_entries,
                      filters=self.search.get_search_filters())
 
-    def _run_editor(self, editor_class):
+    def _run_editor(self, button, editor_class):
         model = run_dialog(editor_class, self, self.conn)
         if finish_transaction(self.conn, model):
             self.search.refresh()
