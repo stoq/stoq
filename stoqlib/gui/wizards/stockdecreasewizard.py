@@ -200,7 +200,7 @@ class DecreaseItemStep(SellableItemStep):
 
         storable = IStorable(sellable.product, None)
         assert storable
-        balance = storable.get_stock_item(self.model.branch).quantity
+        balance = storable.get_full_balance(branch=self.model.branch)
         for i in self.slave.klist:
             if i.sellable == sellable:
                 balance -= i.quantity
