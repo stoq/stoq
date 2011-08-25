@@ -28,8 +28,9 @@ import decimal
 
 import pango
 import gtk
-from kiwi.datatypes import converter
+from kiwi.datatypes import converter, ValidationError
 from kiwi.enums import SearchFilterPosition
+from kiwi.log import Logger
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.exceptions import DatabaseInconsistency
@@ -40,6 +41,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
+from stoqlib.lib.message import warning
 from stoqlib.gui.editors.producteditor import ProductStockEditor
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
@@ -61,6 +63,7 @@ from stoqlib.reporting.product import SimpleProductReport
 from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
+log = Logger('stoq.gui.stock')
 
 
 class StockApp(SearchableAppWindow):
@@ -259,7 +262,15 @@ class StockApp(SearchableAppWindow):
 
         pixbuf = None
         if item:
-            pixbuf = self.pixbuf_converter.from_string(item.product.image)
+            try:
+                pixbuf = self.pixbuf_converter.from_string(item.product.image)
+            except ValidationError:
+                # FIXME: Find a better way of treating this. Somehow image
+                #        is not valid for some user. See bug 4611
+                pixbuf = None
+                log.warning("It was not possible to load the image "
+                            "of product %s" % item.product)
+
             if self.image_viewer:
                 self.image_viewer.set_product(item.product)
         if pixbuf:
