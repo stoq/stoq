@@ -218,6 +218,8 @@ class InventoryApp(SearchableAppWindow):
         inventory.cancel()
         trans.commit()
 
+        self._update_widgets()
+
     def _register_product_counting(self):
         trans = new_transaction()
         inventory = trans.get(self.results.get_selected())
