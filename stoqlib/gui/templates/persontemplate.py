@@ -32,6 +32,7 @@ from stoqlib.gui.base.slaves import NoteSlave
 from stoqlib.gui.editors.addresseditor import (AddressAdditionDialog,
                                                AddressSlave)
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
+from stoqlib.gui.search.callsearch import CallsSearch
 from stoqlib.gui.slaves.liaisonslave import LiaisonListDialog
 from stoqlib.gui.templates.companytemplate import CompanyEditorTemplate
 from stoqlib.gui.templates.individualtemplate import IndividualEditorTemplate
@@ -137,6 +138,10 @@ class _PersonEditorTemplate(BaseEditorSlave):
 
     def on_contacts_button__clicked(self, button):
         run_dialog(LiaisonListDialog, self._parent, self.conn,
+                   person=self.model)
+
+    def on_calls_button__clicked(self, button):
+        run_dialog(CallsSearch, self._parent, self.conn,
                    person=self.model)
 
     #

@@ -49,6 +49,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
+from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -126,6 +127,7 @@ class StartSaleQuoteStep(WizardEditorStep):
     #
 
     def post_init(self):
+        self.toogle_client_details()
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
@@ -141,6 +143,10 @@ class StartSaleQuoteStep(WizardEditorStep):
                                     StartSaleQuoteStep.proxy_widgets)
         if sysparam(self.conn).ASK_SALES_CFOP:
             self.add_proxy(self.model, StartSaleQuoteStep.cfop_widgets)
+
+    def toogle_client_details(self):
+        client = self.client.read()
+        self.client_details.set_sensitive(bool(client))
 
     #
     #   Callbacks
@@ -158,10 +164,15 @@ class StartSaleQuoteStep(WizardEditorStep):
         self.client.select(client)
 
     def on_client__changed(self, widget):
+        self.toogle_client_details()
         client = self.client.get_selected_data()
         if not client:
             return
         self.client_category.select(client.category)
+
+    def on_client_details__clicked(self, button):
+        client = self.model.client
+        run_dialog(ClientDetailsDialog, self, self.conn, client)
 
     def on_expire_date__validate(self, widget, value):
         if value < datetime.date.today():

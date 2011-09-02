@@ -54,7 +54,6 @@ class LiaisonListDialog(ModelListDialog):
         self.person = person
         self.trans = trans
         ModelListDialog.__init__(self, trans)
-        self.set_reuse_transaction(trans)
 
     def populate(self):
         return Liaison.selectBy(person=self.person, connection=self.trans)

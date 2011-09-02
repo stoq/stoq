@@ -182,10 +182,22 @@ class Calls(Domain):
     delivered, etc.
     """
 
+    implements(IDescribable)
+
     date = DateTimeCol()
+    description = UnicodeCol()
     message = UnicodeCol()
     person = ForeignKey('Person')
     attendant = ForeignKey('PersonAdaptToUser')
+    
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.description
+
 
 class Person(Domain):
     """Base class to register persons in the system. This class should never
@@ -1223,3 +1235,54 @@ class CreditProviderView(Viewable):
     def provider(self):
         return PersonAdaptToCreditProvider.get(self.provider_id,
                                                connection=self.get_connection())
+
+
+class CallsView(Viewable):
+    """Store information about the realized calls to client.
+    """
+    Attendant_Person = Alias(Person, 'attendant_person')
+    columns = dict(
+        id=Calls.q.id,
+        person=Person.q.name,
+        date=Calls.q.date,
+        description=Calls.q.description,
+        message=Calls.q.message,
+        attendant=Attendant_Person.q.name,
+        )
+
+    joins = [
+        LEFTJOINOn(None, Person,
+                   Person.q.id == Calls.q.personID),
+        LEFTJOINOn(None, PersonAdaptToUser,
+                   PersonAdaptToUser.q.id == Calls.q.attendantID),
+        LEFTJOINOn(None, Attendant_Person,
+                   PersonAdaptToUser.q.originalID == Attendant_Person.q.id),
+        ]
+
+    @property
+    def call(self):
+        return Calls.get(self.id, connection=self.get_connection())
+
+    @classmethod
+    def select_by_client_date(cls, query, client, date,
+                              having=None, connection=None):
+        if client:
+            client_query = Calls.q.personID == client.id
+            if query:
+                query = AND(query, client_query)
+            else:
+                query = client_query
+
+        if date:
+            if isinstance(date, tuple):
+                date_query = AND(const.DATE(Calls.q.date) >= date[0],
+                                 const.DATE(Calls.q.date) <= date[1])
+            else:
+                date_query = const.DATE(Calls.q.date) == date
+
+            if query:
+                query = AND(query, date_query)
+            else:
+                query = date_query
+
+        return cls.select(query, having=having, connection=connection)
