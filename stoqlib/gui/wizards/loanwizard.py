@@ -52,6 +52,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
+from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.loaneditor import LoanItemEditor
@@ -148,6 +149,7 @@ class StartNewLoanStep(WizardEditorStep):
     #
 
     def post_init(self):
+        self.toogle_client_details()
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
@@ -161,6 +163,10 @@ class StartNewLoanStep(WizardEditorStep):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     StartNewLoanStep.proxy_widgets)
+
+    def toogle_client_details(self):
+        client = self.client.read()
+        self.client_details.set_sensitive(bool(client))
 
     #
     #   Callbacks
@@ -178,6 +184,7 @@ class StartNewLoanStep(WizardEditorStep):
         self.client.select(client)
 
     def on_client__changed(self, widget):
+        self.toogle_client_details()
         client = self.client.get_selected_data()
         if not client:
             return
@@ -191,6 +198,10 @@ class StartNewLoanStep(WizardEditorStep):
     def on_notes_button__clicked(self, *args):
         run_dialog(NoteEditor, self.wizard, self.conn, self.model, 'notes',
                    title=_("Additional Information"))
+
+    def on_client_details__clicked(self, button):
+        client = self.model.client
+        run_dialog(ClientDetailsDialog, self, self.conn, client)
 
 
 class LoanItemStep(SaleQuoteItemStep):

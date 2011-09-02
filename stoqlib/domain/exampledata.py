@@ -125,6 +125,9 @@ def create_loan(trans):
 def create_loan_item(trans):
     return ExampleCreator.create(trans, 'LoanItem')
 
+def create_call(trans):
+    return ExampleCreator.create(trans, 'Calls')
+
 
 class ExampleCreator(object):
     def __init__(self):
@@ -213,6 +216,7 @@ class ExampleCreator(object):
             'TransferOrder': self.create_transfer,
             'PaymentCategory': self.create_payment_category,
             'FiscalDayHistory': self.create_fiscal_day_history,
+            'Calls': self.create_call,
             }
         if isinstance(model_type, basestring):
             model_name = model_type
@@ -764,3 +768,12 @@ class ExampleCreator(object):
                                 total=100,
                                 station=self.create_station(),
                                 connection=self.trans)
+
+    def create_call(self):
+        from stoqlib.domain.person import Calls
+        return Calls(date=datetime.date(2011, 1, 1),
+                     message="Test call message",
+                     person=self.create_person(),
+                     attendant=self.create_user(),
+                     description="Test call",
+                     connection=self.trans)

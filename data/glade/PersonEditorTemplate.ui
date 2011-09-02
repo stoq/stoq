@@ -16,11 +16,10 @@
               <object class="GtkVBox" id="identification_tab">
                 <property name="visible">True</property>
                 <property name="border_width">5</property>
-                <property name="spacing">5</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkTable" id="table1">
                     <property name="visible">True</property>
-                    <property name="border_width">5</property>
                     <property name="n_rows">3</property>
                     <property name="n_columns">4</property>
                     <property name="column_spacing">6</property>
@@ -188,7 +187,7 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
+                    <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
@@ -196,11 +195,10 @@
                 <child>
                   <object class="GtkHBox" id="hbox2">
                     <property name="visible">True</property>
+                    <property name="spacing">6</property>
                     <child>
-                      <object class="ProxyLabel" id="kiwilabel3">
+                      <object class="GtkLabel" id="label5">
                         <property name="visible">True</property>
-                        <property name="use_markup">True</property>
-                        <property name="data_type">unicode</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -221,6 +219,20 @@
                         <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="calls_button">
+                        <property name="label" translatable="yes">Calls...</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>

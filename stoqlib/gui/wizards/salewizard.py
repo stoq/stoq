@@ -27,7 +27,6 @@
 
 import gtk
 
-from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
 from kiwi.datatypes import currency, ValidationError
 from kiwi.python import Settable
@@ -44,6 +43,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard, BaseWizardStep
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor, TransporterEditor
@@ -301,7 +301,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     def _create_client(self):
         trans = new_transaction()
         client = run_person_role_dialog(ClientEditor, self, trans, None)
-        rv = finish_transaction(trans, client)
+        finish_transaction(trans, client)
         client = self.conn.get(client)
         trans.close()
         if not client:
@@ -406,6 +406,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def post_init(self):
         marker('Entering post_init')
+        self.toogle_client_details()
         self.wizard.payment_group.clear_unused()
         self.register_validate_function(self.wizard.refresh_next)
         self._update_next_step(self.get_selected_method())
@@ -453,11 +454,16 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.add_proxy(self.model, SalesPersonStep.cfop_widgets)
         marker('Finished setting up proxies')
 
+    def toogle_client_details(self):
+        client = self.client.read()
+        self.client_details.set_sensitive(bool(client))
+
     #
     # Callbacks
     #
 
     def on_client__changed(self, entry):
+        self.toogle_client_details()
         self._update_widgets()
 
     def on_create_client__clicked(self, button):
@@ -498,6 +504,10 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
                              connection=self.conn)
         if exists.count() > 0:
             return ValidationError(_(u'Invoice number already used.'))
+
+    def on_client_details__clicked(self, button):
+        client = self.model.client
+        run_dialog(ClientDetailsDialog, self, self.conn, client)
 
 
 #

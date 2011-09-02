@@ -39,12 +39,14 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
                                           InCheckPaymentView,
                                           OutCheckPaymentView)
+from stoqlib.domain.person import CallsView
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.parameters import sysparam
+from stoqlib.reporting.calls_report import CallsReport
 from stoqlib.reporting.payment import (ReceivablePaymentReport,
                                        PayablePaymentReport,
                                        BillCheckPaymentReport)
@@ -314,3 +316,15 @@ class TestReport(DomainTest):
         service.order = order
         order.open_date = datetime.date(2007, 1, 1)
         self.checkPDF(ProductionOrderReport, order, date=order.open_date)
+
+    def testCallsReport(self):
+        from stoqlib.gui.search.callsearch import CallsSearch
+        person = self.create_person()
+        self.create_call()
+        search = CallsSearch(self.trans, person)
+        search.width = 1000
+        # the orderBy clause is only needed by the test
+        calls = CallsView.select(connection=self.trans).orderBy('id')
+        search.results.add_list(calls, clear=True)
+        self.checkPDF(CallsReport, search.results, list(search.results),
+                      date=datetime.date(2011, 1, 1), person_name=person.name)

@@ -271,7 +271,6 @@ class AddressAdditionDialog(ModelListDialog):
         self.person = person
         self.trans = trans
         ModelListDialog.__init__(self, trans)
-        self.set_reuse_transaction(trans)
 
     def populate(self):
         # This is only additional addresses, eg non-main ones

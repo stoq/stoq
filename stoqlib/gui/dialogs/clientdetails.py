@@ -78,6 +78,7 @@ class _TemporaryProduct(object):
     #
 
     def update_values(self, product):
+        self.last_date = product.sale.confirm_date or product.sale.open_date
         self._quantity += product.quantity
         self.total_value += product.price * product.quantity
         self.avg_value = self.total_value / self._quantity
@@ -123,6 +124,7 @@ class ClientDetailsDialog(BaseEditor):
         self.product_list.set_columns(self._get_product_columns())
         self.services_list.set_columns(self._get_services_columns())
         self.payments_list.set_columns(self._get_payments_columns())
+        self.calls_list.set_columns(self._get_calls_columns())
 
         sales = self.model.get_client_sales()
         self.sales_list.add_list(sales)
@@ -131,6 +133,7 @@ class ClientDetailsDialog(BaseEditor):
         self.product_list.add_list(self.products)
         self.services_list.add_list(self.services)
         self.payments_list.add_list(self.payments)
+        self.calls_list.add_list(self.model.person.calls)
 
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % _("Total:")
@@ -162,6 +165,8 @@ class ClientDetailsDialog(BaseEditor):
                        expand=True, searchable=True),
                 Column("qty_str", title=_("Total quantity"),
                        data_type=str, width=120, justify=gtk.JUSTIFY_RIGHT),
+                Column("last_date", title=_("Lastest purchase"),
+                       data_type=datetime.date, width=150),
                 Column("avg_value", title=_("Avg. value"), width=100,
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT),
                 Column("total_value", title=_("Total value"), width=100,
@@ -187,6 +192,8 @@ class ClientDetailsDialog(BaseEditor):
                        expand=True),
                 Column("due_date", title=_("Due date"), width=110,
                        data_type=datetime.date, sorted=True),
+                Column("paid_date", title=_("Paid date"), width=110,
+                       data_type=datetime.date),
                 Column("status_str", title=_("Status"), width=80,
                        data_type=str),
                 ColoredColumn("base_value", title=_("Value"),
@@ -197,6 +204,14 @@ class ClientDetailsDialog(BaseEditor):
                        format_func=(lambda days_late: days_late and
                                     str(days_late) or u""),
                        justify=gtk.JUSTIFY_RIGHT, data_type=str)]
+
+    def _get_calls_columns(self):
+        return [Column("date", title=_("Date"),
+                       data_type=datetime.date, width=150, sorted=True),
+                Column("description", title=_("Description"),
+                       data_type=str, width=150, expand=True),
+                Column("attendant.person.name", title=_("Attendant"),
+                       data_type=str, width=100, expand=True),]
 
     #
     # BaseEditor Hooks
