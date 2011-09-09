@@ -160,6 +160,7 @@ class ProductionServiceStep(SellableItemStep):
 
     def validate(self, value):
         # This step is optional
+        self.wizard.refresh_next(True)
         return True
 
     def get_order_item(self, sellable, cost, quantity):
@@ -188,6 +189,10 @@ class ProductionServiceStep(SellableItemStep):
                     data_type=str),
             Column('service.sellable.cost', title=_('Cost'),
                     data_type=currency),]
+
+    def remove_items(self, items):
+        for item in items:
+            self.model.remove_service_item(item)
 
     #
     # WizardStep hooks

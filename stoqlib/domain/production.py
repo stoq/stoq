@@ -89,6 +89,7 @@ class ProductionOrder(Domain):
                               connection=self.get_connection())
 
     def remove_item(self, item):
+        assert isinstance(item, ProductionItem)
         if item.order is not self:
             raise ValueError(_('Argument item must have an order attribute '
                                'associated with the current production '
@@ -106,6 +107,14 @@ class ProductionOrder(Domain):
         """
         return ProductionService.selectBy(order=self,
                                           connection=self.get_connection())
+
+    def remove_service_item(self, item):
+        assert isinstance(item, ProductionService)
+        if item.order is not self:
+            raise ValueError(_('Argument item must have an order attribute '
+                               'associated with the current production '
+                               'order instance.'))
+        ProductionService.delete(item.id, connection=self.get_connection())
 
     def get_material_items(self):
         """Returns all the material needed by this production.
