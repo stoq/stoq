@@ -25,7 +25,8 @@
 
 
 from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.production import ProductionOrder, ProductionMaterial
+from stoqlib.domain.production import (ProductionOrder, ProductionMaterial,
+                                       ProductionItem, ProductionService)
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -140,6 +141,25 @@ class TestProductionItem(DomainTest):
         item = self.create_production_item()
         item.produced = 1
         self.assertRaises(ValueError, item.add_lost, 1)
+
+    def test_items(self):
+        order = self.create_production_order()
+        item = ProductionItem(product=self.create_product(),
+                              order=order, quantity=1, connection=self.trans)
+        service = ProductionService(service=self.create_service(),
+                                    order=order, connection=self.trans)
+
+        self.assertTrue(item in order.get_items())
+        self.assertTrue(service in order.get_service_items())
+
+        self.assertRaises(AssertionError, order.remove_item, service)
+        self.assertRaises(AssertionError, order.remove_service_item, item)
+
+        order.remove_item(item)
+        self.assertEqual(list(order.get_items()), [])
+
+        order.remove_service_item(service)
+        self.assertEqual(list(order.get_service_items()), [])
 
 
 class TestProductionMaterial(DomainTest):
