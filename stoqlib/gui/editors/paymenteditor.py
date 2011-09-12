@@ -86,7 +86,10 @@ class BasePaymentEditor(BaseEditor):
     def create_model(self, trans):
         group = PaymentGroup(connection=trans)
         money = PaymentMethod.get_by_name(trans, 'money')
+        # Set status to PENDING now, to avoid calling set_pending on
+        # on_confirm for payments that shoud not have its status changed.
         return Payment(open_date=datetime.date.today(),
+                       status=Payment.STATUS_PENDING,
                        description='',
                        value=currency(0),
                        base_value=currency(0),
@@ -117,9 +120,6 @@ class BasePaymentEditor(BaseEditor):
                     self.model.value)
 
     def on_confirm(self):
-        # Only set pending if its a new payment (status == PREVIEW)
-        if self.model.status is Payment.STATUS_PREVIEW:
-            self.model.set_pending()
         self.model.base_value = self.model.value
         person = self.person.get_selected_data()
         if person is not None and person is not ValueUnset:
