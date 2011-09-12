@@ -377,7 +377,8 @@ class TefStep(WizardEditorStep):
 
         # FIXME: This is a hack, remove it when we can avoid
         #        calling dialog.run()
-        reactor.startRunning()
+        if not reactor.running:
+            reactor.run()
 
         self.send_progress.show()
         self.send_progress.set_text(_('Sending...'))

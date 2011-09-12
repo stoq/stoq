@@ -116,13 +116,15 @@ class CrashReportDialog(object):
 
     def _destroy(self):
         self._dialog.destroy()
-        reactor.stop()
+        if reactor.running:
+            reactor.stop()
         raise SystemExit
 
     def run(self):
         self._dialog.connect('response', self._on_dialog__response)
         self._dialog.show_all()
-        reactor.run()
+        if not reactor.running:
+            reactor.run()
 
     def _on_report__failed(self, response, failure):
         self._show_error()

@@ -429,7 +429,8 @@ def run_app(options, appname):
 
     log.debug("Entering reactor")
     from twisted.internet import reactor
-    reactor.run()
+    if not reactor.running:
+        reactor.run()
     log.info("Shutting down %s application" % appname)
 
 def _parse_command_line(args):

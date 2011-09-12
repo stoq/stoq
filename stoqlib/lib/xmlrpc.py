@@ -114,7 +114,8 @@ if has_twisted:
         def serve(self):
             log.info('Listening on port %d' % self._port)
             reactor.listenTCP(self._port, self._service)
-            reactor.run()
+            if not reactor.running:
+                reactor.run()
 
         def stop(self):
             self._service.stopFactory()
