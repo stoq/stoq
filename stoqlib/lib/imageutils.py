@@ -25,6 +25,7 @@
 """ Utility class and functions for images """
 
 import imghdr
+import tempfile
 import os.path
 
 import gtk
@@ -41,15 +42,12 @@ class ImageHelper(object):
 
     def _save_image(self):
         if self._image is not None:
-            resource_path = environ.get_resource_paths("pixmaps")[0]
-            image_name = os.path.basename(self.image_path)
-            if resource_path.endswith('/'):
-                resource = resource_path + image_name
-            else:
-                resource = resource_path + '/' + image_name
-            image_type = self._get_image_type()
-            self._image.save(resource, image_type)
-            self.image_path = resource
+            tmp_file = tempfile.NamedTemporaryFile(delete=False,
+                                                   prefix='stoqlib-logo')
+            tmp_file.close()
+
+            self._image.save(tmp_file.name, self._get_image_type())
+            self.image_path = tmp_file.name
 
     def _check_image_type(self):
         # types supported by gtk.gdk.Pixbuf
@@ -90,6 +88,5 @@ class ImageHelper(object):
             w, h = size
             self._image = self._image.scale_simple(
                 w, h, gtk.gdk.INTERP_BILINEAR)
-            # FIXME: See bug 4510
-            #self._save_image()
+            self._save_image()
 
