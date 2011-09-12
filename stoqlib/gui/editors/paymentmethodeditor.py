@@ -24,6 +24,8 @@
 """ Editors for payment method management.  """
 
 
+from kiwi.datatypes import ValidationError
+
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.base.dialogs import run_dialog
@@ -72,6 +74,23 @@ class PaymentMethodEditor(BaseEditor):
     def on_confirm(self):
         self.model.destination_account = self.account.get_selected()
         return self.model
+
+    #
+    #   Validators
+    #
+
+    def on_daily_penalty__validate(self, widget, value):
+        if value < 0:
+            return ValidationError(_(u'The value must be positive.'))
+
+    def on_interest__validate(self, widget, value):
+        if value < 0:
+            return ValidationError(_(u'The value must be positive.'))
+
+    def on_max_installments__validate(self, widget, value):
+        if value <= 0:
+            return ValidationError(_(u'The value must be positive.'))
+
 
 class CardPaymentMethodEditor(PaymentMethodEditor):
 
