@@ -531,7 +531,10 @@ class InstallPostgresStep(BaseWizardStep):
         if self.done or test_local_database():
             return CreateDatabaseStep(self.wizard, self)
 
-        self._install_postgres()
+        if self._can_install():
+            self._install_postgres()
+        else:
+            warning(_("You need to install PostgreSQL before moving forward"))
 
         return self
 
