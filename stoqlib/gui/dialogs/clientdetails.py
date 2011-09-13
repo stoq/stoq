@@ -149,6 +149,8 @@ class ClientDetailsDialog(BaseEditor):
         return [Column("id", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
                        format='%04d', width=90, sorted=True),
+                Column("invoice_number", title=_("Invoice #"),
+                       data_type=int, width=90),
                 Column("open_date", title=_("Date"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT, width=80),
                 Column("salesperson_name", title=_("Salesperson"),
