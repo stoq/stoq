@@ -85,6 +85,9 @@ class BillReport(object):
         self._bill = self._get_bill()
         self._render_class = get_bank(self._bank_id)
 
+        # Reports need a title when printing
+        self.title = _("Bill")
+
         self.today = datetime.datetime.today()
 
     def _get_bill(self):
