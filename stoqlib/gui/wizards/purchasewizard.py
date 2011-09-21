@@ -100,6 +100,11 @@ class StartPurchaseStep(WizardEditorStep):
         self.open_date.set_sensitive(allow_outdated)
         self._fill_supplier_combo()
         self._fill_branch_combo()
+        if self.model.freight_type == self.model_type.FREIGHT_FOB:
+            self.fob_radio.set_active(True)
+        else:
+            self.cif_radio.set_active(True)
+
         self._update_widgets()
 
     def _update_widgets(self):
