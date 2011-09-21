@@ -118,7 +118,7 @@ class DatabaseSettings(object):
             conn.makeConnection()
         except OperationalError, e:
             log.info('OperationalError: %s' % e)
-            raise DatabaseError(e)
+            raise DatabaseError(e.args[0])
         except Exception, e:
             value = sys.exc_info()[1]
             raise DatabaseError(
