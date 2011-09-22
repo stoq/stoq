@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-09-12 16:58-0300\n"
-"PO-Revision-Date: 2011-09-07 08:53+0000\n"
+"PO-Revision-Date: 2011-09-22 04:21+0000\n"
 "Last-Translator: عبدالله شلي (Abdellah Chelli) <Unknown>\n"
 "Language-Team: Arabic <ar@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-09-13 04:51+0000\n"
-"X-Generator: Launchpad (build 13910)\n"
+"X-Launchpad-Export-Date: 2011-09-22 04:51+0000\n"
+"X-Generator: Launchpad (build 13996)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account code:"
@@ -27,7 +27,7 @@ msgstr "اسم الحساب:"
 
 #: ../data/glade/AccountEditor.ui.h:3
 msgid "Hold control to remove selection."
-msgstr ""
+msgstr "سيطر لإزالة المنتقى"
 
 #: ../data/glade/AccountEditor.ui.h:4
 msgid "Parent:"
@@ -149,20 +149,20 @@ msgstr "الشارع:"
 
 #: ../data/glade/AdminPasswordStep.ui.h:1
 msgid "Enter the password and then click <b>Forward</b> to continue."
-msgstr ""
+msgstr "أدخل كلمة المرور ثم انقر فوق <b>تابع</ b> للمتابعة."
 
 #: ../data/glade/BankDataSlave.ui.h:1
 msgid "Bank Account:"
-msgstr ""
+msgstr "حساب البنك:"
 
 #: ../data/glade/BankDataSlave.ui.h:2
 msgid "Bank Branch:"
-msgstr ""
+msgstr "فرع البنك:"
 
 #: ../data/glade/BankDataSlave.ui.h:3
 #: ../data/glade/EmployeeDetailsSlave.ui.h:3
 msgid "Bank ID:"
-msgstr ""
+msgstr "رقم تعريف البنك:"
 
 #: ../data/glade/BaseCashSlave.ui.h:1 ../data/glade/TillOpening.ui.h:1
 msgid "Balance:"
@@ -171,29 +171,29 @@ msgstr "الرصيد:"
 #. Do not translate $CURRENCY
 #: ../data/glade/BaseCashSlave.ui.h:3
 msgid "Cash Amount ($CURRENCY):"
-msgstr ""
+msgstr "المبلغ النقدي  ($CURRENCY):"
 
 #: ../data/glade/BasePaymentDataEditor.ui.h:1
 #: ../data/glade/BasePaymentEditor.ui.h:3
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:3
 msgid "Due date:"
-msgstr ""
+msgstr "تاريخ الاستحقاق:"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/BasePaymentDataEditor.ui.h:4
 #: ../data/glade/BasePaymentEditor.ui.h:7
 msgid "Value ($CURRENCY):"
-msgstr ""
+msgstr "القيمة ($CURRENCY):"
 
 #: ../data/glade/BasePaymentEditor.ui.h:1
 #: ../data/glade/ClientStatusSlave.ui.h:2 ../data/glade/SellableEditor.ui.h:4
 msgid "Category:"
-msgstr ""
+msgstr "التصنيف:"
 
 #: ../data/glade/BasePaymentEditor.ui.h:4
 #: ../stoqlib/domain/payment/operation.py:50
 msgid "Money"
-msgstr ""
+msgstr "مال"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:1
 #: ../data/glade/CreditProviderMethodSlave.ui.h:1
