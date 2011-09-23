@@ -558,6 +558,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
 
         finish_transaction(trans, True)
         trans.close()
+        self.wizard.finish()
 
     def _create_orders(self):
         trans = new_transaction()
