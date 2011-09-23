@@ -49,8 +49,10 @@ class CallsSearch(SearchEditor):
     searching_by_date = True
     size = (700, 450)
 
-    def __init__(self, conn, person):
+    def __init__(self, conn, person, reuse_transaction):
+        self.conn = conn
         self.person = person
+        self._reuse_transaction = reuse_transaction
         SearchEditor.__init__(self, conn)
 
     #
@@ -103,19 +105,28 @@ class CallsSearch(SearchEditor):
         elif isinstance(date, DateIntervalQueryState):
             date = (date.start, date.end)
 
+        # Use the current connection ('self.conn') to show inserted calls,
+        # before confirm the new person.
         return self.search_table.select_by_client_date(query, client, date,
-                                                       connection=conn)
+                                                       connection=self.conn)
 
     def update_widgets(self, *args):
         call_view = self.results.get_selected()
         self.set_edit_button_sensitive(call_view is not None)
 
     def run_editor(self, obj):
-        trans = new_transaction()
-        retval = run_dialog(self.editor_class, self, trans,
-                            trans.get(obj), self.person)
-        finish_transaction(trans, retval)
-        trans.close()
+        if self._reuse_transaction:
+            self.conn.savepoint('before_run_editor')
+            retval = run_dialog(self.editor_class, self, self.conn,
+                                self.conn.get(obj), self.person)
+            if not retval:
+                self.conn.rollback_to_savepoint('before_run_editor')
+        else:
+            trans = new_transaction()
+            retval = run_dialog(self.editor_class, self, trans,
+                                trans.get(obj), self.person)
+            finish_transaction(trans, retval)
+            trans.close()
         return retval
 
     #

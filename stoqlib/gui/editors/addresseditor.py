@@ -267,10 +267,12 @@ class AddressAdditionDialog(ModelListDialog):
 
     model_type = Address
 
-    def __init__(self, trans, person):
+    def __init__(self, trans, person, reuse_transaction=False):
         self.person = person
         self.trans = trans
         ModelListDialog.__init__(self, trans)
+        if reuse_transaction:
+            self.set_reuse_transaction(trans)
 
     def populate(self):
         # This is only additional addresses, eg non-main ones
@@ -280,8 +282,12 @@ class AddressAdditionDialog(ModelListDialog):
             connection=self.trans)
 
     def run_editor(self, trans, model):
-        return self.run_dialog(AddressEditor,
-            conn=trans, person=self.person, address=model)
+        trans.savepoint('before_run_editor')
+        retval =  self.run_dialog(AddressEditor, conn=trans,
+                                  person=self.person, address=model)
+        if not retval:
+            trans.rollback_to_savepoint('before_run_editor')
+        return retval
 
 class AddressSelectionDialog(ModelListDialog):
     title = _('Select an address')
