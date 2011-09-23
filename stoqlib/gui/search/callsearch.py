@@ -49,7 +49,7 @@ class CallsSearch(SearchEditor):
     searching_by_date = True
     size = (700, 450)
 
-    def __init__(self, conn, person, reuse_transaction):
+    def __init__(self, conn, person, reuse_transaction=False):
         self.conn = conn
         self.person = person
         self._reuse_transaction = reuse_transaction
