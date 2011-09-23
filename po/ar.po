@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-09-12 16:58-0300\n"
-"PO-Revision-Date: 2011-09-22 04:21+0000\n"
+"PO-Revision-Date: 2011-09-22 05:41+0000\n"
 "Last-Translator: عبدالله شلي (Abdellah Chelli) <Unknown>\n"
 "Language-Team: Arabic <ar@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-09-22 04:51+0000\n"
-"X-Generator: Launchpad (build 13996)\n"
+"X-Launchpad-Export-Date: 2011-09-23 04:42+0000\n"
+"X-Generator: Launchpad (build 14012)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account code:"
@@ -204,20 +204,20 @@ msgstr "مال"
 #: ../data/glade/PurchasePaymentSlave.ui.h:1 ../data/glade/TaxIPISlave.ui.h:1
 #: ../plugins/books/glade/ProductBookSlave.ui.h:1
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:2
 msgid "Default Bank:"
-msgstr ""
+msgstr "البنك الإفتراضي:"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:3
 #: ../stoqlib/reporting/purchase.py:348
 msgid "Installments:"
-msgstr ""
+msgstr "الأقساط:"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:4
 msgid "Start at:"
-msgstr ""
+msgstr "إبدأ عند:"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:5
 msgid "With intervals of:"
@@ -237,7 +237,7 @@ msgstr ""
 #: ../data/glade/TributarySituationSlave.ui.h:2
 #, no-c-format
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #: ../data/glade/BaseSellableCategoryDataSlave.ui.h:4
 #: ../data/glade/SellableCategoryDataSlave.ui.h:5
