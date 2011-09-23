@@ -105,7 +105,8 @@ class CacheStore(object):
 
         try:
             data = cPickle.load(fd)
-        except (AttributeError, EOFError, ValueError, cPickle.BadPickleGet):
+        except (AttributeError, EOFError, ValueError,
+                cPickle.UnpicklingError):
             # Broken pickle entry, remove it
             self.clear()
             data = None
