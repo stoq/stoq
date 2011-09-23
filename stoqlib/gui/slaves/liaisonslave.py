@@ -50,14 +50,20 @@ class LiaisonListDialog(ModelListDialog):
                       format_func=format_phone_number,
                       data_type=str, width=200)]
 
-    def __init__(self, trans, person):
+    def __init__(self, trans, person, reuse_transaction=False):
         self.person = person
         self.trans = trans
         ModelListDialog.__init__(self, trans)
+        if reuse_transaction:
+            self.set_reuse_transaction(trans)
 
     def populate(self):
         return Liaison.selectBy(person=self.person, connection=self.trans)
 
     def run_editor(self, trans, model):
-        return self.run_dialog(ContactEditor, conn=trans,
-                               model=model, person=self.person)
+        trans.savepoint('before_run_editor')
+        retval =  self.run_dialog(ContactEditor, conn=trans,
+                                  model=model, person=self.person)
+        if not retval:
+            trans.rollback_to_savepoint('before_run_editor')
+        return retval

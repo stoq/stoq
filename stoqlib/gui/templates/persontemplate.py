@@ -24,6 +24,7 @@
 ##
 """ Templates implementation for person editors.  """
 
+from stoqlib.database.runtime import get_connection
 from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.exceptions import DatabaseInconsistency
@@ -57,6 +58,14 @@ class _PersonEditorTemplate(BaseEditorSlave):
         self._parent = parent
         super(self.__class__, self).__init__(conn, model,
                                              visual_mode=visual_mode)
+        self._check_new_person()
+
+    def _check_new_person(self):
+        self.is_new_person = False
+        # If this person is not in the default connection, then it was created
+        # inside another transaction that was not commited yet.
+        if not Person.selectBy(id=self.model.id, connection=get_connection()):
+            self.is_new_person = True
 
     #
     # BaseEditorSlave hooks
@@ -127,8 +136,9 @@ class _PersonEditorTemplate(BaseEditorSlave):
             warning(msg)
             return
 
-        result = run_dialog(AddressAdditionDialog, self._parent, self.conn,
-                            person=self.model)
+        result = run_dialog(AddressAdditionDialog, self._parent,
+                            self.conn, person=self.model,
+                            reuse_transaction=self.is_new_person)
         if not result:
             return
 
@@ -138,11 +148,11 @@ class _PersonEditorTemplate(BaseEditorSlave):
 
     def on_contacts_button__clicked(self, button):
         run_dialog(LiaisonListDialog, self._parent, self.conn,
-                   person=self.model)
+                   person=self.model, reuse_transaction=self.is_new_person)
 
     def on_calls_button__clicked(self, button):
         run_dialog(CallsSearch, self._parent, self.conn,
-                   person=self.model)
+                   person=self.model, reuse_transaction=self.is_new_person)
 
     #
     # Private API
