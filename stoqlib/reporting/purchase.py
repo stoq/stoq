@@ -120,8 +120,12 @@ class PurchaseOrderReport(BaseStoqReport):
         self._setup_items_table()
         self._add_notes()
 
-    def _get_items_table_columns(self):
-        return [
+    def _get_items_table_columns(self, include_received):
+        """
+        @param include_received: If the received quantity and total columns
+        should be displayed
+        """
+        cols = [
             OTC(_("Category"), lambda obj: "%s" %
                 obj.sellable.get_category_description(), width=90),
             OTC(_("Item"),
@@ -138,12 +142,19 @@ class PurchaseOrderReport(BaseStoqReport):
             OTC(_("Total"),
                 lambda obj: get_formatted_price(obj.get_total()), width=90,
                 align=RIGHT),
-            OTC(_("Qty Received"), lambda obj: format_quantity(
-                obj.quantity_received), width=90, align=RIGHT),
-            OTC(_("Total"),
-                lambda obj: get_formatted_price(obj.get_received_total()),
-                width=90, align=RIGHT),
             ]
+
+        if include_received:
+            cols.extend([
+                OTC(_("Qty Received"), lambda obj: format_quantity(
+                    obj.quantity_received), width=90, align=RIGHT),
+                OTC(_("Total"),
+                    lambda obj: get_formatted_price(obj.get_received_total()),
+                    width=90, align=RIGHT),
+                ])
+
+        return cols
+
     def _add_items_table(self, items):
         total_quantity = Decimal(0)
         total_qty_received = Decimal(0)
@@ -154,11 +165,15 @@ class PurchaseOrderReport(BaseStoqReport):
             total_qty_received += item.quantity_received
             total_value += item.quantity * item.cost
             total_received += item.quantity_received * item.cost
+
         extra_row = ["", "", "", _("Totals:"), format_quantity(total_quantity),
-                     get_formatted_price(total_value),
-                     format_quantity(total_qty_received),
-                     get_formatted_price(total_received)]
-        self.add_object_table(items, self._get_items_table_columns(),
+                     get_formatted_price(total_value)]
+        if total_qty_received:
+            extra_row.extend([format_quantity(total_qty_received),
+                              get_formatted_price(total_received)])
+
+        columns = self._get_items_table_columns(total_qty_received)
+        self.add_object_table(items, columns,
                               summary_row=extra_row)
 
     def _add_ordered_items_table(self, items):
