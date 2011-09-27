@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-09-12 16:58-0300\n"
-"PO-Revision-Date: 2011-08-12 16:46+0000\n"
-"Last-Translator: Gabriel Gerga  <Unknown>\n"
+"PO-Revision-Date: 2011-09-26 12:36+0000\n"
+"Last-Translator: Rafael Neri <Unknown>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-09-13 04:52+0000\n"
-"X-Generator: Launchpad (build 13910)\n"
+"X-Launchpad-Export-Date: 2011-09-27 04:51+0000\n"
+"X-Generator: Launchpad (build 14028)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -366,15 +366,15 @@ msgstr "Selecione a codificação a utilizar quando salvar o arquivo:"
 
 #: ../data/glade/CSVExporterDialog.ui.h:3
 msgid "Separator:"
-msgstr ""
+msgstr "Separador:"
 
 #: ../data/glade/CallsEditor.ui.h:1
 msgid "Attendant:"
-msgstr ""
+msgstr "Atendente:"
 
 #: ../data/glade/CallsEditor.ui.h:4
 msgid "Message:"
-msgstr ""
+msgstr "Mensagem:"
 
 #: ../data/glade/CashAdvanceEditor.ui.h:1
 msgid "Credit for Employee:"
@@ -428,7 +428,7 @@ msgstr "Nome:"
 #: ../data/glade/ClientDetailsDialog.ui.h:1
 #: ../stoqlib/gui/editors/callseditor.py:37
 msgid "Calls"
-msgstr ""
+msgstr "Chamadas"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:2
 #: ../data/glade/DeliveryEditor.ui.h:4
@@ -1420,7 +1420,7 @@ msgstr "Acréscimo:"
 
 #: ../data/glade/PersonEditorTemplate.ui.h:1
 msgid "Calls..."
-msgstr ""
+msgstr "Chamadas..."
 
 #: ../data/glade/PersonEditorTemplate.ui.h:2
 msgid "Co_ntacts..."
@@ -2065,7 +2065,7 @@ msgstr "Categoria do cliente:"
 
 #: ../data/glade/SalesPersonStep.ui.h:7
 msgid "Client details."
-msgstr ""
+msgstr "Detalhes do cliente."
 
 #: ../data/glade/SalesPersonStep.ui.h:9
 #: ../stoqlib/gui/wizards/loanwizard.py:254
@@ -3766,7 +3766,7 @@ msgstr ""
 
 #: ../stoq/gui/config.py:537
 msgid "You need to install PostgreSQL before moving forward"
-msgstr ""
+msgstr "Você precisa instalar o PostgreSQL antes de avançar"
 
 #: ../stoq/gui/config.py:547
 msgid "Something went wrong while trying to install the PostgreSQL server."
@@ -6401,7 +6401,7 @@ msgstr "Quantidade total"
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:168
 msgid "Lastest purchase"
-msgstr ""
+msgstr "Última compra"
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:170
 msgid "Avg. value"
@@ -6432,7 +6432,7 @@ msgstr "Dias de atraso"
 #: ../stoqlib/gui/dialogs/clientdetails.py:213
 #: ../stoqlib/gui/search/callsearch.py:94
 msgid "Attendant"
-msgstr ""
+msgstr "Atendente"
 
 #: ../stoqlib/gui/dialogs/crashreportdialog.py:61
 #, python-format
@@ -6475,19 +6475,19 @@ msgstr "Dialogo de exportação CSV"
 #. (Name, character)
 #: ../stoqlib/gui/dialogs/csvexporterdialog.py:95
 msgid "Comma"
-msgstr ""
+msgstr "Vírgula"
 
 #: ../stoqlib/gui/dialogs/csvexporterdialog.py:96
 msgid "Semicolon"
-msgstr ""
+msgstr "Ponto e vírgula"
 
 #: ../stoqlib/gui/dialogs/csvexporterdialog.py:97
 msgid "Tab"
-msgstr ""
+msgstr "Tab"
 
 #: ../stoqlib/gui/dialogs/csvexporterdialog.py:98
 msgid "Colon"
-msgstr ""
+msgstr "Dois pontos"
 
 #: ../stoqlib/gui/dialogs/csvexporterdialog.py:110
 msgid "CSV Files"
@@ -8156,11 +8156,11 @@ msgstr "Enviar PDF por e-mail"
 
 #: ../stoqlib/gui/search/callsearch.py:46
 msgid "Sold Items to Client"
-msgstr ""
+msgstr "Itens vendidos ao cliente"
 
 #: ../stoqlib/gui/search/callsearch.py:69
 msgid "Print"
-msgstr ""
+msgstr "Imprimir"
 
 #: ../stoqlib/gui/search/categorysearch.py:44
 msgid "Sellable Category Search"
@@ -11417,25 +11417,25 @@ msgstr "Página % 2d"
 
 #: ../stoqlib/reporting/calls_report.py:36
 msgid "Calls Report"
-msgstr ""
+msgstr "Relatório de chamadas"
 
 #: ../stoqlib/reporting/calls_report.py:37
 msgid "call"
-msgstr ""
+msgstr "chamada"
 
 #: ../stoqlib/reporting/calls_report.py:37
 msgid "calls"
-msgstr ""
+msgstr "chamadas"
 
 #: ../stoqlib/reporting/calls_report.py:42
 #, python-format
 msgid "performed call to %s"
-msgstr ""
+msgstr "chamada realizada para %s"
 
 #: ../stoqlib/reporting/calls_report.py:43
 #, python-format
 msgid "performed calls to %s"
-msgstr ""
+msgstr "chamadas realizadas para %s"
 
 #: ../stoqlib/reporting/loanreceipt.py:42
 msgid "Loan Receipt"
