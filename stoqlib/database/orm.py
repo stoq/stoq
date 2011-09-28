@@ -217,6 +217,9 @@ OR = OR
 sqlIdentifier = sqlIdentifier
 DESC = DESC
 
+class ILIKE(LIKE):
+    op = 'ILIKE'
+
 # Connections
 connectionForURI = connectionForURI
 Transaction = Transaction

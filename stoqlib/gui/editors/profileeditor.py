@@ -104,9 +104,6 @@ class UserProfileEditor(BaseEditor):
     #
 
     def on_profile_name__validate(self, widget, value):
-        conn = get_connection()
-        q1 = const.UPPER(UserProfile.q.name) == value.upper()
-        q2 = UserProfile.q.id != self.model.id
-        query = AND(q1, q2)
-        if UserProfile.select(query, connection=conn):
+        if self.model.check_unique_value_exists('name', value,
+                                                case_sensitive=False):
             return ValidationError('This profile already exists!')
