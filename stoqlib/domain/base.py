@@ -26,7 +26,7 @@
 from zope.interface.interface import adapter_hooks
 
 from stoqlib.database.orm import orm_name, ForeignKey, IntCol
-from stoqlib.database.orm import ORMObject, const, AND, const
+from stoqlib.database.orm import ORMObject, const, AND, const, ILIKE
 from stoqlib.database.runtime import (StoqlibTransaction,
                                       get_current_user, get_current_station)
 from stoqlib.domain.system import TransactionEntry
@@ -199,7 +199,7 @@ class BaseDomain(AbstractModel, ORMObject):
         if case_sensitive:
             query = getattr(self.q, attribute) == value
         else:
-            query = const.UPPER(getattr(self.q, attribute)) == value.upper()
+            query = ILIKE(getattr(self.q, attribute), value)
 
         # Remove ourself from the results.
         if hasattr(self, 'id'):

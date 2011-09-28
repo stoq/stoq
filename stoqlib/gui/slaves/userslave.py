@@ -280,11 +280,8 @@ class UserDetailsSlave(BaseEditorSlave):
         self.username.grab_focus()
 
     def on_username__validate(self, widget, value):
-        # FIXME: Move to Person/IUser
-        user_table = Person.getAdapterClass(IUser)
-        query = const.UPPER(user_table.q.username) == value.upper()
-        user = Person.iselectOne(IUser, query, connection=self.conn)
-        if user and self.model.username != value:
+        if self.model.check_unique_value_exists('username', value,
+                                                case_sensitive=False):
             return ValidationError('Username already exist')
 
     def on_change_password_button__clicked(self, button):
