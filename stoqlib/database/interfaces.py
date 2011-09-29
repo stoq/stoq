@@ -72,6 +72,12 @@ class ITransaction(IConnection):
         @returns: a reference to the same object within the transaction
         """
 
+    def add_created_object(object):
+        """Adds a created C{object} to the transaction.
+
+        @param object: an L{stoqlib.database.orm.ORMObject} subclass
+        """
+
     def add_modified_object(object):
         """Adds a modified object to the transaction.
         It's used to update TransactionEntry to keep a log of all modified object

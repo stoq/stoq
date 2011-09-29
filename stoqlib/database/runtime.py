@@ -48,44 +48,28 @@ class StoqlibTransaction(Transaction):
     implements(ITransaction)
 
     def __init__(self, *args, **kwargs):
-        self._modified_object_sets = [dict()]
         self._savepoints = []
         Transaction.__init__(self, *args, **kwargs)
 
-    def _reset_modified(self):
-        self._modified_object_sets = [dict()]
+        self._user = get_current_user(self)
+        self._station = get_current_station(self)
+        self._reset_pending_objs()
 
-    def _update_transaction_entry(self):
-        fields = dict(te_time=const.NOW())
-        user = get_current_user(self)
-        if user:
-            fields['user_id'] = user.id
+    #
+    #  ITransaction implementation
+    #
 
-        station = get_current_station(self)
-        if station is not None:
-            fields['station_id'] = station.id
-
-        for objdicts in self._modified_object_sets:
-            for table, modified_te_objs in objdicts.iteritems():
-                modified_obj_ids = [m.id for m in modified_te_objs]
-                sql = Update('transaction_entry', fields,
-                             where=IN(const.id, modified_obj_ids))
-                self.query(self.sqlrepr(sql))
-
-                # We changed the object behind ORMObjects back, sync them
-                for modified_te in modified_te_objs:
-                    modified_te.sync()
+    def add_created_object(self, obj):
+        obj_set = self._created_object_sets[-1]
+        obj_set.add(obj)
 
     def add_modified_object(self, obj):
-        if obj.te_modified is not None:
-            objdict = self._modified_object_sets[-1]
-            objset = objdict.setdefault(type(obj), set())
-            objset.add(obj.te_modified)
+        obj_set = self._modified_object_sets[-1]
+        obj_set.add(obj)
 
     def commit(self, close=False):
-        self._update_transaction_entry()
+        self._process_pending_objs()
         Transaction.commit(self, close=close)
-        self._reset_modified()
 
     def rollback(self, name=None):
         if name:
@@ -94,7 +78,7 @@ class StoqlibTransaction(Transaction):
             # FIXME: SQLObject is busted, this is called from __del__
             if Transaction is not None:
                 Transaction.rollback(self)
-            self._reset_modified()
+            self._reset_pending_objs()
 
     def close(self):
         self._connection.close()
@@ -114,7 +98,8 @@ class StoqlibTransaction(Transaction):
         if not sqlIdentifier(name):
             raise ValueError("Invalid savepoint name: %r" % name)
         self.query('SAVEPOINT %s' % name)
-        self._modified_object_sets.append(dict())
+        self._modified_object_sets.append(set())
+        self._created_object_sets.append(set())
         if not name in self._savepoints:
             self._savepoints.append(name)
 
@@ -126,7 +111,55 @@ class StoqlibTransaction(Transaction):
 
         self.query('ROLLBACK TO SAVEPOINT %s' % name)
         self._modified_object_sets.pop()
+        self._created_object_sets.pop()
         self._savepoints.remove(name)
+
+    #
+    #  Private
+    #
+
+    def _process_pending_objs(self):
+        # Fields to update te_modified for modified objs
+        te_fields = {'te_time': const.NOW(),
+                     'user_id': self._user and self._user.id,
+                     'station_id': self._station and self._station.id}
+
+        created_objs = set()
+        modified_objs = set()
+        processed_objs = set()
+
+        while self._need_process_pending():
+            created_objs.update(*self._created_object_sets)
+            modified_objs.update(*self._modified_object_sets)
+
+            # Remove already processed objs (can happen when an obj is
+            # added here again when processing the hooks bellow).
+            created_objs -= processed_objs
+            modified_objs -= processed_objs
+            # Created objs probably was marked as modified too.
+            modified_objs -= created_objs
+
+            # Make sure while will be False on next iteration. Unless any
+            # object is added when processing the hooks bellow.
+            self._reset_pending_objs()
+
+            for created_obj in created_objs:
+                created_obj.on_create()
+                processed_objs.add(created_obj)
+
+            for modified_obj in modified_objs:
+                modified_obj.te_modified.set(**te_fields)
+                modified_obj.on_update()
+                processed_objs.add(modified_obj)
+
+    def _need_process_pending(self):
+        return (any(self._created_object_sets) or
+                any(self._modified_object_sets))
+
+    def _reset_pending_objs(self):
+        self._created_object_sets = [set()]
+        self._modified_object_sets = [set()]
+
 
 def get_connection():
     """This function returns a connection to the current database.
