@@ -147,6 +147,7 @@ class AbstractModel(object):
                 type=entry_type,
                 connection=conn)
         super(AbstractModel, self)._create(*args, **kwargs)
+        conn.add_created_object(self)
 
     def _SO_setValue(self, name, value, from_, to):
         super(AbstractModel, self)._SO_setValue(name, value, from_, to)
@@ -159,6 +160,28 @@ class AbstractModel(object):
     #
     # General methods
     #
+
+    def on_create(self):
+        """Called when C{self} is about to be created on the database
+
+        This hook can be overridden on child classes for improved
+        functionality.
+        @note: A trick you may want to use: Use C{self.get_connection}
+            to get the L{stoqlib.runtime.StoqlibTransaction} in which
+            C{self} lives and do your modifications in it.
+        """
+        pass
+
+    def on_update(self):
+        """Called when C{self} is about to be updated on the database
+
+        This hook can be overridden on child classes for improved
+        functionality.
+        @note: A trick you may want to use: Use C{self.get_connection}
+            to get the L{stoqlib.runtime.StoqlibTransaction} in which
+            C{self} lives and do your modifications in it.
+        """
+        pass
 
     def clone(self):
         """Get a persistent copy of an existent object. Remember that we can
