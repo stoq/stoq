@@ -29,6 +29,8 @@ from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 
+from stoqdrivers.exceptions import CouponOpenError, DriverError
+
 from stoqlib.database.orm import const
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.account import Account, AccountTransaction
@@ -375,7 +377,7 @@ class CashAdvanceEditor(BaseEditor):
             assert till
             try:
                 TillRemoveCashEvent.emit(till=till, value=value)
-            except (TillError, DeviceError), e:
+            except (TillError, DeviceError, DriverError), e:
                 warning(str(e))
                 return None
             till_entry = till.add_debit_entry(
@@ -439,7 +441,7 @@ class CashOutEditor(BaseEditor):
             assert till
             try:
                 TillRemoveCashEvent.emit(till=till, value=value)
-            except (TillError, DeviceError), e:
+            except (TillError, DeviceError, DriverError), e:
                 warning(str(e))
                 return None
 
@@ -497,7 +499,7 @@ class CashInEditor(BaseEditor):
             try:
                 TillAddCashEvent.emit(till=till,
                                       value=self.model.value)
-            except (TillError, DeviceError), e:
+            except (TillError, DeviceError, DriverError), e:
                 warning(str(e))
                 return None
 
