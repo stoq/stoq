@@ -416,6 +416,7 @@ class ECFUI(object):
                 till_entry.description = _("Cash in")
             till_entry.value = -till_entry.value
             last_doc.last_till_entry = None
+            info(_("Document was cancelled"))
         except:
             info(_("Cancelling failed, nothing to cancel"))
             return
@@ -435,6 +436,7 @@ class ECFUI(object):
             connection=trans)
         sale.return_(renegotiation)
         last_doc.last_sale = None
+        info(_("Document was cancelled"))
 
     def _cancel_last_document(self):
         try:
@@ -460,7 +462,6 @@ class ECFUI(object):
             else:
                 self._cancel_last_sale(last_doc, trans)
         trans.commit()
-        info(_("Document was cancelled"))
 
     def _till_summarize(self):
         try:
