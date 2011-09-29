@@ -51,8 +51,6 @@ class StoqlibTransaction(Transaction):
         self._savepoints = []
         Transaction.__init__(self, *args, **kwargs)
 
-        self._user = get_current_user(self)
-        self._station = get_current_station(self)
         self._reset_pending_objs()
 
     #
@@ -120,9 +118,11 @@ class StoqlibTransaction(Transaction):
 
     def _process_pending_objs(self):
         # Fields to update te_modified for modified objs
+        user = get_current_user(self)
+        station = get_current_station(self)
         te_fields = {'te_time': const.NOW(),
-                     'user_id': self._user and self._user.id,
-                     'station_id': self._station and self._station.id}
+                     'user_id': user and user.id,
+                     'station_id': station and station.id}
 
         created_objs = set()
         modified_objs = set()
