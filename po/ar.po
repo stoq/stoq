@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-09-12 16:58-0300\n"
-"PO-Revision-Date: 2011-09-22 05:41+0000\n"
+"PO-Revision-Date: 2011-09-28 17:51+0000\n"
 "Last-Translator: عبدالله شلي (Abdellah Chelli) <Unknown>\n"
 "Language-Team: Arabic <ar@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-09-23 04:42+0000\n"
-"X-Generator: Launchpad (build 14012)\n"
+"X-Launchpad-Export-Date: 2011-09-29 04:39+0000\n"
+"X-Generator: Launchpad (build 14049)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account code:"
@@ -247,7 +247,7 @@ msgstr ""
 #: ../data/glade/BaseSellableCategoryDataSlave.ui.h:5
 #: ../data/glade/ProductTaxTemplateEditor.ui.h:2
 msgid "Tax:"
-msgstr ""
+msgstr "الضريبة:"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:1
 #: ../data/glade/DeviceSettingsEditor.ui.h:1
@@ -268,11 +268,11 @@ msgstr ""
 #: ../stoqlib/gui/search/personsearch.py:277
 #: ../stoqlib/gui/search/stationsearch.py:62
 msgid "Active"
-msgstr ""
+msgstr "نشط"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:2
 msgid "Branch status:"
-msgstr ""
+msgstr "حالة الفرع:"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:3
 #: ../data/glade/TransporterDataSlave.ui.h:5
@@ -286,15 +286,15 @@ msgstr ""
 #: ../stoqlib/domain/test/test_person.py:458
 #: ../stoqlib/gui/search/personsearch.py:278
 msgid "Inactive"
-msgstr ""
+msgstr "غير نشط"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:4
 msgid "Manager:"
-msgstr ""
+msgstr "المدير:"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:5
 msgid "Tax Polity:"
-msgstr ""
+msgstr "السياسة الضريبية:"
 
 #: ../data/glade/BranchDialog.ui.h:3
 #: ../data/glade/CompanyDocumentsSlave.ui.h:1
@@ -305,15 +305,15 @@ msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:4
 msgid "Company Details"
-msgstr ""
+msgstr "تفاصيل الشركة"
 
 #: ../data/glade/BranchDialog.ui.h:5
 msgid "Company Name:"
-msgstr ""
+msgstr "اسم الشركة:"
 
 #: ../data/glade/BranchDialog.ui.h:6 ../data/glade/PersonEditorTemplate.ui.h:6
 msgid "Fax:"
-msgstr ""
+msgstr "الفاكس:"
 
 #: ../data/glade/BranchDialog.ui.h:7
 #: ../data/glade/ProductSupplierEditor.ui.h:8
@@ -327,7 +327,7 @@ msgstr ""
 #: ../data/glade/BranchDialog.ui.h:9 ../data/glade/ContactEditor.ui.h:2
 #: ../data/glade/PersonEditorTemplate.ui.h:13
 msgid "Phone Number:"
-msgstr ""
+msgstr "رقم الهاتف:"
 
 #: ../data/glade/BranchDialog.ui.h:10
 #: ../data/glade/CompanyDocumentsSlave.ui.h:4
@@ -341,15 +341,15 @@ msgstr ""
 
 #: ../data/glade/CSVExporterDialog.ui.h:1
 msgid "Encoding:"
-msgstr ""
+msgstr "الترميز:"
 
 #: ../data/glade/CSVExporterDialog.ui.h:2
 msgid "Select the encoding to use when save the CSV file:"
-msgstr ""
+msgstr "انتق الترميز لحفظ ملف CSV:"
 
 #: ../data/glade/CSVExporterDialog.ui.h:3
 msgid "Separator:"
-msgstr ""
+msgstr "الفاصل:"
 
 #: ../data/glade/CallsEditor.ui.h:1
 msgid "Attendant:"
@@ -357,7 +357,7 @@ msgstr ""
 
 #: ../data/glade/CallsEditor.ui.h:4
 msgid "Message:"
-msgstr ""
+msgstr "الرسالة:"
 
 #: ../data/glade/CashAdvanceEditor.ui.h:1
 msgid "Credit for Employee:"
@@ -383,7 +383,7 @@ msgstr ""
 #: ../data/glade/SaleReturnSlave.ui.h:8
 #: ../data/glade/StartStockDecreaseStep.ui.h:4
 msgid "Reason:"
-msgstr ""
+msgstr "السبب:"
 
 #: ../data/glade/CfopEditor.ui.h:1
 msgid "0.000"
@@ -406,12 +406,12 @@ msgstr ""
 #: ../data/glade/SellableTaxConstantEditor.ui.h:1
 #: ../data/glade/StationEditor.ui.h:3 ../data/glade/TefStep.ui.h:9
 msgid "Name:"
-msgstr ""
+msgstr "الاسم:"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:1
 #: ../stoqlib/gui/editors/callseditor.py:37
 msgid "Calls"
-msgstr ""
+msgstr "مكالمات"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:2
 #: ../data/glade/DeliveryEditor.ui.h:4
@@ -423,7 +423,7 @@ msgstr ""
 #: ../stoqlib/gui/search/paymentsearch.py:139
 #: ../stoqlib/reporting/loanreceipt.py:82 ../stoqlib/reporting/sale.py:79
 msgid "Client:"
-msgstr ""
+msgstr "الزبون:"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:3
 #: ../data/glade/SupplierDetailsDialog.ui.h:1
@@ -449,7 +449,7 @@ msgstr ""
 #: ../data/glade/SupplierDetailsDialog.ui.h:4 ../stoq/gui/purchase.py:175
 #: ../stoq/gui/sales.py:165
 msgid "Products"
-msgstr ""
+msgstr "منتجات"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:7
 #: ../data/glade/ProductStockHistoryDialog.ui.h:6 ../stoq/gui/sales.py:64
@@ -466,13 +466,13 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:442 ../stoqlib/lib/parameters.py:465
 #: ../stoqlib/reporting/sale.py:251
 msgid "Sales"
-msgstr ""
+msgstr "مبيعات"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:8
 #: ../data/glade/ProductionDetailsDialog.ui.h:9 ../stoq/gui/sales.py:166
 #: ../stoqlib/reporting/production.py:200
 msgid "Services"
-msgstr ""
+msgstr "خدمات"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:9
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:8
@@ -483,7 +483,7 @@ msgstr ""
 #: ../data/glade/SupplierDetailsDialog.ui.h:6
 #: ../data/glade/UserStatusSlave.ui.h:3 ../stoqlib/reporting/purchase.py:253
 msgid "Status:"
-msgstr ""
+msgstr "الحالة:"
 
 #: ../data/glade/ClientStatusSlave.ui.h:1
 msgid "Available Credit:"
