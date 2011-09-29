@@ -185,7 +185,7 @@ class StartNewLoanStep(WizardEditorStep):
 
     def on_client__changed(self, widget):
         self.toogle_client_details()
-        client = self.client.get_selected_data()
+        client = self.client.get_selected()
         if not client:
             return
         self.client_category.select(client.category)
