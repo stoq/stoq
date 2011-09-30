@@ -884,7 +884,8 @@ class FirstTimeConfigWizard(BaseWizard):
         return True
 
     def check_incomplete_database(self):
-        logger.info('check_incomplete_database')
+        logger.info('check_incomplete_database (db_is_local=%s)' %
+                (self.db_is_local, ))
         # If we don't have postgres installed we cannot have
         # an incomplete database
         if self.db_is_local and not test_local_database():
@@ -895,6 +896,13 @@ class FirstTimeConfigWizard(BaseWizard):
             if not self.settings.has_database():
                 return False
         except DatabaseError, e:
+            # If we're install stoq locally and hasn't created a database
+            # user yet, we'll receive an authentiction error, there's no
+            # way to reliably check for this but looking for a auth string
+            # should make it work with posgres running in both english and
+            # portuguese
+            if 'auth' in str(e):
+                return False
             msg = (_('It was not possible to connect to the database.') +
                   '\n' + _('Check the server configuration and try again.'))
             warning(msg, str(e))
