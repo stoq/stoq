@@ -73,9 +73,9 @@ class TestTransaction(DomainTest):
 
         dates = [
             ('before create', before),
-            ('create', person.te_created.te_time),
+            #('create', person.te_created.te_time),
             ('after create', created),
-            ('modifiy', person.te_modified.te_time),
+            #('modifiy', person.te_modified.te_time),
             ('after modify', updated),
             ]
         for i in range(len(dates)-1):
