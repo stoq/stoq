@@ -91,7 +91,8 @@ class DependencyChecker(object):
         # FIXME: makes sense to allow Stoq to run with all of these disabled.
         self._check_pyserial(PYSERIAL_REQUIRED)
         self._check_stoqdrivers(STOQDRIVERS_REQUIRED)
-        self._check_gudev(GUDEV_REQUIRED)
+        if platform.system() != 'Windows':
+            self._check_gudev(GUDEV_REQUIRED)
 
     def _error(self, title, msg):
         if self.text_mode:
