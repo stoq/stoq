@@ -253,14 +253,14 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             import psycopg2
         except ImportError:
             self._missing(
-                project="psycopg - PostgreSQL Database adapter for Python",
+                project="psycopg2 - PostgreSQL Database adapter for Python",
                 url='http://www.initd.org/projects/psycopg2',
                 version=version)
 
         psycopg2_version = psycopg2.__version__.split(' ', 1)[0]
         if tuple(map(int, psycopg2_version.split('.'))) < version:
             self._too_old(
-                project="psycopg - PostgreSQL Database adapter for Python",
+                project="psycopg2 - PostgreSQL Database adapter for Python",
                 url='http://www.initd.org/projects/psycopg2',
                 found=psycopg2_version,
                 required=version)
