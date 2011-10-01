@@ -58,7 +58,7 @@ class ProcessView(gtk.ScrolledWindow):
         self._textview.set_cursor_visible(False)
         self._textview.set_wrap_mode(gtk.WRAP_WORD)
         self._textview.set_property('width-request', 1)
-        self.add(self.textview)
+        self.add(self._textview)
         self.show()
         self._textview.show()
 
@@ -115,7 +115,7 @@ class ProcessView(gtk.ScrolledWindow):
     def feed(self, line):
         tbuffer = self._textview.get_buffer()
         tbuffer.insert(tbuffer.get_end_iter(), line)
-        self._view.scroll_to_iter(tbuffer.get_end_iter(), 0.0, False, 0, 0)
+        self._textview.scroll_to_iter(tbuffer.get_end_iter(), 0.0, False, 0, 0)
 
     @property
     def terminal(self):
