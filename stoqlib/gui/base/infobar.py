@@ -25,13 +25,14 @@
 
 import gtk
 
-from stoqlib.gui.base.infobar import InfoBar
 
-class MessageBar(InfoBar):
-    def __init__(self, message, message_type=gtk.MESSAGE_INFO):
-        label = gtk.Label(message)
-        label.set_use_markup(True)
+class InfoBar(gtk.HBox):
+    def __init__(self):
+        gtk.HBox.__init__(self)
 
-        InfoBar.__init__(self)
-        self.get_content_area().add(label)
-        self.set_message_type(message_type)
+    def get_content_area(self):
+        pass
+
+    def add_action_widget(self, widget):
+        pass
+
