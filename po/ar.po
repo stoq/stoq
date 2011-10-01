@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-09-12 16:58-0300\n"
-"PO-Revision-Date: 2011-09-28 17:51+0000\n"
+"PO-Revision-Date: 2011-09-30 11:33+0000\n"
 "Last-Translator: عبدالله شلي (Abdellah Chelli) <Unknown>\n"
 "Language-Team: Arabic <ar@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-09-29 04:39+0000\n"
-"X-Generator: Launchpad (build 14049)\n"
+"X-Launchpad-Export-Date: 2011-10-01 05:09+0000\n"
+"X-Generator: Launchpad (build 14071)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account code:"
@@ -387,7 +387,7 @@ msgstr "السبب:"
 
 #: ../data/glade/CfopEditor.ui.h:1
 msgid "0.000"
-msgstr ""
+msgstr "0,000"
 
 #: ../data/glade/CfopEditor.ui.h:2 ../data/glade/FiscalBookEntryEditor.ui.h:1
 #: ../data/glade/ProductAdjustmentDialog.ui.h:1
@@ -428,12 +428,12 @@ msgstr "الزبون:"
 #: ../data/glade/ClientDetailsDialog.ui.h:3
 #: ../data/glade/SupplierDetailsDialog.ui.h:1
 msgid "Further Details"
-msgstr ""
+msgstr "تفاصيل أكثر"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:4
 #: ../data/glade/SupplierDetailsDialog.ui.h:2
 msgid "Last Purchase Date:"
-msgstr ""
+msgstr "آخر تاريخ شراء:"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:5
 #: ../data/glade/PurchaseDetailsDialog.ui.h:14
@@ -442,7 +442,7 @@ msgstr ""
 #: ../data/glade/SupplierDetailsDialog.ui.h:3
 #: ../plugins/ecf/deviceconstanteditor.py:205
 msgid "Payments"
-msgstr ""
+msgstr "مدفوعات"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:6
 #: ../data/glade/StockDecreaseDetails.ui.h:4
@@ -496,7 +496,7 @@ msgstr ""
 
 #: ../data/glade/ClientStatusSlave.ui.h:5
 msgid "Financial Status:"
-msgstr ""
+msgstr "الوضع المالي:"
 
 #: ../data/glade/CommissionDataSlave.ui.h:1
 msgid " No Commission"
@@ -504,7 +504,7 @@ msgstr ""
 
 #: ../data/glade/CommissionDataSlave.ui.h:4
 msgid "Direct Sale:      "
-msgstr ""
+msgstr "بيع مباشر:      "
 
 #: ../data/glade/CommissionDataSlave.ui.h:5
 msgid "In Installments:"
@@ -529,14 +529,16 @@ msgid ""
 "Creating a new database for Stoq, depending on the speed of your computer "
 "and the server it may take a couple of minutes to finish."
 msgstr ""
+"إنشاء قاعدة بيانات جديدة لـ 'ستوك'، حسب سرعة حاسبك و الخادم قد يأخذ بضع "
+"دقائق للإنتهاء."
 
 #: ../data/glade/CreateDatabaseStep.ui.h:2
 msgid "Show details..."
-msgstr ""
+msgstr "أظهر التفاصيل..."
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:3
 msgid "Closing Day:"
-msgstr ""
+msgstr "يوم الإغلاق:"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:4
 msgid "Credit Fee:"
@@ -544,15 +546,15 @@ msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:5
 msgid "Credit Installment Provider Fee:"
-msgstr ""
+msgstr "رسم الممون لأقساط القرض:"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:6
 msgid "Credit Installments Store Fee:"
-msgstr ""
+msgstr "رسم المخزن لأقساط القرض:"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:7
 msgid "Debit Fee:"
-msgstr ""
+msgstr "رسم الدين:"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:8
 msgid "Debit Pre-Dated Fee:"
@@ -560,7 +562,7 @@ msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:9
 msgid "Fees"
-msgstr ""
+msgstr "رسوم"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:10
 msgid "Max Installments:"
@@ -568,7 +570,7 @@ msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:11
 msgid "Monthly Fee ($CURRENCY):"
-msgstr ""
+msgstr "الرسم الشهري($CURRENCY):"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:12
 #: ../data/glade/TransporterDataSlave.ui.h:6
@@ -577,58 +579,59 @@ msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:13
 msgid "Payment Day:"
-msgstr ""
+msgstr "يوم الدفع:"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:14
 msgid "Provider Id:"
-msgstr ""
+msgstr "رقم تعريف  الممون:"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:15
 msgid "Short Name:"
-msgstr ""
+msgstr "الاسم القصير:"
 
 #: ../data/glade/CreditProviderMethodSlave.ui.h:2
 msgid "Credit Provider:"
-msgstr ""
+msgstr "ممون القرض:"
 
 #: ../data/glade/CreditProviderMethodSlave.ui.h:3
 msgid "Number of Installments:"
-msgstr ""
+msgstr "عدد الأقساط:"
 
 #: ../data/glade/CreditProviderMethodSlave.ui.h:4
 msgid "Payment Type:"
-msgstr ""
+msgstr "طريقة الدفع:"
 
 #: ../data/glade/DatabaseLocationStep.ui.h:1
 msgid "<b>Database location</b>"
-msgstr ""
+msgstr "<b>موقع قاعدة البيانات</b>"
 
 #: ../data/glade/DatabaseLocationStep.ui.h:2
 msgid "I want to manually configure the database connection."
-msgstr ""
+msgstr "أريد إعداد إتصال قاعدة  البيانات يدويا."
 
 #: ../data/glade/DatabaseLocationStep.ui.h:3
 msgid "I want to use Stoq just on this computer."
-msgstr ""
+msgstr "أريد استعمال 'ستوك' في هذا الحاسب فقط."
 
 #: ../data/glade/DatabaseLocationStep.ui.h:4
 #: ../data/glade/InstallationModeStep.ui.h:4
 msgid "Select an option above and then click <b>Forward</b> to continue."
-msgstr ""
+msgstr "انتق خيارا في الأعلى ثم انقر على <b>تابع</b> للمواصلة."
 
 #: ../data/glade/DatabaseLocationStep.ui.h:5
 msgid ""
 "To be able to use Stoq we need make sure that there is a database that we "
 "can connect to."
 msgstr ""
+"حتى يمكنك استعمال 'ستوك' يجب التأكد من وجود قاعدة بيانات يمكن الإتصال بها."
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:1
 msgid "<b>Database Settings</b>"
-msgstr ""
+msgstr "<b>إعدادات قاعدة البيانات</b>"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:2 ../stoqlib/reporting/sale.py:82
 msgid "Address:"
-msgstr ""
+msgstr "العنوان:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:3
 msgid "Authentication:"
@@ -636,39 +639,39 @@ msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:4 ../data/glade/WelcomeStep.ui.h:1
 msgid "Click <b>Forward</b> to continue."
-msgstr ""
+msgstr "انقر على <b>تابع</b> للمواصلة."
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:5
 msgid "Database Name:"
-msgstr ""
+msgstr "اسم قاعدة البيانات:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:6
 #: ../data/glade/PasswordEditorSlave.ui.h:2
 msgid "Password:"
-msgstr ""
+msgstr "كلمة السر:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:7
 msgid "Please, fill the details about your database."
-msgstr ""
+msgstr "من فضلك، إملأ تفاصيل قاعدة البيانات."
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:8
 #: ../data/glade/DeviceSettingsEditor.ui.h:6
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:4
 msgid "Port:"
-msgstr ""
+msgstr "المنفذ:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:9
 #: ../data/glade/UserDetailsSlave.ui.h:4
 msgid "Username:"
-msgstr ""
+msgstr "اسم المستخدم :"
 
 #: ../data/glade/DeliveryEditor.ui.h:1
 msgid "<b>Delivery Address:</b>"
-msgstr ""
+msgstr "<b>عنوان التسليم:</b>"
 
 #: ../data/glade/DeliveryEditor.ui.h:2
 msgid "Additional _Instructions"
-msgstr ""
+msgstr "إرشادات إضافية"
 
 #: ../data/glade/DeliveryEditor.ui.h:3
 msgid "Change _Address"
