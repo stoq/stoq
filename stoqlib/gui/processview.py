@@ -33,7 +33,6 @@ import subprocess
 import glib
 import gtk
 from kiwi.utils import gsignal
-import vte
 
 
 CHILD_TIMEOUT = 100 # in ms
@@ -47,19 +46,21 @@ class ProcessView(gtk.ScrolledWindow):
         gtk.ScrolledWindow.__init__(self)
         self.set_policy(gtk.POLICY_NEVER,
                         gtk.POLICY_AUTOMATIC)
+        self.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         self.listen_stdout = True
         self.listen_stderr = False
         self._source_ids = []
-        self._create_terminal()
+        self._create_view()
 
-    def _create_terminal(self):
-        self._terminal = vte.Terminal()
-        # FIXME: On natty, if we dont set a width-request, the widget will
-        # grow indefinitely
-        self._terminal.set_property('width-request', 1)
-        self.add(self.terminal)
+    def _create_view(self):
+        self._textview = gtk.TextView()
+        self._textview.set_editable(False)
+        self._textview.set_cursor_visible(False)
+        self._textview.set_wrap_mode(gtk.WRAP_WORD)
+        self._textview.set_property('width-request', 1)
+        self.add(self.textview)
         self.show()
-        self._terminal.show()
+        self._textview.show()
 
     def _watch_fd(self, fd):
         fcntl.fcntl(fd, fcntl.F_SETFL, os.O_NONBLOCK)
@@ -112,7 +113,9 @@ class ProcessView(gtk.ScrolledWindow):
         glib.timeout_add(CHILD_TIMEOUT, self._check_child_finished)
 
     def feed(self, line):
-        self._terminal.feed(line)
+        tbuffer = self._textview.get_buffer()
+        tbuffer.insert(tbuffer.get_end_iter(), line)
+        self._view.scroll_to_iter(tbuffer.get_end_iter(), 0.0, False, 0, 0)
 
     @property
     def terminal(self):

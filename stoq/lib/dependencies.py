@@ -48,7 +48,6 @@ PYGTKWEBKIT_REQUIRED = (1, 1, 7)
 PYSERIAL_REQUIRED = (2, 1)
 REPORTLAB_REQUIRED = (2, 4)
 STOQDRIVERS_REQUIRED = (0, 9, 14)
-VTE_REQUIRED = (0, 23)
 TWISTED_REQUIRED = (10, 0)
 ZOPE_INTERFACE_REQUIRED = (3, 0)
 
@@ -71,7 +70,6 @@ class DependencyChecker(object):
         self._check_kiwi(KIWI_REQUIRED)
         self._check_pycairo(PYCAIRO_REQUIRED)
         self._check_pygtkwebkit(PYGTKWEBKIT_REQUIRED)
-        self._check_vte(VTE_REQUIRED)
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
         self._check_dateutil(DATEUTIL_REQUIRED)
         self._check_twisted(TWISTED_REQUIRED)
@@ -193,15 +191,6 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://www.cairographics.org/pycairo/',
                           found=cairo.version,
                           required=version)
-
-    def _check_vte(self, version):
-        try:
-            import vte
-            vte # pyflakes
-        except ImportError:
-            self._missing(project="Vte",
-                          url='http://developer.gnome.org/vte/',
-                          version=version)
 
     def _check_gudev(self, version):
         try:
