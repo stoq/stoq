@@ -111,7 +111,9 @@ def _set_app_info():
     import stoq
     stoq_version = stoq.version
     if hasattr(stoq.library, 'get_revision'):
-        stoq_version += ' r' + stoq.library.get_revision()
+        rev = stoq.library.get_revision()
+        if rev is not None:
+            stoq_version += ' r' + rev
     info = AppInfo()
     info.set("name", "Stoq")
     info.set("version", stoq_version)
