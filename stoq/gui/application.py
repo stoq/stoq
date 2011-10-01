@@ -42,6 +42,7 @@ from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
+from stoqlib.gui.base.infobar import InfoBar
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.printing import print_report
@@ -150,22 +151,11 @@ class AppWindow(BaseAppWindow):
         button = gtk.Button(button_label)
         button.connect('clicked', self._on_enable_production__clicked)
 
-        if hasattr(gtk, 'InfoBar'):
-            bar = gtk.InfoBar()
-            bar.get_content_area().add(label)
-            bar.add_action_widget(button, 0)
-            bar.set_message_type(gtk.MESSAGE_WARNING)
-            bar.show_all()
-        else:
-            bar = gtk.EventBox()
-            hbox = gtk.HBox()
-
-            hbox.pack_start(label)
-            hbox.pack_start(button, False, False, 6)
-
-            bar.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("red"))
-            bar.add(hbox)
-            bar.show_all()
+        bar = InfoBar()
+        bar.get_content_area().add(label)
+        bar.add_action_widget(button, 0)
+        bar.set_message_type(gtk.MESSAGE_WARNING)
+        bar.show_all()
 
         self.main_vbox.pack_start(bar, False, False, 0)
         self.main_vbox.reorder_child(bar, 1)
@@ -408,7 +398,7 @@ class AppWindow(BaseAppWindow):
         label.set_use_markup(True)
         label.show()
 
-        bar = gtk.InfoBar()
+        bar = InfoBar()
         bar.get_content_area().add(label)
         if action_widget:
             bar.add_action_widget(action_widget, 0)
