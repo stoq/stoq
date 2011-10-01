@@ -18,5 +18,7 @@ for name in ['stdout', 'stderr']:
         fp = open(os.devnull, "w")
     setattr(sys, name, fp)
 
+os.environ['PATH'] += os.pathsep + '.'
+
 from stoq.main import main
 sys.exit(main(sys.argv))
