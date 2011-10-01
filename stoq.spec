@@ -22,7 +22,6 @@ Requires: python-psycopg2 >= 2.0.5
 Requires: python-reportlab >= 2.4
 Requires: python-zope-interface >= 3.0.1
 Requires: stoqdrivers >= 0.9.14
-Requires: vte >= 0.28.0
 Requires: pywebkitgtk >= 1.1.7
 Requires: python-twisted-core >= 10.0.0
 Requires: python-twisted-web >= 10.0.0
