@@ -91,7 +91,9 @@ class ProcessView(gtk.ScrolledWindow):
         self.feed('Executing: %s\r\n' % (' '.join(args)))
         kwargs = {}
         child, stdin, stdout, stderr = glib.spawn_async(
-                args, flags=glib.SPAWN_CHILD_INHERITS_STDIN | glib.SPAWN_SEARCH_PATH,
+                args, flags=(glib.SPAWN_CHILD_INHERITS_STDIN |
+                             glib.SPAWN_SEARCH_PATH |
+                             glib.SPAWN_DO_NOT_REAP_CHILD),
                 standard_output=True, standard_error=True)
         glib.child_watch_add(child, self._on_child_finished)
         if self.listen_stdout:
