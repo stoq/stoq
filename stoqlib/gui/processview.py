@@ -26,7 +26,6 @@
 """Process View a simple view of a process' stdout or stderr"""
 
 import errno
-import fcntl
 import os
 import subprocess
 
@@ -63,14 +62,13 @@ class ProcessView(gtk.ScrolledWindow):
         self._textview.show()
 
     def _watch_fd(self, fd):
-        fcntl.fcntl(fd, fcntl.F_SETFL, os.O_NONBLOCK)
         source_id = glib.io_add_watch(fd, glib.IO_IN, self._io_watch)
         self._source_ids.append(source_id)
 
     def _io_watch(self, fd, cond):
         while True:
             try:
-                data = fd.read(N_BYTES)
+                data = os.read(fd, N_BYTES)
             except IOError, e:
                 if e.errno == errno.EAGAIN:
                     break
@@ -84,33 +82,22 @@ class ProcessView(gtk.ScrolledWindow):
                     self.feed(line + '\r\n')
         return True
 
-    def _check_child_finished(self):
-        self.retval = self.proc.poll()
-        finished = self.retval is not None
-        if finished:
-            self._finished()
-        return not finished
-
-    def _finished(self):
+    def _on_child_finished(self, pid, status):
         for source_id in self._source_ids:
             glib.source_remove(source_id)
-        self.emit('finished', self.retval)
+        self.emit('finished', status)
 
     def execute_command(self, args):
         self.feed('Executing: %s\r\n' % (' '.join(args)))
         kwargs = {}
+        child, stdin, stdout, stderr = glib.spawn_async(
+                args, flags=glib.SPAWN_CHILD_INHERITS_STDIN | glib.SPAWN_SEARCH_PATH,
+                standard_output=True, standard_error=True)
+        glib.child_watch_add(child, self._on_child_finished)
         if self.listen_stdout:
-            kwargs['stdout'] = subprocess.PIPE
+            self._watch_fd(stdout)
         if self.listen_stderr:
-            kwargs['stderr'] = subprocess.PIPE
-        self.proc = subprocess.Popen(args, **kwargs)
-        if self.listen_stdout:
-            self._watch_fd(self.proc.stdout)
-        if self.listen_stderr:
-            self._watch_fd(self.proc.stderr)
-
-        # We could probably listen to SIGCHLD here instead
-        glib.timeout_add(CHILD_TIMEOUT, self._check_child_finished)
+            self._watch_fd(stderr)
 
     def feed(self, line):
         tbuffer = self._textview.get_buffer()
@@ -120,3 +107,12 @@ class ProcessView(gtk.ScrolledWindow):
     @property
     def terminal(self):
         return self._terminal
+
+if __name__ == '__main__':
+    w = gtk.Window()
+    w.set_size_request(300, 300)
+    pv = ProcessView()
+    w.add(pv)
+    pv.execute_command(['find', '/tmp'])
+    w.show_all()
+    gtk.main()
