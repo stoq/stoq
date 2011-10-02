@@ -27,12 +27,17 @@
 
 import errno
 import os
-import subprocess
+import platform
 
 import glib
 import gtk
 from kiwi.utils import gsignal
 
+
+if platform.system() != 'Windows':
+    import fcntl
+else:
+    fcntl = None
 
 CHILD_TIMEOUT = 100 # in ms
 N_BYTES = 4096 # a page
@@ -62,6 +67,8 @@ class ProcessView(gtk.ScrolledWindow):
         self._textview.show()
 
     def _watch_fd(self, fd):
+        if fcntl:
+            fcntl.fcntl(fd, fcntl.F_SETFL, os.O_NONBLOCK)
         source_id = glib.io_add_watch(fd, glib.IO_IN, self._io_watch)
         self._source_ids.append(source_id)
 
@@ -69,9 +76,13 @@ class ProcessView(gtk.ScrolledWindow):
         while True:
             try:
                 data = os.read(fd, N_BYTES)
-            except IOError, e:
+            except OSError, e:
                 if e.errno == errno.EAGAIN:
                     break
+                # This is probably wrong, but seems to work
+                elif e.errno == errno.EBADF:
+                    self.emit('finished', 0)
+                    return False
                 else:
                     raise
             if data == '':
@@ -95,6 +106,7 @@ class ProcessView(gtk.ScrolledWindow):
                              glib.SPAWN_SEARCH_PATH |
                              glib.SPAWN_DO_NOT_REAP_CHILD),
                 standard_output=True, standard_error=True)
+
         glib.child_watch_add(child, self._on_child_finished)
         if self.listen_stdout:
             self._watch_fd(stdout)
