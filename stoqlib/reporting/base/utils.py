@@ -72,7 +72,7 @@ def print_file(filename, printer=None, extra_opts=[]):
         import subprocess
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
-        proc = subprocess.Popen(["gsprint", "-query", "-color", filename],
+        proc = subprocess.Popen(["gsprint.exe", "-query", "-color", filename],
                                 startupinfo=startupinfo,
                                 stdout=subprocess.PIPE,
                                 stdin=subprocess.PIPE)
