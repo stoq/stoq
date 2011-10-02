@@ -424,7 +424,7 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
 
     if _fullscreen is not None:
         toplevel.set_position(gtk.WIN_POS_CENTER)
-    elif parent and isinstance(parent, gtk.Window) and parent.get_visible():
+    elif parent and isinstance(parent, gtk.Window) and parent.props.visible:
         toplevel.set_transient_for(parent)
         toplevel.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
     else:

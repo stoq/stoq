@@ -222,7 +222,7 @@ class FieldGrid(gtk.Layout):
 
         field.x, field.y = x, y
 
-        if field.widget.get_visible():
+        if field.widget.props.visible:
             self.queue_resize()
         self.emit('selection-changed', field)
 
@@ -234,7 +234,7 @@ class FieldGrid(gtk.Layout):
 
         field.width, field.height = width, height
 
-        if field.widget.get_visible():
+        if field.widget.props.visible:
             self.queue_resize()
         self.emit('selection-changed', field)
 

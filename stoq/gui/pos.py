@@ -297,7 +297,7 @@ class PosApp(AppWindow):
             Settable(quantity=Decimal(1)), ['quantity'])
 
     def _update_parameter_widgets(self):
-        self.delivery_button.set_visible(self.param.HAS_DELIVERY_MODE)
+        self.delivery_button.props.visible = self.param.HAS_DELIVERY_MODE
 
         window = self.get_toplevel()
         if self.param.POS_FULL_SCREEN:
@@ -308,7 +308,7 @@ class PosApp(AppWindow):
             window.unfullscreen()
 
         for proxy in self.TillMenu.get_proxies():
-            proxy.set_visible(not self.param.POS_SEPARATE_CASHIER)
+            proxy.props.visible = not self.param.POS_SEPARATE_CASHIER
 
         if self.param.CONFIRM_SALES_ON_TILL:
             confirm_label = _("_Close")
@@ -498,8 +498,8 @@ class PosApp(AppWindow):
 
         self.set_sensitive((self.checkout_button,
                             self.ConfirmOrder), has_products or has_services)
-        self.till_status_box.set_visible(not self._sale_started)
-        self.sale_items.set_visible(self._sale_started)
+        self.till_status_box.props.visible = not self._sale_started
+        self.sale_items.props.visible = self._sale_started
 
         self._update_totals()
         self._update_buttons()
