@@ -22,6 +22,8 @@
 
 import gettext
 import locale
+import platform
+import webbrowser
 
 from kiwi.environ import environ
 import gtk
@@ -58,10 +60,10 @@ class WelcomeDialog(gtk.Dialog):
             content = environ.find_resource('html', 'welcome-pt_BR.html')
         else:
             content = environ.find_resource('html', 'welcome.html')
-
         if sysparam(get_connection()).DEMO_MODE:
             content += '?demo-mode'
-        self._view.load_uri('file://' + content)
+        uri = 'file:///' + content
+        self._view.load_uri(uri)
         self.button.grab_focus()
         return super(WelcomeDialog, self).run()
 
@@ -71,5 +73,8 @@ class WelcomeDialog(gtk.Dialog):
         uri = request.props.uri
         if not uri.startswith('file:///'):
             policy.ignore()
-            gtk.show_uri(self.get_screen(), uri,
+            if platform.system() == 'Windows':
+                webbrowser.open(uri, new=True)
+            else:
+                gtk.show_uri(self.get_screen(), uri,
                          gtk.get_current_event_time())
