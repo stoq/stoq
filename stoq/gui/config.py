@@ -47,6 +47,7 @@ if activate tef:
 
 import gettext
 import os
+import platform
 import socket
 
 import gtk
@@ -649,7 +650,10 @@ class CreateDatabaseStep(BaseWizardStep):
         logger.info('_launch_stoqdbadmin')
         self.wizard.disable_back()
         self.wizard.disable_next()
-        args = ['stoqdbadmin', 'init',
+        stoqdbadmin = 'stoqdbadmin'
+        if platform.system() == 'Windows':
+            stoqdbadmin += '.exe'
+        args = [stoqdbadmin, 'init',
                 '--no-load-config',
                 '--no-register-station',
                 '-v']
