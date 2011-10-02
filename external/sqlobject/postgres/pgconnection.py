@@ -96,7 +96,7 @@ class PostgresConnection(DBAPI):
 
     def _setAutoCommit(self, conn, auto):
         # psycopg2 does not have an autocommit method.
-        if hasattr(conn, 'autocommit'):
+        if hasattr(conn, 'autocommit') and callable(conn.autocommit):
             conn.autocommit(auto)
 
     def makeConnection(self):
@@ -109,7 +109,7 @@ class PostgresConnection(DBAPI):
             raise self.module.OperationalError("%s; used connection string %r" % (e, self.dsn))
         if self.autoCommit:
             # psycopg2 does not have an autocommit method.
-            if hasattr(conn, 'autocommit'):
+            if hasattr(conn, 'autocommit') and callable(conn.autocommit):
                 conn.autocommit(1)
         return conn
 
