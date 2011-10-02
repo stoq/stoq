@@ -361,8 +361,8 @@ class AppWindow(BaseAppWindow):
 
         if sysparam(conn).DISABLE_COOKIES:
             self._clear_cookie()
-            self.StoreCookie.set_visible(False)
-            self.ClearCookie.set_visible(False)
+            self.StoreCookie.props.visible = False
+            self.ClearCookie.props.visible = False
 
     def add_debug_ui(self):
         ui_string = """<ui>
