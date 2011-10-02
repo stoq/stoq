@@ -901,7 +901,7 @@ class FirstTimeConfigWizard(BaseWizard):
             # way to reliably check for this but looking for a auth string
             # should make it work with posgres running in both english and
             # portuguese
-            if 'auth' in str(e):
+            if self.db_is_local and 'auth' in str(e):
                 return False
             msg = (_('It was not possible to connect to the database.') +
                   '\n' + _('Check the server configuration and try again.'))
