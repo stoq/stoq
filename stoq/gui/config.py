@@ -734,6 +734,7 @@ class CreateDatabaseStep(BaseWizardStep):
                 warning(_("Something went wrong while trying to create "
                           "the Stoq database"))
             return
+        self.label.set_text("")
         self.wizard.load_config_and_call_setup()
         set_default_profile_settings()
         ensure_admin_user(self.wizard.config.get_password())
