@@ -27,17 +27,6 @@
 import optparse
 import sys
 
-if sys.version_info[0] == 3:
-    raise SystemExit("ERROR: Sorry, Stoq is not yet compatible with Python 3.x.")
-
-try:
-    import pkg_resources
-except ImportError:
-    pass
-
-import stoqlib
-stoqlib # pyflakes
-
 class StoqCommandHandler:
     def __init__(self, prog_name):
         self.prog_name = prog_name
@@ -349,9 +338,9 @@ class StoqCommandHandler:
 
     def opt_shell(self, parser, group):
         group.add_option('-c', '--command',
-                         action="store",
-                         help="Execute SQL command",
-                         dest="command")
+                         action='store',
+                         help='Execute SQL command',
+                         dest='command')
 
     def cmd_import(self, options):
         self._read_config(options, register_station=False)
