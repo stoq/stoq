@@ -143,6 +143,7 @@ class TestProduct(DomainTest):
         storable.increase_stock(1, get_current_branch(self.trans))
         self.assertFalse(product.can_remove())
 
+        # Product was sold.
         sale = self.create_sale()
         sale.add_sellable(product.sellable, quantity=1, price=10)
 
@@ -151,6 +152,32 @@ class TestProduct(DomainTest):
 
         sale.order()
         sale.confirm()
+
+        self.assertFalse(product.can_remove())
+
+        # Product is a component.
+        from stoqlib.domain.product import ProductComponent
+        product = self.create_product(10)
+        component = self.create_product(5)
+        component.addFacet(IStorable, connection=self.trans)
+        self.assertTrue(component.can_remove())
+
+        ProductComponent(product=product,
+                         component=component,
+                         connection=self.trans)
+
+        self.assertFalse(component.can_remove())
+
+        # Product is used in a production.
+        from stoqlib.domain.production import ProductionItem
+        product = self.create_product()
+        storable = product.addFacet(IStorable, connection=self.trans)
+        self.assertTrue(product.can_remove())
+        order = self.create_production_order()
+        ProductionItem(product=product,
+                       order=order,
+                       quantity=1,
+                       connection=self.trans)
 
         self.assertFalse(product.can_remove())
 

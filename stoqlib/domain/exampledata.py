@@ -128,6 +128,12 @@ def create_loan_item(trans):
 def create_call(trans):
     return ExampleCreator.create(trans, 'Calls')
 
+def create_client_category(trans):
+    return ExampleCreator.create(trans, 'ClientCategory')
+
+def create_client_category_price(trans):
+    return ExampleCreator.create(trans, 'ClientCategoryPrice')
+
 
 class ExampleCreator(object):
     def __init__(self):
@@ -159,6 +165,8 @@ class ExampleCreator(object):
             'Bank': self.create_bank,
             'CityLocation': self.get_location,
             'CfopData': self.create_cfop_data,
+            'ClientCategory': self.create_client_category,
+            'ClientCategoryPrice': self.create_client_category_price,
             'EmployeeRole': self.create_employee_role,
             'FiscalBookEntry' : self.create_fiscal_book_entry,
             'IClient': self.create_client,
@@ -367,6 +375,14 @@ class ExampleCreator(object):
     def create_client_category(self, name='Category 1'):
         from stoqlib.domain.person import ClientCategory
         return ClientCategory(name=name, connection=self.trans)
+
+    def create_client_category_price(self):
+        from stoqlib.domain.sellable import ClientCategoryPrice
+        sellable = self.create_sellable(price=50)
+        return ClientCategoryPrice(sellable=sellable,
+                                   category=self.create_client_category(),
+                                   price=100,
+                                   connection=self.trans)
 
     def create_stock_decrease(self):
         from stoqlib.domain.stockdecrease import StockDecrease

@@ -33,6 +33,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.sellable import (BaseSellableInfo, Sellable,
                                      SellableUnit, SellableCategory)
+from stoqlib.domain.production import ProductionService
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -63,6 +64,11 @@ class Service(Domain):
         if self == sysparam(self.get_connection()).DELIVERY_SERVICE:
             # The delivery item cannot be deleted as it's important
             # for creating deliveries.
+            return False
+
+        # False if the service is used in a production.
+        if ProductionService.selectBy(connection=self.get_connection(),
+                                      service=self).count():
             return False
 
         return True
