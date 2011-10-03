@@ -201,10 +201,11 @@ class DatabaseSettings(object):
         to the command line tool of a database such as psql"""
         args = []
         if self.rdbms == 'postgres':
+            # Postgres on windows wants -U first
+            args.extend(['-U', self.username])
             # Password goes via ~/.pgpass
             if self.address:
                 args.extend(['-h', self.address])
-            args.extend(['-U', self.username])
             args.extend(['-p', str(self.port)])
         else:
             raise NotImplementedError(self.rdbms)

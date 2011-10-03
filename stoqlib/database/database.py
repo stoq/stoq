@@ -114,11 +114,10 @@ def execute_sql(filename):
         #    the error occurred.
         # 3) Do not print anything on the output unless it's an warning or a
         #    an error
-        args = ['psql', '-n', '-q',
-                '--variable', 'ON_ERROR_STOP=',
-                '-f', '-']
+        args = ['psql']
+        # -U needs to go in first or psql on windows get confused
         args.extend(settings.get_tool_args())
-        args.append(settings.dbname)
+        args.extend(['-n', '-q'])
 
         kwargs = {}
         if _system == 'Windows':
@@ -126,6 +125,25 @@ def execute_sql(filename):
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
             kwargs['startupinfo'] = startupinfo
+            # For some reason XP doesn't like interacting with
+            # proceses via pipes
+            read_from_pipe = False
+        else:
+            read_from_pipe = True
+
+        # We have two different execution modes,
+        # 1) open stdin (-) and write the data via a pipe,
+        #    this allows us to also disable noticies and info messages,
+        #    so that only warnings are printed, we also fail if a warning
+        #    or error is printed
+        # 2) Pass in the file normally to psql, no error reporting included
+        if read_from_pipe:
+            args.extend(['-f', '-'])
+            args.extend(['--variable', 'ON_ERROR_STOP='])
+        else:
+            args.extend(['-f', filename])
+
+        args.append(settings.dbname)
         log.debug('executing %s' % (' '.join(args), ))
         proc = subprocess.Popen(args,
                                 stdin=subprocess.PIPE,
@@ -133,15 +151,18 @@ def execute_sql(filename):
                                 stderr=subprocess.PIPE,
                                 **kwargs)
 
-        # We don't want to see notices on the output, skip them,
-        # this will make all reported line numbers offset by 1
-        proc.stdin.write("SET SESSION client_min_messages TO 'warning';");
+        if read_from_pipe:
+            # We don't want to see notices on the output, skip them,
+            # this will make all reported line numbers offset by 1
+            proc.stdin.write("SET SESSION client_min_messages TO 'warning';");
 
-        data = open(filename).read()
-        # Rename serial into bigserial, for 64-bit id columns
-        data = data.replace('id serial', 'id bigserial')
+            data = open(filename).read()
+            # Rename serial into bigserial, for 64-bit id columns
+            data = data.replace('id serial', 'id bigserial')
+        else:
+            data = None
         stdout, stderr = proc.communicate(data)
-        if stderr:
+        if read_from_pipe and stderr:
             raise SQLError(stderr[:-1])
         return proc.returncode
     else:
