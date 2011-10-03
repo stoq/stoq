@@ -88,14 +88,18 @@ def collect_report():
     kiwi_version = '.'.join(map(str, kiwi.__version__.version))
     if hasattr(kiwi, 'library'):
         if hasattr(kiwi.library, 'get_revision'):
-            kiwi_version += ' r' + kiwi.library.get_revision()
+            revision = kiwi.library.get_revision()
+            if revision is not None:
+                kiwi_version += ' r' + revision
     text += "Kiwi version: %s\n" % (kiwi_version, )
 
     # Stoqdrivers
     import stoqdrivers
     stoqdrivers_version = '.'.join(map(str, stoqdrivers.__version__))
     if hasattr(stoqdrivers.library, 'get_revision'):
-        stoqdrivers_version += ' r' + stoqdrivers.library.get_revision()
+            revision = stoqdrivers.library.get_revision()
+            if revision is not None:
+                stoqdrivers_version += ' r' + revision
     text += "Stoqdrivers version: %s\n" % (stoqdrivers_version, )
 
     # App version
