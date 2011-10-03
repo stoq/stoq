@@ -28,6 +28,7 @@
 
 import os
 import platform
+import socket
 import subprocess
 import time
 
@@ -195,20 +196,29 @@ def start_shell(command=None, quiet=False):
 
 def test_local_database():
     """Check and see if we postgres running locally"""
+    if _system == 'Windows':
+        # Windows uses local sockets, just try and see if a connection
+        # can be established
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            s.connect(('127.0.0.1', 5432))
+        except socket.error:
+            return False
+        return True
+    else:
+        # default location for unix socket files is /tmp,
+        # ubuntu/debian patches that to /var/run/postgresl
+        for pgdir in ['/tmp', '/var/run/postgresql']:
+            if (not os.path.exists(pgdir) and
+                not os.path.isdir(pgdir)):
+                continue
 
-    # default location for unix socket files is /tmp,
-    # ubuntu/debian patches that to /var/run/postgresl
-    for pgdir in ['/tmp', '/var/run/postgresql']:
-        if (not os.path.exists(pgdir) and
-            not os.path.isdir(pgdir)):
-            continue 
-
-        # Check for the default unix socket which
-        # we will later use to create a database user
-        fname = os.path.join(pgdir, '.s.PGSQL.5432')
-        if os.path.exists(fname):
-            return True
-    return False
+            # Check for the default unix socket which
+            # we will later use to create a database user
+            fname = os.path.join(pgdir, '.s.PGSQL.5432')
+            if os.path.exists(fname):
+                return True
+        return False
 
 def test_connection():
     """Test database connectivity for using command line tools
