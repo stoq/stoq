@@ -28,6 +28,10 @@ import os
 import platform
 import tempfile
 
+from kiwi.log import Logger
+
+log = Logger('reporting.utils')
+
 # a list of programs to be tried when a report needs be viewed
 _system = platform.system()
 PROGRAMS = [('evince', '--preview'), ('xpdf', '-z 100'), 'ggv']
@@ -68,19 +72,14 @@ def print_file(filename, printer=None, extra_opts=[]):
         options += " -P%s" % printer
     if _system == "Linux":
         ret = os.system("lpr %s %s" % (options, filename))
+        os.remove(filename)
     elif _system == "Windows":
-        import subprocess
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
-        proc = subprocess.Popen(["gsprint.exe", "-query", "-color", filename],
-                                startupinfo=startupinfo,
-                                stdout=subprocess.PIPE,
-                                stdin=subprocess.PIPE)
-        ret = proc.wait()
+        log.info("Starting PDF reader for %r" % (filename, ))
+        # Simply execute the file
+        os.startfile(filename)
     else:
         raise SystemExit("unknown system: %s" % (_system, ))
 
-    os.remove(filename)
     return ret
 
 def print_preview(filename, keep_file=False):
