@@ -137,10 +137,6 @@ class CallsSearch(SearchEditor):
         run_dialog(CSVExporterDialog, self, self.conn, self.search_table,
                    self.results)
 
-    def on_selection_changed(self, results, selected):
-        can_edit = bool(selected)
-        self.set_edit_button_sensitive(can_edit)
-
     def _on_results__has_rows(self, widget, has_rows):
         self.print_button.set_sensitive(has_rows)
         self.csv_button.set_sensitive(has_rows)

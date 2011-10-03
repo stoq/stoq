@@ -580,6 +580,9 @@ class SearchEditor(SearchDialog):
         self._selected = None
         self.update_widgets()
 
+        self.set_edit_button_sensitive(False)
+        self.results.connect('selection-changed', self._on_selection_changed)
+
 
     def _setup_slaves(self):
         self._toolbar = SearchEditorToolBar()
@@ -710,6 +713,10 @@ class SearchEditor(SearchDialog):
 
     def _on_toolbar__new(self, toolbar):
         self.run()
+
+    def _on_selection_changed(self, results, selected):
+        can_edit = bool(selected)
+        self.set_edit_button_sensitive(can_edit)
 
     #
     # Hooks
