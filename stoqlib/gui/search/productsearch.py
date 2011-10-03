@@ -93,8 +93,6 @@ class ProductSearch(SearchEditor):
                               hide_toolbar=hide_toolbar,
                               selection_mode=selection_mode)
         self.set_searchbar_labels(_('matching'))
-        self.set_edit_button_sensitive(False)
-        self.results.connect('selection-changed', self.on_selection_changed)
         self._setup_print_slave()
 
     def _setup_print_slave(self):
@@ -200,10 +198,6 @@ class ProductSearch(SearchEditor):
     def _on_export_csv_button__clicked(self, widget):
         run_dialog(CSVExporterDialog, self, self.conn, self.search_table,
                    self.results)
-
-    def on_selection_changed(self, results, selected):
-        can_edit = bool(selected)
-        self.set_edit_button_sensitive(can_edit)
 
     def _on_results__has_rows(self, widget, has_rows):
         self.csv_button.set_sensitive(has_rows)
