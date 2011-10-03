@@ -65,9 +65,19 @@ class TestService(DomainTest):
         service = self.create_service()
         self.assertTrue(service.can_remove())
 
+        # Service already used.
         sale = self.create_sale()
         sale.add_sellable(service.sellable, quantity=1, price=10)
         self.assertFalse(service.sellable.can_remove())
+
+        # Service is used in a production.
+        from stoqlib.domain.production import ProductionService
+        service = self.create_service()
+        self.assertTrue(service.can_remove())
+        ProductionService(service=service,
+                          order=self.create_production_order(),
+                          connection=self.trans)
+        self.assertFalse(service.can_remove())
 
 class TestServiceView(DomainTest):
 

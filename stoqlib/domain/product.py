@@ -181,13 +181,22 @@ class Product(Domain):
     def can_remove(self):
         """Whether we can delete this sellable from the database.
 
-        False if the product/service was never sold or received. True
-        otherwise.
+        False if the product/service was sold, received or used in a
+        production. True otherwise.
         """
+        from stoqlib.domain.production import ProductionItem
         if self.get_history().count():
             return False
         elif IStorable(self).get_stock_items().count():
             return False
+        # Return False if the product is component of other.
+        elif ProductComponent.selectBy(connection=self.get_connection(),
+                                       component=self).count():
+            return False
+        # Return False if the component(product) is used in a production.
+        elif ProductionItem.selectBy(connection=self.get_connection(),
+                                     product=self).count():
+             return False
         return True
 
     #

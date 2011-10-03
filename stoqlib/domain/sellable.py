@@ -261,6 +261,9 @@ class ClientCategoryPrice(Domain):
     def category_name(self):
         return self.category.name
 
+    def remove(self):
+        """Removes this client category price from the database."""
+        self.delete(self.id, self.get_connection())
 
 class Sellable(Domain):
     """ Sellable information of a certain item such a product
@@ -481,8 +484,9 @@ class Sellable(Domain):
     def can_remove(self):
         """Whether we can delete this sellable from the database.
 
-        False if the product/service was never sold or received. True
-        otherwise.
+        False if the product/service was used in some cases below:
+            - Sold or received
+            - The product is in a purchase
         """
         from stoqlib.domain.sale import SaleItem
         if SaleItem.selectBy(connection=self.get_connection(),
@@ -491,6 +495,12 @@ class Sellable(Domain):
             # Quotes (and maybe other cases) don't go to the history,
             # so make sure there's nothing left on SaleItem referencing
             # this sellable.
+            return False
+
+        # If the product is in a purchase.
+        from stoqlib.domain.purchase import PurchaseItem
+        if PurchaseItem.selectBy(connection=self.get_connection(),
+                                 sellable=self).count():
             return False
 
         if self.product:
@@ -667,6 +677,11 @@ class Sellable(Domain):
         service).
         """
         assert self.can_remove()
+
+        # Remove category price before delete the sellable.
+        category_prices = self.get_category_prices()
+        for category_price in category_prices:
+            category_price.remove()
 
         if self.product:
             self.product.remove()

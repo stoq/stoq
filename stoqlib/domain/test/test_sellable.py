@@ -350,9 +350,47 @@ class TestSellable(DomainTest):
         sale.add_sellable(sellable)
         self.failIf(sellable.can_remove())
 
+        # Can't remove the sellable if it's in a purchase.
+        from stoqlib.domain.purchase import PurchaseItem
+        sellable = self.create_sellable()
+        sellable.product.addFacet(IStorable, connection=self.trans)
+        self.assertTrue(sellable.can_remove())
+        PurchaseItem(connection=self.trans,
+                     quantity=8, quantity_received=0,
+                     cost=125, base_cost=125,
+                     sellable=sellable,
+                     order=self.create_purchase_order())
+        self.assertFalse(sellable.can_remove())
+
         # The delivery service cannot be removed.
         sellable = sysparam(self.trans).DELIVERY_SERVICE.sellable
         self.failIf(sellable.can_remove())
+
+    def testRemove(self):
+        # Remove category price and sellable
+        sellable = self.create_sellable()
+        storable = sellable.product.addFacet(IStorable, connection=self.trans)
+
+        ClientCategoryPrice(sellable=sellable,
+                            category=self.create_client_category(),
+                            price=100,
+                            connection=self.trans)
+
+        total = ClientCategoryPrice.selectBy(sellable=sellable.id,
+                                             connection=self.trans).count()
+        total_sellable = Sellable.selectBy(id=sellable.id,
+                                           connection=self.trans).count()
+
+        self.assertEquals(total, 1)
+        self.assertEquals(total_sellable, 1)
+
+        sellable.remove()
+        total = ClientCategoryPrice.selectBy(sellable=sellable.id,
+                                             connection=self.trans).count()
+        total_sellable = Sellable.selectBy(id=sellable.id,
+                                           connection=self.trans).count()
+        self.assertEquals(total, 0)
+        self.assertEquals(total_sellable, 0)
 
     def test_category_price(self):
         sellable = self.create_sellable(price=100)
@@ -369,3 +407,15 @@ class TestSellable(DomainTest):
 
         self.assertEquals(sellable.get_price_for_category(category1), 155)
         self.assertEquals(sellable.get_price_for_category(category2), 100)
+        
+    def test_remove_category_price(self):
+        from stoqlib.domain.sellable import ClientCategoryPrice
+        category_price = self.create_client_category_price()
+
+        total = ClientCategoryPrice.selectBy(connection=self.trans).count()
+        self.assertEquals(total, 1)
+
+        category_price.remove()
+        total = ClientCategoryPrice.selectBy(connection=self.trans).count()
+        self.assertEquals(total, 0)
+

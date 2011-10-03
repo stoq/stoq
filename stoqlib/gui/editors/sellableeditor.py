@@ -30,6 +30,7 @@ from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType, UnitType
 
+from stoqlib.database.exceptions import IntegrityError
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import ClientCategory
 from stoqlib.domain.sellable import (SellableCategory, Sellable,
@@ -42,7 +43,7 @@ from stoqlib.gui.editors.baseeditor import (BaseEditor,
                                             BaseRelationshipEditorSlave)
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
-from stoqlib.lib.message import info, yesno
+from stoqlib.lib.message import info, yesno, warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_price_format_str, get_formatted_cost
@@ -473,12 +474,18 @@ class SellableEditor(BaseEditor):
     #
 
     def _on_delete_button__clicked(self, button, parent_button_label=None):
+        sellable_description = self._sellable.get_description()
         msg = (_("This will delete '%s' from the database. Are you sure?")
-                 % self._sellable.get_description())
+                 % sellable_description)
         if not yesno(msg, gtk.RESPONSE_NO, _("Delete"), _("Keep")):
             return
 
-        self._sellable.remove()
+        try:
+            self._sellable.remove()
+        except IntegrityError, details:
+            warning(_("It was not possible to remove '%s'")
+                      % sellable_description, str(details))
+            return
         # We don't call self.confirm since it will call validate_confirm
         self.cancel()
         self.main_dialog.retval = True
