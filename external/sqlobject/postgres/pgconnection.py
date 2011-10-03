@@ -240,8 +240,12 @@ class PostgresConnection(DBAPI):
         return bool(res)
 
     def dbVersion(self):
+        # PostgreSQL 8.4.8 on i686-pc-linux-gnu,
+        # PostgreSQL 8.4.8, compiled by Visual C++
         version_string = self.queryOne('SELECT VERSION();')[0]
         version = version_string.split(' ', 2)[1]
+        if version.endswith(','):
+            version = version[:-1]
         return tuple(map(int, version.split('.')))
 
     def addColumn(self, tableName, column):
