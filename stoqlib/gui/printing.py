@@ -212,7 +212,7 @@ def print_report(report_class, *args, **kwargs):
     if kwargs.has_key('filters') and kwargs['filters']:
         kwargs = describe_search_filters_for_reports(**kwargs)
 
-    tmp = tempfile.mktemp(prefix='stoqlib-reporting')
+    tmp = tempfile.mktemp(suffix='.pdf', prefix='stoqlib-reporting')
     report = report_class(tmp, *args, **kwargs)
     report.filename = tmp
     report.save()
@@ -235,7 +235,7 @@ def print_report(report_class, *args, **kwargs):
     if kwargs.has_key('filters') and kwargs['filters']:
         kwargs = describe_search_filters_for_reports(**kwargs)
 
-    tmp = tempfile.mktemp(prefix='stoqlib-reporting')
+    tmp = tempfile.mktemp(suffix='.pdf', prefix='stoqlib-reporting')
     report = report_class(tmp, *args, **kwargs)
     report.filename = tmp
     report.save()
