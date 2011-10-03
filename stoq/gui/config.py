@@ -653,6 +653,8 @@ class CreateDatabaseStep(BaseWizardStep):
         stoqdbadmin = 'stoqdbadmin'
         if platform.system() == 'Windows':
             stoqdbadmin += '.exe'
+            # FIXME: listen to file input for 
+            #        APPDATA/stoqdbadmin/stderr.log+stdout.log
         args = [stoqdbadmin, 'init',
                 '--no-load-config',
                 '--no-register-station',
