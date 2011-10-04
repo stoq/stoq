@@ -58,6 +58,7 @@ class InfoBar(gtk.HBox):
     def __init__(self, message_type=gtk.MESSAGE_INFO):
         gtk.HBox.__init__(self)
         self._message_type = message_type
+        self.update_colors()
         self._create_ui()
 
     def _create_ui(self):
