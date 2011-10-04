@@ -136,7 +136,7 @@ class InfoBar(gtk.HBox):
         if isinstance(child, gtk.Button):
             def activated(*unused):
                 response_id = get_response_for_widget(child)
-                self.response(child, response_id)
+                self.response(response_id)
             child.connect('clicked', activated)
 
         self._action_area.pack_end(child, False, False, 0)
