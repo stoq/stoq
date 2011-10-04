@@ -378,4 +378,5 @@ class PurchaseQuoteReport(BaseStoqReport):
         self.add_signatures([_(u"Responsible")])
 
     def get_title(self):
-        return self.report_name
+        order_number = self._quote.get_order_number_str()
+        return _("%s #%s") % (self.report_name, order_number)
