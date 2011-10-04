@@ -76,7 +76,7 @@ def print_file(filename, printer=None, extra_opts=[]):
     elif _system == "Windows":
         log.info("Starting PDF reader for %r" % (filename, ))
         # Simply execute the file
-        os.startfile(filename)
+        ret = os.startfile(filename)
     else:
         raise SystemExit("unknown system: %s" % (_system, ))
 
