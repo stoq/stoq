@@ -169,7 +169,7 @@ class ProductionOrderReport(BaseStoqReport):
             total_lost += material.lost
             total_purchase += material.to_purchase
             total_make += material.to_make
-        extra_row = ['', _(u'Totals:'), format_quantity(total_needed),
+        extra_row = ['', '', _(u'Totals:'), format_quantity(total_needed),
                      format_quantity(total_lost),
                      format_quantity(total_purchase),
                      format_quantity(total_make)]
@@ -180,16 +180,18 @@ class ProductionOrderReport(BaseStoqReport):
         return [
             OTC(_(u'Description'), lambda obj: '%s' % obj.get_description(),
                 expand=True, truncate=True),
+            OTC(_(u'Location'), lambda obj: '%s' % obj.product.location,
+                width=80),
             OTC(_(u'Unit'), lambda obj: '%s' % obj.get_unit_description(),
                 align=LEFT, width=60),
             OTC(_(u'Needed'), lambda obj: '%s' % format_quantity(
-                obj.needed), align=RIGHT, width=100),
+                obj.needed), align=RIGHT, width=80),
             OTC(_(u'Lost'), lambda obj: '%s' % format_quantity(
-               obj.lost), align=RIGHT, width=100),
+               obj.lost), align=RIGHT, width=80),
             OTC(_(u'To Purchase'), lambda obj: '%s' % format_quantity(
-               obj.to_purchase), align=RIGHT, width=100),
+               obj.to_purchase), align=RIGHT, width=80),
             OTC(_(u'To Make'), lambda obj: '%s' % format_quantity(
-               obj.to_make), align=RIGHT, width=100),]
+               obj.to_make), align=RIGHT, width=80),]
 
     def _setup_service_items_table(self):
         services = list(self._production.get_service_items())

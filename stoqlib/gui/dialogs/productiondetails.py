@@ -79,6 +79,7 @@ class ProductionDetailsDialog(BaseEditor):
                        title=_('Description'),
                        data_type=str, expand=True, searchable=True,
                        ellipsize=pango.ELLIPSIZE_END),
+                Column('product.location', _("Location"), data_type=str),
                 Column('unit_description', _("Unit"),
                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('needed', title=_('Needed'),
