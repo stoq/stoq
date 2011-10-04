@@ -81,6 +81,9 @@ class TillApp(SearchableAppWindow):
         self._setup_widgets()
         self.refresh()
 
+        # FIXME: Do this in application.py
+        self.activate()
+
     #
     # Application
     #
@@ -159,6 +162,10 @@ class TillApp(SearchableAppWindow):
 
     def activate(self):
         self._printer.check_till()
+        self.check_open_inventory()
+
+    def set_open_inventory(self):
+        self.set_sensitive(self._inventory_widgets, False)
 
     def create_filters(self):
         self.executer.set_query(self._query_executer)
@@ -222,7 +229,6 @@ class TillApp(SearchableAppWindow):
         self._printer.connect('ecf-changed',
                               self._on_PrinterHelper__ecf_changed)
         self._printer.setup_midnight_check()
-        self._printer.check_till()
 
     def _get_status_values(self):
         statuses = [(v, k) for k, v in Sale.statuses.items()]
@@ -312,6 +318,12 @@ class TillApp(SearchableAppWindow):
         return till.get_balance()
 
     def _setup_widgets(self):
+        # SearchSale is here because it's possible to return a sale inside it
+        self._inventory_widgets = [self.confirm_order_button, self.SearchSale,
+                                   self.return_button]
+        self.register_sensitive_group(self._inventory_widgets,
+                                      lambda: not self.has_open_inventory())
+
         logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
         logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
                                                     LOGO_HEIGHT)
@@ -330,9 +342,9 @@ class TillApp(SearchableAppWindow):
         else:
             can_confirm = can_return = False
 
-        self.details_button.set_sensitive(bool(sale_view))
-        self.confirm_order_button.set_sensitive(can_confirm)
-        self.return_button.set_sensitive(can_return)
+        self.set_sensitive([self.details_button], bool(sale_view))
+        self.set_sensitive([self.confirm_order_button], can_confirm)
+        self.set_sensitive([self.return_button], can_return)
 
     def _check_selected(self):
         sale_view = self.results.get_selected()
@@ -362,12 +374,9 @@ class TillApp(SearchableAppWindow):
             return
 
         # We dont have an ecf. Disable till related operations
-        self.TillOpen.set_sensitive(has_ecf)
-        self.TillClose.set_sensitive(has_ecf)
-        self.TillAddCash.set_sensitive(has_ecf)
-        self.TillRemoveCash.set_sensitive(has_ecf)
-        self.SearchTillHistory.set_sensitive(has_ecf)
-        self.app_vbox.set_sensitive(has_ecf)
+        widgets = [self.TillOpen, self.TillClose, self.TillAddCash,
+                   self.TillRemoveCash, self.SearchTillHistory, self.app_vbox]
+        self.set_sensitive(widgets, has_ecf)
         text = _(u"Till operations requires a connected fiscal printer")
         self.till_status_label.set_text(text)
 
@@ -378,12 +387,12 @@ class TillApp(SearchableAppWindow):
         # - Till is opened
         # - Till was not closed the previous fiscal day (blocked)
 
-        self.TillOpen.set_sensitive(closed)
-        self.TillClose.set_sensitive(not closed or blocked)
-        self.TillAddCash.set_sensitive(not closed and not blocked)
-        self.TillRemoveCash.set_sensitive(not closed and not blocked)
-        self.SearchTillHistory.set_sensitive(not closed and not blocked)
-        self.app_vbox.set_sensitive(not closed and not blocked)
+        self.set_sensitive([self.TillOpen], closed)
+        self.set_sensitive([self.TillClose], not closed or blocked)
+
+        widgets = [self.TillAddCash, self.TillRemoveCash,
+                   self.SearchTillHistory, self.app_vbox]
+        self.set_sensitive(widgets, not closed and not blocked)
 
         if closed:
             text = _(u"Till closed")

@@ -67,6 +67,9 @@ from stoq.gui.application import SearchableAppWindow
 _ = gettext.gettext
 
 class PurchaseApp(SearchableAppWindow):
+
+    # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
+
     app_name = _('Purchase')
     app_icon_name = 'stoq-purchase-app'
     gladefile = "purchase"

@@ -48,6 +48,9 @@ _ = gettext.gettext
 
 
 class InventoryApp(SearchableAppWindow):
+
+    # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
+
     app_name = _('Inventory')
     app_icon_name = 'stoq-inventory-app'
     gladefile = "inventory"

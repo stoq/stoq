@@ -76,9 +76,11 @@ class StockApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
-        self.check_open_inventory()
         self._setup_widgets()
         self._update_widgets()
+
+        # FIXME: Do this in application.py
+        self.activate()
 
     #
     # Application
@@ -206,12 +208,7 @@ class StockApp(SearchableAppWindow):
                                                   connection=conn)
 
     def set_open_inventory(self):
-        self.StockTransfer.set_sensitive(False)
-        self.StockReceive.set_sensitive(False)
-        self.StockInitial.set_sensitive(False)
-        self.StockDecrease.set_sensitive(False)
-        self.LoanNew.set_sensitive(False)
-        self.LoanClose.set_sensitive(False)
+        self.set_sensitive(self._inventory_widgets, False)
 
     def activate(self):
         self.check_open_inventory()
@@ -232,6 +229,12 @@ class StockApp(SearchableAppWindow):
         return items
 
     def _setup_widgets(self):
+        self._inventory_widgets = [self.StockTransfer, self.StockReceive,
+                                   self.StockInitial, self.StockDecrease,
+                                   self.LoanNew, self.LoanClose]
+        self.register_sensitive_group(self._inventory_widgets,
+                                      lambda: not self.has_open_inventory())
+
         self.image_viewer = None
         space = gtk.EventBox()
         space.show()
@@ -278,16 +281,18 @@ class StockApp(SearchableAppWindow):
         else:
             self.image.set_from_stock('gtk-edit', gtk.ICON_SIZE_DIALOG)
 
-        self.image_button.set_sensitive(bool(item))
-        self.history_button.set_sensitive(bool(item) and is_main_branch)
-        self.print_button.set_sensitive(has_stock)
+        self.set_sensitive([self.image_button], bool(item))
+        self.set_sensitive([self.history_button],
+                           bool(item) and is_main_branch)
+        self.set_sensitive([self.print_button], has_stock)
         # We need more than one branch to be able to do transfers
         # Note that 'all branches' is not a real branch
         has_branches = len(self.branch_filter.combo) > 2
 
         transfer_active = self.StockTransfer.get_sensitive()
-        self.StockTransfer.set_sensitive(transfer_active and has_branches)
-        self.SearchTransfer.set_sensitive(has_branches)
+        self.set_sensitive([self.StockTransfer],
+                           transfer_active and has_branches)
+        self.set_sensitive([self.SearchTransfer], has_branches)
 
     def _update_filter_slave(self, slave):
         self.refresh()

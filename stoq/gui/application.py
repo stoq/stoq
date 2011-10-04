@@ -117,9 +117,6 @@ class AppWindow(BaseAppWindow):
                 'operations that modify your stock.')
         self.inventory_bar = self.add_info_bar(gtk.MESSAGE_WARNING, msg)
 
-    def _remove_open_inventory_message(self):
-        self.inventory_bar.hide()
-
     def _usability_hacks(self):
         """Adds some workarounds to improve stoq usability.
 
@@ -380,12 +377,21 @@ class AppWindow(BaseAppWindow):
 
         self.add_ui_actions(ui_string, actions, 'DebugActions')
 
+    def has_open_inventory(self):
+        return Inventory.has_open(self.conn, get_current_branch(self.conn))
+
     def check_open_inventory(self):
-        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
-            self._display_open_inventory_message()
+        inventory_bar = getattr(self, 'inventory_bar', None)
+
+        if self.has_open_inventory():
+            if inventory_bar:
+                inventory_bar.show()
+            else:
+                self._display_open_inventory_message()
+
             self.set_open_inventory()
-        elif hasattr(self, 'inventory_bar'):
-            self._remove_open_inventory_message()
+        elif inventory_bar:
+            inventory_bar.hide()
 
     def add_info_bar(self, message_type, label, action_widget=None):
         """Show an information bar to the user.

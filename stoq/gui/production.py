@@ -49,6 +49,9 @@ _ = gettext.gettext
 
 
 class ProductionApp(SearchableAppWindow):
+
+    # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
+
     app_name = _(u'Production')
     app_icon_name = 'stoq-production-app'
     gladefile = "production"
