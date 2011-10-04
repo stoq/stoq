@@ -55,7 +55,7 @@ class InfoBar(gtk.HBox):
                    "infobar-error",
                    "infobar"]
 
-    def __init__(self, message_type=None):
+    def __init__(self, message_type=gtk.MESSAGE_INFO):
         gtk.HBox.__init__(self)
         self._message_type = message_type
         self._create_ui()
@@ -119,12 +119,14 @@ class InfoBar(gtk.HBox):
             elif self._message_type == gtk.MESSAGE_OTHER:
                 fg = gtk.gdk.Color(0xb800, 0xad00, 0x9d00)
                 bg = gtk.gdk.Color(0xff00, 0xff00, 0xbf00)
+            else:
+                raise AssertionError
 
         if self.style.bg[gtk.STATE_NORMAL] != bg:
             self.modify_bg(gtk.STATE_NORMAL, bg)
 
-        if self.style.fg[gtk.STATE_NORMAL] != bg:
-            self.modify_bg(gtk.STATE_NORMAL, fg)
+        if self.style.fg[gtk.STATE_NORMAL] != fg:
+            self.modify_fg(gtk.STATE_NORMAL, fg)
 
     def add_action_widget(self, child, response_id):
         ad = get_response_data(child, True);
