@@ -126,15 +126,15 @@ class InfoBar(gtk.HBox):
         if self.style.fg[gtk.STATE_NORMAL] != bg:
             self.modify_bg(gtk.STATE_NORMAL, fg)
 
-    def add_action_widget(child, response_id):
+    def add_action_widget(self, child, response_id):
         ad = get_response_data(child, True);
         ad.response_id = response_id
 
         if isinstance(child, gtk.Button):
             def activated(*unused):
-                response_id = get_response_for_widget(button)
-                self.response(button, response_id)
-            button.connect('clicked', action_widget_activated)
+                response_id = get_response_for_widget(child)
+                self.response(child, response_id)
+            child.connect('clicked', activated)
 
         self._action_area.pack_end(child, False, False, 0)
         if response_id == gtk.RESPONSE_HELP:
@@ -149,15 +149,15 @@ class InfoBar(gtk.HBox):
 
     def set_response_sensitive(self, response_id, setting):
         for child in self._action_area.get_children():
-            rd = get_response_data(widget, False)
+            rd = get_response_data(self, False)
             if rd and rd.response_id == response_id:
-                widget.set_sensitive(setting)
+                self.set_sensitive(setting)
 
     def set_default_response(self, response_id):
         for child in self._action_area.get_children():
-            rd = get_response_data(widget, False)
+            rd = get_response_data(self, False)
             if rd and rd.response_id == response_id:
-                widget.grab_default()
+                self.grab_default()
 
     def response(self, response_id):
         self.emit('response', response_id)
