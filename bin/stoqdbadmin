@@ -345,7 +345,13 @@ class StoqCommandHandler:
         from stoqlib.database.database import start_shell
         self._read_config(options, register_station=False,
                           check_schema=False)
-        start_shell()
+        start_shell(options.command)
+
+    def opt_shell(self, parser, group):
+        group.add_option('-c', '--command',
+                         action="store",
+                         help="Execute SQL command",
+                         dest="command")
 
     def cmd_import(self, options):
         self._read_config(options, register_station=False)
