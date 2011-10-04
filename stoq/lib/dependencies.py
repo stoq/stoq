@@ -85,7 +85,8 @@ class DependencyChecker(object):
         self._check_pil(PIL_REQUIRED)
         self._check_reportlab(REPORTLAB_REQUIRED)
         self._check_mako(MAKO_REQUIRED)
-        self._check_pypoppler(PYPOPPLER_REQUIRED)
+        if platform.system() != 'Windows':
+            self._check_pypoppler(PYPOPPLER_REQUIRED)
 
         # ECF
         # FIXME: makes sense to allow Stoq to run with all of these disabled.
