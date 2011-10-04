@@ -305,6 +305,7 @@ class TestReport(DomainTest):
         quoted_item = self.create_purchase_order_item()
         quote = quoted_item.order
         quote.open_date = datetime.date(2007, 1, 1)
+        quote.get_order_number_str = lambda: '0028'
         quote.status = PurchaseOrder.ORDER_QUOTING
         self.checkPDF(PurchaseQuoteReport, quote, date=quote.open_date)
 
