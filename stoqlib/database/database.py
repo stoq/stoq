@@ -148,13 +148,20 @@ def execute_sql(filename):
         raise NotImplementedError(settings.rdbms)
 
 
-def start_shell():
+def start_shell(command=None, quiet=False):
     """Runs a database shell using the current settings
+
+    @param command: tell psql to execute the command string
+    @param quiet: sets psql quiet option (-q)
     """
     settings = get_utility(IDatabaseSettings)
 
     if settings.rdbms == 'postgres':
-        args = ['psql', '-q']
+        args = ['psql']
+        if command:
+            args.extend(['-c', command])
+        if quiet:
+            args.append('-q')
         args.extend(settings.get_tool_args())
         args.append(settings.dbname)
 
