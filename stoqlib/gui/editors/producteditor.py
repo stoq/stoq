@@ -436,14 +436,11 @@ class ProductComponentEditor(BaseEditor):
     title = _(u'Product Component')
     model_type = _TemporaryProductComponent
 
-    def __init__(self, conn, product_component):
-        BaseEditor.__init__(self, conn, model=product_component)
-        self._setup_widgets()
-
     def _setup_widgets(self):
         self.component_description.set_text(self.model.description)
         self.quantity.set_adjustment(
-            gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
+            gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1,
+                           page_incr=10))
         # set a default quantity value for new components
         if not self.model.quantity:
             self.quantity.set_value(1)
@@ -453,6 +450,7 @@ class ProductComponentEditor(BaseEditor):
     #
 
     def setup_proxies(self):
+        self._setup_widgets()
         self.proxy = self.add_proxy(
             self.model, ProductComponentEditor.proxy_widgets)
 
