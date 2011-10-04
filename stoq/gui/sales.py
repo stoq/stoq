@@ -77,13 +77,14 @@ class SalesApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
-        self._open_inventory = False
-        self.check_open_inventory()
         self.summary_label = None
         self._visible_date_col = None
         self._columns = self.get_columns()
         self._setup_columns()
-        self._setup_slaves()
+        self._setup_widgets()
+
+        # FIXME: Do this in application.py
+        self.activate()
 
     #
     # Application
@@ -225,7 +226,7 @@ class SalesApp(SearchableAppWindow):
         return cols
 
     def set_open_inventory(self):
-        self._open_inventory = True
+        self.set_sensitive(self._inventory_widgets, False)
 
     def activate(self):
         self.check_open_inventory()
@@ -238,6 +239,14 @@ class SalesApp(SearchableAppWindow):
         self.search.set_summary_label(column='total',
                                       label='<b>Total:</b>',
                                       format='<b>%s</b>')
+
+    def _setup_widgets(self):
+        self._setup_slaves()
+
+        self._inventory_widgets = [self.sale_toolbar.return_sale_button,
+                                   self.LoanNew, self.LoanClose]
+        self.register_sensitive_group(self._inventory_widgets,
+                                      lambda: not self.has_open_inventory())
 
     def _setup_slaves(self):
         self.sale_toolbar = SaleListToolbar(self.conn, self.results)
@@ -262,12 +271,11 @@ class SalesApp(SearchableAppWindow):
         can_print_invoice = bool(sale_view and
                                  sale_view.client_name is not None and
                                  sale_view.status != Sale.STATUS_RETURNED)
-        self.SalesPrintInvoice.set_sensitive(can_print_invoice)
-        self.SalesCancel.set_sensitive(self._can_cancel(sale_view))
+        self.set_sensitive([self.SalesPrintInvoice], can_print_invoice)
+        self.set_sensitive([self.SalesCancel], self._can_cancel(sale_view))
+        self.set_sensitive([self.sale_toolbar.return_sale_button],
+                           bool(sale_view and sale_view.sale.can_return()))
 
-        can_return = bool(sale_view and sale_view.sale.can_return() and not
-                          self._open_inventory)
-        self.sale_toolbar.return_sale_button.set_sensitive(can_return)
         self.sale_toolbar.set_report_filters(self.search.get_search_filters())
 
     def _print_invoice(self):

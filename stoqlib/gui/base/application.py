@@ -78,6 +78,7 @@ class BaseAppWindow(GladeDelegate):
 
     @argcheck(BaseApp, object)
     def __init__(self, app, keyactions=None):
+        self._sensitive_group = dict()
         self.app = app
         GladeDelegate.__init__(self, delete_handler=self.shutdown_application,
                           keyactions=keyactions,
@@ -104,9 +105,44 @@ class BaseAppWindow(GladeDelegate):
         return self.title
 
     def set_sensitive(self, widgets, value):
-        """Sets one or more widgets to state sensitive. XXX: Kiwi?"""
+        """Set the C{widgets} sensitivity based on C{value}
+
+        @note: if a sensitive group was registered for any widget,
+            it's validation function will be tested and, if C{False}
+            is returned, it will be set insensitive, ignoring C{value}
+
+        @param widgets: a L{list} of widgets
+        @param value: either C{True} or C{False}
+        """
+        # FIXME: Maybe this should ne done on kiwi?
         for widget in widgets:
-            widget.set_sensitive(value)
+            sensitive = value
+
+            for validator in self._sensitive_group.get(widget, []):
+                if not validator[0](*validator[1]):
+                    sensitive = False
+                    break
+
+            widget.set_sensitive(sensitive)
+
+    def register_sensitive_group(self, widgets, validation_func, *args):
+        """Register widgets on a sensitive group.
+
+        Everytime self.set_sensitive() is called, if there is any
+        validation function for a given widget on sensitive group,
+        then that will be used to decide if it gets sensitive or
+        insensitive.
+
+        @param widgets: a L{list} of widgets
+        @param validation_func: a function for validation. It should
+            return either C{True} or C{False}.
+        @param args: args that will be passed to C{validation_func}
+        """
+        assert callable(validation_func)
+
+        for widget in widgets:
+            validators = self._sensitive_group.setdefault(widget, set())
+            validators.add((validation_func, args))
 
     def get_dialog(self, dialog_class, *args, **kwargs):
         """ Encapsuled method for getting dialogs. """

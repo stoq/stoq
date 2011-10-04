@@ -268,7 +268,7 @@ class PosApp(AppWindow):
 
 
     def set_open_inventory(self):
-        self._disable_inventory_ui()
+        self.set_sensitive(self._inventory_widgets, False)
 
     #
     # Private
@@ -318,6 +318,12 @@ class PosApp(AppWindow):
                                     'gtk-apply', confirm_label)
 
     def _setup_widgets(self):
+        self._inventory_widgets = [self.Sales, self.barcode, self.quantity,
+                                   self.sale_items, self.advanced_search,
+                                   self.checkout_button]
+        self.register_sensitive_group(self._inventory_widgets,
+                                      lambda: not self.has_open_inventory())
+
         logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
         logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
                                                     LOGO_HEIGHT)
@@ -431,32 +437,23 @@ class PosApp(AppWindow):
     def _set_sale_sensitive(self, value):
         # Enable/disable the part of the ui that is used for sales,
         # usually manipulated when printer information changes.
-        self.barcode.set_sensitive(value)
-        self.quantity.set_sensitive(value)
-        self.sale_items.set_sensitive(value)
-        self.advanced_search.set_sensitive(value)
+        widgets = [self.barcode, self.quantity, self.sale_items,
+                   self.advanced_search, self.checkout_button]
+        self.set_sensitive(widgets, value)
+
         if value:
             self.barcode.grab_focus()
 
-    def _disable_inventory_ui(self):
-        self.TillOpen.set_sensitive(False)
-        self.Sales.set_sensitive(False)
-        self._disable_sale_ui()
-
     def _disable_printer_ui(self):
-        self._disable_sale_ui()
-        self.TillOpen.set_sensitive(False)
-        self.TillClose.set_sensitive(False)
+        self._set_sale_sensitive(False)
 
         # It's possible to do a Sangria from the Sale search,
         # disable it for now
-        self.Sales.set_sensitive(False)
+        widgets = [self.TillOpen, self.TillClose, self.Sales]
+        self.set_sensitive(widgets, False)
 
         text = _(u"POS operations requires a connected fiscal printer.")
         self.till_status_label.set_text(text)
-
-    def _disable_sale_ui(self):
-        self._set_sale_sensitive(False)
 
     def _till_status_changed(self, closed, blocked):
         if closed:
@@ -467,8 +464,9 @@ class PosApp(AppWindow):
             text = _(u"Till open")
         self.till_status_label.set_text(text)
 
-        self.TillOpen.set_sensitive(closed)
-        self.TillClose.set_sensitive(not closed or blocked)
+        self.set_sensitive([self.TillOpen], closed)
+        self.set_sensitive([self.TillClose], not closed or blocked)
+
         self._set_sale_sensitive(not closed and not blocked)
 
     def _update_widgets(self):
@@ -477,7 +475,7 @@ class PosApp(AppWindow):
                             self.NewDelivery,
                             self.ConfirmOrder), has_sale_items)
         # We can cancel an order whenever we have a coupon opened.
-        self.CancelOrder.set_sensitive(self._sale_started)
+        self.set_sensitive([self.CancelOrder], self._sale_started)
         has_products = False
         has_services = False
         for sale_item in self.sale_items:
@@ -487,14 +485,14 @@ class PosApp(AppWindow):
                 has_services = True
             if has_products and has_services:
                 break
-        self.delivery_button.set_sensitive(has_products)
-        self.NewDelivery.set_sensitive(has_sale_items)
+        self.set_sensitive([self.delivery_button], has_products)
+        self.set_sensitive([self.NewDelivery], has_sale_items)
         sale_item = self.sale_items.get_selected()
         can_edit = bool(
             sale_item is not None and
             sale_item.sellable.service and
             sale_item.sellable.service != self.param.DELIVERY_SERVICE)
-        self.edit_item_button.set_sensitive(can_edit)
+        self.set_sensitive([self.edit_item_button], can_edit)
 
         self.set_sensitive((self.checkout_button,
                             self.ConfirmOrder), has_products or has_services)
@@ -510,8 +508,8 @@ class PosApp(AppWindow):
     def _update_buttons(self):
         has_barcode = self._has_barcode_str()
         has_quantity = self._read_quantity() > 0
-        self.add_button.set_sensitive(has_barcode and has_quantity)
-        self.advanced_search.set_sensitive(has_quantity)
+        self.set_sensitive([self.add_button], has_barcode and has_quantity)
+        self.set_sensitive([self.advanced_search], has_quantity)
 
     def _read_quantity(self):
         quantity_text = self.quantity.get_text()
@@ -616,9 +614,10 @@ class PosApp(AppWindow):
         log.info("Clearing order")
         self._sale_started = False
         self.sale_items.clear()
-        for widget in (self.search_box, self.list_vbox,
-                       self.CancelOrder):
-            widget.set_sensitive(True)
+
+        widgets = [self.search_box, self.list_vbox, self.CancelOrder]
+        self.set_sensitive(widgets, True)
+
         self._delivery = None
 
         self._reset_quantity_proxy()
