@@ -57,13 +57,13 @@ class InfoBar(gtk.HBox):
 
     def __init__(self, message_type=None):
         gtk.HBox.__init__(self)
-        self.message_type = message_type
+        self._message_type = message_type
         self._create_ui()
 
     def _create_ui(self):
         self._content_area = gtk.HBox(False, 0)
         self._content_area.show()
-        self.pack_start(content_area, True, True, 0)
+        self.pack_start(self._content_area, True, True, 0)
         self._content_area.set_spacing(16)
         self._content_area.set_border_width(8)
 
@@ -78,18 +78,18 @@ class InfoBar(gtk.HBox):
         self.set_app_paintable(True)
         self.set_redraw_on_allocate(True)
 
-    def do_expose_event(widget, event):
-        if self.message_type != gtk.MESSAGE_OTHER:
-            detail = self.type_detail[self.message_type]
+    def do_expose_event(self, event):
+        if self._message_type != gtk.MESSAGE_OTHER:
+            detail = self.type_detail[self._message_type]
 
             self.style.paint_box(self.window, gtk.STATE_NORMAL,
-                    gtk.SHADOW_OUT, None, widget, detail,
-                    widget.allocation.x,
-                    widget.allocation.y,
-                    widget.allocation.width,
-                    widget.allocation.height)
+                    gtk.SHADOW_OUT, None, self, detail,
+                    self.allocation.x,
+                    self.allocation.y,
+                    self.allocation.width,
+                    self.allocation.height)
 
-        self.chain(widget, event)
+        self.chain(event)
         return False
 
     def update_colors(self):
@@ -100,7 +100,7 @@ class InfoBar(gtk.HBox):
                          "question_bg_color", "error_bg_color",
                          "other_bg_color"]
 
-        style = widget.get_style()
+        style = self.get_style()
         fg = style.lookup_color(fg_color_name[self._message_type])
         bg = style.lookup_color(bg_color_name[self._message_type])
         if fg is None or bg is None:
@@ -120,10 +120,10 @@ class InfoBar(gtk.HBox):
                 fg = gtk.gdk.Color(0xb800, 0xad00, 0x9d00)
                 bg = gtk.gdk.Color(0xff00, 0xff00, 0xbf00)
 
-        if not bg.equal(widget.style[gtk.STATE_NORMAL]):
+        if self.style.bg[gtk.STATE_NORMAL] != bg:
             self.modify_bg(gtk.STATE_NORMAL, bg)
 
-        if not fg.equal(widget.style[gtk.STATE_NORMAL]):
+        if self.style.fg[gtk.STATE_NORMAL] != bg:
             self.modify_bg(gtk.STATE_NORMAL, fg)
 
     def add_action_widget(child, response_id):
