@@ -89,7 +89,7 @@ class InfoBar(gtk.HBox):
                     self.allocation.width,
                     self.allocation.height)
 
-        self.chain(event)
+        gtk.HBox.do_expose_event(self, event)
         return False
 
     def update_colors(self):
