@@ -97,7 +97,16 @@ class PluginManager(object):
 
         assert plugin_name in self._plugins
 
-    def _get_plugin(self, plugin_name):
+    #
+    # Public API
+    #
+
+    def get_plugin(self, plugin_name):
+        """Returns a plugin by it's name
+
+        @param plugin_name: the plugin's name
+        @returns: the L{IPlugin} implementation of the plugin
+        """
         if not plugin_name in self._plugin_descriptions:
             # Temporary workaround for TEF demonstration on livecd. Figure
             # out how to handle this properly.
@@ -109,10 +118,6 @@ class PluginManager(object):
             self._import_plugin(self._plugin_descriptions[plugin_name])
 
         return self._plugins[plugin_name]
-
-    #
-    # Public API
-    #
 
     def register_plugin(self, plugin):
         """Registers a plugin, this is normally called in the plugin itself
@@ -129,7 +134,7 @@ class PluginManager(object):
         log.info("Activating plugins")
         installed_plugins = InstalledPlugin.select(connection=get_connection())
         for installed_plugin in installed_plugins:
-            plugin = self._get_plugin(installed_plugin.plugin_name)
+            plugin = self.get_plugin(installed_plugin.plugin_name)
             # Plugin may have been uninstalled.
             if plugin:
                 plugin.activate()
@@ -140,7 +145,7 @@ class PluginManager(object):
         and that it always will be loaded on startup
         @param plugin_name: The name of the plugin
         """
-        plugin = self._get_plugin(plugin_name)
+        plugin = self.get_plugin(plugin_name)
         trans = new_transaction()
         if InstalledPlugin.selectOneBy(plugin_name=plugin_name,
                                        connection=trans):
@@ -162,7 +167,7 @@ class PluginManager(object):
         for p in InstalledPlugin.select(connection=get_connection()):
             # FIXME: If the plugin is no longer available, remove it from
             # database.
-            plugin = self._get_plugin(p.plugin_name)
+            plugin = self.get_plugin(p.plugin_name)
             if not plugin:
                 continue
             yield plugin
