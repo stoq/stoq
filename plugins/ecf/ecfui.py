@@ -32,7 +32,7 @@ from kiwi.python import Settable
 from stoqdrivers.exceptions import CouponOpenError, DriverError
 from stoqlib.database.runtime import (get_current_station, get_connection,
                                       new_transaction)
-from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
+from stoqlib.domain.events import (SaleStatusChangedEvent, TillAddCashEvent,
                                    TillRemoveCashEvent, TillOpenEvent,
                                    TillCloseEvent, TillAddTillEntryEvent,
                                    GerencialReportPrintEvent,
@@ -69,7 +69,7 @@ class ECFUI(object):
         self._printer_verified = False
         self._printer = self._create_printer()
 
-        SaleConfirmEvent.connect(self._on_SaleConfirm)
+        SaleStatusChangedEvent.connect(self._on_SaleStatusChanged)
         TillOpenEvent.connect(self._on_TillOpen)
         TillCloseEvent.connect(self._on_TillClose)
         TillAddCashEvent.connect(self._on_TillAddCash)
@@ -519,9 +519,10 @@ class ECFUI(object):
     def _on_StartApplicationEvent(self, appname, app):
         self._add_ui_menus(appname, app, app.main_window.uimanager)
 
-    def _on_SaleConfirm(self, sale, trans):
-        self._confirm_sale(sale)
-        self._set_last_sale(sale, trans)
+    def _on_SaleStatusChanged(self, sale, old_status):
+        if sale.status == Sale.STATUS_CONFIRMED:
+            self._confirm_sale(sale)
+            self._set_last_sale(sale, sale.get_connection())
 
     def _on_TillOpen(self, till):
         return self._open_till(till)

@@ -33,12 +33,14 @@ from stoqlib.lib.event import Event
 # Sale events
 #
 
-class SaleConfirmEvent(Event):
+class SaleStatusChangedEvent(Event):
     """
     This event is emitted when a sale is confirmed
 
-    @param sale: the confirmed sale
+    @param sale: the sale which had it's status changed
+    @param old_status: the old sale status
     """
+
 
 #
 # Payment related events

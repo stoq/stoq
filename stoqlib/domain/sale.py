@@ -39,7 +39,7 @@ from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn, INNERJOINOn
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.domain.base import Domain, ModelAdapter
-from stoqlib.domain.events import SaleConfirmEvent
+from stoqlib.domain.events import SaleStatusChangedEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import (IContainer, IOutPayment,
                                        IPaymentTransaction,
@@ -502,7 +502,8 @@ class Sale(Domain):
         if self.client and not self.client.is_active:
             raise SellError(_('Unable to make sales for clients with status '
                               '%s') % self.client.get_status_string())
-        self.status = Sale.STATUS_ORDERED
+
+        self._set_sale_status(Sale.STATUS_ORDERED)
 
     def confirm(self):
         """Confirms the sale
@@ -529,10 +530,8 @@ class Sale(Domain):
         if self.client:
             self.group.payer = self.client.person
 
-        SaleConfirmEvent.emit(self, conn)
-
         self.confirm_date = const.NOW()
-        self.status = Sale.STATUS_CONFIRMED
+        self._set_sale_status(Sale.STATUS_CONFIRMED)
 
     def set_paid(self):
         """Mark the sale as paid
@@ -550,7 +549,7 @@ class Sale(Domain):
         transaction.pay()
 
         self.close_date = const.NOW()
-        self.status = Sale.STATUS_PAID
+        self._set_sale_status(Sale.STATUS_PAID)
 
     def set_not_paid(self):
         """Mark a sale as not paid. This happens when the user sets a
@@ -562,7 +561,7 @@ class Sale(Domain):
         assert self.can_set_not_paid()
 
         self.close_date = None
-        self.status = Sale.STATUS_CONFIRMED
+        self._set_sale_status(Sale.STATUS_CONFIRMED)
 
     def set_renegotiated(self):
         """Set the sale as renegotiated. The sale payments have been
@@ -570,7 +569,7 @@ class Sale(Domain):
         assert self.can_set_renegotiated()
 
         self.close_date = const.NOW()
-        self.status = Sale.STATUS_RENEGOTIATED
+        self._set_sale_status(Sale.STATUS_RENEGOTIATED)
 
     def cancel(self):
         """Cancel the sale
@@ -586,7 +585,7 @@ class Sale(Domain):
                 item.cancel(branch)
 
         self.cancel_date = const.NOW()
-        self.status = Sale.STATUS_CANCELLED
+        self._set_sale_status(Sale.STATUS_CANCELLED)
 
     @argcheck(RenegotiationData)
     def return_(self, renegotiation):
@@ -604,7 +603,7 @@ class Sale(Domain):
         transaction.return_(renegotiation)
 
         self.return_date = const.NOW()
-        self.status = Sale.STATUS_RETURNED
+        self._set_sale_status(Sale.STATUS_RETURNED)
 
     #
     # Accessors
@@ -832,6 +831,12 @@ class Sale(Domain):
     #
     # Private API
     #
+
+    def _set_sale_status(self, status):
+        old_status = self.status
+        self.status = status
+
+        SaleStatusChangedEvent.emit(self, old_status)
 
     def _get_percentage_value(self, percentage):
         if not percentage:
