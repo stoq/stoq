@@ -35,6 +35,8 @@ from stoqlib.database.orm import (UnicodeCol, ForeignKey, MultipleJoin, DateTime
                                   BoolCol, BLOBCol, IntCol)
 from stoqlib.database.orm import const, AND, LEFTJOINOn
 from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
+                                   ProductRemoveEvent, ProductStockUpdateEvent)
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (IStorable, IContainer,
                                        IBranch)
@@ -176,6 +178,11 @@ class Product(Domain):
             i.delete(i.id, self.get_connection())
         for i in self.get_components():
             i.delete(i.id, self.get_connection())
+
+        # This event needs to be emitted before the real deletion, so
+        # we can know what product is being deleted and remove any
+        # references to it (like foreign keys)
+        ProductRemoveEvent.emit(self)
         self.delete(self.id, self.get_connection())
 
     def can_remove(self):
@@ -277,6 +284,25 @@ class Product(Domain):
             if component.component.is_composed_by(product):
                 return True
         return False
+
+    #
+    # AbstractModel Hooks
+    #
+
+    def on_create(self):
+        ProductCreateEvent.emit(self)
+
+    def on_edit(self):
+        trans = self.get_connection()
+        emitted_trans_list = getattr(self, '_emitted_trans_list', set())
+
+        # Since other classes can propagate this event (like Sellable),
+        # emit the event only once for each transaction.
+        if not trans in emitted_trans_list:
+            ProductEditEvent.emit(self)
+            emitted_trans_list.add(trans)
+
+        self._emitted_trans_list = emitted_trans_list
 
 
 class ProductHistory(Domain):
@@ -530,7 +556,11 @@ class ProductAdaptToStorable(ModelAdapter):
         if unit_cost is not None:
             stock_item.update_cost(quantity, unit_cost)
 
+        old_quantity = stock_item.quantity
         stock_item.quantity += quantity
+
+        ProductStockUpdateEvent.emit(self.product, branch, old_quantity,
+                                     stock_item.quantity)
 
     def decrease_stock(self, quantity, branch):
         # The function get_full_balance returns the current amount of items
@@ -549,6 +579,7 @@ class ProductAdaptToStorable(ModelAdapter):
         stock_item = self.get_stock_item(branch)
         self._check_rejected_stocks([stock_item], quantity)
 
+        old_quantity = stock_item.quantity
         stock_item.quantity -= quantity
         if stock_item.quantity < 0:
             raise ValueError(_("Quantity cannot be negative"))
@@ -562,6 +593,9 @@ class ProductAdaptToStorable(ModelAdapter):
                 # FIXME: rename sell() to something more useful which is not
                 #        confusing a sale and a sellable, Bug 2669
                 sellable.set_unavailable()
+
+        ProductStockUpdateEvent.emit(self.product, branch, old_quantity,
+                                     stock_item.quantity)
 
         return stock_item
 

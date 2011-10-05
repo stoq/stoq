@@ -30,6 +30,45 @@ from stoqlib.enums import CreatePaymentStatus
 from stoqlib.lib.event import Event
 
 #
+# Product events
+#
+
+class ProductCreateEvent(Event):
+    """
+    This event is emitted when a product is created.
+
+    @param product: the created product
+    """
+
+
+class ProductEditEvent(Event):
+    """
+    This event is emitted when a product is edited.
+
+    @param product: the edited product
+    """
+
+
+class ProductRemoveEvent(Event):
+    """
+    This event is emitted when a product is about to be removed.
+
+    @param product: the removed product
+    """
+
+
+class ProductStockUpdateEvent(Event):
+    """
+    This event is emitted when a product stock is in/decreased.
+
+    @param product: the product that had it's stock modified
+    @param branch: the branch on which the stock was modified
+    @param old_quantity: the old product stock quantity
+    @param new_quantity: the new product stock quantity
+    """
+
+
+#
 # Sale events
 #
 
