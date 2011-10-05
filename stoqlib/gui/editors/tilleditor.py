@@ -259,7 +259,11 @@ class TillClosingEditor(BaseEditor):
                 return False
 
         if self._close_db:
-            till.close_till()
+            try:
+                till.close_till()
+            except ValueError as err:
+                warning(str(err))
+                return
 
         # The callsite is responsible for interacting with
         # the fiscal printer
