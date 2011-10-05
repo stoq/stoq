@@ -81,6 +81,10 @@ class CacheStore(object):
             # Permission denied
             if e.errno == errno.EACCES:
                 self._remove_filename(tmp_filename)
+            # No such file or directory
+            elif e.errno == errno.ENOENT:
+                self._directory = None
+                return
             else:
                 raise
 
