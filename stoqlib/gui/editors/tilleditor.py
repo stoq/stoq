@@ -32,7 +32,8 @@ from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 from stoqdrivers.exceptions import CouponOpenError, DriverError
 
 from stoqlib.database.orm import const
-from stoqlib.database.runtime import get_current_station
+from stoqlib.database.runtime import (get_current_station, new_transaction,
+                                      finish_transaction)
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
                                    TillAddTillEntryEvent,
@@ -239,11 +240,20 @@ class TillClosingEditor(BaseEditor):
                                  "greater than the current balance.")
 
             assert self._close_ecf
-            TillRemoveCashEvent.emit(till=till, value=removed)
-            till_entry = till.add_debit_entry(removed,
+            # We need to do this inside a new transaction, because if the
+            # till closing fails further on, this still needs to be recorded
+            # in the database
+            trans = new_transaction()
+            t_till = trans.get(till)
+            TillRemoveCashEvent.emit(till=t_till, value=removed)
+            till_entry = t_till.add_debit_entry(removed,
                                  _(u'Amount removed from Till on %s') %
                                    till.opening_date.strftime('%x'))
-            _create_transaction(self.conn, till_entry)
+            # Financial transaction
+            _create_transaction(trans, till_entry)
+            # DB transaction
+            finish_transaction(trans, True)
+            trans.close()
 
         if self._close_ecf:
             try:
