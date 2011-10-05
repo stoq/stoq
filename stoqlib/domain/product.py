@@ -459,10 +459,10 @@ class ProductStockItem(Domain):
 class ProductAdaptToStorable(ModelAdapter):
     """A product implementation as a storable facet."""
 
+    implements(IStorable)
+
     minimum_quantity = QuantityCol(default=0)
     maximum_quantity = QuantityCol(default=0)
-
-    implements(IStorable, IContainer)
 
     #
     # Private
@@ -504,23 +504,6 @@ class ProductAdaptToStorable(ModelAdapter):
         return ProductStockItem.selectBy(storable=self,
                                          connection=self.get_connection(),
                                          **query_args)
-
-    #
-    # IContainer implementation
-    #
-
-    def add_item(self, item):
-        raise NotImplementedError
-
-    def get_items(self):
-        raise NotImplementedError
-
-    def remove_item(self, item):
-        conn = self.get_connection()
-        if not isinstance(item, ProductStockItem):
-            raise TypeError("Item should be of type ProductStockItem, got "
-                            % type(item))
-        ProductStockItem.delete(item.id, connection=conn)
 
     #
     # Properties
