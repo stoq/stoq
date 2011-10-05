@@ -232,6 +232,15 @@ class BaseSellableInfo(Domain):
     def get_description(self):
         return self.description
 
+    #
+    # Domain hooks
+    #
+
+    def on_update(self):
+        sellable = Sellable.selectOneBy(connection=self.get_connection(),
+                                        base_sellable_info=self)
+        sellable.on_update()
+
 
 class ClientCategoryPrice(Domain):
     """A table that stores special prices for clients based on their
@@ -667,6 +676,19 @@ class Sellable(Domain):
             desc = "[%s] %s" % (self.get_category_description(), desc)
 
         return desc
+
+    #
+    # Domain hooks
+    #
+
+    def on_update(self):
+        product = self.product
+        if product:
+            product.on_update()
+
+        service = self.service
+        if service:
+            service.on_update()
 
     #
     # Classmethods
