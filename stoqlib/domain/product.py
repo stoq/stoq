@@ -292,7 +292,7 @@ class Product(Domain):
     def on_create(self):
         ProductCreateEvent.emit(self)
 
-    def on_edit(self):
+    def on_update(self):
         trans = self.get_connection()
         emitted_trans_list = getattr(self, '_emitted_trans_list', set())
 
