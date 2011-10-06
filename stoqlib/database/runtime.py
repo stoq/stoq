@@ -65,6 +65,10 @@ class StoqlibTransaction(Transaction):
         obj_set = self._modified_object_sets[-1]
         obj_set.add(obj)
 
+    def add_deleted_object(self, obj):
+        obj_set = self._deleted_object_sets[-1]
+        obj_set.add(obj)
+
     def commit(self, close=False):
         self._process_pending_objs()
         Transaction.commit(self, close=close)
@@ -98,6 +102,7 @@ class StoqlibTransaction(Transaction):
         self.query('SAVEPOINT %s' % name)
         self._modified_object_sets.append(set())
         self._created_object_sets.append(set())
+        self._deleted_object_sets.append(set())
         if not name in self._savepoints:
             self._savepoints.append(name)
 
@@ -110,6 +115,7 @@ class StoqlibTransaction(Transaction):
         self.query('ROLLBACK TO SAVEPOINT %s' % name)
         self._modified_object_sets.pop()
         self._created_object_sets.pop()
+        self._deleted_object_sets.pop()
         self._savepoints.remove(name)
 
     #
@@ -126,22 +132,27 @@ class StoqlibTransaction(Transaction):
 
         created_objs = set()
         modified_objs = set()
+        deleted_objs = set()
         processed_objs = set()
 
         while self._need_process_pending():
             created_objs.update(*self._created_object_sets)
             modified_objs.update(*self._modified_object_sets)
+            deleted_objs.update(*self._deleted_object_sets)
 
             # Remove already processed objs (can happen when an obj is
             # added here again when processing the hooks bellow).
-            created_objs -= processed_objs
-            modified_objs -= processed_objs
-            # Created objs probably was marked as modified too.
-            modified_objs -= created_objs
+            modified_objs -= processed_objs | created_objs | deleted_objs
+            created_objs -= processed_objs | deleted_objs
+            deleted_objs -= processed_objs
 
             # Make sure while will be False on next iteration. Unless any
             # object is added when processing the hooks bellow.
             self._reset_pending_objs()
+
+            for deleted_obj in deleted_objs:
+                deleted_obj.on_delete()
+                processed_objs.add(deleted_obj)
 
             for created_obj in created_objs:
                 created_obj.on_create()
@@ -154,11 +165,13 @@ class StoqlibTransaction(Transaction):
 
     def _need_process_pending(self):
         return (any(self._created_object_sets) or
-                any(self._modified_object_sets))
+                any(self._modified_object_sets) or
+                any(self._deleted_object_sets))
 
     def _reset_pending_objs(self):
         self._created_object_sets = [set()]
         self._modified_object_sets = [set()]
+        self._deleted_object_sets = [set()]
 
 
 def get_connection():

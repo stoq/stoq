@@ -48,12 +48,16 @@ class WillBeCommitted(Domain):
     def reset(self):
         self.was_created = False
         self.was_updated = False
+        self.was_deleted = False
 
         self.update_test_var_on_update = False
         self.on_update_called_count = 0
 
     def on_create(self):
         self.was_created = True
+
+    def on_delete(self):
+        self.was_deleted = True
 
     def on_update(self):
         self.was_updated = True
@@ -127,6 +131,38 @@ class StoqlibTransactionTest(DomainTest):
         self._assert_nothing_made(dummy_obj)
         obj.reset()
 
+        obj = WillBeCommitted(connection=self.trans,
+                              test_var='EEE')
+        self.trans.commit()
+        obj.reset()
+        # Test obj being deleted without any modification
+        WillBeCommitted.delete(obj.id, self.trans)
+        self.trans.commit()
+        self._assert_deleted(obj)
+        self._assert_nothing_made(dummy_obj)
+        obj.reset()
+
+        obj = WillBeCommitted(connection=self.trans,
+                              test_var='EEE')
+        self.trans.commit()
+        obj.reset()
+        # Test obj being deleted after modification
+        obj.test_var = 'FFF'
+        WillBeCommitted.delete(obj.id, self.trans)
+        self.trans.commit()
+        self._assert_deleted(obj)
+        self._assert_nothing_made(dummy_obj)
+        obj.reset()
+
+        # Test obj being deleted after creation
+        obj = WillBeCommitted(connection=self.trans,
+                              test_var='EEE')
+        WillBeCommitted.delete(obj.id, self.trans)
+        self.trans.commit()
+        self._assert_deleted(obj)
+        self._assert_nothing_made(dummy_obj)
+        obj.reset()
+
     #
     #  Private
     #
@@ -134,15 +170,24 @@ class StoqlibTransactionTest(DomainTest):
     def _assert_created(self, obj):
         self.assertTrue(obj.was_created)
         self.assertFalse(obj.was_updated)
+        self.assertFalse(obj.was_deleted)
+        self.assertEqual(obj.on_update_called_count, 0)
+
+    def _assert_deleted(self, obj):
+        self.assertFalse(obj.was_created)
+        self.assertTrue(obj.was_deleted)
+        self.assertFalse(obj.was_updated)
         self.assertEqual(obj.on_update_called_count, 0)
 
     def _assert_updated(self, obj):
         self.assertFalse(obj.was_created)
+        self.assertFalse(obj.was_deleted)
         self.assertTrue(obj.was_updated)
         self.assertEqual(obj.on_update_called_count, 1)
 
     def _assert_nothing_made(self, obj):
         self.assertFalse(obj.was_updated)
+        self.assertFalse(obj.was_deleted)
         self.assertFalse(obj.was_created)
         self.assertEqual(obj.on_update_called_count, 0)
 
