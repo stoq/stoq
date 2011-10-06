@@ -78,6 +78,12 @@ class ITransaction(IConnection):
         @param object: an L{stoqlib.database.orm.ORMObject} subclass
         """
 
+    def add_deleted_object(object):
+        """Adds a deleted C{object} to the transaction.
+
+        @param object: an L{stoqlib.database.orm.ORMObject} subclass
+        """
+
     def add_modified_object(object):
         """Adds a modified object to the transaction.
         It's used to update TransactionEntry to keep a log of all modified object

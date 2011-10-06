@@ -149,6 +149,12 @@ class AbstractModel(object):
         super(AbstractModel, self)._create(*args, **kwargs)
         conn.add_created_object(self)
 
+    def destroySelf(self):
+        super(AbstractModel, self).destroySelf()
+
+        if isinstance(self._connection, StoqlibTransaction):
+            self._connection.add_deleted_object(self)
+
     def _SO_setValue(self, name, value, from_, to):
         super(AbstractModel, self)._SO_setValue(name, value, from_, to)
 
@@ -180,6 +186,20 @@ class AbstractModel(object):
         @note: A trick you may want to use: Use C{self.get_connection}
             to get the L{stoqlib.runtime.StoqlibTransaction} in which
             C{self} lives and do your modifications in it.
+        """
+        pass
+
+    def on_delete(self):
+        """Called when C{self} is about to be deleted on the database
+
+        This hook can be overridden on child classes for improved
+        functionality.
+        @note: A trick you may want to use: Use C{self.get_connection}
+            to get the L{stoqlib.runtime.StoqlibTransaction} in which
+            C{self} lives.
+        @attention: Do not try to modify C{self}, as it was marked as
+            obsolet by L{stoqlib.database.orm.ORMObject} and it will
+            result in errors.
         """
         pass
 
