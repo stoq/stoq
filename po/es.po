@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-09-12 16:58-0300\n"
-"PO-Revision-Date: 2011-10-06 18:00+0000\n"
+"PO-Revision-Date: 2011-10-07 17:38+0000\n"
 "Last-Translator: Sergio Meneses <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-10-07 04:40+0000\n"
-"X-Generator: Launchpad (build 14085)\n"
+"X-Launchpad-Export-Date: 2011-10-08 05:19+0000\n"
+"X-Generator: Launchpad (build 14110)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account code:"
@@ -323,7 +323,7 @@ msgstr "ICMS:"
 
 #: ../data/glade/BranchDialog.ui.h:8
 msgid "ISS:"
-msgstr ""
+msgstr "ISS:"
 
 #: ../data/glade/BranchDialog.ui.h:9 ../data/glade/ContactEditor.ui.h:2
 #: ../data/glade/PersonEditorTemplate.ui.h:13
@@ -334,11 +334,11 @@ msgstr "Número de teléfono:"
 #: ../data/glade/CompanyDocumentsSlave.ui.h:4
 #: ../data/glade/ProductsAdjustment.ui.h:5
 msgid "State Registry:"
-msgstr ""
+msgstr "Registro de Estado:"
 
 #: ../data/glade/BranchDialog.ui.h:11
 msgid "Substitution ICMS:"
-msgstr ""
+msgstr "ICMS de sustitución:"
 
 #: ../data/glade/CSVExporterDialog.ui.h:1
 msgid "Encoding:"
@@ -395,7 +395,7 @@ msgstr "0,000"
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:2
 #: ../data/glade/SalesPersonStep.ui.h:5
 msgid "C.F.O.P.:"
-msgstr ""
+msgstr "C.F.O.P.:"
 
 #: ../data/glade/ClientCategoryEditor.ui.h:1
 #: ../data/glade/ContactEditor.ui.h:1
@@ -509,11 +509,11 @@ msgstr "Venta directa:      "
 
 #: ../data/glade/CommissionDataSlave.ui.h:5
 msgid "In Installments:"
-msgstr ""
+msgstr "En Cuotas:"
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:2
 msgid "City Registry:"
-msgstr ""
+msgstr "Ciudad del Registro:"
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:3
 msgid "Fancy Name:"
@@ -530,6 +530,8 @@ msgid ""
 "Creating a new database for Stoq, depending on the speed of your computer "
 "and the server it may take a couple of minutes to finish."
 msgstr ""
+"Creando nueva base de datos nueva para Stoq, dependiendo de la velocidad de "
+"su ordenador y el servidor puede tardar un par de minutos para finalizar."
 
 #: ../data/glade/CreateDatabaseStep.ui.h:2
 msgid "Show details..."
@@ -537,7 +539,7 @@ msgstr "Mostrar detalles..."
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:3
 msgid "Closing Day:"
-msgstr ""
+msgstr "Día de Cierre:"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:4
 msgid "Credit Fee:"
@@ -594,7 +596,7 @@ msgstr "Proveedor de crédito:"
 
 #: ../data/glade/CreditProviderMethodSlave.ui.h:3
 msgid "Number of Installments:"
-msgstr ""
+msgstr "Número de Cuotas"
 
 #: ../data/glade/CreditProviderMethodSlave.ui.h:4
 msgid "Payment Type:"
@@ -650,7 +652,7 @@ msgstr "Contraseña:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:7
 msgid "Please, fill the details about your database."
-msgstr ""
+msgstr "Por favor, llene los detalles sobre su base de datos."
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:8
 #: ../data/glade/DeviceSettingsEditor.ui.h:6
@@ -678,7 +680,7 @@ msgstr ""
 #. Do not translate $CURRENCY
 #: ../data/glade/DeliveryEditor.ui.h:6
 msgid "Delivery cost ($CURRENCY):"
-msgstr ""
+msgstr "Gastos de envios ($CURRENCY)"
 
 #: ../data/glade/DeliveryEditor.ui.h:7
 msgid "Estimated Delivery _Date:"
@@ -686,7 +688,7 @@ msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:8
 msgid "Products to Deliver:"
-msgstr ""
+msgstr "Productos para Ofrecer:"
 
 #: ../data/glade/DeliveryEditor.ui.h:9
 msgid "There is Additional Instructions"
@@ -698,7 +700,7 @@ msgstr "Valor ASCII:"
 
 #: ../data/glade/DeviceConstantEditor.ui.h:2
 msgid "HEX value:"
-msgstr ""
+msgstr "valor HEX:"
 
 #: ../data/glade/DeviceSettingsEditor.ui.h:2
 msgid "Brand:"
@@ -718,7 +720,7 @@ msgstr "Modelo:"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:2
 msgid "Admission Data"
-msgstr ""
+msgstr "Datos de Admisión"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:4
 msgid "Bank Information"
@@ -730,7 +732,7 @@ msgstr "Banco:"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:6
 msgid "Branch Number:"
-msgstr ""
+msgstr "Número de Oficina"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:8
 msgid ""
@@ -746,7 +748,7 @@ msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:13
 msgid "PIS"
-msgstr ""
+msgstr "PIS"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:14
 msgid "Personal Details"
@@ -754,7 +756,7 @@ msgstr "Información personal"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:15
 msgid "Registry:"
-msgstr ""
+msgstr "Registro:"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:16
 msgid "Serie:"
@@ -762,7 +764,7 @@ msgstr "Serie:"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:17
 msgid "Vacation:"
-msgstr ""
+msgstr "Vacaciones:"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:18
 msgid "Work Permit"
@@ -788,15 +790,15 @@ msgstr "Estado del empleado:"
 
 #: ../data/glade/ExistingPersonStep.ui.h:1
 msgid "Existing client"
-msgstr ""
+msgstr "Cliente existente:"
 
 #: ../data/glade/ExistingPersonStep.ui.h:2
 msgid "Is it one of these ?"
-msgstr ""
+msgstr "Es uno de esos?"
 
 #: ../data/glade/ExistingPersonStep.ui.h:3
 msgid "No, it's a new client"
-msgstr ""
+msgstr "No, es un cliente nuevo"
 
 #: ../data/glade/FinishInstallationStep.ui.h:1
 msgid "<b>Installation complete</b>"
@@ -804,7 +806,7 @@ msgstr ""
 
 #: ../data/glade/FinishInstallationStep.ui.h:2 ../stoq/main.py:291
 msgid "Enable online services"
-msgstr ""
+msgstr "Activar los servicios en línea"
 
 #: ../data/glade/FinishInstallationStep.ui.h:3
 msgid "More information..."
@@ -841,11 +843,11 @@ msgstr "Notas"
 
 #: ../data/glade/FinishPurchaseStep.ui.h:3
 msgid "Receive all products now."
-msgstr ""
+msgstr "Recibe todos los productos ahora."
 
 #: ../data/glade/FinishPurchaseStep.ui.h:4
 msgid "Salesperson Name:"
-msgstr ""
+msgstr "Nombre del Vendedor:"
 
 #: ../data/glade/FinishPurchaseStep.ui.h:5
 #: ../data/glade/PurchaseDetailsDialog.ui.h:26
@@ -853,7 +855,7 @@ msgstr ""
 #: ../data/glade/SalesPersonStep.ui.h:17 ../stoqlib/reporting/purchase.py:186
 #: ../stoqlib/reporting/purchase.py:323
 msgid "Transporter:"
-msgstr ""
+msgstr "Transportador"
 
 #: ../data/glade/FiscalBookEntryEditor.ui.h:3
 #: ../data/glade/ProductsAdjustment.ui.h:4
@@ -892,7 +894,7 @@ msgstr "Fecha de finalización:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:4
 msgid "Fiscal Memory"
-msgstr ""
+msgstr "Memoria Fiscal"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:5
 #: ../data/glade/OnSaleInfoSlave.ui.h:2
@@ -901,7 +903,7 @@ msgstr "De:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:6
 msgid "Reductions"
-msgstr ""
+msgstr "Reducciones"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:7
 msgid "Start Date:"
@@ -926,7 +928,7 @@ msgstr "Fecha de nacimiento:"
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:4
 msgid "Birth State:"
-msgstr ""
+msgstr "Estado de Nacimiento:"
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:5
 msgid "Father's Name:"
@@ -958,14 +960,14 @@ msgstr "Ocupación:"
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:12
 msgid "Spouse:"
-msgstr ""
+msgstr "Conyúge:"
 
 #: ../data/glade/IndividualDocuments.ui.h:1
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:3
 #: ../plugins/ecf/paulistainvoicedialog.py:63
 #: ../stoqlib/reporting/loanreceipt.py:153
 msgid "CPF:"
-msgstr ""
+msgstr "CPF:"
 
 #: ../data/glade/IndividualDocuments.ui.h:2
 msgid ""
@@ -981,7 +983,7 @@ msgstr ""
 
 #: ../data/glade/IndividualDocuments.ui.h:6
 msgid "RG Number:"
-msgstr ""
+msgstr "Número RG:"
 
 #: ../data/glade/IndividualDocuments.ui.h:7
 msgid "client_id_slave"
@@ -1012,15 +1014,15 @@ msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:1
 msgid "Create a database in demonstration mode."
-msgstr ""
+msgstr "Crear una base de datos en modo de desmotración."
 
 #: ../data/glade/InstallationModeStep.ui.h:2
 msgid "Create an empty database for production use."
-msgstr ""
+msgstr "Crear una base de datos vacía para uso en producción."
 
 #: ../data/glade/InstallationModeStep.ui.h:3
 msgid "Database initialization"
-msgstr ""
+msgstr "Base de datos de inicialización"
 
 #: ../data/glade/InstallationModeStep.ui.h:5
 msgid ""
@@ -1033,7 +1035,7 @@ msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:8
 msgid "Would you like to:"
-msgstr ""
+msgstr "Te gustaría:"
 
 #: ../data/glade/InstallmentConfirmation.ui.h:3
 #: ../stoqlib/gui/dialogs/importerdialog.py:57
@@ -1044,7 +1046,7 @@ msgstr "Detalles..."
 #: ../data/glade/InstallmentConfirmation.ui.h:5
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:4
 msgid "Discount ($CURRENCY):"
-msgstr ""
+msgstr "Descuento ($CURRENCY):"
 
 #: ../data/glade/InstallmentConfirmation.ui.h:6
 msgid "Installment value:"
@@ -1053,20 +1055,20 @@ msgstr ""
 #. Do not translate $CURRENCY
 #: ../data/glade/InstallmentConfirmation.ui.h:8
 msgid "Interest ($CURRENCY):"
-msgstr ""
+msgstr "Interés ($CURRENCY):"
 
 #: ../data/glade/InstallmentConfirmation.ui.h:9
 msgid "Order number:"
-msgstr ""
+msgstr "Número de orden:"
 
 #: ../data/glade/InstallmentConfirmation.ui.h:10
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:5
 msgid "Paid date:"
-msgstr ""
+msgstr "Fecha de pago:"
 
 #: ../data/glade/InstallmentConfirmation.ui.h:11
 msgid "Pay interest"
-msgstr ""
+msgstr "Pago de intereses"
 
 #: ../data/glade/InstallmentConfirmation.ui.h:12
 msgid "Pay penalty"
@@ -1075,7 +1077,7 @@ msgstr ""
 #. Do not translate $CURRENCY
 #: ../data/glade/InstallmentConfirmation.ui.h:14
 msgid "Penalty ($CURRENCY):"
-msgstr ""
+msgstr "Multa ($CURRENCY)"
 
 #: ../data/glade/InstallmentConfirmation.ui.h:15
 msgid "Total value:"
@@ -1083,7 +1085,7 @@ msgstr ""
 
 #: ../data/glade/InvoiceDetailsEditor.ui.h:1
 msgid "Expedition Date:"
-msgstr ""
+msgstr "Fecha de Expedición:"
 
 #: ../data/glade/InvoiceDetailsEditor.ui.h:2
 #: ../data/glade/OpenInventoryDialog.ui.h:4
@@ -1143,7 +1145,7 @@ msgstr ""
 
 #: ../data/glade/LoanDetails.ui.h:3 ../stoqlib/reporting/loanreceipt.py:69
 msgid "Confirm Date:"
-msgstr ""
+msgstr "Fecha de Confirmación:"
 
 #: ../data/glade/LoanDetails.ui.h:4 ../stoqlib/reporting/loanreceipt.py:81
 msgid "Expire Date:"
@@ -1276,7 +1278,7 @@ msgstr ""
 #: ../data/glade/OnSaleInfoSlave.ui.h:4 ../data/glade/PriceEntrySlave.ui.h:2
 #: ../data/glade/PriceLabelSlave.ui.h:2
 msgid "Price ($CURRENCY):"
-msgstr ""
+msgstr "Precio ($CURRENCY):"
 
 #: ../data/glade/OpenInventoryDialog.ui.h:2
 msgid "Include uncategorized products"
@@ -1295,7 +1297,7 @@ msgstr ""
 #: ../data/glade/OpenProductionOrderStep.ui.h:3
 #: ../stoqlib/reporting/production.py:121
 msgid "Expected Start Date:"
-msgstr ""
+msgstr "Inicio de la Fecha Prevista:"
 
 #: ../data/glade/ParameterSearch.ui.h:1
 msgid "Filter:"
@@ -1344,11 +1346,11 @@ msgstr ""
 
 #: ../data/glade/PaymentMethodEditor.ui.h:5
 msgid "Default Account:"
-msgstr ""
+msgstr "Cuenta por Defecto:"
 
 #: ../data/glade/PaymentMethodEditor.ui.h:7
 msgid "Maximum Installments:"
-msgstr ""
+msgstr "Plazos Máximos:"
 
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:1
 msgid "<b>The following payments will be renegotiated.</b>"
@@ -1379,7 +1381,7 @@ msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:3
 msgid "Custom Tab"
-msgstr ""
+msgstr "Ficha Personalizada"
 
 #: ../data/glade/PersonEditorTemplate.ui.h:4
 msgid "E-mail:"
@@ -1391,7 +1393,7 @@ msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:7
 msgid "General Details"
-msgstr ""
+msgstr "Detalles Generales"
 
 #: ../data/glade/PersonEditorTemplate.ui.h:8
 msgid "Identification"
@@ -1412,19 +1414,19 @@ msgstr ""
 
 #: ../data/glade/PersonRoleTypeStep.ui.h:1
 msgid "A new company"
-msgstr ""
+msgstr "Una empresa nueva"
 
 #: ../data/glade/PersonRoleTypeStep.ui.h:2
 msgid "A new individual"
-msgstr ""
+msgstr "Un individuo nuevo"
 
 #: ../data/glade/PersonRoleTypeStep.ui.h:3
 msgid "What is their phone number ?"
-msgstr ""
+msgstr "Cúal es su número telefónico?"
 
 #: ../data/glade/PersonRoleTypeStep.ui.h:4
 msgid "What kind of client are you adding ?"
-msgstr ""
+msgstr "Qué tipo de cliente esta adicionando?"
 
 #: ../data/glade/PluginStep.ui.h:1
 msgid "<b>Plugins</b>"
@@ -1432,7 +1434,7 @@ msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:2
 msgid "ECF (Fiscal printer support)"
-msgstr ""
+msgstr "ECF (Soporte para impresoras fiscales)"
 
 #: ../data/glade/PluginStep.ui.h:3
 msgid "If you just want to test Stoq it is recommended to select no plugin."
@@ -1457,7 +1459,7 @@ msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:9
 msgid "TEF (Credit card support)"
-msgstr ""
+msgstr "TEF (Soporte para tarjetas de crédito)"
 
 #: ../data/glade/ProductAdjustmentDialog.ui.h:2
 #: ../data/glade/ProductStockHistoryDialog.ui.h:4
@@ -1485,7 +1487,7 @@ msgstr ""
 
 #: ../data/glade/ProductComponentSlave.ui.h:2
 msgid "Sort components by category"
-msgstr ""
+msgstr "Ordenar los componentes por categoría"
 
 #: ../data/glade/ProductImageViewer.ui.h:1
 msgid "Product Picture Viewer"
@@ -1505,7 +1507,7 @@ msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:5
 msgid "EX TIPI:"
-msgstr ""
+msgstr "EX TIPI:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:7
 msgid "Kg"
@@ -1531,7 +1533,7 @@ msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:12
 msgid "NCM:"
-msgstr ""
+msgstr "NCM:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:13
 msgid "Part-Number:"
