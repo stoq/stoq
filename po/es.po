@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-09-12 16:58-0300\n"
-"PO-Revision-Date: 2011-10-07 17:38+0000\n"
+"PO-Revision-Date: 2011-10-08 20:16+0000\n"
 "Last-Translator: Sergio Meneses <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-10-08 05:19+0000\n"
+"X-Launchpad-Export-Date: 2011-10-09 05:20+0000\n"
 "X-Generator: Launchpad (build 14110)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -214,7 +214,7 @@ msgstr "Banco predeterminado:"
 #: ../data/glade/BasePaymentMethodSlave.ui.h:3
 #: ../stoqlib/reporting/purchase.py:348
 msgid "Installments:"
-msgstr ""
+msgstr "Plazos:"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:4
 msgid "Start at:"
@@ -667,7 +667,7 @@ msgstr "Nombre de usuario:"
 
 #: ../data/glade/DeliveryEditor.ui.h:1
 msgid "<b>Delivery Address:</b>"
-msgstr ""
+msgstr "<b>Dirección de entrega:</b>"
 
 #: ../data/glade/DeliveryEditor.ui.h:2
 msgid "Additional _Instructions"
@@ -802,7 +802,7 @@ msgstr "No, es un cliente nuevo"
 
 #: ../data/glade/FinishInstallationStep.ui.h:1
 msgid "<b>Installation complete</b>"
-msgstr ""
+msgstr "<b>Instalación completa</b>"
 
 #: ../data/glade/FinishInstallationStep.ui.h:2 ../stoq/main.py:291
 msgid "Enable online services"
@@ -1220,11 +1220,11 @@ msgstr ""
 #: ../data/glade/PurchaseDetailsDialog.ui.h:15
 #: ../data/glade/SaleDetailsDialog.ui.h:12
 msgid "Penalty:"
-msgstr ""
+msgstr "Multa"
 
 #: ../data/glade/MultipleMethodSlave.ui.h:1
 msgid "<b>Method:</b>"
-msgstr ""
+msgstr "<b>Método:</b>"
 
 #: ../data/glade/MultipleMethodSlave.ui.h:2
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:2
@@ -1272,7 +1272,7 @@ msgstr ""
 
 #: ../data/glade/OnSaleInfoSlave.ui.h:1
 msgid "<u>Currently on Sale:</u>"
-msgstr ""
+msgstr "<u>Actualmente en venta:</u>"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/OnSaleInfoSlave.ui.h:4 ../data/glade/PriceEntrySlave.ui.h:2
@@ -1369,11 +1369,11 @@ msgstr ""
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:13
 #: ../data/glade/SaleDetailsDialog.ui.h:17
 msgid "Surcharge:"
-msgstr ""
+msgstr "Recargo:"
 
 #: ../data/glade/PersonEditorTemplate.ui.h:1
 msgid "Calls..."
-msgstr ""
+msgstr "Llamadas..."
 
 #: ../data/glade/PersonEditorTemplate.ui.h:2
 msgid "Co_ntacts..."
@@ -1711,7 +1711,7 @@ msgstr ""
 #: ../data/glade/SaleDetailsDialog.ui.h:14
 #: ../data/glade/SalesPersonStep.ui.h:14
 msgid "Salesperson:"
-msgstr ""
+msgstr "Vendedor:"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:22
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:24
@@ -1728,7 +1728,7 @@ msgstr ""
 #: ../data/glade/SaleDetailsDialog.ui.h:18
 #: ../data/glade/SaleReturnSlave.ui.h:12
 msgid "Total Paid:"
-msgstr ""
+msgstr "Total pagado:"
 
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:1
 msgid ""
@@ -1739,17 +1739,17 @@ msgstr ""
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:4
 #: ../stoqlib/gui/wizards/receivingwizard.py:201
 msgid "Total Received:"
-msgstr ""
+msgstr "Total recibido:"
 
 #: ../data/glade/PurchaseFinishProductListStep.ui.h:1
 msgid "<b>Products not received will be cancelled.</b>"
-msgstr ""
+msgstr "<b>Los productos no recibidos serán cancelados.</b>"
 
 #: ../data/glade/PurchaseItemEditor.ui.h:3
 #: ../data/glade/ReceivingItemEditor.ui.h:2
 #: ../data/glade/SellableItemStep.ui.h:1
 msgid "Cost:"
-msgstr ""
+msgstr "Costo:"
 
 #: ../data/glade/PurchaseItemEditor.ui.h:5
 msgid "Expected receival:"
@@ -1762,11 +1762,11 @@ msgstr ""
 
 #: ../data/glade/PurchaseItemEditor.ui.h:8
 msgid "Returned Quantity:"
-msgstr ""
+msgstr "Cantidad devuelta:"
 
 #: ../data/glade/PurchaseItemEditor.ui.h:9
 msgid "Sold Quantity:"
-msgstr ""
+msgstr "Cantidad vendida:"
 
 #: ../data/glade/PurchasePaymentSlave.ui.h:3
 msgid "Based on intervals of:"
@@ -1774,7 +1774,7 @@ msgstr ""
 
 #: ../data/glade/PurchasePaymentSlave.ui.h:4
 msgid "Number of installments:"
-msgstr ""
+msgstr "Número de cuotas:"
 
 #: ../data/glade/PurchaseSelectionStep.ui.h:1
 #: ../data/glade/SaleListToolbar.ui.h:2 ../data/glade/payable.ui.h:2
@@ -1786,7 +1786,7 @@ msgstr ""
 #: ../data/glade/PurchaseSelectionStep.ui.h:2 ../data/glade/purchase.ui.h:6
 #: ../stoqlib/reporting/purchase_receival.py:35
 msgid "purchase"
-msgstr ""
+msgstr "compra"
 
 #: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:1
 msgid "C_reate Orders"
@@ -1868,11 +1868,11 @@ msgstr ""
 
 #: ../data/glade/ReceivingItemEditor.ui.h:4
 msgid "Purchase Order:"
-msgstr ""
+msgstr "Orden de compra:"
 
 #: ../data/glade/ReceivingItemEditor.ui.h:5
 msgid "Quantity to Receive:"
-msgstr ""
+msgstr "Cantidad a recibir:"
 
 #: ../data/glade/ReceivingItemEditor.ui.h:7
 msgid "Receiving Order:"
@@ -1880,7 +1880,7 @@ msgstr ""
 
 #: ../data/glade/ReceivingOrderDetailsDialog.ui.h:2
 msgid "Received Products"
-msgstr ""
+msgstr "Productos recibidos"
 
 #: ../data/glade/ReceivingOrderDetailsDialog.ui.h:3
 #: ../stoqlib/gui/editors/paymenteditor.py:355
@@ -1890,11 +1890,11 @@ msgstr ""
 
 #: ../data/glade/RelationshipEditor.ui.h:1
 msgid "Model name:"
-msgstr ""
+msgstr "Nombre del modelo:"
 
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:1
 msgid "<b>Renegotiation Number:</b>"
-msgstr ""
+msgstr "<b>Número de renegociación:</b>"
 
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:4
 #: ../data/glade/SaleDetailsDialog.ui.h:4 ../data/glade/SaleReturnSlave.ui.h:6
@@ -1907,7 +1907,7 @@ msgstr ""
 
 #: ../data/glade/SaleDetailsDialog.ui.h:1
 msgid "<b>Sale Number:</b>"
-msgstr ""
+msgstr "<b>Número de venta:</b>"
 
 #: ../data/glade/SaleDetailsDialog.ui.h:13
 msgid "Print Bills"
@@ -11542,7 +11542,7 @@ msgstr ""
 
 #: ../data/template/transfer.rml.extracted.h:8
 msgid "RESPONSIBLE"
-msgstr ""
+msgstr "RESPONSABLE"
 
 #: ../data/template/transfer.rml.extracted.h:10
 msgid "SOURCE"
