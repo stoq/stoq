@@ -305,6 +305,8 @@ class SaleReturnSlave(BaseEditorSlave):
     #
 
     def on_penalty_value__validate(self, entry, value):
+        if self.visual_mode:
+            return
         if value < 0 :
             return ValidationError(_(u"Deduction value can not be "
                                       "lesser then 0"))
