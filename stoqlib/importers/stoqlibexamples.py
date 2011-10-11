@@ -68,8 +68,8 @@ def create(utilities=False):
     _import_one(ClientImporter, 'clients.csv')
     if utilities:
         _set_person_utilities()
-    _import_one(ProductImporter, 'products.csv')
+    #_import_one(ProductImporter, 'products.csv')
     _import_one(ServiceImporter, 'services.csv')
-    _import_one(PurchaseImporter, 'purchases.csv')
-    _import_one(SaleImporter, 'sales.csv')
-    _import_one(TransferImporter, 'transfers.csv')
+    #_import_one(PurchaseImporter, 'purchases.csv')
+    #_import_one(SaleImporter, 'sales.csv')
+    #_import_one(TransferImporter, 'transfers.csv')

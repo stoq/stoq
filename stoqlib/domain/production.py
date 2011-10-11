@@ -29,11 +29,17 @@ from decimal import Decimal
 from zope.interface import implements
 
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, DateTimeCol, IntCol,
-                                  QuantityCol)
+                                  QuantityCol, BoolCol, MultipleJoin)
+from stoqlib.database.orm import Viewable
+from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn, OR
+from stoqlib.database.orm import Viewable, Field, Alias
 from stoqlib.domain.base import Domain
-from stoqlib.domain.product import ProductHistory
+from stoqlib.domain.product import ProductHistory, Product
 from stoqlib.domain.interfaces import IContainer, IDescribable, IStorable
+from stoqlib.domain.sellable import BaseSellableInfo, Sellable
 from stoqlib.lib.translation import stoqlib_gettext
+
+
 
 _ = stoqlib_gettext
 
@@ -59,12 +65,15 @@ class ProductionOrder(Domain):
     (ORDER_OPENED,
      ORDER_WAITING,
      ORDER_PRODUCING,
-     ORDER_CLOSED) = range(4)
+     ORDER_CLOSED,
+     ORDER_QA) = range(5)
 
     statuses = {ORDER_OPENED:         _(u'Opened'),
                 ORDER_WAITING:        _(u'Waiting'),
                 ORDER_PRODUCING:      _(u'Producing'),
-                ORDER_CLOSED:         _(u'Closed')}
+                ORDER_CLOSED:         _(u'Closed'),
+                ORDER_QA:             _(u'Quality Assurance'),
+                }
 
     status = IntCol(default=ORDER_OPENED)
     open_date = DateTimeCol(default=datetime.datetime.now)
@@ -136,14 +145,28 @@ class ProductionOrder(Domain):
         self.start_date = datetime.date.today()
         self.status = ProductionOrder.ORDER_PRODUCING
 
+    # FIXME: Test
     def try_finalize_production(self):
         """When all items are completely produced, change the status of the
         production to CLOSED.
         """
-        assert self.status == ProductionOrder.ORDER_PRODUCING
+        assert (self.status == ProductionOrder.ORDER_PRODUCING or
+                self.status == ProductionOrder.ORDER_QA)
 
-        # All items must be completely produced.
-        if all([i.is_completely_produced() for i in self.get_items()]):
+        is_produced = []
+        is_tested = []
+
+        for i in self.get_items():
+            is_produced.append(i.is_completely_produced())
+            is_tested.append(i.is_completely_tested())
+
+        is_completely_produced = all(is_produced)
+        is_completely_tested = all(is_tested)
+        if is_completely_produced and not is_completely_tested:
+            # Fully produced but not fully tested. Keep status as QA
+            self.status = ProductionOrder.ORDER_QA
+        elif is_completely_produced and is_completely_tested:
+            # All items must be completely produced and tested
             self.close_date = datetime.date.today()
             self.status = ProductionOrder.ORDER_CLOSED
 
@@ -191,6 +214,9 @@ class ProductionItem(Domain):
     order = ForeignKey('ProductionOrder')
     product = ForeignKey('Product')
 
+    produced_items = MultipleJoin('ProductionProducedItem')
+
+
     #
     # IDescribable Implementation
     #
@@ -231,7 +257,16 @@ class ProductionItem(Domain):
     def is_completely_produced(self):
         return self.quantity == self.produced + self.lost
 
-    def produce(self, quantity):
+    def is_completely_tested(self):
+        # Produced items are only stored if there are quality tests for this
+        # product
+        produced_items = self.produced_items
+        if not produced_items:
+            return True
+
+        return all([i.test_passed for i in produced_items])
+
+    def produce(self, quantity, produced_by=None, serial=None):
         """Sets a certain quantity as produced. The quantity will be marked as
         produced only if there are enough materials allocated, otherwise a
         ValueError exception will be raised.
@@ -253,8 +288,21 @@ class ProductionItem(Domain):
                 conn.rollback_to_savepoint('before_produce')
                 raise
 
-        storable = IStorable(self.product, None)
-        storable.increase_stock(quantity, self.order.branch)
+        if self.product.has_quality_tests():
+            # We have some quality tests to assure. Register it for later
+            for i in range(quantity):
+                ProductionProducedItem(connection=self.get_connection(),
+                                       production_item=self,
+                                       produced_by=produced_by,
+                                       produced_date=datetime.datetime.now(),
+                                       serial_number=serial,
+                                       entered_stock=False)
+        else:
+            # There are no quality tests for this product. Increase stock
+            # right now.
+            storable = IStorable(self.product, None)
+            storable.increase_stock(quantity, self.order.branch)
+
         self.produced += quantity
         self.order.try_finalize_production()
         ProductHistory.add_produced_item(conn, self.order.branch, self)
@@ -288,8 +336,8 @@ class ProductionItem(Domain):
 class ProductionMaterial(Domain):
     """Production Material object implementation.
 
+    @ivar product: The L{Product} that will be consumed.
     @ivar order: The L{ProductionOrder} that will consume this material.
-    @ivar product: The product that will be consumed.
     @ivar needed: The quantity needed of this material.
     @ivar consumed: The quantity already used of this material.
     @ivar lost: The quantity lost of this material.
@@ -298,14 +346,14 @@ class ProductionMaterial(Domain):
     """
     implements(IDescribable)
 
+    product = ForeignKey('Product')
+    order = ForeignKey('ProductionOrder')
     needed = QuantityCol(default=1)
     allocated = QuantityCol(default=0)
     consumed = QuantityCol(default=0)
     lost = QuantityCol(default=0)
     to_purchase = QuantityCol(default=0)
     to_make = QuantityCol(default=0)
-    order = ForeignKey('ProductionOrder')
-    product = ForeignKey('Product')
 
     #
     # Public API
@@ -405,9 +453,9 @@ class ProductionService(Domain):
     """
     implements(IDescribable)
 
-    quantity = QuantityCol(default=1)
-    order = ForeignKey('ProductionOrder')
     service = ForeignKey('Service')
+    order = ForeignKey('ProductionOrder')
+    quantity = QuantityCol(default=1)
 
     #
     # IDescribable Implementation
@@ -420,3 +468,101 @@ class ProductionService(Domain):
 
     def get_unit_description(self):
         return self.service.sellable.get_unit_description()
+
+
+class ProductionProducedItem(Domain):
+    """This class represents a composed product that was produced, but
+    didn't enter the stock yet. Its used mainly for the quality assurance
+    process
+    """
+
+    production_item = ForeignKey('ProductionItem')
+    produced_by = ForeignKey('PersonAdaptToEmployee')
+    produced_date = DateTimeCol()
+    serial_number = UnicodeCol(default='')
+    entered_stock = BoolCol(default=False)
+    test_passed = BoolCol(default=False)
+    test_results = MultipleJoin('ProductionItemQualityResult',
+                                joinColumn='produced_item_id')
+
+
+    def get_pending_tests(self):
+        tests_done = set([t.quality_test for t in self.test_results])
+        all_tests = set(self.production_item.product.quality_tests)
+        return list(all_tests.difference(tests_done))
+
+
+class ProductionItemQualityResult(Domain):
+    """This table stores the test results for every produced item.
+    """
+
+    implements(IDescribable)
+
+    produced_item = ForeignKey('ProductionProducedItem')
+    quality_test = ForeignKey('ProductQualityTest')
+    tested_by = ForeignKey('PersonAdaptToEmployee')
+    tested_date = DateTimeCol(default=None)
+    result_value = UnicodeCol()
+    test_passed = BoolCol(default=False)
+
+    def get_description(self):
+        return self.quality_test.description
+
+    @property
+    def result_value_str(self):
+        return _(self.result_value)
+
+    def get_boolean_value(self):
+        if self.result_value == 'True':
+            return True
+        elif self.result_value == 'False':
+            return False
+        else:
+            raise ValueError
+
+    def get_decimal_value(self):
+        return Decimal(self.result_value)
+
+    def set_boolean_value(self, value):
+        self.test_passed = self.quality_test.result_value_passes(value)
+        self.result_value = str(value)
+
+    def set_decimal_value(self, value):
+        self.test_passed = self.quality_test.result_value_passes(value)
+        self.result_value = '%s' % (value,)
+
+
+
+#
+#   Viewables
+#
+
+class ProducedQualityItemsView(Viewable):
+    columns = dict(id=ProductionProducedItem.q.id,
+                   serial_number=ProductionProducedItem.q.serial_number,
+                   test_passed=ProductionProducedItem.q.test_passed,
+                   entered_stock=ProductionProducedItem.q.entered_stock,
+                   produced_date=ProductionProducedItem.q.produced_date,
+
+                   order_id=ProductionOrder.q.id,
+                   order_status=ProductionOrder.q.status,
+                   description=BaseSellableInfo.q.description,)
+
+    joins = [
+        LEFTJOINOn(None, ProductionItem,
+           ProductionProducedItem.q.production_itemID == ProductionItem.q.id),
+        LEFTJOINOn(None, ProductionOrder,
+                   ProductionItem.q.orderID == ProductionOrder.q.id),
+        LEFTJOINOn(None, Product,
+                   ProductionItem.q.productID == Product.q.id),
+        LEFTJOINOn(None, Sellable,
+                    Sellable.q.id == Product.q.sellableID),
+        INNERJOINOn(None, BaseSellableInfo,
+                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),]
+
+    @property
+    def produced_item(self):
+        return ProductionProducedItem.get(self.id, connection=self.get_connection())
+
+
+

@@ -33,13 +33,17 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 
 from stoqdrivers.enum import TaxType
 
+
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.person import PersonAdaptToSupplier
-from stoqlib.domain.product import ProductSupplierInfo, Product, ProductComponent
+from stoqlib.domain.product import (ProductSupplierInfo, Product,
+                                    ProductComponent,
+                                    ProductQualityTest)
 from stoqlib.domain.sellable import (BaseSellableInfo, Sellable,
                                      SellableTaxConstant)
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.lists import ModelListSlave
 from stoqlib.gui.editors.baseeditor import (BaseEditor, BaseEditorSlave,
                                             BaseRelationshipEditorSlave)
 from stoqlib.gui.editors.sellableeditor import SellableEditor
@@ -57,6 +61,7 @@ _ = stoqlib_gettext
 #
 # Slaves
 #
+
 class _TemporaryProductComponent(object):
     def __init__(self, product=None, component=None, quantity=Decimal(1)):
         self.product = product
@@ -325,6 +330,101 @@ class ProductComponentSlave(BaseEditorSlave):
             self._get_products(sort_by_name=sort_by_name))
         self.component_combo.select_item_by_position(0)
 
+#
+#   Quality Test Editor & Slave
+#
+
+class QualityTestEditor(BaseEditor):
+    model_name = _('Quality Test')
+    model_type = ProductQualityTest
+    gladefile = 'QualityTestEditor'
+
+    proxy_widgets = ['description', 'test_type']
+    confirm_widgets = ['description']
+
+    def __init__(self, conn, model, product):
+        self._product = product
+        BaseEditor.__init__(self, conn=conn, model=model)
+
+
+    def _setup_widgets(self):
+        self.sizegroup1.add_widget(self.decimal_value)
+        self.sizegroup1.add_widget(self.boolean_value)
+        self.test_type.prefill([(value, key)
+            for key, value in ProductQualityTest.types.items()])
+        self.boolean_value.prefill([(_('True'), True), _(('False'), False)])
+
+        # Editing values
+        if self.model.test_type == ProductQualityTest.TYPE_BOOLEAN:
+            self.boolean_value.select(self.model.get_boolean_value())
+        else:
+            min_value, max_value = self.model.get_range_value()
+            self.min_value.set_value(min_value)
+            self.max_value.set_value(max_value)
+
+
+    def create_model(self, conn):
+        return ProductQualityTest(product=self._product, connection=conn)
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    def on_confirm(self):
+        if self.model.test_type == ProductQualityTest.TYPE_BOOLEAN:
+            self.model.set_boolean_value(self.boolean_value.read())
+        else:
+            self.model.set_range_value(self.min_value.read(),
+                                       self.max_value.read())
+        return self.model
+
+    #
+    #   Callbacks
+    #
+
+    def on_test_type__changed(self, widget):
+        if self.model.test_type == ProductQualityTest.TYPE_BOOLEAN:
+            self.boolean_value.show()
+            self.decimal_value.hide()
+        else:
+            self.boolean_value.hide()
+            self.decimal_value.show()
+
+
+class ProductQualityTestSlave(ModelListSlave):
+    model_type = ProductQualityTest
+
+    def __init__(self, conn, product):
+        self._product = product
+        ModelListSlave.__init__(self)
+        self.set_reuse_transaction(self._product.get_connection())
+        self.set_editor_class(QualityTestEditor)
+        self.set_model_type(self.model_type)
+
+    #
+    #   ListSlave Implementation
+    #
+
+    def get_columns(self):
+        return [Column('description', title=_(u'Description'),
+                        data_type=str, expand=True),
+                Column('type_str', title=_(u'Type'), data_type=str),
+                Column('success_value_str', title=_(u'Success Value'), data_type=str),
+                ]
+
+
+    def populate(self):
+        return self._product.quality_tests
+
+    def run_dialog(self, dialog_class, *args, **kwargs):
+        kwargs['product'] = self._product
+        return ModelListSlave.run_dialog(self, dialog_class, *args, **kwargs)
+
+
+#
+#   Product Supplier Editor & Slave
+#
+
 class ProductSupplierEditor(BaseEditor):
     model_name = _('Product Supplier')
     model_type = ProductSupplierInfo
@@ -560,8 +660,11 @@ class ProductionProductEditor(ProductEditor):
     def get_extra_tabs(self):
         self._component_slave = ProductComponentSlave(self.conn, self.model)
         tax_slave = ProductTaxSlave(self.conn, self.model)
+        quality_slave = ProductQualityTestSlave(self.conn, self.model)
         return [(_(u'Components'), self._component_slave),
-                (_(u'Taxes'), tax_slave)]
+                (_(u'Taxes'), tax_slave),
+                (_(u'Quality'), quality_slave),
+                ]
 
     def validate_confirm(self):
         if not self._is_valid_cost(self.cost.read()):

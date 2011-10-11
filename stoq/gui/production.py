@@ -38,7 +38,8 @@ from stoqlib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
 from stoqlib.gui.dialogs.startproduction import StartProductionDialog
 from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
                                                  ProductionItemsSearch,
-                                                 ProductionHistorySearch)
+                                                 ProductionHistorySearch,
+                                                 ProductionQASearch)
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.productionwizard import ProductionWizard
 from stoqlib.reporting.production import ProductionReport
@@ -82,6 +83,7 @@ class ProductionApp(SearchableAppWindow):
           <menuitem action="SearchProduct"/>
           <menuitem action="SearchService"/>
           <menuitem action="SearchProductionItem"/>
+          <menuitem action="SearchQualityAssurance"/>
           <menuitem action="SearchProductionHistory"/>
         </menu>
       </menubar>
@@ -113,6 +115,8 @@ class ProductionApp(SearchableAppWindow):
             ("SearchService", None, _("Services..."), '<Control>s'),
             ("SearchProductionItem", 'stoq-production-app', _("Production items..."),
              '<Control>r'),
+            ("SearchQualityAssurance", None, _("Quality Assurance..."),
+             '<Control>a'),
             ("SearchProductionHistory", None, _("Production history..."), '<Control>h'),
 
         ]
@@ -249,3 +253,7 @@ class ProductionApp(SearchableAppWindow):
 
     def on_SearchProductionHistory__activate(self, action):
         self.run_dialog(ProductionHistorySearch, self.conn)
+
+    def on_SearchQualityAssurance__activate(self, action):
+        self.run_dialog(ProductionQASearch, self.conn)
+
