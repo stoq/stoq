@@ -38,7 +38,7 @@ from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)
 from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import IStorable, IBranch
+from stoqlib.domain.interfaces import (IStorable, IBranch, IDescribable)
 from stoqlib.exceptions import StockError, DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
@@ -149,6 +149,10 @@ class Product(Domain):
     icms_template = ForeignKey('ProductIcmsTemplate', default=None)
     ipi_template = ForeignKey('ProductIpiTemplate', default=None)
 
+    # User for composed products only
+    quality_tests = MultipleJoin('ProductQualityTest')
+
+
     #
     # Facet hooks
     #
@@ -159,6 +163,9 @@ class Product(Domain):
     #
     # General Methods
     #
+
+    def has_quality_tests(self):
+        return bool(self.quality_tests)
 
     @property
     def has_image(self):
@@ -657,3 +664,59 @@ class ProductComponent(Domain):
     quantity = QuantityCol(default=Decimal(1))
     product = ForeignKey('Product')
     component = ForeignKey('Product')
+
+
+class ProductQualityTest(Domain):
+    """A quality test that a manufactured product will be submitted to.
+    """
+
+    implements(IDescribable)
+
+    (TYPE_BOOLEAN,
+     TYPE_DECIMAL) = range(2)
+
+    types = {
+        TYPE_BOOLEAN: _('Boolean'),
+        TYPE_DECIMAL: _('Decimal'),
+    }
+
+    product = ForeignKey('Product')
+    test_type = IntCol(default=TYPE_BOOLEAN)
+    description = UnicodeCol(default='')
+    success_value = UnicodeCol(default='True')
+
+    def get_description(self):
+        return self.description
+
+    @property
+    def type_str(self):
+        return self.types[self.test_type]
+
+    @property
+    def success_value_str(self):
+        return _(self.success_value)
+
+    def get_boolean_value(self):
+        if self.success_value == 'True':
+            return True
+        elif self.success_value == 'False':
+            return False
+        else:
+            raise ValueError, self.success_value
+
+    def get_range_value(self):
+        a, b = self.success_value.split(' - ')
+        return Decimal(a), Decimal(b)
+
+    def set_boolean_value(self, value):
+        self.success_value = str(value)
+
+    def set_range_value(self, min_value, max_value):
+        self.success_value = '%s - %s' % (min_value, max_value)
+
+    def result_value_passes(self, value):
+        if self.test_type == self.TYPE_BOOLEAN:
+            return self.get_boolean_value() == value
+        else:
+            a, b = self.get_range_value()
+            return a <= value <= b

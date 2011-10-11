@@ -23,26 +23,35 @@
 ##
 """ Production editors """
 
+import datetime
+from decimal import Decimal
 import sys
 
 import gtk
 
 from kiwi.datatypes import ValidationError
+from kiwi.python import Settable
+from kiwi.ui.objectlist import Column
 
-from stoqlib.gui.editors.baseeditor import BaseEditor
+
+
+from stoqlib.database.runtime import get_current_user
+from stoqlib.domain.product import ProductQualityTest
 from stoqlib.domain.production import (ProductionItem, ProductionMaterial,
+                                       ProductionItemQualityResult,
                                        ProductionService)
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-
 class ProductionItemEditor(BaseEditor):
     gladefile = 'ProductionItemEditor'
     model_type = ProductionItem
-    size = (-1, 150)
+    size = (-1, -1)
     model_name = _(u'Production Item')
     proxy_widgets = ['description', 'quantity', 'unit_description',]
 
@@ -57,8 +66,17 @@ class ProductionItemEditor(BaseEditor):
     def setup_editor_widgets(self):
         self.order_number.set_text("%04d" %  self.model.order.id)
         self.quantity.set_adjustment(
-            gtk.Adjustment(lower=0, upper=self.get_max_quantity(), step_incr=1))
+            gtk.Adjustment(lower=1, upper=self.get_max_quantity(), step_incr=1))
         self.quantity.set_digits(DECIMAL_PRECISION)
+
+    def setup_produced_item_widgets(self):
+        # FIXME: We should be able to enter more than one produced item with
+        # serial at once.
+        if not self.model.product.has_quality_tests():
+            self.serial_no_label.hide()
+            self.serial_number.hide()
+        else:
+            self.quantity.set_editable(False)
 
     def get_max_quantity(self):
         """Returns the maximum quantity allowed in the quantity spinbutton.
@@ -68,8 +86,13 @@ class ProductionItemEditor(BaseEditor):
     def setup_proxies(self):
         self.setup_editor_widgets()
         self.setup_location_widgets()
+        self.setup_produced_item_widgets()
         self.proxy = self.add_proxy(
             self.model, ProductionItemEditor.proxy_widgets)
+
+        self.serial_model = Settable(serial_number=u'')
+        self.serial_proxy = self.add_proxy(self.serial_model,
+                                           ['serial_number'])
 
     #
     # Kiwi callbacks
@@ -97,11 +120,16 @@ class ProductionItemProducedEditor(ProductionItemEditor):
         self._quantity_proxy = self.add_proxy(self, ['quantity',])
 
     def get_max_quantity(self):
+        # When producing a product with quality tests, We must produce only
+        # one at a time, so we can create the entries in the test table.
+        if self.model.product.has_quality_tests():
+            return 1
         return self.model.quantity - self.model.lost - self.model.produced
 
     def validate_confirm(self):
         try:
-            self.model.produce(self.produced)
+            self.model.produce(self.produced, get_current_user(self.conn),
+                               self.serial_model.serial_number)
         except (ValueError, AssertionError):
             info(_(u'Can not produce this quantity. Not enough materials '
                     'can be allocated to produce this item.'))
@@ -174,3 +202,155 @@ class ProductionMaterialEditor(ProductionItemEditor):
     def on_quantity__validate(self, widget, value):
         if value and value < 0:
             return ValidationError(_(u'This quantity should be positive.'))
+
+
+class QualityTestResultEditor(BaseEditor):
+    model_name = _('Quality Test Result')
+    model_type = ProductionItemQualityResult
+    gladefile = 'QualityTestResultEditor'
+
+    def __init__(self, conn, model, produced_item, pending_tests):
+        self._item = produced_item
+        self._pending_tests = pending_tests
+        self.temp_model = None
+        BaseEditor.__init__(self, conn=conn, model=model)
+
+    @property
+    def test_type(self):
+        return self.model.quality_test.test_type
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model, ['quality_test'])
+
+        if (self.test_type == ProductQualityTest.TYPE_BOOLEAN):
+            self.temp_model = Settable(
+                                decimal_value=Decimal(0),
+                                boolean_value=self.model.get_boolean_value())
+        else:
+            self.temp_model = Settable(
+                                decimal_value=self.model.get_decimal_value(),
+                                boolean_value=False)
+
+        self.temp_proxy = self.add_proxy(
+            self.temp_model, ['decimal_value', 'boolean_value'])
+
+        self._check_value_passes()
+
+    def on_confirm(self):
+        if self.test_type == ProductQualityTest.TYPE_BOOLEAN:
+            self.model.set_boolean_value(self.temp_model.boolean_value)
+        else:
+            self.model.set_decimal_value(self.temp_model.decimal_value)
+
+        return self.model
+
+    def _setup_widgets(self):
+        self.sizegroup1.add_widget(self.decimal_value)
+        self.sizegroup1.add_widget(self.boolean_value)
+
+        if self.test_type == ProductQualityTest.TYPE_BOOLEAN:
+            self.decimal_value.set_visible(False)
+        else:
+            self.boolean_value.set_visible(False)
+
+        self.boolean_value.prefill([(_('True'), True), (_('False'), False)])
+        if self.edit_mode:
+            # Show only the current test item and disable it
+            self.quality_test.prefill([(self.model.quality_test.description,
+                                        self.model.quality_test)])
+            self.quality_test.set_sensitive(False)
+        else:
+            # Show only pending tests
+            self.quality_test.prefill([(i.description, i) for i in
+                                            self._pending_tests])
+
+
+
+    def create_model(self, conn):
+        default_test = self._pending_tests[0]
+        if default_test.test_type == ProductQualityTest.TYPE_BOOLEAN:
+            default_vale = 'False'
+        else:
+            default_vale = '0'
+
+        return ProductionItemQualityResult(connection=conn,
+                                           produced_item=self._item,
+                                           quality_test=default_test,
+                                           tested_by=get_current_user(conn),
+                                           tested_date=datetime.datetime.now(),
+                                           result_value=default_vale)
+
+    def _check_value_passes(self):
+        if self.test_type == ProductQualityTest.TYPE_BOOLEAN:
+            value = self.temp_model.boolean_value
+        else:
+            value = self.temp_model.decimal_value
+
+        test = self.model.quality_test
+        if test.result_value_passes(value):
+            self.result_icon.set_from_stock(gtk.STOCK_OK,
+                                            gtk.ICON_SIZE_BUTTON)
+        else:
+            self.result_icon.set_from_stock(gtk.STOCK_DIALOG_WARNING,
+                                            gtk.ICON_SIZE_BUTTON)
+
+    #
+    #   Callbacks
+    #
+
+    def on_quality_test__changed(self, widget):
+        if self.test_type == ProductQualityTest.TYPE_BOOLEAN:
+            self.boolean_value.show()
+            self.decimal_value.hide()
+        else:
+            self.boolean_value.hide()
+            self.decimal_value.show()
+
+    def after_boolean_value__changed(self, widget):
+        if not self.temp_model:
+            return
+
+        self._check_value_passes()
+
+    def after_decimal_value__changed(self, widget):
+        self._check_value_passes()
+
+
+class ProducedItemQualityTestsDialog(ModelListDialog):
+
+    model_type = ProductionItemQualityResult
+    editor_class = QualityTestResultEditor
+    title = _('Test Results')
+    size = (620, 300)
+
+    def __init__(self, conn, item):
+        self._item = item
+        ModelListDialog.__init__(self)
+        self.set_reuse_transaction(self._item.get_connection())
+        self.set_editor_class(self.editor_class)
+
+    def get_columns(self):
+        return [Column('quality_test.description', title=_(u'Description'),
+                        data_type=str, expand=True),
+                Column('quality_test.type_str', title=_(u'Type'), data_type=str),
+                Column('result_value', title=_(u'Result Value'), data_type=str),
+                Column('test_passed', title=_(u'Test Passed'),
+                       data_type=bool),
+                ]
+
+
+    def populate(self):
+        return self._item.test_results
+
+    def run_dialog(self, dialog_class, *args, **kwargs):
+        pending_tests = self._item.get_pending_tests()
+        if not pending_tests:
+            info(_(u'There are no pending tests for this item'))
+            return
+
+        kwargs['produced_item'] = self._item
+        kwargs['pending_tests'] = pending_tests
+
+        return ModelListDialog.run_dialog(self, dialog_class, *args, **kwargs)
+
