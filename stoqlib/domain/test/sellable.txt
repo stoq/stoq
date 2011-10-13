@@ -9,6 +9,7 @@ Imports that will be used in this doctest:
     >>> from stoqlib.domain.sellable import Sellable
     >>> from stoqlib.domain.sellable import BaseSellableInfo
     >>> from stoqlib.domain.sellable import SellableCategory
+    >>> from decimal import Decimal
 
 Create a new transaction
 
@@ -89,7 +90,7 @@ The default commission is 0
 
 It can be modified:
 
-    >>> sellable.commission = 10
+    >>> sellable.commission = Decimal('10.00')
 
     >>> sellable.commission
     Decimal('10.00')

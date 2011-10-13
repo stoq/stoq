@@ -165,7 +165,7 @@ class TestTill(DomainTest):
         self.assertEqual(till.get_debits_total(), old - 10)
 
     def testTillOpenYesterday(self):
-        yesterday = datetime.date.today() - datetime.timedelta(1)
+        yesterday = datetime.datetime.today() - datetime.timedelta(1)
 
         # Open a till, set the opening_date to yesterday
         till = Till(station=get_current_station(self.trans),
@@ -198,7 +198,7 @@ class TestTill(DomainTest):
         self.failIf(till.needs_closing())
         till.open_till()
         self.failIf(till.needs_closing())
-        till.opening_date = datetime.date.today() - datetime.timedelta(1)
+        till.opening_date = datetime.datetime.today() - datetime.timedelta(1)
         self.failUnless(till.needs_closing())
         till.close_till()
         self.failIf(till.needs_closing())

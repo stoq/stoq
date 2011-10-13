@@ -441,13 +441,13 @@ class PaymentFlowHistory(Domain):
             - The payment was not expected to be paid/received the current date.
         """
         date = self.history_date
-        query = AND(OR(Payment.q.due_date == date,
-                       Payment.q.paid_date == date,
-                       Payment.q.cancel_date == date),
+        query = AND(OR(const.DATE(Payment.q.due_date) == date,
+                       const.DATE(Payment.q.paid_date) == date,
+                       const.DATE(Payment.q.cancel_date) == date),
                     OR(Payment.q.paid_value == None,
                        Payment.q.value != Payment.q.paid_value,
                        Payment.q.paid_date == None,
-                       Payment.q.due_date != Payment.q.paid_date))
+                       const.DATE(Payment.q.due_date) != const.DATE(Payment.q.paid_date)))
         return Payment.select(query, connection=self.get_connection())
 
     #
@@ -537,7 +537,7 @@ class PaymentFlowHistory(Domain):
         if reference_date is None:
             reference_date = datetime.date.today()
         results = PaymentFlowHistory.select(
-                            PaymentFlowHistory.q.history_date < reference_date,
+                            const.DATE(PaymentFlowHistory.q.history_date) < reference_date,
                             orderBy=DESC(PaymentFlowHistory.q.history_date),
                             connection=conn).limit(1)
         if results:
@@ -556,7 +556,7 @@ class PaymentFlowHistory(Domain):
         if reference_date is None:
             reference_date = datetime.date.today()
         results = PaymentFlowHistory.select(
-                            PaymentFlowHistory.q.history_date > reference_date,
+                            const.DATE(PaymentFlowHistory.q.history_date) > reference_date,
                             orderBy=PaymentFlowHistory.q.history_date,
                             connection=conn).limit(1)
         if results:

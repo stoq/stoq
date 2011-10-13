@@ -43,7 +43,7 @@ class TestPayment(DomainTest):
         self.failUnless(payment.status == Payment.STATUS_PREVIEW)
 
     def _get_relative_day(self, days):
-        return datetime.date.today() + datetime.timedelta(days)
+        return datetime.datetime.today() + datetime.timedelta(days)
 
     def testGetPenalty(self):
         method = PaymentMethod.get_by_name(self.trans, 'check')
@@ -76,12 +76,12 @@ class TestPayment(DomainTest):
         paid_date = self._get_relative_day(-5)
         payment.due_date = payment.open_date = due_date
         method.daily_penalty = Decimal(2)
-        self.assertEqual(payment.get_penalty(paid_date), currency(20))
-        self.assertEqual(payment.get_penalty(due_date), currency(0))
+        self.assertEqual(payment.get_penalty(paid_date.date()), currency(20))
+        self.assertEqual(payment.get_penalty(due_date.date()), currency(0))
 
         for day in (18, -18):
             paid_date = self._get_relative_day(day)
-            self.assertRaises(ValueError, payment.get_penalty, paid_date)
+            self.assertRaises(ValueError, payment.get_penalty, paid_date.date())
 
     def testGetInterest(self):
         method = PaymentMethod.get_by_name(self.trans, 'check')
@@ -112,12 +112,12 @@ class TestPayment(DomainTest):
         due_date = self._get_relative_day(-15)
         paid_date = self._get_relative_day(-5)
         payment.due_date = payment.open_date = due_date
-        self.assertEqual(payment.get_interest(paid_date), currency(20))
-        self.assertEqual(payment.get_interest(due_date), currency(0))
+        self.assertEqual(payment.get_interest(paid_date.date()), currency(20))
+        self.assertEqual(payment.get_interest(due_date.date()), currency(0))
 
         for day in (18, -18):
             paid_date = self._get_relative_day(day)
-            self.assertRaises(ValueError, payment.get_interest, paid_date)
+            self.assertRaises(ValueError, payment.get_interest, paid_date.date())
 
     def testIsPaid(self):
         method = PaymentMethod.get_by_name(self.trans, 'check')
@@ -160,7 +160,7 @@ class TestPayment(DomainTest):
                           till=None,
                           category=None,
                           connection=self.trans)
-        today = datetime.date.today().strftime('%x')
+        today = datetime.datetime.today().strftime('%x')
         self.failIf(payment.get_paid_date_string() == today)
         payment.set_pending()
         payment.pay()
@@ -214,7 +214,7 @@ class TestPayment(DomainTest):
 class TestPaymentFlowHistory(DomainTest):
 
     def testGetOrCreateFlowHistory(self):
-        today = datetime.date.today()
+        today = datetime.datetime.today()
         history = PaymentFlowHistory.get_or_create_flow_history(self.trans,
                                                                 today)
         history2 = PaymentFlowHistory.get_or_create_flow_history(self.trans,
@@ -222,7 +222,7 @@ class TestPaymentFlowHistory(DomainTest):
         self.failIf(history is not history2)
 
     def testGetLastDay(self):
-        today = datetime.date.today()
+        today = datetime.datetime.today()
         yesterday = today + datetime.timedelta(days=-1)
         tomorrow = today + datetime.timedelta(days=+1)
 
@@ -240,7 +240,7 @@ class TestPaymentFlowHistory(DomainTest):
                         today_history)
 
     def testGetLastDayRealBalance(self):
-        today = datetime.date.today()
+        today = datetime.datetime.today()
         yesterday = today + datetime.timedelta(days=-1)
         tomorrow = today + datetime.timedelta(days=+1)
 
@@ -260,7 +260,7 @@ class TestPaymentFlowHistory(DomainTest):
         #                 Decimal(0))
 
     def testGetDivergentPayments(self):
-        today = datetime.date.today()
+        today = datetime.datetime.today()
         history = PaymentFlowHistory.get_or_create_flow_history(
             self.trans, today)
         self.failIf(history.get_divergent_payments())
@@ -314,7 +314,7 @@ class TestPaymentFlowHistory(DomainTest):
         self.failUnless(payment4 in history.get_divergent_payments())
 
     def testAddPayment(self):
-        today = datetime.date.today()
+        today = datetime.datetime.today()
         history = PaymentFlowHistory.get_or_create_flow_history(
             self.trans, today)
         old_to_receive = history.to_receive
@@ -336,7 +336,7 @@ class TestPaymentFlowHistory(DomainTest):
         self.assertEqual(old_to_pay + Decimal(10), history.to_pay)
 
     def testRemovePayment(self):
-        today = datetime.date.today()
+        today = datetime.datetime.today()
         history = PaymentFlowHistory.get_or_create_flow_history(
             self.trans, today)
         old_to_receive = history.to_receive
@@ -363,7 +363,7 @@ class TestPaymentFlowHistory(DomainTest):
         self.assertEqual(old_to_pay, history.to_pay)
 
     def testAddPaidPayment(self):
-        today = datetime.date.today()
+        today = datetime.datetime.today()
         history = PaymentFlowHistory.get_or_create_flow_history(
             self.trans, today)
         old_received = history.received
@@ -387,7 +387,7 @@ class TestPaymentFlowHistory(DomainTest):
         self.assertEqual(old_paid + Decimal(10), history.paid)
 
     def testRemovePaidPayment(self):
-        today = datetime.date.today()
+        today = datetime.datetime.today()
         history = PaymentFlowHistory.get_or_create_flow_history(
             self.trans, today)
         old_received = history.received
