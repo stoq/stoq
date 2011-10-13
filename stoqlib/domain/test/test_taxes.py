@@ -42,15 +42,15 @@ class TestProductIcmsTemplate(DomainTest):
 
         self.assertTrue(icms_template.is_p_cred_sn_valid())
 
-        expire_date = datetime.date.today()
+        expire_date = datetime.datetime.today()
         icms_template.p_cred_sn_valid_until = expire_date
         self.assertTrue(icms_template.is_p_cred_sn_valid())
 
-        expire_date = datetime.date.today() + relativedelta(days=+1)
+        expire_date = datetime.datetime.today() + relativedelta(days=+1)
         icms_template.p_cred_sn_valid_until = expire_date
         self.assertTrue(icms_template.is_p_cred_sn_valid())
 
-        expire_date = datetime.date.today() + relativedelta(days=-1)
+        expire_date = datetime.datetime.today() + relativedelta(days=-1)
         icms_template.p_cred_sn_valid_until = expire_date
         self.assertFalse(icms_template.is_p_cred_sn_valid())
 
