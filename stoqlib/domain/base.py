@@ -361,7 +361,6 @@ class ModelAdapter(BaseDomain, ORMObjectAdapter):
 
 for klass in (Domain, ModelAdapter):
     sqlmeta = klass.sqlmeta
-    sqlmeta.cacheValues = False
     sqlmeta.addColumn(ForeignKey('TransactionEntry', name='te_created',
                                  default=None))
     sqlmeta.addColumn(ForeignKey('TransactionEntry', name='te_modified',
