@@ -379,4 +379,4 @@ class PurchaseQuoteReport(BaseStoqReport):
 
     def get_title(self):
         order_number = self._quote.get_order_number_str()
-        return _("%s #%s") % (self.report_name, order_number)
+        return "%s #%s" % (self.report_name, order_number)
