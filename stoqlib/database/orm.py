@@ -32,7 +32,8 @@ from kiwi.datatypes import currency
 from kiwi.db.sqlobj import SQLObjectQueryExecuter
 from sqlobject import (SQLObjectNotFound,
                        SQLObjectMoreThanOneResultError)
-from sqlobject.col import (BoolCol, BLOBCol, DateTimeCol,
+from sqlobject.col import DateTimeCol as _DateTimeCol
+from sqlobject.col import (BoolCol, BLOBCol,
                            ForeignKey, IntCol, StringCol, UnicodeCol)
 from sqlobject.col import (Col, SOBoolCol, SODateTimeCol, SODecimalCol,
                            SOForeignKey, SOIntCol, SOStringCol, SOUnicodeCol)
@@ -185,7 +186,15 @@ ORMObjectQueryExecuter = SQLObjectQueryExecuter
 # Columns
 BLOBCol = BLOBCol
 BoolCol = BoolCol
-DateTimeCol = DateTimeCol
+#DateTimeCol = DateTimeCol
+# FIXME: There are a lot of callsites in stoq that set datetime columns as
+# only date and later use those as datetime. Untill we fix all those
+# callsites, disable cache for datetime columns
+class DateTimeCol(_DateTimeCol):
+    def __init__(self, *args, **kwargs):
+        kwargs['noCache'] = True
+        _DateTimeCol.__init__(self, *args, **kwargs)
+
 ForeignKey = ForeignKey
 IntCol = IntCol
 MultipleJoin = MultipleJoin

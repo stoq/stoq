@@ -1073,11 +1073,14 @@ class SQLObject(object):
 
         if self.sqlmeta.cacheValues:
             i_name = instanceName(name)
-            if isinstance(value, sqlbuilder.SQLCall) and hasattr(self, i_name):
-                # This is a SQL call, meaning its value will be determined
-                # only after sql execution. Invalidate cache so that the
-                # actual value is reloaded
-                delattr(self, i_name)
+            # This is a SQL call, meaning its value will be determined
+            # only after sql execution. Invalidate cache so that the
+            # actual value is reloaded
+            should_invalidate = (isinstance(value, sqlbuilder.SQLCall)
+                                 or self.sqlmeta.columns[name].noCache)
+            if should_invalidate:
+                if hasattr(self, i_name):
+                    delattr(self, i_name)
             else:
                 setattr(self, i_name, value)
 
