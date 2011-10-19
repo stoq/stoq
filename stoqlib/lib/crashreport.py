@@ -28,6 +28,7 @@ import platform
 import sys
 import time
 import traceback
+from twisted.internet import reactor
 
 import gobject
 from kiwi.component import get_utility
@@ -168,7 +169,7 @@ class ReportSubmitter(gobject.GObject):
         self._done(data)
 
     def _on_report__errback(self, failure):
-        log.info('Failed to report bug: %r count=%d' % (args, self._count))
+        log.info('Failed to report bug: %r count=%d' % (failure, self._count))
         if self._count < _N_TRIES:
             self.submit()
         else:
