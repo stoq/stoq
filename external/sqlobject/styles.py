@@ -72,7 +72,10 @@ class MixedCaseUnderscoreStyle(Style):
         return mixedToUnder(attr)
 
     def dbColumnToPythonAttr(self, col):
-        return underToMixed(col)
+        if col.endswith('_id'):
+            return col[:-3] + "ID"
+        return col
+
 
     def pythonClassToDBTable(self, className):
         return className[0].lower() \
