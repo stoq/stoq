@@ -28,6 +28,7 @@ import time
 from kiwi.log import Logger
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.events import SaleStatusChangedEvent
+from stoqlib.domain.sale import Sale
 from stoqlib.gui.events import StartApplicationEvent
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.message import info
@@ -114,6 +115,6 @@ class NFeUI(object):
 
 
     def _on_SaleStatusChanged(self, sale, old_status):
-        if sale.status == sale.STATUS_CONFIRMED:
+        if sale.status == Sale.STATUS_CONFIRMED:
             self._create_nfe(sale, sale.get_connection())
 
