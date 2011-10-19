@@ -87,9 +87,9 @@ class AptPackageInstaller(gobject.GObject):
         from aptdaemon.gtkwidgets import AptConfirmDialog
         dia = AptConfirmDialog(self._transaction,
                                parent=self.parent)
-        respone = dia.run()
+        response = dia.run()
         dia.destroy()
-        if respones == gtk.RESPONSE_OK:
+        if response == gtk.RESPONSE_OK:
             self._install()
 
     def _install(self):
