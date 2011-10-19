@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-10-17 16:43-0200\n"
-"PO-Revision-Date: 2011-10-08 20:16+0000\n"
+"PO-Revision-Date: 2011-10-18 12:54+0000\n"
 "Last-Translator: Sergio Meneses <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-10-18 04:57+0000\n"
+"X-Launchpad-Export-Date: 2011-10-19 05:58+0000\n"
 "X-Generator: Launchpad (build 14157)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -618,12 +618,15 @@ msgstr "Quiero usar Stoq solo en este equipo."
 #: ../data/glade/InstallationModeStep.ui.h:4
 msgid "Select an option above and then click <b>Forward</b> to continue."
 msgstr ""
+"Seleccione una opción y luego haga clic en <b>Enviar</ b> para continuar."
 
 #: ../data/glade/DatabaseLocationStep.ui.h:5
 msgid ""
 "To be able to use Stoq we need make sure that there is a database that we "
 "can connect to."
 msgstr ""
+"Para poder utilizar Stoq tenemos que asegurarnos de que existe una base de "
+"datos para conectarse."
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:1
 msgid "<b>Database Settings</b>"
@@ -675,7 +678,7 @@ msgstr "_Instrucciones adicionales"
 
 #: ../data/glade/DeliveryEditor.ui.h:3
 msgid "Change _Address"
-msgstr ""
+msgstr "C_ambiar dirección"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/DeliveryEditor.ui.h:6
@@ -1035,7 +1038,7 @@ msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:8
 msgid "Would you like to:"
-msgstr "Te gustaría:"
+msgstr "Le gustaría:"
 
 #: ../data/glade/InstallmentConfirmation.ui.h:3
 #: ../stoqlib/gui/dialogs/importerdialog.py:57
@@ -1162,7 +1165,7 @@ msgstr ""
 #: ../stoqlib/reporting/production.py:120 ../stoqlib/reporting/purchase.py:267
 #: ../stoqlib/reporting/purchase.py:346
 msgid "Open Date:"
-msgstr ""
+msgstr "Fecha de apertura:"
 
 #. Responsible combo
 #: ../data/glade/LoanDetails.ui.h:6
@@ -1230,7 +1233,7 @@ msgstr "<b>Método:</b>"
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:2
 #: ../stoqlib/gui/slaves/paymentslave.py:1010
 msgid "Missing:"
-msgstr ""
+msgstr "Falta:"
 
 #: ../data/glade/MultipleMethodSlave.ui.h:3
 msgid "Payments:"
@@ -1282,7 +1285,7 @@ msgstr "Precio ($CURRENCY):"
 
 #: ../data/glade/OpenInventoryDialog.ui.h:2
 msgid "Include uncategorized products"
-msgstr ""
+msgstr "Incluir productos sin categoría"
 
 #: ../data/glade/OpenInventoryDialog.ui.h:5
 msgid "User:"
@@ -1292,7 +1295,7 @@ msgstr ""
 #: ../data/glade/ProductionQuoteDialog.ui.h:2
 #: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:5
 msgid "_Unselect All"
-msgstr ""
+msgstr "D_eseleccionar todo"
 
 #: ../data/glade/OpenProductionOrderStep.ui.h:3
 #: ../stoqlib/reporting/production.py:121
@@ -1334,11 +1337,12 @@ msgstr ""
 #: ../data/glade/PaymentFlowHistoryDialog.ui.h:1
 msgid "<b>Select a date or a range to be visualised in the report:</b>"
 msgstr ""
+"<b>Seleccione una fecha o un rango para ser visualizados en el informe:</ b>"
 
 #: ../data/glade/PaymentListSlave.ui.h:1
 #: ../stoqlib/gui/slaves/paymentslave.py:268
 msgid "Outstanding:"
-msgstr ""
+msgstr "Pendiente:"
 
 #: ../data/glade/PaymentMethodEditor.ui.h:4
 msgid "Daily Penalty:"
@@ -1354,7 +1358,7 @@ msgstr "Plazos Máximos:"
 
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:1
 msgid "<b>The following payments will be renegotiated.</b>"
-msgstr ""
+msgstr "<b>Los siguientes pagos serán renegociados.</ b>"
 
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:4
 #: ../data/glade/PurchaseDetailsDialog.ui.h:21
@@ -1439,6 +1443,8 @@ msgstr "ECF (Soporte para impresoras fiscales)"
 #: ../data/glade/PluginStep.ui.h:3
 msgid "If you just want to test Stoq it is recommended to select no plugin."
 msgstr ""
+"Si quiere poner a prueba Stoq se recomienda no seleccionar ningún "
+"complemento."
 
 #: ../data/glade/PluginStep.ui.h:4
 msgid "NF-e (Eletronic Invoices)"
@@ -1456,6 +1462,8 @@ msgid ""
 "Select the plugins you would like to enable and then click <b>Forward</b> to "
 "continue."
 msgstr ""
+"Seleccione los complementos que desea activar y haga clic en <b>Enviar</ b> "
+"para continuar."
 
 #: ../data/glade/PluginStep.ui.h:9
 msgid "TEF (Credit card support)"
@@ -1495,7 +1503,7 @@ msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:2
 msgid "<b>Mercosul Details</b>"
-msgstr ""
+msgstr "<b>Detalles del Mercosur</b>"
 
 #: ../data/glade/ProductInformationSlave.ui.h:3
 msgid "<b>Stock Details</b>"
@@ -1586,7 +1594,7 @@ msgstr ""
 
 #: ../data/glade/ProductSupplierEditor.ui.h:9
 msgid "Lead Time:"
-msgstr ""
+msgstr "Tiempo de entrega:"
 
 #: ../data/glade/ProductSupplierEditor.ui.h:10
 msgid "Minimum Purchase:"
@@ -1647,6 +1655,7 @@ msgstr ""
 #: ../data/glade/ProductionMaterialListSlave.ui.h:1
 msgid "<b>Listing all the components needed by the production:</b>"
 msgstr ""
+"<b>Listado de todos los componentes necesarios para la producción:</ b>"
 
 #: ../data/glade/ProductionMaterialListSlave.ui.h:2
 msgid "Start Production even if there are missing components"
@@ -1735,6 +1744,8 @@ msgid ""
 "<b>Payments to pay will be cancelled and new ones will be created to match "
 "the remaining value.</b>"
 msgstr ""
+"<b>Los pagos a pagar será cancelados y otros nuevos se crearán para "
+"coincidir con el valor restante.</b>"
 
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:4
 #: ../stoqlib/gui/wizards/receivingwizard.py:201
@@ -1798,7 +1809,7 @@ msgstr ""
 
 #: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:3
 msgid "Select one or more quoted items to compose an order:"
-msgstr ""
+msgstr "Seleccione uno o más elementos citados para hacer una orden:"
 
 #: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:4
 msgid "_Select All"
@@ -1829,7 +1840,7 @@ msgstr ""
 #: ../data/glade/TransporterDataSlave.ui.h:4
 #: ../stoqlib/reporting/purchase.py:339
 msgid "Freight:"
-msgstr ""
+msgstr "Carga:"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:9
@@ -11572,7 +11583,7 @@ msgstr "RESPONSABLE"
 
 #: ../data/template/transfer.rml.extracted.h:10
 msgid "SOURCE"
-msgstr ""
+msgstr "ORIGEN"
 
 #: ../data/template/transfer.rml.extracted.h:11
 msgid "TOTAL:"
@@ -11580,8 +11591,8 @@ msgstr ""
 
 #: ../data/template/transfer.rml.extracted.h:12
 msgid "TRANSFER PRODUCTS"
-msgstr ""
+msgstr "PRODUCTOS DE TRANSFERENCIA"
 
 #: ../data/template/transfer.rml.extracted.h:13
 msgid "TRANSFER RECEIPT"
-msgstr ""
+msgstr "RECIBO DE TRANSFERENCIA"
