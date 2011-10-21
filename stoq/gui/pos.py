@@ -438,7 +438,7 @@ class PosApp(AppWindow):
         # Enable/disable the part of the ui that is used for sales,
         # usually manipulated when printer information changes.
         widgets = [self.barcode, self.quantity, self.sale_items,
-                   self.advanced_search, self.checkout_button]
+                   self.advanced_search]
         self.set_sensitive(widgets, value)
 
         if value:
