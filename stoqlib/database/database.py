@@ -362,7 +362,6 @@ def check_version(conn):
         data = commands.getoutput('psql --version')
         line = data.split('\n', 1)[0]
         client_version = line.split(' ')[2]
-        client_version = "9.1.0"
         assert server_version.count('.') == 2, server_version
         svs = map(int, server_version.split('.'))[:2]
         assert client_version.count('.') == 2, client_version
@@ -376,6 +375,5 @@ def check_version(conn):
                       "incompatibilty by upgrading the server or the client "
                       "tools." % (server_version,
                                   client_version)))
-        return conn.queryAll("SELECT NOW();")[0][0]
     else:
         raise NotImplementedError

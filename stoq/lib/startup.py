@@ -134,7 +134,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
                     "not been updated. Run 'stoqdbadmin updateschema` to "
                     "update the schema  to the latest available version."))
 
-        orm_startup()
+        orm_startup(conn)
 
     if options:
         if options.debug:
