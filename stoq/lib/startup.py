@@ -32,6 +32,7 @@ import os
 
 from kiwi.component import provide_utility
 from stoqlib.database.admin import ensure_admin_user, initialize_system
+from stoqlib.database.database import check_version
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.orm import orm_enable_debugging, orm_startup
 from stoqlib.database.runtime import (get_connection,
@@ -106,7 +107,8 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         except DatabaseError, e:
             error(e.short, str(e.msg))
 
-        orm_startup()
+        check_version(conn)
+        orm_startup(conn)
         # For LTSP systems we cannot use the hostname as stoq is run
         # on a shared serve system. Instead the ip of the client system
         # is available in the LTSP_CLIENT environment variable

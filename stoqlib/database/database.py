@@ -26,6 +26,7 @@
 
 # FIXME: Refactor this to other files
 
+import commands
 import os
 import platform
 import socket
@@ -37,6 +38,8 @@ from kiwi.log import Logger
 
 from stoqlib.database.exceptions import SQLError
 from stoqlib.database.interfaces import IDatabaseSettings
+
+from stoqlib.lib.message import error, warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -347,6 +350,32 @@ def query_server_time(conn):
     conn = settings.get_default_connection()
 
     if settings.rdbms == 'postgres':
+        return conn.queryAll("SELECT NOW();")[0][0]
+    else:
+        raise NotImplementedError
+
+def check_version(conn):
+    settings = get_utility(IDatabaseSettings)
+    if settings.rdbms == 'postgres':
+        version = conn.queryOne('SELECT VERSION();')[0]
+        server_version = version.split(' ', 2)[1]
+        data = commands.getoutput('psql --version')
+        line = data.split('\n', 1)[0]
+        client_version = line.split(' ')[2]
+        client_version = "9.1.0"
+        assert server_version.count('.') == 2, server_version
+        svs = map(int, server_version.split('.'))[:2]
+        assert client_version.count('.') == 2, client_version
+        cvs = map(int, client_version.split('.'))[:2]
+        if svs != cvs:
+            warning(_("Problem with PostgreSQL version"),
+                    _("The version of the PostgreSQL database server (%s) and the "
+                      "postgres client tools (%s) differ. I will let you use "
+                      "Stoq, but you will always see this warning when "
+                      "starting Stoq until you resolve the version "
+                      "incompatibilty by upgrading the server or the client "
+                      "tools." % (server_version,
+                                  client_version)))
         return conn.queryAll("SELECT NOW();")[0][0]
     else:
         raise NotImplementedError
