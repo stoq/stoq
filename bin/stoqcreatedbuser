@@ -44,13 +44,16 @@ if test "$HASUSER" = "1"; then
 else
     # Create a user which is:
     # - allowed to create new databases (-d)
-    # - not a superuser (-S)
+    # - a superuser (-s)
     # - not allowed to create other roles (-R)
     #
     # All of the options above needs to be passed in to avoid entering
     # interactive mode for createuser.
+    #
+    # We're creating superusers as that's what pg_dump requires
+    #
     echo "$SHNAME: Creating user '$USERNAME'"
-    createuser -dSR "$USERNAME"
+    createuser -dsR "$USERNAME"
 fi
 
 exit 0
