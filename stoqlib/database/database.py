@@ -255,7 +255,9 @@ def dump_database(filename):
     log.info("Dumping database to %s" % filename)
 
     if settings.rdbms == 'postgres':
-        args = ['pg_dump', '-Fc', '-E', 'UTF-8']
+        args = ['pg_dump',
+                '--format=custom',
+                '--encoding=UTF-8']
         if filename is not None:
             args.extend(['-f', filename])
         args.extend(settings.get_tool_args())
@@ -322,7 +324,11 @@ def dump_table(table, filename=None):
     log.info("Dumping table to %s" % table)
 
     if settings.rdbms == 'postgres':
-        args = ['pg_dump', '-E', 'UTF-8', '-a', '-t', table]
+        args = ['pg_dump',
+                '--format=custom',
+                '--encoding=UTF-8',
+                '--data-only',
+                '--table=%s' % (table, )]
         if filename is not None:
             args.extend(['-f', filename])
         args.extend(settings.get_tool_args())
