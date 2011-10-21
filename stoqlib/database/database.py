@@ -26,7 +26,6 @@
 
 # FIXME: Refactor this to other files
 
-import commands
 import os
 import platform
 import socket
@@ -359,13 +358,31 @@ def check_version(conn):
     if settings.rdbms == 'postgres':
         version = conn.queryOne('SELECT VERSION();')[0]
         server_version = version.split(' ', 2)[1]
-        data = commands.getoutput('psql --version')
-        line = data.split('\n', 1)[0]
-        client_version = line.split(' ')[2]
-        assert server_version.count('.') == 2, server_version
+        assert server_version.count('.') == 2, version
         svs = map(int, server_version.split('.'))[:2]
-        assert client_version.count('.') == 2, client_version
+
+        # Client version
+        kwargs = {}
+        args = ['psql']
+        if _system == 'Windows':
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
+            kwargs['startupinfo'] = startupinfo
+            # FIXME: figure out why this isn't working
+            return
+        else:
+            args.append('--version')
+        p = subprocess.Popen(args, stdout=subprocess.PIPE, **kwargs)
+        stdout = p.communicate()[0]
+        line = stdout.split('\n', 1)[0]
+        if line.endswith('\r'):
+            line = line[:-1]
+        parts = line.split(' ')
+        assert len(parts) == 3, parts
+        client_version = parts[2]
+        assert client_version.count('.') == 2, line
         cvs = map(int, client_version.split('.'))[:2]
+
         if svs != cvs:
             warning(_("Problem with PostgreSQL version"),
                     _("The version of the PostgreSQL database server (%s) and the "
