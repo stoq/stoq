@@ -108,7 +108,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
             error(e.short, str(e.msg))
 
         check_version(conn)
-        orm_startup(conn)
+        orm_startup()
         # For LTSP systems we cannot use the hostname as stoq is run
         # on a shared serve system. Instead the ip of the client system
         # is available in the LTSP_CLIENT environment variable
@@ -134,7 +134,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
                     "not been updated. Run 'stoqdbadmin updateschema` to "
                     "update the schema  to the latest available version."))
 
-        orm_startup(conn)
+        orm_startup()
 
     if options:
         if options.debug:

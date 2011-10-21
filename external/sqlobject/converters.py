@@ -54,9 +54,10 @@ except ImportError:
 ## Quoting
 ########################################
 
+# FIXME: This sould be left to the library to escape.
 sqlStringReplace = [
     ('\\', '\\\\'),
-    ("'", "\\'"),
+    ("'", "''"),
     ('\000', '\\0'),
     ('\b', '\\b'),
     ('\n', '\\n'),
