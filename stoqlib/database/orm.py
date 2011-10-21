@@ -113,8 +113,9 @@ def orm_enable_debugging():
     conn = get_connection()
     conn.debug = True
 
-def orm_startup(conn):
-    sqlhub.threadConnection = conn
+def orm_startup():
+    from stoqlib.database.runtime import get_connection
+    sqlhub.threadConnection = get_connection()
 
 def orm_get_columns(table):
     columns = table.sqlmeta.columnList[:]
