@@ -104,6 +104,9 @@ class ReceivableApp(SearchableAppWindow):
     # Application
     #
 
+    def activate(self):
+        self.search.refresh()
+
     def create_actions(self):
         ui_string = """<ui>
           <menubar action="menubar">
