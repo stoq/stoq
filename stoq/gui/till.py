@@ -161,6 +161,7 @@ class TillApp(SearchableAppWindow):
                                           self.details_button])
 
     def activate(self):
+        self.search.refresh()
         self._printer.check_till()
         self.check_open_inventory()
 

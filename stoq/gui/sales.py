@@ -229,6 +229,7 @@ class SalesApp(SearchableAppWindow):
         self.set_sensitive(self._inventory_widgets, False)
 
     def activate(self):
+        self.search.refresh()
         self.check_open_inventory()
 
     #
