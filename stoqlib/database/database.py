@@ -386,7 +386,7 @@ def check_version(conn):
 
         client_version = parts[2]
         #assert client_version.count('.') == 2, line
-        if client_version.count('.') != 2):
+        if client_version.count('.') != 2:
             log.info("Error getting pg version: %s" % (client_version,))
             return
 
