@@ -216,10 +216,9 @@ class StoqCommandHandler:
         if proc.returncode == 0:
             return 0
 
-        dirname = os.path.abspath(os.path.dirname(__file__))
         args = ['pkexec',
                 '-u', 'postgres',
-                os.path.join(dirname, 'stoqcreatedbuser'),
+                'stoqcreatedbuser',
                 username]
         proc = subprocess.Popen(args)
         proc.communicate()
