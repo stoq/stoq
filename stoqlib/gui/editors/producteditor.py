@@ -352,7 +352,7 @@ class QualityTestEditor(BaseEditor):
         self.sizegroup1.add_widget(self.boolean_value)
         self.test_type.prefill([(value, key)
             for key, value in ProductQualityTest.types.items()])
-        self.boolean_value.prefill([(_('True'), True), _(('False'), False)])
+        self.boolean_value.prefill([(_('True'), True), (_(('False')), False)])
 
         # Editing values
         if self.model.test_type == ProductQualityTest.TYPE_BOOLEAN:

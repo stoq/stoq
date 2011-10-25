@@ -84,6 +84,9 @@ class ProductionOrder(Domain):
     responsible = ForeignKey('PersonAdaptToEmployee', default=None)
     branch = ForeignKey('PersonAdaptToBranch')
 
+    produced_items = MultipleJoin('ProductionProducedItem',
+                                  joinColumn='order_id', orderBy='id')
+
     #
     # IContainer implmentation
     #
@@ -146,6 +149,21 @@ class ProductionOrder(Domain):
         self.status = ProductionOrder.ORDER_PRODUCING
 
     # FIXME: Test
+    def is_completely_produced(self):
+        return all(i.is_completely_produced() for i in self.get_items())
+
+    # FIXME: Test
+    def is_completely_tested(self):
+        # Produced items are only stored if there are quality tests for this
+        # product
+        produced_items = self.produced_items
+        if not produced_items:
+            return True
+
+        return all([i.test_passed for i in produced_items])
+
+
+    # FIXME: Test
     def try_finalize_production(self):
         """When all items are completely produced, change the status of the
         production to CLOSED.
@@ -153,19 +171,13 @@ class ProductionOrder(Domain):
         assert (self.status == ProductionOrder.ORDER_PRODUCING or
                 self.status == ProductionOrder.ORDER_QA)
 
-        is_produced = []
-        is_tested = []
+        is_produced = self.is_completely_produced()
+        is_tested = self.is_completely_tested()
 
-        for i in self.get_items():
-            is_produced.append(i.is_completely_produced())
-            is_tested.append(i.is_completely_tested())
-
-        is_completely_produced = all(is_produced)
-        is_completely_tested = all(is_tested)
-        if is_completely_produced and not is_completely_tested:
+        if is_produced and not is_tested:
             # Fully produced but not fully tested. Keep status as QA
             self.status = ProductionOrder.ORDER_QA
-        elif is_completely_produced and is_completely_tested:
+        elif is_produced and is_tested:
             # All items must be completely produced and tested
             self.close_date = datetime.date.today()
             self.status = ProductionOrder.ORDER_CLOSED
@@ -214,7 +226,6 @@ class ProductionItem(Domain):
     order = ForeignKey('ProductionOrder')
     product = ForeignKey('Product')
 
-    produced_items = MultipleJoin('ProductionProducedItem')
 
 
     #
@@ -251,22 +262,15 @@ class ProductionItem(Domain):
         @param quantity: the quantity that will be produced.
         """
         assert quantity > 0
+        if self.order.status != ProductionOrder.ORDER_PRODUCING:
+            return False
 
         return self.produced + quantity + self.lost <= self.quantity
 
     def is_completely_produced(self):
         return self.quantity == self.produced + self.lost
 
-    def is_completely_tested(self):
-        # Produced items are only stored if there are quality tests for this
-        # product
-        produced_items = self.produced_items
-        if not produced_items:
-            return True
-
-        return all([i.test_passed for i in produced_items])
-
-    def produce(self, quantity, produced_by=None, serial=None):
+    def produce(self, quantity, produced_by=None, serials=None):
         """Sets a certain quantity as produced. The quantity will be marked as
         produced only if there are enough materials allocated, otherwise a
         ValueError exception will be raised.
@@ -290,9 +294,11 @@ class ProductionItem(Domain):
 
         if self.product.has_quality_tests():
             # We have some quality tests to assure. Register it for later
-            for i in range(quantity):
+            assert len(serials) == quantity
+            for serial in serials:
                 ProductionProducedItem(connection=self.get_connection(),
-                                       production_item=self,
+                                       order=self.order,
+                                       product=self.product,
                                        produced_by=produced_by,
                                        produced_date=datetime.datetime.now(),
                                        serial_number=serial,
@@ -358,6 +364,10 @@ class ProductionMaterial(Domain):
     #
     # Public API
     #
+
+    def can_add_lost(self, quantity):
+        # FIXME
+        return True
 
     def allocate(self, quantity=None):
         """Allocates the needed quantity of this material by decreasing the
@@ -476,10 +486,13 @@ class ProductionProducedItem(Domain):
     process
     """
 
-    production_item = ForeignKey('ProductionItem')
+    order = ForeignKey('ProductionOrder')
+    # ProductionItem already has a reference to Product, but we need it for
+    # constraint checks UNIQUE(product_id, serial_number)
+    product = ForeignKey('Product')
     produced_by = ForeignKey('PersonAdaptToEmployee')
     produced_date = DateTimeCol()
-    serial_number = UnicodeCol(default='')
+    serial_number = IntCol()
     entered_stock = BoolCol(default=False)
     test_passed = BoolCol(default=False)
     test_results = MultipleJoin('ProductionItemQualityResult',
@@ -488,9 +501,34 @@ class ProductionProducedItem(Domain):
 
     def get_pending_tests(self):
         tests_done = set([t.quality_test for t in self.test_results])
-        all_tests = set(self.production_item.product.quality_tests)
+        all_tests = set(self.product.quality_tests)
         return list(all_tests.difference(tests_done))
 
+    @classmethod
+    def get_last_serial_number(cls, product, conn):
+        return cls.selectBy(product=product,
+                    connection=conn).max('serial_number') or 0
+
+    @classmethod
+    def is_valid_serial_range(cls, product, first, last, conn):
+        query = AND(cls.q.productID == product.id,
+                    cls.q.serial_number >= first,
+                    cls.q.serial_number <= last)
+        # There should be no results for the range to be valid
+        return cls.select(query, connection=conn).count() == 0
+
+    def check_tests(self):
+        """Checks if all tests for this produced items passes.
+
+        If all tests passes, sets self.test_passed = True
+        """
+
+        results = [i.test_passed for i in self.test_results]
+
+        passed = all(results)
+        self.test_passed = (passed and
+                            len(results) == len(self.product.quality_tests))
+        print 'XXX', self.test_passed
 
 class ProductionItemQualityResult(Domain):
     """This table stores the test results for every produced item.
@@ -526,43 +564,10 @@ class ProductionItemQualityResult(Domain):
     def set_boolean_value(self, value):
         self.test_passed = self.quality_test.result_value_passes(value)
         self.result_value = str(value)
+        self.produced_item.check_tests()
 
     def set_decimal_value(self, value):
         self.test_passed = self.quality_test.result_value_passes(value)
         self.result_value = '%s' % (value,)
-
-
-
-#
-#   Viewables
-#
-
-class ProducedQualityItemsView(Viewable):
-    columns = dict(id=ProductionProducedItem.q.id,
-                   serial_number=ProductionProducedItem.q.serial_number,
-                   test_passed=ProductionProducedItem.q.test_passed,
-                   entered_stock=ProductionProducedItem.q.entered_stock,
-                   produced_date=ProductionProducedItem.q.produced_date,
-
-                   order_id=ProductionOrder.q.id,
-                   order_status=ProductionOrder.q.status,
-                   description=BaseSellableInfo.q.description,)
-
-    joins = [
-        LEFTJOINOn(None, ProductionItem,
-           ProductionProducedItem.q.production_itemID == ProductionItem.q.id),
-        LEFTJOINOn(None, ProductionOrder,
-                   ProductionItem.q.orderID == ProductionOrder.q.id),
-        LEFTJOINOn(None, Product,
-                   ProductionItem.q.productID == Product.q.id),
-        LEFTJOINOn(None, Sellable,
-                    Sellable.q.id == Product.q.sellableID),
-        INNERJOINOn(None, BaseSellableInfo,
-                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),]
-
-    @property
-    def produced_item(self):
-        return ProductionProducedItem.get(self.id, connection=self.get_connection())
-
-
+        self.produced_item.check_tests()
 

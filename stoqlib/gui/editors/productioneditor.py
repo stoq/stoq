@@ -33,10 +33,9 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
 
-
-
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.product import ProductQualityTest
+from stoqlib.domain.production import ProductionProducedItem
 from stoqlib.domain.production import (ProductionItem, ProductionMaterial,
                                        ProductionItemQualityResult,
                                        ProductionService)
@@ -49,6 +48,14 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 class ProductionItemEditor(BaseEditor):
+    """This is a base class for all items used in a production:
+        - ProductionItem (For both Produced and Lost items)
+        - ProductionService (When adding services to a production order)
+        - ProductionMaterial (The material that will be consumed by an
+          order)
+
+    """
+
     gladefile = 'ProductionItemEditor'
     model_type = ProductionItem
     size = (-1, -1)
@@ -69,15 +76,6 @@ class ProductionItemEditor(BaseEditor):
             gtk.Adjustment(lower=1, upper=self.get_max_quantity(), step_incr=1))
         self.quantity.set_digits(DECIMAL_PRECISION)
 
-    def setup_produced_item_widgets(self):
-        # FIXME: We should be able to enter more than one produced item with
-        # serial at once.
-        if not self.model.product.has_quality_tests():
-            self.serial_no_label.hide()
-            self.serial_number.hide()
-        else:
-            self.quantity.set_editable(False)
-
     def get_max_quantity(self):
         """Returns the maximum quantity allowed in the quantity spinbutton.
         """
@@ -86,13 +84,8 @@ class ProductionItemEditor(BaseEditor):
     def setup_proxies(self):
         self.setup_editor_widgets()
         self.setup_location_widgets()
-        self.setup_produced_item_widgets()
         self.proxy = self.add_proxy(
             self.model, ProductionItemEditor.proxy_widgets)
-
-        self.serial_model = Settable(serial_number=u'')
-        self.serial_proxy = self.add_proxy(self.serial_model,
-                                           ['serial_number'])
 
     #
     # Kiwi callbacks
@@ -101,6 +94,43 @@ class ProductionItemEditor(BaseEditor):
     def on_quantity__validate(self, widget, value):
         if not value or value <= 0:
             return ValidationError(_(u'This quantity should be positive.'))
+
+
+
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+
+class ProducedItemSlave(BaseEditorSlave):
+    """
+    """
+    gladefile = 'ProducedItemSlave'
+    model_type = Settable
+    proxy_widgets = ['serial_number']
+
+    def __init__(self, conn, parent):
+        self._parent = parent
+        self._product = self._parent.model.product
+        BaseEditorSlave.__init__(self, conn)
+
+    #
+    # BaseEditorSlave hooks
+    #
+
+    def create_model(self, conn):
+        serial = ProductionProducedItem.get_last_serial_number(
+                            self._product, conn)
+        return Settable(serial_number=serial+1)
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    def on_serial_number__validate(self, widget, value):
+        qty = self._parent.quantity.read()
+        first = value
+        last = value + qty
+        if not ProductionProducedItem.is_valid_serial_range(self._product,
+                                        first, last, self.conn):
+            return ValidationError(_('There already is a serial number in '
+                                     'the range %d - %d') % (first, last))
 
 
 class ProductionItemProducedEditor(ProductionItemEditor):
@@ -119,17 +149,22 @@ class ProductionItemProducedEditor(ProductionItemEditor):
         self.quantity.set_property('model-attribute', self.quantity_attribute)
         self._quantity_proxy = self.add_proxy(self, ['quantity',])
 
-    def get_max_quantity(self):
-        # When producing a product with quality tests, We must produce only
-        # one at a time, so we can create the entries in the test table.
+    def setup_slaves(self):
+        self.serial_slave = None
         if self.model.product.has_quality_tests():
-            return 1
+            self.serial_slave = ProducedItemSlave(self.conn, self)
+            self.attach_slave('place_holder', self.serial_slave)
+
+    def get_max_quantity(self):
         return self.model.quantity - self.model.lost - self.model.produced
 
     def validate_confirm(self):
+        serials = []
+        for i in range(self.produced):
+            serials.append(self.serial_slave.model.serial_number + i)
         try:
             self.model.produce(self.produced, get_current_user(self.conn),
-                               self.serial_model.serial_number)
+                               serials)
         except (ValueError, AssertionError):
             info(_(u'Can not produce this quantity. Not enough materials '
                     'can be allocated to produce this item.'))
@@ -140,6 +175,10 @@ class ProductionItemProducedEditor(ProductionItemEditor):
         if value <= 0:
             return ValidationError(
                 _(u'Produced value should be greater than zero.'))
+
+
+
+
 
 
 class ProductionItemLostEditor(ProductionItemProducedEditor):
@@ -162,6 +201,8 @@ class ProductionItemLostEditor(ProductionItemProducedEditor):
                 _(u'Produced value should be greater than zero.'))
 
 
+
+
 class ProductionServiceEditor(ProductionItemEditor):
     model_type = ProductionService
     model_name = _(u'Production Service')
@@ -171,6 +212,9 @@ class ProductionServiceEditor(ProductionItemEditor):
         self.location_content.hide()
         self.proxy = self.add_proxy(
             self.model, ProductionServiceEditor.proxy_widgets)
+
+
+
 
 
 class ProductionMaterialEditor(ProductionItemEditor):
@@ -203,6 +247,13 @@ class ProductionMaterialEditor(ProductionItemEditor):
         if value and value < 0:
             return ValidationError(_(u'This quantity should be positive.'))
 
+
+
+
+
+#
+#   Quality Test Result
+#
 
 class QualityTestResultEditor(BaseEditor):
     model_name = _('Quality Test Result')
@@ -345,7 +396,9 @@ class ProducedItemQualityTestsDialog(ModelListDialog):
 
     def run_dialog(self, dialog_class, *args, **kwargs):
         pending_tests = self._item.get_pending_tests()
-        if not pending_tests:
+        # Cannot add more tests, but still can edit existing ones (when
+        # model is not none)
+        if not pending_tests and not kwargs['model']:
             info(_(u'There are no pending tests for this item'))
             return
 
