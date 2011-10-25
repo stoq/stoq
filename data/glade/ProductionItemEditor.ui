@@ -10,6 +10,7 @@
     <child>
       <object class="GtkTable" id="table1">
         <property name="visible">True</property>
+        <property name="border_width">6</property>
         <property name="n_rows">5</property>
         <property name="n_columns">4</property>
         <property name="column_spacing">6</property>
@@ -165,40 +166,17 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="serial_no_label">
+          <object class="GtkEventBox" id="place_holder">
             <property name="visible">True</property>
-            <property name="xalign">1</property>
-            <property name="label" translatable="yes">Serial Number:</property>
+            <child>
+              <placeholder/>
+            </child>
           </object>
           <packing>
+            <property name="right_attach">4</property>
             <property name="top_attach">3</property>
             <property name="bottom_attach">4</property>
           </packing>
-        </child>
-        <child>
-          <object class="ProxyEntry" id="serial_number">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="invisible_char">•</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">True</property>
-            <property name="secondary_icon_sensitive">True</property>
-            <property name="data_type">unicode</property>
-            <property name="mandatory">True</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">3</property>
-            <property name="bottom_attach">4</property>
-          </packing>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
         </child>
         <child>
           <placeholder/>

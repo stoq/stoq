@@ -38,8 +38,7 @@ from stoqlib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
 from stoqlib.gui.dialogs.startproduction import StartProductionDialog
 from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
                                                  ProductionItemsSearch,
-                                                 ProductionHistorySearch,
-                                                 ProductionQASearch)
+                                                 ProductionHistorySearch)
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.productionwizard import ProductionWizard
 from stoqlib.reporting.production import ProductionReport
@@ -253,7 +252,3 @@ class ProductionApp(SearchableAppWindow):
 
     def on_SearchProductionHistory__activate(self, action):
         self.run_dialog(ProductionHistorySearch, self.conn)
-
-    def on_SearchQualityAssurance__activate(self, action):
-        self.run_dialog(ProductionQASearch, self.conn)
-

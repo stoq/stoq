@@ -683,6 +683,7 @@ class ProductQualityTest(Domain):
     product = ForeignKey('Product')
     test_type = IntCol(default=TYPE_BOOLEAN)
     description = UnicodeCol(default='')
+    notes = UnicodeCol(default='')
     success_value = UnicodeCol(default='True')
 
     def get_description(self):

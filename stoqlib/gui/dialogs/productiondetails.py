@@ -29,10 +29,15 @@ import pango
 import gtk
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.printing import print_report
+from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.production import ProductionOrder
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.productioneditor import (ProductionItemProducedEditor,
+                                          ProductionItemLostEditor,
+                                          ProducedItemQualityTestsDialog)
+from stoqlib.gui.printing import print_report
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.production import ProductionOrderReport
 
 _ = stoqlib_gettext
@@ -55,10 +60,19 @@ class ProductionDetailsDialog(BaseEditor):
         self.production_items.set_columns(self._get_production_items_columns())
         self.materials.set_columns(self._get_material_columns())
         self.services.set_columns(self._get_service_columns())
+        self.produced_items.set_columns(self._get_produced_items_columns())
+
+    def _setup_data(self):
+        # FIXME: Improve this
+        self.production_items.clear()
+        self.materials.clear()
+        self.services.clear()
+        self.produced_items.clear()
 
         self.production_items.add_list(self.model.get_items())
         self.materials.add_list(self.model.get_material_items())
         self.services.add_list(self.model.get_service_items())
+        self.produced_items.add_list(self.model.produced_items)
 
     def _get_production_items_columns(self):
         return [Column('description',
@@ -84,6 +98,8 @@ class ProductionDetailsDialog(BaseEditor):
                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('needed', title=_('Needed'),
                        data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
+                Column('allocated', title=_('Allocated'),
+                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
                 Column('lost', title=_('Lost'),
                        data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
                 Column('to_purchase', title=_('To Purchase'),
@@ -99,13 +115,47 @@ class ProductionDetailsDialog(BaseEditor):
                 Column('unit_description', _("Unit"),
                        data_type=str, justify=gtk.JUSTIFY_RIGHT),]
 
+    def _get_produced_items_columns(self):
+        return [Column('serial_number',
+                       title=_('Serial Number'),
+                       data_type=str, expand=True),
+                Column('test_passed', title=_('Tests Passed'),
+                       data_type=bool),
+                Column('entered_stock', title=_('Entered Stock'),
+                       data_type=bool),
+                ]
+
     #
     # BaseEditor hooks
     #
 
     def setup_proxies(self):
         self._setup_widgets()
+        self._setup_data()
         self.add_proxy(self.model, ProductionDetailsDialog.proxy_widgets)
+
+    #
+    #   Actions
+    #
+
+    def _produce(self):
+        production_item = self.production_items.get_selected()
+        trans = new_transaction()
+        model = trans.get(production_item)
+        retval = run_dialog(ProductionItemProducedEditor, self, self.conn, model)
+        if finish_transaction(trans, retval):
+            self._setup_data()
+        trans.close()
+
+    def _test(self):
+        trans = new_transaction()
+        produced_item = self.produced_items.get_selected()
+        model = trans.get(produced_item)
+        run_dialog(ProducedItemQualityTestsDialog, self, trans, model)
+        finish_transaction(trans, True)
+        self._setup_data()
+        trans.close()
+
 
     #
     # Kiwi Callbacks
@@ -113,3 +163,24 @@ class ProductionDetailsDialog(BaseEditor):
 
     def on_print_button__clicked(self, widget):
         print_report(ProductionOrderReport, self.model)
+
+    def on_production_items__selection_changed(self, widget, item):
+        self.produce_button.set_sensitive(bool(item and item.can_produce(1)))
+
+    def on_materials__selection_changed(self, widget, item):
+        self.lost_button.set_sensitive(item and item.can_add_lost(1))
+
+    def on_produced_items__selection_changed(self, widget, item):
+        self.tests_button.set_sensitive(bool(item))
+
+    def on_produce_button__clicked(self, button):
+        self._produce()
+
+    def on_production_items__row_activated(self, list, row):
+        self._produce()
+
+    def on_tests_button__clicked(self, button):
+        self._test()
+
+    def on_produced_items__row_activated(self, list, row):
+        self._test()
