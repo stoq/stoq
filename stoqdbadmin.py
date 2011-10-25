@@ -18,7 +18,7 @@ for name in ['stdout', 'stderr']:
         fp = open(os.devnull, "w")
     setattr(sys, name, fp)
 
-os.environ['PATH'] += os.pathsep + '.'
+os.environ['PATH'] += os.pathsep + "bin"
 
 from stoq.dbadmin import main
 sys.exit(main(sys.argv))
