@@ -20,72 +20,81 @@ import os
 import string
 import sys
 
-# Required version of Python
-REQUIRED_VERSION = (2, 6)
-
-# Directory name, defaults to name of binary, it is relative to ..
-# a, __init__.py and main.py is expected to be found there.
-DIRNAME = None
-
-# Application name, defaults to capitalized name of binary
-APPNAME = None
-
-# Do not modify code below this point
-dirname = DIRNAME or os.path.split(sys.argv[0])[1]
-appname = APPNAME or dirname.capitalize()
-
-if sys.version_info[0] == 3:
-    raise SystemExit("ERROR: Sorry, Stoq is not yet compatible with Python 3.x.")
-
-if sys.hexversion < int('%02x%02x0000' % REQUIRED_VERSION, 16):
-    raise SystemExit("ERROR: Python %s or higher is required to run %s, "
-                     "%s found" % ('.'.join(map(str, REQUIRED_VERSION)),
-                                   appname,
-                                   string.split(sys.version)[0]))
-
-# Figure out the directy which is the prefix
-# path-of-current-file/..
-currentdir = os.path.dirname(os.path.abspath(sys.argv[0]))
-basedir = os.path.abspath(os.path.join(currentdir, '..'))
-
-pythondirs = []
-# Add the base directory where the application is installed in to sys.path
-if os.path.exists(os.path.join(basedir, 'lib')):
-    for site in ['site-packages', 'dist-packages']:
-        if sys.platform == 'win32':
-            pythondir = os.path.join(basedir, 'Lib', site)
-        else:
-            pythondir = os.path.join(basedir, 'lib',
-                                     'python%d.%d' % sys.version_info[:2], site)
-        if os.path.exists(pythondir):
-            pythondirs.append(pythondir)
-
-    if not pythondirs:
-        raise SystemExit("ERROR: Could not find required directory: %s" %
-                         ','.join(pythondirs))
-elif not os.path.exists(os.path.join(basedir, dirname)):
-    raise SystemExit("ERROR: Could not find required directory: %s" %
-                     os.path.join(basedir, dirname))
+if hasattr(sys, 'frozen'):
+    # We're using py2exe:
+    # - no need to check python version
+    # - no need to setup python path
+    # - no need to workaround setuptools
+    # Just set the system path so we can launch binaries
+    # such as stoqdbadmin without having to bother where to find it
+    os.environ['PATH'] += os.pathsep + '.'
 else:
-    pythondirs.append(basedir)
+    # Required version of Python
+    REQUIRED_VERSION = (2, 6)
 
-for pythondir in pythondirs:
-    sys.path.insert(0, pythondir)
+    # Directory name, defaults to name of binary, it is relative to ..
+    # a, __init__.py and main.py is expected to be found there.
+    DIRNAME = None
 
-try:
-    import pkg_resources
-except ImportError:
-    pass
+    # Application name, defaults to capitalized name of binary
+    APPNAME = None
 
-# Disable Ubuntus scrollbar, if it's not set, users can
-# force it by setting LIBOVERLAY_SCROLLBAR=1
-import os
-if os.environ.get('LIBOVERLAY_SCROLLBAR') != '1':
-    os.environ['LIBOVERLAY_SCROLLBAR'] = '0'
+    # Do not modify code below this point
+    dirname = DIRNAME or os.path.split(sys.argv[0])[1]
+    appname = APPNAME or dirname.capitalize()
+
+    if sys.version_info[0] == 3:
+        raise SystemExit("ERROR: Sorry, Stoq is not yet compatible with Python 3.x.")
+
+    if sys.hexversion < int('%02x%02x0000' % REQUIRED_VERSION, 16):
+        raise SystemExit("ERROR: Python %s or higher is required to run %s, "
+                         "%s found" % ('.'.join(map(str, REQUIRED_VERSION)),
+                                       appname,
+                                       string.split(sys.version)[0]))
+
+    # Figure out the directy which is the prefix
+    # path-of-current-file/..
+    currentdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+    basedir = os.path.abspath(os.path.join(currentdir, '..'))
+
+    pythondirs = []
+    # Add the base directory where the application is installed in to sys.path
+    if os.path.exists(os.path.join(basedir, 'lib')):
+        for site in ['site-packages', 'dist-packages']:
+            if sys.platform == 'win32':
+                pythondir = os.path.join(basedir, 'Lib', site)
+            else:
+                pythondir = os.path.join(basedir, 'lib',
+                                         'python%d.%d' % sys.version_info[:2], site)
+            if os.path.exists(pythondir):
+                pythondirs.append(pythondir)
+
+        if not pythondirs:
+            raise SystemExit("ERROR: Could not find required directory: %s" %
+                             ','.join(pythondirs))
+    elif not os.path.exists(os.path.join(basedir, dirname)):
+        raise SystemExit("ERROR: Could not find required directory: %s" %
+                         os.path.join(basedir, dirname))
+    else:
+        pythondirs.append(basedir)
+
+    for pythondir in pythondirs:
+        sys.path.insert(0, pythondir)
+
+    try:
+        import pkg_resources
+    except ImportError:
+        pass
+
+    # Disable Ubuntus scrollbar, if it's not set, users can
+    # force it by setting LIBOVERLAY_SCROLLBAR=1
+    import os
+    if os.environ.get('LIBOVERLAY_SCROLLBAR') != '1':
+        os.environ['LIBOVERLAY_SCROLLBAR'] = '0'
 
 from stoq import main
 
 try:
-    sys.exit(main.main((sys.argv)))
+    sys.exit(main.main(sys.argv))
 except KeyboardInterrupt:
     raise SystemExit

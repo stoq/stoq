@@ -26,9 +26,9 @@
 """ Database startup routines"""
 
 import gettext
+import os
 import socket
 import sys
-import os
 
 from kiwi.component import provide_utility
 from stoqlib.database.admin import ensure_admin_user, initialize_system
