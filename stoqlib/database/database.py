@@ -359,7 +359,12 @@ def check_version(conn):
         version = conn.queryOne('SELECT VERSION();')[0]
         server_version = version.split(' ', 2)[1]
         assert server_version.count('.') == 2, version
-        svs = map(int, server_version.split('.'))[:2]
+        parts = server_version.split(".")[:2]
+        try:
+            svs = map(int, parts)
+        except ValueError:
+            log.info("Error getting server version: %s" % (server_version,))
+            return
 
         # Client version
         kwargs = {}
@@ -381,7 +386,7 @@ def check_version(conn):
         parts = line.split(' ')
         #assert len(parts) == 3, parts
         if len(parts) != 3:
-            log.info("Error getting pg version: %s" % (line,))
+            log.info("Error getting psql version: %s" % (line,))
             return
 
         client_version = parts[2]
