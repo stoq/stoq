@@ -83,6 +83,7 @@ from stoqlib.lib.formatters import raw_phone_number
 from stoqlib.lib.webservice import WebService
 from twisted.internet import reactor
 
+from stoq import library
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import setup, set_default_profile_settings
@@ -622,8 +623,13 @@ class CreateDatabaseStep(BaseWizardStep):
         logger.info('_setup_pgpass')
         # There's no way to pass in the password to psql, so we need
         # to setup a ~/.pgpass where we store the password entered here
-        directory = os.environ.get('HOME', os.environ.get('APPDATA'))
-        passfile = os.path.join(directory, '.pgpass')
+        if platform.system() == 'Windows':
+            directory = os.path.join(os.environ['APPDATA'],
+                                     'postgresql')
+            passfile = os.path.join(directory, 'pgpass.conf')
+        else:
+            directory = os.environ.get('HOME', '/')
+            passfile = os.path.join(directory, '.pgpass')
         pgpass = os.environ.get('PGPASSFILE', passfile)
 
         if os.path.exists(pgpass):
@@ -643,7 +649,11 @@ class CreateDatabaseStep(BaseWizardStep):
             return
 
         lines.append(line)
-        open(pgpass, 'w').write('\n'.join(lines))
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        fd = open(pgpass, 'w')
+        fd.write('\n'.join(lines))
+        fd.write('\n')
         os.chmod(pgpass, 0600)
 
     def _launch_stoqdbadmin(self):
@@ -652,7 +662,10 @@ class CreateDatabaseStep(BaseWizardStep):
         self.wizard.disable_next()
         stoqdbadmin = 'stoqdbadmin'
         if platform.system() == 'Windows':
-            stoqdbadmin += '.exe'
+            if library.uninstalled:
+                stoqdbadmin += '.bat'
+            else:
+                stoqdbadmin += '.exe'
             # FIXME: listen to file input for 
             #        APPDATA/stoqdbadmin/stderr.log+stdout.log
         args = [stoqdbadmin, 'init',
