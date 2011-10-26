@@ -144,7 +144,7 @@ class Payment(Domain):
 
     @property
     def comments_number(self):
-        return len(self.comments)
+        return self.comments.count()
 
     @property
     def bank(self):

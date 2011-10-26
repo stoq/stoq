@@ -28,6 +28,7 @@ from decimal import Decimal
 from kiwi.datatypes import currency
 
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
+from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentFlowHistory
 from stoqlib.domain.test.domaintest import DomainTest
@@ -414,3 +415,15 @@ class TestPaymentFlowHistory(DomainTest):
         self.assertEqual(old_paid + Decimal(10), history.paid)
         payment2.cancel()
         self.assertEqual(old_paid, history.paid)
+
+
+class TestPaymentComment(DomainTest):
+    def test_comment(self):
+        payment = self.create_payment()
+        self.assertEqual(payment.comments_number, 0)
+        user = self.create_user()
+        comment = PaymentComment(author=user, payment=payment, comment='',
+                                connection=self.trans)
+        self.assertEqual(payment.comments_number, 1)
+        self.assertEqual(payment.comments[0], comment)
+
