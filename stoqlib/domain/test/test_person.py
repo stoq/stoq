@@ -31,6 +31,7 @@ from twisted.trial.unittest import SkipTest
 
 from stoqlib.database.orm import ORMObjectMoreThanOneResultError, AND
 from stoqlib.domain.account import BankAccount
+from stoqlib.domain.person import Calls, Liaison
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.domain.fiscal import CfopData
@@ -81,7 +82,7 @@ class TestEmployeeRole(DomainTest):
 
 class TestPerson(DomainTest):
 
-    def testGetMainAddress(self):
+    def testAddresses(self):
         person = self.create_person()
         assert not person.get_main_address()
         ctlocs = CityLocation.select(connection=self.trans)
@@ -90,6 +91,27 @@ class TestPerson(DomainTest):
         address = Address(connection=self.trans, person=person,
                           city_location=ctloc, is_main_address=True)
         self.assertEquals(person.get_main_address(), address)
+
+        self.assertEquals(len(list(person.addresses)), 1)
+        self.assertEquals(person.addresses[0], address)
+
+    def testCalls(self):
+        person = self.create_person()
+        user = self.create_user()
+        self.assertEquals(len(list(person.calls)), 0)
+
+        call = Calls(connection=self.trans, date=datetime.datetime.today(),
+                     description='', message='', person=person, attendant=user)
+        self.assertEquals(len(list(person.calls)), 1)
+        self.assertEquals(person.calls[0], call)
+
+    def testLiaison(self):
+        person = self.create_person()
+        self.assertEquals(len(list(person.liaisons)), 0)
+
+        contact = Liaison(connection=self.trans, person=person)
+        self.assertEquals(len(list(person.liaisons)), 1)
+        self.assertEquals(person.liaisons[0], contact)
 
     def testGetaddressString(self):
         person = self.create_person()

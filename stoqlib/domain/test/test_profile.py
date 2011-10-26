@@ -39,7 +39,7 @@ class TestUserProfile(DomainTest):
         assert not profile.profile_settings
         profile.add_application_reference(
             'my_app', has_permission=True)
-        assert len(profile.profile_settings) == 1
+        assert len(list(profile.profile_settings)) == 1
         assert profile.check_app_permission('my_app')
 
     def test_get_default(self):
@@ -60,7 +60,7 @@ class TestProfileSettings(DomainTest):
         profile.add_application_reference('stock',
                                           has_permission=True)
         items = profile.profile_settings
-        assert len(items) == 1
+        assert len(list(items)) == 1
 
         new_profile = UserProfile(connection=self.trans, name='assistant')
         update_profile_applications(self.trans, new_profile)
