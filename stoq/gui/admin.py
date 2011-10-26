@@ -111,7 +111,7 @@ class Tasks(object):
                  (_('Users'), 'users',
                   'stoq-hr'),
                  (_('User Profiles'), 'user_profiles',
-                  'config-users'),
+                  'stoq-user-profiles'),
                  ]
 
         for label, name, pixbuf in items:

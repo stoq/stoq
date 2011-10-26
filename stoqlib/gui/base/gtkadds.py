@@ -116,6 +116,8 @@ def register_iconsets():
          { gtk.ICON_SIZE_DIALOG: "stoq-taxes-48x48.png" }),
         ("stoq-devices",
          { gtk.ICON_SIZE_DIALOG: "stoq-devices-48x48.png" }),
+        ("stoq-user-profiles",
+         { gtk.ICON_SIZE_DIALOG: "stoq-user-profiles-48x48.png" }),
         ]
 
     iconfactory = gtk.IconFactory()
