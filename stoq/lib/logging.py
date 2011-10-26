@@ -49,6 +49,8 @@ def setup_logging(appname, extended=True):
                 fp = open(os.devnull, "w")
             setattr(sys, name, fp)
 
+    from kiwi import log
+    log.update_logger()
     if not extended:
         return False
     from stoqlib.lib.osutils import get_application_dir
