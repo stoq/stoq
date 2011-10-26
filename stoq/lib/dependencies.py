@@ -151,9 +151,10 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                 pygtk.require('2.0')
                 # Try again now when pygtk is imported
                 import gtk
-            except ImportError:
+            except ImportError, e:
                 # Can't display a dialog here since gtk is not available
-                raise SystemExit("ERROR: PyGTK not found, can't start Stoq")
+                raise SystemExit(
+                    "ERROR: PyGTK not found, can't start Stoq: %r" % (e, ))
 
         if gtk.pygtk_version < pygtk_version:
             self._too_old(project="PyGTK+",
