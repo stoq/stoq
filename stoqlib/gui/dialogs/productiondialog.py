@@ -76,6 +76,7 @@ class _TemporaryProductionItem(object):
     def get_components(self):
         return self.product.get_components()
 
+
 class _TemporaryProductionItemComponent(object):
     def __init__(self, product_component):
         self.product = product_component.component

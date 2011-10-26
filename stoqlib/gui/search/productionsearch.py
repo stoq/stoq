@@ -25,25 +25,17 @@
 
 
 from decimal import Decimal
-import datetime
 
-import gtk
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import ComboSearchFilter
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import ProductComponent
-from stoqlib.domain.production import (ProductionOrder,
-                                       ProducedQualityItemsView)
+from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.views import ProductComponentView, ProductionItemView
-from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.editors.producteditor import ProductionProductEditor
-from stoqlib.gui.editors.productioneditor import (ProductionItemProducedEditor,
-                                                  ProductionItemLostEditor,
-                                                  ProducedItemQualityTestsDialog)
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductSearchQuantity)
@@ -78,34 +70,11 @@ class ProductionItemsSearch(SearchDialog):
     table = search_table = ProductionItemView
     size = (750, 450)
 
-    def _run_editor(self, editor_class):
-        trans = new_transaction()
-        production_item = self.results.get_selected().production_item
-        model = trans.get(production_item)
-        retval = run_dialog(editor_class, self, self.conn, model)
-        if finish_transaction(trans, retval):
-            self.search.refresh()
-        trans.close()
-
     #
     # SearchDialog
     #
 
     def setup_widgets(self):
-        self._produced_button = self.add_button(_(u'_Produced...'),
-                                                stock=gtk.STOCK_ADD)
-        self._produced_button.connect('clicked',
-                                      self._on_produced_button__clicked)
-        self._produced_button.set_sensitive(False)
-        self._produced_button.show()
-
-        # FIXME: Remove this options (they will be on the details dialog
-        self._lost_button = self.add_button(_(u'_Lost...'),
-                                            stock=gtk.STOCK_REMOVE)
-        self._lost_button.connect('clicked', self._on_lost_button__clicked)
-        self._lost_button.set_sensitive(False)
-        self._lost_button.show()
-
         self._print_button = self.add_button('print', stock='gtk-print')
         self._print_button.connect('clicked', self._on_print_button__clicked)
         self._print_button.set_sensitive(False)
@@ -139,30 +108,11 @@ class ProductionItemsSearch(SearchDialog):
                               visible=False),]
 
     def update_widgets(self):
-        view = self.results.get_selected()
-        has_selected = view is not None
-        producing_status = ProductionOrder.ORDER_PRODUCING
-        if has_selected and view.order_status == producing_status:
-            can_produce = view.quantity - view.lost > view.produced
-            # the same situation
-            can_lose = can_produce
-        else:
-            can_produce = False
-            can_lose = False
-        self._produced_button.set_sensitive(can_produce)
-        self._lost_button.set_sensitive(can_lose)
         self._print_button.set_sensitive(len(self.results) > 0)
 
     #
     # Callbacks
     #
-
-    # FIXME: Remove this options
-    def _on_produced_button__clicked(self, widget):
-        self._run_editor(ProductionItemProducedEditor)
-
-    def _on_lost_button__clicked(self, widget):
-        self._run_editor(ProductionItemLostEditor)
 
     def _on_print_button__clicked(self, widget):
         print_report(ProductionItemReport, self.results, list(self.results),
