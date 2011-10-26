@@ -133,6 +133,10 @@ class TestProduct(DomainTest):
         self.assertEqual(len(suppliers), 2)
         self.assertEqual(info in suppliers, True)
 
+        # product.suppliers should behave just like get_suppliers_info()
+        self.assertEqual(len(list(product.suppliers)), 2)
+        self.assertEqual(info in product.suppliers, True)
+
         self.assertEqual(product.is_supplied_by(supplier), True)
 
     def testCanRemove(self):
