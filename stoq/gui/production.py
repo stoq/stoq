@@ -82,7 +82,6 @@ class ProductionApp(SearchableAppWindow):
           <menuitem action="SearchProduct"/>
           <menuitem action="SearchService"/>
           <menuitem action="SearchProductionItem"/>
-          <menuitem action="SearchQualityAssurance"/>
           <menuitem action="SearchProductionHistory"/>
         </menu>
       </menubar>
@@ -114,8 +113,6 @@ class ProductionApp(SearchableAppWindow):
             ("SearchService", None, _("Services..."), '<Control>s'),
             ("SearchProductionItem", 'stoq-production-app', _("Production items..."),
              '<Control>r'),
-            ("SearchQualityAssurance", None, _("Quality Assurance..."),
-             '<Control>a'),
             ("SearchProductionHistory", None, _("Production history..."), '<Control>h'),
 
         ]
