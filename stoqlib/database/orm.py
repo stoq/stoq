@@ -39,7 +39,8 @@ from sqlobject.col import (Col, SOBoolCol, SODateTimeCol, SODecimalCol,
                            SOForeignKey, SOIntCol, SOStringCol, SOUnicodeCol)
 from sqlobject.converters import registerConverter
 from sqlobject.dbconnection import connectionForURI, Transaction
-from sqlobject.joins import MultipleJoin, SingleJoin
+from sqlobject.joins import MultipleJoin as _MultipleJoin, SingleJoin
+from sqlobject.joins import SOMultipleJoin
 from sqlobject.main import sqlhub, SQLObject
 from sqlobject.sqlbuilder import (AND, Alias, IN, INNERJOINOn, ISNOTNULL,
                                   LEFTJOINOn, LIKE, OR, Update, Field,
@@ -197,10 +198,19 @@ class DateTimeCol(_DateTimeCol):
 
 ForeignKey = ForeignKey
 IntCol = IntCol
-MultipleJoin = MultipleJoin
 SingleJoin = SingleJoin
 StringCol = StringCol
 UnicodeCol = UnicodeCol
+
+class MySOMultipleJoin(SOMultipleJoin):
+    def performJoin(self, inst):
+        column = self.joinColumn[:-3] + 'ID'
+        query = getattr(self.otherClass.q, column) == inst.id
+        return self.otherClass.select(query, connection=inst.get_connection())
+
+class MultipleJoin(_MultipleJoin):
+    baseClass = MySOMultipleJoin
+
 
 # Column classes
 Col = Col
