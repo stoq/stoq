@@ -315,31 +315,13 @@ def _maybe_show_welcome_dialog():
     from stoqlib.gui.base.dialogs import run_dialog
     run_dialog(WelcomeDialog)
 
+
 def _prepare_logfiles():
     global _log_filename, _stream
 
     from stoq.lib.logging import setup_logging
-    setup_logging("stoq")
+    _log_filename, _stream = setup_logging("stoq")
 
-    from stoqlib.lib.osutils import get_application_dir
-    stoqdir = get_application_dir()
-
-    import time
-    log_dir = os.path.join(stoqdir, 'logs', time.strftime('%Y'),
-                            time.strftime('%m'))
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-
-    from kiwi.log import set_log_file
-    _log_filename = os.path.join(log_dir, 'stoq_%s.log' %
-                                time.strftime('%Y-%m-%d_%H-%M-%S'))
-    _stream = set_log_file(_log_filename, 'stoq*')
-
-    if hasattr(os, 'symlink'):
-        link_file = os.path.join(stoqdir, 'stoq.log')
-        if os.path.exists(link_file):
-            os.unlink(link_file)
-        os.symlink(_log_filename, link_file)
 
 def _initialize(options):
     # Do this as early as possible to get as much as possible into the

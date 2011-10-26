@@ -369,7 +369,7 @@ def main(args):
     args = args[1:]
 
     from stoq.lib.logging import setup_logging
-    setup_logging("stoqdbadmin")
+    setup_logging("stoqdbadmin", extended=False)
 
     from stoq.lib.options import get_option_parser
     parser = get_option_parser()
