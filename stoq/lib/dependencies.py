@@ -70,7 +70,8 @@ class DependencyChecker(object):
         self._check_pygtk(PYGTK_REQUIRED, GTK_REQUIRED)
         self._check_kiwi(KIWI_REQUIRED)
         self._check_pycairo(PYCAIRO_REQUIRED)
-        self._check_pygtkwebkit(PYGTKWEBKIT_REQUIRED)
+        if platform.system() != 'Windows':
+            self._check_pygtkwebkit(PYGTKWEBKIT_REQUIRED)
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
         self._check_dateutil(DATEUTIL_REQUIRED)
         self._check_twisted(TWISTED_REQUIRED)
