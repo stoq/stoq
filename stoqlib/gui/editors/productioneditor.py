@@ -21,7 +21,31 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-""" Production editors """
+""" Production editors
+
+This file contains several editors used in the production process:
+
+L{ProductionItemEditor}: A base class with some information about the product or
+                         material (description, location, unit). See subclasses
+                         for specifc usage.
+
+L{ProducedItemSlave}: A slave for serial number input.
+
+L{ProductionItemProducedEditor}: A dialog to enter the number of itens produced.
+                                 This uses the L{ProducedItemSlave} slave for
+                                 serial number input
+L{ProductionItemLostEditor}: A dialog to input the number of items lost.
+
+L{ProductionServiceEditor}: Editor for an service item in the production order
+L{ProductionMaterialEditor}: Item for an production material in the production
+                             order
+
+
+L{QualityTestResultEditor}: An editor for a quality test result
+L{ProducedItemQualityTestsDialog}: A dialog listing all quality test results
+                                   made for an produced item
+
+"""
 
 import datetime
 from decimal import Decimal
@@ -32,20 +56,23 @@ import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
-
 from stoqlib.database.runtime import get_current_user
+
 from stoqlib.domain.product import ProductQualityTest
 from stoqlib.domain.production import ProductionProducedItem
 from stoqlib.domain.production import (ProductionItem, ProductionMaterial,
                                        ProductionItemQualityResult,
                                        ProductionService)
-from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+
+
 
 class ProductionItemEditor(BaseEditor):
     """This is a base class for all items used in a production:
@@ -97,8 +124,6 @@ class ProductionItemEditor(BaseEditor):
 
 
 
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-
 class ProducedItemSlave(BaseEditorSlave):
     """
     """
@@ -135,7 +160,6 @@ class ProducedItemSlave(BaseEditorSlave):
 
 class ProductionItemProducedEditor(ProductionItemEditor):
     title = _(u'Produce Items')
-
     quantity_title = _(u'Produced:')
     quantity_attribute = 'produced'
 
@@ -160,14 +184,15 @@ class ProductionItemProducedEditor(ProductionItemEditor):
 
     def validate_confirm(self):
         serials = []
-        for i in range(self.produced):
-            serials.append(self.serial_slave.model.serial_number + i)
+        if self.serial_slave:
+            for i in range(self.produced):
+                serials.append(self.serial_slave.model.serial_number + i)
         try:
             self.model.produce(self.produced, get_current_user(self.conn),
                                serials)
         except (ValueError, AssertionError):
             info(_(u'Can not produce this quantity. Not enough materials '
-                    'can be allocated to produce this item.'))
+                    'allocated to this production.'))
             return False
         return True
 
@@ -177,31 +202,56 @@ class ProductionItemProducedEditor(ProductionItemEditor):
                 _(u'Produced value should be greater than zero.'))
 
 
-
-
-
-
-class ProductionItemLostEditor(ProductionItemProducedEditor):
+class ProductionMaterialLostEditor(ProductionItemProducedEditor):
     title = _(u'Lost Items')
     quantity_title = _(u'Lost:')
     quantity_attribute = 'lost'
+    model_type = ProductionMaterial
 
     def validate_confirm(self):
         try:
             self.model.add_lost(self.lost)
         except (ValueError, AssertionError):
-            info(_(u'Can not lost this quantity. Not enough materials can '
-                    'be allocated to this item.'))
+            info(_(u'Can not lose this quantity. Not enough materials '
+                    'allocated to this production.'))
             return False
         return True
+
+    def get_max_quantity(self):
+        return self.model.allocated - self.model.lost - self.model.consumed
 
     def on_quantity__validate(self, widget, value):
         if value <= 0:
             return ValidationError(
-                _(u'Produced value should be greater than zero.'))
+                _(u'Lost value should be greater than zero.'))
 
 
+class ProductionMaterialAllocateEditor(ProductionItemProducedEditor):
+    title = _(u'Allocate Items')
+    quantity_title = _(u'Allocate:')
+    quantity_attribute = 'allocate'
+    model_type = ProductionMaterial
 
+    def validate_confirm(self):
+        try:
+            self.model.allocate(self.allocate)
+        except (ValueError, AssertionError):
+            info(_(u'Can not allocate this quantity.'))
+            return False
+        return True
+
+    def get_max_quantity(self):
+        return self.model.get_stock_quantity()
+
+    def on_quantity__validate(self, widget, value):
+        if value <= 0:
+            return ValidationError(
+                _(u'Lost value should be greater than zero.'))
+
+
+#
+#   Production Wizard Editors
+#
 
 class ProductionServiceEditor(ProductionItemEditor):
     model_type = ProductionService

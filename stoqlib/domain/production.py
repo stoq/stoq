@@ -30,15 +30,11 @@ from zope.interface import implements
 
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, DateTimeCol, IntCol,
                                   QuantityCol, BoolCol, MultipleJoin)
-from stoqlib.database.orm import Viewable
-from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn, OR
-from stoqlib.database.orm import Viewable, Field, Alias
+from stoqlib.database.orm import AND
 from stoqlib.domain.base import Domain
-from stoqlib.domain.product import ProductHistory, Product
+from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable, IStorable
-from stoqlib.domain.sellable import BaseSellableInfo, Sellable
 from stoqlib.lib.translation import stoqlib_gettext
-
 
 
 _ = stoqlib_gettext
@@ -181,6 +177,13 @@ class ProductionOrder(Domain):
             # All items must be completely produced and tested
             self.close_date = datetime.date.today()
             self.status = ProductionOrder.ORDER_CLOSED
+
+        # If the order is closed, return the the remaining allocated material to
+        # the stock
+        if self.status == ProductionOrder.ORDER_CLOSED:
+            for m in self.get_material_items():
+                m.return_remaining()
+
 
     def set_production_waiting(self):
         assert self.status == ProductionOrder.ORDER_OPENED
@@ -365,9 +368,20 @@ class ProductionMaterial(Domain):
     # Public API
     #
 
+    # TESTME
     def can_add_lost(self, quantity):
-        # FIXME
-        return True
+        """Returns if we can loose a certain quantity of this material.
+
+        @param quantity: the quantity that will be lost.
+        """
+        return self.can_consume(quantity)
+
+    def can_consume(self, quantity):
+        assert quantity > 0
+        if self.order.status != ProductionOrder.ORDER_PRODUCING:
+            return False
+
+        return self.lost + quantity <= self.needed - self.consumed
 
     def allocate(self, quantity=None):
         """Allocates the needed quantity of this material by decreasing the
@@ -396,6 +410,20 @@ class ProductionMaterial(Domain):
             self.allocated += quantity
             storable.decrease_stock(quantity, self.order.branch)
 
+    # TESTME
+    def return_remaining(self):
+        """Returns remaining allocated material to the stock
+
+        This should be called only after the production order is closed.
+        """
+        assert self.order.status == ProductionOrder.ORDER_CLOSED
+        remaining = self.allocated - self.lost - self.consumed
+        assert remaining >= 0
+        storable = IStorable(self.product)
+        storable.increase_stock(remaining, self.order.branch)
+        self.allocated -= remaining
+
+
     def add_lost(self, quantity):
         """Adds the quantity lost of this material. The maximum quantity that
         can be lost is given by the formula:
@@ -419,13 +447,16 @@ class ProductionMaterial(Domain):
     def consume(self, quantity):
         """Consumes a certain quantity of material. The maximum quantity
         allowed to be consumed is given by the following formula:
+
             - max_consumed(quantity) = needed - consumed - lost - quantity
 
         @param quantity: the quantity to be consumed.
         """
         assert quantity > 0
 
-        if self.consumed + quantity > self.needed - self.lost:
+        available = self.allocated - self.consumed - self.lost
+
+        if quantity > available:
             raise ValueError(_('Can not consume this quantity.'))
 
         required = self.consumed + self.lost + quantity

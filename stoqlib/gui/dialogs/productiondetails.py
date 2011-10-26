@@ -34,8 +34,9 @@ from stoqlib.domain.production import ProductionOrder
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.productioneditor import (ProductionItemProducedEditor,
-                                          ProductionItemLostEditor,
-                                          ProducedItemQualityTestsDialog)
+                                                  ProductionMaterialLostEditor,
+                                                  ProductionMaterialAllocateEditor,
+                                                  ProducedItemQualityTestsDialog)
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.production import ProductionOrderReport
@@ -89,8 +90,7 @@ class ProductionDetailsDialog(BaseEditor):
                        data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),]
 
     def _get_material_columns(self):
-        return [Column('description',
-                       title=_('Description'),
+        return [Column('description', title=_('Description'),
                        data_type=str, expand=True, searchable=True,
                        ellipsize=pango.ELLIPSIZE_END),
                 Column('product.location', _("Location"), data_type=str),
@@ -100,12 +100,16 @@ class ProductionDetailsDialog(BaseEditor):
                        data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
                 Column('allocated', title=_('Allocated'),
                        data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
+                Column('consumed', title=_('Consumed'),
+                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
                 Column('lost', title=_('Lost'),
                        data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
                 Column('to_purchase', title=_('To Purchase'),
-                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT,
+                       visible=False),
                 Column('to_make', title=_('To Make'),
-                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),]
+                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT,
+                       visible=False),]
 
     def _get_service_columns(self):
         return [Column('description', _("Description"), data_type=str,
@@ -138,14 +142,25 @@ class ProductionDetailsDialog(BaseEditor):
     #   Actions
     #
 
-    def _produce(self):
-        production_item = self.production_items.get_selected()
+    def _run_editor(self, editor_class, item):
         trans = new_transaction()
-        model = trans.get(production_item)
-        retval = run_dialog(ProductionItemProducedEditor, self, self.conn, model)
+        model = trans.get(item)
+        retval = run_dialog(editor_class, self, self.conn, model)
         if finish_transaction(trans, retval):
             self._setup_data()
         trans.close()
+
+    def _produce(self):
+        production_item = self.production_items.get_selected()
+        self._run_editor(ProductionItemProducedEditor, production_item)
+
+    def _add_lost(self):
+        item = self.materials.get_selected()
+        self._run_editor(ProductionMaterialLostEditor, item)
+
+    def _allocate(self):
+        item = self.materials.get_selected()
+        self._run_editor(ProductionMaterialAllocateEditor, item)
 
     def _test(self):
         trans = new_transaction()
@@ -165,22 +180,36 @@ class ProductionDetailsDialog(BaseEditor):
         print_report(ProductionOrderReport, self.model)
 
     def on_production_items__selection_changed(self, widget, item):
-        self.produce_button.set_sensitive(bool(item and item.can_produce(1)))
+        self.produce_button.set_sensitive(bool(item) and item.can_produce(1))
 
     def on_materials__selection_changed(self, widget, item):
-        self.lost_button.set_sensitive(item and item.can_add_lost(1))
+        self.lost_button.set_sensitive(bool(item) and item.can_add_lost(1))
+        self.allocate_button.set_sensitive(bool(item) and
+                    item.order.status == ProductionOrder.ORDER_PRODUCING)
 
     def on_produced_items__selection_changed(self, widget, item):
         self.tests_button.set_sensitive(bool(item))
+
+    def on_lost_button__clicked(self, button):
+        self._add_lost()
+
+    def on_allocate_button__clicked(self, button):
+        self._allocate()
+
+    def on_materials__row_activated(self, list, row):
+        if self.lost_button.get_sensitive():
+            self._add_lost()
 
     def on_produce_button__clicked(self, button):
         self._produce()
 
     def on_production_items__row_activated(self, list, row):
-        self._produce()
+        if self.produce_button.get_sensitive():
+            self._produce()
 
     def on_tests_button__clicked(self, button):
         self._test()
 
     def on_produced_items__row_activated(self, list, row):
-        self._test()
+        if self.tests_button.get_sensitive():
+            self._test()
