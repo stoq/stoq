@@ -29,10 +29,10 @@ else:
 
     # Directory name, defaults to name of binary, it is relative to ..
     # a, __init__.py and main.py is expected to be found there.
-    DIRNAME = None
+    DIRNAME = "stoq"
 
     # Application name, defaults to capitalized name of binary
-    APPNAME = None
+    APPNAME = "stoq"
 
     # Do not modify code below this point
     dirname = DIRNAME or os.path.split(sys.argv[0])[1]
