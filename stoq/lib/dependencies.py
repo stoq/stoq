@@ -30,6 +30,7 @@
 import gettext
 import os
 import platform
+import sys
 
 _ = gettext.gettext
 
@@ -238,9 +239,11 @@ You can find an older version of %s on it's homepage at\n%s""") % (
 
     def _check_psql(self, version):
         executable = 'psql'
+        paths = os.environ['PATH'].split(os.pathsep)
         if platform.system() == 'Windows':
             executable += '.exe'
-        for path in os.environ['PATH'].split(os.pathsep):
+            paths.insert(0, os.path.dirname(sys.argv[0]))
+        for path in paths:
             full = os.path.join(path, executable)
             if os.path.exists(full):
                 break
