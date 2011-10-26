@@ -27,7 +27,6 @@ import webbrowser
 
 from kiwi.environ import environ
 import gtk
-import webkit
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.lib.parameters import sysparam
@@ -44,6 +43,10 @@ class WelcomeDialog(gtk.Dialog):
         sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         self.get_content_area().pack_start(sw)
 
+
+        if platform.system() == 'Windows':
+            return
+        import webkit
         self._view = webkit.WebView()
         self._view.connect(
             'navigation-policy-decision-requested',
@@ -55,14 +58,20 @@ class WelcomeDialog(gtk.Dialog):
         self.set_title(_("Welcome to Stoq"))
         self.show_all()
 
-    def run(self):
+    def get_uri(self):
         if locale.getlocale()[0] == 'pt_BR':
             content = environ.find_resource('html', 'welcome-pt_BR.html')
         else:
             content = environ.find_resource('html', 'welcome.html')
         if sysparam(get_connection()).DEMO_MODE:
             content += '?demo-mode'
-        uri = 'file:///' + content
+        return 'file:///' + content
+
+    def run(self):
+        uri = self.get_uri()
+        if platform.system() == 'Windows':
+            webbrowser.open(uri, new=True)
+            return
         self._view.load_uri(uri)
         self.button.grab_focus()
         return super(WelcomeDialog, self).run()
