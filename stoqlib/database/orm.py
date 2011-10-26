@@ -206,7 +206,12 @@ class MySOMultipleJoin(SOMultipleJoin):
     def performJoin(self, inst):
         column = self.joinColumn[:-3] + 'ID'
         query = getattr(self.otherClass.q, column) == inst.id
-        return self.otherClass.select(query, connection=inst.get_connection())
+        order = 'id'
+        if self.orderBy != NoDefault:
+            order = self.orderBy
+        return self.otherClass.select(query,
+                        connection=inst.get_connection()).orderBy(order)
+
 
 class MultipleJoin(_MultipleJoin):
     baseClass = MySOMultipleJoin
