@@ -419,7 +419,6 @@ class QualityTestResultEditor(BaseEditor):
 
 
 class ProducedItemQualityTestsDialog(ModelListDialog):
-
     model_type = ProductionItemQualityResult
     editor_class = QualityTestResultEditor
     title = _('Test Results')

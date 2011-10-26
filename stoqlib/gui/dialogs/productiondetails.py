@@ -62,6 +62,9 @@ class ProductionDetailsDialog(BaseEditor):
         self.materials.set_columns(self._get_material_columns())
         self.services.set_columns(self._get_service_columns())
         self.produced_items.set_columns(self._get_produced_items_columns())
+        # We should probably allow editing tests results for more than one row
+        # at the same time
+        #self.produced_items.set_selection_mode(gtk.SELECTION_MULTIPLE)
 
     def _setup_data(self):
         # FIXME: Improve this
@@ -195,10 +198,6 @@ class ProductionDetailsDialog(BaseEditor):
 
     def on_allocate_button__clicked(self, button):
         self._allocate()
-
-    def on_materials__row_activated(self, list, row):
-        if self.lost_button.get_sensitive():
-            self._add_lost()
 
     def on_produce_button__clicked(self, button):
         self._produce()
