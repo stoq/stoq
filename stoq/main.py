@@ -124,6 +124,7 @@ def _check_dependencies():
     from stoq.lib.dependencies import check_dependencies
     check_dependencies()
 
+
 def _check_version_policy():
     # No need to bother version checking when not running in developer mode
     from stoqlib.lib.parameters import is_developer_mode
@@ -316,6 +317,9 @@ def _maybe_show_welcome_dialog():
 
 def _prepare_logfiles():
     global _log_filename, _stream
+
+    from stoq.lib.logging import setup_logging
+    setup_logging("stoq")
 
     from stoqlib.lib.osutils import get_application_dir
     stoqdir = get_application_dir()
