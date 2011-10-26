@@ -298,6 +298,11 @@ class PluginStep(BaseWizardStep):
     def post_init(self):
         self.wizard.plugins = []
         self.enable_ecf.grab_focus()
+        if platform.system() == 'Windows':
+            self.enable_ecf.set_active(False)
+            self.enable_ecf.set_sensitive(False)
+            self.enable_tef.set_active(False)
+            self.enable_tef.set_sensitive(False)
 
     def next_step(self):
         if self.enable_ecf.get_active():
