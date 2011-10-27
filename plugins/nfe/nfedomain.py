@@ -23,10 +23,10 @@
 ##
 
 from stoqlib.database.orm import IntCol, UnicodeCol
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import BaseDomain
 
 
-class NFeCityData(Domain):
+class NFeCityData(BaseDomain):
     """Information about Brazil states and cities.
 
     @ivar state_code: the unique code that represents a certain state.
