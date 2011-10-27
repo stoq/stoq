@@ -24,9 +24,9 @@
 ##
 """ Dialogs for payment method management"""
 
-import operator
-import gtk
+import platform
 
+import gtk
 from kiwi.component import get_utility
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.list import Column
@@ -85,9 +85,12 @@ class PluginManagerDialog(BasicDialog):
     def _setup_widgets(self):
         self.set_ok_label(_(u'Activate'), 'gtk-apply')
         self.ok_button.set_sensitive(False)
-        plugins = [_PluginModel(p, self.conn)
-                            for p in self._manager.get_plugin_names()]
-        plugins = sorted(plugins, key=operator.attrgetter('name'))
+        plugins = []
+        for name in sorted(self._manager.get_plugin_names()):
+            if platform.system() == 'Windows':
+                if name in ['ecf', 'tef']:
+                    continue
+            plugins.append(_PluginModel(name, self.conn))
         self.klist = ObjectList(self._get_columns(), plugins,
                                 gtk.SELECTION_BROWSE)
         self.klist.connect("selection-changed",
