@@ -129,15 +129,16 @@ class InfoBar(gtk.HBox):
         if self.style.fg[gtk.STATE_NORMAL] != fg:
             self.modify_fg(gtk.STATE_NORMAL, fg)
 
+    def _on_action_widget__clicked(self, widget):
+        response_id = get_response_for_widget(widget)
+        self.response(response_id)
+
     def add_action_widget(self, child, response_id):
         ad = get_response_data(child, True);
         ad.response_id = response_id
 
         if isinstance(child, gtk.Button):
-            def activated(*unused):
-                response_id = get_response_for_widget(child)
-                self.response(response_id)
-            child.connect('clicked', activated)
+            child.connect('clicked', self._on_action_widget__clicked)
 
         self._action_area.pack_end(child, False, False, 0)
         if response_id == gtk.RESPONSE_HELP:
