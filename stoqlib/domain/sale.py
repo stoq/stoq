@@ -431,7 +431,9 @@ class Sale(Domain):
         sale_item.sale = self
 
     def get_items(self):
-        return SaleItem.selectBy(sale=self, connection=self.get_connection())
+        conn = self.get_connection()
+        return SaleItem.selectBy(sale=self,
+                                 connection=conn).orderBy(SaleItem.q.id)
 
     @argcheck(SaleItem)
     def remove_item(self, sale_item):

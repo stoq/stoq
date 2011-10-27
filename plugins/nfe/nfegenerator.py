@@ -141,6 +141,9 @@ class NFeGenerator(object):
             return '0'
         return str(11 - remainder)
 
+    def _get_today_date(self):
+        return datetime.date.today()
+
     def _get_cnpj(self, person):
         company = ICompany(person, None)
         assert company is not None
@@ -170,7 +173,7 @@ class NFeGenerator(object):
         branch_location = branch.person.get_main_address().city_location
         cuf = str(get_state_code(branch_location.state) or '')
 
-        today = datetime.date.today()
+        today = self._get_today_date()
         aamm = today.strftime('%y%m')
 
         nnf = self._sale.invoice_number
@@ -541,7 +544,7 @@ class NFeIdentification(BaseNFeXMLGroup):
         self.set_attr('cUF', cUF)
         # Pg. 92: Random number of 8-digits. (This used to be 9, but was
         # changed to 8 in nfe 2.0)
-        self.set_attr('cNF', random.randint(10000000, 99999999))
+        self.set_attr('cNF', self._get_random_cnf())
 
         payment_type = 1
         installments = len(payments)
@@ -569,6 +572,10 @@ class NFeIdentification(BaseNFeXMLGroup):
         if children:
             return base + children[0].as_txt()
         return base
+
+    def _get_random_cnf(self):
+        return random.randint(10000000, 99999999)
+
 
 class NFeEcfInfo(BaseNFeXMLGroup):
     """
