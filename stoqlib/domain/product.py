@@ -172,17 +172,14 @@ class Product(Domain):
     def remove(self):
         """Deletes this product from the database.
         """
-        storable = IStorable(self)
-        storable.delete(storable.id, self.get_connection())
+        storable = IStorable(self, None)
+        if storable:
+            storable.delete(storable.id, self.get_connection())
         for i in self.get_suppliers_info():
             i.delete(i.id, self.get_connection())
         for i in self.get_components():
             i.delete(i.id, self.get_connection())
 
-        # This event needs to be emitted before the real deletion, so
-        # we can know what product is being deleted and remove any
-        # references to it (like foreign keys)
-        ProductRemoveEvent.emit(self)
         self.delete(self.id, self.get_connection())
 
     def can_remove(self):
@@ -194,7 +191,8 @@ class Product(Domain):
         from stoqlib.domain.production import ProductionItem
         if self.get_history().count():
             return False
-        elif IStorable(self).get_stock_items().count():
+        storable = IStorable(self, None)
+        if storable and storable.get_stock_items().count():
             return False
         # Return False if the product is component of other.
         elif ProductComponent.selectBy(connection=self.get_connection(),
@@ -291,6 +289,9 @@ class Product(Domain):
 
     def on_create(self):
         ProductCreateEvent.emit(self)
+
+    def on_delete(self):
+        ProductRemoveEvent.emit(self)
 
     def on_update(self):
         trans = self.get_connection()
