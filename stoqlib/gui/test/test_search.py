@@ -60,7 +60,13 @@ class TestDateOptions(unittest.TestCase):
         return loc == "en_US"
 
     def _set_locale(self, loc):
-        locale.setlocale(locale.LC_ALL, loc)
+        try:
+            locale.setlocale(locale.LC_ALL, loc)
+        except locale.Error:
+            # Some locales could not be available on user's machine, leading
+            # him to a false positive broke test, so skip it, informing the
+            # problem.
+            raise unittest.SkipTest("Locale %s not available" % (loc,))
 
     def _testWeekday(self, loc, interval):
         if self._starts_on_sunday(loc):
