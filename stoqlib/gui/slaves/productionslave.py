@@ -48,7 +48,7 @@ class _TemporaryMaterial(object):
         if storable is not None:
             self.stock_quantity =  storable.get_full_balance(production.branch)
         else:
-            self.stock_quantity = 0
+            self.stock_quantity = Decimal(0)
 
         sellable = component.sellable
         self.code = sellable.code
@@ -56,9 +56,9 @@ class _TemporaryMaterial(object):
         self.category_description = sellable.get_category_description()
         self.unit_description = sellable.get_unit_description()
         self.product = component
-        self.needed = 0
-        self.to_purchase = 0
-        self.to_make = 0
+        self.needed = Decimal(0)
+        self.to_purchase = Decimal(0)
+        self.to_make = Decimal(0)
         self.order = production
         self._material = None
         self._conn = conn
@@ -100,7 +100,7 @@ class _TemporaryMaterial(object):
     def update_quantities(self):
         missing_quantity = self.needed - self.stock_quantity
         if missing_quantity < 0:
-            missing_quantity = 0
+            missing_quantity = Decimal(0)
 
         if self.product.has_components():
             self.to_make = missing_quantity
