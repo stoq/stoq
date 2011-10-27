@@ -338,7 +338,7 @@ class ExampleCreator(object):
         return SellableCategory(description="Category",
                                 connection=self.trans)
 
-    def create_sale(self):
+    def create_sale(self, id_=None):
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.till import Till
         till = Till.get_current(self.trans)
@@ -348,12 +348,17 @@ class ExampleCreator(object):
         salesperson = self.create_sales_person()
         branch = self.create_branch()
         group = self.create_payment_group()
+        extra_args = dict()
+        if id_:
+            extra_args['id'] = id_
+
         return Sale(coupon_id=0,
                     open_date=const.NOW(),
                     salesperson=salesperson, branch=branch,
                     cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
                     group=group,
-                    connection=self.trans)
+                    connection=self.trans,
+                    **extra_args)
 
     def create_sale_item(self):
         from stoqlib.domain.sale import SaleItem
