@@ -50,7 +50,8 @@ else
     # All of the options above needs to be passed in to avoid entering
     # interactive mode for createuser.
     #
-    # We're creating superusers as that's what pg_dump requires
+    # We're creating superusers as that's what pg_dump requires and to use
+    # COPY command (when enabling nfe plugin)
     #
     echo "$SHNAME: Creating user '$USERNAME'"
     createuser -dsR "$USERNAME"
