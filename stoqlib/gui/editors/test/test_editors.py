@@ -141,7 +141,6 @@ def _create_slave_test():
         'InConsignmentItemEditor': ' ',
         'IndividualEditorTemplate' : 'Missing slave',
         'CompanyEditorTemplate' : 'Missing slave',
-        'LoanItemEditor' : 'weird',
         'ProductStockHistoryDialog': ' ',
         'SaleItemICMSSlave': 'Unkown type',
         'SaleItemIPISlave': 'Unkown type',
