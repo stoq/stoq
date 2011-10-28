@@ -35,6 +35,7 @@ from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.lib.interfaces import IPluginManager
+from stoqlib.lib.parameters import is_developer_mode
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import yesno
 
@@ -87,6 +88,9 @@ class PluginManagerDialog(BasicDialog):
         self.ok_button.set_sensitive(False)
         plugins = []
         for name in sorted(self._manager.get_plugin_names()):
+            # FIXME: Remove when magento plugin is functional for end users
+            if not is_developer_mode() and name == 'magento':
+                continue
             if platform.system() == 'Windows':
                 if name in ['ecf', 'tef']:
                     continue
