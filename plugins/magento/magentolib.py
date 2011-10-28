@@ -59,6 +59,7 @@ def get_proxy():
         proxy = MagentoProxy(config.url, config.api_user, config.api_key,
                              config.tz_hours)
         provide_utility(IMagentoProxy, proxy)
+        assert get_utility(IMagentoProxy, None)
 
     return proxy
 

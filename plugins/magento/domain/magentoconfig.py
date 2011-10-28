@@ -30,7 +30,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import (DecimalCol, IntCol, UnicodeCol, DateTimeCol,
                                   ForeignKey)
-from stoqlib.database.runtime import get_connection, new_transaction
+from stoqlib.database.runtime import get_connection
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import ISalesPerson, IEmployee, IIndividual
 from stoqlib.domain.person import Person
@@ -52,13 +52,10 @@ def get_config(trans=None):
 
     if not config:
         config = MagentoConfig.selectOne(connection=get_connection())
+        assert config
         provide_utility(IMagentoConfig, config)
+        assert get_utility(IMagentoConfig, None)
 
-        if not config.salesperson:
-            trans = new_transaction()
-            c = trans.get(config)
-            c.salesperson = c._create_salesperson()
-            trans.commit(close=True)
     if trans:
         return trans.get(config)
 
