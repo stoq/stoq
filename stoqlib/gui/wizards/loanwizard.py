@@ -322,12 +322,11 @@ class LoanItemSelectionStep(BaseWizardStep):
 
     def _edit_item(self, item):
         trans = new_transaction()
-        item = trans.get(item)
-        retval = run_dialog(LoanItemEditor, self, trans, item,
+        model = trans.get(item)
+        retval = run_dialog(LoanItemEditor, self, trans, model,
                             expanded_edition=True)
         retval = finish_transaction(trans, retval)
         if retval:
-            item = self.conn.get(item)
             self.loan_items.update(item)
             self._validate_step(True)
         trans.close()
