@@ -1,0 +1,8 @@
+[Plugin]
+Module=magentoplugin
+Version=1
+Name=Magento Plugin
+Name[pt_BR]=Plugin Magento
+Authors=Stoq Team <stoq-devel@async.com.br>
+Copyright=Copyright © 2011 Async Open Source
+Website=http://www.stoq.com.br/
