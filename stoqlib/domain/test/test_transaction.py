@@ -30,7 +30,8 @@ from kiwi.component import get_utility
 
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_station,
-                                      new_transaction)
+                                      new_transaction,
+                                      get_connection)
 from stoqlib.domain.person import Person
 from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.test.domaintest import DomainTest
@@ -87,6 +88,37 @@ class TestTransaction(DomainTest):
                 raise AssertionError(
                     "'%s' (%s) was expected to be before '%s' (%s)" % (
                     before_name, before, after_name, after))
+
+    def testCacheInvalidation(self):
+        # First create a new person in an outside transaction
+        outside_trans = new_transaction()
+        outside_person = Person(name='doe', connection=outside_trans)
+        outside_trans.commit()
+
+        # Get this person in the db connection
+        db_person = Person.selectOneBy(id=outside_person.id,
+                                       connection=get_connection())
+        self.assertEqual(db_person.name, 'doe')
+
+        # Now, select that same person in an inside transaction
+        inside_trans = new_transaction()
+        inside_person = inside_trans.get(outside_person)
+
+        # Change and commit the changes on this inside transaction
+        inside_person.name = 'john'
+
+        # Before comminting the other persons should still be 'doe'
+        self.assertEqual(db_person.name, 'doe')
+        self.assertEqual(outside_person.name, 'doe')
+
+        inside_trans.commit()
+
+        # We expect the changes to reflect on the connection
+        self.assertEqual(db_person.name, 'john')
+
+        # and also on the outside transaction
+        self.assertEqual(outside_person.name, 'john')
+
 
     def testUser(self):
         user = get_current_user(self.trans)

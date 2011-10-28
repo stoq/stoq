@@ -49,6 +49,7 @@ class StoqlibTransaction(Transaction):
 
     def __init__(self, *args, **kwargs):
         self._savepoints = []
+        self._related_transactions = set()
         Transaction.__init__(self, *args, **kwargs)
 
         self._reset_pending_objs()
@@ -92,6 +93,14 @@ class StoqlibTransaction(Transaction):
 
         if not isinstance(obj, ORMObject):
             raise TypeError("obj must be a ORMObject, not %r" % (obj,))
+
+        # sqlobject invalidates the objects from the connection, but not from
+        # other transactions. If the object we are getting now comes from
+        # another transaction, save it so we can invalidate the objects modified
+        # in this transaction when committing
+        other_conn = obj.get_connection()
+        if isinstance(other_conn, StoqlibTransaction):
+            self._related_transactions.add(other_conn)
 
         table = type(obj)
         return table.get(obj.id, connection=self)
@@ -162,6 +171,14 @@ class StoqlibTransaction(Transaction):
                 modified_obj.te_modified.set(**te_fields)
                 modified_obj.on_update()
                 processed_objs.add(modified_obj)
+
+                # Invalidate the modified objects in other possible related
+                # transactions
+                for trans in self._related_transactions:
+                    klass = type(modified_obj)
+                    cache = trans.cache.tryGet(modified_obj.id, klass)
+                    if cache:
+                        cache.expire()
 
     def _need_process_pending(self):
         return (any(self._created_object_sets) or
