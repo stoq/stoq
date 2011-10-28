@@ -81,6 +81,11 @@ else:
     except ImportError:
         pass
 
+# We only support portuguese locale on Windows for now
+import platform
+if platform.system() == 'Windows':
+    os.environ['LANGUAGE'] = 'pt_BR.UTF-8'
+
 from stoq import dbadmin
 
 try:
