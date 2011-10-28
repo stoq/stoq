@@ -1,0 +1,106 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2006-2011 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+## Author(s):   Stoq Team   <stoq-devel@async.com.br>
+##
+
+import datetime
+import time
+import sys
+
+from twisted.internet import reactor
+from twisted.internet.task import LoopingCall
+from twisted.internet.defer import inlineCallbacks
+from twisted.python import log
+
+from stoqlib.lib.pluginmanager import provide_plugin_manager
+from stoq.lib.startup import setup
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
+log.startLogging(sys.stderr)
+
+
+class MagentoSyncDaemon(object):
+    """Sync daemon for magento
+
+    @cvar SYNC_INTERVAL: the interval between looping calls, in sec
+    """
+
+    _PLUGIN_NAME = 'magento'
+    SYNC_INTERVAL = 15
+
+    def __init__(self, *args):
+        setup(register_station=True, load_plugins=False)
+
+        manager = provide_plugin_manager()
+
+        self._mag_plugin = manager.get_plugin(MagentoSyncDaemon._PLUGIN_NAME)
+        self._lc = LoopingCall(self._synchronize)
+
+    #
+    #  Public API
+    #
+
+    def start(self):
+        """Starts the daemon"""
+        self._lc.start(MagentoSyncDaemon.SYNC_INTERVAL)
+        reactor.run()
+
+    def stop(self):
+        """Stops the daemon"""
+        reactor.stop()
+
+    #
+    #  Private
+    #
+
+    @inlineCallbacks
+    def _synchronize(self):
+        t_before = time.time()
+        print _("Magento synchronization initialized")
+
+        try:
+            retval = yield self._mag_plugin.synchronize()
+        except Exception:
+            # We don't want the daemon to stop! If there's an error, we
+            # will indicate it on stdout and log the problem
+            retval = False
+            log.err()
+
+        t_after = time.time()
+        t_delta = datetime.timedelta(seconds=-int(t_before - t_after))
+        status = _("OK") if retval else _("With errors")
+
+        # Simple stdout feedback
+        print _("Magento synchronization finished")
+        print _("    Status: %s") % (status,)
+        print _("    Time took: %s") % (t_delta,)
+
+
+if __name__ == '__main__':
+    sync_daemon = MagentoSyncDaemon(*sys.argv)
+    try:
+        sys.exit(sync_daemon.start())
+    except KeyboardInterrupt:
+        sync_daemon.stop()
+        print 'Interrupted'
