@@ -134,6 +134,15 @@ def create_client_category(trans):
 def create_client_category_price(trans):
     return ExampleCreator.create(trans, 'ClientCategoryPrice')
 
+def create_bank(trans):
+    return ExampleCreator.create(trans, 'Bank')
+
+def create_bank_account(trans):
+    return ExampleCreator.create(trans, 'BankAccount')
+
+def create_quote_group(trans):
+    return ExampleCreator.create(trans, 'QuoteGroup')
+
 
 class ExampleCreator(object):
     def __init__(self):
@@ -225,6 +234,10 @@ class ExampleCreator(object):
             'PaymentCategory': self.create_payment_category,
             'FiscalDayHistory': self.create_fiscal_day_history,
             'Calls': self.create_call,
+            'Bank': self.create_bank,
+            'BankAccount': self.create_bank_account,
+            'QuoteGroup': self.create_quote_group,
+            'Quotation': self.create_quotation,
             }
         if isinstance(model_type, basestring):
             model_name = model_type
@@ -451,6 +464,18 @@ class ExampleCreator(object):
                               responsible=get_current_user(self.trans),
                               connection=self.trans)
 
+    def create_quote_group(self):
+        from stoqlib.domain.purchase import QuoteGroup
+        return QuoteGroup(connection=self.trans)
+
+    def create_quotation(self):
+        from stoqlib.domain.purchase import Quotation
+        quote_group = self.create_quote_group()
+        purchase_order = self.create_purchase_order()
+        return Quotation(connection=self.trans,
+                         group=quote_group,
+                         purchase=purchase_order)
+
     def create_purchase_order_item(self):
         from stoqlib.domain.purchase import PurchaseItem
         return PurchaseItem(connection=self.trans,
@@ -597,6 +622,13 @@ class ExampleCreator(object):
         from stoqlib.domain.account import Bank
         return Bank(connection=self.trans, name='Boston', short_name='short',
                     compensation_code='1234')
+
+    def create_bank_account(self):
+        from stoqlib.domain.account import BankAccount
+        return BankAccount(connection=self.trans,
+                           bank_id=1,
+                           branch='2666-1',
+                           account='20.666-1')
 
     def create_bank_branch(self):
         person = self.create_person()
