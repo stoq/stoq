@@ -503,6 +503,7 @@ class ProductionDialog(GladeSlaveDelegate):
         trans = new_transaction()
         order = self._create_purchase_order(trans)
         if not order:
+            # FIXME: We should close the connection above if this really happens
             return False
 
         retval = run_dialog(PurchaseWizard, self, trans, order)
