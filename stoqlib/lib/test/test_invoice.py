@@ -60,9 +60,11 @@ class InvoiceTest(DomainTest):
                                           sale.get_sale_subtotal())
         payment.get_adapted().due_date = datetime.datetime(2000, 1, 1)
 
-    def _add_product(self, sale, tax=None, price=None):
+    def _add_product(self, sale, tax=None, price=None, code=None):
         product = self.create_product(price=price)
         sellable = product.sellable
+        if code:
+            sellable.code = code
         sellable.tax_constant = SellableTaxConstant(
             description=str(tax),
             tax_type=int(TaxType.CUSTOM),
@@ -76,7 +78,9 @@ class InvoiceTest(DomainTest):
     def testSaleInvoice(self):
         sale = self.create_sale()
         for i in range(10):
-            self._add_product(sale, tax=18, price=50+i)
+            price = 50 + i
+            code = str(1000 + i)
+            self._add_product(sale, tax=18, price=price, code=code)
 
         sale.order()
         self._add_payments(sale)
@@ -89,12 +93,7 @@ class InvoiceTest(DomainTest):
         invoice = SaleInvoice(sale, layout)
         invoice.today = datetime.datetime(2007, 1, 1, 10, 20, 30)
 
-        for n, sale_item in enumerate(sale.products.orderBy('price')):
-            sale_item.sellable.code = '100' + str(n)
-            sale_item.sellable.base_sellable_info.get_description = \
-                 lambda : 'DESCRIPTION'
         compare_invoice_file(invoice, 'sale-invoice')
-    testSaleInvoice.todo = "Not completely stable"
 
     def testHasInvoiceNumber(self):
         sale = self.create_sale()
