@@ -275,6 +275,7 @@ class AdminApp(AppWindow):
               <menuitem action="SearchBranch"/>
               <menuitem action="SearchComputer"/>
               <menuitem action="SearchTaxTemplate"/>
+              <menuitem action="SearchEvents"/>
             </menu>
             <menu action="ConfigureMenu">
               <menuitem action="ConfigureDevices"/>
@@ -303,6 +304,7 @@ class AdminApp(AppWindow):
             ("SearchMenu", None, _("_Search")),
             ("SearchRole", None, _("Roles..."), '<Control><Alt>o'),
             ("SearchEmployee", None, _("Employees..."), '<Control><Alt>e'),
+            ("SearchEvents", None, _("Events..."), ''),
             ("SearchCfop", None, _("C.F.O.P..."), '<Control>o'),
             ("SearchFiscalBook", None, _("Fiscal books..."), '<Control><Alt>f'),
             ("SearchUserProfile", None, _("Profiles..."), '<Control><Alt>u'),
@@ -378,6 +380,9 @@ class AdminApp(AppWindow):
 
     def on_SearchTaxTemplate__activate(self, action):
         self.tasks.run_task('tax_templates')
+
+    def on_SearchEvents__activate(self, action):
+        self.tasks.run_task('events')
 
     # Configure
 
