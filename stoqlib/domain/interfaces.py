@@ -318,6 +318,12 @@ class IUser(IPersonFacet):
                         'system')
     password = Attribute('Password')
 
+    def login():
+        pass
+
+    def logout():
+        pass
+
 
 class IBranch(IPersonFacet):
     """An administrative division of some larger or more complex
