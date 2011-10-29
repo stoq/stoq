@@ -66,6 +66,10 @@ def _create_adapter_test():
             if value.im_self is not None:
                 # TODO: Only allow classmethods on base/abstract classes
                 continue
+
+            # Skip events
+            if name in ['on_create', 'on_update', 'on_delete']:
+                pass
             methods.append(name)
 
         # Remove methods which are part of an interface
