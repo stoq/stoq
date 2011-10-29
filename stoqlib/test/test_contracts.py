@@ -69,7 +69,7 @@ def _create_adapter_test():
 
             # Skip events
             if name in ['on_create', 'on_update', 'on_delete']:
-                pass
+                continue
             methods.append(name)
 
         # Remove methods which are part of an interface
@@ -78,6 +78,7 @@ def _create_adapter_test():
                 if not name in methods:
                     continue
                 methods.remove(name)
+
         if methods:
             self.fail(
                 "%s has public methods %s which are not part of an "
@@ -85,7 +86,6 @@ def _create_adapter_test():
     namespace = dict(_test_adapter=_test_adapter)
 
     for klass in get_all_adapters():
-
         tname = klass.__name__
         name = 'test' + tname
         func = lambda self, adapter=klass: self._test_adapter(adapter)
