@@ -93,6 +93,15 @@ def _exit_func():
         show_dialog()
         raise SystemExit
 
+    from stoqlib.database.runtime import get_current_user, get_connection
+    from stoqlib.exceptions import StoqlibError
+    try:
+        user = get_current_user(get_connection())
+        if user:
+           user.logout()
+    except StoqlibError:
+        pass
+
     if _cur_exit_func:
         _cur_exit_func()
 

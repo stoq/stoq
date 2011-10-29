@@ -27,6 +27,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import UnicodeCol, ForeignKey, BoolCol
 from stoqlib.domain.base import Domain
+from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import IActive, IBranch
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
@@ -90,6 +91,13 @@ class BranchStation(Domain):
         if IBranch(branch, None) is None:
             raise TypeError("%r must implemented IBranch" % (branch,))
         return cls.selectOneBy(name=name, branch=branch, connection=conn)
+
+    # Events
+
+    def on_create(self):
+        Event.log(Event.TYPE_SYSTEM,
+                  _("Created computer '%s' for branch '%s'") % (
+                       self.name, self.branch.person.name))
 
     #
     # IActive implementation

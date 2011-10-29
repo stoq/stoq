@@ -75,8 +75,10 @@ from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
                                   ForeignKey, MultipleJoin, BoolCol)
 from stoqlib.database.orm import const, OR, AND, INNERJOINOn, LEFTJOINOn, Alias
 from stoqlib.database.orm import Viewable
-from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.address import Address
+from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
                                        ISalesPerson, IBankBranch, IActive,
@@ -738,6 +740,18 @@ class PersonAdaptToUser(PersonAdapter):
             return self.statuses[self.STATUS_ACTIVE]
         return self.statuses[self.STATUS_INACTIVE]
 
+    def login(self):
+        station = get_current_station(self.get_connection())
+        Event.log(Event.TYPE_USER,
+                  _("User '%s' logged in on '%s'") % (self.username,
+                                                      station.name))
+
+    def logout(self):
+        station = get_current_station(self.get_connection())
+        Event.log(Event.TYPE_USER,
+                  _("User '%s' logged out from '%s'") % (self.username,
+                                                         station.name))
+
 Person.registerFacet(PersonAdaptToUser, IUser)
 
 class PersonAdaptToBranch(PersonAdapter):
@@ -789,6 +803,12 @@ class PersonAdaptToBranch(PersonAdapter):
             AND(self._fetchTIDs(table, timestamp, te_type),
                 BranchStation.q.branchID != self.id),
             connection=trans)
+
+    # Event
+
+    def on_create(self):
+        Event.log(Event.TYPE_SYSTEM,
+                  _("Created branch '%s'" % (self.person.name, )))
 
     # Private
 

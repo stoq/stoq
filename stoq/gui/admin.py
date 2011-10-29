@@ -41,6 +41,7 @@ from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
 from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog,
                                                InvoicePrinterDialog)
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
+from stoqlib.gui.search.eventsearch import EventSearch
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
 from stoqlib.gui.search.parametersearch import ParameterSearch
 from stoqlib.gui.search.personsearch import (ClientSearch,
@@ -87,7 +88,9 @@ class Tasks(object):
                  (_('Devices'), 'devices',
                   'stoq-devices'),
                  (_('Employees'), 'employees',
-                  'stoq-admin-app'),
+                  'stoq-devices'),
+                 (_('Events'), 'events',
+                  'gtk-dialog-warning'),
                  (_('Roles'), 'employee_roles',
                   'stoq-users'),
                  (_('Fiscal Books'), 'fiscal_books',
@@ -172,6 +175,10 @@ class Tasks(object):
 
     def _open_employee_roles(self):
         self.app.run_dialog(EmployeeRoleSearch, self.app.conn)
+
+    def _open_events(self):
+        self.app.run_dialog(EventSearch, self.app.conn,
+                            hide_toolbar=True)
 
     def _open_fiscal_books(self):
         self.app.run_dialog(FiscalBookEntrySearch, self.app.conn,

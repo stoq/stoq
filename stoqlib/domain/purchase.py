@@ -36,6 +36,7 @@ from stoqlib.database.orm import Viewable, Alias
 from stoqlib.database.orm import PriceCol, BoolCol, QuantityCol
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.base import Domain
+from stoqlib.domain.event import Event
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
@@ -327,6 +328,13 @@ class PurchaseOrder(Domain):
         self.status = PurchaseOrder.ORDER_CONFIRMED
         self.confirm_date = confirm_date
 
+        Event.log(Event.TYPE_ORDER,
+                _("Order %d, total value %2.2f, supplier '%s' "
+                  "is now confirmed") % (
+                    self.order_number,
+                    self.get_purchase_total(),
+                    self.supplier.person.name))
+
     def set_consigned(self):
         if self.status != PurchaseOrder.ORDER_PENDING:
             raise ValueError(
@@ -343,6 +351,13 @@ class PurchaseOrder(Domain):
             raise ValueError(_('Invalid status, it should be confirmed '
                                'got %s instead') % self.get_status_str())
         self.status = self.ORDER_CLOSED
+
+        Event.log(Event.TYPE_ORDER,
+                _("Order %d, total value %2.2f, supplier '%s' "
+                  "is now closed") % (
+                    self.order_number,
+                    self.get_purchase_total(),
+                    self.supplier.person.name))
 
     def cancel(self):
         """Cancels the purchase order
