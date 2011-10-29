@@ -95,6 +95,8 @@ class BranchStation(Domain):
     # Events
 
     def on_create(self):
+        # Should be done after_create()
+        return
         Event.log(Event.TYPE_SYSTEM,
                   _("Created computer '%s' for branch '%s'") % (
                        self.name, self.branch.person.name))
