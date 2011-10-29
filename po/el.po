@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-24 12:07-0200\n"
+"POT-Creation-Date: 2011-10-28 12:10-0200\n"
 "PO-Revision-Date: 2011-06-07 15:38+0000\n"
 "Last-Translator: Sergios <sergios@greeklug.gr>\n"
 "Language-Team: Greek <el@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-10-25 04:54+0000\n"
-"X-Generator: Launchpad (build 14185)\n"
+"X-Launchpad-Export-Date: 2011-10-29 05:21+0000\n"
+"X-Generator: Launchpad (build 14197)\n"
 "Language: el\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -260,11 +260,11 @@ msgstr ""
 #: ../stoqlib/domain/person.py:381 ../stoqlib/domain/person.py:629
 #: ../stoqlib/domain/person.py:718 ../stoqlib/domain/person.py:758
 #: ../stoqlib/domain/person.py:1164 ../stoqlib/domain/person.py:1206
-#: ../stoqlib/domain/station.py:108 ../stoqlib/domain/test/test_person.py:495
-#: ../stoqlib/domain/test/test_person.py:504
+#: ../stoqlib/domain/station.py:108 ../stoqlib/domain/test/test_person.py:517
+#: ../stoqlib/domain/test/test_person.py:526
 #: ../stoqlib/gui/dialogs/devices.py:53
 #: ../stoqlib/gui/dialogs/paymentmethod.py:85
-#: ../stoqlib/gui/dialogs/pluginsdialog.py:102
+#: ../stoqlib/gui/dialogs/pluginsdialog.py:109
 #: ../stoqlib/gui/search/personsearch.py:184
 #: ../stoqlib/gui/search/personsearch.py:277
 #: ../stoqlib/gui/search/stationsearch.py:62
@@ -283,8 +283,8 @@ msgstr ""
 #: ../stoqlib/domain/person.py:537 ../stoqlib/domain/person.py:630
 #: ../stoqlib/domain/person.py:719 ../stoqlib/domain/person.py:759
 #: ../stoqlib/domain/person.py:1166 ../stoqlib/domain/person.py:1208
-#: ../stoqlib/domain/station.py:109 ../stoqlib/domain/test/test_person.py:447
-#: ../stoqlib/domain/test/test_person.py:458
+#: ../stoqlib/domain/station.py:109 ../stoqlib/domain/test/test_person.py:469
+#: ../stoqlib/domain/test/test_person.py:480
 #: ../stoqlib/gui/search/personsearch.py:278
 msgid "Inactive"
 msgstr ""
@@ -525,7 +525,7 @@ msgid ""
 "items:</b>"
 msgstr ""
 
-#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:673
+#: ../data/glade/CreateDatabaseStep.ui.h:1 ../stoq/gui/config.py:691
 msgid ""
 "Creating a new database for Stoq, depending on the speed of your computer "
 "and the server it may take a couple of minutes to finish."
@@ -802,7 +802,7 @@ msgstr ""
 msgid "<b>Installation complete</b>"
 msgstr ""
 
-#: ../data/glade/FinishInstallationStep.ui.h:2 ../stoq/main.py:293
+#: ../data/glade/FinishInstallationStep.ui.h:2 ../stoq/main.py:294
 msgid "Enable online services"
 msgstr ""
 
@@ -3131,7 +3131,7 @@ msgid ""
 "Do you really want to cancel the last cash removed number %d and value %.2f ?"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:407 ../stoqlib/gui/dialogs/pluginsdialog.py:119
+#: ../plugins/ecf/ecfui.py:407 ../stoqlib/gui/dialogs/pluginsdialog.py:126
 #: ../stoqlib/gui/fiscalprinter.py:144 ../stoqlib/gui/fiscalprinter.py:279
 msgid "Not now"
 msgstr ""
@@ -3220,7 +3220,44 @@ msgstr ""
 msgid "The CNPJ is not valid."
 msgstr ""
 
-#: ../plugins/nfe/nfegenerator.py:151
+#. TRANSLATORS: #%d refers to the user's ID on Magento
+#: ../plugins/magento/domain/magentoclient.py:79
+#, python-format
+msgid "Magento user #%s"
+msgstr ""
+
+#: ../plugins/magento/domain/magentoconfig.py:127
+msgid "Magento e-commerce"
+msgstr ""
+
+#: ../plugins/magento/domain/magentoconfig.py:128
+msgid "E-commerce software"
+msgstr ""
+
+#: ../plugins/magento/domain/magentosale.py:157
+#, python-format
+msgid "Magento sale #%s\n"
+msgstr ""
+
+#: ../plugins/magento/domain/magentosale.py:369
+#, python-format
+msgid "Invoice for order: %s"
+msgstr ""
+
+#: ../plugins/magento/domain/magentosale.py:451
+#, python-format
+msgid "Shipment for order: %s"
+msgstr ""
+
+#: ../plugins/magento/magentolib.py:82
+msgid "The url provided is not valid"
+msgstr ""
+
+#: ../plugins/magento/magentolib.py:88
+msgid "Access denied for the given user"
+msgstr ""
+
+#: ../plugins/nfe/nfegenerator.py:154
 #, python-format
 msgid "The CNPJ of %s is not valid."
 msgstr ""
@@ -3567,42 +3604,42 @@ msgstr "Μάθετε περισσότερα ..."
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr "<b>Υπάρχει μια νέα έκδοση Stoq διαθέσιμη (%s)</b>"
 
-#: ../stoq/gui/config.py:210
+#: ../stoq/gui/config.py:211
 #, python-format
 msgid "The database address '%s' is invalid. Please fix it and try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:213 ../stoq/gui/config.py:218
+#: ../stoq/gui/config.py:214 ../stoq/gui/config.py:219
 msgid "Invalid database address"
 msgstr "Μη έγκυρη διεύθυνση βάσης δεδομένων"
 
-#: ../stoq/gui/config.py:248
+#: ../stoq/gui/config.py:249
 msgid "Needs Password"
 msgstr "Χρειάζονται κωδικοί πρόσβασης"
 
-#: ../stoq/gui/config.py:249
+#: ../stoq/gui/config.py:250
 msgid "Trust"
 msgstr "Έμπιστο"
 
-#: ../stoq/gui/config.py:385 ../stoqlib/gui/dialogs/crashreportdialog.py:101
+#: ../stoq/gui/config.py:391 ../stoqlib/gui/dialogs/crashreportdialog.py:101
 msgid "Sending..."
 msgstr ""
 
-#: ../stoq/gui/config.py:403
+#: ../stoq/gui/config.py:409
 #, python-format
 msgid "%s is not a valid email"
 msgstr ""
 
-#: ../stoq/gui/config.py:407
+#: ../stoq/gui/config.py:413
 #, python-format
 msgid "%s is not a valid phone"
 msgstr ""
 
-#: ../stoq/gui/config.py:438
+#: ../stoq/gui/config.py:444
 msgid "Administrator account"
 msgstr ""
 
-#: ../stoq/gui/config.py:441
+#: ../stoq/gui/config.py:447
 #, python-format
 msgid ""
 "I'm adding a user account called <b>%s</b> which will have administrator "
@@ -3612,58 +3649,58 @@ msgid ""
 "admin application and create them."
 msgstr ""
 
-#: ../stoq/gui/config.py:490
+#: ../stoq/gui/config.py:496
 msgid "Forward"
 msgstr ""
 
-#: ../stoq/gui/config.py:495
+#: ../stoq/gui/config.py:501
 msgid ""
 "The installation guide will now install the packages for you using apt, it "
 "may ask you for your password to continue."
 msgstr ""
 
 #. Translators: %s is the string "Forward"
-#: ../stoq/gui/config.py:499
+#: ../stoq/gui/config.py:505
 #, python-format
 msgid "Click %s to begin installing the PostgreSQL server."
 msgstr ""
 
 #. Translators: %s is the string "Forward"
-#: ../stoq/gui/config.py:504
+#: ../stoq/gui/config.py:510
 #, python-format
 msgid ""
 "Click %s to continue when you have installed PostgreSQL server on this "
 "computer."
 msgstr ""
 
-#: ../stoq/gui/config.py:527
+#: ../stoq/gui/config.py:533
 msgid "Please wait while the package installation is completing."
 msgstr ""
 
-#: ../stoq/gui/config.py:539
+#: ../stoq/gui/config.py:545
 msgid "You need to install PostgreSQL before moving forward"
 msgstr ""
 
-#: ../stoq/gui/config.py:549
+#: ../stoq/gui/config.py:555
 msgid "Something went wrong while trying to install the PostgreSQL server."
 msgstr ""
 
-#: ../stoq/gui/config.py:552
+#: ../stoq/gui/config.py:558
 msgid ""
 "Sorry, something went wrong while installing PostgreSQL, try again manually "
 "or go back and configure Stoq to connect to another."
 msgstr ""
 
-#: ../stoq/gui/config.py:567
+#: ../stoq/gui/config.py:573
 msgid "Authorization failed, try again or connect to another database"
 msgstr ""
 
-#: ../stoq/gui/config.py:605
+#: ../stoq/gui/config.py:611
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
 msgstr "Stoq απαιτεί PostgreSQL 8.1 ή νεότερη, αλλά βρέθηκε το %s"
 
-#: ../stoq/gui/config.py:612
+#: ../stoq/gui/config.py:618
 #, python-format
 msgid ""
 "The specifed database '%s' does not exist.\n"
@@ -3672,49 +3709,49 @@ msgstr ""
 "Η συγκεκριμένη βάση δεδομένων '%s' δεν υπάρχει.\n"
 "Θέλετε να την δημιουργήστε;"
 
-#: ../stoq/gui/config.py:614
+#: ../stoq/gui/config.py:620
 msgid "Don't create"
 msgstr ""
 
-#: ../stoq/gui/config.py:614
+#: ../stoq/gui/config.py:620
 msgid "Create database"
 msgstr ""
 
-#: ../stoq/gui/config.py:676
+#: ../stoq/gui/config.py:694
 msgid "Creating database..."
 msgstr "Δημιουργία βάσης δεδομένων..."
 
-#: ../stoq/gui/config.py:681
+#: ../stoq/gui/config.py:699
 msgid "Please wait while the database is being created."
 msgstr ""
 
-#: ../stoq/gui/config.py:691
+#: ../stoq/gui/config.py:709
 msgid "Creating base schema..."
 msgstr "Δημιουργία σχήματος βάσης ..."
 
-#: ../stoq/gui/config.py:695
+#: ../stoq/gui/config.py:713
 msgid "Creating schema, applying patches..."
 msgstr ""
 "Δημιουργία σχήματος, με την εφαρμογή ενημερωμένες εκδόσεις κώδικα ..."
 
-#: ../stoq/gui/config.py:700
+#: ../stoq/gui/config.py:718
 #, python-format
 msgid "Creating schema, applying patch %d ..."
 msgstr "Δημιουργία σχήματος, εφαρμογή ενημερωμένης έκδοσης κώδικα %d ..."
 
-#: ../stoq/gui/config.py:702
+#: ../stoq/gui/config.py:720
 msgid "Creating additional database objects ..."
 msgstr "Η δημιουργία πρόσθετων αντικειμένων βάσης δεδομένων ..."
 
-#: ../stoq/gui/config.py:705
+#: ../stoq/gui/config.py:723
 msgid "Creating examples ..."
 msgstr "Δημιουργία παραδειγμάτων ..."
 
-#: ../stoq/gui/config.py:708
+#: ../stoq/gui/config.py:726
 msgid "Activating plugins ..."
 msgstr ""
 
-#: ../stoq/gui/config.py:710
+#: ../stoq/gui/config.py:728
 msgid "This may take some time."
 msgstr ""
 
@@ -3722,56 +3759,56 @@ msgstr ""
 #. - pressed cancel in the authentication popup
 #. - user erred the password 3 times
 #. Allow him to try again
-#: ../stoq/gui/config.py:727
+#: ../stoq/gui/config.py:745
 msgid "Something went wrong while trying to create the database. Try again?"
 msgstr ""
 
-#: ../stoq/gui/config.py:729
+#: ../stoq/gui/config.py:747
 msgid "Change settings"
 msgstr ""
 
-#: ../stoq/gui/config.py:729 ../stoq/gui/pos.py:792 ../stoq/gui/till.py:295
+#: ../stoq/gui/config.py:747 ../stoq/gui/pos.py:792 ../stoq/gui/till.py:295
 msgid "Try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:736
+#: ../stoq/gui/config.py:754
 msgid "Something went wrong while trying to create the Stoq database"
 msgstr ""
 "Κάτι πήγε στραβά κατά την προσπάθεια να δημιουργήσει τη βάση δεδομένων Stoq"
 
-#: ../stoq/gui/config.py:743
+#: ../stoq/gui/config.py:761
 msgid "Done."
 msgstr ""
 
-#: ../stoq/gui/config.py:747
+#: ../stoq/gui/config.py:765
 msgid "Installation successful, click <b>Forward</b> to continue."
 msgstr ""
 
-#: ../stoq/gui/config.py:769
+#: ../stoq/gui/config.py:787
 msgid "Run Stoq"
 msgstr "Εκτέλεση Stoq"
 
-#: ../stoq/gui/config.py:790 ../stoqlib/lib/parameters.py:537
+#: ../stoq/gui/config.py:808 ../stoqlib/lib/parameters.py:537
 msgid "Online services"
 msgstr ""
 
-#: ../stoq/gui/config.py:801
+#: ../stoq/gui/config.py:819
 msgid "Stoq - Installation"
 msgstr ""
 
-#: ../stoq/gui/config.py:913
+#: ../stoq/gui/config.py:931
 msgid "It was not possible to connect to the database."
 msgstr ""
 
-#: ../stoq/gui/config.py:914
+#: ../stoq/gui/config.py:932
 msgid "Check the server configuration and try again."
 msgstr ""
 
-#: ../stoq/gui/config.py:930
+#: ../stoq/gui/config.py:948
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 
-#: ../stoq/gui/config.py:936
+#: ../stoq/gui/config.py:954
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
 "database server {address}, however it is not a Stoq database or it was "
@@ -5046,11 +5083,11 @@ msgstr ""
 msgid "Updating Stoq"
 msgstr ""
 
-#: ../stoq/gui/welcomedialog.py:53
+#: ../stoq/gui/welcomedialog.py:56
 msgid "_Start using Stoq"
 msgstr ""
 
-#: ../stoq/gui/welcomedialog.py:55
+#: ../stoq/gui/welcomedialog.py:58
 msgid "Welcome to Stoq"
 msgstr ""
 
@@ -5122,7 +5159,7 @@ msgid ""
 "You are running stoq using sudo. That is not recommended."
 msgstr ""
 
-#: ../stoq/lib/dependencies.py:114
+#: ../stoq/lib/dependencies.py:116
 #, python-format
 msgid ""
 "<b>%s</b> could not be found on your system.\n"
@@ -5132,11 +5169,11 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../stoq/lib/dependencies.py:121
+#: ../stoq/lib/dependencies.py:123
 msgid "Missing dependency"
 msgstr ""
 
-#: ../stoq/lib/dependencies.py:124
+#: ../stoq/lib/dependencies.py:126
 #, python-format
 msgid ""
 "<b>%s</b> was found on your system, but it is too old for Stoq to be able to "
@@ -5146,11 +5183,11 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../stoq/lib/dependencies.py:130
+#: ../stoq/lib/dependencies.py:132
 msgid "Out-dated dependency"
 msgstr ""
 
-#: ../stoq/lib/dependencies.py:133
+#: ../stoq/lib/dependencies.py:135
 #, python-format
 msgid ""
 "<b>%s</b> was found on your system, but its version, %s incompatible with "
@@ -5160,7 +5197,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../stoq/lib/dependencies.py:139
+#: ../stoq/lib/dependencies.py:141
 msgid "Incompatible dependency"
 msgstr ""
 
@@ -5201,33 +5238,33 @@ msgid ""
 "keeping your privacy intact.</b>"
 msgstr ""
 
-#: ../stoq/main.py:259
+#: ../stoq/main.py:260
 msgid "You need to register a company before start using Stoq"
 msgstr ""
 
-#: ../stoq/main.py:261
+#: ../stoq/main.py:262
 msgid ""
 "Could not find a company. You'll need to register one before start using Stoq"
 msgstr ""
 
-#: ../stoq/main.py:292
+#: ../stoq/main.py:293
 msgid "Not right now"
 msgstr ""
 
-#: ../stoq/main.py:295
+#: ../stoq/main.py:296
 msgid "Do you want to enable Stoq online services?"
 msgstr ""
 
-#: ../stoq/main.py:379
+#: ../stoq/main.py:365
 msgid "Could not open the database config file"
 msgstr ""
 
-#: ../stoq/main.py:380
+#: ../stoq/main.py:366
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr "Προβληματικό αρχείο ρυθμίσεων config, πήρε λάθος '%s', τύπου '%s'"
 
-#: ../stoq/main.py:396
+#: ../stoq/main.py:382
 msgid "Could not connect to the database"
 msgstr ""
 
@@ -5307,11 +5344,11 @@ msgstr ""
 msgid "Manager"
 msgstr ""
 
-#: ../stoqlib/database/database.py:396
+#: ../stoqlib/database/database.py:401
 msgid "Problem with PostgreSQL version"
 msgstr ""
 
-#: ../stoqlib/database/database.py:397
+#: ../stoqlib/database/database.py:402
 #, python-format
 msgid ""
 "The version of the PostgreSQL database server (%s) and the postgres client "
@@ -5490,17 +5527,17 @@ msgstr ""
 msgid "Confirmed"
 msgstr ""
 
-#: ../stoqlib/domain/payment/group.py:216
+#: ../stoqlib/domain/payment/group.py:217
 #, python-format
 msgid "sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/payment/group.py:218
+#: ../stoqlib/domain/payment/group.py:219
 #, python-format
 msgid "order %s"
 msgstr ""
 
-#: ../stoqlib/domain/payment/group.py:220
+#: ../stoqlib/domain/payment/group.py:221
 #, python-format
 msgid "renegotiation %s"
 msgstr ""
@@ -5719,27 +5756,27 @@ msgstr ""
 msgid "Day"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:475
+#: ../stoqlib/domain/product.py:476
 msgid "This company doesn't allow logic quantity operations"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:485
+#: ../stoqlib/domain/product.py:486
 msgid "Quantity to decrease is greater than available stock."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:495
+#: ../stoqlib/domain/product.py:496
 msgid "Quantity to sell is greater than the available stock."
 msgstr ""
 
-#: ../stoqlib/domain/product.py:522
+#: ../stoqlib/domain/product.py:523
 msgid "quantity must be a positive number"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:568
+#: ../stoqlib/domain/product.py:569
 msgid "Quantity cannot be negative"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:636
+#: ../stoqlib/domain/product.py:637
 #, python-format
 msgid "You should have only one stock item for this branch, got %d"
 msgstr ""
@@ -5909,74 +5946,74 @@ msgstr ""
 msgid "Returned"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:501
+#: ../stoqlib/domain/sale.py:503
 msgid "The sale must have sellable items"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:503
+#: ../stoqlib/domain/sale.py:505
 #, python-format
 msgid "Unable to make sales for clients with status %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:545
+#: ../stoqlib/domain/sale.py:547
 #, python-format
 msgid ""
 "You cannot close a sale without paying all the payment. Payment %r is still "
 "not paid"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:653
+#: ../stoqlib/domain/sale.py:655
 #, python-format
 msgid "Sale Details: %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:659
+#: ../stoqlib/domain/sale.py:661
 #, python-format
 msgid "Delivery Address: %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:665
+#: ../stoqlib/domain/sale.py:667
 #, python-format
 msgid "\"%s\" Notes: %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:668
+#: ../stoqlib/domain/sale.py:670
 #, python-format
 msgid "\"%s\" Estimated Fix Date: %s"
 msgstr ""
 
 #. First line.
-#: ../stoqlib/domain/sale.py:681 ../stoqlib/reporting/purchase.py:196
+#: ../stoqlib/domain/sale.py:683 ../stoqlib/reporting/purchase.py:196
 #: ../stoqlib/reporting/purchase.py:208
 msgid "Not Specified"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:695
+#: ../stoqlib/domain/sale.py:697
 #, python-format
 msgid "The sale %r have a client but no client_role defined."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:915
+#: ../stoqlib/domain/sale.py:917
 msgid "You must have at least one payment for each payment group"
 msgstr ""
 
 #. The sale was not entirely paid, so we have to payback the
 #. till, because the sale amount have already been added in there
-#: ../stoqlib/domain/sale.py:970
+#: ../stoqlib/domain/sale.py:972
 #, python-format
 msgid "Debit on Till: Sale %d Returned"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:980
+#: ../stoqlib/domain/sale.py:982
 #, python-format
 msgid "%s Money Returned for Sale %d"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1054
+#: ../stoqlib/domain/sale.py:1056
 msgid "Sale orders must have items, which means products or services"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:1059
+#: ../stoqlib/domain/sale.py:1061
 msgid "Sale total quantity should never be zero"
 msgstr ""
 
@@ -6024,7 +6061,7 @@ msgstr ""
 msgid "There is already a station registered as `%s'."
 msgstr ""
 
-#: ../stoqlib/domain/test/test_person.py:100
+#: ../stoqlib/domain/test/test_person.py:122
 #, python-format
 msgid "%s %s, %s"
 msgstr ""
@@ -6448,29 +6485,29 @@ msgstr ""
 msgid "Payment Method"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/pluginsdialog.py:65
+#: ../stoqlib/gui/dialogs/pluginsdialog.py:66
 msgid "Plugin Manager"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/pluginsdialog.py:69
+#: ../stoqlib/gui/dialogs/pluginsdialog.py:70
 msgid "Select the plugin you want to activate and click in the apply button."
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/pluginsdialog.py:86
+#: ../stoqlib/gui/dialogs/pluginsdialog.py:87
 msgid "Activate"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/pluginsdialog.py:100
+#: ../stoqlib/gui/dialogs/pluginsdialog.py:107
 msgid "Plugin"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/pluginsdialog.py:115
+#: ../stoqlib/gui/dialogs/pluginsdialog.py:122
 msgid ""
 "Are you sure you want activate this plugin?\n"
 "Please note that, once activated you will not be able to disable it."
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/pluginsdialog.py:119
+#: ../stoqlib/gui/dialogs/pluginsdialog.py:126
 msgid "Activate plugin"
 msgstr ""
 
