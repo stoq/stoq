@@ -244,7 +244,7 @@ class LoanSelectionStep(BaseWizardStep):
 
     def _get_columns(self):
         return [SearchColumn('id', title=_('#'), sorted=True,
-                             data_type=str, width=80),
+                             data_type=int, width=80),
                 SearchColumn('responsible_name', title=_(u'Responsible'),
                              data_type=str, expand=True),
                 SearchColumn('client_name', title=_(u'Client'),
