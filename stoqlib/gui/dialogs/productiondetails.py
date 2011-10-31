@@ -78,6 +78,8 @@ class ProductionDetailsDialog(BaseEditor):
         self.services.add_list(self.model.get_service_items())
         self.produced_items.add_list(self.model.produced_items)
 
+        self.proxy.update_many(['close_date', 'status_string'])
+
     def _get_production_items_columns(self):
         return [Column('description',
                        title=_('Description'),
@@ -138,8 +140,8 @@ class ProductionDetailsDialog(BaseEditor):
 
     def setup_proxies(self):
         self._setup_widgets()
+        self.proxy = self.add_proxy(self.model, ProductionDetailsDialog.proxy_widgets)
         self._setup_data()
-        self.add_proxy(self.model, ProductionDetailsDialog.proxy_widgets)
 
     #
     #   Actions
