@@ -158,7 +158,6 @@ class ProductionOrder(Domain):
 
         return all([i.test_passed for i in produced_items])
 
-
     # FIXME: Test
     def try_finalize_production(self):
         """When all items are completely produced, change the status of the
@@ -181,8 +180,13 @@ class ProductionOrder(Domain):
         # If the order is closed, return the the remaining allocated material to
         # the stock
         if self.status == ProductionOrder.ORDER_CLOSED:
+            # Return remaining allocated material to the stock
             for m in self.get_material_items():
                 m.return_remaining()
+
+            # Increase the stock for the produced items
+            for p in self.produced_items:
+                p.send_to_stock()
 
 
     def set_production_waiting(self):
@@ -419,6 +423,8 @@ class ProductionMaterial(Domain):
         assert self.order.status == ProductionOrder.ORDER_CLOSED
         remaining = self.allocated - self.lost - self.consumed
         assert remaining >= 0
+        if not remaining:
+            return
         storable = IStorable(self.product)
         storable.increase_stock(remaining, self.order.branch)
         self.allocated -= remaining
@@ -548,18 +554,28 @@ class ProductionProducedItem(Domain):
         # There should be no results for the range to be valid
         return cls.select(query, connection=conn).count() == 0
 
+    def send_to_stock(self):
+        # Already is in stock
+        if self.entered_stock:
+            return
+
+        storable = IStorable(self.product, None)
+        storable.increase_stock(1, self.order.branch)
+        self.entered_stock = True
+
     def check_tests(self):
         """Checks if all tests for this produced items passes.
 
         If all tests passes, sets self.test_passed = True
         """
-
         results = [i.test_passed for i in self.test_results]
 
         passed = all(results)
         self.test_passed = (passed and
-                            len(results) == len(self.product.quality_tests))
-        print 'XXX', self.test_passed
+                            len(results) == self.product.quality_tests.count())
+        if self.test_passed:
+            self.order.try_finalize_production()
+
 
 class ProductionItemQualityResult(Domain):
     """This table stores the test results for every produced item.
