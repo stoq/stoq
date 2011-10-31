@@ -181,6 +181,8 @@ class SoldItemsByBranchSearch(SearchDialog):
                              sorted=True, order=gtk.SORT_DESCENDING),
                 SearchColumn('description', title=_('Product'), data_type=str,
                              expand=True),
+                SearchColumn('category', title=_('Category'), data_type=str,
+                             visible=False),
                 SearchColumn('branch_name', title=_('Branch'), data_type=str,
                              width=200),
                 Column('quantity', title=_('Quantity'), data_type=Decimal,
