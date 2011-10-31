@@ -465,6 +465,7 @@ class SoldItemView(Viewable):
         id=Sellable.q.id,
         code=Sellable.q.code,
         description=BaseSellableInfo.q.description,
+        category=SellableCategory.q.description,
         quantity=const.SUM(SaleItem.q.quantity),
         total_cost=const.SUM(SaleItem.q.quantity * SaleItem.q.average_cost),
     )
@@ -474,6 +475,8 @@ class SoldItemView(Viewable):
                     Sellable.q.id == SaleItem.q.sellableID),
         LEFTJOINOn(None, Sale,
                    SaleItem.q.saleID == Sale.q.id),
+        LEFTJOINOn(None, SellableCategory,
+                   Sellable.q.categoryID == SellableCategory.q.id),
         INNERJOINOn(None, BaseSellableInfo,
                     Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
     ]
