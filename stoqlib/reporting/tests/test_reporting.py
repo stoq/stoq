@@ -45,6 +45,7 @@ from stoqlib.domain.service import ServiceView
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.views import ProductFullStockView
+from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.calls_report import CallsReport
 from stoqlib.reporting.payment import (ReceivablePaymentReport,
@@ -59,7 +60,24 @@ from stoqlib.reporting.till import TillHistoryReport
 from stoqlib.lib.diffutils import diff_files
 from stoqlib.lib.pdf import pdftohtml
 
+_search_restore_columns = StoqlibSearchSlaveDelegate.restore_columns
+
+
 class TestReport(DomainTest):
+
+    def tearUp(self):
+        super(TestReport, self).tearUp()
+
+        # Some tests in here use searchs to populate the report. Avoid
+        # restoring the cache, if any, or we will have inexplicable diff.
+        StoqlibSearchSlaveDelegate.restore_columns = lambda s: None
+
+    def tearDown(self):
+        super(TestReport, self).tearDown()
+
+        # Restore original restore_columns, to avoid breaking other tests
+        StoqlibSearchSlaveDelegate.restore_columns = _search_restore_columns
+
     def checkPDF(self, report_class, *args, **kwargs):
         exists_pdf = False
         frame = sys._getframe(1)
