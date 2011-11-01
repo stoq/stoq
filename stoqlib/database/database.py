@@ -38,7 +38,7 @@ from kiwi.log import Logger
 from stoqlib.database.exceptions import SQLError
 from stoqlib.database.interfaces import IDatabaseSettings
 
-from stoqlib.lib.message import error, warning
+from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -308,7 +308,7 @@ def restore_database(dump):
         log.debug('executing %s' % (' '.join(args), ))
 
         proc = subprocess.Popen(args, stderr=subprocess.PIPE)
-        retcode = proc.wait()
+        proc.wait()
         return newname
     else:
         raise NotImplementedError(settings.rdbms)

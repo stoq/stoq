@@ -201,7 +201,6 @@ class OFXImporter(Importer):
                                value=value,
                                date=date,
                                connection=trans)
-        last_date = date
         t.sync()
         return True
 

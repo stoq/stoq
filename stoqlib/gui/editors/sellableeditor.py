@@ -410,7 +410,6 @@ class SellableEditor(BaseEditor):
     def _update_tax_value(self):
         if not hasattr(self, 'tax_proxy'):
             return
-        constant = self.tax_constant.get_selected_data()
         self.tax_proxy.update('tax_constant.tax_value')
 
     def get_taxes(self):

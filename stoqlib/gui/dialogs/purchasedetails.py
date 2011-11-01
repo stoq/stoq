@@ -76,7 +76,6 @@ class _TemporaryReceivingDetails:
 
         if orders.count():
             discount = surcharge = freight = subtotal = total = 0
-            freight_type = None
             for order in orders:
                 discount += order._get_total_discounts()
                 surcharge += order._get_total_surcharges()

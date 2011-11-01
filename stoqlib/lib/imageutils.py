@@ -31,8 +31,6 @@ import os.path
 import gtk
 import gobject
 
-from kiwi.environ import environ
-
 
 class ImageHelper(object):
 

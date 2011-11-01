@@ -25,7 +25,6 @@
 """ Purchase wizard definition """
 
 import datetime
-from decimal import Decimal
 import sys
 
 import gtk
@@ -38,7 +37,7 @@ from stoqlib.database.runtime import (get_current_branch, new_transaction,
 from stoqlib.domain.interfaces import IBranch, ITransporter, ISupplier
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
-from stoqlib.domain.person import Person, PersonAdaptToTransporter
+from stoqlib.domain.person import Person
 from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,

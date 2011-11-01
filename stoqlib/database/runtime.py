@@ -32,7 +32,7 @@ from stoqlib.database.interfaces import (
     IDatabaseSettings, IConnection, ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
 from stoqlib.database.orm import ORMObject, Transaction
-from stoqlib.database.orm import sqlIdentifier, const, Update, IN
+from stoqlib.database.orm import sqlIdentifier, const
 from stoqlib.exceptions import LoginError, StoqlibError
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.translation import stoqlib_gettext

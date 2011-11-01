@@ -65,10 +65,6 @@ class BranchDialog(BaseEditor):
         BaseEditor.__init__(self, trans, model, visual_mode=False)
         self._setup_widgets()
 
-    def _setup_widgets(self):
-        self.title_label.set_size('large')
-        self.title_label.set_bold(True)
-
     def _update_system_parameters(self, person):
         icms = self.tax_proxy.model.icms
         self.param.update_parameter('ICMS_TAX', unicode(icms))

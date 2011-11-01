@@ -192,10 +192,10 @@ class StoqCommandHandler:
             branch = None
 
         try:
-            station = BranchStation(connection=trans,
-                                    is_active=True,
-                                    branch=branch,
-                                    name=socket.gethostname())
+            BranchStation(connection=trans,
+                          is_active=True,
+                          branch=branch,
+                          name=socket.gethostname())
         except StoqlibError, e:
             raise SystemExit("ERROR: %s" % e)
 

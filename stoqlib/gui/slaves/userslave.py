@@ -29,10 +29,9 @@
 import gtk
 from kiwi.datatypes import ValidationError
 
-from stoqlib.database.orm import const
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.profile import UserProfile
-from stoqlib.domain.person import EmployeeRole, Person
+from stoqlib.domain.person import EmployeeRole
 from stoqlib.domain.interfaces import IEmployee, ISalesPerson, IUser
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog

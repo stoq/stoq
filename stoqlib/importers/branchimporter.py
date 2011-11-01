@@ -62,13 +62,16 @@ class BranchImporter(CSVImporter):
                                            state=data.state,
                                            country=data.country)
         streetnumber = data.streetnumber and int(data.streetnumber) or None
-        address = Address(is_main_address=True,
-                          person=person, city_location=ctloc,
-                          connection=trans,
-                          street=data.street,
-                          streetnumber=streetnumber,
-                          district=data.district,
-                          postal_code=data.postal_code)
+        Address(
+            is_main_address=True,
+            person=person,
+            city_location=ctloc,
+            connection=trans,
+            street=data.street,
+            streetnumber=streetnumber,
+            district=data.district,
+            postal_code=data.postal_code
+            )
 
         person.addFacet(IBranch, connection=trans)
 

@@ -207,30 +207,6 @@ def describe_search_filters_for_reports(**kwargs):
     kwargs['filter_strings'] = filter_strings
     return kwargs
 
-
-def print_report(report_class, *args, **kwargs):
-    if kwargs.has_key('filters') and kwargs['filters']:
-        kwargs = describe_search_filters_for_reports(**kwargs)
-
-    tmp = tempfile.mktemp(suffix='.pdf', prefix='stoqlib-reporting')
-    report = report_class(tmp, *args, **kwargs)
-    report.filename = tmp
-    report.save()
-    op = PrintOperation()
-    op.print_pdf(report)
-
-def describe_search_filters_for_reports(**kwargs):
-    filters = kwargs.pop('filters')
-    filter_strings = []
-    for filter in filters:
-        description = filter.get_description()
-        if description:
-            filter_strings.append(description)
-
-    kwargs['filter_strings'] = filter_strings
-    return kwargs
-
-
 def print_report(report_class, *args, **kwargs):
     if kwargs.has_key('filters') and kwargs['filters']:
         kwargs = describe_search_filters_for_reports(**kwargs)

@@ -24,7 +24,6 @@
 """ List management for common dialogs.  """
 
 import gtk
-from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.listdialog import ListSlave
 from kiwi.utils import gsignal

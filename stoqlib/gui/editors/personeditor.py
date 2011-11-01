@@ -44,7 +44,7 @@ from stoqlib.gui.slaves.branchslave import BranchDetailsSlave
 from stoqlib.domain.person import EmployeeRole, PersonAdaptToCreditProvider
 from stoqlib.domain.interfaces import (IClient, ICreditProvider, IEmployee,
                                        ISupplier, ITransporter, IUser,
-                                       ICompany, IIndividual, IBranch)
+                                       IIndividual, IBranch)
 
 _ = stoqlib_gettext
 

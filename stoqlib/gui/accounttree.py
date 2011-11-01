@@ -22,7 +22,6 @@
 import gtk
 
 from kiwi.currency import currency
-from kiwi.datatypes import converter
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ColoredColumn, Column, ObjectTree
 from stoqlib.database.runtime import get_connection

@@ -73,9 +73,6 @@ class CSVImporter(Importer):
     #
 
     def feed(self, fp, filename='<stdin>'):
-        field_names = self.fields + self.optional_fields
-
-        t = time.time()
         trans = new_transaction()
         self.before_start(trans)
         trans.commit(close=True)
@@ -86,6 +83,7 @@ class CSVImporter(Importer):
         return len(self.rows)
 
     def process_item(self, trans, item_no):
+        t = time.time()
         item = self.rows[item_no]
         if not item or item[0].startswith('%'):
             self.lineno += 1
@@ -106,7 +104,7 @@ class CSVImporter(Importer):
         row = CSVRow(item, field_names)
         try:
             self.process_one(row, row.fields, trans)
-        except Exception, e:
+        except Exception:
             print
             print 'Error while processing row %d %r' % (self.lineno, row,)
             print

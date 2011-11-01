@@ -23,13 +23,13 @@
 ##
 """ Charting """
 
-import datetime
-import gettext
-import string
+import pprint
 
-from kiwi.python import namedAny, Settable
+from kiwi.python import namedAny
+from stoqlib.lib.translation import stoqlib_gettext
 
-_ = gettext.gettext
+_ = stoqlib_gettext
+
 
 class DateArgument(object):
     pass

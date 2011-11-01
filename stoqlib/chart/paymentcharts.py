@@ -23,9 +23,11 @@
 ##
 """ Payment charts """
 
+import datetime
 import string
 
 from stoqlib.chart.chart import Chart
+from stoqlib.database.runtime import get_connection
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -164,6 +166,7 @@ def daily_payments(year, month):
     @month: month to show payments for
     @returns: (month, total in payments, total out payments, profit)
     """
+    conn = get_connection()
 
     if 2100 > year < 1900:
         raise ValueError(year)

@@ -54,8 +54,6 @@ from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 
-from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
-
 
 _ = stoqlib_gettext
 
@@ -212,7 +210,7 @@ class FiscalPrinterHelper(gobject.GObject):
 
         try:
             CouponCreatedEvent.emit(coupon)
-        except (DriverError, DeviceError), e:
+        except (DriverError, DeviceError):
             warning('Não foi possível abrir o cupom')
             coupon = None
 

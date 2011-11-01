@@ -29,12 +29,12 @@ from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 
-from stoqdrivers.exceptions import CouponOpenError, DriverError
+from stoqdrivers.exceptions import DriverError
 
 from stoqlib.database.orm import const
 from stoqlib.database.runtime import (get_current_station, new_transaction,
                                       finish_transaction)
-from stoqlib.domain.account import Account, AccountTransaction
+from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
                                    TillAddTillEntryEvent,
                                    TillAddCashEvent, TillRemoveCashEvent)
@@ -50,7 +50,6 @@ from stoqlib.lib.message import warning
 _ = stoqlib_gettext
 
 def _create_transaction(conn, till_entry):
-    till = till_entry.till
     AccountTransaction(description=till_entry.description,
                        source_account=sysparam(conn).IMBALANCE_ACCOUNT,
                        account=sysparam(conn).TILLS_ACCOUNT,

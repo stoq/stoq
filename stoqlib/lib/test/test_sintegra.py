@@ -20,7 +20,6 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
-from cStringIO import StringIO
 import datetime
 from decimal import Decimal
 import os
@@ -40,7 +39,6 @@ def compare_sintegra_file(sfile, basename):
     expected = basename + '-expected.txt'
     output = basename + '-output.txt'
 
-    fp = StringIO()
     sfile.write(output)
     expected = os.path.join(test.__path__[0], expected)
     retval = diff_files(expected, output)

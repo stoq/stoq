@@ -216,7 +216,7 @@ def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
             initialize_system()
             ensure_admin_user("")
             create(utilities=True)
-    except Exception, e:
+    except Exception:
         # Work around trial
         import traceback
         traceback.print_exc()

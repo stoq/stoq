@@ -57,7 +57,6 @@ class _TemporaryQuoteGroup(object):
         order = self._create_purchase_order(trans)
         to_quote_items = {}
         for production in productions:
-            materials = production.get_material_items()
             for material in production.get_material_items():
                 if material.to_purchase <= 0:
                     continue

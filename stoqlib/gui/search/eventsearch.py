@@ -24,8 +24,6 @@
 ##
 """ Implementation of event search """
 
-import datetime
-
 from kiwi.ui.objectlist import Column
 
 from stoqlib.gui.base.search import SearchEditor

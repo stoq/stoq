@@ -26,15 +26,14 @@
 import cgi
 import json
 
-from kiwi.environ import environ
 from twisted.internet import reactor
 from twisted.web.resource import Resource
 from twisted.web.server import Site
 from twisted.web.static import File
 
 from stoqlib.chart.chart import get_chart_class
+from stoqlib.database.runtime import get_connection
 from stoqlib.lib.template import render_template
-
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -53,6 +52,8 @@ class RootResource(Resource):
 class ChartChartResource(Resource):
 
     def _get_chart(self, request):
+        conn = get_connection()
+
         if not '?' in request.uri:
             raise TypeError("Missing arguments")
         args = cgi.parse_qs(request.uri.split('?', 1)[1])
@@ -70,7 +71,8 @@ class ChartChartResource(Resource):
         opt['data'] = chart.run()
         opt['options'] = {
             "xaxis": { "mode": "time" },
-            "bars": { "show": True, "barWidth": 20 * _JS_DAY },
+            # XXX: _JS_DAY is not defined
+            #"bars": { "show": True, "barWidth": 20 * _JS_DAY },
             "points": { "show": False },
             "lines": { "show": False },
             "grid": { "hoverable": True,

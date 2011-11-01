@@ -26,6 +26,8 @@
 import gtk
 import webkit
 
+from twisted.internet import reactor
+
 class ChartDialog(gtk.Window):
     def __init__(self):
         gtk.Window.__init__(self)

@@ -27,7 +27,6 @@
 import time
 
 import gobject
-import cairo
 import gtk
 import pango
 import pangocairo
