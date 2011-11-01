@@ -85,7 +85,6 @@ class TestECFPrinter(DomainTest):
         settings = self.create_ecf_printer()
         settings.create_fiscal_printer_constants()
 
-        constants = list(settings.constants)
         for constant_type in [DeviceConstant.TYPE_UNIT,
                               DeviceConstant.TYPE_TAX,
                               DeviceConstant.TYPE_PAYMENT]:

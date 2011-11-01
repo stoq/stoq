@@ -24,17 +24,10 @@
 
 """ Search dialog/Editor for publishers """
 
-from kiwi.argcheck import argcheck
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.objectlist import SearchColumn
 
-from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formatters import format_phone_number
 
-from stoqlib.gui.base.search import SearchEditor, SearchDialog
-from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.search.personsearch import BasePersonSearch
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 

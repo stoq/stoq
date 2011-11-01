@@ -32,7 +32,6 @@ from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.domain.sellable import Sellable
 from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 

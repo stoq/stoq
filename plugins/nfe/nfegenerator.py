@@ -30,9 +30,6 @@ import random
 from xml.etree.ElementTree import Element
 from xml.sax.saxutils import escape
 
-from stoqdrivers.enum import TaxType
-
-import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.parameters import sysparam
@@ -449,7 +446,6 @@ class NFeData(BaseNFeXMLGroup):
     def as_txt(self):
         txt = u'%s|%s|%s|\n' % (self.txttag, self.element.get('versao'),
                                 self.get_id_value())
-        children = self.get_children()
         for child in self.get_children():
             txt += child.as_txt()
 
@@ -1599,7 +1595,6 @@ class NFeTransporter(BaseNFeXMLGroup):
 
         address = person.get_main_address()
         if address:
-            postal_code = ''.join([i for i in address.postal_code if i in '1234567890'])
             self.set_attr('xEnder', address.get_address_string()[:60])
             self.set_attr('xMun', address.city_location.city[:60])
             self.set_attr('UF', address.city_location.state)

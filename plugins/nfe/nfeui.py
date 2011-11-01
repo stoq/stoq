@@ -31,7 +31,6 @@ from stoqlib.domain.events import SaleStatusChangedEvent
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.events import StartApplicationEvent
 from stoqlib.lib.osutils import get_application_dir
-from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
 from nfegenerator import NFeGenerator
