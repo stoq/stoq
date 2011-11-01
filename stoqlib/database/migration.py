@@ -34,7 +34,6 @@ import tempfile
 import traceback
 
 from kiwi.environ import environ
-from kiwi.component import get_utility
 from kiwi.log import Logger
 
 from stoqlib.database.database import (execute_sql, dump_database,
@@ -47,10 +46,10 @@ from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.defaults import stoqlib_gettext
-from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import error, info
 from stoqlib.lib.parameters import (check_parameter_presence,
                                     ensure_system_parameters)
+from stoqlib.lib.pluginmanager import get_plugin_manager
 
 _ = stoqlib_gettext
 log = Logger('stoqlib.database.migration')
@@ -347,7 +346,9 @@ class StoqlibSchemaMigration(SchemaMigration):
         return True
 
     def update_plugins(self):
-        for plugin in get_utility(IPluginManager).get_active_plugins():
+        manager = get_plugin_manager()
+        for plugin_name in manager.installed_plugins_names:
+            plugin = manager.get_plugin(plugin_name)
             migration = plugin.get_migration()
             if migration:
                 migration.update()
@@ -356,7 +357,9 @@ class StoqlibSchemaMigration(SchemaMigration):
         # This cannot be done in check_uptodate since the plugin domain
         # classes were introduced as a patch and the way the callsites
         # works in stoq/lib/startup.py
-        for plugin in get_utility(IPluginManager).get_active_plugins():
+        manager = get_plugin_manager()
+        for plugin_name in manager.installed_plugins_names:
+            plugin = manager.get_plugin(plugin_name)
             migration = plugin.get_migration()
             if not migration:
                 continue

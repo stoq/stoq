@@ -37,9 +37,9 @@ from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import warning, marker
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard, BaseWizardStep
 from stoqlib.gui.base.dialogs import run_dialog
@@ -366,9 +366,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         # if the NF-e plugin is active, the client is mandantory in this
         # wizard (in this situation, we have only quote sales).
         if self.model.status == Sale.STATUS_QUOTE:
-            manager = get_utility(IPluginManager)
-            assert manager
-
+            manager = get_plugin_manager()
             mandatory_client = manager.is_active('nfe')
             self.client.set_property('mandatory', mandatory_client)
 

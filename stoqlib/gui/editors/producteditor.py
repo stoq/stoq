@@ -28,7 +28,6 @@ import sys
 
 import gtk
 
-from kiwi.component import get_utility
 from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 
@@ -46,11 +45,11 @@ from stoqlib.gui.editors.baseeditor import (BaseEditor, BaseEditorSlave,
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.gui.slaves.productslave import (ProductDetailsSlave,
                                              ProductTaxSlave)
-from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_price, get_formatted_cost
+from stoqlib.lib.pluginmanager import get_plugin_manager
 
 _ = stoqlib_gettext
 
@@ -489,14 +488,17 @@ class ProductEditor(SellableEditor):
         self.status_unavailable_label.set_text(text)
 
     def _get_plugin_tabs(self):
-        manager = get_utility(IPluginManager, None)
-        if manager:
-            for plugin in manager.get_active_plugins():
-                if plugin.has_product_slave:
-                    slave_class = plugin.get_product_slave_class()
-                    plugin_product_slave = slave_class(self.conn, self.model)
-                    return [(slave_class.title, plugin_product_slave),]
-        return []
+        manager = get_plugin_manager()
+        tab_list = []
+
+        for plugin_name in manager.active_plugins_names:
+            plugin = manager.get_plugin(plugin_name)
+            if plugin.has_product_slave:
+                slave_class = plugin.get_product_slave_class()
+                plugin_product_slave = slave_class(self.conn, self.model)
+                tab_list.append((slave_class.title, plugin_product_slave))
+
+        return tab_list
 
     #
     # BaseEditor

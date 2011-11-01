@@ -118,10 +118,9 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         set_current_branch_station(conn, station_name)
 
     if load_plugins:
-        from stoqlib.lib.pluginmanager import provide_plugin_manager
-        manager = provide_plugin_manager()
-
-        manager.activate_plugins()
+        from stoqlib.lib.pluginmanager import get_plugin_manager
+        manager = get_plugin_manager()
+        manager.activate_installed_plugins()
 
     if check_schema:
         _check_tables()

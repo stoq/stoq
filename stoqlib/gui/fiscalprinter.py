@@ -27,7 +27,6 @@ import sys
 
 import gobject
 import gtk
-from kiwi.component import get_utility
 from kiwi.log import Logger
 from kiwi.utils import gsignal
 from stoqdrivers.exceptions import (DriverError, CouponOpenError,
@@ -49,9 +48,9 @@ from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.tilleditor import TillOpeningEditor, TillClosingEditor
 from stoqlib.gui.events import CouponCreatedEvent
-from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 
@@ -264,8 +263,7 @@ class FiscalPrinterHelper(gobject.GObject):
         self._close_db = close_db
         self._close_ecf = close_ecf
 
-        manager = get_utility(IPluginManager)
-        manager.is_active('ecf')
+        manager = get_plugin_manager()
         if close_db and (close_ecf or not manager.is_active('ecf')):
             msg = _("You need to close the till from the previous day before "
                     "creating a new order.\n\nClose the Till?")

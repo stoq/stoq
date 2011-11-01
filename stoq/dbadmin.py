@@ -161,20 +161,19 @@ class StoqCommandHandler:
         trans.commit()
 
     def _enable_plugins(self, plugin_names):
-        from stoqlib.lib.pluginmanager import provide_plugin_manager
+        from stoqlib.lib.pluginmanager import (PluginError,
+                                               get_plugin_manager)
+        manager = get_plugin_manager()
 
-        for plugin in plugin_names:
-            manager = provide_plugin_manager()
-            if not manager.has_plugin(plugin):
-                break
-            manager.enable_plugin(plugin)
-        else:
-            return
-
-        print 'No plugin called: %s' % (plugin,)
-        print 'Available plugins are:'
-        for plugin_name in manager.get_plugin_names():
-            print '  ', plugin_name
+        for plugin_name in plugin_names:
+            try:
+                manager.install_plugin(plugin_name)
+            except PluginError as err:
+                print err
+                print "Available plugins:"
+                for plugin_name in manager.available_plugins_names:
+                    print "  %s" % (plugin_name,)
+                return
 
     def _register_station(self):
         # Register the current computer as a branch station
@@ -235,7 +234,6 @@ class StoqCommandHandler:
 
     def cmd_updateschema(self, options):
         from stoqlib.database.migration import StoqlibSchemaMigration
-        from stoqlib.lib.pluginmanager import provide_plugin_manager
 
         self._read_config(options, check_schema=False, load_plugins=False,
                           register_station=False)
@@ -243,7 +241,6 @@ class StoqCommandHandler:
         # This is a little bit tricky to be able to apply the initial
         # plugin infrastructure
         migration = StoqlibSchemaMigration()
-        provide_plugin_manager()
         if not migration.update(backup=options.disable_backup):
             return 1
 

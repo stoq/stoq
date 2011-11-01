@@ -110,16 +110,46 @@ class IPluginManager(Interface):
 
 
 class IPlugin(Interface):
+
+    name = Attribute('name')
     has_product_slave = Attribute('has_product_slave')
 
-    def install():
+    def activate():
+        """Called everytime the plugins gets activated
+
+        This is where the init plugin logic should be, like events
+            connection and so on.
+        """
         pass
 
-    def activate(context):
+    def get_migration():
+        """Get the database migration for the plugin
+
+        @returns: a L{stoqlib.database.migration.PluginSchemaMigration}
+        """
+        pass
+
+    def get_tables():
+        """Returns a C{list} of domain classes
+
+        This should return a C{list} of tuples, each one containing the
+            domain path as the first item, and a list of classes as
+            the second. e.g. A 'from a.b import C, D' should be
+            translated into the C{tuple} ('a.b', ['C', 'D']).
+        @note: this information is used for database synchronization
+
+        @returns: a C{list} of C{tuple} containing domain info
+        """
         pass
 
     def get_product_slave_class():
-        """This should return the product slave class."""
+        """Returns a slave that will be appended on product editor
+
+        If C{self.has_product_slave} is C{True}, this should return a
+            slave that will be used as an extra tab on product editor.
+
+        @returns: a L{stoqlib.gui.editors.baseeditor.BaseEditorSlave}
+        """
         pass
 
 

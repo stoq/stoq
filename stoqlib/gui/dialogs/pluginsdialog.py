@@ -27,17 +27,14 @@
 import platform
 
 import gtk
-from kiwi.component import get_utility
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
-from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.gui.base.dialogs import BasicDialog
-from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.parameters import is_developer_mode
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import yesno
+from stoqlib.lib.pluginmanager import get_plugin_manager
 
 _ = stoqlib_gettext
 
@@ -50,12 +47,9 @@ class _PluginModel(object):
     @ivar is_active: True if the plugin is installed, False otherwise.
     """
 
-    def __init__(self, plugin_name, conn):
+    def __init__(self, plugin_name, is_active):
         self.name = plugin_name
-        self.is_active = self._get_plugin_is_active(conn)
-
-    def _get_plugin_is_active(self, conn):
-        return InstalledPlugin.selectOneBy(plugin_name=self.name) is not None
+        self.is_active = is_active
 
     def can_activate(self):
         return not self.is_active
@@ -71,10 +65,9 @@ class PluginManagerDialog(BasicDialog):
                     'the apply button.')
         self._initialize(hide_footer=False, size=PluginManagerDialog.size,
                          title=PluginManagerDialog.title, header_text=header)
-        self._manager = get_utility(IPluginManager)
-        assert self._manager
 
         self.conn = conn
+        self._manager = get_plugin_manager()
         self._setup_widgets()
 
     def _update_widgets(self):
@@ -87,14 +80,17 @@ class PluginManagerDialog(BasicDialog):
         self.set_ok_label(_(u'Activate'), 'gtk-apply')
         self.ok_button.set_sensitive(False)
         plugins = []
-        for name in sorted(self._manager.get_plugin_names()):
+
+        for name in sorted(self._manager.available_plugins_names):
             # FIXME: Remove when magento plugin is functional for end users
             if not is_developer_mode() and name == 'magento':
                 continue
             if platform.system() == 'Windows':
                 if name in ['ecf', 'tef']:
                     continue
-            plugins.append(_PluginModel(name, self.conn))
+            plugins.append(_PluginModel(name, name in
+                                        self._manager.installed_plugins_names))
+
         self.klist = ObjectList(self._get_columns(), plugins,
                                 gtk.SELECTION_BROWSE)
         self.klist.connect("selection-changed",
@@ -108,11 +104,10 @@ class PluginManagerDialog(BasicDialog):
                        expand=True),
                 Column('is_active', title=_('Active'), data_type=bool)]
 
-    def _enable_plugin(self, plugin):
-        trans = new_transaction()
-        self._manager.enable_plugin(plugin.name)
-        finish_transaction(trans, True)
-        trans.close()
+    def _enable_plugin(self, plugin_model):
+        plugin_name = plugin_model.name
+        self._manager.install_plugin(plugin_name)
+        self._manager.activate_plugin(plugin_name)
 
     #
     # BasicDialog
