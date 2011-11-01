@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-10-28 12:10-0200\n"
-"PO-Revision-Date: 2011-10-28 20:09+0000\n"
+"PO-Revision-Date: 2011-10-31 15:09+0000\n"
 "Last-Translator: Rafael Neri <Unknown>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-10-29 05:22+0000\n"
+"X-Launchpad-Export-Date: 2011-11-01 05:08+0000\n"
 "X-Generator: Launchpad (build 14197)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -5085,43 +5085,44 @@ msgstr "Add cash..."
 
 #: ../stoq/gui/till.py:125
 msgid "Remove cash..."
-msgstr ""
+msgstr "Remove cash..."
 
 #: ../stoq/gui/till.py:137
 msgid "Till history..."
-msgstr ""
+msgstr "Till history..."
 
 #: ../stoq/gui/till.py:139
 msgid "Fiscal till operations..."
-msgstr ""
+msgstr "Fiscal till operations..."
 
 #: ../stoq/gui/till.py:144
 msgid "Till help"
-msgstr ""
+msgstr "Till help"
 
 #: ../stoq/gui/till.py:200
 #, python-format
 msgid "Stoq - Till for Branch %03d"
-msgstr ""
+msgstr "Stoq - Till for Branch %03d"
 
 #: ../stoq/gui/till.py:207 ../stoqlib/gui/dialogs/productstockdetails.py:154
 #: ../stoqlib/gui/search/salesearch.py:76
 #: ../stoqlib/gui/wizards/receivingwizard.py:95
 msgid "Date Started"
-msgstr ""
+msgstr "Date Started"
 
 #: ../stoq/gui/till.py:247
 msgid "This quote has expired. Confirm it anyway?"
-msgstr ""
+msgstr "This quote has expired. Confirm it anyway?"
 
 #: ../stoq/gui/till.py:249
 msgid "Confirm quote"
-msgstr ""
+msgstr "Confirm quote"
 
 #: ../stoq/gui/till.py:268
 #, python-format
 msgid "This sale has %d items of %s, but there is only %d available on stock"
 msgstr ""
+"This sale has %d items of %s, but there is only %d available on stock"
 
 #: ../stoq/gui/till.py:292
 msgid ""
@@ -5129,40 +5130,43 @@ msgid ""
 "Until it is opened, it's not possible to confirm the sale. Do you want to "
 "try again?"
 msgstr ""
+"Failed to open the fiscal coupon.\n"
+"Until it is opened, it's not possible to confirm the sale. Do you want to "
+"try again?"
 
 #: ../stoq/gui/till.py:295
 msgid "Cancel coupon"
-msgstr ""
+msgstr "Cancel coupon"
 
 #: ../stoq/gui/till.py:381
 msgid "Till operations requires a connected fiscal printer"
-msgstr ""
+msgstr "Till operations requires a connected fiscal printer"
 
 #: ../stoq/gui/till.py:403
 msgid "Till blocked from previous day"
-msgstr ""
+msgstr "Till blocked from previous day"
 
 #: ../stoq/gui/till.py:406
 #, python-format
 msgid "Till opened on <b>%s</b>"
-msgstr ""
+msgstr "Till opened on <b>%s</b>"
 
 #: ../stoq/gui/update.py:89
 #, python-format
 msgid "Applying patch %s ..."
-msgstr ""
+msgstr "Applying patch %s ..."
 
 #: ../stoq/gui/update.py:91
 msgid "Creating a database backup"
-msgstr ""
+msgstr "Creating a database backup"
 
 #: ../stoq/gui/update.py:92
 msgid "Creating a database backup in case anything goes wrong."
-msgstr ""
+msgstr "Creating a database backup in case anything goes wrong."
 
 #: ../stoq/gui/update.py:94
 msgid "Restoring database backup"
-msgstr ""
+msgstr "Restoring database backup"
 
 #: ../stoq/gui/update.py:96
 msgid ""
@@ -5172,10 +5176,15 @@ msgid ""
 "\n"
 "This may take some time."
 msgstr ""
+"Stoq update failed.\n"
+"\n"
+"We will try to restore the current database.\n"
+"\n"
+"This may take some time."
 
 #: ../stoq/gui/update.py:101
 msgid "Database backup restored"
-msgstr ""
+msgstr "Database backup restored"
 
 #: ../stoq/gui/update.py:103
 #, python-format
@@ -5187,44 +5196,51 @@ msgid ""
 "\n"
 "A backup database was created as <b>%s</b>"
 msgstr ""
+"Stoq database update failed but the database was restored.\n"
+"An automatic crash report was submitted. Please, enter in contact at <b>stoq-"
+"users@stoq.com.br</b> for assistance in recovering your database and making "
+"it possible to use Stoq %s again.\n"
+"\n"
+"A backup database was created as <b>%s</b>"
 
 #: ../stoq/gui/update.py:121
 msgid "Applying database patches..."
-msgstr ""
+msgstr "Applying database patches..."
 
 #: ../stoq/gui/update.py:130
 msgid "Done. Click 'Forward' to continue"
-msgstr ""
+msgstr "Done. Click 'Forward' to continue"
 
 #: ../stoq/gui/update.py:156
 msgid "Updating Stoq"
-msgstr ""
+msgstr "Updating Stoq"
 
 #: ../stoq/gui/welcomedialog.py:56
 msgid "_Start using Stoq"
-msgstr ""
+msgstr "_Start using Stoq"
 
 #: ../stoq/gui/welcomedialog.py:58
 msgid "Welcome to Stoq"
-msgstr ""
+msgstr "Welcome to Stoq"
 
 #: ../stoq/lib/applist.py:36
 msgid ""
 "Administer the branches, users, employees and configure system parameters."
 msgstr ""
+"Administer the branches, users, employees and configure system parameters."
 
 #: ../stoq/lib/applist.py:40
 msgid "Control accounts and financial transactions."
-msgstr ""
+msgstr "Control accounts and financial transactions."
 
 #: ../stoq/lib/applist.py:43
 msgid "Audit and adjust the product stock."
-msgstr ""
+msgstr "Audit and adjust the product stock."
 
 #. Tabs cache requires unique ids
 #: ../stoq/lib/applist.py:45 ../stoqlib/gui/accounttree.py:152
 msgid "Accounts Payable"
-msgstr ""
+msgstr "Accounts Payable"
 
 #: ../stoq/lib/applist.py:46
 msgid "Manage payment that needs to be paid."
