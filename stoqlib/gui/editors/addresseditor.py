@@ -25,7 +25,6 @@
 
 import gtk
 from kiwi.argcheck import argcheck
-from kiwi.component import get_utility
 from kiwi.datatypes import ValidationError
 from kiwi.python import AttributeForwarder
 from kiwi.ui.widgets.list import Column
@@ -37,7 +36,7 @@ from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.lib.countries import get_countries
 from stoqlib.lib.defaults import get_country_states
-from stoqlib.lib.interfaces import IPluginManager
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_state
 
@@ -162,13 +161,9 @@ class AddressSlave(BaseEditorSlave):
                 self.streetnumber.set_text('')
 
     def _get_nfe_plugin(self):
-        manager = get_utility(IPluginManager, None)
-        if manager is None:
-            return
-
-        for plugin in manager.get_active_plugins():
-            if plugin.name == u'nfe':
-                return plugin
+        manager = get_plugin_manager()
+        if manager.is_active('nfe'):
+            return manager.get_plugin('nfe')
 
     def _complete_cities(self):
         city = self.city.read()

@@ -32,7 +32,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib import test
 from stoqlib.lib.diffutils import diff_files
 from stoqlib.lib.interfaces import IAppInfo
-from stoqlib.lib.pluginmanager import provide_plugin_manager
+from stoqlib.lib.pluginmanager import get_plugin_manager
 
 # This test should really be inside plugins/ecf, bug that is not supported yet.
 sys.path.append('plugins/ecf')
@@ -57,8 +57,11 @@ class Cat52Test(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
 
-        manager = provide_plugin_manager()
-        manager.enable_plugin('ecf')
+        manager = get_plugin_manager()
+        if not manager.is_installed('ecf'):
+            # STOQLIB_TEST_QUICK won't let dropdb on testdb run. Just a
+            # precaution to avoid trying to install it again
+            manager.install_plugin('ecf')
 
     def testComplete(self):
         station = self.create_station()

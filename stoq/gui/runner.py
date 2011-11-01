@@ -32,9 +32,10 @@ from stoqlib.exceptions import LoginError
 from stoqlib.gui.splash import hide_splash
 from stoqlib.gui.events import StartApplicationEvent
 from stoqlib.database.runtime import get_connection, get_current_user
-from stoqlib.lib.interfaces import IApplicationDescriptions, IPluginManager
+from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.message import error, info
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import get_plugin_manager
 
 
 log = Logger('stoq.runner')
@@ -168,7 +169,7 @@ class ApplicationRunner(object):
 
         # Possibly correct window position (livecd workaround for small
         # screens)
-        manager = get_utility(IPluginManager)
+        manager = get_plugin_manager()
         if (sysparam(get_connection()).DEMO_MODE
             and manager.is_active('ecf')):
             pos = app.main_window.toplevel.get_position()
