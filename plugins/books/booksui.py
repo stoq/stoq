@@ -22,8 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import os
-
 import gtk
 
 from kiwi.log import Logger
@@ -31,7 +29,6 @@ from kiwi.log import Logger
 from stoqlib.database.runtime import get_connection
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.events import StartApplicationEvent
-from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
 from bookssearch import ProductBookSearch

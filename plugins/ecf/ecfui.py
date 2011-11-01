@@ -55,7 +55,6 @@ from catgenerator import StoqlibCATGenerator
 from couponprinter import CouponPrinter
 from ecfdomain import ECFPrinter, FiscalSaleHistory
 from ecfprinterdialog import ECFListDialog
-from ecfprinterstatus import ECFAsyncPrinterStatus
 from ecfmemorydialog import FiscalMemoryDialog
 from paulistainvoicedialog import PaulistaInvoiceDialog
 
@@ -104,9 +103,6 @@ class ECFUI(object):
                 _("This operation requires a connected fiscal printer"))
 
         if not self._printer_verified:
-            domain = self._printer.get_printer()
-            driver = self._printer.get_driver()
-
             if not self._printer.check_serial():
                 raise DeviceError(
                     _("Fiscalprinters serial number is different!"))
@@ -198,7 +194,7 @@ class ECFUI(object):
         log.info('ecfui._check_printer')
         try:
             self._validate_printer()
-        except (DriverError, DeviceError), details:
+        except (DriverError, DeviceError):
             warning('Não foi possível comunicar com a impressora.')
             raise SystemExit
 
