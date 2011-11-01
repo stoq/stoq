@@ -27,8 +27,6 @@ import datetime
 
 from kiwi.datatypes import currency
 
-from twisted.trial.unittest import SkipTest
-
 from stoqlib.database.orm import ORMObjectMoreThanOneResultError, AND
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import Calls, Liaison

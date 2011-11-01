@@ -207,11 +207,8 @@ class EmployeeRoleSlave(BaseEditorSlave):
 
     def _update_sensitivity(self):
         editor = True
-        settings = False
         if self.role.get_text():
             editor = self.role.is_valid()
-            if editor:
-                settings = self._is_default_salesperson_role()
         else:
             self.model.role = None
         self.role_editor_button.set_sensitive(editor)

@@ -140,7 +140,6 @@ class _IndividualDetailsSlave(BaseEditorSlave):
         self.birth_state.prefill(get_country_states())
 
     def _update_marital_status(self):
-        marital_status = self.marital_status.get_selected_data()
         if self.model.is_married():
             self.spouse_lbl.show()
             self.spouse_name.show()

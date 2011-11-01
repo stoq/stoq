@@ -83,11 +83,9 @@ class FiscalBookEntrySearch(SearchDialog):
     searchbar_result_strings = _("fiscal entry"), _("fiscal entries")
 
     def _setup_columns(self, column, table, col_name, summary_label_text):
-        label_text = '<b>%s</b>' % summary_label_text
         columns = self.get_columns() + [column]
         self.results.set_columns(columns)
         self.set_table(table)
-        #self.setup_summary_label(col_name, label_text)
 
     def _setup_icms_columns(self):
         col = SearchColumn('icms_value',

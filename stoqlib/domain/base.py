@@ -26,7 +26,7 @@
 from zope.interface.interface import adapter_hooks
 
 from stoqlib.database.orm import orm_name, ForeignKey, IntCol
-from stoqlib.database.orm import ORMObject, const, AND, const, ILIKE
+from stoqlib.database.orm import ORMObject, const, AND, ILIKE
 from stoqlib.database.runtime import (StoqlibTransaction,
                                       get_current_user, get_current_station)
 from stoqlib.domain.system import TransactionEntry

@@ -35,7 +35,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
-from kiwi.ui.search import ComboSearchFilter, DateSearchOption
+from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import SearchColumn, Column
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.operation import register_payment_operations
@@ -64,24 +64,6 @@ from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
 
-class NextMonthOption(DateSearchOption):
-    name = _('Next month')
-    def get_interval(self):
-        today = datetime.date.today()
-        year = today.year
-        month = today.month + 1
-        if month > 12:
-            month = 1
-            year += 1
-        # Try 31 first then add one until date() does not complain.
-        day = today.day
-        while True:
-            try:
-                end_date = datetime.date(year, month, day)
-                break
-            except ValueError:
-                day += 1
-        return datetime.date.today(), end_date
 
 class ReceivableApp(SearchableAppWindow):
 

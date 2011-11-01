@@ -30,6 +30,7 @@ import platform
 
 try:
     import gudev
+    gudev # pyflakes
 except ImportError:
     gudev = None
 

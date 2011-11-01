@@ -62,7 +62,7 @@ class Method(object):
             try:
                 exc = namedAny(exc_name)
                 raise exc(msg)
-            except Exception, unused:
+            except Exception:
                 # In case server/client side is out of sync
                 raise Exception(msg)
 

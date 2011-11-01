@@ -25,8 +25,6 @@
 Domain classes related to stoqdrivers package.
 """
 
-import platform
-
 from zope.interface import implements
 from stoqdrivers.printers.cheque import ChequePrinter
 from stoqdrivers.scales.scales import Scale

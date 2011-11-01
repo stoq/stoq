@@ -38,7 +38,6 @@ from kiwi.log import Logger
 
 from stoqlib.database.database import (execute_sql, dump_database,
                                        restore_database, test_connection)
-from stoqlib.database.exceptions import SQLError
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.profile import update_profile_applications
@@ -327,7 +326,7 @@ class StoqlibSchemaMigration(SchemaMigration):
                 super(StoqlibSchemaMigration, self).update()
                 if plugins:
                     self.update_plugins()
-            except Exception, e:
+            except Exception:
                 exc = sys.exc_info()
                 tb_str = ''.join(traceback.format_exception(*exc))
                 collect_traceback(exc, submit=True)

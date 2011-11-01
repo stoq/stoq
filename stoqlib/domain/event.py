@@ -64,9 +64,9 @@ class Event(Domain):
     @classmethod
     def log(cls, event_type, description):
         trans = new_transaction()
-        event = cls(event_type=event_type,
-                    description=description,
-                    connection=trans)
+        cls(event_type=event_type,
+            description=description,
+            connection=trans)
         trans.commit()
 
 

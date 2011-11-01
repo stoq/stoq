@@ -24,11 +24,9 @@ from cStringIO import StringIO
 from decimal import Decimal
 import operator
 
-from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.account import Account
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.importers.ofximporter import OFXImporter
-from stoqlib.lib.parameters import sysparam
 
 
 OFX_DATA = """OFXHEADER:100
@@ -218,7 +216,6 @@ class OFXImporterTest(DomainTest):
         ofx.feed(StringIO(OFX_DATA))
         ofx.set_dry(True)
         ofx.process(self.trans)
-        imbalance_account = sysparam(self.trans).IMBALANCE_ACCOUNT
         account = Account.select(connection=self.trans).orderBy('id')[-1]
         self.failUnless(account)
         self.assertEquals(account.description, "Bank - CHECKING")
@@ -236,7 +233,6 @@ class OFXImporterTest(DomainTest):
         ofx.feed(StringIO(OFX_DATA2))
         ofx.set_dry(True)
         ofx.process(self.trans)
-        imbalance_account = sysparam(self.trans).IMBALANCE_ACCOUNT
         account = Account.select(connection=self.trans).orderBy('id')[-1]
         self.failUnless(account)
         self.assertEquals(account.description, "Banco do Brasil - CHECKING")
@@ -254,8 +250,6 @@ class OFXImporterTest(DomainTest):
         ofx.feed(StringIO(OFX_DATA3))
         ofx.set_dry(True)
         ofx.process(self.trans)
-        imbalance_account = sysparam(self.trans).IMBALANCE_ACCOUNT
-        trans = new_transaction()
         account = Account.select(connection=self.trans).orderBy('id')[-1]
         self.failUnless(account)
         self.assertEquals(account.description, "SANTANDER - CHECKING")

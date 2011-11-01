@@ -324,8 +324,6 @@ class SalesPersonReport(SearchResultsReport):
             if total_amount:
                 va = total_amount/sales_qty
             text = _("Sold value per sales %s") % (get_formatted_price(va,))
-            total_sellables = sum([item.sale.get_items_total_quantity()
-                for item in self.salesperson_list])
 
         self.add_object_table(self.salesperson_list, self._get_columns(),
                               summary_row=summary_row)
