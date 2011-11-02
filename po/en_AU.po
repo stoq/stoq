@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-10-28 12:10-0200\n"
-"PO-Revision-Date: 2011-10-31 15:09+0000\n"
+"PO-Revision-Date: 2011-11-01 23:20+0000\n"
 "Last-Translator: Rafael Neri <Unknown>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-01 05:08+0000\n"
-"X-Generator: Launchpad (build 14197)\n"
+"X-Launchpad-Export-Date: 2011-11-02 05:02+0000\n"
+"X-Generator: Launchpad (build 14214)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account code:"
@@ -4975,7 +4975,7 @@ msgstr "Salesperson"
 
 #: ../stoq/gui/sales.py:289
 msgid "There are no invoice printer configured for this station"
-msgstr ""
+msgstr "There are no invoice printer configured for this station"
 
 #: ../stoq/gui/sales.py:358
 msgid "This will cancel the selected quote. Are you sure?"
@@ -5244,46 +5244,49 @@ msgstr "Accounts Payable"
 
 #: ../stoq/lib/applist.py:46
 msgid "Manage payment that needs to be paid."
-msgstr ""
+msgstr "Manage payment that needs to be paid."
 
 #: ../stoq/lib/applist.py:49
 msgid "Terminal and cash register for selling products and services."
-msgstr ""
+msgstr "Terminal and cash register for selling products and services."
 
 #: ../stoq/lib/applist.py:52
 msgid "Manage the production process."
-msgstr ""
+msgstr "Manage the production process."
 
 #: ../stoq/lib/applist.py:55
 msgid "Create purchase orders and quotes"
-msgstr ""
+msgstr "Create purchase orders and quotes"
 
 #: ../stoq/lib/applist.py:57 ../stoqlib/gui/accounttree.py:158
 msgid "Accounts Receivable"
-msgstr ""
+msgstr "Accounts Receivable"
 
 #: ../stoq/lib/applist.py:58
 msgid "Manage payments that needs to be received."
-msgstr ""
+msgstr "Manage payments that needs to be received."
 
 #: ../stoq/lib/applist.py:61
 msgid "Quotes management and commission calculation."
-msgstr ""
+msgstr "Quotes management and commission calculation."
 
 #: ../stoq/lib/applist.py:64
 msgid ""
 "Stock management, receive products and transfer them between branches."
 msgstr ""
+"Stock management, receive products and transfer them between branches."
 
 #: ../stoq/lib/applist.py:67
 msgid "Control tills and their workflow."
-msgstr ""
+msgstr "Control tills and their workflow."
 
 #: ../stoq/lib/configparser.py:238
 msgid ""
 "Error: Stoq configuration is not avaiable. Check that the current user has a "
 "configuration file (~/.stoq/stoq.conf)."
 msgstr ""
+"Error: Stoq configuration is not avaiable. Check that the current user has a "
+"configuration file (~/.stoq/stoq.conf)."
 
 #: ../stoq/lib/configparser.py:241
 msgid ""
@@ -5291,6 +5294,9 @@ msgid ""
 "\n"
 "You are running stoq using sudo. That is not recommended."
 msgstr ""
+"\n"
+"\n"
+"You are running stoq using sudo. That is not recommended."
 
 #: ../stoq/lib/dependencies.py:116
 #, python-format
@@ -5301,10 +5307,15 @@ msgid ""
 "You can find a recent version of %s on it's homepage at\n"
 "%s"
 msgstr ""
+"<b>%s</b> could not be found on your system.\n"
+"%s %s or higher is required for Stoq to run.\n"
+"\n"
+"You can find a recent version of %s on it's homepage at\n"
+"%s"
 
 #: ../stoq/lib/dependencies.py:123
 msgid "Missing dependency"
-msgstr ""
+msgstr "Missing dependency"
 
 #: ../stoq/lib/dependencies.py:126
 #, python-format
@@ -5315,10 +5326,15 @@ msgid ""
 "You can find a recent version of %s on it's homepage at\n"
 "%s"
 msgstr ""
+"<b>%s</b> was found on your system, but it is too old for Stoq to be able to "
+"run. %s %s was found, but %s is required.\n"
+"\n"
+"You can find a recent version of %s on it's homepage at\n"
+"%s"
 
 #: ../stoq/lib/dependencies.py:132
 msgid "Out-dated dependency"
-msgstr ""
+msgstr "Out-dated dependency"
 
 #: ../stoq/lib/dependencies.py:135
 #, python-format
@@ -5329,20 +5345,27 @@ msgid ""
 "You can find an older version of %s on it's homepage at\n"
 "%s"
 msgstr ""
+"<b>%s</b> was found on your system, but its version, %s incompatible with "
+"Stoq, you need to downgrade to %s for Stoq to work.\n"
+"\n"
+"You can find an older version of %s on it's homepage at\n"
+"%s"
 
 #: ../stoq/lib/dependencies.py:141
 msgid "Incompatible dependency"
-msgstr ""
+msgstr "Incompatible dependency"
 
 #: ../stoq/lib/startup.py:59 ../stoq/lib/startup.py:132
 msgid "Database schema error"
-msgstr ""
+msgstr "Database schema error"
 
 #: ../stoq/lib/startup.py:60
 msgid ""
 "Table 'system_table' does not exist.\n"
 "Consult your database administrator to solve this problem."
 msgstr ""
+"Table 'system_table' does not exist.\n"
+"Consult your database administrator to solve this problem."
 
 #: ../stoq/lib/startup.py:133
 msgid ""
@@ -5350,14 +5373,17 @@ msgid ""
 "'stoqdbadmin updateschema` to update the schema  to the latest available "
 "version."
 msgstr ""
+"The database schema has changed, but the database has not been updated. Run "
+"'stoqdbadmin updateschema` to update the schema  to the latest available "
+"version."
 
 #: ../stoq/lib/startup.py:154
 msgid "Update Error"
-msgstr ""
+msgstr "Update Error"
 
 #: ../stoq/lib/startup.py:155
 msgid "You need to call setup() before checking the database schema."
-msgstr ""
+msgstr "You need to call setup() before checking the database schema."
 
 #: ../stoq/main.py:40
 msgid ""
@@ -5370,108 +5396,117 @@ msgid ""
 "<b>We will not disclose the collected information and we are committed to "
 "keeping your privacy intact.</b>"
 msgstr ""
+"One of the new features of Stoq 1.0 is support for online services. Features "
+"using the online services include automatic bug report and update "
+"notifications. More services are under development.To be able to provide a "
+"better service and properly identify the user we will collect the CNPJ of "
+"the primary branch and the ip address.\n"
+"\n"
+"<b>We will not disclose the collected information and we are committed to "
+"keeping your privacy intact.</b>"
 
 #: ../stoq/main.py:260
 msgid "You need to register a company before start using Stoq"
-msgstr ""
+msgstr "You need to register a company before start using Stoq"
 
 #: ../stoq/main.py:262
 msgid ""
 "Could not find a company. You'll need to register one before start using Stoq"
 msgstr ""
+"Could not find a company. You'll need to register one before start using Stoq"
 
 #: ../stoq/main.py:293
 msgid "Not right now"
-msgstr ""
+msgstr "Not right now"
 
 #: ../stoq/main.py:296
 msgid "Do you want to enable Stoq online services?"
-msgstr ""
+msgstr "Do you want to enable Stoq online services?"
 
 #: ../stoq/main.py:365
 msgid "Could not open the database config file"
-msgstr ""
+msgstr "Could not open the database config file"
 
 #: ../stoq/main.py:366
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
-msgstr ""
+msgstr "Invalid config file settings, got error '%s', of type '%s'"
 
 #: ../stoq/main.py:382
 msgid "Could not connect to the database"
-msgstr ""
+msgstr "Could not connect to the database"
 
 #: ../stoqlib/chart/chartserver.py:45
 msgid "Stoq Chart Server"
-msgstr ""
+msgstr "Stoq Chart Server"
 
 #: ../stoqlib/chart/paymentcharts.py:36 ../stoqlib/chart/paymentcharts.py:90
 msgid "Monthly payments"
-msgstr ""
+msgstr "Monthly payments"
 
 #: ../stoqlib/chart/paymentcharts.py:38
 msgid "Total revenue, expenses and profit for all years"
-msgstr ""
+msgstr "Total revenue, expenses and profit for all years"
 
 #: ../stoqlib/chart/paymentcharts.py:91
 msgid "Total revenue, expenses and profit for all months in a year"
-msgstr ""
+msgstr "Total revenue, expenses and profit for all months in a year"
 
 #: ../stoqlib/chart/paymentcharts.py:156
 msgid "Revenue"
-msgstr ""
+msgstr "Revenue"
 
 #: ../stoqlib/chart/paymentcharts.py:157 ../stoqlib/domain/account.py:91
 #: ../stoqlib/domain/account.py:101
 msgid "Expense"
-msgstr ""
+msgstr "Expense"
 
 #: ../stoqlib/chart/paymentcharts.py:158
 msgid "Profit"
-msgstr ""
+msgstr "Profit"
 
 #: ../stoqlib/database/admin.py:76 ../stoqlib/database/admin.py:92
 #: ../stoqlib/database/admin.py:311
 msgid "Administrator"
-msgstr ""
+msgstr "Administrator"
 
 #. Dependencies to create an user.
 #: ../stoqlib/database/admin.py:79
 msgid "System Administrator"
-msgstr ""
+msgstr "System Administrator"
 
 #: ../stoqlib/database/admin.py:169
 msgid "Assets"
-msgstr ""
+msgstr "Assets"
 
 #: ../stoqlib/database/admin.py:170 ../stoqlib/database/admin.py:186
 msgid "Banks"
-msgstr ""
+msgstr "Banks"
 
 #: ../stoqlib/database/admin.py:171 ../stoqlib/domain/account.py:102
 msgid "Equity"
-msgstr ""
+msgstr "Equity"
 
 #: ../stoqlib/database/admin.py:172
 msgid "Expenses"
-msgstr ""
+msgstr "Expenses"
 
 #: ../stoqlib/database/admin.py:173 ../stoqlib/database/admin.py:190
 msgid "Imbalance"
-msgstr ""
+msgstr "Imbalance"
 
 #: ../stoqlib/database/admin.py:174 ../stoqlib/domain/account.py:90
 #: ../stoqlib/domain/account.py:100
 msgid "Income"
-msgstr ""
+msgstr "Income"
 
 #: ../stoqlib/database/admin.py:175 ../stoqlib/database/admin.py:188
 msgid "Tills"
-msgstr ""
+msgstr "Tills"
 
 #: ../stoqlib/database/admin.py:271
 msgid "The current database user does not have super user rights"
-msgstr ""
+msgstr "The current database user does not have super user rights"
 
 #: ../stoqlib/database/admin.py:312 ../stoqlib/gui/search/personsearch.py:349
 msgid "Manager"
@@ -5479,7 +5514,7 @@ msgstr "Manager"
 
 #: ../stoqlib/database/database.py:401
 msgid "Problem with PostgreSQL version"
-msgstr ""
+msgstr "Problem with PostgreSQL version"
 
 #: ../stoqlib/database/database.py:402
 #, python-format
@@ -5489,6 +5524,10 @@ msgid ""
 "warning when starting Stoq until you resolve the version incompatibilty by "
 "upgrading the server or the client tools."
 msgstr ""
+"The version of the PostgreSQL database server (%s) and the postgres client "
+"tools (%s) differ. I will let you use Stoq, but you will always see this "
+"warning when starting Stoq until you resolve the version incompatibilty by "
+"upgrading the server or the client tools."
 
 #: ../stoqlib/database/migration.py:137
 #, python-format
