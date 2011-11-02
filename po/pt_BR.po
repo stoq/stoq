@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-10-28 12:10-0200\n"
-"PO-Revision-Date: 2011-10-24 14:29+0000\n"
-"Last-Translator: Ronaldo Maia <mainha+lp@gmail.com>\n"
+"PO-Revision-Date: 2011-11-01 23:10+0000\n"
+"Last-Translator: Rafael Neri <Unknown>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-10-29 05:22+0000\n"
-"X-Generator: Launchpad (build 14197)\n"
+"X-Launchpad-Export-Date: 2011-11-02 05:02+0000\n"
+"X-Generator: Launchpad (build 14214)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -3337,38 +3337,38 @@ msgstr "O CNPJ não é válido"
 #: ../plugins/magento/domain/magentoclient.py:79
 #, python-format
 msgid "Magento user #%s"
-msgstr ""
+msgstr "Usuário Magento #%s"
 
 #: ../plugins/magento/domain/magentoconfig.py:127
 msgid "Magento e-commerce"
-msgstr ""
+msgstr "Magento e-commerce"
 
 #: ../plugins/magento/domain/magentoconfig.py:128
 msgid "E-commerce software"
-msgstr ""
+msgstr "Programa de comercio eletrônico"
 
 #: ../plugins/magento/domain/magentosale.py:157
 #, python-format
 msgid "Magento sale #%s\n"
-msgstr ""
+msgstr "Vendas Magento #%s\n"
 
 #: ../plugins/magento/domain/magentosale.py:369
 #, python-format
 msgid "Invoice for order: %s"
-msgstr ""
+msgstr "Fatura para ordem: %s"
 
 #: ../plugins/magento/domain/magentosale.py:451
 #, python-format
 msgid "Shipment for order: %s"
-msgstr ""
+msgstr "Remessa para ordem: %s"
 
 #: ../plugins/magento/magentolib.py:82
 msgid "The url provided is not valid"
-msgstr ""
+msgstr "A url informada não é válida"
 
 #: ../plugins/magento/magentolib.py:88
 msgid "Access denied for the given user"
-msgstr ""
+msgstr "Acesso negado para o usuário dado"
 
 #: ../plugins/nfe/nfegenerator.py:154
 #, python-format
