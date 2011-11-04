@@ -309,7 +309,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def _create_client(self):
         trans = new_transaction()
-        client = run_person_role_dialog(ClientEditor, self, trans, None)
+        client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
         finish_transaction(trans, client)
         client = self.conn.get(client)
         trans.close()
@@ -479,7 +479,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     def on_create_transporter__clicked(self, button):
         trans = new_transaction()
         transporter = trans.get(self.model.transporter)
-        model =  run_person_role_dialog(TransporterEditor, self, trans,
+        model =  run_person_role_dialog(TransporterEditor, self.wizard, trans,
                                         transporter)
         rv = finish_transaction(trans, model)
         trans.close()
@@ -491,11 +491,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self._update_totals()
 
     def on_notes_button__clicked(self, *args):
-        run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
+        run_dialog(NoteEditor, self.wizard, self.conn, self.model, 'notes',
                    title=_("Additional Information"))
 
     def on_create_cfop__clicked(self, widget):
-        cfop = run_dialog(CfopEditor, self, self.conn, None)
+        cfop = run_dialog(CfopEditor, self.wizard, self.conn, None)
         if cfop:
             self.cfop.append_item(cfop.get_description(), cfop)
             self.cfop.select_item_by_data(cfop)
@@ -514,7 +514,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def on_client_details__clicked(self, button):
         client = self.model.client
-        run_dialog(ClientDetailsDialog, self, self.conn, client)
+        run_dialog(ClientDetailsDialog, self.wizard, self.conn, client)
 
 
 #

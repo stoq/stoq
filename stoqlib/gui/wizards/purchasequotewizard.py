@@ -258,7 +258,7 @@ class QuoteSupplierStep(WizardEditorStep):
         selected = self.quoting_list.get_selected()
         columns = self._get_product_columns()
         title = _(u'Products supplied by %s') % selected.supplier.person.name
-        run_dialog(SimpleListDialog, self, columns, selected.items,
+        run_dialog(SimpleListDialog, self.wizard, columns, selected.items,
                    title=title)
 
     def _show_missing_products(self):
@@ -270,7 +270,7 @@ class QuoteSupplierStep(WizardEditorStep):
                 break
 
         columns = self._get_product_columns()
-        run_dialog(SimpleListDialog, self, columns, missing_products,
+        run_dialog(SimpleListDialog, self.wizard, columns, missing_products,
                    title=_(u'Missing Products'))
 
     def _update_wizard(self):
@@ -386,7 +386,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
     def _run_quote_editor(self):
         trans = new_transaction()
         selected = trans.get(self.search.results.get_selected().purchase)
-        retval = run_dialog(QuoteFillingDialog, self, selected, trans)
+        retval = run_dialog(QuoteFillingDialog, self.wizard, selected, trans)
         finish_transaction(trans, retval)
         trans.close()
         self._update_view()
@@ -569,7 +569,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
             if not purchase:
                 continue
 
-            retval = run_dialog(PurchaseWizard, self, trans, purchase)
+            retval = run_dialog(PurchaseWizard, self.wizard, trans, purchase)
             finish_transaction(trans, retval)
             # keep track of the quotes that might be closed
             if retval:
