@@ -174,7 +174,7 @@ class StartNewLoanStep(WizardEditorStep):
 
     def on_create_client__clicked(self, button):
         trans = new_transaction()
-        client = run_person_role_dialog(ClientEditor, self, trans, None)
+        client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
         retval = finish_transaction(trans, client)
         client = self.conn.get(client)
         trans.close()
@@ -201,7 +201,7 @@ class StartNewLoanStep(WizardEditorStep):
 
     def on_client_details__clicked(self, button):
         client = self.model.client
-        run_dialog(ClientDetailsDialog, self, self.conn, client)
+        run_dialog(ClientDetailsDialog, self.wizard, self.conn, client)
 
 
 class LoanItemStep(SaleQuoteItemStep):
@@ -323,7 +323,7 @@ class LoanItemSelectionStep(BaseWizardStep):
     def _edit_item(self, item):
         trans = new_transaction()
         model = trans.get(item)
-        retval = run_dialog(LoanItemEditor, self, trans, model,
+        retval = run_dialog(LoanItemEditor, self.wizard, trans, model,
                             expanded_edition=True)
         retval = finish_transaction(trans, retval)
         if retval:

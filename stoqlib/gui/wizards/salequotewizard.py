@@ -154,7 +154,7 @@ class StartSaleQuoteStep(WizardEditorStep):
 
     def on_create_client__clicked(self, button):
         trans = new_transaction()
-        client = run_person_role_dialog(ClientEditor, self, trans, None)
+        client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
         retval = finish_transaction(trans, client)
         client = self.conn.get(client)
         trans.close()
@@ -172,7 +172,7 @@ class StartSaleQuoteStep(WizardEditorStep):
 
     def on_client_details__clicked(self, button):
         client = self.model.client
-        run_dialog(ClientDetailsDialog, self, self.conn, client)
+        run_dialog(ClientDetailsDialog, self.wizard, self.conn, client)
 
     def on_expire_date__validate(self, widget, value):
         if value < datetime.date.today():
@@ -184,7 +184,7 @@ class StartSaleQuoteStep(WizardEditorStep):
                    title=_("Additional Information"))
 
     def on_create_cfop__clicked(self, widget):
-        cfop = run_dialog(CfopEditor, self, self.conn, None)
+        cfop = run_dialog(CfopEditor, self.wizard, self.conn, None)
         if cfop:
             self.cfop.append_item(cfop.get_description(), cfop)
             self.cfop.select_item_by_data(cfop)

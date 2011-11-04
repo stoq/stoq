@@ -120,7 +120,7 @@ class StartPurchaseStep(WizardEditorStep):
         trans = new_transaction()
         if supplier is not None:
             supplier = trans.get(self.model.supplier)
-        model = run_person_role_dialog(SupplierEditor, self, trans,
+        model = run_person_role_dialog(SupplierEditor, self.wizard, trans,
                                        supplier)
         retval = finish_transaction(trans, model)
         if retval:
@@ -512,7 +512,7 @@ class FinishPurchaseStep(WizardEditorStep):
     def _run_transporter_editor(self, transporter=None):
         trans = new_transaction()
         transporter = trans.get(transporter)
-        model =  run_person_role_dialog(TransporterEditor, self, trans,
+        model =  run_person_role_dialog(TransporterEditor, self.wizard, trans,
                                         transporter)
         rv = finish_transaction(trans, model)
         trans.close()

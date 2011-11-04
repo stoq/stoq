@@ -183,7 +183,7 @@ class PurchaseSelectionStep(BaseWizardStep):
         self._update_view()
 
     def _on_results__row_activated(self, results, purchase_order_view):
-        run_dialog(PurchaseDetailsDialog, self, self.conn,
+        run_dialog(PurchaseDetailsDialog, self.wizard, self.conn,
                    model=purchase_order_view.purchase)
 
     def on_details_button__clicked(self, *args):
@@ -191,7 +191,7 @@ class PurchaseSelectionStep(BaseWizardStep):
         if not selected:
             raise ValueError('You should have one order selected '
                              'at this point, got nothing')
-        run_dialog(PurchaseDetailsDialog, self, self.conn,
+        run_dialog(PurchaseDetailsDialog, self.wizard, self.conn,
                    model=selected.purchase)
 
 

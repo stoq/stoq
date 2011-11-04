@@ -124,7 +124,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(value)
 
     def _edit_item(self, item):
-        retval = run_dialog(InConsignmentItemEditor, self, self.conn, item)
+        retval = run_dialog(InConsignmentItemEditor, self.wizard, self.conn, item)
         if retval:
             self.consignment_items.update(item)
             self._validate_step(True)
