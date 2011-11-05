@@ -29,7 +29,7 @@ pep8:
 	pep8 stoq stoqlib
 
 pyflakes:
-	pyflakes stoq stoqlib
+	pyflakes stoq stoqlib plugins
 
 check:
 	LC_ALL=C trial stoq stoqlib

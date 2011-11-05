@@ -77,8 +77,8 @@ class TestSintegraGenerator(DomainTest):
         sale.order()
 
         method = PaymentMethod.get_by_name(self.trans, 'money')
-        payment = method.create_inpayment(sale.group,
-                                          sale.get_sale_subtotal())
+        method.create_inpayment(sale.group,
+                                sale.get_sale_subtotal())
 
         sale.confirm()
         sale.set_paid()

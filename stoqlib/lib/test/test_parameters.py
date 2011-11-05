@@ -46,11 +46,11 @@ class TestParameter(DomainTest):
         person = Person(name='Jonas', connection=self.trans)
         person.addFacet(IIndividual, connection=self.trans)
         role = EmployeeRole(connection=self.trans, name='desenvolvedor')
-        employee = person.addFacet(IEmployee, connection=self.trans,
-                                   role=role)
+        person.addFacet(IEmployee, connection=self.trans,
+                        role=role)
         self.salesperson = person.addFacet(ISalesPerson,
                                            connection=self.trans)
-        company = person.addFacet(ICompany, connection=self.trans)
+        person.addFacet(ICompany, connection=self.trans)
         client = person.addFacet(IClient, connection=self.trans)
         self.branch = person.addFacet(IBranch, connection=self.trans)
 
@@ -100,7 +100,6 @@ class TestParameter(DomainTest):
 
     def testUseLogicQuantity(self):
         storable = self.create_storable()
-        param = self.sparam.USE_LOGIC_QUANTITY
         self.assertEqual(storable._check_logic_quantity(), None)
         self.sparam.update_parameter(parameter_name='USE_LOGIC_QUANTITY',
                                      value=u'0')

@@ -72,7 +72,7 @@ class EmployeeImporter(CSVImporter):
                                    registry_number=data.employee_number)
 
         start = self.parse_date(data.start)
-        role_history = EmployeeRoleHistory(
+        EmployeeRoleHistory(
             connection=trans, role=role,
             employee=employee,
             is_active=True,
@@ -84,12 +84,13 @@ class EmployeeImporter(CSVImporter):
                                            state=data.state,
                                            country=data.country)
         streetnumber = data.streetnumber and int(data.streetnumber) or None
-        address = Address(is_main_address=True,
-                          person=person, city_location=ctloc,
-                          connection=trans,
-                          street=data.street,
-                          streetnumber=streetnumber,
-                          district=data.district)
+        Address(is_main_address=True,
+                person=person,
+                city_location=ctloc,
+                connection=trans,
+                street=data.street,
+                streetnumber=streetnumber,
+                district=data.district)
 
         profile = UserProfile.selectOneBy(name=data.profile, connection=trans)
 

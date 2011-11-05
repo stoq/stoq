@@ -26,7 +26,6 @@
 
 from decimal import Decimal
 
-from stoqlib.database.runtime import get_connection, get_current_branch
 from stoqlib.reporting.template import (SearchResultsReport, PriceReport,
                                         ObjectListReport)
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC

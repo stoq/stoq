@@ -28,10 +28,8 @@ import gtk
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
-from stoqlib.database.runtime import get_connection
 from stoqlib.domain.payment.views import PaymentMethodView
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.message import marker
 from stoqlib.lib.translation import stoqlib_gettext
 
 N_ = _ = stoqlib_gettext

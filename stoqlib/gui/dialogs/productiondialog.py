@@ -24,7 +24,6 @@
 ##
 
 from decimal import Decimal
-from sys import maxint as MAXINT
 
 import gtk
 from gtk import gdk
@@ -232,7 +231,6 @@ class ProductionProductSlave(GladeSlaveDelegate):
         self.remove_product_button.set_sensitive(can_remove)
 
     def _get_columns(self):
-        adj = gtk.Adjustment(upper=MAXINT, step_incr=1)
         return [Column('code', title=_(u'Code'), data_type=int),
                 Column('category', title=_(u'Category'), data_type=str,
                         expand=True, sorted=True),
@@ -312,7 +310,6 @@ class ProductionComponentSlave(GladeSlaveDelegate):
         self.export_csv_button.set_sensitive(self.has_rows)
 
     def _get_columns(self):
-        adj = gtk.Adjustment(upper=MAXINT, step_incr=1)
         return [Column('industrialized_str', title=_(u'Ind.'), data_type=str),
                 Column('code', title=_(u'code'), data_type=str),
                 Column('category', title=_(u'Category'), data_type=str,

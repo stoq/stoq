@@ -30,10 +30,7 @@ import gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.person import Person
-from stoqlib.domain.product import Product
 from stoqlib.lib.countries import get_countries
 from stoqlib.lib.translation import stoqlib_gettext
 

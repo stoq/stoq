@@ -24,7 +24,6 @@
 
 import datetime
 
-import gobject
 import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError

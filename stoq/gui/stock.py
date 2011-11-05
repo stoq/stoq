@@ -41,7 +41,6 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
-from stoqlib.lib.message import warning
 from stoqlib.gui.editors.producteditor import ProductStockEditor
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard

@@ -369,7 +369,7 @@ class TestSellable(DomainTest):
     def testRemove(self):
         # Remove category price and sellable
         sellable = self.create_sellable()
-        storable = sellable.product.addFacet(IStorable, connection=self.trans)
+        sellable.product.addFacet(IStorable, connection=self.trans)
 
         ClientCategoryPrice(sellable=sellable,
                             category=self.create_client_category(),

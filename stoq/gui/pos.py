@@ -511,7 +511,6 @@ class PosApp(AppWindow):
         self.set_sensitive([self.advanced_search], has_quantity)
 
     def _read_quantity(self):
-        quantity_text = self.quantity.get_text()
         try:
             quantity = self.quantity.read()
         except ValidationError:

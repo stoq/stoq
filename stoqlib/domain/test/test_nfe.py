@@ -41,8 +41,7 @@ from stoqlib.lib.pluginmanager import get_plugin_manager
 
 # This test should be inside plugins/nfe, but it's not reachable there
 sys.path.append('plugins/nfe')
-from nfegenerator import (NFeGenerator, remove_accentuation, nfe_tostring,
-                          NFeIdentification)
+from nfegenerator import NFeGenerator, remove_accentuation, NFeIdentification
 
 
 class TestNfeGenerator(DomainTest):

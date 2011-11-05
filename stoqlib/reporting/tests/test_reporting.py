@@ -271,18 +271,18 @@ class TestReport(DomainTest):
         storable = product.addFacet(IStorable, connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
 
-        source = CommissionSource(sellable=sellable,
-                                  direct_value=Decimal(10),
-                                  installments_value=1,
-                                  connection=self.trans)
+        CommissionSource(sellable=sellable,
+                         direct_value=Decimal(10),
+                         installments_value=1,
+                         connection=self.trans)
 
         sale.order()
 
         method = PaymentMethod.get_by_name(self.trans, 'money')
         till = Till.get_last_opened(self.trans)
-        payment = method.create_inpayment(sale.group,
-                                          sale.get_sale_subtotal(),
-                                          till=till)
+        method.create_inpayment(sale.group,
+                                sale.get_sale_subtotal(),
+                                till=till)
         sale.confirm()
         sale.set_paid()
 

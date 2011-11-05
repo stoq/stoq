@@ -102,10 +102,12 @@ class PurchaseImporter(CSVImporter):
                                          connection=trans)
 
         for purchase_item in purchase.get_items():
-            receicing_item = ReceivingOrderItem(connection=trans,
-                                                cost=purchase_item.sellable.cost,
-                                                sellable=purchase_item.sellable,
-                                                quantity=int(data.quantity),
-                                                purchase_item=purchase_item,
-                                                receiving_order=receiving_order)
+            ReceivingOrderItem(
+                connection=trans,
+                cost=purchase_item.sellable.cost,
+                sellable=purchase_item.sellable,
+                quantity=int(data.quantity),
+                purchase_item=purchase_item,
+                receiving_order=receiving_order
+                )
         receiving_order.confirm()

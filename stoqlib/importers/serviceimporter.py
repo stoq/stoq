@@ -57,5 +57,5 @@ class ServiceImporter(CSVImporter):
                             cost=int(data.cost),
                             code=data.barcode,
                             barcode=data.barcode)
-        service = Service(sellable=sellable,
-                          connection=trans)
+        Service(sellable=sellable,
+                connection=trans)

@@ -236,10 +236,10 @@ def ensure_sellable_constants():
                  TaxType.NONE,
                  TaxType.SERVICE]:
         desc = describe_constant(enum)
-        constant = SellableTaxConstant(description=desc,
-                                       tax_type=int(enum),
-                                       tax_value=None,
-                                       connection=trans)
+        SellableTaxConstant(description=desc,
+                            tax_type=int(enum),
+                            tax_value=None,
+                            connection=trans)
 
     trans.commit(close=True)
 

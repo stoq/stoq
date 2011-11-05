@@ -379,7 +379,6 @@ class BaseRMLReport(object):
         """
         conn = get_connection()
         branch = get_current_branch(conn)
-        branch_address = branch.person.address
         logo = _get_logotype_path(conn)
 
         ns['title'] = self.title

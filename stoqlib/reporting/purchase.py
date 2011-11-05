@@ -277,7 +277,6 @@ class PurchaseOrderReport(BaseStoqReport):
                               table_line=TABLE_LINE_BLANK, width=730)
 
     def _setup_items_table(self):
-        items = self._order.get_items()
         # XXX: Stoqlib Reporting try to apply len() on the table data, but
         # Purchase's get_items returns a SelectResult instance (ORMObject)
         # that not supports the len operator.

@@ -25,7 +25,7 @@
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
-from stoqlib.database.orm import (AND, const, UnicodeCol, IntCol, ForeignKey,
+from stoqlib.database.orm import (AND, UnicodeCol, IntCol, ForeignKey,
                                   BoolCol, ILIKE)
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.base import Domain
