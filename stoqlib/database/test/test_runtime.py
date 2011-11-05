@@ -78,12 +78,6 @@ class StoqlibTransactionTest(DomainTest):
                                   WillBeCommitted.SQL_CREATE)))
         self.trans.commit()
 
-    def setDown(self):
-        self.trans.query(WillBeCommitted.SQL_DROP)
-        trans.commit()
-
-        super(StoqlibTransactionTest, self).setDown()
-
     def test_transaction_commit_hook(self):
         # Dummy will only be asserted for creation on the first commit.
         # After that it should pass all assert for nothing made.

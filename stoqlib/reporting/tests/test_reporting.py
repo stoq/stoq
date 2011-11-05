@@ -65,8 +65,8 @@ _search_restore_columns = StoqlibSearchSlaveDelegate.restore_columns
 
 class TestReport(DomainTest):
 
-    def tearUp(self):
-        super(TestReport, self).tearUp()
+    def setUp(self):
+        super(TestReport, self).setUp()
 
         # Some tests in here use searchs to populate the report. Avoid
         # restoring the cache, if any, or we will have inexplicable diff.
