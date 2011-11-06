@@ -27,7 +27,6 @@
 
 import sets
 import socket
-import subprocess
 
 from dateutil.parser import parse
 from kiwi.component import get_utility, provide_utility
@@ -48,6 +47,7 @@ from stoqlib.domain.station import BranchStation
 from stoqlib.domain.synchronization import BranchSynchronization
 from stoqlib.domain.system import TransactionEntry
 from stoqlib.enums import SyncPolicy
+from stoqlib.lib.process import Process, PIPE
 from stoqlib.lib.xmlrpc import ServerProxy, XMLRPCService
 
 log = Logger('stoqlib.synchronization')
@@ -268,12 +268,12 @@ class SynchronizationService(XMLRPCService):
             stdout = None
         else:
             cmd += '-q'
-            stdout = subprocess.PIPE
+            stdout = PIPE
 
         log.info('sql_prepare: executing %s' % cmd)
-        proc = subprocess.Popen(cmd, shell=True,
-                                stdin=subprocess.PIPE,
-                                stdout=stdout)
+        proc = Process(cmd, shell=True,
+                       stdin=PIPE,
+                       stdout=stdout)
 
         self._processes[proc.pid] = proc
         log.info('sql_prepare: PID is %d' % (proc.pid, ))

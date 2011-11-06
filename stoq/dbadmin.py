@@ -202,15 +202,15 @@ class StoqCommandHandler:
         trans.commit()
 
     def _create_dbuser(self, username):
-        import subprocess
         import os
+        from stoqlib.lib.process import Process, PIPE
         for envname in ['PGUSER', 'PGHOST']:
             if envname in os.environ:
                 del os.environ[envname]
 
         # See if we can connect to the database
         args = ['psql', 'postgres', username, '-c', 'SELECT 1;']
-        proc = subprocess.Popen(args, stdout=subprocess.PIPE)
+        proc = Process(args, stdout=PIPE)
         proc.communicate()
         if proc.returncode == 0:
             return 0
@@ -219,7 +219,7 @@ class StoqCommandHandler:
                 '-u', 'postgres',
                 'stoqcreatedbuser',
                 username]
-        proc = subprocess.Popen(args)
+        proc = Process(args)
         proc.communicate()
         if proc.returncode != 0:
             print "ERROR: Failed to run %r" % (args, )

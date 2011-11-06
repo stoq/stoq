@@ -22,7 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 import os
-import subprocess
 import atexit
 
 try:
@@ -42,6 +41,7 @@ from stoqlib.database.testsuite import (provide_database_settings,
 from stoqlib.domain.interfaces import ICompany, IBranch
 from stoqlib.domain.person import Person
 from stoqlib.domain.station import BranchStation
+from stoqlib.lib.process import Process
 
 from tests import base
 base #pyflakes
@@ -164,7 +164,7 @@ def _initialize_server():
               SyncTestData.shop_dbname, "shop-computer",
               SyncTestData.db_username))
     log.info("Starting up server with command %s" % cmd)
-    SyncTestData.server_proc = subprocess.Popen(cmd, shell=True)
+    SyncTestData.server_proc = Process(cmd, shell=True)
     atexit.register(terminate_server, SyncTestData.server_proc)
 
 def bootstrap():

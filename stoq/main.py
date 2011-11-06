@@ -95,6 +95,7 @@ def _exit_func():
 
     from stoqlib.database.runtime import get_current_user, get_connection
     from stoqlib.exceptions import StoqlibError
+    from stoqlib.lib.process import Process
     try:
         user = get_current_user(get_connection())
         if user:
@@ -106,8 +107,7 @@ def _exit_func():
         _cur_exit_func()
 
     if _restart:
-        import subprocess
-        subprocess.Popen([sys.argv[0]], shell=True)
+        Process([sys.argv[0]], shell=True)
 
 def restart_stoq_atexit():
     global _restart
