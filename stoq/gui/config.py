@@ -39,7 +39,7 @@ if network database:
 > PluginStep
 if activate tef:
     > TefStep
-> AdminPasswordStep
+> StoqAdminPasswordStep
 > CreateDatabaseStep
 > FinishInstallationStep
 
@@ -77,6 +77,7 @@ from stoqlib.gui.base.wizards import BaseWizard, WizardEditorStep
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.processview import ProcessView
 from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.osutils import read_registry_key
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import validate_email
 from stoqlib.lib.formatters import raw_phone_number
@@ -115,6 +116,7 @@ class BaseWizardStep(WizardStep, GladeSlaveDelegate):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
 
 
+
 class WelcomeStep(BaseWizardStep):
     gladefile = "WelcomeStep"
 
@@ -129,8 +131,32 @@ class WelcomeStep(BaseWizardStep):
         self.image1.set_from_pixbuf(logo)
         self.title_label.set_bold(True)
 
+    def _postgres_from_stoq_installer(self):
+        if read_registry_key(
+            'HKCC', r'Software\Stoq',
+            'InstalledPostgres') != 1:
+            return False
+        # Make sure PostgreSQL is still installed
+        basedir = read_registry_key(
+            'HKLM', r'Software\PostgreSQL\Installations\postgresql-8.4',
+            'Base Directory')
+        return basedir is not None
+
+    def _get_postgres_port(self):
+        return read_registry_key(
+            'HKLM', r'Software\PostgreSQL\Services\postgresql-8.4',
+            'Port')
+
     def next_step(self):
-        return DatabaseLocationStep(self.wizard, self)
+        if self._postgres_from_stoq_installer():
+            settings = self.wizard.settings
+            settings.address = "localhost"
+            settings.dbname = "stoq"
+            settings.username = "postgres"
+            settings.port = self._get_postgres_port()
+            return PostgresAdminPasswordStep(self.wizard, self)
+        else:
+            return DatabaseLocationStep(self.wizard, self)
 
 
 class DatabaseLocationStep(BaseWizardStep):
@@ -152,19 +178,7 @@ class DatabaseLocationStep(BaseWizardStep):
         #        is_developer_mode() or STOQ_DATABASE_NAME
         settings.dbname = "stoq"
 
-        # Try to connect, we don't care if we can connect,
-        # we just want to know if it's properly installed
-        self.wizard.try_connect(settings, warn=False)
-
-        # Corrupted or a non-Stoq database
-        if self.wizard.check_incomplete_database():
-            settings.dbname = ""
-            return DatabaseSettingsStep(self.wizard, self, focus_dbname=True)
-
-        if self.wizard.has_installed_db:
-            return FinishInstallationStep(self.wizard)
-
-        return InstallationModeStep(self.wizard, self)
+        return self.wizard.connect_for_settings(self)
 
     def on_radio_local__activate(self, radio):
         self.wizard.go_to_next()
@@ -312,7 +326,7 @@ class PluginStep(BaseWizardStep):
 
         if self.enable_tef.get_active() and not self.wizard.tef_request_done:
             return TefStep(self.wizard, self)
-        return AdminPasswordStep(self.wizard, self)
+        return StoqAdminPasswordStep(self.wizard, self)
 
 
 class TefStep(WizardEditorStep):
@@ -374,7 +388,7 @@ class TefStep(WizardEditorStep):
     def next_step(self):
         # We already sent the details, but may still be on the same step.
         if self.wizard.tef_request_done:
-            return AdminPasswordStep(self.wizard, self.previous)
+            return StoqAdminPasswordStep(self.wizard, self.previous)
 
         api = WebService()
         response = api.tef_request(self.model.name, self.model.email,
@@ -429,8 +443,7 @@ class TefStep(WizardEditorStep):
         self._show_error()
 
 
-class AdminPasswordStep(BaseWizardStep):
-    """ Ask a password for the new user being created. """
+class PasswordStep(BaseWizardStep):
     gladefile = 'AdminPasswordStep'
 
     def __init__(self, wizard, previous):
@@ -439,16 +452,6 @@ class AdminPasswordStep(BaseWizardStep):
             self.get_description_label())
         self.title_label.set_markup(self.get_title_label())
         self.setup_slaves()
-
-    def get_title_label(self):
-        return '<b>%s</b>' % _("Administrator account")
-
-    def get_description_label(self):
-        return _("I'm adding a user account called <b>%s</b> which will "
-                 "have administrator privilegies.\n\nTo be "
-                 "able to create other users you need to login "
-                 "with this user in the admin application and "
-                 "create them.") % USER_ADMIN_DEFAULT_NAME
 
     def get_slave(self):
         return PasswordEditorSlave(None)
@@ -465,6 +468,51 @@ class AdminPasswordStep(BaseWizardStep):
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
         self.password_slave.password.grab_focus()
+
+
+class PostgresAdminPasswordStep(PasswordStep):
+    """ Ask a password for posgres administration user. """
+    title_label = _("PostgresSQL 'postgres' password")
+
+    def get_title_label(self):
+        return '<b>%s</b>' % _("PostgreSQL password")
+
+    def get_description_label(self):
+        return _("To be able to create a new Stoq database you need to enter "
+                 "the password of the <b>postgres</b> user for the PostgreSQL "
+                 "database we're installing to."
+                 "This is the same password you were asked when you installed"
+                 "PostgreSQL on this computer.")
+
+    def get_slave(self):
+        return PasswordEditorSlave(None, confirm_password=False)
+
+    #
+    # WizardStep hooks
+    #
+
+    def next_step(self):
+        self.wizard.settings.password = self.password_slave.model.new_password
+        return self.wizard.connect_for_settings(self)
+
+
+class StoqAdminPasswordStep(PasswordStep):
+    """ Ask a password for the new user being created. """
+    title_label = _("Administrator account")
+
+    def get_title_label(self):
+        return '<b>%s</b>' % _("Administrator account")
+
+    def get_description_label(self):
+        return _("I'm adding a user account called <b>%s</b> which will "
+                 "have administrator privilegies.\n\nTo be "
+                 "able to create other users you need to login "
+                 "with this user in the admin application and "
+                 "create them.") % USER_ADMIN_DEFAULT_NAME
+
+    #
+    # WizardStep hooks
+    #
 
     def validate_step(self):
         good_pass = self.password_slave.validate_confirm()
@@ -970,6 +1018,20 @@ class FirstTimeConfigWizard(BaseWizard):
               register_station=False,
               load_plugins=True)
 
+    def connect_for_settings(self, step):
+        # Try to connect, we don't care if we can connect,
+        # we just want to know if it's properly installed
+        self.try_connect(self.settings, warn=False)
+
+        # Corrupted or a non-Stoq database
+        if self.check_incomplete_database():
+            self.settings.dbname = ""
+            return DatabaseSettingsStep(self, step, focus_dbname=True)
+
+        if self.has_installed_db:
+            return FinishInstallationStep(self)
+
+        return InstallationModeStep(self, step)
     #
     # WizardStep hooks
     #
