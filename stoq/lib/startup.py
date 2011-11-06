@@ -67,6 +67,8 @@ def setup_path():
     if platform.system() != 'Windows':
         return
 
+    # Pyflakes runs on non-windows and can't find WindowsError
+    WindowsError = globals()['WindowsError']
     paths = []
     import _winreg
     try:
