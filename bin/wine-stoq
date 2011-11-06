@@ -3,7 +3,7 @@ STOQDIR=$(dirname `which stoq`)
 
 export PYTHONPATH=$STOQDIR/../../stoqlib\;$STOQDIR/../../kiwi\;$STOQDIR/../../stoqdrivers
 export WINEDEBUG=fixme-all
-export WINEPREFIX=`cat $STOQDIR/../.wine-build-stoq-prefix`
+export WINEPREFIX=`pwd`/../stoq-win32/wine-prefix
 # To avoid dragging in canberra
 unset GTK_MODULES
 
