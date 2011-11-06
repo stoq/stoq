@@ -27,12 +27,12 @@
 
 import errno
 import os
-import subprocess
 
 import glib
 import gtk
 from kiwi.utils import gsignal
 
+from stoqlib.lib.process import Process, PIPE
 
 CHILD_TIMEOUT = 100 # in ms
 N_BYTES = 4096 # a page
@@ -103,10 +103,10 @@ class ProcessView(gtk.ScrolledWindow):
         self.feed('Executing: %s\r\n' % (' '.join(args)))
         kwargs = {}
         if self.listen_stdout:
-            kwargs['stdout'] = subprocess.PIPE
+            kwargs['stdout'] = PIPE
         if self.listen_stderr:
-            kwargs['stderr'] = subprocess.PIPE
-        self.proc = subprocess.Popen(args, **kwargs)
+            kwargs['stderr'] = PIPE
+        self.proc = Process(args, **kwargs)
         if self.listen_stdout:
             self._watch_fd(self.proc.stdout)
         if self.listen_stderr:

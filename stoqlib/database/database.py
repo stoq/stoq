@@ -29,7 +29,6 @@
 import os
 import platform
 import socket
-import subprocess
 import time
 
 from kiwi.component import get_utility
@@ -39,6 +38,7 @@ from stoqlib.database.exceptions import SQLError
 from stoqlib.database.interfaces import IDatabaseSettings
 
 from stoqlib.lib.message import warning
+from stoqlib.lib.process import Process, PIPE
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -125,9 +125,6 @@ def execute_sql(filename):
         kwargs = {}
         if _system == 'Windows':
             # Hide the console window
-            startupinfo = subprocess.STARTUPINFO()
-            startupinfo.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
-            kwargs['startupinfo'] = startupinfo
             # For some reason XP doesn't like interacting with
             # proceses via pipes
             read_from_pipe = False
@@ -148,11 +145,11 @@ def execute_sql(filename):
 
         args.append(settings.dbname)
         log.debug('executing %s' % (' '.join(args), ))
-        proc = subprocess.Popen(args,
-                                stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                **kwargs)
+        proc = Process(args,
+                       stdin=PIPE,
+                       stdout=PIPE,
+                       stderr=PIPE,
+                       **kwargs)
 
         if read_from_pipe:
             # We don't want to see notices on the output, skip them,
@@ -191,7 +188,7 @@ def start_shell(command=None, quiet=False):
 
         print 'Connecting to %s' % (
             settings.get_connection_uri(filter_password=True),)
-        proc = subprocess.Popen(args)
+        proc = Process(args)
         proc.wait()
     else:
         raise NotImplementedError(settings.rdbms)
@@ -239,9 +236,9 @@ def test_connection():
         args.append(settings.dbname)
 
         log.debug('executing %s' % (' '.join(args), ))
-        proc = subprocess.Popen(args,
-                                stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE)
+        proc = Process(args,
+                       stdin=PIPE,
+                       stdout=PIPE)
 
         retval = proc.wait()
         return retval == 0
@@ -266,7 +263,7 @@ def dump_database(filename):
         args.append(settings.dbname)
 
         log.debug('executing %s' % (' '.join(args), ))
-        proc = subprocess.Popen(args)
+        proc = Process(args)
         return proc.wait() == 0
     else:
         raise NotImplementedError(settings.rdbms)
@@ -307,7 +304,7 @@ def restore_database(dump):
 
         log.debug('executing %s' % (' '.join(args), ))
 
-        proc = subprocess.Popen(args, stderr=subprocess.PIPE)
+        proc = Process(args, stderr=PIPE)
         proc.wait()
         return newname
     else:
@@ -319,7 +316,7 @@ def dump_table(table, filename=None):
     Note this does not include the schema itself, just the data.
     To get the data call stdout.read() on the returned object.
     @param table: table to write
-    @param proc: a subprocess.Popen instance
+    @param proc: a Process instance
     """
     settings = get_utility(IDatabaseSettings)
 
@@ -337,9 +334,9 @@ def dump_table(table, filename=None):
         args.append(settings.dbname)
 
         log.debug('executing %s' % (' '.join(args), ))
-        return subprocess.Popen(args,
-                                stdout=subprocess.PIPE,
-                                env=dict(LANG='C'))
+        return Process(args,
+                       stdout=PIPE,
+                       env=dict(LANG='C'))
     else:
         raise NotImplementedError(settings.rdbms)
 
@@ -370,14 +367,11 @@ def check_version(conn):
         kwargs = {}
         args = ['psql']
         if _system == 'Windows':
-            startupinfo = subprocess.STARTUPINFO()
-            startupinfo.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
-            kwargs['startupinfo'] = startupinfo
             # FIXME: figure out why this isn't working
             return
         else:
             args.append('--version')
-        p = subprocess.Popen(args, stdout=subprocess.PIPE, **kwargs)
+        p = Process(args, stdout=PIPE, **kwargs)
         stdout = p.communicate()[0]
         line = stdout.split('\n', 1)[0]
         if line.endswith('\r'):
