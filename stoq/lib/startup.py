@@ -46,6 +46,7 @@ from stoqlib.exceptions import (DatabaseError, StoqlibError,
 from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.interfaces import  IApplicationDescriptions
 from stoqlib.lib.message import error
+from stoqlib.lib.osutils import read_registry_key
 
 from stoq.lib.configparser import register_config, StoqConfig
 from stoq.lib.options import get_option_parser
@@ -67,27 +68,19 @@ def setup_path():
     if platform.system() != 'Windows':
         return
 
-    # Pyflakes runs on non-windows and can't find WindowsError
-    from exceptions import WindowsError
     paths = []
-    import _winreg
-    try:
-        PSQL_VERSION = '8.4'
-        key = r'Software\PostgreSQL\Installations\postgresql-%s' % (
-            PSQL_VERSION, )
-        postgres = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, key)
-        value, key_type = _winreg.QueryValueEx(postgres, 'Base Directory')
-        paths.append(os.path.join(value, 'bin'))
-    except WindowsError, e:
-        log.info("Error while opening registry key %r: %r" % (key, e))
 
-    try:
-        postgres = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER,
-            r'Software\Stoq')
-        value, key_type = _winreg.QueryValueEx(postgres, 'Path')
-        paths.append(value)
-    except WindowsError, e:
-        log.info("Error while opening registry key %r: %r" % (key, e))
+    # PostgreSQL, we're only working with 8.4 for now
+    key = r'Software\PostgreSQL\Installations\postgresql-8.4'
+    base_dir = read_registry_key('HKLM', key, 'Base Directory')
+    if base_dir is not None:
+        paths.append(os.path.join(base_dir, 'bin'))
+
+    # Stoq, for stoqdbadmin and restarting Stoq itself
+    key = r'Software\Stoq'
+    stoq_dir = read_registry_key('HKCC', r'Software\Stoq', 'Path')
+    if stoq_dir is not None:
+        paths.append(stoq_dir)
 
     for path in paths:
         if path not in os.environ['PATH']:
