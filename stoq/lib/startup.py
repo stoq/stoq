@@ -68,7 +68,7 @@ def setup_path():
         return
 
     # Pyflakes runs on non-windows and can't find WindowsError
-    WindowsError = globals()['WindowsError']
+    from exceptions import WindowsError
     paths = []
     import _winreg
     try:
