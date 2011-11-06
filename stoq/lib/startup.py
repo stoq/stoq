@@ -31,6 +31,7 @@ import socket
 import sys
 
 from kiwi.component import provide_utility
+from kiwi.log import Logger
 from stoqlib.database.admin import ensure_admin_user, initialize_system
 from stoqlib.database.database import check_version
 from stoqlib.database.migration import StoqlibSchemaMigration
@@ -50,6 +51,7 @@ from stoq.lib.configparser import register_config, StoqConfig
 from stoq.lib.options import get_option_parser
 
 _ = gettext.gettext
+log = Logger('startup')
 
 def _check_tables():
     # Check so SystemTable is present
@@ -59,6 +61,35 @@ def _check_tables():
             _("Database schema error"),
             _("Table 'system_table' does not exist.\n"
               "Consult your database administrator to solve this problem."))
+
+def setup_path():
+    import platform
+    if platform.system() != 'Windows':
+        return
+
+    paths = []
+    import _winreg
+    try:
+        PSQL_VERSION = '8.4'
+        key = r'Software\PostgreSQL\Installations\postgresql-%s' % (
+            PSQL_VERSION, )
+        postgres = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, key)
+        value, key_type = _winreg.QueryValueEx(postgres, 'Base Directory')
+        paths.append(os.path.join(value, 'bin'))
+    except WindowsError, e:
+        log.info("Error while opening registry key %r: %r" % (key, e))
+
+    try:
+        postgres = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER,
+            r'Software\Stoq')
+        value, key_type = _winreg.QueryValueEx(postgres, 'Path')
+        paths.append(value)
+    except WindowsError, e:
+        log.info("Error while opening registry key %r: %r" % (key, e))
+
+    for path in paths:
+        if path not in os.environ['PATH']:
+            os.environ['PATH'] += ';' + path
 
 def setup(config=None, options=None, register_station=True, check_schema=True,
           load_plugins=True):
@@ -87,6 +118,8 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     if options.verbose:
         from kiwi.log import set_log_level
         set_log_level('stoq*', 0)
+
+    setup_path()
 
     if config is None:
         config = StoqConfig()
