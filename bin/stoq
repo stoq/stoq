@@ -25,9 +25,7 @@ if hasattr(sys, 'frozen'):
     # - no need to check python version
     # - no need to setup python path
     # - no need to workaround setuptools
-    # Just set the system path so we can launch binaries
-    # such as stoqdbadmin without having to bother where to find it
-    os.environ['PATH'] += os.pathsep + '.'
+    pass
 else:
     # Required version of Python
     REQUIRED_VERSION = (2, 6)
@@ -96,6 +94,7 @@ else:
 import platform
 if platform.system() == 'Windows':
     os.environ['LANGUAGE'] = 'pt_BR.UTF-8'
+    import locale
     locale.setlocale(locale.LC_ALL, '')
 from stoq import main
 
