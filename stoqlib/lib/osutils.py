@@ -78,3 +78,28 @@ def get_username():
         return os.environ['USERNAME']
     else:
         raise SystemExit("unknown system: %s" % (_system, ))
+
+def read_registry_key(root, key, value):
+    """Reads a registry key and return it's value.
+    None is returned if the value couldn't be read
+    """
+    if platform.system() != 'Windows':
+        return None
+    import exceptions
+    import _winreg
+
+    if root == 'HKCC':
+        root = _winreg.HKEY_CURRENT_USER
+    elif root == 'HKLM':
+        root = _winreg.HKEY_LOCAL_MACHINE
+    else:
+        raise ValueError(root)
+
+    try:
+        k = _winreg.OpenKey(root, key)
+        reg_value, key_type = _winreg.QueryValueEx(k, value)
+    except exceptions.WindowsError:
+        #log.info('Error while reading %s/%s/%s: %r' % (root, k, value, e))
+        return None
+    return reg_value
+
