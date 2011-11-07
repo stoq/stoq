@@ -59,7 +59,7 @@ class WelcomeDialog(gtk.Dialog):
         self.show_all()
 
     def get_uri(self):
-        if locale.getlocale()[0] == 'pt_BR':
+        if locale.getlocale()[0] == 'pt_BR' or platform.system() == 'Windows':
             content = environ.find_resource('html', 'welcome-pt_BR.html')
         else:
             content = environ.find_resource('html', 'welcome.html')
