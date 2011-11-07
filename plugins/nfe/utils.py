@@ -28,7 +28,7 @@ from unicodedata import normalize
 from xml.etree import ElementTree
 
 from stoqlib.database.runtime import get_connection
-from stoqlib.database.orm import AND, LIKE
+from stoqlib.database.orm import AND, LIKE, ILIKE
 from stoqlib.lib.parameters import sysparam
 
 from nfedomain import NFeCityData
@@ -105,9 +105,9 @@ def get_city_code(city_name, state=None, code=None):
     assert state_code is not None
 
     city_name = remove_accentuation(city_name)
-    city_data = NFeCityData.selectOneBy(city_name=city_name,
-                                        state_code=state_code,
-                                        connection=get_connection())
+    query = AND(NFeCityData.q.state_code == state_code,
+                ILIKE(NFeCityData.q.city_name, city_name))
+    city_data = NFeCityData.selectOne(query, connection=get_connection())
     if city_data is not None:
         return city_data.city_code
 
