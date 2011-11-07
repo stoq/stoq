@@ -819,12 +819,12 @@ class NFeProductDetails(BaseNFeXMLGroup):
                   (u'NCM', ''),
                   (u'EXTIPI', ''),
                   (u'CFOP', ''),
-                  (u'uCom', u'un'),
+                  (u'uCom', ''),
                   (u'qCom', ''),
                   (u'vUnCom', ''),
                   (u'vProd', ''),
                   (u'cEANTrib', ''),
-                  (u'uTrib', u'un'),
+                  (u'uTrib', ''),
                   (u'qTrib', ''),
                   (u'vUnTrib', ''),
                   (u'vFrete', ''),
@@ -858,8 +858,8 @@ class NFeProductDetails(BaseNFeXMLGroup):
         self.set_attr('vProd', self.format_value(quantity * price))
         self.set_attr('qCom', self.format_value(quantity, precision=4))
         self.set_attr('qTrib', self.format_value(quantity, precision=4))
-        self.set_attr('uTrib', unit)
-        self.set_attr('uCom', unit)
+        self.set_attr('uTrib', unit or 'un')
+        self.set_attr('uCom', unit or 'un')
 
 
 #
