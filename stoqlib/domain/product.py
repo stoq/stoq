@@ -698,6 +698,7 @@ class ProductQualityTest(Domain):
         return _(self.success_value)
 
     def get_boolean_value(self):
+        assert self.test_type == self.TYPE_BOOLEAN
         if self.success_value == 'True':
             return True
         elif self.success_value == 'False':
@@ -706,6 +707,7 @@ class ProductQualityTest(Domain):
             raise ValueError, self.success_value
 
     def get_range_value(self):
+        assert self.test_type == self.TYPE_DECIMAL
         a, b = self.success_value.split(' - ')
         return Decimal(a), Decimal(b)
 

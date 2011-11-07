@@ -331,10 +331,10 @@ class SellableItemStep(WizardEditorStep):
                                                and bool(self.proxy.model)
                                                and bool(self.proxy.model.sellable))
         self.wizard.refresh_next(value and bool(len(self.slave.klist)))
-        
+
     def remove_items(self, items):
         """Remove items from the current L{IContainer}.
-    
+
         Subclasses can override this if special logic is necessary.
         """
         for item in items:

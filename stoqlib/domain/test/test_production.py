@@ -65,8 +65,14 @@ class TestProductionItem(DomainTest):
 
     def testCanProduce(self):
         item = self.create_production_item()
-        # quantity defaults to 1
         self.assertRaises(AssertionError, item.can_produce, 0)
+
+        # Cant produce if production havent started yet
+        self.assertFalse(item.can_produce(1))
+        item.order.start_production()
+
+
+        # quantity defaults to 1
         self.assertTrue(item.can_produce(1))
         self.assertFalse(item.can_produce(2))
         # if we lost one product we can not produce more items
@@ -83,10 +89,8 @@ class TestProductionItem(DomainTest):
     def testProduce(self):
         item = self.create_production_item(quantity=2)
         branch = item.order.branch
-        item.product.addFacet(IStorable, connection=self.trans)
         for material in item.order.get_material_items():
-            storable = material.product.addFacet(IStorable,
-                                                 connection=self.trans)
+            storable = IStorable(material.product)
             storable.increase_stock(2, branch)
 
         order = item.order
@@ -110,10 +114,8 @@ class TestProductionItem(DomainTest):
         item = self.create_production_item(quantity=2)
         order = item.order
         branch = order.branch
-        item.product.addFacet(IStorable, connection=self.trans)
         for component in item.get_components():
-            storable = component.component.addFacet(IStorable,
-                                                    connection=self.trans)
+            storable = IStorable(component.component)
             storable.increase_stock(2, branch)
 
         self.assertEqual(order.status, ProductionOrder.ORDER_OPENED)
@@ -168,9 +170,7 @@ class TestProductionMaterial(DomainTest):
         material = self.create_production_material()
         branch = material.order.branch
         product = material.product
-        storable = IStorable(product, None)
-        if storable is None:
-            storable = product.addFacet(IStorable, connection=self.trans)
+        storable = IStorable(product)
         storable.increase_stock(10, branch)
         material.needed = 20
         self.assertEqual(material.get_stock_quantity(), 10)
@@ -192,7 +192,7 @@ class TestProductionMaterial(DomainTest):
         material = self.create_production_material()
         branch = material.order.branch
         product = material.product
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = IStorable(product)
         storable.increase_stock(10, branch)
         self.assertEqual(material.get_stock_quantity(), 10)
 
@@ -210,10 +210,8 @@ class TestProductionMaterial(DomainTest):
         item = self.create_production_item()
         order = item.order
         branch = order.branch
-        item.product.addFacet(IStorable, connection=self.trans)
         for component in item.get_components():
-            storable = component.component.addFacet(IStorable,
-                                                    connection=self.trans)
+            storable = IStorable(component.component)
             storable.increase_stock(1, branch)
 
         order.start_production()
@@ -232,10 +230,8 @@ class TestProductionMaterial(DomainTest):
         item = self.create_production_item()
         order = item.order
         branch = order.branch
-        item.product.addFacet(IStorable, connection=self.trans)
         for material in item.order.get_material_items():
-            storable = material.product.addFacet(IStorable,
-                                                 connection=self.trans)
+            storable = IStorable(material.product)
             storable.increase_stock(10, branch)
 
         item.order.start_production()
@@ -249,3 +245,44 @@ class TestProductionMaterial(DomainTest):
                           product=component.component, connection=self.trans)
             consumed = component.quantity
             self.assertEqual(material.consumed, consumed)
+
+
+from stoqlib.domain.product import ProductQualityTest
+class TestProductionQuality(DomainTest):
+
+    def testProductionQualityCompleteProcess(self):
+        # Order with one product to produce 4 units
+        order = self.create_production_order()
+        item = self.create_production_item(quantity=4, order=order)
+        for material in item.order.get_material_items():
+            storable = IStorable(material.product)
+            storable.increase_stock(4, order.branch)
+
+
+        # The product has 2 quality tests
+        test1 = ProductQualityTest(connection=self.trans, product=item.product,
+                                       test_type=ProductQualityTest.TYPE_BOOLEAN)
+        test1.set_boolean_value(True)
+        test2 = ProductQualityTest(connection=self.trans, product=item.product,
+                                       test_type=ProductQualityTest.TYPE_DECIMAL)
+        test2.set_range_value(10, 20)
+        order.start_production()
+        self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)
+
+        # Since the item has tests, we cant produce anonimously
+        self.assertRaises(AssertionError, item.produce, 1)
+        user = self.create_user()
+
+        # Produce first item with a serial number
+        self.assertEqual(order.produced_items.count(), 0)
+        item.produce(1, user, [123456])
+        self.assertEqual(order.produced_items.count(), 1)
+        self.assertEqual(order.produced_items[0].serial_number, 123456)
+
+
+        # Status should still be PRODUCING
+        self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)
+
+        # Produce the rest
+        item.produce(3, user, [123457, 123458, 1234569])
+        self.assertEqual(order.status, ProductionOrder.ORDER_QA)

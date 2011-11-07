@@ -286,6 +286,12 @@ class ProductionItem(Domain):
         """
         assert self.can_produce(quantity)
 
+        # check if its ok to produce before consuming material
+        if self.product.has_quality_tests():
+            # We have some quality tests to assure. Register it for later
+            assert produced_by
+            assert len(serials) == quantity
+
         conn = self.get_connection()
         conn.savepoint('before_produce')
 
@@ -300,8 +306,6 @@ class ProductionItem(Domain):
                 raise
 
         if self.product.has_quality_tests():
-            # We have some quality tests to assure. Register it for later
-            assert len(serials) == quantity
             for serial in serials:
                 ProductionProducedItem(connection=self.get_connection(),
                                        order=self.order,
@@ -461,7 +465,6 @@ class ProductionMaterial(Domain):
         assert quantity > 0
 
         available = self.allocated - self.consumed - self.lost
-
         if quantity > available:
             raise ValueError(_('Can not consume this quantity.'))
 
@@ -527,7 +530,7 @@ class ProductionProducedItem(Domain):
     # ProductionItem already has a reference to Product, but we need it for
     # constraint checks UNIQUE(product_id, serial_number)
     product = ForeignKey('Product')
-    produced_by = ForeignKey('PersonAdaptToEmployee')
+    produced_by = ForeignKey('PersonAdaptToUser')
     produced_date = DateTimeCol()
     serial_number = IntCol()
     entered_stock = BoolCol(default=False)
