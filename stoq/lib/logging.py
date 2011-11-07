@@ -24,35 +24,10 @@
 ##
 ##
 
-import errno
 import os
-import platform
-import sys
 import time
 
-def setup_logging(appname, extended=True):
-    """Overrides sys.stdout/sys.stderr and writes it to a file,
-    this is necessary on windows got get any output from an application
-    which isn't a "console" application."""
-    if platform.system() == 'Windows':
-        logdir = os.path.join(os.environ['APPDATA'], appname, "logs")
-        if not os.path.exists(logdir):
-            os.makedirs(logdir)
-        # http://www.py2exe.org/index.cgi/StderrLog
-        for name in ['stdout', 'stderr']:
-            filename = os.path.join(logdir, name + ".log")
-            try:
-                fp = open(filename, "w")
-            except IOError, e:
-                if e.errno != errno.EACCES:
-                    raise
-                fp = open(os.devnull, "w")
-            setattr(sys, name, fp)
-
-    from kiwi import log
-    log.update_logger()
-    if not extended:
-        return False
+def setup_logging(appname):
     from stoqlib.lib.osutils import get_application_dir
     stoqdir = get_application_dir(appname)
 
@@ -65,7 +40,6 @@ def setup_logging(appname, extended=True):
     _log_filename = os.path.join(log_dir, 'stoq_%s.log' %
                                 time.strftime('%Y-%m-%d_%H-%M-%S'))
     _stream = set_log_file(_log_filename, 'stoq*')
-    log.update_logger()
 
     if hasattr(os, 'symlink'):
         link_file = os.path.join(stoqdir, 'stoq.log')
