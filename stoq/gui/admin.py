@@ -88,7 +88,7 @@ class Tasks(object):
                  (_('Devices'), 'devices',
                   'stoq-devices'),
                  (_('Employees'), 'employees',
-                  'stoq-devices'),
+                  'stoq-admin-app'),
                  (_('Events'), 'events',
                   'gtk-dialog-warning'),
                  (_('Roles'), 'employee_roles',
