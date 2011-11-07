@@ -492,7 +492,7 @@ class PostgresAdminPasswordStep(PasswordStep):
     #
 
     def next_step(self):
-        self.wizard.settings.password = self.password_slave.model.new_password
+        self.wizard.settings.password = str(self.password_slave.model.new_password)
         return self.wizard.connect_for_settings(self)
 
 
