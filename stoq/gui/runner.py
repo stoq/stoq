@@ -142,20 +142,15 @@ class ApplicationRunner(object):
         Runs an application
         @param appname: application to run
         """
-        if not self._user.profile.check_app_permission(appdesc.name):
+
+        if (appdesc.name != 'launcher' and
+            not self._user.profile.check_app_permission(appdesc.name)):
             error(_("This user lacks credentials \nfor application %s") %
                   appdesc.name)
             return
 
-        if self._current_app:
-            self._current_app.hide()
-
-        app = self._application_cache.get(appdesc.name)
-        if app is None:
-            app = self._load_app(appdesc)
-            self._application_cache[appdesc.name] = app
-        else:
-            app.main_window.activate()
+        app = self._load_app(appdesc)
+        app.main_window.activate()
 
         self._current_app = app
         self._appname = appdesc.name
@@ -207,7 +202,6 @@ class ApplicationRunner(object):
         old_user = self._get_current_username()
 
         if not self.login(try_cookie=False):
-            self._current_app.shutdown()
             return
 
         # If the username is the same

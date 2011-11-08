@@ -25,7 +25,6 @@
 
 import gtk
 from kiwi.ui.delegates import GladeDelegate
-from kiwi.argcheck import argcheck
 from twisted.internet import reactor
 
 from stoqlib.gui.base.dialogs import (get_dialog, run_dialog,
@@ -76,7 +75,6 @@ class BaseAppWindow(GladeDelegate):
     title = ''
     size = ()
 
-    @argcheck(BaseApp, object)
     def __init__(self, app, keyactions=None):
         self._sensitive_group = dict()
         self.app = app

@@ -122,7 +122,6 @@ class ProductionApp(SearchableAppWindow):
         self.ProductionPurchaseQuote.set_short_label(_("Purchase"))
         self.SearchProductionItem.set_short_label(_("Search items"))
         self.add_help_ui(_("Production help"), 'producao-inicio')
-        self.add_user_ui()
 
     def create_ui(self):
         self.menubar = self.uimanager.get_widget('/menubar')

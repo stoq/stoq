@@ -189,7 +189,6 @@ class PosApp(AppWindow):
         ]
         self.add_ui_actions(ui_string, actions)
         self.add_help_ui(_("POS help"), 'pdv-inicio')
-        self.add_user_ui()
 
     def create_ui(self):
         self.menubar = self.uimanager.get_widget('/menubar')

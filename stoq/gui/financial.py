@@ -398,7 +398,6 @@ class FinancialApp(AppWindow):
             ]
         self.add_ui_actions(ui_string, actions)
         self.add_help_ui(_("Financial help"), 'financial-inicio')
-        self.add_user_ui()
 
     def create_ui(self):
         self._update_actions()
