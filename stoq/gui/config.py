@@ -480,8 +480,8 @@ class PostgresAdminPasswordStep(PasswordStep):
     def get_description_label(self):
         return _("To be able to create a new Stoq database you need to enter "
                  "the password of the <b>postgres</b> user for the PostgreSQL "
-                 "database we're installing to."
-                 "This is the same password you were asked when you installed"
+                 "database we're installing to.\n\n"
+                 "This is the same password you were asked when you installed "
                  "PostgreSQL on this computer.")
 
     def get_slave(self):
