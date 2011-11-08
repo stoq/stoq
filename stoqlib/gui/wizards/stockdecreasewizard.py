@@ -31,11 +31,13 @@ import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.database.orm import AND
 from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.interfaces import (IBranch,
                                        IStorable, IEmployee)
 from stoqlib.domain.person import Person
+from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.lib.message import yesno
@@ -129,9 +131,10 @@ class DecreaseItemStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
-        return Sellable.get_available_sellables_query(
-            self.conn,
-            )
+        branch = get_current_branch(self.conn)
+        branch_query = ProductStockItem.q.branchID == branch.id
+        return AND(branch_query,
+                   Sellable.get_available_sellables_query(self.conn))
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)

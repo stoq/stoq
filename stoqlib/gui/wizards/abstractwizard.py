@@ -78,6 +78,7 @@ class _SellableSearch(SearchEditor):
                  ):
         self._query = query
         self._supplier = supplier
+        self._table = table
 
         SearchEditor.__init__(self, conn, selection_mode=selection_mode,
                               hide_footer=hide_footer, table=table,
@@ -118,12 +119,12 @@ class _SellableSearch(SearchEditor):
                    SearchColumn('description', title=_('Description'),
                                 data_type=str, expand=True, sorted=True)]
 
-        if hasattr(self.table, 'minimum_quantity'):
+        if self._table.columns.has_key('minimum_quantity'):
             columns.append(SearchColumn('minimum_quantity',
                                         title=_(u'Minimum Qty'),
                                         data_type=Decimal, visible=False))
 
-        if hasattr(self.table, 'stock'):
+        if self._table.columns.has_key('stock'):
             columns.append(SearchColumn('stock', title=_(u'In Stock'),
                                         data_type=Decimal))
 
