@@ -35,8 +35,10 @@ _ = stoqlib_gettext
 
 def _df(seconds, denominator=1, text='', past=True):
     if past:
+        # Translators: 15 [days|weeks|months|years] ago
         return _('%s %s ago') % ((seconds + denominator/2)/denominator, text)
     else:
+        # Translators: in 15 [days|weeks|months|years]
         return _('in %s %s') % ((seconds + denominator/2)/denominator, text)
 
 
@@ -65,7 +67,7 @@ def pretty_date(time=False, asdays=False):
 
     if days == 0 and not asdays:
         if seconds < 10:
-            return 'now'
+            return _('now')
         elif seconds < 60:
             return _df(seconds, 1, _('seconds'), past)
         elif seconds < 120:
