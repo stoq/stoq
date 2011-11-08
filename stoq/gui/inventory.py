@@ -220,7 +220,7 @@ class InventoryApp(SearchableAppWindow):
         inventory = trans.get(self.results.get_selected())
         inventory.cancel()
         trans.commit()
-
+        self.refresh()
         self._update_widgets()
 
     def _register_product_counting(self):
@@ -229,6 +229,7 @@ class InventoryApp(SearchableAppWindow):
         model = self.run_dialog(ProductCountingDialog, inventory, trans)
         finish_transaction(trans, model)
         trans.close()
+        self.refresh()
         self._update_widgets()
 
     def _adjust_product_quantities(self):
@@ -237,6 +238,7 @@ class InventoryApp(SearchableAppWindow):
         model = self.run_dialog(ProductsAdjustmentDialog, inventory, trans)
         finish_transaction(trans, model)
         trans.close()
+        self.refresh()
         self._update_widgets()
 
     def _update_filter_slave(self, slave):
