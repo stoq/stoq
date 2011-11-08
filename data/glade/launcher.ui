@@ -2,10 +2,10 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkWindow" id="admin">
-    <property name="width_request">800</property>
-    <property name="height_request">570</property>
-    <property name="title" translatable="yes" context="yes">launcher</property>
+  <object class="GtkWindow" id="launcher">
+    <property name="width_request">700</property>
+    <property name="height_request">600</property>
+    <property name="title" translatable="yes" context="yes">admin</property>
     <property name="window_position">center</property>
     <property name="destroy_with_parent">True</property>
     <child>
@@ -53,9 +53,9 @@
       <!-- column-name label -->
       <column type="gchararray"/>
       <!-- column-name name -->
-      <column type="gchararray"/>
-      <!-- column-name pixbuf -->
       <column type="GdkPixbuf"/>
+      <!-- column-name pixbuf -->
+      <column type="PyObject"/>
     </columns>
   </object>
 </interface>

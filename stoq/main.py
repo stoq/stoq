@@ -417,12 +417,18 @@ def run_app(options, appname):
 
     if appname:
         app = runner.get_app_by_name(appname)
+        runner.run(app)
     else:
-        app = runner.choose()
-        if not app:
-            return
+        from stoq.gui.launcher import Launcher
 
-    runner.run(app)
+        class App(object):
+            pass
+        app = App()
+        app.options = options
+        app.runner = runner
+        w = Launcher(app, runner)
+        app.main_window = w
+        w.show_all()
 
     log.debug("Entering reactor")
     from twisted.internet import reactor

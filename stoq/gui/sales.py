@@ -167,7 +167,6 @@ class SalesApp(SearchableAppWindow):
         self.SearchService.set_short_label(_("Services"))
         self.SearchDelivery.set_short_label(_("Deliveries"))
         self.add_help_ui(_("Sales help"), 'vendas-inicio')
-        self.add_user_ui()
 
     def create_ui(self):
         self.menubar = self.uimanager.get_widget('/menubar')

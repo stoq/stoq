@@ -33,10 +33,9 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
 from kiwi.log import Logger
 from stoqlib.database.orm import ORMObjectQueryExecuter
-from stoqlib.database.runtime import (get_current_user, new_transaction,
-                                      finish_transaction, get_connection,
+from stoqlib.database.runtime import (new_transaction, get_connection,
                                       get_current_branch)
-from stoqlib.lib.interfaces import IAppInfo, ICookieFile, IStoqConfig
+from stoqlib.lib.interfaces import IAppInfo, IStoqConfig
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.webservice import WebService
@@ -47,7 +46,6 @@ from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
-from stoqlib.gui.slaves.userslave import PasswordEditor
 from stoqlib.domain.inventory import Inventory
 
 import stoq
@@ -94,7 +92,8 @@ class AppWindow(BaseAppWindow):
             self.add_debug_ui()
 
         BaseAppWindow.__init__(self, app)
-        self.get_toplevel().add_accel_group(self.uimanager.get_accel_group())
+        toplevel = self.get_toplevel()
+        toplevel.add_accel_group(self.uimanager.get_accel_group())
         self.create_ui()
         self.setup_focus()
         self._check_demo_mode()
@@ -162,20 +161,6 @@ class AppWindow(BaseAppWindow):
             return
         self._version_checker = VersionChecker(self.conn, self)
         self._version_checker.check_new_version()
-
-    def _store_cookie(self, *args):
-        user = get_current_user(self.conn)
-        get_utility(ICookieFile).store(user.username,
-                                       user.password)
-
-    def _clear_cookie(self, *args):
-        get_utility(ICookieFile).clear()
-
-    def _change_password(self):
-        trans = new_transaction()
-        user = get_current_user(trans)
-        retval = self.run_dialog(PasswordEditor, trans, user)
-        finish_transaction(trans, retval)
 
     def _read_resource(self, domain, name):
         try:
@@ -291,12 +276,11 @@ class AppWindow(BaseAppWindow):
         for action in ag.list_actions():
             setattr(self, action.get_name(), action)
 
-    def add_help_ui(self, help_label, help_section):
+    def add_help_ui(self, help_label=None, help_section=None):
         ui_string = """<ui>
           <menubar action="menubar">
             <menu action="HelpMenu">
               <menuitem action="HelpContents"/>
-              <menuitem action="HelpHelp"/>
               <separator name="HelpSeparator"/>
               <menuitem action="HelpSupport"/>
               <menuitem action="HelpTranslate"/>
@@ -311,9 +295,6 @@ class AppWindow(BaseAppWindow):
         help_actions = [
             ("HelpMenu", None, _("_Help")),
             ("HelpContents", gtk.STOCK_HELP, _("Contents"), '<Shift>F1'),
-            ("HelpHelp", None, help_label, 'F1',
-             _("Show help for this Application"),
-             on_HelpHelp__activate),
             ("HelpTranslate", None, _("Translate Stoq..."), None,
              _("Translate this application online")),
             ("HelpSupport", None, _("Get support online..."), None,
@@ -322,44 +303,20 @@ class AppWindow(BaseAppWindow):
             ]
         self.add_ui_actions(ui_string, help_actions, 'HelpActions')
 
-    def add_user_ui(self):
-        ui_string = """<ui>
-          <menubar name="menubar">
-            <menu action="UserMenu">
-              <menuitem action="StoreCookie"/>
-              <menuitem action="ClearCookie"/>
-              <menuitem action="ChangePassword"/>
-              <separator/>
-              <menuitem action="ChangeUser"/>
-              <menuitem action="ChangeApplication"/>
-            </menu>
-          </menubar>
+        if help_label is not None:
+            ui_string = """<ui>
+            <menubar action="menubar">
+              <menu action="HelpMenu">
+                <menuitem action="HelpHelp"/>
+              </menu>
+            </menubar>
         </ui>"""
-
-        conn = get_connection()
-        user = get_current_user(conn)
-        user_actions = [
-            ('UserMenu', None, _('%s User') % user.username.capitalize()),
-            ('StoreCookie', gtk.STOCK_SAVE, _('_Store'), '<control>k',
-             _('Store a cookie')),
-            ('ClearCookie',     gtk.STOCK_CLEAR, _('_Clear'), '<control>e',
-             _('Clear the cookie')),
-            ('ChangePassword', gtk.STOCK_REFRESH, _('Chan_ge Password'),
-              '<control>g', _('Change the password')),
-            ('ChangeUser',    gtk.STOCK_REFRESH, _('C_hange User'), '<control>h',
-             _('Change user')),
-            ('ChangeApplication', gtk.STOCK_REFRESH, _('Change Application'),
-             'F5', _('Change application')),
-            ]
-        self.add_ui_actions(ui_string, user_actions, 'UserActions')
-
-        user_menu = self.uimanager.get_widget('/menubar/UserMenu')
-        user_menu.set_right_justified(True)
-
-        if sysparam(conn).DISABLE_COOKIES:
-            self._clear_cookie()
-            self.StoreCookie.props.visible = False
-            self.ClearCookie.props.visible = False
+            help_help_actions = [
+                ("HelpHelp", None, help_label, 'F1',
+                 _("Show help for this Application"),
+                 on_HelpHelp__activate),
+                ]
+            self.add_ui_actions(ui_string, help_help_actions, 'HelpHelpActions')
 
     def add_debug_ui(self):
         ui_string = """<ui>
@@ -424,9 +381,9 @@ class AppWindow(BaseAppWindow):
         if self.can_close_application():
             if self.search:
                 self.search.save_columns()
-            self.app.shutdown()
+            self.app.main_window.hide()
         # We must return True here or the window will be hidden.
-        return True
+        return False
 
     #
     # Callbacks
@@ -434,28 +391,6 @@ class AppWindow(BaseAppWindow):
 
     def on_Quit__activate(self, action):
         self.shutdown_application()
-
-    # User
-
-    def on_StoreCookie__activate(self, action):
-        self._store_cookie()
-
-    def on_ClearCookie__activate(self, action):
-        self._clear_cookie()
-
-    def on_ChangePassword__activate(self, action):
-        self._change_password()
-
-    def on_ChangeUser__activate(self, action):
-        self.app.runner.relogin()
-
-    def on_ChangeApplication__activate(self, action):
-        if not self.can_change_application():
-            return
-
-        appname = self.app.runner.choose(parent=self.get_toplevel())
-        if appname:
-            self.app.runner.run(appname)
 
     # Help
 

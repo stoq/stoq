@@ -101,7 +101,6 @@ class InventoryApp(SearchableAppWindow):
         self.adjust_action.set_short_label(_("Adjust"))
         self.counting_action.set_short_label(_("Count"))
         self.add_help_ui(_("Inventory help"), 'inventario-inicio')
-        self.add_user_ui()
 
     def create_ui(self):
         self.menubar = self.uimanager.get_widget('/menubar')

@@ -160,7 +160,6 @@ class StockApp(SearchableAppWindow):
         self.StockReceive.set_short_label(_("Receive"))
         self.StockTransfer.set_short_label(_("Transfer"))
         self.add_help_ui(_("Stock help"), 'vendas-inicio')
-        self.add_user_ui()
 
     def create_ui(self):
         self.menubar = self.uimanager.get_widget('/menubar')

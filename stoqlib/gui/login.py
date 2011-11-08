@@ -49,7 +49,7 @@ log = Logger('stoq. config')
 
 class LoginDialog(GladeDelegate, RunnableView):
     toplevel_name = gladefile = "LoginDialog"
-    size = (280, 230)
+    size = (-1, -1)
 
     def __init__(self, title=None):
         self.keyactions = { gtk.keysyms.Escape : self.on_escape_pressed }
@@ -304,6 +304,11 @@ class LoginHelper:
             else:
                 log.info("Authenticated user %s" % username)
                 self._force_username = None
+
+                if dialog.remember.get_active():
+                    get_utility(ICookieFile).store(user.username,
+                                                   user.password)
+
                 if dialog:
                     dialog.destroy()
 
