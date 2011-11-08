@@ -32,6 +32,7 @@ import datetime
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.database.orm import AND
 from stoqlib.database.runtime import (get_current_branch, get_current_user,
                                       new_transaction, finish_transaction)
 from stoqlib.domain.interfaces import ISalesPerson
@@ -39,6 +40,7 @@ from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.person import Person, ClientView, ClientCategory
+from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
@@ -204,7 +206,10 @@ class SaleQuoteItemStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
-        return Sellable.get_available_sellables_for_quote_query(self.conn)
+        branch = get_current_branch(self.conn)
+        branch_query = ProductStockItem.q.branchID == branch.id
+        return AND(branch_query,
+                   Sellable.get_available_sellables_for_quote_query(self.conn))
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
