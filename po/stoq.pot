@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-08 13:38-0200\n"
+"POT-Creation-Date: 2011-11-08 14:55-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3650,8 +3650,9 @@ msgstr ""
 #: ../stoq/gui/config.py:481
 msgid ""
 "To be able to create a new Stoq database you need to enter the password of "
-"the <b>postgres</b> user for the PostgreSQL database we're installing to."
-"This is the same password you were asked when you installedPostgreSQL on "
+"the <b>postgres</b> user for the PostgreSQL database we're installing to.\n"
+"\n"
+"This is the same password you were asked when you installed PostgreSQL on "
 "this computer."
 msgstr ""
 
@@ -11142,101 +11143,107 @@ msgstr ""
 msgid "There is no defined %s parameter datain the database."
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:38
+#. Translators: 15 [days|weeks|months|years] ago
+#: ../stoqlib/lib/prettydate.py:39
 #, python-format
 msgid "%s %s ago"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:40
+#. Translators: in 15 [days|weeks|months|years]
+#: ../stoqlib/lib/prettydate.py:42
 #, python-format
 msgid "in %s %s"
 msgstr ""
 
 #: ../stoqlib/lib/prettydate.py:70
+msgid "now"
+msgstr ""
+
+#: ../stoqlib/lib/prettydate.py:72
 msgid "seconds"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:72
+#: ../stoqlib/lib/prettydate.py:74
 msgid "a minute ago"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:72
+#: ../stoqlib/lib/prettydate.py:74
 msgid "in a minute"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:74
+#: ../stoqlib/lib/prettydate.py:76
 msgid "minutes"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:76
+#: ../stoqlib/lib/prettydate.py:78
 msgid "an hour ago"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:76
+#: ../stoqlib/lib/prettydate.py:78
 msgid "in an hour"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:78
+#: ../stoqlib/lib/prettydate.py:80
 msgid "hours"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:81
+#: ../stoqlib/lib/prettydate.py:83
 msgid "today"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:83
+#: ../stoqlib/lib/prettydate.py:85
 msgid "yesterday"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:83
+#: ../stoqlib/lib/prettydate.py:85
 msgid "tomorrow"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:85
+#: ../stoqlib/lib/prettydate.py:87
 msgid "day before"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:85
+#: ../stoqlib/lib/prettydate.py:87
 msgid "day after"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:87
+#: ../stoqlib/lib/prettydate.py:89
 msgid "days"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:89
+#: ../stoqlib/lib/prettydate.py:91
 msgid "last week"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:89
+#: ../stoqlib/lib/prettydate.py:91
 msgid "next week"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:91
+#: ../stoqlib/lib/prettydate.py:93
 msgid "weeks"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:93
+#: ../stoqlib/lib/prettydate.py:95
 msgid "last month"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:93
+#: ../stoqlib/lib/prettydate.py:95
 msgid "next month"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:95
+#: ../stoqlib/lib/prettydate.py:97
 msgid "months"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:97
+#: ../stoqlib/lib/prettydate.py:99
 msgid "last year"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:97
+#: ../stoqlib/lib/prettydate.py:99
 msgid "next year"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:99
+#: ../stoqlib/lib/prettydate.py:101
 msgid "years"
 msgstr ""
 
