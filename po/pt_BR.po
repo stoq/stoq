@@ -24,15 +24,15 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-08 14:55-0200\n"
-"PO-Revision-Date: 2011-11-08 16:27+0000\n"
+"PO-Revision-Date: 2011-11-08 18:48+0000\n"
 "Last-Translator: Ronaldo Maia <mainha+lp@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-08 16:45+0000\n"
+"X-Launchpad-Export-Date: 2011-11-09 04:57+0000\n"
 "X-Generator: Launchpad (build 14263)\n"
+"Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account code:"
@@ -537,8 +537,8 @@ msgstr "Nome fantasia:"
 
 #: ../data/glade/ConsignmentItemSelectionStep.ui.h:1
 msgid ""
-"<b>Consignment Items - Fill the quantity sold and returned of those items:</"
-"b>"
+"<b>Consignment Items - Fill the quantity sold and returned of those "
+"items:</b>"
 msgstr ""
 "<b>Itens consignados - Preencha as quantidades vendidas e retornadas deste "
 "item:</b>"
@@ -2348,11 +2348,12 @@ msgstr "<b>Plugin TEF</b>"
 
 #: ../data/glade/TefStep.ui.h:2
 msgid ""
-"An error ocurred sending your details. Please <a href=\"http://www.stoq.com."
-"br/pt-br/more/contact\">contact us</a>."
+"An error ocurred sending your details. Please <a "
+"href=\"http://www.stoq.com.br/pt-br/more/contact\">contact us</a>."
 msgstr ""
-"Ocorreu um erro ao tentar enviar os seus dados. Por favor, <a href=\"http://"
-"www.stoq.com.br/pt-br/more/contact\">entre em contato conosco</a>."
+"Ocorreu um erro ao tentar enviar os seus dados. Por favor, <a "
+"href=\"http://www.stoq.com.br/pt-br/more/contact\">entre em contato "
+"conosco</a>."
 
 #: ../data/glade/TefStep.ui.h:3
 msgid "Email:"
@@ -2488,8 +2489,8 @@ msgid ""
 "connect to an existing.\n"
 "\n"
 "If you're having trouble with the installation or need help importing your "
-"database from another application, don't hesitate to <a href=\"http://www."
-"stoq.com.br/pt-br/more/contact\">contact us</a>."
+"database from another application, don't hesitate to <a "
+"href=\"http://www.stoq.com.br/pt-br/more/contact\">contact us</a>."
 msgstr ""
 "Obrigado por instalar o Stoq, você vai estar pronto para utilizá-lo em "
 "alguns minutos.\n"
@@ -2498,8 +2499,8 @@ msgstr ""
 "dados ou conectar em um existente.\n"
 "\n"
 "Se você estiver tendo problemas com a instalação ou precisa de ajuda para "
-"importar o seus dados de outro aplicativo, não hesite em <a href=\"http://"
-"www.stoq.com.br/pt-br/more/contact\">nos contactar</a>."
+"importar o seus dados de outro aplicativo, não hesite em <a "
+"href=\"http://www.stoq.com.br/pt-br/more/contact\">nos contactar</a>."
 
 #: ../data/glade/WelcomeStep.ui.h:7
 msgid "Welcome to the Stoq installation wizard."
@@ -3840,7 +3841,8 @@ msgstr ""
 
 #: ../stoq/gui/config.py:581
 msgid "Please wait while the package installation is completing."
-msgstr "Por favor espere enquanto a instalação do pacote está sendo realizada."
+msgstr ""
+"Por favor espere enquanto a instalação do pacote está sendo realizada."
 
 #: ../stoq/gui/config.py:593
 msgid "You need to install PostgreSQL before moving forward"
@@ -5338,7 +5340,8 @@ msgid "Quotes management and commission calculation."
 msgstr "Gerenciamento de orçamentos e calculo de comissão."
 
 #: ../stoq/lib/applist.py:64
-msgid "Stock management, receive products and transfer them between branches."
+msgid ""
+"Stock management, receive products and transfer them between branches."
 msgstr ""
 "Gerenciamento do estoque, recebimento de produtos e transferência entre "
 "filiais."
@@ -5476,7 +5479,8 @@ msgstr ""
 
 #: ../stoq/main.py:269
 msgid "You need to register a company before start using Stoq"
-msgstr "Você precisa registrar uma empresa antes de começar a utilizar o Stoq"
+msgstr ""
+"Você precisa registrar uma empresa antes de começar a utilizar o Stoq"
 
 #: ../stoq/main.py:271
 msgid ""
@@ -5577,7 +5581,8 @@ msgstr "Caixas"
 
 #: ../stoqlib/database/admin.py:271
 msgid "The current database user does not have super user rights"
-msgstr "O atual usuário do banco de dados não possui direitos de super usuário"
+msgstr ""
+"O atual usuário do banco de dados não possui direitos de super usuário"
 
 #: ../stoqlib/database/admin.py:312 ../stoqlib/gui/search/personsearch.py:349
 msgid "Manager"
@@ -5626,7 +5631,8 @@ msgstr ""
 
 #: ../stoqlib/database/migration.py:307
 msgid "Please, check if you can connect to the database using:"
-msgstr "Por favor, verifique se você consegue conectar a base de dados usando:"
+msgstr ""
+"Por favor, verifique se você consegue conectar a base de dados usando:"
 
 #: ../stoqlib/database/migration.py:309
 msgid "psql -l -h <server> -p <port> -U <username>"
@@ -5694,8 +5700,8 @@ msgid ""
 "Could not connect to %s database. The error message is '%s'. Please fix the "
 "connection settings you have set and try again."
 msgstr ""
-"Não foi possível conectar ao banco de dados %s. A mensagem de erro é '%s'."
-"Por favor, corrija as configurações que você definiu e tente novamente."
+"Não foi possível conectar ao banco de dados %s. A mensagem de erro é "
+"'%s'.Por favor, corrija as configurações que você definiu e tente novamente."
 
 #: ../stoqlib/domain/account.py:86
 msgid "Deposit"
@@ -6323,7 +6329,8 @@ msgstr "%s Dinheiro devolvido da venda %d"
 
 #: ../stoqlib/domain/sale.py:1056
 msgid "Sale orders must have items, which means products or services"
-msgstr "Pedidos de venda devem ter itens, o que significa produtos ou serviços"
+msgstr ""
+"Pedidos de venda devem ter itens, o que significa produtos ou serviços"
 
 #: ../stoqlib/domain/sale.py:1061
 msgid "Sale total quantity should never be zero"
@@ -8279,7 +8286,8 @@ msgstr "Este usuário está inativo"
 #: ../stoqlib/gui/login.py:223
 #, python-format
 msgid "User '%s' has no profile set, but this should not happen."
-msgstr "Usuário '%s' não tem um perfil setado, mas isso não deveria acontecer."
+msgstr ""
+"Usuário '%s' não tem um perfil setado, mas isso não deveria acontecer."
 
 #: ../stoqlib/gui/login.py:225
 msgid "Please contact your system administrator or Stoq team."
@@ -9622,7 +9630,8 @@ msgstr "Não cancelar"
 
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:544
 msgid "Should we close the quotes used to compose the purchase order ?"
-msgstr "Deseja fechar as cotações utilizadas para compor uma ordem de compra ?"
+msgstr ""
+"Deseja fechar as cotações utilizadas para compor uma ordem de compra ?"
 
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:546
 msgid "Close quotes"
@@ -9642,7 +9651,8 @@ msgstr "Recebimento de cotação"
 
 #: ../stoqlib/gui/wizards/purchasewizard.py:182
 msgid "Expected receival date must be set to today or a future date"
-msgstr "A data prevista para recebimento deve ser a data atual uma data futura"
+msgstr ""
+"A data prevista para recebimento deve ser a data atual uma data futura"
 
 #: ../stoqlib/gui/wizards/purchasewizard.py:187
 msgid "The expected freight value must be a positive number."
@@ -11493,7 +11503,8 @@ msgstr "Orientação de impressão da Danfe"
 
 #: ../stoqlib/lib/parameters.py:486
 msgid "Orientation to use for printing danfe. Portrait or Landscape"
-msgstr "Orientação para utilização de impressão da Danfe. Retrato ou Paisagem"
+msgstr ""
+"Orientação para utilização de impressão da Danfe. Retrato ou Paisagem"
 
 #: ../stoqlib/lib/parameters.py:488
 msgid "Portrait"
