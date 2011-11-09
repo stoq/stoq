@@ -415,20 +415,19 @@ def run_app(options, appname):
     _check_param_online_services()
     _maybe_show_welcome_dialog()
 
+    from stoq.gui.launcher import Launcher
+
+    class App(object):
+        pass
+    app = App()
+    app.options = options
+    app.runner = runner
+    w = Launcher(app, runner)
+    app.main_window = w
+    w.show_all()
     if appname:
         app = runner.get_app_by_name(appname)
         runner.run(app)
-    else:
-        from stoq.gui.launcher import Launcher
-
-        class App(object):
-            pass
-        app = App()
-        app.options = options
-        app.runner = runner
-        w = Launcher(app, runner)
-        app.main_window = w
-        w.show_all()
 
     log.debug("Entering reactor")
     from twisted.internet import reactor
