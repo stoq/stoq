@@ -491,17 +491,20 @@ class ExampleCreator(object):
                                description='production',
                                connection=self.trans)
 
-    def create_production_item(self, quantity=1):
+    def create_production_item(self, quantity=1, order=None):
         from stoqlib.domain.product import ProductComponent
         from stoqlib.domain.production import (ProductionItem,
                                                ProductionMaterial)
         product = self.create_product(10)
+        product.addFacet(IStorable, connection=self.trans)
         component = self.create_product(5)
+        component.addFacet(IStorable, connection=self.trans)
         ProductComponent(product=product,
                          component=component,
                          connection=self.trans)
 
-        order = self.create_production_order()
+        if not order:
+            order = self.create_production_order()
         component = list(product.get_components())[0]
         ProductionMaterial(product=component.component,
                            order=order,

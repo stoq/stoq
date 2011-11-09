@@ -29,11 +29,13 @@ from decimal import Decimal
 from zope.interface import implements
 
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, DateTimeCol, IntCol,
-                                  QuantityCol)
+                                  QuantityCol, BoolCol, MultipleJoin)
+from stoqlib.database.orm import AND
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable, IStorable
 from stoqlib.lib.translation import stoqlib_gettext
+
 
 _ = stoqlib_gettext
 
@@ -59,12 +61,15 @@ class ProductionOrder(Domain):
     (ORDER_OPENED,
      ORDER_WAITING,
      ORDER_PRODUCING,
-     ORDER_CLOSED) = range(4)
+     ORDER_CLOSED,
+     ORDER_QA) = range(5)
 
     statuses = {ORDER_OPENED:         _(u'Opened'),
                 ORDER_WAITING:        _(u'Waiting'),
                 ORDER_PRODUCING:      _(u'Producing'),
-                ORDER_CLOSED:         _(u'Closed')}
+                ORDER_CLOSED:         _(u'Closed'),
+                ORDER_QA:             _(u'Quality Assurance'),
+                }
 
     status = IntCol(default=ORDER_OPENED)
     open_date = DateTimeCol(default=datetime.datetime.now)
@@ -74,6 +79,9 @@ class ProductionOrder(Domain):
     description = UnicodeCol(default='')
     responsible = ForeignKey('PersonAdaptToEmployee', default=None)
     branch = ForeignKey('PersonAdaptToBranch')
+
+    produced_items = MultipleJoin('ProductionProducedItem',
+                                  joinColumn='order_id', orderBy='id')
 
     #
     # IContainer implmentation
@@ -136,16 +144,50 @@ class ProductionOrder(Domain):
         self.start_date = datetime.date.today()
         self.status = ProductionOrder.ORDER_PRODUCING
 
+    # FIXME: Test
+    def is_completely_produced(self):
+        return all(i.is_completely_produced() for i in self.get_items())
+
+    # FIXME: Test
+    def is_completely_tested(self):
+        # Produced items are only stored if there are quality tests for this
+        # product
+        produced_items = self.produced_items
+        if not produced_items:
+            return True
+
+        return all([i.test_passed for i in produced_items])
+
+    # FIXME: Test
     def try_finalize_production(self):
         """When all items are completely produced, change the status of the
         production to CLOSED.
         """
-        assert self.status == ProductionOrder.ORDER_PRODUCING
+        assert (self.status == ProductionOrder.ORDER_PRODUCING or
+                self.status == ProductionOrder.ORDER_QA)
 
-        # All items must be completely produced.
-        if all([i.is_completely_produced() for i in self.get_items()]):
+        is_produced = self.is_completely_produced()
+        is_tested = self.is_completely_tested()
+
+        if is_produced and not is_tested:
+            # Fully produced but not fully tested. Keep status as QA
+            self.status = ProductionOrder.ORDER_QA
+        elif is_produced and is_tested:
+            # All items must be completely produced and tested
             self.close_date = datetime.date.today()
             self.status = ProductionOrder.ORDER_CLOSED
+
+        # If the order is closed, return the the remaining allocated material to
+        # the stock
+        if self.status == ProductionOrder.ORDER_CLOSED:
+            # Return remaining allocated material to the stock
+            for m in self.get_material_items():
+                m.return_remaining()
+
+            # Increase the stock for the produced items
+            for p in self.produced_items:
+                p.send_to_stock()
+
 
     def set_production_waiting(self):
         assert self.status == ProductionOrder.ORDER_OPENED
@@ -191,6 +233,8 @@ class ProductionItem(Domain):
     order = ForeignKey('ProductionOrder')
     product = ForeignKey('Product')
 
+
+
     #
     # IDescribable Implementation
     #
@@ -225,13 +269,15 @@ class ProductionItem(Domain):
         @param quantity: the quantity that will be produced.
         """
         assert quantity > 0
+        if self.order.status != ProductionOrder.ORDER_PRODUCING:
+            return False
 
         return self.produced + quantity + self.lost <= self.quantity
 
     def is_completely_produced(self):
         return self.quantity == self.produced + self.lost
 
-    def produce(self, quantity):
+    def produce(self, quantity, produced_by=None, serials=None):
         """Sets a certain quantity as produced. The quantity will be marked as
         produced only if there are enough materials allocated, otherwise a
         ValueError exception will be raised.
@@ -239,6 +285,12 @@ class ProductionItem(Domain):
         @param quantity: the quantity that will be produced.
         """
         assert self.can_produce(quantity)
+
+        # check if its ok to produce before consuming material
+        if self.product.has_quality_tests():
+            # We have some quality tests to assure. Register it for later
+            assert produced_by
+            assert len(serials) == quantity
 
         conn = self.get_connection()
         conn.savepoint('before_produce')
@@ -253,8 +305,21 @@ class ProductionItem(Domain):
                 conn.rollback_to_savepoint('before_produce')
                 raise
 
-        storable = IStorable(self.product, None)
-        storable.increase_stock(quantity, self.order.branch)
+        if self.product.has_quality_tests():
+            for serial in serials:
+                ProductionProducedItem(connection=self.get_connection(),
+                                       order=self.order,
+                                       product=self.product,
+                                       produced_by=produced_by,
+                                       produced_date=datetime.datetime.now(),
+                                       serial_number=serial,
+                                       entered_stock=False)
+        else:
+            # There are no quality tests for this product. Increase stock
+            # right now.
+            storable = IStorable(self.product, None)
+            storable.increase_stock(quantity, self.order.branch)
+
         self.produced += quantity
         self.order.try_finalize_production()
         ProductHistory.add_produced_item(conn, self.order.branch, self)
@@ -288,8 +353,8 @@ class ProductionItem(Domain):
 class ProductionMaterial(Domain):
     """Production Material object implementation.
 
+    @ivar product: The L{Product} that will be consumed.
     @ivar order: The L{ProductionOrder} that will consume this material.
-    @ivar product: The product that will be consumed.
     @ivar needed: The quantity needed of this material.
     @ivar consumed: The quantity already used of this material.
     @ivar lost: The quantity lost of this material.
@@ -298,18 +363,33 @@ class ProductionMaterial(Domain):
     """
     implements(IDescribable)
 
+    product = ForeignKey('Product')
+    order = ForeignKey('ProductionOrder')
     needed = QuantityCol(default=1)
     allocated = QuantityCol(default=0)
     consumed = QuantityCol(default=0)
     lost = QuantityCol(default=0)
     to_purchase = QuantityCol(default=0)
     to_make = QuantityCol(default=0)
-    order = ForeignKey('ProductionOrder')
-    product = ForeignKey('Product')
 
     #
     # Public API
     #
+
+    # TESTME
+    def can_add_lost(self, quantity):
+        """Returns if we can loose a certain quantity of this material.
+
+        @param quantity: the quantity that will be lost.
+        """
+        return self.can_consume(quantity)
+
+    def can_consume(self, quantity):
+        assert quantity > 0
+        if self.order.status != ProductionOrder.ORDER_PRODUCING:
+            return False
+
+        return self.lost + quantity <= self.needed - self.consumed
 
     def allocate(self, quantity=None):
         """Allocates the needed quantity of this material by decreasing the
@@ -338,6 +418,22 @@ class ProductionMaterial(Domain):
             self.allocated += quantity
             storable.decrease_stock(quantity, self.order.branch)
 
+    # TESTME
+    def return_remaining(self):
+        """Returns remaining allocated material to the stock
+
+        This should be called only after the production order is closed.
+        """
+        assert self.order.status == ProductionOrder.ORDER_CLOSED
+        remaining = self.allocated - self.lost - self.consumed
+        assert remaining >= 0
+        if not remaining:
+            return
+        storable = IStorable(self.product)
+        storable.increase_stock(remaining, self.order.branch)
+        self.allocated -= remaining
+
+
     def add_lost(self, quantity):
         """Adds the quantity lost of this material. The maximum quantity that
         can be lost is given by the formula:
@@ -361,13 +457,15 @@ class ProductionMaterial(Domain):
     def consume(self, quantity):
         """Consumes a certain quantity of material. The maximum quantity
         allowed to be consumed is given by the following formula:
+
             - max_consumed(quantity) = needed - consumed - lost - quantity
 
         @param quantity: the quantity to be consumed.
         """
         assert quantity > 0
 
-        if self.consumed + quantity > self.needed - self.lost:
+        available = self.allocated - self.consumed - self.lost
+        if quantity > available:
             raise ValueError(_('Can not consume this quantity.'))
 
         required = self.consumed + self.lost + quantity
@@ -405,9 +503,9 @@ class ProductionService(Domain):
     """
     implements(IDescribable)
 
-    quantity = QuantityCol(default=1)
-    order = ForeignKey('ProductionOrder')
     service = ForeignKey('Service')
+    order = ForeignKey('ProductionOrder')
+    quantity = QuantityCol(default=1)
 
     #
     # IDescribable Implementation
@@ -420,3 +518,106 @@ class ProductionService(Domain):
 
     def get_unit_description(self):
         return self.service.sellable.get_unit_description()
+
+
+class ProductionProducedItem(Domain):
+    """This class represents a composed product that was produced, but
+    didn't enter the stock yet. Its used mainly for the quality assurance
+    process
+    """
+
+    order = ForeignKey('ProductionOrder')
+    # ProductionItem already has a reference to Product, but we need it for
+    # constraint checks UNIQUE(product_id, serial_number)
+    product = ForeignKey('Product')
+    produced_by = ForeignKey('PersonAdaptToUser')
+    produced_date = DateTimeCol()
+    serial_number = IntCol()
+    entered_stock = BoolCol(default=False)
+    test_passed = BoolCol(default=False)
+    test_results = MultipleJoin('ProductionItemQualityResult',
+                                joinColumn='produced_item_id')
+
+
+    def get_pending_tests(self):
+        tests_done = set([t.quality_test for t in self.test_results])
+        all_tests = set(self.product.quality_tests)
+        return list(all_tests.difference(tests_done))
+
+    @classmethod
+    def get_last_serial_number(cls, product, conn):
+        return cls.selectBy(product=product,
+                    connection=conn).max('serial_number') or 0
+
+    @classmethod
+    def is_valid_serial_range(cls, product, first, last, conn):
+        query = AND(cls.q.productID == product.id,
+                    cls.q.serial_number >= first,
+                    cls.q.serial_number <= last)
+        # There should be no results for the range to be valid
+        return cls.select(query, connection=conn).count() == 0
+
+    def send_to_stock(self):
+        # Already is in stock
+        if self.entered_stock:
+            return
+
+        storable = IStorable(self.product, None)
+        storable.increase_stock(1, self.order.branch)
+        self.entered_stock = True
+
+    def check_tests(self):
+        """Checks if all tests for this produced items passes.
+
+        If all tests passes, sets self.test_passed = True
+        """
+        results = [i.test_passed for i in self.test_results]
+
+        passed = all(results)
+        self.test_passed = (passed and
+                            len(results) == self.product.quality_tests.count())
+        if self.test_passed:
+            self.order.try_finalize_production()
+
+
+class ProductionItemQualityResult(Domain):
+    """This table stores the test results for every produced item.
+    """
+
+    implements(IDescribable)
+
+    produced_item = ForeignKey('ProductionProducedItem')
+    quality_test = ForeignKey('ProductQualityTest')
+    tested_by = ForeignKey('PersonAdaptToEmployee')
+    tested_date = DateTimeCol(default=None)
+    result_value = UnicodeCol()
+    test_passed = BoolCol(default=False)
+
+    def get_description(self):
+        return self.quality_test.description
+
+    @property
+    def result_value_str(self):
+        return _(self.result_value)
+
+    def get_boolean_value(self):
+        if self.result_value == 'True':
+            return True
+        elif self.result_value == 'False':
+            return False
+        else:
+            raise ValueError
+
+    def get_decimal_value(self):
+        return Decimal(self.result_value)
+
+    def set_boolean_value(self, value):
+        self.test_passed = self.quality_test.result_value_passes(value)
+        self.result_value = str(value)
+        self.produced_item.check_tests()
+
+    def set_decimal_value(self, value):
+        self.test_passed = self.quality_test.result_value_passes(value)
+        self.result_value = '%s' % (value,)
+        self.produced_item.check_tests()
+

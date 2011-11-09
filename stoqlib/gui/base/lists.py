@@ -73,7 +73,10 @@ class ModelListSlave(ListSlave):
 
     def _prepare_run_editor(self, item):
         if self._reuse_transaction:
+            self._reuse_transaction.savepoint('before_run_editor')
             retval = self.run_editor(self._reuse_transaction, item)
+            if not retval:
+                self._reuse_transaction.rollback_to_savepoint('before_run_editor')
         else:
             # 1) Create a new transaction
             # 2) Fetch the model from that transactions POW
@@ -205,9 +208,6 @@ class ModelListDialog(gtk.Dialog, ModelListSlave):
     title = None
 
     def __init__(self, conn=None):
-        if not self.columns:
-            raise ValueError("columns cannot be empty")
-
         if self.model_type is None:
             raise TypeError("%s must define a model_type class attribute" %
                             type(self).__name__)

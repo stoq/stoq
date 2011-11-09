@@ -462,3 +462,79 @@ class TestProductHistory(DomainTest):
                                                sellable=transfer_item.sellable)
         self.failUnless(prod_hist)
         self.assertEqual(prod_hist.quantity_transfered, qty)
+
+
+from stoqlib.domain.product import ProductQualityTest
+from decimal import Decimal
+
+class TestProductQuality(DomainTest):
+
+    def test_quality_tests(self):
+        product = self.create_product()
+        product.addFacet(IStorable, connection=self.trans)
+
+        # There are still no tests for this product
+        self.assertEqual(product.quality_tests.count(), 0)
+
+        test1 = ProductQualityTest(connection=self.trans, product=product,
+                                   test_type=ProductQualityTest.TYPE_BOOLEAN,
+                                   success_value='True')
+        # Now there sould be one
+        self.assertEqual(product.quality_tests.count(), 1)
+        # and it should be the one we created
+        self.assertTrue(test1 in product.quality_tests)
+
+        # Different product
+        product2 = self.create_product()
+        product2.addFacet(IStorable, connection=self.trans)
+
+        # With different test
+        test2 = ProductQualityTest(connection=self.trans, product=product2,
+                                   test_type=ProductQualityTest.TYPE_BOOLEAN,
+                                   success_value='True')
+
+        # First product still should have only one
+        self.assertEqual(product.quality_tests.count(), 1)
+        # And it should not be the second test.
+        self.assertTrue(test2 not in product.quality_tests)
+
+    def test_boolean_value(self):
+        product = self.create_product()
+        bool_test = ProductQualityTest(connection=self.trans, product=product,
+                                   test_type=ProductQualityTest.TYPE_BOOLEAN)
+        bool_test.set_boolean_value(True)
+        self.assertEqual(bool_test.get_boolean_value(), True)
+        self.assertTrue(bool_test.result_value_passes(True))
+        self.assertFalse(bool_test.result_value_passes(False))
+
+
+        bool_test.set_boolean_value(False)
+        self.assertEqual(bool_test.get_boolean_value(), False)
+        self.assertTrue(bool_test.result_value_passes(False))
+        self.assertFalse(bool_test.result_value_passes(True))
+
+        self.assertRaises(AssertionError, bool_test.get_range_value)
+
+    def test_decimal_value(self):
+        product = self.create_product()
+        test = ProductQualityTest(connection=self.trans, product=product,
+                                   test_type=ProductQualityTest.TYPE_DECIMAL)
+        test.set_range_value(Decimal(10), Decimal(20))
+        self.assertEqual(test.get_range_value(), (Decimal(10), Decimal(20)))
+
+        self.assertFalse(test.result_value_passes(Decimal(9.99)))
+        self.assertTrue(test.result_value_passes(Decimal(10)))
+        self.assertTrue(test.result_value_passes(Decimal(15)))
+        self.assertTrue(test.result_value_passes(Decimal(20)))
+        self.assertFalse(test.result_value_passes(Decimal(20.0001)))
+        self.assertFalse(test.result_value_passes(Decimal(30)))
+
+        test.set_range_value(Decimal(30), Decimal(40))
+        self.assertEqual(test.get_range_value(), (Decimal(30), Decimal(40)))
+        self.assertTrue(test.result_value_passes(Decimal(30)))
+
+        # Negative values
+        test.set_range_value(Decimal(-5), Decimal(5))
+        self.assertEqual(test.get_range_value(), (Decimal(-5), Decimal(5)))
+
+        self.assertRaises(AssertionError, test.get_boolean_value)
