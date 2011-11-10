@@ -43,7 +43,7 @@ class EventSearch(SearchEditor):
     searchbar_result_strings = (_('event'), _('events'))
 
     def create_filters(self):
-        self.set_text_field_columns(['description', 'event_type', 'date'])
+        self.set_text_field_columns(['description'])
 
     def get_columns(self):
         """Hook called by SearchEditor"""
