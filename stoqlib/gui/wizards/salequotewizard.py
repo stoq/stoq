@@ -32,7 +32,7 @@ import datetime
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import AND, OR
 from stoqlib.database.runtime import (get_current_branch, get_current_user,
                                       new_transaction, finish_transaction)
 from stoqlib.domain.interfaces import ISalesPerson
@@ -207,7 +207,8 @@ class SaleQuoteItemStep(SellableItemStep):
 
     def get_sellable_view_query(self):
         branch = get_current_branch(self.conn)
-        branch_query = ProductStockItem.q.branchID == branch.id
+        branch_query = OR(ProductStockItem.q.branchID == branch.id,
+                          ProductStockItem.q.branchID == None)
         return AND(branch_query,
                    Sellable.get_available_sellables_for_quote_query(self.conn))
 
@@ -227,6 +228,8 @@ class SaleQuoteItemStep(SellableItemStep):
         missing = set()
         for i in self.slave.klist:
             quantities.setdefault(i.sellable, 0)
+            if i.sellable.service:
+                continue
             quantities[i.sellable] += i.quantity
             if quantities[i.sellable] > i._stock_quantity:
                 missing.add(i.sellable)
