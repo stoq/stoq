@@ -221,11 +221,35 @@ class SaleQuoteItemStep(SellableItemStep):
     # SellableItemStep virtual methods
     #
 
+    def _update_total(self):
+        SellableItemStep._update_total(self)
+        quantities = {}
+        missing = set()
+        for i in self.slave.klist:
+            quantities.setdefault(i.sellable, 0)
+            quantities[i.sellable] += i.quantity
+            if quantities[i.sellable] > i._stock_quantity:
+                missing.add(i.sellable)
+
+        total_missing = len(missing)
+        msg = ''
+        if total_missing == 1:
+            msg = _("1 product does not have enought "
+                    "quantity to confirm the sale")
+        elif total_missing > 1:
+            msg = _("%s products don't have enought "
+                    "quantity to confirm the sale") % total_missing
+        self.slave.set_message_markup('<b>%s</b>' % msg)
+
     def get_order_item(self, sellable, price, quantity):
         price = self.cost.read()
         retval = self._validate_sellable_price(price)
         if retval is None:
-            return self.model.add_sellable(sellable, quantity, price)
+            item = self.model.add_sellable(sellable, quantity, price)
+            # Save temporarily the stock quantity so we can show a warning if
+            # there is not enough quantity for the sale.
+            item._stock_quantity = self.proxy.model.stock_quantity
+            return item
 
     def get_saved_items(self):
         return list(self.model.get_items())
