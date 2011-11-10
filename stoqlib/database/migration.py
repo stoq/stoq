@@ -48,7 +48,7 @@ from stoqlib.lib.defaults import stoqlib_gettext
 from stoqlib.lib.message import error, info
 from stoqlib.lib.parameters import (check_parameter_presence,
                                     ensure_system_parameters)
-from stoqlib.lib.pluginmanager import get_plugin_manager
+from stoqlib.lib.pluginmanager import get_plugin_manager, PluginError
 
 _ = stoqlib_gettext
 log = Logger('stoqlib.database.migration')
@@ -358,7 +358,16 @@ class StoqlibSchemaMigration(SchemaMigration):
         # works in stoq/lib/startup.py
         manager = get_plugin_manager()
         for plugin_name in manager.installed_plugins_names:
-            plugin = manager.get_plugin(plugin_name)
+            try:
+                plugin = manager.get_plugin(plugin_name)
+            except PluginError:
+                # tef is installed on the livecd, but we remove it when
+                # instaling to HDD. This workaround will ignore if the plugin is
+                # enabled but not installed. Figure out how to handle this
+                # properly.
+                if plugin_name == 'tef':
+                    continue
+                raise
             migration = plugin.get_migration()
             if not migration:
                 continue
