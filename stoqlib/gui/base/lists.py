@@ -229,6 +229,9 @@ class ModelListDialog(gtk.Dialog, ModelListSlave):
 
 class AdditionListSlave(StoqlibSearchSlaveDelegate):
     """A slave that offers a simple list and its management.
+
+    This slave also has the option to display a small message right next to the
+    buttons
     """
 
     toplevel_name = gladefile = 'AdditionListSlave'
@@ -400,6 +403,11 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
 
     def register_editor_kwargs(self, **kwargs):
         self._editor_kwargs = kwargs
+
+    def set_message_markup(self, message):
+        """Display a simple message on a label, next to the add, edit, delete buttons
+        """
+        self.message_label.set_markup(message)
 
     def get_selection(self):
         # XXX: add get_selected_rows and raise exceptions if not in the
