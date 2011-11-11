@@ -89,7 +89,7 @@ class PurchaseApp(SearchableAppWindow):
         ui_string = """<ui>
       <menubar action="menubar">
         <menu action="PurchaseMenu">
-          <menuitem action="Confirm"/>
+          <menuitem action="ConfirmOrder"/>
           <menuitem action="FinishOrder"/>
           <separator name="sep"/>
           <menuitem action="NewOrder"/>
@@ -126,10 +126,27 @@ class PurchaseApp(SearchableAppWindow):
         <placeholder name="ExtraMenu"/>
       </menubar>
       <toolbar action="main_toolbar">
-        <toolitem action="NewOrder"/>
-        <toolitem action="QuoteOrder"/>
-        <toolitem action="Products"/>
-        <toolitem action="Suppliers"/>
+        <toolitem action="NewToolItem">
+          <menu action="NewToolMenu">
+            <menuitem action="NewToolMenuOrder"/>
+            <menuitem action="NewToolMenuQuote"/>
+            <menuitem action="NewToolMenuConsignment"/>
+          </menu>
+        </toolitem>
+        <toolitem action="SearchToolItem">
+          <menu action="SearchToolMenu">
+            <menuitem action="SearchToolMenuProduct"/>
+            <menuitem action="SearchToolMenuSupplier"/>
+            <menuitem action="SearchToolMenuQuotes"/>
+            <menuitem action="SearchToolMenuServices"/>
+          </menu>
+        </toolitem>
+        <toolitem action="Print"/>
+        <separator/>
+        <toolitem action="Confirm"/>
+        <toolitem action="Cancel"/>
+        <toolitem action="Edit"/>
+        <toolitem action="Details"/>
       </toolbar>
     </ui>"""
 
@@ -141,7 +158,7 @@ class PurchaseApp(SearchableAppWindow):
             ("NewOrder", gtk.STOCK_NEW, _("New order..."), "<Control>o"),
             ("QuoteOrder", gtk.STOCK_INDEX, _("New quote..."), "<Control>e"),
             ("FinishOrder", None, _("Finish order...")),
-            ("Confirm", 'stoq-delivery', _("Confirm order...")),
+            ("ConfirmOrder", 'stoq-delivery', _("Confirm order...")),
             ("StockCost", None, _("_Stock cost...")),
             ("Production", gtk.STOCK_JUSTIFY_FILL,  _("Production..."),
              "<Control>r"),
@@ -170,9 +187,47 @@ class PurchaseApp(SearchableAppWindow):
             ("SearchPurchasedItems", None, _("Purchased items..."), "<Control>p"),
             ("ProductsSoldSearch", None, _("Products sold..."), ""),
             ("ProductsPriceSearch", None, _("Prices editor..."), ""),
+
+            # Toolbar
+            ("NewToolMenu", None, _("New")),
+            ("NewToolMenuOrder", gtk.STOCK_NEW, _("Order"), '',
+             _("Create a new order")),
+            ("NewToolMenuQuote", gtk.STOCK_INDEX, _("Quote"), '',
+             _("Create a new quote")),
+            ("NewToolMenuConsignment", None, _("Consignment")),
+
+            ("SearchToolMenu", None, _("Search")),
+            ("SearchToolMenuProduct", 'stoq-products', _("Product"), '',
+              _("Search for a product")),
+            ("SearchToolMenuSupplier", 'stoq-suppliers', _("Supplier"), '',
+              _("Search for a supplier")),
+            ("SearchToolMenuServices", 'stoq-services', _("Service"), '',
+              _("Search for a service")),
+            ("SearchToolMenuQuotes", None, _("Quote"), '',
+              _("Search for a quote")),
+
+            ("Print", gtk.STOCK_PRINT, _("Print"), '',
+             _("Print the order")),
+            ("Confirm", gtk.STOCK_APPLY, _("Confirm"), '',
+             _("Confirm the order, this will send it to the supplier")),
+            ("Cancel", gtk.STOCK_CANCEL, _("Cancel"), '',
+             _("Cancel the order")),
+            ("Edit", gtk.STOCK_EDIT, _("Edit"), '',
+             _("Edit the order, allows you to change the details of it")),
+            ("Details", gtk.STOCK_INFO, _("Details"), '',
+             _("View the details of an order"))
         ]
 
         self.add_ui_actions(ui_string, actions)
+
+        self.add_tool_menu_actions([
+            ("NewToolItem", _("New"), "", gtk.STOCK_NEW),
+            ("SearchToolItem", _("Search"), "", 'stoq-products')])
+
+        self.NewToolItem.props.is_important = True
+        self.SearchToolItem.props.is_important = True
+        self.Confirm.props.is_important = True
+
         self.NewOrder.set_short_label(_("New order"))
         self.QuoteOrder.set_short_label(_("New quote"))
         self.Products.set_short_label(_("Products"))
@@ -226,8 +281,8 @@ class PurchaseApp(SearchableAppWindow):
                                       label=_('<b>Orders total:</b>'),
                                       format='<b>%s</b>')
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.ConfirmOrder.set_sensitive(False)
         self.Confirm.set_sensitive(False)
-        self.confirm.set_sensitive(False)
         # FIXME: enable before release.
         # XXX: Figure out if ideale still needs this. otherwise, remove the
         # related code
@@ -237,8 +292,7 @@ class PurchaseApp(SearchableAppWindow):
         self._update_view()
 
     def _update_list_aware_widgets(self, has_items):
-        for widget in (self.edit_button, self.details_button,
-                       self.print_button):
+        for widget in (self.Edit, self.Details, self.Print):
             widget.set_sensitive(has_items)
 
     def _update_view(self):
@@ -262,11 +316,11 @@ class PurchaseApp(SearchableAppWindow):
             can_finish = (selection[0].status == PurchaseOrder.ORDER_CONFIRMED and
                           selection[0].received_quantity > 0)
 
-        self.cancel_button.set_sensitive(can_cancel)
-        self.edit_button.set_sensitive(can_edit)
+        self.Cancel.set_sensitive(can_cancel)
+        self.Edit.set_sensitive(can_edit)
+        self.ConfirmOrder.set_sensitive(can_send_supplier)
         self.Confirm.set_sensitive(can_send_supplier)
-        self.confirm.set_sensitive(can_send_supplier)
-        self.details_button.set_sensitive(one_selected)
+        self.Details.set_sensitive(one_selected)
         self.FinishOrder.set_sensitive(can_finish)
 
     def _new_order(self, order=None, edit_mode=False):
@@ -274,7 +328,8 @@ class PurchaseApp(SearchableAppWindow):
         order = trans.get(order)
         model = self.run_dialog(PurchaseWizard, trans, order,
                                 edit_mode)
-        finish_transaction(trans, model)
+        if finish_transaction(trans, model):
+            self.refresh()
         trans.close()
 
         return model
@@ -290,7 +345,6 @@ class PurchaseApp(SearchableAppWindow):
             self._new_order(purchase, edit_mode=False)
         else:
             self._quote_order(purchase)
-        self.refresh()
 
     def _run_details_dialog(self):
         order_views = self.results.get_selected_rows()
@@ -366,7 +420,8 @@ class PurchaseApp(SearchableAppWindow):
         trans = new_transaction()
         quote = trans.get(quote)
         model = self.run_dialog(QuotePurchaseWizard, trans, quote)
-        finish_transaction(trans, model)
+        if finish_transaction(trans, model):
+            self.refresh()
         trans.close()
 
     def _finish_order(self):
@@ -383,6 +438,12 @@ class PurchaseApp(SearchableAppWindow):
         trans.close()
 
         self.refresh()
+
+    def _new_consignment(self):
+        trans = new_transaction()
+        model = self.run_dialog(ConsignmentWizard, trans)
+        finish_transaction(trans, model)
+        trans.close()
 
     #
     # Kiwi Callbacks
@@ -404,26 +465,25 @@ class PurchaseApp(SearchableAppWindow):
     def _on_results__has_rows(self, results, has_items):
         self._update_list_aware_widgets(has_items)
 
-    def on_details_button__clicked(self, button):
+    def on_Details__activate(self, action):
         self._run_details_dialog()
 
-    def on_edit_button__clicked(self, button):
+    def on_Edit__activate(self, action):
         self._edit_order()
 
-    def on_print_button__clicked(self, button):
+    def on_Print__activate(self, action):
         self._print_selected_items()
 
-    def on_cancel_button__clicked(self, button):
+    def on_Cancel__activate(self, action):
         self._cancel_order()
 
-    def on_confirm__clicked(self, button):
+    def on_Confirm__activate(self, button):
         self._send_selected_items_to_supplier()
 
     # Order
 
     def on_NewOrder__activate(self, action):
         self._new_order()
-        self.refresh()
 
     def on_QuoteOrder__activate(self, action):
         self._quote_order()
@@ -434,16 +494,13 @@ class PurchaseApp(SearchableAppWindow):
     def on_StockCost__activate(self, action):
         self.run_dialog(StockCostDialog, self.conn, None)
 
-    def on_Confirm__activate(self, action):
+    def on_ConfirmOrder__activate(self, action):
         self._send_selected_items_to_supplier()
 
     # Consignment
 
     def on_NewConsignment__activate(self, action):
-        trans = new_transaction()
-        model = self.run_dialog(ConsignmentWizard, trans)
-        finish_transaction(trans, model)
-        trans.close()
+        self._new_consignment()
 
     def on_CloseInConsignment__activate(self, action):
         trans = new_transaction()
@@ -506,3 +563,32 @@ class PurchaseApp(SearchableAppWindow):
         retval = self.run_dialog(SellablePriceDialog, trans)
         finish_transaction(trans, retval)
         trans.close()
+
+    # Toolitem
+
+    def on_NewToolItem__activate(self, action):
+        self._new_order()
+
+    def on_NewToolMenuOrder__activate(self, action):
+        self._new_order()
+
+    def on_NewToolMenuQuote__activate(self, action):
+        self._quote_order()
+
+    def on_NewToolMenuConsignment__activate(self, action):
+        self._new_consignment()
+
+    def on_SearchToolItem__activate(self, action):
+        self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
+
+    def on_SearchToolMenuProduct__activate(self, action):
+        self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
+
+    def on_SearchToolMenuSupplier__activate(self, action):
+        self.run_dialog(SupplierSearch, self.conn, hide_footer=True)
+
+    def on_SearchToolMenuServices__activate(self, action):
+        self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
+
+    def on_SearchToolMenuQuotes__activate(self, action):
+        self.run_dialog(ReceiveQuoteWizard, self.conn)
