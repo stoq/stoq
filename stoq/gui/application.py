@@ -277,31 +277,8 @@ class AppWindow(BaseAppWindow):
             setattr(self, action.get_name(), action)
 
     def add_help_ui(self, help_label=None, help_section=None):
-        ui_string = """<ui>
-          <menubar action="menubar">
-            <menu action="HelpMenu">
-              <menuitem action="HelpContents"/>
-              <separator name="HelpSeparator"/>
-              <menuitem action="HelpSupport"/>
-              <menuitem action="HelpTranslate"/>
-              <separator name="HelpSeparator2"/>
-              <menuitem action="HelpAbout"/>
-            </menu>
-          </menubar>
-        </ui>"""
         def on_HelpHelp__activate(action):
             show_section(help_section)
-
-        help_actions = [
-            ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, _("Contents"), '<Shift>F1'),
-            ("HelpTranslate", None, _("Translate Stoq..."), None,
-             _("Translate this application online")),
-            ("HelpSupport", None, _("Get support online..."), None,
-             _("Get support for Stoq online")),
-            ("HelpAbout", gtk.STOCK_ABOUT),
-            ]
-        self.add_ui_actions(ui_string, help_actions, 'HelpActions')
 
         if help_label is not None:
             ui_string = """<ui>
@@ -317,6 +294,31 @@ class AppWindow(BaseAppWindow):
                  on_HelpHelp__activate),
                 ]
             self.add_ui_actions(ui_string, help_help_actions, 'HelpHelpActions')
+
+        ui_string = """<ui>
+          <menubar action="menubar">
+            <menu action="HelpMenu">
+              <menuitem action="HelpContents"/>
+              <separator name="HelpSeparator"/>
+              <menuitem action="HelpSupport"/>
+              <menuitem action="HelpTranslate"/>
+              <separator name="HelpSeparator2"/>
+              <menuitem action="HelpAbout"/>
+            </menu>
+          </menubar>
+        </ui>"""
+
+        help_actions = [
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, _("Contents"), '<Shift>F1'),
+            ("HelpTranslate", None, _("Translate Stoq..."), None,
+             _("Translate this application online")),
+            ("HelpSupport", None, _("Get support online..."), None,
+             _("Get support for Stoq online")),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+            ]
+        self.add_ui_actions(ui_string, help_actions, 'HelpActions')
+
 
     def add_debug_ui(self):
         ui_string = """<ui>
