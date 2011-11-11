@@ -347,10 +347,7 @@ class FinancialApp(AppWindow):
         self._refresh_accounts()
         for page in self._pages.values():
             page.refresh()
-
-    #
-    # Private
-    #
+        self._update_tooltips()
 
     def create_actions(self):
         ui_string = """<ui>
@@ -365,11 +362,14 @@ class FinancialApp(AppWindow):
             </menu>
           </menubar>
           <toolbar action="toolbar">
-            <toolitem action="AddAccount"/>
-            <toolitem action="DeleteAccount"/>
+            <toolitem action="New">
+              <menu action="NewToolItem">
+                <menuitem action="NewToolMenuAccount"/>
+                <menuitem action="NewToolMenuTransaction"/>
+              </menu>
+            </toolitem>
             <separator/>
-            <toolitem action="AddTransaction"/>
-            <toolitem action="DeleteTransaction"/>
+            <toolitem action="Edit"/>
           </toolbar>
         </ui>"""
 
@@ -395,8 +395,21 @@ class FinancialApp(AppWindow):
              '<control>t', _('Create new transaction')),
             ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete transaction'),
              '', _('Delete transaction')),
+
+            # Toolbar
+            ("NewToolItem", None, _("New")),
+            ("NewToolMenuAccount", gtk.STOCK_NEW, _("Account"), '',
+             _("Add a new account")),
+            ("NewToolMenuTransaction", gtk.STOCK_NEW, _("Transaction"), '',
+             _("Add a new transaction")),
+            ("Edit", gtk.STOCK_EDIT, _("Edit"), '',),
+
             ]
         self.add_ui_actions(ui_string, actions)
+        self.add_tool_menu_actions([
+            ("New", _("New"), '', gtk.STOCK_ADD),
+            ])
+        self.New.props.is_important = True
         self.add_help_ui(_("Financial help"), 'financial-inicio')
 
     def create_ui(self):
@@ -407,18 +420,32 @@ class FinancialApp(AppWindow):
         self.main_vbox.reorder_child(menubar, 0)
 
         toolbar = self.uimanager.get_widget('/toolbar')
-        toolbar.set_style(gtk.TOOLBAR_BOTH)
         self.main_vbox.pack_start(toolbar, False, False)
         self.main_vbox.reorder_child(toolbar, 1)
 
+    #
+    # Private
+    #
+
     def _update_actions(self):
+        self.New.set_sensitive(self._can_add_account() or
+                               self._can_add_account())
         self.AddAccount.set_sensitive(self._can_add_account())
+        self.NewToolMenuAccount.set_sensitive(self._can_add_account())
         self.EditAccount.set_sensitive(self._can_edit_account())
         self.DeleteAccount.set_sensitive(self._can_delete_account())
         self.AddTransaction.set_sensitive(self._can_add_transaction())
+        self.NewToolMenuTransaction.set_sensitive(self._can_add_transaction())
         self.DeleteTransaction.set_sensitive(self._can_delete_transaction())
         self.ExportCSV.set_sensitive(self._can_export_csv())
-        self.edit_button.set_sensitive(self._can_edit_account())
+        self.Edit.set_sensitive(self._can_edit_account() or
+                                self._can_edit_transaction())
+
+    def _update_tooltips(self):
+        if self._is_accounts_tab():
+            self.Edit.set_tooltip(_("Edit the current account"))
+        else:
+            self.Edit.set_tooltip(_("Edit the current transaction"))
 
     def _create_initial_page(self):
         pixbuf = self.accounts.render_icon('stoq-money', gtk.ICON_SIZE_MENU)
@@ -652,6 +679,17 @@ class FinancialApp(AppWindow):
 
         return True
 
+    def _can_edit_transaction(self):
+        if not self._is_transaction_tab():
+            return False
+
+        page = self._get_current_page_widget()
+        transaction = page.results.get_selected()
+        if transaction is None:
+            return False
+
+        return True
+
     def _can_export_csv(self):
         return not self._is_accounts_tab()
 
@@ -719,17 +757,27 @@ class FinancialApp(AppWindow):
     def on_accounts__selection_changed(self, ktree, account_view):
         self._update_actions()
 
-    def on_edit_button__clicked(self, button):
+    def on_Edit__activate(self, button):
         account_view = self.accounts.get_selected()
         self._edit_existing_account(account_view)
 
     def after_notebook__switch_page(self, notebook, page, page_id):
         self._update_actions()
+        self._update_tooltips()
 
     # Toolbar
 
-    def on_AddAccount__activate(self, action):
+    def on_New__activate(self, action):
+        if self._is_accounts_tab():
+            self._create_new_account()
+        else:
+            self._add_transaction()
+
+    def on_NewToolMenuAccount__activate(self, action):
         self._create_new_account()
+
+    def on_NewToolMenuTransaction__activate(self, action):
+        self._add_transaction()
 
     def on_DeleteAccount__activate(self, action):
         account_view = self.accounts.get_selected()
@@ -739,9 +787,6 @@ class FinancialApp(AppWindow):
         transactions = self._get_current_page_widget()
         transaction = transactions.results.get_selected()
         self._delete_transaction(transaction)
-
-    def on_AddTransaction__activate(self, action):
-        self._add_transaction()
 
     # Financial
 
