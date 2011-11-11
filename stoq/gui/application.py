@@ -27,6 +27,7 @@ import datetime
 import gettext
 import locale
 
+import gobject
 import gtk
 from kiwi.component import get_utility
 from kiwi.enums import SearchFilterPosition
@@ -52,6 +53,13 @@ import stoq
 
 log = Logger('stoq.application')
 _ = gettext.gettext
+
+
+class ToolMenuAction(gtk.Action):
+    pass
+gobject.type_register(ToolMenuAction)
+ToolMenuAction.set_tool_item_type(
+    gobject.type_from_name('GtkMenuToolButton').pytype)
 
 
 class App(BaseApp):
@@ -125,7 +133,7 @@ class AppWindow(BaseAppWindow):
         if not hasattr(self, 'main_toolbar'):
             return
 
-        self.main_toolbar.set_style(gtk.TOOLBAR_BOTH)
+        self.main_toolbar.set_style(gtk.TOOLBAR_BOTH_HORIZ)
 
     def _check_demo_mode(self):
         if not sysparam(self.conn).DEMO_MODE:
@@ -274,6 +282,17 @@ class AppWindow(BaseAppWindow):
         self.uimanager.insert_action_group(ag, 0)
         self.uimanager.add_ui_from_string(ui_string)
         for action in ag.list_actions():
+            setattr(self, action.get_name(), action)
+
+    def add_tool_menu_actions(self, actions):
+        group = gtk.ActionGroup(name="ToolMenuGroup")
+        self.uimanager.insert_action_group(group, 0)
+        for name, label, tooltip, stock_id in actions:
+            action = ToolMenuAction(name=name,
+                                    label=label,
+                                    tooltip=tooltip,
+                                    stock_id=stock_id)
+            group.add_action(action)
             setattr(self, action.get_name(), action)
 
     def add_help_ui(self, help_label=None, help_section=None):
