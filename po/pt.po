@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-08 14:55-0200\n"
-"PO-Revision-Date: 2011-11-01 23:11+0000\n"
+"PO-Revision-Date: 2011-11-10 12:13+0000\n"
 "Last-Translator: Rafael Neri <Unknown>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-09 04:56+0000\n"
-"X-Generator: Launchpad (build 14263)\n"
+"X-Launchpad-Export-Date: 2011-11-11 05:04+0000\n"
+"X-Generator: Launchpad (build 14277)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -3412,7 +3412,7 @@ msgstr "Funcionários"
 
 #: ../stoq/gui/admin.py:92
 msgid "Events"
-msgstr ""
+msgstr "Eventos"
 
 #: ../stoq/gui/admin.py:94
 msgid "Roles"
@@ -3508,7 +3508,7 @@ msgstr "Funcionários..."
 
 #: ../stoq/gui/admin.py:307
 msgid "Events..."
-msgstr ""
+msgstr "Eventos..."
 
 #: ../stoq/gui/admin.py:308
 msgid "C.F.O.P..."
@@ -3773,11 +3773,11 @@ msgstr "%s não é um telefone válido"
 
 #: ../stoq/gui/config.py:475
 msgid "PostgresSQL 'postgres' password"
-msgstr ""
+msgstr "Senha do usuário 'postgres' do PostgreSQL"
 
 #: ../stoq/gui/config.py:478
 msgid "PostgreSQL password"
-msgstr ""
+msgstr "Senha do PostgreSQL"
 
 #: ../stoq/gui/config.py:481
 msgid ""
@@ -3787,6 +3787,10 @@ msgid ""
 "This is the same password you were asked when you installed PostgreSQL on "
 "this computer."
 msgstr ""
+"Para poder criar um novo banco de dados do Stoq você precisa informar a "
+"senha do usuário <b>postgres</b> do banco de dados PostgreSQL. Esta é a "
+"mesma senha que foi informada no momento da instalação do PostgreSQL nesse "
+"computador."
 
 #: ../stoq/gui/config.py:501 ../stoq/gui/config.py:504
 msgid "Administrator account"
@@ -5999,17 +6003,17 @@ msgstr "Desligado"
 #: ../stoqlib/domain/person.py:746
 #, python-format
 msgid "User '%s' logged in on '%s'"
-msgstr ""
+msgstr "Usuário '%s' fez login em '%s'"
 
 #: ../stoqlib/domain/person.py:752
 #, python-format
 msgid "User '%s' logged out from '%s'"
-msgstr ""
+msgstr "Usuário '%s' fez logout em '%s'"
 
 #: ../stoqlib/domain/person.py:811
 #, python-format
 msgid "Created branch '%s'"
-msgstr ""
+msgstr "Criou o branch '%s'"
 
 #: ../stoqlib/domain/person.py:862 ../stoqlib/gui/editors/personeditor.py:157
 msgid "Card Provider"
@@ -6150,7 +6154,7 @@ msgstr ""
 #: ../stoqlib/domain/purchase.py:332
 #, python-format
 msgid "Order %d, total value %2.2f, supplier '%s' is now confirmed"
-msgstr ""
+msgstr "Ordem %d, valor total %2.2f, fornecedor '%s' foi confirmada"
 
 #: ../stoqlib/domain/purchase.py:341
 #, python-format
@@ -6165,7 +6169,7 @@ msgstr "Estado inválido, ele deve ser confirmado, ao invés, recebeu %s"
 #: ../stoqlib/domain/purchase.py:356
 #, python-format
 msgid "Order %d, total value %2.2f, supplier '%s' is now closed"
-msgstr ""
+msgstr "Ordem %d, valor total %2.2f, fornecedor '%s' foi fechada"
 
 #: ../stoqlib/domain/purchase.py:375
 msgid "This item is not pending, hence cannot be received"
@@ -6386,7 +6390,7 @@ msgstr "Já existe uma estação registrada como `%s'."
 #: ../stoqlib/domain/station.py:101
 #, python-format
 msgid "Created computer '%s' for branch '%s'"
-msgstr ""
+msgstr "Criou o computador '%s' para a filial '%s'"
 
 #: ../stoqlib/domain/test/test_person.py:120
 #, python-format
@@ -8398,16 +8402,16 @@ msgstr "Pesquisa de itens consignados"
 
 #: ../stoqlib/gui/search/eventsearch.py:38
 msgid "Search for events"
-msgstr ""
+msgstr "Procurar por eventos"
 
 #. model_list_lookup_attr = 'product_id'
 #: ../stoqlib/gui/search/eventsearch.py:43
 msgid "event"
-msgstr ""
+msgstr "evento"
 
 #: ../stoqlib/gui/search/eventsearch.py:43
 msgid "events"
-msgstr ""
+msgstr "eventos"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:53
 msgid "ISS"
@@ -11568,105 +11572,105 @@ msgstr "Não há nenhum dado do parâmetro %s definido no banco de dados."
 #: ../stoqlib/lib/prettydate.py:39
 #, python-format
 msgid "%s %s ago"
-msgstr ""
+msgstr "%s %s Atrás"
 
 #. Translators: in 15 [days|weeks|months|years]
 #: ../stoqlib/lib/prettydate.py:42
 #, python-format
 msgid "in %s %s"
-msgstr ""
+msgstr "em %s %s"
 
 #: ../stoqlib/lib/prettydate.py:70
 msgid "now"
-msgstr ""
+msgstr "agora"
 
 #: ../stoqlib/lib/prettydate.py:72
 msgid "seconds"
-msgstr ""
+msgstr "segundos"
 
 #: ../stoqlib/lib/prettydate.py:74
 msgid "a minute ago"
-msgstr ""
+msgstr "um minuto atrás"
 
 #: ../stoqlib/lib/prettydate.py:74
 msgid "in a minute"
-msgstr ""
+msgstr "em um minuto"
 
 #: ../stoqlib/lib/prettydate.py:76
 msgid "minutes"
-msgstr ""
+msgstr "minutos"
 
 #: ../stoqlib/lib/prettydate.py:78
 msgid "an hour ago"
-msgstr ""
+msgstr "uma hora atrás"
 
 #: ../stoqlib/lib/prettydate.py:78
 msgid "in an hour"
-msgstr ""
+msgstr "em uma hora"
 
 #: ../stoqlib/lib/prettydate.py:80
 msgid "hours"
-msgstr ""
+msgstr "horas"
 
 #: ../stoqlib/lib/prettydate.py:83
 msgid "today"
-msgstr ""
+msgstr "hoje"
 
 #: ../stoqlib/lib/prettydate.py:85
 msgid "yesterday"
-msgstr ""
+msgstr "ontem"
 
 #: ../stoqlib/lib/prettydate.py:85
 msgid "tomorrow"
-msgstr ""
+msgstr "amanhã"
 
 #: ../stoqlib/lib/prettydate.py:87
 msgid "day before"
-msgstr ""
+msgstr "anteontem"
 
 #: ../stoqlib/lib/prettydate.py:87
 msgid "day after"
-msgstr ""
+msgstr "depois de amanhã"
 
 #: ../stoqlib/lib/prettydate.py:89
 msgid "days"
-msgstr ""
+msgstr "dias"
 
 #: ../stoqlib/lib/prettydate.py:91
 msgid "last week"
-msgstr ""
+msgstr "semana passada"
 
 #: ../stoqlib/lib/prettydate.py:91
 msgid "next week"
-msgstr ""
+msgstr "próxima semana"
 
 #: ../stoqlib/lib/prettydate.py:93
 msgid "weeks"
-msgstr ""
+msgstr "semanas"
 
 #: ../stoqlib/lib/prettydate.py:95
 msgid "last month"
-msgstr ""
+msgstr "mês anterior"
 
 #: ../stoqlib/lib/prettydate.py:95
 msgid "next month"
-msgstr ""
+msgstr "próximo mês"
 
 #: ../stoqlib/lib/prettydate.py:97
 msgid "months"
-msgstr ""
+msgstr "meses"
 
 #: ../stoqlib/lib/prettydate.py:99
 msgid "last year"
-msgstr ""
+msgstr "ano passado"
 
 #: ../stoqlib/lib/prettydate.py:99
 msgid "next year"
-msgstr ""
+msgstr "próximo ano"
 
 #: ../stoqlib/lib/prettydate.py:101
 msgid "years"
-msgstr ""
+msgstr "anos"
 
 #: ../stoqlib/lib/sintegragenerator.py:123
 #, python-format
