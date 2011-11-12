@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-11-08 14:55-0200\n"
-"PO-Revision-Date: 2011-11-10 20:44+0000\n"
+"PO-Revision-Date: 2011-11-11 18:52+0000\n"
 "Last-Translator: Rafael Neri <Unknown>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-11 05:04+0000\n"
+"X-Launchpad-Export-Date: 2011-11-12 04:59+0000\n"
 "X-Generator: Launchpad (build 14277)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -6865,19 +6865,19 @@ msgstr ""
 
 #: ../stoqlib/gui/dialogs/productcountingdialog.py:112
 msgid "Close inventory"
-msgstr ""
+msgstr "Close inventory"
 
 #: ../stoqlib/gui/dialogs/productcountingdialog.py:113
 msgid "Continue counting"
-msgstr ""
+msgstr "Continue counting"
 
 #: ../stoqlib/gui/dialogs/productimage.py:14
 msgid "Product Image Viewer"
-msgstr ""
+msgstr "Product Image Viewer"
 
 #: ../stoqlib/gui/dialogs/productiondetails.py:44
 msgid "Production Details"
-msgstr ""
+msgstr "Production Details"
 
 #: ../stoqlib/gui/dialogs/productiondetails.py:72
 #: ../stoqlib/gui/search/productionsearch.py:131
@@ -6885,7 +6885,7 @@ msgstr ""
 #: ../stoqlib/reporting/product.py:142 ../stoqlib/reporting/production.py:63
 #: ../stoqlib/reporting/production.py:155
 msgid "Produced"
-msgstr ""
+msgstr "Produced"
 
 #: ../stoqlib/gui/dialogs/productiondetails.py:74
 #: ../stoqlib/gui/dialogs/productiondetails.py:87
@@ -6895,36 +6895,36 @@ msgstr ""
 #: ../stoqlib/reporting/production.py:157
 #: ../stoqlib/reporting/production.py:189
 msgid "Lost"
-msgstr ""
+msgstr "Lost"
 
 #: ../stoqlib/gui/dialogs/productiondetails.py:85
 #: ../stoqlib/gui/dialogs/productiondialog.py:319
 #: ../stoqlib/gui/slaves/productionslave.py:172
 #: ../stoqlib/reporting/production.py:187
 msgid "Needed"
-msgstr ""
+msgstr "Needed"
 
 #: ../stoqlib/gui/dialogs/productiondetails.py:89
 #: ../stoqlib/gui/dialogs/productiondialog.py:323
 #: ../stoqlib/gui/slaves/productionslave.py:176
 #: ../stoqlib/reporting/production.py:191
 msgid "To Purchase"
-msgstr ""
+msgstr "To Purchase"
 
 #: ../stoqlib/gui/dialogs/productiondetails.py:91
 #: ../stoqlib/gui/dialogs/productiondialog.py:328
 #: ../stoqlib/gui/slaves/productionslave.py:180
 #: ../stoqlib/reporting/production.py:193
 msgid "To Make"
-msgstr ""
+msgstr "To Make"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:313
 msgid "Ind."
-msgstr ""
+msgstr "Ind."
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:314
 msgid "code"
-msgstr ""
+msgstr "code"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:321
 #: ../stoqlib/gui/search/productsearch.py:397
@@ -6933,25 +6933,25 @@ msgstr ""
 #: ../stoqlib/gui/wizards/abstractwizard.py:127
 #: ../stoqlib/reporting/product.py:233 ../stoqlib/reporting/purchase.py:101
 msgid "In Stock"
-msgstr ""
+msgstr "In Stock"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:322
 #: ../stoqlib/gui/search/productsearch.py:399
 #: ../stoqlib/reporting/product.py:235
 msgid "To Receive"
-msgstr ""
+msgstr "To Receive"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:427
 msgid "Production Dialog"
-msgstr ""
+msgstr "Production Dialog"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:435
 msgid "Create _purchase order"
-msgstr ""
+msgstr "Create _purchase order"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:458
 msgid "You don't have any components to purchase"
-msgstr ""
+msgstr "You don't have any components to purchase"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:464
 msgid ""
@@ -6960,86 +6960,92 @@ msgid ""
 "\n"
 "Would you like to continue the purchase ?"
 msgstr ""
+"The quantity needed of some components is bigger than the quantity you will "
+"purchase.\n"
+"\n"
+"Would you like to continue the purchase ?"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:468
 msgid "Abort purchase"
-msgstr ""
+msgstr "Abort purchase"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:469
 msgid "Continue purchase"
-msgstr ""
+msgstr "Continue purchase"
 
 #: ../stoqlib/gui/dialogs/productionquotedialog.py:91
 msgid "Purchase Production"
-msgstr ""
+msgstr "Purchase Production"
 
 #: ../stoqlib/gui/dialogs/productionquotedialog.py:100
 msgid "Create _Quote"
-msgstr ""
+msgstr "Create _Quote"
 
 #: ../stoqlib/gui/dialogs/productionquotedialog.py:157
 msgid ""
 "The quote group was succesfully created and it is available in the Purchase "
 "application."
 msgstr ""
+"The quote group was succesfully created and it is available in the Purchase "
+"application."
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:53
 msgid "Product History"
-msgstr ""
+msgstr "Product History"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:139
 #: ../stoqlib/reporting/purchase.py:109
 msgid "Purchase Order"
-msgstr ""
+msgstr "Purchase Order"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:143
 #: ../stoqlib/gui/search/fiscalsearch.py:123
 msgid "Invoice"
-msgstr ""
+msgstr "Invoice"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:169
 msgid "Date Created"
-msgstr ""
+msgstr "Date Created"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:172
 #: ../stoqlib/gui/search/transfersearch.py:94
 msgid "Destination"
-msgstr ""
+msgstr "Destination"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:177
 #: ../stoqlib/gui/search/productsearch.py:258
 #: ../stoqlib/reporting/product.py:140
 msgid "Transfered"
-msgstr ""
+msgstr "Transfered"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:181
 #: ../stoqlib/gui/search/loansearch.py:69
 msgid "Loan"
-msgstr ""
+msgstr "Loan"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:191
 #: ../stoqlib/gui/wizards/loanwizard.py:256
 #: ../stoqlib/gui/wizards/loanwizard.py:363
 msgid "Loaned"
-msgstr ""
+msgstr "Loaned"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:200
 #: ../stoqlib/gui/search/stockdecreasesearch.py:94
 #: ../stoqlib/reporting/stockdecreasereceipt.py:114
 msgid "Removed By"
-msgstr ""
+msgstr "Removed By"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:99
 msgid "Mixed Freights"
-msgstr ""
+msgstr "Mixed Freights"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:105
 msgid "Purchase Details"
-msgstr ""
+msgstr "Purchase Details"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:187
 msgid "Quantity Received"
-msgstr ""
+msgstr "Quantity Received"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:213
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:131
@@ -7047,258 +7053,258 @@ msgstr ""
 #: ../stoqlib/gui/slaves/installmentslave.py:249
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:138
 msgid "Paid value"
-msgstr ""
+msgstr "Paid value"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:220
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:144
 #: ../stoqlib/gui/dialogs/saledetails.py:180
 #: ../stoqlib/gui/editors/paymenteditor.py:330
 msgid "When"
-msgstr ""
+msgstr "When"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:225
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:149
 #: ../stoqlib/gui/dialogs/saledetails.py:185
 #: ../stoqlib/gui/editors/paymenteditor.py:335
 msgid "Changed"
-msgstr ""
+msgstr "Changed"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:227
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:151
 #: ../stoqlib/gui/dialogs/saledetails.py:187
 #: ../stoqlib/gui/editors/paymenteditor.py:337
 msgid "From"
-msgstr ""
+msgstr "From"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:229
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:153
 #: ../stoqlib/gui/dialogs/saledetails.py:189
 #: ../stoqlib/gui/editors/paymenteditor.py:339
 msgid "To"
-msgstr ""
+msgstr "To"
 
 #: ../stoqlib/gui/dialogs/quotedialog.py:80
 msgid "Quote Filling"
-msgstr ""
+msgstr "Quote Filling"
 
 #: ../stoqlib/gui/dialogs/quotedialog.py:97
 msgid "Last Cost"
-msgstr ""
+msgstr "Last Cost"
 
 #: ../stoqlib/gui/dialogs/quotedialog.py:99
 msgid "Average Cost"
-msgstr ""
+msgstr "Average Cost"
 
 #: ../stoqlib/gui/dialogs/receivingdialog.py:52
 msgid "Receiving Order Details"
-msgstr ""
+msgstr "Receiving Order Details"
 
 #: ../stoqlib/gui/dialogs/receivingdialog.py:99
 #, python-format
 msgid "Received in <b>%s</b> for branch <b>%s</b>"
-msgstr ""
+msgstr "Received in <b>%s</b> for branch <b>%s</b>"
 
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:65
 msgid "Renegotiation Details"
-msgstr ""
+msgstr "Renegotiation Details"
 
 #: ../stoqlib/gui/dialogs/saledetails.py:75
 msgid "Sale Details"
-msgstr ""
+msgstr "Sale Details"
 
 #: ../stoqlib/gui/dialogs/saledetails.py:238
 msgid "Sale Cancellation Details"
-msgstr ""
+msgstr "Sale Cancellation Details"
 
 #: ../stoqlib/gui/dialogs/sellablepricedialog.py:114
 msgid "Price Change Dialog"
-msgstr ""
+msgstr "Price Change Dialog"
 
 #: ../stoqlib/gui/dialogs/sellablepricedialog.py:158
 msgid "Default Price"
-msgstr ""
+msgstr "Default Price"
 
 #: ../stoqlib/gui/dialogs/sellablepricedialog.py:193
 msgid "Updating items"
-msgstr ""
+msgstr "Updating items"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:47
 msgid "January"
-msgstr ""
+msgstr "January"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:48
 msgid "February"
-msgstr ""
+msgstr "February"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:49
 msgid "March"
-msgstr ""
+msgstr "March"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:50
 msgid "April"
-msgstr ""
+msgstr "April"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:51
 msgid "May"
-msgstr ""
+msgstr "May"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:52
 msgid "June"
-msgstr ""
+msgstr "June"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:53
 msgid "July"
-msgstr ""
+msgstr "July"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:54
 msgid "August"
-msgstr ""
+msgstr "August"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:55
 msgid "September"
-msgstr ""
+msgstr "September"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:56
 msgid "October"
-msgstr ""
+msgstr "October"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:57
 msgid "November"
-msgstr ""
+msgstr "November"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:58
 msgid "December"
-msgstr ""
+msgstr "December"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:65
 msgid "Fiscal Printer History"
-msgstr ""
+msgstr "Fiscal Printer History"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:70
 msgid "Generate"
-msgstr ""
+msgstr "Generate"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:72
 msgid "Month:"
-msgstr ""
+msgstr "Month:"
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:84
 msgid "Save Sintegra file"
-msgstr ""
+msgstr "Save Sintegra file"
 
 #. Translators: Month Year, eg: 'May 2007'
 #: ../stoqlib/gui/dialogs/sintegradialog.py:126
 #, python-format
 msgid "%s %s"
-msgstr ""
+msgstr "%s %s"
 
 #: ../stoqlib/gui/dialogs/startproduction.py:47
 msgid "_Start Production"
-msgstr ""
+msgstr "_Start Production"
 
 #: ../stoqlib/gui/dialogs/stockcostdialog.py:54
 msgid "Product - Stock Cost"
-msgstr ""
+msgstr "Product - Stock Cost"
 
 #: ../stoqlib/gui/dialogs/stockcostdialog.py:68
 #, python-format
 msgid "Fixing stock cost for products in %s"
-msgstr ""
+msgstr "Fixing stock cost for products in %s"
 
 #: ../stoqlib/gui/dialogs/stockcostdialog.py:81
 msgid "Stock Cost"
-msgstr ""
+msgstr "Stock Cost"
 
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:38
 msgid "Manual Stock Decrease Details"
-msgstr ""
+msgstr "Manual Stock Decrease Details"
 
 #: ../stoqlib/gui/dialogs/supplierdetails.py:53
 msgid "Supplier Details"
-msgstr ""
+msgstr "Supplier Details"
 
 #: ../stoqlib/gui/dialogs/tillhistory.py:52
 msgid "Till Entries matching:"
-msgstr ""
+msgstr "Till Entries matching:"
 
 #: ../stoqlib/gui/dialogs/tillhistory.py:53
 msgid "Till history"
-msgstr ""
+msgstr "Till history"
 
 #: ../stoqlib/gui/dialogs/tillhistory.py:60
 #: ../stoqlib/gui/search/paymentsearch.py:80
 #: ../stoqlib/gui/slaves/paymentslave.py:245
 #: ../stoqlib/gui/wizards/receivingwizard.py:93
 msgid "Number"
-msgstr ""
+msgstr "Number"
 
 #: ../stoqlib/gui/dialogs/tillhistory.py:86
 msgid "Cash _Add..."
-msgstr ""
+msgstr "Cash _Add..."
 
 #: ../stoqlib/gui/dialogs/tillhistory.py:88
 msgid "Cash _In..."
-msgstr ""
+msgstr "Cash _In..."
 
 #: ../stoqlib/gui/dialogs/tillhistory.py:90
 msgid "Cash _Out..."
-msgstr ""
+msgstr "Cash _Out..."
 
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:47
 msgid "Transfer Order Details"
-msgstr ""
+msgstr "Transfer Order Details"
 
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:87
 msgid "Total Cost"
-msgstr ""
+msgstr "Total Cost"
 
 #: ../stoqlib/gui/editors/accounteditor.py:112
 msgid "Account description cannot be empty"
-msgstr ""
+msgstr "Account description cannot be empty"
 
 #: ../stoqlib/gui/editors/accounttransactioneditor.py:101
 msgid "Account Editor"
-msgstr ""
+msgstr "Account Editor"
 
 #: ../stoqlib/gui/editors/accounttransactioneditor.py:114
 msgid "Show Payment"
-msgstr ""
+msgstr "Show Payment"
 
 #: ../stoqlib/gui/editors/accounttransactioneditor.py:174
 msgid "Description must be filled in"
-msgstr ""
+msgstr "Description must be filled in"
 
 #: ../stoqlib/gui/editors/accounttransactioneditor.py:178
 msgid "Value must be greater than zero"
-msgstr ""
+msgstr "Value must be greater than zero"
 
 #: ../stoqlib/gui/editors/addresseditor.py:189 ../stoqlib/lib/countries.py:59
 msgid "Brazil"
-msgstr ""
+msgstr "Brazil"
 
 #: ../stoqlib/gui/editors/addresseditor.py:196
 msgid "The State is not valid"
-msgstr ""
+msgstr "The State is not valid"
 
 #: ../stoqlib/gui/editors/addresseditor.py:200
 msgid "Number cannot be zero or less than zero"
-msgstr ""
+msgstr "Number cannot be zero or less than zero"
 
 #: ../stoqlib/gui/editors/addresseditor.py:213
 #: ../stoqlib/gui/editors/addresseditor.py:256
 #: ../stoqlib/gui/editors/addresseditor.py:292
 #: ../stoqlib/gui/search/salesearch.py:139
 msgid "Address"
-msgstr ""
+msgstr "Address"
 
 #: ../stoqlib/gui/editors/addresseditor.py:252
 msgid "Additional Addresses"
-msgstr ""
+msgstr "Additional Addresses"
 
 #: ../stoqlib/gui/editors/addresseditor.py:258
 #: ../stoqlib/gui/editors/addresseditor.py:294
 msgid "City"
-msgstr ""
+msgstr "City"
 
 #: ../stoqlib/gui/editors/addresseditor.py:260
 #: ../stoqlib/gui/editors/addresseditor.py:296
@@ -7307,148 +7313,148 @@ msgstr "State"
 
 #: ../stoqlib/gui/editors/addresseditor.py:288
 msgid "Select an address"
-msgstr ""
+msgstr "Select an address"
 
 #: ../stoqlib/gui/editors/baseeditor.py:206
 #, python-format
 msgid "Details of %s"
-msgstr ""
+msgstr "Details of %s"
 
 #: ../stoqlib/gui/editors/baseeditor.py:208
 #, python-format
 msgid "Edit Details of \"%s\""
-msgstr ""
+msgstr "Edit Details of \"%s\""
 
 #: ../stoqlib/gui/editors/baseeditor.py:209
 #, python-format
 msgid "Add %s"
-msgstr ""
+msgstr "Add %s"
 
 #: ../stoqlib/gui/editors/categoryeditor.py:45
 msgid "Category already exists."
-msgstr ""
+msgstr "Category already exists."
 
 #: ../stoqlib/gui/editors/categoryeditor.py:54
 #: ../stoqlib/gui/search/taxclasssearch.py:48
 msgid "Base Category"
-msgstr ""
+msgstr "Base Category"
 
 #: ../stoqlib/gui/editors/categoryeditor.py:120
 #: ../stoqlib/gui/editors/categoryeditor.py:136
 #: ../stoqlib/gui/editors/sellableeditor.py:176
 #, python-format
 msgid "Calculate Commission From: %s"
-msgstr ""
+msgstr "Calculate Commission From: %s"
 
 #: ../stoqlib/gui/editors/clientcategoryeditor.py:36
 msgid "Client Category"
-msgstr ""
+msgstr "Client Category"
 
 #: ../stoqlib/gui/editors/clientcategoryeditor.py:55
 msgid "The client category should have a name."
-msgstr ""
+msgstr "The client category should have a name."
 
 #: ../stoqlib/gui/editors/clientcategoryeditor.py:58
 #, python-format
 msgid "The client category '%s' already exists."
-msgstr ""
+msgstr "The client category '%s' already exists."
 
 #: ../stoqlib/gui/editors/contacteditor.py:36
 msgid "Liaison"
-msgstr ""
+msgstr "Liaison"
 
 #: ../stoqlib/gui/editors/decreaseeditor.py:43
 msgid "Decrease Item"
-msgstr ""
+msgstr "Decrease Item"
 
 #: ../stoqlib/gui/editors/decreaseeditor.py:68
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:199
 msgid "Quantity must be greater than zero"
-msgstr ""
+msgstr "Quantity must be greater than zero"
 
 #: ../stoqlib/gui/editors/decreaseeditor.py:82
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:210
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:201
 msgid "Quantity is greater than the quantity in stock."
-msgstr ""
+msgstr "Quantity is greater than the quantity in stock."
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:54
 #: ../stoqlib/gui/editors/deliveryeditor.py:58
 #: ../stoqlib/lib/parameters.py:821
 msgid "Delivery"
-msgstr ""
+msgstr "Delivery"
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:61
 msgid "New Delivery"
-msgstr ""
+msgstr "New Delivery"
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:107
 msgid "Deliver"
-msgstr ""
+msgstr "Deliver"
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:147
 msgid "Delivery Instructions"
-msgstr ""
+msgstr "Delivery Instructions"
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:152
 msgid "Expected delivery date must be set to a future date"
-msgstr ""
+msgstr "Expected delivery date must be set to a future date"
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:158
 msgid "The Delivery cost must be a positive value."
-msgstr ""
+msgstr "The Delivery cost must be a positive value."
 
 #: ../stoqlib/gui/editors/deviceseditor.py:80
 #: ../stoqlib/gui/editors/deviceseditor.py:86
 #: ../stoqlib/gui/editors/deviceseditor.py:121
 #: ../stoqlib/gui/editors/deviceseditor.py:134
 msgid "Choose..."
-msgstr ""
+msgstr "Choose..."
 
 #: ../stoqlib/gui/editors/deviceseditor.py:159
 #, python-format
 msgid "Edit Device for %s"
-msgstr ""
+msgstr "Edit Device for %s"
 
 #: ../stoqlib/gui/editors/deviceseditor.py:161
 msgid "Add Device"
-msgstr ""
+msgstr "Add Device"
 
 #: ../stoqlib/gui/editors/deviceseditor.py:171
 #, python-format
 msgid "A %s already exists for station \"%s\""
-msgstr ""
+msgstr "A %s already exists for station \"%s\""
 
 #: ../stoqlib/gui/editors/fiscaleditor.py:63
 #, python-format
 msgid "'%s' is not a valid C.F.O.P. code."
-msgstr ""
+msgstr "'%s' is not a valid C.F.O.P. code."
 
 #: ../stoqlib/gui/editors/fiscaleditor.py:83
 #, python-format
 msgid "Edit Fiscal Book Entry #%d"
-msgstr ""
+msgstr "Edit Fiscal Book Entry #%d"
 
 #: ../stoqlib/gui/editors/invoiceeditor.py:57
 #: ../stoqlib/gui/editors/invoiceeditor.py:222
 msgid "Invoice Layouts"
-msgstr ""
+msgstr "Invoice Layouts"
 
 #: ../stoqlib/gui/editors/invoiceeditor.py:99
 msgid "width value must greater than zero."
-msgstr ""
+msgstr "width value must greater than zero."
 
 #: ../stoqlib/gui/editors/invoiceeditor.py:103
 msgid "height value must greater than zero."
-msgstr ""
+msgstr "height value must greater than zero."
 
 #: ../stoqlib/gui/editors/invoiceeditor.py:202
 msgid "You need at least one sale to be able to preview invoice layouts"
-msgstr ""
+msgstr "You need at least one sale to be able to preview invoice layouts"
 
 #: ../stoqlib/gui/editors/invoiceeditor.py:209
 msgid "Not enough fields or data to create an invoice preview."
-msgstr ""
+msgstr "Not enough fields or data to create an invoice preview."
 
 #: ../stoqlib/gui/editors/invoiceeditor.py:228
 msgid "Size"
@@ -7456,16 +7462,16 @@ msgstr "Size"
 
 #: ../stoqlib/gui/editors/invoiceeditor.py:249
 msgid "Untitled Printer"
-msgstr ""
+msgstr "Untitled Printer"
 
 #: ../stoqlib/gui/editors/invoiceeditor.py:286
 msgid "Device name"
-msgstr ""
+msgstr "Device name"
 
 #: ../stoqlib/gui/editors/invoiceeditor.py:287
 #: ../stoqlib/gui/search/tillsearch.py:119
 msgid "Station"
-msgstr ""
+msgstr "Station"
 
 #: ../stoqlib/gui/editors/invoiceeditor.py:288
 msgid "Layout"
@@ -7473,242 +7479,245 @@ msgstr "Layout"
 
 #: ../stoqlib/gui/editors/invoiceeditor.py:294
 msgid "Sale Invoice"
-msgstr ""
+msgstr "Sale Invoice"
 
 #: ../stoqlib/gui/editors/invoiceeditor.py:297
 msgid "Sale Invoice Dialog"
-msgstr ""
+msgstr "Sale Invoice Dialog"
 
 #: ../stoqlib/gui/editors/loaneditor.py:41
 msgid "Loan Item"
-msgstr ""
+msgstr "Loan Item"
 
 #: ../stoqlib/gui/editors/loaneditor.py:106
 #: ../stoqlib/gui/editors/saleeditor.py:127
 #: ../stoqlib/gui/wizards/salequotewizard.py:314
 msgid "The price must be greater than zero."
-msgstr ""
+msgstr "The price must be greater than zero."
 
 #: ../stoqlib/gui/editors/loaneditor.py:112
 msgid "The quantity should be positive."
-msgstr ""
+msgstr "The quantity should be positive."
 
 #: ../stoqlib/gui/editors/loaneditor.py:114
 msgid "Quantity not available in stock."
-msgstr ""
+msgstr "Quantity not available in stock."
 
 #: ../stoqlib/gui/editors/loaneditor.py:118
 #: ../stoqlib/gui/editors/loaneditor.py:126
 #: ../stoqlib/gui/editors/purchaseeditor.py:139
 #: ../stoqlib/gui/editors/purchaseeditor.py:148
 msgid "Can not decrease this quantity."
-msgstr ""
+msgstr "Can not decrease this quantity."
 
 #: ../stoqlib/gui/editors/loaneditor.py:121
 #: ../stoqlib/gui/editors/loaneditor.py:129
 msgid "Sale and return quantity is greater than the total quantity."
-msgstr ""
+msgstr "Sale and return quantity is greater than the total quantity."
 
 #: ../stoqlib/gui/editors/parameterseditor.py:101
 msgid "Cat 52 directory selection"
-msgstr ""
+msgstr "Cat 52 directory selection"
 
 #: ../stoqlib/gui/editors/parameterseditor.py:168
 #, python-format
 msgid "Edit '%s' Parameter"
-msgstr ""
+msgstr "Edit '%s' Parameter"
 
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:36
 msgid "Payment Category"
-msgstr ""
+msgstr "Payment Category"
 
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:57
 msgid "The payment category should have name."
-msgstr ""
+msgstr "The payment category should have name."
 
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:60
 #, python-format
 msgid "The payment category '%s' already exists."
-msgstr ""
+msgstr "The payment category '%s' already exists."
 
 #: ../stoqlib/gui/editors/paymenteditor.py:105
 msgid "Add a new payment category"
-msgstr ""
+msgstr "Add a new payment category"
 
 #: ../stoqlib/gui/editors/paymenteditor.py:106
 msgid "Edit the selected payment category"
-msgstr ""
+msgstr "Edit the selected payment category"
 
 #: ../stoqlib/gui/editors/paymenteditor.py:109
 msgid "Edit the selected supplier"
-msgstr ""
+msgstr "Edit the selected supplier"
 
 #: ../stoqlib/gui/editors/paymenteditor.py:112
 msgid "Edit the selected client"
-msgstr ""
+msgstr "Edit the selected client"
 
 #: ../stoqlib/gui/editors/paymenteditor.py:192
 msgid "Sale details"
-msgstr ""
+msgstr "Sale details"
 
 #: ../stoqlib/gui/editors/paymenteditor.py:194
 msgid "Purchase details"
-msgstr ""
+msgstr "Purchase details"
 
 #: ../stoqlib/gui/editors/paymenteditor.py:225
 #: ../stoqlib/gui/slaves/paymentslave.py:1218
 msgid "The value must be greater than zero."
-msgstr ""
+msgstr "The value must be greater than zero."
 
 #: ../stoqlib/gui/editors/paymenteditor.py:254
 msgid "Payer:"
-msgstr ""
+msgstr "Payer:"
 
 #: ../stoqlib/gui/editors/paymenteditor.py:275
 msgid "Recipient:"
-msgstr ""
+msgstr "Recipient:"
 
 #: ../stoqlib/gui/editors/paymenteditor.py:358
 msgid "Payment Details"
-msgstr ""
+msgstr "Payment Details"
 
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:99
 msgid "Edit providers"
-msgstr ""
+msgstr "Edit providers"
 
 #: ../stoqlib/gui/editors/paymentseditor.py:43
 msgid "Payments Editor"
-msgstr ""
+msgstr "Payments Editor"
 
 #: ../stoqlib/gui/editors/personeditor.py:54
 msgid "New Client"
-msgstr ""
+msgstr "New Client"
 
 #: ../stoqlib/gui/editors/personeditor.py:77
 msgid "New User"
-msgstr ""
+msgstr "New User"
 
 #: ../stoqlib/gui/editors/personeditor.py:106
 msgid "User Details"
-msgstr ""
+msgstr "User Details"
 
 #: ../stoqlib/gui/editors/personeditor.py:124
 msgid "Credit Provider"
-msgstr ""
+msgstr "Credit Provider"
 
 #: ../stoqlib/gui/editors/personeditor.py:125
 msgid "New Credit Provider"
-msgstr ""
+msgstr "New Credit Provider"
 
 #: ../stoqlib/gui/editors/personeditor.py:158
 msgid "New Card Provider"
-msgstr ""
+msgstr "New Card Provider"
 
 #: ../stoqlib/gui/editors/personeditor.py:163
 msgid "Employee"
-msgstr ""
+msgstr "Employee"
 
 #: ../stoqlib/gui/editors/personeditor.py:164
 msgid "New Employee"
-msgstr ""
+msgstr "New Employee"
 
 #: ../stoqlib/gui/editors/personeditor.py:187
 msgid "Employee Data"
-msgstr ""
+msgstr "Employee Data"
 
 #: ../stoqlib/gui/editors/personeditor.py:198
 msgid "Role History"
-msgstr ""
+msgstr "Role History"
 
 #: ../stoqlib/gui/editors/personeditor.py:212
 msgid "Employee Role"
-msgstr ""
+msgstr "Employee Role"
 
 #: ../stoqlib/gui/editors/personeditor.py:217
 msgid "Role Name:"
-msgstr ""
+msgstr "Role Name:"
 
 #: ../stoqlib/gui/editors/personeditor.py:245
 msgid "New Supplier"
-msgstr ""
+msgstr "New Supplier"
 
 #: ../stoqlib/gui/editors/personeditor.py:269
 msgid "Transporter"
-msgstr ""
+msgstr "Transporter"
 
 #: ../stoqlib/gui/editors/personeditor.py:270
 msgid "New Transporter"
-msgstr ""
+msgstr "New Transporter"
 
 #: ../stoqlib/gui/editors/personeditor.py:295
 msgid "New Branch"
-msgstr ""
+msgstr "New Branch"
 
 #: ../stoqlib/gui/editors/producteditor.py:126
 msgid "Production Cost"
-msgstr ""
+msgstr "Production Cost"
 
 #: ../stoqlib/gui/editors/producteditor.py:226
 #, python-format
 msgid "You can not add this product as component, since %s is composed by %s"
 msgstr ""
+"You can not add this product as component, since %s is composed by %s"
 
 #: ../stoqlib/gui/editors/producteditor.py:263
 #, python-format
 msgid "This will remove the component \"%s\". Are you sure?"
-msgstr ""
+msgstr "This will remove the component \"%s\". Are you sure?"
 
 #: ../stoqlib/gui/editors/producteditor.py:266
 msgid "Remove component"
-msgstr ""
+msgstr "Remove component"
 
 #: ../stoqlib/gui/editors/producteditor.py:267
 msgid "Keep component"
-msgstr ""
+msgstr "Keep component"
 
 #: ../stoqlib/gui/editors/producteditor.py:329
 msgid "Product Supplier"
-msgstr ""
+msgstr "Product Supplier"
 
 #: ../stoqlib/gui/editors/producteditor.py:340
 #: ../stoqlib/gui/slaves/productslave.py:55
 msgid "Unit(s)"
-msgstr ""
+msgstr "Unit(s)"
 
 #: ../stoqlib/gui/editors/producteditor.py:404
 msgid "Lead time"
-msgstr ""
+msgstr "Lead time"
 
 #: ../stoqlib/gui/editors/producteditor.py:405
 msgid "Minimum Purchase"
-msgstr ""
+msgstr "Minimum Purchase"
 
 #: ../stoqlib/gui/editors/producteditor.py:416
 #, python-format
 msgid "%s is already supplied by %s"
-msgstr ""
+msgstr "%s is already supplied by %s"
 
 #: ../stoqlib/gui/editors/producteditor.py:435
 msgid "Product Component"
-msgstr ""
+msgstr "Product Component"
 
 #. FIXME: value < upper bound
 #: ../stoqlib/gui/editors/producteditor.py:466
 msgid "The component quantity must be greater than zero."
-msgstr ""
+msgstr "The component quantity must be greater than zero."
 
 #: ../stoqlib/gui/editors/producteditor.py:471
 #: ../stoqlib/gui/editors/producteditor.py:588
 #: ../stoqlib/gui/search/salesearch.py:182
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:254
 msgid "Product"
-msgstr ""
+msgstr "Product"
 
 #: ../stoqlib/gui/editors/producteditor.py:485
 msgid ""
 "This status changes automatically when the\n"
 "product is purchased or an inicial stock is added."
 msgstr ""
+"This status changes automatically when the\n"
+"product is purchased or an inicial stock is added."
 
 #: ../stoqlib/gui/editors/producteditor.py:552
 msgid "Cost must be greater than the sum of the components."
