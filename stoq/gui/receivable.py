@@ -63,7 +63,7 @@ from stoqlib.lib.message import warning
 from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
-
+LAUNCHER_EMBEDDED = True
 
 class ReceivableApp(SearchableAppWindow):
 
@@ -78,51 +78,75 @@ class ReceivableApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
-        self._setup_widgets()
-        self._update_widgets()
         self.results.connect('has-rows', self._has_rows)
+        self.activate()
 
     #
     # Application
     #
 
     def activate(self):
+        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self._setup_widgets()
+        self._update_widgets()
         self.search.refresh()
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.receivable_ui)
+        self.uimanager.remove_ui(self.receivable_help_ui)
 
     def create_actions(self):
         ui_string = """<ui>
           <menubar action="menubar">
-            <menu action="Menu">
-              <menuitem action="AddReceiving"/>
-              <menuitem action="CancelPayment"/>
-              <menuitem action="SetNotPaid"/>
-              <menuitem action="ChangeDueDate"/>
-              <menuitem action="Renegotiate"/>
-              <menuitem action="Comments"/>
-              <separator name="sep"/>
-              <menuitem action="PrintBill"/>
-              <menuitem action="PrintReceipt"/>
-              <menuitem action="PaymentFlowHistory"/>
-              <separator name="sep2"/>
-              <separator name="sep3"/>
-              <menuitem action="ExportCSV"/>
-              <separator name="sep4"/>
-              <menuitem action="Quit"/>
+            <menu action="StoqMenu">
+              <menu action="NewMenu">
+                <placeholder name="NewMenuItemPH">
+                  <menuitem action="AddReceiving"/>
+                </placeholder>
+              </menu>
+              <placeholder name="StoqMenuPH">
+                <menuitem action="ExportCSV"/>
+              </placeholder>
             </menu>
-            <menu action="SearchMenu">
-              <menuitem action="BillCheckSearch"/>
-              <menuitem action="CardPaymentSearch"/>
+            <menu action="EditMenu">
+              <placeholder name="EditMenuPH">
+                <menuitem action="AddReceiving"/>
+                <menuitem action="CancelPayment"/>
+                <menuitem action="SetNotPaid"/>
+                <menuitem action="ChangeDueDate"/>
+                <menuitem action="Renegotiate"/>
+                <menuitem action="Comments"/>
+                <separator name="sep"/>
+                <menuitem action="PrintBill"/>
+                <menuitem action="PrintReceipt"/>
+                <menuitem action="PaymentFlowHistory"/>
+              </placeholder>
             </menu>
+            <placeholder name="AppMenubarPH">
+              <menu action="SearchMenu">
+                <menuitem action="BillCheckSearch"/>
+                <menuitem action="CardPaymentSearch"/>
+              </menu>
+            </placeholder>
           </menubar>
-        </ui>"""
+      <toolbar action="toolbar">
+        <placeholder name="NewToolItemPH">
+          <toolitem action="NewToolItem">
+            <menu action="NewMenu">
+              <menuitem action="AddReceiving"/>
+            </menu>
+          </toolitem>
+        </placeholder>
+      </toolbar>
+    </ui>"""
+
 
         actions = [
             ('menubar', None, ''),
 
             # Payable
-            ('Menu', None, _('Accounts _receivable')),
             ('AddReceiving', gtk.STOCK_ADD,
-             _('Add receiving...'), '<Control>p'),
+             _('Accounts receivable'), '<Control>p'),
             ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
             ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...')),
@@ -135,21 +159,16 @@ class ReceivableApp(SearchableAppWindow):
              _('Payment _flow history...'), '<Control>f'),
 
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
-            ("Quit", gtk.STOCK_QUIT),
+            ('Quit', gtk.STOCK_QUIT),
 
             # Search
             ('SearchMenu', None, _('_Search')),
             ('BillCheckSearch', None, _('Bill and check...')),
             ('CardPaymentSearch', None, _('Card payment...')),
         ]
-        self.add_ui_actions(ui_string, actions)
-        self.add_help_ui(_("Accounts receivable help"), 'receber-inicio')
-
-    def create_ui(self):
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_vbox.pack_start(self.menubar, False, False)
-        self.main_vbox.reorder_child(self.menubar, 0)
-        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.receivable_ui = self.add_ui_actions(ui_string, actions)
+        self.receivable_help_ui = self.add_help_ui(
+            _("Accounts receivable help"), 'receber-inicio')
 
     def _setup_widgets(self):
         self.search.set_summary_label(
