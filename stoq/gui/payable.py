@@ -59,6 +59,7 @@ from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.slaves.installmentslave import PurchaseInstallmentConfirmationSlave
 
 _ = gettext.gettext
+LAUNCHER_EMBEDDED = True
 
 class PayableApp(SearchableAppWindow):
 
@@ -85,35 +86,55 @@ class PayableApp(SearchableAppWindow):
     def activate(self):
         self.search.refresh()
 
+    def deactivate(self):
+        self.uimanager.remove_ui(self.payable_ui)
+        self.uimanager.remove_ui(self.payable_help_ui)
+
     def create_actions(self):
         ui_string = """<ui>
           <menubar action="menubar">
-            <menu action="PayableMenu">
-              <menuitem action="AddPayment"/>
-              <menuitem action="CancelPayment"/>
-              <menuitem action="SetNotPaid"/>
-              <menuitem action="ChangeDueDate"/>
-              <menuitem action="Comments"/>
-              <separator name="sep"/>
-              <menuitem action="PrintReceipt"/>
-              <menuitem action="PaymentFlowHistory"/>
-              <separator name="sep2"/>
-              <menuitem action="ExportCSV"/>
-              <separator name="sep3"/>
-              <menuitem action="Quit"/>
+            <menu action="StoqMenu">
+              <menu action="NewMenu">
+                <placeholder name="NewMenuItemPH">
+                  <menuitem action="AddPayment"/>
+                </placeholder>
+              </menu>
+              <placeholder name="StoqMenuPH">
+                <menuitem action="ExportCSV"/>
+              </placeholder>
             </menu>
-            <menu action="SearchMenu">
-              <menuitem action="BillCheckSearch"/>
+            <menu action="EditMenu">
+              <placeholder name="EditMenuPH">
+                <menuitem action="CancelPayment"/>
+                <menuitem action="SetNotPaid"/>
+                <menuitem action="ChangeDueDate"/>
+                <menuitem action="Comments"/>
+                <menuitem action="PrintReceipt"/>
+                <menuitem action="PaymentFlowHistory"/>
+              </placeholder>
             </menu>
+            <placeholder name="AppMenubarPH">
+              <menu action="SearchMenu">
+                <menuitem action="BillCheckSearch"/>
+              </menu>
+            </placeholder>
           </menubar>
-        </ui>"""
+      <toolbar action="toolbar">
+        <placeholder name="NewToolItemPH">
+          <toolitem action="NewToolItem">
+            <menu action="NewMenu">
+              <menuitem action="AddPayment"/>
+            </menu>
+          </toolitem>
+        </placeholder>
+      </toolbar>
+    </ui>"""
 
         actions = [
             ('menubar', None, ''),
 
             # Payable
-            ('PayableMenu', None, _('Accounts _payable')),
-            ('AddPayment', gtk.STOCK_ADD, _('Add payment...'), '<Control>p'),
+            ('AddPayment', gtk.STOCK_ADD, _('Accounts payable'), '<Control>p'),
             ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
             ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...')),
@@ -129,15 +150,10 @@ class PayableApp(SearchableAppWindow):
             # Search
             ('SearchMenu', None, _('_Search')),
             ('BillCheckSearch', None, _('Bill and check...')),
-
         ]
-        self.add_ui_actions(ui_string, actions)
-        self.add_help_ui(_("Accounts payable help"), 'pagar-inicio')
-
-    def create_ui(self):
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_vbox.pack_start(self.menubar, False, False)
-        self.main_vbox.reorder_child(self.menubar, 0)
+        self.payable_ui = self.add_ui_actions(ui_string, actions)
+        self.payable_help_ui = self.add_help_ui(_("Accounts payable help"),
+                                                  'pagar-inicio')
 
     #
     # SearchableAppWindow

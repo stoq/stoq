@@ -59,6 +59,7 @@ from stoqlib.lib.message import info
 from stoq.gui.application import AppWindow
 
 _ = gettext.gettext
+LAUNCHER_EMBEDDED = True
 
 logger = Logger('stoq.gui.admin')
 
@@ -259,38 +260,50 @@ class AdminApp(AppWindow):
     # Application
     #
 
+    def activate(self):
+        self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
+        self.iconview.set_text_column(COL_LABEL)
+        self.iconview.set_pixbuf_column(COL_PIXBUF)
+        self.iconview.grab_focus()
+        self.iconview.connect('item-activated', self.tasks.on_item_activated)
+        self.tasks.add_defaults(self.model)
+        self.iconview.select_path(self.model[0].path)
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.admin_ui)
+        self.uimanager.remove_ui(self.admin_help_ui)
+
     def create_actions(self):
         ui_string = """<ui>
           <menubar action="menubar">
-            <menu action="AdminMenu">
-              <menuitem action="Quit"/>
-            </menu>
-            <menu action="SearchMenu">
-              <menuitem action="SearchRole"/>
-              <menuitem action="SearchEmployee"/>
-              <menuitem action="SearchCfop"/>
-              <menuitem action="SearchFiscalBook"/>
-              <menuitem action="SearchUserProfile"/>
-              <menuitem action="SearchUser"/>
-              <menuitem action="SearchBranch"/>
-              <menuitem action="SearchComputer"/>
-              <menuitem action="SearchTaxTemplate"/>
-              <menuitem action="SearchEvents"/>
-            </menu>
-            <menu action="ConfigureMenu">
-              <menuitem action="ConfigureDevices"/>
-              <menuitem action="ConfigurePaymentMethods"/>
-              <menuitem action="ConfigurePaymentCategories"/>
-              <menuitem action="ConfigureClientCategories"/>
-              <menuitem action="ConfigureTaxes"/>
-              <menuitem action="ConfigureSintegra"/>
-              <menuitem action="ConfigureParameters"/>
-              <menuitem action="ConfigureInvoices"/>
-              <menuitem action="ConfigureInvoicePrinters"/>
-              <separator name="ConfigureSeparator"/>
-              <menuitem action="ConfigurePlugins"/>
-              <placeholder name="PluginSettings"/>
-            </menu>
+            <placeholder action="AppMenubarPH">
+              <menu action="SearchMenu">
+                <menuitem action="SearchRole"/>
+                <menuitem action="SearchEmployee"/>
+                <menuitem action="SearchCfop"/>
+                <menuitem action="SearchFiscalBook"/>
+                <menuitem action="SearchUserProfile"/>
+                <menuitem action="SearchUser"/>
+                <menuitem action="SearchBranch"/>
+                <menuitem action="SearchComputer"/>
+                <menuitem action="SearchTaxTemplate"/>
+                <menuitem action="SearchEvents"/>
+              </menu>
+              <menu action="ConfigureMenu">
+                <menuitem action="ConfigureDevices"/>
+                <menuitem action="ConfigurePaymentMethods"/>
+                <menuitem action="ConfigurePaymentCategories"/>
+                <menuitem action="ConfigureClientCategories"/>
+                <menuitem action="ConfigureTaxes"/>
+                <menuitem action="ConfigureSintegra"/>
+                <menuitem action="ConfigureParameters"/>
+                <menuitem action="ConfigureInvoices"/>
+                <menuitem action="ConfigureInvoicePrinters"/>
+                <separator name="ConfigureSeparator"/>
+                <menuitem action="ConfigurePlugins"/>
+                <placeholder name="PluginSettings"/>
+              </menu>
+            </placeholder>
           </menubar>
         </ui>"""
 
@@ -330,21 +343,8 @@ class AdminApp(AppWindow):
             ("ConfigureTaxes", None, _("Taxes..."), '<Control>l'),
             ("ConfigureParameters", None, _("Parameters..."), '<Control>y'),
             ]
-        self.add_ui_actions(ui_string, actions)
-        self.add_help_ui(_("Admin help"), 'admin-inicial')
-
-    def create_ui(self):
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_vbox.pack_start(self.menubar, False, False)
-        self.main_vbox.reorder_child(self.menubar, 0)
-
-        self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
-        self.iconview.set_text_column(COL_LABEL)
-        self.iconview.set_pixbuf_column(COL_PIXBUF)
-        self.iconview.grab_focus()
-        self.iconview.connect('item-activated', self.tasks.on_item_activated)
-        self.tasks.add_defaults(self.model)
-        self.iconview.select_path(self.model[0].path)
+        self.admin_ui = self.add_ui_actions(ui_string, actions)
+        self.admin_help_ui = self.add_help_ui(_("Admin help"), 'admin-inicial')
 
     #
     # Callbacks

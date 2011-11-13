@@ -36,35 +36,38 @@ from kiwi.ui.objectlist import Column, SearchColumn
 from kiwi.ui.search import ComboSearchFilter
 from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
                                       finish_transaction)
-from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
-from stoqlib.gui.dialogs.productiondialog import ProductionDialog
+from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.sellablepricedialog import SellablePriceDialog
+from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
+from stoqlib.gui.editors.producteditor import ProductEditor
+from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
+                                               BaseSellableCatSearch)
 from stoqlib.gui.search.consignmentsearch import ConsignmentItemSearch
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
+from stoqlib.gui.search.productsearch import (ProductSearch,
+                                              ProductStockSearch,
+                                              ProductClosedStockSearch,
+                                              ProductsSoldSearch)
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.sellableunitsearch import SellableUnitSearch
-from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
+from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.consignmentwizard import (ConsignmentWizard,
                                                    CloseInConsignmentWizard)
 from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
 from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
                                                      ReceiveQuoteWizard)
-from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
-                                               BaseSellableCatSearch)
-from stoqlib.gui.search.productsearch import (ProductSearch,
-                                              ProductStockSearch,
-                                              ProductClosedStockSearch,
-                                              ProductsSoldSearch)
-from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
-from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
-from stoqlib.reporting.purchase import PurchaseReport
+from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.lib.formatters import format_quantity
+from stoqlib.lib.message import warning, yesno
+from stoqlib.reporting.purchase import PurchaseReport
+
 from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
+
+LAUNCHER_EMBEDDED = True
 
 class PurchaseApp(SearchableAppWindow):
 
@@ -85,68 +88,85 @@ class PurchaseApp(SearchableAppWindow):
     # Application
     #
 
+    def activate(self):
+        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.purchase_ui)
+        self.uimanager.remove_ui(self.purchase_help_ui)
+
     def create_actions(self):
         ui_string = """<ui>
       <menubar action="menubar">
-        <menu action="PurchaseMenu">
-          <menuitem action="ConfirmOrder"/>
-          <menuitem action="FinishOrder"/>
-          <separator name="sep"/>
-          <menuitem action="NewOrder"/>
-          <menuitem action="QuoteOrder"/>
-          <separator name="sep2"/>
-          <menuitem action="StockCost"/>
-          <menuitem action="Production"/>
-          <separator name="sep3"/>
-          <menuitem action="ExportCSV"/>
-          <separator name="sep4"/>
-          <menuitem action="Quit"/>
+        <menu action="StoqMenu">
+          <menu action="NewMenu">
+            <placeholder name="NewMenuItemPH">
+              <menuitem action="NewOrder"/>
+              <menuitem action="NewQuote"/>
+              <menuitem action="NewProduct"/>
+              <menuitem action="NewConsignment"/>
+            </placeholder>
+          </menu>
+          <placeholder name="StoqMenuPH">
+            <menuitem action="ExportCSV"/>
+          </placeholder>
         </menu>
-        <menu action="ConsignmentMenu">
-          <menuitem action="NewConsignment"/>
-          <menuitem action="CloseInConsignment"/>
-          <separator name="sep2"/>
-          <menuitem action="SearchInConsignmentItems"/>
+        <menu action="EditMenu">
+          <placeholder name="EditMenuPH">
+            <menuitem action="ConfirmOrder"/>
+            <menuitem action="FinishOrder"/>
+            <separator/>
+            <menuitem action="StockCost"/>
+            <separator name="sep2"/>
+            <menuitem action="CloseInConsignment"/>
+            <menuitem action="SearchInConsignmentItems"/>
+          </placeholder>
         </menu>
-        <menu action="SearchMenu">
-          <menuitem action="BaseCategories"/>
-          <menuitem action="Categories"/>
-          <menuitem action="ProductUnits"/>
-          <menuitem action="Products"/>
-          <menuitem action="Services"/>
-          <menuitem action="SearchStockItems"/>
-          <menuitem action="SearchClosedStockItems"/>
-          <menuitem action="Suppliers"/>
-          <menuitem action="Transporter"/>
-          <menuitem action="SearchQuotes"/>
-          <menuitem action="SearchPurchasedItems"/>
-          <menuitem action="ProductsSoldSearch"/>
-          <menuitem action="ProductsPriceSearch"/>
-        </menu>
-        <placeholder name="ExtraMenu"/>
+        <placeholder name="AppMenubarPH">
+          <menu action="SearchMenu">
+            <menuitem action="BaseCategories"/>
+            <menuitem action="Categories"/>
+            <menuitem action="ProductUnits"/>
+            <menuitem action="Products"/>
+            <menuitem action="Services"/>
+            <menuitem action="SearchStockItems"/>
+            <menuitem action="SearchClosedStockItems"/>
+            <menuitem action="Suppliers"/>
+            <menuitem action="Transporter"/>
+            <menuitem action="SearchQuotes"/>
+            <menuitem action="SearchPurchasedItems"/>
+            <menuitem action="ProductsSoldSearch"/>
+            <menuitem action="ProductsPriceSearch"/>
+          </menu>
+        </placeholder>
       </menubar>
-      <toolbar action="main_toolbar">
-        <toolitem action="NewToolItem">
-          <menu action="NewToolMenu">
-            <menuitem action="NewToolMenuOrder"/>
-            <menuitem action="NewToolMenuQuote"/>
-            <menuitem action="NewToolMenuConsignment"/>
-          </menu>
-        </toolitem>
-        <toolitem action="SearchToolItem">
-          <menu action="SearchToolMenu">
-            <menuitem action="SearchToolMenuProduct"/>
-            <menuitem action="SearchToolMenuSupplier"/>
-            <menuitem action="SearchToolMenuQuotes"/>
-            <menuitem action="SearchToolMenuServices"/>
-          </menu>
-        </toolitem>
-        <toolitem action="Print"/>
-        <separator/>
-        <toolitem action="Confirm"/>
-        <toolitem action="Cancel"/>
-        <toolitem action="Edit"/>
-        <toolitem action="Details"/>
+      <toolbar action="toolbar">
+        <placeholder name="NewToolItemPH">
+          <toolitem action="NewToolItem">
+            <menu action="NewMenu">
+              <menuitem action="NewOrder"/>
+              <menuitem action="NewQuote"/>
+              <menuitem action="NewProduct"/>
+              <menuitem action="NewConsignment"/>
+            </menu>
+          </toolitem>
+        </placeholder>
+        <placeholder name="AppToolbarPH">
+          <toolitem action="SearchToolItem">
+            <menu action="SearchToolMenu">
+              <menuitem action="SearchToolMenuProduct"/>
+              <menuitem action="SearchToolMenuSupplier"/>
+              <menuitem action="SearchToolMenuQuotes"/>
+              <menuitem action="SearchToolMenuServices"/>
+            </menu>
+          </toolitem>
+          <toolitem action="Print"/>
+          <separator/>
+          <toolitem action="Confirm"/>
+          <toolitem action="Cancel"/>
+          <toolitem action="Edit"/>
+          <toolitem action="Details"/>
+        </placeholder>
       </toolbar>
     </ui>"""
 
@@ -154,20 +174,13 @@ class PurchaseApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Purchase
-            ("PurchaseMenu", None, _("_Order")),
-            ("NewOrder", gtk.STOCK_NEW, _("New order..."), "<Control>o"),
-            ("QuoteOrder", gtk.STOCK_INDEX, _("New quote..."), "<Control>e"),
             ("FinishOrder", None, _("Finish order...")),
             ("ConfirmOrder", 'stoq-delivery', _("Confirm order...")),
             ("StockCost", None, _("_Stock cost...")),
-            ("Production", gtk.STOCK_JUSTIFY_FILL,  _("Production..."),
-             "<Control>r"),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
             ("Quit", gtk.STOCK_QUIT),
 
             # Consignment
-            ("ConsignmentMenu", None, _("_Consignment")),
-            ("NewConsignment", None, _("New consignment...")),
             ("CloseInConsignment", None, _("Close consigment...")),
             ("SearchInConsignmentItems", None, _("Search consigment items...")),
 
@@ -189,12 +202,14 @@ class PurchaseApp(SearchableAppWindow):
             ("ProductsPriceSearch", None, _("Prices editor..."), ""),
 
             # Toolbar
-            ("NewToolMenu", None, _("New")),
-            ("NewToolMenuOrder", gtk.STOCK_NEW, _("Order"), '',
+            ("NewOrder", gtk.STOCK_NEW, _("Order"), '<control>o',
              _("Create a new order")),
-            ("NewToolMenuQuote", gtk.STOCK_INDEX, _("Quote"), '',
+            ("NewQuote", gtk.STOCK_INDEX, _("Quote"), '<control>e',
              _("Create a new quote")),
-            ("NewToolMenuConsignment", None, _("Consignment")),
+            ("NewConsignment", None, _("Consignment"), '',
+             _("Create a new consignment")),
+            ("NewProduct", None, _("Product"), '',
+             _("Create a new product")),
 
             ("SearchToolMenu", None, _("Search")),
             ("SearchToolMenuProduct", 'stoq-products', _("Product"), '',
@@ -218,31 +233,21 @@ class PurchaseApp(SearchableAppWindow):
              _("View the details of an order"))
         ]
 
-        self.add_ui_actions(ui_string, actions)
+        self.purchase_ui = self.add_ui_actions(ui_string, actions)
 
         self.add_tool_menu_actions([
-            ("NewToolItem", _("New"), "", gtk.STOCK_NEW),
-            ("SearchToolItem", _("Search"), "", 'stoq-products')])
+            ("SearchToolItem", _("Search"), None, 'stoq-products')])
 
-        self.NewToolItem.props.is_important = True
         self.SearchToolItem.props.is_important = True
         self.Confirm.props.is_important = True
 
         self.NewOrder.set_short_label(_("New order"))
-        self.QuoteOrder.set_short_label(_("New quote"))
+        self.NewQuote.set_short_label(_("New quote"))
         self.Products.set_short_label(_("Products"))
         self.Suppliers.set_short_label(_("Suppliers"))
-        self.add_help_ui(_("Purchase help"), 'compras-inicio')
 
-    def create_ui(self):
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_vbox.pack_start(self.menubar, False, False)
-        self.main_vbox.reorder_child(self.menubar, 0)
-
-        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
-        self.list_vbox.pack_start(self.main_toolbar, False, False)
-        self.list_vbox.reorder_child(self.main_toolbar, 0)
-        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.purchase_help_ui = self.add_help_ui(_("Purchase help"),
+                                                 'compras-inicio')
 
     def create_filters(self):
         self.set_text_field_columns(['supplier_name'])
@@ -283,10 +288,6 @@ class PurchaseApp(SearchableAppWindow):
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.ConfirmOrder.set_sensitive(False)
         self.Confirm.set_sensitive(False)
-        # FIXME: enable before release.
-        # XXX: Figure out if ideale still needs this. otherwise, remove the
-        # related code
-        self.Production.set_sensitive(False)
 
     def _update_totals(self):
         self._update_view()
@@ -439,6 +440,12 @@ class PurchaseApp(SearchableAppWindow):
 
         self.refresh()
 
+    def _new_product(self):
+        trans = new_transaction()
+        model = self.run_dialog(ProductEditor, trans)
+        finish_transaction(trans, model)
+        trans.close()
+
     def _new_consignment(self):
         trans = new_transaction()
         model = self.run_dialog(ConsignmentWizard, trans)
@@ -482,12 +489,6 @@ class PurchaseApp(SearchableAppWindow):
 
     # Order
 
-    def on_NewOrder__activate(self, action):
-        self._new_order()
-
-    def on_QuoteOrder__activate(self, action):
-        self._quote_order()
-
     def on_FinishOrder__activate(self, action):
         self._finish_order()
 
@@ -498,9 +499,6 @@ class PurchaseApp(SearchableAppWindow):
         self._send_selected_items_to_supplier()
 
     # Consignment
-
-    def on_NewConsignment__activate(self, action):
-        self._new_consignment()
 
     def on_CloseInConsignment__activate(self, action):
         trans = new_transaction()
@@ -516,9 +514,6 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_Categories__activate(self, action):
         self.run_dialog(SellableCategorySearch, self.conn)
-
-    def on_Production__activate(self, action):
-        self.run_dialog(ProductionDialog, self.conn)
 
     def on_SearchQuotes__activate(self, action):
         self.run_dialog(ReceiveQuoteWizard, self.conn)
@@ -566,16 +561,19 @@ class PurchaseApp(SearchableAppWindow):
 
     # Toolitem
 
-    def on_NewToolItem__activate(self, action):
+    def new_activate(self):
         self._new_order()
 
-    def on_NewToolMenuOrder__activate(self, action):
+    def on_NewOrder__activate(self, action):
         self._new_order()
 
-    def on_NewToolMenuQuote__activate(self, action):
+    def on_NewQuote__activate(self, action):
         self._quote_order()
 
-    def on_NewToolMenuConsignment__activate(self, action):
+    def on_NewProduct__activate(self, action):
+        self._new_product()
+
+    def on_NewConsignment__activate(self, action):
         self._new_consignment()
 
     def on_SearchToolItem__activate(self, action):

@@ -64,13 +64,23 @@ ToolMenuAction.set_tool_item_type(
 
 class App(BaseApp):
 
-    def __init__(self, window_class, config, options, runner):
+    def __init__(self, window_class, config, options, runner, embedded,
+                 launcher):
         self.config = config
         self.options = options
         self.runner = runner
         self.window_class = window_class
+        self.embedded = embedded
+        self.launcher = launcher
         BaseApp.__init__(self, window_class)
 
+    def show(self):
+        if self.embedded:
+            win = self.main_window.get_toplevel()
+            self.launcher.show_app(self.main_window, win.child)
+            win.hide()
+        else:
+            BaseApp.show(self)
 
 class AppWindow(BaseAppWindow):
     """ Base class for the main window of applications.
@@ -90,7 +100,11 @@ class AppWindow(BaseAppWindow):
     def __init__(self, app):
         self._config = get_utility(IStoqConfig)
         self.conn = new_transaction()
-        self.uimanager = gtk.UIManager()
+        if app.embedded:
+            uimanager = app.launcher.uimanager
+        else:
+            uimanager = gtk.UIManager()
+        self.uimanager = uimanager
         self.accel_group = self.uimanager.get_accel_group()
 
         # Create actions, this must be done before the constructor
@@ -100,8 +114,9 @@ class AppWindow(BaseAppWindow):
             self.add_debug_ui()
 
         BaseAppWindow.__init__(self, app)
-        toplevel = self.get_toplevel()
-        toplevel.add_accel_group(self.uimanager.get_accel_group())
+        if not app.embedded:
+            toplevel = self.get_toplevel()
+            toplevel.add_accel_group(self.uimanager.get_accel_group())
         self.create_ui()
         self.setup_focus()
         self._check_demo_mode()
@@ -280,9 +295,10 @@ class AppWindow(BaseAppWindow):
         ag = gtk.ActionGroup(name)
         ag.add_actions(actions)
         self.uimanager.insert_action_group(ag, 0)
-        self.uimanager.add_ui_from_string(ui_string)
+        ui_id = self.uimanager.add_ui_from_string(ui_string)
         for action in ag.list_actions():
             setattr(self, action.get_name(), action)
+        return ui_id
 
     def add_tool_menu_actions(self, actions):
         group = gtk.ActionGroup(name="ToolMenuGroup")
@@ -336,7 +352,7 @@ class AppWindow(BaseAppWindow):
              _("Get support for Stoq online")),
             ("HelpAbout", gtk.STOCK_ABOUT),
             ]
-        self.add_ui_actions(ui_string, help_actions, 'HelpActions')
+        return self.add_ui_actions(ui_string, help_actions, 'HelpActions')
 
 
     def add_debug_ui(self):

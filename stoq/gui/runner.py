@@ -65,7 +65,7 @@ class ApplicationRunner(object):
         self._blocked_apps = []
         self._hidden_apps = []
 
-    def _load_app(self, appdesc):
+    def _load_app(self, appdesc, launcher):
         module = __import__("stoq.gui.%s" % (appdesc.name, ),
                             globals(), locals(), [''])
         window = appdesc.name.capitalize() + 'App'
@@ -76,8 +76,10 @@ class ApplicationRunner(object):
 
         hide_splash()
 
+        embedded = getattr(module, 'LAUNCHER_EMBEDDED', False)
         from stoq.gui.application import App
-        app = App(window_class, self._login, self._options, self)
+        app = App(window_class, self._login, self._options, self, embedded,
+                  launcher)
 
         toplevel = app.main_window.get_toplevel()
         icon = toplevel.render_icon(appdesc.icon, gtk.ICON_SIZE_MENU)
@@ -137,10 +139,11 @@ class ApplicationRunner(object):
                                                    available_applications),
                           parent=parent)
 
-    def run(self, appdesc):
+    def run(self, appdesc, launcher):
         """
         Runs an application
         @param appname: application to run
+        @param launcher: a launcher
         """
 
         if (appdesc.name != 'launcher' and
@@ -149,8 +152,9 @@ class ApplicationRunner(object):
                   appdesc.name)
             return
 
-        app = self._load_app(appdesc)
+        app = self._load_app(appdesc, launcher)
         app.main_window.activate()
+        app.launcher = launcher
 
         self._current_app = app
         self._appname = appdesc.name

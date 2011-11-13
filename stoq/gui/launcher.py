@@ -46,7 +46,14 @@ class Launcher(AppWindow):
     gladefile = 'launcher'
 
     def __init__(self, app, runner):
+        import stoq.gui.purchase
+        import stoq.gui.payable
+        import stoq.gui.receivable
+        import stoq.gui.financial
+        import stoq.gui.admin
         self.runner = runner
+        self.application_box = None
+        self.current_app = None
         AppWindow.__init__(self, app)
         self.get_toplevel().connect('destroy', self._shutdown)
         hide_splash()
@@ -56,7 +63,7 @@ class Launcher(AppWindow):
     #
 
     def activate(self):
-        pass
+        self.hide_app()
 
     #
     # Private
@@ -66,30 +73,82 @@ class Launcher(AppWindow):
         ui_string = """<ui>
           <menubar action="menubar">
             <menu action="StoqMenu">
+              <menu action="NewMenu">
+                <placeholder name="NewMenuItemPH"/>
+              </menu>
+              <menuitem action="ChangeApplication"/>
+              <separator name="sep"/>
+              <placeholder name="StoqMenuPH"/>
+              <separator name="sep"/>
               <menuitem action="ChangePassword"/>
               <menuitem action="SignOut"/>
-              <separator name="sep"/>
               <menuitem action="Quit"/>
             </menu>
+            <menu action="EditMenu">
+              <menuitem action="Cut"/>
+              <menuitem action="Copy"/>
+              <menuitem action="Paste"/>
+              <separator/>
+              <placeholder name="EditMenuPH"/>
+              <separator/>
+              <menuitem action="Preferences"/>
+            </menu>
+            <menu action="ViewMenu">
+            </menu>
+            <placeholder name="AppMenubarPH"/>
+            <placeholder name="ExtraMenubarPH"/>
           </menubar>
+          <toolbar action="toolbar">
+            <placeholder name="NewToolItemPH">
+              <toolitem action="NewToolItem">
+                <menu action="NewMenu">
+                </menu>
+              </toolitem>
+            </placeholder>
+            <placeholder name="AppToolbarPH"/>
+          </toolbar>
         </ui>"""
 
         actions = [
             ('menubar', None, ''),
 
-            ('StoqMenu', None, _("_Stoq")),
+            ('StoqMenu', None, _("_File")),
+            ('StoqMenuNew', None, _("_New")),
+            ('ChangeApplication', None, _('Close'), '<control>w'),
             ('ChangePassword', None, _('Change password...'), None),
             ('SignOut', None, _('Sign out...')),
             ("Quit", gtk.STOCK_QUIT),
 
+            ('EditMenu', None, _("_Edit")),
+            ('Cut', None, _("Cu_t")),
+            ('Copy', None, _("Copy")),
+            ('Paste', None, _("_Paste")),
+            ('Preferences', None, _("_Preferences")),
+
+            ('ViewMenu', None, _("_View")),
+
+            ('toolbar', None, ''),
+            ("NewMenu", None, _("New")),
             ]
         self.add_ui_actions(ui_string, actions)
+        self.Cut.set_sensitive(False)
+        self.Copy.set_sensitive(False)
+        self.Paste.set_sensitive(False)
+        self.add_tool_menu_actions([
+            ("NewToolItem", _("New"), '', gtk.STOCK_ADD),
+            ])
+        self.NewToolItem.props.is_important = True
+
         self.add_help_ui()
 
     def create_ui(self):
         menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(menubar, False, False)
         self.main_vbox.reorder_child(menubar, 0)
+
+        toolbar = self.uimanager.get_widget('/toolbar')
+        self.main_vbox.pack_start(toolbar, False, False)
+        self.main_vbox.reorder_child(toolbar, 1)
 
         self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
         self.iconview.set_markup_column(COL_LABEL)
@@ -107,6 +166,30 @@ class Launcher(AppWindow):
         # FIXME: last opened application
         self.iconview.select_path(self.model[0].path)
         self.iconview.grab_focus()
+
+
+    def show_app(self, app, app_window):
+        if not self.application_box:
+            self.application_box = gtk.VBox()
+            self.main_vbox.pack_start(self.application_box, True, True)
+        app_window.reparent(self.application_box)
+        self.application_box.set_child_packing(app_window, True, True, 0,
+                                               gtk.PACK_START)
+        app_window.show_all()
+        self.iconview_vbox.hide()
+        self.application_box.show()
+        self.current_app = app
+        self.current_widget = app_window
+        self.ChangeApplication.set_sensitive(True)
+
+    def hide_app(self):
+        self.application_box.hide()
+        if self.current_app:
+            self.current_app.deactivate()
+            self.current_widget.destroy()
+        self.ChangeApplication.set_sensitive(False)
+        self.iconview.grab_focus()
+        self.iconview_vbox.show()
 
     #
     # Private
@@ -144,6 +227,18 @@ class Launcher(AppWindow):
     # Kiwi callbacks
     #
 
+    def on_NewToolItem__activate(self, action):
+        if self.current_app:
+            self.current_app.new_activate()
+        else:
+            print 'FIXME'
+
+    def on_Preferences__activate(self, action):
+        pass
+
+    def on_ChangeApplication__activate(self, action):
+        self.hide_app()
+
     def on_ChangePassword__activate(self, action):
         from stoqlib.gui.slaves.userslave import PasswordEditor
         trans = new_transaction()
@@ -162,4 +257,4 @@ class Launcher(AppWindow):
 
     def on_iconview__item_activated(self, iconview, path):
         app = self.model[path][COL_APP]
-        self.runner.run(app)
+        self.runner.run(app, self)

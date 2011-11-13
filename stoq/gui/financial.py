@@ -57,6 +57,7 @@ from stoqlib.lib.parameters import sysparam
 from stoq.gui.application import AppWindow
 
 _ = gettext.gettext
+LAUNCHER_EMBEDDED = True
 
 class NotebookCloseButton(gtk.Button):
     pass
@@ -347,29 +348,42 @@ class FinancialApp(AppWindow):
         self._refresh_accounts()
         for page in self._pages.values():
             page.refresh()
+        self._update_actions()
         self._update_tooltips()
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.financial_ui)
+        self.uimanager.remove_ui(self.financial_help_ui)
 
     def create_actions(self):
         ui_string = """<ui>
           <menubar action="menubar">
-            <menu action="FinancialMenu">
-              <menuitem action="AddAccount"/>
-              <menuitem action="Import"/>
-              <separator name="sep"/>
-              <menuitem action="ExportCSV"/>
-              <separator name="sep2"/>
-              <menuitem action="Quit"/>
+            <menu action="StoqMenu">
+              <menu action="NewMenu">
+                <placeholder action="NewMenuItemPH">
+                  <menuitem action="NewAccount"/>
+                  <menuitem action="NewTransaction"/>
+                </placeholder>
+              </menu>
+              <placeholder name="StoqMenuPH">
+                <menuitem action="Import"/>
+                <menuitem action="ExportCSV"/>
+              </placeholder>
             </menu>
           </menubar>
           <toolbar action="toolbar">
-            <toolitem action="New">
-              <menu action="NewToolItem">
-                <menuitem action="NewToolMenuAccount"/>
-                <menuitem action="NewToolMenuTransaction"/>
-              </menu>
-            </toolitem>
-            <separator/>
-            <toolitem action="Edit"/>
+            <placeholder name="NewToolItemPH">
+              <toolitem action="NewToolItem">
+                <menu action="NewMenu">
+                  <menuitem action="NewAccount"/>
+                  <menuitem action="NewTransaction"/>
+                </menu>
+              </toolitem>
+            </placeholder>
+            <placeholder action="ApplicationToolbar">
+              <separator/>
+              <toolitem action="Edit"/>
+            </placeholder>
           </toolbar>
         </ui>"""
 
@@ -377,7 +391,6 @@ class FinancialApp(AppWindow):
             ('menubar', None, ''),
 
             # Financial
-            ('FinancialMenu', None, _("_Financial")),
             ('Import', gtk.STOCK_ADD, _('Import...'),
              '<control>i', _('Import a GnuCash or OFX file')),
             ('ExportCSV', None, _('Export CSV...'), '<control>F10'),
@@ -387,55 +400,33 @@ class FinancialApp(AppWindow):
             ('toolbar', None, ''),
             ('EditAccount', gtk.STOCK_EDIT, _('Edit account'),
              '<control>e', _('Change the currently selected account')),
-            ('AddAccount', gtk.STOCK_ADD, _('Create new account'),
-             '<control>a', _('Create new account')),
             ('DeleteAccount', gtk.STOCK_DELETE, _('Delete account'),
              '', _('Delete account')),
-            ('AddTransaction', gtk.STOCK_ADD, _('Create new transaction'),
-             '<control>t', _('Create new transaction')),
             ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete transaction'),
              '', _('Delete transaction')),
 
             # Toolbar
-            ("NewToolItem", None, _("New")),
-            ("NewToolMenuAccount", gtk.STOCK_NEW, _("Account"), '',
+            #("NewToolItem", None, _("New")),
+            ("NewAccount", gtk.STOCK_NEW, _("Account"), '<control>a',
              _("Add a new account")),
-            ("NewToolMenuTransaction", gtk.STOCK_NEW, _("Transaction"), '',
+            ("NewTransaction", gtk.STOCK_NEW, _("Transaction"), '<control>t',
              _("Add a new transaction")),
             ("Edit", gtk.STOCK_EDIT, _("Edit"), '',),
 
             ]
-        self.add_ui_actions(ui_string, actions)
-        self.add_tool_menu_actions([
-            ("New", _("New"), '', gtk.STOCK_ADD),
-            ])
-        self.New.props.is_important = True
-        self.add_help_ui(_("Financial help"), 'financial-inicio')
-
-    def create_ui(self):
-        self._update_actions()
-
-        menubar = self.uimanager.get_widget('/menubar')
-        self.main_vbox.pack_start(menubar, False, False)
-        self.main_vbox.reorder_child(menubar, 0)
-
-        toolbar = self.uimanager.get_widget('/toolbar')
-        self.main_vbox.pack_start(toolbar, False, False)
-        self.main_vbox.reorder_child(toolbar, 1)
+        self.financial_ui = self.add_ui_actions(ui_string, actions)
+        self.financial_help_ui = self.add_help_ui(_("Financial help"),
+                'financial-inicio')
 
     #
     # Private
     #
 
     def _update_actions(self):
-        self.New.set_sensitive(self._can_add_account() or
-                               self._can_add_account())
-        self.AddAccount.set_sensitive(self._can_add_account())
-        self.NewToolMenuAccount.set_sensitive(self._can_add_account())
+        self.NewAccount.set_sensitive(self._can_add_account())
         self.EditAccount.set_sensitive(self._can_edit_account())
         self.DeleteAccount.set_sensitive(self._can_delete_account())
-        self.AddTransaction.set_sensitive(self._can_add_transaction())
-        self.NewToolMenuTransaction.set_sensitive(self._can_add_transaction())
+        self.NewTransaction.set_sensitive(self._can_add_transaction())
         self.DeleteTransaction.set_sensitive(self._can_delete_transaction())
         self.ExportCSV.set_sensitive(self._can_export_csv())
         self.Edit.set_sensitive(self._can_edit_account() or
@@ -767,16 +758,16 @@ class FinancialApp(AppWindow):
 
     # Toolbar
 
-    def on_New__activate(self, action):
-        if self._is_accounts_tab():
+    def new_activate(self):
+        if self._is_accounts_tab() and self._can_add_account():
             self._create_new_account()
-        else:
+        elif self._is_transaction_tab() and self._can_add_transaction():
             self._add_transaction()
 
-    def on_NewToolMenuAccount__activate(self, action):
+    def on_NewAccount__activate(self, action):
         self._create_new_account()
 
-    def on_NewToolMenuTransaction__activate(self, action):
+    def on_NewTransaction__activate(self, action):
         self._add_transaction()
 
     def on_DeleteAccount__activate(self, action):
