@@ -40,23 +40,36 @@ _ = gettext.gettext
  COL_PIXBUF,
  COL_APP) = range(3)
 
+class LauncherApp(object):
+    def __init__(self, launcher):
+        self.launcher = launcher
+        self.runner = launcher.runner
+        self.embedded = False
+        self.main_window = launcher
+        self.options = launcher.options
+
+
 class Launcher(AppWindow):
 
     app_name = _('v1.0 [localhost]')
     gladefile = 'launcher'
+    launchers = []
 
-    def __init__(self, app, runner):
+    def __init__(self, options, runner):
         import stoq.gui.purchase
         import stoq.gui.payable
         import stoq.gui.receivable
         import stoq.gui.financial
         import stoq.gui.admin
         self.runner = runner
+        self.options = options
         self.application_box = None
         self.current_app = None
+        app = LauncherApp(self)
         AppWindow.__init__(self, app)
         self.get_toplevel().connect('destroy', self._shutdown)
         hide_splash()
+        Launcher.launchers.append(self)
 
     #
     # AppWindow overrides
@@ -76,6 +89,7 @@ class Launcher(AppWindow):
               <menu action="NewMenu">
                 <placeholder name="NewMenuItemPH"/>
               </menu>
+              <menuitem action="NewWindow"/>
               <menuitem action="ChangeApplication"/>
               <separator name="sep"/>
               <placeholder name="StoqMenuPH"/>
@@ -114,6 +128,7 @@ class Launcher(AppWindow):
 
             ('StoqMenu', None, _("_File")),
             ('StoqMenuNew', None, _("_New")),
+            ('NewWindow', None, _("New _window")),
             ('ChangeApplication', None, _('Close'), '<control>w'),
             ('ChangePassword', None, _('Change password...'), None),
             ('SignOut', None, _('Sign out...')),
@@ -196,8 +211,10 @@ class Launcher(AppWindow):
     #
 
     def _shutdown(self, *args):
-        self.shutdown_application()
-        raise SystemExit
+        Launcher.launchers.remove(self)
+        if not Launcher.launchers:
+            self.shutdown_application()
+            raise SystemExit
 
     def _get_available_applications(self):
         user = get_current_user(self.conn)
@@ -232,6 +249,10 @@ class Launcher(AppWindow):
             self.current_app.new_activate()
         else:
             print 'FIXME'
+
+    def on_NewWindow__activate(self, action):
+        launcher = Launcher(self.options, self.runner)
+        launcher.show()
 
     def on_Preferences__activate(self, action):
         pass
