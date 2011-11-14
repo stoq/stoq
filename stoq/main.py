@@ -416,16 +416,7 @@ def run_app(options, appname):
     _maybe_show_welcome_dialog()
 
     from stoq.gui.launcher import Launcher
-
-    class App(object):
-        pass
-    app = App()
-    app.options = options
-    app.runner = runner
-    app.embedded = False
-    launcher = Launcher(app, runner)
-    app.launcher = launcher
-    app.main_window = launcher
+    launcher = Launcher(options, runner)
     launcher.show()
     if appname:
         app = runner.get_app_by_name(appname)
