@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-11-08 14:55-0200\n"
-"PO-Revision-Date: 2011-11-11 18:52+0000\n"
+"PO-Revision-Date: 2011-11-14 20:58+0000\n"
 "Last-Translator: Rafael Neri <Unknown>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-12 04:59+0000\n"
-"X-Generator: Launchpad (build 14277)\n"
+"X-Launchpad-Export-Date: 2011-11-15 05:09+0000\n"
+"X-Generator: Launchpad (build 14291)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account code:"
@@ -7721,191 +7721,196 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/producteditor.py:552
 msgid "Cost must be greater than the sum of the components."
-msgstr ""
+msgstr "Cost must be greater than the sum of the components."
 
 #: ../stoqlib/gui/editors/producteditor.py:573
 msgid "There is no component in this product."
-msgstr ""
+msgstr "There is no component in this product."
 
 #: ../stoqlib/gui/editors/producteditor.py:582
 msgid "Cost cannot be zero or negative."
-msgstr ""
+msgstr "Cost cannot be zero or negative."
 
 #: ../stoqlib/gui/editors/productioneditor.py:46
 msgid "Production Item"
-msgstr ""
+msgstr "Production Item"
 
 #: ../stoqlib/gui/editors/productioneditor.py:80
 #: ../stoqlib/gui/editors/productioneditor.py:176
 msgid "This quantity should be positive."
-msgstr ""
+msgstr "This quantity should be positive."
 
 #: ../stoqlib/gui/editors/productioneditor.py:84
 msgid "Produce Items"
-msgstr ""
+msgstr "Produce Items"
 
 #: ../stoqlib/gui/editors/productioneditor.py:86
 msgid "Produced:"
-msgstr ""
+msgstr "Produced:"
 
 #: ../stoqlib/gui/editors/productioneditor.py:106
 msgid ""
 "Can not produce this quantity. Not enough materials can be allocated to "
 "produce this item."
 msgstr ""
+"Can not produce this quantity. Not enough materials can be allocated to "
+"produce this item."
 
 #: ../stoqlib/gui/editors/productioneditor.py:114
 #: ../stoqlib/gui/editors/productioneditor.py:134
 msgid "Produced value should be greater than zero."
-msgstr ""
+msgstr "Produced value should be greater than zero."
 
 #: ../stoqlib/gui/editors/productioneditor.py:118
 msgid "Lost Items"
-msgstr ""
+msgstr "Lost Items"
 
 #: ../stoqlib/gui/editors/productioneditor.py:119
 msgid "Lost:"
-msgstr ""
+msgstr "Lost:"
 
 #: ../stoqlib/gui/editors/productioneditor.py:126
 msgid ""
 "Can not lost this quantity. Not enough materials can be allocated to this "
 "item."
 msgstr ""
+"Can not lost this quantity. Not enough materials can be allocated to this "
+"item."
 
 #: ../stoqlib/gui/editors/productioneditor.py:139
 msgid "Production Service"
-msgstr ""
+msgstr "Production Service"
 
 #: ../stoqlib/gui/editors/productioneditor.py:150
 msgid "Production Material Item"
-msgstr ""
+msgstr "Production Material Item"
 
 #: ../stoqlib/gui/editors/productioneditor.py:162
 msgid "Quantity to make:"
-msgstr ""
+msgstr "Quantity to make:"
 
 #: ../stoqlib/gui/editors/productioneditor.py:165
 msgid "Quantity to purchase:"
-msgstr ""
+msgstr "Quantity to purchase:"
 
 #: ../stoqlib/gui/editors/profileeditor.py:41
 msgid "User Profile"
-msgstr ""
+msgstr "User Profile"
 
 #: ../stoqlib/gui/editors/purchaseeditor.py:46
 msgid "Purchase Item"
-msgstr ""
+msgstr "Purchase Item"
 
 #: ../stoqlib/gui/editors/purchaseeditor.py:89
 msgid "The expected receival date should be a future date or today."
-msgstr ""
+msgstr "The expected receival date should be a future date or today."
 
 #: ../stoqlib/gui/editors/purchaseeditor.py:94
 msgid "The cost should be greater than zero."
-msgstr ""
+msgstr "The cost should be greater than zero."
 
 #: ../stoqlib/gui/editors/purchaseeditor.py:98
 #: ../stoqlib/gui/editors/saleeditor.py:92
 msgid "The quantity should be greater than zero."
-msgstr ""
+msgstr "The quantity should be greater than zero."
 
 #: ../stoqlib/gui/editors/purchaseeditor.py:143
 msgid "Sold and returned quantity does not match."
-msgstr ""
+msgstr "Sold and returned quantity does not match."
 
 #: ../stoqlib/gui/editors/purchaseeditor.py:152
 msgid "Invalid returned quantity"
-msgstr ""
+msgstr "Invalid returned quantity"
 
 #: ../stoqlib/gui/editors/receivingeditor.py:38
 msgid "Receiving Item"
-msgstr ""
+msgstr "Receiving Item"
 
 #: ../stoqlib/gui/editors/receivingeditor.py:70
 msgid "The receiving quantity must be zero or a positive number."
-msgstr ""
+msgstr "The receiving quantity must be zero or a positive number."
 
 #: ../stoqlib/gui/editors/receivingeditor.py:75
 #, python-format
 msgid "You can not receive more than %d items."
-msgstr ""
+msgstr "You can not receive more than %d items."
 
 #: ../stoqlib/gui/editors/saleeditor.py:44
 msgid "Sale Quote Item"
-msgstr ""
+msgstr "Sale Quote Item"
 
 #: ../stoqlib/gui/editors/saleeditor.py:85
 #: ../stoqlib/gui/search/fiscalsearch.py:51
 #: ../stoqlib/gui/wizards/salequotewizard.py:247
 msgid "ICMS"
-msgstr ""
+msgstr "ICMS"
 
 #: ../stoqlib/gui/editors/saleeditor.py:88
 #: ../stoqlib/gui/search/fiscalsearch.py:52
 #: ../stoqlib/gui/wizards/salequotewizard.py:248
 msgid "IPI"
-msgstr ""
+msgstr "IPI"
 
 #: ../stoqlib/gui/editors/saleeditor.py:97
 #: ../stoqlib/gui/wizards/abstractwizard.py:546
 #, python-format
 msgid "This product unit (%s) does not support fractions."
-msgstr ""
+msgstr "This product unit (%s) does not support fractions."
 
 #: ../stoqlib/gui/editors/saleeditor.py:133
 #: ../stoqlib/gui/wizards/salequotewizard.py:302
 #, python-format
 msgid "Max discount for this product is %.2f%%"
-msgstr ""
+msgstr "Max discount for this product is %.2f%%"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:65
 msgid "Taxes and Tax rates"
-msgstr ""
+msgstr "Taxes and Tax rates"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:98
 msgid "Tax rate"
-msgstr ""
+msgstr "Tax rate"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:112
 #, python-format
 msgid ""
 "You can't remove this tax, since %d products or services are taxed with '%s'."
 msgstr ""
+"You can't remove this tax, since %d products or services are taxed with '%s'."
 
 #: ../stoqlib/gui/editors/sellableeditor.py:134
 msgid "Price settings"
-msgstr ""
+msgstr "Price settings"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:151
 #: ../stoqlib/gui/editors/sellableeditor.py:545
 msgid "Price cannot be zero or negative"
-msgstr ""
+msgstr "Price cannot be zero or negative"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:165
 msgid "Product Price"
-msgstr ""
+msgstr "Product Price"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:186
 msgid "Category Price"
-msgstr ""
+msgstr "Category Price"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:227
 msgid "Markup"
-msgstr ""
+msgstr "Markup"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:237
 #, python-format
 msgid "%s already have a price for category %s"
-msgstr ""
+msgstr "%s already have a price for category %s"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:283
 msgid "This unit type requires weighing"
-msgstr ""
+msgstr "This unit type requires weighing"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:325
 msgid "Category Prices"
-msgstr ""
+msgstr "Category Prices"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:334
 #, python-format
@@ -7914,6 +7919,9 @@ msgid ""
 "products.\n"
 "To avoid this limitation, enable production mode."
 msgstr ""
+"This is a demostration mode of Stoq, you cannot create more than %d "
+"products.\n"
+"To avoid this limitation, enable production mode."
 
 #: ../stoqlib/gui/editors/sellableeditor.py:347
 msgid "Remove"
@@ -7921,28 +7929,28 @@ msgstr "Remove"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:352
 msgid "Close Product"
-msgstr ""
+msgstr "Close Product"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:354
 msgid "Close Service"
-msgstr ""
+msgstr "Close Service"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:361
 msgid "Reopen Product"
-msgstr ""
+msgstr "Reopen Product"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:363
 msgid "Reopen Service"
-msgstr ""
+msgstr "Reopen Service"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:449
 msgid "No unit"
-msgstr ""
+msgstr "No unit"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:477
 #, python-format
 msgid "This will delete '%s' from the database. Are you sure?"
-msgstr ""
+msgstr "This will delete '%s' from the database. Are you sure?"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:479
 msgid "Delete"
@@ -7950,12 +7958,12 @@ msgstr "Delete"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:479
 msgid "Keep"
-msgstr ""
+msgstr "Keep"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:485
 #, python-format
 msgid "It was not possible to remove '%s'"
-msgstr ""
+msgstr "It was not possible to remove '%s'"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:494
 #, python-format
@@ -7964,11 +7972,14 @@ msgid ""
 "Please note that when it's closed, you won't be able to commercialize it "
 "anymore."
 msgstr ""
+"Do you really want to close '%s'?\n"
+"Please note that when it's closed, you won't be able to commercialize it "
+"anymore."
 
 #: ../stoqlib/gui/editors/sellableeditor.py:499
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:546
 msgid "Don't close"
-msgstr ""
+msgstr "Don't close"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:507
 #, python-format
@@ -7976,132 +7987,134 @@ msgid ""
 "Do you really want to reopen '%s'?\n"
 "Note that when it's opened, you will be able to commercialize it again."
 msgstr ""
+"Do you really want to reopen '%s'?\n"
+"Note that when it's opened, you will be able to commercialize it again."
 
 #: ../stoqlib/gui/editors/sellableeditor.py:511
 msgid "Keep closed"
-msgstr ""
+msgstr "Keep closed"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:528
 msgid "The code can not be empty."
-msgstr ""
+msgstr "The code can not be empty."
 
 #: ../stoqlib/gui/editors/sellableeditor.py:530
 #, python-format
 msgid "The code %s already exists."
-msgstr ""
+msgstr "The code %s already exists."
 
 #: ../stoqlib/gui/editors/sellableeditor.py:536
 msgid "Barcode must have 14 digits or less."
-msgstr ""
+msgstr "Barcode must have 14 digits or less."
 
 #: ../stoqlib/gui/editors/sellableeditor.py:540
 msgid "Cannot create new barcodes in demonstration mode"
-msgstr ""
+msgstr "Cannot create new barcodes in demonstration mode"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:549
 msgid "Cost cannot be zero or negative"
-msgstr ""
+msgstr "Cost cannot be zero or negative"
 
 #: ../stoqlib/gui/editors/sellableuniteditor.py:43
 msgid "Product Unit"
-msgstr ""
+msgstr "Product Unit"
 
 #: ../stoqlib/gui/editors/serviceeditor.py:46
 #: ../stoqlib/gui/editors/serviceeditor.py:81
 #: ../stoqlib/gui/editors/serviceeditor.py:96
 msgid "Service"
-msgstr ""
+msgstr "Service"
 
 #: ../stoqlib/gui/editors/serviceeditor.py:77
 #: ../stoqlib/gui/wizards/purchasewizard.py:529
 msgid "Expected receival date must be set to a future date"
-msgstr ""
+msgstr "Expected receival date must be set to a future date"
 
 #: ../stoqlib/gui/editors/serviceeditor.py:87
 #: ../stoqlib/gui/slaves/categoryslave.py:40
 msgid "No tax"
-msgstr ""
+msgstr "No tax"
 
 #: ../stoqlib/gui/editors/tilleditor.py:128
 #, python-format
 msgid "Initial Cash amount of %s"
-msgstr ""
+msgstr "Initial Cash amount of %s"
 
 #: ../stoqlib/gui/editors/tilleditor.py:143
 msgid "You cannot add a negative amount when opening the till."
-msgstr ""
+msgstr "You cannot add a negative amount when opening the till."
 
 #: ../stoqlib/gui/editors/tilleditor.py:151
 msgid "Closing Opened Till"
-msgstr ""
+msgstr "Closing Opened Till"
 
 #: ../stoqlib/gui/editors/tilleditor.py:188
 msgid "Total balance:"
-msgstr ""
+msgstr "Total balance:"
 
 #: ../stoqlib/gui/editors/tilleditor.py:194
 msgid "Initial Amount"
-msgstr ""
+msgstr "Initial Amount"
 
 #: ../stoqlib/gui/editors/tilleditor.py:202
 #: ../stoqlib/gui/editors/tilleditor.py:480
 msgid "Cash In"
-msgstr ""
+msgstr "Cash In"
 
 #: ../stoqlib/gui/editors/tilleditor.py:204
 #: ../stoqlib/gui/editors/tilleditor.py:419
 msgid "Cash Out"
-msgstr ""
+msgstr "Cash Out"
 
 #: ../stoqlib/gui/editors/tilleditor.py:217
 msgid "Amount"
-msgstr ""
+msgstr "Amount"
 
 #: ../stoqlib/gui/editors/tilleditor.py:249
 #: ../stoqlib/importers/saleimporter.py:111
 #, python-format
 msgid "Amount removed from Till on %s"
-msgstr ""
+msgstr "Amount removed from Till on %s"
 
 #: ../stoqlib/gui/editors/tilleditor.py:288
 msgid "Value cannot be less than zero"
-msgstr ""
+msgstr "Value cannot be less than zero"
 
 #: ../stoqlib/gui/editors/tilleditor.py:291
 msgid "You can not specify an amount removed greater than the till balance."
-msgstr ""
+msgstr "You can not specify an amount removed greater than the till balance."
 
 #: ../stoqlib/gui/editors/tilleditor.py:326
 #: ../stoqlib/gui/editors/tilleditor.py:333
 msgid "Value cannot be zero or less than zero"
-msgstr ""
+msgstr "Value cannot be zero or less than zero"
 
 #: ../stoqlib/gui/editors/tilleditor.py:336
 msgid "Value cannot be more than the total Till balance"
-msgstr ""
+msgstr "Value cannot be more than the total Till balance"
 
 #: ../stoqlib/gui/editors/tilleditor.py:344
 msgid "Cash Advance"
-msgstr ""
+msgstr "Cash Advance"
 
 #: ../stoqlib/gui/editors/tilleditor.py:397
 #, python-format
 msgid "Cash advance paid to employee: %s"
-msgstr ""
+msgstr "Cash advance paid to employee: %s"
 
 #: ../stoqlib/gui/editors/tilleditor.py:422
 msgid "Reverse Payment"
-msgstr ""
+msgstr "Reverse Payment"
 
 #: ../stoqlib/gui/editors/tilleditor.py:462
 #, python-format
 msgid "Cash out: %s"
-msgstr ""
+msgstr "Cash out: %s"
 
 #: ../stoqlib/gui/editors/tilleditor.py:521
 #, python-format
 msgid "Cash in: %s"
-msgstr ""
+msgstr "Cash in: %s"
 
 #: ../stoqlib/gui/fiscalprinter.py:138
 msgid ""
@@ -8110,16 +8123,21 @@ msgid ""
 "\n"
 "Close the till?"
 msgstr ""
+"You can only close the till once per day. You won't be able to make any more "
+"sales today.\n"
+"\n"
+"Close the till?"
 
 #: ../stoqlib/gui/fiscalprinter.py:141 ../stoqlib/gui/fiscalprinter.py:275
 msgid "Close Till"
-msgstr ""
+msgstr "Close Till"
 
 #. FIXME: Find a better description for the warning bellow.
 #: ../stoqlib/gui/fiscalprinter.py:207
 msgid ""
 "You are not allowed to sell in branches not created by the demonstration mode"
 msgstr ""
+"You are not allowed to sell in branches not created by the demonstration mode"
 
 #: ../stoqlib/gui/fiscalprinter.py:266
 msgid ""
@@ -8128,6 +8146,10 @@ msgid ""
 "\n"
 "Close the Till?"
 msgstr ""
+"You need to close the till from the previous day before creating a new "
+"order.\n"
+"\n"
+"Close the Till?"
 
 #: ../stoqlib/gui/fiscalprinter.py:269
 msgid ""
@@ -8135,6 +8157,9 @@ msgid ""
 "\n"
 "Close the till in Stoq?"
 msgstr ""
+"The till in Stoq is opened, but in ECF is closed.\n"
+"\n"
+"Close the till in Stoq?"
 
 #: ../stoqlib/gui/fiscalprinter.py:272
 msgid ""
@@ -8142,16 +8167,21 @@ msgid ""
 "\n"
 "Close the till in ECF?"
 msgstr ""
+"The till in stoq is closed, but in ECF is opened.\n"
+"\n"
+"Close the till in ECF?"
 
 #: ../stoqlib/gui/fiscalprinter.py:396
 msgid ""
 "The fiscal printer has run out of paper.\n"
 "Add more paper before continuing."
 msgstr ""
+"The fiscal printer has run out of paper.\n"
+"Add more paper before continuing."
 
 #: ../stoqlib/gui/fiscalprinter.py:398 ../stoqlib/gui/fiscalprinter.py:405
 msgid "Confirm later"
-msgstr ""
+msgstr "Confirm later"
 
 #: ../stoqlib/gui/fiscalprinter.py:403
 msgid "The fiscal printer is offline, turn it on and try again"
@@ -8159,49 +8189,49 @@ msgstr ""
 
 #: ../stoqlib/gui/fiscalprinter.py:409
 msgid "It is not possible to emit the coupon"
-msgstr ""
+msgstr "It is not possible to emit the coupon"
 
 #: ../stoqlib/gui/fiscalprinter.py:491 ../stoqlib/gui/fiscalprinter.py:532
 #: ../stoqlib/gui/fiscalprinter.py:576 ../stoqlib/gui/fiscalprinter.py:602
 msgid "Erro na impressão. Deseja tentar novamente?"
-msgstr ""
+msgstr "Erro na impressão. Deseja tentar novamente?"
 
 #: ../stoqlib/gui/fiscalprinter.py:493 ../stoqlib/gui/fiscalprinter.py:534
 #: ../stoqlib/gui/fiscalprinter.py:550 ../stoqlib/gui/fiscalprinter.py:578
 #: ../stoqlib/gui/fiscalprinter.py:604
 msgid "Sim"
-msgstr ""
+msgstr "Sim"
 
 #: ../stoqlib/gui/fiscalprinter.py:493 ../stoqlib/gui/fiscalprinter.py:534
 #: ../stoqlib/gui/fiscalprinter.py:550 ../stoqlib/gui/fiscalprinter.py:578
 #: ../stoqlib/gui/fiscalprinter.py:604
 msgid "Não"
-msgstr ""
+msgstr "Não"
 
 #: ../stoqlib/gui/fiscalprinter.py:548
 msgid "Erro cancelando cupom. Deseja tentar novamente?"
-msgstr ""
+msgstr "Erro cancelando cupom. Deseja tentar novamente?"
 
 #: ../stoqlib/gui/login.py:117
 msgid " Authenticating user..."
-msgstr ""
+msgstr " Authenticating user..."
 
 #: ../stoqlib/gui/login.py:135
 msgid "Stoq - Choose application"
-msgstr ""
+msgstr "Stoq - Choose application"
 
 #: ../stoqlib/gui/login.py:212 ../stoqlib/gui/login.py:218
 msgid "Invalid user or password"
-msgstr ""
+msgstr "Invalid user or password"
 
 #: ../stoqlib/gui/login.py:215
 msgid "This user is inactive"
-msgstr ""
+msgstr "This user is inactive"
 
 #: ../stoqlib/gui/login.py:223
 #, python-format
 msgid "User '%s' has no profile set, but this should not happen."
-msgstr ""
+msgstr "User '%s' has no profile set, but this should not happen."
 
 #: ../stoqlib/gui/login.py:225
 msgid "Please contact your system administrator or Stoq team."
