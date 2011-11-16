@@ -178,7 +178,6 @@ class PurchaseApp(SearchableAppWindow):
             ("ConfirmOrder", 'stoq-delivery', _("Confirm order...")),
             ("StockCost", None, _("_Stock cost...")),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-            ("Quit", gtk.STOCK_QUIT),
 
             # Consignment
             ("CloseInConsignment", None, _("Close consigment...")),

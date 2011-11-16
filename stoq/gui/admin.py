@@ -311,7 +311,6 @@ class AdminApp(AppWindow):
             ('menubar', None, ''),
             # Admin
             ("AdminMenu", None, _("_Admin")),
-            ("Quit", gtk.STOCK_QUIT),
 
             # Search
             ("SearchMenu", None, _("_Search")),

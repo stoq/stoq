@@ -136,10 +136,14 @@ class Launcher(AppWindow):
 
             ('StoqMenu', None, _("_File")),
             ('StoqMenuNew', None, _("_New")),
-            ('NewWindow', None, _("New _window")),
-            ('Close', None, _('Close'), '<control>w'),
-            ('ChangePassword', None, _('Change password...'), None),
-            ('SignOut', None, _('Sign out...')),
+            ('NewWindow', None, _("New _window"), '<control>n',
+            _('Opens up a new window')),
+            ('Close', None, _('Close'), '<control>w',
+            _('Close the current view and go back to the initial screen')),
+            ('ChangePassword', None, _('Change password...'), '',
+            _('Change the password for the currently logged in user')),
+            ('SignOut', None, _('Sign out...'), '',
+            _('Sign out the currently logged in user and login as another')),
             ("Quit", gtk.STOCK_QUIT, _('Quit'), '<control>q',
              _('Exit the application')),
 
@@ -324,7 +328,8 @@ class Launcher(AppWindow):
         self.app.runner.relogin()
 
     def on_Quit__activate(self, action):
-        self._shutdown()
+        self.shutdown_application()
+        raise SystemExit
 
     def on_iconview__item_activated(self, iconview, path):
         app = self.model[path][COL_APP]

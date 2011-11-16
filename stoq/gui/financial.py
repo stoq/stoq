@@ -394,7 +394,6 @@ class FinancialApp(AppWindow):
             ('Import', gtk.STOCK_ADD, _('Import...'),
              '<control>i', _('Import a GnuCash or OFX file')),
             ('ExportCSV', None, _('Export CSV...'), '<control>F10'),
-            ("Quit", gtk.STOCK_QUIT),
 
             # Toolbar
             ('toolbar', None, ''),

@@ -150,7 +150,6 @@ class PayableApp(SearchableAppWindow):
              '<Control>f'),
 
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
-            ("Quit", gtk.STOCK_QUIT),
 
             # Search
             ('SearchMenu', None, _('_Search')),

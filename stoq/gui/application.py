@@ -432,9 +432,6 @@ class AppWindow(BaseAppWindow):
     # Callbacks
     #
 
-    def on_Quit__activate(self, action):
-        self.shutdown_application()
-
     # Help
 
     def on_HelpContents__activate(self, action):
