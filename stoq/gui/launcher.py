@@ -213,6 +213,12 @@ class Launcher(AppWindow):
         self.iconview.select_path(self.model[0].path)
         self.iconview.grab_focus()
 
+        # Disable border on statusbar
+        children = self.statusbar.get_children()
+        if children and isinstance(children[0], gtk.Frame):
+            frame = children[0]
+            frame.set_shadow_type(gtk.SHADOW_NONE)
+
     def show_app(self, app, app_window):
         app_window.reparent(self.application_box)
         self.application_box.set_child_packing(app_window, True, True, 0,
