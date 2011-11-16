@@ -151,6 +151,7 @@ class Launcher(AppWindow):
             ("NewMenu", None, _("New")),
             ]
         self.add_ui_actions(ui_string, actions)
+        self.Close.set_sensitive(False)
         self.Cut.set_sensitive(False)
         self.Copy.set_sensitive(False)
         self.Paste.set_sensitive(False)
