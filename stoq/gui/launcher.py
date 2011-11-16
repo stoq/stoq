@@ -172,6 +172,10 @@ class Launcher(AppWindow):
         self.add_help_ui()
 
     def create_ui(self):
+        self.uimanager.connect('connect-proxy',
+            self._on_uimanager__connect_proxy)
+        self.uimanager.connect('disconnect-proxy',
+            self._on_uimanager__disconnect_proxy)
         menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(menubar, False, False)
         self.main_vbox.reorder_child(menubar, 0)
@@ -196,7 +200,6 @@ class Launcher(AppWindow):
         # FIXME: last opened application
         self.iconview.select_path(self.model[0].path)
         self.iconview.grab_focus()
-
 
     def show_app(self, app, app_window):
         app_window.reparent(self.application_box)
@@ -255,6 +258,26 @@ class Launcher(AppWindow):
     #
     # Kiwi callbacks
     #
+
+    def _on_menu_item__select(self, menuitem, tooltip):
+        self.statusbar.push(-1, tooltip)
+
+    def _on_menu_item__deselect(self, menuitem):
+        self.statusbar.pop(-1)
+
+    def _on_uimanager__connect_proxy(self, uimgr, action, widget):
+        tooltip = action.get_property('tooltip')
+        if isinstance(widget, gtk.MenuItem) and tooltip:
+            cid = widget.connect(
+             'select', self._on_menu_item__select, tooltip)
+            cid2 = widget.connect(
+             'deselect', self._on_menu_item__deselect)
+            widget.set_data('app::connect-ids', (cid, cid2))
+
+    def _on_uimanager__disconnect_proxy(self, uimgr, action, widget):
+        cids = widget.get_data('app::connect-ids') or ()
+        for name, cid in cids:
+            widget.disconnect(cid)
 
     def on_NewToolItem__activate(self, action):
         if self.current_app:
