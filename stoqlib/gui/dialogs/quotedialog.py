@@ -25,6 +25,8 @@
 
 from decimal import Decimal
 
+import gtk
+
 from kiwi.datatypes import currency
 from kiwi.enums import ListType
 from kiwi.python import AttributeForwarder
@@ -32,10 +34,17 @@ from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
 from stoqlib.database.orm import AND, OR, LEFTJOINOn
+from stoqlib.database.runtime import (new_transaction, finish_transaction,
+                                      get_current_user)
+from stoqlib.domain.interfaces import IEmployee
+from stoqlib.domain.production import ProductionOrder, ProductionMaterial
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
+from stoqlib.domain.sale import Sale
+from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
+from stoqlib.lib.message import info
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -115,3 +124,91 @@ class QuoteFillingDialog(BaseEditor):
 
     def on_confirm(self):
         return True
+
+
+class ConfirmSaleMissingDialog(SimpleListDialog):
+    """This dialog shows a list of missing products to confirm a Sale
+
+    Unless the user cancel the dialog, the Sale will change the status from
+    QUOTE to ORDERED.
+
+    Also, for all productis missing that are composed, a new production order
+    will be created.
+    """
+
+    def __init__(self, sale, missing_items):
+        self.sale = sale
+        self.missing = missing_items
+        msg = _("<b>The following itens don't have enought stock to confirm the "
+               "sale</b>")
+        SimpleListDialog.__init__(self, self._get_columns(), missing_items,
+                                  hide_cancel_btn=False,
+                                  title=_('Missing items'))
+        self.header_label.set_markup(msg)
+        self.header_label.show()
+
+        if sale.status == Sale.STATUS_QUOTE:
+            label = gtk.Label(_('Do you want to mark the sale as ordered instead?'))
+            self.notice.add(label)
+            label.show()
+            self.set_ok_label('Order sale')
+
+    def _get_columns(self):
+        return [Column('description', title=_(u'Product'),
+                        data_type=str, expand=True),
+                Column('ordered', title=_(u'Ordered'),
+                       data_type=int),
+                Column('stock', title=_(u'Stock'),
+                       data_type=int)]
+
+    def _create_production_order(self, trans):
+        desc = _('Production for Sale order %s') % self.sale.get_order_number_str()
+        if self.sale.client:
+            desc += _(' (Client: %s') % self.sale.client.get_name()
+        user = get_current_user(trans)
+        employee = IEmployee(user.person, None)
+        order = ProductionOrder(branch=self.sale.branch,
+                    status=ProductionOrder.ORDER_WAITING,
+                    responsible=employee,
+                    description=desc,
+                    connection=trans)
+
+        materials = {}
+        for item in self.missing:
+            product = item.storable.product
+            components = list(product.get_components())
+            if not components:
+                continue
+            qty = item.ordered - item.stock
+            order.add_item(product.sellable, qty)
+
+            # Merge possible duplicate components from different products
+            for component in components:
+                materials.setdefault(component.component, 0)
+                materials[component.component] += component.quantity * qty
+
+        for material, needed in materials.items():
+            ProductionMaterial(needed=needed,
+                               order=order,
+                               product=material,
+                               connection=trans)
+
+
+        # This means we have production itens
+        if materials:
+            info(_('A new production was created for the missing composed '
+                   'products'))
+        else:
+            ProductionOrder.delete(order.id, trans)
+
+    def confirm(self, *args):
+        if self.sale.status == Sale.STATUS_QUOTE:
+            trans = new_transaction()
+            sale = trans.get(self.sale)
+            self._create_production_order(trans)
+            sale.order()
+            finish_transaction(trans, True)
+            trans.close()
+        return SimpleListDialog.confirm(self, *args)
+
+

@@ -445,7 +445,8 @@ class Sale(Domain):
         """Only newly created sales can be ordered
         @returns: True if the sale can be ordered, otherwise False
         """
-        return self.status == Sale.STATUS_INITIAL
+        return (self.status == Sale.STATUS_INITIAL or
+                self.status == Sale.STATUS_QUOTE)
 
     def can_confirm(self):
         """Only ordered sales can be confirmed
@@ -492,6 +493,7 @@ class Sale(Domain):
 
     def order(self):
         """Orders the sale
+
         Ordering a sale is the first step done after creating it.
         The state of the sale will change to Sale.STATUS_ORDERED.
         To order a sale you need to add sale items to it.
