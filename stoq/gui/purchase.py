@@ -89,6 +89,11 @@ class PurchaseApp(SearchableAppWindow):
     #
 
     def activate(self):
+        self.app.launcher.add_new_items([
+            self.NewOrder,
+            self.NewQuote,
+            self.NewProduct,
+            self.NewConsignment])
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
 
     def deactivate(self):
@@ -141,16 +146,6 @@ class PurchaseApp(SearchableAppWindow):
         </placeholder>
       </menubar>
       <toolbar action="toolbar">
-        <placeholder name="NewToolItemPH">
-          <toolitem action="NewToolItem">
-            <menu action="NewMenu">
-              <menuitem action="NewOrder"/>
-              <menuitem action="NewQuote"/>
-              <menuitem action="NewProduct"/>
-              <menuitem action="NewConsignment"/>
-            </menu>
-          </toolitem>
-        </placeholder>
         <placeholder name="AppToolbarPH">
           <toolitem action="SearchToolItem">
             <menu action="SearchToolMenu">

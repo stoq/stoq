@@ -64,6 +64,7 @@ class Launcher(AppWindow):
         self.runner = runner
         self.options = options
         self.current_app = None
+        self._new_items = []
         app = LauncherApp(self)
         AppWindow.__init__(self, app)
         self.get_toplevel().connect('destroy', self._shutdown)
@@ -91,9 +92,9 @@ class Launcher(AppWindow):
             <menu action="StoqMenu">
               <menu action="NewMenu">
                 <placeholder name="NewMenuItemPH"/>
+                <separator/>
+                <menuitem action="NewWindow"/>
               </menu>
-              <menuitem action="NewWindow"/>
-              <separator/>
               <placeholder name="StoqMenuPH"/>
               <separator/>
               <menuitem action="ChangePassword"/>
@@ -121,12 +122,11 @@ class Launcher(AppWindow):
             <placeholder name="ExtraMenubarPH"/>
           </menubar>
           <toolbar action="toolbar">
-            <placeholder name="NewToolItemPH">
               <toolitem action="NewToolItem">
-                <menu action="NewMenu">
+                <menu action="NewToolMenu">
+                  <menuitem action="NewWindow"/>
                 </menu>
               </toolitem>
-            </placeholder>
             <placeholder name="AppToolbarPH"/>
           </toolbar>
         </ui>"""
@@ -135,8 +135,9 @@ class Launcher(AppWindow):
             ('menubar', None, ''),
 
             ('StoqMenu', None, _("_File")),
-            ('StoqMenuNew', None, _("_New")),
-            ('NewWindow', None, _("New _window"), '<control>n',
+            ('StoqMenuNew', None),
+            ("NewMenu", None, _("New")),
+            ('NewWindow', None, _("_Window"), '<control>n',
             _('Opens up a new window')),
             ('Close', None, _('Close'), '<control>w',
             _('Close the current view and go back to the initial screen')),
@@ -156,7 +157,7 @@ class Launcher(AppWindow):
             ('ViewMenu', None, _("_View")),
 
             ('toolbar', None, ''),
-            ("NewMenu", None, _("New")),
+            ("NewToolMenu", None, _("New")),
             ]
         self.add_ui_actions(ui_string, actions)
         self.Close.set_sensitive(False)
@@ -177,11 +178,23 @@ class Launcher(AppWindow):
         self.ToggleStatusbar.props.active = True
 
         self.add_tool_menu_actions([
-            ("NewToolItem", _("New"), '', gtk.STOCK_ADD),
+            ("NewToolItem", _("New"), '', gtk.STOCK_NEW),
             ])
         self.NewToolItem.props.is_important = True
 
         self.add_help_ui()
+
+    def add_new_items(self, actions):
+        new_item = self.NewToolItem.get_proxies()[0]
+        menu = new_item.get_menu()
+        for action in actions:
+            action.set_accel_group(self.uimanager.get_accel_group())
+            menu_item = action.create_menu_item()
+            self._new_items.append(menu_item)
+            menu.insert(menu_item, len(list(menu))-2)
+        sep = gtk.SeparatorMenuItem()
+        self._new_items.append(sep)
+        menu.insert(sep, len(list(menu))-2)
 
     def create_ui(self):
         menubar = self.uimanager.get_widget('/menubar')
@@ -227,6 +240,10 @@ class Launcher(AppWindow):
         if self.current_app:
             self.current_app.deactivate()
             self.current_widget.destroy()
+            self.current_app = None
+        for item in self._new_items:
+            item.destroy()
+        self._new_items = []
         self.Close.set_sensitive(False)
         self.ChangePassword.set_visible(True)
         self.SignOut.set_visible(True)
