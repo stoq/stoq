@@ -308,9 +308,6 @@ class SellableEditor(BaseEditor):
                                     ])
         self.setup_widgets()
 
-        self.set_description(
-            self.model.sellable.base_sellable_info.description)
-
         if not is_new:
             if self._sellable.is_closed():
                 self._add_reopen_button()
