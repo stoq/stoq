@@ -57,6 +57,7 @@ from stoqlib.lib.parameters import sysparam
 from stoq.gui.application import AppWindow
 
 _ = gettext.gettext
+LAUNCHER_EMBEDDED = True
 
 class NotebookCloseButton(gtk.Button):
     pass
@@ -344,32 +345,39 @@ class FinancialApp(AppWindow):
     #
 
     def activate(self):
+        self.app.launcher.add_new_items([self.NewAccount,
+                                         self.NewTransaction])
         self._refresh_accounts()
         for page in self._pages.values():
             page.refresh()
+        self._update_actions()
+        self._update_tooltips()
 
-    #
-    # Private
-    #
+    def deactivate(self):
+        self.uimanager.remove_ui(self.financial_ui)
+        self.uimanager.remove_ui(self.financial_help_ui)
 
     def create_actions(self):
         ui_string = """<ui>
           <menubar action="menubar">
-            <menu action="FinancialMenu">
-              <menuitem action="AddAccount"/>
-              <menuitem action="Import"/>
-              <separator name="sep"/>
-              <menuitem action="ExportCSV"/>
-              <separator name="sep2"/>
-              <menuitem action="Quit"/>
+            <menu action="StoqMenu">
+              <menu action="NewMenu">
+                <placeholder action="NewMenuItemPH">
+                  <menuitem action="NewAccount"/>
+                  <menuitem action="NewTransaction"/>
+                </placeholder>
+              </menu>
+              <placeholder name="StoqMenuPH">
+                <menuitem action="Import"/>
+                <menuitem action="ExportCSV"/>
+              </placeholder>
             </menu>
           </menubar>
           <toolbar action="toolbar">
-            <toolitem action="AddAccount"/>
-            <toolitem action="DeleteAccount"/>
-            <separator/>
-            <toolitem action="AddTransaction"/>
-            <toolitem action="DeleteTransaction"/>
+            <placeholder action="ApplicationToolbar">
+              <separator/>
+              <toolitem action="Edit"/>
+            </placeholder>
           </toolbar>
         </ui>"""
 
@@ -377,48 +385,51 @@ class FinancialApp(AppWindow):
             ('menubar', None, ''),
 
             # Financial
-            ('FinancialMenu', None, _("_Financial")),
             ('Import', gtk.STOCK_ADD, _('Import...'),
              '<control>i', _('Import a GnuCash or OFX file')),
             ('ExportCSV', None, _('Export CSV...'), '<control>F10'),
-            ("Quit", gtk.STOCK_QUIT),
 
             # Toolbar
             ('toolbar', None, ''),
             ('EditAccount', gtk.STOCK_EDIT, _('Edit account'),
              '<control>e', _('Change the currently selected account')),
-            ('AddAccount', gtk.STOCK_ADD, _('Create new account'),
-             '<control>a', _('Create new account')),
             ('DeleteAccount', gtk.STOCK_DELETE, _('Delete account'),
              '', _('Delete account')),
-            ('AddTransaction', gtk.STOCK_ADD, _('Create new transaction'),
-             '<control>t', _('Create new transaction')),
             ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete transaction'),
              '', _('Delete transaction')),
+
+            # Toolbar
+            #("NewToolItem", None, _("New")),
+            ("NewAccount", gtk.STOCK_NEW, _("Account"), '<control>a',
+             _("Add a new account")),
+            ("NewTransaction", gtk.STOCK_NEW, _("Transaction"), '<control>t',
+             _("Add a new transaction")),
+            ("Edit", gtk.STOCK_EDIT, _("Edit"), '',),
+
             ]
-        self.add_ui_actions(ui_string, actions)
-        self.add_help_ui(_("Financial help"), 'financial-inicio')
+        self.financial_ui = self.add_ui_actions(ui_string, actions)
+        self.financial_help_ui = self.add_help_ui(_("Financial help"),
+                'financial-inicio')
 
-    def create_ui(self):
-        self._update_actions()
-
-        menubar = self.uimanager.get_widget('/menubar')
-        self.main_vbox.pack_start(menubar, False, False)
-        self.main_vbox.reorder_child(menubar, 0)
-
-        toolbar = self.uimanager.get_widget('/toolbar')
-        toolbar.set_style(gtk.TOOLBAR_BOTH)
-        self.main_vbox.pack_start(toolbar, False, False)
-        self.main_vbox.reorder_child(toolbar, 1)
+    #
+    # Private
+    #
 
     def _update_actions(self):
-        self.AddAccount.set_sensitive(self._can_add_account())
+        self.NewAccount.set_sensitive(self._can_add_account())
         self.EditAccount.set_sensitive(self._can_edit_account())
         self.DeleteAccount.set_sensitive(self._can_delete_account())
-        self.AddTransaction.set_sensitive(self._can_add_transaction())
+        self.NewTransaction.set_sensitive(self._can_add_transaction())
         self.DeleteTransaction.set_sensitive(self._can_delete_transaction())
         self.ExportCSV.set_sensitive(self._can_export_csv())
-        self.edit_button.set_sensitive(self._can_edit_account())
+        self.Edit.set_sensitive(self._can_edit_account() or
+                                self._can_edit_transaction())
+
+    def _update_tooltips(self):
+        if self._is_accounts_tab():
+            self.Edit.set_tooltip(_("Edit the current account"))
+        else:
+            self.Edit.set_tooltip(_("Edit the current transaction"))
 
     def _create_initial_page(self):
         pixbuf = self.accounts.render_icon('stoq-money', gtk.ICON_SIZE_MENU)
@@ -652,6 +663,17 @@ class FinancialApp(AppWindow):
 
         return True
 
+    def _can_edit_transaction(self):
+        if not self._is_transaction_tab():
+            return False
+
+        page = self._get_current_page_widget()
+        transaction = page.results.get_selected()
+        if transaction is None:
+            return False
+
+        return True
+
     def _can_export_csv(self):
         return not self._is_accounts_tab()
 
@@ -719,17 +741,27 @@ class FinancialApp(AppWindow):
     def on_accounts__selection_changed(self, ktree, account_view):
         self._update_actions()
 
-    def on_edit_button__clicked(self, button):
+    def on_Edit__activate(self, button):
         account_view = self.accounts.get_selected()
         self._edit_existing_account(account_view)
 
     def after_notebook__switch_page(self, notebook, page, page_id):
         self._update_actions()
+        self._update_tooltips()
 
     # Toolbar
 
-    def on_AddAccount__activate(self, action):
+    def new_activate(self):
+        if self._is_accounts_tab() and self._can_add_account():
+            self._create_new_account()
+        elif self._is_transaction_tab() and self._can_add_transaction():
+            self._add_transaction()
+
+    def on_NewAccount__activate(self, action):
         self._create_new_account()
+
+    def on_NewTransaction__activate(self, action):
+        self._add_transaction()
 
     def on_DeleteAccount__activate(self, action):
         account_view = self.accounts.get_selected()
@@ -739,9 +771,6 @@ class FinancialApp(AppWindow):
         transactions = self._get_current_page_widget()
         transaction = transactions.results.get_selected()
         self._delete_transaction(transaction)
-
-    def on_AddTransaction__activate(self, action):
-        self._add_transaction()
 
     # Financial
 

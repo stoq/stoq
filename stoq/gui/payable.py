@@ -59,6 +59,7 @@ from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.slaves.installmentslave import PurchaseInstallmentConfirmationSlave
 
 _ = gettext.gettext
+LAUNCHER_EMBEDDED = True
 
 class PayableApp(SearchableAppWindow):
 
@@ -74,7 +75,7 @@ class PayableApp(SearchableAppWindow):
         SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_widgets()
-        self.pay_order_button.set_sensitive(False)
+        self.Pay.set_sensitive(False)
         self.PrintReceipt.set_sensitive(False)
         self.results.connect('has-rows', self._has_rows)
 
@@ -84,36 +85,55 @@ class PayableApp(SearchableAppWindow):
 
     def activate(self):
         self.search.refresh()
+        self.app.launcher.add_new_items([self.AddPayment])
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.payable_ui)
+        self.uimanager.remove_ui(self.payable_help_ui)
 
     def create_actions(self):
         ui_string = """<ui>
           <menubar action="menubar">
-            <menu action="PayableMenu">
-              <menuitem action="AddPayment"/>
-              <menuitem action="CancelPayment"/>
-              <menuitem action="SetNotPaid"/>
-              <menuitem action="ChangeDueDate"/>
-              <menuitem action="Comments"/>
-              <separator name="sep"/>
-              <menuitem action="PrintReceipt"/>
-              <menuitem action="PaymentFlowHistory"/>
-              <separator name="sep2"/>
-              <menuitem action="ExportCSV"/>
-              <separator name="sep3"/>
-              <menuitem action="Quit"/>
+            <menu action="StoqMenu">
+              <menu action="NewMenu">
+                <placeholder name="NewMenuItemPH">
+                  <menuitem action="AddPayment"/>
+                </placeholder>
+              </menu>
+              <placeholder name="StoqMenuPH">
+                <menuitem action="ExportCSV"/>
+              </placeholder>
             </menu>
-            <menu action="SearchMenu">
-              <menuitem action="BillCheckSearch"/>
+            <menu action="EditMenu">
+              <placeholder name="EditMenuPH">
+                <menuitem action="CancelPayment"/>
+                <menuitem action="SetNotPaid"/>
+                <menuitem action="ChangeDueDate"/>
+                <menuitem action="Comments"/>
+                <menuitem action="PrintReceipt"/>
+                <menuitem action="PaymentFlowHistory"/>
+              </placeholder>
             </menu>
+            <placeholder name="AppMenubarPH">
+              <menu action="SearchMenu">
+                <menuitem action="BillCheckSearch"/>
+              </menu>
+            </placeholder>
           </menubar>
-        </ui>"""
+          <toolbar action="toolbar">
+            <toolitem action="PrintReport"/>
+            <separator/>
+            <toolitem action="Pay"/>
+            <toolitem action="Edit"/>
+            <toolitem action="Details"/>
+          </toolbar>
+    </ui>"""
 
         actions = [
             ('menubar', None, ''),
 
             # Payable
-            ('PayableMenu', None, _('Accounts _payable')),
-            ('AddPayment', gtk.STOCK_ADD, _('Add payment...'), '<Control>p'),
+            ('AddPayment', gtk.STOCK_ADD, _('Accounts payable'), '<Control>p'),
             ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
             ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...')),
@@ -124,20 +144,28 @@ class PayableApp(SearchableAppWindow):
              '<Control>f'),
 
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
-            ("Quit", gtk.STOCK_QUIT),
 
             # Search
             ('SearchMenu', None, _('_Search')),
             ('BillCheckSearch', None, _('Bill and check...')),
 
+            # Toolbar
+            ('PrintReport', gtk.STOCK_PRINT, _('Print'), '',
+              _('Print a report for the payment')),
+            ('Pay', gtk.STOCK_APPLY, _('Pay'), '',
+              _('Pay the order assoicated with the payment')),
+            ('Edit', gtk.STOCK_EDIT, _('Edit'), '',
+              _('Edit the payment')),
+            ('Details', gtk.STOCK_FIND, _('Details'), '',
+              _('Show details for the payment')),
         ]
-        self.add_ui_actions(ui_string, actions)
-        self.add_help_ui(_("Accounts payable help"), 'pagar-inicio')
+        self.payable_ui = self.add_ui_actions(ui_string, actions)
+        self.payable_help_ui = self.add_help_ui(_("Accounts payable help"),
+                                                  'pagar-inicio')
+        self.Pay.props.is_important = True
 
-    def create_ui(self):
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_vbox.pack_start(self.menubar, False, False)
-        self.main_vbox.reorder_child(self.menubar, 0)
+    def new_activate(self):
+        self._add_payment()
 
     #
     # SearchableAppWindow
@@ -151,7 +179,7 @@ class PayableApp(SearchableAppWindow):
             SearchFilterPosition.TOP, ['status'])
 
     def _has_rows(self, result_list, has_rows):
-        self.print_button.set_sensitive(has_rows)
+        self.PrintReport.set_sensitive(has_rows)
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), long_title='Payment ID',
@@ -223,7 +251,6 @@ class PayableApp(SearchableAppWindow):
             return False
 
         return True
-
 
     def _change_due_date(self, payable_view):
         """ Receives a payable_view and change the payment due date
@@ -376,20 +403,21 @@ class PayableApp(SearchableAppWindow):
         return all(view.sale == sale for view in payable_views)
 
     def _setup_widgets(self):
+        parent = self.app.launcher.statusbar.get_message_area()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.search.set_summary_label(column='value',
                                       label='<b>Total:</b>',
-                                      format='<b>%s</b>')
+                                      format='<b>%s</b>',
+                                      parent=parent)
 
     def _update_widgets(self):
         selected = self.results.get_selected_rows()
-        self.details_button.set_sensitive(self._can_show_details(selected))
+        self.Details.set_sensitive(self._can_show_details(selected))
         self.Comments.set_sensitive(self._can_show_comments(selected))
         self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
         self.CancelPayment.set_sensitive(self._can_cancel_payment(selected))
-        self.edit_button.set_sensitive(self._can_edit(selected))
-        self.pay_order_button.set_sensitive(self._can_pay(selected))
-        self.print_button.set_sensitive(bool(len(self.results)))
+        self.Edit.set_sensitive(self._can_edit(selected))
+        self.Pay.set_sensitive(self._can_pay(selected))
         self.PrintReceipt.set_sensitive(self._are_paid(selected,
                                                        respect_purchase=True))
         self.SetNotPaid.set_sensitive(self._are_paid(selected, respect_purchase=False))
@@ -398,6 +426,14 @@ class PayableApp(SearchableAppWindow):
         items = [(value, key) for key, value in Payment.statuses.items()]
         items.insert(0, (_('Any'), None))
         return items
+
+    def _add_payment(self):
+        trans = new_transaction()
+        retval = self.run_dialog(OutPaymentEditor, trans)
+        if finish_transaction(trans, retval):
+            self.results.refresh()
+        trans.close()
+        self.search.refresh()
 
     def _run_bill_check_search(self):
         run_dialog(OutPaymentBillCheckSearch, self, self.conn)
@@ -414,20 +450,20 @@ class PayableApp(SearchableAppWindow):
         payable_view = self.results.get_selected_rows()[0]
         self._show_comments(payable_view)
 
-    def on_details_button__clicked(self, button):
+    def on_Details__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]
         self._show_details(payable_view)
 
-    def on_pay_order_button__clicked(self, button):
+    def on_Pay__activate(self, action):
         self._pay(self.results.get_selected_rows())
 
-    def on_edit_button__clicked(self, button):
+    def on_Edit__activate(self, action):
         self._edit(self.results.get_selected_rows())
 
     def on_results__selection_changed(self, results, selected):
         self._update_widgets()
 
-    def on_print_button__clicked(self, button):
+    def on_PrintReport__activate(self, action):
         payments = self.results.get_selected_rows() or list(self.results)
         self.print_report(PayablePaymentReport, self.results,
                           payments, do_footer=False)
@@ -443,11 +479,7 @@ class PayableApp(SearchableAppWindow):
         self.run_dialog(PaymentFlowHistoryDialog, self.conn)
 
     def on_AddPayment__activate(self, action):
-        trans = new_transaction()
-        retval = self.run_dialog(OutPaymentEditor, trans)
-        if finish_transaction(trans, retval):
-            self.results.refresh()
-        trans.close()
+        self._add_payment()
 
     def on_CancelPayment__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]

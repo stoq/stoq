@@ -416,18 +416,11 @@ def run_app(options, appname):
     _maybe_show_welcome_dialog()
 
     from stoq.gui.launcher import Launcher
-
-    class App(object):
-        pass
-    app = App()
-    app.options = options
-    app.runner = runner
-    w = Launcher(app, runner)
-    app.main_window = w
-    w.show_all()
+    launcher = Launcher(options, runner)
+    launcher.show()
     if appname:
         app = runner.get_app_by_name(appname)
-        runner.run(app)
+        runner.run(app, launcher)
 
     log.debug("Entering reactor")
     from twisted.internet import reactor
