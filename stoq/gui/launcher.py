@@ -63,7 +63,6 @@ class Launcher(AppWindow):
         import stoq.gui.admin
         self.runner = runner
         self.options = options
-        self.application_box = None
         self.current_app = None
         app = LauncherApp(self)
         AppWindow.__init__(self, app)
@@ -200,9 +199,6 @@ class Launcher(AppWindow):
 
 
     def show_app(self, app, app_window):
-        if not self.application_box:
-            self.application_box = gtk.VBox()
-            self.main_vbox.pack_start(self.application_box, True, True)
         app_window.reparent(self.application_box)
         self.application_box.set_child_packing(app_window, True, True, 0,
                                                gtk.PACK_START)
