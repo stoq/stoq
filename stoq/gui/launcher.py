@@ -277,16 +277,37 @@ class Launcher(AppWindow):
     def _on_menu_item__deselect(self, menuitem):
         self.statusbar.pop(-1)
 
+    def _on_tool_item__enter_notify_event(self, toolitem, event, tooltip):
+        self.statusbar.push(-1, tooltip)
+
+    def _on_tool_item__leave_notify_event(self, toolitem, event):
+        self.statusbar.pop(-1)
+
     def _on_uimanager__connect_proxy(self, uimgr, action, widget):
         tooltip = action.get_tooltip()
-        if isinstance(widget, gtk.MenuItem) and tooltip:
+        if not tooltip:
+            return
+        if isinstance(widget, gtk.MenuItem):
             widget.connect('select', self._on_menu_item__select, tooltip)
             widget.connect('deselect', self._on_menu_item__deselect)
+        elif isinstance(widget, gtk.ToolItem):
+            widget.child.connect('enter-notify-event',
+                    self._on_tool_item__enter_notify_event, tooltip)
+            widget.child.connect('leave-notify-event',
+                    self._on_tool_item__leave_notify_event)
 
     def _on_uimanager__disconnect_proxy(self, uimgr, action, widget):
-        if isinstance(widget, gtk.MenuItem) and action.get_tooltip():
+        tooltip = action.get_tooltip()
+        if not tooltip:
+            return
+        if isinstance(widget, gtk.MenuItem):
             widget.disconnect_by_func(self._on_menu_item__select)
             widget.disconnect_by_func(self._on_menu_item__deselect)
+        elif isinstance(widget, gtk.ToolItem):
+            widget.child.disconnect_by_func(
+                self._on_tool_item__enter_notify_event)
+            widget.child.disconnect_by_func(
+                self._on_tool_item__leave_notify_event)
 
     def on_NewToolItem__activate(self, action):
         if self.current_app:
