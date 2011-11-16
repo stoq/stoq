@@ -98,7 +98,7 @@ class AccountTransactionEditor(BaseEditor):
     gladefile = "AccountTransactionEditor"
     proxy_widgets = ['description', 'code', 'date', 'value', 'is_incoming']
     model_type = _AccountTransactionTemporary
-    title = _("Account Editor")
+    model_name = _('transaction')
     confirm_widgets = ['description', 'code', 'value']
 
     gsignal('account-added')
