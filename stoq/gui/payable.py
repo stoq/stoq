@@ -120,6 +120,13 @@ class PayableApp(SearchableAppWindow):
               </menu>
             </placeholder>
           </menubar>
+          <toolbar action="toolbar">
+            <toolitem action="PrintReport"/>
+            <separator/>
+            <toolitem action="Pay"/>
+            <toolitem action="Edit"/>
+            <toolitem action="Details"/>
+          </toolbar>
     </ui>"""
 
         actions = [
