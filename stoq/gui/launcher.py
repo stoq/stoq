@@ -104,10 +104,6 @@ class Launcher(AppWindow):
               <menuitem action="Quit"/>
             </menu>
             <menu action="EditMenu">
-              <menuitem action="Cut"/>
-              <menuitem action="Copy"/>
-              <menuitem action="Paste"/>
-              <separator/>
               <placeholder name="EditMenuPH"/>
               <separator/>
               <menuitem action="Preferences"/>
@@ -149,9 +145,6 @@ class Launcher(AppWindow):
              _('Exit the application')),
 
             ('EditMenu', None, _("_Edit")),
-            ('Cut', None, _("Cu_t")),
-            ('Copy', None, _("Copy")),
-            ('Paste', None, _("_Paste")),
             ('Preferences', None, _("_Preferences")),
 
             ('ViewMenu', None, _("_View")),
@@ -161,9 +154,6 @@ class Launcher(AppWindow):
             ]
         self.add_ui_actions(ui_string, actions)
         self.Close.set_sensitive(False)
-        self.Cut.set_sensitive(False)
-        self.Copy.set_sensitive(False)
-        self.Paste.set_sensitive(False)
         toogle_actions = [
             ('ToggleToolbar', None, _("_Toolbar"), '',
              _('Show or hide the toolbar')),

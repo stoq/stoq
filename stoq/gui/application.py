@@ -340,10 +340,10 @@ class AppWindow(BaseAppWindow):
           <menubar action="menubar">
             <menu action="HelpMenu">
               <menuitem action="HelpContents"/>
-              <separator name="HelpSeparator"/>
+              <separator/>
               <menuitem action="HelpSupport"/>
               <menuitem action="HelpTranslate"/>
-              <separator name="HelpSeparator2"/>
+              <separator/>
               <menuitem action="HelpAbout"/>
             </menu>
           </menubar>
