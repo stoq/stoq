@@ -276,9 +276,11 @@ class PurchaseApp(SearchableAppWindow):
     #
 
     def _setup_widgets(self):
+        parent = self.app.launcher.statusbar.get_message_area()
         self.search.set_summary_label(column='total',
                                       label=_('<b>Orders total:</b>'),
-                                      format='<b>%s</b>')
+                                      format='<b>%s</b>',
+                                      parent=parent)
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.ConfirmOrder.set_sensitive(False)
         self.Confirm.set_sensitive(False)

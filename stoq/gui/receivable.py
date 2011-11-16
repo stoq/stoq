@@ -160,8 +160,11 @@ class ReceivableApp(SearchableAppWindow):
             _("Accounts receivable help"), 'receber-inicio')
 
     def _setup_widgets(self):
-        self.search.set_summary_label(
-            'value', '<b>Total:</b>', '<b>%s</b>')
+        parent = self.app.launcher.statusbar.get_message_area()
+        self.search.set_summary_label(column='value',
+            label='<b>%s</b>' % (_("Total")),
+            format='<b>%s</b>',
+            parent=parent)
 
     def _update_widgets(self):
         selected = self.results.get_selected_rows()

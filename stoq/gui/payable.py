@@ -403,10 +403,12 @@ class PayableApp(SearchableAppWindow):
         return all(view.sale == sale for view in payable_views)
 
     def _setup_widgets(self):
+        parent = self.app.launcher.statusbar.get_message_area()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.search.set_summary_label(column='value',
                                       label='<b>Total:</b>',
-                                      format='<b>%s</b>')
+                                      format='<b>%s</b>',
+                                      parent=parent)
 
     def _update_widgets(self):
         selected = self.results.get_selected_rows()

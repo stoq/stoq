@@ -233,6 +233,10 @@ class Launcher(AppWindow):
             self.current_app.deactivate()
             self.current_widget.destroy()
             self.current_app = None
+
+        message_area = self.statusbar.get_message_area()
+        for child in message_area.get_children()[1:]:
+            child.destroy()
         for item in self._new_items:
             item.destroy()
         self._new_items = []
