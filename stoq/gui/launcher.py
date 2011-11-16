@@ -82,6 +82,10 @@ class Launcher(AppWindow):
     #
 
     def create_actions(self):
+        self.uimanager.connect('connect-proxy',
+            self._on_uimanager__connect_proxy)
+        self.uimanager.connect('disconnect-proxy',
+            self._on_uimanager__disconnect_proxy)
         ui_string = """<ui>
           <menubar action="menubar">
             <menu action="StoqMenu">
@@ -176,10 +180,6 @@ class Launcher(AppWindow):
         self.add_help_ui()
 
     def create_ui(self):
-        self.uimanager.connect('connect-proxy',
-            self._on_uimanager__connect_proxy)
-        self.uimanager.connect('disconnect-proxy',
-            self._on_uimanager__disconnect_proxy)
         menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(menubar, False, False)
         self.main_vbox.reorder_child(menubar, 0)
@@ -274,18 +274,15 @@ class Launcher(AppWindow):
         self.statusbar.pop(-1)
 
     def _on_uimanager__connect_proxy(self, uimgr, action, widget):
-        tooltip = action.get_property('tooltip')
+        tooltip = action.get_tooltip()
         if isinstance(widget, gtk.MenuItem) and tooltip:
-            cid = widget.connect(
-             'select', self._on_menu_item__select, tooltip)
-            cid2 = widget.connect(
-             'deselect', self._on_menu_item__deselect)
-            widget.set_data('app::connect-ids', (cid, cid2))
+            widget.connect('select', self._on_menu_item__select, tooltip)
+            widget.connect('deselect', self._on_menu_item__deselect)
 
     def _on_uimanager__disconnect_proxy(self, uimgr, action, widget):
-        cids = widget.get_data('app::connect-ids') or ()
-        for cid in cids:
-            widget.disconnect(cid)
+        if isinstance(widget, gtk.MenuItem) and action.get_tooltip():
+            widget.disconnect_by_func(self._on_menu_item__select)
+            widget.disconnect_by_func(self._on_menu_item__deselect)
 
     def on_NewToolItem__activate(self, action):
         if self.current_app:
