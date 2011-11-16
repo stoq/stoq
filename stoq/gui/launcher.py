@@ -51,16 +51,19 @@ class LauncherApp(object):
 
 class Launcher(AppWindow):
 
-    app_name = _('v1.0 [localhost]')
+    app_name = _('Stoq')
     gladefile = 'launcher'
     launchers = []
 
     def __init__(self, options, runner):
+        # FIXME: Use a Progress bar or something instead
         import stoq.gui.purchase
         import stoq.gui.payable
         import stoq.gui.receivable
         import stoq.gui.financial
         import stoq.gui.admin
+        # pyflakes
+        stoq
         self.runner = runner
         self.options = options
         self.current_app = None
