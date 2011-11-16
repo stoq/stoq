@@ -33,6 +33,7 @@ from kiwi.datatypes import currency, converter
 from kiwi.log import Logger
 from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
+from kiwi.python import Settable
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
@@ -49,6 +50,7 @@ from stoqlib.lib.message import yesno, warning
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.dialogs.quotedialog import ConfirmSaleMissingDialog
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -63,7 +65,6 @@ log = Logger('stoq.till')
 
 LOGO_WIDTH = 91
 LOGO_HEIGHT = 32
-
 
 class TillApp(SearchableAppWindow):
 
@@ -261,14 +262,20 @@ class TillApp(SearchableAppWindow):
             prod_desc[storable] = sale_item.sellable.get_description()
 
         branch = self.current_branch
+        missing = []
         for storable in prod_sold.keys():
             stock = storable.get_full_balance(branch)
             if stock < prod_sold[storable]:
-                warning(_("This sale has %d items of %s, but there is only "
-                          "%d available on stock") % (prod_sold[storable],
-                                                      prod_desc[storable],
-                                                      stock))
-                return
+                missing.append(Settable(storable=storable,
+                                        description=prod_desc[storable],
+                                        ordered=prod_sold[storable],
+                                        stock=stock))
+
+        if missing:
+            retval = run_dialog(ConfirmSaleMissingDialog, self, sale, missing)
+            if retval:
+                self.refresh()
+            return
 
         coupon = self._open_coupon()
         if not coupon:
