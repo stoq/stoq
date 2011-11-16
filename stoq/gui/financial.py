@@ -345,6 +345,8 @@ class FinancialApp(AppWindow):
     #
 
     def activate(self):
+        self.app.launcher.add_new_items([self.NewAccount,
+                                         self.NewTransaction])
         self._refresh_accounts()
         for page in self._pages.values():
             page.refresh()
@@ -372,14 +374,6 @@ class FinancialApp(AppWindow):
             </menu>
           </menubar>
           <toolbar action="toolbar">
-            <placeholder name="NewToolItemPH">
-              <toolitem action="NewToolItem">
-                <menu action="NewMenu">
-                  <menuitem action="NewAccount"/>
-                  <menuitem action="NewTransaction"/>
-                </menu>
-              </toolitem>
-            </placeholder>
             <placeholder action="ApplicationToolbar">
               <separator/>
               <toolitem action="Edit"/>

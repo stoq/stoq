@@ -79,13 +79,13 @@ class ReceivableApp(SearchableAppWindow):
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
         self.results.connect('has-rows', self._has_rows)
-        self.activate()
 
     #
     # Application
     #
 
     def activate(self):
+        self.app.launcher.add_new_items([self.AddReceiving])
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self._setup_widgets()
         self._update_widgets()
@@ -101,7 +101,6 @@ class ReceivableApp(SearchableAppWindow):
             <menu action="StoqMenu">
               <menu action="NewMenu">
                 <placeholder name="NewMenuItemPH">
-                  <menuitem action="AddReceiving"/>
                 </placeholder>
               </menu>
               <placeholder name="StoqMenuPH">
@@ -129,15 +128,6 @@ class ReceivableApp(SearchableAppWindow):
               </menu>
             </placeholder>
           </menubar>
-      <toolbar action="toolbar">
-        <placeholder name="NewToolItemPH">
-          <toolitem action="NewToolItem">
-            <menu action="NewMenu">
-              <menuitem action="AddReceiving"/>
-            </menu>
-          </toolitem>
-        </placeholder>
-      </toolbar>
     </ui>"""
 
 

@@ -85,6 +85,7 @@ class PayableApp(SearchableAppWindow):
 
     def activate(self):
         self.search.refresh()
+        self.app.launcher.add_new_items([self.AddPayment])
 
     def deactivate(self):
         self.uimanager.remove_ui(self.payable_ui)
@@ -119,20 +120,6 @@ class PayableApp(SearchableAppWindow):
               </menu>
             </placeholder>
           </menubar>
-      <toolbar action="toolbar">
-        <placeholder name="NewToolItemPH">
-          <toolitem action="NewToolItem">
-            <menu action="NewMenu">
-              <menuitem action="AddPayment"/>
-            </menu>
-          </toolitem>
-        </placeholder>
-        <toolitem action="PrintReport"/>
-        <separator/>
-        <toolitem action="Pay"/>
-        <toolitem action="Edit"/>
-        <toolitem action="Details"/>
-        </toolbar>
     </ui>"""
 
         actions = [
