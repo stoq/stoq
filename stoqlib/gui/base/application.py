@@ -89,9 +89,9 @@ class BaseAppWindow(GladeDelegate):
         toplevel.set_title(self.get_title())
 
     def key_control_F11(self):
-        self._toggle_fullscreen()
+        self.toggle_fullscreen()
 
-    def _toggle_fullscreen(self):
+    def toggle_fullscreen(self):
         window = self.get_toplevel()
         if window.window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN:
             window.unfullscreen()

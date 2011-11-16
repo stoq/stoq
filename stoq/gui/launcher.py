@@ -108,6 +108,10 @@ class Launcher(AppWindow):
               <menuitem action="Preferences"/>
             </menu>
             <menu action="ViewMenu">
+              <menuitem action="ToggleToolbar"/>
+              <menuitem action="ToggleStatusbar"/>
+              <separator/>
+              <menuitem action="ToggleFullscreen"/>
             </menu>
             <placeholder name="AppMenubarPH"/>
             <placeholder name="ExtraMenubarPH"/>
@@ -141,6 +145,8 @@ class Launcher(AppWindow):
             ('Preferences', None, _("_Preferences")),
 
             ('ViewMenu', None, _("_View")),
+            ('Toolbar', None, _("_Toolbar")),
+            ('Statusbar', None, _("_Statusbar")),
 
             ('toolbar', None, ''),
             ("NewMenu", None, _("New")),
@@ -149,6 +155,16 @@ class Launcher(AppWindow):
         self.Cut.set_sensitive(False)
         self.Copy.set_sensitive(False)
         self.Paste.set_sensitive(False)
+        toogle_actions = [
+            ('ToggleToolbar', None, _("_Toolbar")),
+            ('ToggleStatusbar', None, _("_Statusbar")),
+            ('ToggleFullscreen', None, _("_Fullscreen"), 'F11'),
+            ]
+        self.add_ui_actions('', toogle_actions, 'ToogleActions',
+                            'toogle')
+        self.ToggleToolbar.props.active = True
+        self.ToggleStatusbar.props.active = True
+
         self.add_tool_menu_actions([
             ("NewToolItem", _("New"), '', gtk.STOCK_ADD),
             ])
@@ -256,6 +272,16 @@ class Launcher(AppWindow):
 
     def on_Preferences__activate(self, action):
         pass
+
+    def on_ToggleToolbar__toggled(self, action):
+        toolbar = self.uimanager.get_widget('/toolbar')
+        toolbar.set_visible(action.get_active())
+
+    def on_ToggleStatusbar__toggled(self, action):
+        self.statusbar.set_visible(action.get_active())
+
+    def on_ToggleFullscreen__toggled(self, action):
+        self.toggle_fullscreen()
 
     def on_ChangeApplication__activate(self, action):
         self.hide_app()
