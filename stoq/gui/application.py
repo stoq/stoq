@@ -291,9 +291,15 @@ class AppWindow(BaseAppWindow):
     # Public API
     #
 
-    def add_ui_actions(self, ui_string, actions, name='Actions'):
+    def add_ui_actions(self, ui_string, actions, name='Actions',
+                       action_type='normal'):
         ag = gtk.ActionGroup(name)
-        ag.add_actions(actions)
+        if action_type == 'normal':
+            ag.add_actions(actions)
+        elif action_type == 'toogle':
+            ag.add_toggle_actions(actions)
+        else:
+            raise ValueError(action_type)
         self.uimanager.insert_action_group(ag, 0)
         ui_id = self.uimanager.add_ui_from_string(ui_string)
         for action in ag.list_actions():
