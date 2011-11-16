@@ -123,6 +123,7 @@ class Launcher(AppWindow):
                   <menuitem action="NewWindow"/>
                 </menu>
               </toolitem>
+            <toolitem action="Quit"/>
             <placeholder name="AppToolbarPH"/>
           </toolbar>
         </ui>"""
@@ -224,6 +225,7 @@ class Launcher(AppWindow):
         self.Close.set_sensitive(True)
         self.ChangePassword.set_visible(False)
         self.SignOut.set_visible(False)
+        self.Quit.set_visible(False)
 
     def hide_app(self):
         self.application_box.hide()
@@ -237,6 +239,7 @@ class Launcher(AppWindow):
         self.Close.set_sensitive(False)
         self.ChangePassword.set_visible(True)
         self.SignOut.set_visible(True)
+        self.Quit.set_visible(True)
         self.iconview.grab_focus()
         self.iconview_vbox.show()
 
