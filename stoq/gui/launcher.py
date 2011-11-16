@@ -89,12 +89,13 @@ class Launcher(AppWindow):
                 <placeholder name="NewMenuItemPH"/>
               </menu>
               <menuitem action="NewWindow"/>
-              <menuitem action="ChangeApplication"/>
-              <separator name="sep"/>
+              <separator/>
               <placeholder name="StoqMenuPH"/>
-              <separator name="sep"/>
+              <separator/>
               <menuitem action="ChangePassword"/>
               <menuitem action="SignOut"/>
+              <separator/>
+              <menuitem action="Close"/>
               <menuitem action="Quit"/>
             </menu>
             <menu action="EditMenu">
@@ -132,10 +133,11 @@ class Launcher(AppWindow):
             ('StoqMenu', None, _("_File")),
             ('StoqMenuNew', None, _("_New")),
             ('NewWindow', None, _("New _window")),
-            ('ChangeApplication', None, _('Close'), '<control>w'),
+            ('Close', None, _('Close'), '<control>w'),
             ('ChangePassword', None, _('Change password...'), None),
             ('SignOut', None, _('Sign out...')),
-            ("Quit", gtk.STOCK_QUIT),
+            ("Quit", gtk.STOCK_QUIT, _('Quit'), '<control>q',
+             _('Exit the application')),
 
             ('EditMenu', None, _("_Edit")),
             ('Cut', None, _("Cu_t")),
@@ -144,8 +146,6 @@ class Launcher(AppWindow):
             ('Preferences', None, _("_Preferences")),
 
             ('ViewMenu', None, _("_View")),
-            ('Toolbar', None, _("_Toolbar")),
-            ('Statusbar', None, _("_Statusbar")),
 
             ('toolbar', None, ''),
             ("NewMenu", None, _("New")),
@@ -155,9 +155,12 @@ class Launcher(AppWindow):
         self.Copy.set_sensitive(False)
         self.Paste.set_sensitive(False)
         toogle_actions = [
-            ('ToggleToolbar', None, _("_Toolbar")),
-            ('ToggleStatusbar', None, _("_Statusbar")),
-            ('ToggleFullscreen', None, _("_Fullscreen"), 'F11'),
+            ('ToggleToolbar', None, _("_Toolbar"), '',
+             _('Show or hide the toolbar')),
+            ('ToggleStatusbar', None, _("_Statusbar"), '',
+             _('Show or hide the statusbar')),
+            ('ToggleFullscreen', None, _("_Fullscreen"), 'F11',
+             _('Enter or leave fullscreen mode')),
             ]
         self.add_ui_actions('', toogle_actions, 'ToogleActions',
                             'toogle')
@@ -210,14 +213,18 @@ class Launcher(AppWindow):
         self.application_box.show()
         self.current_app = app
         self.current_widget = app_window
-        self.ChangeApplication.set_sensitive(True)
+        self.Close.set_sensitive(True)
+        self.ChangePassword.set_visible(False)
+        self.SignOut.set_visible(False)
 
     def hide_app(self):
         self.application_box.hide()
         if self.current_app:
             self.current_app.deactivate()
             self.current_widget.destroy()
-        self.ChangeApplication.set_sensitive(False)
+        self.Close.set_sensitive(False)
+        self.ChangePassword.set_visible(True)
+        self.SignOut.set_visible(True)
         self.iconview.grab_focus()
         self.iconview_vbox.show()
 
@@ -276,7 +283,7 @@ class Launcher(AppWindow):
 
     def _on_uimanager__disconnect_proxy(self, uimgr, action, widget):
         cids = widget.get_data('app::connect-ids') or ()
-        for name, cid in cids:
+        for cid in cids:
             widget.disconnect(cid)
 
     def on_NewToolItem__activate(self, action):
@@ -302,7 +309,7 @@ class Launcher(AppWindow):
     def on_ToggleFullscreen__toggled(self, action):
         self.toggle_fullscreen()
 
-    def on_ChangeApplication__activate(self, action):
+    def on_Close__activate(self, action):
         self.hide_app()
 
     def on_ChangePassword__activate(self, action):
