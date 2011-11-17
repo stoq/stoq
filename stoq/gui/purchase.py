@@ -95,7 +95,7 @@ class PurchaseApp(SearchableAppWindow):
             self.NewProduct,
             self.NewConsignment])
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
-        self.refresh()
+        self.search.refresh()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.purchase_ui)
