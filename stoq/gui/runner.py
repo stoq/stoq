@@ -76,7 +76,7 @@ class ApplicationRunner(object):
 
         hide_splash()
 
-        embedded = getattr(module, 'LAUNCHER_EMBEDDED', False)
+        embedded = getattr(window_class, 'launcher_embedded', False)
         from stoq.gui.application import App
         app = App(window_class, self._login, self._options, self, embedded,
                   launcher)

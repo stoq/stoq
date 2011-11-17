@@ -67,7 +67,6 @@ from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
 
-LAUNCHER_EMBEDDED = True
 
 class PurchaseApp(SearchableAppWindow):
 
@@ -78,6 +77,7 @@ class PurchaseApp(SearchableAppWindow):
     gladefile = "purchase"
     search_table = PurchaseOrderView
     search_label = _('matching:')
+    launcher_embedded = True
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)

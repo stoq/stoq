@@ -63,7 +63,6 @@ from stoqlib.lib.message import warning
 from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
-LAUNCHER_EMBEDDED = True
 
 class ReceivableApp(SearchableAppWindow):
 
@@ -72,9 +71,9 @@ class ReceivableApp(SearchableAppWindow):
     app_name = _('Accounts receivable')
     app_icon_name = 'stoq-bills'
     gladefile = 'receivable'
-
     search_table = InPaymentView
     search_label = _('matching:')
+    launcher_embedded = True
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
