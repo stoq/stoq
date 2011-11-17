@@ -432,6 +432,10 @@ class AppWindow(BaseAppWindow):
     # Callbacks
     #
 
+    # Backwards-compatibility
+    def key_F5(self):
+        self.app.launcher.hide_app()
+
     # Help
 
     def on_HelpContents__activate(self, action):
