@@ -226,6 +226,9 @@ class Launcher(AppWindow):
             frame = children[0]
             frame.set_shadow_type(gtk.SHADOW_NONE)
 
+        user = get_current_user(self.conn)
+        self.statusbar.push(0, _("User: %s") % (user.person.name, ))
+
     def show_app(self, app, app_window):
         app_window.reparent(self.application_box)
         self.application_box.set_child_packing(app_window, True, True, 0,
@@ -265,6 +268,7 @@ class Launcher(AppWindow):
 
         self.iconview.grab_focus()
         self.iconview_vbox.show()
+
     #
     # Private
     #
