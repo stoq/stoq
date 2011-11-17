@@ -41,6 +41,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
+from stoqlib.lib.message import warning
 from stoqlib.gui.editors.producteditor import ProductStockEditor
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
@@ -65,6 +66,7 @@ _ = gettext.gettext
 log = Logger('stoq.gui.stock')
 
 
+
 class StockApp(SearchableAppWindow):
     app_name = _('Stock')
     app_icon_name = 'stoq-stock-app'
@@ -72,53 +74,88 @@ class StockApp(SearchableAppWindow):
     search_table = ProductFullStockView
     search_labels = _('Matching:')
     pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
+    launcher_embedded = True
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_widgets()
 
-        # FIXME: Do this in application.py
-        self.activate()
-
     #
     # Application
     #
 
+    def activate(self):
+        self.check_open_inventory()
+        self._update_widgets()
+        self.app.launcher.add_new_items([self.NewReceiving, self.NewTransfer,
+                                         self.NewStockDecrease])
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.stock_ui)
+        self.uimanager.remove_ui(self.help_ui)
+
+    def new_activate(self):
+        if not self.NewReceiving.get_sensitive():
+            warning(_("You cannot receive a purchase with an open inventory."))
+            return
+        self._receive_purchase()
+
     def create_actions(self):
         ui_string = """<ui>
       <menubar action="menubar">
-        <menu action="StockMenu">
-          <menuitem action="StockReceive"/>
-          <menuitem action="StockTransfer"/>
-          <menuitem action="StockDecrease"/>
-          <menuitem action="StockInitial"/>
-          <separator name="sep1"/>
-          <menuitem action="StockPictureViewer"/>
-          <separator name="sep2"/>
-          <menuitem action="ExportCSV"/>
-          <menuitem action="Quit"/>
+        <menu action="StoqMenu">
+          <menu action="NewMenu">
+            <placeholder name="NewMenuItemPH">
+              <menuitem action="NewReceiving"/>
+              <menuitem action="NewTransfer"/>
+              <menuitem action="NewStockDecrease"/>
+            </placeholder>
+          </menu>
+
+          <placeholder name="StoqMenuPH">
+            <menuitem action="ExportCSV"/>
+          </placeholder>
         </menu>
-        <menu action="LoanMenu">
-          <menuitem action="LoanNew"/>
-          <menuitem action="LoanClose"/>
-          <separator/>
-          <menuitem action="LoanSearch"/>
-          <menuitem action="LoanSearchItems"/>
+
+        <menu action="EditMenu">
+          <placeholder name="EditMenuPH">
+            <menuitem action="StockInitial"/>
+          </placeholder>
         </menu>
-        <menu action="SearchMenu">
-          <menuitem action="SearchPurchaseReceiving"/>
-          <menuitem action="SearchProductHistory"/>
-          <menuitem action="SearchTransfer"/>
-          <menuitem action="SearchStockDecrease"/>
-          <menuitem action="SearchPurchasedStockItems"/>
-          <menuitem action="SearchStockItems"/>
-          <menuitem action="SearchClosedStockItems"/>
+
+        <menu action="ViewMenu">
+          <placeholder name="ViewMenuPH">
+            <menuitem action="StockPictureViewer"/>
+          </placeholder>
         </menu>
+
+        <placeholder name="AppMenubarPH">
+          <menu action="LoanMenu">
+            <menuitem action="LoanNew"/>
+            <menuitem action="LoanClose"/>
+            <separator/>
+            <menuitem action="LoanSearch"/>
+            <menuitem action="LoanSearchItems"/>
+          </menu>
+          <menu action="SearchMenu">
+            <menuitem action="SearchPurchaseReceiving"/>
+            <menuitem action="SearchProductHistory"/>
+            <menuitem action="SearchTransfer"/>
+            <menuitem action="SearchStockDecrease"/>
+            <menuitem action="SearchPurchasedStockItems"/>
+            <menuitem action="SearchStockItems"/>
+            <menuitem action="SearchClosedStockItems"/>
+          </menu>
+        </placeholder>
       </menubar>
-      <toolbar action="main_toolbar">
-        <toolitem action="StockReceive"/>
-        <toolitem action="StockTransfer"/>
+      <toolbar action="toolbar">
+        <placeholder name="AppToolbarPH">
+          <toolitem action="Print"/>
+          <separator/>
+          <toolitem action="ProductStockHistory"/>
+          <toolitem action="EditProduct"/>
+        </placeholder>
       </toolbar>
     </ui>"""
 
@@ -127,14 +164,11 @@ class StockApp(SearchableAppWindow):
 
             # Stock
             ("StockMenu", None, _("_Stock")),
-            ("StockReceive", 'stoq-receiving', _("_Receive..."), '<Control>r'),
-            ('StockTransfer', 'gtk-convert', _('Transfer...'), '<Control>t'),
-            ('StockDecrease', None, _('Decrease stock...')),
+            ("NewReceiving", 'stoq-receiving', _("_Receive..."), '<Control>r'),
+            ('NewTransfer', 'gtk-convert', _('Transfer...'), '<Control>t'),
+            ('NewStockDecrease', None, _('Decrease stock...')),
             ('StockInitial', 'gtk-go-up', _('Register initial stock...')),
-            ('StockPictureViewer', None, _('Toggle picture viewer'),
-             '<Control><Alt>v'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-            ("Quit", gtk.STOCK_QUIT),
 
             # Loan
             ("LoanMenu", None, _("_Loan")),
@@ -154,21 +188,27 @@ class StockApp(SearchableAppWindow):
             ("SearchTransfer", None, _("Transfers..."), "<Control><Alt>t"),
             ("SearchClosedStockItems", None, _("Closed stock Items..."),
              "<Control><Alt>c"),
+
+             # Toolbar
+            ("Print", gtk.STOCK_PRINT, _("Print")),
+            ("ProductStockHistory", gtk.STOCK_INFO, _("History")),
+            ("EditProduct", gtk.STOCK_EDIT, _("Edit")),
         ]
 
-        self.add_ui_actions(ui_string, actions)
-        self.StockReceive.set_short_label(_("Receive"))
-        self.StockTransfer.set_short_label(_("Transfer"))
-        self.add_help_ui(_("Stock help"), 'vendas-inicio')
+        toogle_actions = [
+            ('StockPictureViewer', None, _('Picture viewer'),
+             '<Control><Alt>v'),
+        ]
+        self.add_ui_actions('', toogle_actions, 'ToogleActions',
+                            'toogle')
 
-    def create_ui(self):
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_vbox.pack_start(self.menubar, False, False)
-        self.main_vbox.reorder_child(self.menubar, 0)
 
-        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
-        self.toolbar_vbox.pack_start(self.main_toolbar, False, False)
-        self.toolbar_vbox.reorder_child(self.main_toolbar, 0)
+        self.stock_ui = self.add_ui_actions(ui_string, actions)
+        self.NewReceiving.set_short_label(_("Receive"))
+        self.NewTransfer.set_short_label(_("Transfer"))
+        self.EditProduct.props.is_important = True
+        self.ProductStockHistory.props.is_important = True
+        self.help_ui = self.add_help_ui(_("Stock help"), 'vendas-inicio')
 
     def create_filters(self):
         self.executer.set_query(self.query)
@@ -208,10 +248,6 @@ class StockApp(SearchableAppWindow):
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
 
-    def activate(self):
-        self.check_open_inventory()
-        self._update_widgets()
-
     #
     # Private API
     #
@@ -227,32 +263,26 @@ class StockApp(SearchableAppWindow):
         return items
 
     def _setup_widgets(self):
-        self._inventory_widgets = [self.StockTransfer, self.StockReceive,
-                                   self.StockInitial, self.StockDecrease,
+        self._inventory_widgets = [self.NewTransfer, self.NewReceiving,
+                                   self.StockInitial, self.NewStockDecrease,
                                    self.LoanNew, self.LoanClose]
         self.register_sensitive_group(self._inventory_widgets,
                                       lambda: not self.has_open_inventory())
 
         self.image_viewer = None
-        space = gtk.EventBox()
-        space.show()
-        self.button_box.pack_start(space)
 
         self.image = gtk.Image()
+        self.edit_button = self.uimanager.get_widget('/toolbar/AppToolbarPH/EditProduct')
+        self.edit_button.set_icon_widget(self.image)
+        self.image.show()
 
-        button = gtk.Button()
-        button.set_size_request(74, 64)
-        button.set_image(self.image)
-        button.set_relief(gtk.RELIEF_NONE)
-        button.show()
-        button.connect('clicked', self._on_image_button__clicked)
-        self.button_box.pack_start(button, False, False)
-        self.image_button = button
-
+        parent = self.app.launcher.statusbar.get_message_area()
         self.search.set_summary_label(column='stock',
                                       label=_('<b>Stock Total:</b>'),
-                                      format='<b>%s</b>')
+                                      format='<b>%s</b>',
+                                      parent=parent)
 
+    # FIXME: This should be called when the results is updated
     def _update_widgets(self):
         branch = get_current_branch(self.conn)
 
@@ -265,6 +295,11 @@ class StockApp(SearchableAppWindow):
         if item:
             try:
                 pixbuf = self.pixbuf_converter.from_string(item.product.image)
+                if pixbuf:
+                    # FIXME: get this icon size from settings
+                    icon_size = 24
+                    pixbuf = pixbuf.scale_simple(icon_size, icon_size,
+                                                 gtk.gdk.INTERP_BILINEAR)
             except ValidationError:
                 # FIXME: Find a better way of treating this. Somehow image
                 #        is not valid for some user. See bug 4611
@@ -274,21 +309,22 @@ class StockApp(SearchableAppWindow):
 
             if self.image_viewer:
                 self.image_viewer.set_product(item.product)
+
         if pixbuf:
             self.image.set_from_pixbuf(pixbuf)
         else:
-            self.image.set_from_stock('gtk-edit', gtk.ICON_SIZE_DIALOG)
+            self.image.set_from_stock('gtk-edit', gtk.ICON_SIZE_LARGE_TOOLBAR)
 
-        self.set_sensitive([self.image_button], bool(item))
-        self.set_sensitive([self.history_button],
+        self.set_sensitive([self.EditProduct], bool(item))
+        self.set_sensitive([self.ProductStockHistory],
                            bool(item) and is_main_branch)
-        self.set_sensitive([self.print_button], has_stock)
+        self.set_sensitive([self.Print], has_stock)
         # We need more than one branch to be able to do transfers
         # Note that 'all branches' is not a real branch
         has_branches = len(self.branch_filter.combo) > 2
 
-        transfer_active = self.StockTransfer.get_sensitive()
-        self.set_sensitive([self.StockTransfer],
+        transfer_active = self.NewTransfer.get_sensitive()
+        self.set_sensitive([self.NewTransfer],
                            transfer_active and has_branches)
         self.set_sensitive([self.SearchTransfer], has_branches)
 
@@ -298,6 +334,12 @@ class StockApp(SearchableAppWindow):
     def _transfer_stock(self):
         trans = new_transaction()
         model = self.run_dialog(StockTransferWizard, trans)
+        finish_transaction(trans, model)
+        trans.close()
+
+    def _receive_purchase(self):
+        trans = new_transaction()
+        model = self.run_dialog(ReceivingOrderWizard, trans)
         finish_transaction(trans, model)
         trans.close()
 
@@ -311,18 +353,18 @@ class StockApp(SearchableAppWindow):
     def on_results__selection_changed(self, results, product):
         self._update_widgets()
 
-    def on_print_button__clicked(self, button):
+    def on_Print__activate(self, button):
         branch_name = self.branch_filter.combo.get_active_text()
         self.print_report(SimpleProductReport, self.results,
                           list(self.results), branch_name=branch_name)
 
-    def on_history_button__clicked(self, button):
+    def on_ProductStockHistory__activate(self, button):
         selected = self.results.get_selected()
         sellable = Sellable.get(selected.id, connection=self.conn)
         self.run_dialog(ProductStockHistoryDialog, self.conn, sellable,
                         branch=self.branch_filter.combo.get_selected())
 
-    def _on_image_button__clicked(self, button):
+    def on_EditProduct__activate(self, button):
         selected = self.results.get_selected()
         assert selected
 
@@ -335,16 +377,13 @@ class StockApp(SearchableAppWindow):
 
     # Stock
 
-    def on_StockReceive__activate(self, button):
-        trans = new_transaction()
-        model = self.run_dialog(ReceivingOrderWizard, trans)
-        finish_transaction(trans, model)
-        trans.close()
+    def on_NewReceiving__activate(self, button):
+        self._receive_purchase()
 
-    def on_StockTransfer__activate(self, button):
+    def on_NewTransfer__activate(self, button):
         self._transfer_stock()
 
-    def on_StockDecrease__activate(self, action):
+    def on_NewStockDecrease__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(StockDecreaseWizard, trans)
         finish_transaction(trans, model)
@@ -356,9 +395,11 @@ class StockApp(SearchableAppWindow):
 
     def on_StockPictureViewer__activate(self, button):
         if self.image_viewer:
+            self.StockPictureViewer.props.active = False
             self.image_viewer.destroy()
             self.image_viewer = None
         else:
+            self.StockPictureViewer.props.active = True
             self.image_viewer = ProductImageViewer()
             selected = self.results.get_selected()
             if selected:
