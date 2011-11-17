@@ -30,7 +30,7 @@ from kiwi.component import get_utility
 from stoqlib.database.runtime import (new_transaction, finish_transaction,
                                       get_current_user)
 from stoqlib.gui.splash import hide_splash
-from stoqlib.lib.interfaces import IApplicationDescriptions
+from stoqlib.lib.interfaces import IApplicationDescriptions, IStoqConfig
 
 from stoq.gui.application import AppWindow
 from stoq.lib.applist import Application
@@ -62,9 +62,12 @@ class Launcher(AppWindow):
         self._new_items = []
         app = LauncherApp(self)
         AppWindow.__init__(self, app)
-        self.get_toplevel().connect('destroy', self._shutdown)
+        toplevel = self.get_toplevel()
+        toplevel.connect('destroy', self._shutdown)
+        toplevel.connect('configure-event', self._on_toplevel__configure)
         hide_splash()
         Launcher.launchers.append(self)
+        self._restore_window_size()
 
     #
     # AppWindow overrides
@@ -266,9 +269,32 @@ class Launcher(AppWindow):
     # Private
     #
 
+    def _restore_window_size(self):
+        config = get_utility(IStoqConfig)
+        try:
+            width = int(config.get('Launcher', 'window_width') or -1)
+            height = int(config.get('Launcher', 'window_height') or -1)
+            x = int(config.get('Launcher', 'window_x') or -1)
+            y = int(config.get('Launcher', 'window_y') or -1)
+        except ValueError:
+            pass
+        toplevel = self.get_toplevel()
+        toplevel.set_default_size(width, height)
+        if x != -1 and y != -1:
+            toplevel.move(x, y)
+
+    def _save_window_size(self):
+        config = get_utility(IStoqConfig)
+        config.set('Launcher', 'window_width', str(self._width))
+        config.set('Launcher', 'window_height', str(self._height))
+        config.set('Launcher', 'window_x', str(self._x))
+        config.set('Launcher', 'window_y', str(self._y))
+        config.flush()
+
     def _shutdown(self, *args):
         Launcher.launchers.remove(self)
         if not Launcher.launchers:
+            self._save_window_size()
             self.shutdown_application()
             raise SystemExit
 
@@ -299,6 +325,12 @@ class Launcher(AppWindow):
     #
     # Kiwi callbacks
     #
+
+    def _on_toplevel__configure(self, widget, event):
+        self._x = event.x
+        self._y = event.y
+        self._width = event.width
+        self._height = event.height
 
     def _on_menu_item__select(self, menuitem, tooltip):
         self.statusbar.push(-1, tooltip)
@@ -378,6 +410,7 @@ class Launcher(AppWindow):
         self.app.runner.relogin()
 
     def on_Quit__activate(self, action):
+        self._save_window_size()
         self.shutdown_application()
         raise SystemExit
 
