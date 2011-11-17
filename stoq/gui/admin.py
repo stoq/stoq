@@ -273,6 +273,9 @@ class AdminApp(AppWindow):
         self.uimanager.remove_ui(self.admin_ui)
         self.uimanager.remove_ui(self.admin_help_ui)
 
+    def new_activate(self):
+        pass
+
     def create_actions(self):
         ui_string = """<ui>
           <menubar action="menubar">

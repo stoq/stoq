@@ -90,6 +90,7 @@ class StockApp(SearchableAppWindow):
         self._update_widgets()
         self.app.launcher.add_new_items([self.NewReceiving, self.NewTransfer,
                                          self.NewStockDecrease])
+        self.search.refresh()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.stock_ui)

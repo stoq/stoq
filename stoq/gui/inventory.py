@@ -125,10 +125,15 @@ class InventoryApp(SearchableAppWindow):
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
         ]
         self.inventory_ui = self.add_ui_actions(ui_string, actions)
-        self.AdjustAction.set_short_label(_("Adjust"))
-        self.CountingAction.set_short_label(_("Count"))
         self.help_ui = self.add_help_ui(_("Inventory help"),
                                         'inventario-inicio')
+
+        self.AdjustAction.set_short_label(_("Adjust"))
+        self.CountingAction.set_short_label(_("Count"))
+        self.Cancel.set_short_label(_("Cancel"))
+        self.AdjustAction.props.is_important = True
+        self.CountingAction.props.is_important = True
+        self.Cancel.props.is_important = True
 
     def new_activate(self):
         if not self.NewInventory.get_sensitive():

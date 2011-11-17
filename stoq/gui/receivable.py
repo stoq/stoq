@@ -94,30 +94,33 @@ class ReceivableApp(SearchableAppWindow):
         self.uimanager.remove_ui(self.receivable_ui)
         self.uimanager.remove_ui(self.receivable_help_ui)
 
+    def new_activate(self):
+        self._add_receiving()
+
     def create_actions(self):
         ui_string = """<ui>
           <menubar action="menubar">
             <menu action="StoqMenu">
               <menu action="NewMenu">
                 <placeholder name="NewMenuItemPH">
+                  <menuitem action="AddReceiving"/>
                 </placeholder>
               </menu>
               <placeholder name="StoqMenuPH">
                 <menuitem action="ExportCSV"/>
+                <separator name="sep"/>
+                <menuitem action="PrintBill"/>
+                <menuitem action="PrintReceipt"/>
+                <menuitem action="PaymentFlowHistory"/>
               </placeholder>
             </menu>
             <menu action="EditMenu">
               <placeholder name="EditMenuPH">
-                <menuitem action="AddReceiving"/>
                 <menuitem action="CancelPayment"/>
                 <menuitem action="SetNotPaid"/>
                 <menuitem action="ChangeDueDate"/>
                 <menuitem action="Renegotiate"/>
                 <menuitem action="Comments"/>
-                <separator name="sep"/>
-                <menuitem action="PrintBill"/>
-                <menuitem action="PrintReceipt"/>
-                <menuitem action="PaymentFlowHistory"/>
               </placeholder>
             </menu>
             <placeholder name="AppMenubarPH">
@@ -127,6 +130,20 @@ class ReceivableApp(SearchableAppWindow):
               </menu>
             </placeholder>
           </menubar>
+          <toolbar action="toolbar">
+            <toolitem action="Print">
+              <menu action="PrintToolMenu">
+                <menuitem action="PrintList"/>
+                <menuitem action="PrintBill"/>
+                <menuitem action="PrintReceipt"/>
+              </menu>
+            </toolitem>
+
+            <separator/>
+            <toolitem action="Receive"/>
+            <toolitem action="Details"/>
+          </toolbar>
+
     </ui>"""
 
 
@@ -139,7 +156,7 @@ class ReceivableApp(SearchableAppWindow):
             ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
             ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...')),
-            ('PrintBill', gtk.STOCK_PRINT, _('Print bill...')),
+            ('PrintBill', gtk.STOCK_PRINT, _('Print bill')),
             ('Comments', None, _('Comments...')),
 
             ('Renegotiate', None, _('Renegotiate payments...')),
@@ -153,10 +170,26 @@ class ReceivableApp(SearchableAppWindow):
             ('SearchMenu', None, _('_Search')),
             ('BillCheckSearch', None, _('Bill and check...')),
             ('CardPaymentSearch', None, _('Card payment...')),
+
+            ('PrintToolMenu', _('Print')),
+            ('PrintList', gtk.STOCK_PRINT, _('Payment List'), '',
+             _('Print a report for this payment list'),),
+
+            ('Receive', gtk.STOCK_APPLY, _('Receive'), '',
+             _('Receive the selected payments')),
+            ('Details', gtk.STOCK_INFO, _('Details'), '',
+             _('Show details for the payment'),)
         ]
         self.receivable_ui = self.add_ui_actions(ui_string, actions)
         self.receivable_help_ui = self.add_help_ui(
             _("Accounts receivable help"), 'receber-inicio')
+
+        self.add_tool_menu_actions([
+                            ("Print", _("Print"), None,
+                            gtk.STOCK_PRINT)])
+
+        self.Receive.props.is_important = True
+
 
     def _setup_widgets(self):
         parent = self.app.launcher.statusbar.get_message_area()
@@ -167,8 +200,8 @@ class ReceivableApp(SearchableAppWindow):
 
     def _update_widgets(self):
         selected = self.results.get_selected_rows()
-        self.receive_button.set_sensitive(self._can_receive(selected))
-        self.details_button.set_sensitive(self._can_show_details(selected))
+        self.Receive.set_sensitive(self._can_receive(selected))
+        self.Details.set_sensitive(self._can_show_details(selected))
         self.Comments.set_sensitive(self._can_show_comments(selected))
         self.Renegotiate.set_sensitive(self._can_renegotiate(selected))
         self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
@@ -180,7 +213,7 @@ class ReceivableApp(SearchableAppWindow):
         self.PrintBill.set_sensitive(self._can_print_bill(selected))
 
     def _has_rows(self, result_list, has_rows):
-        self.print_button.set_sensitive(has_rows)
+        self.Print.set_sensitive(has_rows)
 
     def _get_status_values(self):
         values = [(v, k) for k, v in Payment.statuses.items()]
@@ -426,6 +459,10 @@ class ReceivableApp(SearchableAppWindow):
     def _run_bill_check_search(self):
         run_dialog(InPaymentBillCheckSearch, self, self.conn)
 
+    def _print_payment_list(self):
+        payments = self.results.get_selected_rows() or list(self.results)
+        self.print_report(ReceivablePaymentReport, self.results, payments)
+
     #
     # Kiwi callbacks
     #
@@ -436,16 +473,18 @@ class ReceivableApp(SearchableAppWindow):
     def on_results__selection_changed(self, receivables, selected):
         self._update_widgets()
 
-    def on_details_button__clicked(self, button):
+    def on_Details__activate(self, button):
         selected = self.results.get_selected_rows()[0]
         self._show_details(selected)
 
-    def on_receive_button__clicked(self, button):
+    def on_Receive__activate(self, button):
         self._receive(self.results.get_selected_rows())
 
-    def on_print_button__clicked(self, button):
-        payments = self.results.get_selected_rows() or list(self.results)
-        self.print_report(ReceivablePaymentReport, self.results, payments)
+    def on_Print__activate(self, button):
+        self._print_payment_list()
+
+    def on_PrintList__activate(self, action):
+        self._print_payment_list()
 
     def on_Comments__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]
