@@ -327,8 +327,9 @@ class Launcher(AppWindow):
     #
 
     def _on_toplevel__configure(self, widget, event):
-        self._x = event.x
-        self._y = event.y
+        rect = widget.window.get_frame_extents()
+        self._x = rect.x
+        self._y = rect.y
         self._width = event.width
         self._height = event.height
 
