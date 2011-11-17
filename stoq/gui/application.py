@@ -65,13 +65,14 @@ ToolMenuAction.set_tool_item_type(
 class App(BaseApp):
 
     def __init__(self, window_class, config, options, runner, embedded,
-                 launcher):
+                 launcher, name):
         self.config = config
         self.options = options
         self.runner = runner
         self.window_class = window_class
         self.embedded = embedded
         self.launcher = launcher
+        self.name = name
         BaseApp.__init__(self, window_class)
 
     def show(self):
@@ -119,12 +120,14 @@ class AppWindow(BaseAppWindow):
             toplevel.add_accel_group(self.uimanager.get_accel_group())
         self.create_ui()
         self.setup_focus()
-        self._check_demo_mode()
-        self._check_version()
-        self._usability_hacks()
 
-        if not stoq.stable and not is_developer_mode():
-            self._display_unstable_version_message()
+        if app.name == 'launcher':
+            self._check_demo_mode()
+            self._check_version()
+            self._usability_hacks()
+
+            if not stoq.stable and not is_developer_mode():
+                self._display_unstable_version_message()
 
     def _display_unstable_version_message(self):
         msg = _(
@@ -177,7 +180,7 @@ class AppWindow(BaseAppWindow):
         bar.show_all()
 
         self.main_vbox.pack_start(bar, False, False, 0)
-        self.main_vbox.reorder_child(bar, 1)
+        self.main_vbox.reorder_child(bar, 2)
 
     def _check_version(self):
         if not sysparam(self.conn).ONLINE_SERVICES:
@@ -412,7 +415,7 @@ class AppWindow(BaseAppWindow):
         bar.show()
 
         self.main_vbox.pack_start(bar, False, False, 0)
-        self.main_vbox.reorder_child(bar, 1)
+        self.main_vbox.reorder_child(bar, 2)
 
         return bar
 

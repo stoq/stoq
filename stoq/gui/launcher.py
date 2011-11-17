@@ -47,7 +47,7 @@ class LauncherApp(object):
         self.embedded = False
         self.main_window = launcher
         self.options = launcher.options
-
+        self.name = 'launcher'
 
 class Launcher(AppWindow):
 
