@@ -50,8 +50,6 @@ _ = gettext.gettext
 
 class ProductionApp(SearchableAppWindow):
 
-    # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
-
     app_name = _(u'Production')
     app_icon_name = 'stoq-production-app'
     gladefile = "production"
@@ -136,21 +134,25 @@ class ProductionApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Production
-            ("ProductionMenu", None, _("_Production")),
             ('NewProduction', gtk.STOCK_NEW,
-             _('New production order...'), '<Control>o'),
-            ('StartProduction', gtk.STOCK_CONVERT,
-             _('Start production...'), '<Control>t'),
-            ('EditProduction', gtk.STOCK_EDIT,
-             _('Edit production...')),
-            ('ProductionDetails', gtk.STOCK_INFO,
-             _('Production details...')),
+             _('New production order...'), '<Control>o',
+             _('Create a new production')),
+            ('StartProduction', gtk.STOCK_CONVERT, _('Start production...'),
+             '<Control>t',
+             _('Start the selected production')),
+            ('EditProduction', gtk.STOCK_EDIT, _('Edit production...'), '',
+             _('Edit the selected production')
+            ),
+            ('ProductionDetails', gtk.STOCK_INFO, _('Production details...'),
+            '',
+            _('See production details and register produced itens')),
             ('ProductionPurchaseQuote', 'stoq-purchase-app',
              _('New Purchase Quote...'),
              '<Control>p'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
 
-            ("Print", gtk.STOCK_PRINT, _("Print")),
+            ("Print", gtk.STOCK_PRINT, _("Print"), '',
+             _('Print this list of productions')),
 
             # Search
             ("SearchMenu", None, _("_Search")),
@@ -185,9 +187,9 @@ class ProductionApp(SearchableAppWindow):
             can_edit = (selected.status == ProductionOrder.ORDER_OPENED or
                         selected.status == ProductionOrder.ORDER_WAITING)
             can_start = can_edit
-        self.EditProduction.set_sensitive(can_edit)
-        self.StartProduction.set_sensitive(can_start)
-        self.ProductionDetails.set_sensitive(bool(selected))
+        self.set_sensitive([self.EditProduction], can_edit)
+        self.set_sensitive([self.StartProduction], can_start)
+        self.set_sensitive([self.ProductionDetails], bool(selected))
 
     def _get_status_values(self):
         items = [(text, value)
@@ -261,7 +263,7 @@ class ProductionApp(SearchableAppWindow):
 
     def on_results__has_rows(self, widget, has_rows):
         self._update_widgets()
-        self.Print.set_sensitive(has_rows)
+        self.set_sensitive([self.Print], has_rows)
 
     def on_results__row_activated(self, widget, order):
         self.run_dialog(ProductionDetailsDialog, self.conn, order)
