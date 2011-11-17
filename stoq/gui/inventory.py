@@ -199,12 +199,12 @@ class InventoryApp(SearchableAppWindow):
             has_open = selected.is_open()
             has_adjusted = selected.has_adjusted_items()
 
-        self.Print.set_sensitive(has_open)
-        self.Cancel.set_sensitive(has_open and not has_adjusted)
-        self.NewInventory.set_sensitive(self._can_open())
+        self.set_sensitive([self.Print], has_open)
+        self.set_sensitive([self.Cancel], has_open and not has_adjusted)
+        self.set_sensitive([self.NewInventory], self._can_open())
+        self.set_sensitive([self.CountingAction], has_open)
+        self.set_sensitive([self.AdjustAction], has_open and all_counted)
         self.app.launcher.set_new_menu_sensitive(self._can_open())
-        self.CountingAction.set_sensitive(has_open)
-        self.AdjustAction.set_sensitive(has_open and all_counted)
 
     def _get_available_branches_to_inventory(self):
         """Returns a list of branches where we can open an inventory.
