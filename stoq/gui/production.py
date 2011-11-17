@@ -57,9 +57,23 @@ class ProductionApp(SearchableAppWindow):
     gladefile = "production"
     search_table = ProductionOrder
     search_label = _(u'matching:')
+    launcher_embedded = True
+
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
+
+    def activate(self):
+        self.search.refresh()
+        self.app.launcher.add_new_items([self.NewProduction,
+                        self.ProductionPurchaseQuote])
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.production_ui)
+        self.uimanager.remove_ui(self.help_ui)
+
+    def new_activate(self):
+        self._open_production_order()
 
     #
     # Application
@@ -68,27 +82,46 @@ class ProductionApp(SearchableAppWindow):
     def create_actions(self):
         ui_string = """<ui>
       <menubar action="menubar">
-        <menu action="ProductionMenu">
-          <menuitem action="ProductionStart"/>
-          <separator name="sep"/>
-          <menuitem action="ProductionNew"/>
-          <menuitem action="ProductionPurchaseQuote"/>
-          <separator name="sep2"/>
-          <menuitem action="ExportCSV"/>
-          <separator name="sep3"/>
-          <menuitem action="Quit"/>
+        <menu action="StoqMenu">
+          <menu action="NewMenu">
+            <placeholder name="NewMenuItemPH">
+              <menuitem action="NewProduction"/>
+              <menuitem action="ProductionPurchaseQuote"/>
+            </placeholder>
+          </menu>
+
+          <placeholder name="StoqMenuPH">
+            <menuitem action="ExportCSV"/>
+          </placeholder>
         </menu>
-        <menu action="SearchMenu">
-          <menuitem action="SearchProduct"/>
-          <menuitem action="SearchService"/>
-          <menuitem action="SearchProductionItem"/>
-          <menuitem action="SearchProductionHistory"/>
+
+        <menu action="EditMenu">
+          <placeholder name="EditMenuPH">
+            <menuitem action="StartProduction"/>
+            <menuitem action="EditProduction"/>
+          </placeholder>
         </menu>
+
+        <placeholder name="AppMenubarPH">
+          <menu action="SearchMenu">
+            <menuitem action="SearchProduct"/>
+            <menuitem action="SearchService"/>
+            <menuitem action="SearchProductionItem"/>
+            <menuitem action="SearchProductionHistory"/>
+          </menu>
+        </placeholder>
+
       </menubar>
-      <toolbar action="main_toolbar">
-        <toolitem action="ProductionNew"/>
-        <toolitem action="ProductionPurchaseQuote"/>
-        <toolitem action="SearchProductionItem"/>
+
+      <toolbar action="toolbar">
+        <placeholder name="AppToolbarPH">
+          <toolitem action="SearchProductionItem"/>
+          <toolitem action="Print"/>
+          <separator/>
+          <toolitem action="StartProduction"/>
+          <toolitem action="EditProduction"/>
+          <toolitem action="ProductionDetails"/>
+        </placeholder>
       </toolbar>
     </ui>"""
 
@@ -97,15 +130,20 @@ class ProductionApp(SearchableAppWindow):
 
             # Production
             ("ProductionMenu", None, _("_Production")),
-            ('ProductionNew', gtk.STOCK_NEW,
+            ('NewProduction', gtk.STOCK_NEW,
              _('New production order...'), '<Control>o'),
-            ('ProductionStart', 'stoq-transfer',
+            ('StartProduction', gtk.STOCK_CONVERT,
              _('Start production...'), '<Control>t'),
+            ('EditProduction', gtk.STOCK_EDIT,
+             _('Edit production...')),
+            ('ProductionDetails', gtk.STOCK_INFO,
+             _('Production details...')),
             ('ProductionPurchaseQuote', 'stoq-purchase-app',
              _('New Purchase Quote...'),
              '<Control>p'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-            ("Quit", gtk.STOCK_QUIT),
+
+            ("Print", gtk.STOCK_PRINT, _("Print")),
 
             # Search
             ("SearchMenu", None, _("_Search")),
@@ -117,21 +155,13 @@ class ProductionApp(SearchableAppWindow):
 
         ]
 
-        self.add_ui_actions(ui_string, actions)
-        self.ProductionNew.set_short_label(_("New Production"))
+        self.production_ui = self.add_ui_actions(ui_string, actions)
+        self.NewProduction.set_short_label(_("New Production"))
         self.ProductionPurchaseQuote.set_short_label(_("Purchase"))
         self.SearchProductionItem.set_short_label(_("Search items"))
-        self.add_help_ui(_("Production help"), 'producao-inicio')
-
-    def create_ui(self):
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_vbox.pack_start(self.menubar, False, False)
-        self.main_vbox.reorder_child(self.menubar, 0)
-
-        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
-        self.list_vbox.pack_start(self.main_toolbar, False, False)
-        self.list_vbox.reorder_child(self.main_toolbar, 0)
-        self._update_widgets()
+        self.StartProduction.set_short_label(_('Start'))
+        self.StartProduction.props.is_important = True
+        self.help_ui = self.add_help_ui(_("Production help"), 'producao-inicio')
 
     def _update_widgets(self):
         selected = self.results.get_selected()
@@ -141,10 +171,9 @@ class ProductionApp(SearchableAppWindow):
             can_edit = (selected.status == ProductionOrder.ORDER_OPENED or
                         selected.status == ProductionOrder.ORDER_WAITING)
             can_start = can_edit
-        self.edit_button.set_sensitive(can_edit)
-        self.ProductionStart.set_sensitive(can_start)
-        self.start_production_button.set_sensitive(can_start)
-        self.details_button.set_sensitive(bool(selected))
+        self.EditProduction.set_sensitive(can_edit)
+        self.StartProduction.set_sensitive(can_start)
+        self.ProductionDetails.set_sensitive(bool(selected))
 
     def _get_status_values(self):
         items = [(text, value)
@@ -198,20 +227,17 @@ class ProductionApp(SearchableAppWindow):
     # Kiwi Callbacks
     #
 
-    def on_start_production_button__clicked(self, widget):
-        self._start_production_order()
-
-    def on_edit_button__clicked(self, widget):
+    def on_EditProduction__activate(self, widget):
         order = self.results.get_selected()
         assert order is not None
         self._open_production_order(order)
 
-    def on_details_button__clicked(self, widget):
+    def on_ProductionDetails__activate(self, widget):
         order = self.results.get_selected()
         assert order is not None
         self.run_dialog(ProductionDetailsDialog, self.conn, order)
 
-    def on_print_button__clicked(self, widget):
+    def on_Print__activate(self, widget):
         items = self.results
         self.print_report(ProductionReport, items, list(items),
                           self.status_filter.get_state().value)
@@ -220,17 +246,18 @@ class ProductionApp(SearchableAppWindow):
         self._update_widgets()
 
     def on_results__has_rows(self, widget, has_rows):
-        self.print_button.set_sensitive(has_rows)
+        self._update_widgets()
+        self.Print.set_sensitive(has_rows)
 
     def on_results__row_activated(self, widget, order):
         self.run_dialog(ProductionDetailsDialog, self.conn, order)
 
     # Production
 
-    def on_ProductionNew__activate(self, action):
+    def on_NewProduction__activate(self, action):
         self._open_production_order()
 
-    def on_ProductionStart__activate(self, action):
+    def on_StartProduction__activate(self, action):
         self._start_production_order()
 
     def on_ProductionPurchaseQuote__activate(self, action):

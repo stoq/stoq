@@ -1,190 +1,34 @@
-<?xml version="1.0"?>
-<!--*- mode: xml -*-->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="production">
-    <property name="destroy_with_parent">True</property>
-    <property name="height_request">570</property>
-    <property name="role"/>
-    <property name="title" translatable="yes">production</property>
     <property name="width_request">800</property>
+    <property name="height_request">570</property>
+    <property name="title" translatable="yes">production</property>
     <property name="window_position">center</property>
+    <property name="destroy_with_parent">True</property>
     <child>
       <object class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
         <child>
           <object class="GtkVBox" id="list_vbox">
-            <property name="spacing">2</property>
             <property name="visible">True</property>
+            <property name="spacing">2</property>
             <child>
               <object class="GtkEventBox" id="search_holder">
                 <property name="visible">True</property>
               </object>
               <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkHBox" id="hbox7">
-                <property name="border_width">6</property>
-                <property name="spacing">3</property>
-                <property name="visible">True</property>
-                <child>
-                  <object class="GtkHButtonBox" id="hbuttonbox1">
-                    <property name="border_width">0</property>
-                    <property name="layout_style">start</property>
-                    <property name="spacing">6</property>
-                    <property name="visible">True</property>
-                    <child>
-                      <object class="GtkButton" id="start_production_button">
-                        <property name="visible">True</property>
-                        <child>
-                          <object class="GtkAlignment" id="alignment4">
-                            <property name="visible">True</property>
-                            <child>
-                              <object class="GtkVBox" id="vbox2">
-                                <property name="visible">True</property>
-                                <child>
-                                  <object class="GtkImage" id="image1">
-                                    <property name="stock">gtk-convert</property>
-                                    <property name="visible">True</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label2">
-                                    <property name="label" translatable="yes">Start Production</property>
-                                    <property name="use-underline">True</property>
-                                    <property name="visible">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="edit_button">
-                        <property name="visible">True</property>
-                        <child>
-                          <object class="GtkAlignment" id="alignment41">
-                            <property name="visible">True</property>
-                            <child>
-                              <object class="GtkVBox" id="vbox51">
-                                <property name="visible">True</property>
-                                <child>
-                                  <object class="GtkImage" id="image41">
-                                    <property name="stock">gtk-edit</property>
-                                    <property name="visible">True</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label61">
-                                    <property name="label" translatable="yes">Ed_it</property>
-                                    <property name="use-underline">True</property>
-                                    <property name="visible">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="details_button">
-                        <property name="visible">True</property>
-                        <child>
-                          <object class="GtkAlignment" id="alignment2">
-                            <property name="visible">True</property>
-                            <child>
-                              <object class="GtkVBox" id="vbox3">
-                                <property name="visible">True</property>
-                                <child>
-                                  <object class="GtkImage" id="image2">
-                                    <property name="stock">gtk-find</property>
-                                    <property name="visible">True</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label3">
-                                    <property name="label" translatable="yes">_Details</property>
-                                    <property name="use-underline">True</property>
-                                    <property name="visible">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="print_button">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <child>
-                          <object class="GtkAlignment" id="alignment23">
-                            <property name="visible">True</property>
-                            <child>
-                              <object class="GtkVBox" id="vbox33">
-                                <property name="visible">True</property>
-                                <child>
-                                  <object class="GtkImage" id="image23">
-                                    <property name="stock">gtk-print</property>
-                                    <property name="visible">True</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label34">
-                                    <property name="label" translatable="yes">_Print</property>
-                                    <property name="use-underline">True</property>
-                                    <property name="visible">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">3</property>
               </packing>
             </child>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
