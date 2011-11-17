@@ -41,7 +41,7 @@ from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
 from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import warning, yesno
 from stoqlib.reporting.product import ProductCountingReport
 
 _ = gettext.gettext
@@ -56,6 +56,7 @@ class InventoryApp(SearchableAppWindow):
     gladefile = "inventory"
     search_table = Inventory
     search_labels = _('Matching:')
+    launcher_embedded = True
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
@@ -65,51 +66,73 @@ class InventoryApp(SearchableAppWindow):
     # Application
     #
 
+    def activate(self):
+        self.app.launcher.add_new_items([self.NewInventory])
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.inventory_ui)
+        self.uimanager.remove_ui(self.help_ui)
+
     def create_actions(self):
         ui_string = """<ui>
-         <menubar action="menubar">
-            <menu action="InventoryMenu">
-              <menuitem action="new_inventory"/>
-              <menuitem action="counting_action"/>
-              <menuitem action="adjust_action"/>
-              <separator name="sep"/>
-              <menuitem action="ExportCSV"/>
-              <separator name="sep2"/>
-              <menuitem action="Quit"/>
-            </menu>
-         </menubar>
-         <toolbar action="main_toolbar">
-           <toolitem action="counting_action"/>
-           <toolitem action="adjust_action"/>
-         </toolbar>
-        </ui>"""
+      <menubar action="menubar">
+        <menu action="StoqMenu">
+          <menu action="NewMenu">
+            <placeholder name="NewMenuItemPH">
+              <menuitem action="NewInventory"/>
+            </placeholder>
+          </menu>
+          <placeholder name="StoqMenuPH">
+            <menuitem action="Print"/>
+            <menuitem action="ExportCSV"/>
+          </placeholder>
+        </menu>
+        <menu action="EditMenu">
+          <placeholder name="EditMenuPH">
+            <menuitem action="CountingAction"/>
+            <menuitem action="AdjustAction"/>
+            <menuitem action="Cancel"/>
+          </placeholder>
+        </menu>
+      </menubar>
+      <toolbar action="toolbar">
+        <placeholder name="AppToolbarPH">
+          <toolitem action="Print"/>
+          <separator/>
+          <toolitem action="Cancel"/>
+          <toolitem action="CountingAction"/>
+          <toolitem action="AdjustAction"/>
+        </placeholder>
+      </toolbar>
+    </ui>"""
 
         actions = [
             ('menubar', None, ''),
             # Inventory
             ("InventoryMenu", None, _("Inventory")),
-            ('new_inventory', None, _('Open I_nventry'), '<Control>i'),
-            ('counting_action', gtk.STOCK_INDEX, _('_Count inventory...'),
-             '<Control>a'),
-            ('adjust_action', gtk.STOCK_CONVERT, _('_Adjust inventory...'),
+            ('NewInventory', None, _('Open I_nventry'), '<Control>i'),
+            ('CountingAction', gtk.STOCK_INDEX, _('_Count inventory...'),
              '<Control>c'),
+            ('AdjustAction', gtk.STOCK_CONVERT, _('_Adjust inventory...'),
+             '<Control>a'),
+            ('Cancel', gtk.STOCK_CANCEL, _('Cancel inventory'), '',
+             _('Cancel the currently open inventory')),
+            ('Print', gtk.STOCK_CANCEL, _('Print inventory'), '',
+             _('Print product list for inventory counting.')),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
-            ("Quit", gtk.STOCK_QUIT),
-
         ]
-        self.add_ui_actions(ui_string, actions)
-        self.adjust_action.set_short_label(_("Adjust"))
-        self.counting_action.set_short_label(_("Count"))
-        self.add_help_ui(_("Inventory help"), 'inventario-inicio')
+        self.inventory_ui = self.add_ui_actions(ui_string, actions)
+        self.AdjustAction.set_short_label(_("Adjust"))
+        self.CountingAction.set_short_label(_("Count"))
+        self.help_ui = self.add_help_ui(_("Inventory help"),
+                                        'inventario-inicio')
 
-    def create_ui(self):
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_vbox.pack_start(self.menubar, False, False)
-        self.main_vbox.reorder_child(self.menubar, 0)
-
-        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
-        self.main_vbox.pack_start(self.main_toolbar, False, False)
-        self.main_vbox.reorder_child(self.main_toolbar, 1)
+    def new_activate(self):
+        if not self.NewInventory.get_sensitive():
+            warning(_("You cannot open an inventory without having a "
+                      "branch with stock in it."))
+            return
+        self._open_inventory()
 
     #
     # SearchableAppWindow
@@ -173,11 +196,12 @@ class InventoryApp(SearchableAppWindow):
             has_open = selected.is_open()
             has_adjusted = selected.has_adjusted_items()
 
-        self.print_button.set_sensitive(has_open)
-        self.cancel_button.set_sensitive(has_open and not has_adjusted)
-        self.new_inventory.set_sensitive(self._can_open())
-        self.counting_action.set_sensitive(has_open)
-        self.adjust_action.set_sensitive(has_open and all_counted)
+        self.Print.set_sensitive(has_open)
+        self.Cancel.set_sensitive(has_open and not has_adjusted)
+        self.NewInventory.set_sensitive(self._can_open())
+        self.app.launcher.NewToolItem.set_sensitive(self._can_open())
+        self.CountingAction.set_sensitive(has_open)
+        self.AdjustAction.set_sensitive(has_open and all_counted)
 
     def _get_available_branches_to_inventory(self):
         """Returns a list of branches where we can open an inventory.
@@ -251,22 +275,22 @@ class InventoryApp(SearchableAppWindow):
     # Callbacks
     #
 
-    def on_new_inventory__activate(self, action):
+    def on_NewInventory__activate(self, action):
         self._open_inventory()
 
-    def on_counting_action__activate(self, action):
+    def on_CountingAction__activate(self, action):
         self._register_product_counting()
 
-    def on_adjust_action__activate(self, action):
+    def on_AdjustAction__activate(self, action):
         self._adjust_product_quantities()
 
     def on_results__selection_changed(self, results, product):
         self._update_widgets()
 
-    def on_cancel_button__clicked(self, widget):
+    def on_Cancel__activate(self, widget):
         self._cancel_inventory()
 
-    def on_print_button__clicked(self, button):
+    def on_Print__activate(self, button):
         selected = self.results.get_selected()
         sellables = list(self._get_sellables_by_inventory(selected))
         if sellables:
