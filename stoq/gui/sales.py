@@ -97,6 +97,9 @@ class SalesApp(SearchableAppWindow):
         self.uimanager.remove_ui(self.sales_ui)
         self.uimanager.remove_ui(self.help_ui)
 
+    def new_activate(self):
+        self._new_sale_quote()
+
     def create_actions(self):
         ui_string = """<ui>
       <menubar action="menubar">
@@ -290,11 +293,16 @@ class SalesApp(SearchableAppWindow):
     def _setup_slaves(self):
         # This is only here to reuse the logic in it.
         self.sale_toolbar = SaleListToolbar(self.conn, self.results)
+        self.results.connect("selection-changed", self._update_toolbar)
+        self.results.connect("has-rows", self._update_toolbar)
 
     def _can_cancel(self, view):
         # Here we want to cancel only quoting sales. This is why we don't use
         # Sale.can_cancel here.
         return bool(view and view.status == Sale.STATUS_QUOTE)
+
+    def _can_edit(self, view):
+        return bool(view and view.sale.status ==  Sale.STATUS_QUOTE)
 
     def _update_toolbar(self, *args):
         sale_view = self.results.get_selected()
@@ -303,10 +311,14 @@ class SalesApp(SearchableAppWindow):
         can_print_invoice = bool(sale_view and
                                  sale_view.client_name is not None and
                                  sale_view.status != Sale.STATUS_RETURNED)
-        self.set_sensitive([self.SalesPrintInvoice, self.Print], can_print_invoice)
-        self.set_sensitive([self.SalesCancel, self.Cancel], self._can_cancel(sale_view))
+        self.set_sensitive([self.SalesPrintInvoice], can_print_invoice)
+        self.set_sensitive([self.SalesCancel], self._can_cancel(sale_view))
         self.set_sensitive([self.sale_toolbar.return_sale_button, self.Return],
                            bool(sale_view and sale_view.sale.can_return()))
+        self.set_sensitive([self.sale_toolbar.return_sale_button, self.Details],
+                           bool(sale_view))
+        self.set_sensitive([self.sale_toolbar.edit_button, self.Edit],
+                           self._can_edit(sale_view))
 
         self.sale_toolbar.set_report_filters(self.search.get_search_filters())
 
@@ -367,6 +379,12 @@ class SalesApp(SearchableAppWindow):
             return SaleView.q.status != Sale.STATUS_ORDERED
         return SaleView.q.status == state.value
 
+    def _new_sale_quote(self):
+        trans = new_transaction()
+        model = self.run_dialog(SaleQuoteWizard, trans)
+        finish_transaction(trans, model)
+        trans.close()
+
     #
     # Kiwi callbacks
     #
@@ -380,10 +398,7 @@ class SalesApp(SearchableAppWindow):
     # Sales
 
     def on_SaleQuote__activate(self, action):
-        trans = new_transaction()
-        model = self.run_dialog(SaleQuoteWizard, trans)
-        finish_transaction(trans, model)
-        trans.close()
+        self._new_sale_quote()
 
     def on_SalesCancel__activate(self, action):
         if yesno(_('This will cancel the selected quote. Are you sure?'),
