@@ -151,7 +151,7 @@ class PayableApp(SearchableAppWindow):
 
             # Toolbar
             ('PrintReport', gtk.STOCK_PRINT, _('Print'), '',
-              _('Print a report for the payment')),
+              _('Print a report for this payment list')),
             ('Pay', gtk.STOCK_APPLY, _('Pay'), '',
               _('Pay the order assoicated with the payment')),
             ('Edit', gtk.STOCK_EDIT, _('Edit'), '',

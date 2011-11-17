@@ -73,6 +73,9 @@ class Launcher(AppWindow):
     def activate(self):
         self.hide_app()
 
+    def get_title(self):
+        return self.app_name
+
     #
     # Private
     #
@@ -106,6 +109,7 @@ class Launcher(AppWindow):
             <menu action="ViewMenu">
               <menuitem action="ToggleToolbar"/>
               <menuitem action="ToggleStatusbar"/>
+              <placeholder name="ViewMenuPH"/>
               <separator/>
               <menuitem action="ToggleFullscreen"/>
             </menu>
@@ -233,6 +237,7 @@ class Launcher(AppWindow):
         app_window.show_all()
 
         self.current_app = app
+        self.get_toplevel().set_title(app.get_title())
         self.current_widget = app_window
 
     def hide_app(self):
@@ -242,6 +247,7 @@ class Launcher(AppWindow):
             self.current_widget.destroy()
             self.current_app = None
 
+        self.get_toplevel().set_title(self.get_title())
         message_area = self.statusbar.get_message_area()
         for child in message_area.get_children()[1:]:
             child.destroy()
