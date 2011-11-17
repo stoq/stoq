@@ -197,13 +197,13 @@ class SalesApp(SearchableAppWindow):
             ("SearchToolMenu", None, _("Search")),
 
             ("Print", gtk.STOCK_PRINT, _("Print"), '',
-             _("Print the sale and it's items")),
+             _("Print this sale listing")),
             ("Return", gtk.STOCK_CANCEL, _("Return sale"), '',
              _("Return the sale and cancel the payments.")),
             ("Edit", gtk.STOCK_EDIT, _("Edit"), '',
              _("Edit the sale, allows you to change the details of it")),
             ("Details", gtk.STOCK_INFO, _("Details"), '',
-             _("View the details of a sale"))
+             _("View the details of the sale"))
         ]
 
         self.sales_ui = self.add_ui_actions(ui_string, actions)
