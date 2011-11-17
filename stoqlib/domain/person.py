@@ -742,15 +742,23 @@ class PersonAdaptToUser(PersonAdapter):
 
     def login(self):
         station = get_current_station(self.get_connection())
-        Event.log(Event.TYPE_USER,
-                  _("User '%s' logged in on '%s'") % (self.username,
-                                                      station.name))
+        if station:
+            Event.log(Event.TYPE_USER,
+                _("User '%s' logged in on '%s'") % (self.username,
+                                                    station.name))
+        else:
+            Event.log(Event.TYPE_USER,
+                _("User '%s' logged in") % (self.username,))
 
     def logout(self):
         station = get_current_station(self.get_connection())
-        Event.log(Event.TYPE_USER,
-                  _("User '%s' logged out from '%s'") % (self.username,
-                                                         station.name))
+        if station:
+            Event.log(Event.TYPE_USER,
+                _("User '%s' logged out from '%s'") % (self.username,
+                                                       station.name))
+        else:
+            Event.log(Event.TYPE_USER,
+                _("User '%s' logged out") % (self.username,))
 
 Person.registerFacet(PersonAdaptToUser, IUser)
 
