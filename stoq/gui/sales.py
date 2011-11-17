@@ -385,6 +385,11 @@ class SalesApp(SearchableAppWindow):
         finish_transaction(trans, model)
         trans.close()
 
+    def _search_product(self):
+        hide_cost_column = not sysparam(self.conn).SHOW_COST_COLUMN_IN_SALES
+        self.run_dialog(ProductSearch, self.conn, hide_footer=True,
+                        hide_toolbar=True, hide_cost_column=hide_cost_column)
+
     #
     # Kiwi callbacks
     #
@@ -437,15 +442,13 @@ class SalesApp(SearchableAppWindow):
     # Search
 
     def on_SearchToolItem__activate(self, action):
-        self.on_SearchProduct__activate(action)
+        self._search_product()
 
     def on_SearchClient__activate(self, button):
         self.run_dialog(ClientSearch, self.conn, hide_footer=True)
 
     def on_SearchProduct__activate(self, button):
-        hide_cost_column = not sysparam(self.conn).SHOW_COST_COLUMN_IN_SALES
-        self.run_dialog(ProductSearch, self.conn, hide_footer=True,
-                        hide_toolbar=True, hide_cost_column=hide_cost_column)
+        self._search_product()
 
     def on_SearchCommission__activate(self, button):
         self.run_dialog(CommissionSearch, self.conn)
