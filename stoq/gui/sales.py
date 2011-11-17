@@ -83,9 +83,6 @@ class SalesApp(SearchableAppWindow):
         self._setup_columns()
         self._setup_widgets()
 
-        # FIXME: Do this in application.py
-        self.activate()
-
     #
     # Application
     #

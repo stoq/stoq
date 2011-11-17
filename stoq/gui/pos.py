@@ -127,8 +127,6 @@ class PosApp(AppWindow):
         self._setup_widgets()
         self._setup_proxies()
         self._clear_order()
-        # FIXME: Do this in application.py
-        self.activate()
 
     #
     # Application
