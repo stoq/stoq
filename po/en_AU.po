@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-11-08 14:55-0200\n"
-"PO-Revision-Date: 2011-11-14 20:58+0000\n"
+"PO-Revision-Date: 2011-11-16 20:16+0000\n"
 "Last-Translator: Rafael Neri <Unknown>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-15 05:09+0000\n"
+"X-Launchpad-Export-Date: 2011-11-17 05:26+0000\n"
 "X-Generator: Launchpad (build 14291)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -8185,7 +8185,7 @@ msgstr "Confirm later"
 
 #: ../stoqlib/gui/fiscalprinter.py:403
 msgid "The fiscal printer is offline, turn it on and try again"
-msgstr ""
+msgstr "The fiscal printer is offline, turn it on and try again"
 
 #: ../stoqlib/gui/fiscalprinter.py:409
 msgid "It is not possible to emit the coupon"
@@ -8235,266 +8235,266 @@ msgstr "User '%s' has no profile set, but this should not happen."
 
 #: ../stoqlib/gui/login.py:225
 msgid "Please contact your system administrator or Stoq team."
-msgstr ""
+msgstr "Please contact your system administrator or Stoq team."
 
 #: ../stoqlib/gui/login.py:227
 msgid "User does not have a profile"
-msgstr ""
+msgstr "User does not have a profile"
 
 #: ../stoqlib/gui/login.py:269
 msgid "Stoq - Access Control"
-msgstr ""
+msgstr "Stoq - Access Control"
 
 #: ../stoqlib/gui/login.py:287
 msgid "specify an username"
-msgstr ""
+msgstr "specify an username"
 
 #. Add a mailto button
 #: ../stoqlib/gui/printing.py:107
 msgid "Send PDF by e-mail"
-msgstr ""
+msgstr "Send PDF by e-mail"
 
 #: ../stoqlib/gui/search/callsearch.py:46
 msgid "Sold Items to Client"
-msgstr ""
+msgstr "Sold Items to Client"
 
 #: ../stoqlib/gui/search/callsearch.py:71
 msgid "Print"
-msgstr ""
+msgstr "Print"
 
 #: ../stoqlib/gui/search/categorysearch.py:44
 msgid "Sellable Category Search"
-msgstr ""
+msgstr "Sellable Category Search"
 
 #: ../stoqlib/gui/search/categorysearch.py:46
 msgid "Categories Matching:"
-msgstr ""
+msgstr "Categories Matching:"
 
 #: ../stoqlib/gui/search/categorysearch.py:47
 msgid "category"
-msgstr ""
+msgstr "category"
 
 #: ../stoqlib/gui/search/categorysearch.py:47
 msgid "categories"
-msgstr ""
+msgstr "categories"
 
 #: ../stoqlib/gui/search/categorysearch.py:64
 msgid "Suggested Markup (%)"
-msgstr ""
+msgstr "Suggested Markup (%)"
 
 #. This column evals to an integer, and due to a bug
 #. in kiwi, its not searchable
 #: ../stoqlib/gui/search/categorysearch.py:66
 #: ../stoqlib/gui/search/commissionsearch.py:75
 msgid "Commission (%)"
-msgstr ""
+msgstr "Commission (%)"
 
 #: ../stoqlib/gui/search/categorysearch.py:69
 msgid "Installments Commission (%)"
-msgstr ""
+msgstr "Installments Commission (%)"
 
 #: ../stoqlib/gui/search/categorysearch.py:85
 msgid "Base Sellable Category Search"
-msgstr ""
+msgstr "Base Sellable Category Search"
 
 #: ../stoqlib/gui/search/categorysearch.py:86
 msgid "Base Categories Matching:"
-msgstr ""
+msgstr "Base Categories Matching:"
 
 #: ../stoqlib/gui/search/categorysearch.py:87
 msgid "base category"
-msgstr ""
+msgstr "base category"
 
 #: ../stoqlib/gui/search/categorysearch.py:87
 msgid "base categories"
-msgstr ""
+msgstr "base categories"
 
 #: ../stoqlib/gui/search/commissionsearch.py:46
 msgid "Search for Commissions"
-msgstr ""
+msgstr "Search for Commissions"
 
 #: ../stoqlib/gui/search/commissionsearch.py:62
 msgid "Anyone"
-msgstr ""
+msgstr "Anyone"
 
 #: ../stoqlib/gui/search/commissionsearch.py:63
 msgid "Sold by:"
-msgstr ""
+msgstr "Sold by:"
 
 #: ../stoqlib/gui/search/commissionsearch.py:69 ../stoqlib/lib/invoice.py:309
 #: ../stoqlib/lib/parameters.py:358
 msgid "Sale"
-msgstr ""
+msgstr "Sale"
 
 #. negative commissions are shown in red color
 #: ../stoqlib/gui/search/commissionsearch.py:78
 msgid "Commission"
-msgstr ""
+msgstr "Commission"
 
 #: ../stoqlib/gui/search/commissionsearch.py:83
 msgid "Payment value"
-msgstr ""
+msgstr "Payment value"
 
 #: ../stoqlib/gui/search/commissionsearch.py:85
 msgid "Sale total"
-msgstr ""
+msgstr "Sale total"
 
 #: ../stoqlib/gui/search/consignmentsearch.py:39
 msgid "Consignment Items Search"
-msgstr ""
+msgstr "Consignment Items Search"
 
 #: ../stoqlib/gui/search/eventsearch.py:38
 msgid "Search for events"
-msgstr ""
+msgstr "Search for events"
 
 #. model_list_lookup_attr = 'product_id'
 #: ../stoqlib/gui/search/eventsearch.py:43
 msgid "event"
-msgstr ""
+msgstr "event"
 
 #: ../stoqlib/gui/search/eventsearch.py:43
 msgid "events"
-msgstr ""
+msgstr "events"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:53
 msgid "ISS"
-msgstr ""
+msgstr "ISS"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:58
 msgid "C.F.O.P. Search"
-msgstr ""
+msgstr "C.F.O.P. Search"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:62
 msgid "C.F.O.P.s"
-msgstr ""
+msgstr "C.F.O.P.s"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:79
 msgid "Search for fiscal entries"
-msgstr ""
+msgstr "Search for fiscal entries"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:83
 msgid "fiscal entry"
-msgstr ""
+msgstr "fiscal entry"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:83
 msgid "fiscal entries"
-msgstr ""
+msgstr "fiscal entries"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:92
 msgid "ICMS Total"
-msgstr ""
+msgstr "ICMS Total"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:96
 msgid "ICMS Total:"
-msgstr ""
+msgstr "ICMS Total:"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:100
 msgid "IPI Total"
-msgstr ""
+msgstr "IPI Total"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:104
 msgid "IPI Total:"
-msgstr ""
+msgstr "IPI Total:"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:108
 msgid "ISS Total"
-msgstr ""
+msgstr "ISS Total"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:112
 msgid "ISS Total:"
-msgstr ""
+msgstr "ISS Total:"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:173
 #: ../stoqlib/gui/search/tillsearch.py:105
 msgid "Show entries of type"
-msgstr ""
+msgstr "Show entries of type"
 
 #: ../stoqlib/gui/search/loansearch.py:48
 msgid "Loan Items Search"
-msgstr ""
+msgstr "Loan Items Search"
 
 #: ../stoqlib/gui/search/loansearch.py:93
 msgid "Loan Search"
-msgstr ""
+msgstr "Loan Search"
 
 #: ../stoqlib/gui/search/loansearch.py:97
 msgid "loan"
-msgstr ""
+msgstr "loan"
 
 #: ../stoqlib/gui/search/loansearch.py:97
 msgid "loans"
-msgstr ""
+msgstr "loans"
 
 #: ../stoqlib/gui/search/loansearch.py:145
 msgid "Removed by"
-msgstr ""
+msgstr "Removed by"
 
 #: ../stoqlib/gui/search/parametersearch.py:49
 msgid "Stoq System Parameters"
-msgstr ""
+msgstr "Stoq System Parameters"
 
 #: ../stoqlib/gui/search/parametersearch.py:67
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:358
 msgid "Group"
-msgstr ""
+msgstr "Group"
 
 #: ../stoqlib/gui/search/parametersearch.py:69
 msgid "Parameter"
-msgstr ""
+msgstr "Parameter"
 
 #: ../stoqlib/gui/search/parametersearch.py:71
 msgid "Current value"
-msgstr ""
+msgstr "Current value"
 
 #: ../stoqlib/gui/search/paymentsearch.py:55
 msgid "Bill & Check Payments Search"
-msgstr ""
+msgstr "Bill & Check Payments Search"
 
 #: ../stoqlib/gui/search/paymentsearch.py:73
 msgid "Bill or check number:"
-msgstr ""
+msgstr "Bill or check number:"
 
 #: ../stoqlib/gui/search/paymentsearch.py:78
 #: ../stoqlib/reporting/purchase.py:250
 msgid "Method"
-msgstr ""
+msgstr "Method"
 
 #: ../stoqlib/gui/search/paymentsearch.py:116
 msgid "Card Payment Search"
-msgstr ""
+msgstr "Card Payment Search"
 
 #: ../stoqlib/gui/search/paymentsearch.py:154
 msgid "Credit provider"
-msgstr ""
+msgstr "Credit provider"
 
 #: ../stoqlib/gui/search/paymentsearch.py:164
 msgid "% Fee"
-msgstr ""
+msgstr "% Fee"
 
 #: ../stoqlib/gui/search/paymentsearch.py:166
 #: ../stoqlib/reporting/payment.py:91
 msgid "Fee"
-msgstr ""
+msgstr "Fee"
 
 #: ../stoqlib/gui/search/personsearch.py:61
 msgid "Person Search"
-msgstr ""
+msgstr "Person Search"
 
 #: ../stoqlib/gui/search/personsearch.py:82
 msgid "Employee Search"
-msgstr ""
+msgstr "Employee Search"
 
 #: ../stoqlib/gui/search/personsearch.py:86
 msgid "employee"
-msgstr ""
+msgstr "employee"
 
 #: ../stoqlib/gui/search/personsearch.py:86
 msgid "employees"
-msgstr ""
+msgstr "employees"
 
 #: ../stoqlib/gui/search/personsearch.py:106
 msgid "Show employees with status"
-msgstr ""
+msgstr "Show employees with status"
 
 #: ../stoqlib/gui/search/personsearch.py:112
 #: ../stoqlib/gui/search/personsearch.py:319
@@ -8504,23 +8504,23 @@ msgstr "Role"
 
 #: ../stoqlib/gui/search/personsearch.py:114
 msgid "Registry Number"
-msgstr ""
+msgstr "Registry Number"
 
 #: ../stoqlib/gui/search/personsearch.py:124
 msgid "Supplier Search"
-msgstr ""
+msgstr "Supplier Search"
 
 #: ../stoqlib/gui/search/personsearch.py:128
 msgid "Suppliers Matching:"
-msgstr ""
+msgstr "Suppliers Matching:"
 
 #: ../stoqlib/gui/search/personsearch.py:129
 msgid "supplier"
-msgstr ""
+msgstr "supplier"
 
 #: ../stoqlib/gui/search/personsearch.py:129
 msgid "suppliers"
-msgstr ""
+msgstr "suppliers"
 
 #: ../stoqlib/gui/search/personsearch.py:141
 #: ../stoqlib/gui/search/personsearch.py:180
@@ -8530,153 +8530,153 @@ msgstr ""
 #: ../stoqlib/gui/slaves/liaisonslave.py:49
 #: ../stoqlib/gui/wizards/personwizard.py:109
 msgid "Phone Number"
-msgstr ""
+msgstr "Phone Number"
 
 #: ../stoqlib/gui/search/personsearch.py:143
 msgid "Fancy Name"
-msgstr ""
+msgstr "Fancy Name"
 
 #: ../stoqlib/gui/search/personsearch.py:182
 msgid "Short Name"
-msgstr ""
+msgstr "Short Name"
 
 #: ../stoqlib/gui/search/personsearch.py:186
 msgid "Credit Fee"
-msgstr ""
+msgstr "Credit Fee"
 
 #: ../stoqlib/gui/search/personsearch.py:188
 msgid "Debit Fee"
-msgstr ""
+msgstr "Debit Fee"
 
 #: ../stoqlib/gui/search/personsearch.py:191
 msgid "Credit installments store Fee"
-msgstr ""
+msgstr "Credit installments store Fee"
 
 #: ../stoqlib/gui/search/personsearch.py:194
 msgid "Credit installments provider Fee"
-msgstr ""
+msgstr "Credit installments provider Fee"
 
 #: ../stoqlib/gui/search/personsearch.py:196
 msgid "Debit pre-dated fee"
-msgstr ""
+msgstr "Debit pre-dated fee"
 
 #: ../stoqlib/gui/search/personsearch.py:198
 msgid "Fixed fee"
-msgstr ""
+msgstr "Fixed fee"
 
 #: ../stoqlib/gui/search/personsearch.py:215
 msgid "Card Provider Search"
-msgstr ""
+msgstr "Card Provider Search"
 
 #: ../stoqlib/gui/search/personsearch.py:218
 msgid "provider"
-msgstr ""
+msgstr "provider"
 
 #: ../stoqlib/gui/search/personsearch.py:218
 msgid "providers"
-msgstr ""
+msgstr "providers"
 
 #: ../stoqlib/gui/search/personsearch.py:223
 msgid "Client Search"
-msgstr ""
+msgstr "Client Search"
 
 #: ../stoqlib/gui/search/personsearch.py:227
 msgid "client"
-msgstr ""
+msgstr "client"
 
 #: ../stoqlib/gui/search/personsearch.py:227
 msgid "clients"
-msgstr ""
+msgstr "clients"
 
 #: ../stoqlib/gui/search/personsearch.py:237
 msgid "Show clients with status"
-msgstr ""
+msgstr "Show clients with status"
 
 #: ../stoqlib/gui/search/personsearch.py:249
 msgid "CNPJ/CPF"
-msgstr ""
+msgstr "CNPJ/CPF"
 
 #: ../stoqlib/gui/search/personsearch.py:252
 msgid "RG"
-msgstr ""
+msgstr "RG"
 
 #: ../stoqlib/gui/search/personsearch.py:269
 msgid "Transporter Search"
-msgstr ""
+msgstr "Transporter Search"
 
 #: ../stoqlib/gui/search/personsearch.py:273
 msgid "transporter"
-msgstr ""
+msgstr "transporter"
 
 #: ../stoqlib/gui/search/personsearch.py:273
 msgid "transporters"
-msgstr ""
+msgstr "transporters"
 
 #: ../stoqlib/gui/search/personsearch.py:281
 msgid "Show transporters with status"
-msgstr ""
+msgstr "Show transporters with status"
 
 #: ../stoqlib/gui/search/personsearch.py:291
 msgid "Freight (%)"
-msgstr ""
+msgstr "Freight (%)"
 
 #: ../stoqlib/gui/search/personsearch.py:299
 msgid "Employee Role Search"
-msgstr ""
+msgstr "Employee Role Search"
 
 #: ../stoqlib/gui/search/personsearch.py:308
 msgid "role"
-msgstr ""
+msgstr "role"
 
 #: ../stoqlib/gui/search/personsearch.py:308
 msgid "roles"
-msgstr ""
+msgstr "roles"
 
 #: ../stoqlib/gui/search/personsearch.py:316
 msgid "Role Matching"
-msgstr ""
+msgstr "Role Matching"
 
 #: ../stoqlib/gui/search/personsearch.py:323
 msgid "Branch Search"
-msgstr ""
+msgstr "Branch Search"
 
 #: ../stoqlib/gui/search/personsearch.py:326
 #: ../stoqlib/gui/search/productsearch.py:95
 #: ../stoqlib/gui/search/servicesearch.py:67
 msgid "matching"
-msgstr ""
+msgstr "matching"
 
 #: ../stoqlib/gui/search/personsearch.py:327
 msgid "branch"
-msgstr ""
+msgstr "branch"
 
 #: ../stoqlib/gui/search/personsearch.py:327
 msgid "branches"
-msgstr ""
+msgstr "branches"
 
 #: ../stoqlib/gui/search/personsearch.py:338
 msgid "Show branches with status"
-msgstr ""
+msgstr "Show branches with status"
 
 #: ../stoqlib/gui/search/personsearch.py:368
 msgid "User Search"
-msgstr ""
+msgstr "User Search"
 
 #: ../stoqlib/gui/search/personsearch.py:372
 msgid "Users Matching:"
-msgstr ""
+msgstr "Users Matching:"
 
 #: ../stoqlib/gui/search/personsearch.py:373
 msgid "user"
-msgstr ""
+msgstr "user"
 
 #: ../stoqlib/gui/search/personsearch.py:373
 msgid "users"
-msgstr ""
+msgstr "users"
 
 #: ../stoqlib/gui/search/personsearch.py:383
 msgid "Login Name"
-msgstr ""
+msgstr "Login Name"
 
 #: ../stoqlib/gui/search/personsearch.py:385
 #: ../stoqlib/gui/search/profilesearch.py:58
@@ -8685,88 +8685,88 @@ msgstr "Profile"
 
 #: ../stoqlib/gui/search/productionsearch.py:54
 msgid "Production Product"
-msgstr ""
+msgstr "Production Product"
 
 #: ../stoqlib/gui/search/productionsearch.py:74
 #: ../stoqlib/reporting/production.py:132
 msgid "Production Items"
-msgstr ""
+msgstr "Production Items"
 
 #: ../stoqlib/gui/search/productionsearch.py:92
 msgid "_Produced..."
-msgstr ""
+msgstr "_Produced..."
 
 #: ../stoqlib/gui/search/productionsearch.py:99
 msgid "_Lost..."
-msgstr ""
+msgstr "_Lost..."
 
 #: ../stoqlib/gui/search/productionsearch.py:116
 msgid "order status:"
-msgstr ""
+msgstr "order status:"
 
 #: ../stoqlib/gui/search/productionsearch.py:129
 #: ../stoqlib/reporting/production.py:62
 msgid "To Produce"
-msgstr ""
+msgstr "To Produce"
 
 #: ../stoqlib/gui/search/productionsearch.py:167
 msgid "Production History Search"
-msgstr ""
+msgstr "Production History Search"
 
 #: ../stoqlib/gui/search/productsearch.py:63
 msgid "Product Search"
-msgstr ""
+msgstr "Product Search"
 
 #: ../stoqlib/gui/search/productsearch.py:68
 msgid "Add products"
-msgstr ""
+msgstr "Add products"
 
 #: ../stoqlib/gui/search/productsearch.py:69
 #: ../stoqlib/gui/search/productsearch.py:348
 #: ../stoqlib/reporting/product.py:118 ../stoqlib/reporting/product.py:177
 #: ../stoqlib/reporting/product.py:212 ../stoqlib/reporting/product.py:244
 msgid "product"
-msgstr ""
+msgstr "product"
 
 #: ../stoqlib/gui/search/productsearch.py:69
 #: ../stoqlib/gui/search/productsearch.py:348
 #: ../stoqlib/reporting/product.py:118 ../stoqlib/reporting/product.py:177
 #: ../stoqlib/reporting/product.py:212 ../stoqlib/reporting/product.py:244
 msgid "products"
-msgstr ""
+msgstr "products"
 
 #: ../stoqlib/gui/search/productsearch.py:101
 msgid "_Price table"
-msgstr ""
+msgstr "_Price table"
 
 #: ../stoqlib/gui/search/productsearch.py:214
 msgid "Product History Search"
-msgstr ""
+msgstr "Product History Search"
 
 #: ../stoqlib/gui/search/productsearch.py:267
 #: ../stoqlib/reporting/product.py:143
 msgid "Consumed"
-msgstr ""
+msgstr "Consumed"
 
 #: ../stoqlib/gui/search/productsearch.py:270
 msgid "Manualy Decreased"
-msgstr ""
+msgstr "Manualy Decreased"
 
 #: ../stoqlib/gui/search/productsearch.py:279
 msgid "Products Sold Search"
-msgstr ""
+msgstr "Products Sold Search"
 
 #: ../stoqlib/gui/search/productsearch.py:337
 msgid "Avg. Cost"
-msgstr ""
+msgstr "Avg. Cost"
 
 #: ../stoqlib/gui/search/productsearch.py:343
 msgid "Product Stock Search"
-msgstr ""
+msgstr "Product Stock Search"
 
 #: ../stoqlib/gui/search/productsearch.py:358
 msgid "The DIFFERENCE column is equal IN STOCK minus MINIMUM columns"
-msgstr ""
+msgstr "The DIFFERENCE column is equal IN STOCK minus MINIMUM columns"
 
 #: ../stoqlib/gui/search/productsearch.py:392
 #: ../stoqlib/reporting/product.py:231
@@ -8781,77 +8781,77 @@ msgstr "Minimum"
 #: ../stoqlib/gui/search/productsearch.py:401
 #: ../stoqlib/gui/slaves/paymentslave.py:264
 msgid "Difference"
-msgstr ""
+msgstr "Difference"
 
 #: ../stoqlib/gui/search/productsearch.py:415
 msgid "Closed Product Stock Search"
-msgstr ""
+msgstr "Closed Product Stock Search"
 
 #: ../stoqlib/gui/search/profilesearch.py:39
 msgid "User Profile Search"
-msgstr ""
+msgstr "User Profile Search"
 
 #: ../stoqlib/gui/search/profilesearch.py:50
 msgid "Profiles Matching:"
-msgstr ""
+msgstr "Profiles Matching:"
 
 #: ../stoqlib/gui/search/purchasesearch.py:45
 msgid "Purchased Items Search"
-msgstr ""
+msgstr "Purchased Items Search"
 
 #: ../stoqlib/gui/search/purchasesearch.py:86
 #: ../stoqlib/reporting/purchase.py:97
 msgid "Purchased"
-msgstr ""
+msgstr "Purchased"
 
 #: ../stoqlib/gui/search/purchasesearch.py:92
 msgid "Purchased date"
-msgstr ""
+msgstr "Purchased date"
 
 #: ../stoqlib/gui/search/purchasesearch.py:94
 msgid "Expected receival"
-msgstr ""
+msgstr "Expected receival"
 
 #: ../stoqlib/gui/search/receivingsearch.py:47
 msgid "Purchase Receiving Search"
-msgstr ""
+msgstr "Purchase Receiving Search"
 
 #: ../stoqlib/gui/search/receivingsearch.py:51
 msgid "receiving order"
-msgstr ""
+msgstr "receiving order"
 
 #: ../stoqlib/gui/search/receivingsearch.py:51
 msgid "receiving orders"
-msgstr ""
+msgstr "receiving orders"
 
 #: ../stoqlib/gui/search/receivingsearch.py:77
 msgid "Purchase order #"
-msgstr ""
+msgstr "Purchase order #"
 
 #: ../stoqlib/gui/search/receivingsearch.py:79
 msgid "Receival date"
-msgstr ""
+msgstr "Receival date"
 
 #: ../stoqlib/gui/search/receivingsearch.py:85
 msgid "Purchaser"
-msgstr ""
+msgstr "Purchaser"
 
 #: ../stoqlib/gui/search/receivingsearch.py:89
 msgid "Invoice total"
-msgstr ""
+msgstr "Invoice total"
 
 #: ../stoqlib/gui/search/salesearch.py:55
 msgid "Search for Sales"
-msgstr ""
+msgstr "Search for Sales"
 
 #: ../stoqlib/gui/search/salesearch.py:121
 msgid "Delivery Search"
-msgstr ""
+msgstr "Delivery Search"
 
 #: ../stoqlib/gui/search/salesearch.py:128
 #: ../stoqlib/gui/search/salesearch.py:165
 msgid "Items matching:"
-msgstr ""
+msgstr "Items matching:"
 
 #: ../stoqlib/gui/search/salesearch.py:133
 #: ../stoqlib/reporting/loanreceipt.py:103
@@ -8859,33 +8859,33 @@ msgstr ""
 #: ../stoqlib/reporting/sale.py:100
 #: ../stoqlib/reporting/stockdecreasereceipt.py:93
 msgid "Item"
-msgstr ""
+msgstr "Item"
 
 #: ../stoqlib/gui/search/salesearch.py:142
 msgid "Estimated"
-msgstr ""
+msgstr "Estimated"
 
 #: ../stoqlib/gui/search/salesearch.py:144
 #: ../stoqlib/reporting/purchase.py:140
 msgid "Qty"
-msgstr ""
+msgstr "Qty"
 
 #: ../stoqlib/gui/search/salesearch.py:150
 msgid "Sold Items by Branch"
-msgstr ""
+msgstr "Sold Items by Branch"
 
 #. Branch
 #: ../stoqlib/gui/search/salesearch.py:174
 msgid "In Branch:"
-msgstr ""
+msgstr "In Branch:"
 
 #: ../stoqlib/gui/search/sellablesearch.py:49
 msgid "Search for sale items"
-msgstr ""
+msgstr "Search for sale items"
 
 #: ../stoqlib/gui/search/sellablesearch.py:54
 msgid "_Add sale items"
-msgstr ""
+msgstr "_Add sale items"
 
 #: ../stoqlib/gui/search/sellablesearch.py:55
 msgid "sale item"
