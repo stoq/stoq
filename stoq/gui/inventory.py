@@ -67,6 +67,7 @@ class InventoryApp(SearchableAppWindow):
     #
 
     def activate(self):
+        self.search.refresh()
         self.app.launcher.add_new_items([self.NewInventory])
 
     def deactivate(self):
@@ -109,12 +110,14 @@ class InventoryApp(SearchableAppWindow):
         actions = [
             ('menubar', None, ''),
             # Inventory
-            ("InventoryMenu", None, _("Inventory")),
-            ('NewInventory', None, _('Open I_nventry'), '<Control>i'),
+            ('NewInventory', None, _('Open I_nventry'), '<Control>i',
+             _('Create a new inventory for product counting.')),
             ('CountingAction', gtk.STOCK_INDEX, _('_Count inventory...'),
-             '<Control>c'),
+             '<Control>c',
+             _('Enter actual stock for products in this inventory')),
             ('AdjustAction', gtk.STOCK_CONVERT, _('_Adjust inventory...'),
-             '<Control>a'),
+             '<Control>a',
+             _('Adjust stock accordingly to counting')),
             ('Cancel', gtk.STOCK_CANCEL, _('Cancel inventory'), '',
              _('Cancel the currently open inventory')),
             ('Print', gtk.STOCK_PRINT, _('Print inventory'), '',
