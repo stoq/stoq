@@ -199,7 +199,7 @@ class InventoryApp(SearchableAppWindow):
         self.Print.set_sensitive(has_open)
         self.Cancel.set_sensitive(has_open and not has_adjusted)
         self.NewInventory.set_sensitive(self._can_open())
-        self.app.launcher.NewToolItem.set_sensitive(self._can_open())
+        self.app.launcher.set_new_menu_sensitive(self._can_open())
         self.CountingAction.set_sensitive(has_open)
         self.AdjustAction.set_sensitive(has_open and all_counted)
 

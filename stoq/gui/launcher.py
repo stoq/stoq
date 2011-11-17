@@ -56,14 +56,6 @@ class Launcher(AppWindow):
     launchers = []
 
     def __init__(self, options, runner):
-        # FIXME: Use a Progress bar or something instead
-        import stoq.gui.purchase
-        import stoq.gui.payable
-        import stoq.gui.receivable
-        import stoq.gui.financial
-        import stoq.gui.admin
-        # pyflakes
-        stoq
         self.runner = runner
         self.options = options
         self.current_app = None
@@ -190,6 +182,11 @@ class Launcher(AppWindow):
         self._new_items.append(sep)
         menu.insert(sep, len(list(menu))-2)
 
+    def set_new_menu_sensitive(self, sensitive):
+        new_item = self.NewToolItem.get_proxies()[0]
+        button = new_item.get_children()[0].get_children()[0]
+        button.set_sensitive(sensitive)
+
     def create_ui(self):
         menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(menubar, False, False)
@@ -226,15 +223,17 @@ class Launcher(AppWindow):
         app_window.reparent(self.application_box)
         self.application_box.set_child_packing(app_window, True, True, 0,
                                                gtk.PACK_START)
-        app_window.show_all()
-        self.iconview_vbox.hide()
-        self.application_box.show()
-        self.current_app = app
-        self.current_widget = app_window
         self.Close.set_sensitive(True)
         self.ChangePassword.set_visible(False)
         self.SignOut.set_visible(False)
         self.Quit.set_visible(False)
+
+        self.iconview_vbox.hide()
+        self.application_box.show()
+        app_window.show_all()
+
+        self.current_app = app
+        self.current_widget = app_window
 
     def hide_app(self):
         self.application_box.hide()
@@ -253,9 +252,10 @@ class Launcher(AppWindow):
         self.ChangePassword.set_visible(True)
         self.SignOut.set_visible(True)
         self.Quit.set_visible(True)
+        self.set_new_menu_sensitive(True)
+
         self.iconview.grab_focus()
         self.iconview_vbox.show()
-
     #
     # Private
     #
