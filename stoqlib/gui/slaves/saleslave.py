@@ -173,17 +173,9 @@ class SaleListToolbar(GladeSlaveDelegate):
     def set_report_filters(self, filters):
         self._report_filters = filters
 
-    #
-    # Private
-    #
-
-    def _update_print_button(self, enabled):
-        self.print_button.set_sensitive(enabled)
-
-    def _show_details(self, sale_view):
-        run_dialog(SaleDetailsDialog, self.parent, self.conn, sale_view)
-
-    def _edit_sale(self, sale_view):
+    def edit(self, sale_view=None):
+        if sale_view is None:
+            sale_view = self.sales.get_selected()
         trans = new_transaction()
         sale = trans.get(sale_view.sale)
         model = run_dialog(SaleQuoteWizard, self.parent, trans, sale)
@@ -193,23 +185,17 @@ class SaleListToolbar(GladeSlaveDelegate):
         if retval:
             self.emit('sale-edited', retval)
 
-    #
-    # Kiwi callbacks
-    #
+    def show_details(self, sale_view=None):
+        if sale_view is None:
+            sale_view = self.sales.get_selected()
+        run_dialog(SaleDetailsDialog, self.parent,
+                   self.conn, sale_view)
 
-    def on_sales__has_rows(self, klist, enabled):
-        self._update_print_button(enabled)
+    def print_sale(self):
+        print_report(SalesReport, self.sales, list(self.sales),
+                     filters=self._report_filters)
 
-    def on_sales__selection_changed(self, sales, sale):
-        self.update_buttons()
-
-    def on_sales__row_activated(self, sales, sale):
-        if sale.status == Sale.STATUS_QUOTE:
-            self._edit_sale(sale)
-        else:
-            self._show_details(sale)
-
-    def on_return_sale_button__clicked(self, button):
+    def return_sale(self):
         try:
             till = Till.get_current(self.conn)
         except TillError, e:
@@ -225,16 +211,41 @@ class SaleListToolbar(GladeSlaveDelegate):
         if retval:
             self.emit('sale-returned', retval)
 
+    #
+    # Private
+    #
+
+    def _update_print_button(self, enabled):
+        self.print_button.set_sensitive(enabled)
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_sales__has_rows(self, klist, enabled):
+        self._update_print_button(enabled)
+
+    def on_sales__selection_changed(self, sales, sale):
+        self.update_buttons()
+
+    def on_sales__row_activated(self, sales, sale):
+        if sale.status == Sale.STATUS_QUOTE:
+            self.edit(sale)
+        else:
+            self.show_details(sale)
+
+    def on_return_sale_button__clicked(self, button):
+        self.return_sale()
+
     def on_edit_button__clicked(self, button):
         sale = self.sales.get_selected()
         self._edit_sale(sale)
 
     def on_details_button__clicked(self, button):
-        self._show_details(self.sales.get_selected())
+        self.show_details()
 
     def on_print_button__clicked(self, button):
-        print_report(SalesReport, self.sales, list(self.sales),
-                     filters=self._report_filters)
+        self.print_sale()
 
 
 class SaleReturnSlave(BaseEditorSlave):

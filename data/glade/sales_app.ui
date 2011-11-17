@@ -35,7 +35,7 @@
             </child>
             <child>
               <object class="GtkEventBox" id="list_toolbar_holder">
-                <property name="border_width">6</property>
+                <property name="border_width">0</property>
                 <property name="visible">True</property>
               </object>
               <packing>
