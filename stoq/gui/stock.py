@@ -282,7 +282,6 @@ class StockApp(SearchableAppWindow):
                                       format='<b>%s</b>',
                                       parent=parent)
 
-    # FIXME: This should be called when the results is updated
     def _update_widgets(self):
         branch = get_current_branch(self.conn)
 
@@ -349,6 +348,9 @@ class StockApp(SearchableAppWindow):
 
     def on_image_viewer_closed(self, window, event):
         self.image_viewer = None
+
+    def on_results__has_rows(self, results, product):
+        self._update_widgets()
 
     def on_results__selection_changed(self, results, product):
         self._update_widgets()
