@@ -59,7 +59,6 @@ from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.slaves.installmentslave import PurchaseInstallmentConfirmationSlave
 
 _ = gettext.gettext
-LAUNCHER_EMBEDDED = True
 
 class PayableApp(SearchableAppWindow):
 
@@ -70,6 +69,7 @@ class PayableApp(SearchableAppWindow):
     gladefile = 'payable'
     search_table = OutPaymentView
     search_label = _('matching:')
+    launcher_embedded = True
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)

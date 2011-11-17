@@ -57,7 +57,6 @@ from stoqlib.lib.parameters import sysparam
 from stoq.gui.application import AppWindow
 
 _ = gettext.gettext
-LAUNCHER_EMBEDDED = True
 
 class NotebookCloseButton(gtk.Button):
     pass
@@ -327,6 +326,7 @@ class FinancialApp(AppWindow):
     app_name = _('Financial')
     app_icon_name = 'stoq-financial-app'
     gladefile = 'financial'
+    launcher_embedded = True
 
     def __init__(self, app):
         self._pages = {}

@@ -59,7 +59,6 @@ from stoqlib.lib.message import info
 from stoq.gui.application import AppWindow
 
 _ = gettext.gettext
-LAUNCHER_EMBEDDED = True
 
 logger = Logger('stoq.gui.admin')
 
@@ -251,6 +250,7 @@ class AdminApp(AppWindow):
     app_name = _('Administrative')
     app_icon_name = 'stoq-admin-app'
     gladefile = "admin"
+    launcher_embedded = True
 
     def __init__(self, app):
         self.tasks = Tasks(self)
