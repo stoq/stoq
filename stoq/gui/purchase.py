@@ -95,6 +95,7 @@ class PurchaseApp(SearchableAppWindow):
             self.NewProduct,
             self.NewConsignment])
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.refresh()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.purchase_ui)
@@ -247,7 +248,6 @@ class PurchaseApp(SearchableAppWindow):
         self.set_text_field_columns(['supplier_name'])
         self.status_filter = ComboSearchFilter(_('Show orders'),
                                                self._get_status_values())
-        self.status_filter.select(PurchaseOrder.ORDER_CONFIRMED)
         self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
