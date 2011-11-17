@@ -119,6 +119,15 @@ class TestSale(DomainTest):
         sale.order()
         self.failIf(sale.can_order())
 
+        # We can also order sales with QUOTE status
+        sale = self.create_sale()
+        sale.status = Sale.STATUS_QUOTE
+        sellable = self.create_sellable()
+        sale.add_sellable(sellable, quantity=5)
+        self.failUnless(sale.can_order())
+        sale.order()
+        self.failIf(sale.can_order())
+
     def testConfirmMoney(self):
         sale = self.create_sale()
         self.add_product(sale)

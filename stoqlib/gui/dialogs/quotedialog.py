@@ -139,8 +139,8 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
     def __init__(self, sale, missing_items):
         self.sale = sale
         self.missing = missing_items
-        msg = _("<b>The following itens don't have enought stock to confirm the "
-               "sale</b>")
+        msg = '<b>%s</b>' % _("The following items don't have enough stock to "
+                              "confirm the sale")
         SimpleListDialog.__init__(self, self._get_columns(), missing_items,
                                   hide_cancel_btn=False,
                                   title=_('Missing items'))
@@ -148,10 +148,10 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
         self.header_label.show()
 
         if sale.status == Sale.STATUS_QUOTE:
-            label = gtk.Label(_('Do you want to mark the sale as ordered instead?'))
+            label = gtk.Label(_('Do you want to order the sale instead?'))
             self.notice.add(label)
             label.show()
-            self.set_ok_label('Order sale')
+            self.set_ok_label(_('Order sale'))
 
     def _get_columns(self):
         return [Column('description', title=_(u'Product'),
@@ -164,7 +164,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
     def _create_production_order(self, trans):
         desc = _('Production for Sale order %s') % self.sale.get_order_number_str()
         if self.sale.client:
-            desc += _(' (Client: %s') % self.sale.client.get_name()
+            desc += ' (%s)' % self.sale.client.get_name()
         user = get_current_user(trans)
         employee = IEmployee(user.person, None)
         order = ProductionOrder(branch=self.sale.branch,
