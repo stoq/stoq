@@ -117,7 +117,7 @@ class InventoryApp(SearchableAppWindow):
              '<Control>a'),
             ('Cancel', gtk.STOCK_CANCEL, _('Cancel inventory'), '',
              _('Cancel the currently open inventory')),
-            ('Print', gtk.STOCK_CANCEL, _('Print inventory'), '',
+            ('Print', gtk.STOCK_PRINT, _('Print inventory'), '',
              _('Print product list for inventory counting.')),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
         ]
@@ -293,5 +293,7 @@ class InventoryApp(SearchableAppWindow):
     def on_Print__activate(self, button):
         selected = self.results.get_selected()
         sellables = list(self._get_sellables_by_inventory(selected))
-        if sellables:
-            self.print_report(ProductCountingReport, sellables)
+        if not sellables:
+            warning(_("No products found in the inventory."))
+            return
+        self.print_report(ProductCountingReport, sellables)
