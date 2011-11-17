@@ -144,8 +144,8 @@ class SalesApp(SearchableAppWindow):
         <placeholder name="AppToolbarPH">
           <toolitem action="SearchToolItem">
             <menu action="SearchToolMenu">
-              <menuitem action="SearchClient"/>
               <menuitem action="SearchProduct"/>
+              <menuitem action="SearchClient"/>
               <menuitem action="SearchService"/>
               <menuitem action="SearchDelivery"/>
             </menu>
@@ -435,6 +435,9 @@ class SalesApp(SearchableAppWindow):
         self.run_dialog(LoanItemSearch, self.conn)
 
     # Search
+
+    def on_SearchToolItem__activate(self, action):
+        self.on_SearchProduct__activate(action)
 
     def on_SearchClient__activate(self, button):
         self.run_dialog(ClientSearch, self.conn, hide_footer=True)

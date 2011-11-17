@@ -115,7 +115,14 @@ class ProductionApp(SearchableAppWindow):
 
       <toolbar action="toolbar">
         <placeholder name="AppToolbarPH">
-          <toolitem action="SearchProductionItem"/>
+          <toolitem action="SearchToolItem">
+            <menu action="SearchToolMenu">
+              <menuitem action="SearchProduct"/>
+              <menuitem action="SearchService"/>
+              <menuitem action="SearchProductionItem"/>
+            </menu>
+          </toolitem>
+
           <toolitem action="Print"/>
           <separator/>
           <toolitem action="StartProduction"/>
@@ -153,15 +160,22 @@ class ProductionApp(SearchableAppWindow):
              '<Control>r'),
             ("SearchProductionHistory", None, _("Production history..."), '<Control>h'),
 
-        ]
+            ("SearchToolMenu", None, _("Search")),
 
+        ]
         self.production_ui = self.add_ui_actions(ui_string, actions)
+        self.help_ui = self.add_help_ui(_("Production help"), 'producao-inicio')
+
+        self.add_tool_menu_actions([
+            ("SearchToolItem", _("Search"), None, 'stoq-products')])
+        self.SearchToolItem.props.is_important = True
+
+
         self.NewProduction.set_short_label(_("New Production"))
         self.ProductionPurchaseQuote.set_short_label(_("Purchase"))
         self.SearchProductionItem.set_short_label(_("Search items"))
         self.StartProduction.set_short_label(_('Start'))
         self.StartProduction.props.is_important = True
-        self.help_ui = self.add_help_ui(_("Production help"), 'producao-inicio')
 
     def _update_widgets(self):
         selected = self.results.get_selected()
@@ -264,6 +278,9 @@ class ProductionApp(SearchableAppWindow):
         self.run_dialog(ProductionQuoteDialog, self.conn)
 
     # Search
+
+    def on_SearchToolItem__activate(self, action):
+        self.run_dialog(ProductionProductSearch, self.conn)
 
     def on_SearchProduct__activate(self, action):
         self.run_dialog(ProductionProductSearch, self.conn)
