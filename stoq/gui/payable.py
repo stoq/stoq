@@ -156,7 +156,7 @@ class PayableApp(SearchableAppWindow):
               _('Pay the order assoicated with the payment')),
             ('Edit', gtk.STOCK_EDIT, _('Edit'), '',
               _('Edit the payment')),
-            ('Details', gtk.STOCK_FIND, _('Details'), '',
+            ('Details', gtk.STOCK_INFO, _('Details'), '',
               _('Show details for the payment')),
         ]
         self.payable_ui = self.add_ui_actions(ui_string, actions)
