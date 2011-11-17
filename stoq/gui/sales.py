@@ -66,6 +66,7 @@ class SalesApp(SearchableAppWindow):
     gladefile = 'sales_app'
     search_table = SaleView
     search_label = _('matching:')
+    launcher_embedded = True
 
     cols_info = {Sale.STATUS_INITIAL: 'open_date',
                  Sale.STATUS_CONFIRMED: 'confirm_date',
@@ -87,56 +88,86 @@ class SalesApp(SearchableAppWindow):
     # Application
     #
 
+    def activate(self):
+        self.app.launcher.add_new_items([self.SaleQuote])
+        self.search.refresh()
+        self.check_open_inventory()
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.sales_ui)
+        self.uimanager.remove_ui(self.help_ui)
+
     def create_actions(self):
         ui_string = """<ui>
       <menubar action="menubar">
-        <menu action="SalesMenu">
-          <menuitem action="SalesQuote"/>
-          <menuitem action="SalesCancel"/>
-          <separator/>
-          <!-- Must update nfe plugin if this changes -->
-          <menuitem action="SalesPrintInvoice"/>
-          <separator/>
-          <menuitem action="ExportCSV"/>
-          <separator/>
-          <menuitem action="Quit"/>
+        <menu action="StoqMenu">
+          <menu action="NewMenu">
+            <placeholder name="NewMenuItemPH">
+              <menuitem action="SaleQuote"/>
+            </placeholder>
+          </menu>
+          <placeholder name="StoqMenuPH">
+            <separator/>
+            <!-- Must update nfe plugin if this changes -->
+            <menuitem action="SalesPrintInvoice"/>
+            <separator/>
+            <menuitem action="ExportCSV"/>
+          </placeholder>
         </menu>
-        <menu action="LoanMenu">
-          <menuitem action="LoanNew"/>
-          <menuitem action="LoanClose"/>
-          <separator/>
-          <menuitem action="LoanSearch"/>
-          <menuitem action="LoanSearchItems"/>
+        <menu action="EditMenu">
+          <placeholder name="EditMenuPH">
+            <menuitem action="SalesCancel"/>
+          </placeholder>
         </menu>
-        <menu action="SearchMenu">
-          <menuitem action="SearchSoldItemsByBranch"/>
-          <menuitem action="SearchProduct"/>
-          <menuitem action="SearchService"/>
-          <menuitem action="SearchDelivery"/>
-          <menuitem action="SearchClient"/>
-          <menuitem action="SearchCommission"/>
-        </menu>
-        <placeholder name="ExtraMenu"/>
+        <placeholder name="AppMenubarPH">
+          <menu action="LoanMenu">
+            <menuitem action="LoanNew"/>
+            <menuitem action="LoanClose"/>
+            <separator/>
+            <menuitem action="LoanSearch"/>
+            <menuitem action="LoanSearchItems"/>
+          </menu>
+          <menu action="SearchMenu">
+            <menuitem action="SearchSoldItemsByBranch"/>
+            <menuitem action="SearchProduct"/>
+            <menuitem action="SearchService"/>
+            <menuitem action="SearchDelivery"/>
+            <menuitem action="SearchClient"/>
+            <menuitem action="SearchCommission"/>
+          </menu>
+        </placeholder>
       </menubar>
-      <toolbar action="main_toolbar">
-        <toolitem action="SalesQuote"/>
-        <toolitem action="SearchClient"/>
-        <toolitem action="SearchProduct"/>
-        <toolitem action="SearchService"/>
-        <toolitem action="SearchDelivery"/>
+      <toolbar action="toolbar">
+        <placeholder name="AppToolbarPH">
+          <toolitem action="SearchToolItem">
+            <menu action="SearchToolMenu">
+              <menuitem action="SearchClient"/>
+              <menuitem action="SearchProduct"/>
+              <menuitem action="SearchService"/>
+              <menuitem action="SearchDelivery"/>
+            </menu>
+          </toolitem>
+        </placeholder>
+        <separator/>
+        <toolitem action="Print"/>
+        <separator/>
+        <toolitem action="Edit"/>
+        <toolitem action="Details"/>
+        <toolitem action="Return"/>
       </toolbar>
     </ui>"""
-
         actions = [
             ('menubar', None, ''),
 
-            # Production
+            # Sales
             ("SalesMenu", None, _("_Sales")),
-            ("SalesQuote", gtk.STOCK_NEW, _("New sale quote")),
+            ("SaleQuote", None, _("Sale quote"), '',
+             _('Create a new quote for a sale')),
             ("SalesCancel", None, _("Cancel quote")),
-            ("SalesPrintInvoice", gtk.STOCK_PRINT, _("_Print invoice...")),
-            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-            ("Quit", gtk.STOCK_QUIT),
+            ("SalesPrintInvoice", gtk.STOCK_PRINT,
+             _("_Print invoice...")),
+            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'),
+             '<Control>F10'),
 
             # Loan
             ("LoanMenu", None, _("_Loan")),
@@ -149,30 +180,43 @@ class SalesApp(SearchableAppWindow):
             ("SearchMenu", None, _("_Search")),
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
              "<Control><Alt>a"),
-            ("SearchProduct", 'stoq-products', _("Products..."), "<Control><Alt>p"),
-            ("SearchService", 'stoq-services', _("Services..."), "<Control><Alt>s"),
-            ("SearchDelivery", 'stoq-delivery', _("Deliveries..."), "<Control><Alt>e"),
-            ("SearchClient", 'stoq-clients', _("Clients..."), "<Control><Alt>c"),
-            ("SearchCommission", None, _("Commissions..."), "<Control><Alt>o"),
+            ("SearchProduct", 'stoq-products', _("Products"),
+             "<Control><Alt>p"),
+            ("SearchService", 'stoq-services', _("Services"),
+             "<Control><Alt>s"),
+            ("SearchDelivery", 'stoq-delivery', _("Deliveries"),
+             "<Control><Alt>e"),
+            ("SearchClient", 'stoq-clients', _("Clients"),
+             "<Control><Alt>c"),
+            ("SearchCommission", None, _("Commissions"),
+             "<Control><Alt>o"),
 
+            ("SearchToolMenu", None, _("Search")),
+
+            ("Print", gtk.STOCK_PRINT, _("Print"), '',
+             _("Print the sale and it's items")),
+            ("Return", gtk.STOCK_CANCEL, _("Return sale"), '',
+             _("Return the sale and cancel the payments.")),
+            ("Edit", gtk.STOCK_EDIT, _("Edit"), '',
+             _("Edit the sale, allows you to change the details of it")),
+            ("Details", gtk.STOCK_INFO, _("Details"), '',
+             _("View the details of a sale"))
         ]
 
-        self.add_ui_actions(ui_string, actions)
-        self.SalesQuote.set_short_label(_("New Sale Quote"))
+        self.sales_ui = self.add_ui_actions(ui_string, actions)
+
+        self.add_tool_menu_actions([
+            ("SearchToolItem", _("Search"), None, 'stoq-products')])
+
+        self.SearchToolItem.props.is_important = True
+
+        self.SaleQuote.set_short_label(_("New Sale Quote"))
         self.SearchClient.set_short_label(_("Clients"))
         self.SearchProduct.set_short_label(_("Products"))
         self.SearchService.set_short_label(_("Services"))
         self.SearchDelivery.set_short_label(_("Deliveries"))
-        self.add_help_ui(_("Sales help"), 'vendas-inicio')
 
-    def create_ui(self):
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_vbox.pack_start(self.menubar, False, False)
-        self.main_vbox.reorder_child(self.menubar, 0)
-
-        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
-        self.main_vbox.pack_start(self.main_toolbar, False, False)
-        self.main_vbox.reorder_child(self.main_toolbar, 1)
+        self.help_ui = self.add_help_ui(_("Sales help"), 'vendas-inicio')
 
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'salesperson_name'])
@@ -224,18 +268,16 @@ class SalesApp(SearchableAppWindow):
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
 
-    def activate(self):
-        self.search.refresh()
-        self.check_open_inventory()
-
     #
     # Private
     #
 
     def _create_summary_label(self):
+        parent = self.app.launcher.statusbar.get_message_area()
         self.search.set_summary_label(column='total',
                                       label='<b>Total:</b>',
-                                      format='<b>%s</b>')
+                                      format='<b>%s</b>',
+                                      parent=parent)
 
     def _setup_widgets(self):
         self._setup_slaves()
@@ -246,15 +288,8 @@ class SalesApp(SearchableAppWindow):
                                       lambda: not self.has_open_inventory())
 
     def _setup_slaves(self):
+        # This is only here to reuse the logic in it.
         self.sale_toolbar = SaleListToolbar(self.conn, self.results)
-        self.sale_toolbar.connect('sale-returned',
-                                  self._on_sale_toolbar__sale_returned)
-        self.sale_toolbar.connect('sale-edited',
-                                  self._on_sale_toolbar__sale_edited)
-        self.attach_slave("list_toolbar_holder", self.sale_toolbar)
-        self.results.connect("selection-changed",
-                            self._update_toolbar)
-        self._update_toolbar()
 
     def _can_cancel(self, view):
         # Here we want to cancel only quoting sales. This is why we don't use
@@ -268,9 +303,9 @@ class SalesApp(SearchableAppWindow):
         can_print_invoice = bool(sale_view and
                                  sale_view.client_name is not None and
                                  sale_view.status != Sale.STATUS_RETURNED)
-        self.set_sensitive([self.SalesPrintInvoice], can_print_invoice)
-        self.set_sensitive([self.SalesCancel], self._can_cancel(sale_view))
-        self.set_sensitive([self.sale_toolbar.return_sale_button],
+        self.set_sensitive([self.SalesPrintInvoice, self.Print], can_print_invoice)
+        self.set_sensitive([self.SalesCancel, self.Cancel], self._can_cancel(sale_view))
+        self.set_sensitive([self.sale_toolbar.return_sale_button, self.Return],
                            bool(sale_view and sale_view.sale.can_return()))
 
         self.sale_toolbar.set_report_filters(self.search.get_search_filters())
@@ -344,7 +379,7 @@ class SalesApp(SearchableAppWindow):
 
     # Sales
 
-    def on_SalesQuote__activate(self, action):
+    def on_SaleQuote__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(SaleQuoteWizard, trans)
         finish_transaction(trans, model)
@@ -405,3 +440,17 @@ class SalesApp(SearchableAppWindow):
 
     def on_SearchDelivery__activate(self, action):
         self.run_dialog(DeliverySearch, self.conn)
+
+    # Toolbar
+
+    def on_Print__activate(self, action):
+        self.sale_toolbar.print_sale()
+
+    def on_Edit__activate(self, action):
+        self.sale_toolbar.edit()
+
+    def on_Details__activate(self, action):
+        self.sale_toolbar.show_details()
+
+    def on_Return__activate(self, action):
+        self.sale_toolbar.return_sale()
