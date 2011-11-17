@@ -82,9 +82,6 @@ class TillApp(SearchableAppWindow):
         self._setup_widgets()
         self.refresh()
 
-        # FIXME: Do this in application.py
-        self.activate()
-
     #
     # Application
     #
