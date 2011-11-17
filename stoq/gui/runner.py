@@ -79,7 +79,7 @@ class ApplicationRunner(object):
         embedded = getattr(window_class, 'launcher_embedded', False)
         from stoq.gui.application import App
         app = App(window_class, self._login, self._options, self, embedded,
-                  launcher)
+                  launcher, appdesc.name)
 
         toplevel = app.main_window.get_toplevel()
         icon = toplevel.render_icon(appdesc.icon, gtk.ICON_SIZE_MENU)
