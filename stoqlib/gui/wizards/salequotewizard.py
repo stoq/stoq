@@ -31,6 +31,7 @@ import datetime
 
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
+from kiwi.python import Settable
 
 from stoqlib.database.orm import AND, OR
 from stoqlib.database.runtime import (get_current_branch, get_current_user,
@@ -225,33 +226,39 @@ class SaleQuoteItemStep(SellableItemStep):
     def _update_total(self):
         SellableItemStep._update_total(self)
         quantities = {}
-        missing = set()
+        missing = {}
+        lead_time = 0
         for i in self.slave.klist:
-            quantities.setdefault(i.sellable, 0)
             if i.sellable.service:
                 continue
+
+            quantities.setdefault(i.sellable, 0)
             quantities[i.sellable] += i.quantity
             if quantities[i.sellable] > i._stock_quantity:
-                missing.add(i.sellable)
+                lead_time = max(lead_time, i._lead_time)
+                missing[i.sellable] = Settable(
+                    description=i.sellable.get_description(),
+                    stock=i._stock_quantity,
+                    ordered=quantities[i.sellable],
+                    lead_time=i._lead_time,
+                )
+        self.missing = missing
 
-        total_missing = len(missing)
-        msg = ''
-        if total_missing == 1:
-            msg = _("1 product does not have enought "
-                    "quantity to confirm the sale")
-        elif total_missing > 1:
-            msg = _("%s products don't have enought "
-                    "quantity to confirm the sale") % total_missing
-        self.slave.set_message_markup('<b>%s</b>' % msg)
+        if missing:
+            msg = _('Not enough stock. Estimated time to obtain missing items: %d days.') % lead_time
+            self.slave.set_message('<b>%s</b>' % msg, self._show_missing_details)
+        else:
+            self.slave.clear_message()
 
     def get_order_item(self, sellable, price, quantity):
         price = self.cost.read()
         retval = self._validate_sellable_price(price)
         if retval is None:
             item = self.model.add_sellable(sellable, quantity, price)
-            # Save temporarily the stock quantity so we can show a warning if
-            # there is not enough quantity for the sale.
+            # Save temporarily the stock quantity and lead_time so we can show a
+            # warning if there is not enough quantity for the sale.
             item._stock_quantity = self.proxy.model.stock_quantity
+            item._lead_time = self.proxy.model.lead_time
             return item
 
     def get_saved_items(self):
@@ -320,6 +327,25 @@ class SaleQuoteItemStep(SellableItemStep):
     #
     # Private API
     #
+
+    def _show_missing_details(self, button):
+        from stoqlib.gui.base.lists import SimpleListDialog
+        columns = [Column('description', title=_(u'Product'),
+                          data_type=str, expand=True),
+                   Column('ordered', title=_(u'Ordered'),
+                          data_type=int),
+                   Column('stock', title=_(u'Stock'),
+                          data_type=int),
+                   Column('lead_time', title=_(u'Lead Time'),
+                          data_type=int),
+                    ]
+
+
+        class MyList(SimpleListDialog):
+            size = (500, 200)
+
+        run_dialog(MyList, self, columns, self.missing.values(), title="Missing products")
+
 
     def _validate_sellable_price(self, price):
         s = self.proxy.model.sellable

@@ -189,8 +189,31 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="message_label">
-                <property name="visible">True</property>
+              <object class="GtkHBox" id="message_hbox">
+                <child>
+                  <object class="GtkLabel" id="message_label">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="message_details_button">
+                    <property name="label" translatable="yes">Details</property>
+                    <property name="visible">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="image">details_image</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -207,5 +230,9 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkImage" id="details_image">
+    <property name="visible">True</property>
+    <property name="stock">gtk-info</property>
   </object>
 </interface>

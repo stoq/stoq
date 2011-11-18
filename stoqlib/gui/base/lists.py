@@ -273,6 +273,7 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
         self.set_editor(editor_class)
         self._editor_kwargs = dict()
         self._can_edit = True
+        self._callback_id = None
         if self.visual_mode:
             self.hide_add_button()
             self.hide_edit_button()
@@ -404,10 +405,20 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
     def register_editor_kwargs(self, **kwargs):
         self._editor_kwargs = kwargs
 
-    def set_message_markup(self, message):
+    def set_message(self, message, details_callback=None):
         """Display a simple message on a label, next to the add, edit, delete buttons
         """
+        self.message_hbox.set_visible(True)
+        self.message_details_button.set_visible(bool(details_callback))
+        if details_callback:
+            if self._callback_id:
+                self.message_details_button.disconnect(self._callback_id)
+            self._callback_id = self.message_details_button.connect(
+                                                'clicked', details_callback)
         self.message_label.set_markup(message)
+
+    def clear_message(self):
+        self.message_hbox.set_visible(False)
 
     def get_selection(self):
         # XXX: add get_selected_rows and raise exceptions if not in the
