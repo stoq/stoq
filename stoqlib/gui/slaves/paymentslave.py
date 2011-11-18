@@ -60,6 +60,7 @@ from stoqlib.lib.defaults import (interval_types, INTERVALTYPE_MONTH,
 from stoqlib.lib.message import info, warning
 from stoqlib.lib.payment import (generate_payments_values,
                                           generate_payments_due_dates)
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -144,6 +145,9 @@ class BasePaymentDataEditor(BaseEditor):
     #
 
     def on_due_date__validate(self, widget, value):
+        if sysparam(self.conn).ALLOW_OUTDATED_OPERATIONS:
+            return
+
         if value < datetime.date.today():
             return ValidationError(_(u"Expected installment due date "
                                       "must be set to a future date"))
@@ -368,6 +372,9 @@ class PaymentListSlave(GladeSlaveDelegate):
         return (total_payments - self.total_value)
 
     def are_due_dates_valid(self):
+        if sysparam(self.method.get_connection()).ALLOW_OUTDATED_OPERATIONS:
+            return True
+
         previous_date = datetime.date.today() + datetime.timedelta(days=-1)
         for payment in self.payment_list:
             if payment.due_date <= previous_date:
@@ -597,6 +604,9 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                      max_installments)
 
     def on_first_duedate__validate(self, widget, value):
+        if sysparam(self.conn).ALLOW_OUTDATED_OPERATIONS:
+            return
+
         if value < datetime.date.today():
             self.payment_list.clear_payments()
             return ValidationError(_("Expected first installment date must be "

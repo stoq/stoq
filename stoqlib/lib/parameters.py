@@ -206,10 +206,10 @@ _details = [
         'sellable.SellableCategory'),
 
     ParameterDetails(
-        'ALLOW_OUTDATED_PURCHASES',
-        _('Purchase'),
-        _('Allow outdated purchases'),
-        _('Allows the inclusion of purchases done previously than the '
+        'ALLOW_OUTDATED_OPERATIONS',
+        _('General'),
+        _('Allow outdated operations'),
+        _('Allows the inclusion of purchases and payments done previously than the '
           'current date.'),
         bool, initial=False),
 
