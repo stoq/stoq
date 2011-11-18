@@ -77,12 +77,9 @@ class SalesApp(SearchableAppWindow):
                  Sale.STATUS_RENEGOTIATED: 'close_date',}
 
     def __init__(self, app):
-        SearchableAppWindow.__init__(self, app)
         self.summary_label = None
         self._visible_date_col = None
-        self._columns = self.get_columns()
-        self._setup_columns()
-        self._setup_widgets()
+        SearchableAppWindow.__init__(self, app)
 
     #
     # Application
@@ -154,6 +151,9 @@ class SalesApp(SearchableAppWindow):
 
     def create_ui(self):
         self.app.launcher.add_new_items([self.SaleQuote])
+        self._columns = self.get_columns()
+        self._setup_columns()
+        self._setup_widgets()
 
     def activate(self):
         self.check_open_inventory()

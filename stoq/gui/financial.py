@@ -330,15 +330,9 @@ class FinancialApp(AppWindow):
 
     def __init__(self, app):
         self._pages = {}
-
         self.accounts = AccountTree()
-
         AppWindow.__init__(self, app)
-        self.search_holder.add(self.accounts)
-        self.accounts.show()
-        self._refresh_accounts()
         self._tills_account = sysparam(self.conn).TILLS_ACCOUNT
-        self._create_initial_page()
 
     #
     # AppWindow overrides
@@ -375,10 +369,16 @@ class FinancialApp(AppWindow):
                                                 filename='financial.xml')
         self.set_help_section(_("Financial help"), 'financial-inicio')
 
-    def activate(self):
+    def create_ui(self):
         self.app.launcher.add_new_items([self.NewAccount,
                                          self.NewTransaction])
+
+        self.search_holder.add(self.accounts)
+        self.accounts.show()
+        self._create_initial_page()
         self._refresh_accounts()
+
+    def activate(self):
         for page in self._pages.values():
             page.refresh()
         self._update_actions()

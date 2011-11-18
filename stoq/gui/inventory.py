@@ -58,9 +58,6 @@ class InventoryApp(SearchableAppWindow):
     search_labels = _('Matching:')
     launcher_embedded = True
 
-    def __init__(self, app):
-        SearchableAppWindow.__init__(self, app)
-
     #
     # Application
     #
