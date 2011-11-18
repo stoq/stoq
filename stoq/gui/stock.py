@@ -116,6 +116,8 @@ class StockApp(SearchableAppWindow):
             ("ProductStockHistory", gtk.STOCK_INFO, _("History")),
             ("EditProduct", gtk.STOCK_EDIT, _("Edit")),
         ]
+        self.stock_ui = self.add_ui_actions('', actions,
+                                            filename='stock.xml')
 
         toogle_actions = [
             ('StockPictureViewer', None, _('Picture viewer'),
@@ -123,14 +125,12 @@ class StockApp(SearchableAppWindow):
         ]
         self.add_ui_actions('', toogle_actions, 'ToogleActions',
                             'toogle')
+        self.set_help_section(_("Stock help"), 'vendas-inicio')
 
-        self.stock_ui = self.add_ui_actions('', actions,
-                                            filename='stock.xml')
         self.NewReceiving.set_short_label(_("Receive"))
         self.NewTransfer.set_short_label(_("Transfer"))
         self.EditProduct.props.is_important = True
         self.ProductStockHistory.props.is_important = True
-        self.set_help_section(_("Stock help"), 'vendas-inicio')
 
     def create_ui(self):
         self.app.launcher.add_new_items([self.NewReceiving, self.NewTransfer,
@@ -150,6 +150,9 @@ class StockApp(SearchableAppWindow):
             warning(_("You cannot receive a purchase with an open inventory."))
             return
         self._receive_purchase()
+
+    def search_activate(self):
+        self.run_dialog(ProductStockSearch, self.conn)
 
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)

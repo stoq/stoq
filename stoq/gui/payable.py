@@ -129,6 +129,9 @@ class PayableApp(SearchableAppWindow):
     def new_activate(self):
         self._add_payment()
 
+    def search_activate(self):
+        run_dialog(OutPaymentBillCheckSearch, self, self.conn)
+
     #
     # SearchableAppWindow
     #

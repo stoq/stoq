@@ -124,7 +124,6 @@ class PurchaseApp(SearchableAppWindow):
             ("NewProduct", None, _("Product"), '',
              _("Create a new product")),
 
-            ("SearchToolMenu", None, _("Search")),
             ("SearchToolMenuProduct", 'stoq-products', _("Product"), '',
               _("Search for a product")),
             ("SearchToolMenuSupplier", 'stoq-suppliers', _("Supplier"), '',
@@ -149,10 +148,6 @@ class PurchaseApp(SearchableAppWindow):
         self.purchase_ui = self.add_ui_actions("", actions,
                                                filename="purchase.xml")
 
-        self.add_tool_menu_actions([
-            ("SearchToolItem", _("Search"), None, 'stoq-products')])
-
-        self.SearchToolItem.props.is_important = True
         self.Confirm.props.is_important = True
 
         self.NewOrder.set_short_label(_("New order"))
@@ -169,6 +164,11 @@ class PurchaseApp(SearchableAppWindow):
             self.NewQuote,
             self.NewProduct,
             self.NewConsignment])
+        self.app.launcher.add_search_items([
+          self.SearchToolMenuProduct,
+          self.SearchToolMenuSupplier,
+          self.SearchToolMenuQuotes,
+          self.SearchToolMenuServices])
         parent = self.app.launcher.statusbar.get_message_area()
         self.search.set_summary_label(column='total',
                                       label=_('<b>Orders total:</b>'),
@@ -185,6 +185,12 @@ class PurchaseApp(SearchableAppWindow):
 
     def deactivate(self):
         self.uimanager.remove_ui(self.purchase_ui)
+
+    def new_activate(self):
+        self._new_order()
+
+    def search_activate(self):
+        self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
 
     #
     # SearchableAppWindow
@@ -493,9 +499,6 @@ class PurchaseApp(SearchableAppWindow):
 
     # Toolitem
 
-    def new_activate(self):
-        self._new_order()
-
     def on_NewOrder__activate(self, action):
         self._new_order()
 
@@ -507,9 +510,6 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_NewConsignment__activate(self, action):
         self._new_consignment()
-
-    def on_SearchToolItem__activate(self, action):
-        self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
 
     def on_SearchToolMenuProduct__activate(self, action):
         self.run_dialog(ProductSearch, self.conn, hide_price_column=True)

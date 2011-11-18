@@ -31,19 +31,16 @@
           <menuitem action="ProductionPurchaseQuote"/>
         </placeholder>
       </menu>
-
       <placeholder name="StoqMenuPH">
         <menuitem action="ExportCSV"/>
       </placeholder>
     </menu>
-
     <menu action="EditMenu">
       <placeholder name="EditMenuPH">
         <menuitem action="StartProduction"/>
         <menuitem action="EditProduction"/>
       </placeholder>
     </menu>
-
     <placeholder name="AppMenubarPH">
       <menu action="SearchMenu">
         <menuitem action="SearchProduct"/>
@@ -52,19 +49,9 @@
         <menuitem action="SearchProductionHistory"/>
       </menu>
     </placeholder>
-
   </menubar>
-
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">
-      <toolitem action="SearchToolItem">
-        <menu action="SearchToolMenu">
-          <menuitem action="SearchProduct"/>
-          <menuitem action="SearchService"/>
-          <menuitem action="SearchProductionItem"/>
-        </menu>
-      </toolitem>
-
       <toolitem action="Print"/>
       <separator/>
       <toolitem action="StartProduction"/>

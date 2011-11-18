@@ -68,14 +68,6 @@
   </menubar>
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">
-      <toolitem action="SearchToolItem">
-        <menu action="SearchToolMenu">
-          <menuitem action="SearchToolMenuProduct"/>
-          <menuitem action="SearchToolMenuSupplier"/>
-          <menuitem action="SearchToolMenuQuotes"/>
-          <menuitem action="SearchToolMenuServices"/>
-        </menu>
-      </toolitem>
       <toolitem action="Print"/>
       <separator/>
       <toolitem action="Confirm"/>

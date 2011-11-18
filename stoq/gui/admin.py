@@ -298,9 +298,6 @@ class AdminApp(AppWindow):
                                             filename='admin.xml')
         self.set_help_section(_("Admin help"), 'admin-inicial')
 
-    def new_activate(self):
-        print 'FIXME: Add user/employee/profile'
-
     def create_ui(self):
         self.tasks = Tasks(self)
         self.tasks.set_model(self.model)
@@ -319,6 +316,12 @@ class AdminApp(AppWindow):
 
     def setup_focus(self):
         self.iconview.grab_focus()
+
+    def new_activate(self):
+        raise NotImplementedError('FIXME: Add user/employee/profile')
+
+    def search_activate(self):
+        self.tasks.run_task('users')
 
     #
     # Callbacks
