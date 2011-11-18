@@ -112,6 +112,7 @@ class PosApp(AppWindow):
     app_name = _('Point of Sales')
     app_icon_name = 'stoq-pos-app'
     gladefile = "pos"
+    launcher_embedded = True
 
     def __init__(self, app):
         AppWindow.__init__(self, app)
@@ -132,32 +133,60 @@ class PosApp(AppWindow):
     # Application
     #
 
+    def activate(self):
+        self.check_open_inventory()
+        self._update_parameter_widgets()
+        self._update_widgets()
+        # This is important to do after the other calls, since
+        # it emits signals that disable UI which might otherwise
+        # be enabled.
+        self._printer.check_till()
+
+        # Hide toolbar specially for pos
+        self.uimanager.get_widget('/toolbar').hide()
+        self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').hide()
+
+        self.barcode.grab_focus()
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.pos_ui)
+        self.uimanager.remove_ui(self.help_ui)
+
+        # Re enable toolbar 
+        self.uimanager.get_widget('/toolbar').show()
+        self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').show()
+
     def create_actions(self):
         ui_string = """<ui>
-         <menubar action="menubar">
-             <menu action="SalesMenu">
-                <menuitem action="ConfirmOrder"/>
-                <menuitem action="CancelOrder"/>
-                <separator name="sep"/>
-                <menuitem action="NewDelivery"/>
-                <separator name="sep2"/>
-                <menuitem action="Quit"/>
-             </menu>
-             <menu action="SearchMenu">
-                <menuitem action="Sales"/>
-                <menuitem action="SoldItemsByBranchSearch"/>
-                <menuitem action="Clients"/>
-                <menuitem action="ProductSearch"/>
-                <menuitem action="ServiceSearch"/>
-                <menuitem action="DeliverySearch"/>
-             </menu>
-             <menu action="TillMenu">
-                <menuitem action="TillOpen"/>
-                <menuitem action="TillClose"/>
-             </menu>
-             <placeholder name="ExtraMenu"/>
-         </menubar>
-        </ui>"""
+      <menubar action="menubar">
+        <menu action="StoqMenu">
+          <placeholder name="StoqMenuPH">
+            <separator/>
+            <menuitem action="TillOpen"/>
+            <menuitem action="TillClose"/>
+          </placeholder>
+        </menu>
+        <menu action="EditMenu">
+          <placeholder name="EditMenuPH">
+             <menuitem action="ConfirmOrder"/>
+             <menuitem action="CancelOrder"/>
+             <separator name="sep"/>
+             <menuitem action="NewDelivery"/>
+          </placeholder>
+        </menu>
+        <placeholder name="AppMenubarPH">
+          <menu action="SearchMenu">
+             <menuitem action="Sales"/>
+             <menuitem action="SoldItemsByBranchSearch"/>
+             <menuitem action="Clients"/>
+             <menuitem action="ProductSearch"/>
+             <menuitem action="ServiceSearch"/>
+             <menuitem action="DeliverySearch"/>
+          </menu>
+          <placeholder name="ExtraMenu"/>
+        </placeholder>
+      </menubar>
+     </ui>"""
 
         actions = [
             ('menubar', None, ''),
@@ -167,7 +196,6 @@ class PosApp(AppWindow):
             ('CancelOrder', None, _('Cancel Order'), '<Control><Alt>o'),
             ('NewDelivery', None, _('New Delivery...'), '<Control>F5'),
             ('ConfirmOrder', None, _('Confirm Order...'), '<Control>F10'),
-            ("Quit", gtk.STOCK_QUIT),
 
             # Search
             ("SearchMenu", None, _("_Search")),
@@ -185,15 +213,10 @@ class PosApp(AppWindow):
             ("TillClose", None, _("Close Till..."), '<Control>F7'),
 
         ]
-        self.add_ui_actions(ui_string, actions)
-        self.add_help_ui(_("POS help"), 'pdv-inicio')
+        self.pos_ui = self.add_ui_actions(ui_string, actions)
+        self.help_ui = self.add_help_ui(_("POS help"), 'pdv-inicio')
 
     def create_ui(self):
-        self.menubar = self.uimanager.get_widget('/menubar')
-
-        self.main_vbox.pack_start(self.menubar, False, False)
-        self.main_vbox.reorder_child(self.menubar, 0)
-
         self.sale_items.set_columns(self.get_columns())
         self.sale_items.set_selection_mode(gtk.SELECTION_BROWSE)
 
@@ -239,15 +262,6 @@ class PosApp(AppWindow):
                                         self.item_button_box])
         self.item_button_box.set_focus_chain([self.add_button,
                                               self.advanced_search])
-
-    def activate(self):
-        self.check_open_inventory()
-        self._update_parameter_widgets()
-        self._update_widgets()
-        # This is important to do after the other calls, since
-        # it emits signals that disable UI which might otherwise
-        # be enabled.
-        self._printer.check_till()
 
     def get_columns(self):
         return [Column('code', title=_('Reference'),
