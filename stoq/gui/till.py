@@ -32,7 +32,6 @@ import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.log import Logger
 from kiwi.enums import SearchFilterPosition
-from kiwi.environ import environ
 from kiwi.python import Settable
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
@@ -73,6 +72,7 @@ class TillApp(SearchableAppWindow):
     gladefile = 'till'
     search_table = SaleView
     search_labels = _(u'matching:')
+    launcher_embedded = True
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
@@ -86,30 +86,53 @@ class TillApp(SearchableAppWindow):
     # Application
     #
 
+    def activate(self):
+        self.search.refresh()
+        self._printer.check_till()
+        self.check_open_inventory()
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.till_ui)
+        self.uimanager.remove_ui(self.help_ui)
+
+    def new_activate(self):
+        pass
+
     def create_actions(self):
         ui_string = """<ui>
       <menubar action="menubar">
-        <menu action="TillMenu">
-          <menuitem action="TillOpen"/>
-          <menuitem action="TillClose"/>
-          <separator/>
-          <menuitem action="TillAddCash"/>
-          <menuitem action="TillRemoveCash"/>
-          <separator name="sep1"/>
-          <menuitem action="ExportCSV"/>
-          <separator name="sep2"/>
-          <menuitem action="Quit"/>
+        <menu action="StoqMenu">
+            <placeholder name="StoqMenuPH">
+              <menuitem action="TillOpen"/>
+              <menuitem action="TillClose"/>
+              <separator/>
+              <menuitem action="TillAddCash"/>
+              <menuitem action="TillRemoveCash"/>
+              <separator name="sep1"/>
+              <menuitem action="ExportCSV"/>
+            </placeholder>
         </menu>
-        <menu action="SearchMenu">
-          <menuitem action="SearchClient"/>
-          <menuitem action="SearchSale"/>
-          <menuitem action="SearchSoldItemsByBranch"/>
-          <separator name="sep2"/>
-          <menuitem action="SearchTillHistory"/>
-          <menuitem action="SearchFiscalTillOperations"/>
-        </menu>
-        <placeholder name="ExtraMenu"/>
+          <placeholder name="AppMenubarPH">
+            <menu action="SearchMenu">
+              <menuitem action="SearchClient"/>
+              <menuitem action="SearchSale"/>
+              <menuitem action="SearchSoldItemsByBranch"/>
+              <separator name="sep2"/>
+              <menuitem action="SearchTillHistory"/>
+              <menuitem action="SearchFiscalTillOperations"/>
+            </menu>
+            <placeholder name="ExtraMenu"/>
+          </placeholder>
       </menubar>
+      <toolbar action="toolbar">
+        <placeholder name="AppToolbarPH">
+        </placeholder>
+        <separator/>
+        <toolitem action="Confirm"/>
+        <toolitem action="Return"/>
+        <toolitem action="Details"/>
+      </toolbar>
+
     </ui>"""
 
         actions = [
@@ -123,7 +146,6 @@ class TillApp(SearchableAppWindow):
             ('TillRemoveCash', None, _('Remove cash...'), '<Control>j'),
             ('ExportCSV', gtk.STOCK_SAVE_AS,
              _('Export CSV...'), '<Control>F10'),
-            ("Quit", gtk.STOCK_QUIT),
 
             # Search
             ("SearchMenu", None, _("_Search")),
@@ -136,15 +158,17 @@ class TillApp(SearchableAppWindow):
             ("SearchFiscalTillOperations", None,
              _("Fiscal till operations..."), '<Contro><Alt>f'),
 
+            ("Confirm", gtk.STOCK_APPLY, _("Confirm")),
+            ("Return", gtk.STOCK_CANCEL, _("Return")),
+            ("Details", gtk.STOCK_INFO, _("Details")),
         ]
 
-        self.add_ui_actions(ui_string, actions)
-        self.add_help_ui(_("Till help"), 'caixa-inicio')
+        self.till_ui = self.add_ui_actions(ui_string, actions)
+        self.help_ui = self.add_help_ui(_("Till help"), 'caixa-inicio')
 
-    def create_ui(self):
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_vbox.pack_start(self.menubar, False, False)
-        self.main_vbox.reorder_child(self.menubar, 0)
+        self.Confirm.props.is_important = True
+        self.Return.props.is_important = True
+        self.Details.props.is_important = True
 
     def setup_focus(self):
         # Groups
@@ -153,14 +177,9 @@ class TillApp(SearchableAppWindow):
 
         # Setting up the toolbar
         self.list_vbox.set_focus_chain([self.footer_hbox])
-        self.footer_hbox.set_focus_chain([self.confirm_order_button,
-                                          self.return_button,
-                                          self.details_button])
-
-    def activate(self):
-        self.search.refresh()
-        self._printer.check_till()
-        self.check_open_inventory()
+        #self.footer_hbox.set_focus_chain([self.confirm_order_button,
+        #                                  self.return_button,
+        #                                  self.details_button])
 
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
@@ -323,17 +342,20 @@ class TillApp(SearchableAppWindow):
 
     def _setup_widgets(self):
         # SearchSale is here because it's possible to return a sale inside it
-        self._inventory_widgets = [self.confirm_order_button, self.SearchSale,
-                                   self.return_button]
+        self._inventory_widgets = [self.Confirm, self.SearchSale,
+                                   self.Return]
         self.register_sensitive_group(self._inventory_widgets,
                                       lambda: not self.has_open_inventory())
 
-        logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
-        logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
-                                                    LOGO_HEIGHT)
-        self.stoq_logo.set_from_pixbuf(logo)
+        #logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
+        #logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
+        #                                            LOGO_HEIGHT)
+        #self.stoq_logo.set_from_pixbuf(logo)
         self.total_label.set_size('xx-large')
         self.total_label.set_bold(True)
+
+        self.till_status_label.set_size('xx-large')
+        self.till_status_label.set_bold(True)
 
     def _update_toolbar_buttons(self):
         sale_view = self.results.get_selected()
@@ -346,9 +368,9 @@ class TillApp(SearchableAppWindow):
         else:
             can_confirm = can_return = False
 
-        self.set_sensitive([self.details_button], bool(sale_view))
-        self.set_sensitive([self.confirm_order_button], can_confirm)
-        self.set_sensitive([self.return_button], can_return)
+        self.set_sensitive([self.Details], bool(sale_view))
+        self.set_sensitive([self.Confirm], can_confirm)
+        self.set_sensitive([self.Return], can_return)
 
     def _check_selected(self):
         sale_view = self.results.get_selected()
@@ -406,9 +428,9 @@ class TillApp(SearchableAppWindow):
             text = _(u"Till blocked from previous day")
         else:
             till = Till.get_current(self.conn)
-            text = _(u"Till opened on <b>%s</b>") % till.opening_date.strftime('%x')
+            text = _(u"Till opened on %s") % till.opening_date.strftime('%x')
 
-        self.till_status_label.set_markup(text)
+        self.till_status_label.set_text(text)
 
         self._update_toolbar_buttons()
         self._update_total()
@@ -417,7 +439,7 @@ class TillApp(SearchableAppWindow):
     # Callbacks
     #
 
-    def on_confirm_order_button__clicked(self, button):
+    def on_Confirm__activate(self, action):
         self._confirm_order()
         self._update_total()
 
@@ -430,10 +452,10 @@ class TillApp(SearchableAppWindow):
     def on_results__has_rows(self, results, has_rows):
         self._update_total()
 
-    def on_details_button__clicked(self, button):
+    def on_Details__activate(self, action):
         self._run_details_dialog()
 
-    def on_return_button__clicked(self, button):
+    def on_Return__activate(self, action):
         self._return_sale()
 
     def _on_PrinterHelper__till_status_changed(self, printer, closed, blocked):

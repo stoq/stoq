@@ -63,7 +63,7 @@ class Launcher(AppWindow):
         app = LauncherApp(self)
         AppWindow.__init__(self, app)
         toplevel = self.get_toplevel()
-        toplevel.connect('destroy', self._shutdown)
+        toplevel.connect('delete-event', self._shutdown)
         toplevel.connect('configure-event', self._on_toplevel__configure)
         hide_splash()
         Launcher.launchers.append(self)
@@ -240,7 +240,7 @@ class Launcher(AppWindow):
 
         self.iconview_vbox.hide()
         self.application_box.show()
-        app_window.show_all()
+        app_window.show()
 
         self.current_app = app
         self.get_toplevel().set_title(app.get_title())
@@ -296,11 +296,18 @@ class Launcher(AppWindow):
         config.flush()
 
     def _shutdown(self, *args):
+        if self.current_app and not self.current_app.shutdown_application():
+            # We must return True to avoid closing
+            return True
+
         Launcher.launchers.remove(self)
-        if not Launcher.launchers:
-            self._save_window_size()
-            self.shutdown_application()
-            raise SystemExit
+        # There are other launchers running
+        if Launcher.launchers:
+            # We must return True to avoid closing
+            return True
+
+        self._save_window_size()
+        raise SystemExit
 
     def _get_available_applications(self):
         user = get_current_user(self.conn)
@@ -329,6 +336,12 @@ class Launcher(AppWindow):
     #
     # Kiwi callbacks
     #
+
+    # Backwards-compatibility
+    def key_F5(self):
+        if self.current_app and self.current_app.can_change_application():
+            self.hide_app()
+        return True
 
     def _on_toplevel__configure(self, widget, event):
         rect = widget.window.get_frame_extents()
@@ -399,7 +412,8 @@ class Launcher(AppWindow):
         self.toggle_fullscreen()
 
     def on_Close__activate(self, action):
-        self.hide_app()
+        if self.current_app and self.current_app.shutdown_application():
+            self.hide_app()
 
     def on_ChangePassword__activate(self, action):
         from stoqlib.gui.slaves.userslave import PasswordEditor
@@ -415,9 +429,9 @@ class Launcher(AppWindow):
         self.app.runner.relogin()
 
     def on_Quit__activate(self, action):
-        self._save_window_size()
-        self.shutdown_application()
-        raise SystemExit
+        if self.current_app and self.current_app.shutdown_application():
+            self._save_window_size()
+            raise SystemExit
 
     def on_iconview__item_activated(self, iconview, path):
         app = self.model[path][COL_APP]

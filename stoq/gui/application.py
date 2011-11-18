@@ -421,20 +421,16 @@ class AppWindow(BaseAppWindow):
     #
 
     def shutdown_application(self, *args):
-        if self.can_close_application():
-            if self.search:
-                self.search.save_columns()
-            self.app.main_window.hide()
-        # We must return True here or the window will be hidden.
-        return False
+        if not self.can_close_application():
+            return False
+
+        if self.search:
+            self.search.save_columns()
+        return True
 
     #
     # Callbacks
     #
-
-    # Backwards-compatibility
-    def key_F5(self):
-        self.app.launcher.hide_app()
 
     # Help
 

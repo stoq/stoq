@@ -78,7 +78,7 @@ class BaseAppWindow(GladeDelegate):
     def __init__(self, app, keyactions=None):
         self._sensitive_group = dict()
         self.app = app
-        GladeDelegate.__init__(self, delete_handler=self.shutdown_application,
+        GladeDelegate.__init__(self, delete_handler=self._on_delete_handler,
                           keyactions=keyactions,
                           gladefile=self.gladefile,
                           toplevel_name=self.toplevel_name)
@@ -157,5 +157,8 @@ class BaseAppWindow(GladeDelegate):
     # Callbacks
     #
 
+    def _on_delete_handler(self, *args):
+        self.shutdown_application()
+
     def _on_quit_action__clicked(self, *args):
-        self.app.shutdown()
+        self.shutdown_application()
