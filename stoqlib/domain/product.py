@@ -139,6 +139,7 @@ class Product(Domain):
     weight = DecimalCol(default=0)
     consignment = BoolCol(default=False)
     sellable = ForeignKey('Sellable')
+    suppliers = MultipleJoin('ProductSupplierInfo')
 
     # Nomenclatura Comum do Mercosul related details
     ncm = UnicodeCol(default=None)
@@ -149,7 +150,7 @@ class Product(Domain):
     icms_template = ForeignKey('ProductIcmsTemplate', default=None)
     ipi_template = ForeignKey('ProductIpiTemplate', default=None)
 
-    # User for composed products only
+    # Used for composed products only
     quality_tests = MultipleJoin('ProductQualityTest')
 
 
@@ -213,6 +214,13 @@ class Product(Domain):
     #
     # Acessors
     #
+
+    def get_max_lead_time(self):
+        # FIXME: this will change in another commit
+        if self.has_components():
+            return 0
+        else:
+            return self.suppliers.max('lead_time') or 0
 
     def get_history(self):
         """Returns the list of L{ProductHistory} for this product.

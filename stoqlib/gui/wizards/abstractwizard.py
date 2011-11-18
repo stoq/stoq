@@ -300,6 +300,7 @@ class SellableItemStep(WizardEditorStep):
         cost = currency(0)
         quantity = currency(0)
         description = u''
+        lead_time = 0
 
         if sellable:
             description = "<b>%s</b>" % sellable.get_description()
@@ -309,6 +310,7 @@ class SellableItemStep(WizardEditorStep):
             if storable:
                 minimum= storable.minimum_quantity
                 stock = storable.get_full_balance(self.model.branch)
+                lead_time = sellable.product.get_max_lead_time()
         else:
             self.barcode.set_text('')
 
@@ -317,6 +319,7 @@ class SellableItemStep(WizardEditorStep):
                          sellable=sellable,
                          minimum_quantity=minimum,
                          stock_quantity=stock,
+                         lead_time=lead_time,
                          sellable_description=description)
 
         self.proxy.set_model(model)
