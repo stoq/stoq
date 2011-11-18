@@ -169,7 +169,7 @@ class TillApp(SearchableAppWindow):
         self.Return.props.is_important = True
         self.Details.props.is_important = True
 
-    def setup_focus(self):
+    def create_ui(self):
         # Groups
         self.main_vbox.set_focus_chain([self.app_vbox])
         self.app_vbox.set_focus_chain([self.search_holder, self.list_vbox])

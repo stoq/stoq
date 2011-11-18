@@ -146,8 +146,6 @@ class PosApp(AppWindow):
         self.uimanager.get_widget('/toolbar').hide()
         self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').hide()
 
-        self.barcode.grab_focus()
-
     def deactivate(self):
         self.uimanager.remove_ui(self.pos_ui)
 
@@ -188,6 +186,28 @@ class PosApp(AppWindow):
     def create_ui(self):
         self.sale_items.set_columns(self.get_columns())
         self.sale_items.set_selection_mode(gtk.SELECTION_BROWSE)
+        # Setting up the widget groups
+        self.main_vbox.set_focus_chain([self.pos_vbox])
+
+        self.pos_vbox.set_focus_chain([self.list_header_hbox, self.list_vbox])
+        self.list_vbox.set_focus_chain([self.footer_hbox])
+        self.footer_hbox.set_focus_chain([self.toolbar_vbox])
+
+        # Setting up the toolbar area
+        self.toolbar_vbox.set_focus_chain([self.toolbar_button_box])
+        self.toolbar_button_box.set_focus_chain([self.checkout_button,
+                                                 self.delivery_button,
+                                                 self.edit_item_button,
+                                                 self.remove_item_button,])
+
+        # Setting up the barcode area
+        self.item_hbox.set_focus_chain([self.barcode, self.quantity,
+                                        self.item_button_box])
+        self.item_button_box.set_focus_chain([self.add_button,
+                                              self.advanced_search])
+
+    def setup_focus(self):
+        self.barcode.grab_focus()
 
     def can_change_application(self):
         # Block POS application if we are in the middle of a sale.
@@ -210,27 +230,6 @@ class PosApp(AppWindow):
                 self._cancel_order(show_confirmation=False)
                 return True
         return can_close_application
-
-    def setup_focus(self):
-        # Setting up the widget groups
-        self.main_vbox.set_focus_chain([self.pos_vbox])
-
-        self.pos_vbox.set_focus_chain([self.list_header_hbox, self.list_vbox])
-        self.list_vbox.set_focus_chain([self.footer_hbox])
-        self.footer_hbox.set_focus_chain([self.toolbar_vbox])
-
-        # Setting up the toolbar area
-        self.toolbar_vbox.set_focus_chain([self.toolbar_button_box])
-        self.toolbar_button_box.set_focus_chain([self.checkout_button,
-                                                 self.delivery_button,
-                                                 self.edit_item_button,
-                                                 self.remove_item_button,])
-
-        # Setting up the barcode area
-        self.item_hbox.set_focus_chain([self.barcode, self.quantity,
-                                        self.item_button_box])
-        self.item_button_box.set_focus_chain([self.add_button,
-                                              self.advanced_search])
 
     def get_columns(self):
         return [Column('code', title=_('Reference'),

@@ -214,11 +214,14 @@ class Launcher(AppWindow):
         self.Quit.set_visible(False)
 
         self.iconview_vbox.hide()
+
+        self.get_toplevel().set_title(app.get_title())
         self.application_box.show()
+        app.activate()
         app_window.show()
+        app.setup_focus()
 
         self.current_app = app
-        self.get_toplevel().set_title(app.get_title())
         self.current_widget = app_window
 
     def hide_app(self):
