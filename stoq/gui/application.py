@@ -208,15 +208,19 @@ class AppWindow(BaseAppWindow):
 
     def create_actions(self):
         """This is called before the BaseWindow constructor, so we
-        can create actions that can be autoconnected."""
+        can create actions that can be autoconnected.
+        The widgets and actions loaded from builder files are not set
+        yet"""
 
     def create_ui(self):
         """This is called when the UI such as GtkWidgets should be
-        created"""
+        created. Glade widgets are now created and can be accessed
+        in the instance.
+        """
 
     def activate(self):
-        """This is when you switch to an application, can
-        be overridden in a subclass."""
+        """This is when you switch to an application.
+        You should setup widget sensitivity here and refresh lists etc"""
 
     def setup_focus(self):
         """Define this method on child when it's needed.

@@ -81,24 +81,10 @@ class PurchaseApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
-        self._setup_widgets()
-        self._update_view()
 
     #
     # Application
     #
-
-    def activate(self):
-        self.app.launcher.add_new_items([
-            self.NewOrder,
-            self.NewQuote,
-            self.NewProduct,
-            self.NewConsignment])
-        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
-        self.search.refresh()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.purchase_ui)
 
     def create_actions(self):
         actions = [
@@ -180,6 +166,33 @@ class PurchaseApp(SearchableAppWindow):
         self.set_help_section(_("Purchase help"),
                               'compras-inicio')
 
+    def create_ui(self):
+        self.app.launcher.add_new_items([
+            self.NewOrder,
+            self.NewQuote,
+            self.NewProduct,
+            self.NewConsignment])
+        parent = self.app.launcher.statusbar.get_message_area()
+        self.search.set_summary_label(column='total',
+                                      label=_('<b>Orders total:</b>'),
+                                      format='<b>%s</b>',
+                                      parent=parent)
+        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.ConfirmOrder.set_sensitive(False)
+        self.Confirm.set_sensitive(False)
+
+    def activate(self):
+        self._update_view()
+        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.search.refresh()
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.purchase_ui)
+
+    #
+    # SearchableAppWindow
+    #
+
     def create_filters(self):
         self.set_text_field_columns(['supplier_name'])
         self.status_filter = ComboSearchFilter(_('Show orders'),
@@ -210,16 +223,6 @@ class PurchaseApp(SearchableAppWindow):
     #
     # Private
     #
-
-    def _setup_widgets(self):
-        parent = self.app.launcher.statusbar.get_message_area()
-        self.search.set_summary_label(column='total',
-                                      label=_('<b>Orders total:</b>'),
-                                      format='<b>%s</b>',
-                                      parent=parent)
-        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
-        self.ConfirmOrder.set_sensitive(False)
-        self.Confirm.set_sensitive(False)
 
     def _update_totals(self):
         self._update_view()

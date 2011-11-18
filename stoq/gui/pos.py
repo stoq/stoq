@@ -133,26 +133,6 @@ class PosApp(AppWindow):
     # Application
     #
 
-    def activate(self):
-        self.check_open_inventory()
-        self._update_parameter_widgets()
-        self._update_widgets()
-        # This is important to do after the other calls, since
-        # it emits signals that disable UI which might otherwise
-        # be enabled.
-        self._printer.check_till()
-
-        # Hide toolbar specially for pos
-        self.uimanager.get_widget('/toolbar').hide()
-        self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').hide()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.pos_ui)
-
-        # Re enable toolbar
-        self.uimanager.get_widget('/toolbar').show()
-        self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').show()
-
     def create_actions(self):
         actions = [
             ('menubar', None, ''),
@@ -205,6 +185,26 @@ class PosApp(AppWindow):
                                         self.item_button_box])
         self.item_button_box.set_focus_chain([self.add_button,
                                               self.advanced_search])
+
+    def activate(self):
+        self.check_open_inventory()
+        self._update_parameter_widgets()
+        self._update_widgets()
+        # This is important to do after the other calls, since
+        # it emits signals that disable UI which might otherwise
+        # be enabled.
+        self._printer.check_till()
+
+        # Hide toolbar specially for pos
+        self.uimanager.get_widget('/toolbar').hide()
+        self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').hide()
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.pos_ui)
+
+        # Re enable toolbar
+        self.uimanager.get_widget('/toolbar').show()
+        self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').show()
 
     def setup_focus(self):
         self.barcode.grab_focus()

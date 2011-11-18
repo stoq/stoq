@@ -344,18 +344,6 @@ class FinancialApp(AppWindow):
     # AppWindow overrides
     #
 
-    def activate(self):
-        self.app.launcher.add_new_items([self.NewAccount,
-                                         self.NewTransaction])
-        self._refresh_accounts()
-        for page in self._pages.values():
-            page.refresh()
-        self._update_actions()
-        self._update_tooltips()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.financial_ui)
-
     def create_actions(self):
         actions = [
             ('menubar', None, ''),
@@ -386,6 +374,18 @@ class FinancialApp(AppWindow):
         self.financial_ui = self.add_ui_actions('', actions,
                                                 filename='financial.xml')
         self.set_help_section(_("Financial help"), 'financial-inicio')
+
+    def activate(self):
+        self.app.launcher.add_new_items([self.NewAccount,
+                                         self.NewTransaction])
+        self._refresh_accounts()
+        for page in self._pages.values():
+            page.refresh()
+        self._update_actions()
+        self._update_tooltips()
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.financial_ui)
 
     #
     # Private

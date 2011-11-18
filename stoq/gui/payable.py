@@ -83,15 +83,7 @@ class PayableApp(SearchableAppWindow):
     # Application
     #
 
-    def activate(self):
-        self.search.refresh()
-        self.app.launcher.add_new_items([self.AddPayment])
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.payable_ui)
-
     def create_actions(self):
-
         actions = [
             ('menubar', None, ''),
 
@@ -127,6 +119,13 @@ class PayableApp(SearchableAppWindow):
         self.set_help_section(_("Accounts payable help"),
                               'pagar-inicio')
         self.Pay.props.is_important = True
+
+    def activate(self):
+        self.search.refresh()
+        self.app.launcher.add_new_items([self.AddPayment])
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.payable_ui)
 
     def new_activate(self):
         self._add_payment()

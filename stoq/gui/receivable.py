@@ -83,19 +83,6 @@ class ReceivableApp(SearchableAppWindow):
     # Application
     #
 
-    def activate(self):
-        self.app.launcher.add_new_items([self.AddReceiving])
-        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
-        self._setup_widgets()
-        self._update_widgets()
-        self.search.refresh()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.receivable_ui)
-
-    def new_activate(self):
-        self._add_receiving()
-
     def create_actions(self):
         actions = [
             ('menubar', None, ''),
@@ -140,35 +127,24 @@ class ReceivableApp(SearchableAppWindow):
 
         self.Receive.props.is_important = True
 
-
-    def _setup_widgets(self):
+    def create_ui(self):
+        self.app.launcher.add_new_items([self.AddReceiving])
+        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         parent = self.app.launcher.statusbar.get_message_area()
         self.search.set_summary_label(column='value',
             label='<b>%s</b>' % (_("Total")),
             format='<b>%s</b>',
             parent=parent)
 
-    def _update_widgets(self):
-        selected = self.results.get_selected_rows()
-        self.Receive.set_sensitive(self._can_receive(selected))
-        self.Details.set_sensitive(self._can_show_details(selected))
-        self.Comments.set_sensitive(self._can_show_comments(selected))
-        self.Renegotiate.set_sensitive(self._can_renegotiate(selected))
-        self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
-        self.CancelPayment.set_sensitive(self._can_cancel_payment(selected))
-        self.PrintReceipt.set_sensitive(self._are_paid(selected,
-                                                       respect_sale=True))
-        self.SetNotPaid.set_sensitive(self._are_paid(selected,
-                                                     respect_sale=False))
-        self.PrintBill.set_sensitive(self._can_print_bill(selected))
+    def activate(self):
+        self._update_widgets()
+        self.search.refresh()
 
-    def _has_rows(self, result_list, has_rows):
-        self.Print.set_sensitive(has_rows)
+    def deactivate(self):
+        self.uimanager.remove_ui(self.receivable_ui)
 
-    def _get_status_values(self):
-        values = [(v, k) for k, v in Payment.statuses.items()]
-        values.insert(0, (_("Any"), None))
-        return values
+    def new_activate(self):
+        self._add_receiving()
 
     #
     # SearchableAppWindow hooks
@@ -211,6 +187,28 @@ class ReceivableApp(SearchableAppWindow):
     #
     # Private
     #
+
+    def _update_widgets(self):
+        selected = self.results.get_selected_rows()
+        self.Receive.set_sensitive(self._can_receive(selected))
+        self.Details.set_sensitive(self._can_show_details(selected))
+        self.Comments.set_sensitive(self._can_show_comments(selected))
+        self.Renegotiate.set_sensitive(self._can_renegotiate(selected))
+        self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
+        self.CancelPayment.set_sensitive(self._can_cancel_payment(selected))
+        self.PrintReceipt.set_sensitive(self._are_paid(selected,
+                                                       respect_sale=True))
+        self.SetNotPaid.set_sensitive(self._are_paid(selected,
+                                                     respect_sale=False))
+        self.PrintBill.set_sensitive(self._can_print_bill(selected))
+
+    def _has_rows(self, result_list, has_rows):
+        self.Print.set_sensitive(has_rows)
+
+    def _get_status_values(self):
+        values = [(v, k) for k, v in Payment.statuses.items()]
+        values.insert(0, (_("Any"), None))
+        return values
 
     def _show_details(self, receivable_view):
         trans = new_transaction()

@@ -88,17 +88,6 @@ class SalesApp(SearchableAppWindow):
     # Application
     #
 
-    def activate(self):
-        self.app.launcher.add_new_items([self.SaleQuote])
-        self.search.refresh()
-        self.check_open_inventory()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.sales_ui)
-
-    def new_activate(self):
-        self._new_sale_quote()
-
     def create_actions(self):
         actions = [
             ('menubar', None, ''),
@@ -163,6 +152,26 @@ class SalesApp(SearchableAppWindow):
 
         self.set_help_section(_("Sales help"), 'vendas-inicio')
 
+    def create_ui(self):
+        self.app.launcher.add_new_items([self.SaleQuote])
+
+    def activate(self):
+        self.check_open_inventory()
+        self.search.refresh()
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.sales_ui)
+
+    def new_activate(self):
+        self._new_sale_quote()
+
+    def set_open_inventory(self):
+        self.set_sensitive(self._inventory_widgets, False)
+
+    #
+    # SearchableAppWindow
+    #
+
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'salesperson_name'])
         status_filter = ComboSearchFilter(_('Show sales with status'),
@@ -209,9 +218,6 @@ class SalesApp(SearchableAppWindow):
                 SearchColumn('total', title=_('Total'), data_type=currency,
                              width=120)]
         return cols
-
-    def set_open_inventory(self):
-        self.set_sensitive(self._inventory_widgets, False)
 
     #
     # Private
