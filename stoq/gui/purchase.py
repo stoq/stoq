@@ -101,70 +101,6 @@ class PurchaseApp(SearchableAppWindow):
         self.uimanager.remove_ui(self.purchase_ui)
 
     def create_actions(self):
-        ui_string = """<ui>
-      <menubar action="menubar">
-        <menu action="StoqMenu">
-          <menu action="NewMenu">
-            <placeholder name="NewMenuItemPH">
-              <menuitem action="NewOrder"/>
-              <menuitem action="NewQuote"/>
-              <menuitem action="NewProduct"/>
-              <menuitem action="NewConsignment"/>
-            </placeholder>
-          </menu>
-          <placeholder name="StoqMenuPH">
-            <menuitem action="ExportCSV"/>
-          </placeholder>
-        </menu>
-        <menu action="EditMenu">
-          <placeholder name="EditMenuPH">
-            <menuitem action="ConfirmOrder"/>
-            <menuitem action="FinishOrder"/>
-            <separator/>
-            <menuitem action="StockCost"/>
-            <separator name="sep2"/>
-            <menuitem action="CloseInConsignment"/>
-            <menuitem action="SearchInConsignmentItems"/>
-          </placeholder>
-        </menu>
-        <placeholder name="AppMenubarPH">
-          <menu action="SearchMenu">
-            <menuitem action="BaseCategories"/>
-            <menuitem action="Categories"/>
-            <menuitem action="ProductUnits"/>
-            <menuitem action="Products"/>
-            <menuitem action="Services"/>
-            <menuitem action="SearchStockItems"/>
-            <menuitem action="SearchClosedStockItems"/>
-            <menuitem action="Suppliers"/>
-            <menuitem action="Transporter"/>
-            <menuitem action="SearchQuotes"/>
-            <menuitem action="SearchPurchasedItems"/>
-            <menuitem action="ProductsSoldSearch"/>
-            <menuitem action="ProductsPriceSearch"/>
-          </menu>
-        </placeholder>
-      </menubar>
-      <toolbar action="toolbar">
-        <placeholder name="AppToolbarPH">
-          <toolitem action="SearchToolItem">
-            <menu action="SearchToolMenu">
-              <menuitem action="SearchToolMenuProduct"/>
-              <menuitem action="SearchToolMenuSupplier"/>
-              <menuitem action="SearchToolMenuQuotes"/>
-              <menuitem action="SearchToolMenuServices"/>
-            </menu>
-          </toolitem>
-          <toolitem action="Print"/>
-          <separator/>
-          <toolitem action="Confirm"/>
-          <toolitem action="Cancel"/>
-          <toolitem action="Edit"/>
-          <toolitem action="Details"/>
-        </placeholder>
-      </toolbar>
-    </ui>"""
-
         actions = [
             ('menubar', None, ''),
 
@@ -227,7 +163,8 @@ class PurchaseApp(SearchableAppWindow):
              _("View the details of an order"))
         ]
 
-        self.purchase_ui = self.add_ui_actions(ui_string, actions)
+        self.purchase_ui = self.add_ui_actions("", actions,
+                                               filename="purchase.xml")
 
         self.add_tool_menu_actions([
             ("SearchToolItem", _("Search"), None, 'stoq-products')])

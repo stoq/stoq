@@ -91,42 +91,6 @@ class PayableApp(SearchableAppWindow):
         self.uimanager.remove_ui(self.payable_ui)
 
     def create_actions(self):
-        ui_string = """<ui>
-          <menubar action="menubar">
-            <menu action="StoqMenu">
-              <menu action="NewMenu">
-                <placeholder name="NewMenuItemPH">
-                  <menuitem action="AddPayment"/>
-                </placeholder>
-              </menu>
-              <placeholder name="StoqMenuPH">
-                <menuitem action="ExportCSV"/>
-              </placeholder>
-            </menu>
-            <menu action="EditMenu">
-              <placeholder name="EditMenuPH">
-                <menuitem action="CancelPayment"/>
-                <menuitem action="SetNotPaid"/>
-                <menuitem action="ChangeDueDate"/>
-                <menuitem action="Comments"/>
-                <menuitem action="PrintReceipt"/>
-                <menuitem action="PaymentFlowHistory"/>
-              </placeholder>
-            </menu>
-            <placeholder name="AppMenubarPH">
-              <menu action="SearchMenu">
-                <menuitem action="BillCheckSearch"/>
-              </menu>
-            </placeholder>
-          </menubar>
-          <toolbar action="toolbar">
-            <toolitem action="PrintReport"/>
-            <separator/>
-            <toolitem action="Pay"/>
-            <toolitem action="Edit"/>
-            <toolitem action="Details"/>
-          </toolbar>
-    </ui>"""
 
         actions = [
             ('menubar', None, ''),
@@ -158,7 +122,8 @@ class PayableApp(SearchableAppWindow):
             ('Details', gtk.STOCK_INFO, _('Details'), '',
               _('Show details for the payment')),
         ]
-        self.payable_ui = self.add_ui_actions(ui_string, actions)
+        self.payable_ui = self.add_ui_actions(None, actions,
+                                              filename='payable.xml')
         self.set_help_section(_("Accounts payable help"),
                               'pagar-inicio')
         self.Pay.props.is_important = True

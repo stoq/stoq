@@ -77,58 +77,6 @@ class ProductionApp(SearchableAppWindow):
     #
 
     def create_actions(self):
-        ui_string = """<ui>
-      <menubar action="menubar">
-        <menu action="StoqMenu">
-          <menu action="NewMenu">
-            <placeholder name="NewMenuItemPH">
-              <menuitem action="NewProduction"/>
-              <menuitem action="ProductionPurchaseQuote"/>
-            </placeholder>
-          </menu>
-
-          <placeholder name="StoqMenuPH">
-            <menuitem action="ExportCSV"/>
-          </placeholder>
-        </menu>
-
-        <menu action="EditMenu">
-          <placeholder name="EditMenuPH">
-            <menuitem action="StartProduction"/>
-            <menuitem action="EditProduction"/>
-          </placeholder>
-        </menu>
-
-        <placeholder name="AppMenubarPH">
-          <menu action="SearchMenu">
-            <menuitem action="SearchProduct"/>
-            <menuitem action="SearchService"/>
-            <menuitem action="SearchProductionItem"/>
-            <menuitem action="SearchProductionHistory"/>
-          </menu>
-        </placeholder>
-
-      </menubar>
-
-      <toolbar action="toolbar">
-        <placeholder name="AppToolbarPH">
-          <toolitem action="SearchToolItem">
-            <menu action="SearchToolMenu">
-              <menuitem action="SearchProduct"/>
-              <menuitem action="SearchService"/>
-              <menuitem action="SearchProductionItem"/>
-            </menu>
-          </toolitem>
-
-          <toolitem action="Print"/>
-          <separator/>
-          <toolitem action="StartProduction"/>
-          <toolitem action="EditProduction"/>
-          <toolitem action="ProductionDetails"/>
-        </placeholder>
-      </toolbar>
-    </ui>"""
-
         actions = [
             ('menubar', None, ''),
 
@@ -164,8 +112,9 @@ class ProductionApp(SearchableAppWindow):
             ("SearchToolMenu", None, _("Search")),
 
         ]
-        self.production_ui = self.add_ui_actions(ui_string, actions)
-        self.set_short_label(_("Production help"), 'producao-inicio')
+        self.production_ui = self.add_ui_actions("", actions,
+                                                 filename="production.xml")
+        self.set_help_section(_("Production help"), 'producao-inicio')
 
         self.add_tool_menu_actions([
             ("SearchToolItem", _("Search"), None, 'stoq-products')])

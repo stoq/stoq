@@ -97,55 +97,6 @@ class ReceivableApp(SearchableAppWindow):
         self._add_receiving()
 
     def create_actions(self):
-        ui_string = """<ui>
-          <menubar action="menubar">
-            <menu action="StoqMenu">
-              <menu action="NewMenu">
-                <placeholder name="NewMenuItemPH">
-                  <menuitem action="AddReceiving"/>
-                </placeholder>
-              </menu>
-              <placeholder name="StoqMenuPH">
-                <menuitem action="ExportCSV"/>
-                <separator name="sep"/>
-                <menuitem action="PrintBill"/>
-                <menuitem action="PrintReceipt"/>
-                <menuitem action="PaymentFlowHistory"/>
-              </placeholder>
-            </menu>
-            <menu action="EditMenu">
-              <placeholder name="EditMenuPH">
-                <menuitem action="CancelPayment"/>
-                <menuitem action="SetNotPaid"/>
-                <menuitem action="ChangeDueDate"/>
-                <menuitem action="Renegotiate"/>
-                <menuitem action="Comments"/>
-              </placeholder>
-            </menu>
-            <placeholder name="AppMenubarPH">
-              <menu action="SearchMenu">
-                <menuitem action="BillCheckSearch"/>
-                <menuitem action="CardPaymentSearch"/>
-              </menu>
-            </placeholder>
-          </menubar>
-          <toolbar action="toolbar">
-            <toolitem action="Print">
-              <menu action="PrintToolMenu">
-                <menuitem action="PrintList"/>
-                <menuitem action="PrintBill"/>
-                <menuitem action="PrintReceipt"/>
-              </menu>
-            </toolitem>
-
-            <separator/>
-            <toolitem action="Receive"/>
-            <toolitem action="Details"/>
-          </toolbar>
-
-    </ui>"""
-
-
         actions = [
             ('menubar', None, ''),
 
@@ -179,7 +130,8 @@ class ReceivableApp(SearchableAppWindow):
             ('Details', gtk.STOCK_INFO, _('Details'), '',
              _('Show details for the payment'),)
         ]
-        self.receivable_ui = self.add_ui_actions(ui_string, actions)
+        self.receivable_ui = self.add_ui_actions(None, actions,
+                                                 filename='receivable.xml')
         self.set_help_section(_("Accounts receivable help"), 'receber-inicio')
 
         self.add_tool_menu_actions([

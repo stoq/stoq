@@ -357,29 +357,6 @@ class FinancialApp(AppWindow):
         self.uimanager.remove_ui(self.financial_ui)
 
     def create_actions(self):
-        ui_string = """<ui>
-          <menubar action="menubar">
-            <menu action="StoqMenu">
-              <menu action="NewMenu">
-                <placeholder action="NewMenuItemPH">
-                  <menuitem action="NewAccount"/>
-                  <menuitem action="NewTransaction"/>
-                </placeholder>
-              </menu>
-              <placeholder name="StoqMenuPH">
-                <menuitem action="Import"/>
-                <menuitem action="ExportCSV"/>
-              </placeholder>
-            </menu>
-          </menubar>
-          <toolbar action="toolbar">
-            <placeholder action="ApplicationToolbar">
-              <separator/>
-              <toolitem action="Edit"/>
-            </placeholder>
-          </toolbar>
-        </ui>"""
-
         actions = [
             ('menubar', None, ''),
 
@@ -406,7 +383,8 @@ class FinancialApp(AppWindow):
             ("Edit", gtk.STOCK_EDIT, _("Edit"), '',),
 
             ]
-        self.financial_ui = self.add_ui_actions(ui_string, actions)
+        self.financial_ui = self.add_ui_actions('', actions,
+                                                filename='financial.xml')
         self.set_help_section(_("Financial help"), 'financial-inicio')
 
     #

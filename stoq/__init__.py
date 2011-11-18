@@ -55,6 +55,7 @@ if library.uninstalled:
     library.add_global_resource('pixmaps', 'data/pixmaps')
     library.add_global_resource('sql', 'data/sql')
     library.add_global_resource('template', 'data/template')
+    library.add_global_resource('uixml', 'data/uixml')
     library.add_resource('plugin', 'plugins')
 
 library.enable_translation()

@@ -100,64 +100,6 @@ class SalesApp(SearchableAppWindow):
         self._new_sale_quote()
 
     def create_actions(self):
-        ui_string = """<ui>
-      <menubar action="menubar">
-        <menu action="StoqMenu">
-          <menu action="NewMenu">
-            <placeholder name="NewMenuItemPH">
-              <menuitem action="SaleQuote"/>
-            </placeholder>
-          </menu>
-          <placeholder name="StoqMenuPH">
-            <separator/>
-            <!-- Must update nfe plugin if this changes -->
-            <menuitem action="SalesPrintInvoice"/>
-            <separator/>
-            <menuitem action="ExportCSV"/>
-          </placeholder>
-        </menu>
-        <menu action="EditMenu">
-          <placeholder name="EditMenuPH">
-            <menuitem action="SalesCancel"/>
-          </placeholder>
-        </menu>
-        <placeholder name="AppMenubarPH">
-          <menu action="LoanMenu">
-            <menuitem action="LoanNew"/>
-            <menuitem action="LoanClose"/>
-            <separator/>
-            <menuitem action="LoanSearch"/>
-            <menuitem action="LoanSearchItems"/>
-          </menu>
-          <menu action="SearchMenu">
-            <menuitem action="SearchSoldItemsByBranch"/>
-            <menuitem action="SearchProduct"/>
-            <menuitem action="SearchService"/>
-            <menuitem action="SearchDelivery"/>
-            <menuitem action="SearchClient"/>
-            <menuitem action="SearchCommission"/>
-          </menu>
-        </placeholder>
-      </menubar>
-      <toolbar action="toolbar">
-        <placeholder name="AppToolbarPH">
-          <toolitem action="SearchToolItem">
-            <menu action="SearchToolMenu">
-              <menuitem action="SearchProduct"/>
-              <menuitem action="SearchClient"/>
-              <menuitem action="SearchService"/>
-              <menuitem action="SearchDelivery"/>
-            </menu>
-          </toolitem>
-        </placeholder>
-        <separator/>
-        <toolitem action="Print"/>
-        <separator/>
-        <toolitem action="Edit"/>
-        <toolitem action="Details"/>
-        <toolitem action="Return"/>
-      </toolbar>
-    </ui>"""
         actions = [
             ('menubar', None, ''),
 
@@ -205,7 +147,8 @@ class SalesApp(SearchableAppWindow):
              _("View the details of the sale"))
         ]
 
-        self.sales_ui = self.add_ui_actions(ui_string, actions)
+        self.sales_ui = self.add_ui_actions("", actions,
+                                            filename="sales.xml")
 
         self.add_tool_menu_actions([
             ("SearchToolItem", _("Search"), None, 'stoq-products')])

@@ -102,63 +102,6 @@ class StockApp(SearchableAppWindow):
         self._receive_purchase()
 
     def create_actions(self):
-        ui_string = """<ui>
-      <menubar action="menubar">
-        <menu action="StoqMenu">
-          <menu action="NewMenu">
-            <placeholder name="NewMenuItemPH">
-              <menuitem action="NewReceiving"/>
-              <menuitem action="NewTransfer"/>
-              <menuitem action="NewStockDecrease"/>
-            </placeholder>
-          </menu>
-
-          <placeholder name="StoqMenuPH">
-            <menuitem action="ExportCSV"/>
-          </placeholder>
-        </menu>
-
-        <menu action="EditMenu">
-          <placeholder name="EditMenuPH">
-            <menuitem action="StockInitial"/>
-          </placeholder>
-        </menu>
-
-        <menu action="ViewMenu">
-          <placeholder name="ViewMenuPH">
-            <menuitem action="StockPictureViewer"/>
-          </placeholder>
-        </menu>
-
-        <placeholder name="AppMenubarPH">
-          <menu action="LoanMenu">
-            <menuitem action="LoanNew"/>
-            <menuitem action="LoanClose"/>
-            <separator/>
-            <menuitem action="LoanSearch"/>
-            <menuitem action="LoanSearchItems"/>
-          </menu>
-          <menu action="SearchMenu">
-            <menuitem action="SearchPurchaseReceiving"/>
-            <menuitem action="SearchProductHistory"/>
-            <menuitem action="SearchTransfer"/>
-            <menuitem action="SearchStockDecrease"/>
-            <menuitem action="SearchPurchasedStockItems"/>
-            <menuitem action="SearchStockItems"/>
-            <menuitem action="SearchClosedStockItems"/>
-          </menu>
-        </placeholder>
-      </menubar>
-      <toolbar action="toolbar">
-        <placeholder name="AppToolbarPH">
-          <toolitem action="Print"/>
-          <separator/>
-          <toolitem action="ProductStockHistory"/>
-          <toolitem action="EditProduct"/>
-        </placeholder>
-      </toolbar>
-    </ui>"""
-
         actions = [
             ('menubar', None, ''),
 
@@ -202,8 +145,8 @@ class StockApp(SearchableAppWindow):
         self.add_ui_actions('', toogle_actions, 'ToogleActions',
                             'toogle')
 
-
-        self.stock_ui = self.add_ui_actions(ui_string, actions)
+        self.stock_ui = self.add_ui_actions('', actions,
+                                            filename='stock.xml')
         self.NewReceiving.set_short_label(_("Receive"))
         self.NewTransfer.set_short_label(_("Transfer"))
         self.EditProduct.props.is_important = True

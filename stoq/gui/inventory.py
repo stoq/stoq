@@ -74,38 +74,6 @@ class InventoryApp(SearchableAppWindow):
         self.uimanager.remove_ui(self.inventory_ui)
 
     def create_actions(self):
-        ui_string = """<ui>
-      <menubar action="menubar">
-        <menu action="StoqMenu">
-          <menu action="NewMenu">
-            <placeholder name="NewMenuItemPH">
-              <menuitem action="NewInventory"/>
-            </placeholder>
-          </menu>
-          <placeholder name="StoqMenuPH">
-            <menuitem action="Print"/>
-            <menuitem action="ExportCSV"/>
-          </placeholder>
-        </menu>
-        <menu action="EditMenu">
-          <placeholder name="EditMenuPH">
-            <menuitem action="CountingAction"/>
-            <menuitem action="AdjustAction"/>
-            <menuitem action="Cancel"/>
-          </placeholder>
-        </menu>
-      </menubar>
-      <toolbar action="toolbar">
-        <placeholder name="AppToolbarPH">
-          <toolitem action="Print"/>
-          <separator/>
-          <toolitem action="Cancel"/>
-          <toolitem action="CountingAction"/>
-          <toolitem action="AdjustAction"/>
-        </placeholder>
-      </toolbar>
-    </ui>"""
-
         actions = [
             ('menubar', None, ''),
             # Inventory
@@ -123,7 +91,8 @@ class InventoryApp(SearchableAppWindow):
              _('Print product list for inventory counting.')),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
         ]
-        self.inventory_ui = self.add_ui_actions(ui_string, actions)
+        self.inventory_ui = self.add_ui_actions('', actions,
+                                                filename='inventory.xml')
         self.set_help_section(_("Inventory help"),
                               'inventario-inicio')
 

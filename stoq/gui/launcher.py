@@ -95,57 +95,6 @@ class Launcher(AppWindow):
             self._on_uimanager__connect_proxy)
         self.uimanager.connect('disconnect-proxy',
             self._on_uimanager__disconnect_proxy)
-        ui_string = """<ui>
-          <menubar action="menubar">
-            <menu action="StoqMenu">
-              <menu action="NewMenu">
-                <placeholder name="NewMenuItemPH"/>
-                <separator/>
-                <menuitem action="NewWindow"/>
-              </menu>
-              <placeholder name="StoqMenuPH"/>
-              <separator/>
-              <menuitem action="ChangePassword"/>
-              <menuitem action="SignOut"/>
-              <separator/>
-              <menuitem action="Close"/>
-              <menuitem action="Quit"/>
-            </menu>
-            <menu action="EditMenu">
-              <placeholder name="EditMenuPH"/>
-              <separator/>
-              <menuitem action="Preferences"/>
-            </menu>
-            <menu action="ViewMenu">
-              <menuitem action="ToggleToolbar"/>
-              <menuitem action="ToggleStatusbar"/>
-              <placeholder name="ViewMenuPH"/>
-              <separator/>
-              <menuitem action="ToggleFullscreen"/>
-            </menu>
-            <placeholder name="AppMenubarPH"/>
-            <placeholder name="ExtraMenubarPH"/>
-            <menu action="HelpMenu">
-              <placeholder name="HelpPH"/>
-              <menuitem action="HelpContents"/>
-              <separator/>
-              <menuitem action="HelpSupport"/>
-              <menuitem action="HelpTranslate"/>
-              <separator/>
-              <menuitem action="HelpAbout"/>
-            </menu>
-          </menubar>
-          <toolbar action="toolbar">
-              <toolitem action="NewToolItem">
-                <menu action="NewToolMenu">
-                  <menuitem action="NewWindow"/>
-                </menu>
-              </toolitem>
-            <toolitem action="Quit"/>
-            <placeholder name="AppToolbarPH"/>
-          </toolbar>
-        </ui>"""
-
         actions = [
             ('menubar', ),
             ('toolbar', ),
@@ -183,7 +132,7 @@ class Launcher(AppWindow):
             # Toolbar
             ("NewToolMenu", None, _("New")),
             ]
-        self.add_ui_actions(ui_string, actions)
+        self.add_ui_actions(None, actions, filename='launcher.xml')
         self.Close.set_sensitive(False)
         toogle_actions = [
             ('ToggleToolbar', None, _("_Toolbar"), '',
