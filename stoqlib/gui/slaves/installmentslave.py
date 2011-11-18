@@ -35,6 +35,7 @@ from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder
@@ -323,6 +324,9 @@ class _InstallmentConfirmationSlave(BaseEditor):
     #
 
     def on_close_date__validate(self, widget, date):
+        if sysparam(self.conn).ALLOW_OUTDATED_OPERATIONS:
+            return
+
         if date > datetime.date.today() or date < self.model.open_date:
             return ValidationError(_("Paid date must be between "
                                      "%s and today") % (self.model.open_date,))
