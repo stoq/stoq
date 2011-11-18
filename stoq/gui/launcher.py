@@ -66,7 +66,7 @@ class Launcher(AppWindow):
         self.runner = runner
         self.options = options
         self.current_app = None
-        self._new_items = []
+        self._tool_items = []
         app = LauncherApp(self)
         AppWindow.__init__(self, app)
         toplevel = self.get_toplevel()
@@ -123,6 +123,7 @@ class Launcher(AppWindow):
 
             # Toolbar
             ("NewToolMenu", None, _("New")),
+            ("SearchToolMenu", None, _("Search")),
             ]
         self.add_ui_actions(None, actions, filename='launcher.xml')
         self.Close.set_sensitive(False)
@@ -141,8 +142,10 @@ class Launcher(AppWindow):
 
         self.add_tool_menu_actions([
             ("NewToolItem", _("New"), '', gtk.STOCK_NEW),
+            ("SearchToolItem", _("Search"), None, gtk.STOCK_FIND),
             ])
         self.NewToolItem.props.is_important = True
+        self.SearchToolItem.props.is_important = True
 
     def create_ui(self):
         self.uimanager.connect('connect-proxy',
@@ -155,15 +158,21 @@ class Launcher(AppWindow):
     #
 
     def add_new_items(self, actions):
-        new_item = self.NewToolItem.get_proxies()[0]
+        self._add_actions_to_tool_item(self.NewToolItem, actions)
+
+    def add_search_items(self, actions):
+        self._add_actions_to_tool_item(self.SearchToolItem, actions)
+
+    def _add_actions_to_tool_item(self, toolitem, actions):
+        new_item = toolitem.get_proxies()[0]
         menu = new_item.get_menu()
         for action in actions:
             action.set_accel_group(self.uimanager.get_accel_group())
             menu_item = action.create_menu_item()
-            self._new_items.append(menu_item)
+            self._tool_items.append(menu_item)
             menu.insert(menu_item, len(list(menu))-2)
         sep = gtk.SeparatorMenuItem()
-        self._new_items.append(sep)
+        self._tool_items.append(sep)
         menu.insert(sep, len(list(menu))-2)
 
     def set_new_menu_sensitive(self, sensitive):
@@ -240,9 +249,9 @@ class Launcher(AppWindow):
         message_area = self.statusbar.get_message_area()
         for child in message_area.get_children()[1:]:
             child.destroy()
-        for item in self._new_items:
+        for item in self._tool_items:
             item.destroy()
-        self._new_items = []
+        self._tool_items = []
         self.Close.set_sensitive(False)
         self.ChangePassword.set_visible(True)
         self.SignOut.set_visible(True)
@@ -420,6 +429,12 @@ class Launcher(AppWindow):
     def on_NewToolItem__activate(self, action):
         if self.current_app:
             self.current_app.new_activate()
+        else:
+            print 'FIXME'
+
+    def on_SearchToolItem__activate(self, action):
+        if self.current_app:
+            self.current_app.search_activate()
         else:
             print 'FIXME'
 

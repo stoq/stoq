@@ -254,6 +254,14 @@ class AppWindow(BaseAppWindow):
         """
         raise NotImplementedError
 
+    def new_activate(self):
+        """Called when the New toolbar item is activated"""
+        raise NotImplementedError
+
+    def search_activate(self):
+        """Called when the Search toolbar item is activated"""
+        raise NotImplementedError
+
     #
     # Public API
     #

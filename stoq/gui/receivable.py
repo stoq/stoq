@@ -143,6 +143,9 @@ class ReceivableApp(SearchableAppWindow):
     def new_activate(self):
         self._add_receiving()
 
+    def search_activate(self):
+        self._run_bill_check_search()
+
     #
     # SearchableAppWindow hooks
     #

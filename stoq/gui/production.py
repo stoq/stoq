@@ -101,10 +101,6 @@ class ProductionApp(SearchableAppWindow):
                                                  filename="production.xml")
         self.set_help_section(_("Production help"), 'producao-inicio')
 
-        self.add_tool_menu_actions([
-            ("SearchToolItem", _("Search"), None, 'stoq-products')])
-        self.SearchToolItem.props.is_important = True
-
         self.NewProduction.set_short_label(_("New Production"))
         self.ProductionPurchaseQuote.set_short_label(_("Purchase"))
         self.SearchProductionItem.set_short_label(_("Search items"))
@@ -114,6 +110,10 @@ class ProductionApp(SearchableAppWindow):
     def create_ui(self):
         self.app.launcher.add_new_items([self.NewProduction,
                                          self.ProductionPurchaseQuote])
+        self.app.launcher.add_new_items([
+            self.SearchProduct,
+            self.SearchService,
+            self.SearchProductionItem])
 
     def activate(self):
         self.search.refresh()
@@ -133,6 +133,10 @@ class ProductionApp(SearchableAppWindow):
 
     def new_activate(self):
         self._open_production_order()
+
+    def search_activate(self):
+        self.run_dialog(ProductionProductSearch, self.conn)
+
 
     #
     # SearchableAppWindow
@@ -227,9 +231,6 @@ class ProductionApp(SearchableAppWindow):
         self.run_dialog(ProductionQuoteDialog, self.conn)
 
     # Search
-
-    def on_SearchToolItem__activate(self, action):
-        self.run_dialog(ProductionProductSearch, self.conn)
 
     def on_SearchProduct__activate(self, action):
         self.run_dialog(ProductionProductSearch, self.conn)

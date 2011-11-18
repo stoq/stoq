@@ -136,11 +136,6 @@ class SalesApp(SearchableAppWindow):
         self.sales_ui = self.add_ui_actions("", actions,
                                             filename="sales.xml")
 
-        self.add_tool_menu_actions([
-            ("SearchToolItem", _("Search"), None, 'stoq-products')])
-
-        self.SearchToolItem.props.is_important = True
-
         self.SaleQuote.set_short_label(_("New Sale Quote"))
         self.SearchClient.set_short_label(_("Clients"))
         self.SearchProduct.set_short_label(_("Products"))
@@ -150,10 +145,17 @@ class SalesApp(SearchableAppWindow):
         self.set_help_section(_("Sales help"), 'vendas-inicio')
 
     def create_ui(self):
-        self.app.launcher.add_new_items([self.SaleQuote])
+
         self._columns = self.get_columns()
         self._setup_columns()
         self._setup_widgets()
+
+        self.app.launcher.add_new_items([self.SaleQuote])
+        self.app.launcher.add_search_items([
+          self.SearchProduct,
+          self.SearchClient,
+          self.SearchService,
+          self.SearchDelivery])
 
     def activate(self):
         self.check_open_inventory()
@@ -164,6 +166,9 @@ class SalesApp(SearchableAppWindow):
 
     def new_activate(self):
         self._new_sale_quote()
+
+    def search_activate(self):
+        self._search_product()
 
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
@@ -388,9 +393,6 @@ class SalesApp(SearchableAppWindow):
         self.run_dialog(LoanItemSearch, self.conn)
 
     # Search
-
-    def on_SearchToolItem__activate(self, action):
-        self._search_product()
 
     def on_SearchClient__activate(self, button):
         self.run_dialog(ClientSearch, self.conn, hide_footer=True)

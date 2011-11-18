@@ -144,6 +144,9 @@ class TillApp(SearchableAppWindow):
     def new_activate(self):
         pass
 
+    def search_activate(self):
+        self._run_search_dialog(TillFiscalOperationsSearch)
+
     #
     # SearchableAppWindow
     #

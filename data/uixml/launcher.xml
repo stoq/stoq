@@ -68,6 +68,10 @@
           <menuitem action="NewWindow"/>
         </menu>
       </toolitem>
+      <toolitem action="SearchToolItem">
+        <menu action="SearchToolMenu">
+        </menu>
+      </toolitem>
     <toolitem action="Quit"/>
     <placeholder name="AppToolbarPH"/>
   </toolbar>
