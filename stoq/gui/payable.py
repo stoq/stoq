@@ -89,7 +89,6 @@ class PayableApp(SearchableAppWindow):
 
     def deactivate(self):
         self.uimanager.remove_ui(self.payable_ui)
-        self.uimanager.remove_ui(self.payable_help_ui)
 
     def create_actions(self):
         ui_string = """<ui>
@@ -160,8 +159,8 @@ class PayableApp(SearchableAppWindow):
               _('Show details for the payment')),
         ]
         self.payable_ui = self.add_ui_actions(ui_string, actions)
-        self.payable_help_ui = self.add_help_ui(_("Accounts payable help"),
-                                                  'pagar-inicio')
+        self.set_help_section(_("Accounts payable help"),
+                              'pagar-inicio')
         self.Pay.props.is_important = True
 
     def new_activate(self):

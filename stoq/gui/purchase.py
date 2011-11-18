@@ -99,7 +99,6 @@ class PurchaseApp(SearchableAppWindow):
 
     def deactivate(self):
         self.uimanager.remove_ui(self.purchase_ui)
-        self.uimanager.remove_ui(self.purchase_help_ui)
 
     def create_actions(self):
         ui_string = """<ui>
@@ -241,8 +240,8 @@ class PurchaseApp(SearchableAppWindow):
         self.Products.set_short_label(_("Products"))
         self.Suppliers.set_short_label(_("Suppliers"))
 
-        self.purchase_help_ui = self.add_help_ui(_("Purchase help"),
-                                                 'compras-inicio')
+        self.set_help_section(_("Purchase help"),
+                              'compras-inicio')
 
     def create_filters(self):
         self.set_text_field_columns(['supplier_name'])

@@ -25,7 +25,6 @@
 
 import datetime
 import gettext
-import locale
 
 import gobject
 import gtk
@@ -36,7 +35,7 @@ from kiwi.log import Logger
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (new_transaction, get_connection,
                                       get_current_branch)
-from stoqlib.lib.interfaces import IAppInfo, IStoqConfig
+from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.webservice import WebService
@@ -44,7 +43,7 @@ from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.base.infobar import InfoBar
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
-from stoqlib.gui.help import show_contents, show_section
+from stoqlib.gui.help import show_section
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.domain.inventory import Inventory
@@ -197,46 +196,6 @@ class AppWindow(BaseAppWindow):
             license = environ.find_resource(domain, name + '.gz')
             return gzip.GzipFile(license)
 
-    def _run_about(self, *args):
-        info = get_utility(IAppInfo)
-        about = gtk.AboutDialog()
-        about.set_name(info.get("name"))
-        about.set_version(info.get("version"))
-        about.set_website(stoq.website)
-        release_date = stoq.release_date
-        about.set_comments('Release Date: %s' %
-                           datetime.datetime(*release_date).strftime('%x'))
-        about.set_copyright('Copyright (C) 2005-2011 Async Open Source')
-
-        # Logo
-        icon_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
-        logo = gtk.gdk.pixbuf_new_from_file(icon_file)
-        about.set_logo(logo)
-
-        # License
-
-        if locale.getlocale()[0] == 'pt_BR':
-            filename = 'COPYING.pt_BR'
-        else:
-            filename = 'COPYING'
-        fp = self._read_resource('docs', filename)
-        about.set_license(fp.read())
-
-        # Authors & Contributors
-        fp = self._read_resource('docs', 'AUTHORS')
-        lines = [a.strip() for a in fp.readlines()]
-        lines.append('') # separate authors from contributors
-        fp = self._read_resource('docs', 'CONTRIBUTORS')
-        lines.extend([c.strip() for c in fp.readlines()])
-        about.set_authors(lines)
-
-        about.run()
-        about.destroy()
-
-    def _show_uri(self, uri):
-        toplevel = self.get_toplevel()
-        gtk.show_uri(toplevel.get_screen(), uri, gtk.gdk.CURRENT_TIME)
-
     def print_report(self, report_class, *args, **kwargs):
         filters = self.search.get_search_filters()
         if filters:
@@ -320,49 +279,27 @@ class AppWindow(BaseAppWindow):
             group.add_action(action)
             setattr(self, action.get_name(), action)
 
-    def add_help_ui(self, help_label=None, help_section=None):
+    def set_help_section(self, label, section):
         def on_HelpHelp__activate(action):
-            show_section(help_section)
-
-        if help_label is not None:
-            ui_string = """<ui>
-            <menubar action="menubar">
-              <menu action="HelpMenu">
-                <menuitem action="HelpHelp"/>
-              </menu>
-            </menubar>
-        </ui>"""
-            help_help_actions = [
-                ("HelpHelp", None, help_label, 'F1',
-                 _("Show help for this Application"),
-                 on_HelpHelp__activate),
-                ]
-            self.add_ui_actions(ui_string, help_help_actions, 'HelpHelpActions')
+            show_section(section)
 
         ui_string = """<ui>
-          <menubar action="menubar">
-            <menu action="HelpMenu">
-              <menuitem action="HelpContents"/>
-              <separator/>
-              <menuitem action="HelpSupport"/>
-              <menuitem action="HelpTranslate"/>
-              <separator/>
-              <menuitem action="HelpAbout"/>
-            </menu>
-          </menubar>
+        <menubar action="menubar">
+          <menu action="HelpMenu">
+            <placeholder name="HelpPH">
+              <menuitem action="HelpHelp"/>
+            </placeholder>
+          </menu>
+        </menubar>
         </ui>"""
-
-        help_actions = [
-            ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, _("Contents"), '<Shift>F1'),
-            ("HelpTranslate", None, _("Translate Stoq..."), None,
-             _("Translate this application online")),
-            ("HelpSupport", None, _("Get support online..."), None,
-             _("Get support for Stoq online")),
-            ("HelpAbout", gtk.STOCK_ABOUT),
+        help_help_actions = [
+            ("HelpHelp", None, label, 'F1',
+             _("Show help for this application"),
+             on_HelpHelp__activate),
             ]
-        return self.add_ui_actions(ui_string, help_actions, 'HelpActions')
-
+        self.help_ui = self.add_ui_actions(
+            ui_string,
+            help_help_actions, 'HelpHelpActions')
 
     def add_debug_ui(self):
         ui_string = """<ui>
@@ -434,20 +371,6 @@ class AppWindow(BaseAppWindow):
     #
     # Callbacks
     #
-
-    # Help
-
-    def on_HelpContents__activate(self, action):
-        show_contents()
-
-    def on_HelpTranslate__activate(self, action):
-        self._show_uri("https://translations.launchpad.net/stoq")
-
-    def on_HelpSupport__activate(self, action):
-        self._show_uri("http://www.stoq.com.br/support")
-
-    def on_HelpAbout__activate(self, action):
-        self._run_about()
 
     # Debug
 

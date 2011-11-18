@@ -274,7 +274,6 @@ class AdminApp(AppWindow):
 
     def deactivate(self):
         self.uimanager.remove_ui(self.admin_ui)
-        self.uimanager.remove_ui(self.admin_help_ui)
 
     def new_activate(self):
         pass
@@ -349,7 +348,7 @@ class AdminApp(AppWindow):
             ("ConfigureParameters", None, _("Parameters..."), '<Control>y'),
             ]
         self.admin_ui = self.add_ui_actions(ui_string, actions)
-        self.admin_help_ui = self.add_help_ui(_("Admin help"), 'admin-inicial')
+        self.set_help_section(_("Admin help"), 'admin-inicial')
 
     #
     # Callbacks

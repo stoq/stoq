@@ -22,18 +22,25 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
 import gettext
+import locale
 import operator
 
 import gtk
 from kiwi.component import get_utility
+from kiwi.environ import environ
 from stoqlib.database.runtime import (new_transaction, finish_transaction,
                                       get_current_user)
+from stoqlib.gui.help import show_contents
 from stoqlib.gui.splash import hide_splash
-from stoqlib.lib.interfaces import IApplicationDescriptions, IStoqConfig
+from stoqlib.lib.interfaces import (IAppInfo, IApplicationDescriptions,
+                                    IStoqConfig)
 
 from stoq.gui.application import AppWindow
 from stoq.lib.applist import Application
+
+import stoq
 
 _ = gettext.gettext
 (COL_LABEL,
@@ -118,6 +125,15 @@ class Launcher(AppWindow):
             </menu>
             <placeholder name="AppMenubarPH"/>
             <placeholder name="ExtraMenubarPH"/>
+            <menu action="HelpMenu">
+              <placeholder name="HelpPH"/>
+              <menuitem action="HelpContents"/>
+              <separator/>
+              <menuitem action="HelpSupport"/>
+              <menuitem action="HelpTranslate"/>
+              <separator/>
+              <menuitem action="HelpAbout"/>
+            </menu>
           </menubar>
           <toolbar action="toolbar">
               <toolitem action="NewToolItem">
@@ -131,7 +147,8 @@ class Launcher(AppWindow):
         </ui>"""
 
         actions = [
-            ('menubar', None, ''),
+            ('menubar', ),
+            ('toolbar', ),
 
             ('StoqMenu', None, _("_File")),
             ('StoqMenuNew', None),
@@ -147,12 +164,23 @@ class Launcher(AppWindow):
             ("Quit", gtk.STOCK_QUIT, _('Quit'), '<control>q',
              _('Exit the application')),
 
+            # Edit
             ('EditMenu', None, _("_Edit")),
             ('Preferences', None, _("_Preferences")),
 
+            # View
             ('ViewMenu', None, _("_View")),
 
-            ('toolbar', None, ''),
+            # Help
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, _("Contents"), '<Shift>F1'),
+            ("HelpTranslate", None, _("Translate Stoq..."), None,
+             _("Translate this application online")),
+            ("HelpSupport", None, _("Get support online..."), None,
+             _("Get support for Stoq online")),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+
+            # Toolbar
             ("NewToolMenu", None, _("New")),
             ]
         self.add_ui_actions(ui_string, actions)
@@ -174,8 +202,6 @@ class Launcher(AppWindow):
             ("NewToolItem", _("New"), '', gtk.STOCK_NEW),
             ])
         self.NewToolItem.props.is_important = True
-
-        self.add_help_ui()
 
     def add_new_items(self, actions):
         new_item = self.NewToolItem.get_proxies()[0]
@@ -250,6 +276,9 @@ class Launcher(AppWindow):
         self.application_box.hide()
         if self.current_app:
             self.current_app.deactivate()
+            if self.current_app.help_ui:
+                self.uimanager.remove_ui(self.current_app.help_ui)
+                self.current_app.help_ui = None
             self.current_widget.destroy()
             self.current_app = None
 
@@ -333,6 +362,46 @@ class Launcher(AppWindow):
 
         return available_applications
 
+    def _show_uri(self, uri):
+        toplevel = self.get_toplevel()
+        gtk.show_uri(toplevel.get_screen(), uri, gtk.gdk.CURRENT_TIME)
+
+    def _run_about(self, *args):
+        info = get_utility(IAppInfo)
+        about = gtk.AboutDialog()
+        about.set_name(info.get("name"))
+        about.set_version(info.get("version"))
+        about.set_website(stoq.website)
+        release_date = stoq.release_date
+        about.set_comments('Release Date: %s' %
+                           datetime.datetime(*release_date).strftime('%x'))
+        about.set_copyright('Copyright (C) 2005-2011 Async Open Source')
+
+        # Logo
+        icon_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
+        logo = gtk.gdk.pixbuf_new_from_file(icon_file)
+        about.set_logo(logo)
+
+        # License
+
+        if locale.getlocale()[0] == 'pt_BR':
+            filename = 'COPYING.pt_BR'
+        else:
+            filename = 'COPYING'
+        fp = self._read_resource('docs', filename)
+        about.set_license(fp.read())
+
+        # Authors & Contributors
+        fp = self._read_resource('docs', 'AUTHORS')
+        lines = [a.strip() for a in fp.readlines()]
+        lines.append('') # separate authors from contributors
+        fp = self._read_resource('docs', 'CONTRIBUTORS')
+        lines.extend([c.strip() for c in fp.readlines()])
+        about.set_authors(lines)
+
+        about.run()
+        about.destroy()
+
     #
     # Kiwi callbacks
     #
@@ -388,6 +457,12 @@ class Launcher(AppWindow):
             widget.child.disconnect_by_func(
                 self._on_tool_item__leave_notify_event)
 
+    def on_iconview__item_activated(self, iconview, path):
+        app = self.model[path][COL_APP]
+        self.runner.run(app, self)
+
+    # File
+
     def on_NewToolItem__activate(self, action):
         if self.current_app:
             self.current_app.new_activate()
@@ -397,19 +472,6 @@ class Launcher(AppWindow):
     def on_NewWindow__activate(self, action):
         launcher = Launcher(self.options, self.runner)
         launcher.show()
-
-    def on_Preferences__activate(self, action):
-        pass
-
-    def on_ToggleToolbar__toggled(self, action):
-        toolbar = self.uimanager.get_widget('/toolbar')
-        toolbar.set_visible(action.get_active())
-
-    def on_ToggleStatusbar__toggled(self, action):
-        self.statusbar.set_visible(action.get_active())
-
-    def on_ToggleFullscreen__toggled(self, action):
-        self.toggle_fullscreen()
 
     def on_Close__activate(self, action):
         if self.current_app and self.current_app.shutdown_application():
@@ -433,6 +495,34 @@ class Launcher(AppWindow):
             self._save_window_size()
             raise SystemExit
 
-    def on_iconview__item_activated(self, iconview, path):
-        app = self.model[path][COL_APP]
-        self.runner.run(app, self)
+    # View
+
+    def on_Preferences__activate(self, action):
+        pass
+
+    # Edit
+
+    def on_ToggleToolbar__toggled(self, action):
+        toolbar = self.uimanager.get_widget('/toolbar')
+        toolbar.set_visible(action.get_active())
+
+    def on_ToggleStatusbar__toggled(self, action):
+        self.statusbar.set_visible(action.get_active())
+
+    def on_ToggleFullscreen__toggled(self, action):
+        self.toggle_fullscreen()
+
+
+    # Help
+
+    def on_HelpContents__activate(self, action):
+        show_contents()
+
+    def on_HelpTranslate__activate(self, action):
+        self._show_uri("https://translations.launchpad.net/stoq")
+
+    def on_HelpSupport__activate(self, action):
+        self._show_uri("http://www.stoq.com.br/support")
+
+    def on_HelpAbout__activate(self, action):
+        self._run_about()

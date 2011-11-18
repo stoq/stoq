@@ -355,7 +355,6 @@ class FinancialApp(AppWindow):
 
     def deactivate(self):
         self.uimanager.remove_ui(self.financial_ui)
-        self.uimanager.remove_ui(self.financial_help_ui)
 
     def create_actions(self):
         ui_string = """<ui>
@@ -408,8 +407,7 @@ class FinancialApp(AppWindow):
 
             ]
         self.financial_ui = self.add_ui_actions(ui_string, actions)
-        self.financial_help_ui = self.add_help_ui(_("Financial help"),
-                'financial-inicio')
+        self.set_help_section(_("Financial help"), 'financial-inicio')
 
     #
     # Private

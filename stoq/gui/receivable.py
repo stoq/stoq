@@ -92,7 +92,6 @@ class ReceivableApp(SearchableAppWindow):
 
     def deactivate(self):
         self.uimanager.remove_ui(self.receivable_ui)
-        self.uimanager.remove_ui(self.receivable_help_ui)
 
     def new_activate(self):
         self._add_receiving()
@@ -181,8 +180,7 @@ class ReceivableApp(SearchableAppWindow):
              _('Show details for the payment'),)
         ]
         self.receivable_ui = self.add_ui_actions(ui_string, actions)
-        self.receivable_help_ui = self.add_help_ui(
-            _("Accounts receivable help"), 'receber-inicio')
+        self.set_help_section(_("Accounts receivable help"), 'receber-inicio')
 
         self.add_tool_menu_actions([
                             ("Print", _("Print"), None,
