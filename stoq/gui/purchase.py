@@ -79,9 +79,6 @@ class PurchaseApp(SearchableAppWindow):
     search_label = _('matching:')
     launcher_embedded = True
 
-    def __init__(self, app):
-        SearchableAppWindow.__init__(self, app)
-
     #
     # Application
     #

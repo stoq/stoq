@@ -74,14 +74,6 @@ class TillApp(SearchableAppWindow):
     search_labels = _(u'matching:')
     launcher_embedded = True
 
-    def __init__(self, app):
-        SearchableAppWindow.__init__(self, app)
-
-        self.current_branch = get_current_branch(self.conn)
-        self._setup_printer()
-        self._setup_widgets()
-        self.refresh()
-
     #
     # Application
     #
@@ -124,6 +116,7 @@ class TillApp(SearchableAppWindow):
         self.Details.props.is_important = True
 
     def create_ui(self):
+        self.current_branch = get_current_branch(self.conn)
         # Groups
         self.main_vbox.set_focus_chain([self.app_vbox])
         self.app_vbox.set_focus_chain([self.search_holder, self.list_vbox])
@@ -133,13 +126,15 @@ class TillApp(SearchableAppWindow):
         #self.footer_hbox.set_focus_chain([self.confirm_order_button,
         #                                  self.return_button,
         #                                  self.details_button])
+        self._setup_printer()
+        self._setup_widgets()
 
     def get_title(self):
         return _('Stoq - Till for Branch %03d') % (
             get_current_branch(self.conn).id, )
 
     def activate(self):
-        self.search.refresh()
+        self.refresh()
         self._printer.check_till()
         self.check_open_inventory()
 

@@ -71,14 +71,6 @@ class PayableApp(SearchableAppWindow):
     search_label = _('matching:')
     launcher_embedded = True
 
-    def __init__(self, app):
-        SearchableAppWindow.__init__(self, app)
-        self._setup_widgets()
-        self._update_widgets()
-        self.Pay.set_sensitive(False)
-        self.PrintReceipt.set_sensitive(False)
-        self.results.connect('has-rows', self._has_rows)
-
     #
     # Application
     #
@@ -120,9 +112,16 @@ class PayableApp(SearchableAppWindow):
                               'pagar-inicio')
         self.Pay.props.is_important = True
 
+    def create_ui(self):
+        self._setup_widgets()
+        self.results.connect('has-rows', self._has_rows)
+
     def activate(self):
         self.search.refresh()
         self.app.launcher.add_new_items([self.AddPayment])
+        self._update_widgets()
+        self.Pay.set_sensitive(False)
+        self.PrintReceipt.set_sensitive(False)
 
     def deactivate(self):
         self.uimanager.remove_ui(self.payable_ui)

@@ -254,9 +254,6 @@ class AdminApp(AppWindow):
     gladefile = "admin"
     launcher_embedded = True
 
-    def __init__(self, app):
-        AppWindow.__init__(self, app)
-
     #
     # Application
     #

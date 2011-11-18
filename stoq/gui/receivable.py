@@ -75,10 +75,6 @@ class ReceivableApp(SearchableAppWindow):
     search_label = _('matching:')
     launcher_embedded = True
 
-    def __init__(self, app):
-        SearchableAppWindow.__init__(self, app)
-        self.results.connect('has-rows', self._has_rows)
-
     #
     # Application
     #
@@ -135,6 +131,7 @@ class ReceivableApp(SearchableAppWindow):
             label='<b>%s</b>' % (_("Total")),
             format='<b>%s</b>',
             parent=parent)
+        self.results.connect('has-rows', self._has_rows)
 
     def activate(self):
         self._update_widgets()

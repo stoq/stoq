@@ -124,10 +124,6 @@ class PosApp(AppWindow):
         # CONFIRM_SALES_ON_TILL doesnt create a coupon
         self._sale_started = False
         self._scale_settings = DeviceSettings.get_scale_settings(self.conn)
-        self._setup_printer()
-        self._setup_widgets()
-        self._setup_proxies()
-        self._clear_order()
 
     #
     # Application
@@ -185,6 +181,10 @@ class PosApp(AppWindow):
                                         self.item_button_box])
         self.item_button_box.set_focus_chain([self.add_button,
                                               self.advanced_search])
+        self._setup_printer()
+        self._setup_widgets()
+        self._setup_proxies()
+        self._clear_order()
 
     def activate(self):
         self.check_open_inventory()

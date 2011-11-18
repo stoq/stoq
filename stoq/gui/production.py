@@ -57,10 +57,6 @@ class ProductionApp(SearchableAppWindow):
     search_label = _(u'matching:')
     launcher_embedded = True
 
-
-    def __init__(self, app):
-        SearchableAppWindow.__init__(self, app)
-
     #
     # Application
     #

@@ -76,11 +76,6 @@ class StockApp(SearchableAppWindow):
     pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
     launcher_embedded = True
 
-    def __init__(self, app):
-        SearchableAppWindow.__init__(self, app)
-        self._setup_widgets()
-        self._update_widgets()
-
     #
     # Application
     #
@@ -140,6 +135,7 @@ class StockApp(SearchableAppWindow):
     def create_ui(self):
         self.app.launcher.add_new_items([self.NewReceiving, self.NewTransfer,
                                          self.NewStockDecrease])
+        self._setup_widgets()
 
     def activate(self):
         self.check_open_inventory()
