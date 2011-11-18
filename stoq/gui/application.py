@@ -118,7 +118,6 @@ class AppWindow(BaseAppWindow):
             toplevel = self.get_toplevel()
             toplevel.add_accel_group(self.uimanager.get_accel_group())
         self.create_ui()
-        self.setup_focus()
 
         if app.name == 'launcher':
             self._check_demo_mode()
@@ -215,12 +214,14 @@ class AppWindow(BaseAppWindow):
         """This is called when the UI such as GtkWidgets should be
         created"""
 
-    def setup_focus(self):
-        """Define this method on child when it's needed."""
-
     def activate(self):
-        """This is called when you switch to an application, can
-        be overridden in a subclass"""
+        """This is when you switch to an application, can
+        be overridden in a subclass."""
+
+    def setup_focus(self):
+        """Define this method on child when it's needed.
+        This is for calling grab_focus(), it's called after the window
+        is shown. focus chains should be created in create_ui()"""
 
     def get_title(self):
         # This method must be redefined in child when it's needed
