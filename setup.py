@@ -93,6 +93,7 @@ data_files = [
     ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
     ('$datadir/sql', listfiles('data', 'sql', '*.py')),
     ('$datadir/template', listfiles('data', 'template', '*.rml')),
+    ('$datadir/uixml', listfiles('data', 'glade', '*.xml')),
     ('$datadir/html', listfiles('data', 'html', '*.html')),
     ('$datadir/html', listfiles('data', 'html', '*.css')),
     ('$datadir/html', listfiles('data', 'html', '*.png')),

@@ -72,6 +72,7 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{_datadir}/stoq/pixmaps
 %{_datadir}/stoq/sql
 %{_datadir}/stoq/template
+%{_datadir}/stoq/uixml
 %{_datadir}/locale/*/LC_MESSAGES/stoq.mo
 %{_datadir}/applications/stoq.desktop
 %{python_sitelib}/stoq

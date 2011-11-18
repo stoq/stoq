@@ -279,39 +279,6 @@ class AdminApp(AppWindow):
         pass
 
     def create_actions(self):
-        ui_string = """<ui>
-          <menubar action="menubar">
-            <placeholder action="AppMenubarPH">
-              <menu action="SearchMenu">
-                <menuitem action="SearchRole"/>
-                <menuitem action="SearchEmployee"/>
-                <menuitem action="SearchCfop"/>
-                <menuitem action="SearchFiscalBook"/>
-                <menuitem action="SearchUserProfile"/>
-                <menuitem action="SearchUser"/>
-                <menuitem action="SearchBranch"/>
-                <menuitem action="SearchComputer"/>
-                <menuitem action="SearchTaxTemplate"/>
-                <menuitem action="SearchEvents"/>
-              </menu>
-              <menu action="ConfigureMenu">
-                <menuitem action="ConfigureDevices"/>
-                <menuitem action="ConfigurePaymentMethods"/>
-                <menuitem action="ConfigurePaymentCategories"/>
-                <menuitem action="ConfigureClientCategories"/>
-                <menuitem action="ConfigureTaxes"/>
-                <menuitem action="ConfigureSintegra"/>
-                <menuitem action="ConfigureParameters"/>
-                <menuitem action="ConfigureInvoices"/>
-                <menuitem action="ConfigureInvoicePrinters"/>
-                <separator name="ConfigureSeparator"/>
-                <menuitem action="ConfigurePlugins"/>
-                <placeholder name="PluginSettings"/>
-              </menu>
-            </placeholder>
-          </menubar>
-        </ui>"""
-
         actions = [
             ('menubar', None, ''),
             # Admin
@@ -347,7 +314,8 @@ class AdminApp(AppWindow):
             ("ConfigureTaxes", None, _("Taxes..."), '<Control>l'),
             ("ConfigureParameters", None, _("Parameters..."), '<Control>y'),
             ]
-        self.admin_ui = self.add_ui_actions(ui_string, actions)
+        self.admin_ui = self.add_ui_actions('', actions,
+                                            filename='admin.xml')
         self.set_help_section(_("Admin help"), 'admin-inicial')
 
     #

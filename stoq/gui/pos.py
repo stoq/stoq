@@ -156,37 +156,6 @@ class PosApp(AppWindow):
         self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').show()
 
     def create_actions(self):
-        ui_string = """<ui>
-      <menubar action="menubar">
-        <menu action="StoqMenu">
-          <placeholder name="StoqMenuPH">
-            <separator/>
-            <menuitem action="TillOpen"/>
-            <menuitem action="TillClose"/>
-          </placeholder>
-        </menu>
-        <menu action="EditMenu">
-          <placeholder name="EditMenuPH">
-             <menuitem action="ConfirmOrder"/>
-             <menuitem action="CancelOrder"/>
-             <separator name="sep"/>
-             <menuitem action="NewDelivery"/>
-          </placeholder>
-        </menu>
-        <placeholder name="AppMenubarPH">
-          <menu action="SearchMenu">
-             <menuitem action="Sales"/>
-             <menuitem action="SoldItemsByBranchSearch"/>
-             <menuitem action="Clients"/>
-             <menuitem action="ProductSearch"/>
-             <menuitem action="ServiceSearch"/>
-             <menuitem action="DeliverySearch"/>
-          </menu>
-          <placeholder name="ExtraMenu"/>
-        </placeholder>
-      </menubar>
-     </ui>"""
-
         actions = [
             ('menubar', None, ''),
 
@@ -212,7 +181,8 @@ class PosApp(AppWindow):
             ("TillClose", None, _("Close Till..."), '<Control>F7'),
 
         ]
-        self.pos_ui = self.add_ui_actions(ui_string, actions)
+        self.pos_ui = self.add_ui_actions('', actions,
+                                          filename='pos.xml')
         self.set_help_section(_("POS help"), 'pdv-inicio')
 
     def create_ui(self):

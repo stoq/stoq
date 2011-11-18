@@ -1,0 +1,75 @@
+<!-- -*- Mode: XML; coding: utf-8 -*- -->
+<!-- vi:si:et:sw=4:sts=4:ts=4 -->
+<!--
+## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+## Author(s): Stoq Team <stoq-devel@async.com.br>
+##
+-->
+
+<ui>
+  <menubar action="menubar">
+    <menu action="StoqMenu">
+      <menu action="NewMenu">
+        <placeholder name="NewMenuItemPH">
+          <menuitem action="NewProduction"/>
+          <menuitem action="ProductionPurchaseQuote"/>
+        </placeholder>
+      </menu>
+
+      <placeholder name="StoqMenuPH">
+        <menuitem action="ExportCSV"/>
+      </placeholder>
+    </menu>
+
+    <menu action="EditMenu">
+      <placeholder name="EditMenuPH">
+        <menuitem action="StartProduction"/>
+        <menuitem action="EditProduction"/>
+      </placeholder>
+    </menu>
+
+    <placeholder name="AppMenubarPH">
+      <menu action="SearchMenu">
+        <menuitem action="SearchProduct"/>
+        <menuitem action="SearchService"/>
+        <menuitem action="SearchProductionItem"/>
+        <menuitem action="SearchProductionHistory"/>
+      </menu>
+    </placeholder>
+
+  </menubar>
+
+  <toolbar action="toolbar">
+    <placeholder name="AppToolbarPH">
+      <toolitem action="SearchToolItem">
+        <menu action="SearchToolMenu">
+          <menuitem action="SearchProduct"/>
+          <menuitem action="SearchService"/>
+          <menuitem action="SearchProductionItem"/>
+        </menu>
+      </toolitem>
+
+      <toolitem action="Print"/>
+      <separator/>
+      <toolitem action="StartProduction"/>
+      <toolitem action="EditProduction"/>
+      <toolitem action="ProductionDetails"/>
+    </placeholder>
+  </toolbar>
+</ui>
