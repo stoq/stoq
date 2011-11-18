@@ -87,42 +87,6 @@ class TillApp(SearchableAppWindow):
     #
 
     def create_actions(self):
-        ui_string = """<ui>
-      <menubar action="menubar">
-        <menu action="StoqMenu">
-            <placeholder name="StoqMenuPH">
-              <menuitem action="TillOpen"/>
-              <menuitem action="TillClose"/>
-              <separator/>
-              <menuitem action="TillAddCash"/>
-              <menuitem action="TillRemoveCash"/>
-              <separator name="sep1"/>
-              <menuitem action="ExportCSV"/>
-            </placeholder>
-        </menu>
-          <placeholder name="AppMenubarPH">
-            <menu action="SearchMenu">
-              <menuitem action="SearchClient"/>
-              <menuitem action="SearchSale"/>
-              <menuitem action="SearchSoldItemsByBranch"/>
-              <separator name="sep2"/>
-              <menuitem action="SearchTillHistory"/>
-              <menuitem action="SearchFiscalTillOperations"/>
-            </menu>
-            <placeholder name="ExtraMenu"/>
-          </placeholder>
-      </menubar>
-      <toolbar action="toolbar">
-        <placeholder name="AppToolbarPH">
-        </placeholder>
-        <separator/>
-        <toolitem action="Confirm"/>
-        <toolitem action="Return"/>
-        <toolitem action="Details"/>
-      </toolbar>
-
-    </ui>"""
-
         actions = [
             ('menubar', None, ''),
 
@@ -151,7 +115,8 @@ class TillApp(SearchableAppWindow):
             ("Details", gtk.STOCK_INFO, _("Details")),
         ]
 
-        self.till_ui = self.add_ui_actions(ui_string, actions)
+        self.till_ui = self.add_ui_actions('', actions,
+                                           filename="till.xml")
         self.set_help_section(_("Till help"), 'caixa-inicio')
 
         self.Confirm.props.is_important = True
