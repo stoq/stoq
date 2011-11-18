@@ -60,18 +60,10 @@ class InventoryApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
-        self._update_widgets()
 
     #
     # Application
     #
-
-    def activate(self):
-        self.search.refresh()
-        self.app.launcher.add_new_items([self.NewInventory])
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.inventory_ui)
 
     def create_actions(self):
         actions = [
@@ -102,6 +94,16 @@ class InventoryApp(SearchableAppWindow):
         self.AdjustAction.props.is_important = True
         self.CountingAction.props.is_important = True
         self.Cancel.props.is_important = True
+
+    def create_ui(self):
+        self.app.launcher.add_new_items([self.NewInventory])
+
+    def activate(self):
+        self.search.refresh()
+        self._update_widgets()
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.inventory_ui)
 
     def new_activate(self):
         if not self.NewInventory.get_sensitive():

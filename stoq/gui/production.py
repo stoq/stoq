@@ -61,17 +61,6 @@ class ProductionApp(SearchableAppWindow):
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
 
-    def activate(self):
-        self.search.refresh()
-        self.app.launcher.add_new_items([self.NewProduction,
-                        self.ProductionPurchaseQuote])
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.production_ui)
-
-    def new_activate(self):
-        self._open_production_order()
-
     #
     # Application
     #
@@ -126,7 +115,12 @@ class ProductionApp(SearchableAppWindow):
         self.StartProduction.set_short_label(_('Start'))
         self.StartProduction.props.is_important = True
 
-    def _update_widgets(self):
+    def create_ui(self):
+        self.app.launcher.add_new_items([self.NewProduction,
+                                         self.ProductionPurchaseQuote])
+
+    def activate(self):
+        self.search.refresh()
         selected = self.results.get_selected()
         can_edit = False
         can_start = False
@@ -138,29 +132,11 @@ class ProductionApp(SearchableAppWindow):
         self.set_sensitive([self.StartProduction], can_start)
         self.set_sensitive([self.ProductionDetails], bool(selected))
 
-    def _get_status_values(self):
-        items = [(text, value)
-                 for value, text in ProductionOrder.statuses.items()]
-        items.insert(0, (_(u'Any'), None))
-        return items
+    def deactivate(self):
+        self.uimanager.remove_ui(self.production_ui)
 
-    def _open_production_order(self, order=None):
-        trans = new_transaction()
-        order = trans.get(order)
-        retval = self.run_dialog(ProductionWizard, trans, order)
-        finish_transaction(trans, retval)
-        trans.close()
-        self.refresh()
-
-    def _start_production_order(self):
-        trans = new_transaction()
-        order = trans.get(self.results.get_selected())
-        assert order is not None
-
-        retval = self.run_dialog(StartProductionDialog, trans, order)
-        finish_transaction(trans, retval)
-        trans.close()
-        self.refresh()
+    def new_activate(self):
+        self._open_production_order()
 
     #
     # SearchableAppWindow
@@ -185,6 +161,34 @@ class ProductionApp(SearchableAppWindow):
                              data_type=datetime.date, width=80),
                 SearchColumn('close_date', title=_(u'Closed'),
                              data_type=datetime.date, width=80)]
+
+    #
+    # Private
+    #
+
+    def _get_status_values(self):
+        items = [(text, value)
+                 for value, text in ProductionOrder.statuses.items()]
+        items.insert(0, (_(u'Any'), None))
+        return items
+
+    def _open_production_order(self, order=None):
+        trans = new_transaction()
+        order = trans.get(order)
+        retval = self.run_dialog(ProductionWizard, trans, order)
+        finish_transaction(trans, retval)
+        trans.close()
+        self.refresh()
+
+    def _start_production_order(self):
+        trans = new_transaction()
+        order = trans.get(self.results.get_selected())
+        assert order is not None
+
+        retval = self.run_dialog(StartProductionDialog, trans, order)
+        finish_transaction(trans, retval)
+        trans.close()
+        self.refresh()
 
     #
     # Kiwi Callbacks

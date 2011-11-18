@@ -77,7 +77,7 @@ class Launcher(AppWindow):
         self._restore_window_size()
 
     #
-    # AppWindow overrides
+    # AppWindow
     #
 
     def activate(self):
@@ -86,15 +86,7 @@ class Launcher(AppWindow):
     def get_title(self):
         return self.app_name
 
-    #
-    # Private
-    #
-
     def create_actions(self):
-        self.uimanager.connect('connect-proxy',
-            self._on_uimanager__connect_proxy)
-        self.uimanager.connect('disconnect-proxy',
-            self._on_uimanager__disconnect_proxy)
         actions = [
             ('menubar', ),
             ('toolbar', ),
@@ -151,6 +143,16 @@ class Launcher(AppWindow):
             ("NewToolItem", _("New"), '', gtk.STOCK_NEW),
             ])
         self.NewToolItem.props.is_important = True
+
+    def create_ui(self):
+        self.uimanager.connect('connect-proxy',
+            self._on_uimanager__connect_proxy)
+        self.uimanager.connect('disconnect-proxy',
+            self._on_uimanager__disconnect_proxy)
+
+    #
+    # Public API
+    #
 
     def add_new_items(self, actions):
         new_item = self.NewToolItem.get_proxies()[0]

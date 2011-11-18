@@ -85,22 +85,6 @@ class StockApp(SearchableAppWindow):
     # Application
     #
 
-    def activate(self):
-        self.check_open_inventory()
-        self._update_widgets()
-        self.app.launcher.add_new_items([self.NewReceiving, self.NewTransfer,
-                                         self.NewStockDecrease])
-        self.search.refresh()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.stock_ui)
-
-    def new_activate(self):
-        if not self.NewReceiving.get_sensitive():
-            warning(_("You cannot receive a purchase with an open inventory."))
-            return
-        self._receive_purchase()
-
     def create_actions(self):
         actions = [
             ('menubar', None, ''),
@@ -153,8 +137,33 @@ class StockApp(SearchableAppWindow):
         self.ProductStockHistory.props.is_important = True
         self.set_help_section(_("Stock help"), 'vendas-inicio')
 
+    def create_ui(self):
+        self.app.launcher.add_new_items([self.NewReceiving, self.NewTransfer,
+                                         self.NewStockDecrease])
+
+    def activate(self):
+        self.check_open_inventory()
+        self._update_widgets()
+        self.search.refresh()
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.stock_ui)
+
+    def new_activate(self):
+        if not self.NewReceiving.get_sensitive():
+            warning(_("You cannot receive a purchase with an open inventory."))
+            return
+        self._receive_purchase()
+
+    def set_open_inventory(self):
+        self.set_sensitive(self._inventory_widgets, False)
+
+    #
+    # SearchableAppWindow
+    #
+
     def create_filters(self):
-        self.executer.set_query(self.query)
+        self.executer.set_query(self._query)
         self.set_text_field_columns(['description'])
         self.branch_filter = ComboSearchFilter(
             _('Show by:'), self._get_branches())
@@ -182,18 +191,15 @@ class StockApp(SearchableAppWindow):
                        data_type=bool, width=80),
                  ]
 
-    def query(self, query, having, conn):
+    #
+    # Private API
+    #
+
+    def _query(self, query, having, conn):
         branch = self.branch_filter.get_state().value
         return self.search_table.select_by_branch(query, branch,
                                                   having=having,
                                                   connection=conn)
-
-    def set_open_inventory(self):
-        self.set_sensitive(self._inventory_widgets, False)
-
-    #
-    # Private API
-    #
 
     def _get_branches(self):
         items = [(b.person.name, b)

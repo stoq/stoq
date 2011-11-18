@@ -86,17 +86,6 @@ class TillApp(SearchableAppWindow):
     # Application
     #
 
-    def activate(self):
-        self.search.refresh()
-        self._printer.check_till()
-        self.check_open_inventory()
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.till_ui)
-
-    def new_activate(self):
-        pass
-
     def create_actions(self):
         ui_string = """<ui>
       <menubar action="menubar">
@@ -180,6 +169,25 @@ class TillApp(SearchableAppWindow):
         #                                  self.return_button,
         #                                  self.details_button])
 
+    def get_title(self):
+        return _('Stoq - Till for Branch %03d') % (
+            get_current_branch(self.conn).id, )
+
+    def activate(self):
+        self.search.refresh()
+        self._printer.check_till()
+        self.check_open_inventory()
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.till_ui)
+
+    def new_activate(self):
+        pass
+
+    #
+    # SearchableAppWindow
+    #
+
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
 
@@ -191,28 +199,6 @@ class TillApp(SearchableAppWindow):
         status_filter.select(Sale.STATUS_CONFIRMED)
         self.add_filter(status_filter, position=SearchFilterPosition.TOP,
                         columns=['status'])
-
-    def _query_executer(self, query, having, conn):
-        # We should only show Sales that
-        # 1) In the current branch (FIXME: Should be on the same station.
-                                    # See bug 4266)
-        # 2) Are in the status QUOTE or ORDERED.
-        # 3) For the order statuses, the date should be the same as today
-
-        new = AND(Sale.q.branchID == self.current_branch.id,
-                 OR(Sale.q.status == Sale.STATUS_QUOTE,
-                    Sale.q.status == Sale.STATUS_ORDERED,
-                    const.DATE(Sale.q.open_date) == date.today()))
-
-        if query:
-            query = AND(query, new)
-        else:
-            query = new
-
-        return self.search_table.select(query, having=having, connection=conn)
-
-    def get_title(self):
-        return _('Stoq - Till for Branch %03d') % get_current_branch(self.conn).id
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), width=60,
@@ -236,6 +222,25 @@ class TillApp(SearchableAppWindow):
     #
     # Private
     #
+
+    def _query_executer(self, query, having, conn):
+        # We should only show Sales that
+        # 1) In the current branch (FIXME: Should be on the same station.
+                                    # See bug 4266)
+        # 2) Are in the status QUOTE or ORDERED.
+        # 3) For the order statuses, the date should be the same as today
+
+        new = AND(Sale.q.branchID == self.current_branch.id,
+                 OR(Sale.q.status == Sale.STATUS_QUOTE,
+                    Sale.q.status == Sale.STATUS_ORDERED,
+                    const.DATE(Sale.q.open_date) == date.today()))
+
+        if query:
+            query = AND(query, new)
+        else:
+            query = new
+
+        return self.search_table.select(query, having=having, connection=conn)
 
     def _setup_printer(self):
         self._printer = FiscalPrinterHelper(self.conn,

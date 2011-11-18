@@ -255,28 +255,11 @@ class AdminApp(AppWindow):
     launcher_embedded = True
 
     def __init__(self, app):
-        self.tasks = Tasks(self)
         AppWindow.__init__(self, app)
-        self.tasks.set_model(self.model)
 
     #
     # Application
     #
-
-    def activate(self):
-        self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
-        self.iconview.set_text_column(COL_LABEL)
-        self.iconview.set_pixbuf_column(COL_PIXBUF)
-        self.iconview.grab_focus()
-        self.iconview.connect('item-activated', self.tasks.on_item_activated)
-        self.tasks.add_defaults()
-        self.iconview.select_path(self.model[0].path)
-
-    def deactivate(self):
-        self.uimanager.remove_ui(self.admin_ui)
-
-    def new_activate(self):
-        pass
 
     def create_actions(self):
         actions = [
@@ -317,6 +300,28 @@ class AdminApp(AppWindow):
         self.admin_ui = self.add_ui_actions('', actions,
                                             filename='admin.xml')
         self.set_help_section(_("Admin help"), 'admin-inicial')
+
+    def new_activate(self):
+        print 'FIXME: Add user/employee/profile'
+
+    def create_ui(self):
+        self.tasks = Tasks(self)
+        self.tasks.set_model(self.model)
+        self.tasks.add_defaults()
+        self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
+        self.iconview.set_text_column(COL_LABEL)
+        self.iconview.set_pixbuf_column(COL_PIXBUF)
+        self.iconview.connect('item-activated', self.tasks.on_item_activated)
+        self.iconview.select_path(self.model[0].path)
+
+    def activate(self):
+        pass
+
+    def deactivate(self):
+        self.uimanager.remove_ui(self.admin_ui)
+
+    def setup_focus(self):
+        self.iconview.grab_focus()
 
     #
     # Callbacks
