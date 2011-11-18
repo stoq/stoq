@@ -94,7 +94,6 @@ class StockApp(SearchableAppWindow):
 
     def deactivate(self):
         self.uimanager.remove_ui(self.stock_ui)
-        self.uimanager.remove_ui(self.help_ui)
 
     def new_activate(self):
         if not self.NewReceiving.get_sensitive():
@@ -209,7 +208,7 @@ class StockApp(SearchableAppWindow):
         self.NewTransfer.set_short_label(_("Transfer"))
         self.EditProduct.props.is_important = True
         self.ProductStockHistory.props.is_important = True
-        self.help_ui = self.add_help_ui(_("Stock help"), 'vendas-inicio')
+        self.set_help_section(_("Stock help"), 'vendas-inicio')
 
     def create_filters(self):
         self.executer.set_query(self.query)

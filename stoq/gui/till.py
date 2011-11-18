@@ -93,7 +93,6 @@ class TillApp(SearchableAppWindow):
 
     def deactivate(self):
         self.uimanager.remove_ui(self.till_ui)
-        self.uimanager.remove_ui(self.help_ui)
 
     def new_activate(self):
         pass
@@ -164,7 +163,7 @@ class TillApp(SearchableAppWindow):
         ]
 
         self.till_ui = self.add_ui_actions(ui_string, actions)
-        self.help_ui = self.add_help_ui(_("Till help"), 'caixa-inicio')
+        self.set_help_section(_("Till help"), 'caixa-inicio')
 
         self.Confirm.props.is_important = True
         self.Return.props.is_important = True

@@ -95,7 +95,6 @@ class SalesApp(SearchableAppWindow):
 
     def deactivate(self):
         self.uimanager.remove_ui(self.sales_ui)
-        self.uimanager.remove_ui(self.help_ui)
 
     def new_activate(self):
         self._new_sale_quote()
@@ -219,7 +218,7 @@ class SalesApp(SearchableAppWindow):
         self.SearchService.set_short_label(_("Services"))
         self.SearchDelivery.set_short_label(_("Deliveries"))
 
-        self.help_ui = self.add_help_ui(_("Sales help"), 'vendas-inicio')
+        self.set_help_section(_("Sales help"), 'vendas-inicio')
 
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'salesperson_name'])

@@ -72,7 +72,6 @@ class InventoryApp(SearchableAppWindow):
 
     def deactivate(self):
         self.uimanager.remove_ui(self.inventory_ui)
-        self.uimanager.remove_ui(self.help_ui)
 
     def create_actions(self):
         ui_string = """<ui>
@@ -125,8 +124,8 @@ class InventoryApp(SearchableAppWindow):
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
         ]
         self.inventory_ui = self.add_ui_actions(ui_string, actions)
-        self.help_ui = self.add_help_ui(_("Inventory help"),
-                                        'inventario-inicio')
+        self.set_help_section(_("Inventory help"),
+                              'inventario-inicio')
 
         self.AdjustAction.set_short_label(_("Adjust"))
         self.CountingAction.set_short_label(_("Count"))

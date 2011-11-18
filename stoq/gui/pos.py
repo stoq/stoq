@@ -150,9 +150,8 @@ class PosApp(AppWindow):
 
     def deactivate(self):
         self.uimanager.remove_ui(self.pos_ui)
-        self.uimanager.remove_ui(self.help_ui)
 
-        # Re enable toolbar 
+        # Re enable toolbar
         self.uimanager.get_widget('/toolbar').show()
         self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').show()
 
@@ -214,7 +213,7 @@ class PosApp(AppWindow):
 
         ]
         self.pos_ui = self.add_ui_actions(ui_string, actions)
-        self.help_ui = self.add_help_ui(_("POS help"), 'pdv-inicio')
+        self.set_help_section(_("POS help"), 'pdv-inicio')
 
     def create_ui(self):
         self.sale_items.set_columns(self.get_columns())

@@ -68,7 +68,6 @@ class ProductionApp(SearchableAppWindow):
 
     def deactivate(self):
         self.uimanager.remove_ui(self.production_ui)
-        self.uimanager.remove_ui(self.help_ui)
 
     def new_activate(self):
         self._open_production_order()
@@ -166,12 +165,11 @@ class ProductionApp(SearchableAppWindow):
 
         ]
         self.production_ui = self.add_ui_actions(ui_string, actions)
-        self.help_ui = self.add_help_ui(_("Production help"), 'producao-inicio')
+        self.set_short_label(_("Production help"), 'producao-inicio')
 
         self.add_tool_menu_actions([
             ("SearchToolItem", _("Search"), None, 'stoq-products')])
         self.SearchToolItem.props.is_important = True
-
 
         self.NewProduction.set_short_label(_("New Production"))
         self.ProductionPurchaseQuote.set_short_label(_("Purchase"))
