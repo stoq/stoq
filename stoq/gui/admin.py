@@ -72,9 +72,11 @@ class Tasks(object):
 
         self.theme = gtk.icon_theme_get_default()
 
-    def add_defaults(self, model):
+    def set_model(self, model):
         self.model = model
         self.model.clear()
+
+    def add_defaults(self):
         items = [(_('Branches'), 'branches',
                   'gtk-home'),
                  (_('Client Categories'), 'client_categories',
@@ -255,6 +257,7 @@ class AdminApp(AppWindow):
     def __init__(self, app):
         self.tasks = Tasks(self)
         AppWindow.__init__(self, app)
+        self.tasks.set_model(self.model)
 
     #
     # Application
@@ -266,7 +269,7 @@ class AdminApp(AppWindow):
         self.iconview.set_pixbuf_column(COL_PIXBUF)
         self.iconview.grab_focus()
         self.iconview.connect('item-activated', self.tasks.on_item_activated)
-        self.tasks.add_defaults(self.model)
+        self.tasks.add_defaults()
         self.iconview.select_path(self.model[0].path)
 
     def deactivate(self):
