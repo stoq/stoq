@@ -39,8 +39,6 @@
     </menu>
     <menu action="EditMenu">
       <placeholder name="EditMenuPH">
-        <menuitem action="Details"/>
-        <separator/>
         <menuitem action="StockCost"/>
         <separator name="sep2"/>
         <menuitem action="CloseInConsignment"/>
@@ -50,6 +48,7 @@
     <placeholder name="AppMenubarPH">
       <menu action="OrderMenu">
         <menuitem action="Details"/>
+        <separator/>
         <menuitem action="Edit"/>
         <menuitem action="Confirm"/>
         <menuitem action="Finish"/>
