@@ -34,13 +34,14 @@
         </placeholder>
       </menu>
       <placeholder name="StoqMenuPH">
+        <menuitem action="Print"/>
         <menuitem action="ExportCSV"/>
       </placeholder>
     </menu>
     <menu action="EditMenu">
       <placeholder name="EditMenuPH">
         <menuitem action="StockCost"/>
-        <separator name="sep2"/>
+        <separator/>
         <menuitem action="CloseInConsignment"/>
         <menuitem action="SearchInConsignmentItems"/>
       </placeholder>
@@ -53,7 +54,6 @@
         <menuitem action="Confirm"/>
         <menuitem action="Finish"/>
         <menuitem action="Cancel"/>
-        <menuitem action="Print"/>
       </menu>
       <menu action="SearchMenu">
         <menuitem action="BaseCategories"/>
@@ -79,7 +79,6 @@
     <menuitem action="Confirm"/>
     <menuitem action="Finish"/>
     <menuitem action="Cancel"/>
-    <menuitem action="Print"/>
   </popup>
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">

@@ -30,6 +30,7 @@
         <separator/>
         <menuitem action="NewWindow"/>
       </menu>
+      <separator/>
       <placeholder name="StoqMenuPH"/>
       <separator/>
       <menuitem action="ChangePassword"/>
