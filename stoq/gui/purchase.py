@@ -88,6 +88,8 @@ class PurchaseApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Purchase
+            ("Print", gtk.STOCK_PRINT, _("Print"), '',
+             _("Print the list of orders")),
             ("StockCost", None, _("_Stock cost...")),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
             # Consignment
@@ -133,8 +135,6 @@ class PurchaseApp(SearchableAppWindow):
             ("SearchToolMenuQuotes", None, _("Quote"), '',
               _("Search for a quote")),
 
-            ("Print", gtk.STOCK_PRINT, _("Print"), '',
-             _("Print the order")),
             ("Confirm", gtk.STOCK_APPLY, _("Confirm"), '',
              _("Confirm the order, this will send it to the supplier")),
             ("Cancel", gtk.STOCK_CANCEL, _("Cancel"), '',
