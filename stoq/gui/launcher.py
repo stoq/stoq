@@ -153,34 +153,6 @@ class Launcher(AppWindow):
         self.uimanager.connect('disconnect-proxy',
             self._on_uimanager__disconnect_proxy)
 
-    #
-    # Public API
-    #
-
-    def add_new_items(self, actions):
-        self._add_actions_to_tool_item(self.NewToolItem, actions)
-
-    def add_search_items(self, actions):
-        self._add_actions_to_tool_item(self.SearchToolItem, actions)
-
-    def _add_actions_to_tool_item(self, toolitem, actions):
-        new_item = toolitem.get_proxies()[0]
-        menu = new_item.get_menu()
-        for action in actions:
-            action.set_accel_group(self.uimanager.get_accel_group())
-            menu_item = action.create_menu_item()
-            self._tool_items.append(menu_item)
-            menu.insert(menu_item, len(list(menu))-2)
-        sep = gtk.SeparatorMenuItem()
-        self._tool_items.append(sep)
-        menu.insert(sep, len(list(menu))-2)
-
-    def set_new_menu_sensitive(self, sensitive):
-        new_item = self.NewToolItem.get_proxies()[0]
-        button = new_item.get_children()[0].get_children()[0]
-        button.set_sensitive(sensitive)
-
-    def create_ui(self):
         menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(menubar, False, False)
         self.main_vbox.reorder_child(menubar, 0)
@@ -214,6 +186,21 @@ class Launcher(AppWindow):
 
         user = get_current_user(self.conn)
         self.statusbar.push(0, _("User: %s") % (user.person.name, ))
+
+    #
+    # Public API
+    #
+
+    def add_new_items(self, actions):
+        self._add_actions_to_tool_item(self.NewToolItem, actions)
+
+    def add_search_items(self, actions):
+        self._add_actions_to_tool_item(self.SearchToolItem, actions)
+
+    def set_new_menu_sensitive(self, sensitive):
+        new_item = self.NewToolItem.get_proxies()[0]
+        button = new_item.get_children()[0].get_children()[0]
+        button.set_sensitive(sensitive)
 
     def show_app(self, app, app_window):
         app_window.reparent(self.application_box)
@@ -264,6 +251,18 @@ class Launcher(AppWindow):
     #
     # Private
     #
+
+    def _add_actions_to_tool_item(self, toolitem, actions):
+        new_item = toolitem.get_proxies()[0]
+        menu = new_item.get_menu()
+        for action in actions:
+            action.set_accel_group(self.uimanager.get_accel_group())
+            menu_item = action.create_menu_item()
+            self._tool_items.append(menu_item)
+            menu.insert(menu_item, len(list(menu))-2)
+        sep = gtk.SeparatorMenuItem()
+        self._tool_items.append(sep)
+        menu.insert(sep, len(list(menu))-2)
 
     def _restore_window_size(self):
         config = get_utility(IStoqConfig)
