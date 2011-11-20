@@ -88,14 +88,14 @@ class PurchaseApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Purchase
-            ("FinishOrder", None, _("Finish order...")),
-            ("ConfirmOrder", 'stoq-delivery', _("Confirm order...")),
             ("StockCost", None, _("_Stock cost...")),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-
             # Consignment
             ("CloseInConsignment", None, _("Close consigment...")),
             ("SearchInConsignmentItems", None, _("Search consigment items...")),
+
+            # Order
+            ("OrderMenu", None, _("Order")),
 
             # Search
             ("SearchMenu", None, _("_Search")),
@@ -142,7 +142,9 @@ class PurchaseApp(SearchableAppWindow):
             ("Edit", gtk.STOCK_EDIT, _("Edit"), '',
              _("Edit the order, allows you to change the details of it")),
             ("Details", gtk.STOCK_INFO, _("Details"), '',
-             _("View the details of an order"))
+             _("View the details of an order")),
+            ("Finish", gtk.STOCK_APPLY, _("Finish"), '',
+             _('Complete a partially received order.')),
         ]
 
         self.purchase_ui = self.add_ui_actions("", actions,
@@ -157,6 +159,7 @@ class PurchaseApp(SearchableAppWindow):
 
         self.set_help_section(_("Purchase help"),
                               'compras-inicio')
+        self.popup = self.uimanager.get_widget('/PurchaseSelection')
 
     def create_ui(self):
         self.app.launcher.add_new_items([
@@ -175,7 +178,6 @@ class PurchaseApp(SearchableAppWindow):
                                       format='<b>%s</b>',
                                       parent=parent)
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
-        self.ConfirmOrder.set_sensitive(False)
         self.Confirm.set_sensitive(False)
 
     def activate(self):
@@ -257,10 +259,9 @@ class PurchaseApp(SearchableAppWindow):
 
         self.Cancel.set_sensitive(can_cancel)
         self.Edit.set_sensitive(can_edit)
-        self.ConfirmOrder.set_sensitive(can_send_supplier)
         self.Confirm.set_sensitive(can_send_supplier)
         self.Details.set_sensitive(one_selected)
-        self.FinishOrder.set_sensitive(can_finish)
+        self.Finish.set_sensitive(can_finish)
 
     def _new_order(self, order=None, edit_mode=False):
         trans = new_transaction()
@@ -324,6 +325,21 @@ class PurchaseApp(SearchableAppWindow):
         trans.commit()
         self.refresh()
 
+    def _finish_order(self):
+        order_views = self.results.get_selected_rows()
+        qty = len(order_views)
+        if qty != 1:
+            raise ValueError('You should have only one order selected '
+                             'at this point, got %d' % qty)
+
+        trans = new_transaction()
+        order = trans.get(order_views[0].purchase)
+        model = self.run_dialog(PurchaseFinishWizard, trans, order)
+        finish_transaction(trans, model)
+        trans.close()
+
+        self.refresh()
+
     def _print_selected_items(self):
         items = self.results.get_selected_rows() or list(self.results)
         self.print_report(PurchaseReport, self.results, items,
@@ -363,21 +379,6 @@ class PurchaseApp(SearchableAppWindow):
             self.refresh()
         trans.close()
 
-    def _finish_order(self):
-        order_views = self.results.get_selected_rows()
-        qty = len(order_views)
-        if qty != 1:
-            raise ValueError('You should have only one order selected '
-                             'at this point, got %d' % qty)
-
-        trans = new_transaction()
-        order = trans.get(order_views[0].purchase)
-        model = self.run_dialog(PurchaseFinishWizard, trans, order)
-        finish_transaction(trans, model)
-        trans.close()
-
-        self.refresh()
-
     def _new_product(self):
         trans = new_transaction()
         model = self.run_dialog(ProductEditor, trans)
@@ -397,6 +398,9 @@ class PurchaseApp(SearchableAppWindow):
     def key_control_a(self, *args):
         # FIXME Remove this method after gazpacho bug fix.
         self._new_order()
+
+    def on_results__right_click(self, results, result, event):
+        self.popup.popup(None, None, None, event.button, event.time)
 
     def on_results__row_activated(self, klist, purchase_order_view):
         self._run_details_dialog()
@@ -425,16 +429,13 @@ class PurchaseApp(SearchableAppWindow):
     def on_Confirm__activate(self, button):
         self._send_selected_items_to_supplier()
 
-    # Order
-
-    def on_FinishOrder__activate(self, action):
+    def on_Finish__activate(self, action):
         self._finish_order()
+
+    # Order
 
     def on_StockCost__activate(self, action):
         self.run_dialog(StockCostDialog, self.conn, None)
-
-    def on_ConfirmOrder__activate(self, action):
-        self._send_selected_items_to_supplier()
 
     # Consignment
 
