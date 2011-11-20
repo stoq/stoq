@@ -86,9 +86,9 @@ class StockApp(SearchableAppWindow):
 
             # Stock
             ("StockMenu", None, _("_Stock")),
-            ("NewReceiving", 'stoq-receiving', _("_Receive..."), '<Control>r'),
-            ('NewTransfer', 'gtk-convert', _('Transfer...'), '<Control>t'),
-            ('NewStockDecrease', None, _('Decrease stock...')),
+            ("NewReceiving", 'stoq-receiving', _("_Receive order"), '<Control>r'),
+            ('NewTransfer', 'gtk-convert', _('Transfer'), '<Control>t'),
+            ('NewStockDecrease', None, _('Decrease stock')),
             ('StockInitial', 'gtk-go-up', _('Register initial stock...')),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
 

@@ -121,8 +121,6 @@ class SalesApp(SearchableAppWindow):
             ("SearchCommission", None, _("Commissions"),
              "<Control><Alt>o"),
 
-            ("SearchToolMenu", None, _("Search")),
-
             ("Print", gtk.STOCK_PRINT, _("Print"), '',
              _("Print this sale listing")),
             ("Return", gtk.STOCK_CANCEL, _("Return sale"), '',

@@ -67,7 +67,7 @@ class ProductionApp(SearchableAppWindow):
 
             # Production
             ('NewProduction', gtk.STOCK_NEW,
-             _('New production order...'), '<Control>o',
+             _('Production order'), '<Control>o',
              _('Create a new production')),
             ('StartProduction', gtk.STOCK_CONVERT, _('Start production...'),
              '<Control>t',
@@ -79,8 +79,7 @@ class ProductionApp(SearchableAppWindow):
             '',
             _('See production details and register produced itens')),
             ('ProductionPurchaseQuote', 'stoq-purchase-app',
-             _('New Purchase Quote...'),
-             '<Control>p'),
+             _('Purchase quote'), '<Control>p'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
 
             ("Print", gtk.STOCK_PRINT, _("Print"), '',
@@ -93,8 +92,6 @@ class ProductionApp(SearchableAppWindow):
             ("SearchProductionItem", 'stoq-production-app', _("Production items..."),
              '<Control>r'),
             ("SearchProductionHistory", None, _("Production history..."), '<Control>h'),
-
-            ("SearchToolMenu", None, _("Search")),
 
         ]
         self.production_ui = self.add_ui_actions("", actions,
@@ -110,10 +107,11 @@ class ProductionApp(SearchableAppWindow):
     def create_ui(self):
         self.app.launcher.add_new_items([self.NewProduction,
                                          self.ProductionPurchaseQuote])
-        self.app.launcher.add_new_items([
+        self.app.launcher.add_search_items([
             self.SearchProduct,
             self.SearchService,
-            self.SearchProductionItem])
+            self.SearchProductionItem,
+            ])
 
     def activate(self):
         self.search.refresh()
