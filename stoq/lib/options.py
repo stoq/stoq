@@ -84,5 +84,14 @@ def get_option_parser():
                      action='store_false',
                      help="do not load stoq.conf",
                      dest='load_config')
+    # These options are parsed in gtk_init() which is
+    # called when the gtk module is imported.
+    # To be able to use them and still have optparse complain
+    # about invalid arguments we need to add fake verious of
+    # them here.
+    group.add_option('', '--g-fatal-warnings',
+                     help=optparse.SUPPRESS_HELP,
+                     action='store_true',
+                     dest='fatal_warnings')
     parser.add_option_group(group)
     return parser
