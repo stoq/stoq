@@ -179,6 +179,10 @@ class PurchaseApp(SearchableAppWindow):
                                       parent=parent)
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.Confirm.set_sensitive(False)
+        self.app.launcher.NewToolItem.set_tooltip(
+            _("Create a new order"))
+        self.app.launcher.SearchToolItem.set_tooltip(
+            _("Search for an order"))
 
     def activate(self):
         self._update_view()

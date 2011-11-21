@@ -75,13 +75,11 @@ class Launcher(AppWindow):
         hide_splash()
         Launcher.launchers.append(self)
         self._restore_window_size()
+        self.hide_app()
 
     #
     # AppWindow
     #
-
-    def activate(self):
-        self.hide_app()
 
     def get_title(self):
         return self.app_name
@@ -210,6 +208,10 @@ class Launcher(AppWindow):
         self.ChangePassword.set_visible(False)
         self.SignOut.set_visible(False)
         self.Quit.set_visible(False)
+        self.NewToolItem.set_tooltip("")
+        self.NewToolItem.set_sensitive(True)
+        self.SearchToolItem.set_tooltip("")
+        self.SearchToolItem.set_sensitive(True)
 
         self.iconview_vbox.hide()
 
@@ -244,7 +246,9 @@ class Launcher(AppWindow):
         self.SignOut.set_visible(True)
         self.Quit.set_visible(True)
         self.set_new_menu_sensitive(True)
-
+        self.NewToolItem.set_tooltip(_("Open a new window"))
+        self.SearchToolItem.set_tooltip("")
+        self.SearchToolItem.set_sensitive(False)
         self.iconview.grab_focus()
         self.iconview_vbox.show()
 
