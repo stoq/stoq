@@ -380,6 +380,50 @@ class TestProduct(DomainTest):
         stock_item = storable.get_stock_item(branch)
         self.assertEquals(stock_item.stock_cost, 10)
 
+    def test_lead_time(self):
+        product = self.create_product()
+        product.addFacet(IStorable, connection=self.trans)
+        branch = get_current_branch(self.trans)
+        #storable.increase_stock(1, get_current_branch(self.trans))
+
+        supplier1 = self.create_supplier()
+        ProductSupplierInfo(connection=self.trans, product=product,
+                            supplier=supplier1, lead_time=10)
+
+        self.assertEqual(product.get_max_lead_time(1, branch), 10)
+
+        supplier2 = self.create_supplier()
+        ProductSupplierInfo(connection=self.trans, product=product,
+                            supplier=supplier2, lead_time=20)
+        self.assertEqual(product.get_max_lead_time(1, branch), 20)
+
+        # Now for composed products
+        product = self.create_product(create_supplier=False)
+        product.is_composed = True
+        product.production_time = 5
+        product.addFacet(IStorable, connection=self.trans)
+
+        component = self.create_product(create_supplier=False)
+        component.addFacet(IStorable, connection=self.trans)
+        ProductSupplierInfo(connection=self.trans, product=component,
+                            supplier=supplier1, lead_time=7)
+        self.assertEqual(component.get_max_lead_time(1, branch), 7)
+
+        pc = ProductComponent(product=product, component=component, quantity=1,
+                         connection=self.trans)
+
+        self.assertEqual(product.get_max_lead_time(1, branch), 12)
+
+        # Increase the component stock
+        IStorable(component).increase_stock(1, branch)
+
+        self.assertEqual(product.get_max_lead_time(1, branch), 5)
+
+        # Increase the quantity required:
+        pc.quantity = 2
+        self.assertEqual(product.get_max_lead_time(1, branch), 12)
+
+
 
 class TestProductSellableItem(DomainTest):
 
@@ -538,3 +582,4 @@ class TestProductQuality(DomainTest):
         self.assertEqual(test.get_range_value(), (Decimal(-5), Decimal(5)))
 
         self.assertRaises(AssertionError, test.get_boolean_value)
+

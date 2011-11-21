@@ -229,23 +229,27 @@ class SaleQuoteItemStep(SellableItemStep):
         missing = {}
         lead_time = 0
         for i in self.slave.klist:
-            if i.sellable.service:
+            sellable = i.sellable
+            if sellable.service:
                 continue
 
-            quantities.setdefault(i.sellable, 0)
-            quantities[i.sellable] += i.quantity
-            if quantities[i.sellable] > i._stock_quantity:
-                lead_time = max(lead_time, i._lead_time)
-                missing[i.sellable] = Settable(
-                    description=i.sellable.get_description(),
+            quantities.setdefault(sellable, 0)
+            quantities[sellable] += i.quantity
+            if quantities[sellable] > i._stock_quantity:
+                _lead_time = sellable.product.get_max_lead_time(
+                                    quantities[sellable], self.model.branch)
+                max_lead_time = max(lead_time, _lead_time)
+                missing[sellable] = Settable(
+                    description=sellable.get_description(),
                     stock=i._stock_quantity,
-                    ordered=quantities[i.sellable],
-                    lead_time=i._lead_time,
+                    ordered=quantities[sellable],
+                    lead_time=_lead_time,
                 )
         self.missing = missing
 
         if missing:
-            msg = _('Not enough stock. Estimated time to obtain missing items: %d days.') % lead_time
+            msg = _('Not enough stock. '
+               'Estimated time to obtain missing items: %d days.') % max_lead_time
             self.slave.set_message('<b>%s</b>' % msg, self._show_missing_details)
         else:
             self.slave.clear_message()
@@ -258,7 +262,6 @@ class SaleQuoteItemStep(SellableItemStep):
             # Save temporarily the stock quantity and lead_time so we can show a
             # warning if there is not enough quantity for the sale.
             item._stock_quantity = self.proxy.model.stock_quantity
-            item._lead_time = self.proxy.model.lead_time
             return item
 
     def get_saved_items(self):
