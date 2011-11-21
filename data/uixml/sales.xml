@@ -24,13 +24,13 @@
 
 <ui>
   <menubar action="menubar">
-    <menu action="StoqMenu">
+    <menu action="FileMenu">
       <menu action="NewMenu">
         <placeholder name="NewMenuItemPH">
           <menuitem action="SaleQuote"/>
         </placeholder>
       </menu>
-      <placeholder name="StoqMenuPH">
+      <placeholder name="FileMenuPH">
         <separator/>
         <!-- Must update nfe plugin if this changes -->
         <menuitem action="SalesPrintInvoice"/>

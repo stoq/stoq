@@ -24,14 +24,14 @@
 
 <ui>
   <menubar action="menubar">
-    <menu action="StoqMenu">
+    <menu action="FileMenu">
       <menu action="NewMenu">
         <placeholder action="NewMenuItemPH">
           <menuitem action="NewAccount"/>
           <menuitem action="NewTransaction"/>
         </placeholder>
       </menu>
-      <placeholder name="StoqMenuPH">
+      <placeholder name="FileMenuPH">
         <menuitem action="Import"/>
         <menuitem action="ExportCSV"/>
       </placeholder>
