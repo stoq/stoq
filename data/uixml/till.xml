@@ -24,8 +24,8 @@
 
 <ui>
   <menubar action="menubar">
-    <menu action="StoqMenu">
-        <placeholder name="StoqMenuPH">
+    <menu action="FileMenu">
+        <placeholder name="FileMenuPH">
           <menuitem action="TillOpen"/>
           <menuitem action="TillClose"/>
           <separator/>

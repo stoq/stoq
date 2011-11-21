@@ -24,7 +24,7 @@
 
 <ui>
   <menubar action="menubar">
-    <menu action="StoqMenu">
+    <menu action="FileMenu">
       <menu action="NewMenu">
         <placeholder name="NewMenuItemPH">
           <menuitem action="NewReceiving"/>
@@ -33,7 +33,7 @@
         </placeholder>
       </menu>
 
-      <placeholder name="StoqMenuPH">
+      <placeholder name="FileMenuPH">
         <menuitem action="ExportCSV"/>
       </placeholder>
     </menu>

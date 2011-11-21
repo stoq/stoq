@@ -89,8 +89,8 @@ class Launcher(AppWindow):
             ('menubar', ),
             ('toolbar', ),
 
-            ('StoqMenu', None, _("_File")),
-            ('StoqMenuNew', None),
+            ('FileMenu', None, _("_File")),
+            ('FileMenuNew', None),
             ("NewMenu", None, _("New")),
             ('NewWindow', None, _("_Window"), '<control>n',
             _('Opens up a new window')),

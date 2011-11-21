@@ -24,14 +24,14 @@
 
 <ui>
   <menubar action="menubar">
-    <menu action="StoqMenu">
+    <menu action="FileMenu">
       <menu action="NewMenu">
         <placeholder name="NewMenuItemPH"/>
         <separator/>
         <menuitem action="NewWindow"/>
       </menu>
       <separator/>
-      <placeholder name="StoqMenuPH"/>
+      <placeholder name="FileMenuPH"/>
       <separator/>
       <menuitem action="ChangePassword"/>
       <menuitem action="SignOut"/>
