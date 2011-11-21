@@ -175,6 +175,14 @@ class Viewable(object):
         for colName in sorted(cols):
             cls.addColumn(colName, cols[colName])
 
+    def __hash__(self):
+        return self.id
+
+    def __cmp__(self, other):
+        if self.__class__ != other.__class__:
+            return -1
+        return cmp(self.id, other.id)
+
     @classmethod
     def addColumn(cls, name, query):
         col = None
