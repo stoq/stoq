@@ -270,6 +270,7 @@ class PurchaseApp(SearchableAppWindow):
                                 edit_mode)
         if finish_transaction(trans, model):
             self.refresh()
+            self.results.select(PurchaseOrderView.get(model.id))
         trans.close()
 
         return model
@@ -324,6 +325,7 @@ class PurchaseApp(SearchableAppWindow):
             order.confirm()
         trans.commit()
         self.refresh()
+        self.results.select(orders)
 
     def _finish_order(self):
         order_views = self.results.get_selected_rows()
@@ -339,6 +341,7 @@ class PurchaseApp(SearchableAppWindow):
         trans.close()
 
         self.refresh()
+        self.results.select(order_views)
 
     def _print_selected_items(self):
         items = self.results.get_selected_rows() or list(self.results)
@@ -364,6 +367,7 @@ class PurchaseApp(SearchableAppWindow):
         trans.commit()
         self._update_totals()
         self.refresh()
+        self.results.select(order_views)
 
     def _get_status_values(self):
         items = [(text, value)
@@ -377,6 +381,7 @@ class PurchaseApp(SearchableAppWindow):
         model = self.run_dialog(QuotePurchaseWizard, trans, quote)
         if finish_transaction(trans, model):
             self.refresh()
+            self.results.select(PurchaseOrderView.get(model.id))
         trans.close()
 
     def _new_product(self):
