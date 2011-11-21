@@ -280,6 +280,11 @@ class ProductComponentSlave(BaseEditorSlave):
     # BaseEditorSlave
     #
 
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self._product, ['production_time'])
+        # FIXME:
+        self.production_time.set_value(self._product.production_time)
+
     def create_model(self, conn):
         return _TemporaryProductComponent(product=self._product)
 

@@ -33,6 +33,7 @@ from kiwi.ui.search import ComboSearchFilter, DateSearchFilter, Today
 from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
 
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.database.orm import AND
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
@@ -188,6 +189,13 @@ class ProductSearch(SearchEditor):
         branch = self.branch_filter.get_state().value
         if branch is not None:
             branch = PersonAdaptToBranch.get(branch, connection=conn)
+
+        composed_query = Product.q.is_composed == False
+        if query:
+            query = AND(query, composed_query)
+        else:
+            query = composed_query
+
         return self.search_table.select_by_branch(query, branch,
                                                   connection=conn)
 

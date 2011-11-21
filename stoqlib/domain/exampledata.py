@@ -309,13 +309,14 @@ class ExampleCreator(object):
         product = Product(sellable=sellable, connection=self.trans)
         return product.addFacet(IStorable, connection=self.trans)
 
-    def create_product(self, price=None):
+    def create_product(self, price=None, create_supplier=True):
         from stoqlib.domain.product import ProductSupplierInfo
         sellable = self.create_sellable(price=price)
-        ProductSupplierInfo(connection=self.trans,
-                            supplier=self.create_supplier(),
-                            product=sellable.product,
-                            is_main_supplier=True)
+        if create_supplier:
+            ProductSupplierInfo(connection=self.trans,
+                                supplier=self.create_supplier(),
+                                product=sellable.product,
+                                is_main_supplier=True)
         return sellable.product
 
     def create_base_sellable_info(self, price=None):

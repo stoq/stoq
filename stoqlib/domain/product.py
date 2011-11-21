@@ -153,6 +153,9 @@ class Product(Domain):
     # Used for composed products only
     quality_tests = MultipleJoin('ProductQualityTest')
 
+    is_composed = BoolCol(default=False)
+    production_time = IntCol(default=1)
+
 
     #
     # Facet hooks
@@ -215,10 +218,42 @@ class Product(Domain):
     # Acessors
     #
 
-    def get_max_lead_time(self):
-        # FIXME: this will change in another commit
-        if self.has_components():
-            return 0
+    def get_manufacture_time(self, quantity, branch):
+        """Returns the estimated time to manufacture a product
+
+        If the components don't have enough stock, the estimated time to obtain
+        missing components will also be considered (using the max lead time from
+        the suppliers)
+        """
+        assert self.is_composed
+
+        # Components maximum lead time
+        comp_max_time = 0
+        for i in self.get_components():
+            storable = IStorable(i.component)
+            needed = quantity * i.quantity
+            stock = storable.get_full_balance(branch)
+            # We have enought of this component items to produce.
+            if  stock >= needed:
+                continue
+            comp_max_time  = max(comp_max_time,
+                                 i.component.get_max_lead_time(needed, branch))
+        return self.production_time + comp_max_time
+
+    def get_max_lead_time(self, quantity, branch):
+        """Returns the longest lead time for this product.
+
+        If this is a composed product, the lead time will be the time to
+        manufacture the product plus the time to obtain all the missing
+        components
+
+        If its a regular product this will be the longest lead time for a
+        supplier to deliver the product (considering the worst case).
+
+        quantity and branch are used only when the product is composed
+        """
+        if self.is_composed:
+            return self.get_manufacture_time(quantity, branch)
         else:
             return self.suppliers.max('lead_time') or 0
 
