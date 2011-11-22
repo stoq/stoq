@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -112,9 +112,12 @@ class StockApp(SearchableAppWindow):
              "<Control><Alt>c"),
 
              # Toolbar
-            ("Print", gtk.STOCK_PRINT, _("Print")),
-            ("ProductStockHistory", gtk.STOCK_INFO, _("History")),
-            ("EditProduct", gtk.STOCK_EDIT, _("Edit")),
+            ("Print", gtk.STOCK_PRINT, _("Print"), '',
+            _('Print the list of products')),
+            ("ProductStockHistory", gtk.STOCK_INFO, _("History"), '',
+            _('Show the stock history of a product')),
+            ("EditProduct", gtk.STOCK_EDIT, _("Edit"), '',
+            _("Edit the product")),
         ]
         self.stock_ui = self.add_ui_actions('', actions,
                                             filename='stock.xml')
@@ -135,9 +138,40 @@ class StockApp(SearchableAppWindow):
     def create_ui(self):
         self.app.launcher.add_new_items([self.NewReceiving, self.NewTransfer,
                                          self.NewStockDecrease])
-        self._setup_widgets()
+        self.app.launcher.add_search_items([
+            self.SearchStockItems,
+            self.SearchStockDecrease,
+            self.SearchClosedStockItems,
+            self.SearchProductHistory,
+            self.SearchPurchasedStockItems,
+            self.SearchTransfer,
+            ])
+        self._inventory_widgets = [self.NewTransfer, self.NewReceiving,
+                                   self.StockInitial, self.NewStockDecrease,
+                                   self.LoanNew, self.LoanClose]
+        self.register_sensitive_group(self._inventory_widgets,
+                                      lambda: not self.has_open_inventory())
+
+        self.image_viewer = None
+
+        self.image = gtk.Image()
+        self.edit_button = self.uimanager.get_widget('/toolbar/AppToolbarPH/EditProduct')
+        self.edit_button.set_icon_widget(self.image)
+        self.image.show()
+
+        parent = self.app.launcher.statusbar.get_message_area()
+        self.search.set_summary_label(column='stock',
+                                      label=_('<b>Stock Total:</b>'),
+                                      format='<b>%s</b>',
+                                      parent=parent)
+        self.search.search.search_button.hide()
 
     def activate(self):
+        self.app.launcher.NewToolItem.set_tooltip(
+            _("Create a new receiving order"))
+        self.app.launcher.SearchToolItem.set_tooltip(
+            _("Search for a stock item"))
+
         self.check_open_inventory()
         self._update_widgets()
         self.search.refresh()
@@ -209,26 +243,6 @@ class StockApp(SearchableAppWindow):
                                         'Found zero')
         items.insert(0, [_('All branches'), None])
         return items
-
-    def _setup_widgets(self):
-        self._inventory_widgets = [self.NewTransfer, self.NewReceiving,
-                                   self.StockInitial, self.NewStockDecrease,
-                                   self.LoanNew, self.LoanClose]
-        self.register_sensitive_group(self._inventory_widgets,
-                                      lambda: not self.has_open_inventory())
-
-        self.image_viewer = None
-
-        self.image = gtk.Image()
-        self.edit_button = self.uimanager.get_widget('/toolbar/AppToolbarPH/EditProduct')
-        self.edit_button.set_icon_widget(self.image)
-        self.image.show()
-
-        parent = self.app.launcher.statusbar.get_message_area()
-        self.search.set_summary_label(column='stock',
-                                      label=_('<b>Stock Total:</b>'),
-                                      format='<b>%s</b>',
-                                      parent=parent)
 
     def _update_widgets(self):
         branch = get_current_branch(self.conn)
