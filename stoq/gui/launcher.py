@@ -463,9 +463,11 @@ class Launcher(AppWindow):
         self.app.runner.relogin()
 
     def on_Quit__activate(self, action):
-        if self.current_app and self.current_app.shutdown_application():
-            self._save_window_size()
-            raise SystemExit
+        if self.current_app and not self.current_app.shutdown_application():
+            return
+
+        self._save_window_size()
+        raise SystemExit
 
     # View
 
