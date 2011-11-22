@@ -187,6 +187,10 @@ class PosApp(AppWindow):
         self._clear_order()
 
     def activate(self):
+        # Hide toolbar specially for pos
+        self.uimanager.get_widget('/toolbar').hide()
+        self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').hide()
+
         self.check_open_inventory()
         self._update_parameter_widgets()
         self._update_widgets()
@@ -194,10 +198,6 @@ class PosApp(AppWindow):
         # it emits signals that disable UI which might otherwise
         # be enabled.
         self._printer.check_till()
-
-        # Hide toolbar specially for pos
-        self.uimanager.get_widget('/toolbar').hide()
-        self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').hide()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.pos_ui)
