@@ -299,8 +299,7 @@ class Launcher(AppWindow):
         Launcher.launchers.remove(self)
         # There are other launchers running
         if Launcher.launchers:
-            # We must return True to avoid closing
-            return True
+            return
 
         self._save_window_size()
         raise SystemExit
@@ -419,10 +418,13 @@ class Launcher(AppWindow):
             widget.disconnect_by_func(self._on_menu_item__select)
             widget.disconnect_by_func(self._on_menu_item__deselect)
         elif isinstance(widget, gtk.ToolItem):
-            widget.child.disconnect_by_func(
-                self._on_tool_item__enter_notify_event)
-            widget.child.disconnect_by_func(
-                self._on_tool_item__leave_notify_event)
+            try:
+                widget.child.disconnect_by_func(
+                    self._on_tool_item__enter_notify_event)
+                widget.child.disconnect_by_func(
+                    self._on_tool_item__leave_notify_event)
+            except TypeError, e:
+                pass
 
     def on_iconview__item_activated(self, iconview, path):
         app = self.model[path][COL_APP]
