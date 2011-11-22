@@ -247,6 +247,7 @@ class QuoteSupplierStep(WizardEditorStep):
 
         quote.supplier = selected.supplier
         self.wizard.quote_group.add_item(quote)
+        self.wizard.quote = quote
 
         self.conn.commit()
 
@@ -619,6 +620,7 @@ class QuotePurchaseWizard(BaseWizard):
     def __init__(self, conn, model=None):
         title = self._get_title(model)
         self.edit = model is not None
+        self.quote = None
         self.quote_group = self._get_or_create_quote_group(model, conn)
         model = model or self._create_model(conn)
         if model.status != PurchaseOrder.ORDER_QUOTING:
@@ -666,7 +668,7 @@ class QuotePurchaseWizard(BaseWizard):
 
     def finish(self):
         self._delete_model()
-        self.retval = True
+        self.retval = self.quote
         self.close()
 
 
