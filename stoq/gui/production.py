@@ -115,16 +115,7 @@ class ProductionApp(SearchableAppWindow):
 
     def activate(self):
         self.search.refresh()
-        selected = self.results.get_selected()
-        can_edit = False
-        can_start = False
-        if selected:
-            can_edit = (selected.status == ProductionOrder.ORDER_OPENED or
-                        selected.status == ProductionOrder.ORDER_WAITING)
-            can_start = can_edit
-        self.set_sensitive([self.EditProduction], can_edit)
-        self.set_sensitive([self.StartProduction], can_start)
-        self.set_sensitive([self.ProductionDetails], bool(selected))
+        self._update_widgets()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.production_ui)
@@ -163,6 +154,18 @@ class ProductionApp(SearchableAppWindow):
     #
     # Private
     #
+
+    def _update_widgets(self):
+        selected = self.results.get_selected()
+        can_edit = False
+        can_start = False
+        if selected:
+            can_edit = (selected.status == ProductionOrder.ORDER_OPENED or
+                        selected.status == ProductionOrder.ORDER_WAITING)
+            can_start = can_edit
+        self.set_sensitive([self.EditProduction], can_edit)
+        self.set_sensitive([self.StartProduction], can_start)
+        self.set_sensitive([self.ProductionDetails], bool(selected))
 
     def _get_status_values(self):
         items = [(text, value)
