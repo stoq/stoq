@@ -69,6 +69,10 @@
       </menu>
     </placeholder>
   </menubar>
+  <popup name="StockSelection">
+    <menuitem action="ProductStockHistory"/>
+    <menuitem action="EditProduct"/>
+  </popup>
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">
       <toolitem action="Print"/>

@@ -136,6 +136,7 @@ class StockApp(SearchableAppWindow):
         self.ProductStockHistory.props.is_important = True
 
     def create_ui(self):
+        self.popup = self.uimanager.get_widget('/StockSelection')
         self.app.launcher.add_new_items([self.NewReceiving, self.NewTransfer,
                                          self.NewStockDecrease])
         self.app.launcher.add_search_items([
@@ -316,6 +317,9 @@ class StockApp(SearchableAppWindow):
 
     def on_results__selection_changed(self, results, product):
         self._update_widgets()
+
+    def on_results__right_click(self, results, result, event):
+        self.popup.popup(None, None, None, event.button, event.time)
 
     def on_Print__activate(self, button):
         branch_name = self.branch_filter.combo.get_active_text()
