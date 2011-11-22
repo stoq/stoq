@@ -89,7 +89,7 @@ class NFeUI(object):
     def _disable_print_invoice(self, uimanager):
         # since the nfe plugin was enabled, the user must not be able to print
         # the regular fiscal invoice (replaced by the nfe).
-        widget = uimanager.get_widget('/menubar/SalesMenu/SalesPrintInvoice')
+        widget = uimanager.get_widget('/menubar/FileMenu/FileMenuPH/SalesPrintInvoice')
         widget.hide()
 
     def _disable_invoice_configuration(self, app, uimanager):
