@@ -410,6 +410,7 @@ class AppWindow(BaseAppWindow):
         self._config.set('Database', 'enable_production', 'True')
         self._config.flush()
         self.shutdown_application()
+        raise SystemExit
 
 
 class SearchableAppWindow(AppWindow):
