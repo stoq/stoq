@@ -219,6 +219,7 @@ class Launcher(AppWindow):
         self.application_box.show()
         app.activate()
         app_window.show()
+        app.toplevel = self.get_toplevel()
         app.setup_focus()
 
         self.current_app = app
