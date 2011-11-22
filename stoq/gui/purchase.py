@@ -399,7 +399,9 @@ class PurchaseApp(SearchableAppWindow):
     def _new_consignment(self):
         trans = new_transaction()
         model = self.run_dialog(ConsignmentWizard, trans)
-        finish_transaction(trans, model)
+        if finish_transaction(trans, model):
+            self.refresh()
+            self.results.select(PurchaseOrderView.get(model.id))
         trans.close()
 
     #
