@@ -153,7 +153,6 @@ class ApplicationRunner(object):
             return
 
         app = self._load_app(appdesc, launcher)
-        app.main_window.activate()
         app.launcher = launcher
 
         self._current_app = app
