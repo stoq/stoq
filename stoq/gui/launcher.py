@@ -423,7 +423,7 @@ class Launcher(AppWindow):
                     self._on_tool_item__enter_notify_event)
                 widget.child.disconnect_by_func(
                     self._on_tool_item__leave_notify_event)
-            except TypeError, e:
+            except TypeError:
                 pass
 
     def on_iconview__item_activated(self, iconview, path):
