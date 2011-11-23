@@ -163,7 +163,7 @@ class ReceivableApp(SearchableAppWindow):
                              format='%04d'),
                 Column('color', title=_('Description'), width=20,
                        data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
-                Column('payment.comments_number', title=_(u'Comments'),
+                Column('comments_number', title=_(u'Comments'),
                         visible=False),
                 SearchColumn('description', title=_('Description'),
                               data_type=str, ellipsize=pango.ELLIPSIZE_END,
