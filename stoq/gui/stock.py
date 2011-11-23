@@ -175,6 +175,8 @@ class StockApp(SearchableAppWindow):
 
         self.check_open_inventory()
         self._update_widgets()
+
+    def setup_focus(self):
         self.search.refresh()
 
     def deactivate(self):

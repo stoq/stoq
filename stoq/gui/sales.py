@@ -157,6 +157,9 @@ class SalesApp(SearchableAppWindow):
 
     def activate(self):
         self.check_open_inventory()
+        self._update_toolbar()
+
+    def setup_focus(self):
         self.search.refresh()
 
     def deactivate(self):

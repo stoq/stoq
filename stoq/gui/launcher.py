@@ -218,6 +218,9 @@ class Launcher(AppWindow):
         self.get_toplevel().set_title(app.get_title())
         self.application_box.show()
         app.activate()
+        self.uimanager.ensure_update()
+        while gtk.events_pending():
+            gtk.main_iteration()
         app_window.show()
         app.toplevel = self.get_toplevel()
         app.setup_focus()

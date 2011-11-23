@@ -188,6 +188,8 @@ class PurchaseApp(SearchableAppWindow):
             _("Search for an order"))
         self._update_view()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+
+    def setup_focus(self):
         self.search.refresh()
 
     def deactivate(self):
