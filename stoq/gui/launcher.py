@@ -368,6 +368,10 @@ class Launcher(AppWindow):
         about.run()
         about.destroy()
 
+    def _new_window(self):
+        launcher = Launcher(self.options, self.runner)
+        launcher.show()
+
     #
     # Kiwi callbacks
     #
@@ -436,7 +440,7 @@ class Launcher(AppWindow):
         if self.current_app:
             self.current_app.new_activate()
         else:
-            print 'FIXME'
+            self._new_window()
 
     def on_SearchToolItem__activate(self, action):
         if self.current_app:
@@ -445,8 +449,7 @@ class Launcher(AppWindow):
             print 'FIXME'
 
     def on_NewWindow__activate(self, action):
-        launcher = Launcher(self.options, self.runner)
-        launcher.show()
+        self._new_window()
 
     def on_Close__activate(self, action):
         if self.current_app and self.current_app.shutdown_application():
