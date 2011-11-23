@@ -547,9 +547,9 @@ class Sale(Domain):
         else:
             client_name = _('without a client')
         Event.log(Event.TYPE_SALE,
-                _("Sale %s, total value %2.2f, %s "
+                _("Sale %d, total value %2.2f, %s "
                   "was confirmed") % (
-                  self.invoice_number,
+                  self.invoice_number or 0,
                   self.get_total_sale_amount(),
                   client_name))
 
@@ -582,7 +582,7 @@ class Sale(Domain):
         else:
             client_name = _('without a client')
         Event.log(Event.TYPE_SALE,
-                  msg % (self.invoice_number,
+                  msg % (self.invoice_number or 0,
                          self.get_total_sale_amount(),
                          client_name))
 
@@ -647,7 +647,7 @@ class Sale(Domain):
         Event.log(Event.TYPE_SALE,
                 _("Sale %d, total value %2.2f, %s "
                   "was returned, reason: '%s'") % (
-                  self.invoice_number,
+                  self.invoice_number or 0,
                   self.get_total_sale_amount(),
                   client_name,
                   renegotiation.reason))
