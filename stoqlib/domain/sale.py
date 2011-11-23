@@ -547,7 +547,7 @@ class Sale(Domain):
         else:
             client_name = _('without a client')
         Event.log(Event.TYPE_SALE,
-                _("Sale %d, total value %2.2f, %s "
+                _("Sale %s, total value %2.2f, %s "
                   "was confirmed") % (
                   self.invoice_number,
                   self.get_total_sale_amount(),
