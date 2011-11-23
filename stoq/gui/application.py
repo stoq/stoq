@@ -435,6 +435,8 @@ class SearchableAppWindow(AppWindow):
                                      restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.search.set_query_executer(self.executer)
+        self.search.search.connect("search-completed",
+                                   self._on_search__search_completed)
         self.results = self.search.search.results
         self.set_text_field_label(self.search_label)
 
@@ -498,6 +500,9 @@ class SearchableAppWindow(AppWindow):
         self.run_dialog(CSVExporterDialog, self, self.search_table,
                         self.results)
 
+    def search_completed(self, results, states):
+        pass
+
     #
     # Hooks
     #
@@ -507,6 +512,9 @@ class SearchableAppWindow(AppWindow):
     #
     # Callbacks
     #
+
+    def _on_search__search_completed(self, search, results, states):
+        self.search_completed(results, states)
 
     def on_ExportCSV__activate(self, action):
         self.export_csv()
