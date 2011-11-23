@@ -57,7 +57,6 @@
             <child>
               <object class="ObjectList" id="product_list">
                 <property name="visible">True</property>
-                <property name="vscrollbar_policy">automatic</property>
               </object>
             </child>
             <child>

@@ -15,8 +15,6 @@
             <child>
               <object class="ObjectList" id="klist">
                 <property name="visible">True</property>
-                <property name="vscrollbar_policy">automatic</property>
-                <property name="shadow_type">in</property>
               </object>
               <packing>
                 <property name="expand">True</property>

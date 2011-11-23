@@ -102,8 +102,6 @@
                   <object class="ObjectList" id="receiving_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="position">0</property>
@@ -130,8 +128,6 @@
                   <object class="ObjectList" id="sales_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="position">0</property>
@@ -162,8 +158,6 @@
                   <object class="ObjectList" id="transfer_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="position">0</property>
@@ -194,8 +188,6 @@
                   <object class="ObjectList" id="loan_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="position">0</property>
@@ -226,8 +218,6 @@
                   <object class="ObjectList" id="decrease_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="position">0</property>

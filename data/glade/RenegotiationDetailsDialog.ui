@@ -235,9 +235,6 @@
                       <object class="ObjectList" id="items_list">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">automatic</property>
-                        <property name="vscrollbar_policy">automatic</property>
-                        <property name="shadow_type">in</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -417,9 +414,6 @@
                   <object class="ObjectList" id="payments_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -450,8 +444,6 @@
                   <object class="ObjectList" id="payments_info_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>

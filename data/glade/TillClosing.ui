@@ -70,7 +70,6 @@
               <object class="ObjectList" id="day_history">
                 <property name="border_width">6</property>
                 <property name="visible">True</property>
-                <property name="vscrollbar_policy">automatic</property>
               </object>
             </child>
           </object>

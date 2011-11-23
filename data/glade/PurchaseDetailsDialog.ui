@@ -203,9 +203,6 @@
                   <object class="ObjectList" id="payments_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -382,9 +379,6 @@
                   <object class="ObjectList" id="payments_info_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -416,9 +410,6 @@
                   <object class="ObjectList" id="ordered_items">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -450,9 +441,6 @@
                   <object class="ObjectList" id="received_items">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -876,9 +864,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="border_width">6</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                     <child>
                       <object class="ProxyTextView" id="notes">
                         <property name="visible">True</property>

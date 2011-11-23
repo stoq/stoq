@@ -129,8 +129,6 @@
                   <object class="ObjectList" id="sales_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -153,8 +151,6 @@
               <object class="ObjectList" id="product_list">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">automatic</property>
-                <property name="shadow_type">etched-in</property>
               </object>
               <packing>
                 <property name="position">1</property>
@@ -174,8 +170,6 @@
               <object class="ObjectList" id="services_list">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">automatic</property>
-                <property name="shadow_type">etched-in</property>
               </object>
               <packing>
                 <property name="position">2</property>
@@ -195,8 +189,6 @@
               <object class="ObjectList" id="payments_list">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">automatic</property>
-                <property name="shadow_type">etched-in</property>
               </object>
               <packing>
                 <property name="position">3</property>
@@ -216,8 +208,6 @@
               <object class="ObjectList" id="calls_list">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">automatic</property>
-                <property name="shadow_type">etched-in</property>
               </object>
               <packing>
                 <property name="position">4</property>
