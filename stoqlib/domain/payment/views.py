@@ -26,11 +26,12 @@ import datetime
 
 from kiwi.datatypes import converter
 
-from stoqlib.database.orm import AND, OR
+from stoqlib.database.orm import AND, OR, const
 from stoqlib.database.orm import Alias, LEFTJOINOn, INNERJOINOn
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.category import PaymentCategory
+from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import (CheckData, PaymentMethod,
                                            CreditCardData)
@@ -64,6 +65,7 @@ class InPaymentView(Viewable):
         method_name=PaymentMethod.q.method_name,
         renegotiation_id=PaymentRenegotiation.q.id,
         renegotiated_id=PaymentGroup.q.renegotiationID,
+        comments_number=const.COUNT(PaymentComment.q.id),
         )
 
     joins = [
@@ -81,6 +83,8 @@ class InPaymentView(Viewable):
                    PaymentCategory.q.id == Payment.q.categoryID),
         INNERJOINOn(None, PaymentMethod,
                     Payment.q.methodID == PaymentMethod.q.id),
+        LEFTJOINOn(None, PaymentComment,
+                   PaymentComment.q.paymentID == Payment.q.id),
         ]
 
     def can_change_due_date(self):
@@ -139,6 +143,7 @@ class OutPaymentView(Viewable):
         purchase_id=PurchaseOrder.q.id,
         sale_id=Sale.q.id,
         color=PaymentCategory.q.color,
+        comments_number=const.COUNT(PaymentComment.q.id)
         )
 
     PaymentGroup_Sale = Alias(PaymentGroup, 'payment_group_sale')
@@ -159,6 +164,8 @@ class OutPaymentView(Viewable):
                    Person.q.id == PaymentGroup_Sale.q.recipientID),
         LEFTJOINOn(None, PaymentCategory,
                    PaymentCategory.q.id == Payment.q.categoryID),
+        LEFTJOINOn(None, PaymentComment,
+                   PaymentComment.q.paymentID == Payment.q.id),
         ]
 
     def get_status_str(self):
