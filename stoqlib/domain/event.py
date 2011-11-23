@@ -48,7 +48,8 @@ class Event(Domain):
     (TYPE_SYSTEM,
      TYPE_USER,
      TYPE_ORDER,
-     TYPE_SALE) = range(4)
+     TYPE_SALE,
+     TYPE_PAYMENT) = range(5)
 
     types = { # System related messages
               TYPE_SYSTEM:    _('System'),
@@ -58,6 +59,8 @@ class Event(Domain):
               TYPE_ORDER:     _('Order'),
               # Sales
               TYPE_SALE:      _('Sale'),
+              # Payment
+              TYPE_PAYMENT:   _('Payment'),
             }
 
     date = DateTimeCol(default=datetime.datetime.now)

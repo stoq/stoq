@@ -35,6 +35,7 @@ from stoqlib.database.orm import (IntCol, DateTimeCol, UnicodeCol, ForeignKey,
 from stoqlib.database.orm import (const, DESC, AND, OR, MultipleJoin,
                                   SingleJoin)
 from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.event import Event
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
@@ -226,6 +227,18 @@ class Payment(Domain):
         if self.method.operation.create_transaction():
             AccountTransaction.create_from_payment(self, account)
 
+        if self.value == self.paid_value:
+            Event.log(Event.TYPE_PAYMENT,
+                    _("%s payment with value %2.2f was paid") % (
+                    self.method.method_name.capitalize(),
+                    self.value))
+        else:
+            Event.log(Event.TYPE_PAYMENT,
+                    _("%s payment with value original value %2.2f was paid "
+                      "with value %2.2f") % (
+                    self.method.method_name.capitalize(),
+                    self.value, self.paid_value))
+
     def cancel(self, change_entry=None):
         # TODO Check for till entries here and call cancel_till_entry if
         # it's possible. Bug 2598
@@ -247,6 +260,11 @@ class Payment(Domain):
         if change_entry is not None:
             change_entry.last_status = old_status
             change_entry.new_status = self.status
+
+        Event.log(Event.TYPE_PAYMENT,
+                _("%s payment with value %2.2f was cancelled.") % (
+                self.method.method_name.capitalize(),
+                self.value))
 
     def change_due_date(self, new_due_date):
         """Changes the payment due date.
