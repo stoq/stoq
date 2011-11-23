@@ -547,9 +547,9 @@ class Sale(Domain):
         else:
             client_name = _('without a client')
         Event.log(Event.TYPE_SALE,
-                _("Sale %d, total value %2.2f, %s "
+                _("Sale %s, total value %2.2f, %s "
                   "was confirmed") % (
-                  self.invoice_number or 0,
+                  self.get_order_number_str(),
                   self.get_total_sale_amount(),
                   client_name))
 
@@ -573,16 +573,16 @@ class Sale(Domain):
 
         if all(payment.method.method_name == 'money'
                 for payment in self.group.payments):
-            msg = _("Sale %d, total value %2.2f, %s was paid and confirmed")
+            msg = _("Sale %s, total value %2.2f, %s was paid and confirmed")
         else:
-            msg = _("Sale %d, total value %2.2f, %s as paid")
+            msg = _("Sale %s, total value %2.2f, %s as paid")
 
         if self.client:
             client_name = _("client '%s'") % (self.client.person.name, )
         else:
             client_name = _('without a client')
         Event.log(Event.TYPE_SALE,
-                  msg % (self.invoice_number or 0,
+                  msg % (self.get_order_number_str(),
                          self.get_total_sale_amount(),
                          client_name))
 
@@ -645,9 +645,9 @@ class Sale(Domain):
         else:
             client_name = _('without a client')
         Event.log(Event.TYPE_SALE,
-                _("Sale %d, total value %2.2f, %s "
+                _("Sale %s, total value %2.2f, %s "
                   "was returned, reason: '%s'") % (
-                  self.invoice_number or 0,
+                  self.get_order_number_str(),
                   self.get_total_sale_amount(),
                   client_name,
                   renegotiation.reason))
