@@ -40,6 +40,7 @@ from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
 from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
 from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog,
                                                InvoicePrinterDialog)
+from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
 from stoqlib.gui.search.eventsearch import EventSearch
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
@@ -54,6 +55,7 @@ from stoqlib.gui.search.personsearch import (ClientSearch,
 from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.message import info
 
 from stoq.gui.application import AppWindow
@@ -293,6 +295,10 @@ class AdminApp(AppWindow):
             ("ConfigurePlugins", None, _("Plugins...")),
             ("ConfigureTaxes", None, _("Taxes..."), '<Control>l'),
             ("ConfigureParameters", None, _("Parameters..."), '<Control>y'),
+
+            # New
+            ("NewUser", None, _("User"), '',
+             _("Create a new user")),
             ]
         self.admin_ui = self.add_ui_actions('', actions,
                                             filename='admin.xml')
@@ -309,7 +315,12 @@ class AdminApp(AppWindow):
         self.iconview.select_path(self.model[0].path)
 
     def activate(self):
-        pass
+        self.app.launcher.add_new_items([self.NewUser])
+        self.app.launcher.add_search_items([self.SearchUser])
+        self.app.launcher.NewToolItem.set_tooltip(
+            _("Create a new user"))
+        self.app.launcher.SearchToolItem.set_tooltip(
+            _("Search for users"))
 
     def deactivate(self):
         self.uimanager.remove_ui(self.admin_ui)
@@ -318,11 +329,17 @@ class AdminApp(AppWindow):
         self.iconview.grab_focus()
 
     def new_activate(self):
-        raise NotImplementedError('FIXME: Add user/employee/profile')
+        self._new_user()
 
     def search_activate(self):
         self.tasks.run_task('users')
 
+    # Private
+
+    def _new_user(self):
+        trans = new_transaction()
+        model = run_person_role_dialog(UserEditor, self, trans)
+        finish_transaction(trans, model)
     #
     # Callbacks
     #
@@ -391,3 +408,7 @@ class AdminApp(AppWindow):
 
     def on_ConfigurePlugins__activate(self, action):
          self.tasks.run_task('plugins')
+
+    # New
+    def on_NewUser__activate(self, action):
+        self._new_user()
