@@ -70,7 +70,7 @@ from zope.interface import implements
 
 from kiwi.datatypes import currency
 
-from stoqlib.database.orm import PriceCol, DecimalCol
+from stoqlib.database.orm import PriceCol, PercentCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
                                   ForeignKey, MultipleJoin, BoolCol)
 from stoqlib.database.orm import const, OR, AND, INNERJOINOn, LEFTJOINOn, Alias
@@ -885,11 +885,11 @@ class PersonAdaptToCreditProvider(PersonAdapter):
     payment_day = IntCol(default=10)
     max_installments = IntCol(default=12)
     monthly_fee = PriceCol(default=0)
-    credit_fee = DecimalCol(default=0)
-    credit_installments_store_fee = DecimalCol(default=0)
-    credit_installments_provider_fee = DecimalCol(default=0)
-    debit_fee = DecimalCol(default=0)
-    debit_pre_dated_fee = DecimalCol(default=0)
+    credit_fee = PercentCol(default=0)
+    credit_installments_store_fee = PercentCol(default=0)
+    credit_installments_provider_fee = PercentCol(default=0)
+    debit_fee = PercentCol(default=0)
+    debit_pre_dated_fee = PercentCol(default=0)
 
     #
     # ICreditProvider implementation
@@ -960,7 +960,7 @@ class PersonAdaptToSalesPerson(PersonAdapter):
                                                          u'Category'),
                        COMMISSION_BY_SALE_TOTAL: _(u'By Sale Total')}
 
-    comission = DecimalCol(default=0)
+    comission = PercentCol(default=0)
     comission_type = IntCol(default=COMMISSION_BY_SALESPERSON)
     is_active = BoolCol(default=True)
 
@@ -983,7 +983,7 @@ class PersonAdaptToTransporter(PersonAdapter):
     is_active = BoolCol(default=True)
     open_contract_date = DateTimeCol(default=datetime.datetime.now)
     #FIXME: not used in purchases.
-    freight_percentage = DecimalCol(default=0)
+    freight_percentage = PercentCol(default=0)
 
     #
     # Auxiliar methods

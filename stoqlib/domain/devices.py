@@ -30,7 +30,7 @@ from stoqdrivers.printers.cheque import ChequePrinter
 from stoqdrivers.scales.scales import Scale
 from stoqdrivers.serialbase import SerialPort
 
-from stoqlib.database.orm import DecimalCol
+from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import (UnicodeCol, IntCol, ForeignKey, BoolCol,
                            DateTimeCol, StringCol)
 from stoqlib.database.orm import MultipleJoin
@@ -157,7 +157,7 @@ class FiscalDayTax(Domain):
     """
     fiscal_day_history = ForeignKey('FiscalDayHistory')
     code = StringCol()
-    value = DecimalCol()
+    value = PriceCol()
     type = StringCol()
 
 
@@ -173,7 +173,7 @@ class FiscalDayHistory(Domain):
     coupon_end = IntCol()
     cro = IntCol()
     crz = IntCol()
-    period_total = DecimalCol()
-    total = DecimalCol()
+    period_total = PriceCol()
+    total = PriceCol()
     taxes = MultipleJoin('FiscalDayTax')
     reduction_date = DateTimeCol()

@@ -32,7 +32,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import PriceCol, DecimalCol, QuantityCol
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
-                                  BoolCol, BLOBCol, IntCol)
+                                  BoolCol, BLOBCol, IntCol, PercentCol)
 from stoqlib.database.orm import const, AND, LEFTJOINOn
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
@@ -84,7 +84,7 @@ class ProductSupplierInfo(Domain):
     lead_time = IntCol(default=1)
     minimum_purchase = QuantityCol(default=Decimal(1))
     # This is Brazil-specific information
-    icms = DecimalCol(default=0)
+    icms = PercentCol(default=0)
     supplier =  ForeignKey('PersonAdaptToSupplier')
     product =  ForeignKey('Product')
 

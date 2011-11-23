@@ -32,7 +32,7 @@ from kiwi.datatypes import currency
 from stoqdrivers.enum import TaxType, UnitType
 from zope.interface import implements
 
-from stoqlib.database.orm import BoolCol, PriceCol, DecimalCol
+from stoqlib.database.orm import BoolCol, PriceCol, PercentCol
 from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, ForeignKey
 from stoqlib.database.orm import SingleJoin
 from stoqlib.database.orm import AND, IN, OR
@@ -94,7 +94,7 @@ class SellableTaxConstant(Domain):
 
     description = UnicodeCol()
     tax_type = IntCol()
-    tax_value = DecimalCol(default=None)
+    tax_value = PercentCol(default=None)
 
     _mapping = {
         int(TaxType.NONE): 'TAX_NONE',                      # Não tributado - ICMS
@@ -139,8 +139,8 @@ class SellableCategory(Domain):
     """
 
     description = UnicodeCol()
-    suggested_markup = DecimalCol(default=0)
-    salesperson_commission = DecimalCol(default=0)
+    suggested_markup = PercentCol(default=0)
+    salesperson_commission = PercentCol(default=0)
     category = ForeignKey('SellableCategory', default=None)
     tax_constant = ForeignKey('SellableTaxConstant', default=None)
 
@@ -219,8 +219,8 @@ class BaseSellableInfo(Domain):
 
     price = PriceCol(default=0)
     description = UnicodeCol(default='')
-    max_discount = DecimalCol(default=0)
-    commission = DecimalCol(default=0)
+    max_discount = PercentCol(default=0)
+    commission = PercentCol(default=0)
 
     def get_commission(self):
         return self.commission
@@ -254,7 +254,7 @@ class ClientCategoryPrice(Domain):
     sellable = ForeignKey('Sellable')
     category = ForeignKey('ClientCategory')
     price = PriceCol(default=0)
-    max_discount = DecimalCol(default=0)
+    max_discount = PercentCol(default=0)
 
     def _get_markup(self):
         if self.sellable.cost == 0:

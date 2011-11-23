@@ -79,6 +79,9 @@ class DecimalCol(Col):
 class QuantityCol(DecimalCol):
     baseClass = AbstractQuantityCol
 
+class PercentCol(DecimalCol):
+    baseClass = AbstractDecimalCol
+
 
 # Price
 

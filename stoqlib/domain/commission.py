@@ -27,7 +27,7 @@ Commission management
 
 from decimal import Decimal
 
-from stoqlib.database.orm import DecimalCol
+from stoqlib.database.orm import PercentCol, PriceCol
 from stoqlib.database.orm import ForeignKey, IntCol
 from stoqlib.database.orm import INNERJOINOn
 from stoqlib.database.orm import Viewable
@@ -63,8 +63,8 @@ class CommissionSource(Domain):
     and the opposite is true.
     """
 
-    direct_value = DecimalCol()
-    installments_value = DecimalCol()
+    direct_value = PercentCol()
+    installments_value = PercentCol()
     category = ForeignKey('SellableCategory', default=None)
     sellable = ForeignKey('Sellable', default=None)
 
@@ -90,7 +90,7 @@ class Commission(Domain):
      INSTALLMENTS) = range(2)
 
     commission_type = IntCol(default=DIRECT)
-    value = DecimalCol(default=0)
+    value = PriceCol(default=0)
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
     sale = ForeignKey('Sale')
     payment = ForeignKey('Payment')
