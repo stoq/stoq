@@ -199,6 +199,19 @@ class PurchaseApp(SearchableAppWindow):
     def search_activate(self):
         self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
 
+    def search_completed(self, results, states):
+        if len(results):
+            return
+
+        supplier, status = states[:2]
+        if len(states) > 2 or (supplier.text == '' and status.value is None):
+            self.results.set_message(_("Nothing registered in Stoq, add an "
+                "order in %s" % ("<b>%s</b>" % (_("File->New")))))
+        else:
+            self.results.set_message(_("Nothing found, refine search."))
+
+        # FIXME: Push number of results to Statusbar
+
     #
     # SearchableAppWindow
     #
