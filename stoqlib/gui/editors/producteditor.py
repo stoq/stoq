@@ -662,6 +662,11 @@ class ProductionProductEditor(ProductEditor):
             return cost >= component_cost
         return True
 
+    def create_model(self, conn):
+        model = ProductEditor.create_model(self, conn)
+        model.is_composed = True
+        return model
+
     def get_extra_tabs(self):
         self._component_slave = ProductComponentSlave(self.conn, self.model)
         tax_slave = ProductTaxSlave(self.conn, self.model)
