@@ -168,7 +168,7 @@ class SellableSearch(SearchEditor):
         else:
             self.ok_button.set_sensitive(True)
 
-    def search_completed(self, results):
+    def search_completed(self, results, states):
         if not self._first_search:
             if self._first_search_string != self.get_searchbar_search_string():
                 self.remove_message_bar()

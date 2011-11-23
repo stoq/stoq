@@ -418,8 +418,8 @@ class SearchDialog(BasicDialog):
     # Callbacks
     #
 
-    def _on_search__search_completed(self, search, results):
-        self.search_completed(results)
+    def _on_search__search_completed(self, search, results, states):
+        self.search_completed(results, states)
 
     def _on_results__cell_edited(self, results, obj, attr):
         """Override this method on child when it's needed to perform some
@@ -456,7 +456,7 @@ class SearchDialog(BasicDialog):
         also when a list item is selected. """
 
 
-    def search_completed(self, results):
+    def search_completed(self, results, states):
         pass
 
 
