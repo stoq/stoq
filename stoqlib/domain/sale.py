@@ -39,6 +39,7 @@ from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn, INNERJOINOn
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.event import Event
 from stoqlib.domain.events import SaleStatusChangedEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import (IContainer, IOutPayment,
@@ -537,6 +538,17 @@ class Sale(Domain):
         self.confirm_date = const.NOW()
         self._set_sale_status(Sale.STATUS_CONFIRMED)
 
+        if self.client:
+            client_name = _("client '%s'") % (self.client.person.name, )
+        else:
+            client_name = _('without a client')
+        Event.log(Event.TYPE_SALE,
+                _("Sale %d, total value %2.2f, %s "
+                  "was confirmed") % (
+                  self.invoice_number,
+                  self.get_total_sale_amount(),
+                  client_name))
+
     def set_paid(self):
         """Mark the sale as paid
         Marking a sale as paid means that all the payments have been received.
@@ -554,6 +566,17 @@ class Sale(Domain):
 
         self.close_date = const.NOW()
         self._set_sale_status(Sale.STATUS_PAID)
+
+        if self.client:
+            client_name = _("client '%s'") % (self.client.person.name, )
+        else:
+            client_name = _('without a client')
+        Event.log(Event.TYPE_SALE,
+                _("Sale %d, total value %2.2f, %s "
+                  "was paid") % (
+                  self.invoice_number,
+                  self.get_total_sale_amount(),
+                  client_name))
 
     def set_not_paid(self):
         """Mark a sale as not paid. This happens when the user sets a
@@ -608,6 +631,19 @@ class Sale(Domain):
 
         self.return_date = const.NOW()
         self._set_sale_status(Sale.STATUS_RETURNED)
+
+        if self.client:
+            client_name = _("client '%s'") % (self.client.person.name, )
+        else:
+            client_name = _('without a client')
+        Event.log(Event.TYPE_SALE,
+                _("Sale %d, total value %2.2f, %s "
+                  "was returned, reason: '%s'") % (
+                  self.invoice_number,
+                  self.get_total_sale_amount(),
+                  client_name,
+                  renegotiation.reason))
+
 
     #
     # Accessors
