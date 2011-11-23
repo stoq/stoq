@@ -500,15 +500,17 @@ class SearchableAppWindow(AppWindow):
         self.run_dialog(CSVExporterDialog, self, self.search_table,
                         self.results)
 
-    def search_completed(self, results, states):
-        pass
-
     #
     # Hooks
     #
 
     def create_filters(self):
         pass
+
+    def search_completed(self, results, states):
+        if not len(results):
+            results.set_message(_("Nothing found, refine search."))
+
     #
     # Callbacks
     #
