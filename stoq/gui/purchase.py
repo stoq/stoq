@@ -205,8 +205,9 @@ class PurchaseApp(SearchableAppWindow):
 
         supplier, status = states[:2]
         if len(states) > 2 or (supplier.text == '' and status.value is None):
-            self.results.set_message(_("Nothing registered in Stoq, add an "
-                "order in %s" % ("<b>%s</b>" % (_("File->New")))))
+            self.results.set_message(_("No orders could be found.\n\n"
+                "Would you like to %s ?" % ('<a href="new_order">%s</a>' % (
+                    _("add a new order")))))
         else:
             self.results.set_message(_("Nothing found, refine search."))
 
@@ -433,6 +434,10 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_results__selection_changed(self, results, selected):
         self._update_view()
+
+    def on_results__activate_link(self, results, uri):
+        if uri == 'new_order':
+            self._new_order()
 
     def _on_results__double_click(self, results, order):
         self._run_details_dialog()
