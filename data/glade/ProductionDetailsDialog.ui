@@ -202,9 +202,6 @@
                   <object class="ObjectList" id="production_items">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -260,9 +257,6 @@
                   <object class="ObjectList" id="materials">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -338,9 +332,6 @@
                   <object class="ObjectList" id="produced_items">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -400,9 +391,6 @@
                   <object class="ObjectList" id="services">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>

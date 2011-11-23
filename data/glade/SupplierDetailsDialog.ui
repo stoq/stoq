@@ -129,8 +129,6 @@
                   <object class="ObjectList" id="purchases_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -153,8 +151,6 @@
               <object class="ObjectList" id="product_list">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">automatic</property>
-                <property name="shadow_type">etched-in</property>
               </object>
               <packing>
                 <property name="position">1</property>
@@ -174,8 +170,6 @@
               <object class="ObjectList" id="payments_list">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">automatic</property>
-                <property name="shadow_type">etched-in</property>
               </object>
               <packing>
                 <property name="position">2</property>

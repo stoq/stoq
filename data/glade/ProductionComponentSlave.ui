@@ -18,7 +18,6 @@
             <child>
               <object class="ObjectList" id="component_list">
                 <property name="visible">True</property>
-                <property name="vscrollbar_policy">automatic</property>
               </object>
             </child>
           </object>

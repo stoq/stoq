@@ -22,7 +22,6 @@
         </child>
         <child>
           <object class="ObjectList" id="product_list">
-            <property name="selection_mode">none</property>
             <property name="visible">True</property>
           </object>
           <packing>

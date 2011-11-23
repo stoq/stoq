@@ -24,7 +24,6 @@
                         <child>
                             <object class="ObjectList" id="klist">
                                 <property name="visible">True</property>
-                                <property name="vscrollbar_policy">automatic</property>
                             </object>
                             <packing>
                                 <property name="position">1</property>

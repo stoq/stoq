@@ -192,9 +192,6 @@
                   <object class="ObjectList" id="product_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="position">0</property>
