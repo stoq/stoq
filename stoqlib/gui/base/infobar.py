@@ -83,7 +83,7 @@ class InfoBar(gtk.HBox):
         if self._message_type != gtk.MESSAGE_OTHER:
             detail = self.type_detail[self._message_type]
 
-            self.style.paint_box(self.window, gtk.STATE_NORMAL,
+            self.get_style().paint_box(self.window, gtk.STATE_NORMAL,
                     gtk.SHADOW_OUT, None, self, detail,
                     self.allocation.x,
                     self.allocation.y,
@@ -123,10 +123,10 @@ class InfoBar(gtk.HBox):
             else:
                 raise AssertionError
 
-        if self.style.bg[gtk.STATE_NORMAL] != bg:
+        if style.bg[gtk.STATE_NORMAL] != bg:
             self.modify_bg(gtk.STATE_NORMAL, bg)
 
-        if self.style.fg[gtk.STATE_NORMAL] != fg:
+        if style.fg[gtk.STATE_NORMAL] != fg:
             self.modify_fg(gtk.STATE_NORMAL, fg)
 
     def _on_action_widget__clicked(self, widget):
