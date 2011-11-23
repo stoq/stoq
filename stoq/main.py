@@ -400,8 +400,6 @@ def run_app(options, appname):
     log.debug('register stock icons')
     register_iconsets()
 
-    _setup_cookiefile()
-
     from stoq.gui.runner import ApplicationRunner
     runner = ApplicationRunner(options)
 
@@ -483,6 +481,7 @@ def main(args):
     _setup_twisted()
     _check_version_policy()
     _setup_ui_dialogs()
+    _setup_cookiefile()
 
     _initialize(options)
     run_app(options, appname)
