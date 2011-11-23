@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -47,7 +47,8 @@ class Event(Domain):
 
     (TYPE_SYSTEM,
      TYPE_USER,
-     TYPE_ORDER) = range(3)
+     TYPE_ORDER,
+     TYPE_SALE) = range(4)
 
     types = { # System related messages
               TYPE_SYSTEM:    _('System'),
@@ -55,6 +56,8 @@ class Event(Domain):
               TYPE_USER:      _('User'),
               # Purchase orders
               TYPE_ORDER:     _('Order'),
+              # Sales
+              TYPE_SALE:      _('Sale'),
             }
 
     date = DateTimeCol(default=datetime.datetime.now)
