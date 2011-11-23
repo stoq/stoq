@@ -29,14 +29,14 @@ import gtk
 from kiwi.component import get_utility
 from kiwi.log import Logger
 from stoqlib.exceptions import LoginError
-from stoqlib.gui.splash import hide_splash
 from stoqlib.gui.events import StartApplicationEvent
+from stoqlib.gui.splash import hide_splash
 from stoqlib.database.runtime import get_connection, get_current_user
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.message import error, info
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
-
+from stoq.gui.launcher import Launcher
 
 log = Logger('stoq.runner')
 _ = gettext.gettext
@@ -119,26 +119,6 @@ class ApplicationRunner(object):
 
     # Public API
 
-    def choose(self, parent=None):
-        """
-        Displays a list of applications
-        @param parent: Parent window or None
-        @returns: selected application or None if nothing was selected
-        """
-
-        available_applications = self._get_available_applications()
-        if len(available_applications) == 1:
-            return available_applications[0]
-
-        from stoqlib.gui.base.dialogs import run_dialog
-        from stoqlib.gui.login import SelectApplicationsDialog
-        from stoqlib.gui.splash import hide_splash
-        hide_splash()
-
-        return run_dialog(SelectApplicationsDialog(self._appname,
-                                                   available_applications),
-                          parent=parent)
-
     def run(self, appdesc, launcher):
         """
         Runs an application
@@ -159,8 +139,7 @@ class ApplicationRunner(object):
         self._appname = appdesc.name
 
         if appdesc.name in self._blocked_apps:
-            app = self.choose()
-            self.run(app)
+            launcher.show()
             return
 
         app.run()
@@ -216,12 +195,8 @@ class ApplicationRunner(object):
         # clear the cache, since we switched users
         self._application_cache.clear()
 
-        appname = self.choose()
-        if not appname:
-            self._current_app.shutdown()
-            return
-
-        self.run(appname)
+        launcher = Launcher(self._options, self)
+        launcher.show()
 
     def get_app_by_name(self, appname):
         """
