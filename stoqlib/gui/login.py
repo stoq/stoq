@@ -27,16 +27,14 @@ import gtk
 from kiwi.component import get_utility, provide_utility
 from kiwi.environ import environ
 from kiwi.log import Logger
-from kiwi.ui.delegates import GladeDelegate, GladeSlaveDelegate
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.delegates import GladeDelegate
 
 from stoqlib.database.interfaces import ICurrentUser
 from stoqlib.database.runtime import get_connection
 from stoqlib.exceptions import DatabaseError, LoginError, UserProfileError
 from stoqlib.domain.interfaces import IUser
 from stoqlib.domain.person import Person
-from stoqlib.gui.base.dialogs import (BasicWrappingDialog, run_dialog,
-                                      RunnableView)
+from stoqlib.gui.base.dialogs import RunnableView
 from stoqlib.gui.splash import hide_splash
 from stoqlib.lib.interfaces import CookieError, ICookieFile
 from stoqlib.lib.message import warning
@@ -129,73 +127,6 @@ class LoginDialog(GladeDelegate, RunnableView):
         self.show()
         gtk.main()
         return self.retval
-
-class SelectApplicationsDialog(GladeSlaveDelegate):
-    gladefile = "SelectApplicationsSlave"
-    title = _('Stoq - Choose application')
-    size = (-1, 405)
-
-    def __init__(self, appname=None, applications=None):
-        """ Creates a new SelectApplicationsDialog object
-
-        @param appname: application name to select
-        @param applications: applications to show
-        @type applications: list of Application
-        """
-        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
-
-        self.logo.set_from_file(environ.find_resource("pixmaps",
-                                                      "stoq_logo.svg"))
-
-        self.main_dialog = BasicWrappingDialog(self, self.title,
-                                               size=self.size)
-
-        self.applications = applications
-        self._setup_applist()
-
-        # O(n), but not so important, we have few apps.
-        for model in self.klist:
-            if model.name == appname:
-                self.klist.select(model)
-                break
-
-    def _setup_applist(self):
-        self.klist.get_treeview().set_headers_visible(False)
-        self.klist.set_columns(self._get_columns())
-        self.klist.set_size_request(200, -1)
-        self.klist.extend(self.applications)
-
-        if not len(self.klist):
-            raise ValueError('Application list should have items at '
-                             'this point')
-        self.klist.select(self.klist[0])
-        self.app_list.show()
-
-    def _get_columns(self):
-        return [Column('icon', use_stock=True,
-                       justify=gtk.JUSTIFY_LEFT,
-                       icon_size=gtk.ICON_SIZE_LARGE_TOOLBAR),
-                Column('fullname', data_type=str,
-                       expand=True, searchable=True)]
-
-    def on_confirm(self):
-        return self.klist.get_selected()
-
-    def on_cancel(self):
-        return None
-
-    def validate_confirm(self):
-        return True
-
-    def on_klist__selection_changed(self, klist, model):
-        if model:
-            self.description.set_text(model.description)
-
-    def on_klist__row_activated(self, klist, model):
-        self.main_dialog.confirm()
-
-    def run(self):
-        return run_dialog(self())
 
 class LoginHelper:
 
