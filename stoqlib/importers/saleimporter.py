@@ -69,6 +69,7 @@ class SaleImporter(CSVImporter):
         sale = Sale(client=client,
                     open_date=self.parse_date(data.open_date),
                     coupon_id=int(data.coupon_id),
+                    invoice_number=int(data.coupon_id),
                     salesperson=salesperson,
                     branch=branch,
                     cfop=sysparam(trans).DEFAULT_SALES_CFOP,
