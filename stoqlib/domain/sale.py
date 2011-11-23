@@ -538,6 +538,10 @@ class Sale(Domain):
         self.confirm_date = const.NOW()
         self._set_sale_status(Sale.STATUS_CONFIRMED)
 
+        # do not log money payments twice
+        if all(payment.method.method_name == 'money'
+                for payment in self.group.payments):
+            return
         if self.client:
             client_name = _("client '%s'") % (self.client.person.name, )
         else:
@@ -567,16 +571,20 @@ class Sale(Domain):
         self.close_date = const.NOW()
         self._set_sale_status(Sale.STATUS_PAID)
 
+        if all(payment.method.method_name == 'money'
+                for payment in self.group.payments):
+            msg = _("Sale %d, total value %2.2f, %s was paid and confirmed")
+        else:
+            msg = _("Sale %d, total value %2.2f, %s as paid")
+
         if self.client:
             client_name = _("client '%s'") % (self.client.person.name, )
         else:
             client_name = _('without a client')
         Event.log(Event.TYPE_SALE,
-                _("Sale %d, total value %2.2f, %s "
-                  "was paid") % (
-                  self.invoice_number,
-                  self.get_total_sale_amount(),
-                  client_name))
+                  msg % (self.invoice_number,
+                         self.get_total_sale_amount(),
+                         client_name))
 
     def set_not_paid(self):
         """Mark a sale as not paid. This happens when the user sets a
