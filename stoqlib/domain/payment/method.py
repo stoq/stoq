@@ -30,7 +30,7 @@ from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
 from zope.interface import implements
 
-from stoqlib.database.orm import DecimalCol, PriceCol
+from stoqlib.database.orm import PercentCol, PriceCol
 from stoqlib.database.orm import IntCol, ForeignKey, BoolCol, StringCol, UnicodeCol
 from stoqlib.database.orm import const, AND
 from stoqlib.domain.base import Domain
@@ -94,7 +94,7 @@ class CreditCardData(Domain):
     payment = ForeignKey('Payment')
     card_type = IntCol(default=TYPE_CREDIT)
     provider = ForeignKey('PersonAdaptToCreditProvider', default=None)
-    fee = DecimalCol(default=0)
+    fee = PercentCol(default=0)
     fee_value = PriceCol(default=0)
     nsu = IntCol(default=None)
     auth = IntCol(default=None)
@@ -130,8 +130,8 @@ class PaymentMethod(Domain):
     method_name = StringCol()
     is_active = BoolCol(default=True)
     description = UnicodeCol()
-    daily_penalty = DecimalCol(default=0)
-    interest = DecimalCol(default=0)
+    daily_penalty = PercentCol(default=0)
+    interest = PercentCol(default=0)
     payment_day = IntCol(default=None)
     closing_day = IntCol(default=None)
     max_installments = IntCol(default=1)

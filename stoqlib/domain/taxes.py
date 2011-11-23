@@ -24,8 +24,8 @@
 
 import datetime
 
-from stoqlib.database.orm import (IntCol, UnicodeCol, DecimalCol, DateTimeCol,
-                                  PriceCol, ForeignKey, BoolCol)
+from stoqlib.database.orm import (IntCol, UnicodeCol, QuantityCol, DateTimeCol,
+                                  PriceCol, ForeignKey, BoolCol, PercentCol)
 from stoqlib.domain.base import Domain
 
 # SIGLAS:
@@ -33,7 +33,6 @@ from stoqlib.domain.base import Domain
 # ST - Situação tributária
 # CST - Codigo ST
 # MVA - Margem de valor adicionado
-
 
 #
 #   Base Tax Classes
@@ -73,20 +72,20 @@ class BaseICMS(BaseTax):
     cst = IntCol(default=None)
 
     mod_bc = IntCol(default=None)
-    p_icms = DecimalCol(default=None)
+    p_icms = PercentCol(default=None)
 
     mod_bc_st = IntCol(default=None)
-    p_mva_st = DecimalCol(default=None)
-    p_red_bc_st = DecimalCol(default=None)
-    p_icms_st = DecimalCol(default=None)
-    p_red_bc = DecimalCol(default=None)
+    p_mva_st = PercentCol(default=None)
+    p_red_bc_st = PercentCol(default=None)
+    p_icms_st = PercentCol(default=None)
+    p_red_bc = PercentCol(default=None)
 
     bc_include_ipi = BoolCol(default=True)
     bc_st_include_ipi = BoolCol(default=True)
 
     # Simples Nacional
     csosn = IntCol(default=None)
-    p_cred_sn = DecimalCol(default=None)
+    p_cred_sn = PercentCol(default=None)
 
 
 class BaseIPI(BaseTax):
@@ -100,9 +99,9 @@ class BaseIPI(BaseTax):
     c_enq = UnicodeCol(default='')
 
     cst = IntCol(default=None)
-    p_ipi = DecimalCol(default=None)
+    p_ipi = PercentCol(default=None)
 
-    q_unid = DecimalCol(default=None)
+    q_unid = QuantityCol(default=None)
 
     calculo = IntCol(default=CALC_ALIQUOTA)
 

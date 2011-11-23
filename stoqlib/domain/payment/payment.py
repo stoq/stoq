@@ -31,7 +31,7 @@ from kiwi.log import Logger
 from zope.interface import implements
 
 from stoqlib.database.orm import (IntCol, DateTimeCol, UnicodeCol, ForeignKey,
-                                  PriceCol, DecimalCol)
+                                  PriceCol)
 from stoqlib.database.orm import (const, DESC, AND, OR, MultipleJoin,
                                   SingleJoin)
 from stoqlib.domain.base import Domain, ModelAdapter
@@ -403,13 +403,13 @@ class PaymentFlowHistory(Domain):
 
     history_date = DateTimeCol(default=datetime.datetime.now)
 
-    to_receive = DecimalCol(default=Decimal(0))
-    received = DecimalCol(default=Decimal(0))
-    to_pay = DecimalCol(default=Decimal(0))
-    paid = DecimalCol(default=Decimal(0))
+    to_receive = PriceCol(default=Decimal(0))
+    received = PriceCol(default=Decimal(0))
+    to_pay = PriceCol(default=Decimal(0))
+    paid = PriceCol(default=Decimal(0))
 
-    balance_expected = DecimalCol(default=Decimal(0))
-    balance_real = DecimalCol(default=Decimal(0))
+    balance_expected = PriceCol(default=Decimal(0))
+    balance_real = PriceCol(default=Decimal(0))
 
     to_receive_payments = IntCol(default=0)
     received_payments = IntCol(default=0)
