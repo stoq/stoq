@@ -130,7 +130,7 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
 
     def _on_search__search_completed(self, search, results, states):
         if not len(results):
-            self.set_message(_("Nothing found. Try refining the search..."))
+            self.set_message(_("Nothing found."))
 
 
 
