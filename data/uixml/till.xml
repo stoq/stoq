@@ -25,27 +25,27 @@
 <ui>
   <menubar action="menubar">
     <menu action="FileMenu">
-        <placeholder name="FileMenuPH">
-          <menuitem action="TillOpen"/>
-          <menuitem action="TillClose"/>
-          <separator/>
-          <menuitem action="TillAddCash"/>
-          <menuitem action="TillRemoveCash"/>
-          <separator name="sep1"/>
-          <menuitem action="ExportCSV"/>
-        </placeholder>
-    </menu>
-      <placeholder name="AppMenubarPH">
-        <menu action="SearchMenu">
-          <menuitem action="SearchClient"/>
-          <menuitem action="SearchSale"/>
-          <menuitem action="SearchSoldItemsByBranch"/>
-          <separator name="sep2"/>
-          <menuitem action="SearchTillHistory"/>
-          <menuitem action="SearchFiscalTillOperations"/>
-        </menu>
-        <placeholder name="ExtraMenu"/>
+      <placeholder name="FileMenuPH">
+        <menuitem action="TillOpen"/>
+        <menuitem action="TillClose"/>
+        <separator/>
+        <menuitem action="TillAddCash"/>
+        <menuitem action="TillRemoveCash"/>
+        <separator name="sep1"/>
+        <menuitem action="ExportCSV"/>
       </placeholder>
+    </menu>
+    <menu action="SearchMenu">
+      <placeholder name="SearchMenuPH">
+        <menuitem action="SearchClient"/>
+        <menuitem action="SearchSale"/>
+        <menuitem action="SearchSoldItemsByBranch"/>
+        <separator name="sep2"/>
+        <menuitem action="SearchTillHistory"/>
+        <menuitem action="SearchFiscalTillOperations"/>
+      </placeholder>
+    </menu>
+    <placeholder name="ExtraMenu"/>
   </menubar>
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">
@@ -55,5 +55,4 @@
     <toolitem action="Return"/>
     <toolitem action="Details"/>
   </toolbar>
-
 </ui>

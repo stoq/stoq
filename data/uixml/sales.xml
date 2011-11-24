@@ -43,6 +43,16 @@
         <menuitem action="SalesCancel"/>
       </placeholder>
     </menu>
+    <menu action="SearchMenu">
+      <placeholder name="SearchMenuPH">
+        <menuitem action="SearchSoldItemsByBranch"/>
+        <menuitem action="SearchProduct"/>
+        <menuitem action="SearchService"/>
+        <menuitem action="SearchDelivery"/>
+        <menuitem action="SearchClient"/>
+        <menuitem action="SearchCommission"/>
+      </placeholder>
+    </menu>
     <placeholder name="AppMenubarPH">
       <menu action="LoanMenu">
         <menuitem action="LoanNew"/>
@@ -50,14 +60,6 @@
         <separator/>
         <menuitem action="LoanSearch"/>
         <menuitem action="LoanSearchItems"/>
-      </menu>
-      <menu action="SearchMenu">
-        <menuitem action="SearchSoldItemsByBranch"/>
-        <menuitem action="SearchProduct"/>
-        <menuitem action="SearchService"/>
-        <menuitem action="SearchDelivery"/>
-        <menuitem action="SearchClient"/>
-        <menuitem action="SearchCommission"/>
       </menu>
     </placeholder>
   </menubar>

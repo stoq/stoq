@@ -32,33 +32,22 @@
           <menuitem action="NewStockDecrease"/>
         </placeholder>
       </menu>
-
       <placeholder name="FileMenuPH">
         <menuitem action="ExportCSV"/>
       </placeholder>
     </menu>
-
     <menu action="EditMenu">
       <placeholder name="EditMenuPH">
         <menuitem action="StockInitial"/>
       </placeholder>
     </menu>
-
     <menu action="ViewMenu">
       <placeholder name="ViewMenuPH">
         <menuitem action="StockPictureViewer"/>
       </placeholder>
     </menu>
-
-    <placeholder name="AppMenubarPH">
-      <menu action="LoanMenu">
-        <menuitem action="LoanNew"/>
-        <menuitem action="LoanClose"/>
-        <separator/>
-        <menuitem action="LoanSearch"/>
-        <menuitem action="LoanSearchItems"/>
-      </menu>
-      <menu action="SearchMenu">
+    <menu action="SearchMenu">
+      <placeholder name="SearchMenuPH">
         <menuitem action="SearchPurchaseReceiving"/>
         <menuitem action="SearchProductHistory"/>
         <menuitem action="SearchTransfer"/>
@@ -66,6 +55,15 @@
         <menuitem action="SearchPurchasedStockItems"/>
         <menuitem action="SearchStockItems"/>
         <menuitem action="SearchClosedStockItems"/>
+      </placeholder>
+    </menu>
+    <placeholder name="AppMenubarPH">
+      <menu action="LoanMenu">
+        <menuitem action="LoanNew"/>
+        <menuitem action="LoanClose"/>
+        <separator/>
+        <menuitem action="LoanSearch"/>
+        <menuitem action="LoanSearchItems"/>
       </menu>
     </placeholder>
   </menubar>

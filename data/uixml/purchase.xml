@@ -46,16 +46,8 @@
         <menuitem action="SearchInConsignmentItems"/>
       </placeholder>
     </menu>
-    <placeholder name="AppMenubarPH">
-      <menu action="OrderMenu">
-        <menuitem action="Details"/>
-        <separator/>
-        <menuitem action="Edit"/>
-        <menuitem action="Confirm"/>
-        <menuitem action="Finish"/>
-        <menuitem action="Cancel"/>
-      </menu>
-      <menu action="SearchMenu">
+    <menu action="SearchMenu">
+      <placeholder name="SearchMenuPH">
         <menuitem action="BaseCategories"/>
         <menuitem action="Categories"/>
         <menuitem action="ProductUnits"/>
@@ -69,6 +61,16 @@
         <menuitem action="SearchPurchasedItems"/>
         <menuitem action="ProductsSoldSearch"/>
         <menuitem action="ProductsPriceSearch"/>
+      </placeholder>
+    </menu>
+    <placeholder name="AppMenubarPH">
+      <menu action="OrderMenu">
+        <menuitem action="Details"/>
+        <separator/>
+        <menuitem action="Edit"/>
+        <menuitem action="Confirm"/>
+        <menuitem action="Finish"/>
+        <menuitem action="Cancel"/>
       </menu>
     </placeholder>
   </menubar>

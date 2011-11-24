@@ -110,6 +110,9 @@ class Launcher(AppWindow):
             # View
             ('ViewMenu', None, _("_View")),
 
+            # Search
+            ('SearchMenu', None, _("_Search")),
+
             # Help
             ("HelpMenu", None, _("_Help")),
             ("HelpContents", gtk.STOCK_HELP, _("Contents"), '<Shift>F1'),

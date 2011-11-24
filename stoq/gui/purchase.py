@@ -100,7 +100,6 @@ class PurchaseApp(SearchableAppWindow):
             ("OrderMenu", None, _("Order")),
 
             # Search
-            ("SearchMenu", None, _("_Search")),
             ("BaseCategories", None, _("Base categories..."), "<Control>b"),
             ("Categories", None, _("Categories..."), "<Control>c"),
             ("Products", 'stoq-products', _("Products..."), "<Control>d"),

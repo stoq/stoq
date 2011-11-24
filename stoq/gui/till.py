@@ -92,7 +92,6 @@ class TillApp(SearchableAppWindow):
              _('Export CSV...'), '<Control>F10'),
 
             # Search
-            ("SearchMenu", None, _("_Search")),
             ("SearchClient", None, _("Clients..."), '<Control><Alt>c'),
             ("SearchSale", None, _("Sales..."), '<Contrl><Alt>a'),
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),

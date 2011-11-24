@@ -39,16 +39,16 @@
          <menuitem action="NewDelivery"/>
       </placeholder>
     </menu>
-    <placeholder name="AppMenubarPH">
-      <menu action="SearchMenu">
+    <menu action="SearchMenu">
+       <placeholder name="SearchMenuPH">
          <menuitem action="Sales"/>
          <menuitem action="SoldItemsByBranchSearch"/>
          <menuitem action="Clients"/>
          <menuitem action="ProductSearch"/>
          <menuitem action="ServiceSearch"/>
          <menuitem action="DeliverySearch"/>
-      </menu>
-      <placeholder name="ExtraMenu"/>
-    </placeholder>
+      </placeholder>
+    </menu>
+    <placeholder name="ExtraMenu"/>
   </menubar>
 </ui>

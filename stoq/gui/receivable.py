@@ -100,7 +100,6 @@ class ReceivableApp(SearchableAppWindow):
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
 
             # Search
-            ('SearchMenu', None, _('_Search')),
             ('BillCheckSearch', None, _('Bill and check...')),
             ('CardPaymentSearch', None, _('Card payment...')),
 

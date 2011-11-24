@@ -51,6 +51,9 @@
       <separator/>
       <menuitem action="ToggleFullscreen"/>
     </menu>
+    <menu action="SearchMenu">
+      <placeholder name="SearchMenuPH"/>
+    </menu>
     <placeholder name="AppMenubarPH"/>
     <placeholder name="ExtraMenubarPH"/>
     <menu action="HelpMenu">

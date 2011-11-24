@@ -107,7 +107,6 @@ class SalesApp(SearchableAppWindow):
             ("LoanSearchItems", None, _("Search loan items...")),
 
             # Search
-            ("SearchMenu", None, _("_Search")),
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
              "<Control><Alt>a"),
             ("SearchProduct", 'stoq-products', _("Products"),
