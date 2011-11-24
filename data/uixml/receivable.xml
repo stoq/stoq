@@ -47,12 +47,12 @@
         <menuitem action="Comments"/>
       </placeholder>
     </menu>
-    <placeholder name="AppMenubarPH">
-      <menu action="SearchMenu">
+    <menu action="SearchMenu">
+      <placeholder name="SearchMenuPH">
         <menuitem action="BillCheckSearch"/>
         <menuitem action="CardPaymentSearch"/>
-      </menu>
-    </placeholder>
+      </placeholder>
+    </menu>
   </menubar>
   <toolbar action="toolbar">
     <toolitem action="Print">
@@ -62,10 +62,8 @@
         <menuitem action="PrintReceipt"/>
       </menu>
     </toolitem>
-
     <separator/>
     <toolitem action="Receive"/>
     <toolitem action="Details"/>
   </toolbar>
-
 </ui>

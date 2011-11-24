@@ -24,8 +24,8 @@
 
 <ui>
   <menubar action="menubar">
-    <placeholder action="AppMenubarPH">
-      <menu action="SearchMenu">
+    <menu action="SearchMenu">
+      <placeholder action="SearchMenuPH">
         <menuitem action="SearchRole"/>
         <menuitem action="SearchEmployee"/>
         <menuitem action="SearchCfop"/>
@@ -36,7 +36,9 @@
         <menuitem action="SearchComputer"/>
         <menuitem action="SearchTaxTemplate"/>
         <menuitem action="SearchEvents"/>
-      </menu>
+      </placeholder>
+     </menu>
+    <placeholder action="AppMenubarPH">
       <menu action="ConfigureMenu">
         <menuitem action="ConfigureDevices"/>
         <menuitem action="ConfigurePaymentMethods"/>

@@ -44,11 +44,11 @@
         <menuitem action="PaymentFlowHistory"/>
       </placeholder>
     </menu>
-    <placeholder name="AppMenubarPH">
-      <menu action="SearchMenu">
+    <menu action="SearchMenu">
+      <placeholder name="SearchMenuPH">
         <menuitem action="BillCheckSearch"/>
-      </menu>
-    </placeholder>
+      </placeholder>
+    </menu>
   </menubar>
   <toolbar action="toolbar">
     <toolitem action="PrintReport"/>

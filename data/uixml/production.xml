@@ -41,14 +41,14 @@
         <menuitem action="EditProduction"/>
       </placeholder>
     </menu>
-    <placeholder name="AppMenubarPH">
-      <menu action="SearchMenu">
+    <menu action="SearchMenu">
+      <placeholder name="SearchMenuPH">
         <menuitem action="SearchProduct"/>
         <menuitem action="SearchService"/>
         <menuitem action="SearchProductionItem"/>
         <menuitem action="SearchProductionHistory"/>
-      </menu>
-    </placeholder>
+      </placeholder>
+    </menu>
   </menubar>
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">

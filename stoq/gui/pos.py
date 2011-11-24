@@ -140,7 +140,6 @@ class PosApp(AppWindow):
             ('ConfirmOrder', None, _('Confirm Order...'), '<Control>F10'),
 
             # Search
-            ("SearchMenu", None, _("_Search")),
             ("Sales", None, _("Sales..."), '<Control><Alt>a'),
             ("SoldItemsByBranchSearch", None, _("Sold Items by Branch..."),
                 '<Contrl><Alt>a'),

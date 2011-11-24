@@ -100,7 +100,6 @@ class StockApp(SearchableAppWindow):
             ("LoanSearchItems", None, _("Search loan items...")),
 
             # Search
-            ("SearchMenu", None, _("_Search")),
             ("SearchPurchaseReceiving", None, _("Received purchases..."),
              "<Control><Alt>u"),
             ("SearchProductHistory", None, _("Product history..."), "<Control><Alt>p"),

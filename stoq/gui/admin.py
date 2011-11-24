@@ -267,7 +267,6 @@ class AdminApp(AppWindow):
             ("AdminMenu", None, _("_Admin")),
 
             # Search
-            ("SearchMenu", None, _("_Search")),
             ("SearchRole", None, _("Roles..."), '<Control><Alt>o'),
             ("SearchEmployee", None, _("Employees..."), '<Control><Alt>e'),
             ("SearchEvents", None, _("Events..."), ''),

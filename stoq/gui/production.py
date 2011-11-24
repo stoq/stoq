@@ -86,7 +86,6 @@ class ProductionApp(SearchableAppWindow):
              _('Print this list of productions')),
 
             # Search
-            ("SearchMenu", None, _("_Search")),
             ("SearchProduct", None, _("Products..."), '<Control>d'),
             ("SearchService", None, _("Services..."), '<Control>s'),
             ("SearchProductionItem", 'stoq-production-app', _("Production items..."),
