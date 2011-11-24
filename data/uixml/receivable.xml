@@ -32,7 +32,7 @@
       </menu>
       <placeholder name="FileMenuPH">
         <menuitem action="ExportCSV"/>
-        <separator name="sep"/>
+        <separator/>
         <menuitem action="PrintBill"/>
         <menuitem action="PrintReceipt"/>
         <menuitem action="PaymentFlowHistory"/>

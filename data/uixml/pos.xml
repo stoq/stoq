@@ -35,7 +35,7 @@
       <placeholder name="EditMenuPH">
          <menuitem action="ConfirmOrder"/>
          <menuitem action="CancelOrder"/>
-         <separator name="sep"/>
+         <separator/>
          <menuitem action="NewDelivery"/>
       </placeholder>
     </menu>

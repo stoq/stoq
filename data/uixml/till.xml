@@ -31,7 +31,7 @@
         <separator/>
         <menuitem action="TillAddCash"/>
         <menuitem action="TillRemoveCash"/>
-        <separator name="sep1"/>
+        <separator/>
         <menuitem action="ExportCSV"/>
       </placeholder>
     </menu>
@@ -40,7 +40,7 @@
         <menuitem action="SearchClient"/>
         <menuitem action="SearchSale"/>
         <menuitem action="SearchSoldItemsByBranch"/>
-        <separator name="sep2"/>
+        <separator/>
         <menuitem action="SearchTillHistory"/>
         <menuitem action="SearchFiscalTillOperations"/>
       </placeholder>
