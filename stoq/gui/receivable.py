@@ -84,8 +84,8 @@ class ReceivableApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Payable
-            ('AddReceiving', gtk.STOCK_ADD,
-             _('Accounts receivable'), '<Control>p'),
+            ('AddReceiving', gtk.STOCK_ADD, _('Account receivable'),
+             '<Control>p'),
             ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
             ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...')),
@@ -100,17 +100,19 @@ class ReceivableApp(SearchableAppWindow):
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
 
             # Search
-            ('BillCheckSearch', None, _('Bill and check...')),
-            ('CardPaymentSearch', None, _('Card payment...')),
+            ('BillCheckSearch', None, _('Bill and check...'), '',
+             _('Search for bills and checks')),
+            ('CardPaymentSearch', None, _('Card payment...'), '',
+             _('Search for card payments')),
 
             ('PrintToolMenu', _('Print')),
             ('PrintList', gtk.STOCK_PRINT, _('Payment List'), '',
-             _('Print a report for this payment list'),),
+             _('Print a report for this payment listing'),),
 
             ('Receive', gtk.STOCK_APPLY, _('Receive'), '',
              _('Receive the selected payments')),
             ('Details', gtk.STOCK_INFO, _('Details'), '',
-             _('Show details for the payment'),)
+             _('Show details for the selected payment'),)
         ]
         self.receivable_ui = self.add_ui_actions(None, actions,
                                                  filename='receivable.xml')

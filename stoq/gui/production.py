@@ -77,20 +77,24 @@ class ProductionApp(SearchableAppWindow):
             ),
             ('ProductionDetails', gtk.STOCK_INFO, _('Production details...'),
             '',
-            _('See production details and register produced itens')),
+            _('Show production details and register produced items')),
             ('ProductionPurchaseQuote', 'stoq-purchase-app',
              _('Purchase quote'), '<Control>p'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
 
             ("Print", gtk.STOCK_PRINT, _("Print"), '',
-             _('Print this list of productions')),
+             _('Print a report of this production listing')),
 
             # Search
-            ("SearchProduct", None, _("Products..."), '<Control>d'),
-            ("SearchService", None, _("Services..."), '<Control>s'),
-            ("SearchProductionItem", 'stoq-production-app', _("Production items..."),
-             '<Control>r'),
-            ("SearchProductionHistory", None, _("Production history..."), '<Control>h'),
+            ("SearchProduct", None, _("Production products..."), '<Control>d',
+             _("Search for production products")),
+            ("SearchService", None, _("Services..."), '<Control>s',
+             _("Search for services")),
+            ("SearchProductionItem", 'stoq-production-app',
+             _("Production items..."), '<Control>r',
+             _("Search for production items")),
+            ("SearchProductionHistory", None, _("Production history..."),
+             '<Control>h', _("Search for production history")),
 
         ]
         self.production_ui = self.add_ui_actions("", actions,

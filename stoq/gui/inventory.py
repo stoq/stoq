@@ -67,17 +67,20 @@ class InventoryApp(SearchableAppWindow):
             ('menubar', None, ''),
             # Inventory
             ('NewInventory', None, _('Open I_nventry'), '<Control>i',
-             _('Create a new inventory for product counting.')),
+             _('Create a new inventory for product counting')),
             ('CountingAction', gtk.STOCK_INDEX, _('_Count inventory...'),
              '<Control>c',
-             _('Enter actual stock for products in this inventory')),
+             _('Register the actual stock of products in the selected '
+               'inventory')),
             ('AdjustAction', gtk.STOCK_CONVERT, _('_Adjust inventory...'),
              '<Control>a',
-             _('Adjust stock accordingly to counting')),
+             _('Adjust the stock accordingly to the counting in the selected '
+               'inventory')),
             ('Cancel', gtk.STOCK_CANCEL, _('Cancel inventory'), '',
-             _('Cancel the currently open inventory')),
+             _('Cancel the selected inventory')),
             ('Print', gtk.STOCK_PRINT, _('Print inventory'), '',
-             _('Print product list for inventory counting.')),
+             _('Print the product listing for the selected inventory '
+               'to be used for counting')),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
         ]
         self.inventory_ui = self.add_ui_actions('', actions,

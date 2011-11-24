@@ -108,26 +108,27 @@ class SalesApp(SearchableAppWindow):
 
             # Search
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
-             "<Control><Alt>a"),
+             "<Control><Alt>a", _("Search for sold items by branch")),
             ("SearchProduct", 'stoq-products', _("Products"),
-             "<Control><Alt>p"),
+             "<Control><Alt>p", _("Search for products")),
             ("SearchService", 'stoq-services', _("Services"),
-             "<Control><Alt>s"),
+             "<Control><Alt>s", _("Search for services")),
             ("SearchDelivery", 'stoq-delivery', _("Deliveries"),
-             "<Control><Alt>e"),
+             "<Control><Alt>e", _("Search for deliveries")),
             ("SearchClient", 'stoq-clients', _("Clients"),
-             "<Control><Alt>c"),
+             "<Control><Alt>c", _("Search for clients")),
             ("SearchCommission", None, _("Commissions"),
-             "<Control><Alt>o"),
+             "<Control><Alt>o", _("Search for salespersons commissions")),
 
             ("Print", gtk.STOCK_PRINT, _("Print"), '',
              _("Print this sale listing")),
             ("Return", gtk.STOCK_CANCEL, _("Return sale"), '',
-             _("Return the sale and cancel the payments.")),
+             _("Return the selected sale and cancel it's payments")),
             ("Edit", gtk.STOCK_EDIT, _("Edit"), '',
-             _("Edit the sale, allows you to change the details of it")),
+             _("Edit the selected sale, allowing you to change the details "
+               "of it")),
             ("Details", gtk.STOCK_INFO, _("Details"), '',
-             _("View the details of the sale"))
+             _("Show details of the selected sale"))
         ]
 
         self.sales_ui = self.add_ui_actions("", actions,

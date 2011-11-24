@@ -80,7 +80,7 @@ class PayableApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Payable
-            ('AddPayment', gtk.STOCK_ADD, _('Accounts payable'), '<Control>p'),
+            ('AddPayment', gtk.STOCK_ADD, _('Account payable'), '<Control>p'),
             ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
             ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...')),
@@ -93,17 +93,18 @@ class PayableApp(SearchableAppWindow):
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
 
             # Search
-            ('BillCheckSearch', None, _('Bill and check...')),
+            ('BillCheckSearch', None, _('Bill and check...'), '',
+             _('Search for bills and checks')),
 
             # Toolbar
             ('PrintReport', gtk.STOCK_PRINT, _('Print'), '',
-              _('Print a report for this payment list')),
+             _('Print a report for this payment listing')),
             ('Pay', gtk.STOCK_APPLY, _('Pay'), '',
-              _('Pay the order assoicated with the payment')),
+             _('Pay the order associated with the selected payment')),
             ('Edit', gtk.STOCK_EDIT, _('Edit'), '',
-              _('Edit the payment')),
+             _('Edit the selected payment details')),
             ('Details', gtk.STOCK_INFO, _('Details'), '',
-              _('Show details for the payment')),
+             _('Show details for the selected payment')),
         ]
         self.payable_ui = self.add_ui_actions(None, actions,
                                               filename='payable.xml')
