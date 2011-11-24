@@ -65,7 +65,6 @@
   </menubar>
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">
-      <separator/>
       <toolitem action="Print"/>
       <separator/>
       <toolitem action="Edit"/>
