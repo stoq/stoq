@@ -435,8 +435,8 @@ class SearchableAppWindow(AppWindow):
                                      restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.search.set_query_executer(self.executer)
-        self.search.search.connect("search-completed",
-                                   self._on_search__search_completed)
+        self.search.search.connect_after("search-completed",
+                                         self._on_search__search_completed)
         self.results = self.search.search.results
         self.set_text_field_label(self.search_label)
 
@@ -508,8 +508,7 @@ class SearchableAppWindow(AppWindow):
         pass
 
     def search_completed(self, results, states):
-        if not len(results):
-            results.set_message(_("Nothing found, refine search."))
+        pass
 
     #
     # Callbacks

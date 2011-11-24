@@ -207,11 +207,11 @@ class PurchaseApp(SearchableAppWindow):
 
         supplier, status = states[:2]
         if len(states) > 2 or (supplier.text == '' and status.value is None):
-            self.results.set_message(_("No orders could be found.\n\n"
-                "Would you like to %s ?" % ('<a href="new_order">%s</a>' % (
-                    _("add a new order")))))
-        else:
-            self.results.set_message(_("Nothing found, refine search."))
+            self.search.set_message("%s\n\n%s" % (
+                _("No orders could be found."),
+                _("Would you like to %s ?") % (
+                    '<a href="new_order">%s</a>' % _("add a new order"))
+                ))
 
         # FIXME: Push number of results to Statusbar
 

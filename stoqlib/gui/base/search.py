@@ -82,6 +82,8 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
             self._cache_store = None
 
         SearchSlaveDelegate.__init__(self, self._columns)
+        self.search.connect("search-completed",
+                            self._on_search__search_completed)
 
     #
     #  Public API
@@ -109,6 +111,9 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
                 col.visible = props[0]
                 col.width = props[1]
 
+    def set_message(self, message):
+        self.search.results.set_message(message)
+
     #
     #  Private API
     #
@@ -118,6 +123,14 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
         restore_dir = os.path.join(get_application_dir(), 'columns-%s' % uname)
         restore_name = restore_name and "%s.pickle" % restore_name
         return CacheStore(restore_dir, restore_name)
+
+    #
+    #  Callbacks
+    #
+
+    def _on_search__search_completed(self, search, results, states):
+        if not len(results):
+            self.set_message(_("Nothing found. Try refining the search..."))
 
 
 
