@@ -49,7 +49,7 @@
         <menuitem action="ConfigureParameters"/>
         <menuitem action="ConfigureInvoices"/>
         <menuitem action="ConfigureInvoicePrinters"/>
-        <separator name="ConfigureSeparator"/>
+        <separator/>
         <menuitem action="ConfigurePlugins"/>
         <placeholder name="PluginSettings"/>
       </menu>
