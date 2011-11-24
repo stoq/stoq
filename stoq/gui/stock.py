@@ -101,22 +101,28 @@ class StockApp(SearchableAppWindow):
 
             # Search
             ("SearchPurchaseReceiving", None, _("Received purchases..."),
-             "<Control><Alt>u"),
-            ("SearchProductHistory", None, _("Product history..."), "<Control><Alt>p"),
-            ("SearchStockDecrease", None, _("Stock decreases...")),
-            ("SearchPurchasedStockItems", None, _("Purchased items..."), "<Control><Alt>i"),
-            ("SearchStockItems", None, _("Stock items..."), "<Control><Alt>s"),
-            ("SearchTransfer", None, _("Transfers..."), "<Control><Alt>t"),
+             "<Control><Alt>u", _("Search for received purchase orders")),
+            ("SearchProductHistory", None, _("Product history..."),
+             "<Control><Alt>p", _("Search for product history")),
+            ("SearchStockDecrease", None, _("Stock decreases..."), '',
+             _("Search for manual stock decreases")),
+            ("SearchPurchasedStockItems", None, _("Purchased items..."),
+             "<Control><Alt>i", _("Search for purchased items")),
+            ("SearchStockItems", None, _("Stock items..."), "<Control><Alt>s",
+             _("Search for items on stock")),
+            ("SearchTransfer", None, _("Transfers..."), "<Control><Alt>t",
+             _("Search for stock transfers")),
             ("SearchClosedStockItems", None, _("Closed stock Items..."),
-             "<Control><Alt>c"),
+             "<Control><Alt>c", _("Search for closed stock items")),
 
              # Toolbar
             ("Print", gtk.STOCK_PRINT, _("Print"), '',
-            _('Print the list of products')),
+            _('Print a report of this products listing')),
             ("ProductStockHistory", gtk.STOCK_INFO, _("History"), '',
-            _('Show the stock history of a product')),
+            _('Show the stock history of the selected product')),
             ("EditProduct", gtk.STOCK_EDIT, _("Edit"), '',
-            _("Edit the product")),
+            _("Edit the selected product, allowing you to change it's "
+              "details")),
         ]
         self.stock_ui = self.add_ui_actions('', actions,
                                             filename='stock.xml')

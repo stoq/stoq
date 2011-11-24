@@ -351,13 +351,12 @@ class FinancialApp(AppWindow):
             ('toolbar', None, ''),
             ('EditAccount', gtk.STOCK_EDIT, _('Edit account'),
              '<control>e', _('Change the currently selected account')),
-            ('DeleteAccount', gtk.STOCK_DELETE, _('Delete account'),
-             '', _('Delete account')),
-            ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete transaction'),
-             '', _('Delete transaction')),
+            ('DeleteAccount', gtk.STOCK_DELETE, _('Delete account'), '',
+             _('Delete the selected account')),
+            ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete transaction'), '',
+             _('Delete the selected transaction')),
 
             # Toolbar
-            #("NewToolItem", None, _("New")),
             ("NewAccount", gtk.STOCK_NEW, _("Account"), '<control>a',
              _("Add a new account")),
             ("NewTransaction", gtk.STOCK_NEW, _("Transaction"), '<control>t',
@@ -403,9 +402,9 @@ class FinancialApp(AppWindow):
 
     def _update_tooltips(self):
         if self._is_accounts_tab():
-            self.Edit.set_tooltip(_("Edit the current account"))
+            self.Edit.set_tooltip(_("Edit the selected account"))
         else:
-            self.Edit.set_tooltip(_("Edit the current transaction"))
+            self.Edit.set_tooltip(_("Edit the selected transaction"))
 
     def _create_initial_page(self):
         pixbuf = self.accounts.render_icon('stoq-money', gtk.ICON_SIZE_MENU)

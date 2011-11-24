@@ -92,18 +92,25 @@ class TillApp(SearchableAppWindow):
              _('Export CSV...'), '<Control>F10'),
 
             # Search
-            ("SearchClient", None, _("Clients..."), '<Control><Alt>c'),
-            ("SearchSale", None, _("Sales..."), '<Contrl><Alt>a'),
+            ("SearchClient", None, _("Clients..."), '<Control><Alt>c',
+             _("Search for clients")),
+            ("SearchSale", None, _("Sales..."), '<Contrl><Alt>a',
+             _("Search for sales")),
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
-             '<Control><Alt>d'),
-            ("SearchTillHistory", None,
-             _("Till history..."), '<Control><Alt>t'),
-            ("SearchFiscalTillOperations", None,
-             _("Fiscal till operations..."), '<Contro><Alt>f'),
+             '<Control><Alt>d', _("Search for items sold by branch")),
+            ("SearchTillHistory", None, _("Till history..."), '<Control><Alt>t',
+             _("Search for till history")),
+            ("SearchFiscalTillOperations", None, _("Fiscal till operations..."),
+             '<Contro><Alt>f', _("Search for fiscal till operations")),
 
-            ("Confirm", gtk.STOCK_APPLY, _("Confirm")),
-            ("Return", gtk.STOCK_CANCEL, _("Return")),
-            ("Details", gtk.STOCK_INFO, _("Details")),
+            ("Confirm", gtk.STOCK_APPLY, _("Confirm"), '',
+             _("Confirm the selected sale, decreasing stock and making it "
+               "possible to receive it's payments")),
+            ("Return", gtk.STOCK_CANCEL, _("Return"), '',
+             _("Return the selected sale, returning stock and the client's "
+               "payments")),
+            ("Details", gtk.STOCK_INFO, _("Details"), '',
+             _("Show details of the selected sale")),
         ]
 
         self.till_ui = self.add_ui_actions('', actions,
