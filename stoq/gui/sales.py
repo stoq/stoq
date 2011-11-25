@@ -50,7 +50,6 @@ from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.invoice import SaleInvoice, print_sale_invoice
 from stoqlib.lib.message import info, yesno
-from stoqlib.lib.parameters import sysparam
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -339,7 +338,7 @@ class SalesApp(SearchableAppWindow):
         trans.close()
 
     def _search_product(self):
-        hide_cost_column = not sysparam(self.conn).SHOW_COST_COLUMN_IN_SALES
+        hide_cost_column = not api.sysparam(self.conn).SHOW_COST_COLUMN_IN_SALES
         self.run_dialog(ProductSearch, self.conn, hide_footer=True,
                         hide_toolbar=True, hide_cost_column=hide_cost_column)
 

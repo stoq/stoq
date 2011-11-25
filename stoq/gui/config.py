@@ -78,7 +78,6 @@ from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.processview import ProcessView
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.osutils import read_registry_key
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import validate_email
 from stoqlib.lib.formatters import raw_phone_number
 from stoqlib.lib.webservice import WebService
@@ -903,7 +902,7 @@ class FirstTimeConfigWizard(BaseWizard):
         #        be done at the same place.
         logger.info('_create_station')
         if self.enable_production:
-            branch = sysparam(trans).MAIN_COMPANY
+            branch = api.sysparam(trans).MAIN_COMPANY
             assert branch
             provide_utility(ICurrentBranch, branch)
         else:
@@ -935,7 +934,7 @@ class FirstTimeConfigWizard(BaseWizard):
     def _set_online_services(self, trans):
         logger.info('_set_online_services (%s)' %
                             self.enable_online_services)
-        sysparam(trans).ONLINE_SERVICES = int(self.enable_online_services)
+        api.sysparam(trans).ONLINE_SERVICES = int(self.enable_online_services)
 
     def try_connect(self, settings, warn=True):
         logger.info('try_connect (warn=%s)' % (warn))

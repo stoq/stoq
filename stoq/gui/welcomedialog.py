@@ -29,7 +29,6 @@ from kiwi.environ import environ
 import gtk
 
 from stoqlib.api import api
-from stoqlib.lib.parameters import sysparam
 
 _ = gettext.gettext
 
@@ -63,7 +62,7 @@ class WelcomeDialog(gtk.Dialog):
             content = environ.find_resource('html', 'welcome-pt_BR.html')
         else:
             content = environ.find_resource('html', 'welcome.html')
-        if sysparam(api.get_connection()).DEMO_MODE:
+        if api.sysparam(api.get_connection()).DEMO_MODE:
             content += '?demo-mode'
         return 'file:///' + content
 

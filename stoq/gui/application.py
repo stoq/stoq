@@ -34,7 +34,6 @@ from kiwi.log import Logger
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.lib.message import yesno
-from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
@@ -120,7 +119,7 @@ class AppWindow(BaseAppWindow):
             self._check_version()
             self._usability_hacks()
 
-            if not stoq.stable and not is_developer_mode():
+            if not stoq.stable and not api.is_developer_mode():
                 self._display_unstable_version_message()
 
     def _display_unstable_version_message(self):
@@ -148,7 +147,7 @@ class AppWindow(BaseAppWindow):
         self.main_toolbar.set_style(gtk.TOOLBAR_BOTH_HORIZ)
 
     def _check_demo_mode(self):
-        if not sysparam(self.conn).DEMO_MODE:
+        if not api.sysparam(self.conn).DEMO_MODE:
             return
 
         if api.config.get('UI', 'hide_demo_warning') == 'True':
@@ -177,7 +176,7 @@ class AppWindow(BaseAppWindow):
         self.main_vbox.reorder_child(bar, 2)
 
     def _check_version(self):
-        if not sysparam(self.conn).ONLINE_SERVICES:
+        if not api.sysparam(self.conn).ONLINE_SERVICES:
             return
         self._version_checker = VersionChecker(self.conn, self)
         self._version_checker.check_new_version()
@@ -565,7 +564,7 @@ class VersionChecker(object):
     #
 
     def check_new_version(self):
-        if is_developer_mode():
+        if api.is_developer_mode():
             return
         log.debug('Checking version')
         date = api.config.get('General', 'last-version-check')

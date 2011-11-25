@@ -49,7 +49,6 @@ from stoqlib.exceptions import StoqlibError, TaxError
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.message import warning, info, yesno, marker
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.gui.base.dialogs import push_fullscreen, pop_fullscreen
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
@@ -114,7 +113,7 @@ class PosApp(AppWindow):
     def __init__(self, app):
         AppWindow.__init__(self, app)
         self._delivery = None
-        self.param = sysparam(self.conn)
+        self.param = api.sysparam(self.conn)
         self.max_results = self.param.MAX_SEARCH_RESULTS
         self._coupon = None
         # Cant use self._coupon to verify if there is a sale, since
@@ -380,7 +379,7 @@ class PosApp(AppWindow):
         if not barcode:
             raise StoqlibError("_get_sellable needs a barcode")
 
-        fmt = sysparam(self.conn).SCALE_BARCODE_FORMAT
+        fmt = api.sysparam(self.conn).SCALE_BARCODE_FORMAT
 
         # Check if this barcode is from a scale
         info = parse_barcode(barcode, fmt)
@@ -674,7 +673,7 @@ class PosApp(AppWindow):
         user = api.get_current_user(trans)
         branch = api.get_current_branch(trans)
         salesperson = ISalesPerson(user.person)
-        cfop = sysparam(trans).DEFAULT_SALES_CFOP
+        cfop = api.sysparam(trans).DEFAULT_SALES_CFOP
         group = PaymentGroup(connection=trans)
         sale = Sale(connection=trans,
                     branch=branch,
@@ -682,7 +681,7 @@ class PosApp(AppWindow):
                     group=group,
                     cfop=cfop,
                     coupon_id=None,
-                    operation_nature=sysparam(trans).DEFAULT_OPERATION_NATURE)
+                    operation_nature=api.sysparam(trans).DEFAULT_OPERATION_NATURE)
 
         if self._delivery:
             address_string = self._delivery.address.get_address_string()
