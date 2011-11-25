@@ -31,6 +31,7 @@ having to import their symbols.
 
 from kiwi.component import get_utility
 
+from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       rollback_and_begin, finish_transaction)
@@ -64,6 +65,11 @@ class StoqAPI(object):
     def config(self):
         return get_utility(IStoqConfig)
 
+    def sysparam(self, conn):
+        return sysparam(conn)
+
+    def is_developer_mode(self):
+        return is_developer_mode()
 
 api = StoqAPI()
 

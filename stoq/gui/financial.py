@@ -53,7 +53,6 @@ from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
 from stoqlib.gui.dialogs.sintegradialog import month_names
 from stoqlib.lib.message import yesno
-from stoqlib.lib.parameters import sysparam
 from stoq.gui.application import AppWindow
 
 _ = gettext.gettext
@@ -332,7 +331,7 @@ class FinancialApp(AppWindow):
         self._pages = {}
         self.accounts = AccountTree()
         AppWindow.__init__(self, app)
-        self._tills_account = sysparam(self.conn).TILLS_ACCOUNT
+        self._tills_account = api.sysparam(self.conn).TILLS_ACCOUNT
 
     #
     # AppWindow overrides
@@ -444,7 +443,7 @@ class FinancialApp(AppWindow):
         if parent_account:
             if parent_account.kind in ['payable', 'receivable']:
                 parent_account = None
-            if parent_account == sysparam(self.conn).IMBALANCE_ACCOUNT:
+            if parent_account == api.sysparam(self.conn).IMBALANCE_ACCOUNT:
                 parent_account = None
         retval = self.run_dialog(AccountEditor, trans, model=model,
                                  parent_account=parent_account)
