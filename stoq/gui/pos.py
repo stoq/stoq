@@ -37,10 +37,7 @@ from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 from kiwi.ui.widgets.contextmenu import ContextMenu, ContextMenuItem
 from stoqdrivers.enum import UnitType
-from stoqlib.database.runtime import (new_transaction,
-                                      finish_transaction,
-                                      get_current_user,
-                                      get_current_branch)
+from stoqlib.api import api
 from stoqlib.domain.interfaces import IDelivery, ISalesPerson
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.payment.group import PaymentGroup
@@ -578,7 +575,7 @@ class PosApp(AppWindow):
         self.barcode.grab_focus()
 
     def _check_available_stock(self, storable, sellable):
-        branch = get_current_branch(self.conn)
+        branch = api.get_current_branch(self.conn)
         available = storable.get_full_balance(branch)
         added = sum([sale_item.quantity
                      for sale_item in self.sale_items
@@ -674,8 +671,8 @@ class PosApp(AppWindow):
                                 new_item=new_item)
 
     def _create_sale(self, trans):
-        user = get_current_user(trans)
-        branch = get_current_branch(trans)
+        user = api.get_current_user(trans)
+        branch = api.get_current_branch(trans)
         salesperson = ISalesPerson(user.person)
         cfop = sysparam(trans).DEFAULT_SALES_CFOP
         group = PaymentGroup(connection=trans)
@@ -711,7 +708,7 @@ class PosApp(AppWindow):
     def _checkout(self):
         assert len(self.sale_items) >= 1
 
-        trans = new_transaction()
+        trans = api.new_transaction()
         sale = self._create_sale(trans)
         if self.param.CONFIRM_SALES_ON_TILL:
             sale.order()
@@ -720,7 +717,7 @@ class PosApp(AppWindow):
             assert self._coupon
 
             ordered = self._coupon.confirm(sale, trans)
-            if not finish_transaction(trans, ordered):
+            if not api.finish_transaction(trans, ordered):
                 # FIXME: Move to TEF plugin
                 manager = get_plugin_manager()
                 if manager.is_active('tef'):

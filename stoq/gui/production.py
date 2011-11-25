@@ -31,7 +31,7 @@ import gtk
 from kiwi.ui.objectlist import SearchColumn, Column
 from kiwi.ui.search import ComboSearchFilter, SearchFilterPosition
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.gui.dialogs.productiondetails import ProductionDetailsDialog
 from stoqlib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
@@ -177,20 +177,20 @@ class ProductionApp(SearchableAppWindow):
         return items
 
     def _open_production_order(self, order=None):
-        trans = new_transaction()
+        trans = api.new_transaction()
         order = trans.get(order)
         retval = self.run_dialog(ProductionWizard, trans, order)
-        finish_transaction(trans, retval)
+        api.finish_transaction(trans, retval)
         trans.close()
         self.refresh()
 
     def _start_production_order(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         order = trans.get(self.results.get_selected())
         assert order is not None
 
         retval = self.run_dialog(StartProductionDialog, trans, order)
-        finish_transaction(trans, retval)
+        api.finish_transaction(trans, retval)
         trans.close()
         self.refresh()
 

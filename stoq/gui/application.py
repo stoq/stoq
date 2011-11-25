@@ -32,9 +32,8 @@ from kiwi.component import get_utility
 from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
 from kiwi.log import Logger
+from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
-from stoqlib.database.runtime import (new_transaction, get_connection,
-                                      get_current_branch)
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam, is_developer_mode
@@ -99,7 +98,7 @@ class AppWindow(BaseAppWindow):
 
     def __init__(self, app):
         self._config = get_utility(IStoqConfig)
-        self.conn = new_transaction()
+        self.conn = api.new_transaction()
         if app.embedded:
             uimanager = app.launcher.uimanager
         else:
@@ -335,7 +334,7 @@ class AppWindow(BaseAppWindow):
         self.add_ui_actions(ui_string, actions, 'DebugActions')
 
     def has_open_inventory(self):
-        return Inventory.has_open(self.conn, get_current_branch(self.conn))
+        return Inventory.has_open(self.conn,api.get_current_branch(self.conn))
 
     def check_open_inventory(self):
         inventory_bar = getattr(self, 'inventory_bar', None)
@@ -428,7 +427,7 @@ class SearchableAppWindow(AppWindow):
         if self.search_table is None:
             raise TypeError("%r must define a search_table attribute" % self)
 
-        self.executer = ORMObjectQueryExecuter(get_connection())
+        self.executer = ORMObjectQueryExecuter(api.get_connection())
         self.executer.set_table(self.search_table)
 
         self.search = StoqlibSearchSlaveDelegate(self.get_columns(),

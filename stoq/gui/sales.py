@@ -34,8 +34,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
-from stoqlib.database.runtime import (get_current_station,
-                                      new_transaction, finish_transaction)
+from stoqlib.api import api
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.editors.invoiceeditor import SaleInvoicePrinterDialog
@@ -280,7 +279,7 @@ class SalesApp(SearchableAppWindow):
         sale_view = self.results.get_selected()
         assert sale_view
         sale = Sale.get(sale_view.id, connection=self.conn)
-        station = get_current_station(self.conn)
+        station = api.get_current_station(self.conn)
         printer = InvoicePrinter.get_by_station(station, self.conn)
         if printer is None:
             info(_("There are no invoice printer configured for this station"))
@@ -291,10 +290,10 @@ class SalesApp(SearchableAppWindow):
         if not invoice.has_invoice_number() or sale.invoice_number:
             print_sale_invoice(invoice, printer)
         else:
-            trans = new_transaction()
+            trans = api.new_transaction()
             retval = self.run_dialog(SaleInvoicePrinterDialog, trans,
                                      trans.get(sale), printer)
-            finish_transaction(trans, retval)
+            api.finish_transaction(trans, retval)
             trans.close()
 
     def _setup_columns(self, sale_status=Sale.STATUS_CONFIRMED):
@@ -334,9 +333,9 @@ class SalesApp(SearchableAppWindow):
         return SaleView.q.status == state.value
 
     def _new_sale_quote(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = self.run_dialog(SaleQuoteWizard, trans)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
 
     def _search_product(self):
@@ -363,11 +362,11 @@ class SalesApp(SearchableAppWindow):
         if yesno(_('This will cancel the selected quote. Are you sure?'),
                  gtk.RESPONSE_NO, _("Don't cancel"), _("Cancel quote")):
             return
-        trans = new_transaction()
+        trans = api.new_transaction()
         sale_view = self.results.get_selected()
         sale = trans.get(sale_view.sale)
         sale.cancel()
-        finish_transaction(trans, True)
+        api.finish_transaction(trans, True)
         self.search.refresh()
 
     def on_SalesPrintInvoice__activate(self, action):
@@ -376,15 +375,15 @@ class SalesApp(SearchableAppWindow):
     # Loan
 
     def on_LoanNew__activate(self, action):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = self.run_dialog(NewLoanWizard, trans)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
 
     def on_LoanClose__activate(self, action):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = self.run_dialog(CloseLoanWizard, trans)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
 
     def on_LoanSearch__activate(self, action):

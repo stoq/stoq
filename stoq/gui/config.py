@@ -61,12 +61,12 @@ from kiwi.ui.dialogs import info
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.wizard import WizardStep
 
+from stoqlib.api import api
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME, ensure_admin_user
 from stoqlib.database.database import test_local_database
 from stoqlib.database.interfaces import (ICurrentBranchStation,
                                          ICurrentBranch)
-from stoqlib.database.runtime import new_transaction
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.person import Person
 from stoqlib.domain.station import BranchStation
@@ -390,8 +390,8 @@ class TefStep(WizardEditorStep):
         if self.wizard.tef_request_done:
             return StoqAdminPasswordStep(self.wizard, self.previous)
 
-        api = WebService()
-        response = api.tef_request(self.model.name, self.model.email,
+        webapi = WebService()
+        response = webapi.tef_request(self.model.name, self.model.email,
                                    self.model.phone)
         response.addCallback(self._on_response_done)
         response.addErrback(self._on_response_error)
@@ -572,10 +572,10 @@ class InstallPostgresStep(BaseWizardStep):
         from stoqlib.gui.aptpackageinstaller import AptPackageInstaller
         self.wizard.disable_back()
         self.wizard.disable_next()
-        api = AptPackageInstaller(parent=self.wizard.get_toplevel())
-        api.install('postgresql')
-        api.connect('done', self._on_apt_install__done)
-        api.connect('auth-failed', self._on_apt_install__auth_failed)
+        apti = AptPackageInstaller(parent=self.wizard.get_toplevel())
+        apti.install('postgresql')
+        apti.connect('done', self._on_apt_install__done)
+        apti.connect('auth-failed', self._on_apt_install__auth_failed)
 
         self.label.set_markup(
             _("Please wait while the package installation is completing."))
@@ -1041,7 +1041,7 @@ class FirstTimeConfigWizard(BaseWizard):
             self.load_config_and_call_setup()
         else:
             # Commit data created during the wizard, such as stations
-            trans = new_transaction()
+            trans = api.new_transaction()
             self._set_admin_password(trans)
             self._create_station(trans)
             self._set_online_services(trans)

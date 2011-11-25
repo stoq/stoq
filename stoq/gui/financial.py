@@ -41,8 +41,8 @@ from kiwi.python import Settable
 from kiwi.ui.dialogs import open as open_dialog
 from kiwi.ui.objectlist import ColoredColumn, Column, ObjectList
 from kiwi.ui.search import Any, DateSearchFilter, DateSearchOption, SearchContainer
+from stoqlib.api import api
 from stoqlib.database.orm import const, OR, AND
-from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.account import Account, AccountTransaction, AccountTransactionView
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.gui.accounttree import AccountTree
@@ -271,7 +271,7 @@ class TransactionPage(object):
             item.total = total
 
     def _edit_transaction_dialog(self, item):
-        trans = new_transaction()
+        trans = api.new_transaction()
         if isinstance(item.transaction, AccountTransactionView):
             account_transaction = trans.get(item.transaction.transaction)
         else:
@@ -289,7 +289,7 @@ class TransactionPage(object):
             self._update_totals()
             self.search.results.update(item)
             self.app.accounts.refresh_accounts(self.app.conn)
-        finish_transaction(trans, transaction)
+        api.finish_transaction(trans, transaction)
 
     def on_dialog__opened(self, dialog):
         dialog.connect('account-added', self.on_dialog__account_added)
@@ -298,7 +298,7 @@ class TransactionPage(object):
         self.app.accounts.refresh_accounts(self.app.conn)
 
     def add_transaction_dialog(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = getattr(self.model, 'account', self.model)
         model = trans.get(model)
 
@@ -314,7 +314,7 @@ class TransactionPage(object):
             self._update_totals()
             self.search.results.update(item)
             self.app.accounts.refresh_accounts(self.app.conn)
-        finish_transaction(trans, transaction)
+        api.finish_transaction(trans, transaction)
 
     def _on_row__activated(self, objectlist, item):
         if self.model.kind == 'account':
@@ -438,7 +438,7 @@ class FinancialApp(AppWindow):
         self.accounts.refresh_accounts(self.conn)
 
     def _run_account_editor(self, model, parent_account):
-        trans = new_transaction()
+        trans = api.new_transaction()
         if model:
             model = trans.get(model.account)
         if parent_account:
@@ -448,7 +448,7 @@ class FinancialApp(AppWindow):
                 parent_account = None
         retval = self.run_dialog(AccountEditor, trans, model=model,
                                  parent_account=parent_account)
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             self.accounts.refresh_accounts(self.conn)
 
         return retval
@@ -671,7 +671,7 @@ class FinancialApp(AppWindow):
         self.accounts.remove(account_view)
         self.accounts.flush()
 
-        trans = new_transaction()
+        trans = api.new_transaction()
         account = trans.get(account_view.account)
         account.remove(trans)
         trans.commit(close=True)
@@ -686,7 +686,7 @@ class FinancialApp(AppWindow):
         account_transactions = self._get_current_page_widget()
         account_transactions.results.remove(item)
 
-        trans = new_transaction()
+        trans = api.new_transaction()
         if isinstance(item.transaction, AccountTransactionView):
             account_transaction = trans.get(item.transaction.transaction)
         else:

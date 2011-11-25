@@ -31,7 +31,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Person
@@ -204,10 +204,10 @@ class InventoryApp(SearchableAppWindow):
         return bool(self._get_available_branches_to_inventory())
 
     def _open_inventory(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         branches = self._get_available_branches_to_inventory()
         model = self.run_dialog(OpenInventoryDialog, trans, branches)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
         self.refresh()
         self._update_widgets()
@@ -217,7 +217,7 @@ class InventoryApp(SearchableAppWindow):
                  gtk.RESPONSE_YES, _("Don't cancel"), _("Cancel inventory")):
             return
 
-        trans = new_transaction()
+        trans = api.new_transaction()
         inventory = trans.get(self.results.get_selected())
         inventory.cancel()
         trans.commit()
@@ -225,19 +225,19 @@ class InventoryApp(SearchableAppWindow):
         self._update_widgets()
 
     def _register_product_counting(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         inventory = trans.get(self.results.get_selected())
         model = self.run_dialog(ProductCountingDialog, inventory, trans)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
         self.refresh()
         self._update_widgets()
 
     def _adjust_product_quantities(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         inventory = trans.get(self.results.get_selected())
         model = self.run_dialog(ProductsAdjustmentDialog, inventory, trans)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
         self.refresh()
         self._update_widgets()
