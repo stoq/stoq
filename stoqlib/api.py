@@ -28,10 +28,15 @@
 Singleton object which makes it easier to common stoqlib APIs without
 having to import their symbols.
 """
+
+from kiwi.component import get_utility
+
+from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       rollback_and_begin, finish_transaction)
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station, get_current_user)
+
 
 class StoqAPI(object):
     def get_connection(self):
@@ -54,6 +59,10 @@ class StoqAPI(object):
 
     def get_current_user(self, conn):
         return get_current_user(conn)
+
+    @property
+    def config(self):
+        return get_utility(IStoqConfig)
 
 
 api = StoqAPI()
