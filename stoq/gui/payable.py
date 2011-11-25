@@ -80,15 +80,22 @@ class PayableApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Payable
-            ('AddPayment', gtk.STOCK_ADD, _('Account payable'), '<Control>p'),
-            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...')),
-            ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
-            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...')),
-            ('Comments', None, _('Comments...')),
+            ('AddPayment', gtk.STOCK_ADD, _('Account payable'), '<Control>p',
+             _('Create a new account payable')),
+            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...'), '',
+             _('Cancel the selected payment')),
+            ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...'), '',
+             _('Mark the selected payment as not paid')),
+            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...'), '',
+             _('Change the due date of the selected payment')),
+            ('Comments', None, _('Comments...'), '',
+             _('Add comments to the selected payment')),
 
-            ('PrintReceipt', None, _('Print _receipt'), '<Control>r'),
+            ('PrintReceipt', None, _('Print _receipt'), '<Control>r',
+             _('Print a receipt for the selected payment')),
             ('PaymentFlowHistory', None, _('Payment _flow history...'),
-             '<Control>f'),
+             '<Control>f',
+             _('Show a report of payment expected to receive grouped by day')),
 
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
 
@@ -115,13 +122,18 @@ class PayableApp(SearchableAppWindow):
     def create_ui(self):
         self._setup_widgets()
         self.results.connect('has-rows', self._has_rows)
+        self.search.search.search_button.hide()
 
     def activate(self):
         self.search.refresh()
         self.app.launcher.add_new_items([self.AddPayment])
-        self._update_widgets()
+        self.app.launcher.NewToolItem.set_tooltip(self.AddPayment.get_tooltip())
+        self.app.launcher.add_search_items([self.BillCheckSearch])
+        self.app.launcher.SearchToolItem.set_tooltip(
+            self.BillCheckSearch.get_tooltip())
         self.Pay.set_sensitive(False)
         self.PrintReceipt.set_sensitive(False)
+        self._update_widgets()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.payable_ui)
