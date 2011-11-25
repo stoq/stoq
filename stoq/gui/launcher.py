@@ -33,9 +33,7 @@ from kiwi.environ import environ
 from stoqlib.api import api
 from stoqlib.gui.help import show_contents
 from stoqlib.gui.splash import hide_splash
-from stoqlib.lib.interfaces import (IAppInfo, IApplicationDescriptions,
-                                    IStoqConfig)
-
+from stoqlib.lib.interfaces import (IAppInfo, IApplicationDescriptions)
 from stoq.gui.application import AppWindow
 from stoq.lib.applist import Application
 
@@ -275,12 +273,11 @@ class Launcher(AppWindow):
         menu.insert(sep, len(list(menu))-2)
 
     def _restore_window_size(self):
-        config = get_utility(IStoqConfig)
         try:
-            width = int(config.get('Launcher', 'window_width') or -1)
-            height = int(config.get('Launcher', 'window_height') or -1)
-            x = int(config.get('Launcher', 'window_x') or -1)
-            y = int(config.get('Launcher', 'window_y') or -1)
+            width = int(api.config.get('Launcher', 'window_width') or -1)
+            height = int(api.config.get('Launcher', 'window_height') or -1)
+            x = int(api.config.get('Launcher', 'window_x') or -1)
+            y = int(api.config.get('Launcher', 'window_y') or -1)
         except ValueError:
             pass
         toplevel = self.get_toplevel()
@@ -289,12 +286,11 @@ class Launcher(AppWindow):
             toplevel.move(x, y)
 
     def _save_window_size(self):
-        config = get_utility(IStoqConfig)
-        config.set('Launcher', 'window_width', str(self._width))
-        config.set('Launcher', 'window_height', str(self._height))
-        config.set('Launcher', 'window_x', str(self._x))
-        config.set('Launcher', 'window_y', str(self._y))
-        config.flush()
+        api.config.set('Launcher', 'window_width', str(self._width))
+        api.config.set('Launcher', 'window_height', str(self._height))
+        api.config.set('Launcher', 'window_x', str(self._x))
+        api.config.set('Launcher', 'window_y', str(self._y))
+        api.config.flush()
 
     def _shutdown(self, *args):
         if self.current_app and not self.current_app.shutdown_application():

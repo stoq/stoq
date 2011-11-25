@@ -28,13 +28,11 @@ import gettext
 
 import gobject
 import gtk
-from kiwi.component import get_utility
 from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
 from kiwi.log import Logger
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
-from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.webservice import WebService
@@ -97,7 +95,6 @@ class AppWindow(BaseAppWindow):
     search = None
 
     def __init__(self, app):
-        self._config = get_utility(IStoqConfig)
         self.conn = api.new_transaction()
         if app.embedded:
             uimanager = app.launcher.uimanager
@@ -154,7 +151,7 @@ class AppWindow(BaseAppWindow):
         if not sysparam(self.conn).DEMO_MODE:
             return
 
-        if self._config.get('UI', 'hide_demo_warning') == 'True':
+        if api.config.get('UI', 'hide_demo_warning') == 'True':
             return
 
         button_label = _('Enable production mode')
@@ -406,8 +403,8 @@ class AppWindow(BaseAppWindow):
 
         from stoq.main import restart_stoq_atexit
         restart_stoq_atexit()
-        self._config.set('Database', 'enable_production', 'True')
-        self._config.flush()
+        api.config.set('Database', 'enable_production', 'True')
+        api.config.flush()
         self.shutdown_application()
         raise SystemExit
 
@@ -558,11 +555,10 @@ class VersionChecker(object):
 
     def _on_response_done(self, details):
         self._check_details(details['version'])
-        config = get_utility(IStoqConfig)
-        config.set('General', 'last-version-check',
-                   datetime.date.today().strftime('%Y-%m-%d'))
-        config.set('General', 'latest-version', details['version'])
-        config.flush()
+        api.config.set('General', 'last-version-check',
+                       datetime.date.today().strftime('%Y-%m-%d'))
+        api.config.set('General', 'latest-version', details['version'])
+        api.config.flush()
 
     #
     #   Public API
@@ -572,8 +568,7 @@ class VersionChecker(object):
         if is_developer_mode():
             return
         log.debug('Checking version')
-        config = get_utility(IStoqConfig)
-        date = config.get('General', 'last-version-check')
+        date = api.config.get('General', 'last-version-check')
         if date:
             check_date = datetime.datetime.strptime(date, '%Y-%m-%d')
             diff = datetime.date.today() - check_date.date()
@@ -582,6 +577,6 @@ class VersionChecker(object):
         else:
             return self._download_details()
 
-        latest_version = config.get('General', 'latest-version')
+        latest_version = api.config.get('General', 'latest-version')
         if latest_version:
             self._check_details(latest_version)
