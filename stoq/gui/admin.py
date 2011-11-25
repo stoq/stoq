@@ -29,8 +29,7 @@ import glib
 import gtk
 from kiwi.log import Logger
 
-from stoqlib.database.runtime import (new_transaction, finish_transaction,
-                                      get_current_branch)
+from stoqlib.api import api
 from stoqlib.domain.invoice import InvoiceLayout
 from stoqlib.gui.dialogs.clientcategorydialog import ClientCategoryDialog
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
@@ -166,9 +165,9 @@ class Tasks(object):
         self.app.run_dialog(ClientSearch, self.app.conn)
 
     def _open_client_categories(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = self.app.run_dialog(ClientCategoryDialog, trans)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
 
     def _open_devices(self):
@@ -200,9 +199,9 @@ class Tasks(object):
         self.app.run_dialog(InvoicePrinterDialog, self.app.conn)
 
     def _open_payment_categories(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = self.app.run_dialog(PaymentCategoryDialog, trans)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
 
     def _open_payment_methods(self):
@@ -218,7 +217,7 @@ class Tasks(object):
         self.app.run_dialog(CfopSearch, self.app.conn, hide_footer=True)
 
     def _open_sintegra(self):
-        branch = get_current_branch(self.app.conn)
+        branch = api.get_current_branch(self.app.conn)
         if branch.manager is None:
             info(_(
                 "You must define a manager to this branch before you can create"
@@ -336,9 +335,9 @@ class AdminApp(AppWindow):
     # Private
 
     def _new_user(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = run_person_role_dialog(UserEditor, self, trans)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
     #
     # Callbacks
     #

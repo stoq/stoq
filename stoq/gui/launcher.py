@@ -30,8 +30,7 @@ import operator
 import gtk
 from kiwi.component import get_utility
 from kiwi.environ import environ
-from stoqlib.database.runtime import (new_transaction, finish_transaction,
-                                      get_current_user)
+from stoqlib.api import api
 from stoqlib.gui.help import show_contents
 from stoqlib.gui.splash import hide_splash
 from stoqlib.lib.interfaces import (IAppInfo, IApplicationDescriptions,
@@ -185,7 +184,7 @@ class Launcher(AppWindow):
             frame = children[0]
             frame.set_shadow_type(gtk.SHADOW_NONE)
 
-        user = get_current_user(self.conn)
+        user = api.get_current_user(self.conn)
         self.statusbar.push(0, _("User: %s") % (user.person.name, ))
 
     #
@@ -311,7 +310,7 @@ class Launcher(AppWindow):
         raise SystemExit
 
     def _get_available_applications(self):
-        user = get_current_user(self.conn)
+        user = api.get_current_user(self.conn)
 
         permissions = {}
         for settings in user.profile.profile_settings:
@@ -463,10 +462,10 @@ class Launcher(AppWindow):
 
     def on_ChangePassword__activate(self, action):
         from stoqlib.gui.slaves.userslave import PasswordEditor
-        trans = new_transaction()
-        user = get_current_user(trans)
+        trans = api.new_transaction()
+        user = api.get_current_user(trans)
         retval = self.run_dialog(PasswordEditor, trans, user)
-        finish_transaction(trans, retval)
+        api.finish_transaction(trans, retval)
 
     def on_SignOut__activate(self, action):
         from stoqlib.lib.interfaces import ICookieFile

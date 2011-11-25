@@ -37,7 +37,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import SearchColumn, Column
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
@@ -212,20 +212,20 @@ class ReceivableApp(SearchableAppWindow):
         return values
 
     def _show_details(self, receivable_view):
-        trans = new_transaction()
+        trans = api.new_transaction()
         payment = trans.get(receivable_view.payment)
         retval = run_dialog(InPaymentEditor, self, trans, payment)
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             self.search.refresh()
         trans.close()
         return retval
 
 
     def _show_comments(self, receivable_view):
-        trans = new_transaction()
+        trans = api.new_transaction()
         retval = run_dialog(PaymentCommentsDialog, self, trans,
                             receivable_view.payment)
-        finish_transaction(trans, retval)
+        api.finish_transaction(trans, retval)
 
     def _receive(self, receivable_views):
         """
@@ -235,14 +235,14 @@ class ReceivableApp(SearchableAppWindow):
         """
         assert self._can_receive(receivable_views)
 
-        trans = new_transaction()
+        trans = api.new_transaction()
 
         payments = [trans.get(view.payment) for view in receivable_views]
 
         retval = run_dialog(SaleInstallmentConfirmationSlave, self, trans,
                             payments=payments)
 
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             for view in receivable_views:
                 view.sync()
                 self.results.update(view)
@@ -251,9 +251,9 @@ class ReceivableApp(SearchableAppWindow):
         self._update_widgets()
 
     def _add_receiving(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         retval = self.run_dialog(InPaymentEditor, trans)
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             self.search.refresh()
 
     def _change_due_date(self, receivable_view):
@@ -262,13 +262,13 @@ class ReceivableApp(SearchableAppWindow):
         @param receivable_view: a InPaymentView instance
         """
         assert receivable_view.can_change_due_date()
-        trans = new_transaction()
+        trans = api.new_transaction()
         payment = trans.get(receivable_view.payment)
         sale = trans.get(receivable_view.sale)
         retval = run_dialog(PaymentDueDateChangeDialog, self,
                             trans, payment, sale)
 
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             receivable_view.sync()
             self.results.update(receivable_view)
 
@@ -278,13 +278,13 @@ class ReceivableApp(SearchableAppWindow):
         """Show a dialog do enter a reason for status change
         @param receivable_view: a InPaymentView instance
         """
-        trans = new_transaction()
+        trans = api.new_transaction()
         payment = trans.get(receivable_view.payment)
         order = trans.get(receivable_view.sale)
         retval = run_dialog(PaymentStatusChangeDialog, self, trans,
                             payment, status, order)
 
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             receivable_view.sync()
             self.results.update(receivable_view)
             self.results.unselect_all()
@@ -477,11 +477,11 @@ class ReceivableApp(SearchableAppWindow):
             warning(str(e))
             return
         receivable_views = self.results.get_selected_rows()
-        trans = new_transaction()
+        trans = api.new_transaction()
         groups = list(set([trans.get(v.group) for v in receivable_views]))
         retval = run_dialog(PaymentRenegotiationWizard, self, trans,
                             groups)
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             self.search.refresh()
 
     def on_PrintBill__activate(self, action):

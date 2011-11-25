@@ -33,9 +33,8 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.log import Logger
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
+from stoqlib.api import api
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.database.runtime import (new_transaction, get_current_branch,
-                                      finish_transaction)
 from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import Sellable
@@ -208,7 +207,7 @@ class StockApp(SearchableAppWindow):
         self.set_text_field_columns(['description'])
         self.branch_filter = ComboSearchFilter(
             _('Show by:'), self._get_branches())
-        self.branch_filter.select(get_current_branch(self.conn))
+        self.branch_filter.select(api.get_current_branch(self.conn))
         self.add_filter(self.branch_filter, position=SearchFilterPosition.TOP)
 
     def get_columns(self):
@@ -253,7 +252,7 @@ class StockApp(SearchableAppWindow):
         return items
 
     def _update_widgets(self):
-        branch = get_current_branch(self.conn)
+        branch = api.get_current_branch(self.conn)
 
         is_main_branch = self.branch_filter.get_state().value is branch
         has_stock = len(self.results) > 0
@@ -301,15 +300,15 @@ class StockApp(SearchableAppWindow):
         self.refresh()
 
     def _transfer_stock(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = self.run_dialog(StockTransferWizard, trans)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
 
     def _receive_purchase(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = self.run_dialog(ReceivingOrderWizard, trans)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
 
     #
@@ -343,11 +342,11 @@ class StockApp(SearchableAppWindow):
         selected = self.results.get_selected()
         assert selected
 
-        trans = new_transaction()
+        trans = api.new_transaction()
         product = trans.get(selected.product)
 
         model = self.run_dialog(ProductStockEditor, trans, product)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
 
     # Stock
@@ -359,9 +358,9 @@ class StockApp(SearchableAppWindow):
         self._transfer_stock()
 
     def on_NewStockDecrease__activate(self, action):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = self.run_dialog(StockDecreaseWizard, trans)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
 
     def on_StockInitial__activate(self, action):
@@ -386,15 +385,15 @@ class StockApp(SearchableAppWindow):
     # Loan
 
     def on_LoanNew__activate(self, action):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = self.run_dialog(NewLoanWizard, trans)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
 
     def on_LoanClose__activate(self, action):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = self.run_dialog(CloseLoanWizard, trans)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
 
     def on_LoanSearch__activate(self, action):

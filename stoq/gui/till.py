@@ -36,11 +36,10 @@ from kiwi.python import Settable
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
+from stoqlib.api import api
 from stoqlib.exceptions import (StoqlibError, TillError, SellError,
                                 ModelDataError)
 from stoqlib.database.orm import AND, OR, const
-from stoqlib.database.runtime import (new_transaction, get_current_branch,
-                                      rollback_and_begin, finish_transaction)
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
@@ -122,7 +121,7 @@ class TillApp(SearchableAppWindow):
         self.Details.props.is_important = True
 
     def create_ui(self):
-        self.current_branch = get_current_branch(self.conn)
+        self.current_branch = api.get_current_branch(self.conn)
         # Groups
         self.main_vbox.set_focus_chain([self.app_vbox])
         self.app_vbox.set_focus_chain([self.search_holder, self.list_vbox])
@@ -137,7 +136,7 @@ class TillApp(SearchableAppWindow):
 
     def get_title(self):
         return _('Stoq - Till for Branch %03d') % (
-            get_current_branch(self.conn).id, )
+            api.get_current_branch(self.conn).id, )
 
     def activate(self):
         self.refresh()
@@ -226,7 +225,7 @@ class TillApp(SearchableAppWindow):
         return statuses
 
     def _confirm_order(self):
-        rollback_and_begin(self.conn)
+        api.rollback_and_begin(self.conn)
         selected = self.results.get_selected()
         sale = Sale.get(selected.id, connection=self.conn)
         expire_date = sale.expire_date
@@ -353,7 +352,7 @@ class TillApp(SearchableAppWindow):
         return sale_view
 
     def _run_search_dialog(self, dialog_type, **kwargs):
-        trans = new_transaction()
+        trans = api.new_transaction()
         self.run_dialog(dialog_type, trans, **kwargs)
         trans.close()
 
@@ -364,7 +363,7 @@ class TillApp(SearchableAppWindow):
     def _return_sale(self):
         sale_view = self._check_selected()
         retval = return_sale(self.get_toplevel(), sale_view, self.conn)
-        if finish_transaction(self.conn, retval):
+        if api.finish_transaction(self.conn, retval):
             self._update_total()
 
     def _update_ecf(self, has_ecf):
@@ -447,12 +446,12 @@ class TillApp(SearchableAppWindow):
 
     def on_TillAddCash__activate(self, action):
         model = run_dialog(CashInEditor, self, self.conn)
-        if finish_transaction(self.conn, model):
+        if api.finish_transaction(self.conn, model):
             self._update_total()
 
     def on_TillRemoveCash__activate(self, action):
         model = run_dialog(CashOutEditor, self, self.conn)
-        if finish_transaction(self.conn, model):
+        if api.finish_transaction(self.conn, model):
             self._update_total()
 
     # Search

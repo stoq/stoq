@@ -37,7 +37,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
@@ -190,18 +190,18 @@ class PayableApp(SearchableAppWindow):
     #
 
     def _show_details(self, payable_view):
-        trans = new_transaction()
+        trans = api.new_transaction()
         payment = trans.get(payable_view.payment)
         retval = run_dialog(OutPaymentEditor, self, trans, payment)
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             self.search.refresh()
         trans.close()
 
     def _show_comments(self, payable_view):
-        trans = new_transaction()
+        trans = api.new_transaction()
         retval = run_dialog(PaymentCommentsDialog, self, trans,
                             payable_view.payment)
-        finish_transaction(trans, retval)
+        api.finish_transaction(trans, retval)
 
     def _can_show_details(self, payable_views):
         """
@@ -235,7 +235,7 @@ class PayableApp(SearchableAppWindow):
         @param payable_view: a OutPaymentView instance
         """
         assert payable_view.can_change_due_date()
-        trans = new_transaction()
+        trans = api.new_transaction()
         payment = trans.get(payable_view.payment)
         order = trans.get(payable_view.sale)
 
@@ -245,7 +245,7 @@ class PayableApp(SearchableAppWindow):
         retval = run_dialog(PaymentDueDateChangeDialog, self, trans,
                             payment, order)
 
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             payable_view.sync()
             self.results.update(payable_view)
 
@@ -255,7 +255,7 @@ class PayableApp(SearchableAppWindow):
         """Show a dialog do enter a reason for status change
         @param payable_view: a OutPaymentView instance
         """
-        trans = new_transaction()
+        trans = api.new_transaction()
         payment = trans.get(payable_view.payment)
         order = trans.get(payable_view.sale)
 
@@ -265,7 +265,7 @@ class PayableApp(SearchableAppWindow):
         retval = run_dialog(PaymentStatusChangeDialog, self, trans,
                             payment, status, order)
 
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             payable_view.sync()
             self.results.update(payable_view)
             self.results.unselect_all()
@@ -292,10 +292,10 @@ class PayableApp(SearchableAppWindow):
         return payable_views[0].can_change_due_date()
 
     def _edit(self, payable_views):
-        trans = new_transaction()
+        trans = api.new_transaction()
         order = trans.get(payable_views[0].purchase)
         model = run_dialog(PaymentsEditor, self, trans, order)
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
         trans.close()
 
     def _pay(self, payable_views):
@@ -306,14 +306,14 @@ class PayableApp(SearchableAppWindow):
         """
         assert self._can_pay(payable_views)
 
-        trans = new_transaction()
+        trans = api.new_transaction()
 
         payments = [trans.get(view.payment) for view in payable_views]
 
         retval = run_dialog(PurchaseInstallmentConfirmationSlave, self, trans,
                             payments=payments)
 
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             for view in payable_views:
                 view.sync()
                 self.results.update(view)
@@ -405,9 +405,9 @@ class PayableApp(SearchableAppWindow):
         return items
 
     def _add_payment(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         retval = self.run_dialog(OutPaymentEditor, trans)
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             self.results.refresh()
         trans.close()
         self.search.refresh()
