@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-24 15:25-0200\n"
-"PO-Revision-Date: 2011-11-10 12:13+0000\n"
+"PO-Revision-Date: 2011-11-25 12:05+0000\n"
 "Last-Translator: Rafael Neri <Unknown>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-25 05:25+0000\n"
-"X-Generator: Launchpad (build 14376)\n"
+"X-Launchpad-Export-Date: 2011-11-26 05:52+0000\n"
+"X-Generator: Launchpad (build 14381)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -697,7 +697,7 @@ msgstr "Porta:"
 #: ../data/glade/DatabaseSettingsStep.ui.h:9
 #: ../data/glade/UserDetailsSlave.ui.h:4
 msgid "Username:"
-msgstr "Usuário:"
+msgstr "Nome de utilizador:"
 
 #: ../data/glade/DeliveryEditor.ui.h:1
 msgid "<b>Delivery Address:</b>"
@@ -1248,7 +1248,7 @@ msgstr ""
 
 #: ../data/glade/LoginDialog.ui.h:1
 msgid "Remember me"
-msgstr ""
+msgstr "Lembrar"
 
 #: ../data/glade/LoginDialog.ui.h:2
 msgctxt "yes"
@@ -1258,7 +1258,7 @@ msgstr "_Senha:"
 #: ../data/glade/LoginDialog.ui.h:3
 msgctxt "yes"
 msgid "_Username:"
-msgstr "_Usuário:"
+msgstr "_Utilizador:"
 
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:2
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:3
@@ -1350,7 +1350,7 @@ msgstr "Incluir produtos sem categoria"
 
 #: ../data/glade/OpenInventoryDialog.ui.h:5
 msgid "User:"
-msgstr "Usuário:"
+msgstr "Utilizador:"
 
 #: ../data/glade/OpenInventoryDialog.ui.h:6
 #: ../data/glade/ProductionQuoteDialog.ui.h:2
@@ -1540,7 +1540,7 @@ msgstr ""
 
 #: ../data/glade/ProducedItemSlave.ui.h:3
 msgid "Serial Number:"
-msgstr ""
+msgstr "Número serial:"
 
 #: ../data/glade/ProductAdjustmentDialog.ui.h:2
 #: ../data/glade/ProductStockHistoryDialog.ui.h:4
@@ -1569,7 +1569,7 @@ msgstr "Quantidade:"
 
 #: ../data/glade/ProductComponentSlave.ui.h:2
 msgid "Production time:"
-msgstr ""
+msgstr "Tempo de produção:"
 
 #: ../data/glade/ProductComponentSlave.ui.h:3
 #: ../data/glade/ProductQualityTestSlave.ui.h:2
@@ -1727,7 +1727,7 @@ msgstr "Itens"
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:6
 msgid "Lost Material"
-msgstr ""
+msgstr "Material perdido"
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:7
 #: ../stoqlib/reporting/production.py:161
@@ -1746,7 +1746,7 @@ msgstr ""
 #: ../data/glade/ProductionDetailsDialog.ui.h:14
 #: ../stoqlib/gui/editors/productioneditor.py:424
 msgid "Test Results"
-msgstr ""
+msgstr "Resultados de teste"
 
 #: ../data/glade/ProductionItemEditor.ui.h:3
 msgid "Production:"
@@ -2564,7 +2564,7 @@ msgstr "Bem-vindo ao assistente de instalação do Stoq."
 #: ../data/glade/admin.ui.h:1
 msgctxt "yes"
 msgid "launcher"
-msgstr ""
+msgstr "iniciador"
 
 #: ../data/glade/financial.ui.h:1 ../stoq/gui/financial.py:412
 #: ../stoq/gui/financial.py:504 ../stoqlib/lib/parameters.py:503
@@ -3356,7 +3356,7 @@ msgstr "O CNPJ não é válido"
 #: ../plugins/magento/domain/magentoclient.py:79
 #, python-format
 msgid "Magento user #%s"
-msgstr "Usuário Magento #%s"
+msgstr "Utilizador Magento #%s"
 
 #: ../plugins/magento/domain/magentoconfig.py:124
 msgid "Magento e-commerce"
@@ -3387,7 +3387,7 @@ msgstr "A url fornecida não é válida"
 
 #: ../plugins/magento/magentolib.py:89
 msgid "Access denied for the given user"
-msgstr "Acesso para o usuário dado"
+msgstr "Acesso para determinado utilizador"
 
 #: ../plugins/nfe/nfegenerator.py:151
 #, python-format
@@ -3477,11 +3477,11 @@ msgstr "Transportadoras"
 
 #: ../stoq/gui/admin.py:118
 msgid "Users"
-msgstr "Usuários"
+msgstr "Utilizadores"
 
 #: ../stoq/gui/admin.py:120
 msgid "User Profiles"
-msgstr "Perfis de usuários"
+msgstr "Perfis de Utilizador"
 
 #: ../stoq/gui/admin.py:196
 msgid ""
@@ -3534,7 +3534,7 @@ msgstr "Perfis..."
 
 #: ../stoq/gui/admin.py:276
 msgid "Users..."
-msgstr "Usuários..."
+msgstr "Utilizadores..."
 
 #: ../stoq/gui/admin.py:277
 msgid "Branches..."
@@ -3598,11 +3598,11 @@ msgstr "Parâmetros..."
 #: ../stoq/gui/admin.py:299 ../stoqlib/domain/event.py:57
 #: ../stoqlib/gui/editors/personeditor.py:76
 msgid "User"
-msgstr "Usuário"
+msgstr "Utilizador"
 
 #: ../stoq/gui/admin.py:300 ../stoq/gui/admin.py:320
 msgid "Create a new user"
-msgstr ""
+msgstr "Criar um novo utilizador"
 
 #: ../stoq/gui/admin.py:304
 msgid "Admin help"
@@ -3610,7 +3610,7 @@ msgstr "Ajuda do admin"
 
 #: ../stoq/gui/admin.py:322
 msgid "Search for users"
-msgstr ""
+msgstr "Pesquisar por utilizadores"
 
 #: ../stoq/gui/application.py:132
 msgid ""
@@ -3744,7 +3744,7 @@ msgid ""
 "this computer."
 msgstr ""
 "Para poder criar um novo banco de dados do Stoq você precisa informar a "
-"senha do usuário <b>postgres</b> do banco de dados PostgreSQL. Esta é a "
+"senha do utilizador <b>postgres</b> do banco de dados PostgreSQL. Esta é a "
 "mesma senha que foi informada no momento da instalação do PostgreSQL nesse "
 "computador."
 
@@ -3761,11 +3761,11 @@ msgid ""
 "To be able to create other users you need to login with this user in the "
 "admin application and create them."
 msgstr ""
-"Estou adicionando um usuário chamado <b>%s</b> que terá privilégios de "
+"Estou adicionando um utilizador chamado <b>%s</b> que terá privilégios de "
 "administrador.\n"
 "\n"
-"Para poder criar outros usuários, você precisa fazer login com este usuário "
-"no aplicativo admin e criá-los."
+"Para poder criar outros utilizadores, você precisa fazer login com este "
+"utilizador no aplicativo admin e criá-los."
 
 #: ../stoq/gui/config.py:544
 msgid "Forward"
@@ -4125,7 +4125,7 @@ msgstr "Remover conta"
 
 #: ../stoq/gui/financial.py:355
 msgid "Delete the selected account"
-msgstr ""
+msgstr "Eliminar a conta seleccionada"
 
 #: ../stoq/gui/financial.py:356
 msgid "Delete transaction"
@@ -4133,21 +4133,21 @@ msgstr "Remover transação"
 
 #: ../stoq/gui/financial.py:357
 msgid "Delete the selected transaction"
-msgstr ""
+msgstr "Apagar a transacção seleccionada"
 
 #: ../stoq/gui/financial.py:362
 msgid "Transaction"
-msgstr ""
+msgstr "Transação"
 
 #: ../stoq/gui/financial.py:363
 msgid "Add a new transaction"
-msgstr ""
+msgstr "Adicionar nova transacção"
 
 #: ../stoq/gui/financial.py:364 ../stoq/gui/payable.py:104
 #: ../stoq/gui/purchase.py:142 ../stoq/gui/sales.py:127
 #: ../stoq/gui/stock.py:123
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 #: ../stoq/gui/financial.py:369
 msgid "Financial help"
@@ -4155,11 +4155,11 @@ msgstr "Ajuda do financeiro"
 
 #: ../stoq/gui/financial.py:405
 msgid "Edit the selected account"
-msgstr ""
+msgstr "Editar a conta seleccionada"
 
 #: ../stoq/gui/financial.py:407
 msgid "Edit the selected transaction"
-msgstr ""
+msgstr "Editar a transacção seleccionada"
 
 #: ../stoq/gui/financial.py:538
 msgid "All supported formats"
@@ -4240,11 +4240,11 @@ msgstr "Cancelar inventário"
 
 #: ../stoq/gui/inventory.py:80
 msgid "Cancel the selected inventory"
-msgstr ""
+msgstr "Cancelar o inventário selecionado"
 
 #: ../stoq/gui/inventory.py:81
 msgid "Print inventory"
-msgstr ""
+msgstr "Imprimir inventário"
 
 #: ../stoq/gui/inventory.py:82
 msgid ""
@@ -4339,25 +4339,25 @@ msgstr "Não cancelar"
 
 #: ../stoq/gui/inventory.py:275
 msgid "No products found in the inventory."
-msgstr ""
+msgstr "Nenhum produto encontrado no inventário."
 
 #: ../stoq/gui/launcher.py:61
 msgid "Stoq"
-msgstr ""
+msgstr "Stoq"
 
 #: ../stoq/gui/launcher.py:92
 msgid "_File"
-msgstr ""
+msgstr "_Arquivo"
 
 #. Toolbar
 #: ../stoq/gui/launcher.py:94 ../stoq/gui/launcher.py:126
 #: ../stoq/gui/launcher.py:145
 msgid "New"
-msgstr ""
+msgstr "Novo"
 
 #: ../stoq/gui/launcher.py:95
 msgid "_Window"
-msgstr ""
+msgstr "_Janela"
 
 #: ../stoq/gui/launcher.py:96
 msgid "Opens up a new window"
@@ -4369,15 +4369,15 @@ msgstr "Fechar"
 
 #: ../stoq/gui/launcher.py:98
 msgid "Close the current view and go back to the initial screen"
-msgstr ""
+msgstr "Fechar a visualização atual e ir para a tela inicial"
 
 #: ../stoq/gui/launcher.py:99
 msgid "Change password..."
-msgstr ""
+msgstr "Alterar senha..."
 
 #: ../stoq/gui/launcher.py:100
 msgid "Change the password for the currently logged in user"
-msgstr ""
+msgstr "Alterar a senha para o utilizador logado"
 
 #: ../stoq/gui/launcher.py:101
 msgid "Sign out..."
@@ -4393,7 +4393,7 @@ msgstr "Sair"
 
 #: ../stoq/gui/launcher.py:104
 msgid "Exit the application"
-msgstr ""
+msgstr "Sair da aplicação"
 
 #. Edit
 #: ../stoq/gui/launcher.py:107
@@ -4402,12 +4402,12 @@ msgstr "_Editar"
 
 #: ../stoq/gui/launcher.py:108
 msgid "_Preferences"
-msgstr ""
+msgstr "Preferências"
 
 #. View
 #: ../stoq/gui/launcher.py:111
 msgid "_View"
-msgstr ""
+msgstr "_Ver"
 
 #. Search
 #: ../stoq/gui/launcher.py:114
@@ -4441,40 +4441,40 @@ msgstr "Encontre suporte online para o Stoq"
 
 #: ../stoq/gui/launcher.py:127 ../stoq/gui/launcher.py:146
 msgid "Search"
-msgstr ""
+msgstr "Pesquisar"
 
 #: ../stoq/gui/launcher.py:132
 msgid "_Toolbar"
-msgstr ""
+msgstr "Barra de Ferramen_tas"
 
 #: ../stoq/gui/launcher.py:133
 msgid "Show or hide the toolbar"
-msgstr ""
+msgstr "Mostrar ou ocultar a barra de ferramentas"
 
 #: ../stoq/gui/launcher.py:134
 msgid "_Statusbar"
-msgstr ""
+msgstr "_Barra de estado"
 
 #: ../stoq/gui/launcher.py:135
 msgid "Show or hide the statusbar"
-msgstr ""
+msgstr "Mostrar ou ocultar a barra de estados"
 
 #: ../stoq/gui/launcher.py:136
 msgid "_Fullscreen"
-msgstr ""
+msgstr "Ecrã Completo"
 
 #: ../stoq/gui/launcher.py:137
 msgid "Enter or leave fullscreen mode"
-msgstr ""
+msgstr "Alternar o modo de ecrã completo"
 
 #: ../stoq/gui/launcher.py:189
 #, python-format
 msgid "User: %s"
-msgstr ""
+msgstr "Utilizador: %s"
 
 #: ../stoq/gui/launcher.py:256
 msgid "Open a new window"
-msgstr ""
+msgstr "Abrir uma nova janela"
 
 #. TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 #: ../stoq/gui/payable.py:67
@@ -4554,7 +4554,7 @@ msgstr ""
 
 #: ../stoq/gui/payable.py:102
 msgid "Pay"
-msgstr ""
+msgstr "Pagar"
 
 #: ../stoq/gui/payable.py:103
 msgid "Pay the order associated with the selected payment"
@@ -5252,7 +5252,7 @@ msgid ""
 "This user lacks credentials \n"
 "for application %s"
 msgstr ""
-"Esse usuário não tem credencial \n"
+"Esse utilizador não tem credencial \n"
 "para o aplicativo %s"
 
 #. Sales
@@ -5737,7 +5737,7 @@ msgstr "Bem-vindo ao Stoq"
 msgid ""
 "Administer the branches, users, employees and configure system parameters."
 msgstr ""
-"Administra as filiais, usuários, empregados e configura parâmetros do "
+"Administra as filiais, utilizadores, empregados e configura parâmetros do "
 "sistema."
 
 #: ../stoq/lib/applist.py:40
@@ -5798,8 +5798,8 @@ msgid ""
 "Error: Stoq configuration is not avaiable. Check that the current user has a "
 "configuration file (~/.stoq/stoq.conf)."
 msgstr ""
-"Erro: configuração do Stoq não disponível. Verifique se o usuário possui um "
-"arquivo de configuração (~/.stoq/stoq.conf)."
+"Erro: configuração do Stoq não disponível. Verifique se o utilizador possui "
+"um arquivo de configuração (~/.stoq/stoq.conf)."
 
 #: ../stoq/lib/configparser.py:241
 msgid ""
@@ -5914,8 +5914,8 @@ msgstr ""
 "Uma das novas funcionalidades do Stoq 1.0 é o suporte a serviços online. "
 "Funcionalidades utilizando os serviços online incluem relatórios de erros e "
 "notificações de atualização. Mais serviços estão em desenvolvimento. Para "
-"podermos oferecer um serviço melhor e identificar devidamente o usuário, nós "
-"iremos coletar o CNPJ da empresa principal e o endereço de ip.\n"
+"podermos oferecer um serviço melhor e identificar devidamente o utilizador, "
+"nós iremos coletar o CNPJ da empresa principal e o endereço de ip.\n"
 "\n"
 "<b>Nós não iremos divulgar as informações coletadas e estamos comprometidos "
 "em manter a sua privacidade intacta.</b>"
@@ -6025,7 +6025,7 @@ msgstr "Caixas"
 #: ../stoqlib/database/admin.py:271
 msgid "The current database user does not have super user rights"
 msgstr ""
-"O atual usuário do banco de dados não possui direitos de super usuário"
+"O atual utilizador do banco de dados não possui direitos de super usuário"
 
 #: ../stoqlib/database/admin.py:312 ../stoqlib/gui/search/personsearch.py:349
 msgid "Manager"
@@ -6449,22 +6449,22 @@ msgstr "Desligado"
 #: ../stoqlib/domain/person.py:747
 #, python-format
 msgid "User '%s' logged in on '%s'"
-msgstr "Usuário '%s' fez login em '%s'"
+msgstr "Utilizador '%s' fez login em '%s'"
 
 #: ../stoqlib/domain/person.py:751
 #, python-format
 msgid "User '%s' logged in"
-msgstr ""
+msgstr "Utilizador logado em '%s'"
 
 #: ../stoqlib/domain/person.py:757
 #, python-format
 msgid "User '%s' logged out from '%s'"
-msgstr "Usuário '%s' fez logout em '%s'"
+msgstr "Utilizador '%s' fez logout em '%s'"
 
 #: ../stoqlib/domain/person.py:761
 #, python-format
 msgid "User '%s' logged out"
-msgstr ""
+msgstr "Utilizador '%s' fez logout"
 
 #: ../stoqlib/domain/person.py:819
 #, python-format
@@ -8196,11 +8196,11 @@ msgstr "Novo cliente"
 
 #: ../stoqlib/gui/editors/personeditor.py:77
 msgid "New User"
-msgstr "Novo usuário"
+msgstr "Novo utilizador"
 
 #: ../stoqlib/gui/editors/personeditor.py:106
 msgid "User Details"
-msgstr "Detalhes do usuário"
+msgstr "Detalhes do Utilizador"
 
 #: ../stoqlib/gui/editors/personeditor.py:124
 msgid "Credit Provider"
@@ -8443,7 +8443,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/profileeditor.py:41
 msgid "User Profile"
-msgstr "Perfil de usuário"
+msgstr "Perfil do Utilizador"
 
 #: ../stoqlib/gui/editors/purchaseeditor.py:46
 msgid "Purchase Item"
@@ -8860,21 +8860,21 @@ msgstr "Erro cancelando cupom. Deseja tentar novamente?"
 
 #: ../stoqlib/gui/login.py:115
 msgid " Authenticating user..."
-msgstr " Autenticando usuário..."
+msgstr " Autenticando utilizador..."
 
 #: ../stoqlib/gui/login.py:143 ../stoqlib/gui/login.py:149
 msgid "Invalid user or password"
-msgstr "Usuário ou senha inválidos"
+msgstr "Utilizador ou senha inválidos"
 
 #: ../stoqlib/gui/login.py:146
 msgid "This user is inactive"
-msgstr "Este usuário está inativo"
+msgstr "Este utilizador está inativo"
 
 #: ../stoqlib/gui/login.py:154
 #, python-format
 msgid "User '%s' has no profile set, but this should not happen."
 msgstr ""
-"Usuário '%s' não tem um perfil setado, mas isso não deveria acontecer."
+"Utilizador '%s' não tem um perfil setado, mas isso não deveria acontecer."
 
 #: ../stoqlib/gui/login.py:156
 msgid "Please contact your system administrator or Stoq team."
@@ -8882,7 +8882,7 @@ msgstr "Por favor, contacte o seu administrador do sistema ou a equipe Stoq."
 
 #: ../stoqlib/gui/login.py:158
 msgid "User does not have a profile"
-msgstr "Usuário não tem perfil"
+msgstr "Utilizador não tem perfil"
 
 #: ../stoqlib/gui/login.py:200
 msgid "Stoq - Access Control"
@@ -8890,7 +8890,7 @@ msgstr "Stoq - Controle de acesso"
 
 #: ../stoqlib/gui/login.py:218
 msgid "specify an username"
-msgstr "especifique um usuário"
+msgstr "especifique um utilizador"
 
 #. Add a mailto button
 #: ../stoqlib/gui/printing.py:107
@@ -9294,19 +9294,19 @@ msgstr "Exibir filiais com situação"
 
 #: ../stoqlib/gui/search/personsearch.py:368
 msgid "User Search"
-msgstr "Pesquisa de usuário"
+msgstr "Pesquisa de Utilizadores"
 
 #: ../stoqlib/gui/search/personsearch.py:372
 msgid "Users Matching:"
-msgstr "Usuários contendo:"
+msgstr "Utilizadores contendo:"
 
 #: ../stoqlib/gui/search/personsearch.py:373
 msgid "user"
-msgstr "usuário"
+msgstr "utilizador"
 
 #: ../stoqlib/gui/search/personsearch.py:373
 msgid "users"
-msgstr "usuários"
+msgstr "utilizadores"
 
 #: ../stoqlib/gui/search/personsearch.py:383
 msgid "Login Name"
@@ -9410,7 +9410,7 @@ msgstr "Pesquisa de produtos fechados"
 
 #: ../stoqlib/gui/search/profilesearch.py:39
 msgid "User Profile Search"
-msgstr "Pesquisa de perfil de usuário"
+msgstr "Pesquisa de perfil de utilizadores"
 
 #: ../stoqlib/gui/search/profilesearch.py:50
 msgid "Profiles Matching:"
@@ -11630,7 +11630,7 @@ msgid ""
 "in. Requires restart to take effect."
 msgstr ""
 "Desativar a capacidade do sistema de gravar cookies e logar automaticamente "
-"no sistema. Se sim, todos os usuários devem digitar a senha ao logar no "
+"no sistema. Se sim, todos os utilizadores devem digitar a senha ao logar no "
 "sistema. Requer reiniciar o sistema para que as alterações tenham efeito."
 
 #: ../stoqlib/lib/parameters.py:178
@@ -11832,8 +11832,8 @@ msgid ""
 "Once this parameter is set to true, the user will be able to change the "
 "salesperson of an opened order on sale checkout dialog"
 msgstr ""
-"Uma vez que este parâmetro esteja definido, o usuário será capaz de alterar "
-"o vendedor de uma venda através do diálogo de confirmação de vendas"
+"Uma vez que este parâmetro esteja definido, o utilizador será capaz de "
+"alterar o vendedor de uma venda através do diálogo de confirmação de vendas"
 
 #: ../stoqlib/lib/parameters.py:328
 msgid "Return money on sales"
@@ -11999,7 +11999,7 @@ msgid ""
 "clients, users and more to the system"
 msgstr ""
 "Este é o código de área padrão que será usado para cadastrar novos clientes, "
-"usuários e outros no sistema"
+"utilizadores e outros no sistema"
 
 #: ../stoqlib/lib/parameters.py:443
 msgid "Default tax constant for products"
