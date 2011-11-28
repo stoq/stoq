@@ -114,7 +114,7 @@
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImage" id="GtkImage1">
-                        <property name="stock">stoq-lock</property>
+                        <property name="stock">gtk-dialog-authentication</property>
                         <property name="visible">True</property>
                       </object>
                     </child>
