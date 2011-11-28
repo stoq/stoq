@@ -36,15 +36,6 @@ _stream = None
 _ran_wizard = False
 _restart = False
 _cur_exit_func = None
-PRIVACY_STRING = _(
-    "One of the new features of Stoq 1.0 is support for online "
-    "services. Features using the online services include automatic "
-    "bug report and update notifications. More services are under development."
-    "To be able to provide a better service and properly identify the user "
-    "we will collect the CNPJ of the primary branch and the ip address.\n\n"
-    "<b>We will not disclose the collected information and we are committed "
-    "to keeping your privacy intact.</b>")
-
 # To avoid kiwi dependency at startup
 log = logging.getLogger('stoq.main')
 
@@ -252,79 +243,6 @@ def _setup_cookiefile():
     cookiefile = os.path.join(app_dir, "cookie")
     provide_utility(ICookieFile, Base64CookieFile(cookiefile))
 
-def _check_param_main_branch():
-    from stoqlib.database.runtime import (get_connection, new_transaction,
-                                          get_current_station)
-    from stoqlib.domain.person import Person
-    from stoqlib.domain.interfaces import IBranch, ICompany
-    from stoqlib.lib.parameters import sysparam
-    conn = get_connection()
-    compaines = Person.iselect(ICompany, connection=conn)
-    if (compaines.count() == 0 or
-        not sysparam(conn).MAIN_COMPANY):
-        from stoqlib.gui.base.dialogs import run_dialog
-        from stoqlib.gui.dialogs.branchdialog import BranchDialog
-        from stoqlib.lib.message import info
-        if _ran_wizard:
-            info(_("You need to register a company before start using Stoq"))
-        else:
-            info(_("Could not find a company. You'll need to register one "
-                   "before start using Stoq"))
-        trans = new_transaction()
-        person = run_dialog(BranchDialog, None, trans)
-        if not person:
-            raise SystemExit
-        branch = IBranch(person)
-        sysparam(trans).MAIN_COMPANY = branch.id
-        get_current_station(trans).branch = branch
-        trans.commit()
-
-    return
-
-def _check_param_online_services():
-    from stoqlib.database.runtime import new_transaction
-    from stoqlib.lib.parameters import sysparam
-
-    trans = new_transaction()
-    sparam = sysparam(trans)
-    val = sparam.ONLINE_SERVICES
-    if val is None:
-        import gtk
-        from kiwi.ui.dialogs import HIGAlertDialog
-        # FIXME: All of this is to avoid having to set markup as the default
-        #        in kiwi/ui/dialogs:HIGAlertDialog.set_details, after 1.0
-        #        this can be simplified when we fix so that all descriptions
-        #        sent to these dialogs are properly escaped
-        dialog = HIGAlertDialog(
-            parent=None,
-            flags=gtk.DIALOG_MODAL,
-            type=gtk.MESSAGE_WARNING)
-        dialog.add_button(_("Not right now"), gtk.RESPONSE_NO)
-        dialog.add_button(_("Enable online services"), gtk.RESPONSE_YES)
-
-        dialog.set_primary(_('Do you want to enable Stoq online services?'))
-        dialog.set_details(PRIVACY_STRING, use_markup=True)
-        dialog.set_default_response(gtk.RESPONSE_YES)
-        response = dialog.run()
-        dialog.destroy()
-        sparam.ONLINE_SERVICES = int(bool(response == gtk.RESPONSE_YES))
-    trans.commit()
-
-def _maybe_show_welcome_dialog():
-    from kiwi.component import get_utility
-    from stoqlib.lib.interfaces import IStoqConfig
-
-    config = get_utility(IStoqConfig)
-    if config.get('General', 'show_welcome_dialog') == 'False':
-        return
-    config.set('General', 'show_welcome_dialog', 'False')
-    config.flush()
-
-    from stoq.gui.welcomedialog import WelcomeDialog
-    from stoqlib.gui.base.dialogs import run_dialog
-    run_dialog(WelcomeDialog)
-
-
 def _prepare_logfiles():
     global _log_filename, _stream
 
@@ -393,38 +311,17 @@ def _initialize(options):
         raise SystemExit("Error: bad connection settings provided")
 
 def run_app(options, appname):
+    global _ran_wizard
     from stoqlib.gui.base.gtkadds import register_iconsets
-    from stoqlib.exceptions import LoginError
-    from stoqlib.lib.message import error
 
     log.debug('register stock icons')
     register_iconsets()
 
-    from stoq.gui.runner import ApplicationRunner
-    runner = ApplicationRunner(options)
+    from stoq.gui.shell import Shell
 
-    try:
-        if not runner.login():
-            return
-    except LoginError, e:
-        error(e)
-
-    _check_param_main_branch()
-    _check_param_online_services()
-    _maybe_show_welcome_dialog()
-
-    from stoq.gui.launcher import Launcher
-    launcher = Launcher(options, runner)
-    launcher.show()
-    if appname:
-        app = runner.get_app_by_name(appname)
-        runner.run(app, launcher)
-
-    log.debug("Entering reactor")
-    from twisted.internet import reactor
-    if not reactor.running:
-        reactor.run()
-    log.info("Shutting down %s application" % appname)
+    shell = Shell(options, appname)
+    shell.ran_wizard = _ran_wizard
+    shell.run()
 
 def _parse_command_line(args):
     from stoqlib.lib.uptime import set_initial
