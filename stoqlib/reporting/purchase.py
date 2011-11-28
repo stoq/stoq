@@ -317,6 +317,7 @@ class PurchaseQuoteReport(BaseStoqReport):
         self._setup_quote_details()
         self._setup_payments()
         self._setup_items_table()
+        self._add_notes()
         self._add_signature_field()
 
     def _get_items_columns(self):
@@ -375,6 +376,12 @@ class PurchaseQuoteReport(BaseStoqReport):
     def _add_signature_field(self):
         # The supplier name here ?
         self.add_signatures([_(u"Responsible")])
+
+    def _add_notes(self):
+        if self._quote.notes:
+            self.add_paragraph(_(u'Purchase Notes'), style='Normal-Bold')
+            self.add_preformatted_text(self._quote.notes,
+                                       style='Normal-Notes')
 
     def get_title(self):
         order_number = self._quote.get_order_number_str()
