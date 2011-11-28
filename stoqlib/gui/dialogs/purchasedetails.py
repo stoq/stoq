@@ -33,6 +33,8 @@ from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.domain.interfaces import IInPayment
@@ -163,6 +165,9 @@ class PurchaseDetailsDialog(BaseEditor):
                            self.received_freight):
                 widget.hide()
 
+        self.export_csv.set_visible(
+            self.model.status == PurchaseOrder.ORDER_QUOTING)
+
         self._setup_summary_labels()
 
     def _get_ordered_columns(self):
@@ -232,6 +237,10 @@ class PurchaseDetailsDialog(BaseEditor):
                         data_type=str, expand=True,
                         ellipsize=pango.ELLIPSIZE_END)]
 
+    def _export_csv(self):
+        run_dialog(CSVExporterDialog, self, None, PurchaseItemView,
+                   self.ordered_items)
+
     def _print_report(self):
         if self.model.status == PurchaseOrder.ORDER_QUOTING:
             report = PurchaseQuoteReport
@@ -258,6 +267,9 @@ class PurchaseDetailsDialog(BaseEditor):
     #
     # Kiwi callbacks
     #
+
+    def on_export_csv__clicked(self, button):
+        self._export_csv()
 
     def on_print_button__clicked(self, button):
         self._print_report()
