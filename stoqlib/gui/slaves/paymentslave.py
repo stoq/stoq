@@ -40,7 +40,7 @@ from kiwi.utils import gsignal
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import Column
 
-from stoqlib.database.runtime import get_connection
+from stoqlib.api import api
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.domain.payment.group import PaymentGroup
@@ -1248,7 +1248,7 @@ class MultipleMethodSlave(BaseEditorSlave):
 
 def register_payment_slaves():
     dsm = get_utility(IDomainSlaveMapper)
-    conn = get_connection()
+    conn = api.get_connection()
     for method_name, slave_class in [
         ('bill', BillMethodSlave),
         ('check', CheckMethodSlave),

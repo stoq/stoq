@@ -28,8 +28,8 @@ from kiwi.python import Settable
 from kiwi.argcheck import argcheck
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.api import api
 from stoqlib.database.orm import Transaction, OR, LIKE
-from stoqlib.database.runtime import rollback_and_begin
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
@@ -73,7 +73,7 @@ class RoleEditorStep(BaseWizardStep):
     def previous_step(self):
         # We don't want to create duplicate person objects when switching
         # steps.
-        rollback_and_begin(self.conn)
+        api.rollback_and_begin(self.conn)
         return BaseWizardStep.previous_step(self)
 
     def has_next_step(self):

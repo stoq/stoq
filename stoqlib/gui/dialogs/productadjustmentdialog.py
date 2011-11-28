@@ -31,7 +31,7 @@ import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 
-from stoqlib.database.runtime import finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.inventory import Inventory, InventoryItem
@@ -120,7 +120,7 @@ class ProductsAdjustmentDialog(BaseEditor):
     def _run_adjustment_dialog(self, inventory_item):
         retval = run_dialog(AdjustmentDialog, self, self.conn,
                             inventory_item, self.model.invoice_number)
-        finish_transaction(self.conn, retval)
+        api.finish_transaction(self.conn, retval)
 
         if not retval:
             return

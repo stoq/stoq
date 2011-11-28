@@ -30,7 +30,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import any
 from kiwi.ui.widgets.list import Column, ObjectList
 
-from stoqlib.database.runtime import finish_transaction, new_transaction
+from stoqlib.api import api
 from stoqlib.domain.person import ClientView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.addresseditor import AddressSelectionDialog
@@ -119,9 +119,9 @@ class DeliveryEditor(BaseEditor):
         self.model.address = address
 
     def _create_client(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         client = run_person_role_dialog(ClientEditor, self, trans, None)
-        finish_transaction(trans, client)
+        api.finish_transaction(trans, client)
 
         if client is not None:
             self._populate_person()

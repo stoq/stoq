@@ -29,7 +29,7 @@ from kiwi.python import Settable
 from kiwi.ui.wizard import WizardStep
 from twisted.trial.unittest import SkipTest
 
-from stoqlib.database.runtime import get_current_station, get_current_user
+from stoqlib.api import api
 from stoqlib.lib.introspection import get_all_classes
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.domain.person import Person
@@ -87,9 +87,9 @@ def _test_slave(self, slave):
                 model = None
             value = model
         elif arg == 'station':
-            value = get_current_station(self.trans)
+            value = api.get_current_station(self.trans)
         elif arg == 'user':
-            value = get_current_user(self.trans)
+            value = api.get_current_user(self.trans)
         elif arg == 'person':
             value = self.create_person()
         elif arg == 'branch':

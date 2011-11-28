@@ -29,8 +29,7 @@ from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
-from stoqlib.database.runtime import (new_transaction, finish_transaction,
-                                      get_current_branch)
+from stoqlib.api import api
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -56,7 +55,7 @@ class StockCostDialog(BaseEditor):
 
     def __init__(self, conn, branch=None):
         if branch is None:
-            self._branch = get_current_branch(conn)
+            self._branch = api.get_current_branch(conn)
         else:
             self._branch = branch
         BaseEditor.__init__(self, conn, model=object())
@@ -107,11 +106,11 @@ class StockCostDialog(BaseEditor):
         self.attach_slave("on_slave_holder" , self.slave)
 
     def on_confirm(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         for item in self._storables:
             self._validate_confirm(item, trans)
 
-        finish_transaction(trans, True)
+        api.finish_transaction(trans, True)
         trans.close()
         return True
 

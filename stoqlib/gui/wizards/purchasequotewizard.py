@@ -34,9 +34,8 @@ from kiwi.python import Settable
 from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
-from stoqlib.database.runtime import (get_current_branch, new_transaction,
-                                      finish_transaction, get_current_user)
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import (PurchaseOrder, PurchaseItem, QuoteGroup,
@@ -385,10 +384,10 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(self._can_order(selected))
 
     def _run_quote_editor(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         selected = trans.get(self.search.results.get_selected().purchase)
         retval = run_dialog(QuoteFillingDialog, self.wizard, selected, trans)
-        finish_transaction(trans, retval)
+        api.finish_transaction(trans, retval)
         trans.close()
         self._update_view()
 
@@ -399,14 +398,14 @@ class QuoteGroupSelectionStep(BaseWizardStep):
                      _("Remove quote"), _("Don't remove")):
             return
 
-        trans = new_transaction()
+        trans = api.new_transaction()
         group = trans.get(q.group)
         quote = trans.get(q)
         group.remove_item(quote)
         # there is no reason to keep the group if there's no more quotes
         if group.get_items().count() == 0:
             QuoteGroup.delete(group.id, connection=trans)
-        finish_transaction(trans, True)
+        api.finish_transaction(trans, True)
         trans.close()
         self.search.refresh()
 
@@ -507,11 +506,11 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                      _("Cancel group"), _("Don't Cancel")):
             return
 
-        trans = new_transaction()
+        trans = api.new_transaction()
         group = trans.get(self._group)
         group.cancel()
         QuoteGroup.delete(group.id, connection=trans)
-        finish_transaction(trans, True)
+        api.finish_transaction(trans, True)
         trans.close()
         self.wizard.finish()
 
@@ -547,7 +546,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                     gtk.RESPONSE_NO, _("Close quotes"), _("Don't close")):
             return
 
-        trans = new_transaction()
+        trans = api.new_transaction()
         for q in quotes:
             quotation = trans.get(q)
             quotation.close()
@@ -557,12 +556,12 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
         if not group.get_items():
             QuoteGroup.delete(group.id, connection=trans)
 
-        finish_transaction(trans, True)
+        api.finish_transaction(trans, True)
         trans.close()
         self.wizard.finish()
 
     def _create_orders(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         group = trans.get(self._group)
         quotes = []
         for quote in group.get_items():
@@ -571,7 +570,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                 continue
 
             retval = run_dialog(PurchaseWizard, self.wizard, trans, purchase)
-            finish_transaction(trans, retval)
+            api.finish_transaction(trans, retval)
             # keep track of the quotes that might be closed
             if retval:
                 quotes.append(quote)
@@ -637,12 +636,12 @@ class QuotePurchaseWizard(BaseWizard):
 
     def _create_model(self, conn):
         supplier = sysparam(conn).SUGGESTED_SUPPLIER
-        branch = get_current_branch(conn)
+        branch = api.get_current_branch(conn)
         status = PurchaseOrder.ORDER_QUOTING
         group = PaymentGroup(connection=conn)
         return PurchaseOrder(supplier=supplier, branch=branch, status=status,
                              expected_receival_date=None,
-                             responsible=get_current_user(conn),
+                             responsible=api.get_current_user(conn),
                              group=group,
                              connection=conn)
 

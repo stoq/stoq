@@ -30,8 +30,8 @@ from decimal import Decimal
 from kiwi.datatypes import currency
 from kiwi.ui.objectlist import Column, SearchColumn
 
+from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
-from stoqlib.database.runtime import get_current_user
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
@@ -132,7 +132,7 @@ class PurchaseSelectionStep(BaseWizardStep):
         # actually have a purchase selected
         if not self.wizard.model:
             self.wizard.model = self.model = ReceivingOrder(
-                responsible=get_current_user(self.conn),
+                responsible=api.get_current_user(self.conn),
                 supplier=None, invoice_number=None,
                 branch=None, purchase=purchase,
                 connection=self.conn)

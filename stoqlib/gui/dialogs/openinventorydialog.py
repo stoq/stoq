@@ -28,7 +28,7 @@ import datetime
 
 from kiwi.ui.objectlist import Column
 
-from stoqlib.database.runtime import get_current_user
+from stoqlib.api import api
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.inventory import Inventory, InventoryItem
 from stoqlib.domain.sellable import Sellable, SellableCategory
@@ -43,7 +43,7 @@ class _TemporaryInventory(object):
     def __init__(self, conn):
         self.open_date = datetime.datetime.now()
         self.branch = None
-        self.user = get_current_user(conn)
+        self.user = api.get_current_user(conn)
 
 class _TemporaryCategory(object):
     def __init__(self, category=None, parent=None):

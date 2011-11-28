@@ -29,8 +29,8 @@ from decimal import Decimal
 from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.api import api
 from stoqlib.database.orm import AND
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.person import Person, PersonAdaptToEmployee
 from stoqlib.domain.production import (ProductionOrder, ProductionItem,
@@ -327,7 +327,7 @@ class ProductionWizard(BaseWizard):
         return _(u'Edit Production')
 
     def _create_model(self, conn):
-        branch = get_current_branch(conn)
+        branch = api.get_current_branch(conn)
         return ProductionOrder(branch=branch,
                                connection=conn)
 

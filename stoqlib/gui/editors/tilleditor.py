@@ -31,9 +31,8 @@ from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 
 from stoqdrivers.exceptions import DriverError
 
+from stoqlib.api import api
 from stoqlib.database.orm import const
-from stoqlib.database.runtime import (get_current_station, new_transaction,
-                                      finish_transaction)
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
                                    TillAddTillEntryEvent,
@@ -104,7 +103,7 @@ class TillOpeningEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        till = Till(connection=conn, station=get_current_station(conn))
+        till = Till(connection=conn, station=api.get_current_station(conn))
         till.open_till()
 
         return _TillOpeningModel(till=till, value=currency(0))
@@ -242,7 +241,7 @@ class TillClosingEditor(BaseEditor):
             # We need to do this inside a new transaction, because if the
             # till closing fails further on, this still needs to be recorded
             # in the database
-            trans = new_transaction()
+            trans = api.new_transaction()
             t_till = trans.get(till)
             TillRemoveCashEvent.emit(till=t_till, value=removed)
             till_entry = t_till.add_debit_entry(removed,
@@ -251,7 +250,7 @@ class TillClosingEditor(BaseEditor):
             # Financial transaction
             _create_transaction(trans, till_entry)
             # DB transaction
-            finish_transaction(trans, True)
+            api.finish_transaction(trans, True)
             trans.close()
 
         if self._close_ecf:

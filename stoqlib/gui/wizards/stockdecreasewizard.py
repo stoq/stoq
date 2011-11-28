@@ -31,8 +31,8 @@ import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.api import api
 from stoqlib.database.orm import AND
-from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.interfaces import (IBranch,
                                        IStorable, IEmployee)
@@ -131,7 +131,7 @@ class DecreaseItemStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
-        branch = get_current_branch(self.conn)
+        branch = api.get_current_branch(self.conn)
         branch_query = ProductStockItem.q.branchID == branch.id
         return AND(branch_query,
                    Sellable.get_available_sellables_query(self.conn))
@@ -232,8 +232,8 @@ class StockDecreaseWizard(BaseWizard):
         BaseWizard.__init__(self, conn, first_step, model)
 
     def _create_model(self, conn):
-        branch = get_current_branch(conn)
-        user = get_current_user(conn)
+        branch = api.get_current_branch(conn)
+        user = api.get_current_user(conn)
         employee = IEmployee(user.person, None)
         cfop = sysparam(conn).DEFAULT_STOCK_DECREASE_CFOP
         return StockDecrease(responsible=user,

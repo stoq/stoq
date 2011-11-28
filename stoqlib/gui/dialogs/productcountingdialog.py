@@ -33,7 +33,7 @@ from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.message import yesno
@@ -111,10 +111,10 @@ class ProductCountingDialog(BaseEditor):
                 'Would you like to close this inventory now ?')
         if yesno(msg, gtk.RESPONSE_NO, _('Close inventory'),
                                        _('Continue counting')):
-            trans = new_transaction()
+            trans = api.new_transaction()
             inventory = trans.get(self.model)
             inventory.close()
-            finish_transaction(trans, inventory)
+            api.finish_transaction(trans, inventory)
             trans.close()
 
     #
@@ -129,13 +129,13 @@ class ProductCountingDialog(BaseEditor):
         self.attach_slave("place_holder" , self.slave)
 
     def on_confirm(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         for item in self._inventory_items:
             self._validate_inventory_item(item, trans)
 
         # We have to call finish_transaction here, since we will check
         # if we can close the inventory now
-        finish_transaction(trans, True)
+        api.finish_transaction(trans, True)
         trans.close()
 
         if self._can_close_inventory_after_counting():

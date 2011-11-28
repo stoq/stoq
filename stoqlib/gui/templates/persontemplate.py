@@ -24,7 +24,7 @@
 ##
 """ Templates implementation for person editors.  """
 
-from stoqlib.database.runtime import get_connection
+from stoqlib.api import api
 from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.exceptions import DatabaseInconsistency
@@ -64,7 +64,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
         self.is_new_person = False
         # If this person is not in the default connection, then it was created
         # inside another transaction that was not commited yet.
-        if not Person.selectBy(id=self.model.id, connection=get_connection()):
+        if not Person.selectBy(id=self.model.id, connection=api.get_connection()):
             self.is_new_person = True
 
     #

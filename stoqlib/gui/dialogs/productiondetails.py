@@ -29,7 +29,7 @@ import pango
 import gtk
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -148,10 +148,10 @@ class ProductionDetailsDialog(BaseEditor):
     #
 
     def _run_editor(self, editor_class, item):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = trans.get(item)
         retval = run_dialog(editor_class, self, self.conn, model)
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             self._setup_data()
         trans.close()
 
@@ -168,11 +168,11 @@ class ProductionDetailsDialog(BaseEditor):
         self._run_editor(ProductionMaterialAllocateEditor, item)
 
     def _test(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         produced_item = self.produced_items.get_selected()
         model = trans.get(produced_item)
         run_dialog(ProducedItemQualityTestsDialog, self, trans, model)
-        finish_transaction(trans, True)
+        api.finish_transaction(trans, True)
         self._setup_data()
         trans.close()
 

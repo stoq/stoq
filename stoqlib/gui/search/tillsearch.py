@@ -32,8 +32,8 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import SearchColumn
 
+from stoqlib.api import api
 from stoqlib.database.orm import INNERJOINOn, Viewable
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.payment.group import PaymentGroup
@@ -128,5 +128,5 @@ class TillFiscalOperationsSearch(SearchDialog):
     #
 
     def _get_query(self, state):
-        branch = get_current_branch(self.conn)
+        branch = api.get_current_branch(self.conn)
         return self.search_table.q.branch_id == branch.id

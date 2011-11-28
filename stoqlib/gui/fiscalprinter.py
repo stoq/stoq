@@ -33,8 +33,7 @@ from stoqdrivers.exceptions import (DriverError, CouponOpenError,
                                     OutofPaperError, PrinterOfflineError)
 from zope.interface import implements
 
-from stoqlib.database.runtime import (get_current_branch, new_transaction,
-                                      finish_transaction)
+from stoqlib.api import api
 from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
                                    CardPaymentReceiptPrintedEvent,
                                    GerencialReportPrintEvent,
@@ -109,14 +108,14 @@ class FiscalPrinterHelper(gobject.GObject):
                     "Close the current Till and open another one.")
             return False
 
-        trans = new_transaction()
+        trans = api.new_transaction()
         try:
             model = run_dialog(TillOpeningEditor, self._parent, trans)
         except TillError, e:
             warning(e)
             model = None
 
-        retval = finish_transaction(trans, model)
+        retval = api.finish_transaction(trans, model)
         trans.close()
         if retval:
             self._till_status_changed(closed=False, blocked=False)
@@ -149,17 +148,17 @@ class FiscalPrinterHelper(gobject.GObject):
             till = Till.get_last_opened(self.conn)
             assert till
 
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = run_dialog(TillClosingEditor, self._parent, trans,
                            previous_day=self._previous_day, close_db=close_db,
                            close_ecf=close_ecf)
 
         if not model:
-            finish_transaction(trans, model)
+            api.finish_transaction(trans, model)
             return
 
         # TillClosingEditor closes the till
-        retval = finish_transaction(trans, model)
+        retval = api.finish_transaction(trans, model)
         trans.close()
         if retval:
             self._till_status_changed(closed=True, blocked=False)
@@ -199,7 +198,7 @@ class FiscalPrinterHelper(gobject.GObject):
         """
 
         if sysparam(self.conn).DEMO_MODE:
-            branch = get_current_branch(self.conn)
+            branch = api.get_current_branch(self.conn)
             company = ICompany(branch.person, None)
             if company and company.cnpj not in ['24.198.774/7322-35',
                                                 '66.873.574/0001-82']:
@@ -423,20 +422,20 @@ class FiscalCoupon(gobject.GObject):
         model = run_dialog(ConfirmSaleWizard, self._parent, trans, sale)
         if not model:
             CancelPendingPaymentsEvent.emit()
-            finish_transaction(trans, False)
+            api.finish_transaction(trans, False)
             return False
         if sale.client and not self.is_customer_identified():
             self.identify_customer(sale.client.person)
 
         if not self.totalize(sale):
-            finish_transaction(trans, False)
+            api.finish_transaction(trans, False)
             return False
 
         if not self.setup_payments(sale):
-            finish_transaction(trans, False)
+            api.finish_transaction(trans, False)
             return False
         if not self.close(sale, trans):
-            finish_transaction(trans, False)
+            api.finish_transaction(trans, False)
             return False
 
         sale.confirm()
@@ -446,7 +445,7 @@ class FiscalCoupon(gobject.GObject):
             sale.cancel()
 
         # Only finish the transaction after everything passed above.
-        finish_transaction(trans, model)
+        api.finish_transaction(trans, model)
 
         if sale.only_paid_with_money():
             sale.set_paid()

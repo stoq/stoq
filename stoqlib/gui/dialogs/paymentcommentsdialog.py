@@ -2,7 +2,7 @@ import datetime
 
 from kiwi.ui.objectlist import Column
 
-from stoqlib.database.runtime import get_current_user
+from stoqlib.api import api
 from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
@@ -33,7 +33,7 @@ class PaymentCommentsDialog(ModelListDialog):
 
     def run_editor(self, trans, model):
         if not model:
-            model = PaymentComment(author=get_current_user(trans),
+            model = PaymentComment(author=api.get_current_user(trans),
                                    payment=trans.get(self.payment),
                                    comment=u"",
                                    connection=trans)

@@ -32,7 +32,7 @@ from kiwi.ui.objectlist import Column, ColoredColumn
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import SummaryLabel
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.interfaces import ISupplier
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -167,7 +167,7 @@ class SupplierDetailsDialog(BaseEditor):
     #
 
     def on_further_details_button__clicked(self, *args):
-        trans = new_transaction()
+        trans = api.new_transaction()
         run_person_role_dialog(SupplierEditor, self, trans,
                                self.model, visual_mode=True)
-        finish_transaction(trans, False)
+        api.finish_transaction(trans, False)

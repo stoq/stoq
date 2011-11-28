@@ -33,9 +33,8 @@ from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
 
+from stoqlib.api import api
 from stoqlib.database.orm import AND, OR
-from stoqlib.database.runtime import (get_current_branch, get_current_user,
-                                      new_transaction, finish_transaction)
 from stoqlib.domain.interfaces import ISalesPerson
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
@@ -156,9 +155,9 @@ class StartSaleQuoteStep(WizardEditorStep):
     #
 
     def on_create_client__clicked(self, button):
-        trans = new_transaction()
+        trans = api.new_transaction()
         client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
-        retval = finish_transaction(trans, client)
+        retval = api.finish_transaction(trans, client)
         client = self.conn.get(client)
         trans.close()
         if not retval:
@@ -207,7 +206,7 @@ class SaleQuoteItemStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
-        branch = get_current_branch(self.conn)
+        branch = api.get_current_branch(self.conn)
         branch_query = OR(ProductStockItem.q.branchID == branch.id,
                           ProductStockItem.q.branchID == None)
         return AND(branch_query,
@@ -403,13 +402,13 @@ class SaleQuoteWizard(BaseWizard):
         return _('Edit Sale Quote')
 
     def _create_model(self, conn):
-        user = get_current_user(conn)
+        user = api.get_current_user(conn)
         salesperson = ISalesPerson(user.person)
 
         return Sale(coupon_id=None,
                     status=Sale.STATUS_QUOTE,
                     salesperson=salesperson,
-                    branch=get_current_branch(conn),
+                    branch=api.get_current_branch(conn),
                     group=PaymentGroup(connection=conn),
                     cfop=sysparam(conn).DEFAULT_SALES_CFOP,
                     operation_nature=sysparam(conn).DEFAULT_OPERATION_NATURE,

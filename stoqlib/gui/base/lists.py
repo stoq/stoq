@@ -28,8 +28,7 @@ from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.listdialog import ListSlave
 from kiwi.utils import gsignal
 
-from stoqlib.database.runtime import (new_transaction, finish_transaction,
-                                      get_connection)
+from stoqlib.api import api
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import SelectionError, StoqlibError
 from stoqlib.gui.base.dialogs import run_dialog, get_dialog, BasicDialog
@@ -51,7 +50,7 @@ class ModelListSlave(ListSlave):
         @param conn: A database connection
         """
         if not conn:
-            conn = get_connection()
+            conn = api.get_connection()
         self.conn = conn
 
         self._model_type = None
@@ -67,7 +66,7 @@ class ModelListSlave(ListSlave):
         if self._reuse_transaction:
             self._delete_with_transaction(model, self._reuse_transaction)
         else:
-            trans = new_transaction()
+            trans = api.new_transaction()
             self._delete_with_transaction(model, trans)
             trans.commit(close=True)
 
@@ -84,13 +83,13 @@ class ModelListSlave(ListSlave):
             # 4) If the return value is not None fetch it in the
             #    original connection (eg, self.conn)
             # 5) Return the value, so it can be populated by the list
-            trans = new_transaction()
+            trans = api.new_transaction()
             if item is not None:
                 model = trans.get(item)
             else:
                 model = None
             retval = self.run_editor(trans, model)
-            finish_transaction(trans, retval)
+            api.finish_transaction(trans, retval)
             if retval:
                 retval = self._model_type.get(retval.id, connection=self.conn)
             trans.close()

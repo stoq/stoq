@@ -30,8 +30,8 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.objectlist import SearchColumn
 
+from stoqlib.api import api
 from stoqlib.database.orm import AND
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
@@ -196,7 +196,7 @@ class SellableSearch(SearchEditor):
         # sellables without a unit set
         if self.quantity is not None and (self.quantity % 1) != 0:
             queries.append(Sellable.q.unitID != None)
-        branch = get_current_branch(conn)
+        branch = api.get_current_branch(conn)
         query = AND(*queries)
         return SellableFullStockView.select_by_branch(query, branch,
                                                       connection=conn)

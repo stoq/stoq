@@ -34,9 +34,8 @@ from kiwi.python import Settable
 from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.objectlist import Column, SearchColumn
 
+from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
-from stoqlib.database.runtime import (get_current_branch, get_current_user,
-                                      new_transaction, finish_transaction)
 from stoqlib.domain.interfaces import IStorable, ISalesPerson
 from stoqlib.domain.person import (ClientView, PersonAdaptToUser,
                                    ClientCategory)
@@ -173,9 +172,9 @@ class StartNewLoanStep(WizardEditorStep):
     #
 
     def on_create_client__clicked(self, button):
-        trans = new_transaction()
+        trans = api.new_transaction()
         client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
-        retval = finish_transaction(trans, client)
+        retval = api.finish_transaction(trans, client)
         client = self.conn.get(client)
         trans.close()
         if not retval:
@@ -321,18 +320,18 @@ class LoanItemSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(value)
 
     def _edit_item(self, item):
-        trans = new_transaction()
+        trans = api.new_transaction()
         model = trans.get(item)
         retval = run_dialog(LoanItemEditor, self.wizard, trans, model,
                             expanded_edition=True)
-        retval = finish_transaction(trans, retval)
+        retval = api.finish_transaction(trans, retval)
         if retval:
             self.loan_items.update(item)
             self._validate_step(True)
         trans.close()
 
     def _create_sale(self, sale_items):
-        user = get_current_user(self.conn)
+        user = api.get_current_user(self.conn)
         sale = Sale(connection=self.conn,
                     branch=self.loan.branch,
                     client=self.loan.client,
@@ -454,8 +453,8 @@ class NewLoanWizard(BaseWizard):
             return _('New Loan Wizard')
 
     def _create_model(self, conn):
-        loan = Loan(responsible=get_current_user(conn),
-                    branch=get_current_branch(conn),
+        loan = Loan(responsible=api.get_current_user(conn),
+                    branch=api.get_current_branch(conn),
                     connection=conn)
         # Temporarily save the client_category, so it works fine with
         # SaleQuoteItemStep

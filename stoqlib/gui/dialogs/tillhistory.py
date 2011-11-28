@@ -31,7 +31,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.search import DateSearchFilter, Today
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
-from stoqlib.database.runtime import finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.till import TillEntry
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.base.dialogs import run_dialog
@@ -114,7 +114,7 @@ class TillHistoryDialog(SearchDialog):
 
     def _run_editor(self, button, editor_class):
         model = run_dialog(editor_class, self, self.conn)
-        if finish_transaction(self.conn, model):
+        if api.finish_transaction(self.conn, model):
             self.search.refresh()
             self.results.unselect_all()
             if len(self.results):

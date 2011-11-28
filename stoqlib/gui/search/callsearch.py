@@ -30,7 +30,7 @@ from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.objectlist import SearchColumn, Column
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.person import CallsView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchEditor
@@ -122,10 +122,10 @@ class CallsSearch(SearchEditor):
             if not retval:
                 self.conn.rollback_to_savepoint('before_run_editor')
         else:
-            trans = new_transaction()
+            trans = api.new_transaction()
             retval = run_dialog(self.editor_class, self, trans,
                                 trans.get(obj), self.person)
-            finish_transaction(trans, retval)
+            api.finish_transaction(trans, retval)
             trans.close()
         return retval
 
