@@ -50,6 +50,7 @@ class StoqlibTransaction(Transaction):
     def __init__(self, *args, **kwargs):
         self._savepoints = []
         self._related_transactions = set()
+        self.retval = None
         Transaction.__init__(self, *args, **kwargs)
 
         self._reset_pending_objs()
