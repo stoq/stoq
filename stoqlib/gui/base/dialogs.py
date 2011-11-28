@@ -28,9 +28,10 @@ import inspect
 import gtk
 from gtk import keysyms
 from kiwi.log import Logger
+from kiwi.ui.dialogs import error, warning, info, yesno
 from kiwi.ui.delegates import GladeSlaveDelegate, GladeDelegate
 from kiwi.ui.views import BaseView
-from kiwi.ui.dialogs import error, warning, info, yesno
+from kiwi.utils import gsignal
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
@@ -249,6 +250,7 @@ class BasicPluggableDialog(BasicDialog):
     """Abstract class for Pluggable*Dialog; two buttons and a slave area"""
     warnbox = None
     slave = None
+    gsignal('confirm', object)
     def _initialize(self, slave, title=" ", header_text="", size=None,
                     hide_footer=False):
         """May be called by refresh by subdialogs, as necessary"""
@@ -292,6 +294,7 @@ class BasicPluggableDialog(BasicDialog):
         # value. It can be an integer or a model object.
         self.retval = self.slave.on_confirm()
         self.close()
+        self.emit('confirm', self.retval)
 
         log.info("%s: Closed (confirmed), retval=%r" % (
             self.slave.__class__.__name__, self.retval))
