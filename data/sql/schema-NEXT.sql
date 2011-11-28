@@ -453,6 +453,7 @@ CREATE TABLE product_component (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     product_id bigint REFERENCES product(id),
     component_id bigint REFERENCES product(id),
+    design_reference text,
     quantity numeric(20, 3)
         CONSTRAINT positive_quantity CHECK (quantity > 0),
         CONSTRAINT different_products CHECK (product_id != component_id)

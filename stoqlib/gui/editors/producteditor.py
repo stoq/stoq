@@ -63,10 +63,12 @@ _ = stoqlib_gettext
 #
 
 class _TemporaryProductComponent(object):
-    def __init__(self, product=None, component=None, quantity=Decimal(1)):
+    def __init__(self, product=None, component=None, quantity=Decimal(1),
+                 design_reference=u''):
         self.product = product
         self.component = component
         self.quantity = quantity
+        self.design_reference = design_reference
 
         if self.component is not None:
             # keep this values in memory in order to speed up the
@@ -101,11 +103,13 @@ class _TemporaryProductComponent(object):
         if component is not None:
             # updating
             component.quantity = self.quantity
+            component.design_reference = self.design_reference
         else:
             # adding
             ProductComponent(product=self.product,
                              component=self.component,
                              quantity=self.quantity,
+                             design_reference=self.design_reference,
                              connection=connection)
 
 
@@ -128,6 +132,8 @@ class ProductComponentSlave(BaseEditorSlave):
                 Column('description', title=_(u'Description'),
                         data_type=str, expand=True),
                 Column('category', title=_(u'Category'), data_type=str),
+                # Translators: Ref. is for Reference (as in design reference)
+                Column('design_reference', title=_(u'Ref.'), data_type=str),
                 Column('production_cost', title=_(u'Production Cost'),
                         format_func=get_formatted_cost, data_type=currency),
                 Column('total_production_cost', title=_(u'Total'),
@@ -187,7 +193,8 @@ class ProductComponentSlave(BaseEditorSlave):
                                                    connection=self.conn):
             yield _TemporaryProductComponent(product=component.product,
                                              component=component.component,
-                                             quantity=component.quantity)
+                                             quantity=component.quantity,
+                                             design_reference=component.design_reference)
 
     def _add_to_component_tree(self, component=None):
         parent = None
@@ -535,7 +542,7 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
 
 class ProductComponentEditor(BaseEditor):
     gladefile = 'ProductComponentEditor'
-    proxy_widgets = ['quantity',]
+    proxy_widgets = ['quantity', 'design_reference']
     title = _(u'Product Component')
     model_type = _TemporaryProductComponent
 
