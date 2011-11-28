@@ -30,7 +30,7 @@ from kiwi.datatypes import currency
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import get_current_user
+from stoqlib.api import api
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
@@ -70,7 +70,7 @@ class ConsignmentItemStep(PurchaseItemStep):
         self.model.set_consigned()
 
         receiving_model = ReceivingOrder(
-            responsible=get_current_user(self.conn),
+            responsible=api.get_current_user(self.conn),
             purchase=self.model,
             supplier=self.model.supplier,
             branch=self.model.branch,

@@ -31,9 +31,9 @@ from kiwi.component import get_utility
 from kiwi.datatypes import currency, ValidationError
 from kiwi.python import Settable
 
+from stoqlib.api import api
 from stoqlib.database.exceptions import IntegrityError
 from stoqlib.database.orm import AND
-from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import StoqlibError
@@ -308,9 +308,9 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         marker('Filled CFOPs')
 
     def _create_client(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
-        finish_transaction(trans, client)
+        api.finish_transaction(trans, client)
         client = self.conn.get(client)
         trans.close()
         if not client:
@@ -477,11 +477,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self._create_client()
 
     def on_create_transporter__clicked(self, button):
-        trans = new_transaction()
+        trans = api.new_transaction()
         transporter = trans.get(self.model.transporter)
         model =  run_person_role_dialog(TransporterEditor, self.wizard, trans,
                                         transporter)
-        rv = finish_transaction(trans, model)
+        rv = api.finish_transaction(trans, model)
         trans.close()
         if rv:
             self._fill_transporter_combo()

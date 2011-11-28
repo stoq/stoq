@@ -29,7 +29,7 @@ import tempfile
 import gio
 import gtk
 
-from stoqlib.database.runtime import get_connection, get_current_user
+from stoqlib.api import api
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.base.utils import print_file, print_preview
@@ -122,7 +122,7 @@ class GtkPrintDialog(object):
     def _pdfmailto(self):
         if not os.path.exists(self._report.filename):
             raise OSError, "the file does not exist"
-        user = get_current_user(get_connection())
+        user = api.get_current_user(api.get_connection())
         os.system("/usr/local/bin/pdfmailto %s '%s'" % (
                                 self._report.filename, user.person.name))
 

@@ -31,8 +31,8 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.api import api
 from stoqlib.database.orm import AND
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import IBranch, IEmployee, IStorable
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import ProductStockItem
@@ -91,7 +91,7 @@ class StockTransferProductStep(SellableItemStep):
     sellable_view = ProductWithStockView
 
     def __init__(self, wizard, conn, model):
-        self.branch = get_current_branch(conn)
+        self.branch = api.get_current_branch(conn)
         SellableItemStep.__init__(self, wizard, None, conn, model)
 
     #
@@ -99,7 +99,7 @@ class StockTransferProductStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
-        branch = get_current_branch(self.conn)
+        branch = api.get_current_branch(self.conn)
         branch_query = ProductStockItem.q.branchID == branch.id
         sellable_query = Sellable.get_unblocked_sellables_query(self.conn,
                                                                 storable=True)
@@ -215,7 +215,7 @@ class StockTransferFinishStep(BaseWizardStep):
     def __init__(self, conn, wizard, transfer_order, previous):
         self.conn = conn
         self.transfer_order = transfer_order
-        self.branch = get_current_branch(self.conn)
+        self.branch = api.get_current_branch(self.conn)
         BaseWizardStep.__init__(self, self.conn, wizard, previous)
         self.setup_proxies()
 

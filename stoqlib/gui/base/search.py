@@ -35,9 +35,8 @@ from kiwi.ui.search import (ComboSearchFilter, SearchSlaveDelegate,
                             DateSearchOption)
 from kiwi.utils import gsignal
 
+from stoqlib.api import api
 from stoqlib.database.orm import ORMObject, ORMObjectQueryExecuter
-from stoqlib.database.runtime import (get_connection, new_transaction,
-                                      finish_transaction, get_current_user)
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
@@ -119,7 +118,7 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
     #
 
     def _get_cache_store(self, restore_name):
-        uname = get_current_user(get_connection()).username
+        uname = api.get_current_user(api.get_connection()).username
         restore_dir = os.path.join(get_application_dir(), 'columns-%s' % uname)
         restore_name = restore_name and "%s.pickle" % restore_name
         return CacheStore(restore_dir, restore_name)
@@ -217,7 +216,7 @@ class SearchDialog(BasicDialog):
                                 title=title or self.title,
                                 size=self.size)
 
-        self.executer = ORMObjectQueryExecuter(get_connection())
+        self.executer = ORMObjectQueryExecuter(api.get_connection())
         self.executer.set_limit(sysparam(self.conn).MAX_SEARCH_RESULTS)
         self.set_table(self.search_table)
 
@@ -398,7 +397,6 @@ class SearchDialog(BasicDialog):
 
     def create_branch_filter(self, label=None):
         from stoqlib.domain.person import PersonAdaptToBranch
-        from stoqlib.database.runtime import get_current_branch
         branches = PersonAdaptToBranch.get_active_branches(self.conn)
         items = [(b.person.name, b.id) for b in branches]
         #if not items:
@@ -409,7 +407,7 @@ class SearchDialog(BasicDialog):
         if not label:
             label = _('Branch:')
         branch_filter = ComboSearchFilter(label, items)
-        current = get_current_branch(self.conn)
+        current = api.get_current_branch(self.conn)
         if current:
             branch_filter.select(current.id)
 
@@ -680,10 +678,10 @@ class SearchEditor(SearchDialog):
         return run_dialog(editor_class, parent, *args)
 
     def run_editor(self, obj):
-        trans = new_transaction()
+        trans = api.new_transaction()
         retval = self.run_dialog(self.editor_class, self, trans,
                                  trans.get(obj))
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             # If the return value is an ORMObject, fetch it from
             # the right connection
             if isinstance(retval, ORMObject):

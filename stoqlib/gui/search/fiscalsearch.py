@@ -32,7 +32,7 @@ from kiwi.python import enum
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import SearchColumn
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData, IcmsIpiView, IssView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchEditor, SearchDialog
@@ -182,10 +182,10 @@ class FiscalBookEntrySearch(SearchDialog):
         entry = self.results.get_selected()
         assert entry is not None
 
-        trans = new_transaction()
+        trans = api.new_transaction()
         retval = run_dialog(FiscalBookEntryEditor, self, trans,
                             trans.get(entry.book_entry))
-        finish_transaction(trans, retval)
+        api.finish_transaction(trans, retval)
         trans.close()
 
     def _on_export_csv_button__clicked(self, widget):

@@ -30,7 +30,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.utils import gsignal
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.accounteditor import AccountEditor
@@ -189,11 +189,11 @@ class AccountTransactionEditor(BaseEditor):
                    self.conn, self.model.payment)
 
     def _add_account(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         parent_account = trans.get(self.account.get_selected())
         model = run_dialog(AccountEditor, self, trans,
                            parent_account=parent_account)
-        if finish_transaction(trans, model):
+        if api.finish_transaction(trans, model):
             account = Account.get(model.id, connection=self.conn)
             self._populate_accounts()
             self.account.select(account)

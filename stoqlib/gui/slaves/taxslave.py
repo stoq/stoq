@@ -30,11 +30,11 @@ import gtk
 
 from kiwi.datatypes import ValidationError
 
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.database.runtime import get_current_branch
+from stoqlib.api import api
 from stoqlib.domain.taxes import (SaleItemIcms, ProductIcmsTemplate,
                                   SaleItemIpi, ProductIpiTemplate)
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 
 
 _ = stoqlib_gettext
@@ -228,7 +228,7 @@ class BaseICMSSlave(BaseTaxSlave):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.branch = get_current_branch(self.model.get_connection())
+        self.branch = api.get_current_branch(self.model.get_connection())
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
         # Simple Nacional

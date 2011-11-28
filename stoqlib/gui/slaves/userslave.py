@@ -29,7 +29,7 @@
 import gtk
 from kiwi.datatypes import ValidationError
 
-from stoqlib.database.runtime import get_current_user
+from stoqlib.api import api
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.person import EmployeeRole
 from stoqlib.domain.interfaces import IEmployee, ISalesPerson, IUser
@@ -150,7 +150,7 @@ class PasswordEditor(BaseEditor):
             self.current_password_lbl.hide()
 
     def _needs_password_confirmation(self):
-        current_user = get_current_user(self.conn)
+        current_user = api.get_current_user(self.conn)
         return current_user.profile.id != 1
 
     #

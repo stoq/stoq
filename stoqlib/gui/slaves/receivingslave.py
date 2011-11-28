@@ -27,7 +27,7 @@
 from kiwi.datatypes import ValidationError, ValueUnset
 from kiwi.utils import gsignal
 
-from stoqlib.database.runtime import new_transaction
+from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.person import PersonAdaptToTransporter
@@ -210,7 +210,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             return ValidationError(_("Receiving order number must be "
                                      "between 1 and 999999"))
 
-        trans = new_transaction()
+        trans = api.new_transaction()
         # Using a transaction to do the verification bellow because,
         # if we use self.conn the changes on the invoice will be
         # saved at the same time in the database and it'll think

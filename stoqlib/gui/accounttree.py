@@ -24,7 +24,8 @@ import gtk
 from kiwi.currency import currency
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ColoredColumn, Column, ObjectTree
-from stoqlib.database.runtime import get_connection
+
+from stoqlib.api import api
 from stoqlib.domain.views import Account, AccountView
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -123,7 +124,7 @@ class AccountTree(ObjectTree):
         elif kind == 'receivable':
             pixbuf = self._pixbuf_receivable
         elif kind == 'account':
-            till_account_id = sysparam(get_connection()).TILLS_ACCOUNT.id
+            till_account_id = sysparam(api.get_connection()).TILLS_ACCOUNT.id
             if model.matches(till_account_id):
                 pixbuf = self._pixbuf_till
             else:
@@ -133,7 +134,7 @@ class AccountTree(ObjectTree):
         return pixbuf
 
     def insert_initial(self, conn, ignore=None):
-        till_id = sysparam(get_connection()).TILLS_ACCOUNT.id
+        till_id = sysparam(api.get_connection()).TILLS_ACCOUNT.id
 
         accounts = list(AccountView.select(connection=conn))
         accounts = self._orderaccounts(accounts)

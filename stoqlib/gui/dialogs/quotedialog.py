@@ -33,9 +33,8 @@ from kiwi.python import AttributeForwarder
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
+from stoqlib.api import api
 from stoqlib.database.orm import AND, OR, LEFTJOINOn
-from stoqlib.database.runtime import (new_transaction, finish_transaction,
-                                      get_current_user)
 from stoqlib.domain.interfaces import IEmployee
 from stoqlib.domain.production import ProductionOrder, ProductionMaterial
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
@@ -165,7 +164,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
         desc = _('Production for Sale order %s') % self.sale.get_order_number_str()
         if self.sale.client:
             desc += ' (%s)' % self.sale.client.get_name()
-        user = get_current_user(trans)
+        user = api.get_current_user(trans)
         employee = IEmployee(user.person, None)
         order = ProductionOrder(branch=self.sale.branch,
                     status=ProductionOrder.ORDER_WAITING,
@@ -203,11 +202,11 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
 
     def confirm(self, *args):
         if self.sale.status == Sale.STATUS_QUOTE:
-            trans = new_transaction()
+            trans = api.new_transaction()
             sale = trans.get(self.sale)
             self._create_production_order(trans)
             sale.order()
-            finish_transaction(trans, True)
+            api.finish_transaction(trans, True)
             trans.close()
         return SimpleListDialog.confirm(self, *args)
 

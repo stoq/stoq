@@ -56,8 +56,8 @@ import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
-from stoqlib.database.runtime import get_current_user
 
+from stoqlib.api import api
 from stoqlib.domain.product import ProductQualityTest
 from stoqlib.domain.production import ProductionProducedItem
 from stoqlib.domain.production import (ProductionItem, ProductionMaterial,
@@ -188,7 +188,7 @@ class ProductionItemProducedEditor(ProductionItemEditor):
             for i in range(self.produced):
                 serials.append(self.serial_slave.model.serial_number + i)
         try:
-            self.model.produce(self.produced, get_current_user(self.conn),
+            self.model.produce(self.produced, api.get_current_user(self.conn),
                                serials)
         except (ValueError, AssertionError):
             info(_(u'Can not produce this quantity. Not enough materials '
@@ -378,7 +378,7 @@ class QualityTestResultEditor(BaseEditor):
         return ProductionItemQualityResult(connection=conn,
                                            produced_item=self._item,
                                            quality_test=default_test,
-                                           tested_by=get_current_user(conn),
+                                           tested_by=api.get_current_user(conn),
                                            tested_date=datetime.datetime.now(),
                                            result_value=default_vale)
 

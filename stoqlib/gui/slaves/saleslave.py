@@ -29,7 +29,7 @@ from kiwi.decorators import signal_block
 from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import GladeSlaveDelegate
 
-from stoqlib.database.runtime import finish_transaction, new_transaction
+from stoqlib.api import api
 from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import StoqlibError, TillError
@@ -176,10 +176,10 @@ class SaleListToolbar(GladeSlaveDelegate):
     def edit(self, sale_view=None):
         if sale_view is None:
             sale_view = self.sales.get_selected()
-        trans = new_transaction()
+        trans = api.new_transaction()
         sale = trans.get(sale_view.sale)
         model = run_dialog(SaleQuoteWizard, self.parent, trans, sale)
-        retval = finish_transaction(trans, model)
+        retval = api.finish_transaction(trans, model)
         trans.close()
 
         if retval:
@@ -206,7 +206,7 @@ class SaleListToolbar(GladeSlaveDelegate):
             return info(_(u'You must open the till first.'))
         sale = self.sales.get_selected()
         retval = return_sale(self.get_parent(), sale, self.conn)
-        finish_transaction(self.conn, retval)
+        api.finish_transaction(self.conn, retval)
 
         if retval:
             self.emit('sale-returned', retval)

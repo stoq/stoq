@@ -33,7 +33,7 @@ import pango
 from kiwi.datatypes import currency, ValidationError, ValueUnset
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IClient,
                                        ISupplier)
 from stoqlib.domain.payment.category import PaymentCategory
@@ -158,20 +158,20 @@ class BasePaymentEditor(BaseEditor):
             self.person.select(facet)
 
     def _run_payment_category_editor(self, category=None):
-        trans = new_transaction()
+        trans = api.new_transaction()
         category = trans.get(category)
         model = run_dialog(PaymentCategoryEditor, self, trans, category)
-        rv = finish_transaction(trans, model)
+        rv = api.finish_transaction(trans, model)
         trans.close()
         if rv:
             self._fill_category_combo()
             self.category.select(model)
 
     def _run_person_editor(self, person=None):
-        trans = new_transaction()
+        trans = api.new_transaction()
         person = trans.get(person)
         model = run_person_role_dialog(self.person_editor, self, trans, person)
-        rv = finish_transaction(trans, model)
+        rv = api.finish_transaction(trans, model)
         trans.close()
         if rv:
             self._populate_person()

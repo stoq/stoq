@@ -29,7 +29,7 @@ from stoqdrivers.printers.base import (get_supported_printers,
                                        get_supported_printers_by_iface)
 from stoqdrivers.scales.base import get_supported_scales
 
-from stoqlib.database.runtime import get_connection, get_current_station
+from stoqlib.api import api
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.person import BranchStation
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -148,7 +148,7 @@ class DeviceSettingsEditor(BaseEditor):
 
     def create_model(self, conn):
         return DeviceSettings(device_name=None,
-                              station=get_current_station(conn),
+                              station=api.get_current_station(conn),
                               brand=None,
                               model=None,
                               type=None,
@@ -163,7 +163,7 @@ class DeviceSettingsEditor(BaseEditor):
     def validate_confirm(self):
         if not self.edit_mode:
             settings = DeviceSettings.get_by_station_and_type(
-                conn=get_connection(),
+                conn=api.get_connection(),
                 station=self.model.station.id,
                 type=self.model.type)
             if settings:

@@ -32,8 +32,7 @@ import gtk
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import (get_current_branch, new_transaction,
-                                      finish_transaction, get_current_user)
+from stoqlib.api import api
 from stoqlib.domain.interfaces import IBranch, ITransporter, ISupplier
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
@@ -116,12 +115,12 @@ class StartPurchaseStep(WizardEditorStep):
             self.model.freight_type = self.model_type.FREIGHT_FOB
 
     def _run_supplier_dialog(self, supplier):
-        trans = new_transaction()
+        trans = api.new_transaction()
         if supplier is not None:
             supplier = trans.get(self.model.supplier)
         model = run_person_role_dialog(SupplierEditor, self.wizard, trans,
                                        supplier)
-        retval = finish_transaction(trans, model)
+        retval = api.finish_transaction(trans, model)
         if retval:
             model = self.conn.get(model)
             self._fill_supplier_combo()
@@ -456,7 +455,7 @@ class FinishPurchaseStep(WizardEditorStep):
         self.model.confirm()
 
         receiving_model = ReceivingOrder(
-            responsible=get_current_user(self.conn),
+            responsible=api.get_current_user(self.conn),
             purchase=self.model,
             supplier=self.model.supplier,
             branch=self.model.branch,
@@ -509,11 +508,11 @@ class FinishPurchaseStep(WizardEditorStep):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def _run_transporter_editor(self, transporter=None):
-        trans = new_transaction()
+        trans = api.new_transaction()
         transporter = trans.get(transporter)
         model =  run_person_role_dialog(TransporterEditor, self.wizard, trans,
                                         transporter)
-        rv = finish_transaction(trans, model)
+        rv = api.finish_transaction(trans, model)
         trans.close()
         if rv:
             self._setup_transporter_entry()
@@ -578,11 +577,11 @@ class PurchaseWizard(BaseWizard):
 
     def _create_model(self, conn):
         supplier = sysparam(conn).SUGGESTED_SUPPLIER
-        branch = get_current_branch(conn)
+        branch = api.get_current_branch(conn)
         group = PaymentGroup(connection=conn)
         status = PurchaseOrder.ORDER_PENDING
         return PurchaseOrder(supplier=supplier,
-                             responsible=get_current_user(conn),
+                             responsible=api.get_current_user(conn),
                              branch=branch,
                              status=status,
                              group=group,

@@ -33,8 +33,7 @@ from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
-from stoqlib.database.runtime import (new_transaction, finish_transaction,
-                                      get_current_branch)
+from stoqlib.api import api
 from stoqlib.domain.product import ProductAdaptToStorable
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.message import yesno
@@ -62,7 +61,7 @@ class InitialStockDialog(BaseEditor):
 
     def __init__(self, conn, branch=None):
         if branch is None:
-            self._branch = get_current_branch(conn)
+            self._branch = api.get_current_branch(conn)
         else:
             self._branch = branch
         BaseEditor.__init__(self, conn, model=object())
@@ -107,11 +106,11 @@ class InitialStockDialog(BaseEditor):
             storable.increase_stock(item.initial_stock, self._branch)
 
     def _add_initial_stock(self):
-        trans = new_transaction()
+        trans = api.new_transaction()
         for item in self._storables:
             self._validate_initial_stock_quantity(item, trans)
 
-        finish_transaction(trans, True)
+        api.finish_transaction(trans, True)
         trans.close()
 
     #

@@ -24,9 +24,9 @@
 
 import datetime
 
+from stoqlib.api import api
 from stoqlib.domain.interfaces import IUser
 from stoqlib.domain.person import Calls, Person
-from stoqlib.database.runtime import get_current_user
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -52,7 +52,7 @@ class CallsEditor(BaseEditor):
                      description='',
                      message='',
                      person=self.person,
-                     attendant=get_current_user(self.conn),
+                     attendant=api.get_current_user(self.conn),
                      connection=conn)
 
     def setup_proxies(self):

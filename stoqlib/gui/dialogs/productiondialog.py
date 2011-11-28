@@ -33,8 +33,7 @@ from kiwi.utils import gsignal
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import Column, ColoredColumn
 
-from stoqlib.database.runtime import (new_transaction, finish_transaction,
-                                      get_current_branch, get_connection)
+from stoqlib.api import api
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.product import Product
 from stoqlib.domain.payment.group import PaymentGroup
@@ -101,7 +100,7 @@ class _TemporaryProductionItemComponent(object):
         self.make_quantity = self._get_make_quantity()
 
         #XXX: workaround!
-        conn = get_connection()
+        conn = api.get_connection()
         items = PurchasedItemAndStockView.select(
             Product.q.id==self.product.id, connection=conn)
         self.to_receive = sum(
@@ -472,7 +471,7 @@ class ProductionDialog(GladeSlaveDelegate):
 
     def _create_purchase_order(self, trans):
         supplier = sysparam(trans).SUGGESTED_SUPPLIER
-        branch = get_current_branch(trans)
+        branch = api.get_current_branch(trans)
         group = PaymentGroup(connection=trans)
         order = PurchaseOrder(supplier=supplier, branch=branch,
                               status=PurchaseOrder.ORDER_PENDING,
@@ -498,14 +497,14 @@ class ProductionDialog(GladeSlaveDelegate):
             return False
         # Let's create the purchase order here, so the user might create
         # several orders without leave this dialog
-        trans = new_transaction()
+        trans = api.new_transaction()
         order = self._create_purchase_order(trans)
         if not order:
             # FIXME: We should close the connection above if this really happens
             return False
 
         retval = run_dialog(PurchaseWizard, self, trans, order)
-        finish_transaction(trans, retval)
+        api.finish_transaction(trans, retval)
         trans.close()
         return retval
 

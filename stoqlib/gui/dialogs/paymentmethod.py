@@ -28,7 +28,7 @@ import gtk
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.search import SearchEditorToolBar
@@ -92,10 +92,10 @@ class PaymentMethodsDialog(BasicDialog):
             raise TypeError('Invalid payment method adapter: %s'
                             % item.method_name)
 
-        trans = new_transaction()
+        trans = api.new_transaction()
         item = trans.get(item)
         retval = run_dialog(editor, self, trans, item)
-        finish_transaction(trans, retval)
+        api.finish_transaction(trans, retval)
 
     #
     # Callbacks

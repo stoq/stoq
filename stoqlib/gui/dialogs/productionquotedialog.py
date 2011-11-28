@@ -28,8 +28,7 @@ import datetime
 
 from kiwi.ui.objectlist import Column
 
-from stoqlib.database.runtime import (new_transaction, finish_transaction,
-                                      get_current_branch, get_current_user)
+from stoqlib.api import api
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup, Quotation
@@ -45,10 +44,10 @@ class _TemporaryQuoteGroup(object):
 
     def _create_purchase_order(self, trans):
         return PurchaseOrder(supplier=sysparam(trans).SUGGESTED_SUPPLIER,
-                             branch=get_current_branch(trans),
+                             branch=api.get_current_branch(trans),
                              status=PurchaseOrder.ORDER_QUOTING,
                              expected_receival_date=None,
-                             responsible=get_current_user(trans),
+                             responsible=api.get_current_user(trans),
                              group=PaymentGroup(connection=trans),
                              connection=trans)
 
@@ -150,9 +149,9 @@ class ProductionQuoteDialog(BaseEditor):
     def on_confirm(self):
         # We are using this hook as a callback for the OK button
         productions = [p.obj for p in self.productions if p.selected]
-        trans = new_transaction()
+        trans = api.new_transaction()
         group = self.model.create_quote_group(productions, trans)
-        finish_transaction(trans, group)
+        api.finish_transaction(trans, group)
         trans.close()
         info(_(u'The quote group was succesfully created and it is available '
                 'in the Purchase application.'))

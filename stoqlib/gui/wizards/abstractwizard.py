@@ -39,10 +39,8 @@ from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.ui.objectlist import SearchColumn
 from kiwi.python import Settable
 
+from stoqlib.api import api
 from stoqlib.database.orm import AND, ORMObject
-from stoqlib.database.runtime import (new_transaction,
-                                      finish_transaction)
-
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.product import Product, ProductSupplierInfo
@@ -138,7 +136,7 @@ class _SellableSearch(SearchEditor):
         return model.product
 
     def run_editor(self, obj=None):
-        trans = new_transaction()
+        trans = api.new_transaction()
         product = self.run_dialog(self.editor_class, self, trans,
                                  trans.get(obj))
 
@@ -152,7 +150,7 @@ class _SellableSearch(SearchEditor):
                                 base_cost=product.sellable.cost,
                                 is_main_supplier=True)
 
-        if finish_transaction(trans, product):
+        if api.finish_transaction(trans, product):
             # If the return value is an ORMObject, fetch it from
             # the right connection
             if isinstance(product, ORMObject):

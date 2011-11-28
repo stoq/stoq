@@ -31,7 +31,7 @@ from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 import pango
 
-from stoqlib.database.runtime import new_transaction
+from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
@@ -205,7 +205,7 @@ class AbstractCreditProviderSearch(BasePersonSearch):
         return self.provider_table.q.provider_type == self.provider_type
 
     def _on_results__cell_edited(self, results, obj, attr):
-        trans = new_transaction()
+        trans = api.new_transaction()
         cards = trans.get(obj.provider)
         cards.is_active = obj.is_active
         trans.commit(close=True)

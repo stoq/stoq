@@ -32,7 +32,7 @@ from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter, Today
 from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
 
-from stoqlib.database.runtime import get_current_branch
+from stoqlib.api import api
 from stoqlib.database.orm import AND
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import Product
@@ -373,7 +373,7 @@ class ProductStockSearch(SearchEditor):
         self.executer.set_query(self.executer_query)
 
         branch_filter = self.create_branch_filter(_('In branch:'))
-        branch_filter.select(get_current_branch(self.conn).id)
+        branch_filter.select(api.get_current_branch(self.conn).id)
         self.add_filter(branch_filter, columns = [])
         self.branch_filter = branch_filter
 

@@ -27,7 +27,7 @@ from kiwi.argcheck import argcheck
 from kiwi.ui.objectlist import Column
 from zope.interface import providedBy
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.api import api
 from stoqlib.domain.base import AbstractModel
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.parameter import ParameterData
@@ -99,10 +99,10 @@ class ParameterSearch(BaseEditor):
         return data
 
     def _edit_item(self, item):
-        trans = new_transaction()
+        trans = api.new_transaction()
         parameter = trans.get(item)
         retval = run_dialog(SystemParameterEditor, self, trans, parameter)
-        if finish_transaction(trans, retval):
+        if api.finish_transaction(trans, retval):
             sysparam(trans).rebuild_cache_for(item.field_name)
             self.results.update(item)
         trans.close()
