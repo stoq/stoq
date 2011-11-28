@@ -23,8 +23,10 @@
 ##
 """ This module test all class in stoqlib/domain/production.py """
 
+from decimal import Decimal
 
 from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.product import ProductQualityTest
 from stoqlib.domain.production import (ProductionOrder, ProductionMaterial,
                                        ProductionItem, ProductionService)
 from stoqlib.domain.test.domaintest import DomainTest
@@ -247,7 +249,6 @@ class TestProductionMaterial(DomainTest):
             self.assertEqual(material.consumed, consumed)
 
 
-from stoqlib.domain.product import ProductQualityTest
 class TestProductionQuality(DomainTest):
 
     def testProductionQualityCompleteProcess(self):
@@ -273,6 +274,11 @@ class TestProductionQuality(DomainTest):
         self.assertRaises(AssertionError, item.produce, 1)
         user = self.create_user()
 
+        # We still dont have any stock for this product
+        storable = IStorable(item.product)
+        self.assertEqual(storable.get_full_balance(order.branch), 0)
+
+
         # Produce first item with a serial number
         self.assertEqual(order.produced_items.count(), 0)
         item.produce(1, user, [123456])
@@ -286,3 +292,54 @@ class TestProductionQuality(DomainTest):
         # Produce the rest
         item.produce(3, user, [123457, 123458, 1234569])
         self.assertEqual(order.status, ProductionOrder.ORDER_QA)
+
+        # For a produced item, initially, the tests should be empty
+        p_item = order.produced_items[0]
+        self.assertEqual(p_item.get_test_result(test1), None)
+        self.assertEqual(p_item.get_test_result(test2), None)
+        self.assertEqual(p_item.test_passed, False)
+
+        # Add a first, faild test
+        result = p_item.set_test_result_value(test1, False, user)
+        self.assertEqual(p_item.get_test_result(test1), result)
+        self.assertEqual(p_item.get_test_result(test2), None)
+
+        self.assertEqual(result.get_boolean_value(), False)
+        self.assertEqual(result.test_passed, False)
+
+        # Set it to success
+        p_item.set_test_result_value(test1, True, user)
+        self.assertEqual(result.get_boolean_value(), True)
+        self.assertEqual(result.test_passed, True)
+
+        # Since the product has two tests, the produced item havent passed all
+        # tests yet
+        self.assertEqual(p_item.test_passed, False)
+
+        # Add a result for the second test (failing)
+        result = p_item.set_test_result_value(test2, Decimal(5), user)
+        self.assertEqual(p_item.get_test_result(test2), result)
+
+        self.assertEqual(result.get_decimal_value(), 5)
+        self.assertEqual(result.test_passed, False)
+        self.assertEqual(p_item.test_passed, False)
+
+        # Now set the second test as a success
+        p_item.set_test_result_value(test2, Decimal(15), user)
+        self.assertEqual(result.test_passed, True)
+        self.assertEqual(p_item.test_passed, True)
+
+        # Lets now set the results for all tests as sucessful
+        for p_item in order.produced_items:
+            p_item.set_test_result_value(test1, True, user)
+            p_item.set_test_result_value(test2, Decimal(15), user)
+
+        # Order should be now  CLOSED
+        self.assertEqual(order.status, ProductionOrder.ORDER_CLOSED)
+
+        # Items should have entered stock
+        for p_item in order.produced_items:
+            self.assertEqual(p_item.entered_stock, True)
+
+        storable = IStorable(item.product)
+        self.assertEqual(storable.get_full_balance(order.branch), 4)

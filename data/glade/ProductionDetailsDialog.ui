@@ -340,25 +340,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkHButtonBox" id="hbuttonbox2">
+                  <object class="GtkEventBox" id="quality_holder">
                     <property name="visible">True</property>
-                    <property name="spacing">6</property>
-                    <property name="layout_style">start</property>
                     <child>
-                      <object class="GtkButton" id="tests_button">
-                        <property name="label" translatable="yes">Test Results</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="use_action_appearance">False</property>
-                        <property name="image">test_icon</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                   </object>
                   <packing>
@@ -455,9 +440,5 @@
   <object class="GtkImage" id="produced_icon">
     <property name="visible">True</property>
     <property name="stock">gtk-add</property>
-  </object>
-  <object class="GtkImage" id="test_icon">
-    <property name="visible">True</property>
-    <property name="stock">gtk-ok</property>
   </object>
 </interface>
