@@ -97,7 +97,7 @@ class Tasks(object):
                  (_('Roles'), 'employee_roles',
                   'stoq-users'),
                  (_('Fiscal Books'), 'fiscal_books',
-                  'stoq-conference'),
+                  'stoq-edit'),
                  (_('Invoice Printers'), 'invoice_printers',
                   'gtk-print'),
                  (_('Payment Categories'), 'payment_categories',
