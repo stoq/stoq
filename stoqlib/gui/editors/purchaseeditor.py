@@ -33,7 +33,6 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
-from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -67,10 +66,7 @@ class PurchaseItemEditor(BaseEditor):
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
                                                  step_incr=1))
         self.description.set_text(self.model.sellable.get_description())
-        if sysparam(self.conn).USE_FOUR_PRECISION_DIGITS:
-            self.cost.set_digits(4)
-        else:
-            self.cost.set_digits(DECIMAL_PRECISION)
+        self.cost.set_digits(sysparam(self.conn).COST_PRECISION_DIGITS)
 
     def _set_not_editable(self):
         self.cost.set_sensitive(False)

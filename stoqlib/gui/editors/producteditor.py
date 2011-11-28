@@ -446,8 +446,7 @@ class ProductSupplierEditor(BaseEditor):
         else:
             description = unit.description
         self.unit_label.set_text(description)
-        if sysparam(self.conn).USE_FOUR_PRECISION_DIGITS:
-            self.base_cost.set_digits(4)
+        self.base_cost.set_digits(sysparam(self.conn).COST_PRECISION_DIGITS)
         self.base_cost.set_adjustment(
             gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
         self.minimum_purchase.set_adjustment(
@@ -628,8 +627,7 @@ class ProductEditor(SellableEditor):
         return extra_tabs
 
     def setup_widgets(self):
-        if sysparam(self.conn).USE_FOUR_PRECISION_DIGITS:
-            self.cost.set_digits(4)
+        self.cost.set_digits(sysparam(self.conn).COST_PRECISION_DIGITS)
         self.consignment_yes_button.set_active(self.model.consignment)
         self.consignment_yes_button.set_sensitive(self._model_created)
         self.consignment_no_button.set_sensitive(self._model_created)

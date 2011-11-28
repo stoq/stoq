@@ -223,8 +223,7 @@ class SellableItemStep(WizardEditorStep):
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
                                                  step_incr=1))
         self._reset_sellable()
-        if sysparam(conn).USE_FOUR_PRECISION_DIGITS:
-            self.cost.set_digits(4)
+        self.cost.set_digits(sysparam(conn).COST_PRECISION_DIGITS)
         self.quantity.set_digits(3)
 
     # Public API

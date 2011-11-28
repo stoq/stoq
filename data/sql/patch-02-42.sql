@@ -24,7 +24,7 @@ ALTER TABLE fiscal_book_entry ALTER COLUMN icms_value TYPE numeric(20, 2);
 ALTER TABLE fiscal_book_entry ALTER COLUMN ipi_value TYPE numeric(20, 2);
 
 -- inventory.py
-ALTER TABLE inventory_item ALTER COLUMN product_cost TYPE numeric(20, 4);
+ALTER TABLE inventory_item ALTER COLUMN product_cost TYPE numeric(20, 8);
 
 -- loan.py
 ALTER TABLE loan_item ALTER COLUMN price TYPE numeric(20, 2);
@@ -60,18 +60,18 @@ ALTER TABLE person_adapt_to_credit_provider ALTER COLUMN monthly_fee TYPE numeri
 ALTER TABLE employee_role_history ALTER COLUMN salary TYPE numeric(20, 2);
 
 -- product.py
-ALTER TABLE product_supplier_info ALTER COLUMN base_cost TYPE numeric(20, 4);
-ALTER TABLE product_stock_item ALTER COLUMN stock_cost TYPE numeric(20, 2);
+ALTER TABLE product_supplier_info ALTER COLUMN base_cost TYPE numeric(20, 8);
+ALTER TABLE product_stock_item ALTER COLUMN stock_cost TYPE numeric(20, 8);
 
 -- purchase.py
-ALTER TABLE purchase_item ALTER COLUMN base_cost TYPE numeric(20, 4);
-ALTER TABLE purchase_item ALTER COLUMN cost TYPE numeric(20, 4);
+ALTER TABLE purchase_item ALTER COLUMN base_cost TYPE numeric(20, 8);
+ALTER TABLE purchase_item ALTER COLUMN cost TYPE numeric(20, 8);
 ALTER TABLE purchase_order ALTER COLUMN expected_freight TYPE numeric(20, 2);
 ALTER TABLE purchase_order ALTER COLUMN surcharge_value TYPE numeric(20, 2);
 ALTER TABLE purchase_order ALTER COLUMN discount_value TYPE numeric(20, 2);
 
 -- receiving.py
-ALTER TABLE receiving_order_item ALTER COLUMN cost TYPE numeric(20, 4);
+ALTER TABLE receiving_order_item ALTER COLUMN cost TYPE numeric(20, 8);
 ALTER TABLE receiving_order ALTER COLUMN freight_total TYPE numeric(20, 2);
 ALTER TABLE receiving_order ALTER COLUMN surcharge_value TYPE numeric(20, 2);
 ALTER TABLE receiving_order ALTER COLUMN discount_value TYPE numeric(20, 2);
@@ -87,7 +87,7 @@ ALTER TABLE renegotiation_data ALTER COLUMN penalty_value TYPE numeric(20, 2);
 
 -- sale.py
 ALTER TABLE sale_item ALTER COLUMN base_price TYPE numeric(20, 2);
-ALTER TABLE sale_item ALTER COLUMN average_cost TYPE numeric(20, 2);
+ALTER TABLE sale_item ALTER COLUMN average_cost TYPE numeric(20, 8);
 ALTER TABLE sale_item ALTER COLUMN price TYPE numeric(20, 2);
 ALTER TABLE sale ALTER COLUMN discount_value TYPE numeric(20, 2);
 ALTER TABLE sale ALTER COLUMN surcharge_value TYPE numeric(20, 2);
@@ -97,7 +97,7 @@ ALTER TABLE sale ALTER COLUMN total_amount TYPE numeric(20, 2);
 ALTER TABLE on_sale_info ALTER COLUMN on_sale_price TYPE numeric(20, 2);
 ALTER TABLE base_sellable_info ALTER COLUMN price TYPE numeric(20, 2);
 ALTER TABLE client_category_price ALTER COLUMN price TYPE numeric(20, 2);
-ALTER TABLE sellable ALTER COLUMN cost TYPE numeric(20, 4);
+ALTER TABLE sellable ALTER COLUMN cost TYPE numeric(20, 8);
 
 
 -- taxes.py

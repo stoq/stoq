@@ -56,7 +56,7 @@ class DirectoryParameter(object):
 
 class ParameterDetails(object):
     def __init__(self, key, group, short_desc, long_desc, type,
-                 initial=None, options=None,
+                 initial=None, options=None, range=None,
                  multiline=False, validator=None, onupgrade=None):
         self.key = key
         self.group = group
@@ -65,6 +65,7 @@ class ParameterDetails(object):
         self.type = type
         self.initial = initial
         self.options = options
+        self.range = range
         self.multiline = multiline
         self.validator = validator
         if onupgrade is None:
@@ -453,12 +454,12 @@ _details = [
         DirectoryParameter, initial='~/.stoq/cat52'),
 
     ParameterDetails(
-        'USE_FOUR_PRECISION_DIGITS',
+        'COST_PRECISION_DIGITS',
         _('General'),
-        _('Use four precision digits'),
-        _('Once this parameter is set, the products cost will be expressed '
-          'using four precision digits.'),
-        bool, initial=False),
+        _('Number of digits to use for product cost'),
+        _('Set this parameter accordingly to the number of digits of the '
+          'products you purchase'),
+        int, initial=2, range=[2,8],),
 
     ParameterDetails(
         'SCALE_BARCODE_FORMAT',

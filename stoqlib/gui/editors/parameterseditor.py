@@ -27,6 +27,7 @@ from decimal import Decimal
 import gtk
 
 from kiwi.ui.widgets.entry import ProxyEntry
+from kiwi.ui.widgets.spinbutton import ProxySpinButton
 from kiwi.ui.widgets.textview import ProxyTextView
 from kiwi.ui.widgets.combo import ProxyComboEntry, ProxyComboBox
 
@@ -81,6 +82,26 @@ class SystemParameterEditor(BaseEditor):
                        self._on_entry__validation_changed)
 
         self._entry = widget
+
+    def _setup_spin_entry_slave(self, box=None):
+        widget = ProxySpinButton()
+        widget.props.sensitive = self.sensitive
+        widget.data_type = int
+        widget.set_range(self.constant.range[0], self.constant.range[1])
+        widget.set_value(int(self.model.field_value))
+        widget.set_increments(1, 10)
+        widget.connect('changed', self._on_spin_changed)
+        if box is None:
+            self.container.add(widget)
+        else:
+            box.pack_start(widget)
+
+        widget.show()
+        widget.connect('validate', self._on_entry__validate)
+        widget.connect('validation-changed',
+                       self._on_entry__validation_changed)
+        self._entry = widget
+
 
     def _setup_text_entry_slave(self):
         widget = ProxyTextView()
@@ -188,6 +209,8 @@ class SystemParameterEditor(BaseEditor):
         elif issubclass(field_type, (int, float)):
             if self.constant.options:
                 self._setup_options_combo_slave()
+            elif self.constant.range:
+                self._setup_spin_entry_slave()
             else:
                 self._setup_entry_slave()
         elif issubclass(field_type, basestring):
@@ -225,6 +248,9 @@ class SystemParameterEditor(BaseEditor):
 
     def _on_yes_radio__toggled(self, widget):
         self.model.field_value = str(int(widget.get_active()))
+
+    def _on_spin_changed(self, widget):
+        self.model.field_value = str(widget.get_value_as_int())
 
     def _on_filechooser_button__selection_changed(self, widget):
         filename = widget.get_filename()
