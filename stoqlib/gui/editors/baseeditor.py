@@ -185,6 +185,8 @@ class BaseEditor(BaseEditorSlave):
     confirm_widgets = ()
 
     def __init__(self, conn, model=None, visual_mode=False):
+        if conn is not None and isinstance(conn, StoqlibTransaction):
+            conn.needs_retval = True
         self._message_bar = None
         self._confirm_disabled = False
         BaseEditorSlave.__init__(self, conn, model,

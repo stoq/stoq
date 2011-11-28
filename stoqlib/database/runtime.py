@@ -45,12 +45,20 @@ log = Logger('stoqlib.runtime')
 #
 
 class StoqlibTransaction(Transaction):
+    """
+    @ivar retval: The return value of a operation this transaction
+      is covering. Usually a domain object that was modified
+    @ivar needs_retval: If this is set to True, the retval variable
+      needs to be set to a non-zero value to be committed, see
+      stoqlib.api.trans
+    """
     implements(ITransaction)
 
     def __init__(self, *args, **kwargs):
         self._savepoints = []
         self._related_transactions = set()
         self.retval = None
+        self.needs_retval = False
         Transaction.__init__(self, *args, **kwargs)
 
         self._reset_pending_objs()

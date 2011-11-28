@@ -67,6 +67,8 @@ class BaseWizard(PluggableWizard, RunnableView):
         logger.info('Entering wizard: %s' % self.__class__.__name__)
         self.conn = conn
         self.model = model
+        if isinstance(self.conn, StoqlibTransaction):
+            self.conn.needs_retval = True
         self.retval = None
         size = size or self.size
         title = title or self.title
