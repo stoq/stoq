@@ -29,6 +29,8 @@ Singleton object which makes it easier to common stoqlib APIs without
 having to import their symbols.
 """
 
+from contextlib import contextmanager
+
 from kiwi.component import get_utility
 
 from stoqlib.lib.parameters import sysparam, is_developer_mode
@@ -60,6 +62,31 @@ class StoqAPI(object):
 
     def get_current_user(self, conn):
         return get_current_user(conn)
+
+    @contextmanager
+    def trans(self):
+        """Creates a new transaction and commits/closes it when done.
+
+        It should be used as:
+
+          with api.trans() as trans:
+              ...
+              trans.retval = True
+              ...
+
+        When the execution of the with statement has finished this
+        will commit the object, close the transaction.
+        trans.retval will be used to determine if the transaction
+        should be committed or rolled back (via finish_transaction)
+        """
+        trans = self.new_transaction()
+        yield trans
+        retval = bool(trans.retval)
+        if self.finish_transaction(trans, retval):
+            trans.committed = True
+        else:
+            trans.committed = False
+        trans.close()
 
     @property
     def config(self):
