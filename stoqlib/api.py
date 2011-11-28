@@ -71,8 +71,6 @@ class StoqAPI(object):
 
           with api.trans() as trans:
               ...
-              trans.retval = True
-              ...
 
         When the execution of the with statement has finished this
         will commit the object, close the transaction.
@@ -81,11 +79,19 @@ class StoqAPI(object):
         """
         trans = self.new_transaction()
         yield trans
-        retval = bool(trans.retval)
-        if self.finish_transaction(trans, retval):
-            trans.committed = True
+
+        # Editors/Wizards requires the trans.retval variable to
+        # be set or it won't be committed.
+        if trans.needs_retval:
+            retval = bool(trans.retval)
+            if self.finish_transaction(trans, retval):
+                trans.committed = True
+            else:
+                trans.committed = False
+        # Normal transaction, just commit it
         else:
-            trans.committed = False
+            trans.commit()
+            trans.committed = True
         trans.close()
 
     @property
