@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-24 15:25-0200\n"
-"PO-Revision-Date: 2011-11-20 19:14+0000\n"
+"PO-Revision-Date: 2011-11-27 13:01+0000\n"
 "Last-Translator: Johan Dahlin <jdahlin@gmail.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-25 05:25+0000\n"
-"X-Generator: Launchpad (build 14376)\n"
+"X-Launchpad-Export-Date: 2011-11-28 05:21+0000\n"
+"X-Generator: Launchpad (build 14381)\n"
 "Language: sv\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -28,7 +28,7 @@ msgstr "Kontonamn:"
 
 #: ../data/glade/AccountEditor.ui.h:3
 msgid "Hold control to remove selection."
-msgstr ""
+msgstr "Håll nere control för att ta bort markeringen"
 
 #: ../data/glade/AccountEditor.ui.h:4
 msgid "Parent:"
@@ -510,11 +510,11 @@ msgstr "Kreditgräns ($CURRENCY)"
 
 #: ../data/glade/ClientStatusSlave.ui.h:5
 msgid "Financial Status:"
-msgstr ""
+msgstr "Finansiell status:"
 
 #: ../data/glade/CommissionDataSlave.ui.h:1
 msgid " No Commission"
-msgstr ""
+msgstr " Ingen provision"
 
 #: ../data/glade/CommissionDataSlave.ui.h:4
 msgid "Direct Sale:      "
