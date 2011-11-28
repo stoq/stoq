@@ -124,7 +124,7 @@ class ECFUI(object):
         ui_string = """<ui>
           <menubar name="menubar">
             <menu action="ConfigureMenu">
-            <placeholder name="PluginSettings">
+            <placeholder name="ConfigurePH">
               <menuitem action="ConfigurePrinter"/>
             </placeholder>
             </menu>
