@@ -253,7 +253,7 @@ class AdminApp(AppWindow):
     app_name = _('Administrative')
     app_icon_name = 'stoq-admin-app'
     gladefile = "admin"
-    launcher_embedded = True
+    embedded = True
 
     #
     # Application

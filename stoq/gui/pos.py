@@ -108,7 +108,7 @@ class PosApp(AppWindow):
     app_name = _('Point of Sales')
     app_icon_name = 'stoq-pos-app'
     gladefile = "pos"
-    launcher_embedded = True
+    embedded = True
 
     def __init__(self, app):
         AppWindow.__init__(self, app)

@@ -76,7 +76,7 @@ class PurchaseApp(SearchableAppWindow):
     gladefile = "purchase"
     search_table = PurchaseOrderView
     search_label = _('matching:')
-    launcher_embedded = True
+    embedded = True
 
     #
     # Application

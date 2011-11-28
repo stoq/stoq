@@ -73,7 +73,7 @@ class ReceivableApp(SearchableAppWindow):
     gladefile = 'receivable'
     search_table = InPaymentView
     search_label = _('matching:')
-    launcher_embedded = True
+    embedded = True
 
     #
     # Application

@@ -64,7 +64,7 @@ class SalesApp(SearchableAppWindow):
     gladefile = 'sales_app'
     search_table = SaleView
     search_label = _('matching:')
-    launcher_embedded = True
+    embedded = True
 
     cols_info = {Sale.STATUS_INITIAL: 'open_date',
                  Sale.STATUS_CONFIRMED: 'confirm_date',
