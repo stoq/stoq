@@ -51,7 +51,7 @@
         <menuitem action="ConfigureInvoicePrinters"/>
         <separator/>
         <menuitem action="ConfigurePlugins"/>
-        <placeholder name="PluginSettings"/>
+        <placeholder name="ConfigurePH"/>
       </menu>
     </placeholder>
   </menubar>
