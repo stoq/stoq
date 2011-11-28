@@ -29,7 +29,6 @@ import pango
 import gtk
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
-from stoqlib.api import api
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
