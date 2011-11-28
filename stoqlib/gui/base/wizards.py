@@ -27,6 +27,7 @@ from kiwi.log import Logger
 from kiwi.ui.wizard import PluggableWizard, WizardStep
 from kiwi.ui.delegates import GladeSlaveDelegate
 
+from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.base.dialogs import RunnableView
 
@@ -66,6 +67,7 @@ class BaseWizard(PluggableWizard, RunnableView):
         logger.info('Entering wizard: %s' % self.__class__.__name__)
         self.conn = conn
         self.model = model
+        self.retval = None
         size = size or self.size
         title = title or self.title
         if not title:
@@ -88,3 +90,9 @@ class BaseWizard(PluggableWizard, RunnableView):
             self.enable_next()
         else:
             self.disable_next()
+
+    def close(self):
+        if isinstance(self.conn, StoqlibTransaction):
+            self.conn.retval = self.retval
+        return super(BaseWizard, self).close()
+

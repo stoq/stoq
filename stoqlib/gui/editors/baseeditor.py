@@ -31,6 +31,7 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.listdialog import ListContainer
 from kiwi.ui.widgets.label import ProxyLabel
 
+from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
@@ -192,6 +193,8 @@ class BaseEditor(BaseEditorSlave):
         self.main_dialog = BasicWrappingDialog(self,
                                                self.get_title(self.model),
                                                self.header, self.size)
+        self.main_dialog.connect(
+            'confirm', self._on_main_dialog__confirm)
 
         if self.hide_footer or self.visual_mode:
             self.main_dialog.hide_footer()
@@ -201,6 +204,10 @@ class BaseEditor(BaseEditorSlave):
 
         self.register_validate_function(self._validation_function)
         self.force_validation()
+
+    def _on_main_dialog__confirm(self, dialog, retval):
+        if isinstance(self.conn, StoqlibTransaction):
+            self.conn.retval = retval
 
     def _get_title_format(self):
         if self.visual_mode:
