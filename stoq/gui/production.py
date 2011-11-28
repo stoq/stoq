@@ -142,7 +142,7 @@ class ProductionApp(SearchableAppWindow):
 
     def get_columns(self):
         return [SearchColumn('id', title=_(u'# '), sorted=True, data_type=int,
-                             format='%04d', width=80),
+                             format='%04d', width=80, order=gtk.SORT_DESCENDING),
                 Column('status_string', title=_(u'Status'), data_type=str,
                         visible=False),
                 SearchColumn('description', title=_(u'Description'),
@@ -194,6 +194,15 @@ class ProductionApp(SearchableAppWindow):
         trans.close()
         self.refresh()
 
+    def _production_details(self):
+        order = self.results.get_selected()
+        assert order is not None
+        trans = api.new_transaction()
+        model = trans.get(order)
+        self.run_dialog(ProductionDetailsDialog, trans, model)
+        api.finish_transaction(trans, True)
+        trans.close()
+
     #
     # Kiwi Callbacks
     #
@@ -204,9 +213,7 @@ class ProductionApp(SearchableAppWindow):
         self._open_production_order(order)
 
     def on_ProductionDetails__activate(self, widget):
-        order = self.results.get_selected()
-        assert order is not None
-        self.run_dialog(ProductionDetailsDialog, self.conn, order)
+        self._production_details()
 
     def on_Print__activate(self, widget):
         items = self.results
@@ -221,7 +228,7 @@ class ProductionApp(SearchableAppWindow):
         self.set_sensitive([self.Print], has_rows)
 
     def on_results__row_activated(self, widget, order):
-        self.run_dialog(ProductionDetailsDialog, self.conn, order)
+        self._production_details()
 
     # Production
 

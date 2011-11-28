@@ -566,6 +566,31 @@ class ProductionProducedItem(Domain):
         storable.increase_stock(1, self.order.branch)
         self.entered_stock = True
 
+    def set_test_result_value(self, quality_test, value, tester):
+        result = ProductionItemQualityResult.selectOneBy(
+                            connection=self.get_connection(),
+                            quality_test=quality_test,
+                            produced_item=self)
+        if not result:
+            result = ProductionItemQualityResult(
+                                connection=self.get_connection(),
+                                quality_test=quality_test,
+                                produced_item=self,
+                                tested_by=tester,
+                                result_value = '')
+        else:
+            result.tested_by = tester
+
+        result.tested_date = datetime.datetime.now()
+        result.set_value(value)
+        return result
+
+    def get_test_result(self, quality_test):
+        return ProductionItemQualityResult.selectOneBy(
+                            connection=self.get_connection(),
+                            quality_test=quality_test,
+                            produced_item=self)
+
     def check_tests(self):
         """Checks if all tests for this produced items passes.
 
@@ -588,7 +613,7 @@ class ProductionItemQualityResult(Domain):
 
     produced_item = ForeignKey('ProductionProducedItem')
     quality_test = ForeignKey('ProductQualityTest')
-    tested_by = ForeignKey('PersonAdaptToEmployee')
+    tested_by = ForeignKey('PersonAdaptToUser')
     tested_date = DateTimeCol(default=None)
     result_value = UnicodeCol()
     test_passed = BoolCol(default=False)
@@ -610,6 +635,12 @@ class ProductionItemQualityResult(Domain):
 
     def get_decimal_value(self):
         return Decimal(self.result_value)
+
+    def set_value(self, value):
+        if isinstance(value, bool):
+            self.set_boolean_value(value)
+        else:
+            self.set_decimal_value(value)
 
     def set_boolean_value(self, value):
         self.test_passed = self.quality_test.result_value_passes(value)

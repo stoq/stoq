@@ -26,16 +26,21 @@
 from decimal import Decimal
 
 import pango
+import gtk
 
+from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn
+from kiwi.utils import gsignal
 
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.gui.editors.productioneditor import ProductionMaterialEditor
+from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.product import ProductQualityTest
 from stoqlib.domain.production import ProductionOrder, ProductionMaterial
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.gui.editors.productioneditor import ProductionMaterialEditor
 
 _ = stoqlib_gettext
 
@@ -242,3 +247,115 @@ class ProductionMaterialListSlave(BaseEditorSlave):
 
     def on_edit_button__clicked(self, widget):
         self._edit_production_material()
+
+
+
+
+#
+#   Quality Test Result
+#
+
+class QualityTestResultSlave(BaseEditorSlave):
+    model_name = _('Quality Test Result')
+    model_type = Settable
+    gladefile = 'QualityTestResultSlave'
+    proxy_widgets = ['quality_test', 'decimal_value', 'boolean_value']
+
+    gsignal('test-updated', object, object, object)
+
+    def __init__(self, conn):
+        self._items = []
+        self._product = None
+        BaseEditorSlave.__init__(self, conn=conn, model=None)
+
+    @property
+    def test_type(self):
+        if self.model.quality_test:
+            return self.model.quality_test.test_type
+        return None
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.quality_vbox.set_sensitive(False)
+
+    def _setup_widgets(self):
+        self.sizegroup1.add_widget(self.decimal_value)
+        self.sizegroup1.add_widget(self.boolean_value)
+        self.decimal_value.set_visible(False)
+        self.boolean_value.prefill([(_('True'), True), (_('False'), False)])
+
+    def create_model(self, conn):
+        return Settable(quality_test=None,
+                        decimal_value=Decimal(0),
+                        boolean_value=False)
+
+    def _check_value_passes(self):
+        if not self._product:
+            return
+        if self.test_type == ProductQualityTest.TYPE_BOOLEAN:
+            value = self.model.boolean_value
+        else:
+            value = self.model.decimal_value
+
+        test = self.model.quality_test
+        if test.result_value_passes(value):
+            self.result_icon.set_from_stock(gtk.STOCK_OK,
+                                            gtk.ICON_SIZE_BUTTON)
+        else:
+            self.result_icon.set_from_stock(gtk.STOCK_DIALOG_WARNING,
+                                            gtk.ICON_SIZE_BUTTON)
+
+    #
+    #   Public API
+    #
+
+    def set_item_tests(self, items, product):
+        self._items = items
+        self.quality_vbox.set_sensitive(bool(product and items))
+
+        # Tests didnt change
+        if self._product == product:
+            return
+
+        self._product = product
+        if product:
+            self.quality_test.prefill([(i.description, i)
+                            for i in product.quality_tests])
+
+    def apply(self):
+        if self.test_type == ProductQualityTest.TYPE_BOOLEAN:
+            value = self.model.boolean_value
+        else:
+            value = self.model.decimal_value
+
+        for item in self._items:
+            result = item.set_test_result_value(self.model.quality_test, value,
+                                                get_current_user(self.conn))
+            self.emit('test-updated', item, self.model.quality_test, result)
+
+
+    #
+    #   Callbacks
+    #
+
+    def after_quality_test__changed(self, widget):
+        if not widget.get_selected():
+            return
+        if self.test_type == ProductQualityTest.TYPE_BOOLEAN:
+            self.boolean_value.show()
+            self.decimal_value.hide()
+        else:
+            self.boolean_value.hide()
+            self.decimal_value.show()
+
+        self._check_value_passes()
+
+    def after_boolean_value__changed(self, widget):
+        self._check_value_passes()
+
+    def after_decimal_value__changed(self, widget):
+        self._check_value_passes()
+
+    def on_apply_button__clicked(self, widget):
+        self.apply()
