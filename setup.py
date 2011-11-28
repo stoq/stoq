@@ -98,8 +98,8 @@ data_files = [
     ('$datadir/html', listfiles('data', 'html', '*.css')),
     ('$datadir/html', listfiles('data', 'html', '*.png')),
     ('$sysconfdir/stoq',  ''),
-    ('share/doc/stoq',
-     ('AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR', 'COPYING.stoqlib', 'README')),
+    ('share/doc/stoq', ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
+                        'COPYING.stoqlib', 'README', 'docs/copyright']),
     ('share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
     ('share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
     ]

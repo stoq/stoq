@@ -1,0 +1,58 @@
+Stoq
+====
+
+Copyright (C) 2005-2011 Async Open Source
+
+Stoq is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+More details at COPYING
+
+Stoqlib
+=======
+
+Copyright (C) 2005-2011 Async Open Source
+
+Stoqlib is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+More details at COPYING.stoqlib
+
+Stoq pixmaps
+============
+
+These pixmaps were copied from gnome-icon-theme, licenced under GPL-v2, and
+can be downloaded from <http://download.gnome.org/sources/gnome-icon-theme/>:
+
+* stoq-edit
+* stoq-calc
+* stoq-devices
+* stoq-inventory-app
+* stoq-pos-app
+* stoq-production-app
+* stoq-purchase-app
+* stoq-services
+* stoq-system
+* stoq-taxes
+* stoq-user-profiles
+
+Stoq external
+=============
+
+These softwares are included/forked on Stoq source:
+
+* FormEncode <http://pypi.python.org/pypi/FormEncode>
+  Licence: PFS
+* PyBoleto <http://pypi.python.org/pypi/pyboleto>
+  Licence: BSD
+* PyDispatcher <http://pypi.python.org/pypi/PyDispatcher>
+  Licence: BSD
+* SQLObject: <http://sqlobject.org>
+  Licence: LGPL-v2.1+
+* trml2pdf <http://pypi.python.org/pypi/trml2pdf>
+  Licence: LGPL-v2.1+
+
