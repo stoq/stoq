@@ -190,18 +190,17 @@ class PayableApp(SearchableAppWindow):
     #
 
     def _show_details(self, payable_view):
-        trans = api.new_transaction()
-        payment = trans.get(payable_view.payment)
-        retval = run_dialog(OutPaymentEditor, self, trans, payment)
-        if api.finish_transaction(trans, retval):
+        with api.trans() as trans:
+            payment = trans.get(payable_view.payment)
+            run_dialog(OutPaymentEditor, self, trans, payment)
+
+        if trans.committed:
             self.search.refresh()
-        trans.close()
 
     def _show_comments(self, payable_view):
-        trans = api.new_transaction()
-        retval = run_dialog(PaymentCommentsDialog, self, trans,
-                            payable_view.payment)
-        api.finish_transaction(trans, retval)
+        with api.trans() as trans:
+            run_dialog(PaymentCommentsDialog, self, trans,
+                       payable_view.payment)
 
     def _can_show_details(self, payable_views):
         """
@@ -235,42 +234,39 @@ class PayableApp(SearchableAppWindow):
         @param payable_view: a OutPaymentView instance
         """
         assert payable_view.can_change_due_date()
-        trans = api.new_transaction()
-        payment = trans.get(payable_view.payment)
-        order = trans.get(payable_view.sale)
 
-        if order is None:
-            order = trans.get(payable_view.purchase)
+        with api.trans() as trans:
+            payment = trans.get(payable_view.payment)
+            order = trans.get(payable_view.sale)
 
-        retval = run_dialog(PaymentDueDateChangeDialog, self, trans,
-                            payment, order)
+            if order is None:
+                order = trans.get(payable_view.purchase)
 
-        if api.finish_transaction(trans, retval):
+            run_dialog(PaymentDueDateChangeDialog, self, trans,
+                       payment, order)
+
+        if trans.committed:
             payable_view.sync()
             self.results.update(payable_view)
-
-        trans.close()
 
     def _change_status(self, payable_view, status):
         """Show a dialog do enter a reason for status change
         @param payable_view: a OutPaymentView instance
         """
-        trans = api.new_transaction()
-        payment = trans.get(payable_view.payment)
-        order = trans.get(payable_view.sale)
+        with api.trans() as trans:
+            payment = trans.get(payable_view.payment)
+            order = trans.get(payable_view.sale)
 
-        if order is None:
-            order = trans.get(payable_view.purchase)
+            if order is None:
+                order = trans.get(payable_view.purchase)
 
-        retval = run_dialog(PaymentStatusChangeDialog, self, trans,
-                            payment, status, order)
+            run_dialog(PaymentStatusChangeDialog, self, trans,
+                       payment, status, order)
 
-        if api.finish_transaction(trans, retval):
+        if trans.committed:
             payable_view.sync()
             self.results.update(payable_view)
             self.results.unselect_all()
-
-        trans.close()
 
     def _can_cancel_payment(self, payable_views):
         """whether or not we can cancel the payment.
@@ -292,11 +288,9 @@ class PayableApp(SearchableAppWindow):
         return payable_views[0].can_change_due_date()
 
     def _edit(self, payable_views):
-        trans = api.new_transaction()
-        order = trans.get(payable_views[0].purchase)
-        model = run_dialog(PaymentsEditor, self, trans, order)
-        api.finish_transaction(trans, model)
-        trans.close()
+        with api.trans() as trans:
+            order = trans.get(payable_views[0].purchase)
+            run_dialog(PaymentsEditor, self, trans, order)
 
     def _pay(self, payable_views):
         """
@@ -306,19 +300,17 @@ class PayableApp(SearchableAppWindow):
         """
         assert self._can_pay(payable_views)
 
-        trans = api.new_transaction()
+        with api.trans() as trans:
+            payments = [trans.get(view.payment) for view in payable_views]
 
-        payments = [trans.get(view.payment) for view in payable_views]
+            run_dialog(PurchaseInstallmentConfirmationSlave, self, trans,
+                       payments=payments)
 
-        retval = run_dialog(PurchaseInstallmentConfirmationSlave, self, trans,
-                            payments=payments)
-
-        if api.finish_transaction(trans, retval):
+        if trans.committed:
             for view in payable_views:
                 view.sync()
                 self.results.update(view)
 
-        trans.close()
         self._update_widgets()
 
     def _can_pay(self, payable_views):
@@ -405,12 +397,12 @@ class PayableApp(SearchableAppWindow):
         return items
 
     def _add_payment(self):
-        trans = api.new_transaction()
-        retval = self.run_dialog(OutPaymentEditor, trans)
-        if api.finish_transaction(trans, retval):
-            self.results.refresh()
-        trans.close()
+        with api.trans() as trans:
+            self.run_dialog(OutPaymentEditor, trans)
+
         self.search.refresh()
+        if trans.committed:
+            self.results.select(OutPaymentView.get(trans.retval.id))
 
     def _run_bill_check_search(self):
         run_dialog(OutPaymentBillCheckSearch, self, self.conn)

@@ -285,16 +285,13 @@ class PurchaseApp(SearchableAppWindow):
         self.Finish.set_sensitive(can_finish)
 
     def _new_order(self, order=None, edit_mode=False):
-        trans = api.new_transaction()
-        order = trans.get(order)
-        model = self.run_dialog(PurchaseWizard, trans, order,
-                                edit_mode)
-        if api.finish_transaction(trans, model):
-            self.refresh()
-            self.results.select(PurchaseOrderView.get(model.id))
-        trans.close()
+        with api.trans() as trans:
+            order = trans.get(order)
+            self.run_dialog(PurchaseWizard, trans, order, edit_mode)
 
-        return model
+        if trans.committed:
+            self.refresh()
+            self.results.select(PurchaseOrderView.get(trans.retval.id))
 
     def _edit_order(self):
         selected = self.results.get_selected_rows()
@@ -340,11 +337,10 @@ class PurchaseApp(SearchableAppWindow):
         if yesno(msg, gtk.RESPONSE_NO, _("Don't confirm"), confirm_label):
             return
 
-        trans = api.new_transaction()
-        for order_view in valid_order_views:
-            order = trans.get(order_view.purchase)
-            order.confirm()
-        trans.commit()
+        with api.trans() as trans:
+            for order_view in valid_order_views:
+                order = trans.get(order_view.purchase)
+                order.confirm()
         self.refresh()
         self.results.select(orders)
 
@@ -355,11 +351,9 @@ class PurchaseApp(SearchableAppWindow):
             raise ValueError('You should have only one order selected '
                              'at this point, got %d' % qty)
 
-        trans = api.new_transaction()
-        order = trans.get(order_views[0].purchase)
-        model = self.run_dialog(PurchaseFinishWizard, trans, order)
-        api.finish_transaction(trans, model)
-        trans.close()
+        with api.trans() as trans:
+            order = trans.get(order_views[0].purchase)
+            self.run_dialog(PurchaseFinishWizard, trans, order)
 
         self.refresh()
         self.results.select(order_views)
@@ -381,11 +375,10 @@ class PurchaseApp(SearchableAppWindow):
         if yesno(select_label, gtk.RESPONSE_NO,
                  _("Don't cancel"), cancel_label):
             return
-        trans = api.new_transaction()
-        for order_view in order_views:
-            order = trans.get(order_view.purchase)
-            order.cancel()
-        trans.commit()
+        with api.trans() as trans:
+            for order_view in order_views:
+                order = trans.get(order_view.purchase)
+                order.cancel()
         self._update_totals()
         self.refresh()
         self.results.select(order_views)
@@ -397,27 +390,25 @@ class PurchaseApp(SearchableAppWindow):
         return items
 
     def _quote_order(self, quote=None):
-        trans = api.new_transaction()
-        quote = trans.get(quote)
-        model = self.run_dialog(QuotePurchaseWizard, trans, quote)
-        if api.finish_transaction(trans, model):
+        with api.trans() as trans:
+            quote = trans.get(quote)
+            self.run_dialog(QuotePurchaseWizard, trans, quote)
+
+        if trans.committed:
             self.refresh()
-            self.results.select(PurchaseOrderView.get(model.id))
-        trans.close()
+            self.results.select(PurchaseOrderView.get(trans.retval.id))
 
     def _new_product(self):
-        trans = api.new_transaction()
-        model = self.run_dialog(ProductEditor, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        with api.trans() as trans:
+            self.run_dialog(ProductEditor, trans)
 
     def _new_consignment(self):
-        trans = api.new_transaction()
-        model = self.run_dialog(ConsignmentWizard, trans)
-        if api.finish_transaction(trans, model):
+        with api.trans() as trans:
+            self.run_dialog(ConsignmentWizard, trans)
+
+        if trans.committed:
             self.refresh()
-            self.results.select(PurchaseOrderView.get(model.id))
-        trans.close()
+            self.results.select(PurchaseOrderView.get(trans.retval.id))
 
     #
     # Kiwi Callbacks
@@ -472,10 +463,8 @@ class PurchaseApp(SearchableAppWindow):
     # Consignment
 
     def on_CloseInConsignment__activate(self, action):
-        trans = api.new_transaction()
-        model = self.run_dialog(CloseInConsignmentWizard, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        with api.trans() as trans:
+            self.run_dialog(CloseInConsignmentWizard, trans)
 
     def on_SearchInConsignmentItems__activate(self, action):
         self.run_dialog(ConsignmentItemSearch, self.conn)
@@ -525,10 +514,8 @@ class PurchaseApp(SearchableAppWindow):
             warning(_("Can't use prices editor without client categories"))
             return
 
-        trans = api.new_transaction()
-        retval = self.run_dialog(SellablePriceDialog, trans)
-        api.finish_transaction(trans, retval)
-        trans.close()
+        with api.trans() as trans:
+            self.run_dialog(SellablePriceDialog, trans)
 
     # Toolitem
 
