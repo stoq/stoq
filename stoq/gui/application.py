@@ -45,8 +45,9 @@ from stoqlib.gui.base.infobar import InfoBar
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.help import show_contents, show_section
-from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
+from stoqlib.gui.printing import print_report
+from stoqlib.gui.splash import hide_splash
 from stoqlib.domain.inventory import Inventory
 from twisted.internet import reactor
 
@@ -116,6 +117,7 @@ class AppWindow(GladeDelegate):
 
     """
 
+    app_windows = []
     app_name = None
     app_icon_name = None
     search = None
@@ -125,8 +127,10 @@ class AppWindow(GladeDelegate):
 
     def __init__(self, app, keyactions=None):
         self._sensitive_group = dict()
+        self._tool_items = []
         self.app = app
         self.conn = api.new_transaction()
+        self.current_app = None
         self.uimanager = self._create_ui_manager()
         self.accel_group = self.uimanager.get_accel_group()
 
@@ -157,6 +161,8 @@ class AppWindow(GladeDelegate):
 
     def _configure_toplevel(self):
         toplevel = self.get_toplevel()
+        toplevel.connect('delete-event', self._on_toplevel__delete_event)
+        toplevel.connect('configure-event', self._on_toplevel__configure)
         add_current_toplevel(toplevel)
         if self.size:
             toplevel.set_size_request(*self.size)
@@ -168,6 +174,11 @@ class AppWindow(GladeDelegate):
     def _ui_bootstrap(self):
         if self.app.name != 'launcher':
             return
+
+        hide_splash()
+        AppWindow.app_windows.append(self)
+        self._restore_window_size()
+        self.hide_app()
 
         self._check_demo_mode()
         self._check_version()
@@ -405,15 +416,46 @@ class AppWindow(GladeDelegate):
         about.run()
         about.destroy()
 
+    def _add_actions_to_tool_item(self, toolitem, actions):
+        new_item = toolitem.get_proxies()[0]
+        menu = new_item.get_menu()
+        for action in actions:
+            action.set_accel_group(self.uimanager.get_accel_group())
+            menu_item = action.create_menu_item()
+            self._tool_items.append(menu_item)
+            menu.insert(menu_item, len(list(menu))-2)
+        sep = gtk.SeparatorMenuItem()
+        self._tool_items.append(sep)
+        menu.insert(sep, len(list(menu))-2)
+
     def _show_uri(self, uri):
         toplevel = self.get_toplevel()
         gtk.show_uri(toplevel.get_screen(), uri, gtk.gdk.CURRENT_TIME)
 
     def _new_window(self):
         from stoq.gui.launcher import Launcher
-        launcher = Launcher(self.options, self.runner)
+        launcher = Launcher(self.app.options, self.runner)
         launcher.show()
 
+    def _restore_window_size(self):
+        try:
+            width = int(api.config.get('Launcher', 'window_width') or -1)
+            height = int(api.config.get('Launcher', 'window_height') or -1)
+            x = int(api.config.get('Launcher', 'window_x') or -1)
+            y = int(api.config.get('Launcher', 'window_y') or -1)
+        except ValueError:
+            pass
+        toplevel = self.get_toplevel()
+        toplevel.set_default_size(width, height)
+        if x != -1 and y != -1:
+            toplevel.move(x, y)
+
+    def _save_window_size(self):
+        api.config.set('Launcher', 'window_width', str(self._width))
+        api.config.set('Launcher', 'window_height', str(self._height))
+        api.config.set('Launcher', 'window_x', str(self._x))
+        api.config.set('Launcher', 'window_y', str(self._y))
+        api.config.flush()
 
     #
     # Overridables
@@ -648,6 +690,70 @@ class AppWindow(GladeDelegate):
 
         return bar
 
+    def add_new_items(self, actions):
+        self._add_actions_to_tool_item(self.NewToolItem, actions)
+
+    def add_search_items(self, actions):
+        self._add_actions_to_tool_item(self.SearchToolItem, actions)
+
+    def set_new_menu_sensitive(self, sensitive):
+        new_item = self.NewToolItem.get_proxies()[0]
+        button = new_item.get_children()[0].get_children()[0]
+        button.set_sensitive(sensitive)
+
+    def show_app(self, app, app_window):
+        app_window.reparent(self.application_box)
+        self.application_box.set_child_packing(app_window, True, True, 0,
+                                               gtk.PACK_START)
+        self.Close.set_sensitive(True)
+        self.ChangePassword.set_visible(False)
+        self.SignOut.set_visible(False)
+        self.Quit.set_visible(False)
+        self.NewToolItem.set_tooltip("")
+        self.NewToolItem.set_sensitive(True)
+        self.SearchToolItem.set_tooltip("")
+        self.SearchToolItem.set_sensitive(True)
+
+        self.get_toplevel().set_title(app.get_title())
+        self.application_box.show()
+        app.activate()
+        self.uimanager.ensure_update()
+        while gtk.events_pending():
+            gtk.main_iteration()
+        app_window.show()
+        app.toplevel = self.get_toplevel()
+        app.setup_focus()
+
+        self.current_app = app
+        self.current_widget = app_window
+
+
+    def hide_app(self):
+        self.application_box.hide()
+        if self.current_app:
+            self.current_app.deactivate()
+            if self.current_app.help_ui:
+                self.uimanager.remove_ui(self.current_app.help_ui)
+                self.current_app.help_ui = None
+            self.current_widget.destroy()
+            self.current_app = None
+
+        self.get_toplevel().set_title(self.get_title())
+        message_area = self.statusbar.get_message_area()
+        for child in message_area.get_children()[1:]:
+            child.destroy()
+        for item in self._tool_items:
+            item.destroy()
+        self._tool_items = []
+        self.Close.set_sensitive(False)
+        self.ChangePassword.set_visible(True)
+        self.SignOut.set_visible(True)
+        self.Quit.set_visible(True)
+        self.set_new_menu_sensitive(True)
+        self.NewToolItem.set_tooltip(_("Open a new window"))
+        self.SearchToolItem.set_tooltip("")
+        self.SearchToolItem.set_sensitive(False)
+
     #
     # AppWindow
     #
@@ -665,8 +771,34 @@ class AppWindow(GladeDelegate):
     # Callbacks
     #
 
+    def key_F5(self):
+        # Backwards-compatibility
+        if self.current_app and self.current_app.can_change_application():
+            self.hide_app()
+        return True
+
     def key_control_F11(self):
         self.toggle_fullscreen()
+
+    def _on_toplevel__configure(self, widget, event):
+        rect = widget.window.get_frame_extents()
+        self._x = rect.x
+        self._y = rect.y
+        self._width = event.width
+        self._height = event.height
+
+    def _on_toplevel__delete_event(self, *args):
+        if self.current_app and not self.current_app.shutdown_application():
+            # We must return True to avoid closing
+            return True
+
+        AppWindow.app_windows.remove(self)
+        # There are other windows running
+        if AppWindow.app_windows:
+            return
+
+        self._save_window_size()
+        raise SystemExit
 
     def _on_menu_item__select(self, menuitem, tooltip):
         self.statusbar.push(-1, tooltip)
