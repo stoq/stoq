@@ -1,119 +1,155 @@
-<?xml version="1.0"?>
-<!--*- mode: xml -*-->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="StartQuoteStep">
-    <property name="default_height">250</property>
     <property name="default_width">440</property>
+    <property name="default_height">250</property>
     <child>
       <object class="GtkTable" id="table1">
-        <property name="border_width">6</property>
-        <property name="column_spacing">6</property>
-        <property name="homogeneous">True</property>
-        <property name="n_columns">4</property>
-        <property name="n_rows">3</property>
-        <property name="row_spacing">12</property>
         <property name="visible">True</property>
+        <property name="border_width">6</property>
+        <property name="n_rows">4</property>
+        <property name="n_columns">4</property>
+        <property name="column_spacing">6</property>
+        <property name="row_spacing">12</property>
         <child>
           <object class="GtkLabel" id="label1">
-            <property name="label" translatable="yes">Open date:</property>
             <property name="visible">True</property>
-            <property name="xalign">1.0</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">Open date:</property>
           </object>
           <packing>
-            <property name="x_options">fill</property>
-            <property name="y_options">fill</property>
+            <property name="x_options">GTK_FILL</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="label2">
-            <property name="label" translatable="yes">Deadline:</property>
             <property name="visible">True</property>
-            <property name="xalign">1.0</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">Deadline:</property>
           </object>
           <packing>
-            <property name="bottom_attach">2</property>
             <property name="top_attach">1</property>
-            <property name="x_options">fill</property>
-            <property name="y_options">fill</property>
+            <property name="bottom_attach">2</property>
+            <property name="x_options">GTK_FILL</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="label4">
-            <property name="label" translatable="yes">Branch:</property>
             <property name="visible">True</property>
-            <property name="xalign">1.0</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">Branch:</property>
           </object>
           <packing>
-            <property name="bottom_attach">3</property>
             <property name="top_attach">2</property>
-            <property name="y_options">fill</property>
+            <property name="bottom_attach">3</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="ProxyDateEntry" id="open_date">
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
             <property name="data_type">date</property>
             <property name="model_attribute">open_date</property>
-            <property name="sensitive">False</property>
-            <property name="visible">True</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
-            <property name="y_options">fill</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="ProxyDateEntry" id="quote_deadline">
+            <property name="visible">True</property>
             <property name="data_type">date</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">quote_deadline</property>
-            <property name="visible">True</property>
           </object>
           <packing>
-            <property name="bottom_attach">2</property>
             <property name="left_attach">1</property>
             <property name="right_attach">2</property>
             <property name="top_attach">1</property>
-            <property name="y_options">fill</property>
+            <property name="bottom_attach">2</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="ProxyComboEntry" id="branch_combo">
+            <property name="visible">True</property>
             <property name="data_type">object</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">branch</property>
-            <property name="visible">True</property>
           </object>
           <packing>
-            <property name="bottom_attach">3</property>
             <property name="left_attach">1</property>
             <property name="right_attach">3</property>
             <property name="top_attach">2</property>
-            <property name="y_options">fill</property>
+            <property name="bottom_attach">3</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="label3">
-            <property name="label" translatable="yes">Quote group:</property>
             <property name="visible">True</property>
-            <property name="xalign">1.0</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">Quote group:</property>
           </object>
           <packing>
             <property name="left_attach">2</property>
             <property name="right_attach">3</property>
-            <property name="y_options">fill</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="quote_group">
             <property name="visible">True</property>
-            <property name="xalign">0.0</property>
+            <property name="xalign">0</property>
           </object>
           <packing>
             <property name="left_attach">3</property>
             <property name="right_attach">4</property>
-            <property name="y_options">fill</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label5">
+            <property name="visible">True</property>
+            <property name="xalign">1</property>
+            <property name="yalign">0</property>
+            <property name="label" translatable="yes">Notes</property>
+          </object>
+          <packing>
+            <property name="top_attach">3</property>
+            <property name="bottom_attach">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyTextView" id="notes">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">notes</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">3</property>
+            <property name="bottom_attach">4</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>

@@ -70,7 +70,7 @@ _ = stoqlib_gettext
 class StartQuoteStep(WizardEditorStep):
     gladefile = 'StartQuoteStep'
     model_type = PurchaseOrder
-    proxy_widgets = ['open_date', 'quote_deadline', 'branch_combo',]
+    proxy_widgets = ['open_date', 'quote_deadline', 'branch_combo', 'notes']
 
     def __init__(self, wizard, previous, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
@@ -83,6 +83,8 @@ class StartQuoteStep(WizardEditorStep):
         branches = table.get_active_branches(self.conn)
         items = [(s.person.name, s) for s in branches]
         self.branch_combo.prefill(sorted(items))
+        self.notes.set_accepts_tab(False)
+
 
     #
     # WizardStep
