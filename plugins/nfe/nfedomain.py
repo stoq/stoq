@@ -22,11 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.database.orm import IntCol, UnicodeCol
-from stoqlib.domain.base import BaseDomain
+from stoqlib.database.orm import ORMObject, IntCol, UnicodeCol
 
 
-class NFeCityData(BaseDomain):
+class NFeCityData(ORMObject):
     """Information about Brazil states and cities.
 
     @ivar state_code: the unique code that represents a certain state.

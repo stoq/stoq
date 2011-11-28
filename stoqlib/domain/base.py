@@ -223,7 +223,7 @@ class AbstractModel(object):
     def get_connection(self):
         return self._connection
 
-class BaseDomain(AbstractModel, ORMObject):
+class _BaseDomain(AbstractModel, ORMObject):
     """An abstract mixin class for domain classes"""
 
     def check_unique_value_exists(self, attribute, value,
@@ -254,13 +254,13 @@ class BaseDomain(AbstractModel, ORMObject):
 #
 
 
-class Domain(BaseDomain, AdaptableORMObject):
+class Domain(_BaseDomain, AdaptableORMObject):
     """If you want to be able to extend a certain class with adapters or
     even just have a simple class without sublasses, this is the right
     choice.
     """
     def __init__(self, *args, **kwargs):
-        BaseDomain.__init__(self, *args, **kwargs)
+        _BaseDomain.__init__(self, *args, **kwargs)
         AdaptableORMObject.__init__(self)
 
     def _create(self, id, **kw):
@@ -269,7 +269,7 @@ class Domain(BaseDomain, AdaptableORMObject):
                 "creating a %s instance needs a StoqlibTransaction, not %s"
                 % (self.__class__.__name__,
                    self._connection.__class__.__name__))
-        BaseDomain._create(self, id, **kw)
+        _BaseDomain._create(self, id, **kw)
 
     if orm_name == 'storm':
         def __repr__(self):
@@ -349,14 +349,14 @@ class BaseSQLView:
 #
 
 
-class ModelAdapter(BaseDomain, ORMObjectAdapter):
+class ModelAdapter(_BaseDomain, ORMObjectAdapter):
 
     if orm_name == 'storm':
         originalID = IntCol('original_id')
 
     def __init__(self, original=None, *args, **kwargs):
         ORMObjectAdapter.__init__(self, original, kwargs) # Modifies kwargs
-        BaseDomain.__init__(self, *args, **kwargs)
+        _BaseDomain.__init__(self, *args, **kwargs)
 
 
 for klass in (Domain, ModelAdapter):
