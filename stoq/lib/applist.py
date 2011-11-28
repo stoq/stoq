@@ -38,7 +38,7 @@ _APPLICATIONS = {
                'stoq-admin-app'),
     'financial' : (_("Financial"),
                    _("Control accounts and financial transactions."),
-                   'stoq-payable-app'),
+                   'stoq-calc'),
     'inventory' : (_("Inventory"),
                    _("Audit and adjust the product stock."),
                    'stoq-inventory-app'),
