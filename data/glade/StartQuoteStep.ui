@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 2.12 -->
   <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-requires gtk+ 2.12 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="StartQuoteStep">
     <property name="default_width">440</property>
@@ -129,11 +129,20 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyTextView" id="notes">
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="data_type">unicode</property>
-            <property name="model_attribute">notes</property>
+            <property name="hscrollbar_policy">automatic</property>
+            <property name="vscrollbar_policy">automatic</property>
+            <property name="shadow_type">etched-in</property>
+            <child>
+              <object class="ProxyTextView" id="notes">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">notes</property>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="left_attach">1</property>
