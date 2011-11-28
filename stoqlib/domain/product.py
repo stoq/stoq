@@ -707,6 +707,7 @@ class ProductComponent(Domain):
     quantity = QuantityCol(default=Decimal(1))
     product = ForeignKey('Product')
     component = ForeignKey('Product')
+    design_reference = UnicodeCol(default=u'')
 
 
 class ProductQualityTest(Domain):
