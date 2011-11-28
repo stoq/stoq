@@ -123,43 +123,54 @@ class AppWindow(GladeDelegate):
     def __init__(self, app, keyactions=None):
         self._sensitive_group = dict()
         self.app = app
-
         self.conn = api.new_transaction()
-        if app.embedded:
-            uimanager = app.launcher.uimanager
-        else:
-            uimanager = gtk.UIManager()
-        self.uimanager = uimanager
+        self.uimanager = self._create_ui_manager()
         self.accel_group = self.uimanager.get_accel_group()
 
-        # Create actions, this must be done before the constructor
-        # is called, eg when signals are autoconnected
-        self.create_actions()
-        if app.options.debug:
-            self.add_debug_ui()
-
-
+        self._create_ui_manager_ui()
         GladeDelegate.__init__(self, delete_handler=self._on_delete_handler,
                                keyactions=keyactions,
                                gladefile=self.gladefile,
                                toplevel_name=self.toplevel_name)
+        self._configure_toplevel()
+        self.create_ui()
+
+        self._ui_bootstrap()
+
+    def _create_ui_manager(self):
+        if self.app.embedded:
+            uimanager = self.app.launcher.uimanager
+        else:
+            uimanager = gtk.UIManager()
+        return uimanager
+
+    def _create_ui_manager_ui(self):
+        # Create actions, this must be done before the constructor
+        # is called, eg when signals are autoconnected
+        self.create_actions()
+        if self.app.options.debug:
+            self.add_debug_ui()
+
+    def _configure_toplevel(self):
         toplevel = self.get_toplevel()
         add_current_toplevel(toplevel)
         if self.size:
             toplevel.set_size_request(*self.size)
         toplevel.set_title(self.get_title())
 
-        if not app.embedded:
+        if not self.app.embedded:
             toplevel.add_accel_group(self.uimanager.get_accel_group())
-        self.create_ui()
 
-        if app.name == 'launcher':
-            self._check_demo_mode()
-            self._check_version()
-            self._usability_hacks()
+    def _ui_bootstrap(self):
+        if self.app.name != 'launcher':
+            return
 
-            if not stoq.stable and not api.is_developer_mode():
-                self._display_unstable_version_message()
+        self._check_demo_mode()
+        self._check_version()
+        self._usability_hacks()
+
+        if not stoq.stable and not api.is_developer_mode():
+            self._display_unstable_version_message()
 
 
     def _display_unstable_version_message(self):
