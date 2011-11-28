@@ -179,11 +179,15 @@ class ProductComponentSlave(BaseEditorSlave):
         has_selected = self.component_tree.get_selected() is not None
         self.edit_button.set_sensitive(has_selected)
         self.remove_button.set_sensitive(has_selected)
-        # summary label
+
+        # FIXME: This is wrong. Summary label already calculates the total. We
+        # are duplicating this.
         value = 0
         for component in self.component_tree:
+            if self.component_tree.get_parent(component):
+                continue
             value += component.get_total_production_cost()
-        self.component_label.set_value(get_formatted_price(value))
+        self.component_label.set_value(get_formatted_cost(value))
 
     def _populate_component_tree(self):
         self._add_to_component_tree()
