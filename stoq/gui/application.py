@@ -380,7 +380,7 @@ class AppWindow(GladeDelegate):
             license = environ.find_resource(domain, name + '.gz')
             return gzip.GzipFile(license)
 
-    def _run_about(self, *args):
+    def _run_about(self):
         info = get_utility(IAppInfo)
         about = gtk.AboutDialog()
         about.set_name(info.get("name"))
