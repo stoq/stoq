@@ -24,7 +24,6 @@
 ##
 
 import gettext
-import logging
 import operator
 
 import gtk
@@ -44,7 +43,7 @@ from stoq.gui.launcher import Launcher
 
 _ = gettext.gettext
 _shell = None
-log = logging.getLogger('stoq.shell')
+log = Logger('stoq.shell')
 PRIVACY_STRING = _(
     "One of the new features of Stoq 1.0 is support for online "
     "services. Features using the online services include automatic "
@@ -96,7 +95,6 @@ class Shell(object):
             not sysparam(conn).MAIN_COMPANY):
             from stoqlib.gui.base.dialogs import run_dialog
             from stoqlib.gui.dialogs.branchdialog import BranchDialog
-            from stoqlib.lib.message import info
             if self.ran_wizard:
                 info(_("You need to register a company before start using Stoq"))
             else:
@@ -119,7 +117,6 @@ class Shell(object):
         sparam = sysparam(trans)
         val = sparam.ONLINE_SERVICES
         if val is None:
-            import gtk
             from kiwi.ui.dialogs import HIGAlertDialog
             # FIXME: All of this is to avoid having to set markup as the default
             #        in kiwi/ui/dialogs:HIGAlertDialog.set_details, after 1.0
@@ -141,7 +138,6 @@ class Shell(object):
         trans.commit()
 
     def _maybe_show_welcome_dialog(self):
-        from kiwi.component import get_utility
         from stoqlib.lib.interfaces import IStoqConfig
 
         config = get_utility(IStoqConfig)
