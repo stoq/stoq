@@ -25,14 +25,25 @@
 
 import gettext
 import logging
+import operator
 
-from twisted.internet import reactor
+import gtk
+from kiwi.component import get_utility
+from kiwi.log import Logger
+from stoqlib.api import api
 from stoqlib.exceptions import LoginError
-from stoqlib.lib.message import error
+from stoqlib.gui.events import StartApplicationEvent
+from stoqlib.gui.login import LoginHelper
+from stoqlib.gui.splash import hide_splash
+from stoqlib.lib.interfaces import IApplicationDescriptions
+from stoqlib.lib.message import error, info
+from stoqlib.lib.pluginmanager import get_plugin_manager
+from twisted.internet import reactor
 
-from stoq.gui.runner import ApplicationRunner
+from stoq.gui.launcher import Launcher
 
 _ = gettext.gettext
+_shell = None
 log = logging.getLogger('stoq.shell')
 PRIVACY_STRING = _(
     "One of the new features of Stoq 1.0 is support for online "
@@ -46,23 +57,32 @@ PRIVACY_STRING = _(
 
 class Shell(object):
     def __init__(self, options, appname=None):
-        self.options = options
-        self.appname = appname
-        self.runner = ApplicationRunner(options)
+        global _shell
+        _shell = self
+        self._current_app = None
+        self._appname = None
+        self._application_cache = {}
+        self._user = None
+        self._blocked_apps = []
+        self._hidden_apps = []
+        self._options = options
+        self._login = LoginHelper(username=options.login_username)
         self.ran_wizard = False
 
-        self._login()
-        self._check_param_main_branch()
-        self._check_param_online_services()
-        self._maybe_show_welcome_dialog()
-        self._run_app(appname)
-
-    def _login(self):
         try:
-            if not self.runner.login():
+            if not self.login():
                 return
         except LoginError, e:
             error(e)
+        self.login()
+        self._check_param_main_branch()
+        self._check_param_online_services()
+        self._maybe_show_welcome_dialog()
+        if appname:
+            appdesc = self.get_app_by_name(appname)
+            self.run(appdesc)
+        else:
+            self.run()
 
     def _check_param_main_branch(self):
         from stoqlib.database.runtime import (get_connection, new_transaction,
@@ -134,16 +154,185 @@ class Shell(object):
         from stoqlib.gui.base.dialogs import run_dialog
         run_dialog(WelcomeDialog)
 
-    def _run_app(self, appname):
-        from stoq.gui.launcher import Launcher
-        launcher = Launcher(self.options, self.runner)
-        launcher.show()
-        if appname:
-            app = self.runner.get_app_by_name(appname)
-            self.runner.run(app, launcher)
+    def _load_app(self, appdesc, app_window):
+        module = __import__("stoq.gui.%s" % (appdesc.name, ),
+                            globals(), locals(), [''])
+        window = appdesc.name.capitalize() + 'App'
+        window_class = getattr(module, window, None)
+        if window_class is None:
+            raise SystemExit("%s app misses a %r attribute" % (
+                appdesc.name, window))
 
-    def run(self):
+        hide_splash()
+
+        embedded = getattr(window_class, 'launcher_embedded', False)
+        from stoq.gui.application import App
+        app = App(window_class, self._login, self._options, self, embedded,
+                  app_window, appdesc.name)
+
+        toplevel = app.main_window.get_toplevel()
+        icon = toplevel.render_icon(appdesc.icon, gtk.ICON_SIZE_MENU)
+        toplevel.set_icon(icon)
+
+        StartApplicationEvent.emit(appdesc.name, app)
+
+        return app
+
+    def _get_available_applications(self):
+        from stoq.lib.applist import Application
+
+        permissions = {}
+        for settings in self._user.profile.profile_settings:
+            permissions[settings.app_dir_name] = settings.has_permission
+
+        descriptions = get_utility(IApplicationDescriptions).get_descriptions()
+
+        available_applications = []
+
+        # sorting by app_full_name
+        for name, full, icon, descr in sorted(descriptions,
+                                              key=operator.itemgetter(1)):
+            if name in self._hidden_apps:
+                continue
+            if permissions.get(name) and name not in self._blocked_apps:
+                available_applications.append(
+                    Application(name, full, icon, descr))
+
+        return available_applications
+
+    def _get_current_username(self):
+        conn = api.get_connection()
+        user = api.get_current_user(conn)
+        return user.username
+
+    # Public API
+
+    def login(self, try_cookie=True):
+        """
+        Do a login
+        @param try_cookie: Try to use a cookie if one is available
+        @returns: True if login succeed, otherwise false
+        """
+        user = None
+        if try_cookie:
+            user = self._login.cookie_login()
+
+        if not user:
+            try:
+                user = self._login.validate_user()
+            except LoginError, e:
+                info(e)
+
+        if user:
+            self._user = user
+        return bool(user)
+
+    def relogin(self):
+        """
+        Do a relogin, eg switch users
+        """
+        if self._current_app:
+            self._current_app.hide()
+
+        old_user = self._get_current_username()
+
+        if not self.login(try_cookie=False):
+            return
+
+        # If the username is the same
+        if (old_user == self._get_current_username() and
+            self._current_app):
+            self._current_app.show()
+            return
+
+        # clear the cache, since we switched users
+        self._application_cache.clear()
+
+        launcher = Launcher(self._options, self)
+        launcher.show()
+
+    def get_app_by_name(self, appname):
+        """
+        @param appname: a string
+        @returns: a L{Application} object
+        """
+        from stoq.lib.applist import Application
+        descriptions = get_utility(IApplicationDescriptions).get_descriptions()
+        for name, full, icon, descr in descriptions:
+            if name == appname:
+                return Application(name, full, icon, descr)
+
+    def get_current_app_name(self):
+        """
+        Get the name of the currently running application
+        @returns: the name
+        @rtype: str
+        """
+        return self._appname
+
+    def block_application(self, appname):
+        """Blocks an application to be loaded.
+        @param appname: the name of the application. Raises ValueError if the
+                        application was already blocked.
+        """
+        if appname not in self._blocked_apps:
+            self._blocked_apps.append(appname)
+        else:
+            raise ValueError('%s was already blocked.' % appname)
+
+    def unblock_application(self, appname):
+        """Unblocks a previously blocked application.
+        @param appname: the name of the blocked application. Raises ValueError
+                        if the application was not previously blocked.
+        """
+        if appname in self._blocked_apps:
+            self._blocked_apps.remove(appname)
+        else:
+            raise ValueError('%s was not blocked.' % appname)
+
+    def run(self, appdesc=None):
+        from stoq.gui.launcher import Launcher
+        app_window = Launcher(self._options, self)
+        app_window.show()
+
+        if not appdesc:
+            return
+        if (appdesc.name != 'launcher' and
+            not self._user.profile.check_app_permission(appdesc.name)):
+            error(_("This user lacks credentials \nfor application %s") %
+                  appdesc.name)
+            return
+
+        self.run_embedded(appdesc, app_window)
+
+    def run_embedded(self, appdesc, app_window):
+        app = self._load_app(appdesc, app_window)
+        app.launcher = app_window
+
+        self._current_app = app
+        self._appname = appdesc.name
+
+        if appdesc.name in self._blocked_apps:
+            app_window.show()
+            return
+
+        app.run()
+
+        # Possibly correct window position (livecd workaround for small
+        # screens)
+        manager = get_plugin_manager()
+        if (api.sysparam(api.get_connection()).DEMO_MODE
+            and manager.is_active('ecf')):
+            pos = app.main_window.toplevel.get_position()
+            if pos[0] < 220:
+                app.main_window.toplevel.move(220, pos[1])
+
+    def run_loop(self):
         log.debug("Entering reactor")
         if not reactor.running:
             reactor.run()
             log.info("Shutting down application")
+
+
+def get_shell():
+    return _shell

@@ -67,7 +67,7 @@ ToolMenuAction.set_tool_item_type(
 class App(object):
     """Class for application control. """
 
-    def __init__(self, window_class, config, options, runner, embedded,
+    def __init__(self, window_class, config, options, shell, embedded,
                  launcher, name):
         """
         Create a new object App.
@@ -77,7 +77,7 @@ class App(object):
             raise TypeError
         self.config = config
         self.options = options
-        self.runner = runner
+        self.shell = shell
         self.window_class = window_class
         self.embedded = embedded
         self.launcher = launcher
@@ -433,9 +433,7 @@ class AppWindow(GladeDelegate):
         gtk.show_uri(toplevel.get_screen(), uri, gtk.gdk.CURRENT_TIME)
 
     def _new_window(self):
-        from stoq.gui.launcher import Launcher
-        launcher = Launcher(self.app.options, self.runner)
-        launcher.show()
+        self.app.shell.run()
 
     def _restore_window_size(self):
         try:
@@ -873,7 +871,7 @@ class AppWindow(GladeDelegate):
         from stoqlib.lib.interfaces import ICookieFile
         get_utility(ICookieFile).clear()
         self.get_toplevel().hide()
-        self.app.runner.relogin()
+        self.app.shell.relogin()
 
     def _on_Quit__activate(self, action):
         if self.current_app and not self.current_app.shutdown_application():

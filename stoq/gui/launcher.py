@@ -40,7 +40,7 @@ _ = gettext.gettext
 class LauncherApp(object):
     def __init__(self, launcher, options):
         self.launcher = launcher
-        self.runner = launcher.runner
+        self.shell = launcher.shell
         self.embedded = False
         self.main_window = launcher
         self.options = options
@@ -51,8 +51,8 @@ class Launcher(AppWindow):
     app_name = _('Stoq')
     gladefile = 'launcher'
 
-    def __init__(self, options, runner):
-        self.runner = runner
+    def __init__(self, options, shell):
+        self.shell = shell
         app = LauncherApp(self, options)
         AppWindow.__init__(self, app)
 
@@ -128,5 +128,4 @@ class Launcher(AppWindow):
 
     def on_iconview__item_activated(self, iconview, path):
         app = self.model[path][COL_APP]
-        self.runner.run(app, self)
-
+        self.shell.run_embedded(app, self)

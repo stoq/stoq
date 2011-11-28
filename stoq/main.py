@@ -42,12 +42,12 @@ log = logging.getLogger('stoq.main')
 def _write_exception_hook(exctype, value, tb):
     global _stream
     import traceback
-    from stoq.gui.runner import get_runner
+    from stoq.gui.shell import get_shell
     from stoqlib.gui.base.dialogs import get_current_toplevel
 
-    runner = get_runner()
-    if runner:
-        appname = runner.get_current_app_name()
+    shell = get_shell()
+    if shell:
+        appname = shell.get_current_app_name()
     else:
         appname = 'unknown'
 
@@ -321,7 +321,7 @@ def run_app(options, appname):
 
     shell = Shell(options, appname)
     shell.ran_wizard = _ran_wizard
-    shell.run()
+    shell.run_loop()
 
 def _parse_command_line(args):
     from stoqlib.lib.uptime import set_initial
