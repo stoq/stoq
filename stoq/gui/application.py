@@ -25,15 +25,18 @@
 
 import datetime
 import gettext
-
+import locale
 import gobject
 import gtk
+
+from kiwi.component import get_utility
 from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
 from kiwi.log import Logger
 from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
+from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.message import yesno
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.dialogs import (get_dialog, run_dialog,
@@ -41,7 +44,7 @@ from stoqlib.gui.base.dialogs import (get_dialog, run_dialog,
 from stoqlib.gui.base.infobar import InfoBar
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
-from stoqlib.gui.help import show_section
+from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.domain.inventory import Inventory
@@ -133,8 +136,8 @@ class AppWindow(GladeDelegate):
                                gladefile=self.gladefile,
                                toplevel_name=self.toplevel_name)
         self._configure_toplevel()
+        self._create_shared_ui()
         self.create_ui()
-
         self._ui_bootstrap()
 
     def _create_ui_manager(self):
@@ -147,6 +150,7 @@ class AppWindow(GladeDelegate):
     def _create_ui_manager_ui(self):
         # Create actions, this must be done before the constructor
         # is called, eg when signals are autoconnected
+        self._create_shared_actions()
         self.create_actions()
         if self.app.options.debug:
             self.add_debug_ui()
@@ -172,6 +176,130 @@ class AppWindow(GladeDelegate):
         if not stoq.stable and not api.is_developer_mode():
             self._display_unstable_version_message()
 
+    def _create_shared_actions(self):
+        if self.app.name != 'launcher':
+            return
+        actions = [
+            ('menubar', ),
+            ('toolbar', ),
+
+            ('FileMenu', None, _("_File")),
+            ('FileMenuNew', None),
+            ("NewMenu", None, _("New")),
+            ('NewWindow', None, _("_Window"), '<control>n',
+            _('Opens up a new window')),
+            ('Close', None, _('Close'), '<control>w',
+            _('Close the current view and go back to the initial screen')),
+            ('ChangePassword', None, _('Change password...'), '',
+            _('Change the password for the currently logged in user')),
+            ('SignOut', None, _('Sign out...'), '',
+            _('Sign out the currently logged in user and login as another')),
+            ("Quit", gtk.STOCK_QUIT, _('Quit'), '<control>q',
+             _('Exit the application')),
+
+            # Edit
+            ('EditMenu', None, _("_Edit")),
+            ('Preferences', None, _("_Preferences")),
+
+            # View
+            ('ViewMenu', None, _("_View")),
+
+            # Search
+            ('SearchMenu', None, _("_Search")),
+
+            # Help
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, _("Contents"), '<Shift>F1'),
+            ("HelpTranslate", None, _("Translate Stoq..."), None,
+             _("Translate this application online")),
+            ("HelpSupport", None, _("Get support online..."), None,
+             _("Get support for Stoq online")),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+
+            # Toolbar
+            ("NewToolMenu", None, _("New")),
+            ("SearchToolMenu", None, _("Search")),
+            ]
+        self.add_ui_actions(None, actions, filename='launcher.xml')
+        self.Close.set_sensitive(False)
+        toogle_actions = [
+            ('ToggleToolbar', None, _("_Toolbar"), '',
+             _('Show or hide the toolbar')),
+            ('ToggleStatusbar', None, _("_Statusbar"), '',
+             _('Show or hide the statusbar')),
+            ('ToggleFullscreen', None, _("_Fullscreen"), 'F11',
+             _('Enter or leave fullscreen mode')),
+            ]
+        self.add_ui_actions('', toogle_actions, 'ToogleActions',
+                            'toogle')
+
+        self.ToggleToolbar.props.active = True
+        self.ToggleStatusbar.props.active = True
+
+        self.add_tool_menu_actions([
+            ("NewToolItem", _("New"), '', gtk.STOCK_NEW),
+            ("SearchToolItem", _("Search"), None, gtk.STOCK_FIND),
+            ])
+        self.NewToolItem.props.is_important = True
+        self.SearchToolItem.props.is_important = True
+
+    def _create_shared_ui(self):
+        if self.app.name != 'launcher':
+            return
+        self.uimanager.connect('connect-proxy',
+            self._on_uimanager__connect_proxy)
+        self.uimanager.connect('disconnect-proxy',
+            self._on_uimanager__disconnect_proxy)
+
+        self.ToggleToolbar.connect(
+            'toggled', self._on_ToggleToolbar__toggled)
+        self.ToggleStatusbar.connect(
+            'toggled', self._on_ToggleStatusbar__toggled)
+        self.ToggleFullscreen.connect(
+            'toggled', self._on_ToggleFullscreen__toggled)
+
+        self.NewToolItem.connect(
+            'activate', self._on_NewToolItem__activate)
+        self.SearchToolItem.connect(
+            'activate', self._on_SearchToolItem__activate)
+        self.NewWindow.connect(
+            'activate', self._on_NewWindow__activate)
+        self.Close.connect(
+            'activate', self._on_Close__activate)
+        self.ChangePassword.connect(
+            'activate', self._on_ChangePassword__activate)
+        self.SignOut.connect(
+            'activate', self._on_SignOut__activate)
+        self.Quit.connect(
+            'activate', self._on_Quit__activate)
+
+        self.Preferences.connect(
+            'activate', self._on_Preferences__activate)
+        self.HelpContents.connect(
+            'activate', self._on_HelpContents__activate)
+        self.HelpTranslate.connect(
+            'activate', self._on_HelpTranslate__activate)
+        self.HelpSupport.connect(
+            'activate', self._on_HelpSupport__activate)
+        self.HelpAbout.connect(
+            'activate', self._on_HelpAbout__activate)
+
+        menubar = self.uimanager.get_widget('/menubar')
+        self.main_vbox.pack_start(menubar, False, False)
+        self.main_vbox.reorder_child(menubar, 0)
+
+        toolbar = self.uimanager.get_widget('/toolbar')
+        self.main_vbox.pack_start(toolbar, False, False)
+        self.main_vbox.reorder_child(toolbar, 1)
+
+        # Disable border on statusbar
+        children = self.statusbar.get_children()
+        if children and isinstance(children[0], gtk.Frame):
+            frame = children[0]
+            frame.set_shadow_type(gtk.SHADOW_NONE)
+
+        user = api.get_current_user(self.conn)
+        self.statusbar.push(0, _("User: %s") % (user.person.name, ))
 
     def _display_unstable_version_message(self):
         msg = _(
@@ -240,6 +368,52 @@ class AppWindow(GladeDelegate):
             import gzip
             license = environ.find_resource(domain, name + '.gz')
             return gzip.GzipFile(license)
+
+    def _run_about(self, *args):
+        info = get_utility(IAppInfo)
+        about = gtk.AboutDialog()
+        about.set_name(info.get("name"))
+        about.set_version(info.get("version"))
+        about.set_website(stoq.website)
+        release_date = stoq.release_date
+        about.set_comments('Release Date: %s' %
+                           datetime.datetime(*release_date).strftime('%x'))
+        about.set_copyright('Copyright (C) 2005-2011 Async Open Source')
+
+        # Logo
+        icon_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
+        logo = gtk.gdk.pixbuf_new_from_file(icon_file)
+        about.set_logo(logo)
+
+        # License
+
+        if locale.getlocale()[0] == 'pt_BR':
+            filename = 'COPYING.pt_BR'
+        else:
+            filename = 'COPYING'
+        fp = self._read_resource('docs', filename)
+        about.set_license(fp.read())
+
+        # Authors & Contributors
+        fp = self._read_resource('docs', 'AUTHORS')
+        lines = [a.strip() for a in fp.readlines()]
+        lines.append('') # separate authors from contributors
+        fp = self._read_resource('docs', 'CONTRIBUTORS')
+        lines.extend([c.strip() for c in fp.readlines()])
+        about.set_authors(lines)
+
+        about.run()
+        about.destroy()
+
+    def _show_uri(self, uri):
+        toplevel = self.get_toplevel()
+        gtk.show_uri(toplevel.get_screen(), uri, gtk.gdk.CURRENT_TIME)
+
+    def _new_window(self):
+        from stoq.gui.launcher import Launcher
+        launcher = Launcher(self.options, self.runner)
+        launcher.show()
+
 
     #
     # Overridables
@@ -494,9 +668,122 @@ class AppWindow(GladeDelegate):
     def key_control_F11(self):
         self.toggle_fullscreen()
 
+    def _on_menu_item__select(self, menuitem, tooltip):
+        self.statusbar.push(-1, tooltip)
+
+    def _on_menu_item__deselect(self, menuitem):
+        self.statusbar.pop(-1)
+
+    def _on_tool_item__enter_notify_event(self, toolitem, event, tooltip):
+        self.statusbar.push(-1, tooltip)
+
+    def _on_tool_item__leave_notify_event(self, toolitem, event):
+        self.statusbar.pop(-1)
+
+    def _on_uimanager__connect_proxy(self, uimgr, action, widget):
+        tooltip = action.get_tooltip()
+        if not tooltip:
+            return
+        if isinstance(widget, gtk.MenuItem):
+            widget.connect('select', self._on_menu_item__select, tooltip)
+            widget.connect('deselect', self._on_menu_item__deselect)
+        elif isinstance(widget, gtk.ToolItem):
+            widget.child.connect('enter-notify-event',
+                    self._on_tool_item__enter_notify_event, tooltip)
+            widget.child.connect('leave-notify-event',
+                    self._on_tool_item__leave_notify_event)
+
+    def _on_uimanager__disconnect_proxy(self, uimgr, action, widget):
+        tooltip = action.get_tooltip()
+        if not tooltip:
+            return
+        if isinstance(widget, gtk.MenuItem):
+            widget.disconnect_by_func(self._on_menu_item__select)
+            widget.disconnect_by_func(self._on_menu_item__deselect)
+        elif isinstance(widget, gtk.ToolItem):
+            try:
+                widget.child.disconnect_by_func(
+                    self._on_tool_item__enter_notify_event)
+                widget.child.disconnect_by_func(
+                    self._on_tool_item__leave_notify_event)
+            except TypeError:
+                pass
+
+    # File
+
+    def _on_NewToolItem__activate(self, action):
+        if self.current_app:
+            self.current_app.new_activate()
+        else:
+            self._new_window()
+
+    def _on_SearchToolItem__activate(self, action):
+        if self.current_app:
+            self.current_app.search_activate()
+        else:
+            print 'FIXME'
+
+    def _on_NewWindow__activate(self, action):
+        self._new_window()
+
+    def _on_Close__activate(self, action):
+        if self.current_app and self.current_app.shutdown_application():
+            self.hide_app()
+
+    def _on_ChangePassword__activate(self, action):
+        from stoqlib.gui.slaves.userslave import PasswordEditor
+        trans = api.new_transaction()
+        user = api.get_current_user(trans)
+        retval = self.run_dialog(PasswordEditor, trans, user)
+        api.finish_transaction(trans, retval)
+
+    def _on_SignOut__activate(self, action):
+        from stoqlib.lib.interfaces import ICookieFile
+        get_utility(ICookieFile).clear()
+        self.get_toplevel().hide()
+        self.app.runner.relogin()
+
+    def _on_Quit__activate(self, action):
+        if self.current_app and not self.current_app.shutdown_application():
+            return
+
+        self._save_window_size()
+        raise SystemExit
+
+    # View
+
+    def _on_Preferences__activate(self, action):
+        pass
+
+    # Edit
+
+    def _on_ToggleToolbar__toggled(self, action):
+        toolbar = self.uimanager.get_widget('/toolbar')
+        toolbar.set_visible(action.get_active())
+
+    def _on_ToggleStatusbar__toggled(self, action):
+        self.statusbar.set_visible(action.get_active())
+
+    def _on_ToggleFullscreen__toggled(self, action):
+        self.toggle_fullscreen()
+
+    # Help
+
+    def _on_HelpContents__activate(self, action):
+        show_contents()
+
+    def _on_HelpTranslate__activate(self, action):
+        self._show_uri("https://translations.launchpad.net/stoq")
+
+    def _on_HelpSupport__activate(self, action):
+        self._show_uri("http://www.stoq.com.br/support")
+
+    def _on_HelpAbout__activate(self, action):
+        self._run_about()
+
     # Debug
 
-    def on_Introspect_activate(self, action):
+    def _on_Introspect_activate(self, action):
         window = self.get_toplevel()
         introspect_slaves(window)
 
