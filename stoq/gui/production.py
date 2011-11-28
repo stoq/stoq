@@ -55,7 +55,7 @@ class ProductionApp(SearchableAppWindow):
     gladefile = "production"
     search_table = ProductionOrder
     search_label = _(u'matching:')
-    launcher_embedded = True
+    embedded = True
 
     #
     # Application

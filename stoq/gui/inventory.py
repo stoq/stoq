@@ -56,7 +56,7 @@ class InventoryApp(SearchableAppWindow):
     gladefile = "inventory"
     search_table = Inventory
     search_labels = _('Matching:')
-    launcher_embedded = True
+    embedded = True
 
     #
     # Application

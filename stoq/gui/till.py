@@ -71,7 +71,7 @@ class TillApp(SearchableAppWindow):
     gladefile = 'till'
     search_table = SaleView
     search_labels = _(u'matching:')
-    launcher_embedded = True
+    embedded = True
 
     #
     # Application

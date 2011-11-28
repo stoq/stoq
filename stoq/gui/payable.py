@@ -69,7 +69,7 @@ class PayableApp(SearchableAppWindow):
     gladefile = 'payable'
     search_table = OutPaymentView
     search_label = _('matching:')
-    launcher_embedded = True
+    embedded = True
 
     #
     # Application

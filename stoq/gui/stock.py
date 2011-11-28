@@ -73,7 +73,7 @@ class StockApp(SearchableAppWindow):
     search_table = ProductFullStockView
     search_labels = _('Matching:')
     pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
-    launcher_embedded = True
+    embedded = True
 
     #
     # Application
