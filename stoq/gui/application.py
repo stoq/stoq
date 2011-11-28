@@ -31,18 +31,21 @@ import gtk
 from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
 from kiwi.log import Logger
+from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.lib.message import yesno
 from stoqlib.lib.webservice import WebService
-from stoqlib.gui.base.application import BaseApp, BaseAppWindow
-from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
+from stoqlib.gui.base.dialogs import (get_dialog, run_dialog,
+                                      add_current_toplevel)
 from stoqlib.gui.base.infobar import InfoBar
+from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.help import show_section
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.domain.inventory import Inventory
+from twisted.internet import reactor
 
 import stoq
 
@@ -57,10 +60,17 @@ ToolMenuAction.set_tool_item_type(
     gobject.type_from_name('GtkMenuToolButton').pytype)
 
 
-class App(BaseApp):
+class App(object):
+    """Class for application control. """
 
     def __init__(self, window_class, config, options, runner, embedded,
                  launcher, name):
+        """
+        Create a new object App.
+        @param main_window_class: A eAppWindow subclass
+        """
+        if not issubclass(window_class, AppWindow):
+            raise TypeError
         self.config = config
         self.options = options
         self.runner = runner
@@ -68,7 +78,10 @@ class App(BaseApp):
         self.embedded = embedded
         self.launcher = launcher
         self.name = name
-        BaseApp.__init__(self, window_class)
+
+        # The self should be passed to main_window to let it access
+        # shutdown and do_sync methods.
+        self.main_window = window_class(self)
 
     def show(self):
         if self.embedded:
@@ -76,10 +89,21 @@ class App(BaseApp):
             self.launcher.show_app(self.main_window, win.child)
             win.hide()
         else:
-            BaseApp.show(self)
+            self.main_window.show()
 
-class AppWindow(BaseAppWindow):
-    """ Base class for the main window of applications.
+    def run(self):
+        self.show()
+
+    def hide(self):
+        self.main_window.hide()
+
+    def shutdown(self, *args):
+        if reactor.running:
+            reactor.stop()
+
+
+class AppWindow(GladeDelegate):
+    """ Class for the main window of applications.
 
     @cvar app_name: This attribute is used when generating titles for
                     applications.  It's also useful if we get a list of
@@ -92,8 +116,14 @@ class AppWindow(BaseAppWindow):
     app_name = None
     app_icon_name = None
     search = None
+    gladefile = toplevel_name = ''
+    title = ''
+    size = ()
 
-    def __init__(self, app):
+    def __init__(self, app, keyactions=None):
+        self._sensitive_group = dict()
+        self.app = app
+
         self.conn = api.new_transaction()
         if app.embedded:
             uimanager = app.launcher.uimanager
@@ -108,9 +138,18 @@ class AppWindow(BaseAppWindow):
         if app.options.debug:
             self.add_debug_ui()
 
-        BaseAppWindow.__init__(self, app)
+
+        GladeDelegate.__init__(self, delete_handler=self._on_delete_handler,
+                               keyactions=keyactions,
+                               gladefile=self.gladefile,
+                               toplevel_name=self.toplevel_name)
+        toplevel = self.get_toplevel()
+        add_current_toplevel(toplevel)
+        if self.size:
+            toplevel.set_size_request(*self.size)
+        toplevel.set_title(self.get_title())
+
         if not app.embedded:
-            toplevel = self.get_toplevel()
             toplevel.add_accel_group(self.uimanager.get_accel_group())
         self.create_ui()
 
@@ -121,6 +160,7 @@ class AppWindow(BaseAppWindow):
 
             if not stoq.stable and not api.is_developer_mode():
                 self._display_unstable_version_message()
+
 
     def _display_unstable_version_message(self):
         msg = _(
@@ -190,13 +230,6 @@ class AppWindow(BaseAppWindow):
             license = environ.find_resource(domain, name + '.gz')
             return gzip.GzipFile(license)
 
-    def print_report(self, report_class, *args, **kwargs):
-        filters = self.search.get_search_filters()
-        if filters:
-            kwargs['filters'] = filters
-
-        print_report(report_class, *args, **kwargs)
-
     #
     # Overridables
     #
@@ -260,6 +293,68 @@ class AppWindow(BaseAppWindow):
     #
     # Public API
     #
+
+    def print_report(self, report_class, *args, **kwargs):
+        filters = self.search.get_search_filters()
+        if filters:
+            kwargs['filters'] = filters
+
+        print_report(report_class, *args, **kwargs)
+
+    def toggle_fullscreen(self):
+        window = self.get_toplevel()
+        if window.window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN:
+            window.unfullscreen()
+        else:
+            window.fullscreen()
+
+    def set_sensitive(self, widgets, value):
+        """Set the C{widgets} sensitivity based on C{value}
+
+        @note: if a sensitive group was registered for any widget,
+            it's validation function will be tested and, if C{False}
+            is returned, it will be set insensitive, ignoring C{value}
+
+        @param widgets: a L{list} of widgets
+        @param value: either C{True} or C{False}
+        """
+        # FIXME: Maybe this should ne done on kiwi?
+        for widget in widgets:
+            sensitive = value
+
+            for validator in self._sensitive_group.get(widget, []):
+                if not validator[0](*validator[1]):
+                    sensitive = False
+                    break
+
+            widget.set_sensitive(sensitive)
+
+    def register_sensitive_group(self, widgets, validation_func, *args):
+        """Register widgets on a sensitive group.
+
+        Everytime self.set_sensitive() is called, if there is any
+        validation function for a given widget on sensitive group,
+        then that will be used to decide if it gets sensitive or
+        insensitive.
+
+        @param widgets: a L{list} of widgets
+        @param validation_func: a function for validation. It should
+            return either C{True} or C{False}.
+        @param args: args that will be passed to C{validation_func}
+        """
+        assert callable(validation_func)
+
+        for widget in widgets:
+            validators = self._sensitive_group.setdefault(widget, set())
+            validators.add((validation_func, args))
+
+    def get_dialog(self, dialog_class, *args, **kwargs):
+        """ Encapsuled method for getting dialogs. """
+        return get_dialog(self, dialog_class, *args, **kwargs)
+
+    def run_dialog(self, dialog_class, *args, **kwargs):
+        """ Encapsuled method for running dialogs. """
+        return run_dialog(dialog_class, self, *args, **kwargs)
 
     def add_ui_actions(self, ui_string, actions, name='Actions',
                        action_type='normal', filename=None):
@@ -369,8 +464,9 @@ class AppWindow(BaseAppWindow):
         return bar
 
     #
-    # BaseAppWindow
+    # AppWindow
     #
+
 
     def shutdown_application(self, *args):
         if not self.can_close_application():
@@ -383,6 +479,9 @@ class AppWindow(BaseAppWindow):
     #
     # Callbacks
     #
+
+    def key_control_F11(self):
+        self.toggle_fullscreen()
 
     # Debug
 
@@ -406,6 +505,12 @@ class AppWindow(BaseAppWindow):
         api.config.flush()
         self.shutdown_application()
         raise SystemExit
+
+    def _on_delete_handler(self, *args):
+        self.shutdown_application()
+
+    def _on_quit_action__clicked(self, *args):
+        self.shutdown_application()
 
 
 class SearchableAppWindow(AppWindow):
@@ -436,6 +541,7 @@ class SearchableAppWindow(AppWindow):
         self.set_text_field_label(self.search_label)
 
         AppWindow.__init__(self, app)
+
 
         self.attach_slave('search_holder', self.search)
 
