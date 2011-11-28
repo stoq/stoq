@@ -433,8 +433,8 @@ class PurchaseOrder(Domain):
         #XXX: Since the purchase_total value must have two digits
         # (at the moment) we need to format the value to a 2-digit number and
         # then convert it to currency data type, because the subtotal value
-        # may return a 4-digit value,  if the USE_FOUR_PRECISION_DIGITS
-        # parameters is set.
+        # may return a 3-or-more-digit value, depending on COST_PRECISION_DIGITS
+        # parameters.
         return currency(get_formatted_price(total))
 
     def get_received_total(self):

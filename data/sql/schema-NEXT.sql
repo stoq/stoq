@@ -373,7 +373,7 @@ CREATE TABLE sellable (
     code text,
     status integer CONSTRAINT valid_status
         CHECK (status >= 0 AND status < 4),
-    cost numeric(20, 4) CONSTRAINT positive_cost
+    cost numeric(20, 8) CONSTRAINT positive_cost
         CHECK (cost >= 0),
     notes text,
     unit_id bigint REFERENCES sellable_unit(id),
@@ -473,7 +473,7 @@ CREATE TABLE product_supplier_info (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    base_cost numeric(20, 4) CONSTRAINT positive_base_cost
+    base_cost numeric(20, 8) CONSTRAINT positive_base_cost
         CHECK (base_cost >= 0),
     notes text,
     is_main_supplier boolean,
@@ -612,9 +612,9 @@ CREATE TABLE purchase_item (
         CHECK (quantity >= 0),
     quantity_received numeric(20, 3) CONSTRAINT positive_quantity_received
         CHECK (quantity_received >= 0),
-    base_cost numeric(20, 4) CONSTRAINT positive_base_cost
+    base_cost numeric(20, 8) CONSTRAINT positive_base_cost
         CHECK (base_cost >= 0),
-    cost numeric(20, 4) CONSTRAINT positive_cost
+    cost numeric(20, 8) CONSTRAINT positive_cost
         CHECK (cost >= 0),
     expected_receival_date timestamp,
     sellable_id bigint REFERENCES sellable(id),
@@ -757,7 +757,7 @@ CREATE TABLE sale_item (
     notes text,
     estimated_fix_date timestamp,
     completion_date timestamp,
-    average_cost numeric(20, 2) DEFAULT 0,
+    average_cost numeric(20, 8) DEFAULT 0,
     sale_id bigint REFERENCES sale(id),
     sellable_id bigint REFERENCES sellable(id),
     icms_info_id bigint REFERENCES sale_item_icms(id),
@@ -777,7 +777,7 @@ CREATE TABLE product_stock_item (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    stock_cost numeric(20, 2),
+    stock_cost numeric(20, 8),
     quantity numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (quantity >= 0),
     logic_quantity numeric(20, 3) CONSTRAINT positive_logic_quantity
@@ -1107,7 +1107,7 @@ CREATE TABLE receiving_order_item (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     quantity numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (quantity >= 0),
-    cost numeric(20, 4) CONSTRAINT positive_cost
+    cost numeric(20, 8) CONSTRAINT positive_cost
         CHECK (cost >= 0),
     sellable_id bigint REFERENCES sellable(id),
     receiving_order_id bigint REFERENCES receiving_order(id),
@@ -1332,7 +1332,7 @@ CREATE TABLE inventory_item (
         CHECK (actual_quantity >= 0),
     inventory_id bigint NOT NULL REFERENCES inventory(id),
     reason text,
-    product_cost numeric(20, 4) CONSTRAINT positive_product_cost
+    product_cost numeric(20, 8) CONSTRAINT positive_product_cost
         CHECK (product_cost >= 0),
     cfop_data_id bigint REFERENCES cfop_data(id)
 );
