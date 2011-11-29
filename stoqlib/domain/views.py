@@ -73,7 +73,7 @@ class ProductFullStockView(Viewable):
         location=Product.q.location,
         tax_description=SellableTaxConstant.q.description,
         category_description=SellableCategory.q.description,
-        total_stock_cost = const.SUM(
+        total_stock_cost=const.SUM(
                 ProductStockItem.q.stock_cost*ProductStockItem.q.quantity),
         stock=const.COALESCE(const.SUM(ProductStockItem.q.quantity +
                                        ProductStockItem.q.logic_quantity), 0),
@@ -313,8 +313,8 @@ class SellableFullStockView(Viewable):
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
         category_description=SellableCategory.q.description,
-        base_price = BaseSellableInfo.q.price,
-        max_discount = BaseSellableInfo.q.max_discount,
+        base_price=BaseSellableInfo.q.price,
+        max_discount=BaseSellableInfo.q.max_discount,
         stock=const.COALESCE(const.SUM(ProductStockItem.q.quantity +
                                        ProductStockItem.q.logic_quantity), 0),
         )
@@ -689,8 +689,8 @@ class SaleItemsView(Viewable):
         code=Sellable.q.code,
         description=BaseSellableInfo.q.description,
         sale_id=SaleItem.q.saleID,
-        sale_date = Sale.q.open_date,
-        client_name = Person.q.name,
+        sale_date=Sale.q.open_date,
+        client_name=Person.q.name,
         quantity=SaleItem.q.quantity,
         unit_description=SellableUnit.q.description,
     )

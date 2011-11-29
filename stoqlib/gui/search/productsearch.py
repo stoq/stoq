@@ -112,7 +112,7 @@ class ProductSearch(SearchEditor):
 
     def on_print_price_button_clicked(self, button):
         print_report(ProductPriceReport, list(self.results),
-                     filters = self.search.get_search_filters(),
+                     filters=self.search.get_search_filters(),
                      branch_name=self.branch_filter.combo.get_active_text())
 
     def _has_rows(self, results, obj):
@@ -374,7 +374,7 @@ class ProductStockSearch(SearchEditor):
 
         branch_filter = self.create_branch_filter(_('In branch:'))
         branch_filter.select(api.get_current_branch(self.conn).id)
-        self.add_filter(branch_filter, columns = [])
+        self.add_filter(branch_filter, columns=[])
         self.branch_filter = branch_filter
 
     def on_print_button_clicked(self, widget):

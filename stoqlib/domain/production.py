@@ -577,7 +577,7 @@ class ProductionProducedItem(Domain):
                                 quality_test=quality_test,
                                 produced_item=self,
                                 tested_by=tester,
-                                result_value = '')
+                                result_value='')
         else:
             result.tested_by = tester
 

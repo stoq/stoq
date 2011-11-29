@@ -318,15 +318,15 @@ class AccountTransactionView(Viewable):
     Account_Source = Alias(Account, 'account_source')
 
     columns = dict(
-        id = AccountTransaction.q.id,
-        code = AccountTransaction.q.code,
-        description = AccountTransaction.q.description,
-        value = AccountTransaction.q.value,
-        date = AccountTransaction.q.date,
-        dest_accountID = Account_Dest.q.id,
-        dest_account_description = Account_Dest.q.description,
-        source_accountID = Account_Source.q.id,
-        source_account_description = Account_Source.q.description,
+        id=AccountTransaction.q.id,
+        code=AccountTransaction.q.code,
+        description=AccountTransaction.q.description,
+        value=AccountTransaction.q.value,
+        date=AccountTransaction.q.date,
+        dest_accountID=Account_Dest.q.id,
+        dest_account_description=Account_Dest.q.description,
+        source_accountID=Account_Source.q.id,
+        source_account_description=Account_Source.q.description,
         )
 
     joins = [

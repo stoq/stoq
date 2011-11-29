@@ -1175,32 +1175,28 @@ class SaleView(Viewable):
     Person_SalesPerson = Alias(Person, 'person_sales_person')
 
     columns = dict(
-        id = Sale.q.id,
-        invoice_number = Sale.q.invoice_number,
-        coupon_id = Sale.q.coupon_id,
-        open_date = Sale.q.open_date,
-        close_date = Sale.q.close_date,
-        confirm_date = Sale.q.confirm_date,
-        cancel_date = Sale.q.cancel_date,
-        return_date = Sale.q.return_date,
-        expire_date = Sale.q.expire_date,
-        status = Sale.q.status,
-        notes = Sale.q.notes,
-        surcharge_value = Sale.q.surcharge_value,
-        discount_value = Sale.q.discount_value,
-        bar = Sale.q.discount_value,
-        client_id = Sale.q.clientID,
-
-        salesperson_name = Person_SalesPerson.q.name,
-        client_name = Person_Client.q.name,
-
-        v_ipi = const.SUM(SaleItemIpi.q.v_ipi),
-
-        total_quantity = const.SUM(SaleItem.q.quantity),
-        subtotal = const.SUM(SaleItem.q.quantity * SaleItem.q.price),
-        total = const.SUM(SaleItem.q.price * SaleItem.q.quantity) - \
+        id=Sale.q.id,
+        invoice_number=Sale.q.invoice_number,
+        coupon_id=Sale.q.coupon_id,
+        open_date=Sale.q.open_date,
+        close_date=Sale.q.close_date,
+        confirm_date=Sale.q.confirm_date,
+        cancel_date=Sale.q.cancel_date,
+        return_date=Sale.q.return_date,
+        expire_date=Sale.q.expire_date,
+        status=Sale.q.status,
+        notes=Sale.q.notes,
+        surcharge_value=Sale.q.surcharge_value,
+        discount_value=Sale.q.discount_value,
+        bar=Sale.q.discount_value,
+        client_id=Sale.q.clientID,
+        salesperson_name=Person_SalesPerson.q.name,
+        client_name=Person_Client.q.name,
+        v_ipi=const.SUM(SaleItemIpi.q.v_ipi),
+        total_quantity=const.SUM(SaleItem.q.quantity),
+        subtotal=const.SUM(SaleItem.q.quantity * SaleItem.q.price),
+        total=const.SUM(SaleItem.q.price * SaleItem.q.quantity) - \
               Sale.q.discount_value + Sale.q.surcharge_value
-
     )
 
     joins = [

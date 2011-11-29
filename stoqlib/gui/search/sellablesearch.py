@@ -145,7 +145,7 @@ class SellableSearch(SearchEditor):
                               sorted=True),
                 SearchColumn('barcode', title=_('Barcode'), data_type=str,
                               visible=False),
-                SearchColumn('description', title= _('Description'),
+                SearchColumn('description', title=_('Description'),
                              data_type=str, expand=True),
                 SearchColumn('price', title=_('Price'), data_type=currency,
                               justify=gtk.JUSTIFY_RIGHT, width=120),

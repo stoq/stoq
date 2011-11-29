@@ -66,8 +66,8 @@ class SellableView(Viewable):
         cost=Sellable.q.cost,
         category_description=SellableCategory.q.description,
         description=BaseSellableInfo.q.description,
-        price = BaseSellableInfo.q.price,
-        max_discount = BaseSellableInfo.q.max_discount,
+        price=BaseSellableInfo.q.price,
+        max_discount=BaseSellableInfo.q.max_discount,
     )
 
     joins = [
