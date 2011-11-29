@@ -116,4 +116,3 @@ class NFeUI(object):
     def _on_SaleStatusChanged(self, sale, old_status):
         if sale.status == Sale.STATUS_CONFIRMED:
             self._create_nfe(sale, sale.get_connection())
-

@@ -147,5 +147,3 @@ class MagentoTableConfig(Domain):
 
     magento_table = UnicodeCol()
     last_sync_date = DateTimeCol(default=datetime.datetime.min)
-
-

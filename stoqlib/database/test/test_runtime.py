@@ -184,5 +184,3 @@ class StoqlibTransactionTest(DomainTest):
         self.assertFalse(obj.was_deleted)
         self.assertFalse(obj.was_created)
         self.assertEqual(obj.on_update_called_count, 0)
-
-

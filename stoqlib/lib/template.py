@@ -35,5 +35,3 @@ def render_template(filename, **ns):
     lookup = TemplateLookup(directories=environ.get_resource_paths('template'))
     tmpl = lookup.get_template(filename)
     return tmpl.render(**ns)
-
-

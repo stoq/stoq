@@ -475,5 +475,3 @@ class MagentoShipment(MagentoBaseSyncUp):
         self.was_track_added = retval
 
         returnValue(retval)
-
-

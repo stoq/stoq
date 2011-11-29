@@ -105,4 +105,3 @@ class StoqAPI(object):
         return is_developer_mode()
 
 api = StoqAPI()
-

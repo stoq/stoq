@@ -385,5 +385,3 @@ class MagentoBaseSyncBoth(MagentoBaseSyncDown, MagentoBaseSyncUp):
         retval = yield maybeDeferred(super(MagentoBaseSyncBoth, self).process,
                                      **kwargs)
         returnValue(retval)
-
-

@@ -16,4 +16,3 @@ def apply_patch(trans):
             mag_product = MagentoProduct(connection=trans,
                                          product=product)
             assert mag_product
-

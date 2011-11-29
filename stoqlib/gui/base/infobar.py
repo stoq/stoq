@@ -181,4 +181,3 @@ class InfoBar(gtk.HBox):
 
     def get_content_area(self):
         return self._content_area
-

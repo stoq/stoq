@@ -258,5 +258,3 @@ class MagentoAddress(MagentoBaseSyncDown):
                 continue
 
             address.is_main_address = False
-
-

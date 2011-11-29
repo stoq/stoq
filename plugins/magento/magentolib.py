@@ -254,4 +254,3 @@ class MagentoProxy(object):
             return arg
 
         return arg
-

@@ -366,4 +366,3 @@ class MagentoStock(MagentoBaseSyncUp):
             'qty' : quantity,
             'is_in_stock' : int(product.sellable.can_be_sold()),
             }
-

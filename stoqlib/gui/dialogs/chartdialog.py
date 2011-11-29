@@ -44,4 +44,3 @@ class ChartDialog(gtk.Window):
         for key, value in kwargs.items():
             url += key + '=' + str(value)
         self._view.load_uri(url)
-

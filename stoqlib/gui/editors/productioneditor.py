@@ -284,4 +284,3 @@ class ProductionMaterialEditor(ProductionItemEditor):
     def on_quantity__validate(self, widget, value):
         if value and value < 0:
             return ValidationError(_(u'This quantity should be positive.'))
-

@@ -33,5 +33,3 @@ class IMagentoProxy(Interface):
 
 class IMagentoConfig(Interface):
     """Magento configuration"""
-
-
