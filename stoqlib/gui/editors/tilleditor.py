@@ -492,7 +492,7 @@ class CashInEditor(BaseEditor):
     def create_model(self, conn):
         till=Till.get_current(conn)
         return Settable(value=currency(0),
-                        reason='', 
+                        reason='',
                         till=till,
                         balance=till.get_balance())
 
