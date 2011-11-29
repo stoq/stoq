@@ -56,6 +56,7 @@ class TestPEP8(unittest.TestCase):
 ERRORS = [
     'E111', # indentation is not a multiple of four
     'W291', # trailing whitespace
+    'W293', # blank line contains whitespace
     'W601', # in instead of dict.has_key
     'W602', # deprecated form of raising exception
 ]
