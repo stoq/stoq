@@ -82,7 +82,7 @@ class UpdateSchemaStep(BaseWizardStep):
         log_pos = line.find(LOG_CATEGORY)
         if log_pos == -1:
             return
-        line = line[log_pos+len(LOG_CATEGORY)+1:]
+        line = line[log_pos + len(LOG_CATEGORY) + 1:]
         longer = None
         if line.startswith('PATCH:'):
             patch = line.split(':', 1)[1]

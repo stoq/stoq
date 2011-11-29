@@ -332,4 +332,4 @@ class SalesPersonReport(SearchResultsReport):
         self.add_preformatted_text(_("S/P: Sellables sold per sale"))
         if text:
             self.add_preformatted_text(text)
-            self.add_preformatted_text(_("Total of sales: %d") %  sales_qty)
+            self.add_preformatted_text(_("Total of sales: %d") % sales_qty)

@@ -104,7 +104,7 @@ class TestPurchaseOrder(DomainTest):
 
         payments = list(order.payments)
         payments_after_cancel = len(payments)
-        self.assertEqual(payments_after_cancel, payments_before_cancel+1)
+        self.assertEqual(payments_after_cancel, payments_before_cancel + 1)
 
         for payment in payments:
             # Ok, paid payments of cancelled purchases remain paid...

@@ -86,7 +86,7 @@ class ProductionItemEditor(BaseEditor):
             self.location_content.hide()
 
     def setup_editor_widgets(self):
-        self.order_number.set_text("%04d" %  self.model.order.id)
+        self.order_number.set_text("%04d" % self.model.order.id)
         self.quantity.set_adjustment(
             gtk.Adjustment(lower=1, upper=self.get_max_quantity(), step_incr=1))
         self.quantity.set_digits(DECIMAL_PRECISION)
@@ -131,7 +131,7 @@ class ProducedItemSlave(BaseEditorSlave):
     def create_model(self, conn):
         serial = ProductionProducedItem.get_last_serial_number(
                             self._product, conn)
-        return Settable(serial_number=serial+1)
+        return Settable(serial_number=serial + 1)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)

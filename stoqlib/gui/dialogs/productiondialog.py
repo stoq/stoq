@@ -102,7 +102,7 @@ class _TemporaryProductionItemComponent(object):
         #XXX: workaround!
         conn = api.get_connection()
         items = PurchasedItemAndStockView.select(
-            Product.q.id==self.product.id, connection=conn)
+            Product.q.id == self.product.id, connection=conn)
         self.to_receive = sum(
             [i.purchased - i.received for i in items], Decimal(0))
 

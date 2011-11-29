@@ -90,7 +90,7 @@ class TestSale(DomainTest):
         sellable = self.create_sellable()
         sale.add_sellable(sellable, quantity=5)
 
-        items =  sale.get_items()
+        items = sale.get_items()
         self.assertEqual(items.count(), 1)
         self.assertEqual(sellable, items[0].sellable)
 

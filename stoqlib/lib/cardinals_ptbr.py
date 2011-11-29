@@ -177,12 +177,12 @@ def _do_int_group(numstr, feminine=False):
             # - Se é na posição da centena, e seguem apenas zeros, é
             #   cem; senão, é cento.
             if level == 1:
-                nextnum = int(numstr[i+1])
+                nextnum = int(numstr[i + 1])
                 out.append(tens[nextnum])
                 break
             if level == 2:
-                nextnum = int(numstr[i+1])
-                nextnextnum = int(numstr[i+2])
+                nextnum = int(numstr[i + 1])
+                nextnextnum = int(numstr[i + 2])
                 if nextnum == 0 and nextnextnum == 0:
                     out.append("cem")
                     break

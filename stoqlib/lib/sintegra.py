@@ -256,7 +256,7 @@ class SintegraFile(object):
             self.add(SintegraRegister90(cgc, estadual, number, fsum, '',
                                         totalizers))
         self.add(SintegraRegister90(cgc, estadual, 99,
-                                 len(self._registers)+1, '', totalizers))
+                                 len(self._registers) + 1, '', totalizers))
 
     def write(self, filename=None, fp=None):
         """Writes out of the content of the file to a filename or fp

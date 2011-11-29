@@ -205,7 +205,7 @@ class TransactionPage(object):
     def _get_account_columns(self):
         def format_withdrawal(value):
             if value < 0:
-                return '%.2f'% (abs(value), )
+                return '%.2f' % (abs(value), )
 
         def format_deposit(value):
             if value > 0:

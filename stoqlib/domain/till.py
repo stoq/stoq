@@ -273,10 +273,10 @@ class Till(Domain):
         money = PaymentMethod.get_by_name(conn, 'money')
 
         results = TillEntry.select(
-            join=LEFTJOINOn(None, Payment, Payment.q.id==TillEntry.q.paymentID),
-            clause=AND(OR(TillEntry.q.paymentID==None,
-                          Payment.q.methodID==money.id),
-                       TillEntry.q.tillID==self.id),
+            join=LEFTJOINOn(None, Payment, Payment.q.id == TillEntry.q.paymentID),
+            clause=AND(OR(TillEntry.q.paymentID == None,
+                          Payment.q.methodID == money.id),
+                       TillEntry.q.tillID == self.id),
             connection=conn)
 
         return currency(self.initial_cash_amount +

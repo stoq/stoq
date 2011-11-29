@@ -61,7 +61,7 @@ class LoanItemEditor(BaseEditor):
         BaseEditor.__init__(self, conn, model)
 
     def _setup_widgets(self):
-        self.sale.set_text("%04d" %  self.model.loan.id)
+        self.sale.set_text("%04d" % self.model.loan.id)
         self.description.set_text(self.model.sellable.get_description())
         for widget in [self.sale_quantity, self.return_quantity]:
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,

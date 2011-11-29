@@ -92,20 +92,20 @@ class SQLObjectStyle(object):
         return self._under_to_mixed(column_name)
 
     def pythonClassToDBTable(self, class_name):
-        return class_name[0].lower()+self._mixed_to_under(class_name[1:])
+        return class_name[0].lower() + self._mixed_to_under(class_name[1:])
 
     def dbTableToPythonClass(self, table_name):
-        return table_name[0].upper()+self._under_to_mixed(table_name[1:])
+        return table_name[0].upper() + self._under_to_mixed(table_name[1:])
 
     def pythonClassToDBTableReference(self, class_name):
         return self.tableReference(self.pythonClassToDBTable(class_name))
 
     def tableReference(self, table_name):
-        return table_name+"_id"
+        return table_name + "_id"
 
     def _mixed_to_under(self, name, _re=re.compile("[A-Z]+")):
         if name.endswith("ID"):
-            return self._mixed_to_under(name[:-2]+"_id")
+            return self._mixed_to_under(name[:-2] + "_id")
         name = _re.sub(self._mixed_to_under_sub, name)
         if name.startswith("_"):
             return name[1:]
@@ -810,7 +810,7 @@ class CONTAINSSTRING(Like):
         string = string.replace("!", "!!") \
                        .replace("_", "!_") \
                        .replace("%", "!%")
-        Like.__init__(self, expr, "%"+string+"%", SQLRaw("'!'"))
+        Like.__init__(self, expr, "%" + string + "%", SQLRaw("'!'"))
 
 
 class DeclarativeMeta(type):
@@ -896,7 +896,7 @@ class Viewable(Declarative):
                 if hasattr(cls.columns[attribute], 'variable_factory'):
                     var = cls.columns[attribute].variable_factory.func()
                     if value is not None:
-                        value =  var.parse_set(value, False)
+                        value = var.parse_set(value, False)
                 setattr(instance, attribute, value)
             return instance
 
@@ -1029,7 +1029,7 @@ class Connection(object):
             return self.store.find(table, *args, **kwargs)
 
     def makeConnection(self):
-        self.store =  Store(self.db)
+        self.store = Store(self.db)
         if not hasattr(self.store, 'transactions'):
             self.store.transactions = []
 

@@ -85,7 +85,7 @@ class StoqlibCATGenerator(object):
                                   self.printer.device_serial[-5:],
                                   base[self.end.day],
                                   base[self.end.month],
-                                  base[self.end.year-2000],
+                                  base[self.end.year - 2000],
                                   )
 
     def write(self, dir):
@@ -153,7 +153,7 @@ class StoqlibCATGenerator(object):
         # Then we add the details
         for item in z_reductions:
             for i, tax in enumerate(item.taxes):
-                self.cat.add_z_reduction_details(item, tax, i+1)
+                self.cat.add_z_reduction_details(item, tax, i + 1)
 
     def _add_fiscal_coupon_information(self):
         sales = list(self._get_sales())
@@ -172,7 +172,7 @@ class StoqlibCATGenerator(object):
 
             for i, item in enumerate(sale.get_items()):
                 self.cat.add_fiscal_coupon_details(sale, client, history[0],
-                                                   item, iss_tax, i+1)
+                                                   item, iss_tax, i + 1)
 
             # Ignore returned sales here, they will be handled later
             if sale.return_date:

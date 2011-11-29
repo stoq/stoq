@@ -152,7 +152,7 @@ class Commission(Domain):
 
     def _get_category_commission(self, category):
         if category:
-            source =  CommissionSource.selectOneBy(
+            source = CommissionSource.selectOneBy(
                 category=category,
                 connection=self.get_connection())
             if not source:

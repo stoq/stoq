@@ -98,7 +98,7 @@ class InvoiceTest(DomainTest):
     def testHasInvoiceNumber(self):
         sale = self.create_sale()
         for i in range(10):
-            self._add_product(sale, tax=18, price=50+i)
+            self._add_product(sale, tax=18, price=50 + i)
 
         sale.order()
         self._add_payments(sale)

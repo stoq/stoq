@@ -1286,16 +1286,16 @@ class DeliveryView(Viewable):
     )
 
     joins = [LEFTJOINOn(None, Sellable,
-                        SaleItem.q.sellableID==Sellable.q.id),
+                        SaleItem.q.sellableID == Sellable.q.id),
              LEFTJOINOn(None, BaseSellableInfo,
-                        BaseSellableInfo.q.id==Sellable.q.base_sellable_infoID),
+                        BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID),
              LEFTJOINOn(None, DeliveryItem,
-                        Sellable.q.id==DeliveryItem.q.sellableID),
-             LEFTJOINOn(None, Sale, SaleItem.q.saleID==Sale.q.id),
+                        Sellable.q.id == DeliveryItem.q.sellableID),
+             LEFTJOINOn(None, Sale, SaleItem.q.saleID == Sale.q.id),
              LEFTJOINOn(None, PersonAdaptToClient,
-                        Sale.q.clientID==PersonAdaptToClient.q.id),
+                        Sale.q.clientID == PersonAdaptToClient.q.id),
              LEFTJOINOn(None, Person,
-                        PersonAdaptToClient.q.originalID==Person.q.id),
+                        PersonAdaptToClient.q.originalID == Person.q.id),
     ]
 
     clause = AND(SaleItemAdaptToDelivery.q.originalID == SaleItem.q.id,

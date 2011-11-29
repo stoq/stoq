@@ -795,7 +795,7 @@ class LoanView(Viewable):
     PersonResponsible = Alias(Person, 'person_responsible')
     PersonClient = Alias(Person, 'person_client')
 
-    columns =  dict(id=Loan.q.id,
+    columns = dict(id=Loan.q.id,
                     status=Loan.q.status,
                     open_date=Loan.q.open_date,
                     close_date=Loan.q.close_date,

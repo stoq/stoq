@@ -85,8 +85,8 @@ class ProductSupplierInfo(Domain):
     minimum_purchase = QuantityCol(default=Decimal(1))
     # This is Brazil-specific information
     icms = PercentCol(default=0)
-    supplier =  ForeignKey('PersonAdaptToSupplier')
-    product =  ForeignKey('Product')
+    supplier = ForeignKey('PersonAdaptToSupplier')
+    product = ForeignKey('Product')
 
     #
     # Classmethods
@@ -487,7 +487,7 @@ class ProductStockItem(Domain):
     stock_cost = PriceCol(default=0)
     quantity = QuantityCol(default=0)
     logic_quantity = QuantityCol(default=0)
-    branch =  ForeignKey('PersonAdaptToBranch')
+    branch = ForeignKey('PersonAdaptToBranch')
     storable = ForeignKey('ProductAdaptToStorable')
 
     def update_cost(self, new_quantity, new_cost):

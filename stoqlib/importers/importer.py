@@ -101,9 +101,9 @@ class Importer(object):
         self.before_start(trans)
         for i in range(n_items):
             if self.process_item(trans, i):
-                create_log.info('ITEM:%d' % (i+1, ))
+                create_log.info('ITEM:%d' % (i + 1, ))
                 imported_items += 1
-            if not self.dry and i+1 % 100 == 0:
+            if not self.dry and i + 1 % 100 == 0:
                 trans.commit(close=True)
                 trans = new_transaction()
 

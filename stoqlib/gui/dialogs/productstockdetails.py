@@ -69,7 +69,7 @@ class ProductStockHistoryDialog(BaseEditor):
         self.decrease_list.set_columns(self._get_decrease_columns())
 
         items = ReceivingItemView.select(
-            ReceivingItemView.q.sellable_id==self.model.id,
+            ReceivingItemView.q.sellable_id == self.model.id,
             connection=self.conn)
 
         self.receiving_list.add_list(list(items))

@@ -719,7 +719,7 @@ class CreateDatabaseStep(BaseWizardStep):
             else:
                 stoqdbadmin += '.exe'
             # FIXME: listen to file input for
-            #        APPDATA/stoqdbadmin/stderr.log+stdout.log
+            #        APPDATA/stoqdbadmin/stderr.log + stdout.log
         args = [stoqdbadmin, 'init',
                 '--no-load-config',
                 '--no-register-station',
@@ -750,7 +750,7 @@ class CreateDatabaseStep(BaseWizardStep):
         log_pos = line.find(LOG_CATEGORY)
         if log_pos == -1:
             return
-        line = line[log_pos+len(LOG_CATEGORY)+1:]
+        line = line[log_pos + len(LOG_CATEGORY) + 1:]
         if line == 'SCHEMA':
             value = 0.1
             text = _("Creating base schema...")
@@ -762,7 +762,7 @@ class CreateDatabaseStep(BaseWizardStep):
             # 0.4 - 0.7 patches
             patch = float(line.split(':', 1)[1])
             value = 0.4 + (patch / self.n_patches) * 0.3
-            text = _("Creating schema, applying patch %d ...") % (patch+1, )
+            text = _("Creating schema, applying patch %d ...") % (patch + 1, )
         elif line == 'INIT START':
             text = _("Creating additional database objects ...")
             value = 0.8

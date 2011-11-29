@@ -46,7 +46,7 @@ class PaymentCategoryDialog(ModelListDialog):
     size = (620, 300)
 
     # ListDialog
-    columns =  [
+    columns = [
         Column('name', title=_('Category'),
                data_type=str, expand=True, sorted=True),
         Column('color', title=_('Color'), width=20,

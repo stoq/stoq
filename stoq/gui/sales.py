@@ -254,7 +254,7 @@ class SalesApp(SearchableAppWindow):
         return bool(view and view.status == Sale.STATUS_QUOTE)
 
     def _can_edit(self, view):
-        return bool(view and view.sale.status ==  Sale.STATUS_QUOTE)
+        return bool(view and view.sale.status == Sale.STATUS_QUOTE)
 
     def _update_toolbar(self, *args):
         sale_view = self.results.get_selected()

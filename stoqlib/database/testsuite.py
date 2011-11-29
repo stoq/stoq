@@ -72,7 +72,7 @@ def _provide_database_settings():
                               get_username())
     hostname = os.environ.get('PGHOST', 'localhost')
     port = int(os.environ.get('PGPORT', '5432'))
-    dbname =  os.environ.get('STOQLIB_TEST_DBNAME',
+    dbname = os.environ.get('STOQLIB_TEST_DBNAME',
                              '%s_test' % username)
     password = ''
 

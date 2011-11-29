@@ -577,7 +577,7 @@ class GroupingTableBuilder(AbstractTableBuilder):
         for group in self.column_groups:
             col_idx = 0
             for col in group.columns:
-                widths = self.column_widths[col_idx:col_idx+col.colspan]
+                widths = self.column_widths[col_idx:col_idx + col.colspan]
                 col.width = sum(widths)
                 col_idx += col.colspan
 

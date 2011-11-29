@@ -480,7 +480,7 @@ class PaymentFlowHistory(Domain):
         """
         last_day = self.get_last_day_real_balance()
         old_balance_real = self.balance_real
-        self.balance_expected =  last_day + self.to_receive - self.to_pay
+        self.balance_expected = last_day + self.to_receive - self.to_pay
         self.balance_real = last_day + self.received - self.paid
 
         # balance_real affects the future (last_day real balance)

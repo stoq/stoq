@@ -113,7 +113,7 @@ class NFeGenerator(object):
         return nfe_tostring(self.root)
 
     def _as_txt(self):
-        nfe =  [u'NOTAFISCAL|1|\n',
+        nfe = [u'NOTAFISCAL|1|\n',
                self._nfe_data.as_txt()]
         return u''.join(nfe)
 
