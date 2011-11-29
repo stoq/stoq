@@ -65,7 +65,7 @@ class StoqlibCATGenerator(object):
         self.end = date
 
         if not printer:
-            raise CATError, _(u"There must be a printer configured")
+            raise CATError(_(u"There must be a printer configured"))
 
         self.printer = printer
         self.driver = printer.get_fiscal_driver()

@@ -121,7 +121,7 @@ class GtkPrintDialog(object):
 
     def _pdfmailto(self):
         if not os.path.exists(self._report.filename):
-            raise OSError, "the file does not exist"
+            raise OSError("the file does not exist")
         user = api.get_current_user(api.get_connection())
         os.system("/usr/local/bin/pdfmailto %s '%s'" % (
                                 self._report.filename, user.person.name))

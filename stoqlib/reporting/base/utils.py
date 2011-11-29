@@ -66,7 +66,7 @@ def print_file(filename, printer=None, extra_opts=[]):
     @type:             list of strings
     """
     if not os.path.exists(filename):
-        raise ValueError, "File %s not found" % filename
+        raise ValueError("File %s not found" % filename)
     options = " ".join(extra_opts)
     if printer:
         options += " -P%s" % printer
@@ -91,7 +91,7 @@ def print_preview(filename, keep_file=False):
     @type:             bool
     """
     if not os.path.exists(filename):
-        raise OSError, "the file does not exist"
+        raise OSError("the file does not exist")
 
     path = os.environ['PATH'].split(':')
 
