@@ -94,7 +94,7 @@ def calculate_delta_interval(interval_type, intervals):
     @param intervals: an int representing the number of intervals
     @returns: a L{relativedelta.relativedelta} object
     """
-    if not interval_types.has_key(interval_type):
+    if not interval_type in interval_type:
         raise KeyError('Invalid interval_type %r argument for '
                        'calculate_interval function.' % (interval_type,))
     if not type(intervals) == int:

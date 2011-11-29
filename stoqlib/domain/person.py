@@ -548,7 +548,7 @@ class PersonAdaptToClient(PersonAdapter):
     #
 
     def get_status_string(self):
-        if not self.statuses.has_key(self.status):
+        if not self.status in self.statuses:
             raise DatabaseInconsistency('Invalid status for client, '
                                         'got %d' % self.status)
         return self.statuses[self.status]

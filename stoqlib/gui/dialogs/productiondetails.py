@@ -166,7 +166,7 @@ class ProductionDetailsDialog(BaseEditor):
         # Add one column for each test from each product.
         products = dict()
         for item in self.model.get_items():
-            if products.has_key(item.product):
+            if item.product in products:
                 continue
             products[item.product] = 1
             for test in item.product.quality_tests:

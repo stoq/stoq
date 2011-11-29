@@ -69,10 +69,7 @@ class BaseStoqReport(ReportTemplate):
     report_name_prefix = "Stoq - "
 
     def __init__(self, *args, **kwargs):
-        if kwargs.has_key('do_footer'):
-            timestamp = kwargs['do_footer']
-        else:
-            timestamp = True
+        timestamp = kwargs.get('do_footer', True)
         ReportTemplate.__init__(self, timestamp=timestamp,
                                 username=self.get_username(), *args, **kwargs)
         logotype_path = _get_logotype_path(get_connection())
@@ -299,10 +296,7 @@ class ObjectListReport(SearchResultsReport):
         """
         row = []
         for column in self.get_columns():
-            if self._summary_row.has_key(column.name):
-                row.append(self._summary_row[column.name])
-            else:
-                row.append('')
+            row.append(self._summary_row.get(column.name, ''))
         if any(row) and row[0] == '':
             row[0] = _(u'Totals:')
 
