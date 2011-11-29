@@ -298,7 +298,7 @@ class PurchaseApp(SearchableAppWindow):
         qty = len(selected)
         if qty != 1:
             raise ValueError('You should have only one order selected, '
-                             'got %d instead' % qty )
+                             'got %d instead' % qty)
         purchase = selected[0].purchase
         if purchase.status == PurchaseOrder.ORDER_PENDING:
             self._new_order(purchase, edit_mode=False)

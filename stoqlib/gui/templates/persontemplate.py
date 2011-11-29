@@ -187,7 +187,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
             self.address_button.set_label(_("1 More Address..."))
         elif addresses > 2:
             self.address_button.set_label(_("%i More Addresses...")
-                                            % (addresses -1) )
+                                            % (addresses -1))
 
 class BasePersonRoleEditor(BaseEditor):
     """A base class for person role editors. This class can not be

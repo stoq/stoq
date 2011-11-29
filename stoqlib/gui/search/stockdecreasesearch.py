@@ -109,7 +109,7 @@ class StockDecreaseSearch(SearchDialog):
     def on_print_button_clicked(self, button):
         orders = self.results.get_selected_rows()
         if len(orders) == 1:
-            print_report(StockDecreaseReceipt, orders[0] )
+            print_report(StockDecreaseReceipt, orders[0])
 
     def on_details_button_clicked(self, button):
         orders = self.results.get_selected_rows()
