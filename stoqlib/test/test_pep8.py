@@ -27,7 +27,6 @@ Useful to early find syntax errors and other common problems.
 """
 
 import os
-import sys
 
 import pep8
 from twisted.trial import unittest
@@ -36,8 +35,6 @@ import stoq
 
 class TestPEP8(unittest.TestCase):
     def runPep8(self, path):
-        warnings = []
-        msgs = []
         result = 0
         for dirpath, dirnames, filenames in os.walk(path):
             for filename in filenames:
