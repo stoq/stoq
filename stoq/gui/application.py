@@ -729,6 +729,8 @@ class AppWindow(GladeDelegate):
     def hide_app(self):
         self.application_box.hide()
         if self.current_app:
+            if self.current_app.search:
+                self.current_app.search.save_columns()
             self.current_app.deactivate()
             if self.current_app.help_ui:
                 self.uimanager.remove_ui(self.current_app.help_ui)
@@ -761,8 +763,8 @@ class AppWindow(GladeDelegate):
         if not self.can_close_application():
             return False
 
-        if self.search:
-            self.search.save_columns()
+        if self.current_app and self.current_app.search:
+            self.current_app.search.save_columns()
         return True
 
     #
