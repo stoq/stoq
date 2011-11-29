@@ -87,4 +87,3 @@ class ImageHelper(object):
             self._image = self._image.scale_simple(
                 w, h, gtk.gdk.INTERP_BILINEAR)
             self._save_image()
-

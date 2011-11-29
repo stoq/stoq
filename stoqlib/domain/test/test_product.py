@@ -582,4 +582,3 @@ class TestProductQuality(DomainTest):
         self.assertEqual(test.get_range_value(), (Decimal(-5), Decimal(5)))
 
         self.assertRaises(AssertionError, test.get_boolean_value)
-

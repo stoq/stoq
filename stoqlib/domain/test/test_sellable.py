@@ -418,4 +418,3 @@ class TestSellable(DomainTest):
         category_price.remove()
         total = ClientCategoryPrice.selectBy(connection=self.trans).count()
         self.assertEquals(total, 0)
-

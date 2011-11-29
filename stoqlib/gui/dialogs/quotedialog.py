@@ -209,5 +209,3 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
             api.finish_transaction(trans, True)
             trans.close()
         return SimpleListDialog.confirm(self, *args)
-
-

@@ -117,9 +117,3 @@ for dirpath in ['stoq', 'stoqlib', 'plugins']:
     func = lambda self, path=path: self.runPyflakes(path)
     func.__name__ = name
     setattr(TestPyflakes, name, func)
-
-
-
-
-
-

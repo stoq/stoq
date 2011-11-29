@@ -97,4 +97,3 @@ class BaseWizard(PluggableWizard, RunnableView):
         if isinstance(self.conn, StoqlibTransaction):
             self.conn.retval = self.retval
         return super(BaseWizard, self).close()
-

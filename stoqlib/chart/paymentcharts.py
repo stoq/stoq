@@ -207,4 +207,3 @@ ORDER BY extract(day FROM paid_date);"""
         total_in = values.get('in', 0)
         total_out = values.get('out', 0)
         yield [day, total_in, total_out, total_in - total_out]
-

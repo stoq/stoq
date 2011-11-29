@@ -152,4 +152,3 @@ class TestNfeGenerator(DomainTest):
                        is_main_address=True,
                        person=person,
                        city_location=city)
-

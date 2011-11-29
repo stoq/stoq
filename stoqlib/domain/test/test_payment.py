@@ -426,4 +426,3 @@ class TestPaymentComment(DomainTest):
                                 connection=self.trans)
         self.assertEqual(payment.comments_number, 1)
         self.assertEqual(payment.comments[0], comment)
-

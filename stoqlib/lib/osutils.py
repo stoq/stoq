@@ -102,4 +102,3 @@ def read_registry_key(root, key, value):
         #log.info('Error while reading %s/%s/%s: %r' % (root, k, value, e))
         return None
     return reg_value
-

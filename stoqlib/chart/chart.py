@@ -68,5 +68,3 @@ def get_chart_class(chart_name):
     if not location:
         raise ValueError(chart_name)
     return namedAny(location)
-
-

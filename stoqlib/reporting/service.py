@@ -61,4 +61,3 @@ class ServicePriceReport(PriceReport):
     """This report show a list of services and it's prices."""
     report_name = _("Service Listing")
     main_object_name = (_("service"), _("services"))
-

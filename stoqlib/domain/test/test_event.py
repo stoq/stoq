@@ -34,4 +34,3 @@ class TestEvent(DomainTest):
         self.failUnless(events)
         self.assertEquals(events[0].description, "foo")
         self.assertEquals(events[0].event_type, Event.TYPE_SYSTEM)
-

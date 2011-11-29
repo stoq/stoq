@@ -208,5 +208,3 @@ class TestPluginManager(DomainTest):
         # Workaround to register _TestPlugin since is not really a plugin
         self._manager._plugin_descriptions[_TestPlugin.name] = None
         register_plugin(_TestPlugin)
-
-

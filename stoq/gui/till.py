@@ -471,4 +471,3 @@ class TillApp(SearchableAppWindow):
 
     def on_SearchFiscalTillOperations__activate(self, button):
         self._run_search_dialog(TillFiscalOperationsSearch)
-

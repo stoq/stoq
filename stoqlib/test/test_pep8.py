@@ -58,6 +58,7 @@ ERRORS = [
     'E251', # no spaces around keyword / parameter equals
     'W291', # trailing whitespace
     'W293', # blank line contains whitespace
+    'W391', # blank line at end of file
     'E401', # multiple imports on one line
     'W601', # in instead of dict.has_key
     'W602', # deprecated form of raising exception
@@ -74,9 +75,3 @@ for dirpath in ['stoq', 'stoqlib', 'plugins']:
     func = lambda self, path=path: self.runPep8(path)
     func.__name__ = name
     setattr(TestPEP8, name, func)
-
-
-
-
-
-
