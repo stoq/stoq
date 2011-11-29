@@ -748,7 +748,7 @@ class ProductQualityTest(Domain):
         elif self.success_value == 'False':
             return False
         else:
-            raise ValueError, self.success_value
+            raise ValueError(self.success_value)
 
     def get_range_value(self):
         assert self.test_type == self.TYPE_DECIMAL

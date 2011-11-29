@@ -392,8 +392,8 @@ class ObjectTableBuilder(ColumnTableBuilder):
         # If we set a virtual column in a table without header, the first line
         # (the supposed header) will have spanned cells
         if 1 in [c.virtual for c in self.columns]:
-            raise RuntimeError, 'Virtual columns in a table (%r) without' \
-                                ' headers is not implemented' % self
+            raise RuntimeError('Virtual columns in a table (%r) without'
+                               ' headers is not implemented' % self)
         return None
 
     def get_row_data(self, value):
@@ -414,21 +414,21 @@ class ObjectTableBuilder(ColumnTableBuilder):
         if total_expand and None in col_widths:
             msg = 'You cannot use auto-sized (%r) and expandable ' \
                   ' columns on the same table (%r)'
-            raise ValueError, msg % (cols[col_widths.index(None)], self)
+            raise ValueError(msg % (cols[col_widths.index(None)], self))
 
         if width and not total_expand:
-            raise ValueError, 'Setting table width without expanded' \
-                              ' col(s) doesn\'t make sense.'
+            raise ValueError('Setting table width without expanded'
+                             ' col(s) doesn\'t make sense.')
 
         if total_expand and not width:
-            raise ValueError, 'Expandable cols can only be used with ' \
-                              'fixed width table.'
+            raise ValueError('Expandable cols can only be used with '
+                              'fixed width table.')
 
         total_width = sum([w or 0 for w in col_widths])
 
         if width and total_width > width:
             msg = 'Columns width sum (%.2f) can\'t exceed table width (%.2f).'
-            raise RuntimeError, msg % (total_width, width)
+            raise RuntimeError(msg % (total_width, width))
 
         if total_expand:
             extra_width = width - total_width - COL_PADDING * len(cols)

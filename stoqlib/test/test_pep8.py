@@ -57,6 +57,7 @@ ERRORS = [
     'E111', # indentation is not a multiple of four
     'W291', # trailing whitespace
     'W601', # in instead of dict.has_key
+    'W602', # deprecated form of raising exception
 ]
 root = os.path.dirname(os.path.dirname(stoq.__file__)) + '/'
 for dirpath in ['stoq', 'stoqlib', 'plugins']:
