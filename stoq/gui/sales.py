@@ -119,9 +119,9 @@ class SalesApp(SearchableAppWindow):
              "<Control><Alt>o", _("Search for salespersons commissions")),
 
             ("Print", gtk.STOCK_PRINT, _("Print"), '',
-             _("Print this sale listing")),
+             _("Print a report for this sale listing")),
             ("Return", gtk.STOCK_CANCEL, _("Return sale"), '',
-             _("Return the selected sale and cancel it's payments")),
+             _("Return the selected sale, canceling it's payments")),
             ("Edit", gtk.STOCK_EDIT, _("Edit"), '',
              _("Edit the selected sale, allowing you to change the details "
                "of it")),

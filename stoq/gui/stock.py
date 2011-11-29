@@ -175,7 +175,7 @@ class StockApp(SearchableAppWindow):
         self.app.launcher.NewToolItem.set_tooltip(
             _("Create a new receiving order"))
         self.app.launcher.SearchToolItem.set_tooltip(
-            _("Search for a stock item"))
+            _("Search for stock items"))
 
         self.check_open_inventory()
         self._update_widgets()
