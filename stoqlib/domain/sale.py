@@ -539,19 +539,20 @@ class Sale(Domain):
         self._set_sale_status(Sale.STATUS_CONFIRMED)
 
         # do not log money payments twice
-        if all(payment.method.method_name == 'money'
-                for payment in self.group.payments):
-            return
-        if self.client:
-            client_name = _("client '%s'") % (self.client.person.name, )
-        else:
-            client_name = _('without a client')
-        Event.log(Event.TYPE_SALE,
-                _("Sale %s, total value %2.2f, %s "
-                  "was confirmed") % (
-                  self.get_order_number_str(),
-                  self.get_total_sale_amount(),
-                  client_name))
+        if not all(payment.method.method_name == 'money'
+                   for payment in self.group.payments):
+            if self.client:
+                msg = _("Sale {sale_number} to client {client_name} was "
+                        "confirmed with value {total_value:.2f}.").format(
+                        sale_number=self.get_order_number_str(),
+                        client_name=self.client.person.name,
+                        total_value=self.get_total_sale_amount())
+            else:
+                msg = _("Sale {sale_number} without a client was "
+                        "confirmed with value {total_value:.2f}.").format(
+                        sale_number=self.get_order_number_str(),
+                        total_value=self.get_total_sale_amount())
+            Event.log(Event.TYPE_SALE, msg)
 
     def set_paid(self):
         """Mark the sale as paid
@@ -573,18 +574,31 @@ class Sale(Domain):
 
         if all(payment.method.method_name == 'money'
                 for payment in self.group.payments):
-            msg = _("Sale %s, total value %2.2f, %s was paid and confirmed")
+            # Money payments are confirmed and paid, so lof them that way
+            if self.client:
+                msg = _("Sale {sale_number} to client {client_name} was paid "
+                        "and confirmed with value {total_value:.2f}.").format(
+                        sale_number=self.get_order_number_str(),
+                        client_name=self.client.person.name,
+                        total_value=self.get_total_sale_amount())
+            else:
+                msg = _("Sale {sale_number} without a client was paid "
+                        "and confirmed with value {total_value:.2f}.").format(
+                        sale_number=self.get_order_number_str(),
+                        total_value=self.get_total_sale_amount())
         else:
-            msg = _("Sale %s, total value %2.2f, %s as paid")
-
-        if self.client:
-            client_name = _("client '%s'") % (self.client.person.name, )
-        else:
-            client_name = _('without a client')
-        Event.log(Event.TYPE_SALE,
-                  msg % (self.get_order_number_str(),
-                         self.get_total_sale_amount(),
-                         client_name))
+            if self.client:
+                msg = _("Sale {sale_number} to client {client_name} was paid "
+                        "with value {total_value:.2f}.").format(
+                        sale_number=self.get_order_number_str(),
+                        client_name=self.client.person.name,
+                        total_value=self.get_total_sale_amount())
+            else:
+                msg = _("Sale {sale_number} without a client was paid "
+                        "with value {total_value:.2f}.").format(
+                        sale_number=self.get_order_number_str(),
+                        total_value=self.get_total_sale_amount())
+        Event.log(Event.TYPE_SALE, msg)
 
     def set_not_paid(self):
         """Mark a sale as not paid. This happens when the user sets a
@@ -641,17 +655,19 @@ class Sale(Domain):
         self._set_sale_status(Sale.STATUS_RETURNED)
 
         if self.client:
-            client_name = _("client '%s'") % (self.client.person.name, )
+            msg = _("Sale {sale_number} to client {client_name} was returned "
+                    "with value {total_value:.2f}. Reason: {reason}").format(
+                    sale_number=self.get_order_number_str(),
+                    client_name=self.client.person.name,
+                    total_value=self.get_total_sale_amount(),
+                    reason=renegotiation.reason)
         else:
-            client_name = _('without a client')
-        Event.log(Event.TYPE_SALE,
-                _("Sale %s, total value %2.2f, %s "
-                  "was returned, reason: '%s'") % (
-                  self.get_order_number_str(),
-                  self.get_total_sale_amount(),
-                  client_name,
-                  renegotiation.reason))
-
+            msg = _("Sale {sale_number} without a client was returned "
+                    "with value {total_value:.2f}. Reason: {reason}").format(
+                    sale_number=self.get_order_number_str(),
+                    total_value=self.get_total_sale_amount(),
+                    reason=renegotiation.reason)
+        Event.log(Event.TYPE_SALE, msg)
 
     #
     # Accessors

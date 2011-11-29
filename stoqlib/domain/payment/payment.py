@@ -227,17 +227,19 @@ class Payment(Domain):
         if self.method.operation.create_transaction():
             AccountTransaction.create_from_payment(self, account)
 
+
         if self.value == self.paid_value:
-            Event.log(Event.TYPE_PAYMENT,
-                    _("%s payment with value %2.2f was paid") % (
-                    self.method.method_name.capitalize(),
-                    self.value))
+            msg = _("{method} payment with value {value:.2f} was paid").format(
+                    method=self.method.method_name,
+                    value=self.value)
         else:
-            Event.log(Event.TYPE_PAYMENT,
-                    _("%s payment with value original value %2.2f was paid "
-                      "with value %2.2f") % (
-                    self.method.method_name.capitalize(),
-                    self.value, self.paid_value))
+            msg = _("{method} payment with value original value "
+                    "{original_value:.2f} was paid with value "
+                    "{value:.2f}").format(
+                    method=self.method.method_name,
+                    original_value=self.value,
+                    value=self.paid_value)
+        Event.log(Event.TYPE_PAYMENT, msg.capitalize())
 
     def cancel(self, change_entry=None):
         # TODO Check for till entries here and call cancel_till_entry if
@@ -261,10 +263,10 @@ class Payment(Domain):
             change_entry.last_status = old_status
             change_entry.new_status = self.status
 
-        Event.log(Event.TYPE_PAYMENT,
-                _("%s payment with value %2.2f was cancelled.") % (
-                self.method.method_name.capitalize(),
-                self.value))
+        msg = _("{method} payment with value {value:.2f} was cancelled").format(
+                method=self.method.method_name,
+                value=self.value)
+        Event.log(Event.TYPE_PAYMENT, msg.capitalize())
 
     def change_due_date(self, new_due_date):
         """Changes the payment due date.

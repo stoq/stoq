@@ -182,9 +182,9 @@ class PurchaseApp(SearchableAppWindow):
 
     def activate(self):
         self.app.launcher.NewToolItem.set_tooltip(
-            _("Create a new order"))
+            _("Create a new purchase order"))
         self.app.launcher.SearchToolItem.set_tooltip(
-            _("Search for an order"))
+            _("Search for purchase orders"))
         self._update_view()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
 
@@ -209,7 +209,7 @@ class PurchaseApp(SearchableAppWindow):
             self.search.set_message("%s\n\n%s" % (
                 _("No orders could be found."),
                 _("Would you like to %s ?") % (
-                    '<a href="new_order">%s</a>' % _("add a new order"))
+                    '<a href="new_order">%s</a>' % _("create a new order"))
                 ))
 
         # FIXME: Push number of results to Statusbar
