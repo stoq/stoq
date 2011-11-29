@@ -107,12 +107,12 @@ class ReceivableApp(SearchableAppWindow):
 
             ('PrintToolMenu', _('Print')),
             ('PrintList', gtk.STOCK_PRINT, _('Payment List'), '',
-             _('Print a report for this payment listing'),),
+             _('Print a report for this payment listing'), ),
 
             ('Receive', gtk.STOCK_APPLY, _('Receive'), '',
              _('Receive the selected payments')),
             ('Details', gtk.STOCK_INFO, _('Details'), '',
-             _('Show details for the selected payment'),)
+             _('Show details for the selected payment'), )
         ]
         self.receivable_ui = self.add_ui_actions(None, actions,
                                                  filename='receivable.xml')

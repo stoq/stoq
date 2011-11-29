@@ -155,7 +155,7 @@ class ProductionOrderReport(BaseStoqReport):
             OTC(_(u'Produced'), lambda obj: '%s' % format_quantity(
                obj.produced), align=RIGHT, width=100),
             OTC(_(u'Lost'), lambda obj: '%s' % format_quantity(
-               obj.lost), align=RIGHT, width=100),]
+               obj.lost), align=RIGHT, width=100)]
 
     def _setup_material_items_table(self):
         self.add_paragraph(_(u'Materials'), style='Title')
@@ -191,7 +191,7 @@ class ProductionOrderReport(BaseStoqReport):
             OTC(_(u'To Purchase'), lambda obj: '%s' % format_quantity(
                obj.to_purchase), align=RIGHT, width=80),
             OTC(_(u'To Make'), lambda obj: '%s' % format_quantity(
-               obj.to_make), align=RIGHT, width=80),]
+               obj.to_make), align=RIGHT, width=80)]
 
     def _setup_service_items_table(self):
         services = list(self._production.get_service_items())
@@ -210,7 +210,7 @@ class ProductionOrderReport(BaseStoqReport):
             OTC(_(u'Unit'), lambda obj: '%s' % obj.get_unit_description(),
                 align=LEFT, width=60),
             OTC(_(u'Quantity'), lambda obj: '%s' % format_quantity(
-                obj.quantity), align=RIGHT, width=100),]
+                obj.quantity), align=RIGHT, width=100)]
 
     #
     # BaseStoqReport

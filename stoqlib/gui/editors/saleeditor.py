@@ -45,7 +45,7 @@ class SaleQuoteItemEditor(BaseEditor):
     proxy_widgets = ['price',
                      'quantity',
                      'cfop',
-                     'total',]
+                     'total']
 
     def __init__(self, conn, model):
         self.icms_slave = None

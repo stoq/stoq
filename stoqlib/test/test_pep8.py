@@ -43,7 +43,7 @@ class TestPEP8(unittest.TestCase):
                 filename = os.path.join(dirpath, filename)
                 pep8.process_options([
                     '--repeat',
-                    '--select=%s' % (','.join(ERRORS),), filename])
+                    '--select=%s' % (','.join(ERRORS), ), filename])
                 pep8.input_file(filename)
                 result += pep8.get_count()
 
@@ -54,6 +54,7 @@ ERRORS = [
     'E111', # indentation is not a multiple of four
     'E112', # expected an indented block
     'E113', # unexpected indentation
+    'E231', # E231 missing whitespace after ','/':'
     'E251', # no spaces around keyword / parameter equals
     'W291', # trailing whitespace
     'W293', # blank line contains whitespace
@@ -69,7 +70,7 @@ ERRORS = [
 root = os.path.dirname(os.path.dirname(stoq.__file__)) + '/'
 for dirpath in ['stoq', 'stoqlib', 'plugins']:
     path = os.path.abspath(os.path.join(root, dirpath))
-    name = 'test_%s_pep8' % (dirpath,)
+    name = 'test_%s_pep8' % (dirpath, )
     func = lambda self, path=path: self.runPep8(path)
     func.__name__ = name
     setattr(TestPEP8, name, func)

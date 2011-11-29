@@ -459,7 +459,7 @@ _details = [
         _('Number of digits to use for product cost'),
         _('Set this parameter accordingly to the number of digits of the '
           'products you purchase'),
-        int, initial=2, range=[2,8],),
+        int, initial=2, range=[2, 8]),
 
     ParameterDetails(
         'SCALE_BARCODE_FORMAT',
@@ -746,7 +746,7 @@ class ParameterAccess(ClassInittableObject):
             if detail.key == field_name:
                 return detail
         else:
-            raise KeyError("No such a parameter: %s" % (field_name,))
+            raise KeyError("No such a parameter: %s" % (field_name, ))
 
     def get_parameter_type(self, field_name):
         detail = self.get_parameter_constant(field_name)

@@ -45,7 +45,7 @@ class PersonAdaptToPublisher(PersonAdapter):
      STATUS_INACTIVE) = range(2)
 
     statuses = {STATUS_ACTIVE:    _(u'Active'),
-                 STATUS_INACTIVE: _(u'Inactive'),}
+                 STATUS_INACTIVE: _(u'Inactive')}
 
     status = IntCol(default=STATUS_ACTIVE)
 

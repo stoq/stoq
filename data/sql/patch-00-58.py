@@ -18,7 +18,7 @@ def apply_patch(trans):
               'invoice_field',
               'invoice_printer',
               'inventory',
-              'inventory_item',]
+              'inventory_item']
     for table in tables:
         for column in columns:
             trans.query("""

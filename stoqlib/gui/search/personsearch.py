@@ -196,7 +196,7 @@ class AbstractCreditProviderSearch(BasePersonSearch):
                 SearchColumn('debit_pre_dated_fee', _('Debit pre-dated fee'),
                              data_type=Decimal, width=190, visible=False),
                 SearchColumn('monthly_fee', _('Fixed fee'),
-                             data_type=Decimal, width=100, visible=False),]
+                             data_type=Decimal, width=100, visible=False)]
 
     def get_editor_model(self, provider_view):
         return provider_view.provider

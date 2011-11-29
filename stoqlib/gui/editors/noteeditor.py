@@ -27,7 +27,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 class NoteEditor(BaseEditor):
     """ Simple editor that offers a label and a textview. """
     gladefile = "NoteSlave"
-    proxy_widgets = ('notes',)
+    proxy_widgets = ('notes', )
     size = (500, 200)
 
     def __init__(self, conn, model, attr_name, title='', label_text=None,

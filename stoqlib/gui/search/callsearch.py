@@ -94,7 +94,7 @@ class CallsSearch(SearchEditor):
                 SearchColumn('description', title=_('Description'),
                              data_type=str, width=150, expand=True),
                 SearchColumn('attendant', title=_('Attendant'),
-                             data_type=str, width=100, expand=True),]
+                             data_type=str, width=100, expand=True)]
 
     def executer_query(self, query, having, conn):
         client = self.person

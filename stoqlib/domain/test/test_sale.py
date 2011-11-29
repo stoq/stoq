@@ -666,7 +666,7 @@ class TestSale(DomainTest):
         commissions = Commission.selectBy(sale=sale,
                                           connection=self.trans)
         self.assertEquals(commissions.count(), 1)
-        self.assertEquals(commissions[0].value ,Decimal('20.00'))
+        self.assertEquals(commissions[0].value, Decimal('20.00'))
 
     def testCommissionAmountMultiple(self):
         sale = self.create_sale()

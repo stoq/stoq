@@ -251,10 +251,10 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
                      'subtotal_lbl',
                      'salesperson',
                      'client',
-                     'transporter',)
+                     'transporter', )
 
-    invoice_widgets = ('invoice_number',)
-    cfop_widgets = ('cfop',)
+    invoice_widgets = ('invoice_number', )
+    cfop_widgets = ('cfop', )
 
     def __init__(self, wizard, conn, model, payment_group,
                  invoice_model):

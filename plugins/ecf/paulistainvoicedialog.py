@@ -41,7 +41,7 @@ class PaulistaInvoiceDialog(BaseEditor):
     size = (260, 160)
     model_type = Settable
     gladefile = "PaulistaInvoice"
-    proxy_widgets = ("document",)
+    proxy_widgets = ("document", )
     cpf_mask = u"000.000.000-00"
     cnpj_mask = u"00.000.000/0000-00"
 

@@ -143,7 +143,7 @@ class ProductTaxTemplate(Domain):
      TYPE_IPI) = range(2)
 
     types = {TYPE_ICMS:     u"ICMS",
-             TYPE_IPI:      u"IPI",}
+             TYPE_IPI:      u"IPI"}
 
     type_map = {TYPE_ICMS:     ProductIcmsTemplate,
                 TYPE_IPI:      ProductIpiTemplate}
@@ -264,7 +264,7 @@ class SaleItemIcms(BaseICMS):
         branch = sale_item.sale.branch
 
         # Simples nacional
-        if branch.crt in (1,2):
+        if branch.crt in [1, 2]:
             self._update_simples(sale_item)
         else:
             self._update_normal(sale_item)

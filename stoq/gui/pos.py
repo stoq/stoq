@@ -169,7 +169,7 @@ class PosApp(AppWindow):
         self.toolbar_button_box.set_focus_chain([self.checkout_button,
                                                  self.delivery_button,
                                                  self.edit_item_button,
-                                                 self.remove_item_button,])
+                                                 self.remove_item_button])
 
         # Setting up the barcode area
         self.item_hbox.set_focus_chain([self.barcode, self.quantity,

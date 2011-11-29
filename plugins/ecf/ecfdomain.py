@@ -167,14 +167,14 @@ class ECFPrinter(Domain):
             if constant is None:
                 raise DeviceError(_(
                     "fiscal printer is missing a constant for the custom "
-                    "tax constant '%s'") %  (sellable_constant.description,))
+                    "tax constant '%s'") %  (sellable_constant.description, ))
         else:
             constant = DeviceConstant.get_tax_constant(
                 self, sellable_constant.tax_type, conn)
             if constant is None:
                 raise DeviceError(_(
                     "fiscal printer is missing a constant for tax "
-                    "constant '%s'") %  (sellable_constant.description,))
+                    "constant '%s'") %  (sellable_constant.description, ))
 
         return constant
 
@@ -331,7 +331,7 @@ class ECFDocumentHistory(Domain):
     """
     (TYPE_MEMORY_READ,
      TYPE_Z_REDUCTION,
-     TYPE_SUMMARY,) = range(3)
+     TYPE_SUMMARY) = range(3)
 
     printer = ForeignKey("ECFPrinter")
     type = IntCol()

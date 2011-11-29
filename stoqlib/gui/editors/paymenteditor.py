@@ -300,7 +300,7 @@ class LonelyPaymentDetailsDialog(BaseEditor):
                      'discount',
                      'due_date',
                      'paid_date',
-                     'status',]
+                     'status']
 
     def __init__(self, conn, payment):
         BaseEditor.__init__(self, conn, payment)
@@ -328,7 +328,7 @@ class LonelyPaymentDetailsDialog(BaseEditor):
 
     def _get_columns(self):
         return [Column('change_date', _("When"),
-                        data_type=datetime.date, sorted=True,),
+                        data_type=datetime.date, sorted=True, ),
                 Column('description', _("Payment"),
                         data_type=str, expand=True,
                         ellipsize=pango.ELLIPSIZE_END),

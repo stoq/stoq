@@ -147,7 +147,7 @@ class SaleOrderReport(BaseStoqReport):
                        Sale.STATUS_CANCELLED: 'cancel_date',
                        Sale.STATUS_QUOTE: 'open_date',
                        Sale.STATUS_RETURNED: 'return_date',
-                       Sale.STATUS_RENEGOTIATED: 'close_date',}
+                       Sale.STATUS_RENEGOTIATED: 'close_date'}
         return getattr(self.sale, status_date[status])
 
     #
@@ -179,7 +179,7 @@ class SalesReport(ObjectListReport):
 
     def _setup_sales_table(self):
         total = sum([sale.total or currency(0) for sale in self.sale_list])
-        self.add_summary_by_column(_(u'Total'),get_formatted_price(total))
+        self.add_summary_by_column(_(u'Total'), get_formatted_price(total))
         self.add_object_table(self.sale_list, self.get_columns(),
                               summary_row=self.get_summary_row())
 
@@ -323,7 +323,7 @@ class SalesPersonReport(SearchResultsReport):
             va = 0
             if total_amount:
                 va = total_amount/sales_qty
-            text = _("Sold value per sales %s") % (get_formatted_price(va,))
+            text = _("Sold value per sales %s") % (get_formatted_price(va, ))
 
         self.add_object_table(self.salesperson_list, self._get_columns(),
                               summary_row=summary_row)

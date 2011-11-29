@@ -101,7 +101,7 @@ class TributarySituationSlave(BaseEditorSlave):
 class SellableDetailsSlave(BaseEditorSlave):
     """This is base slave for product or service details."""
     gladefile = 'SellableDetailsSlave'
-    proxy_widgets = ['notes',]
+    proxy_widgets = ['notes']
     model_type = Sellable
     image_model = None
 

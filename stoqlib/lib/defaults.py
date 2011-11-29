@@ -96,7 +96,7 @@ def calculate_delta_interval(interval_type, intervals):
     """
     if not interval_type in interval_types:
         raise KeyError('Invalid interval_type %r argument for '
-                       'calculate_interval function.' % (interval_type,))
+                       'calculate_interval function.' % (interval_type, ))
     if not type(intervals) == int:
         raise TypeError('Invalid type for intervals argument. It must be '
                         'integer, got %s' % type(intervals))

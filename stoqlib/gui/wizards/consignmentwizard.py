@@ -237,7 +237,7 @@ class CloseConsignmentPaymentStep(BaseWizardStep):
                                          finish_on_total=False)
         self.attach_slave('place_holder', self.slave)
 
-    def _validate_step(self,value):
+    def _validate_step(self, value):
         can_finish = value and self.slave.can_confirm()
         self.wizard.refresh_next(can_finish)
 

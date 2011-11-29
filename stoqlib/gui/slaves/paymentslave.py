@@ -921,7 +921,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         self._setup_widgets()
 
     def setup_proxies(self):
-        self._proxy = self.add_proxy(self._holder, ['base_value',])
+        self._proxy = self.add_proxy(self._holder, ['base_value'])
 
     # The two methods below are required to be a payment method slave without
     # inheriting BasePaymentMethodSlave.
@@ -1028,7 +1028,7 @@ class MultipleMethodSlave(BaseEditorSlave):
                        width=80),
                 Column('value', title=_(u'Value'), data_type=currency),
                 Column('due_date', title=_('Due date'),
-                        data_type=datetime.date),]
+                        data_type=datetime.date)]
 
     def _add_method(self, payment_method):
         if not payment_method.is_active:
@@ -1254,7 +1254,7 @@ def register_payment_slaves():
         ('check', CheckMethodSlave),
         ('card', CardMethodSlave),
         ('store_credit', StoreCreditMethodSlave),
-        ('multiple', MultipleMethodSlave),]:
+        ('multiple', MultipleMethodSlave)]:
 
         method = PaymentMethod.get_by_name(conn, method_name)
         dsm.register(method, slave_class)

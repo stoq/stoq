@@ -106,7 +106,7 @@ class CSVImporter(Importer):
             self.process_one(row, row.fields, trans)
         except Exception:
             print
-            print 'Error while processing row %d %r' % (self.lineno, row,)
+            print 'Error while processing row %d %r' % (self.lineno, row, )
             print
             raise
 

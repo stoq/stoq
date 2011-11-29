@@ -124,7 +124,7 @@ class DeliverySearch(SearchDialog):
     size = (750, 450)
 
     def create_filters(self):
-        self.set_text_field_columns(['description',])
+        self.set_text_field_columns(['description'])
         self.set_searchbar_labels(_('Items matching:'))
 
     def get_columns(self):
@@ -161,7 +161,7 @@ class SoldItemsByBranchSearch(SearchDialog):
         self.results.connect('has_rows', self._on_results__has_rows)
 
     def create_filters(self):
-        self.set_text_field_columns(['description',])
+        self.set_text_field_columns(['description'])
         self.set_searchbar_labels(_('Items matching:'))
         self.executer.set_query(self.executer_query)
 

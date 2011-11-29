@@ -152,7 +152,7 @@ class PurchaseOrder(Domain):
                 ORDER_PENDING:      _(u'Pending'),
                 ORDER_CONFIRMED:    _(u'Confirmed'),
                 ORDER_CLOSED:       _(u'Closed'),
-                ORDER_CONSIGNED:    _(u'Consigned'),}
+                ORDER_CONSIGNED:    _(u'Consigned')}
 
     (FREIGHT_FOB,
      FREIGHT_CIF) = range(2)
@@ -316,7 +316,7 @@ class PurchaseOrder(Domain):
             raise ValueError(
                 _('Invalid order status, it should be '
                   'ORDER_PENDING or ORDER_CONSIGNED, got %s') % (
-                self.get_status_str(),))
+                self.get_status_str(), ))
 
         transaction = IPaymentTransaction(self)
         transaction.confirm()
@@ -339,7 +339,7 @@ class PurchaseOrder(Domain):
         if self.status != PurchaseOrder.ORDER_PENDING:
             raise ValueError(
                 _('Invalid order status, it should be '
-                  'ORDER_PENDING, got %s') % (self.get_status_str(),))
+                  'ORDER_PENDING, got %s') % (self.get_status_str(), ))
 
         self.responsible = get_current_user(self.get_connection())
         self.status = PurchaseOrder.ORDER_CONSIGNED

@@ -72,7 +72,7 @@ class SalesApp(SearchableAppWindow):
                  Sale.STATUS_CANCELLED: 'cancel_date',
                  Sale.STATUS_QUOTE: 'open_date',
                  Sale.STATUS_RETURNED: 'return_date',
-                 Sale.STATUS_RENEGOTIATED: 'close_date',}
+                 Sale.STATUS_RENEGOTIATED: 'close_date'}
 
     def __init__(self, app):
         self.summary_label = None

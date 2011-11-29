@@ -67,7 +67,7 @@ STYLE_SHEET.add(ParagraphStyle(
     parent=STYLE_SHEET['Normal'],
     fontName='Vera',
     alignment=TA_LEFT,
-    leftIndent=18,))
+    leftIndent=18))
 
 STYLE_SHEET.add(ParagraphStyle(
     'Normal-Bold',
@@ -108,13 +108,13 @@ STYLE_SHEET.add(ParagraphStyle(
     parent=STYLE_SHEET["Normal"],
     alignment=TA_LEFT,
     leftIndent=0,
-    rightIndent=0,))
+    rightIndent=0))
 
 STYLE_SHEET.add(ParagraphStyle(
     "TableHeader",
     parent=STYLE_SHEET["TableCell"],
     fontName="Vera-B",
-    leading=13,))
+    leading=13))
 
 # This is a total padding preview used to calculate the expanded width for the
 # columns:
@@ -135,11 +135,11 @@ DEFAULT_MARGIN = 5
 SIGNATURE_FONT = ('Vera', 8)
 
 default_table_cmds = (
-    ('LEADING', (0,0), (-1,-1), 10),
-    ('LEFTPADDING', (0,0), (-1,-1), 6),
-    ('RIGHTPADDING', (0,0), (-1,-1), 6),
-    ('TOPPADDING', (0,0), (-1,-1), 3),
-    ('BOTTOMPADDING', (0,0), (-1,-1), 3))
+    ('LEADING', (0, 0), (-1, -1), 10),
+    ('LEFTPADDING', (0, 0), (-1, -1), 6),
+    ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+    ('TOPPADDING', (0, 0), (-1, -1), 3),
+    ('BOTTOMPADDING', (0, 0), (-1, -1), 3))
 
 TABLE_LINE = (1, colors.black)
 

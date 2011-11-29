@@ -84,12 +84,12 @@ class SaleDetailsDialog(BaseEditor):
                      'subtotal_lbl',
                      'surcharge_lbl',
                      'discount_lbl',
-                     'invoice_number',)
+                     'invoice_number', )
     payment_widgets = ('total_discount',
                        'total_interest',
                        'total_penalty',
                        'total_paid',
-                       'total_value',)
+                       'total_value', )
 
     def __init__(self, conn, model=None, visual_mode=False):
         """ Creates a new SaleDetailsDialog object
@@ -178,7 +178,7 @@ class SaleDetailsDialog(BaseEditor):
 
     def _get_payments_info_columns(self):
         return [Column('change_date', _(u"When"),
-                        data_type=datetime.date, sorted=True,),
+                        data_type=datetime.date, sorted=True, ),
                 Column('description', _(u"Payment"),
                         data_type=str, expand=True,
                         ellipsize=pango.ELLIPSIZE_END),

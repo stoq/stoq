@@ -411,7 +411,7 @@ class CATRegister(object):
                                            kwargs.values())])
         for key in kwargs:
             if key in sent_args:
-                raise CATRegister("%s specified two times" % (key,))
+                raise CATRegister("%s specified two times" % (key, ))
 
         self._values = {}
         for (name, length, argtype) in self.register_fields:

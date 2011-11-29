@@ -62,7 +62,7 @@ def drop_database(dbname, settings=None):
         for i in range(3):
             try:
                 conn.dropDatabase(dbname, ifExists=True)
-                log.info("Dropped database %s" % (dbname,))
+                log.info("Dropped database %s" % (dbname, ))
                 break
             except Exception, e:
                 time.sleep(1)
@@ -77,7 +77,7 @@ def clean_database(dbname):
     """Cleans a database. If the database does not exist, it will be created.
     @param dbname: name of the database.
     """
-    log.info("Cleaning database %s" % (dbname,))
+    log.info("Cleaning database %s" % (dbname, ))
 
     try:
         drop_database(dbname)
@@ -187,7 +187,7 @@ def start_shell(command=None, quiet=False):
         args.append(settings.dbname)
 
         print 'Connecting to %s' % (
-            settings.get_connection_uri(filter_password=True),)
+            settings.get_connection_uri(filter_password=True), )
         proc = Process(args)
         proc.wait()
     else:
@@ -360,7 +360,7 @@ def check_version(conn):
         try:
             svs = map(int, parts)
         except ValueError:
-            log.info("Error getting server version: %s" % (server_version,))
+            log.info("Error getting server version: %s" % (server_version, ))
             return
 
         # Client version
@@ -380,13 +380,13 @@ def check_version(conn):
         parts = line.split(' ')
         #assert len(parts) == 3, parts
         if len(parts) != 3:
-            log.info("Error getting psql version: %s" % (line,))
+            log.info("Error getting psql version: %s" % (line, ))
             return
 
         client_version = parts[2]
         #assert client_version.count('.') == 2, line
         if client_version.count('.') != 2:
-            log.info("Error getting pg version: %s" % (client_version,))
+            log.info("Error getting pg version: %s" % (client_version, ))
             return
 
         cvs = map(int, client_version.split('.'))[:2]

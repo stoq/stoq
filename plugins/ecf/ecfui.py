@@ -204,7 +204,7 @@ class ECFUI(object):
             self._printer.cancel()
 
     def _open_till(self, till):
-        log.info('ECFCouponPrinter.open_till(%r)' % (till,))
+        log.info('ECFCouponPrinter.open_till(%r)' % (till, ))
 
         # Callsite catches DeviceError
         self._validate_printer()
@@ -259,7 +259,7 @@ class ECFUI(object):
                          "if you want to save the paulista invoice file. "
                          "Go to the admin application and fill the "
                          "required information for the ECF."),
-                buttons=((_(u"Cancel Close Till"), gtk.RESPONSE_CANCEL),))
+                buttons=((_(u"Cancel Close Till"), gtk.RESPONSE_CANCEL), ))
             return False
 
         retval = True
@@ -327,7 +327,7 @@ class ECFUI(object):
         printer.last_sale = None
 
     def _add_cash(self, till, value):
-        log.info('ECFCouponPrinter.add_cash(%r, %r)' % (till, value,))
+        log.info('ECFCouponPrinter.add_cash(%r, %r)' % (till, value, ))
 
         # XXX: this is so ugly, but the printer stops responding
         # if its printing something. We should wait a little bit...
@@ -339,7 +339,7 @@ class ECFUI(object):
         self._printer.add_cash(value)
 
     def _remove_cash(self, till, value):
-        log.info('ECFCouponPrinter.remove_cash(%r, %r)' % (till, value,))
+        log.info('ECFCouponPrinter.remove_cash(%r, %r)' % (till, value, ))
 
         # Callsite catches DeviceError
         self._validate_printer()
@@ -347,7 +347,7 @@ class ECFUI(object):
         self._printer.remove_cash(value)
 
     def _confirm_sale(self, sale):
-        log.info('ECFCouponPrinter.confirm_sale(%r)' % (sale,))
+        log.info('ECFCouponPrinter.confirm_sale(%r)' % (sale, ))
 
         self._validate_printer()
 

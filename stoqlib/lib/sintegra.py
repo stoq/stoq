@@ -56,11 +56,11 @@ class SintegraFile(object):
         numbers = [f.sintegra_number for f in self._registers]
         if register.sintegra_unique:
             if register.sintegra_number in numbers:
-                raise SintegraError("%s can only be added once" % (register.sintegra_number,))
+                raise SintegraError("%s can only be added once" % (register.sintegra_number, ))
         if register.sintegra_requires:
             for number in register.sintegra_requires:
                 if not number in numbers:
-                    raise SintegraError("%s must be added at this point" % (number,))
+                    raise SintegraError("%s must be added at this point" % (number, ))
 
         self._registers.append(register)
 
@@ -187,7 +187,7 @@ class SintegraFile(object):
         if product_code is None:
             product_code = " " * 14
         else:
-            code = '%014s' % (product_code,)
+            code = '%014s' % (product_code, )
             product_code = code.replace(' ', '0')
         if cst is None:
             cst = ' ' * 3
@@ -311,7 +311,7 @@ class SintegraRegister(object):
                           for field in zip(self.sintegra_fields, args)])
         for key in kwargs:
             if key in sent_args:
-                raise SintegraRegister("%s specified two times" % (key,))
+                raise SintegraRegister("%s specified two times" % (key, ))
 
         total = 0
         self._values = {}
@@ -562,7 +562,7 @@ def test():
         'CANDEIAS', 'SP', int('0710802316'),
         20070401, 20070430, '331'))
     s.add(SintegraRegister11(
-        'RODOVIA BA 000 KM 00', 12,',CX',
+        'RODOVIA BA 000 KM 00', 12, ',CX',
         'POSTAL 60', 43800000, 'EDSON / PEDRO',
         int('07100000000')))
     s.add_fiscal_coupon(datetime.date(2007, 4, 1),

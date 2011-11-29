@@ -122,7 +122,7 @@ class ProductionQuoteDialog(BaseEditor):
                 Column('obj.responsible_name', title=_(u"Responsible"),
                         data_type=str),
                 Column('obj.open_date', title=_(u"Opened"),
-                        data_type=datetime.date),]
+                        data_type=datetime.date)]
 
     def _select(self, productions, select_value):
         for production in productions:

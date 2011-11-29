@@ -81,7 +81,7 @@ class ProductionItemsSearch(SearchDialog):
         self._print_button.show()
 
     def create_filters(self):
-        self.set_text_field_columns(['description',])
+        self.set_text_field_columns(['description'])
         self.set_searchbar_labels(_(u'matching:'))
 
         statuses = [(desc, i) for i, desc in ProductionOrder.statuses.items()]
@@ -105,7 +105,7 @@ class ProductionItemsSearch(SearchDialog):
                 SearchColumn('produced', title=_(u'Produced'),
                               data_type=Decimal),
                 SearchColumn('lost', title=_(u'Lost'), data_type=Decimal,
-                              visible=False),]
+                              visible=False)]
 
     def update_widgets(self):
         self._print_button.set_sensitive(len(self.results) > 0)
@@ -116,7 +116,7 @@ class ProductionItemsSearch(SearchDialog):
 
     def _on_print_button__clicked(self, widget):
         print_report(ProductionItemReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters(),)
+                     filters=self.search.get_search_filters(), )
 
 
 class ProductionHistorySearch(ProductSearchQuantity):
@@ -125,6 +125,6 @@ class ProductionHistorySearch(ProductSearchQuantity):
 
     def _on_print_button__clicked(self, widget):
         print_report(ProductionItemReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters(),)
+                     filters=self.search.get_search_filters(), )
 
 

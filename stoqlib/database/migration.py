@@ -99,7 +99,7 @@ class Patch(object):
             function(trans)
             trans.commit(close=True)
         else:
-            raise AssertionError("Unknown filename: %s" % (self.filename,))
+            raise AssertionError("Unknown filename: %s" % (self.filename, ))
 
         sql = self._migration.generate_sql_for_patch(self)
         open(temporary, 'a').write(sql)
@@ -181,8 +181,8 @@ class SchemaMigration(object):
                     continue
                 patches_to_apply.append(patch)
 
-            log.info("Applying %d patches" % (len(patches_to_apply),))
-            create_log.info("PATCHES:%d" % (len(patches_to_apply),))
+            log.info("Applying %d patches" % (len(patches_to_apply), ))
+            create_log.info("PATCHES:%d" % (len(patches_to_apply), ))
 
             for patch in patches_to_apply:
                 create_log.info("PATCH:%d.%d" % (patch.generation,
@@ -234,9 +234,9 @@ class SchemaMigration(object):
             if patch.get_version() > current_version:
                 to_apply.append(patch)
 
-        self._log("PATCHES:%d" % (len(to_apply),))
+        self._log("PATCHES:%d" % (len(to_apply), ))
         for i, patch in enumerate(to_apply):
-            self._log("PATCH:%d" % (i,))
+            self._log("PATCH:%d" % (i, ))
             patch.apply(self.conn)
         self._log("PATCHES APPLIED")
 
@@ -330,13 +330,13 @@ class StoqlibSchemaMigration(SchemaMigration):
                 exc = sys.exc_info()
                 tb_str = ''.join(traceback.format_exception(*exc))
                 collect_traceback(exc, submit=True)
-                create_log.info("ERROR:%s" % (tb_str,))
+                create_log.info("ERROR:%s" % (tb_str, ))
 
                 if backup:
                     log.info("Restoring backup %s" % (temporary, ))
                     create_log.info("RESTORE-START:")
                     new_name = restore_database(temporary)
-                    create_log.info("RESTORE-DONE:%s" % (new_name,))
+                    create_log.info("RESTORE-DONE:%s" % (new_name, ))
                 return False
         finally:
             if backup is True:

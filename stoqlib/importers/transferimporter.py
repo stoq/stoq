@@ -45,25 +45,25 @@ class TransferImporter(CSVImporter):
             connection=trans), None)
         if source_branch is None:
             raise ValueError("%s is not a valid branch" % (
-                data.source_branch_name,))
+                data.source_branch_name, ))
         source_employee = IEmployee(Person.selectOneBy(
             name=data.source_employee_name,
             connection=trans), None)
         if source_employee is None:
             raise ValueError("%s is not a valid employee" % (
-                data.source_employee_name,))
+                data.source_employee_name, ))
         dest_branch = IBranch(Person.selectOneBy(
             name=data.dest_branch_name,
             connection=trans), None)
         if dest_branch is None:
             raise ValueError("%s is not a valid branch" % (
-                data.dest_branch_name,))
+                data.dest_branch_name, ))
         dest_employee = IEmployee(Person.selectOneBy(
             name=data.dest_employee_name,
             connection=trans), None)
         if dest_employee is None:
             raise ValueError("%s is not a valid employee" % (
-                data.dest_employee_name,))
+                data.dest_employee_name, ))
 
         sellables = self.parse_multi(Sellable, data.sellable_list, trans)
 

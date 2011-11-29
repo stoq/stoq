@@ -143,7 +143,7 @@ class GtkPrintDialog(object):
             self._dialog.destroy()
             self._dialog = None
         else:
-            raise AssertionError("unhandled response: %d" % (response,))
+            raise AssertionError("unhandled response: %d" % (response, ))
 
     #
     # Callbacks

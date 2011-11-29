@@ -161,7 +161,7 @@ class SellablePriceDialog(BaseEditor):
 
         self._price_columns[None] = columns[-1]
         for cat in self.categories:
-            columns.append(Column('price_%s' % (cat.id,),
+            columns.append(Column('price_%s' % (cat.id, ),
                                title=cat.get_description(), data_type=currency,
                                width=90, visible=True))
             self._price_columns[cat.id] = columns[-1]

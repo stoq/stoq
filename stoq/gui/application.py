@@ -650,7 +650,7 @@ class AppWindow(GladeDelegate):
         self.add_ui_actions(ui_string, actions, 'DebugActions')
 
     def has_open_inventory(self):
-        return Inventory.has_open(self.conn,api.get_current_branch(self.conn))
+        return Inventory.has_open(self.conn, api.get_current_branch(self.conn))
 
     def check_open_inventory(self):
         inventory_bar = getattr(self, 'inventory_bar', None)

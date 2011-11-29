@@ -53,7 +53,7 @@ class SaleDiscountSlave(BaseEditorSlave):
     """
     gladefile = 'SaleDiscountSlave'
     proxy_widgets = ('discount_value',
-                     'discount_perc',)
+                     'discount_perc', )
     gsignal('discount-changed')
 
     def __init__(self, conn, model, model_type, visual_mode=False):

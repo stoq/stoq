@@ -131,7 +131,7 @@ class SupplierDetailsDialog(BaseEditor):
                 Column("qty_str", title=_("Total quantity"),
                        data_type=str, width=120, justify=gtk.JUSTIFY_RIGHT),
                 Column("total_value", title=_("Total value"), width=80,
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT,)]
+                       data_type=currency, justify=gtk.JUSTIFY_RIGHT, )]
 
     def _get_payments_columns(self):
         return [Column("id", title=_("#"),

@@ -190,7 +190,7 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column("unit_description", title=_(u"Unit"), data_type=str),
                 Column("quantity", title=_(u"Loaned"), data_type=Decimal),
                 Column("return_quantity", title=_(u"Returned"),
-                        data_type=Decimal),]
+                        data_type=Decimal)]
 
     def _get_decrease_columns(self):
         return [Column("id", title=_("#"), data_type=int,
@@ -200,7 +200,7 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column("removed_by_name", title=_("Removed By"), expand=True,
                         data_type=str),
                 Column("quantity", title=_("Quantity"), data_type=int),
-                Column("unit_description", title=_("Unit"), data_type=str),]
+                Column("unit_description", title=_("Unit"), data_type=str)]
 
     #
     # BaseEditor Hooks

@@ -222,7 +222,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         if order_count > 0:
             supplier_name = self.model.supplier.person.name
             return ValidationError(_(u'Invoice %d already exists for '
-                                     'supplier %s.' % (value, supplier_name,)))
+                                     'supplier %s.' % (value, supplier_name, )))
 
     def after_freight_combo__content_changed(self, widget):
         value = widget.read()
@@ -275,7 +275,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             return ValidationError(_("Discount must be greater than zero"))
         if value > self.model.get_total():
             return ValidationError(_("Discount must be less "
-                                     "than %s" % (self.model.get_total(),)))
+                                     "than %s" % (self.model.get_total(), )))
 
     def after_secure_value__content_changed(self, widget):
         try:

@@ -51,7 +51,7 @@ def create_doctest(pattern):
         func = lambda self, f=filename: self._test_one(f)
         namespace[name] = func
         func.__name__ = name
-    return type('DocTest', (unittest.TestCase,), namespace)
+    return type('DocTest', (unittest.TestCase, ), namespace)
 
 # Monkeys of all countries, unite!
 # This is done so we can use ellipsis in the tests.

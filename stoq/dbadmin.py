@@ -172,7 +172,7 @@ class StoqCommandHandler:
                 print err
                 print "Available plugins:"
                 for plugin_name in manager.available_plugins_names:
-                    print "  %s" % (plugin_name,)
+                    print "  %s" % (plugin_name, )
                 return
 
     def _register_station(self):

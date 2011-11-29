@@ -349,7 +349,7 @@ class FiscalCoupon(gobject.GObject):
         if sale_item.price <= 0:
             return 0
 
-        log.info("adding sale item %r to coupon" % (sale_item,))
+        log.info("adding sale item %r to coupon" % (sale_item, ))
         item_id = self.emit('add-item', sale_item)
 
         ids = self._item_ids.setdefault(sale_item, [])
@@ -364,7 +364,7 @@ class FiscalCoupon(gobject.GObject):
             return
 
         for item_id in self._item_ids.pop(sale_item):
-            log.info("removing sale item %r from coupon" % (sale_item,))
+            log.info("removing sale item %r from coupon" % (sale_item, ))
             try:
                 self.emit('remove-item', item_id)
             except DriverError:

@@ -142,7 +142,7 @@ class RenegotiationDetailsDialog(BaseEditor):
 
     def _get_payments_info_columns(self):
         return [Column('change_date', _(u"When"),
-                        data_type=datetime.date, sorted=True,),
+                        data_type=datetime.date, sorted=True, ),
                 Column('description', _(u"Payment"),
                         data_type=str, expand=True,
                         ellipsize=pango.ELLIPSIZE_END),

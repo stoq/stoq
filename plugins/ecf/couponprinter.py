@@ -356,7 +356,7 @@ class Coupon(object):
         if not constant:
             raise DeviceError(
                 _("The payment method used in this sale (%s) is not "
-                  "configured in the fiscal printer.") % (payment.method.method_name,))
+                  "configured in the fiscal printer.") % (payment.method.method_name, ))
 
         return constant
 
@@ -364,9 +364,9 @@ class Coupon(object):
         """ Add the payments defined in the sale to the coupon. Note that this
         function must be called after all the payments has been created.
         """
-        log.info("setting up payments for %r" % (sale,))
+        log.info("setting up payments for %r" % (sale, ))
 
-        log.info("we have %d payments" % (sale.payments.count()),)
+        log.info("we have %d payments" % (sale.payments.count()), )
 
         card_payments = {}
         # Merge card payments by nsu

@@ -12,7 +12,7 @@ app.PurchaseApp.filter_combo.select_item_by_label("Quoting")
 app.PurchaseApp.filter_combo.select_item_by_label("Cancelled")
 app.PurchaseApp.filter_combo.select_item_by_label("Any")
 app.PurchaseApp.search_button.clicked()
-app.PurchaseApp.orders.select_paths([(1,)])
+app.PurchaseApp.orders.select_paths([(1, )])
 app.PurchaseApp.details_button.clicked()
 
 player.wait_for_window("PurchaseDetailsDialog")

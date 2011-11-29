@@ -34,7 +34,7 @@ from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.search import SearchEditorToolBar
 from stoqlib.gui.editors.paymentmethodeditor import (PaymentMethodEditor,
                                                      CardPaymentMethodEditor,
-                                                     MoneyPaymentMethodEditor,)
+                                                     MoneyPaymentMethodEditor, )
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

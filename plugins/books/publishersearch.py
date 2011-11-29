@@ -73,7 +73,7 @@ class PublisherSearch(BasePersonSearch):
         self.set_text_field_columns(['name'])
 
     def get_columns(self):
-        return [SearchColumn('name', _('Name'), str, width=250, expand=True),]
+        return [SearchColumn('name', _('Name'), str, width=250, expand=True)]
 
     def get_editor_model(self, model):
         return model.publisher

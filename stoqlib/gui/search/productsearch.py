@@ -280,7 +280,7 @@ class ProductSearchQuantity(SearchDialog):
                        visible=self.show_production_columns),
                 Column('quantity_lost', title=_('Lost'),
                        format_func=format_data, data_type=Decimal,
-                       visible=self.show_production_columns,)]
+                       visible=self.show_production_columns, )]
 
 
 class ProductsSoldSearch(SearchDialog):
@@ -408,7 +408,7 @@ class ProductStockSearch(SearchEditor):
                        format_func=format_data, data_type=Decimal),
                 ColoredColumn('difference', title=_('Difference'), color='red',
                               format_func=format_data, data_type=Decimal,
-                              data_func=lambda x: x <= Decimal(0)),]
+                              data_func=lambda x: x <= Decimal(0))]
 
     def executer_query(self, query, having, conn):
         branch = self.branch_filter.get_state().value

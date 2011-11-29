@@ -43,7 +43,7 @@ class LoanItemEditor(BaseEditor):
                      'quantity',
                      'sale_quantity',
                      'return_quantity',
-                     'total',]
+                     'total']
 
     def __init__(self, conn, model, expanded_edition=False):
         """An editor for a loan item. If the expaned_edition is True, the

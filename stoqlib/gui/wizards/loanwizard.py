@@ -366,7 +366,7 @@ class LoanItemSelectionStep(BaseWizardStep):
             Column('return_quantity', title=_('Returned'), data_type=Decimal,
                    format_func=format_quantity),
             Column('price', title=_('Price'), data_type=currency,
-                   format_func=get_formatted_cost),]
+                   format_func=get_formatted_cost)]
 
     #
     # WizardStep

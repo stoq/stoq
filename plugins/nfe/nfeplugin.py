@@ -49,10 +49,10 @@ class NFePlugin(object):
     def get_migration(self):
         environ.add_resource('nfecsv', os.path.join(plugin_root, 'csv'))
         environ.add_resource('nfesql', os.path.join(plugin_root, 'sql'))
-        return PluginSchemaMigration(self.name, 'nfesql', ['*.sql', '*.py',])
+        return PluginSchemaMigration(self.name, 'nfesql', ['*.sql', '*.py'])
 
     def get_tables(self):
-        return [('nfedomain', ['NFeCityData',])]
+        return [('nfedomain', ['NFeCityData'])]
 
     def activate(self):
         self.ui = NFeUI()
