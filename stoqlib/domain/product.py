@@ -211,7 +211,7 @@ class Product(Domain):
         # Return False if the component(product) is used in a production.
         elif ProductionItem.selectBy(connection=self.get_connection(),
                                      product=self).count():
-             return False
+            return False
         return True
 
     #

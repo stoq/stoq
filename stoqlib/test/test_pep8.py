@@ -54,6 +54,7 @@ class TestPEP8(unittest.TestCase):
             raise AssertionError("ERROR: %d PEP8 errors in %s" % (result, path, ))
 
 ERRORS = [
+    'E111', # indentation is not a multiple of four
     'W291', # trailing whitespace
     'W601', # in instead of dict.has_key
 ]
