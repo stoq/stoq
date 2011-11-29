@@ -100,7 +100,7 @@ class Application(object):
     @ivar description: long description of application
     """
 
-    def __init__ (self, name, fullname, icon, description):
+    def __init__(self, name, fullname, icon, description):
         self.name = name
         self.fullname = fullname
         self.icon = icon
