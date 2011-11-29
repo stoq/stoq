@@ -54,6 +54,7 @@ ERRORS = [
     'E111', # indentation is not a multiple of four
     'E112', # expected an indented block
     'E113', # unexpected indentation
+    'E211', # whitespace before '('
     'E231', # E231 missing whitespace after ','/':'
     'E251', # no spaces around keyword / parameter equals
     'W291', # trailing whitespace
