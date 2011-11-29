@@ -90,7 +90,7 @@ def _exit_func():
     try:
         user = get_current_user(get_connection())
         if user:
-           user.logout()
+            user.logout()
     except StoqlibError:
         pass
 

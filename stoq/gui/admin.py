@@ -355,7 +355,7 @@ class AdminApp(AppWindow):
         self.tasks.run_task('fiscal_books')
 
     def on_SearchCfop__activate(self, action):
-         self.tasks.run_task('cfop')
+        self.tasks.run_task('cfop')
 
     def on_SearchUserProfile__activate(self, action):
         self.tasks.run_task('user_profiles')
@@ -387,7 +387,7 @@ class AdminApp(AppWindow):
         self.tasks.run_task('payment_categories')
 
     def on_ConfigureClientCategories__activate(self, action):
-         self.tasks.run_task('client_categories')
+        self.tasks.run_task('client_categories')
 
     def on_ConfigureTaxes__activate(self, action):
         self.tasks.run_task('taxes')
@@ -405,7 +405,7 @@ class AdminApp(AppWindow):
         self.tasks.run_task('invoice_printers')
 
     def on_ConfigurePlugins__activate(self, action):
-         self.tasks.run_task('plugins')
+        self.tasks.run_task('plugins')
 
     # New
     def on_NewUser__activate(self, action):
