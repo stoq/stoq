@@ -362,7 +362,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         return payments
 
     def clear_payments(self):
-        self.payment_list.clear();
+        self.payment_list.clear()
         self.update_view()
 
     def get_total_difference(self):
