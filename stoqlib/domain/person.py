@@ -191,7 +191,6 @@ class Calls(Domain):
     message = UnicodeCol()
     person = ForeignKey('Person')
     attendant = ForeignKey('PersonAdaptToUser')
-    
 
     #
     # IDescribable implementation

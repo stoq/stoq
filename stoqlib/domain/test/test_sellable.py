@@ -407,7 +407,7 @@ class TestSellable(DomainTest):
 
         self.assertEquals(sellable.get_price_for_category(category1), 155)
         self.assertEquals(sellable.get_price_for_category(category2), 100)
-        
+
     def test_remove_category_price(self):
         from stoqlib.domain.sellable import ClientCategoryPrice
         category_price = self.create_client_category_price()

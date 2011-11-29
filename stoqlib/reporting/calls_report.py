@@ -35,7 +35,7 @@ class CallsReport(ObjectListReport):
     """Realized calls to client report"""
     report_name = _("Calls Report")
     main_object_name = (_("call"), _("calls"))
-    
+
     def __init__(self, filename, objectlist, calls, *args, **kwargs):
         self.calls = calls
         person_name = kwargs['person_name']
