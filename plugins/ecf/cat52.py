@@ -317,8 +317,8 @@ class CATFile(object):
             item_canceled='N',
             # canceled items
             item_canceled_amount=0,
-            item_canceled_value=0,              #
-            item_canceled_surcharge=0,          #
+            item_canceled_value=0,
+            item_canceled_surcharge=0,
             round_or_trunc='A',                 # !!! A ou T
             amount_decimal_precision=2,         # !!!
             value_decimal_precision=2,          # !!!
@@ -591,7 +591,7 @@ class CATRegisterE13(CATRegister):
         ('user_number', 2, number),
         ('crz', 6, number),
         ('partial_totalizer', 7, basestring),   # See table 6.5.1.2
-        ('value', 13, number),                  #currency
+        ('value', 13, number),                  # currency
         ]
 
 class CATRegisterE14(CATRegister):
