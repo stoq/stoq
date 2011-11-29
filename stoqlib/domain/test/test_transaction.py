@@ -119,6 +119,8 @@ class TestTransaction(DomainTest):
         # and also on the outside transaction
         self.assertEqual(outside_person.name, 'john')
 
+        outside_trans.close()
+        inside_trans.close()
 
     def testUser(self):
         user = get_current_user(self.trans)
@@ -146,3 +148,4 @@ class TestTransaction(DomainTest):
             Person.delete(person.id, connection=trans)
         trans.commit()
         DomainTest.tearDown(self)
+        trans.close()
