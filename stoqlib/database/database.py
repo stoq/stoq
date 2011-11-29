@@ -154,7 +154,7 @@ def execute_sql(filename):
         if read_from_pipe:
             # We don't want to see notices on the output, skip them,
             # this will make all reported line numbers offset by 1
-            proc.stdin.write("SET SESSION client_min_messages TO 'warning';");
+            proc.stdin.write("SET SESSION client_min_messages TO 'warning';")
 
             data = open(filename).read()
             # Rename serial into bigserial, for 64-bit id columns

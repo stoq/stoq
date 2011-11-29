@@ -134,7 +134,7 @@ class InfoBar(gtk.HBox):
         self.response(response_id)
 
     def add_action_widget(self, child, response_id):
-        ad = get_response_data(child, True);
+        ad = get_response_data(child, True)
         ad.response_id = response_id
 
         if isinstance(child, gtk.Button):

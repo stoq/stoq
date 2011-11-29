@@ -162,8 +162,10 @@ def get_country_states():
 def _split_parts(a):
     parts = re.findall('(\d+|\D+)', a)
     for i in xrange(len(parts)):
-        try: parts[i] = int(parts[i])
-        except: pass
+        try:
+            parts[i] = int(parts[i])
+        except:
+            pass
     return parts
 
 def sort_sellable_code(a, b):

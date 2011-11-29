@@ -55,11 +55,19 @@ class TestPEP8(unittest.TestCase):
 
 ERRORS = [
     'E111', # indentation is not a multiple of four
+    'E112', # expected an indented block
+    'E113', # unexpected indentation
     'W291', # trailing whitespace
     'W293', # blank line contains whitespace
+    'E401', # multiple imports on one line
     'W601', # in instead of dict.has_key
     'W602', # deprecated form of raising exception
+    'W603', # '<>' is deprecated, use '!='"
+    'W604', # backticks are deprecated, use 'repr()'
+    'E701', # multiple statements on one line (colon)
+    'E702', # multiple statements on one line (semicolon)
 ]
+
 root = os.path.dirname(os.path.dirname(stoq.__file__)) + '/'
 for dirpath in ['stoq', 'stoqlib', 'plugins']:
     path = os.path.abspath(os.path.join(root, dirpath))
