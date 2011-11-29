@@ -402,7 +402,7 @@ class PayableApp(SearchableAppWindow):
 
         self.search.refresh()
         if trans.committed:
-            self.results.select(OutPaymentView.get(trans.retval.id))
+            self.select_result(OutPaymentView.get(trans.retval.id))
 
     def _run_bill_check_search(self):
         run_dialog(OutPaymentBillCheckSearch, self, self.conn)

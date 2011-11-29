@@ -291,7 +291,7 @@ class PurchaseApp(SearchableAppWindow):
 
         if trans.committed:
             self.refresh()
-            self.results.select(PurchaseOrderView.get(trans.retval.id))
+            self.select_result(PurchaseOrderView.get(trans.retval.id))
 
     def _edit_order(self):
         selected = self.results.get_selected_rows()
@@ -342,7 +342,7 @@ class PurchaseApp(SearchableAppWindow):
                 order = trans.get(order_view.purchase)
                 order.confirm()
         self.refresh()
-        self.results.select(orders)
+        self.select_result(orders)
 
     def _finish_order(self):
         order_views = self.results.get_selected_rows()
@@ -356,7 +356,7 @@ class PurchaseApp(SearchableAppWindow):
             self.run_dialog(PurchaseFinishWizard, trans, order)
 
         self.refresh()
-        self.results.select(order_views)
+        self.select_result(order_views)
 
     def _print_selected_items(self):
         items = self.results.get_selected_rows() or list(self.results)
@@ -381,7 +381,7 @@ class PurchaseApp(SearchableAppWindow):
                 order.cancel()
         self._update_totals()
         self.refresh()
-        self.results.select(order_views)
+        self.select_result(order_views)
 
     def _get_status_values(self):
         items = [(text, value)
@@ -396,7 +396,7 @@ class PurchaseApp(SearchableAppWindow):
 
         if trans.committed:
             self.refresh()
-            self.results.select(PurchaseOrderView.get(trans.retval.id))
+            self.select_result(PurchaseOrderView.get(trans.retval.id))
 
     def _new_product(self):
         with api.trans() as trans:
@@ -408,7 +408,7 @@ class PurchaseApp(SearchableAppWindow):
 
         if trans.committed:
             self.refresh()
-            self.results.select(PurchaseOrderView.get(trans.retval.id))
+            self.select_result(PurchaseOrderView.get(trans.retval.id))
 
     #
     # Kiwi Callbacks

@@ -1031,6 +1031,18 @@ class SearchableAppWindow(AppWindow):
         self.run_dialog(CSVExporterDialog, self, self.search_table,
                         self.results)
 
+    def select_result(self, result):
+        """Select the object in the result list
+
+        If the object is not in the list (filtered out, for instance), no error
+        is thrown and nothing is selected
+        """
+        try:
+            self.results.select(result)
+        except ValueError:
+            pass
+
+
     #
     # Hooks
     #
