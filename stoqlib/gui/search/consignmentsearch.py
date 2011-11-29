@@ -65,4 +65,4 @@ class ConsignmentItemSearch(SearchDialog):
                 SearchColumn('sold', title=_(u'Sold'),
                              data_type=Decimal),
                 SearchColumn('returned', title=_(u'Returned'),
-                             data_type=Decimal),]
+                             data_type=Decimal)]

@@ -52,23 +52,23 @@ class PurchaseImporter(CSVImporter):
                                connection=trans), None)
         if supplier is None:
             raise ValueError("%s is not a valid supplier" % (
-                data.supplier_name,))
+                data.supplier_name, ))
         transporter = ITransporter(
             Person.selectOneBy(name=data.transporter_name,
                                connection=trans), None)
         if transporter is None:
             raise ValueError("%s is not a valid transporter" % (
-                data.transporter_name,))
+                data.transporter_name, ))
         branch = IBranch(Person.selectOneBy(name=data.branch_name,
                                             connection=trans), None)
         if branch is None:
             raise ValueError("%s is not a valid branch" % (
-                data.branch_name,))
+                data.branch_name, ))
         user = IUser(Person.selectOneBy(name=data.user_name,
                                         connection=trans), None)
         if user is None:
             raise ValueError("%s is not a valid user" % (
-                data.user_name,))
+                data.user_name, ))
 
         group = PaymentGroup(connection=trans)
         purchase = PurchaseOrder(connection=trans,

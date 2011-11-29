@@ -129,7 +129,7 @@ class TransactionPage(object):
         year = datetime.datetime.today().year
         for i in range(1, 13):
             name = month_names[i]
-            option = type(name + 'Option', (MonthOption,),
+            option = type(name + 'Option', (MonthOption, ),
                           { 'name': gettext.gettext(name),
                             'month': i,
                             'year': year })
@@ -360,7 +360,7 @@ class FinancialApp(AppWindow):
              _("Add a new account")),
             ("NewTransaction", gtk.STOCK_NEW, _("Transaction"), '<control>t',
              _("Add a new transaction")),
-            ("Edit", gtk.STOCK_EDIT, _("Edit"), '',),
+            ("Edit", gtk.STOCK_EDIT, _("Edit"), ''),
 
             ]
         self.financial_ui = self.add_ui_actions('', actions,

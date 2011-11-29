@@ -42,7 +42,7 @@ class ReceivingItemEditor(BaseEditor):
                      'description',
                      'quantity',
                      'remaining_quantity',
-                     'total',)
+                     'total', )
 
     #
     # BaseEditor hooks

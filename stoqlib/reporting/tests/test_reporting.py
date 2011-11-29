@@ -81,7 +81,7 @@ class TestReport(DomainTest):
     def checkPDF(self, report_class, *args, **kwargs):
         exists_pdf = False
         frame = sys._getframe(1)
-        filename = "%s.pdf" % (frame.f_code.co_name[4:],)
+        filename = "%s.pdf" % (frame.f_code.co_name[4:], )
         filename = os.path.join(os.path.dirname(stoqlib.__file__),
                                "reporting", "tests", "data", filename)
         if os.path.exists(filename):
@@ -107,11 +107,11 @@ class TestReport(DomainTest):
             os.unlink(filename)
 
     def _comparePDF(self, original_filename, filename):
-        original_filename_html = "%s.html" % (original_filename,)
-        tmp_html = "%s.html" % (filename,)
+        original_filename_html = "%s.html" % (original_filename, )
+        tmp_html = "%s.html" % (filename, )
 
-        out_original_filename = "%s.htm" % (original_filename,)
-        out_tmp = "%s.htm" % (filename,)
+        out_original_filename = "%s.htm" % (original_filename, )
+        out_tmp = "%s.htm" % (filename, )
 
         input_original = open(original_filename_html)
         input_filename = open(tmp_html)
@@ -121,11 +121,11 @@ class TestReport(DomainTest):
         for line in input_original:
             if line.startswith("<META"):
                 continue
-            output_original.write(line,)
+            output_original.write(line, )
         for line in input_filename:
             if line.startswith("<META"):
                 continue
-            output_tmp.write(line,)
+            output_tmp.write(line, )
         for file in (input_original, input_filename, output_original,
                      output_tmp):
             file.close()

@@ -234,7 +234,7 @@ class BasePersonRoleEditor(BaseEditor):
         if not self.role_type in [Person.ROLE_INDIVIDUAL,
                                   Person.ROLE_COMPANY]:
             raise ValueError("Invalid value for role_type attribute, %r" % (
-                self.role_type,))
+                self.role_type, ))
         if (self.role_type == Person.ROLE_INDIVIDUAL and
             not IIndividual(self.person, None)):
             self.person.addFacet(IIndividual, connection=conn)

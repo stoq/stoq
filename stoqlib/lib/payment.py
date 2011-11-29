@@ -46,7 +46,7 @@ class PaymentOperationManager(object):
         if not IPaymentOperation.providedBy(klass):
             raise ValueError(
                 "%r does not  implement required interface "
-                "IPaymentOperation" % (klass,))
+                "IPaymentOperation" % (klass, ))
         self._methods[name] = klass
 
     def get_operation_names(self):

@@ -19,7 +19,7 @@ class VehiclesProductionReport(ReportTemplate):
         self.run_report(rows)
 
     def run_report(self, production_list):
-        header = ['Id','Description', 'Type', 'Control', 'Start M.',
+        header = ['Id', 'Description', 'Type', 'Control', 'Start M.',
                   'End M.', 'Total', 'Difference', 'Price', 'Total Price']
         rows = self.get_rows()
         self.add_report_table(rows, header=header)

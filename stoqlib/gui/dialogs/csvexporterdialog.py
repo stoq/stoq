@@ -95,7 +95,7 @@ class CSVExporterDialog(BaseEditor):
         opts = [(_('Comma'), ','),
                 (_('Semicolon'), ';'),
                 (_('Tab'), '\t'),
-                (_('Colon'), ':'),]
+                (_('Colon'), ':')]
         self.separator.prefill(opts)
 
 

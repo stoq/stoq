@@ -447,7 +447,7 @@ class ProductSupplierEditor(BaseEditor):
     gladefile = 'ProductSupplierEditor'
 
     proxy_widgets = ('base_cost', 'icms', 'notes', 'lead_time',
-                     'minimum_purchase',)
+                     'minimum_purchase', )
     confirm_widgets = ['base_cost', 'icms', 'lead_time', 'minimum_purchase']
 
     def _setup_widgets(self):
@@ -520,7 +520,7 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
                 Column('minimum_purchase', title=_(u'Minimum Purchase'),
                         data_type=Decimal),
                 Column('base_cost', title=_(u'Cost'), data_type=currency,
-                        format_func=get_formatted_cost),]
+                        format_func=get_formatted_cost)]
 
     def create_model(self):
         product = self._product

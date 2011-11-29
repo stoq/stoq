@@ -327,7 +327,7 @@ def _parse_command_line(args):
     from stoqlib.lib.uptime import set_initial
     set_initial()
 
-    log.info('parsing command line arguments: %s ' % (args,))
+    log.info('parsing command line arguments: %s ' % (args, ))
     from stoq.lib.options import get_option_parser
     parser = get_option_parser()
 

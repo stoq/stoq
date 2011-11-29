@@ -67,7 +67,7 @@ class ProductBookSlave(BaseEditorSlave):
 
     def _setup_widgets(self):
         self.country_combo.prefill(get_countries())
-        for widget in [self.pages, self.year,]:
+        for widget in [self.pages, self.year]:
             widget.set_adjustment(
                 gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
         table = Person.getAdapterClass(IPublisher)

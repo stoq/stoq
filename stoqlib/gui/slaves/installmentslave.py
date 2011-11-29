@@ -329,7 +329,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
 
         if date > datetime.date.today() or date < self.model.open_date:
             return ValidationError(_("Paid date must be between "
-                                     "%s and today") % (self.model.open_date,))
+                                     "%s and today") % (self.model.open_date, ))
 
     def after_penalty__content_changed(self, proxy_entry):
         if proxy_entry.is_valid() and proxy_entry.read() == ValueUnset:
@@ -358,7 +358,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
         total = self.model.get_installment_value()
         if value >= total:
             return ValidationError(_("Discount can not be greater or "
-                                     "equal than %.2f" % (total,)))
+                                     "equal than %.2f" % (total, )))
         if value < 0:
             return ValidationError(_("Discount can not be less than zero"))
 

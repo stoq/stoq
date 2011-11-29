@@ -172,7 +172,7 @@ class ClientDetailsDialog(BaseEditor):
                 Column("avg_value", title=_("Avg. value"), width=100,
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT),
                 Column("total_value", title=_("Total value"), width=100,
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT,)]
+                       data_type=currency, justify=gtk.JUSTIFY_RIGHT, )]
 
     def _get_services_columns(self):
         return [Column("sellable.code", title=_("Code"), data_type=str,
@@ -213,7 +213,7 @@ class ClientDetailsDialog(BaseEditor):
                 Column("description", title=_("Description"),
                        data_type=str, width=150, expand=True),
                 Column("attendant.person.name", title=_("Attendant"),
-                       data_type=str, width=100, expand=True),]
+                       data_type=str, width=100, expand=True)]
 
     #
     # BaseEditor Hooks

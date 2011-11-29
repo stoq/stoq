@@ -84,7 +84,7 @@ class PurchaseOrderReport(ReportTemplate):
         values = [object.total_value for object in objects]
         total_value = reduce(operator.add, values, 0.0)
         total_value = '$ %.2f' % total_value
-        self.add_data_table((('Total value:', total_value),),
+        self.add_data_table((('Total value:', total_value), ),
                              align=RIGHT)
 
     def build_signatures(self):

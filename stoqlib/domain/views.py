@@ -175,7 +175,7 @@ class ProductClosedStockView(ProductFullWithClosedStockView):
 class ProductComponentView(ProductFullStockView):
     columns = ProductFullStockView.columns
     clause = AND(ProductFullStockView.clause,
-                 ProductComponent.q.productID == Product.q.id,)
+                 ProductComponent.q.productID == Product.q.id, )
 
     @property
     def sellable(self):
@@ -483,7 +483,7 @@ class SoldItemView(Viewable):
 
     clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
                 Sale.q.status == Sale.STATUS_PAID,
-                Sale.q.status == Sale.STATUS_ORDERED,)
+                Sale.q.status == Sale.STATUS_ORDERED, )
 
     @classmethod
     def select_by_branch_date(cls, query, branch, date,
@@ -612,7 +612,7 @@ class PurchasedItemAndStockView(Viewable):
 
     clause = AND(PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED,
                  PurchaseOrder.q.branchID == ProductStockItem.q.branchID,
-                 PurchaseItem.q.quantity > PurchaseItem.q.quantity_received,)
+                 PurchaseItem.q.quantity > PurchaseItem.q.quantity_received, )
 
     @property
     def purchase_item(self):
@@ -769,7 +769,7 @@ class ProductionItemView(Viewable):
                    lost=ProductionItem.q.lost,
                    category_description=SellableCategory.q.description,
                    unit_description=SellableUnit.q.description,
-                   description=BaseSellableInfo.q.description,)
+                   description=BaseSellableInfo.q.description, )
 
     joins = [
         LEFTJOINOn(None, ProductionOrder,
@@ -783,7 +783,7 @@ class ProductionItemView(Viewable):
         LEFTJOINOn(None, SellableUnit,
                    Sellable.q.unitID == SellableUnit.q.id),
         INNERJOINOn(None, BaseSellableInfo,
-                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),]
+                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id)]
 
     @property
     def production_item(self):
@@ -806,7 +806,7 @@ class LoanView(Viewable):
                     responsible_name=PersonResponsible.q.name,
                     client_name=PersonClient.q.name,
                     loaned=const.SUM(LoanItem.q.quantity),
-                    total=const.SUM(LoanItem.q.quantity * LoanItem.q.price),)
+                    total=const.SUM(LoanItem.q.quantity * LoanItem.q.price), )
     joins = [
         INNERJOINOn(None, LoanItem, Loan.q.id == LoanItem.q.loanID),
         LEFTJOINOn(None, PersonAdaptToBranch,
@@ -840,7 +840,7 @@ class LoanItemView(Viewable):
                    code=Sellable.q.code,
                    category_description=SellableCategory.q.description,
                    unit_description=SellableUnit.q.description,
-                   description=BaseSellableInfo.q.description,)
+                   description=BaseSellableInfo.q.description, )
 
     joins = [
         LEFTJOINOn(None, Loan, LoanItem.q.loanID == Loan.q.id),
@@ -851,7 +851,7 @@ class LoanItemView(Viewable):
         LEFTJOINOn(None, SellableCategory,
                    SellableCategory.q.id == Sellable.q.categoryID),
         INNERJOINOn(None, BaseSellableInfo,
-                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),]
+                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id)]
 
 class AccountView(Viewable):
 

@@ -140,7 +140,7 @@ class QuoteItemsStep(PurchaseItemStep):
                    data_type=str, expand=True, searchable=True),
             Column('quantity', title=_('Quantity'), data_type=float, width=90,
                    format_func=format_quantity),
-            Column('sellable.unit_description',title=_('Unit'), data_type=str,
+            Column('sellable.unit_description', title=_('Unit'), data_type=str,
                    width=70),
             ]
 
@@ -364,7 +364,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
                 Column('open_date', title=_('Open date'),
                         data_type=datetime.date),
                 Column('deadline', title=_('Deadline'),
-                        data_type=datetime.date),]
+                        data_type=datetime.date)]
 
     def _can_purchase(self, item):
         return item.cost > currency(0) and item.quantity > Decimal(0)
@@ -482,7 +482,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                 Column('ordered_quantity', title=_(u'Ordered'),
                         data_type=Decimal),
                 Column('cost', title=_(u'Cost'), data_type=currency,
-                        format_func=get_formatted_cost),]
+                        format_func=get_formatted_cost)]
 
     def _update_widgets(self):
         if not self.quoted_items:

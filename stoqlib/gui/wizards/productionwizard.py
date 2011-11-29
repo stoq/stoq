@@ -64,7 +64,7 @@ class OpenProductionOrderStep(WizardEditorStep):
                      'order_number',
                      'branch',
                      'responsible',
-                     'description',]
+                     'description']
 
     def __init__(self, conn, wizard, model):
         WizardEditorStep.__init__(self, conn, wizard, model)
@@ -185,10 +185,10 @@ class ProductionServiceStep(SellableItemStep):
                     data_type=str, expand=True, sorted=True),
             Column('quantity', title=_('Quantity'), data_type=Decimal,
                     format_func=format_quantity),
-            Column('service.sellable.unit_description',title=_('Unit'),
+            Column('service.sellable.unit_description', title=_('Unit'),
                     data_type=str),
             Column('service.sellable.cost', title=_('Cost'),
-                    data_type=currency),]
+                    data_type=currency)]
 
     def remove_items(self, items):
         for item in items:
@@ -259,8 +259,8 @@ class ProductionItemStep(SellableItemStep):
                     data_type=str, expand=True, sorted=True),
             Column('quantity', title=_('Quantity'), data_type=Decimal,
                     format_func=format_quantity),
-            Column('product.sellable.unit_description',title=_('Unit'),
-                    data_type=str),]
+            Column('product.sellable.unit_description', title=_('Unit'),
+                    data_type=str)]
 
     #
     # WizardStep hooks

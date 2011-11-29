@@ -135,7 +135,7 @@ class InvoicePage(object):
             self._add_list(data_type, x, y, width, height, data)
         else:
             raise AssertionError(
-                "unsupported field type: %s" % (data_type,))
+                "unsupported field type: %s" % (data_type, ))
 
 
 class _Invoice(object):
@@ -193,7 +193,7 @@ class _Invoice(object):
     def _fetch_data_by_field(self, field):
         invoice_field_class = get_invoice_field_by_name(field.field_name)
         if invoice_field_class is None:
-            print 'WARNING: Could not find field %s' % (field.field_name,)
+            print 'WARNING: Could not find field %s' % (field.field_name, )
             return
         invoice_field = invoice_field_class(self)
         return (invoice_field.fetch(field.width, field.height),
@@ -890,7 +890,7 @@ class F(InvoiceFieldDescription):
     field_type = [str]
     def fetch(self, width, height):
         for i in range(self.sale.products.count()):
-            yield '%03d' % (i+1,)
+            yield '%03d' % (i+1, )
 
 _add_invoice_field(F)
 

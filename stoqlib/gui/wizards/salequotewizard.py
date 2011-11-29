@@ -74,7 +74,7 @@ class StartSaleQuoteStep(WizardEditorStep):
     model_type = Sale
     proxy_widgets = ('client', 'salesperson', 'expire_date',
                      'operation_nature', 'client_category')
-    cfop_widgets = ('cfop',)
+    cfop_widgets = ('cfop', )
 
     def _setup_widgets(self):
         # Hide total and subtotal
@@ -274,11 +274,11 @@ class SaleQuoteItemStep(SellableItemStep):
                    data_type=str, expand=True, searchable=True),
             Column('quantity', title=_('Quantity'), data_type=float, width=60,
                    format_func=format_quantity),
-            Column('sellable.unit_description',title=_('Unit'), data_type=str,
+            Column('sellable.unit_description', title=_('Unit'), data_type=str,
                    width=40)]
 
         if sysparam(self.conn).SHOW_COST_COLUMN_IN_SALES:
-            columns.append(Column('sellable.cost',title=_('Cost'), data_type=currency,
+            columns.append(Column('sellable.cost', title=_('Cost'), data_type=currency,
                                    width=80))
 
         columns.extend([

@@ -235,7 +235,7 @@ class SynchronizationService(XMLRPCService):
         # We can't use set_current_branch_station because we want to
         # replace the current utilities in some cases
         if station:
-            log.info("Setting BranchStation to %s" % (station.name,))
+            log.info("Setting BranchStation to %s" % (station.name, ))
             provide_utility(ICurrentBranchStation, station, replace=True)
             provide_utility(ICurrentBranch, station.branch, replace=True)
 
@@ -302,14 +302,14 @@ class SynchronizationService(XMLRPCService):
         @returns: None if successful, otherwise a string
         """
         # XXX: rewrite the docstring
-        log.info('service.sql_finish(%d)' % (sid,))
+        log.info('service.sql_finish(%d)' % (sid, ))
 
         proc = self._processes.pop(sid)
 
         proc.stdin.close()
-        log.info('sql_finish: waiting for process %d to finish' % (proc.pid,))
+        log.info('sql_finish: waiting for process %d to finish' % (proc.pid, ))
         returncode = proc.wait()
-        log.info('sql_finish: psql process returned %d' % (returncode,))
+        log.info('sql_finish: psql process returned %d' % (returncode, ))
 
         if returncode == 3:
             return "psql returned an error: see the error log"
@@ -323,7 +323,7 @@ class SynchronizationService(XMLRPCService):
         branch = get_current_branch(conn)
         tables = get_tables(policy, (SyncPolicy.FROM_SOURCE,
                                      SyncPolicy.INITIAL))
-        log.info("Fetching all changes since %s" % (timestamp,))
+        log.info("Fetching all changes since %s" % (timestamp, ))
         data = []
         for table in tables:
             if table == TransactionEntry:
@@ -414,18 +414,18 @@ class SynchronizationClient(object):
                 REFERENCES branch_station (id);''' % dict(t='transaction_entry')
 
     def _get_policy(self, policy):
-        log.info('Fetching policy %s' % (policy,))
+        log.info('Fetching policy %s' % (policy, ))
         try:
             configuration = get_policy_by_name(policy)
         except LookupError:
-            raise Exception("Unknown policy name: %s" % (policy,))
+            raise Exception("Unknown policy name: %s" % (policy, ))
         return configuration
 
     def _get_station(self, conn, name):
         # Note: This assumes that names of the stations are unique
         station = BranchStation.selectOneBy(name=name, connection=conn)
         if station is None:
-            raise Exception("There is no station for %s" % (name,))
+            raise Exception("There is no station for %s" % (name, ))
         return station
 
     def _get_synchronization(self, trans, branch):
@@ -465,7 +465,7 @@ class SynchronizationClient(object):
             raise SystemExit(
                 "Tried to synchronize against for station %s which does "
                 "not have an entry in the BranchSynchronization table" % (
-                station_name,))
+                station_name, ))
         return sync.sync_time
 
     def _insert_one(self, trans, table, obj_id, attrs):
@@ -476,7 +476,7 @@ class SynchronizationClient(object):
                (table.sqlmeta.table,
                 ", ".join(names),
                 ", ".join(values)))
-        log.info("Executing SQL: %s" % (cmd,))
+        log.info("Executing SQL: %s" % (cmd, ))
         trans.query(cmd)
 
     def _update_one(self, trans, table, obj_id, attrs):
@@ -484,7 +484,7 @@ class SynchronizationClient(object):
                 (table.sqlmeta.table,
                  ", ".join('%s = %s' % (name, value) for name, value in attrs),
                  trans.sqlrepr(obj_id)))
-        log.info("Executing SQL: %s" % (cmd,))
+        log.info("Executing SQL: %s" % (cmd, ))
         trans.query(cmd)
 
     def _bump_id_sequences(self, station, policy):
@@ -614,7 +614,7 @@ class SynchronizationClient(object):
             trans = transaction
         timestamp = const.NOW()
         station = self._get_station(trans, station_name)
-        tables = get_tables(policy, pfilter=(SyncPolicy.FROM_TARGET,))
+        tables = get_tables(policy, pfilter=(SyncPolicy.FROM_TARGET, ))
         self._sql_send(self._dump_tables(tables))
         if not self._commit:
             return

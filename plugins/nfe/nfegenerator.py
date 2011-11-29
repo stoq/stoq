@@ -114,7 +114,7 @@ class NFeGenerator(object):
 
     def _as_txt(self):
         nfe =  [u'NOTAFISCAL|1|\n',
-               self._nfe_data.as_txt(),]
+               self._nfe_data.as_txt()]
         return u''.join(nfe)
 
     def _calculate_verifier_digit(self, key):
@@ -582,7 +582,7 @@ class NFeEcfInfo(BaseNFeXMLGroup):
     """
     attributes = [(u'mod', '2D'),
                   (u'nECF', ''),
-                  (u'nCOO', ''),]
+                  (u'nCOO', '')]
 
     txttag = 'B20j'
 
@@ -613,10 +613,10 @@ class NFeAddress(BaseNFeXMLGroup):
                   (u'cMun', ''),
                   (u'xMun', ''),
                   (u'UF', ''),
-                  (u'CEP',''),
+                  (u'CEP', ''),
                   (u'CPais', '1058'),
                   (u'XPais', 'BRASIL'),
-                  (u'Fone', ''),]
+                  (u'Fone', '')]
 
     def __init__(self, tag, street, number, complement, district, city, state,
                  postal_code='', phone_number=''):
@@ -684,7 +684,7 @@ class NFeIssuer(BaseNFeXMLGroup):
         else:
             doc_tag = self.doc_cpf_tag
             doc_value = self.get_attr('CPF')
-        return '%s|%s|\n' % (doc_tag, doc_value,)
+        return '%s|%s|\n' % (doc_tag, doc_value, )
 
     def as_txt(self):
         if self.get_attr('CNPJ'):
@@ -767,7 +767,7 @@ class NFeProduct(BaseNFeXMLGroup):
         self.append(nfe_tax)
 
     def as_txt(self):
-        base = '%s|%s||\n' % (self.txttag, self.element.get('nItem'),)
+        base = '%s|%s||\n' % (self.txttag, self.element.get('nItem'), )
         details, tax = self.get_children()
         tax_txt = 'M|\nN|\n%s' % tax.as_txt()
         return base + details.as_txt() + tax_txt
@@ -887,7 +887,7 @@ class NFeICMS(BaseNFeXMLGroup):
         BaseNFeXMLGroup.__init__(self)
 
         # Simples Nacional
-        if crt in (1,2):
+        if crt in [1, 2]:
             icms_tag_class = NFE_ICMS_CSOSN_MAP.get(sale_icms_info.csosn)
         else: # Regime normal
             icms_tag_class = NFE_ICMS_CST_MAP.get(sale_icms_info.cst)
@@ -973,7 +973,7 @@ class NFeICMS00(BaseNFeICMS):
                   (u'modBC', None),
                   (u'vBC', None),
                   (u'pICMS', None),
-                  (u'vICMS', None),]
+                  (u'vICMS', None)]
 
     def __init__(self, sale_icms_info):
         BaseNFeICMS.__init__(self, sale_icms_info)
@@ -1007,7 +1007,7 @@ class NFeICMS10(BaseNFeICMS):
                        (u'pRedBCST', ''),
                        (u'vBCST', ''),
                        (u'pICMSST', ''),
-                       (u'vICMSST', '',)])
+                       (u'vICMSST', '', )])
 
 
 # Pg. 108
@@ -1026,7 +1026,7 @@ class NFeICMS20(BaseNFeICMS):
                   (u'pRedBC', ''),
                   (u'vBC', ''),
                   (u'pICMS', ''),
-                  (u'vICMS', ''),]
+                  (u'vICMS', '')]
 
 
 
@@ -1044,7 +1044,7 @@ class NFeICMS30(BaseNFeICMS):
                   (u'pRedBCST', ''),
                   (u'vBCST', ''),
                   (u'pICMSST', ''),
-                  (u'vICMSST', ''),]
+                  (u'vICMSST', '')]
 
 
 # Pg. 111
@@ -1078,7 +1078,7 @@ class NFeICMS60(BaseNFeICMS):
     attributes = [(u'orig', ''),
                   (u'CST', ''),
                   (u'vBCST', ''),
-                  (u'vICMSST', ''),]
+                  (u'vICMSST', '')]
 
 
 class NFeICMS70(BaseNFeICMS):
@@ -1096,7 +1096,7 @@ class NFeICMS70(BaseNFeICMS):
                   (u'pRedBCST', ''),
                   (u'vBCST', ''),
                   (u'pICMSST', ''),
-                  (u'vICMSST', ''),]
+                  (u'vICMSST', '')]
 
 
 class NFeICMS90(BaseNFeICMS):
@@ -1114,7 +1114,7 @@ class NFeICMS90(BaseNFeICMS):
                   (u'pRedBCST', ''),
                   (u'vBCST', ''),
                   (u'pICMSST', ''),
-                  (u'vICMSST', ''),]
+                  (u'vICMSST', '')]
 
 
 class NFeICMSPart(BaseNFeICMS):
@@ -1271,7 +1271,7 @@ class NFeIPI(BaseNFeXMLGroup):
                   (u'CNPJProd', ''),
                   (u'CSelo', ''),
                   (u'QSelo', ''),
-                  (u'CEnq', ''),]
+                  (u'CEnq', '')]
 
     def __init__(self, ipi_info):
         BaseNFeXMLGroup.__init__(self)
@@ -1524,7 +1524,7 @@ class NFeICMSTotal(BaseNFeXMLGroup):
                   (u'vPIS', '0'),
                   (u'vCOFINS', '0'),
                   (u'vOutro', '0'),
-                  (u'vNF', ''),]
+                  (u'vNF', '')]
     txttag = 'W02'
 
     def __init__(self, sale_total, items_total):
@@ -1548,7 +1548,7 @@ class NFeTransport(BaseNFeXMLGroup):
                     1 - por conta do destinatário (default)
     """
     tag = u'transp'
-    attributes = [('modFrete', '1'),]
+    attributes = [('modFrete', '1')]
     txttag = 'X'
 
 
@@ -1575,7 +1575,7 @@ class NFeTransporter(BaseNFeXMLGroup):
                   (u'IE', ''),
                   (u'xEnder', ''),
                   (u'xMun', ''),
-                  (u'UF', ''),]
+                  (u'UF', '')]
 
     def __init__(self, transporter):
         BaseNFeXMLGroup.__init__(self)
@@ -1606,7 +1606,7 @@ class NFeTransporter(BaseNFeXMLGroup):
         else:
             doc_tag = self.doc_cpf_tag
             doc_value = self.get_attr('CPF')
-        return '%s|%s|\n' % (doc_tag, doc_value or '',)
+        return '%s|%s|\n' % (doc_tag, doc_value or '', )
 
     def as_txt(self):
         base_txt = "%s|%s|%s|%s|%s|%s\n" % (self.txttag,
@@ -1614,7 +1614,7 @@ class NFeTransporter(BaseNFeXMLGroup):
                                             self.get_attr('IE') or '',
                                             self.get_attr('xEnder') or '',
                                             self.get_attr('UF') or '',
-                                            self.get_attr('xMun') or '',)
+                                            self.get_attr('xMun') or '', )
         doc_txt = self.get_doc_txt()
 
         return base_txt + doc_txt
@@ -1633,7 +1633,7 @@ class NFeVolume(BaseNFeXMLGroup):
                   (u'marca', ''),
                   (u'nVol', ''),
                   (u'pesoL', ''),
-                  (u'pesoB', ''),]
+                  (u'pesoB', '')]
 
     def __init__(self, quantity=0, unit='', brand='', number='',
                  net_weight=0.0, gross_weight=0.0):
@@ -1669,7 +1669,7 @@ class NFeInvoice(BaseNFeXMLGroup):
     attributes = [(u'nFat', ''),
                   (u'vOrig', ''),
                   (u'vDesc', ''),
-                  (u'vLiq', ''),]
+                  (u'vLiq', '')]
 
     def __init__(self, number, original_value, discount, liquid_value):
         BaseNFeXMLGroup.__init__(self)
@@ -1693,7 +1693,7 @@ class NFeDuplicata(BaseNFeXMLGroup):
 
     attributes = [(u'nDup', ''),
                   (u'dVenc', ''),
-                  (u'vDup', ''),]
+                  (u'vDup', '')]
 
     def __init__(self, number, due_date, value):
         BaseNFeXMLGroup.__init__(self)

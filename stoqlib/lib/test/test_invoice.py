@@ -42,10 +42,10 @@ def compare_invoice_file(invoice, basename):
 
     fp = open(output, 'w')
     for n, page in enumerate(invoice.generate_pages()):
-        fp.write('-- PAGE %d - START ----\n' % (n + 1,))
+        fp.write('-- PAGE %d - START ----\n' % (n + 1, ))
         for line in page:
             fp.write(line.tostring())
-        fp.write('-- PAGE %d - END ----\n' % (n + 1,))
+        fp.write('-- PAGE %d - END ----\n' % (n + 1, ))
     fp.close()
     expected = os.path.join(test.__path__[0], expected)
     retval = diff_files(expected, output)

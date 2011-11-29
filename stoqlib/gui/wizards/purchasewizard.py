@@ -215,7 +215,7 @@ class PurchaseItemStep(SellableItemStep):
             self.conn,
             storable=True,
             supplier=self.model.supplier,
-            consigned=self.model.consigned,)
+            consigned=self.model.consigned, )
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
@@ -267,7 +267,7 @@ class PurchaseItemStep(SellableItemStep):
                    format_func=format_quantity),
             Column('expected_receival_date', title=_('Expected Receival'),
                    data_type=datetime.date, visible=False),
-            Column('sellable.unit_description',title=_('Unit'), data_type=str,
+            Column('sellable.unit_description', title=_('Unit'), data_type=str,
                    width=70),
             Column('cost', title=_('Cost'), data_type=currency,
                    format_func=get_formatted_cost, width=90),

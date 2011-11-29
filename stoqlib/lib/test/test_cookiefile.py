@@ -38,7 +38,7 @@ class CookieTest(unittest.TestCase):
     def testStore(self):
         self._write_cookie('abc')
         os.chmod('test.cookie', 0)
-        self.assertRaises(CookieError, self.cookie.store,'', '')
+        self.assertRaises(CookieError, self.cookie.store, '', '')
         self.cookie.clear()
         self.cookie.store('abc', 'abc')
         self.assertEqual(open('test.cookie').read(), 'abc:YWJj\n')

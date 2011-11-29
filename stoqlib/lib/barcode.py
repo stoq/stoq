@@ -39,7 +39,7 @@ class BarcodeInfo:
      OPTION_5_DIGITS_PRICE,
      OPTION_4_DIGITS_WEIGHT,
      OPTION_5_DIGITS_WEIGHT,
-     OPTION_6_DIGITS_WEIGHT,) = range(5)
+     OPTION_6_DIGITS_WEIGHT) = range(5)
 
     options = {
         OPTION_4_DIGITS_PRICE: _(u'4 Digits Code with Price'),
@@ -96,5 +96,5 @@ if __name__ == '__main__':
     barcode = '2000100005279'
     # 2 0001 00 00527 9
 
-    print parse_barcode('2000100005279',BarcodeInfo.OPTION_4_DIGITS_PRICE)
+    print parse_barcode('2000100005279', BarcodeInfo.OPTION_4_DIGITS_PRICE)
     print parse_barcode('2123456005279', BarcodeInfo.OPTION_6_DIGITS_WEIGHT)

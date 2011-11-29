@@ -145,7 +145,7 @@ class ReceivingOrder(Domain):
                                                   "highlighted on invoice")}
 
     FOB_FREIGHTS = (FREIGHT_FOB_PAYMENT,
-                    FREIGHT_FOB_INSTALLMENTS,)
+                    FREIGHT_FOB_INSTALLMENTS, )
     CIF_FREIGHTS = (FREIGHT_CIF_UNKNOWN,
                     FREIGHT_CIF_INVOICE)
 

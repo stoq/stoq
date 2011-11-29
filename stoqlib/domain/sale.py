@@ -249,7 +249,7 @@ class DeliveryItem(Domain):
             # FIXME: Maybe we should allow delivering services as well.
             raise SellError(
                 _("It's only possible to deliver products, not %r") % (
-                type(sale_item),))
+                type(sale_item), ))
 
         quantity = sale_item.quantity - sale_item.get_quantity_delivered()
         return cls(connection=sale_item.get_connection(),
@@ -355,7 +355,7 @@ class Sale(Domain):
                 STATUS_ORDERED:     _(u"Ordered"),
                 STATUS_RETURNED:    _(u"Returned"),
                 STATUS_RENEGOTIATED: _(u"Renegotiated"),
-                STATUS_QUOTE:       _(u"Quoting"),}
+                STATUS_QUOTE:       _(u"Quoting")}
 
     status = IntCol(default=STATUS_INITIAL)
     coupon_id = IntCol()
@@ -563,7 +563,7 @@ class Sale(Domain):
             if not payment.is_paid():
                 raise StoqlibError(
                     _("You cannot close a sale without paying all the payment. "
-                      "Payment %r is still not paid") % (payment,))
+                      "Payment %r is still not paid") % (payment, ))
 
         transaction = IPaymentTransaction(self)
         transaction.pay()
@@ -1299,4 +1299,4 @@ class DeliveryView(Viewable):
     ]
 
     clause = AND(SaleItemAdaptToDelivery.q.originalID == SaleItem.q.id,
-                 SaleItemAdaptToDelivery.q.id == DeliveryItem.q.deliveryID,)
+                 SaleItemAdaptToDelivery.q.id == DeliveryItem.q.deliveryID, )

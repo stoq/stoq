@@ -83,7 +83,7 @@ class SintegraDialog(ConfirmDialog):
         end = self.date_filter.get_end_date()
         filename = save(_("Save Sintegra file"),
                         self.get_toplevel(),
-                        "sintegra-%s.txt" % (start.strftime('%Y-%m'),))
+                        "sintegra-%s.txt" % (start.strftime('%Y-%m'), ))
         if not filename:
             return
 

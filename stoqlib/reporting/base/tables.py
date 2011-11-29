@@ -442,7 +442,7 @@ class NewObjectTableBuilder(AbstractTableBuilder):
 
     alignment_translate_dict = {gtk.JUSTIFY_CENTER: TA_CENTER,
                                 gtk.JUSTIFY_LEFT: TA_LEFT,
-                                gtk.JUSTIFY_RIGHT: TA_RIGHT,}
+                                gtk.JUSTIFY_RIGHT: TA_RIGHT}
 
     def __init__(self, objs, cols, width=None, highlight=HIGHLIGHT_ALWAYS):
         self._columns, self._col_widths = \

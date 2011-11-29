@@ -255,7 +255,7 @@ class ECFEditor(BaseEditor):
                     continue
 
             if value:
-                constant_name = '%d %%' % (value,)
+                constant_name = '%d %%' % (value, )
             elif constant:
                 constant_name = constant.description
             else:

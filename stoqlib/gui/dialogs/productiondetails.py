@@ -55,7 +55,7 @@ class ProductionDetailsDialog(BaseEditor):
                      'open_date',
                      'close_date',
                      'responsible_name',
-                     'status_string',)
+                     'status_string', )
 
     def _setup_widgets(self):
         self.production_items.set_columns(self._get_production_items_columns())
@@ -90,7 +90,7 @@ class ProductionDetailsDialog(BaseEditor):
                 Column('produced', title=_('Produced'),
                        data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
                 Column('lost', title=_('Lost'),
-                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),]
+                       data_type=Decimal, justify=gtk.JUSTIFY_RIGHT)]
 
     def _get_material_columns(self):
         return [Column('description', title=_('Description'),
@@ -112,7 +112,7 @@ class ProductionDetailsDialog(BaseEditor):
                        visible=False),
                 Column('to_make', title=_('To Make'),
                        data_type=Decimal, justify=gtk.JUSTIFY_RIGHT,
-                       visible=False),]
+                       visible=False)]
 
     def _get_service_columns(self):
         return [Column('description', _("Description"), data_type=str,
@@ -120,7 +120,7 @@ class ProductionDetailsDialog(BaseEditor):
                 Column('quantity', _("Quantity"),
                        data_type=Decimal, justify=gtk.JUSTIFY_RIGHT),
                 Column('unit_description', _("Unit"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),]
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT)]
 
     def _get_test_result(self, item, quality_test):
         """Gets test result from cache, or fetch from database.
@@ -182,7 +182,7 @@ class ProductionDetailsDialog(BaseEditor):
                 Column('test_passed', title=_('Tests Passed'),
                        data_type=bool, visible=False),
                 Column('entered_stock', title=_('Entered Stock'),
-                       data_type=bool, visible=False),])
+                       data_type=bool, visible=False)])
         return columns
 
     #

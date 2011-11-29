@@ -46,7 +46,7 @@ class PurchaseItemEditor(BaseEditor):
     proxy_widgets = ['cost',
                      'expected_receival_date',
                      'quantity',
-                     'total',]
+                     'total']
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)

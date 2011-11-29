@@ -205,7 +205,7 @@ class OFXImporter(Importer):
         return True
 
     def when_done(self, trans):
-        log.info("Imported %d transactions" % (len(self.tp.transactions),))
+        log.info("Imported %d transactions" % (len(self.tp.transactions), ))
         if self.skipped:
             log.info("Couldn't parse %d transactions" % (self.skipped, ))
 

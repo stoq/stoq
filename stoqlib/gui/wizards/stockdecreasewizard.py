@@ -169,7 +169,7 @@ class DecreaseItemStep(SellableItemStep):
                    data_type=str, expand=True, searchable=True),
             Column('quantity', title=_('Quantity'), data_type=float, width=90,
                    format_func=format_quantity),
-            Column('sellable.unit_description',title=_('Unit'), data_type=str,
+            Column('sellable.unit_description', title=_('Unit'), data_type=str,
                    width=70),
             ]
 

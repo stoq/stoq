@@ -747,7 +747,7 @@ class PersonAdaptToUser(PersonAdapter):
                                                     station.name))
         else:
             Event.log(Event.TYPE_USER,
-                _("User '%s' logged in") % (self.username,))
+                _("User '%s' logged in") % (self.username, ))
 
     def logout(self):
         station = get_current_station(self.get_connection())
@@ -757,7 +757,7 @@ class PersonAdaptToUser(PersonAdapter):
                                                        station.name))
         else:
             Event.log(Event.TYPE_USER,
-                _("User '%s' logged out") % (self.username,))
+                _("User '%s' logged out") % (self.username, ))
 
 Person.registerFacet(PersonAdaptToUser, IUser)
 
@@ -853,7 +853,7 @@ class PersonAdaptToCreditProvider(PersonAdapter):
     """A credit provider facet of a person."""
     implements(ICreditProvider)
 
-    (PROVIDER_CARD,) = range(1)
+    (PROVIDER_CARD, ) = range(1)
 
     cards_type = {
         CreditCardData.TYPE_CREDIT: 'credit_fee',

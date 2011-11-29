@@ -41,7 +41,7 @@ class CashChangeSlave(BaseEditorSlave):
 
     gladefile = 'CashChangeSlave'
     model_type = object
-    proxy_widgets = ('received_value',)
+    proxy_widgets = ('received_value', )
 
     def __init__(self, conn, model):
         BaseEditorSlave.__init__(self, conn, model)

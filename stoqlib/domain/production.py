@@ -649,6 +649,6 @@ class ProductionItemQualityResult(Domain):
 
     def set_decimal_value(self, value):
         self.test_passed = self.quality_test.result_value_passes(value)
-        self.result_value = '%s' % (value,)
+        self.result_value = '%s' % (value, )
         self.produced_item.check_tests()
 

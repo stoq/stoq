@@ -75,7 +75,7 @@ class ProductionItemEditor(BaseEditor):
     model_type = ProductionItem
     size = (-1, -1)
     model_name = _(u'Production Item')
-    proxy_widgets = ['description', 'quantity', 'unit_description',]
+    proxy_widgets = ['description', 'quantity', 'unit_description']
 
     def setup_location_widgets(self):
         location = self.model.product.location
@@ -159,7 +159,7 @@ class ProductionItemProducedEditor(ProductionItemEditor):
         self.quantity_lbl.set_text(self.quantity_title)
         self.proxy.remove_widget('quantity')
         self.quantity.set_property('model-attribute', self.quantity_attribute)
-        self._quantity_proxy = self.add_proxy(self, ['quantity',])
+        self._quantity_proxy = self.add_proxy(self, ['quantity'])
 
     def setup_slaves(self):
         self.serial_slave = None
@@ -258,7 +258,7 @@ class ProductionServiceEditor(ProductionItemEditor):
 class ProductionMaterialEditor(ProductionItemEditor):
     model_type = ProductionMaterial
     model_name = _(u'Production Material Item')
-    proxy_widgets = ['description',]
+    proxy_widgets = ['description']
 
     def setup_proxies(self):
         self.setup_editor_widgets()

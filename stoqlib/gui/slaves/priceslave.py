@@ -43,7 +43,7 @@ class PriceSlave(GladeSlaveDelegate):
 
     def set_model(self, model):
         if self._proxy is None:
-            self._proxy = self.add_proxy(model, ("price",))
+            self._proxy = self.add_proxy(model, ("price", ))
         else:
             self._proxy.set_model(model)
 

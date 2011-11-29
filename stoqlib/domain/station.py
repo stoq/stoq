@@ -89,7 +89,7 @@ class BranchStation(Domain):
         """
 
         if IBranch(branch, None) is None:
-            raise TypeError("%r must implemented IBranch" % (branch,))
+            raise TypeError("%r must implemented IBranch" % (branch, ))
         return cls.selectOneBy(name=name, branch=branch, connection=conn)
 
     # Events

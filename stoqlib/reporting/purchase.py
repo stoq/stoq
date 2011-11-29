@@ -236,7 +236,7 @@ class PurchaseOrderReport(BaseStoqReport):
         installments_number = payments.count()
         if installments_number > 1:
             msg = (_("Payments: %d installments")
-                   % (installments_number,))
+                   % (installments_number, ))
         elif installments_number == 1:
             msg = _("Payments: 1 installment")
         else:
@@ -332,7 +332,7 @@ class PurchaseQuoteReport(BaseStoqReport):
             OTC(_("Cost"), lambda obj: "", width=70, align=RIGHT),
             OTC(_("Quantity"), lambda obj: format_quantity(obj.quantity),
                 width=70, align=RIGHT),
-            OTC(_("Total"), lambda obj: "", width=90, align=RIGHT),]
+            OTC(_("Total"), lambda obj: "", width=90, align=RIGHT)]
 
     def _get_freight_line(self):
         return [_(u"Transporter:"), u"",

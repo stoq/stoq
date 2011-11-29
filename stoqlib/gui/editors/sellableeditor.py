@@ -185,7 +185,7 @@ class SellablePriceEditor(BasePriceEditor):
 class CategoryPriceEditor(BasePriceEditor):
     model_name = _(u'Category Price')
     model_type = ClientCategoryPrice
-    sellable_widgets = ('cost',)
+    sellable_widgets = ('cost', )
     proxy_widgets = ('markup', 'max_discount', 'price')
 
     def setup_proxies(self):
@@ -263,7 +263,7 @@ class SellableEditor(BaseEditor):
     gladefile = 'SellableEditor'
     confirm_widgets = ['description', 'cost', 'price']
 
-    sellable_tax_widgets = ('tax_constant', 'tax_value',)
+    sellable_tax_widgets = ('tax_constant', 'tax_value', )
     sellable_widgets = ('code',
                         'barcode',
                         'description',

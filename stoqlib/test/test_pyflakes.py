@@ -113,7 +113,7 @@ class TestPyflakes(unittest.TestCase):
 root = os.path.dirname(os.path.dirname(stoq.__file__)) + '/'
 for dirpath in ['stoq', 'stoqlib', 'plugins']:
     path = os.path.abspath(os.path.join(root, dirpath))
-    name = 'test_%s_pyflakes' % (dirpath,)
+    name = 'test_%s_pyflakes' % (dirpath, )
     func = lambda self, path=path: self.runPyflakes(path)
     func.__name__ = name
     setattr(TestPyflakes, name, func)

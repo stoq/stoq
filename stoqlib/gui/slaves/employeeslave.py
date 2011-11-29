@@ -94,7 +94,7 @@ class EmployeeDetailsSlave(BaseEditorSlave):
 class EmployeeStatusSlave(BaseEditorSlave):
     gladefile = 'EmployeeStatusSlave'
     model_iface = IEmployee
-    proxy_widgets = ('statuses_combo',)
+    proxy_widgets = ('statuses_combo', )
 
     def setup_proxies(self):
         items = [(v, c)
@@ -107,7 +107,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
     gladefile = 'EmployeeRoleSlave'
     model_type = EmployeeRoleHistory
     proxy_widgets = ('role',
-                     'salary',)
+                     'salary', )
 
     def __init__(self, conn, employee, edit_mode, visual_mode=False):
         self.max_results = sysparam(conn).MAX_SEARCH_RESULTS

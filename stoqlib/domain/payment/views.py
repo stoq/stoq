@@ -212,7 +212,7 @@ class CardPaymentView(Viewable):
         status=Payment.q.status,
         value=Payment.q.value,
         fee=CreditCardData.q.fee,
-        fee_calc=CreditCardData.q.fee_value,)
+        fee_calc=CreditCardData.q.fee_value, )
 
 
     joins = [

@@ -293,7 +293,7 @@ class SaleInvoicePrinterDialog(BaseEditor):
     model_type = Sale
     model_name = _(u'Sale Invoice')
     gladefile = 'SaleInvoicePrinterDialog'
-    proxy_widgets = ('invoice_number',)
+    proxy_widgets = ('invoice_number', )
     title = _(u'Sale Invoice Dialog')
     size = (250, 100)
 

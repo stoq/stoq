@@ -207,7 +207,7 @@ class SellableItemStep(WizardEditorStep):
                      'cost',
                      'minimum_quantity',
                      'stock_quantity',
-                     'sellable_description',)
+                     'sellable_description', )
     model_type = None
     table = Sellable
     item_table = None

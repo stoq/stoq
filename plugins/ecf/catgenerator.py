@@ -104,7 +104,7 @@ class StoqlibCATGenerator(object):
                     #Sale.q.station_id == self.printer.station_id
                     )
         if returned:
-            query = AND(const.DATE(Sale.q.return_date) == self.end,)
+            query = AND(const.DATE(Sale.q.return_date) == self.end, )
 
         return Sale.select(query, connection=self.conn)
 

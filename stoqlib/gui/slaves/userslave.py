@@ -52,7 +52,7 @@ class LoginInfo:
 class UserStatusSlave(BaseEditorSlave):
     gladefile = 'UserStatusSlave'
     model_iface = IUser
-    proxy_widgets = ('active_check',)
+    proxy_widgets = ('active_check', )
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
@@ -134,7 +134,7 @@ class PasswordEditorSlave(BaseEditorSlave):
 class PasswordEditor(BaseEditor):
     gladefile = 'PasswordEditor'
     model_type = LoginInfo
-    proxy_widgets = ('current_password',)
+    proxy_widgets = ('current_password', )
 
     def __init__(self, conn, user, visual_mode=False):
         self.user = user

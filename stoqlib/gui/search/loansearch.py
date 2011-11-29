@@ -71,7 +71,7 @@ class LoanItemSearch(SearchDialog):
                 SearchColumn('opened', title=_(u'Open date'),
                              data_type=datetime.date, visible=False),
                 SearchColumn('closed', title=_(u'Close date'),
-                             data_type=datetime.date,),
+                             data_type=datetime.date, ),
                 SearchColumn('code', title=_(u'Code'), data_type=str,
                              visible=False),
                 SearchColumn('category_description', title=_(u'Category'),
@@ -87,7 +87,7 @@ class LoanItemSearch(SearchDialog):
                 SearchColumn('price', title=_(u'Price'),
                              data_type=currency),
                 SearchColumn('total', title=_(u'Total'),
-                             data_type=currency),]
+                             data_type=currency)]
 
 class LoanSearch(SearchDialog):
     title = _(u"Loan Search")

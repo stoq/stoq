@@ -419,7 +419,7 @@ class SQLObjectBase(Storm):
     def _parse_orderBy(cls, orderBy):
         result = []
         if not isinstance(orderBy, (tuple, list)):
-            orderBy = (orderBy,)
+            orderBy = (orderBy, )
         for item in orderBy:
             if isinstance(item, basestring):
                 desc = item.startswith("-")
@@ -536,7 +536,7 @@ class SQLObjectResultSet(object):
             if type(find_spec) is not tuple:
                 find_spec = (find_spec, SQL(self._selectAlso))
             else:
-                find_spec += (SQL(self._selectAlso),)
+                find_spec += (SQL(self._selectAlso), )
 
         if self._join:
             store = store.using(self._cls.__storm_table__, self._join)
@@ -587,7 +587,7 @@ class SQLObjectResultSet(object):
                 L = list(self)
                 if len(L) > 100:
                     warnings.warn('Negative indices when slicing are slow: '
-                                  'fetched %d rows.' % (len(L),))
+                                  'fetched %d rows.' % (len(L), ))
                 start, stop, step = index.indices(len(L))
                 assert step == 1, "slice step must be 1"
                 index = slice(start, stop)
@@ -597,7 +597,7 @@ class SQLObjectResultSet(object):
                 L = list(self)
                 if len(L) > 100:
                     warnings.warn('Negative indices are slow: '
-                                  'fetched %d rows.' % (len(L),))
+                                  'fetched %d rows.' % (len(L), ))
                 return detuplelize(L[index])
             return detuplelize(self._result_set[index])
 
@@ -954,7 +954,7 @@ class ConstantSpace(object):
         # Workarround arround an issue in inspect.isclass
         if attr == '__bases__':
             raise AttributeError
-        return type(attr, (NamedFunc,), {'name': attr})
+        return type(attr, (NamedFunc, ), {'name': attr})
 
 
 class Transaction(object):
@@ -1010,7 +1010,7 @@ class Connection(object):
         self.store = None
 
     def dbVersion(self):
-        return (8,3)
+        return (8, 3)
 
     def queryOne(self, query):
         res = self.store.execute(

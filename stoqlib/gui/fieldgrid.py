@@ -203,7 +203,7 @@ class FieldGrid(gtk.Layout):
         if not description:
             description = text
         label.set_markup(
-            '<span letter_spacing="3072">%s</span>' % (description,))
+            '<span letter_spacing="3072">%s</span>' % (description, ))
         label.modify_font(self.font)
         field = FieldInfo(self, text, label, x, y, width, height)
         self._fields.append(field)

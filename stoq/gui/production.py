@@ -135,7 +135,7 @@ class ProductionApp(SearchableAppWindow):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description',])
+        self.set_text_field_columns(['description'])
         self.status_filter = ComboSearchFilter(
             _(u'Show productions with status'), self._get_status_values())
         self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])

@@ -86,7 +86,7 @@ class DeviceSettingsEditor(BaseEditor):
         items = [(_("Choose..."), None)]
         device_types = (# TODO: Reenable when we have cheque printers working.
                         #DeviceSettings.CHEQUE_PRINTER_DEVICE,
-                        DeviceSettings.SCALE_DEVICE,)
+                        DeviceSettings.SCALE_DEVICE, )
         items.extend([(self.model.get_device_type_name(t), t)
                       for t in device_types])
         self.type_combo.prefill(items)

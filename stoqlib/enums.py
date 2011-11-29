@@ -51,9 +51,9 @@ class CreatePaymentStatus(enum):
 
     (SUCCESS,
      FAIL,
-     UNHANDLED,) = range(3)
+     UNHANDLED, ) = range(3)
 
 
 class NFeDanfeOrientation(enum):
     (PORTRAIT,
-     LANDSCAPE,) = range(2)
+     LANDSCAPE, ) = range(2)

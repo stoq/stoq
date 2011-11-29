@@ -44,7 +44,7 @@ class BasePaymentChangeDialog(BaseEditor):
     size = (450, 250)
     model_type = PaymentChangeHistory
     gladefile = "PaymentChangeDialog"
-    history_widgets = ('change_reason',)
+    history_widgets = ('change_reason', )
     payment_widgets = ()
 
     def __init__(self, conn, payment, order=None):
@@ -151,7 +151,7 @@ class PaymentDueDateChangeDialog(BasePaymentChangeDialog):
         BasePaymentChangeDialog.setup_proxies(self)
 
         self._temp_model = _TempDateModel()
-        self._date_proxy = self.add_proxy(self._temp_model, ('due_date',))
+        self._date_proxy = self.add_proxy(self._temp_model, ('due_date', ))
 
     def create_model(self, conn):
         model = BasePaymentChangeDialog.create_model(self, conn)
@@ -177,7 +177,7 @@ class PaymentStatusChangeDialog(BasePaymentChangeDialog):
     """This dialog is responsible to change a payment status"""
 
     title = _(u"Change Payment Status")
-    payment_widgets = ('status_combo',)
+    payment_widgets = ('status_combo', )
 
     def __init__(self, conn, payment, target_status, order=None):
         self._target_status = target_status

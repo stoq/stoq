@@ -47,7 +47,7 @@ _tables = [
      ('account', ["BankAccount", "Bank"]),
      ('profile', ["UserProfile", "ProfileSettings"]),
      ('person', ["Person"]),
-     ('address', ["CityLocation", "Address",]),
+     ('address', ["CityLocation", "Address"]),
      ('person', ["EmployeeRole",
                  "WorkPermitData",
                  "MilitaryData",

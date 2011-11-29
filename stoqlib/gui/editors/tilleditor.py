@@ -214,7 +214,7 @@ class TillClosingEditor(BaseEditor):
         return [Column('description', title=_('Description'), data_type=str,
                         width=300, sorted=True),
                 ColoredColumn('value', title=_('Amount'), data_type=currency,
-                               color='red', data_func=lambda x: x < 0),]
+                               color='red', data_func=lambda x: x < 0)]
 
     #
     # BaseEditorSlave
@@ -394,7 +394,7 @@ class CashAdvanceEditor(BaseEditor):
                 return None
             till_entry = till.add_debit_entry(
                 value, (_(u'Cash advance paid to employee: %s') % (
-                self._get_employee_name(),)))
+                self._get_employee_name(), )))
 
             TillAddTillEntryEvent.emit(till_entry, self.conn)
             _create_transaction(self.conn, till_entry)
@@ -458,7 +458,7 @@ class CashOutEditor(BaseEditor):
                 return None
 
             till_entry = till.add_debit_entry(
-                value, (_(u'Cash out: %s') % (self.reason.get_text(),)))
+                value, (_(u'Cash out: %s') % (self.reason.get_text(), )))
 
 
             TillAddTillEntryEvent.emit(till_entry, self.conn)
@@ -517,7 +517,7 @@ class CashInEditor(BaseEditor):
 
             till_entry = till.add_credit_entry(
                 self.model.value,
-                (_(u'Cash in: %s') % (self.reason.get_text(),)))
+                (_(u'Cash in: %s') % (self.reason.get_text(), )))
 
             TillAddTillEntryEvent.emit(till_entry, self.conn)
             _create_transaction(self.conn, till_entry)

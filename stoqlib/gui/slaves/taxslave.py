@@ -212,8 +212,8 @@ class BaseICMSSlave(BaseTaxSlave):
         # Simples Nacional
         101: ['orig', 'csosn', 'p_cred_sn', 'p_cred_sn_valid_until',
               'v_cred_icms_sn'],
-        102: ['orig', 'csosn',],
-        103: ['orig', 'csosn',],
+        102: ['orig', 'csosn'],
+        103: ['orig', 'csosn'],
         201: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
               'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_cred_sn',
               'p_cred_sn_valid_until', 'v_cred_icms_sn'],
@@ -221,8 +221,8 @@ class BaseICMSSlave(BaseTaxSlave):
               'p_icms_st', 'v_bc_st', 'v_icms_st'],
         203: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
               'p_icms_st', 'v_bc_st', 'v_icms_st'],
-        300: ['orig', 'csosn',],
-        400: ['orig', 'csosn',],
+        300: ['orig', 'csosn'],
+        400: ['orig', 'csosn'],
         500: ['orig', 'csosn', 'v_bc_st_ret', 'v_icms_st_ret'],
     }
 
@@ -232,7 +232,7 @@ class BaseICMSSlave(BaseTaxSlave):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
         # Simple Nacional
-        if self.branch.crt in (1,2):
+        if self.branch.crt in [1, 2]:
             self._update_selected_csosn()
         else:
             self._update_selected_cst()

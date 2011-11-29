@@ -114,7 +114,7 @@ class OutPaymentBillCheckSearch(_BaseBillCheckSearch):
 class CardPaymentSearch(SearchDialog):
 
     title = _(u"Card Payment Search")
-    size = (750,500)
+    size = (750, 500)
     searching_by_date = True
     search_table = CardPaymentView
     selection_mode = gtk.SELECTION_BROWSE

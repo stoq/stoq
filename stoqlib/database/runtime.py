@@ -101,7 +101,7 @@ class StoqlibTransaction(Transaction):
             return None
 
         if not isinstance(obj, ORMObject):
-            raise TypeError("obj must be a ORMObject, not %r" % (obj,))
+            raise TypeError("obj must be a ORMObject, not %r" % (obj, ))
 
         # sqlobject invalidates the objects from the connection, but not from
         # other transactions. If the object we are getting now comes from

@@ -172,7 +172,7 @@ class ProductionMaterialListSlave(BaseEditorSlave):
                     data_type=str, expand=True, ellipsize=pango.ELLIPSIZE_END),
             Column('description', title=_('Description'), data_type=str,
                     expand=True, ellipsize=pango.ELLIPSIZE_END, sorted=True),
-            Column('unit_description',title=_('Unit'),
+            Column('unit_description', title=_('Unit'),
                     data_type=str),
             Column('needed', title=_('Needed'), data_type=Decimal,
                     format_func=format_quantity),
@@ -184,7 +184,7 @@ class ProductionMaterialListSlave(BaseEditorSlave):
                           data_func=self._colorize_to_purchase_col),
             ColoredColumn('to_make', title=_('To Make'), data_type=Decimal,
                           format_func=format_quantity, use_data_model=True,
-                          color='red', data_func=self._colorize_to_make_col),]
+                          color='red', data_func=self._colorize_to_make_col)]
 
     #XXX: Some duplication here, since the columns will never be both red.
 

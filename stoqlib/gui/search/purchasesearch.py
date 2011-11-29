@@ -93,7 +93,7 @@ class PurchasedItemsSearch(SearchEditor):
                              data_type=datetime.date),
                 SearchColumn('expected_receival_date', title=_('Expected receival'),
                              data_type=datetime.date,
-                             valid_values=self._get_date_options()),]
+                             valid_values=self._get_date_options())]
 
     def get_editor_model(self, model):
         return model.purchase_item

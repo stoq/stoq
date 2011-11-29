@@ -117,7 +117,7 @@ class PluginManager(object):
         plugin_name = plugin_desc.name
         fp, pathname, description = imp.find_module(plugin_desc.entry,
                                                     [plugin_desc.dirname])
-        log.info("Loading plugin %s" % (plugin_name,))
+        log.info("Loading plugin %s" % (plugin_name, ))
         imp.load_module(plugin_name, fp, pathname, description)
 
         assert plugin_name in self._plugins
@@ -133,7 +133,7 @@ class PluginManager(object):
         @returns: the L{IPlugin} implementation of the plugin
         """
         if not plugin_name in self._plugin_descriptions:
-            raise PluginError("%s plugin not found" % (plugin_name,))
+            raise PluginError("%s plugin not found" % (plugin_name, ))
 
         if not plugin_name in self._plugins:
             self._import_plugin(self._plugin_descriptions[plugin_name])
@@ -153,7 +153,7 @@ class PluginManager(object):
         """
         if not IPlugin.providedBy(plugin):
             raise TypeError("The object %s does not implement IPlugin "
-                            "interface" % (plugin,))
+                            "interface" % (plugin, ))
         self._plugins[plugin.name] = plugin
 
     def activate_plugin(self, plugin_name):
@@ -169,10 +169,10 @@ class PluginManager(object):
         @param plugin: the L{IPlugin} implementation of the plugin
         """
         if self.is_active(plugin_name):
-            raise PluginError("Plugin %s is already active" % (plugin_name,))
+            raise PluginError("Plugin %s is already active" % (plugin_name, ))
 
         plugin = self.get_plugin(plugin_name)
-        log.info("Activating plugin %s" % (plugin_name,))
+        log.info("Activating plugin %s" % (plugin_name, ))
         plugin.activate()
         self._active_plugins[plugin_name] = plugin
 
@@ -190,7 +190,7 @@ class PluginManager(object):
 
         if plugin_name in self.installed_plugins_names:
             raise PluginError("Plugin %s is already installed on database"
-                              % (plugin_name,))
+                              % (plugin_name, ))
 
         trans = new_transaction()
         InstalledPlugin(connection=trans,

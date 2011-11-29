@@ -77,5 +77,5 @@ def apply_patch(trans):
         if not trans.tableHasColumn(table_name, 'is_valid_model'):
             continue
         trans.query('ALTER TABLE %s DROP COLUMN is_valid_model' % (
-            table_name,))
+            table_name, ))
     trans.commit()

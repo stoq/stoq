@@ -154,7 +154,7 @@ class SellableSearch(SearchEditor):
                 AccessorColumn('stock', title=_(u'Stock'),
                                 accessor=self._get_available_stock,
                                 format_func=format_quantity, width=90,
-                                data_type=Decimal),]
+                                data_type=Decimal)]
 
     def update_widgets(self):
         sellable_view = self.results.get_selected()

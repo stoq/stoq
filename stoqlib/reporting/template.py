@@ -211,7 +211,7 @@ class SearchResultsReport(BaseStoqReport):
         notes = []
         for filter_string in self._filter_strings:
             if base_note:
-                notes.append('%s %s' % (base_note, filter_string,))
+                notes.append('%s %s' % (base_note, filter_string))
             elif filter_string:
                 notes.append(filter_string)
         return (title, notes)
@@ -262,7 +262,7 @@ class ObjectListReport(SearchResultsReport):
             if not column.treeview_column.get_visible():
                 continue
             # Not supported columns.
-            if column.data_type in [bool, gtk.gdk.Pixbuf,]:
+            if column.data_type in [bool, gtk.gdk.Pixbuf]:
                 continue
 
             report_columns.append(self._convert_column(column))
@@ -287,7 +287,7 @@ class ObjectListReport(SearchResultsReport):
         @param column_name: the name of the summarized column.
         @param value: the summary value.
         """
-        self._summary_row.update({column_name:value})
+        self._summary_row.update({column_name: value})
 
     def get_summary_row(self):
         """Returns the row used to summarize data.
@@ -386,4 +386,4 @@ class BaseRMLReport(object):
         """
         raise NotImplementedError(
             '%s needs to implement get_namespace()' %
-            (self.__class__.__name,))
+            (self.__class__.__name, ))

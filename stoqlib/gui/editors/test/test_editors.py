@@ -48,7 +48,7 @@ def get_all_slaves():
             continue
         if klass in [BaseEditor, BaseEditorSlave]:
             continue
-        if issubclass(klass, (WizardStep,)):
+        if issubclass(klass, (WizardStep, )):
             continue
         if klass in slaves:
             continue
@@ -82,7 +82,7 @@ def _test_slave(self, slave):
             if needs_model:
                 model = self.create_by_type(model_type)
                 if model is None:
-                    raise SkipTest('unsupported model: %s' % (model_type.__name__,))
+                    raise SkipTest('unsupported model: %s' % (model_type.__name__, ))
             else:
                 model = None
             value = model
@@ -123,7 +123,7 @@ def _test_slave(self, slave):
         elif has_default:
             value = defaults[def_idx]
         else:
-            raise SkipTest('unknown argument: %s' % (arg,))
+            raise SkipTest('unknown argument: %s' % (arg, ))
         send.append(value)
 
     s = slave(*send)
@@ -170,7 +170,7 @@ def _create_slave_test():
             func.skip = SKIP[tname]
         namespace[name] = func
 
-    return type('TestSlaves', (DomainTest,), namespace)
+    return type('TestSlaves', (DomainTest, ), namespace)
 
 # Speculative fix: collect the garbage before we run the tests, since there is
 # a strange (and random) segmentation fault, due to memory violation.

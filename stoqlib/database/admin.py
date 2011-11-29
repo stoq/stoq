@@ -96,7 +96,7 @@ def ensure_admin_user(administrator_password):
         if not profile:
             profile = UserProfile.selectOneBy(name='Administrator', connection=trans)
 
-        log.info("Attaching IUser facet (%s)" % (USER_ADMIN_DEFAULT_NAME,))
+        log.info("Attaching IUser facet (%s)" % (USER_ADMIN_DEFAULT_NAME, ))
         person.addFacet(IUser, username=USER_ADMIN_DEFAULT_NAME,
                         password=administrator_password,
                         profile=profile, connection=trans)
@@ -195,7 +195,7 @@ def _ensure_card_providers():
     from stoqlib.domain.person import PersonAdaptToCreditProvider
 
     providers = ['VISANET', 'REDECARD', 'AMEX', 'HIPERCARD',
-                 'BANRISUL','PAGGO', 'CREDISHOP', 'CERTIF']
+                 'BANRISUL', 'PAGGO', 'CREDISHOP', 'CERTIF']
 
     trans = new_transaction()
     for name in providers:
@@ -297,7 +297,7 @@ def create_base_schema():
     try:
         schema = environ.find_resource('sql', '%s-schema.sql' % settings.rdbms)
         if execute_sql(schema) != 0:
-            error('Failed to create %s specific schema' % (settings.rdbms,))
+            error('Failed to create %s specific schema' % (settings.rdbms, ))
     except EnvironmentError:
         pass
 

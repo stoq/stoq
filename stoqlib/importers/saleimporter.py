@@ -53,18 +53,18 @@ class SaleImporter(CSVImporter):
                                             connection=trans), None)
         if branch is None:
             raise ValueError("%s is not a valid branch" % (
-                data.branch_name,))
+                data.branch_name, ))
         client = IClient(Person.selectOneBy(name=data.client_name,
                                             connection=trans), None)
         if client is None:
             raise ValueError("%s is not a valid client" % (
-                data.client_name,))
+                data.client_name, ))
         salesperson = ISalesPerson(
             Person.selectOneBy(name=data.salesperson_name,
                                connection=trans), None)
         if salesperson is None:
             raise ValueError("%s is not a valid salesperson" % (
-                data.salesperson_name,))
+                data.salesperson_name, ))
         group = PaymentGroup(connection=trans)
         sale = Sale(client=client,
                     open_date=self.parse_date(data.open_date),
