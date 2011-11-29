@@ -74,3 +74,4 @@ class Event(Domain):
             description=description,
             connection=trans)
         trans.commit()
+        trans.close()
