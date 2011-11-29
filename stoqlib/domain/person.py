@@ -1245,10 +1245,8 @@ class CreditProviderView(Viewable):
         is_active=PersonAdaptToCreditProvider.q.is_active,
         credit_fee=PersonAdaptToCreditProvider.q.credit_fee,
         debit_fee=PersonAdaptToCreditProvider.q.debit_fee,
-        credit_installments_store_fee=
-            PersonAdaptToCreditProvider.q.credit_installments_store_fee,
-        credit_installments_provider_fee=
-            PersonAdaptToCreditProvider.q.credit_installments_provider_fee,
+        credit_installments_store_fee=PersonAdaptToCreditProvider.q.credit_installments_store_fee,
+        credit_installments_provider_fee=PersonAdaptToCreditProvider.q.credit_installments_provider_fee,
         debit_pre_dated_fee=PersonAdaptToCreditProvider.q.debit_pre_dated_fee,
         monthly_fee=PersonAdaptToCreditProvider.q.monthly_fee
         )

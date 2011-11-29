@@ -115,7 +115,7 @@ class TestPerson(DomainTest):
         person = self.create_person()
         ctloc = CityLocation(connection=self.trans)
         address = Address(connection=self.trans, person=person,
-                          city_location=ctloc, street ='bla', streetnumber=2,
+                          city_location=ctloc, street='bla', streetnumber=2,
                           district='fed', is_main_address=True)
         self.assertEquals(person.get_address_string(), _(u'%s %s, %s') % (
             address.street, address.streetnumber, address.district))

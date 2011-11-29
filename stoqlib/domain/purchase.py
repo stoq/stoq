@@ -719,28 +719,28 @@ class PurchaseOrderView(Viewable):
     Person_Responsible = Alias(Person, 'person_responsible')
 
     columns = dict(
-        id = PurchaseOrder.q.id,
-        status = PurchaseOrder.q.status,
-        open_date = PurchaseOrder.q.open_date,
-        quote_deadline = PurchaseOrder.q.quote_deadline,
-        expected_receival_date = PurchaseOrder.q.expected_receival_date,
-        expected_pay_date = PurchaseOrder.q.expected_pay_date,
-        receival_date = PurchaseOrder.q.receival_date,
-        confirm_date = PurchaseOrder.q.confirm_date,
-        salesperson_name = PurchaseOrder.q.salesperson_name,
-        expected_freight = PurchaseOrder.q.expected_freight,
-        surcharge_value = PurchaseOrder.q.surcharge_value,
-        discount_value = PurchaseOrder.q.discount_value,
+        id=PurchaseOrder.q.id,
+        status=PurchaseOrder.q.status,
+        open_date=PurchaseOrder.q.open_date,
+        quote_deadline=PurchaseOrder.q.quote_deadline,
+        expected_receival_date=PurchaseOrder.q.expected_receival_date,
+        expected_pay_date=PurchaseOrder.q.expected_pay_date,
+        receival_date=PurchaseOrder.q.receival_date,
+        confirm_date=PurchaseOrder.q.confirm_date,
+        salesperson_name=PurchaseOrder.q.salesperson_name,
+        expected_freight=PurchaseOrder.q.expected_freight,
+        surcharge_value=PurchaseOrder.q.surcharge_value,
+        discount_value=PurchaseOrder.q.discount_value,
 
-        supplier_name = Person_Supplier.q.name,
-        transporter_name = Person_Transporter.q.name,
-        branch_name = Person_Branch.q.name,
-        responsible_name = Person_Responsible.q.name,
+        supplier_name=Person_Supplier.q.name,
+        transporter_name=Person_Transporter.q.name,
+        branch_name=Person_Branch.q.name,
+        responsible_name=Person_Responsible.q.name,
 
-        ordered_quantity = const.SUM(PurchaseItem.q.quantity),
-        received_quantity = const.SUM(PurchaseItem.q.quantity_received),
-        subtotal = const.SUM(PurchaseItem.q.cost * PurchaseItem.q.quantity),
-        total = const.SUM(PurchaseItem.q.cost * PurchaseItem.q.quantity) - \
+        ordered_quantity=const.SUM(PurchaseItem.q.quantity),
+        received_quantity=const.SUM(PurchaseItem.q.quantity_received),
+        subtotal=const.SUM(PurchaseItem.q.cost * PurchaseItem.q.quantity),
+        total=const.SUM(PurchaseItem.q.cost * PurchaseItem.q.quantity) - \
             PurchaseOrder.q.discount_value + PurchaseOrder.q.surcharge_value
     )
 

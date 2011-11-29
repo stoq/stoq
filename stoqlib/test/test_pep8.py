@@ -54,6 +54,7 @@ ERRORS = [
     'E111', # indentation is not a multiple of four
     'E112', # expected an indented block
     'E113', # unexpected indentation
+    'E251', # no spaces around keyword / parameter equals
     'W291', # trailing whitespace
     'W293', # blank line contains whitespace
     'E401', # multiple imports on one line

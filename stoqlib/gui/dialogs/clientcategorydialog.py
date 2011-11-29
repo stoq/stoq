@@ -44,7 +44,7 @@ class ClientCategoryDialog(ModelListDialog):
 
     #ListDialog
     columns = [
-        Column('name', title= _('Category'),
+        Column('name', title=_('Category'),
                 data_type=str, expand=True, sorted=True)
         ]
 
