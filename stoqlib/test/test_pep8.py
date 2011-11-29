@@ -57,6 +57,7 @@ ERRORS = [
     'E231', # E231 missing whitespace after ','/':'
     'E251', # no spaces around keyword / parameter equals
     'W291', # trailing whitespace
+    'W292', # no newline at end of file
     'W293', # blank line contains whitespace
     'W391', # blank line at end of file
     'E401', # multiple imports on one line
