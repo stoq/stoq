@@ -302,7 +302,7 @@ class ECFListDialog(ModelListDialog):
     size = (600, 250)
     editor_class = ECFEditor
 
-    columns =  [
+    columns = [
         Column('description', title=_('Model'), data_type=str, expand=True),
         Column('device_serial', title=_('Serial'), data_type=str, width=100),
         Column('station.name', title=_('Computer'), data_type=str, width=100),

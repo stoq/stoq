@@ -73,7 +73,7 @@ def print_cheques_for_payment_group(conn, group):
         except KeyError:
             continue
         thirdparty = group.recipient
-        info(_(u"Insert Cheque %d") % (idx+1))
+        info(_(u"Insert Cheque %d") % (idx + 1))
         max_len = printer.get_capability("cheque_thirdparty").max_len
         thirdparty = thirdparty and thirdparty.name[:max_len] or ""
         printer.print_cheque(bank, payment.value, thirdparty, city)

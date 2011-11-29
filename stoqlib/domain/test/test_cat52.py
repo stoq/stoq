@@ -110,7 +110,7 @@ class Cat52Test(DomainTest):
         for item in FiscalDayHistory.select(connection=self.trans):
             f.add_z_reduction(item)
             for i, tax in enumerate(item.taxes):
-                f.add_z_reduction_details(item, tax, i+1)
+                f.add_z_reduction_details(item, tax, i + 1)
 
 
         sale = self.create_sale()
@@ -126,7 +126,7 @@ class Cat52Test(DomainTest):
         f.add_fiscal_coupon(sale, sale.client, history)
         for i, item in enumerate(sale.get_items()):
             f.add_fiscal_coupon_details(sale, sale.client, history,
-                                        item, 800, i+1)
+                                        item, 800, i + 1)
 
         for payment in sale.payments:
             f.add_payment_method(sale, history, payment)

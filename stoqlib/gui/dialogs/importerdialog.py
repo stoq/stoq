@@ -82,7 +82,7 @@ class ImporterDialog(BasicDialog):
         log_pos = line.find(LOG_CATEGORY)
         if log_pos == -1:
             return
-        line = line[log_pos+len(LOG_CATEGORY)+1:]
+        line = line[log_pos + len(LOG_CATEGORY) + 1:]
         if line.startswith('ITEMS:'):
             value = 0
             self.n_items = int(line.split(':', 1)[1])
@@ -94,7 +94,7 @@ class ImporterDialog(BasicDialog):
         elif line.startswith('ITEM:'):
             item = float(line.split(':', 1)[1])
             value = item / self.n_items
-            text = _("Importing item %d ...") % (item+1, )
+            text = _("Importing item %d ...") % (item + 1, )
         else:
             return
         self.progressbar.set_fraction(value)

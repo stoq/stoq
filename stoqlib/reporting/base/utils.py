@@ -106,7 +106,7 @@ def print_preview(filename, keep_file=False):
         args.append(filename)
         for part in path:
             full = os.path.join(part, program)
-            if not os.access(full, os.R_OK|os.X_OK):
+            if not os.access(full, os.R_OK | os.X_OK):
                 continue
             if not os.fork():
                 args = " ".join(args)

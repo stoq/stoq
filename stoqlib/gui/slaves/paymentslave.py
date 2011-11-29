@@ -1060,7 +1060,7 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         payments = self.model.group.get_valid_payments()
         payment_count = payments.filter(
-            Payment.q.methodID==self._method.id).count()
+            Payment.q.methodID == self._method.id).count()
         if payment_count >= self._method.max_installments:
             info(_(u'You can not add more payments using the %s '
                    'payment method.') % self._method.description)
@@ -1159,7 +1159,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         npayments = payments.count()
 
         for i, payment in enumerate(payments.orderBy('id')):
-            description = payment.method.describe_payment(payment_group, i+1,
+            description = payment.method.describe_payment(payment_group, i + 1,
                                                           npayments)
             payment.description = description
             self.payments.append(payment)

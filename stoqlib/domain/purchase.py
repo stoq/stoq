@@ -128,9 +128,9 @@ class PurchaseItem(Domain):
         @returns: the quantity already ordered of a given sellable or zero if
         no quantity have been ordered.
         """
-        query = AND(PurchaseItem.q.sellableID==sellable.id,
-                    PurchaseOrder.q.id==PurchaseItem.q.orderID,
-                    PurchaseOrder.q.status==PurchaseOrder.ORDER_CONFIRMED)
+        query = AND(PurchaseItem.q.sellableID == sellable.id,
+                    PurchaseOrder.q.id == PurchaseItem.q.orderID,
+                    PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED)
         ordered_items = PurchaseItem.select(query, connection=conn)
         return ordered_items.sum('quantity') or Decimal(0)
 

@@ -43,7 +43,7 @@ class DeviceSettingsDialog(ModelListDialog):
     size = (750, 300)
 
     # ListDialog
-    columns =  [
+    columns = [
         Column('device_type_name', title=_('Device Type'),
                data_type=str, sorted=True, width=180),
         Column('description', title=_('Description'),

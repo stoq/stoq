@@ -51,7 +51,7 @@ class _TemporaryMaterial(object):
     def __init__(self, production, component, conn):
         storable = IStorable(component, None)
         if storable is not None:
-            self.stock_quantity =  storable.get_full_balance(production.branch)
+            self.stock_quantity = storable.get_full_balance(production.branch)
         else:
             self.stock_quantity = Decimal(0)
 

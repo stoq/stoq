@@ -183,11 +183,11 @@ class CouponPrinter(object):
         """
         # We are registering this before the actual emission, so, coo and crz are -1 offset.
         # gnf though is already the correct value.
-        coo = self._driver.get_coo()+1
+        coo = self._driver.get_coo() + 1
         gnf = self._driver.get_gnf()
         crz = None
         if type == ECFDocumentHistory.TYPE_Z_REDUCTION:
-            crz = self._driver.get_crz()+1
+            crz = self._driver.get_crz() + 1
 
         trans = new_transaction()
         doc = ECFDocumentHistory(connection=trans,

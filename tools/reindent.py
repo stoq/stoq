@@ -192,7 +192,7 @@ class Reindenter:
         after.extend(lines[1:i])
         for i in range(len(stats)-1):
             thisstmt, thislevel = stats[i]
-            nextstmt = stats[i+1][0]
+            nextstmt = stats[i + 1][0]
             have = getlspace(lines[thisstmt])
             want = thislevel * 4
             if want < 0:
@@ -204,7 +204,7 @@ class Reindenter:
                     want = have2want.get(have, -1)
                     if want < 0:
                         # Then it probably belongs to the next real stmt.
-                        for j in xrange(i+1, len(stats)-1):
+                        for j in xrange(i + 1, len(stats)-1):
                             jline, jlevel = stats[j]
                             if jlevel >= 0:
                                 if have == getlspace(lines[jline]):
@@ -265,7 +265,7 @@ class Reindenter:
         if type == NEWLINE:
             # A program statement, or ENDMARKER, will eventually follow,
             # after some (possibly empty) run of tokens of the form
-            #     (NL | COMMENT)* (INDENT | DEDENT+)?
+            #     (NL | COMMENT)* (INDENT | DEDENT + )?
             self.find_stmt = 1
 
         elif type == INDENT:

@@ -74,7 +74,7 @@ class TestEmployeeRoleHistory(DomainTest):
 class TestEmployeeRole(DomainTest):
     def testGetdescription(self):
         role = self.create_employee_role()
-        role.name =  'manager'
+        role.name = 'manager'
         self.assertEquals(role.name, role.get_description())
 
 
@@ -388,14 +388,14 @@ class TestSupplier(_PersonFacetTest, DomainTest):
                               PersonAdaptToSupplier.STATUS_ACTIVE)
 
     def testGetAllSuppliers(self):
-        query = AND(Person.q.name ==  "test",
+        query = AND(Person.q.name == "test",
                     PersonAdaptToSupplier.q.originalID == Person.q.id)
 
         suppliers = Person.select(query, connection=self.trans)
         self.assertEqual(suppliers.count(), 0)
 
         supplier = self.create_supplier()
-        supplier.person.name =  "test"
+        supplier.person.name = "test"
 
         suppliers = Person.select(query, connection=self.trans)
         self.assertEqual(suppliers.count(), 1)

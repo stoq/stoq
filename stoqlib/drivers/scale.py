@@ -44,7 +44,7 @@ def _get_scale(conn):
     global _scale
     if _scale:
         return _scale
-    settings =  DeviceSettings.get_scale_settings(conn)
+    settings = DeviceSettings.get_scale_settings(conn)
     if settings and settings.is_active:
         _scale = Scale(brand=settings.brand,
                        model=settings.model,

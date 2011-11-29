@@ -28,7 +28,7 @@ import os
 from stoqlib.database.testsuite import bootstrap_testsuite
 
 hostname = os.environ.get('STOQLIB_TEST_HOSTNAME')
-dbname =  os.environ.get('STOQLIB_TEST_DBNAME')
+dbname = os.environ.get('STOQLIB_TEST_DBNAME')
 username = os.environ.get('STOQLIB_TEST_USERNAME')
 password = os.environ.get('STOQLIB_TEST_PASSWORD')
 port = int(os.environ.get('STOQLIB_TEST_PORT') or 0)

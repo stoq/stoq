@@ -173,7 +173,7 @@ class CATFile(object):
                                 register_date=self.printer.register_date.date(),
                                 register_hour=self.printer.register_date.time(),
                                 cro=self.printer.register_cro,
-                                total=int(total*100), # 2 decimal positions
+                                total=int(total * 100), # 2 decimal positions
                                 user_number=self.printer.user_number,
                                 ))
 
@@ -189,7 +189,7 @@ class CATFile(object):
                                 moviment_date=reduction.emission_date,
                                 reduction_date=reduction.reduction_date.date(),
                                 reduction_time=reduction.reduction_date.time(),
-                                total=int(reduction.period_total*100),
+                                total=int(reduction.period_total * 100),
                                 issqn_discount=False))
 
     # E13

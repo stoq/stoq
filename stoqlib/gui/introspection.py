@@ -28,7 +28,7 @@ def _foreach_child(widget, cb, lvl=0):
     cb(widget, lvl)
     if isinstance(widget, gtk.Container):
         for child in widget.get_children():
-            _foreach_child(child, cb, lvl+1)
+            _foreach_child(child, cb, lvl + 1)
 
 def introspect_slaves(window):
     """Traverses all the children of window and prints out all the

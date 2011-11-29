@@ -23,16 +23,16 @@
 ##
 ##
 
-program_name    = "Stoq"
-website         = 'http://www.stoq.com.br'
-major_version   = 1
-minor_version   = 0
-micro_version   = 5
-extra_version   = 0
-release_date    = (2011, 11, 8)
-stable          = True
+program_name = "Stoq"
+website = 'http://www.stoq.com.br'
+major_version = 1
+minor_version = 0
+micro_version = 5
+extra_version = 0
+release_date = (2011, 11, 8)
+stable = True
 
-version         = '%d.%d.%d' % (major_version, minor_version, micro_version)
+version = '%d.%d.%d' % (major_version, minor_version, micro_version)
 if extra_version > 0:
     version += '.%d' % (extra_version, )
 

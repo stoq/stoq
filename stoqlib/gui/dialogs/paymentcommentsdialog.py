@@ -14,7 +14,7 @@ class PaymentCommentsDialog(ModelListDialog):
     title = _(u'Payment Comments')
     size = (600, 250)
 
-    columns =  [
+    columns = [
         Column('date', title=_('Date'),
                data_type=datetime.date, width=100),
         Column('author.person.name', title=_('Author'),

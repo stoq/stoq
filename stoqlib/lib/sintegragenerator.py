@@ -289,7 +289,7 @@ class StoqlibSintegraGenerator(object):
                 receiving_order.invoice_number,
                 receiving_order.get_cfop_code(),
                 '000',
-                i+1,
+                i + 1,
                 item.sellable.code,
                 item.quantity,
                 item_total,

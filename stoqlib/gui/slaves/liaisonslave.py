@@ -62,7 +62,7 @@ class LiaisonListDialog(ModelListDialog):
 
     def run_editor(self, trans, model):
         trans.savepoint('before_run_editor')
-        retval =  self.run_dialog(ContactEditor, conn=trans,
+        retval = self.run_dialog(ContactEditor, conn=trans,
                                   model=model, person=self.person)
         if not retval:
             trans.rollback_to_savepoint('before_run_editor')

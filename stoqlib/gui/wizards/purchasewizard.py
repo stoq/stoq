@@ -510,7 +510,7 @@ class FinishPurchaseStep(WizardEditorStep):
     def _run_transporter_editor(self, transporter=None):
         trans = api.new_transaction()
         transporter = trans.get(transporter)
-        model =  run_person_role_dialog(TransporterEditor, self.wizard, trans,
+        model = run_person_role_dialog(TransporterEditor, self.wizard, trans,
                                         transporter)
         rv = api.finish_transaction(trans, model)
         trans.close()

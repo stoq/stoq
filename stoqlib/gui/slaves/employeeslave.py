@@ -50,7 +50,7 @@ class EmployeeDetailsSlave(BaseEditorSlave):
     # Proxy widgets
     #
 
-    employee_widgets =    ('admission_date',
+    employee_widgets = ('admission_date',
                            'registry_number',
                            'expire_vacation',
                            'dependent_person_number',
@@ -192,7 +192,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
     def on_role_editor_button__clicked(self, *args):
         # This will avoid circular imports
         from stoqlib.gui.editors.personeditor import EmployeeRoleEditor
-        model =  run_dialog(EmployeeRoleEditor, self, self.conn,
+        model = run_dialog(EmployeeRoleEditor, self, self.conn,
                             self.model.role)
         if model:
             self._setup_entry_completion()

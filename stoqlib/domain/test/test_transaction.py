@@ -81,7 +81,7 @@ class TestTransaction(DomainTest):
             ]
         for i in range(len(dates)-1):
             before_name, before = dates[i]
-            after_name, after = dates[i+1]
+            after_name, after = dates[i + 1]
             before_decimal = Decimal(before.strftime('%s.%f'))
             after_decimal = Decimal(after.strftime('%s.%f'))
             if before_decimal > after_decimal:

@@ -105,7 +105,7 @@ class WebService(object):
             producer = None
         elif method == 'POST':
             producer = StringProducer(urllib.urlencode(params))
-            headers['Content-Type'] =  ['application/x-www-form-urlencoded']
+            headers['Content-Type'] = ['application/x-www-form-urlencoded']
         else:
             raise AssertionError(method)
 

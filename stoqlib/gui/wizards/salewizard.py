@@ -479,7 +479,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     def on_create_transporter__clicked(self, button):
         trans = api.new_transaction()
         transporter = trans.get(self.model.transporter)
-        model =  run_person_role_dialog(TransporterEditor, self.wizard, trans,
+        model = run_person_role_dialog(TransporterEditor, self.wizard, trans,
                                         transporter)
         rv = api.finish_transaction(trans, model)
         trans.close()

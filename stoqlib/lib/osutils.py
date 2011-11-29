@@ -38,7 +38,7 @@ def _get_xdg_dir(envname, default):
             return default
     for line in f:
         if line.startswith(envname):
-            return os.path.expandvars(line[len(envname)+2:-2])
+            return os.path.expandvars(line[len(envname) + 2:-2])
     return default
 
 def get_application_dir(appname="stoq"):

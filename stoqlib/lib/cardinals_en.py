@@ -156,7 +156,7 @@ illions = {0: '',
 MAX_POWER = 63
 
 # Don't know what 10^66 onwards is
-# Hence if you to print a number >= 10^{63+3} an exception is raised
+# Hence if you to print a number >= 10^{63 + 3} an exception is raised
 # in other wards the largest number that can be handled currently is
 # cardinal (10L**66 - 1)
 # Raja 10/09/2000

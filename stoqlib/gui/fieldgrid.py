@@ -101,17 +101,17 @@ class FieldInfo(object):
         cy = a.y + 1
         cw = a.width
         ch = a.height
-        intop = y in Range(cy-1, cy+1)
-        inbottom = y in Range(cy+ch-3, cy+ch)
+        intop = y in Range(cy-1, cy + 1)
+        inbottom = y in Range(cy + ch-3, cy + ch)
 
-        if x in Range(cx-1, cx+1):
+        if x in Range(cx-1, cx + 1):
             if intop:
                 return #_CURSOR_TOP_LEFT
             elif inbottom:
                 return #_CURSOR_BOTTOM_LEFT
             else:
                 return #_CURSOR_LEFT_SIDE
-        elif x in Range(cx+cw-2, cx+cw+1):
+        elif x in Range(cx + cw-2, cx + cw + 1):
             if intop:
                 return # _CURSOR_TOP_RIGHT
             elif inbottom:
@@ -377,7 +377,7 @@ class FieldGrid(gtk.Layout):
         width = (self.width * fw) - 1
         height = (self.height * fh) - 1
         window.draw_rectangle(self._border_gc, False, 0, 0,
-                              width+1, height+1)
+                              width + 1, height + 1)
 
         if self._draw_grid:
             grid_gc = self._grid_gc

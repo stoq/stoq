@@ -61,7 +61,7 @@ class Chart(object):
         pass
 
 # Relative to stoqlib.chart
-_charts =  { 'paymentchart': ['MonthlyPaymentsChart']  }
+_charts = { 'paymentchart': ['MonthlyPaymentsChart']  }
 
 def get_chart_class(chart_name):
     location = _charts.get(chart_name)

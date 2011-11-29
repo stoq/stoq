@@ -252,7 +252,7 @@ class AddressAdditionDialog(ModelListDialog):
     title = _('Additional Addresses')
     size = (600, 250)
 
-    columns =  [
+    columns = [
         Column('address_string', title=_('Address'),
                data_type=str, width=250, expand=True),
         Column('city', title=_('City'), width=100,
@@ -278,7 +278,7 @@ class AddressAdditionDialog(ModelListDialog):
 
     def run_editor(self, trans, model):
         trans.savepoint('before_run_editor')
-        retval =  self.run_dialog(AddressEditor, conn=trans,
+        retval = self.run_dialog(AddressEditor, conn=trans,
                                   person=self.person, address=model)
         if not retval:
             trans.rollback_to_savepoint('before_run_editor')
@@ -288,7 +288,7 @@ class AddressSelectionDialog(ModelListDialog):
     title = _('Select an address')
     size = (600, 250)
 
-    columns =  [
+    columns = [
         Column('address_string', title=_('Address'),
                data_type=str, width=250, expand=True),
         Column('city', title=_('City'), width=100,

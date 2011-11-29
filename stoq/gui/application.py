@@ -423,10 +423,10 @@ class AppWindow(GladeDelegate):
             action.set_accel_group(self.uimanager.get_accel_group())
             menu_item = action.create_menu_item()
             self._tool_items.append(menu_item)
-            menu.insert(menu_item, len(list(menu))-2)
+            menu.insert(menu_item, len(list(menu)) - 2)
         sep = gtk.SeparatorMenuItem()
         self._tool_items.append(sep)
-        menu.insert(sep, len(list(menu))-2)
+        menu.insert(sep, len(list(menu)) - 2)
 
     def _show_uri(self, uri):
         toplevel = self.get_toplevel()
