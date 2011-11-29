@@ -1105,7 +1105,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         # Exigência do TEF: Deve finalizar ao chegar no total da venda.
         if self.finish_on_total and self._outstanding_value == 0:
             self._wizard.finish()
-        # Keep update_view after force_validation, since it can disable 
+        # Keep update_view after force_validation, since it can disable
         # next/finish even if validation is ok
         self.force_validation()
         self.update_view()
@@ -1125,7 +1125,7 @@ class MultipleMethodSlave(BaseEditorSlave):
             payment.cancel()
 
         self._update_payment_list()
-        # Keep update_view after force_validation, since it can disable 
+        # Keep update_view after force_validation, since it can disable
         # next/finish even if validation is ok
         self.force_validation()
         self.update_view()

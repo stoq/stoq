@@ -359,8 +359,8 @@ class SaleQuoteItemStep(SellableItemStep):
             if not info:
                 info = s.base_sellable_info
             return ValidationError(
-                _(u'Max discount for this product is %.2f%%') % 
-                                                            info.max_discount)
+                _(u'Max discount for this product is %.2f%%') %
+                info.max_discount)
 
     #
     # Callbacks

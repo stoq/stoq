@@ -54,7 +54,8 @@ class TestPEP8(unittest.TestCase):
             raise AssertionError("ERROR: %d PEP8 errors in %s" % (result, path, ))
 
 ERRORS = [
-    'W601',
+    'W291', # trailing whitespace
+    'W601', # in instead of dict.has_key
 ]
 root = os.path.dirname(os.path.dirname(stoq.__file__)) + '/'
 for dirpath in ['stoq', 'stoqlib', 'plugins']:

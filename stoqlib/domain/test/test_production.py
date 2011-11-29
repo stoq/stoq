@@ -107,7 +107,7 @@ class TestProductionItem(DomainTest):
 
         item.produce(1)
 
-        # When the total produced reaches the total quantity to produce, 
+        # When the total produced reaches the total quantity to produce,
         # order automatically changes the status.
         self.assertEqual(order.status, ProductionOrder.ORDER_CLOSED)
         self.assertEqual(item.produced, 2)
@@ -131,7 +131,7 @@ class TestProductionItem(DomainTest):
         self.assertEqual(item.lost, 1)
         self.assertRaises(ValueError, item.add_lost, 2)
 
-        # When the total produced reaches the total quantity to produce, 
+        # When the total produced reaches the total quantity to produce,
         # order automatically changes the status.
         item.add_lost(1)
         self.assertEqual(order.status, ProductionOrder.ORDER_CLOSED)
