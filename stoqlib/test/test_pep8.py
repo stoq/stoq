@@ -58,6 +58,7 @@ ERRORS = [
     'E211', # whitespace before '('
     'E231', # E231 missing whitespace after ','/':'
     'E251', # no spaces around keyword / parameter equals
+    'E262', # inline comment should start with '# '
     'W291', # trailing whitespace
     'W292', # no newline at end of file
     'W293', # blank line contains whitespace
