@@ -262,7 +262,7 @@ class Adaptable(object):
 
         if func:
             adapter = func(*args, **kwargs)
-        elif facets.has_key(k):
+        elif k in facets:
             adapterClass = facets[k]
             adapter = adapterClass(self, *args, **kwargs)
         else:

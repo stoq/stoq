@@ -483,7 +483,7 @@ class PurchaseOrder(Domain):
 
     @classmethod
     def translate_status(cls, status):
-        if not cls.statuses.has_key(status):
+        if not status in cls.statuses:
             raise DatabaseInconsistency(_('Got an unexpected status value: '
                                           '%s') % status)
         return cls.statuses[status]

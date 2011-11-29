@@ -760,7 +760,7 @@ class ParameterAccess(ClassInittableObject):
         from stoqlib.domain.base import AbstractModel
         if isinstance(field_type, basestring):
             field_type = namedAny('stoqlib.domain.' + field_type)
-        if self._cache.has_key(field_name):
+        if field_name in self._cache:
             param = self._cache[field_name]
             if issubclass(field_type, AbstractModel):
                 return field_type.get(param.id, connection=self.conn)

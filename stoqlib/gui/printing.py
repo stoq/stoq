@@ -208,7 +208,7 @@ def describe_search_filters_for_reports(**kwargs):
     return kwargs
 
 def print_report(report_class, *args, **kwargs):
-    if kwargs.has_key('filters') and kwargs['filters']:
+    if kwargs.get('filters'):
         kwargs = describe_search_filters_for_reports(**kwargs)
 
     tmp = tempfile.mktemp(suffix='.pdf', prefix='stoqlib-reporting')

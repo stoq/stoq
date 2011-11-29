@@ -117,12 +117,12 @@ class _SellableSearch(SearchEditor):
                    SearchColumn('description', title=_('Description'),
                                 data_type=str, expand=True, sorted=True)]
 
-        if self._table.columns.has_key('minimum_quantity'):
+        if 'minimum_quantity' in self._table.columns:
             columns.append(SearchColumn('minimum_quantity',
                                         title=_(u'Minimum Qty'),
                                         data_type=Decimal, visible=False))
 
-        if self._table.columns.has_key('stock'):
+        if 'stock' in self._table.columns:
             columns.append(SearchColumn('stock', title=_(u'In Stock'),
                                         data_type=Decimal))
 

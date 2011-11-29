@@ -63,7 +63,7 @@ class _TemporaryQuoteGroup(object):
                 sellable = material.product.sellable
                 quantity = material.to_purchase
 
-                if to_quote_items.has_key(sellable):
+                if sellable in to_quote_items:
                     to_quote_items[sellable] += quantity
                 else:
                     to_quote_items[sellable] = quantity

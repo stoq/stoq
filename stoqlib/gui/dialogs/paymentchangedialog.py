@@ -181,7 +181,7 @@ class PaymentStatusChangeDialog(BasePaymentChangeDialog):
 
     def __init__(self, conn, payment, target_status, order=None):
         self._target_status = target_status
-        assert Payment.statuses.has_key(self._target_status)
+        assert self._target_status in Payment.statuses
 
         BasePaymentChangeDialog.__init__(self, conn, payment, order)
 

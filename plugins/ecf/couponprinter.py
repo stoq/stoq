@@ -393,7 +393,7 @@ class Coupon(object):
                 operation = payment.method.operation
                 card_data = operation.get_card_data_by_payment(payment)
                 # This payment was already addded
-                if not card_payments.has_key(card_data.nsu):
+                if not card_data.nsu in card_payments:
                     continue
                 self._driver.add_payment(constant.device_value,
                                          card_payments[card_data.nsu])

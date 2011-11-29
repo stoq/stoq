@@ -166,7 +166,7 @@ class Payment(Domain):
     #
 
     def get_status_str(self):
-        if not self.statuses.has_key(self.status):
+        if not self.status in self.statuses:
             raise DatabaseInconsistency('Invalid status for Payment '
                                         'instance, got %d' % self.status)
         return self.statuses[self.status]
