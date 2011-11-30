@@ -221,7 +221,7 @@ class PayableApp(SearchableAppWindow):
         if not self._same_purchase(payable_views):
             return False
 
-        status = payable_views[0].purchase.status
+        status = payable_views[0].purchase_status
         if (status == PurchaseOrder.ORDER_CANCELLED or
             status == PurchaseOrder.ORDER_PENDING):
             return False
@@ -326,10 +326,10 @@ class PayableApp(SearchableAppWindow):
         if len(payable_views) == 1:
             return payable_views[0].status == Payment.STATUS_PENDING
 
-        purchase = payable_views[0].purchase
+        purchase = payable_views[0].purchase_id
         if purchase is None:
             return False
-        return all(view.purchase == purchase and
+        return all(view.purchase_id == purchase and
                    view.status == Payment.STATUS_PENDING
                    for view in payable_views)
 
@@ -344,22 +344,22 @@ class PayableApp(SearchableAppWindow):
         if not payable_views:
             return False
 
-        purchase = payable_views[0].purchase
+        purchase = payable_views[0].purchase_id
         if purchase is None and respect_purchase:
             return False
 
-        return all((view.purchase == purchase or not respect_purchase) and
-                   view.payment.is_paid() for view in payable_views)
+        return all((view.purchase_id == purchase or not respect_purchase) and
+                   view.is_paid() for view in payable_views)
 
     def _same_purchase(self, payable_views):
         """Determines if a list of payable_views are in the same purchase"""
         if not payable_views:
             return False
 
-        purchase = payable_views[0].purchase
+        purchase = payable_views[0].purchase_id
         if purchase is None:
             return False
-        return all(view.purchase == purchase for view in payable_views)
+        return all(view.purchase_id == purchase for view in payable_views)
 
     def _same_sale(self, payable_views):
         """Determines if a list of payable_views are in the same sale"""

@@ -194,7 +194,6 @@ class ReceivableApp(SearchableAppWindow):
         self.Receive.set_sensitive(self._can_receive(selected))
         self.Details.set_sensitive(self._can_show_details(selected))
         self.Comments.set_sensitive(self._can_show_comments(selected))
-        self.Renegotiate.set_sensitive(self._can_renegotiate(selected))
         self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
         self.CancelPayment.set_sensitive(self._can_cancel_payment(selected))
         self.PrintReceipt.set_sensitive(self._are_paid(selected,
@@ -302,10 +301,10 @@ class ReceivableApp(SearchableAppWindow):
         if not receivable_views:
             return False
 
-        sale = receivable_views[0].sale
+        sale = receivable_views[0].sale_id
         if sale is None and respect_sale:
             return False
-        return all(view.sale == sale and view.payment.is_paid()
+        return all(view.sale_id == sale and view.is_paid()
                    for view in receivable_views)
 
     def _can_receive(self, receivable_views):
@@ -335,7 +334,12 @@ class ReceivableApp(SearchableAppWindow):
                    for view in receivable_views)
 
     def _can_renegotiate(self, receivable_views):
-        """whether or not we can renegotiate this payments"""
+        """whether or not we can renegotiate this payments
+
+        This do to much queries. Dont call inside _update_widgets to avoid
+        unecessary queries. Instead, call before the user actually tries to
+        renegotiate.
+        """
         if not len(receivable_views):
             return False
 
@@ -385,14 +389,14 @@ class ReceivableApp(SearchableAppWindow):
         if not receivable_views:
             return False
 
-        sale = receivable_views[0].sale
+        sale = receivable_views[0].sale_id
         if sale is None:
             if len(receivable_views) == 1:
                 return True
             else:
                 return False
 
-        return all(view.sale == sale for view in receivable_views[1:])
+        return all(view.sale_id == sale for view in receivable_views[1:])
 
     def _can_show_comments(self, receivable_views):
         return len(receivable_views) == 1
@@ -477,6 +481,9 @@ class ReceivableApp(SearchableAppWindow):
             warning(str(e))
             return
         receivable_views = self.results.get_selected_rows()
+        if not self._can_renegotiate(receivable_views):
+            warning(_('Cannot renegotiate selected payments'))
+            return
         trans = api.new_transaction()
         groups = list(set([trans.get(v.group) for v in receivable_views]))
         retval = run_dialog(PaymentRenegotiationWizard, self, trans,

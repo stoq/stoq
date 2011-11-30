@@ -93,7 +93,7 @@ class InPaymentView(Viewable):
                                    Payment.STATUS_CANCELLED]
 
     def can_cancel_payment(self):
-        if self.sale:
+        if self.sale_id:
             return False
 
         return self.status == Payment.STATUS_PENDING
@@ -110,6 +110,9 @@ class InPaymentView(Viewable):
             return 0
 
         return days_late.days
+
+    def is_paid(self):
+        return self.status == Payment.STATUS_PAID
 
     @property
     def sale(self):
@@ -152,6 +155,7 @@ class OutPaymentView(Viewable):
         value=Payment.q.value,
         paid_value=Payment.q.paid_value,
         purchase_id=PurchaseOrder.q.id,
+        purchase_status=PurchaseOrder.q.status,
         sale_id=Sale.q.id,
         color=PaymentCategory.q.color,
         comments_number=const.COUNT(PaymentComment.q.id)
@@ -187,10 +191,13 @@ class OutPaymentView(Viewable):
                                    Payment.STATUS_CANCELLED]
 
     def can_cancel_payment(self):
-        if self.sale or self.purchase:
+        if self.sale_id or self.purchase_id:
             return False
 
         return self.status == Payment.STATUS_PENDING
+
+    def is_paid(self):
+        return self.status == Payment.STATUS_PAID
 
     @property
     def purchase(self):
