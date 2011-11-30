@@ -239,6 +239,20 @@ class IClient(IPersonFacet):
         current client
         """
 
+    def get_client_services():
+        """Returns a list of services from SoldServicesView with services
+        consumed by the client
+        """
+
+    def get_client_products():
+        """Returns a list of products from SoldProductsView with products
+        sold to the client
+        """
+
+    def get_client_payments():
+        """Returns a list of payment from InPaymentView with client's payments
+        """
+
     def get_name():
         """Name of the client
         """
