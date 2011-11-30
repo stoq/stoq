@@ -159,7 +159,6 @@ class SintegraFile(object):
                                      total_icms_base,
                                      icms_aliquota, ""))
 
-
     def add_receiving_order(self, cnpj, state_registry, receival_date,
                             state, modelo, serial, numero, cfop, emitente,
                             total, icms_base, icms_total, isenta, outras,

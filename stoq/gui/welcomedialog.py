@@ -43,7 +43,6 @@ class WelcomeDialog(gtk.Dialog):
         sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         self.get_content_area().pack_start(sw)
 
-
         if platform.system() == 'Windows':
             return
         import webkit

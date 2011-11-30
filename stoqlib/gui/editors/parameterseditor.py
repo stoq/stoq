@@ -103,7 +103,6 @@ class SystemParameterEditor(BaseEditor):
                        self._on_entry__validation_changed)
         self._entry = widget
 
-
     def _setup_text_entry_slave(self):
         widget = ProxyTextView()
         widget.props.sensitive = self.sensitive

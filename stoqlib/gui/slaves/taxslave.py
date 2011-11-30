@@ -118,7 +118,6 @@ class BaseICMSSlave(BaseTaxSlave):
     all_widgets = (combo_widgets + percentage_widgets + value_widgets +
                    bool_widgets + date_widgets)
 
-
     simples_widgets = ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
               'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_cred_sn',
               'p_cred_sn_valid_until' 'v_cred_icms_sn', 'v_bc_st_ret',
@@ -188,9 +187,6 @@ class BaseICMSSlave(BaseTaxSlave):
         ),
     }
 
-
-
-    # This widgets should be enabled when this option is selected.
     MAP_VALID_WIDGETS = {
         0: ['orig', 'cst', 'mod_bc', 'p_icms', 'v_bc', 'v_icms',
             'bc_include_ipi'],
@@ -295,7 +291,6 @@ class SaleItemICMSSlave(BaseICMSSlave):
                      BaseICMSSlave.value_widgets)
     hide_widgets = BaseICMSSlave.date_widgets
 
-
     def setup_callbacks(self):
         for name in self.percentage_widgets:
             widget = getattr(self, name)
@@ -316,11 +311,6 @@ class SaleItemICMSSlave(BaseICMSSlave):
 
         self.update_values()
 
-
-
-#
-#   IPI
-#
 
 class BaseIPISlave(BaseTaxSlave):
     gladefile = 'TaxIPISlave'

@@ -78,7 +78,6 @@ class BaseEditorSlave(GladeSlaveDelegate):
                     "%s.create_model() must return a valid model, not %r" % (
                     self.__class__.__name__, model))
 
-
         log.info("%s editor using a %smodel %s" % (
             self.__class__.__name__, created, type(model).__name__))
 

@@ -78,7 +78,6 @@ class SellableView(Viewable):
                    SellableCategory.q.id == Sellable.q.categoryID),
     ]
 
-
     def __init__(self, *args, **kargs):
         self._new_prices = {}
         Viewable.__init__(self, *args, **kargs)

@@ -83,7 +83,6 @@ class MagentoClient(MagentoBaseSyncDown):
 
         return self.update_local(info)
 
-
     def update_local(self, info):
         person = self.client.person
         individual = IIndividual(person, None)

@@ -363,7 +363,6 @@ class QualityTestEditor(BaseEditor):
         self._product = product
         BaseEditor.__init__(self, conn=conn, model=model)
 
-
     def _setup_widgets(self):
         self.sizegroup1.add_widget(self.decimal_value)
         self.sizegroup1.add_widget(self.boolean_value)
@@ -378,7 +377,6 @@ class QualityTestEditor(BaseEditor):
             min_value, max_value = self.model.get_range_value()
             self.min_value.set_value(min_value)
             self.max_value.set_value(max_value)
-
 
     def create_model(self, conn):
         return ProductQualityTest(product=self._product, connection=conn)
@@ -428,7 +426,6 @@ class ProductQualityTestSlave(ModelListSlave):
                 Column('type_str', title=_(u'Type'), data_type=str),
                 Column('success_value_str', title=_(u'Success Value'), data_type=str),
                 ]
-
 
     def populate(self):
         return self._product.quality_tests

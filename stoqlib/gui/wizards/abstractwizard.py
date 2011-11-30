@@ -61,7 +61,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-
 class _SellableSearch(SearchEditor):
 
     title = _('Item search')
@@ -336,11 +335,6 @@ class SellableItemStep(WizardEditorStep):
         """
         for item in items:
             self.model.remove_item(item)
-
-
-    #
-    # WizardStep hooks
-    #
 
     def next_step(self):
         raise NotImplementedError('This method must be defined on child')

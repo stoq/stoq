@@ -241,7 +241,6 @@ class PosApp(AppWindow):
                 Column('total', title=_('Total'), data_type=currency,
                        justify=gtk.JUSTIFY_RIGHT, width=100)]
 
-
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
 
@@ -630,7 +629,6 @@ class PosApp(AppWindow):
         self._clear_order()
 
         return True
-
 
     def _create_delivery(self):
         delivery_sellable = self.param.DELIVERY_SERVICE.sellable

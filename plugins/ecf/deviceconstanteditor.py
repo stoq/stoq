@@ -92,11 +92,6 @@ class _DeviceConstantEditor(BaseEditor):
     def _update_hex(self, value):
         self.device_value_hex.set_text(value)
 
-
-    #
-    # BaseEditor
-    #
-
     def create_model(self, conn):
         return DeviceConstant(connection=conn,
                               printer=self.printer,
@@ -220,11 +215,6 @@ class DeviceConstantsDialog(BasicDialog):
         self.main.add(hbox)
 
         hbox.show_all()
-
-
-    #
-    # Callbacks
-    #
 
     def _on_klist__selection_changed(self, klist, selected):
         self._constant_slave.switch(selected.type)

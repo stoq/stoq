@@ -254,7 +254,6 @@ class MagentoSale(MagentoBaseSyncBoth):
         returnValue(True)
 
 
-
 class MagentoInvoice(MagentoBaseSyncBoth):
     """Class for sale invoice synchronization between Stoq and Magento"""
 

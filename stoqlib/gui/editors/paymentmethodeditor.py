@@ -56,7 +56,6 @@ class PaymentMethodEditor(BaseEditor):
         BaseEditor.__init__(self, conn, model)
         self.set_description(model.description)
 
-
     def _setup_widgets(self):
         destinations = Account.select(connection=self.conn)
         items = [(a.long_description, a) for a in destinations]

@@ -70,7 +70,6 @@ class TributarySituationSlave(BaseEditorSlave):
     proxy_widgets = ("tax_constant", "tax_value")
     model_type = None
 
-
     def __init__(self, conn, model=None):
         self.proxy = None
         BaseEditorSlave.__init__(self, conn, model)

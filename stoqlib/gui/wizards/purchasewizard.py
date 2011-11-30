@@ -187,7 +187,6 @@ class StartPurchaseStep(WizardEditorStep):
                                       'positive number.'))
 
 
-
 class PurchaseItemStep(SellableItemStep):
     """ Wizard step for purchase order's items selection """
     model_type = PurchaseOrder
@@ -254,7 +253,6 @@ class PurchaseItemStep(SellableItemStep):
                                                     step_incr=1))
         self.quantity.set_value(minimum)
         self.cost.set_value(supplier_info.base_cost)
-
 
     def get_columns(self):
         return [
@@ -497,7 +495,6 @@ class FinishPurchaseStep(WizardEditorStep):
             ReceivingOrder.delete(receiving_model.id, connection=self.conn)
             self.wizard.receiving_model = None
 
-
         self.salesperson_name.grab_focus()
         self._set_receival_date_suggestion()
         self.register_validate_function(self.wizard.refresh_next)
@@ -517,11 +514,6 @@ class FinishPurchaseStep(WizardEditorStep):
         if rv:
             self._setup_transporter_entry()
             self.transporter.select(model)
-
-
-    #
-    # Kiwi callbacks
-    #
 
     def on_expected_receival_date__validate(self, widget, date):
         if sysparam(self.conn).ALLOW_OUTDATED_OPERATIONS:

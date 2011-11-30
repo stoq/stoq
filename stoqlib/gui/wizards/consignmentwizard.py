@@ -241,11 +241,6 @@ class CloseConsignmentPaymentStep(BaseWizardStep):
         can_finish = value and self.slave.can_confirm()
         self.wizard.refresh_next(can_finish)
 
-
-    #
-    # WizardStep hooks
-    #
-
     def validate_step(self):
         return True
 
@@ -275,7 +270,6 @@ class ConsignmentWizard(PurchaseWizard):
         register_payment_operations()
         first_step = StartConsignmentStep(self, conn, model)
         BaseWizard.__init__(self, conn, first_step, model)
-
 
     def _create_model(self, conn):
         model = PurchaseWizard._create_model(self, conn)

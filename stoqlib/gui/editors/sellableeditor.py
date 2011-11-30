@@ -323,11 +323,6 @@ class SellableEditor(BaseEditor):
         price_slave = CategoryPriceSlave(self.conn, self.model.sellable)
         self.add_extra_tab(_(u'Category Prices'), price_slave)
 
-
-    #
-    #  Private API
-    #
-
     def _add_demo_warning(self):
         self.add_message_bar(
             _("This is a demostration mode of Stoq, you cannot create more than %d products.\n"

@@ -54,7 +54,6 @@ fiscal_book_entries = {FiscalBookEntryType.ICMS: _("ICMS"),
                        FiscalBookEntryType.ISS: _("ISS")}
 
 
-
 class CfopSearch(SearchEditor):
     title = _("C.F.O.P. Search")
     table = CfopData
@@ -127,7 +126,6 @@ class FiscalBookEntrySearch(SearchDialog):
                              data_type=str, width=75),
                 SearchColumn('drawee_name', title=_('Drawee'),
                              data_type=str, expand=True)]
-
 
     def _get_entry_type_query(self, state):
         entry_type = state.value

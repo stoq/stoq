@@ -263,11 +263,6 @@ class PurchaseDetailsDialog(BaseEditor):
         self.add_proxy(_TemporaryReceivingDetails(self._receiving_orders),
                        PurchaseDetailsDialog.receiving_proxy)
 
-
-    #
-    # Kiwi callbacks
-    #
-
     def on_export_csv__clicked(self, button):
         self._export_csv()
 

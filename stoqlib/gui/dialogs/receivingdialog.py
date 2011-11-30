@@ -25,7 +25,6 @@
 """ Classes for Receiving Order Details Dialog """
 
 
-
 import gtk
 from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.list import SummaryLabel

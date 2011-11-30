@@ -399,7 +399,6 @@ class PaymentMethod(Domain):
         return self.create_payments(IInPayment, payment_group,
                                     value, due_dates)
 
-
     @argcheck(PaymentGroup, Decimal, object)
     def create_outpayments(self, payment_group, value, due_dates):
         """Creates a list of new outpayments, the values of the individual

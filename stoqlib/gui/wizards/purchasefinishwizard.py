@@ -242,11 +242,6 @@ class PurchaseFinishWizard(BaseWizard):
         payment.set_pending()
         payment.addFacet(IInPayment, connection=self.conn)
 
-
-    #
-    # WizardStep hooks
-    #
-
     def finish(self):
         model = self.model
         self.retval = model

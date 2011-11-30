@@ -33,7 +33,6 @@ from stoqlib.lib.payment import (generate_payments_due_dates,
                                  generate_payments_values)
 
 
-
 class TestPaymentFunctions(DomainTest):
     """"A class for testing the functions on lib/payment.py
     """

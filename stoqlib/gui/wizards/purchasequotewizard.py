@@ -85,11 +85,6 @@ class StartQuoteStep(WizardEditorStep):
         self.branch_combo.prefill(sorted(items))
         self.notes.set_accepts_tab(False)
 
-
-    #
-    # WizardStep
-    #
-
     def post_init(self):
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()

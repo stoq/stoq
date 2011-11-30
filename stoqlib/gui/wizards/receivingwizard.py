@@ -292,7 +292,6 @@ class ReceivingOrderProductStep(SellableItemStep):
             Column('total', title=_('Total'), data_type=currency, width=100)
             ]
 
-
     def get_order_item(self, sellable, cost, quantity):
         # Never called in this wizard.
         return

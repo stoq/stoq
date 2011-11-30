@@ -196,7 +196,6 @@ class DatabaseSettings(object):
             args.extend(['-w', self.password])
         return args
 
-
     def get_tool_args(self):
         """Return a list of arguments suitable for sending in
         to the command line tool of a database such as psql"""

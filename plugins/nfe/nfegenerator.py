@@ -454,8 +454,6 @@ class NFeData(BaseNFeXMLGroup):
         return txt
 
 
-
-# Pg. 92
 class NFeIdentification(BaseNFeXMLGroup):
     """
     - Attributes:
@@ -755,7 +753,6 @@ class NFeProduct(BaseNFeXMLGroup):
             nfe_ipi = NFeIPI(sale_ipi)
             nfe_tax.append(nfe_ipi)
 
-
         if True: # if sale_item.pis_info
             nfe_pis = NFePIS()
             pis = NFePISOutr()
@@ -767,7 +764,6 @@ class NFeProduct(BaseNFeXMLGroup):
             cofins = NFeCOFINSOutr()
             nfe_cofins.append(cofins)
             nfe_tax.append(nfe_cofins)
-
 
         self.append(nfe_tax)
 
@@ -909,7 +905,6 @@ class NFeICMS(BaseNFeXMLGroup):
         return icms.as_txt()
 
 
-
 class BaseNFeICMS(BaseNFeXMLGroup):
     INFO_NAME_MAP = {
         'orig': 'orig',
@@ -950,8 +945,6 @@ class BaseNFeICMS(BaseNFeXMLGroup):
             self.set_attr(name, value)
 
 
-
-# Pg. 108
 class NFeICMS00(BaseNFeICMS):
     """Tributada integralmente (CST=00).
 
@@ -1034,8 +1027,6 @@ class NFeICMS20(BaseNFeICMS):
                   (u'vICMS', '')]
 
 
-
-# Pg. 109
 class NFeICMS30(BaseNFeICMS):
     """Isenta ou não tributada e com cobrança do ICMS por substituição
     tributária (CST=30).
@@ -1360,8 +1351,6 @@ class NFeIPINT(BaseNFeXMLGroup):
 #
 
 
-
-# Pg. 117
 class NFePIS(BaseNFeXMLGroup):
     tag = u'PIS'
     txttag = 'Q'
@@ -1481,9 +1470,6 @@ class NFeCOFINSOutr(NFeCOFINSAliq):
 #
 
 
-
-
-# Pg. 123
 class NFeTotal(BaseNFeXMLGroup):
     tag = u'total'
     txttag = 'W'
@@ -1710,7 +1696,6 @@ class NFeDuplicata(BaseNFeXMLGroup):
         self.set_attr('vDup', self.format_value(value))
 
 
-
 class NFeAdditionalInformation(BaseNFeXMLGroup):
     tag = u'infAdic'
     attributes = [(u'infAdFisco', None),
@@ -1722,13 +1707,6 @@ class NFeAdditionalInformation(BaseNFeXMLGroup):
 
         self.set_attr('infAdFisco', fisco_notes)
         self.set_attr('infCpl', sale_notes)
-
-
-
-
-
-
-
 
 
 NFE_ICMS_CST_MAP = {

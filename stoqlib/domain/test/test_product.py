@@ -353,7 +353,6 @@ class TestProduct(DomainTest):
         total = Product.selectBy(id=product.id, connection=self.trans).count()
         self.assertEquals(total, 0)
 
-
     def testIncreaseDecreaseStock(self):
         branch = get_current_branch(self.trans)
         product = self.create_product()
@@ -422,7 +421,6 @@ class TestProduct(DomainTest):
         # Increase the quantity required:
         pc.quantity = 2
         self.assertEqual(product.get_max_lead_time(1, branch), 12)
-
 
 
 class TestProductSellableItem(DomainTest):
@@ -552,7 +550,6 @@ class TestProductQuality(DomainTest):
         self.assertEqual(bool_test.get_boolean_value(), True)
         self.assertTrue(bool_test.result_value_passes(True))
         self.assertFalse(bool_test.result_value_passes(False))
-
 
         bool_test.set_boolean_value(False)
         self.assertEqual(bool_test.get_boolean_value(), False)

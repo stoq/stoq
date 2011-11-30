@@ -134,7 +134,6 @@ class TransferOrder(Domain):
             receival_date = datetime.date.today()
         self.receival_date = receival_date
 
-
         for item in self.get_items():
             storable = IStorable(item.sellable.product)
             from_stock = storable.get_stock_item(self.source_branch)

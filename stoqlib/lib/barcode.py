@@ -72,7 +72,6 @@ class BarcodeInfo:
         self.mode = mode
 
 
-
 def parse_barcode(barcode, fmt=BarcodeInfo.OPTION_4_DIGITS_PRICE):
     if not barcode.startswith('2') or len(barcode) != 13:
         return None

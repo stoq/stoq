@@ -249,12 +249,6 @@ class ProductionMaterialListSlave(BaseEditorSlave):
         self._edit_production_material()
 
 
-
-
-#
-#   Quality Test Result
-#
-
 class QualityTestResultSlave(BaseEditorSlave):
     model_name = _('Quality Test Result')
     model_type = Settable
@@ -333,11 +327,6 @@ class QualityTestResultSlave(BaseEditorSlave):
             result = item.set_test_result_value(self.model.quality_test, value,
                                                 get_current_user(self.conn))
             self.emit('test-updated', item, self.model.quality_test, result)
-
-
-    #
-    #   Callbacks
-    #
 
     def after_quality_test__changed(self, widget):
         if not widget.get_selected():

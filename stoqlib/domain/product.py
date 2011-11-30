@@ -157,11 +157,6 @@ class Product(Domain):
     is_composed = BoolCol(default=False)
     production_time = IntCol(default=1)
 
-
-    #
-    # Facet hooks
-    #
-
     def facet_IStorable_add(self, **kwargs):
         return ProductAdaptToStorable(self, **kwargs)
 
@@ -406,7 +401,6 @@ class ProductHistory(Domain):
             quantity_received=receiving_order_item.quantity,
             received_date=receiving_order_item.receiving_order.receival_date,
             connection=conn)
-
 
     @classmethod
     def add_transfered_item(cls, conn, branch, transfer_order_item):
@@ -692,7 +686,6 @@ class ProductAdaptToStorable(ModelAdapter):
     def get_stock_items(self):
         return ProductStockItem.selectBy(storable=self,
                                          connection=self.get_connection())
-
 
     def get_stock_item(self, branch):
         return ProductStockItem.selectOneBy(branch=branch,

@@ -44,7 +44,6 @@ class TestServiceSellableItem(DomainTest):
         product_item = sale.add_sellable(product.sellable, quantity=1, price=10)
         delivery_item = DeliveryItem.create_from_sellable_item(product_item)
 
-
         delivery = service_item.addFacet(IDelivery, connection=self.trans)
         self.assertEquals(list(delivery.get_items()), [])
         delivery.add_item(delivery_item)

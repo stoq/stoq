@@ -67,6 +67,7 @@ ERRORS = [
     'W292', # no newline at end of file
     'W293', # blank line contains whitespace
     'E302', # expected 2 blank lines, found 1
+    'E303', # too many blank lines
     'W391', # blank line at end of file
     'E401', # multiple imports on one line
     'W601', # in instead of dict.has_key

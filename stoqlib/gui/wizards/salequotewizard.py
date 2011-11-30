@@ -123,11 +123,6 @@ class StartSaleQuoteStep(WizardEditorStep):
         items.insert(0, ['', None])
         self.client_category.prefill(items)
 
-
-    #
-    # WizardStep hooks
-    #
-
     def post_init(self):
         self.toogle_client_details()
         self.register_validate_function(self.wizard.refresh_next)
@@ -199,11 +194,6 @@ class SaleQuoteItemStep(SellableItemStep):
     summary_label_text = "<b>%s</b>" % _('Total Ordered:')
     sellable = None
     sellable_view = SellableFullStockView
-
-
-    #
-    # Helper methods
-    #
 
     def get_sellable_view_query(self):
         branch = api.get_current_branch(self.conn)
@@ -342,12 +332,10 @@ class SaleQuoteItemStep(SellableItemStep):
                           data_type=int),
                     ]
 
-
         class MyList(SimpleListDialog):
             size = (500, 200)
 
         run_dialog(MyList, self, columns, self.missing.values(), title="Missing products")
-
 
     def _validate_sellable_price(self, price):
         s = self.proxy.model.sellable

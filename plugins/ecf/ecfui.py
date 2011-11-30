@@ -476,7 +476,6 @@ class ECFUI(object):
             return
         run_dialog(FiscalMemoryDialog, None, self.conn, self._printer)
 
-
     def _get_client_document(self, sale):
         """Returns a Settable with two attributes: document, a string with
         the client cpf or cnpj and document_type, being one of
@@ -544,7 +543,6 @@ class ECFUI(object):
     #
     # Callbacks
     #
-
 
     def _on_coupon__open(self, coupon):
         self._validate_printer()

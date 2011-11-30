@@ -60,8 +60,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-
-
 class ProductionItemEditor(BaseEditor):
     """This is a base class for all items used in a production:
         - ProductionItem (For both Produced and Lost items)
@@ -109,7 +107,6 @@ class ProductionItemEditor(BaseEditor):
     def on_quantity__validate(self, widget, value):
         if not value or value <= 0:
             return ValidationError(_(u'This quantity should be positive.'))
-
 
 
 class ProducedItemSlave(BaseEditorSlave):
@@ -250,9 +247,6 @@ class ProductionServiceEditor(ProductionItemEditor):
         self.location_content.hide()
         self.proxy = self.add_proxy(
             self.model, ProductionServiceEditor.proxy_widgets)
-
-
-
 
 
 class ProductionMaterialEditor(ProductionItemEditor):

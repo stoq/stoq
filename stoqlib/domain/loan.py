@@ -185,7 +185,6 @@ class Loan(Domain):
             const.ROUND(LoanItem.q.price * LoanItem.q.quantity,
                         DECIMAL_PRECISION)) or 0)
 
-
     def get_client_name(self):
         if self.client:
             return self.client.person.name

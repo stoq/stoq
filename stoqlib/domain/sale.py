@@ -226,7 +226,6 @@ class SaleItem(Domain):
         return self.sale.cfop.code.replace('.', '')
 
 
-
 class DeliveryItem(Domain):
     """Class responsible to store all the products for a certain delivery"""
 
@@ -292,7 +291,6 @@ class SaleItemAdaptToDelivery(ModelAdapter):
                                         sellable=sellable)
 
 SaleItem.registerFacet(SaleItemAdaptToDelivery, IDelivery)
-
 
 
 class Sale(Domain):
@@ -792,7 +790,6 @@ class Sale(Domain):
                         sale=self,
                         sellable=sellable,
                         price=price)
-
 
     def create_sale_return_adapter(self):
         conn = self.get_connection()

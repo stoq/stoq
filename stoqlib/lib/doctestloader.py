@@ -33,7 +33,6 @@ _doctest_flags = doctest.ELLIPSIS | doctest.REPORT_ONLY_FIRST_FAILURE
 
 def create_doctest(pattern):
 
-
     def _test_one(self, filename):
         failures, tries = doctest.testfile(filename, verbose=False,
                                            module_relative=False,

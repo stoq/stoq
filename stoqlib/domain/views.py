@@ -458,7 +458,6 @@ class QuotationView(Viewable):
                                  connection=self.get_connection())
 
 
-
 class SoldItemView(Viewable):
     """Stores information about all sale items, including the average cost
     of the sold items.

@@ -85,11 +85,6 @@ class UserEditor(BasePersonRoleEditor):
         BasePersonRoleEditor.__init__(self, conn, model, role_type, person,
                                       visual_mode=visual_mode)
 
-
-    #
-    # BaseEditorSlaves Hooks
-    #
-
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
         user = IUser(person, None)
@@ -205,7 +200,6 @@ class EmployeeEditor(BasePersonRoleEditor):
         self.individual_slave.on_confirm()
         self.role_slave.on_confirm()
         return self.model
-
 
 
 class EmployeeRoleEditor(SimpleEntryEditor):

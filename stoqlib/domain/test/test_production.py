@@ -73,8 +73,6 @@ class TestProductionItem(DomainTest):
         self.assertFalse(item.can_produce(1))
         item.order.start_production()
 
-
-        # quantity defaults to 1
         self.assertTrue(item.can_produce(1))
         self.assertFalse(item.can_produce(2))
         # if we lost one product we can not produce more items
@@ -259,8 +257,6 @@ class TestProductionQuality(DomainTest):
             storable = IStorable(material.product)
             storable.increase_stock(4, order.branch)
 
-
-        # The product has 2 quality tests
         test1 = ProductQualityTest(connection=self.trans, product=item.product,
                                        test_type=ProductQualityTest.TYPE_BOOLEAN)
         test1.set_boolean_value(True)
@@ -278,15 +274,11 @@ class TestProductionQuality(DomainTest):
         storable = IStorable(item.product)
         self.assertEqual(storable.get_full_balance(order.branch), 0)
 
-
-        # Produce first item with a serial number
         self.assertEqual(order.produced_items.count(), 0)
         item.produce(1, user, [123456])
         self.assertEqual(order.produced_items.count(), 1)
         self.assertEqual(order.produced_items[0].serial_number, 123456)
 
-
-        # Status should still be PRODUCING
         self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)
 
         # Produce the rest

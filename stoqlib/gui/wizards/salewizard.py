@@ -564,11 +564,6 @@ class ConfirmSaleWizard(BaseWizard):
         return (self.invoice_model.invoice_number !=
                     self.invoice_model.original_invoice)
 
-
-    #
-    # BaseWizard hooks
-    #
-
     def finish(self):
         self.retval = True
         invoice_number = self.invoice_model.invoice_number

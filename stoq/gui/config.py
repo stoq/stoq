@@ -117,7 +117,6 @@ class BaseWizardStep(WizardStep, GladeSlaveDelegate):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
 
 
-
 class WelcomeStep(BaseWizardStep):
     gladefile = "WelcomeStep"
 
