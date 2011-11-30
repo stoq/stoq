@@ -127,6 +127,7 @@ class EmployeeRole(Domain):
         return self.check_unique_value_exists('name', name,
                                     case_sensitive=False)
 
+
 # WorkPermitData, MilitaryData, and VoterData are Brazil-specific information.
 class WorkPermitData(Domain):
     """Work permit data for employees.
@@ -278,6 +279,7 @@ class Person(Domain):
             return 0
         return int(''.join([c for c in self.phone_number
                                   if c in '1234567890']))
+
     def get_fax_number_number(self):
         """Returns the fax number without any non-numeric characters
         @returns: the fax number as a number
@@ -592,12 +594,28 @@ class PersonAdaptToClient(PersonAdapter):
                                connection=self.get_connection(),
                                orderBy=SaleView.q.open_date)
 
+    def get_client_services(self):
+        from stoqlib.domain.sale import SoldServicesView
+        return SoldServicesView.select(SoldServicesView.q.client_id == self.id,
+                               connection=self.get_connection(),
+                               orderBy=SoldServicesView.q.estimated_fix_date)
+
+    def get_client_products(self):
+        from stoqlib.domain.sale import SoldProductsView
+        return SoldProductsView.select(SoldProductsView.q.client_id == self.id,
+                               connection=self.get_connection(),)
+
+    def get_client_payments(self):
+        from stoqlib.domain.payment.views import InPaymentView
+        return InPaymentView.select(
+                               InPaymentView.q.person_id == self.originalID,
+                               connection=self.get_connection(),
+                               orderBy=InPaymentView.q.due_date)
+
     def get_last_purchase_date(self):
-        sales = self.get_client_sales()
-        if sales:
-            # The get_client_sales method already returns a sorted list of
-            # sales by open_date column
-            return sales[-1].open_date.date()
+        max_date = self.get_client_sales().max('open_date')
+        if max_date:
+            return max_date.date()
 
     @property
     def remaining_store_credit(self):
@@ -864,7 +882,6 @@ class PersonAdaptToCreditProvider(PersonAdapter):
         CreditCardData.TYPE_DEBIT: 'debit_fee',
         CreditCardData.TYPE_DEBIT_PRE_DATED: 'debit_pre_dated_fee'
     }
-
 
     provider_types = {PROVIDER_CARD: _(u'Card Provider')}
 

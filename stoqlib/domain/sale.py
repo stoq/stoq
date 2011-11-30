@@ -1204,7 +1204,6 @@ class SaleView(Viewable):
         notes=Sale.q.notes,
         surcharge_value=Sale.q.surcharge_value,
         discount_value=Sale.q.discount_value,
-        bar=Sale.q.discount_value,
         client_id=Sale.q.clientID,
         salesperson_name=Person_SalesPerson.q.name,
         client_name=Person_Client.q.name,
@@ -1316,3 +1315,71 @@ class DeliveryView(Viewable):
 
     clause = AND(SaleItemAdaptToDelivery.q.originalID == SaleItem.q.id,
                  SaleItemAdaptToDelivery.q.id == DeliveryItem.q.deliveryID, )
+
+
+class SoldSellableView(Viewable):
+    Person_Client = Alias(Person, 'person_client')
+    Person_SalesPerson = Alias(Person, 'person_sales_person')
+
+    columns = dict(
+        id=Sellable.q.id,
+        code=Sellable.q.code,
+        description=BaseSellableInfo.q.description,
+
+        client_id=Sale.q.clientID,
+        client_name=Person_Client.q.name,
+        total_quantity=const.SUM(SaleItem.q.quantity),
+        subtotal=const.SUM(SaleItem.q.quantity * SaleItem.q.price),
+    )
+
+    joins = [
+        LEFTJOINOn(None, SaleItem,
+                    SaleItem.q.sellableID == Sellable.q.id),
+        LEFTJOINOn(None, BaseSellableInfo,
+                   BaseSellableInfo.q.id==Sellable.q.base_sellable_infoID),
+        LEFTJOINOn(None, Sale,
+                    Sale.q.id == SaleItem.q.saleID),
+        LEFTJOINOn(None, PersonAdaptToClient,
+                   Sale.q.clientID == PersonAdaptToClient.q.id),
+        LEFTJOINOn(None, PersonAdaptToSalesPerson,
+                   Sale.q.salespersonID == PersonAdaptToSalesPerson.q.id),
+
+        LEFTJOINOn(None, Person_Client,
+                   PersonAdaptToClient.q.originalID == Person_Client.q.id),
+        LEFTJOINOn(None, Person_SalesPerson,
+                   PersonAdaptToSalesPerson.q.originalID == Person_SalesPerson.q.id),
+
+        LEFTJOINOn(None, SaleItemIpi,
+                   SaleItemIpi.q.id == SaleItem.q.ipi_infoID),
+    ]
+
+class SoldServicesView(SoldSellableView):
+    columns = SoldSellableView.columns.copy()
+    columns.update(dict(
+        id=SaleItem.q.id,
+        estimated_fix_date=SaleItem.q.estimated_fix_date,
+    ))
+
+    joins = SoldSellableView.joins[:]
+    joins[0] = LEFTJOINOn(None, Sellable,
+                    SaleItem.q.sellableID == Sellable.q.id)
+    joins.append(
+        INNERJOINOn(None, Service,
+                    Sellable.q.id == Service.q.sellableID),
+    )
+
+class SoldProductsView(SoldSellableView):
+    columns = SoldSellableView.columns.copy()
+
+    columns.update(dict(
+        last_date=const.MAX(Sale.q.open_date),
+        avg_value=const.AVG(SaleItem.q.price),
+        quantity=const.SUM(SaleItem.q.quantity),
+        total_value=const.SUM(SaleItem.q.quantity * SaleItem.q.price),
+    ))
+
+    joins = SoldSellableView.joins[:]
+    joins.append(
+        INNERJOINOn(None, Product,
+                    Sellable.q.id == Product.q.sellableID),
+    )

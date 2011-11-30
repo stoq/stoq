@@ -47,6 +47,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class InPaymentView(Viewable):
     columns = dict(
         id=Payment.q.id,
@@ -99,6 +100,16 @@ class InPaymentView(Viewable):
 
     def get_status_str(self):
         return Payment.statuses[self.status]
+
+    def get_days_late(self):
+        if self.status in [Payment.STATUS_PAID, Payment.STATUS_CANCELLED]:
+            return 0
+
+        days_late = datetime.date.today() - self.due_date.date()
+        if days_late.days < 0:
+            return 0
+
+        return days_late.days
 
     @property
     def sale(self):
@@ -195,6 +206,7 @@ class OutPaymentView(Viewable):
     def payment(self):
         return Payment.get(self.id, connection=self.get_connection())
 
+
 class CardPaymentView(Viewable):
     """A view for credit providers."""
     _DraweePerson = Alias(Person, "drawee_person")
@@ -213,7 +225,6 @@ class CardPaymentView(Viewable):
         value=Payment.q.value,
         fee=CreditCardData.q.fee,
         fee_calc=CreditCardData.q.fee_value, )
-
 
     joins = [
         INNERJOINOn(None, PaymentMethod,
@@ -253,6 +264,7 @@ class CardPaymentView(Viewable):
                 query = provider_query
 
         return cls.select(query, having=having, connection=connection)
+
 
 class _BillandCheckPaymentView(Viewable):
     """A base view for check and bill payments."""
@@ -326,7 +338,6 @@ class PaymentChangeHistoryView(Viewable):
                     Payment.q.id == PaymentChangeHistory.q.paymentID)
     ]
 
-
     @classmethod
     def select_by_group(cls, group, connection):
         return PaymentChangeHistoryView.select((Payment.q.groupID == group.id),
@@ -354,6 +365,7 @@ class PaymentChangeHistoryView(Viewable):
             return converter.as_string(datetime.date, self.new_due_date)
         elif self.new_status:
             return Payment.statuses[self.new_status]
+
 
 class PaymentMethodView(Viewable):
     columns = dict(
