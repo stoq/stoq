@@ -70,13 +70,13 @@ class ChartChartResource(Resource):
         opt = {}
         opt['data'] = chart.run()
         opt['options'] = {
-            "xaxis": { "mode": "time" },
+            "xaxis": {"mode": "time"},
             # XXX: _JS_DAY is not defined
-            #"bars": { "show": True, "barWidth": 20 * _JS_DAY },
-            "points": { "show": False },
-            "lines": { "show": False },
-            "grid": { "hoverable": True,
-                      "clickable": True },
+            #"bars": {"show": True, "barWidth": 20 * _JS_DAY},
+            "points": {"show": False},
+            "lines": {"show": False},
+            "grid": {"hoverable": True,
+                     "clickable": True},
         }
         return render_template('chart-time.html', chart=chart,
                                json=json.dumps(opt))

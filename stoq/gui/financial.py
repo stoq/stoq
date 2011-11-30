@@ -130,9 +130,9 @@ class TransactionPage(object):
         for i in range(1, 13):
             name = month_names[i]
             option = type(name + 'Option', (MonthOption, ),
-                          { 'name': gettext.gettext(name),
-                            'month': i,
-                            'year': year })
+                          {'name': gettext.gettext(name),
+                           'month': i,
+                           'year': year})
             self.date_filter.add_option(option, i)
         self.date_filter.add_custom_options()
         self.date_filter.mode.select_item_by_position(0)

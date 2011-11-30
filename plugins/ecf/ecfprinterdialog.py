@@ -271,13 +271,13 @@ class ECFEditor(BaseEditor):
         # This is going to be ugly, most printers don't support
         # a real constant for the payment methods, so we have to look
         # at the description and guess
-        payment_enums = { 'dinheiro': PaymentMethodType.MONEY,
-                          'cheque': PaymentMethodType.CHECK,
-                          'boleto' : PaymentMethodType.BILL,
-                          'cartao credito' : PaymentMethodType.CREDIT_CARD,
-                          'cartao debito' : PaymentMethodType.DEBIT_CARD,
-                          'financeira' : PaymentMethodType.FINANCIAL,
-                          'vale compra' : PaymentMethodType.GIFT_CERTIFICATE
+        payment_enums = {'dinheiro': PaymentMethodType.MONEY,
+                         'cheque': PaymentMethodType.CHECK,
+                         'boleto' : PaymentMethodType.BILL,
+                         'cartao credito' : PaymentMethodType.CREDIT_CARD,
+                         'cartao debito' : PaymentMethodType.DEBIT_CARD,
+                         'financeira' : PaymentMethodType.FINANCIAL,
+                         'vale compra' : PaymentMethodType.GIFT_CERTIFICATE
                           }
 
         for device_value, constant_name in driver.get_payment_constants():
