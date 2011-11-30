@@ -75,8 +75,8 @@ class OFXTagParser(sgmllib.SGMLParser):
             self._tags = {}
         if tag == 'fi':
             self._is_fi = False
-            self.fi = { 'org': self._tags['org'],
-                        'fid': self._tags['fid'] }
+            self.fi = {'org': self._tags['org'],
+                       'fid': self._tags['fid']}
             self._tags = {}
 
     def handle_data(self, data):

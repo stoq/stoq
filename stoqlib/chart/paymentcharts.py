@@ -194,7 +194,7 @@ GROUP BY extract(day FROM paid_date)
 ORDER BY extract(day FROM paid_date);"""
     days = {}
     for i in range(1, 32):
-        days[i] = { 'in': 0, 'out': 0 }
+        days[i] = {'in': 0, 'out': 0}
     tmpl = string.Template(daily_in_payments).substitute(dict(month=month, year=year))
     for day, total_in in conn.queryAll(tmpl):
         days[day]['in'] = total_in

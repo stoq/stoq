@@ -54,6 +54,7 @@ ERRORS = [
     'E111', # indentation is not a multiple of four
     'E112', # expected an indented block
     'E113', # unexpected indentation
+    'E201', # whitespace after '{'
     'E202', # whitespace before ')'
     'E211', # whitespace before '('
     'E225', # missing whitespace around operator

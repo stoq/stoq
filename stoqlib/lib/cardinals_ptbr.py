@@ -245,7 +245,7 @@ words[2] = {
 # Português tem a maravilha dos números variarem conforme o gênero
 feminine_words = {}
 feminine_words[0] = words[0].copy()
-feminine_words[0].update({ 1 : 'uma', 2 : 'duas' })
+feminine_words[0].update({1 : 'uma', 2 : 'duas'})
 feminine_words[1] = words[1].copy()
 feminine_words[2] = words[2].copy()
 feminine_words[2].update({
