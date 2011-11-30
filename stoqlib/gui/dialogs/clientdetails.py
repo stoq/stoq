@@ -33,55 +33,14 @@ from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.domain.interfaces import IClient
-from stoqlib.domain.sale import Sale
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
+from stoqlib.lib.translation import stoqlib_gettext
 
 
 _ = stoqlib_gettext
-
-class _TemporaryProduct(object):
-    """A class to hold information about client's bought products."""
-
-    def __init__(self, product):
-        """Initialize the object.
-
-        Note: When creating an instance of this class, you'll have
-              to call update_values even for the same product that
-              were used to create the instance itself. This is
-              done this way so we don't need to wast cpu/ram for
-              finding if the product's values weren't updated on
-              __init__ themselves.
-        """
-        self._unit = product.sellable.get_unit_description()
-        self.description = product.sellable.get_description()
-        self.code = product.sellable.code
-
-        self._quantity = 0
-        self.avg_value = 0
-        self.total_value = 0
-
-    #
-    # Properties
-    #
-
-    @property
-    def qty_str(self):
-        """The string representation of the quantities."""
-        return "%s %s" % (self._quantity, self._unit)
-
-    #
-    # Public API
-    #
-
-    def update_values(self, product):
-        self.last_date = product.sale.confirm_date or product.sale.open_date
-        self._quantity += product.quantity
-        self.total_value += product.price * product.quantity
-        self.avg_value = self.total_value / self._quantity
 
 
 class ClientDetailsDialog(BaseEditor):
@@ -104,21 +63,6 @@ class ClientDetailsDialog(BaseEditor):
         BaseEditor.__init__(self, conn, model)
         self._setup_widgets()
 
-    def _build_data(self, sales):
-        self.services = []
-        self.payments = []
-        product_dict = {}
-        for sale_view in sales:
-            sale = Sale.get(sale_view.id, connection=self.conn)
-            self.services.extend(sale.services)
-            self.payments.extend(sale.payments)
-            for product in sale.products:
-                p = product_dict.setdefault(product.sellable,
-                                            _TemporaryProduct(product))
-                p.update_values(product)
-
-        self.products = product_dict.values()
-
     def _setup_widgets(self):
         self.sales_list.set_columns(self._get_sale_columns())
         self.product_list.set_columns(self._get_product_columns())
@@ -126,13 +70,10 @@ class ClientDetailsDialog(BaseEditor):
         self.payments_list.set_columns(self._get_payments_columns())
         self.calls_list.set_columns(self._get_calls_columns())
 
-        sales = self.model.get_client_sales()
-        self.sales_list.add_list(sales)
-
-        self._build_data(sales)
-        self.product_list.add_list(self.products)
-        self.services_list.add_list(self.services)
-        self.payments_list.add_list(self.payments)
+        self.sales_list.add_list(self.model.get_client_sales())
+        self.product_list.add_list(self.model.get_client_products())
+        self.services_list.add_list(self.model.get_client_services())
+        self.payments_list.add_list(self.model.get_client_payments())
         self.calls_list.add_list(self.model.person.calls)
 
         value_format = '<b>%s</b>'
@@ -165,7 +106,7 @@ class ClientDetailsDialog(BaseEditor):
                        justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
                 Column("description", title=_("Description"), data_type=str,
                        expand=True, searchable=True),
-                Column("qty_str", title=_("Total quantity"),
+                Column("quantity", title=_("Total quantity"),
                        data_type=str, width=120, justify=gtk.JUSTIFY_RIGHT),
                 Column("last_date", title=_("Lastest purchase"),
                        data_type=datetime.date, width=150),
@@ -175,9 +116,9 @@ class ClientDetailsDialog(BaseEditor):
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT, )]
 
     def _get_services_columns(self):
-        return [Column("sellable.code", title=_("Code"), data_type=str,
+        return [Column("code", title=_("Code"), data_type=str,
                        justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
-                Column("sellable.base_sellable_info.description",
+                Column("description",
                        title=_("Description"), data_type=str, expand=True,
                        searchable=True),
                 Column("estimated_fix_date", title=_("Estimated fix date"),
@@ -187,7 +128,7 @@ class ClientDetailsDialog(BaseEditor):
         return [Column("id", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
                        format='%04d', width=50),
-                Column("method.description", title=_("Type"),
+                Column("method_name", title=_("Type"),
                        data_type=str, width=90),
                 Column("description", title=_("Description"),
                        data_type=str, searchable=True, width=190,
@@ -198,7 +139,7 @@ class ClientDetailsDialog(BaseEditor):
                        data_type=datetime.date),
                 Column("status_str", title=_("Status"), width=80,
                        data_type=str),
-                ColoredColumn("base_value", title=_("Value"),
+                ColoredColumn("value", title=_("Value"),
                               justify=gtk.JUSTIFY_RIGHT, data_type=currency,
                               color='red', width=100,
                               data_func=payment_value_colorize),
