@@ -108,7 +108,6 @@ class SellableTaxConstant(Domain):
         return SellableTaxConstant._mapping.get(
             self.tax_type, self.tax_value)
 
-
     @classmethod
     def get_by_type(cls, tax_type, conn):
         """Fetch the tax constant for tax_type
@@ -307,7 +306,6 @@ class Sellable(Domain):
      STATUS_CLOSED,
      STATUS_BLOCKED) = range(4)
 
-
     statuses = {STATUS_AVAILABLE:   _(u"Available"),
                 STATUS_UNAVAILABLE: _(u"Unavailable"),
                 STATUS_CLOSED:      _(u"Closed"),
@@ -330,7 +328,6 @@ class Sellable(Domain):
     service = SingleJoin('Service', joinColumn='sellable_id')
 
     default_sale_cfop = ForeignKey("CfopData", default=None)
-
 
     def _create(self, id, **kw):
         markup = None

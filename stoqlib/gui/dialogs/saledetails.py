@@ -50,8 +50,6 @@ from stoqlib.reporting.sale import SaleOrderReport
 _ = stoqlib_gettext
 
 
-
-# A workaround to show negative values in the interface
 class _TemporaryOutPayment(object):
 
     class method:

@@ -469,9 +469,6 @@ class PurchaseApp(SearchableAppWindow):
     def on_SearchInConsignmentItems__activate(self, action):
         self.run_dialog(ConsignmentItemSearch, self.conn)
 
-
-    # Search
-
     def on_Categories__activate(self, action):
         self.run_dialog(SellableCategorySearch, self.conn)
 

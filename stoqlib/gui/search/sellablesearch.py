@@ -111,11 +111,6 @@ class SellableSearch(SearchEditor):
             self.set_searchbar_search_string(search_str)
             self.search.refresh()
 
-
-    #
-    # Hooks
-    #
-
     def key_shift_Return(self):
         self.confirm()
 

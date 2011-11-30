@@ -129,11 +129,6 @@ class ProductionApp(SearchableAppWindow):
     def search_activate(self):
         self.run_dialog(ProductionProductSearch, self.conn)
 
-
-    #
-    # SearchableAppWindow
-    #
-
     def create_filters(self):
         self.set_text_field_columns(['description'])
         self.status_filter = ComboSearchFilter(

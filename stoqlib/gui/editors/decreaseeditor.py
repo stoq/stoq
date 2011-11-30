@@ -58,11 +58,6 @@ class DecreaseItemEditor(PurchaseItemEditor):
                                                    step_incr=1))
         self.description.set_text(self.model.sellable.get_description())
 
-
-    #
-    # Kiwi Callbacks
-    #
-
     def on_quantity__validate(self, widget, value):
         if value <= 0:
             return ValidationError(_(u'Quantity must be greater than zero'))

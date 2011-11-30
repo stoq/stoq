@@ -538,7 +538,6 @@ class FiscalCoupon(gobject.GObject):
                     return False
                 _flush_interface()
 
-
     def cancel(self):
         log.info('Canceling coupon')
         while True:
@@ -581,7 +580,6 @@ class FiscalCoupon(gobject.GObject):
                     CancelPendingPaymentsEvent.emit()
                     return False
                 _flush_interface()
-
 
     def close(self, sale, trans):
         # XXX: Remove this when bug #2827 is fixed.

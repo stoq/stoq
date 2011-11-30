@@ -188,7 +188,6 @@ class ProductionOrder(Domain):
             for p in self.produced_items:
                 p.send_to_stock()
 
-
     def set_production_waiting(self):
         assert self.status == ProductionOrder.ORDER_OPENED
 
@@ -232,12 +231,6 @@ class ProductionItem(Domain):
     lost = QuantityCol(default=0)
     order = ForeignKey('ProductionOrder')
     product = ForeignKey('Product')
-
-
-
-    #
-    # IDescribable Implementation
-    #
 
     def get_description(self):
         return self.product.sellable.get_description()
@@ -433,7 +426,6 @@ class ProductionMaterial(Domain):
         storable.increase_stock(remaining, self.order.branch)
         self.allocated -= remaining
 
-
     def add_lost(self, quantity):
         """Adds the quantity lost of this material. The maximum quantity that
         can be lost is given by the formula:
@@ -537,7 +529,6 @@ class ProductionProducedItem(Domain):
     test_passed = BoolCol(default=False)
     test_results = MultipleJoin('ProductionItemQualityResult',
                                 joinColumn='produced_item_id')
-
 
     def get_pending_tests(self):
         tests_done = set([t.quality_test for t in self.test_results])

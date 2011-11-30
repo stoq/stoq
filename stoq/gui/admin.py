@@ -345,7 +345,6 @@ class AdminApp(AppWindow):
 
     # Search
 
-
     def on_SearchRole__activate(self, action):
         self.tasks.run_task('employee_roles')
 

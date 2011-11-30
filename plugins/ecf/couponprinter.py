@@ -378,7 +378,6 @@ class Coupon(object):
             card_payments.setdefault(card_data.nsu, 0)
             card_payments[card_data.nsu] += payment.value
 
-
         for payment in sale.payments:
             constant = self._get_payment_method_constant(payment)
 

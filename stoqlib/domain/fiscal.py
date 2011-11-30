@@ -75,11 +75,6 @@ class FiscalBookEntry(Domain):
     ipi_value = PriceCol(default=None)
     entry_type = IntCol(default=None)
 
-
-    #
-    # Classmethods
-    #
-
     @classmethod
     def has_entry_by_payment_group(cls, conn, payment_group, entry_type):
         return bool(cls.get_entry_by_payment_group(
@@ -186,7 +181,6 @@ class _FiscalBookEntryView(object):
         LEFTJOINOn(None, Person,
                    Person.q.id == FiscalBookEntry.q.draweeID),
         ]
-
 
     @property
     def book_entry(self):

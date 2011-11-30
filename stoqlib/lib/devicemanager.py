@@ -50,7 +50,6 @@ if dbus:
         def get(self, property):
             return self._device.GetProperty(property)
 
-
     class _HALManager(object):
         def __init__(self):
             self._bus = dbus.SystemBus()

@@ -259,7 +259,6 @@ class SQLObjectMeta(PropertyPublisherMeta):
                     dict.setdefault(remove.__name__, remove)
                 define_add_remove(dict, prop)
 
-
         id_type = dict.setdefault("_idType", int)
         id_cls = {int: Int, str: RawStr, unicode: AutoUnicode}[id_type]
         dict["id"] = id_cls(id_name, primary=True, default=AutoReload)
@@ -879,7 +878,6 @@ class Viewable(Declarative):
 
         cls.tables = tables
 
-
     def get_connection(self):
         return None
 
@@ -901,7 +899,6 @@ class Viewable(Declarative):
         if clauses:
             clauses = [AND(*clauses)]
 
-
         def _load_view_objects(result, values):
             instance = cls()
             for attribute, value in zip(attributes, values):
@@ -912,7 +909,6 @@ class Viewable(Declarative):
                         value = var.parse_set(value, False)
                 setattr(instance, attribute, value)
             return instance
-
 
         results = store.using(*cls.tables).find(columns, *clauses)
         if cls.group_by:
@@ -947,7 +943,6 @@ class QuantityVariable(DecimalVariable):
 
 class QuantityCol(DecimalCol):
     variable_class = QuantityVariable
-
 
 
 class MyDateTimeVariable(DateTimeVariable, DateVariable):

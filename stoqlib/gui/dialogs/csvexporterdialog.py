@@ -98,7 +98,6 @@ class CSVExporterDialog(BaseEditor):
                 (_('Colon'), ':')]
         self.separator.prefill(opts)
 
-
     def _run_filechooser(self):
         chooser = gtk.FileChooserDialog(_(u"Export CSV..."), None,
                                         gtk.FILE_CHOOSER_ACTION_SAVE,

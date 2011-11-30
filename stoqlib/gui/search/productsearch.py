@@ -179,7 +179,6 @@ class ProductSearch(SearchEditor):
             cols.append(SearchColumn('price', title=_('Price'),
                                      data_type=currency, width=90))
 
-
         cols.append(SearchColumn('stock', title=_('Stock'),
                                  format_func=format_quantity,
                                  data_type=Decimal, width=80))

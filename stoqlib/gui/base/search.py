@@ -133,7 +133,6 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
             self.set_message(_("Nothing found."))
 
 
-
 class SearchDialogPrintSlave(GladeSlaveDelegate):
     """ Slave for internal use of SearchEditor, offering an eventbox for a
     toolbar and managing the 'print_price_button' buttons. """
@@ -467,7 +466,6 @@ class SearchDialog(BasicDialog):
         called when a signal is emitted by 'Filter' or 'Clear' buttons and
         also when a list item is selected. """
 
-
     def search_completed(self, results, states):
         pass
 
@@ -492,7 +490,6 @@ class SearchEditorToolBar(GladeSlaveDelegate):
 
     def on_new_button__clicked(self, button):
         self.emit('add')
-
 
 
 class SearchEditor(SearchDialog):
@@ -595,7 +592,6 @@ class SearchEditor(SearchDialog):
         self.set_edit_button_sensitive(False)
         self.results.connect('selection-changed', self._on_selection_changed)
 
-
     def _setup_slaves(self):
         self._toolbar = SearchEditorToolBar()
         self._toolbar.connect("edit", self._on_toolbar__edit)
@@ -697,9 +693,6 @@ class SearchEditor(SearchDialog):
             SearchDialog.row_activate(self, obj)
         elif self.accept_edit_data:
             self._edit(obj)
-
-
-    # Private
 
     def _edit(self, obj):
         if obj is None:

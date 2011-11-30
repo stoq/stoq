@@ -670,7 +670,6 @@ class PurchaseItemView(Viewable):
         return "%s %s" % (format_quantity(self.quantity),
                           self.unit or u"")
 
-
     def get_quantity_received_as_string(self):
         return "%s %s" % (format_quantity(self.quantity_received),
                           self.unit or u"")

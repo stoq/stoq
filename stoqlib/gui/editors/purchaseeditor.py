@@ -100,7 +100,6 @@ class InConsignmentItemEditor(PurchaseItemEditor):
     proxy_widgets.extend(['quantity_sold',
                           'quantity_returned'])
 
-
     def __init__(self, conn, model):
         self._original_sold_qty = model.quantity_sold
         self._original_returned_qty = model.quantity_returned

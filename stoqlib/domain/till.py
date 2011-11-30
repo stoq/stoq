@@ -315,7 +315,6 @@ class Till(Domain):
     # Private
     #
 
-
     def _get_last_closed_till(self):
         results = Till.selectBy(
             status=Till.STATUS_CLOSED,

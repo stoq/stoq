@@ -257,7 +257,6 @@ class PaymentListSlave(GladeSlaveDelegate):
 
         return columns
 
-
     def _setup_widgets(self):
         self.payment_list.set_columns(self._get_columns())
         self.total_label.set_text(format_price(self.total_value, True,
@@ -472,15 +471,12 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.payment_list.connect('payment-edited',
                                   self._on_payment_list__edit_payment)
 
-
     def _setup_widgets(self):
         max_installments = self.method.max_installments
         self.installments_number.set_range(1, max_installments)
         has_installments = (self._installments_number and
                             self._installments_number > 1 or False)
 
-
-        # FIXME: Workarround to make intervals never go to 0
         self.intervals.set_range(1, 99)
         self.intervals.set_sensitive(has_installments)
 
@@ -1044,7 +1040,6 @@ class MultipleMethodSlave(BaseEditorSlave):
             elif (isinstance(self.model, PurchaseOrder) and
                   payment_method.method_name == 'store_credit'):
                 return
-
 
         radio = gtk.RadioButton(self.cash_radio, payment_method.description)
         self.methods_box.pack_start(radio)

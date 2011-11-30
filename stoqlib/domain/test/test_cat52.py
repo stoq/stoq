@@ -112,7 +112,6 @@ class Cat52Test(DomainTest):
             for i, tax in enumerate(item.taxes):
                 f.add_z_reduction_details(item, tax, i + 1)
 
-
         sale = self.create_sale()
         sale.client = self.create_client()
         sale.confirm_date = today
@@ -130,6 +129,5 @@ class Cat52Test(DomainTest):
 
         for payment in sale.payments:
             f.add_payment_method(sale, history, payment)
-
 
         compare_files(f, 'cat52')

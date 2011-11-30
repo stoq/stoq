@@ -505,7 +505,6 @@ class SynchronizationClient(object):
         self.proxy.bump_sequences(table_names, str(branch_offset),
                                   str(branch_offset + BRANCH_ID_OFFSET))
 
-
     def _has_update_conflict(self, trans, obj, station, last_sync, attrs):
         # At this point we need to check if the target has
         # modified an object which has been modified locally
@@ -532,11 +531,6 @@ class SynchronizationClient(object):
 
         # FIXME: Delete the transaction entry on the client side
         return True
-
-
-    #
-    # Public API
-    #
 
     def clean(self):
         self.proxy.clean()

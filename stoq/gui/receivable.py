@@ -220,7 +220,6 @@ class ReceivableApp(SearchableAppWindow):
         trans.close()
         return retval
 
-
     def _show_comments(self, receivable_view):
         trans = api.new_transaction()
         retval = run_dialog(PaymentCommentsDialog, self, trans,

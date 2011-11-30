@@ -182,7 +182,6 @@ class StoqlibCATGenerator(object):
             for payment in sale.payments:
                 self.cat.add_payment_method(sale, history[0], payment)
 
-
         returned_sales = list(self._get_sales(returned=True))
         for sale in returned_sales:
             history = FiscalSaleHistory.selectBy(sale=sale,

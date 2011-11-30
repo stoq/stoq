@@ -461,7 +461,6 @@ class CashOutEditor(BaseEditor):
             till_entry = till.add_debit_entry(
                 value, (_(u'Cash out: %s') % (self.reason.get_text(), )))
 
-
             TillAddTillEntryEvent.emit(till_entry, self.conn)
             _create_transaction(self.conn, till_entry)
             return till_entry

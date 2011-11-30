@@ -354,11 +354,6 @@ class ReceivingOrder(Domain):
 
         return currency(total)
 
-
-    #
-    # General methods
-    #
-
     def guess_freight_type(self):
         """Returns a freight_type based on the purchase's freight_type"""
         if self.purchase.freight_type == PurchaseOrder.FREIGHT_FOB:

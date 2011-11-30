@@ -55,7 +55,6 @@ class UpdateWelcomeStep(BaseWizardStep):
         return UpdateSchemaStep(None, self.wizard)
 
 
-
 class UpdateSchemaStep(BaseWizardStep):
     gladefile = 'UpdateSchemaStep'
 

@@ -72,8 +72,6 @@ class TestStockDecrease(DomainTest):
         self.assertEqual(storable.get_stock_item(branch).quantity, 95)
 
 
-
-
 class TestStockDecreaseItem(DomainTest):
 
     def testGetDescription(self):

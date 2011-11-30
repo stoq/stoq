@@ -76,11 +76,6 @@ class CheckPaymentOperation(object):
     description = _(u'Check')
     max_installments = 12
 
-
-    #
-    # IPaymentOperation
-    #
-
     def payment_create(self, payment):
         conn = payment.get_connection()
         # Every check must have a check data reference
@@ -181,11 +176,6 @@ class CardPaymentOperation(object):
         card_data = self.get_card_data_by_payment(payment)
         return self.CARD_METHOD_CONSTANTS.get(card_data.card_type)
 
-
-    #
-    # Public API
-    #
-
     @argcheck(Payment)
     def get_card_data_by_payment(self, payment):
         """Get an existing CreditCardData instance from a payment object."""
@@ -246,7 +236,6 @@ class MultiplePaymentOperation(object):
 
     def get_constant(self, payment):
         return PaymentMethodType.MULTIPLE
-
 
 
 def register_payment_operations():

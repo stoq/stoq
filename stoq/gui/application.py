@@ -725,7 +725,6 @@ class AppWindow(GladeDelegate):
         self.current_app = app
         self.current_widget = app_window
 
-
     def hide_app(self):
         self.application_box.hide()
         if self.current_app:
@@ -757,7 +756,6 @@ class AppWindow(GladeDelegate):
     #
     # AppWindow
     #
-
 
     def shutdown_application(self, *args):
         if not self.can_close_application():
@@ -972,7 +970,6 @@ class SearchableAppWindow(AppWindow):
 
         AppWindow.__init__(self, app)
 
-
         self.attach_slave('search_holder', self.search)
 
         self.create_filters()
@@ -1041,11 +1038,6 @@ class SearchableAppWindow(AppWindow):
             self.results.select(result)
         except ValueError:
             pass
-
-
-    #
-    # Hooks
-    #
 
     def create_filters(self):
         pass

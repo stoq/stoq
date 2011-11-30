@@ -114,7 +114,6 @@ class TestPurchaseOrder(DomainTest):
             if IInPayment(payment, None):
                 self.assertEqual(payment.value, total_paid)
 
-
     def testCanCancelPartial(self):
         order = self.create_purchase_order()
         self.assertEqual(order.can_cancel(), True)
@@ -153,7 +152,6 @@ class TestPurchaseOrder(DomainTest):
             payment.pay()
 
         self.assertEqual(order.is_paid(), True)
-
 
     def testAccountTransactionCheck(self):
         order = self.create_purchase_order()

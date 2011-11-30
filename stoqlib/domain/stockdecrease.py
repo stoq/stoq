@@ -124,11 +124,6 @@ class StockDecrease(Domain):
             raise DatabaseInconsistency(_("Invalid status %d") % status)
         return cls.statuses[status]
 
-
-    #
-    # IContainer implementation
-    #
-
     @argcheck(StockDecreaseItem)
     def add_item(self, item):
         assert not item.stock_decrease
@@ -204,11 +199,6 @@ class StockDecrease(Domain):
                                  stock_decrease=self,
                                  sellable=sellable,
                                  )
-
-
-    #
-    # Properties
-    #
 
     @property
     def order_number(self):

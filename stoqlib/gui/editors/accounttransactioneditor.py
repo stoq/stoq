@@ -125,11 +125,6 @@ class AccountTransactionEditor(BaseEditor):
         payment_button.set_sensitive(self.model.payment is not None)
         payment_button.show()
 
-
-    #
-    # BaseEditor hooks
-    #
-
     def create_model(self, conn):
         return _AccountTransactionTemporary(
             transaction=None,

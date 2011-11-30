@@ -192,8 +192,6 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
                                product=material,
                                connection=trans)
 
-
-        # This means we have production itens
         if materials:
             info(_('A new production was created for the missing composed '
                    'products'))

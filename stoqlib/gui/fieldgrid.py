@@ -124,7 +124,6 @@ class FieldInfo(object):
             return _CURSOR_BOTTOM_SIDE
 
 
-
 class FieldGrid(gtk.Layout):
     """FieldGrid is a Grid like widget which you can add fields to
 
@@ -164,7 +163,6 @@ class FieldGrid(gtk.Layout):
         self._moving_start_y_position = 0
         self._action_type = FIELD_NONE
         self._selected_field = None
-
 
         self._draw_grid = True
         TEXT = '1234567890ABCDEFTI'
@@ -369,7 +367,6 @@ class FieldGrid(gtk.Layout):
 
         for c in self._fields:
             self.propagate_expose(c.widget, event)
-
 
         fw = self._field_width + 1
         fh = self._field_height + 1

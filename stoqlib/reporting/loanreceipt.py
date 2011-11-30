@@ -89,7 +89,6 @@ class LoanReceipt(BaseStoqReport):
                               highlight=HIGHLIGHT_NEVER,
                               table_line=TABLE_LINE_BLANK)
 
-
     def _add_notes(self):
         details_str = self.order.notes
         if details_str:

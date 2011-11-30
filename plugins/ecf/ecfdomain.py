@@ -302,11 +302,6 @@ class DeviceConstant(Domain):
             constant_enum=int(constant_enum),
             connection=conn)
 
-
-    #
-    # IDescribable
-    #
-
     def get_description(self):
         return self.constant_name
 

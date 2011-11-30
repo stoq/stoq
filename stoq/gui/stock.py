@@ -65,7 +65,6 @@ _ = gettext.gettext
 log = Logger('stoq.gui.stock')
 
 
-
 class StockApp(SearchableAppWindow):
     app_name = _('Stock')
     app_icon_name = 'stoq-stock-app'

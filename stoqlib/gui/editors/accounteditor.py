@@ -78,7 +78,6 @@ class AccountEditor(BaseEditor):
         self.account_type.select(account_type)
         self.parent_accounts.show()
 
-
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model, AccountEditor.proxy_widgets)

@@ -59,7 +59,6 @@ month_names = {
 }
 
 
-
 class SintegraDialog(ConfirmDialog):
     size = (780, -1)
     title = _('Fiscal Printer History')

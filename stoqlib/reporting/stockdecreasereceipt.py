@@ -75,7 +75,6 @@ class StockDecreaseReceipt(BaseStoqReport):
                               highlight=HIGHLIGHT_NEVER,
                               table_line=TABLE_LINE_BLANK)
 
-
     def _add_reason(self):
         details_str = self.order.reason
 
@@ -113,12 +112,6 @@ class StockDecreaseReceipt(BaseStoqReport):
 
     def _add_signatures(self):
         self.add_signatures([_(u"Responsible"), _(u'Removed By')])
-
-
-
-    #
-    # BaseReportTemplate hooks
-    #
 
     def get_title(self):
         return _(u'Number: %s - Manual stock decrease on %s') % (

@@ -33,7 +33,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-
 class YearlyPaymentsChart(Chart):
     name = _("Monthly payments")
 

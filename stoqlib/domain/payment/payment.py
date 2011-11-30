@@ -160,11 +160,6 @@ class Payment(Domain):
             data = self.method.operation.get_check_data_by_payment(self)
             return data.bank_data
 
-
-    #
-    # Public API
-    #
-
     def get_status_str(self):
         if not self.status in self.statuses:
             raise DatabaseInconsistency('Invalid status for Payment '
@@ -226,7 +221,6 @@ class Payment(Domain):
 
         if self.method.operation.create_transaction():
             AccountTransaction.create_from_payment(self, account)
-
 
         if self.value == self.paid_value:
             msg = _("{method} payment with value {value:.2f} was paid").format(

@@ -829,12 +829,6 @@ class ParameterAccess(ClassInittableObject):
         self._set_schema(key, service.id)
 
 
-
-#
-# General routines
-#
-
-
 def sysparam(conn):
     return ParameterAccess(conn)
 

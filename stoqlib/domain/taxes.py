@@ -118,11 +118,6 @@ class ProductIcmsTemplate(BaseICMS):
     # Simples Nacional
     p_cred_sn_valid_until = DateTimeCol(default=None)
 
-
-    #
-    #  Public API
-    #
-
     def is_p_cred_sn_valid(self):
         """Returns if p_cred_sn has expired."""
         if not self.p_cred_sn_valid_until:
@@ -157,16 +152,9 @@ class ProductTaxTemplate(Domain):
         return klass.selectOneBy(product_tax_template=self,
                                  connection=self.get_connection())
 
-
     def get_tax_type_str(self):
         return self.types[self.tax_type]
 
-
-
-
-#
-#   Sale Item Tax Classes
-#
 
 class SaleItemIcms(BaseICMS):
     v_bc = PriceCol(default=None)
@@ -269,8 +257,6 @@ class SaleItemIcms(BaseICMS):
             self._update_simples(sale_item)
         else:
             self._update_normal(sale_item)
-
-
 
 
 class SaleItemIpi(BaseIPI):

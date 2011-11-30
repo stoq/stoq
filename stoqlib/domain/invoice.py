@@ -113,7 +113,6 @@ class InvoiceLayout(Domain):
         return self.description
 
 
-
 class InvoiceField(Domain):
     """Represents a field in an InvoiceLayout.
     @ivar x: x position of the upper left corner of the field

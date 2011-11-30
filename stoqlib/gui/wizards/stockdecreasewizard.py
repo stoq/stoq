@@ -68,13 +68,11 @@ class StartStockDecreaseStep(WizardEditorStep):
                      'cfop',
                      )
 
-
     def _fill_employee_combo(self):
         employees = [(e.person.name, e)
                      for e in Person.iselect(IEmployee,
                                              connection=self.conn)]
         self.removed_by.prefill(sorted(employees))
-
 
     def _fill_branch_combo(self):
         table = Person.getAdapterClass(IBranch)
@@ -114,8 +112,6 @@ class StartStockDecreaseStep(WizardEditorStep):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     self.proxy_widgets)
-
-
 
 
 class DecreaseItemStep(SellableItemStep):
@@ -211,14 +207,6 @@ class DecreaseItemStep(SellableItemStep):
         if value > balance:
             return ValidationError(
                 _(u'Quantity is greater than the quantity in stock.'))
-
-
-
-
-
-#
-# Main wizard
-#
 
 
 class StockDecreaseWizard(BaseWizard):

@@ -56,6 +56,5 @@ class NoteEditor(BaseEditor):
         self.notes.set_property('model-attribute', self.attr_name)
         self.add_proxy(self.model, NoteEditor.proxy_widgets)
 
-
     def get_title(self, *args):
         return self.title

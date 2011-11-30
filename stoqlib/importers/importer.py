@@ -122,11 +122,6 @@ class Importer(object):
             t2 - t1))
         create_log.info('IMPORTED-ITEMS:%d' % (imported_items, ))
 
-
-    #
-    # Mandatory to implement in subclasses
-    #
-
     def feed(self, fp, filename='<stdin>'):
         """Feeds csv data from an iterable
         @param fp: a file descriptor

@@ -165,11 +165,6 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
         self.proxy.update('total')
 
-
-    #
-    # Callbacks
-    #
-
     def on_invoice_number__activate(self, widget):
         self.emit('activate')
 
