@@ -255,6 +255,7 @@ class BasicPluggableDialog(BasicDialog):
     warnbox = None
     slave = None
     gsignal('confirm', object)
+
     def _initialize(self, slave, title=" ", header_text="", size=None,
                     hide_footer=False):
         """May be called by refresh by subdialogs, as necessary"""
@@ -341,6 +342,7 @@ class ConfirmDialog(BasicDialog):
     """
 
     title = _('Confirmation')
+
     def __init__(self, text='', title=None, size=None, ok_label=None):
         BasicDialog.__init__(self)
         self.justify_label(gtk.JUSTIFY_CENTER)
@@ -361,6 +363,7 @@ class NotifyDialog(ConfirmDialog):
     """
 
     title = _('Notification')
+
     def __init__(self, text, title=None, size=None, ok_label=None):
         ConfirmDialog.__init__(self, text, title, size=size,
                                ok_label=ok_label)

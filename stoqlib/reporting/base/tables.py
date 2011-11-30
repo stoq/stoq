@@ -180,6 +180,7 @@ class DataTableBuilder(AbstractTableBuilder):
 class ReportTableBuilder(AbstractTableBuilder):
     """ Report table builder """
     highlight = HIGHLIGHT_ODD
+
     def __init__(self, data, style=None, header=None, table_line=TABLE_LINE,
                  extra_row=None):
         self.header = header

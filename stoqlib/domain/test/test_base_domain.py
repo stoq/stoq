@@ -37,6 +37,7 @@ class IDong(Interface):
 
 class Ding(Domain):
     field = IntCol(default=0)
+
     def __init__(self, connection, field=None):
         Domain.__init__(self, connection=connection, field=field)
         self.called = False

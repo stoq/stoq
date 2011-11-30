@@ -85,6 +85,7 @@ class XMLRPCService(object):
     """An XMLRPCService using SimpleXMLRPCServer from the standard library
     """
     implements(IXMLRPCService)
+
     def __init__(self, hostname, port):
         self.hostname = hostname
         self.port = port
@@ -112,6 +113,7 @@ if has_twisted:
         """An XMLRPCService using Twisted
         """
         implements(IXMLRPCService)
+
         def __init__(self, hostname, port):
             xmlrpc.XMLRPC.__init__(self)
             self._hostname = hostname

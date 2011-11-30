@@ -374,6 +374,7 @@ class F(InvoiceFieldDescription):
     name = "COMPANY_DOCUMENT"
     description = _("Company document number")
     length = 4
+
     def fetch(self, width, height):
         return ICompany(self.sale.branch).cnpj
 
@@ -385,6 +386,7 @@ class F(InvoiceFieldDescription):
     name = "OUTGOING_INVOICE"
     description = _("Outgoing invoice")
     length = 1
+
     def fetch(self, width, height):
         return isinstance(self.invoice, SaleInvoice)
 
@@ -396,6 +398,7 @@ class F(InvoiceFieldDescription):
     name = "INCOMING_INVOICE"
     description = _("Incoming invoice")
     length = 1
+
     def fetch(self, width, height):
         return isinstance(self.invoice, PurchaseInvoice)
 
@@ -406,6 +409,7 @@ class F(InvoiceFieldDescription):
     name = "CLIENT_NAME"
     description = _('Client name')
     length = 35
+
     def fetch(self, width, height):
         return self.sale.client.person.name
 
@@ -416,6 +420,7 @@ class F(InvoiceFieldDescription):
     name = "CLIENT_ADDRESS"
     description = _('Client Address')
     length = 34
+
     def fetch(self, width, height):
         return self.sale.client.person.address.get_address_string()
 
@@ -426,6 +431,7 @@ class F(InvoiceFieldDescription):
     name = "CLIENT_DOCUMENT"
     description = _("Client's document number")
     length = 14
+
     def fetch(self, width, height):
         individual = IIndividual(self.sale.client, None)
         if individual is not None:
@@ -442,6 +448,7 @@ class F(InvoiceFieldDescription):
     name = "CLIENT_DISTRICT"
     description = _("Client's district")
     length = 15
+
     def fetch(self, width, height):
         return self.sale.client.person.address.district
 
@@ -452,6 +459,7 @@ class F(InvoiceFieldDescription):
     name = "CLIENT_POSTAL_CODE"
     description = _("Client's postal code")
     length = 8
+
     def fetch(self, width, height):
         return self.sale.client.person.address.postal_code
 
@@ -462,6 +470,7 @@ class F(InvoiceFieldDescription):
     name = "CLIENT_CITY"
     description = _("Client's city")
     length = 34
+
     def fetch(self, width, height):
         return self.sale.client.person.address.get_city()
 
@@ -472,6 +481,7 @@ class F(InvoiceFieldDescription):
     name = "CLIENT_PHONE"
     description = _('Client Phone number')
     length = 12
+
     def fetch(self, width, height):
         return self.sale.client.person.phone_number
 
@@ -482,6 +492,7 @@ class F(InvoiceFieldDescription):
     name = "CLIENT_FAX"
     description = _('Client Fax number')
     length = 12
+
     def fetch(self, width, height):
         return self.sale.client.person.fax_number
 
@@ -492,6 +503,7 @@ class F(InvoiceFieldDescription):
     name = "CLIENT_PHONE_FAX"
     description = _('Client Phone/Fax number')
     length = 12
+
     def fetch(self, width, height):
         return '%s / %s' % (
             self.sale.client.person.phone_number,
@@ -504,6 +516,7 @@ class F(InvoiceFieldDescription):
     name = "CLIENT_STATE"
     description = _('Client state abbreviation')
     length = 2
+
     def fetch(self, width, height):
         return self.sale.client.person.address.get_state()
 
@@ -514,6 +527,7 @@ class F(InvoiceFieldDescription):
     name = "CLIENT_STATE_REGISTRY_DOCUMENT"
     description = _('Clients state registry number or document number')
     length = 14
+
     def fetch(self, width, height):
         company = ICompany(self.sale.client, None)
         if company is None:
@@ -528,6 +542,7 @@ class F(InvoiceFieldDescription):
     name = "ORDER_EMISSION_DATE"
     description = _('Emission date')
     length = 10
+
     def fetch(self, width, height):
         return self.invoice.today.strftime(self.invoice.date_format)
 
@@ -538,6 +553,7 @@ class F(InvoiceFieldDescription):
     name = "ORDER_CREATION_DATE"
     description = _('Creation date')
     length = 10
+
     def fetch(self, width, height):
         return self.invoice.today.strftime(self.invoice.date_format)
 
@@ -548,6 +564,7 @@ class F(InvoiceFieldDescription):
     name = "ORDER_CREATION_TIME"
     description = _('Creation time')
     length = 8
+
     def fetch(self, width, height):
         return self.invoice.today.strftime('%H:%S')
 
@@ -558,6 +575,7 @@ class F(InvoiceFieldDescription):
     name = "PAYMENT_NUMBERS"
     description = _('Number of payments')
     length = 4
+
     def fetch(self, width, height):
         return str(self.sale.payments.count())
 
@@ -568,6 +586,7 @@ class F(InvoiceFieldDescription):
     name = "PAYMENT_DUE_DATES"
     description = _('Payment due dates')
     length = 1
+
     def fetch(self, width, height):
         dates = [p.due_date.strftime(self.invoice.date_format)
                                     for p in self.sale.payments]
@@ -580,6 +599,7 @@ class F(InvoiceFieldDescription):
     name = "PAYMENT_VALUES"
     description = _('Payment values')
     length = 1
+
     def fetch(self, width, height):
         dates = [str(p.value) for p in self.sale.payments]
         return ', '.join(dates)
@@ -591,6 +611,7 @@ class F(InvoiceFieldDescription):
     name = "BASE_DE_CALCULO_ICMS"
     length = 1
     field_type = Decimal
+
     def fetch(self, width, height):
         total = Decimal(0)
         for sale_item in self.sale.products:
@@ -607,6 +628,7 @@ class F(InvoiceFieldDescription):
     name = "VALOR_ICMS"
     length = 1
     field_type = Decimal
+
     def fetch(self, width, height):
         total = Decimal(0)
         for sale_item in self.sale.products:
@@ -623,6 +645,7 @@ class F(InvoiceFieldDescription):
     name = "BASE_DE_CALCULO_ICMS_SUBST"
     length = 1
     field_type = Decimal
+
     def fetch(self, width, height):
         total = Decimal(0)
         for sale_item in self.sale.products:
@@ -638,6 +661,7 @@ class F(InvoiceFieldDescription):
     name = "VALOR_ICMS_SUBST"
     length = 1
     field_type = Decimal
+
     def fetch(self, width, height):
         total = Decimal(0)
         tax_value = sysparam(self.conn).SUBSTITUTION_TAX
@@ -654,6 +678,7 @@ class F(InvoiceFieldDescription):
     name = "BASE_DE_CALCULO_ISS"
     length = 1
     field_type = Decimal
+
     def fetch(self, width, height):
         total = Decimal(0)
         for sale_item in self.sale.services:
@@ -800,6 +825,7 @@ class F(InvoiceFieldDescription):
     name = "VALOR_TOTAL_SERVICOS"
     length = 1
     field_type = Decimal
+
     def fetch(self, width, height):
         return sum([s.quantity * s.price for s in self.sale.services],
                    Decimal(0))
@@ -811,6 +837,7 @@ class F(InvoiceFieldDescription):
     name = "VALOR_TOTAL_PRODUTOS"
     length = 1
     field_type = Decimal
+
     def fetch(self, width, height):
         return self.sale.get_sale_subtotal()
 
@@ -820,6 +847,7 @@ _add_invoice_field(F)
 class F(InvoiceFieldDescription):
     name = "VALOR_FRETE"
     length = 1
+
     def fetch(self, width, height):
         return 0
 
@@ -829,6 +857,7 @@ _add_invoice_field(F)
 class F(InvoiceFieldDescription):
     name = "VALOR_SEGURO"
     length = 1
+
     def fetch(self, width, height):
         return 0
 
@@ -838,6 +867,7 @@ _add_invoice_field(F)
 class F(InvoiceFieldDescription):
     name = "VALOR_DESPESAS"
     length = 1
+
     def fetch(self, width, height):
         return 0
 
@@ -847,6 +877,7 @@ _add_invoice_field(F)
 class F(InvoiceFieldDescription):
     name = "VALOR_IPI"
     length = 1
+
     def fetch(self, width, height):
         return 0
 
@@ -857,6 +888,7 @@ class F(InvoiceFieldDescription):
     name = "VALOR_TOTAL_NOTA"
     length = 1
     field_type = Decimal
+
     def fetch(self, width, height):
         return self.sale.get_sale_subtotal()
 
@@ -866,6 +898,7 @@ _add_invoice_field(F)
 class F(InvoiceFieldDescription):
     name = "ADDITIONAL_SALE_NOTES"
     lenght = 1
+
     def fetch(self, width, height):
         return ''
 
@@ -875,6 +908,7 @@ _add_invoice_field(F)
 class F(InvoiceFieldDescription):
     name = "SALE_NUMBER"
     length = 1
+
     def fetch(self, width, height):
         return self.sale.get_order_number_str()
 
@@ -884,6 +918,7 @@ _add_invoice_field(F)
 class F(InvoiceFieldDescription):
     name = "SALESPERSON_NAME"
     length = 1
+
     def fetch(self, width, height):
         return self.sale.get_salesperson_name()
 
@@ -895,6 +930,7 @@ class F(InvoiceFieldDescription):
     description = _('Product item counter')
     length = 3
     field_type = [str]
+
     def fetch(self, width, height):
         for i in range(self.sale.products.count()):
             yield '%03d' % (i + 1, )
@@ -1042,6 +1078,7 @@ _add_invoice_field(F)
 class F(InvoiceFieldDescription):
     name = "CFOP"
     length = 4
+
     def fetch(self, width, height):
         if self.sale.cfop:
             return self.sale.cfop.code
@@ -1053,6 +1090,7 @@ class F(InvoiceFieldDescription):
     name = "STATE_REGISTRY"
     description = _("State registry number")
     length = 14
+
     def fetch(self, width, height):
         return ICompany(self.sale.branch).state_registry
 
@@ -1063,6 +1101,7 @@ class F(InvoiceFieldDescription):
     name = "CITY_REGISTRY"
     description = _("City registry number")
     length = 14
+
     def fetch(self, width, height):
         return ICompany(self.sale.branch).city_registry
 
@@ -1072,6 +1111,7 @@ _add_invoice_field(F)
 class F(InvoiceFieldDescription):
     name = "INSCR_ESTADUAL_SUBSTITUTO_TRIB"
     length = 4
+
     def fetch(self, width, height):
         return ''
 _add_invoice_field(F)

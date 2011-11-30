@@ -176,6 +176,7 @@ class _DeviceConstantsList(AdditionListSlave):
 
 class DeviceConstantsDialog(BasicDialog):
     size = (500, 300)
+
     def __init__(self, conn, printer):
         self._constant_slave = None
         self.conn = conn

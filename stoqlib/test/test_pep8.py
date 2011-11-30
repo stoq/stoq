@@ -67,6 +67,7 @@ ERRORS = [
     'W291', # trailing whitespace
     'W292', # no newline at end of file
     'W293', # blank line contains whitespace
+    'E301', # expected 1 blank line, found 0
     'E302', # expected 2 blank lines, found 1
     'E303', # too many blank lines
     'W391', # blank line at end of file

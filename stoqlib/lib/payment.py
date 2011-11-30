@@ -35,6 +35,7 @@ _ = stoqlib_gettext
 
 class PaymentOperationManager(object):
     implements(IPaymentOperationManager)
+
     def __init__(self):
         self._methods = {}
 
