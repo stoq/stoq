@@ -77,7 +77,7 @@ class SaleOrderReport(BaseStoqReport):
                 TC('', style='Normal-Bold', width=130), TC('', expand=True)]
 
         data = [[_(u'Client:'), client, _(u'Phone number:'), phone_number],
-                [_(u'CPF/CNPJ:') , document, _(u'Mobile number'),
+                [_(u'CPF/CNPJ:'), document, _(u'Mobile number'),
                  mobile_number],
                 [_(u'Address:'), address[0], _(u'City/State:'), address[1]]]
 

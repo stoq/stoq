@@ -119,7 +119,7 @@ class QuoteFillingDialog(BaseEditor):
     def setup_slaves(self):
         self.slave = ListSlave(self._get_columns())
         self.slave.set_list_type(ListType.READONLY)
-        self.attach_slave("place_holder" , self.slave)
+        self.attach_slave("place_holder", self.slave)
 
     def on_confirm(self):
         return True
