@@ -42,6 +42,7 @@ class ECFAsyncPrinterStatus(gobject.GObject):
     """
     gsignal('reply', str)
     gsignal('timeout')
+
     def __init__(self, device_name, printer_class=None, printer=None, delay=5):
         """
         @param device_name:

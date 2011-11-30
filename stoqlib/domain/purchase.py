@@ -678,6 +678,7 @@ class PurchaseItemView(Viewable):
     def select_by_purchase(cls, purchase, connection):
         return PurchaseItemView.select(PurchaseOrder.q.id == purchase.id,
                                        connection=connection)
+
     @property
     def purchase_item(self):
         return PurchaseItem.get(self.id)

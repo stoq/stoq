@@ -248,6 +248,7 @@ class SQLObjectMeta(PropertyPublisherMeta):
                 def define_add_remove(dict, prop):
                     capitalised_name = (prop._otherClass[0].capitalize() +
                                         prop._otherClass[1:])
+
                     def add(self, obj):
                         prop._get_bound_reference_set(self).add(obj)
                     add.__name__ = "add" + capitalised_name
@@ -834,6 +835,7 @@ class DeclarativeMeta(type):
 
 class Declarative(object):
     __metaclass__ = DeclarativeMeta
+
     def __classinit__(cls, new_attrs):
         pass
 

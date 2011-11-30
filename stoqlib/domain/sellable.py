@@ -820,6 +820,7 @@ class Sellable(Domain):
         statuses = [cls.STATUS_AVAILABLE, cls.STATUS_UNAVAILABLE]
         return cls._get_sellables_by_barcode(conn, barcode,
                                              IN(cls.q.status, statuses))
+
     @classmethod
     def get_unblocked_by_categories(cls, conn, categories,
                                     include_uncategorized=True):

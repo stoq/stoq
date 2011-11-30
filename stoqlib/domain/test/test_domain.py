@@ -41,6 +41,7 @@ def _create_domain_test():
 
     for table in tables:
         tables_dict[table.__name__] = table
+
     def _test_domain(self, klass):
         kwargs = {}
         args = []
