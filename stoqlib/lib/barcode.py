@@ -82,12 +82,12 @@ def parse_barcode(barcode, fmt=BarcodeInfo.OPTION_4_DIGITS_PRICE):
 
     if mode == BarcodeInfo.MODE_PRICE:
         code = barcode[1:1 + digits]
-        price = Decimal(barcode[7:-1])/Decimal('1e2')
+        price = Decimal(barcode[7:-1]) / Decimal('1e2')
         weight = None
     elif mode == BarcodeInfo.MODE_WEIGHT:
         code = barcode[1:1 + digits]
         price = None
-        weight = Decimal(barcode[8:-1])/Decimal('1e3')
+        weight = Decimal(barcode[8:-1]) / Decimal('1e3')
 
     return BarcodeInfo(code, price, weight, mode)
 

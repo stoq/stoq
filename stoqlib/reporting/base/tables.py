@@ -164,8 +164,8 @@ class DataTableBuilder(AbstractTableBuilder):
                            (col_idx, - 1),
                            10)
             self.style.add('RIGHTPADDING',
-                           (col_idx-1,  0),
-                           (col_idx-1, -1),
+                           (col_idx - 1,  0),
+                           (col_idx - 1, -1),
                            10)
             self.style.add('LINEBEFORE',
                            (col_idx,  0),
@@ -706,10 +706,10 @@ class TableColumn:
                      table_line=TABLE_LINE):
         """ Apply the column style. """
         if self.virtual:
-            style.add('SPAN', (idx-1, 0), (idx, 0))
+            style.add('SPAN', (idx - 1, 0), (idx, 0))
         else:
             j = has_summary_row and 1 or 0
-            style.add('LINEBEFORE', (idx, 0), (idx, -1-j),
+            style.add('LINEBEFORE', (idx, 0), (idx, -1 - j),
                       *table_line)
 
 class ObjectTableColumn(TableColumn):

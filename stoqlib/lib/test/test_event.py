@@ -15,21 +15,21 @@ class EventTest(unittest.TestCase):
 
     def testReturnValueNoConnection(self):
         class MyEvent(Event):
-            returnclass=ReturnStatus
+            returnclass = ReturnStatus
 
         retval = MyEvent.emit()
         self.assertEquals(None, retval)
 
     def testWrongReturnValue(self):
         class MyEvent(Event):
-            returnclass=ReturnStatus
+            returnclass = ReturnStatus
 
         MyEvent.connect(self._stub_return_wrong_value)
         self.assertRaises(TypeError, MyEvent.emit)
 
     def testCorrectReturnValue(self):
         class MyEvent(Event):
-            returnclass=ReturnStatus
+            returnclass = ReturnStatus
 
         MyEvent.connect(self._stub_return_corret_value)
         # Shouln't raise

@@ -196,7 +196,7 @@ class SaleItemIcms(BaseICMS):
             self.v_bc_st += self.v_bc_st * self.p_mva_st / 100
 
         if self.v_bc_st is not None and self.p_icms_st is not None:
-            self.v_icms_st = self.v_bc_st * self.p_icms_st/100
+            self.v_icms_st = self.v_bc_st * self.p_icms_st / 100
         if self.v_icms is not None and self.v_icms_st is not None:
             self.v_icms_st -= self.v_icms
 
@@ -210,7 +210,7 @@ class SaleItemIcms(BaseICMS):
             self.v_bc -= self.v_bc * self.p_red_bc / 100
 
         if self.p_icms is not None and self.v_bc is not None:
-            self.v_icms = self.v_bc * self.p_icms/100
+            self.v_icms = self.v_bc * self.p_icms / 100
 
     def _update_normal(self, sale_item):
         """Atualiza os dados de acordo com os calculos do Regime Tributário
@@ -297,7 +297,7 @@ class SaleItemIpi(BaseIPI):
         if self.calculo == self.CALC_ALIQUOTA:
             self.v_bc = sale_item.price * sale_item.quantity
             if self.p_ipi is not None:
-                self.v_ipi = self.v_bc * self.p_ipi/100
+                self.v_ipi = self.v_bc * self.p_ipi / 100
         elif self.calculo == self.CALC_UNIDADE:
             if self.q_unid is not None and self.v_unid is not None:
                 self.v_ipi = self.q_unid * self.v_unid

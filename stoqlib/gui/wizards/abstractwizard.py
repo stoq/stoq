@@ -304,7 +304,7 @@ class SellableItemStep(WizardEditorStep):
             quantity = Decimal(1)
             storable = IStorable(sellable.product, None)
             if storable:
-                minimum= storable.minimum_quantity
+                minimum = storable.minimum_quantity
                 stock = storable.get_full_balance(self.model.branch)
         else:
             self.barcode.set_text('')

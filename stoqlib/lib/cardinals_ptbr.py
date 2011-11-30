@@ -41,7 +41,7 @@ def to_words(num, feminine=False, unit_names=None):
             "Números decimais ainda não suportados, envie patches!")
     if not isinstance(num, int):
         raise TypeError("Valor deve ser inteiro")
-    if num > 10**9:
+    if num > 10 ** 9:
         raise ValueError("Valor deve ser menor que 10^9")
     if num > 1 and unit_names:
         return _do_ints(str(num), feminine) + " " + unit_names[1]
@@ -106,7 +106,7 @@ def _do_ints(ints, feminine=False):
     groups = []
     group = []
     for i in range(intlen):
-        group.insert(0, ints[-i-1])
+        group.insert(0, ints[-i - 1])
         if len(group) == 3:
             groups.insert(0, "".join(group))
             group = []

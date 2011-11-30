@@ -244,7 +244,7 @@ class StoqlibSintegraGenerator(object):
             if not sale.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID):
                 continue
             for sale_item in sale.products:
-                discount = sale_item.sale.discount_value/sale_item.quantity
+                discount = sale_item.sale.discount_value / sale_item.quantity
                 cost = (sale_item.sellable.base_sellable_info.price *
                          sale_item.quantity - discount)
                 if not sale_item.sellable in sellables:

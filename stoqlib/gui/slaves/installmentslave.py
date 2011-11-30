@@ -54,7 +54,7 @@ class _ConfirmationModel(object):
     def set_interest(self, interest):
         installments = len(self.payments)
         for payment in self.payments:
-            payment.interest = interest/installments
+            payment.interest = interest / installments
 
     def get_penalty(self):
         return currency(sum(p.penalty or 0 for p in self.payments))
@@ -62,7 +62,7 @@ class _ConfirmationModel(object):
     def set_penalty(self, penalty):
         installments = len(self.payments)
         for payment in self.payments:
-            payment.penalty = penalty/installments
+            payment.penalty = penalty / installments
 
     def get_discount(self):
         return currency(sum(p.discount or 0 for p in self.payments))
@@ -70,7 +70,7 @@ class _ConfirmationModel(object):
     def set_discount(self, discount):
         installments = len(self.payments)
         for payment in self.payments:
-            payment.discount = discount/installments
+            payment.discount = discount / installments
 
     def get_calculated_interest(self):
         return currency(0)
@@ -281,7 +281,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
     def _update_total_value(self):
         total = self.model.get_penalty() + self.model.get_interest() - \
                 self.model.get_discount()
-        value = total/self.installments_number
+        value = total / self.installments_number
         for payment in self._payments:
             payment.paid_value = payment.value + value
             self.installments.update(payment)

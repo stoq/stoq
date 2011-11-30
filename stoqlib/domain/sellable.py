@@ -662,7 +662,7 @@ class Sellable(Domain):
             info = self.get_category_price_info(category)
         if not info:
             info = self.base_sellable_info
-        if newprice < info.price - (info.price * info.max_discount/100):
+        if newprice < info.price - (info.price * info.max_discount / 100):
             return False
         return True
 

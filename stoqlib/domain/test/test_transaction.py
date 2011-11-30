@@ -79,7 +79,7 @@ class TestTransaction(DomainTest):
             #('modifiy', person.te_modified.te_time),
             ('after modify', updated),
             ]
-        for i in range(len(dates)-1):
+        for i in range(len(dates) - 1):
             before_name, before = dates[i]
             after_name, after = dates[i + 1]
             before_decimal = Decimal(before.strftime('%s.%f'))

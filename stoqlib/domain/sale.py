@@ -370,7 +370,7 @@ class Sale(Domain):
     discount_value = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     total_amount = PriceCol(default=0)
-    invoice_number= IntCol(default=None)
+    invoice_number = IntCol(default=None)
     operation_nature = UnicodeCol(default='')
     cfop = ForeignKey("CfopData")
     client = ForeignKey('PersonAdaptToClient', default=None)
@@ -1291,7 +1291,7 @@ class DeliveryView(Viewable):
     @cvar client_name: the sale client name
     """
 
-    columns=dict(
+    columns = dict(
         id=SaleItem.q.id,
         sale_id=SaleItem.q.saleID,
         quantity=SaleItem.q.quantity,
@@ -1340,7 +1340,7 @@ class SoldSellableView(Viewable):
         LEFTJOINOn(None, SaleItem,
                     SaleItem.q.sellableID == Sellable.q.id),
         LEFTJOINOn(None, BaseSellableInfo,
-                   BaseSellableInfo.q.id==Sellable.q.base_sellable_infoID),
+                   BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID),
         LEFTJOINOn(None, Sale,
                     Sale.q.id == SaleItem.q.saleID),
         LEFTJOINOn(None, PersonAdaptToClient,

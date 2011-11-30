@@ -826,7 +826,7 @@ class CardMethodSlave(BaseEditorSlave):
             data.card_type = payment_type
             data.provider = provider
             data.fee = provider.get_fee_for_payment(provider, data)
-            data.fee_value = data.fee * adapted.value /100
+            data.fee_value = data.fee * adapted.value / 100
 
     def _get_credit_providers(self):
         return PersonAdaptToCreditProvider.get_card_providers(

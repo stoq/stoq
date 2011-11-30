@@ -41,7 +41,7 @@ def to_words(num, unit_names=None):
         raise TypeError("Float numbers are not supported")
     if not isinstance(num, int):
         raise TypeError("Value must be an integer")
-    if num > 10**66:
+    if num > 10 ** 66:
         raise ValueError("Value must be lesser than 10^66")
     if num > 1 and unit_names:
         return cardinal(num) + " " + unit_names[1]
