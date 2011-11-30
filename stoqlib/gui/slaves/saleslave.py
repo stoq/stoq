@@ -165,8 +165,8 @@ class SaleListToolbar(GladeSlaveDelegate):
     def update_buttons(self):
         sale_view = self.sales.get_selected()
         self.details_button.set_sensitive(bool(sale_view))
-        can_return = bool(sale_view and sale_view.sale.can_return())
-        can_edit = bool(sale_view and sale_view.sale.status == Sale.STATUS_QUOTE)
+        can_return = bool(sale_view and sale_view.can_return())
+        can_edit = bool(sale_view and sale_view.status == Sale.STATUS_QUOTE)
         self.return_sale_button.set_sensitive(can_return)
         self.edit_button.set_sensitive(can_edit)
 
@@ -360,7 +360,7 @@ def cancel_sale(sale):
 
 def return_sale(parent, sale_view, conn):
     from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
-    sale = Sale.get(sale_view.sale.id, connection=conn)
+    sale = Sale.get(sale_view.id, connection=conn)
     if sale.can_return():
         retval = run_dialog(SaleReturnWizard, parent, conn, sale_view)
     elif sale.can_cancel():

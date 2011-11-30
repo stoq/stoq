@@ -253,7 +253,7 @@ class SalesApp(SearchableAppWindow):
         return bool(view and view.status == Sale.STATUS_QUOTE)
 
     def _can_edit(self, view):
-        return bool(view and view.sale.status == Sale.STATUS_QUOTE)
+        return bool(view and view.status == Sale.STATUS_QUOTE)
 
     def _update_toolbar(self, *args):
         sale_view = self.results.get_selected()
@@ -265,7 +265,7 @@ class SalesApp(SearchableAppWindow):
         self.set_sensitive([self.SalesPrintInvoice], can_print_invoice)
         self.set_sensitive([self.SalesCancel], self._can_cancel(sale_view))
         self.set_sensitive([self.sale_toolbar.return_sale_button, self.Return],
-                           bool(sale_view and sale_view.sale.can_return()))
+                           bool(sale_view and sale_view.can_return()))
         self.set_sensitive([self.sale_toolbar.return_sale_button, self.Details],
                            bool(sale_view))
         self.set_sensitive([self.sale_toolbar.edit_button, self.Edit],
