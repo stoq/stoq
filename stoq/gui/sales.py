@@ -236,9 +236,8 @@ class SalesApp(SearchableAppWindow):
 
     def _setup_widgets(self):
         self._setup_slaves()
-
         self._inventory_widgets = [self.sale_toolbar.return_sale_button,
-                                   self.LoanNew, self.LoanClose]
+                                   self.Return, self.LoanNew, self.LoanClose]
         self.register_sensitive_group(self._inventory_widgets,
                                       lambda: not self.has_open_inventory())
 

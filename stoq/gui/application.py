@@ -684,7 +684,7 @@ class AppWindow(GladeDelegate):
         bar.show()
 
         self.main_vbox.pack_start(bar, False, False, 0)
-        self.main_vbox.reorder_child(bar, 2)
+        self.main_vbox.reorder_child(bar, 0)
 
         return bar
 
