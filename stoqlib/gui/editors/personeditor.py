@@ -72,6 +72,7 @@ class ClientEditor(BasePersonRoleEditor):
                                               visual_mode=self.visual_mode)
         self.main_slave.attach_person_slave(self.status_slave)
 
+
 class UserEditor(BasePersonRoleEditor):
     model_name = _('User')
     title = _('New User')
@@ -289,6 +290,7 @@ class TransporterEditor(BasePersonRoleEditor):
                                                   visual_mode=self.visual_mode)
         slave = self.main_slave.get_person_slave()
         slave.attach_slave('person_status_holder', self.details_slave)
+
 
 class BranchEditor(BasePersonRoleEditor):
     model_name = _('Branch')

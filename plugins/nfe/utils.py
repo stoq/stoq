@@ -76,6 +76,7 @@ _uf_code = dict(# Norte
 # Functions
 #
 
+
 def get_state_code(state):
     """Returns the state code of a certain state (Brazil specific).
 
@@ -84,6 +85,7 @@ def get_state_code(state):
               code for the given state.
     """
     return _uf_code.get(state.upper())
+
 
 def get_city_code(city_name, state=None, code=None):
     """Returns the city code of a certain city. The city code is Brazil
@@ -111,6 +113,7 @@ def get_city_code(city_name, state=None, code=None):
     if city_data is not None:
         return city_data.city_code
 
+
 def get_cities_by_name(city, limit=20):
     """Returns a sequence of {NFeCityData} instances which the city name
     matches with the given city.
@@ -120,12 +123,14 @@ def get_cities_by_name(city, limit=20):
                                   connection=get_connection())
     return results.limit(limit)
 
+
 def remove_accentuation(string):
     """Remove the accentuantion of a string.
     @returns: the string without accentuantion.
     """
     # Taken from http://www.python.org.br/wiki/RemovedorDeAcentos
     return normalize('NFKD', string.decode('utf-8')).encode('ASCII', 'ignore')
+
 
 def nfe_tostring(element):
     """Returns the canonical XML string of a certain element with line feeds

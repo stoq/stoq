@@ -32,6 +32,7 @@ from stoqlib.api import api
 
 _ = gettext.gettext
 
+
 class WelcomeDialog(gtk.Dialog):
     def __init__(self):
         gtk.Dialog.__init__(self)

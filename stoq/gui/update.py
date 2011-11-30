@@ -40,6 +40,7 @@ _ = gettext.gettext
 # Wizard Steps
 #
 
+
 class UpdateWelcomeStep(BaseWizardStep):
     gladefile = 'UpdateWelcomeStep'
 

@@ -33,6 +33,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentFlowHistory
 from stoqlib.domain.test.domaintest import DomainTest
 
+
 class TestPayment(DomainTest):
     def test_new(self):
         payment = Payment(value=currency(10), due_date=datetime.datetime.now(),

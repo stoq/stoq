@@ -50,9 +50,11 @@ from stoqlib.lib.barcode import BarcodeInfo
 _ = stoqlib_gettext
 log = Logger('stoqlib.parameters')
 
+
 class DirectoryParameter(object):
     def __init__(self, path):
         self.path = path
+
 
 class ParameterDetails(object):
     def __init__(self, key, group, short_desc, long_desc, type,
@@ -882,6 +884,7 @@ def check_parameter_presence(conn):
 
     return results.count() == len(_details)
 
+
 def ensure_system_parameters(update=False):
     # This is called when creating a new database or
     # updating an existing one
@@ -893,6 +896,7 @@ def ensure_system_parameters(update=False):
     else:
         param.set_defaults()
     trans.commit(close=True)
+
 
 def is_developer_mode():
     if os.environ.get('STOQ_DEVELOPER_MODE') == '0':

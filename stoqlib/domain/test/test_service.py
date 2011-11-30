@@ -30,6 +30,7 @@ from stoqlib.exceptions import SellError
 
 from stoqlib.domain.test.domaintest import DomainTest
 
+
 class TestServiceSellableItem(DomainTest):
     def test_addItem(self):
         sale = self.create_sale()
@@ -48,6 +49,7 @@ class TestServiceSellableItem(DomainTest):
         self.assertEquals(list(delivery.get_items()), [])
         delivery.add_item(delivery_item)
         self.assertEquals(list(delivery.get_items()), [delivery_item])
+
 
 class TestService(DomainTest):
     def test_remove(self):
@@ -78,6 +80,7 @@ class TestService(DomainTest):
                           order=self.create_production_order(),
                           connection=self.trans)
         self.assertFalse(service.can_remove())
+
 
 class TestServiceView(DomainTest):
 

@@ -240,6 +240,7 @@ def register_plugin(plugin_class):
     manager = get_plugin_manager()
     manager.register_plugin(plugin_class())
 
+
 def get_plugin_manager():
     """Provides and returns the plugin manager
 

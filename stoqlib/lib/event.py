@@ -27,6 +27,7 @@ from kiwi.log import Logger
 
 log = Logger('stoqlib.events')
 
+
 class Event(object):
     returnclass = None
 

@@ -27,11 +27,14 @@
 
 import gettext as gettext_
 
+
 def stoqlib_gettext(message):
     return dgettext('stoq', message)
 
+
 def stoqlib_ngettext(singular, plural, n):
     return gettext_.dngettext('stoq', singular, plural, n)
+
 
 def dgettext(domain, message):
     is_unicode = False
@@ -43,8 +46,10 @@ def dgettext(domain, message):
         retval = unicode(retval, 'utf-8')
     return retval
 
+
 def gettext(message):
     return unicode(gettext_.gettext(message), 'utf-8')
+
 
 def N_(message):
     return message

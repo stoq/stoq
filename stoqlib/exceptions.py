@@ -68,6 +68,7 @@ class DatabaseError(Exception):
     def __str__(self):
         return self.msg
 
+
 class StockError(Exception):
     """Exception for stock operations"""
 
@@ -116,11 +117,14 @@ class SellableError(Exception):
 class StoqlibError(Exception):
     """General Error for stoqlib domain classes and dialogs"""
 
+
 class InvalidStatus(Exception):
     """Invalid status for the object which the operation was requested"""
 
+
 class BarcodeDoesNotExists(Exception):
     """There are no products with the specified barcode"""
+
 
 class DeviceError(Exception):
     """A problem with a Device such as a fiscal printer"""

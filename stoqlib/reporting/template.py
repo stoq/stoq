@@ -55,6 +55,7 @@ LOGO_SIZE = (171, 59)
 SMALL_FONT = ("Vera", 12)
 TEXT_HEIGHT = 13
 
+
 def _get_logotype_path(trans):
     logofile = sysparam(trans).CUSTOM_LOGO_FOR_REPORTS
     if logofile.is_valid():

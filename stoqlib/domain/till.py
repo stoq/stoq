@@ -47,6 +47,7 @@ log = Logger('stoqlib.till')
 # Domain Classes
 #
 
+
 class Till(Domain):
     """The Till describes the financial operations of a specific day.
 

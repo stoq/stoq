@@ -36,6 +36,7 @@ from stoqlib.domain.person import Person
 
 from stoqlib.domain.test.domaintest import DomainTest
 
+
 def get_all_slaves():
     slaves = []
     for klass in get_all_classes('stoqlib/gui'):
@@ -54,6 +55,7 @@ def get_all_slaves():
             continue
         slaves.append(klass)
     return slaves
+
 
 def _test_slave(self, slave):
     args, varargs, varkw, defaults = inspect.getargspec(slave.__init__)
@@ -128,6 +130,7 @@ def _test_slave(self, slave):
 
     s = slave(*send)
     s.on_confirm()
+
 
 def _create_slave_test():
     TODO = {}

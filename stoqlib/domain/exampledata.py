@@ -41,104 +41,138 @@ from stoqlib.lib.parameters import sysparam
 
 # Do not remove, these are used by doctests
 
+
 def create_person(trans):
     return ExampleCreator.create(trans, 'Person')
+
 
 def create_branch(trans):
     return ExampleCreator.create(trans, 'IBranch')
 
+
 def create_supplier(trans):
     return ExampleCreator.create(trans, 'ISupplier')
+
 
 def create_employee(trans):
     return ExampleCreator.create(trans, 'IEmployee')
 
+
 def create_salesperson(trans):
     return ExampleCreator.create(trans, 'ISalesPerson')
+
 
 def create_client(trans):
     return ExampleCreator.create(trans, 'IClient')
 
+
 def create_individual(trans):
     return ExampleCreator.create(trans, 'IIndividual')
+
 
 def create_user(trans):
     return ExampleCreator.create(trans, 'IUser')
 
+
 def create_storable(trans):
     return ExampleCreator.create(trans, 'ProductAdaptToStorable')
+
 
 def create_product(trans):
     return ExampleCreator.create(trans, 'Product')
 
+
 def create_sellable(trans):
     return ExampleCreator.create(trans, 'Sellable')
+
 
 def create_sellable_unit(trans):
     return ExampleCreator.create(trans, 'SellableUnit')
 
+
 def create_sale(trans):
     return ExampleCreator.create(trans, 'Sale')
+
 
 def create_sale_item_icms(trans):
     return ExampleCreator.create(trans, 'SaleItemIcms')
 
+
 def create_stock_decrease(trans):
     return ExampleCreator.create(trans, 'StockDecrease')
+
 
 def create_city_location(trans):
     return ExampleCreator.create(trans, 'CityLocation')
 
+
 def create_parameter_data(trans):
     return ExampleCreator.create(trans, 'ParameterData')
+
 
 def create_company(trans):
     return ExampleCreator.create(trans, 'ICompany')
 
+
 def create_till(trans):
     return ExampleCreator.create(trans, 'Till')
+
 
 def create_user_profile(trans):
     return ExampleCreator.create(trans, 'UserProfile')
 
+
 def get_station(trans):
     return ExampleCreator.create(trans, 'BranchStation')
+
 
 def get_location(trans):
     return ExampleCreator.create(trans, 'CityLocation')
 
+
 def create_production_order(trans):
     return ExampleCreator.create(trans, 'ProductionOrder')
+
 
 def create_production_item(trans):
     return ExampleCreator.create(trans, 'ProductionItem')
 
+
 def create_production_material(trans):
     return ExampleCreator.create(trans, 'ProductionMaterial')
+
 
 def create_production_service(trans):
     return ExampleCreator.create(trans, 'ProductionService')
 
+
 def create_loan(trans):
     return ExampleCreator.create(trans, 'Loan')
+
 
 def create_loan_item(trans):
     return ExampleCreator.create(trans, 'LoanItem')
 
+
 def create_call(trans):
     return ExampleCreator.create(trans, 'Calls')
+
 
 def create_client_category(trans):
     return ExampleCreator.create(trans, 'ClientCategory')
 
+
 def create_client_category_price(trans):
     return ExampleCreator.create(trans, 'ClientCategoryPrice')
+
 
 def create_bank(trans):
     return ExampleCreator.create(trans, 'Bank')
 
+
 def create_bank_account(trans):
     return ExampleCreator.create(trans, 'BankAccount')
+
 
 def create_quote_group(trans):
     return ExampleCreator.create(trans, 'QuoteGroup')

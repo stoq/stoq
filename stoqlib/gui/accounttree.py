@@ -58,6 +58,7 @@ def sort_models(a, b):
     return cmp(a.lower(),
                b.lower())
 
+
 class AccountTree(ObjectTree):
     def __init__(self, with_code=True, create_mode=False):
         self.create_mode = create_mode

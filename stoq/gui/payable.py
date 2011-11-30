@@ -60,6 +60,7 @@ from stoqlib.gui.slaves.installmentslave import PurchaseInstallmentConfirmationS
 
 _ = gettext.gettext
 
+
 class PayableApp(SearchableAppWindow):
 
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])

@@ -54,6 +54,7 @@ from stoq.lib.options import get_option_parser
 _ = gettext.gettext
 log = Logger('startup')
 
+
 def _check_tables():
     # Check so SystemTable is present
     conn = get_connection()
@@ -62,6 +63,7 @@ def _check_tables():
             _("Database schema error"),
             _("Table 'system_table' does not exist.\n"
               "Consult your database administrator to solve this problem."))
+
 
 def setup_path():
     import platform
@@ -85,6 +87,7 @@ def setup_path():
     for path in paths:
         if path not in os.environ['PATH']:
             os.environ['PATH'] += ';' + path
+
 
 def setup(config=None, options=None, register_station=True, check_schema=True,
           load_plugins=True):
@@ -206,6 +209,7 @@ def clean_database(config, options=None):
         ensure_admin_user(password)
     except Exception:
         collect_traceback(sys.exc_info(), submit=True)
+
 
 def set_default_profile_settings():
     trans = new_transaction()

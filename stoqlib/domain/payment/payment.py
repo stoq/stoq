@@ -384,6 +384,7 @@ class Payment(Domain):
             return self.open_date.date().strftime('%x')
         return ""
 
+
 class PaymentChangeHistory(Domain):
     """ A class to hold information about changes to a payment.
 

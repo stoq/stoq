@@ -28,6 +28,7 @@ import platform
 
 _system = platform.system()
 
+
 def _get_xdg_dir(envname, default):
     default = os.path.expanduser(default)
     filename = os.path.expanduser("~/.config/user-dirs.dirs")
@@ -40,6 +41,7 @@ def _get_xdg_dir(envname, default):
         if line.startswith(envname):
             return os.path.expandvars(line[len(envname) + 2:-2])
     return default
+
 
 def get_application_dir(appname="stoq"):
     """Fetches a application specific directory,
@@ -57,6 +59,7 @@ def get_application_dir(appname="stoq"):
         os.makedirs(appdir)
     return appdir
 
+
 def get_documents_dir():
     """@returns: the documents dir for the current user"""
     if _system == 'Linux':
@@ -70,6 +73,7 @@ def get_documents_dir():
     else:
         raise SystemExit("unknown system: %s" % (_system, ))
 
+
 def get_username():
     """@returns: the current username"""
     if _system == 'Linux':
@@ -78,6 +82,7 @@ def get_username():
         return os.environ['USERNAME']
     else:
         raise SystemExit("unknown system: %s" % (_system, ))
+
 
 def read_registry_key(root, key, value):
     """Reads a registry key and return it's value.

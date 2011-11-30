@@ -32,6 +32,7 @@ from zope.interface.exceptions import Invalid
 from stoqlib.lib.introspection import (get_all_adapters,
                                        get_interfaces_for_package)
 
+
 def _create_adapter_test():
     # Create a dynamic test class which verifies that methods in all adapters
     # are defined in an interface.
@@ -95,6 +96,7 @@ def _create_adapter_test():
         namespace[name] = func
 
     return type('TestAdapters', (unittest.TestCase, ), namespace)
+
 
 def _create_iface_test():
     def _test_class(self, klass):

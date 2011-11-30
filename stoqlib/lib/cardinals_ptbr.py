@@ -23,6 +23,7 @@
 ##
 ##
 
+
 def to_words(num, feminine=False, unit_names=None):
     """Retorna uma string representando o valor inteiro passado, por extenso
     @param num: um inteiro
@@ -48,6 +49,7 @@ def to_words(num, feminine=False, unit_names=None):
     elif unit_names:
         return _do_ints(str(num), feminine) + " " + unit_names[0]
     return _do_ints(str(num), feminine)
+
 
 def to_words_as_money(num, currency_names):
     """
@@ -96,6 +98,7 @@ def to_words_as_money(num, currency_names):
 #
 # Funções que de fato processam os inteiros
 #
+
 
 def _do_ints(ints, feminine=False):
     intlen = len(ints)
@@ -154,6 +157,7 @@ def _do_ints(ints, feminine=False):
             intret = intret + " " + suffix
 
     return intret
+
 
 def _do_int_group(numstr, feminine=False):
     out = []

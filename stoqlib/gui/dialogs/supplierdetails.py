@@ -44,6 +44,7 @@ from stoqlib.lib.defaults import payment_value_colorize
 
 _ = stoqlib_gettext
 
+
 class SupplierDetailsDialog(BaseEditor):
     """This dialog shows some important details about suppliers like:
         - history of purchases

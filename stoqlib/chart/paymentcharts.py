@@ -88,6 +88,7 @@ class YearlyPaymentsChart(Chart):
             data['date'] = year
             yield data
 
+
 class MonthlyPaymentsChart(Chart):
     name = _("Monthly payments")
     description = _("Total revenue, expenses and profit for all months in a year")
@@ -159,6 +160,7 @@ SELECT $date_columns,
         data.append(dict(label=_("Expense"), data=expense))
         data.append(dict(label=_("Profit"), data=profit))
         return data
+
 
 def daily_payments(year, month):
     """

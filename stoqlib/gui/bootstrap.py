@@ -31,11 +31,13 @@ from kiwi.ui.widgets.label import ProxyLabel
 def _register_proxy_markup():
     ProxyLabel.replace('$CURRENCY', get_localeconv()['currency_symbol'])
 
+
 def _register_domain_slave_mapper():
     from stoqlib.gui.interfaces import IDomainSlaveMapper
     from stoqlib.gui.domainslavemapper import DefaultDomainSlaveMapper
     provide_utility(IDomainSlaveMapper, DefaultDomainSlaveMapper(),
                     replace=True)
+
 
 def bootstrap():
     """Run the UI bootstrap for Stoqlib,

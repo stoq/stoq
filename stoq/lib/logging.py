@@ -27,6 +27,7 @@
 import os
 import time
 
+
 def setup_logging(appname):
     from stoqlib.lib.osutils import get_application_dir
     stoqdir = get_application_dir(appname)

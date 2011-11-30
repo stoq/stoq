@@ -34,6 +34,7 @@ from ecfdomain import FiscalSaleHistory
 
 _ = stoqlib_gettext
 
+
 class PaulistaInvoiceDialog(BaseEditor):
     """"""
     title = _(u"Paulista Invoice")

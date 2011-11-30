@@ -107,6 +107,7 @@ class ProductPriceReport(PriceReport):
                                  _("products from branch %s") % branch_name)
         PriceReport.__init__(self, filename, products, *args, **kwargs)
 
+
 class ProductQuantityReport(ObjectListReport):
     """ This report show a list of all products returned by a SearchBar,
     listing both its description, quantity solded and quantity received.

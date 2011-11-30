@@ -28,6 +28,7 @@ from stoqlib.domain.interfaces import IIndividual, IClient
 from stoqlib.domain.person import Person
 from stoqlib.importers.csvimporter import CSVImporter
 
+
 class ClientImporter(CSVImporter):
     fields = ['name',
               'phone_number',

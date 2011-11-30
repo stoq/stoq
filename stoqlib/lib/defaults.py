@@ -73,6 +73,7 @@ NL_TIME_FIRST_WEEKDAY = 131176
 
 _libc = None
 
+
 def get_libc():
     """Returns an accessor to C library.
 
@@ -152,6 +153,7 @@ ALL_BRANCHES = _('All branches'), ALL_ITEMS_INDEX
 # Common methods
 #
 
+
 def get_country_states():
     # This is Brazil-specific information.
     return ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
@@ -168,6 +170,7 @@ def _split_parts(a):
             pass
     return parts
 
+
 def sort_sellable_code(a, b):
     return cmp(_split_parts(a), _split_parts(b))
 
@@ -179,6 +182,7 @@ def sort_sellable_code(a, b):
 DECIMAL_PRECISION = 2
 QUANTITY_PRECISION = 3
 _format = Decimal('10e-%d' % DECIMAL_PRECISION)
+
 
 def quantize(dec):
     """Quantities a decimal according to the current settings.

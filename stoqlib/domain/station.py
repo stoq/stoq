@@ -34,6 +34,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class BranchStation(Domain):
     """Defines a computer which access Stoqlib database and lives in a
     certain branch company

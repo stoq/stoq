@@ -27,6 +27,7 @@ import unittest
 
 from stoqlib.database.runtime import finish_transaction, rollback_and_begin
 
+
 class FakeTransaction:
     def __init__(self):
         self.committed = False
@@ -42,8 +43,10 @@ class FakeTransaction:
     def begin(self):
         self.begun = True
 
+
 class Model:
     pass
+
 
 class DatabaseTest(unittest.TestCase):
     def testFinishTransaction(self):

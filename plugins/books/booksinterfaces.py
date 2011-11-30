@@ -32,6 +32,7 @@ from stoqlib.domain.interfaces import IPersonFacet
 # Interfaces
 #
 
+
 class IPublisher(IPersonFacet):
     """An institution created to publish books"""
 

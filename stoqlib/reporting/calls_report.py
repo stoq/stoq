@@ -31,6 +31,7 @@ from stoqlib.reporting.template import ObjectListReport
 
 _ = stoqlib_gettext
 
+
 class CallsReport(ObjectListReport):
     """Realized calls to client report"""
     report_name = _("Calls Report")

@@ -41,6 +41,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class LoginInfo:
     """ This class is used by password editor only for validation of the
         fields.
@@ -48,6 +49,7 @@ class LoginInfo:
     current_password = None
     new_password = None
     confirm_password = None
+
 
 class UserStatusSlave(BaseEditorSlave):
     gladefile = 'UserStatusSlave'
@@ -191,6 +193,7 @@ class PasswordEditor(BaseEditor):
         self.password_slave.on_confirm()
         self.user.password = self.model.new_password
         return self.user
+
 
 class UserDetailsSlave(BaseEditorSlave):
     gladefile = 'UserDetailsSlave'

@@ -30,6 +30,7 @@ from stoqlib.domain.person import PersonAdaptToBranch
 
 PersonAdaptToBranch # pyflakes
 
+
 class BranchSynchronization(ORMObject):
     """Created once per branch. Contains a string which is a reference to a policy
     defined in stoqlib.database.policy and a timestamp which is updated each

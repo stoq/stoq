@@ -36,6 +36,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class Bank(Domain):
     """A definition of a bank. A bank can have many branches associated with
     it.

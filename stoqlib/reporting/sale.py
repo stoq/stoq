@@ -46,6 +46,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class SaleOrderReport(BaseStoqReport):
     report_name = _("Sale Order")
 

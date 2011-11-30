@@ -34,6 +34,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 class _Base(DomainTest):
     pass
 
+
 def _create_domain_test():
     tables = get_table_types()
     tables_dict = {}

@@ -357,6 +357,7 @@ class LonelyPaymentDetailsDialog(BaseEditor):
         if IOutPayment(model, None):
             return _('Payment Details')
 
+
 def get_dialog_for_payment(payment):
     if IInPayment(payment, None):
         return InPaymentEditor

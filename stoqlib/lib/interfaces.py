@@ -30,6 +30,7 @@ from zope.interface.interface import Interface, Attribute
 class CookieError(Exception):
     pass
 
+
 class ICookieFile(Interface):
     def get():
         """Fetch the cookie or raise CookieError if a problem occurred
@@ -48,6 +49,7 @@ class ICookieFile(Interface):
     def clear():
         """Resets the cookie
         """
+
 
 class IApplicationDescriptions(Interface):
     """Get a list of application names, useful for launcher programs
@@ -70,6 +72,7 @@ class IApplicationDescriptions(Interface):
         @returns: a list of tuples with Stoq application informations.
         """
 
+
 class IXMLRPCService(Interface):
     def __init__(hostname, port):
         """
@@ -89,6 +92,7 @@ class IXMLRPCService(Interface):
         """Stops the service, eg break out of serve
         """
 
+
 class ISystemNotifier(Interface):
 
     def info(short, description):
@@ -103,6 +107,7 @@ class ISystemNotifier(Interface):
 
     def yesno(text, default, *verbs):
         pass
+
 
 class IPluginManager(Interface):
     """
@@ -208,6 +213,7 @@ class IPaymentOperationManager(Interface):
         @returns: the operation
         @rtype operation: an object implementing L{IPaymentOperation}
         """
+
 
 class IStoqConfig(Interface):
     pass

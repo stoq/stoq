@@ -39,6 +39,7 @@ from stoqlib.exceptions import (FilePermissionError,
 _ = gettext.gettext
 _config = None
 
+
 class StoqConfig:
     domain = 'stoq'
 

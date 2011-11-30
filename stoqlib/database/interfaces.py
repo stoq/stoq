@@ -28,6 +28,7 @@
 from zope.interface import Attribute
 from zope.interface.interface import Interface
 
+
 class IDatabaseSettings(Interface):
     """This is an interface to describe all important database settings
     """
@@ -43,12 +44,14 @@ class IDatabaseSettings(Interface):
         @returns: a ORM connection URI.
         """
 
+
 class IConnection(Interface):
     """This is an interface that describes a database connection
     """
 
     def close():
         """Drops the connection to the database"""
+
 
 class ITransaction(IConnection):
     """This is an interface that describes a database transaction.
@@ -100,16 +103,19 @@ class ITransaction(IConnection):
         @param name: name of the savepoint
         """
 
+
 class ICurrentBranch(Interface):
     """This is a mainly a marker for the current branch which is expected
     to implement L{stoqlib.domain.interfaces.IBranch}
     It's mainly used by get_current_branch()
     """
 
+
 class ICurrentBranchStation(Interface):
     """This is a mainly a marker for the current branch station.
     It's mainly used by get_current_station()
     """
+
 
 class ICurrentUser(Interface):
     """This is a mainly a marker for the current user.

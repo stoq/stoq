@@ -43,6 +43,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class FiscalBookEntryType(enum):
     (ICMS,
      IPI,

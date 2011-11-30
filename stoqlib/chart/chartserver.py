@@ -38,6 +38,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class RootResource(Resource):
 
     def render_GET(self, request):

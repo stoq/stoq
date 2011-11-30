@@ -35,6 +35,7 @@ _ = stoqlib_gettext
 #  Editors
 #
 
+
 class SellableUnitEditor(BaseEditor):
     """An editor for L{stoqlib.domain.sellable.SellableUnit}"""
 

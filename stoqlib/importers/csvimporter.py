@@ -34,6 +34,7 @@ import time
 from stoqlib.database.runtime import new_transaction
 from stoqlib.importers.importer import Importer
 
+
 class CSVRow(object):
     """A row in a CSV file
     """
@@ -47,6 +48,7 @@ class CSVRow(object):
     def __repr__(self):
         return '<CSV line %s>' % ', '.join(
             ['%s=%r' % (f, getattr(self, f)) for f in self.fields])
+
 
 class CSVImporter(Importer):
     """Class to assist the process of importing csv files.

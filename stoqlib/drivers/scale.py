@@ -37,6 +37,7 @@ _scale = None
 # Private
 #
 
+
 def _get_scale(conn):
     """ Returns a Scale instance pre-configured for the current
     workstation.
@@ -55,6 +56,7 @@ def _get_scale(conn):
                 "(\"%s\") or the scale is not enabled currently"
                  % get_current_station(conn).name))
     return _scale
+
 
 def read_scale_info(conn):
     """ Read informations from the scale configured for this station.

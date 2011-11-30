@@ -37,15 +37,19 @@ def format_quantity(quantity):
         return '%.0f' % quantity
     return '%.*f' % (QUANTITY_PRECISION, quantity)
 
+
 def get_formatted_percentage(value):
     return "%.*f %%" % (DECIMAL_PRECISION, value)
+
 
 def get_price_format_str():
     return '%%.%sf' % DECIMAL_PRECISION
 
+
 def get_formatted_price(float_value, symbol=True, precision=DECIMAL_PRECISION):
     return format_price(float_value, symbol=symbol,
                         precision=precision)
+
 
 def get_formatted_cost(float_value, symbol=True):
     from stoqlib.lib.parameters import sysparam
@@ -72,8 +76,10 @@ def _format_phone_number(digits, phone):
         return '(%s) %s-%s' % (phone[:2], phone[2:6], phone[6:10])
     return phone
 
+
 def raw_phone_number(phone_number):
     return re.sub('[^0-9]', '', phone_number)
+
 
 def format_phone_number(phone_number):
     from stoqlib.lib.validators import validate_phone_number
@@ -86,8 +92,10 @@ def format_phone_number(phone_number):
 #  Adress formatters
 #
 
+
 def raw_postal_code(postal_code):
     return re.sub("[^0-9]", '', postal_code)
+
 
 def format_postal_code(postal_code):
     from stoqlib.lib.validators import validate_postal_code

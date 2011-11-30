@@ -38,6 +38,7 @@ from stoqlib.domain.base import ModelAdapter, ORMObjectAdapter
 
 from stoqlib.lib.component import Adapter
 
+
 def get_all_classes(package):
     """
     Gets a generator with classes.
@@ -64,6 +65,7 @@ def get_all_classes(package):
             for unused, klass in inspect.getmembers(module, inspect.isclass):
                 yield klass
 
+
 def get_interfaces_for_package(package):
     """
     Gets a generator with classes which implements at least one interface.
@@ -77,6 +79,7 @@ def get_interfaces_for_package(package):
         if issubclass(klass, InterfaceClass):
             continue
         yield klass
+
 
 def get_all_adapters():
     """

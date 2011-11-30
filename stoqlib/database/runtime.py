@@ -44,6 +44,7 @@ log = Logger('stoqlib.runtime')
 # Working with connections and transactions
 #
 
+
 class StoqlibTransaction(Transaction):
     """
     @ivar retval: The return value of a operation this transaction
@@ -227,6 +228,7 @@ def get_connection():
         provide_utility(IConnection, conn)
     return conn
 
+
 def new_transaction():
     """
     Create a new transaction.
@@ -238,6 +240,7 @@ def new_transaction():
     assert _transaction is not None
     return _transaction
 
+
 def rollback_and_begin(trans):
     """
     Abort changes in models and begins the transaction.
@@ -245,6 +248,7 @@ def rollback_and_begin(trans):
     """
     trans.rollback()
     trans.begin()
+
 
 def finish_transaction(trans, commit):
     """Encapsulated method for committing/aborting changes in models.
@@ -319,6 +323,7 @@ def _register_branch(conn, station_name):
 
     return BranchStation.get(station_id, connection=conn)
 
+
 def set_current_branch_station(conn, station_name):
     """Registers the current station and the branch of the station
     as the current branch for the system
@@ -341,6 +346,7 @@ def set_current_branch_station(conn, station_name):
     if station.branch:
         provide_utility(ICurrentBranch, station.branch)
 
+
 def get_current_user(conn):
     """Fetch the user which is currently logged into the system or None
     None means that there are no utilities available which in turn
@@ -355,6 +361,7 @@ def get_current_user(conn):
     if user is not None:
         return user.get(user.id, connection=conn)
 
+
 def get_current_branch(conn):
     """Fetches the current branch company.
 
@@ -365,6 +372,7 @@ def get_current_branch(conn):
     branch = get_utility(ICurrentBranch, None)
     if branch is not None:
         return branch.get(branch.id, connection=conn)
+
 
 def get_current_station(conn):
     """Fetches the current station (computer) which we are running on

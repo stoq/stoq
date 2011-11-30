@@ -38,6 +38,7 @@ from booksinterfaces import IPublisher, IBook
 # Publisher person facet implementation
 #
 
+
 class PersonAdaptToPublisher(PersonAdapter):
     implements(IPublisher)
 

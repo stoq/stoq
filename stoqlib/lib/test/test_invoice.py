@@ -53,6 +53,7 @@ def compare_invoice_file(invoice, basename):
     if retval:
         raise AssertionError("Files differ, check output above")
 
+
 class InvoiceTest(DomainTest):
     def _add_payments(self, sale):
         method = PaymentMethod.get_by_name(self.trans, 'money')

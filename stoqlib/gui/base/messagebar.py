@@ -27,6 +27,7 @@ import gtk
 
 from stoqlib.gui.base.infobar import InfoBar
 
+
 class MessageBar(InfoBar):
     def __init__(self, message, message_type=gtk.MESSAGE_INFO):
         label = gtk.Label(message)

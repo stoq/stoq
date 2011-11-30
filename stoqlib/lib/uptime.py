@@ -28,9 +28,11 @@ import time
 
 _start_time = None
 
+
 def set_initial():
     global _start_time
     _start_time = time.time()
+
 
 def get_uptime():
     """Get the uptime of the application

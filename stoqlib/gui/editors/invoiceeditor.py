@@ -213,6 +213,7 @@ class InvoiceLayoutEditor(BaseEditor):
             for line in page:
                 print repr(line.tostring())
 
+
 class InvoiceLayoutDialog(ModelListDialog):
 
     # ModelListDialog

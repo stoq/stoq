@@ -51,6 +51,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class _SearchDialogDetailsSlave(GladeSlaveDelegate):
     """ Slave for internal use of SearchEditor, offering an eventbox for a
     toolbar and managing the 'New' and 'Edit' buttons. """
@@ -754,6 +755,7 @@ class SearchEditor(SearchDialog):
 #
 # Date search options
 #
+
 
 class ThisWeek(DateSearchOption):
     name = _('This week')

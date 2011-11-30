@@ -42,6 +42,7 @@ from stoqlib.reporting.calls_report import CallsReport
 
 _ = stoqlib_gettext
 
+
 class CallsSearch(SearchEditor):
     title = _("Sold Items to Client")
     search_table = CallsView

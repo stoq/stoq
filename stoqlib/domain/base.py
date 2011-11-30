@@ -39,6 +39,7 @@ DATABASE_ENCODING = 'UTF-8'
 # Persistent ORMObject adapters
 #
 
+
 class ORMObjectAdapter(Adapter):
     def __init__(self, adaptable, kwargs):
         Adapter.__init__(self, adaptable)
@@ -222,6 +223,7 @@ class AbstractModel(object):
 
     def get_connection(self):
         return self._connection
+
 
 class _BaseDomain(AbstractModel, ORMObject):
     """An abstract mixin class for domain classes"""

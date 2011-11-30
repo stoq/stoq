@@ -31,6 +31,7 @@ from kiwi.component import get_utility, provide_utility
 from stoqlib.lib.interfaces import ISystemNotifier
 from stoqlib.lib.uptime import get_uptime
 
+
 class DefaultSystemNotifier:
     implements(ISystemNotifier)
 
@@ -59,18 +60,22 @@ def info(short, description=None):
     sn = get_utility(ISystemNotifier)
     sn.info(short, description)
 
+
 def warning(short, description=None, *args, **kwargs):
     sn = get_utility(ISystemNotifier)
     return sn.warning(short, description, *args, **kwargs)
+
 
 def error(short, description=None):
     sn = get_utility(ISystemNotifier)
     sn.error(short, description)
     sys.exit(1)
 
+
 def yesno(text, default=-1, *verbs):
     sn = get_utility(ISystemNotifier)
     return sn.yesno(text, default, *verbs)
+
 
 def marker(msg):
     if os.environ.get('STOQ_DEBUG'):

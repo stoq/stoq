@@ -193,6 +193,7 @@ def start_shell(command=None, quiet=False):
     else:
         raise NotImplementedError(settings.rdbms)
 
+
 def test_local_database():
     """Check and see if we postgres running locally"""
     if _system == 'Windows':
@@ -218,6 +219,7 @@ def test_local_database():
             if os.path.exists(fname):
                 return True
         return False
+
 
 def test_connection():
     """Test database connectivity for using command line tools
@@ -349,6 +351,7 @@ def query_server_time(conn):
         return conn.queryAll("SELECT NOW();")[0][0]
     else:
         raise NotImplementedError
+
 
 def check_version(conn):
     settings = get_utility(IDatabaseSettings)

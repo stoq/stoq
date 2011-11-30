@@ -2,8 +2,10 @@ import unittest
 
 from stoqlib.lib.event import Event
 
+
 class ReturnStatus:
     pass
+
 
 class EventTest(unittest.TestCase):
 

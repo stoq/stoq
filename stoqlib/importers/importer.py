@@ -157,6 +157,7 @@ class Importer(object):
         before committing.
         """
 
+
 def get_by_type(importer_type):
     """Gets an importers class, instantiates it returns it
     @param importer_type: an importer

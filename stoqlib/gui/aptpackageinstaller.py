@@ -36,6 +36,7 @@ try:
 except ImportError:
     has_apt = False
 
+
 class AptPackageInstaller(gobject.GObject):
     gsignal('done', object)
     gsignal('auth-failed')

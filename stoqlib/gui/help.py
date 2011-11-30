@@ -27,8 +27,10 @@ import gtk
 
 from stoqlib.gui.base.dialogs import get_current_toplevel
 
+
 def show_contents(screen=None):
     show_section('', screen=screen)
+
 
 def show_section(section, screen=None):
     if section == '':

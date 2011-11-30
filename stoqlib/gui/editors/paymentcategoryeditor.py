@@ -32,6 +32,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class PaymentCategoryEditor(BaseEditor):
     model_name = _('Payment Category')
     model_type = PaymentCategory

@@ -105,6 +105,7 @@ LOGO_HEIGHT = 32
 (TRUST_AUTHENTICATION,
  PASSWORD_AUTHENTICATION) = range(2)
 
+
 class BaseWizardStep(WizardStep, GladeSlaveDelegate):
     """A wizard step base class definition"""
     gladefile = None
@@ -620,6 +621,7 @@ class InstallPostgresStep(BaseWizardStep):
         self.label.set_markup(
             _("Authorization failed, try again or connect to "
               "another database"))
+
 
 class CreateDatabaseStep(BaseWizardStep):
     gladefile = 'CreateDatabaseStep'

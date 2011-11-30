@@ -41,6 +41,7 @@ HEIGHT = 260
 BORDER = 8 # This includes shadow out border from GtkFrame
 _ = stoqlib_gettext
 
+
 class SplashScreen(gtk.Window):
 
     def __init__(self):
@@ -101,10 +102,12 @@ class SplashScreen(gtk.Window):
 
 _splash = None
 
+
 def show_splash():
     global _splash
     _splash = SplashScreen()
     _splash.show()
+
 
 def hide_splash():
     global _splash

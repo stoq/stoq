@@ -28,6 +28,7 @@
 ##
 ##
 
+
 def to_words(num, unit_names=None):
     """
     Returns the integer as a cardinal number
@@ -48,6 +49,7 @@ def to_words(num, unit_names=None):
     elif unit_names:
         return cardinal(num) + " " + unit_names[0]
     return cardinal(num)
+
 
 def to_words_as_money(num, currency_names):
     """Returns a amount as a cardinal number
@@ -165,6 +167,7 @@ MAX_POWER = 63
 # the main function
 #
 
+
 def cardinal(n):
     """Returns the cardinal number of input n
     """
@@ -179,6 +182,7 @@ def cardinal(n):
 #
 # aux: the work horse
 #
+
 
 def aux(n, power=0):
     out = ""
@@ -201,6 +205,7 @@ def aux(n, power=0):
 #
 # p_100s: handles 3-digit chunks
 #
+
 
 def p_100s(n):
     "print a cardinal description of a number < 1000"

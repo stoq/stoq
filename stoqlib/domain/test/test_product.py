@@ -454,6 +454,7 @@ class TestProductSellableItem(DomainTest):
         sale_item.sell(branch)
         assert not storable.get_stock_item(branch).quantity
 
+
 class TestProductHistory(DomainTest):
 
     def testAddReceivedQuantity(self):
@@ -510,6 +511,7 @@ class TestProductHistory(DomainTest):
 
 from stoqlib.domain.product import ProductQualityTest
 from decimal import Decimal
+
 
 class TestProductQuality(DomainTest):
 

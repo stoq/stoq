@@ -281,6 +281,7 @@ class TestPerson(DomainTest):
         self.assertEquals(person.get_formatted_fax_number(),
                           fax)
 
+
 class _PersonFacetTest(object):
     facet = None
 
@@ -305,6 +306,7 @@ class _PersonFacetTest(object):
     def testGetDescription(self):
         facet = self._create_person_facet()
         self.failUnless(facet.get_description(), facet.person.name)
+
 
 class TestIndividual(_PersonFacetTest, DomainTest):
     facet = Person.getAdapterClass(IIndividual)
@@ -453,6 +455,7 @@ class TestEmployee(_PersonFacetTest, DomainTest):
         #history2.is_active = False
         #assert employee.get_role_history()
 
+
 class TestUser(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToUser
 
@@ -463,6 +466,7 @@ class TestUser(_PersonFacetTest, DomainTest):
         user.is_active = False
         string = user.get_status_string()
         self.assertEquals(string, _(u'Inactive'))
+
 
 class TestBranch(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToBranch
@@ -488,6 +492,7 @@ class TestBranch(_PersonFacetTest, DomainTest):
 class TestBankBranch(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToBankBranch
 
+
 class TestCreditProvider(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToCreditProvider
 
@@ -496,6 +501,7 @@ class TestCreditProvider(_PersonFacetTest, DomainTest):
         facet = self._create_person_facet()
         self.assertEqual(facet.get_card_providers(self.trans).count(),
                          count + 1)
+
 
 class SalesPersonTest(_PersonFacetTest, DomainTest):
 
@@ -511,6 +517,7 @@ class SalesPersonTest(_PersonFacetTest, DomainTest):
         salesperson = self.create_sales_person()
         string = salesperson.get_status_string()
         self.assertEquals(string, _(u'Active'))
+
 
 class TransporterTest(_PersonFacetTest, DomainTest):
 

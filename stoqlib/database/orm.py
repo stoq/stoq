@@ -54,11 +54,13 @@ from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
 
 # Currency
 
+
 def _CurrencyConverter(value, db):
     return str(Decimal(value))
 registerConverter(currency, _CurrencyConverter)
 
 # Decimal
+
 
 class AbstractDecimalCol(SODecimalCol):
     def __init__(self, **kw):
@@ -73,11 +75,14 @@ class AbstractQuantityCol(SODecimalCol):
         kw['precision'] = QUANTITY_PRECISION
         SODecimalCol.__init__(self, **kw)
 
+
 class DecimalCol(Col):
     baseClass = AbstractDecimalCol
 
+
 class QuantityCol(DecimalCol):
     baseClass = AbstractQuantityCol
+
 
 class PercentCol(DecimalCol):
     baseClass = AbstractDecimalCol
@@ -102,6 +107,7 @@ class SOPriceCol(AbstractDecimalCol):
     def createValidators(self):
         return [_PriceValidator()] + super(SOPriceCol, self).createValidators()
 
+
 class PriceCol(DecimalCol):
     baseClass = SOPriceCol
 
@@ -117,9 +123,11 @@ def orm_enable_debugging():
     conn = get_connection()
     conn.debug = True
 
+
 def orm_startup():
     from stoqlib.database.runtime import get_connection
     sqlhub.threadConnection = get_connection()
+
 
 def orm_get_columns(table):
     columns = table.sqlmeta.columnList[:]
@@ -130,6 +138,7 @@ def orm_get_columns(table):
         parent = parent.sqlmeta.parentClass
 
     return [(c, c.origName) for c in columns]
+
 
 def orm_get_random(column):
     if column is SOForeignKey:
@@ -155,6 +164,7 @@ def orm_get_random(column):
         raise ValueError
 
     return value
+
 
 def orm_get_unittest_value(klass, test, tables_dict, name, column):
     if column.default is not NoDefault:
@@ -194,6 +204,8 @@ BoolCol = BoolCol
 # FIXME: There are a lot of callsites in stoq that set datetime columns as
 # only date and later use those as datetime. Untill we fix all those
 # callsites, disable cache for datetime columns
+
+
 class DateTimeCol(_DateTimeCol):
     def __init__(self, *args, **kwargs):
         kwargs['noCache'] = True
@@ -204,6 +216,7 @@ IntCol = IntCol
 SingleJoin = SingleJoin
 StringCol = StringCol
 UnicodeCol = UnicodeCol
+
 
 class MySOMultipleJoin(SOMultipleJoin):
     def performJoin(self, inst):
@@ -243,6 +256,7 @@ const = const
 OR = OR
 sqlIdentifier = sqlIdentifier
 DESC = DESC
+
 
 class ILIKE(LIKE):
     op = 'ILIKE'

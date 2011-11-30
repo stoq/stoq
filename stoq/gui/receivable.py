@@ -64,6 +64,7 @@ from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
 
+
 class ReceivableApp(SearchableAppWindow):
 
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])

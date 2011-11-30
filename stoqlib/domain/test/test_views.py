@@ -26,6 +26,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.database.runtime import get_current_branch
 
+
 class TestSellableFullStockView(DomainTest):
     def testSelectByBranch(self):
         branch = get_current_branch(self.trans)

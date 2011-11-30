@@ -24,6 +24,7 @@
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
 
+
 class NoteEditor(BaseEditor):
     """ Simple editor that offers a label and a textview. """
     gladefile = "NoteSlave"

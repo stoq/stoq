@@ -46,6 +46,7 @@ _ = stoqlib_gettext
 
 log = Logger('stoqlib.db.settings')
 
+
 class DatabaseSettings(object):
     """DatabaseSettings contains all the information required to connect to
     a database, such as hostname, username and password.

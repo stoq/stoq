@@ -41,6 +41,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class SystemParameterEditor(BaseEditor):
     gladefile = "SystemParameterEditor"
     proxy_widgets = ("parameter_name",

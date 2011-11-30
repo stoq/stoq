@@ -346,6 +346,7 @@ class ReceivingInvoiceStep(WizardEditorStep):
 # Main wizard
 #
 
+
 class ReceivingOrderWizard(BaseWizard):
     title = _("Receiving Order")
     size = (750, 350)

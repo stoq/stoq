@@ -27,6 +27,7 @@ import difflib
 import os
 import re
 
+
 def _diff(orig, new, short, verbose):
     lines = difflib.unified_diff(orig, new)
     if not lines:
@@ -46,6 +47,7 @@ def _diff(orig, new, short, verbose):
 
     return diff
 
+
 def diff_files(orig, new, verbose=False):
     """Diff two files.
 
@@ -56,6 +58,7 @@ def diff_files(orig, new, verbose=False):
                  open(new).readlines(),
                  short=os.path.basename(orig),
                  verbose=verbose)
+
 
 def diff_strings(orig, new, verbose=False):
     """Diff two strings.
@@ -70,6 +73,7 @@ def diff_strings(orig, new, verbose=False):
                  _tolines(new),
                  short='<input>',
                  verbose=verbose)
+
 
 def diff_pdf_htmls(original_filename, filename):
     # REPLACE all generated dates with %%DATE%%

@@ -29,6 +29,7 @@ from stoqlib.enums import SyncPolicy
 from stoqlib.database.policy import (get_policy_by_name,
                                      SynchronizationPolicy)
 
+
 class TestStation(unittest.TestCase):
 
     def test_getPolicyByName(self):

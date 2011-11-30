@@ -35,6 +35,7 @@ from stoqlib.domain.sellable import (BaseSellableInfo,
 from stoqlib.importers.csvimporter import CSVImporter
 from stoqlib.lib.parameters import sysparam
 
+
 class ProductImporter(CSVImporter):
     fields = ['base_category',
               'barcode',

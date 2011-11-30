@@ -30,8 +30,10 @@ from stoqlib.domain.base import Domain, ModelAdapter
 
 from stoqlib.domain.test.domaintest import DomainTest
 
+
 class IDong(Interface):
     pass
+
 
 class Ding(Domain):
     field = IntCol(default=0)
@@ -43,6 +45,7 @@ class Ding(Domain):
         self.called = True
         adapter_klass = self.getAdapterClass(IDong)
         return adapter_klass(self, **kwargs)
+
 
 class DingAdaptToDong(ModelAdapter):
     implements(IDong)
@@ -57,6 +60,7 @@ for table in (Ding, DingAdaptToDong):
         trans.dropTable(table_name, cascade=True)
     table.createTable(connection=trans)
 trans.commit()
+
 
 class TestFacet(DomainTest):
     def testAdd(self):
@@ -92,6 +96,7 @@ class TestFacet(DomainTest):
 
         self.failUnless(len(Ding.getFacetTypes()), 2)
         self.failUnless(DingAdaptToDang in Ding.getFacetTypes())
+
 
 class TestSelect(DomainTest):
     def testSelectOne(self):

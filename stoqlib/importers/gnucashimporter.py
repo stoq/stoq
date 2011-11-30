@@ -45,17 +45,22 @@ TRN_NS = "http://www.gnucash.org/XML/trn"
 TS_NS = "http://www.gnucash.org/XML/ts"
 SPLIT_NS = "http://www.gnucash.org/XML/split"
 
+
 def _gncns(tag):
     return '{%s}%s' % (GNC_NS, tag)
+
 
 def _actns(tag):
     return '{%s}%s' % (ACT_NS, tag)
 
+
 def _trnns(tag):
     return '{%s}%s' % (TRN_NS, tag)
 
+
 def _tsns(tag):
     return '{%s}%s' % (TS_NS, tag)
+
 
 def _splitns(tag):
     return '{%s}%s' % (SPLIT_NS, tag)
@@ -70,6 +75,7 @@ _account_types = {
     'EQUITY': Account.TYPE_EQUITY,
     'ASSET': Account.TYPE_ASSET,
 }
+
 
 class GnuCashXMLImporter(Importer):
     """Class to assist the process of importing gnucash files.

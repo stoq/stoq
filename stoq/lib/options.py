@@ -27,6 +27,7 @@
 
 import optparse
 
+
 def get_option_parser():
     """
     Get the option parser used to parse arguments on the command line

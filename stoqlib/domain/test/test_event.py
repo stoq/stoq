@@ -25,6 +25,7 @@
 from stoqlib.domain.event import Event
 from stoqlib.domain.test.domaintest import DomainTest
 
+
 class TestEvent(DomainTest):
 
     def testSystemEvent(self):

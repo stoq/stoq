@@ -51,6 +51,8 @@ from stoqlib.lib.payment import PaymentOperationManager
 log = Logger('stoqlib.database.testsuite')
 
 # Provide a fake description utility, the ProfileSettings class depends on it
+
+
 class FakeApplicationDescriptions:
     def get_application_names(self):
         return []
@@ -62,10 +64,13 @@ class FakeApplicationDescriptions:
 # refuses to quit if SystemExit is raised or if sys.exit() is called.
 # For now it is assumed that errors() are fatal, that might change in
 # the near future
+
+
 class TestsuiteNotifier(DefaultSystemNotifier):
     def error(self, short, description):
         DefaultSystemNotifier.error(self, short, description)
         os._exit(1)
+
 
 def _provide_database_settings():
     username = os.environ.get('STOQLIB_TEST_USERNAME',
@@ -83,10 +88,12 @@ def _provide_database_settings():
                                    password=password)
     provide_utility(IDatabaseSettings, db_settings)
 
+
 def _provide_current_user():
     user = Person.iselectOneBy(IUser, username='admin',
                                connection=get_connection())
     provide_utility(ICurrentUser, user, replace=True)
+
 
 def _provide_current_station(station_name=None, branch_name=None):
     if not station_name:
@@ -116,6 +123,7 @@ def _provide_current_station(station_name=None, branch_name=None):
     provide_utility(ICurrentBranchStation, station)
     trans.commit(close=True)
 
+
 def _provide_app_info():
     from kiwi.component import provide_utility
     from stoqlib.lib.interfaces import IAppInfo
@@ -126,6 +134,7 @@ def _provide_app_info():
     provide_utility(IAppInfo, info)
 
 # Public API
+
 
 def provide_database_settings(dbname=None, address=None, port=None, username=None,
                               password=None, create=True):
@@ -173,11 +182,13 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
 
     return rv
 
+
 def _provide_payment_operation_manager():
     from stoqlib.domain.payment.operation import register_payment_operations
 
     provide_utility(IPaymentOperationManager, PaymentOperationManager())
     register_payment_operations()
+
 
 def provide_utilities(station_name, branch_name=None):
     """
@@ -188,6 +199,7 @@ def provide_utilities(station_name, branch_name=None):
     _provide_current_user()
     _provide_current_station(station_name, branch_name)
     _provide_payment_operation_manager()
+
 
 def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
                         password="", station_name=None, quick=False):

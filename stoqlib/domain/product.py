@@ -124,6 +124,7 @@ class ProductSupplierInfo(Domain):
 
         return "%d %s" % (lead_time, day_str)
 
+
 class Product(Domain):
     """Class responsible to store basic products informations."""
 

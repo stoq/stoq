@@ -36,8 +36,10 @@ IntegrityError = psycopg2.IntegrityError
 ProgrammingError = psycopg2.ProgrammingError
 OperationalError = psycopg2.OperationalError
 
+
 class ORMTestError(Exception):
     pass
+
 
 class SQLError(Exception):
     pass

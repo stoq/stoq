@@ -26,6 +26,7 @@
 from kiwi.environ import environ
 from mako.lookup import TemplateLookup
 
+
 def render_template(filename, **ns):
     """Renders a template giving a filename and a keyword dictionary
     @filename: a template filename to render

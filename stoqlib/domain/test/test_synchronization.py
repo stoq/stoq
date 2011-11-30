@@ -29,6 +29,7 @@ from stoqlib.domain.synchronization import BranchSynchronization
 
 from stoqlib.domain.test.domaintest import DomainTest
 
+
 class TestBranchSynchronization(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)

@@ -135,6 +135,7 @@ from stoqlib.exceptions import AdapterError
 # Adaptors
 #
 
+
 class Adapter(object):
     """Adapter base class, all adapters must subclass this.
     """
@@ -160,6 +161,7 @@ class Adapter(object):
         @returns: the adapted object
         """
         return self._adaptable
+
 
 class Adaptable(object):
     """Adapter base class, everything you want to adapt must subclass this.
@@ -318,6 +320,8 @@ class Adaptable(object):
 # depends on the state of the object itself [_adapterCache], it's
 # also a cache which can be used by persisted adapters so we don't
 # need to refetch.
+
+
 def _adapter_hook(iface, obj):
     # Twisted's IPathImportMapper occasionally sends in None
     # which breaks isinstance, work-around. Johan 2008-09-29

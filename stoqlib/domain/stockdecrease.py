@@ -43,6 +43,7 @@ _ = stoqlib_gettext
 # Base Domain Classes
 #
 
+
 class StockDecreaseItem(Domain):
     """An item in a stock decrease object.
 

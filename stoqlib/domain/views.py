@@ -45,6 +45,7 @@ from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      SellableTaxConstant)
 from stoqlib.domain.stockdecrease import (StockDecrease, StockDecreaseItem)
 
+
 class ProductFullStockView(Viewable):
     """Stores information about products.
     This view is used to query stock information on a certain branch.
@@ -164,6 +165,7 @@ class ProductFullWithClosedStockView(ProductFullStockView):
     """
 
     clause = None
+
 
 class ProductClosedStockView(ProductFullWithClosedStockView):
     """Stores information about products that were closed.
@@ -852,6 +854,7 @@ class LoanItemView(Viewable):
                    SellableCategory.q.id == Sellable.q.categoryID),
         INNERJOINOn(None, BaseSellableInfo,
                     Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id)]
+
 
 class AccountView(Viewable):
 

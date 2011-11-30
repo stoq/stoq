@@ -36,6 +36,7 @@ from stoqlib.reporting.base.default_style import (DOC_DEFAULTS, SPACING,
                                                  DEFAULT_MARGIN, TABLE_LINE)
 from stoqlib.reporting.base.flowables import Paragraph
 
+
 class BaseReportTemplate(BaseDocTemplate):
     """ Base class representing the document itself. Here is implemented all the
     methods to reporting elements insertion, like signatures, tables, paragraphs

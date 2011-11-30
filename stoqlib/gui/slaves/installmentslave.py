@@ -43,6 +43,7 @@ from stoqlib.domain.sale import Sale, SaleView
 
 _ = stoqlib_gettext
 
+
 class _ConfirmationModel(object):
     def __init__(self, payments):
         self.payments = payments

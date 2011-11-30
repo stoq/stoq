@@ -41,6 +41,7 @@ log = Logger('stoqlib.gui.editors')
 
 _ = stoqlib_gettext
 
+
 class BaseEditorSlave(GladeSlaveDelegate):
     """ Base class for editor slaves inheritance. It offers methods for
     setting up focus sequence, required attributes and validated attrs.
@@ -348,6 +349,7 @@ class BaseEditor(BaseEditorSlave):
     def _validation_function(self, is_valid):
         self.refresh_ok(is_valid)
         self.is_valid = is_valid
+
 
 class BaseRelationshipEditorSlave(GladeSlaveDelegate):
     """An editor for relationships between objects

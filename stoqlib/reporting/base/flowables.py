@@ -50,6 +50,7 @@ ELLIPSIS_STRING = "..."
 # Flowables
 #
 
+
 class PageNumberChanger(ActionFlowable):
     """ A flowable for current page number specification """
 
@@ -63,6 +64,7 @@ class PageNumberChanger(ActionFlowable):
     def apply(self, doc):
         """ Apply the new page number. Internal use by Reportlab. """
         doc.page = self.page_number
+
 
 class ReportLine(Flowable):
     """ Just a simple line flowable """
@@ -118,6 +120,7 @@ class ReportLine(Flowable):
         x2 = x + self.avail_width - self.h_margins
         canvas.line(x1, y, x2, y)
         canvas.restoreState()
+
 
 class Signature(Flowable):
     """ A signature flowable """
@@ -242,6 +245,7 @@ class Signature(Flowable):
                             % self.align)
         self.build_signatures(canvas, x, x1, x2, y, default_x2)
         canvas.restoreState()
+
 
 class Paragraph(RParagraph):
     def __init__(self, text, style=None, ellipsize=True, bulletText=None,

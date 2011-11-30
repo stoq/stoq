@@ -66,6 +66,7 @@ from stoqlib.lib.message import warning
 
 _ = stoqlib_gettext
 
+
 def can_generate_bill():
     config = get_utility(IStoqConfig)
     if config.get('Boleto', 'banco') is None:
@@ -73,6 +74,7 @@ def can_generate_bill():
                    "generate bills. Check the manual to see how."))
         return False
     return True
+
 
 class BillReport(object):
     def __init__(self, filename, payments):

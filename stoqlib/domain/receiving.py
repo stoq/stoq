@@ -425,6 +425,7 @@ class ReceivingOrder(Domain):
     surcharge_percentage = property(_get_surcharge_by_percentage,
                                     _set_surcharge_by_percentage)
 
+
 @argcheck(PurchaseOrder, ReceivingOrder)
 def get_receiving_items_by_purchase_order(purchase_order, receiving_order):
     """Returns a list of receiving items based on a list of purchase items

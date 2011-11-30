@@ -28,6 +28,7 @@ from stoqlib.domain.interfaces import ICompany, ITransporter
 from stoqlib.domain.person import Person
 from stoqlib.importers.csvimporter import CSVImporter
 
+
 class TransporterImporter(CSVImporter):
     fields = ['name',
               'phone_number',

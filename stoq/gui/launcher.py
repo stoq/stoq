@@ -37,6 +37,7 @@ _ = gettext.gettext
  COL_PIXBUF,
  COL_APP) = range(3)
 
+
 class LauncherApp(object):
     def __init__(self, launcher, options):
         self.launcher = launcher
@@ -45,6 +46,7 @@ class LauncherApp(object):
         self.main_window = launcher
         self.options = options
         self.name = 'launcher'
+
 
 class Launcher(AppWindow):
 

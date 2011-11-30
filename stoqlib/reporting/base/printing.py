@@ -34,6 +34,7 @@ from stoqlib.reporting.base.default_style import (HIGHLIGHT_COLOR, SPACING,
 _ = stoqlib_gettext
 SMALL_FONT = ("Vera", 12)
 
+
 class ReportTemplate(BaseReportTemplate):
     """ An extension of BaseReportTemplate with methods to draw the report
     footer and header, just it.  Use this if you like headers and footer,

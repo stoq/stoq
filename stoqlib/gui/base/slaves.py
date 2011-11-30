@@ -28,6 +28,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 
 _ = stoqlib_gettext
 
+
 class NoteSlave(BaseEditorSlave):
     """ Slave store general notes. The model must have an attribute 'notes'
     to work.

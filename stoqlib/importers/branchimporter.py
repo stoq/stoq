@@ -29,6 +29,7 @@ from stoqlib.domain.person import Person
 from stoqlib.importers.csvimporter import CSVImporter
 from stoqlib.lib.parameters import sysparam
 
+
 class BranchImporter(CSVImporter):
     fields = ['name',
               'fancy_name',

@@ -50,6 +50,7 @@ _ = stoqlib_gettext
 # Wizard Steps
 #
 
+
 class RoleEditorStep(BaseWizardStep):
     gladefile = 'HolderTemplate'
 
@@ -240,6 +241,8 @@ class PersonRoleWizard(BaseWizard):
 
 
 argcheck(BasePersonRoleEditor, object, Transaction, object)
+
+
 def run_person_role_dialog(role_editor, parent, conn, model=None,
                            **editor_kwargs):
     if not model:

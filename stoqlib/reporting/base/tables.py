@@ -48,6 +48,7 @@ HIGHLIGHT_EVEN = 2
 HIGHLIGHT_ALWAYS = 3
 HIGHLIGHT_NEVER = 4
 
+
 class Table(RTable):
     """ Extension of Reportlab Table """
     def __init__(self, data, colWidths=None, rowHeights=None, style=None,
@@ -97,6 +98,7 @@ class Table(RTable):
 # Table builders
 #
 
+
 class AbstractTableBuilder:
     """ Abstract class for table creation """
     def __init__(self, data, style=None, extra_row=None):
@@ -136,6 +138,7 @@ class AbstractTableBuilder:
         """ Implement this method on subclass to define your own table styles.
         """
 
+
 class DataTableBuilder(AbstractTableBuilder):
     """ Data table builder """
 
@@ -172,6 +175,7 @@ class DataTableBuilder(AbstractTableBuilder):
                            (col_idx, -1),
                            0.5,
                            SOFT_LINE_COLOR)
+
 
 class ReportTableBuilder(AbstractTableBuilder):
     """ Report table builder """
@@ -230,6 +234,7 @@ class ReportTableBuilder(AbstractTableBuilder):
                     i += 1
                 style.add('BACKGROUND', (0, i), (-1, i), HIGHLIGHT_COLOR)
         style.add('BOX', (0, 0), (-1, border_reach), *self.table_line)
+
 
 class ColumnTableBuilder(ReportTableBuilder):
     """ Column table builder """
@@ -344,6 +349,7 @@ class ColumnTableBuilder(ReportTableBuilder):
                              has_summary_row=self.has_summary_row,
                              table_line=self.table_line)
 
+
 class ObjectTableBuilder(ColumnTableBuilder):
     """ Object table builder """
     def __init__(self, objs, columns, style=None, width=None,
@@ -436,6 +442,7 @@ class ObjectTableBuilder(ColumnTableBuilder):
                 expand_width = extra_width * col.expand_factor / total_expand
                 col.width += expand_width
 
+
 class NewObjectTableBuilder(AbstractTableBuilder):
     """ A new implementation of ObjectTableBuilder, which accepts Kiwi's
     ObjectList columns. """
@@ -495,6 +502,7 @@ class NewObjectTableBuilder(AbstractTableBuilder):
         if self._header:
             data.insert(0, self._header)
         return data
+
 
 class GroupingTableBuilder(AbstractTableBuilder):
     def __init__(self, objs, column_groups, column_widths, style=None,
@@ -585,6 +593,7 @@ class GroupingTableBuilder(AbstractTableBuilder):
         for group in self.column_groups:
             group.setup_group(self.column_groups)
 
+
 class TableColumnGroup:
     """ This class groups GroupTableColumns columns """
 
@@ -631,6 +640,7 @@ class TableColumnGroup:
 #
 # Table Columns
 #
+
 
 class TableColumn:
     def __init__(self, name=None, width=None, format_string=None,
@@ -712,6 +722,7 @@ class TableColumn:
             style.add('LINEBEFORE', (idx, 0), (idx, -1 - j),
                       *table_line)
 
+
 class ObjectTableColumn(TableColumn):
     def __init__(self, name, data_source, expand_factor=0, align=LEFT,
                  truncate=False, width=None, format_string=None,
@@ -763,6 +774,7 @@ class ObjectTableColumn(TableColumn):
 
     def __repr__(self):
         return '<ObjectTableColumn name: %s at 0x%x>' % (self.name, id(self))
+
 
 class GroupingTableColumn(ObjectTableColumn):
     """ This column type works like ObjectTableColumn but it doesn't implements

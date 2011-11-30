@@ -30,6 +30,7 @@ from stoqlib.reporting.template import ObjectListReport
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.formatters import get_formatted_price
 
+
 class PurchaseReceivalReport(ObjectListReport):
     report_name = _("Purchase Receival Report")
     main_object_name = (_("purchase"), _("purchases"))

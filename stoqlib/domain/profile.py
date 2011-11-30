@@ -56,6 +56,7 @@ class ProfileSettings(Domain):
                                   connection=conn)
         setting.has_permission = permission
 
+
 class UserProfile(Domain):
     """User profile definition."""
 

@@ -33,6 +33,7 @@ from stoqlib.lib.event import Event
 # Product events
 #
 
+
 class ProductCreateEvent(Event):
     """
     This event is emitted when a product is created.
@@ -98,6 +99,7 @@ class CreatePaymentEvent(Event):
 
     returnclass = CreatePaymentStatus
 
+
 class CardPaymentReceiptPrepareEvent(Event):
     """
     This will be emmited when a card payment receipt should be printed.
@@ -109,6 +111,7 @@ class CardPaymentReceiptPrepareEvent(Event):
                                receipts
     """
 
+
 class CardPaymentReceiptPrintedEvent(Event):
     """
     This gets emmited after a card payment receipt is successfully printed.
@@ -116,15 +119,18 @@ class CardPaymentReceiptPrintedEvent(Event):
     @param payment: the receipt of this payment
     """
 
+
 class CancelPendingPaymentsEvent(Event):
     """
     This gets emmited if a card payment receipt fails to be printed, meaning
     that all payments should be cancelled
     """
 
+
 class GerencialReportPrintEvent(Event):
     """
     """
+
 
 class GerencialReportCancelEvent(Event):
     """

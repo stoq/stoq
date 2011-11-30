@@ -45,8 +45,10 @@ _ = stoqlib_gettext
 
 _HEX_REGEXP = re.compile("[0-9a-fA-F]{1,2}")
 
+
 def dec2hex(dec):
     return "".join([data.encode("hex") for data in dec])
+
 
 def hex2dec(hex):
     dec = ""
@@ -56,6 +58,7 @@ def hex2dec(hex):
             data = UNKNOWN_CHARACTER
         dec += data
     return dec
+
 
 class _DeviceConstantEditor(BaseEditor):
     gladefile = 'DeviceConstantEditor'
@@ -120,6 +123,7 @@ class _DeviceConstantEditor(BaseEditor):
 
     def on_device_value__content_changed(self, entry):
         self._update_hex(dec2hex(entry.get_text()))
+
 
 class _DeviceConstantsList(AdditionListSlave):
     def __init__(self, conn, printer):

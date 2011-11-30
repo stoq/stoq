@@ -35,6 +35,7 @@ import gobject
 from kiwi.utils import gsignal
 from stoqdrivers.serialbase import SerialPort
 
+
 class ECFAsyncPrinterStatus(gobject.GObject):
     """
     @ivar printer:

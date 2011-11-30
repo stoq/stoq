@@ -30,6 +30,7 @@ from stoqlib.domain.person import Person, EmployeeRole, EmployeeRoleHistory
 from stoqlib.domain.profile import UserProfile
 from stoqlib.importers.csvimporter import CSVImporter
 
+
 class EmployeeImporter(CSVImporter):
     fields = ['name',
               'phone_number',

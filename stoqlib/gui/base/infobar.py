@@ -27,8 +27,10 @@ import gtk
 
 from kiwi.utils import gsignal
 
+
 class _response_data:
     response_id = None
+
 
 def get_response_data(widget, create):
     ad = widget.get_data('pygtk-info-bar-response')

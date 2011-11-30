@@ -73,6 +73,7 @@ DEFAULT_INSTALLMENTS_NUMBER = 1
 DEFAULT_INTERVALS = 1
 DEFAULT_INTERVAL_TYPE = INTERVALTYPE_MONTH
 
+
 class _BaseTemporaryMethodData(object):
     def __init__(self, first_duedate=None,
                  installments_number=None):

@@ -64,6 +64,7 @@ log = Logger('stoq.till')
 LOGO_WIDTH = 91
 LOGO_HEIGHT = 32
 
+
 class TillApp(SearchableAppWindow):
 
     app_name = _(u'Till')

@@ -78,6 +78,7 @@ class Warnbox(GladeSlaveDelegate):
         self.error_icon.hide()
         self.label.set_text("")
 
+
 class RunnableView:
     """A mixin class for any View or GladeDelegate that offers run/close"""
     retval = None
@@ -99,6 +100,7 @@ class RunnableView:
 #
 # Abstract classes: inherit only, do not use.
 #
+
 
 class AbstractDialog(GladeDelegate, RunnableView):
     """Abstract Dialog class that defines a simple run API."""
@@ -125,6 +127,7 @@ class AbstractDialog(GladeDelegate, RunnableView):
 # NotifyDialog/PluggableNotifyDialog for an example of how __init__ should
 # behave.
 #
+
 
 class BasicDialog(AbstractDialog):
     """Abstract class that offers a Dialog with two buttons. It should be
@@ -246,6 +249,7 @@ class BasicDialog(AbstractDialog):
 # second set offers a pluggable slave area.
 #
 
+
 class BasicPluggableDialog(BasicDialog):
     """Abstract class for Pluggable*Dialog; two buttons and a slave area"""
     warnbox = None
@@ -314,6 +318,7 @@ class BasicPluggableDialog(BasicDialog):
 # interface for stoqlib.services run_dialog compatibility.
 #
 
+
 class BasicWrappingDialog(BasicPluggableDialog):
     """ Abstract class for Wrapping*Dialog; run and set_transient_for to
     the wrapped slave and ok_button sensitivity control """
@@ -328,6 +333,7 @@ class BasicWrappingDialog(BasicPluggableDialog):
         self.get_toplevel().set_name(slave.__class__.__name__)
         slave.run = self.run
         slave.set_transient_for = self.set_transient_for
+
 
 class ConfirmDialog(BasicDialog):
     """Dialog offers an option to confirm or cancel an event. It prints text
@@ -347,6 +353,7 @@ class ConfirmDialog(BasicDialog):
         self.keyactions = {keysyms.Escape: self.cancel,
                            keysyms.Return: self.confirm,
                            keysyms.KP_Enter: self.confirm}
+
 
 class NotifyDialog(ConfirmDialog):
     """Dialog that notifies an event. It prints text in a label and offers a
@@ -396,6 +403,7 @@ def get_dialog(parent, dialog, *args, **kwargs):
         if parent and not _fullscreen:
             dialog.set_transient_for(parent)
     return dialog
+
 
 def run_dialog(dialog, parent=None, *args, **kwargs):
     """Runs a dialog and return the return value of it.
@@ -450,13 +458,16 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
 
 _fullscreen = None
 
+
 def push_fullscreen(window):
     global _fullscreen
     _fullscreen = window
 
+
 def pop_fullscreen(window):
     global _fullscreen
     _fullscreen = None
+
 
 def notify_if_raises(win, check_func, exceptions=ModelDataError,
                      text="An error ocurred: %s"):

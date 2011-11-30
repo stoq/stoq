@@ -34,6 +34,7 @@ from stoqlib.lib.interfaces import CookieError, ICookieFile
 
 log = Logger("cookie")
 
+
 class Base64CookieFile(object):
 
     implements(ICookieFile)
