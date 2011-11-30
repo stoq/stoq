@@ -84,10 +84,11 @@ from stoqlib.lib.webservice import WebService
 from twisted.internet import reactor
 
 from stoq import library
+from stoq.gui.shell import PRIVACY_STRING
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import setup, set_default_profile_settings
-from stoq.main import PRIVACY_STRING, run_app
+from stoq.main import run_app
 
 _ = gettext.gettext
 
