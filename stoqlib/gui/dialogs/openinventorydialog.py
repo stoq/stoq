@@ -45,6 +45,7 @@ class _TemporaryInventory(object):
         self.branch = None
         self.user = api.get_current_user(conn)
 
+
 class _TemporaryCategory(object):
     def __init__(self, category=None, parent=None):
         self.obj = category

@@ -163,6 +163,7 @@ class Commission(Domain):
 # Views
 #
 
+
 class CommissionView(Viewable):
     """ Stores information about commissions and it's related
         sale and payment.

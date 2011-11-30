@@ -27,6 +27,7 @@ from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 
 from stoqlib.domain.test.domaintest import DomainTest
 
+
 class TestCfopData(DomainTest):
     def testGetDescription(self):
         cfop = CfopData(code=u"2365", description=u"blabla",

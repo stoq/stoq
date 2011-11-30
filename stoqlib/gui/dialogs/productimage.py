@@ -10,6 +10,7 @@ _ = gettext.gettext
 
 PIXBUF_CONVERTER = converter.get_converter(gtk.gdk.Pixbuf)
 
+
 class ProductImageViewer(GladeDelegate, RunnableView):
     title = _("Product Image Viewer")
     gladefile = "ProductImageViewer"

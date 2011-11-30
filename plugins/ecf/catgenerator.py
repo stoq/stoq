@@ -44,6 +44,7 @@ from ecfdomain import FiscalSaleHistory, ECFDocumentHistory
 
 _ = stoqlib_gettext
 
+
 class Async(object):
 
     name = "Async Serviços de Informática Ltda"

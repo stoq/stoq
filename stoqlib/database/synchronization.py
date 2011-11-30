@@ -63,6 +63,7 @@ CHUNKSIZE = 40960
 BRANCH_ID_OFFSET = 1000000000000000
 #BRANCH_ID_OFFSET = 1 << 50
 
+
 def _collect_table(tables, table):
     if table in tables:
         return
@@ -86,6 +87,7 @@ def _collect_table(tables, table):
             if issubclass(facet_type, ORMObject):
                 _collect_table(tables, facet_type)
 
+
 def get_tables(policy, pfilter=None):
     """Fetches a list of tables given a specific policy.
     A pfilter can optionally be specified to filter out tables
@@ -104,6 +106,7 @@ def get_tables(policy, pfilter=None):
         _collect_table(tables, table)
 
     return tables
+
 
 class TableSerializer:
     def __init__(self, conn, tables, station):
@@ -187,6 +190,7 @@ class TableSerializer:
 
         if data:
             yield data
+
 
 class SynchronizationService(XMLRPCService):
     def __init__(self, hostname, port):
@@ -376,6 +380,7 @@ class SynchronizationService(XMLRPCService):
     xmlrpc_sql_insert = sql_insert
     xmlrpc_sql_finish = sql_finish
     xmlrpc_quit = quit
+
 
 class SynchronizationClient(object):
     def __init__(self, hostname, port):

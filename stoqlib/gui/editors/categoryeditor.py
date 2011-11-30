@@ -39,6 +39,7 @@ _ = stoqlib_gettext
 # Helper functions
 #
 
+
 def _validate_category_description(category, description, conn):
     retval = category.check_category_description_exists(description, conn)
     if not retval:
@@ -47,6 +48,7 @@ def _validate_category_description(category, description, conn):
 #
 # Main editors
 #
+
 
 class BaseSellableCategoryEditor(BaseEditor):
     gladefile = 'BaseSellableCategoryDataSlave'

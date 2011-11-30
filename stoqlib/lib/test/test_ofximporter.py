@@ -210,6 +210,7 @@ NEWFILEUID:NONE
     </BANKMSGSRSV1>
 </OFX>"""
 
+
 class OFXImporterTest(DomainTest):
     def testOFXImportBBJurdica(self):
         ofx = OFXImporter()

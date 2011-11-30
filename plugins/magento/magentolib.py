@@ -63,6 +63,7 @@ def get_proxy():
 
     return proxy
 
+
 def validate_connection(url, api_user, api_key):
     """Validate a connection with Magento.
 

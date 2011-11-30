@@ -40,6 +40,7 @@ from stoqlib.lib.parameters import sysparam
 
 log = Logger('ofximporter')
 
+
 class OFXTagParser(sgmllib.SGMLParser):
     def __init__(self):
         sgmllib.SGMLParser.__init__(self)

@@ -37,6 +37,7 @@ _ = stoqlib_gettext
 # Domain Classes
 #
 
+
 class Event(Domain):
     """An event represent something that happened in Stoq that
     should be logged and access at a later point.

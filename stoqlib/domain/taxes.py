@@ -38,6 +38,7 @@ from stoqlib.domain.base import Domain
 #   Base Tax Classes
 #
 
+
 class BaseTax(Domain):
 
     def set_from_template(self, template):

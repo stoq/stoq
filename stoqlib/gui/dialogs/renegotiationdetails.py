@@ -43,6 +43,7 @@ from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 
 _ = stoqlib_gettext
 
+
 class _RenegotiationItem(object):
     def __init__(self, payment_group):
         parent = payment_group.get_parent()

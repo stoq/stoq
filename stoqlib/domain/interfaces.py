@@ -30,6 +30,7 @@ from zope.interface import Attribute, Interface
 # Interfaces
 #
 
+
 class IActive(Interface):
     """It defines if a certain object can be active or not"""
 
@@ -256,6 +257,7 @@ class IClient(IPersonFacet):
     def get_name():
         """Name of the client
         """
+
 
 class ISupplier(IPersonFacet):
     """A company or an individual that produces, provides, or furnishes

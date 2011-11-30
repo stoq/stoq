@@ -7,6 +7,7 @@ from stoqlib.domain.product import Product
 
 from domain.magentoproduct import MagentoProduct
 
+
 def apply_patch(trans):
     for product in Product.select(connection=trans):
         if not MagentoProduct.selectOneBy(connection=trans,

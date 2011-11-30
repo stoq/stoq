@@ -89,6 +89,7 @@ class LoanItemSearch(SearchDialog):
                 SearchColumn('total', title=_(u'Total'),
                              data_type=currency)]
 
+
 class LoanSearch(SearchDialog):
     title = _(u"Loan Search")
     size = (750, 500)

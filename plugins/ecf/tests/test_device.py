@@ -34,6 +34,7 @@ from ecf.ecfdomain import ECFPrinter, DeviceConstant
 
 _ = stoqlib_gettext
 
+
 class TestDeviceConstant(DomainTest):
     def testGetConstantDescription(self):
         constant = self.create_device_constant()

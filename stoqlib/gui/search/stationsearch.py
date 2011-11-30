@@ -34,6 +34,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class StationSearch(SearchEditor):
     title = _("Computer Search")
     table = BranchStation

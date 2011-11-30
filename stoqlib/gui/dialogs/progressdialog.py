@@ -28,6 +28,7 @@ import gtk
 from kiwi.ui.delegates import GladeDelegate
 from kiwi.utils import gsignal
 
+
 class ProgressDialog(GladeDelegate):
     """This is a dialog you use to show the progress of a certain task.
     It's just a label, progress bar and button.

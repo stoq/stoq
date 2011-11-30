@@ -34,6 +34,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 
+
 class TestTill(DomainTest):
 
     def _create_inpayment(self):

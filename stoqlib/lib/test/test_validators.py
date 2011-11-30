@@ -32,6 +32,7 @@ from stoqlib.lib.validators import (validate_cpf, validate_cnpj,
                                     validate_decimal, validate_directory,
                                     validate_percentage, validate_cfop)
 
+
 class TestValidators(DomainTest):
 
     def testValidateCPF(self):

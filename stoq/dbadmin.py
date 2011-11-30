@@ -27,6 +27,7 @@
 import optparse
 import sys
 
+
 class StoqCommandHandler:
     def __init__(self, prog_name):
         self.prog_name = prog_name
@@ -354,6 +355,7 @@ class StoqCommandHandler:
                          action="store",
                          help="Filename to import",
                          dest="filename")
+
 
 def main(args):
     pname = args[0]

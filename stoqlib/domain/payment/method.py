@@ -50,6 +50,7 @@ _ = stoqlib_gettext
 # Domain Classes
 #
 
+
 class CheckData(Domain):
     """Stores check informations and also a history of possible
     devolutions.

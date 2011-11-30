@@ -37,6 +37,7 @@ from stoqlib.lib.diffutils import diff_pdf_htmls
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.pdf import pdftohtml
 
+
 class MockConfig:
     def __init__(self, fp):
         self._config = SafeConfigParser()
@@ -55,6 +56,7 @@ class MockConfig:
         if not self._config.has_section(section):
             return {}
         return self._config.items(section)
+
 
 class TestBoleto(DomainTest):
     def setUp(self):

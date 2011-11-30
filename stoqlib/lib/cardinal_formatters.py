@@ -37,6 +37,7 @@ else:
     assert to_words_as_money # pyflakes
     currency_names = ['dollar', 'dollars', 'cent', 'cents']
 
+
 def get_price_cardinal(price):
     """Return the price as a cardinal number"""
     return to_words_as_money(price, currency_names)

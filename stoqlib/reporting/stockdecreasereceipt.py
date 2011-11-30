@@ -36,6 +36,7 @@ from stoqlib.reporting.template import BaseStoqReport
 
 _ = stoqlib_gettext
 
+
 class StockDecreaseReceipt(BaseStoqReport):
     """Stock Decrease receipt
         This class builds the namespace used in template

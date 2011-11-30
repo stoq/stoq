@@ -4,6 +4,7 @@ import unittest
 from stoqlib.lib.interfaces import CookieError
 from stoqlib.lib.cookie import Base64CookieFile
 
+
 class CookieTest(unittest.TestCase):
     def setUp(self):
         self.cookie = Base64CookieFile('test.cookie')

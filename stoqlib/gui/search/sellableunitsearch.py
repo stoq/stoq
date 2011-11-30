@@ -37,6 +37,7 @@ _ = stoqlib_gettext
 #  Searchs
 #
 
+
 class SellableUnitSearch(SearchEditor):
     """A search for L{stoqlib.domain.sellable.SellableUnit}"""
 

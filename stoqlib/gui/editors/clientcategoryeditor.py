@@ -32,6 +32,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class ClientCategoryEditor(BaseEditor):
     model_name = _('Client Category')
     model_type = ClientCategory

@@ -67,6 +67,7 @@ from stoq.gui.application import AppWindow
 _ = gettext.gettext
 log = Logger('stoq.pos')
 
+
 class _SaleItem(object):
     def __init__(self, sellable, quantity, price=None, notes=None):
         # Use only 3 decimal places for the quantity
@@ -102,6 +103,7 @@ class _SaleItem(object):
 
 LOGO_WIDTH = 91
 LOGO_HEIGHT = 32
+
 
 class PosApp(AppWindow):
 

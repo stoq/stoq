@@ -31,6 +31,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 def get_current_cheque_printer_settings(conn):
     res = DeviceSettings.selectOneBy(
         connection=conn,
@@ -44,6 +45,7 @@ def get_current_cheque_printer_settings(conn):
     return ChequePrinter(brand=res.brand,
                          model=res.model,
                          device=res.device_name)
+
 
 def print_cheques_for_payment_group(conn, group):
     """ Given a instance that implements the PaymentGroup interface, iterate

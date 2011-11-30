@@ -46,6 +46,7 @@ def compare_sintegra_file(sfile, basename):
     if retval:
         raise AssertionError("Files differ, check output above")
 
+
 class SintegraTest(DomainTest):
     def testComplete(self):
         station = self.create_station()

@@ -29,6 +29,7 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.formatters import get_formatted_price
 from stoqlib.reporting.template import ObjectListReport
 
+
 class TillHistoryReport(ObjectListReport):
     """This report show a list of the till history returned by a SearchBar,
     listing both its description, date and value.

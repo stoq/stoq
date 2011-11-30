@@ -39,6 +39,7 @@ _cur_exit_func = None
 # To avoid kiwi dependency at startup
 log = logging.getLogger('stoq.main')
 
+
 def _write_exception_hook(exctype, value, tb):
     global _stream
     import traceback
@@ -64,6 +65,7 @@ def _write_exception_hook(exctype, value, tb):
 
     from stoqlib.lib.crashreport import collect_traceback
     collect_traceback((exctype, value, tb))
+
 
 def _debug_hook(exctype, value, tb):
     import traceback
@@ -100,9 +102,11 @@ def _exit_func():
     if _restart:
         Process([sys.argv[0]], shell=True)
 
+
 def restart_stoq_atexit():
     global _restart
     _restart = True
+
 
 def _set_app_info():
     from kiwi.component import provide_utility
@@ -119,6 +123,7 @@ def _set_app_info():
     info.set("version", stoq_version)
     info.set("log", _log_filename)
     provide_utility(IAppInfo, info)
+
 
 def _check_dependencies():
     from stoq.lib.dependencies import check_dependencies
@@ -175,6 +180,7 @@ def _run_first_time_wizard(options, config=None):
     run_dialog(FirstTimeConfigWizard, None, options, config)
     raise SystemExit()
 
+
 def _run_update_wizard():
     from stoqlib.gui.base.dialogs import run_dialog
     from stoq.gui.update import SchemaUpdateWizard
@@ -184,9 +190,11 @@ def _run_update_wizard():
     if not retval:
         raise SystemExit()
 
+
 def _show_splash():
     from stoqlib.gui.splash import show_splash
     show_splash()
+
 
 def _setup_gtk():
     import gtk
@@ -214,9 +222,11 @@ def _setup_gtk():
     settings = gtk.settings_get_default()
     settings.props.gtk_button_images = True
 
+
 def _setup_twisted():
     from twisted.internet import gtk2reactor
     gtk2reactor.install()
+
 
 def _setup_ui_dialogs():
     # This needs to be here otherwise we can't install the dialog
@@ -233,6 +243,7 @@ def _setup_ui_dialogs():
     stock_app = environ.find_resource('pixmaps', 'stoq-stock-app-24x24.png')
     gtk.window_set_default_icon_from_file(stock_app)
 
+
 def _setup_cookiefile():
     log.debug('setting up cookie file')
     from kiwi.component import provide_utility
@@ -242,6 +253,7 @@ def _setup_cookiefile():
     app_dir = get_application_dir()
     cookiefile = os.path.join(app_dir, "cookie")
     provide_utility(ICookieFile, Base64CookieFile(cookiefile))
+
 
 def _prepare_logfiles():
     global _log_filename, _stream
@@ -310,6 +322,7 @@ def _initialize(options):
               'error=%s uri=%s' % (str(e), conn_uri))
         raise SystemExit("Error: bad connection settings provided")
 
+
 def run_app(options, appname):
     global _ran_wizard
     from stoqlib.gui.base.gtkadds import register_iconsets
@@ -322,6 +335,7 @@ def run_app(options, appname):
     shell = Shell(options, appname)
     shell.ran_wizard = _ran_wizard
     shell.run_loop()
+
 
 def _parse_command_line(args):
     from stoqlib.lib.uptime import set_initial
@@ -360,6 +374,7 @@ def _parse_command_line(args):
                              "Valid applications are: %s" % (appname, apps))
 
     return options, appname
+
 
 def main(args):
     try:

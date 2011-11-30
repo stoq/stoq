@@ -284,6 +284,7 @@ class AddressAdditionDialog(ModelListDialog):
             trans.rollback_to_savepoint('before_run_editor')
         return retval
 
+
 class AddressSelectionDialog(ModelListDialog):
     title = _('Select an address')
     size = (600, 250)

@@ -368,6 +368,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           required=version,
                           found=twisted.version.base())
 
+
 def check_dependencies(text_mode=False):
     dp = DependencyChecker()
     dp.text_mode = text_mode

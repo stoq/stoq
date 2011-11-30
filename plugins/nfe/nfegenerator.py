@@ -47,6 +47,7 @@ from utils import (get_state_code, get_city_code, nfe_tostring,
 # (brazilian portuguese only).
 #
 
+
 class NFeGenerator(object):
     """NF-e Generator class.
     The NF-e generator is responsible to create a NF-e XML document for a
@@ -322,6 +323,7 @@ class NFeGenerator(object):
 # NF-e XML Groups
 #
 
+
 class BaseNFeXMLGroup(object):
     """Base XML group class.
     A XML group is a helper interface to xml.etree.Element hierarchy of
@@ -591,6 +593,7 @@ class NFeEcfInfo(BaseNFeXMLGroup):
         self.set_attr('nECF', n_ecf)
         self.set_attr('nCOO', coo)
 
+
 class NFeAddress(BaseNFeXMLGroup):
     """
     - Attributes:
@@ -715,6 +718,8 @@ class NFeRecipient(NFeIssuer):
         return base + self.get_doc_txt() + self._address.as_txt()
 
 # Pg. 102
+
+
 class NFeProduct(BaseNFeXMLGroup):
     """
     - Attributes:
@@ -1412,6 +1417,8 @@ class NFePISOutr(NFePISAliq):
         return base + q
 
 # Pg. 120, 121
+
+
 class NFeCOFINS(BaseNFeXMLGroup):
     tag = u'COFINS'
     txttag = 'S'

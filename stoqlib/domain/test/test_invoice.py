@@ -26,6 +26,7 @@ from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
 
 from stoqlib.domain.test.domaintest import DomainTest
 
+
 class TestInvoicePrinter(DomainTest):
     def testGetByStation(self):
         station = self.create_station()

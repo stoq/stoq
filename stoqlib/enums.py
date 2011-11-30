@@ -25,6 +25,7 @@
 
 from kiwi.python import enum
 
+
 class SyncPolicy(enum):
     #
     # Source -> Master/Office

@@ -143,6 +143,7 @@ class WorkPermitData(Domain):
     pis_bank = UnicodeCol(default=None)
     pis_registry_date = DateTimeCol(default=None)
 
+
 class MilitaryData(Domain):
     """ Military data for employees. This is Brazil-specific
     information.
@@ -152,12 +153,14 @@ class MilitaryData(Domain):
     series_number = UnicodeCol(default=None)
     category = UnicodeCol(default=None)
 
+
 class VoterData(Domain):
     """Voter data for employees. This is Brazil-specific information."""
 
     number = UnicodeCol(default=None)
     section = UnicodeCol(default=None)
     zone = UnicodeCol(default=None)
+
 
 class Liaison(Domain):
     """Base class to store the person's contact informations."""
@@ -360,6 +363,7 @@ class Person(Domain):
 # Adapters
 #
 
+
 class PersonAdapter(ModelAdapter):
     implements(IActive, IDescribable, IPersonFacet)
 
@@ -461,6 +465,7 @@ class PersonAdaptToIndividual(PersonAdapter):
 
 Person.registerFacet(PersonAdaptToIndividual, IIndividual)
 
+
 class PersonAdaptToCompany(PersonAdapter):
     """A company facet of a person.
 
@@ -507,6 +512,7 @@ class PersonAdaptToCompany(PersonAdapter):
 
 Person.registerFacet(PersonAdaptToCompany, ICompany)
 
+
 class ClientCategory(Domain):
     """I am a client category.
     I contain a name
@@ -523,6 +529,7 @@ class ClientCategory(Domain):
 
     def get_description(self):
         return self.name
+
 
 class PersonAdaptToClient(PersonAdapter):
     """A client facet of a person."""
@@ -633,6 +640,7 @@ class PersonAdaptToClient(PersonAdapter):
 
 Person.registerFacet(PersonAdaptToClient, IClient)
 
+
 class PersonAdaptToSupplier(PersonAdapter):
     """A supplier facet of a person.
 
@@ -685,6 +693,7 @@ class PersonAdaptToSupplier(PersonAdapter):
 
 Person.registerFacet(PersonAdaptToSupplier, ISupplier)
 
+
 class PersonAdaptToEmployee(PersonAdapter):
     """An employee facet of a person."""
     implements(IEmployee)
@@ -727,6 +736,7 @@ class PersonAdaptToEmployee(PersonAdapter):
             connection=self.get_connection())
 
 Person.registerFacet(PersonAdaptToEmployee, IEmployee)
+
 
 class PersonAdaptToUser(PersonAdapter):
     """An user facet of a person."""
@@ -778,6 +788,7 @@ class PersonAdaptToUser(PersonAdapter):
                 _("User '%s' logged out") % (self.username, ))
 
 Person.registerFacet(PersonAdaptToUser, IUser)
+
 
 class PersonAdaptToBranch(PersonAdapter):
     """A branch facet of a person.
@@ -858,6 +869,7 @@ class PersonAdaptToBranch(PersonAdapter):
 
 Person.registerFacet(PersonAdaptToBranch, IBranch)
 
+
 class PersonAdaptToBankBranch(PersonAdapter):
     """A bank branch facet of a person."""
     implements(IBankBranch)
@@ -866,6 +878,7 @@ class PersonAdaptToBankBranch(PersonAdapter):
     bank = ForeignKey('Bank')
 
 Person.registerFacet(PersonAdaptToBankBranch, IBankBranch)
+
 
 class PersonAdaptToCreditProvider(PersonAdapter):
     """A credit provider facet of a person."""
@@ -948,6 +961,7 @@ class PersonAdaptToCreditProvider(PersonAdapter):
 
 Person.registerFacet(PersonAdaptToCreditProvider, ICreditProvider)
 
+
 class PersonAdaptToSalesPerson(PersonAdapter):
     """A sales person facet of a person.
 
@@ -992,6 +1006,7 @@ class PersonAdaptToSalesPerson(PersonAdapter):
 
 Person.registerFacet(PersonAdaptToSalesPerson, ISalesPerson)
 
+
 class PersonAdaptToTransporter(PersonAdapter):
     """A transporter facet of a person."""
     implements(ITransporter)
@@ -1027,6 +1042,7 @@ class EmployeeRoleHistory(Domain):
 #
 # Views
 #
+
 
 class ClientView(Viewable):
     """Stores information about clients.
@@ -1145,6 +1161,7 @@ class SupplierView(Viewable):
     def supplier(self):
         return PersonAdaptToSupplier.get(self.supplier_id,
                                          connection=self.get_connection())
+
 
 class TransporterView(Viewable):
     """

@@ -66,6 +66,7 @@ log = Logger('stoqlib.admin')
 create_log = Logger('stoqlib.database.create')
 USER_ADMIN_DEFAULT_NAME = 'admin'
 
+
 def ensure_admin_user(administrator_password):
     log.info("Creating administrator user")
 
@@ -163,6 +164,7 @@ def _register_payment_methods():
 
     trans.commit(close=True)
 
+
 def register_accounts(trans):
     from stoqlib.domain.account import Account
     log.info("Creating Accounts")
@@ -189,6 +191,7 @@ def register_accounts(trans):
     sparam.IMBALANCE_ACCOUNT = Account.selectOneBy(
         connection=trans, description=_("Imbalance")).id
 
+
 def _ensure_card_providers():
     """ Creates a list of default card providers """
     log.info("Creating Card Providers")
@@ -210,6 +213,7 @@ def _ensure_card_providers():
                         open_contract_date=const.NOW(), connection=trans)
     trans.commit(close=True)
 
+
 def get_admin_user(conn):
     """Retrieves the current administrator user for the system
     @param conn: a database connection
@@ -217,6 +221,7 @@ def get_admin_user(conn):
     """
     return Person.iselectOneBy(IUser, username=USER_ADMIN_DEFAULT_NAME,
                                connection=conn)
+
 
 def ensure_sellable_constants():
     """ Create native sellable constants. """
@@ -243,6 +248,7 @@ def ensure_sellable_constants():
 
     trans.commit(close=True)
 
+
 def user_has_usesuper(trans):
     """This method checks if the currently logged in postgres user has
     `usesuper' access which is necessary for certain operations
@@ -254,6 +260,7 @@ def user_has_usesuper(trans):
     results = trans.queryOne(
         'SELECT usesuper FROM pg_user WHERE usename=CURRENT_USER')
     return results[0] == 1
+
 
 def _create_procedural_languages():
     "Creates procedural SQL languages we're going to use in scripts"
@@ -274,6 +281,7 @@ def _create_procedural_languages():
     trans.query('CREATE LANGUAGE plpgsql')
     trans.commit(close=True)
 
+
 def _get_latest_schema():
     schema_pattern = "schema-??.sql"
     schemas = []
@@ -283,6 +291,7 @@ def _get_latest_schema():
     assert schemas
     schemas.sort()
     return schemas[-1]
+
 
 def create_base_schema():
     log.info('Creating base schema')
@@ -304,6 +313,7 @@ def create_base_schema():
     migration = StoqlibSchemaMigration()
     migration.apply_all_patches()
 
+
 def create_default_profiles():
     trans = new_transaction()
 
@@ -314,11 +324,13 @@ def create_default_profiles():
 
     trans.commit(close=True)
 
+
 def _install_invoice_templates():
     log.info("Installing invoice templates")
     importer = InvoiceImporter()
     importer.feed_file(environ.find_resource('csv', 'invoices.csv'))
     importer.process()
+
 
 def initialize_system():
     """Call all the necessary methods to startup Stoq applications for

@@ -27,6 +27,7 @@ from stoqlib.lib.parameters import sysparam
 
 from stoqlib.domain.test.domaintest import DomainTest
 
+
 class TestCityLocation(DomainTest):
     def testIsValidModel(self):
         location = self.create_city_location()
@@ -59,6 +60,7 @@ class TestCityLocation(DomainTest):
                           sysparam(self.trans).STATE_SUGGESTED)
         self.assertEquals(location.country,
                           sysparam(self.trans).COUNTRY_SUGGESTED)
+
 
 class TestAddress(DomainTest):
     def testIsValidModel(self):

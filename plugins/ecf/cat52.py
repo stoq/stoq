@@ -34,6 +34,7 @@ latscii.register_codec()
 
 from ecfdomain import ECFDocumentHistory
 
+
 def _argtype_name(argtype):
     if argtype == number:
         return 'number'
@@ -560,6 +561,7 @@ class CATRegisterE02(CATRegister):
         ('user_number', 2, number),
         ]
 
+
 class CATRegisterE12(CATRegister):
     """Register E12 - Z reduction list
     """
@@ -594,6 +596,7 @@ class CATRegisterE13(CATRegister):
         ('value', 13, number),                  # currency
         ]
 
+
 class CATRegisterE14(CATRegister):
     """Register E14 - Fiscal Coupon/Fiscal Invoice list
     """
@@ -626,6 +629,7 @@ class CATRegisterE14(CATRegister):
         # cpf or cnpj, depending on the client
         ('client_cpf_cnpj', 14, number),
         ]
+
 
 class CATRegisterE15(CATRegister):
     """Register E15 - Fiscal Coupon/Fiscal Invoice details list
@@ -667,6 +671,7 @@ class CATRegisterE15(CATRegister):
         ('value_decimal_precision', 1, number),
     ]
 
+
 class CATRegisterE16(CATRegister):
     """Register E16 - Other documents
     """
@@ -685,6 +690,7 @@ class CATRegisterE16(CATRegister):
         ('emission_date', 8, datetime.date),
         ('emission_hour', 6, datetime.time),
         ]
+
 
 class CATRegisterE21(CATRegister):
     """Register E21 - Fiscal Coupon and Non-fiscal document - payment methods
@@ -706,6 +712,7 @@ class CATRegisterE21(CATRegister):
         ('returned', 1, basestring),
         ('returned_value', 13, number),
     ]
+
 
 class CATRegisterEAD(CATRegister):
     """Register EAD - Digital Signature

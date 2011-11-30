@@ -30,6 +30,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.database.orm import ForeignKey, DateTimeCol, UnicodeCol
 from stoqlib.domain.interfaces import IDescribable
 
+
 class PaymentComment(Domain):
     author = ForeignKey('PersonAdaptToUser')
     payment = ForeignKey('Payment')

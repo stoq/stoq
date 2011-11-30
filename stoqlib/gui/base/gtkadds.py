@@ -135,6 +135,7 @@ def register_iconsets():
         iconfactory.add(stock_id, iconset)
     iconfactory.add_default()
 
+
 def change_button_appearance(button, icon=None, text=None):
     alignment = button.get_children()[0]
     hbox = alignment.get_children()[0]
@@ -143,6 +144,7 @@ def change_button_appearance(button, icon=None, text=None):
         image.set_from_stock(icon, gtk.ICON_SIZE_BUTTON)
     if text is not None:
         label.set_text_with_mnemonic(text)
+
 
 def button_set_image_with_label(button, stock_id, text):
     """Sets an image above the text
@@ -172,6 +174,8 @@ def button_set_image_with_label(button, stock_id, text):
 
 
 _pixbuf_cache = {}
+
+
 def render_pixbuf(color_name):
     if color_name is None:
         return None

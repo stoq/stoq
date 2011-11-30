@@ -39,6 +39,7 @@ POSTAL_CODE_CHAR_LEN = 8
 # Date validatores
 #
 
+
 def is_date_in_interval(date, start_date, end_date):
     """Check if a certain date is in an interval. The function accepts
     None values for start_date and end_date and, in this case, return True
@@ -57,6 +58,7 @@ def is_date_in_interval(date, start_date, end_date):
 # Phone number validators
 #
 
+
 def validate_phone_number(phone_number):
     phone_number = raw_phone_number(phone_number)
     digits = len(phone_number)
@@ -68,10 +70,12 @@ def validate_phone_number(phone_number):
 # Adress validators
 #
 
+
 def validate_postal_code(postal_code):
     if not postal_code:
         return False
     return len(raw_postal_code(postal_code)) == POSTAL_CODE_CHAR_LEN
+
 
 def validate_area_code(code):
     """Validates Brazilian area codes"""
@@ -84,6 +88,7 @@ def validate_area_code(code):
     # Valid brazilian codes are on the range of 10-99
     return 10 <= code <= 99
 
+
 def validate_state(state):
     state_code = ("RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI",
                   "CE", "RN", "PB", "PE", "AL", "SE", "BA", "MG", "ES",
@@ -95,6 +100,7 @@ def validate_state(state):
 #
 # Document Validators
 #
+
 
 def validate_cpf(cpf):
     cpf = ''.join(re.findall('\d', str(cpf)))
@@ -119,6 +125,7 @@ def validate_cpf(cpf):
             new.append(verifier_digit)
 
     return True
+
 
 def validate_cnpj(cnpj):
     """Validates a cnpj.
@@ -152,6 +159,7 @@ def validate_cnpj(cnpj):
 
     return True
 
+
 def validate_cfop(cfop):
     """Validates C.F.O.P. code
 
@@ -175,6 +183,7 @@ def validate_cfop(cfop):
 # Misc validators
 #
 
+
 def _validate_type(type_, value):
     if isinstance(value, basestring):
         try:
@@ -188,6 +197,7 @@ def _validate_type(type_, value):
 
     return True
 
+
 def validate_int(value):
     """Validates an integer.
 
@@ -195,6 +205,7 @@ def validate_int(value):
     if it can be converted to an integer.
     """
     return _validate_type(int, value)
+
 
 def validate_decimal(value):
     """Validates an Decimal.
@@ -204,9 +215,11 @@ def validate_decimal(value):
     """
     return _validate_type(Decimal, value)
 
+
 def validate_directory(path):
     """Find out if a directory exists"""
     return posixpath.exists(posixpath.expanduser(path))
+
 
 def validate_percentage(value):
     """Se if a given value is a valid percentage.
@@ -221,6 +234,7 @@ def validate_percentage(value):
             return False
 
     return 0 <= value <= 100
+
 
 def validate_email(value):
     """Try to validate an email address.

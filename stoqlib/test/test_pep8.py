@@ -33,6 +33,7 @@ from twisted.trial import unittest
 
 import stoq
 
+
 class TestPEP8(unittest.TestCase):
     def runPep8(self, path):
         result = 0
@@ -65,6 +66,7 @@ ERRORS = [
     'W291', # trailing whitespace
     'W292', # no newline at end of file
     'W293', # blank line contains whitespace
+    'E302', # expected 2 blank lines, found 1
     'W391', # blank line at end of file
     'E401', # multiple imports on one line
     'W601', # in instead of dict.has_key

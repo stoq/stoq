@@ -26,6 +26,7 @@
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField
 from stoqlib.importers.csvimporter import CSVImporter
 
+
 class InvoiceImporter(CSVImporter):
 
     fields = ['layout_description',

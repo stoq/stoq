@@ -189,6 +189,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
             self.address_button.set_label(_("%i More Addresses...")
                                             % (addresses - 1))
 
+
 class BasePersonRoleEditor(BaseEditor):
     """A base class for person role editors. This class can not be
     instantiated directly.

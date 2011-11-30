@@ -357,11 +357,14 @@ class InvoiceFieldDescription(object):
 
 invoice_fields = {}
 
+
 def _add_invoice_field(field):
     invoice_fields[field.name] = field
 
+
 def get_invoice_field_by_name(field_name):
     return invoice_fields.get(field_name)
+
 
 def get_invoice_fields():
     return invoice_fields.values()
@@ -474,6 +477,7 @@ class F(InvoiceFieldDescription):
 
 _add_invoice_field(F)
 
+
 class F(InvoiceFieldDescription):
     name = "CLIENT_FAX"
     description = _('Client Fax number')
@@ -482,6 +486,7 @@ class F(InvoiceFieldDescription):
         return self.sale.client.person.fax_number
 
 _add_invoice_field(F)
+
 
 class F(InvoiceFieldDescription):
     name = "CLIENT_PHONE_FAX"
@@ -569,6 +574,7 @@ class F(InvoiceFieldDescription):
         return ', '.join(dates)
 
 _add_invoice_field(F)
+
 
 class F(InvoiceFieldDescription):
     name = "PAYMENT_VALUES"
@@ -882,6 +888,7 @@ class F(InvoiceFieldDescription):
         return self.sale.get_salesperson_name()
 
 _add_invoice_field(F)
+
 
 class F(InvoiceFieldDescription):
     name = "PRODUCT_ITEM_COUNTER"

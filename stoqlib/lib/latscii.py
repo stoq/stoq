@@ -118,6 +118,7 @@ decoding_map.update({
 
 encoding_map = codecs.make_identity_dict(range(256))
 
+
 def register_codec():
     class Codec(codecs.Codec):
         def decode(self, input, errors='strict'):

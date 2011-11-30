@@ -45,6 +45,7 @@ _ = stoqlib_gettext
 RETRY_NUMBER = 3
 log = Logger('stoq. config')
 
+
 class LoginDialog(GladeDelegate, RunnableView):
     toplevel_name = gladefile = "LoginDialog"
     size = (-1, -1)
@@ -127,6 +128,7 @@ class LoginDialog(GladeDelegate, RunnableView):
         self.show()
         gtk.main()
         return self.retval
+
 
 class LoginHelper:
 

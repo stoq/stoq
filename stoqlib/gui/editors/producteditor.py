@@ -350,6 +350,7 @@ class ProductComponentSlave(BaseEditorSlave):
 #   Quality Test Editor & Slave
 #
 
+
 class QualityTestEditor(BaseEditor):
     model_name = _('Quality Test')
     model_type = ProductQualityTest

@@ -38,6 +38,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class SaleImporter(CSVImporter):
     fields = ['branch_name',
               'client_name',

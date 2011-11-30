@@ -37,6 +37,7 @@ from stoqlib.lib.process import Process, PIPE
 CHILD_TIMEOUT = 100 # in ms
 N_BYTES = 4096 # a page
 
+
 class ProcessView(gtk.ScrolledWindow):
     gsignal('read-line', str)
     gsignal('finished', object)

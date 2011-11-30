@@ -47,6 +47,7 @@ _tracebacks = []
 
 _N_TRIES = 3
 
+
 def collect_report():
     info = get_utility(IAppInfo, None)
 
@@ -121,6 +122,7 @@ def collect_report():
     text += ('-' * 80) + '\n'
     return text
 
+
 def collect_traceback(tb, output=True, submit=False):
     """Collects traceback which might be submitted
     @output: if it is to be printed
@@ -134,8 +136,10 @@ def collect_traceback(tb, output=True, submit=False):
     if is_developer_mode() and submit:
         report()
 
+
 def has_tracebacks():
     return bool(_tracebacks)
+
 
 class ReportSubmitter(gobject.GObject):
     gsignal('failed', object)

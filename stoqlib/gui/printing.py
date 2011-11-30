@@ -38,6 +38,7 @@ from stoqlib.reporting.base.utils import print_file, print_preview
 _ = stoqlib_gettext
 _system = platform.system()
 
+
 def _get_printers_lpstat():
     import commands
 
@@ -57,6 +58,7 @@ def _get_printers_lpstat():
         printers.append(printer_name)
     return printers
 
+
 def _get_available_printers():
     if _system == "Linux":
         return _get_printers_lpstat()
@@ -74,6 +76,7 @@ try:
     gtkunixprint # pyflakes
 except ImportError:
     gtkunixprint = None
+
 
 class GtkPrintDialog(object):
     """A dialog to print PDFs using the printer dialog in Gtk+ 2.10+
@@ -166,6 +169,7 @@ try:
 except ImportError:
     poppler = None
 
+
 class GtkPrintOperationDialog(object):
     def __init__(self, report):
         self._report = report
@@ -206,6 +210,7 @@ def describe_search_filters_for_reports(**kwargs):
 
     kwargs['filter_strings'] = filter_strings
     return kwargs
+
 
 def print_report(report_class, *args, **kwargs):
     if kwargs.get('filters'):

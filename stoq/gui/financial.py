@@ -57,13 +57,16 @@ from stoq.gui.application import AppWindow
 
 _ = gettext.gettext
 
+
 class NotebookCloseButton(gtk.Button):
     pass
 gobject.type_register(NotebookCloseButton)
 
+
 class FinancialSearchResults(ObjectList):
     pass
 gobject.type_register(FinancialSearchResults)
+
 
 class TransactionSearchContainer(SearchContainer):
     results_class = FinancialSearchResults

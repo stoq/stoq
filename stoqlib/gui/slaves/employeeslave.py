@@ -103,6 +103,7 @@ class EmployeeStatusSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model,
                                     EmployeeStatusSlave.proxy_widgets)
 
+
 class EmployeeRoleSlave(BaseEditorSlave):
     gladefile = 'EmployeeRoleSlave'
     model_type = EmployeeRoleHistory

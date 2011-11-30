@@ -32,6 +32,7 @@ from stoqlib.reporting.template import BaseRMLReport
 
 _ = stoqlib_gettext
 
+
 class PaymentReceipt(BaseRMLReport):
     """Payment receipt
         This class builds the namespace used in template

@@ -270,6 +270,7 @@ countries = [N_("Afghanistan"),
              N_("Zambia"),
              N_("Zimbabwe")]
 
+
 def get_countries():
     """Fetch a list of translated/untranslated countries suitable for usage
     within combo.prefill();

@@ -59,6 +59,8 @@ _DEMO_PRODUCT_LIMIT = 30
 #
 # Editors
 #
+
+
 class SellableTaxConstantEditor(BaseEditor):
     gladefile = 'SellableTaxConstantEditor'
     model_type = SellableTaxConstant

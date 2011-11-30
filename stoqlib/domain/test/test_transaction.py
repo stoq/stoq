@@ -39,6 +39,7 @@ from stoqlib.database.interfaces import IDatabaseSettings
 
 NAME = 'dummy transaction test'
 
+
 def _query_server_time(conn):
     # Be careful, this opens up a new connection, queries the server
     # and closes the connection. That takes ~150ms
@@ -47,6 +48,7 @@ def _query_server_time(conn):
         return conn.queryAll("SELECT NOW();")[0][0]
     else:
         raise NotImplementedError
+
 
 class TestTransaction(DomainTest):
     def testTimestamp(self):

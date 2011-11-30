@@ -36,6 +36,7 @@ log = Logger('reporting.utils')
 _system = platform.system()
 PROGRAMS = [('evince', '--preview'), ('xpdf', '-z 100'), 'ggv']
 
+
 def build_report(report_class, *args, **kwargs):
     """ Given a class (BaseReportTemplate instance), build a report. It is
     important to note that this function create a temporary file where the
@@ -51,6 +52,7 @@ def build_report(report_class, *args, **kwargs):
     report = report_class(filename, *args, **kwargs)
     report.save()
     return filename
+
 
 def print_file(filename, printer=None, extra_opts=[]):
     """ Given a filename try to print it. If no printer is specified, print
@@ -81,6 +83,7 @@ def print_file(filename, printer=None, extra_opts=[]):
         raise SystemExit("unknown system: %s" % (_system, ))
 
     return ret
+
 
 def print_preview(filename, keep_file=False):
     """ Try preview the filename using one of the PDF viewers registred in

@@ -32,6 +32,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class CallsEditor(BaseEditor):
     model_type = Calls
     model_name = _("Calls")

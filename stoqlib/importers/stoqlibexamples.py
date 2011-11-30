@@ -43,10 +43,12 @@ from stoqlib.lib.parameters import sysparam
 
 log = Logger('stoqlib.examples')
 
+
 def _import_one(klass, filename):
     imp = klass()
     imp.feed_file(environ.find_resource('csv', filename))
     imp.process()
+
 
 def _set_person_utilities():
     trans = new_transaction()
@@ -57,6 +59,7 @@ def _set_person_utilities():
                             connection=trans, is_active=True)
     provide_utility(ICurrentBranchStation, station)
     trans.commit(close=True)
+
 
 def create(utilities=False):
     log.info('Creating example database')

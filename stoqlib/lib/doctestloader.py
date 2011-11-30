@@ -30,6 +30,7 @@ import unittest
 
 _doctest_flags = doctest.ELLIPSIS | doctest.REPORT_ONLY_FIRST_FAILURE
 
+
 def create_doctest(pattern):
 
 

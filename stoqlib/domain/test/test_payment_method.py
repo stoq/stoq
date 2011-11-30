@@ -90,6 +90,7 @@ class _TestPaymentMethod:
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
         return method.create_payments(iface, order.group, value, due_dates)
 
+
 class _TestPaymentMethodsBase(_TestPaymentMethod):
     def testCreateInPayment(self):
         payment = self.createInPayment()

@@ -30,6 +30,7 @@ latscii.register_codec()
 
 number = (int, long, Decimal)
 
+
 def argtype_name(argtype):
     if argtype == number:
         return 'number'
@@ -281,6 +282,7 @@ class SintegraFile(object):
             raise TypeError("You need to close the document before calling write()")
         return self._registers
 
+
 class SintegraRegister(object):
     """ This is an abstract class
     The arguments depends on what is defined in the class variable
@@ -504,6 +506,7 @@ class SintegraRegister54(SintegraRegister):
         ('icms_aliquota', 4, number),
         ]
 
+
 class SintegraRegister74(SintegraRegister):
     sintegra_number = 74
     sintegra_fields = [
@@ -526,6 +529,7 @@ class SintegraRegister74(SintegraRegister):
         ('blank', 45, basestring),
         ]
 
+
 class SintegraRegister75(SintegraRegister):
     sintegra_number = 75
     sintegra_fields = [
@@ -541,6 +545,7 @@ class SintegraRegister75(SintegraRegister):
         ('base_icms', 13, number),
         ]
 
+
 class SintegraRegister90(SintegraRegister):
     sintegra_number = 90
     sintegra_fields = [
@@ -552,6 +557,7 @@ class SintegraRegister90(SintegraRegister):
         ('number', 1, number),
         ]
     sintegra_requires = 10, 11
+
 
 def test():
     s = SintegraFile()

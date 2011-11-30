@@ -24,6 +24,7 @@
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
 
+
 class SimpleEntryEditor(BaseEditor):
     """Editor that offers a generic entry to input a string value."""
     gladefile = "SimpleEntryEditor"

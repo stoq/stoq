@@ -63,6 +63,7 @@ class CfopEditor(BaseEditor):
             return ValidationError(_(u"'%s' is not a valid C.F.O.P. code.")
                                      % value)
 
+
 class FiscalBookEntryEditor(BaseEditor):
     model_type = FiscalBookEntry
     gladefile = 'FiscalBookEntryEditor'

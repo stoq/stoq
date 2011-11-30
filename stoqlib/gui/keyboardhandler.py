@@ -31,6 +31,7 @@ for all toplevel windows
 import gtk
 from kiwi.ui.test.recorder import add_emission_hook
 
+
 class _KeyboardHandler(object):
     def __init__(self):
         self._hooks = {}
@@ -54,6 +55,7 @@ class _KeyboardHandler(object):
         self._hooks[keyval] = callback
 
 _handler = _KeyboardHandler()
+
 
 def install_global_keyhandler(keyval, callback):
     """ Installs a new key handler.

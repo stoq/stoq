@@ -37,6 +37,7 @@ from stoqlib.domain.views import (ProductFullStockView,
                                   ProductClosedStockView)
 from stoqlib.lib.parameters import sysparam
 
+
 class TestSellableCategory(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)

@@ -32,6 +32,7 @@ from stoqlib.reporting.template import BaseStoqReport, ObjectListReport
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.formatters import get_formatted_price
 
+
 class _BasePaymentReport(ObjectListReport):
     """Base report for Payable and Receivable reports"""
     report_name = _("Payment Report")

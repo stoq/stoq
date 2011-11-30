@@ -190,6 +190,7 @@ class TestPurchaseOrder(DomainTest):
 
         self.failIf(account.transactions)
 
+
 class TestQuoteGroup(DomainTest):
 
     def testCancel(self):

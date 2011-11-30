@@ -68,6 +68,7 @@ _APPLICATIONS = {
              'stoq-till-app'),
 }
 
+
 def get_application_names():
     """Get a list of application names, useful for launcher programs
 

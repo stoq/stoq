@@ -39,6 +39,7 @@ from stoqlib.domain.views import SellableCategoryView
 
 _ = stoqlib_gettext
 
+
 class SellableCategorySearch(SearchEditor):
     size = (750, 500)
     title = _('Sellable Category Search')
@@ -80,6 +81,7 @@ class SellableCategorySearch(SearchEditor):
 
     def _get_query(self, states):
         return SellableCategory.q.categoryID != None
+
 
 class BaseSellableCatSearch(SellableCategorySearch):
     title = _('Base Sellable Category Search')

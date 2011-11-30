@@ -65,6 +65,7 @@ from stoqlib.database.exceptions import ORMTestError
 
 _IGNORED = object()
 
+
 class SQLObjectNotFound(StormError):
     pass
 
@@ -320,6 +321,7 @@ class DotQAlias(object):
     def __get__(self, obj, cls=None):
         return BoundDotQAlias(obj)
 
+
 class BoundDotQAlias(object):
 
     def __init__(self, alias):
@@ -469,6 +471,7 @@ class SQLObjectBase(Storm):
 
 class ORMObject(SQLObjectBase):
     pass
+
 
 class SQLObjectResultSet(object):
     """SQLObject-equivalent of the ResultSet class in Storm.
@@ -721,6 +724,7 @@ class AutoUnicodeVariable(Variable):
             raise TypeError("Expected basestring, found %s" % repr(type(value)))
         return unicode(value)
 
+
 class AutoUnicode(SimpleProperty):
     variable_class = AutoUnicodeVariable
 
@@ -728,29 +732,38 @@ class AutoUnicode(SimpleProperty):
 class StringCol(PropertyAdapter, AutoUnicode):
     pass
 
+
 class IntCol(PropertyAdapter, Int):
     pass
+
 
 class BoolCol(PropertyAdapter, Bool):
     pass
 
+
 class FloatCol(PropertyAdapter, Float):
     pass
+
 
 class UtcDateTimeCol(PropertyAdapter, DateTime):
     _kwargs = {"tzinfo": tzutc()}
 
+
 class DateTimeCol(PropertyAdapter, DateTime):
     pass
+
 
 class DateCol(PropertyAdapter, Date):
     pass
 
+
 class IntervalCol(PropertyAdapter, TimeDelta):
     pass
 
+
 class DecimalCol(PropertyAdapter, Decimal):
     pass
+
 
 class UnicodeCol(PropertyAdapter, Unicode):
     pass
@@ -1004,6 +1017,7 @@ class Transaction(object):
     def unblock_implicit_flushes(self):
         self.store.unblock_implicit_flushes()
 
+
 class Connection(object):
     def __init__(self, db):
         self.db = db
@@ -1124,6 +1138,7 @@ class Connection(object):
 def connectionForURI(uri):
     return Connection(create_database(uri))
 
+
 def has_sql_call(column):
     if isinstance(column, PropertyColumn):
         return False
@@ -1143,23 +1158,29 @@ def has_sql_call(column):
 
     return False
 
+
 def sqlIdentifier(*args, **kwargs):
     return True
+
 
 def export_csv(*args, **kwargs):
     pass
 
+
 def orm_startup():
     pass
 
+
 def orm_enable_debugging():
     debug(True)
+
 
 def orm_get_columns(table):
     for name, v in table._attr_to_prop.items():
         if not isinstance(v, PropertyColumn):
             continue
         yield getattr(table, name), name
+
 
 def orm_get_random(column):
     if isinstance(column, Reference):
@@ -1187,6 +1208,7 @@ def orm_get_random(column):
         raise ValueError(column)
 
     return value
+
 
 def orm_get_unittest_value(klass, test, tables_dict, name, column):
     value = None
@@ -1247,8 +1269,10 @@ SOUnicodeCol = UnicodeCol
 SOPriceCol = PriceCol
 AbstractDecimalCol = DecimalCol
 
+
 def MyJoin(table1, table2, clause):
     return Join(table2, clause)
+
 
 def MyLeftJoin(table1, table2, clause):
     return LeftJoin(table2, clause)
@@ -1260,6 +1284,8 @@ Alias = ClassAlias
 AND = And
 IN = In
 INNERJOINOn = MyJoin
+
+
 def ISNOTNULL(arg):
     return arg != None
 

@@ -36,6 +36,7 @@ from stoqlib.reporting.template import BaseStoqReport
 
 _ = stoqlib_gettext
 
+
 class LoanReceipt(BaseStoqReport):
     """Loan receipt
     """

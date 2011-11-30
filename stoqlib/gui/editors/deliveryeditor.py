@@ -44,6 +44,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class Delivery(object):
     def __init__(self):
         self.price = None

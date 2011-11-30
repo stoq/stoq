@@ -123,6 +123,7 @@ def test_gui(config, options, tests=None):
         print 'gui tests ok'
     return 0
 
+
 def main(args):
     parser = get_option_parser()
     options, args = parser.parse_args(args)

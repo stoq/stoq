@@ -40,6 +40,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.exceptions import StockError
 from stoqlib.domain.test.domaintest import DomainTest
 
+
 class TestParameter(DomainTest):
 
     def _create_examples(self):

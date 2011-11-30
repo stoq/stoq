@@ -351,12 +351,14 @@ class SaleReturnSlave(BaseEditorSlave):
 
 # helper functions
 
+
 def cancel_sale(sale):
     msg = _('Do you really want to cancel this sale ?')
     if yesno(msg, gtk.RESPONSE_NO, _("Cancel sale"), _("Don't cancel sale")):
         sale.cancel()
         return True
     return False
+
 
 def return_sale(parent, sale_view, conn):
     from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard

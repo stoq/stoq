@@ -48,6 +48,7 @@ from stoqlib.lib.message import warning
 
 _ = stoqlib_gettext
 
+
 def _create_transaction(conn, till_entry):
     AccountTransaction(description=till_entry.description,
                        source_account=sysparam(conn).IMBALANCE_ACCOUNT,

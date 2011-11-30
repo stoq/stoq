@@ -64,6 +64,7 @@ log = Logger('stoqlib.fiscalprinter')
  CLOSE_TILL_ECF,
  CLOSE_TILL_BOTH) = range(4)
 
+
 def _flush_interface():
     """ Sometimes we need to 'flush' interface, so that the dialog has some
     time to disaperar before we send a blocking command to the printer
@@ -72,6 +73,8 @@ def _flush_interface():
         gtk.main_iteration()
 
 # FIXME: Maybe this should be a singleton
+
+
 class FiscalPrinterHelper(gobject.GObject):
     """
 

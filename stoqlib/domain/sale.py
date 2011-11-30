@@ -69,6 +69,7 @@ _ = stoqlib_gettext
 # Base Domain Classes
 #
 
+
 class SaleItem(Domain):
     """An item in a sale.
 
@@ -1357,6 +1358,7 @@ class SoldSellableView(Viewable):
                    SaleItemIpi.q.id == SaleItem.q.ipi_infoID),
     ]
 
+
 class SoldServicesView(SoldSellableView):
     columns = SoldSellableView.columns.copy()
     columns.update(dict(
@@ -1371,6 +1373,7 @@ class SoldServicesView(SoldSellableView):
         INNERJOINOn(None, Service,
                     Sellable.q.id == Service.q.sellableID),
     )
+
 
 class SoldProductsView(SoldSellableView):
     columns = SoldSellableView.columns.copy()

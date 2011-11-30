@@ -35,6 +35,8 @@ from twisted.trial import unittest
 import stoq
 
 # stolen from pyflakes
+
+
 def check(codeString, filename, warnings):
     try:
         try:
@@ -81,6 +83,7 @@ def check(codeString, filename, warnings):
         return len(warnings)
 
 checker = __import__('pyflakes.checker').checker
+
 
 class TestPyflakes(unittest.TestCase):
     def runPyflakes(self, path):

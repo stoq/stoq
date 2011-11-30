@@ -27,6 +27,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.sellable import Sellable, SellableCategory
 
+
 class CommissionSlave(BaseEditorSlave):
     """A slave for a sellable(product or service) commission source"""
 
@@ -102,6 +103,7 @@ class CommissionSlave(BaseEditorSlave):
         can_active_spin = not widget.get_active()
         self.commission_spin.set_sensitive(can_active_spin)
         self.commission_inst_spin.set_sensitive(can_active_spin)
+
 
 class CategoryCommissionSlave(CommissionSlave):
     """A slave for category commission source"""

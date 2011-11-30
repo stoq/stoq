@@ -67,6 +67,7 @@ logger = Logger('stoq.gui.admin')
  COL_NAME,
  COL_PIXBUF) = range(3)
 
+
 class Tasks(object):
     def __init__(self, app):
         self.app = app

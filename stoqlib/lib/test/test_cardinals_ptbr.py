@@ -27,6 +27,7 @@
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.cardinals_ptbr import to_words, to_words_as_money
 
+
 class TestParameter(DomainTest):
 
     def testToWords(self):

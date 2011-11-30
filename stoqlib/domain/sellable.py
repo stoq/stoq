@@ -50,6 +50,7 @@ _ = stoqlib_gettext
 # Base Domain Classes
 #
 
+
 class SellableUnit(Domain):
     """ A class used to represent the sellable unit.
 
@@ -273,6 +274,7 @@ class ClientCategoryPrice(Domain):
     def remove(self):
         """Removes this client category price from the database."""
         self.delete(self.id, self.get_connection())
+
 
 class Sellable(Domain):
     """ Sellable information of a certain item such a product

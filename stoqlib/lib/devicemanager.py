@@ -73,6 +73,7 @@ class SerialDevice(object):
         """
         self.device_name = device_name
 
+
 class DeviceManager(object):
     """DeviceManager is responsible for interacting with hardware devices.
     It optionally uses HAL to probe the system

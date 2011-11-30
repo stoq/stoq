@@ -24,6 +24,7 @@
 
 import os
 
+
 def pdftohtml(filename, output):
     cmd = 'pdftohtml -noframes -i -q %s %s' % (filename, output)
     return os.system(cmd)

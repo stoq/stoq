@@ -13,6 +13,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
 from stoqlib.lib.test.test_sintegra import compare_sintegra_file
 
+
 class TestSintegraGenerator(DomainTest):
 
     def testRegisters(self):

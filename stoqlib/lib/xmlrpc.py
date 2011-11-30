@@ -38,12 +38,15 @@ from stoqlib.lib.interfaces import IXMLRPCService
 log = Logger('stoqlib.xmlrpc')
 
 # Monkey patch xmlrpclib which is broken in < Python 2.5
+
+
 def dumps(real):
     def wrapper(*args, **kwargs):
         kwargs['allow_none'] = True
         return real(*args, **kwargs)
     return wrapper
 xmlrpclib.dumps = dumps(xmlrpclib.dumps)
+
 
 class Method(object):
     def __init__(self, method):
@@ -67,12 +70,16 @@ class Method(object):
                 raise Exception(msg)
 
 # This is only done so we can do a try/except around a method call
+
+
 class ServerProxy(xmlrpclib.ServerProxy):
     def __getattr__(self, name):
         return Method(xmlrpclib.ServerProxy.__getattr__(self, name))
 
+
 class XMLRPCWebService(SimpleXMLRPCServer.SimpleXMLRPCServer):
     allow_reuse_address = True
+
 
 class XMLRPCService(object):
     """An XMLRPCService using SimpleXMLRPCServer from the standard library

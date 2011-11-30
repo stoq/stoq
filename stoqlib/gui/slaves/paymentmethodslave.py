@@ -34,6 +34,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 N_ = _ = stoqlib_gettext
 
+
 class SelectPaymentMethodSlave(GladeSlaveDelegate):
     """ This slave show a radion button group with three payment method options:
     Money and Other (any other method supported by the system).
