@@ -685,7 +685,7 @@ class ExampleCreator(object):
 
     def create_transfer_order(self):
         from stoqlib.domain.transfer import TransferOrder
-        source_branch= self.create_branch("Source")
+        source_branch = self.create_branch("Source")
         dest_branch = self.create_branch("Dest")
         source_resp = self.create_employee("Ipswich")
         dest_resp = self.create_employee("Bolton")

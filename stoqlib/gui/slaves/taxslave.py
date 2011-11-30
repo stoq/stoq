@@ -69,7 +69,7 @@ class BaseTaxSlave(BaseEditorSlave):
 
         for w in self.hide_widgets:
             getattr(self, w).hide()
-            getattr(self, w+'_label').hide()
+            getattr(self, w + '_label').hide()
 
         for name, tooltip in self.tooltips.items():
             widget = getattr(self, name)
@@ -90,12 +90,12 @@ class BaseTaxSlave(BaseEditorSlave):
         for widget in self.all_widgets:
             if widget in valid_widgets:
                 getattr(self, widget).set_sensitive(True)
-                lbl = getattr(self, widget+'_label', None)
+                lbl = getattr(self, widget + '_label', None)
                 if lbl:
                     lbl.set_sensitive(True)
             else:
                 getattr(self, widget).set_sensitive(False)
-                lbl = getattr(self, widget+'_label', None)
+                lbl = getattr(self, widget + '_label', None)
                 if lbl:
                     lbl.set_sensitive(True)
 
@@ -423,7 +423,7 @@ class BaseIPISlave(BaseTaxSlave):
 class IPITemplateSlave(BaseIPISlave):
     model_type = ProductIpiTemplate
     proxy_widgets = (BaseIPISlave.combo_widgets +
-                     BaseIPISlave.percentage_widgets+
+                     BaseIPISlave.percentage_widgets +
                      BaseIPISlave.text_widgets)
     hide_widgets = BaseIPISlave.value_widgets
 

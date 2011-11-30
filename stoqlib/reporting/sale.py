@@ -322,7 +322,7 @@ class SalesPersonReport(SearchResultsReport):
             summary_row.pop(0)
             va = 0
             if total_amount:
-                va = total_amount/sales_qty
+                va = total_amount / sales_qty
             text = _("Sold value per sales %s") % (get_formatted_price(va, ))
 
         self.add_object_table(self.salesperson_list, self._get_columns(),

@@ -199,7 +199,7 @@ class SellablePriceDialog(BaseEditor):
         for i, s in enumerate(self.slave.listcontainer.list):
             s.save_changes()
             d.progressbar.set_text('%s/%s' % (i + 1, total))
-            d.progressbar.set_fraction((i + 1)/float(total))
+            d.progressbar.set_fraction((i + 1) / float(total))
             while gtk.events_pending():
                 gtk.main_iteration(False)
 

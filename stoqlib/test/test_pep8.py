@@ -56,6 +56,7 @@ ERRORS = [
     'E113', # unexpected indentation
     'E202', # whitespace before ')'
     'E211', # whitespace before '('
+    'E225', # missing whitespace around operator
     'E231', # E231 missing whitespace after ','/':'
     'E251', # no spaces around keyword / parameter equals
     'E262', # inline comment should start with '# '

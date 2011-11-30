@@ -362,7 +362,7 @@ class CashAdvanceEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        till=Till.get_current(self.conn)
+        till = Till.get_current(self.conn)
         return Settable(employee=None,
                         payment=None,
                         open_date=None,
@@ -490,7 +490,7 @@ class CashInEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        till=Till.get_current(conn)
+        till = Till.get_current(conn)
         return Settable(value=currency(0),
                         reason='',
                         till=till,

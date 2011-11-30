@@ -74,7 +74,7 @@ class ProductFullStockView(Viewable):
         tax_description=SellableTaxConstant.q.description,
         category_description=SellableCategory.q.description,
         total_stock_cost=const.SUM(
-                ProductStockItem.q.stock_cost*ProductStockItem.q.quantity),
+                ProductStockItem.q.stock_cost * ProductStockItem.q.quantity),
         stock=const.COALESCE(const.SUM(ProductStockItem.q.quantity +
                                        ProductStockItem.q.logic_quantity), 0),
         unit=SellableUnit.q.description,
@@ -211,7 +211,7 @@ class _PurchaseItemTotal(Viewable):
     columns = dict(
         id=PurchaseItem.q.sellableID,
         purchase_id=PurchaseOrder.q.id,
-        to_receive=const.SUM(PurchaseItem.q.quantity-
+        to_receive=const.SUM(PurchaseItem.q.quantity -
                              PurchaseItem.q.quantity_received)
     )
 

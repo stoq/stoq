@@ -58,7 +58,7 @@ def collect_report():
 
     for i, (exctype, value, tb) in enumerate(_tracebacks):
         text += '\n'.join(traceback.format_exception(exctype, value, tb))
-        if i != len(_tracebacks) -1:
+        if i != len(_tracebacks) - 1:
             text += '-' * 60
     text += ('-' * 80) + '\n'
 

@@ -122,7 +122,7 @@ class ReportLine(Flowable):
 class Signature(Flowable):
     """ A signature flowable """
 
-    def __init__(self, labels, align=RIGHT, line_width=75*mm, height=60,
+    def __init__(self, labels, align=RIGHT, line_width=75 * mm, height=60,
                  text_align=CENTER, style_data=None):
         """ Creates a new Signature object
 

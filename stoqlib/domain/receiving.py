@@ -211,7 +211,7 @@ class ReceivingOrder(Domain):
             payments = group.get_pending_payments()
             payments_number = payments.count()
             if payments_number > 0:
-                per_installments_value = difference/payments_number
+                per_installments_value = difference / payments_number
                 for payment in payments:
                     new_value = payment.value + per_installments_value
                     payment.update_value(new_value)

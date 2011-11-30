@@ -331,7 +331,7 @@ class SintegraRegister(object):
                 "There are items with a total length of %d in %s, "
                 "but only 124 is allowed" % (total, self.__class__.__name__))
         elif total < 124:
-            self.padding = 124-total
+            self.padding = 124 - total
         else:
             self.padding = 0
 
@@ -349,7 +349,7 @@ class SintegraRegister(object):
             values.append(self._values[name])
         if self.padding:
             values.append(' '  * self.padding)
-        return '%02d%s\r\n'% (self.sintegra_number,
+        return '%02d%s\r\n' % (self.sintegra_number,
                               ''.join(values))
 
     # Private

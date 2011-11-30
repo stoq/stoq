@@ -423,7 +423,7 @@ class PurchaseOrder(Domain):
         The sum of all the items cost * items quantity
         """
         return currency(self.get_items().sum(
-            PurchaseItem.q.cost *PurchaseItem.q.quantity) or 0)
+            PurchaseItem.q.cost * PurchaseItem.q.quantity) or 0)
 
     def get_purchase_total(self):
         subtotal = self.get_purchase_subtotal()

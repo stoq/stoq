@@ -102,9 +102,9 @@ class TestReceivingOrder(DomainTest):
         installment_count = order.payments.count()
         for pay in order.payments:
             self.assertEqual(pay.value,
-                order.get_total()/installment_count)
+                order.get_total() / installment_count)
             self.assertEqual(pay.value,
-                order.get_total()/installment_count)
+                order.get_total() / installment_count)
         self.assertEqual(order.invoice_total, order.get_total())
         self.assertEquals(stock_item.quantity, 16)
 
@@ -158,7 +158,7 @@ class TestReceivingOrder(DomainTest):
         payment_dict = {}
         for pay in order.payments:
             self.assertEqual(pay.value,
-                order.get_total()/installment_count)
+                order.get_total() / installment_count)
             payment_dict[pay] = pay.value
 
         order.discount_value = 20
@@ -169,7 +169,7 @@ class TestReceivingOrder(DomainTest):
         order.update_payments()
 
         for pay in order.payments:
-            self.assertEqual(pay.value, order.get_total()/installment_count)
+            self.assertEqual(pay.value, order.get_total() / installment_count)
             self.failIf(pay.value <= payment_dict[pay])
 
     def testUpdatePaymentValuesWithFreightPayment(self):
@@ -186,7 +186,7 @@ class TestReceivingOrder(DomainTest):
         payment_dict = {}
         for pay in order.payments:
             self.assertEqual(pay.value,
-                order.get_total()/installment_count)
+                order.get_total() / installment_count)
             payment_dict[pay] = pay.value
 
         order.discount_value = 20
