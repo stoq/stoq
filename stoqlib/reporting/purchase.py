@@ -63,7 +63,7 @@ class PurchaseReport(ObjectListReport):
     def _setup_table(self):
         totals = [(purchase.ordered_quantity, purchase.received_quantity,
                    purchase.total) for purchase in self._purchases]
-        ordered, received , total = zip(*totals)
+        ordered, received, total = zip(*totals)
         self.add_summary_by_column(
             _(u'Ordered'), format_quantity(sum(ordered, Decimal(0))))
         self.add_summary_by_column(

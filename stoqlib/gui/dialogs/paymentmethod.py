@@ -46,10 +46,10 @@ class PaymentMethodsDialog(BasicDialog):
     title = _("Payment Method Settings")
 
     # TODO: implement editor for 'multiple' payment method.
-    METHOD_EDITORS = {'card' : CardPaymentMethodEditor,
-                      'money' : MoneyPaymentMethodEditor,
-                      'check' : PaymentMethodEditor,
-                      'bill' : PaymentMethodEditor}
+    METHOD_EDITORS = {'card': CardPaymentMethodEditor,
+                      'money': MoneyPaymentMethodEditor,
+                      'check': PaymentMethodEditor,
+                      'bill': PaymentMethodEditor}
 
     def __init__(self, conn):
         BasicDialog.__init__(self)

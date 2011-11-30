@@ -50,7 +50,7 @@ class LoginDialog(GladeDelegate, RunnableView):
     size = (-1, -1)
 
     def __init__(self, title=None):
-        self.keyactions = {gtk.keysyms.Escape : self.on_escape_pressed}
+        self.keyactions = {gtk.keysyms.Escape: self.on_escape_pressed}
         GladeDelegate.__init__(self, gladefile=self.gladefile,
                           keyactions=self.keyactions,
                           delete_handler=gtk.main_quit)

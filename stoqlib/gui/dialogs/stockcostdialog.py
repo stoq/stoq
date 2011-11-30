@@ -103,7 +103,7 @@ class StockCostDialog(BaseEditor):
         self.slave.set_list_type(ListType.READONLY)
         self.slave.listcontainer.list.connect(
             "cell-edited", self._on_objectlist__cell_edited)
-        self.attach_slave("on_slave_holder" , self.slave)
+        self.attach_slave("on_slave_holder", self.slave)
 
     def on_confirm(self):
         trans = api.new_transaction()

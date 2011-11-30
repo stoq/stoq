@@ -281,18 +281,18 @@ class MagentoProduct(MagentoBaseSyncUp):
                         self.TAX_NONE)
 
         return {
-            'status' : status,
-            'name' : sellable.get_description(),
-            'description' : sellable.notes,
-            'short_description' : sellable.notes.split('\n')[0],
-            'cost' : sellable.cost,
-            'price' : sellable.price,
-            'tax_class_id' : tax_class_id,
-            'url_key' : self.url_key,
-            'news_from_date' : self.news_from_date,
-            'news_to_date' : self.news_to_date,
-            'visibility' : self.visibility,
-            'weight' : self.product.weight or 1,
+            'status': status,
+            'name': sellable.get_description(),
+            'description': sellable.notes,
+            'short_description': sellable.notes.split('\n')[0],
+            'cost': sellable.cost,
+            'price': sellable.price,
+            'tax_class_id': tax_class_id,
+            'url_key': self.url_key,
+            'news_from_date': self.news_from_date,
+            'news_to_date': self.news_to_date,
+            'visibility': self.visibility,
+            'weight': self.product.weight or 1,
             }
 
 
@@ -363,6 +363,6 @@ class MagentoStock(MagentoBaseSyncUp):
                 quantity = stock_item.quantity + stock_item.logic_quantity
 
         return {
-            'qty' : quantity,
-            'is_in_stock' : int(product.sellable.can_be_sold()),
+            'qty': quantity,
+            'is_in_stock': int(product.sellable.can_be_sold()),
             }

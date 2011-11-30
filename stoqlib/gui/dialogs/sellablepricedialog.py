@@ -176,7 +176,7 @@ class SellablePriceDialog(BaseEditor):
     def setup_slaves(self):
         self.slave = ListSlave(self._get_columns())
         self.slave.set_list_type(ListType.READONLY)
-        self.attach_slave("on_slave_holder" , self.slave)
+        self.attach_slave("on_slave_holder", self.slave)
 
     def on_cancel(self):
         # Call clear on objectlist before destruction. Workaround for a bug

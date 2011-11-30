@@ -204,77 +204,77 @@ def _do_int_group(numstr, feminine=False):
 words = {}
 
 words[0] = {
-    0 : None,
-    1 : 'um',
-    2 : 'dois',
-    3 : u'três',
-    4 : 'quatro',
-    5 : 'cinco',
-    6 : 'seis',
-    7 : 'sete',
-    8 : 'oito',
-    9 : 'nove'
+    0: None,
+    1: 'um',
+    2: 'dois',
+    3: u'três',
+    4: 'quatro',
+    5: 'cinco',
+    6: 'seis',
+    7: 'sete',
+    8: 'oito',
+    9: 'nove'
 }
 
 words[1] = {
-    0 : None,
-    1 : None,
-    2 : 'vinte',
-    3 : 'trinta',
-    4 : 'quarenta',
-    5 : 'cinquenta',
-    6 : 'sessenta',
-    7 : 'setenta',
-    8 : 'oitenta',
-    9 : 'noventa'
+    0: None,
+    1: None,
+    2: 'vinte',
+    3: 'trinta',
+    4: 'quarenta',
+    5: 'cinquenta',
+    6: 'sessenta',
+    7: 'setenta',
+    8: 'oitenta',
+    9: 'noventa'
 }
 
 words[2] = {
-    0 : None,
-    1 : None,
-    2 : 'duzentos',
-    3 : 'trezentos',
-    4 : 'quatrocentos',
-    5 : 'quinhentos',
-    6 : 'seiscentos',
-    7 : 'setecentos',
-    8 : 'oitocentos',
-    9 : 'novecentos'
+    0: None,
+    1: None,
+    2: 'duzentos',
+    3: 'trezentos',
+    4: 'quatrocentos',
+    5: 'quinhentos',
+    6: 'seiscentos',
+    7: 'setecentos',
+    8: 'oitocentos',
+    9: 'novecentos'
 }
 
 # Português tem a maravilha dos números variarem conforme o gênero
 feminine_words = {}
 feminine_words[0] = words[0].copy()
-feminine_words[0].update({1 : 'uma', 2 : 'duas'})
+feminine_words[0].update({1: 'uma', 2: 'duas'})
 feminine_words[1] = words[1].copy()
 feminine_words[2] = words[2].copy()
 feminine_words[2].update({
-    2 : 'duzentas',
-    3 : 'trezentas',
-    4 : 'quatrocentas',
-    5 : 'quinhentas',
-    6 : 'seiscentas',
-    7 : 'setecentas',
-    8 : 'oitocentas',
-    9 : 'novecentas'
+    2: 'duzentas',
+    3: 'trezentas',
+    4: 'quatrocentas',
+    5: 'quinhentas',
+    6: 'seiscentas',
+    7: 'setecentas',
+    8: 'oitocentas',
+    9: 'novecentas'
 })
 
 tens = {
-    0 : "dez",
-    1 : "onze",
-    2 : "doze",
-    3 : "treze",
-    4 : "quatorze",
-    5 : "quinze",
-    6 : "dezesseis",
-    7 : "dezessete",
-    8 : "dezoito",
-    9 : "dezenove"
+    0: "dez",
+    1: "onze",
+    2: "doze",
+    3: "treze",
+    4: "quatorze",
+    5: "quinze",
+    6: "dezesseis",
+    7: "dezessete",
+    8: "dezoito",
+    9: "dezenove"
 }
 
 mults = {
-    0 : None,
-    1 : ("mil", "mil"),
-    2 : (u"milhão", u"milhões"),
-    3 : (u"bilhão", u"bilhões"),
+    0: None,
+    1: ("mil", "mil"),
+    2: (u"milhão", u"milhões"),
+    3: (u"bilhão", u"bilhões"),
 }

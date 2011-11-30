@@ -273,11 +273,11 @@ class ECFEditor(BaseEditor):
         # at the description and guess
         payment_enums = {'dinheiro': PaymentMethodType.MONEY,
                          'cheque': PaymentMethodType.CHECK,
-                         'boleto' : PaymentMethodType.BILL,
-                         'cartao credito' : PaymentMethodType.CREDIT_CARD,
-                         'cartao debito' : PaymentMethodType.DEBIT_CARD,
-                         'financeira' : PaymentMethodType.FINANCIAL,
-                         'vale compra' : PaymentMethodType.GIFT_CERTIFICATE
+                         'boleto': PaymentMethodType.BILL,
+                         'cartao credito': PaymentMethodType.CREDIT_CARD,
+                         'cartao debito': PaymentMethodType.DEBIT_CARD,
+                         'financeira': PaymentMethodType.FINANCIAL,
+                         'vale compra': PaymentMethodType.GIFT_CERTIFICATE
                           }
 
         for device_value, constant_name in driver.get_payment_constants():

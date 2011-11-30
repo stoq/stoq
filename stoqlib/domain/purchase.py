@@ -157,8 +157,8 @@ class PurchaseOrder(Domain):
     (FREIGHT_FOB,
      FREIGHT_CIF) = range(2)
 
-    freight_types = {FREIGHT_FOB    : _(u'FOB'),
-                     FREIGHT_CIF    : _(u'CIF')}
+    freight_types = {FREIGHT_FOB: _(u'FOB'),
+                     FREIGHT_CIF: _(u'CIF')}
 
     status = IntCol(default=ORDER_QUOTING)
     open_date = DateTimeCol(default=datetime.datetime.now)

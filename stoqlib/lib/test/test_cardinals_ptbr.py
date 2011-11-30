@@ -71,7 +71,7 @@ class TestParameter(DomainTest):
         self.assertEqual(to_words(2000100), u"dois milhões e cem")
         self.assertEqual(to_words(2000111), u"dois milhões cento e onze")
         self.assertEqual(to_words(2000102), u"dois milhões cento e dois")
-        self.assertEqual(to_words(2000102, feminine=1) ,
+        self.assertEqual(to_words(2000102, feminine=1),
                                     u"dois milhões cento e duas")
         self.assertEqual(to_words(10000111), u"dez milhões cento e onze")
         self.assertEqual(to_words(10000118),
