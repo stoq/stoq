@@ -426,7 +426,7 @@ class PersonAdaptToIndividual(PersonAdapter):
     genders = {GENDER_MALE:     _(u'Male'),
                GENDER_FEMALE:   _(u'Female')}
 
-    cpf  = UnicodeCol(default='')
+    cpf = UnicodeCol(default='')
     rg_number = UnicodeCol(default='')
     birth_date = DateTimeCol(default=None)
     occupation = UnicodeCol(default='')
@@ -477,7 +477,7 @@ class PersonAdaptToCompany(PersonAdapter):
     implements(ICompany)
 
     # Cnpj, state_registry and city registry are Brazil-specific information.
-    cnpj  = UnicodeCol(default='')
+    cnpj = UnicodeCol(default='')
     fancy_name = UnicodeCol(default='')
     state_registry = UnicodeCol(default='')
     city_registry = UnicodeCol(default='')
@@ -750,7 +750,7 @@ class PersonAdaptToUser(PersonAdapter):
     username = UnicodeCol(alternateID=True)
     password = UnicodeCol()
     is_active = BoolCol(default=True)
-    profile  = ForeignKey('UserProfile')
+    profile = ForeignKey('UserProfile')
 
     @classmethod
     def check_password_for(cls, username, password, conn):

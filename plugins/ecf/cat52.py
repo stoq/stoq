@@ -475,7 +475,7 @@ class CATRegister(object):
                 arg = arg[:length]
         elif argtype == datetime.date:
             # YYYYMMDD
-            arg  = value.strftime("%Y%m%d")
+            arg = value.strftime("%Y%m%d")
         elif argtype == datetime.time:
             # HHMM
             arg = value.strftime("%H%M%S")

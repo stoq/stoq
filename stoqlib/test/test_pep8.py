@@ -59,6 +59,7 @@ ERRORS = [
     'E202', # whitespace before ')'
     'E203', # whitespace before ':'
     'E211', # whitespace before '('
+    'E221', # multiple spaces before operator
     'E225', # missing whitespace around operator
     'E231', # E231 missing whitespace after ','/':'
     'E251', # no spaces around keyword / parameter equals

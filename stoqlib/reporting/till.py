@@ -46,7 +46,7 @@ class TillHistoryReport(ObjectListReport):
         self._setup_items_table()
 
     def _setup_items_table(self):
-        total  = sum([te.value or 0 for te in self._till_entries])
+        total = sum([te.value or 0 for te in self._till_entries])
         self.add_summary_by_column(_(u'Value'), get_formatted_price(total))
         self.add_object_table(self._till_entries, self.get_columns(),
                               summary_row=self.get_summary_row())

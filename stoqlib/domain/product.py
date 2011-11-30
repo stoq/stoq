@@ -232,8 +232,8 @@ class Product(Domain):
             # We have enought of this component items to produce.
             if  stock >= needed:
                 continue
-            comp_max_time  = max(comp_max_time,
-                                 i.component.get_max_lead_time(needed, branch))
+            comp_max_time = max(comp_max_time,
+                                i.component.get_max_lead_time(needed, branch))
         return self.production_time + comp_max_time
 
     def get_max_lead_time(self, quantity, branch):
