@@ -314,8 +314,8 @@ class IEmployee(IPersonFacet):
                               'MilitaryData')
     voter_data = Attribute('voter_data',
                            'VoterData')
-    bank_account  = Attribute('bank_account',
-                              'BankAccount')
+    bank_account = Attribute('bank_account',
+                             'BankAccount')
     role = Attribute('A reference to an employee role object')
 
     def get_role_history():
@@ -389,7 +389,7 @@ class ICreditProvider(IPersonFacet):
     provider_type = Attribute('This attribute must be either'
                               'provider card or provider '
                               'finance')
-    short_name  = Attribute('A short description of this provider')
+    short_name = Attribute('A short description of this provider')
     provider_id = Attribute('An identification for this provider')
     open_contract_date = Attribute('The date when we start working with '
                                    'this provider')

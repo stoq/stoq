@@ -79,23 +79,23 @@ def pretty_date(time=False, asdays=False):
         else:
             return _df(seconds, 3600, _('hours'), past)
     else:
-        if days   == 0:
+        if days == 0:
             return _('today')
-        elif days   == 1:
+        elif days == 1:
             return past and _('yesterday') or _('tomorrow')
-        elif days   == 2:
+        elif days == 2:
             return past and _('day before') or _('day after')
-        elif days    < 7:
+        elif days < 7:
             return _df(days, 1, _('days'), past)
-        elif days    < 14:
+        elif days < 14:
             return past and _('last week') or _('next week')
-        elif days    < 31:
+        elif days < 31:
             return _df(days, 7, _('weeks'), past)
-        elif days    < 61:
+        elif days < 61:
             return past and _('last month') or _('next month')
-        elif days    < 365:
+        elif days < 365:
             return _df(days, 30, _('months'), past)
-        elif days    < 730:
+        elif days < 730:
             return past and _('last year') or _('next year')
         else:
             return _df(days, 365, _('years'), past)

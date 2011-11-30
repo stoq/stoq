@@ -174,7 +174,7 @@ class Signature(Flowable):
         line_height = y + SIGNATURE_FONT[1] + 1 * mm
 
         # XXX Still missing support for a real style object
-        default_font_name, default_font_size  = SIGNATURE_FONT
+        default_font_name, default_font_size = SIGNATURE_FONT
         font_name = (self.style_data and self.style_data.fontName or
                      default_font_name)
         font_size = (self.style_data and self.style_data.fontSize or

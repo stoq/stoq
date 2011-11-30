@@ -349,7 +349,7 @@ class SintegraRegister(object):
         for (name, _, _) in self.sintegra_fields:
             values.append(self._values[name])
         if self.padding:
-            values.append(' '  * self.padding)
+            values.append(' ' * self.padding)
         return '%02d%s\r\n' % (self.sintegra_number,
                               ''.join(values))
 
@@ -357,7 +357,7 @@ class SintegraRegister(object):
 
     def _arg_to_string(self, value, length, argtype):
         if value is None:
-            return ' '  * length
+            return ' ' * length
 
         if argtype == number:
             # If a value is higher the the maximum allowed,
