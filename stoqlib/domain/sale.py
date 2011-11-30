@@ -1244,6 +1244,10 @@ class SaleView(Viewable):
     # Public API
     #
 
+    def can_return(self):
+        return (self.status == Sale.STATUS_CONFIRMED or
+                self.status == Sale.STATUS_PAID)
+
     def get_subtotal(self):
         if self.v_ipi is not None:
             return currency(self.subtotal + self.v_ipi)
