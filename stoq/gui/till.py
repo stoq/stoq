@@ -86,10 +86,12 @@ class TillApp(SearchableAppWindow):
             ("TillMenu", None, _("_Till")),
             ('TillOpen', None, _('Open till...'), '<Control>F6'),
             ('TillClose', None, _('Close till...'), '<Control>F7'),
-            ('TillAddCash', None, _('Add cash...'), '<Control>s'),
-            ('TillRemoveCash', None, _('Remove cash...'), '<Control>j'),
             ('ExportCSV', gtk.STOCK_SAVE_AS,
              _('Export CSV...'), '<Control>F10'),
+
+            # New
+            ('TillAddCash', None, _('Cash addition'), ''),
+            ('TillRemoveCash', None, _('Cash removal'), ''),
 
             # Search
             ("SearchClient", None, _("Clients..."), '<Control><Alt>c',
@@ -137,6 +139,8 @@ class TillApp(SearchableAppWindow):
             api.get_current_branch(self.conn).id, )
 
     def activate(self):
+        self.app.launcher.add_new_items([self.TillAddCash,
+                                         self.TillRemoveCash])
         self.app.launcher.add_search_items([self.SearchFiscalTillOperations,
                                             self.SearchClient,
                                             self.SearchSale])
@@ -148,7 +152,7 @@ class TillApp(SearchableAppWindow):
         self.uimanager.remove_ui(self.till_ui)
 
     def new_activate(self):
-        pass
+        self._run_add_cash_dialog()
 
     def search_activate(self):
         self._run_search_dialog(TillFiscalOperationsSearch)
@@ -361,6 +365,17 @@ class TillApp(SearchableAppWindow):
         sale_view = self._check_selected()
         run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
 
+    def _run_add_cash_dialog(self):
+        try:
+            model = run_dialog(CashInEditor, self, self.conn)
+        except TillError as err:
+            # Inform the error to the user instead of crashing
+            warning(err)
+            return
+
+        if api.finish_transaction(self.conn, model):
+            self._update_total()
+
     def _return_sale(self):
         sale_view = self._check_selected()
         retval = return_sale(self.get_toplevel(), sale_view, self.conn)
@@ -446,9 +461,7 @@ class TillApp(SearchableAppWindow):
         self._printer.open_till()
 
     def on_TillAddCash__activate(self, action):
-        model = run_dialog(CashInEditor, self, self.conn)
-        if api.finish_transaction(self.conn, model):
-            self._update_total()
+        self._run_add_cash_dialog()
 
     def on_TillRemoveCash__activate(self, action):
         model = run_dialog(CashOutEditor, self, self.conn)

@@ -25,12 +25,15 @@
 <ui>
   <menubar action="menubar">
     <menu action="FileMenu">
+      <menu action="NewMenu">
+        <placeholder name="NewMenuItemPH">
+          <menuitem action="TillAddCash"/>
+          <menuitem action="TillRemoveCash"/>
+        </placeholder>
+      </menu>
       <placeholder name="FileMenuPH">
         <menuitem action="TillOpen"/>
         <menuitem action="TillClose"/>
-        <separator/>
-        <menuitem action="TillAddCash"/>
-        <menuitem action="TillRemoveCash"/>
         <separator/>
         <menuitem action="ExportCSV"/>
       </placeholder>
