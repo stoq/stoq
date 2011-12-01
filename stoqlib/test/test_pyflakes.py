@@ -85,25 +85,33 @@ def check(codeString, filename, warnings):
 checker = __import__('pyflakes.checker').checker
 
 
-class TestPyflakes(unittest.TestCase):
-    def runPyflakes(self, path):
-        warnings = []
-        msgs = []
-        result = 0
+def get_pyflakes_filenames(root):
+    for dirpath in ['stoq', 'stoqlib', 'plugins']:
+        path = os.path.abspath(os.path.join(root, dirpath))
         for dirpath, dirnames, filenames in os.walk(path):
             for filename in filenames:
                 if not filename.endswith('.py'):
                     continue
-                filename = os.path.join(dirpath, filename)
-                try:
-                    fd = file(filename, 'U')
-                    try:
-                        result = check(fd.read(), filename, warnings)
-                    finally:
-                        fd.close()
-                except IOError, msg:
-                    print >> sys.stderr, "%s: %s" % (filename, msg.args[1])
-                    result = 1
+                full = os.path.join(dirpath, filename)
+                name = full[len(root):][:-3]
+                name = name.replace('/', '_')
+                yield name, full
+
+
+class TestPyflakes(unittest.TestCase):
+    def runPyflakes(self, root, filename):
+        warnings = []
+        msgs = []
+        result = 0
+        try:
+            fd = file(filename, 'U')
+            try:
+                result = check(fd.read(), filename, warnings)
+            finally:
+                fd.close()
+        except IOError, msg:
+            print >> sys.stderr, "%s: %s" % (filename, msg.args[1])
+            result = 1
 
         warnings.sort(lambda a, b: cmp(a.lineno, b.lineno))
         for warning in warnings:
@@ -111,12 +119,13 @@ class TestPyflakes(unittest.TestCase):
             print msg
             msgs.append(msg)
         if result:
-            raise AssertionError("%d warnings:\n%s\n" % (len(msgs), '\n'.join(msgs), ))
+            raise AssertionError(
+                "%d warnings:\n%s\n" % (len(msgs), '\n'.join(msgs), ))
+
 
 root = os.path.dirname(os.path.dirname(stoq.__file__)) + '/'
-for dirpath in ['stoq', 'stoqlib', 'plugins']:
-    path = os.path.abspath(os.path.join(root, dirpath))
-    name = 'test_%s_pyflakes' % (dirpath, )
-    func = lambda self, path=path: self.runPyflakes(path)
+for testname, filename in get_pyflakes_filenames(root):
+    name = 'test_%s' % (testname, )
+    func = lambda self, r=root, f=filename: self.runPyflakes(r, f)
     func.__name__ = name
     setattr(TestPyflakes, name, func)

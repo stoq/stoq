@@ -33,24 +33,6 @@ from twisted.trial import unittest
 
 import stoq
 
-
-class TestPEP8(unittest.TestCase):
-    def runPep8(self, path):
-        result = 0
-        for dirpath, dirnames, filenames in os.walk(path):
-            for filename in filenames:
-                if not filename.endswith('.py'):
-                    continue
-                filename = os.path.join(dirpath, filename)
-                pep8.process_options([
-                    '--repeat',
-                    '--select=%s' % (','.join(ERRORS), ), filename])
-                pep8.input_file(filename)
-                result += pep8.get_count()
-
-        if result:
-            raise AssertionError("ERROR: %d PEP8 errors in %s" % (result, path, ))
-
 ERRORS = [
     'E111', # indentation is not a multiple of four
     'E112', # expected an indented block
@@ -81,10 +63,35 @@ ERRORS = [
     'E702', # multiple statements on one line (semicolon)
 ]
 
+
+class TestPEP8(unittest.TestCase):
+    def runPep8(self, filename):
+        pep8.process_options([
+            '--repeat',
+            '--select=%s' % (','.join(ERRORS), ), filename])
+        pep8.input_file(filename)
+        result = pep8.get_count()
+        if result:
+            raise AssertionError(
+                "ERROR: %d PEP8 errors in %s" % (result, filename, ))
+
+
+def get_pep8_filenames(root):
+    for dirpath in ['stoq', 'stoqlib', 'plugins']:
+        path = os.path.abspath(os.path.join(root, dirpath))
+        for dirpath, dirnames, filenames in os.walk(path):
+            for filename in filenames:
+                if not filename.endswith('.py'):
+                    continue
+                full = os.path.join(dirpath, filename)
+                name = full[len(root):][:-3]
+                name = name.replace('/', '_')
+                yield name, full
+
+
 root = os.path.dirname(os.path.dirname(stoq.__file__)) + '/'
-for dirpath in ['stoq', 'stoqlib', 'plugins']:
-    path = os.path.abspath(os.path.join(root, dirpath))
-    name = 'test_%s_pep8' % (dirpath, )
-    func = lambda self, path=path: self.runPep8(path)
+for testname, filename in get_pep8_filenames(root):
+    name = 'test_%s' % (testname, )
+    func = lambda self, f=filename: self.runPep8(f)
     func.__name__ = name
     setattr(TestPEP8, name, func)
