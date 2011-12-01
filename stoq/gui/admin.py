@@ -315,7 +315,8 @@ class AdminApp(AppWindow):
 
     def activate(self):
         self.app.launcher.add_new_items([self.NewUser])
-        self.app.launcher.add_search_items([self.SearchUser])
+        self.app.launcher.add_search_items([self.SearchUser,
+                                            self.SearchEmployee])
         self.app.launcher.NewToolItem.set_tooltip(
             _("Create a new user"))
         self.app.launcher.SearchToolItem.set_tooltip(
