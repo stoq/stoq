@@ -27,18 +27,50 @@ from decimal import Decimal
 
 from dateutil.relativedelta import relativedelta
 from stoqlib.domain.taxes import (ProductIcmsTemplate,
-                                  ProductTaxTemplate)
+                                  ProductTaxTemplate,
+                                  SaleItemIpi)
 from stoqlib.domain.test.domaintest import DomainTest
+
+
+class TestBaseTax(DomainTest):
+    def testSetFromTemplate(self):
+        tax_template = ProductTaxTemplate(
+            connection=self.trans,
+            tax_type=ProductTaxTemplate.TYPE_ICMS)
+        icms_template = ProductIcmsTemplate(
+            connection=self.trans,
+            product_tax_template=tax_template)
+        icms_template.set_from_template(tax_template)
+
+
+class TestProductTaxTemplate(DomainTest):
+    def testGetTaxModel(self):
+        tax_template = ProductTaxTemplate(
+            connection=self.trans,
+            tax_type=ProductTaxTemplate.TYPE_ICMS)
+        self.failIf(tax_template.get_tax_model())
+        ProductIcmsTemplate(
+            connection=self.trans,
+            product_tax_template=tax_template)
+        self.failUnless(tax_template.get_tax_model())
+
+    def testGetTaxTypeStr(self):
+        tax_template = ProductTaxTemplate(
+            connection=self.trans,
+            tax_type=ProductTaxTemplate.TYPE_ICMS)
+        self.assertEqual(tax_template.get_tax_type_str(), 'ICMS')
 
 
 class TestProductIcmsTemplate(DomainTest):
     """Tests for ProductIcmsTemplate class"""
 
     def testIsPCredSnValid(self):
-        tax_template = ProductTaxTemplate(connection=self.trans,
-                                          tax_type=ProductTaxTemplate.TYPE_ICMS)
-        icms_template = ProductIcmsTemplate(connection=self.trans,
-                                            product_tax_template=tax_template)
+        tax_template = ProductTaxTemplate(
+            connection=self.trans,
+            tax_type=ProductTaxTemplate.TYPE_ICMS)
+        icms_template = ProductIcmsTemplate(
+            connection=self.trans,
+            product_tax_template=tax_template)
 
         self.assertTrue(icms_template.is_p_cred_sn_valid())
 
@@ -62,7 +94,6 @@ class TestSaleItemIcms(DomainTest):
         sale = self.create_sale()
         product = self.create_product(price=price)
         sale_item = sale.add_sellable(product.sellable, quantity=quantity)
-
         if sale_item_icms:
             sale_item.icms_info = sale_item_icms
 
@@ -103,3 +134,87 @@ class TestSaleItemIcms(DomainTest):
         sale_item_icms.p_cred_sn = Decimal("3.10")
         sale_item_icms.update_values()
         self.failIf(sale_item_icms.v_cred_icms_sn)
+
+    def testUpdateValuesNormal(self):
+        sale_item_icms = self.create_sale_item_icms()
+        sale_item = self._get_sale_item(sale_item_icms, 1, 10)
+        sale_item.sale.branch.crt = 0
+        sale_item_icms.cst = 0
+        sale_item_icms.update_values()
+
+        sale_item_icms = self.create_sale_item_icms()
+        sale_item = self._get_sale_item(sale_item_icms, 1, 10)
+        sale_item.sale.branch.crt = 0
+        sale_item_icms.cst = 10
+        sale_item_icms.p_red_bc_st = 10
+        sale_item_icms.p_mva_st = 10
+        sale_item_icms.v_bc_st = 10
+        sale_item_icms.p_icms_st = 10
+        sale_item_icms.v_icms = 10
+        sale_item_icms.v_icms_st = 10
+        sale_item_icms.p_red_bc = 10
+        sale_item_icms.p_icms = 10
+        sale_item_icms.p_v_bc = 10
+        sale_item_icms.p_red_bc = 10
+        sale_item_icms.update_values()
+
+        sale_item_icms = self.create_sale_item_icms()
+        sale_item = self._get_sale_item(sale_item_icms, 1, 10)
+        sale_item.sale.branch.crt = 0
+        sale_item_icms.cst = 20
+        sale_item_icms.update_values()
+
+        sale_item_icms = self.create_sale_item_icms()
+        sale_item = self._get_sale_item(sale_item_icms, 1, 10)
+        sale_item.sale.branch.crt = 0
+        sale_item_icms.cst = 30
+        sale_item_icms.update_values()
+
+        sale_item_icms = self.create_sale_item_icms()
+        sale_item = self._get_sale_item(sale_item_icms, 1, 10)
+        sale_item.sale.branch.crt = 0
+        sale_item_icms.cst = 40
+        sale_item_icms.update_values()
+
+        sale_item_icms = self.create_sale_item_icms()
+        sale_item = self._get_sale_item(sale_item_icms, 1, 10)
+        sale_item.sale.branch.crt = 0
+        sale_item_icms.cst = 51
+        sale_item_icms.update_values()
+
+        sale_item_icms = self.create_sale_item_icms()
+        sale_item = self._get_sale_item(sale_item_icms, 1, 10)
+        sale_item.sale.branch.crt = 0
+        sale_item_icms.cst = 60
+        sale_item_icms.update_values()
+
+        sale_item_icms = self.create_sale_item_icms()
+        sale_item = self._get_sale_item(sale_item_icms, 1, 10)
+        sale_item.sale.branch.crt = 0
+        sale_item_icms.cst = 70
+        sale_item_icms.update_values()
+
+
+class TestSaleItemIpi(DomainTest):
+    def _get_sale_item(self, sale_item_ipi=None, quantity=1, price=10):
+        sale = self.create_sale()
+        product = self.create_product(price=price)
+        sale_item = sale.add_sellable(product.sellable,
+                                      quantity=quantity)
+        if sale_item_ipi:
+            sale_item.ipi_info = sale_item_ipi
+
+        return sale_item
+
+    def testSetInitialValues(self):
+        sale_item_ipi = SaleItemIpi(connection=self.trans)
+        self._get_sale_item(sale_item_ipi, 1, 10)
+        sale_item_ipi.cst = 0
+        sale_item_ipi.p_ipi = 0
+        sale_item_ipi.set_initial_values()
+
+        sale_item_ipi = SaleItemIpi(connection=self.trans)
+        self._get_sale_item(sale_item_ipi, 1, 10)
+        sale_item_ipi.cst = 0
+        sale_item_ipi.calculo = SaleItemIpi.CALC_UNIDADE
+        sale_item_ipi.set_initial_values()
