@@ -275,16 +275,12 @@ class TestTill(DomainTest):
         self.assertEqual(till.get_balance(), -10)
 
     def testGetLast(self):
-        self.failIf(Till.get_last(self.trans))
-
         till = Till(connection=self.trans,
                     station=get_current_station(self.trans))
         till.open_till()
         self.assertEquals(Till.get_last(self.trans), till)
 
     def testGetLastClosed(self):
-        self.failIf(Till.get_last_closed(self.trans))
-
         till = Till(connection=self.trans,
                     station=get_current_station(self.trans))
         till.open_till()
