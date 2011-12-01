@@ -56,7 +56,6 @@ class TestIcmsIpiBookEntry(DomainTest):
         self.assertEquals(book_entry.entry_type,
                            FiscalBookEntry.TYPE_PRODUCT)
 
-
     def testHasEntryByPaymentGroup(self):
         payment_group = self.create_payment_group()
         entry = self.create_icms_ipi_book_entry()
@@ -73,7 +72,6 @@ class TestIcmsIpiBookEntry(DomainTest):
         self.failIf(entry.get_entry_by_payment_group(
             self.trans, payment_group,
             entry.entry_type))
-
 
 
 class TestIssBookEntry(DomainTest):
@@ -113,5 +111,3 @@ class TestIssBookEntry(DomainTest):
         self.failIf(entry.get_entry_by_payment_group(
             self.trans, payment_group,
             entry.entry_type))
-
-
