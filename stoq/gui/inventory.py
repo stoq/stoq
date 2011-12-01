@@ -96,6 +96,7 @@ class InventoryApp(SearchableAppWindow):
         self.Cancel.props.is_important = True
 
     def create_ui(self):
+        self.search.search.search_button.hide()
         self.app.launcher.add_new_items([self.NewInventory])
 
     def activate(self):
