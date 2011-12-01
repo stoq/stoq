@@ -26,10 +26,10 @@ web: apidocs
 	scp stoqlib.pickle async.com.br:$(WEBDOC_DIR)/stoqlib
 
 pep8:
-	pep8 stoq stoqlib
+	trial stoqlib.test.test_pep8
 
 pyflakes:
-	pyflakes stoq stoqlib plugins
+	trial stoqlib.test.test_pyflakes
 
 check:
 	LC_ALL=C trial stoq stoqlib
