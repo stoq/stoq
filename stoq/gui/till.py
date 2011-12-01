@@ -129,9 +129,6 @@ class TillApp(SearchableAppWindow):
 
         # Setting up the toolbar
         self.list_vbox.set_focus_chain([self.footer_hbox])
-        #self.footer_hbox.set_focus_chain([self.confirm_order_button,
-        #                                  self.return_button,
-        #                                  self.details_button])
         self._setup_printer()
         self._setup_widgets()
 
@@ -140,6 +137,9 @@ class TillApp(SearchableAppWindow):
             api.get_current_branch(self.conn).id, )
 
     def activate(self):
+        self.app.launcher.add_search_items([self.SearchFiscalTillOperations,
+                                            self.SearchClient,
+                                            self.SearchSale])
         self.refresh()
         self._printer.check_till()
         self.check_open_inventory()
