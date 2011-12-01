@@ -25,41 +25,19 @@
 import datetime
 import decimal
 
-from kiwi.component import get_utility, provide_utility
-from zope.interface import implements
-
 from stoqlib.database.orm import (DecimalCol, IntCol, UnicodeCol, DateTimeCol,
                                   ForeignKey)
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import ISalesPerson, IEmployee, IIndividual
 from stoqlib.domain.person import Person
+from stoqlib.domain.product import Product
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
-from magentointerfaces import IMagentoConfig
+from magentoproduct import MagentoProduct
 
 _ = stoqlib_gettext
-
-
-def get_config(trans=None):
-    """Returns a singleton of MagentoConfig
-
-    @param trans: if given, the config will be retrieved to this
-        transaction before returning.
-    """
-    config = get_utility(IMagentoConfig, None)
-
-    if not config:
-        config = MagentoConfig.selectOne(connection=get_connection())
-        assert config
-        provide_utility(IMagentoConfig, config)
-        assert get_utility(IMagentoConfig, None)
-
-    if trans:
-        return trans.get(config)
-
-    return config
 
 
 class MagentoConfig(Domain):
@@ -71,9 +49,8 @@ class MagentoConfig(Domain):
     @ivar tz_hours: the timezone difference, in hours, e.g. -3 for GMT-3
     @ivar qty_days_as_new: how many days to set a product as new on magento
     @ivar branch: the branch which will be used to query stock information
+    @ivar salesperson: the magento sales salesperson
     """
-
-    implements(IMagentoConfig)
 
     url = UnicodeCol()
     api_user = UnicodeCol(default='')
@@ -97,9 +74,11 @@ class MagentoConfig(Domain):
         table = klass.__name__
 
         table_config = MagentoTableConfig.selectOneBy(connection=conn,
+                                                      magento_config=self,
                                                       magento_table=table)
         if not table_config:
             table_config = MagentoTableConfig(connection=conn,
+                                              config=self,
                                               magento_table=table)
 
         return table_config
@@ -111,11 +90,30 @@ class MagentoConfig(Domain):
     def _create(self, *args, **kwargs):
         if not 'salesperson' in kwargs:
             kwargs['salesperson'] = self._create_salesperson()
+        if not 'branch' in kwargs:
+            kwargs['branch'] = get_current_branch()
 
         super(MagentoConfig, self)._create(*args, **kwargs)
 
     #
-    #  Private API
+    #  AbstractDomain hooks
+    #
+
+    def on_create(self):
+        conn = self.get_connection()
+
+        # When commiting, ensure we known all products to synchronize using the
+        # server registered on self. Events should take care of creating others
+        for product in Product.select(connection=conn):
+            # Just need to create. All other information will be synchronized
+            # on MagentoProduct.synchronize
+            mag_product = MagentoProduct(connection=conn,
+                                         product=product,
+                                         config=self)
+            assert mag_product
+
+    #
+    #  Private
     #
 
     def _create_salesperson(self):
@@ -140,10 +138,12 @@ class MagentoConfig(Domain):
 class MagentoTableConfig(Domain):
     """Class for storing Magento config specific to a C{magento_table}
 
+    @ivar config: the L{MagentoConfig} associated with this obj
     @ivar magento_table: the table associated with this config
     @ivar last_sync_date: the last date, on Magento, that C{magento_table}
         was successfully synchronized for the last time
     """
 
+    config = ForeignKey('MagentoConfig')
     magento_table = UnicodeCol()
     last_sync_date = DateTimeCol(default=datetime.datetime.min)

@@ -33,6 +33,7 @@ from twisted.internet.defer import DeferredLock, returnValue, inlineCallbacks
 from zope.interface import implements
 
 from stoqlib.database.migration import PluginSchemaMigration
+from stoqlib.database.runtime import get_connection
 from stoqlib.domain.events import (ProductCreateEvent, ProductRemoveEvent,
                                    ProductEditEvent, ProductStockUpdateEvent,
                                    SaleStatusChangedEvent)
@@ -41,6 +42,7 @@ from stoqlib.lib.pluginmanager import register_plugin
 
 plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
+from domain.magentoconfig import MagentoConfig
 from domain.magentoclient import MagentoClient, MagentoAddress
 from domain.magentoproduct import MagentoProduct, MagentoStock
 from domain.magentosale import MagentoSale, MagentoInvoice, MagentoShipment
@@ -121,63 +123,60 @@ class MagentoPlugin(object):
 
     @inlineCallbacks
     def _synchronize_magento_table(self, mag_table):
+        retval_list = []
+
         log.info("Start synchronizing %s" % mag_table)
-        retval = yield mag_table.synchronize()
-        log.info("Finish synchronizing magento table %s with status: %s"
-                 % (mag_table, retval))
-        returnValue(retval)
+        for config in MagentoConfig.select(connection=get_connection()):
+            retval = yield mag_table.synchronize(config)
+            retval_list.append(retval)
+            log.info("Finish synchronizing magento table %s on url %s with "
+                     "status: %s" % (mag_table, config.url, retval))
 
-    def _get_magento_product_by_product(self, product):
+        returnValue(all(retval_list))
+
+    def _get_magento_products_by_product(self, product):
         conn = product.get_connection()
-        mag_product = MagentoProduct.selectOneBy(connection=conn,
-                                                 product=product)
-        assert mag_product
-        return mag_product
-
-    def _get_magento_sale_by_sale(self, sale):
-        conn = sale.get_connection()
-        mag_sale = MagentoSale.selectOneBy(connection=conn,
-                                           sale=sale)
-        assert mag_sale
-        return mag_sale
+        mag_products = MagentoProduct.selectBy(connection=conn,
+                                               product=product)
+        return mag_products
 
     #
     #  Callbacks
     #
 
     def _on_product_create(self, product, **kwargs):
-        # Just create the registry and it will be synchronized later.
-        MagentoProduct(connection=product.get_connection(),
-                       product=product)
+        conn = product.get_connection()
+        for config in MagentoConfig.select(connection=conn):
+            # Just create the registry and it will be synchronized later.
+            MagentoProduct(connection=product.get_connection(),
+                           product=product,
+                           config=config)
 
     def _on_product_update(self, product, **kwargs):
-        mag_product = self._get_magento_product_by_product(product)
-        mag_product.need_sync = True
+        for mag_product in self._get_magento_products_by_product(product):
+            mag_product.need_sync = True
 
     def _on_product_delete(self, product, **kwargs):
-        mag_product = self._get_magento_product_by_product(product)
-        # Remove the foreign key reference, so the product can be
-        # deleted on stoq without problems. This deletion will happen
-        # later when synchronizing products.
-        mag_product.product = None
-        mag_product.need_sync = True
+        for mag_product in self._get_magento_products_by_product(product):
+            # Remove the foreign key reference, so the product can be
+            # deleted on stoq without problems. This deletion will happen
+            # later when synchronizing products.
+            mag_product.product = None
+            mag_product.need_sync = True
 
     def _on_product_stock_update(self, product, branch, old_quantity,
                                  new_quantity, **kwargs):
         conn = product.get_connection()
-        mag_product = self._get_magento_product_by_product(product)
-
-        mag_stock = MagentoStock.selectOneBy(connection=conn,
-                                             magento_product=mag_product)
-        # Maybe we do not have mag_stock yet. It's created on MagentoProduct
-        # create method. There's no problem because, when it gets created, it's
-        # need_sync attribute will be True by default.
-        if mag_stock:
-            mag_stock.need_sync = True
+        for mag_product in self._get_magento_products_by_product(product):
+            for mag_stock in MagentoStock.selectBy(connection=conn,
+                                                   magento_product=mag_product):
+                mag_stock.need_sync = True
 
     def _on_sale_status_change(self, sale, old_status, **kwargs):
-        mag_sale = self._get_magento_sale_by_sale(sale)
-        mag_sale.need_sync = True
+        mag_sale = MagentoSale.selectOneBy(connection=sale.get_connection(),
+                                           sale=sale)
+        if mag_sale:
+            mag_sale.need_sync = True
 
 
 register_plugin(MagentoPlugin)

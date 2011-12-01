@@ -114,9 +114,11 @@ class MagentoClient(MagentoBaseSyncDown):
                 continue
             conn = self.get_connection()
             mag_address = MagentoAddress.selectOneBy(connection=conn,
+                                                     config=self.config,
                                                      magento_id=mag_address_id)
             if not mag_address:
                 mag_address = MagentoAddress(connection=conn,
+                                             config=self.config,
                                              magento_id=mag_address_id,
                                              magento_client=self)
             mag_address.need_sync = True

@@ -28,11 +28,10 @@ from kiwi.log import Logger
 from twisted.internet.defer import inlineCallbacks, returnValue, maybeDeferred
 from twisted.web.xmlrpc import Fault
 
-from stoqlib.database.orm import BoolCol, IntCol
+from stoqlib.database.orm import BoolCol, IntCol, ForeignKey, AND
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.base import Domain
 
-from domain.magentoconfig import get_config
 from magentolib import get_proxy
 
 log = Logger('plugins.magento.domain.magentobase')
@@ -51,6 +50,8 @@ class MagentoBase(Domain):
         processed again.
     @ivar magento_id: the record ID on Magento
     @ivar need_sync: if we need to sync this object
+    @ivar config: the L{magentoconfig.MagentoConfig} associated with
+        this object.
     """
 
     API_NAME = None
@@ -59,6 +60,15 @@ class MagentoBase(Domain):
     keep_need_sync = False
     magento_id = IntCol(default=None)
     need_sync = BoolCol(default=True)
+    config = ForeignKey('MagentoConfig')
+
+    #
+    #  Properties
+    #
+
+    @property
+    def proxy(self):
+        return get_proxy(self.config)
 
     #
     #  Classmethods
@@ -66,19 +76,25 @@ class MagentoBase(Domain):
 
     @classmethod
     @inlineCallbacks
-    def synchronize(cls):
+    def synchronize(cls, config):
         """Sync clients between Stoq and Magento.
 
         We will iterate over all records marked wit C{need_sync} and
         call it's C{process} method.
+        @note: Only objs associated to C{config} will be synchronized,
+            that means, the objs will be synchronized to the server
+            pointed by C{config}.
 
+        @param config: the L{magentoconfig.MagentoConfig} that will
+            be used to synchronize objs
         @returns: C{True} if all sync went well, C{False} otherwise
         """
         retval_list = list()
         trans = new_transaction()
 
         for obj in cls.select(connection=trans,
-                              clause=cls.q.need_sync == True):
+                              clause=AND(cls.q.config == config,
+                                         cls.q.need_sync == True)):
             retval = yield maybeDeferred(obj.process)
             retval_list.append(retval)
 
@@ -95,16 +111,18 @@ class MagentoBase(Domain):
 
     @classmethod
     @inlineCallbacks
-    def list_remote(cls, *args, **kwargs):
+    def list_remote(cls, config, *args, **kwargs):
         """Request a list of records on Magento
 
+        @param config: the L{magentoconfig.MagentoConfig} that will
+            be used to retrieve the record list
         @param args: additional args that will be used on info
             request
         @param kwargs: additional filters that will be used on
             info request
         @returns: a L{list} of records
         """
-        proxy = get_proxy()
+        proxy = get_proxy(config)
         method = "%s.list" % cls.API_NAME
         args = list(args)
         args.append(kwargs)
@@ -121,14 +139,16 @@ class MagentoBase(Domain):
 
     @classmethod
     @inlineCallbacks
-    def info_remote(cls, id_, *args):
+    def info_remote(cls, config, id_, *args):
         """Request info about the record represented by C{id_} on Magento
 
+        @param config: the L{magentoconfig.MagentoConfig} that will
+            be used to retrieve the record information
         @param id_: the register identification on Magento
         @param args: additional args that will be used on info request
         @returns: a L{dict} containing info
         """
-        proxy = get_proxy()
+        proxy = get_proxy(config)
         method = "%s.info" % cls.API_NAME
         args = list(args)
         # The id needs to be the first item
@@ -174,10 +194,6 @@ class MagentoBase(Domain):
                              "attribute." % self.__class__.__name__)
 
         super(MagentoBase, self)._init(*args, **kwargs)
-
-        conn = self.get_connection()
-        self.config = get_config(conn)
-        self.proxy = get_proxy()
 
 
 class MagentoBaseSyncUp(MagentoBase):
@@ -290,7 +306,7 @@ class MagentoBaseSyncDown(MagentoBase):
 
     @classmethod
     @inlineCallbacks
-    def synchronize(cls):
+    def synchronize(cls, config):
         """Extends L{MagentoBase.sync} functionality
 
         Before doing the real sync, we request for a list of records
@@ -299,23 +315,24 @@ class MagentoBaseSyncDown(MagentoBase):
         @returns: C{True} if all sync went well, C{False} otherwise
         """
         trans = new_transaction()
-        config = get_config(trans)
-        table_config = config.get_table_config(cls)
+        table_config = trans.get(config.get_table_config(cls))
 
         last_sync_date = table_config.last_sync_date
         filters = {
             # Only retrieve records modified after last_sync_date
             'updated_at': {'gteq': last_sync_date},
             }
-        mag_records = yield cls.list_remote(**filters)
+        mag_records = yield cls.list_remote(config, **filters)
 
         if mag_records:
             for mag_record in mag_records:
                 magento_id = mag_record[cls.API_ID_NAME]
                 obj = cls.selectOneBy(connection=trans,
+                                      config=config,
                                       magento_id=magento_id)
                 if not obj:
                     obj = cls(connection=trans,
+                              config=config,
                               magento_id=magento_id)
 
                 obj.need_sync = True
@@ -330,7 +347,7 @@ class MagentoBaseSyncDown(MagentoBase):
             finish_transaction(trans, True)
 
         trans.close()
-        retval = yield super(MagentoBaseSyncDown, cls).synchronize()
+        retval = yield super(MagentoBaseSyncDown, cls).synchronize(config)
         returnValue(retval)
 
     @inlineCallbacks
@@ -344,7 +361,8 @@ class MagentoBaseSyncDown(MagentoBase):
         if not sync_down:
             retval = True
         else:
-            info = yield self.__class__.info_remote(self.magento_id)
+            info = yield self.__class__.info_remote(self.config,
+                                                    self.magento_id)
             if not info:
                 returnValue(False)
 

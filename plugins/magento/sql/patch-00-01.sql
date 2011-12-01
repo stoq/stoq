@@ -13,7 +13,7 @@ CREATE TABLE magento_config (
     api_key text NOT NULL,
     qty_days_as_new integer,
     tz_hours numeric(10, 2),
-    branch_id bigint UNIQUE REFERENCES person_adapt_to_branch(id)
+    branch_id bigint UNIQUE REFERENCES person_adapt_to_branch(id),
     salesperson_id bigint UNIQUE REFERENCES person_adapt_to_sales_person(id)
 );
 
@@ -23,7 +23,8 @@ CREATE TABLE magento_table_config (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     magento_table text NOT NULL,
-    last_sync_date timestamp
+    last_sync_date timestamp,
+    config_id bigint UNIQUE REFERENCES magento_config(id)
 );
 
 CREATE TABLE magento_product (
@@ -31,7 +32,7 @@ CREATE TABLE magento_product (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    magento_id bigint UNIQUE,
+    magento_id bigint,
     need_sync boolean,
     sku text,
     visibility integer,
@@ -40,6 +41,7 @@ CREATE TABLE magento_product (
     url_key text,
     news_from_date timestamp,
     news_to_date timestamp,
+    config_id bigint UNIQUE REFERENCES magento_config(id),
     product_id bigint UNIQUE REFERENCES product(id)
 );
 
@@ -48,8 +50,9 @@ CREATE TABLE magento_stock (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    magento_id bigint UNIQUE,
+    magento_id bigint,
     need_sync boolean,
+    config_id bigint UNIQUE REFERENCES magento_config(id),
     magento_product_id bigint UNIQUE REFERENCES magento_product(id)
 );
 
@@ -58,8 +61,9 @@ CREATE TABLE magento_client (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    magento_id bigint UNIQUE,
+    magento_id bigint,
     need_sync boolean,
+    config_id bigint UNIQUE REFERENCES magento_config(id),
     client_id bigint UNIQUE REFERENCES person_adapt_to_client(id)
 );
 
@@ -68,8 +72,9 @@ CREATE TABLE magento_address (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    magento_id bigint UNIQUE,
+    magento_id bigint,
     need_sync boolean,
+    config_id bigint UNIQUE REFERENCES magento_config(id),
     magento_client_id bigint REFERENCES magento_client(id),
     address_id bigint UNIQUE REFERENCES address(id)
 );
@@ -79,9 +84,10 @@ CREATE TABLE magento_sale (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    magento_id bigint UNIQUE,
+    magento_id bigint,
     need_sync boolean,
     status text,
+    config_id bigint UNIQUE REFERENCES magento_config(id),
     magento_client_id bigint REFERENCES magento_client(id),
     sale_id bigint UNIQUE REFERENCES sale(id)
 );
@@ -91,10 +97,11 @@ CREATE TABLE magento_invoice (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    magento_id bigint UNIQUE,
+    magento_id bigint,
     need_sync boolean,
     status integer,
     can_void boolean,
+    config_id bigint UNIQUE REFERENCES magento_config(id),
     magento_sale_id bigint REFERENCES magento_sale(id)
 );
 
@@ -103,9 +110,10 @@ CREATE TABLE magento_shipment (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    magento_id bigint UNIQUE,
+    magento_id bigint,
     need_sync boolean,
     was_track_added boolean,
+    config_id bigint UNIQUE REFERENCES magento_config(id),
     magento_sale_id bigint REFERENCES magento_sale(id)
 );
 

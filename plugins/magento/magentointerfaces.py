@@ -27,9 +27,5 @@
 from zope.interface import Interface
 
 
-class IMagentoProxy(Interface):
-    """A proxy that communicates with Magento"""
-
-
-class IMagentoConfig(Interface):
-    """Magento configuration"""
+class IMagentoProxyMapper(Interface):
+    """A mapper of Magento urls to a proxy implementation"""

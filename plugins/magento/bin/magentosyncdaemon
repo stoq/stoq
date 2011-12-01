@@ -32,7 +32,7 @@ from twisted.internet.task import LoopingCall
 from twisted.internet.defer import inlineCallbacks
 from twisted.python import log
 
-from stoqlib.lib.pluginmanager import provide_plugin_manager
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoq.lib.startup import setup
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -52,7 +52,11 @@ class MagentoSyncDaemon(object):
     def __init__(self, *args):
         setup(register_station=True, load_plugins=False)
 
-        manager = provide_plugin_manager()
+        manager = get_plugin_manager()
+
+        if not manager.is_installed(MagentoSyncDaemon._PLUGIN_NAME):
+            raise SystemExit(_("ERROR: Magento plugin is not installed.\n"
+                               "Stopping the Daemon.."))
 
         self._mag_plugin = manager.get_plugin(MagentoSyncDaemon._PLUGIN_NAME)
         self._lc = LoopingCall(self._synchronize)
@@ -77,7 +81,7 @@ class MagentoSyncDaemon(object):
     @inlineCallbacks
     def _synchronize(self):
         t_before = time.time()
-        print _("Magento synchronization initialized")
+        print _("Magento synchronization initialized..")
 
         try:
             retval = yield self._mag_plugin.synchronize()
@@ -92,7 +96,7 @@ class MagentoSyncDaemon(object):
         status = _("OK") if retval else _("With errors")
 
         # Simple stdout feedback
-        print _("Magento synchronization finished")
+        print _("Magento synchronization finished:")
         print _("    Status: %s") % (status,)
         print _("    Time took: %s") % (t_delta,)
 

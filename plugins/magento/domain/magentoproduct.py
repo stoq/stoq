@@ -39,7 +39,6 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
 
 from domain.magentobase import MagentoBaseSyncUp
-from domain.magentoconfig import get_config
 
 log = Logger('plugins.magento.domain.magentoproduct')
 
@@ -97,7 +96,7 @@ class MagentoProduct(MagentoBaseSyncUp):
 
     @classmethod
     @inlineCallbacks
-    def import_from_magento(cls):
+    def import_from_magento(cls, config):
         """Import products from Magento
 
         @returns: C{True} if all products imported sucessful,
@@ -105,24 +104,24 @@ class MagentoProduct(MagentoBaseSyncUp):
         """
         retval = True
         trans = new_transaction()
-        config = get_config(trans)
 
         filters = {
             # Exclude already imported products
             cls.API_ID_NAME: {'nin': [mag_p.magento_id for mag_p in
-                                      cls.select(connection=trans)]},
+                                      cls.select(connection=trans,
+                                                 config=config)]},
             # Stoq only supports simple products with default set right now
             'type': {'eq': cls.TYPE_SIMPLE},
             'set': {'eq': cls.DEFAULT_SET},
             }
-        product_list = yield cls.list_remote(**filters)
+        product_list = yield cls.list_remote(config, **filters)
         # Empty lists are fine! That means we don't have anything to import
         if product_list in (None, False):
             returnValue(False)
 
         for magento_id in [p[cls.API_ID_NAME] for p in product_list]:
-            product_info = yield cls.info_remote(magento_id)
-            stock_info = yield MagentoStock.info_remote(magento_id)
+            product_info = yield cls.info_remote(config, magento_id)
+            stock_info = yield MagentoStock.info_remote(config, magento_id)
             if not product_info or not stock_info:
                 finish_transaction(trans, False)
                 retval = False
@@ -152,6 +151,7 @@ class MagentoProduct(MagentoBaseSyncUp):
                 sellable.close()
 
             mag_product = cls(connection=trans,
+                              config=config,
                               magento_id=magento_id,
                               sku=product_info['sku'],
                               product_type=product_info['type'],
@@ -162,6 +162,7 @@ class MagentoProduct(MagentoBaseSyncUp):
                               news_to_date=product_info['news_to_date'],
                               product=product)
             MagentoStock(connection=trans,
+                         config=config,
                          magento_id=magento_id,
                          magento_product=mag_product)
 
@@ -193,7 +194,8 @@ class MagentoProduct(MagentoBaseSyncUp):
         except Fault as err:
             if err.faultCode == self.ERROR_PRODUCT_ALREADY_EXISTS:
                 # If product exists, get its id and update it
-                retval = yield MagentoProduct.info_remote(self.sku)
+                retval = yield MagentoProduct.info_remote(self.config,
+                                                          self.sku)
                 if retval:
                     self.magento_id = retval[self.API_ID_NAME]
             else:
@@ -206,6 +208,7 @@ class MagentoProduct(MagentoBaseSyncUp):
         if retval:
             MagentoStock(connection=self.get_connection(),
                          magento_id=self.magento_id,
+                         config=self.config,
                          magento_product=self)
             retval = yield self.update_remote()
 
@@ -309,21 +312,23 @@ class MagentoStock(MagentoBaseSyncUp):
 
     @classmethod
     @inlineCallbacks
-    def list_remote(cls, *args, **kwargs):
+    def list_remote(cls, config, *args, **kwargs):
         args = list(args)
         if not args:
             # If this is not an info call, mimic the list api behavior
             args.append([mag_stock.magento_id for mag_stock in
-                         cls.select(connection=get_connection())])
+                         cls.selectBy(connection=get_connection(),
+                                      config=config)])
 
-        retval = yield super(MagentoStock, cls).list_remote(*args, **kwargs)
+        retval = yield super(MagentoStock, cls).list_remote(config, *args,
+                                                            **kwargs)
         returnValue(retval)
 
     @classmethod
     @inlineCallbacks
-    def info_remote(cls, id, *args):
+    def info_remote(cls, config, id, *args):
         # Mimic info api as stock doesn't have one
-        retval = yield cls.list_remote([id])
+        retval = yield cls.list_remote(config, [id])
         returnValue(retval and retval[0])
 
     #
