@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-29 18:04-0200\n"
-"PO-Revision-Date: 2011-11-29 10:54+0000\n"
-"Last-Translator: Luiz Fernando da Silva <folksilva@gmail.com>\n"
+"PO-Revision-Date: 2011-11-30 18:02+0000\n"
+"Last-Translator: millemiglia <dnieper650@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-30 05:40+0000\n"
-"X-Generator: Launchpad (build 14404)\n"
+"X-Launchpad-Export-Date: 2011-12-01 05:28+0000\n"
+"X-Generator: Launchpad (build 14414)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -1560,7 +1560,7 @@ msgstr "Componente:"
 
 #: ../data/glade/ProductComponentEditor.ui.h:2
 msgid "Design Reference:"
-msgstr ""
+msgstr "Referência de projeto:"
 
 #: ../data/glade/ProductComponentEditor.ui.h:3
 #: ../data/glade/ProductionItemEditor.ui.h:4
@@ -1797,7 +1797,7 @@ msgstr "Valor previsto de transporte"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:8
 msgid "Export CSV"
-msgstr ""
+msgstr "Exportar CSV"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:14 ../stoq/gui/purchase.py:240
 #: ../stoqlib/domain/sale.py:355 ../stoqlib/gui/dialogs/quotedialog.py:158
@@ -1916,7 +1916,7 @@ msgstr "Tipo do teste:"
 
 #: ../data/glade/QualityTestResultSlave.ui.h:1
 msgid "Quality Test Result:"
-msgstr ""
+msgstr "Resultado do teste de qualidade:"
 
 #: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:1
 msgid "C_reate Orders"
@@ -2032,7 +2032,7 @@ msgstr "<b>Número de venda:</b>"
 
 #: ../data/glade/SaleDetailsDialog.ui.h:3
 msgid "Client details"
-msgstr ""
+msgstr "Detalhes do cliente"
 
 #: ../data/glade/SaleDetailsDialog.ui.h:13
 msgid "Print Bills"
@@ -2040,7 +2040,7 @@ msgstr "Imprimir boletos"
 
 #: ../data/glade/SaleDetailsDialog.ui.h:15
 msgid "Status details"
-msgstr ""
+msgstr "Detalhes do estado"
 
 #: ../data/glade/SaleInvoicePrinterDialog.ui.h:2
 msgid "<b>Invoice Number:</b>"
@@ -4516,7 +4516,7 @@ msgstr "Conta de pagamento"
 
 #: ../stoq/gui/payable.py:84
 msgid "Create a new account payable"
-msgstr ""
+msgstr "Criar uma nova conta a pagar"
 
 #: ../stoq/gui/payable.py:85 ../stoq/gui/receivable.py:89
 msgid "Cancel payment..."
@@ -4524,7 +4524,7 @@ msgstr "Cancelar pagamento..."
 
 #: ../stoq/gui/payable.py:86
 msgid "Cancel the selected payment"
-msgstr ""
+msgstr "Cancelar o pagamento selecionado"
 
 #: ../stoq/gui/payable.py:87 ../stoq/gui/receivable.py:90
 msgid "Set as not paid..."
@@ -4532,7 +4532,7 @@ msgstr "Marcar como não pago..."
 
 #: ../stoq/gui/payable.py:88
 msgid "Mark the selected payment as not paid"
-msgstr ""
+msgstr "Marcar o pagamento selecionado como não pago"
 
 #: ../stoq/gui/payable.py:89 ../stoq/gui/receivable.py:91
 msgid "Change due date..."
@@ -4540,7 +4540,7 @@ msgstr "Alterar vencimento..."
 
 #: ../stoq/gui/payable.py:90
 msgid "Change the due date of the selected payment"
-msgstr ""
+msgstr "Mudar a data de vencimento do pagamento selecionado"
 
 #: ../stoq/gui/payable.py:91 ../stoq/gui/receivable.py:93
 msgid "Comments..."
@@ -4548,7 +4548,7 @@ msgstr "Comentários..."
 
 #: ../stoq/gui/payable.py:92
 msgid "Add comments to the selected payment"
-msgstr ""
+msgstr "Adicionar comentários ao pagamento selecionado"
 
 #: ../stoq/gui/payable.py:94 ../stoq/gui/receivable.py:96
 msgid "Print _receipt"
@@ -4556,7 +4556,7 @@ msgstr "Imprimir _recibo"
 
 #: ../stoq/gui/payable.py:95
 msgid "Print a receipt for the selected payment"
-msgstr ""
+msgstr "Imprimir um recibo para o pagamento selecionado"
 
 #: ../stoq/gui/payable.py:96 ../stoq/gui/receivable.py:98
 msgid "Payment _flow history..."
@@ -4564,7 +4564,7 @@ msgstr "Histórico de _fluxo de pagamentos"
 
 #: ../stoq/gui/payable.py:98
 msgid "Show a report of payment expected to receive grouped by day"
-msgstr ""
+msgstr "Mostrar um relatório de pagamentos a receber agrupados por dia"
 
 #. Search
 #: ../stoq/gui/payable.py:103 ../stoq/gui/receivable.py:103
@@ -5174,7 +5174,7 @@ msgstr "<b>Total dos pedidos:</b>"
 
 #: ../stoq/gui/purchase.py:187
 msgid "Search for purchase orders"
-msgstr ""
+msgstr "Pesquisar por pedidos de compra"
 
 #: ../stoq/gui/purchase.py:210
 msgid "No orders could be found."
@@ -5187,7 +5187,7 @@ msgstr "Você gostaria de %s?"
 
 #: ../stoq/gui/purchase.py:212
 msgid "create a new order"
-msgstr ""
+msgstr "criar um novo pedido"
 
 #: ../stoq/gui/purchase.py:223 ../stoq/gui/till.py:165
 msgid "Show orders"
@@ -5355,7 +5355,7 @@ msgstr "Pesquisa por comissões de vendedores"
 
 #: ../stoq/gui/sales.py:122
 msgid "Print a report for this sale listing"
-msgstr ""
+msgstr "Imprimir um relatório desta listagem de vendas"
 
 #: ../stoq/gui/sales.py:123
 msgid "Return sale"
@@ -5363,7 +5363,7 @@ msgstr "Devolver venda"
 
 #: ../stoq/gui/sales.py:124
 msgid "Return the selected sale, canceling it's payments"
-msgstr ""
+msgstr "Devolver a venda selecionada, cancelando seus pagamentos"
 
 #: ../stoq/gui/sales.py:126
 msgid "Edit the selected sale, allowing you to change the details of it"
@@ -5608,7 +5608,7 @@ msgstr "Cria um novo pedido de recebimento"
 
 #: ../stoq/gui/stock.py:178
 msgid "Search for stock items"
-msgstr ""
+msgstr "Pesquisar por itens de estoque"
 
 #: ../stoq/gui/stock.py:191
 msgid "You cannot receive a purchase with an open inventory."
@@ -6380,13 +6380,15 @@ msgstr "Revisão"
 
 #: ../stoqlib/domain/payment/payment.py:232
 msgid "{method} payment with value {value:.2f} was paid"
-msgstr ""
+msgstr "Pagamento em {method} de valor {value:.2f} foi pago"
 
 #: ../stoqlib/domain/payment/payment.py:236
 msgid ""
 "{method} payment with value original value {original_value:.2f} was paid "
 "with value {value:.2f}"
 msgstr ""
+"Pagamento em {method} de valor original {original_value:.2f} foi pago com o "
+"valor {value:.2f}"
 
 #: ../stoqlib/domain/payment/payment.py:249
 #, python-format
@@ -6395,7 +6397,7 @@ msgstr "Estado inválido para a operação cancel, recebeu %s"
 
 #: ../stoqlib/domain/payment/payment.py:266
 msgid "{method} payment with value {value:.2f} was cancelled"
-msgstr ""
+msgstr "Pagamento em {method} de valor {value:.2f} foi cancelado"
 
 #: ../stoqlib/domain/payment/payment.py:277
 #, python-format
@@ -6784,12 +6786,16 @@ msgid ""
 "Sale {sale_number} to client {client_name} was confirmed with value "
 "{total_value:.2f}."
 msgstr ""
+"Venda {sale_number} ao cliente {client_name} foi confirmada com o valor "
+"{total_value:.2f}."
 
 #: ../stoqlib/domain/sale.py:551
 msgid ""
 "Sale {sale_number} without a client was confirmed with value "
 "{total_value:.2f}."
 msgstr ""
+"Venda {sale_number}, sem cliente, foi confirmada com o valor "
+"{total_value:.2f}."
 
 #: ../stoqlib/domain/sale.py:566
 #, python-format
@@ -6805,35 +6811,46 @@ msgid ""
 "Sale {sale_number} to client {client_name} was paid and confirmed with value "
 "{total_value:.2f}."
 msgstr ""
+"Venda {sale_number} ao cliente {client_name} foi paga e confirmada com o "
+"valor {total_value:.2f}."
 
 #: ../stoqlib/domain/sale.py:585
 msgid ""
 "Sale {sale_number} without a client was paid and confirmed with value "
 "{total_value:.2f}."
 msgstr ""
+"Venda {sale_number}, sem cliente, foi paga e confirmada com o valor "
+"{total_value:.2f}."
 
 #: ../stoqlib/domain/sale.py:591
 msgid ""
 "Sale {sale_number} to client {client_name} was paid with value "
 "{total_value:.2f}."
 msgstr ""
+"Venda {sale_number} ao cliente {client_name} foi paga com o valor "
+"{total_value:.2f}."
 
 #: ../stoqlib/domain/sale.py:597
 msgid ""
 "Sale {sale_number} without a client was paid with value {total_value:.2f}."
 msgstr ""
+"Venda {sale_number}, sem cliente, foi paga com o valor {total_value:.2f}."
 
 #: ../stoqlib/domain/sale.py:658
 msgid ""
 "Sale {sale_number} to client {client_name} was returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
+"Venda {sale_number} ao cliente {client_name} foi devolvida com o valor "
+"{total_value:.2f}. Razão: {reason}"
 
 #: ../stoqlib/domain/sale.py:665
 msgid ""
 "Sale {sale_number} without a client was returned with value "
 "{total_value:.2f}. Reason: {reason}"
 msgstr ""
+"Venda {sale_number}, sem cliente, foi devolvida com o valor "
+"{total_value:.2f}. Razão: {reason}"
 
 #: ../stoqlib/domain/sale.py:717
 #, python-format
@@ -8310,7 +8327,7 @@ msgstr "Nova filial"
 #. Translators: Ref. is for Reference (as in design reference)
 #: ../stoqlib/gui/editors/producteditor.py:136
 msgid "Ref."
-msgstr ""
+msgstr "Ref."
 
 #: ../stoqlib/gui/editors/producteditor.py:137
 msgid "Production Cost"
@@ -12077,13 +12094,15 @@ msgstr "Onde o arquivo gerado após uma redução Z deve ser salvo"
 
 #: ../stoqlib/lib/parameters.py:459
 msgid "Number of digits to use for product cost"
-msgstr ""
+msgstr "Número de dígitos a usar para custo dos produtos"
 
 #: ../stoqlib/lib/parameters.py:460
 msgid ""
 "Set this parameter accordingly to the number of digits of the products you "
 "purchase"
 msgstr ""
+"Configurar este parâmetro de acordo com o número de dígitos dos produtos que "
+"você comprou"
 
 #: ../stoqlib/lib/parameters.py:467
 msgid "Scale barcode format"
