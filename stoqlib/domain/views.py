@@ -473,7 +473,7 @@ class SoldItemView(Viewable):
 
     joins = [
         LEFTJOINOn(None, SaleItem,
-                    Sellable.q.id == SaleItem.q.sellableID),
+                   Sellable.q.id == SaleItem.q.sellableID),
         LEFTJOINOn(None, Sale,
                    SaleItem.q.saleID == Sale.q.id),
         LEFTJOINOn(None, SellableCategory,
@@ -509,10 +509,6 @@ class SoldItemView(Viewable):
                 query = date_query
 
         return cls.select(query, having=having, connection=connection)
-
-    @property
-    def sale(self):
-        return Sale.get(self.sale_id, connection=self.get_connection())
 
     @property
     def average_cost(self):
