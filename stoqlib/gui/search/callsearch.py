@@ -44,7 +44,7 @@ _ = stoqlib_gettext
 
 
 class CallsSearch(SearchEditor):
-    title = _("Sold Items to Client")
+    title = _("Clients Calls")
     search_table = CallsView
     editor_class = CallsEditor
     searching_by_date = True
