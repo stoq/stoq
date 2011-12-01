@@ -96,7 +96,7 @@ class TransferOrder(Domain):
                                           connection=self.get_connection())
 
     def add_item(self, item):
-        pass
+        item.transfer_order = self
 
     @argcheck(TransferOrderItem)
     def remove_item(self, item):
