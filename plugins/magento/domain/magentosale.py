@@ -473,7 +473,8 @@ class MagentoShipment(MagentoBaseSyncUp):
 
     @inlineCallbacks
     def update_remote(self):
-        retval = yield self.add_track_remote()
-        self.was_track_added = retval
+        if not self.was_track_added:
+            retval = yield self.add_track_remote()
+            self.was_track_added = retval
 
         returnValue(retval)

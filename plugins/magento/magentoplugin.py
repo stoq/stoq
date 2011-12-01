@@ -30,7 +30,7 @@ import sys
 from kiwi.environ import environ
 from kiwi.log import Logger
 from twisted.internet.defer import (DeferredLock, returnValue, inlineCallbacks,
-                                    DeferredList)
+                                    gatherResults)
 from zope.interface import implements
 
 from stoqlib.database.migration import PluginSchemaMigration
@@ -83,13 +83,13 @@ class MagentoPlugin(object):
             for table in (MagentoProduct, MagentoStock, MagentoCategory,
                           MagentoImage, MagentoClient, MagentoAddress,
                           MagentoSale, MagentoInvoice, MagentoShipment):
-                # Use DeferredList to allow multiple servers to be synchronized
-                # at the same time. Can save a lot of time!
-                retval = yield DeferredList(
+                # Use gatherResults to allow multiple servers to be
+                # synchronized at the same time. Can save a lot of time!
+                retval = yield gatherResults(
                     [self._synchronize_magento_table(table, config) for config
                      in MagentoConfig.select(connection=get_connection())]
                     )
-                retval_list.append(all([all(r) for r in retval]))
+                retval_list.append(all(retval))
             returnValue(all(retval_list))
         finally:
             self._lock.release()
@@ -167,7 +167,7 @@ class MagentoPlugin(object):
         conn = product.get_connection()
         for config in MagentoConfig.select(connection=conn):
             # Just create the registry and it will be synchronized later.
-            MagentoProduct(connection=product.get_connection(),
+            MagentoProduct(connection=conn,
                            product=product,
                            config=config)
 
