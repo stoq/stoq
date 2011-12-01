@@ -27,6 +27,14 @@ from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.test.domaintest import DomainTest
 
 
+class TestTransferOrderItem(DomainTest):
+
+    def testGetTotal(self):
+        order = self.create_transfer_order()
+        item = self.create_transfer_order_item(order)
+        self.assertEquals(item.get_total(), 625)
+
+
 class TestTransferOrder(DomainTest):
 
     def testCanClose(self):
@@ -82,3 +90,45 @@ class TestTransferOrder(DomainTest):
         self.assertEqual(order.can_close(), False)
 
         self.assertEqual(after_qty, before_qty + sent_qty)
+
+    def testAddItem(self):
+        order = self.create_transfer_order()
+
+        item = self.create_transfer_order_item()
+        order.add_item(item)
+        self.assertEquals(item.transfer_order, order)
+
+    def testRemoveItem(self):
+        order = self.create_transfer_order()
+        item = self.create_transfer_order_item(order)
+        order.remove_item(item)
+
+        order = self.create_transfer_order()
+        item = self.create_transfer_order_item()
+        self.assertRaises(ValueError, order.remove_item, item)
+
+    def testGetSourceBranchName(self):
+        order = self.create_transfer_order()
+        self.assertEquals(order.get_source_branch_name(), 'Source')
+
+    def testGetDestinationBranchName(self):
+        order = self.create_transfer_order()
+        self.assertEquals(order.get_destination_branch_name(),
+                          'Dest')
+
+    def testGetSourceResponsibleName(self):
+        order = self.create_transfer_order()
+        self.assertEquals(order.get_source_responsible_name(),
+                          'Ipswich')
+
+    def testGetDestinationResponsibleName(self):
+        order = self.create_transfer_order()
+        self.assertEquals(order.get_destination_responsible_name(),
+                          'Bolton')
+
+    def testGetTotalItemsTransfer(self):
+        order = self.create_transfer_order()
+        self.create_transfer_order_item(order)
+        self.assertEquals(order.get_total_items_transfer(), 5)
+        self.create_transfer_order_item(order)
+        self.assertEquals(order.get_total_items_transfer(), 10)
