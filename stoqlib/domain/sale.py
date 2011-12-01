@@ -815,14 +815,14 @@ class Sale(Domain):
         return SaleItem.select(
             AND(SaleItem.q.saleID == self.id,
                 SaleItem.q.sellableID == Product.q.sellableID),
-            connection=self.get_connection())
+            connection=self.get_connection()).orderBy('id')
 
     @property
     def services(self):
         return SaleItem.select(
             AND(SaleItem.q.saleID == self.id,
                 SaleItem.q.sellableID == Service.q.sellableID),
-            connection=self.get_connection())
+            connection=self.get_connection()).orderBy('id')
 
     @property
     def payments(self):
