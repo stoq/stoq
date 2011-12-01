@@ -122,10 +122,11 @@ class PayableApp(SearchableAppWindow):
 
     def create_ui(self):
         self._setup_widgets()
-        self.results.connect('has-rows', self._has_rows)
         self.search.search.search_button.hide()
 
     def activate(self):
+        # Avoid letting this sensitive if has-rows is never emitted
+        self.PrintReport.set_sensitive(False)
         self.search.refresh()
         self.app.launcher.add_new_items([self.AddPayment])
         self.app.launcher.NewToolItem.set_tooltip(self.AddPayment.get_tooltip())
@@ -155,9 +156,6 @@ class PayableApp(SearchableAppWindow):
             ComboSearchFilter(_('Show payments'),
                               self._get_status_values()),
             SearchFilterPosition.TOP, ['status'])
-
-    def _has_rows(self, result_list, has_rows):
-        self.PrintReport.set_sensitive(has_rows)
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), long_title='Payment ID',
@@ -411,6 +409,9 @@ class PayableApp(SearchableAppWindow):
     #
     # Kiwi callbacks
     #
+
+    def on_results__has_rows(self, klist, has_rows):
+        self.PrintReport.set_sensitive(has_rows)
 
     def on_results__row_activated(self, klist, payable_view):
         if self._can_show_details([payable_view]):

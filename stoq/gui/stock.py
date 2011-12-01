@@ -171,6 +171,8 @@ class StockApp(SearchableAppWindow):
         self.search.search.search_button.hide()
 
     def activate(self):
+        # Avoid letting this sensitive if has-rows is never emitted
+        self.Print.set_sensitive(False)
         self.app.launcher.NewToolItem.set_tooltip(
             _("Create a new receiving order"))
         self.app.launcher.SearchToolItem.set_tooltip(
