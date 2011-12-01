@@ -64,11 +64,11 @@ class ProductionOrder(Domain):
      ORDER_CLOSED,
      ORDER_QA) = range(5)
 
-    statuses = {ORDER_OPENED:         _(u'Opened'),
-                ORDER_WAITING:        _(u'Waiting'),
-                ORDER_PRODUCING:      _(u'Producing'),
-                ORDER_CLOSED:         _(u'Closed'),
-                ORDER_QA:             _(u'Quality Assurance'),
+    statuses = {ORDER_OPENED: _(u'Opened'),
+                ORDER_WAITING: _(u'Waiting'),
+                ORDER_PRODUCING: _(u'Producing'),
+                ORDER_CLOSED: _(u'Closed'),
+                ORDER_QA: _(u'Quality Assurance'),
                 }
 
     status = IntCol(default=ORDER_OPENED)

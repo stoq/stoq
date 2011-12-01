@@ -138,11 +138,11 @@ class ProductTaxTemplate(Domain):
     (TYPE_ICMS,
      TYPE_IPI) = range(2)
 
-    types = {TYPE_ICMS:     u"ICMS",
-             TYPE_IPI:      u"IPI"}
+    types = {TYPE_ICMS: u"ICMS",
+             TYPE_IPI: u"IPI"}
 
-    type_map = {TYPE_ICMS:     ProductIcmsTemplate,
-                TYPE_IPI:      ProductIpiTemplate}
+    type_map = {TYPE_ICMS: ProductIcmsTemplate,
+                TYPE_IPI: ProductIpiTemplate}
 
     name = UnicodeCol(default='')
     tax_type = IntCol()

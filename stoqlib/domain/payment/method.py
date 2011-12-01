@@ -84,13 +84,13 @@ class CreditCardData(Domain):
      TYPE_DEBIT_PRE_DATED) = range(5)
 
     types = {
-        TYPE_CREDIT:                      _('Credit Card'),
-        TYPE_DEBIT:                       _('Debit Card'),
-        TYPE_CREDIT_INSTALLMENTS_STORE:   _('Credit Card Installments Store'),
-        TYPE_CREDIT_INSTALLMENTS_PROVIDER:
-                                       _('Credit Card Installments Provider'),
-        TYPE_DEBIT_PRE_DATED:             _('Debit Card Pre-dated'),
-    }
+        TYPE_CREDIT: _('Credit Card'),
+        TYPE_DEBIT: _('Debit Card'),
+        TYPE_CREDIT_INSTALLMENTS_STORE: _('Credit Card Installments Store'),
+        TYPE_CREDIT_INSTALLMENTS_PROVIDER: _('Credit Card Installments '
+                                             'Provider'),
+        TYPE_DEBIT_PRE_DATED: _('Debit Card Pre-dated'),
+        }
 
     payment = ForeignKey('Payment')
     card_type = IntCol(default=TYPE_CREDIT)

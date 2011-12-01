@@ -68,11 +68,11 @@ class _TemporaryReceivingDetails:
 
     def __init__(self, orders):
         freight_type_map = {
-            ReceivingOrder.FREIGHT_FOB_PAYMENT:      PurchaseOrder.FREIGHT_FOB,
+            ReceivingOrder.FREIGHT_FOB_PAYMENT: PurchaseOrder.FREIGHT_FOB,
             ReceivingOrder.FREIGHT_FOB_INSTALLMENTS: PurchaseOrder.FREIGHT_FOB,
-            ReceivingOrder.FREIGHT_CIF_UNKNOWN:      PurchaseOrder.FREIGHT_CIF,
-            ReceivingOrder.FREIGHT_CIF_INVOICE:      PurchaseOrder.FREIGHT_CIF
-        }
+            ReceivingOrder.FREIGHT_CIF_UNKNOWN: PurchaseOrder.FREIGHT_CIF,
+            ReceivingOrder.FREIGHT_CIF_INVOICE: PurchaseOrder.FREIGHT_CIF
+            }
         freight_names = PurchaseOrder.freight_types
         freight_types = []
 

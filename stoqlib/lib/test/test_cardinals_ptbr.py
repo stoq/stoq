@@ -40,7 +40,7 @@ class TestParameter(DomainTest):
         self.assertEqual(to_words(3), u"três")
         self.assertEqual(to_words(10), "dez")
         self.assertEqual(to_words(11), "onze")
-        self.assertEqual(to_words(15),  "quinze")
+        self.assertEqual(to_words(15), "quinze")
         self.assertEqual(to_words(20), "vinte")
         self.assertEqual(to_words(25), "vinte e cinco")
         self.assertEqual(to_words(49), "quarenta e nove")

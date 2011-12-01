@@ -125,7 +125,7 @@ class BaseICMSSlave(BaseTaxSlave):
 
     normal_widgets = ['orig', 'cst', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
              'p_icms_st', 'v_bc_st', 'v_icms_st', 'bc_st_include_ipi',
-             'mod_bc', 'p_icms', 'v_bc', 'v_icms',  'bc_include_ipi',
+             'mod_bc', 'p_icms', 'v_bc', 'v_icms', 'bc_include_ipi',
              'bc_st_include_ipi']
 
     tooltips = {

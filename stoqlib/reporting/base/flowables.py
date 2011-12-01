@@ -167,7 +167,7 @@ class Signature(Flowable):
         else:
             return canvas.drawCentredString
 
-    def build_signatures(self, canvas, x,  x1, x2, y, default_x2):
+    def build_signatures(self, canvas, x, x1, x2, y, default_x2):
         """ This is the method that really draw the flowable on the report.
         This is called internally by drawOn.
         """

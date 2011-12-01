@@ -114,8 +114,8 @@ class Loan(Domain):
     (STATUS_OPEN,
      STATUS_CLOSED) = range(2)
 
-    statuses = {STATUS_OPEN:     _(u"Opened"),
-                STATUS_CLOSED:     _(u"Closed")}
+    statuses = {STATUS_OPEN: _(u'Opened'),
+                STATUS_CLOSED: _(u'Closed')}
 
     status = IntCol(default=STATUS_OPEN)
     notes = UnicodeCol(default='')

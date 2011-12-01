@@ -53,16 +53,16 @@ class Event(Domain):
      TYPE_PAYMENT) = range(5)
 
     types = {# System related messages
-             TYPE_SYSTEM:    _('System'),
+             TYPE_SYSTEM: _('System'),
              # Login/Logout
-             TYPE_USER:      _('User'),
+             TYPE_USER: _('User'),
              # Purchase orders
-             TYPE_ORDER:     _('Order'),
+             TYPE_ORDER: _('Order'),
              # Sales
-             TYPE_SALE:      _('Sale'),
+             TYPE_SALE: _('Sale'),
              # Payment
-             TYPE_PAYMENT:   _('Payment'),
-            }
+             TYPE_PAYMENT: _('Payment'),
+             }
 
     date = DateTimeCol(default=datetime.datetime.now)
     event_type = IntCol()

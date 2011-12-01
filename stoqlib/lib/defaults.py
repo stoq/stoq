@@ -54,10 +54,10 @@ UNKNOWN_CHARACTER = u"\N{REPLACEMENT CHARACTER}"
  INTERVALTYPE_MONTH,
  INTERVALTYPE_YEAR) = range(4)
 
-interval_types = {INTERVALTYPE_DAY:      _('Days'),
-                  INTERVALTYPE_WEEK:     _('Weeks'),
-                  INTERVALTYPE_MONTH:    _('Months'),
-                  INTERVALTYPE_YEAR:     _('Years')}
+interval_types = {INTERVALTYPE_DAY: _('Days'),
+                  INTERVALTYPE_WEEK: _('Weeks'),
+                  INTERVALTYPE_MONTH: _('Months'),
+                  INTERVALTYPE_YEAR: _('Years')}
 
 interval_name = {INTERVALTYPE_DAY: 'days',
                  INTERVALTYPE_WEEK: 'weeks',

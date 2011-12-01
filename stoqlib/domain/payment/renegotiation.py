@@ -52,9 +52,9 @@ class PaymentRenegotiation(Domain):
      STATUS_PAID,
      STATUS_RENEGOTIATED) = range(3)
 
-    statuses = {STATUS_CONFIRMED:       _(u"Confirmed"),
-                STATUS_PAID:            _(u"Paid"),
-                STATUS_RENEGOTIATED:    _(u"Renegotiated")}
+    statuses = {STATUS_CONFIRMED: _(u'Confirmed'),
+                STATUS_PAID: _(u'Paid'),
+                STATUS_RENEGOTIATED: _(u'Renegotiated')}
 
     status = IntCol(default=STATUS_CONFIRMED)
     notes = UnicodeCol(default=None)

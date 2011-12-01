@@ -163,15 +163,15 @@ class DataTableBuilder(AbstractTableBuilder):
         columns = max(map(len, self.data))
         for col_idx in range(2, columns - 1, 2):
             self.style.add('LEFTPADDING',
-                           (col_idx,   0),
+                           (col_idx, 0),
                            (col_idx, - 1),
                            10)
             self.style.add('RIGHTPADDING',
-                           (col_idx - 1,  0),
+                           (col_idx - 1, 0),
                            (col_idx - 1, -1),
                            10)
             self.style.add('LINEBEFORE',
-                           (col_idx,  0),
+                           (col_idx, 0),
                            (col_idx, -1),
                            0.5,
                            SOFT_LINE_COLOR)

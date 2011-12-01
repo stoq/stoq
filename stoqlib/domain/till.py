@@ -82,9 +82,9 @@ class Till(Domain):
      STATUS_OPEN,
      STATUS_CLOSED) = range(3)
 
-    statuses = {STATUS_PENDING: _(u"Pending"),
-                STATUS_OPEN:    _(u"Opened"),
-                STATUS_CLOSED:  _(u"Closed")}
+    statuses = {STATUS_PENDING: _(u'Pending'),
+                STATUS_OPEN: _(u'Opened'),
+                STATUS_CLOSED: _(u'Closed')}
 
     status = IntCol(default=STATUS_PENDING)
     initial_cash_amount = PriceCol(default=0, notNull=True)

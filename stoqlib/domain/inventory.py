@@ -30,7 +30,7 @@ from stoqlib.database.orm import QuantityCol, PriceCol
 from stoqlib.database.orm import ForeignKey, DateTimeCol, IntCol, UnicodeCol
 from stoqlib.database.orm import const, AND, ISNOTNULL
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IBranch,  IStorable
+from stoqlib.domain.interfaces import IBranch, IStorable
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import Person
 from stoqlib.lib.translation import stoqlib_gettext
@@ -164,9 +164,9 @@ class Inventory(Domain):
 
     (STATUS_OPEN, STATUS_CLOSED, STATUS_CANCELLED) = range(3)
 
-    statuses = {STATUS_OPEN:      _(u"Opened"),
-                STATUS_CLOSED:    _(u"Closed"),
-                STATUS_CANCELLED: _(u"Cancelled")}
+    statuses = {STATUS_OPEN: _(u'Opened'),
+                STATUS_CLOSED: _(u'Closed'),
+                STATUS_CANCELLED: _(u'Cancelled')}
 
     status = IntCol(default=STATUS_OPEN)
     invoice_number = IntCol(default=None)
