@@ -179,6 +179,7 @@ class AppWindow(GladeDelegate):
         AppWindow.app_windows.append(self)
         self._restore_window_size()
         self.hide_app()
+        self.Preferences.set_sensitive(False)
 
         self._check_demo_mode()
         self._check_version()
