@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import base64
 import datetime
 import urllib
 
@@ -30,8 +31,9 @@ from kiwi.log import Logger
 from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.web.xmlrpc import Fault
 
-from stoqlib.database.orm import (IntCol, UnicodeCol, DateTimeCol, ForeignKey,
-                                  SingleJoin)
+from stoqlib.database.orm import (IntCol, UnicodeCol, DateTimeCol, BLOBCol,
+                                  BoolCol, ForeignKey, SingleJoin,
+                                  MultipleJoin)
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       finish_transaction)
 from stoqlib.domain.interfaces import IStorable
@@ -89,6 +91,8 @@ class MagentoProduct(MagentoBaseSyncUp):
 
     magento_stock = SingleJoin('MagentoStock',
                                joinColumn='magento_product_id')
+    magento_images = MultipleJoin('MagentoImage',
+                                  joinColumn='magento_product_id')
 
     #
     #  Classmethods
@@ -210,7 +214,9 @@ class MagentoProduct(MagentoBaseSyncUp):
                          magento_id=self.magento_id,
                          config=self.config,
                          magento_product=self)
-            retval = yield self.update_remote()
+            image = self.product.full_image
+            if image:
+                self._update_main_image(image)
 
         returnValue(bool(retval))
 
@@ -220,6 +226,10 @@ class MagentoProduct(MagentoBaseSyncUp):
         if not self.product:
             retval = yield self.remove_remote()
             returnValue(retval)
+
+        image = self.product.full_image
+        if image:
+            self._update_main_image(image)
 
         data = [self.magento_id, self._get_data()]
         try:
@@ -249,6 +259,8 @@ class MagentoProduct(MagentoBaseSyncUp):
         mag_stock = self.magento_stock
         if mag_stock:
             mag_stock.delete(mag_stock.id, conn)
+        for mag_image in self.magento_images:
+            mag_image.delete(mag_image.id, conn)
         self.delete(self.id, conn)
 
         returnValue(retval)
@@ -256,6 +268,25 @@ class MagentoProduct(MagentoBaseSyncUp):
     #
     #  Private
     #
+
+    def _update_main_image(self, image):
+        conn = self.get_connection()
+        mag_image = MagentoImage.selectOneBy(connection=conn,
+                                             magento_product=self,
+                                             is_main=True)
+        if not mag_image:
+            label = self.product.sellable.get_description()
+            mag_image = MagentoImage(connection=conn,
+                                     magento_id=self.magento_id,
+                                     config=self.config,
+                                     image=image,
+                                     is_main=True,
+                                     label=label,
+                                     magento_product=self)
+
+        if mag_image.image != image:
+            mag_image.image = image
+            mag_image.need_sync = True
 
     def _generate_initial_data(self):
         sellable = self.product.sellable
@@ -366,4 +397,97 @@ class MagentoStock(MagentoBaseSyncUp):
         return {
             'qty': quantity,
             'is_in_stock': int(product.sellable.can_be_sold()),
+            }
+<<<<<<< TREE
+=======
+
+class MagentoImage(MagentoBaseSyncUp):
+    """Class for product image synchronization between Stoq and Magento"""
+
+    API_NAME = 'product_media'
+    API_ID_NAME = MagentoProduct.API_ID_NAME
+
+    (ERROR_IMAGE_STORE_VIEW_NOT_FOUND,
+     ERROR_IMAGE_PRODUCT_NOT_EXISTS,
+     ERROR_IMAGE_PRODUCT_INVALID_DATA,
+     ERROR_IMAGE_NOT_EXISTS,
+     ERROR_IMAGE_CREATION_FAILED,
+     ERROR_IMAGE_NOT_UPDATED,
+     ERROR_IMAGE_NOT_REMOVED,
+     ERROR_IMAGE_NO_SUPPORT) = range(100, 108)
+
+    TYPE_BASE_IMAGE = 'image'
+    TYPE_SMALL_IMAGE = 'small_image'
+    TYPE_THUMBNAIL = 'thumbnail'
+
+    image = BLOBCol()
+    filename = UnicodeCol(default=None)
+    is_main = BoolCol(default=False)
+    label = UnicodeCol(default=None)
+    visible = BoolCol(default=True)
+    magento_product = ForeignKey('MagentoProduct')
+
+    #
+    #  MagentoBaseSyncUp hooks
+    #
+
+    def need_create_remote(self):
+        # When we create an image, it doesn't return an id, but a filename
+        if not self.filename:
+            return True
+
+        return super(MagentoImage, self).need_create_remote()
+
+    @inlineCallbacks
+    def create_remote(self):
+        image_data = self._get_data()
+        image_data.update({
+            'file': {
+                'name': urllib.quote('%s%s' % (self.label, self.id)),
+                'content': base64.b64encode(self.image),
+                # All of our images are stored as png
+                'mime': 'image/png',
+                }
+            })
+        data = [self.magento_product.magento_id, image_data]
+
+        try:
+            retval = yield self.proxy.call('product_media.create', data)
+        except Fault as err:
+            log.warning("An error occurried when trying to create a product's "
+                        "image on magento: %s" % err.faultString)
+            returnValue(False)
+        else:
+            self.filename = retval
+
+        returnValue(bool(retval))
+
+    @inlineCallbacks
+    def update_remote(self):
+        image_data = self._get_data()
+        data = [self.magento_product.magento_id, self.filename, image_data]
+
+        try:
+            retval = yield self.proxy.call('product_media.update', data)
+        except Fault as err:
+            log.warning("An error occurried when trying to update a product's "
+                        "image on magento: %s" % err.faultString)
+            returnValue(False)
+
+        returnValue(retval)
+
+    #
+    #  Private
+    #
+
+    def _get_data(self):
+        types = []
+        if self.is_main:
+            types.extend([self.TYPE_BASE_IMAGE, self.TYPE_SMALL_IMAGE,
+                          self.TYPE_THUMBNAIL])
+
+        return {
+            'types': types,
+            'label': self.label,
+            'exclude': not self.visible,
             }

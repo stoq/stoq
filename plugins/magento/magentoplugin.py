@@ -45,7 +45,7 @@ plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
 from domain.magentoconfig import MagentoConfig
 from domain.magentoclient import MagentoClient, MagentoAddress
-from domain.magentoproduct import MagentoProduct, MagentoStock
+from domain.magentoproduct import MagentoProduct, MagentoStock, MagentoImage
 from domain.magentosale import MagentoSale, MagentoInvoice, MagentoShipment
 
 log = Logger('plugins.magento.magentoplugin')
@@ -78,17 +78,17 @@ class MagentoPlugin(object):
             retval_list = []
             # The order above matters. e.g. We always want to sync products
             # and clients before sales, to avoid problems with references.
-            for table in (MagentoProduct, MagentoStock, MagentoClient,
-                          MagentoAddress, MagentoSale, MagentoInvoice,
-                          MagentoShipment):
+            for table in (MagentoProduct, MagentoStock, MagentoImage,
+                          MagentoClient, MagentoAddress, MagentoSale,
+                          MagentoInvoice, MagentoShipment):
                 # Use DeferredList to allow multiple servers to be synchronized
                 # at the same time. Can save a lot of time!
-                retval_list = yield DeferredList(
+                retval = yield DeferredList(
                     [self._synchronize_magento_table(table, config) for config
                      in MagentoConfig.select(connection=get_connection())]
                     )
-            # retval_list = [(success, result), ...]
-            returnValue(all([all(retval) for retval in retval_list]))
+                retval_list.append(all([all(r) for r in retval]))
+            returnValue(all(retval_list))
         finally:
             self._lock.release()
 
@@ -112,7 +112,8 @@ class MagentoPlugin(object):
                                       'MagentoTableDict',
                                       'MagentoTableDictItem'])
             ('domain.magentoproduct', ['MagentoProduct',
-                                       'MagentoStock']),
+                                       'MagentoStock',
+                                       'MagentoImage']),
             ('domain.magentoclient', ['MagentoClient',
                                       'MagentoAddress']),
             ('domain.magentosale', ['MagentoSale',

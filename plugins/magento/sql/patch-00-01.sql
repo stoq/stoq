@@ -66,6 +66,22 @@ CREATE TABLE magento_stock (
     magento_product_id bigint UNIQUE REFERENCES magento_product(id)
 );
 
+CREATE TABLE magento_image (
+    id bigserial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    magento_id bigint,
+    need_sync boolean,
+    is_main boolean,
+    visible boolean,
+    image bytea,
+    filename text,
+    label text,
+    config_id bigint REFERENCES magento_config(id),
+    magento_product_id bigint REFERENCES magento_product(id)
+);
+
 CREATE TABLE magento_client (
     id bigserial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
