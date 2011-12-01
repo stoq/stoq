@@ -76,8 +76,8 @@ class TransferOrder(Domain):
     (STATUS_PENDING,
      STATUS_CLOSED) = range(2)
 
-    statuses = {STATUS_PENDING: _(u"Pending"),
-                STATUS_CLOSED:  _(u"Closed")}
+    statuses = {STATUS_PENDING: _(u'Pending'),
+                STATUS_CLOSED: _(u'Closed')}
 
     status = IntCol(default=STATUS_PENDING)
     open_date = DateTimeCol(default=datetime.datetime.now)

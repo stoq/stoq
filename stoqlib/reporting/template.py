@@ -330,7 +330,7 @@ class PriceReport(SearchResultsReport):
         total_price = 0
         for item in self._items:
             total_price += item.price or Decimal(0)
-        summary_row = ["",  _("Total:"), format_quantity(total_price)]
+        summary_row = ["", _("Total:"), format_quantity(total_price)]
         self.add_object_table(self._items, self._get_columns(),
                               summary_row=summary_row)
 

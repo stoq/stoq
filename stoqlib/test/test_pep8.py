@@ -62,6 +62,7 @@ ERRORS = [
     'E221', # multiple spaces before operator
     'E225', # missing whitespace around operator
     'E231', # E231 missing whitespace after ','/':'
+    'E241', # multiple spaces after operator
     'E251', # no spaces around keyword / parameter equals
     'E262', # inline comment should start with '# '
     'W291', # trailing whitespace

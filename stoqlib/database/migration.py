@@ -127,7 +127,7 @@ class SchemaMigration(object):
     """
 
     patch_resource = None
-    patch_patterns = ["patch*.sql",  "patch*.py"]
+    patch_patterns = ["patch*.sql", "patch*.py"]
 
     def __init__(self):
         if self.patch_resource is None:

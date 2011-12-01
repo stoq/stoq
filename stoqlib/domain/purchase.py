@@ -147,12 +147,12 @@ class PurchaseOrder(Domain):
      ORDER_CLOSED,
      ORDER_CONSIGNED) = range(6)
 
-    statuses = {ORDER_CANCELLED:    _(u'Cancelled'),
-                ORDER_QUOTING:      _(u'Quoting'),
-                ORDER_PENDING:      _(u'Pending'),
-                ORDER_CONFIRMED:    _(u'Confirmed'),
-                ORDER_CLOSED:       _(u'Closed'),
-                ORDER_CONSIGNED:    _(u'Consigned')}
+    statuses = {ORDER_CANCELLED: _(u'Cancelled'),
+                ORDER_QUOTING: _(u'Quoting'),
+                ORDER_PENDING: _(u'Pending'),
+                ORDER_CONFIRMED: _(u'Confirmed'),
+                ORDER_CLOSED: _(u'Closed'),
+                ORDER_CONSIGNED: _(u'Consigned')}
 
     (FREIGHT_FOB,
      FREIGHT_CIF) = range(2)

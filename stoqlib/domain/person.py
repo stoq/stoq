@@ -423,8 +423,8 @@ class PersonAdaptToIndividual(PersonAdapter):
     (GENDER_MALE,
      GENDER_FEMALE) = range(2)
 
-    genders = {GENDER_MALE:     _(u'Male'),
-               GENDER_FEMALE:   _(u'Female')}
+    genders = {GENDER_MALE: _(u'Male'),
+               GENDER_FEMALE: _(u'Female')}
 
     cpf = UnicodeCol(default='')
     rg_number = UnicodeCol(default='')
@@ -541,10 +541,10 @@ class PersonAdaptToClient(PersonAdapter):
 
     implements(IClient)
 
-    statuses = {STATUS_SOLVENT:     _(u'Solvent'),
-                STATUS_INDEBTED:    _(u'Indebted'),
-                STATUS_INSOLVENT:   _(u'Insolvent'),
-                STATUS_INACTIVE:    _(u'Inactive')}
+    statuses = {STATUS_SOLVENT: _(u'Solvent'),
+                STATUS_INDEBTED: _(u'Indebted'),
+                STATUS_INSOLVENT: _(u'Insolvent'),
+                STATUS_INACTIVE: _(u'Inactive')}
 
     status = IntCol(default=STATUS_SOLVENT)
     days_late = IntCol(default=0)
@@ -653,9 +653,9 @@ class PersonAdaptToSupplier(PersonAdapter):
      STATUS_INACTIVE,
      STATUS_BLOCKED) = range(3)
 
-    statuses = {STATUS_ACTIVE:      _(u'Active'),
-                STATUS_INACTIVE:    _(u'Inactive'),
-                STATUS_BLOCKED:     _(u'Blocked')}
+    statuses = {STATUS_ACTIVE: _(u'Active'),
+                STATUS_INACTIVE: _(u'Inactive'),
+                STATUS_BLOCKED: _(u'Blocked')}
 
     status = IntCol(default=STATUS_ACTIVE)
     product_desc = UnicodeCol(default='')
@@ -703,10 +703,10 @@ class PersonAdaptToEmployee(PersonAdapter):
      STATUS_VACATION,
      STATUS_OFF) = range(4)
 
-    statuses = {STATUS_NORMAL:      _(u'Normal'),
-                STATUS_AWAY:        _(u'Away'),
-                STATUS_VACATION:    _(u'Vacation'),
-                STATUS_OFF:         _(u'Off')}
+    statuses = {STATUS_NORMAL: _(u'Normal'),
+                STATUS_AWAY: _(u'Away'),
+                STATUS_VACATION: _(u'Vacation'),
+                STATUS_OFF: _(u'Off')}
 
     admission_date = DateTimeCol(default=None)
     expire_vacation = DateTimeCol(default=None)
@@ -744,8 +744,8 @@ class PersonAdaptToUser(PersonAdapter):
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
-    statuses = {STATUS_ACTIVE:      _(u'Active'),
-                STATUS_INACTIVE:    _(u'Inactive')}
+    statuses = {STATUS_ACTIVE: _(u'Active'),
+                STATUS_INACTIVE: _(u'Inactive')}
 
     username = UnicodeCol(alternateID=True)
     password = UnicodeCol()
@@ -805,8 +805,8 @@ class PersonAdaptToBranch(PersonAdapter):
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
 
-    statuses = {STATUS_ACTIVE:      _(u'Active'),
-                STATUS_INACTIVE:    _(u'Inactive')}
+    statuses = {STATUS_ACTIVE: _(u'Active'),
+                STATUS_INACTIVE: _(u'Inactive')}
 
     manager = ForeignKey('PersonAdaptToEmployee', default=None)
     is_active = BoolCol(default=True)

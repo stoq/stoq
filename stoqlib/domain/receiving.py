@@ -135,14 +135,13 @@ class ReceivingOrder(Domain):
      FREIGHT_CIF_UNKNOWN,
      FREIGHT_CIF_INVOICE) = range(4)
 
-    freight_types = {FREIGHT_FOB_PAYMENT:      _(u"FOB - Freight value "
-                                                  "on a new payment"),
+    freight_types = {FREIGHT_FOB_PAYMENT: _(u"FOB - Freight value "
+                                            "on a new payment"),
                      FREIGHT_FOB_INSTALLMENTS: _(u"FOB - Freight value "
-                                                  "on installments"),
-                     FREIGHT_CIF_UNKNOWN:      _(u"CIF - Freight value "
-                                                  "is unknown"),
-                     FREIGHT_CIF_INVOICE:      _(u"CIF - Freight value "
-                                                  "highlighted on invoice")}
+                                                 "on installments"),
+                     FREIGHT_CIF_UNKNOWN: _(u"CIF - Freight value is unknown"),
+                     FREIGHT_CIF_INVOICE: _(u"CIF - Freight value highlighted "
+                                            "on invoice")}
 
     FOB_FREIGHTS = (FREIGHT_FOB_PAYMENT,
                     FREIGHT_FOB_INSTALLMENTS, )

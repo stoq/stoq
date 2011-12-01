@@ -95,7 +95,7 @@ class PurchaseSelectionStep(BaseWizardStep):
                 SearchColumn('open_date', title=_('Date Started'),
                              data_type=datetime.date, width=100),
                 SearchColumn('expected_receival_date', data_type=datetime.date,
-                             title=_('Expected Receival'),  visible=False),
+                             title=_('Expected Receival'), visible=False),
                 SearchColumn('supplier_name', title=_('Supplier'),
                              data_type=str, searchable=True, width=130,
                              expand=True),

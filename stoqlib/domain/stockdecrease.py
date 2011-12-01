@@ -101,9 +101,8 @@ class StockDecrease(Domain):
     (STATUS_INITIAL,
      STATUS_CONFIRMED) = range(2)
 
-    statuses = {STATUS_INITIAL:     _(u"Opened"),
-                STATUS_CONFIRMED:   _(u"Confirmed"),
-                }
+    statuses = {STATUS_INITIAL: _(u'Opened'),
+                STATUS_CONFIRMED: _(u'Confirmed')}
 
     status = IntCol(default=STATUS_INITIAL)
     reason = UnicodeCol(default='')

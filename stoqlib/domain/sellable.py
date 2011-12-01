@@ -306,10 +306,10 @@ class Sellable(Domain):
      STATUS_CLOSED,
      STATUS_BLOCKED) = range(4)
 
-    statuses = {STATUS_AVAILABLE:   _(u"Available"),
-                STATUS_UNAVAILABLE: _(u"Unavailable"),
-                STATUS_CLOSED:      _(u"Closed"),
-                STATUS_BLOCKED:     _(u"Blocked")}
+    statuses = {STATUS_AVAILABLE: _(u'Available'),
+                STATUS_UNAVAILABLE: _(u'Unavailable'),
+                STATUS_CLOSED: _(u'Closed'),
+                STATUS_BLOCKED: _(u'Blocked')}
 
     code = UnicodeCol(default='')
     barcode = UnicodeCol(default='')

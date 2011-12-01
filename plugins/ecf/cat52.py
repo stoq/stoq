@@ -45,7 +45,7 @@ def _argtype_name(argtype):
 # for a complete list of this:
 
 BRAND_CODES = {
-    'daruma':   'DR',
+    'daruma': 'DR',
     'bematech': 'BE',
 }
 
@@ -69,7 +69,7 @@ MODEL_FULL_NAME = {
 DOCUMENT_TYPES = {
     ECFDocumentHistory.TYPE_MEMORY_READ: 'MF',
     ECFDocumentHistory.TYPE_Z_REDUCTION: 'RZ',
-    ECFDocumentHistory.TYPE_SUMMARY:     'LX',
+    ECFDocumentHistory.TYPE_SUMMARY: 'LX',
 }
 
 

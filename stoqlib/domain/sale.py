@@ -347,14 +347,14 @@ class Sale(Domain):
      STATUS_QUOTE,
      STATUS_RENEGOTIATED) = range(8)
 
-    statuses = {STATUS_INITIAL:     _(u"Opened"),
-                STATUS_CONFIRMED:   _(u"Confirmed"),
-                STATUS_PAID:        _(u"Paid"),
-                STATUS_CANCELLED:   _(u"Cancelled"),
-                STATUS_ORDERED:     _(u"Ordered"),
-                STATUS_RETURNED:    _(u"Returned"),
-                STATUS_RENEGOTIATED: _(u"Renegotiated"),
-                STATUS_QUOTE:       _(u"Quoting")}
+    statuses = {STATUS_INITIAL: _(u'Opened'),
+                STATUS_CONFIRMED: _(u'Confirmed'),
+                STATUS_PAID: _(u'Paid'),
+                STATUS_CANCELLED: _(u'Cancelled'),
+                STATUS_ORDERED: _(u'Ordered'),
+                STATUS_RETURNED: _(u'Returned'),
+                STATUS_RENEGOTIATED: _(u'Renegotiated'),
+                STATUS_QUOTE: _(u'Quoting')}
 
     status = IntCol(default=STATUS_INITIAL)
     coupon_id = IntCol()
