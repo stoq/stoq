@@ -23,7 +23,7 @@ CREATE TABLE magento_table_dict (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     magento_table text NOT NULL,
-    config_id bigint UNIQUE REFERENCES magento_config(id)
+    config_id bigint REFERENCES magento_config(id)
 );
 
 CREATE TABLE magento_table_dict_item (
@@ -31,9 +31,9 @@ CREATE TABLE magento_table_dict_item (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    item_key text UNIQUE,
+    item_key text,
     item_value text,
-    item_type integer,
+    item_type text,
     mapper_id bigint REFERENCES magento_table_dict(id)
 );
 

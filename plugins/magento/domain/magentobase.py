@@ -93,6 +93,17 @@ class MagentoBase(Domain):
         retval_list = list()
         trans = new_transaction()
 
+        config_dict = cls.get_config_dict(config, trans)
+        need_ensure_config = config_dict.setdefault('need_ensure_config', True)
+        if need_ensure_config:
+            retval = yield cls.ensure_config_dict(config, config_dict)
+            if not retval:
+                returnValue(False)
+
+            config_dict['need_ensure_config'] = not retval
+            finish_transaction(trans, retval)
+
+
         for obj in cls.select(connection=trans,
                               clause=AND(cls.q.configID == config.id,
                                          cls.q.need_sync == True)):
@@ -185,6 +196,21 @@ class MagentoBase(Domain):
                                            config=config,
                                            magento_table=name)
         return config_dict
+
+    @classmethod
+    def ensure_config_dict(cls, config, config_dict):
+        """Ensure that C{config_dict} has all values it needs
+
+        This can be implemented on subclasses to allow more advanced
+        logic on C{synchronize}.
+
+        @param config: the L{MagentoConfig} we are working on
+        @param config_dict: the L{MagentoTableDict} of C{cls}
+        @returns: C{True} if ensure went well, C{False} otherwise
+        """
+        return True
+
+
 
     #
     #  Public API
@@ -338,9 +364,10 @@ class MagentoBaseSyncDown(MagentoBase):
         """
         trans = new_transaction()
         config_dict = cls.get_config_dict(config, trans)
+        # The min year to be converted to timestamp is 1900
+        min_datetime = datetime.datetime.min.replace(year=1900)
 
-        last_sync_date = config_dict.setdefault('last_sync_date',
-                                                datetime.datetime.min)
+        last_sync_date = config_dict.setdefault('last_sync_date', min_datetime)
         filters = {
             # Only retrieve records modified after last_sync_date
             'updated_at': {'gteq': last_sync_date},
@@ -364,7 +391,7 @@ class MagentoBaseSyncDown(MagentoBase):
                                      # visible on list. Their last_sync should
                                      # be updated manually on their class.
                                      mag_record.get('updated_at',
-                                                    datetime.datetime.min))
+                                                    min_datetime))
 
             config_dict['last_sync_date'] = last_sync_date
             finish_transaction(trans, True)

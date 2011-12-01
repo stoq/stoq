@@ -38,6 +38,7 @@ from stoqlib.database.runtime import get_connection
 from stoqlib.domain.interfaces import IStorable
 
 from domain.magentobase import MagentoBaseSyncUp
+from magentolib import get_proxy
 
 log = Logger('plugins.magento.domain.magentoproduct')
 
@@ -75,11 +76,9 @@ class MagentoProduct(MagentoBaseSyncUp):
     TAX_TAXABLE_GOODS = 2
     TAX_SHIPPING = 4
 
-    DEFAULT_SET = 4
-
     sku = UnicodeCol(default=None)
     product_type = UnicodeCol(default=TYPE_SIMPLE)
-    product_set = IntCol(default=DEFAULT_SET)
+    product_set = IntCol(default=None)
     visibility = IntCol(default=VISIBILITY_CATALOG_SEARCH)
     url_key = UnicodeCol(default=None)
     news_from_date = DateTimeCol(default=None)
@@ -90,6 +89,35 @@ class MagentoProduct(MagentoBaseSyncUp):
                                joinColumn='magento_product_id')
     magento_images = MultipleJoin('MagentoImage',
                                   joinColumn='magento_product_id')
+
+    #
+    #  MagentoBase hooks
+    #
+
+    @classmethod
+    @inlineCallbacks
+    def ensure_config_dict(cls, config, config_dict):
+        # Ensure we know the id of the default set
+        if not 'default_set' in config_dict:
+            proxy = get_proxy(config)
+            try:
+                set_list = yield proxy.call('product_attribute_set.list')
+            except Fault as err:
+                log.warning("An error occurried when trying to get the "
+                            "default product set on magento: %s"
+                            % err.faultString)
+                returnValue(False)
+
+            for set_ in set_list:
+                if set_['name'] == 'Default':
+                    default_set = config_dict.setdefault('default_set',
+                                                         set_['set_id'])
+                    break
+
+            if not default_set:
+                returnValue(False)
+
+        returnValue(True)
 
     #
     #  MagentoBaseSyncUp hooks
@@ -207,7 +235,11 @@ class MagentoProduct(MagentoBaseSyncUp):
     def _generate_initial_data(self):
         sellable = self.product.sellable
         config = self.config
+        config_dict = MagentoProduct.get_config_dict(config,
+                                                     self.get_connection())
 
+        if not self.product_set:
+            self.product_set = config_dict['default_set']
         if not self.sku:
             # SKU is a product identifier on Magento and must be unique
             self.sku = 'SK%s' % str(sellable.id).zfill(20)

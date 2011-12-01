@@ -51,9 +51,8 @@ def import_products(config):
         MagentoProduct.API_ID_NAME: {
             'nin': [mag_p.magento_id for mag_p in
                     MagentoProduct.select(connection=trans, config=config)]},
-        # Stoq only supports simple products with default set right now
+        # Stoq only supports simple products right now
         'type': {'eq': MagentoProduct.TYPE_SIMPLE},
-        'set': {'eq': MagentoProduct.DEFAULT_SET},
         }
     product_list = yield MagentoProduct.list_remote(config, **filters)
     # Empty lists are fine! That means we don't have anything to import
