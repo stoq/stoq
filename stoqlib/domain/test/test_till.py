@@ -182,6 +182,38 @@ class TestTill(DomainTest):
 
         self.assertEqual(Till.get_current(self.trans), None)
 
+    def testTillOpenPreviouslyNotClosed(self):
+        yesterday = datetime.datetime.today() - datetime.timedelta(1)
+
+        # Open a till, set the opening_date to yesterday
+        till = Till(station=get_current_station(self.trans),
+                    connection=self.trans)
+        till.open_till()
+        till.opening_date = yesterday
+        till.close_till()
+        till.closing_date = None
+
+        self.assertRaises(TillError, till.open_till)
+
+    def testTillOpenPreviouslyOpened(self):
+        yesterday = datetime.datetime.today() - datetime.timedelta(1)
+
+        # Open a till, set the opening_date to yesterday
+        till = Till(station=get_current_station(self.trans),
+                    connection=self.trans)
+        till.open_till()
+        till.opening_date = yesterday
+        till.add_credit_entry(currency(10), u"")
+        till.close_till()
+        till.closing_date = yesterday
+
+        new_till = Till(station=get_current_station(self.trans),
+                        connection=self.trans)
+        self.failUnless(new_till._get_last_closed_till())
+        new_till.open_till()
+        self.assertEquals(new_till.initial_cash_amount,
+                          till.final_cash_amount)
+
     def testTillOpenOtherStation(self):
         till = Till(station=self.create_station(),
                     connection=self.trans)
@@ -241,3 +273,20 @@ class TestTill(DomainTest):
         self.assertEqual(till.get_balance(), 0)
         till.add_debit_entry(10)
         self.assertEqual(till.get_balance(), -10)
+
+    def testGetLast(self):
+        self.failIf(Till.get_last(self.trans))
+
+        till = Till(connection=self.trans,
+                    station=get_current_station(self.trans))
+        till.open_till()
+        self.assertEquals(Till.get_last(self.trans), till)
+
+    def testGetLastClosed(self):
+        self.failIf(Till.get_last_closed(self.trans))
+
+        till = Till(connection=self.trans,
+                    station=get_current_station(self.trans))
+        till.open_till()
+        till.close_till()
+        self.assertEquals(Till.get_last_closed(self.trans), till)

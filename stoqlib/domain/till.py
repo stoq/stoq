@@ -171,8 +171,6 @@ class Till(Domain):
         if last_till:
             if not last_till.closing_date:
                 raise TillError(_("Previous till was not closed"))
-            elif last_till.opening_date.date() == today:
-                raise TillError(_("A till has already been opened today"))
 
             initial_cash_amount = last_till.final_cash_amount
         else:
