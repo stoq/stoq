@@ -97,9 +97,9 @@ class MagentoProduct(MagentoBaseSyncUp):
 
     @classmethod
     @inlineCallbacks
-    def ensure_config_dict(cls, config, config_dict):
+    def ensure_config(cls, config):
         # Ensure we know the id of the default set
-        if not 'default_set' in config_dict:
+        if not config.default_product_set:
             proxy = get_proxy(config)
             try:
                 set_list = yield proxy.call('product_attribute_set.list')
@@ -109,14 +109,14 @@ class MagentoProduct(MagentoBaseSyncUp):
                             % err.faultString)
                 returnValue(False)
 
+            default_set = None
             for set_ in set_list:
                 if set_['name'] == 'Default':
-                    default_set = config_dict.setdefault('default_set',
-                                                         set_['set_id'])
+                    default_set = set_['set_id']
                     break
-
             if not default_set:
                 returnValue(False)
+            config.default_product_set = default_set
 
         returnValue(True)
 
@@ -262,11 +262,9 @@ class MagentoProduct(MagentoBaseSyncUp):
     def _generate_initial_data(self):
         sellable = self.product.sellable
         config = self.config
-        config_dict = MagentoProduct.get_config_dict(config,
-                                                     self.get_connection())
 
         if not self.product_set:
-            self.product_set = config_dict['default_set']
+            self.product_set = config.default_product_set
         if not self.sku:
             # SKU is a product identifier on Magento and must be unique
             self.sku = 'SK%s' % str(sellable.id).zfill(20)
@@ -562,18 +560,18 @@ class MagentoCategory(MagentoBaseSyncUp):
 
     @classmethod
     @inlineCallbacks
-    def ensure_config_dict(cls, config, config_dict):
+    def ensure_config(cls, config):
         # Ensure we know the root category
-        if not 'root_category_id' in config_dict:
+        if not config.root_category:
             tree = yield cls.tree_remote(config)
             if not tree:
                 returnValue(False)
 
             # The root will be the dict retrieved by tree
-            root_id = config_dict.setdefault('root_category_id',
-                                             tree[cls.API_ID_NAME])
-            if not root_id:
+            root_category = tree[cls.API_ID_NAME]
+            if not root_category:
                 returnValue(False)
+            config.root_category = root_category
 
         returnValue(True)
 
@@ -586,9 +584,7 @@ class MagentoCategory(MagentoBaseSyncUp):
         if self.parent:
             parent_id = self.parent.magento_id
         else:
-            config_dict = MagentoCategory.get_config_dict(self.config,
-                                                          self.get_connection())
-            parent_id = config_dict['root_category_id']
+            parent_id = self.config.root_category
 
         data = [parent_id, self._get_data()]
         try:

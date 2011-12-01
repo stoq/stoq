@@ -32,7 +32,6 @@ from stoqlib.database.orm import BoolCol, IntCol, ForeignKey, AND
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.base import Domain
 
-from magentoconfig import MagentoTableDict
 from magentolib import get_proxy
 
 log = Logger('plugins.magento.domain.magentobase')
@@ -93,14 +92,13 @@ class MagentoBase(Domain):
         retval_list = list()
         trans = new_transaction()
 
-        config_dict = cls.get_config_dict(config, trans)
-        need_ensure_config = config_dict.setdefault('need_ensure_config', True)
-        if need_ensure_config:
-            retval = yield cls.ensure_config_dict(config, config_dict)
+        table_config = config.get_table_config(cls)
+        if table_config.need_ensure_config:
+            retval = yield cls.ensure_config(trans.get(config))
             if not retval:
                 returnValue(False)
 
-            config_dict['need_ensure_config'] = not retval
+            table_config.need_ensure_config = not retval
             finish_transaction(trans, retval)
 
         for obj in cls.select(connection=trans,
@@ -176,35 +174,13 @@ class MagentoBase(Domain):
         returnValue(retval)
 
     @classmethod
-    def get_config_dict(cls, config, conn):
-        """Returns the magento config specific to C{klass}
-
-        Makes it easy to get a L{MagentoTableDict} associated with C{cls}
-        and C{config}. If it doesn't exist, we create one and returns it.
-
-        @param config: the L{MagentoConfig} associated with config dict
-        @param conn: an L{stoqlib.database.ITransaction} implementation
-        @returns: a L{MagentoTableDict} instance
-        """
-        name = cls.__name__
-        config_dict = MagentoTableDict.selectOneBy(connection=conn,
-                                                   config=config,
-                                                   magento_table=name)
-        if not config_dict:
-            config_dict = MagentoTableDict(connection=conn,
-                                           config=config,
-                                           magento_table=name)
-        return config_dict
-
-    @classmethod
-    def ensure_config_dict(cls, config, config_dict):
-        """Ensure that C{config_dict} has all values it needs
+    def ensure_config(cls, config):
+        """A helper to get specific configs for C{cls} before sync
 
         This can be implemented on subclasses to allow more advanced
         logic on C{synchronize}.
 
         @param config: the L{MagentoConfig} we are working on
-        @param config_dict: the L{MagentoTableDict} of C{cls}
         @returns: C{True} if ensure went well, C{False} otherwise
         """
         return True
@@ -360,11 +336,9 @@ class MagentoBaseSyncDown(MagentoBase):
         @returns: C{True} if all sync went well, C{False} otherwise
         """
         trans = new_transaction()
-        config_dict = cls.get_config_dict(config, trans)
-        # The min year to be converted to timestamp is 1900
-        min_datetime = datetime.datetime.min.replace(year=1900)
+        table_config = trans.get(config.get_table_config(cls))
 
-        last_sync_date = config_dict.setdefault('last_sync_date', min_datetime)
+        last_sync_date = table_config.last_sync_date
         filters = {
             # Only retrieve records modified after last_sync_date
             'updated_at': {'gteq': last_sync_date},
@@ -388,9 +362,9 @@ class MagentoBaseSyncDown(MagentoBase):
                                      # visible on list. Their last_sync should
                                      # be updated manually on their class.
                                      mag_record.get('updated_at',
-                                                    min_datetime))
+                                                    datetime.datetime.min))
 
-            config_dict['last_sync_date'] = last_sync_date
+            table_config.last_sync_date = last_sync_date
             finish_transaction(trans, True)
 
         trans.close()

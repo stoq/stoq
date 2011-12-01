@@ -13,28 +13,21 @@ CREATE TABLE magento_config (
     api_key text NOT NULL,
     qty_days_as_new integer,
     tz_hours numeric(10, 2),
+    default_product_set integer,
+    root_category integer,
     branch_id bigint UNIQUE REFERENCES person_adapt_to_branch(id),
     salesperson_id bigint UNIQUE REFERENCES person_adapt_to_sales_person(id)
 );
 
-CREATE TABLE magento_table_dict (
+CREATE TABLE magento_table_config (
     id bigserial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     magento_table text NOT NULL,
+    last_sync_date timestamp,
+    need_ensure_config boolean,
     config_id bigint REFERENCES magento_config(id)
-);
-
-CREATE TABLE magento_table_dict_item (
-    id bigserial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-
-    item_key text,
-    item_value text,
-    item_type text,
-    mapper_id bigint REFERENCES magento_table_dict(id)
 );
 
 CREATE TABLE magento_category (

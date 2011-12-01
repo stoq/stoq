@@ -22,11 +22,13 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
 import decimal
 
-from stoqlib.database.orm import DecimalCol, IntCol, UnicodeCol, ForeignKey
-from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.base import Domain, MappingDomain, ItemDomain
+from stoqlib.database.orm import (DecimalCol, IntCol, UnicodeCol, DateTimeCol,
+                                  BoolCol, ForeignKey)
+from stoqlib.database.runtime import get_current_branch, new_transaction
+from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import ISalesPerson, IEmployee, IIndividual
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
@@ -47,6 +49,8 @@ class MagentoConfig(Domain):
     @ivar qty_days_as_new: how many days to set a product as new on magento
     @ivar branch: the branch which will be used to query stock information
     @ivar salesperson: the magento sales salesperson
+    @ivar default_product_set: the id of the default products set on magento
+    @ivar root_category: the id of the root category on magento
     """
 
     url = UnicodeCol()
@@ -57,6 +61,30 @@ class MagentoConfig(Domain):
     qty_days_as_new = IntCol(default=45)
     branch = ForeignKey('PersonAdaptToBranch')
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
+
+    default_product_set = IntCol(default=None)
+    root_category = IntCol(default=None)
+
+    #
+    #  Public API
+    #
+
+    def get_table_config(self, klass):
+        conn = self.get_connection()
+        name = klass.__name__
+        table_config = MagentoTableConfig.selectOneBy(connection=conn,
+                                                      config=self,
+                                                      magento_table=name)
+        if not table_config:
+            trans = new_transaction()
+            MagentoTableConfig(connection=trans,
+                               config=self,
+                               magento_table=name)
+            trans.commit(close=True)
+            # We created the obj. Now the selectOneBy above will work
+            return self.get_table_config(klass)
+
+        return table_config
 
     #
     #  ORMObject hooks
@@ -118,12 +146,8 @@ class MagentoConfig(Domain):
         return person.addFacet(ISalesPerson, connection=conn)
 
 
-class MagentoTableDictItem(ItemDomain):
-    """Items implementation for L{MagentoTableDict}"""
-
-
-class MagentoTableDict(MappingDomain):
-    """Responsible for storing specific configurations in a C{dict} style
+class MagentoTableConfig(Domain):
+    """Responsible for storing specific configurations for classes
 
     @ivar config: the L{MagentoConfig} associated with this obj
     @ivar magento_table: the name of the table associated with this config
@@ -131,5 +155,5 @@ class MagentoTableDict(MappingDomain):
 
     config = ForeignKey('MagentoConfig')
     magento_table = UnicodeCol()
-
-MagentoTableDict.register_item_domain(MagentoTableDictItem)
+    last_sync_date = DateTimeCol(default=datetime.datetime.min)
+    need_ensure_config = BoolCol(default=True)
