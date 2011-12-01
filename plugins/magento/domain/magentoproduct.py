@@ -33,7 +33,7 @@ from twisted.web.xmlrpc import Fault
 
 from stoqlib.database.orm import (IntCol, UnicodeCol, DateTimeCol, BLOBCol,
                                   BoolCol, ForeignKey, SingleJoin,
-                                  MultipleJoin)
+                                  MultipleJoin, IN)
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.interfaces import IStorable
 
@@ -223,32 +223,41 @@ class MagentoProduct(MagentoBaseSyncUp):
     def _update_category(self, category):
         conn = self.get_connection()
         mag_category = self.magento_category
-        if not mag_category or mag_category != category:
-            mag_category = MagentoCategory.selectOneBy(connection=conn,
-                                                       config=self.config,
-                                                       category=category)
-            self.magento_category = mag_category
 
-        mag_category.need_sync = True
+        if mag_category and mag_category.category == category:
+            # Nothing changed..return here to skip processing bellow
+            return
+        elif mag_category and mag_category.category != category:
+            # Make sure we will remove the product from the category
+            mag_category.need_sync = True
+
+        mag_category = MagentoCategory.selectOneBy(connection=conn,
+                                                   config=self.config,
+                                                   category=category)
+        self.magento_category = mag_category
+        self.magento_category.need_sync = True
 
     def _update_main_image(self, image):
         conn = self.get_connection()
         mag_image = MagentoImage.selectOneBy(connection=conn,
                                              magento_product=self,
                                              is_main=True)
-        if not mag_image:
-            label = self.product.sellable.get_description()
-            mag_image = MagentoImage(connection=conn,
-                                     magento_id=self.magento_id,
-                                     config=self.config,
-                                     image=image,
-                                     is_main=True,
-                                     label=label,
-                                     magento_product=self)
 
-        if mag_image.image != image:
-            mag_image.image = image
-            mag_image.need_sync = True
+        if mag_image and mag_image.image == image:
+            # Nothing changed..return here to skip processing bellow
+            return
+        elif mag_image and mag_image.image != image:
+            # This won't be the main image anymore.
+            mag_image.is_main = False
+
+        label = self.product.sellable.get_description()
+        mag_image = MagentoImage(connection=conn,
+                                 magento_id=self.magento_id,
+                                 config=self.config,
+                                 image=image,
+                                 is_main=True,
+                                 label=label,
+                                 magento_product=self)
 
     def _generate_initial_data(self):
         sellable = self.product.sellable
@@ -539,6 +548,10 @@ class MagentoCategory(MagentoBaseSyncUp):
         try:
             retval = yield self.proxy.call('category.removeProduct', data)
         except Fault as err:
+            if err.faultCode == self.ERROR_CATEGORY_PRODUCT_NOT_ASSIGNED:
+                # The product isn't assigned. That's what we wanted
+                returnValue(True)
+
             log.warning("An error occurried when trying assign a product "
                         "to a category on magento: %s" % err.faultString)
             returnValue(False)
@@ -597,6 +610,7 @@ class MagentoCategory(MagentoBaseSyncUp):
 
     @inlineCallbacks
     def update_remote(self):
+        conn = self.get_connection()
         data = [self.magento_id, self._get_data()]
 
         try:
@@ -612,12 +626,24 @@ class MagentoCategory(MagentoBaseSyncUp):
             retval_list = []
             assigned_ids = [ap[MagentoProduct.API_ID_NAME] for ap
                             in assigned_products]
+
             for mag_product in self.magento_products:
                 if mag_product.magento_id in assigned_ids:
+                    # Remove the id from the list, to allow us to find the ones
+                    # that we need to remove bellow.
+                    assigned_ids.remove(mag_product.magento_id)
                     continue
 
                 retval_ = yield self.assign_product_remote(mag_product)
                 retval_list.append(retval_)
+            # Deassign products not listed on self anymore
+            if assigned_ids:
+                for mag_product in MagentoProduct.select(
+                    connection=conn,
+                    clause=IN(MagentoProduct.q.magento_id, assigned_ids),
+                    ):
+                    retval_ = yield self.remove_product_remote(mag_product)
+                    retval_list.append(retval_)
 
             retval = retval and all(retval_list)
 
