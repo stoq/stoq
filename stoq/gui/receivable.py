@@ -137,6 +137,9 @@ class ReceivableApp(SearchableAppWindow):
 
     def activate(self):
         self._update_widgets()
+        self.app.launcher.add_search_items([self.BillCheckSearch,
+                                            self.CardPaymentSearch])
+
         self.search.refresh()
 
     def deactivate(self):

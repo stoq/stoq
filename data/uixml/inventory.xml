@@ -47,9 +47,9 @@
     <placeholder name="AppToolbarPH">
       <toolitem action="Print"/>
       <separator/>
-      <toolitem action="Cancel"/>
       <toolitem action="CountingAction"/>
       <toolitem action="AdjustAction"/>
+      <toolitem action="Cancel"/>
     </placeholder>
   </toolbar>
 </ui>

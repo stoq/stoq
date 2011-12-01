@@ -101,9 +101,11 @@ class InventoryApp(SearchableAppWindow):
     def activate(self):
         self.search.refresh()
         self._update_widgets()
+        self.app.launcher.SearchToolItem.set_sensitive(False)
 
     def deactivate(self):
         self.uimanager.remove_ui(self.inventory_ui)
+        self.app.launcher.SearchToolItem.set_sensitive(True)
 
     def new_activate(self):
         if not self.NewInventory.get_sensitive():

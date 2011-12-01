@@ -384,9 +384,11 @@ class FinancialApp(AppWindow):
             page.refresh()
         self._update_actions()
         self._update_tooltips()
+        self.app.launcher.SearchToolItem.set_sensitive(False)
 
     def deactivate(self):
         self.uimanager.remove_ui(self.financial_ui)
+        self.app.launcher.SearchToolItem.set_sensitive(True)
 
     #
     # Private
