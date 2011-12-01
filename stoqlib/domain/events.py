@@ -70,6 +70,26 @@ class ProductStockUpdateEvent(Event):
 
 
 #
+# Category events
+#
+
+class CategoryCreateEvent(Event):
+    """
+    This event is emitted when a category is created.
+
+    @param product: the created category
+    """
+
+
+class CategoryEditEvent(Event):
+    """
+    This event is emitted when a category is edited.
+
+    @param product: the edited category
+    """
+
+
+#
 # Sale events
 #
 
