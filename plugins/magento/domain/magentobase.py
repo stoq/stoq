@@ -32,6 +32,7 @@ from stoqlib.database.orm import BoolCol, IntCol, ForeignKey, AND
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.base import Domain
 
+from magentoconfig import MagentoTableDict
 from magentolib import get_proxy
 
 log = Logger('plugins.magento.domain.magentobase')
@@ -93,7 +94,7 @@ class MagentoBase(Domain):
         trans = new_transaction()
 
         for obj in cls.select(connection=trans,
-                              clause=AND(cls.q.config == config,
+                              clause=AND(cls.q.configID == config.id,
                                          cls.q.need_sync == True)):
             retval = yield maybeDeferred(obj.process)
             retval_list.append(retval)
@@ -163,6 +164,27 @@ class MagentoBase(Domain):
             returnValue(False)
 
         returnValue(retval)
+
+    @classmethod
+    def get_config_dict(cls, config, conn):
+        """Returns the magento config specific to C{klass}
+
+        Makes it easy to get a L{MagentoTableDict} associated with C{cls}
+        and C{config}. If it doesn't exist, we create one and returns it.
+
+        @param config: the L{MagentoConfig} associated with config dict
+        @param conn: an L{stoqlib.database.ITransaction} implementation
+        @returns: a L{MagentoTableDict} instance
+        """
+        name = cls.__name__
+        config_dict = MagentoTableDict.selectOneBy(connection=conn,
+                                                   config=config,
+                                                   magento_table=name)
+        if not config_dict:
+            config_dict = MagentoTableDict(connection=conn,
+                                           config=config,
+                                           magento_table=name)
+        return config_dict
 
     #
     #  Public API
@@ -315,9 +337,10 @@ class MagentoBaseSyncDown(MagentoBase):
         @returns: C{True} if all sync went well, C{False} otherwise
         """
         trans = new_transaction()
-        table_config = trans.get(config.get_table_config(cls))
+        config_dict = cls.get_config_dict(config, trans)
 
-        last_sync_date = table_config.last_sync_date
+        last_sync_date = config_dict.setdefault('last_sync_date',
+                                                datetime.datetime.min)
         filters = {
             # Only retrieve records modified after last_sync_date
             'updated_at': {'gteq': last_sync_date},
@@ -343,7 +366,7 @@ class MagentoBaseSyncDown(MagentoBase):
                                      mag_record.get('updated_at',
                                                     datetime.datetime.min))
 
-            table_config.last_sync_date = last_sync_date
+            config_dict['last_sync_date'] = last_sync_date
             finish_transaction(trans, True)
 
         trans.close()

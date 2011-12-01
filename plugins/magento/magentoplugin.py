@@ -29,7 +29,8 @@ import sys
 
 from kiwi.environ import environ
 from kiwi.log import Logger
-from twisted.internet.defer import DeferredLock, returnValue, inlineCallbacks
+from twisted.internet.defer import (DeferredLock, returnValue, inlineCallbacks,
+                                    DeferredList)
 from zope.interface import implements
 
 from stoqlib.database.migration import PluginSchemaMigration
@@ -80,9 +81,14 @@ class MagentoPlugin(object):
             for table in (MagentoProduct, MagentoStock, MagentoClient,
                           MagentoAddress, MagentoSale, MagentoInvoice,
                           MagentoShipment):
-                retval = yield self._synchronize_magento_table(table)
-                retval_list.append(retval)
-            returnValue(all(retval_list))
+                # Use DeferredList to allow multiple servers to be synchronized
+                # at the same time. Can save a lot of time!
+                retval_list = yield DeferredList(
+                    [self._synchronize_magento_table(table, config) for config
+                     in MagentoConfig.select(connection=get_connection())]
+                    )
+            # retval_list = [(success, result), ...]
+            returnValue(all([all(retval) for retval in retval_list]))
         finally:
             self._lock.release()
 
@@ -103,7 +109,8 @@ class MagentoPlugin(object):
     def get_tables(self):
         return [
             ('domain.magentoconfig', ['MagentoConfig',
-                                      'MagentoTableConfig'])
+                                      'MagentoTableDict',
+                                      'MagentoTableDictItem'])
             ('domain.magentoproduct', ['MagentoProduct',
                                        'MagentoStock']),
             ('domain.magentoclient', ['MagentoClient',
@@ -122,17 +129,15 @@ class MagentoPlugin(object):
     #
 
     @inlineCallbacks
-    def _synchronize_magento_table(self, mag_table):
-        retval_list = []
+    def _synchronize_magento_table(self, mag_table, config):
+        url = config.url
 
-        log.info("Start synchronizing %s" % mag_table)
-        for config in MagentoConfig.select(connection=get_connection()):
-            retval = yield mag_table.synchronize(config)
-            retval_list.append(retval)
-            log.info("Finish synchronizing magento table %s on url %s with "
-                     "status: %s" % (mag_table, config.url, retval))
+        log.info("Start synchronizing %s on server %s" % (mag_table, url))
+        retval = yield mag_table.synchronize(config)
+        log.info("Start synchronizing %s on server %s with retval %s" %
+                 (mag_table, url, retval))
 
-        returnValue(all(retval_list))
+        returnValue(retval)
 
     def _get_magento_products_by_product(self, product):
         conn = product.get_connection()

@@ -22,20 +22,16 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 import decimal
 
-from stoqlib.database.orm import (DecimalCol, IntCol, UnicodeCol, DateTimeCol,
-                                  ForeignKey)
+from stoqlib.database.orm import DecimalCol, IntCol, UnicodeCol, ForeignKey
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, MappingDomain, ItemDomain
 from stoqlib.domain.interfaces import ISalesPerson, IEmployee, IIndividual
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-
-from magentoproduct import MagentoProduct
 
 _ = stoqlib_gettext
 
@@ -62,36 +58,15 @@ class MagentoConfig(Domain):
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
 
     #
-    #  Public API
-    #
-
-    def get_table_config(self, klass):
-        """Returns the magento config specific to C{klass}
-
-        @returns: the L{MagentoTableConfig} associated with C{klass}
-        """
-        conn = self.get_connection()
-        table = klass.__name__
-
-        table_config = MagentoTableConfig.selectOneBy(connection=conn,
-                                                      magento_config=self,
-                                                      magento_table=table)
-        if not table_config:
-            table_config = MagentoTableConfig(connection=conn,
-                                              config=self,
-                                              magento_table=table)
-
-        return table_config
-
-    #
     #  ORMObject hooks
     #
 
     def _create(self, *args, **kwargs):
+        conn = self.get_connection()
         if not 'salesperson' in kwargs:
             kwargs['salesperson'] = self._create_salesperson()
         if not 'branch' in kwargs:
-            kwargs['branch'] = get_current_branch()
+            kwargs['branch'] = get_current_branch(conn)
 
         super(MagentoConfig, self)._create(*args, **kwargs)
 
@@ -100,6 +75,7 @@ class MagentoConfig(Domain):
     #
 
     def on_create(self):
+        from magentoproduct import MagentoProduct
         conn = self.get_connection()
 
         # When commiting, ensure we known all products to synchronize using the
@@ -135,15 +111,18 @@ class MagentoConfig(Domain):
         return person.addFacet(ISalesPerson, connection=conn)
 
 
-class MagentoTableConfig(Domain):
-    """Class for storing Magento config specific to a C{magento_table}
+class MagentoTableDictItem(ItemDomain):
+    """Items implementation for L{MagentoTableDict}"""
+
+
+class MagentoTableDict(MappingDomain):
+    """Responsible for storing specific configurations in a C{dict} style
 
     @ivar config: the L{MagentoConfig} associated with this obj
-    @ivar magento_table: the table associated with this config
-    @ivar last_sync_date: the last date, on Magento, that C{magento_table}
-        was successfully synchronized for the last time
+    @ivar magento_table: the name of the table associated with this config
     """
 
     config = ForeignKey('MagentoConfig')
     magento_table = UnicodeCol()
-    last_sync_date = DateTimeCol(default=datetime.datetime.min)
+
+MagentoTableDict.register_item_domain(MagentoTableDictItem)
