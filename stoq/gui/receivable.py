@@ -126,6 +126,7 @@ class ReceivableApp(SearchableAppWindow):
         self.Receive.props.is_important = True
 
     def create_ui(self):
+        self.search.search.search_button.hide()
         self.app.launcher.add_new_items([self.AddReceiving])
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         parent = self.app.launcher.statusbar.get_message_area()
