@@ -83,6 +83,7 @@ class MagentoProduct(MagentoBaseSyncUp):
     url_key = UnicodeCol(default=None)
     news_from_date = DateTimeCol(default=None)
     news_to_date = DateTimeCol(default=None)
+    magento_category = ForeignKey('MagentoCategory', default=None)
     product = ForeignKey('Product')
 
     magento_stock = SingleJoin('MagentoStock',
@@ -161,6 +162,9 @@ class MagentoProduct(MagentoBaseSyncUp):
             image = self.product.full_image
             if image:
                 self._update_main_image(image)
+            category = self.product.sellable.category
+            if category:
+                self._update_category(category)
 
         returnValue(bool(retval))
 
@@ -174,6 +178,9 @@ class MagentoProduct(MagentoBaseSyncUp):
         image = self.product.full_image
         if image:
             self._update_main_image(image)
+        category = self.product.sellable.category
+        if category:
+            self._update_category(category)
 
         data = [self.magento_id, self._get_data()]
         try:
@@ -212,6 +219,17 @@ class MagentoProduct(MagentoBaseSyncUp):
     #
     #  Private
     #
+
+    def _update_category(self, category):
+        conn = self.get_connection()
+        mag_category = self.magento_category
+        if not mag_category or mag_category != category:
+            mag_category = MagentoCategory.selectOneBy(connection=conn,
+                                                       config=self.config,
+                                                       category=category)
+            self.magento_category = mag_category
+
+        mag_category.need_sync = True
 
     def _update_main_image(self, image):
         conn = self.get_connection()
@@ -438,4 +456,189 @@ class MagentoImage(MagentoBaseSyncUp):
             'types': types,
             'label': self.label,
             'exclude': not self.visible,
+            }
+<<<<<<< TREE
+=======
+
+class MagentoCategory(MagentoBaseSyncUp):
+    """Class for product category synchronization between Stoq and Magento"""
+
+    API_NAME = 'category'
+    API_ID_NAME = 'category_id'
+
+    (ERROR_CATEGORY_STORE_VIEW_NOT_FOUND,
+     ERROR_CATEGORY_WEBSITE_NOT_EXISTS,
+     ERROR_CATEGORY_NOT_EXISTS,
+     ERROR_CATEGORY_INVALID_DATA,
+     ERROR_CATEGORY_NOT_MOVED,
+     ERROR_CATEGORY_NOT_DELETED,
+     ERROR_CATEGORY_PRODUCT_NOT_ASSIGNED) = range(100, 107)
+
+    is_active = BoolCol(default=True)
+    category = ForeignKey('SellableCategory')
+    parent = ForeignKey('MagentoCategory', default=None)
+
+    magento_products = MultipleJoin('MagentoProduct',
+                                    joinColumn='magento_category_id')
+
+    #
+    #  Classmethods
+    #
+
+    @classmethod
+    @inlineCallbacks
+    def tree_remote(cls, config, parent_id=None):
+        data = []
+        if parent_id:
+            data.append(parent_id)
+
+        proxy = get_proxy(config)
+        try:
+            retval = yield proxy.call('category.tree', data)
+        except Fault as err:
+            log.warning("An error occurried when trying get a categories tree "
+                        "on magento: %s" % err.faultString)
+            returnValue(False)
+
+        returnValue(retval)
+
+    #
+    #  Public API
+    #
+
+    @inlineCallbacks
+    def assigned_products_remote(self):
+        try:
+            retval = yield self.proxy.call('category.assignedProducts',
+                                           [self.magento_id])
+        except Fault as err:
+            log.warning("An error occurried when trying get a category "
+                        "assigned product list on magento: %s"
+                        % err.faultString)
+            returnValue(False)
+
+        returnValue(retval)
+
+    @inlineCallbacks
+    def assign_product_remote(self, magento_product):
+        data = [self.magento_id, magento_product.magento_id]
+
+        try:
+            retval = yield self.proxy.call('category.assignProduct', data)
+        except Fault as err:
+            log.warning("An error occurried when trying assign a product "
+                        "to a category on magento: %s" % err.faultString)
+            returnValue(False)
+
+        returnValue(retval)
+
+    @inlineCallbacks
+    def remove_product_remote(self, magento_product):
+        data = [self.magento_id, magento_product.magento_id]
+
+        try:
+            retval = yield self.proxy.call('category.removeProduct', data)
+        except Fault as err:
+            log.warning("An error occurried when trying assign a product "
+                        "to a category on magento: %s" % err.faultString)
+            returnValue(False)
+
+        returnValue(retval)
+
+    #
+    #  MagentoBase hooks
+    #
+
+    @classmethod
+    @inlineCallbacks
+    def ensure_config_dict(cls, config, config_dict):
+        # Ensure we know the root category
+        if not 'root_category_id' in config_dict:
+            tree = yield cls.tree_remote(config)
+            if not tree:
+                returnValue(False)
+
+            # The root will be the dict retrieved by tree
+            root_id = config_dict.setdefault('root_category_id',
+                                             tree[cls.API_ID_NAME])
+            if not root_id:
+                returnValue(False)
+
+        returnValue(True)
+
+    #
+    #  MagentoBaseSyncUp hooks
+    #
+
+    @inlineCallbacks
+    def create_remote(self):
+        if self.parent:
+            parent_id = self.parent.magento_id
+        else:
+            config_dict = MagentoCategory.get_config_dict(self.config,
+                                                          self.get_connection())
+            parent_id = config_dict['root_category_id']
+
+        data = [parent_id, self._get_data()]
+        try:
+            retval = yield self.proxy.call('category.create', data)
+        except Fault as err:
+            log.warning("An error occurried when trying to create a category "
+                        "on magento: %s" % err.faultString)
+            returnValue(False)
+        else:
+            self.magento_id = retval
+            # Ensure we will call update to assign products properly.
+            # We don't do it here because, if it fails, we will try to create
+            # the category on magento again, resulting in an error.
+            self.keep_need_sync = True
+
+        returnValue(bool(retval))
+
+    @inlineCallbacks
+    def update_remote(self):
+        data = [self.magento_id, self._get_data()]
+
+        try:
+            retval = yield self.proxy.call('category.update', data)
+        except Fault as err:
+            log.warning("An error occurried when trying to update a category "
+                        "on magento: %s" % err.faultString)
+            returnValue(False)
+
+        assigned_products = yield self.assigned_products_remote()
+        # Find what products miss assignment for self and assign
+        if not assigned_products in (None, False):
+            retval_list = []
+            assigned_ids = [ap[MagentoProduct.API_ID_NAME] for ap
+                            in assigned_products]
+            for mag_product in self.magento_products:
+                if mag_product.magento_id in assigned_ids:
+                    continue
+
+                retval_ = yield self.assign_product_remote(mag_product)
+                retval_list.append(retval_)
+
+            retval = retval and all(retval_list)
+
+        returnValue(retval)
+
+    #
+    #  Private
+    #
+
+    def _get_data(self):
+        name = self.category.get_description()
+        # Base categories are not visible.
+        include_in_menu = bool(self.category.category)
+
+        available_sort_by = ['name', 'price']
+        default_sort_by = available_sort_by[0]
+
+        return {
+            'name': name,
+            'is_active': self.is_active,
+            'include_in_menu': include_in_menu,
+            'available_sort_by': available_sort_by,
+            'default_sort_by': default_sort_by,
             }

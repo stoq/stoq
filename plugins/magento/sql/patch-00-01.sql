@@ -37,6 +37,19 @@ CREATE TABLE magento_table_dict_item (
     mapper_id bigint REFERENCES magento_table_dict(id)
 );
 
+CREATE TABLE magento_category (
+    id bigserial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    magento_id bigint,
+    need_sync boolean,
+    is_active boolean,
+    parent_id bigint REFERENCES magento_category(id),
+    config_id bigint REFERENCES magento_config(id),
+    category_id bigint UNIQUE REFERENCES sellable_category(id)
+);
+
 CREATE TABLE magento_product (
     id bigserial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -51,6 +64,7 @@ CREATE TABLE magento_product (
     url_key text,
     news_from_date timestamp,
     news_to_date timestamp,
+    magento_category_id bigint REFERENCES magento_category(id),
     config_id bigint REFERENCES magento_config(id),
     product_id bigint UNIQUE REFERENCES product(id)
 );

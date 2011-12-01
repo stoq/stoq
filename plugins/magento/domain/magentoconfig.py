@@ -30,6 +30,7 @@ from stoqlib.domain.base import Domain, MappingDomain, ItemDomain
 from stoqlib.domain.interfaces import ISalesPerson, IEmployee, IIndividual
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
+from stoqlib.domain.sellable import SellableCategory
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -75,7 +76,7 @@ class MagentoConfig(Domain):
     #
 
     def on_create(self):
-        from magentoproduct import MagentoProduct
+        from magentoproduct import MagentoProduct, MagentoCategory
         conn = self.get_connection()
 
         # When commiting, ensure we known all products to synchronize using the
@@ -87,6 +88,12 @@ class MagentoConfig(Domain):
                                          product=product,
                                          config=self)
             assert mag_product
+        # Like products above, ensure we know all categories to synchronize.
+        for category in SellableCategory.select(connection=conn):
+            mag_category = MagentoCategory(connection=conn,
+                                           category=category,
+                                           config=self)
+            assert mag_category
 
     #
     #  Private

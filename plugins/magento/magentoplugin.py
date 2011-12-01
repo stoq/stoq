@@ -37,6 +37,7 @@ from stoqlib.database.migration import PluginSchemaMigration
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.events import (ProductCreateEvent, ProductRemoveEvent,
                                    ProductEditEvent, ProductStockUpdateEvent,
+                                   CategoryCreateEvent, CategoryEditEvent,
                                    SaleStatusChangedEvent)
 from stoqlib.lib.interfaces import IPlugin
 from stoqlib.lib.pluginmanager import register_plugin
@@ -45,7 +46,8 @@ plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
 from domain.magentoconfig import MagentoConfig
 from domain.magentoclient import MagentoClient, MagentoAddress
-from domain.magentoproduct import MagentoProduct, MagentoStock, MagentoImage
+from domain.magentoproduct import (MagentoProduct, MagentoStock, MagentoImage,
+                                   MagentoCategory)
 from domain.magentosale import MagentoSale, MagentoInvoice, MagentoShipment
 
 log = Logger('plugins.magento.magentoplugin')
@@ -78,9 +80,9 @@ class MagentoPlugin(object):
             retval_list = []
             # The order above matters. e.g. We always want to sync products
             # and clients before sales, to avoid problems with references.
-            for table in (MagentoProduct, MagentoStock, MagentoImage,
-                          MagentoClient, MagentoAddress, MagentoSale,
-                          MagentoInvoice, MagentoShipment):
+            for table in (MagentoProduct, MagentoStock, MagentoCategory,
+                          MagentoImage, MagentoClient, MagentoAddress,
+                          MagentoSale, MagentoInvoice, MagentoShipment):
                 # Use DeferredList to allow multiple servers to be synchronized
                 # at the same time. Can save a lot of time!
                 retval = yield DeferredList(
@@ -103,6 +105,10 @@ class MagentoPlugin(object):
         ProductEditEvent.connect(self._on_product_update)
         ProductStockUpdateEvent.connect(self._on_product_stock_update)
 
+        # Connect category events
+        CategoryCreateEvent.connect(self._on_category_create)
+        CategoryEditEvent.connect(self._on_category_update)
+
         # Connect sale events
         SaleStatusChangedEvent.connect(self._on_sale_status_change)
 
@@ -113,6 +119,7 @@ class MagentoPlugin(object):
                                       'MagentoTableDictItem'])
             ('domain.magentoproduct', ['MagentoProduct',
                                        'MagentoStock',
+                                       'MagentoCategory',
                                        'MagentoImage']),
             ('domain.magentoclient', ['MagentoClient',
                                       'MagentoAddress']),
@@ -146,6 +153,12 @@ class MagentoPlugin(object):
                                                product=product)
         return mag_products
 
+    def _get_magento_categories_by_category(self, category):
+        conn = category.get_connection()
+        mag_categories = MagentoCategory.selectBy(connection=conn,
+                                                  category=category)
+        return mag_categories
+
     #
     #  Callbacks
     #
@@ -177,6 +190,18 @@ class MagentoPlugin(object):
             for mag_stock in MagentoStock.selectBy(connection=conn,
                                                    magento_product=mag_product):
                 mag_stock.need_sync = True
+
+    def _on_category_create(self, category, **kwargs):
+        conn = category.get_connection()
+        for config in MagentoConfig.select(connection=conn):
+            # Just create the registry and it will be synchronized later.
+            MagentoCategory(connection=conn,
+                            category=category,
+                            config=config)
+
+    def _on_category_update(self, category, **kwargs):
+        for mag_category in self._get_magento_categories_by_category(category):
+            mag_category.need_sync = True
 
     def _on_sale_status_change(self, sale, old_status, **kwargs):
         mag_sale = MagentoSale.selectOneBy(connection=sale.get_connection(),
