@@ -114,4 +114,3 @@ def import_products(config):
 
     trans.close()
     returnValue(retval)
-

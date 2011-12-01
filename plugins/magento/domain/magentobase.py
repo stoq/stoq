@@ -103,7 +103,6 @@ class MagentoBase(Domain):
             config_dict['need_ensure_config'] = not retval
             finish_transaction(trans, retval)
 
-
         for obj in cls.select(connection=trans,
                               clause=AND(cls.q.configID == config.id,
                                          cls.q.need_sync == True)):
@@ -209,8 +208,6 @@ class MagentoBase(Domain):
         @returns: C{True} if ensure went well, C{False} otherwise
         """
         return True
-
-
 
     #
     #  Public API

@@ -373,8 +373,7 @@ class MagentoStock(MagentoBaseSyncUp):
             'qty': quantity,
             'is_in_stock': int(product.sellable.can_be_sold()),
             }
-<<<<<<< TREE
-=======
+
 
 class MagentoImage(MagentoBaseSyncUp):
     """Class for product image synchronization between Stoq and Magento"""
@@ -466,8 +465,7 @@ class MagentoImage(MagentoBaseSyncUp):
             'label': self.label,
             'exclude': not self.visible,
             }
-<<<<<<< TREE
-=======
+
 
 class MagentoCategory(MagentoBaseSyncUp):
     """Class for product category synchronization between Stoq and Magento"""
