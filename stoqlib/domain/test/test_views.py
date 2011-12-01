@@ -258,8 +258,10 @@ class TestQuotationView(DomainTest):
         self.assertFalse(quotations[0].is_closed())
         quotations[0].close()
 
-        results = QuotationView.select(connection=self.trans)
+        results = QuotationView.select(
+                QuotationView.q.id == quotations[0].id, connection=self.trans)
         self.failUnless(list(results))
+        self.assertEquals(results.count(), 1)
         self.assertEquals(results[0].group, quote)
         self.assertEquals(results[0].quotation, quotations[0])
         self.assertEquals(results[0].purchase, order)
