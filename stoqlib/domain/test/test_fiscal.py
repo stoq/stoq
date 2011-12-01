@@ -36,37 +36,11 @@ class TestCfopData(DomainTest):
         self.assertEqual(full_desc, u"%s %s" % (u"2365", u"blabla"))
 
 
-class TestFiscalBookEntry:
-
-    def create_book_entry(self):
-        raise NotImplementedError
-
-    def testHasEntryByPaymentGroup(self):
-        payment_group = self.create_payment_group()
-        entry = self.create_book_entry()
-
-        self.failUnless(entry.has_entry_by_payment_group(
-            self.trans, entry.payment_group, entry.entry_type))
-        self.failIf(entry.has_entry_by_payment_group(
-            self.trans, payment_group, entry.entry_type))
-
-    def testGetEntryByPaymentGroup(self):
-        payment_group = self.create_payment_group()
-        entry = self.create_book_entry()
-
-        self.failIf(entry.get_entry_by_payment_group(
-            self.trans, payment_group,
-            entry.entry_type))
-
-
-class TestIcmsIpiBookEntry(TestFiscalBookEntry, DomainTest):
-
-    def create_book_entry(self):
-        return self.create_icms_ipi_book_entry()
+class TestIcmsIpiBookEntry(DomainTest):
 
     def testReverseEntry(self):
-        icmsipibookentry = self.create_book_entry()
-        reversal = icmsipibookentry.reverse_entry(100)
+        entry = self.create_icms_ipi_book_entry()
+        reversal = entry.reverse_entry(100)
         self.assertEquals(reversal.icms_value, 10)
         self.assertEquals(reversal.ipi_value, 10)
 
@@ -83,14 +57,30 @@ class TestIcmsIpiBookEntry(TestFiscalBookEntry, DomainTest):
                            FiscalBookEntry.TYPE_PRODUCT)
 
 
-class TestIssBookEntry(TestFiscalBookEntry, DomainTest):
+    def testHasEntryByPaymentGroup(self):
+        payment_group = self.create_payment_group()
+        entry = self.create_icms_ipi_book_entry()
 
-    def create_book_entry(self):
-        return self.create_iss_book_entry()
+        self.failUnless(entry.has_entry_by_payment_group(
+            self.trans, entry.payment_group, entry.entry_type))
+        self.failIf(entry.has_entry_by_payment_group(
+            self.trans, payment_group, entry.entry_type))
+
+    def testGetEntryByPaymentGroup(self):
+        payment_group = self.create_payment_group()
+        entry = self.create_icms_ipi_book_entry()
+
+        self.failIf(entry.get_entry_by_payment_group(
+            self.trans, payment_group,
+            entry.entry_type))
+
+
+
+class TestIssBookEntry(DomainTest):
 
     def testReverseEntry(self):
-        issbookentry = self.create_book_entry()
-        reversal = issbookentry.reverse_entry(201)
+        entry = self.create_iss_book_entry()
+        reversal = entry.reverse_entry(201)
         self.assertEquals(reversal.iss_value, 10)
 
     def testCreateServiceEntry(self):
@@ -106,3 +96,22 @@ class TestIssBookEntry(TestFiscalBookEntry, DomainTest):
         self.assertEquals(book_entry.iss_value, 123)
         self.assertEquals(book_entry.entry_type,
                           FiscalBookEntry.TYPE_SERVICE)
+
+    def testHasEntryByPaymentGroup(self):
+        payment_group = self.create_payment_group()
+        entry = self.create_iss_book_entry()
+
+        self.failUnless(entry.has_entry_by_payment_group(
+            self.trans, entry.payment_group, entry.entry_type))
+        self.failIf(entry.has_entry_by_payment_group(
+            self.trans, payment_group, entry.entry_type))
+
+    def testGetEntryByPaymentGroup(self):
+        payment_group = self.create_payment_group()
+        entry = self.create_iss_book_entry()
+
+        self.failIf(entry.get_entry_by_payment_group(
+            self.trans, payment_group,
+            entry.entry_type))
+
+
