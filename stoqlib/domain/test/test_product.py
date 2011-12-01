@@ -31,7 +31,8 @@ from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
-                                    ProductHistory, ProductComponent)
+                                    ProductHistory, ProductComponent,
+                                    ProductAdaptToStorable)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import BaseSellableInfo, Sellable
 
@@ -93,131 +94,6 @@ class TestProduct(DomainTest):
         sellable = self.create_sellable()
         self.product = Product(sellable=sellable,
                                connection=self.trans)
-
-    def test_product_events(self):
-        trans_list = []
-        p_data = _ProductEventData()
-        ProductCreateEvent.connect(p_data.on_create)
-        ProductEditEvent.connect(p_data.on_edit)
-        ProductRemoveEvent.connect(p_data.on_delete)
-
-        # Test product being created
-        trans = new_transaction()
-        trans_list.append(trans)
-        base_sellable_info = BaseSellableInfo(
-            connection=trans,
-            description='Test 1234',
-            price=decimal.Decimal(2),
-            )
-        sellable = Sellable(
-            connection=trans,
-            base_sellable_info=base_sellable_info,
-            )
-        product = Product(
-            connection=trans,
-            sellable=sellable,
-            )
-        trans.commit()
-        self.assertTrue(p_data.was_created)
-        self.assertFalse(p_data.was_edited)
-        self.assertFalse(p_data.was_deleted)
-        self.assertEqual(p_data.product, product)
-        p_data.reset()
-
-        # Test product being edited and emmiting the event just once
-        trans = new_transaction()
-        trans_list.append(trans)
-        base_sellable_info = trans.get(base_sellable_info)
-        sellable = trans.get(sellable)
-        product = trans.get(product)
-        sellable.notes = 'Notes'
-        base_sellable_info.description = 'Test 666'
-        product.weight = decimal.Decimal(10)
-        trans.commit()
-        self.assertTrue(p_data.was_edited)
-        self.assertFalse(p_data.was_created)
-        self.assertFalse(p_data.was_deleted)
-        self.assertEqual(p_data.product, product)
-        self.assertEqual(p_data.emmit_count, 1)
-        p_data.reset()
-
-        # Test product being edited, editing BaseSellableInfo
-        trans = new_transaction()
-        trans_list.append(trans)
-        base_sellable_info = trans.get(base_sellable_info)
-        sellable = trans.get(sellable)
-        product = trans.get(product)
-        base_sellable_info.description = 'Test 4321'
-        trans.commit()
-        self.assertTrue(p_data.was_edited)
-        self.assertFalse(p_data.was_created)
-        self.assertFalse(p_data.was_deleted)
-        self.assertEqual(p_data.product, product)
-        self.assertEqual(p_data.emmit_count, 1)
-        p_data.reset()
-
-        # Test product being edited, editing Sellable
-        trans = new_transaction()
-        trans_list.append(trans)
-        base_sellable_info = trans.get(base_sellable_info)
-        sellable = trans.get(sellable)
-        product = trans.get(product)
-        sellable.notes = 'Notes for test'
-        trans.commit()
-        self.assertTrue(p_data.was_edited)
-        self.assertFalse(p_data.was_created)
-        self.assertFalse(p_data.was_deleted)
-        self.assertEqual(p_data.product, product)
-        self.assertEqual(p_data.emmit_count, 1)
-        p_data.reset()
-
-        # Test product being edited, editing Product itself
-        trans = new_transaction()
-        trans_list.append(trans)
-        base_sellable_info = trans.get(base_sellable_info)
-        sellable = trans.get(sellable)
-        product = trans.get(product)
-        product.weight = decimal.Decimal(1)
-        trans.commit()
-        self.assertTrue(p_data.was_edited)
-        self.assertFalse(p_data.was_created)
-        self.assertFalse(p_data.was_deleted)
-        self.assertEqual(p_data.product, product)
-        self.assertEqual(p_data.emmit_count, 1)
-        p_data.reset()
-
-        # Test product being edited, editing Product itself
-        trans = new_transaction()
-        trans_list.append(trans)
-        base_sellable_info = trans.get(base_sellable_info)
-        sellable = trans.get(sellable)
-        product = trans.get(product)
-        product.weight = decimal.Decimal(1)
-        trans.commit()
-        self.assertTrue(p_data.was_edited)
-        self.assertFalse(p_data.was_created)
-        self.assertFalse(p_data.was_deleted)
-        self.assertEqual(p_data.product, product)
-        self.assertEqual(p_data.emmit_count, 1)
-        p_data.reset()
-
-        # Test product being removed
-        trans = new_transaction()
-        trans_list.append(trans)
-        base_sellable_info = trans.get(base_sellable_info)
-        sellable = trans.get(sellable)
-        product = trans.get(product)
-        sellable.remove()
-        trans.commit()
-        self.assertTrue(p_data.was_deleted)
-        self.assertFalse(p_data.was_created)
-        self.assertFalse(p_data.was_edited)
-        self.assertEqual(p_data.product, product)
-        self.assertEqual(p_data.emmit_count, 1)
-        p_data.reset()
-
-        for trans in trans_list:
-            trans.close()
 
     def test_get_main_supplier_info(self):
         self.failIf(self.product.get_main_supplier_info())
@@ -581,3 +457,130 @@ class TestProductQuality(DomainTest):
         self.assertEqual(test.get_range_value(), (Decimal(-5), Decimal(5)))
 
         self.assertRaises(AssertionError, test.get_boolean_value)
+
+
+class TestProductEvent(DomainTest):
+    def testCreateEvent(self):
+        trans_list = []
+        p_data = _ProductEventData()
+        ProductCreateEvent.connect(p_data.on_create)
+        ProductEditEvent.connect(p_data.on_edit)
+        ProductRemoveEvent.connect(p_data.on_delete)
+
+        # Test product being created
+        trans = new_transaction()
+        trans_list.append(trans)
+        base_sellable_info = BaseSellableInfo(
+            connection=trans,
+            description='Test 1234',
+            price=decimal.Decimal(2),
+            )
+        sellable = Sellable(
+            connection=trans,
+            base_sellable_info=base_sellable_info,
+            )
+        product = Product(
+            connection=trans,
+            sellable=sellable,
+            )
+        trans.commit()
+        self.assertTrue(p_data.was_created)
+        self.assertFalse(p_data.was_edited)
+        self.assertFalse(p_data.was_deleted)
+        self.assertEqual(p_data.product, product)
+        p_data.reset()
+
+        # Test product being edited and emmiting the event just once
+        trans = new_transaction()
+        trans_list.append(trans)
+        base_sellable_info = trans.get(base_sellable_info)
+        sellable = trans.get(sellable)
+        product = trans.get(product)
+        sellable.notes = 'Notes'
+        base_sellable_info.description = 'Test 666'
+        product.weight = decimal.Decimal(10)
+        trans.commit()
+        self.assertTrue(p_data.was_edited)
+        self.assertFalse(p_data.was_created)
+        self.assertFalse(p_data.was_deleted)
+        self.assertEqual(p_data.product, product)
+        self.assertEqual(p_data.emmit_count, 1)
+        p_data.reset()
+
+        # Test product being edited, editing BaseSellableInfo
+        trans = new_transaction()
+        trans_list.append(trans)
+        base_sellable_info = trans.get(base_sellable_info)
+        sellable = trans.get(sellable)
+        product = trans.get(product)
+        base_sellable_info.description = 'Test 4321'
+        trans.commit()
+        self.assertTrue(p_data.was_edited)
+        self.assertFalse(p_data.was_created)
+        self.assertFalse(p_data.was_deleted)
+        self.assertEqual(p_data.product, product)
+        self.assertEqual(p_data.emmit_count, 1)
+        p_data.reset()
+
+        # Test product being edited, editing Sellable
+        trans = new_transaction()
+        trans_list.append(trans)
+        base_sellable_info = trans.get(base_sellable_info)
+        sellable = trans.get(sellable)
+        product = trans.get(product)
+        sellable.notes = 'Notes for test'
+        trans.commit()
+        self.assertTrue(p_data.was_edited)
+        self.assertFalse(p_data.was_created)
+        self.assertFalse(p_data.was_deleted)
+        self.assertEqual(p_data.product, product)
+        self.assertEqual(p_data.emmit_count, 1)
+        p_data.reset()
+
+        # Test product being edited, editing Product itself
+        trans = new_transaction()
+        trans_list.append(trans)
+        base_sellable_info = trans.get(base_sellable_info)
+        sellable = trans.get(sellable)
+        product = trans.get(product)
+        product.weight = decimal.Decimal(1)
+        trans.commit()
+        self.assertTrue(p_data.was_edited)
+        self.assertFalse(p_data.was_created)
+        self.assertFalse(p_data.was_deleted)
+        self.assertEqual(p_data.product, product)
+        self.assertEqual(p_data.emmit_count, 1)
+        p_data.reset()
+
+        # Test product being edited, editing Product itself
+        trans = new_transaction()
+        trans_list.append(trans)
+        base_sellable_info = trans.get(base_sellable_info)
+        sellable = trans.get(sellable)
+        product = trans.get(product)
+        product.weight = decimal.Decimal(1)
+        trans.commit()
+        self.assertTrue(p_data.was_edited)
+        self.assertFalse(p_data.was_created)
+        self.assertFalse(p_data.was_deleted)
+        self.assertEqual(p_data.product, product)
+        self.assertEqual(p_data.emmit_count, 1)
+        p_data.reset()
+
+        # Test product being removed
+        trans = new_transaction()
+        trans_list.append(trans)
+        base_sellable_info = trans.get(base_sellable_info)
+        sellable = trans.get(sellable)
+        product = trans.get(product)
+        sellable.remove()
+        trans.commit()
+        self.assertTrue(p_data.was_deleted)
+        self.assertFalse(p_data.was_created)
+        self.assertFalse(p_data.was_edited)
+        self.assertEqual(p_data.product, product)
+        self.assertEqual(p_data.emmit_count, 1)
+        p_data.reset()
+
+        for trans in trans_list:
+            trans.close()
