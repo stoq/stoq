@@ -343,7 +343,8 @@ class ExampleCreator(object):
         product = Product(sellable=sellable, connection=self.trans)
         return product.addFacet(IStorable, connection=self.trans)
 
-    def create_product(self, price=None, create_supplier=True):
+    def create_product(self, price=None, create_supplier=True,
+                       branch=None, stock=None):
         from stoqlib.domain.product import ProductSupplierInfo
         sellable = self.create_sellable(price=price)
         if create_supplier:
@@ -351,7 +352,23 @@ class ExampleCreator(object):
                                 supplier=self.create_supplier(),
                                 product=sellable.product,
                                 is_main_supplier=True)
-        return sellable.product
+        product = sellable.product
+        if not branch:
+            branch = get_current_branch(self.trans)
+
+        if stock:
+            storable = product.addFacet(IStorable, connection=self.trans)
+            storable.increase_stock(stock, branch, unit_cost=10)
+
+        return product
+
+    def create_product_component(self):
+        from stoqlib.domain.product import ProductComponent
+        product = self.create_product()
+        component = self.create_product()
+        return ProductComponent(product=product,
+                                component=component,
+                                connection=self.trans)
 
     def create_base_sellable_info(self, price=None):
         from stoqlib.domain.sellable import BaseSellableInfo
@@ -596,7 +613,8 @@ class ExampleCreator(object):
             product = sellable.product
             product.addFacet(IStorable, connection=self.trans)
         if purchase_item is None:
-            purchase_item = receiving_order.purchase.add_item(sellable, quantity)
+            purchase_item = receiving_order.purchase.add_item(
+                sellable, quantity)
         return ReceivingOrderItem(connection=self.trans,
                                   quantity=quantity, cost=125,
                                   purchase_item=purchase_item,
@@ -604,7 +622,8 @@ class ExampleCreator(object):
                                   receiving_order=receiving_order)
 
     def create_fiscal_book_entry(self, entry_type=None, icms_value=0,
-                                 iss_value=0, ipi_value=0, invoice_number=None):
+                                 iss_value=0, ipi_value=0,
+                                 invoice_number=None):
         from stoqlib.domain.payment.group import PaymentGroup
         from stoqlib.domain.fiscal import FiscalBookEntry
         payment_group = PaymentGroup(connection=self.trans)
@@ -823,13 +842,14 @@ class ExampleCreator(object):
 
     def create_account_transaction(self, account):
         from stoqlib.domain.account import AccountTransaction
-        return AccountTransaction(description="Test Account Transaction",
-                                  code="Code",
-                                  date=datetime.datetime.now(),
-                                  value=1,
-                                  account=account,
-                                  source_account=sysparam(self.trans).IMBALANCE_ACCOUNT,
-                                  connection=self.trans)
+        return AccountTransaction(
+            description="Test Account Transaction",
+            code="Code",
+            date=datetime.datetime.now(),
+            value=1,
+            account=account,
+            source_account=sysparam(self.trans).IMBALANCE_ACCOUNT,
+            connection=self.trans)
 
     def create_transfer(self):
         from stoqlib.domain.transfer import TransferOrder
@@ -868,3 +888,15 @@ class ExampleCreator(object):
                      attendant=self.create_user(),
                      description="Test call",
                      connection=self.trans)
+
+    def create_commission_source(self, category=None):
+        from stoqlib.domain.commission import CommissionSource
+        if not category:
+            sellable = self.create_sellable()
+        else:
+            sellable = None
+        return CommissionSource(direct_value=10,
+                                category=category,
+                                sellable=sellable,
+                                installments_value=1,
+                                connection=self.trans)
