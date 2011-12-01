@@ -99,6 +99,8 @@ class InventoryApp(SearchableAppWindow):
         self.app.launcher.add_new_items([self.NewInventory])
 
     def activate(self):
+        # Avoid letting this sensitive if has-rows is never emitted
+        self.Print.set_sensitive(False)
         self.search.refresh()
         self._update_widgets()
         self.app.launcher.SearchToolItem.set_sensitive(False)

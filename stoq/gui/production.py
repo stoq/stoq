@@ -117,6 +117,8 @@ class ProductionApp(SearchableAppWindow):
             ])
 
     def activate(self):
+        # Avoid letting this sensitive if has-rows is never emitted
+        self.Print.set_sensitive(False)
         self.search.refresh()
         self._update_widgets()
 

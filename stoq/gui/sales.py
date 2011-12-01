@@ -154,6 +154,8 @@ class SalesApp(SearchableAppWindow):
           self.SearchDelivery])
 
     def activate(self):
+        # Avoid letting this sensitive if has-rows is never emitted
+        self.Print.set_sensitive(False)
         self.check_open_inventory()
         self._update_toolbar()
 
@@ -244,8 +246,6 @@ class SalesApp(SearchableAppWindow):
     def _setup_slaves(self):
         # This is only here to reuse the logic in it.
         self.sale_toolbar = SaleListToolbar(self.conn, self.results)
-        self.results.connect("selection-changed", self._update_toolbar)
-        self.results.connect("has-rows", self._update_toolbar)
 
     def _can_cancel(self, view):
         # Here we want to cancel only quoting sales. This is why we don't use
@@ -350,6 +350,13 @@ class SalesApp(SearchableAppWindow):
 
     def _on_sale_toolbar__sale_edited(self, toolbar, sale):
         self.search.refresh()
+
+    def on_results__selection_changed(self, results, sale):
+        self._update_toolbar()
+
+    def on_results__has_rows(self, results, has_rows):
+        self.Print.set_sensitive(has_rows)
+        self._update_toolbar()
 
     # Sales
 

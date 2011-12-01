@@ -133,7 +133,6 @@ class ReceivableApp(SearchableAppWindow):
             label='<b>%s</b>' % (_("Total")),
             format='<b>%s</b>',
             parent=parent)
-        self.results.connect('has-rows', self._has_rows)
 
     def activate(self):
         self._update_widgets()
@@ -205,9 +204,6 @@ class ReceivableApp(SearchableAppWindow):
         self.SetNotPaid.set_sensitive(self._are_paid(selected,
                                                      respect_sale=False))
         self.PrintBill.set_sensitive(self._can_print_bill(selected))
-
-    def _has_rows(self, result_list, has_rows):
-        self.Print.set_sensitive(has_rows)
 
     def _get_status_values(self):
         values = [(v, k) for k, v in Payment.statuses.items()]
@@ -422,6 +418,9 @@ class ReceivableApp(SearchableAppWindow):
     #
     # Kiwi callbacks
     #
+
+    def on_results__has_rows(self, klist, has_rows):
+        self.Print.set_sensitive(has_rows)
 
     def on_results__row_activated(self, klist, receivable_view):
         self._show_details(receivable_view)
