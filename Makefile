@@ -31,6 +31,11 @@ pep8:
 pyflakes:
 	trial stoqlib.test.test_pyflakes
 
+pylint:
+	pylint --load-plugins tools/pylint_stoq -E \
+	    stoqlib/domain/*.py \
+	    stoqlib/domain/payment/*.py
+
 check:
 	LC_ALL=C trial stoq stoqlib
 

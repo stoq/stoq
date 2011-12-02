@@ -161,7 +161,7 @@ class FiscalBookEntry(Domain):
             connection=conn)
 
 
-class _FiscalBookEntryView(object):
+class _FiscalBookEntryView(Viewable):
 
     columns = dict(
         id=FiscalBookEntry.q.id,
@@ -188,7 +188,7 @@ class _FiscalBookEntryView(object):
                                    connection=self.get_connection())
 
 
-class IcmsIpiView(_FiscalBookEntryView, Viewable):
+class IcmsIpiView(_FiscalBookEntryView):
     """
     Stores information about the taxes (ICMS and IPI) related to a
     certain product.
@@ -218,7 +218,7 @@ class IcmsIpiView(_FiscalBookEntryView, Viewable):
     joins = _FiscalBookEntryView.joins
 
 
-class IssView(_FiscalBookEntryView, Viewable):
+class IssView(_FiscalBookEntryView):
     """
     Stores information related to a service tax (ISS).
     This view is used to query the service tax information.

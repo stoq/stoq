@@ -1097,18 +1097,6 @@ class SaleAdaptToPaymentTransaction(object):
             iss_total += iss_tax * (price * item.quantity)
         return iss_total
 
-    def _has_iss_entry(self):
-        return FiscalBookEntry.has_entry_by_payment_group(
-            self.sale.get_connection(),
-            self.sale.group,
-            type=FiscalBookEntry.TYPE_SERVICE)
-
-    def _has_icms_entry(self):
-        return FiscalBookEntry.has_entry_by_payment_group(
-            self.sale.get_connection(),
-            self.sale.group,
-            type=FiscalBookEntry.TYPE_PRODUCT)
-
     def _get_average_difference(self):
         sale = self.sale
         if not sale.get_items().count():

@@ -23,6 +23,7 @@
 ##
 """ Base routines for domain modules """
 
+# pylint: disable=E1101
 from zope.interface.interface import adapter_hooks
 
 from stoqlib.database.orm import orm_name, ForeignKey, IntCol

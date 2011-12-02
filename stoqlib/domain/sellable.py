@@ -125,6 +125,7 @@ class SellableTaxConstant(Domain):
         return self.description
 
 
+# pylint: disable=E1101
 class SellableCategory(Domain):
     """ Sellable category. This class can represents a
     sellable's category as well its base category.
@@ -200,6 +201,7 @@ class SellableCategory(Domain):
         @returns: categories
         """
         return cls.select(cls.q.categoryID == None, connection=conn)
+# pylint: enable=E1101
 
 
 class OnSaleInfo(Domain):
