@@ -235,6 +235,7 @@ class MultipleJoin(_MultipleJoin):
 
 # Column classes
 Col = Col
+SOCol = SOCol
 SOBoolCol = SOBoolCol
 SODateTimeCol = SODateTimeCol
 SODecimalCol = SODecimalCol
@@ -242,6 +243,9 @@ SOForeignKey = SOForeignKey
 SOIntCol = SOIntCol
 SOStringCol = SOStringCol
 SOUnicodeCol = SOUnicodeCol
+
+SOSingleJoin = SOSingleJoin
+SOMultipleJoin = SOMultipleJoin
 
 # SQLBuilder
 Alias = Alias
