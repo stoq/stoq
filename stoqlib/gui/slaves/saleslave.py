@@ -32,6 +32,7 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from stoqlib.api import api
 from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.domain.till import Till
+from stoqlib.domain.inventory import Inventory
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
@@ -196,6 +197,8 @@ class SaleListToolbar(GladeSlaveDelegate):
                      filters=self._report_filters)
 
     def return_sale(self):
+        assert not Inventory.has_open(self.conn,
+                            api.get_current_branch(self.conn))
         try:
             till = Till.get_current(self.conn)
         except TillError, e:

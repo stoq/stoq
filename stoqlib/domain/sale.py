@@ -1246,6 +1246,14 @@ class SaleView(Viewable):
         return (self.status == Sale.STATUS_CONFIRMED or
                 self.status == Sale.STATUS_PAID)
 
+    def can_confirm(self):
+        return (self.status == Sale.STATUS_ORDERED or
+                self.status == Sale.STATUS_QUOTE)
+
+    def can_cancel(self):
+        return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID,
+                               Sale.STATUS_ORDERED, Sale.STATUS_QUOTE)
+
     def get_subtotal(self):
         if self.v_ipi is not None:
             return currency(self.subtotal + self.v_ipi)

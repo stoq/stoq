@@ -133,6 +133,9 @@ class AppWindow(GladeDelegate):
         self.current_app = None
         self.uimanager = self._create_ui_manager()
         self.accel_group = self.uimanager.get_accel_group()
+        # Cache to avoid duplicate queries on every row selection change
+        self._has_open_inventory =  Inventory.has_open(
+                            self.conn, api.get_current_branch(self.conn))
 
         self._create_ui_manager_ui()
         GladeDelegate.__init__(self, delete_handler=self._on_delete_handler,
@@ -650,21 +653,32 @@ class AppWindow(GladeDelegate):
 
         self.add_ui_actions(ui_string, actions, 'DebugActions')
 
-    def has_open_inventory(self):
-        return Inventory.has_open(self.conn, api.get_current_branch(self.conn))
+    def has_open_inventory(self, from_cache=True):
+        if not from_cache:
+            self._has_open_inventory =  Inventory.has_open(
+                            self.conn, api.get_current_branch(self.conn))
+        return self._has_open_inventory
 
     def check_open_inventory(self):
+        """Checks if there is an open inventory.
+
+        In the case there is one, will call set_open_inventory (subclasses
+        should implement it).
+
+        Returns True if there is an open inventory. False otherwise
+        """
         inventory_bar = getattr(self, 'inventory_bar', None)
 
-        if self.has_open_inventory():
+        if self.has_open_inventory(from_cache=False):
             if inventory_bar:
                 inventory_bar.show()
             else:
                 self._display_open_inventory_message()
-
             self.set_open_inventory()
+            return True
         elif inventory_bar:
             inventory_bar.hide()
+            return False
 
     def add_info_bar(self, message_type, label, action_widget=None):
         """Show an information bar to the user.

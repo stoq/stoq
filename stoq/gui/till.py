@@ -230,6 +230,9 @@ class TillApp(SearchableAppWindow):
         return statuses
 
     def _confirm_order(self):
+        if self.check_open_inventory():
+            return
+
         api.rollback_and_begin(self.conn)
         selected = self.results.get_selected()
         sale = Sale.get(selected.id, connection=self.conn)
@@ -324,10 +327,6 @@ class TillApp(SearchableAppWindow):
         self.register_sensitive_group(self._inventory_widgets,
                                       lambda: not self.has_open_inventory())
 
-        #logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
-        #logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
-        #                                            LOGO_HEIGHT)
-        #self.stoq_logo.set_from_pixbuf(logo)
         self.total_label.set_size('xx-large')
         self.total_label.set_bold(True)
 
@@ -337,11 +336,11 @@ class TillApp(SearchableAppWindow):
     def _update_toolbar_buttons(self):
         sale_view = self.results.get_selected()
         if sale_view:
-            can_confirm = sale_view.sale.can_confirm()
+            can_confirm = sale_view.can_confirm()
             # when confirming sales in till, we also might want to cancel
             # sales
-            can_return = (sale_view.sale.can_return() or
-                          sale_view.sale.can_cancel())
+            can_return = (sale_view.can_return() or
+                          sale_view.can_cancel())
         else:
             can_confirm = can_return = False
 
@@ -377,6 +376,9 @@ class TillApp(SearchableAppWindow):
             self._update_total()
 
     def _return_sale(self):
+        if self.check_open_inventory():
+            return
+
         sale_view = self._check_selected()
         retval = return_sale(self.get_toplevel(), sale_view, self.conn)
         if api.finish_transaction(self.conn, retval):
@@ -474,6 +476,9 @@ class TillApp(SearchableAppWindow):
         self._run_search_dialog(ClientSearch, hide_footer=True)
 
     def on_SearchSale__activate(self, action):
+        if self.check_open_inventory():
+            return
+
         self._run_search_dialog(SaleSearch)
 
     def on_SearchSoldItemsByBranch__activate(self, button):
