@@ -301,12 +301,16 @@ class StockApp(SearchableAppWindow):
         self.refresh()
 
     def _transfer_stock(self):
+        if self.check_open_inventory():
+            return
         trans = api.new_transaction()
         model = self.run_dialog(StockTransferWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def _receive_purchase(self):
+        if self.check_open_inventory():
+            return
         trans = api.new_transaction()
         model = self.run_dialog(ReceivingOrderWizard, trans)
         api.finish_transaction(trans, model)
@@ -359,12 +363,16 @@ class StockApp(SearchableAppWindow):
         self._transfer_stock()
 
     def on_NewStockDecrease__activate(self, action):
+        if self.check_open_inventory():
+            return
         trans = api.new_transaction()
         model = self.run_dialog(StockDecreaseWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def on_StockInitial__activate(self, action):
+        if self.check_open_inventory():
+            return
         branch = self.branch_filter.get_state().value
         self.run_dialog(InitialStockDialog, self.conn, branch)
 
@@ -386,12 +394,16 @@ class StockApp(SearchableAppWindow):
     # Loan
 
     def on_LoanNew__activate(self, action):
+        if self.check_open_inventory():
+            return
         trans = api.new_transaction()
         model = self.run_dialog(NewLoanWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def on_LoanClose__activate(self, action):
+        if self.check_open_inventory():
+            return
         trans = api.new_transaction()
         model = self.run_dialog(CloseLoanWizard, trans)
         api.finish_transaction(trans, model)

@@ -380,12 +380,16 @@ class SalesApp(SearchableAppWindow):
     # Loan
 
     def on_LoanNew__activate(self, action):
+        if self.check_open_inventory():
+            return
         trans = api.new_transaction()
         model = self.run_dialog(NewLoanWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def on_LoanClose__activate(self, action):
+        if self.check_open_inventory():
+            return
         trans = api.new_transaction()
         model = self.run_dialog(CloseLoanWizard, trans)
         api.finish_transaction(trans, model)
@@ -429,4 +433,6 @@ class SalesApp(SearchableAppWindow):
         self.sale_toolbar.show_details()
 
     def on_Return__activate(self, action):
+        if self.check_open_inventory():
+            return
         self.sale_toolbar.return_sale()
