@@ -35,12 +35,12 @@ from sqlobject import (SQLObjectNotFound,
 from sqlobject.col import DateTimeCol as _DateTimeCol
 from sqlobject.col import (BoolCol, BLOBCol,
                            ForeignKey, IntCol, StringCol, UnicodeCol)
-from sqlobject.col import (Col, SOBoolCol, SODateTimeCol, SODecimalCol,
+from sqlobject.col import (Col, SOCol, SOBoolCol, SODateTimeCol, SODecimalCol,
                            SOForeignKey, SOIntCol, SOStringCol, SOUnicodeCol)
 from sqlobject.converters import registerConverter
 from sqlobject.dbconnection import connectionForURI, Transaction
 from sqlobject.joins import MultipleJoin as _MultipleJoin, SingleJoin
-from sqlobject.joins import SOMultipleJoin
+from sqlobject.joins import SOSingleJoin, SOMultipleJoin
 from sqlobject.main import sqlhub, SQLObject
 from sqlobject.sqlbuilder import (AND, Alias, IN, INNERJOINOn, ISNOTNULL,
                                   LEFTJOINOn, LIKE, OR, Update, Field,

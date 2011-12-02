@@ -853,6 +853,9 @@ def get_foreign_key_parameter(field_name, conn):
     return parameter
 
 
+def get_all_details():
+    return _details
+
 def get_parameter_details(field_name):
     """ Returns a ParameterDetails class for the given parameter name
     """

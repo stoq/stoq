@@ -26,6 +26,8 @@
 
 from zope.interface import Attribute, Interface
 
+# pylint: disable=E0102,E0211,E0213
+
 #
 # Interfaces
 #
@@ -69,7 +71,14 @@ class IDescribable(Interface):
         """ Returns a description that identifies the object """
 
 
-class IStorable(Interface):
+class IORMObject(Interface):
+    id = Attribute("Object ID")
+
+    def delete(obj_id, connection):
+        pass
+
+
+class IStorable(IORMObject):
     """Storable documentation for a certain product or a sellable item.
     Each storable can have references to many concrete items which will
     be defined by IContainer routines."""
@@ -141,7 +150,7 @@ class IPersonFacet(Interface):
     person = Attribute("a Person")
 
 
-class IPaymentFacet(Interface):
+class IPaymentFacet(IORMObject):
     """A facet on a Payment, the only thing it has is a named reference
     back to the payment itself.
     """

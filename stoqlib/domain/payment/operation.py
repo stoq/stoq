@@ -206,7 +206,8 @@ class StoreCreditPaymentOperation(object):
         return True
 
     def get_constant(self, payment):
-        return PaymentMethodType.STORE_CREDIT
+        # FIXME: Add another constant to stoqdrivers?
+        return PaymentMethodType.CUSTOM
 
 
 # The MultiplePaymentOperation is not a payment operation, but we need to
