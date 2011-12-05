@@ -62,7 +62,7 @@ ERRORS = [
 ]
 
 
-class TestPyflakes(SourceTest, unittest.TestCase):
+class TestPEP8(SourceTest, unittest.TestCase):
 
     def check_filename(self, root, filename):
         pep8.process_options([
