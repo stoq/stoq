@@ -23,6 +23,7 @@
 ##
 
 import errno
+import fnmatch
 import os
 import platform
 
@@ -107,3 +108,15 @@ def read_registry_key(root, key, value):
         #log.info('Error while reading %s/%s/%s: %r' % (root, k, value, e))
         return None
     return reg_value
+
+
+def list_recursively(directory, pattern):
+    """Returns files recursively from directory matching pattern
+    @directory: directory to list
+    @pattern: glob mattern to match
+    """
+    matches = []
+    for root, dirnames, filenames in os.walk(directory):
+        for filename in fnmatch.filter(filenames, pattern):
+            matches.append(os.path.join(root, filename))
+    return matches
