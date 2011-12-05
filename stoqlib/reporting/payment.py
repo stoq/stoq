@@ -70,7 +70,7 @@ class PayablePaymentReport(_BasePaymentReport):
 
 
 class BillCheckPaymentReport(_BasePaymentReport):
-    """This report shows a list of payments and some information about the
+    """This report shows a list of Gpayments and some information about the
     bill or check method payment (if available) like: the bank id, the bank
     branch, the bank account. The field payment_number in the report can be
     the check number or the bill number.
@@ -163,3 +163,27 @@ class PaymentFlowHistoryReport(BaseStoqReport):
 
     def get_title(self):
         return self.report_name
+
+
+class AccountTransactionReport(ObjectListReport):
+    report_name = _("Transaction Report")
+    main_object_name = (_("transaction"), _("transactions"))
+
+    def __init__(self, filename, objectlist, transactions, account, *args, **kwargs):
+        self._transactions = transactions
+        self._account = account
+        ObjectListReport.__init__(self, filename, objectlist, transactions,
+                                  self.report_name,
+                                  landscape=True, *args, **kwargs)
+        self._setup_table()
+
+    def _setup_table(self):
+        total_value = sum([item.value for item in self._transactions],
+                          Decimal(0))
+        self.add_summary_by_column(_(u'Value'),
+                                   get_formatted_price(total_value))
+        self.add_object_table(self._transactions, self.get_columns(),
+                              summary_row=self.get_summary_row())
+
+    def get_title(self):
+        return _("Transactions for account %s") % (self._account.description, )

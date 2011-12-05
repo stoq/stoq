@@ -52,7 +52,10 @@ from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEdito
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
 from stoqlib.gui.dialogs.sintegradialog import month_names
+from stoqlib.gui.printing import print_report
 from stoqlib.lib.message import yesno
+from stoqlib.reporting.payment import AccountTransactionReport
+
 from stoq.gui.application import AppWindow
 
 _ = gettext.gettext
@@ -345,6 +348,8 @@ class FinancialApp(AppWindow):
             ('menubar', None, ''),
 
             # Financial
+            ('Print', gtk.STOCK_PRINT, _("Print..."),
+             None, _('Print a transaction report')),
             ('Import', gtk.STOCK_ADD, _('Import...'),
              '<control>i', _('Import a GnuCash or OFX file')),
             ('ExportCSV', None, _('Export CSV...'), '<control>F10'),
@@ -403,6 +408,7 @@ class FinancialApp(AppWindow):
         self.ExportCSV.set_sensitive(self._can_export_csv())
         self.Edit.set_sensitive(self._can_edit_account() or
                                 self._can_edit_transaction())
+        self.Print.set_sensitive(self._is_transaction_tab())
 
     def _update_tooltips(self):
         if self._is_accounts_tab():
@@ -698,9 +704,18 @@ class FinancialApp(AppWindow):
         account_transaction.delete(account_transaction.id, connection=trans)
         trans.commit(close=True)
 
+    def _print_transaction_report(self):
+        assert self._is_transaction_tab()
+
+        page = self._get_current_page_widget()
+        print_report(AccountTransactionReport, page.results, list(page.results),
+                     account=page.model,
+                     filters=page.search.get_search_filters())
+
     #
     # Kiwi callbacks
     #
+
     def key_escape(self):
         if self._can_close_tab():
             self._close_current_page()
@@ -752,6 +767,9 @@ class FinancialApp(AppWindow):
         self._delete_transaction(transaction)
 
     # Financial
+
+    def on_Print__activate(self, action):
+        self._print_transaction_report()
 
     def on_Import__activate(self, action):
         self._import()
