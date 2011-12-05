@@ -28,10 +28,10 @@
 Singleton object which makes it easier to common stoqlib APIs without
 having to import their symbols.
 """
-
 from contextlib import contextmanager
 
 from kiwi.component import get_utility
+from twisted.internet.defer import inlineCallbacks, returnValue
 
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.interfaces import IStoqConfig
@@ -103,5 +103,24 @@ class StoqAPI(object):
 
     def is_developer_mode(self):
         return is_developer_mode()
+
+    @property
+    def async(self):
+        """Async API for dialog, it's built on-top of
+        twisted and is meant to be used in the following way:
+
+        @api.async
+        def _run_a_dialog(self):
+            model = yield run_dialog(SomeDialog, parent, conn)
+
+        If the function returns a value, you need to use api.asyncReturn, eg:
+
+            api.asyncReturn(model)
+        """
+
+        return inlineCallbacks
+
+    def asyncReturn(self, value=None):
+        return returnValue(value)
 
 api = StoqAPI()
