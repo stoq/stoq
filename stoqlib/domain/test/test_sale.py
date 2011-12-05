@@ -373,7 +373,7 @@ class TestSale(DomainTest):
         self.assertEqual(returned_amount, currency(0))
 
         balance_final = till.get_balance()
-        self.assertEqual(balance_initial, balance_final)
+        self.assertEqual(balance_before_return, balance_final)
 
     def testReturnNotEntirelyPaid(self):
         sale = self.create_sale()
@@ -386,11 +386,14 @@ class TestSale(DomainTest):
         till = Till.get_current(self.trans)
         balance_initial = till.get_balance()
 
+        # Add 3 check payments of 100 each
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment1 = method.create_inpayment(sale.group, Decimal(100))
         method.create_inpayment(sale.group, Decimal(100))
         method.create_inpayment(sale.group, Decimal(100))
         sale.confirm()
+
+        # Pay the first payment.
         payment = payment1.get_adapted()
         payment.pay()
         self.failUnless(sale.can_return())
@@ -411,8 +414,11 @@ class TestSale(DomainTest):
                 returned_amount += payment.value
         self.assertEqual(payment.value, returned_amount)
 
+        # Till balance after return.
+        balance_after_return = balance_before_return - returned_amount
+
         balance_final = till.get_balance()
-        self.assertEqual(balance_initial, balance_final)
+        self.assertEqual(balance_after_return, balance_final)
 
     def testReturnNotEntirelyPaidWithPenalty(self):
         sale = self.create_sale()
@@ -444,7 +450,8 @@ class TestSale(DomainTest):
         self.failUnless(sale.can_return())
 
         # Make sure we received the money in the current till
-        self.assertEqual(till.get_balance(), 300)
+        balance_before_return = till.get_balance()
+        self.assertEqual(balance_before_return, 300)
         self.failUnless(sale.can_return())
 
         # Return the product, with a 50 penality
@@ -456,6 +463,11 @@ class TestSale(DomainTest):
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
         self.assertEqual(sale.group.status, PaymentGroup.STATUS_CANCELLED)
+
+        # Till balance after return.
+        total_returned = renegotiation.paid_total - penalty
+        balance_after_return = balance_before_return - total_returned
+        self.failIf(balance_after_return >= balance_before_return)
 
         # Penality is still 50
         self.assertEqual(renegotiation.penalty_value, penalty)
@@ -482,8 +494,9 @@ class TestSale(DomainTest):
         self.failUnless(IOutPayment(p4))
         self.assertEquals(p4.value, penalty)
 
-        # Return all money in the till except the penality, 300 - 250
-        self.assertEqual(till.get_balance(), penalty)
+        # Paid payments: return money in the till, except the penality.
+        # To Pay payments: not return money, the value must remain in the till.
+        self.assertEqual(till.get_balance(), balance_after_return)
 
     def testCanCancel(self):
         sale = self.create_sale()

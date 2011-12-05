@@ -38,11 +38,12 @@ from stoqlib.domain.events import (SaleStatusChangedEvent, TillAddCashEvent,
                                    GerencialReportPrintEvent,
                                    GerencialReportCancelEvent,
                                    CheckECFStateEvent,
-                                   HasPendingReduceZ)
+                                   HasPendingReduceZ, ECFIsLastSaleEvent)
 from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import PersonAdaptToIndividual, PersonAdaptToCompany
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.events import StartApplicationEvent, CouponCreatedEvent
@@ -69,6 +70,7 @@ class ECFUI(object):
         self._printer = self._create_printer()
 
         SaleStatusChangedEvent.connect(self._on_SaleStatusChanged)
+        ECFIsLastSaleEvent.connect(self._on_ECFIsLastSale)
         TillOpenEvent.connect(self._on_TillOpen)
         TillCloseEvent.connect(self._on_TillClose)
         TillAddCashEvent.connect(self._on_TillAddCash)
@@ -450,6 +452,12 @@ class ECFUI(object):
         if last_doc.last_till_entry:
             self._cancel_last_till_entry(last_doc, trans)
         else:
+            # Verify till balance before cancel the last sale.
+            till = Till.get_current(trans)
+            if last_doc.last_sale.total_amount > till.get_balance():
+                warning(_("You do not have this value on till."))
+                trans.close()
+                return
             cancelled = self._printer.cancel()
             if not cancelled:
                 info(_("Cancelling sale failed, nothing to cancel"))
@@ -518,6 +526,10 @@ class ECFUI(object):
         if sale.status == Sale.STATUS_CONFIRMED:
             self._confirm_sale(sale)
             self._set_last_sale(sale, sale.get_connection())
+
+    def _on_ECFIsLastSale(self, sale):
+        last_doc = self._get_last_document(sale.get_connection())
+        return last_doc.last_sale == sale
 
     def _on_TillOpen(self, till):
         return self._open_till(till)

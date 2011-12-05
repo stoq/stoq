@@ -283,6 +283,8 @@ class TillClosingEditor(BaseEditor):
     #
 
     def after_value__validate(self, widget, value):
+        if not hasattr(self, 'proxy'):
+            return
         if value < currency(0):
             self.proxy.update('balance', currency(0))
             return ValidationError(_("Value cannot be less than zero"))

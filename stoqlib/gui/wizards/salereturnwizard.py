@@ -24,8 +24,10 @@
 ##
 """ Sale return wizards definition """
 
+from stoqlib.domain.events import ECFIsLastSaleEvent
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.slaves.saleslave import SaleReturnSlave
@@ -101,6 +103,11 @@ class SaleReturnWizard(BaseWizard):
 
     def finish(self):
         sale = Sale.get(self.model.id, connection=self.conn)
+        ecf_last_sale = ECFIsLastSaleEvent.emit(sale)
+        if ecf_last_sale:
+            info(_("That is last sale in ECF. Return using the menu "
+                   "ECF - Cancel Last Document"))
+            return
         sale.return_(self.renegotiation)
 
         self.retval = True

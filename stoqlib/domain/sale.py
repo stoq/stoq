@@ -40,7 +40,7 @@ from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.event import Event
-from stoqlib.domain.events import SaleStatusChangedEvent
+from stoqlib.domain.events import SaleStatusChangedEvent, ECFIsLastSaleEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import (IContainer, IOutPayment,
                                        IPaymentTransaction,
@@ -1026,7 +1026,11 @@ class SaleAdaptToPaymentTransaction(object):
         paid_value = self.sale.group.get_total_paid()
         till_difference = self.sale.get_total_sale_amount() - paid_value
 
-        if till_difference > 0:
+        ecf_last_sale = ECFIsLastSaleEvent.emit(self.sale)
+
+        # Only return the total amount of the last sale. Because the ECF will
+        # register this action when Cancel Last Document.
+        if till_difference > 0 and ecf_last_sale:
             # The sale was not entirely paid, so we have to payback the
             # till, because the sale amount have already been added in there
             desc = _(u'Debit on Till: Sale %d Returned') % self.sale.id

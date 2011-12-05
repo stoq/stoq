@@ -82,9 +82,18 @@ class SaleStatusChangedEvent(Event):
     """
 
 
+class ECFIsLastSaleEvent(Event):
+    """
+    This event is emitted to compare the last sale with the last document
+    in ECF.
+
+    @param sale: sale that will be compared.
+    """
+
 #
 # Payment related events
 #
+
 
 class CreatePaymentEvent(Event):
     """
