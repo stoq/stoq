@@ -291,6 +291,13 @@ class Shell(object):
         app_window = Launcher(self._options, self)
         app_window.show()
 
+        # A GtkWindowGroup controls grabs (blocking mouse/keyboard interaction),
+        # by default all windows are added to the same window group.
+        # We want to avoid setting modallity on other windows
+        # when running a dialog using gtk_dialog_run/run_dialog.
+        window_group = gtk.WindowGroup()
+        window_group.add_window(app_window.get_toplevel())
+
         if not appdesc:
             return
         if (appdesc.name != 'launcher' and
