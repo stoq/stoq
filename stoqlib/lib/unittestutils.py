@@ -43,9 +43,12 @@ class SourceTest(ClassInittableObject):
     @classmethod
     def __class_init__(cls, namespace):
         root = os.path.dirname(os.path.dirname(stoqlib.__file__)) + '/'
+        cls.root = root
         for filename in get_stoq_sources(root):
-            testname = filename[len(root):][:-3]
-            testname = testname.replace('/', '_')
+            testname = filename[len(root):]
+            if not cls.filename_filter(testname):
+                continue
+            testname = testname[:-3].replace('/', '_')
             name = 'test_%s' % (testname, )
             func = lambda self, r=root, f=filename: self.check_filename(r, f)
             func.__name__ = name
@@ -53,3 +56,10 @@ class SourceTest(ClassInittableObject):
 
     def check_filename(self, root, filename):
         pass
+
+    @classmethod
+    def filename_filter(cls, filename):
+        if cls.__name__ == 'SourceTest':
+            return False
+        else:
+            return True
