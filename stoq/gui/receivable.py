@@ -85,7 +85,7 @@ class ReceivableApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Payable
-            ('AddReceiving', gtk.STOCK_ADD, _('Account receivable'),
+            ('AddReceiving', gtk.STOCK_ADD, _('Account receivable...'),
              '<Control>p'),
             ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
@@ -101,9 +101,9 @@ class ReceivableApp(SearchableAppWindow):
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
 
             # Search
-            ('BillCheckSearch', None, _('Bill and check...'), '',
+            ('BillCheckSearch', None, _('Bills and checks...'), '',
              _('Search for bills and checks')),
-            ('CardPaymentSearch', None, _('Card payment...'), '',
+            ('CardPaymentSearch', None, _('Card payments...'), '',
              _('Search for card payments')),
 
             ('PrintToolMenu', _('Print')),

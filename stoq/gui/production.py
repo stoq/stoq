@@ -67,7 +67,7 @@ class ProductionApp(SearchableAppWindow):
 
             # Production
             ('NewProduction', gtk.STOCK_NEW,
-             _('Production order'), '<Control>o',
+             _('Production order...'), '<Control>o',
              _('Create a new production')),
             ('StartProduction', gtk.STOCK_CONVERT, _('Start production...'),
              '<Control>t',
@@ -79,7 +79,7 @@ class ProductionApp(SearchableAppWindow):
             '',
             _('Show production details and register produced items')),
             ('ProductionPurchaseQuote', 'stoq-purchase-app',
-             _('Purchase quote'), '<Control>p'),
+             _('Purchase quote...'), '<Control>p'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
 
             ("Print", gtk.STOCK_PRINT, _("Print"), '',
