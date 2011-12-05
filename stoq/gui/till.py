@@ -383,6 +383,7 @@ class TillApp(SearchableAppWindow):
         retval = return_sale(self.get_toplevel(), sale_view, self.conn)
         if api.finish_transaction(self.conn, retval):
             self._update_total()
+            self.refresh()
 
     def _update_ecf(self, has_ecf):
         # If we have an ecf, let the other events decide what to disable.

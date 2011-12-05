@@ -193,7 +193,9 @@ class Till(Domain):
             raise TillError(_("Till is already closed"))
 
         if self.get_balance() < 0:
-            raise ValueError(_("Till balance is negative"))
+            raise ValueError(_("Till balance is negative, but this should not "
+                               "happen. Contact Stoq Team if you need "
+                               "assistance"))
 
         self.final_cash_amount = self.get_balance()
         self.closing_date = const.NOW()
