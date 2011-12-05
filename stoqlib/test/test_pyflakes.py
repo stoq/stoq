@@ -28,85 +28,69 @@ Useful to early find syntax errors and other common problems.
 
 import compiler
 import sys
-import os
 
+from stoqlib.lib.unittestutils import SourceTest
 from twisted.trial import unittest
 
-import stoq
 
-# stolen from pyflakes
+class TestPyflakes(SourceTest, unittest.TestCase):
+    def setUp(self):
+        self.checker = __import__('pyflakes.checker').checker
 
-
-def check(codeString, filename, warnings):
-    try:
+    # stolen from pyflakes
+    def _check(self, codeString, filename, warnings):
         try:
-            compile(codeString, filename, "exec")
-        except MemoryError:
-            # Python 2.4 will raise MemoryError if the source can't be
-            # decoded.
-            if sys.version_info[:2] == (2, 4):
-                raise SyntaxError(None)
-            raise
-    except (SyntaxError, IndentationError), value:
-        msg = value.args[0]
+            try:
+                compile(codeString, filename, "exec")
+            except MemoryError:
+                # Python 2.4 will raise MemoryError if the source can't be
+                # decoded.
+                if sys.version_info[:2] == (2, 4):
+                    raise SyntaxError(None)
+                raise
+        except (SyntaxError, IndentationError), value:
+            msg = value.args[0]
 
-        (lineno, offset, text) = value.lineno, value.offset, value.text
+            (lineno, offset, text) = value.lineno, value.offset, value.text
 
-        # If there's an encoding problem with the file, the text is None.
-        if text is None:
-            # Avoid using msg, since for the only known case, it contains a
-            # bogus message that claims the encoding the file declared was
-            # unknown.
-            print >> sys.stderr, "%s: problem decoding source" % (filename, )
+            # If there's an encoding problem with the file, the text is None.
+            if text is None:
+                # Avoid using msg, since for the only known case, it contains a
+                # bogus message that claims the encoding the file declared was
+                # unknown.
+                print >> sys.stderr, "%s: problem decoding source" % (filename, )
+            else:
+                line = text.splitlines()[-1]
+
+                if offset is not None:
+                    offset = offset - (len(text) - len(line))
+
+                print >> sys.stderr, '%s:%d: %s' % (filename, lineno, msg)
+                print >> sys.stderr, line
+
+                if offset is not None:
+                    print >> sys.stderr, " " * offset, "^"
+
+            return 1
+        except UnicodeError, msg:
+            print >> sys.stderr, 'encoding error at %r: %s' % (filename, msg)
+            return 1
         else:
-            line = text.splitlines()[-1]
+            # Okay, it's syntactically valid.  Now parse it into an ast and check
+            # it.
+            tree = compiler.parse(codeString)
+            w = self.checker.Checker(tree, filename)
+            warnings.extend(w.messages)
+            return len(warnings)
 
-            if offset is not None:
-                offset = offset - (len(text) - len(line))
-
-            print >> sys.stderr, '%s:%d: %s' % (filename, lineno, msg)
-            print >> sys.stderr, line
-
-            if offset is not None:
-                print >> sys.stderr, " " * offset, "^"
-
-        return 1
-    except UnicodeError, msg:
-        print >> sys.stderr, 'encoding error at %r: %s' % (filename, msg)
-        return 1
-    else:
-        # Okay, it's syntactically valid.  Now parse it into an ast and check
-        # it.
-        tree = compiler.parse(codeString)
-        w = checker.Checker(tree, filename)
-        warnings.extend(w.messages)
-        return len(warnings)
-
-checker = __import__('pyflakes.checker').checker
-
-
-def get_pyflakes_filenames(root):
-    for dirpath in ['stoq', 'stoqlib', 'plugins']:
-        path = os.path.abspath(os.path.join(root, dirpath))
-        for dirpath, dirnames, filenames in os.walk(path):
-            for filename in filenames:
-                if not filename.endswith('.py'):
-                    continue
-                full = os.path.join(dirpath, filename)
-                name = full[len(root):][:-3]
-                name = name.replace('/', '_')
-                yield name, full
-
-
-class TestPyflakes(unittest.TestCase):
-    def runPyflakes(self, root, filename):
+    def check_filename(self, root, filename):
         warnings = []
         msgs = []
         result = 0
         try:
             fd = file(filename, 'U')
             try:
-                result = check(fd.read(), filename, warnings)
+                result = self._check(fd.read(), filename, warnings)
             finally:
                 fd.close()
         except IOError, msg:
@@ -121,11 +105,3 @@ class TestPyflakes(unittest.TestCase):
         if result:
             raise AssertionError(
                 "%d warnings:\n%s\n" % (len(msgs), '\n'.join(msgs), ))
-
-
-root = os.path.dirname(os.path.dirname(stoq.__file__)) + '/'
-for testname, filename in get_pyflakes_filenames(root):
-    name = 'test_%s' % (testname, )
-    func = lambda self, r=root, f=filename: self.runPyflakes(r, f)
-    func.__name__ = name
-    setattr(TestPyflakes, name, func)
