@@ -32,6 +32,7 @@
         </placeholder>
       </menu>
       <placeholder name="FileMenuPH">
+        <menuitem action="Print"/>
         <menuitem action="Import"/>
         <menuitem action="ExportCSV"/>
       </placeholder>
@@ -40,6 +41,7 @@
   <toolbar action="toolbar">
     <placeholder action="ApplicationToolbar">
       <separator/>
+      <toolitem action="Print"/>
       <toolitem action="Edit"/>
     </placeholder>
   </toolbar>
