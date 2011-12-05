@@ -359,9 +359,9 @@ class FinancialApp(AppWindow):
              _('Delete the selected transaction')),
 
             # Toolbar
-            ("NewAccount", gtk.STOCK_NEW, _("Account"), '<control>a',
+            ("NewAccount", gtk.STOCK_NEW, _("Account..."), '<control>a',
              _("Add a new account")),
-            ("NewTransaction", gtk.STOCK_NEW, _("Transaction"), '<control>t',
+            ("NewTransaction", gtk.STOCK_NEW, _("Transaction..."), '<control>t',
              _("Add a new transaction")),
             ("Edit", gtk.STOCK_EDIT, _("Edit"), ''),
 

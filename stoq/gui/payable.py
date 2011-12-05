@@ -81,7 +81,7 @@ class PayableApp(SearchableAppWindow):
             ('menubar', None, ''),
 
             # Payable
-            ('AddPayment', gtk.STOCK_ADD, _('Account payable'), '<Control>p',
+            ('AddPayment', gtk.STOCK_ADD, _('Account payable...'), '<Control>p',
              _('Create a new account payable')),
             ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...'), '',
              _('Cancel the selected payment')),
@@ -101,7 +101,7 @@ class PayableApp(SearchableAppWindow):
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
 
             # Search
-            ('BillCheckSearch', None, _('Bill and check...'), '',
+            ('BillCheckSearch', None, _('Bills and checks...'), '',
              _('Search for bills and checks')),
 
             # Toolbar

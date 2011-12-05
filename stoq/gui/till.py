@@ -90,8 +90,8 @@ class TillApp(SearchableAppWindow):
              _('Export CSV...'), '<Control>F10'),
 
             # New
-            ('TillAddCash', None, _('Cash addition'), ''),
-            ('TillRemoveCash', None, _('Cash removal'), ''),
+            ('TillAddCash', None, _('Cash addition...'), ''),
+            ('TillRemoveCash', None, _('Cash removal...'), ''),
 
             # Search
             ("SearchClient", None, _("Clients..."), '<Control><Alt>c',

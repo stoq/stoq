@@ -124,15 +124,6 @@ class PurchaseApp(SearchableAppWindow):
             ("NewProduct", None, _("Product"), '',
              _("Create a new product")),
 
-            ("SearchToolMenuProduct", 'stoq-products', _("Product"), '',
-             _("Search for products")),
-            ("SearchToolMenuSupplier", 'stoq-suppliers', _("Supplier"), '',
-             _("Search for suppliers")),
-            ("SearchToolMenuServices", 'stoq-services', _("Service"), '',
-             _("Search for services")),
-            ("SearchToolMenuQuotes", None, _("Quote"), '',
-             _("Search for quotes")),
-
             ("Confirm", gtk.STOCK_APPLY, _("Confirm"), '',
              _("Confirm the selected order(s), marking it as sent to the "
                "supplier")),
@@ -167,10 +158,10 @@ class PurchaseApp(SearchableAppWindow):
             self.NewProduct,
             self.NewConsignment])
         self.app.launcher.add_search_items([
-          self.SearchToolMenuProduct,
-          self.SearchToolMenuSupplier,
-          self.SearchToolMenuQuotes,
-          self.SearchToolMenuServices])
+            self.Products,
+            self.Suppliers,
+            self.SearchQuotes,
+            self.Services])
         parent = self.app.launcher.statusbar.get_message_area()
         self.search.set_summary_label(column='total',
                                       label=_('<b>Orders total:</b>'),
@@ -532,15 +523,3 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_NewConsignment__activate(self, action):
         self._new_consignment()
-
-    def on_SearchToolMenuProduct__activate(self, action):
-        self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
-
-    def on_SearchToolMenuSupplier__activate(self, action):
-        self.run_dialog(SupplierSearch, self.conn, hide_footer=True)
-
-    def on_SearchToolMenuServices__activate(self, action):
-        self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
-
-    def on_SearchToolMenuQuotes__activate(self, action):
-        self.run_dialog(ReceiveQuoteWizard, self.conn)

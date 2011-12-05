@@ -440,6 +440,8 @@ class AppWindow(GladeDelegate):
         for action in reversed(actions):
             action.set_accel_group(self.uimanager.get_accel_group())
             menu_item = action.create_menu_item()
+            # Toolmenus doesn't use the trailing '...' menu pattern
+            menu_item.set_label(menu_item.get_label().replace('...', ''))
             self._tool_items.append(menu_item)
             menu.prepend(menu_item)
 

@@ -296,7 +296,7 @@ class AdminApp(AppWindow):
             ("ConfigureParameters", None, _("Parameters..."), '<Control>y'),
 
             # New
-            ("NewUser", None, _("User"), '',
+            ("NewUser", None, _("User..."), '',
              _("Create a new user")),
             ]
         self.admin_ui = self.add_ui_actions('', actions,

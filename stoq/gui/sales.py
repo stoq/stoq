@@ -89,7 +89,7 @@ class SalesApp(SearchableAppWindow):
 
             # Sales
             ("SalesMenu", None, _("_Sales")),
-            ("SaleQuote", None, _("Sale quote"), '',
+            ("SaleQuote", None, _("Sale quote..."), '',
              _('Create a new quote for a sale')),
             ("SalesCancel", None, _("Cancel quote")),
             ("SalesPrintInvoice", gtk.STOCK_PRINT,
@@ -107,15 +107,15 @@ class SalesApp(SearchableAppWindow):
             # Search
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
              "<Control><Alt>a", _("Search for sold items by branch")),
-            ("SearchProduct", 'stoq-products', _("Products"),
+            ("SearchProduct", 'stoq-products', _("Products..."),
              "<Control><Alt>p", _("Search for products")),
-            ("SearchService", 'stoq-services', _("Services"),
+            ("SearchService", 'stoq-services', _("Services..."),
              "<Control><Alt>s", _("Search for services")),
-            ("SearchDelivery", 'stoq-delivery', _("Deliveries"),
+            ("SearchDelivery", 'stoq-delivery', _("Deliveries..."),
              "<Control><Alt>e", _("Search for deliveries")),
-            ("SearchClient", 'stoq-clients', _("Clients"),
+            ("SearchClient", 'stoq-clients', _("Clients..."),
              "<Control><Alt>c", _("Search for clients")),
-            ("SearchCommission", None, _("Commissions"),
+            ("SearchCommission", None, _("Commissions..."),
              "<Control><Alt>o", _("Search for salespersons commissions")),
 
             ("Print", gtk.STOCK_PRINT, _("Print"), '',
