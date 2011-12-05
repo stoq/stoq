@@ -26,6 +26,7 @@ from stoqlib.lib.process import Process
 from stoqlib.lib.unittestutils import SourceTest
 from twisted.trial import unittest
 
+
 class TestPylint(SourceTest, unittest.TestCase):
 
     @classmethod
