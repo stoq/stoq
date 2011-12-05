@@ -316,6 +316,12 @@ class AppWindow(GladeDelegate):
         user = api.get_current_user(self.conn)
         self.statusbar.push(0, _("User: %s") % (user.person.name, ))
 
+        # FIXME: For some reason, without this hack, some apps like Stock and
+        #        Purchase shows an extra search tool menu labeled 'empty'
+        search_tool_menu = self.SearchToolItem.get_proxies()[0].get_menu()
+        for child in search_tool_menu.get_children():
+            search_tool_menu.remove(child)
+
     def _display_unstable_version_message(self):
         msg = _(
             'You are currently using an <b>unstable version</b> of Stoq that '
@@ -423,14 +429,19 @@ class AppWindow(GladeDelegate):
     def _add_actions_to_tool_item(self, toolitem, actions):
         new_item = toolitem.get_proxies()[0]
         menu = new_item.get_menu()
-        for action in actions:
+
+        # Insert a separator only if menu already had children
+        if len(menu.get_children()):
+            sep = gtk.SeparatorMenuItem()
+            sep.set_visible(True)
+            self._tool_items.append(sep)
+            menu.prepend(sep)
+        # Do this reversed because we are prepending
+        for action in reversed(actions):
             action.set_accel_group(self.uimanager.get_accel_group())
             menu_item = action.create_menu_item()
             self._tool_items.append(menu_item)
-            menu.insert(menu_item, len(list(menu)) - 2)
-        sep = gtk.SeparatorMenuItem()
-        self._tool_items.append(sep)
-        menu.insert(sep, len(list(menu)) - 2)
+            menu.prepend(menu_item)
 
     def _show_uri(self, uri):
         toplevel = self.get_toplevel()
