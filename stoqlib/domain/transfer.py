@@ -200,8 +200,6 @@ class TransferOrderView(Viewable):
                    BranchDest.q.originalID == PersonDest.q.id),
     ]
 
-
     @property
     def transfer_order(self):
         return TransferOrder.get(self.id)
-
