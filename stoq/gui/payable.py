@@ -104,6 +104,9 @@ class PayableApp(SearchableAppWindow):
             ('BillCheckSearch', None, _('Bills and checks...'), '',
              _('Search for bills and checks')),
 
+            # Payment
+            ('PaymentMenu', None, _('Payment')),
+
             # Toolbar
             ('PrintReport', gtk.STOCK_PRINT, _('Print'), '',
              _('Print a report for this payment listing')),
@@ -119,6 +122,7 @@ class PayableApp(SearchableAppWindow):
         self.set_help_section(_("Accounts payable help"),
                               'pagar-inicio')
         self.Pay.props.is_important = True
+        self.popup = self.uimanager.get_widget('/PayableSelection')
 
     def create_ui(self):
         self._setup_widgets()
@@ -416,6 +420,9 @@ class PayableApp(SearchableAppWindow):
     def on_results__row_activated(self, klist, payable_view):
         if self._can_show_details([payable_view]):
             self._show_details(payable_view)
+
+    def on_results__right_click(self, results, result, event):
+        self.popup.popup(None, None, None, event.button, event.time)
 
     def on_Comments__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]

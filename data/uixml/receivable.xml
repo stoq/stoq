@@ -38,15 +38,18 @@
         <menuitem action="PaymentFlowHistory"/>
       </placeholder>
     </menu>
-    <menu action="EditMenu">
-      <placeholder name="EditMenuPH">
+    <placeholder name="AppMenubarPH">
+      <menu action="PaymentMenu">
+        <menuitem action="Details"/>
+        <separator/>
+        <menuitem action="Receive"/>
         <menuitem action="CancelPayment"/>
         <menuitem action="SetNotPaid"/>
         <menuitem action="ChangeDueDate"/>
         <menuitem action="Renegotiate"/>
         <menuitem action="Comments"/>
-      </placeholder>
-    </menu>
+      </menu>
+    </placeholder>
     <menu action="SearchMenu">
       <placeholder name="SearchMenuPH">
         <menuitem action="BillCheckSearch"/>
@@ -54,7 +57,17 @@
       </placeholder>
     </menu>
   </menubar>
-  <toolbar action="toolbar">
+  <popup name="ReceivableSelection">
+    <menuitem action="Details"/>
+    <separator/>
+    <menuitem action="Receive"/>
+    <menuitem action="CancelPayment"/>
+    <menuitem action="SetNotPaid"/>
+    <menuitem action="ChangeDueDate"/>
+    <menuitem action="Renegotiate"/>
+    <menuitem action="Comments"/>
+ </popup>
+ <toolbar action="toolbar">
     <toolitem action="Print">
       <menu action="PrintToolMenu">
         <menuitem action="PrintList"/>

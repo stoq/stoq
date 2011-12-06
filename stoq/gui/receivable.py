@@ -106,6 +106,9 @@ class ReceivableApp(SearchableAppWindow):
             ('CardPaymentSearch', None, _('Card payments...'), '',
              _('Search for card payments')),
 
+            # Payment
+            ('PaymentMenu', None, _('Payment')),
+
             ('PrintToolMenu', _('Print')),
             ('PrintList', gtk.STOCK_PRINT, _('Payment List'), '',
              _('Print a report for this payment listing'), ),
@@ -124,6 +127,7 @@ class ReceivableApp(SearchableAppWindow):
                             gtk.STOCK_PRINT)])
 
         self.Receive.props.is_important = True
+        self.popup = self.uimanager.get_widget('/ReceivableSelection')
 
     def create_ui(self):
         self.search.search.search_button.hide()
@@ -428,6 +432,9 @@ class ReceivableApp(SearchableAppWindow):
 
     def on_results__selection_changed(self, receivables, selected):
         self._update_widgets()
+
+    def on_results__right_click(self, results, result, event):
+        self.popup.popup(None, None, None, event.button, event.time)
 
     def on_Details__activate(self, button):
         selected = self.results.get_selected_rows()[0]
