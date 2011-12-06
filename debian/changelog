@@ -1,3 +1,9 @@
+stoq (1.1) natty; urgency=low
+
+  * Release Stoq 1.1
+
+ -- Ronaldo Maia <romaia@async.com.br>  Tue, 06 Dec 2011 13:55:20 -0200
+
 stoq (1.0.5) natty; urgency=low
 
   * Bugfix release
