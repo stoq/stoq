@@ -61,7 +61,7 @@
 
 This assistant will help you configure Stoq to create a new database or connect to an existing.
 
-If you're having trouble with the installation or need help importing your database from another application, don't hesitate to &lt;a href="http://www.stoq.com.br/pt-br/more/contact"&gt;contact us&lt;/a&gt;.</property>
+If you're having trouble with the installation or need help importing your database from another application, don't hesitate to &lt;a href="http://www.stoq.com.br/contato"&gt;contact us&lt;/a&gt;.</property>
             <property name="use_markup">True</property>
             <property name="wrap">True</property>
           </object>

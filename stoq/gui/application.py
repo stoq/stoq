@@ -934,7 +934,7 @@ class AppWindow(GladeDelegate):
         self._show_uri("https://translations.launchpad.net/stoq")
 
     def _on_HelpSupport__activate(self, action):
-        self._show_uri("http://www.stoq.com.br/support")
+        self._show_uri("http://www.stoq.com.br/suporte")
 
     def _on_HelpAbout__activate(self, action):
         self._run_about()
@@ -1100,7 +1100,7 @@ class VersionChecker(object):
         if 'AdminApp' not in self.app.__class__.__name__:
             return
         button = gtk.LinkButton(
-            'http://www.stoq.com.br/pt-br/more/whatsnew',
+            'http://www.stoq.com.br/novidades',
             _(u'Learn More...'))
         msg = _('<b>There is a new Stoq version available (%s)</b>') % (
             latest_version, )

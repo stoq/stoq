@@ -92,7 +92,7 @@
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">Want to import your data from another software or from spreadsheets? We can help you.
 
-&lt;a href="http://www.stoq.com.br/pt-br/more/contact"&gt;Send the data&lt;/a&gt; you want imported to us, and we will give a response within 2 business days.</property>
+&lt;a href="http://www.stoq.com.br/contato"&gt;Send the data&lt;/a&gt; you want imported to us, and we will give a response within 2 business days.</property>
                 <property name="use_markup">True</property>
                 <property name="wrap">True</property>
               </object>
