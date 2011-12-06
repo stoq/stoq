@@ -27,11 +27,12 @@ import datetime
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
-from stoqlib.database.orm import QuantityCol
-from stoqlib.database.orm import ForeignKey, IntCol
+from stoqlib.database.orm import QuantityCol, const, INNERJOINOn, LEFTJOINOn
+from stoqlib.database.orm import ForeignKey, IntCol, Viewable, Alias
 from stoqlib.database.orm import DateTimeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory
+from stoqlib.domain.person import Person, PersonAdaptToBranch
 from stoqlib.domain.interfaces import IContainer, IStorable
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -167,3 +168,40 @@ class TransferOrder(Domain):
            item in transfer
         """
         return sum([item.quantity for item in self.get_items()], 0)
+
+
+class TransferOrderView(Viewable):
+    BranchDest = Alias(PersonAdaptToBranch, 'branch_dest')
+    PersonDest = Alias(Person, 'person_dest')
+
+    columns = dict(
+        id=TransferOrder.q.id,
+        open_date=TransferOrder.q.open_date,
+        receival_date=TransferOrder.q.receival_date,
+        source_branch_id=TransferOrder.q.source_branchID,
+        destination_branch_id=TransferOrder.q.destination_branchID,
+        source_branch_name=Person.q.name,
+        destination_branch_name=PersonDest.q.name,
+        total_itens=const.SUM(TransferOrderItem.q.quantity),
+    )
+
+    joins = [
+        INNERJOINOn(None, TransferOrderItem,
+                    TransferOrder.q.id == TransferOrderItem.q.transfer_orderID),
+        # Source
+        LEFTJOINOn(None, PersonAdaptToBranch,
+                   TransferOrder.q.source_branchID == PersonAdaptToBranch.q.id),
+        LEFTJOINOn(None, Person,
+                   PersonAdaptToBranch.q.originalID == Person.q.id),
+        # Destination
+        LEFTJOINOn(None, BranchDest,
+                   TransferOrder.q.destination_branchID == BranchDest.q.id),
+        LEFTJOINOn(None, PersonDest,
+                   BranchDest.q.originalID == PersonDest.q.id),
+    ]
+
+
+    @property
+    def transfer_order(self):
+        return TransferOrder.get(self.id)
+

@@ -29,9 +29,11 @@ from decimal import Decimal
 
 import gtk
 from kiwi.ui.search import DateSearchFilter
-from kiwi.ui.objectlist import Column
+from kiwi.ui.objectlist import Column, SearchColumn
 
-from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
+from stoqlib.domain.transfer import (TransferOrderItem,
+                                     TransferOrderView)
+
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
@@ -45,7 +47,7 @@ _ = stoqlib_gettext
 class TransferOrderSearch(SearchDialog):
     title = _(u"Transfer Order Search")
     size = (750, 500)
-    search_table = TransferOrder
+    search_table = TransferOrderView
     selection_mode = gtk.SELECTION_MULTIPLE
     searchbar_result_strings = _(u"transfer order"), _(u"transfer orders")
     search_by_date = True
@@ -56,7 +58,8 @@ class TransferOrderSearch(SearchDialog):
                               title=self.title)
         self._setup_widgets()
 
-    def _show_transfer_order_details(self, transfer_order):
+    def _show_transfer_order_details(self, order_view):
+        transfer_order = order_view.transfer_order
         run_dialog(TransferOrderDetailsDialog, self, self.conn,
                    transfer_order)
 
@@ -78,7 +81,8 @@ class TransferOrderSearch(SearchDialog):
         pass
 
     def create_filters(self):
-        self.set_text_field_columns(['id'])
+        self.set_text_field_columns(['source_branch_name',
+                                     'destination_branch_name'])
         self.set_searchbar_labels(_('matching:'))
 
         # Date
@@ -86,33 +90,34 @@ class TransferOrderSearch(SearchDialog):
         self.add_filter(date_filter, columns=['open_date', 'receival_date'])
 
     def get_columns(self):
-        return [Column('id', _('#'), data_type=int, width=50),
-                Column('open_date', _('Open date'),
+        return [SearchColumn('id', _('#'), data_type=int, width=50),
+                SearchColumn('open_date', _('Open date'),
                        data_type=datetime.date, sorted=True, width=100),
-                Column('source_branch_name', _('Source'),
+                SearchColumn('source_branch_name', _('Source'),
                        data_type=unicode, expand=True),
-                Column('destination_branch_name', _('Destination'),
+                SearchColumn('destination_branch_name', _('Destination'),
                        data_type=unicode, width=220),
-                Column('total_items_transfer',
+                Column('total_items',
                        _('Number of items transferred'), data_type=Decimal, width=110)]
 
     #
     # Callbacks
     #
 
-    def on_row_activated(self, klist, transfer_order):
-        self._show_transfer_order_details(transfer_order)
+    def on_row_activated(self, klist, view):
+        self._show_transfer_order_details(view)
 
     def on_print_button_clicked(self, button):
-        orders = self.results.get_selected_rows()
-        if len(orders) == 1:
-            items = TransferOrderItem.selectBy(transfer_order=orders[0],
+        views = self.results.get_selected_rows()
+        if len(views) == 1:
+            order = views[0].transfer_order
+            items = TransferOrderItem.selectBy(transfer_order=order,
                                                connection=self.conn)
-            print_report(TransferOrderReceipt, orders[0], items)
+            print_report(TransferOrderReceipt, order, items)
 
     def on_details_button_clicked(self, button):
-        orders = self.results.get_selected_rows()
-        if len(orders) > 1:
+        views = self.results.get_selected_rows()
+        if len(views) > 1:
             raise ValueError("You should have only one item selected at "
                              "this point ")
-        self._show_transfer_order_details(orders[0])
+        self._show_transfer_order_details(views[0])
