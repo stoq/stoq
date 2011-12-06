@@ -249,7 +249,7 @@ class LoginHelper:
 
         if dialog:
             dialog.destroy()
-        raise LoginError("Depleted attempts of authentication")
+        raise LoginError(_("Depleted attempts of authentication"))
 
     #
     # Exit strategies
