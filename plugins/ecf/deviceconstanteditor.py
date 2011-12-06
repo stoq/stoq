@@ -192,7 +192,6 @@ class DeviceConstantsDialog(BasicDialog):
     def _create_ui(self):
         hbox = gtk.HBox()
         self.klist = ObjectList([Column('name')])
-        self.klist.set_policy(gtk.POLICY_NEVER, gtk.POLICY_NEVER)
         self.klist.set_size_request(150, -1)
         self.klist.get_treeview().set_headers_visible(False)
         self.klist.connect('selection-changed',
