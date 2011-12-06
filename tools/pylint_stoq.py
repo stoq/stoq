@@ -166,6 +166,52 @@ class FakeBuilder(object):
         nodes = self.builder.string_build(data)
         self.module.locals = nodes.locals
 
+    def add_wizard_step(self, module):
+        from stoqlib.gui.wizards.purchasewizard import WizardEditorStep
+        pymod = namedAny(module.name)
+        for attr in dir(pymod):
+            value = getattr(pymod, attr)
+            if attr in module and isinstance(module[attr], From):
+                continue
+
+            if my_issubclass(value, WizardEditorStep):
+                self.add_delegate(value, attr)
+
+    def add_delegate(self, delegate, attr):
+        from kiwi.environ import environ
+        from kiwi.ui.builderloader import BuilderWidgetTree
+        import gtk
+        if not delegate.gladefile:
+            return
+        f = environ.find_resource('glade', delegate.gladefile + '.ui')
+        tree = BuilderWidgetTree(delegate, f, None)
+
+        t = ''
+        t += 'import kiwi\n'
+        t += 'class %s(object):\n' % (attr, )
+        for widget in sorted(tree.get_widgets()):
+            try:
+                name = gtk.Buildable.get_name(widget)
+            except TypeError:
+                continue
+            t += '    %s = %s.%s()\n' % (name,
+                                         widget.__module__,
+                                         widget.__class__.__name__)
+
+        print t
+        real_node = self.module[attr]
+        self.module.body.remove(real_node)
+        print vars(self.module)
+        nodes = self.builder.string_build(t)
+        for key, value in nodes.items():
+            self.module.locals[key] = [value]
+            self.module.body.append(value)
+
+        new_node = self.module.locals[attr][0]
+        for key, value in real_node.locals.items():
+            print key
+            new_node[key] = [value]
+
 
 def stoq_transform(module):
     fake = FakeBuilder(module)
@@ -193,6 +239,10 @@ def stoq_transform(module):
         pass
 """)
         module.locals = nodes.locals
+
+    #elif module.name == 'stoqlib.gui.wizards.purchasewizard':
+    #    fake.add_wizard_step(module)
+
 
 def register(linter):
     """called when loaded by pylint --load-plugins, register our tranformation
