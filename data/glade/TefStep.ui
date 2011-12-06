@@ -209,7 +209,7 @@ Please fill in your details and will contact you within two business days:</prop
           <object class="GtkLabel" id="send_error_label">
             <property name="visible">True</property>
             <property name="xalign">0</property>
-            <property name="label" translatable="yes">An error ocurred sending your details. Please &lt;a href="http://www.stoq.com.br/pt-br/more/contact"&gt;contact us&lt;/a&gt;.</property>
+            <property name="label" translatable="yes">An error ocurred sending your details. Please &lt;a href="http://www.stoq.com.br/contato"&gt;contact us&lt;/a&gt;.</property>
             <property name="use_markup">True</property>
           </object>
           <packing>
