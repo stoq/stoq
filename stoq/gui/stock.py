@@ -164,11 +164,10 @@ class StockApp(SearchableAppWindow):
         self.edit_button.set_icon_widget(self.image)
         self.image.show()
 
-        parent = self.app.launcher.statusbar.get_message_area()
         self.search.set_summary_label(column='stock',
                                       label=_('<b>Stock Total:</b>'),
                                       format='<b>%s</b>',
-                                      parent=parent)
+                                      parent=self.get_statusbar_message_area())
         self.search.search.search_button.hide()
 
     def activate(self):

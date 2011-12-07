@@ -133,11 +133,10 @@ class ReceivableApp(SearchableAppWindow):
         self.search.search.search_button.hide()
         self.app.launcher.add_new_items([self.AddReceiving])
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
-        parent = self.app.launcher.statusbar.get_message_area()
         self.search.set_summary_label(column='value',
             label='<b>%s</b>' % (_("Total")),
             format='<b>%s</b>',
-            parent=parent)
+            parent=self.get_statusbar_message_area())
 
     def activate(self):
         self._update_widgets()

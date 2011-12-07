@@ -162,11 +162,10 @@ class PurchaseApp(SearchableAppWindow):
             self.Suppliers,
             self.SearchQuotes,
             self.Services])
-        parent = self.app.launcher.statusbar.get_message_area()
         self.search.set_summary_label(column='total',
                                       label=_('<b>Orders total:</b>'),
                                       format='<b>%s</b>',
-                                      parent=parent)
+                                      parent=self.get_statusbar_message_area())
         self.search.search.search_button.hide()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.Confirm.set_sensitive(False)

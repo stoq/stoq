@@ -134,8 +134,8 @@ class AppWindow(GladeDelegate):
         self.uimanager = self._create_ui_manager()
         self.accel_group = self.uimanager.get_accel_group()
         # Cache to avoid duplicate queries on every row selection change
-        self._has_open_inventory =  Inventory.has_open(
-                            self.conn, api.get_current_branch(self.conn))
+        self._has_open_inventory = Inventory.has_open(
+            self.conn, api.get_current_branch(self.conn))
 
         self._create_ui_manager_ui()
         GladeDelegate.__init__(self, delete_handler=self._on_delete_handler,
@@ -307,14 +307,7 @@ class AppWindow(GladeDelegate):
         self.main_vbox.pack_start(toolbar, False, False)
         self.main_vbox.reorder_child(toolbar, 1)
 
-        # Disable border on statusbar
-        children = self.statusbar.get_children()
-        if children and isinstance(children[0], gtk.Frame):
-            frame = children[0]
-            frame.set_shadow_type(gtk.SHADOW_NONE)
-
-        user = api.get_current_user(self.conn)
-        self.statusbar.push(0, _("User: %s") % (user.person.name, ))
+        self._prepare_statusbar()
 
         # FIXME: For some reason, without this hack, some apps like Stock and
         #        Purchase shows an extra search tool menu labeled 'empty'
@@ -472,6 +465,40 @@ class AppWindow(GladeDelegate):
         api.config.set('Launcher', 'window_y', str(self._y))
         api.config.flush()
 
+    def _prepare_statusbar(self):
+        # Disable border on statusbar
+        children = self.statusbar.get_children()
+        if children and isinstance(children[0], gtk.Frame):
+            frame = children[0]
+            frame.set_shadow_type(gtk.SHADOW_NONE)
+
+        # Setup the message area, more complicated than it
+        # should be since we're maintaining support for
+        # PyGTK 2.17
+        if hasattr(self.statusbar, 'get_message_area'):
+            area = self.statusbar.get_message_area()
+        else:
+            area = gtk.HBox(False, 4)
+
+            frame = self.statusbar.get_children()[0]
+            label = frame.get_child()
+            frame.remove(label)
+            frame.add(area)
+
+            area.add(label)
+            area.show()
+
+        self.statusbar_message_area = area
+
+        # Set the initial text, the currently logged in user
+        user = api.get_current_user(self.conn)
+        self.statusbar.push(0, _("User: %s") % (user.person.name, ))
+
+    def _empty_message_area(self):
+        area = self.get_statusbar_message_area()
+        for child in area.get_children()[1:]:
+            child.destroy()
+
     #
     # Overridables
     #
@@ -535,6 +562,9 @@ class AppWindow(GladeDelegate):
     #
     # Public API
     #
+
+    def get_statusbar_message_area(self):
+        return self.app.launcher.statusbar_message_area
 
     def print_report(self, report_class, *args, **kwargs):
         filters = self.search.get_search_filters()
@@ -668,8 +698,8 @@ class AppWindow(GladeDelegate):
 
     def has_open_inventory(self, from_cache=True):
         if not from_cache:
-            self._has_open_inventory =  Inventory.has_open(
-                            self.conn, api.get_current_branch(self.conn))
+            self._has_open_inventory = Inventory.has_open(
+                self.conn, api.get_current_branch(self.conn))
         return self._has_open_inventory
 
     def check_open_inventory(self):
@@ -766,9 +796,7 @@ class AppWindow(GladeDelegate):
             self.current_app = None
 
         self.get_toplevel().set_title(self.get_title())
-        message_area = self.statusbar.get_message_area()
-        for child in message_area.get_children()[1:]:
-            child.destroy()
+        self._empty_message_area()
         for item in self._tool_items:
             item.destroy()
         self._tool_items = []
