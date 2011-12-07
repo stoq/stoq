@@ -10,13 +10,13 @@ URL: http://www.stoq.com.br/
 Source: http://download.stoq.com.br/sources/1.0/stoq-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: postgresql >= 8.4
-Requires: pygtk2 >= 2.16
+Requires: pygtk2 >= 2.22
 Requires: pypoppler >= 0.12.1
 Requires: python-abi = %(%{__python} -c "import sys; print sys.version[:3]")
 Requires: python-dateutil >= 1.4.1
 Requires: python-imaging >= 1.1.5
 Requires: python-gudev >= 147
-Requires: python-kiwi >= 1.9.29
+Requires: python-kiwi >= 1.9.30
 Requires: python-mako >= 0.2.5
 Requires: python-psycopg2 >= 2.0.5
 Requires: python-reportlab >= 2.4
