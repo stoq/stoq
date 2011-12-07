@@ -35,7 +35,7 @@ import sys
 _ = gettext.gettext
 
 DATEUTIL_REQUIRED = (1, 4, 1)
-GTK_REQUIRED = (2, 16, 0)
+GTK_REQUIRED = (2, 22, 0)
 GUDEV_REQUIRED = (147, )
 KIWI_REQUIRED = (1, 9, 30)
 MAKO_REQUIRED = (0, 2, 5)
