@@ -230,11 +230,10 @@ class SalesApp(SearchableAppWindow):
     #
 
     def _create_summary_label(self):
-        parent = self.app.launcher.statusbar.get_message_area()
         self.search.set_summary_label(column='total',
                                       label='<b>Total:</b>',
                                       format='<b>%s</b>',
-                                      parent=parent)
+                                      parent=self.get_statusbar_message_area())
 
     def _setup_widgets(self):
         self._setup_slaves()

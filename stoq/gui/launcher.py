@@ -69,7 +69,8 @@ class Launcher(AppWindow):
         self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
         self.iconview.set_markup_column(COL_LABEL)
         self.iconview.set_pixbuf_column(COL_PIXBUF)
-        self.iconview.set_item_orientation(gtk.ORIENTATION_HORIZONTAL)
+        if hasattr(self.iconview, "set_item_orientation"):
+            self.iconview.set_item_orientation(gtk.ORIENTATION_HORIZONTAL)
         self.iconview.set_item_width(300)
         self.iconview.set_selection_mode(gtk.SELECTION_BROWSE)
         self.iconview.set_spacing(10)
