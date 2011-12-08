@@ -262,11 +262,6 @@ class AdminApp(AppWindow):
 
     def create_actions(self):
         actions = [
-            ('menubar', None, ''),
-            # Admin
-            ("AdminMenu", None, _("_Admin")),
-
-            # Search
             ("SearchRole", None, _("Roles..."), '<Control><Alt>o'),
             ("SearchEmployee", None, _("Employees..."), '<Control><Alt>e'),
             ("SearchEvents", None, _("Events..."), ''),
@@ -277,8 +272,6 @@ class AdminApp(AppWindow):
             ("SearchBranch", None, _("Branches..."), '<Control>b'),
             ("SearchComputer", None, _('Computers...'), '<Control><Alt>h'),
             ("SearchTaxTemplate", None, _('Tax Classes...')),
-
-            # Configure
             ("ConfigureMenu", None, _("_Configure")),
             ("ConfigureDevices", None, _("Devices..."), '<Control>d'),
             ("ConfigurePaymentMethods", None, _("Payment methods..."),
@@ -294,8 +287,6 @@ class AdminApp(AppWindow):
             ("ConfigurePlugins", None, _("Plugins...")),
             ("ConfigureTaxes", None, _("Taxes..."), '<Control>l'),
             ("ConfigureParameters", None, _("Parameters..."), '<Control>y'),
-
-            # New
             ("NewUser", None, _("User..."), '',
              _("Create a new user")),
             ]

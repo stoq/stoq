@@ -78,12 +78,10 @@ class PayableApp(SearchableAppWindow):
 
     def create_actions(self):
         actions = [
-            ('menubar', None, ''),
-
-            # Payable
+            ('PaymentMenu', None, _('Payment')),
             ('AddPayment', gtk.STOCK_ADD, _('Account payable...'), '<Control>p',
              _('Create a new account payable')),
-            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...'), '',
+            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel...'), '',
              _('Cancel the selected payment')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...'), '',
              _('Mark the selected payment as not paid')),
@@ -91,36 +89,30 @@ class PayableApp(SearchableAppWindow):
              _('Change the due date of the selected payment')),
             ('Comments', None, _('Comments...'), '',
              _('Add comments to the selected payment')),
-
-            ('PrintReceipt', None, _('Print _receipt'), '<Control>r',
+            ('PrintReceipt', None, _('Print _receipt...'), '<Control>r',
              _('Print a receipt for the selected payment')),
             ('PaymentFlowHistory', None, _('Payment _flow history...'),
              '<Control>f',
              _('Show a report of payment expected to receive grouped by day')),
-
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
-
-            # Search
             ('BillCheckSearch', None, _('Bills and checks...'), '',
              _('Search for bills and checks')),
-
-            # Payment
-            ('PaymentMenu', None, _('Payment')),
-
-            # Toolbar
             ('PrintReport', gtk.STOCK_PRINT, _('Print'), '',
              _('Print a report for this payment listing')),
-            ('Pay', gtk.STOCK_APPLY, _('Pay'), '',
+            ('Pay', gtk.STOCK_APPLY, _('Pay...'), '',
              _('Pay the order associated with the selected payment')),
-            ('Edit', gtk.STOCK_EDIT, _('Edit'), '',
+            ('Edit', gtk.STOCK_EDIT, _('Edit...'), '',
              _('Edit the selected payment details')),
-            ('Details', gtk.STOCK_INFO, _('Details'), '',
+            ('Details', gtk.STOCK_INFO, _('Details...'), '',
              _('Show details for the selected payment')),
         ]
         self.payable_ui = self.add_ui_actions(None, actions,
                                               filename='payable.xml')
         self.set_help_section(_("Accounts payable help"),
                               'pagar-inicio')
+        self.Pay.set_short_label(_('Pay'))
+        self.Edit.set_short_label(_('Edit'))
+        self.Details.set_short_label(_('Details'))
         self.Pay.props.is_important = True
         self.popup = self.uimanager.get_widget('/PayableSelection')
 

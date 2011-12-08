@@ -84,21 +84,13 @@ class PurchaseApp(SearchableAppWindow):
 
     def create_actions(self):
         actions = [
-            ('menubar', None, ''),
-
-            # Purchase
             ("Print", gtk.STOCK_PRINT, _("Print"), '',
              _("Print the list of orders")),
             ("StockCost", None, _("_Stock cost...")),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-            # Consignment
             ("CloseInConsignment", None, _("Close consigment...")),
             ("SearchInConsignmentItems", None, _("Search consigment items...")),
-
-            # Order
             ("OrderMenu", None, _("Order")),
-
-            # Search
             ("BaseCategories", None, _("Base categories..."), "<Control>b"),
             ("Categories", None, _("Categories..."), "<Control>c"),
             ("Products", 'stoq-products', _("Products..."), "<Control>d"),
@@ -113,27 +105,24 @@ class PurchaseApp(SearchableAppWindow):
             ("SearchPurchasedItems", None, _("Purchased items..."), "<Control>p"),
             ("ProductsSoldSearch", None, _("Products sold..."), ""),
             ("ProductsPriceSearch", None, _("Prices editor..."), ""),
-
-            # Toolbar
-            ("NewOrder", gtk.STOCK_NEW, _("Order"), '<control>o',
+            ("NewOrder", gtk.STOCK_NEW, _("Order..."), '<control>o',
              _("Create a new purchase order")),
-            ("NewQuote", gtk.STOCK_INDEX, _("Quote"), '<control>e',
+            ("NewQuote", gtk.STOCK_INDEX, _("Quote..."), '<control>e',
              _("Create a new purchase quote")),
-            ("NewConsignment", None, _("Consignment"), '',
+            ("NewConsignment", None, _("Consignment..."), '',
              _("Create a new purchase consignment")),
-            ("NewProduct", None, _("Product"), '',
+            ("NewProduct", None, _("Product..."), '',
              _("Create a new product")),
-
-            ("Confirm", gtk.STOCK_APPLY, _("Confirm"), '',
+            ("Confirm", gtk.STOCK_APPLY, _("Confirm..."), '',
              _("Confirm the selected order(s), marking it as sent to the "
                "supplier")),
-            ("Cancel", gtk.STOCK_CANCEL, _("Cancel"), '',
+            ("Cancel", gtk.STOCK_CANCEL, _("Cancel..."), '',
              _("Cancel the selected order")),
-            ("Edit", gtk.STOCK_EDIT, _("Edit"), '',
+            ("Edit", gtk.STOCK_EDIT, _("Edit..."), '',
              _("Edit the selected order, allowing you to change it's details")),
-            ("Details", gtk.STOCK_INFO, _("Details"), '',
+            ("Details", gtk.STOCK_INFO, _("Details..."), '',
              _("Show details of the selected order")),
-            ("Finish", gtk.STOCK_APPLY, _("Finish"), '',
+            ("Finish", gtk.STOCK_APPLY, _("Finish..."), '',
              _('Complete the selected partially received order')),
         ]
 
@@ -146,6 +135,11 @@ class PurchaseApp(SearchableAppWindow):
         self.NewQuote.set_short_label(_("New quote"))
         self.Products.set_short_label(_("Products"))
         self.Suppliers.set_short_label(_("Suppliers"))
+        self.Confirm.set_short_label(_("Confirm"))
+        self.Cancel.set_short_label(_("Cancel"))
+        self.Finish.set_short_label(_("Finish"))
+        self.Edit.set_short_label(_("Edit"))
+        self.Details.set_short_label(_("Details"))
 
         self.set_help_section(_("Purchase help"),
                               'compras-inicio')

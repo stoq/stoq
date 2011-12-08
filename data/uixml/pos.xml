@@ -33,10 +33,6 @@
     </menu>
     <menu action="EditMenu">
       <placeholder name="EditMenuPH">
-         <menuitem action="ConfirmOrder"/>
-         <menuitem action="CancelOrder"/>
-         <separator/>
-         <menuitem action="NewDelivery"/>
       </placeholder>
     </menu>
     <menu action="SearchMenu">
@@ -49,6 +45,14 @@
          <menuitem action="DeliverySearch"/>
       </placeholder>
     </menu>
+    <placeholder name="AppMenubarPH">
+      <menu action="OrderMenu">
+        <menuitem action="ConfirmOrder"/>
+        <menuitem action="CancelOrder"/>
+        <separator/>
+        <menuitem action="NewDelivery"/>
+      </menu>
+    </placeholder>
     <placeholder name="ExtraMenu"/>
   </menubar>
 </ui>

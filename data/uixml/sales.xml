@@ -28,19 +28,13 @@
       <menu action="NewMenu">
         <placeholder name="NewMenuItemPH">
           <menuitem action="SaleQuote"/>
+          <menuitem action="LoanNew"/>
         </placeholder>
       </menu>
       <placeholder name="FileMenuPH">
-        <separator/>
-        <!-- Must update nfe plugin if this changes -->
-        <menuitem action="SalesPrintInvoice"/>
+        <menuitem action="LoanClose"/>
         <separator/>
         <menuitem action="ExportCSV"/>
-      </placeholder>
-    </menu>
-    <menu action="EditMenu">
-      <placeholder name="EditMenuPH">
-        <menuitem action="SalesCancel"/>
       </placeholder>
     </menu>
     <menu action="SearchMenu">
@@ -51,18 +45,34 @@
         <menuitem action="SearchDelivery"/>
         <menuitem action="SearchClient"/>
         <menuitem action="SearchCommission"/>
-      </placeholder>
-    </menu>
-    <placeholder name="AppMenubarPH">
-      <menu action="LoanMenu">
-        <menuitem action="LoanNew"/>
-        <menuitem action="LoanClose"/>
         <separator/>
         <menuitem action="LoanSearch"/>
         <menuitem action="LoanSearchItems"/>
+      </placeholder>
+    </menu>
+    <placeholder name="AppMenubarPH">
+      <menu action="SaleMenu">
+        <menuitem action="Details"/>
+        <separator/>
+        <menuitem action="Edit"/>
+        <menuitem action="SalesCancel"/>
+        <menuitem action="Return"/>
+        <separator/>
+        <!-- Must update nfe plugin if this changes -->
+        <menuitem action="SalesPrintInvoice"/>
       </menu>
     </placeholder>
   </menubar>
+  <popup name="SaleSelection">
+    <menuitem action="Details"/>
+    <separator/>
+    <menuitem action="Edit"/>
+    <menuitem action="SalesCancel"/>
+    <menuitem action="Return"/>
+    <separator/>
+    <!-- Must update nfe plugin if this changes -->
+    <menuitem action="SalesPrintInvoice"/>
+  </popup>
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">
       <toolitem action="Print"/>

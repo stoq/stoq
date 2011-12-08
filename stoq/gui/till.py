@@ -80,20 +80,13 @@ class TillApp(SearchableAppWindow):
 
     def create_actions(self):
         actions = [
-            ('menubar', None, ''),
-
-            # Till
-            ("TillMenu", None, _("_Till")),
+            ('SaleMenu', None, _('Sale')),
             ('TillOpen', None, _('Open till...'), '<Control>F6'),
             ('TillClose', None, _('Close till...'), '<Control>F7'),
             ('ExportCSV', gtk.STOCK_SAVE_AS,
              _('Export CSV...'), '<Control>F10'),
-
-            # New
             ('TillAddCash', None, _('Cash addition...'), ''),
             ('TillRemoveCash', None, _('Cash removal...'), ''),
-
-            # Search
             ("SearchClient", None, _("Clients..."), '<Control><Alt>c',
              _("Search for clients")),
             ("SearchSale", None, _("Sales..."), '<Contrl><Alt>a',
@@ -104,14 +97,13 @@ class TillApp(SearchableAppWindow):
              _("Search for till history")),
             ("SearchFiscalTillOperations", None, _("Fiscal till operations..."),
              '<Contro><Alt>f', _("Search for fiscal till operations")),
-
-            ("Confirm", gtk.STOCK_APPLY, _("Confirm"), '',
+            ("Confirm", gtk.STOCK_APPLY, _("Confirm..."), '',
              _("Confirm the selected sale, decreasing stock and making it "
                "possible to receive it's payments")),
-            ("Return", gtk.STOCK_CANCEL, _("Return"), '',
+            ("Return", gtk.STOCK_CANCEL, _("Return..."), '',
              _("Return the selected sale, returning stock and the client's "
                "payments")),
-            ("Details", gtk.STOCK_INFO, _("Details"), '',
+            ("Details", gtk.STOCK_INFO, _("Details..."), '',
              _("Show details of the selected sale")),
         ]
 
@@ -119,11 +111,16 @@ class TillApp(SearchableAppWindow):
                                            filename="till.xml")
         self.set_help_section(_("Till help"), 'caixa-inicio')
 
+        self.Confirm.set_short_label(_('Confirm'))
+        self.Return.set_short_label(_('Return'))
+        self.Details.set_short_label(_('Details'))
         self.Confirm.props.is_important = True
         self.Return.props.is_important = True
         self.Details.props.is_important = True
 
     def create_ui(self):
+        self.popup = self.uimanager.get_widget('/SaleSelection')
+
         self.current_branch = api.get_current_branch(self.conn)
         # Groups
         self.main_vbox.set_focus_chain([self.app_vbox])
@@ -442,6 +439,9 @@ class TillApp(SearchableAppWindow):
 
     def on_results__has_rows(self, results, has_rows):
         self._update_total()
+
+    def on_results__right_click(self, results, result, event):
+        self.popup.popup(None, None, None, event.button, event.time)
 
     def on_Details__activate(self, action):
         self._run_details_dialog()

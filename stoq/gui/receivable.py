@@ -82,40 +82,29 @@ class ReceivableApp(SearchableAppWindow):
 
     def create_actions(self):
         actions = [
-            ('menubar', None, ''),
-
-            # Payable
+            ('PaymentMenu', None, _('Payment')),
             ('AddReceiving', gtk.STOCK_ADD, _('Account receivable...'),
              '<Control>p'),
             ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...')),
             ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
             ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...')),
-            ('PrintBill', gtk.STOCK_PRINT, _('Print bill')),
+            ('PrintBill', gtk.STOCK_PRINT, _('Print bill...')),
             ('Comments', None, _('Comments...')),
-
-            ('Renegotiate', None, _('Renegotiate payments...')),
-            ('PrintReceipt', None, _('Print _receipt'), '<Control>r'),
+            ('Renegotiate', None, _('Renegotiate...')),
+            ('PrintReceipt', None, _('Print _receipt...'), '<Control>r'),
             ('PaymentFlowHistory', None,
              _('Payment _flow history...'), '<Control>f'),
-
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
-
-            # Search
             ('BillCheckSearch', None, _('Bills and checks...'), '',
              _('Search for bills and checks')),
             ('CardPaymentSearch', None, _('Card payments...'), '',
              _('Search for card payments')),
-
-            # Payment
-            ('PaymentMenu', None, _('Payment')),
-
             ('PrintToolMenu', _('Print')),
             ('PrintList', gtk.STOCK_PRINT, _('Payment List'), '',
              _('Print a report for this payment listing'), ),
-
-            ('Receive', gtk.STOCK_APPLY, _('Receive'), '',
+            ('Receive', gtk.STOCK_APPLY, _('Receive...'), '',
              _('Receive the selected payments')),
-            ('Details', gtk.STOCK_INFO, _('Details'), '',
+            ('Details', gtk.STOCK_INFO, _('Details...'), '',
              _('Show details for the selected payment'), )
         ]
         self.receivable_ui = self.add_ui_actions(None, actions,
@@ -126,6 +115,8 @@ class ReceivableApp(SearchableAppWindow):
                             ("Print", _("Print"), None,
                             gtk.STOCK_PRINT)])
 
+        self.Receive.set_short_label(_('Receive'))
+        self.Details.set_short_label(_('Details'))
         self.Receive.props.is_important = True
         self.popup = self.uimanager.get_widget('/ReceivableSelection')
 
