@@ -73,7 +73,6 @@ class Shell(object):
                 return
         except LoginError, e:
             error(e)
-        self.login()
         self._check_param_main_branch()
         self._check_param_online_services()
         self._maybe_show_welcome_dialog()
