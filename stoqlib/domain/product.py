@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -60,22 +60,24 @@ class ProductSupplierInfo(Domain):
 
     Each product can has more than one supplier.
 
-    B{Important attributes}:
-        - I{is_main_supplier}: defines if this object stores information
-                               for the main supplier.
-        - I{base_cost}: the cost which helps the purchaser to define the
-                        main cost of a certain product. Each product can
-                        have multiple suppliers and for each supplier a
-                        base_cost is available. The purchaser in this case
-                        must decide how to define the main cost based in
-                        the base cost avarage of all suppliers.
-        - I(icms): a Brazil-specific attribute that means
-                   'Imposto sobre circulacao de mercadorias e prestacao '
-                   'de servicos'
-        - I{lead_time}: the number of days needed to deliver the product to
-                        purchaser.
-        - I{minimum_purchase}: the minimum amount that we can buy from this
-                               supplier.
+    @ivar base_cost: the cost which helps the purchaser to define the
+      main cost of a certain product. Each product can
+      have multiple suppliers and for each supplier a
+      base_cost is available. The purchaser in this case
+      must decide how to define the main cost based in
+      the base cost avarage of all suppliers.
+    @ivar notes:
+    @ivar is_main_supplier: defines if this object stores information
+        for the main supplier.
+    @ivar icms: a Brazil-specific attribute that means
+       'Imposto sobre circulacao de mercadorias e prestacao '
+       'de servicos'
+    @ivar lead_time}: the number of days needed to deliver the product to
+       purchaser.
+    @ivar minimum_purchase: the minimum amount that we can buy from this
+       supplier.
+    @ivar supplier: the supplier of this relation
+    @ivar product: the product of this relation
     """
 
     base_cost = PriceCol(default=0)
@@ -126,11 +128,38 @@ class ProductSupplierInfo(Domain):
 
 
 class Product(Domain):
-    """Class responsible to store basic products informations."""
+    """Class responsible to store basic products informations.
 
+    @ivar sellable: sellable of this product
+    @ivar suppliers: list of suppliers that sells this product
+    @ivar image: a thumbnail of this product
+    @ivar full_image: an image of this product
+    @ivar consignment:
+    @ivar is_composed:
+    @ivar production_time:
+    @ivar quality_tests:
+    @ivar location: physical location of this product, like a drawer
+      or shelf number
+    @ivar manufacturer: name of the manufacturer for this product
+    @ivar part_number: a number representing this part
+    @ivar width: physical width of this product, unit not enforced
+    @ivar height: physical height of this product, unit not enforced
+    @ivar depth: depth of this product, unit not enforced
+    @ivar ncm: NFE: nomenclature comon do mercuosol
+    @ivar ex_tipi: NFE: see ncm
+    @ivar genero: NFE: see ncm
+    @ivar icms_template: ICMS tax template, brazil specific
+    @ivar ipi_template: IPI tax template, brazil specific
+    """
+
+    sellable = ForeignKey('Sellable')
     suppliers = MultipleJoin('ProductSupplierInfo')
     image = BLOBCol(default='')
     full_image = BLOBCol(default='')
+    consignment = BoolCol(default=False)
+
+    # Production
+    is_composed = BoolCol(default=False)
     location = UnicodeCol(default='')
     manufacturer = UnicodeCol(default='')
     part_number = UnicodeCol(default='')
@@ -138,24 +167,17 @@ class Product(Domain):
     height = DecimalCol(default=0)
     depth = DecimalCol(default=0)
     weight = DecimalCol(default=0)
-    consignment = BoolCol(default=False)
-    sellable = ForeignKey('Sellable')
-    suppliers = MultipleJoin('ProductSupplierInfo')
-
-    # Nomenclatura Comum do Mercosul related details
-    ncm = UnicodeCol(default=None)
-    ex_tipi = UnicodeCol(default=None)
-    genero = UnicodeCol(default=None)
+    quality_tests = MultipleJoin('ProductQualityTest')   # Used for composed products only
+    production_time = IntCol(default=1)
 
     # Tax details
     icms_template = ForeignKey('ProductIcmsTemplate', default=None)
     ipi_template = ForeignKey('ProductIpiTemplate', default=None)
 
-    # Used for composed products only
-    quality_tests = MultipleJoin('ProductQualityTest')
-
-    is_composed = BoolCol(default=False)
-    production_time = IntCol(default=1)
+    # Nomenclatura Comum do Mercosul related details
+    ncm = UnicodeCol(default=None)
+    ex_tipi = UnicodeCol(default=None)
+    genero = UnicodeCol(default=None)
 
     def facet_IStorable_add(self, **kwargs):
         return ProductAdaptToStorable(self, **kwargs)
@@ -477,7 +499,15 @@ class ProductHistory(Domain):
 
 class ProductStockItem(Domain):
     """Class that makes a reference to the product stock of a
-    certain branch company."""
+    certain branch company.
+
+    @ivar stock_cost: the average stock price, will be updated as
+      new stock items are received.
+    @ivar quantity: number of storables in the stock item
+    @ivar logic_quantity: ???
+    @ivar branch: the branch this stock item belongs to
+    @ivar storable: the storable the stock item refers to
+    """
 
     stock_cost = PriceCol(default=0)
     quantity = QuantityCol(default=0)
