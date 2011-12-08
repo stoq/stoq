@@ -140,7 +140,6 @@ class PosApp(AppWindow):
             ("ProductSearch", None, _("Products..."), '<Control><Alt>p'),
             ("ServiceSearch", None, _("Services..."), '<Contro><Alt>s'),
             ("DeliverySearch", None, _("Deliveries..."), '<Control><Alt>e'),
-            ("TillMenu", None, _("_Till")),
             ("TillOpen", None, _("Open Till..."), '<Control>F6'),
             ("TillClose", None, _("Close Till..."), '<Control>F7'),
         ]
@@ -273,9 +272,8 @@ class PosApp(AppWindow):
             pop_fullscreen(window)
             window.unfullscreen()
 
-        print self.TillMenu
-        for proxy in self.TillMenu.get_proxies():
-            proxy.props.visible = not self.param.POS_SEPARATE_CASHIER
+        for widget in (self.TillOpen, self.TillClose):
+            widget.set_visible(not self.param.POS_SEPARATE_CASHIER)
 
         if self.param.CONFIRM_SALES_ON_TILL:
             confirm_label = _("_Close")
