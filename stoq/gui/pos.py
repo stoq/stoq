@@ -129,15 +129,10 @@ class PosApp(AppWindow):
 
     def create_actions(self):
         actions = [
-            ('menubar', None, ''),
-
-            # Sales
-            ("SalesMenu", None, _("Sal_es")),
-            ('CancelOrder', None, _('Cancel Order'), '<Control><Alt>o'),
-            ('NewDelivery', None, _('New Delivery...'), '<Control>F5'),
-            ('ConfirmOrder', None, _('Confirm Order...'), '<Control>F10'),
-
-            # Search
+            ("OrderMenu", None, _("Order")),
+            ('ConfirmOrder', None, _('Confirm...'), '<Control>F10'),
+            ('CancelOrder', None, _('Cancel...'), '<Control><Alt>o'),
+            ('NewDelivery', None, _('Create delivery...'), '<Control>F5'),
             ("Sales", None, _("Sales..."), '<Control><Alt>a'),
             ("SoldItemsByBranchSearch", None, _("Sold Items by Branch..."),
                 '<Contrl><Alt>a'),
@@ -145,12 +140,9 @@ class PosApp(AppWindow):
             ("ProductSearch", None, _("Products..."), '<Control><Alt>p'),
             ("ServiceSearch", None, _("Services..."), '<Contro><Alt>s'),
             ("DeliverySearch", None, _("Deliveries..."), '<Control><Alt>e'),
-
-            # Till
             ("TillMenu", None, _("_Till")),
             ("TillOpen", None, _("Open Till..."), '<Control>F6'),
             ("TillClose", None, _("Close Till..."), '<Control>F7'),
-
         ]
         self.pos_ui = self.add_ui_actions('', actions,
                                           filename='pos.xml')
@@ -281,6 +273,7 @@ class PosApp(AppWindow):
             pop_fullscreen(window)
             window.unfullscreen()
 
+        print self.TillMenu
         for proxy in self.TillMenu.get_proxies():
             proxy.props.visible = not self.param.POS_SEPARATE_CASHIER
 

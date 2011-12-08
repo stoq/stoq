@@ -884,8 +884,12 @@ class AppWindow(GladeDelegate):
         if not tooltip:
             return
         if isinstance(widget, gtk.MenuItem):
-            widget.disconnect_by_func(self._on_menu_item__select)
-            widget.disconnect_by_func(self._on_menu_item__deselect)
+            try:
+                widget.disconnect_by_func(self._on_menu_item__select)
+                widget.disconnect_by_func(self._on_menu_item__deselect)
+            except TypeError:
+                # Maybe it was already disconnected
+                pass
         elif isinstance(widget, gtk.ToolItem):
             try:
                 widget.child.disconnect_by_func(

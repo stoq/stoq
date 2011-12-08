@@ -64,21 +64,18 @@ class InventoryApp(SearchableAppWindow):
 
     def create_actions(self):
         actions = [
-            ('menubar', None, ''),
-            # Inventory
-            ('NewInventory', None, _('Open I_nventry'), '<Control>i',
+            ('InventoryMenu', None, _('Inventory')),
+            ('NewInventory', None, _('Inventry...'), '',
              _('Create a new inventory for product counting')),
-            ('CountingAction', gtk.STOCK_INDEX, _('_Count inventory...'),
-             '<Control>c',
+            ('CountingAction', gtk.STOCK_INDEX, _('_Count...'), '<Control>c',
              _('Register the actual stock of products in the selected '
                'inventory')),
-            ('AdjustAction', gtk.STOCK_CONVERT, _('_Adjust inventory...'),
-             '<Control>a',
+            ('AdjustAction', gtk.STOCK_CONVERT, _('_Adjust...'), '<Control>a',
              _('Adjust the stock accordingly to the counting in the selected '
                'inventory')),
-            ('Cancel', gtk.STOCK_CANCEL, _('Cancel inventory'), '',
+            ('Cancel', gtk.STOCK_CANCEL, _('Cancel...'), '',
              _('Cancel the selected inventory')),
-            ('Print', gtk.STOCK_PRINT, _('Print inventory'), '',
+            ('Print', gtk.STOCK_PRINT, _('Print product listing...'), '',
              _('Print the product listing for the selected inventory '
                'to be used for counting')),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
@@ -96,6 +93,8 @@ class InventoryApp(SearchableAppWindow):
         self.Cancel.props.is_important = True
 
     def create_ui(self):
+        self.popup = self.uimanager.get_widget('/InventorySelection')
+
         self.search.search.search_button.hide()
         self.app.launcher.add_new_items([self.NewInventory])
 
@@ -269,6 +268,9 @@ class InventoryApp(SearchableAppWindow):
 
     def on_results__selection_changed(self, results, product):
         self._update_widgets()
+
+    def on_results__right_click(self, results, result, event):
+        self.popup.popup(None, None, None, event.button, event.time)
 
     def on_Cancel__activate(self, widget):
         self._cancel_inventory()

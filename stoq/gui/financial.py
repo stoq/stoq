@@ -345,37 +345,34 @@ class FinancialApp(AppWindow):
 
     def create_actions(self):
         actions = [
-            ('menubar', None, ''),
-
-            # Financial
+            ('TransactionMenu', None, _('Transaction')),
+            ('AccountMenu', None, _('Account')),
             ('Print', gtk.STOCK_PRINT, _("Print..."),
              None, _('Print a transaction report')),
             ('Import', gtk.STOCK_ADD, _('Import...'),
              '<control>i', _('Import a GnuCash or OFX file')),
             ('ExportCSV', None, _('Export CSV...'), '<control>F10'),
-
-            # Toolbar
-            ('toolbar', None, ''),
-            ('EditAccount', gtk.STOCK_EDIT, _('Edit account'),
-             '<control>e', _('Change the currently selected account')),
-            ('DeleteAccount', gtk.STOCK_DELETE, _('Delete account'), '',
+            ('DeleteAccount', gtk.STOCK_DELETE, _('Delete...'), '',
              _('Delete the selected account')),
-            ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete transaction'), '',
+            ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete...'), '',
              _('Delete the selected transaction')),
-
-            # Toolbar
             ("NewAccount", gtk.STOCK_NEW, _("Account..."), '<control>a',
              _("Add a new account")),
             ("NewTransaction", gtk.STOCK_NEW, _("Transaction..."), '<control>t',
              _("Add a new transaction")),
-            ("Edit", gtk.STOCK_EDIT, _("Edit"), ''),
-
+            ("Edit", gtk.STOCK_EDIT, _("Edit..."), ''),
             ]
         self.financial_ui = self.add_ui_actions('', actions,
                                                 filename='financial.xml')
         self.set_help_section(_("Financial help"), 'financial-inicio')
+        self.Edit.set_short_label(_('Edit'))
+        self.DeleteAccount.set_short_label(_('Delete'))
+        self.DeleteTransaction.set_short_label(_('Delete'))
 
     def create_ui(self):
+        self.trans_popup = self.uimanager.get_widget('/TransactionSelection')
+        self.acc_popup = self.uimanager.get_widget('/AccountSelection')
+
         self.app.launcher.add_new_items([self.NewAccount,
                                          self.NewTransaction])
 
@@ -400,8 +397,13 @@ class FinancialApp(AppWindow):
     #
 
     def _update_actions(self):
+        is_accounts_tab = self._is_accounts_tab()
+        self.AccountMenu.set_visible(is_accounts_tab)
+        self.TransactionMenu.set_visible(not is_accounts_tab)
+        self.DeleteAccount.set_visible(is_accounts_tab)
+        self.DeleteTransaction.set_visible(not is_accounts_tab)
+
         self.NewAccount.set_sensitive(self._can_add_account())
-        self.EditAccount.set_sensitive(self._can_edit_account())
         self.DeleteAccount.set_sensitive(self._can_delete_account())
         self.NewTransaction.set_sensitive(self._can_add_transaction())
         self.DeleteTransaction.set_sensitive(self._can_delete_transaction())
@@ -532,6 +534,8 @@ class FinancialApp(AppWindow):
                                    self, self.get_toplevel())
             page.search.results.connect('selection-changed',
                                         self._on_transaction__selection_changed)
+            page.search.results.connect('right-click',
+                                        self._on_transaction__right_click)
             hbox = self._create_tab_label(account_view.description, pixbuf, page)
             page_id = self.notebook.append_page(page.search, hbox)
             page.show()
@@ -734,6 +738,12 @@ class FinancialApp(AppWindow):
 
     def on_accounts__selection_changed(self, ktree, account_view):
         self._update_actions()
+
+    def _on_transaction__right_click(self, results, result, event):
+        self.trans_popup.popup(None, None, None, event.button, event.time)
+
+    def on_accounts__right_click(self, results, result, event):
+        self.acc_popup.popup(None, None, None, event.button, event.time)
 
     def on_Edit__activate(self, button):
         account_view = self.accounts.get_selected()

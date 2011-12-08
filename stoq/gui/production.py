@@ -63,29 +63,21 @@ class ProductionApp(SearchableAppWindow):
 
     def create_actions(self):
         actions = [
-            ('menubar', None, ''),
-
-            # Production
             ('NewProduction', gtk.STOCK_NEW,
              _('Production order...'), '<Control>o',
              _('Create a new production')),
-            ('StartProduction', gtk.STOCK_CONVERT, _('Start production...'),
-             '<Control>t',
+            ('StartProduction', gtk.STOCK_CONVERT, _('Start...'), '<Control>t',
              _('Start the selected production')),
-            ('EditProduction', gtk.STOCK_EDIT, _('Edit production...'), '',
-             _('Edit the selected production')
-            ),
-            ('ProductionDetails', gtk.STOCK_INFO, _('Production details...'),
-            '',
+            ('EditProduction', gtk.STOCK_EDIT, _('Edit...'), '',
+             _('Edit the selected production')),
+            ('ProductionDetails', gtk.STOCK_INFO, _('Details...'), '',
             _('Show production details and register produced items')),
             ('ProductionPurchaseQuote', 'stoq-purchase-app',
              _('Purchase quote...'), '<Control>p'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-
             ("Print", gtk.STOCK_PRINT, _("Print"), '',
              _('Print a report of this production listing')),
-
-            # Search
+            ('ProductionMenu', None, _('Production')),
             ("SearchProduct", None, _("Production products..."), '<Control>d',
              _("Search for production products")),
             ("SearchService", None, _("Services..."), '<Control>s',
@@ -95,7 +87,6 @@ class ProductionApp(SearchableAppWindow):
              _("Search for production items")),
             ("SearchProductionHistory", None, _("Production history..."),
              '<Control>h', _("Search for production history")),
-
         ]
         self.production_ui = self.add_ui_actions("", actions,
                                                  filename="production.xml")
@@ -105,9 +96,12 @@ class ProductionApp(SearchableAppWindow):
         self.ProductionPurchaseQuote.set_short_label(_("Purchase"))
         self.SearchProductionItem.set_short_label(_("Search items"))
         self.StartProduction.set_short_label(_('Start'))
+        self.EditProduction.set_short_label(_('Edit'))
+        self.ProductionDetails.set_short_label(_('Details'))
         self.StartProduction.props.is_important = True
 
     def create_ui(self):
+        self.popup = self.uimanager.get_widget('/ProductionSelection')
         self.app.launcher.add_new_items([self.NewProduction,
                                          self.ProductionPurchaseQuote])
         self.app.launcher.add_search_items([
@@ -226,6 +220,9 @@ class ProductionApp(SearchableAppWindow):
 
     def on_results__row_activated(self, widget, order):
         self._production_details()
+
+    def on_results__right_click(self, results, result, event):
+        self.popup.popup(None, None, None, event.button, event.time)
 
     # Production
 

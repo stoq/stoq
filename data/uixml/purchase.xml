@@ -34,6 +34,8 @@
         </placeholder>
       </menu>
       <placeholder name="FileMenuPH">
+        <menuitem action="CloseInConsignment"/>
+        <separator/>
         <menuitem action="Print"/>
         <menuitem action="ExportCSV"/>
       </placeholder>
@@ -41,9 +43,6 @@
     <menu action="EditMenu">
       <placeholder name="EditMenuPH">
         <menuitem action="StockCost"/>
-        <separator/>
-        <menuitem action="CloseInConsignment"/>
-        <menuitem action="SearchInConsignmentItems"/>
       </placeholder>
     </menu>
     <menu action="SearchMenu">
@@ -61,6 +60,7 @@
         <menuitem action="SearchPurchasedItems"/>
         <menuitem action="ProductsSoldSearch"/>
         <menuitem action="ProductsPriceSearch"/>
+        <menuitem action="SearchInConsignmentItems"/>
       </placeholder>
     </menu>
     <placeholder name="AppMenubarPH">

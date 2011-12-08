@@ -85,26 +85,12 @@ class SalesApp(SearchableAppWindow):
 
     def create_actions(self):
         actions = [
-            ('menubar', None, ''),
-
-            # Sales
-            ("SalesMenu", None, _("_Sales")),
             ("SaleQuote", None, _("Sale quote..."), '',
              _('Create a new quote for a sale')),
-            ("SalesCancel", None, _("Cancel quote")),
-            ("SalesPrintInvoice", gtk.STOCK_PRINT,
-             _("_Print invoice...")),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'),
              '<Control>F10'),
-
-            # Loan
-            ("LoanMenu", None, _("_Loan")),
-            ("LoanNew", None, _("New loan...")),
+            ("LoanNew", None, _("Loan...")),
             ("LoanClose", None, _("Close loan...")),
-            ("LoanSearch", None, _("Search loans...")),
-            ("LoanSearchItems", None, _("Search loan items...")),
-
-            # Search
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
              "<Control><Alt>a", _("Search for sold items by branch")),
             ("SearchProduct", 'stoq-products', _("Products..."),
@@ -117,15 +103,19 @@ class SalesApp(SearchableAppWindow):
              "<Control><Alt>c", _("Search for clients")),
             ("SearchCommission", None, _("Commissions..."),
              "<Control><Alt>o", _("Search for salespersons commissions")),
-
+            ("LoanSearch", None, _("Loans...")),
+            ("LoanSearchItems", None, _("Loan items...")),
+            ("SaleMenu", None, _("Sale")),
+            ("SalesCancel", None, _("Cancel quote...")),
+            ("SalesPrintInvoice", gtk.STOCK_PRINT, _("_Print invoice...")),
             ("Print", gtk.STOCK_PRINT, _("Print"), '',
              _("Print a report for this sale listing")),
-            ("Return", gtk.STOCK_CANCEL, _("Return sale"), '',
+            ("Return", gtk.STOCK_CANCEL, _("Return..."), '',
              _("Return the selected sale, canceling it's payments")),
-            ("Edit", gtk.STOCK_EDIT, _("Edit"), '',
+            ("Edit", gtk.STOCK_EDIT, _("Edit..."), '',
              _("Edit the selected sale, allowing you to change the details "
                "of it")),
-            ("Details", gtk.STOCK_INFO, _("Details"), '',
+            ("Details", gtk.STOCK_INFO, _("Details..."), '',
              _("Show details of the selected sale"))
         ]
 
@@ -137,10 +127,15 @@ class SalesApp(SearchableAppWindow):
         self.SearchProduct.set_short_label(_("Products"))
         self.SearchService.set_short_label(_("Services"))
         self.SearchDelivery.set_short_label(_("Deliveries"))
+        self.SalesCancel.set_short_label(_("Cancel"))
+        self.Edit.set_short_label(_("Edit"))
+        self.Return.set_short_label(_("Return"))
+        self.Details.set_short_label(_("Details"))
 
         self.set_help_section(_("Sales help"), 'vendas-inicio')
 
     def create_ui(self):
+        self.popup = self.uimanager.get_widget('/SaleSelection')
 
         self._columns = self.get_columns()
         self._setup_columns()
@@ -356,6 +351,9 @@ class SalesApp(SearchableAppWindow):
     def on_results__has_rows(self, results, has_rows):
         self.Print.set_sensitive(has_rows)
         self._update_toolbar()
+
+    def on_results__right_click(self, results, result, event):
+        self.popup.popup(None, None, None, event.button, event.time)
 
     # Sales
 

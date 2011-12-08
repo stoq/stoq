@@ -31,18 +31,26 @@
         </placeholder>
       </menu>
       <placeholder name="FileMenuPH">
-        <menuitem action="Print"/>
         <menuitem action="ExportCSV"/>
       </placeholder>
     </menu>
-    <menu action="EditMenu">
-      <placeholder name="EditMenuPH">
+    <placeholder name="AppMenubarPH">
+      <menu action="InventoryMenu">
         <menuitem action="CountingAction"/>
         <menuitem action="AdjustAction"/>
         <menuitem action="Cancel"/>
-      </placeholder>
-    </menu>
+        <separator/>
+        <menuitem action="Print"/>
+      </menu>
+    </placeholder>
   </menubar>
+  <popup name="InventorySelection">
+    <menuitem action="CountingAction"/>
+    <menuitem action="AdjustAction"/>
+    <menuitem action="Cancel"/>
+    <separator/>
+    <menuitem action="Print"/>
+  </popup>
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">
       <toolitem action="Print"/>

@@ -80,25 +80,14 @@ class StockApp(SearchableAppWindow):
 
     def create_actions(self):
         actions = [
-            ('menubar', None, ''),
-
-            # Stock
-            ("StockMenu", None, _("_Stock")),
             ("NewReceiving", 'stoq-receiving', _("_Receive order..."),
              '<Control>r'),
             ('NewTransfer', 'gtk-convert', _('Transfer...'), '<Control>t'),
             ('NewStockDecrease', None, _('Decrease stock...')),
             ('StockInitial', 'gtk-go-up', _('Register initial stock...')),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-
-            # Loan
-            ("LoanMenu", None, _("_Loan")),
-            ("LoanNew", None, _("New loan...")),
+            ("LoanNew", None, _("Loan...")),
             ("LoanClose", None, _("Close loan...")),
-            ("LoanSearch", None, _("Search loans...")),
-            ("LoanSearchItems", None, _("Search loan items...")),
-
-            # Search
             ("SearchPurchaseReceiving", None, _("Received purchases..."),
              "<Control><Alt>u", _("Search for received purchase orders")),
             ("SearchProductHistory", None, _("Product history..."),
@@ -113,13 +102,14 @@ class StockApp(SearchableAppWindow):
              _("Search for stock transfers")),
             ("SearchClosedStockItems", None, _("Closed stock Items..."),
              "<Control><Alt>c", _("Search for closed stock items")),
-
-             # Toolbar
+            ("LoanSearch", None, _("Loans...")),
+            ("LoanSearchItems", None, _("Loan items...")),
+            ("ProductMenu", None, _("Product")),
             ("Print", gtk.STOCK_PRINT, _("Print"), '',
             _('Print a report of this products listing')),
-            ("ProductStockHistory", gtk.STOCK_INFO, _("History"), '',
+            ("ProductStockHistory", gtk.STOCK_INFO, _("History..."), '',
             _('Show the stock history of the selected product')),
-            ("EditProduct", gtk.STOCK_EDIT, _("Edit"), '',
+            ("EditProduct", gtk.STOCK_EDIT, _("Edit..."), '',
             _("Edit the selected product, allowing you to change it's "
               "details")),
         ]
@@ -136,13 +126,15 @@ class StockApp(SearchableAppWindow):
 
         self.NewReceiving.set_short_label(_("Receive"))
         self.NewTransfer.set_short_label(_("Transfer"))
+        self.EditProduct.set_short_label(_("Edit"))
+        self.ProductStockHistory.set_short_label(_("History"))
         self.EditProduct.props.is_important = True
         self.ProductStockHistory.props.is_important = True
 
     def create_ui(self):
         self.popup = self.uimanager.get_widget('/StockSelection')
         self.app.launcher.add_new_items([self.NewReceiving, self.NewTransfer,
-                                         self.NewStockDecrease])
+                                         self.NewStockDecrease, self.LoanNew])
         self.app.launcher.add_search_items([
             self.SearchStockItems,
             self.SearchStockDecrease,
