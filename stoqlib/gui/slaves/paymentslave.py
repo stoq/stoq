@@ -1215,6 +1215,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         try:
             entry.read()
         except ValidationError, e:
+            self.add_button.set_sensitive(False)
             return e
         self._update_missing_or_change_value()
 
