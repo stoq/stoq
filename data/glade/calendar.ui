@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy toplevel-contextual -->
+  <object class="GtkWindow" id="calendar">
+    <property name="width_request">800</property>
+    <property name="height_request">570</property>
+    <property name="title" translatable="yes">calendar</property>
+    <property name="window_position">center</property>
+    <property name="destroy_with_parent">True</property>
+    <child>
+      <object class="GtkVBox" id="main_vbox">
+        <property name="visible">True</property>
+      </object>
+    </child>
+  </object>
+</interface>
