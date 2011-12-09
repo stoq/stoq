@@ -23,6 +23,7 @@
 ##
 
 import datetime
+from decimal import Decimal
 
 from stoqlib.database.orm import (IntCol, UnicodeCol, QuantityCol, DateTimeCol,
                                   PriceCol, ForeignKey, BoolCol, PercentCol)
@@ -206,11 +207,11 @@ class SaleItemIcms(BaseICMS):
         Normal (Não simples)
         """
         if self.cst == 0:
-            self.p_red_bc = 0
+            self.p_red_bc = Decimal(0)
             self._calc_normal(sale_item)
 
         elif self.cst == 10:
-            self.p_red_bc = 0
+            self.p_red_bc = Decimal(0)
             self._calc_normal(sale_item)
             self._calc_st(sale_item)
 
