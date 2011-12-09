@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-14 10:18-0200\n"
+"POT-Creation-Date: 2013-02-21 15:29-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,49 +18,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
-msgid "Account code:"
-msgstr ""
-
-#: ../data/glade/AccountEditor.ui.h:2
 msgid "Account name:"
 msgstr ""
 
-#: ../data/glade/AccountEditor.ui.h:3
-msgid "Hold control to remove selection."
+#: ../data/glade/AccountEditor.ui.h:2
+msgid "Account code:"
 msgstr ""
 
-#: ../data/glade/AccountEditor.ui.h:4
+#: ../data/glade/AccountEditor.ui.h:3
 msgid "Parent:"
 msgstr ""
 
-#: ../data/glade/AccountEditor.ui.h:5 ../data/glade/BasePaymentEditor.ui.h:5
-#: ../data/glade/DeviceConstantEditor.ui.h:4
+#: ../data/glade/AccountEditor.ui.h:4 ../data/glade/BasePaymentEditor.ui.h:6
+#: ../data/glade/DeviceConstantEditor.ui.h:1
 msgid "Type:"
 msgstr ""
 
+#: ../data/glade/AccountEditor.ui.h:5
+msgid "Hold control to remove selection."
+msgstr ""
+
 #: ../data/glade/AccountTransactionEditor.ui.h:1
-#: ../data/glade/EmployeeDetailsSlave.ui.h:1
-#: ../data/glade/InstallmentConfirmation.ui.h:1
+#: ../data/glade/EmployeeDetailsSlave.ui.h:11
+#: ../data/glade/InstallmentConfirmation.ui.h:12
 msgid "Account:"
 msgstr ""
 
-#: ../data/glade/AccountTransactionEditor.ui.h:2 ../stoq/gui/financial.py:360
+#: ../data/glade/AccountTransactionEditor.ui.h:2 ../stoq/gui/financial.py:361
 msgid "Add a new account"
 msgstr ""
 
-#: ../data/glade/AccountTransactionEditor.ui.h:3
-#: ../data/glade/SellableEditor.ui.h:5
-msgid "Code:"
-msgstr ""
-
 #. Date
-#: ../data/glade/AccountTransactionEditor.ui.h:4
-#: ../data/glade/BaseCashSlave.ui.h:4 ../data/glade/CallsEditor.ui.h:2
-#: ../data/glade/EmployeeDetailsSlave.ui.h:7
+#: ../data/glade/AccountTransactionEditor.ui.h:3
+#: ../data/glade/BaseCashSlave.ui.h:1 ../data/glade/CallsEditor.ui.h:1
+#: ../data/glade/EmployeeDetailsSlave.ui.h:2
 #: ../data/glade/FiscalBookEntryEditor.ui.h:2
-#: ../data/glade/ProductsAdjustment.ui.h:3
-#: ../data/glade/StartStockDecreaseStep.ui.h:3
-#: ../data/glade/StockDecreaseDetails.ui.h:3 ../stoq/gui/financial.py:132
+#: ../data/glade/ProductsAdjustment.ui.h:5
+#: ../data/glade/StartStockDecreaseStep.ui.h:1
+#: ../data/glade/StockDecreaseDetails.ui.h:1 ../stoq/gui/financial.py:132
 #: ../stoqlib/gui/dialogs/paymentflowhistorydialog.py:80
 #: ../stoqlib/gui/dialogs/tillhistory.py:74
 #: ../stoqlib/gui/search/callsearch.py:88
@@ -74,33 +69,50 @@ msgstr ""
 msgid "Date:"
 msgstr ""
 
-#: ../data/glade/AccountTransactionEditor.ui.h:5
-#: ../data/glade/BasePaymentEditor.ui.h:2
-#: ../data/glade/BaseSellableCategoryDataSlave.ui.h:3
-#: ../data/glade/CallsEditor.ui.h:3 ../data/glade/CfopEditor.ui.h:3
-#: ../data/glade/InvoiceLayoutEditor.ui.h:2
-#: ../data/glade/InvoicePrinterEditor.ui.h:2
+#: ../data/glade/AccountTransactionEditor.ui.h:4
+#: ../data/glade/BasePaymentEditor.ui.h:1
+#: ../data/glade/BaseSellableCategoryDataSlave.ui.h:1
+#: ../data/glade/CallsEditor.ui.h:3 ../data/glade/CfopEditor.ui.h:2
+#: ../data/glade/InvoiceLayoutEditor.ui.h:1
+#: ../data/glade/InvoicePrinterEditor.ui.h:1
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:1
-#: ../data/glade/OpenProductionOrderStep.ui.h:2
-#: ../data/glade/ProductionItemEditor.ui.h:1
-#: ../data/glade/PurchaseItemEditor.ui.h:4
+#: ../data/glade/OpenProductionOrderStep.ui.h:4
+#: ../data/glade/ProductionItemEditor.ui.h:2
+#: ../data/glade/PurchaseItemEditor.ui.h:2
 #: ../data/glade/QualityTestEditor.ui.h:1
-#: ../data/glade/ReceivingItemEditor.ui.h:3
-#: ../data/glade/SaleQuoteItemEditor.ui.h:3
-#: ../data/glade/SellableCategoryDataSlave.ui.h:4
-#: ../data/glade/SellableEditor.ui.h:10
-#: ../data/glade/SellableUnitEditor.ui.h:2
+#: ../data/glade/ReceivingItemEditor.ui.h:2
+#: ../data/glade/SaleQuoteItemEditor.ui.h:2
+#: ../data/glade/SellableCategoryDataSlave.ui.h:1
+#: ../data/glade/SellableEditor.ui.h:4 ../data/glade/SellableUnitEditor.ui.h:1
 msgid "Description:"
 msgstr ""
 
+#: ../data/glade/AccountTransactionEditor.ui.h:5
+#: ../data/glade/SellableEditor.ui.h:1
+msgid "Code:"
+msgstr ""
+
 #: ../data/glade/AccountTransactionEditor.ui.h:6
-#: ../data/glade/DeviceConstantEditor.ui.h:5
-#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:9
+#: ../data/glade/DeviceConstantEditor.ui.h:3
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:3
 #: ../data/glade/SellableTaxConstantEditor.ui.h:2
 msgid "Value:"
 msgstr ""
 
-#: ../data/glade/AdditionListSlave.ui.h:1 ../data/glade/SaleReturnSlave.ui.h:6
+#: ../data/glade/AdditionListSlave.ui.h:1
+msgid "New..."
+msgstr ""
+
+#: ../data/glade/AdditionListSlave.ui.h:2
+msgid "_Delete"
+msgstr ""
+
+#: ../data/glade/AdditionListSlave.ui.h:3 ../data/glade/SearchEditor.ui.h:2
+msgid "_Edit..."
+msgstr ""
+
+#: ../data/glade/AdditionListSlave.ui.h:4
+#: ../data/glade/SaleReturnSlave.ui.h:12
 #: ../data/glade/SearchDialogDetailsSlave.ui.h:1 ../stoq/gui/payable.py:116
 #: ../stoq/gui/production.py:100 ../stoq/gui/purchase.py:142
 #: ../stoq/gui/receivable.py:119 ../stoq/gui/sales.py:133
@@ -110,52 +122,40 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
-#: ../data/glade/AdditionListSlave.ui.h:2
-msgid "New..."
-msgstr ""
-
-#: ../data/glade/AdditionListSlave.ui.h:3
-msgid "_Delete"
-msgstr ""
-
-#: ../data/glade/AdditionListSlave.ui.h:4 ../data/glade/SearchEditor.ui.h:1
-msgid "_Edit..."
-msgstr ""
-
 #: ../data/glade/AddressSlave.ui.h:1
-msgid "City:"
+msgid "Street:"
 msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:2
-msgid "Complement:"
-msgstr ""
-
-#: ../data/glade/AddressSlave.ui.h:3
-#: ../plugins/books/glade/ProductBookSlave.ui.h:3
-msgid "Country:"
-msgstr ""
-
-#: ../data/glade/AddressSlave.ui.h:4
-msgid "District:"
-msgstr ""
-
-#: ../data/glade/AddressSlave.ui.h:5
-#: ../data/glade/BasePaymentDataEditor.ui.h:2
-#: ../data/glade/EmployeeDetailsSlave.ui.h:12
-#: ../data/glade/OpenProductionOrderStep.ui.h:4
+#: ../data/glade/BasePaymentDataEditor.ui.h:4
+#: ../data/glade/EmployeeDetailsSlave.ui.h:6
+#: ../data/glade/OpenProductionOrderStep.ui.h:5
 msgid "Number:"
 msgstr ""
 
-#: ../data/glade/AddressSlave.ui.h:6
-msgid "Postal Code:"
+#: ../data/glade/AddressSlave.ui.h:3
+msgid "Complement:"
 msgstr ""
 
-#: ../data/glade/AddressSlave.ui.h:7
+#: ../data/glade/AddressSlave.ui.h:4
 msgid "State:"
 msgstr ""
 
+#: ../data/glade/AddressSlave.ui.h:5
+msgid "Postal Code:"
+msgstr ""
+
+#: ../data/glade/AddressSlave.ui.h:6
+msgid "District:"
+msgstr ""
+
+#: ../data/glade/AddressSlave.ui.h:7
+msgid "City:"
+msgstr ""
+
 #: ../data/glade/AddressSlave.ui.h:8
-msgid "Street:"
+#: ../plugins/books/glade/ProductBookSlave.ui.h:13
+msgid "Country:"
 msgstr ""
 
 #: ../data/glade/AdminPasswordStep.ui.h:1
@@ -163,7 +163,8 @@ msgid "Enter the password and then click <b>Forward</b> to continue."
 msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:1
-msgid "Bank Account:"
+#: ../data/glade/EmployeeDetailsSlave.ui.h:9
+msgid "Bank ID:"
 msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:2
@@ -171,59 +172,58 @@ msgid "Bank Branch:"
 msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:3
-#: ../data/glade/EmployeeDetailsSlave.ui.h:3
-msgid "Bank ID:"
+msgid "Bank Account:"
 msgstr ""
 
-#: ../data/glade/BaseCashSlave.ui.h:1 ../data/glade/TillOpening.ui.h:1
+#: ../data/glade/BaseCashSlave.ui.h:2 ../data/glade/TillOpening.ui.h:2
 msgid "Balance:"
 msgstr ""
 
 #. Do not translate $CURRENCY
-#: ../data/glade/BaseCashSlave.ui.h:3
+#: ../data/glade/BaseCashSlave.ui.h:4
 msgid "Cash Amount ($CURRENCY):"
 msgstr ""
 
 #: ../data/glade/BasePaymentDataEditor.ui.h:1
-#: ../data/glade/BasePaymentEditor.ui.h:3
-#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:3
+#: ../data/glade/BasePaymentEditor.ui.h:4
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:2
 msgid "Due date:"
 msgstr ""
 
 #. Do not translate $CURRENCY
-#: ../data/glade/BasePaymentDataEditor.ui.h:4
-#: ../data/glade/BasePaymentEditor.ui.h:7
+#: ../data/glade/BasePaymentDataEditor.ui.h:3
+#: ../data/glade/BasePaymentEditor.ui.h:3
 msgid "Value ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/BasePaymentEditor.ui.h:1
-#: ../data/glade/ClientStatusSlave.ui.h:2 ../data/glade/SellableEditor.ui.h:4
+#: ../data/glade/BasePaymentEditor.ui.h:5
+#: ../data/glade/ClientStatusSlave.ui.h:2 ../data/glade/SellableEditor.ui.h:13
 msgid "Category:"
 msgstr ""
 
-#: ../data/glade/BasePaymentEditor.ui.h:4
+#: ../data/glade/BasePaymentEditor.ui.h:7
 #: ../stoqlib/domain/payment/operation.py:50
 msgid "Money"
 msgstr ""
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:1
-#: ../data/glade/CreditProviderMethodSlave.ui.h:1
-#: ../data/glade/InvoiceLayoutEditor.ui.h:1
-#: ../data/glade/PaymentMethodEditor.ui.h:3
-#: ../data/glade/ProductInformationSlave.ui.h:1
-#: ../data/glade/PurchaseItemEditor.ui.h:1
-#: ../data/glade/PurchasePaymentSlave.ui.h:1 ../data/glade/TaxIPISlave.ui.h:1
-#: ../plugins/books/glade/ProductBookSlave.ui.h:1
-msgid "0"
+#: ../stoqlib/reporting/purchase.py:363
+msgid "Installments:"
 msgstr ""
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:2
-msgid "Default Bank:"
+#: ../data/glade/CreditProviderMethodSlave.ui.h:4
+#: ../data/glade/InvoiceLayoutEditor.ui.h:3
+#: ../data/glade/PaymentMethodEditor.ui.h:5
+#: ../data/glade/ProductInformationSlave.ui.h:9
+#: ../data/glade/PurchaseItemEditor.ui.h:6
+#: ../data/glade/PurchasePaymentSlave.ui.h:4 ../data/glade/TaxIPISlave.ui.h:1
+#: ../plugins/books/glade/ProductBookSlave.ui.h:8
+msgid "0"
 msgstr ""
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:3
-#: ../stoqlib/reporting/purchase.py:363
-msgid "Installments:"
+msgid "Default Bank:"
 msgstr ""
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:4
@@ -235,37 +235,49 @@ msgid "With intervals of:"
 msgstr ""
 
 #: ../data/glade/BaseSellableCategoryDataSlave.ui.h:2
-#: ../data/glade/BranchDialog.ui.h:2 ../data/glade/CommissionDataSlave.ui.h:3
-#: ../data/glade/CredProviderDetailsSlave.ui.h:2
-#: ../data/glade/PaymentMethodEditor.ui.h:2
-#: ../data/glade/ProductSupplierEditor.ui.h:2
-#: ../data/glade/SaleDiscountSlave.ui.h:2
-#: ../data/glade/SellableCategoryDataSlave.ui.h:2
-#: ../data/glade/SellableEditor.ui.h:2
-#: ../data/glade/SellablePriceDialog.ui.h:2
-#: ../data/glade/SellablePriceEditor.ui.h:2
-#: ../data/glade/TransporterDataSlave.ui.h:2
-#: ../data/glade/TributarySituationSlave.ui.h:2
-#, no-c-format
-msgid "%"
-msgstr ""
-
-#: ../data/glade/BaseSellableCategoryDataSlave.ui.h:4
-#: ../data/glade/SellableCategoryDataSlave.ui.h:5
+#: ../data/glade/SellableCategoryDataSlave.ui.h:3
 msgid "Suggested Markup:"
 msgstr ""
 
-#: ../data/glade/BaseSellableCategoryDataSlave.ui.h:5
+#: ../data/glade/BaseSellableCategoryDataSlave.ui.h:3
 #: ../data/glade/ProductTaxTemplateEditor.ui.h:2
 msgid "Tax:"
 msgstr ""
 
+#: ../data/glade/BaseSellableCategoryDataSlave.ui.h:5
+#: ../data/glade/BranchDialog.ui.h:6 ../data/glade/CommissionDataSlave.ui.h:4
+#: ../data/glade/CredProviderDetailsSlave.ui.h:8
+#: ../data/glade/PaymentMethodEditor.ui.h:7
+#: ../data/glade/ProductSupplierEditor.ui.h:10
+#: ../data/glade/SaleDiscountSlave.ui.h:3
+#: ../data/glade/SellableCategoryDataSlave.ui.h:5
+#: ../data/glade/SellableEditor.ui.h:17
+#: ../data/glade/SellablePriceDialog.ui.h:3
+#: ../data/glade/SellablePriceEditor.ui.h:10
+#: ../data/glade/TransporterDataSlave.ui.h:7
+#: ../data/glade/TributarySituationSlave.ui.h:3
+#, no-c-format
+msgid "%"
+msgstr ""
+
 #: ../data/glade/BranchDetailsSlave.ui.h:1
-#: ../data/glade/DeviceSettingsEditor.ui.h:1
+msgid "Manager:"
+msgstr ""
+
+#: ../data/glade/BranchDetailsSlave.ui.h:2
+msgid "Tax Polity:"
+msgstr ""
+
+#: ../data/glade/BranchDetailsSlave.ui.h:3
+msgid "Branch status:"
+msgstr ""
+
+#: ../data/glade/BranchDetailsSlave.ui.h:4
+#: ../data/glade/DeviceSettingsEditor.ui.h:6
 #: ../data/glade/TransporterDataSlave.ui.h:3
-#: ../data/glade/UserStatusSlave.ui.h:1 ../plugins/books/booksdomain.py:48
+#: ../data/glade/UserStatusSlave.ui.h:2 ../plugins/books/booksdomain.py:48
 #: ../plugins/ecf/ecfdomain.py:205 ../plugins/ecf/ecfprinterdialog.py:309
-#: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:2
+#: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:9
 #: ../stoqlib/domain/devices.py:135 ../stoqlib/domain/payment/method.py:155
 #: ../stoqlib/domain/person.py:388 ../stoqlib/domain/person.py:656
 #: ../stoqlib/domain/person.py:747 ../stoqlib/domain/person.py:808
@@ -281,13 +293,9 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: ../data/glade/BranchDetailsSlave.ui.h:2
-msgid "Branch status:"
-msgstr ""
-
-#: ../data/glade/BranchDetailsSlave.ui.h:3
-#: ../data/glade/TransporterDataSlave.ui.h:5
-#: ../data/glade/UserStatusSlave.ui.h:2 ../plugins/books/booksdomain.py:49
+#: ../data/glade/BranchDetailsSlave.ui.h:5
+#: ../data/glade/TransporterDataSlave.ui.h:4
+#: ../data/glade/UserStatusSlave.ui.h:3 ../plugins/books/booksdomain.py:49
 #: ../plugins/ecf/ecfdomain.py:206 ../stoqlib/domain/devices.py:136
 #: ../stoqlib/domain/payment/method.py:156 ../stoqlib/domain/person.py:389
 #: ../stoqlib/domain/person.py:547 ../stoqlib/domain/person.py:657
@@ -299,70 +307,62 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: ../data/glade/BranchDetailsSlave.ui.h:4
-msgid "Manager:"
+#: ../data/glade/BranchDialog.ui.h:1
+msgid "Company Details"
 msgstr ""
 
-#: ../data/glade/BranchDetailsSlave.ui.h:5
-msgid "Tax Polity:"
+#: ../data/glade/BranchDialog.ui.h:2
+msgid "Company Name:"
 msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:3
-#: ../data/glade/CompanyDocumentsSlave.ui.h:1
+#: ../data/glade/CompanyDocumentsSlave.ui.h:2
 #: ../data/glade/ProductsAdjustment.ui.h:2
 #: ../plugins/ecf/paulistainvoicedialog.py:70
 msgid "CNPJ:"
 msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:4
-msgid "Company Details"
-msgstr ""
-
-#: ../data/glade/BranchDialog.ui.h:5
-msgid "Company Name:"
-msgstr ""
-
-#: ../data/glade/BranchDialog.ui.h:6 ../data/glade/PersonEditorTemplate.ui.h:6
-msgid "Fax:"
-msgstr ""
-
-#: ../data/glade/BranchDialog.ui.h:7
-#: ../data/glade/ProductSupplierEditor.ui.h:8
+#: ../data/glade/ProductSupplierEditor.ui.h:7
 msgid "ICMS:"
 msgstr ""
 
-#: ../data/glade/BranchDialog.ui.h:8
-msgid "ISS:"
+#: ../data/glade/BranchDialog.ui.h:7
+msgid "Substitution ICMS:"
 msgstr ""
 
-#: ../data/glade/BranchDialog.ui.h:9 ../data/glade/ContactEditor.ui.h:2
-#: ../data/glade/PersonEditorTemplate.ui.h:13
-msgid "Phone Number:"
+#: ../data/glade/BranchDialog.ui.h:8 ../data/glade/PersonEditorTemplate.ui.h:3
+msgid "Fax:"
+msgstr ""
+
+#: ../data/glade/BranchDialog.ui.h:9
+msgid "ISS:"
 msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:10
 #: ../data/glade/CompanyDocumentsSlave.ui.h:4
-#: ../data/glade/ProductsAdjustment.ui.h:5
+#: ../data/glade/ProductsAdjustment.ui.h:4
 msgid "State Registry:"
 msgstr ""
 
-#: ../data/glade/BranchDialog.ui.h:11
-msgid "Substitution ICMS:"
+#: ../data/glade/BranchDialog.ui.h:11 ../data/glade/ContactEditor.ui.h:2
+#: ../data/glade/PersonEditorTemplate.ui.h:2
+msgid "Phone Number:"
 msgstr ""
 
 #: ../data/glade/CSVExporterDialog.ui.h:1
-msgid "Encoding:"
+msgid "Select the encoding to use when save the CSV file:"
 msgstr ""
 
 #: ../data/glade/CSVExporterDialog.ui.h:2
-msgid "Select the encoding to use when save the CSV file:"
+msgid "Encoding:"
 msgstr ""
 
 #: ../data/glade/CSVExporterDialog.ui.h:3
 msgid "Separator:"
 msgstr ""
 
-#: ../data/glade/CallsEditor.ui.h:1
+#: ../data/glade/CallsEditor.ui.h:2
 msgid "Attendant:"
 msgstr ""
 
@@ -378,93 +378,82 @@ msgstr ""
 msgid "Cash Change"
 msgstr ""
 
-#: ../data/glade/CashChangeSlave.ui.h:2
+#. Do not translate $CURRENCY
+#: ../data/glade/CashChangeSlave.ui.h:3
+msgid "Received: ($CURRENCY)"
+msgstr ""
+
+#: ../data/glade/CashChangeSlave.ui.h:4
 #: ../stoqlib/gui/slaves/paymentslave.py:1019
 msgid "Change:"
 msgstr ""
 
-#. Do not translate $CURRENCY
-#: ../data/glade/CashChangeSlave.ui.h:4
-msgid "Received: ($CURRENCY)"
-msgstr ""
-
 #: ../data/glade/CashInEditor.ui.h:1 ../data/glade/CashOutEditor.ui.h:1
-#: ../data/glade/PaymentChangeDialog.ui.h:4
+#: ../data/glade/PaymentChangeDialog.ui.h:5
 #: ../data/glade/ProductAdjustmentDialog.ui.h:4
 #: ../data/glade/SaleReturnSlave.ui.h:8
 #: ../data/glade/StartStockDecreaseStep.ui.h:4
 msgid "Reason:"
 msgstr ""
 
-#: ../data/glade/CfopEditor.ui.h:1
-msgid "0.000"
+#: ../data/glade/CfopEditor.ui.h:1 ../data/glade/FiscalBookEntryEditor.ui.h:1
+#: ../data/glade/ProductAdjustmentDialog.ui.h:3
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:5
+#: ../data/glade/SalesPersonStep.ui.h:10
+msgid "C.F.O.P.:"
 msgstr ""
 
-#: ../data/glade/CfopEditor.ui.h:2 ../data/glade/FiscalBookEntryEditor.ui.h:1
-#: ../data/glade/ProductAdjustmentDialog.ui.h:1
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:2
-#: ../data/glade/SalesPersonStep.ui.h:5
-msgid "C.F.O.P.:"
+#: ../data/glade/CfopEditor.ui.h:3
+msgid "0.000"
 msgstr ""
 
 #: ../data/glade/ClientCategoryEditor.ui.h:1
 #: ../data/glade/ContactEditor.ui.h:1
-#: ../data/glade/DeviceConstantEditor.ui.h:3
-#: ../data/glade/InvoiceLayoutEditor.ui.h:5
-#: ../data/glade/PaymentCategoryEditor.ui.h:2
-#: ../data/glade/PersonEditorTemplate.ui.h:12
+#: ../data/glade/DeviceConstantEditor.ui.h:2
+#: ../data/glade/InvoiceLayoutEditor.ui.h:6
+#: ../data/glade/PaymentCategoryEditor.ui.h:1
+#: ../data/glade/PersonEditorTemplate.ui.h:1
 #: ../data/glade/ProductTaxTemplateEditor.ui.h:1
 #: ../data/glade/SellableTaxConstantEditor.ui.h:1
-#: ../data/glade/StationEditor.ui.h:3 ../data/glade/TefStep.ui.h:9
+#: ../data/glade/StationEditor.ui.h:1 ../data/glade/TefStep.ui.h:5
 msgid "Name:"
 msgstr ""
 
 #: ../data/glade/ClientDetailsDialog.ui.h:1
-#: ../stoqlib/gui/editors/callseditor.py:38
-msgid "Calls"
-msgstr ""
-
-#: ../data/glade/ClientDetailsDialog.ui.h:2
-#: ../data/glade/DeliveryEditor.ui.h:4
-#: ../data/glade/InstallmentConfirmation.ui.h:2
-#: ../data/glade/LoanDetails.ui.h:2 ../data/glade/PaymentChangeDialog.ui.h:2
-#: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:2
-#: ../data/glade/RenegotiationDetailsDialog.ui.h:3
-#: ../data/glade/SaleDetailsDialog.ui.h:4 ../data/glade/SalesPersonStep.ui.h:8
+#: ../data/glade/DeliveryEditor.ui.h:1
+#: ../data/glade/InstallmentConfirmation.ui.h:11
+#: ../data/glade/LoanDetails.ui.h:6 ../data/glade/PaymentChangeDialog.ui.h:2
+#: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:1
+#: ../data/glade/RenegotiationDetailsDialog.ui.h:4
+#: ../data/glade/SaleDetailsDialog.ui.h:5 ../data/glade/SalesPersonStep.ui.h:2
 #: ../stoqlib/gui/search/paymentsearch.py:139
 #: ../stoqlib/reporting/loanreceipt.py:83 ../stoqlib/reporting/sale.py:80
 msgid "Client:"
 msgstr ""
 
-#: ../data/glade/ClientDetailsDialog.ui.h:3
-#: ../data/glade/SupplierDetailsDialog.ui.h:1
-msgid "Further Details"
-msgstr ""
-
-#: ../data/glade/ClientDetailsDialog.ui.h:4
+#: ../data/glade/ClientDetailsDialog.ui.h:2
 #: ../data/glade/SupplierDetailsDialog.ui.h:2
 msgid "Last Purchase Date:"
 msgstr ""
 
-#: ../data/glade/ClientDetailsDialog.ui.h:5
-#: ../data/glade/PurchaseDetailsDialog.ui.h:15
-#: ../data/glade/RenegotiationDetailsDialog.ui.h:8
-#: ../data/glade/SaleDetailsDialog.ui.h:11
+#: ../data/glade/ClientDetailsDialog.ui.h:3
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:6
+#: ../data/glade/PaymentChangeDialog.ui.h:3
+#: ../data/glade/RenegotiationDetailsDialog.ui.h:5
+#: ../data/glade/SaleDetailsDialog.ui.h:6 ../data/glade/SellableEditor.ui.h:12
 #: ../data/glade/SupplierDetailsDialog.ui.h:3
-#: ../plugins/ecf/deviceconstanteditor.py:204 ../stoqlib/lib/parameters.py:534
-msgid "Payments"
+#: ../data/glade/UserStatusSlave.ui.h:1 ../stoqlib/reporting/purchase.py:268
+msgid "Status:"
 msgstr ""
 
-#: ../data/glade/ClientDetailsDialog.ui.h:6
-#: ../data/glade/StockDecreaseDetails.ui.h:4
-#: ../data/glade/SupplierDetailsDialog.ui.h:4 ../stoq/gui/purchase.py:136
-#: ../stoq/gui/sales.py:127
-msgid "Products"
+#: ../data/glade/ClientDetailsDialog.ui.h:4
+#: ../data/glade/SupplierDetailsDialog.ui.h:4
+msgid "Further Details"
 msgstr ""
 
-#: ../data/glade/ClientDetailsDialog.ui.h:7
-#: ../data/glade/ProductStockHistoryDialog.ui.h:6 ../stoq/gui/sales.py:62
-#: ../stoq/lib/applist.py:60 ../stoqlib/lib/parameters.py:180
+#: ../data/glade/ClientDetailsDialog.ui.h:5
+#: ../data/glade/ProductStockHistoryDialog.ui.h:4 ../stoq/gui/sales.py:62
+#: ../stoq/lib/applist.py:63 ../stoqlib/lib/parameters.py:180
 #: ../stoqlib/lib/parameters.py:221 ../stoqlib/lib/parameters.py:239
 #: ../stoqlib/lib/parameters.py:247 ../stoqlib/lib/parameters.py:257
 #: ../stoqlib/lib/parameters.py:289 ../stoqlib/lib/parameters.py:297
@@ -479,25 +468,35 @@ msgstr ""
 msgid "Sales"
 msgstr ""
 
-#: ../data/glade/ClientDetailsDialog.ui.h:8
+#: ../data/glade/ClientDetailsDialog.ui.h:6
+#: ../data/glade/StockDecreaseDetails.ui.h:6
+#: ../data/glade/SupplierDetailsDialog.ui.h:6 ../stoq/gui/purchase.py:136
+#: ../stoq/gui/sales.py:127
+msgid "Products"
+msgstr ""
+
+#: ../data/glade/ClientDetailsDialog.ui.h:7
 #: ../data/glade/ProductionDetailsDialog.ui.h:13 ../stoq/gui/sales.py:128
 #: ../stoqlib/reporting/production.py:202
 msgid "Services"
 msgstr ""
 
+#: ../data/glade/ClientDetailsDialog.ui.h:8
+#: ../data/glade/PurchaseDetailsDialog.ui.h:12
+#: ../data/glade/RenegotiationDetailsDialog.ui.h:11
+#: ../data/glade/SaleDetailsDialog.ui.h:17
+#: ../data/glade/SupplierDetailsDialog.ui.h:7
+#: ../plugins/ecf/deviceconstanteditor.py:204 ../stoqlib/lib/parameters.py:534
+msgid "Payments"
+msgstr ""
+
 #: ../data/glade/ClientDetailsDialog.ui.h:9
-#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:8
-#: ../data/glade/PaymentChangeDialog.ui.h:5
-#: ../data/glade/RenegotiationDetailsDialog.ui.h:10
-#: ../data/glade/SaleDetailsDialog.ui.h:16
-#: ../data/glade/SellableEditor.ui.h:14
-#: ../data/glade/SupplierDetailsDialog.ui.h:6
-#: ../data/glade/UserStatusSlave.ui.h:3 ../stoqlib/reporting/purchase.py:268
-msgid "Status:"
+#: ../stoqlib/gui/editors/callseditor.py:38
+msgid "Calls"
 msgstr ""
 
 #: ../data/glade/ClientStatusSlave.ui.h:1
-msgid "Available Credit:"
+msgid "Financial Status:"
 msgstr ""
 
 #. Do not translate $CURRENCY
@@ -506,14 +505,14 @@ msgid "Credit Limit ($CURRENCY):"
 msgstr ""
 
 #: ../data/glade/ClientStatusSlave.ui.h:5
-msgid "Financial Status:"
+msgid "Available Credit:"
 msgstr ""
 
 #: ../data/glade/CommissionDataSlave.ui.h:1
 msgid " No Commission"
 msgstr ""
 
-#: ../data/glade/CommissionDataSlave.ui.h:4
+#: ../data/glade/CommissionDataSlave.ui.h:2
 msgid "Direct Sale:      "
 msgstr ""
 
@@ -521,12 +520,12 @@ msgstr ""
 msgid "In Installments:"
 msgstr ""
 
-#: ../data/glade/CompanyDocumentsSlave.ui.h:2
-msgid "City Registry:"
+#: ../data/glade/CompanyDocumentsSlave.ui.h:1
+msgid "Fancy Name:"
 msgstr ""
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:3
-msgid "Fancy Name:"
+msgid "City Registry:"
 msgstr ""
 
 #: ../data/glade/ConsignmentItemSelectionStep.ui.h:1
@@ -545,36 +544,37 @@ msgstr ""
 msgid "Show details..."
 msgstr ""
 
+#: ../data/glade/CredProviderDetailsSlave.ui.h:1
+msgid "Provider Id:"
+msgstr ""
+
+#: ../data/glade/CredProviderDetailsSlave.ui.h:2
+#: ../data/glade/TransporterDataSlave.ui.h:2
+msgid "Open Contract Date:"
+msgstr ""
+
 #: ../data/glade/CredProviderDetailsSlave.ui.h:3
-msgid "Closing Day:"
+msgid "Short Name:"
 msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:4
-msgid "Credit Fee:"
+msgid "Max Installments:"
 msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:5
-msgid "Credit Installment Provider Fee:"
+msgid "Payment Day:"
 msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:6
-msgid "Credit Installments Store Fee:"
-msgstr ""
-
-#: ../data/glade/CredProviderDetailsSlave.ui.h:7
-msgid "Debit Fee:"
-msgstr ""
-
-#: ../data/glade/CredProviderDetailsSlave.ui.h:8
-msgid "Debit Pre-Dated Fee:"
+msgid "Closing Day:"
 msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:9
-msgid "Fees"
+msgid "Credit Installment Provider Fee:"
 msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:10
-msgid "Max Installments:"
+msgid "Credit Installments Store Fee:"
 msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:11
@@ -582,32 +582,31 @@ msgid "Monthly Fee ($CURRENCY):"
 msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:12
-#: ../data/glade/TransporterDataSlave.ui.h:6
-msgid "Open Contract Date:"
+msgid "Credit Fee:"
 msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:13
-msgid "Payment Day:"
+msgid "Debit Pre-Dated Fee:"
 msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:14
-msgid "Provider Id:"
+msgid "Debit Fee:"
 msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:15
-msgid "Short Name:"
+msgid "Fees"
+msgstr ""
+
+#: ../data/glade/CreditProviderMethodSlave.ui.h:1
+msgid "Credit Provider:"
 msgstr ""
 
 #: ../data/glade/CreditProviderMethodSlave.ui.h:2
-msgid "Credit Provider:"
+msgid "Payment Type:"
 msgstr ""
 
 #: ../data/glade/CreditProviderMethodSlave.ui.h:3
 msgid "Number of Installments:"
-msgstr ""
-
-#: ../data/glade/CreditProviderMethodSlave.ui.h:4
-msgid "Payment Type:"
 msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:1
@@ -615,7 +614,9 @@ msgid "<b>Database location</b>"
 msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:2
-msgid "I want to manually configure the database connection."
+msgid ""
+"To be able to use Stoq we need make sure that there is a database that we "
+"can connect to."
 msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:3
@@ -623,139 +624,141 @@ msgid "I want to use Stoq just on this computer."
 msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:4
-#: ../data/glade/InstallationModeStep.ui.h:4
-msgid "Select an option above and then click <b>Forward</b> to continue."
+msgid "I want to manually configure the database connection."
 msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:5
-msgid ""
-"To be able to use Stoq we need make sure that there is a database that we "
-"can connect to."
+#: ../data/glade/InstallationModeStep.ui.h:8
+msgid "Select an option above and then click <b>Forward</b> to continue."
 msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:1
 msgid "<b>Database Settings</b>"
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:2 ../stoqlib/reporting/sale.py:83
+#: ../data/glade/DatabaseSettingsStep.ui.h:2
+msgid "Please, fill the details about your database."
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:3 ../stoqlib/reporting/sale.py:83
 msgid "Address:"
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:3
-msgid "Authentication:"
-msgstr ""
-
-#: ../data/glade/DatabaseSettingsStep.ui.h:4 ../data/glade/WelcomeStep.ui.h:1
-msgid "Click <b>Forward</b> to continue."
+#: ../data/glade/DatabaseSettingsStep.ui.h:4
+#: ../data/glade/DeviceSettingsEditor.ui.h:3
+#: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:2
+msgid "Port:"
 msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:5
-msgid "Database Name:"
+#: ../data/glade/UserDetailsSlave.ui.h:1
+msgid "Username:"
 msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:6
-#: ../data/glade/PasswordEditorSlave.ui.h:2
+#: ../data/glade/PasswordEditorSlave.ui.h:1
 msgid "Password:"
 msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:7
-msgid "Please, fill the details about your database."
+msgid "Database Name:"
 msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:8
-#: ../data/glade/DeviceSettingsEditor.ui.h:6
-#: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:4
-msgid "Port:"
+msgid "Authentication:"
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:9
-#: ../data/glade/UserDetailsSlave.ui.h:4
-msgid "Username:"
-msgstr ""
-
-#: ../data/glade/DeliveryEditor.ui.h:1
-msgid "<b>Delivery Address:</b>"
+#: ../data/glade/DatabaseSettingsStep.ui.h:9 ../data/glade/WelcomeStep.ui.h:7
+msgid "Click <b>Forward</b> to continue."
 msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:2
-msgid "Additional _Instructions"
-msgstr ""
-
-#: ../data/glade/DeliveryEditor.ui.h:3
-msgid "Change _Address"
-msgstr ""
-
-#. Do not translate $CURRENCY
-#: ../data/glade/DeliveryEditor.ui.h:6
-msgid "Delivery cost ($CURRENCY):"
-msgstr ""
-
-#: ../data/glade/DeliveryEditor.ui.h:7
 msgid "Estimated Delivery _Date:"
 msgstr ""
 
-#: ../data/glade/DeliveryEditor.ui.h:8
+#. Do not translate $CURRENCY
+#: ../data/glade/DeliveryEditor.ui.h:4
+msgid "Delivery cost ($CURRENCY):"
+msgstr ""
+
+#: ../data/glade/DeliveryEditor.ui.h:5
 msgid "Products to Deliver:"
+msgstr ""
+
+#: ../data/glade/DeliveryEditor.ui.h:6
+msgid "<b>Delivery Address:</b>"
+msgstr ""
+
+#: ../data/glade/DeliveryEditor.ui.h:7
+msgid "Change _Address"
+msgstr ""
+
+#: ../data/glade/DeliveryEditor.ui.h:8
+msgid "Additional _Instructions"
 msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:9
 msgid "There is Additional Instructions"
 msgstr ""
 
-#: ../data/glade/DeviceConstantEditor.ui.h:1
+#: ../data/glade/DeviceConstantEditor.ui.h:4
 msgid "ASCII value:"
 msgstr ""
 
-#: ../data/glade/DeviceConstantEditor.ui.h:2
+#: ../data/glade/DeviceConstantEditor.ui.h:5
 msgid "HEX value:"
+msgstr ""
+
+#: ../data/glade/DeviceSettingsEditor.ui.h:1
+msgid "Device Type:"
 msgstr ""
 
 #: ../data/glade/DeviceSettingsEditor.ui.h:2
 msgid "Brand:"
 msgstr ""
 
-#: ../data/glade/DeviceSettingsEditor.ui.h:3
-msgid "Device Type:"
-msgstr ""
-
 #: ../data/glade/DeviceSettingsEditor.ui.h:4
-msgid "Host:"
-msgstr ""
-
-#: ../data/glade/DeviceSettingsEditor.ui.h:5
 msgid "Model:"
 msgstr ""
 
-#: ../data/glade/EmployeeDetailsSlave.ui.h:2
+#: ../data/glade/DeviceSettingsEditor.ui.h:5
+msgid "Host:"
+msgstr ""
+
+#: ../data/glade/EmployeeDetailsSlave.ui.h:1
 msgid "Admission Data"
 msgstr ""
 
+#: ../data/glade/EmployeeDetailsSlave.ui.h:3
+msgid "Registry:"
+msgstr ""
+
 #: ../data/glade/EmployeeDetailsSlave.ui.h:4
-msgid "Bank Information"
+msgid "Vacation:"
 msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:5
-msgid "Bank:"
+msgid "Work Permit"
 msgstr ""
 
-#: ../data/glade/EmployeeDetailsSlave.ui.h:6
-msgid "Branch Number:"
+#: ../data/glade/EmployeeDetailsSlave.ui.h:7
+msgid "Serie:"
 msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:8
-msgid ""
-"Dependent \n"
-"Number:"
+msgid "Bank Information"
 msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:10
-msgid ""
-"Education \n"
-"Level:"
+msgid "Branch Number:"
+msgstr ""
+
+#: ../data/glade/EmployeeDetailsSlave.ui.h:12
+msgid "PIS"
 msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:13
-msgid "PIS"
+msgid "Bank:"
 msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:14
@@ -763,28 +766,24 @@ msgid "Personal Details"
 msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:15
-msgid "Registry:"
-msgstr ""
-
-#: ../data/glade/EmployeeDetailsSlave.ui.h:16
-msgid "Serie:"
+msgid ""
+"Education \n"
+"Level:"
 msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:17
-msgid "Vacation:"
-msgstr ""
-
-#: ../data/glade/EmployeeDetailsSlave.ui.h:18
-msgid "Work Permit"
+msgid ""
+"Dependent \n"
+"Number:"
 msgstr ""
 
 #: ../data/glade/EmployeeRoleSlave.ui.h:1
-msgid "A_dd/Edit Role..."
+#: ../data/glade/UserDetailsSlave.ui.h:3
+msgid "Role:"
 msgstr ""
 
 #: ../data/glade/EmployeeRoleSlave.ui.h:2
-#: ../data/glade/UserDetailsSlave.ui.h:3
-msgid "Role:"
+msgid "A_dd/Edit Role..."
 msgstr ""
 
 #. Do not translate $CURRENCY
@@ -797,11 +796,11 @@ msgid "Employee Status:"
 msgstr ""
 
 #: ../data/glade/ExistingPersonStep.ui.h:1
-msgid "Existing client"
+msgid "Is it one of these ?"
 msgstr ""
 
 #: ../data/glade/ExistingPersonStep.ui.h:2
-msgid "Is it one of these ?"
+msgid "Existing client"
 msgstr ""
 
 #: ../data/glade/ExistingPersonStep.ui.h:3
@@ -812,15 +811,7 @@ msgstr ""
 msgid "<b>Installation complete</b>"
 msgstr ""
 
-#: ../data/glade/FinishInstallationStep.ui.h:2 ../stoq/gui/shell.py:129
-msgid "Enable online services"
-msgstr ""
-
-#: ../data/glade/FinishInstallationStep.ui.h:3
-msgid "More information..."
-msgstr ""
-
-#: ../data/glade/FinishInstallationStep.ui.h:4
+#: ../data/glade/FinishInstallationStep.ui.h:2
 msgid ""
 "Stoq was successfully installed in your system!\n"
 "\n"
@@ -833,53 +824,57 @@ msgid ""
 "hesitate to <a href=\"http://www.stoq.com.br/contato\">contact us</a>."
 msgstr ""
 
+#: ../data/glade/FinishInstallationStep.ui.h:7 ../stoq/gui/shell.py:129
+msgid "Enable online services"
+msgstr ""
+
+#: ../data/glade/FinishInstallationStep.ui.h:8
+msgid "More information..."
+msgstr ""
+
 #: ../data/glade/FinishPurchaseStep.ui.h:1
-#: ../data/glade/PurchaseDetailsDialog.ui.h:7
-#: ../stoqlib/reporting/purchase.py:209
-msgid "Expected Receival Date:"
-msgstr ""
-
-#: ../data/glade/FinishPurchaseStep.ui.h:2
-#: ../data/glade/PurchaseDetailsDialog.ui.h:10
-#: ../data/glade/ReceivingOrderDetailsDialog.ui.h:1
-#: ../data/glade/RenegotiationDetailsDialog.ui.h:6
-#: ../data/glade/SaleDetailsDialog.ui.h:9 ../data/glade/StartQuoteStep.ui.h:3
-#: ../stoqlib/reporting/loanreceipt.py:95
-msgid "Notes"
-msgstr ""
-
-#: ../data/glade/FinishPurchaseStep.ui.h:3
-msgid "Receive all products now."
-msgstr ""
-
-#: ../data/glade/FinishPurchaseStep.ui.h:4
 msgid "Salesperson Name:"
 msgstr ""
 
-#: ../data/glade/FinishPurchaseStep.ui.h:5
-#: ../data/glade/PurchaseDetailsDialog.ui.h:27
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:25
-#: ../data/glade/SalesPersonStep.ui.h:17 ../stoqlib/reporting/purchase.py:201
+#: ../data/glade/FinishPurchaseStep.ui.h:2
+#: ../data/glade/PurchaseDetailsDialog.ui.h:19
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:6
+#: ../data/glade/SalesPersonStep.ui.h:3 ../stoqlib/reporting/purchase.py:201
 #: ../stoqlib/reporting/purchase.py:338
 msgid "Transporter:"
 msgstr ""
 
+#: ../data/glade/FinishPurchaseStep.ui.h:3
+#: ../data/glade/PurchaseDetailsDialog.ui.h:22
+#: ../stoqlib/reporting/purchase.py:209
+msgid "Expected Receival Date:"
+msgstr ""
+
+#: ../data/glade/FinishPurchaseStep.ui.h:4
+#: ../data/glade/PurchaseDetailsDialog.ui.h:26
+#: ../data/glade/ReceivingOrderDetailsDialog.ui.h:3
+#: ../data/glade/RenegotiationDetailsDialog.ui.h:13
+#: ../data/glade/SaleDetailsDialog.ui.h:19 ../data/glade/StartQuoteStep.ui.h:5
+#: ../stoqlib/reporting/loanreceipt.py:95
+msgid "Notes"
+msgstr ""
+
+#: ../data/glade/FinishPurchaseStep.ui.h:5
+msgid "Receive all products now."
+msgstr ""
+
 #: ../data/glade/FiscalBookEntryEditor.ui.h:3
-#: ../data/glade/ProductsAdjustment.ui.h:4
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:12
-#: ../data/glade/SaleDetailsDialog.ui.h:7
-#: ../data/glade/SalesPersonStep.ui.h:10
+#: ../data/glade/ProductsAdjustment.ui.h:3
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:4
+#: ../data/glade/SaleDetailsDialog.ui.h:4 ../data/glade/SalesPersonStep.ui.h:8
 msgid "Invoice Number:"
 msgstr ""
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:1
-#: ../data/glade/ProductSupplierEditor.ui.h:3
-#: ../data/glade/PurchasePaymentSlave.ui.h:2
-#: ../data/glade/SaleInvoicePrinterDialog.ui.h:1
-msgid "1"
+msgid "Fiscal Memory"
 msgstr ""
 
-#: ../data/glade/FiscalMemoryEditor.ui.h:2 ../stoq/gui/financial.py:224
+#: ../data/glade/FiscalMemoryEditor.ui.h:2 ../stoq/gui/financial.py:225
 #: ../stoqlib/gui/dialogs/clientdetails.py:95
 #: ../stoqlib/gui/dialogs/clientdetails.py:152
 #: ../stoqlib/gui/dialogs/paymentcommentsdialog.py:18
@@ -897,73 +892,76 @@ msgid "Date"
 msgstr ""
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:3
-msgid "End Date:"
-msgstr ""
-
-#: ../data/glade/FiscalMemoryEditor.ui.h:4
-msgid "Fiscal Memory"
-msgstr ""
-
-#: ../data/glade/FiscalMemoryEditor.ui.h:5
-#: ../data/glade/OnSaleInfoSlave.ui.h:2 ../data/glade/QualityTestEditor.ui.h:2
-msgid "From:"
-msgstr ""
-
-#: ../data/glade/FiscalMemoryEditor.ui.h:6
 msgid "Reductions"
 msgstr ""
 
-#: ../data/glade/FiscalMemoryEditor.ui.h:7
+#: ../data/glade/FiscalMemoryEditor.ui.h:4
 msgid "Start Date:"
 msgstr ""
 
-#: ../data/glade/FiscalMemoryEditor.ui.h:8
-#: ../data/glade/OnSaleInfoSlave.ui.h:5 ../data/glade/QualityTestEditor.ui.h:5
+#: ../data/glade/FiscalMemoryEditor.ui.h:5
+msgid "End Date:"
+msgstr ""
+
+#: ../data/glade/FiscalMemoryEditor.ui.h:6
+#: ../data/glade/OnSaleInfoSlave.ui.h:4 ../data/glade/QualityTestEditor.ui.h:3
+msgid "From:"
+msgstr ""
+
+#: ../data/glade/FiscalMemoryEditor.ui.h:7
+#: ../data/glade/OnSaleInfoSlave.ui.h:5 ../data/glade/QualityTestEditor.ui.h:4
 msgid "To:"
 msgstr ""
 
+#: ../data/glade/FiscalMemoryEditor.ui.h:8
+#: ../data/glade/ProductSupplierEditor.ui.h:5
+#: ../data/glade/PurchasePaymentSlave.ui.h:3
+#: ../data/glade/SaleInvoicePrinterDialog.ui.h:2
+msgid "1"
+msgstr ""
+
 #: ../data/glade/IndividualDetailsSlave.ui.h:1
-msgid "Birth City:"
-msgstr ""
-
-#: ../data/glade/IndividualDetailsSlave.ui.h:2
-msgid "Birth Country:"
-msgstr ""
-
-#: ../data/glade/IndividualDetailsSlave.ui.h:3
-msgid "Birth Date:"
-msgstr ""
-
-#: ../data/glade/IndividualDetailsSlave.ui.h:4
-msgid "Birth State:"
-msgstr ""
-
-#: ../data/glade/IndividualDetailsSlave.ui.h:5
-msgid "Father's Name:"
-msgstr ""
-
-#: ../data/glade/IndividualDetailsSlave.ui.h:6 ../stoqlib/domain/person.py:427
-msgid "Female"
-msgstr ""
-
-#: ../data/glade/IndividualDetailsSlave.ui.h:7
 msgid "Gender:"
 msgstr ""
 
-#: ../data/glade/IndividualDetailsSlave.ui.h:8 ../stoqlib/domain/person.py:426
-msgid "Male"
+#: ../data/glade/IndividualDetailsSlave.ui.h:2
+msgid "Occupation:"
 msgstr ""
 
-#: ../data/glade/IndividualDetailsSlave.ui.h:9
-msgid "Marital Status:"
-msgstr ""
-
-#: ../data/glade/IndividualDetailsSlave.ui.h:10
+#: ../data/glade/IndividualDetailsSlave.ui.h:3
 msgid "Mother's name:"
 msgstr ""
 
+#: ../data/glade/IndividualDetailsSlave.ui.h:4
+msgid "Father's Name:"
+msgstr ""
+
+#: ../data/glade/IndividualDetailsSlave.ui.h:5
+msgid "Marital Status:"
+msgstr ""
+
+#: ../data/glade/IndividualDetailsSlave.ui.h:6 ../stoqlib/domain/person.py:426
+msgid "Male"
+msgstr ""
+
+#: ../data/glade/IndividualDetailsSlave.ui.h:7 ../stoqlib/domain/person.py:427
+msgid "Female"
+msgstr ""
+
+#: ../data/glade/IndividualDetailsSlave.ui.h:8
+msgid "Birth Date:"
+msgstr ""
+
+#: ../data/glade/IndividualDetailsSlave.ui.h:9
+msgid "Birth State:"
+msgstr ""
+
+#: ../data/glade/IndividualDetailsSlave.ui.h:10
+msgid "Birth City:"
+msgstr ""
+
 #: ../data/glade/IndividualDetailsSlave.ui.h:11
-msgid "Occupation:"
+msgid "Birth Country:"
 msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:12
@@ -971,30 +969,30 @@ msgid "Spouse:"
 msgstr ""
 
 #: ../data/glade/IndividualDocuments.ui.h:1
-#: ../plugins/ecf/glade/PaulistaInvoice.ui.h:3
+msgid "client_id_slave"
+msgstr ""
+
+#: ../data/glade/IndividualDocuments.ui.h:2
+#: ../plugins/ecf/glade/PaulistaInvoice.ui.h:2
 #: ../plugins/ecf/paulistainvoicedialog.py:64
 #: ../stoqlib/reporting/loanreceipt.py:153
 msgid "CPF:"
 msgstr ""
 
-#: ../data/glade/IndividualDocuments.ui.h:2
-msgid ""
-"RG Expedition\n"
-"Date:"
-msgstr ""
-
-#: ../data/glade/IndividualDocuments.ui.h:4
+#: ../data/glade/IndividualDocuments.ui.h:3
 msgid ""
 "RG Expedition\n"
 "Local:"
 msgstr ""
 
-#: ../data/glade/IndividualDocuments.ui.h:6
+#: ../data/glade/IndividualDocuments.ui.h:5
 msgid "RG Number:"
 msgstr ""
 
-#: ../data/glade/IndividualDocuments.ui.h:7
-msgid "client_id_slave"
+#: ../data/glade/IndividualDocuments.ui.h:6
+msgid ""
+"RG Expedition\n"
+"Date:"
 msgstr ""
 
 #: ../data/glade/InitialStockDialog.ui.h:1
@@ -1006,10 +1004,6 @@ msgid "<b>Installing PostgreSQL server</b>"
 msgstr ""
 
 #: ../data/glade/InstallPostgresStep.ui.h:2
-msgid "Click <b>Forward</b> to begin installing the PostgreSQL server."
-msgstr ""
-
-#: ../data/glade/InstallPostgresStep.ui.h:3
 msgid ""
 "The PostgreSQL server isn't properly running on this computer. It needs to "
 "be installed and started for Stoq to be able to run.\n"
@@ -1019,16 +1013,24 @@ msgid ""
 "the distribution documentation for more information."
 msgstr ""
 
+#: ../data/glade/InstallPostgresStep.ui.h:5
+msgid "Click <b>Forward</b> to begin installing the PostgreSQL server."
+msgstr ""
+
 #: ../data/glade/InstallationModeStep.ui.h:1
-msgid "Create a database in demonstration mode."
+msgid "Database initialization"
 msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:2
-msgid "Create an empty database for production use."
+msgid "Would you like to:"
 msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:3
-msgid "Database initialization"
+msgid "Create an empty database for production use."
+msgstr ""
+
+#: ../data/glade/InstallationModeStep.ui.h:4
+msgid "Create a database in demonstration mode."
 msgstr ""
 
 #: ../data/glade/InstallationModeStep.ui.h:5
@@ -1040,56 +1042,52 @@ msgid ""
 "imported to us, and we will give a response within 2 business days."
 msgstr ""
 
-#: ../data/glade/InstallationModeStep.ui.h:8
-msgid "Would you like to:"
+#: ../data/glade/InstallmentConfirmation.ui.h:1
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:7
+msgid "Paid date:"
 msgstr ""
 
-#: ../data/glade/InstallmentConfirmation.ui.h:3 ../stoq/gui/payable.py:107
-#: ../stoq/gui/production.py:73 ../stoq/gui/purchase.py:123
-#: ../stoq/gui/receivable.py:107 ../stoq/gui/sales.py:118
-#: ../stoq/gui/till.py:106 ../stoqlib/gui/dialogs/importerdialog.py:57
-msgid "Details..."
-msgstr ""
-
-#. Do not translate $CURRENCY
-#: ../data/glade/InstallmentConfirmation.ui.h:5
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:4
-msgid "Discount ($CURRENCY):"
-msgstr ""
-
-#: ../data/glade/InstallmentConfirmation.ui.h:6
+#: ../data/glade/InstallmentConfirmation.ui.h:2
 msgid "Installment value:"
 msgstr ""
 
 #. Do not translate $CURRENCY
-#: ../data/glade/InstallmentConfirmation.ui.h:8
-msgid "Interest ($CURRENCY):"
-msgstr ""
-
-#: ../data/glade/InstallmentConfirmation.ui.h:9
-msgid "Order number:"
-msgstr ""
-
-#: ../data/glade/InstallmentConfirmation.ui.h:10
-#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:5
-msgid "Paid date:"
-msgstr ""
-
-#: ../data/glade/InstallmentConfirmation.ui.h:11
-msgid "Pay interest"
-msgstr ""
-
-#: ../data/glade/InstallmentConfirmation.ui.h:12
-msgid "Pay penalty"
-msgstr ""
-
-#. Do not translate $CURRENCY
-#: ../data/glade/InstallmentConfirmation.ui.h:14
+#: ../data/glade/InstallmentConfirmation.ui.h:4
 msgid "Penalty ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/InstallmentConfirmation.ui.h:15
+#. Do not translate $CURRENCY
+#: ../data/glade/InstallmentConfirmation.ui.h:6
+msgid "Interest ($CURRENCY):"
+msgstr ""
+
+#. Do not translate $CURRENCY
+#: ../data/glade/InstallmentConfirmation.ui.h:8
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:19
+msgid "Discount ($CURRENCY):"
+msgstr ""
+
+#: ../data/glade/InstallmentConfirmation.ui.h:9
 msgid "Total value:"
+msgstr ""
+
+#: ../data/glade/InstallmentConfirmation.ui.h:10
+msgid "Order number:"
+msgstr ""
+
+#: ../data/glade/InstallmentConfirmation.ui.h:13
+msgid "Pay penalty"
+msgstr ""
+
+#: ../data/glade/InstallmentConfirmation.ui.h:14
+msgid "Pay interest"
+msgstr ""
+
+#: ../data/glade/InstallmentConfirmation.ui.h:15 ../stoq/gui/payable.py:107
+#: ../stoq/gui/production.py:73 ../stoq/gui/purchase.py:123
+#: ../stoq/gui/receivable.py:107 ../stoq/gui/sales.py:118
+#: ../stoq/gui/till.py:106 ../stoqlib/gui/dialogs/importerdialog.py:57
+msgid "Details..."
 msgstr ""
 
 #: ../data/glade/InvoiceDetailsEditor.ui.h:1
@@ -1101,50 +1099,63 @@ msgstr ""
 msgid "Time:"
 msgstr ""
 
-#: ../data/glade/InvoiceLayoutEditor.ui.h:3
-msgid "Field:"
-msgstr ""
-
-#: ../data/glade/InvoiceLayoutEditor.ui.h:4
-#: ../data/glade/ProductInformationSlave.ui.h:6
-msgid "Height:"
-msgstr ""
-
-#: ../data/glade/InvoiceLayoutEditor.ui.h:6
-msgid "Position:"
-msgstr ""
-
-#: ../data/glade/InvoiceLayoutEditor.ui.h:7
-msgid "Size:"
-msgstr ""
-
-#: ../data/glade/InvoiceLayoutEditor.ui.h:8
-#: ../data/glade/ProductInformationSlave.ui.h:16
+#: ../data/glade/InvoiceLayoutEditor.ui.h:2
+#: ../data/glade/ProductInformationSlave.ui.h:3
 msgid "Width:"
 msgstr ""
 
-#: ../data/glade/InvoicePrinterEditor.ui.h:1
-msgid "Computer:"
+#: ../data/glade/InvoiceLayoutEditor.ui.h:4
+#: ../data/glade/ProductInformationSlave.ui.h:12
+msgid "Height:"
+msgstr ""
+
+#: ../data/glade/InvoiceLayoutEditor.ui.h:5
+msgid "Field:"
+msgstr ""
+
+#: ../data/glade/InvoiceLayoutEditor.ui.h:7
+msgid "Position:"
+msgstr ""
+
+#: ../data/glade/InvoiceLayoutEditor.ui.h:8
+msgid "Size:"
+msgstr ""
+
+#: ../data/glade/InvoicePrinterEditor.ui.h:2
+msgid "Device name:"
 msgstr ""
 
 #: ../data/glade/InvoicePrinterEditor.ui.h:3
-msgid "Device name:"
+msgid "Computer:"
 msgstr ""
 
 #: ../data/glade/InvoicePrinterEditor.ui.h:4
 msgid "Layout:"
 msgstr ""
 
-#: ../data/glade/LoanDetails.ui.h:1 ../data/glade/OpenInventoryDialog.ui.h:1
+#: ../data/glade/LoanDetails.ui.h:1 ../data/glade/OpenInventoryDialog.ui.h:3
 #: ../data/glade/OpenProductionOrderStep.ui.h:1
-#: ../data/glade/ProductionDetailsDialog.ui.h:3
+#: ../data/glade/ProductionDetailsDialog.ui.h:1
+#: ../data/glade/PurchaseDetailsDialog.ui.h:1
+#: ../data/glade/RenegotiationDetailsDialog.ui.h:2
+#: ../data/glade/SaleDetailsDialog.ui.h:2
+#: ../data/glade/StartPurchaseStep.ui.h:1 ../data/glade/TillClosing.ui.h:3
+#: ../stoqlib/reporting/loanreceipt.py:73
+#: ../stoqlib/reporting/production.py:120 ../stoqlib/reporting/purchase.py:267
+#: ../stoqlib/reporting/purchase.py:346
+msgid "Open Date:"
+msgstr ""
+
+#: ../data/glade/LoanDetails.ui.h:2 ../data/glade/OpenInventoryDialog.ui.h:2
+#: ../data/glade/OpenProductionOrderStep.ui.h:2
+#: ../data/glade/ProductionDetailsDialog.ui.h:5
 #: ../data/glade/ProductsAdjustment.ui.h:1
-#: ../data/glade/PurchaseDetailsDialog.ui.h:3
+#: ../data/glade/PurchaseDetailsDialog.ui.h:5
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:1
-#: ../data/glade/StartPurchaseStep.ui.h:4 ../data/glade/StartQuoteStep.ui.h:1
-#: ../data/glade/StartStockDecreaseStep.ui.h:1
-#: ../data/glade/StationEditor.ui.h:2
-#: ../data/glade/StockDecreaseDetails.ui.h:1 ../stoqlib/gui/base/search.py:408
+#: ../data/glade/StartPurchaseStep.ui.h:2 ../data/glade/StartQuoteStep.ui.h:3
+#: ../data/glade/StartStockDecreaseStep.ui.h:2
+#: ../data/glade/StationEditor.ui.h:3
+#: ../data/glade/StockDecreaseDetails.ui.h:2 ../stoqlib/gui/base/search.py:408
 #: ../stoqlib/reporting/loanreceipt.py:84
 #: ../stoqlib/reporting/production.py:125 ../stoqlib/reporting/purchase.py:270
 #: ../stoqlib/reporting/purchase.py:350
@@ -1152,41 +1163,28 @@ msgstr ""
 msgid "Branch:"
 msgstr ""
 
-#: ../data/glade/LoanDetails.ui.h:3 ../stoqlib/reporting/loanreceipt.py:70
-msgid "Confirm Date:"
-msgstr ""
-
-#: ../data/glade/LoanDetails.ui.h:4 ../stoqlib/reporting/loanreceipt.py:82
-msgid "Expire Date:"
-msgstr ""
-
-#: ../data/glade/LoanDetails.ui.h:5 ../data/glade/OpenInventoryDialog.ui.h:3
-#: ../data/glade/OpenProductionOrderStep.ui.h:5
-#: ../data/glade/ProductionDetailsDialog.ui.h:8
-#: ../data/glade/PurchaseDetailsDialog.ui.h:11
-#: ../data/glade/RenegotiationDetailsDialog.ui.h:7
-#: ../data/glade/SaleDetailsDialog.ui.h:10
-#: ../data/glade/StartPurchaseStep.ui.h:10 ../data/glade/TillClosing.ui.h:6
-#: ../stoqlib/reporting/loanreceipt.py:73
-#: ../stoqlib/reporting/production.py:120 ../stoqlib/reporting/purchase.py:267
-#: ../stoqlib/reporting/purchase.py:346
-msgid "Open Date:"
-msgstr ""
-
 #. Responsible combo
-#: ../data/glade/LoanDetails.ui.h:6
-#: ../data/glade/OpenProductionOrderStep.ui.h:6
-#: ../data/glade/ProductionDetailsDialog.ui.h:12
-#: ../data/glade/PurchaseDetailsDialog.ui.h:20
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:21
-#: ../data/glade/RenegotiationDetailsDialog.ui.h:9
-#: ../data/glade/SaleReturnSlave.ui.h:9
-#: ../data/glade/StockDecreaseDetails.ui.h:7
-#: ../data/glade/TransferOrderDetails.ui.h:4
+#: ../data/glade/LoanDetails.ui.h:3
+#: ../data/glade/OpenProductionOrderStep.ui.h:3
+#: ../data/glade/ProductionDetailsDialog.ui.h:3
+#: ../data/glade/PurchaseDetailsDialog.ui.h:3
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:7
+#: ../data/glade/RenegotiationDetailsDialog.ui.h:3
+#: ../data/glade/SaleReturnSlave.ui.h:1
+#: ../data/glade/StockDecreaseDetails.ui.h:3
+#: ../data/glade/TransferOrderDetails.ui.h:3
 #: ../stoqlib/gui/wizards/loanwizard.py:87
 #: ../stoqlib/reporting/loanreceipt.py:83
 #: ../stoqlib/reporting/stockdecreasereceipt.py:71
 msgid "Responsible:"
+msgstr ""
+
+#: ../data/glade/LoanDetails.ui.h:4 ../stoqlib/reporting/loanreceipt.py:70
+msgid "Confirm Date:"
+msgstr ""
+
+#: ../data/glade/LoanDetails.ui.h:5 ../stoqlib/reporting/loanreceipt.py:82
+msgid "Expire Date:"
 msgstr ""
 
 #: ../data/glade/LoanItemSelectionStep.ui.h:1
@@ -1196,7 +1194,8 @@ msgid ""
 msgstr ""
 
 #: ../data/glade/LoginDialog.ui.h:1
-msgid "Remember me"
+msgctxt "yes"
+msgid "_Username:"
 msgstr ""
 
 #: ../data/glade/LoginDialog.ui.h:2
@@ -1205,34 +1204,33 @@ msgid "_Password:"
 msgstr ""
 
 #: ../data/glade/LoginDialog.ui.h:3
-msgctxt "yes"
-msgid "_Username:"
-msgstr ""
-
-#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:2
-#: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:3
-#: ../data/glade/PurchaseDetailsDialog.ui.h:5
-#: ../data/glade/RenegotiationDetailsDialog.ui.h:4
-#: ../data/glade/SaleDetailsDialog.ui.h:5
-#: ../data/glade/SaleDiscountSlave.ui.h:3 ../stoqlib/reporting/sale.py:129
-msgid "Discount:"
+msgid "Remember me"
 msgstr ""
 
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:4
-#: ../data/glade/PaymentMethodEditor.ui.h:6
-#: ../data/glade/PurchaseDetailsDialog.ui.h:9
-#: ../data/glade/SaleDetailsDialog.ui.h:6
+#: ../data/glade/PaymentMethodEditor.ui.h:3
+#: ../data/glade/PurchaseDetailsDialog.ui.h:8
+#: ../data/glade/SaleDetailsDialog.ui.h:14
 msgid "Interest:"
 msgstr ""
 
-#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:6
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:5
 msgid "Paid value:"
 msgstr ""
 
-#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:7
-#: ../data/glade/PurchaseDetailsDialog.ui.h:16
-#: ../data/glade/SaleDetailsDialog.ui.h:12
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:8
+#: ../data/glade/PurchaseDetailsDialog.ui.h:9
+#: ../data/glade/SaleDetailsDialog.ui.h:15
 msgid "Penalty:"
+msgstr ""
+
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:9
+#: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:4
+#: ../data/glade/PurchaseDetailsDialog.ui.h:7
+#: ../data/glade/RenegotiationDetailsDialog.ui.h:6
+#: ../data/glade/SaleDetailsDialog.ui.h:9
+#: ../data/glade/SaleDiscountSlave.ui.h:1 ../stoqlib/reporting/sale.py:129
+msgid "Discount:"
 msgstr ""
 
 #: ../data/glade/MultipleMethodSlave.ui.h:1
@@ -1240,9 +1238,7 @@ msgid "<b>Method:</b>"
 msgstr ""
 
 #: ../data/glade/MultipleMethodSlave.ui.h:2
-#: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:2
-#: ../stoqlib/gui/slaves/paymentslave.py:1017
-msgid "Missing:"
+msgid "_Cash"
 msgstr ""
 
 #: ../data/glade/MultipleMethodSlave.ui.h:3
@@ -1252,13 +1248,13 @@ msgstr ""
 #: ../data/glade/MultipleMethodSlave.ui.h:4
 #: ../data/glade/PaymentListSlave.ui.h:2
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:6
-#: ../data/glade/PurchaseDetailsDialog.ui.h:26
-#: ../data/glade/PurchaseItemEditor.ui.h:10
-#: ../data/glade/ReceivingItemEditor.ui.h:8
-#: ../data/glade/RenegotiationDetailsDialog.ui.h:13
-#: ../data/glade/SaleDetailsDialog.ui.h:20
-#: ../data/glade/SaleQuoteItemEditor.ui.h:9
-#: ../data/glade/SalesPersonStep.ui.h:16
+#: ../data/glade/PurchaseDetailsDialog.ui.h:11
+#: ../data/glade/PurchaseItemEditor.ui.h:9
+#: ../data/glade/ReceivingItemEditor.ui.h:7
+#: ../data/glade/RenegotiationDetailsDialog.ui.h:9
+#: ../data/glade/SaleDetailsDialog.ui.h:12
+#: ../data/glade/SaleQuoteItemEditor.ui.h:8
+#: ../data/glade/SalesPersonStep.ui.h:14
 #: ../stoqlib/gui/dialogs/clientdetails.py:80
 #: ../stoqlib/gui/dialogs/productstockdetails.py:99
 #: ../stoqlib/gui/dialogs/receivingdialog.py:68
@@ -1276,7 +1272,9 @@ msgid "Total:"
 msgstr ""
 
 #: ../data/glade/MultipleMethodSlave.ui.h:5
-msgid "_Cash"
+#: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:4
+#: ../stoqlib/gui/slaves/paymentslave.py:1017
+msgid "Missing:"
 msgstr ""
 
 #: ../data/glade/NoteSlave.ui.h:1
@@ -1288,26 +1286,26 @@ msgid "<u>Currently on Sale:</u>"
 msgstr ""
 
 #. Do not translate $CURRENCY
-#: ../data/glade/OnSaleInfoSlave.ui.h:4 ../data/glade/PriceEntrySlave.ui.h:2
+#: ../data/glade/OnSaleInfoSlave.ui.h:3 ../data/glade/PriceEntrySlave.ui.h:2
 #: ../data/glade/PriceLabelSlave.ui.h:2
 msgid "Price ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/OpenInventoryDialog.ui.h:2
-msgid "Include uncategorized products"
-msgstr ""
-
-#: ../data/glade/OpenInventoryDialog.ui.h:5
+#: ../data/glade/OpenInventoryDialog.ui.h:1
 msgid "User:"
 msgstr ""
 
-#: ../data/glade/OpenInventoryDialog.ui.h:6
+#: ../data/glade/OpenInventoryDialog.ui.h:5
 #: ../data/glade/ProductionQuoteDialog.ui.h:2
-#: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:5
+#: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:3
 msgid "_Unselect All"
 msgstr ""
 
-#: ../data/glade/OpenProductionOrderStep.ui.h:3
+#: ../data/glade/OpenInventoryDialog.ui.h:6
+msgid "Include uncategorized products"
+msgstr ""
+
+#: ../data/glade/OpenProductionOrderStep.ui.h:6
 #: ../stoqlib/reporting/production.py:121
 msgid "Expected Start Date:"
 msgstr ""
@@ -1324,24 +1322,24 @@ msgstr ""
 msgid "Current Password:"
 msgstr ""
 
-#: ../data/glade/PasswordEditorSlave.ui.h:1
+#: ../data/glade/PasswordEditorSlave.ui.h:2
 msgid "Confirm password:"
 msgstr ""
 
-#: ../data/glade/PaymentCategoryEditor.ui.h:1
+#: ../data/glade/PaymentCategoryEditor.ui.h:2
 msgid "Color:"
 msgstr ""
 
 #: ../data/glade/PaymentChangeDialog.ui.h:1
-msgid "Change to:"
+#: ../data/glade/ProductionDetailsDialog.ui.h:4
+#: ../data/glade/PurchaseDetailsDialog.ui.h:4
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:3
+#: ../data/glade/StartPurchaseStep.ui.h:7
+msgid "Order Number:"
 msgstr ""
 
-#: ../data/glade/PaymentChangeDialog.ui.h:3
-#: ../data/glade/ProductionDetailsDialog.ui.h:9
-#: ../data/glade/PurchaseDetailsDialog.ui.h:12
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:16
-#: ../data/glade/StartPurchaseStep.ui.h:11
-msgid "Order Number:"
+#: ../data/glade/PaymentChangeDialog.ui.h:4
+msgid "Change to:"
 msgstr ""
 
 #: ../data/glade/PaymentFlowHistoryDialog.ui.h:1
@@ -1353,47 +1351,35 @@ msgstr ""
 msgid "Outstanding:"
 msgstr ""
 
+#: ../data/glade/PaymentMethodEditor.ui.h:1
+msgid "Default Account:"
+msgstr ""
+
+#: ../data/glade/PaymentMethodEditor.ui.h:2
+msgid "Maximum Installments:"
+msgstr ""
+
 #: ../data/glade/PaymentMethodEditor.ui.h:4
 msgid "Daily Penalty:"
 msgstr ""
 
-#: ../data/glade/PaymentMethodEditor.ui.h:5
-msgid "Default Account:"
-msgstr ""
-
-#: ../data/glade/PaymentMethodEditor.ui.h:7
-msgid "Maximum Installments:"
-msgstr ""
-
-#: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:1
+#: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:2
 msgid "<b>The following payments will be renegotiated.</b>"
 msgstr ""
 
-#: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:4
-#: ../data/glade/PurchaseDetailsDialog.ui.h:22
-#: ../data/glade/RenegotiationDetailsDialog.ui.h:11
-#: ../data/glade/SaleDetailsDialog.ui.h:17
-#: ../data/glade/SalesPersonStep.ui.h:15
+#: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:3
+#: ../data/glade/PurchaseDetailsDialog.ui.h:16
+#: ../data/glade/RenegotiationDetailsDialog.ui.h:8
+#: ../data/glade/SaleDetailsDialog.ui.h:11
+#: ../data/glade/SalesPersonStep.ui.h:13
 msgid "Subtotal:"
 msgstr ""
 
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:5
-#: ../data/glade/PurchaseDetailsDialog.ui.h:24
-#: ../data/glade/RenegotiationDetailsDialog.ui.h:12
-#: ../data/glade/SaleDetailsDialog.ui.h:18
+#: ../data/glade/PurchaseDetailsDialog.ui.h:15
+#: ../data/glade/RenegotiationDetailsDialog.ui.h:7
+#: ../data/glade/SaleDetailsDialog.ui.h:10
 msgid "Surcharge:"
-msgstr ""
-
-#: ../data/glade/PersonEditorTemplate.ui.h:1
-msgid "Calls..."
-msgstr ""
-
-#: ../data/glade/PersonEditorTemplate.ui.h:2
-msgid "Co_ntacts..."
-msgstr ""
-
-#: ../data/glade/PersonEditorTemplate.ui.h:3
-msgid "Custom Tab"
 msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:4
@@ -1401,32 +1387,44 @@ msgid "E-mail:"
 msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:5
-msgid "Extra Tab"
+msgid "Mobile:"
+msgstr ""
+
+#: ../data/glade/PersonEditorTemplate.ui.h:6
+msgid "Co_ntacts..."
 msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:7
-msgid "General Details"
+msgid "Calls..."
 msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:8
-msgid "Identification"
+msgid "More _Addresses..."
 msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:9
+msgid "Identification"
+msgstr ""
+
+#: ../data/glade/PersonEditorTemplate.ui.h:10
 #: ../stoqlib/gui/templates/persontemplate.py:169
 msgid "Individual/Company Data"
 msgstr ""
 
-#: ../data/glade/PersonEditorTemplate.ui.h:10
-msgid "Mobile:"
+#: ../data/glade/PersonEditorTemplate.ui.h:11
+msgid "General Details"
 msgstr ""
 
-#: ../data/glade/PersonEditorTemplate.ui.h:11
-msgid "More _Addresses..."
+#: ../data/glade/PersonEditorTemplate.ui.h:12
+msgid "Custom Tab"
+msgstr ""
+
+#: ../data/glade/PersonEditorTemplate.ui.h:13
+msgid "Extra Tab"
 msgstr ""
 
 #: ../data/glade/PersonRoleTypeStep.ui.h:1
-msgid "A new company"
+msgid "What kind of client are you adding ?"
 msgstr ""
 
 #: ../data/glade/PersonRoleTypeStep.ui.h:2
@@ -1434,11 +1432,11 @@ msgid "A new individual"
 msgstr ""
 
 #: ../data/glade/PersonRoleTypeStep.ui.h:3
-msgid "What is their phone number ?"
+msgid "A new company"
 msgstr ""
 
 #: ../data/glade/PersonRoleTypeStep.ui.h:4
-msgid "What kind of client are you adding ?"
+msgid "What is their phone number ?"
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:1
@@ -1446,96 +1444,97 @@ msgid "<b>Plugins</b>"
 msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:2
-msgid "ECF (Fiscal printer support)"
-msgstr ""
-
-#: ../data/glade/PluginStep.ui.h:3
-msgid "If you just want to test Stoq it is recommended to select no plugin."
-msgstr ""
-
-#: ../data/glade/PluginStep.ui.h:4
-msgid "NF-e (Eletronic Invoices)"
-msgstr ""
-
-#: ../data/glade/PluginStep.ui.h:5
 msgid ""
 "Once a plugin is activated it will not be possible to disable it.\n"
 "\n"
 "Select the plugins you want to enable:"
 msgstr ""
 
+#: ../data/glade/PluginStep.ui.h:5
+msgid "ECF (Fiscal printer support)"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:6
+msgid "TEF (Credit card support)"
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:7
+msgid "NF-e (Eletronic Invoices)"
+msgstr ""
+
 #: ../data/glade/PluginStep.ui.h:8
+msgid "If you just want to test Stoq it is recommended to select no plugin."
+msgstr ""
+
+#: ../data/glade/PluginStep.ui.h:9
 msgid ""
 "Select the plugins you would like to enable and then click <b>Forward</b> to "
 "continue."
 msgstr ""
 
-#: ../data/glade/PluginStep.ui.h:9
-msgid "TEF (Credit card support)"
+#: ../data/glade/ProducedItemSlave.ui.h:1
+msgid "Serial Number:"
 msgstr ""
 
-#: ../data/glade/ProducedItemSlave.ui.h:1
+#: ../data/glade/ProducedItemSlave.ui.h:2
 msgid ""
 "Inform only the first produced item serial number.\n"
 "Others will be calculated automaticaly"
 msgstr ""
 
-#: ../data/glade/ProducedItemSlave.ui.h:3
-msgid "Serial Number:"
-msgstr ""
-
-#: ../data/glade/ProductAdjustmentDialog.ui.h:2
-#: ../data/glade/ProductStockHistoryDialog.ui.h:4
+#: ../data/glade/ProductAdjustmentDialog.ui.h:1
+#: ../data/glade/ProductStockHistoryDialog.ui.h:1
 #: ../data/glade/ProductionProductSlave.ui.h:1
 msgid "Product:"
 msgstr ""
 
-#: ../data/glade/ProductAdjustmentDialog.ui.h:3
+#: ../data/glade/ProductAdjustmentDialog.ui.h:2
 msgid "Quantity for Adjustment:"
 msgstr ""
 
 #: ../data/glade/ProductComponentEditor.ui.h:1
-#: ../data/glade/ProductComponentSlave.ui.h:1
+#: ../data/glade/ProductComponentSlave.ui.h:3
 #: ../data/glade/ProductQualityTestSlave.ui.h:1
 msgid "Component:"
 msgstr ""
 
 #: ../data/glade/ProductComponentEditor.ui.h:2
-msgid "Design Reference:"
-msgstr ""
-
-#: ../data/glade/ProductComponentEditor.ui.h:3
-#: ../data/glade/ProductionItemEditor.ui.h:4
-#: ../data/glade/PurchaseItemEditor.ui.h:7
+#: ../data/glade/ProductionItemEditor.ui.h:3
+#: ../data/glade/PurchaseItemEditor.ui.h:8
 #: ../data/glade/ReceivingItemEditor.ui.h:6
-#: ../data/glade/SaleQuoteItemEditor.ui.h:6
-#: ../data/glade/SellableItemStep.ui.h:4 ../data/glade/pos.ui.h:4
+#: ../data/glade/SaleQuoteItemEditor.ui.h:7
+#: ../data/glade/SellableItemStep.ui.h:2 ../data/glade/pos.ui.h:3
 msgid "Quantity:"
 msgstr ""
 
-#: ../data/glade/ProductComponentSlave.ui.h:2
+#: ../data/glade/ProductComponentEditor.ui.h:3
+msgid "Design Reference:"
+msgstr ""
+
+#: ../data/glade/ProductComponentSlave.ui.h:1
 msgid "Production time:"
 msgstr ""
 
-#: ../data/glade/ProductComponentSlave.ui.h:3
-#: ../data/glade/ProductQualityTestSlave.ui.h:2
-msgid "Sort components by category"
+#: ../data/glade/ProductComponentSlave.ui.h:2 ../stoqlib/lib/prettydate.py:89
+msgid "days"
 msgstr ""
 
-#: ../data/glade/ProductComponentSlave.ui.h:4 ../stoqlib/lib/prettydate.py:89
-msgid "days"
+#: ../data/glade/ProductComponentSlave.ui.h:4
+#: ../data/glade/ProductQualityTestSlave.ui.h:2
+msgid "Sort components by category"
 msgstr ""
 
 #: ../data/glade/ProductImageViewer.ui.h:1
 msgid "Product Picture Viewer"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:2
-msgid "<b>Mercosul Details</b>"
+#: ../data/glade/ProductInformationSlave.ui.h:1
+#: ../data/glade/ProductionItemEditor.ui.h:4
+msgid "Location:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:3
-msgid "<b>Stock Details</b>"
+#: ../data/glade/ProductInformationSlave.ui.h:2
+msgid "Part-Number:"
 msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:4
@@ -1543,93 +1542,92 @@ msgid "Depth:"
 msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:5
-msgid "EX TIPI:"
+msgid "<b>Stock Details</b>"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:7
-msgid "Kg"
-msgstr ""
-
-#: ../data/glade/ProductInformationSlave.ui.h:8
-#: ../data/glade/ProductionItemEditor.ui.h:2
-msgid "Location:"
-msgstr ""
-
-#: ../data/glade/ProductInformationSlave.ui.h:9
-msgid "Manufacturer:"
-msgstr ""
-
-#: ../data/glade/ProductInformationSlave.ui.h:10
-msgid "Maximum:"
-msgstr ""
-
-#: ../data/glade/ProductInformationSlave.ui.h:11
+#: ../data/glade/ProductInformationSlave.ui.h:6
 #: ../data/glade/SellableItemStep.ui.h:3
 msgid "Minimum:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:12
+#: ../data/glade/ProductInformationSlave.ui.h:7
+msgid "<b>Mercosul Details</b>"
+msgstr ""
+
+#: ../data/glade/ProductInformationSlave.ui.h:8
 msgid "NCM:"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:13
-msgid "Part-Number:"
-msgstr ""
-
-#: ../data/glade/ProductInformationSlave.ui.h:14
+#: ../data/glade/ProductInformationSlave.ui.h:10
 msgid "Un"
 msgstr ""
 
-#: ../data/glade/ProductInformationSlave.ui.h:15
+#: ../data/glade/ProductInformationSlave.ui.h:11
+msgid "Manufacturer:"
+msgstr ""
+
+#: ../data/glade/ProductInformationSlave.ui.h:13
 msgid "Weight:"
 msgstr ""
 
-#: ../data/glade/ProductStockHistoryDialog.ui.h:1
-msgid "Current Stock Balance:"
+#: ../data/glade/ProductInformationSlave.ui.h:14
+msgid "Maximum:"
+msgstr ""
+
+#: ../data/glade/ProductInformationSlave.ui.h:15
+msgid "EX TIPI:"
+msgstr ""
+
+#: ../data/glade/ProductInformationSlave.ui.h:16
+msgid "Kg"
 msgstr ""
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:2
-msgid "Loans"
+msgid "Current Stock Balance:"
 msgstr ""
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:3
-msgid "Manual Decrease"
-msgstr ""
-
-#: ../data/glade/ProductStockHistoryDialog.ui.h:5
 msgid "Receivings"
 msgstr ""
 
-#: ../data/glade/ProductStockHistoryDialog.ui.h:7
+#: ../data/glade/ProductStockHistoryDialog.ui.h:5
 msgid "Transfers"
 msgstr ""
 
-#: ../data/glade/ProductSupplierEditor.ui.h:4
-#: ../data/glade/PurchaseItemEditor.ui.h:2
-#: ../data/glade/ReceivingItemEditor.ui.h:1
-msgid "1.00"
+#: ../data/glade/ProductStockHistoryDialog.ui.h:6
+msgid "Loans"
 msgstr ""
 
-#: ../data/glade/ProductSupplierEditor.ui.h:5
+#: ../data/glade/ProductStockHistoryDialog.ui.h:7
+msgid "Manual Decrease"
+msgstr ""
+
+#: ../data/glade/ProductSupplierEditor.ui.h:1
+msgid "Supplier Cost:"
+msgstr ""
+
+#: ../data/glade/ProductSupplierEditor.ui.h:2
+msgid "Lead Time:"
+msgstr ""
+
+#: ../data/glade/ProductSupplierEditor.ui.h:3
 msgid ""
 "Additional \n"
 "Information:"
 msgstr ""
 
-#: ../data/glade/ProductSupplierEditor.ui.h:7
+#: ../data/glade/ProductSupplierEditor.ui.h:6
 msgid "Day(s)"
 msgstr ""
 
-#: ../data/glade/ProductSupplierEditor.ui.h:9
-msgid "Lead Time:"
-msgstr ""
-
-#: ../data/glade/ProductSupplierEditor.ui.h:10
+#: ../data/glade/ProductSupplierEditor.ui.h:8
 msgid "Minimum Purchase:"
 msgstr ""
 
 #: ../data/glade/ProductSupplierEditor.ui.h:11
-msgid "Supplier Cost:"
+#: ../data/glade/PurchaseItemEditor.ui.h:10
+#: ../data/glade/ReceivingItemEditor.ui.h:8
+msgid "1.00"
 msgstr ""
 
 #: ../data/glade/ProductTaxSlave.ui.h:1
@@ -1641,58 +1639,58 @@ msgid "IPI Class:"
 msgstr ""
 
 #: ../data/glade/ProductionComponentSlave.ui.h:1
-msgid "CSV..."
-msgstr ""
-
-#: ../data/glade/ProductionComponentSlave.ui.h:2
 #: ../stoqlib/gui/editors/producteditor.py:681
 msgid "Components"
 msgstr ""
 
-#: ../data/glade/ProductionDetailsDialog.ui.h:1
-msgid "Add Produced"
+#: ../data/glade/ProductionComponentSlave.ui.h:2
+msgid "CSV..."
 msgstr ""
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:2
-msgid "Allocate More"
-msgstr ""
-
-#: ../data/glade/ProductionDetailsDialog.ui.h:4
 #: ../stoqlib/reporting/production.py:122
 msgid "Close Date:"
 msgstr ""
 
-#: ../data/glade/ProductionDetailsDialog.ui.h:5
-#: ../data/glade/RenegotiationDetailsDialog.ui.h:5
-#: ../data/glade/SaleDetailsDialog.ui.h:8 ../stoq/gui/sales.py:216
+#: ../data/glade/ProductionDetailsDialog.ui.h:6
+#: ../data/glade/PurchaseDetailsDialog.ui.h:6
+msgid "Order Status:"
+msgstr ""
+
+#: ../data/glade/ProductionDetailsDialog.ui.h:7
+msgid "Add Produced"
+msgstr ""
+
+#: ../data/glade/ProductionDetailsDialog.ui.h:8
+#: ../data/glade/RenegotiationDetailsDialog.ui.h:10
+#: ../data/glade/SaleDetailsDialog.ui.h:13 ../stoq/gui/sales.py:216
 #: ../stoqlib/gui/search/salesearch.py:83
 msgid "Items"
 msgstr ""
 
-#: ../data/glade/ProductionDetailsDialog.ui.h:6
+#: ../data/glade/ProductionDetailsDialog.ui.h:9
 msgid "Lost Material"
 msgstr ""
 
-#: ../data/glade/ProductionDetailsDialog.ui.h:7
+#: ../data/glade/ProductionDetailsDialog.ui.h:10
+msgid "Allocate More"
+msgstr ""
+
+#: ../data/glade/ProductionDetailsDialog.ui.h:11
 #: ../stoqlib/reporting/production.py:161
 msgid "Materials"
 msgstr ""
 
-#: ../data/glade/ProductionDetailsDialog.ui.h:10
-#: ../data/glade/PurchaseDetailsDialog.ui.h:13
-msgid "Order Status:"
-msgstr ""
-
-#: ../data/glade/ProductionDetailsDialog.ui.h:11
+#: ../data/glade/ProductionDetailsDialog.ui.h:12
 msgid "Produced Items"
 msgstr ""
 
-#: ../data/glade/ProductionItemEditor.ui.h:3
+#: ../data/glade/ProductionItemEditor.ui.h:1
 msgid "Production:"
 msgstr ""
 
 #: ../data/glade/ProductionItemEditor.ui.h:5
-#: ../data/glade/SellableEditor.ui.h:16
+#: ../data/glade/SellableEditor.ui.h:15
 msgid "Unit:"
 msgstr ""
 
@@ -1716,26 +1714,27 @@ msgstr ""
 msgid "Probing device..."
 msgstr ""
 
-#: ../data/glade/PurchaseDetailsDialog.ui.h:1
-msgid "Additional Info"
-msgstr ""
-
 #: ../data/glade/PurchaseDetailsDialog.ui.h:2
-msgid "Agreed Freight Type:"
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:2
+#: ../data/glade/StartPurchaseStep.ui.h:3
+#: ../data/glade/SupplierDetailsDialog.ui.h:1
+#: ../stoqlib/gui/dialogs/paymentchangedialog.py:73
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:339
+#: ../stoqlib/reporting/purchase.py:269 ../stoqlib/reporting/purchase.py:349
+msgid "Supplier:"
 msgstr ""
 
-#: ../data/glade/PurchaseDetailsDialog.ui.h:4
-#: ../data/glade/RenegotiationDetailsDialog.ui.h:2
-#: ../data/glade/SaleDetailsDialog.ui.h:2
+#: ../data/glade/PurchaseDetailsDialog.ui.h:10
+#: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:3
+#: ../data/glade/SaleDetailsDialog.ui.h:16
+#: ../data/glade/SaleReturnSlave.ui.h:4
+msgid "Total Paid:"
+msgstr ""
+
+#: ../data/glade/PurchaseDetailsDialog.ui.h:13
+#: ../data/glade/RenegotiationDetailsDialog.ui.h:12
+#: ../data/glade/SaleDetailsDialog.ui.h:18
 msgid "Changes"
-msgstr ""
-
-#: ../data/glade/PurchaseDetailsDialog.ui.h:6
-msgid "Expected Freight Value:"
-msgstr ""
-
-#: ../data/glade/PurchaseDetailsDialog.ui.h:8
-msgid "Export CSV"
 msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:14 ../stoq/gui/purchase.py:226
@@ -1757,34 +1756,32 @@ msgid "Received"
 msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:18
-msgid "Received Freight Type:"
-msgstr ""
-
-#: ../data/glade/PurchaseDetailsDialog.ui.h:19
-msgid "Received Freight Value:"
-msgstr ""
-
-#: ../data/glade/PurchaseDetailsDialog.ui.h:21
-#: ../data/glade/SaleDetailsDialog.ui.h:14
-#: ../data/glade/SalesPersonStep.ui.h:14
+#: ../data/glade/SaleDetailsDialog.ui.h:3 ../data/glade/SalesPersonStep.ui.h:1
 msgid "Salesperson:"
 msgstr ""
 
+#: ../data/glade/PurchaseDetailsDialog.ui.h:20
+msgid "Agreed Freight Type:"
+msgstr ""
+
+#: ../data/glade/PurchaseDetailsDialog.ui.h:21
+msgid "Received Freight Type:"
+msgstr ""
+
 #: ../data/glade/PurchaseDetailsDialog.ui.h:23
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:24
-#: ../data/glade/StartPurchaseStep.ui.h:12
-#: ../data/glade/SupplierDetailsDialog.ui.h:7
-#: ../stoqlib/gui/dialogs/paymentchangedialog.py:73
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:339
-#: ../stoqlib/reporting/purchase.py:269 ../stoqlib/reporting/purchase.py:349
-msgid "Supplier:"
+msgid "Expected Freight Value:"
+msgstr ""
+
+#: ../data/glade/PurchaseDetailsDialog.ui.h:24
+msgid "Received Freight Value:"
 msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:25
-#: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:3
-#: ../data/glade/SaleDetailsDialog.ui.h:19
-#: ../data/glade/SaleReturnSlave.ui.h:12
-msgid "Total Paid:"
+msgid "Additional Info"
+msgstr ""
+
+#: ../data/glade/PurchaseDetailsDialog.ui.h:27
+msgid "Export CSV"
 msgstr ""
 
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:1
@@ -1793,7 +1790,7 @@ msgid ""
 "the remaining value.</b>"
 msgstr ""
 
-#: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:4
+#: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:2
 #: ../stoqlib/gui/wizards/receivingwizard.py:201
 msgid "Total Received:"
 msgstr ""
@@ -1802,9 +1799,18 @@ msgstr ""
 msgid "<b>Products not received will be cancelled.</b>"
 msgstr ""
 
+#: ../data/glade/PurchaseItemEditor.ui.h:1
+#: ../data/glade/SaleQuoteItemEditor.ui.h:1
+msgid "Order:"
+msgstr ""
+
 #: ../data/glade/PurchaseItemEditor.ui.h:3
-#: ../data/glade/ReceivingItemEditor.ui.h:2
-#: ../data/glade/SellableItemStep.ui.h:1
+msgid "Sold Quantity:"
+msgstr ""
+
+#: ../data/glade/PurchaseItemEditor.ui.h:4
+#: ../data/glade/ReceivingItemEditor.ui.h:3
+#: ../data/glade/SellableItemStep.ui.h:4
 msgid "Cost:"
 msgstr ""
 
@@ -1812,42 +1818,33 @@ msgstr ""
 msgid "Expected receival:"
 msgstr ""
 
-#: ../data/glade/PurchaseItemEditor.ui.h:6
-#: ../data/glade/SaleQuoteItemEditor.ui.h:4
-msgid "Order:"
-msgstr ""
-
-#: ../data/glade/PurchaseItemEditor.ui.h:8
+#: ../data/glade/PurchaseItemEditor.ui.h:7
 msgid "Returned Quantity:"
 msgstr ""
 
-#: ../data/glade/PurchaseItemEditor.ui.h:9
-msgid "Sold Quantity:"
-msgstr ""
-
-#: ../data/glade/PurchasePaymentSlave.ui.h:3
-msgid "Based on intervals of:"
-msgstr ""
-
-#: ../data/glade/PurchasePaymentSlave.ui.h:4
+#: ../data/glade/PurchasePaymentSlave.ui.h:1
 msgid "Number of installments:"
 msgstr ""
 
-#: ../data/glade/PurchaseSelectionStep.ui.h:1
-#: ../data/glade/SaleListToolbar.ui.h:2
-msgid "_Details"
+#: ../data/glade/PurchasePaymentSlave.ui.h:2
+msgid "Based on intervals of:"
 msgstr ""
 
-#: ../data/glade/PurchaseSelectionStep.ui.h:2 ../data/glade/purchase.ui.h:1
+#: ../data/glade/PurchaseSelectionStep.ui.h:1 ../data/glade/purchase.ui.h:1
 #: ../stoqlib/reporting/purchase_receival.py:36
 msgid "purchase"
 msgstr ""
 
-#: ../data/glade/QualityTestEditor.ui.h:3
+#: ../data/glade/PurchaseSelectionStep.ui.h:2
+#: ../data/glade/SaleListToolbar.ui.h:3
+msgid "_Details"
+msgstr ""
+
+#: ../data/glade/QualityTestEditor.ui.h:2
 msgid "Success Value:"
 msgstr ""
 
-#: ../data/glade/QualityTestEditor.ui.h:4
+#: ../data/glade/QualityTestEditor.ui.h:5
 msgid "Test Type:"
 msgstr ""
 
@@ -1856,27 +1853,27 @@ msgid "Quality Test Result:"
 msgstr ""
 
 #: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:1
-msgid "C_reate Orders"
-msgstr ""
-
-#: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:2
-msgid "Cancel _Group"
-msgstr ""
-
-#: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:3
 msgid "Select one or more quoted items to compose an order:"
 msgstr ""
 
-#: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:4
+#: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:2
 msgid "_Select All"
 msgstr ""
 
+#: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:4
+msgid "C_reate Orders"
+msgstr ""
+
+#: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:5
+msgid "Cancel _Group"
+msgstr ""
+
 #: ../data/glade/QuoteSupplierStep.ui.h:1
-msgid "Include all products in quotes"
+msgid "Select one or more suppliers to generate quote(s):"
 msgstr ""
 
 #: ../data/glade/QuoteSupplierStep.ui.h:2
-msgid "Select one or more suppliers to generate quote(s):"
+msgid "_View Products"
 msgstr ""
 
 #: ../data/glade/QuoteSupplierStep.ui.h:3
@@ -1884,72 +1881,72 @@ msgid "_Missing Products"
 msgstr ""
 
 #: ../data/glade/QuoteSupplierStep.ui.h:4
-msgid "_View Products"
+msgid "Include all products in quotes"
 msgstr ""
 
-#. Do not translate $CURRENCY
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:6
-msgid "Freight ($CURRENCY):"
-msgstr ""
-
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:7
-#: ../data/glade/TransporterDataSlave.ui.h:4
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:8
+#: ../data/glade/TransporterDataSlave.ui.h:5
 #: ../stoqlib/reporting/purchase.py:339
 msgid "Freight:"
 msgstr ""
 
-#. Do not translate $CURRENCY
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:9
-msgid "ICMS Total ($CURRENCY):"
-msgstr ""
-
-#. Do not translate $CURRENCY
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:11
-msgid "IPI ($CURRENCY):"
-msgstr ""
-
-#. Do not translate $CURRENCY
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:14
-msgid "Invoice Total ($CURRENCY):"
-msgstr ""
-
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:15
-#: ../data/glade/SalesPersonStep.ui.h:11
+#: ../data/glade/SalesPersonStep.ui.h:16
 msgid "Notes..."
 msgstr ""
 
 #. Do not translate $CURRENCY
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:18
-msgid "Others Expenditures ($CURRENCY):"
-msgstr ""
-
-#. Do not translate $CURRENCY
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:20
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:11
 msgid "Products Total ($CURRENCY):"
 msgstr ""
 
 #. Do not translate $CURRENCY
-#: ../data/glade/ReceivingInvoiceSlave.ui.h:23
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:13
+msgid "Freight ($CURRENCY):"
+msgstr ""
+
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:15
+msgid "IPI ($CURRENCY):"
+msgstr ""
+
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:17
+msgid "ICMS Total ($CURRENCY):"
+msgstr ""
+
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:21
 msgid "Secure ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/ReceivingItemEditor.ui.h:4
-msgid "Purchase Order:"
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:23
+msgid "Others Expenditures ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/ReceivingItemEditor.ui.h:5
-msgid "Quantity to Receive:"
+#. Do not translate $CURRENCY
+#: ../data/glade/ReceivingInvoiceSlave.ui.h:25
+msgid "Invoice Total ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/ReceivingItemEditor.ui.h:7
+#: ../data/glade/ReceivingItemEditor.ui.h:1
 msgid "Receiving Order:"
 msgstr ""
 
-#: ../data/glade/ReceivingOrderDetailsDialog.ui.h:2
+#: ../data/glade/ReceivingItemEditor.ui.h:4
+msgid "Quantity to Receive:"
+msgstr ""
+
+#: ../data/glade/ReceivingItemEditor.ui.h:5
+msgid "Purchase Order:"
+msgstr ""
+
+#: ../data/glade/ReceivingOrderDetailsDialog.ui.h:1
 msgid "Received Products"
 msgstr ""
 
-#: ../data/glade/ReceivingOrderDetailsDialog.ui.h:3
+#: ../data/glade/ReceivingOrderDetailsDialog.ui.h:2
 #: ../stoqlib/gui/editors/paymenteditor.py:355
 #: ../stoqlib/reporting/purchase.py:295
 msgid "Receiving Details"
@@ -1967,104 +1964,96 @@ msgstr ""
 msgid "<b>Sale Number:</b>"
 msgstr ""
 
-#: ../data/glade/SaleDetailsDialog.ui.h:3
+#: ../data/glade/SaleDetailsDialog.ui.h:7
 msgid "Client details"
 msgstr ""
 
-#: ../data/glade/SaleDetailsDialog.ui.h:13
-msgid "Print Bills"
-msgstr ""
-
-#: ../data/glade/SaleDetailsDialog.ui.h:15
+#: ../data/glade/SaleDetailsDialog.ui.h:8
 msgid "Status details"
 msgstr ""
 
-#: ../data/glade/SaleInvoicePrinterDialog.ui.h:2
+#: ../data/glade/SaleDetailsDialog.ui.h:20
+msgid "Print Bills"
+msgstr ""
+
+#: ../data/glade/SaleInvoicePrinterDialog.ui.h:1
 msgid "<b>Invoice Number:</b>"
 msgstr ""
 
-#: ../data/glade/SaleListToolbar.ui.h:1 ../data/glade/pos.ui.h:3
-msgid "Ed_it"
-msgstr ""
-
-#: ../data/glade/SaleListToolbar.ui.h:3
-msgid "_Print"
-msgstr ""
-
-#: ../data/glade/SaleListToolbar.ui.h:4
+#: ../data/glade/SaleListToolbar.ui.h:1
 msgid "_Return"
 msgstr ""
 
-#: ../data/glade/SaleQuoteItemEditor.ui.h:1
+#: ../data/glade/SaleListToolbar.ui.h:2 ../data/glade/pos.ui.h:8
+msgid "Ed_it"
+msgstr ""
+
+#: ../data/glade/SaleListToolbar.ui.h:4
+msgid "_Print"
+msgstr ""
+
+#: ../data/glade/SaleQuoteItemEditor.ui.h:3
+msgid "Sale Quantity:"
+msgstr ""
+
+#: ../data/glade/SaleQuoteItemEditor.ui.h:4
+msgid "Price:"
+msgstr ""
+
+#: ../data/glade/SaleQuoteItemEditor.ui.h:5
+msgid "CFOP:"
+msgstr ""
+
+#: ../data/glade/SaleQuoteItemEditor.ui.h:6
+msgid "Return Quantity:"
+msgstr ""
+
+#: ../data/glade/SaleQuoteItemEditor.ui.h:9
 #: ../stoqlib/gui/editors/saleeditor.py:71
 msgid "Basic"
 msgstr ""
 
-#: ../data/glade/SaleQuoteItemEditor.ui.h:2
-msgid "CFOP:"
-msgstr ""
-
-#: ../data/glade/SaleQuoteItemEditor.ui.h:5
-msgid "Price:"
-msgstr ""
-
-#: ../data/glade/SaleQuoteItemEditor.ui.h:7
-msgid "Return Quantity:"
-msgstr ""
-
-#: ../data/glade/SaleQuoteItemEditor.ui.h:8
-msgid "Sale Quantity:"
-msgstr ""
-
-#: ../data/glade/SaleReturnSlave.ui.h:1
-msgid "<b>Cancellation Details:</b>"
-msgstr ""
-
 #: ../data/glade/SaleReturnSlave.ui.h:2
-msgid "Cancel Date:"
+msgid "Order Total:"
 msgstr ""
 
 #: ../data/glade/SaleReturnSlave.ui.h:3
-msgid "Cancellation Type:"
+msgid "<b>Cancellation Details:</b>"
 msgstr ""
 
 #. Do not translate $CURRENCY
-#: ../data/glade/SaleReturnSlave.ui.h:5
+#: ../data/glade/SaleReturnSlave.ui.h:6
 msgid "Deduction ($CURRENCY):"
 msgstr ""
 
 #: ../data/glade/SaleReturnSlave.ui.h:7
-msgid "Order Total:"
-msgstr ""
-
-#: ../data/glade/SaleReturnSlave.ui.h:10
-msgid "Return Invoice Number:"
-msgstr ""
-
-#: ../data/glade/SaleReturnSlave.ui.h:11
 msgid "Return Value:"
 msgstr ""
 
-#: ../data/glade/SalesPersonStep.ui.h:1
-msgid "0.00"
+#: ../data/glade/SaleReturnSlave.ui.h:9
+msgid "Cancellation Type:"
 msgstr ""
 
-#: ../data/glade/SalesPersonStep.ui.h:2
-msgid "Add a new C.F.O.P."
+#: ../data/glade/SaleReturnSlave.ui.h:10
+msgid "Cancel Date:"
 msgstr ""
 
-#: ../data/glade/SalesPersonStep.ui.h:3
+#: ../data/glade/SaleReturnSlave.ui.h:11
+msgid "Return Invoice Number:"
+msgstr ""
+
+#: ../data/glade/SalesPersonStep.ui.h:4
+msgid "Operation Nature:"
+msgstr ""
+
+#: ../data/glade/SalesPersonStep.ui.h:5
 #: ../stoqlib/gui/editors/paymenteditor.py:111
 msgid "Add a new client"
 msgstr ""
 
-#: ../data/glade/SalesPersonStep.ui.h:4
+#: ../data/glade/SalesPersonStep.ui.h:6
 #: ../stoqlib/gui/wizards/purchasewizard.py:430
 msgid "Add a new transporter"
-msgstr ""
-
-#: ../data/glade/SalesPersonStep.ui.h:6
-msgid "Client Category:"
 msgstr ""
 
 #: ../data/glade/SalesPersonStep.ui.h:7
@@ -2076,27 +2065,35 @@ msgstr ""
 msgid "Expire"
 msgstr ""
 
-#: ../data/glade/SalesPersonStep.ui.h:12
-msgid "Operation Nature:"
+#: ../data/glade/SalesPersonStep.ui.h:11
+msgid "Add a new C.F.O.P."
 msgstr ""
 
-#: ../data/glade/SalesPersonStep.ui.h:13
+#: ../data/glade/SalesPersonStep.ui.h:12
+msgid "Client Category:"
+msgstr ""
+
+#: ../data/glade/SalesPersonStep.ui.h:15
+msgid "0.00"
+msgstr ""
+
+#: ../data/glade/SalesPersonStep.ui.h:17
 msgid "Order Details"
 msgstr ""
 
-#: ../data/glade/SearchEditor.ui.h:2
+#: ../data/glade/SearchEditor.ui.h:1
 msgid "_New..."
 msgstr ""
 
 #: ../data/glade/SelectPaymentMethodSlave.ui.h:1
-msgid "C_ash"
-msgstr ""
-
-#: ../data/glade/SelectPaymentMethodSlave.ui.h:2
 msgid "Payment method:"
 msgstr ""
 
-#: ../data/glade/SellableCategoryDataSlave.ui.h:3
+#: ../data/glade/SelectPaymentMethodSlave.ui.h:2
+msgid "C_ash"
+msgstr ""
+
+#: ../data/glade/SellableCategoryDataSlave.ui.h:2
 msgid "Base Category:"
 msgstr ""
 
@@ -2108,21 +2105,35 @@ msgstr ""
 msgid "Right-click image for more options"
 msgstr ""
 
-#: ../data/glade/SellableEditor.ui.h:3 ../data/glade/pos.ui.h:2
+#: ../data/glade/SellableEditor.ui.h:2 ../data/glade/pos.ui.h:2
 msgid "Barcode:"
 msgstr ""
 
+#: ../data/glade/SellableEditor.ui.h:3
+msgid "Default Sales C.F.O.P.:"
+msgstr ""
+
+#. Do not translate $CURRENCY
 #: ../data/glade/SellableEditor.ui.h:6
-msgid "Consignment:"
+msgid "Cost ($CURRENCY):"
 msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/SellableEditor.ui.h:8
-msgid "Cost ($CURRENCY):"
+#: ../data/glade/SellablePriceEditor.ui.h:7
+msgid "Sale Price ($CURRENCY):"
 msgstr ""
 
 #: ../data/glade/SellableEditor.ui.h:9
-msgid "Default Sales C.F.O.P.:"
+msgid "Consignment:"
+msgstr ""
+
+#: ../data/glade/SellableEditor.ui.h:10 ../stoqlib/gui/base/dialogs.py:502
+#: ../stoqlib/gui/dialogs/productiondialog.py:155
+#: ../stoqlib/gui/editors/parameterseditor.py:156
+#: ../stoqlib/gui/search/parametersearch.py:95
+#: ../stoqlib/gui/wizards/personwizard.py:98
+msgid "Yes"
 msgstr ""
 
 #: ../data/glade/SellableEditor.ui.h:11 ../stoqlib/gui/base/dialogs.py:502
@@ -2132,26 +2143,12 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#. Do not translate $CURRENCY
-#: ../data/glade/SellableEditor.ui.h:13
-#: ../data/glade/SellablePriceEditor.ui.h:10
-msgid "Sale Price ($CURRENCY):"
-msgstr ""
-
-#: ../data/glade/SellableEditor.ui.h:15
-#: ../data/glade/TributarySituationSlave.ui.h:3
+#: ../data/glade/SellableEditor.ui.h:14
+#: ../data/glade/TributarySituationSlave.ui.h:1
 msgid "Tributary Situation:"
 msgstr ""
 
-#: ../data/glade/SellableEditor.ui.h:17 ../stoqlib/gui/base/dialogs.py:502
-#: ../stoqlib/gui/dialogs/productiondialog.py:155
-#: ../stoqlib/gui/editors/parameterseditor.py:156
-#: ../stoqlib/gui/search/parametersearch.py:95
-#: ../stoqlib/gui/wizards/personwizard.py:98
-msgid "Yes"
-msgstr ""
-
-#: ../data/glade/SellableItemStep.ui.h:2
+#: ../data/glade/SellableItemStep.ui.h:1
 msgid "Item:"
 msgstr ""
 
@@ -2159,7 +2156,7 @@ msgstr ""
 msgid "Stock:"
 msgstr ""
 
-#: ../data/glade/SellablePriceDialog.ui.h:3
+#: ../data/glade/SellablePriceDialog.ui.h:1
 msgid "Apply Markup:"
 msgstr ""
 
@@ -2167,51 +2164,45 @@ msgstr ""
 msgid "on category"
 msgstr ""
 
-#: ../data/glade/SellablePriceEditor.ui.h:4
-#, no-c-format
-msgid "%  "
-msgstr ""
-
-#: ../data/glade/SellablePriceEditor.ui.h:5
-msgid "0,00"
-msgstr ""
-
-#: ../data/glade/SellablePriceEditor.ui.h:6
+#: ../data/glade/SellablePriceEditor.ui.h:1
 msgid "Base Cost:"
 msgstr ""
 
-#: ../data/glade/SellablePriceEditor.ui.h:7
+#: ../data/glade/SellablePriceEditor.ui.h:2
+msgid "0,00"
+msgstr ""
+
+#: ../data/glade/SellablePriceEditor.ui.h:3
 msgid "Markup:"
+msgstr ""
+
+#: ../data/glade/SellablePriceEditor.ui.h:5
+#, no-c-format
+msgid "%  "
 msgstr ""
 
 #: ../data/glade/SellablePriceEditor.ui.h:8
 msgid "Max Discount:"
 msgstr ""
 
-#: ../data/glade/SellableUnitEditor.ui.h:1
+#: ../data/glade/SellableUnitEditor.ui.h:2
 msgid "Allow Fractions (e.g 0.5Kg, 0.75mL)"
 msgstr ""
 
 #: ../data/glade/ServiceItemEditor.ui.h:1
-msgid "  Price:"
+msgid "Estimated Fix Date:"
 msgstr ""
 
 #: ../data/glade/ServiceItemEditor.ui.h:2
-msgid "Estimated Fix Date:"
+msgid "  Price:"
 msgstr ""
 
 #: ../data/glade/ServiceItemEditor.ui.h:3
 msgid "Service Details:"
 msgstr ""
 
-#. Do not translate $CURRENCY
-#: ../data/glade/StartPurchaseStep.ui.h:2
-msgid "$CURRENCY"
-msgstr ""
-
-#: ../data/glade/StartPurchaseStep.ui.h:3
-#: ../stoqlib/gui/editors/paymenteditor.py:108
-msgid "Add a new supplier"
+#: ../data/glade/StartPurchaseStep.ui.h:4
+msgid "Freight Type:"
 msgstr ""
 
 #: ../data/glade/StartPurchaseStep.ui.h:5
@@ -2219,19 +2210,31 @@ msgid "CIF (Cost Insurance Freight)"
 msgstr ""
 
 #: ../data/glade/StartPurchaseStep.ui.h:6
-msgid "Edit selected supplier"
-msgstr ""
-
-#: ../data/glade/StartPurchaseStep.ui.h:7
-msgid "Expected Freight:"
-msgstr ""
-
-#: ../data/glade/StartPurchaseStep.ui.h:8
 msgid "FOB (Free On Board)"
 msgstr ""
 
-#: ../data/glade/StartPurchaseStep.ui.h:9
-msgid "Freight Type:"
+#: ../data/glade/StartPurchaseStep.ui.h:8
+msgid "Expected Freight:"
+msgstr ""
+
+#. Do not translate $CURRENCY
+#: ../data/glade/StartPurchaseStep.ui.h:10
+msgid "$CURRENCY"
+msgstr ""
+
+#: ../data/glade/StartPurchaseStep.ui.h:11
+#: ../stoqlib/gui/editors/paymenteditor.py:108
+msgid "Add a new supplier"
+msgstr ""
+
+#: ../data/glade/StartPurchaseStep.ui.h:12
+msgid "Edit selected supplier"
+msgstr ""
+
+#: ../data/glade/StartQuoteStep.ui.h:1
+#: ../data/glade/StockTransferFinishStep.ui.h:2
+#: ../data/glade/TransferOrderDetails.ui.h:1
+msgid "Open date:"
 msgstr ""
 
 #. To be filled
@@ -2240,34 +2243,28 @@ msgid "Deadline:"
 msgstr ""
 
 #: ../data/glade/StartQuoteStep.ui.h:4
-#: ../data/glade/StockTransferFinishStep.ui.h:1
-#: ../data/glade/TransferOrderDetails.ui.h:2
-msgid "Open date:"
-msgstr ""
-
-#: ../data/glade/StartQuoteStep.ui.h:5
 msgid "Quote group:"
 msgstr ""
 
-#: ../data/glade/StartStockDecreaseStep.ui.h:2
-#: ../data/glade/StockDecreaseDetails.ui.h:2
-msgid "Cfop:"
-msgstr ""
-
 #. Transporter/RemovedBy Combo
-#: ../data/glade/StartStockDecreaseStep.ui.h:5
-#: ../data/glade/StockDecreaseDetails.ui.h:6
+#: ../data/glade/StartStockDecreaseStep.ui.h:3
+#: ../data/glade/StockDecreaseDetails.ui.h:5
 #: ../stoqlib/gui/wizards/loanwizard.py:105
 #: ../stoqlib/reporting/loanreceipt.py:85
 #: ../stoqlib/reporting/stockdecreasereceipt.py:71
 msgid "Removed By:"
 msgstr ""
 
-#: ../data/glade/StationEditor.ui.h:1
+#: ../data/glade/StartStockDecreaseStep.ui.h:5
+#: ../data/glade/StockDecreaseDetails.ui.h:4
+msgid "Cfop:"
+msgstr ""
+
+#: ../data/glade/StationEditor.ui.h:2
 msgid "Active:"
 msgstr ""
 
-#: ../data/glade/StockDecreaseDetails.ui.h:5
+#: ../data/glade/StockDecreaseDetails.ui.h:7
 #: ../stoqlib/gui/dialogs/purchasedetails.py:236
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:156
 #: ../stoqlib/gui/dialogs/saledetails.py:189
@@ -2276,13 +2273,12 @@ msgstr ""
 msgid "Reason"
 msgstr ""
 
-#: ../data/glade/StockTransferFinishStep.ui.h:2
-#: ../data/glade/TransferOrderDetails.ui.h:3
-msgid "Receival date:"
+#: ../data/glade/StockTransferFinishStep.ui.h:1
+msgid "Sending branch:"
 msgstr ""
 
 #: ../data/glade/StockTransferFinishStep.ui.h:3
-msgid "Receiver:"
+msgid "Sender:"
 msgstr ""
 
 #: ../data/glade/StockTransferFinishStep.ui.h:4
@@ -2290,11 +2286,12 @@ msgid "Receiving branch:"
 msgstr ""
 
 #: ../data/glade/StockTransferFinishStep.ui.h:5
-msgid "Sender:"
+#: ../data/glade/TransferOrderDetails.ui.h:4
+msgid "Receival date:"
 msgstr ""
 
 #: ../data/glade/StockTransferFinishStep.ui.h:6
-msgid "Sending branch:"
+msgid "Receiver:"
 msgstr ""
 
 #: ../data/glade/SupplierDetailsDialog.ui.h:5
@@ -2302,18 +2299,26 @@ msgid "Purchases"
 msgstr ""
 
 #: ../data/glade/SupplierDetailsSlave.ui.h:1
-msgid "Product Types:"
-msgstr ""
-
-#: ../data/glade/SupplierDetailsSlave.ui.h:2
 msgid "Supplier Status:"
 msgstr ""
 
+#: ../data/glade/SupplierDetailsSlave.ui.h:2
+msgid "Product Types:"
+msgstr ""
+
 #: ../data/glade/SystemParameterEditor.ui.h:1
+msgid "Group:"
+msgstr ""
+
+#: ../data/glade/SystemParameterEditor.ui.h:2
+msgid "Parameter Name:"
+msgstr ""
+
+#: ../data/glade/SystemParameterEditor.ui.h:3
 msgid "Current Value:"
 msgstr ""
 
-#: ../data/glade/SystemParameterEditor.ui.h:2 ../stoqlib/lib/parameters.py:154
+#: ../data/glade/SystemParameterEditor.ui.h:4 ../stoqlib/lib/parameters.py:154
 #: ../stoqlib/lib/parameters.py:162 ../stoqlib/lib/parameters.py:171
 #: ../stoqlib/lib/parameters.py:213 ../stoqlib/lib/parameters.py:265
 #: ../stoqlib/lib/parameters.py:273 ../stoqlib/lib/parameters.py:281
@@ -2321,14 +2326,6 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:453 ../stoqlib/lib/parameters.py:460
 #: ../stoqlib/lib/parameters.py:527 ../stoqlib/lib/parameters.py:547
 msgid "General"
-msgstr ""
-
-#: ../data/glade/SystemParameterEditor.ui.h:3
-msgid "Group:"
-msgstr ""
-
-#: ../data/glade/SystemParameterEditor.ui.h:4
-msgid "Parameter Name:"
 msgstr ""
 
 #: ../data/glade/TaxICMSSlave.ui.h:1
@@ -2341,81 +2338,81 @@ msgstr ""
 
 #: ../data/glade/TefStep.ui.h:2
 msgid ""
-"An error ocurred sending your details. Please <a href=\"http://www.stoq.com."
-"br/contato\">contact us</a>."
-msgstr ""
-
-#: ../data/glade/TefStep.ui.h:3
-msgid "Email:"
-msgstr ""
-
-#: ../data/glade/TefStep.ui.h:4
-msgid ""
 "Enabling TEF requires installing additional software.\n"
 "\n"
 "Please fill in your details and will contact you within two business days:"
 msgstr ""
 
+#: ../data/glade/TefStep.ui.h:6
+msgid "Email:"
+msgstr ""
+
 #: ../data/glade/TefStep.ui.h:7
-msgid "Enviando Dados..."
-msgstr ""
-
-#: ../data/glade/TefStep.ui.h:8
-msgid "Fill in the form above and then click <b>Forward</b> to continue."
-msgstr ""
-
-#: ../data/glade/TefStep.ui.h:10
 msgid "Phone:"
 msgstr ""
 
+#: ../data/glade/TefStep.ui.h:8
+msgid "Enviando Dados..."
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:9
+msgid ""
+"An error ocurred sending your details. Please <a href=\"http://www.stoq.com."
+"br/contato\">contact us</a>."
+msgstr ""
+
+#: ../data/glade/TefStep.ui.h:10
+msgid "Fill in the form above and then click <b>Forward</b> to continue."
+msgstr ""
+
 #: ../data/glade/TillClosing.ui.h:1
-msgid "<b>Cash Amounts:</b>"
+msgid "Till Closing"
 msgstr ""
 
 #: ../data/glade/TillClosing.ui.h:2
 msgid "<b>General Details:</b>"
 msgstr ""
 
-#. Do not translate $CURRENCY
 #: ../data/glade/TillClosing.ui.h:4
-msgid "Amount Removed ($CURRENCY):"
+msgid "<b>Cash Amounts:</b>"
 msgstr ""
 
 #: ../data/glade/TillClosing.ui.h:5
 msgid "Float Remaining:"
 msgstr ""
 
+#. Do not translate $CURRENCY
 #: ../data/glade/TillClosing.ui.h:7
-msgid "Till Closing"
+msgid "Amount Removed ($CURRENCY):"
 msgstr ""
 
 #: ../data/glade/TillFiscalOperationsToolbar.ui.h:1
+msgid "Till Out..."
+msgstr ""
+
+#: ../data/glade/TillFiscalOperationsToolbar.ui.h:2
 #: ../stoqlib/gui/fiscalprinter.py:400 ../stoqlib/gui/fiscalprinter.py:407
 msgid "Resume"
 msgstr ""
 
-#: ../data/glade/TillFiscalOperationsToolbar.ui.h:2
-msgid "Till Out..."
-msgstr ""
-
-#. Do not translate $CURRENCY
-#: ../data/glade/TillOpening.ui.h:3
-msgid "Cash to add ($CURRENCY):"
-msgstr ""
-
-#: ../data/glade/TillOpening.ui.h:4 ../stoqlib/gui/editors/tilleditor.py:95
+#: ../data/glade/TillOpening.ui.h:1 ../stoqlib/gui/editors/tilleditor.py:95
 msgid "Till Opening"
 msgstr ""
 
-#: ../data/glade/TransferOrderDetails.ui.h:1
-msgid "Destination:"
+#. Do not translate $CURRENCY
+#: ../data/glade/TillOpening.ui.h:4
+msgid "Cash to add ($CURRENCY):"
 msgstr ""
 
-#: ../data/glade/TransferOrderDetails.ui.h:5
+#: ../data/glade/TransferOrderDetails.ui.h:2
 msgid "Source:"
 msgstr ""
 
-#: ../data/glade/TransporterDataSlave.ui.h:7
+#: ../data/glade/TransferOrderDetails.ui.h:5
+msgid "Destination:"
+msgstr ""
+
+#: ../data/glade/TransporterDataSlave.ui.h:1
 msgid "Transporter Status:"
 msgstr ""
 
@@ -2424,6 +2421,10 @@ msgid "<b>Updating Database Schema</b>"
 msgstr ""
 
 #: ../data/glade/UpdateWelcomeStep.ui.h:1
+msgid "Update Database"
+msgstr ""
+
+#: ../data/glade/UpdateWelcomeStep.ui.h:2
 msgid ""
 "Stoq was already updated, but we still need to update the database schema.\n"
 "\n"
@@ -2435,24 +2436,24 @@ msgid ""
 "updating."
 msgstr ""
 
-#: ../data/glade/UpdateWelcomeStep.ui.h:8
-msgid "Update Database"
-msgstr ""
-
-#: ../data/glade/UserDetailsSlave.ui.h:1
-msgid "Change Password..."
-msgstr ""
-
 #: ../data/glade/UserDetailsSlave.ui.h:2
 msgid "Profile:"
 msgstr ""
 
+#: ../data/glade/UserDetailsSlave.ui.h:4
+msgid "Change Password..."
+msgstr ""
+
 #: ../data/glade/UserProfileEditor.ui.h:1
-msgid "Available Applications:"
+msgid "Profile Name:"
 msgstr ""
 
 #: ../data/glade/UserProfileEditor.ui.h:2
-msgid "Profile Name:"
+msgid "Available Applications:"
+msgstr ""
+
+#: ../data/glade/WelcomeStep.ui.h:1
+msgid "Welcome to the Stoq installation wizard."
 msgstr ""
 
 #: ../data/glade/WelcomeStep.ui.h:2
@@ -2468,23 +2469,23 @@ msgid ""
 "stoq.com.br/contato\">contact us</a>."
 msgstr ""
 
-#: ../data/glade/WelcomeStep.ui.h:7
-msgid "Welcome to the Stoq installation wizard."
-msgstr ""
-
 #: ../data/glade/admin.ui.h:1
 msgctxt "yes"
 msgid "launcher"
 msgstr ""
 
-#: ../data/glade/financial.ui.h:1 ../stoq/gui/financial.py:424
-#: ../stoq/gui/financial.py:516 ../stoqlib/lib/parameters.py:506
-#: ../stoqlib/lib/parameters.py:513 ../stoqlib/lib/parameters.py:520
-msgid "Accounts"
+#: ../data/glade/calendar.ui.h:1
+msgid "calendar"
 msgstr ""
 
-#: ../data/glade/financial.ui.h:2 ../data/glade/payable.ui.h:1
+#: ../data/glade/financial.ui.h:1 ../data/glade/payable.ui.h:1
 msgid "payable"
+msgstr ""
+
+#: ../data/glade/financial.ui.h:2 ../stoq/gui/financial.py:425
+#: ../stoq/gui/financial.py:517 ../stoqlib/lib/parameters.py:506
+#: ../stoqlib/lib/parameters.py:513 ../stoqlib/lib/parameters.py:520
+msgid "Accounts"
 msgstr ""
 
 #: ../data/glade/inventory.ui.h:1
@@ -2497,22 +2498,22 @@ msgid "admin"
 msgstr ""
 
 #: ../data/glade/pos.ui.h:1
+msgid "STOQ - POS Application"
+msgstr ""
+
+#: ../data/glade/pos.ui.h:4
 msgid "Add a product or service by barcode"
 msgstr ""
 
 #: ../data/glade/pos.ui.h:5
-msgid "STOQ - POS Application"
-msgstr ""
-
-#: ../data/glade/pos.ui.h:6
 msgid "Search for products and services by barcode or name"
 msgstr ""
 
-#: ../data/glade/pos.ui.h:7 ../stoq/gui/pos.py:281
+#: ../data/glade/pos.ui.h:6 ../stoq/gui/pos.py:281
 msgid "_Checkout"
 msgstr ""
 
-#: ../data/glade/pos.ui.h:8
+#: ../data/glade/pos.ui.h:7
 msgid "_Delivery"
 msgstr ""
 
@@ -2613,8 +2614,8 @@ msgid "Barcode"
 msgstr ""
 
 #. XXX Bug #2430 will improve this part
-#: ../plugins/books/bookssearch.py:85 ../stoq/gui/financial.py:225
-#: ../stoq/gui/financial.py:243 ../stoq/gui/inventory.py:134
+#: ../plugins/books/bookssearch.py:85 ../stoq/gui/financial.py:226
+#: ../stoq/gui/financial.py:244 ../stoq/gui/inventory.py:134
 #: ../stoq/gui/stock.py:207 ../stoqlib/gui/accounttree.py:71
 #: ../stoqlib/gui/dialogs/clientdetails.py:105
 #: ../stoqlib/gui/dialogs/clientdetails.py:119
@@ -2784,28 +2785,32 @@ msgstr ""
 msgid "Publishers ..."
 msgstr ""
 
-#: ../plugins/books/glade/ProductBookSlave.ui.h:2
+#: ../plugins/books/glade/ProductBookSlave.ui.h:1
 msgid "Author:"
 msgstr ""
 
+#: ../plugins/books/glade/ProductBookSlave.ui.h:2
+msgid "Series/Collection:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.ui.h:3
+msgid "Subject:"
+msgstr ""
+
 #: ../plugins/books/glade/ProductBookSlave.ui.h:4
-msgid "Decorative Finish:"
-msgstr ""
-
-#: ../plugins/books/glade/ProductBookSlave.ui.h:5
-msgid "Edition:"
-msgstr ""
-
-#: ../plugins/books/glade/ProductBookSlave.ui.h:6
 msgid "ISBN:"
 msgstr ""
 
-#: ../plugins/books/glade/ProductBookSlave.ui.h:7
-msgid "Language:"
+#: ../plugins/books/glade/ProductBookSlave.ui.h:5
+msgid "Year:"
 msgstr ""
 
-#: ../plugins/books/glade/ProductBookSlave.ui.h:8
-msgid "Pages:"
+#: ../plugins/books/glade/ProductBookSlave.ui.h:6
+msgid "Decorative Finish:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.ui.h:7
+msgid "Synopsis:"
 msgstr ""
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:9
@@ -2813,19 +2818,15 @@ msgid "Publisher:"
 msgstr ""
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:10
-msgid "Series/Collection:"
+msgid "Edition:"
 msgstr ""
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:11
-msgid "Subject:"
+msgid "Language:"
 msgstr ""
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:12
-msgid "Synopsis:"
-msgstr ""
-
-#: ../plugins/books/glade/ProductBookSlave.ui.h:13
-msgid "Year:"
+msgid "Pages:"
 msgstr ""
 
 #: ../plugins/books/publishersearch.py:42
@@ -2900,7 +2901,7 @@ msgstr ""
 msgid "Device constant"
 msgstr ""
 
-#: ../plugins/ecf/deviceconstanteditor.py:135 ../stoq/gui/financial.py:245
+#: ../plugins/ecf/deviceconstanteditor.py:135 ../stoq/gui/financial.py:246
 #: ../stoq/gui/payable.py:179 ../stoq/gui/receivable.py:180
 #: ../stoqlib/gui/dialogs/clientdetails.py:142
 #: ../stoqlib/gui/dialogs/purchasedetails.py:213
@@ -3192,17 +3193,19 @@ msgid "Cancelling sale failed, nothing to cancel"
 msgstr ""
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:1
-msgid ""
-"<b>You can get the following information on a fiscal memory read from the "
-"printer</b>"
+msgid "Printer:"
 msgstr ""
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:3
-msgid "Edit Constants ..."
+msgid "Serial:"
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:4
+msgid "User Number:"
 msgstr ""
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:5
-msgid "Printer:"
+msgid "Register Date:"
 msgstr ""
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:6
@@ -3210,30 +3213,28 @@ msgid "Register CRO:"
 msgstr ""
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:7
-msgid "Register Date:"
+msgid ""
+"<b>You can get the following information on a fiscal memory read from the "
+"printer</b>"
 msgstr ""
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:8
-msgid "Serial:"
-msgstr ""
-
-#: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:9
-msgid "User Number:"
+msgid "Edit Constants ..."
 msgstr ""
 
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:1
-#: ../stoqlib/gui/search/personsearch.py:146
-#: ../stoqlib/gui/search/personsearch.py:251
-msgid "CNPJ"
+msgid "Document:"
 msgstr ""
 
-#: ../plugins/ecf/glade/PaulistaInvoice.ui.h:2
+#: ../plugins/ecf/glade/PaulistaInvoice.ui.h:3
 #: ../stoqlib/gui/search/personsearch.py:252
 msgid "CPF"
 msgstr ""
 
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:4
-msgid "Document:"
+#: ../stoqlib/gui/search/personsearch.py:146
+#: ../stoqlib/gui/search/personsearch.py:251
+msgid "CNPJ"
 msgstr ""
 
 #: ../plugins/ecf/paulistainvoicedialog.py:40
@@ -3249,43 +3250,6 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/branchdialog.py:163
 #: ../stoqlib/gui/templates/companytemplate.py:52
 msgid "The CNPJ is not valid."
-msgstr ""
-
-#. TRANSLATORS: #%d refers to the user's ID on Magento
-#: ../plugins/magento/domain/magentoclient.py:79
-#, python-format
-msgid "Magento user #%s"
-msgstr ""
-
-#: ../plugins/magento/domain/magentoconfig.py:124
-msgid "Magento e-commerce"
-msgstr ""
-
-#: ../plugins/magento/domain/magentoconfig.py:125
-msgid "E-commerce software"
-msgstr ""
-
-#: ../plugins/magento/domain/magentosale.py:157
-#, python-format
-msgid "Magento sale #%s\n"
-msgstr ""
-
-#: ../plugins/magento/domain/magentosale.py:368
-#, python-format
-msgid "Invoice for order: %s"
-msgstr ""
-
-#: ../plugins/magento/domain/magentosale.py:450
-#, python-format
-msgid "Shipment for order: %s"
-msgstr ""
-
-#: ../plugins/magento/magentolib.py:84
-msgid "The url provided is not valid"
-msgstr ""
-
-#: ../plugins/magento/magentolib.py:90
-msgid "Access denied for the given user"
 msgstr ""
 
 #: ../plugins/nfe/nfegenerator.py:152
@@ -3497,130 +3461,130 @@ msgstr ""
 msgid "Search for users"
 msgstr ""
 
-#: ../stoq/gui/application.py:201
+#: ../stoq/gui/application.py:202
 msgid "_File"
 msgstr ""
 
 #. Toolbar
-#: ../stoq/gui/application.py:203 ../stoq/gui/application.py:235
-#: ../stoq/gui/application.py:255
+#: ../stoq/gui/application.py:204 ../stoq/gui/application.py:236
+#: ../stoq/gui/application.py:256
 msgid "New"
 msgstr ""
 
-#: ../stoq/gui/application.py:204
+#: ../stoq/gui/application.py:205
 msgid "_Window"
 msgstr ""
 
-#: ../stoq/gui/application.py:205
+#: ../stoq/gui/application.py:206
 msgid "Opens up a new window"
 msgstr ""
 
-#: ../stoq/gui/application.py:206
+#: ../stoq/gui/application.py:207
 #: ../stoqlib/gui/dialogs/crashreportdialog.py:81
 msgid "Close"
 msgstr ""
 
-#: ../stoq/gui/application.py:207
+#: ../stoq/gui/application.py:208
 msgid "Close the current view and go back to the initial screen"
 msgstr ""
 
-#: ../stoq/gui/application.py:208
+#: ../stoq/gui/application.py:209
 msgid "Change password..."
 msgstr ""
 
-#: ../stoq/gui/application.py:209
+#: ../stoq/gui/application.py:210
 msgid "Change the password for the currently logged in user"
 msgstr ""
 
-#: ../stoq/gui/application.py:210
+#: ../stoq/gui/application.py:211
 msgid "Sign out..."
 msgstr ""
 
-#: ../stoq/gui/application.py:211
+#: ../stoq/gui/application.py:212
 msgid "Sign out the currently logged in user and login as another"
 msgstr ""
 
-#: ../stoq/gui/application.py:212 ../stoqlib/database/runtime.py:283
+#: ../stoq/gui/application.py:213 ../stoqlib/database/runtime.py:283
 msgid "Quit"
 msgstr ""
 
-#: ../stoq/gui/application.py:213
+#: ../stoq/gui/application.py:214
 msgid "Exit the application"
 msgstr ""
 
 #. Edit
-#: ../stoq/gui/application.py:216
+#: ../stoq/gui/application.py:217
 msgid "_Edit"
 msgstr ""
 
-#: ../stoq/gui/application.py:217
+#: ../stoq/gui/application.py:218
 msgid "_Preferences"
 msgstr ""
 
 #. View
-#: ../stoq/gui/application.py:220
+#: ../stoq/gui/application.py:221
 msgid "_View"
 msgstr ""
 
 #. Search
-#: ../stoq/gui/application.py:223
+#: ../stoq/gui/application.py:224
 msgid "_Search"
 msgstr ""
 
 #. Help
-#: ../stoq/gui/application.py:226
+#: ../stoq/gui/application.py:227
 msgid "_Help"
 msgstr ""
 
-#: ../stoq/gui/application.py:227
+#: ../stoq/gui/application.py:228
 msgid "Contents"
 msgstr ""
 
-#: ../stoq/gui/application.py:228
+#: ../stoq/gui/application.py:229
 msgid "Translate Stoq..."
 msgstr ""
 
-#: ../stoq/gui/application.py:229
+#: ../stoq/gui/application.py:230
 msgid "Translate this application online"
 msgstr ""
 
-#: ../stoq/gui/application.py:230
+#: ../stoq/gui/application.py:231
 msgid "Get support online..."
 msgstr ""
 
-#: ../stoq/gui/application.py:231
+#: ../stoq/gui/application.py:232
 msgid "Get support for Stoq online"
 msgstr ""
 
-#: ../stoq/gui/application.py:236 ../stoq/gui/application.py:256
+#: ../stoq/gui/application.py:237 ../stoq/gui/application.py:257
 msgid "Search"
 msgstr ""
 
-#: ../stoq/gui/application.py:241
+#: ../stoq/gui/application.py:242
 msgid "_Toolbar"
 msgstr ""
 
-#: ../stoq/gui/application.py:242
+#: ../stoq/gui/application.py:243
 msgid "Show or hide the toolbar"
 msgstr ""
 
-#: ../stoq/gui/application.py:243
+#: ../stoq/gui/application.py:244
 msgid "_Statusbar"
 msgstr ""
 
-#: ../stoq/gui/application.py:244
+#: ../stoq/gui/application.py:245
 msgid "Show or hide the statusbar"
 msgstr ""
 
-#: ../stoq/gui/application.py:245
+#: ../stoq/gui/application.py:246
 msgid "_Fullscreen"
 msgstr ""
 
-#: ../stoq/gui/application.py:246
+#: ../stoq/gui/application.py:247
 msgid "Enter or leave fullscreen mode"
 msgstr ""
 
-#: ../stoq/gui/application.py:320
+#: ../stoq/gui/application.py:321
 msgid ""
 "You are currently using an <b>unstable version</b> of Stoq that is under "
 "development,\n"
@@ -3628,75 +3592,124 @@ msgid ""
 "<b>Do not use in production.</b>"
 msgstr ""
 
-#: ../stoq/gui/application.py:326
+#: ../stoq/gui/application.py:327
 msgid ""
 "There is an inventory process open at the moment.\n"
 "While that inventory is open, you will be unable to do operations that "
 "modify your stock."
 msgstr ""
 
-#: ../stoq/gui/application.py:349 ../stoq/gui/application.py:987
+#: ../stoq/gui/application.py:350 ../stoq/gui/application.py:988
 msgid "Enable production mode"
 msgstr ""
 
-#: ../stoq/gui/application.py:350
+#: ../stoq/gui/application.py:351
 msgid "You are using Stoq in demonstration mode."
 msgstr ""
 
-#: ../stoq/gui/application.py:351
+#: ../stoq/gui/application.py:352
 #, python-format
 msgid ""
 "Some features are limited due to fiscal reasons. Click on '%s' to remove the "
 "limitations and finish the demonstration."
 msgstr ""
 
-#: ../stoq/gui/application.py:495
+#: ../stoq/gui/application.py:496
 #, python-format
 msgid "User: %s"
 msgstr ""
 
 #. This method must be redefined in child when it's needed
-#: ../stoq/gui/application.py:529
+#: ../stoq/gui/application.py:530
 #, python-format
 msgid "Stoq - %s"
 msgstr ""
 
-#: ../stoq/gui/application.py:676
+#: ../stoq/gui/application.py:677
 msgid "Show help for this application"
 msgstr ""
 
-#: ../stoq/gui/application.py:692
+#: ../stoq/gui/application.py:693
 msgid "Debug"
 msgstr ""
 
-#: ../stoq/gui/application.py:693
+#: ../stoq/gui/application.py:694
 msgid "Introspect slaves"
 msgstr ""
 
-#: ../stoq/gui/application.py:808
+#: ../stoq/gui/application.py:809
 msgid "Open a new window"
 msgstr ""
 
-#: ../stoq/gui/application.py:983
+#: ../stoq/gui/application.py:984
 msgid ""
 "This will enable production mode and finish the demonstration. Are you sure?"
 msgstr ""
 
-#: ../stoq/gui/application.py:986
+#: ../stoq/gui/application.py:987
 msgid "Continue testing"
 msgstr ""
 
-#: ../stoq/gui/application.py:1013
+#: ../stoq/gui/application.py:1014
 msgid "Search:"
 msgstr ""
 
-#: ../stoq/gui/application.py:1136
+#: ../stoq/gui/application.py:1137
 msgid "Learn More..."
 msgstr ""
 
-#: ../stoq/gui/application.py:1137
+#: ../stoq/gui/application.py:1138
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
+msgstr ""
+
+#: ../stoq/gui/calendar.py:126 ../stoqlib/lib/prettydate.py:83
+msgid "today"
+msgstr ""
+
+#: ../stoq/gui/calendar.py:127
+msgid "month"
+msgstr ""
+
+#: ../stoq/gui/calendar.py:128
+msgid "week"
+msgstr ""
+
+#: ../stoq/gui/calendar.py:129
+msgid "day"
+msgstr ""
+
+#: ../stoq/gui/calendar.py:158 ../stoq/lib/applist.py:39
+msgid "Calendar"
+msgstr ""
+
+#: ../stoq/gui/calendar.py:172 ../stoq/gui/financial.py:351
+msgid "Print..."
+msgstr ""
+
+#: ../stoq/gui/calendar.py:173 ../stoq/gui/financial.py:352
+msgid "Print a transaction report"
+msgstr ""
+
+#: ../stoq/gui/calendar.py:174 ../stoq/gui/financial.py:355
+#: ../stoq/gui/inventory.py:81 ../stoq/gui/payable.py:98
+#: ../stoq/gui/production.py:77 ../stoq/gui/purchase.py:90
+#: ../stoq/gui/receivable.py:97 ../stoq/gui/sales.py:90
+#: ../stoq/gui/stock.py:88 ../stoq/gui/till.py:87
+#: ../stoqlib/gui/dialogs/csvexporterdialog.py:102
+#: ../stoqlib/gui/search/callsearch.py:67
+#: ../stoqlib/gui/search/fiscalsearch.py:152
+#: ../stoqlib/gui/search/productsearch.py:127
+#: ../stoqlib/gui/search/salesearch.py:156
+msgid "Export CSV..."
+msgstr ""
+
+#: ../stoq/gui/calendar.py:175
+msgid "Task..."
+msgstr ""
+
+#: ../stoq/gui/calendar.py:176
+msgid "Add a new task"
 msgstr ""
 
 #: ../stoq/gui/config.py:225
@@ -3923,7 +3936,7 @@ msgid ""
 "corrupted, please select another one."
 msgstr ""
 
-#: ../stoq/gui/financial.py:226 ../stoq/gui/financial.py:244
+#: ../stoq/gui/financial.py:227 ../stoq/gui/financial.py:245
 #: ../stoq/gui/payable.py:161 ../stoq/gui/payable.py:165
 #: ../stoq/gui/pos.py:226 ../stoq/gui/production.py:139
 #: ../stoq/gui/receivable.py:163 ../stoq/gui/receivable.py:167
@@ -4011,11 +4024,11 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: ../stoq/gui/financial.py:228 ../stoq/gui/financial.py:349
+#: ../stoq/gui/financial.py:229 ../stoq/gui/financial.py:350
 msgid "Account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:237 ../stoq/gui/pos.py:232
+#: ../stoq/gui/financial.py:238 ../stoq/gui/pos.py:232
 #: ../stoq/gui/purchase.py:232 ../stoq/gui/receivable.py:128
 #: ../stoq/gui/sales.py:219 ../stoq/gui/till.py:189
 #: ../stoqlib/gui/accounttree.py:82
@@ -4043,7 +4056,7 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
-#: ../stoq/gui/financial.py:242 ../stoq/gui/payable.py:171
+#: ../stoq/gui/financial.py:243 ../stoq/gui/payable.py:171
 #: ../stoq/gui/receivable.py:172 ../stoqlib/gui/dialogs/clientdetails.py:136
 #: ../stoqlib/gui/dialogs/purchasedetails.py:207
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:122
@@ -4059,136 +4072,116 @@ msgstr ""
 msgid "Due date"
 msgstr ""
 
-#: ../stoq/gui/financial.py:331 ../stoq/lib/applist.py:39
+#: ../stoq/gui/financial.py:332 ../stoq/lib/applist.py:42
 msgid "Financial"
 msgstr ""
 
-#: ../stoq/gui/financial.py:348
+#: ../stoq/gui/financial.py:349
 msgid "Transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:350
-msgid "Print..."
-msgstr ""
-
-#: ../stoq/gui/financial.py:351
-msgid "Print a transaction report"
-msgstr ""
-
-#: ../stoq/gui/financial.py:352
+#: ../stoq/gui/financial.py:353
 msgid "Import..."
 msgstr ""
 
-#: ../stoq/gui/financial.py:353
+#: ../stoq/gui/financial.py:354
 msgid "Import a GnuCash or OFX file"
 msgstr ""
 
-#: ../stoq/gui/financial.py:354 ../stoq/gui/inventory.py:81
-#: ../stoq/gui/payable.py:98 ../stoq/gui/production.py:77
-#: ../stoq/gui/purchase.py:90 ../stoq/gui/receivable.py:97
-#: ../stoq/gui/sales.py:90 ../stoq/gui/stock.py:88 ../stoq/gui/till.py:87
-#: ../stoqlib/gui/dialogs/csvexporterdialog.py:102
-#: ../stoqlib/gui/search/callsearch.py:67
-#: ../stoqlib/gui/search/fiscalsearch.py:152
-#: ../stoqlib/gui/search/productsearch.py:127
-#: ../stoqlib/gui/search/salesearch.py:156
-msgid "Export CSV..."
-msgstr ""
-
-#: ../stoq/gui/financial.py:355 ../stoq/gui/financial.py:357
+#: ../stoq/gui/financial.py:356 ../stoq/gui/financial.py:358
 msgid "Delete..."
 msgstr ""
 
-#: ../stoq/gui/financial.py:356
+#: ../stoq/gui/financial.py:357
 msgid "Delete the selected account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:358
+#: ../stoq/gui/financial.py:359
 msgid "Delete the selected transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:359
+#: ../stoq/gui/financial.py:360
 msgid "Account..."
 msgstr ""
 
-#: ../stoq/gui/financial.py:361
+#: ../stoq/gui/financial.py:362
 msgid "Transaction..."
 msgstr ""
 
-#: ../stoq/gui/financial.py:362
+#: ../stoq/gui/financial.py:363
 msgid "Add a new transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:363 ../stoq/gui/payable.py:105
+#: ../stoq/gui/financial.py:364 ../stoq/gui/payable.py:105
 #: ../stoq/gui/production.py:71 ../stoq/gui/purchase.py:121
 #: ../stoq/gui/sales.py:115 ../stoq/gui/stock.py:112
 msgid "Edit..."
 msgstr ""
 
-#: ../stoq/gui/financial.py:367
+#: ../stoq/gui/financial.py:368
 msgid "Financial help"
 msgstr ""
 
-#: ../stoq/gui/financial.py:368 ../stoq/gui/payable.py:115
+#: ../stoq/gui/financial.py:369 ../stoq/gui/payable.py:115
 #: ../stoq/gui/production.py:99 ../stoq/gui/purchase.py:141
 #: ../stoq/gui/sales.py:131 ../stoq/gui/stock.py:129
 msgid "Edit"
 msgstr ""
 
-#: ../stoq/gui/financial.py:369 ../stoq/gui/financial.py:370
+#: ../stoq/gui/financial.py:370 ../stoq/gui/financial.py:371
 #: ../stoqlib/gui/editors/sellableeditor.py:473
 msgid "Delete"
 msgstr ""
 
-#: ../stoq/gui/financial.py:417
+#: ../stoq/gui/financial.py:418
 msgid "Edit the selected account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:419
+#: ../stoq/gui/financial.py:420
 msgid "Edit the selected transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:552
+#: ../stoq/gui/financial.py:553
 msgid "All supported formats"
 msgstr ""
 
-#: ../stoq/gui/financial.py:559
+#: ../stoq/gui/financial.py:560
 msgid "Open Financial Exchange (OFX)"
 msgstr ""
 
-#: ../stoq/gui/financial.py:564
+#: ../stoq/gui/financial.py:565
 msgid "GNUCash xml format"
 msgstr ""
 
-#: ../stoq/gui/financial.py:675
+#: ../stoq/gui/financial.py:676
 #, python-format
 msgid "Are you sure you want to remove account \"%s\" ?"
 msgstr ""
 
-#: ../stoq/gui/financial.py:678
+#: ../stoq/gui/financial.py:679
 msgid "Keep account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:678
+#: ../stoq/gui/financial.py:679
 msgid "Remove account"
 msgstr ""
 
-#: ../stoq/gui/financial.py:694
+#: ../stoq/gui/financial.py:695
 #, python-format
 msgid "Are you sure you want to remove transaction \"%s\" ?"
 msgstr ""
 
-#: ../stoq/gui/financial.py:697
+#: ../stoq/gui/financial.py:698
 msgid "Keep transaction"
 msgstr ""
 
-#: ../stoq/gui/financial.py:697
+#: ../stoq/gui/financial.py:698
 msgid "Remove transaction"
 msgstr ""
 
 #. TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 #: ../stoq/gui/inventory.py:54 ../stoq/gui/inventory.py:67
-#: ../stoq/lib/applist.py:42
+#: ../stoq/lib/applist.py:45
 msgid "Inventory"
 msgstr ""
 
@@ -4527,7 +4520,7 @@ msgid ""
 "Can't confirm the payment if the purchase is not completely received yet."
 msgstr ""
 
-#: ../stoq/gui/pos.py:110 ../stoq/lib/applist.py:48
+#: ../stoq/gui/pos.py:110 ../stoq/lib/applist.py:51
 msgid "Point of Sales"
 msgstr ""
 
@@ -4713,7 +4706,7 @@ msgid "Quantity must be a positive number"
 msgstr ""
 
 #: ../stoq/gui/production.py:53 ../stoq/gui/production.py:80
-#: ../stoq/lib/applist.py:51 ../stoqlib/gui/dialogs/startproduction.py:35
+#: ../stoq/lib/applist.py:54 ../stoqlib/gui/dialogs/startproduction.py:35
 msgid "Production"
 msgstr ""
 
@@ -4787,7 +4780,7 @@ msgstr ""
 
 #. TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 #: ../stoq/gui/production.py:96 ../stoq/gui/purchase.py:74
-#: ../stoq/lib/applist.py:54 ../stoqlib/lib/invoice.py:317
+#: ../stoq/lib/applist.py:57 ../stoqlib/lib/invoice.py:317
 #: ../stoqlib/lib/parameters.py:189 ../stoqlib/lib/parameters.py:197
 #: ../stoqlib/lib/parameters.py:205 ../stoqlib/lib/parameters.py:389
 msgid "Purchase"
@@ -5287,7 +5280,7 @@ msgid ""
 "for application %s"
 msgstr ""
 
-#: ../stoq/gui/stock.py:69 ../stoq/lib/applist.py:63
+#: ../stoq/gui/stock.py:69 ../stoq/lib/applist.py:66
 #: ../stoqlib/gui/dialogs/quotedialog.py:160
 #: ../stoqlib/gui/search/consignmentsearch.py:61
 #: ../stoqlib/gui/search/productsearch.py:182
@@ -5435,7 +5428,7 @@ msgstr ""
 msgid "Picture"
 msgstr ""
 
-#: ../stoq/gui/till.py:70 ../stoq/lib/applist.py:66
+#: ../stoq/gui/till.py:70 ../stoq/lib/applist.py:69
 msgid "Till"
 msgstr ""
 
@@ -5602,52 +5595,52 @@ msgid ""
 "Administer the branches, users, employees and configure system parameters."
 msgstr ""
 
-#: ../stoq/lib/applist.py:40
+#: ../stoq/lib/applist.py:43
 msgid "Control accounts and financial transactions."
 msgstr ""
 
-#: ../stoq/lib/applist.py:43
+#: ../stoq/lib/applist.py:46
 msgid "Audit and adjust the product stock."
 msgstr ""
 
 #. Tabs cache requires unique ids
-#: ../stoq/lib/applist.py:45 ../stoqlib/gui/accounttree.py:153
+#: ../stoq/lib/applist.py:48 ../stoqlib/gui/accounttree.py:153
 msgid "Accounts Payable"
 msgstr ""
 
-#: ../stoq/lib/applist.py:46
+#: ../stoq/lib/applist.py:49
 msgid "Manage payment that needs to be paid."
 msgstr ""
 
-#: ../stoq/lib/applist.py:49
+#: ../stoq/lib/applist.py:52
 msgid "Terminal and cash register for selling products and services."
 msgstr ""
 
-#: ../stoq/lib/applist.py:52
+#: ../stoq/lib/applist.py:55
 msgid "Manage the production process."
 msgstr ""
 
-#: ../stoq/lib/applist.py:55
+#: ../stoq/lib/applist.py:58
 msgid "Create purchase orders and quotes"
 msgstr ""
 
-#: ../stoq/lib/applist.py:57 ../stoqlib/gui/accounttree.py:159
+#: ../stoq/lib/applist.py:60 ../stoqlib/gui/accounttree.py:159
 msgid "Accounts Receivable"
 msgstr ""
 
-#: ../stoq/lib/applist.py:58
+#: ../stoq/lib/applist.py:61
 msgid "Manage payments that needs to be received."
 msgstr ""
 
-#: ../stoq/lib/applist.py:61
+#: ../stoq/lib/applist.py:64
 msgid "Quotes management and commission calculation."
 msgstr ""
 
-#: ../stoq/lib/applist.py:64
+#: ../stoq/lib/applist.py:67
 msgid "Stock management, receive products and transfer them between branches."
 msgstr ""
 
-#: ../stoq/lib/applist.py:67
+#: ../stoq/lib/applist.py:70
 msgid "Control tills and their workflow."
 msgstr ""
 
@@ -7475,72 +7468,24 @@ msgstr ""
 msgid "Updating items"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/sintegradialog.py:47
-msgid "January"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/sintegradialog.py:48
-msgid "February"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/sintegradialog.py:49
-msgid "March"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/sintegradialog.py:50
-msgid "April"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/sintegradialog.py:51
-msgid "May"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/sintegradialog.py:52
-msgid "June"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/sintegradialog.py:53
-msgid "July"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/sintegradialog.py:54
-msgid "August"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/sintegradialog.py:55
-msgid "September"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/sintegradialog.py:56
-msgid "October"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/sintegradialog.py:57
-msgid "November"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/sintegradialog.py:58
-msgid "December"
-msgstr ""
-
-#: ../stoqlib/gui/dialogs/sintegradialog.py:64
+#: ../stoqlib/gui/dialogs/sintegradialog.py:44
 msgid "Fiscal Printer History"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/sintegradialog.py:69
+#: ../stoqlib/gui/dialogs/sintegradialog.py:49
 msgid "Generate"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/sintegradialog.py:71
+#: ../stoqlib/gui/dialogs/sintegradialog.py:51
 msgid "Month:"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/sintegradialog.py:83
+#: ../stoqlib/gui/dialogs/sintegradialog.py:63
 msgid "Save Sintegra file"
 msgstr ""
 
 #. Translators: Month Year, eg: 'May 2007'
-#: ../stoqlib/gui/dialogs/sintegradialog.py:125
+#: ../stoqlib/gui/dialogs/sintegradialog.py:106
 #, python-format
 msgid "%s %s"
 msgstr ""
@@ -11073,6 +11018,154 @@ msgstr ""
 msgid "Zimbabwe"
 msgstr ""
 
+#: ../stoqlib/lib/dateconstants.py:30
+msgid "January"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:31
+msgid "February"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:32
+msgid "March"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:33
+msgid "April"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:34 ../stoqlib/lib/dateconstants.py:48
+msgid "May"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:35
+msgid "June"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:36
+msgid "July"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:37
+msgid "August"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:38
+msgid "September"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:39
+msgid "October"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:40
+msgid "November"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:41
+msgid "December"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:44
+msgid "Jan"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:45
+msgid "Feb"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:46
+msgid "Mar"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:47
+msgid "Apr"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:49
+msgid "Jun"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:50
+msgid "Jul"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:51
+msgid "Aug"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:52
+msgid "Sep"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:53
+msgid "Oct"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:54
+msgid "Nov"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:55
+msgid "Dec"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:58
+msgid "Sunday"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:59
+msgid "Monday"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:60
+msgid "Tuesday"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:61
+msgid "Wednesday"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:62
+msgid "Thursday"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:63
+msgid "Friday"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:64
+msgid "Saturday"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:67
+msgid "Sun"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:68
+msgid "Mon"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:69
+msgid "Tue"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:70
+msgid "Wed"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:71
+msgid "Thu"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:72
+msgid "Fri"
+msgstr ""
+
+#: ../stoqlib/lib/dateconstants.py:73
+msgid "Sat"
+msgstr ""
+
 #: ../stoqlib/lib/defaults.py:58
 msgid "Weeks"
 msgstr ""
@@ -11811,10 +11904,6 @@ msgstr ""
 msgid "hours"
 msgstr ""
 
-#: ../stoqlib/lib/prettydate.py:83
-msgid "today"
-msgstr ""
-
 #: ../stoqlib/lib/prettydate.py:85
 msgid "yesterday"
 msgstr ""
@@ -12348,103 +12437,103 @@ msgid "Transfer Receipt"
 msgstr ""
 
 #: ../data/template/receipt.rml.extracted.h:1
-msgid "ADDRESS:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:2
-msgid "AGENCY:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:3
-msgid "BANK:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:4
-msgid "CHECK PAYMENT"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:5
-msgid "CPF/CNPJ/RG:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:6
-msgid "DATE:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:7
-msgid "DRAWEE:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:8
-msgid "I/WE RECEIVED FROM"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:9
-#: ../data/template/transfer.rml.extracted.h:4
-msgid "NUMBER:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:10
 msgid "RECEIPT"
 msgstr ""
 
-#: ../data/template/receipt.rml.extracted.h:11
-msgid "REFERRING TO:"
+#: ../data/template/receipt.rml.extracted.h:2
+#: ../data/template/transfer.rml.extracted.h:2
+msgid "NUMBER:"
 msgstr ""
 
-#: ../data/template/receipt.rml.extracted.h:12
-#: ../data/template/transfer.rml.extracted.h:9
-msgid "SIGNATURE:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:13
-msgid "THE IMPORTANCE OF:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:14
+#: ../data/template/receipt.rml.extracted.h:3
 msgid "VALUE:"
 msgstr ""
 
-#: ../data/template/transfer.rml.extracted.h:1
-msgid "CODE"
+#: ../data/template/receipt.rml.extracted.h:4
+msgid "I/WE RECEIVED FROM"
 msgstr ""
 
-#: ../data/template/transfer.rml.extracted.h:2
-msgid "DESCRIPTION"
+#: ../data/template/receipt.rml.extracted.h:5
+msgid "ADDRESS:"
+msgstr ""
+
+#: ../data/template/receipt.rml.extracted.h:6
+msgid "THE IMPORTANCE OF:"
+msgstr ""
+
+#: ../data/template/receipt.rml.extracted.h:7
+msgid "REFERRING TO:"
+msgstr ""
+
+#: ../data/template/receipt.rml.extracted.h:8
+msgid "CHECK PAYMENT"
+msgstr ""
+
+#: ../data/template/receipt.rml.extracted.h:9
+msgid "BANK:"
+msgstr ""
+
+#: ../data/template/receipt.rml.extracted.h:10
+msgid "AGENCY:"
+msgstr ""
+
+#: ../data/template/receipt.rml.extracted.h:11
+msgid "DRAWEE:"
+msgstr ""
+
+#: ../data/template/receipt.rml.extracted.h:12
+msgid "CPF/CNPJ/RG:"
+msgstr ""
+
+#: ../data/template/receipt.rml.extracted.h:13
+msgid "DATE:"
+msgstr ""
+
+#: ../data/template/receipt.rml.extracted.h:14
+#: ../data/template/transfer.rml.extracted.h:12
+msgid "SIGNATURE:"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:1
+msgid "TRANSFER RECEIPT"
 msgstr ""
 
 #: ../data/template/transfer.rml.extracted.h:3
-msgid "DESTINATION"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:5
-msgid "OPEN:"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:6
-msgid "QUANTITY"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:7
-msgid "RECEIVAL:"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:8
-msgid "RESPONSIBLE"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:10
 msgid "SOURCE"
 msgstr ""
 
-#: ../data/template/transfer.rml.extracted.h:11
-msgid "TOTAL:"
+#: ../data/template/transfer.rml.extracted.h:4
+msgid "RESPONSIBLE"
 msgstr ""
 
-#: ../data/template/transfer.rml.extracted.h:12
+#: ../data/template/transfer.rml.extracted.h:5
+msgid "DESTINATION"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:6
 msgid "TRANSFER PRODUCTS"
 msgstr ""
 
+#: ../data/template/transfer.rml.extracted.h:7
+msgid "CODE"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:8
+msgid "DESCRIPTION"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:9
+msgid "QUANTITY"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:10
+msgid "TOTAL:"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:11
+msgid "OPEN:"
+msgstr ""
+
 #: ../data/template/transfer.rml.extracted.h:13
-msgid "TRANSFER RECEIPT"
+msgid "RECEIVAL:"
 msgstr ""
