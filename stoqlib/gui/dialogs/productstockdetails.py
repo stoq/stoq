@@ -75,7 +75,7 @@ class ProductStockHistoryDialog(BaseEditor):
         self.receiving_list.add_list(list(items))
 
         items = SaleItemsView.select(
-                    SaleItemsView.q.id == self.model.id,
+                    SaleItemsView.q.sellable_id == self.model.id,
                     connection=self.conn)
         self.sales_list.add_list(list(items))
 
