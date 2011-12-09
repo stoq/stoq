@@ -36,28 +36,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning
 from stoqlib.lib.sintegra import SintegraError
 from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
-
+from stoqlib.lib.dateconstants import get_month_names
 _ = stoqlib_gettext
-
-N_ = lambda x: x
-
-# FIXME: Move out of here, Financial also uses it
-
-month_names = {
-    1: N_('January'),
-    2: N_('February'),
-    3: N_('March'),
-    4: N_('April'),
-    5: N_('May'),
-    6: N_('June'),
-    7: N_('July'),
-    8: N_('August'),
-    9: N_('September'),
-    10: N_('October'),
-    11: N_('November'),
-    12: N_('December'),
-}
-
 
 class SintegraDialog(ConfirmDialog):
     size = (780, -1)
@@ -120,10 +100,11 @@ class SintegraDialog(ConfirmDialog):
 
         # When we have the list of intervals, add them to the list and
         # make sure that they are translated
+        month_names = get_month_names()
         for start, end in intervals:
             # Translators: Month Year, eg: 'May 2007'
             name = _('%s %s') % (
-                _(month_names[start.month]), start.year)
+                _(month_names[start.month+1]), start.year)
             date_filter.add_option_fixed_interval(
                 name, start, end, position=0)
 

@@ -1,0 +1,27 @@
+<!DOCTYPE html5>
+<html>
+
+<head>
+  <link rel='stylesheet' type='text/css' href='js/fullcalendar-1.5.2/fullcalendar/fullcalendar.css' />
+  <script type='text/javascript' src='js/fullcalendar-1.5.2/jquery/jquery-1.5.2.min.js'></script>
+  <script type='text/javascript' src='js/fullcalendar-1.5.2/fullcalendar/fullcalendar.min.js'></script>
+  <script>
+  function startup(options) {
+      options.aspectRatio = 2.3;
+      options.header = {
+          left: 'prev,today,next',
+          center: 'title',
+          right: 'month,agendaWeek',
+      };
+      $('#calendar').fullCalendar(options);
+  };
+  </script>
+</head>
+
+<body>
+  <div id='content'>
+    <div id='calendar' style='margin:3em 0;font-size:13px'>
+    </div>
+  </div>
+</body>
+</html>
