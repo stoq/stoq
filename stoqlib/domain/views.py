@@ -682,7 +682,8 @@ class SaleItemsView(Viewable):
     """
 
     columns = dict(
-        id=Sellable.q.id,
+        id=SaleItem.q.id,
+        sellable_id=Sellable.q.id,
         code=Sellable.q.code,
         description=BaseSellableInfo.q.description,
         sale_id=SaleItem.q.saleID,
@@ -693,7 +694,7 @@ class SaleItemsView(Viewable):
     )
 
     joins = [
-        LEFTJOINOn(None, SaleItem,
+        LEFTJOINOn(None, Sellable,
                     Sellable.q.id == SaleItem.q.sellableID),
         LEFTJOINOn(None, Sale,
                    SaleItem.q.saleID == Sale.q.id),
@@ -709,6 +710,7 @@ class SaleItemsView(Viewable):
 
     clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
                 Sale.q.status == Sale.STATUS_PAID,
+                Sale.q.status == Sale.STATUS_RENEGOTIATED,
                 Sale.q.status == Sale.STATUS_ORDERED)
 
 
