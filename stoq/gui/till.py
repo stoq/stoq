@@ -481,6 +481,7 @@ class TillApp(SearchableAppWindow):
             return
 
         self._run_search_dialog(SaleSearch)
+        self.refresh()
 
     def on_SearchSoldItemsByBranch__activate(self, button):
         self._run_search_dialog(SoldItemsByBranchSearch)
