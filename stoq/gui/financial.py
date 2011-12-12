@@ -51,8 +51,8 @@ from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
+from stoqlib.gui.dialogs.sintegradialog import month_names
 from stoqlib.gui.printing import print_report
-from stoqlib.lib.dateconstants import get_month_names
 from stoqlib.lib.message import yesno
 from stoqlib.reporting.payment import AccountTransactionReport
 
@@ -133,14 +133,13 @@ class TransactionPage(object):
         self.date_filter.clear_options()
         self.date_filter.add_option(Any, 0)
         year = datetime.datetime.today().year
-        month_names = get_month_names()
-        for i, month in enumerate(month_names):
+        for i in range(1, 13):
             name = month_names[i]
             option = type(name + 'Option', (MonthOption, ),
                           {'name': gettext.gettext(name),
-                           'month': i+1,
+                           'month': i,
                            'year': year})
-            self.date_filter.add_option(option, i+1)
+            self.date_filter.add_option(option, i)
         self.date_filter.add_custom_options()
         self.date_filter.mode.select_item_by_position(0)
         self.search.add_filter(self.date_filter)

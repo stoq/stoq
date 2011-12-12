@@ -36,9 +36,6 @@ _APPLICATIONS = {
               _("Administer the branches, users, employees and configure system "
                 "parameters."),
               'stoq-admin-app'),
-    'calendar': (_("Calendar"),
-                 "Shows payments, orders and other things that will happen in the future.",
-                 'stoq-calendar-app'),
     'financial': (_("Financial"),
                   _("Control accounts and financial transactions."),
                   'stoq-calc'),
