@@ -463,6 +463,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_SearchQuotes__activate(self, action):
         self.run_dialog(ReceiveQuoteWizard, self.conn)
+        self.refresh()
 
     def on_SearchPurchasedItems__activate(self, action):
         self.run_dialog(PurchasedItemsSearch, self.conn)
