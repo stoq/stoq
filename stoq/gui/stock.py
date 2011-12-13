@@ -80,10 +80,10 @@ class StockApp(SearchableAppWindow):
 
     def create_actions(self):
         actions = [
-            ("NewReceiving", 'stoq-receiving', _("_Receive order..."),
+            ("NewReceiving", 'stoq-receiving', _("Order _receival..."),
              '<Control>r'),
             ('NewTransfer', 'gtk-convert', _('Transfer...'), '<Control>t'),
-            ('NewStockDecrease', None, _('Decrease stock...')),
+            ('NewStockDecrease', None, _('Stock decrease...')),
             ('StockInitial', 'gtk-go-up', _('Register initial stock...')),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
             ("LoanNew", None, _("Loan...")),

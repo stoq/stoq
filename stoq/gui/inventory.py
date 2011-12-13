@@ -65,7 +65,7 @@ class InventoryApp(SearchableAppWindow):
     def create_actions(self):
         actions = [
             ('InventoryMenu', None, _('Inventory')),
-            ('NewInventory', None, _('Inventry...'), '',
+            ('NewInventory', None, _('Inventory...'), '',
              _('Create a new inventory for product counting')),
             ('CountingAction', gtk.STOCK_INDEX, _('_Count...'), '<Control>c',
              _('Register the actual stock of products in the selected '
