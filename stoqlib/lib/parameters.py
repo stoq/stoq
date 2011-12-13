@@ -529,6 +529,14 @@ _details = [
         _('If Stoq is used in a demonstration mode'),
         bool, initial=False),
 
+    ParameterDetails(
+        'BLOCK_INCOMPLETE_PURCHASE_PAYMENTS',
+        _('Payments'),
+        _('Block incomplete purchase payments'),
+        _('Do not allow confirming a account payable if the purchase is not '
+          'completely received.'),
+        bool, initial=False),
+
     # This parameter is tricky, we want to ask the user to fill it in when
     # upgrading from a previous version, but not if the user installed Stoq
     # from scratch. Some of the hacks involved with having 3 boolean values

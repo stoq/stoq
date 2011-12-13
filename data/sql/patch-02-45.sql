@@ -1,0 +1,1 @@
+--Created parameter: block the accounts payable if the total quantity of ordered products in a purchase, not was received.
