@@ -52,6 +52,7 @@ from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
 from stoqlib.gui.editors.paymentseditor import PaymentsEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
+from stoqlib.lib.message import warning
 from stoqlib.reporting.payment import PayablePaymentReport
 from stoqlib.reporting.payment_receipt import PaymentReceipt
 
@@ -294,6 +295,17 @@ class PayableApp(SearchableAppWindow):
         @param payables_views: a list of payable_views
         """
         assert self._can_pay(payable_views)
+
+        # Do not allow confirming the payment if the purchase was not
+        # completely received.
+        purchase_order = payable_views[0].purchase
+
+        if (purchase_order and
+            api.sysparam(self.conn).BLOCK_INCOMPLETE_PURCHASE_PAYMENTS and
+            not purchase_order.status == PurchaseOrder.ORDER_CLOSED):
+
+            return warning(_("Can't confirm the payment if the purchase "
+                             "is not completely received yet."))
 
         with api.trans() as trans:
             payments = [trans.get(view.payment) for view in payable_views]
