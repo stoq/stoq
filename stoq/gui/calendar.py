@@ -27,6 +27,7 @@ stoq/gui/calendar.py:
     Calendar application.
 """
 
+import datetime
 import gettext
 import json
 
@@ -41,8 +42,10 @@ from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
 from stoqlib.lib import dateconstants
+from stoqlib.lib.daemonutils import start_daemon
 
 from stoq.gui.application import AppWindow
+
 
 _ = gettext.gettext
 
@@ -56,42 +59,40 @@ class CalendarView(gtk.ScrolledWindow):
         self._view = webkit.WebView()
         self._view.props.settings.props.enable_developer_extras = True
 
-        insp = self._view.get_web_inspector()
-
-        def inspect(inspector, view):
-            w = gtk.Window()
-            w.set_size_request(800, 600)
-            sw = gtk.ScrolledWindow()
-            w.add(sw)
-            view = webkit.WebView()
-            sw.add(view)
-            w.show_all()
-            return view
-        insp.connect('inspect-web-view', inspect)
+        self._view.get_web_inspector().connect(
+            'inspect-web-view',
+            self._on_inspector__inspect_web_view)
         self._view.connect(
             'navigation-policy-decision-requested',
             self._on_view__navigation_policy_decision_requested)
+        self._view.connect(
+            'load-finished',
+            self._on_view__document_load_finished)
         self.add(self._view)
         self._view.show()
-        self._view.load_uri('html://calendar-app.html')
 
-        # FIXME: Use some signal to find out when the document is rendered
-        import gobject
-        gobject.idle_add(self._load_events)
+    def _on_inspector__inspect_web_view(self, inspector, view):
+        w = gtk.Window()
+        w.set_size_request(800, 600)
+        sw = gtk.ScrolledWindow()
+        w.add(sw)
+        view = webkit.WebView()
+        sw.add(view)
+        w.show_all()
+        return view
+
+    def _on_view__document_load_finished(self, view, frame):
+        self._load_finished()
 
     def _on_view__navigation_policy_decision_requested(self, view, frame,
                                                        request, action,
                                                        policy):
         uri = request.props.uri
         if uri.startswith('file:///'):
-            return True
-        if uri.startswith('html://'):
-            policy.ignore()
-            filename = uri[7:]
-            filename = environ.find_resource('html', filename)
-            self._view.load_uri('file://' + filename)
-            return
-        if uri.startswith('dialog://'):
+            policy.use()
+        elif uri.startswith('http://localhost'):
+            policy.use()
+        elif uri.startswith('dialog://'):
             policy.ignore()
             data = uri[9:]
             doc, args = data.split('?', 1)
@@ -100,29 +101,49 @@ class CalendarView(gtk.ScrolledWindow):
                 k, v = arg.split('=', 1)
                 kwargs[k] = v
             self._run_dialog(doc, **kwargs)
-            return
-
-        gtk.show_uri(self.get_screen(), uri,
-                     gtk.get_current_event_time())
+        else:
+            gtk.show_uri(self.get_screen(), uri,
+                         gtk.get_current_event_time())
 
     def _run_dialog(self, name, **kwargs):
         if name == 'payment':
             self._show_payment_details(**kwargs)
+        elif name == 'in-payment-list':
+            self._show_in_payment_list(**kwargs)
+        elif name == 'out-payment-list':
+            self._show_out_payment_list(**kwargs)
+        else:
+            raise NotImplementedError(name)
 
-    def _show_payment_details(self, payment_id):
+    def _show_payment_details(self, id):
         trans = api.new_transaction()
-        payment = trans.get(Payment.get(int(payment_id)))
+        payment = trans.get(Payment.get(int(id)))
         retval = run_dialog(InPaymentEditor, self.app, trans, payment)
         if api.finish_transaction(trans, retval):
             self.search.refresh()
         trans.close()
+
+    def _show_in_payment_list(self, ids):
+        ids = map(int, ids.split('|'))
+        app = self.app.app.launcher.run_app_by_name('receivable')
+        app.main_window.select_payment_ids(ids)
+
+    def _show_out_payment_list(self, date):
+        print date, repr(date)
+        y, m, d = map(int, date.split('-'))
+        date = datetime.date(y, m, d)
+        app = self.app.app.launcher.run_app_by_name('payable')
+        app.main_window.search_for_date(date)
+
+    def _load_finished(self):
+        self._startup()
 
     def _startup(self):
         d = {}
         d['monthNames'] = dateconstants.get_month_names()
         d['monthNamesShort'] = dateconstants.get_short_month_names()
         d['dayNames'] = dateconstants.get_day_names()
-        d['dayNamesShort'] = dateconstants.get_short_month_names()
+        d['dayNamesShort'] = dateconstants.get_short_day_names()
         d['buttonText'] = {"today": _('today'),
                            "month": _('month'),
                            "week": _('week'),
@@ -130,28 +151,23 @@ class CalendarView(gtk.ScrolledWindow):
         s = "startup(%s);" % (json.dumps(d), )
         self._view.execute_script(s)
 
-    def _load_events(self):
-        self._startup()
-        for pv in InPaymentView.select(connection=self.app.conn):
-            self._add_payment(pv.payment, "red")
-        for pv in OutPaymentView.select(connection=self.app.conn):
-            self._add_payment(pv.payment, "blue")
-
     def _render_event(self, args):
         self._view.execute_script(
             "$('#calendar').fullCalendar('renderEvent', %s, true);" % (
             json.dumps(args)))
 
-    def _add_payment(self, payment, color):
-        event = {"title": payment.description,
-                 "start": payment.due_date.isoformat(),
-                 "url": "dialog://payment?payment_id=" + str(payment.id),
-                 "color": color}
-        self._render_event(event)
-
     def print_(self):
         self._view.execute_script('window.print()')
 
+    def _load_daemon_path(self, path):
+        uri = '%s/%s' % (self._daemon_uri, path)
+        self._view.load_uri(uri)
+
+    def set_daemon_uri(self, uri):
+        self._daemon_uri = uri
+
+    def load(self):
+        self._load_daemon_path('web/static/calendar-app.html')
 
 class CalendarApp(AppWindow):
 
@@ -162,6 +178,16 @@ class CalendarApp(AppWindow):
 
     def __init__(self, app):
         AppWindow.__init__(self, app)
+        self._setup_daemon()
+
+    @api.async
+    def _setup_daemon(self):
+        daemon = yield start_daemon()
+        self._calendar.set_daemon_uri(daemon.base_uri)
+
+        proxy = daemon.get_client()
+        service = yield proxy.callRemote('start_webservice')
+        self._calendar.load()
 
     #
     # AppWindow overrides

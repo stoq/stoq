@@ -2,16 +2,39 @@
 <html>
 
 <head>
-  <link rel='stylesheet' type='text/css' href='js/fullcalendar-1.5.2/fullcalendar/fullcalendar.css' />
-  <script type='text/javascript' src='js/fullcalendar-1.5.2/jquery/jquery-1.5.2.min.js'></script>
-  <script type='text/javascript' src='js/fullcalendar-1.5.2/fullcalendar/fullcalendar.min.js'></script>
+  <link rel='stylesheet' type='text/css' href='/web/static/calendar.css' />
+  <link rel='stylesheet' type='text/css' href='/web/static/js/fullcalendar-1.5.2/fullcalendar/fullcalendar.css' />
+  <script type='text/javascript' src='/web/static/js/fullcalendar-1.5.2/jquery/jquery-1.5.2.min.js'></script>
+  <script type='text/javascript' src='/web/static/js/fullcalendar-1.5.2/fullcalendar/fullcalendar.min.js'></script>
+
   <script>
   function startup(options) {
       options.aspectRatio = 2.3;
+      options.events = function(start, end, callback) {
+        $.ajax({
+            url: "/web/calendar-events.json",
+            dataType: 'json',
+            data: {
+                start: start.getTime() / 1000,
+                end: end.getTime() / 1000
+            },
+            success: function(events) {
+                callback(events);
+            }
+        });
+      };
+
       options.header = {
           left: 'prev,today,next',
           center: 'title',
           right: 'month,agendaWeek',
+      };
+      options.loading = function(isLoading, view) {
+             if (isLoading) {
+                $('#loading').show();
+             } else {
+                $('#loading').hide();
+             }
       };
       $('#calendar').fullCalendar(options);
   };
@@ -20,7 +43,10 @@
 
 <body>
   <div id='content'>
-    <div id='calendar' style='margin:3em 0;font-size:13px'>
+    <div id='loading' style='margin:0em 0'>
+      Loading calendar content, please wait...
+    </div>
+    <div id='calendar' style='margin:3em 0;font-size:13px;position: fixed; top: 0'>
     </div>
   </div>
 </body>

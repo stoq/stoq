@@ -184,6 +184,17 @@ class ReceivableApp(SearchableAppWindow):
                              data_type=currency, width=90)]
 
     #
+    # Public API
+    #
+
+    def select_payment_ids(self, ids):
+        views = []
+        for payment_id in ids:
+            views.append(InPaymentView.get(payment_id))
+
+        self.select_result(views)
+
+    #
     # Private
     #
 
