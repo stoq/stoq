@@ -31,14 +31,11 @@ import datetime
 import gettext
 import json
 
-from kiwi.environ import environ
 import gtk
 import webkit
 
 from stoqlib.api import api
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.payment.views import InPaymentView
-from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
 from stoqlib.lib import dateconstants
@@ -168,6 +165,7 @@ class CalendarView(gtk.ScrolledWindow):
     def load(self):
         self._load_daemon_path('web/static/calendar-app.html')
 
+
 class CalendarApp(AppWindow):
 
     app_name = _('Calendar')
@@ -185,7 +183,7 @@ class CalendarApp(AppWindow):
         self._calendar.set_daemon_uri(daemon.base_uri)
 
         proxy = daemon.get_client()
-        service = yield proxy.callRemote('start_webservice')
+        yield proxy.callRemote('start_webservice')
         self._calendar.load()
 
     #

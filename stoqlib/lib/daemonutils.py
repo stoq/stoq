@@ -27,16 +27,15 @@ import errno
 import os
 import signal
 
-from kiwi.utils import gsignal
 from twisted.internet import defer, reactor
 from twisted.web.xmlrpc import Proxy
 
-from stoqlib.api import api
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.process import Process
 
 
 _daemon = None
+
 
 def _get_random_id():
     return base64.urlsafe_b64encode(os.urandom(8))[:-1]
@@ -65,8 +64,6 @@ class DaemonManager(object):
         appdir = get_application_dir()
         portfile = os.path.join(appdir, 'daemon', self._daemon_id, 'port')
 
-
-
         try:
             data = open(portfile).read()
         except IOError, e:
@@ -89,6 +86,7 @@ def start_daemon():
     global _daemon
     _daemon = DaemonManager()
     return _daemon.start()
+
 
 def stop_daemon():
     global _daemon

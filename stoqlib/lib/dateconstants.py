@@ -26,6 +26,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 def get_month_names():
     return [_('January'),
             _('February'),
@@ -39,6 +40,7 @@ def get_month_names():
             _('October'),
             _('November'),
             _('December')]
+
 
 def get_short_month_names():
     return [_('Jan'),
@@ -54,6 +56,7 @@ def get_short_month_names():
             _('Nov'),
             _('Dec')]
 
+
 def get_day_names():
     return [_('Sunday'),
             _('Monday'),
@@ -62,6 +65,7 @@ def get_day_names():
             _('Thursday'),
             _('Friday'),
             _('Saturday')]
+
 
 def get_short_day_names():
     return [_('Sun'),
