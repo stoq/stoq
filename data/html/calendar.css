@@ -1,0 +1,77 @@
+.summarize,
+.fc-agenda .summarize .fc-event-time,
+.summarize a {
+  background: white;
+  color: black;
+}
+
+.out-payment,
+.fc-agenda .out-payment .fc-event-time,
+.out-payment a {
+  background: red;
+  border-color: black;
+  color: black;
+}
+
+.out-payment-late,
+.fc-agenda .out-payment-late .fc-event-time,
+.out-payment-late a {
+  background: red;
+  border-color: white;
+  color: white;
+  font-weight: bold;
+  text-shadow: 2px 2px black;
+}
+
+.out-payment-due,
+.fc-agenda .out-payment-due .fc-event-time,
+.out-payment-due a {
+  background: #ff6868;
+  border-color: black;
+  color: white;
+  text-shadow: 2px 2px black;
+}
+
+.out-payment-paid,
+.fc-agenda .out-payment-paid .fc-event-time,
+.out-payment-paid a {
+  background: #ffc6c6;
+  border-color: #ffc6c6;
+  color: black;
+}
+
+.in-payment,
+.fc-agenda .in-payment .fc-event-time,
+.in-payment a {
+  background: blue;
+  border-color: black;
+  color: white;
+}
+
+.in-payment-late,
+.fc-agenda .in-payment-late .fc-event-time,
+.in-payment-late a {
+  background: blue;
+  border-color: white;
+  color: white;
+  font-weight: bold;
+  text-shadow: 2px 2px black;
+}
+
+.in-payment-due,
+.fc-agenda .in-payment-due .fc-event-time,
+.in-payment-due a {
+  background: 686bff;
+  border-color: black;
+  color: white;
+  text-shadow: 2px 2px black;
+}
+
+.in-payment-paid,
+.fc-agenda .in-payment-paid .fc-event-time,
+.in-payment-paid a {
+  background: #c6c7ff;
+  border-color: #c6c7ff;
+  color: black;
+}
+
