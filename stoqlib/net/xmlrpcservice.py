@@ -86,6 +86,11 @@ class XMLRPCService(server.Site):
         self._root.putChild('XMLRPC', XMLRPCResource(self._root))
         server.Site.__init__(self, self._root)
 
+    def log(self, request):
+        log.info('%s http://localhost:%d%s' % (request.method,
+                                               self._port,
+                                               request.uri))
+
     @property
     def port(self):
         return self._port
