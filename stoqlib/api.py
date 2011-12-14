@@ -35,6 +35,7 @@ from twisted.internet.defer import inlineCallbacks, returnValue
 
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.interfaces import IStoqConfig
+from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       rollback_and_begin, finish_transaction)
 from stoqlib.database.runtime import (get_current_branch,
@@ -97,6 +98,10 @@ class StoqAPI(object):
     @property
     def config(self):
         return get_utility(IStoqConfig)
+
+    @property
+    def settings(self):
+        return get_utility(IDatabaseSettings)
 
     def sysparam(self, conn):
         return sysparam(conn)

@@ -31,12 +31,13 @@ import shutil
 from twisted.internet import defer, reactor
 from twisted.web.xmlrpc import Proxy
 
+from stoqlib.api import api
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.process import Process
 
 
 class TryAgainError(Exception):
-    pass
+     pass
 
 
 def _get_random_id():
@@ -57,11 +58,10 @@ class DaemonManager(object):
         else:
             return defer.succeed(self)
 
-        self._process = Process([
-            'stoq-daemon',
-            '--daemon-id', self._daemon_id,
-            #'--sql',
-            ])
+        args = ['stoq-daemon',
+                '--daemon-id', self._daemon_id]
+        args.extend(api.settings.get_command_line_arguments())
+        self._process = Process(args)
 
         reactor.callLater(0.1, self._check_active)
         self._defer = defer.Deferred()
