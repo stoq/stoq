@@ -22,8 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import os
-import random
 import xmlrpclib
 
 from kiwi.log import Logger

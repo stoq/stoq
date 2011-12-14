@@ -33,9 +33,13 @@ from twisted.internet import reactor
 
 from stoqlib.net.xmlrpcservice import XMLRPCService
 from stoqlib.lib.osutils import get_application_dir
+from stoqlib.lib.translation import stoqlib_gettext
 from stoq.lib.options import get_option_parser
 
+_ = stoqlib_gettext
+
 log = logging.getLogger('stoq.daemonmain')
+
 
 class Daemon(object):
     def __init__(self, daemon_id):
@@ -77,7 +81,6 @@ def main(args):
     if not options.daemon_id:
         raise SystemExit("Need a daemon id")
 
-
     from stoqlib.lib.message import error
     from stoq.lib.configparser import StoqConfig
     log.debug('reading configuration')
@@ -86,7 +89,6 @@ def main(args):
         config.load(options.filename)
     else:
         config.load_default()
-    config_file = config.get_filename()
 
     settings = config.get_settings()
 
@@ -112,7 +114,6 @@ def main(args):
         error(_('Could not connect to the database'),
               'error=%s uri=%s' % (str(e), conn_uri))
         raise SystemExit("Error: bad connection settings provided")
-
 
     daemon = Daemon(options.daemon_id)
     daemon.run()

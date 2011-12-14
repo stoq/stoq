@@ -39,6 +39,7 @@ from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
 from stoqlib.lib.dateconstants import get_month_names
 _ = stoqlib_gettext
 
+
 class SintegraDialog(ConfirmDialog):
     size = (780, -1)
     title = _('Fiscal Printer History')
@@ -104,7 +105,7 @@ class SintegraDialog(ConfirmDialog):
         for start, end in intervals:
             # Translators: Month Year, eg: 'May 2007'
             name = _('%s %s') % (
-                _(month_names[start.month+1]), start.year)
+                _(month_names[start.month + 1]), start.year)
             date_filter.add_option_fixed_interval(
                 name, start, end, position=0)
 

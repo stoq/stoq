@@ -40,21 +40,25 @@ _ = stoqlib_gettext
 
 class CalendarEvents(Resource):
     def render_GET(self, resource):
-        start = datetime.datetime.fromtimestamp(float(resource.args['start'][0]))
-        end = datetime.datetime.fromtimestamp(float(resource.args['end'][0]))
+        start = datetime.datetime.fromtimestamp(
+            float(resource.args['start'][0]))
+        end = datetime.datetime.fromtimestamp(
+            float(resource.args['end'][0]))
         trans = api.new_transaction()
         events = []
-        for pv in InPaymentView.select(OR(AND(InPaymentView.q.paid_date >= start,
-                                              InPaymentView.q.paid_date <= end),
-                                          AND(InPaymentView.q.due_date >= start,
-                                              InPaymentView.q.due_date <= end)),
-                                       connection=trans):
+        for pv in InPaymentView.select(
+            OR(AND(InPaymentView.q.paid_date >= start,
+                   InPaymentView.q.paid_date <= end),
+               AND(InPaymentView.q.due_date >= start,
+                   InPaymentView.q.due_date <= end)),
+            connection=trans):
             self._create_in_payment(pv, events)
-        for pv in OutPaymentView.select(OR(AND(OutPaymentView.q.paid_date >= start,
-                                               OutPaymentView.q.paid_date <= end),
-                                           AND(OutPaymentView.q.due_date >= start,
-                                               OutPaymentView.q.due_date <= end)),
-                                        connection=trans):
+        for pv in OutPaymentView.select(
+            OR(AND(OutPaymentView.q.paid_date >= start,
+                   OutPaymentView.q.paid_date <= end),
+               AND(OutPaymentView.q.due_date >= start,
+                   OutPaymentView.q.due_date <= end)),
+            connection=trans):
             self._create_out_payment(pv, events)
         events = self._summarize_events(events)
         return json.dumps(events)
@@ -64,16 +68,18 @@ class CalendarEvents(Resource):
         className = "in-payment"
         if payment.is_paid() or payment.status == payment.STATUS_CONFIRMED:
             if payment_view.drawee:
-                title = _("Payment (%s) from %s was received") % (payment.paid_value,
-                                                                  payment_view.drawee,)
+                title = _("Payment (%s) from %s was received") % (
+                    payment.paid_value,
+                    payment_view.drawee,)
             else:
                 title = _("Payment (%s) was received") % (payment.paid_value, )
             start = payment.paid_date
             className = "in-payment-paid"
         elif payment.is_pending():
             if payment_view.drawee:
-                title = _("Payment (%s) from %s is due") % (payment.value,
-                                                            payment_view.drawee,)
+                title = _("Payment (%s) from %s is due") % (
+                    payment.value,
+                    payment_view.drawee,)
             else:
                 title = _("Payment (%s) due") % (payment.value, )
             start = payment.due_date
@@ -110,10 +116,12 @@ class CalendarEvents(Resource):
             className = "out-payment-paid"
         elif payment.is_pending():
             if supplier_name:
-                title = _("%s (%s) to %s is due") % (payment.description,
-                                                     payment.value, supplier_name,)
+                title = _("%s (%s) to %s is due") % (
+                    payment.description,
+                    payment.value, supplier_name,)
             else:
-                title = _("%s (%s) due") % (payment.description, payment.value, )
+                title = _("%s (%s) due") % (
+                    payment.description, payment.value, )
             start = payment.due_date
             if start < datetime.datetime.today():
                 className = "out-payment-late"
@@ -143,12 +151,14 @@ class CalendarEvents(Resource):
             else:
                 perDay[start] = [event]
 
-        # Display max 2 per days, and create a new summary event for the remaning
+        # Display max 2 per days, and create a new summary event
+        # for the remaning
         normal_events = []
         for date, date_events in perDay.items():
             normal_events.extend(date_events[:2])
             if len(date_events) > 2:
-                summary_events = self._create_summary_events(date, date_events[2:])
+                summary_events = self._create_summary_events(
+                    date, date_events[2:])
                 normal_events.extend(summary_events)
         return normal_events
 
@@ -173,6 +183,7 @@ class CalendarEvents(Resource):
                                start=date,
                                className="summarize"))
         return events
+
 
 class WebResource(Resource):
 
