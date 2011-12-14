@@ -24,6 +24,7 @@
 ##
 """ stoq-daemon: Daemon part of Stoq, ran on-demand.  """
 
+import logging
 import optparse
 import os
 import sys
@@ -34,6 +35,7 @@ from stoqlib.net.xmlrpcservice import XMLRPCService
 from stoqlib.lib.osutils import get_application_dir
 from stoq.lib.options import get_option_parser
 
+log = logging.getLogger('stoq.daemonmain')
 
 class Daemon(object):
     def __init__(self, daemon_id):
@@ -60,8 +62,6 @@ class Daemon(object):
         reactor.stop()
 
     def run(self):
-        print 'RUNNING DAEMON'
-        reactor.callLater(5, self._check_active)
         reactor.run()
 
 
@@ -76,6 +76,43 @@ def main(args):
     options, args = parser.parse_args(args)
     if not options.daemon_id:
         raise SystemExit("Need a daemon id")
+
+
+    from stoqlib.lib.message import error
+    from stoq.lib.configparser import StoqConfig
+    log.debug('reading configuration')
+    config = StoqConfig()
+    if options.filename:
+        config.load(options.filename)
+    else:
+        config.load_default()
+    config_file = config.get_filename()
+
+    settings = config.get_settings()
+
+    try:
+        conn_uri = settings.get_connection_uri()
+    except:
+        type, value, trace = sys.exc_info()
+        error(_("Could not open the database config file"),
+              _("Invalid config file settings, got error '%s', "
+                "of type '%s'") % (value, type))
+
+    from stoqlib.exceptions import StoqlibError
+    from stoqlib.database.exceptions import PostgreSQLError
+    from stoq.lib.startup import setup
+    log.debug('calling setup()')
+
+    # XXX: progress dialog for connecting (if it takes more than
+    # 2 seconds) or creating the database
+    try:
+        setup(config, options, register_station=True,
+              check_schema=False)
+    except (StoqlibError, PostgreSQLError), e:
+        error(_('Could not connect to the database'),
+              'error=%s uri=%s' % (str(e), conn_uri))
+        raise SystemExit("Error: bad connection settings provided")
+
 
     daemon = Daemon(options.daemon_id)
     daemon.run()
