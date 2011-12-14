@@ -37,7 +37,7 @@ from stoqlib.lib.process import Process
 
 
 class TryAgainError(Exception):
-     pass
+    pass
 
 
 def _get_random_id():
@@ -52,8 +52,8 @@ class DaemonManager(object):
 
     def start(self):
         try:
-            port = self._get_port()
-        except TryAgainError, e:
+            self._get_port()
+        except TryAgainError:
             pass
         else:
             return defer.succeed(self)
@@ -78,7 +78,6 @@ class DaemonManager(object):
             shutil.rmtree(daemondir)
         except OSError:
             pass
-
 
     def _get_port(self):
         appdir = get_application_dir()
@@ -110,6 +109,7 @@ class DaemonManager(object):
 
 
 _daemon = DaemonManager()
+
 
 def start_daemon():
     return _daemon.start()
