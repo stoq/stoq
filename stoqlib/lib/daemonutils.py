@@ -26,6 +26,7 @@ import base64
 import errno
 import os
 import signal
+import shutil
 
 from twisted.internet import defer, reactor
 from twisted.web.xmlrpc import Proxy
@@ -34,7 +35,8 @@ from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.process import Process
 
 
-_daemon = None
+class TryAgainError(Exception):
+    pass
 
 
 def _get_random_id():
@@ -45,9 +47,17 @@ class DaemonManager(object):
     def __init__(self):
         self._daemon_id = _get_random_id()
         self._port = None
+        self._process = None
 
     def start(self):
-        self.process = Process([
+        try:
+            port = self._get_port()
+        except TryAgainError, e:
+            pass
+        else:
+            return defer.succeed(self)
+
+        self._process = Process([
             'stoq-daemon',
             '--daemon-id', self._daemon_id,
             #'--sql',
@@ -58,9 +68,19 @@ class DaemonManager(object):
         return self._defer
 
     def stop(self):
-        os.kill(self.process.pid, signal.SIGINT)
+        if not self._process:
+            return
+        os.kill(self._process.pid, signal.SIGINT)
 
-    def _check_active(self):
+        appdir = get_application_dir()
+        daemondir = os.path.join(appdir, 'daemon', self._daemon_id)
+        try:
+            shutil.rmtree(daemondir)
+        except OSError:
+            pass
+
+
+    def _get_port(self):
         appdir = get_application_dir()
         portfile = os.path.join(appdir, 'daemon', self._daemon_id, 'port')
 
@@ -68,10 +88,17 @@ class DaemonManager(object):
             data = open(portfile).read()
         except IOError, e:
             if e.errno == errno.ENOENT:
-                reactor.callLater(0.1, self._check_active)
-                return
+                raise TryAgainError
             raise
-        self._port = int(data)
+        return int(data)
+
+    def _check_active(self):
+        try:
+            port = self._get_port()
+        except TryAgainError:
+            reactor.callLater(0.1, self._check_active)
+            return
+        self._port = port
         self._defer.callback(self)
 
     @property
@@ -82,13 +109,11 @@ class DaemonManager(object):
         return Proxy('%s/XMLRPC' % (self.base_uri, ))
 
 
+_daemon = DaemonManager()
+
 def start_daemon():
-    global _daemon
-    _daemon = DaemonManager()
     return _daemon.start()
 
 
 def stop_daemon():
-    global _daemon
-    if _daemon:
-        _daemon.stop()
+    _daemon.stop()
