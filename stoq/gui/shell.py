@@ -329,6 +329,8 @@ class Shell(object):
             if pos[0] < 220:
                 app.main_window.toplevel.move(220, pos[1])
 
+        return app
+
     def run_loop(self):
         log.debug("Entering reactor")
         if not reactor.running:

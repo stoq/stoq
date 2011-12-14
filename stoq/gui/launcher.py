@@ -97,9 +97,24 @@ class Launcher(AppWindow):
         self.iconview_vbox.show()
         self.iconview.grab_focus()
 
+    def run_app_by_name(self, app_name):
+        self.hide_app()
+        app = self._get_app_by_name(app_name)
+        if app is None:
+            raise ValueError(app_name)
+        return self.shell.run_embedded(app, self)
+
     #
     # Private
     #
+
+    def _get_app_by_name(self, app_name):
+        for row in self.model:
+            if row[COL_APP].name == app_name:
+                return row[COL_APP]
+
+    def _run_app(self, app):
+        self.shell.run_embedded(app, self)
 
     def _get_available_applications(self):
         user = api.get_current_user(self.conn)
@@ -131,4 +146,4 @@ class Launcher(AppWindow):
 
     def on_iconview__item_activated(self, iconview, path):
         app = self.model[path][COL_APP]
-        self.shell.run_embedded(app, self)
+        self._run_app(app)
