@@ -129,7 +129,6 @@ class CalendarView(gtk.ScrolledWindow):
         app.main_window.select_payment_ids(ids)
 
     def _show_out_payment_list(self, date):
-        print date, repr(date)
         y, m, d = map(int, date.split('-'))
         date = datetime.date(y, m, d)
         app = self.app.app.launcher.run_app_by_name('payable')
