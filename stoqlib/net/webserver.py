@@ -168,7 +168,7 @@ class CalendarEvents(Resource):
         out_payment_events = [e for e in events if e["type"] == "out-payment"]
         events = []
         if in_payment_events:
-            title = _("%d+ accounts recivable") % (len(in_payment_events), )
+            title = _("%d+ accounts receivable") % (len(in_payment_events), )
             url = "dialog://in-payment-list?ids=%s" % (
                 "|".join([str(e["id"]) for e in in_payment_events]), )
             events.append(dict(title=title,
