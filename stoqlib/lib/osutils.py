@@ -118,5 +118,9 @@ def list_recursively(directory, pattern):
     matches = []
     for root, dirnames, filenames in os.walk(directory):
         for filename in fnmatch.filter(filenames, pattern):
+            # skip backup files
+            if (filename.startswith('.#') or
+                filename.endswith('~')):
+                continue
             matches.append(os.path.join(root, filename))
     return matches
