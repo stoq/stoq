@@ -24,6 +24,7 @@
 
 import gtk
 
+from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.processview import ProcessView
 from stoqlib.lib.message import warning
@@ -75,6 +76,7 @@ class ImporterDialog(BasicDialog):
                 '-t', self.format,
                 '--import-filename', self.filename,
                 '-v']
+        args.extend(api.settings.get_command_line_arguments())
         self.process_view.execute_command(args)
 
     def _parse_process_line(self, line):
