@@ -73,26 +73,6 @@ class IApplicationDescriptions(Interface):
         """
 
 
-class IXMLRPCService(Interface):
-    def __init__(hostname, port):
-        """
-        Create a new IXMLRPCService object.
-        @param port: port to listen to
-        @param hostname: hostname to bind to or an empty string
-                         to bind to all addresses
-        """
-
-    def serve():
-        """Starts the XMLRPC service so it's ready
-        to accept clients.
-        This call will block until stop() is called
-        """
-
-    def stop():
-        """Stops the service, eg break out of serve
-        """
-
-
 class ISystemNotifier(Interface):
 
     def info(short, description):

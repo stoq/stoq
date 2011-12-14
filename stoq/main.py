@@ -80,6 +80,9 @@ def _debug_hook(exctype, value, tb):
 
 # FIXME: this logic should be inside stoqlib.
 def _exit_func():
+    from stoqlib.lib.daemonutils import stop_daemon
+    stop_daemon()
+
     from stoqlib.lib.crashreport import has_tracebacks
     if has_tracebacks() and not 'STOQ_DISABLE_CRASHREPORT' in os.environ:
         from stoqlib.gui.dialogs.crashreportdialog import show_dialog

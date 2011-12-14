@@ -182,6 +182,19 @@ class PayableApp(SearchableAppWindow):
                               long_title='Paid value', width=90)]
 
     #
+    # Public API
+    #
+
+    def search_for_date(self, date):
+        from kiwi.ui.search import DateSearchFilter
+        dfilter = DateSearchFilter(_("Paid or due date"))
+        dfilter.set_removable()
+        dfilter.mode.select_item_by_position(5)
+        self.add_filter(dfilter, columns=["paid_date", "due_date"])
+        dfilter.start_date.set_date(date)
+        self.search.refresh()
+
+    #
     # Private
     #
 
