@@ -48,7 +48,7 @@ from stoqlib.domain.synchronization import BranchSynchronization
 from stoqlib.domain.system import TransactionEntry
 from stoqlib.enums import SyncPolicy
 from stoqlib.lib.process import Process, PIPE
-from stoqlib.lib.xmlrpc import ServerProxy, XMLRPCService
+from stoqlib.net.xmlrpcservice import ServerProxy, XMLRPCService
 
 log = Logger('stoqlib.synchronization')
 

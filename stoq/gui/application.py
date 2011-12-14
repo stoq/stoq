@@ -102,6 +102,7 @@ class App(object):
         self.main_window.hide()
 
     def shutdown(self, *args):
+        print 'SHUTDOWN'
         if reactor.running:
             reactor.stop()
 
@@ -852,7 +853,7 @@ class AppWindow(GladeDelegate):
             return
 
         self._save_window_size()
-        raise SystemExit
+        reactor.stop()
 
     def _on_menu_item__select(self, menuitem, tooltip):
         self.statusbar.push(-1, tooltip)

@@ -376,6 +376,20 @@ def _parse_command_line(args):
     return options, appname
 
 
+def _setup_daemon():
+    from stoqlib.api import api
+    from stoqlib.lib.daemonutils import start_daemon
+
+    @api.async
+    def start():
+        daemon = yield start_daemon()
+        proxy = daemon.get_client()
+        retval = yield proxy.callRemote('start_webservice')
+        print retval
+
+    start()
+
+
 def main(args):
     try:
         options, appname = _parse_command_line(args)
@@ -395,5 +409,6 @@ def main(args):
     _setup_ui_dialogs()
     _setup_cookiefile()
 
+    _setup_daemon()
     _initialize(options)
     run_app(options, appname)
