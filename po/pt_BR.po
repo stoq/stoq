@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-12-06 14:34-0200\n"
-"PO-Revision-Date: 2011-12-06 17:51+0000\n"
-"Last-Translator: Ronaldo Maia <mainha+lp@gmail.com>\n"
+"PO-Revision-Date: 2011-12-13 19:27+0000\n"
+"Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-12-13 05:06+0000\n"
-"X-Generator: Launchpad (build 14458)\n"
+"X-Launchpad-Export-Date: 2011-12-14 04:48+0000\n"
+"X-Generator: Launchpad (build 14487)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -4525,7 +4525,7 @@ msgstr "contendo:"
 #. Payable
 #: ../stoq/gui/payable.py:84
 msgid "Account payable..."
-msgstr "Contas a pagar..."
+msgstr "Conta a pagar..."
 
 #: ../stoq/gui/payable.py:85
 msgid "Create a new account payable"
@@ -5513,7 +5513,7 @@ msgstr "_Receber ordem..."
 
 #: ../stoq/gui/stock.py:89
 msgid "Transfer..."
-msgstr "Transferir..."
+msgstr "Transferência..."
 
 #: ../stoq/gui/stock.py:90
 msgid "Decrease stock..."
