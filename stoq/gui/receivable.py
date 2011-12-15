@@ -74,6 +74,7 @@ class ReceivableApp(SearchableAppWindow):
     gladefile = 'receivable'
     search_table = InPaymentView
     search_label = _('matching:')
+    report_table = ReceivablePaymentReport
     embedded = True
 
     #
@@ -94,14 +95,10 @@ class ReceivableApp(SearchableAppWindow):
             ('PrintReceipt', None, _('Print _receipt...'), '<Control>r'),
             ('PaymentFlowHistory', None,
              _('Payment _flow history...'), '<Control>f'),
-            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
             ('BillCheckSearch', None, _('Bills and checks...'), '',
              _('Search for bills and checks')),
             ('CardPaymentSearch', None, _('Card payments...'), '',
              _('Search for card payments')),
-            ('PrintToolMenu', _('Print')),
-            ('PrintList', gtk.STOCK_PRINT, _('Payment List'), '',
-             _('Print a report for this payment listing'), ),
             ('Receive', gtk.STOCK_APPLY, _('Receive...'), '',
              _('Receive the selected payments')),
             ('Details', gtk.STOCK_INFO, _('Details...'), '',
@@ -111,10 +108,6 @@ class ReceivableApp(SearchableAppWindow):
                                                  filename='receivable.xml')
         self.set_help_section(_("Accounts receivable help"), 'receber-inicio')
 
-        self.add_tool_menu_actions([
-                            ("Print", _("Print"), None,
-                            gtk.STOCK_PRINT)])
-
         self.Receive.set_short_label(_('Receive'))
         self.Details.set_short_label(_('Details'))
         self.Receive.props.is_important = True
@@ -123,6 +116,8 @@ class ReceivableApp(SearchableAppWindow):
     def create_ui(self):
         self.search.search.search_button.hide()
         self.app.launcher.add_new_items([self.AddReceiving])
+        self.app.launcher.Print.set_tooltip(
+            _("Print a report of this payments"))
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.search.set_summary_label(column='value',
             label='<b>%s</b>' % (_("Total")),
@@ -417,16 +412,9 @@ class ReceivableApp(SearchableAppWindow):
     def _run_bill_check_search(self):
         run_dialog(InPaymentBillCheckSearch, self, self.conn)
 
-    def _print_payment_list(self):
-        payments = self.results.get_selected_rows() or list(self.results)
-        self.print_report(ReceivablePaymentReport, self.results, payments)
-
     #
     # Kiwi callbacks
     #
-
-    def on_results__has_rows(self, klist, has_rows):
-        self.Print.set_sensitive(has_rows)
 
     def on_results__row_activated(self, klist, receivable_view):
         self._show_details(receivable_view)
@@ -443,12 +431,6 @@ class ReceivableApp(SearchableAppWindow):
 
     def on_Receive__activate(self, button):
         self._receive(self.results.get_selected_rows())
-
-    def on_Print__activate(self, button):
-        self._print_payment_list()
-
-    def on_PrintList__activate(self, action):
-        self._print_payment_list()
 
     def on_Comments__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]

@@ -32,9 +32,7 @@
         </placeholder>
       </menu>
       <placeholder name="FileMenuPH">
-        <menuitem action="Print"/>
         <menuitem action="Import"/>
-        <menuitem action="ExportCSV"/>
       </placeholder>
     </menu>
     <placeholder name="AppMenubarPH">
@@ -59,7 +57,6 @@
   <toolbar action="toolbar">
     <placeholder action="ApplicationToolbar">
       <separator/>
-      <toolitem action="Print"/>
       <toolitem action="Edit"/>
       <toolitem action="DeleteAccount"/>
       <toolitem action="DeleteTransaction"/>

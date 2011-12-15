@@ -33,8 +33,6 @@
       </menu>
       <placeholder name="FileMenuPH">
         <menuitem action="LoanClose"/>
-        <separator/>
-        <menuitem action="ExportCSV"/>
       </placeholder>
     </menu>
     <menu action="SearchMenu">
@@ -75,7 +73,6 @@
   </popup>
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">
-      <toolitem action="Print"/>
       <separator/>
       <toolitem action="Edit"/>
       <toolitem action="Details"/>

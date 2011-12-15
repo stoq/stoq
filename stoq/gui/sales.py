@@ -50,6 +50,7 @@ from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.invoice import SaleInvoice, print_sale_invoice
 from stoqlib.lib.message import info, yesno
+from stoqlib.reporting.sale import SalesReport
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -64,6 +65,7 @@ class SalesApp(SearchableAppWindow):
     gladefile = 'sales_app'
     search_table = SaleView
     search_label = _('matching:')
+    report_table = SalesReport
     embedded = True
 
     cols_info = {Sale.STATUS_INITIAL: 'open_date',
@@ -87,8 +89,6 @@ class SalesApp(SearchableAppWindow):
         actions = [
             ("SaleQuote", None, _("Sale quote..."), '',
              _('Create a new quote for a sale')),
-            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'),
-             '<Control>F10'),
             ("LoanNew", None, _("Loan...")),
             ("LoanClose", None, _("Close loan...")),
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
@@ -108,8 +108,6 @@ class SalesApp(SearchableAppWindow):
             ("SaleMenu", None, _("Sale")),
             ("SalesCancel", None, _("Cancel quote...")),
             ("SalesPrintInvoice", gtk.STOCK_PRINT, _("_Print invoice...")),
-            ("Print", gtk.STOCK_PRINT, _("Print"), '',
-             _("Print a report for this sale listing")),
             ("Return", gtk.STOCK_CANCEL, _("Return..."), '',
              _("Return the selected sale, canceling it's payments")),
             ("Edit", gtk.STOCK_EDIT, _("Edit..."), '',
@@ -147,10 +145,9 @@ class SalesApp(SearchableAppWindow):
           self.SearchClient,
           self.SearchService,
           self.SearchDelivery])
+        self.app.launcher.Print.set_tooltip(_("Print a report of these sales"))
 
     def activate(self):
-        # Avoid letting this sensitive if has-rows is never emitted
-        self.Print.set_sensitive(False)
         self.check_open_inventory()
         self._update_toolbar()
 
@@ -349,7 +346,6 @@ class SalesApp(SearchableAppWindow):
         self._update_toolbar()
 
     def on_results__has_rows(self, results, has_rows):
-        self.Print.set_sensitive(has_rows)
         self._update_toolbar()
 
     def on_results__right_click(self, results, result, event):
@@ -419,9 +415,6 @@ class SalesApp(SearchableAppWindow):
         self.run_dialog(DeliverySearch, self.conn)
 
     # Toolbar
-
-    def on_Print__activate(self, action):
-        self.sale_toolbar.print_sale()
 
     def on_Edit__activate(self, action):
         self.sale_toolbar.edit()

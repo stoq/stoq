@@ -35,9 +35,6 @@
       </menu>
       <placeholder name="FileMenuPH">
         <menuitem action="CloseInConsignment"/>
-        <separator/>
-        <menuitem action="Print"/>
-        <menuitem action="ExportCSV"/>
       </placeholder>
     </menu>
     <menu action="EditMenu">
@@ -54,8 +51,8 @@
         <menuitem action="Services"/>
         <menuitem action="SearchStockItems"/>
         <menuitem action="SearchClosedStockItems"/>
-        <menuitem action="Suppliers"/>
         <menuitem action="Transporter"/>
+        <menuitem action="Suppliers"/>
         <menuitem action="SearchQuotes"/>
         <menuitem action="SearchPurchasedItems"/>
         <menuitem action="ProductsSoldSearch"/>
@@ -84,7 +81,6 @@
   </popup>
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">
-      <toolitem action="Print"/>
       <separator/>
       <toolitem action="Confirm"/>
       <toolitem action="Edit"/>

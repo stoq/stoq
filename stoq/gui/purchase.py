@@ -76,6 +76,7 @@ class PurchaseApp(SearchableAppWindow):
     gladefile = "purchase"
     search_table = PurchaseOrderView
     search_label = _('matching:')
+    report_table = PurchaseReport
     embedded = True
 
     #
@@ -84,10 +85,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def create_actions(self):
         actions = [
-            ("Print", gtk.STOCK_PRINT, _("Print"), '',
-             _("Print the list of orders")),
             ("StockCost", None, _("_Stock cost...")),
-            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
             ("CloseInConsignment", None, _("Close consigment...")),
             ("SearchInConsignmentItems", None, _("Search consigment items...")),
             ("OrderMenu", None, _("Order")),
@@ -165,12 +163,12 @@ class PurchaseApp(SearchableAppWindow):
         self.Confirm.set_sensitive(False)
 
     def activate(self):
-        # Avoid letting this sensitive if has-rows is never emitted
-        self.Print.set_sensitive(False)
         self.app.launcher.NewToolItem.set_tooltip(
             _("Create a new purchase order"))
         self.app.launcher.SearchToolItem.set_tooltip(
             _("Search for purchase orders"))
+        self.app.launcher.Print.set_tooltip(
+            _("Print a report of these orders"))
         self._update_view()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
 
@@ -232,6 +230,11 @@ class PurchaseApp(SearchableAppWindow):
                 SearchColumn('total', title=_('Total'),
                              data_type=currency, width=120)]
 
+    def print_report(self, *args, **kwargs):
+        # PurchaseReport needs a status arg
+        kwargs['status'] = self.status_filter.get_state().value
+        super(PurchaseApp, self).print_report(*args, **kwargs)
+
     #
     # Private
     #
@@ -240,7 +243,7 @@ class PurchaseApp(SearchableAppWindow):
         self._update_view()
 
     def _update_list_aware_widgets(self, has_items):
-        for widget in (self.Edit, self.Details, self.Print):
+        for widget in (self.Edit, self.Details):
             widget.set_sensitive(has_items)
 
     def _update_view(self):
@@ -344,11 +347,6 @@ class PurchaseApp(SearchableAppWindow):
         self.refresh()
         self.select_result(order_views)
 
-    def _print_selected_items(self):
-        items = self.results.get_selected_rows() or list(self.results)
-        self.print_report(PurchaseReport, self.results, items,
-                          self.status_filter.get_state().value)
-
     def _cancel_order(self):
         register_payment_operations()
         order_views = self.results.get_selected_rows()
@@ -404,9 +402,6 @@ class PurchaseApp(SearchableAppWindow):
         # FIXME Remove this method after gazpacho bug fix.
         self._new_order()
 
-    def on_results__has_rows(self, klist, has_rows):
-        self.Print.set_sensitive(has_rows)
-
     def on_results__right_click(self, results, result, event):
         self.popup.popup(None, None, None, event.button, event.time)
 
@@ -431,9 +426,6 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_Edit__activate(self, action):
         self._edit_order()
-
-    def on_Print__activate(self, action):
-        self._print_selected_items()
 
     def on_Cancel__activate(self, action):
         self._cancel_order()

@@ -31,9 +31,6 @@
           <menuitem action="ProductionPurchaseQuote"/>
         </placeholder>
       </menu>
-      <placeholder name="FileMenuPH">
-        <menuitem action="ExportCSV"/>
-      </placeholder>
     </menu>
     <placeholder name="AppMenubarPH">
       <menu action="ProductionMenu">
@@ -60,7 +57,6 @@
   </popup>
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">
-      <toolitem action="Print"/>
       <separator/>
       <toolitem action="StartProduction"/>
       <toolitem action="EditProduction"/>

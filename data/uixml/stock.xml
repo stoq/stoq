@@ -36,8 +36,6 @@
       <placeholder name="FileMenuPH">
         <menuitem action="StockInitial"/>
         <menuitem action="LoanClose"/>
-        <separator/>
-        <menuitem action="ExportCSV"/>
       </placeholder>
     </menu>
     <menu action="ViewMenu">
@@ -72,7 +70,6 @@
   </popup>
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">
-      <toolitem action="Print"/>
       <separator/>
       <toolitem action="ProductStockHistory"/>
       <toolitem action="EditProduct"/>

@@ -206,12 +206,8 @@ class CalendarApp(AppWindow):
 
     def create_actions(self):
         actions = [
-            ('Print', gtk.STOCK_PRINT, _("Print..."),
-             None, _('Print a transaction report')),
-            ('ExportCSV', None, _('Export CSV...'), '<control>F10'),
             ("NewTask", gtk.STOCK_NEW, _("Task..."), '<control>t',
              _("Add a new task")),
-
             ('Back', gtk.STOCK_GO_BACK, _("Back"),
              '', _("Go back")),
             ('Forward', gtk.STOCK_GO_FORWARD, _("Forward"),
@@ -242,9 +238,12 @@ class CalendarApp(AppWindow):
         self.main_vbox.pack_start(self._calendar)
         self._calendar.show()
         self.app.launcher.add_new_items([self.NewTask])
+        self.app.launcher.Print.set_tooltip(_("Print this calendar"))
 
     def activate(self):
         self.app.launcher.SearchToolItem.set_sensitive(False)
+        # FIXME: Are we 100% sure we can always print something?
+        self.app.launcher.Print.set_sensitive(True)
 
     def deactivate(self):
         self.uimanager.remove_ui(self.calendar_ui)
@@ -259,12 +258,10 @@ class CalendarApp(AppWindow):
     def new_activate(self):
         pass
 
-    # Calendar
-
-    def on_Print__activate(self, action):
+    def print_activate(self):
         self._calendar.print_()
 
-    def on_ExportCSV__activate(self, action):
+    def export_csv_activate(self):
         pass
 
     def on_Back__activate(self, action):

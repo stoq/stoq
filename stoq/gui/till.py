@@ -55,6 +55,7 @@ from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch, SoldItemsByBranchSearch
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
 from stoqlib.gui.slaves.saleslave import return_sale
+from stoqlib.reporting.sale import SalesReport
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -72,6 +73,7 @@ class TillApp(SearchableAppWindow):
     gladefile = 'till'
     search_table = SaleView
     search_labels = _(u'matching:')
+    report_table = SalesReport
     embedded = True
 
     #
@@ -83,8 +85,6 @@ class TillApp(SearchableAppWindow):
             ('SaleMenu', None, _('Sale')),
             ('TillOpen', None, _('Open till...'), '<Control>F6'),
             ('TillClose', None, _('Close till...'), '<Control>F7'),
-            ('ExportCSV', gtk.STOCK_SAVE_AS,
-             _('Export CSV...'), '<Control>F10'),
             ('TillAddCash', None, _('Cash addition...'), ''),
             ('TillRemoveCash', None, _('Cash removal...'), ''),
             ("SearchClient", None, _("Clients..."), '<Control><Alt>c',
@@ -141,6 +141,7 @@ class TillApp(SearchableAppWindow):
         self.app.launcher.add_search_items([self.SearchFiscalTillOperations,
                                             self.SearchClient,
                                             self.SearchSale])
+        self.app.launcher.Print.set_tooltip(_("Print a report of these sales"))
         self.refresh()
         self._printer.check_till()
         self.check_open_inventory()

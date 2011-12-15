@@ -210,6 +210,8 @@ class AppWindow(GladeDelegate):
             _('Change the password for the currently logged in user')),
             ('SignOut', None, _('Sign out...'), '',
             _('Sign out the currently logged in user and login as another')),
+            ('Print', gtk.STOCK_PRINT, _("Print..."), '<control>p'),
+            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
             ("Quit", gtk.STOCK_QUIT, _('Quit'), '<control>q',
              _('Exit the application')),
 
@@ -252,6 +254,7 @@ class AppWindow(GladeDelegate):
         self.ToggleToolbar.props.active = True
         self.ToggleStatusbar.props.active = True
 
+        self.Print.set_short_label(_("Print"))
         self.add_tool_menu_actions([
             ("NewToolItem", _("New"), '', gtk.STOCK_NEW),
             ("SearchToolItem", _("Search"), None, gtk.STOCK_FIND),
@@ -286,6 +289,10 @@ class AppWindow(GladeDelegate):
             'activate', self._on_ChangePassword__activate)
         self.SignOut.connect(
             'activate', self._on_SignOut__activate)
+        self.Print.connect(
+            'activate', self._on_Print__activate)
+        self.ExportCSV.connect(
+            'activate', self._on_ExportCSV__activate)
         self.Quit.connect(
             'activate', self._on_Quit__activate)
 
@@ -560,6 +567,14 @@ class AppWindow(GladeDelegate):
         """Called when the Search toolbar item is activated"""
         raise NotImplementedError
 
+    def print_activate(self):
+        """Called when the Print toolbar item is activated"""
+        raise NotImplementedError
+
+    def export_csv_activate(self):
+        """Called when the Export menu item is activated"""
+        raise NotImplementedError
+
     #
     # Public API
     #
@@ -767,6 +782,10 @@ class AppWindow(GladeDelegate):
         self.Close.set_sensitive(True)
         self.ChangePassword.set_visible(False)
         self.SignOut.set_visible(False)
+        self.Print.set_visible(True)
+        self.Print.set_sensitive(False)
+        self.ExportCSV.set_visible(True)
+        self.ExportCSV.set_sensitive(False)
         self.Quit.set_visible(False)
         self.NewToolItem.set_tooltip("")
         self.NewToolItem.set_sensitive(True)
@@ -807,6 +826,10 @@ class AppWindow(GladeDelegate):
         self.ChangePassword.set_visible(True)
         self.SignOut.set_visible(True)
         self.Quit.set_visible(True)
+        self.Print.set_sensitive(False)
+        self.Print.set_visible(False)
+        self.ExportCSV.set_visible(False)
+        self.ExportCSV.set_sensitive(False)
         self.set_new_menu_sensitive(True)
         self.NewToolItem.set_tooltip(_("Open a new window"))
         self.SearchToolItem.set_tooltip("")
@@ -919,6 +942,14 @@ class AppWindow(GladeDelegate):
     def _on_NewWindow__activate(self, action):
         self._new_window()
 
+    def _on_Print__activate(self, action):
+        if self.current_app:
+            self.current_app.print_activate()
+
+    def _on_ExportCSV__activate(self, action):
+        if self.current_app:
+            self.current_app.export_csv_activate()
+
     def _on_Close__activate(self, action):
         if self.current_app and self.current_app.shutdown_application():
             self.hide_app()
@@ -1010,10 +1041,13 @@ class SearchableAppWindow(AppWindow):
 
     @cvar search_table: The we will query on to perform the search
     @cvar search_label: Label left of the search entry
+    @cvar report_table: the report class for printing the object list
+        embedded on app.
     """
 
     search_table = None
     search_label = _('Search:')
+    report_table = None
 
     def __init__(self, app):
         if self.search_table is None:
@@ -1032,12 +1066,29 @@ class SearchableAppWindow(AppWindow):
         self.set_text_field_label(self.search_label)
 
         AppWindow.__init__(self, app)
-
         self.attach_slave('search_holder', self.search)
 
         self.create_filters()
 
         self.search.focus_search_entry()
+
+    #
+    # AppWindow hooks
+    #
+
+    def print_activate(self):
+        if self.results.get_selection_mode() == gtk.SELECTION_MULTIPLE:
+            results = self.results.get_selected_rows()
+        else:
+            result = self.results.get_selected()
+            results = [result] if result else None
+        results = results or list(self.results)
+
+        self.print_report(self.report_table, self.results, results,
+                          do_footer=False)
+
+    def export_csv_activate(self):
+        self.export_csv()
 
     #
     # Public API
@@ -1115,8 +1166,9 @@ class SearchableAppWindow(AppWindow):
     def _on_search__search_completed(self, search, results, states):
         self.search_completed(results, states)
 
-    def on_ExportCSV__activate(self, action):
-        self.export_csv()
+        has_results = len(results)
+        for widget in (self.app.launcher.Print, self.app.launcher.ExportCSV):
+            widget.set_sensitive(has_results)
 
 
 class VersionChecker(object):

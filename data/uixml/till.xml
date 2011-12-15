@@ -34,8 +34,6 @@
       <placeholder name="FileMenuPH">
         <menuitem action="TillOpen"/>
         <menuitem action="TillClose"/>
-        <separator/>
-        <menuitem action="ExportCSV"/>
       </placeholder>
     </menu>
     <placeholder name="AppMenubarPH">

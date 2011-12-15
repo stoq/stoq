@@ -348,11 +348,8 @@ class FinancialApp(AppWindow):
         actions = [
             ('TransactionMenu', None, _('Transaction')),
             ('AccountMenu', None, _('Account')),
-            ('Print', gtk.STOCK_PRINT, _("Print..."),
-             None, _('Print a transaction report')),
             ('Import', gtk.STOCK_ADD, _('Import...'),
              '<control>i', _('Import a GnuCash or OFX file')),
-            ('ExportCSV', None, _('Export CSV...'), '<control>F10'),
             ('DeleteAccount', gtk.STOCK_DELETE, _('Delete...'), '',
              _('Delete the selected account')),
             ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete...'), '',
@@ -393,6 +390,12 @@ class FinancialApp(AppWindow):
         self.uimanager.remove_ui(self.financial_ui)
         self.app.launcher.SearchToolItem.set_sensitive(True)
 
+    def print_activate(self):
+        self._print_transaction_report()
+
+    def export_csv_activate(self):
+        self._export_csv()
+
     #
     # Private
     #
@@ -403,21 +406,24 @@ class FinancialApp(AppWindow):
         self.TransactionMenu.set_visible(not is_accounts_tab)
         self.DeleteAccount.set_visible(is_accounts_tab)
         self.DeleteTransaction.set_visible(not is_accounts_tab)
+        self.app.launcher.ExportCSV.set_sensitive(not is_accounts_tab)
+        self.app.launcher.Print.set_sensitive(not is_accounts_tab)
 
         self.NewAccount.set_sensitive(self._can_add_account())
         self.DeleteAccount.set_sensitive(self._can_delete_account())
         self.NewTransaction.set_sensitive(self._can_add_transaction())
         self.DeleteTransaction.set_sensitive(self._can_delete_transaction())
-        self.ExportCSV.set_sensitive(self._can_export_csv())
         self.Edit.set_sensitive(self._can_edit_account() or
                                 self._can_edit_transaction())
-        self.Print.set_sensitive(self._is_transaction_tab())
 
     def _update_tooltips(self):
         if self._is_accounts_tab():
             self.Edit.set_tooltip(_("Edit the selected account"))
+            self.app.launcher.Print.set_tooltip("")
         else:
             self.Edit.set_tooltip(_("Edit the selected transaction"))
+            self.app.launcher.Print.set_tooltip(
+                _("Print a report of these transactions"))
 
     def _create_initial_page(self):
         pixbuf = self.accounts.render_icon('stoq-money', gtk.ICON_SIZE_MENU)
@@ -664,9 +670,6 @@ class FinancialApp(AppWindow):
 
         return True
 
-    def _can_export_csv(self):
-        return not self._is_accounts_tab()
-
     def _add_transaction(self):
         page = self._get_current_page_widget()
         page.add_transaction_dialog()
@@ -710,7 +713,7 @@ class FinancialApp(AppWindow):
         trans.commit(close=True)
 
     def _print_transaction_report(self):
-        assert self._is_transaction_tab()
+        assert not self._is_accounts_tab()
 
         page = self._get_current_page_widget()
         print_report(AccountTransactionReport, page.results, list(page.results),
@@ -779,11 +782,5 @@ class FinancialApp(AppWindow):
 
     # Financial
 
-    def on_Print__activate(self, action):
-        self._print_transaction_report()
-
     def on_Import__activate(self, action):
         self._import()
-
-    def on_ExportCSV__activate(self, action):
-        self._export_csv()

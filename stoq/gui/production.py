@@ -55,6 +55,7 @@ class ProductionApp(SearchableAppWindow):
     gladefile = "production"
     search_table = ProductionOrder
     search_label = _(u'matching:')
+    report_table = ProductionReport
     embedded = True
 
     #
@@ -74,9 +75,6 @@ class ProductionApp(SearchableAppWindow):
             _('Show production details and register produced items')),
             ('ProductionPurchaseQuote', 'stoq-purchase-app',
              _('Purchase quote...'), '<Control>p'),
-            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-            ("Print", gtk.STOCK_PRINT, _("Print"), '',
-             _('Print a report of this production listing')),
             ('ProductionMenu', None, _('Production')),
             ("SearchProduct", None, _("Production products..."), '<Control>d',
              _("Search for production products")),
@@ -109,10 +107,10 @@ class ProductionApp(SearchableAppWindow):
             self.SearchService,
             self.SearchProductionItem,
             ])
+        self.app.launcher.Print.set_tooltip(
+            _("Print a report of these productions"))
 
     def activate(self):
-        # Avoid letting this sensitive if has-rows is never emitted
-        self.Print.set_sensitive(False)
         self.search.refresh()
         self._update_widgets()
 
@@ -144,6 +142,11 @@ class ProductionApp(SearchableAppWindow):
                              data_type=datetime.date, width=80),
                 SearchColumn('close_date', title=_(u'Closed'),
                              data_type=datetime.date, width=80)]
+
+    def print_report(self, *args, **kwargs):
+        # ProductionReport needs a status kwarg
+        kwargs['status'] = self.status_filter.get_state().value
+        super(ProductionApp, self).print_report(*args, **kwargs)
 
     #
     # Private
@@ -206,17 +209,11 @@ class ProductionApp(SearchableAppWindow):
     def on_ProductionDetails__activate(self, widget):
         self._production_details()
 
-    def on_Print__activate(self, widget):
-        items = self.results
-        self.print_report(ProductionReport, items, list(items),
-                          self.status_filter.get_state().value)
-
     def on_results__selection_changed(self, results, selected):
         self._update_widgets()
 
     def on_results__has_rows(self, widget, has_rows):
         self._update_widgets()
-        self.set_sensitive([self.Print], has_rows)
 
     def on_results__row_activated(self, widget, order):
         self._production_details()
