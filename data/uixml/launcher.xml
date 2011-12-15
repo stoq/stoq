@@ -45,9 +45,10 @@
       <menuitem action="Preferences"/>
     </menu>
     <menu action="ViewMenu">
+      <placeholder name="ViewMenuPH"/>
+      <separator/>
       <menuitem action="ToggleToolbar"/>
       <menuitem action="ToggleStatusbar"/>
-      <placeholder name="ViewMenuPH"/>
       <separator/>
       <menuitem action="ToggleFullscreen"/>
     </menu>

@@ -162,6 +162,20 @@ class CalendarView(gtk.ScrolledWindow):
     def set_daemon_uri(self, uri):
         self._daemon_uri = uri
 
+    def go_prev(self):
+        self._view.execute_script("$('#calendar').fullCalendar('prev');")
+
+    def show_today(self):
+        self._view.execute_script("$('#calendar').fullCalendar('today');")
+
+    def go_next(self):
+        self._view.execute_script("$('#calendar').fullCalendar('next');")
+
+    def change_view(self, view_name):
+        self._view.execute_script(
+            "$('#calendar').fullCalendar('changeView', %r);" % (
+            view_name, ))
+
     def load(self):
         self._load_daemon_path('web/static/calendar-app.html')
 
@@ -197,10 +211,31 @@ class CalendarApp(AppWindow):
             ('ExportCSV', None, _('Export CSV...'), '<control>F10'),
             ("NewTask", gtk.STOCK_NEW, _("Task..."), '<control>t',
              _("Add a new task")),
+
+            ('Back', gtk.STOCK_GO_BACK, _("Back"),
+             '', _("Go back")),
+            ('Forward', gtk.STOCK_GO_FORWARD, _("Forward"),
+             '', _("Go forward")),
+            ('Today', 'stoq-calendar-today', _("Show today"),
+             '', _("Show today")),
             ]
         self.calendar_ui = self.add_ui_actions('', actions,
                                                 filename='calendar.xml')
         self.help_ui = None
+
+        radio_actions = [
+            ('ViewMonth', 'stoq-calendar-month', _("View as month"),
+             '', _("Show one month")),
+            ('ViewWeek', 'stoq-calendar-week', _("View as week"),
+             '', _("Show one week")),
+            ]
+        self.add_ui_actions('', radio_actions, 'RadioActions',
+                            'radio')
+        self.ViewMonth.set_short_label(_("Month"))
+        self.ViewWeek.set_short_label(_("Week"))
+        self.ViewMonth.props.is_important = True
+        self.ViewWeek.props.is_important = True
+        self.ViewMonth.props.active = True
 
     def create_ui(self):
         self._calendar = CalendarView(self)
@@ -231,3 +266,18 @@ class CalendarApp(AppWindow):
 
     def on_ExportCSV__activate(self, action):
         pass
+
+    def on_Back__activate(self, action):
+        self._calendar.go_prev()
+
+    def on_Today__activate(self, action):
+        self._calendar.show_today()
+
+    def on_Forward__activate(self, action):
+        self._calendar.go_next()
+
+    def on_ViewMonth__activate(self, action):
+        self._calendar.change_view('month')
+
+    def on_ViewWeek__activate(self, action):
+        self._calendar.change_view('basicWeek')

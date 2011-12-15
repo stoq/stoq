@@ -636,6 +636,8 @@ class AppWindow(GladeDelegate):
             ag.add_actions(actions)
         elif action_type == 'toogle':
             ag.add_toggle_actions(actions)
+        elif action_type == 'radio':
+            ag.add_radio_actions(actions)
         else:
             raise ValueError(action_type)
         self.uimanager.insert_action_group(ag, 0)
