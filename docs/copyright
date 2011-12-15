@@ -40,6 +40,13 @@ can be downloaded from <http://download.gnome.org/sources/gnome-icon-theme/>:
 * stoq-taxes
 * stoq-user-profiles
 
+These pixwmaps were copied from evolution, licensed under LGPL-v2/v3:
+
+* stoq-calendar-app
+* stoq-calendar-week
+* stoq-calendar-month
+* stoq-calendar-today
+
 Stoq external
 =============
 
