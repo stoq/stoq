@@ -68,23 +68,76 @@ class CalendarView(gtk.ScrolledWindow):
         self.add(self._view)
         self._view.show()
 
-    def _on_inspector__inspect_web_view(self, inspector, view):
-        w = gtk.Window()
-        w.set_size_request(800, 600)
-        sw = gtk.ScrolledWindow()
-        w.add(sw)
-        view = webkit.WebView()
-        sw.add(view)
-        w.show_all()
-        return view
+    def _load_finished(self):
+        self._startup()
 
-    def _on_view__document_load_finished(self, view, frame):
-        self._load_finished()
+    def _startup(self):
+        d = {}
+        d['monthNames'] = dateconstants.get_month_names()
+        d['monthNamesShort'] = dateconstants.get_short_month_names()
+        d['dayNames'] = dateconstants.get_day_names()
+        d['dayNamesShort'] = dateconstants.get_short_day_names()
+        d['buttonText'] = {"today": _('today'),
+                           "month": _('month'),
+                           "week": _('week'),
+                           "day": _('day')}
+        self._js_function_call('startup', d)
 
-    def _on_view__navigation_policy_decision_requested(self, view, frame,
-                                                       request, action,
-                                                       policy):
-        uri = request.props.uri
+    def _load_daemon_path(self, path):
+        uri = '%s/%s' % (self._daemon_uri, path)
+        self._view.load_uri(uri)
+
+    def _run_dialog(self, name, **kwargs):
+        if name == 'payment':
+            self._show_payment_details(**kwargs)
+        elif name == 'in-payment-list':
+            self._show_in_payment_list(**kwargs)
+        elif name == 'out-payment-list':
+            self._show_out_payment_list(**kwargs)
+        else:
+            raise NotImplementedError(name)
+
+    def _show_payment_details(self, id):
+        trans = api.new_transaction()
+        payment = trans.get(Payment.get(int(id)))
+        retval = run_dialog(InPaymentEditor, self.app, trans, payment)
+        if api.finish_transaction(trans, retval):
+            self.refresh()
+        trans.close()
+
+    def _show_in_payment_list(self, ids):
+        ids = map(int, ids.split('|'))
+        app = self.app.app.launcher.run_app_by_name(
+            'receivable', params={'no-refresh': True})
+        app.main_window.select_payment_ids(ids)
+
+    def _show_out_payment_list(self, date):
+        y, m, d = map(int, date.split('-'))
+        date = datetime.date(y, m, d)
+        app = self.app.app.launcher.run_app_by_name(
+            'payable', params={'no-refresh': True})
+        app.main_window.search_for_date(date)
+
+    def _js_function_call(self, function, *args):
+        js_values = []
+        for arg in args:
+            if arg is True:
+                value = 'true'
+            elif arg is False:
+                value = 'false'
+            elif type(arg) in [str, int, float]:
+                value = repr(arg)
+            else:
+                value = json.dumps(arg)
+            js_values.append(value)
+
+        self._view.execute_script('%s(%s)' % (
+            function, ', '.join(js_values)))
+
+    def _calendar_run(self, name, *args):
+        self._js_function_call("$('#calendar').fullCalendar", name, *args)
+
+    def _policy_decision(self, uri, policy):
         if uri.startswith('file:///'):
             policy.use()
         elif uri.startswith('http://localhost'):
@@ -102,84 +155,58 @@ class CalendarView(gtk.ScrolledWindow):
             gtk.show_uri(self.get_screen(), uri,
                          gtk.get_current_event_time())
 
-    def _run_dialog(self, name, **kwargs):
-        if name == 'payment':
-            self._show_payment_details(**kwargs)
-        elif name == 'in-payment-list':
-            self._show_in_payment_list(**kwargs)
-        elif name == 'out-payment-list':
-            self._show_out_payment_list(**kwargs)
-        else:
-            raise NotImplementedError(name)
+    def _create_view_for_inspector(self, introspector_view):
+        window = gtk.Window()
+        window.set_size_request(800, 600)
+        sw = gtk.ScrolledWindow()
+        window.add(sw)
+        view = webkit.WebView()
+        sw.add(introspector_view)
+        window.show_all()
+        return view
 
-    def _show_payment_details(self, id):
-        trans = api.new_transaction()
-        payment = trans.get(Payment.get(int(id)))
-        retval = run_dialog(InPaymentEditor, self.app, trans, payment)
-        if api.finish_transaction(trans, retval):
-            self.search.refresh()
-        trans.close()
+    #
+    # Callbacks
+    #
 
-    def _show_in_payment_list(self, ids):
-        ids = map(int, ids.split('|'))
-        app = self.app.app.launcher.run_app_by_name(
-            'receivable', params={'no-refresh': True})
-        app.main_window.select_payment_ids(ids)
+    def _on_inspector__inspect_web_view(self, inspector, view):
+        return self._create_view_for_inspector(view)
 
-    def _show_out_payment_list(self, date):
-        y, m, d = map(int, date.split('-'))
-        date = datetime.date(y, m, d)
-        app = self.app.app.launcher.run_app_by_name(
-            'payable', params={'no-refresh': True})
-        app.main_window.search_for_date(date)
+    def _on_view__document_load_finished(self, view, frame):
+        self._load_finished()
 
-    def _load_finished(self):
-        self._startup()
+    def _on_view__navigation_policy_decision_requested(self, view, frame,
+                                                       request, action,
+                                                       policy):
+        self._policy_decision(request.props.uri, policy)
 
-    def _startup(self):
-        d = {}
-        d['monthNames'] = dateconstants.get_month_names()
-        d['monthNamesShort'] = dateconstants.get_short_month_names()
-        d['dayNames'] = dateconstants.get_day_names()
-        d['dayNamesShort'] = dateconstants.get_short_day_names()
-        d['buttonText'] = {"today": _('today'),
-                           "month": _('month'),
-                           "week": _('week'),
-                           "day": _('day')}
-        s = "startup(%s);" % (json.dumps(d), )
-        self._view.execute_script(s)
-
-    def _render_event(self, args):
-        self._view.execute_script(
-            "$('#calendar').fullCalendar('renderEvent', %s, true);" % (
-            json.dumps(args)))
-
-    def print_(self):
-        self._view.execute_script('window.print()')
-
-    def _load_daemon_path(self, path):
-        uri = '%s/%s' % (self._daemon_uri, path)
-        self._view.load_uri(uri)
+    #
+    # Public API
+    #
 
     def set_daemon_uri(self, uri):
         self._daemon_uri = uri
 
-    def go_prev(self):
-        self._view.execute_script("$('#calendar').fullCalendar('prev');")
-
-    def show_today(self):
-        self._view.execute_script("$('#calendar').fullCalendar('today');")
-
-    def go_next(self):
-        self._view.execute_script("$('#calendar').fullCalendar('next');")
-
-    def change_view(self, view_name):
-        self._view.execute_script(
-            "$('#calendar').fullCalendar('changeView', %r);" % (
-            view_name, ))
-
     def load(self):
         self._load_daemon_path('web/static/calendar-app.html')
+
+    def print_(self):
+        self._view.execute_script('window.print()')
+
+    def go_prev(self):
+        self._calendar_run('prev')
+
+    def show_today(self):
+        self._calendar_run('today')
+
+    def go_next(self):
+        self._calendar_run('next')
+
+    def change_view(self, view_name):
+        self._calendar_run('changeView', view_name)
+
+    def refresh(self):
+        self.load()
 
 
 class CalendarApp(AppWindow):

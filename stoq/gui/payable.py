@@ -35,7 +35,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
-from kiwi.ui.search import ComboSearchFilter
+from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.api import api
 from stoqlib.domain.payment.operation import register_payment_operations
@@ -120,11 +120,6 @@ class PayableApp(SearchableAppWindow):
         self.search.search.search_button.hide()
 
     def activate(self, params):
-        # Avoid letting this sensitive if has-rows is never emitted
-        self.PrintReport.set_sensitive(False)
-        # FIXME: double negation is weird here
-        if not params.get('no-refresh'):
-            self.search.refresh()
         self.app.launcher.add_new_items([self.AddPayment])
         self.app.launcher.NewToolItem.set_tooltip(self.AddPayment.get_tooltip())
         self.app.launcher.add_search_items([self.BillCheckSearch])
@@ -134,7 +129,9 @@ class PayableApp(SearchableAppWindow):
             _("Print a report of these payments"))
         self.Pay.set_sensitive(False)
         self.PrintReceipt.set_sensitive(False)
-        self.search.refresh()
+        # FIXME: double negation is weird here
+        if not params.get('no-refresh'):
+            self.search.refresh()
         self._update_widgets()
 
     def deactivate(self):
@@ -189,7 +186,6 @@ class PayableApp(SearchableAppWindow):
     #
 
     def search_for_date(self, date):
-        from kiwi.ui.search import DateSearchFilter
         dfilter = DateSearchFilter(_("Paid or due date"))
         dfilter.set_removable()
         dfilter.mode.select_item_by_position(5)
