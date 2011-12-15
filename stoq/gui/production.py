@@ -110,7 +110,7 @@ class ProductionApp(SearchableAppWindow):
         self.app.launcher.Print.set_tooltip(
             _("Print a report of these productions"))
 
-    def activate(self):
+    def activate(self, params):
         self.search.refresh()
         self._update_widgets()
 

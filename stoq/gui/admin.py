@@ -304,7 +304,7 @@ class AdminApp(AppWindow):
         self.iconview.connect('item-activated', self.tasks.on_item_activated)
         self.iconview.select_path(self.model[0].path)
 
-    def activate(self):
+    def activate(self, params):
         # Admin app doesn't have anything to print/export
         for widget in (self.app.launcher.Print, self.app.launcher.ExportCSV):
             widget.set_visible(False)

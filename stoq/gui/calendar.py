@@ -122,13 +122,15 @@ class CalendarView(gtk.ScrolledWindow):
 
     def _show_in_payment_list(self, ids):
         ids = map(int, ids.split('|'))
-        app = self.app.app.launcher.run_app_by_name('receivable')
+        app = self.app.app.launcher.run_app_by_name(
+            'receivable', params={'no-refresh': True})
         app.main_window.select_payment_ids(ids)
 
     def _show_out_payment_list(self, date):
         y, m, d = map(int, date.split('-'))
         date = datetime.date(y, m, d)
-        app = self.app.app.launcher.run_app_by_name('payable')
+        app = self.app.app.launcher.run_app_by_name(
+            'payable', params={'no-refresh': True})
         app.main_window.search_for_date(date)
 
     def _load_finished(self):
@@ -240,7 +242,7 @@ class CalendarApp(AppWindow):
         self.app.launcher.add_new_items([self.NewTask])
         self.app.launcher.Print.set_tooltip(_("Print this calendar"))
 
-    def activate(self):
+    def activate(self, params):
         self.app.launcher.SearchToolItem.set_sensitive(False)
         # FIXME: Are we 100% sure we can always print something?
         self.app.launcher.Print.set_sensitive(True)

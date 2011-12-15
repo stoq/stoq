@@ -87,16 +87,16 @@ class App(object):
         # shutdown and do_sync methods.
         self.main_window = window_class(self)
 
-    def show(self):
+    def show(self, params=None):
         if self.embedded:
             win = self.main_window.get_toplevel()
-            self.launcher.show_app(self.main_window, win.child)
+            self.launcher.show_app(self.main_window, win.child, params)
             win.hide()
         else:
             self.main_window.show()
 
-    def run(self):
-        self.show()
+    def run(self, params=None):
+        self.show(params)
 
     def hide(self):
         self.main_window.hide()
@@ -523,9 +523,11 @@ class AppWindow(GladeDelegate):
         in the instance.
         """
 
-    def activate(self):
+    def activate(self, params):
         """This is when you switch to an application.
-        You should setup widget sensitivity here and refresh lists etc"""
+        You should setup widget sensitivity here and refresh lists etc
+        @params: an dictionary with optional parameters.
+        """
 
     def setup_focus(self):
         """Define this method on child when it's needed.
@@ -775,7 +777,7 @@ class AppWindow(GladeDelegate):
         button = new_item.get_children()[0].get_children()[0]
         button.set_sensitive(sensitive)
 
-    def show_app(self, app, app_window):
+    def show_app(self, app, app_window, params=None):
         app_window.reparent(self.application_box)
         self.application_box.set_child_packing(app_window, True, True, 0,
                                                gtk.PACK_START)
@@ -794,7 +796,7 @@ class AppWindow(GladeDelegate):
 
         self.get_toplevel().set_title(app.get_title())
         self.application_box.show()
-        app.activate()
+        app.activate(params or {})
         self.uimanager.ensure_update()
         while gtk.events_pending():
             gtk.main_iteration()

@@ -135,7 +135,7 @@ class TillApp(SearchableAppWindow):
         return _('Stoq - Till for Branch %03d') % (
             api.get_current_branch(self.conn).id, )
 
-    def activate(self):
+    def activate(self, params):
         self.app.launcher.add_new_items([self.TillAddCash,
                                          self.TillRemoveCash])
         self.app.launcher.add_search_items([self.SearchFiscalTillOperations,

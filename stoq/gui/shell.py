@@ -307,7 +307,7 @@ class Shell(object):
 
         self.run_embedded(appdesc, app_window)
 
-    def run_embedded(self, appdesc, app_window):
+    def run_embedded(self, appdesc, app_window, params=None):
         app = self._load_app(appdesc, app_window)
         app.launcher = app_window
 
@@ -318,7 +318,7 @@ class Shell(object):
             app_window.show()
             return
 
-        app.run()
+        app.run(params)
 
         # Possibly correct window position (livecd workaround for small
         # screens)
