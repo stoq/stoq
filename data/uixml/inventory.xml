@@ -30,9 +30,6 @@
           <menuitem action="NewInventory"/>
         </placeholder>
       </menu>
-      <placeholder name="FileMenuPH">
-        <menuitem action="ExportCSV"/>
-      </placeholder>
     </menu>
     <placeholder name="AppMenubarPH">
       <menu action="InventoryMenu">
@@ -40,7 +37,7 @@
         <menuitem action="AdjustAction"/>
         <menuitem action="Cancel"/>
         <separator/>
-        <menuitem action="Print"/>
+        <menuitem action="PrintProductListing"/>
       </menu>
     </placeholder>
   </menubar>
@@ -49,11 +46,10 @@
     <menuitem action="AdjustAction"/>
     <menuitem action="Cancel"/>
     <separator/>
-    <menuitem action="Print"/>
+    <menuitem action="PrintProductListing"/>
   </popup>
   <toolbar action="toolbar">
     <placeholder name="AppToolbarPH">
-      <toolitem action="Print"/>
       <separator/>
       <toolitem action="CountingAction"/>
       <toolitem action="AdjustAction"/>

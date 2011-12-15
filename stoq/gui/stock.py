@@ -71,6 +71,7 @@ class StockApp(SearchableAppWindow):
     gladefile = "stock"
     search_table = ProductFullStockView
     search_labels = _('Matching:')
+    report_table = SimpleProductReport
     pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
     embedded = True
 
@@ -85,7 +86,6 @@ class StockApp(SearchableAppWindow):
             ('NewTransfer', 'gtk-convert', _('Transfer...'), '<Control>t'),
             ('NewStockDecrease', None, _('Stock decrease...')),
             ('StockInitial', 'gtk-go-up', _('Register initial stock...')),
-            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
             ("LoanNew", None, _("Loan...")),
             ("LoanClose", None, _("Close loan...")),
             ("SearchPurchaseReceiving", None, _("Received purchases..."),
@@ -105,8 +105,6 @@ class StockApp(SearchableAppWindow):
             ("LoanSearch", None, _("Loans...")),
             ("LoanSearchItems", None, _("Loan items...")),
             ("ProductMenu", None, _("Product")),
-            ("Print", gtk.STOCK_PRINT, _("Print"), '',
-            _('Print a report of this products listing')),
             ("ProductStockHistory", gtk.STOCK_INFO, _("History..."), '',
             _('Show the stock history of the selected product')),
             ("EditProduct", gtk.STOCK_EDIT, _("Edit..."), '',
@@ -143,6 +141,8 @@ class StockApp(SearchableAppWindow):
             self.SearchPurchasedStockItems,
             self.SearchTransfer,
             ])
+        self.app.launcher.Print.set_tooltip(
+            _("Print a report of these products"))
         self._inventory_widgets = [self.NewTransfer, self.NewReceiving,
                                    self.StockInitial, self.NewStockDecrease,
                                    self.LoanNew, self.LoanClose]
@@ -163,8 +163,6 @@ class StockApp(SearchableAppWindow):
         self.search.search.search_button.hide()
 
     def activate(self):
-        # Avoid letting this sensitive if has-rows is never emitted
-        self.Print.set_sensitive(False)
         self.app.launcher.NewToolItem.set_tooltip(
             _("Create a new receiving order"))
         self.app.launcher.SearchToolItem.set_tooltip(
@@ -190,6 +188,11 @@ class StockApp(SearchableAppWindow):
 
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
+
+    def print_report(self, *args, **kwargs):
+        # SimpleProductReport needs a branch_name kwarg
+        kwargs['branch_name'] = self.branch_filter.combo.get_active_text()
+        super(StockApp, self).print_report(*args, **kwargs)
 
     #
     # SearchableAppWindow
@@ -248,8 +251,6 @@ class StockApp(SearchableAppWindow):
         branch = api.get_current_branch(self.conn)
 
         is_main_branch = self.branch_filter.get_state().value is branch
-        has_stock = len(self.results) > 0
-
         item = self.results.get_selected()
 
         pixbuf = None
@@ -279,7 +280,6 @@ class StockApp(SearchableAppWindow):
         self.set_sensitive([self.EditProduct], bool(item))
         self.set_sensitive([self.ProductStockHistory],
                            bool(item) and is_main_branch)
-        self.set_sensitive([self.Print], has_stock)
         # We need more than one branch to be able to do transfers
         # Note that 'all branches' is not a real branch
         has_branches = len(self.branch_filter.combo) > 2
@@ -323,11 +323,6 @@ class StockApp(SearchableAppWindow):
 
     def on_results__right_click(self, results, result, event):
         self.popup.popup(None, None, None, event.button, event.time)
-
-    def on_Print__activate(self, button):
-        branch_name = self.branch_filter.combo.get_active_text()
-        self.print_report(SimpleProductReport, self.results,
-                          list(self.results), branch_name=branch_name)
 
     def on_ProductStockHistory__activate(self, button):
         selected = self.results.get_selected()

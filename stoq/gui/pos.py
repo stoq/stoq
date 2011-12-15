@@ -175,6 +175,10 @@ class PosApp(AppWindow):
         self._clear_order()
 
     def activate(self):
+        # Admin app doesn't have anything to print/export
+        for widget in (self.app.launcher.Print, self.app.launcher.ExportCSV):
+            widget.set_visible(False)
+
         # Hide toolbar specially for pos
         self.uimanager.get_widget('/toolbar').hide()
         self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').hide()

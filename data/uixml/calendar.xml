@@ -30,10 +30,6 @@
           <menuitem action="NewTask"/>
         </placeholder>
       </menu>
-      <placeholder name="FileMenuPH">
-        <menuitem action="Print"/>
-        <menuitem action="ExportCSV"/>
-      </placeholder>
     </menu>
     <menu action="ViewMenu">
       <placeholder name="ViewMenuPH">
@@ -45,8 +41,6 @@
   </menubar>
   <toolbar action="toolbar">
     <placeholder action="ApplicationToolbar">
-      <separator/>
-      <toolitem action="Print"/>
       <separator/>
       <toolitem action="Back"/>
       <toolitem action="Today"/>

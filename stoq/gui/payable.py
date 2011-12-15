@@ -71,6 +71,7 @@ class PayableApp(SearchableAppWindow):
     gladefile = 'payable'
     search_table = OutPaymentView
     search_label = _('matching:')
+    report_table = PayablePaymentReport
     embedded = True
 
     #
@@ -95,11 +96,8 @@ class PayableApp(SearchableAppWindow):
             ('PaymentFlowHistory', None, _('Payment _flow history...'),
              '<Control>f',
              _('Show a report of payment expected to receive grouped by day')),
-            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
             ('BillCheckSearch', None, _('Bills and checks...'), '',
              _('Search for bills and checks')),
-            ('PrintReport', gtk.STOCK_PRINT, _('Print'), '',
-             _('Print a report for this payment listing')),
             ('Pay', gtk.STOCK_APPLY, _('Pay...'), '',
              _('Pay the order associated with the selected payment')),
             ('Edit', gtk.STOCK_EDIT, _('Edit...'), '',
@@ -122,16 +120,16 @@ class PayableApp(SearchableAppWindow):
         self.search.search.search_button.hide()
 
     def activate(self):
-        # Avoid letting this sensitive if has-rows is never emitted
-        self.PrintReport.set_sensitive(False)
-        self.search.refresh()
         self.app.launcher.add_new_items([self.AddPayment])
         self.app.launcher.NewToolItem.set_tooltip(self.AddPayment.get_tooltip())
         self.app.launcher.add_search_items([self.BillCheckSearch])
         self.app.launcher.SearchToolItem.set_tooltip(
             self.BillCheckSearch.get_tooltip())
+        self.app.launcher.Print.set_tooltip(
+            _("Print a report of these payments"))
         self.Pay.set_sensitive(False)
         self.PrintReceipt.set_sensitive(False)
+        self.search.refresh()
         self._update_widgets()
 
     def deactivate(self):
@@ -430,9 +428,6 @@ class PayableApp(SearchableAppWindow):
     # Kiwi callbacks
     #
 
-    def on_results__has_rows(self, klist, has_rows):
-        self.PrintReport.set_sensitive(has_rows)
-
     def on_results__row_activated(self, klist, payable_view):
         if self._can_show_details([payable_view]):
             self._show_details(payable_view)
@@ -456,11 +451,6 @@ class PayableApp(SearchableAppWindow):
 
     def on_results__selection_changed(self, results, selected):
         self._update_widgets()
-
-    def on_PrintReport__activate(self, action):
-        payments = self.results.get_selected_rows() or list(self.results)
-        self.print_report(PayablePaymentReport, self.results,
-                          payments, do_footer=False)
 
     def on_PrintReceipt__activate(self, action):
         register_payment_operations()

@@ -43,6 +43,7 @@ from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
 from stoqlib.lib.message import warning, yesno
 from stoqlib.reporting.product import ProductCountingReport
+from stoqlib.reporting.inventory import InventoryReport
 
 _ = gettext.gettext
 
@@ -56,6 +57,7 @@ class InventoryApp(SearchableAppWindow):
     gladefile = "inventory"
     search_table = Inventory
     search_labels = _('Matching:')
+    report_table = InventoryReport
     embedded = True
 
     #
@@ -75,10 +77,9 @@ class InventoryApp(SearchableAppWindow):
                'inventory')),
             ('Cancel', gtk.STOCK_CANCEL, _('Cancel...'), '',
              _('Cancel the selected inventory')),
-            ('Print', gtk.STOCK_PRINT, _('Print product listing...'), '',
-             _('Print the product listing for the selected inventory '
-               'to be used for counting')),
-            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
+            ('PrintProductListing', gtk.STOCK_PRINT,
+             _('Print product listing...'), '',
+             _('Print the product listing for this inventory'))
         ]
         self.inventory_ui = self.add_ui_actions('', actions,
                                                 filename='inventory.xml')
@@ -97,10 +98,11 @@ class InventoryApp(SearchableAppWindow):
 
         self.search.search.search_button.hide()
         self.app.launcher.add_new_items([self.NewInventory])
+        self.app.launcher.Print.set_tooltip(
+            _("Print a report of these inventories"))
 
     def activate(self):
         # Avoid letting this sensitive if has-rows is never emitted
-        self.Print.set_sensitive(False)
         self.search.refresh()
         self._update_widgets()
         self.app.launcher.SearchToolItem.set_sensitive(False)
@@ -178,7 +180,6 @@ class InventoryApp(SearchableAppWindow):
             has_open = selected.is_open()
             has_adjusted = selected.has_adjusted_items()
 
-        self.set_sensitive([self.Print], has_open)
         self.set_sensitive([self.Cancel], has_open and not has_adjusted)
         self.set_sensitive([self.NewInventory], self._can_open())
         self.set_sensitive([self.CountingAction], has_open)
@@ -275,7 +276,7 @@ class InventoryApp(SearchableAppWindow):
     def on_Cancel__activate(self, widget):
         self._cancel_inventory()
 
-    def on_Print__activate(self, button):
+    def on_PrintProductListing__activate(self, button):
         selected = self.results.get_selected()
         sellables = list(self._get_sellables_by_inventory(selected))
         if not sellables:

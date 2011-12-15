@@ -305,6 +305,10 @@ class AdminApp(AppWindow):
         self.iconview.select_path(self.model[0].path)
 
     def activate(self):
+        # Admin app doesn't have anything to print/export
+        for widget in (self.app.launcher.Print, self.app.launcher.ExportCSV):
+            widget.set_visible(False)
+
         self.app.launcher.add_new_items([self.NewUser])
         self.app.launcher.add_search_items([self.SearchUser,
                                             self.SearchEmployee])

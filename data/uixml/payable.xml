@@ -32,8 +32,6 @@
       </menu>
       <placeholder name="FileMenuPH">
         <menuitem action="PaymentFlowHistory"/>
-        <separator/>
-        <menuitem action="ExportCSV"/>
       </placeholder>
     </menu>
     <placeholder name="AppMenubarPH">
@@ -69,7 +67,6 @@
     <menuitem action="PrintReceipt"/>
   </popup>
   <toolbar action="toolbar">
-    <toolitem action="PrintReport"/>
     <separator/>
     <toolitem action="Pay"/>
     <toolitem action="Edit"/>

@@ -33,6 +33,9 @@
       <separator/>
       <placeholder name="FileMenuPH"/>
       <separator/>
+      <menuitem action="Print"/>
+      <menuitem action="ExportCSV"/>
+      <separator/>
       <menuitem action="ChangePassword"/>
       <menuitem action="SignOut"/>
       <separator/>
@@ -77,6 +80,8 @@
         <menu action="SearchToolMenu">
         </menu>
       </toolitem>
+      <separator/>
+      <toolitem action="Print"/>
     <toolitem action="Quit"/>
     <placeholder name="AppToolbarPH"/>
   </toolbar>
