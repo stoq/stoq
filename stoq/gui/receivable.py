@@ -35,7 +35,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
-from kiwi.ui.search import ComboSearchFilter
+from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from kiwi.ui.objectlist import SearchColumn, Column
 from stoqlib.api import api
 from stoqlib.domain.payment.operation import register_payment_operations
@@ -184,12 +184,13 @@ class ReceivableApp(SearchableAppWindow):
     # Public API
     #
 
-    def select_payment_ids(self, ids):
-        views = []
-        for payment_id in ids:
-            views.append(InPaymentView.get(payment_id))
-
-        self.select_result(views)
+    def search_for_date(self, date):
+        dfilter = DateSearchFilter(_("Paid or due date"))
+        dfilter.set_removable()
+        dfilter.mode.select_item_by_position(5)
+        self.add_filter(dfilter, columns=["paid_date", "due_date"])
+        dfilter.start_date.set_date(date)
+        self.search.refresh()
 
     #
     # Private
