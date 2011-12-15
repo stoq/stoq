@@ -1,3 +1,8 @@
+* {
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
 .summarize,
 .fc-agenda .summarize .fc-event-time,
 .summarize a {
