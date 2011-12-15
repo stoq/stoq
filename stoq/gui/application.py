@@ -941,7 +941,7 @@ class AppWindow(GladeDelegate):
             return
 
         self._save_window_size()
-        raise SystemExit
+        reactor.stop()
 
     # View
 
@@ -994,8 +994,8 @@ class AppWindow(GladeDelegate):
         restart_stoq_atexit()
         api.config.set('Database', 'enable_production', 'True')
         api.config.flush()
-        self.shutdown_application()
-        raise SystemExit
+        if self.shutdown_application():
+            reactor.stop()
 
     def _on_delete_handler(self, *args):
         self.shutdown_application()
