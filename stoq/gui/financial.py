@@ -379,7 +379,7 @@ class FinancialApp(AppWindow):
         self._create_initial_page()
         self._refresh_accounts()
 
-    def activate(self):
+    def activate(self, params):
         for page in self._pages.values():
             page.refresh()
         self._update_actions()

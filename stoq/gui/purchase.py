@@ -162,7 +162,7 @@ class PurchaseApp(SearchableAppWindow):
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.Confirm.set_sensitive(False)
 
-    def activate(self):
+    def activate(self, params):
         self.app.launcher.NewToolItem.set_tooltip(
             _("Create a new purchase order"))
         self.app.launcher.SearchToolItem.set_tooltip(

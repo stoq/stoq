@@ -88,21 +88,21 @@ class Launcher(AppWindow):
     # Public API
     #
 
-    def show_app(self, app, app_window):
+    def show_app(self, app, app_window, params=None):
         self.iconview_vbox.hide()
-        super(Launcher, self).show_app(app, app_window)
+        super(Launcher, self).show_app(app, app_window, params)
 
     def hide_app(self):
         super(Launcher, self).hide_app()
         self.iconview_vbox.show()
         self.iconview.grab_focus()
 
-    def run_app_by_name(self, app_name):
+    def run_app_by_name(self, app_name, params=None):
         self.hide_app()
         app = self._get_app_by_name(app_name)
         if app is None:
             raise ValueError(app_name)
-        return self.shell.run_embedded(app, self)
+        return self.shell.run_embedded(app, self, params)
 
     #
     # Private

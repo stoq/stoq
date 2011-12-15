@@ -119,7 +119,12 @@ class PayableApp(SearchableAppWindow):
         self._setup_widgets()
         self.search.search.search_button.hide()
 
-    def activate(self):
+    def activate(self, params):
+        # Avoid letting this sensitive if has-rows is never emitted
+        self.PrintReport.set_sensitive(False)
+        # FIXME: double negation is weird here
+        if not params.get('no-refresh'):
+            self.search.refresh()
         self.app.launcher.add_new_items([self.AddPayment])
         self.app.launcher.NewToolItem.set_tooltip(self.AddPayment.get_tooltip())
         self.app.launcher.add_search_items([self.BillCheckSearch])

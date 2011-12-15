@@ -162,7 +162,7 @@ class StockApp(SearchableAppWindow):
                                       parent=self.get_statusbar_message_area())
         self.search.search.search_button.hide()
 
-    def activate(self):
+    def activate(self, params):
         self.app.launcher.NewToolItem.set_tooltip(
             _("Create a new receiving order"))
         self.app.launcher.SearchToolItem.set_tooltip(

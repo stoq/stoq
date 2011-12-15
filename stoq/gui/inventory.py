@@ -101,7 +101,7 @@ class InventoryApp(SearchableAppWindow):
         self.app.launcher.Print.set_tooltip(
             _("Print a report of these inventories"))
 
-    def activate(self):
+    def activate(self, params):
         # Avoid letting this sensitive if has-rows is never emitted
         self.search.refresh()
         self._update_widgets()

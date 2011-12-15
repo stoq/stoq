@@ -124,12 +124,14 @@ class ReceivableApp(SearchableAppWindow):
             format='<b>%s</b>',
             parent=self.get_statusbar_message_area())
 
-    def activate(self):
+    def activate(self, params):
         self._update_widgets()
         self.app.launcher.add_search_items([self.BillCheckSearch,
                                             self.CardPaymentSearch])
 
-        self.search.refresh()
+        # FIXME: double negation is weird here
+        if not params.get('no-refresh'):
+            self.search.refresh()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.receivable_ui)

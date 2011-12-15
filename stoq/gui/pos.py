@@ -174,7 +174,7 @@ class PosApp(AppWindow):
         self._setup_proxies()
         self._clear_order()
 
-    def activate(self):
+    def activate(self, params):
         # Admin app doesn't have anything to print/export
         for widget in (self.app.launcher.Print, self.app.launcher.ExportCSV):
             widget.set_visible(False)
