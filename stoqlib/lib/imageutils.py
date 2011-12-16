@@ -28,7 +28,6 @@ import imghdr
 import tempfile
 import os.path
 
-import gtk
 import gobject
 
 
@@ -63,6 +62,7 @@ class ImageHelper(object):
         """Returns True if the image is supported by Stoq, False
         otherwise.
         """
+        import gtk
         # FIXME: self._image should not be created here. As the name
         #        of this method says, it should only check for valid
         #        images.
@@ -81,6 +81,7 @@ class ImageHelper(object):
     def resize(self, size):
         if not self.is_valid():
             return
+        import gtk
         current_size = self._image.get_width(), self._image.get_height()
         if current_size != size:
             w, h = size
