@@ -42,7 +42,7 @@ class CSVRow(object):
         self.fields = []
         for i, field in enumerate(item):
             #XXX: we expect to receive unicode data
-            setattr(self, field_names[i], unicode(field))
+            setattr(self, field_names[i], unicode(field, 'utf-8'))
             self.fields.append(field_names[i])
 
     def __repr__(self):
