@@ -28,11 +28,18 @@ import time
 
 from kiwi.log import Logger
 from kiwi.python import namedAny
+import pango
 
 from stoqlib.database.runtime import new_transaction
 
 log = Logger('stoqlib.importer')
 create_log = Logger('stoqlib.importer.create')
+
+# pango is not used, but we're importing it so that
+# python changes it's default encoding to utf-8,
+# we could also call sys.setdefaultencoding, but then
+# we're have to reload(sys) since it's deleted by site
+pango  # pyflakes
 
 _available_importers = {
     'account.ofx': 'ofximporter.OFXImporter',
