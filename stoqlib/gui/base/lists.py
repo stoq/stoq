@@ -153,7 +153,7 @@ class ModelListSlave(ListSlave):
         """
         dialog = get_dialog(self, dialog_class, *args, **kwargs)
 
-        retval = run_dialog(dialog)
+        retval = run_dialog(dialog, parent=self)
         if not retval:
             # We must return None because of ListDialog's add-item signal
             # expects that
