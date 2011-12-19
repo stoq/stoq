@@ -1041,7 +1041,8 @@ class MultipleMethodSlave(BaseEditorSlave):
                   payment_method.method_name == 'store_credit'):
                 return
 
-        radio = gtk.RadioButton(self.cash_radio, payment_method.description)
+        radio = gtk.RadioButton(self.cash_radio,
+                                payment_method.get_description())
         self.methods_box.pack_start(radio)
         radio.connect('toggled', self._on_method__toggled)
         radio.set_data('method', payment_method)
