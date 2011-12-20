@@ -17,6 +17,7 @@ include debian/changelog debian/compat debian/copyright debian/control debian/ru
 include debian/pycompat debian/pyversions
 include AUTHORS
 include COPYING
+include COPYING.stoqlib
 include COPYING.pt_BR
 include MANIFEST.in
 include README
@@ -25,3 +26,4 @@ include NEWS
 include CONTRIBUTORS
 include stoq.desktop
 include stoq.spec
+include data/br.com.stoq.createdatabase.policy
