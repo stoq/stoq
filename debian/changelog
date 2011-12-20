@@ -1,3 +1,10 @@
+stoq (1.1.1) oneiric; urgency=low
+
+  * New release
+  * Updated manifest and other bugfixes
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 20 Dec 2011 17:58:34 -0200
+
 stoq (1.1) natty; urgency=low
 
   * Release Stoq 1.1
