@@ -41,6 +41,7 @@ from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog,
                                                InvoicePrinterDialog)
 from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
+from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.eventsearch import EventSearch
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
 from stoqlib.gui.search.parametersearch import ParameterSearch
@@ -261,32 +262,47 @@ class AdminApp(AppWindow):
     #
 
     def create_actions(self):
+        group = get_accels('app.admin')
         actions = [
-            ("SearchRole", None, _("Roles..."), '<Control><Alt>o'),
-            ("SearchEmployee", None, _("Employees..."), '<Control><Alt>e'),
-            ("SearchEvents", None, _("Events..."), ''),
-            ("SearchCfop", None, _("C.F.O.P..."), '<Control>o'),
-            ("SearchFiscalBook", None, _("Fiscal books..."), '<Control><Alt>f'),
-            ("SearchUserProfile", None, _("Profiles..."), '<Control><Alt>u'),
-            ("SearchUser", None, _("Users..."), '<Control>u'),
-            ("SearchBranch", None, _("Branches..."), '<Control>b'),
-            ("SearchComputer", None, _('Computers...'), '<Control><Alt>h'),
+            ("SearchRole", None, _("Roles..."),
+             group.get('search_roles')),
+            ("SearchEmployee", None, _("Employees..."),
+             group.get('search_employees')),
+            ("SearchEvents", None, _("Events..."),
+             group.get('search_events')),
+            ("SearchCfop", None, _("C.F.O.P..."),
+             group.get('search_cfop')),
+            ("SearchFiscalBook", None, _("Fiscal books..."),
+             group.get('search_fiscalbook')),
+            ("SearchUserProfile", None, _("Profiles..."),
+             group.get('search_profile')),
+            ("SearchUser", None, _("Users..."),
+             group.get('search_users')),
+            ("SearchBranch", None, _("Branches..."),
+             group.get('search_branches')),
+            ("SearchComputer", None, _('Computers...'),
+             group.get('search_computers')),
             ("SearchTaxTemplate", None, _('Tax Classes...')),
             ("ConfigureMenu", None, _("_Configure")),
-            ("ConfigureDevices", None, _("Devices..."), '<Control>d'),
+            ("ConfigureDevices", None, _("Devices..."),
+             group.get('config_devices')),
             ("ConfigurePaymentMethods", None, _("Payment methods..."),
-             '<Control>m'),
+             group.get('config_payment_methods')),
             ("ConfigurePaymentCategories", None, _("Payment categories..."),
-             '<Control>a'),
+             group.get('config_payment_categories')),
             ("ConfigureClientCategories", None, _("Client categories..."),
-             '<control>x'),
-            ("ConfigureInvoices", None, _("Invoices..."), '<Control>n'),
+             group.get('config_client_categories')),
+            ("ConfigureInvoices", None, _("Invoices..."),
+             group.get('config_invoices')),
             ("ConfigureInvoicePrinters", None, _("Invoice printers..."),
-             '<Control>f'),
-            ("ConfigureSintegra", None, _("Sintegra..."), '<Control>w'),
+             group.get('config_invoice_printers')),
+            ("ConfigureSintegra", None, _("Sintegra..."),
+             group.get('config_sintegra')),
             ("ConfigurePlugins", None, _("Plugins...")),
-            ("ConfigureTaxes", None, _("Taxes..."), '<Control>l'),
-            ("ConfigureParameters", None, _("Parameters..."), '<Control>y'),
+            ("ConfigureTaxes", None, _("Taxes..."),
+             group.get('config_taxes')),
+            ("ConfigureParameters", None, _("Parameters..."),
+             group.get('config_parameters')),
             ("NewUser", None, _("User..."), '',
              _("Create a new user")),
             ]
