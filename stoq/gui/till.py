@@ -51,6 +51,7 @@ from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.quotedialog import ConfirmSaleMissingDialog
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
+from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch, SoldItemsByBranchSearch
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
@@ -81,29 +82,40 @@ class TillApp(SearchableAppWindow):
     #
 
     def create_actions(self):
+        group = get_accels('app.till')
         actions = [
             ('SaleMenu', None, _('Sale')),
-            ('TillOpen', None, _('Open till...'), '<Control>F6'),
-            ('TillClose', None, _('Close till...'), '<Control>F7'),
+            ('TillOpen', None, _('Open till...'),
+             group.get('open_till')),
+            ('TillClose', None, _('Close till...'),
+             group.get('close_till')),
             ('TillAddCash', None, _('Cash addition...'), ''),
             ('TillRemoveCash', None, _('Cash removal...'), ''),
-            ("SearchClient", None, _("Clients..."), '<Control><Alt>c',
+            ("SearchClient", None, _("Clients..."),
+             group.get('search_clients'),
              _("Search for clients")),
-            ("SearchSale", None, _("Sales..."), '<Contrl><Alt>a',
+            ("SearchSale", None, _("Sales..."),
+             group.get('search_sale'),
              _("Search for sales")),
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
-             '<Control><Alt>d', _("Search for items sold by branch")),
-            ("SearchTillHistory", None, _("Till history..."), '<Control><Alt>t',
+             group.get('search_sold_items_by_branch'),
+             _("Search for items sold by branch")),
+            ("SearchTillHistory", None, _("Till history..."),
+             group.get('search_till_history'),
              _("Search for till history")),
             ("SearchFiscalTillOperations", None, _("Fiscal till operations..."),
-             '<Contro><Alt>f', _("Search for fiscal till operations")),
-            ("Confirm", gtk.STOCK_APPLY, _("Confirm..."), '',
+             group.get('search_fiscal_till_operations'),
+             _("Search for fiscal till operations")),
+            ("Confirm", gtk.STOCK_APPLY, _("Confirm..."),
+             group.get('confirm_sale'),
              _("Confirm the selected sale, decreasing stock and making it "
                "possible to receive it's payments")),
-            ("Return", gtk.STOCK_CANCEL, _("Return..."), '',
+            ("Return", gtk.STOCK_CANCEL, _("Return..."),
+             group.get('return_sale'),
              _("Return the selected sale, returning stock and the client's "
                "payments")),
-            ("Details", gtk.STOCK_INFO, _("Details..."), '',
+            ("Details", gtk.STOCK_INFO, _("Details..."),
+             group.get('sale_details'),
              _("Show details of the selected sale")),
         ]
 

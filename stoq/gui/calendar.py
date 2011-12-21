@@ -38,6 +38,7 @@ from stoqlib.api import api
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
+from stoqlib.gui.keybindings import get_accels
 from stoqlib.lib import dateconstants
 from stoqlib.lib.daemonutils import start_daemon
 
@@ -234,15 +235,14 @@ class CalendarApp(AppWindow):
     #
 
     def create_actions(self):
+        group = get_accels('app.calendar')
         actions = [
-            ("NewTask", gtk.STOCK_NEW, _("Task..."), '<control>t',
-             _("Add a new task")),
             ('Back', gtk.STOCK_GO_BACK, _("Back"),
-             '', _("Go back")),
+             group.get('go_back'), _("Go back")),
             ('Forward', gtk.STOCK_GO_FORWARD, _("Forward"),
-             '', _("Go forward")),
+             group.get('go_forward'), _("Go forward")),
             ('Today', 'stoq-calendar-today', _("Show today"),
-             '', _("Show today")),
+             group.get('show_today'), _("Show today")),
             ]
         self.calendar_ui = self.add_ui_actions('', actions,
                                                 filename='calendar.xml')
@@ -266,7 +266,6 @@ class CalendarApp(AppWindow):
         self._calendar = CalendarView(self)
         self.main_vbox.pack_start(self._calendar)
         self._calendar.show()
-        self.app.launcher.add_new_items([self.NewTask])
         self.app.launcher.Print.set_tooltip(_("Print this calendar"))
 
     def activate(self, params):

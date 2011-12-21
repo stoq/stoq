@@ -51,6 +51,7 @@ from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
+from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.dateconstants import get_month_names
 from stoqlib.lib.message import yesno
@@ -345,20 +346,26 @@ class FinancialApp(AppWindow):
     #
 
     def create_actions(self):
+        group = get_accels('app.financial')
         actions = [
             ('TransactionMenu', None, _('Transaction')),
             ('AccountMenu', None, _('Account')),
             ('Import', gtk.STOCK_ADD, _('Import...'),
-             '<control>i', _('Import a GnuCash or OFX file')),
-            ('DeleteAccount', gtk.STOCK_DELETE, _('Delete...'), '',
+             group.get('import'), _('Import a GnuCash or OFX file')),
+            ('DeleteAccount', gtk.STOCK_DELETE, _('Delete...'),
+             group.get('delete_account'),
              _('Delete the selected account')),
-            ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete...'), '',
+            ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete...'),
+             group.get('delete_transaction'),
              _('Delete the selected transaction')),
-            ("NewAccount", gtk.STOCK_NEW, _("Account..."), '<control>a',
+            ("NewAccount", gtk.STOCK_NEW, _("Account..."),
+             group.get('new_account'),
              _("Add a new account")),
-            ("NewTransaction", gtk.STOCK_NEW, _("Transaction..."), '<control>t',
+            ("NewTransaction", gtk.STOCK_NEW, _("Transaction..."),
+             group.get('new_transaction'),
              _("Add a new transaction")),
-            ("Edit", gtk.STOCK_EDIT, _("Edit..."), ''),
+            ("Edit", gtk.STOCK_EDIT, _("Edit..."),
+             group.get('edit')),
             ]
         self.financial_ui = self.add_ui_actions('', actions,
                                                 filename='financial.xml')

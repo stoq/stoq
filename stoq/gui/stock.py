@@ -41,11 +41,11 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
+from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
+from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
+from stoqlib.gui.dialogs.productimage import ProductImageViewer
 from stoqlib.gui.editors.producteditor import ProductStockEditor
-from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
-from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
-from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
-from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
+from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
@@ -54,9 +54,10 @@ from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
-from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
-from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
-from stoqlib.gui.dialogs.productimage import ProductImageViewer
+from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
+from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
+from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
+from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
 from stoqlib.reporting.product import SimpleProductReport
 
 from stoq.gui.application import SearchableAppWindow
@@ -80,34 +81,44 @@ class StockApp(SearchableAppWindow):
     #
 
     def create_actions(self):
+        group = get_accels('app.stock')
         actions = [
             ("NewReceiving", 'stoq-receiving', _("Order _receival..."),
-             '<Control>r'),
-            ('NewTransfer', 'gtk-convert', _('Transfer...'), '<Control>t'),
+             group.get('new_receiving')),
+            ('NewTransfer', 'gtk-convert', _('Transfer...'),
+             group.get('transfer_product')),
             ('NewStockDecrease', None, _('Stock decrease...')),
             ('StockInitial', 'gtk-go-up', _('Register initial stock...')),
             ("LoanNew", None, _("Loan...")),
             ("LoanClose", None, _("Close loan...")),
             ("SearchPurchaseReceiving", None, _("Received purchases..."),
-             "<Control><Alt>u", _("Search for received purchase orders")),
+             group.get('search_receiving'),
+             _("Search for received purchase orders")),
             ("SearchProductHistory", None, _("Product history..."),
-             "<Control><Alt>p", _("Search for product history")),
+             group.get('search_product_history'),
+             _("Search for product history")),
             ("SearchStockDecrease", None, _("Stock decreases..."), '',
              _("Search for manual stock decreases")),
             ("SearchPurchasedStockItems", None, _("Purchased items..."),
-             "<Control><Alt>i", _("Search for purchased items")),
-            ("SearchStockItems", None, _("Stock items..."), "<Control><Alt>s",
+             group.get('search_purchased_stock_items'),
+             _("Search for purchased items")),
+            ("SearchStockItems", None, _("Stock items..."),
+             group.get('search_stock_items'),
              _("Search for items on stock")),
-            ("SearchTransfer", None, _("Transfers..."), "<Control><Alt>t",
+            ("SearchTransfer", None, _("Transfers..."),
+             group.get('search_transfers'),
              _("Search for stock transfers")),
             ("SearchClosedStockItems", None, _("Closed stock Items..."),
-             "<Control><Alt>c", _("Search for closed stock items")),
+             group.get('search_closed_stock_items'),
+             _("Search for closed stock items")),
             ("LoanSearch", None, _("Loans...")),
             ("LoanSearchItems", None, _("Loan items...")),
             ("ProductMenu", None, _("Product")),
-            ("ProductStockHistory", gtk.STOCK_INFO, _("History..."), '',
+            ("ProductStockHistory", gtk.STOCK_INFO, _("History..."),
+             group.get('history'),
             _('Show the stock history of the selected product')),
-            ("EditProduct", gtk.STOCK_EDIT, _("Edit..."), '',
+            ("EditProduct", gtk.STOCK_EDIT, _("Edit..."),
+             group.get('edit_product'),
             _("Edit the selected product, allowing you to change it's "
               "details")),
         ]

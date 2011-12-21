@@ -46,6 +46,7 @@ from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.introspection import introspect_slaves
+from stoqlib.gui.keybindings import get_accel, get_accels
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.splash import hide_splash
 from stoqlib.domain.inventory import Inventory
@@ -195,24 +196,33 @@ class AppWindow(GladeDelegate):
     def _create_shared_actions(self):
         if self.app.name != 'launcher':
             return
+        group = get_accels('app.common')
         actions = [
             ('menubar', ),
             ('toolbar', ),
 
+            # Menus
             ('FileMenu', None, _("_File")),
             ('FileMenuNew', None),
             ("NewMenu", None, _("New")),
-            ('NewWindow', None, _("_Window"), '<control>n',
+
+            ('NewWindow', None, _("_Window"),
+             group.get('new_window'),
             _('Opens up a new window')),
-            ('Close', None, _('Close'), '<control>w',
+            ('Close', None, _('Close'),
+             group.get('close_window'),
             _('Close the current view and go back to the initial screen')),
-            ('ChangePassword', None, _('Change password...'), '',
+            ('ChangePassword', None, _('Change password...'),
+             group.get('change_password'),
             _('Change the password for the currently logged in user')),
-            ('SignOut', None, _('Sign out...'), '',
+            ('SignOut', None, _('Sign out...'),
+             group.get('sign_out'),
             _('Sign out the currently logged in user and login as another')),
-            ('Print', gtk.STOCK_PRINT, _("Print..."), '<control>p'),
+            ('Print', gtk.STOCK_PRINT, _("Print..."),
+             group.get('print')),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
-            ("Quit", gtk.STOCK_QUIT, _('Quit'), '<control>q',
+            ("Quit", gtk.STOCK_QUIT, _('Quit'),
+             group.get('quit'),
              _('Exit the application')),
 
             # Edit
@@ -227,7 +237,8 @@ class AppWindow(GladeDelegate):
 
             # Help
             ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, _("Contents"), '<Shift>F1'),
+            ("HelpContents", gtk.STOCK_HELP, _("Contents"),
+             group.get('help_contents')),
             ("HelpTranslate", None, _("Translate Stoq..."), None,
              _("Translate this application online")),
             ("HelpSupport", None, _("Get support online..."), None,
@@ -241,11 +252,14 @@ class AppWindow(GladeDelegate):
         self.add_ui_actions(None, actions, filename='launcher.xml')
         self.Close.set_sensitive(False)
         toogle_actions = [
-            ('ToggleToolbar', None, _("_Toolbar"), '',
+            ('ToggleToolbar', None, _("_Toolbar"),
+             group.get('toggle_toolbar'),
              _('Show or hide the toolbar')),
-            ('ToggleStatusbar', None, _("_Statusbar"), '',
+            ('ToggleStatusbar', None, _("_Statusbar"),
+             group.get('toggle_statusbar'),
              _('Show or hide the statusbar')),
-            ('ToggleFullscreen', None, _("_Fullscreen"), 'F11',
+            ('ToggleFullscreen', None, _("_Fullscreen"),
+             group.get('toggle_fullscreen'),
              _('Enter or leave fullscreen mode')),
             ]
         self.add_ui_actions('', toogle_actions, 'ToogleActions',
@@ -692,7 +706,8 @@ class AppWindow(GladeDelegate):
         </menubar>
         </ui>"""
         help_help_actions = [
-            ("HelpHelp", None, label, 'F1',
+            ("HelpHelp", None, label,
+             get_accel('app.common.help'),
              _("Show help for this application"),
              on_HelpHelp__activate),
             ]
@@ -858,9 +873,6 @@ class AppWindow(GladeDelegate):
         if self.current_app and self.current_app.can_change_application():
             self.hide_app()
         return True
-
-    def key_control_F11(self):
-        self.toggle_fullscreen()
 
     def _on_toplevel__configure(self, widget, event):
         rect = widget.window.get_frame_extents()

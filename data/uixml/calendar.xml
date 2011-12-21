@@ -27,7 +27,6 @@
     <menu action="FileMenu">
       <menu action="NewMenu">
         <placeholder action="NewMenuItemPH">
-          <menuitem action="NewTask"/>
         </placeholder>
       </menu>
     </menu>
