@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-12-15 14:04-0200\n"
-"PO-Revision-Date: 2011-12-13 19:27+0000\n"
-"Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
+"PO-Revision-Date: 2011-12-21 11:47+0000\n"
+"Last-Translator: ruysabino <ruysabino@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-12-16 05:37+0000\n"
-"X-Generator: Launchpad (build 14523)\n"
+"X-Launchpad-Export-Date: 2011-12-22 05:29+0000\n"
+"X-Generator: Launchpad (build 14560)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -63,7 +63,7 @@ msgstr "Conta:"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:2 ../stoq/gui/financial.py:358
 msgid "Add a new account"
-msgstr "Adicionar uma nova conta"
+msgstr "Adicionar nova conta"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:3
 #: ../data/glade/SellableEditor.ui.h:5
@@ -133,7 +133,7 @@ msgstr "Novo..."
 
 #: ../data/glade/AdditionListSlave.ui.h:3
 msgid "_Delete"
-msgstr "_Remover"
+msgstr "_Apagar"
 
 #: ../data/glade/AdditionListSlave.ui.h:4 ../data/glade/SearchEditor.ui.h:1
 msgid "_Edit..."
@@ -2574,7 +2574,7 @@ msgstr "lançador"
 
 #: ../data/glade/calendar.ui.h:1
 msgid "calendar"
-msgstr ""
+msgstr "calendário"
 
 #: ../data/glade/financial.ui.h:1 ../stoq/gui/financial.py:431
 #: ../stoq/gui/financial.py:523 ../stoqlib/lib/parameters.py:506
@@ -3870,35 +3870,35 @@ msgstr "hoje"
 
 #: ../stoq/gui/calendar.py:144
 msgid "month"
-msgstr ""
+msgstr "mês"
 
 #: ../stoq/gui/calendar.py:145
 msgid "week"
-msgstr ""
+msgstr "semana"
 
 #: ../stoq/gui/calendar.py:146
 msgid "day"
-msgstr ""
+msgstr "dia"
 
 #: ../stoq/gui/calendar.py:185 ../stoq/lib/applist.py:39
 msgid "Calendar"
-msgstr ""
+msgstr "Calendário"
 
 #: ../stoq/gui/calendar.py:209
 msgid "Task..."
-msgstr ""
+msgstr "Tarefa..."
 
 #: ../stoq/gui/calendar.py:210
 msgid "Add a new task"
-msgstr ""
+msgstr "Adicionar uma nova tarefa"
 
 #: ../stoq/gui/calendar.py:211
 msgid "Back"
-msgstr ""
+msgstr "Voltar"
 
 #: ../stoq/gui/calendar.py:212
 msgid "Go back"
-msgstr ""
+msgstr "Voltar"
 
 #: ../stoq/gui/calendar.py:213 ../stoq/gui/config.py:544
 msgid "Forward"
@@ -3906,39 +3906,39 @@ msgstr "Avançar"
 
 #: ../stoq/gui/calendar.py:214
 msgid "Go forward"
-msgstr ""
+msgstr "Avançar"
 
 #: ../stoq/gui/calendar.py:215 ../stoq/gui/calendar.py:216
 msgid "Show today"
-msgstr ""
+msgstr "Mostrar hoje"
 
 #: ../stoq/gui/calendar.py:223
 msgid "View as month"
-msgstr ""
+msgstr "Visualizar como mês"
 
 #: ../stoq/gui/calendar.py:224
 msgid "Show one month"
-msgstr ""
+msgstr "Mostrar um mês"
 
 #: ../stoq/gui/calendar.py:225
 msgid "View as week"
-msgstr ""
+msgstr "Mostrar como semana"
 
 #: ../stoq/gui/calendar.py:226
 msgid "Show one week"
-msgstr ""
+msgstr "Mostrar uma semana"
 
 #: ../stoq/gui/calendar.py:230
 msgid "Month"
-msgstr ""
+msgstr "Mês"
 
 #: ../stoq/gui/calendar.py:231
 msgid "Week"
-msgstr ""
+msgstr "Semana"
 
 #: ../stoq/gui/calendar.py:241
 msgid "Print this calendar"
-msgstr ""
+msgstr "Imprime este calendário"
 
 #: ../stoq/gui/config.py:225
 #, python-format
@@ -4332,7 +4332,7 @@ msgstr "Financeiro"
 
 #: ../stoq/gui/financial.py:349
 msgid "Transaction"
-msgstr ""
+msgstr "Transação"
 
 #: ../stoq/gui/financial.py:351
 msgid "Import..."
@@ -4344,7 +4344,7 @@ msgstr "Importar um arquivo GnuCash ou OFX"
 
 #: ../stoq/gui/financial.py:353 ../stoq/gui/financial.py:355
 msgid "Delete..."
-msgstr ""
+msgstr "Apagar..."
 
 #: ../stoq/gui/financial.py:354
 msgid "Delete the selected account"
@@ -4370,7 +4370,7 @@ msgstr "Adicionar uma nova transação"
 #: ../stoq/gui/production.py:72 ../stoq/gui/purchase.py:119
 #: ../stoq/gui/sales.py:113 ../stoq/gui/stock.py:110
 msgid "Edit..."
-msgstr ""
+msgstr "Editar..."
 
 #: ../stoq/gui/financial.py:365
 msgid "Financial help"
@@ -4397,7 +4397,7 @@ msgstr "Edita a transação selecionada"
 
 #: ../stoq/gui/financial.py:426
 msgid "Print a report of these transactions"
-msgstr ""
+msgstr "Imprime um relatório destas transações"
 
 #: ../stoq/gui/financial.py:559
 msgid "All supported formats"
@@ -4449,7 +4449,7 @@ msgstr "contendo:"
 
 #: ../stoq/gui/inventory.py:70
 msgid "Inventory..."
-msgstr ""
+msgstr "Inventário"
 
 #: ../stoq/gui/inventory.py:71
 msgid "Create a new inventory for product counting"
@@ -4457,7 +4457,7 @@ msgstr "Cria um novo inventário para contagem de produtos"
 
 #: ../stoq/gui/inventory.py:72
 msgid "_Count..."
-msgstr ""
+msgstr "_Contar..."
 
 #: ../stoq/gui/inventory.py:73
 msgid "Register the actual stock of products in the selected inventory"
@@ -4465,7 +4465,7 @@ msgstr "Registra o atual estoque de produtos no inventário selecionado"
 
 #: ../stoq/gui/inventory.py:75
 msgid "_Adjust..."
-msgstr ""
+msgstr "_Ajustar..."
 
 #: ../stoq/gui/inventory.py:76
 msgid ""
@@ -4475,7 +4475,7 @@ msgstr "Ajusta o estoque de acordo com a contagem do inventário selecionado"
 #: ../stoq/gui/inventory.py:78 ../stoq/gui/payable.py:86
 #: ../stoq/gui/pos.py:134 ../stoq/gui/purchase.py:117
 msgid "Cancel..."
-msgstr ""
+msgstr "Cancelar..."
 
 #: ../stoq/gui/inventory.py:79
 msgid "Cancel the selected inventory"
@@ -4483,11 +4483,11 @@ msgstr "Cancela o inventário selecionado"
 
 #: ../stoq/gui/inventory.py:81
 msgid "Print product listing..."
-msgstr ""
+msgstr "Imprimir listagem de produtos"
 
 #: ../stoq/gui/inventory.py:82
 msgid "Print the product listing for this inventory"
-msgstr ""
+msgstr "Imprime a listagem de produtos deste inventário"
 
 #: ../stoq/gui/inventory.py:86
 msgid "Inventory help"
@@ -4503,7 +4503,7 @@ msgstr "Contar"
 
 #: ../stoq/gui/inventory.py:102
 msgid "Print a report of these inventories"
-msgstr ""
+msgstr "Imprime um relatório destes inventários"
 
 #: ../stoq/gui/inventory.py:116
 msgid ""
@@ -4653,7 +4653,7 @@ msgstr "Adicionar comentários ao pagamento selecionado"
 
 #: ../stoq/gui/payable.py:94 ../stoq/gui/receivable.py:95
 msgid "Print _receipt..."
-msgstr ""
+msgstr "Imp_rimir recibo..."
 
 #: ../stoq/gui/payable.py:95
 msgid "Print a receipt for the selected payment"
@@ -4677,7 +4677,7 @@ msgstr "Pesquisa por boletos e cheques"
 
 #: ../stoq/gui/payable.py:101
 msgid "Pay..."
-msgstr ""
+msgstr "Pagar..."
 
 #: ../stoq/gui/payable.py:102
 msgid "Pay the order associated with the selected payment"
@@ -4701,7 +4701,7 @@ msgstr "Pagar"
 
 #: ../stoq/gui/payable.py:129
 msgid "Print a report of these payments"
-msgstr ""
+msgstr "Imprime um relatório destes pagamentos"
 
 #: ../stoq/gui/payable.py:151 ../stoq/gui/receivable.py:150
 msgid "Show payments"
@@ -4773,12 +4773,13 @@ msgstr "Pago"
 
 #: ../stoq/gui/payable.py:188
 msgid "Paid or due date"
-msgstr ""
+msgstr "Pagas ou vencidas"
 
 #: ../stoq/gui/payable.py:318
 msgid ""
 "Can't confirm the payment if the purchase is not completely received yet."
 msgstr ""
+"Não é possível confirmar o pagamento se a compra não foi totalmente recebida."
 
 #: ../stoq/gui/pos.py:110 ../stoq/lib/applist.py:51
 msgid "Point of Sales"
@@ -4796,11 +4797,11 @@ msgstr "Pedido"
 
 #: ../stoq/gui/pos.py:133 ../stoq/gui/purchase.py:114 ../stoq/gui/till.py:100
 msgid "Confirm..."
-msgstr ""
+msgstr "Confirmar..."
 
 #: ../stoq/gui/pos.py:135
 msgid "Create delivery..."
-msgstr ""
+msgstr "Criar entrega..."
 
 #: ../stoq/gui/pos.py:136 ../stoq/gui/till.py:92
 msgid "Sales..."
@@ -4988,7 +4989,7 @@ msgstr "Cria uma nova produção"
 
 #: ../stoq/gui/production.py:70
 msgid "Start..."
-msgstr ""
+msgstr "Iniciar..."
 
 #: ../stoq/gui/production.py:71
 msgid "Start the selected production"
@@ -5060,7 +5061,7 @@ msgstr "Iniciar"
 
 #: ../stoq/gui/production.py:111
 msgid "Print a report of these productions"
-msgstr ""
+msgstr "Imprime um relatório destas produções"
 
 #: ../stoq/gui/production.py:129
 msgid "Show productions with status"
@@ -5141,7 +5142,7 @@ msgstr "Editor de preços..."
 
 #: ../stoq/gui/purchase.py:106
 msgid "Order..."
-msgstr ""
+msgstr "Pedido..."
 
 #: ../stoq/gui/purchase.py:107 ../stoq/gui/purchase.py:167
 msgid "Create a new purchase order"
@@ -5149,7 +5150,7 @@ msgstr "Cria um novo pedido de compra"
 
 #: ../stoq/gui/purchase.py:108
 msgid "Quote..."
-msgstr ""
+msgstr "Cotação..."
 
 #: ../stoq/gui/purchase.py:109
 msgid "Create a new purchase quote"
@@ -5157,7 +5158,7 @@ msgstr "Cria uma nova cotação de compra"
 
 #: ../stoq/gui/purchase.py:110
 msgid "Consignment..."
-msgstr ""
+msgstr "Consignação..."
 
 #: ../stoq/gui/purchase.py:111
 msgid "Create a new purchase consignment"
@@ -5165,7 +5166,7 @@ msgstr "Cria uma nova consignação de compra"
 
 #: ../stoq/gui/purchase.py:112
 msgid "Product..."
-msgstr ""
+msgstr "Produto..."
 
 #: ../stoq/gui/purchase.py:113
 msgid "Create a new product"
@@ -5192,7 +5193,7 @@ msgstr "Mostra detalhes do pedido selecionado"
 
 #: ../stoq/gui/purchase.py:123
 msgid "Finish..."
-msgstr ""
+msgstr "Finalizar..."
 
 #: ../stoq/gui/purchase.py:124
 msgid "Complete the selected partially received order"
@@ -5228,7 +5229,7 @@ msgstr "Pesquisar por pedidos de compra"
 
 #: ../stoq/gui/purchase.py:171
 msgid "Print a report of these orders"
-msgstr ""
+msgstr "Imprime um relatório destes pedidos"
 
 #: ../stoq/gui/purchase.py:194
 msgid "No orders could be found."
@@ -5303,11 +5304,11 @@ msgstr "Cancelar pagamento..."
 
 #: ../stoq/gui/receivable.py:92
 msgid "Print bill..."
-msgstr ""
+msgstr "Imprimir boleto..."
 
 #: ../stoq/gui/receivable.py:94
 msgid "Renegotiate..."
-msgstr ""
+msgstr "Renegociar..."
 
 #: ../stoq/gui/receivable.py:100
 msgid "Card payments..."
@@ -5319,7 +5320,7 @@ msgstr "Pesquisa por pagamentos com cartão"
 
 #: ../stoq/gui/receivable.py:102
 msgid "Receive..."
-msgstr ""
+msgstr "Receber..."
 
 #: ../stoq/gui/receivable.py:103
 msgid "Receive the selected payments"
@@ -5336,7 +5337,7 @@ msgstr "Receber"
 
 #: ../stoq/gui/receivable.py:120
 msgid "Print a report of this payments"
-msgstr ""
+msgstr "Imprime um relatório destes pagamentos"
 
 #: ../stoq/gui/receivable.py:165 ../stoqlib/gui/search/fiscalsearch.py:127
 #: ../stoqlib/gui/search/paymentsearch.py:152
@@ -5357,7 +5358,7 @@ msgstr "Cria uma nova cotação para uma venda"
 
 #: ../stoq/gui/sales.py:92 ../stoq/gui/stock.py:89
 msgid "Loan..."
-msgstr ""
+msgstr "Empréstimo..."
 
 #: ../stoq/gui/sales.py:93 ../stoq/gui/stock.py:90
 msgid "Close loan..."
@@ -5393,11 +5394,11 @@ msgstr "Pesquisa por comissões de vendedores"
 
 #: ../stoq/gui/sales.py:106 ../stoq/gui/stock.py:105
 msgid "Loans..."
-msgstr ""
+msgstr "Empréstimos..."
 
 #: ../stoq/gui/sales.py:107 ../stoq/gui/stock.py:106
 msgid "Loan items..."
-msgstr ""
+msgstr "Itens emprestados..."
 
 #. Sales
 #: ../stoq/gui/sales.py:108 ../stoq/gui/till.py:85
@@ -5408,7 +5409,7 @@ msgstr "Venda"
 
 #: ../stoq/gui/sales.py:109
 msgid "Cancel quote..."
-msgstr ""
+msgstr "Cancelar cotação..."
 
 #: ../stoq/gui/sales.py:110
 msgid "_Print invoice..."
@@ -5416,7 +5417,7 @@ msgstr "Im_primir nota fiscal..."
 
 #: ../stoq/gui/sales.py:111 ../stoq/gui/till.py:103
 msgid "Return..."
-msgstr ""
+msgstr "Retornar..."
 
 #: ../stoq/gui/sales.py:112
 msgid "Return the selected sale, canceling it's payments"
@@ -5448,7 +5449,7 @@ msgstr "Ajuda do vendas"
 
 #: ../stoq/gui/sales.py:148 ../stoq/gui/till.py:144
 msgid "Print a report of these sales"
-msgstr ""
+msgstr "Imprime um relatório destas vendas"
 
 #: ../stoq/gui/sales.py:175 ../stoqlib/gui/search/salesearch.py:70
 msgid "Show sales with status"
@@ -5577,7 +5578,7 @@ msgstr "Estoque"
 
 #: ../stoq/gui/stock.py:84
 msgid "Order _receival..."
-msgstr ""
+msgstr "Recebimento de pedido..."
 
 #: ../stoq/gui/stock.py:86
 msgid "Transfer..."
@@ -5585,7 +5586,7 @@ msgstr "Transferência..."
 
 #: ../stoq/gui/stock.py:87
 msgid "Stock decrease..."
-msgstr ""
+msgstr "Saída manual..."
 
 #: ../stoq/gui/stock.py:88
 msgid "Register initial stock..."
@@ -5650,7 +5651,7 @@ msgstr "Produto"
 
 #: ../stoq/gui/stock.py:108
 msgid "History..."
-msgstr ""
+msgstr "Histórico..."
 
 #: ../stoq/gui/stock.py:109
 msgid "Show the stock history of the selected product"
@@ -5679,7 +5680,7 @@ msgstr "Historico"
 
 #: ../stoq/gui/stock.py:145
 msgid "Print a report of these products"
-msgstr ""
+msgstr "Imprime um relatório destes produtos"
 
 #: ../stoq/gui/stock.py:160
 msgid "<b>Stock Total:</b>"
@@ -11530,103 +11531,103 @@ msgstr "Dezembro"
 
 #: ../stoqlib/lib/dateconstants.py:46
 msgid "Jan"
-msgstr ""
+msgstr "Janeiro"
 
 #: ../stoqlib/lib/dateconstants.py:47
 msgid "Feb"
-msgstr ""
+msgstr "Fevereiro"
 
 #: ../stoqlib/lib/dateconstants.py:48
 msgid "Mar"
-msgstr ""
+msgstr "Março"
 
 #: ../stoqlib/lib/dateconstants.py:49
 msgid "Apr"
-msgstr ""
+msgstr "Abril"
 
 #: ../stoqlib/lib/dateconstants.py:51
 msgid "Jun"
-msgstr ""
+msgstr "Junho"
 
 #: ../stoqlib/lib/dateconstants.py:52
 msgid "Jul"
-msgstr ""
+msgstr "Julho"
 
 #: ../stoqlib/lib/dateconstants.py:53
 msgid "Aug"
-msgstr ""
+msgstr "Agosto"
 
 #: ../stoqlib/lib/dateconstants.py:54
 msgid "Sep"
-msgstr ""
+msgstr "Setembro"
 
 #: ../stoqlib/lib/dateconstants.py:55
 msgid "Oct"
-msgstr ""
+msgstr "Outubro"
 
 #: ../stoqlib/lib/dateconstants.py:56
 msgid "Nov"
-msgstr ""
+msgstr "Novembro"
 
 #: ../stoqlib/lib/dateconstants.py:57
 msgid "Dec"
-msgstr ""
+msgstr "Dezembro"
 
 #: ../stoqlib/lib/dateconstants.py:61
 msgid "Sunday"
-msgstr ""
+msgstr "Domingo"
 
 #: ../stoqlib/lib/dateconstants.py:62
 msgid "Monday"
-msgstr ""
+msgstr "Segunda"
 
 #: ../stoqlib/lib/dateconstants.py:63
 msgid "Tuesday"
-msgstr ""
+msgstr "Terça"
 
 #: ../stoqlib/lib/dateconstants.py:64
 msgid "Wednesday"
-msgstr ""
+msgstr "Quarta"
 
 #: ../stoqlib/lib/dateconstants.py:65
 msgid "Thursday"
-msgstr ""
+msgstr "Quinta"
 
 #: ../stoqlib/lib/dateconstants.py:66
 msgid "Friday"
-msgstr ""
+msgstr "Sexta"
 
 #: ../stoqlib/lib/dateconstants.py:67
 msgid "Saturday"
-msgstr ""
+msgstr "Sábado"
 
 #: ../stoqlib/lib/dateconstants.py:71
 msgid "Sun"
-msgstr ""
+msgstr "Domingo"
 
 #: ../stoqlib/lib/dateconstants.py:72
 msgid "Mon"
-msgstr ""
+msgstr "Segunda"
 
 #: ../stoqlib/lib/dateconstants.py:73
 msgid "Tue"
-msgstr ""
+msgstr "Terça"
 
 #: ../stoqlib/lib/dateconstants.py:74
 msgid "Wed"
-msgstr ""
+msgstr "Quarta"
 
 #: ../stoqlib/lib/dateconstants.py:75
 msgid "Thu"
-msgstr ""
+msgstr "Quinta"
 
 #: ../stoqlib/lib/dateconstants.py:76
 msgid "Fri"
-msgstr ""
+msgstr "Sexta"
 
 #: ../stoqlib/lib/dateconstants.py:77
 msgid "Sat"
-msgstr ""
+msgstr "Sábado"
 
 #: ../stoqlib/lib/defaults.py:58
 msgid "Weeks"
@@ -12378,13 +12379,15 @@ msgstr "Se o Stoq é utilizado em um modo de demonstração"
 
 #: ../stoqlib/lib/parameters.py:535
 msgid "Block incomplete purchase payments"
-msgstr ""
+msgstr "Bloquear pagamentos incompletos de compras"
 
 #: ../stoqlib/lib/parameters.py:536
 msgid ""
 "Do not allow confirming a account payable if the purchase is not completely "
 "received."
 msgstr ""
+"Não permitir confirmar uma conta a pagar se a compra não for totalmente "
+"recebida."
 
 #: ../stoqlib/lib/parameters.py:549
 msgid ""
@@ -12508,52 +12511,52 @@ msgstr "Você precisa ter uma inscrição estadual cadastrada para a empresa %s"
 #: ../stoqlib/net/webserver.py:71
 #, python-format
 msgid "Payment (%s) from %s was received"
-msgstr ""
+msgstr "Pagamento (%s) de %s foi recebido"
 
 #: ../stoqlib/net/webserver.py:75
 #, python-format
 msgid "Payment (%s) was received"
-msgstr ""
+msgstr "Pagamento (%s) foi recebido"
 
 #: ../stoqlib/net/webserver.py:80
 #, python-format
 msgid "Payment (%s) from %s is due"
-msgstr ""
+msgstr "Pagamento (%s) de %s  está pendente"
 
 #: ../stoqlib/net/webserver.py:84
 #, python-format
 msgid "Payment (%s) due"
-msgstr ""
+msgstr "Pagamento (%s) pendente"
 
 #: ../stoqlib/net/webserver.py:109
 #, python-format
 msgid "%s (%s) to %s was paid"
-msgstr ""
+msgstr "%s (%s) para %s foi pago"
 
 #: ../stoqlib/net/webserver.py:113
 #, python-format
 msgid "%s (%s) was paid"
-msgstr ""
+msgstr "%s (%s) foi pago"
 
 #: ../stoqlib/net/webserver.py:119
 #, python-format
 msgid "%s (%s) to %s is due"
-msgstr ""
+msgstr "%s (%s) para %s está pendente"
 
 #: ../stoqlib/net/webserver.py:123
 #, python-format
 msgid "%s (%s) due"
-msgstr ""
+msgstr "%s (%s) pendente"
 
 #: ../stoqlib/net/webserver.py:171
 #, python-format
 msgid "%d+ accounts receivable"
-msgstr ""
+msgstr "%d+ contas à receber"
 
 #: ../stoqlib/net/webserver.py:179
 #, python-format
 msgid "%d+ accounts payable"
-msgstr ""
+msgstr "%d+ contas à pagar"
 
 #: ../stoqlib/reporting/base/printing.py:99
 #, python-format
@@ -12584,15 +12587,15 @@ msgstr "chamadas realizadas para %s"
 
 #: ../stoqlib/reporting/inventory.py:39
 msgid "Inventory Listing"
-msgstr ""
+msgstr "Listagem de inventários"
 
 #: ../stoqlib/reporting/inventory.py:40
 msgid "inventory entry"
-msgstr ""
+msgstr "entrada de inventário"
 
 #: ../stoqlib/reporting/inventory.py:40
 msgid "inventory entries"
-msgstr ""
+msgstr "entradas de inventário"
 
 #: ../stoqlib/reporting/loanreceipt.py:43
 msgid "Loan Receipt"
