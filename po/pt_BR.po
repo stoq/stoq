@@ -24,13 +24,13 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-12-15 14:04-0200\n"
-"PO-Revision-Date: 2011-12-21 11:47+0000\n"
-"Last-Translator: ruysabino <ruysabino@gmail.com>\n"
+"PO-Revision-Date: 2011-12-23 14:18+0000\n"
+"Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-12-22 05:29+0000\n"
+"X-Launchpad-Export-Date: 2011-12-24 05:58+0000\n"
 "X-Generator: Launchpad (build 14560)\n"
 "Language: \n"
 
@@ -133,7 +133,7 @@ msgstr "Novo..."
 
 #: ../data/glade/AdditionListSlave.ui.h:3
 msgid "_Delete"
-msgstr "_Apagar"
+msgstr "E_xcluir"
 
 #: ../data/glade/AdditionListSlave.ui.h:4 ../data/glade/SearchEditor.ui.h:1
 msgid "_Edit..."
@@ -4344,7 +4344,7 @@ msgstr "Importar um arquivo GnuCash ou OFX"
 
 #: ../stoq/gui/financial.py:353 ../stoq/gui/financial.py:355
 msgid "Delete..."
-msgstr "Apagar..."
+msgstr "Excluir..."
 
 #: ../stoq/gui/financial.py:354
 msgid "Delete the selected account"
@@ -7110,11 +7110,11 @@ msgstr "Excluir estes %d itens?"
 
 #: ../stoqlib/gui/base/lists.py:347
 msgid "Delete item"
-msgstr "Remover item"
+msgstr "Excluir"
 
 #: ../stoqlib/gui/base/lists.py:348
 msgid "Delete items"
-msgstr "Apagar itens"
+msgstr "Excluir itens"
 
 #: ../stoqlib/gui/base/lists.py:352
 msgid "Keep it"
