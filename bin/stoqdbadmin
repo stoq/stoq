@@ -47,39 +47,7 @@ else:
                                        appname,
                                        string.split(sys.version)[0]))
 
-    # Figure out the directy which is the prefix
-    # path-of-current-file/..
-    currentdir = os.path.dirname(os.path.abspath(sys.argv[0]))
-    basedir = os.path.abspath(os.path.join(currentdir, '..'))
-
-    pythondirs = []
-    # Add the base directory where the application is installed in to sys.path
-    if os.path.exists(os.path.join(basedir, 'lib')):
-        for site in ['site-packages', 'dist-packages']:
-            if sys.platform == 'win32':
-                pythondir = os.path.join(basedir, 'Lib', site)
-            else:
-                pythondir = os.path.join(basedir, 'lib',
-                                         'python%d.%d' % sys.version_info[:2], site)
-            if os.path.exists(pythondir):
-                pythondirs.append(pythondir)
-
-        if not pythondirs:
-            raise SystemExit("ERROR: Could not find required directory: %s" %
-                             ','.join(pythondirs))
-    elif not os.path.exists(os.path.join(basedir, dirname)):
-        raise SystemExit("ERROR: Could not find required directory: %s" %
-                         os.path.join(basedir, dirname))
-    else:
-        pythondirs.append(basedir)
-
-    for pythondir in pythondirs:
-        sys.path.insert(0, pythondir)
-
-    try:
-        import pkg_resources
-    except ImportError:
-        pass
+    import pkg_resources
 
 # We only support portuguese locale on Windows for now
 import platform
