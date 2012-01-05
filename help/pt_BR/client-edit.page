@@ -1,0 +1,75 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="client-edit">
+
+  <title>Editando um cliente</title>
+  <info>
+    <desc>
+      Editando um cliente no Stoq
+    </desc>
+
+    <link type="guide" xref="client" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para editar informações de clientes
+    cadastrados no Stoq.
+  </p>
+  <note style="tip">
+    <p>
+      O procedimento abaixo utilizará o <link xref="app-sales" /> para
+      realizar o cadastro, porém, assim como todas as outras pessoas (física ou
+      jurídica) no Stoq, o mesmo pode ser realizado no
+      <link xref="app-admin" /> no ícone <gui>Clientes</gui>.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-sales" />, abra a
+        <link xref="client-search">pesquisa de clientes</link> procure
+        pelo cliente em questão e selecione-o.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo o cliente selecionado, clique em <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto e você poderá
+        editar as informações do cliente. Essas informações estão dívididas
+        em abas e podem ser diferentes de acordo com o tipo de cliente. No
+        caso de se tratar de uma pessoa física, uma aba existira contendo
+        <gui>Dados de pessoa física</gui>, enquanto no caso de pessoa jurídica
+        essa aba se chamará <gui>Dados de pessoa jurídica</gui>, além de abas
+        extras específicas de um cliente.
+      </p>
+    </item>
+    <item>
+      <p>
+        Após o preenchimento dos
+        <link xref="overview#required-fields">campos obrigatórios</link> e
+        correção dos
+        <link xref="overview#validation"> erros de validação</link> o botão
+        <gui>Ok</gui> será habilitado e você pode confirmar a edição.
+      </p>
+      <note style="tip">
+        <p>
+          Note que a qualquer momento caso você se arrependa da edição, você
+          pode clicar em <gui>Cancelar</gui> e assim descartar todas as
+          mudanças realizadas no momento.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu cliente foi editado com sucesso no Stoq!
+      </p>
+    </item>
+  </steps>
+
+</page>
