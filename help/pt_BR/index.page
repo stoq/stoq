@@ -1,0 +1,37 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:e="http://projectmallard.org/experimental/"
+      type="guide" style="task"
+      id="index">
+
+  <info>
+    <desc>Manual do Stoq</desc>
+    <title type='link'>Manual do Stoq</title>
+    <title type='text'>Manual do Stoq</title>
+
+    <credit type="author">
+      <name>Stoq Team</name>
+      <email>stoq-devel@async.com.br</email>
+    </credit>
+  </info>
+  <title>
+    <media type="image" src="figures/stoq_logo.svg" height="30">Stoq Logo</media>  Manual do Stoq
+  </title>
+
+  <links type="topic" style="mouseovers"
+         groups="about product-new purchase-new purchase-receival sale-new
+                 overview faq">
+    <e:mouseover src="figures/stoq_splash.png"/>
+    <!--FIXME: Add right src for earch mouseover-->
+    <e:mouseover match="about" src="figures/stoq_main.png"/>
+    <e:mouseover match="product-new" src="figures/stoq_main.png"/>
+    <e:mouseover match="purchase-new" src="figures/stoq_main.png"/>
+    <e:mouseover match="purchase-receival" src="figures/stoq_main.png"/>
+    <e:mouseover match="sale-new" src="figures/stoq_main.png"/>
+    <e:mouseover match="overview" src="figures/stoq_main.png"/>
+    <e:mouseover match="faq" src="figures/stoq_main.png"/>
+  </links>
+
+  <!--This will automatcaly list all pages that links to this page-->
+  <links type="topic" style="toronto" />
+
+</page>

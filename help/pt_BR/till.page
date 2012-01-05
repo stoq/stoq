@@ -1,0 +1,50 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="till">
+
+  <title>Caixa</title>
+  <info>
+    <desc>
+      <link xref="till-open" />,
+      <link xref="till-close" />,
+      <link xref="till-add-money" />,
+      <link xref="till-remove-money" />...
+    </desc>
+
+    <link type="guide" xref="app-till" />
+    <link type="guide" xref="app-pos" />
+    <link type="seealso" xref="product" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    O caixa, responsável por operações financeiras no Stoq, como
+    <link xref="account-receivable">receber o pagamento</link> de uma
+    <link xref="sale">venda</link>,
+    <link xref="account-payable">realizar o pagamento</link> de uma
+    <link xref="purchase">compra</link> e etc.
+  </p>
+  <p>
+    Sua funcionalidade está implementada em sua maior parte no
+    <link xref="app-till" />, apesar de também ser oferecida uma interface
+    mínima, para facilidade de uso, no <link xref="app-pos" />.
+  </p>
+  <note style="important">
+    <p>
+      Note que várias operações no Stoq, como
+      <link xref="sale-new">realizar uma venda</link> necessitam de um
+      <link xref="till-open">caixa aberto</link>. Essa operação só pode ser
+      realizada uma vez por dia, portanto, evite
+      <link xref="till-open">fechar o caixa</link> até o final do período
+      fiscal. Para modificar a quantidade de dinheiro em caixa, utilize
+      <link xref="till-add-money">suprimentos</link> e
+      <link xref="till-remove-money">sangrias</link>.
+    </p>
+  </note>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

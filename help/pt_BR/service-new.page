@@ -1,0 +1,72 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="service-new">
+
+  <title>Cadastrando um serviço</title>
+  <info>
+    <desc>
+      Cadastrando um serviço no Stoq
+    </desc>
+
+    <link type="guide" xref="service" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para cadastrarmos serviços no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Abra a <link xref="overview#search">pesquisa</link> de serviços em
+        <guiseq><gui>Pesquisa</gui><gui>Serviços</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode abrir a mesma pesquisa na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Buscar</gui><gui>Serviços</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Clique no botão <gui>Novo</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        No <link xref="overview#editor">editor</link> que será aberto, preencha
+        os campos de acordo com as especificações de seu serviço, como
+        <gui>Descrição</gui>, <gui>Preço de venda</gui>, etc.
+      </p>
+    </item>
+    <item>
+      <p>
+        Após o preenchimento dos <link xref="overview#required-fields">campos
+        obrigatórios</link> e correção dos <link xref="overview#validation">
+        erros de validação</link>, o botão <gui>Ok</gui> será habilitado e você
+        poderá confirmar a criação do serviço.
+      </p>
+      <note style="tip">
+        <p>
+          Note que, caso você desista de criar o serviço em questão, você pode
+          clicar em <gui>Cancelar</gui> e o processo será totalmente
+          descartado.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu serviço foi criado com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

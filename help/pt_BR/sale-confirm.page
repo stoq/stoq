@@ -1,0 +1,86 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="sale-confirm">
+
+  <title>Confirmando uma venda</title>
+  <info>
+    <desc>
+      Confirmando venda no Stoq
+    </desc>
+
+    <link type="guide" xref="sale" />
+    <link type="seealso" xref="till" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para confirmar
+    <link xref="sale-quote">cotações de venda</link> realizadas no
+    <link xref="app-sales" /> ou mesmo as realizadas no <link xref="app-pos" />
+    quando o <link xref="param">parâmetro</link>
+    <gui>Confirmar vendas no caixa</gui> é verdadeiro.
+  </p>
+  <p>
+    Confirmar uma venda implica na criação de
+    <link xref="account-receivable">contas a receber</link> da mesma por parte do
+    <link xref="client">cliente</link>.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-till" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Encontre a venda desejada na
+        <link xref="overview#search">pesquisa</link> principal.
+        Utilize <link xref="overview#search-filter">filtros</link> para ajudar.
+      </p>
+    </item>
+    <item>
+      <p>
+        Após ter a venda dejada selecionada, selecione o menu
+        <guiseq><gui>Venda</gui><gui>Confirmar</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente você pode realizar o mesmo através da
+          <link xref="overview#toolbar">barra de ferramentas</link> no botão
+          <gui>Confirmar</gui>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo, você pode preencher algumas informações extras
+            como a <gui>Transportadora</gui> encarregada pela entrega,
+            o <gui>Valor recebido</gui>, no caso de forma de pagamento ser em
+            <gui>Dinheiro</gui> e desta forma identificar o <gui>Troco</gui>.
+          </p>
+        </item>
+        <item>
+          <p>
+            Caso alguma forma de pagamento diferente de <gui>Dinheiro</gui> e
+            <gui>Fiado</gui> tenham sido escolhidas, haverão passos adicionais
+            para o preenchimento de informações dessas formas (e.g.
+            <gui>Fornecedor de crédito</gui> e <gui>Número de parcelas</gui> no
+            caso de <gui>Cartão</gui>.
+          </p>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Pronto! A sua venda foi confirmada com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

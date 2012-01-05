@@ -1,0 +1,33 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="sale">
+
+  <title>Vendas</title>
+  <info>
+    <desc>
+      <link xref="sale-new" />,
+      <link xref="sale-search" />,
+      <link xref="sale-confirm" />,
+      <link xref="sale-receive" />...
+    </desc>
+
+    <link type="guide" xref="app-sales" />
+    <link type="guide" xref="app-pos" />
+    <link type="guide" xref="app-till" />
+    <link type="seealso" xref="account-receivable" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Uma venda de <link xref="product">produtos</link> e
+    <link xref="service">serviços</link>, podendo esta estar vinculada a um
+    <link xref="client">cliente</link> e até mesmo ser entregue em sua
+    residência.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

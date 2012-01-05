@@ -1,0 +1,49 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="sale-return">
+
+  <title>Retornando uma venda</title>
+  <info>
+    <desc>
+      Retornando uma venda no Stoq
+    </desc>
+
+    <link type="guide" xref="sale" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para retornar uma venda realizada no passado, isto
+    é, retornar os produtos ao <link xref="stock">estoque</link> e devolver a
+    <link xref="account-receivable">quantia recebida</link> por esta ao
+    <link xref="client">cliente</link>.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-sales" /> ou o <link xref="app-till" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tenha certeza de ter <link xref="till-open">aberto o caixa</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto e você poderá
+        poderá verificar o <gui>Valor estornado</gui> para devolvê-lo ao
+        cliente e até mesmo aplicar um <gui>Dedução</gui> no caso de existir
+        alguma multa no processo. Após ter certeza dos dados da devolução,
+        clique em <gui>Ok</gui> para finalizar o processo.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Sua venda foi retornada com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

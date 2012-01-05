@@ -1,0 +1,27 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="app-financial">
+
+  <title>Aplicativo Financeiro</title>
+  <info>
+    <desc>
+      <link xref="account" />,
+      <link xref="transaction" />,
+      <link xref="account-payable" />,
+      <link xref="account-receivable" />...
+    </desc>
+
+    <link type="guide" xref="index" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Gerencia contas e transações financeiras.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

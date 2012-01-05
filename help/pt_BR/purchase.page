@@ -1,0 +1,35 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="purchase">
+
+  <title>Compras</title>
+  <info>
+    <desc>
+      <link xref="purchase-new" />,
+      <link xref="purchase-search" />,
+      <link xref="purchase-confirm" />,
+      <link xref="purchase-receival" />...
+    </desc>
+
+    <link type="guide" xref="app-purchase" />
+    <link type="seealso" xref="service" />
+    <link type="seealso" xref="account-payable" />
+    <link type="seealso" xref="supplier" />
+    <link type="seealso" xref="transporter" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Um pedido de compra de <link xref="product">produtos</link> de um
+    <link xref="supplier">fornecedor</link>, que possívelmente será entregue
+    por uma <link xref="transporter">transportadora</link> à uma das
+    <link xref="branch">filiais</link> da empresa através de um
+    <link xref="purchase-receival">recebimento de compra</link>.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

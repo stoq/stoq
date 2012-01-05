@@ -1,0 +1,66 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="service-edit">
+
+  <title>Editando um serviço</title>
+  <info>
+    <desc>
+      Editando um serviço no Stoq
+    </desc>
+
+    <link type="guide" xref="service" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para editarmos serviço no Stoq, isto é,
+    alterarmos as suas especificações registradas como descrição, preço, etc.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Realize uma <link xref="service-search">pesquisa de serviços</link>
+        pelo serviço em questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Nesta <link xref="overview#search">pesquisa</link>, tendo o serviço
+        selecionado, clique no botão <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto e populado
+        com as informações atuais de seu serviço. A partir de agora você pode
+        realizar as mudanças pretendidas.
+      </p>
+    </item>
+    <item>
+      <p>
+        Após as mudanças, não havendo nenhum <link xref="overview#validation">
+        erro de validação</link>, o botão <gui>Ok</gui> estará habilitado e
+        você poderá confirmar a edição do serviço.
+      </p>
+      <note style="tip">
+        <p>
+          Note que, caso você desista das mudanças que está realizando, você
+          pode clicar em <gui>Cancelar</gui> e todas as mudanças serão
+          descartadas, revertendo o serviço ào estado anterior.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu serviço foi editado com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

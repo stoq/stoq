@@ -1,0 +1,29 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="app-pos">
+
+  <title>Aplicativo Ponto de vendas</title>
+  <info>
+    <desc>
+      <link xref="sale" />,
+      <link xref="product" />,
+      <link xref="service" />,
+      <link xref="client" />,
+      <link xref="till" />...
+    </desc>
+
+    <link type="guide" xref="index" group="app-pos" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Terminal de vendas e caixa registradora para venda de produtos e
+    serviços.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

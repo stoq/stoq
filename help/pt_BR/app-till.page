@@ -1,0 +1,27 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="app-till">
+
+  <title>Aplicativo Caixa</title>
+  <info>
+    <desc>
+      <link xref="till" />,
+      <link xref="sale" />,
+      <link xref="client" />...
+    </desc>
+
+    <link type="guide" xref="index" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Controle de caixa e seus fluxos. Realiza suprimentos e sangrias, confirma
+    vendas, entre outros.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

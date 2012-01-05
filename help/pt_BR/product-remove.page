@@ -1,0 +1,72 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="product-remove">
+
+  <title>Removendo um produto</title>
+  <info>
+    <desc>
+      Removendo um produto no Stoq
+    </desc>
+
+    <link type="guide" xref="product" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para remover totalmente um produto do Stoq, isto
+    é, remover qualquer referência do mesmo nos registros, como se ele nunca
+    tivesse sido criado em primeira instância.
+  </p>
+  <note style="important">
+    <p>
+      Note que a remoção é apenas possível no caso de o produto em questão
+      nunca ter sido comprado, vendido ou qualquer outra operação do tipo.
+      Neste caso, você pode realizar um
+      <link xref="product-close">fechamento do produto</link>.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Realize uma <link xref="product-search">pesquisa de produtos</link>
+        pelo produto em questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Nesta <link xref="overview#search">pesquisa</link>, tendo o produto
+        selecionado, clique no botão <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto com as
+        informações do produto em questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Ao lado dos botões <gui>Ok</gui> e <gui>Cancelar</gui>, você irá
+        encontrar um botão <gui>Remover</gui>. Clique nele!
+      </p>
+    </item>
+    <item>
+      <p>
+        Um dialogo será aberto para confirmar a remoção. Tendo certeza de que é
+        isso mesmo que você quer fazer, confirme-o.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu produto foi removido com sucesso do Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

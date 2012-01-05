@@ -1,0 +1,91 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="supplier-new">
+
+  <title>Cadastrando um fornecedor</title>
+  <info>
+    <desc>
+      Cadastrando um fornecedor no Stoq
+    </desc>
+
+    <link type="guide" xref="supplier" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para cadastrar fornecedores no Stoq, isto é,
+    cadastrar uma pessoa (física ou jurídica) que irá fornecer
+    <link xref="product">produtos</link> às nossas
+    <link xref="branch">filiais</link> para suprir seus
+    <link xref="stock">estoques</link>.
+  </p>
+  <note style="tip">
+    <p>
+      O procedimento abaixo utilizará o <link xref="app-purchase" /> para
+      realizar o cadastro, porém, assim como todas as outras pessoas (física ou
+      jurídica) no Stoq, o mesmo pode ser realizado no
+      <link xref="app-admin" /> no ícone <gui>Fornecedores</gui>.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-purchase" />, abra a
+        <link xref="supplier-search">pesquisa de fornecedores</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Clique no botão <gui>Novo</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo, você deve indicar se está adicionando
+            <gui>Uma nova pessoa física</gui> ou
+            <gui>Uma nova pessoa jurídica</gui>. Após isso, clique em
+            <gui>Avançar</gui>.
+          </p>
+          <note style="important">
+            <p>
+              Tenha certeza de inserir o número de telefone correto do
+              fornecedor, pois desse jeito, caso ele já possua um cadastro
+              (como um cliente por exemplo) os dados gerais (como nome,
+              telefone, cpf/cnpj, endereços) serão compartilhados entre ambos,
+              facilitando assim a manutenção dos dados.
+            </p>
+          </note>
+        </item>
+        <item>
+          <p>
+            No segundo passo você deve informar os dados desse fornecedor, como
+            o seu <gui>Nome</gui>, <gui>Endereço</gui> e etc. As informações
+            estão dívididas em abas e podem ser diferentes de acordo com o tipo
+            de fornecedor. No caso de se tratar de uma pessoa física, uma aba
+            existira contendo <gui>Dados de pessoa física</gui>, enquanto no
+            caso de pessoa jurídica essa aba se chamará
+            <gui>Dados de pessoa jurídica</gui>, além de abas extras referente
+            à um fornecedor. Após o preenchimento dos
+            <link xref="overview#required-fields">campos obrigatórios</link> e
+            correção dos
+            <link xref="overview#validation"> erros de validação</link> o botão
+            <gui>Terminar</gui> será habilitado e você pode finalizar o
+            processo.
+          </p>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu fornecedor foi criado com sucesso no Stoq!
+      </p>
+    </item>
+  </steps>
+
+</page>

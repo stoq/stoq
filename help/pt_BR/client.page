@@ -1,0 +1,40 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="client">
+
+  <title>Clientes</title>
+  <info>
+    <desc>
+      <link xref="client-new" />,
+      <link xref="client-edit" />,
+      <link xref="client-search" />...
+    </desc>
+
+    <link type="guide" xref="app-till" />
+    <link type="guide" xref="app-admin" />
+    <link type="guide" xref="app-sales" />
+    <link type="guide" xref="app-pos" />
+    <link type="seealso" xref="sale" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Um cliente que pode estar vinculado a uma <link xref="sale">venda</link>
+    realizada no Stoq.
+  </p>
+  <note style="advanced">
+    <p>
+      Assim como todas as outras pessoas (físicas ou jurídicas) cadastradas no
+      Stoq, um cliente pode realizar vários papeis ao mesmo tempo, como
+      também ser um <link xref="supplier">fornecedor</link>, um
+      <link xref="employee">funcionário</link> e etc. Isso facilita a edição de
+      seus dados básicos.
+    </p>
+  </note>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

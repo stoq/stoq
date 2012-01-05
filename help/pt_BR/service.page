@@ -1,0 +1,34 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="service">
+
+  <title>Serviços</title>
+  <info>
+    <desc>
+      <link xref="service-new" />,
+      <link xref="service-edit" />,
+      <link xref="service-search" />,
+      <link xref="service-close" />,
+      <link xref="service-remove" />...
+    </desc>
+
+    <link type="guide" xref="app-purchase" />
+    <link type="guide" xref="app-pos" />
+    <link type="guide" xref="app-production" />
+    <link type="seealso" xref="product" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Um serviço prestado pela empresa, cujo qual podemos realizar
+    <link xref="sale">vendas</link> da mesma forma que vendemos
+    <link xref="product">produtos</link>, além de utiliza-los em
+    <link xref="production">produções</link>.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

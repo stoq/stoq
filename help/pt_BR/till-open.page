@@ -1,0 +1,56 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="till-open">
+
+  <title>Abrindo o caixa</title>
+  <info>
+    <desc>
+      Abrindo o caixa no Stoq.
+    </desc>
+
+    <link type="guide" xref="till" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para abrir o caixa, isto é, iniciar as operações
+    fiscais do dia.
+  </p>
+  <p>
+    Utilizaremos o <link xref="app-till" /> neste guia, porém, o mesmo pode ser
+    feito no <link xref="app-pos" /> por comodidade.
+  </p>
+  <note style="important">
+    <p>
+      Note que esta operação só pode ser realizada uma vez por dia. Portanto,
+      evite <link xref="till-close">fechar o caixa</link> até o final do
+      período fiscal.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-till" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione <guiseq><gui>Arquivo</gui><gui>Abrir caixa</gui></guiseq>.
+      </p>
+    </item>
+    <item>
+      <p>
+        No <link xref="overview#editor">editor</link> que será aberto, coloque
+        o valor em dinheiro que o caixa está sendo suprido. Após isso, clique
+        em <gui>Ok</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! O caixa foi aberto com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

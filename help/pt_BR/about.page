@@ -1,0 +1,23 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="about">
+
+  <title>Sobre o Stoq</title>
+  <info>
+    <desc>
+      Sobre o Stoq.
+    </desc>
+
+    <link type="guide" xref="index" group="about" />
+    <link type="seealso" xref="overview" />
+    <link type="seealso" xref="faq" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    O <app>Stoq</app> é uma suíte formada por vários aplicativos de apoio à
+    Gestão Comercial e Industrial, disponibilizada e mantida como software
+    livre pela <link href="http://www.async.com.br">Async Open Source</link>.
+  </p>
+
+</page>

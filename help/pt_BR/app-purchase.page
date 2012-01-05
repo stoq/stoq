@@ -1,0 +1,71 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="app-purchase">
+
+  <title>Aplicativo Compras</title>
+  <info>
+    <desc>
+      <link xref="purchase" />,
+      <link xref="product" />,
+      <link xref="service" />,
+      <link xref="transporter" />,
+      <link xref="supplier" />...
+    </desc>
+
+    <link type="guide" xref="index" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este aplicativo é responsável pela área de compras da empresa. Todas as
+    compras de produtos destinados a venda são realizadas por este aplicativo
+    e posteriormente, encaminhadas ao <link xref="app-stock" /> para futuro
+    recebimento.
+  </p>
+  <p>
+    Através deste aplicativo, é possível gerenciar fornecedores,
+    transportadoras, produtos e serviços, facilitando assim o cotidiano dos
+    administradores da empresa.
+  </p>
+
+  <list>
+    <title>Colunas da lista de pedidos:</title>
+    <item>
+      <p>
+        <gui># (número)</gui>: Número do pedido registrado no aplicativo.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Aberto</gui>: Dia em que o pedido foi realizado.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Fornecedor</gui>: Nome do fornecedor responsável pelo pedido.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Pedido</gui>: Quantidade de produtos solicitada no pedido.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Recebido</gui>: Quantidade de produtos que ja foram recebidas no
+        pedido.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Total</gui>: Valor total do pedido.
+      </p>
+    </item>
+  </list>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

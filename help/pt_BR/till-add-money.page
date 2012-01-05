@@ -1,0 +1,61 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="till-add-money">
+
+  <title>Realizando um suprimento de caixa</title>
+  <info>
+    <desc>
+      Realizando um suprimento de caixa.
+    </desc>
+
+    <link type="guide" xref="till" />
+    <link type="seealso" xref="till-history" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para suprir o caixa com dinheiro, isto é,
+    adicionar dinheiro ao caixa sem um "motivo óbvio". Um exemplo disso seria
+    quando acaba-se o dinheiro do caixa e precisamos adicionar mais
+    manualmente.
+  </p>
+  <p>
+    Este processo também pode ser realizado através do
+    <link xref="till-history">histórico de caixa</link>.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-till" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione
+        <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Suprimento</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Novo</gui><gui>Suprimento</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        No <link xref="overview#editor">editor</link> que será aberto, coloque
+        a <gui>Quantia</gui> em que o caixa está sendo suprido e a
+        <gui>Razão</gui> do suprimento (e.g. 'Adição de dinheiro para troco').
+        Após isso, clique em <gui>Ok</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! O caixa foi suprido com a quantia indicada.
+      </p>
+    </item>
+  </steps>
+
+</page>

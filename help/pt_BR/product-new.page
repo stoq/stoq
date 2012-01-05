@@ -1,0 +1,81 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="product-new">
+
+  <title>Cadastrando um produto</title>
+  <info>
+    <desc>
+      Cadastrando um produto no Stoq
+    </desc>
+
+    <link type="guide" xref="index" group="product-new" />
+    <link type="guide" xref="product" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para cadastrarmos produtos simples no Stoq. Note
+    que também é possível realizar o cadastramento durante um
+    <link xref="purchase-new">pedido de compra</link>.
+  </p>
+  <note style="important">
+    <p>
+      Para poder realizar uma <link xref="sale-new">nova venda</link> do
+      produto cadastrado, é preciso que o mesmo possua estoque. Para isso,
+      podemos realizar uma <link xref="purchase-new">nova compra</link> ou
+      <link xref="stock-register-initial">registrar um estoque inicial</link>,
+      no caso de este já possuir um estoque físico do mesmo.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Produto</gui>
+        </guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode criar um produto na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Novo</gui><gui>Produto</gui></guiseq> ou através do
+          botão <gui>Novo</gui> na <link xref="product-search">pesquisa de
+          produtos</link>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        No <link xref="overview#editor">editor</link> que será aberto, preencha
+        os campos de acordo com as especificações de seu produto, como
+        <gui>Descrição</gui>, <gui>Preço de venda</gui>, etc.
+      </p>
+    </item>
+    <item>
+      <p>
+        Após o preenchimento dos <link xref="overview#required-fields">campos
+        obrigatórios</link> e correção dos <link xref="overview#validation">
+        erros de validação</link>, o botão <gui>Ok</gui> será habilitado e você
+        poderá confirmar a criação do produto.
+      </p>
+      <note style="tip">
+        <p>
+          Note que, caso você desista de criar o produto em questão, você pode
+          clicar em <gui>Cancelar</gui> e o processo será totalmente
+          descartado.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu produto foi criado com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

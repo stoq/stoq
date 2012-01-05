@@ -1,0 +1,38 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="product">
+
+  <title>Produtos</title>
+  <info>
+    <desc>
+      <link xref="product-new" />,
+      <link xref="product-edit" />,
+      <link xref="product-search" />,
+      <link xref="product-close" />,
+      <link xref="product-remove" />...
+    </desc>
+
+    <link type="guide" xref="app-purchase" />
+    <link type="guide" xref="app-stock" />
+    <link type="guide" xref="app-pos" />
+    <link type="seealso" xref="service" />
+    <link type="seealso" xref="stock" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Um produto que é <link xref="sale">vendido</link> pela empresa. Ele pode
+    ter origem de uma <link xref="purchase">compra</link> através de um
+    <link xref="supplier">fornecedor</link>, ou mesmo ser
+    <link xref="production">produzido</link> internamente na empresa.
+    Ele possui um <link xref="stock">estoque</link> e pode estar vinculado a
+    <link xref="tax">taxas</link>, <link xref="category">categorias</link>,
+    etc.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>
