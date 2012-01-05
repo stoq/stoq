@@ -1,0 +1,95 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="purchase-receival">
+
+  <title>Recebendo uma compra</title>
+  <info>
+    <desc>
+      Recebendo uma compra no Stoq
+    </desc>
+
+    <link type="guide" xref="index" group="purchase-receival" />
+    <link type="guide" xref="purchase" />
+    <link type="seealso" xref="stock" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para realizar o recebimento de um pedido de
+    compra. Após isso, o estoque na <link xref="branch">filial</link> dos
+    <link xref="product">produtos</link> contidos no pedido serão aumentados.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-stock" />
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione <guiseq><gui>Arquivo</gui><gui>Novo</gui>
+        <gui>Recebimento de pedido</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Novo</gui><gui>Recebimento de pedido</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo, uma <link xref="overview#search">pesquisa</link>
+            será aberta. Encontre e selecione o pedido desejado e clique em
+            <gui>Avançar</gui>.
+          </p>
+        </item>
+        <item>
+          <p>
+            No segundo passo, você pode conferir a <gui>Quantidade</gui> pedida
+            e alterar a <gui>Quantidade a receber</gui> conforme o necessário,
+            realizando então um "recebimento parcial". Para isso, selecione o
+            produto na lista e clique em <gui>Editar</gui>, e então, altere a
+            quantidade que realmente está sendo recebida. Após verificar que
+            tudo está Ok, clique em <gui>Avançar</gui>.
+          </p>
+          <note style="tip">
+            <p>
+              Um recebimento parcial tratará o pedido como aberto, isto é, você
+              ainda pode realizar um futuro recebimento do mesmo, mas só poderá
+              receber a quantidade que faltou no atual.
+            </p>
+          </note>
+        </item>
+        <item>
+          <p>
+            No terceiro e último passo, a maior parte das informações virão
+            pré-preenchidas com as informações que foram preenchidas na
+            <link xref="purchase-new">criação do pedido</link>, como a
+            <gui>Transportadora</gui>, <gui>Frete</gui> e outros. Verifique
+            essas informações e, além de outras como o número da
+            <gui>Nota fiscal</gui>, taxas como <gui>IPI</gui>,
+            <gui>Total ICMS</gui>, <gui>Frete</gui> e etc. Após o preenchimento
+            dos <link xref="overview#required-fields">campos obrigatórios</link>
+            e correção dos <link xref="overview#validation">
+            erros de validação</link> o botão <gui>Terminar</gui> será
+            habilitado e você pode finalizar o processo.
+          </p>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Pronto! O seu recebimento foi realizado com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

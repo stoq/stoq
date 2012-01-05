@@ -1,0 +1,74 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="service-remove">
+
+  <title>Removendo um serviço</title>
+  <info>
+    <desc>
+      Removendo um serviço no Stoq
+    </desc>
+
+    <link type="guide" xref="service" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para remover totalmente um serviço do Stoq, isto
+    é, remover qualquer referência do mesmo nos registros, como se ele nunca
+    tivesse sido criado em primeira instância.
+  </p>
+  <note style="important">
+    <p>
+      Note que a remoção é apenas possível no caso de o serviço em questão
+      nunca ter sido vendido. Neste caso, você pode realizar um
+      <link xref="service-close">fechamento do serviço</link>.
+      Note também que o serviço de entrega apontado nos
+      <link xref="param">parâmetros</link> não pode ser fechado. Neste caso,
+      aponte outro serviço como serviço de entrega.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Realize uma <link xref="service-search">pesquisa de serviços</link>
+        pelo serviço em questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Nesta <link xref="overview#search">pesquisa</link>, tendo o serviço
+        selecionado, clique no botão <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto com as
+        informações do serviço em questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Ao lado dos botões <gui>Ok</gui> e <gui>Cancelar</gui>, você irá
+        encontrar um botão <gui>Remover</gui>. Clique nele!
+      </p>
+    </item>
+    <item>
+      <p>
+        Um dialogo será aberto para confirmar a remoção. Tendo certeza de que é
+        isso mesmo que você quer fazer, confirme-o.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu serviço foi removido com sucesso do Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

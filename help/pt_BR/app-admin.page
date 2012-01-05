@@ -1,0 +1,30 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="app-admin">
+
+  <title>Aplicativo Administrativo</title>
+  <info>
+    <desc>
+      <link xref="user" />,
+      <link xref="employee" />,
+      <link xref="branch" />,
+      <link xref="param" />,
+      <link xref="plugin" />,
+      <link xref="taxes" />...
+    </desc>
+
+    <link type="guide" xref="index" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Administra filiais, usuários, empregados, configura parâmetros e plugins,
+    entre outros.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

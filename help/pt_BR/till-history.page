@@ -1,0 +1,49 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="till-history">
+
+  <title>Verificando o histórico do caixa</title>
+  <info>
+    <desc>
+      Verificando o histórico do caixa no Stoq
+    </desc>
+
+    <link type="guide" xref="till" />
+    <link type="seealso" xref="till-add-money" />
+    <link type="seealso" xref="till-remove-money" />
+    <link type="seealso" xref="employee-credit" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Através desse processo, podemos rápidamente verificar o histórico do caixa,
+    isto é, todos os
+    <link xref="account-receivable">recebimentos de contas</link>,
+    <link xref="account-payable">pagamentos de contas</link>,
+    <link xref="till-add-money">suprimentos</link> e
+    <link xref="till-remove-money">sangrias</link>.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-till" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione o menu
+        <guiseq><gui>Pesquisar</gui><gui>Histórico do caixa</gui></guiseq>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Uma <link xref="overview#search">pesquisa</link> será aberta e nela
+        você pode encontrar o histórico completo. Utilize
+        <link xref="overview#search-filter">filtros</link> para facilitar a
+        pesquisa.
+      </p>
+    </item>
+  </steps>
+
+</page>

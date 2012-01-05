@@ -1,0 +1,48 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="service-search">
+
+  <title>Pesquisando por um serviço</title>
+  <info>
+    <desc>
+      Pesquisando por um serviço no Stoq
+    </desc>
+
+    <link type="guide" xref="service" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Utilizamos este processo para encontrar serviços cadastrados no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione <guiseq><gui>Pesquisar</gui><gui>Serviços</gui>
+        </guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode pesquisar por um serviço na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Buscar</gui><gui>Serviços</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Uma <link xref="overview#search">pesquisa</link> será aberta e nela
+        você pode encontrar o serviço em questão. Utilize
+        <link xref="overview#search-filter">filtros</link> para facilitar a
+        pesquisa.
+      </p>
+    </item>
+  </steps>
+
+</page>

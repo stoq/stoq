@@ -1,0 +1,127 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="sale-new">
+
+  <title>Realizando uma venda</title>
+  <info>
+    <desc>
+      Realizando uma venda no Stoq
+    </desc>
+
+    <link type="guide" xref="index" group="sale-new" />
+    <link type="guide" xref="sale" />
+    <link type="seealso" xref="payment-method" />
+    <link type="seealso" xref="client" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Para realizar uma venda no Stoq podêmos utilizar 2 processos. Um deles, no
+    <link xref="app-pos" /> que irá automaticamente confirmá-la e receber o
+    pagamento cujo qual iremos descrever aqui, e outra no
+    <link xref="app-sales" /> através de
+    <link xref="sale-quote">cotações de venda</link> que pode ser compreendida
+    melhor em sua sessão.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-pos" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tenha certeza de ter <link xref="till-open">aberto o caixa</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Você pode agora selecionar os <link xref="product">produtos</link> e
+        <link xref="service">serviços</link> que serão vendidos através de seus
+        respectivos <gui>Códigos de barras</gui> assim como suas
+        <gui>Quantidades</gui>. Após selecionado, clique em <gui>Adicionar</gui>
+        (botão com um ícone de +). Alternativamente, você pode fazer o mesmo
+        das seguintes formas:
+      </p>
+      <note style="tip">
+        <p>
+          Para selecionar o <gui>Código de barras</gui> você pode utilizar um
+          leitor de código de barras. Este fará a adição automática do item,
+          agilizando assim o processo de venda.
+        </p>
+      </note>
+      <list>
+        <item>
+          <p>
+            Clicando no botão <gui>Pesquisar</gui> (botão com uma lupa). Este
+            abrirá uma <link xref="overview#search">pesquisa</link> contendo os
+            items disponíveis.
+          </p>
+        </item>
+        <item>
+          <p>
+            Digitando um pedaço da descrição do produto no
+            <gui>Código de barras</gui> (e.g. digitar "sap" para encontar o
+            produto "Sapato preto") e apertando <key>Enter</key>. Isto abrirá a
+            <link xref="overview#search">pesquisa</link> automáticamente e te
+            permitirá encontrar o item desejado, podendo este também ser
+            selecionado com <key>Enter</key>.
+          </p>
+        </item>
+      </list>
+    </item>
+    <item>
+      <p>
+        Caso essa venda seja uma entrega você pode clicar no botão
+        <gui>Entrega</gui>. Este abrirá um
+        <link xref="overview#editor">editor</link> onde você irá preencher
+        informações como o <gui>Cliente</gui>, <gui>Custo de entrega</gui> e
+        etc.
+      </p>
+    </item>
+    <item>
+      <p>
+        Após ter certeza de todos os items, assim como o
+        <gui>Total</gui> na parte inferior da janela, você pode
+        <gui>Confirmar</gui> a venda e um
+        <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <note style="important">
+        <p>
+          Caso o <link xref="param">parâmetro</link>
+          <gui>Confirmar vendas no caixa</gui> seja verdadeiro, ao clicar no
+          botão <gui>Fechar</gui> a venda será registrada, devendo
+          esta ser confirmada no <link xref="app-till" />. Isso é útil nos
+          casos em que a venda é realizada em um local diferente do caixa.
+        </p>
+      </note>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo, você pode preencher algumas informações extras
+            como o <gui>Cliente</gui> que está realizando a venda, o
+            <gui>Valor recebido</gui>, no caso de forma de pagamento ser em
+            <gui>Dinheiro</gui> e desta forma identificar o <gui>Troco</gui>.
+          </p>
+        </item>
+        <item>
+          <p>
+            Caso alguma forma de pagamento diferente de <gui>Dinheiro</gui> e
+            <gui>Fiado</gui> tenham sido escolhidas, haverão passos adicionais
+            para o preenchimento de informações dessas formas (e.g.
+            <gui>Fornecedor de crédito</gui> e <gui>Número de parcelas</gui> no
+            caso de <gui>Cartão</gui>.
+          </p>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Pronto! A venda foi realizada com sucesso! A tela será limpa para
+        permitir que outra venda seja realizada de uma forma rápida!
+      </p>
+    </item>
+  </steps>
+
+</page>

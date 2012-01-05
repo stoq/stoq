@@ -1,0 +1,55 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="product-search">
+
+  <title>Pesquisando por um produto</title>
+  <info>
+    <desc>
+      Pesquisando por um produto no Stoq
+    </desc>
+
+    <link type="guide" xref="product" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para encontrar produtos cadastrado no Stoq.
+  </p>
+  <note style="tip">
+    <p>
+      Este processo indica a utilização do <link xref="app-purchase" />, mas
+      também existem pesquisas parecidas no <link xref="app-stock" />,
+      <link xref="app-sales" />, porém, com algumas limitações.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione <guiseq><gui>Pesquisar</gui><gui>Produtos</gui>
+        </guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode pesquisar por um produto na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Buscar</gui><gui>Produtos</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Uma <link xref="overview#search">pesquisa</link> será aberta e nela
+        você pode encontrar o produto em questão. Utilize
+        <link xref="overview#search-filter">filtros</link> para facilitar a
+        pesquisa.
+      </p>
+    </item>
+  </steps>
+
+</page>

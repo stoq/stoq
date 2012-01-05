@@ -1,0 +1,55 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="supplier-search">
+
+  <title>Pesquisando por um fornecedor</title>
+  <info>
+    <desc>
+      Pesquisando por um fornecedor no Stoq
+    </desc>
+
+    <link type="guide" xref="supplier" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para encontrar fornecedores cadastrados no Stoq.
+  </p>
+  <note style="tip">
+    <p>
+      O procedimento abaixo utilizará o <link xref="app-purchase" /> para
+      realizar o cadastro, porém, assim como todas as outras pessoas (física ou
+      jurídica) no Stoq, o mesmo pode ser realizado no
+      <link xref="app-admin" /> no ícone <gui>Fornecedores</gui>.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione <guiseq><gui>Pesquisar</gui><gui>Fornecedores</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Buscar</gui><gui>Fornecedores</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Uma <link xref="overview#search">pesquisa</link> será aberta e nela
+        você pode encontrar o fornecedor em questão. Utilize
+        <link xref="overview#search-filter">filtros</link> para facilitar a
+        pesquisa.
+      </p>
+    </item>
+  </steps>
+
+</page>

@@ -1,0 +1,74 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="product-close">
+
+  <title>Fechando um produto</title>
+  <info>
+    <desc>
+      Fechando um produto no Stoq
+    </desc>
+
+    <link type="guide" xref="product" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para fechar um produto do Stoq, isto é, impedir
+    que novas compras/vendas deste sejam feitas. Isso é interessante para
+    produtos que saíram de linha, mas já foram comprados e vendidos no passado.
+    Como o Stoq não consegue <link xref="product-remove">remover esses
+    produtos</link> esta é a opção para realizar o mesmo, sem quebrar essas
+    referências.
+  </p>
+  <note style="important">
+    <p>
+      Note que, para realizar um fechamento de um produto, é necessário que o
+      mesmo não possua estoque físico cadastrado no Stoq. Caso seja necessário,
+      você pode realizar uma <link xref="stock-decrease">saída manual</link>.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Realize uma <link xref="product-search">pesquisa de produtos</link>
+        pelo produto em questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Nesta <link xref="overview#search">pesquisa</link>, tendo o produto
+        selecionado, clique no botão <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto com as
+        informações do produto em questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Ao lado dos botões <gui>Ok</gui> e <gui>Cancelar</gui>, você irá
+        encontrar um botão <gui>Fechar</gui>. Clique nele!
+      </p>
+    </item>
+    <item>
+      <p>
+        Um dialogo será aberto para confirmar o fechamento. Tendo certeza de
+        que é isso mesmo que você quer fazer, confirme-o.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu produto foi fechado com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

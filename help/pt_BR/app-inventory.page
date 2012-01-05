@@ -1,0 +1,25 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task"
+      id="app-inventory">
+
+  <title>Aplicativo Inventário</title>
+  <info>
+    <desc>
+      <link xref="inventory" />,
+      <link xref="stock" />...
+    </desc>
+
+    <link type="guide" xref="index" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Audita e ajusta o estoque de produtos.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

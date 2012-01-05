@@ -1,0 +1,40 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="supplier">
+
+  <title>Fornecedores</title>
+  <info>
+    <desc>
+      <link xref="supplier-new" />,
+      <link xref="supplier-edit" />,
+      <link xref="supplier-search" />...
+    </desc>
+
+    <link type="guide" xref="app-purchase" />
+    <link type="guide" xref="app-admin" />
+    <link type="seealso" xref="product" />
+    <link type="seealso" xref="purchase" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Responsável por fornecer <link xref="product">produtos</link> à empresa,
+    possívelmente através de uma <link xref="transporter">transportadora</link>,
+    para alimentar o <link xref="stock">estoque</link> dos mesmos.
+  </p>
+  <note style="advanced">
+    <p>
+      Assim como todas as outras pessoas (físicas ou jurídicas) cadastradas no
+      Stoq, um fornecedor pode realizar vários papeis ao mesmo tempo, como
+      também ser um <link xref="client">cliente</link>, um
+      <link xref="employee">funcionário</link> e etc. Isso facilita a edição de
+      seus dados básicos.
+    </p>
+  </note>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

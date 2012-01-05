@@ -1,0 +1,88 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="product-add-supplier">
+
+  <title>Adicionando um fornecedor para um produto</title>
+  <info>
+    <desc>
+      Adicionando um fornecedor para um produto no Stoq
+    </desc>
+
+    <link type="guide" xref="product" />
+    <link type="guide" xref="supplier" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para adicionar um fornecedor à um produto, isto
+    é, indicar ao Stoq que um dado <link xref="product">produto</link> é
+    fornecido por um dado <link xref="supplier">fornecedor</link>.
+  </p>
+  <p>
+    Isso é importante pois, para realizarmos um
+    <link xref="purchase-new">pedido de compra</link> a um fornecedor, para
+    adicionarmos um produto à esta compra, é necessário que o Stoq saiba que
+    ele é fornecido por pelo mesmo.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" /> e realize uma
+        <link xref="product-search">pesquisa de produtos</link> pelo produto em
+        questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Nesta <link xref="overview#search">pesquisa</link>, tendo o produto
+        selecionado, clique no botão <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto com as
+        informações do produto em questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Navegue até a aba <gui>Fornecedores</gui>. Nela, selecione o fornecedor
+        que você deseja adicionar e clique em <gui>Adicionar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um dialogo será aberto e nele você poderá preencher alguns dados sobre
+        o fornecimento dese produto por este fornecedor, como o
+        <gui>Custo do fornecedor</gui>, o <gui>Mínimo para compras</gui> e etc.
+        Após o preenchimento dos <link xref="overview#required-fields">campos
+        obrigatórios</link> e correção dos <link xref="overview#validation">
+        erros de validação</link> o botão <gui>Ok</gui> será habilitado, e você
+        poderá confirmar o diálogo.
+      </p>
+      <note style="important">
+        <p>
+          Esses dados são importantes pois serão utilizados para preenchimento
+          automático e <link xref="overview#validation">validação</link>
+          na hora de realizar uma compra. Ex. O Stoq não deixará um usuário
+          realizar uma compra de 5un de um produto X caso esteja indicado 10un
+          no campo <gui>Mínimo para compras</gui>. Neste caso, ele precisaria
+          realizar o pedido de no mínimo 10un.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Após ter adicionado todos os fornecedores pretendidos e ter certeza de
+        que tudo está Ok, clique em <gui>Ok</gui> para confirmar o processo.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu produto foi vinculado ao fornecedor com sucesso!
+      </p>
+    </item>
+  </steps>
+
+</page>

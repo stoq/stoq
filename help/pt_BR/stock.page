@@ -1,0 +1,32 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="stock">
+
+  <title>Estoque</title>
+  <info>
+    <desc>
+      <link xref="stock-register-initial" />,
+      <link xref="stock-transfer" />,
+      <link xref="stock-decrease" />...
+    </desc>
+
+    <link type="guide" xref="app-stock" />
+    <link type="guide" xref="app-inventory" />
+    <link type="seealso" xref="product" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    A representação da quantidade física de um
+    <link xref="product">produto</link> no Stoq. Esta quantidade pode ser
+    rápidamente verificada na <link xref="overview#search">pesquisa</link> do
+    <link xref="app-stock" />, podendo verificar o estoque geral ou de cada
+    <link xref="branch">filial</link>.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

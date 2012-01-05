@@ -1,0 +1,62 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="stock-register-initial">
+
+  <title>Registro de estoque inicial</title>
+  <info>
+    <desc>
+      Registro de estoque inicial no Stoq
+    </desc>
+
+    <link type="guide" xref="stock" />
+    <link type="seealso" xref="product" />
+    <link type="seealso" xref="purchase" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para registrar um estoque inicial para um certo
+    <link xref="product">produto</link>, isto é, registrar uma quantidade
+    inicial que já possuímos desse produto e que não foi recebido de nenhuma
+    <link xref="purchase">compra</link> conhecida pelo Stoq.
+  </p>
+  <note style="important">
+    <p>
+      Esse processo só pode ser realizado para produtos que nunca foram
+      <link xref="purchase">comprados</link> antes.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-stock" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione <guiseq><gui>Arquivo</gui>
+        <gui>Registrar estoque inicial</gui></guiseq>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um diálogo será aberto, listando todos os novos produtos do Stoq. Na
+        coluna <gui>Estoque inicial</gui>, preencha a quantidade inicial para
+        cada produto.
+      </p>
+    </item>
+    <item>
+      <p>
+        Após o preenchimento, clique em <gui>Ok</gui> para confirmar o
+        processo.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! O registro de estoque inicial foi realizado com sucesso.
+      </p>
+    </item>
+  </steps>
+
+</page>

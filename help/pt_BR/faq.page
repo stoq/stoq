@@ -1,0 +1,28 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="faq">
+
+  <title>Perguntas frequentes</title>
+  <info>
+    <desc>
+      Perguntas frequentes do Stoq.
+    </desc>
+
+    <link type="guide" xref="index" group="faq" />
+    <link type="seealso" xref="overview" />
+    <link type="seealso" xref="about" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <list type="enumerated">
+    <item>
+      <p>FIXME</p>
+      <list>
+        <item>
+          <p>RE: FIXME</p>
+        </item>
+      </list>
+    </item>
+  </list>
+
+</page>

@@ -1,0 +1,91 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="stock-transfer">
+
+  <title>Transferência de estoque entre filiais</title>
+  <info>
+    <desc>
+      Transferência de estoque entre filiais no Stoq
+    </desc>
+
+    <link type="guide" xref="stock" />
+    <link type="seealso" xref="branch" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Realizamos este processo para transferir uma dada quantidade de estoque de
+    um <link xref="product">produto</link> entre
+    <link xref="branch">filiais</link>.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-stock" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione <guiseq><gui>Arquivo</gui><gui>Novo</gui>
+        <gui>Transferência</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Novo</gui><gui>Transferência</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo, você deve dizer quais produtos fazem parte desta
+            transferência, assim como as quantidades de cada um. Após adicionar
+            ao menos um produto, o botão <gui>Avançar</gui> será habilitado e
+            você pode seguir para o próximo passo.
+          </p>
+          <note style="important">
+            <p>
+              Os produtos e estoques selecionados aqui, fazem parte da
+              <link xref="branch">filial</link> em que o atual
+              <link xref="user">usuário</link> está logado.
+            </p>
+          </note>
+        </item>
+        <item>
+          <p>
+            No segundo passo você deve preencher alguns dados referentes à
+            transferência como, qual é a <gui>Filial destinatária</gui>, o
+            funcionário <gui>Responsável pelo envio</gui>, o funcionário
+            <gui>Responsável pelo recebimento</gui> e etc. Após o preenchimento
+            dos <link xref="overview#required-fields">campos obrigatórios</link>
+            e correção dos <link xref="overview#validation">
+            erros de validação</link> o botão <gui>Terminar</gui> será
+            habilitado e você pode finalizar o processo.
+          </p>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Após a confirmação do assistente, um dialogo aparecerá perguntando se
+        você gostaria de imprimir um recibo. Esse recibo é um relatório,
+        indicando os produtos que estão sendo transferidos, os responsáveis,
+        além de possuir um campo para assinatura, servindo este como um
+        comprovante de transferência (além do próprio registro no Stoq).
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! A sua transferência foi realizada com sucesso!
+      </p>
+    </item>
+  </steps>
+
+</page>

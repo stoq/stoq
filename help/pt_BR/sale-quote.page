@@ -1,0 +1,81 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="sale-quote">
+
+  <title>Realizando uma cotação de venda</title>
+  <info>
+    <desc>
+      Realizando uma cotação de venda no Stoq
+    </desc>
+
+    <link type="guide" xref="sale" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para criar uma cotação de venda no Stoq, isto é,
+    criar uma proposta de venda para um dado <link xref="client">cliente</link>,
+    podendo esta ter um prazo de expiração e etc.
+  </p>
+  <note style="important">
+    <p>
+      Uma cotação só será considerada uma venda a partir do momento em que for
+      <link xref="sale-confirm">confirmada</link>.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-sales" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione <guiseq><gui>Arquivo</gui><gui>Novo</gui>
+        <gui>Cotação de venda</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode criar um produto na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Novo</gui><gui>Cotação de venda</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo, você poderá preencher informações básicas desta
+            cotação, como o <gui>Cliente</gui>, informações de quando ela
+            <gui>Expira</gui> e etc. Após o preenchimento dessas informações,
+            clique em <gui>Avançar</gui>.
+          </p>
+        </item>
+        <item>
+          <p>
+            No segundo passo, você irá escolher os itens que fazem parte desta
+            cotação. Ao escolher cada <gui>Item</gui>, tenha certeza de
+            verificar a <gui>Quantidade</gui> que será vendida ao
+            <link xref="client">cliente</link> assim como o <gui>Preço</gui>
+            oferecido à ele. Após ter certeza dos items inseridos, clique em
+            <gui>Finalizar</gui> para completar o processo.
+          </p>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Pronto! A sua cotação foi criada com sucesso no Stoq! Caso o
+        <link xref="client">cliente</link> decida por consolidar a cotação, a
+        mesma já pode ser <link xref="sale-confirm">confirmada</link> no
+        <link xref="app-till" />.
+      </p>
+    </item>
+  </steps>
+
+</page>

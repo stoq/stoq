@@ -1,0 +1,116 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="purchase-new">
+
+  <title>Realizando uma compra</title>
+  <info>
+    <desc>
+      Realizando uma compra no Stoq
+    </desc>
+
+    <link type="guide" xref="index" group="purchase-new" />
+    <link type="guide" xref="purchase" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para cadastrar um novo pedido de compras de
+    <link xref="product">produtos</link> no Stoq.
+  </p>
+  <note style="important">
+    <p>
+      Note que o procedimento ira criar uma espécie de "rascunho" do pedido em
+      questão. Isso é feito para permitir que o usuário tenha tempo de corrigir
+      qualquer informação incorreta que o pedido possua, uma vez que não é
+      possível removê-lo. Após ter certeza das informações contidas no
+      mesmo, faça uma <link xref="purchase-confirm">confirmação</link> e então
+      o Stoq o tratará como um "real" pedido.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Pedido</gui>
+        </guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode criar um produto na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Novo</gui><gui>Pedido</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo, você preencherá as informações básicas do pedido
+            como, qual a <gui>Filial</gui> que receberá o pedido, de qual
+            <gui>Fornecedor</gui>, etc. Após o preenchimento dos
+            <link xref="overview#required-fields">campos obrigatórios</link>
+            e correção dos <link xref="overview#validation">
+            erros de validação</link> o botão <gui>Avançar</gui> será
+            habilitado e você pode ir para o próximo passo.
+          </p>
+        </item>
+        <item>
+          <p>
+            No segundo passo, você deve selecionar os produtos que fazem parte
+            do pedido e suas respectivas quantidades. Só podem ser selecionados
+            aqui produtos que são fornecidos pelo
+            <link xref="supplier">fornecedor</link> escolhido no passo
+            anterior.
+          </p>
+          <note style="tip">
+            <p>
+              Tenha certeza de ter registrado o fornecedor atual como um dos
+              <link xref="product-add-supplier">fornecedores do produto</link>.
+            </p>
+          </note>
+        </item>
+        <item>
+          <p>
+            No terceiro passo você deverá selecionar a forma de pagamento do
+            pedido, podendo esta (com exceção de <gui>Dinheiro</gui>) ser
+            dividida em várias parcelas. Isso é importante para o controle de
+            <link xref="account-payable">contas a pagar</link>.
+          </p>
+        </item>
+        <item>
+          <p>
+            No quarto e último passo, você pode indicar o <gui>Vendedor</gui>
+            do fornecedor responsável pelo pedido, a <gui>Transportadora</gui>
+            que irá transportá-lo, etc. Ao clicar em <gui>Terminar</gui>, o
+            processo será finalizado.
+          </p>
+          <note style="important">
+            <p>
+              Caso você deixe marcado a caixa
+              <gui>Receber todos os produtos agora</gui>, ao finalizar o
+              processo, você será direcionado para o
+              <link xref="purchase-receival">recebimento da compra</link>.Isso
+              é útil em casos que a compra está sendo cadastrada no momento de
+              seu recebimento.
+            </p>
+          </note>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu pedido de compra foi registrado com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

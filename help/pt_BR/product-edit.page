@@ -1,0 +1,76 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="product-edit">
+
+  <title>Editando um produto</title>
+  <info>
+    <desc>
+      Editando um produto no Stoq
+    </desc>
+
+    <link type="guide" xref="product" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para editar produtos no Stoq, isto é, alterar as
+    suas especificações registradas como descrição, preço, etc.
+  </p>
+  <note style="important">
+    <p>
+      Note que as especificações de um produto são divididas em categorias.
+      Neste processo, utilizaremos o <link xref="app-purchase" /> que é capaz de
+      alterar a maioria dessas categorias, porém, no <link xref="app-stock" />
+      por exemplo, é possível realizar o mesmo, mas com limitações (nele,
+      conseguimos apenas alterar propriedades físicas, como peso, altura,
+      imagem, etc).
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Realize uma <link xref="product-search">pesquisa de produtos</link>
+        pelo produto em questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Nesta <link xref="overview#search">pesquisa</link>, tendo o produto
+        selecionado, clique no botão <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto e populado
+        com as informações atuais de seu produto. A partir de agora você pode
+        realizar as mudanças pretendidas.
+      </p>
+    </item>
+    <item>
+      <p>
+        Após as mudanças, não havendo nenhum <link xref="overview#validation">
+        erro de validação</link>, o botão <gui>Ok</gui> estará habilitado e
+        você poderá confirmar a edição do produto.
+      </p>
+      <note style="tip">
+        <p>
+          Note que, caso você desista das mudanças que está realizando, você
+          pode clicar em <gui>Cancelar</gui> e todas as mudanças serão
+          descartadas, revertendo o produto ào estado anterior.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu produto foi editado com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

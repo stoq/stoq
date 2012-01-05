@@ -1,0 +1,40 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task 2column"
+      id="param">
+
+  <title>Parâmetros</title>
+  <info>
+    <desc>
+      Parâmetros do Stoq
+    </desc>
+
+    <link type="guide" xref="app-admin" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Parâmetros provêem um jeito simples e rápido de modificar o Stoq para se
+    adaptar à algumas necessidades específicas de algumas empresas.
+    Tenha certeza de verificá-los para ter certeza de que o Stoq está
+    configurado e trabalhando exatamente do jeito que você quer.
+  </p>
+  <p>
+    É possível acessá-los no <link xref="app-admin" /> no menu
+    <guiseq><gui>Configurar</gui><gui>Parâmetros</gui></guiseq> ou diretamente
+    do ícone de parâmetros na tela inicial.
+  </p>
+  <p>
+    Em cada um dos parâmetros, ao clicar em <gui>Editar</gui> uma explicação
+    completa do mesmo é oferecida. Nessa tela é possível realizar uma edição do
+    valor do parâmetro.
+  </p>
+  <note style="important">
+    <p>
+      Assim como nos <link xref="overview#editor">editores</link>, a edição de
+      parâmetros também está sujeita à
+      <link xref="overview#validation">validação</link> além de possuir
+      <link xref="overview#required-fields">campos obrigatórios</link>.
+    </p>
+  </note>
+
+</page>

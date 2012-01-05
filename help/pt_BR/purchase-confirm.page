@@ -1,0 +1,71 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="purchase-confirm">
+
+  <title>Confirmando uma compra</title>
+  <info>
+    <desc>
+      Confirmando uma compra no Stoq
+    </desc>
+
+    <link type="guide" xref="purchase" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para confirmar um pedido de compra no Stoq.
+  </p>
+  <p>
+    Após realizarmos um novo <link xref="purchase-new">pedido de compra</link>,
+    o mesmo é visto pelo Stoq como um "rascunho" e só terá validade após a
+    confirmação.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Na <link xref="overview#search">pesquisa</link> do aplicativo,
+        <link xref="purchase-search">pesquise pelo pedido</link> em questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo ele selecionado, na
+        <link xref="overview#results">lista de resultados</link> selecione o
+        menu <guiseq><gui>Pedido</gui><gui>Confirmar</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo clicando com o botão
+          direito no item da lista de resultados e selecionando
+          <gui>Confirmar</gui> ou através da
+          <link xref="overview#toolbar">barra de ferramentas</link> clicando no
+          botão <gui>Confirmar</gui>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Um diálogo aparecerá perguntando se você está certo de que deseja
+        confirmar o pedido. A partir desse momento, o pedido é tratado como
+        "O fornecedor já tem total conhecimento do pedido e está trabalhando
+        para realizá-lo". Após ter certeza, clique em
+        <gui>Confirmar pedido</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu pedido de compra foi confirmado com sucesso no Stoq. Você
+        já pode realizar um
+        <link xref="purchase-receival">recebimento</link> dele no
+        <link xref="app-stock" />.
+      </p>
+    </item>
+  </steps>
+
+</page>
