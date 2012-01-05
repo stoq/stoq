@@ -20,7 +20,7 @@
       O procedimento abaixo utilizará o <link xref="app-sales" /> para
       realizar o cadastro, porém, assim como todas as outras pessoas (física ou
       jurídica) no Stoq, o mesmo pode ser realizado no
-      <link xref="app-admin" /> no ícone <gui>Fornecedores</gui>.
+      <link xref="app-admin" /> no ícone <gui>Clientes</gui>.
     </p>
   </note>
 
@@ -32,13 +32,14 @@
     </item>
     <item>
       <p>
-        Selecione <guiseq><gui>Pesquisar</gui><gui>Fornecedores</gui></guiseq>.
+        Selecione o menu
+        <guiseq><gui>Pesquisar</gui><gui>Clientes</gui></guiseq>.
       </p>
       <note style="tip">
         <p>
           Alternativamente, você pode realizar o mesmo na
           <link xref="overview#toolbar">barra de ferramentas</link> em
-          <guiseq><gui>Buscar</gui><gui>Fornecedores</gui></guiseq>.
+          <guiseq><gui>Buscar</gui><gui>Clientes</gui></guiseq>.
         </p>
       </note>
     </item>

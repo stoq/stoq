@@ -1,0 +1,87 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="transporter-new">
+
+  <title>Cadastrando uma transportadora</title>
+  <info>
+    <desc>
+      Cadastrando uma transportadora no Stoq
+    </desc>
+
+    <link type="guide" xref="transporter" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para cadastrar transportadoras no Stoq.
+  </p>
+  <note style="tip">
+    <p>
+      O procedimento abaixo utilizará o <link xref="app-purchase" /> para
+      realizar o cadastro, porém, assim como todas as outras pessoas (física ou
+      jurídica) no Stoq, o mesmo pode ser realizado no
+      <link xref="app-admin" /> no ícone <gui>Transportadoras</gui>.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-purchase" />, abra a
+        <link xref="transporter-search">pesquisa de transportadoras</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Clique no botão <gui>Novo</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo, você deve indicar se está adicionando
+            <gui>Uma nova pessoa física</gui> ou
+            <gui>Uma nova pessoa jurídica</gui>. Após isso, clique em
+            <gui>Avançar</gui>.
+          </p>
+          <note style="important">
+            <p>
+              Tenha certeza de inserir o número de telefone correto da
+              transportadora, pois desse jeito, caso ele já possua um cadastro
+              (como um fornecedor por exemplo) os dados gerais (como nome,
+              telefone, cpf/cnpj, endereços) serão compartilhados entre ambos,
+              facilitando assim a manutenção dos dados.
+            </p>
+          </note>
+        </item>
+        <item>
+          <p>
+            No segundo passo você deve informar os dados dessa transportadora, como
+            o seu <gui>Nome</gui>, <gui>Endereço</gui> e etc. As informações
+            estão dívididas em abas e podem ser diferentes de acordo com o tipo
+            de transportadora. No caso de se tratar de uma pessoa física, uma aba
+            existira contendo <gui>Dados de pessoa física</gui>, enquanto no
+            caso de pessoa jurídica essa aba se chamará
+            <gui>Dados de pessoa jurídica</gui>, além de abas extras referente
+            à uma transportadora. Após o preenchimento dos
+            <link xref="overview#required-fields">campos obrigatórios</link> e
+            correção dos
+            <link xref="overview#validation"> erros de validação</link> o botão
+            <gui>Terminar</gui> será habilitado e você pode finalizar o
+            processo.
+          </p>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Pronto! Sua transportadora foi criada com sucesso no Stoq!
+      </p>
+    </item>
+  </steps>
+
+</page>
