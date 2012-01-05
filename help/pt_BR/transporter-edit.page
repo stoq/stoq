@@ -1,0 +1,75 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="transporter-edit">
+
+  <title>Editando uma transportadora</title>
+  <info>
+    <desc>
+      Editando uma transportadora no Stoq
+    </desc>
+
+    <link type="guide" xref="transporter" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para editar informações de transportadoras
+    cadastrados no Stoq.
+  </p>
+  <note style="tip">
+    <p>
+      O procedimento abaixo utilizará o <link xref="app-purchase" /> para
+      realizar o cadastro, porém, assim como todas as outras pessoas (física ou
+      jurídica) no Stoq, o mesmo pode ser realizado no
+      <link xref="app-admin" /> no ícone <gui>Transportadoras</gui>.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-purchase" />, abra a
+        <link xref="transporter-search">pesquisa de transportadoras</link>
+        procure pela transportadora em questão e selecione-o.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo a transportadora selecionado, clique em <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto e você poderá
+        editar as informações da transportadora. Essas informações estão dívididas
+        em abas e podem ser diferentes de acordo com o tipo de transportadora. No
+        caso de se tratar de uma pessoa física, uma aba existira contendo
+        <gui>Dados de pessoa física</gui>, enquanto no caso de pessoa jurídica
+        essa aba se chamará <gui>Dados de pessoa jurídica</gui>, além de abas
+        extras específicas de uma transportadora.
+      </p>
+    </item>
+    <item>
+      <p>
+        Após o preenchimento dos
+        <link xref="overview#required-fields">campos obrigatórios</link> e
+        correção dos
+        <link xref="overview#validation"> erros de validação</link> o botão
+        <gui>Ok</gui> será habilitado e você pode confirmar a edição.
+      </p>
+      <note style="tip">
+        <p>
+          Note que a qualquer momento caso você se arrependa da edição, você
+          pode clicar em <gui>Cancelar</gui> e assim descartar todas as
+          mudanças realizadas no momento.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Sua transportadora foi editada com sucesso no Stoq!
+      </p>
+    </item>
+  </steps>
+
+</page>
