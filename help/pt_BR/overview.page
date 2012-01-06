@@ -94,8 +94,8 @@
         na figura acima), pode representar alguma atividade específica em algum
         aplicativo, mas no geral, em aplicativos que tenham uma
         <link xref="#search">pesquisa</link> ele irá imprimir um
-        relatório da lista de resultados, baseado nos
-        <link xref="#search-filter">filtros</link> e a visibilidade das
+        <link xref="#report">relatório</link> da lista de resultados, baseado
+        nos <link xref="#search-filter">filtros</link> e a visibilidade das
         <link xref="#search-column">colunas</link>.
       </p>
     </section>
@@ -283,6 +283,38 @@
       substituído pelo botão <gui>Terminar</gui>, cujo qual finalizará o
       processo com êxito!
     </p>
+  </section>
+
+  <section id="report">
+    <title>Relatórios</title>
+    <p>
+      No Stoq tentamos facilitar ao máximo a impressão de relatórios. Em 90%
+      das nossas <link xref="#search">pesquisas</link> podemos imprimir um
+      relatório dos resultados:
+    </p>
+    <media type="image" src="figures/stoq_report.png" />
+    <p>
+      Os dados que aparecerão no relatório podem ser controlados através da
+      pesquisa em sí. e.g. Se escondermos a
+      <link xref="#search-column">coluna</link> de <gui>Fornecedor</gui>, ao
+      imprimir o relatório, a mesma não seria mostrada. O mesmo acontece com os
+      resultados, que podem ser controlados com
+      <link xref="#search-filter">filtros</link>.
+    </p>
+    <p>
+      Os dados do cabeçalho são preenchidos automaticamente de acordo com as
+      informações da <link xref="branch">filiail</link>.
+    </p>
+    <note style="important">
+      <p>
+        Apesar da facilidade em imprimir relatórios, pense em sua
+        responsabilidade social quanto à utilização de papel. Os dados não irão
+        sumir do Stoq do dia para a noite..Imprima apenas se for totalmente
+        necessário! Lembre-se também que as vezes é mais fácil utilizar a opção
+        de impressão em PDF (oferecida pelo sistema operacional) onde o mesmo
+        pode ser anexado em um email.
+      </p>
+    </note>
   </section>
 
 </page>
