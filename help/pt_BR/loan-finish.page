@@ -1,0 +1,79 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="loan-finish">
+
+  <title>Finalizando um empréstimo</title>
+  <info>
+    <desc>
+      Finalizando um empréstimo no Stoq
+    </desc>
+
+    <link type="guide" xref="loan" />
+    <link type="seealso" xref="sale" />
+    <link type="seealso" xref="stock" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Utilizamos este processo para finalizar um empréstimo no Stoq, isto é,
+    receber novamente os <link xref="product">produtos</link> que o
+    <link xref="client">cliente</link> emprestou, e criando uma
+    <link xref="sale-quote">cotação de venda</link> dos que ele decidiu
+    comprar.
+  </p>
+  <note style="important">
+    <p>
+      Note que os produtos devolvidos terão o seu
+      <link xref="stock">estoque</link> automáticamente aumentado novamente.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-stock" /> ou <link xref="app-sales" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione o menu
+        <guiseq><gui>Arquivo</gui><gui> Fechar empréstimo</gui></guiseq>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            O primeiro passo é uma <link xref="overview#search">pesquisa</link>
+            onde você deverá encontrar o empréstimo em questão. Tendo ele
+            selecionado, clique em <gui>Avançar</gui>.
+          </p>
+        </item>
+        <item>
+          <p>
+            No segundo passo, selecione cada item e clique em
+            <gui>Editar</gui>. No
+            <link xref="overview#editor">editor</link> que será aberto,
+            preencha <gui>Quantidade retornada</gui> pelo cliente assim como a
+            <gui>Quantidade vendida</gui>. Após ter realizado o preenchimento
+            de todos os itens, clique em <gui>Terminar</gui> para finalizar o
+            processo.
+          </p>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Pronto! O seu empréstimo foi finalizado com sucesso! Os itens que foram
+        devolvidos retornaram ao <link xref="stock">estoque</link> enquanto os
+        que foram vendidos se transformaram em uma
+        <link xref="sale-quote">cotação de venda</link>, podendo esta ser
+        confirmada posteriormente no <link xref="app-till" />.
+      </p>
+    </item>
+  </steps>
+
+</page>

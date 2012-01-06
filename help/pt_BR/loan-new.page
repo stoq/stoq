@@ -1,0 +1,93 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="loan-new">
+
+  <title>Realizando um empréstimo</title>
+  <info>
+    <desc>
+      Realizando um empréstimo no Stoq
+    </desc>
+
+    <link type="guide" xref="loan" />
+    <link type="seealso" xref="sale" />
+    <link type="seealso" xref="stock" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Utilizamos este processo para realizar um empréstimo de
+    <link xref="product">produtos</link> a um dado
+    <link xref="client">cliente</link>.
+  </p>
+  <note style="important">
+    <p>
+      Note que, enquanto o produto está emprestado a um cliente, seu
+      <link xref="stock">estoque</link> será automáticamente diminuído.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-stock" /> ou <link xref="app-sales" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione o menu
+        <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Empréstimo</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Novo</gui><gui>Empréstimo</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo você deverá informar o <gui>Cliente</gui> que
+            está retirando os produtos, assim como um limite para que ele os
+            devolva em <gui>Expira</gui>.
+          </p>
+          <note style="tip">
+            <p>
+              Note que, caso esse seja um novo cliente, você pode clicar no
+              botão <gui>Adicionar</gui> (botão + ao lado) para
+              <link xref="client-new">adicionar um novo cliente</link>.
+            </p>
+          </note>
+        </item>
+        <item>
+          <p>
+            No segundo passo você deve selecionar cada <gui>Item</gui> que será
+            emprestado, prestando atenção na <gui>Quantidade</gui> e
+            <gui>Preço</gui> de venda. Este será utilizado caso o cliente
+            decida ficar com o produto e comprá-lo. Após ter adicionado os
+            itens, clique em <gui>Terminar</gui> para finalizar o processo.
+          </p>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Um dialogo aparecerá perguntando se você deseja imprimir um recibo.
+        Este, caso imprimido, deve ser assinado pelo cliente para firmar um
+        contrato informal de que este está ciente do empréstimo e deve devolver
+        ou comprar os itens até a data de expiração.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! O seu empréstimo foi realizado com sucesso!
+      </p>
+    </item>
+  </steps>
+
+</page>
