@@ -1,0 +1,40 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="user">
+
+  <title>Usuários</title>
+  <info>
+    <desc>
+      <link xref="user-new" />,
+      <link xref="user-edit" />,
+      <link xref="user-search" />...
+    </desc>
+
+    <link type="guide" xref="app-admin" />
+    <link type="seealso" xref="employee" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Cada pessoa que utiliza o Stoq possuirá um usuário cadastrado. Este
+    usuário terá vinculado a si um
+    <link xref="user-profile">perfil de usuário</link> que será utilizado para
+    determinar quais <link xref="overview#app">aplicativos</link> ele poderá
+    utilizar, além de possívelmente um <link xref="user-role">cargo</link>.
+  </p>
+  <note style="advanced">
+    <p>
+      Assim como todas as outras pessoas (físicas ou jurídicas) cadastradas no
+      Stoq, um cliente pode realizar vários papeis ao mesmo tempo, como
+      também ser um <link xref="supplier">fornecedor</link>, um
+      <link xref="employee">funcionário</link> e etc. Isso facilita a edição de
+      seus dados básicos.
+    </p>
+  </note>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

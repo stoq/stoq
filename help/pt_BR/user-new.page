@@ -1,0 +1,77 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="user-new">
+
+  <title>Cadastrando um usuário</title>
+  <info>
+    <desc>
+      Cadastrando um usuário no Stoq
+    </desc>
+
+    <link type="guide" xref="user" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para cadastrar usuários no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-admin" />, abra a
+        <link xref="user-search">pesquisa de usuários</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Clique no botão <gui>Novo</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo, você pode informar o número de telefone do
+            usuário. Após isso, clique em <gui>Avançar</gui>.
+          </p>
+          <note style="important">
+            <p>
+              Tenha certeza de inserir o número de telefone correto do
+              usuário, pois desse jeito, caso ele já possua um cadastro
+              (como um fornecedor por exemplo) os dados gerais (como nome,
+              telefone, cpf/cnpj, endereços) serão compartilhados entre ambos,
+              facilitando assim a manutenção dos dados.
+            </p>
+          </note>
+        </item>
+        <item>
+          <p>
+            No segundo passo você deve preencher os
+            <gui>Detalhes do usuário</gui> como o <gui>Usuário</gui> em sí, uma
+            <gui>Senha</gui>, um <gui>Perfil</gui> e etc que serão utilizados
+            para ele <link xref="user-login">acessar o Stoq</link>. Outras
+            informações estão divididas em outras abas, como
+            <gui>Identificação</gui>, <gui>Dados de pessoa física</gui>, etc do
+            mesmo. Após o preenchimento dos
+            <link xref="overview#required-fields">campos obrigatórios</link> e
+            correção dos
+            <link xref="overview#validation">erros de validação</link> o botão
+            <gui>Terminar</gui> será habilitado e você pode finalizar o
+            processo.
+          </p>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu usuário foi criado com sucesso no e ele já pode ser
+        usado para a utilização do Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>
