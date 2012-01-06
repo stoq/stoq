@@ -1,0 +1,26 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task 2column"
+      id="plugin-tef">
+
+  <title>Plugin TEF</title>
+  <info>
+    <desc>
+      Plugin TEF (Transferência Eletrônica de Fundos) no Stoq
+    </desc>
+
+    <link type="guide" xref="plugin" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Ao ativar este plugin, o Stoq estará apto a aceitar cartões de crédito de
+    diversas bandeiras, facilitando assim a vida da empresa e de seus clientes.
+  </p>
+  <p>
+    Este plugin é oferecido como um serviço em parceria com a VeSPague. Conheça
+    mais informações e tire dúvidas na
+    <link href="http://www.stoq.com.br/suporte">página de suporte do Stoq</link>
+    ou <link xref="about#contact-us">entre em contato</link>.
+  </p>
+
+</page>

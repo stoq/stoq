@@ -19,5 +19,57 @@
     Gestão Comercial e Industrial, disponibilizada e mantida como software
     livre pela <link href="http://www.async.com.br">Async Open Source</link>.
   </p>
+  <p>
+    Tenha mais informações visitando o nosso website em:
+    <link href="http://www.stoq.com.br" />.
+  </p>
+
+  <section id="contact-us">
+    <title>Entre em contato</title>
+    <p>
+      Utilize os seguintes meios para encontrar em contato:
+    </p>
+    <list>
+      <item>
+        <title>Comunicação ao vivo</title>
+        <p>
+          Possuímos uma equipe online principalmente em horário comercial no
+          canal <code>#stoq</code> do servidor
+          <link href="http://freenode.net">FreeNode</link>. Para se conectar,
+          utilize um
+          <link href="http://webchat.freenode.net">serviço online de chat</link>
+          ou algum cliente de IRC como o
+          <link href="http://xchat.org">X-Chat</link>.
+        </p>
+      </item>
+      <item>
+        <title>Contato técnico</title>
+        <p>
+          Possuímos duas listas de discussão, destinadas a auxiliar usuários e
+          desenvolvedores. Envie um email e providenciaremos uma resposta o
+          mais rápido possível!
+        </p>
+        <list>
+          <item>
+            <p>
+              <link href="http://www.async.com.br/mailman/listinfo/stoq-users">Lista de usuários</link>
+            </p>
+          </item>
+          <item>
+            <p>
+              <link href="http://www.async.com.br/mailman/listinfo/stoq-dev">Lista de desenvolvedores</link>
+            </p>
+          </item>
+        </list>
+      </item>
+      <item>
+        <title>Contato comercial</title>
+        <p>
+          Para tratar de assuntos comerciais, entre em contato no email:
+          <em>comercial @ stoq.com.br</em> (sem espaços).
+        </p>
+      </item>
+    </list>
+  </section>
 
 </page>
