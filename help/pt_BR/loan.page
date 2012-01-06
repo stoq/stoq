@@ -1,0 +1,33 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="loan">
+
+  <title>Empréstimos</title>
+  <info>
+    <desc>
+      <link xref="loan-new" />,
+      <link xref="loan-search" />,
+      <link xref="loan-item-search" />,
+      <link xref="loan-finish" />...
+    </desc>
+
+    <link type="guide" xref="app-stock" />
+    <link type="guide" xref="app-sales" />
+    <link type="seealso" xref="sale" />
+    <link type="seealso" xref="stock" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Um empréstimo de <link xref="product">produtos</link> a um dado
+    <link xref="client">cliente</link>. Este pode posteriormente
+    <link xref="loan-finish">finalizar o empréstimo</link>, devolvendo
+    alguns/todos os itens, ou mesmo comprando alguns/todos os itens.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>
