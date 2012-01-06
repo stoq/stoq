@@ -1,0 +1,38 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="account-payable">
+
+  <title>Conta a pagar</title>
+  <info>
+    <desc>
+      <link xref="account-payable-new" />,
+      <link xref="account-payable-pay" />,
+      <link xref="account-payable-search" />...
+    </desc>
+
+    <link type="guide" xref="app-payable" />
+    <link type="guide" xref="app-financial" />
+    <link type="guide" xref="app-purchase" />
+    <link type="guide" xref="app-calendar" />
+    <link type="seealso" xref="purchase" />
+    <link type="seealso" xref="transaction" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Uma conta a pagar, talvez provinda de um
+    <link xref="purchase">pedido de compra</link> ou
+    <link xref="account-payable-new">gerada manualmente</link>, que irá gerar
+    uma <link xref="transaction">transação</link> no
+    <link xref="app-financial" /> ao ser marca como
+    <link xref="account-payable-pay">paga</link> no
+    <link xref="app-payable" />. Sua data de vencimento pode também ser
+    acompanhada no <link xref="app-calendar" />.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>
