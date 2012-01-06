@@ -1,0 +1,38 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task 2column"
+      id="plugin-books">
+
+  <title>Plugin Livros</title>
+  <info>
+    <desc>
+      Plugin Livros no Stoq
+    </desc>
+
+    <link type="guide" xref="plugin" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Ao ativar este plugin, o Stoq conseguira cadatrar informações extras em
+    <link xref="product">produtos</link> referentes a livros, como Autor,
+    Páginas, Ano, Editora, ISBN, etc.
+  </p>
+  <note style="important">
+    <p>
+      Assim como todos os <link xref="plugin">plugins</link> após ativo não
+      será possível desativá-lo. Tenha certeza de que realmente deseja fazê-lo
+      antes de confirmar a ação!
+    </p>
+  </note>
+  <p>
+    A funcionalidade do Stoq não será alterada, exceto que cada produto é
+    tratado como um livro e logo, ao <link xref="product-new">criar</link> ou
+    <link xref="product-edit">editar</link> algum, essas informações extrar
+    serão dispostas em uma aba extra.
+  </p>
+  <p>
+    Isso é um aditivo interessante para livrarias que estão interessadas em
+    utilizar o Stoq!
+  </p>
+
+</page>
