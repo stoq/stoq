@@ -7,7 +7,6 @@
     <desc>
       <link xref="sale" />,
       <link xref="client" />,
-      <link xref="commission" />,
       <link xref="product" />,
       <link xref="loan" />...
     </desc>
