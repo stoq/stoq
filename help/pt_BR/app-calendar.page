@@ -5,7 +5,6 @@
   <title>Aplicativo Calendário</title>
   <info>
     <desc>
-      <link xref="task" />,
       <link xref="account-payable" />,
       <link xref="account-receivable" />...
     </desc>
