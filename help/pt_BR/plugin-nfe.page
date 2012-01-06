@@ -1,0 +1,64 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task 2column"
+      id="plugin-nfe">
+
+  <title>Plugin NF-e</title>
+  <info>
+    <desc>
+      Plugin NF-e (Nota Fiscal Eletrônica) no Stoq
+    </desc>
+
+    <link type="guide" xref="plugin" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Ao ativar este plugin, o Stoq estará apto a gerar notas fiscais
+    eletrônicas para <link xref="sale">vendas</link>.
+  </p>
+  <note style="important">
+    <p>
+      Assim como todos os <link xref="plugin">plugins</link> após ativo não
+      será possível desativá-lo. Tenha certeza de que realmente deseja fazê-lo
+      antes de confirmar a ação!
+    </p>
+  </note>
+  <p>
+    Toda a venda realizada pelo Stoq irá gerar um arquivo txt dentro de
+    <file>~/.stoq/exported_nfe</file>. Este será separado por pastas
+    representando meses e dias, para facilitar a organização.
+  </p>
+  <p>
+    Esses arquivos podem ser importados importados por um sistema de emissão de
+    NF-e, como o
+    <link href="http://www.emissornfe.fazenda.sp.gov.br">Emissor de NF-e da Secretaria da Fazenda</link>.
+    Após este passo a importação pode ser feita, de modo que toda nota
+    importada estará automaticamente com o status “em digitação”. Todo restante
+    do processo deve ser realizado no sistema da receita, entre eles a
+    verificação, validação e assinatura. Com todo este processo realizado é
+    possível enviar a NF-e.
+  </p>
+
+  <list>
+    <title>Algumas considerações importantes</title>
+    <item>
+      <p>
+        No emissor citado acima, o cadastro da empresa deve ser realizado com
+        os mesmos <link xref="branch">dados cadastrados</link> no Stoq.
+      </p>
+    </item>
+    <item>
+      <p>
+        Não será possível realizar <link xref="sale">vendas</link> sem informar
+        um <link xref="client">cliente</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Não será possível <link xref="receipt">imprimir recibos</link> para
+        vendas, uma vez que a emissão de NF-e substitui essa funcionalidade.
+      </p>
+    </item>
+  </list>
+
+</page>
