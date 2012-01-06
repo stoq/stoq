@@ -1,0 +1,65 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="user-edit">
+
+  <title>Editando um usuário</title>
+  <info>
+    <desc>
+      Editando um usuário no Stoq
+    </desc>
+
+    <link type="guide" xref="user" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para editar informações de usuários
+    cadastrados no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-admin" />, abra a
+        <link xref="user-search">pesquisa de usuários</link> procure
+        pelo usuário em questão e selecione-o.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo o usuário selecionado, clique em <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto e você poderá
+        editar as informações do usuário. Essas informações estão dívididas
+        em abas <gui>Identificação</gui> <gui>Dados de pessoa física</gui>, etc
+        do mesmo. Na aba <gui>Detalhes do usuário</gui> podemos editar o nome
+        do <gui>Usuário</gui>, assim como <gui>Alterar senha</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Após o preenchimento dos
+        <link xref="overview#required-fields">campos obrigatórios</link> e
+        correção dos
+        <link xref="overview#validation"> erros de validação</link> o botão
+        <gui>Ok</gui> será habilitado e você pode confirmar a edição.
+      </p>
+      <note style="tip">
+        <p>
+          Note que a qualquer momento caso você se arrependa da edição, você
+          pode clicar em <gui>Cancelar</gui> e assim descartar todas as
+          mudanças realizadas no momento.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu usuário foi editado com sucesso no Stoq!
+      </p>
+    </item>
+  </steps>
+
+</page>

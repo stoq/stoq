@@ -1,0 +1,57 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="user-login">
+
+  <title>Acessando o Stoq</title>
+  <info>
+    <desc>
+      Acessando o Stoq
+    </desc>
+
+    <link type="guide" xref="user" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para acessar o Stoq tendo assim acesso ao
+    <link xref="overview#launcher" /> e podendo utilizar os diversos
+    <link xref="overview#app">aplicativos</link> oferecidos.
+  </p>
+  <note style="important">
+    <p>
+      Tenha certeza de ter <link xref="user-new">criado o usuário</link> que
+      irá acessar o sistema antes de realizar os procedimentos abaixo.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Ao acessar o Stoq, você irá se deparar com o controle de acesso.
+      </p>
+    </item>
+    <item>
+      <p>
+        Preencha o seu <gui>Usuário</gui> e <gui>Senha</gui> e então pressione
+        <gui>Ok</gui>.
+      </p>
+      <note style="important">
+        <p>
+          A caixa <gui>Lembre-se de mim</gui> só deve ser marcada no caso de o
+          utilizador ser único no computador que está sendo utilizado. Caso
+          contrário, um outro usuário poderia realizar um acesso maldoso e
+          prejudicar este com a senha salva.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Caso o seu usuário e senha estejam corretos você cairá no
+        <link xref="overview#launcher" />. Ao finalizar o seu acesso, lembre-se
+        de realizar um logout através do menu
+        <guiseq><gui>Arquivo</gui><gui>Sair</gui></guiseq>.
+      </p>
+    </item>
+  </steps>
+
+</page>

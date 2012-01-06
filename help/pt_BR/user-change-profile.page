@@ -1,0 +1,38 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="user-change-profile">
+
+  <title>Alterando o perfil de um usuário</title>
+  <info>
+    <desc>
+      Alterando o perfil de um usuário
+    </desc>
+
+    <link type="guide" xref="user" />
+    <link type="guide" xref="user-profile" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para vincular um <link xref="user">usuário</link>
+    a um <link xref="user-profile">perfil de usuário</link>. Isto é importante
+    pois, o perfil de um usuário define quais aplicativos ele está apto a
+    utilizar.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-admin" /> e comece a
+        <link xref="user-edit">editar o usuário</link> em questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Na aba <gui>Detalhes do usuário</gui>, você pode realizar a alteração
+        do <gui>Perfil</gui>.
+      </p>
+    </item>
+  </steps>
+
+</page>
