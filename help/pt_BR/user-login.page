@@ -49,7 +49,7 @@
         Caso o seu usuário e senha estejam corretos você cairá no
         <link xref="overview#launcher" />. Ao finalizar o seu acesso, lembre-se
         de realizar um logout através do menu
-        <guiseq><gui>Arquivo</gui><gui>Sair</gui></guiseq>.
+        <guiseq><gui>Arquivo</gui><gui>Encerrar a sessão</gui></guiseq>.
       </p>
     </item>
   </steps>
