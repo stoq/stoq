@@ -5,9 +5,7 @@
   <title>Aplicativo Contas a receber</title>
   <info>
     <desc>
-      <link xref="account-receivable" />,
-      <link xref="receipt" />,
-      <link xref="bill" />...
+      <link xref="account-receivable" />...
     </desc>
 
     <link type="guide" xref="index" />

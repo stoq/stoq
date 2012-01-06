@@ -1,0 +1,40 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="account-receivable">
+
+  <title>Conta a receber</title>
+  <info>
+    <desc>
+      <link xref="account-receivable-new" />,
+      <link xref="account-receivable-receive" />,
+      <link xref="account-receivable-search" />...
+    </desc>
+
+    <link type="guide" xref="app-receivable" />
+    <link type="guide" xref="app-financial" />
+    <link type="guide" xref="app-sales" />
+    <link type="guide" xref="app-till" />
+    <link type="guide" xref="app-pos" />
+    <link type="guide" xref="app-calendar" />
+    <link type="seealso" xref="sale" />
+    <link type="seealso" xref="transaction" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Uma conta a receber, talvez provinda de uma
+    <link xref="sale">venda</link> a um <link xref="client">cliente</link>
+    ou <link xref="account-receivable-new">gerada manualmente</link>, que irá
+    gerar uma <link xref="transaction">transação</link> no
+    <link xref="app-financial" /> ao ser marca como
+    <link xref="account-payable-pay">recebida</link> no
+    <link xref="app-receivable" />. Sua data de vencimento pode também ser
+    acompanhada no <link xref="app-calendar" />.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>
