@@ -1,0 +1,41 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task"
+      id="plugin">
+
+  <title>Plugins</title>
+  <info>
+    <desc>
+      Plugins do Stoq
+    </desc>
+
+    <link type="guide" xref="app-admin" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Oferecemos alguns serviços no Stoq na forma de plugins. Isso devido ao fato
+    de serem serviços específicos do o mercado brasileiro, além de ser algo de
+    escolha do cliente, em utilizar ou não.
+  </p>
+  <p>
+    É possível acessá-los no <link xref="app-admin" /> no menu
+    <guiseq><gui>Configurar</gui><gui>Plugins</gui></guiseq> ou diretamente
+    do ícone de plugins na tela inicial.
+  </p>
+  <p>
+    Nessa tela você pode visualizar os plugins disponíveis, assim como
+    <gui>Ativar</gui> algum.
+  </p>
+  <note style="important">
+    <p>
+      Um plugin após ativo não pode ser desativado. Tenha certeza de que
+      realmente deseja fazê-lo antes de confirmar a ação!
+    </p>
+  </note>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Plugins</title>
+  </links>
+
+</page>
