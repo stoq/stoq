@@ -1,0 +1,60 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task 2column"
+      id="receipt">
+
+  <title>Imprimindo um recibo</title>
+  <info>
+    <desc>
+      Imprimindo um recibo no Stoq
+    </desc>
+
+    <link type="guide" xref="account-payable" />
+    <link type="guide" xref="account-receivable" />
+    <link type="seealso" xref="purchase" />
+    <link type="seealso" xref="sale" />
+    <link type="seealso" xref="plugin-nfe" />
+    <link type="seealso" xref="plugin-ecf" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Recibos podem ser gerados para
+    <link xref="account-payable">contas a pagar</link> e
+    <link xref="account-payable">contas a receber</link>, desde que estejam
+    totalmente pagas.
+  </p>
+  <note style="important">
+    <p>
+      O recibo gerado não terá validade fiscal, sendo apenas uma formalidade
+      entre as partes envolvidas. Caso esse seja o interesse, verifique os
+      plugins <link xref="plugin-nfe">NFe</link> e
+      <link xref="plugin-ecf">ECF</link>.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-payable" /> realize uma
+        <link xref="account-payable-search">pesquisa por contas a pagar</link>
+        no caso de uma conta a pagar, ou no <link xref="app-receivable" />
+        realize uma
+        <link xref="account-receivable-search">pesquisa por contas a receber</link>
+        no caso de uma conta a receber.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo o pagamento selecionado, selecione o menu
+        <guiseq><gui>Pagamento</gui><gui>Imprimir recibo</gui></guiseq>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um dialogo de impressão do sistema será aberto e você poderá realizar a
+        impressão do recibo. Não se esqueça das assinaturas!
+      </p>
+    </item>
+  </steps>
+
+</page>

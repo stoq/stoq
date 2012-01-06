@@ -1,0 +1,76 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task 2column"
+      id="bill">
+
+  <title>Gerando e imprimindo boletos</title>
+  <info>
+    <desc>
+      Gerando e imprimindo boletos no Stoq
+    </desc>
+
+    <link type="guide" xref="account-receivable" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    O stoq possui um suporte inicial a geração e impressão de boletos para
+    <link xref="account-receivable">recebimento de pagamentos</link>.
+  </p>
+  <note style="bug">
+    <p>
+      No momento o processo exige a edição manual do arquivo de configurações
+      (exemplificada abaixo), porém, estamos trabalhando para uma maior
+      facilidade disso no futuro!
+    </p>
+  </note>
+
+  <section id="howto">
+    <title>Configurando</title>
+    <p>
+      Você deverá adicionar ao arquivo
+      <file>~/.stoq/stoq.conf</file> (~ representa a pasta pessoal do usuário)
+      uma sessão [Boleto] seguindo o exemplo abaixo:
+    </p>
+    <code>
+[Boleto]
+; Boleto section should inform the bank code, and can provide up to 3 lines
+; to add at the instructions field.
+
+; There should be another section named after the bank_id, that stores the
+; information abount the account destination of the bill
+banco = 104
+
+instrucao1 = Primeia linha da instrução
+instrucao2 = Segunda linha da instrução
+instrucao3 = Terceira linha da instrução
+
+[104]
+; Nossa Caixa
+carteira = 18
+agencia = 1565
+conta = 414
+
+[001]
+; Banco do Brasil
+convenio = 12345678
+len_convenio = 8
+agencia = 1172
+conta = 403005
+    </code>
+    <p>
+      Como pode ser visto no exemplo, informamos em "banco = 104" que iremos
+      utilizar o banco indicado na sessão [104] e abaixo. Além disso, podemos
+      informar em "instrucao1", "instrucao2" e "instrucao3" 3 linhas de
+      instruções que serão impressas no boleto.
+    </p>
+    <p>
+      Após isso, para imprimir o boleto, no <link xref="app-receivable" />,
+      realize uma
+      <link ref="account-receivable-search">pesquisa por contas a receber</link>
+      pela conta e questão e selecione o menu
+      <guiseq><gui>Pagamento</gui><gui>Imprimir boleto</gui></guiseq>.
+    </p>
+  </section>
+
+
+</page>
