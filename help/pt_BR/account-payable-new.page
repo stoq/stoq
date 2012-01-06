@@ -1,0 +1,77 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="account-payable-new">
+
+  <title>Gerando uma nova conta a pagar</title>
+  <info>
+    <desc>
+      Gerando uma nova conta a pagar
+    </desc>
+
+    <link type="guide" xref="account-payable" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para gerar uma nova conta a pagar, isto é,
+    informar ao Stoq sobre um pagamento avulso. e.g. Compramos uma cesta de
+    lixo no supermercado, porém, não vamos realizar uma
+    <link xref="purchase">compra</link> do mesmo pois, uma cesta de lixo não é
+    um <link xref="product">produto</link> que iremos comercializar, e sim,
+    apenas utilizar na empresa. Geramos então uma entrada avulsa para informar
+    essa compra.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-payable" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione
+        <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Conta a pagar</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Novo</gui><gui>Conta a pagar</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Um editor será aberto onde você deverá preencher a <gui>Descrição</gui>
+        da conta, o <gui>Valor</gui> assim como o <gui>Vencimento</gui>. Apesar
+        de não ser obrigatório, pode ser interessante informar o
+        <gui>Destinatário</gui> caso este seja um
+        <link xref="supplier">fornecedor</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Após o preenchimento dos <link xref="overview#required-fields">campos
+        obrigatórios</link> e correção dos <link xref="overview#validation">
+        erros de validação</link>, o botão <gui>Ok</gui> será habilitado e você
+        poderá confirmar o processo.
+      </p>
+      <note style="tip">
+        <p>
+          Note que, caso você desista de gerar a conta em questão, você pode
+          clicar em <gui>Cancelar</gui> e o processo será totalmente
+          descartado.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Sua conta a pagar foi gerada com sucesso! Você já pode informar
+        ao Stoq sobre o <link xref="account-payable-pay">pagamento</link> da
+        mesma.
+      </p>
+    </item>
+  </steps>
+
+</page>

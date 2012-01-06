@@ -1,0 +1,80 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="account-payable-pay">
+
+  <title>Pagando uma conta a pagar</title>
+  <info>
+    <desc>
+      Pagando uma conta a pagar
+    </desc>
+
+    <link type="guide" xref="account-payable" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para informar ao Stoq que a conta a pagar em
+    questão foi paga com sucesso.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-payable" />, realize uma
+        <link xref="account-payable-search">pesquisa por contas a pagar</link>
+        pela conta em questão e selecione-a.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo a conta selecionada, selecione o menu
+        <guiseq><gui>Pagamento</gui><gui>Pagar</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo na
+          <link xref="overview#toolbar">barra de ferramentas</link> no botão
+          <gui>Pagar</gui>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Um editor será aberto para confirmar os dados do pagamento. Nele você
+        pode informar alguns dados extras como alguma <gui>Multa</gui>,
+        <gui>Desconto</gui>, etc. Além disso, você pode informar uma
+        <gui>Conta</gui> para controle de
+        <link xref="transaction">transações financeiras</link>.
+      </p>
+      <note style="bug">
+        <p>
+          No momento, devido ao
+          <link href="http://bugs.async.com.br/show_bug.cgi?id=4568">bug 4568</link>,
+          não é possível marcar uma <gui>Conta</gui> para pagamentos
+          renegociados.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Após o preenchimento dos <link xref="overview#required-fields">campos
+        obrigatórios</link> e correção dos <link xref="overview#validation">
+        erros de validação</link>, o botão <gui>Ok</gui> será habilitado e você
+        poderá confirmar o processo.
+      </p>
+      <note style="tip">
+        <p>
+          Note que, caso você desista de informar o pagamento em questão, você
+          pode clicar em <gui>Cancelar</gui> e o processo será totalmente
+          descartado.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Sua conta a pagar foi marcada como paga no Stoq com sucesso!
+      </p>
+    </item>
+  </steps>
+
+</page>
