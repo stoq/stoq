@@ -14,8 +14,10 @@
   </info>
 
   <p>
-    Este processo é utilizado para cadastrar um novo pedido de compras de
-    <link xref="product">produtos</link> no Stoq.
+    Este processo é utilizado para realizar um novo pedido de compra de
+    <link xref="product">produtos</link> no Stoq, isto é, informar ao Stoq
+    sobre o pedido de dado(s) produto(s) à um
+    <link xref="supplier">fornecedor</link>.
   </p>
   <note style="important">
     <p>

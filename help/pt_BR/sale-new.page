@@ -16,13 +16,19 @@
   </info>
 
   <p>
-    Para realizar uma venda no Stoq podêmos utilizar 2 processos. Um deles, no
-    <link xref="app-pos" /> que irá automaticamente confirmá-la e receber o
-    pagamento cujo qual iremos descrever aqui, e outra no
-    <link xref="app-sales" /> através de
-    <link xref="sale-quote">cotações de venda</link> que pode ser compreendida
-    melhor em sua sessão.
+    Utilizamos este processo para realizar uma venda de
+    <link xref="product">produtos</link> e <link xref="service">serviços</link>
+    a um <link xref="client">cliente</link>. Pense nesse processo como o
+    realizado por um caixa de supermercado.
   </p>
+  <note style="tip">
+    <p>
+      Note que, além deste processo, também é possível realizar vendas através
+      de <link xref="sale-quote">cotações de venda</link>. Estas deverão ser
+      <link xref="sale-confirm">confirmadas</link> posteriormente no
+      <link xref="app-till" />.
+    </p>
+  </note>
 
   <steps>
     <item>

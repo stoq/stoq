@@ -14,7 +14,7 @@
   </info>
 
   <p>
-    Este processo é utilizado para cadastrarmos produtos simples no Stoq. Note
+    Este processo é utilizado para cadastrar produtos no Stoq. Note
     que também é possível realizar o cadastramento durante um
     <link xref="purchase-new">pedido de compra</link>.
   </p>
@@ -24,7 +24,7 @@
       produto cadastrado, é preciso que o mesmo possua estoque. Para isso,
       podemos realizar uma <link xref="purchase-new">nova compra</link> ou
       <link xref="stock-register-initial">registrar um estoque inicial</link>,
-      no caso de este já possuir um estoque físico do mesmo.
+      no caso de já possuir um estoque físico do mesmo.
     </p>
   </note>
 

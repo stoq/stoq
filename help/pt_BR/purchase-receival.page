@@ -16,8 +16,10 @@
 
   <p>
     Este processo é utilizado para realizar o recebimento de um pedido de
-    compra. Após isso, o estoque na <link xref="branch">filial</link> dos
-    <link xref="product">produtos</link> contidos no pedido serão aumentados.
+    compra, isto é, informar ao Stoq que dado pedido foi entregue na
+    <link xref="branch">filial</link>, fazendo com que os
+    <link xref="product">produtos</link> contidos neste tenham seus
+    <link xref="stock">estoques</link> automaticamente aumentados.
   </p>
 
   <steps>
