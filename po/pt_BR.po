@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-12-15 14:04-0200\n"
-"PO-Revision-Date: 2011-12-23 14:18+0000\n"
+"PO-Revision-Date: 2012-01-06 18:01+0000\n"
 "Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-12-24 05:58+0000\n"
-"X-Generator: Launchpad (build 14560)\n"
+"X-Launchpad-Export-Date: 2012-01-07 05:25+0000\n"
+"X-Generator: Launchpad (build 14640)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -3670,11 +3670,11 @@ msgstr "Altera a senha do usuário atualmente logado"
 
 #: ../stoq/gui/application.py:211
 msgid "Sign out..."
-msgstr "Sair..."
+msgstr "Encerrar a sessão..."
 
 #: ../stoq/gui/application.py:212
 msgid "Sign out the currently logged in user and login as another"
-msgstr "Sai do usuário atualmente logado e entra com outro"
+msgstr "Encerra a sessão do usuário atualmente logado e entra com outro"
 
 #: ../stoq/gui/application.py:213
 msgid "Print..."
@@ -3695,7 +3695,7 @@ msgstr "Sair"
 
 #: ../stoq/gui/application.py:216
 msgid "Exit the application"
-msgstr "Sair da aplicação"
+msgstr "Sai da aplicação"
 
 #. Edit
 #: ../stoq/gui/application.py:219
