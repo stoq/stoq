@@ -1,0 +1,48 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task 2column"
+      id="production-product">
+
+  <title>Produtos de produção</title>
+  <info>
+    <desc>
+      Produtos de produção no Stoq
+    </desc>
+
+    <link type="guide" xref="app-production" />
+    <link type="seealso" xref="production" />
+    <link type="seealso" xref="product" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Produtos de produção são tratados pelo Stoq como um
+    <link xref="product">produto comum</link>, podendo este ser
+    <link xref="stock">estocado</link> e <link xref="sale">vendido</link>. A
+    diferença é: Ao invés de <link xref="purchase">comprarmos</link> esses
+    produtos de <link xref="supplier">fornecedores</link>, nós compramos suas
+    matérias primas, e realizamos uma <link xref="production">produção</link>
+    do mesmo em nossa empresa.
+  </p>
+  <p>
+    Eles podem ser encontrados na <link xref="overview#search">pesquisa</link>
+    do <link xref="app-production" />, dentro do menu
+    <guiseq><gui>Pesquisar</gui><gui>Produtos de produção</gui></guiseq>.
+  </p>
+  <p>
+    Nessa pesquisa, podemos criar um <gui>Novo</gui> produto de produção, ou
+    mesmo <gui>Editar</gui> os existentes. Os processos são os mesmos da
+    <link xref="product-new">criação de um produto simples</link> e
+    <link xref="product-edit">edição de um produto simples</link>, com exceção
+    de uma aba <gui>Componentes</gui>, onde inserimos as matérias primas (que
+    são produtos simples) e indicamos o <gui>Tempo de produção</gui>.
+  </p>
+
+  <note style="important">
+    <p>
+      Produtos de produção devem ser criados e pesquisados do modo indicado
+      acima. A <link xref="product-search">pesquisa de produtos simples</link>
+      no <link xref="app-purchase" /> não os encontrará.
+    </p>
+  </note>
+
+</page>

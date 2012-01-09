@@ -6,7 +6,7 @@
   <info>
     <desc>
       <link xref="production" />,
-      <link xref="compound-product" />...
+      <link xref="production-product" />...
     </desc>
 
     <link type="guide" xref="index" />
