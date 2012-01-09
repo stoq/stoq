@@ -1,0 +1,69 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="transaction-import">
+
+  <title>Importando transações</title>
+  <info>
+    <desc>
+      Importando transações financeiras no Stoq
+    </desc>
+
+    <link type="guide" xref="transaction" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para importar transações financeiras ao Stoq.
+  </p>
+  <p>
+    Oferecemos suporte de importação à transações provindas do
+    <link href="http://www.gnucash.org">Gnu Cash</link>, além do formato
+    <link href="http://en.wikipedia.org/wiki/Open_Financial_Exchange">OFX</link>,
+    oferecido na exportação de extratos na maioria dos bancos.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-financial" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione o menu
+        <guiseq><gui>Arquivo</gui><gui>Importar</gui></guiseq>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione o arquivo que será importado no seletor de arquivos do
+        sistema que foi aberto.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um dialogo será aberto mostrando o progresso de importação dos itens.
+        No final, ele dirá a quantidade importada e a quantidade ignorada.
+        Clique em <gui>Concluído</gui> para finalizar o processo.
+      </p>
+      <note style="tip">
+        <p>
+          Itens ignorados nem sempre representam um erro. No processo de
+          importação o Stoq irá verificar por itens já importados
+          anteriormente, evitando assim a duplicação de dados e facilitando a
+          vida dos usuários, podendo estes realizar a importação de um extrato
+          bancário do mês quantas vezes desejar.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Suas transações foram importadas com sucesso no Stoq!
+        Os itens importados serão listados na <link xref="account">conta</link>
+        de <gui>Desequilíbrio</gui>. De lá você pode editá-las e escolher uma
+        nova conta <gui>Pai</gui>.
+      </p>
+    </item>
+  </steps>
+
+</page>

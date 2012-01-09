@@ -1,0 +1,67 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="transaction-new">
+
+  <title>Criando uma transação</title>
+  <info>
+    <desc>
+      Criando uma transação no Stoq
+    </desc>
+
+    <link type="guide" xref="transaction" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para criar uma nova transação avulsa em uma
+    <link xref="account">conta</link>.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-financial" /> dê um duplo clique na
+        <link xref="account">conta</link> em que a transação será criada.
+      </p>
+    </item>
+    <item>
+      <p>
+        Uma aba com o mesmo nome da conta será aberta e selecionada.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione o menu
+        <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Transação</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Novo</gui><gui>Transação</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Clique no botão <gui>Novo</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        No <link xref="overview#editor">editor</link> que será aberto, você
+        deve preencher informações como <gui>Valor</gui>, <gui>Descrição</gui>
+        e etc. Caso o valor dessa transação seja negativa, selecione o combo
+        <gui>Diminuir</gui>, caso contrário, deixe selecionado
+        <gui>Adicionar</gui>. Após ter certeza dos dados, clique em
+        <gui>Ok</gui> para confirmar o processo.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Sua transação foi criada com sucesso!
+      </p>
+    </item>
+  </steps>
+
+</page>
