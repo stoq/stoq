@@ -1,0 +1,63 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task 2column"
+      id="account">
+
+  <title>Contas</title>
+  <info>
+    <desc>
+      Contas de transações do Stoq
+    </desc>
+
+    <link type="guide" xref="app-financial" />
+    <link type="seealso" xref="transaction" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Contas são utilizadas para organizar
+    <link xref="transaction">transações</link> financeiras.
+  </p>
+  <p>
+    Elas podem ser encontradas no <link xref="app-financial" /> na aba
+    <gui>Contas</gui> e ser editar no menu
+    <guiseq><gui>Conta</gui><gui>Editar</gui></guiseq>. Alí você pode editar
+    informações como <gui>Nome da conta</gui>, o seu <gui>Tipo</gui> e até
+    mesmo o seu <gui>Pai</gui>, podendo esta conta ser filha de uma outra conta
+    existente.
+  </p>
+  <p>
+    Ao dar um duplo clique em uma conta, uma nova aba será aberta listando
+    todas as <link xref="transaction">transações</link> referentes a mesma.
+  </p>
+
+  <section id="special-accounts">
+    <title>Contas especiais</title>
+    <p>
+      As seguintes contas são listadas junto com as outras citadas acima, e
+      possuem um comportamento especial:
+    </p>
+    <list>
+      <item>
+        <p>
+          <gui>Contas a pagar</gui>: Lista transações de
+          <link xref="account-payable">contas a pagar</link>.
+        </p>
+      </item>
+      <item>
+        <p>
+          <gui>Contas a receber</gui>: Lista transações de
+          <link xref="account-receivable">contas a receber</link>.
+        </p>
+      </item>
+      <item>
+        <p>
+          <gui>Caixas</gui>: Lista transações provindas de operações
+          financeiras do <link xref="till">caixa</link>, como
+          <link xref="till-add-money">suprimentos</link> e
+          <link xref="till-remove-money">sangrias</link>.
+        </p>
+      </item>
+    </list>
+  </section>
+
+</page>

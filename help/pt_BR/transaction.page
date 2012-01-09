@@ -1,0 +1,37 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="transaction">
+
+  <title>Transações</title>
+  <info>
+    <desc>
+      <link xref="transaction-new" />,
+      <link xref="inventory-count" />,
+      <link xref="inventory-adjust" />...
+    </desc>
+
+    <link type="guide" xref="app-financial" />
+    <link type="seealso" xref="account" />
+    <link type="seealso" xref="account-payable" />
+    <link type="seealso" xref="account-receivable" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Transações financeiras podem representar uma
+    <link xref="account-payable">conta paga</link>, uma
+    <link xref="account-receivable">conta recebida</link>, uma operação fiscal
+    de um <link xref="till">caixa</link> e até mesmo uma transação de banco
+    que foi <link xref="transaction-import">importada</link>, entre outras.
+  </p>
+  <p>
+    Elas são organizadas dentro de <link xref="account">contas</link> para
+    maior facilidade de uso e administração.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>
