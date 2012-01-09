@@ -304,6 +304,7 @@ def add_bindings(bindings):
     global _bindings
     _bindings.extend(bindings)
 
+
 def load_user_keybindings():
     from stoqlib.api import api
     for key, value in api.config.items('Shortcuts'):

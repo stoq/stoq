@@ -29,7 +29,7 @@ from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
+from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.keybindings import get_bindings
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -75,4 +75,3 @@ class ShortcutsEditor(BasicDialog):
         api.config.set('Shortcuts', shortcut.name, shortcut.shortcut)
         api.config.flush()
         self._label.show()
-
