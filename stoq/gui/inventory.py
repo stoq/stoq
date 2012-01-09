@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -37,13 +37,15 @@ from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.exceptions import DatabaseInconsistency
-from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
 from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
+from stoqlib.gui.keybindings import get_accels
 from stoqlib.lib.message import warning, yesno
 from stoqlib.reporting.product import ProductCountingReport
 from stoqlib.reporting.inventory import InventoryReport
+
+from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
 
@@ -65,20 +67,29 @@ class InventoryApp(SearchableAppWindow):
     #
 
     def create_actions(self):
+        group = get_accels('app.inventory')
         actions = [
-            ('InventoryMenu', None, _('Inventory')),
-            ('NewInventory', None, _('Inventory...'), '',
+            # File
+            ('NewInventory', None, _('Inventory...'),
+             group.get('new_inventory'),
              _('Create a new inventory for product counting')),
-            ('CountingAction', gtk.STOCK_INDEX, _('_Count...'), '<Control>c',
+
+            # Inventory
+            ('InventoryMenu', None, _('Inventory')),
+            ('CountingAction', gtk.STOCK_INDEX, _('_Count...'),
+             group.get('inventory_count'),
              _('Register the actual stock of products in the selected '
                'inventory')),
-            ('AdjustAction', gtk.STOCK_CONVERT, _('_Adjust...'), '<Control>a',
+            ('AdjustAction', gtk.STOCK_CONVERT, _('_Adjust...'),
+             group.get('inventory_adjust'),
              _('Adjust the stock accordingly to the counting in the selected '
                'inventory')),
-            ('Cancel', gtk.STOCK_CANCEL, _('Cancel...'), '',
+            ('Cancel', gtk.STOCK_CANCEL, _('Cancel...'),
+             group.get('inventory_cancel'),
              _('Cancel the selected inventory')),
             ('PrintProductListing', gtk.STOCK_PRINT,
-             _('Print product listing...'), '',
+             _('Print product listing...'),
+             group.get('inventory_print'),
              _('Print the product listing for this inventory'))
         ]
         self.inventory_ui = self.add_ui_actions('', actions,

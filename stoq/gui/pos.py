@@ -55,6 +55,7 @@ from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
+from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import (SaleSearch, DeliverySearch,
@@ -128,20 +129,36 @@ class PosApp(AppWindow):
     #
 
     def create_actions(self):
+        group = get_accels('app.pos')
         actions = [
+            # File
+            ("TillOpen", None, _("Open Till..."),
+             group.get('till_open')),
+            ("TillClose", None, _("Close Till..."),
+             group.get('till_close')),
+
+            # Order
             ("OrderMenu", None, _("Order")),
-            ('ConfirmOrder', None, _('Confirm...'), '<Control>F10'),
-            ('CancelOrder', None, _('Cancel...'), '<Control><Alt>o'),
-            ('NewDelivery', None, _('Create delivery...'), '<Control>F5'),
-            ("Sales", None, _("Sales..."), '<Control><Alt>a'),
+            ('ConfirmOrder', None, _('Confirm...'),
+             group.get('order_confirm')),
+            ('CancelOrder', None, _('Cancel...'),
+             group.get('order_cancel')),
+            ('NewDelivery', None, _('Create delivery...'),
+             group.get('order_create_delivery')),
+
+            # Search
+            ("Sales", None, _("Sales..."),
+             group.get('search_sales')),
             ("SoldItemsByBranchSearch", None, _("Sold Items by Branch..."),
-                '<Contrl><Alt>a'),
-            ("Clients", None, _("Clients..."), '<Control><Alt>c'),
-            ("ProductSearch", None, _("Products..."), '<Control><Alt>p'),
-            ("ServiceSearch", None, _("Services..."), '<Contro><Alt>s'),
-            ("DeliverySearch", None, _("Deliveries..."), '<Control><Alt>e'),
-            ("TillOpen", None, _("Open Till..."), '<Control>F6'),
-            ("TillClose", None, _("Close Till..."), '<Control>F7'),
+             group.get('search_sold_items')),
+            ("Clients", None, _("Clients..."),
+             group.get('search_clients')),
+            ("ProductSearch", None, _("Products..."),
+             group.get('search_products')),
+            ("ServiceSearch", None, _("Services..."),
+             group.get('search_services')),
+            ("DeliverySearch", None, _("Deliveries..."),
+             group.get('search_deliveries')),
         ]
         self.pos_ui = self.add_ui_actions('', actions,
                                           filename='pos.xml')

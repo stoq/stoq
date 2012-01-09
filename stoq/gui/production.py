@@ -36,6 +36,7 @@ from stoqlib.domain.production import ProductionOrder
 from stoqlib.gui.dialogs.productiondetails import ProductionDetailsDialog
 from stoqlib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
 from stoqlib.gui.dialogs.startproduction import StartProductionDialog
+from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
                                                  ProductionItemsSearch,
                                                  ProductionHistorySearch)
@@ -63,28 +64,45 @@ class ProductionApp(SearchableAppWindow):
     #
 
     def create_actions(self):
+        group = get_accels('app.production')
         actions = [
+            ('menubar', None, ''),
+
+            # File
             ('NewProduction', gtk.STOCK_NEW,
-             _('Production order...'), '<Control>o',
+             _('Production order...'),
+             group.get('new_production_order'),
              _('Create a new production')),
-            ('StartProduction', gtk.STOCK_CONVERT, _('Start...'), '<Control>t',
-             _('Start the selected production')),
-            ('EditProduction', gtk.STOCK_EDIT, _('Edit...'), '',
-             _('Edit the selected production')),
-            ('ProductionDetails', gtk.STOCK_INFO, _('Details...'), '',
-            _('Show production details and register produced items')),
             ('ProductionPurchaseQuote', 'stoq-purchase-app',
-             _('Purchase quote...'), '<Control>p'),
+             _('Purchase quote...'),
+             group.get('new_production_quote')),
+
+             # Production
             ('ProductionMenu', None, _('Production')),
-            ("SearchProduct", None, _("Production products..."), '<Control>d',
+            ('StartProduction', gtk.STOCK_CONVERT, _('Start production...'),
+             group.get('production_start'),
+             _('Start the selected production')),
+            ('EditProduction', gtk.STOCK_EDIT, _('Edit production...'),
+             group.get('production_edit'),
+             _('Edit the selected production')),
+            ('ProductionDetails', gtk.STOCK_INFO, _('Production details...'),
+             group.get('production_details'),
+            _('Show production details and register produced items')),
+
+            # Search
+            ("SearchProduct", None, _("Production products..."),
+             group.get('search_production_products'),
              _("Search for production products")),
-            ("SearchService", None, _("Services..."), '<Control>s',
+            ("SearchService", None, _("Services..."),
+             group.get('search_services'),
              _("Search for services")),
             ("SearchProductionItem", 'stoq-production-app',
-             _("Production items..."), '<Control>r',
+             _("Production items..."),
+             group.get('search_production_items'),
              _("Search for production items")),
             ("SearchProductionHistory", None, _("Production history..."),
-             '<Control>h', _("Search for production history")),
+             group.get('search_production_history'),
+             _("Search for production history")),
         ]
         self.production_ui = self.add_ui_actions("", actions,
                                                  filename="production.xml")

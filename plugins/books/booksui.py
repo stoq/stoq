@@ -29,6 +29,7 @@ from kiwi.log import Logger
 from stoqlib.database.runtime import get_connection
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.events import StartApplicationEvent
+from stoqlib.gui.keybindings import add_bindings, get_accels
 from stoqlib.lib.translation import stoqlib_gettext
 
 from bookssearch import ProductBookSearch
@@ -43,6 +44,10 @@ class BooksUI(object):
     def __init__(self):
         self.conn = get_connection()
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
+        add_bindings([
+            ('plugin.books.search_books', '<Control><Alt>B'),
+            ('plugin.books.search_publishers', '<Control><Alt>P'),
+            ])
 
     #
     # Private
@@ -64,12 +69,15 @@ class BooksUI(object):
                             <menuitem action="Publishers"/>'''
         ui_string = self._get_menu_ui_string() % menu_items_str
 
+        group = get_accels('plugin.books')
         ag = gtk.ActionGroup('BooksMenuActions')
         ag.add_actions([
             ('BooksMenu', None, _(u'Books')),
-            ('BookSearch', None, _(u'Book Search'), '<Control><Alt>B', None,
+            ('BookSearch', None, _(u'Book Search'),
+             group.get('search_books'), None,
              self._on_BookSearch__activate),
-            ('Publishers', None, _(u'Publishers ...'), '<Control><Alt>P', None,
+            ('Publishers', None, _(u'Publishers ...'),
+             group.get('search_publishers'), None,
              self._on_Publishers__activate),
         ])
 
@@ -80,10 +88,12 @@ class BooksUI(object):
         menu_items_str = '<menuitem action="BookSearch"/>'
         ui_string = self._get_menu_ui_string() % menu_items_str
 
+        group = get_accels('plugin.books')
         ag = gtk.ActionGroup('BooksMenuActions')
         ag.add_actions([
             ('BooksMenu', None, _(u'Books')),
-            ('BookSearch', None, _(u'Book Search'), '<Control><Alt>B', None,
+            ('BookSearch', None, _(u'Book Search'),
+             group.get('search_books'), None,
              self._on_BookSearchView__activate),
         ])
 
@@ -94,10 +104,12 @@ class BooksUI(object):
         menu_items_str = '<menuitem action="BookSearch"/>'
         ui_string = self._get_menu_ui_string() % menu_items_str
 
+        group = get_accels('plugin.books')
         ag = gtk.ActionGroup('BooksMenuActions')
         ag.add_actions([
             ('BooksMenu', None, _(u'Books')),
-            ('BookSearch', None, _(u'Book Search'), '<Control><Alt>B', None,
+            ('BookSearch', None, _(u'Book Search'),
+             group.get('search_books'), None,
              self._on_BookSearchView__activate),
         ])
 

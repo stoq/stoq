@@ -45,6 +45,7 @@ from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError
+from stoqlib.gui.keybindings import add_bindings, get_accels
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.events import StartApplicationEvent, CouponCreatedEvent
 from stoqlib.lib.message import info, warning, yesno
@@ -87,6 +88,11 @@ class ECFUI(object):
             'Summary', _('Summary'), None, None)
         self._till_summarize_action.connect(
             'activate', self._on_TillSummary__activate)
+
+        add_bindings([
+            ('plugin.ecf.read_memory', '<Control>F9'),
+            ('plugin.ecf.summarize', '<Control>F11'),
+            ])
 
     #
     # Private
@@ -158,15 +164,18 @@ class ECFUI(object):
           </menubar>
         </ui>"""
 
+        group = get_accels('plugin.ecf')
+
         ag = gtk.ActionGroup('ECFMenuActions')
         ag.add_actions([
             ('ECFMenu', None, _('ECF')),
             ('ReadMemory', None, _('Read Memory'),
-             '<Control>F9', None, self._on_ReadMemory__activate),
+             group.get('read_memory'), None, self._on_ReadMemory__activate),
             ('CancelLastDocument', None, _('Cancel Last Document'),
              None, None, self._on_CancelLastDocument__activate),
             ])
-        ag.add_action_with_accel(self._till_summarize_action, '<Control>F11')
+        ag.add_action_with_accel(self._till_summarize_action,
+                                 group.get('summarize'))
 
         uimanager.insert_action_group(ag, 0)
         uimanager.add_ui_from_string(ui_string)
@@ -182,13 +191,16 @@ class ECFUI(object):
             </placeholder>
           </menubar>
         </ui>"""
+
+        group = get_accels('plugin.ecf')
         ag = gtk.ActionGroup('ECFMenuActions')
         ag.add_actions([
             ('ECFMenu', None, _('ECF')),
             ('ReadMemory', None, _('Read Memory'),
-             '<Control>F9', None, self._on_ReadMemory__activate),
+             group.get('read_memory'), None, self._on_ReadMemory__activate),
             ])
-        ag.add_action_with_accel(self._till_summarize_action, '<Control>F11')
+        ag.add_action_with_accel(self._till_summarize_action,
+                                 group.get('summarize'))
         uimanager.insert_action_group(ag, 0)
         uimanager.add_ui_from_string(ui_string)
 
