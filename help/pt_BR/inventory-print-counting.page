@@ -1,0 +1,52 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="inventory-print-counting">
+
+  <title>Imprimindo uma listagem de produtos de um inventário</title>
+  <info>
+    <desc>
+      Imprimindo uma listagem de produtos de um inventário no Stoq
+    </desc>
+
+    <link type="guide" xref="inventory" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para imprimir uma listagem de produtos de um
+    inventário. Isso é útil pois, podemos entregar essa listagem a um
+    funcionário e este realizar a contagem no papel sem a necessidade de um
+    computador, cabendo apenas depois ao responsável transpor essa lista à
+    <link xref="inventory-count">contagem</link> no Stoq.
+  </p>
+  <note style="important">
+    <p>
+      Assim como todas as operações de inventário, enquanto um inventário
+      estiver aberto, não é possível realizar operações que alterem o estoque
+      de produtos.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-inventory" /> realize uma
+        <link xref="inventory-search">pesquisa de inventários</link> pelo
+        inventário em questão e selecione-o.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo o inventário selecionado, selecione o menu
+        <guiseq><gui>Inventário</gui><gui>Imprimir listagem de produtos</gui></guiseq>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Isso irá abrir a janela de impressão do sistema e você pode confimar
+        essa impressão!
+      </p>
+    </item>
+  </steps>
+
+</page>

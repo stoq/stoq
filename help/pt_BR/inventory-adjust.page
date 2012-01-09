@@ -1,0 +1,74 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="inventory-adjust">
+
+  <title>Ajustando inventário</title>
+  <info>
+    <desc>
+      Ajustando um inventário no Stoq
+    </desc>
+
+    <link type="guide" xref="inventory" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para realizar um ajuste de um inventário no Stoq,
+    isto é, ajustar as quantidades de <link xref="stock">estoque</link> de cada
+    produto de acordo com a <link xref="inventory-count">contagem</link>
+    realizada anteriormente.
+  </p>
+  <note style="important">
+    <p>
+      Assim como todas as operações de inventário, enquanto um inventário
+      estiver aberto, não é possível realizar operações que alterem o estoque
+      de produtos.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-inventory" /> realize uma
+        <link xref="inventory-search">pesquisa de inventários</link> pelo
+        inventário em questão e selecione-o.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo o inventário selecionado, selecione o menu
+        <guiseq><gui>Inventário</gui><gui>Ajustar</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo na
+          <link xref="overview#toolbar">barra de ferramentas</link> no botão
+          <gui>Ajustar</gui>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        No <link xref="overview#editor">editor</link> que será aberto, você
+        deve informar um número de <gui>Nota fiscal</gui>, assim como ajustar
+        cada um dos itens. Para isso, selecione o item desejado e clique em
+        <gui>Ajustar</gui>. No editor que será aberto, você pode informar um
+        <gui>C.F.O.P</gui> e uma <gui>Razão</gui> do ajuste. Após isso, clique
+        em <gui>Ok</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Após ter realizado o ajuste de todos os itens, o botão
+        <gui>Fechar inventário</gui> será habilitado e você poderá finalizar o
+        processo.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! O inventário foi ajustado com sucesso no Stoq!
+      </p>
+    </item>
+  </steps>
+
+</page>
