@@ -112,6 +112,8 @@ class Tasks(object):
                   'gtk-properties'),
                  (_('Taxes'), 'taxes',
                   'stoq-taxes'),
+                 (_('Tax Classes'), 'tax_templates',
+                  'stoq-documents'),
                  (_('Suppliers'), 'suppliers',
                   'stoq-suppliers'),
                  (_('Transporters'), 'transporters',
