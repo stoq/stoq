@@ -6,11 +6,10 @@
   <info>
     <desc>
       <link xref="user" />,
-      <link xref="employee" />,
       <link xref="branch" />,
       <link xref="param" />,
       <link xref="plugin" />,
-      <link xref="tax" />...
+      <link xref="tax-class" />...
     </desc>
 
     <link type="guide" xref="index" />
