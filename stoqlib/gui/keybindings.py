@@ -315,6 +315,7 @@ def set_user_binding(binding, value):
     global _user_bindings
     _user_bindings[binding] = value
 
+
 def get_bindings():
     global _bindings
     for binding in _bindings:
