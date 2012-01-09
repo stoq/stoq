@@ -81,6 +81,37 @@ _bindings = [
     ('app.stock.search_closed_stock_items', "<Control><Alt>c"),
     ('app.stock.edit_product', ''),
     ('app.stock.history', ''),
+    ('app.stock.toggle_picture_viewer', '<Control><Alt>v'),
+
+    # Receivable application
+    ('app.receivable.add_receiving', '<Control>p'),
+    ('app.receivable.payment_flow_history', '<Control>f'),
+    ('app.receivable.payment_details', ''),
+    ('app.receivable.payment_receive', ''),
+    ('app.receivable.payment_cancel', ''),
+    ('app.receivable.payment_set_not_paid', ''),
+    ('app.receivable.payment_change_due_date', ''),
+    ('app.receivable.payment_renegotiate', ''),
+    ('app.receivable.payment_comments', ''),
+    ('app.receivable.payment_print_bill', ''),
+    ('app.receivable.payment_print_receipt', '<Control>r'),
+    ('app.receivable.search_bills', ''),
+    ('app.receivable.search_card_payments', ''),
+
+    # Sales application
+    ('app.sales.search_sold_items_by_branch', '<Control><Alt>a'),
+    ('app.sales.search_products', '<Control><Alt>p'),
+    ('app.sales.search_services', '<Control><Alt>s'),
+    ('app.sales.search_deliveries', '<Control><Alt>e'),
+    ('app.sales.search_clients', '<Control><Alt>c'),
+    ('app.sales.search_commissions', '<Control><Alt>o'),
+    ('app.sales.search_loans', ''),
+    ('app.sales.search_loan_items', ''),
+    ('app.sales.sale_cancel', ''),
+    ('app.sales.sale_print_invoice', ''),
+    ('app.sales.sale_return', ''),
+    ('app.sales.sale_edit', ''),
+    ('app.sales.sale_details', ''),
 
     # Till application
     ('app.till.open_till', '<Control>F6'),
