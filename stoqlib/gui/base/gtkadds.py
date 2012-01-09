@@ -72,6 +72,8 @@ def register_iconsets():
         ("stoq-inventory-app",
          {gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-inventory-app-24x24.png",
           gtk.ICON_SIZE_DIALOG: "stoq-inventory-app-48x48.png"}),
+        ("stoq-keyboard",
+         {gtk.ICON_SIZE_DIALOG: "stoq-keyboard-48x48.svg"}),
         ("stoq-money",
          {gtk.ICON_SIZE_LARGE_TOOLBAR: "stoq-money-24x24.png",
           gtk.ICON_SIZE_DIALOG: "stoq-money-48x48.png"}),

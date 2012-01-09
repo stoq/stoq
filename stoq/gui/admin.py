@@ -41,6 +41,7 @@ from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog,
                                                InvoicePrinterDialog)
 from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
+from stoqlib.gui.editors.shortcutseditor import ShortcutsEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.eventsearch import EventSearch
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
@@ -102,6 +103,8 @@ class Tasks(object):
                   'stoq-edit'),
                  (_('Invoice Printers'), 'invoice_printers',
                   'gtk-print'),
+                 (_('Keyboard shortcuts'), 'keyboard_shortcuts',
+                  'stoq-keyboard'),
                  (_('Payment Categories'), 'payment_categories',
                   'stoq-payable-app'),
                  (_('Payment Methods'), 'payment_methods',
@@ -219,6 +222,9 @@ class Tasks(object):
 
     def _open_cfop(self):
         self.app.run_dialog(CfopSearch, self.app.conn, hide_footer=True)
+
+    def _open_keyboard_shortcuts(self):
+        self.app.run_dialog(ShortcutsEditor, self.app.conn)
 
     def _open_sintegra(self):
         branch = api.get_current_branch(self.app.conn)
