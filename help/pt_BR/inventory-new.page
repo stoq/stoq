@@ -1,0 +1,78 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="inventory-new">
+
+  <title>Abrindo um inventário</title>
+  <info>
+    <desc>
+      Abrindo um inventário no Stoq
+    </desc>
+
+    <link type="guide" xref="inventory" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para abrir um novo inventário no Stoq. Isso é
+    necessário para que posteriormente possamos realizar uma
+    <link xref="inventory-count">contagem</link> e um
+    <link xref="inventory-adjust">ajuste</link> do
+    <link xref="stock">estoque</link> de produtos.
+  </p>
+  <note style="important">
+    <p>
+      Assim como todas as operações de inventário, enquanto um inventário
+      estiver aberto, não é possível realizar operações que alterem o estoque
+      de produtos.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-inventory" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione o menu
+        <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Inventário</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Novo</gui><gui>Inventário</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Clique no botão <gui>Novo</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        No <link xref="overview#editor">editor</link> que será aberto, você
+        poderá selecionar a <gui>Filial</gui> em que o inventário está sendo
+        aberto e os produtos que fazem parte deste. Após ter certeza de tudo,
+        clique em <gui>Abrir</gui>.
+      </p>
+      <note style="tip">
+        <p>
+          Note que produtos sem categoria não aparecem por padrão. Caso você
+          deseja incluí-los, tenha certeza de marcar a caixa
+          <gui>Incluir produtos sem categoria</gui>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu inventário foi aberto com sucesso! Caso deseje, você pode
+        <link xref="inventory-print-counting">imprimir uma listagem de produtos</link>
+        desse inventário e entregá-lo a um funcionário para facilitar a contagem.
+      </p>
+    </item>
+  </steps>
+
+</page>

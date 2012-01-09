@@ -1,0 +1,66 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="inventory-count">
+
+  <title>Realizando a contagem de um inventário</title>
+  <info>
+    <desc>
+      Realizando a contagem de um inventário no Stoq
+    </desc>
+
+    <link type="guide" xref="inventory" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para informar ao Stoq a contagem de um
+    <link xref="inventory-new">inventário aberto</link>. Isso pode ser
+    facilitado se você utilizar uma
+    <link xref="inventory-print-counting">impressão de listagem de produtos</link>
+    previamente preenchida por um funcionário e apenas transpassá-la.
+  </p>
+  <note style="important">
+    <p>
+      Assim como todas as operações de inventário, enquanto um inventário
+      estiver aberto, não é possível realizar operações que alterem o estoque
+      de produtos.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-inventory" /> realize uma
+        <link xref="inventory-search">pesquisa de inventários</link> pelo
+        inventário em questão e selecione-o.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo o inventário selecionado, selecione o menu
+        <guiseq><gui>Inventário</gui><gui>Contar</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo na
+          <link xref="overview#toolbar">barra de ferramentas</link> no botão
+          <gui>Contar</gui>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        No <link xref="overview#editor">editor</link> que será aberto, você
+        deve preencher as atuais quantidade de cada produto do inventário. Após
+        isso, clique em <gui>Ok</gui> para confirmar o processo.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Você informou a contagem ao Stoq com sucesso! Agora você já
+        pode realizar um <link xref="inventory-adjust">ajuste</link> do mesmo.
+      </p>
+    </item>
+  </steps>
+
+</page>
