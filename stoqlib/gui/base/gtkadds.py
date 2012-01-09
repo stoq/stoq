@@ -125,6 +125,8 @@ def register_iconsets():
          {gtk.ICON_SIZE_DIALOG: "stoq-calc-48x48.png"}),
         ("stoq-taxes",
          {gtk.ICON_SIZE_DIALOG: "stoq-taxes-48x48.png"}),
+        ("stoq-documents",
+         {gtk.ICON_SIZE_DIALOG: "stoq-documents-48x48.png"}),
         ("stoq-devices",
          {gtk.ICON_SIZE_DIALOG: "stoq-devices-48x48.png"}),
         ("stoq-user-profiles",
