@@ -179,6 +179,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     from stoqlib.gui.keybindings import load_user_keybindings
     load_user_keybindings()
 
+
 def needs_schema_update():
     try:
         migration = StoqlibSchemaMigration()
