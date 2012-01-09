@@ -22,20 +22,39 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from kiwi.component import get_utility
+
+from stoqlib.lib.interfaces import IApplicationDescriptions
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
+
+_user_bindings = {}
+
 _bindings = [
     # Common application shortcuts
-    ('app.common.toggle_fullscreen', '<Control>F11'),
-    ('app.common.toggle_statusbar', ''),
-    ('app.common.toggle_toolbar', ''),
-    ('app.common.help_contents', ''),
-    ('app.common.new_window', '<Control>n'),
-    ('app.common.change_password', ''),
-    ('app.common.sign_out', ''),
-    ('app.common.close_window', '<Control>w'),
-    ('app.common.print', '<Control>p'),
-    ('app.common.quit', '<Control>q'),
-    ('app.common.help', 'F1'),
-    ('app.common.help_contents', '<Control>F1'),
+    ('app.common.toggle_fullscreen', '<Control>F11',
+     _('Toggle fullscreen')),
+    ('app.common.toggle_statusbar', '',
+     _('Toggle statusbar')),
+    ('app.common.toggle_toolbar', '',
+     _('Toggle toolbar')),
+    ('app.common.new_window', '<Control>n',
+     _('Create a new Window')),
+    ('app.common.change_password', '',
+     _('Change password')),
+    ('app.common.sign_out', '',
+     _('Sign out')),
+    ('app.common.close_window', '<Control>w',
+     _('Close window')),
+    ('app.common.print', '<Control>p',
+     _("Print"),),
+    ('app.common.quit', '<Control>q',
+     _("Quit the application")),
+    ('app.common.help', 'F1',
+     _('Show help')),
+    ('app.common.help_contents', '<Control>F1',
+     _('Show help contents')),
 
     # Admin application
     ('app.admin.search_roles', '<Control><Alt>o'),
@@ -206,6 +225,37 @@ _bindings = [
 ]
 
 
+class KeyBinding(object):
+    def __init__(self, item):
+        self.name = item[0]
+        self.shortcut = _user_bindings.get(self.name, item[1])
+        self.category = self._parse_category(item[0])
+        self.description = self._parse_description(item)
+
+    def _parse_category(self, name):
+        if name.startswith('app.common'):
+            return _("General")
+        elif name.startswith('app'):
+            app_name = name.split('.', 2)[1]
+            app_list = get_utility(IApplicationDescriptions)
+            for item in app_list.get_descriptions():
+                if item[0] == app_name:
+                    return item[1]  # the label
+
+        elif name.startswith('plugin'):
+            return _('%s plugin') % (name.split('.', 2)[1], )
+        else:
+            raise AssertionError(name)
+
+    def _parse_description(self, item):
+        if len(item) > 2:
+            return item[2]
+        else:
+            n = self.name.rsplit('.')[-1]
+            n = n.replace('_', ' ')
+            return n.capitalize()
+
+
 class KeyBindingGroup(object):
     def __init__(self, bindings):
         self._bindings = bindings
@@ -220,22 +270,38 @@ def add_bindings(bindings):
     global _bindings
     _bindings.extend(bindings)
 
+def load_user_keybindings():
+    from stoqlib.api import api
+    for key, value in api.config.items('Shortcuts'):
+        set_user_binding(key, value)
+
+def set_user_binding(binding, value):
+    global _user_bindings
+    _user_bindings[binding] = value
+
+def get_bindings():
+    global _bindings
+    for binding in _bindings:
+        yield KeyBinding(binding)
+
 
 def get_accels(prefix=''):
     d = {}
     if prefix and not prefix.endswith('.'):
         prefix += '.'
 
-    for name, accel in _bindings:
-        if name.startswith(prefix):
-            sub = name[len(prefix):]
-            d[sub] = accel
+    for item in _bindings:
+        name = item[0]
+        if not name.startswith(prefix):
+            continue
+        key = name[len(prefix):]
+        d[key] = _user_bindings.get(name, item[1])
     return KeyBindingGroup(d)
 
 
 def get_accel(accel_name):
-    for name, accel in _bindings:
-        if name == accel_name:
-            return accel
+    for item in _bindings:
+        if item[0] == accel_name:
+            return item[1]
 
     raise AttributeError(accel_name)

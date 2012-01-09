@@ -429,10 +429,6 @@ class PurchaseApp(SearchableAppWindow):
     # Kiwi Callbacks
     #
 
-    def key_control_a(self, *args):
-        # FIXME Remove this method after gazpacho bug fix.
-        self._new_order()
-
     def on_results__right_click(self, results, result, event):
         self.popup.popup(None, None, None, event.button, event.time)
 
