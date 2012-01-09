@@ -50,6 +50,7 @@ from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
 from stoqlib.gui.editors.paymentseditor import PaymentsEditor
+from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
 from stoqlib.lib.message import warning
@@ -79,32 +80,50 @@ class PayableApp(SearchableAppWindow):
     #
 
     def create_actions(self):
+        group = get_accels('app.payable')
+
         actions = [
-            ('PaymentMenu', None, _('Payment')),
-            ('AddPayment', gtk.STOCK_ADD, _('Account payable...'), '<Control>p',
+            # File
+            ('AddPayment', gtk.STOCK_ADD, _('Account payable...'),
+             group.get('add_payable'),
              _('Create a new account payable')),
-            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel...'), '',
-             _('Cancel the selected payment')),
-            ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...'), '',
-             _('Mark the selected payment as not paid')),
-            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...'), '',
-             _('Change the due date of the selected payment')),
-            ('Comments', None, _('Comments...'), '',
-             _('Add comments to the selected payment')),
-            ('PrintReceipt', None, _('Print _receipt...'), '<Control>r',
-             _('Print a receipt for the selected payment')),
             ('PaymentFlowHistory', None, _('Payment _flow history...'),
-             '<Control>f',
+             group.get('payment_flow_history'),
              _('Show a report of payment expected to receive grouped by day')),
-            ('BillCheckSearch', None, _('Bills and checks...'), '',
-             _('Search for bills and checks')),
-            ('Pay', gtk.STOCK_APPLY, _('Pay...'), '',
-             _('Pay the order associated with the selected payment')),
-            ('Edit', gtk.STOCK_EDIT, _('Edit...'), '',
-             _('Edit the selected payment details')),
-            ('Details', gtk.STOCK_INFO, _('Details...'), '',
+
+            # Payment
+            ('PaymentMenu', None, _('Payment')),
+            ('Details', gtk.STOCK_INFO, _('Details...'),
+             group.get('payment_details'),
              _('Show details for the selected payment')),
+            ('Pay', gtk.STOCK_APPLY, _('Pay...'),
+             group.get('payment_pay'),
+             _('Pay the order associated with the selected payment')),
+            ('Edit', gtk.STOCK_EDIT, _('Edit...'),
+             group.get('payment_edit'),
+             _('Edit the selected payment details')),
+            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel...'),
+             group.get('payment_cancel'),
+             _('Cancel the selected payment')),
+            ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...'),
+             group.get('payment_set_not_paid'),
+             _('Mark the selected payment as not paid')),
+            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...'),
+             group.get('payment_change_due_date'),
+             _('Change the due date of the selected payment')),
+            ('Comments', None, _('Comments...'),
+             group.get('payment_comments'),
+             _('Add comments to the selected payment')),
+            ('PrintReceipt', None, _('Print _receipt...'),
+             group.get('payment_print_receipt'),
+             _('Print a receipt for the selected payment')),
+
+            # Search
+            ('BillCheckSearch', None, _('Bills and checks...'),
+             group.get('search_bills'),
+             _('Search for bills and checks')),
         ]
+
         self.payable_ui = self.add_ui_actions(None, actions,
                                               filename='payable.xml')
         self.set_help_section(_("Accounts payable help"),

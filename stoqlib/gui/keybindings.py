@@ -70,18 +70,80 @@ _bindings = [
     ('app.financial.new_transaction', '<Control>t'),
     ('app.financial.edit', ''),
 
-    # Stock application
-    ('app.stock.new_receiving', '<Control>r'),
-    ('app.stock.transfer_product', '<Control>t'),
-    ('app.stock.search_receiving', '<Control><Alt>u'),
-    ('app.stock.search_product_history', "<Control><Alt>p"),
-    ('app.stock.search_purchased_stock_items', ''),
-    ('app.stock.search_stock_items', "<Control><Alt>s"),
-    ('app.stock.search_transfers', "<Control><Alt>t"),
-    ('app.stock.search_closed_stock_items', "<Control><Alt>c"),
-    ('app.stock.edit_product', ''),
-    ('app.stock.history', ''),
-    ('app.stock.toggle_picture_viewer', '<Control><Alt>v'),
+    # Inventory application
+    ('app.inventory.new_inventory', ''),
+    ('app.inventory.inventory_count', '<Control>c'),
+    ('app.inventory.inventory_adjust', '<Control>a'),
+    ('app.inventory.inventory_cancel', ''),
+    ('app.inventory.inventory_print', ''),
+
+    # Payable application
+    ('app.payable.add_payable', '<Control>p'),
+    ('app.payable.payment_flow_history', '<Control>f'),
+    ('app.payable.payment_details', ''),
+    ('app.payable.payment_pay', ''),
+    ('app.payable.payment_edit', ''),
+    ('app.payable.payment_cancel', ''),
+    ('app.payable.payment_set_not_paid', ''),
+    ('app.payable.payment_change_due_date', ''),
+    ('app.payable.payment_comments', ''),
+    ('app.payable.payment_print_receipt', '<Control>r'),
+    ('app.payable.search_bills', ''),
+
+    # Pos application
+    ('app.pos.till_open', '<Control>F6'),
+    ('app.pos.till_close', '<Control>F7'),
+    ('app.pos.order_confirm', '<Control>F10'),
+    ('app.pos.order_cancel', '<Control><Alt>o'),
+    ('app.pos.order_create_delivery', '<Control>F5'),
+    ('app.pos.search_sales', '<Control><Alt>a'),
+    ('app.pos.search_sold_items', '<Contrl><Alt>a'),
+    ('app.pos.search_clients', '<Control><Alt>c'),
+    ('app.pos.search_products', '<Control><Alt>p'),
+    ('app.pos.search_services', '<Contro><Alt>s'),
+    ('app.pos.search_deliveries', '<Control><Alt>e'),
+    # ecf till read memory: <Control>F9
+    # ecf till summarize: <Control>F11
+    # books search books: <Control><Alt>B
+    # books search publishers: <Control><Alt>P
+
+    # Production application
+    ('app.production.new_production_order', '<Control>o'),
+    ('app.production.new_production_quote', '<Control>p'),
+    ('app.production.production_details', ''),
+    ('app.production.production_start', '<Control>t'),
+    ('app.production.production_edit', ''),
+    ('app.production.search_production_products', '<Control>d'),
+    ('app.production.search_services', '<Control>s'),
+    ('app.production.search_production_items', '<Control>r'),
+    ('app.production.search_production_history', '<Control>h'),
+
+    # Purchase application
+    ('app.purchase.new_order', '<control>o'),
+    ('app.purchase.new_quote', '<control>e'),
+    ('app.purchase.new_consignment', ''),
+    ('app.purchase.new_product', ''),
+    ('app.purchase.search_base_categories', '<Control>b'),
+    ('app.purchase.search_categories', '<Control>c'),
+    ('app.purchase.search_products', '<Control>d'),
+    ('app.purchase.search_product_units', '<Control>u'),
+    ('app.purchase.search_services', '<Control>s'),
+    ('app.purchase.search_stock_items', '<Control>i'),
+    ('app.purchase.search_closed_stock_items', '<Control><Alt>c'),
+    ('app.purchase.search_suppliers', '<Control>u'),
+    ('app.purchase.search_transporters', '<Control>t'),
+    ('app.purchase.search_quotes', '<Control>e'),
+    ('app.purchase.search_purchased_items', '<Control>p'),
+    ('app.purchase.search_products_sold', ''),
+    ('app.purchase.search_prices', ''),
+    ('app.purchase.search_consignment_items', ''),
+    ('app.purchase.order_confirm', ''),
+    ('app.purchase.order_cancel', ''),
+    ('app.purchase.order_edit', ''),
+    ('app.purchase.order_details', ''),
+    ('app.purchase.order_finish', ''),
+    # books search books: <Control><Alt>B
+    # books search publishers: <Control><Alt>P
 
     # Receivable application
     ('app.receivable.add_receiving', '<Control>p'),
@@ -112,6 +174,21 @@ _bindings = [
     ('app.sales.sale_return', ''),
     ('app.sales.sale_edit', ''),
     ('app.sales.sale_details', ''),
+    # books search books: <Control><Alt>B
+    # books search publishers: <Control><Alt>P
+
+    # Stock application
+    ('app.stock.new_receiving', '<Control>r'),
+    ('app.stock.transfer_product', '<Control>t'),
+    ('app.stock.search_receiving', '<Control><Alt>u'),
+    ('app.stock.search_product_history', "<Control><Alt>p"),
+    ('app.stock.search_purchased_stock_items', ''),
+    ('app.stock.search_stock_items', "<Control><Alt>s"),
+    ('app.stock.search_transfers', "<Control><Alt>t"),
+    ('app.stock.search_closed_stock_items', "<Control><Alt>c"),
+    ('app.stock.edit_product', ''),
+    ('app.stock.history', ''),
+    ('app.stock.toggle_picture_viewer', '<Control><Alt>v'),
 
     # Till application
     ('app.till.open_till', '<Control>F6'),
@@ -124,6 +201,8 @@ _bindings = [
     ('app.till.confirm_sale', ''),
     ('app.till.return_sale', ''),
     ('app.till.sale_details', ''),
+    # ecf till read memory: <Control>F9
+    # ecf till summarize: <Control>F11
 ]
 
 
@@ -135,6 +214,11 @@ class KeyBindingGroup(object):
         if not name in self._bindings:
             raise AttributeError(name)
         return self._bindings[name]
+
+
+def add_bindings(bindings):
+    global _bindings
+    _bindings.extend(bindings)
 
 
 def get_accels(prefix=''):

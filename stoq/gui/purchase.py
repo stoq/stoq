@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -41,6 +41,7 @@ from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.sellablepricedialog import SellablePriceDialog
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
 from stoqlib.gui.editors.producteditor import ProductEditor
+from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
                                                BaseSellableCatSearch)
 from stoqlib.gui.search.consignmentsearch import ConsignmentItemSearch
@@ -84,43 +85,73 @@ class PurchaseApp(SearchableAppWindow):
     #
 
     def create_actions(self):
+        group = get_accels('app.purchase')
         actions = [
-            ("StockCost", None, _("_Stock cost...")),
-            ("CloseInConsignment", None, _("Close consigment...")),
-            ("SearchInConsignmentItems", None, _("Search consigment items...")),
+            # File
             ("OrderMenu", None, _("Order")),
-            ("BaseCategories", None, _("Base categories..."), "<Control>b"),
-            ("Categories", None, _("Categories..."), "<Control>c"),
-            ("Products", 'stoq-products', _("Products..."), "<Control>d"),
-            ("ProductUnits", None, _("Product units..."), "<Control>u"),
-            ("Services", None, _("Services..."), "<Control>s"),
-            ("SearchStockItems", None, _("Stock items..."), "<Control>i"),
-            ("SearchClosedStockItems", None, _("Closed stock items..."),
-             "<Control><Alt>c"),
-            ("Suppliers", 'stoq-suppliers', _("Suppliers..."), "<Control>u"),
-            ("Transporter", None, _("Transporters..."), "<Control>t"),
-            ("SearchQuotes", None, _("Quotes..."), "<Control>e"),
-            ("SearchPurchasedItems", None, _("Purchased items..."), "<Control>p"),
-            ("ProductsSoldSearch", None, _("Products sold..."), ""),
-            ("ProductsPriceSearch", None, _("Prices editor..."), ""),
-            ("NewOrder", gtk.STOCK_NEW, _("Order..."), '<control>o',
+            ("NewOrder", gtk.STOCK_NEW, _("Order..."),
+             group.get('new_order'),
              _("Create a new purchase order")),
-            ("NewQuote", gtk.STOCK_INDEX, _("Quote..."), '<control>e',
+            ("NewQuote", gtk.STOCK_INDEX, _("Quote..."),
+             group.get('new_quote'),
              _("Create a new purchase quote")),
-            ("NewConsignment", None, _("Consignment..."), '',
+            ("NewConsignment", None, _("Consignment..."),
+             group.get('new_consignment'),
              _("Create a new purchase consignment")),
-            ("NewProduct", None, _("Product..."), '',
+            ("NewProduct", None, _("Product..."),
+             group.get('new_product'),
              _("Create a new product")),
-            ("Confirm", gtk.STOCK_APPLY, _("Confirm..."), '',
+            ("CloseInConsignment", None, _("Close consigment...")),
+
+            # Edit
+            ("StockCost", None, _("_Stock cost...")),
+
+            # Search
+            ("BaseCategories", None, _("Base categories..."),
+             group.get("search_base_categories")),
+            ("Categories", None, _("Categories..."),
+             group.get("search_categories")),
+            ("Products", 'stoq-products', _("Products..."),
+             group.get("search_products")),
+            ("ProductUnits", None, _("Product units..."),
+             group.get("search_product_units")),
+            ("Services", None, _("Services..."),
+             group.get("search_services")),
+            ("SearchStockItems", None, _("Stock items..."),
+             group.get("search_stock_items")),
+            ("SearchClosedStockItems", None, _("Closed stock items..."),
+             group.get("search_closed_stock_items")),
+            ("Suppliers", 'stoq-suppliers', _("Suppliers..."),
+             group.get("search_suppliers")),
+            ("Transporter", None, _("Transporters..."),
+             group.get("search_transporters")),
+            ("SearchQuotes", None, _("Quotes..."),
+             group.get("search_quotes")),
+            ("SearchPurchasedItems", None, _("Purchased items..."),
+             group.get("search_purchased_items")),
+            ("ProductsSoldSearch", None, _("Sold products..."),
+             group.get("search_products_sold")),
+            ("ProductsPriceSearch", None, _("Prices..."),
+             group.get("search_prices")),
+            ("SearchInConsignmentItems", None, _("Search consigment items..."),
+             group.get("search_consignment_items")),
+
+            # Order
+            ("Confirm", gtk.STOCK_APPLY, _("Confirm..."),
+             group.get('order_confirm'),
              _("Confirm the selected order(s), marking it as sent to the "
                "supplier")),
-            ("Cancel", gtk.STOCK_CANCEL, _("Cancel..."), '',
+            ("Cancel", gtk.STOCK_CANCEL, _("Cancel..."),
+             group.get('order_cancel'),
              _("Cancel the selected order")),
-            ("Edit", gtk.STOCK_EDIT, _("Edit..."), '',
+            ("Edit", gtk.STOCK_EDIT, _("Edit..."),
+             group.get('order_edit'),
              _("Edit the selected order, allowing you to change it's details")),
-            ("Details", gtk.STOCK_INFO, _("Details..."), '',
+            ("Details", gtk.STOCK_INFO, _("Details..."),
+             group.get('order_details'),
              _("Show details of the selected order")),
-            ("Finish", gtk.STOCK_APPLY, _("Finish..."), '',
+            ("Finish", gtk.STOCK_APPLY, _("Finish..."),
+             group.get('order_finish'),
              _('Complete the selected partially received order')),
         ]
 
