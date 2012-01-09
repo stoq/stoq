@@ -53,6 +53,7 @@ from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
+from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
@@ -82,27 +83,45 @@ class ReceivableApp(SearchableAppWindow):
     #
 
     def create_actions(self):
+        group = get_accels('app.receivable')
         actions = [
-            ('PaymentMenu', None, _('Payment')),
+            # File
             ('AddReceiving', gtk.STOCK_ADD, _('Account receivable...'),
-             '<Control>p'),
-            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...')),
-            ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
-            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...')),
-            ('PrintBill', gtk.STOCK_PRINT, _('Print bill...')),
-            ('Comments', None, _('Comments...')),
-            ('Renegotiate', None, _('Renegotiate...')),
-            ('PrintReceipt', None, _('Print _receipt...'), '<Control>r'),
+             group.get('add_receiving')),
             ('PaymentFlowHistory', None,
-             _('Payment _flow history...'), '<Control>f'),
-            ('BillCheckSearch', None, _('Bills and checks...'), '',
-             _('Search for bills and checks')),
-            ('CardPaymentSearch', None, _('Card payments...'), '',
-             _('Search for card payments')),
-            ('Receive', gtk.STOCK_APPLY, _('Receive...'), '',
+             _('Payment _flow history...'),
+             group.get('payment_flow_history')),
+
+            # Payment
+            ('PaymentMenu', None, _('Payment')),
+            ('Details', gtk.STOCK_INFO, _('Details...'),
+             group.get('payment_details'),
+             _('Show details for the selected payment'), ),
+            ('Receive', gtk.STOCK_APPLY, _('Receive...'),
+             group.get('payment_receive'),
              _('Receive the selected payments')),
-            ('Details', gtk.STOCK_INFO, _('Details...'), '',
-             _('Show details for the selected payment'), )
+            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel payment...'),
+             group.get('payment_cancel')),
+            ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...'),
+             group.get('payment_set_not_paid')),
+            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change due date...'),
+             group.get('payment_change_due_date')),
+            ('Renegotiate', None, _('Renegotiate...'),
+             group.get('payment_renegotiate')),
+            ('Comments', None, _('Comments...'),
+             group.get('payment_comments')),
+            ('PrintBill', gtk.STOCK_PRINT, _('Print bill...'),
+             group.get('payment_print_bill')),
+            ('PrintReceipt', None, _('Print _receipt...'),
+             group.get('payment_print_receipt')),
+
+            # Search
+            ('BillCheckSearch', None, _('Bills and checks...'),
+             group.get('search_bills'),
+             _('Search for bills and checks')),
+            ('CardPaymentSearch', None, _('Card payments...'),
+             group.get('search_card_payments'),
+             _('Search for card payments')),
         ]
         self.receivable_ui = self.add_ui_actions(None, actions,
                                                  filename='receivable.xml')

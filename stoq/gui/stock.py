@@ -127,7 +127,7 @@ class StockApp(SearchableAppWindow):
 
         toogle_actions = [
             ('StockPictureViewer', None, _('Picture viewer'),
-             '<Control><Alt>v'),
+             group.get('toggle_picture_viewer')),
         ]
         self.add_ui_actions('', toogle_actions, 'ToogleActions',
                             'toogle')

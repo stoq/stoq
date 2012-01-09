@@ -38,6 +38,7 @@ from stoqlib.api import api
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.editors.invoiceeditor import SaleInvoicePrinterDialog
+from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -86,26 +87,41 @@ class SalesApp(SearchableAppWindow):
     #
 
     def create_actions(self):
+        group = get_accels('app.sales')
         actions = [
+            # File
             ("SaleQuote", None, _("Sale quote..."), '',
              _('Create a new quote for a sale')),
             ("LoanNew", None, _("Loan...")),
             ("LoanClose", None, _("Close loan...")),
+
+            # Search
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
-             "<Control><Alt>a", _("Search for sold items by branch")),
+             group.get("search_sold_items_by_branch"),
+             _("Search for sold items by branch")),
             ("SearchProduct", 'stoq-products', _("Products..."),
-             "<Control><Alt>p", _("Search for products")),
+             group.get("search_products"),
+             _("Search for products")),
             ("SearchService", 'stoq-services', _("Services..."),
-             "<Control><Alt>s", _("Search for services")),
+             group.get("search_services"),
+             _("Search for services")),
             ("SearchDelivery", 'stoq-delivery', _("Deliveries..."),
-             "<Control><Alt>e", _("Search for deliveries")),
+             group.get("search_deliveries"),
+             _("Search for deliveries")),
             ("SearchClient", 'stoq-clients', _("Clients..."),
-             "<Control><Alt>c", _("Search for clients")),
+             group.get("search_clients"),
+             _("Search for clients")),
             ("SearchCommission", None, _("Commissions..."),
-             "<Control><Alt>o", _("Search for salespersons commissions")),
-            ("LoanSearch", None, _("Loans...")),
-            ("LoanSearchItems", None, _("Loan items...")),
+             group.get("search_commissions"),
+             _("Search for salespersons commissions")),
+            ("LoanSearch", None, _("Loans..."),
+             group.get("search_loans")),
+            ("LoanSearchItems", None, _("Loan items..."),
+             group.get("search_loan_items")),
+
+            # Sale
             ("SaleMenu", None, _("Sale")),
+
             ("SalesCancel", None, _("Cancel quote...")),
             ("SalesPrintInvoice", gtk.STOCK_PRINT, _("_Print invoice...")),
             ("Return", gtk.STOCK_CANCEL, _("Return..."), '',
