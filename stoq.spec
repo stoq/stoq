@@ -60,7 +60,6 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{_bindir}/stoqdbadmin
 %{_bindir}/stoqruncmd
 %{_libdir}/python*/site-packages/*.egg-info
-%{_libdir}/stoqlib
 %{_sysconfdir}/stoq
 %{_datadir}/icons/hicolor/48x48/apps/stoq.png
 %{_datadir}/polkit-1/actions/br.com.stoq.createdatabase.policy
@@ -75,6 +74,7 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{_datadir}/stoq/uixml
 %{_datadir}/locale/*/LC_MESSAGES/stoq.mo
 %{_datadir}/applications/stoq.desktop
+%{_datadir}/gnome/help
 %{python_sitelib}/stoq
 %{python_sitelib}/stoqlib
 

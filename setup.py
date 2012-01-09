@@ -100,6 +100,12 @@ data_files = [
     ('$sysconfdir/stoq',  ''),
     ('share/doc/stoq', ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
                         'COPYING.stoqlib', 'README', 'docs/copyright']),
+    ('share/gnome/help/stoq/C', listfiles('help/pt_BR', '*.page')),
+    ('share/gnome/help/stoq/C', listfiles('help/pt_BR', '*.xml')),
+    ('share/gnome/help/stoq/C/figures',
+     listfiles('help/pt_BR/figures', '*.png')),
+    ('share/gnome/help/stoq/C/figures',
+     listfiles('help/pt_BR/figures', '*.svg')),
     ('share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
     ('share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
     ]

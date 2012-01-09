@@ -10,6 +10,7 @@ recursive-include data/sql *.sql *.py
 recursive-include data/template *.rml
 recursive-include docs *
 recursive-include external *.py *jpg *gif
+recursive-include help *.page *.xml *.svg *.png
 recursive-include po *.po *.pot POTFILES.list
 recursive-include plugins *.csv *.py *.ui *.sql *.plugin
 recursive-include stoqlib *.pdf *.txt
