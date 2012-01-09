@@ -17,7 +17,7 @@
   </info>
 
   <p>
-    Utilizamos inventário apra <link xref="inventory-count">contar</link> e
+    Utilizamos um inventário para <link xref="inventory-count">contar</link> e
     <link xref="inventory-adjust">ajustar</link> o
     <link xref="stock">estoque</link> de <link xref="product">produtos</link>
     no Stoq.

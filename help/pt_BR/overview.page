@@ -151,8 +151,8 @@
       </p>
     </note>
     <p>
-      Em 90% das pesquisas, encontraremos em baixo da lista de resultados dois
-      botões, <gui>Novo</gui> e <gui>Editar</gui>.
+      Na maioria de nossas das pesquisas, encontraremos em baixo da lista de
+      resultados dois botões, <gui>Novo</gui> e <gui>Editar</gui>.
     </p>
     <media type="image" src="figures/stoq_search_new_edit.png" />
     <p>
@@ -211,7 +211,7 @@
       chamamos de Editor.
     </p>
     <p>
-      Em 99% dos casos, o mesmo editor é utilizado para criação e edição do
+      Na maioria dos casos, o mesmo editor é utilizado para criação e edição do
       registro em questão. O botão <gui>Ok</gui> confirma a ação enquanto o
       botão <gui>Cancelar</gui> anula, revertendo qualquer alteração realizada
       no registro, ou cancelando a criação do mesmo.
@@ -288,7 +288,7 @@
   <section id="report">
     <title>Relatórios</title>
     <p>
-      No Stoq tentamos facilitar ao máximo a impressão de relatórios. Em 90%
+      No Stoq tentamos facilitar ao máximo a impressão de relatórios. Na maioria
       das nossas <link xref="#search">pesquisas</link> podemos imprimir um
       relatório dos resultados:
     </p>
