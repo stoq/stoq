@@ -1,0 +1,66 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="product-add-tax-class">
+
+  <title>Adicionando um imposto a um produto</title>
+  <info>
+    <desc>
+      Adicionando um imposto a um produto no Stoq
+    </desc>
+
+    <link type="guide" xref="product" />
+    <link type="guide" xref="tax-class" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para vincular um
+    <link xref="product">produto</link> a uma
+    <link xref="tax-class">classe de imposto</link>.
+  </p>
+  <p>
+    Cada produto pode ser vinculado a 2 impostos, um ICMS e um IPI e, ao
+    realizar uma <link xref="sale">venda</link>, cada um deles será
+    automáticamente registrado e calculado.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-purchase" /> e realize uma
+        <link xref="product-search">pesquisa de produtos</link> pelo produto em
+        questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Nesta <link xref="overview#search">pesquisa</link>, tendo o produto
+        selecionado, clique no botão <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto com as
+        informações do produto em questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Navegue até a aba <gui>Impostos</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Aqui você pode escolher uma <gui>Classe ICMS</gui> e uma
+        <gui>Classe IPI</gui>. Após ter certeza dos dados, clique em
+        <gui>Ok</gui> para confirmar o processo.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu produto foi vinculado ao(s) imposto(s) com sucesso!
+      </p>
+    </item>
+  </steps>
+
+</page>

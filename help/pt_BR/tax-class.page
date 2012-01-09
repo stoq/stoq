@@ -1,0 +1,37 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="tax-class">
+
+  <title>Classes de impostos</title>
+  <info>
+    <desc>
+      <link xref="tax-class-new" />,
+      <link xref="tax-class-search" />...
+    </desc>
+
+    <link type="guide" xref="app-admin" />
+    <link type="seealso" xref="product" />
+    <link type="seealso" xref="sale" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    As classes de impostos foram criadas para atender uma necessidade de
+    suporte a um maior número de empresas que necessitam de cálculos para ICMS
+    e IPI importantes para geração de <link xref="plugin-nfe">NF-e</link>.
+  </p>
+  <note style="important">
+    <p>
+      Produtos podem ter
+      <link xref="product-add-tax-class">impostos vinculados</link> a si que
+      são automáticamente registradas e cálculadas em
+      <link xref="sale">vendas</link>.
+    </p>
+  </note>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

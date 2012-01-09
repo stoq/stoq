@@ -1,0 +1,57 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="tax-class-new">
+
+  <title>Cadastrando uma classe imposto</title>
+  <info>
+    <desc>
+      Cadastrando uma classe imposto no Stoq
+    </desc>
+
+    <link type="guide" xref="tax-class" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para cadastrar impostos ICMC/IPI no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-admin" />, abra a
+        <link xref="tax-class-search">pesquisa de classe de impostos</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Clique no botão <gui>Novo</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto. Após
+        escolher um <gui>Nome</gui>, selecione o tipo do <gui>Imposto</gui>
+        (ICMS ou IPI). Dependendo do tipo, haverão campos diferentes a serem
+        preenchidos abaixo. Após o preenchimento e verificação dos dados, você
+        pode clicar em <gui>Ok</gui> para finalizar o processo.
+      </p>
+      <note style="important">
+        <p>
+          Note que, dependendo do cadastro da <link xref="branch">filial</link>,
+          caso esta seja optante pelo Simples Nacional, o campo utilizado para
+          tributação será o <gui>CSOSN</gui> (Código de Situação da Operação no
+          Simples Nacional). Caso contrário, o campo utilizado será o
+          <gui>CST</gui> (Código de Situação Tributária).
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu imposto foi criado com sucesso no Stoq! Você já pode
+        <link xref="product-add-tax-class">vinculá-lo a um produto</link>.
+      </p>
+    </item>
+  </steps>
+
+</page>
