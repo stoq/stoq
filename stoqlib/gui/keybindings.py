@@ -310,6 +310,7 @@ def load_user_keybindings():
     for key, value in api.config.items('Shortcuts'):
         set_user_binding(key, value)
 
+
 def set_user_binding(binding, value):
     global _user_bindings
     _user_bindings[binding] = value
