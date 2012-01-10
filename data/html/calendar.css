@@ -80,3 +80,28 @@
   color: black;
 }
 
+.purchase-confirmed,
+.fc-agenda .purchase-confirmed .fc-event-time,
+.purchase-confirmed a {
+  background: #0000ff
+  border-color: #0000ff;
+  color: black;
+}
+
+.purchase-due,
+.fc-agenda .purchase-due .fc-event-time,
+.purchase-due a {
+  background: #0000ff
+  border-color: #0000ff;
+  color: black;
+}
+
+
+.purchase-late,
+.fc-agenda .purchase-late .fc-event-time,
+.purchase-late a {
+  background: #0000ff
+  border-color: #0000ff;
+  color: black;
+}
+

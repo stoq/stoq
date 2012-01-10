@@ -35,8 +35,10 @@ import gtk
 import webkit
 
 from stoqlib.api import api
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.editors.paymenteditor import get_dialog_for_payment
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.stockicons import (STOQ_CALENDAR_TODAY,
@@ -44,7 +46,6 @@ from stoqlib.gui.stockicons import (STOQ_CALENDAR_TODAY,
                                     STOQ_CALENDAR_MONTH)
 from stoqlib.lib import dateconstants
 from stoqlib.lib.daemonutils import start_daemon
-
 from stoq.gui.application import AppWindow
 
 
@@ -98,6 +99,10 @@ class CalendarView(gtk.ScrolledWindow):
             self._show_in_payment_list(**kwargs)
         elif name == 'out-payment-list':
             self._show_out_payment_list(**kwargs)
+        elif name == 'purchase':
+            self._show_purchase(**kwargs)
+        elif name == 'purchase-list':
+            self._show_purchase_list(**kwargs)
         else:
             raise NotImplementedError(name)
 
@@ -122,6 +127,21 @@ class CalendarView(gtk.ScrolledWindow):
         date = datetime.date(y, m, d)
         app = self.app.app.launcher.run_app_by_name(
             'payable', params={'no-refresh': True})
+        app.main_window.search_for_date(date)
+
+    def _show_purchase(self, id):
+        trans = api.new_transaction()
+        purchase = trans.get(PurchaseOrder.get(int(id)))
+        retval = run_dialog(PurchaseDetailsDialog, self.app, trans, purchase)
+        if api.finish_transaction(trans, retval):
+            self.refresh()
+        trans.close()
+
+    def _show_purchase_list(self, date):
+        y, m, d = map(int, date.split('-'))
+        date = datetime.date(y, m, d)
+        app = self.app.app.launcher.run_app_by_name(
+            'purchase', params={'no-refresh': True})
         app.main_window.search_for_date(date)
 
     def _js_function_call(self, function, *args):
