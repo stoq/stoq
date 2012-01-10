@@ -262,7 +262,7 @@ class InPaymentEditor(BasePaymentEditor):
                       or None
         """
         BasePaymentEditor.__init__(self, conn, model)
-        if model and not model.is_inpayment():
+        if model is None or not model.is_inpayment():
             self.model.addFacet(IInPayment, connection=self.conn)
             self.can_edit_details()
 
@@ -283,7 +283,7 @@ class OutPaymentEditor(BasePaymentEditor):
                       or None
         """
         BasePaymentEditor.__init__(self, conn, model)
-        if model and not model.is_outpayment():
+        if model is None or not model.is_outpayment():
             self.model.addFacet(IOutPayment, connection=self.conn)
             self.can_edit_details()
 
