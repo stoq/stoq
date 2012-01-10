@@ -31,9 +31,10 @@ from kiwi.environ import environ
 
 from stoqlib.api import api
 from stoqlib.database.orm import AND, OR
+from stoqlib.domain.purchase import PurchaseOrderView
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.payment.views import OutPaymentView
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 
 _ = stoqlib_gettext
 
@@ -60,8 +61,16 @@ class CalendarEvents(Resource):
                    OutPaymentView.q.due_date <= end)),
             connection=trans):
             self._create_out_payment(pv, events)
+        self._collect_purchase_orders(start, end, events, trans)
         events = self._summarize_events(events)
         return json.dumps(events)
+
+    def _collect_purchase_orders(self, start, end, events, trans):
+        for ov in PurchaseOrderView.select(
+            AND(PurchaseOrderView.q.expected_receival_date >= start,
+                PurchaseOrderView.q.expected_receival_date <= end),
+            connection=trans):
+            self._create_order(ov, events)
 
     def _create_in_payment(self, payment_view, events):
         payment = payment_view.payment
@@ -140,6 +149,26 @@ class CalendarEvents(Resource):
                        "url": "dialog://payment?id=" + str(payment.id),
                        "className": className})
 
+    def _create_order(self, order_view, events):
+        from stoqlib.lib.formatters import get_formatted_price
+        title = _("Purchase of %s from %s") % (
+            get_formatted_price(order_view.total),
+            order_view.supplier_name)
+        if order_view.confirm_date:
+            className = "purchase-confirmed"
+        else:
+            if order_view.expected_receival_date < datetime.datetime.today():
+                className = "purchase-late"
+            else:
+                className = "purchase-due"
+
+        events.append({"title": title,
+                       "id": order_view.id,
+                       "start": order_view.expected_receival_date,
+                       "type": "purchase",
+                       "url": "dialog://purchase?id=" + str(order_view.id),
+                       "className": className})
+
     def _summarize_events(self, events):
         perDay = {}
         # summarize per day
@@ -166,18 +195,32 @@ class CalendarEvents(Resource):
         assert type(date) == str, type(date)
         in_payment_events = [e for e in events if e["type"] == "in-payment"]
         out_payment_events = [e for e in events if e["type"] == "out-payment"]
+        purchase_events = [e for e in events if e["type"] == "purchase"]
         events = []
         if in_payment_events:
-            title = _("%d+ accounts receivable") % (len(in_payment_events), )
+            title_format = stoqlib_ngettext(_("%d more account receivable"),
+                                            _("%d more accounts receivable"),
+                                            len(in_payment_events))
             url = "dialog://in-payment-list?date=%s" % (date, )
-            events.append(dict(title=title,
+            events.append(dict(title=title_format % len(in_payment_events),
                                url=url,
                                start=date,
                                className="summarize"))
         if out_payment_events:
-            title = _("%d+ accounts payable") % (len(out_payment_events), )
+            title_format = stoqlib_ngettext(_("%d more account payable"),
+                                            _("%d more accounts payable"),
+                                            len(out_payment_events))
             url = "dialog://out-payment-list?date=%s" % (date, )
-            events.append(dict(title=title,
+            events.append(dict(title=title_format % len(out_payment_events),
+                               url=url,
+                               start=date,
+                               className="summarize"))
+        if purchase_events:
+            title_format = stoqlib_ngettext(_("%d more purchase"),
+                                            _("%d more purchases"),
+                                            len(purchase_events))
+            url = "dialog://purchase-list?date=%s" % (date, )
+            events.append(dict(title=title_format % len(purchase_events),
                                url=url,
                                start=date,
                                className="summarize"))

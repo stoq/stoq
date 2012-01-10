@@ -33,7 +33,7 @@ from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.objectlist import Column, SearchColumn
-from kiwi.ui.search import ComboSearchFilter
+from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from stoqlib.api import api
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
@@ -200,7 +200,8 @@ class PurchaseApp(SearchableAppWindow):
             _("Search for purchase orders"))
         self.app.launcher.Print.set_tooltip(
             _("Print a report of these orders"))
-        self._update_view()
+        if not params.get('no-refresh'):
+            self._update_view()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
 
     def setup_focus(self):
@@ -265,6 +266,14 @@ class PurchaseApp(SearchableAppWindow):
         # PurchaseReport needs a status arg
         kwargs['status'] = self.status_filter.get_state().value
         super(PurchaseApp, self).print_report(*args, **kwargs)
+
+    def search_for_date(self, date):
+        dfilter = DateSearchFilter(_("Expected receival date"))
+        dfilter.set_removable()
+        dfilter.mode.select_item_by_position(5)
+        self.add_filter(dfilter, columns=["expected_receival_date"])
+        dfilter.start_date.set_date(date)
+        self.search.refresh()
 
     #
     # Private
