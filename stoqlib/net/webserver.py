@@ -47,6 +47,16 @@ class CalendarEvents(Resource):
             float(resource.args['end'][0]))
         trans = api.new_transaction()
         events = []
+        if 'in_payments' in resource.args:
+            self._collect_inpayments(start, end, events, trans)
+        if 'out_payments' in resource.args:
+            self._collect_outpayments(start, end, events, trans)
+        if 'purchase_orders' in resource.args:
+            self._collect_purchase_orders(start, end, events, trans)
+        events = self._summarize_events(events)
+        return json.dumps(events)
+
+    def _collect_inpayments(self, start, end, events, trans):
         for pv in InPaymentView.select(
             OR(AND(InPaymentView.q.paid_date >= start,
                    InPaymentView.q.paid_date <= end),
@@ -54,6 +64,8 @@ class CalendarEvents(Resource):
                    InPaymentView.q.due_date <= end)),
             connection=trans):
             self._create_in_payment(pv, events)
+
+    def _collect_outpayments(self, start, end, events, trans):
         for pv in OutPaymentView.select(
             OR(AND(OutPaymentView.q.paid_date >= start,
                    OutPaymentView.q.paid_date <= end),
@@ -61,9 +73,6 @@ class CalendarEvents(Resource):
                    OutPaymentView.q.due_date <= end)),
             connection=trans):
             self._create_out_payment(pv, events)
-        self._collect_purchase_orders(start, end, events, trans)
-        events = self._summarize_events(events)
-        return json.dumps(events)
 
     def _collect_purchase_orders(self, start, end, events, trans):
         for ov in PurchaseOrderView.select(

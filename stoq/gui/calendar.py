@@ -94,16 +94,21 @@ class CalendarView(gtk.ScrolledWindow):
         self._startup()
 
     def _startup(self):
-        d = {}
-        d['monthNames'] = dateconstants.get_month_names()
-        d['monthNamesShort'] = dateconstants.get_short_month_names()
-        d['dayNames'] = dateconstants.get_day_names()
-        d['dayNamesShort'] = dateconstants.get_short_day_names()
-        d['buttonText'] = {"today": _('today'),
-                           "month": _('month'),
-                           "week": _('week'),
-                           "day": _('day')}
-        self._js_function_call('startup', d)
+        options = {}
+        options['monthNames'] = dateconstants.get_month_names()
+        options['monthNamesShort'] = dateconstants.get_short_month_names()
+        options['dayNames'] = dateconstants.get_day_names()
+        options['dayNamesShort'] = dateconstants.get_short_day_names()
+        options['buttonText'] = {"today": _('today'),
+                                 "month": _('month'),
+                                 "week": _('week'),
+                                 "day": _('day')}
+
+        # FIXME: This should be configurable via the user interface
+        options['data'] = dict(in_payments=True,
+                               out_payments=True,
+                               purchase_orders=True)
+        self._js_function_call('startup', options)
 
     def _load_daemon_path(self, path):
         uri = '%s/%s' % (self._daemon_uri, path)
