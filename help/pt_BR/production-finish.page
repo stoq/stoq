@@ -1,0 +1,70 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="production-finish">
+
+  <title>Finalizando uma produção</title>
+  <info>
+    <desc>
+      Finalizando uma produção no Stoq
+    </desc>
+
+    <link type="guide" xref="production" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para informar ao Stoq sobre o termino de uma
+    produção, isto é, informar a quantidade de
+    <link xref="production-product">produtos de produção</link> que foram
+    produzidos/perdidos durante o processo.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-production" />, realize uma
+        <link xref="production-search">pesquisa de ordem de produções</link>
+        pela ordem em questão e selecione-a.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo ela selecionada, na
+        <link xref="overview#results">lista de resultados</link> selecione o
+        menu <guiseq><gui>Produção</gui><gui>Detalhes de produção</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo clicando com o botão
+          direito no item da lista de resultados e selecionando
+          <gui>Detalhes de produção</gui> ou através da
+          <link xref="overview#toolbar">barra de ferramentas</link> clicando no
+          botão <gui>Detalhes</gui>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        No dialogo que será aberto, na aba <gui>Itens</gui>, selecione o item
+        desejado e clique em <gui>Adicionar Produzido</gui>. No diálogo que
+        será aberto, informe a quantidade que foi produzida e clique em
+        <gui>Ok</gui>.
+      </p>
+      <note style="tip">
+        <p>
+          Esse processo pode ser realizado para quantos itens você desejar, e
+          quantas vezes forem necessárias. A produção será dada como finalizada
+          quando todos os itens forem totalmente produzidos!
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Os itens marcados como produzidos estão agora em
+        <link xref="stock">estoque</link> e disponíveis para
+        <link xref="sale">venda</link>.
+      </p>
+    </item>
+  </steps>
+
+</page>

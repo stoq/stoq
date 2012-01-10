@@ -1,0 +1,36 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="production-search">
+
+  <title>Pesquisando por uma produção</title>
+  <info>
+    <desc>
+      Pesquisando por uma produção no Stoq
+    </desc>
+
+    <link type="guide" xref="production" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para encontrar produções registradas no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-production" />
+      </p>
+    </item>
+    <item>
+      <p>
+        Você pode encontrar a produção
+        <link xref="overview#results">lista de resultados</link> do
+        <link xref="overview#app">aplicativo</link>. Utilize
+        <link xref="overview#search-filter">filtros</link> para facilitar a
+        pesquisa.
+      </p>
+    </item>
+  </steps>
+
+</page>
