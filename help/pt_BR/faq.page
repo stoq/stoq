@@ -14,15 +14,117 @@
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>
 
-  <list type="enumerated">
-    <item>
-      <p>FIXME</p>
-      <list>
-        <item>
-          <p>RE: FIXME</p>
-        </item>
-      </list>
-    </item>
-  </list>
+  <!--This will automatically list all pages that links to this page-->
+  <links type="section">
+    <title>Sumário</title>
+  </links>
+
+  <section id="use-in-pt-br">
+    <title>Instalei o Stoq em inglês, mas gostaria de utilizá-lo em português. Como faço?</title>
+    <p>
+      Primeiramente você precisa ter instalado em seu sistema os pacotes de
+      linguagem do <link href="http://www.gtk.org">GTK</link> em Português do
+      Brasil.
+    </p>
+    <p>
+      Se estiver utilizando o Ubuntu, basta apenas instalar o pacote
+      <link href="apt:language-support-pt">language-support-pt</link>. A
+      partir daí você pode alterar a linguagem do sistema para pt_BR e o Stoq
+      será aberto em Português do Brasil.
+    </p>
+    <p>
+      Você também pode rodar o Stoq em português, mesmo utilizando outra
+      língua no sistema com o comando:
+    </p>
+    <p>
+      <cmd>$ LANGUAGE=pt_BR.UTF-8 stoq</cmd>
+    </p>
+  </section>
+
+  <section id="fiscal-printer">
+    <title>Eu posso utilizar o aplicativo caixa sem possuir uma impressora fiscal?</title>
+    <p>
+      Isso depende. Se você tiver habilitado o
+      <link xref="plugin-ecf">plugin ECF</link> a utilização da impressora
+      fiscal é obrigatória. Caso contrário, não!
+    </p>
+    <p>
+      Verifique se o seu estabelecimento é obrigado a imprimir notas fiscais.
+      Caso seja, a ativação desse plugin é obrigatória pela lei e não opcional!
+    </p>
+  </section>
+
+  <section id="more-than-one-app">
+    <title>Como faço para abrir mais de um aplicativo do Stoq ao mesmo tempo?</title>
+    <p>
+      Você pode realizar isso em todos os aplicativos no menu
+      <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Janela</gui></guiseq>, ou
+      mesmo na <link xref="overview#toolbar">barra de ferramentas</link>, no
+      menu <guiseq><gui>Novo</gui><gui>Janela</gui></guiseq>.
+    </p>
+    <p>
+      Essa opção irá abrir uma janela nova do Stoq, totalmente independente da
+      outra, te possibilitando possuir mais de 1 aplicativo aberto ao mesmo
+      tempo.
+    </p>
+  </section>
+
+  <section id="change-stock">
+    <title>Como faço para ajustar os valores lançados na opção "estoque inicial"? É possível zerar e cadastrar novamente?</title>
+    <p>
+      O processo de
+      <link xref="stock-register-initial">registro de estoque inicial</link> só
+      pode ser utilizado uma vez para cada produto. Após isso, você pode
+      utilizar <link xref="inventory">inventários</link> para realizar ajustes.
+    </p>
+  </section>
+
+  <section id="backup">
+    <title>Como realizo um backup completo do Stoq?</title>
+    <p>
+      Todas as informações do Stoq são guardadas na base de dados PostgreSQL.
+      Realizando um backup da base é o suficiente para preservar todas essas
+      informações/configurações. Para isso, utilize o comando:
+    </p>
+    <p>
+      <cmd>$ pg_dump -Fc dbname > stoq.dump</cmd>
+    </p>
+    <p>
+      Substitua <code>dbname</code> pelo nome da base de dados utilizada pelo
+      Stoq.
+    </p>
+    <p>
+      Algumas configurações são guardados no diretório <file>~/.stoq</file>,
+      como informações de conexão, algumas configurações específicas de
+      usuários e etc, podendo você também guardá-la.
+    </p>
+  </section>
+
+  <section id="restore-backup">
+    <title>Como restauro um backup do Stoq?</title>
+    <p>
+      Se você realizou o backup utilizando a dica de
+      <link xref="#backup">backup</link> acima, você pode restaurá-lo com:
+    </p>
+    <p>
+      <cmd>$ pg_restore -d dbname stoq.dump</cmd>
+    </p>
+    <p>
+      Substitua <code>dbname</code> pelo nome da base de dados utilizada pelo
+      Stoq.
+    </p>
+  </section>
+
+  <section id="more-help">
+    <title>Minha dúvida não foi sanada. Como consigo mais ajuda?</title>
+    <p>
+      Dê uma olhada na <link xref="overview">visão geral</link> pois esta
+      possui uma gama de informações que podem acabar sanando a sua dúvida.
+    </p>
+    <p>
+      Caso não tenha encontrado nada sobre a sua dúvida você pode tentar
+      <link xref="about#contact-us">entrar em contato conosco</link>.
+    </p>
+  </section>
 
 </page>
