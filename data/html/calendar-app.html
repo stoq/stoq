@@ -11,13 +11,16 @@
   function startup(options) {
       options.aspectRatio = 2.3;
       options.events = function(start, end, callback) {
+        var data = {};
+        data.start = start.getTime() / 1000;
+        data.end = end.getTime() / 1000;
+        if ('data' in options) {
+            $.extend(data, options.data);
+        }
         $.ajax({
             url: "/web/calendar-events.json",
             dataType: 'json',
-            data: {
-                start: start.getTime() / 1000,
-                end: end.getTime() / 1000
-            },
+            data: data,
             success: function(events) {
                 callback(events);
             }
