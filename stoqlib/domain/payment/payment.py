@@ -519,7 +519,7 @@ class PaymentFlowHistory(Domain):
         else:
             payment_qty = -1
 
-        if not payment.is_outpayment():
+        if payment.is_outpayment():
             if accomplished:
                 self.paid += value
                 self.paid_payments += payment_qty
@@ -531,7 +531,7 @@ class PaymentFlowHistory(Domain):
                     to_pay = 0
                 self.to_pay = to_pay
                 self.to_pay_payments += payment_qty
-        elif not payment.is_inpayment():
+        elif payment.is_inpayment():
             if accomplished:
                 self.received += value
                 self.received_payments += payment_qty
