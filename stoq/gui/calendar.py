@@ -37,7 +37,7 @@ import webkit
 from stoqlib.api import api
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.paymenteditor import InPaymentEditor
+from stoqlib.gui.editors.paymenteditor import get_dialog_for_payment
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.stockicons import (STOQ_CALENDAR_TODAY,
                                     STOQ_CALENDAR_WEEK,
@@ -104,7 +104,8 @@ class CalendarView(gtk.ScrolledWindow):
     def _show_payment_details(self, id):
         trans = api.new_transaction()
         payment = trans.get(Payment.get(int(id)))
-        retval = run_dialog(InPaymentEditor, self.app, trans, payment)
+        dialog_class = get_dialog_for_payment(payment)
+        retval = run_dialog(dialog_class, self.app, trans, payment)
         if api.finish_transaction(trans, retval):
             self.refresh()
         trans.close()
