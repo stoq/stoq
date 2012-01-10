@@ -21,14 +21,11 @@
          groups="about product-new purchase-new purchase-receival sale-new
                  overview faq">
     <e:mouseover src="figures/stoq_splash.png"/>
-    <!--FIXME: Add right src for earch mouseover-->
-    <e:mouseover match="about" src="figures/stoq_main.png"/>
-    <e:mouseover match="product-new" src="figures/stoq_main.png"/>
-    <e:mouseover match="purchase-new" src="figures/stoq_main.png"/>
-    <e:mouseover match="purchase-receival" src="figures/stoq_main.png"/>
-    <e:mouseover match="sale-new" src="figures/stoq_main.png"/>
+    <e:mouseover match="product-new" src="figures/stoq_new_product.png"/>
+    <e:mouseover match="purchase-new" src="figures/stoq_new_purchase.png"/>
+    <e:mouseover match="purchase-receival" src="figures/stoq_new_receival.png"/>
+    <e:mouseover match="sale-new" src="figures/stoq_new_sale.png"/>
     <e:mouseover match="overview" src="figures/stoq_main.png"/>
-    <e:mouseover match="faq" src="figures/stoq_main.png"/>
   </links>
 
   <!--This will automatcaly list all pages that links to this page-->
