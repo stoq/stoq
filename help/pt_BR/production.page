@@ -1,0 +1,32 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="production">
+
+  <title>Production</title>
+  <info>
+    <desc>
+      <link xref="production-new" />,
+      <link xref="production-search" />,
+      <link xref="production-start" />,
+      <link xref="production-finish" />...
+    </desc>
+
+    <link type="guide" xref="app-production" />
+    <link type="seealso" xref="product" />
+    <link type="seealso" xref="service" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Uma produção de um <link xref="production-product">produto de produção</link>,
+    tendo este 1 ou mais <link xref="product">produtos componentes</link>,
+    que após produzidos serão guardados em <link xref="stock">estoque</link> e
+    podem posteriormente ser <link xref="sale">vendidos</link>.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

@@ -1,0 +1,110 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="production-new">
+
+  <title>Criando uma ordem de produção</title>
+  <info>
+    <desc>
+      Criando uma ordem de produção no Stoq
+    </desc>
+
+    <link type="guide" xref="production" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para criar uma nova ordem de produção de
+    <link xref="product">produtos de produção</link> no Stoq.
+  </p>
+  <note style="important">
+    <p>
+      Após criada a produção, é necessário
+      <link xref="production-start">iniciá-la</link> e posteriormente,
+      <link xref="production-finish">informar os itens produzidos</link>.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-production" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione
+        <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Ordem de produção</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode criar um produto na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Novo</gui><gui>Ordem de produção</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo, você preencherá as informações básicas da
+            produção como, qual a <gui>Filial</gui> que irá produzir, a
+            <gui>Data prevista para início</gui>, uma <gui>Descrição</gui> e
+            etc. Após o preenchimento dos
+            <link xref="overview#required-fields">campos obrigatórios</link>
+            e correção dos <link xref="overview#validation">
+            erros de validação</link> o botão <gui>Avançar</gui> será
+            habilitado e você pode ir para o próximo passo.
+          </p>
+        </item>
+        <item>
+          <p>
+            No segundo passo, você deve selecionar os serviços que serão
+            utilizados para realizar esta produção. Após ter certeza de todos,
+            clique em <gui>Avançar</gui>.
+          </p>
+        </item>
+        <item>
+          <p>
+            No terceiro passo, você deve selecionar os produtos que serão
+            produzidos nessa produção. Após ter certeza de todos, clique em
+            <gui>Avançar</gui>.
+          </p>
+          <note style="important">
+            <p>
+              Note que os produtos que aparecem aqui não são
+              <link xref="product">produtos simples</link>, mas sim os
+              <link xref="production-product">produtos de produção</link>
+              registrados anteriormente.
+            </p>
+          </note>
+        </item>
+        <item>
+          <p>
+            No terceiro passo você deverá verificar os itens que serão
+            produzidos. Após isso, clique em <gui>Terminar</gui> para finalizar
+            o processo.
+          </p>
+          <note style="important">
+            <p>
+              Note que, se a caixa
+              <gui>Iniciar a produção mesmo se houver falta de componentes</gui>
+              estiver marcada, o Stoq te deixará iniciciar a produção, porém,
+              não te deixará finalizá-la até que todos os componentes possam
+              ser consumidos.
+            </p>
+          </note>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu ordem de produção foi registrada com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

@@ -1,0 +1,61 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="production-start">
+
+  <title>Iniciando uma produção</title>
+  <info>
+    <desc>
+      Iniciando uma produção no Stoq
+    </desc>
+
+    <link type="guide" xref="production" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para informar ao Stoq sobre o início de uma ordem
+    de produção.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-production" />, realize uma
+        <link xref="production-search">pesquisa de ordem de produções</link>
+        pela ordem em questão e selecione-a.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo ela selecionada, na
+        <link xref="overview#results">lista de resultados</link> selecione o
+        menu <guiseq><gui>Produção</gui><gui>Iniciar produção</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode realizar o mesmo clicando com o botão
+          direito no item da lista de resultados e selecionando
+          <gui>Iniciar produção</gui> ou através da
+          <link xref="overview#toolbar">barra de ferramentas</link> clicando no
+          botão <gui>Iniciar</gui>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto onde você
+        poderá confirmar e editar a listagem de componentes necessários para a
+        produção. Após ter certeza de todos os dados, clique em
+        <gui>Iniciar produção</gui> para confirmar o processo.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Sua ordem de produção foi marcada como inicada com sucesso!
+        Não se esqueça de <link xref="production-finish">finalizá-la</link>,
+        informando a quantidade produzida/perdida de produtos.
+      </p>
+    </item>
+  </steps>
+
+</page>
