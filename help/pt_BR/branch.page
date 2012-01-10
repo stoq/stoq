@@ -1,0 +1,28 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="branch">
+
+  <title>Filiais</title>
+  <info>
+    <desc>
+      <link xref="branch-new" />,
+      <link xref="branch-edit" />,
+      <link xref="branch-search" />,
+      <link xref="branch-set-main" />...
+    </desc>
+
+    <link type="guide" xref="app-admin" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    O Stoq está preparado para trabalhar com múltiplas filiais da empresa,
+    sendo uma destas a <link xref="branch-set-new">filial principal</link>.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

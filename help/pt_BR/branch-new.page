@@ -1,0 +1,74 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="branch-new">
+
+  <title>Cadastrando uma filial</title>
+  <info>
+    <desc>
+      Cadastrando uma filial no Stoq
+    </desc>
+
+    <link type="guide" xref="branch" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para cadastrar filiais no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-admin" />, abra a
+        <link xref="branch-search">pesquisa de filiais</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Clique no botão <gui>Novo</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo, você pode informar o número de telefone da
+            filial. Após isso, clique em <gui>Avançar</gui>.
+          </p>
+          <note style="important">
+            <p>
+              Tenha certeza de inserir o número de telefone correto da
+              filial, pois desse jeito, caso ele já possua um cadastro
+              (como um fornecedor por exemplo) os dados gerais (como nome,
+              telefone, cpf/cnpj, endereços) serão compartilhados entre ambos,
+              facilitando assim a manutenção dos dados.
+            </p>
+          </note>
+        </item>
+        <item>
+          <p>
+            No segundo passo você deve preencher os
+            <gui>Detalhes gerais</gui> da filial como o <gui>Gerente</gui> e
+            <gui>Regime tributário</gui>, além de outros dados comuns de
+            pessoas jurídicas. Após o preenchimento dos
+            <link xref="overview#required-fields">campos obrigatórios</link> e
+            correção dos
+            <link xref="overview#validation">erros de validação</link> o botão
+            <gui>Terminar</gui> será habilitado e você pode finalizar o
+            processo.
+          </p>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu usuário foi criado com sucesso no e ele já pode ser
+        usado para a utilização do Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

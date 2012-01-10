@@ -1,0 +1,42 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="branch-set-main">
+
+  <title>Fazer de uma filial a companhia principal</title>
+  <info>
+    <desc>
+      Fazer de uma filial a companhia principal
+    </desc>
+
+    <link type="guide" xref="branch" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para fazer de uma filial a companhia principal,
+    isto é, a filial matriz, responsável por todas as outras.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-admin" /> abra a pesquisa de
+        <link xref="param">parâmetros</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Encontre o parâmetro <gui>Companhia principal</gui>. Ao dar um duplo
+        clique, você pode realizar a alteração para qualquer outra filial
+        cadastrada. Após ter certeza, clique em <gui>Ok</gui> para confirmar o
+        processo.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Você realizou a alteração da companhia principal com sucesso!
+      </p>
+    </item>
+  </steps>
+
+</page>

@@ -1,0 +1,66 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="branch-edit">
+
+  <title>Editando uma filial</title>
+  <info>
+    <desc>
+      Editando uma filial no Stoq
+    </desc>
+
+    <link type="guide" xref="branch" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para editar informações de filiais
+    cadastradas no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-admin" />, abra a
+        <link xref="branch-search">pesquisa de filiais</link>, procure
+        pela filial em questão e selecione-a.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo a filial selecionada, clique em <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto e você poderá
+        editar as informações da filial. Essas informações estão dívididas
+        em abas <gui>Identificação</gui> <gui>Dados de pessoa jurídica</gui>,
+        etc do mesmo. Na aba <gui>Detalhes gerais</gui> podemos editar algumas
+        informações específicas, como o <gui>Gerente</gui> e
+        <gui>Regime tributário</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Após o preenchimento dos
+        <link xref="overview#required-fields">campos obrigatórios</link> e
+        correção dos
+        <link xref="overview#validation"> erros de validação</link> o botão
+        <gui>Ok</gui> será habilitado e você pode confirmar a edição.
+      </p>
+      <note style="tip">
+        <p>
+          Note que a qualquer momento caso você se arrependa da edição, você
+          pode clicar em <gui>Cancelar</gui> e assim descartar todas as
+          mudanças realizadas no momento.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Sua filial foi editada com sucesso no Stoq!
+      </p>
+    </item>
+  </steps>
+
+</page>

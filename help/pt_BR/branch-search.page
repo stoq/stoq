@@ -1,0 +1,41 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="branch-search">
+
+  <title>Pesquisando por uma filial</title>
+  <info>
+    <desc>
+      Pesquisando por uma filial no Stoq
+    </desc>
+
+    <link type="guide" xref="branch" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para encontrar filiais cadastradas no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-admin" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione o menu
+        <guiseq><gui>Pesquisar</gui><gui>Filiais</gui></guiseq>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Uma <link xref="overview#search">pesquisa</link> será aberta e nela
+        você pode encontrar a filial em questão. Utilize
+        <link xref="overview#search-filter">filtros</link> para facilitar a
+        pesquisa.
+      </p>
+    </item>
+  </steps>
+
+</page>
