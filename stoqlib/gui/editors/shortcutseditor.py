@@ -23,21 +23,59 @@
 ##
 ##
 
-import gtk
+import warnings
 
+import gtk
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog
-from stoqlib.gui.keybindings import get_bindings
+from stoqlib.gui.keybindings import (get_bindings,
+                                     set_user_binding,
+                                     remove_user_binding,
+                                     remove_user_bindings,
+                                     get_binding_categories)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
+# Gtk+ bug 639455 fixed in 2011-01-04 in 3.x branch
+warnings.filterwarnings(
+    action='ignore', module='stoqlib.gui.base.dialogs',
+    message=("Object class GtkCellEditableEventBox doesn't implement "
+             "property 'editing-canceled' from interface 'GtkCellEditable'"))
+
+
+class ShortcutColumn(Column):
+    def __init__(self, title, editor):
+        Column.__init__(self, title, data_type=str)
+        self.editor = editor
+
+    def create_renderer(self, model):
+        renderer = gtk.CellRendererAccel()
+        renderer.props.editable = True
+        renderer.props.accel_mode = gtk.CELL_RENDERER_ACCEL_MODE_OTHER
+        renderer.connect('accel-edited', self._on_accel_edited)
+        renderer.connect('accel-cleared', self._on_accel_cleared)
+        return renderer, 'text'
+
+    def _on_accel_edited(self, renderer, path, accel_key, mods, keycode):
+        model = self._objectlist.get_model()
+        binding = model[path][0]
+        binding.shortcut = gtk.accelerator_name(accel_key, mods)
+        self.editor.set_binding(binding)
+
+    def _on_accel_cleared(self, renderer, path):
+        model = self._objectlist.get_model()
+        binding = model[path][0]
+        self.editor.remove_binding(binding)
+        binding.shortcut = None
+
+
 class ShortcutsEditor(BasicDialog):
-    size = (500, 400)
+    size = (700, 400)
     title = _("Keyboard shortcuts")
 
     def __init__(self, conn):
@@ -47,10 +85,30 @@ class ShortcutsEditor(BasicDialog):
 
     def _create_ui(self):
         self.cancel_button.hide()
+
+        hbox = gtk.HBox()
+        self.main.remove(self.main.get_child())
+        self.main.add(hbox)
+        hbox.show()
+
+        self.categories = ObjectList(
+            [Column('label', sorted=True, expand=True)],
+            get_binding_categories(),
+            gtk.SELECTION_BROWSE)
+        self.categories.connect('selection-changed',
+                                self._on_categories__selection_changed)
+        self.categories.set_headers_visible(False)
+        self.categories.set_size_request(200, -1)
+        hbox.pack_start(self.categories, False, False)
+        self.categories.show()
+
         box = gtk.VBox()
-        self.shortcuts = ObjectList(self._get_columns(), get_bindings(),
-                                gtk.SELECTION_BROWSE)
-        self.shortcuts.connect("cell-edited", self.on_cell_edited)
+        hbox.pack_start(box)
+        box.show()
+
+        self.shortcuts = ObjectList(self._get_columns(), [],
+                                    gtk.SELECTION_BROWSE)
+        self.shortcuts.set_headers_visible(False)
         box.pack_start(self.shortcuts)
         self.shortcuts.show()
 
@@ -58,20 +116,41 @@ class ShortcutsEditor(BasicDialog):
             _("You need to restart Stoq for the changes to take effect"))
         box.pack_start(self._label, False, False, 6)
 
-        self.main.remove(self.main.get_child())
-        self.main.add(box)
         box.show()
+
+        defaults_button = gtk.Button(_("Reset defaults"))
+        defaults_button.connect('clicked', self._on_defaults_button__clicked)
+        self.action_area.pack_start(defaults_button, False, False, 6)
+        self.action_area.reorder_child(defaults_button, 0)
+        defaults_button.show()
+
+    def _on_categories__selection_changed(self, categories, category):
+        if not category:
+            return
+        self.shortcuts.add_list(get_bindings(category.name), clear=True)
+
+    def _on_defaults_button__clicked(self, button):
+        api.config.remove_section('Shortcuts')
+        api.config.flush()
+        remove_user_bindings()
+        categories = list(get_binding_categories())
+        self._label.show()
+        self.categories.refresh()
+        self.categories.select(old)
 
     def _get_columns(self):
         return [Column('description', data_type=str,
-                       expand=True),
-                Column('category', data_type=str),
-                Column('shortcut', data_type=str, editable=True)]
+                       expand=True, sorted=True),
+                ShortcutColumn('shortcut', self)]
 
-    def on_cell_edited(self, shortcuts, shortcut, attr):
-        # FIXME: this should not be stored in stoq.conf
-        # FIXME: Use a keyboard grabber
-        # FIXME: this is emitted even if the text isn't changed
-        api.config.set('Shortcuts', shortcut.name, shortcut.shortcut)
+    def set_binding(self, binding):
+        set_user_binding(binding.name, binding.shortcut)
+        api.config.set('Shortcuts', binding.name, binding.shortcut)
+        api.config.flush()
+        self._label.show()
+
+    def remove_binding(self, binding):
+        remove_user_binding(binding.name)
+        api.config.remove('Shortcuts', binding.name)
         api.config.flush()
         self._label.show()

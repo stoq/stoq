@@ -220,6 +220,9 @@ class StoqConfig:
         if self.has_section(section):
             self._config.remove_option(section, option)
 
+    def remove_section(self, section):
+        self._config.remove_section(section)
+
     def has_section(self, section):
         return self._config.has_section(section)
 
