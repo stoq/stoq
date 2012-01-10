@@ -995,7 +995,7 @@ class SaleAdaptToPaymentTransaction(object):
 
         nitems = 0
         for item in self.sale.group.payments:
-            if item.is_outpayment():
+            if not item.is_outpayment():
                 nitems += 1
 
         if nitems <= 1:
