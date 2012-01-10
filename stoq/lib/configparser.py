@@ -202,13 +202,13 @@ class StoqConfig:
             self.store_password(options.password)
 
     def set(self, section, option, value):
-        if not self._config.has_section(section):
+        if not self.has_section(section):
             self._config.add_section(section)
 
         self._config.set(section, option, value)
 
     def get(self, section, option):
-        if not self._config.has_section(section):
+        if not self.has_section(section):
             return
 
         if not self._config.has_option(section, option):
@@ -217,10 +217,15 @@ class StoqConfig:
         return self._config.get(section, option)
 
     def remove(self, section, option):
-        if self._config.has_section(section):
+        if self.has_section(section):
             self._config.remove_option(section, option)
 
+    def has_section(self, section):
+        return self._config.has_section(section)
+
     def items(self, section):
+        if not self.has_section(section):
+            return []
         return self._config.items(section)
 
 #
