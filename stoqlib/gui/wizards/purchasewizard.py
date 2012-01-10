@@ -561,6 +561,7 @@ class PurchaseWizard(BaseWizard):
         first_step = StartPurchaseStep(self, conn, model)
         BaseWizard.__init__(self, conn, first_step, model, title=title,
                             edit_mode=edit_mode)
+        self.set_help_section("purchase-new")
 
     def _get_title(self, model=None):
         if not model:

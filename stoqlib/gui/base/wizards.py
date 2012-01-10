@@ -23,13 +23,15 @@
 ##
 """ Base classes for wizards """
 
+import gtk
 from kiwi.log import Logger
 from kiwi.ui.wizard import PluggableWizard, WizardStep
 from kiwi.ui.delegates import GladeSlaveDelegate
 
 from stoqlib.database.runtime import StoqlibTransaction
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.base.dialogs import RunnableView
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.gui.help import show_section
 
 logger = Logger('stoqlib.gui.base.wizard')
 
@@ -77,6 +79,17 @@ class BaseWizard(PluggableWizard, RunnableView):
         PluggableWizard.__init__(self, title=title, first_step=first_step,
                                  size=size, edit_mode=edit_mode)
         self.enable_window_controls()
+
+    def set_help_section(self, section):
+        def on_help__clicked(button):
+            show_section(section)
+
+        self.buttonbox.set_layout(gtk.BUTTONBOX_END)
+        button = gtk.Button(stock=gtk.STOCK_HELP)
+        button.connect('clicked', on_help__clicked)
+        self.buttonbox.add(button)
+        self.buttonbox.set_child_secondary(button, True)
+        button.show()
 
     def cancel(self):
         logger.info('Canceling wizard: %s' % self.__class__.__name__)
