@@ -109,11 +109,12 @@ class CalendarView(gtk.ScrolledWindow):
             self.refresh()
         trans.close()
 
-    def _show_in_payment_list(self, ids):
-        ids = map(int, ids.split('|'))
+    def _show_in_payment_list(self, date):
+        y, m, d = map(int, date.split('-'))
+        date = datetime.date(y, m, d)
         app = self.app.app.launcher.run_app_by_name(
             'receivable', params={'no-refresh': True})
-        app.main_window.select_payment_ids(ids)
+        app.main_window.search_for_date(date)
 
     def _show_out_payment_list(self, date):
         y, m, d = map(int, date.split('-'))
