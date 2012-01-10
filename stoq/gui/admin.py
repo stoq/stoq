@@ -56,6 +56,11 @@ from stoqlib.gui.search.personsearch import (ClientSearch,
 from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
+from stoqlib.gui.stockicons import (
+    STOQ_CALC, STOQ_ADMIN_APP, STOQ_CLIENTS, STOQ_DEVICES, STOQ_DELIVERY,
+    STOQ_DOCUMENTS, STOQ_EDIT, STOQ_KEYBOARD, STOQ_HR, STOQ_MONEY,
+    STOQ_PAYABLE_APP, STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAXES,
+    STOQ_USER_PROFILES, STOQ_USERS)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.message import info
 
@@ -81,51 +86,30 @@ class Tasks(object):
         self.model.clear()
 
     def add_defaults(self):
-        items = [(_('Branches'), 'branches',
-                  'gtk-home'),
-                 (_('Client Categories'), 'client_categories',
-                  'stoq-clients'),
-                 (_('Clients'), 'clients',
-                  'stoq-clients'),
-                 (_('C.F.O.P.'), 'cfop',
-                  'stoq-calc'),
-                 (_('Computers'), 'stations',
-                  'stoq-system'),
-                 (_('Devices'), 'devices',
-                  'stoq-devices'),
-                 (_('Employees'), 'employees',
-                  'stoq-admin-app'),
-                 (_('Events'), 'events',
-                  'gtk-dialog-warning'),
-                 (_('Roles'), 'employee_roles',
-                  'stoq-users'),
-                 (_('Fiscal Books'), 'fiscal_books',
-                  'stoq-edit'),
-                 (_('Invoice Printers'), 'invoice_printers',
-                  'gtk-print'),
-                 (_('Keyboard shortcuts'), 'keyboard_shortcuts',
-                  'stoq-keyboard'),
-                 (_('Payment Categories'), 'payment_categories',
-                  'stoq-payable-app'),
-                 (_('Payment Methods'), 'payment_methods',
-                  'stoq-money'),
-                 (_('Parameters'), 'parameters',
-                  'gtk-preferences'),
-                 (_('Plugins'), 'plugins',
-                  'gtk-properties'),
-                 (_('Taxes'), 'taxes',
-                  'stoq-taxes'),
-                 (_('Tax Classes'), 'tax_templates',
-                  'stoq-documents'),
-                 (_('Suppliers'), 'suppliers',
-                  'stoq-suppliers'),
-                 (_('Transporters'), 'transporters',
-                  'stoq-delivery'),
-                 (_('Users'), 'users',
-                  'stoq-hr'),
-                 (_('User Profiles'), 'user_profiles',
-                  'stoq-user-profiles'),
-                 ]
+        items = [
+            (_('Branches'), 'branches', gtk.STOCK_HOME),
+            (_('Client Categories'), 'client_categories', STOQ_CLIENTS),
+            (_('Clients'), 'clients', STOQ_CLIENTS),
+            (_('C.F.O.P.'), 'cfop', STOQ_CALC),
+            (_('Computers'), 'stations', STOQ_SYSTEM),
+            (_('Devices'), 'devices', STOQ_DEVICES),
+            (_('Employees'), 'employees', STOQ_ADMIN_APP),
+            (_('Events'), 'events', gtk.STOCK_DIALOG_WARNING),
+            (_('Roles'), 'employee_roles', STOQ_USERS),
+            (_('Fiscal Books'), 'fiscal_books', STOQ_EDIT),
+            (_('Invoice Printers'), 'invoice_printers', gtk.STOCK_PRINT),
+            (_('Keyboard shortcuts'), 'keyboard_shortcuts', STOQ_KEYBOARD),
+            (_('Payment Categories'), 'payment_categories', STOQ_PAYABLE_APP),
+            (_('Payment Methods'), 'payment_methods', STOQ_MONEY),
+            (_('Parameters'), 'parameters', gtk.STOCK_PREFERENCES),
+            (_('Plugins'), 'plugins', gtk.STOCK_PROPERTIES),
+            (_('Taxes'), 'taxes', STOQ_TAXES),
+            (_('Tax Classes'), 'tax_templates', STOQ_DOCUMENTS),
+            (_('Suppliers'), 'suppliers', STOQ_SUPPLIERS),
+            (_('Transporters'), 'transporters', STOQ_DELIVERY),
+            (_('Users'), 'users', STOQ_HR),
+            (_('User Profiles'), 'user_profiles', STOQ_USER_PROFILES),
+            ]
 
         for label, name, pixbuf in items:
             self.add_item(label, name, pixbuf)
@@ -261,7 +245,6 @@ class Tasks(object):
 class AdminApp(AppWindow):
 
     app_name = _('Administrative')
-    app_icon_name = 'stoq-admin-app'
     gladefile = "admin"
     embedded = True
 

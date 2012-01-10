@@ -70,7 +70,6 @@ LOGO_HEIGHT = 32
 class TillApp(SearchableAppWindow):
 
     app_name = _(u'Till')
-    app_icon_name = 'stoq-till-app'
     gladefile = 'till'
     search_table = SaleView
     search_labels = _(u'matching:')

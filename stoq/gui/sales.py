@@ -46,6 +46,8 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import DeliverySearch, SoldItemsByBranchSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
+from stoqlib.gui.stockicons import (STOQ_PRODUCTS, STOQ_SERVICES,
+                                    STOQ_CLIENTS, STOQ_DELIVERY)
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.formatters import format_quantity
@@ -62,7 +64,6 @@ _ = gettext.gettext
 class SalesApp(SearchableAppWindow):
 
     app_name = _('Sales')
-    app_icon_name = 'stoq-sales-app'
     gladefile = 'sales_app'
     search_table = SaleView
     search_label = _('matching:')
@@ -99,16 +100,16 @@ class SalesApp(SearchableAppWindow):
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
              group.get("search_sold_items_by_branch"),
              _("Search for sold items by branch")),
-            ("SearchProduct", 'stoq-products', _("Products..."),
+            ("SearchProduct", STOQ_PRODUCTS, _("Products..."),
              group.get("search_products"),
              _("Search for products")),
-            ("SearchService", 'stoq-services', _("Services..."),
+            ("SearchService", STOQ_SERVICES, _("Services..."),
              group.get("search_services"),
              _("Search for services")),
-            ("SearchDelivery", 'stoq-delivery', _("Deliveries..."),
+            ("SearchDelivery", STOQ_DELIVERY, _("Deliveries..."),
              group.get("search_deliveries"),
              _("Search for deliveries")),
-            ("SearchClient", 'stoq-clients', _("Clients..."),
+            ("SearchClient", STOQ_CLIENTS, _("Clients..."),
              group.get("search_clients"),
              _("Search for clients")),
             ("SearchCommission", None, _("Commissions..."),

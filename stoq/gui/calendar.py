@@ -39,6 +39,9 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
 from stoqlib.gui.keybindings import get_accels
+from stoqlib.gui.stockicons import (STOQ_CALENDAR_TODAY,
+                                    STOQ_CALENDAR_WEEK,
+                                    STOQ_CALENDAR_MONTH)
 from stoqlib.lib import dateconstants
 from stoqlib.lib.daemonutils import start_daemon
 
@@ -213,7 +216,6 @@ class CalendarView(gtk.ScrolledWindow):
 class CalendarApp(AppWindow):
 
     app_name = _('Calendar')
-    app_icon_name = 'stoq-calendar-app'
     gladefile = 'calendar'
     embedded = True
 
@@ -241,7 +243,7 @@ class CalendarApp(AppWindow):
              group.get('go_back'), _("Go back")),
             ('Forward', gtk.STOCK_GO_FORWARD, _("Forward"),
              group.get('go_forward'), _("Go forward")),
-            ('Today', 'stoq-calendar-today', _("Show today"),
+            ('Today', STOQ_CALENDAR_TODAY, _("Show today"),
              group.get('show_today'), _("Show today")),
             ]
         self.calendar_ui = self.add_ui_actions('', actions,
@@ -249,9 +251,9 @@ class CalendarApp(AppWindow):
         self.help_ui = None
 
         radio_actions = [
-            ('ViewMonth', 'stoq-calendar-month', _("View as month"),
+            ('ViewMonth', STOQ_CALENDAR_MONTH, _("View as month"),
              '', _("Show one month")),
-            ('ViewWeek', 'stoq-calendar-week', _("View as week"),
+            ('ViewWeek', STOQ_CALENDAR_WEEK, _("View as week"),
              '', _("Show one week")),
             ]
         self.add_ui_actions('', radio_actions, 'RadioActions',

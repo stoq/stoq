@@ -82,7 +82,7 @@ class CSVExporterDialog(BaseEditor):
     #
 
     def _setup_widgets(self):
-        self.main_dialog.ok_button.set_label('gtk-save-as')
+        self.main_dialog.ok_button.set_label(gtk.STOCK_SAVE_AS)
 
         # (encoding name, python encoding codec)
         # see http://docs.python.org/lib/standard-encodings.html

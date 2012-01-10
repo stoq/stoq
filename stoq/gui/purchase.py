@@ -53,6 +53,7 @@ from stoqlib.gui.search.productsearch import (ProductSearch,
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.sellableunitsearch import SellableUnitSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
+from stoqlib.gui.stockicons import (STOQ_PRODUCTS, STOQ_SUPPLIERS)
 from stoqlib.gui.wizards.consignmentwizard import (ConsignmentWizard,
                                                    CloseInConsignmentWizard)
 from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
@@ -73,7 +74,6 @@ class PurchaseApp(SearchableAppWindow):
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 
     app_name = _('Purchase')
-    app_icon_name = 'stoq-purchase-app'
     gladefile = "purchase"
     search_table = PurchaseOrderView
     search_label = _('matching:')
@@ -111,7 +111,7 @@ class PurchaseApp(SearchableAppWindow):
              group.get("search_base_categories")),
             ("Categories", None, _("Categories..."),
              group.get("search_categories")),
-            ("Products", 'stoq-products', _("Products..."),
+            ("Products", STOQ_PRODUCTS, _("Products..."),
              group.get("search_products")),
             ("ProductUnits", None, _("Product units..."),
              group.get("search_product_units")),
@@ -121,7 +121,7 @@ class PurchaseApp(SearchableAppWindow):
              group.get("search_stock_items")),
             ("SearchClosedStockItems", None, _("Closed stock items..."),
              group.get("search_closed_stock_items")),
-            ("Suppliers", 'stoq-suppliers', _("Suppliers..."),
+            ("Suppliers", STOQ_SUPPLIERS, _("Suppliers..."),
              group.get("search_suppliers")),
             ("Transporter", None, _("Transporters..."),
              group.get("search_transporters")),

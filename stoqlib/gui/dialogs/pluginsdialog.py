@@ -77,7 +77,7 @@ class PluginManagerDialog(BasicDialog):
         self.ok_button.set_sensitive(selected.can_activate())
 
     def _setup_widgets(self):
-        self.set_ok_label(_(u'Activate'), 'gtk-apply')
+        self.set_ok_label(_(u'Activate'), gtk.STOCK_APPLY)
         self.ok_button.set_sensitive(False)
         plugins = []
 

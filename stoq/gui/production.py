@@ -42,6 +42,7 @@ from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
                                                  ProductionHistorySearch)
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.productionwizard import ProductionWizard
+from stoqlib.gui.stockicons import STOQ_PRODUCTION_APP
 from stoqlib.reporting.production import ProductionReport
 
 from stoq.gui.application import SearchableAppWindow
@@ -52,7 +53,6 @@ _ = gettext.gettext
 class ProductionApp(SearchableAppWindow):
 
     app_name = _(u'Production')
-    app_icon_name = 'stoq-production-app'
     gladefile = "production"
     search_table = ProductionOrder
     search_label = _(u'matching:')
@@ -73,7 +73,7 @@ class ProductionApp(SearchableAppWindow):
              _('Production order...'),
              group.get('new_production_order'),
              _('Create a new production')),
-            ('ProductionPurchaseQuote', 'stoq-purchase-app',
+            ('ProductionPurchaseQuote', STOQ_PRODUCTION_APP,
              _('Purchase quote...'),
              group.get('new_production_quote')),
 
@@ -96,7 +96,7 @@ class ProductionApp(SearchableAppWindow):
             ("SearchService", None, _("Services..."),
              group.get('search_services'),
              _("Search for services")),
-            ("SearchProductionItem", 'stoq-production-app',
+            ("SearchProductionItem", STOQ_PRODUCTION_APP,
              _("Production items..."),
              group.get('search_production_items'),
              _("Search for production items")),

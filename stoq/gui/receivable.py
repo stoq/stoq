@@ -71,7 +71,6 @@ class ReceivableApp(SearchableAppWindow):
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 
     app_name = _('Accounts receivable')
-    app_icon_name = 'stoq-bills'
     gladefile = 'receivable'
     search_table = InPaymentView
     search_label = _('matching:')
