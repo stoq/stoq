@@ -130,10 +130,10 @@ class ShortcutsEditor(BasicDialog):
         self.shortcuts.add_list(get_bindings(category.name), clear=True)
 
     def _on_defaults_button__clicked(self, button):
+        old = self.categories.get_selected()
         api.config.remove_section('Shortcuts')
         api.config.flush()
         remove_user_bindings()
-        categories = list(get_binding_categories())
         self._label.show()
         self.categories.refresh()
         self.categories.select(old)
