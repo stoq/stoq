@@ -32,8 +32,7 @@ import gettext
 import json
 
 import gtk
-import webkit
-
+from kiwi.log import Logger
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.payment.payment import Payment
@@ -46,11 +45,17 @@ from stoqlib.gui.stockicons import (STOQ_CALENDAR_TODAY,
                                     STOQ_CALENDAR_MONTH)
 from stoqlib.lib import dateconstants
 from stoqlib.lib.daemonutils import start_daemon
+import webkit
+
 from stoq.gui.application import AppWindow
 
+log = Logger("stoq.gui.calendar")
 
 _ = gettext.gettext
 
+USER_AGENT = ("Mozilla/5.0 (X11; Linux x86_64) "
+              "AppleWebKit/535.4+ (KHTML, like Gecko) "
+              "Version/5.0 Safari/535.4+ Stoq")
 
 class CalendarView(gtk.ScrolledWindow):
     def __init__(self, app):
@@ -59,8 +64,9 @@ class CalendarView(gtk.ScrolledWindow):
         self.set_shadow_type(gtk.SHADOW_ETCHED_IN)
 
         self._view = webkit.WebView()
-        self._view.props.settings.props.enable_developer_extras = True
-
+        settings = self._view.props.settings
+        settings.props.enable_developer_extras = True
+        settings.props.user_agent = USER_AGENT
         self._view.get_web_inspector().connect(
             'inspect-web-view',
             self._on_inspector__inspect_web_view)
@@ -90,6 +96,7 @@ class CalendarView(gtk.ScrolledWindow):
 
     def _load_daemon_path(self, path):
         uri = '%s/%s' % (self._daemon_uri, path)
+        log.info("Loading uri: %s" % (uri, ))
         self._view.load_uri(uri)
 
     def _run_dialog(self, name, **kwargs):
