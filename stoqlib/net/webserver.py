@@ -105,7 +105,7 @@ class CalendarEvents(Resource):
                        "id": payment.id,
                        "type": "in-payment",
                        "start": start,
-                       "url": "dialog://payment?id=" + str(payment.id),
+                       "url": "stoq://dialog/payment?id=" + str(payment.id),
                        "className": className})
 
     def _create_out_payment(self, payment_view, events):
@@ -146,7 +146,7 @@ class CalendarEvents(Resource):
                        "id": payment.id,
                        "type": "out-payment",
                        "start": start,
-                       "url": "dialog://payment?id=" + str(payment.id),
+                       "url": "stoq://dialog/payment?id=" + str(payment.id),
                        "className": className})
 
     def _create_order(self, order_view, events):
@@ -166,7 +166,7 @@ class CalendarEvents(Resource):
                        "id": order_view.id,
                        "start": order_view.expected_receival_date,
                        "type": "purchase",
-                       "url": "dialog://purchase?id=" + str(order_view.id),
+                       "url": "stoq://dialog/purchase?id=" + str(order_view.id),
                        "className": className})
 
     def _summarize_events(self, events):
@@ -201,7 +201,7 @@ class CalendarEvents(Resource):
             title_format = stoqlib_ngettext(_("%d more account receivable"),
                                             _("%d more accounts receivable"),
                                             len(in_payment_events))
-            url = "dialog://in-payment-list?date=%s" % (date, )
+            url = "stoq://show/in-payments-by-date?date=%s" % (date, )
             events.append(dict(title=title_format % len(in_payment_events),
                                url=url,
                                start=date,
@@ -210,7 +210,7 @@ class CalendarEvents(Resource):
             title_format = stoqlib_ngettext(_("%d more account payable"),
                                             _("%d more accounts payable"),
                                             len(out_payment_events))
-            url = "dialog://out-payment-list?date=%s" % (date, )
+            url = "stoq://show/out-payments-by-date?date=%s" % (date, )
             events.append(dict(title=title_format % len(out_payment_events),
                                url=url,
                                start=date,
@@ -219,7 +219,7 @@ class CalendarEvents(Resource):
             title_format = stoqlib_ngettext(_("%d more purchase"),
                                             _("%d more purchases"),
                                             len(purchase_events))
-            url = "dialog://purchase-list?date=%s" % (date, )
+            url = "stoq://show/purchases-by-date?date=%s" % (date, )
             events.append(dict(title=title_format % len(purchase_events),
                                url=url,
                                start=date,

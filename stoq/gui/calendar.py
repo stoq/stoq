@@ -30,6 +30,7 @@ stoq/gui/calendar.py:
 import datetime
 import gettext
 import json
+import urlparse
 
 import gtk
 from kiwi.log import Logger
@@ -56,6 +57,16 @@ _ = gettext.gettext
 USER_AGENT = ("Mozilla/5.0 (X11; Linux x86_64) "
               "AppleWebKit/535.4+ (KHTML, like Gecko) "
               "Version/5.0 Safari/535.4+ Stoq")
+
+# urlparse.urlparse() requires you to register your custom url
+# scheme to be able to use result.query
+
+
+def register_scheme(scheme):
+    for method in filter(lambda s: s.startswith('uses_'), dir(urlparse)):
+        getattr(urlparse, method).append(scheme)
+register_scheme('stoq')
+
 
 class CalendarView(gtk.ScrolledWindow):
     def __init__(self, app):
@@ -98,20 +109,6 @@ class CalendarView(gtk.ScrolledWindow):
         uri = '%s/%s' % (self._daemon_uri, path)
         log.info("Loading uri: %s" % (uri, ))
         self._view.load_uri(uri)
-
-    def _run_dialog(self, name, **kwargs):
-        if name == 'payment':
-            self._show_payment_details(**kwargs)
-        elif name == 'in-payment-list':
-            self._show_in_payment_list(**kwargs)
-        elif name == 'out-payment-list':
-            self._show_out_payment_list(**kwargs)
-        elif name == 'purchase':
-            self._show_purchase(**kwargs)
-        elif name == 'purchase-list':
-            self._show_purchase_list(**kwargs)
-        else:
-            raise NotImplementedError(name)
 
     def _show_payment_details(self, id):
         trans = api.new_transaction()
@@ -170,20 +167,48 @@ class CalendarView(gtk.ScrolledWindow):
     def _calendar_run(self, name, *args):
         self._js_function_call("$('#calendar').fullCalendar", name, *args)
 
+    def _uri_run_dialog(self, result, kwargs):
+        path = result.path
+        if path == '/payment':
+            self._show_payment_details(**kwargs)
+        elif path == '/purchase':
+            self._show_purchase(**kwargs)
+        else:
+            raise NotImplementedError(path)
+
+    def _uri_show(self, result, kwargs):
+        path = result.path
+        if path == '/in-payments-by-date':
+            self._show_in_payment_list(**kwargs)
+        elif path == '/out-payments-by-date':
+            self._show_out_payment_list(**kwargs)
+        elif path == '/purchases-by-date':
+            self._show_purchase_list(**kwargs)
+        else:
+            raise NotImplementedError(path)
+
+    def _parse_stoq_uri(self, uri):
+        result = urlparse.urlparse(uri)
+        kwargs = {}
+        for arg in result.query.split(','):
+            k, v = arg.split('=', 1)
+            kwargs[k] = v
+
+        if result.hostname == 'dialog':
+            self._uri_run_dialog(result, kwargs)
+        elif result.hostname == 'show':
+            self._uri_show(result, kwargs)
+        else:
+            raise NotImplementedError(result.hostname)
+
     def _policy_decision(self, uri, policy):
         if uri.startswith('file:///'):
             policy.use()
         elif uri.startswith('http://localhost'):
             policy.use()
-        elif uri.startswith('dialog://'):
+        elif uri.startswith('stoq://'):
             policy.ignore()
-            data = uri[9:]
-            doc, args = data.split('?', 1)
-            kwargs = {}
-            for arg in args.split(','):
-                k, v = arg.split('=', 1)
-                kwargs[k] = v
-            self._run_dialog(doc, **kwargs)
+            self._parse_stoq_uri(uri)
         else:
             gtk.show_uri(self.get_screen(), uri,
                          gtk.get_current_event_time())
