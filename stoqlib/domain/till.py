@@ -34,7 +34,6 @@ from stoqlib.database.orm import IntCol, DateTimeCol, ForeignKey, UnicodeCol
 from stoqlib.database.orm import AND, const, OR, LEFTJOINOn
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IOutPayment, IInPayment
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.exceptions import TillError
 from stoqlib.lib.translation import stoqlib_gettext
@@ -208,9 +207,9 @@ class Till(Domain):
         @returns: till entry representing the added debit
         @rtype: L{TillEntry}
         """
-        if IInPayment(payment, None):
+        if payment.is_inpayment():
             value = payment.value
-        elif IOutPayment(payment, None):
+        elif payment.is_outpayment():
             value = -payment.value
         else:
             raise AssertionError(payment)

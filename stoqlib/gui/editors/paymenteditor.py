@@ -262,7 +262,7 @@ class InPaymentEditor(BasePaymentEditor):
                       or None
         """
         BasePaymentEditor.__init__(self, conn, model)
-        if not IInPayment(model, None):
+        if model and not model.is_inpayment():
             self.model.addFacet(IInPayment, connection=self.conn)
             self.can_edit_details()
 
@@ -283,7 +283,7 @@ class OutPaymentEditor(BasePaymentEditor):
                       or None
         """
         BasePaymentEditor.__init__(self, conn, model)
-        if not IOutPayment(model, None):
+        if model and not model.is_outpayment():
             self.model.addFacet(IOutPayment, connection=self.conn)
             self.can_edit_details()
 
@@ -351,18 +351,24 @@ class LonelyPaymentDetailsDialog(BaseEditor):
             self.model, LonelyPaymentDetailsDialog.proxy_widgets)
 
     def get_title(self, model):
-        if IInPayment(model, None):
+        if model is None:
+            return
+
+        if model.is_inpayment():
             return _('Receiving Details')
 
-        if IOutPayment(model, None):
+        if model.is_outpayment():
             return _('Payment Details')
 
 
 def get_dialog_for_payment(payment):
-    if IInPayment(payment, None):
+    if payment is None:
+        raise TypeError(payment)
+
+    if payment.is_inpayment():
         return InPaymentEditor
 
-    if IOutPayment(payment, None):
+    if payment.is_outpayment():
         return OutPaymentEditor
 
     raise TypeError(payment)

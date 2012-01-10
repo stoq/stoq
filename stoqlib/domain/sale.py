@@ -42,10 +42,9 @@ from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.event import Event
 from stoqlib.domain.events import SaleStatusChangedEvent, ECFIsLastSaleEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.interfaces import (IContainer, IOutPayment,
+from stoqlib.domain.interfaces import (IContainer,
                                        IPaymentTransaction,
-                                       IDelivery, IStorable,
-                                       IInPayment)
+                                       IDelivery, IStorable)
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Person, PersonAdaptToClient,
@@ -943,7 +942,7 @@ class SaleAdaptToPaymentTransaction(object):
             if self._already_have_commission(payment):
                 continue
             commission = self._create_commission(payment)
-            if IOutPayment(payment, None) is not None:
+            if payment.is_outpayment():
                 commission.value = -commission.value
 
     def cancel(self):
@@ -979,7 +978,7 @@ class SaleAdaptToPaymentTransaction(object):
         till = Till.get_current(self.sale.get_connection())
         for payment in payments:
             assert payment.is_pending(), payment.get_status_str()
-            assert IInPayment(payment, None)
+            assert payment.is_inpayment()
             till.add_entry(payment)
 
         # FIXME: Move this to a payment method specific hook
@@ -996,7 +995,7 @@ class SaleAdaptToPaymentTransaction(object):
 
         nitems = 0
         for item in self.sale.group.payments:
-            if IOutPayment(item, None) is None:
+            if item.is_outpayment():
                 nitems += 1
 
         if nitems <= 1:

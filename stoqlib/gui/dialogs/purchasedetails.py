@@ -37,7 +37,6 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.printing import print_report
-from stoqlib.domain.interfaces import IInPayment
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
@@ -50,7 +49,7 @@ _ = stoqlib_gettext
 def payment_value_colorize(payment):
     if payment.status == Payment.STATUS_CANCELLED:
         return gtk.gdk.color_parse('gray')
-    if IInPayment(payment, None):
+    if payment.is_inpayment():
         return gtk.gdk.color_parse('blue')
 
     return gtk.gdk.color_parse('red')

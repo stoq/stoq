@@ -40,7 +40,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.printing import print_report
-from stoqlib.domain.interfaces import IClient, IOutPayment
+from stoqlib.domain.interfaces import IClient
 from stoqlib.domain.person import Person
 from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
@@ -105,7 +105,7 @@ class SaleDetailsDialog(BaseEditor):
 
     def _get_payments(self, sale):
         for payment in sale.payments:
-            if IOutPayment(payment, None):
+            if payment.is_outpayment():
                 yield _TemporaryOutPayment(payment)
             else:
                 yield payment
