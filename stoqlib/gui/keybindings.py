@@ -307,12 +307,7 @@ def add_bindings(bindings):
 
 def load_user_keybindings():
     from stoqlib.api import api
-    from ConfigParser import NoSectionError
-    try:
-        shortcuts = api.config.items('Shortcuts')
-    except NoSectionError:
-        return
-    for key, value in shortcuts:
+    for key, value in api.config.items('Shortcuts'):
         set_user_binding(key, value)
 
 
