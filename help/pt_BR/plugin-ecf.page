@@ -1,0 +1,65 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task 2column"
+      id="plugin-ecf">
+
+  <title>Plugin ECF</title>
+  <info>
+    <desc>
+      Plugin ECF no Stoq
+    </desc>
+
+    <link type="guide" xref="plugin" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Ao ativar este plugin, o Stoq estará apto a trabalhar com impressoras
+    fiscais em <link xref="sale">vendas</link>.
+  </p>
+  <note style="important">
+    <p>
+      Assim como todos os <link xref="plugin">plugins</link> após ativo não
+      será possível desativá-lo. Tenha certeza de que realmente deseja fazê-lo
+      antes de confirmar a ação!
+    </p>
+  </note>
+  <p>
+    Você deve verificar junto ao fisco sobre a obrigatoriedade de seu comércio
+    quanto a impressão de notas fiscais. Em caso obrigatório, este plugin deve
+    ser ativado. Caso contrário, ele é opcional, podendo você optar por apenas
+    utilizar as funcionalidades providas pelo
+    <link xref="plugin-nfe">plugin NF-e (Nota Fiscal Eletrônica)</link>.
+  </p>
+  <p>
+    Um novo menu constará nos <link xref="app-pos" /> e <link xref="app-till" />.
+    Utilizaremos esse menu para <gui>Cancelar a última venda</gui> que foi
+    impressa e <gui>Ler memória</gui> (melhor explicada na nota abaixo).
+  </p>
+  <note style="important">
+    <p>
+      CONVÊNIO ICMS 156/94 - Parágrafo único. No início de cada dia, será
+      emitida uma Leitura "X" de todos os ECFs em uso, devendo o cupom de
+      leitura ser mantido junto ao equipamento no decorrer do dia, para
+      exibição ao Fisco, se solicitado.
+    </p>
+  </note>
+
+  <list>
+    <title>Algumas considerações importantes</title>
+    <item>
+      <p>
+        Não será possível utilizar o <link xref="app-till" /> ou realizar
+        qualquer tipo de <link xref="sale">vendas</link> sem ter uma impressora
+        fiscal conectada ao computador. Verifique os
+        <link href="http://www.stoq.com.br/mais/#ecf">equipamentos suportados</link>
+        pelo Stoq.
+      </p>
+      <p>
+        Todas as operações do <link xref="till">caixa</link> são dependentes da
+        situação da impressora fiscal presente no computador, desde a
+        abertura, até mesmo suprimentos e sangrias.
+      </p>
+    </item>
+  </list>
+
+</page>
