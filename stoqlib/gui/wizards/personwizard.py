@@ -24,7 +24,6 @@
 ##
 """ Person role wizards definition """
 
-import gtk
 from kiwi.python import Settable
 from kiwi.argcheck import argcheck
 from kiwi.ui.widgets.list import Column
@@ -36,7 +35,6 @@ from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.personeditor import BranchEditor, UserEditor
-from stoqlib.gui.help import show_section
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_phone_number, raw_phone_number
@@ -207,16 +205,7 @@ class PersonRoleWizard(BaseWizard):
                             title=self.get_role_title())
 
         if role_editor.create_help_section:
-            self.buttonbox.set_layout(gtk.BUTTONBOX_END)
-            button = gtk.Button(stock=gtk.STOCK_HELP)
-            button.connect('clicked', self._on_help__clicked,
-                           role_editor.create_help_section)
-            self.buttonbox.add(button)
-            self.buttonbox.set_child_secondary(button, True)
-            button.show()
-
-    def _on_help__clicked(self, button, section):
-        show_section(section)
+            self.set_help_section(role_editor.create_help_section)
 
     def get_role_name(self):
         if not self.role_editor.model_name:
