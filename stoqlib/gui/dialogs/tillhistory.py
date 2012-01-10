@@ -38,6 +38,8 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.tilleditor import (CashAdvanceEditor, CashInEditor,
                                             CashOutEditor)
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.stockicons import (STOQ_MONEY, STOQ_MONEY_ADD,
+                                    STOQ_MONEY_REMOVE)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.reporting.till import TillHistoryReport
@@ -84,11 +86,11 @@ class TillHistoryDialog(SearchDialog):
         self.results.connect('has-rows', self._has_rows)
 
         self._add_editor_button(_('Cash _Add...'), CashAdvanceEditor,
-                                'stoq-money')
+                                STOQ_MONEY)
         self._add_editor_button(_('Cash _In...'), CashInEditor,
-                                'stoq-money-add')
+                                STOQ_MONEY_ADD)
         self._add_editor_button(_('Cash _Out...'), CashOutEditor,
-                                'stoq-money-remove')
+                                STOQ_MONEY_REMOVE)
 
         self.print_button = gtk.Button(None, gtk.STOCK_PRINT, True)
         self.print_button.set_property("use-stock", True)

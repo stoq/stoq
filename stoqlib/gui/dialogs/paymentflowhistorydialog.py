@@ -24,6 +24,7 @@
 """Payment Flow History Report Dialog"""
 
 
+import gtk
 from kiwi.python import Settable
 from kiwi.ui.search import (DateSearchFilter, Today, Yesterday, LastWeek,
                             LastMonth)
@@ -75,7 +76,7 @@ class PaymentFlowHistoryDialog(BaseEditor):
     #
 
     def _setup_widgets(self):
-        self.main_dialog.ok_button.set_label('gtk-print')
+        self.main_dialog.ok_button.set_label(gtk.STOCK_PRINT)
 
         self._date_filter = DateSearchFilter(_(u'Date:'))
         #FIXME: add a remove_option method in DateSearchFilter.

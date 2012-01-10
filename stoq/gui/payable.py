@@ -68,7 +68,6 @@ class PayableApp(SearchableAppWindow):
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 
     app_name = _('Accounts payable')
-    app_icon_name = 'stoq-payable-app'
     gladefile = 'payable'
     search_table = OutPaymentView
     search_label = _('matching:')

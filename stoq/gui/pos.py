@@ -109,7 +109,6 @@ LOGO_HEIGHT = 32
 class PosApp(AppWindow):
 
     app_name = _('Point of Sales')
-    app_icon_name = 'stoq-pos-app'
     gladefile = "pos"
     embedded = True
 
@@ -301,7 +300,7 @@ class PosApp(AppWindow):
         else:
             confirm_label = _("_Checkout")
         button_set_image_with_label(self.checkout_button,
-                                    'gtk-apply', confirm_label)
+                                    gtk.STOCK_APPLY, confirm_label)
 
     def _setup_widgets(self):
         self._inventory_widgets = [self.Sales, self.barcode, self.quantity,

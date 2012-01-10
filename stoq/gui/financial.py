@@ -331,7 +331,6 @@ class TransactionPage(object):
 class FinancialApp(AppWindow):
 
     app_name = _('Financial')
-    app_icon_name = 'stoq-financial-app'
     gladefile = 'financial'
     embedded = True
 

@@ -26,6 +26,7 @@
 
 from decimal import Decimal
 
+import gtk
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import ComboSearchFilter
@@ -75,7 +76,7 @@ class ProductionItemsSearch(SearchDialog):
     #
 
     def setup_widgets(self):
-        self._print_button = self.add_button('print', stock='gtk-print')
+        self._print_button = self.add_button('print', stock=gtk.STOCK_PRINT)
         self._print_button.connect('clicked', self._on_print_button__clicked)
         self._print_button.set_sensitive(False)
         self._print_button.show()

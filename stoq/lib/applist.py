@@ -28,6 +28,11 @@ import gettext
 
 from kiwi.component import implements
 from stoqlib.lib.interfaces import IApplicationDescriptions
+from stoqlib.gui.stockicons import (
+    STOQ_ADMIN_APP, STOQ_CALENDAR_APP, STOQ_CALC, STOQ_INVENTORY_APP,
+    STOQ_PAYABLE_APP, STOQ_POS_APP, STOQ_PRODUCTION_APP,
+    STOQ_PURCHASE_APP, STOQ_BILLS, STOQ_SALES_APP, STOQ_STOCK_APP,
+    STOQ_TILL_APP)
 
 _ = gettext.gettext
 
@@ -35,40 +40,40 @@ _APPLICATIONS = {
     'admin': (_("Administrative"),
               _("Administer the branches, users, employees and configure system "
                 "parameters."),
-              'stoq-admin-app'),
+              STOQ_ADMIN_APP),
     'calendar': (_("Calendar"),
                  "Shows payments, orders and other things that will happen in the future.",
-                 'stoq-calendar-app'),
+                 STOQ_CALENDAR_APP),
     'financial': (_("Financial"),
                   _("Control accounts and financial transactions."),
-                  'stoq-calc'),
+                  STOQ_CALC),
     'inventory': (_("Inventory"),
                   _("Audit and adjust the product stock."),
-                  'stoq-inventory-app'),
+                  STOQ_INVENTORY_APP),
     'payable': (_("Accounts Payable"),
                 _("Manage payment that needs to be paid."),
-                'stoq-payable-app'),
+                STOQ_PAYABLE_APP),
     'pos': (_("Point of Sales"),
             _("Terminal and cash register for selling products and services."),
-            'stoq-pos-app'),
+            STOQ_POS_APP),
     'production': (_("Production"),
                    _("Manage the production process."),
-                   'stoq-production-app'),
+                   STOQ_PRODUCTION_APP),
     'purchase': (_("Purchase"),
                  _("Create purchase orders and quotes"),
-                   'stoq-purchase-app'),
+                 STOQ_PURCHASE_APP),
     'receivable': (_("Accounts Receivable"),
                    _("Manage payments that needs to be received."),
-                   'stoq-bills'),
+                   STOQ_BILLS),
     'sales': (_("Sales"),
               _("Quotes management and commission calculation."),
-              'stoq-sales-app'),
+              STOQ_SALES_APP),
     'stock': (_("Stock"),
               _("Stock management, receive products and transfer them between branches."),
-              'stoq-stock-app'),
+              STOQ_STOCK_APP),
     'till': (_("Till"),
              _("Control tills and their workflow."),
-             'stoq-till-app'),
+             STOQ_TILL_APP),
 }
 
 

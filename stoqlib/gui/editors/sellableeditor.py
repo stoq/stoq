@@ -338,7 +338,7 @@ class SellableEditor(BaseEditor):
             button.connect(connect_on, callback_func, label)
 
     def _add_delete_button(self):
-        self._add_extra_button(_('Remove'), 'gtk-delete',
+        self._add_extra_button(_('Remove'), gtk.STOCK_DELETE,
                                self._on_delete_button__clicked)
 
     def _add_close_button(self):

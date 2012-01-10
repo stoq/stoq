@@ -27,6 +27,8 @@ from kiwi.ui.objectlist import ColoredColumn, Column, ObjectTree
 
 from stoqlib.api import api
 from stoqlib.domain.views import Account, AccountView
+from stoqlib.gui.stockicons import (STOQ_MONEY, STOQ_PAYABLE_APP, STOQ_BILLS,
+                                    STOQ_TILL_APP)
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -89,10 +91,10 @@ class AccountTree(ObjectTree):
 
         def render_icon(icon):
             return self.render_icon(icon, gtk.ICON_SIZE_MENU)
-        self._pixbuf_money = render_icon('stoq-money')
-        self._pixbuf_payable = render_icon('stoq-payable-app')
-        self._pixbuf_receivable = render_icon('stoq-bills')
-        self._pixbuf_till = render_icon('stoq-till-app')
+        self._pixbuf_money = render_icon(STOQ_MONEY)
+        self._pixbuf_payable = render_icon(STOQ_PAYABLE_APP)
+        self._pixbuf_receivable = render_icon(STOQ_BILLS)
+        self._pixbuf_till = render_icon(STOQ_TILL_APP)
         if self.create_mode:
             self.set_headers_visible(False)
 

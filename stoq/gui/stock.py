@@ -59,6 +59,7 @@ from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
 from stoqlib.reporting.product import SimpleProductReport
+from stoqlib.gui.stockicons import STOQ_RECEIVING
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -68,7 +69,6 @@ log = Logger('stoq.gui.stock')
 
 class StockApp(SearchableAppWindow):
     app_name = _('Stock')
-    app_icon_name = 'stoq-stock-app'
     gladefile = "stock"
     search_table = ProductFullStockView
     search_labels = _('Matching:')
@@ -83,12 +83,12 @@ class StockApp(SearchableAppWindow):
     def create_actions(self):
         group = get_accels('app.stock')
         actions = [
-            ("NewReceiving", 'stoq-receiving', _("Order _receival..."),
+            ("NewReceiving", STOQ_RECEIVING, _("Order _receival..."),
              group.get('new_receiving')),
-            ('NewTransfer', 'gtk-convert', _('Transfer...'),
+            ('NewTransfer', gtk.STOCK_CONVERT, _('Transfer...'),
              group.get('transfer_product')),
             ('NewStockDecrease', None, _('Stock decrease...')),
-            ('StockInitial', 'gtk-go-up', _('Register initial stock...')),
+            ('StockInitial', gtk.STOCK_GO_UP, _('Register initial stock...')),
             ("LoanNew", None, _("Loan...")),
             ("LoanClose", None, _("Close loan...")),
             ("SearchPurchaseReceiving", None, _("Received purchases..."),
@@ -286,7 +286,7 @@ class StockApp(SearchableAppWindow):
         if pixbuf:
             self.image.set_from_pixbuf(pixbuf)
         else:
-            self.image.set_from_stock('gtk-edit', gtk.ICON_SIZE_LARGE_TOOLBAR)
+            self.image.set_from_stock(gtk.STOCK_EDIT, gtk.ICON_SIZE_LARGE_TOOLBAR)
 
         self.set_sensitive([self.EditProduct], bool(item))
         self.set_sensitive([self.ProductStockHistory],

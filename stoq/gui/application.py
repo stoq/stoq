@@ -121,7 +121,6 @@ class AppWindow(GladeDelegate):
 
     app_windows = []
     app_name = None
-    app_icon_name = None
     search = None
     gladefile = toplevel_name = ''
     title = ''
