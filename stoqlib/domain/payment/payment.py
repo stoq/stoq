@@ -378,6 +378,16 @@ class Payment(Domain):
             return self.open_date.date().strftime('%x')
         return ""
 
+    def is_inpayment(self):
+        """Find out if a payment is incoming
+        @returns: True if it's incoming"""
+        return IInPayment(self, None) is not None
+
+    def is_outpayment(self):
+        """Find out if a payment is outgoing
+        @returns: True if it's outgoing"""
+        return IOutPayment(self, None) is not None
+
 
 class PaymentChangeHistory(Domain):
     """ A class to hold information about changes to a payment.
@@ -509,7 +519,7 @@ class PaymentFlowHistory(Domain):
         else:
             payment_qty = -1
 
-        if IOutPayment(payment, None) is not None:
+        if payment.is_outpayment() is not None:
             if accomplished:
                 self.paid += value
                 self.paid_payments += payment_qty
@@ -521,7 +531,7 @@ class PaymentFlowHistory(Domain):
                     to_pay = 0
                 self.to_pay = to_pay
                 self.to_pay_payments += payment_qty
-        elif IInPayment(payment, None) is not None:
+        elif payment.is_inpayment() is not None:
             if accomplished:
                 self.received += value
                 self.received_payments += payment_qty
@@ -661,7 +671,6 @@ class PaymentFlowHistory(Domain):
         day_history = cls.get_or_create_flow_history(conn, reference_date)
         day_history._update_registers(payment, -payment.paid_value,
                                       accomplished=True)
-
 
 #
 # Payment adapters
