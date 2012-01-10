@@ -328,10 +328,10 @@ def _initialize(options):
 
 def run_app(options, appname):
     global _ran_wizard
-    from stoqlib.gui.base.gtkadds import register_iconsets
+    from stoqlib.gui.stockicons import register
 
     log.debug('register stock icons')
-    register_iconsets()
+    register()
 
     from stoq.gui.shell import Shell
 
