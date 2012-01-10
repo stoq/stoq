@@ -38,6 +38,11 @@
       };
       $('#calendar').fullCalendar(options);
   };
+  $(function() {
+     if (navigator.userAgent.search("Stoq") == -1) {
+        startup({});
+     }
+  })
   </script>
 </head>
 
