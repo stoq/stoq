@@ -263,23 +263,8 @@ class KeyBinding(object):
     def __init__(self, item):
         self.name = item[0]
         self.shortcut = _user_bindings.get(self.name, item[1])
-        self.category = self._parse_category(item[0])
+        self.category = get_category_label(item[0])
         self.description = self._parse_description(item)
-
-    def _parse_category(self, name):
-        if name.startswith('app.common'):
-            return _("General")
-        elif name.startswith('app'):
-            app_name = name.split('.', 2)[1]
-            app_list = get_utility(IApplicationDescriptions)
-            for item in app_list.get_descriptions():
-                if item[0] == app_name:
-                    return item[1]  # the label
-
-        elif name.startswith('plugin'):
-            return _('%s plugin') % (name.split('.', 2)[1], )
-        else:
-            raise AssertionError(name)
 
     def _parse_description(self, item):
         if len(item) > 2:
@@ -288,6 +273,12 @@ class KeyBinding(object):
             n = self.name.rsplit('.')[-1]
             n = n.replace('_', ' ')
             return n.capitalize()
+
+
+class KeyBindingCategory(object):
+    def __init__(self, name, label):
+        self.name = name
+        self.label = label
 
 
 class KeyBindingGroup(object):
@@ -316,10 +307,52 @@ def set_user_binding(binding, value):
     _user_bindings[binding] = value
 
 
-def get_bindings():
+def remove_user_binding(binding):
+    global _user_bindings
+    try:
+        del _user_bindings[binding]
+    except KeyError:
+        pass
+
+
+def remove_user_bindings():
+    global _user_bindings
+    _user_bindings = {}
+
+
+def get_bindings(category=None):
     global _bindings
     for binding in _bindings:
+        if category is not None and not binding[0].startswith(category):
+            continue
         yield KeyBinding(binding)
+
+
+def get_category_label(name):
+    if name.startswith('app.common'):
+        return _("General")
+    elif name.startswith('app'):
+        app_name = name.split('.', 2)[1]
+        app_list = get_utility(IApplicationDescriptions)
+        for item in app_list.get_descriptions():
+            if item[0] == app_name:
+                return item[1]  # the label
+
+    elif name.startswith('plugin'):
+        return _('%s plugin') % (name.split('.', 2)[1], )
+    else:
+        raise AssertionError(name)
+
+
+def get_binding_categories():
+    categories = set()
+    for binding in _bindings:
+        name = binding[0]
+        category = '.'.join(name.split('.', 2)[:2])
+        categories.add((category, get_category_label(name)))
+
+    for name, label in categories:
+        yield KeyBindingCategory(name, label)
 
 
 def get_accels(prefix=''):
