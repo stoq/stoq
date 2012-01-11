@@ -16,7 +16,20 @@
   </info>
 
   <p>
-    Gerencia contas e transações financeiras.
+    Este <link xref="overview#app">aplicativo</link> é responsável pelo
+    controle e gerenciamento financeiro da empresa. Todas as contas correntes,
+    contas de investimento, contas de cartões de crédito assim como
+    <link xref="account-payable">contas a pagar</link> e
+    <link xref="account-receivable">contas a receber</link> poderão ser
+    controladas neste aplicativo através de
+    <link xref="transaction">transações financeiras</link>.
+  </p>
+  <p>
+    A separação de funcionalidades nesse aplicativo é feito por abas. A
+    primeira aberta será sempre a aba <gui>Contas</gui>, que mostra uma lista
+    de <link xref="account">contas</link> existentes. Um duplo clique em
+    qualquer uma abrirá uma nova aba, listando todas as
+    <link xref="transaction">transações</link> existentes nessa conta.
   </p>
 
   <!--This will automatically list all pages that links to this page-->

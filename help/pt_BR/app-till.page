@@ -15,9 +15,66 @@
   </info>
 
   <p>
-    Controle de caixa e seus fluxos. Realiza suprimentos e sangrias, confirma
-    vendas, entre outros.
+    Este <link xref="overview#app">aplicativo</link> está diretamente voltado
+    para a área de controle de
+    <link xref="sale">vendas</link>, sendo responsável pelo gerenciamento de
+    cada <link xref="till">caixa</link> da empresa e realizando operações
+    comuns a ele como <link xref="till-add-money">suprimentos</link> 
+    <link xref="till-remove-money">sangrias</link>.
   </p>
+  <p>
+    Todas as vendas realizadas no <link xref="app-pos" /> podem ser verificadas
+    aqui, assim como <link xref="sale-quote">Cotações de venda</link> devem ser
+    confirmadas aqui.
+  </p>
+  <p>
+    Este aplicativo também possui uma grande integração com o
+    <link xref="plugin-ecf">plugin ECF</link>, como a adição de um novo
+    menu chamado <gui>ECF</gui> e todas as ações de <link xref="till">caixa</link>
+    dependendo do estado da impressora fiscal instalada no computador. Mais
+    informações podem ser encontradas na sessão do plugin em si.
+  </p>
+
+  <list>
+    <title><link xref="overview#search-column">Colunas</link> da lista de vendas:</title>
+    <item>
+      <p>
+        <gui># (número)</gui>: Número da venda registrada pelo Stoq.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Situação</gui>: Situação do pedido (Pendente, Fechado, Cotação,
+        etc).
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Data de abertura</gui>: Dia em que a venda foi realizada.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Cliente</gui>: Nome do <link xref="client">cliente</link> ao qual
+        a venda foi/será realizada.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Vendedor</gui>: Nome do vendedor responsável pela venda.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Quantidade</gui>: Quantidade total de produtos na venda.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Total</gui>: Valor total da venda.
+      </p>
+    </item>
+  </list>
 
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">

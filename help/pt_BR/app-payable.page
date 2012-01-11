@@ -13,8 +13,55 @@
   </info>
 
   <p>
-    Gerencia contas a pagar.
+    <link xref="overview#app">Aplicativo</link> responsável por gerenciar
+    <link xref="account-payable">contas a pagar</link>, normalmente provindas
+    de <link xref="purchase">pedidos de compra</link>.
   </p>
+
+  <list>
+    <title><link xref="overview#search-column">Colunas</link> da lista de pagamentos:</title>
+    <item>
+      <p>
+        <gui># (número)</gui>: Número do pagamento registrado pelo Stoq.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Descrição</gui>: Descrição do pagamento.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Fornecedor</gui>: Nome do <link xref="supplier">fornecedor</link>
+        que recebeu/receberá o pagamento.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Vencimento</gui>: Data de vencimento do pagamento.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Data do pagamento</gui>: Data em que foi realizado o pagamento.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Situação</gui>: Situação do pagamento (Pendente, Pago, etc).
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Valor</gui>: Valor do pagamento.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Pago</gui>: Quantia paga em relação ao Valor.
+      </p>
+    </item>
+  </list>
 
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">

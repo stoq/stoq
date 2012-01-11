@@ -16,8 +16,88 @@
   </info>
 
   <p>
-    Gerenciamento de vendas, orçamentos, cálculo de commissões entre outros.
+    <link xref="overview#app">Aplicativo</link> responsável por gerenciar
+    <link xref="sale">vendas</link> realizadas no Stoq.
   </p>
+  <p>
+    Neste aplicativo podemos gerenciar <link xref="client">clientes</link>,
+    <link xref="transporter">transportadoras</link>, assim como
+    <link xref="sale-quote">criar cotações de venda</link> e etc.
+  </p>
+
+  <list>
+    <title><link xref="overview#search-column">Colunas</link> da lista de vendas:</title>
+    <item>
+      <p>
+        <gui># (número)</gui>: Número da venda registrada pelo Stoq.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Data de abertura</gui>: Data em que a venda foi realizada.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Data de fechamento</gui>: Data em que a venda foi fechada, isto é,
+        considerada completa (realizada e paga).
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Data de confirmação</gui>: Data em que a venda foi confirmada.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Data de cancelamento</gui>: Data em que a venda foi cancelada.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Data de retorno</gui>: Data em que a venda foi retornada ao
+        cliente.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Data de expiração</gui>: Data de expiração da cotação.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Situação</gui>: Situação da venda (Aberta, Confirmada, Cotação,
+        etc).
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Descrição</gui>: Descrição da produção.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Cliente</gui>: Nome do <link xref="client">cliente</link> ao qual
+        a venda foi/será realizada.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Vendedor</gui>: Nome do vendedor que realizou a venda.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Itens</gui>: Quantidade total de produtos e serviços na venda.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Total</gui>: Quantia total que foi/deverá ser paga pelo cliente
+        por esta venda.
+      </p>
+    </item>
+  </list>
 
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">

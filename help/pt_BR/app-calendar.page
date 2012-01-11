@@ -14,8 +14,20 @@
   </info>
 
   <p>
-    Gerencia tarefas, pagamentos, pedidos e outras coisas que ocorrerão no
-    futuro utilizando um calendário.
+    Este aplicativo foi desenvolvido com a finalidade de ajudar na vizualização
+    de datas de vencimento de
+    <link xref="account-payable">contas a pagar</link> e
+    <link xref="account-receivable">contas a receber</link>, recebimento de
+    <link xref="purchase">pedidos de compra</link> e etc.
+  </p>
+  <p>
+    Na tela principal, ao contrário da maioria dos aplicativos que exibem uma
+    <link xref="overview#search">pesquisa</link>, ele mostra um calendário.
+    Nesse calendário, poderemos encontrar itens referentes às datas citadas
+    acima.
+  </p>
+  <p>
+    Cada um desses itens pode ser clicado para verificar mais detalhes.
   </p>
 
   <!--This will automatically list all pages that links to this page-->

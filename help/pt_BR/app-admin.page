@@ -17,8 +17,28 @@
   </info>
 
   <p>
-    Administra filiais, usuários, empregados, configura parâmetros e plugins,
-    entre outros.
+    Este <link xref="overview#app">aplicativo</link> permite ao administrador
+    realizar tarefas importantes do sistema, como gerenciar
+    <link xref="user">usuários</link> e funcionários,
+    administrar <link xref="user-profiles">permissões de acesso</link>,
+    configurar <link xref="param">parâmetros globais do sistema</link>,
+    configurar periféricos, entre outras ações.
+  </p>
+  <p>
+    Por controlar toda a suíte Stoq, o acesso dos usuários a este aplicativo
+    deve <link xref="user-add-profile">ser restrito</link>. Mais de um usuário
+    pode estar cadastrado para operá-lo, no entanto é necessário
+    responsabilidade na atribuição do acesso a este aplicativo.
+  </p>
+  <p>
+    Na janela principal, diferente da maioria dos aplicativos que possuem uma
+    <link xref="overview#search">pesquisa</link>, vamos encontrar vários ícones.
+    Eles podem ser navegados com as teclas direcionais do teclado e acessados
+    com <key>Enter</key> ou mesmo com um duplo clique do mouse.
+  </p>
+  <p>
+    Cada um desses ícones existe como um atalho à maioria dos itens nos menus
+    <gui>Configurar</gui> e <gui>Pesquisar</gui>.
   </p>
 
   <!--This will automatically list all pages that links to this page-->
