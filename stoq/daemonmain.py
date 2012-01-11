@@ -82,7 +82,7 @@ def main(args):
         raise SystemExit("Need a daemon id")
 
     from stoqlib.lib.message import error
-    from stoq.lib.configparser import StoqConfig
+    from stoqlib.lib.configparser import StoqConfig
     log.debug('reading configuration')
     config = StoqConfig()
     if options.filename:

@@ -29,8 +29,8 @@ import sys
 
 from kiwi import environ
 from kiwi.log import set_log_level
+from stoqlib.lib.configparser import StoqConfig
 
-from stoq.lib.configparser import StoqConfig
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import (setup,
                               create_examples,

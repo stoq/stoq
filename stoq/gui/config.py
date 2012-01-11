@@ -76,6 +76,7 @@ from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.base.wizards import BaseWizard, WizardEditorStep
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.processview import ProcessView
+from stoqlib.lib.configparser import StoqConfig
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.osutils import read_registry_key
 from stoqlib.lib.validators import validate_email
@@ -85,7 +86,6 @@ from twisted.internet import reactor
 
 from stoq import library
 from stoq.gui.shell import PRIVACY_STRING
-from stoq.lib.configparser import StoqConfig
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import setup, set_default_profile_settings
 from stoq.main import run_app
