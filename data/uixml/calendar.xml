@@ -35,6 +35,8 @@
         <menuitem action="ViewMonth"/>
         <menuitem action="ViewWeek"/>
         <menuitem action="Today"/>
+        <menuitem action="Back"/>
+        <menuitem action="Forward"/>
       </placeholder>
     </menu>
   </menubar>
