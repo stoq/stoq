@@ -35,47 +35,6 @@
     informações podem ser encontradas na sessão do plugin em si.
   </p>
 
-  <list>
-    <title><link xref="overview#search-column">Colunas</link> da lista de vendas:</title>
-    <item>
-      <p>
-        <gui># (número)</gui>: Número da venda registrada pelo Stoq.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Situação</gui>: Situação do pedido (Pendente, Fechado, Cotação,
-        etc).
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Data de abertura</gui>: Dia em que a venda foi realizada.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Cliente</gui>: Nome do <link xref="client">cliente</link> ao qual
-        a venda foi/será realizada.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Vendedor</gui>: Nome do vendedor responsável pela venda.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Quantidade</gui>: Quantidade total de produtos na venda.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Total</gui>: Valor total da venda.
-      </p>
-    </item>
-  </list>
-
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">
     <title>Sumário</title>

@@ -18,51 +18,6 @@
     provindas de <link xref="sale">vendas</link>.
   </p>
 
-  <list>
-    <title><link xref="overview#search-column">Colunas</link> da lista de pagamentos:</title>
-    <item>
-      <p>
-        <gui># (número)</gui>: Número do pagamento registrado pelo Stoq.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Descrição</gui>: Descrição do pagamento.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Sacado</gui>: Nome do <link xref="client">cliente</link> que
-        realizou/realizará o pagamento.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Vencimento</gui>: Data de vencimento do pagamento.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Data do pagamento</gui>: Data em que foi realizado o pagamento.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Situação</gui>: Situação do pagamento (Pendente, Pago, etc).
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Valor</gui>: Valor do pagamento.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Pago</gui>: Quantia paga em relação ao Valor.
-      </p>
-    </item>
-  </list>
-
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">
     <title>Sumário</title>

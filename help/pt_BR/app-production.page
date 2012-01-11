@@ -19,40 +19,6 @@
     <link xref="production-product">produtos de produção</link> da empresa.
   </p>
 
-  <list>
-    <title><link xref="overview#search-column">Colunas</link> da lista de produções:</title>
-    <item>
-      <p>
-        <gui># (número)</gui>: Número da produção registrada pelo Stoq.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Situação</gui>: Situação da produção (Aberta, Produzindo, etc).
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Descrição</gui>: Descrição da produção.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Responsável</gui>: Nome do responsável pela produção.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Aberto</gui>: Data de abertura da produção.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Fechado</gui>: Data em que a produção foi finalizada.
-      </p>
-    </item>
-  </list>
-
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">
     <title>Sumário</title>
