@@ -138,6 +138,8 @@ class AppWindow(GladeDelegate):
         self._has_open_inventory = Inventory.has_open(
             self.conn, api.get_current_branch(self.conn))
 
+        self._app_settings = api.user_settings.get('app-ui', {})
+
         self._create_ui_manager_ui()
         GladeDelegate.__init__(self, delete_handler=self._on_delete_handler,
                                keyactions=keyactions,
@@ -191,6 +193,15 @@ class AppWindow(GladeDelegate):
 
         if not stoq.stable and not api.is_developer_mode():
             self._display_unstable_version_message()
+
+        # Initial fullscreen state for launcher must be handled
+        # separate since the window is not realized when the state loading
+        # is run in hide_app() the first time.
+        window = self.get_toplevel()
+        window.realize()
+        self.ToggleFullscreen.set_active(
+            self._app_settings.get('show-fullscreen', False))
+        self.ToggleFullscreen.notify('active')
 
     def _create_shared_actions(self):
         if self.app.name != 'launcher':
@@ -264,9 +275,6 @@ class AppWindow(GladeDelegate):
         self.add_ui_actions('', toogle_actions, 'ToogleActions',
                             'toogle')
 
-        self.ToggleToolbar.props.active = True
-        self.ToggleStatusbar.props.active = True
-
         self.Print.set_short_label(_("Print"))
         self.add_tool_menu_actions([
             ("NewToolItem", _("New"), '', gtk.STOCK_NEW),
@@ -284,11 +292,11 @@ class AppWindow(GladeDelegate):
             self._on_uimanager__disconnect_proxy)
 
         self.ToggleToolbar.connect(
-            'toggled', self._on_ToggleToolbar__toggled)
+            'notify::active', self._on_ToggleToolbar__notify_active)
         self.ToggleStatusbar.connect(
-            'toggled', self._on_ToggleStatusbar__toggled)
+            'notify::active', self._on_ToggleStatusbar__notify_active)
         self.ToggleFullscreen.connect(
-            'toggled', self._on_ToggleFullscreen__toggled)
+            'notify::active', self._on_ToggleFullscreen__notify_active)
 
         self.NewToolItem.connect(
             'activate', self._on_NewToolItem__activate)
@@ -481,6 +489,10 @@ class AppWindow(GladeDelegate):
             toplevel.move(x, y)
 
     def _save_window_size(self):
+        # Do not save the size of the window when we are in fullscreen
+        window = self.get_toplevel()
+        if window.window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN:
+            return
         d = api.user_settings.get('launcher-geometry', {})
         d['width'] = str(self._width)
         d['height'] = str(self._height)
@@ -521,6 +533,13 @@ class AppWindow(GladeDelegate):
         area = self.get_statusbar_message_area()
         for child in area.get_children()[1:]:
             child.destroy()
+
+    def _update_toggle_actions(self, app_name):
+        self._current_app_settings = d = self._app_settings.setdefault(app_name, {})
+        self.ToggleToolbar.set_active(d.get('show-toolbar', True))
+        self.ToggleStatusbar.set_active(d.get('show-statusbar', True))
+        self.ToggleToolbar.notify('active')
+        self.ToggleStatusbar.notify('active')
 
     #
     # Overridables
@@ -605,13 +624,6 @@ class AppWindow(GladeDelegate):
             kwargs['filters'] = filters
 
         print_report(report_class, *args, **kwargs)
-
-    def toggle_fullscreen(self):
-        window = self.get_toplevel()
-        if window.window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN:
-            window.unfullscreen()
-        else:
-            window.fullscreen()
 
     def set_sensitive(self, widgets, value):
         """Set the C{widgets} sensitivity based on C{value}
@@ -810,9 +822,12 @@ class AppWindow(GladeDelegate):
         self.SearchToolItem.set_tooltip("")
         self.SearchToolItem.set_sensitive(True)
 
+        self._update_toggle_actions(app.app.name)
+
         self.get_toplevel().set_title(app.get_title())
         self.application_box.show()
         app.activate(params or {})
+
         self.uimanager.ensure_update()
         while gtk.events_pending():
             gtk.main_iteration()
@@ -852,6 +867,7 @@ class AppWindow(GladeDelegate):
         self.NewToolItem.set_tooltip(_("Open a new window"))
         self.SearchToolItem.set_tooltip("")
         self.SearchToolItem.set_sensitive(False)
+        self._update_toggle_actions('launcher')
 
     #
     # AppWindow
@@ -996,15 +1012,33 @@ class AppWindow(GladeDelegate):
 
     # Edit
 
-    def _on_ToggleToolbar__toggled(self, action):
+    def _on_ToggleToolbar__notify_active(self, action, pspec):
         toolbar = self.uimanager.get_widget('/toolbar')
         toolbar.set_visible(action.get_active())
+        self._current_app_settings['show-toolbar'] = action.get_active()
+        api.user_settings.flush()
 
-    def _on_ToggleStatusbar__toggled(self, action):
+    def _on_ToggleStatusbar__notify_active(self, action, pspec):
         self.statusbar.set_visible(action.get_active())
+        self._current_app_settings['show-statusbar'] = action.get_active()
+        api.user_settings.flush()
 
-    def _on_ToggleFullscreen__toggled(self, action):
-        self.toggle_fullscreen()
+    def _on_ToggleFullscreen__notify_active(self, action, spec):
+        window = self.get_toplevel()
+        if not window.get_realized():
+            return
+        is_active = action.get_active()
+        is_fullscreen = window.window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN
+        if is_active != is_fullscreen:
+            if is_active:
+                window.fullscreen()
+            else:
+                window.unfullscreen()
+
+        # This is shared between apps, since it's weird to change fullscreen
+        # between applications
+        self._app_settings['show-fullscreen'] = is_active
+        api.user_settings.flush()
 
     # Help
 
