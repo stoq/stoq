@@ -65,6 +65,8 @@ class CalendarView(WebView):
                                  "month": _('month'),
                                  "week": _('week'),
                                  "day": _('day')}
+        options['defaultView'] = api.user_settings.get(
+            'calendar-view', 'month')
 
         # FIXME: This should be configurable via the user interface
         options['data'] = dict(in_payments=True,
@@ -107,6 +109,7 @@ class CalendarView(WebView):
 
     def change_view(self, view_name):
         self._calendar_run('changeView', view_name)
+        api.user_settings.set('calendar-view', view_name)
 
     def refresh(self):
         self.load()
@@ -161,7 +164,12 @@ class CalendarApp(AppWindow):
         self.ViewWeek.set_short_label(_("Week"))
         self.ViewMonth.props.is_important = True
         self.ViewWeek.props.is_important = True
-        self.ViewMonth.props.active = True
+
+        view = api.user_settings.get('calendar-view', 'month')
+        if view == 'month':
+            self.ViewMonth.props.active = True
+        else:
+            self.ViewWeek.props.active = True
 
     def create_ui(self):
         self._calendar = CalendarView(self)
