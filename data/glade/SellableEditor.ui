@@ -168,7 +168,7 @@
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">unicode</property>
                     <property name="mandatory">True</property>
-                    <property name="model_attribute">base_sellable_info.description</property>
+                    <property name="model_attribute">description</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>

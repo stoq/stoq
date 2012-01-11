@@ -27,7 +27,7 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.slaves.imageslaveslave import ImageSlave
-from stoqlib.domain.sellable import OnSaleInfo, Sellable
+from stoqlib.domain.sellable import Sellable
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -38,7 +38,7 @@ class OnSaleInfoSlave(BaseEditorSlave):
     or service is on sale.
     """
     gladefile = 'OnSaleInfoSlave'
-    model_type = OnSaleInfo
+    model_type = Sellable
     proxy_widgets = ('on_sale_price',
                      'on_sale_start_date',
                      'on_sale_end_date')
@@ -46,9 +46,6 @@ class OnSaleInfoSlave(BaseEditorSlave):
     #
     # BaseEditorSlave hooks
     #
-
-    def create_model(self, conn):
-        return OnSaleInfo(connection=conn)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)

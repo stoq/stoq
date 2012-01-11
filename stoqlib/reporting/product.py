@@ -188,7 +188,7 @@ class ProductCountingReport(SearchResultsReport):
         return [
             OTC(_("Code"), lambda obj: obj.code, width=100, truncate=True),
             OTC(_("Description"), lambda obj:
-                obj.base_sellable_info.description, truncate=True),
+                obj.description, truncate=True),
             OTC(_("Fiscal Class"), lambda obj: obj.tax_constant.description,
                 width=80, truncate=True),
             OTC(_("Quantity"), None, width=80, truncate=True),

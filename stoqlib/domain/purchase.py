@@ -45,7 +45,7 @@ from stoqlib.domain.person import (Person, PersonAdaptToBranch,
                                    PersonAdaptToSupplier,
                                    PersonAdaptToTransporter,
                                    PersonAdaptToUser)
-from stoqlib.domain.sellable import Sellable, BaseSellableInfo, SellableUnit
+from stoqlib.domain.sellable import Sellable, SellableUnit
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.translation import stoqlib_gettext
@@ -650,13 +650,12 @@ class PurchaseItemView(Viewable):
         total=PurchaseItem.q.cost * PurchaseItem.q.quantity,
         total_received=PurchaseItem.q.cost * PurchaseItem.q.quantity_received,
         total_sold=PurchaseItem.q.cost * PurchaseItem.q.quantity_sold,
-        description=BaseSellableInfo.q.description,
+        description=Sellable.q.description,
         unit=SellableUnit.q.description,
         )
 
     clause = AND(
         PurchaseOrder.q.id == PurchaseItem.q.orderID,
-        BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID,
         )
 
     joins = [

@@ -27,11 +27,11 @@ from zope.interface import implements
 
 from stoqlib.database.orm import BLOBCol
 from stoqlib.database.orm import ForeignKey
-from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn
+from stoqlib.database.orm import INNERJOINOn, LEFTJOINOn
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
-from stoqlib.domain.sellable import (BaseSellableInfo, Sellable,
+from stoqlib.domain.sellable import (Sellable,
                                      SellableUnit, SellableCategory)
 from stoqlib.domain.production import ProductionService
 from stoqlib.lib.parameters import sysparam
@@ -110,8 +110,8 @@ class ServiceView(Viewable):
         barcode=Sellable.q.barcode,
         status=Sellable.q.status,
         cost=Sellable.q.cost,
-        price=BaseSellableInfo.q.price,
-        description=BaseSellableInfo.q.description,
+        price=Sellable.q.base_price,
+        description=Sellable.q.description,
         category_description=SellableCategory.q.description,
         unit=SellableUnit.q.description,
         service_id=Service.q.id
@@ -127,10 +127,6 @@ class ServiceView(Viewable):
                    SellableCategory.q.id == Sellable.q.categoryID),
 
         ]
-
-    clause = AND(
-        BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID,
-    )
 
     def get_unit(self):
         return self.unit or u""

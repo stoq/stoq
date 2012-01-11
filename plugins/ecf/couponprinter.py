@@ -292,7 +292,7 @@ class Coupon(object):
         """
         sellable = item.sellable
         max_len = self._get_capability("item_description").max_len
-        description = sellable.base_sellable_info.description[:max_len]
+        description = sellable.description[:max_len]
         unit_desc = ''
         if not sellable.unit:
             unit = UnitType.EMPTY

@@ -51,7 +51,7 @@ from stoqlib.domain.person import (Person, PersonAdaptToClient,
                                    PersonAdaptToSalesPerson)
 from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.renegotiation import RenegotiationData
-from stoqlib.domain.sellable import Sellable, BaseSellableInfo
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.taxes import SaleItemIcms, SaleItemIpi
 from stoqlib.domain.till import Till
@@ -174,7 +174,7 @@ class SaleItem(Domain):
         return self.get_quantity_delivered() == self.quantity
 
     def get_description(self):
-        return self.sellable.base_sellable_info.get_description()
+        return self.sellable.get_description()
 
     def is_service(self):
         service = Service.selectOneBy(sellable=self.sellable,
@@ -1297,14 +1297,12 @@ class DeliveryView(Viewable):
         estimated_fix_date=SaleItem.q.estimated_fix_date,
         completion_date=SaleItem.q.completion_date,
         address=SaleItemAdaptToDelivery.q.address,
-        description=BaseSellableInfo.q.description,
+        description=Sellable.q.description,
         client_name=Person.q.name,
     )
 
     joins = [LEFTJOINOn(None, Sellable,
                         SaleItem.q.sellableID == Sellable.q.id),
-             LEFTJOINOn(None, BaseSellableInfo,
-                        BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID),
              LEFTJOINOn(None, DeliveryItem,
                         Sellable.q.id == DeliveryItem.q.sellableID),
              LEFTJOINOn(None, Sale, SaleItem.q.saleID == Sale.q.id),
@@ -1325,7 +1323,7 @@ class SoldSellableView(Viewable):
     columns = dict(
         id=Sellable.q.id,
         code=Sellable.q.code,
-        description=BaseSellableInfo.q.description,
+        description=Sellable.q.description,
 
         client_id=Sale.q.clientID,
         client_name=Person_Client.q.name,
@@ -1336,8 +1334,6 @@ class SoldSellableView(Viewable):
     joins = [
         LEFTJOINOn(None, SaleItem,
                     SaleItem.q.sellableID == Sellable.q.id),
-        LEFTJOINOn(None, BaseSellableInfo,
-                   BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID),
         LEFTJOINOn(None, Sale,
                     Sale.q.id == SaleItem.q.saleID),
         LEFTJOINOn(None, PersonAdaptToClient,

@@ -56,8 +56,6 @@ class Shop(SynchronizationPolicy):
         ('Calls', SyncPolicy.BOTH),
         ('BankAccount', SyncPolicy.BOTH),
         ('BranchStation', SyncPolicy.FROM_SOURCE),
-        ('BaseSellableInfo', SyncPolicy.FROM_SOURCE),
-        ('OnSaleInfo', SyncPolicy.FROM_SOURCE),
         ('SellableUnit', SyncPolicy.FROM_SOURCE),
         ('SellableTaxConstant', SyncPolicy.FROM_SOURCE),
         ('SellableCategory', SyncPolicy.FROM_SOURCE),

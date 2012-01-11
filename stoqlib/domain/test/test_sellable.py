@@ -27,7 +27,7 @@ from decimal import Decimal
 from kiwi.datatypes import currency
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.sellable import (BaseSellableInfo, Sellable,
+from stoqlib.domain.sellable import (Sellable,
                                      SellableCategory, ClientCategoryPrice)
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sale import Sale
@@ -104,11 +104,9 @@ class TestSellable(DomainTest):
         # case the sellable must have the price calculated applying the category's
         # markup in the sellable's cost.
         self._category.suggested_markup = 0
-        sellable_info = BaseSellableInfo(description=u"MX123",
-                                         max_discount=0,
-                                         commission=0,
-                                         connection=self.trans)
-        sellable = Sellable(base_sellable_info=sellable_info,
+        sellable = Sellable(description=u"MX123",
+                            max_discount=0,
+                            commission=0,
                             cost=100,
                             category=self._category,
                             connection=self.trans)
@@ -125,10 +123,8 @@ class TestSellable(DomainTest):
         # When the price isn't defined, but the category, markup and the cost.
         # In this case the category's markup must be ignored and the price
         # calculated applying the markup specified in the sellable's cost.
-        sellable_info = BaseSellableInfo(description=u"FY123",
-                                         connection=self.trans)
         markup = 5
-        sellable = Sellable(base_sellable_info=sellable_info,
+        sellable = Sellable(description=u"FY123",
                             category=self._category,
                             markup=markup,
                             cost=100,
@@ -142,10 +138,8 @@ class TestSellable(DomainTest):
                          % (price, sellable.price)))
 
     def test_commission(self):
-        sellable_info = BaseSellableInfo(description=u"TX342",
-                                         connection=self.trans)
         self._category.salesperson_commission = 10
-        sellable = Sellable(base_sellable_info=sellable_info,
+        sellable = Sellable(description=u"TX342",
                             category=self._category,
                             connection=self.trans)
         self.failUnless(sellable.commission
@@ -155,11 +149,9 @@ class TestSellable(DomainTest):
                             sellable.commission)))
 
     def test_prices_and_markups(self):
-        sellable_info = BaseSellableInfo(description="Test", price=currency(100),
-                                         connection=self.trans)
         self._category.markup = 0
         sellable = Sellable(category=self._category, cost=50,
-                            base_sellable_info=sellable_info,
+                            description="Test", price=currency(100),
                             connection=self.trans)
         self.failUnless(sellable.price == 100,
                         "Expected price: %r, got %r" % (100, sellable.price))
@@ -174,10 +166,8 @@ class TestSellable(DomainTest):
 
         # When the price specified isn't equivalent to the markup specified.
         # In this case the price don't must be updated based on the markup.
-        sellable_info = BaseSellableInfo(description="Test", price=currency(100),
-                                         connection=self.trans)
         sellable = Sellable(markup=10, cost=50,
-                            base_sellable_info=sellable_info,
+                            description="Test", price=currency(100),
                             connection=self.trans)
         self.failUnless(sellable.price == 100)
 
@@ -211,12 +201,10 @@ class TestSellable(DomainTest):
         self.assertFalse(sellable.is_valid_quantity(Decimal('5.5')))
 
     def testIsValidPrice(self):
-        sellable_info = BaseSellableInfo(description="Test",
-                                         price=currency(100),
-                                         max_discount=0,
-                                         connection=self.trans)
         sellable = Sellable(category=self._category, cost=50,
-                            base_sellable_info=sellable_info,
+                            description="Test",
+                            price=currency(100),
+                            max_discount=0,
                             connection=self.trans)
         cat = self.create_client_category('Cat 1')
         cat_price = ClientCategoryPrice(sellable=sellable, category=cat,
@@ -231,7 +219,7 @@ class TestSellable(DomainTest):
         self.assertTrue(sellable.is_valid_price(100))
 
         # without a category, and max_discount = 10%
-        sellable.base_sellable_info.max_discount = 10
+        sellable.max_discount = 10
         self.assertFalse(sellable.is_valid_price(0))
         self.assertFalse(sellable.is_valid_price(-1))
         self.assertFalse(sellable.is_valid_price(89))

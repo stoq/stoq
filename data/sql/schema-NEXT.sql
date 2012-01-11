@@ -306,25 +306,6 @@ CREATE TABLE product_tax_template (
     tax_type integer
 );
 
-CREATE TABLE base_sellable_info (
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    price numeric(20, 2) CONSTRAINT positive_price CHECK (price >= 0),
-    description text,
-    max_discount numeric(10, 2),
-    commission numeric(10, 2)
-);
-
-CREATE TABLE on_sale_info (
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    on_sale_price numeric(20, 2) CONSTRAINT positive_on_sale_price
-       CHECK (on_sale_price >= 0),
-    on_sale_start_date timestamp,
-    on_sale_end_date timestamp
-);
 
 CREATE TABLE sellable_tax_constant (
     id serial NOT NULL PRIMARY KEY,
@@ -373,12 +354,19 @@ CREATE TABLE sellable (
     code text,
     status integer CONSTRAINT valid_status
         CHECK (status >= 0 AND status < 4),
+    description text,
     cost numeric(20, 8) CONSTRAINT positive_cost
         CHECK (cost >= 0),
+    base_price numeric(20, 2) CONSTRAINT positive_price
+        CHECK (base_price >= 0),
     notes text,
+    max_discount numeric(10, 2),
+    commission numeric(10, 2),
+    on_sale_price numeric(20, 2) CONSTRAINT positive_on_sale_price
+       CHECK (on_sale_price >= 0),
+    on_sale_start_date timestamp,
+    on_sale_end_date timestamp,
     unit_id bigint REFERENCES sellable_unit(id),
-    base_sellable_info_id bigint REFERENCES base_sellable_info(id),
-    on_sale_info_id bigint REFERENCES on_sale_info(id),
     category_id bigint REFERENCES sellable_category(id),
     tax_constant_id bigint REFERENCES sellable_tax_constant(id),
     default_sale_cfop_id bigint REFERENCES cfop_data(id)

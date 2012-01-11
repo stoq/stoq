@@ -204,46 +204,6 @@ class SellableCategory(Domain):
 # pylint: enable=E1101
 
 
-class OnSaleInfo(Domain):
-    """
-    @ivar on_sale_price: A special price used when we have a "on sale" state
-    @type on_sale_price: float
-    @ivar on_sale_start_date:
-    @ivar on_sale_end_date:
-    """
-    on_sale_price = PriceCol(default=0)
-    on_sale_start_date = DateTimeCol(default=None)
-    on_sale_end_date = DateTimeCol(default=None)
-
-
-class BaseSellableInfo(Domain):
-    implements(IDescribable)
-
-    price = PriceCol(default=0)
-    description = UnicodeCol(default='')
-    max_discount = PercentCol(default=0)
-    commission = PercentCol(default=0)
-
-    def get_commission(self):
-        return self.commission
-
-    #
-    # IDescribable implementation
-    #
-
-    def get_description(self):
-        return self.description
-
-    #
-    # Domain hooks
-    #
-
-    def on_update(self):
-        sellable = Sellable.selectOneBy(connection=self.get_connection(),
-                                        base_sellable_info=self)
-        sellable.on_update()
-
-
 class ClientCategoryPrice(Domain):
     """A table that stores special prices for clients based on their
     category.
@@ -299,6 +259,11 @@ class Sellable(Domain):
     @type max_discount: float
     @ivar commission: commission to pay after selling this sellable
     @type commission: float
+
+    @ivar on_sale_price: A special price used when we have a "on sale" state
+    @type on_sale_price: float
+    @ivar on_sale_start_date:
+    @ivar on_sale_end_date:
     """
 
     implements(IDescribable)
@@ -319,10 +284,14 @@ class Sellable(Domain):
     # so it must be *always* UNAVAILABLE (that means no stock for it).
     status = IntCol(default=STATUS_UNAVAILABLE)
     cost = PriceCol(default=0)
+    base_price = PriceCol(default=0)
+    description = UnicodeCol(default='')
+    max_discount = PercentCol(default=0)
+    commission = PercentCol(default=0)
+
     notes = UnicodeCol(default='')
     unit = ForeignKey("SellableUnit", default=None)
-    base_sellable_info = ForeignKey('BaseSellableInfo')
-    on_sale_info = ForeignKey('OnSaleInfo')
+
     category = ForeignKey('SellableCategory', default=None)
     tax_constant = ForeignKey('SellableTaxConstant', default=None)
 
@@ -331,29 +300,27 @@ class Sellable(Domain):
 
     default_sale_cfop = ForeignKey("CfopData", default=None)
 
+    on_sale_price = PriceCol(default=0)
+    on_sale_start_date = DateTimeCol(default=None)
+    on_sale_end_date = DateTimeCol(default=None)
+
     def _create(self, id, **kw):
         markup = None
         if not 'kw' in kw:
-            conn = self.get_connection()
-            if not 'on_sale_info' in kw:
-                kw['on_sale_info'] = OnSaleInfo(connection=conn)
             # markup specification must to reflect in the sellable price, since
             # there is no such column -- but we can only change the price right
             # after Domain._create() get executed.
             markup = kw.pop('markup', None)
 
-        Domain._create(self, id, **kw)
-        # I'm not checking price in 'kw' because it can be specified through
-        # base_sellable_info, and then we'll not update the price properly;
-        # instead, I check for "self.price" that, at this point (after
-        # Domain._create excecution) is already set and
-        # accessible through Sellable's price's accessor.
-        if not self.price and ('cost' in kw and 'category' in kw):
-            markup = markup or kw['category'].get_markup()
+        category = kw.get('category', None)
+        if 'price' not in kw and 'cost' in kw and category:
+            markup = markup or category.get_markup()
             cost = kw.get('cost', currency(0))
-            self.price = cost * (markup / currency(100) + 1)
-        if not self.commission and self.category:
-            self.commission = self.category.get_commission()
+            kw['price'] = cost * (markup / currency(100) + 1)
+        if 'commission' not in kw and category:
+            kw['commission'] = category.get_commission()
+
+        Domain._create(self, id, **kw)
 
     #
     # ORMObject setters
@@ -397,45 +364,29 @@ class Sellable(Domain):
     markup = property(_get_markup, _set_markup)
 
     def _get_price(self):
-        if self.on_sale_info.on_sale_price:
+        if self.on_sale_price:
             today = datetime.datetime.today()
-            start_date = self.on_sale_info.on_sale_start_date
-            end_date = self.on_sale_info.on_sale_end_date
+            start_date = self.on_sale_start_date
+            end_date = self.on_sale_end_date
             if is_date_in_interval(today, start_date, end_date):
-                return self.on_sale_info.on_sale_price
-        return self.base_sellable_info.price
+                return self.on_sale_price
+        return self.base_price
 
     def _set_price(self, price):
         if price < 0:
             # Just a precaution for gui validation fails.
             price = 0
 
-        if self.on_sale_info.on_sale_price:
+        if self.on_sale_price:
             today = datetime.datetime.today()
-            start_date = self.on_sale_info.on_sale_start_date
-            end_date = self.on_sale_info.on_sale_end_date
+            start_date = self.on_sale_start_date
+            end_date = self.on_sale_end_date
             if is_date_in_interval(today, start_date, end_date):
-                self.on_sale_info.on_sale_price = price
+                self.on_sale_price = price
                 return
-        self.base_sellable_info.price = price
+        self.base_price = price
 
     price = property(_get_price, _set_price)
-
-    def _get_max_discount(self):
-        return self.base_sellable_info.max_discount
-
-    def _set_max_discount(self, discount):
-        self.base_sellable_info.max_discount = discount
-
-    max_discount = property(_get_max_discount, _set_max_discount)
-
-    def _get_commission(self):
-        return self.base_sellable_info.get_commission()
-
-    def _set_commission(self, commission):
-        self.base_sellable_info.commission = commission
-
-    commission = property(_get_commission, _set_commission)
 
     #
     #  Accessors
@@ -531,12 +482,15 @@ class Sellable(Domain):
             return self.service.can_close()
         return self.is_unavailable()
 
+    def get_commission(self):
+        return self.commission
+
     def get_short_description(self):
         """Returns a short description of the current sale
         @returns: description
         @rtype: string
         """
-        return u'%s %s' % (self.id, self.base_sellable_info.description)
+        return u'%s %s' % (self.id, self.description)
 
     def get_suggested_markup(self):
         """Returns the suggested markup for the sellable
@@ -662,7 +616,7 @@ class Sellable(Domain):
         if category:
             info = self.get_category_price_info(category)
         if not info:
-            info = self.base_sellable_info
+            info = self
         if newprice < info.price - (info.price * info.max_discount / 100):
             return False
         return True
@@ -672,7 +626,7 @@ class Sellable(Domain):
     #
 
     def get_description(self, full_description=False):
-        desc = self.base_sellable_info.get_description()
+        desc = self.description
         if full_description and self.get_category_description():
             desc = "[%s] %s" % (self.get_category_description(), desc)
 
@@ -710,13 +664,9 @@ class Sellable(Domain):
             self.product.remove()
         elif self.service:
             self.service.remove()
-        info = self.base_sellable_info
-        on_sale = self.on_sale_info
-        conn = self.get_connection()
 
+        conn = self.get_connection()
         self.delete(self.id, conn)
-        info.delete(info.id, conn)
-        on_sale.delete(on_sale.id, conn)
 
     @classmethod
     def get_available_sellables_for_quote_query(cls, conn):

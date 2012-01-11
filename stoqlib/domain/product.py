@@ -195,7 +195,7 @@ class Product(Domain):
 
     @property
     def description(self):
-        return self.sellable.base_sellable_info.description
+        return self.sellable.description
 
     def remove(self):
         """Deletes this product from the database.

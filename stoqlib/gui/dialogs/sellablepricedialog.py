@@ -33,7 +33,7 @@ from kiwi.ui.listdialog import ListSlave
 
 from stoqlib.database.orm import LEFTJOINOn
 from stoqlib.domain.sellable import (Sellable, ClientCategoryPrice,
-                                     BaseSellableInfo, SellableCategory)
+                                     SellableCategory)
 from stoqlib.domain.person import ClientCategory
 from stoqlib.gui.dialogs.progressdialog import ProgressDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -65,14 +65,12 @@ class SellableView(Viewable):
         status=Sellable.q.status,
         cost=Sellable.q.cost,
         category_description=SellableCategory.q.description,
-        description=BaseSellableInfo.q.description,
-        price=BaseSellableInfo.q.price,
-        max_discount=BaseSellableInfo.q.max_discount,
+        description=Sellable.q.description,
+        price=Sellable.q.base_price,
+        max_discount=Sellable.q.max_discount,
     )
 
     joins = [
-        LEFTJOINOn(None, BaseSellableInfo,
-                   BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID),
         # Category
         LEFTJOINOn(None, SellableCategory,
                    SellableCategory.q.id == Sellable.q.categoryID),

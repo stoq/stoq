@@ -28,8 +28,7 @@ from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IStorable, ISupplier
-from stoqlib.domain.sellable import (BaseSellableInfo,
-                                     Sellable,
+from stoqlib.domain.sellable import (Sellable,
                                      SellableCategory,
                                      SellableUnit)
 from stoqlib.importers.csvimporter import CSVImporter
@@ -95,11 +94,6 @@ class ProductImporter(CSVImporter):
             suggested_markup=int(data.markup2),
             category=base_category)
 
-        sellable_info = BaseSellableInfo(
-            connection=trans,
-            description=data.description,
-            price=int(data.price))
-
         if 'unit' in fields:
             if not data.unit in self.units:
                 raise ValueError("invalid unit: %s" % data.unit)
@@ -111,7 +105,8 @@ class ProductImporter(CSVImporter):
                             code=data.barcode,
                             barcode=data.barcode,
                             category=category,
-                            base_sellable_info=sellable_info,
+                            description=data.description,
+                            price=int(data.price),
                             unit=unit,
                             tax_constant=self.tax_constant)
         product = Product(sellable=sellable, connection=trans)

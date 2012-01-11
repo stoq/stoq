@@ -33,7 +33,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductHistory, ProductComponent)
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.sellable import BaseSellableInfo, Sellable
+from stoqlib.domain.sellable import Sellable
 
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -302,9 +302,7 @@ class TestProductSellableItem(DomainTest):
 
     def testSell(self):
         sale = self.create_sale()
-        base_sellable_info = BaseSellableInfo(connection=self.trans)
         sellable = Sellable(barcode='xyz',
-                            base_sellable_info=base_sellable_info,
                             connection=self.trans)
         product = Product(sellable=sellable, connection=self.trans)
         sale_item = sale.add_sellable(product.sellable)
@@ -469,14 +467,10 @@ class TestProductEvent(DomainTest):
         # Test product being created
         trans = new_transaction()
         trans_list.append(trans)
-        base_sellable_info = BaseSellableInfo(
+        sellable = Sellable(
             connection=trans,
             description='Test 1234',
             price=decimal.Decimal(2),
-            )
-        sellable = Sellable(
-            connection=trans,
-            base_sellable_info=base_sellable_info,
             )
         product = Product(
             connection=trans,
@@ -492,27 +486,11 @@ class TestProductEvent(DomainTest):
         # Test product being edited and emmiting the event just once
         trans = new_transaction()
         trans_list.append(trans)
-        base_sellable_info = trans.get(base_sellable_info)
         sellable = trans.get(sellable)
         product = trans.get(product)
         sellable.notes = 'Notes'
-        base_sellable_info.description = 'Test 666'
+        sellable.description = 'Test 666'
         product.weight = decimal.Decimal(10)
-        trans.commit()
-        self.assertTrue(p_data.was_edited)
-        self.assertFalse(p_data.was_created)
-        self.assertFalse(p_data.was_deleted)
-        self.assertEqual(p_data.product, product)
-        self.assertEqual(p_data.emmit_count, 1)
-        p_data.reset()
-
-        # Test product being edited, editing BaseSellableInfo
-        trans = new_transaction()
-        trans_list.append(trans)
-        base_sellable_info = trans.get(base_sellable_info)
-        sellable = trans.get(sellable)
-        product = trans.get(product)
-        base_sellable_info.description = 'Test 4321'
         trans.commit()
         self.assertTrue(p_data.was_edited)
         self.assertFalse(p_data.was_created)
@@ -524,7 +502,6 @@ class TestProductEvent(DomainTest):
         # Test product being edited, editing Sellable
         trans = new_transaction()
         trans_list.append(trans)
-        base_sellable_info = trans.get(base_sellable_info)
         sellable = trans.get(sellable)
         product = trans.get(product)
         sellable.notes = 'Notes for test'
@@ -539,7 +516,6 @@ class TestProductEvent(DomainTest):
         # Test product being edited, editing Product itself
         trans = new_transaction()
         trans_list.append(trans)
-        base_sellable_info = trans.get(base_sellable_info)
         sellable = trans.get(sellable)
         product = trans.get(product)
         product.weight = decimal.Decimal(1)
@@ -554,7 +530,6 @@ class TestProductEvent(DomainTest):
         # Test product being edited, editing Product itself
         trans = new_transaction()
         trans_list.append(trans)
-        base_sellable_info = trans.get(base_sellable_info)
         sellable = trans.get(sellable)
         product = trans.get(product)
         product.weight = decimal.Decimal(1)
@@ -569,7 +544,6 @@ class TestProductEvent(DomainTest):
         # Test product being removed
         trans = new_transaction()
         trans_list.append(trans)
-        base_sellable_info = trans.get(base_sellable_info)
         sellable = trans.get(sellable)
         product = trans.get(product)
         sellable.remove()

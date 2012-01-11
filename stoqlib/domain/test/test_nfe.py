@@ -138,7 +138,7 @@ class TestNfeGenerator(DomainTest):
         sellable = self.create_sellable(price=price)
 
         sellable.code = code
-        sellable.base_sellable_info.description = desc
+        sellable.description = desc
 
         return sellable
 

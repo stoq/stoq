@@ -99,7 +99,7 @@ class SaleOrderReport(BaseStoqReport):
         return [OTC(_("Code"), lambda obj: obj.sellable.code,
                     truncate=True, width=100),
                 OTC(_("Item"),
-                    lambda obj: obj.sellable.base_sellable_info.description,
+                    lambda obj: obj.sellable.description,
                     truncate=True, expand=True),
                 OTC(_("Quantity"), lambda obj: obj.get_quantity_unit_string(),
                     width=80, align=RIGHT),

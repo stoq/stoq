@@ -168,7 +168,7 @@ class SellablePriceEditor(BasePriceEditor):
     model_type = Sellable
 
     def setup_slaves(self):
-        slave = OnSaleInfoSlave(self.conn, self.model.on_sale_info)
+        slave = OnSaleInfoSlave(self.conn, self.model)
         self.attach_slave('on_sale_holder', slave)
 
         commission_slave = CommissionSlave(self.conn, self.model)

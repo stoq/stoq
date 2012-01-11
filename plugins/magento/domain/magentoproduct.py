@@ -36,7 +36,7 @@ from stoqlib.database.runtime import (get_connection, new_transaction,
                                       finish_transaction)
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.product import Product
-from stoqlib.domain.sellable import BaseSellableInfo, Sellable
+from stoqlib.domain.sellable import Sellable
 
 from domain.magentobase import MagentoBaseSyncUp
 from domain.magentoconfig import get_config
@@ -128,16 +128,12 @@ class MagentoProduct(MagentoBaseSyncUp):
                 retval = False
                 break
 
-            base_sellable_info = BaseSellableInfo(
+            sellable = Sellable(
                 connection=trans,
                 description=product_info['name'],
                 # FIXME: Cost isn't visible on info
                 #cost=product_info['cost'],
                 price=product_info['price'],
-                )
-            sellable = Sellable(
-                connection=trans,
-                base_sellable_info=base_sellable_info,
                 notes=product_info['description'],
                 )
             product = Product(

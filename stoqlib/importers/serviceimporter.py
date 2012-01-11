@@ -27,8 +27,7 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.service import Service
-from stoqlib.domain.sellable import (BaseSellableInfo,
-                                     Sellable,
+from stoqlib.domain.sellable import (Sellable,
                                      SellableTaxConstant)
 from stoqlib.importers.csvimporter import CSVImporter
 
@@ -48,12 +47,10 @@ class ServiceImporter(CSVImporter):
         assert self.tax_constant
 
     def process_one(self, data, fields, trans):
-        sellable_info = BaseSellableInfo(connection=trans,
-                                         description=data.description,
-                                         price=int(data.price))
         sellable = Sellable(connection=trans,
-                            base_sellable_info=sellable_info,
                             tax_constant=self.tax_constant,
+                            description=data.description,
+                            price=int(data.price),
                             cost=int(data.cost),
                             code=data.barcode,
                             barcode=data.barcode)

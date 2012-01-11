@@ -166,7 +166,7 @@ class SaleDetailsDialog(BaseEditor):
     def _get_items_columns(self):
         return [Column('sellable.code', _("Code"), sorted=True,
                        data_type=str, width=130),
-                Column('sellable.base_sellable_info.description',
+                Column('sellable.description',
                        _("Description"), data_type=str, expand=True,
                        width=200),
                 Column('quantity_unit_string', _("Quantity"), data_type=str,
