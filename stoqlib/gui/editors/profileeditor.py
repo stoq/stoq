@@ -42,6 +42,7 @@ class UserProfileEditor(BaseEditor):
     model_type = UserProfile
     gladefile = 'UserProfileEditor'
     proxy_widgets = ('profile_name', )
+    help_section = 'user-profile'
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)

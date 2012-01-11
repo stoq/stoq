@@ -48,6 +48,7 @@ class ProductTaxTemplateEditor(BaseEditor):
     model_name = _('Base Category')
     proxy_widgets = ('name', 'tax_type')
     size = (-1, -1)
+    help_section = 'tax-class'
 
     def __init__(self, conn, model):
         self.slave_model = None

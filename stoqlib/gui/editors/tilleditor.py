@@ -99,6 +99,8 @@ class TillOpeningEditor(BaseEditor):
     proxy_widgets = ('value',
                      'balance')
 
+    help_section = 'till-open'
+
     #
     # BaseEditorSlave
     #
@@ -155,6 +157,8 @@ class TillClosingEditor(BaseEditor):
     proxy_widgets = ('value',
                      'balance',
                      'opening_date')
+
+    help_section = 'till-close'
 
     def __init__(self, conn, model=None, previous_day=False, close_db=True,
                  close_ecf=True):
@@ -423,6 +427,8 @@ class CashOutEditor(BaseEditor):
     gladefile = 'CashOutEditor'
     title = _(u'Reverse Payment')
 
+    help_section = 'till-remove-money'
+
     def __init__(self, conn):
         BaseEditor.__init__(self, conn)
         self.set_confirm_widget(self.reason)
@@ -481,6 +487,8 @@ class CashInEditor(BaseEditor):
     model_name = _(u'Cash In')
     model_type = Settable
     gladefile = 'CashOutEditor'
+
+    help_section = 'till-add-money'
 
     def __init__(self, conn):
         BaseEditor.__init__(self, conn)

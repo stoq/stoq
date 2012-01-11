@@ -74,6 +74,7 @@ class ProductionItemEditor(BaseEditor):
     size = (-1, -1)
     model_name = _(u'Production Item')
     proxy_widgets = ['description', 'quantity', 'unit_description']
+    help_section = 'production'
 
     def setup_location_widgets(self):
         location = self.model.product.location

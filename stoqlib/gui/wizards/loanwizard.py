@@ -436,6 +436,7 @@ class LoanItemSelectionStep(BaseWizardStep):
 
 class NewLoanWizard(BaseWizard):
     size = (775, 400)
+    help_section = 'loan'
 
     def __init__(self, conn, model=None):
         title = self._get_title(model)
@@ -483,6 +484,7 @@ class NewLoanWizard(BaseWizard):
 class CloseLoanWizard(BaseWizard):
     size = (775, 400)
     title = _(u'Close Loan Wizard')
+    help_section = 'loan'
 
     def __init__(self, conn):
         first_step = LoanSelectionStep(self, conn)

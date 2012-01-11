@@ -58,6 +58,7 @@ class InitialStockDialog(BaseEditor):
     model_type = object
     title = _(u"Product  - Initial Stock")
     size = (750, 450)
+    help_section = 'stock-register-initial'
 
     def __init__(self, conn, branch=None):
         if branch is None:

@@ -272,6 +272,8 @@ class TransporterEditor(BasePersonRoleEditor):
     model_iface = ITransporter
     gladefile = 'BaseTemplate'
 
+    help_section = 'transporter'
+
     #
     # BaseEditor hooks
     #
@@ -297,6 +299,8 @@ class BranchEditor(BasePersonRoleEditor):
     title = _('New Branch')
     model_iface = IBranch
     gladefile = 'BaseTemplate'
+
+    help_section = 'branch'
 
     #
     # BaseEditor hooks

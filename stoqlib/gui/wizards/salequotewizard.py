@@ -381,6 +381,7 @@ class SaleQuoteItemStep(SellableItemStep):
 
 class SaleQuoteWizard(BaseWizard):
     size = (775, 400)
+    help_section = 'sale-quote'
 
     def __init__(self, conn, model=None):
         title = self._get_title(model)

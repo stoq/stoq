@@ -349,6 +349,7 @@ class ReceivingInvoiceStep(WizardEditorStep):
 class ReceivingOrderWizard(BaseWizard):
     title = _("Receiving Order")
     size = (750, 350)
+    help_section = 'purchase-new-receival'
 
     def __init__(self, conn):
         self.model = None
