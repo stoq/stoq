@@ -76,7 +76,7 @@ class ImporterDialog(BasicDialog):
                 '-t', self.format,
                 '--import-filename', self.filename,
                 '-v']
-        args.extend(api.settings.get_command_line_arguments())
+        args.extend(api.db_settings.get_command_line_arguments())
         self.process_view.execute_command(args)
 
     def _parse_process_line(self, line):
