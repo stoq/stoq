@@ -60,7 +60,7 @@ class DaemonManager(object):
 
         args = ['stoq-daemon',
                 '--daemon-id', self._daemon_id]
-        args.extend(api.settings.get_command_line_arguments())
+        args.extend(api.db_settings.get_command_line_arguments())
         self._process = Process(args)
 
         reactor.callLater(0.1, self._check_active)

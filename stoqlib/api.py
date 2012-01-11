@@ -33,13 +33,13 @@ from contextlib import contextmanager
 from kiwi.component import get_utility
 from twisted.internet.defer import inlineCallbacks, returnValue
 
-from stoqlib.lib.parameters import sysparam, is_developer_mode
-from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       rollback_and_begin, finish_transaction)
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station, get_current_user)
+from stoqlib.lib.interfaces import IStoqConfig
+from stoqlib.lib.parameters import sysparam, is_developer_mode
 
 
 class StoqAPI(object):
@@ -100,7 +100,7 @@ class StoqAPI(object):
         return get_utility(IStoqConfig)
 
     @property
-    def settings(self):
+    def db_settings(self):
         return get_utility(IDatabaseSettings)
 
     def sysparam(self, conn):

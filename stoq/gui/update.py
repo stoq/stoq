@@ -119,7 +119,7 @@ class UpdateSchemaStep(BaseWizardStep):
     def _launch_stoqdbadmin(self):
         self.wizard.disable_next()
         args = ['stoqdbadmin', 'updateschema', '-v']
-        args.extend(api.settings.get_command_line_arguments())
+        args.extend(api.db_settings.get_command_line_arguments())
         self.process_view.execute_command(args)
         self.progressbar.set_text(_('Applying database patches...'))
 
