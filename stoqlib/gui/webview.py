@@ -70,7 +70,7 @@ class WebView(gtk.ScrolledWindow):
         self.add(self._view)
         self._view.show()
 
-    def _show_payment_details(self, id):
+    def _dialog_payment_details(self, id):
         from stoqlib.domain.payment.payment import Payment
         trans = api.new_transaction()
         payment = trans.get(Payment.get(int(id)))
@@ -80,21 +80,7 @@ class WebView(gtk.ScrolledWindow):
             self.refresh()
         trans.close()
 
-    def _show_in_payment_list(self, date):
-        y, m, d = map(int, date.split('-'))
-        date = datetime.date(y, m, d)
-        app = self.app.app.launcher.run_app_by_name(
-            'receivable', params={'no-refresh': True})
-        app.main_window.search_for_date(date)
-
-    def _show_out_payment_list(self, date):
-        y, m, d = map(int, date.split('-'))
-        date = datetime.date(y, m, d)
-        app = self.app.app.launcher.run_app_by_name(
-            'payable', params={'no-refresh': True})
-        app.main_window.search_for_date(date)
-
-    def _show_purchase(self, id):
+    def _dialog_purchase(self, id):
         from stoqlib.domain.purchase import PurchaseOrder
         from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 
@@ -105,30 +91,39 @@ class WebView(gtk.ScrolledWindow):
             self.refresh()
         trans.close()
 
-    def _show_purchase_list(self, date):
+    def _show_search_by_date(self, date, app_name):
         y, m, d = map(int, date.split('-'))
         date = datetime.date(y, m, d)
         app = self.app.app.launcher.run_app_by_name(
-            'purchase', params={'no-refresh': True})
+            app_name, params={'no-refresh': True})
         app.main_window.search_for_date(date)
+
+    def _show_in_payments_by_date(self, date):
+        self._show_search_by_date(date, 'receivable')
+
+    def _show_out_payments_by_date(self, date):
+        self._show_search_by_date(date, 'payable')
+
+    def _show_purchases_by_date(self, date):
+        self._show_search_by_date(date, 'purchase')
 
     def _uri_run_dialog(self, result, kwargs):
         path = result.path
         if path == '/payment':
-            self._show_payment_details(**kwargs)
+            self._dialog_payment_details(**kwargs)
         elif path == '/purchase':
-            self._show_purchase(**kwargs)
+            self._dialog_purchase(**kwargs)
         else:
             raise NotImplementedError(path)
 
     def _uri_show(self, result, kwargs):
         path = result.path
         if path == '/in-payments-by-date':
-            self._show_in_payment_list(**kwargs)
+            self._show_in_payments_by_date(**kwargs)
         elif path == '/out-payments-by-date':
-            self._show_out_payment_list(**kwargs)
+            self._show_out_payments_by_date(**kwargs)
         elif path == '/purchases-by-date':
-            self._show_purchase_list(**kwargs)
+            self._show_purchases_by_date(**kwargs)
         else:
             raise NotImplementedError(path)
 
