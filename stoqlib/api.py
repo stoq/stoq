@@ -38,6 +38,7 @@ from stoqlib.database.runtime import (get_connection, new_transaction,
                                       rollback_and_begin, finish_transaction)
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station, get_current_user)
+from stoqlib.lib.settings import get_settings
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 
@@ -102,6 +103,10 @@ class StoqAPI(object):
     @property
     def db_settings(self):
         return get_utility(IDatabaseSettings)
+
+    @property
+    def user_settings(self):
+        return get_settings()
 
     def sysparam(self, conn):
         return sysparam(conn)

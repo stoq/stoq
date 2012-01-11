@@ -364,7 +364,7 @@ class AppWindow(GladeDelegate):
         if not api.sysparam(self.conn).DEMO_MODE:
             return
 
-        if api.config.get('UI', 'hide_demo_warning') == 'True':
+        if api.user_settings.get('hide-demo-warning'):
             return
 
         button_label = _('Enable production mode')
@@ -467,11 +467,12 @@ class AppWindow(GladeDelegate):
         self.app.shell.run()
 
     def _restore_window_size(self):
+        d = api.user_settings.get('launcher-geometry', {})
         try:
-            width = int(api.config.get('Launcher', 'window_width') or -1)
-            height = int(api.config.get('Launcher', 'window_height') or -1)
-            x = int(api.config.get('Launcher', 'window_x') or -1)
-            y = int(api.config.get('Launcher', 'window_y') or -1)
+            width = int(d.get('width', -1))
+            height = int(d.get('height', -1))
+            x = int(d.get('x', -1))
+            y = int(d.get('y', -1))
         except ValueError:
             pass
         toplevel = self.get_toplevel()
@@ -480,11 +481,12 @@ class AppWindow(GladeDelegate):
             toplevel.move(x, y)
 
     def _save_window_size(self):
-        api.config.set('Launcher', 'window_width', str(self._width))
-        api.config.set('Launcher', 'window_height', str(self._height))
-        api.config.set('Launcher', 'window_x', str(self._x))
-        api.config.set('Launcher', 'window_y', str(self._y))
-        api.config.flush()
+        d = api.user_settings.get('launcher-geometry', {})
+        d['width'] = str(self._width)
+        d['height'] = str(self._height)
+        d['x'] = str(self._x)
+        d['y'] = str(self._y)
+        api.user_settings.flush()
 
     def _prepare_statusbar(self):
         # Disable border on statusbar
@@ -1222,10 +1224,10 @@ class VersionChecker(object):
 
     def _on_response_done(self, details):
         self._check_details(details['version'])
-        api.config.set('General', 'last-version-check',
-                       datetime.date.today().strftime('%Y-%m-%d'))
-        api.config.set('General', 'latest-version', details['version'])
-        api.config.flush()
+        api.user_settings.set('last-version-check',
+                              datetime.date.today().strftime('%Y-%m-%d'))
+        api.user_settings.set('latest-version', details['version'])
+        api.user_settings.flush()
 
     #
     #   Public API
@@ -1235,7 +1237,7 @@ class VersionChecker(object):
         if api.is_developer_mode():
             return
         log.debug('Checking version')
-        date = api.config.get('General', 'last-version-check')
+        date = api.user_settings.get('last-version-check')
         if date:
             check_date = datetime.datetime.strptime(date, '%Y-%m-%d')
             diff = datetime.date.today() - check_date.date()
@@ -1244,6 +1246,6 @@ class VersionChecker(object):
         else:
             return self._download_details()
 
-        latest_version = api.config.get('General', 'latest-version')
+        latest_version = api.user_settings.get('latest-version')
         if latest_version:
             self._check_details(latest_version)

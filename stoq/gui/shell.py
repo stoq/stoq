@@ -137,13 +137,10 @@ class Shell(object):
         trans.commit()
 
     def _maybe_show_welcome_dialog(self):
-        from stoqlib.lib.interfaces import IStoqConfig
-
-        config = get_utility(IStoqConfig)
-        if config.get('General', 'show_welcome_dialog') == 'False':
+        if not api.user_settings.get('show-welcome-dialog', True):
             return
-        config.set('General', 'show_welcome_dialog', 'False')
-        config.flush()
+        api.user_settings.set('show-welcome-dialog', False)
+        api.user_settings.flush()
 
         from stoq.gui.welcomedialog import WelcomeDialog
         from stoqlib.gui.base.dialogs import run_dialog
