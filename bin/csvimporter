@@ -31,8 +31,8 @@ from stoqlib.database.interfaces import ICurrentUser
 from stoqlib.database.runtime import get_connection
 from stoqlib.importers.csvimporter import CSVImporter
 from stoqlib.importers.importer import get_by_type
+from stoqlib.lib.configparser import StoqConfig
 
-from stoq.lib.configparser import StoqConfig
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import setup
 

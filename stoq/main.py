@@ -282,8 +282,8 @@ def _initialize(options):
         _cur_exit_func = sys.exitfunc
     sys.exitfunc = _exit_func
 
+    from stoqlib.lib.configparser import StoqConfig
     from stoqlib.lib.message import error
-    from stoq.lib.configparser import StoqConfig
     log.debug('reading configuration')
     config = StoqConfig()
     if options.filename:

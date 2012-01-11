@@ -43,12 +43,12 @@ from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.profile import ProfileSettings
 from stoqlib.exceptions import (DatabaseError, StoqlibError,
                                 DatabaseInconsistency)
+from stoqlib.lib.configparser import register_config, StoqConfig
 from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.interfaces import  IApplicationDescriptions
 from stoqlib.lib.message import error
 from stoqlib.lib.osutils import read_registry_key
 
-from stoq.lib.configparser import register_config, StoqConfig
 from stoq.lib.options import get_option_parser
 
 _ = gettext.gettext

@@ -34,7 +34,7 @@ class StoqCommandHandler:
 
     def _read_config(self, options, create=False, register_station=True,
                      check_schema=True, load_plugins=True):
-        from stoq.lib.configparser import StoqConfig
+        from stoqlib.lib.configparser import StoqConfig
         from stoq.lib.startup import setup
         config = StoqConfig()
         if options.load_config and options.filename:
