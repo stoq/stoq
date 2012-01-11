@@ -55,7 +55,7 @@ class ClientEditor(BasePersonRoleEditor):
     model_iface = IClient
     gladefile = 'BaseTemplate'
 
-    create_help_section = 'client-new'
+    help_section = 'client'
 
     #
     # BaseEditor hooks
@@ -82,7 +82,7 @@ class UserEditor(BasePersonRoleEditor):
     gladefile = 'BaseTemplate'
     USER_TAB_POSITION = 0
 
-    create_help_section = 'user-new'
+    help_section = 'user'
 
     def __init__(self, conn, model=None, role_type=None, person=None,
                  visual_mode=False):
@@ -245,7 +245,7 @@ class SupplierEditor(BasePersonRoleEditor):
     model_iface = ISupplier
     gladefile = 'BaseTemplate'
 
-    create_help_section = 'supplier-new'
+    help_section = 'supplier'
 
     #
     # BaseEditor hooks

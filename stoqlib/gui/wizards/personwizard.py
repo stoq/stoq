@@ -204,8 +204,8 @@ class PersonRoleWizard(BaseWizard):
                             PersonRoleTypeStep(self, conn),
                             title=self.get_role_title())
 
-        if role_editor.create_help_section:
-            self.set_help_section(role_editor.create_help_section)
+        if role_editor.help_section:
+            self.set_help_section(role_editor.help_section)
 
     def get_role_name(self):
         if not self.role_editor.model_name:
