@@ -122,18 +122,22 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
     def set_message(self, message):
         self.search.results.set_message(message)
 
+    #
+    #  Private
+    #
+
     def _migrate_from_pickle(self):
         username = api.get_current_user(api.get_connection()).username
         filename = os.path.join(get_application_dir(), 'columns-%s' % username,
                                 self._restore_name + '.pickle')
         log.info("Migrating columns from pickle: %s" % (filename, ))
         try:
-            import cPickle
-            fd = open(filename)
-            return cPickle.load(fd)
+            with open(filename) as fd:
+                import cPickle
+                return cPickle.load(fd)
         except Exception, e:
             log.info("Exception while migrating: %r" % (e, ))
-            return []
+            return {}
 
     #
     #  Callbacks
