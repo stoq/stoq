@@ -197,11 +197,11 @@ class BasePersonRoleEditor(BaseEditor):
     @ivar main_slave:
     @ivar individual_slave:
     @ivar company_slave:
-    @cvar create_help_section: the help button for this wizard,
+    @cvar help_section: the help button for this wizard,
       usually describing how to create a new person
     """
     size = (700, -1)
-    create_help_section = None
+    help_section = None
 
     def __init__(self, conn, model=None, role_type=None, person=None,
                  visual_mode=False):
