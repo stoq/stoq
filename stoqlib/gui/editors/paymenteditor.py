@@ -252,6 +252,7 @@ class InPaymentEditor(BasePaymentEditor):
     person_class = PersonAdaptToClient
     person_iface = IClient
     _person_label = _("Payer:")
+    help_section = 'account-receivable'
 
     def __init__(self, conn, model=None):
         """ This dialog is responsible to create additional payments with
@@ -273,6 +274,7 @@ class OutPaymentEditor(BasePaymentEditor):
     person_class = PersonAdaptToSupplier
     person_iface = ISupplier
     _person_label = _("Recipient:")
+    help_section = 'account-payable'
 
     def __init__(self, conn, model=None):
         """ This dialog is responsible to create additional payments with

@@ -47,6 +47,7 @@ class SystemParameterEditor(BaseEditor):
     proxy_widgets = ("parameter_name",
                      "parameter_desc")
     model_type = ParameterData
+    help_section = 'param'
 
     def __init__(self, conn, model):
         if not model:

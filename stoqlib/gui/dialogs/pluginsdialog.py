@@ -58,6 +58,7 @@ class _PluginModel(object):
 class PluginManagerDialog(BasicDialog):
     size = (500, 350)
     title = _(u'Plugin Manager')
+    help_section = 'plugin'
 
     def __init__(self, conn):
         BasicDialog.__init__(self)

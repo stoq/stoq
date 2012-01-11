@@ -583,6 +583,7 @@ class ProductComponentEditor(BaseEditor):
 class ProductEditor(SellableEditor):
     model_name = _('Product')
     model_type = Product
+    help_section = 'product'
 
     _model_created = False
 

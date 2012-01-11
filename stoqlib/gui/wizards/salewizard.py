@@ -528,6 +528,7 @@ class ConfirmSaleWizard(BaseWizard):
     size = (600, 400)
     first_step = SalesPersonStep
     title = _("Sale Checkout")
+    help_section = 'sale-confirm'
 
     def __init__(self, conn, model):
         marker('ConfirmSaleWizard')
