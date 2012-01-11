@@ -132,7 +132,7 @@ class ReceivableApp(SearchableAppWindow):
         ]
         self.receivable_ui = self.add_ui_actions(None, actions,
                                                  filename='receivable.xml')
-        self.set_help_section(_("Accounts receivable help"), 'receber-inicio')
+        self.set_help_section(_("Accounts receivable help"), 'app-receivable')
 
         self.Receive.set_short_label(_('Receive'))
         self.Details.set_short_label(_('Details'))

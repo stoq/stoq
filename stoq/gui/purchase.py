@@ -170,8 +170,7 @@ class PurchaseApp(SearchableAppWindow):
         self.Edit.set_short_label(_("Edit"))
         self.Details.set_short_label(_("Details"))
 
-        self.set_help_section(_("Purchase help"),
-                              'compras-inicio')
+        self.set_help_section(_("Purchase help"), 'app-purchase')
         self.popup = self.uimanager.get_widget('/PurchaseSelection')
 
     def create_ui(self):

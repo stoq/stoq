@@ -161,7 +161,7 @@ class PosApp(AppWindow):
         ]
         self.pos_ui = self.add_ui_actions('', actions,
                                           filename='pos.xml')
-        self.set_help_section(_("POS help"), 'pdv-inicio')
+        self.set_help_section(_("POS help"), 'app-pos')
 
     def create_ui(self):
         self.sale_items.set_columns(self.get_columns())

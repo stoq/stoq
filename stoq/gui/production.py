@@ -106,7 +106,7 @@ class ProductionApp(SearchableAppWindow):
         ]
         self.production_ui = self.add_ui_actions("", actions,
                                                  filename="production.xml")
-        self.set_help_section(_("Production help"), 'producao-inicio')
+        self.set_help_section(_("Production help"), 'app-production')
 
         self.NewProduction.set_short_label(_("New Production"))
         self.ProductionPurchaseQuote.set_short_label(_("Purchase"))

@@ -125,8 +125,7 @@ class PayableApp(SearchableAppWindow):
 
         self.payable_ui = self.add_ui_actions(None, actions,
                                               filename='payable.xml')
-        self.set_help_section(_("Accounts payable help"),
-                              'pagar-inicio')
+        self.set_help_section(_("Accounts payable help"), 'app-payable')
         self.Pay.set_short_label(_('Pay'))
         self.Edit.set_short_label(_('Edit'))
         self.Details.set_short_label(_('Details'))
