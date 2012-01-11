@@ -1,0 +1,55 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="user-profile-edit">
+
+  <title>Editando um perfil de usuário</title>
+  <info>
+    <desc>
+      Editando um perfil de usuário no Stoq
+    </desc>
+
+    <link type="guide" xref="user-profile" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para editar informações de perfis de usuários
+    cadastrados no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-admin" />, abra a
+        <link xref="user-profile-search">pesquisa de perfis de usuários</link>,
+        procure pelo perfil em questão e selecione-o.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo o perfil selecionado, clique em <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto e você poderá
+        editar as informações desse perfil, como as permissões de acesso a
+        <link xref="overview#app">aplicativos</link>. Após ter certeza de tudo,
+        clique em <gui>Ok</gui> para confirmar o processo.
+      </p>
+      <note style="tip">
+        <p>
+          Note que a qualquer momento caso você se arrependa da edição, você
+          pode clicar em <gui>Cancelar</gui> e assim descartar todas as
+          mudanças realizadas no momento.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu perfil de usuário foi editado com sucesso no Stoq!
+      </p>
+    </item>
+  </steps>
+
+</page>

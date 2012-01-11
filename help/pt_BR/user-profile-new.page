@@ -1,0 +1,48 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="user-profile-new">
+
+  <title>Criando um perfil de usuário</title>
+  <info>
+    <desc>
+      Criando um perfil de usuário no Stoq
+    </desc>
+
+    <link type="guide" xref="user-profile" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para cadastrar perfis de usuários no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-admin" />, abra a
+        <link xref="user-profile-search">pesquisa de perfis de usuários</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Clique no botão <gui>Novo</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto e nele você
+        deve preencher o <gui>Nome do perfil</gui>, assim como marcar as caixas
+        de permissão dos <link xref="overview#app">aplicativos</link> que
+        poderão ser acessados por este perfil. Ao ter certeza dos dados, clique
+        em <gui>Ok</gui> para finalizar o processo.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu perfil de usuário foi criado com sucesso! Você já pode
+        <link xref="user-add-profile">vinculá-lo a um usuário</link>.
+      </p>
+    </item>
+  </steps>
+
+</page>
