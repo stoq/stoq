@@ -19,36 +19,6 @@
     <link xref="inventory">inventários</link>.
   </p>
 
-  <list>
-    <title><link xref="overview#search-column">Colunas</link> da lista de inventários:</title>
-    <item>
-      <p>
-        <gui>Código</gui>: Número do inventário registrado pelo Stoq.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Situação</gui>: Situação do inventário (Fechado, Aberto, etc).
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Filial</gui>: Nome da <link xref="branch">filial</link> em que o
-        inventário foi/está sendo realizado.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Aberto</gui>: Data de abertura do inventário.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Fechado</gui>: Data em que o inventário foi ajustado e fechado.
-      </p>
-    </item>
-  </list>
-
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">
     <title>Sumário</title>

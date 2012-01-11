@@ -31,48 +31,6 @@
     facilitando assim o cotidiano dos administradores da empresa.
   </p>
 
-  <list>
-    <title><link xref="overview#search-column">Colunas</link> da lista de pedidos:</title>
-    <item>
-      <p>
-        <gui># (número)</gui>: Número do pedido registrado pelo Stoq.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Situação</gui>: Situação do pedido (Pendente, Fechado, Cotação,
-        etc).
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Aberto</gui>: Dia em que o pedido foi realizado.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Fornecedor</gui>: Nome do <link xref="supplier">fornecedor</link>
-        responsável pelo pedido.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Pedido</gui>: Quantidade de produtos solicitada no pedido.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Recebido</gui>: Quantidade de produtos que ja foram recebidas no
-        pedido.
-      </p>
-    </item>
-    <item>
-      <p>
-        <gui>Total</gui>: Valor total do pedido.
-      </p>
-    </item>
-  </list>
-
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">
     <title>Sumário</title>
