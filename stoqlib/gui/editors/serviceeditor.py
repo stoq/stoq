@@ -35,8 +35,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
 from stoqlib.domain.service import Service
-from stoqlib.domain.sellable import (BaseSellableInfo,
-                                     Sellable,
+from stoqlib.domain.sellable import (Sellable,
                                      SellableTaxConstant)
 
 _ = stoqlib_gettext
@@ -103,10 +102,8 @@ class ServiceEditor(SellableEditor):
     #
 
     def create_model(self, conn):
-        sellable_info = BaseSellableInfo(connection=conn,
-                                         description='', price=currency(0))
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.conn)
-        sellable = Sellable(base_sellable_info=sellable_info,
+        sellable = Sellable(description='', price=currency(0),
                             tax_constant=tax_constant,
                             status=Sellable.STATUS_AVAILABLE,
                             connection=conn)

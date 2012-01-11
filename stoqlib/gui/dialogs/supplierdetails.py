@@ -79,7 +79,7 @@ class SupplierDetailsDialog(BaseEditor):
                 product_codes = [item.code for item in product_dict.values()]
                 sellable = purchase_item.sellable
                 if not sellable.code in product_codes:
-                    desc = sellable.base_sellable_info.description
+                    desc = sellable.description
                     obj = Settable(code=sellable.code, description=desc,
                                    _total_qty=qty, total_value=total_value,
                                    qty_str=qty_str, unit=unit, cost=cost)

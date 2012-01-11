@@ -7,30 +7,12 @@ Imports that will be used in this doctest:
     >>> from stoqlib.database.runtime import new_transaction
     >>> from stoqlib.domain.product import Product
     >>> from stoqlib.domain.sellable import Sellable
-    >>> from stoqlib.domain.sellable import BaseSellableInfo
     >>> from stoqlib.domain.sellable import SellableCategory
     >>> from decimal import Decimal
 
 Create a new transaction
 
     >>> trans = new_transaction()
-
-BaseSellableInfo
-================
-
-.. TODO:
-..     def get_commission(self):
-..     def get_description(self):
-
-    >>> info = BaseSellableInfo(connection=trans, description="Sellable")
-
-Commission is initially set to 0:
-
-    >>> info.get_commission()
-    Decimal('0.00')
-
-    >>> info.get_description()
-    u'Sellable'
 
 SellableCategory
 ================
@@ -46,11 +28,20 @@ SellableCategory
 Sellable
 ========
 
-    >>> sellable = Sellable(base_sellable_info=info,
+    >>> sellable = Sellable(description="Sellable",
     ...                     barcode='1138', connection=trans)
 
     >>> sellable
     <Sellable ...>
+
+Commission is initially set to 0:
+
+    >>> sellable.get_commission()
+    Decimal('0.00')
+
+    >>> sellable.get_description()
+    u'Sellable'
+
 
     >>> product = Product(sellable=sellable, connection=trans)
 

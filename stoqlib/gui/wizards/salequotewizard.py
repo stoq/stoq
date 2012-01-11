@@ -356,7 +356,7 @@ class SaleQuoteItemStep(SellableItemStep):
             if category:
                 info = s.get_category_price_info(category)
             if not info:
-                info = s.base_sellable_info
+                info = s
             return ValidationError(
                 _(u'Max discount for this product is %.2f%%') %
                 info.max_discount)

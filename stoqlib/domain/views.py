@@ -41,7 +41,7 @@ from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
 from stoqlib.domain.receiving import ReceivingOrderItem, ReceivingOrder
 from stoqlib.domain.sale import SaleItem, Sale
 from stoqlib.domain.sellable import (Sellable, SellableUnit,
-                                     BaseSellableInfo, SellableCategory,
+                                     SellableCategory,
                                      SellableTaxConstant)
 from stoqlib.domain.stockdecrease import (StockDecrease, StockDecreaseItem)
 
@@ -69,7 +69,7 @@ class ProductFullStockView(Viewable):
         barcode=Sellable.q.barcode,
         status=Sellable.q.status,
         cost=Sellable.q.cost,
-        description=BaseSellableInfo.q.description,
+        description=Sellable.q.description,
         product_id=Product.q.id,
         location=Product.q.location,
         tax_description=SellableTaxConstant.q.description,
@@ -82,8 +82,6 @@ class ProductFullStockView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, BaseSellableInfo,
-                    BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID),
         # Tax Constant
         LEFTJOINOn(None, SellableTaxConstant,
                    SellableTaxConstant.q.id == Sellable.q.tax_constantID),
@@ -155,7 +153,8 @@ class ProductFullStockView(Viewable):
     @property
     def price(self):
         # This property is needed because the price value in the view column
-        # might not be the price used (check OnSaleInfo class).
+        # might not be the price used (check on_sale_* properties on Sellable).
+        # FIXME: This could be done here, without the extra query
         sellable = Sellable.get(self.id, connection=self.get_connection())
         return sellable.price
 
@@ -263,7 +262,7 @@ class ProductQuantityView(Viewable):
     columns = dict(
         id=ProductHistory.q.sellableID,
         code=Sellable.q.code,
-        description=BaseSellableInfo.q.description,
+        description=Sellable.q.description,
         branch=ProductHistory.q.branchID,
         sold_date=ProductHistory.q.sold_date,
         received_date=ProductHistory.q.received_date,
@@ -284,8 +283,6 @@ class ProductQuantityView(Viewable):
     joins = [
         INNERJOINOn(None, Sellable,
                     ProductHistory.q.sellableID == Sellable.q.id),
-        INNERJOINOn(None, BaseSellableInfo,
-                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
     ]
 
 
@@ -311,12 +308,12 @@ class SellableFullStockView(Viewable):
         barcode=Sellable.q.barcode,
         status=Sellable.q.status,
         cost=Sellable.q.cost,
-        description=BaseSellableInfo.q.description,
+        description=Sellable.q.description,
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
         category_description=SellableCategory.q.description,
-        base_price=BaseSellableInfo.q.price,
-        max_discount=BaseSellableInfo.q.max_discount,
+        base_price=Sellable.q.base_price,
+        max_discount=Sellable.q.max_discount,
         stock=const.COALESCE(const.SUM(ProductStockItem.q.quantity +
                                        ProductStockItem.q.logic_quantity), 0),
         )
@@ -339,10 +336,6 @@ class SellableFullStockView(Viewable):
                    ProductAdaptToStorable.q.id),
         ]
 
-    clause = AND(
-        BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID,
-        )
-
     @classmethod
     def select_by_branch(cls, query, branch, having=None, connection=None):
         if branch:
@@ -363,7 +356,8 @@ class SellableFullStockView(Viewable):
     @property
     def price(self):
         # This property is needed because the price value in the view column
-        # might not be the price used (check OnSaleInfo class).
+        # might not be the price used (check on_sale_* properties on Sellable).
+        # FIXME: This could be done here, without the extra query
         sellable = Sellable.get(self.id, connection=self.get_connection())
         return sellable.price
 
@@ -465,7 +459,7 @@ class SoldItemView(Viewable):
     columns = dict(
         id=Sellable.q.id,
         code=Sellable.q.code,
-        description=BaseSellableInfo.q.description,
+        description=Sellable.q.description,
         category=SellableCategory.q.description,
         quantity=const.SUM(SaleItem.q.quantity),
         total_cost=const.SUM(SaleItem.q.quantity * SaleItem.q.average_cost),
@@ -478,8 +472,6 @@ class SoldItemView(Viewable):
                    SaleItem.q.saleID == Sale.q.id),
         LEFTJOINOn(None, SellableCategory,
                    Sellable.q.categoryID == SellableCategory.q.id),
-        INNERJOINOn(None, BaseSellableInfo,
-                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
     ]
 
     clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
@@ -581,7 +573,7 @@ class PurchasedItemAndStockView(Viewable):
     columns = dict(
         id=PurchaseItem.q.id,
         product_id=Product.q.id,
-        description=BaseSellableInfo.q.description,
+        description=Sellable.q.description,
         purchased=PurchaseItem.q.quantity,
         received=PurchaseItem.q.quantity_received,
         stocked=const.SUM(ProductStockItem.q.quantity +
@@ -597,8 +589,6 @@ class PurchasedItemAndStockView(Viewable):
                    PurchaseItem.q.orderID == PurchaseOrder.q.id),
         LEFTJOINOn(None, Sellable,
                     Sellable.q.id == PurchaseItem.q.sellableID),
-        INNERJOINOn(None, BaseSellableInfo,
-                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
         LEFTJOINOn(None, Product,
                    Product.q.sellableID == PurchaseItem.q.sellableID),
         LEFTJOINOn(None, ProductAdaptToStorable,
@@ -685,7 +675,7 @@ class SaleItemsView(Viewable):
         id=SaleItem.q.id,
         sellable_id=Sellable.q.id,
         code=Sellable.q.code,
-        description=BaseSellableInfo.q.description,
+        description=Sellable.q.description,
         sale_id=SaleItem.q.saleID,
         sale_date=Sale.q.open_date,
         client_name=Person.q.name,
@@ -704,8 +694,6 @@ class SaleItemsView(Viewable):
                    Sale.q.clientID == PersonAdaptToClient.q.id),
         LEFTJOINOn(None, Person,
                    PersonAdaptToClient.q.originalID == Person.q.id),
-        INNERJOINOn(None, BaseSellableInfo,
-                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
     ]
 
     clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
@@ -768,7 +756,7 @@ class ProductionItemView(Viewable):
                    lost=ProductionItem.q.lost,
                    category_description=SellableCategory.q.description,
                    unit_description=SellableUnit.q.description,
-                   description=BaseSellableInfo.q.description, )
+                   description=Sellable.q.description, )
 
     joins = [
         LEFTJOINOn(None, ProductionOrder,
@@ -781,8 +769,7 @@ class ProductionItemView(Viewable):
                    SellableCategory.q.id == Sellable.q.categoryID),
         LEFTJOINOn(None, SellableUnit,
                    Sellable.q.unitID == SellableUnit.q.id),
-        INNERJOINOn(None, BaseSellableInfo,
-                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id)]
+    ]
 
     @property
     def production_item(self):
@@ -839,7 +826,7 @@ class LoanItemView(Viewable):
                    code=Sellable.q.code,
                    category_description=SellableCategory.q.description,
                    unit_description=SellableUnit.q.description,
-                   description=BaseSellableInfo.q.description, )
+                   description=Sellable.q.description, )
 
     joins = [
         LEFTJOINOn(None, Loan, LoanItem.q.loanID == Loan.q.id),
@@ -849,8 +836,7 @@ class LoanItemView(Viewable):
                    Sellable.q.unitID == SellableUnit.q.id),
         LEFTJOINOn(None, SellableCategory,
                    SellableCategory.q.id == Sellable.q.categoryID),
-        INNERJOINOn(None, BaseSellableInfo,
-                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id)]
+    ]
 
 
 class AccountView(Viewable):

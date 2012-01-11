@@ -76,7 +76,7 @@ class StockDecreaseItem(Domain):
         return "%s %s" % (self.quantity, self.sellable.get_unit_description())
 
     def get_description(self):
-        return self.sellable.base_sellable_info.get_description()
+        return self.sellable.get_description()
 
 
 class StockDecrease(Domain):

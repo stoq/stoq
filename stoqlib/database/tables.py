@@ -76,7 +76,6 @@ _tables = [
                           "PaymentAdaptToInPayment",
                           "PaymentAdaptToOutPayment"]),
      ('fiscal', ["CfopData", "FiscalBookEntry"]),
-     ('sellable', ["OnSaleInfo", "BaseSellableInfo"]),
      ('sale', ["SaleItem",
                "DeliveryItem",
                "SaleItemAdaptToDelivery",

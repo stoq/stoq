@@ -39,7 +39,7 @@ from stoqlib.domain.person import PersonAdaptToSupplier
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductComponent,
                                     ProductQualityTest)
-from stoqlib.domain.sellable import (BaseSellableInfo, Sellable,
+from stoqlib.domain.sellable import (Sellable,
                                      SellableTaxConstant)
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.gui.base.dialogs import run_dialog
@@ -645,10 +645,8 @@ class ProductEditor(SellableEditor):
 
     def create_model(self, conn):
         self._model_created = True
-        sellable_info = BaseSellableInfo(connection=conn)
         tax_constant = sysparam(conn).DEFAULT_PRODUCT_TAX_CONSTANT
-        sellable = Sellable(base_sellable_info=sellable_info,
-                            tax_constant=tax_constant,
+        sellable = Sellable(tax_constant=tax_constant,
                             connection=conn)
         sellable.unit = sysparam(self.conn).SUGGESTED_UNIT
         model = Product(connection=conn, sellable=sellable)

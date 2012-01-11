@@ -33,22 +33,14 @@ To create a unique code for a ProductAdaptToSellable object, I use datetime
 module
 
     >>> import datetime
-    >>> product_barcode =  'test_code' + str(datetime.datetime.now())
-
-The BaseSellableInfo class stores basic information about sellables. This
-object is mandatory for every new sellable.
-
-    >>> from stoqlib.domain.sellable import BaseSellableInfo
+    >>> product_barcode = 'test_code' + str(datetime.datetime.now())
     >>> description = 'Red Mustang, 1960'
-    >>> sellable_info = BaseSellableInfo(connection=trans,
-    ...                                  description=description,
-    ...                                  price=1500.45)
 
-
-To create a sellable you need to pass in the sellable_info and the barcode.
+To create a sellable you need to pass in the required information.
 
     >>> from stoqlib.domain.sellable import Sellable
-    >>> sellable = Sellable(base_sellable_info=sellable_info,
+    >>> sellable = Sellable(description=description,
+    ...                     price=1500.45,
     ...                     connection=trans,
     ...                     barcode=product_barcode)
 

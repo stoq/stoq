@@ -203,7 +203,6 @@ class ExampleCreator(object):
             'PaymentMethod': self.get_payment_method,
             'Sellable': self.create_sellable,
             'PaymentGroup': self.create_payment_group,
-            'BaseSellableInfo': self.create_base_sellable_info,
             'BranchStation': self.get_station,
             'Bank': self.create_bank,
             'CityLocation': self.get_location,
@@ -223,7 +222,6 @@ class ExampleCreator(object):
             'ISupplier': self.create_supplier,
             'ITransporter': self.create_transporter,
             'IUser': self.create_user,
-            'OnSaleInfo': self.create_on_sale_info,
             'Payment': self.create_payment,
             'ParameterData': self.create_parameter_data,
             'Person': self.create_person,
@@ -370,24 +368,16 @@ class ExampleCreator(object):
                                 component=component,
                                 connection=self.trans)
 
-    def create_base_sellable_info(self, price=None):
-        from stoqlib.domain.sellable import BaseSellableInfo
-        if price is None:
-            price = 10
-        return BaseSellableInfo(connection=self.trans,
-                                description="Description",
-                                price=price)
-
     def create_sellable(self, price=None):
         from stoqlib.domain.product import Product
         from stoqlib.domain.sellable import Sellable
         tax_constant = sysparam(self.trans).DEFAULT_PRODUCT_TAX_CONSTANT
-        base_sellable_info = self.create_base_sellable_info(price=price)
-        on_sale_info = self.create_on_sale_info()
+        if price is None:
+            price = 10
         sellable = Sellable(cost=125,
                             tax_constant=tax_constant,
-                            base_sellable_info=base_sellable_info,
-                            on_sale_info=on_sale_info,
+                            price=price,
+                            description="Description",
                             connection=self.trans)
         Product(sellable=sellable, connection=self.trans)
         return sellable
@@ -653,11 +643,11 @@ class ExampleCreator(object):
     def create_service(self):
         from stoqlib.domain.sellable import Sellable, SellableTaxConstant
         from stoqlib.domain.service import Service
-        sellable_info = self.create_base_sellable_info()
         tax_constant = SellableTaxConstant.get_by_type(
             TaxType.SERVICE, self.trans)
         sellable = Sellable(tax_constant=tax_constant,
-                            base_sellable_info=sellable_info,
+                            price=10,
+                            description="Description",
                             connection=self.trans)
         service = Service(sellable=sellable, connection=self.trans)
         return service
@@ -717,10 +707,6 @@ class ExampleCreator(object):
     def create_payment_group(self):
         from stoqlib.domain.payment.group import PaymentGroup
         return PaymentGroup(connection=self.trans)
-
-    def create_on_sale_info(self):
-        from stoqlib.domain.sellable import OnSaleInfo
-        return OnSaleInfo(connection=self.trans)
 
     def create_sellable_tax_constant(self):
         from stoqdrivers.enum import TaxType

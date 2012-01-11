@@ -80,7 +80,7 @@ class SaleImporter(CSVImporter):
         total_price = 0
         for product in self.parse_multi(Product, data.product_list, trans):
             sale.add_sellable(product.sellable)
-            total_price += product.sellable.base_sellable_info.price
+            total_price += product.sellable.price
 
         sale.order()
         method = PaymentMethod.get_by_name(trans, data.payment_method)
