@@ -23,8 +23,11 @@
 ##
 """ Showing help.  """
 
+import os
+
 import gtk
 
+import stoqlib
 from stoqlib.gui.base.dialogs import get_current_toplevel
 
 
@@ -33,14 +36,19 @@ def show_contents(screen=None):
 
 
 def show_section(section, screen=None):
-    if section == '':
-        uri = 'ghelp:stoq'
+    if stoqlib.library.uninstalled:
+        root = stoqlib.library.get_root()
+        uri = os.path.join(root, 'help', 'pt_BR')
+        if section != '':
+            uri += '/' + section + '.page'
     else:
-        uri = 'ghelp:stoq?' + section
+        uri = 'stoq'
+        if section != '':
+            uri += '?' + section
 
     if not screen:
         toplevel = get_current_toplevel()
         if toplevel:
             screen = toplevel.get_screen()
 
-    gtk.show_uri(screen, uri, gtk.get_current_event_time())
+    gtk.show_uri(screen, 'ghelp:' + uri, gtk.get_current_event_time())
