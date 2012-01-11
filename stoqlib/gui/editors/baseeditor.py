@@ -36,6 +36,7 @@ from stoqlib.lib.component import Adapter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
 from stoqlib.gui.base.messagebar import MessageBar
+from stoqlib.gui.help import show_section
 
 log = Logger('stoqlib.gui.editors')
 
@@ -183,6 +184,7 @@ class BaseEditor(BaseEditorSlave):
     title = None
     hide_footer = False
     confirm_widgets = ()
+    help_section = None
 
     def __init__(self, conn, model=None, visual_mode=False):
         if conn is not None and isinstance(conn, StoqlibTransaction):
@@ -206,6 +208,20 @@ class BaseEditor(BaseEditorSlave):
 
         self.register_validate_function(self._validation_function)
         self.force_validation()
+
+        if self.help_section:
+            self._add_help_button(self.help_section)
+
+    def _add_help_button(self, section):
+        def on_help__clicked(button):
+            show_section(section)
+
+        self.main_dialog.action_area.set_layout(gtk.BUTTONBOX_END)
+        button = gtk.Button(stock=gtk.STOCK_HELP)
+        button.connect('clicked', on_help__clicked)
+        self.main_dialog.action_area.add(button)
+        self.main_dialog.action_area.set_child_secondary(button, True)
+        button.show()
 
     def _on_main_dialog__confirm(self, dialog, retval):
         if isinstance(self.conn, StoqlibTransaction):
