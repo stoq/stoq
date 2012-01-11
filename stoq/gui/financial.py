@@ -368,7 +368,7 @@ class FinancialApp(AppWindow):
             ]
         self.financial_ui = self.add_ui_actions('', actions,
                                                 filename='financial.xml')
-        self.set_help_section(_("Financial help"), 'financial-inicio')
+        self.set_help_section(_("Financial help"), 'app-financial')
         self.Edit.set_short_label(_('Edit'))
         self.DeleteAccount.set_short_label(_('Delete'))
         self.DeleteTransaction.set_short_label(_('Delete'))

@@ -150,7 +150,7 @@ class CalendarApp(AppWindow):
             ]
         self.calendar_ui = self.add_ui_actions('', actions,
                                                 filename='calendar.xml')
-        self.help_ui = None
+        self.set_help_section(_("Calendar help"), 'app-calendar')
 
         radio_actions = [
             ('ViewMonth', STOQ_CALENDAR_MONTH, _("View as month"),

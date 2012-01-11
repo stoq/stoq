@@ -147,7 +147,7 @@ class SalesApp(SearchableAppWindow):
         self.Return.set_short_label(_("Return"))
         self.Details.set_short_label(_("Details"))
 
-        self.set_help_section(_("Sales help"), 'vendas-inicio')
+        self.set_help_section(_("Sales help"), 'app-sales')
 
     def create_ui(self):
         self.popup = self.uimanager.get_widget('/SaleSelection')

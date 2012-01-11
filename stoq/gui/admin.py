@@ -299,7 +299,7 @@ class AdminApp(AppWindow):
             ]
         self.admin_ui = self.add_ui_actions('', actions,
                                             filename='admin.xml')
-        self.set_help_section(_("Admin help"), 'admin-inicial')
+        self.set_help_section(_("Admin help"), 'app-admin')
 
     def create_ui(self):
         self.tasks = Tasks(self)

@@ -131,7 +131,7 @@ class StockApp(SearchableAppWindow):
         ]
         self.add_ui_actions('', toogle_actions, 'ToogleActions',
                             'toogle')
-        self.set_help_section(_("Stock help"), 'vendas-inicio')
+        self.set_help_section(_("Stock help"), 'app-stock')
 
         self.NewReceiving.set_short_label(_("Receive"))
         self.NewTransfer.set_short_label(_("Transfer"))

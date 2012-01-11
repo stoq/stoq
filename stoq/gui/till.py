@@ -120,7 +120,7 @@ class TillApp(SearchableAppWindow):
 
         self.till_ui = self.add_ui_actions('', actions,
                                            filename="till.xml")
-        self.set_help_section(_("Till help"), 'caixa-inicio')
+        self.set_help_section(_("Till help"), 'app-till')
 
         self.Confirm.set_short_label(_('Confirm'))
         self.Return.set_short_label(_('Return'))

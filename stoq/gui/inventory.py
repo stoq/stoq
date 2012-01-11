@@ -93,8 +93,7 @@ class InventoryApp(SearchableAppWindow):
         ]
         self.inventory_ui = self.add_ui_actions('', actions,
                                                 filename='inventory.xml')
-        self.set_help_section(_("Inventory help"),
-                              'inventario-inicio')
+        self.set_help_section(_("Inventory help"), 'app-inventory')
 
         self.AdjustAction.set_short_label(_("Adjust"))
         self.CountingAction.set_short_label(_("Count"))
