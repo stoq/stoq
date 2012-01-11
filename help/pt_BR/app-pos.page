@@ -17,8 +17,17 @@
   </info>
 
   <p>
-    Terminal de vendas e caixa registradora para venda de produtos e
-    serviços.
+    <link xref="overview#app">Aplicativo</link> responsável por realizar uma
+    das funções mais importantes no Stoq, que é o de
+    <link xref="sale">vendas</link>.
+  </p>
+  <p>
+    Diferentemente dos outros aplicativos, ele foi projetado para uma maior
+    facilidade e agilidade na hora de
+    <link xref="sale-new">realizar vendas</link>. Por causa disso, ele possui
+    uma leve integração com o <link xref="till">caixa</link>, como a
+    possibilidade de realizar a <link xref="till-open">abertura de caixa</link>
+    e o <link xref="till-close">fechamento de caixa</link>.
   </p>
 
   <!--This will automatically list all pages that links to this page-->

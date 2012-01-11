@@ -64,6 +64,13 @@
       aplicativos. Para saber mais sobre cada um dos aplicativos, de uma olhada
       na <link xref="index">página inicial</link> do manual.
     </p>
+    <note style="important">
+      <p>
+        Cada <link xref="user">usuário no sistema</link> deverá estar vinculado
+        a um <link xref="user-profile">perfil de usuário</link>, o qual
+        restringirá a sua permissão de utilização de aplicativos.
+      </p>
+    </note>
     <section id="toolbar">
       <title>Barra de ferramentas</title>
       <p>

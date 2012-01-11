@@ -17,22 +17,31 @@
   </info>
 
   <p>
-    Este aplicativo é responsável pela área de compras da empresa. Todas as
-    compras de produtos destinados a venda são realizadas por este aplicativo
-    e posteriormente, encaminhadas ao <link xref="app-stock" /> para futuro
-    recebimento.
+    Este <link xref="overview#app">aplicativo</link> é responsável pela área de
+    compras da empresa. Todas as
+    <link xref="purchase">compras de produtos</link> destinados a venda são
+    realizadas por este aplicativo e posteriormente, encaminhadas ao
+    <link xref="app-stock" /> para futuro recebimento.
   </p>
   <p>
-    Através deste aplicativo, é possível gerenciar fornecedores,
-    transportadoras, produtos e serviços, facilitando assim o cotidiano dos
-    administradores da empresa.
+    Através deste aplicativo, é possível gerenciar
+    <link xref="supplier">fornecedores</link>,
+    <link xref="transporter">transportadoras</link>,
+    <link xref="product">produtos</link> e <link xref="service">serviços</link>,
+    facilitando assim o cotidiano dos administradores da empresa.
   </p>
 
   <list>
-    <title>Colunas da lista de pedidos:</title>
+    <title><link xref="overview#search-column">Colunas</link> da lista de pedidos:</title>
     <item>
       <p>
-        <gui># (número)</gui>: Número do pedido registrado no aplicativo.
+        <gui># (número)</gui>: Número do pedido registrado pelo Stoq.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Situação</gui>: Situação do pedido (Pendente, Fechado, Cotação,
+        etc).
       </p>
     </item>
     <item>
@@ -42,7 +51,8 @@
     </item>
     <item>
       <p>
-        <gui>Fornecedor</gui>: Nome do fornecedor responsável pelo pedido.
+        <gui>Fornecedor</gui>: Nome do <link xref="supplier">fornecedor</link>
+        responsável pelo pedido.
       </p>
     </item>
     <item>

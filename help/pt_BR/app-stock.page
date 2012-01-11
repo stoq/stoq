@@ -15,9 +15,50 @@
   </info>
 
   <p>
-    Gerencia o estoque de produtos, recebimento de compras, transferência
-    entre filiais entre outros.
+    <link xref="overview#app">Aplicativo</link> responsável por gerenciar todo
+    o <link xref="stock">estoque</link> de <link xref="product">produtos</link>
+    dentro do Stoq.
   </p>
+
+  <list>
+    <title><link xref="overview#search-column">Colunas</link> da lista de produtos:</title>
+    <item>
+      <p>
+        <gui>Código</gui>: Código do produto.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Código de barras</gui>: Código de barras do produto.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Categoria</gui>: Categoria do produto.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Descrição</gui>: Descrição do produto.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Quantidade</gui>: Quantidade em estoque desse produto (dependente
+        da filial selecionada no filtro da pesquisa).
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Unidade</gui>: A unidade desse produto (Kg, L, Un, etc).
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Imagem</gui>: Se esse produto possui uma imagem ou não.
+      </p>
+    </item>
+  </list>
 
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">
