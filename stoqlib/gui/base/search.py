@@ -30,6 +30,7 @@ import gtk
 from kiwi.argcheck import argcheck
 from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
+from kiwi.log import Logger
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.search import (ComboSearchFilter, SearchSlaveDelegate,
                             DateSearchOption)
@@ -42,7 +43,6 @@ from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.cachestore import CacheStore
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.osutils import get_application_dir
@@ -50,6 +50,8 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+log = Logger('stoqlib.search')
 
 
 class _SearchDialogDetailsSlave(GladeSlaveDelegate):
@@ -75,11 +77,10 @@ class _SearchDialogDetailsSlave(GladeSlaveDelegate):
 class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
     def __init__(self, columns, restore_name=None):
         self._columns = columns
-        if restore_name:
-            self._cache_store = self._get_cache_store(restore_name)
-            self.restore_columns()
-        else:
-            self._cache_store = None
+        self._restore_name = restore_name
+        self._settings_key = 'search-columns-%s' % (
+            api.get_current_user(api.get_connection()).username, )
+        self.restore_columns()
 
         SearchSlaveDelegate.__init__(self, self._columns)
         self.search.connect("search-completed",
@@ -90,7 +91,7 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
     #
 
     def save_columns(self):
-        if not self._cache_store:
+        if not self._restore_name:
             return
 
         d = {}
@@ -98,12 +99,19 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
             d[col.title] = (col.treeview_column.get_visible(),
                             col.treeview_column.get_width())
 
-        self._cache_store.store(d)
+        columns = api.user_settings.get(self._settings_key, {})
+        columns[self._restore_name] = d
+
+        api.user_settings.flush()
 
     def restore_columns(self):
-        saved = self._cache_store.load()
-        if not saved:
+        if not self._restore_name:
             return
+        columns = api.user_settings.get(self._settings_key, {})
+        if columns:
+            saved = columns.get(self._restore_name, {})
+        else:
+            saved = self._migrate_from_pickle()
 
         for col in self._columns:
             props = saved.get(col.title)
@@ -114,15 +122,18 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
     def set_message(self, message):
         self.search.results.set_message(message)
 
-    #
-    #  Private API
-    #
-
-    def _get_cache_store(self, restore_name):
-        uname = api.get_current_user(api.get_connection()).username
-        restore_dir = os.path.join(get_application_dir(), 'columns-%s' % uname)
-        restore_name = restore_name and "%s.pickle" % restore_name
-        return CacheStore(restore_dir, restore_name)
+    def _migrate_from_pickle(self):
+        username = api.get_current_user(api.get_connection()).username
+        filename = os.path.join(get_application_dir(), 'columns-%s' % username,
+                                self._restore_name + '.pickle')
+        log.info("Migrating columns from pickle: %s" % (filename, ))
+        try:
+            import cPickle
+            fd = open(filename)
+            return cPickle.load(fd)
+        except Exception, e:
+            log.info("Exception while migrating: %r" % (e, ))
+            return []
 
     #
     #  Callbacks
