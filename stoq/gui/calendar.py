@@ -52,11 +52,7 @@ class CalendarView(WebView):
             'load-finished',
             self._on_view__document_load_finished)
 
-        events = api.user_settings.get('calendar-events', {})
-        self._show_events = dict(
-            in_payments=events.get('in-payments', True),
-            out_payments=events.get('out-payments', True),
-            purchase_orders=events.get('purchase-orders', True))
+        self._load_user_settings()
 
     def _load_finished(self):
         self._startup()
@@ -83,6 +79,20 @@ class CalendarView(WebView):
     def _load_daemon_path(self, path):
         uri = '%s/%s' % (self._daemon_uri, path)
         self.load_uri(uri)
+
+    def _load_user_settings(self):
+        events = api.user_settings.get('calendar-events', {})
+        self._show_events = dict(
+            in_payments=events.get('in-payments', True),
+            out_payments=events.get('out-payments', True),
+            purchase_orders=events.get('purchase-orders', True))
+
+    def _save_user_settings(self):
+        events = api.user_settings.get('calendar-events', {})
+        events['in-payments'] = self._show_events['in_payments']
+        events['out-payments'] = self._show_events['out_payments']
+        events['purchase-orders'] = self._show_events['purchase_orders']
+        api.user_settings.flush()
 
     #
     # Callbacks
@@ -117,14 +127,13 @@ class CalendarView(WebView):
     def refresh(self):
         self.load()
 
+    def get_events(self):
+        return self._show_events
+
     def update_events(self, **events):
         self._show_events.update(**events)
         self.refresh()
-        events = api.user_settings.get('calendar-events', {})
-        events['in-payments'] = self._show_events['in_payments']
-        events['out-payments'] = self._show_events['out_payments']
-        events['purchase-orders'] = self._show_events['purchase_orders']
-        api.user_settings.flush()
+        self._save_user_settings()
 
 
 class CalendarApp(AppWindow):
@@ -134,6 +143,7 @@ class CalendarApp(AppWindow):
     embedded = True
 
     def __init__(self, app):
+        self._calendar = CalendarView(self)
         AppWindow.__init__(self, app)
         self._setup_daemon()
 
@@ -177,9 +187,13 @@ class CalendarApp(AppWindow):
         self.add_ui_actions('', toggle_actions, 'ToggleActions',
                             'toggle')
 
-        self.AccountsReceivableEvents.props.active = True
-        self.AccountsPayableEvents.props.active = True
-        self.PurchaseEvents.props.active = True
+        events = self._calendar.get_events()
+        self.AccountsReceivableEvents.props.active = (
+            events['in_payments'])
+        self.AccountsPayableEvents.props.active = (
+            events['out_payments'])
+        self.PurchaseEvents.props.active = (
+            events['purchase_orders'])
         self.AccountsReceivableEvents.connect(
             'notify::active', self._update_events)
         self.AccountsPayableEvents.connect(
@@ -207,7 +221,6 @@ class CalendarApp(AppWindow):
             self.ViewWeek.props.active = True
 
     def create_ui(self):
-        self._calendar = CalendarView(self)
         self.main_vbox.pack_start(self._calendar)
         self._calendar.show()
         self.app.launcher.Print.set_tooltip(_("Print this calendar"))
