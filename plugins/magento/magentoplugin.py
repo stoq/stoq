@@ -24,22 +24,27 @@
 
 """Provide tools for communication between Stoq and Magento e-commerce."""
 
+import datetime
 import os
 import sys
+import time
 
 from kiwi.environ import environ
 from kiwi.log import Logger
+from twisted.internet import reactor
 from twisted.internet.defer import (DeferredLock, returnValue, inlineCallbacks,
                                     gatherResults)
+from twisted.internet.task import LoopingCall
 from zope.interface import implements
 
 from stoqlib.database.migration import PluginSchemaMigration
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_connection, new_transaction
 from stoqlib.domain.events import (ProductCreateEvent, ProductRemoveEvent,
                                    ProductEditEvent, ProductStockUpdateEvent,
                                    CategoryCreateEvent, CategoryEditEvent,
                                    SaleStatusChangedEvent)
 from stoqlib.lib.interfaces import IPlugin
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.pluginmanager import register_plugin
 
 plugin_root = os.path.dirname(__file__)
@@ -49,7 +54,9 @@ from domain.magentoclient import MagentoClient, MagentoAddress
 from domain.magentoproduct import (MagentoProduct, MagentoStock, MagentoImage,
                                    MagentoCategory)
 from domain.magentosale import MagentoSale, MagentoInvoice, MagentoShipment
+from magentolib import validate_connection
 
+_ = stoqlib_gettext
 log = Logger('plugins.magento.magentoplugin')
 
 
@@ -129,8 +136,17 @@ class MagentoPlugin(object):
 
     def get_migration(self):
         environ.add_resource('magentosql', os.path.join(plugin_root, 'sql'))
-        return PluginSchemaMigration(self.name, 'magentosql',
-                                     ['*.sql', '*.py'])
+        return PluginSchemaMigration(self.name, 'magentosql', ['*.sql'])
+
+    def get_dbadmin_commands(self):
+        return _MagentoCmd.COMMANDS
+
+    def handle_dbadmin_command(self, command, options, args):
+        if not command in _MagentoCmd.COMMANDS:
+            raise KeyError(_("Invalid command given"))
+
+        mag_cmd = _MagentoCmd(self)
+        mag_cmd.run(command)
 
     #
     #  Private
@@ -211,3 +227,92 @@ class MagentoPlugin(object):
 
 
 register_plugin(MagentoPlugin)
+
+
+class _MagentoCmd(object):
+    """Sync daemon for magento
+
+    @cvar SYNC_INTERVAL: the interval between looping calls, in sec
+    @cvar CMDS: available commands for dbadmin
+    """
+
+    SYNC_INTERVAL = 15
+    COMMANDS = ['sync',
+                'register_server']
+
+    def __init__(self, plugin):
+        self._plugin = plugin
+
+    #
+    #  Public API
+    #
+
+    def run(self, cmd):
+        cmd_mapper = {'sync': self.run_sync,
+                      'register_server': self.run_register_server}
+        cmd_mapper[cmd]()
+
+    def run_sync(self):
+        try:
+            self._start_sync()
+        except KeyboardInterrupt:
+            self._stop_sync()
+
+    def run_register_server(self):
+        try:
+            url = raw_input(
+                _("Enter the url of the xmlrpc api server (ex: "
+                  "http://example.com/api/xmlrpc): "))
+            api_user = raw_input(
+                _("Enter the api user name of that server: "))
+            api_key = raw_input(
+                _("Enter the api password for that user: "))
+            try:
+                if validate_connection(url, api_user, api_key):
+                    trans = new_transaction()
+                    MagentoConfig(connection=trans,
+                                  url=url,
+                                  api_user=api_user,
+                                  api_key=api_key)
+                    trans.commit(close=True)
+                else:
+                    print _("Could not validate the information provided")
+            except Exception as err:
+                print err
+        except KeyboardInterrupt:
+            pass
+
+    #
+    #  Private
+    #
+
+    def _start_sync(self):
+        lc = LoopingCall(self._sync)
+        lc.start(self.SYNC_INTERVAL)
+        reactor.run()
+
+    def _stop_sync(self):
+        if reactor.running:
+            reactor.stop()
+
+    @inlineCallbacks
+    def _sync(self):
+        t_before = time.time()
+        print _("Magento synchronization initialized..")
+
+        try:
+            retval = yield self._plugin.synchronize()
+        except Exception:
+            # We don't want the daemon to stop! If there's an error, we
+            # will indicate it on stdout and log the problem
+            retval = False
+            log.err()
+
+        t_after = time.time()
+        t_delta = datetime.timedelta(seconds=-int(t_before - t_after))
+        status = _("OK") if retval else _("With errors")
+
+        # Simple stdout feedback
+        print _("Magento synchronization finished:")
+        print _("    Status: %s") % (status,)
+        print _("    Time took: %s") % (t_delta,)
