@@ -134,10 +134,6 @@ class AppWindow(GladeDelegate):
         self.current_app = None
         self.uimanager = self._create_ui_manager()
         self.accel_group = self.uimanager.get_accel_group()
-        # Cache to avoid duplicate queries on every row selection change
-        self._has_open_inventory = Inventory.has_open(
-            self.conn, api.get_current_branch(self.conn))
-
         self._app_settings = api.user_settings.get('app-ui', {})
 
         self._create_ui_manager_ui()
@@ -745,10 +741,8 @@ class AppWindow(GladeDelegate):
         self.add_ui_actions(ui_string, actions, 'DebugActions')
 
     def has_open_inventory(self, from_cache=True):
-        if not from_cache:
-            self._has_open_inventory = Inventory.has_open(
-                self.conn, api.get_current_branch(self.conn))
-        return self._has_open_inventory
+        return Inventory.has_open(self.conn,
+                                  api.get_current_branch(self.conn))
 
     def check_open_inventory(self):
         """Checks if there is an open inventory.
@@ -760,7 +754,7 @@ class AppWindow(GladeDelegate):
         """
         inventory_bar = getattr(self, 'inventory_bar', None)
 
-        if self.has_open_inventory(from_cache=False):
+        if self.has_open_inventory():
             if inventory_bar:
                 inventory_bar.show()
             else:
