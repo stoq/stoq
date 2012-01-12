@@ -261,7 +261,7 @@ class AppWindow(GladeDelegate):
             ]
         self.add_ui_actions(None, actions, filename='launcher.xml')
         self.Close.set_sensitive(False)
-        toogle_actions = [
+        toggle_actions = [
             ('ToggleToolbar', None, _("_Toolbar"),
              group.get('toggle_toolbar'),
              _('Show or hide the toolbar')),
@@ -272,8 +272,8 @@ class AppWindow(GladeDelegate):
              group.get('toggle_fullscreen'),
              _('Enter or leave fullscreen mode')),
             ]
-        self.add_ui_actions('', toogle_actions, 'ToogleActions',
-                            'toogle')
+        self.add_ui_actions('', toggle_actions, 'ToggleActions',
+                            'toggle')
 
         self.Print.set_short_label(_("Print"))
         self.add_tool_menu_actions([
@@ -678,7 +678,7 @@ class AppWindow(GladeDelegate):
         ag = gtk.ActionGroup(name)
         if action_type == 'normal':
             ag.add_actions(actions)
-        elif action_type == 'toogle':
+        elif action_type == 'toggle':
             ag.add_toggle_actions(actions)
         elif action_type == 'radio':
             ag.add_radio_actions(actions)

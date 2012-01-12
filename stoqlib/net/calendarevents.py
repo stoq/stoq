@@ -46,11 +46,11 @@ class CalendarEvents(Resource):
             float(resource.args['end'][0]))
         trans = api.new_transaction()
         events = []
-        if 'in_payments' in resource.args:
+        if resource.args.get('in_payments', [''])[0] == 'true':
             self._collect_inpayments(start, end, events, trans)
-        if 'out_payments' in resource.args:
+        if resource.args.get('out_payments', [''])[0] == 'true':
             self._collect_outpayments(start, end, events, trans)
-        if 'purchase_orders' in resource.args:
+        if resource.args.get('purchase_orders', [''])[0] == 'true':
             self._collect_purchase_orders(start, end, events, trans)
         events = self._summarize_events(events)
         return json.dumps(events)

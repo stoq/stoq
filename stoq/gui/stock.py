@@ -125,12 +125,12 @@ class StockApp(SearchableAppWindow):
         self.stock_ui = self.add_ui_actions('', actions,
                                             filename='stock.xml')
 
-        toogle_actions = [
+        toggle_actions = [
             ('StockPictureViewer', None, _('Picture viewer'),
              group.get('toggle_picture_viewer')),
         ]
-        self.add_ui_actions('', toogle_actions, 'ToogleActions',
-                            'toogle')
+        self.add_ui_actions('', toggle_actions, 'ToggleActions',
+                            'toggle')
         self.set_help_section(_("Stock help"), 'app-stock')
 
         self.NewReceiving.set_short_label(_("Receive"))
