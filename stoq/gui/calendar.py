@@ -52,6 +52,12 @@ class CalendarView(WebView):
             'load-finished',
             self._on_view__document_load_finished)
 
+        events = api.user_settings.get('calendar-events', {})
+        self._show_events = dict(
+            in_payments=events.get('in-payments', True),
+            out_payments=events.get('out-payments', True),
+            purchase_orders=events.get('purchase-orders', True))
+
     def _load_finished(self):
         self._startup()
 
@@ -68,10 +74,7 @@ class CalendarView(WebView):
         options['defaultView'] = api.user_settings.get(
             'calendar-view', 'month')
 
-        # FIXME: This should be configurable via the user interface
-        options['data'] = dict(in_payments=True,
-                               out_payments=True,
-                               purchase_orders=True)
+        options['data'] = self._show_events
         self.js_function_call('startup', options)
 
     def _calendar_run(self, name, *args):
@@ -114,6 +117,15 @@ class CalendarView(WebView):
     def refresh(self):
         self.load()
 
+    def update_events(self, **events):
+        self._show_events.update(**events)
+        self.refresh()
+        events = api.user_settings.get('calendar-events', {})
+        events['in-payments'] = self._show_events['in_payments']
+        events['out-payments'] = self._show_events['out_payments']
+        events['purchase-orders'] = self._show_events['purchase_orders']
+        api.user_settings.flush()
+
 
 class CalendarApp(AppWindow):
 
@@ -147,10 +159,33 @@ class CalendarApp(AppWindow):
              group.get('go_forward'), _("Go forward")),
             ('Today', STOQ_CALENDAR_TODAY, _("Show today"),
              group.get('show_today'), _("Show today")),
+            ('CalendarEvents', None, _("Calendar events")),
+            ('CurrentView', None, _("Display view as")),
             ]
         self.calendar_ui = self.add_ui_actions('', actions,
                                                 filename='calendar.xml')
         self.set_help_section(_("Calendar help"), 'app-calendar')
+
+        toggle_actions = [
+            ('AccountsPayableEvents', None, _("Accounts payable"),
+             None, _("Show accounts payable in the list")),
+            ('AccountsReceivableEvents', None, _("Accounts receivable"),
+             None, _("Show accounts receivable in the list")),
+            ('PurchaseEvents', None, _("Purchases"),
+             None, _("Show purchases in the list")),
+            ]
+        self.add_ui_actions('', toggle_actions, 'ToggleActions',
+                            'toggle')
+
+        self.AccountsReceivableEvents.props.active = True
+        self.AccountsPayableEvents.props.active = True
+        self.PurchaseEvents.props.active = True
+        self.AccountsReceivableEvents.connect(
+            'notify::active', self._update_events)
+        self.AccountsPayableEvents.connect(
+            'notify::active', self._update_events)
+        self.PurchaseEvents.connect(
+            'notify::active', self._update_events)
 
         radio_actions = [
             ('ViewMonth', STOQ_CALENDAR_MONTH, _("View as month"),
@@ -185,6 +220,14 @@ class CalendarApp(AppWindow):
     def deactivate(self):
         self.uimanager.remove_ui(self.calendar_ui)
         self.app.launcher.SearchToolItem.set_sensitive(True)
+
+    # Private
+
+    def _update_events(self, *args):
+        self._calendar.update_events(
+            out_payments=self.AccountsPayableEvents.get_active(),
+            in_payments=self.AccountsReceivableEvents.get_active(),
+            purchase_orders=self.PurchaseEvents.get_active())
 
     #
     # Kiwi callbacks

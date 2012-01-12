@@ -32,8 +32,15 @@
     </menu>
     <menu action="ViewMenu">
       <placeholder name="ViewMenuPH">
-        <menuitem action="ViewMonth"/>
-        <menuitem action="ViewWeek"/>
+        <menu action="CurrentView">
+          <menuitem action="ViewMonth"/>
+          <menuitem action="ViewWeek"/>
+        </menu>
+        <menu action="CalendarEvents">
+          <menuitem action="AccountsPayableEvents"/>
+          <menuitem action="AccountsReceivableEvents"/>
+          <menuitem action="PurchaseEvents"/>
+        </menu>
         <menuitem action="Today"/>
         <menuitem action="Back"/>
         <menuitem action="Forward"/>
