@@ -13,7 +13,7 @@
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU Lesser General Public License for more details.
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU Lesser General Public License
 ## along with this program; if not, write to the Free Software
@@ -21,11 +21,3 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-
-"""Interfaces for Magento"""
-
-from zope.interface import Interface
-
-
-class IMagentoProxyMapper(Interface):
-    """A mapper of Magento urls to a proxy implementation"""

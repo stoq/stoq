@@ -33,18 +33,16 @@ from kiwi.datatypes import converter, ValidationError
 from kiwi.log import Logger
 from twisted.internet.defer import DeferredLock, inlineCallbacks, returnValue
 from twisted.web.xmlrpc import Proxy, Fault, Boolean
-from zope.interface import implements
 
 from stoqlib.lib.translation import stoqlib_gettext
 
-from domain.magentoconfig import get_config
-from magentointerfaces import IMagentoProxy
+from magentointerfaces import IMagentoProxyMapper
 
 _ = stoqlib_gettext
 log = Logger('plugins.magento.magentolib')
 
 
-def get_proxy():
+def get_proxy(config):
     """Return a singleton instance of L{MagentoProxy}.
 
     @attention: Always use this instead of instantializing L{MagentoProxy}
@@ -52,15 +50,19 @@ def get_proxy():
 
     @returns: a L{MagentoProxy} instance
     """
-    proxy = get_utility(IMagentoProxy, None)
+    proxy_mapper = get_utility(IMagentoProxyMapper, None)
+    if not proxy_mapper:
+        proxy_mapper = dict()
+        provide_utility(IMagentoProxyMapper, proxy_mapper)
 
+    # Allow multiple servers, using a singleton for each one
+    key = config.url
+    proxy = proxy_mapper.get(key, None)
     if not proxy:
-        config = get_config()
-        proxy = MagentoProxy(config.url, config.api_user, config.api_key,
-                             config.tz_hours)
-        provide_utility(IMagentoProxy, proxy)
-        assert get_utility(IMagentoProxy, None)
-
+        proxy = proxy_mapper.setdefault(key, MagentoProxy(config.url,
+                                                          config.api_user,
+                                                          config.api_key,
+                                                          config.tz_hours))
     return proxy
 
 
@@ -97,8 +99,6 @@ def validate_connection(url, api_user, api_key):
 class MagentoProxy(object):
     """Proxy for magento api communication"""
 
-    implements(IMagentoProxy)
-
     (ERROR_UNKNOWN,
      ERROR_INTERNAL,
      ERROR_ACCESS_DENIED,
@@ -107,7 +107,7 @@ class MagentoProxy(object):
      ERROR_SESSION_EXPIRED,
      ERROR_WRONG_PARAMETERS) = range(7)
 
-    def __init__(self, url, api_user='', api_key='', tz_hours=0):
+    def __init__(self, url, api_user, api_key, tz_hours=0):
         self._api_user = api_user
         self._api_key = api_key
         self._lock = DeferredLock()

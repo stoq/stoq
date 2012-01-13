@@ -135,6 +135,7 @@ class MagentoSale(MagentoBaseSyncBoth):
         if not self.magento_client:
             mag_client_id = info[MagentoClient.API_ID_NAME]
             mag_client = MagentoClient.selectOneBy(connection=conn,
+                                                   config=self.config,
                                                    magento_id=mag_client_id)
             if not mag_client:
                 log.error("Unexpected error: Could not find the magento "
@@ -180,6 +181,7 @@ class MagentoSale(MagentoBaseSyncBoth):
 
         for item in info['items']:
             mag_product = MagentoProduct.selectOneBy(connection=conn,
+                                                     config=self.config,
                                                      sku=item['sku'])
             if not mag_product:
                 log.error("Unexpected error: Could not find the magento "
@@ -241,6 +243,7 @@ class MagentoSale(MagentoBaseSyncBoth):
             if not self.magento_invoice:
                 # Just creating. It'll be syncronized soon
                 MagentoInvoice(connection=conn,
+                               config=self.config,
                                magento_sale=self)
         elif (self.sale.status == Sale.STATUS_CANCELLED and
               self.status != self.STATUS_CANCELLED):
@@ -470,7 +473,8 @@ class MagentoShipment(MagentoBaseSyncUp):
 
     @inlineCallbacks
     def update_remote(self):
-        retval = yield self.add_track_remote()
-        self.was_track_added = retval
+        if not self.was_track_added:
+            retval = yield self.add_track_remote()
+            self.was_track_added = retval
 
         returnValue(retval)

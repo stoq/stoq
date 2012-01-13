@@ -25,41 +25,18 @@
 import datetime
 import decimal
 
-from kiwi.component import get_utility, provide_utility
-from zope.interface import implements
-
 from stoqlib.database.orm import (DecimalCol, IntCol, UnicodeCol, DateTimeCol,
-                                  ForeignKey)
-from stoqlib.database.runtime import get_connection
+                                  BoolCol, ForeignKey)
+from stoqlib.database.runtime import get_current_branch, new_transaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import ISalesPerson, IEmployee, IIndividual
 from stoqlib.domain.person import Person
+from stoqlib.domain.product import Product
+from stoqlib.domain.sellable import SellableCategory
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
-from magentointerfaces import IMagentoConfig
-
 _ = stoqlib_gettext
-
-
-def get_config(trans=None):
-    """Returns a singleton of MagentoConfig
-
-    @param trans: if given, the config will be retrieved to this
-        transaction before returning.
-    """
-    config = get_utility(IMagentoConfig, None)
-
-    if not config:
-        config = MagentoConfig.selectOne(connection=get_connection())
-        assert config
-        provide_utility(IMagentoConfig, config)
-        assert get_utility(IMagentoConfig, None)
-
-    if trans:
-        return trans.get(config)
-
-    return config
 
 
 class MagentoConfig(Domain):
@@ -71,9 +48,10 @@ class MagentoConfig(Domain):
     @ivar tz_hours: the timezone difference, in hours, e.g. -3 for GMT-3
     @ivar qty_days_as_new: how many days to set a product as new on magento
     @ivar branch: the branch which will be used to query stock information
+    @ivar salesperson: the magento sales salesperson
+    @ivar default_product_set: the id of the default products set on magento
+    @ivar root_category: the id of the root category on magento
     """
-
-    implements(IMagentoConfig)
 
     url = UnicodeCol()
     api_user = UnicodeCol(default='')
@@ -84,23 +62,27 @@ class MagentoConfig(Domain):
     branch = ForeignKey('PersonAdaptToBranch')
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
 
+    default_product_set = IntCol(default=None)
+    root_category = IntCol(default=None)
+
     #
     #  Public API
     #
 
     def get_table_config(self, klass):
-        """Returns the magento config specific to C{klass}
-
-        @returns: the L{MagentoTableConfig} associated with C{klass}
-        """
         conn = self.get_connection()
-        table = klass.__name__
-
+        name = klass.__name__
         table_config = MagentoTableConfig.selectOneBy(connection=conn,
-                                                      magento_table=table)
+                                                      config=self,
+                                                      magento_table=name)
         if not table_config:
-            table_config = MagentoTableConfig(connection=conn,
-                                              magento_table=table)
+            trans = new_transaction()
+            MagentoTableConfig(connection=trans,
+                               config=self,
+                               magento_table=name)
+            trans.commit(close=True)
+            # We created the obj. Now the selectOneBy above will work
+            return self.get_table_config(klass)
 
         return table_config
 
@@ -109,17 +91,50 @@ class MagentoConfig(Domain):
     #
 
     def _create(self, *args, **kwargs):
+        conn = self.get_connection()
         if not 'salesperson' in kwargs:
             kwargs['salesperson'] = self._create_salesperson()
+        if not 'branch' in kwargs:
+            kwargs['branch'] = get_current_branch(conn)
 
         super(MagentoConfig, self)._create(*args, **kwargs)
 
     #
-    #  Private API
+    #  AbstractDomain hooks
+    #
+
+    def on_create(self):
+        from magentoproduct import MagentoProduct, MagentoCategory
+        conn = self.get_connection()
+
+        # When commiting, ensure we known all products to synchronize using the
+        # server registered on self. Events should take care of creating others
+        for product in Product.select(connection=conn):
+            # Just need to create. All other information will be synchronized
+            # on MagentoProduct.synchronize
+            mag_product = MagentoProduct(connection=conn,
+                                         product=product,
+                                         config=self)
+            assert mag_product
+        # Like products above, ensure we know all categories to synchronize.
+        for category in SellableCategory.select(connection=conn):
+            mag_category = MagentoCategory(connection=conn,
+                                           category=category,
+                                           config=self)
+            assert mag_category
+
+    #
+    #  Private
     #
 
     def _create_salesperson(self):
         conn = self.get_connection()
+        old_magento_configs = MagentoConfig.select(connection=conn)
+        if len(list(old_magento_configs)):
+            # Try to reuse the salesperson of the already existing
+            # MagentoConfig. Probably it's the one we create bellow
+            return old_magento_configs[0].salesperson
+
         sysparam_ = sysparam(conn)
         name = _("Magento e-commerce")
         occupation = _("E-commerce software")
@@ -138,12 +153,13 @@ class MagentoConfig(Domain):
 
 
 class MagentoTableConfig(Domain):
-    """Class for storing Magento config specific to a C{magento_table}
+    """Responsible for storing specific configurations for classes
 
-    @ivar magento_table: the table associated with this config
-    @ivar last_sync_date: the last date, on Magento, that C{magento_table}
-        was successfully synchronized for the last time
+    @ivar config: the L{MagentoConfig} associated with this obj
+    @ivar magento_table: the name of the table associated with this config
     """
 
+    config = ForeignKey('MagentoConfig')
     magento_table = UnicodeCol()
     last_sync_date = DateTimeCol(default=datetime.datetime.min)
+    need_ensure_config = BoolCol(default=True)

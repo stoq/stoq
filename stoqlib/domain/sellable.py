@@ -38,6 +38,7 @@ from stoqlib.database.orm import SingleJoin
 from stoqlib.database.orm import AND, IN, OR
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.base import Domain
+from stoqlib.domain.events import CategoryCreateEvent, CategoryEditEvent
 from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
                                 BarcodeDoesNotExists, TaxError)
 from stoqlib.lib.parameters import sysparam
@@ -202,6 +203,16 @@ class SellableCategory(Domain):
         """
         return cls.select(cls.q.categoryID == None, connection=conn)
 # pylint: enable=E1101
+
+    #
+    # Domain hooks
+    #
+
+    def on_create(self):
+        CategoryCreateEvent.emit(self)
+
+    def on_update(self):
+        CategoryEditEvent.emit(self)
 
 
 class ClientCategoryPrice(Domain):
