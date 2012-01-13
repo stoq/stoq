@@ -68,9 +68,21 @@ class StoqCommandHandler:
     def run_command(self, options, cmd, args):
         func = getattr(self, 'cmd_' + cmd, None)
         if func is None:
-            print "%s: Invalid command: `%s' type `%s help' for usage." % (
-                self.prog_name, cmd, self.prog_name)
-            return 1
+            self._read_config(options, load_plugins=False,
+                              register_station=False)
+            from stoqlib.lib.pluginmanager import get_plugin_manager
+            manager = get_plugin_manager()
+            if cmd in manager.installed_plugins_names:
+                if not len(args):
+                    raise SystemExit(
+                        "%s: %s requires at least 2 argument(s)" % (
+                        self.prog_name, cmd))
+                plugin = manager.get_plugin(cmd)
+                return plugin.handle_dbadmin_command(args[0], options, args[1:])
+            else:
+                print "%s: Invalid command: `%s' type `%s help' for usage." % (
+                    self.prog_name, cmd, self.prog_name)
+                return 1
 
         nargs = func.func_code.co_argcount - 2
         if len(args) < nargs:
@@ -84,10 +96,21 @@ class StoqCommandHandler:
         cmds = [attr[4:] for attr in dir(self) if attr.startswith('cmd_')]
         cmds.sort()
         cmds.remove('help')
+
         print 'Available commands:'
         for name in cmds:
             print '  ', name
-        print
+
+        self._read_config(options, load_plugins=False,
+                          register_station=False)
+
+        from stoqlib.lib.pluginmanager import get_plugin_manager
+        manager = get_plugin_manager()
+        for plugin_name in manager.installed_plugins_names:
+            plugin = manager.get_plugin(plugin_name)
+            for command in plugin.get_dbadmin_commands():
+                print '   %s %s' % (plugin_name, command)
+
         return 0
 
     def cmd_init(self, options):
