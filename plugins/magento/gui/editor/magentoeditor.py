@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -43,7 +43,7 @@ class MagentoConfigEditor(BaseEditor):
     gladefile = 'MagentoConfigEditor'
     model_type = MagentoConfig
     model_name = _('Magento config')
-    size = (550, 300)
+    size = (-1, -1)
     proxy_widgets = ('url',
                      'api_user',
                      'api_key',

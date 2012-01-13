@@ -142,14 +142,17 @@ class MagentoPlugin(object):
         return PluginSchemaMigration(self.name, 'magentosql', ['*.sql'])
 
     def get_dbadmin_commands(self):
-        return _MagentoCmd.COMMANDS
+        return ['sync']
 
     def handle_dbadmin_command(self, command, options, args):
-        if not command in _MagentoCmd.COMMANDS:
-            raise KeyError(_("Invalid command given"))
-
         mag_cmd = _MagentoCmd(self)
-        mag_cmd.run(command)
+        if command == 'sync':
+            try:
+                mag_cmd.start_sync()
+            except KeyboardInterrupt:
+                mag_cmd.stop_sync()
+        else:
+            raise KeyError(_("Invalid command given"))
 
     #
     #  Private
@@ -240,7 +243,6 @@ class _MagentoCmd(object):
     """
 
     SYNC_INTERVAL = 15
-    COMMANDS = ['sync']
 
     def __init__(self, plugin):
         self._plugin = plugin
@@ -249,28 +251,18 @@ class _MagentoCmd(object):
     #  Public API
     #
 
-    def run(self, cmd):
-        cmd_mapper = {'sync': self.run_sync}
-        cmd_mapper[cmd]()
-
-    def run_sync(self):
-        try:
-            self._start_sync()
-        except KeyboardInterrupt:
-            self._stop_sync()
-
-    #
-    #  Private
-    #
-
-    def _start_sync(self):
+    def start_sync(self):
         lc = LoopingCall(self._sync)
         lc.start(self.SYNC_INTERVAL)
         reactor.run()
 
-    def _stop_sync(self):
+    def stop_sync(self):
         if reactor.running:
             reactor.stop()
+
+    #
+    #  Private
+    #
 
     @inlineCallbacks
     def _sync(self):
