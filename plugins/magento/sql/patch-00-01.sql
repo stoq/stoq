@@ -15,8 +15,8 @@ CREATE TABLE magento_config (
     tz_hours numeric(10, 2),
     default_product_set integer,
     root_category integer,
-    branch_id bigint UNIQUE REFERENCES person_adapt_to_branch(id),
-    salesperson_id bigint UNIQUE REFERENCES person_adapt_to_sales_person(id)
+    branch_id bigint REFERENCES person_adapt_to_branch(id),
+    salesperson_id bigint REFERENCES person_adapt_to_sales_person(id)
 );
 
 CREATE TABLE magento_table_config (
@@ -40,7 +40,7 @@ CREATE TABLE magento_category (
     is_active boolean,
     parent_id bigint REFERENCES magento_category(id),
     config_id bigint REFERENCES magento_config(id),
-    category_id bigint UNIQUE REFERENCES sellable_category(id)
+    category_id bigint REFERENCES sellable_category(id)
 );
 
 CREATE TABLE magento_product (
@@ -59,7 +59,7 @@ CREATE TABLE magento_product (
     news_to_date timestamp,
     magento_category_id bigint REFERENCES magento_category(id),
     config_id bigint REFERENCES magento_config(id),
-    product_id bigint UNIQUE REFERENCES product(id)
+    product_id bigint REFERENCES product(id)
 );
 
 CREATE TABLE magento_stock (
@@ -97,7 +97,7 @@ CREATE TABLE magento_client (
     magento_id bigint,
     need_sync boolean,
     config_id bigint REFERENCES magento_config(id),
-    client_id bigint UNIQUE REFERENCES person_adapt_to_client(id)
+    client_id bigint REFERENCES person_adapt_to_client(id)
 );
 
 CREATE TABLE magento_address (
@@ -109,7 +109,7 @@ CREATE TABLE magento_address (
     need_sync boolean,
     config_id bigint REFERENCES magento_config(id),
     magento_client_id bigint REFERENCES magento_client(id),
-    address_id bigint UNIQUE REFERENCES address(id)
+    address_id bigint REFERENCES address(id)
 );
 
 CREATE TABLE magento_sale (
