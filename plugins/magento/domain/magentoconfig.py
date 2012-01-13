@@ -129,6 +129,12 @@ class MagentoConfig(Domain):
 
     def _create_salesperson(self):
         conn = self.get_connection()
+        old_magento_configs = MagentoConfig.select(connection=conn)
+        if len(list(old_magento_configs)):
+            # Try to reuse the salesperson of the already existing
+            # MagentoConfig. Probably it's the one we create bellow
+            return old_magento_configs[0].salesperson
+
         sysparam_ = sysparam(conn)
         name = _("Magento e-commerce")
         occupation = _("E-commerce software")

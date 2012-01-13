@@ -38,7 +38,7 @@ from twisted.internet.task import LoopingCall
 from zope.interface import implements
 
 from stoqlib.database.migration import PluginSchemaMigration
-from stoqlib.database.runtime import get_connection, new_transaction
+from stoqlib.database.runtime import get_connection
 from stoqlib.domain.events import (ProductCreateEvent, ProductRemoveEvent,
                                    ProductEditEvent, ProductStockUpdateEvent,
                                    CategoryCreateEvent, CategoryEditEvent,
@@ -54,7 +54,7 @@ from domain.magentoclient import MagentoClient, MagentoAddress
 from domain.magentoproduct import (MagentoProduct, MagentoStock, MagentoImage,
                                    MagentoCategory)
 from domain.magentosale import MagentoSale, MagentoInvoice, MagentoShipment
-from magentolib import validate_connection
+from magentoui import MagentoUI
 
 _ = stoqlib_gettext
 log = Logger('plugins.magento.magentoplugin')
@@ -106,6 +106,9 @@ class MagentoPlugin(object):
     #
 
     def activate(self):
+        environ.add_resource('glade', os.path.join(plugin_root, 'glade'))
+        self.ui = MagentoUI()
+
         # Connect product events
         ProductCreateEvent.connect(self._on_product_create)
         ProductRemoveEvent.connect(self._on_product_delete)
@@ -237,8 +240,7 @@ class _MagentoCmd(object):
     """
 
     SYNC_INTERVAL = 15
-    COMMANDS = ['sync',
-                'register_server']
+    COMMANDS = ['sync']
 
     def __init__(self, plugin):
         self._plugin = plugin
@@ -248,8 +250,7 @@ class _MagentoCmd(object):
     #
 
     def run(self, cmd):
-        cmd_mapper = {'sync': self.run_sync,
-                      'register_server': self.run_register_server}
+        cmd_mapper = {'sync': self.run_sync}
         cmd_mapper[cmd]()
 
     def run_sync(self):
@@ -257,30 +258,6 @@ class _MagentoCmd(object):
             self._start_sync()
         except KeyboardInterrupt:
             self._stop_sync()
-
-    def run_register_server(self):
-        try:
-            url = raw_input(
-                _("Enter the url of the xmlrpc api server (ex: "
-                  "http://example.com/api/xmlrpc): "))
-            api_user = raw_input(
-                _("Enter the api user name of that server: "))
-            api_key = raw_input(
-                _("Enter the api password for that user: "))
-            try:
-                if validate_connection(url, api_user, api_key):
-                    trans = new_transaction()
-                    MagentoConfig(connection=trans,
-                                  url=url,
-                                  api_user=api_user,
-                                  api_key=api_key)
-                    trans.commit(close=True)
-                else:
-                    print _("Could not validate the information provided")
-            except Exception as err:
-                print err
-        except KeyboardInterrupt:
-            pass
 
     #
     #  Private
