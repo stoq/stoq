@@ -104,14 +104,20 @@ class SystemParameterEditor(BaseEditor):
                        self._on_entry__validation_changed)
         self._entry = widget
 
-    def _setup_text_entry_slave(self):
+    def _setup_text_view_slave(self):
+        sw = gtk.ScrolledWindow()
+        sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        sw.set_policy(gtk.POLICY_AUTOMATIC,
+                      gtk.POLICY_AUTOMATIC)
         widget = ProxyTextView()
         widget.props.sensitive = self.sensitive
         widget.data_type = unicode
         widget.model_attribute = "field_value"
         widget.set_wrap_mode(gtk.WRAP_WORD)
         self.proxy.add_widget("field_value", widget)
-        self.container.add(widget)
+        sw.add(widget)
+        sw.show()
+        self.container.add(sw)
 
         widget.show()
         self._entry = widget
@@ -216,7 +222,7 @@ class SystemParameterEditor(BaseEditor):
                 self._setup_entry_slave()
         elif issubclass(field_type, basestring):
             if self.constant.multiline:
-                self._setup_text_entry_slave()
+                self._setup_text_view_slave()
             else:
                 self._setup_entry_slave()
         elif issubclass(field_type, Decimal):
