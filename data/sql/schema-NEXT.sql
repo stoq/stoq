@@ -43,24 +43,6 @@ CREATE TABLE person (
     notes text
 );
 
-CREATE TABLE bank (
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    name text,
-    short_name text,
-    compensation_code text
-);
-
-CREATE TABLE person_adapt_to_bank_branch (
-    id serial NOT NULL PRIMARY KEY,
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    is_active boolean,
-    bank_id bigint REFERENCES bank(id),
-    original_id bigint UNIQUE REFERENCES person(id)
-);
-
 CREATE TABLE client_category (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -207,10 +189,19 @@ CREATE TABLE bank_account (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    bank_id integer CONSTRAINT positive_bank_id
-        CHECK (bank_id >= 0),
-    branch text,
-    account text
+    account_id integer UNIQUE REFERENCES account(id),
+    bank_branch text,
+    bank_account text
+    bank_type bigint,
+);
+
+CREATE TABLE bill_option (
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    option text,
+    value text,
+    bank_account_id bigint REFERENCES bank_account(id)
 );
 
 CREATE TABLE person_adapt_to_employee (
@@ -916,7 +907,7 @@ CREATE TABLE check_data (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     payment_id bigint REFERENCES payment(id),
-    bank_data_id bigint REFERENCES bank_account(id)
+    bank_account_id bigint REFERENCES bank_account(id)
 );
 
 CREATE TABLE credit_card_details (

@@ -258,7 +258,9 @@ class TestCheck(DomainTest, _TestPaymentMethodsBase):
         sale = self.create_sale()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
         payment = method.create_outpayment(sale.group, Decimal(10))
-        self.failUnless(payment.get_adapted().bank)
+        check_data = method.operation.get_check_data_by_payment(payment.get_adapted())
+        check_data.bank_account.bank_number = 123
+        self.assertEquals(payment.get_adapted().bank_account_number, 123)
 
 
 class TestBill(DomainTest, _TestPaymentMethodsBase):

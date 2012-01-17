@@ -282,9 +282,9 @@ class _BillandCheckPaymentView(Viewable):
         status=Payment.q.status,
         value=Payment.q.value,
         payment_number=Payment.q.payment_number,
-        bank_id=BankAccount.q.bank_id,
-        branch=BankAccount.q.branch,
-        account=BankAccount.q.account,
+        bank_number=BankAccount.q.bank_number,
+        branch=BankAccount.q.bank_branch,
+        account=BankAccount.q.bank_account,
         method_description=PaymentMethod.q.description,
     )
 
@@ -293,7 +293,7 @@ class _BillandCheckPaymentView(Viewable):
         INNERJOINOn(None, PaymentMethod,
                     Payment.q.methodID == PaymentMethod.q.id),
         LEFTJOINOn(None, BankAccount,
-                   BankAccount.q.id == CheckData.q.bank_dataID),
+                   BankAccount.q.id == CheckData.q.bank_accountID),
     ]
 
     clause = OR(PaymentMethod.q.method_name == 'bill',

@@ -26,7 +26,7 @@ from zope.interface import implements
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import ForeignKey, IntCol, UnicodeCol
 from stoqlib.database.orm import DateTimeCol
-from stoqlib.database.orm import const, OR
+from stoqlib.database.orm import const, OR, SingleJoin
 from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IOutPayment
@@ -37,33 +37,28 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class Bank(Domain):
-    """A definition of a bank. A bank can have many branches associated with
-    it.
-
-    B{Important attributes}:
-        - I{name}: the name of the bank.
-        - I{short_name}: a short idenfier for the bank.
-        - I{compensation_code}: some financial operations require this code.
-                                It is specific for each bank.
-    """
-    name = UnicodeCol()
-    short_name = UnicodeCol()
-    compensation_code = UnicodeCol()
+class BillOption(Domain):
+    option = UnicodeCol()
+    value = UnicodeCol()
+    bank_account = ForeignKey('BankAccount')
 
 
-# FIXME: Migrate this over to Account
 class BankAccount(Domain):
-    """A bank account definition.
+    """Information specific to a bank
 
-    B{Important atributes}:
-        - I{bank_id}: the bank id.
-        - I{branch}: the bank branch where this account lives.
-        - I{account}: an identifier of this account in the branch.
+    @ivar bank_branch: the bank branch where this account lives.
+    @ivar bank_account: an identifier of this account in the branch.
     """
-    bank_id = IntCol(default=0)
-    branch = UnicodeCol(default=None)
-    account = UnicodeCol(default=None)
+    account = ForeignKey('Account', default=None)
+
+    bank_number = IntCol()
+    bank_branch = UnicodeCol(default=None)
+    bank_account = UnicodeCol(default=None)
+
+    @property
+    def options(self):
+        return BillOption.selectBy(connection=self.get_connection(),
+                                   bank_account=self)
 
 
 class Account(Domain):
@@ -110,6 +105,7 @@ class Account(Domain):
     parent = ForeignKey('Account', default=None)
     station = ForeignKey('BranchStation', default=None)
     account_type = IntCol(default=None)
+    bank = SingleJoin('BankAccount')
 
     #
     # IDescribable implementation

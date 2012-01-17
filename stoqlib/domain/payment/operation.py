@@ -78,17 +78,20 @@ class CheckPaymentOperation(object):
 
     def payment_create(self, payment):
         conn = payment.get_connection()
-        # Every check must have a check data reference
-        CheckData(bank_data=BankAccount(connection=conn),
+        bank_account = BankAccount(connection=conn,
+                                   bank_number=None,
+                                   bank_branch='',
+                                   bank_account='')
+        CheckData(bank_account=bank_account,
                   payment=payment,
                   connection=conn)
 
     def payment_delete(self, payment):
         conn = payment.get_connection()
         check_data = self.get_check_data_by_payment(payment)
-        bank_data = check_data.bank_data
+        bank_account = check_data.bank_account
         CheckData.delete(check_data.id, connection=conn)
-        BankAccount.delete(bank_data.id, connection=conn)
+        BankAccount.delete(bank_account.id, connection=conn)
 
     def create_transaction(self):
         return True

@@ -58,7 +58,7 @@ from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
-from stoqlib.lib.boleto import BillReport, can_generate_bill
+from stoqlib.lib.boleto import BillReport
 from stoqlib.lib.message import warning
 
 from stoq.gui.application import SearchableAppWindow
@@ -514,9 +514,7 @@ class ReceivableApp(SearchableAppWindow):
             self.search.refresh()
 
     def on_PrintBill__activate(self, action):
-        if not can_generate_bill():
-            return
-
         item = self.results.get_selected_rows()[0]
-        payment = item.payment
-        print_report(BillReport, [payment])
+        if not BillReport.check_printable([item.payment]):
+            return False
+        print_report(BillReport, [item.payment])

@@ -21,59 +21,74 @@
 ##
 """Boleto generation code.
 
-For now, configuration will be stored inside stoq.conf. As a workaround, I
-added IStoqConfig, so that stoqlib can get the stoq config. Remove this once
-we have the financial app.
-
-A sample configuration follows:
-
-[Boleto]
-; Boleto section should inform the bank code, and can provide up to 3 lines
-; to add at the instructions field.
-
-; There should be another section named after the bank_id, that stores the
-; information abount the account destination of the bill
-banco = 001
-
-instrucao1 = Primeia linha da instrução
-instrucao2 = Segunda linha da instrução
-instrucao3 = Terceira linha da instrução
-
-[104]
-; Nossa Caixa
-carteira = 18
-agencia = 1565
-conta = 414
-
-[001]
-; Banco do Brasil
-convenio = 12345678
-len_convenio = 8
-agencia = 1172
-conta = 403005
-
 """
 
 import datetime
 
-from kiwi.component import get_utility
 from pyboleto.data import get_bank
 from pyboleto.pdf import BoletoPDF
+from kiwi.log import Logger
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.message import warning
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+log = Logger('stoqlib.lib.boleto')
 
 
-def can_generate_bill():
-    config = get_utility(IStoqConfig)
-    if config.get('Boleto', 'banco') is None:
-        warning(_(u"Looks like you didn't configure stoq yet to "
-                   "generate bills. Check the manual to see how."))
-        return False
-    return True
+(BILL_OPTION_BANK_BRANCH,
+ BILL_OPTION_BANK_ACCOUNT,
+ BILL_OPTION_CUSTOM) = range(3)
+
+
+class BankInfo(object):
+    def __init__(self, description, number, fields):
+        self.description = description
+        self.bank_number = number
+        self.fields = fields
+
+    def get_extra_fields(self):
+        rv = []
+        for field, kind in self.fields.items():
+            if kind == BILL_OPTION_CUSTOM:
+                rv.append(field)
+        return rv
+
+_banks = [
+    BankInfo("Generic", None, {}),
+    BankInfo('Banco Bradesco', 237,
+             {'carteira': BILL_OPTION_CUSTOM,
+              'agencia': BILL_OPTION_BANK_BRANCH,
+              'conta': BILL_OPTION_BANK_BRANCH}),
+    BankInfo("Banco do Brasil", 1,
+             {'convenio': BILL_OPTION_CUSTOM,
+              'len_convenio': BILL_OPTION_CUSTOM,
+              'agencia': BILL_OPTION_BANK_BRANCH,
+              'conta': BILL_OPTION_BANK_BRANCH}),
+    BankInfo('Banco Itau', 341,
+             {'carteira': BILL_OPTION_CUSTOM,
+              'agencia': BILL_OPTION_BANK_BRANCH,
+              'conta': BILL_OPTION_BANK_BRANCH}),
+    BankInfo('Banco Real', 356,
+             {'carteira': BILL_OPTION_CUSTOM,
+              'agencia': BILL_OPTION_BANK_BRANCH,
+              'conta': BILL_OPTION_BANK_BRANCH}),
+    BankInfo('Nossa Caixa', 104,
+             {'carteira': BILL_OPTION_CUSTOM,
+              'agencia': BILL_OPTION_BANK_BRANCH,
+              'conta': BILL_OPTION_BANK_BRANCH}),
+    ]
+
+
+def get_all_banks():
+    return _banks
+
+
+def get_bank_info_by_number(number):
+    for bank in _banks:
+        if bank.bank_number == number:
+            return bank
 
 
 class BillReport(object):
@@ -82,15 +97,55 @@ class BillReport(object):
         self._filename = filename
 
         self._payments_added = False
-        self._config = get_utility(IStoqConfig)
-        self._bank_id = self._config.get('Boleto', 'banco')
-        self._bill = self._get_bill()
-        self._render_class = get_bank(self._bank_id)
-
         # Reports need a title when printing
         self.title = _("Bill")
 
         self.today = datetime.datetime.today()
+
+    @classmethod
+    def check_printable(cls, payments):
+        for payment in payments:
+            msg = cls.validate_payment_for_printing(payment)
+            if msg:
+                warning(_("Could not print Bill Report"),
+                        description=msg)
+                return False
+
+        return True
+
+    @classmethod
+    def validate_payment_for_printing(cls, payment):
+        account = payment.method.destination_account
+        if not account:
+            msg = _("Payment method missing a destination account: '%s'" % (
+                account.description, ))
+            return msg
+
+        from stoqlib.domain.account import Account
+        if (account.account_type != Account.TYPE_BANK or
+            not account.bank):
+            msg = _("Account '%s' must be a bank account.\n"
+                    "You need to configure the bill payment method in "
+                    "the admin application and try again" % (account.description, ))
+            return msg
+
+        bank = account.bank
+        if bank.bank_number == 0:
+            msg = _("Improperly configured bank account: %r" % (bank, ))
+            return msg
+
+        # FIXME: Verify that all bill option fields are configured properly
+
+        bank_no = bank.bank_number
+        bank_info = get_bank_info_by_number(bank_no)
+        if not bank_info:
+            msg = _("Missing stoq support for bank %d" % (bank_no, ))
+            return msg
+
+        boleto_bank = get_bank('%03d' % (bank_no,))
+        if not boleto_bank:
+            msg = _("Missing pyboleto support for %d" % (bank_no, ))
+            return msg
 
     def _get_bill(self):
         format = BoletoPDF.FORMAT_BOLETO
@@ -98,13 +153,14 @@ class BillReport(object):
             format = BoletoPDF.FORMAT_CARNE
         return BoletoPDF(self._filename, format)
 
-    def _get_instrucoes(self):
+    def _get_instrucoes(self, payment):
         instructions = []
-        for i in range(1, 4):
-            value = self._config.get('Boleto', 'instrucao%s' % i)
-            if value is not None:
-                instructions.append(value)
-        instructions.append(_('Stoq Retail Managment') + ' - www.stoq.com.br')
+        data = sysparam(payment.get_connection()).BILL_INSTRUCTIONS
+        for line in data.split('\n')[:3]:
+            line = line.replace('$DATE', payment.due_date.strftime('%d/%m/%Y'))
+            instructions.append(line)
+
+        instructions.append('\n' + _('Stoq Retail Managment') + ' - www.stoq.com.br')
         return instructions
 
     def _get_demonstrativo(self):
@@ -139,6 +195,7 @@ class BillReport(object):
         self._payments_added = True
 
     def _add_payment(self, payment):
+        account = payment.method.destination_account
         kwargs = dict(
             valor_documento=payment.value,
             data_vencimento=payment.due_date.date(),
@@ -149,9 +206,14 @@ class BillReport(object):
             sacado=self._get_sacado(),
             cedente=self._get_cedente(),
             demonstrativo=self._get_demonstrativo(),
-            instrucoes=self._get_instrucoes(),
+            instrucoes=self._get_instrucoes(payment),
+            agencia=account.bank.bank_branch,
+            conta=account.bank.bank_account,
         )
-        kwargs.update(self._config.items(self._bank_id))
+        for opt in account.bank.options:
+            kwargs[opt.option] = opt.value
+        self._bill = self._get_bill()
+        self._render_class = get_bank('%03d' % (account.bank.bank_number, ))
         self.args = kwargs
 
     def override_payment_id(self, payment_id):

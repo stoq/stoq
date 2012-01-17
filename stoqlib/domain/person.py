@@ -30,7 +30,6 @@ facets (adapters).
 There are currently the following Person facets available:
 
   - Branch
-  - BankBranch
   - Client
   - Company
   - CreditProvider
@@ -81,7 +80,7 @@ from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
-                                       ISalesPerson, IBankBranch, IActive,
+                                       ISalesPerson, IActive,
                                        ICreditProvider, ITransporter,
                                        IDescribable, IPersonFacet)
 from stoqlib.domain.payment.payment import Payment
@@ -868,16 +867,6 @@ class PersonAdaptToBranch(PersonAdapter):
 
 
 Person.registerFacet(PersonAdaptToBranch, IBranch)
-
-
-class PersonAdaptToBankBranch(PersonAdapter):
-    """A bank branch facet of a person."""
-    implements(IBankBranch)
-
-    is_active = BoolCol(default=True)
-    bank = ForeignKey('Bank')
-
-Person.registerFacet(PersonAdaptToBankBranch, IBankBranch)
 
 
 class PersonAdaptToCreditProvider(PersonAdapter):

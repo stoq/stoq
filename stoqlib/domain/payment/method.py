@@ -59,7 +59,7 @@ class CheckData(Domain):
     @ivar payment: the payment object.
     """
     payment = ForeignKey('Payment')
-    bank_data = ForeignKey('BankAccount')
+    bank_account = ForeignKey('BankAccount')
 
 
 class CreditCardData(Domain):

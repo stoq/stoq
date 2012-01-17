@@ -47,7 +47,6 @@ from stoqlib.domain.person import (Person,
                                    PersonAdaptToEmployee,
                                    PersonAdaptToUser,
                                    EmployeeRoleHistory,
-                                   PersonAdaptToBankBranch,
                                    PersonAdaptToCreditProvider,
                                    PersonAdaptToTransporter)
 from stoqlib.domain.product import Product
@@ -204,7 +203,8 @@ class TestPerson(DomainTest):
         workpermit_data = WorkPermitData(connection=self.trans)
         military_data = MilitaryData(connection=self.trans)
         voter_data = VoterData(connection=self.trans)
-        bank_account = BankAccount(connection=self.trans)
+        bank_account = BankAccount(connection=self.trans, bank_number=1,
+                bank_account=' ', bank_branch=' ')
         assert not self._check_create_facet_fails(person, IEmployee,
                                                   role=role,
                                                   workpermit_data=workpermit_data,
@@ -240,7 +240,8 @@ class TestPerson(DomainTest):
         workpermit_data = WorkPermitData(connection=self.trans)
         military_data = MilitaryData(connection=self.trans)
         voter_data = VoterData(connection=self.trans)
-        bank_account = BankAccount(connection=self.trans)
+        bank_account = BankAccount(connection=self.trans, bank_number=1,
+                bank_account=' ', bank_branch=' ')
         assert not self._check_create_facet_fails(person, IEmployee,
                                                   role=role,
                                                   workpermit_data=workpermit_data,
@@ -487,10 +488,6 @@ class TestBranch(_PersonFacetTest, DomainTest):
         branch = person.addFacet(IBranch, connection=self.trans,
                                  manager=manager, is_active=True)
         assert branch.get_active_branches(self.trans).count() == count + 1
-
-
-class TestBankBranch(_PersonFacetTest, DomainTest):
-    facet = PersonAdaptToBankBranch
 
 
 class TestCreditProvider(_PersonFacetTest, DomainTest):

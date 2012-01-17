@@ -390,10 +390,6 @@ class ISalesPerson(IPersonFacet):
                                'object')
 
 
-class IBankBranch(IPersonFacet):
-    branch = Attribute('A bank branch definition')
-
-
 class ICreditProvider(IPersonFacet):
     provider_type = Attribute('This attribute must be either'
                               'provider card or provider '
