@@ -15,16 +15,23 @@ class BoletoBanrisul(BoletoData):
 
     # From http://jrimum.org/bopepo/browser/trunk/src/br/com/nordestefomento/jrimum/bopepo/campolivre/AbstractCLBanrisul.java
     def calculaDuploDigito(self, seisPrimeirosCamposConcatenados):
-        somaMod10 = self.modulo10(seisPrimeirosCamposConcatenados)
-        restoMod10 = self.calculeRestoMod10(somaMod10)
-        primeiroDV = self.calculePrimeiroDV(restoMod10)
-        somaMod11 = self.modulo11(
-            str(int(seisPrimeirosCamposConcatenados) + primeiroDV), 7)
+        def sum11(s, lmin, lmax):
+            soma = 0
+            peso = lmin
+            for c in reversed(s):
+                soma += peso * int(c)
+                peso += 1
+                if peso > lmax:
+                    peso = lmin
+            return soma
+        primeiroDV = self.modulo10(seisPrimeirosCamposConcatenados)
+        somaMod11 = sum11(
+            seisPrimeirosCamposConcatenados + str(primeiroDV), 2, 7)
         restoMod11 = self.calculeRestoMod11(somaMod11)
         while restoMod11 == 1:
             primeiroDV = self.encontreValorValidoParaPrimeiroDV(primeiroDV)
-            somaMod11 = self.modulo11(
-                str(int(seisPrimeirosCamposConcatenados) + primeiroDV), 7)
+            somaMod11 = sum11(
+                seisPrimeirosCamposConcatenados + str(primeiroDV), 2, 7)
             restoMod11 = self.calculeRestoMod11(somaMod11)
         segundoDV = self.calculeSegundoDV(restoMod11)
         return str(primeiroDV) + str(segundoDV)
@@ -39,7 +46,7 @@ class BoletoBanrisul(BoletoData):
         if restoMod10 == 0:
             return 0
         else:
-            return restoMod10
+            return 10 - restoMod10
 
     def calculeRestoMod10(self, somaMod10):
         if somaMod10 < 10:
@@ -61,14 +68,9 @@ class BoletoBanrisul(BoletoData):
 
     @property
     def campo_livre(self):
-        first = '21%s%s0%s40' % (self.agencia,
-                                 self.conta,
-                                 self.nosso_numero)
-        dv = self.calculaDuploDigito(first)
-        # FIXME: probably wrong
-        dv = str(int(dv)-1)
-        return '21%s%s0%s40%s' % (self.agencia,
-                                  self.conta,
-                                  self.nosso_numero,
-                                  dv)
+        content = '21%04d%07d%08d40' % (int(self.agencia),
+                                        int(self.conta),
+                                        int(self.nosso_numero))
+        dv = self.calculaDuploDigito(content)
+        return '%s%s' % (content, dv)
 
