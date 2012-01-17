@@ -79,7 +79,7 @@ _banks = [
              {'carteira': BILL_OPTION_CUSTOM,
               'agencia': BILL_OPTION_BANK_BRANCH,
               'conta': BILL_OPTION_BANK_BRANCH}),
-    BankInfo('Nossa Caixa', 104,
+    BankInfo('Caixa Econonima Federal', 104,
              {'carteira': BILL_OPTION_CUSTOM,
               'agencia': BILL_OPTION_BANK_BRANCH,
               'conta': BILL_OPTION_BANK_BRANCH}),
