@@ -87,7 +87,7 @@ class ProductionItemEditor(BaseEditor):
     def setup_editor_widgets(self):
         self.order_number.set_text("%04d" % self.model.order.id)
         self.quantity.set_adjustment(
-            gtk.Adjustment(lower=1, upper=self.get_max_quantity(), step_incr=1))
+            gtk.Adjustment(lower=0, upper=self.get_max_quantity(), step_incr=1))
         self.quantity.set_digits(DECIMAL_PRECISION)
 
     def get_max_quantity(self):
@@ -177,6 +177,7 @@ class ProductionItemProducedEditor(ProductionItemEditor):
             self.model.produce(self.produced, api.get_current_user(self.conn),
                                serials)
         except (ValueError, AssertionError):
+            # FIXME: Adicionar mensagem exibindo produtos faltantes
             info(_(u'Can not produce this quantity. Not enough materials '
                     'allocated to this production.'))
             return False
