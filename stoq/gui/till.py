@@ -226,7 +226,7 @@ class TillApp(SearchableAppWindow):
 
     def _setup_printer(self):
         self._printer = FiscalPrinterHelper(self.conn,
-                                            parent=self.get_toplevel())
+                                            parent=self)
         self._printer.connect('till-status-changed',
                               self._on_PrinterHelper__till_status_changed)
         self._printer.connect('ecf-changed',
