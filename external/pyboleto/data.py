@@ -93,7 +93,7 @@ class BoletoData(object):
             self.moeda,
             'X',
             self.fator_vencimento,
-            self.formata_valor(self.valor_documento,10),
+            self.formata_valor(self.valor_documento, 10),
             self.campo_livre
         )
         dv = self.calculate_dv_barcode(num.replace('X', '', 1))
