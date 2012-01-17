@@ -74,6 +74,11 @@ _banks = [
              {'carteira': BILL_OPTION_CUSTOM,
               'agencia': BILL_OPTION_BANK_BRANCH,
               'conta': BILL_OPTION_BANK_BRANCH}),
+    # FIXME: Santander does not use 'agencia'
+    BankInfo('Banco Santander', 33,
+             {'carteira': BILL_OPTION_CUSTOM,
+              'agencia': BILL_OPTION_BANK_BRANCH,
+              'conta': BILL_OPTION_BANK_BRANCH}),
     BankInfo('Nossa Caixa', 104,
              {'carteira': BILL_OPTION_CUSTOM,
               'agencia': BILL_OPTION_BANK_BRANCH,
