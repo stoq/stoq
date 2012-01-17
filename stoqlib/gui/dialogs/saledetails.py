@@ -32,7 +32,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.boleto import BillReport, can_generate_bill
+from stoqlib.lib.boleto import BillReport
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -208,8 +208,9 @@ class SaleDetailsDialog(BaseEditor):
                      Sale.get(self.model.id, connection=self.conn))
 
     def on_print_bills__clicked(self, button):
-        if not can_generate_bill():
-            return
+        # FIXME:
+        if not BillReport.check_printable(self.payment_list):
+            return False
         print_report(BillReport, self.payments_list)
 
     def on_details_button__clicked(self, button):

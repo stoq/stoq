@@ -22,40 +22,18 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from ConfigParser import SafeConfigParser
 import datetime
 import os
-import StringIO
 import tempfile
 
-from kiwi.component import provide_utility
-
 import stoqlib
+from stoqlib.api import api
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.account import BankAccount, BillOption
 from stoqlib.lib.boleto import BillReport
 from stoqlib.lib.diffutils import diff_pdf_htmls
-from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.pdf import pdftohtml
-
-
-class MockConfig:
-    def __init__(self, fp):
-        self._config = SafeConfigParser()
-        self._config.readfp(fp)
-
-    def get(self, section, option):
-        if not self._config.has_section(section):
-            return
-
-        if not self._config.has_option(section, option):
-            return
-
-        return self._config.get(section, option)
-
-    def items(self, section):
-        if not self._config.has_section(section):
-            return {}
-        return self._config.items(section)
 
 
 class TestBoleto(DomainTest):
@@ -77,17 +55,20 @@ class TestBoleto(DomainTest):
             except OSError:
                 pass
 
-    def _configure_boleto(self, bank, **kwargs):
-        tmpl = """[Boleto]
-banco = %s
-instrucao1 = Primeia linha da instrução
-[%s]
-""" % (bank, bank)
+    def _configure_boleto(self, number, account, agency, **kwargs):
+        bill = PaymentMethod.get_by_name(self.trans, 'bill')
+        bank_account = BankAccount(account=bill.destination_account,
+                                   bank_account=account,
+                                   bank_branch=agency,
+                                   bank_number=int(number),
+                                   connection=self.trans)
+
         for key, value in kwargs.items():
-            tmpl += '%s = %s\n' % (key, value)
-        fp = StringIO.StringIO(tmpl)
-        config = MockConfig(fp)
-        provide_utility(IStoqConfig, config, replace=True)
+            BillOption(connection=self.trans,
+                       bank_account=bank_account,
+                       option=key,
+                       value=value)
+        api.sysparam(self.trans).BILL_INSTRUCTIONS = 'Primeia linha da instrução'
 
     def _get_expected(self, filename, generated):
         fname = os.path.join(os.path.dirname(stoqlib.__file__),
@@ -100,8 +81,8 @@ instrucao1 = Primeia linha da instrução
         sale = self.create_sale()
         self.add_product(sale)
         sale.order()
-        self.add_payments(sale, method_type='bill',
-                          date=datetime.date(2011, 5, 30))
+        self.payment = self.add_payments(sale, method_type='bill',
+                                         date=datetime.date(2011, 5, 30))
         sale.client = self.create_client()
         address = self.create_address()
         address.person = sale.client.person
@@ -131,24 +112,24 @@ instrucao1 = Primeia linha da instrução
         self._configure_boleto("001",
                                convenio="12345678",
                                len_convenio="8",
-                               agencia="1172",
-                               conta="00403005")
+                               agency="1172",
+                               account="00403005")
 
         self._diff(sale, 'boleto-001')
 
     def testNossaCaixa(self):
         sale = self._create_bill_sale()
         self._configure_boleto("104",
-                               agencia="1565",
-                               conta="414-3")
+                               agency="1565",
+                               account="414-3")
 
         self._diff(sale, 'boleto-104')
 
     def testItau(self):
         sale = self._create_bill_sale()
         self._configure_boleto("341",
-                               conta="13877",
-                               agencia="1565",
+                               account="13877",
+                               agency="1565",
                                carteira='175')
 
         self._diff(sale, 'boleto-341')
@@ -156,8 +137,8 @@ instrucao1 = Primeia linha da instrução
     def testBradesco(self):
         sale = self._create_bill_sale()
         self._configure_boleto("237",
-                               conta="029232-4",
-                               agencia="278-0",
+                               account="029232-4",
+                               agency="278-0",
                                carteira='06')
 
         self._diff(sale, 'boleto-237')
@@ -165,8 +146,8 @@ instrucao1 = Primeia linha da instrução
     def testReal(self):
         sale = self._create_bill_sale()
         self._configure_boleto("356",
-                               conta="5705853",
-                               agencia="0531",
+                               account="5705853",
+                               agency="0531",
                                carteira='06')
 
         self._diff(sale, 'boleto-356')

@@ -152,6 +152,8 @@ def _create_slave_test():
         'AccountTransactionEditor': 'needs to set a value',
         'PurchaseInstallmentConfirmationSlave': 'pending payment',
         'SaleInstallmentConfirmationSlave': 'pending payment',
+        'EmployeeEditor': 'bank account',
+        'EmployeeDetailsSlave': 'bank account',
         }
     namespace = dict(_test_slave=_test_slave)
 

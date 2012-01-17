@@ -35,7 +35,6 @@ from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
                                        IIndividual, ISupplier,
                                        IStorable, ISalesPerson,
                                        IClient, IUser, ITransporter,
-                                       IBankBranch,
                                        ICreditProvider)
 from stoqlib.lib.parameters import sysparam
 
@@ -166,10 +165,6 @@ def create_client_category_price(trans):
     return ExampleCreator.create(trans, 'ClientCategoryPrice')
 
 
-def create_bank(trans):
-    return ExampleCreator.create(trans, 'Bank')
-
-
 def create_bank_account(trans):
     return ExampleCreator.create(trans, 'BankAccount')
 
@@ -204,7 +199,6 @@ class ExampleCreator(object):
             'Sellable': self.create_sellable,
             'PaymentGroup': self.create_payment_group,
             'BranchStation': self.get_station,
-            'Bank': self.create_bank,
             'CityLocation': self.get_location,
             'CfopData': self.create_cfop_data,
             'ClientCategory': self.create_client_category,
@@ -225,7 +219,6 @@ class ExampleCreator(object):
             'Payment': self.create_payment,
             'ParameterData': self.create_parameter_data,
             'Person': self.create_person,
-            'PersonAdaptToBankBranch': self.create_bank_branch,
             'PersonAdaptToBranch': self.create_branch,
             'PersonAdaptToCompany': self.create_company,
             'PersonAdaptToClient': self.create_client,
@@ -266,7 +259,6 @@ class ExampleCreator(object):
             'PaymentCategory': self.create_payment_category,
             'FiscalDayHistory': self.create_fiscal_day_history,
             'Calls': self.create_call,
-            'Bank': self.create_bank,
             'BankAccount': self.create_bank_account,
             'QuoteGroup': self.create_quote_group,
             'Quotation': self.create_quotation,
@@ -665,23 +657,13 @@ class ExampleCreator(object):
         person.addFacet(ICompany, connection=self.trans)
         return person.addFacet(ITransporter, connection=self.trans)
 
-    def create_bank(self):
-        from stoqlib.domain.account import Bank
-        return Bank(connection=self.trans, name='Boston', short_name='short',
-                    compensation_code='1234')
-
-    def create_bank_account(self):
+    def create_bank_account(self, account=None):
         from stoqlib.domain.account import BankAccount
         return BankAccount(connection=self.trans,
-                           bank_id=1,
-                           branch='2666-1',
-                           account='20.666-1')
-
-    def create_bank_branch(self):
-        person = self.create_person()
-        person.addFacet(ICompany, connection=self.trans)
-        return person.addFacet(IBankBranch, connection=self.trans,
-                               bank=self.create_bank())
+                           bank_branch='2666-1',
+                           bank_account='20.666-1',
+                           bank_number=1,
+                           account=account or self.create_account())
 
     def create_credit_provider(self):
         person = self.create_person()

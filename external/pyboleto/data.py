@@ -246,7 +246,7 @@ class BoletoData(object):
     def formata_numero(numero, tamanho):
         if len(numero) > tamanho:
             raise BoletoException(
-                u'Tamanho do número maior que o permitido' )
+                u'Tamanho do numero maior que o permitido' )
         return numero.zfill(tamanho)
 
     @staticmethod

@@ -92,17 +92,17 @@ class _TemporaryCreditProviderGroupData(_BaseTemporaryMethodData):
 
 class _TemporaryPaymentData(object):
     def __init__(self, description, value, due_date,
-                 payment_number=None, bank_data=None):
+                 payment_number=None, bank_account=None):
         self.description = description
         self.value = value
         self.due_date = due_date
         self.payment_number = payment_number
-        self.bank_data = bank_data
+        self.bank_account = bank_account
 
 
 class _TemporaryBankData(object):
-    def __init__(self, bank_id=None, bank_branch=None, bank_account=None):
-        self.bank_id = bank_id
+    def __init__(self, bank_number=None, bank_branch=None, bank_account=None):
+        self.bank_number = bank_number
         self.bank_branch = bank_branch
         self.bank_account = bank_account
 
@@ -163,18 +163,12 @@ class CheckDataEditor(BasePaymentDataEditor):
     """An editor to set payment information of check payment method.
     """
 
-    def __init__(self, model, default_bank=None):
-        self._default_bank = default_bank
-        BasePaymentDataEditor.__init__(self, model)
-
     #
     # BaseEditorSlave hooks
     #
 
     def setup_slaves(self):
-        if self._default_bank and not self.model.bank_data.bank_id:
-            self.model.bank_data.bank_id = self._default_bank
-        bank_data_slave = BankDataSlave(self.model.bank_data)
+        bank_data_slave = BankDataSlave(self.model.bank_account)
 
         if self.get_slave(self.slave_holder):
             self.detach_slave(self.slave_holder)
@@ -189,7 +183,7 @@ class BankDataSlave(BaseEditorSlave):
 
     gladefile = 'BankDataSlave'
     model_type = _TemporaryBankData
-    proxy_widgets = ('bank_id', 'bank_branch', 'bank_account')
+    proxy_widgets = ('bank_number', 'bank_branch', 'bank_account')
 
     def __init__(self, model):
         self.model = model
@@ -227,21 +221,21 @@ class PaymentListSlave(GladeSlaveDelegate):
     def _can_edit_payments(self):
         return self.method.method_name != 'money'
 
-    def _has_bank_data(self):
+    def _has_bank_account(self):
         return self.method.method_name == 'check'
 
     def _get_columns(self):
         columns = [Column('description', title=_('Description'),
                           expand=True, data_type=str)]
 
-        if self._has_bank_data():
-            columns.extend([Column('bank_data.bank_id',
+        if self._has_bank_account():
+            columns.extend([Column('bank_account.bank_number',
                                    title=_('Bank ID'),
-                                   data_type=int, justify=gtk.JUSTIFY_RIGHT),
-                            Column('bank_data.bank_branch',
+                                   data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                            Column('bank_account.bank_branch',
                                    title=_('Bank branch'),
                                    data_type=str, justify=gtk.JUSTIFY_RIGHT),
-                            Column('bank_data.bank_account',
+                            Column('bank_account.bank_account',
                                    title=_('Bank account'),
                                    data_type=str, justify=gtk.JUSTIFY_RIGHT)])
 
@@ -298,13 +292,13 @@ class PaymentListSlave(GladeSlaveDelegate):
         self._update_difference_label()
 
     def add_payment(self, description, value, due_date, payment_number=None,
-                    bank_data=None, refresh=True):
+                    bank_account=None, refresh=True):
         """Add a payment to the list"""
         payment = _TemporaryPaymentData(description,
                                         value,
                                         due_date,
                                         payment_number,
-                                        bank_data)
+                                        bank_account)
         self.payment_list.append(payment)
 
         if refresh:
@@ -317,17 +311,17 @@ class PaymentListSlave(GladeSlaveDelegate):
         due_dates = generate_payments_due_dates(installments_number,
                                                 first_due_date, interval,
                                                 interval_type)
-        bank_data = None
+        bank_account = None
 
         self.clear_payments()
         for i in range(installments_number):
             description = self.method.describe_payment(self.group, i + 1,
                                                        installments_number)
-            if self._has_bank_data():
-                bank_data = _TemporaryBankData()
+            if self._has_bank_account():
+                bank_account = _TemporaryBankData()
 
             self.add_payment(description, currency(values[i]), due_dates[i],
-                             None, bank_data, False)
+                             None, bank_account, False)
 
         self.update_view()
 
@@ -350,13 +344,13 @@ class PaymentListSlave(GladeSlaveDelegate):
                                                  due_date=due_date,
                                                  description=p.description,
                                                  payment_number=p.payment_number)
-            if p.bank_data:
-                # Add the bank_data into the payment, if any.
+            if p.bank_account:
+                # Add the bank_account into the payment, if any.
                 adapted = payment.get_adapted()
-                bank_data = adapted.check_data.bank_data
-                bank_data.bank_id = p.bank_data.bank_id
-                bank_data.branch = p.bank_data.bank_branch
-                bank_data.account = p.bank_data.bank_account
+                bank_account = adapted.check_data.bank_account
+                bank_account.bank_number = p.bank_account.bank_number
+                bank_account.bank_branch = p.bank_account.bank_branch
+                bank_account.bank_account = p.bank_account.bank_account
             payments.append(payment)
 
         return payments

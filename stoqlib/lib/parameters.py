@@ -549,6 +549,18 @@ _details = [
         _('If online services such as upgrade notifications, automatic crash reports '
           'should be enabled.'),
         bool, initial=True, onupgrade=''),
+
+    ParameterDetails(
+        'BILL_INSTRUCTIONS',
+        _('Sales'),
+        _('Bill instructions '),
+        # Translators: do not translate $DATE
+        _('When printing bills, include the first 3 lines of these on '
+          'the bill itself. This usually includes instructions on how '
+          'to pay the bill and the validity and the terms. $DATE will be'
+          'replaced with the due date of the bill'),
+        str, multiline=True, initial=""),
+
 ]
 
 

@@ -85,7 +85,7 @@
                 colWidths="3cm, 3.6cm, 2.2cm, 4.2cm, 3cm, 3.6cm">
       <tr>
         <_td>NUMBER:</_td>
-        <td>${payment.bank.account or ""}</td>
+        <td>${payment.bank_account_number or ""}</td>
         <_td>BANK:</_td>
         <td></td>
         <_td>AGENCY:</_td>

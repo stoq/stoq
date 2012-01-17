@@ -436,6 +436,8 @@ class BoletoPDF:
         for i in range(len(instrucoes)):
             parts = utils.simpleSplit(instrucoes[i], 'Helvetica', 9,
                                       self.width - 45*mm )
+            if not parts:
+                parts = [' ']
             self.pdfCanvas.drawString(
                 2*self.space,
                 y - (i * self.deltaFont),

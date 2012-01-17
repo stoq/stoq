@@ -148,17 +148,15 @@ class Payment(Domain):
         return self.comments.count()
 
     @property
-    def bank(self):
-        """Get a BankAccount instance
-        @returns: a BankAccount instance, if the payment method does not
-        provide a bank account.
-        """
+    def bank_account_number(self):
         # This is mainly used by receipt.rml, and is a convenience
         # property, ideally we should move it to payment operation
         # somehow
         if self.method.method_name == 'check':
             data = self.method.operation.get_check_data_by_payment(self)
-            return data.bank_data
+            bank_account = data.bank_account
+            if bank_account:
+                return bank_account.bank_number
 
     def get_status_str(self):
         if not self.status in self.statuses:
