@@ -8,7 +8,7 @@ class TestBancoBanrisul(unittest.TestCase):
     def setUp(self):
         self.dados = BoletoBanrisul(
             agencia = '1102',
-            conta = '900015',
+            conta = '9000150',
             data_vencimento = datetime.date(2000, 7, 4),
             valor_documento = 550,
             nosso_numero = '22832563',
@@ -26,6 +26,10 @@ class TestBancoBanrisul(unittest.TestCase):
     def test_codigo_de_barras(self):
         self.assertEqual(self.dados.barcode,
                          '04198100100000550002111029000150228325634059')
+
+    def test_campo_livre(self):
+        self.assertEqual(self.dados.campo_livre,
+                         '2111029000150228325634059')
 
 if __name__ == '__main__':
     unittest.main()
