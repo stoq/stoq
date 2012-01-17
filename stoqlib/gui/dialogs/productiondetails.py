@@ -82,7 +82,7 @@ class ProductionDetailsDialog(BaseEditor):
         return [Column('description',
                        title=_('Description'),
                        data_type=str, expand=True, searchable=True,
-                       ellipsize=pango.ELLIPSIZE_END),
+                       ellipsize=pango.ELLIPSIZE_END, sorted=True),
                 Column('unit_description', _("Unit"),
                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('quantity', title=_('Quantity'),
@@ -95,7 +95,7 @@ class ProductionDetailsDialog(BaseEditor):
     def _get_material_columns(self):
         return [Column('description', title=_('Description'),
                        data_type=str, expand=True, searchable=True,
-                       ellipsize=pango.ELLIPSIZE_END),
+                       ellipsize=pango.ELLIPSIZE_END, sorted=True),
                 Column('product.location', _("Location"), data_type=str),
                 Column('unit_description', _("Unit"),
                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
@@ -241,7 +241,8 @@ class ProductionDetailsDialog(BaseEditor):
         self.produce_button.set_sensitive(bool(item) and item.can_produce(1))
 
     def on_materials__selection_changed(self, widget, item):
-        self.lost_button.set_sensitive(bool(item) and item.can_add_lost(1))
+        self.lost_button.set_sensitive(bool(item) and
+                                       item.can_add_lost(Decimal(0.001)))
         self.allocate_button.set_sensitive(bool(item) and
                     self.model.status == ProductionOrder.ORDER_PRODUCING)
 
