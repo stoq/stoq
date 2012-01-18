@@ -328,7 +328,6 @@ class AccountEditor(BaseEditor):
                 return ValidationError(str(e))
 
     def _on_bank_option__validate(self, entry, value, bank_info, option):
-        print 'validate!'
         try:
             bank_info.validate_option(option, value)
         except BoletoException, e:
