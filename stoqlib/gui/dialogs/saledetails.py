@@ -208,8 +208,7 @@ class SaleDetailsDialog(BaseEditor):
                      Sale.get(self.model.id, connection=self.conn))
 
     def on_print_bills__clicked(self, button):
-        # FIXME:
-        if not BillReport.check_printable(self.payment_list):
+        if not BillReport.check_printable(self.payments_list):
             return False
         print_report(BillReport, self.payments_list)
 
