@@ -852,11 +852,13 @@ class BillReport(object):
         self._bill.add_data(data)
 
     def override_payment_id(self, payment_id):
-        self.args['nosso_numero'] = str(payment_id)
-        self.args['numero_documento'] = str(payment_id)
+        for data in self._bill.boletos:
+            data.nosso_numero = str(payment_id)
+            data.numero_documento = str(payment_id)
 
     def override_payment_description(self, description):
-        self.args['demonstrativo'] = description
+        for data in self._bill.boletos:
+            data.demonstrativo = description
 
     def save(self):
         self.add_payments()
