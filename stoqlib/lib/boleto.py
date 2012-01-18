@@ -505,7 +505,8 @@ class BoletoBB(BoletoData):
         self.format_nnumero = 1
         if 'format_nnumero' in kwargs:
             self.format_nnumero = int(kwargs.pop('format_nnumero'))
-
+        kwargs['agencia'] = kwargs['agencia'].split('-')[0]
+        kwargs['conta'] = kwargs['conta'].split('-')[0]
         super(BoletoBB, self).__init__(**kwargs)
 
     def format_nosso_numero(self):
