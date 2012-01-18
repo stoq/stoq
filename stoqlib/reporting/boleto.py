@@ -730,9 +730,11 @@ class BoletoPDF(object):
 
 
 class BillReport(object):
-    def __init__(self, filename, payments):
+    def __init__(self, filename, payments, account=None, bank=None):
         self._payments = payments
         self._filename = filename
+        self._account = account
+        self._bank = bank
         self._bill = self._get_bill()
 
         self._payments_added = False
@@ -819,6 +821,18 @@ class BillReport(object):
         branch = payment.group.get_parent().branch
         return branch.get_description()
 
+    def _get_account(self, payment):
+        if self._account:
+            return self._account
+
+        return payment.method.destination_account
+
+    def _get_bank(self, account):
+        if self._bank:
+            return self._bank
+
+        return account.bank
+
     def add_payments(self):
         if self._payments_added:
             return
@@ -829,7 +843,8 @@ class BillReport(object):
         self._payments_added = True
 
     def _add_payment(self, payment):
-        account = payment.method.destination_account
+        account = self._get_account(payment)
+        bank = self._get_bank(account)
         kwargs = dict(
             valor_documento=payment.value,
             data_vencimento=payment.due_date.date(),
@@ -841,13 +856,13 @@ class BillReport(object):
             cedente=self._get_cedente(),
             demonstrativo=self._get_demonstrativo(),
             instrucoes=self._get_instrucoes(payment),
-            agencia=account.bank.bank_branch,
-            conta=account.bank.bank_account,
+            agencia=bank.bank_branch,
+            conta=bank.bank_account,
         )
-        for opt in account.bank.options:
+        for opt in bank.options:
             kwargs[opt.option] = opt.value
         _render_class = get_bank_info_by_number(
-            account.bank.bank_number)
+            bank.bank_number)
         data = _render_class(**kwargs)
         self._bill.add_data(data)
 

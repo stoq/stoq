@@ -22,22 +22,35 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
+
 import gtk
 from kiwi.datatypes import  ValidationError
 from kiwi.ui.widgets.combo import ProxyComboBox
 from kiwi.ui.widgets.entry import ProxyEntry
 
+from stoqlib.api import api
 from stoqlib.domain.account import (Account, BankAccount,
                                     BillOption)
+from stoqlib.domain.exampledata import ExampleCreator
+from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.printing import print_report
 from stoqlib.lib.boleto import (get_all_banks,
                                 get_bank_info_by_number,
                                 BoletoException)
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.reporting.boleto import BillReport
 
 _ = stoqlib_gettext
+
+
+class _Option(object):
+    def __init__(self, option, value):
+        self.option = option
+        self.value = value
 
 
 class _TemporaryBankAccount(object):
@@ -45,6 +58,14 @@ class _TemporaryBankAccount(object):
         self.bank_number = 0
         self.bank_branch = ''
         self.bank_account = ''
+        self._options = {}
+
+    @property
+    def options(self):
+        return self._options.values()
+
+    def set_option(self, option, value):
+        self._options[option] = _Option(option, value)
 
 
 class AccountEditor(BaseEditor):
@@ -60,10 +81,16 @@ class AccountEditor(BaseEditor):
         self._bank_widgets = []
         self._bank_option_widgets = []
         self._option_fields = {}
+        self._test_button = None
         self.existing = model is not None
         self.parent_account = parent_account
         self.bank_model = _TemporaryBankAccount()
         BaseEditor.__init__(self, conn, model)
+
+        self.main_dialog.action_area.add(self._test_button)
+        self.main_dialog.action_area.set_child_secondary(
+            self._test_button, True)
+        self._test_button.show()
 
     #
     # BaseEditor hooks
@@ -75,6 +102,9 @@ class AccountEditor(BaseEditor):
                        connection=conn)
 
     def _setup_widgets(self):
+        self._test_button = gtk.Button(_("Print a test bill"))
+        self._test_button.connect('clicked',
+                                  self._on_test_button__clicked)
         self.parent_accounts = AccountTree(with_code=False, create_mode=True)
         self.parent_accounts.connect('selection-changed',
                                      self._on_parent_accounts__selection_changed)
@@ -125,6 +155,16 @@ class AccountEditor(BaseEditor):
 
         return self.model
 
+    def refresh_ok(self, value):
+        BaseEditor.refresh_ok(self, value)
+
+        account_type = self.account_type.get_selected()
+        if account_type != Account.TYPE_BANK:
+            value = False
+        self._test_button.set_sensitive(value)
+
+    # Private
+
     def _save_bank(self):
         if self._bank_number is None:
             return
@@ -150,8 +190,6 @@ class AccountEditor(BaseEditor):
                                          option=option,
                                          value=value)
             bill_option.value = value
-
-    # Private
 
     def _add_widget(self, label, widget, options=False):
         n_rows = self.table.props.n_rows
@@ -251,6 +289,7 @@ class AccountEditor(BaseEditor):
             self._remove_bank_option_widgets()
             self.code.set_sensitive(True)
             return
+
         self.code.set_sensitive(False)
         self.bank_type = ProxyComboBox()
         self._add_widget(_("Bank:"), self.bank_type)
@@ -269,6 +308,8 @@ class AccountEditor(BaseEditor):
             except KeyError:
                 self.bank_type.select(None)
 
+        self._update_bank_type()
+
     def _remove_bank_widgets(self):
         for widget in self._bank_widgets:
             widget.parent.remove(widget)
@@ -283,6 +324,29 @@ class AccountEditor(BaseEditor):
         self.table.resize(5 + len(self._bank_widgets) / 2, 2)
         self._bank_option_widgets = []
         self._option_fields = {}
+
+    def _print_test_bill(self):
+        register_payment_operations()
+        trans = api.new_transaction()
+        try:
+            ed = ExampleCreator()
+            ed.set_transaction(self.conn)
+            sale = ed.create_sale()
+            ed.add_product(sale)
+            sale.order()
+            payment = ed.add_payments(sale, method_type='bill',
+                                      date=datetime.datetime.now())
+            sale.client = ed.create_client()
+            address = ed.create_address()
+            address.person = sale.client.person
+            sale.confirm()
+
+            print_report(BillReport, [payment.get_adapted()],
+                         account=self.model,
+                         bank=self.bank_model)
+
+        finally:
+            api.rollback_and_begin(trans)
 
     # Callbacks
 
@@ -332,3 +396,7 @@ class AccountEditor(BaseEditor):
             bank_info.validate_option(option, value)
         except BoletoException, e:
             return ValidationError(str(e))
+        self.bank_model.set_option(option, value)
+
+    def _on_test_button__clicked(self, button):
+        self._print_test_bill()
