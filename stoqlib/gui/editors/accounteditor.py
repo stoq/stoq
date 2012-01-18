@@ -202,20 +202,28 @@ class AccountEditor(BaseEditor):
         self._add_widget(_("Account:"), self.bank_account, options=True)
         self.bank_account.show()
 
+        attributes = ['bank_account', 'bank_branch',
+                      'bank_number']
         if bank_number is not None:
             self.bank_number.show()
 
             self.bank_model.bank_number = bank_number
 
-            for option in bank_info.get_extra_options():
-                entry = gtk.Entry()
+            for i, option in enumerate(bank_info.get_extra_options()):
+                name = 'option' + str(i)
+                entry = ProxyEntry()
+                entry.model_attribute = name
+                setattr(self, name, entry)
+                entry.props.data_type = 'str'
+                entry.connect('validate', self._on_bank_option__validate,
+                              bank_info, option)
                 self._add_widget("<i>%s</i>:" % (option, ), entry, options=True)
                 entry.show()
                 self._option_fields[option] = entry
+                attributes.append(entry.model_attribute)
 
         self.bank_proxy = self.add_proxy(
-            self.bank_model, ['bank_account', 'bank_branch',
-                              'bank_number'])
+            self.bank_model, attributes)
 
     def _fill_bank_account(self):
         if not self.model.bank:
@@ -318,3 +326,10 @@ class AccountEditor(BaseEditor):
                 bank_info.validate_field(value)
             except BoletoException, e:
                 return ValidationError(str(e))
+
+    def _on_bank_option__validate(self, entry, value, bank_info, option):
+        print 'validate!'
+        try:
+            bank_info.validate_option(option, value)
+        except BoletoException, e:
+            return ValidationError(str(e))

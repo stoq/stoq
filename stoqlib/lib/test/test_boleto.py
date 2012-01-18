@@ -32,7 +32,7 @@ import stoqlib
 from stoqlib.api import api
 from stoqlib.lib.boleto import (
     BankSantander, BankBanrisul, BankBB, BankBradesco,
-    BankCaixa, BankItau, BankReal)
+    BankCaixa, BankItau, BankReal, BoletoException)
 from stoqlib.domain.account import BankAccount, BillOption
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.test.domaintest import DomainTest
@@ -193,6 +193,13 @@ class TestBancoBanrisul(unittest.TestCase):
         self.assertEqual(self.dados.campo_livre,
                          '2111029000150228325634059')
 
+    def test_validate_field(self):
+        valid = ['06.181631.0-9.',
+                 '06.011.348.0-8'
+                 ]
+        for _ in valid:
+            pass
+
 
 class TestBB(unittest.TestCase):
     def setUp(self):
@@ -277,9 +284,29 @@ class TestBancoBradesco(unittest.TestCase):
                  '1172',
                  '14978-0',
                  '403005',
-                 '0039232-4']
+                 '0039232-4',
+                 '02752']
         for v in valid:
             self.dados.validate_field(v)
+
+    def testCarteira(self):
+        x = BankBradesco(
+            carteira='9',
+            agencia='02752',
+            conta='14978-0',
+            data_vencimento=datetime.date(2011, 3, 9),
+            valor_documento=2952.95,
+            nosso_numero='75896452',
+            numero_documento='75896452')
+        self.assertEquals(
+            x.barcode, '23793490100002952952752090007589645200149780')
+
+        x.validate_option('carteira', '9')
+        x.validate_option('carteira', '09')
+        x.validate_option('carteira', '')
+        self.assertRaises(BoletoException, x.validate_option, 'carteira', 'CNR')
+        self.assertRaises(BoletoException, x.validate_option, 'carteira', '-1')
+        self.assertRaises(BoletoException, x.validate_option, 'carteira', '100')
 
 
 class TestBancoCaixa(unittest.TestCase):
