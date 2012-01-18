@@ -130,7 +130,6 @@ class TestBoleto(DomainTest):
                                account="00403005-X")
         self._diff(sale, 'boleto-001')
 
-
     def testNossaCaixa(self):
         sale = self._create_bill_sale()
         self._configure_boleto("104",
