@@ -675,6 +675,12 @@ class BankBB(BankInfo):
         if option == 'convenio':
             if value == '':
                 raise BoletoException('Convenio não pode ser vazio')
+            try:
+                int(value)
+            except ValueError:
+                raise BoletoException(_("Must be a number"))
+            if len(value) > 8:
+                raise BoletoException(_("Cannot be longer than %d") % (8,))
 
         if option == 'len_convenio':
             if value not in ['6', '7', '8']:
