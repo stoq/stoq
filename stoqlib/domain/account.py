@@ -51,7 +51,7 @@ class BankAccount(Domain):
     """
     account = ForeignKey('Account', default=None)
 
-    bank_number = IntCol()
+    bank_number = IntCol(default=0)
     bank_branch = UnicodeCol(default=None)
     bank_account = UnicodeCol(default=None)
 

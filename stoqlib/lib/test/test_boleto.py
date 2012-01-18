@@ -31,8 +31,8 @@ from twisted.trial import unittest
 import stoqlib
 from stoqlib.api import api
 from stoqlib.lib.boleto import (
-    BoletoSantander, BoletoBanrisul, BoletoBB, BoletoBradesco,
-    BoletoCaixa, BoletoItau, BoletoReal)
+    BankSantander, BankBanrisul, BankBB, BankBradesco,
+    BankCaixa, BankItau, BankReal)
 from stoqlib.domain.account import BankAccount, BillOption
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.test.domaintest import DomainTest
@@ -41,7 +41,7 @@ from stoqlib.lib.pdf import pdftohtml
 from stoqlib.reporting.boleto import BillReport
 
 
-class TestBoleto(DomainTest):
+class TestBank(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
         self._filename = tempfile.mktemp(prefix="stoqlib-test-boleto-",
@@ -168,7 +168,7 @@ class TestBoleto(DomainTest):
 
 class TestBancoBanrisul(unittest.TestCase):
     def setUp(self):
-        self.dados = BoletoBanrisul(
+        self.dados = BankBanrisul(
             agencia='1102',
             conta='9000150',
             data_vencimento=datetime.date(2000, 7, 4),
@@ -196,7 +196,7 @@ class TestBancoBanrisul(unittest.TestCase):
 
 class TestBB(unittest.TestCase):
     def setUp(self):
-        d = BoletoBB(
+        d = BankBB(
             data_vencimento=datetime.date(2011, 3, 8),
             valor_documento=2952.95,
             agencia='9999',
@@ -216,10 +216,21 @@ class TestBB(unittest.TestCase):
             '00196490000002952950000007777777000008765418'
         )
 
+    def test_validate_field(self):
+        valid = ['0295-x',
+                 '2589-5',
+                 '3062-7',
+                 '8041-1',
+                 '15705-8',
+                 '39092-5',
+                 '83773-3']
+        for v in valid:
+            self.dados.validate_field(v)
+
 
 class TestBancoBradesco(unittest.TestCase):
     def setUp(self):
-        self.dados = BoletoBradesco(
+        self.dados = BankBradesco(
             carteira='06',
             agencia='278-0',
             conta='039232-4',
@@ -228,7 +239,7 @@ class TestBancoBradesco(unittest.TestCase):
             nosso_numero='2125525',
         )
 
-        self.dados2 = BoletoBradesco(
+        self.dados2 = BankBradesco(
             carteira='06',
             agencia='1172',
             conta='403005',
@@ -261,10 +272,19 @@ class TestBancoBradesco(unittest.TestCase):
     def test_conta(self):
         self.assertEqual(self.dados.conta, '0039232-4')
 
+    def test_validate_field(self):
+        valid = ['0278-0',
+                 '1172',
+                 '14978-0',
+                 '403005',
+                 '0039232-4']
+        for v in valid:
+            self.dados.validate_field(v)
+
 
 class TestBancoCaixa(unittest.TestCase):
     def setUp(self):
-        self.dados = BoletoCaixa(
+        self.dados = BankCaixa(
             carteira='SR',
             agencia='1565',
             conta='414-3',
@@ -289,7 +309,7 @@ class TestBancoCaixa(unittest.TestCase):
 
 class TestBancoItau(unittest.TestCase):
     def setUp(self):
-        self.dados = BoletoItau(
+        self.dados = BankItau(
             carteira='175',
             conta='13877-4',
             agencia='1565',
@@ -313,7 +333,7 @@ class TestBancoItau(unittest.TestCase):
 
 class TestBancoReal(unittest.TestCase):
     def setUp(self):
-        self.dados = BoletoReal(
+        self.dados = BankReal(
             carteira='06',
             agencia='0531',
             conta='5705853',
@@ -335,7 +355,7 @@ class TestBancoReal(unittest.TestCase):
 
 class TestSantander(unittest.TestCase):
     def setUp(self):
-        self.dados = BoletoSantander(
+        self.dados = BankSantander(
             agencia='1333',
             conta='0707077',
             data_vencimento=datetime.date(2012, 1, 22),
