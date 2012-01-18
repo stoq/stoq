@@ -40,13 +40,6 @@ log = Logger('stoqlib.lib.boleto')
  BILL_OPTION_CUSTOM) = range(3)
 
 
-class BankInfo(object):
-    def __init__(self, description, number, fields):
-        self.description = description
-        self.bank_number = number
-        self.fields = fields
-
-
 class BoletoException(Exception):
     pass
 
@@ -81,16 +74,23 @@ def custom_property(name, num_length):
     )
 
 
-class BoletoData(object):
-    description = None
-    bank_number = None
-    options = {}
-    logo = ''
+class BankInfo(object):
+
     aceite = 'N'
     especie = "R$"
     moeda = "9"
     local_pagamento = "Pagável em qualquer banco até o vencimento"
     quantidade = ""
+
+    # Override in base class
+
+    description = None
+    bank_number = None
+    options = {}
+    logo = ''
+
+    validate_field_func = None
+    validate_field_dv_10 = None
 
     def __init__(self, **kwargs):
         # Informações gerais
@@ -300,6 +300,62 @@ class BoletoData(object):
                 rv.append(option)
         return rv
 
+    @classmethod
+    def validate_field(cls, field, dv_10=None, func=None):
+        if dv_10 is None:
+            dv_10 = cls.validate_field_dv_10
+        if func is None:
+            func = cls.validate_field_func
+
+        # Validation not supported, do nothing
+        if func is None and dv_10 is None:
+            return
+
+        dv = None
+        if '-' in field:
+            if field.count('-') != 1:
+                raise BoletoException(
+                    u'Só pode ter um hífen')
+            field, dv = field.split('-', 1)
+            if not dv:
+                raise BoletoException(
+                    u'Digito verificador não pode ser vazio')
+        try:
+            int(field)
+        except ValueError:
+            raise BoletoException(
+                u'Conta precisa ser um número')
+
+        if dv:
+            if func == 'modulo11':
+                ret = cls.modulo11(field)
+            elif func == 'modulo10':
+                ret = cls.modulo10(field)
+            else:
+                ret = None
+
+            if dv.lower() in [dv_10]:
+                # FIXME: Is it correct that the rest of 0 is
+                #        the same as 10?
+                if ret == 0:
+                    pass
+                elif (ret is not None and
+                    str(ret) != dv.lower() and
+                    ret < 10):
+                    raise BoletoException(
+                        u'Dígito verificador invalido')
+            else:
+                try:
+                    dv = int(dv)
+                except ValueError:
+                    raise BoletoException(
+                        u'Dígito verificador tem que ser um número ou %s' % (
+                        dv_10))
+
+                if ret is not None and ret != dv:
+                    raise BoletoException(
+                        u'Dígito verificador invalido')
+
     @staticmethod
     def formata_numero(numero, tamanho):
         if len(numero) > tamanho:
@@ -318,7 +374,7 @@ class BoletoData(object):
     def formata_valor(nfloat, tamanho):
         try:
             txt = nfloat.replace('.', '')
-            txt = BoletoData.formata_numero(txt, tamanho)
+            txt = BankInfo.formata_numero(txt, tamanho)
             return txt
         except AttributeError:
             pass
@@ -367,7 +423,19 @@ class BoletoData(object):
             return resto
 
 
-class BoletoBanrisul(BoletoData):
+_banks = []
+
+
+def register_bank(bank_class):
+    if not issubclass(bank_class, BankInfo):
+        raise TypeError
+    assert not bank_class in _banks
+    _banks.append(bank_class)
+    return bank_class
+
+
+@register_bank
+class BankBanrisul(BankInfo):
     description = 'Banrisul'
     bank_number = 41
     logo = 'logo_banrisul.jpg'
@@ -378,7 +446,7 @@ class BoletoBanrisul(BoletoData):
     conta = custom_property('conta', 6)
 
     def __init__(self, **kwargs):
-        BoletoData.__init__(self, **kwargs)
+        BankInfo.__init__(self, **kwargs)
 
     # From http://jrimum.org/bopepo/browser/trunk/src/br/com/nordestefomento/jrimum/bopepo/campolivre/AbstractCLBanrisul.java
     def calculaDuploDigito(self, seisPrimeirosCamposConcatenados):
@@ -442,7 +510,8 @@ class BoletoBanrisul(BoletoData):
         return '%s%s' % (content, dv)
 
 
-class BoletoBradesco(BoletoData):
+@register_bank
+class BankBradesco(BankInfo):
     description = 'Bradesco'
     bank_number = 237
     logo = "logo_bancobradesco.jpg"
@@ -450,6 +519,9 @@ class BoletoBradesco(BoletoData):
     options = {'carteira': BILL_OPTION_CUSTOM,
                'agencia': BILL_OPTION_BANK_BRANCH,
                'conta': BILL_OPTION_BANK_BRANCH}
+
+    validate_field_func = 'modulo11'
+    validate_field_dv_10 = '0'
 
     def format_nosso_numero(self):
         return "%s/%s-%s" % (
@@ -485,7 +557,8 @@ class BoletoBradesco(BoletoData):
                                      '0')
 
 
-class BoletoBB(BoletoData):
+@register_bank
+class BankBB(BankInfo):
     description = 'Banco do Brasil'
     bank_number = 1
     logo = 'logo_bb.gif'
@@ -493,6 +566,9 @@ class BoletoBB(BoletoData):
                'len_convenio': BILL_OPTION_CUSTOM,
                'agencia': BILL_OPTION_BANK_BRANCH,
                'conta': BILL_OPTION_BANK_BRANCH}
+
+    validate_field_func = 'modulo11'
+    validate_field_dv_10 = 'x'
 
     def __init__(self, **kwargs):
         if not 'carteira' in kwargs:
@@ -507,7 +583,7 @@ class BoletoBB(BoletoData):
             self.format_nnumero = int(kwargs.pop('format_nnumero'))
         kwargs['agencia'] = kwargs['agencia'].split('-')[0]
         kwargs['conta'] = kwargs['conta'].split('-')[0]
-        super(BoletoBB, self).__init__(**kwargs)
+        super(BankBB, self).__init__(**kwargs)
 
     def format_nosso_numero(self):
         return "%s-%s" % (
@@ -576,7 +652,8 @@ class BoletoBB(BoletoData):
                                   '21')  # numero do serviço
 
 
-class BoletoCaixa(BoletoData):
+@register_bank
+class BankCaixa(BankInfo):
     description = 'Caixa Econonima Federal'
     bank_number = 104
     logo = 'logo_bancocaixa.jpg'
@@ -617,7 +694,8 @@ class BoletoCaixa(BoletoData):
                                 self.conta.split('-')[0])
 
 
-class BoletoItau(BoletoData):
+@register_bank
+class BankItau(BankInfo):
     description = 'Banco Itaú'
     bank_number = 341
     logo = 'logo_itau.gif'
@@ -664,7 +742,8 @@ class BoletoItau(BoletoData):
         )
 
 
-class BoletoReal(BoletoData):
+@register_bank
+class BankReal(BankInfo):
     description = 'Banco Real'
     bank_number = 356
     logo = 'logo_bancoreal.jpg'
@@ -693,7 +772,8 @@ class BoletoReal(BoletoData):
                                   self.nosso_numero)
 
 
-class BoletoSantander(BoletoData):
+@register_bank
+class BankSantander(BankInfo):
     description = 'Banco Santander'
     bank_number = 33
     logo = 'logo_santander.jpg'
@@ -711,7 +791,7 @@ class BoletoSantander(BoletoData):
     nosso_numero = custom_property('nosso_numero', 7)
 
     def __init__(self, **kwargs):
-        BoletoData.__init__(self, **kwargs)
+        BankInfo.__init__(self, **kwargs)
         self.carteira = '102'
 
     def format_nosso_numero(self):
@@ -730,15 +810,6 @@ class BoletoSantander(BoletoData):
                                       dv_nosso_numero,
                                       self.ios,
                                       self.carteira)
-
-_banks = [
-    BoletoBB,
-    BoletoSantander,
-    BoletoReal,
-    BoletoItau,
-    BoletoBradesco,
-    BoletoCaixa,
-    BoletoBanrisul]
 
 
 def get_all_banks():

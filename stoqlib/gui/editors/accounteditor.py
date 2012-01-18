@@ -25,17 +25,26 @@
 import gtk
 from kiwi.datatypes import  ValidationError
 from kiwi.ui.widgets.combo import ProxyComboBox
+from kiwi.ui.widgets.entry import ProxyEntry
 
 from stoqlib.domain.account import (Account, BankAccount,
                                     BillOption)
 from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.boleto import (get_all_banks,
-                                get_bank_info_by_number)
+                                get_bank_info_by_number,
+                                BoletoException)
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+
+class _TemporaryBankAccount(object):
+    def __init__(self):
+        self.bank_number = 0
+        self.bank_branch = ''
+        self.bank_account = ''
 
 
 class AccountEditor(BaseEditor):
@@ -53,6 +62,7 @@ class AccountEditor(BaseEditor):
         self._option_fields = {}
         self.existing = model is not None
         self.parent_account = parent_account
+        self.bank_model = _TemporaryBankAccount()
         BaseEditor.__init__(self, conn, model)
 
     #
@@ -111,35 +121,32 @@ class AccountEditor(BaseEditor):
         if new_parent != self.model:
             self.model.parent = new_parent
         self.model.account_type = self.account_type.get_selected()
-        if self._bank_number is not None:
-            self._save_bank()
+        self._save_bank()
+
         return self.model
 
     def _save_bank(self):
-        if self.model.bank:
-            bank = self.model.bank
-            bank.set(account=self.model,
-                     bank_number=int(self._bank_number),
-                     bank_account=self._bank_account.get_text(),
-                     bank_branch=self._bank_branch.get_text())
-        else:
-            bank = BankAccount(
-                connection=self.conn,
-                account=self.model,
-                bank_number=int(self._bank_number),
-                bank_account=self._bank_account.get_text(),
-                bank_branch=self._bank_branch.get_text())
-        self._save_bank_bill_options(bank)
+        if self._bank_number is None:
+            return
 
-    def _save_bank_bill_options(self, bank):
+        bank_account = self.model.bank
+        if not bank_account:
+            bank_account = BankAccount(account=self.model,
+                                       connection=self.conn)
+        bank_account.set(bank_number=self.bank_model.bank_number,
+                         bank_account=self.bank_model.bank_account,
+                         bank_branch=self.bank_model.bank_branch)
+        self._save_bank_bill_options(bank_account)
+
+    def _save_bank_bill_options(self, bank_account):
         for option, entry in self._option_fields.items():
             value = entry.get_text()
             bill_option = BillOption.selectOneBy(connection=self.conn,
-                                                 bank_account=bank,
+                                                 bank_account=bank_account,
                                                  option=option)
             if bill_option is None:
                 bill_option = BillOption(connection=self.conn,
-                                         bank_account=bank,
+                                         bank_account=bank_account,
                                          option=option,
                                          value=value)
             bill_option.value = value
@@ -167,38 +174,57 @@ class AccountEditor(BaseEditor):
     def _update_bank_type(self):
         self._remove_bank_option_widgets()
 
-        self._bank_number_entry = gtk.Entry()
-        self._bank_number_entry.set_sensitive(False)
-        self._add_widget(_("Number:"), self._bank_number_entry, options=True)
-
-        self._bank_branch = gtk.Entry()
-        self._add_widget(_("Agency:"), self._bank_branch, options=True)
-        self._bank_branch.show()
-
-        self._bank_account = gtk.Entry()
-        self._add_widget(_("Account:"), self._bank_account, options=True)
-        self._bank_account.show()
-
         bank_number = self.bank_type.get_selected()
-        if bank_number == None:
-            return
+        bank_info = None
+        if bank_number:
+            bank_info = get_bank_info_by_number(bank_number)
 
-        self._bank_number_entry.show()
+        self.bank_number = ProxyEntry()
+        self.bank_number.props.data_type = int
+        self.bank_number.set_sensitive(False)
+        self._add_widget(_("Number:"), self.bank_number, options=True)
 
-        bank = get_bank_info_by_number(bank_number)
-        self._bank_number_entry.set_text('%03d' % (int(bank_number), ))
-        for option in bank.get_extra_options():
-            entry = gtk.Entry()
-            self._add_widget("<i>%s</i>:" % (option, ), entry, options=True)
-            entry.show()
-            self._option_fields[option] = entry
+        self.bank_branch = ProxyEntry()
+        self.bank_branch.connect('validate', self._on_bank_branch__validate,
+                                 bank_info)
+        self.bank_branch.props.data_type = 'str'
+        self.bank_branch.props.mandatory = True
+        self.bank_branch.model_attribute = "bank_branch"
+        self._add_widget(_("Agency:"), self.bank_branch, options=True)
+        self.bank_branch.show()
+
+        self.bank_account = ProxyEntry()
+        self.bank_account.connect('validate', self._on_bank_account__validate,
+                                  bank_info)
+        self.bank_account.model_attribute = "bank_account"
+        self.bank_account.props.data_type = 'str'
+        self.bank_account.props.mandatory = True
+        self._add_widget(_("Account:"), self.bank_account, options=True)
+        self.bank_account.show()
+
+        if bank_number is not None:
+            self.bank_number.show()
+
+            self.bank_model.bank_number = bank_number
+
+            for option in bank_info.get_extra_options():
+                entry = gtk.Entry()
+                self._add_widget("<i>%s</i>:" % (option, ), entry, options=True)
+                entry.show()
+                self._option_fields[option] = entry
+
+        self.bank_proxy = self.add_proxy(
+            self.bank_model, ['bank_account', 'bank_branch',
+                              'bank_number'])
 
     def _fill_bank_account(self):
         if not self.model.bank:
             return
 
-        self._bank_branch.set_text(self.model.bank.bank_branch)
-        self._bank_account.set_text(self.model.bank.bank_account)
+        self.bank_model.bank_branch = self.model.bank.bank_branch.encode('utf-8')
+        self.bank_model.bank_account = self.model.bank.bank_account.encode('utf-8')
+        self.bank_proxy.update('bank_branch')
+        self.bank_proxy.update('bank_account')
 
         bill_options = list(BillOption.selectBy(connection=self.conn,
                                                 bank_account=self.model.bank))
@@ -278,3 +304,17 @@ class AccountEditor(BaseEditor):
         self._fill_bank_account()
 
         self._bank_number = bank_number
+
+    def _on_bank_branch__validate(self, entry, value, bank_info):
+        if bank_info:
+            try:
+                bank_info.validate_field(value)
+            except BoletoException, e:
+                return ValidationError(str(e))
+
+    def _on_bank_account__validate(self, entry, value, bank_info):
+        if bank_info:
+            try:
+                bank_info.validate_field(value)
+            except BoletoException, e:
+                return ValidationError(str(e))
