@@ -25,7 +25,6 @@
 
 import datetime
 from decimal import Decimal
-import os
 
 from kiwi.environ import environ
 from kiwi.log import Logger
