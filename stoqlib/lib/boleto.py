@@ -670,6 +670,16 @@ class BankBB(BankInfo):
                 return "%s%2s" % (self.nosso_numero,
                                   '21')  # numero do serviço
 
+    @classmethod
+    def validate_option(cls, option, value):
+        if option == 'convenio':
+            if value == '':
+                raise BoletoException('Convenio não pode ser vazio')
+
+        if option == 'len_convenio':
+            if value not in ['6', '7', '8']:
+                raise BoletoException('Tem que ser 6, 7 ou 8')
+
 
 @register_bank
 class BankCaixa(BankInfo):
