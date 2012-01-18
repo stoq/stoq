@@ -733,6 +733,7 @@ class BillReport(object):
     def __init__(self, filename, payments):
         self._payments = payments
         self._filename = filename
+        self._bill = self._get_bill()
 
         self._payments_added = False
         # Reports need a title when printing
@@ -781,8 +782,6 @@ class BillReport(object):
             return msg
 
     def _get_bill(self):
-        # FIXME: Move out of here to a proper report
-        from stoqlib.reporting.boleto import BoletoPDF
         format = BoletoPDF.FORMAT_BOLETO
         if len(self._payments) > 1:
             format = BoletoPDF.FORMAT_CARNE
@@ -847,10 +846,10 @@ class BillReport(object):
         )
         for opt in account.bank.options:
             kwargs[opt.option] = opt.value
-        self._bill = self._get_bill()
-        self._render_class = get_bank_info_by_number(
+        _render_class = get_bank_info_by_number(
             account.bank.bank_number)
-        self.args = kwargs
+        data = _render_class(**kwargs)
+        self._bill.add_data(data)
 
     def override_payment_id(self, payment_id):
         self.args['nosso_numero'] = str(payment_id)
@@ -861,7 +860,5 @@ class BillReport(object):
 
     def save(self):
         self.add_payments()
-        data = self._render_class(**self.args)
-        self._bill.add_data(data)
         self._bill.render()
         self._bill.save()
