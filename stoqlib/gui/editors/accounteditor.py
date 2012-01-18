@@ -186,12 +186,12 @@ class AccountEditor(BaseEditor):
         self._bank_number_entry.show()
 
         bank = get_bank_info_by_number(bank_number)
-        self._bank_number_entry.set_text('%03d' % (bank_number, ))
-        for field in bank.get_extra_fields():
+        self._bank_number_entry.set_text('%03d' % (int(bank_number), ))
+        for option in bank.get_extra_options():
             entry = gtk.Entry()
-            self._add_widget("<i>%s</i>:" % (field, ), entry, options=True)
+            self._add_widget("<i>%s</i>:" % (option, ), entry, options=True)
             entry.show()
-            self._option_fields[field] = entry
+            self._option_fields[option] = entry
 
     def _fill_bank_account(self):
         if not self.model.bank:

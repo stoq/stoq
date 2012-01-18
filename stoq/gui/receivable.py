@@ -58,8 +58,8 @@ from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
-from stoqlib.lib.boleto import BillReport
 from stoqlib.lib.message import warning
+from stoqlib.reporting.boleto import BillReport
 
 from stoq.gui.application import SearchableAppWindow
 

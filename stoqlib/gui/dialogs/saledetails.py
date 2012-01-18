@@ -31,8 +31,12 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
+from stoqlib.domain.interfaces import IClient
+from stoqlib.domain.person import Person
+from stoqlib.domain.sale import SaleView, Sale
+from stoqlib.domain.payment.views import PaymentChangeHistoryView
+from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.boleto import BillReport
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -40,11 +44,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.printing import print_report
-from stoqlib.domain.interfaces import IClient
-from stoqlib.domain.person import Person
-from stoqlib.domain.sale import SaleView, Sale
-from stoqlib.domain.payment.views import PaymentChangeHistoryView
-from stoqlib.domain.renegotiation import RenegotiationData
+from stoqlib.reporting.boleto import BillReport
 from stoqlib.reporting.sale import SaleOrderReport
 
 _ = stoqlib_gettext
