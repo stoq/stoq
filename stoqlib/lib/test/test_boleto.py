@@ -26,14 +26,19 @@ import datetime
 import os
 import tempfile
 
+from twisted.trial import unittest
+
 import stoqlib
 from stoqlib.api import api
-from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.lib.boleto import (
+    BoletoSantander, BoletoBanrisul, BoletoBB, BoletoBradesco,
+    BoletoCaixa, BoletoItau, BoletoReal)
 from stoqlib.domain.account import BankAccount, BillOption
-from stoqlib.lib.boleto import BillReport
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.diffutils import diff_pdf_htmls
 from stoqlib.lib.pdf import pdftohtml
+from stoqlib.reporting.boleto import BillReport
 
 
 class TestBoleto(DomainTest):
@@ -151,3 +156,197 @@ class TestBoleto(DomainTest):
                                carteira='06')
 
         self._diff(sale, 'boleto-356')
+
+
+class TestBancoBanrisul(unittest.TestCase):
+    def setUp(self):
+        self.dados = BoletoBanrisul(
+            agencia='1102',
+            conta='9000150',
+            data_vencimento=datetime.date(2000, 7, 4),
+            valor_documento=550,
+            nosso_numero='22832563',
+        )
+
+    def test_linha_digitavel(self):
+        self.assertEqual(
+            self.dados.linha_digitavel,
+            '04192.11107 29000.150226 83256.340593 8 10010000055000'
+        )
+
+    def test_tamanho_codigo_de_barras(self):
+        self.assertEqual(len(self.dados.barcode), 44)
+
+    def test_codigo_de_barras(self):
+        self.assertEqual(self.dados.barcode,
+                         '04198100100000550002111029000150228325634059')
+
+    def test_campo_livre(self):
+        self.assertEqual(self.dados.campo_livre,
+                         '2111029000150228325634059')
+
+
+class TestBB(unittest.TestCase):
+    def setUp(self):
+        d = BoletoBB(
+            data_vencimento=datetime.date(2011, 3, 8),
+            valor_documento=2952.95,
+            agencia='9999',
+            conta='99999',
+            convenio='7777777',
+            nosso_numero='87654',
+        )
+        self.dados = d
+
+    def test_linha_digitavel(self):
+        self.assertEqual(self.dados.linha_digitavel,
+            '00190.00009 07777.777009 00087.654182 6 49000000295295'
+        )
+
+    def test_codigo_de_barras(self):
+        self.assertEqual(self.dados.barcode,
+            '00196490000002952950000007777777000008765418'
+        )
+
+
+class TestBancoBradesco(unittest.TestCase):
+    def setUp(self):
+        self.dados = BoletoBradesco(
+            carteira='06',
+            agencia='278-0',
+            conta='039232-4',
+            data_vencimento=datetime.date(2011, 2, 5),
+            valor_documento=8280.00,
+            nosso_numero='2125525',
+        )
+
+        self.dados2 = BoletoBradesco(
+            carteira='06',
+            agencia='1172',
+            conta='403005',
+            data_vencimento=datetime.date(2011, 3, 9),
+            valor_documento=2952.95,
+            nosso_numero='75896452',
+            numero_documento='75896452',
+        )
+
+    def test_linha_digitavel(self):
+        self.assertEqual(self.dados.linha_digitavel,
+            '23790.27804 60000.212559 25003.923205 4 48690000828000'
+        )
+
+        self.assertEqual(self.dados2.linha_digitavel,
+            '23791.17209 60007.589645 52040.300502 1 49010000295295'
+        )
+
+    def test_codigo_de_barras(self):
+        self.assertEqual(self.dados.barcode,
+            '23794486900008280000278060000212552500392320'
+        )
+        self.assertEqual(self.dados2.barcode,
+            '23791490100002952951172060007589645204030050'
+        )
+
+    def test_agencia(self):
+        self.assertEqual(self.dados.agencia, '0278-0')
+
+    def test_conta(self):
+        self.assertEqual(self.dados.conta, '0039232-4')
+
+
+class TestBancoCaixa(unittest.TestCase):
+    def setUp(self):
+        self.dados = BoletoCaixa(
+            carteira='SR',
+            agencia='1565',
+            conta='414-3',
+            data_vencimento=datetime.date(2011, 2, 5),
+            valor_documento=355.00,
+            nosso_numero='19525086',
+        )
+
+    def test_linha_digitavel(self):
+        self.assertEqual(self.dados.linha_digitavel,
+            '10498.01952 25086.156509 00000.004143 7 48690000035500'
+        )
+
+    def test_tamanho_codigo_de_barras(self):
+        self.assertEqual(len(self.dados.barcode), 44)
+
+    def test_codigo_de_barras(self):
+        self.assertEqual(self.dados.barcode,
+            '10497486900000355008019525086156500000000414'
+        )
+
+
+class TestBancoItau(unittest.TestCase):
+    def setUp(self):
+        self.dados = BoletoItau(
+            carteira='175',
+            conta='13877-4',
+            agencia='1565',
+            data_vencimento=datetime.date(2011, 3, 9),
+            valor_documento=2952.95,
+            nosso_numero='12345678',
+        )
+
+    def test_linha_digitavel(self):
+        raise unittest.SkipTest("")
+        self.assertEqual(self.dados.linha_digitavel,
+            '34191.75124 34567.861561 51387.710000 3 49010000295295'
+        )
+
+    def test_codigo_de_barras(self):
+        raise unittest.SkipTest("")
+        self.assertEqual(self.dados.barcode,
+            '34193490100002952951751234567861565138771000'
+        )
+
+
+class TestBancoReal(unittest.TestCase):
+    def setUp(self):
+        self.dados = BoletoReal(
+            carteira='06',
+            agencia='0531',
+            conta='5705853',
+            data_vencimento=datetime.date(2011, 2, 5),
+            valor_documento=355.00,
+            nosso_numero='123',
+        )
+
+    def test_linha_digitavel(self):
+        self.assertEqual(self.dados.linha_digitavel,
+            '35690.53154 70585.390001 00000.001230 8 48690000035500'
+        )
+
+    def test_codigo_de_barras(self):
+        self.assertEqual(self.dados.barcode,
+            '35698486900000355000531570585390000000000123'
+        )
+
+
+class TestSantander(unittest.TestCase):
+    def setUp(self):
+        self.dados = BoletoSantander(
+            agencia='1333',
+            conta='0707077',
+            data_vencimento=datetime.date(2012, 1, 22),
+            valor_documento=2952.95,
+            nosso_numero='1234567',
+        )
+
+    def test_linha_digitavel(self):
+        self.assertEqual(self.dados.linha_digitavel,
+            '03399.07073 07700.000123 34567.901029 6 52200000295295'
+        )
+
+    def test_tamanho_codigo_de_barras(self):
+        self.assertEqual(len(self.dados.barcode), 44)
+
+    def test_codigo_de_barras(self):
+        self.assertEqual(self.dados.barcode,
+            '03396522000002952959070707700000123456790102'
+        )
+
+if __name__ == '__main__':
+    unittest.main()

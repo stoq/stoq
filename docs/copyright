@@ -22,6 +22,9 @@ of the License, or (at your option) any later version.
 
 More details at COPYING.stoqlib
 
+Contains code from PyBoleto <http://code.google.com/p/pyboleto> that
+is under the MIT license.
+
 Stoq pixmaps
 ============
 
@@ -55,8 +58,6 @@ These softwares are included/forked on Stoq source:
 
 * FormEncode <http://pypi.python.org/pypi/FormEncode>
   Licence: PFS
-* PyBoleto <http://pypi.python.org/pypi/pyboleto>
-  Licence: BSD
 * PyDispatcher <http://pypi.python.org/pypi/PyDispatcher>
   Licence: BSD
 * SQLObject: <http://sqlobject.org>

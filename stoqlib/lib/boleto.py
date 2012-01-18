@@ -24,13 +24,12 @@
 """
 
 import datetime
+from decimal import Decimal
+import os
 
-from pyboleto.data import get_bank
-from pyboleto.pdf import BoletoPDF
+from kiwi.environ import environ
 from kiwi.log import Logger
 
-from stoqlib.lib.message import warning
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -48,45 +47,698 @@ class BankInfo(object):
         self.bank_number = number
         self.fields = fields
 
-    def get_extra_fields(self):
+
+class BoletoException(Exception):
+    pass
+
+
+def custom_property(name, num_length):
+    """
+        Function to create properties on boleto
+
+        It accepts a number with or without a DV and zerofills it
+    """
+    internal_attr = '_%s' % name
+
+    def _set_attr(self, val):
+        val = val.split('-')
+
+        if len(val) is 1:
+            val[0] = str(val[0]).zfill(num_length)
+            setattr(self, internal_attr, val[0])
+
+        elif len(val) is 2:
+            val[0] = str(val[0]).zfill(num_length)
+            setattr(self, internal_attr, '-'.join(val))
+
+        else:
+            raise BoletoException('Wrong value format')
+
+    return property(
+        lambda self: getattr(self, internal_attr),
+        _set_attr,
+        lambda self: delattr(self, internal_attr),
+        name
+    )
+
+
+class BoletoData(object):
+    description = None
+    bank_number = None
+    options = {}
+    logo = ''
+    aceite = 'N'
+    especie = "R$"
+    moeda = "9"
+    local_pagamento = "Pagável em qualquer banco até o vencimento"
+    quantidade = ""
+
+    def __init__(self, **kwargs):
+        # Informações gerais
+        self.especie_documento = ""
+        self.instrucoes = []
+
+        # Cedente (empresa - dados do banco)
+        self.agencia = ""
+        self.carteira = ""
+        self.cedente = ""
+        self.conta = ""
+
+        # Sacado (cliente)
+        self.sacado_nome = ""
+        self.sacado_cidade = ""
+        self.sacado_uf = ""
+        self.sacado_endereco = ""
+        self.sacado_bairro = ""
+        self.sacado_cep = ""
+
+        # Pagamento
+        self.data_documento = ""
+        self.data_processamento = datetime.date.today()
+        self.data_vencimento = ""
+        self.demonstrativo = []
+        if (not 'numero_documento' in kwargs and
+            'nosso_numero' in kwargs):
+            kwargs['numero_documento'] = kwargs['nosso_numero']
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+        self.logo_image_path = ""
+        if self.logo:
+            self.logo_image_path = environ.find_resource('pixmaps', self.logo)
+
+    @property
+    def campo_livre(self):
+        raise NotImplementedError
+
+    @property
+    def barcode(self):
+        num = "%03d%1s%1s%4s%10s%24s" % (
+            self.bank_number,
+            self.moeda,
+            'X',
+            self.fator_vencimento,
+            self.formata_valor(self.valor_documento, 10),
+            self.campo_livre
+        )
+        dv = self.calculate_dv_barcode(num.replace('X', '', 1))
+
+        num = num.replace('X', str(dv), 1)
+        assert len(num) == 44, 'Código com %d caracteres' % len(num)
+        return num
+
+    @property
+    def dv_nosso_numero(self):
+        """Returns nosso número DV
+
+            It should be implemented by derived class
+        """
+        raise NotImplementedError
+
+    def calculate_dv_barcode(self, line):
+        resto2 = self.modulo11(line, 9, 1)
+        if resto2 in [0, 1, 10]:
+            dv = 1
+        else:
+            dv = 11 - resto2
+        return dv
+
+    def format_nosso_numero(self):
+        """
+            Return Formatted Nosso Número
+
+            It should be implemented by derived class
+        """
+        return self.nosso_numero
+
+    nosso_numero = custom_property('nosso_numero', 13)
+    agencia = custom_property('agencia', 4)
+    conta = custom_property('conta', 7)
+
+    def _get_valor(self):
+        try:
+            return "%.2f" % self._valor
+        except AttributeError:
+            pass
+
+    def _set_valor(self, val):
+        if type(val) is Decimal:
+            self._valor = val
+        else:
+            self._valor = Decimal(str(val), 2)
+    valor = property(_get_valor, _set_valor)
+
+    def _get_valor_documento(self):
+        try:
+            return "%.2f" % self._valor_documento
+        except AttributeError:
+            pass
+
+    def _set_valor_documento(self, val):
+        if type(val) is Decimal:
+            self._valor_documento = val
+        else:
+            self._valor_documento = Decimal(str(val), 2)
+    valor_documento = property(
+        _get_valor_documento,
+        _set_valor_documento
+    )
+
+    def _instrucoes_get(self):
+        try:
+            return self._instrucoes
+        except AttributeError:
+            pass
+
+    def _instrucoes_set(self, list_inst):
+        self._instrucoes = list_inst
+    instrucoes = property(_instrucoes_get, _instrucoes_set)
+
+    def _demonstrativo_get(self):
+        try:
+            return self._demonstrativo
+        except AttributeError:
+            pass
+
+    def _demonstrativo_set(self, list_dem):
+        self._demonstrativo = list_dem
+    demonstrativo = property(_demonstrativo_get, _demonstrativo_set)
+
+    def _sacado_get(self):
+        if not hasattr(self, '_sacado'):
+            self.sacado = [
+                self.sacado_nome,
+                self.sacado_endereco,
+                '%s - %s - %s - %s' % (
+                    self.sacado_bairro,
+                    self.sacado_cidade,
+                    self.sacado_uf,
+                    self.sacado_cep
+                )
+            ]
+        return self._sacado
+
+    def _sacado_set(self, list_sacado):
+        if len(list_sacado) > 3:
+            raise BoletoException(u'Número de linhas do sacado maior que 3')
+        for line in list_sacado:
+            if len(line) > 80:
+                raise BoletoException(
+                    u'Linha de sacado possui mais que 80 caracteres')
+        self._sacado = list_sacado
+    sacado = property(_sacado_get, _sacado_set)
+
+    @property
+    def fator_vencimento(self):
+        date_ref = datetime.date(2000, 7, 3)  # Fator = 1000
+        delta = self.data_vencimento - date_ref
+        fator = delta.days + 1000
+        return fator
+
+    @property
+    def agencia_conta(self):
+        return "%s/%s" % (self.agencia, self.conta)
+
+    @property
+    def codigo_dv_banco(self):
+        num = '%03d' % (self.bank_number, )
+        cod = "%s-%s" % (num, self.modulo11(num))
+        return cod
+
+    @property
+    def linha_digitavel(self):
+        """Linha que o cliente pode utilizar para digitar se o código
+            de barras não puder ser lido
+
+            Posição    Conteúdo
+            1 a 3    Número do banco
+            4        Código da Moeda - 9 para Real
+            5        Digito verificador do Código de Barras
+            6 a 19   Valor (12 inteiros e 2 decimais)
+            20 a 44  Campo Livre definido por cada banco
+        """
+        linha = self.barcode
+        assert linha, "Boleto doesn't have a barcode"
+
+        def monta_campo(campo):
+            campo_dv = "%s%s" % (campo, self.modulo10(campo))
+            return "%s.%s" % (campo_dv[0:5], campo_dv[5:])
+
+        campo1 = monta_campo(linha[0:4] + linha[19:24])
+        campo2 = monta_campo(linha[24:34])
+        campo3 = monta_campo(linha[34:44])
+        campo4 = linha[4]
+        campo5 = linha[5:19]
+
+        return "%s %s %s %s %s" % (campo1, campo2, campo3, campo4, campo5)
+
+    @classmethod
+    def get_extra_options(cls):
         rv = []
-        for field, kind in self.fields.items():
+        for option, kind in cls.options.items():
             if kind == BILL_OPTION_CUSTOM:
-                rv.append(field)
+                rv.append(option)
         return rv
 
+    @staticmethod
+    def formata_numero(numero, tamanho):
+        if len(numero) > tamanho:
+            raise BoletoException(
+                u'Tamanho do numero maior que o permitido')
+        return numero.zfill(tamanho)
+
+    @staticmethod
+    def formata_texto(texto, tamanho):
+        if len(texto) > tamanho:
+            raise BoletoException(
+                u'Tamanho do texto maior que o permitido')
+        return texto.ljust(tamanho)
+
+    @staticmethod
+    def formata_valor(nfloat, tamanho):
+        try:
+            txt = nfloat.replace('.', '')
+            txt = BoletoData.formata_numero(txt, tamanho)
+            return txt
+        except AttributeError:
+            pass
+
+    @staticmethod
+    def modulo10(num):
+        soma = 0
+        peso = 2
+        for i in range(len(num) - 1, -1, -1):
+            parcial = int(num[i]) * peso
+            if parcial > 9:
+                s = "%d" % parcial
+                parcial = int(s[0]) + int(s[1])
+            soma += parcial
+            if peso == 2:
+                peso = 1
+            else:
+                peso = 2
+
+        resto10 = soma % 10
+        if resto10 == 0:
+            modulo10 = 0
+        else:
+            modulo10 = 10 - resto10
+
+        return modulo10
+
+    @staticmethod
+    def modulo11(num, base=9, r=0):
+        soma = 0
+        fator = 2
+        for i in range(len(str(num))).__reversed__():
+            parcial10 = int(num[i]) * fator
+            soma += parcial10
+            if fator == base:
+                fator = 1
+            fator += 1
+        if r == 0:
+            soma = soma * 10
+            digito = soma % 11
+            if digito == 10:
+                digito = 0
+            return digito
+        if r == 1:
+            resto = soma % 11
+            return resto
+
+
+class BoletoBanrisul(BoletoData):
+    description = 'Banrisul'
+    bank_number = 41
+    logo = 'logo_banrisul.jpg'
+    options = {'agencia': BILL_OPTION_BANK_BRANCH,
+               'conta': BILL_OPTION_BANK_BRANCH}
+
+    nosso_numero = custom_property('nosso_numero', 8)
+    conta = custom_property('conta', 6)
+
+    def __init__(self, **kwargs):
+        BoletoData.__init__(self, **kwargs)
+
+    # From http://jrimum.org/bopepo/browser/trunk/src/br/com/nordestefomento/jrimum/bopepo/campolivre/AbstractCLBanrisul.java
+    def calculaDuploDigito(self, seisPrimeirosCamposConcatenados):
+        def sum11(s, lmin, lmax):
+            soma = 0
+            peso = lmin
+            for c in reversed(s):
+                soma += peso * int(c)
+                peso += 1
+                if peso > lmax:
+                    peso = lmin
+            return soma
+        primeiroDV = self.modulo10(seisPrimeirosCamposConcatenados)
+        somaMod11 = sum11(
+            seisPrimeirosCamposConcatenados + str(primeiroDV), 2, 7)
+        restoMod11 = self.calculeRestoMod11(somaMod11)
+        while restoMod11 == 1:
+            primeiroDV = self.encontreValorValidoParaPrimeiroDV(primeiroDV)
+            somaMod11 = sum11(
+                seisPrimeirosCamposConcatenados + str(primeiroDV), 2, 7)
+            restoMod11 = self.calculeRestoMod11(somaMod11)
+        segundoDV = self.calculeSegundoDV(restoMod11)
+        return str(primeiroDV) + str(segundoDV)
+
+    def calculeSegundoDV(self, restoMod11):
+        if restoMod11 == 0:
+            return restoMod11
+        else:
+            return 11 - restoMod11
+
+    def calculePrimeiroDV(self, restoMod10):
+        if restoMod10 == 0:
+            return 0
+        else:
+            return 10 - restoMod10
+
+    def calculeRestoMod10(self, somaMod10):
+        if somaMod10 < 10:
+            return somaMod10
+        else:
+            return somaMod10 % 10
+
+    def encontreValorValidoParaPrimeiroDV(self, primeiroDV):
+        if primeiroDV == 9:
+            return 0
+        else:
+            return primeiroDV + 1
+
+    def calculeRestoMod11(self, somaMod11):
+        if somaMod11 < 11:
+            return somaMod11
+        else:
+            return somaMod11 % 11
+
+    @property
+    def campo_livre(self):
+        content = '21%04d%07d%08d40' % (int(self.agencia),
+                                        int(self.conta),
+                                        int(self.nosso_numero))
+        dv = self.calculaDuploDigito(content)
+        return '%s%s' % (content, dv)
+
+
+class BoletoBradesco(BoletoData):
+    description = 'Bradesco'
+    bank_number = 237
+    logo = "logo_bancobradesco.jpg"
+
+    options = {'carteira': BILL_OPTION_CUSTOM,
+               'agencia': BILL_OPTION_BANK_BRANCH,
+               'conta': BILL_OPTION_BANK_BRANCH}
+
+    def format_nosso_numero(self):
+        return "%s/%s-%s" % (
+            self.carteira,
+            self.nosso_numero,
+            self.dv_nosso_numero
+        )
+
+    # Nosso numero (sem dv) sao 11 digitos
+    nosso_numero = custom_property('nosso_numero', 11)
+
+    @property
+    def dv_nosso_numero(self):
+        resto2 = self.modulo11(self.nosso_numero, 7, 1)
+        digito = 11 - resto2
+        if digito == 10:
+            dv = 'P'
+        elif digito == 11:
+            dv = 0
+        else:
+            dv = digito
+        return dv
+
+    agencia = custom_property('agencia', 4)
+    conta = custom_property('conta', 7)
+
+    @property
+    def campo_livre(self):
+        return "%4s%2s%11s%7s%1s" % (self.agencia.split('-')[0],
+                                     self.carteira,
+                                     self.nosso_numero,
+                                     self.conta.split('-')[0],
+                                     '0')
+
+
+class BoletoBB(BoletoData):
+    description = 'Banco do Brasil'
+    bank_number = 1
+    logo = 'logo_bb.gif'
+    options = {'convenio': BILL_OPTION_CUSTOM,
+               'len_convenio': BILL_OPTION_CUSTOM,
+               'agencia': BILL_OPTION_BANK_BRANCH,
+               'conta': BILL_OPTION_BANK_BRANCH}
+
+    def __init__(self, **kwargs):
+        if not 'carteira' in kwargs:
+            kwargs['carteira'] = '18'
+
+        self.len_convenio = 7
+        if 'len_convenio' in kwargs:
+            self.len_convenio = int(kwargs.pop('len_convenio'))
+
+        self.format_nnumero = 1
+        if 'format_nnumero' in kwargs:
+            self.format_nnumero = int(kwargs.pop('format_nnumero'))
+
+        super(BoletoBB, self).__init__(**kwargs)
+
+    def format_nosso_numero(self):
+        return "%s-%s" % (
+            self.nosso_numero,
+            self.dv_nosso_numero
+        )
+
+    # Nosso numero (sem dv) sao 11 digitos
+    def _get_nosso_numero(self):
+        return self.convenio + self._nosso_numero
+
+    def _set_nosso_numero(self, val):
+        val = str(val)
+        if self.len_convenio == 4:
+            nn = val.zfill(7)
+        if self.len_convenio == 6:
+            if self.format_nnumero == 1:
+                nn = val.zfill(5)
+            elif self.format_nnumero == 2:
+                nn = val.zfill(17)
+        elif self.len_convenio == 7:
+            nn = val.zfill(10)
+        elif self.len_convenio == 8:
+            nn = val.zfill(9)
+        self._nosso_numero = nn
+
+    nosso_numero = property(_get_nosso_numero, _set_nosso_numero)
+
+    def _get_convenio(self):
+        return self._convenio
+
+    def _set_convenio(self, val):
+        self._convenio = str(val).ljust(self.len_convenio, '0')
+    convenio = property(_get_convenio, _set_convenio)
+
+    @property
+    def agencia_conta(self):
+        return "%s-%s / %s-%s" % (
+            self.agencia,
+            self.modulo11(self.agencia),
+            self.conta,
+            self.modulo11(self.conta)
+        )
+
+    @property
+    def dv_nosso_numero(self):
+        return self.modulo11(self.nosso_numero)
+
+    agencia = custom_property('agencia', 4)
+    conta = custom_property('conta', 8)
+
+    @property
+    def campo_livre(self):
+        if self.len_convenio in (7, 8):
+            return "%6s%s%s" % ('000000',
+                                self.nosso_numero,
+                                self.carteira)
+        elif self.len_convenio is 6:
+            if self.format_nnumero is 1:
+                return "%s%s%s%s" % (self.nosso_numero,
+                                     self.agencia,
+                                     self.conta,
+                                     self.carteira)
+            if self.format_nnumero is 2:
+                return "%s%2s" % (self.nosso_numero,
+                                  '21')  # numero do serviço
+
+
+class BoletoCaixa(BoletoData):
+    description = 'Caixa Econonima Federal'
+    bank_number = 104
+    logo = 'logo_bancocaixa.jpg'
+    options = {'carteira': BILL_OPTION_CUSTOM,
+              'agencia': BILL_OPTION_BANK_BRANCH,
+              'conta': BILL_OPTION_BANK_BRANCH}
+
+    inicio_nosso_numero = '80'
+
+    # Nosso numero (sem dv) sao 10 digitos
+    def _nosso_numero_get(self):
+        return self._nosso_numero
+    '''
+        Nosso Número sem DV, máximo 8 chars
+    '''
+    def _nosso_numero_set(self, val):
+        self._nosso_numero = (self.inicio_nosso_numero +
+                              self.formata_numero(val, 8))
+
+    nosso_numero = property(_nosso_numero_get, _nosso_numero_set)
+
+    @property
+    def dv_nosso_numero(self):
+        resto2 = self.modulo11(self.nosso_numero.split('-')[0], 9, 1)
+        digito = 11 - resto2
+        if digito == 10 or digito == 11:
+            dv = 0
+        else:
+            dv = digito
+        return dv
+
+    conta = custom_property('conta', 11)
+
+    @property
+    def campo_livre(self):
+        return "%10s%4s%11s" % (self.nosso_numero,
+                                self.agencia,
+                                self.conta.split('-')[0])
+
+
+class BoletoItau(BoletoData):
+    description = 'Banco Itaú'
+    bank_number = 341
+    logo = 'logo_itau.gif'
+    options = {'carteira': BILL_OPTION_CUSTOM,
+              'agencia': BILL_OPTION_BANK_BRANCH,
+              'conta': BILL_OPTION_BANK_BRANCH}
+
+    nosso_numero = custom_property('nosso_numero', 8)
+    agencia = custom_property('agencia', 4)
+    conta = custom_property('conta', 5)
+
+    @property
+    def dac_nosso_numero(self):
+        return self.modulo10(self.agencia +
+                             self.conta +
+                             self.carteira +
+                             self.nosso_numero)
+
+    def format_nosso_numero(self):
+        return '%s/%s-%s' % (self.carteira,
+                             self.nosso_numero,
+                             self.dac_nosso_numero)
+
+    @property
+    def agencia_conta(self):
+        agencia = self.agencia.split('-')[0]
+        conta = self.conta.split('-')[0]
+        return '%s / %s-%s' % (agencia,
+                               conta,
+                               self.modulo10(agencia + conta))
+
+    @property
+    def campo_livre(self):
+        agencia = self.agencia
+        conta = self.conta.split('-')[0]
+        return "%3s%8s%1s%4s%5s%1s%3s" % (
+            self.carteira,
+            self.nosso_numero,
+            self.dac_nosso_numero,
+            agencia,
+            conta,
+            self.modulo10(agencia + conta),
+            '000'
+        )
+
+
+class BoletoReal(BoletoData):
+    description = 'Banco Real'
+    bank_number = 356
+    logo = 'logo_bancoreal.jpg'
+    options = {'carteira': BILL_OPTION_CUSTOM,
+               'agencia': BILL_OPTION_BANK_BRANCH,
+               'conta': BILL_OPTION_BANK_BRANCH}
+
+    @property
+    def agencia_conta(self):
+        return "%s/%s-%s" % (self.agencia,
+                             self.conta,
+                             self.digitao_cobranca)
+
+    @property
+    def digitao_cobranca(self):
+        num = "%s%s%s" % (self.nosso_numero,
+                          self.agencia,
+                          self.conta)
+        return self.modulo10(num)
+
+    @property
+    def campo_livre(self):
+        return "%4s%7s%1s%13s" % (self.agencia,
+                                  self.conta,
+                                  self.digitao_cobranca,
+                                  self.nosso_numero)
+
+
+class BoletoSantander(BoletoData):
+    description = 'Banco Santander'
+    bank_number = 33
+    logo = 'logo_santander.jpg'
+    options = {'carteira': BILL_OPTION_CUSTOM,
+               'agencia': BILL_OPTION_BANK_BRANCH,
+               'conta': BILL_OPTION_BANK_BRANCH}
+
+    # Numero fixo na posição 5
+    fixo = '9'
+
+    # IOS - somente para Seguradoras (Se 7% informar 7, limitado 9%)
+    # Demais clientes usar 0 (zero)
+    ios = '0'
+
+    nosso_numero = custom_property('nosso_numero', 7)
+
+    def __init__(self, **kwargs):
+        BoletoData.__init__(self, **kwargs)
+        self.carteira = '102'
+
+    def format_nosso_numero(self):
+        return "00000%s-%s" % (
+            self.nosso_numero,
+            self.modulo11(self.nosso_numero))
+
+    @property
+    def campo_livre(self):
+        conta = self.formata_numero(self.conta, 7)
+        dv_nosso_numero = self.modulo11(self.nosso_numero)
+
+        return '%s%s00000%s%s%s%s' % (self.fixo,
+                                      conta,
+                                      self.nosso_numero,
+                                      dv_nosso_numero,
+                                      self.ios,
+                                      self.carteira)
+
 _banks = [
-    BankInfo("Generic", None, {}),
-    BankInfo('Banco Bradesco', 237,
-             {'carteira': BILL_OPTION_CUSTOM,
-              'agencia': BILL_OPTION_BANK_BRANCH,
-              'conta': BILL_OPTION_BANK_BRANCH}),
-    BankInfo("Banco do Brasil", 1,
-             {'convenio': BILL_OPTION_CUSTOM,
-              'len_convenio': BILL_OPTION_CUSTOM,
-              'agencia': BILL_OPTION_BANK_BRANCH,
-              'conta': BILL_OPTION_BANK_BRANCH}),
-    BankInfo('Banco Itau', 341,
-             {'carteira': BILL_OPTION_CUSTOM,
-              'agencia': BILL_OPTION_BANK_BRANCH,
-              'conta': BILL_OPTION_BANK_BRANCH}),
-    BankInfo('Banco Real', 356,
-             {'carteira': BILL_OPTION_CUSTOM,
-              'agencia': BILL_OPTION_BANK_BRANCH,
-              'conta': BILL_OPTION_BANK_BRANCH}),
-    # FIXME: Santander does not use 'agencia'
-    BankInfo('Banco Santander', 33,
-             {'carteira': BILL_OPTION_CUSTOM,
-              'agencia': BILL_OPTION_BANK_BRANCH,
-              'conta': BILL_OPTION_BANK_BRANCH}),
-    BankInfo('Banrisul', 41,
-             {'agencia': BILL_OPTION_BANK_BRANCH,
-              'conta': BILL_OPTION_BANK_BRANCH}),
-    BankInfo('Caixa Econonima Federal', 104,
-             {'carteira': BILL_OPTION_CUSTOM,
-              'agencia': BILL_OPTION_BANK_BRANCH,
-              'conta': BILL_OPTION_BANK_BRANCH}),
-    ]
+    BoletoBB,
+    BoletoSantander,
+    BoletoReal,
+    BoletoItau,
+    BoletoBradesco,
+    BoletoCaixa,
+    BoletoBanrisul]
 
 
 def get_all_banks():
@@ -97,143 +749,4 @@ def get_bank_info_by_number(number):
     for bank in _banks:
         if bank.bank_number == number:
             return bank
-
-
-class BillReport(object):
-    def __init__(self, filename, payments):
-        self._payments = payments
-        self._filename = filename
-
-        self._payments_added = False
-        # Reports need a title when printing
-        self.title = _("Bill")
-
-        self.today = datetime.datetime.today()
-
-    @classmethod
-    def check_printable(cls, payments):
-        for payment in payments:
-            msg = cls.validate_payment_for_printing(payment)
-            if msg:
-                warning(_("Could not print Bill Report"),
-                        description=msg)
-                return False
-
-        return True
-
-    @classmethod
-    def validate_payment_for_printing(cls, payment):
-        account = payment.method.destination_account
-        if not account:
-            msg = _("Payment method missing a destination account: '%s'" % (
-                account.description, ))
-            return msg
-
-        from stoqlib.domain.account import Account
-        if (account.account_type != Account.TYPE_BANK or
-            not account.bank):
-            msg = _("Account '%s' must be a bank account.\n"
-                    "You need to configure the bill payment method in "
-                    "the admin application and try again" % (account.description, ))
-            return msg
-
-        bank = account.bank
-        if bank.bank_number == 0:
-            msg = _("Improperly configured bank account: %r" % (bank, ))
-            return msg
-
-        # FIXME: Verify that all bill option fields are configured properly
-
-        bank_no = bank.bank_number
-        bank_info = get_bank_info_by_number(bank_no)
-        if not bank_info:
-            msg = _("Missing stoq support for bank %d" % (bank_no, ))
-            return msg
-
-        boleto_bank = get_bank('%03d' % (bank_no,))
-        if not boleto_bank:
-            msg = _("Missing pyboleto support for %d" % (bank_no, ))
-            return msg
-
-    def _get_bill(self):
-        format = BoletoPDF.FORMAT_BOLETO
-        if len(self._payments) > 1:
-            format = BoletoPDF.FORMAT_CARNE
-        return BoletoPDF(self._filename, format)
-
-    def _get_instrucoes(self, payment):
-        instructions = []
-        data = sysparam(payment.get_connection()).BILL_INSTRUCTIONS
-        for line in data.split('\n')[:3]:
-            line = line.replace('$DATE', payment.due_date.strftime('%d/%m/%Y'))
-            instructions.append(line)
-
-        instructions.append('\n' + _('Stoq Retail Managment') + ' - www.stoq.com.br')
-        return instructions
-
-    def _get_demonstrativo(self):
-        payment = self._payments[0]
-        demonstrativo = [payment.group.get_description()]
-        sale = payment.group.sale
-        if sale:
-            for item in sale.get_items():
-                demonstrativo.append(' - %s' % item.get_description())
-        return demonstrativo
-
-    def _get_sacado(self):
-        payment = self._payments[0]
-        payer = payment.group.payer
-        address = payer.get_main_address()
-        return [payer.name,
-                address.get_address_string(),
-                address.get_details_string()]
-
-    def _get_cedente(self):
-        payment = self._payments[0]
-        branch = payment.group.get_parent().branch
-        return branch.get_description()
-
-    def add_payments(self):
-        if self._payments_added:
-            return
-        for p in self._payments:
-            if p.method.method_name != 'bill':
-                continue
-            self._add_payment(p)
-        self._payments_added = True
-
-    def _add_payment(self, payment):
-        account = payment.method.destination_account
-        kwargs = dict(
-            valor_documento=payment.value,
-            data_vencimento=payment.due_date.date(),
-            data_documento=payment.open_date.date(),
-            data_processamento=self.today,
-            nosso_numero=str(payment.id),
-            numero_documento=str(payment.id),
-            sacado=self._get_sacado(),
-            cedente=self._get_cedente(),
-            demonstrativo=self._get_demonstrativo(),
-            instrucoes=self._get_instrucoes(payment),
-            agencia=account.bank.bank_branch,
-            conta=account.bank.bank_account,
-        )
-        for opt in account.bank.options:
-            kwargs[opt.option] = opt.value
-        self._bill = self._get_bill()
-        self._render_class = get_bank('%03d' % (account.bank.bank_number, ))
-        self.args = kwargs
-
-    def override_payment_id(self, payment_id):
-        self.args['nosso_numero'] = str(payment_id)
-        self.args['numero_documento'] = str(payment_id)
-
-    def override_payment_description(self, description):
-        self.args['demonstrativo'] = description
-
-    def save(self):
-        self.add_payments()
-        data = self._render_class(**self.args)
-        self._bill.add_data(data)
-        self._bill.render()
-        self._bill.save()
+    raise NotImplementedError(number)
