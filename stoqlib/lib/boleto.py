@@ -311,6 +311,8 @@ class BankInfo(object):
         if func is None and dv_10 is None:
             return
 
+        field = field.replace(' ', '')
+        field = field.replace('.', '')
         dv = None
         if '-' in field:
             if field.count('-') != 1:
@@ -355,6 +357,10 @@ class BankInfo(object):
                 if ret is not None and ret != dv:
                     raise BoletoException(
                         u'Dígito verificador invalido')
+
+    @classmethod
+    def validate_option(cls, option, value):
+        pass
 
     @staticmethod
     def formata_numero(numero, tamanho):
@@ -550,11 +556,24 @@ class BankBradesco(BankInfo):
 
     @property
     def campo_livre(self):
-        return "%4s%2s%11s%7s%1s" % (self.agencia.split('-')[0],
-                                     self.carteira,
-                                     self.nosso_numero,
-                                     self.conta.split('-')[0],
-                                     '0')
+        return "%04d%02d%11s%07d0" % (int(self.agencia.split('-')[0]),
+                                      int(self.carteira),
+                                      self.nosso_numero,
+                                      int(self.conta.split('-')[0]))
+
+    @classmethod
+    def validate_option(cls, option, value):
+        if option == 'carteira':
+            if value == '':
+                return
+            try:
+                value = int(value)
+            except ValueError:
+                raise BoletoException("carteira tem que ser um número")
+            if 0 > value:
+                raise BoletoException("carteira tem que ser entre 0 e 99")
+            if value > 99:
+                raise BoletoException("carteira tem que ser entre 0 e 99")
 
 
 @register_bank
