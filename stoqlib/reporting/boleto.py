@@ -879,3 +879,13 @@ class BillReport(object):
         self.add_payments()
         self._bill.render()
         self._bill.save()
+
+
+class BillTestReport(object):
+    def __init__(self, filename, data):
+        self._bill = BoletoPDF(filename, BoletoPDF.FORMAT_BOLETO)
+        self._bill.add_data(data)
+
+    def save(self):
+        self._bill.render()
+        self._bill.save()

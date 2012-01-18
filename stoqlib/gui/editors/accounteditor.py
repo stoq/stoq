@@ -29,10 +29,8 @@ from kiwi.datatypes import  ValidationError
 from kiwi.ui.widgets.combo import ProxyComboBox
 from kiwi.ui.widgets.entry import ProxyEntry
 
-from stoqlib.api import api
 from stoqlib.domain.account import (Account, BankAccount,
                                     BillOption)
-from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -42,7 +40,7 @@ from stoqlib.lib.boleto import (get_all_banks,
                                 BoletoException)
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.boleto import BillReport
+from stoqlib.reporting.boleto import BillTestReport
 
 _ = stoqlib_gettext
 
@@ -327,26 +325,26 @@ class AccountEditor(BaseEditor):
 
     def _print_test_bill(self):
         register_payment_operations()
-        trans = api.new_transaction()
-        try:
-            ed = ExampleCreator()
-            ed.set_transaction(self.conn)
-            sale = ed.create_sale()
-            ed.add_product(sale)
-            sale.order()
-            payment = ed.add_payments(sale, method_type='bill',
-                                      date=datetime.datetime.now())
-            sale.client = ed.create_client()
-            address = ed.create_address()
-            address.person = sale.client.person
-            sale.confirm()
 
-            print_report(BillReport, [payment.get_adapted()],
-                         account=self.model,
-                         bank=self.bank_model)
-
-        finally:
-            api.rollback_and_begin(trans)
+        bank_info = get_bank_info_by_number(self.bank_model.bank_number)
+        kwargs = dict(
+            valor_documento=12345.67,
+            data_vencimento=datetime.date.today(),
+            data_documento=datetime.date.today(),
+            data_processamento=datetime.date.today(),
+            nosso_numero='624533',
+            numero_documento='1138',
+            sacado=[_("Drawee"), _("Address"), _("Details")],
+            cedente=_("Supplier"),
+            demonstrativo=[_("Demonstration")],
+            instrucoes=[_("Instructions")],
+            agencia=self.bank_model.bank_branch,
+            conta=self.bank_model.bank_account,
+        )
+        for opt in self.bank_model.options:
+            kwargs[opt.option] = opt.value
+        data = bank_info(**kwargs)
+        print_report(BillTestReport, data)
 
     # Callbacks
 
