@@ -337,24 +337,22 @@ class TestBancoCaixa(unittest.TestCase):
 class TestBancoItau(unittest.TestCase):
     def setUp(self):
         self.dados = BankItau(
-            carteira='175',
-            conta='13877-4',
-            agencia='1565',
-            data_vencimento=datetime.date(2011, 3, 9),
-            valor_documento=2952.95,
+            carteira='110',
+            conta='12345-7',
+            agencia='0057',
+            data_vencimento=datetime.date(2002, 5, 1),
+            valor_documento=123.45,
             nosso_numero='12345678',
         )
 
     def test_linha_digitavel(self):
-        raise unittest.SkipTest("")
         self.assertEqual(self.dados.linha_digitavel,
-            '34191.75124 34567.861561 51387.710000 3 49010000295295'
+            '34191.10121 34567.880058 71234.570001 6 16670000012345'
         )
 
     def test_codigo_de_barras(self):
-        raise unittest.SkipTest("")
         self.assertEqual(self.dados.barcode,
-            '34193490100002952951751234567861565138771000'
+             '34196166700000123451101234567880057123457000'
         )
 
 

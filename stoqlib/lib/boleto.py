@@ -141,6 +141,7 @@ class BankInfo(object):
             self.formata_valor(self.valor_documento, 10),
             self.campo_livre
         )
+
         dv = self.calculate_dv_barcode(num.replace('X', '', 1))
 
         num = num.replace('X', str(dv), 1)
@@ -744,8 +745,10 @@ class BankItau(BankInfo):
 
     @property
     def dac_nosso_numero(self):
-        return self.modulo10(self.agencia +
-                             self.conta +
+        agencia = self.agencia.split('-')[0]
+        conta = self.conta.split('-')[0]
+        return self.modulo10(agencia +
+                             conta +
                              self.carteira +
                              self.nosso_numero)
 
@@ -764,7 +767,7 @@ class BankItau(BankInfo):
 
     @property
     def campo_livre(self):
-        agencia = self.agencia
+        agencia = self.agencia.split('-')[0]
         conta = self.conta.split('-')[0]
         return "%3s%8s%1s%4s%5s%1s%3s" % (
             self.carteira,
