@@ -303,8 +303,12 @@ class BankInfo(object):
 
     @classmethod
     def validate_field(cls, field, dv_10=None, func=None):
-        field = field.replace(' ', '')
-        field = field.replace('.', '')
+        if ' ' in field:
+            raise BoletoException(
+                u'Campo não pode ter espaços')
+        if '.' in field or ',' in field:
+            raise BoletoException(
+                u'Campo não pode ter pontos ou virgulas')
         dv = None
         if '-' in field:
             if field.count('-') != 1:
