@@ -686,7 +686,7 @@ class BankBB(BankInfo):
 
 @register_bank
 class BankCaixa(BankInfo):
-    description = 'Caixa Econonima Federal'
+    description = 'Caixa Econômica Federal'
     bank_number = 104
     logo = 'logo_bancocaixa.jpg'
     options = {'carteira': BILL_OPTION_CUSTOM,
