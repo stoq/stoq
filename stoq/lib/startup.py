@@ -104,7 +104,6 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     # NOTE: No GUI calls are allowed in here
     #       If you change anything here, you need to verify that all
     #       callsites are still working properly.
-    #       bin/debug
     #       bin/stoq
     #       bin/stoqdbadmin
     #       python stoq/tests/runtest.py
