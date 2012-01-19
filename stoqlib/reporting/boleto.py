@@ -24,12 +24,16 @@
 # http://code.google.com/p/pyboleto licensed under MIT
 
 import datetime
+import sys
+import traceback
 
 from reportlab.graphics.barcode.common import I2of5
 from reportlab.lib import colors, pagesizes, utils
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 
+from stoqlib.exceptions import ReportError
+from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.boleto import get_bank_info_by_number
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
@@ -729,6 +733,16 @@ class BoletoPDF(object):
         bc.drawOn(self.pdfCanvas, x, y)
 
 
+def _render_bill(bill):
+    try:
+        bill.render()
+    except ValueError:
+        exc = sys.exc_info()
+        tb_str = ''.join(traceback.format_exception(*exc))
+        collect_traceback(exc, submit=True)
+        raise ReportError(tb_str)
+
+
 class BillReport(object):
     def __init__(self, filename, payments, account=None, bank=None):
         self._payments = payments
@@ -877,7 +891,7 @@ class BillReport(object):
 
     def save(self):
         self.add_payments()
-        self._bill.render()
+        _render_bill(self._bill)
         self._bill.save()
 
 
@@ -887,5 +901,5 @@ class BillTestReport(object):
         self._bill.add_data(data)
 
     def save(self):
-        self._bill.render()
+        _render_bill(self._bill)
         self._bill.save()

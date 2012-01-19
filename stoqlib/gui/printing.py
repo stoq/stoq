@@ -31,6 +31,8 @@ import gtk
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import get_current_toplevel
+from stoqlib.exceptions import ReportError
+from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.base.utils import print_file, print_preview
 
@@ -219,7 +221,12 @@ def print_report(report_class, *args, **kwargs):
     tmp = tempfile.mktemp(suffix='.pdf', prefix='stoqlib-reporting')
     report = report_class(tmp, *args, **kwargs)
     report.filename = tmp
-    report.save()
+    try:
+        report.save()
+    except ReportError, e:
+        warning(_("Error while printing report"),
+                _('Details:') + '\n' + str(e))
+        return
 
     if poppler:
         dialog_class = GtkPrintOperationDialog
