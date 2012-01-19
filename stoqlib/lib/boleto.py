@@ -303,15 +303,6 @@ class BankInfo(object):
 
     @classmethod
     def validate_field(cls, field, dv_10=None, func=None):
-        if dv_10 is None:
-            dv_10 = cls.validate_field_dv_10
-        if func is None:
-            func = cls.validate_field_func
-
-        # Validation not supported, do nothing
-        if func is None and dv_10 is None:
-            return
-
         field = field.replace(' ', '')
         field = field.replace('.', '')
         dv = None
@@ -329,7 +320,8 @@ class BankInfo(object):
             raise BoletoException(
                 u'Conta precisa ser um número')
 
-        if dv:
+        if dv and dv_10 is not None:
+            func = cls.validate_field_func
             if func == 'modulo11':
                 ret = cls.modulo11(field)
             elif func == 'modulo10':
