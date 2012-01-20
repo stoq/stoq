@@ -33,7 +33,7 @@ import webkit
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.paymenteditor import get_dialog_for_payment
-
+from stoqlib.gui.openbrowser import open_browser
 
 log = Logger("stoqlib.gui.webview")
 
@@ -150,8 +150,7 @@ class WebView(gtk.ScrolledWindow):
             policy.ignore()
             self._parse_stoq_uri(uri)
         else:
-            gtk.show_uri(self.get_screen(), uri,
-                         gtk.get_current_event_time())
+            open_browser(uri, self.get_screen())
 
     def _create_view_for_inspector(self, introspector_view):
         window = gtk.Window()

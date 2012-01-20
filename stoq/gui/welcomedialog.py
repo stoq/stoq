@@ -23,12 +23,12 @@
 import gettext
 import locale
 import platform
-import webbrowser
 
 from kiwi.environ import environ
 import gtk
 
 from stoqlib.api import api
+from stoqlib.gui.openbrowser import open_browser
 
 _ = gettext.gettext
 
@@ -69,7 +69,7 @@ class WelcomeDialog(gtk.Dialog):
     def run(self):
         uri = self.get_uri()
         if platform.system() == 'Windows':
-            webbrowser.open(uri, new=True)
+            open_browser(uri, self.get_screen())
             return
         self._view.load_uri(uri)
         self.button.grab_focus()
@@ -81,8 +81,4 @@ class WelcomeDialog(gtk.Dialog):
         uri = request.props.uri
         if not uri.startswith('file:///'):
             policy.ignore()
-            if platform.system() == 'Windows':
-                webbrowser.open(uri, new=True)
-            else:
-                gtk.show_uri(self.get_screen(), uri,
-                         gtk.get_current_event_time())
+            open_browser(uri, self.get_screen())

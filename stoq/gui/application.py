@@ -47,6 +47,7 @@ from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.keybindings import get_accel, get_accels
+from stoqlib.gui.openbrowser import open_browser
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.splash import hide_splash
 from stoqlib.domain.inventory import Inventory
@@ -469,7 +470,7 @@ class AppWindow(GladeDelegate):
 
     def _show_uri(self, uri):
         toplevel = self.get_toplevel()
-        gtk.show_uri(toplevel.get_screen(), uri, gtk.gdk.CURRENT_TIME)
+        open_browser(uri, toplevel.get_screen())
 
     def _new_window(self):
         self.app.shell.run()
