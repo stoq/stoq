@@ -197,6 +197,8 @@ class _PersonEditorTemplate(BaseEditorSlave):
                                             % (addresses - 1))
 
     def _setup_form_fields(self):
+        if not self.db_form:
+            return
         self.db_form.update_widget(self.name,
                                    other=self.name_lbl)
         self.db_form.update_widget(self.phone_number,
