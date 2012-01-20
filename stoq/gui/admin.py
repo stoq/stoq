@@ -33,6 +33,7 @@ from stoqlib.api import api
 from stoqlib.domain.invoice import InvoiceLayout
 from stoqlib.gui.dialogs.clientcategorydialog import ClientCategoryDialog
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
+from stoqlib.gui.editors.formfieldeditor import FormFieldEditor
 from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
 from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
@@ -58,7 +59,7 @@ from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.gui.stockicons import (
     STOQ_CALC, STOQ_ADMIN_APP, STOQ_CLIENTS, STOQ_DEVICES, STOQ_DELIVERY,
-    STOQ_DOCUMENTS, STOQ_EDIT, STOQ_KEYBOARD, STOQ_HR, STOQ_MONEY,
+    STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_KEYBOARD, STOQ_HR, STOQ_MONEY,
     STOQ_PAYABLE_APP, STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAXES,
     STOQ_USER_PROFILES, STOQ_USERS)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
@@ -99,6 +100,7 @@ class Tasks(object):
             (_('Fiscal Books'), 'fiscal_books', STOQ_EDIT),
             (_('Invoice Printers'), 'invoice_printers', gtk.STOCK_PRINT),
             (_('Keyboard shortcuts'), 'keyboard_shortcuts', STOQ_KEYBOARD),
+            (_('Forms'), 'forms', STOQ_FORMS),
             (_('Payment Categories'), 'payment_categories', STOQ_PAYABLE_APP),
             (_('Payment Methods'), 'payment_methods', STOQ_MONEY),
             (_('Parameters'), 'parameters', gtk.STOCK_PREFERENCES),
@@ -173,6 +175,9 @@ class Tasks(object):
     def _open_events(self):
         self.app.run_dialog(EventSearch, self.app.conn,
                             hide_toolbar=True)
+
+    def _open_forms(self):
+        self.app.run_dialog(FormFieldEditor, self.app.conn)
 
     def _open_fiscal_books(self):
         self.app.run_dialog(FiscalBookEntrySearch, self.app.conn,

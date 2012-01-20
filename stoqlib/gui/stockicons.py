@@ -33,6 +33,7 @@ STOQ_EDIT = "stoq-edit"
 STOQ_DELIVERY = "stoq-delivery"
 STOQ_HR = "stoq-hr"
 STOQ_INVENTORY_APP = "stoq-inventory-app"
+STOQ_FORMS = "stoq-forms"
 STOQ_KEYBOARD = "stoq-keyboard"
 STOQ_MONEY = "stoq-money"
 STOQ_MONEY_ADD = "stoq-money-add"
@@ -93,12 +94,14 @@ icon_info = [
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-today-24x24.png"}),
     (STOQ_CLIENTS,
      {GTK_ICON_SIZE_DIALOG: "stoq-clients-48x48.png"}),
-    (STOQ_EDIT,
-     {GTK_ICON_SIZE_DIALOG: "stoq-edit-48x48.png"}),
     (STOQ_DELIVERY,
      {GTK_ICON_SIZE_MENU: "stoq-delivery-16x16.png",
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-delivery-24x24.png",
       GTK_ICON_SIZE_DIALOG: "stoq-delivery-48x48.png"}),
+    (STOQ_EDIT,
+     {GTK_ICON_SIZE_DIALOG: "stoq-edit-48x48.png"}),
+    (STOQ_FORMS,
+     {GTK_ICON_SIZE_DIALOG: "stoq-forms-48x48.png"}),
     (STOQ_HR,
      {GTK_ICON_SIZE_MENU: "stoq-hr-16x16.png",
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-hr-24x24.png",

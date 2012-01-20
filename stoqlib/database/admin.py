@@ -344,6 +344,8 @@ def initialize_system():
     create_log("INIT START")
     trans = new_transaction()
     register_accounts(trans)
+    from stoqlib.domain.uiform import create_default_forms
+    create_default_forms(trans)
     trans.commit(close=True)
     _register_payment_methods()
     ensure_sellable_constants()
@@ -351,4 +353,5 @@ def initialize_system():
     _ensure_card_providers()
     create_default_profiles()
     _install_invoice_templates()
+
     create_log("INIT DONE")

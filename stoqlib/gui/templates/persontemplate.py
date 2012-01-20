@@ -30,6 +30,7 @@ from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.slaves import NoteSlave
+from stoqlib.gui.databaseform import DatabaseForm
 from stoqlib.gui.editors.addresseditor import (AddressAdditionDialog,
                                                AddressSlave)
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
@@ -56,6 +57,10 @@ class _PersonEditorTemplate(BaseEditorSlave):
 
     def __init__(self, conn, model, visual_mode, parent):
         self._parent = parent
+        if self._parent.ui_form_name:
+            self.db_form = DatabaseForm(conn, self._parent.ui_form_name)
+        else:
+            self.db_form = None
         super(self.__class__, self).__init__(conn, model,
                                              visual_mode=visual_mode)
         self._check_new_person()
@@ -76,13 +81,15 @@ class _PersonEditorTemplate(BaseEditorSlave):
 
     def setup_proxies(self):
         self._setup_widgets()
+        self._setup_form_fields()
         self.proxy = self.add_proxy(self.model,
                                     _PersonEditorTemplate.proxy_widgets)
 
     def setup_slaves(self):
         self.address_slave = AddressSlave(
             self.conn, self.model, self.model.get_main_address(),
-            visual_mode=self.visual_mode)
+            visual_mode=self.visual_mode,
+            db_form=self.db_form)
         self.attach_slave('address_holder', self.address_slave)
         self.attach_model_slave('note_holder', NoteSlave, self.model)
 
@@ -189,6 +196,18 @@ class _PersonEditorTemplate(BaseEditorSlave):
             self.address_button.set_label(_("%i More Addresses...")
                                             % (addresses - 1))
 
+    def _setup_form_fields(self):
+        self.db_form.update_widget(self.name,
+                                   other=self.name_lbl)
+        self.db_form.update_widget(self.phone_number,
+                                   other=self.phone_number_lbl)
+        self.db_form.update_widget(self.fax_number, 'fax',
+                                   other=self.fax_lbl)
+        self.db_form.update_widget(self.email,
+                                   other=self.email_lbl)
+        self.db_form.update_widget(self.mobile_number,
+                                   other=self.mobile_lbl)
+
 
 class BasePersonRoleEditor(BaseEditor):
     """A base class for person role editors. This class can not be
@@ -202,6 +221,7 @@ class BasePersonRoleEditor(BaseEditor):
     """
     size = (700, -1)
     help_section = None
+    ui_form_name = None
 
     def __init__(self, conn, model=None, role_type=None, person=None,
                  visual_mode=False):
