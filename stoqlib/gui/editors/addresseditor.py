@@ -95,12 +95,13 @@ class AddressSlave(BaseEditorSlave):
         'country',
         ]
 
-    @argcheck(object, Person, Address, bool, bool)
+    @argcheck(object, Person, Address, bool, bool, object)
     def __init__(self, conn, person, model=None, is_main_address=True,
-                 visual_mode=False):
+                 visual_mode=False, db_form=None):
         self.person = person
         self.is_main_address = (model and model.is_main_address
                                 or is_main_address)
+        self.db_form = db_form
         if model is not None:
             model = conn.get(model)
             model = _AddressModel(model, conn)
@@ -134,6 +135,8 @@ class AddressSlave(BaseEditorSlave):
     def setup_proxies(self):
         self.state.prefill(get_country_states())
         self.country.prefill(get_countries())
+        if self.db_form:
+            self._update_forms()
         self.proxy = self.add_proxy(self.model,
                                     AddressSlave.proxy_widgets)
 
@@ -159,6 +162,22 @@ class AddressSlave(BaseEditorSlave):
 
             if not self.model.streetnumber:
                 self.streetnumber.set_text('')
+
+    def _update_forms(self):
+        self.db_form.update_widget(self.district, other=self.district_lbl)
+        self.db_form.update_widget(self.street, other=self.address_lbl)
+        self.db_form.update_widget(self.streetnumber, 'street_number',
+                                   other=self.streetnumber_check)
+        self.db_form.update_widget(self.postal_code,
+                                   other=self.postal_code_lbl)
+        self.db_form.update_widget(self.complement,
+                                   other=self.complement_lbl)
+        self.db_form.update_widget(self.city,
+                                   other=self.city_lbl)
+        self.db_form.update_widget(self.state,
+                                   other=self.state_lbl)
+        self.db_form.update_widget(self.country,
+                                   other=self.country_lbl)
 
     def _get_nfe_plugin(self):
         manager = get_plugin_manager()

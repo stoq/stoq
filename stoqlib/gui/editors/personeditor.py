@@ -56,6 +56,7 @@ class ClientEditor(BasePersonRoleEditor):
     gladefile = 'BaseTemplate'
 
     help_section = 'client'
+    ui_form_name = 'client'
 
     #
     # BaseEditor hooks
@@ -83,6 +84,7 @@ class UserEditor(BasePersonRoleEditor):
     USER_TAB_POSITION = 0
 
     help_section = 'user'
+    ui_form_name = 'user'
 
     def __init__(self, conn, model=None, role_type=None, person=None,
                  visual_mode=False):
@@ -165,6 +167,8 @@ class EmployeeEditor(BasePersonRoleEditor):
     model_iface = IEmployee
     gladefile = 'BaseTemplate'
 
+    ui_form_name = 'client'
+
     #
     # BaseEditor hooks
     #
@@ -246,6 +250,7 @@ class SupplierEditor(BasePersonRoleEditor):
     gladefile = 'BaseTemplate'
 
     help_section = 'supplier'
+    ui_form_name = 'supplier'
 
     #
     # BaseEditor hooks
@@ -273,6 +278,7 @@ class TransporterEditor(BasePersonRoleEditor):
     gladefile = 'BaseTemplate'
 
     help_section = 'transporter'
+    ui_form_name = 'transporter'
 
     #
     # BaseEditor hooks
@@ -301,6 +307,7 @@ class BranchEditor(BasePersonRoleEditor):
     gladefile = 'BaseTemplate'
 
     help_section = 'branch'
+    ui_form_name = 'branch'
 
     #
     # BaseEditor hooks
