@@ -150,6 +150,7 @@ class StartPurchaseStep(WizardEditorStep):
         self.force_validation()
 
     def next_step(self):
+        self.wizard.all_products = self.all_products.get_active()
         return PurchaseItemStep(self.wizard, self, self.conn, self.model)
 
     def has_previous_step(self):
@@ -210,10 +211,13 @@ class PurchaseItemStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
+        supplier = self.model.supplier
+        if self.wizard.all_products:
+            supplier = None
         return Sellable.get_unblocked_sellables_query(
             self.conn,
             storable=True,
-            supplier=self.model.supplier,
+            supplier=supplier,
             consigned=self.model.consigned, )
 
     def setup_slaves(self):
@@ -553,6 +557,10 @@ class PurchaseWizard(BaseWizard):
     def __init__(self, conn, model=None, edit_mode=False):
         title = self._get_title(model)
         model = model or self._create_model(conn)
+        # Should we show all products or only the ones associated with the
+        # selected supplier?
+        self.all_products = False
+
         # If we receive the order right after the purchase.
         self.receiving_model = None
         if model.status != PurchaseOrder.ORDER_PENDING:
