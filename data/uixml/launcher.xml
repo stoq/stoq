@@ -65,6 +65,7 @@
       <menuitem action="HelpContents"/>
       <separator/>
       <menuitem action="HelpSupport"/>
+      <menuitem action="HelpChat"/>
       <menuitem action="HelpTranslate"/>
       <separator/>
       <menuitem action="HelpAbout"/>

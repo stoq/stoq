@@ -249,6 +249,8 @@ class AppWindow(GladeDelegate):
              _("Translate this application online")),
             ("HelpSupport", None, _("Get support online..."), None,
              _("Get support for Stoq online")),
+            ("HelpChat", None, _("Online chat..."), None,
+             _("Talk about Stoq online")),
             ("HelpAbout", gtk.STOCK_ABOUT),
 
             # Toolbar
@@ -321,6 +323,8 @@ class AppWindow(GladeDelegate):
             'activate', self._on_HelpTranslate__activate)
         self.HelpSupport.connect(
             'activate', self._on_HelpSupport__activate)
+        self.HelpChat.connect(
+            'activate', self._on_HelpChat__activate)
         self.HelpAbout.connect(
             'activate', self._on_HelpAbout__activate)
 
@@ -1041,6 +1045,9 @@ class AppWindow(GladeDelegate):
 
     def _on_HelpTranslate__activate(self, action):
         self._show_uri("https://translations.launchpad.net/stoq")
+
+    def _on_HelpChat__activate(self, action):
+        self._show_uri("http://chat.stoq.com.br/")
 
     def _on_HelpSupport__activate(self, action):
         self._show_uri("http://www.stoq.com.br/suporte")
