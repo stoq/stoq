@@ -56,6 +56,10 @@ class CalendarView(WebView):
 
     def _load_finished(self):
         self._startup()
+        view = self.get_view()
+        view.connect('size-allocate', self._on_view__size_allocate)
+        x, y, width, height = view.get_allocation()
+        self._update_calendar_size(width-x, height-y)
 
     def _startup(self):
         options = {}
@@ -94,12 +98,19 @@ class CalendarView(WebView):
         events['purchase-orders'] = self._show_events['purchase_orders']
         api.user_settings.flush()
 
+    def _update_calendar_size(self, width, height):
+        self._calendar_run('option', 'aspectRatio', float(width)/height)
+
     #
     # Callbacks
     #
 
     def _on_view__document_load_finished(self, view, frame):
         self._load_finished()
+
+    def _on_view__size_allocate(self, widget, req):
+        x, y, width, height = req
+        self._update_calendar_size(width-x, height-y)
 
     #
     # Public API
