@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-13 18:13-0200\n"
-"PO-Revision-Date: 2012-01-13 20:47+0000\n"
-"Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
+"PO-Revision-Date: 2012-01-19 10:50+0000\n"
+"Last-Translator: millemiglia <dnieper650@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-14 05:17+0000\n"
-"X-Generator: Launchpad (build 14664)\n"
+"X-Launchpad-Export-Date: 2012-01-20 04:44+0000\n"
+"X-Generator: Launchpad (build 14700)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -3593,7 +3593,7 @@ msgstr "Impressoras N.F."
 
 #: ../stoq/gui/admin.py:101 ../stoqlib/gui/editors/shortcutseditor.py:79
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Atalhos de teclado"
 
 #: ../stoq/gui/admin.py:102
 msgid "Payment Categories"
@@ -4033,11 +4033,11 @@ msgstr "Mostrar hoje"
 
 #: ../stoq/gui/calendar.py:172
 msgid "Calendar events"
-msgstr ""
+msgstr "Eventos do calendário"
 
 #: ../stoq/gui/calendar.py:173
 msgid "Display view as"
-msgstr ""
+msgstr "Mostrar visão como"
 
 #: ../stoq/gui/calendar.py:177
 msgid "Calendar help"
@@ -4050,7 +4050,7 @@ msgstr "Contas a pagar"
 
 #: ../stoq/gui/calendar.py:181
 msgid "Show accounts payable in the list"
-msgstr ""
+msgstr "Mostrar contas a pagar na lista"
 
 #. TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 #: ../stoq/gui/calendar.py:182 ../stoq/gui/receivable.py:73
@@ -4059,11 +4059,11 @@ msgstr "Contas a receber"
 
 #: ../stoq/gui/calendar.py:183
 msgid "Show accounts receivable in the list"
-msgstr ""
+msgstr "Mostrar contas a receber na lista"
 
 #: ../stoq/gui/calendar.py:185
 msgid "Show purchases in the list"
-msgstr ""
+msgstr "Mostrar pagamentos na lista"
 
 #: ../stoq/gui/calendar.py:205
 msgid "View as month"
@@ -5394,7 +5394,7 @@ msgstr "Exibir pedidos"
 
 #: ../stoq/gui/purchase.py:270
 msgid "Expected receival date"
-msgstr ""
+msgstr "Dia de recebimento esperado"
 
 #: ../stoq/gui/purchase.py:354
 msgid "There are no pending orders selected."
@@ -8906,11 +8906,11 @@ msgstr "Não tributado"
 
 #: ../stoqlib/gui/editors/shortcutseditor.py:116
 msgid "You need to restart Stoq for the changes to take effect"
-msgstr ""
+msgstr "Você precisa reiniciar o Stoq para que as mudanças tenham efeito"
 
 #: ../stoqlib/gui/editors/shortcutseditor.py:121
 msgid "Reset defaults"
-msgstr ""
+msgstr "Restaurar padrão"
 
 #: ../stoqlib/gui/editors/tilleditor.py:130
 #, python-format
@@ -9093,51 +9093,51 @@ msgstr "Erro cancelando cupom. Deseja tentar novamente?"
 
 #: ../stoqlib/gui/keybindings.py:37
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Alterar para tela cheia"
 
 #: ../stoqlib/gui/keybindings.py:39
 msgid "Toggle statusbar"
-msgstr ""
+msgstr "Alterar a barra de status"
 
 #: ../stoqlib/gui/keybindings.py:41
 msgid "Toggle toolbar"
-msgstr ""
+msgstr "Alterar a barra de ferramentas"
 
 #: ../stoqlib/gui/keybindings.py:43
 msgid "Create a new Window"
-msgstr ""
+msgstr "Criar uma nova Janela"
 
 #: ../stoqlib/gui/keybindings.py:45
 msgid "Change password"
-msgstr ""
+msgstr "Alterar Senha"
 
 #: ../stoqlib/gui/keybindings.py:47
 msgid "Sign out"
-msgstr ""
+msgstr "Encerrar a sessão"
 
 #: ../stoqlib/gui/keybindings.py:49
 msgid "Close window"
-msgstr ""
+msgstr "Fechar janela"
 
 #: ../stoqlib/gui/keybindings.py:53
 msgid "Quit the application"
-msgstr ""
+msgstr "Sair do aplicativo"
 
 #: ../stoqlib/gui/keybindings.py:55
 msgid "Show help"
-msgstr ""
+msgstr "Mostrar Ajuda"
 
 #: ../stoqlib/gui/keybindings.py:57
 msgid "Show help contents"
-msgstr ""
+msgstr "Mostrar o conteúdo da ajuda"
 
 #: ../stoqlib/gui/keybindings.py:61
 msgid "Search for employee roles"
-msgstr ""
+msgstr "Pesquisar por cargos de funcionários"
 
 #: ../stoqlib/gui/keybindings.py:63
 msgid "Search for employees"
-msgstr ""
+msgstr "Pesquisar empregados"
 
 #: ../stoqlib/gui/keybindings.py:65 ../stoqlib/gui/search/eventsearch.py:38
 msgid "Search for events"
@@ -9145,95 +9145,95 @@ msgstr "Procurar por eventos"
 
 #: ../stoqlib/gui/keybindings.py:67
 msgid "Search for C.F.O.Ps"
-msgstr ""
+msgstr "Pesquisar C.F.O.Ps"
 
 #: ../stoqlib/gui/keybindings.py:69
 msgid "Search for fiscal books"
-msgstr ""
+msgstr "Pesquisar livros fiscais"
 
 #: ../stoqlib/gui/keybindings.py:71
 msgid "Search for user profiles"
-msgstr ""
+msgstr "Pesquisar perfis de usuários"
 
 #: ../stoqlib/gui/keybindings.py:75
 msgid "Search for company branches"
-msgstr ""
+msgstr "Pesquisar por filiais da empresa"
 
 #: ../stoqlib/gui/keybindings.py:77
 msgid "Search for computers"
-msgstr ""
+msgstr "Pesquisar por computadores"
 
 #: ../stoqlib/gui/keybindings.py:79
 msgid "Configure devices"
-msgstr ""
+msgstr "Configurar dispositivos"
 
 #: ../stoqlib/gui/keybindings.py:81
 msgid "Configure payment methods"
-msgstr ""
+msgstr "Configurar métodos de pagamento"
 
 #: ../stoqlib/gui/keybindings.py:83
 msgid "Configure payment categories"
-msgstr ""
+msgstr "Confgurar categorias de pagamento"
 
 #: ../stoqlib/gui/keybindings.py:85
 msgid "Configure client categories"
-msgstr ""
+msgstr "Configurar categorias de cliente"
 
 #: ../stoqlib/gui/keybindings.py:87
 msgid "Configure invoices"
-msgstr ""
+msgstr "Configurar recibos"
 
 #: ../stoqlib/gui/keybindings.py:89
 msgid "Configure invoice printers"
-msgstr ""
+msgstr "Configurar impressoras de recibo"
 
 #: ../stoqlib/gui/keybindings.py:91
 msgid "Configure sintegra"
-msgstr ""
+msgstr "Configurar o sintegra"
 
 #: ../stoqlib/gui/keybindings.py:93
 msgid "Configure tax classes"
-msgstr ""
+msgstr "Configurar classes de impostos"
 
 #: ../stoqlib/gui/keybindings.py:95
 msgid "Configure parameters"
-msgstr ""
+msgstr "Configurar parâmetros"
 
 #: ../stoqlib/gui/keybindings.py:107
 msgid "Import transactions"
-msgstr ""
+msgstr "Importar transações"
 
 #: ../stoqlib/gui/keybindings.py:109
 msgid "Delete account"
-msgstr ""
+msgstr "Remover uma conta"
 
 #: ../stoqlib/gui/keybindings.py:111
 msgid "Delete account transaction"
-msgstr ""
+msgstr "Remover uma transação"
 
 #: ../stoqlib/gui/keybindings.py:113
 msgid "Create a new account"
-msgstr ""
+msgstr "Criar uma nova conta"
 
 #: ../stoqlib/gui/keybindings.py:115
 msgid "Create a new account transaction"
-msgstr ""
+msgstr "Criar uma nova transação"
 
 #: ../stoqlib/gui/keybindings.py:117
 msgid "Edit an account or account transaction"
-msgstr ""
+msgstr "Editar uma conta ou transação"
 
 #: ../stoqlib/gui/keybindings.py:138
 msgid "Search for paid bills"
-msgstr ""
+msgstr "Pesquisar por boletos pagos"
 
 #: ../stoqlib/gui/keybindings.py:147
 msgid "Search for sales "
-msgstr ""
+msgstr "Pesquisar por vendas "
 
 #: ../stoqlib/gui/keybindings.py:149
 msgid "Search for sold items"
-msgstr ""
+msgstr "Pesquisar por itens vendidos"
 
 #: ../stoqlib/gui/keybindings.py:343
 #, python-format
@@ -12864,7 +12864,7 @@ msgstr "%s (%s) pendente"
 #: ../stoqlib/net/calendarevents.py:161
 #, python-format
 msgid "Purchase of %s from %s"
-msgstr ""
+msgstr "Compras de %s de %s"
 
 #: ../stoqlib/net/calendarevents.py:208
 #, python-format
@@ -12874,27 +12874,27 @@ msgstr "%d mais conta a receber"
 #: ../stoqlib/net/calendarevents.py:209
 #, python-format
 msgid "%d more accounts receivable"
-msgstr ""
+msgstr "%d mais contas a receber"
 
 #: ../stoqlib/net/calendarevents.py:217
 #, python-format
 msgid "%d more account payable"
-msgstr ""
+msgstr "%d mais conta a pagar"
 
 #: ../stoqlib/net/calendarevents.py:218
 #, python-format
 msgid "%d more accounts payable"
-msgstr ""
+msgstr "%d mais contas a pagar"
 
 #: ../stoqlib/net/calendarevents.py:226
 #, python-format
 msgid "%d more purchase"
-msgstr ""
+msgstr "%d mais compra"
 
 #: ../stoqlib/net/calendarevents.py:227
 #, python-format
 msgid "%d more purchases"
-msgstr ""
+msgstr "%d mais compras"
 
 #: ../stoqlib/reporting/base/printing.py:99
 #, python-format

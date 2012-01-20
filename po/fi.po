@@ -1,58 +1,57 @@
-# Arabic translation for stoq
-# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# Finnish translation for stoq
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
 # This file is distributed under the same license as the stoq package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: stoq\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-01-13 18:13-0200\n"
-"PO-Revision-Date: 2012-01-19 18:09+0000\n"
-"Last-Translator: drsaudi <mon7b6@gmail.com>\n"
-"Language-Team: Arabic <ar@li.org>\n"
+"PO-Revision-Date: 2012-01-20 03:11+0000\n"
+"Last-Translator: Tuomas Lähteenmäki <Unknown>\n"
+"Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-20 04:43+0000\n"
+"X-Launchpad-Export-Date: 2012-01-20 04:44+0000\n"
 "X-Generator: Launchpad (build 14700)\n"
-"Language: ar\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account code:"
-msgstr "رمز الحساب:"
+msgstr "Tilin koodi:"
 
 #: ../data/glade/AccountEditor.ui.h:2
 msgid "Account name:"
-msgstr "اسم الحساب:"
+msgstr "Tilin nimi:"
 
 #: ../data/glade/AccountEditor.ui.h:3
 msgid "Hold control to remove selection."
-msgstr "سيطر لإزالة المنتقى"
+msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:4
 msgid "Parent:"
-msgstr "الأصل:"
+msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:5 ../data/glade/BasePaymentEditor.ui.h:5
 #: ../data/glade/DeviceConstantEditor.ui.h:4
 msgid "Type:"
-msgstr "النّوع:"
+msgstr "Tyyppi:"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:1
 #: ../data/glade/EmployeeDetailsSlave.ui.h:1
 #: ../data/glade/InstallmentConfirmation.ui.h:1
 msgid "Account:"
-msgstr "الحساب:"
+msgstr "Tili:"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:2 ../stoq/gui/financial.py:362
 msgid "Add a new account"
-msgstr "أضف حساباً جديدا"
+msgstr "Lisää uusi tili"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:3
 #: ../data/glade/SellableEditor.ui.h:5
 msgid "Code:"
-msgstr "الرمز:"
+msgstr "Koodi:"
 
 #. Date
 #: ../data/glade/AccountTransactionEditor.ui.h:4
@@ -73,7 +72,7 @@ msgstr "الرمز:"
 #: ../stoqlib/gui/search/transfersearch.py:89
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:346
 msgid "Date:"
-msgstr "التّاريخ:"
+msgstr "Päivämäärä:"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:5
 #: ../data/glade/BasePaymentEditor.ui.h:2
@@ -92,14 +91,14 @@ msgstr "التّاريخ:"
 #: ../data/glade/SellableEditor.ui.h:10
 #: ../data/glade/SellableUnitEditor.ui.h:2
 msgid "Description:"
-msgstr "الوصف:"
+msgstr "Kuvaus:"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:6
 #: ../data/glade/DeviceConstantEditor.ui.h:5
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:9
 #: ../data/glade/SellableTaxConstantEditor.ui.h:2
 msgid "Value:"
-msgstr "القيمة:"
+msgstr "Arvo:"
 
 #: ../data/glade/AdditionListSlave.ui.h:1 ../data/glade/SaleReturnSlave.ui.h:6
 #: ../data/glade/SearchDialogDetailsSlave.ui.h:1 ../stoq/gui/payable.py:131
@@ -109,103 +108,103 @@ msgstr "القيمة:"
 #: ../stoqlib/gui/editors/paymenteditor.py:198
 #: ../stoqlib/gui/editors/producteditor.py:623
 msgid "Details"
-msgstr "التفاصيل"
+msgstr "Yksityiskohdat"
 
 #: ../data/glade/AdditionListSlave.ui.h:2
 msgid "New..."
-msgstr "جديد..."
+msgstr "Uusi..."
 
 #: ../data/glade/AdditionListSlave.ui.h:3
 msgid "_Delete"
-msgstr "اح_ذف"
+msgstr "_Poista"
 
 #: ../data/glade/AdditionListSlave.ui.h:4 ../data/glade/SearchEditor.ui.h:1
 msgid "_Edit..."
-msgstr "_حرّر..."
+msgstr "_Muokkaa…"
 
 #: ../data/glade/AddressSlave.ui.h:1
 msgid "City:"
-msgstr "المدينة:"
+msgstr "Kaupunki:"
 
 #: ../data/glade/AddressSlave.ui.h:2
 msgid "Complement:"
-msgstr "التكملة:"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:3
 #: ../plugins/books/glade/ProductBookSlave.ui.h:3
 msgid "Country:"
-msgstr "البلد:"
+msgstr "Maa:"
 
 #: ../data/glade/AddressSlave.ui.h:4
 msgid "District:"
-msgstr "الولاية:"
+msgstr "Alue:"
 
 #: ../data/glade/AddressSlave.ui.h:5
 #: ../data/glade/BasePaymentDataEditor.ui.h:2
 #: ../data/glade/EmployeeDetailsSlave.ui.h:12
 #: ../data/glade/OpenProductionOrderStep.ui.h:4
 msgid "Number:"
-msgstr "الرقم:"
+msgstr "Numero:"
 
 #: ../data/glade/AddressSlave.ui.h:6
 msgid "Postal Code:"
-msgstr "الرمز البريدي:"
+msgstr "Postinumero:"
 
 #: ../data/glade/AddressSlave.ui.h:7
 msgid "State:"
-msgstr "الولاية:"
+msgstr "Lääni:"
 
 #: ../data/glade/AddressSlave.ui.h:8
 msgid "Street:"
-msgstr "الشارع:"
+msgstr "Katuosoite:"
 
 #: ../data/glade/AdminPasswordStep.ui.h:1
 msgid "Enter the password and then click <b>Forward</b> to continue."
-msgstr "أدخل كلمة المرور ثم انقر فوق <b>تابع</ b> للمتابعة."
+msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:1
 msgid "Bank Account:"
-msgstr "حساب البنك:"
+msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:2
 msgid "Bank Branch:"
-msgstr "فرع البنك:"
+msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:3
 #: ../data/glade/EmployeeDetailsSlave.ui.h:3
 msgid "Bank ID:"
-msgstr "رقم تعريف البنك:"
+msgstr "Pankin ID:"
 
 #: ../data/glade/BaseCashSlave.ui.h:1 ../data/glade/TillOpening.ui.h:1
 msgid "Balance:"
-msgstr "الرصيد:"
+msgstr "Saldo:"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/BaseCashSlave.ui.h:3
 msgid "Cash Amount ($CURRENCY):"
-msgstr "المبلغ النقدي  ($CURRENCY):"
+msgstr ""
 
 #: ../data/glade/BasePaymentDataEditor.ui.h:1
 #: ../data/glade/BasePaymentEditor.ui.h:3
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:3
 msgid "Due date:"
-msgstr "تاريخ الاستحقاق:"
+msgstr "Tavoitepäivämäärä:"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/BasePaymentDataEditor.ui.h:4
 #: ../data/glade/BasePaymentEditor.ui.h:7
 msgid "Value ($CURRENCY):"
-msgstr "القيمة ($CURRENCY):"
+msgstr "Arvo ($CURRENCY):"
 
 #: ../data/glade/BasePaymentEditor.ui.h:1
 #: ../data/glade/ClientStatusSlave.ui.h:2 ../data/glade/SellableEditor.ui.h:4
 msgid "Category:"
-msgstr "التصنيف:"
+msgstr "Luokka:"
 
 #: ../data/glade/BasePaymentEditor.ui.h:4
 #: ../stoqlib/domain/payment/operation.py:50
 msgid "Money"
-msgstr "مال"
+msgstr "Valuutta"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:1
 #: ../data/glade/CreditProviderMethodSlave.ui.h:1
@@ -220,16 +219,16 @@ msgstr "0"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:2
 msgid "Default Bank:"
-msgstr "البنك الإفتراضي:"
+msgstr "Pankki oletus:"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:3
 #: ../stoqlib/reporting/purchase.py:363
 msgid "Installments:"
-msgstr "الأقساط:"
+msgstr ""
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:4
 msgid "Start at:"
-msgstr "إبدأ عند:"
+msgstr "Alkupiste:"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:5
 msgid "With intervals of:"
@@ -259,7 +258,7 @@ msgstr ""
 #: ../data/glade/BaseSellableCategoryDataSlave.ui.h:5
 #: ../data/glade/ProductTaxTemplateEditor.ui.h:2
 msgid "Tax:"
-msgstr "الضريبة:"
+msgstr "Vero:"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:1
 #: ../data/glade/DeviceSettingsEditor.ui.h:1
@@ -280,11 +279,11 @@ msgstr "الضريبة:"
 #: ../stoqlib/gui/search/personsearch.py:278
 #: ../stoqlib/gui/search/stationsearch.py:63
 msgid "Active"
-msgstr "نشط"
+msgstr "Aktiivinen"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:2
 msgid "Branch status:"
-msgstr "حالة الفرع:"
+msgstr ""
 
 #: ../data/glade/BranchDetailsSlave.ui.h:3
 #: ../data/glade/TransporterDataSlave.ui.h:5
@@ -298,48 +297,48 @@ msgstr "حالة الفرع:"
 #: ../stoqlib/domain/test/test_person.py:480
 #: ../stoqlib/gui/search/personsearch.py:279
 msgid "Inactive"
-msgstr "غير نشط"
+msgstr "Epäaktiivinen"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:4
 msgid "Manager:"
-msgstr "المدير:"
+msgstr "Manageri:"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:5
 msgid "Tax Polity:"
-msgstr "السياسة الضريبية:"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:3
 #: ../data/glade/CompanyDocumentsSlave.ui.h:1
 #: ../data/glade/ProductsAdjustment.ui.h:2
 #: ../plugins/ecf/paulistainvoicedialog.py:70
 msgid "CNPJ:"
-msgstr ""
+msgstr "CNPJ:"
 
 #: ../data/glade/BranchDialog.ui.h:4
 msgid "Company Details"
-msgstr "تفاصيل الشركة"
+msgstr "Yrityksen tiedot"
 
 #: ../data/glade/BranchDialog.ui.h:5
 msgid "Company Name:"
-msgstr "اسم الشركة:"
+msgstr "Yrityksen nimi:"
 
 #: ../data/glade/BranchDialog.ui.h:6 ../data/glade/PersonEditorTemplate.ui.h:6
 msgid "Fax:"
-msgstr "الفاكس:"
+msgstr "Faksi:"
 
 #: ../data/glade/BranchDialog.ui.h:7
 #: ../data/glade/ProductSupplierEditor.ui.h:8
 msgid "ICMS:"
-msgstr ""
+msgstr "ICMS:"
 
 #: ../data/glade/BranchDialog.ui.h:8
 msgid "ISS:"
-msgstr ""
+msgstr "ISS:"
 
 #: ../data/glade/BranchDialog.ui.h:9 ../data/glade/ContactEditor.ui.h:2
 #: ../data/glade/PersonEditorTemplate.ui.h:13
 msgid "Phone Number:"
-msgstr "رقم الهاتف:"
+msgstr "Puhelinnumero:"
 
 #: ../data/glade/BranchDialog.ui.h:10
 #: ../data/glade/CompanyDocumentsSlave.ui.h:4
@@ -353,15 +352,15 @@ msgstr ""
 
 #: ../data/glade/CSVExporterDialog.ui.h:1
 msgid "Encoding:"
-msgstr "الترميز:"
+msgstr "Merkistö:"
 
 #: ../data/glade/CSVExporterDialog.ui.h:2
 msgid "Select the encoding to use when save the CSV file:"
-msgstr "انتق الترميز لحفظ ملف CSV:"
+msgstr ""
 
 #: ../data/glade/CSVExporterDialog.ui.h:3
 msgid "Separator:"
-msgstr "الفاصل:"
+msgstr "Erotin:"
 
 #: ../data/glade/CallsEditor.ui.h:1
 msgid "Attendant:"
@@ -369,7 +368,7 @@ msgstr ""
 
 #: ../data/glade/CallsEditor.ui.h:4
 msgid "Message:"
-msgstr "الرسالة:"
+msgstr "Viesti:"
 
 #: ../data/glade/CashAdvanceEditor.ui.h:1
 msgid "Credit for Employee:"
@@ -382,12 +381,12 @@ msgstr ""
 #: ../data/glade/CashChangeSlave.ui.h:2
 #: ../stoqlib/gui/slaves/paymentslave.py:1019
 msgid "Change:"
-msgstr ""
+msgstr "Muuta:"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/CashChangeSlave.ui.h:4
 msgid "Received: ($CURRENCY)"
-msgstr "المستلم: ($CURRENCY)"
+msgstr ""
 
 #: ../data/glade/CashInEditor.ui.h:1 ../data/glade/CashOutEditor.ui.h:1
 #: ../data/glade/PaymentChangeDialog.ui.h:4
@@ -395,18 +394,18 @@ msgstr "المستلم: ($CURRENCY)"
 #: ../data/glade/SaleReturnSlave.ui.h:8
 #: ../data/glade/StartStockDecreaseStep.ui.h:4
 msgid "Reason:"
-msgstr "السبب:"
+msgstr "Syy:"
 
 #: ../data/glade/CfopEditor.ui.h:1
 msgid "0.000"
-msgstr "0,000"
+msgstr "0.000"
 
 #: ../data/glade/CfopEditor.ui.h:2 ../data/glade/FiscalBookEntryEditor.ui.h:1
 #: ../data/glade/ProductAdjustmentDialog.ui.h:1
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:2
 #: ../data/glade/SalesPersonStep.ui.h:5
 msgid "C.F.O.P.:"
-msgstr ""
+msgstr "C.F.O.P.:"
 
 #: ../data/glade/ClientCategoryEditor.ui.h:1
 #: ../data/glade/ContactEditor.ui.h:1
@@ -418,12 +417,12 @@ msgstr ""
 #: ../data/glade/SellableTaxConstantEditor.ui.h:1
 #: ../data/glade/StationEditor.ui.h:3 ../data/glade/TefStep.ui.h:9
 msgid "Name:"
-msgstr "الاسم:"
+msgstr "Nimi:"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:1
 #: ../stoqlib/gui/editors/callseditor.py:38
 msgid "Calls"
-msgstr "مكالمات"
+msgstr "Puhelut"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:2
 #: ../data/glade/DeliveryEditor.ui.h:4
@@ -435,17 +434,17 @@ msgstr "مكالمات"
 #: ../stoqlib/gui/search/paymentsearch.py:139
 #: ../stoqlib/reporting/loanreceipt.py:83 ../stoqlib/reporting/sale.py:80
 msgid "Client:"
-msgstr "الزبون:"
+msgstr "Asiakas:"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:3
 #: ../data/glade/SupplierDetailsDialog.ui.h:1
 msgid "Further Details"
-msgstr "تفاصيل أكثر"
+msgstr "Muut lisätiedot"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:4
 #: ../data/glade/SupplierDetailsDialog.ui.h:2
 msgid "Last Purchase Date:"
-msgstr "آخر تاريخ شراء:"
+msgstr ""
 
 #: ../data/glade/ClientDetailsDialog.ui.h:5
 #: ../data/glade/PurchaseDetailsDialog.ui.h:15
@@ -454,14 +453,14 @@ msgstr "آخر تاريخ شراء:"
 #: ../data/glade/SupplierDetailsDialog.ui.h:3
 #: ../plugins/ecf/deviceconstanteditor.py:204 ../stoqlib/lib/parameters.py:534
 msgid "Payments"
-msgstr "مدفوعات"
+msgstr "Maksut"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:6
 #: ../data/glade/StockDecreaseDetails.ui.h:4
 #: ../data/glade/SupplierDetailsDialog.ui.h:4 ../stoq/gui/purchase.py:165
 #: ../stoq/gui/sales.py:142
 msgid "Products"
-msgstr "منتجات"
+msgstr "Tuotteet"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:7
 #: ../data/glade/ProductStockHistoryDialog.ui.h:6 ../stoq/gui/sales.py:66
@@ -478,13 +477,13 @@ msgstr "منتجات"
 #: ../stoqlib/lib/parameters.py:445 ../stoqlib/lib/parameters.py:468
 #: ../stoqlib/reporting/sale.py:252
 msgid "Sales"
-msgstr "مبيعات"
+msgstr "Myynnit"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:8
 #: ../data/glade/ProductionDetailsDialog.ui.h:13 ../stoq/gui/sales.py:143
 #: ../stoqlib/reporting/production.py:202
 msgid "Services"
-msgstr "خدمات"
+msgstr "Palvelut"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:9
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:8
@@ -495,32 +494,32 @@ msgstr "خدمات"
 #: ../data/glade/SupplierDetailsDialog.ui.h:6
 #: ../data/glade/UserStatusSlave.ui.h:3 ../stoqlib/reporting/purchase.py:268
 msgid "Status:"
-msgstr "الحالة:"
+msgstr "Tila"
 
 #: ../data/glade/ClientStatusSlave.ui.h:1
 msgid "Available Credit:"
-msgstr "الرصيد المتبقي:"
+msgstr "Käytettävissä oleva luotto:"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/ClientStatusSlave.ui.h:4
 msgid "Credit Limit ($CURRENCY):"
-msgstr ""
+msgstr "Luottoraja ($CURRENCY):"
 
 #: ../data/glade/ClientStatusSlave.ui.h:5
 msgid "Financial Status:"
-msgstr "الوضع المالي:"
+msgstr "Taloudellinen asema:"
 
 #: ../data/glade/CommissionDataSlave.ui.h:1
 msgid " No Commission"
-msgstr " بدون عمولة"
+msgstr ""
 
 #: ../data/glade/CommissionDataSlave.ui.h:4
 msgid "Direct Sale:      "
-msgstr "بيع مباشر:      "
+msgstr ""
 
 #: ../data/glade/CommissionDataSlave.ui.h:5
 msgid "In Installments:"
-msgstr "بالتقسيط"
+msgstr ""
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:2
 msgid "City Registry:"
@@ -541,16 +540,14 @@ msgid ""
 "Creating a new database for Stoq, depending on the speed of your computer "
 "and the server it may take a couple of minutes to finish."
 msgstr ""
-"إنشاء قاعدة بيانات جديدة لـ 'ستوك'، حسب سرعة حاسبك و الخادم قد يأخذ بضع "
-"دقائق للإنتهاء."
 
 #: ../data/glade/CreateDatabaseStep.ui.h:2
 msgid "Show details..."
-msgstr "أظهر التفاصيل..."
+msgstr "Näytä yksityiskohdat..."
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:3
 msgid "Closing Day:"
-msgstr "يوم الإغلاق:"
+msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:4
 msgid "Credit Fee:"
@@ -558,15 +555,15 @@ msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:5
 msgid "Credit Installment Provider Fee:"
-msgstr "رسم الممون لأقساط القرض:"
+msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:6
 msgid "Credit Installments Store Fee:"
-msgstr "رسم المخزن لأقساط القرض:"
+msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:7
 msgid "Debit Fee:"
-msgstr "رسم الدين:"
+msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:8
 msgid "Debit Pre-Dated Fee:"
@@ -574,7 +571,7 @@ msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:9
 msgid "Fees"
-msgstr "رسوم"
+msgstr "Kulut"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:10
 msgid "Max Installments:"
@@ -582,7 +579,7 @@ msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:11
 msgid "Monthly Fee ($CURRENCY):"
-msgstr "الرسم الشهري($CURRENCY):"
+msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:12
 #: ../data/glade/TransporterDataSlave.ui.h:6
@@ -591,112 +588,111 @@ msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:13
 msgid "Payment Day:"
-msgstr "يوم الدفع:"
+msgstr "Maksupäivämäärä:"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:14
 msgid "Provider Id:"
-msgstr "رقم تعريف  الممون:"
+msgstr "Toimittajan id:"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:15
 msgid "Short Name:"
-msgstr "الاسم القصير:"
+msgstr "Lyhyt nimi:"
 
 #: ../data/glade/CreditProviderMethodSlave.ui.h:2
 msgid "Credit Provider:"
-msgstr "ممون القرض:"
+msgstr ""
 
 #: ../data/glade/CreditProviderMethodSlave.ui.h:3
 msgid "Number of Installments:"
-msgstr "عدد الأقساط:"
+msgstr ""
 
 #: ../data/glade/CreditProviderMethodSlave.ui.h:4
 msgid "Payment Type:"
-msgstr "طريقة الدفع:"
+msgstr "Maksun tyyppi:"
 
 #: ../data/glade/DatabaseLocationStep.ui.h:1
 msgid "<b>Database location</b>"
-msgstr "<b>موقع قاعدة البيانات</b>"
+msgstr "<b>Tietokannan sijainti</b>"
 
 #: ../data/glade/DatabaseLocationStep.ui.h:2
 msgid "I want to manually configure the database connection."
-msgstr "أريد إعداد إتصال قاعدة  البيانات يدويا."
+msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:3
 msgid "I want to use Stoq just on this computer."
-msgstr "أريد استعمال 'ستوك' في هذا الحاسب فقط."
+msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:4
 #: ../data/glade/InstallationModeStep.ui.h:4
 msgid "Select an option above and then click <b>Forward</b> to continue."
-msgstr "انتق خيارا في الأعلى ثم انقر على <b>تابع</b> للمواصلة."
+msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:5
 msgid ""
 "To be able to use Stoq we need make sure that there is a database that we "
 "can connect to."
 msgstr ""
-"حتى يمكنك استعمال 'ستوك' يجب التأكد من وجود قاعدة بيانات يمكن الإتصال بها."
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:1
 msgid "<b>Database Settings</b>"
-msgstr "<b>إعدادات قاعدة البيانات</b>"
+msgstr "<b>Tietokanta asetukset</b>"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:2 ../stoqlib/reporting/sale.py:83
 msgid "Address:"
-msgstr "العنوان:"
+msgstr "Osoite:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:3
 msgid "Authentication:"
-msgstr "التوثيق:"
+msgstr "Tunnistautuminen"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:4 ../data/glade/WelcomeStep.ui.h:1
 msgid "Click <b>Forward</b> to continue."
-msgstr "انقر على <b>تابع</b> للمواصلة."
+msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:5
 msgid "Database Name:"
-msgstr "اسم قاعدة البيانات:"
+msgstr "Tietokannan nimi:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:6
 #: ../data/glade/PasswordEditorSlave.ui.h:2
 msgid "Password:"
-msgstr "كلمة السر:"
+msgstr "Salasana:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:7
 msgid "Please, fill the details about your database."
-msgstr "من فضلك، إملأ تفاصيل قاعدة البيانات."
+msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:8
 #: ../data/glade/DeviceSettingsEditor.ui.h:6
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:4
 msgid "Port:"
-msgstr "المنفذ:"
+msgstr "Portti:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:9
 #: ../data/glade/UserDetailsSlave.ui.h:4
 msgid "Username:"
-msgstr "اسم المستخدم :"
+msgstr "Käyttäjänimi:"
 
 #: ../data/glade/DeliveryEditor.ui.h:1
 msgid "<b>Delivery Address:</b>"
-msgstr "<b>عنوان التسليم:</b>"
+msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:2
 msgid "Additional _Instructions"
-msgstr "إرشادات إضافية"
+msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:3
 msgid "Change _Address"
-msgstr ""
+msgstr "Muuta _osoitetta"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/DeliveryEditor.ui.h:6
 msgid "Delivery cost ($CURRENCY):"
-msgstr "تكلفة التوصيل ($CURRENCY):"
+msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:7
 msgid "Estimated Delivery _Date:"
-msgstr "موعد التوصيل التقريبي"
+msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:8
 msgid "Products to Deliver:"
@@ -708,11 +704,11 @@ msgstr ""
 
 #: ../data/glade/DeviceConstantEditor.ui.h:1
 msgid "ASCII value:"
-msgstr ""
+msgstr "ASCII arvo:"
 
 #: ../data/glade/DeviceConstantEditor.ui.h:2
 msgid "HEX value:"
-msgstr ""
+msgstr "HEX arvo:"
 
 #: ../data/glade/DeviceSettingsEditor.ui.h:2
 msgid "Brand:"
@@ -720,15 +716,15 @@ msgstr ""
 
 #: ../data/glade/DeviceSettingsEditor.ui.h:3
 msgid "Device Type:"
-msgstr ""
+msgstr "Laitteen tyyppi:"
 
 #: ../data/glade/DeviceSettingsEditor.ui.h:4
 msgid "Host:"
-msgstr "المستضيف:"
+msgstr "Palvelin:"
 
 #: ../data/glade/DeviceSettingsEditor.ui.h:5
 msgid "Model:"
-msgstr "النوع:"
+msgstr "Malli:"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:2
 msgid "Admission Data"
@@ -736,11 +732,11 @@ msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:4
 msgid "Bank Information"
-msgstr "معلومات البنك"
+msgstr "Pankkitiedot"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:5
 msgid "Bank:"
-msgstr "البنك:"
+msgstr "Pankki:"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:6
 msgid "Branch Number:"
@@ -757,14 +753,16 @@ msgid ""
 "Education \n"
 "Level:"
 msgstr ""
+"Koulutus\n"
+"taso:"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:13
 msgid "PIS"
-msgstr ""
+msgstr "PIS"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:14
 msgid "Personal Details"
-msgstr ""
+msgstr "Henkilökohtaiset tiedot"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:15
 msgid "Registry:"
@@ -780,7 +778,7 @@ msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:18
 msgid "Work Permit"
-msgstr ""
+msgstr "Työlupa"
 
 #: ../data/glade/EmployeeRoleSlave.ui.h:1
 msgid "A_dd/Edit Role..."
@@ -789,16 +787,16 @@ msgstr ""
 #: ../data/glade/EmployeeRoleSlave.ui.h:2
 #: ../data/glade/UserDetailsSlave.ui.h:3
 msgid "Role:"
-msgstr ""
+msgstr "Rooli:"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/EmployeeRoleSlave.ui.h:4
 msgid "Salary ($CURRENCY):"
-msgstr ""
+msgstr "Palkka ($CURRENCY):"
 
 #: ../data/glade/EmployeeStatusSlave.ui.h:1
 msgid "Employee Status:"
-msgstr "حالة الموظف"
+msgstr "Työntekijän asema:"
 
 #: ../data/glade/ExistingPersonStep.ui.h:1
 msgid "Existing client"
@@ -814,7 +812,7 @@ msgstr ""
 
 #: ../data/glade/FinishInstallationStep.ui.h:1
 msgid "<b>Installation complete</b>"
-msgstr ""
+msgstr "<b>Asennus valmistui</b>"
 
 #: ../data/glade/FinishInstallationStep.ui.h:2 ../stoq/gui/shell.py:129
 msgid "Enable online services"
@@ -822,7 +820,7 @@ msgstr ""
 
 #: ../data/glade/FinishInstallationStep.ui.h:3
 msgid "More information..."
-msgstr ""
+msgstr "Lisää informaatiota"
 
 #: ../data/glade/FinishInstallationStep.ui.h:4
 msgid ""
@@ -850,7 +848,7 @@ msgstr ""
 #: ../data/glade/SaleDetailsDialog.ui.h:9 ../data/glade/StartQuoteStep.ui.h:3
 #: ../stoqlib/reporting/loanreceipt.py:95
 msgid "Notes"
-msgstr "ملاحظات"
+msgstr "Muistiinpanot"
 
 #: ../data/glade/FinishPurchaseStep.ui.h:3
 msgid "Receive all products now."
@@ -874,7 +872,7 @@ msgstr ""
 #: ../data/glade/SaleDetailsDialog.ui.h:7
 #: ../data/glade/SalesPersonStep.ui.h:10
 msgid "Invoice Number:"
-msgstr ""
+msgstr "Invoice numero:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:1
 #: ../data/glade/ProductSupplierEditor.ui.h:3
@@ -898,11 +896,11 @@ msgstr "1"
 #: ../stoqlib/gui/search/stockdecreasesearch.py:90
 #: ../stoqlib/gui/search/tillsearch.py:116
 msgid "Date"
-msgstr "التاريخ"
+msgstr "Päivämäärä"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:3
 msgid "End Date:"
-msgstr "تاريخ الانتهاء"
+msgstr ""
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:4
 msgid "Fiscal Memory"
@@ -911,7 +909,7 @@ msgstr ""
 #: ../data/glade/FiscalMemoryEditor.ui.h:5
 #: ../data/glade/OnSaleInfoSlave.ui.h:2 ../data/glade/QualityTestEditor.ui.h:2
 msgid "From:"
-msgstr "من:"
+msgstr "Lähettäjä:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:6
 msgid "Reductions"
@@ -919,24 +917,24 @@ msgstr ""
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:7
 msgid "Start Date:"
-msgstr "تاريخ البدء:"
+msgstr "Aloituspäivämäärä:"
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:8
 #: ../data/glade/OnSaleInfoSlave.ui.h:5 ../data/glade/QualityTestEditor.ui.h:5
 msgid "To:"
-msgstr "إلى:"
+msgstr "Vastaanottaja:"
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:1
 msgid "Birth City:"
-msgstr "مدينة الميلاد:"
+msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:2
 msgid "Birth Country:"
-msgstr "دولة الميلاد:"
+msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:3
 msgid "Birth Date:"
-msgstr "تاريخ الميلاد:"
+msgstr "Syntymäpäivä:"
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:4
 msgid "Birth State:"
@@ -948,15 +946,15 @@ msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:6 ../stoqlib/domain/person.py:427
 msgid "Female"
-msgstr "أنثى"
+msgstr "Nainen"
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:7
 msgid "Gender:"
-msgstr "الجنس:"
+msgstr "Sukupuoli:"
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:8 ../stoqlib/domain/person.py:426
 msgid "Male"
-msgstr "ذكر"
+msgstr "Mies"
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:9
 msgid "Marital Status:"
@@ -968,18 +966,18 @@ msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:11
 msgid "Occupation:"
-msgstr "المهنة:"
+msgstr "Ammatti:"
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:12
 msgid "Spouse:"
-msgstr ""
+msgstr "Puoliso:"
 
 #: ../data/glade/IndividualDocuments.ui.h:1
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:3
 #: ../plugins/ecf/paulistainvoicedialog.py:64
 #: ../stoqlib/reporting/loanreceipt.py:153
 msgid "CPF:"
-msgstr ""
+msgstr "CPF:"
 
 #: ../data/glade/IndividualDocuments.ui.h:2
 msgid ""
@@ -995,7 +993,7 @@ msgstr ""
 
 #: ../data/glade/IndividualDocuments.ui.h:6
 msgid "RG Number:"
-msgstr ""
+msgstr "RG numero:"
 
 #: ../data/glade/IndividualDocuments.ui.h:7
 msgid "client_id_slave"
@@ -1003,7 +1001,7 @@ msgstr ""
 
 #: ../data/glade/InitialStockDialog.ui.h:1
 msgid "<b></b>"
-msgstr ""
+msgstr "<b></b>"
 
 #: ../data/glade/InstallPostgresStep.ui.h:1
 msgid "<b>Installing PostgreSQL server</b>"
@@ -1053,7 +1051,7 @@ msgstr ""
 #: ../stoq/gui/sales.py:133 ../stoq/gui/till.py:116
 #: ../stoqlib/gui/dialogs/importerdialog.py:58
 msgid "Details..."
-msgstr "التفاصيل..."
+msgstr "Yksityiskohdat..."
 
 #. Do not translate $CURRENCY
 #: ../data/glade/InstallmentConfirmation.ui.h:5
@@ -1072,7 +1070,7 @@ msgstr ""
 
 #: ../data/glade/InstallmentConfirmation.ui.h:9
 msgid "Order number:"
-msgstr ""
+msgstr "Tilausnumero:"
 
 #: ../data/glade/InstallmentConfirmation.ui.h:10
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:5
@@ -1103,41 +1101,41 @@ msgstr ""
 #: ../data/glade/InvoiceDetailsEditor.ui.h:2
 #: ../data/glade/OpenInventoryDialog.ui.h:4
 msgid "Time:"
-msgstr "التوقيت:"
+msgstr "Aika:"
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:3
 msgid "Field:"
-msgstr ""
+msgstr "Kenttä:"
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:4
 #: ../data/glade/ProductInformationSlave.ui.h:6
 msgid "Height:"
-msgstr "الإرتفاع:"
+msgstr "Korkeus:"
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:6
 msgid "Position:"
-msgstr ""
+msgstr "Sijainti:"
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:7
 msgid "Size:"
-msgstr "الحجم:"
+msgstr "Koko:"
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:8
 #: ../data/glade/ProductInformationSlave.ui.h:16
 msgid "Width:"
-msgstr "العرض:"
+msgstr "Leveys:"
 
 #: ../data/glade/InvoicePrinterEditor.ui.h:1
 msgid "Computer:"
-msgstr ""
+msgstr "Tietokone:"
 
 #: ../data/glade/InvoicePrinterEditor.ui.h:3
 msgid "Device name:"
-msgstr ""
+msgstr "Laitenimi:"
 
 #: ../data/glade/InvoicePrinterEditor.ui.h:4
 msgid "Layout:"
-msgstr ""
+msgstr "Ulkoasu:"
 
 #: ../data/glade/LoanDetails.ui.h:1 ../data/glade/OpenInventoryDialog.ui.h:1
 #: ../data/glade/OpenProductionOrderStep.ui.h:1
@@ -1155,11 +1153,11 @@ msgstr ""
 #: ../stoqlib/reporting/purchase.py:350
 #: ../stoqlib/reporting/stockdecreasereceipt.py:70
 msgid "Branch:"
-msgstr "الفرع:"
+msgstr "Haara:"
 
 #: ../data/glade/LoanDetails.ui.h:3 ../stoqlib/reporting/loanreceipt.py:70
 msgid "Confirm Date:"
-msgstr "تاريخ التأكيد:"
+msgstr ""
 
 #: ../data/glade/LoanDetails.ui.h:4 ../stoqlib/reporting/loanreceipt.py:82
 msgid "Expire Date:"
@@ -1192,7 +1190,7 @@ msgstr ""
 #: ../stoqlib/reporting/loanreceipt.py:83
 #: ../stoqlib/reporting/stockdecreasereceipt.py:71
 msgid "Responsible:"
-msgstr ""
+msgstr "Vastuuhenkilö:"
 
 #: ../data/glade/LoanItemSelectionStep.ui.h:1
 msgid ""
@@ -1202,17 +1200,17 @@ msgstr ""
 
 #: ../data/glade/LoginDialog.ui.h:1
 msgid "Remember me"
-msgstr "تذكرني"
+msgstr "Muista minut"
 
 #: ../data/glade/LoginDialog.ui.h:2
 msgctxt "yes"
 msgid "_Password:"
-msgstr "_كلمة السر:"
+msgstr "_Salasana:"
 
 #: ../data/glade/LoginDialog.ui.h:3
 msgctxt "yes"
 msgid "_Username:"
-msgstr ""
+msgstr "_Käyttäjätunnus:"
 
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:2
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:3
@@ -1221,7 +1219,7 @@ msgstr ""
 #: ../data/glade/SaleDetailsDialog.ui.h:5
 #: ../data/glade/SaleDiscountSlave.ui.h:3 ../stoqlib/reporting/sale.py:129
 msgid "Discount:"
-msgstr ""
+msgstr "Alennus:"
 
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:4
 #: ../data/glade/PaymentMethodEditor.ui.h:6
@@ -1248,11 +1246,11 @@ msgstr ""
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:2
 #: ../stoqlib/gui/slaves/paymentslave.py:1017
 msgid "Missing:"
-msgstr ""
+msgstr "Hukassa:"
 
 #: ../data/glade/MultipleMethodSlave.ui.h:3
 msgid "Payments:"
-msgstr ""
+msgstr "Maksut:"
 
 #: ../data/glade/MultipleMethodSlave.ui.h:4
 #: ../data/glade/PaymentListSlave.ui.h:2
@@ -1278,7 +1276,7 @@ msgstr ""
 #: ../stoqlib/reporting/loanreceipt.py:131 ../stoqlib/reporting/sale.py:129
 #: ../stoqlib/reporting/sale.py:310 ../stoqlib/reporting/template.py:333
 msgid "Total:"
-msgstr "الإجمالي:"
+msgstr "Yhteensä:"
 
 #: ../data/glade/MultipleMethodSlave.ui.h:5
 msgid "_Cash"
@@ -1286,7 +1284,7 @@ msgstr ""
 
 #: ../data/glade/NoteSlave.ui.h:1
 msgid "Notes:"
-msgstr "ملاحظات:"
+msgstr "Muistiinpanot:"
 
 #: ../data/glade/OnSaleInfoSlave.ui.h:1
 msgid "<u>Currently on Sale:</u>"
@@ -1296,7 +1294,7 @@ msgstr ""
 #: ../data/glade/OnSaleInfoSlave.ui.h:4 ../data/glade/PriceEntrySlave.ui.h:2
 #: ../data/glade/PriceLabelSlave.ui.h:2
 msgid "Price ($CURRENCY):"
-msgstr ""
+msgstr "Hinta ($CURRENCY):"
 
 #: ../data/glade/OpenInventoryDialog.ui.h:2
 msgid "Include uncategorized products"
@@ -1304,13 +1302,13 @@ msgstr ""
 
 #: ../data/glade/OpenInventoryDialog.ui.h:5
 msgid "User:"
-msgstr "المستخدم:"
+msgstr "Käyttäjä:"
 
 #: ../data/glade/OpenInventoryDialog.ui.h:6
 #: ../data/glade/ProductionQuoteDialog.ui.h:2
 #: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:5
 msgid "_Unselect All"
-msgstr ""
+msgstr "Peru _valinnat"
 
 #: ../data/glade/OpenProductionOrderStep.ui.h:3
 #: ../stoqlib/reporting/production.py:121
@@ -1319,27 +1317,27 @@ msgstr ""
 
 #: ../data/glade/ParameterSearch.ui.h:1
 msgid "Filter:"
-msgstr ""
+msgstr "Suodatin:"
 
 #: ../data/glade/ParameterSearch.ui.h:2
 msgid "_Show All"
-msgstr ""
+msgstr "_Näytä kaikki"
 
 #: ../data/glade/PasswordEditor.ui.h:1
 msgid "Current Password:"
-msgstr "كلمة السر الحالية:"
+msgstr "Nykyinen salasana:"
 
 #: ../data/glade/PasswordEditorSlave.ui.h:1
 msgid "Confirm password:"
-msgstr "تأكيد كلمة المرور:"
+msgstr "Vahvista salasana:"
 
 #: ../data/glade/PaymentCategoryEditor.ui.h:1
 msgid "Color:"
-msgstr "اللون:"
+msgstr "Väri:"
 
 #: ../data/glade/PaymentChangeDialog.ui.h:1
 msgid "Change to:"
-msgstr ""
+msgstr "Muuta arvoon:"
 
 #: ../data/glade/PaymentChangeDialog.ui.h:3
 #: ../data/glade/ProductionDetailsDialog.ui.h:9
@@ -1347,7 +1345,7 @@ msgstr ""
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:16
 #: ../data/glade/StartPurchaseStep.ui.h:11
 msgid "Order Number:"
-msgstr ""
+msgstr "Tilausnumero:"
 
 #: ../data/glade/PaymentFlowHistoryDialog.ui.h:1
 msgid "<b>Select a date or a range to be visualised in the report:</b>"
@@ -1364,7 +1362,7 @@ msgstr ""
 
 #: ../data/glade/PaymentMethodEditor.ui.h:5
 msgid "Default Account:"
-msgstr ""
+msgstr "Oletus tili:"
 
 #: ../data/glade/PaymentMethodEditor.ui.h:7
 msgid "Maximum Installments:"
@@ -1391,11 +1389,11 @@ msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:1
 msgid "Calls..."
-msgstr ""
+msgstr "Puhelut..."
 
 #: ../data/glade/PersonEditorTemplate.ui.h:2
 msgid "Co_ntacts..."
-msgstr ""
+msgstr "_Yhteystiedot..."
 
 #: ../data/glade/PersonEditorTemplate.ui.h:3
 msgid "Custom Tab"
@@ -1403,7 +1401,7 @@ msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:4
 msgid "E-mail:"
-msgstr ""
+msgstr "Sähköpostiosoite:"
 
 #: ../data/glade/PersonEditorTemplate.ui.h:5
 msgid "Extra Tab"
@@ -1415,7 +1413,7 @@ msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:8
 msgid "Identification"
-msgstr ""
+msgstr "Tunnistaminen"
 
 #: ../data/glade/PersonEditorTemplate.ui.h:9
 #: ../stoqlib/gui/templates/persontemplate.py:169
@@ -1424,7 +1422,7 @@ msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:10
 msgid "Mobile:"
-msgstr ""
+msgstr "Matkapuhelin:"
 
 #: ../data/glade/PersonEditorTemplate.ui.h:11
 msgid "More _Addresses..."
@@ -1448,11 +1446,11 @@ msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:1
 msgid "<b>Plugins</b>"
-msgstr ""
+msgstr "<b>Liitännäiset</b>"
 
 #: ../data/glade/PluginStep.ui.h:2
 msgid "ECF (Fiscal printer support)"
-msgstr ""
+msgstr "ECF (Fiscal tulostin tuki)"
 
 #: ../data/glade/PluginStep.ui.h:3
 msgid "If you just want to test Stoq it is recommended to select no plugin."
@@ -1477,7 +1475,7 @@ msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:9
 msgid "TEF (Credit card support)"
-msgstr ""
+msgstr "TEF (Luottokortti tuki)"
 
 #: ../data/glade/ProducedItemSlave.ui.h:1
 msgid ""
@@ -1487,13 +1485,13 @@ msgstr ""
 
 #: ../data/glade/ProducedItemSlave.ui.h:3
 msgid "Serial Number:"
-msgstr ""
+msgstr "Sarjanumero:"
 
 #: ../data/glade/ProductAdjustmentDialog.ui.h:2
 #: ../data/glade/ProductStockHistoryDialog.ui.h:4
 #: ../data/glade/ProductionProductSlave.ui.h:1
 msgid "Product:"
-msgstr ""
+msgstr "Tuote:"
 
 #: ../data/glade/ProductAdjustmentDialog.ui.h:3
 msgid "Quantity for Adjustment:"
@@ -1503,7 +1501,7 @@ msgstr ""
 #: ../data/glade/ProductComponentSlave.ui.h:1
 #: ../data/glade/ProductQualityTestSlave.ui.h:1
 msgid "Component:"
-msgstr ""
+msgstr "Osa:"
 
 #: ../data/glade/ProductComponentEditor.ui.h:2
 msgid "Design Reference:"
@@ -1516,7 +1514,7 @@ msgstr ""
 #: ../data/glade/SaleQuoteItemEditor.ui.h:6
 #: ../data/glade/SellableItemStep.ui.h:4 ../data/glade/pos.ui.h:4
 msgid "Quantity:"
-msgstr ""
+msgstr "Määrä:"
 
 #: ../data/glade/ProductComponentSlave.ui.h:2
 msgid "Production time:"
@@ -1529,7 +1527,7 @@ msgstr ""
 
 #: ../data/glade/ProductComponentSlave.ui.h:4 ../stoqlib/lib/prettydate.py:89
 msgid "days"
-msgstr ""
+msgstr "päivää"
 
 #: ../data/glade/ProductImageViewer.ui.h:1
 msgid "Product Picture Viewer"
@@ -1545,7 +1543,7 @@ msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:4
 msgid "Depth:"
-msgstr ""
+msgstr "Syvyys:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:5
 msgid "EX TIPI:"
@@ -1553,41 +1551,41 @@ msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:7
 msgid "Kg"
-msgstr ""
+msgstr "Kg"
 
 #: ../data/glade/ProductInformationSlave.ui.h:8
 #: ../data/glade/ProductionItemEditor.ui.h:2
 msgid "Location:"
-msgstr ""
+msgstr "Sijainti:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:9
 msgid "Manufacturer:"
-msgstr ""
+msgstr "Valmistaja:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:10
 msgid "Maximum:"
-msgstr ""
+msgstr "Maksimi:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:11
 #: ../data/glade/SellableItemStep.ui.h:3
 msgid "Minimum:"
-msgstr ""
+msgstr "Minimi:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:12
 msgid "NCM:"
-msgstr ""
+msgstr "NCM:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:13
 msgid "Part-Number:"
-msgstr ""
+msgstr "Osanumero:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:14
 msgid "Un"
-msgstr ""
+msgstr "Un"
 
 #: ../data/glade/ProductInformationSlave.ui.h:15
 msgid "Weight:"
-msgstr ""
+msgstr "Paino:"
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:1
 msgid "Current Stock Balance:"
@@ -1607,13 +1605,13 @@ msgstr ""
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:7
 msgid "Transfers"
-msgstr ""
+msgstr "Siirrot"
 
 #: ../data/glade/ProductSupplierEditor.ui.h:4
 #: ../data/glade/PurchaseItemEditor.ui.h:2
 #: ../data/glade/ReceivingItemEditor.ui.h:1
 msgid "1.00"
-msgstr ""
+msgstr "1.00"
 
 #: ../data/glade/ProductSupplierEditor.ui.h:5
 msgid ""
@@ -1623,7 +1621,7 @@ msgstr ""
 
 #: ../data/glade/ProductSupplierEditor.ui.h:7
 msgid "Day(s)"
-msgstr ""
+msgstr "Päivä(ä)"
 
 #: ../data/glade/ProductSupplierEditor.ui.h:9
 msgid "Lead Time:"
@@ -1639,24 +1637,24 @@ msgstr ""
 
 #: ../data/glade/ProductTaxSlave.ui.h:1
 msgid "ICMS Class:"
-msgstr ""
+msgstr "ICMS-luokka:"
 
 #: ../data/glade/ProductTaxSlave.ui.h:2
 msgid "IPI Class:"
-msgstr ""
+msgstr "IPI-luokka:"
 
 #: ../data/glade/ProductionComponentSlave.ui.h:1
 msgid "CSV..."
-msgstr ""
+msgstr "CSV..."
 
 #: ../data/glade/ProductionComponentSlave.ui.h:2
 #: ../stoqlib/gui/editors/producteditor.py:680
 msgid "Components"
-msgstr ""
+msgstr "Osat"
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:1
 msgid "Add Produced"
-msgstr ""
+msgstr "Lisää valmistaja"
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:2
 msgid "Allocate More"
@@ -1672,21 +1670,21 @@ msgstr ""
 #: ../data/glade/SaleDetailsDialog.ui.h:8 ../stoq/gui/sales.py:230
 #: ../stoqlib/gui/search/salesearch.py:83
 msgid "Items"
-msgstr ""
+msgstr "Tuoteet"
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:6
 msgid "Lost Material"
-msgstr ""
+msgstr "Kateissa oleva materiaali"
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:7
 #: ../stoqlib/reporting/production.py:161
 msgid "Materials"
-msgstr ""
+msgstr "Materiaalit"
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:10
 #: ../data/glade/PurchaseDetailsDialog.ui.h:13
 msgid "Order Status:"
-msgstr ""
+msgstr "Tilauksen tila"
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:11
 msgid "Produced Items"
@@ -1694,12 +1692,12 @@ msgstr ""
 
 #: ../data/glade/ProductionItemEditor.ui.h:3
 msgid "Production:"
-msgstr ""
+msgstr "Tuotanto:"
 
 #: ../data/glade/ProductionItemEditor.ui.h:5
 #: ../data/glade/SellableEditor.ui.h:16
 msgid "Unit:"
-msgstr ""
+msgstr "Yksikkö:"
 
 #: ../data/glade/ProductionMaterialListSlave.ui.h:1
 msgid "<b>Listing all the components needed by the production:</b>"
@@ -1715,7 +1713,7 @@ msgstr ""
 
 #: ../data/glade/ProductsAdjustment.ui.h:6
 msgid "_Adjust"
-msgstr ""
+msgstr "_Säädä"
 
 #: ../data/glade/ProgressDialog.ui.h:1
 msgid "Probing device..."
@@ -1723,7 +1721,7 @@ msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:1
 msgid "Additional Info"
-msgstr ""
+msgstr "Lisätietoa"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:2
 msgid "Agreed Freight Type:"
@@ -1733,7 +1731,7 @@ msgstr ""
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:2
 #: ../data/glade/SaleDetailsDialog.ui.h:2
 msgid "Changes"
-msgstr ""
+msgstr "Muutokset"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:6
 msgid "Expected Freight Value:"
@@ -1750,7 +1748,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salequotewizard.py:338
 #: ../stoqlib/reporting/purchase.py:68
 msgid "Ordered"
-msgstr ""
+msgstr "Järjestetty"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:17 ../stoq/gui/purchase.py:258
 #: ../stoqlib/gui/search/productsearch.py:268
@@ -1759,7 +1757,7 @@ msgstr ""
 #: ../stoqlib/reporting/payment.py:135 ../stoqlib/reporting/product.py:140
 #: ../stoqlib/reporting/purchase.py:70 ../stoqlib/reporting/purchase.py:99
 msgid "Received"
-msgstr ""
+msgstr "Vastaanotettu"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:18
 msgid "Received Freight Type:"
@@ -1784,7 +1782,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:339
 #: ../stoqlib/reporting/purchase.py:269 ../stoqlib/reporting/purchase.py:349
 msgid "Supplier:"
-msgstr ""
+msgstr "Toimittaja:"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:25
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:3
@@ -1812,7 +1810,7 @@ msgstr ""
 #: ../data/glade/ReceivingItemEditor.ui.h:2
 #: ../data/glade/SellableItemStep.ui.h:1
 msgid "Cost:"
-msgstr ""
+msgstr "Kustannus:"
 
 #: ../data/glade/PurchaseItemEditor.ui.h:5
 msgid "Expected receival:"
@@ -1821,7 +1819,7 @@ msgstr ""
 #: ../data/glade/PurchaseItemEditor.ui.h:6
 #: ../data/glade/SaleQuoteItemEditor.ui.h:4
 msgid "Order:"
-msgstr ""
+msgstr "Tilaaja:"
 
 #: ../data/glade/PurchaseItemEditor.ui.h:8
 msgid "Returned Quantity:"
@@ -1842,12 +1840,12 @@ msgstr ""
 #: ../data/glade/PurchaseSelectionStep.ui.h:1
 #: ../data/glade/SaleListToolbar.ui.h:2
 msgid "_Details"
-msgstr ""
+msgstr "_Lisätiedot"
 
 #: ../data/glade/PurchaseSelectionStep.ui.h:2 ../data/glade/purchase.ui.h:1
 #: ../stoqlib/reporting/purchase_receival.py:36
 msgid "purchase"
-msgstr ""
+msgstr "osta"
 
 #: ../data/glade/QualityTestEditor.ui.h:3
 msgid "Success Value:"
@@ -1875,7 +1873,7 @@ msgstr ""
 
 #: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:4
 msgid "_Select All"
-msgstr ""
+msgstr "_Valitse kaikki"
 
 #: ../data/glade/QuoteSupplierStep.ui.h:1
 msgid "Include all products in quotes"
@@ -1902,27 +1900,27 @@ msgstr ""
 #: ../data/glade/TransporterDataSlave.ui.h:4
 #: ../stoqlib/reporting/purchase.py:339
 msgid "Freight:"
-msgstr ""
+msgstr "Rahti:"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:9
 msgid "ICMS Total ($CURRENCY):"
-msgstr ""
+msgstr "ICMS yhteensä ($CURRENCY):"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:11
 msgid "IPI ($CURRENCY):"
-msgstr ""
+msgstr "IPI ($CURRENCY):"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:14
 msgid "Invoice Total ($CURRENCY):"
-msgstr ""
+msgstr "Invoice yhteensä ($CURRENCY):"
 
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:15
 #: ../data/glade/SalesPersonStep.ui.h:11
 msgid "Notes..."
-msgstr ""
+msgstr "Muistiinpanot..."
 
 #. Do not translate $CURRENCY
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:18
@@ -1937,7 +1935,7 @@ msgstr ""
 #. Do not translate $CURRENCY
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:23
 msgid "Secure ($CURRENCY):"
-msgstr ""
+msgstr "Turvallinen ($CURRENCY):"
 
 #: ../data/glade/ReceivingItemEditor.ui.h:4
 msgid "Purchase Order:"
@@ -1963,7 +1961,7 @@ msgstr ""
 
 #: ../data/glade/RelationshipEditor.ui.h:1
 msgid "Model name:"
-msgstr ""
+msgstr "Mallin nimi:"
 
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:1
 msgid "<b>Renegotiation Number:</b>"
@@ -1987,32 +1985,32 @@ msgstr ""
 
 #: ../data/glade/SaleInvoicePrinterDialog.ui.h:2
 msgid "<b>Invoice Number:</b>"
-msgstr ""
+msgstr "<b>Invoice numero:</b>"
 
 #: ../data/glade/SaleListToolbar.ui.h:1 ../data/glade/pos.ui.h:3
 msgid "Ed_it"
-msgstr ""
+msgstr "_Muokkaa"
 
 #: ../data/glade/SaleListToolbar.ui.h:3
 msgid "_Print"
-msgstr ""
+msgstr "Tul_osta"
 
 #: ../data/glade/SaleListToolbar.ui.h:4
 msgid "_Return"
-msgstr ""
+msgstr "_Palaa"
 
 #: ../data/glade/SaleQuoteItemEditor.ui.h:1
 #: ../stoqlib/gui/editors/saleeditor.py:71
 msgid "Basic"
-msgstr ""
+msgstr "Perus"
 
 #: ../data/glade/SaleQuoteItemEditor.ui.h:2
 msgid "CFOP:"
-msgstr ""
+msgstr "CFOP:"
 
 #: ../data/glade/SaleQuoteItemEditor.ui.h:5
 msgid "Price:"
-msgstr ""
+msgstr "Hinta:"
 
 #: ../data/glade/SaleQuoteItemEditor.ui.h:7
 msgid "Return Quantity:"
@@ -2053,7 +2051,7 @@ msgstr ""
 
 #: ../data/glade/SalesPersonStep.ui.h:1
 msgid "0.00"
-msgstr ""
+msgstr "0.00"
 
 #: ../data/glade/SalesPersonStep.ui.h:2
 msgid "Add a new C.F.O.P."
@@ -2062,7 +2060,7 @@ msgstr ""
 #: ../data/glade/SalesPersonStep.ui.h:3
 #: ../stoqlib/gui/editors/paymenteditor.py:111
 msgid "Add a new client"
-msgstr ""
+msgstr "Lisää uusi asiakas"
 
 #: ../data/glade/SalesPersonStep.ui.h:4
 #: ../stoqlib/gui/wizards/purchasewizard.py:430
@@ -2080,7 +2078,7 @@ msgstr ""
 #: ../data/glade/SalesPersonStep.ui.h:9
 #: ../stoqlib/gui/wizards/loanwizard.py:253
 msgid "Expire"
-msgstr ""
+msgstr "Vanhentunut"
 
 #: ../data/glade/SalesPersonStep.ui.h:12
 msgid "Operation Nature:"
@@ -2092,7 +2090,7 @@ msgstr ""
 
 #: ../data/glade/SearchEditor.ui.h:2
 msgid "_New..."
-msgstr ""
+msgstr "_Uusi…"
 
 #: ../data/glade/SelectPaymentMethodSlave.ui.h:1
 msgid "C_ash"
@@ -2108,7 +2106,7 @@ msgstr ""
 
 #: ../data/glade/SellableDetailsSlave.ui.h:1
 msgid "Details:"
-msgstr ""
+msgstr "Tiedot:"
 
 #: ../data/glade/SellableDetailsSlave.ui.h:2
 msgid "Right-click image for more options"
@@ -2116,7 +2114,7 @@ msgstr ""
 
 #: ../data/glade/SellableEditor.ui.h:3 ../data/glade/pos.ui.h:2
 msgid "Barcode:"
-msgstr ""
+msgstr "Viivakoodi:"
 
 #: ../data/glade/SellableEditor.ui.h:6
 msgid "Consignment:"
@@ -2125,7 +2123,7 @@ msgstr ""
 #. Do not translate $CURRENCY
 #: ../data/glade/SellableEditor.ui.h:8
 msgid "Cost ($CURRENCY):"
-msgstr ""
+msgstr "Hinta ($CURRENCY):"
 
 #: ../data/glade/SellableEditor.ui.h:9
 msgid "Default Sales C.F.O.P.:"
@@ -2136,13 +2134,13 @@ msgstr ""
 #: ../stoqlib/gui/editors/parameterseditor.py:163
 #: ../stoqlib/gui/search/parametersearch.py:95
 msgid "No"
-msgstr ""
+msgstr "Ei"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/SellableEditor.ui.h:13
 #: ../data/glade/SellablePriceEditor.ui.h:10
 msgid "Sale Price ($CURRENCY):"
-msgstr ""
+msgstr "Myyntihinta ($CURRENCY):"
 
 #: ../data/glade/SellableEditor.ui.h:15
 #: ../data/glade/TributarySituationSlave.ui.h:3
@@ -2155,15 +2153,15 @@ msgstr ""
 #: ../stoqlib/gui/search/parametersearch.py:95
 #: ../stoqlib/gui/wizards/personwizard.py:94
 msgid "Yes"
-msgstr ""
+msgstr "Kyllä"
 
 #: ../data/glade/SellableItemStep.ui.h:2
 msgid "Item:"
-msgstr ""
+msgstr "Kohde:"
 
 #: ../data/glade/SellableItemStep.ui.h:5
 msgid "Stock:"
-msgstr ""
+msgstr "Varasto:"
 
 #: ../data/glade/SellablePriceDialog.ui.h:3
 msgid "Apply Markup:"
@@ -2176,11 +2174,11 @@ msgstr ""
 #: ../data/glade/SellablePriceEditor.ui.h:4
 #, no-c-format
 msgid "%  "
-msgstr ""
+msgstr "%  "
 
 #: ../data/glade/SellablePriceEditor.ui.h:5
 msgid "0,00"
-msgstr ""
+msgstr "0,00"
 
 #: ../data/glade/SellablePriceEditor.ui.h:6
 msgid "Base Cost:"
@@ -2188,7 +2186,7 @@ msgstr ""
 
 #: ../data/glade/SellablePriceEditor.ui.h:7
 msgid "Markup:"
-msgstr ""
+msgstr "Merkkaus:"
 
 #: ../data/glade/SellablePriceEditor.ui.h:8
 msgid "Max Discount:"
@@ -2200,7 +2198,7 @@ msgstr ""
 
 #: ../data/glade/ServiceItemEditor.ui.h:1
 msgid "  Price:"
-msgstr ""
+msgstr "  Hinta:"
 
 #: ../data/glade/ServiceItemEditor.ui.h:2
 msgid "Estimated Fix Date:"
@@ -2213,12 +2211,12 @@ msgstr ""
 #. Do not translate $CURRENCY
 #: ../data/glade/StartPurchaseStep.ui.h:2
 msgid "$CURRENCY"
-msgstr ""
+msgstr "$CURRENCY"
 
 #: ../data/glade/StartPurchaseStep.ui.h:3
 #: ../stoqlib/gui/editors/paymenteditor.py:108
 msgid "Add a new supplier"
-msgstr ""
+msgstr "Lisää uusi toimittaja"
 
 #: ../data/glade/StartPurchaseStep.ui.h:5
 msgid "CIF (Cost Insurance Freight)"
@@ -2226,7 +2224,7 @@ msgstr ""
 
 #: ../data/glade/StartPurchaseStep.ui.h:6
 msgid "Edit selected supplier"
-msgstr ""
+msgstr "Muokkaa valittua toimittajaa"
 
 #: ../data/glade/StartPurchaseStep.ui.h:7
 msgid "Expected Freight:"
@@ -2243,7 +2241,7 @@ msgstr ""
 #. To be filled
 #: ../data/glade/StartQuoteStep.ui.h:2 ../stoqlib/reporting/purchase.py:348
 msgid "Deadline:"
-msgstr ""
+msgstr "Takaraja:"
 
 #: ../data/glade/StartQuoteStep.ui.h:4
 #: ../data/glade/StockTransferFinishStep.ui.h:1
@@ -2271,7 +2269,7 @@ msgstr ""
 
 #: ../data/glade/StationEditor.ui.h:1
 msgid "Active:"
-msgstr ""
+msgstr "Aktiiviset:"
 
 #: ../data/glade/StockDecreaseDetails.ui.h:5
 #: ../stoqlib/gui/dialogs/purchasedetails.py:235
@@ -2280,7 +2278,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/paymenteditor.py:343
 #: ../stoqlib/reporting/stockdecreasereceipt.py:81
 msgid "Reason"
-msgstr ""
+msgstr "Syy"
 
 #: ../data/glade/StockTransferFinishStep.ui.h:2
 #: ../data/glade/TransferOrderDetails.ui.h:3
@@ -2289,7 +2287,7 @@ msgstr ""
 
 #: ../data/glade/StockTransferFinishStep.ui.h:3
 msgid "Receiver:"
-msgstr ""
+msgstr "Vastaanottaja:"
 
 #: ../data/glade/StockTransferFinishStep.ui.h:4
 msgid "Receiving branch:"
@@ -2297,7 +2295,7 @@ msgstr ""
 
 #: ../data/glade/StockTransferFinishStep.ui.h:5
 msgid "Sender:"
-msgstr ""
+msgstr "Lähettäjä:"
 
 #: ../data/glade/StockTransferFinishStep.ui.h:6
 msgid "Sending branch:"
@@ -2305,7 +2303,7 @@ msgstr ""
 
 #: ../data/glade/SupplierDetailsDialog.ui.h:5 ../stoq/gui/calendar.py:184
 msgid "Purchases"
-msgstr ""
+msgstr "Ostot"
 
 #: ../data/glade/SupplierDetailsSlave.ui.h:1
 msgid "Product Types:"
@@ -2317,7 +2315,7 @@ msgstr ""
 
 #: ../data/glade/SystemParameterEditor.ui.h:1
 msgid "Current Value:"
-msgstr ""
+msgstr "Nykyinen arvo:"
 
 #: ../data/glade/SystemParameterEditor.ui.h:2
 #: ../stoqlib/gui/keybindings.py:334 ../stoqlib/lib/parameters.py:154
@@ -2328,11 +2326,11 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:453 ../stoqlib/lib/parameters.py:460
 #: ../stoqlib/lib/parameters.py:527 ../stoqlib/lib/parameters.py:547
 msgid "General"
-msgstr ""
+msgstr "Yleistä"
 
 #: ../data/glade/SystemParameterEditor.ui.h:3
 msgid "Group:"
-msgstr ""
+msgstr "Ryhmä:"
 
 #: ../data/glade/SystemParameterEditor.ui.h:4
 msgid "Parameter Name:"
@@ -2340,7 +2338,7 @@ msgstr ""
 
 #: ../data/glade/TaxICMSSlave.ui.h:1
 msgid "Origin:"
-msgstr ""
+msgstr "Alkuperä:"
 
 #: ../data/glade/TefStep.ui.h:1
 msgid "<b>TEF Plugin</b>"
@@ -2354,7 +2352,7 @@ msgstr ""
 
 #: ../data/glade/TefStep.ui.h:3
 msgid "Email:"
-msgstr ""
+msgstr "Sähköposti:"
 
 #: ../data/glade/TefStep.ui.h:4
 msgid ""
@@ -2373,7 +2371,7 @@ msgstr ""
 
 #: ../data/glade/TefStep.ui.h:10
 msgid "Phone:"
-msgstr ""
+msgstr "Puhelin:"
 
 #: ../data/glade/TillClosing.ui.h:1
 msgid "<b>Cash Amounts:</b>"
@@ -2399,7 +2397,7 @@ msgstr ""
 #: ../data/glade/TillFiscalOperationsToolbar.ui.h:1
 #: ../stoqlib/gui/fiscalprinter.py:400 ../stoqlib/gui/fiscalprinter.py:407
 msgid "Resume"
-msgstr ""
+msgstr "Jatka"
 
 #: ../data/glade/TillFiscalOperationsToolbar.ui.h:2
 msgid "Till Out..."
@@ -2416,11 +2414,11 @@ msgstr ""
 
 #: ../data/glade/TransferOrderDetails.ui.h:1
 msgid "Destination:"
-msgstr ""
+msgstr "Kohde:"
 
 #: ../data/glade/TransferOrderDetails.ui.h:5
 msgid "Source:"
-msgstr ""
+msgstr "Lähde:"
 
 #: ../data/glade/TransporterDataSlave.ui.h:7
 msgid "Transporter Status:"
@@ -2444,15 +2442,15 @@ msgstr ""
 
 #: ../data/glade/UpdateWelcomeStep.ui.h:8
 msgid "Update Database"
-msgstr ""
+msgstr "Päivitä tietokanta"
 
 #: ../data/glade/UserDetailsSlave.ui.h:1
 msgid "Change Password..."
-msgstr ""
+msgstr "Vaihda salasana..."
 
 #: ../data/glade/UserDetailsSlave.ui.h:2
 msgid "Profile:"
-msgstr ""
+msgstr "Käyttäjätiedot:"
 
 #: ../data/glade/UserProfileEditor.ui.h:1
 msgid "Available Applications:"
@@ -2460,7 +2458,7 @@ msgstr ""
 
 #: ../data/glade/UserProfileEditor.ui.h:2
 msgid "Profile Name:"
-msgstr ""
+msgstr "Profiilin nimi:"
 
 #: ../data/glade/WelcomeStep.ui.h:2
 msgid ""
@@ -2482,17 +2480,17 @@ msgstr ""
 #: ../data/glade/admin.ui.h:1
 msgctxt "yes"
 msgid "launcher"
-msgstr ""
+msgstr "käynnistin"
 
 #: ../data/glade/calendar.ui.h:1
 msgid "calendar"
-msgstr ""
+msgstr "kalenteri"
 
 #: ../data/glade/financial.ui.h:1 ../stoq/gui/financial.py:437
 #: ../stoq/gui/financial.py:529 ../stoqlib/lib/parameters.py:506
 #: ../stoqlib/lib/parameters.py:513 ../stoqlib/lib/parameters.py:520
 msgid "Accounts"
-msgstr ""
+msgstr "Tilit"
 
 #: ../data/glade/financial.ui.h:2 ../data/glade/payable.ui.h:1
 msgid "payable"
@@ -2505,7 +2503,7 @@ msgstr ""
 #: ../data/glade/launcher.ui.h:1
 msgctxt "yes"
 msgid "admin"
-msgstr ""
+msgstr "ylläpitäjä"
 
 #: ../data/glade/pos.ui.h:1
 msgid "Add a product or service by barcode"
@@ -2529,7 +2527,7 @@ msgstr ""
 
 #: ../data/glade/pos.ui.h:9
 msgid "_Remove"
-msgstr ""
+msgstr "_Poista"
 
 #: ../data/glade/production.ui.h:1
 msgid "production"
@@ -2541,11 +2539,11 @@ msgstr ""
 
 #: ../data/glade/sales_app.ui.h:1 ../stoqlib/reporting/sale.py:170
 msgid "sales"
-msgstr ""
+msgstr "myynti"
 
 #: ../data/glade/stock.ui.h:1
 msgid "STOQ - Stock Application"
-msgstr ""
+msgstr "STOQ - Varasto-ohjelmisto"
 
 #: ../data/glade/till.ui.h:1
 msgctxt "yes"
@@ -2559,7 +2557,7 @@ msgstr ""
 
 #: ../data/template/receipt.rml:31
 msgid " made in "
-msgstr ""
+msgstr " tehty "
 
 #: ../plugins/books/bookssearch.py:42 ../plugins/books/booksui.py:76
 #: ../plugins/books/booksui.py:95 ../plugins/books/booksui.py:111
@@ -2568,7 +2566,7 @@ msgstr ""
 
 #: ../plugins/books/bookssearch.py:51
 msgid "<b>Total:</b>"
-msgstr ""
+msgstr "<b>Yhteensä:</b>"
 
 #. Branch
 #: ../plugins/books/bookssearch.py:65
@@ -2606,7 +2604,7 @@ msgstr ""
 #: ../stoqlib/gui/search/servicesearch.py:90
 #: ../stoqlib/gui/search/tillsearch.py:105
 msgid "Any"
-msgstr ""
+msgstr "Kaikki"
 
 #: ../plugins/books/bookssearch.py:73 ../stoqlib/gui/search/loansearch.py:61
 #: ../stoqlib/gui/search/productsearch.py:148
@@ -2621,7 +2619,7 @@ msgstr ""
 #: ../stoqlib/gui/search/servicesearch.py:108
 #: ../stoqlib/gui/wizards/abstractwizard.py:112
 msgid "Barcode"
-msgstr ""
+msgstr "Viivakoodi"
 
 #. XXX Bug #2430 will improve this part
 #: ../plugins/books/bookssearch.py:85 ../stoq/gui/financial.py:227
@@ -2665,7 +2663,7 @@ msgstr ""
 #: ../stoqlib/reporting/stockdecreasereceipt.py:91
 #: ../stoqlib/reporting/template.py:322
 msgid "Code"
-msgstr ""
+msgstr "Koodi"
 
 #: ../plugins/books/bookssearch.py:87 ../stoq/gui/stock.py:226
 #: ../stoqlib/gui/dialogs/clientcategorydialog.py:47
@@ -2697,40 +2695,40 @@ msgstr ""
 #: ../stoqlib/reporting/loanreceipt.py:101
 #: ../stoqlib/reporting/purchase.py:129 ../stoqlib/reporting/purchase.py:325
 msgid "Category"
-msgstr ""
+msgstr "Luokka"
 
 #: ../plugins/books/bookssearch.py:89
 msgid "Subject"
-msgstr ""
+msgstr "Aihe"
 
 #: ../plugins/books/bookssearch.py:90
 msgid "Title"
-msgstr ""
+msgstr "Otsikko"
 
 #: ../plugins/books/bookssearch.py:92
 #: ../stoqlib/gui/dialogs/paymentcommentsdialog.py:20
 msgid "Author"
-msgstr ""
+msgstr "Tekijä"
 
 #: ../plugins/books/bookssearch.py:94 ../plugins/books/publishersearch.py:41
 msgid "Publisher"
-msgstr ""
+msgstr "Julkaisija"
 
 #: ../plugins/books/bookssearch.py:96
 msgid "ISBN"
-msgstr ""
+msgstr "ISBN"
 
 #: ../plugins/books/bookssearch.py:97
 msgid "Volume"
-msgstr ""
+msgstr "Äänenvoimakkuus"
 
 #: ../plugins/books/bookssearch.py:99
 msgid "Series"
-msgstr ""
+msgstr "Sarjat"
 
 #: ../plugins/books/bookssearch.py:101
 msgid "Language"
-msgstr ""
+msgstr "Kieli"
 
 #: ../plugins/books/bookssearch.py:109
 #: ../stoqlib/gui/dialogs/productiondialog.py:240
@@ -2768,7 +2766,7 @@ msgstr ""
 #: ../stoqlib/reporting/loanreceipt.py:108 ../stoqlib/reporting/product.py:67
 #: ../stoqlib/reporting/sale.py:106 ../stoqlib/reporting/template.py:325
 msgid "Price"
-msgstr ""
+msgstr "Hinta"
 
 #: ../plugins/books/bookssearch.py:115 ../stoqlib/reporting/product.py:68
 msgid "Stock Total"
@@ -2789,15 +2787,15 @@ msgstr ""
 #: ../plugins/books/booksui.py:75 ../plugins/books/booksui.py:94
 #: ../plugins/books/booksui.py:110
 msgid "Books"
-msgstr ""
+msgstr "Kirjat"
 
 #: ../plugins/books/booksui.py:79
 msgid "Publishers ..."
-msgstr ""
+msgstr "Julkaisija ..."
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:2
 msgid "Author:"
-msgstr ""
+msgstr "Tekijä:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:4
 msgid "Decorative Finish:"
@@ -2805,23 +2803,23 @@ msgstr ""
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:5
 msgid "Edition:"
-msgstr ""
+msgstr "Muokkaaja:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:6
 msgid "ISBN:"
-msgstr ""
+msgstr "ISBN:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:7
 msgid "Language:"
-msgstr ""
+msgstr "Kieli:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:8
 msgid "Pages:"
-msgstr ""
+msgstr "Sivut:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:9
 msgid "Publisher:"
-msgstr ""
+msgstr "Julkaisija:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:10
 msgid "Series/Collection:"
@@ -2829,23 +2827,23 @@ msgstr ""
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:11
 msgid "Subject:"
-msgstr ""
+msgstr "Aihe:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:12
 msgid "Synopsis:"
-msgstr ""
+msgstr "Tiivistelmä:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:13
 msgid "Year:"
-msgstr ""
+msgstr "Vuosi:"
 
 #: ../plugins/books/publishersearch.py:42
 msgid "New Publisher"
-msgstr ""
+msgstr "Uusi julkaisija"
 
 #: ../plugins/books/publishersearch.py:55
 msgid "Publisher Search"
-msgstr ""
+msgstr "Etsi julkaisijaa"
 
 #: ../plugins/books/publishersearch.py:59
 msgid "Publishers matching:"
@@ -2853,11 +2851,11 @@ msgstr ""
 
 #: ../plugins/books/publishersearch.py:60
 msgid "publisher"
-msgstr ""
+msgstr "julkaisija"
 
 #: ../plugins/books/publishersearch.py:60
 msgid "publishers"
-msgstr ""
+msgstr "Julkaisijat"
 
 #. ListDialog
 #: ../plugins/books/publishersearch.py:76
@@ -2873,7 +2871,7 @@ msgstr ""
 #: ../stoqlib/gui/slaves/liaisonslave.py:47
 #: ../stoqlib/gui/wizards/personwizard.py:104 ../stoqlib/reporting/sale.py:280
 msgid "Name"
-msgstr ""
+msgstr "Nimi"
 
 #: ../plugins/ecf/catgenerator.py:69
 msgid "There must be a printer configured"
@@ -2932,22 +2930,22 @@ msgstr ""
 #: ../stoqlib/reporting/purchase.py:256 ../stoqlib/reporting/sale.py:290
 #: ../stoqlib/reporting/till.py:50
 msgid "Value"
-msgstr ""
+msgstr "Arvo"
 
 #: ../plugins/ecf/deviceconstanteditor.py:202
 #: ../stoqlib/gui/search/sellableunitsearch.py:48
 msgid "Units"
-msgstr ""
+msgstr "Yksikköjä"
 
 #: ../plugins/ecf/deviceconstanteditor.py:203 ../plugins/ecf/ecfdomain.py:250
 #: ../plugins/ecf/tests/test_device.py:41
 msgid "Tax"
-msgstr ""
+msgstr "Vero"
 
 #: ../plugins/ecf/ecfdomain.py:109
 #, python-format
 msgid "%d %%"
-msgstr ""
+msgstr "%d %%"
 
 #: ../plugins/ecf/ecfdomain.py:169
 #, python-format
@@ -2986,7 +2984,7 @@ msgstr ""
 #: ../stoqlib/reporting/production.py:185
 #: ../stoqlib/reporting/production.py:210
 msgid "Unit"
-msgstr ""
+msgstr "Kappale"
 
 #. Payment
 #: ../plugins/ecf/ecfdomain.py:251 ../stoq/gui/payable.py:94
@@ -2998,7 +2996,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/paymenteditor.py:334
 #: ../stoqlib/gui/slaves/paymentslave.py:855
 msgid "Payment"
-msgstr ""
+msgstr "Maksu"
 
 #: ../plugins/ecf/ecfmemorydialog.py:37
 msgid "Print Fiscal Memory"
@@ -3018,7 +3016,7 @@ msgstr ""
 
 #: ../plugins/ecf/ecfprinterdialog.py:68
 msgid "Fiscal Printer"
-msgstr ""
+msgstr "Fiscal tulostin"
 
 #: ../plugins/ecf/ecfprinterdialog.py:123
 #, python-format
@@ -3049,7 +3047,7 @@ msgstr ""
 
 #: ../plugins/ecf/ecfprinterdialog.py:177
 msgid "Restart now"
-msgstr ""
+msgstr "Uudelleenkäynnistä nyt"
 
 #: ../plugins/ecf/ecfprinterdialog.py:187
 #, python-format
@@ -3062,21 +3060,21 @@ msgstr ""
 
 #: ../plugins/ecf/ecfprinterdialog.py:301 ../plugins/ecf/ecfui.py:128
 msgid "Fiscal Printers"
-msgstr ""
+msgstr "Fiscal tulostimet"
 
 #: ../plugins/ecf/ecfprinterdialog.py:306
 msgid "Model"
-msgstr ""
+msgstr "Malli"
 
 #: ../plugins/ecf/ecfprinterdialog.py:307
 msgid "Serial"
-msgstr ""
+msgstr "Sarjanumero"
 
 #: ../plugins/ecf/ecfprinterdialog.py:308 ../stoqlib/gui/dialogs/devices.py:51
 #: ../stoqlib/gui/editors/stationeditor.py:39
 #: ../stoqlib/gui/search/stationsearch.py:42
 msgid "Computer"
-msgstr ""
+msgstr "Tietokone"
 
 #: ../plugins/ecf/ecfprinterdialog.py:327
 msgid "Cant edit a virtual printer"
@@ -3084,7 +3082,7 @@ msgstr ""
 
 #: ../plugins/ecf/ecfui.py:88
 msgid "Summary"
-msgstr ""
+msgstr "Yhteenveto"
 
 #: ../plugins/ecf/ecfui.py:111
 msgid "This operation requires a connected fiscal printer"
@@ -3097,7 +3095,7 @@ msgstr ""
 #: ../plugins/ecf/ecfui.py:144 ../plugins/ecf/ecfui.py:171
 #: ../plugins/ecf/ecfui.py:198
 msgid "ECF"
-msgstr ""
+msgstr "ECF"
 
 #: ../plugins/ecf/ecfui.py:145
 msgid "Configure fiscal printer..."
@@ -3121,15 +3119,15 @@ msgstr ""
 #: ../stoq/gui/inventory.py:100 ../stoq/gui/purchase.py:168
 #: ../stoq/gui/sales.py:145
 msgid "Cancel"
-msgstr ""
+msgstr "Peruuta"
 
 #: ../plugins/ecf/ecfui.py:239 ../plugins/ecf/ecfui.py:292
 msgid "Ignore"
-msgstr ""
+msgstr "Ohita"
 
 #: ../plugins/ecf/ecfui.py:240 ../plugins/ecf/ecfui.py:293
 msgid "Try Again"
-msgstr ""
+msgstr "Yritä uudelleen"
 
 #: ../plugins/ecf/ecfui.py:272
 msgid ""
@@ -3172,7 +3170,7 @@ msgstr ""
 #: ../plugins/ecf/ecfui.py:417 ../stoqlib/gui/dialogs/pluginsdialog.py:122
 #: ../stoqlib/gui/fiscalprinter.py:143 ../stoqlib/gui/fiscalprinter.py:277
 msgid "Not now"
-msgstr ""
+msgstr "Ei nyt"
 
 #: ../plugins/ecf/ecfui.py:424
 msgid "Cash out"
@@ -12982,15 +12980,15 @@ msgstr ""
 
 #: ../data/template/receipt.rml.extracted.h:14
 msgid "VALUE:"
-msgstr ""
+msgstr "ARVO:"
 
 #: ../data/template/transfer.rml.extracted.h:1
 msgid "CODE"
-msgstr ""
+msgstr "KOODI"
 
 #: ../data/template/transfer.rml.extracted.h:2
 msgid "DESCRIPTION"
-msgstr ""
+msgstr "KUVAUS"
 
 #: ../data/template/transfer.rml.extracted.h:3
 msgid "DESTINATION"
@@ -12998,11 +12996,11 @@ msgstr ""
 
 #: ../data/template/transfer.rml.extracted.h:5
 msgid "OPEN:"
-msgstr ""
+msgstr "AVAA:"
 
 #: ../data/template/transfer.rml.extracted.h:6
 msgid "QUANTITY"
-msgstr ""
+msgstr "LAATU"
 
 #: ../data/template/transfer.rml.extracted.h:7
 msgid "RECEIVAL:"
@@ -13014,11 +13012,11 @@ msgstr ""
 
 #: ../data/template/transfer.rml.extracted.h:10
 msgid "SOURCE"
-msgstr ""
+msgstr "LÄHDE"
 
 #: ../data/template/transfer.rml.extracted.h:11
 msgid "TOTAL:"
-msgstr ""
+msgstr "YHTEENSÄ:"
 
 #: ../data/template/transfer.rml.extracted.h:12
 msgid "TRANSFER PRODUCTS"
