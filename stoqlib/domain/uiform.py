@@ -75,11 +75,19 @@ def create_default_forms(trans):
                        ('supplier', _('Supplier')),
                        ('transporter', _('Transporter')),
                        ('branch', _('Branch'))]:
-        ui_form = UIForm(connection=trans,
-                         form_name=name,
-                         description=desc)
+        ui_form = UIForm.selectOneBy(connection=trans,
+                                    form_name=name)
+        if ui_form is None:
+            ui_form = UIForm(connection=trans,
+                             form_name=name,
+                             description=desc)
         for (field_name, field_description,
              visible, mandatory) in person_fields:
+            ui_field = UIField.selectOneBy(connection=trans,
+                                           ui_form=ui_form,
+                                           field_name=field_name)
+            if ui_field is not None:
+                continue
             UIField(connection=trans,
                     ui_form=ui_form,
                     field_name=field_name,

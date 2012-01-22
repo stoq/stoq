@@ -1,3 +1,7 @@
+from stoqlib.domain.uiform import create_default_forms
+
+def apply_patch(trans):
+    trans.query("""
 CREATE TABLE ui_form (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -15,4 +19,6 @@ CREATE TABLE ui_field (
     mandatory boolean,
     visible boolean,
     ui_form_id bigint REFERENCES ui_form(id)
-);
+);""")
+
+    create_default_forms(trans)
