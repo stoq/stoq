@@ -34,6 +34,8 @@ class DatabaseForm(object):
                                   connection=conn)
 
     def update_widget(self, widget, field_name=None, other=None):
+        if not self.form:
+            return
         if field_name is None:
             field_name = widget.model_attribute
         field = self.form.get_field(field_name)
