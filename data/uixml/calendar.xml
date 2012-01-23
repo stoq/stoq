@@ -35,6 +35,7 @@
         <menu action="CurrentView">
           <menuitem action="ViewMonth"/>
           <menuitem action="ViewWeek"/>
+          <menuitem action="ViewDay"/>
         </menu>
         <menu action="CalendarEvents">
           <menuitem action="AccountsPayableEvents"/>
@@ -56,6 +57,7 @@
       <separator/>
       <toolitem action="ViewMonth"/>
       <toolitem action="ViewWeek"/>
+      <toolitem action="ViewDay"/>
     </placeholder>
   </toolbar>
 </ui>

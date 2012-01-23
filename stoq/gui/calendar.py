@@ -34,7 +34,8 @@ from stoqlib.api import api
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.stockicons import (STOQ_CALENDAR_TODAY,
                                     STOQ_CALENDAR_WEEK,
-                                    STOQ_CALENDAR_MONTH)
+                                    STOQ_CALENDAR_MONTH,
+                                    STOQ_CALENDAR_LIST)
 from stoqlib.gui.webview import WebView
 from stoqlib.lib import dateconstants
 from stoqlib.lib.daemonutils import start_daemon
@@ -101,6 +102,7 @@ class CalendarView(WebView):
     def _update_calendar_size(self, width, height):
         self._calendar_run('option', 'aspectRatio', float(width) / height)
 
+
     #
     # Callbacks
     #
@@ -132,7 +134,9 @@ class CalendarView(WebView):
         self._calendar_run('next')
 
     def change_view(self, view_name):
+        self._calendar_run('removeEvents')
         self._calendar_run('changeView', view_name)
+        self._calendar_run('refetchEvents')
         api.user_settings.set('calendar-view', view_name)
 
     def refresh(self):
@@ -143,7 +147,10 @@ class CalendarView(WebView):
 
     def update_events(self, **events):
         self._show_events.update(**events)
-        self.refresh()
+        print self._show_events
+        self._calendar_run('option', 'data', self._show_events)
+
+        self._calendar_run('refetchEvents')
         self._save_user_settings()
 
 
@@ -217,19 +224,25 @@ class CalendarApp(AppWindow):
              '', _("Show one month")),
             ('ViewWeek', STOQ_CALENDAR_WEEK, _("View as week"),
              '', _("Show one week")),
+            ('ViewDay', STOQ_CALENDAR_LIST, _("View as day"),
+             '', _("Show one day")),
             ]
         self.add_ui_actions('', radio_actions, 'RadioActions',
                             'radio')
         self.ViewMonth.set_short_label(_("Month"))
         self.ViewWeek.set_short_label(_("Week"))
+        self.ViewDay.set_short_label(_("Day"))
         self.ViewMonth.props.is_important = True
         self.ViewWeek.props.is_important = True
+        self.ViewDay.props.is_important = True
 
         view = api.user_settings.get('calendar-view', 'month')
         if view == 'month':
             self.ViewMonth.props.active = True
-        else:
+        elif view == 'basicWeek':
             self.ViewWeek.props.active = True
+        else:
+            self.ViewDay.props.active = True
 
     def create_ui(self):
         self.main_vbox.pack_start(self._calendar)
@@ -282,3 +295,6 @@ class CalendarApp(AppWindow):
 
     def on_ViewWeek__activate(self, action):
         self._calendar.change_view('basicWeek')
+
+    def on_ViewDay__activate(self, action):
+        self._calendar.change_view('basicDay')

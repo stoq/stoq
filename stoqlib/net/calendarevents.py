@@ -28,8 +28,9 @@ import json
 from twisted.web.resource import Resource
 
 from stoqlib.api import api
-from stoqlib.database.orm import AND, OR
+from stoqlib.database.orm import AND
 from stoqlib.domain.purchase import PurchaseOrderView
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.lib.formatters import get_formatted_price
@@ -44,191 +45,169 @@ class CalendarEvents(Resource):
             float(resource.args['start'][0]))
         end = datetime.datetime.fromtimestamp(
             float(resource.args['end'][0]))
+
+        print resource.args
         trans = api.new_transaction()
-        events = []
+        day_events = {}
         if resource.args.get('in_payments', [''])[0] == 'true':
-            self._collect_inpayments(start, end, events, trans)
+            self._collect_inpayments(start, end, day_events, trans)
         if resource.args.get('out_payments', [''])[0] == 'true':
-            self._collect_outpayments(start, end, events, trans)
+            self._collect_outpayments(start, end, day_events, trans)
         if resource.args.get('purchase_orders', [''])[0] == 'true':
-            self._collect_purchase_orders(start, end, events, trans)
-        events = self._summarize_events(events)
+            self._collect_purchase_orders(start, end, day_events, trans)
+
+        group = resource.args.get('group', [''])[0] == 'true'
+        events = self._summarize_events(day_events, group)
+        trans.close()
         return json.dumps(events)
 
-    def _collect_inpayments(self, start, end, events, trans):
-        for pv in InPaymentView.select(
-            OR(AND(InPaymentView.q.paid_date >= start,
-                   InPaymentView.q.paid_date <= end),
-               AND(InPaymentView.q.due_date >= start,
-                   InPaymentView.q.due_date <= end)),
-            connection=trans):
-            self._create_in_payment(pv, events)
+    def _collect_inpayments(self, start, end, day_events, trans):
+        query = AND(InPaymentView.q.status == Payment.STATUS_PENDING,
+                    InPaymentView.q.due_date >= start,
+                    InPaymentView.q.due_date <= end)
+        for pv in InPaymentView.select(query, connection=trans):
+            date, ev = self._create_in_payment(pv)
+            d = day_events.setdefault(date, dict(receivable=[],
+                                        payable=[], purchases=[]))
+            d['receivable'].append(ev)
 
-    def _collect_outpayments(self, start, end, events, trans):
-        for pv in OutPaymentView.select(
-            OR(AND(OutPaymentView.q.paid_date >= start,
-                   OutPaymentView.q.paid_date <= end),
-               AND(OutPaymentView.q.due_date >= start,
-                   OutPaymentView.q.due_date <= end)),
-            connection=trans):
-            self._create_out_payment(pv, events)
+    def _collect_outpayments(self, start, end, day_events, trans):
+        query = AND(OutPaymentView.q.status == Payment.STATUS_PENDING,
+                    OutPaymentView.q.due_date >= start,
+                    OutPaymentView.q.due_date <= end)
+        for pv in OutPaymentView.select(query, connection=trans):
+            date, ev = self._create_out_payment(pv)
+            d = day_events.setdefault(date, dict(receivable=[],
+                                        payable=[], purchases=[]))
+            d['payable'].append(ev)
 
-    def _collect_purchase_orders(self, start, end, events, trans):
-        for ov in PurchaseOrderView.select(
-            AND(PurchaseOrderView.q.expected_receival_date >= start,
-                PurchaseOrderView.q.expected_receival_date <= end),
-            connection=trans):
-            self._create_order(ov, events)
+    def _collect_purchase_orders(self, start, end, day_events, trans):
+        query = AND(PurchaseOrderView.q.expected_receival_date >= start,
+                    PurchaseOrderView.q.expected_receival_date <= end),
+        for ov in PurchaseOrderView.select(query, connection=trans):
+            date, ev = self._create_order(ov)
+            d = day_events.setdefault(date, dict(receivable=[],
+                                        payable=[], purchases=[]))
+            d['purchases'].append(ev)
 
-    def _create_in_payment(self, payment_view, events):
-        payment = payment_view.payment
-        className = "in-payment"
-        if payment.is_paid() or payment.status == payment.STATUS_CONFIRMED:
-            if payment_view.drawee:
-                title = _("Payment (%s) from %s was received") % (
-                    payment.paid_value,
-                    payment_view.drawee,)
-            else:
-                title = _("Payment (%s) was received") % (payment.paid_value, )
-            start = payment.paid_date
-            className = "in-payment-paid"
-        elif payment.is_pending():
-            if payment_view.drawee:
-                title = _("Payment (%s) from %s is due") % (
-                    payment.value,
-                    payment_view.drawee,)
-            else:
-                title = _("Payment (%s) due") % (payment.value, )
-            start = payment.due_date
-            if start < datetime.datetime.today():
-                className = "in-payment-late"
-            else:
-                className = "in-payment-due"
-        elif payment.is_cancelled():
-            return
-        else:
-            # FIXME: bug?
-            return
-        events.append({"title": title,
-                       "id": payment.id,
-                       "type": "in-payment",
-                       "start": start,
-                       "url": "stoq://dialog/payment?id=" + str(payment.id),
-                       "className": className})
+    def _create_in_payment(self, payment_view):
+        title = payment_view.description
+        if payment_view.drawee:
+            title = _("%s from %s") % (payment_view.description,
+                                       payment_view.drawee)
 
-    def _create_out_payment(self, payment_view, events):
-        payment = payment_view.payment
+        start = payment_view.due_date.date()
+        className = 'receivable'
+        if start < datetime.date.today():
+            className += " late"
+
+        return start, {"title": title,
+                "id": payment_view.id,
+                "type": "in-payment",
+                "start": str(start),
+                "url": "stoq://dialog/payment?id=" + str(payment_view.id),
+                "className": className}
+
+    def _create_out_payment(self, payment_view):
         supplier_name = payment_view.supplier_name
-        className = "out-payment"
 
-        if payment.is_paid() or payment.status == payment.STATUS_CONFIRMED:
-            if supplier_name:
-                title = _("%s (%s) to %s was paid") % (
-                    payment.description,
-                    payment.value, supplier_name,)
-            else:
-                title = _("%s (%s) was paid") % (payment.description,
-                                                 payment.value, )
-            start = payment.paid_date
-            className = "out-payment-paid"
-        elif payment.is_pending():
-            if supplier_name:
-                title = _("%s (%s) to %s is due") % (
-                    payment.description,
-                    payment.value, supplier_name,)
-            else:
-                title = _("%s (%s) due") % (
-                    payment.description, payment.value, )
-            start = payment.due_date
-            if start < datetime.datetime.today():
-                className = "out-payment-late"
-            else:
-                className = "out-payment-due"
-        elif payment.is_cancelled():
-            return
+        className = "payable"
+        if supplier_name:
+            title = _("%s to %s") % (
+                payment_view.description, supplier_name,)
         else:
-            # FIXME: bug?
-            return
+            title = _("%s") % (payment_view.description)
 
-        events.append({"title": title,
-                       "id": payment.id,
-                       "type": "out-payment",
-                       "start": start,
-                       "url": "stoq://dialog/payment?id=" + str(payment.id),
-                       "className": className})
+        start = payment_view.due_date.date()
+        if start < datetime.date.today():
+            className += " late"
 
-    def _create_order(self, order_view, events):
-        title = _("Purchase of %s from %s") % (
-            get_formatted_price(order_view.total),
+        return start, {"title": title,
+                "id": payment_view.id,
+                "type": "out-payment",
+                "start": str(start),
+                "url": "stoq://dialog/payment?id=" + str(payment_view.id),
+                "className": className}
+
+    def _create_order(self, order_view):
+        title = _("Receival from %s") % (
             order_view.supplier_name)
-        if order_view.confirm_date:
-            className = "purchase-confirmed"
-        else:
-            if order_view.expected_receival_date < datetime.datetime.today():
-                className = "purchase-late"
-            else:
-                className = "purchase-due"
 
-        events.append({"title": title,
-                       "id": order_view.id,
-                       "start": order_view.expected_receival_date,
-                       "type": "purchase",
-                       "url": "stoq://dialog/purchase?id=" + str(order_view.id),
-                       "className": className})
+        start = order_view.expected_receival_date.date()
 
-    def _summarize_events(self, events):
-        perDay = {}
-        # summarize per day
-        for event in events:
-            start = str(event["start"].date())
-            event["start"] = start
-            if start in perDay:
-                perDay[start].append(event)
-            else:
-                perDay[start] = [event]
+        className = "purchase"
+        if start < datetime.date.today():
+            className += " late"
 
-        # Display max 2 per days, and create a new summary event
-        # for the remaning
+        return start, {"title": title,
+                "id": order_view.id,
+                "date": str(start),
+                "type": "purchase",
+                "url": "stoq://dialog/purchase?id=" + str(order_view.id),
+                "className": className}
+
+    def _summarize_events(self, day_events, group):
         normal_events = []
-        for date, date_events in perDay.items():
-            normal_events.extend(date_events[:2])
-            if len(date_events) > 2:
+        for date, events in day_events.items():
+            if group:
                 summary_events = self._create_summary_events(
-                    date, date_events[2:])
+                                                    date, events)
                 normal_events.extend(summary_events)
+            else:
+                normal_events.extend(events['receivable'])
+                normal_events.extend(events['payable'])
+                normal_events.extend(events['purchases'])
         return normal_events
 
     def _create_summary_events(self, date, events):
-        assert type(date) == str, type(date)
-        in_payment_events = [e for e in events if e["type"] == "in-payment"]
-        out_payment_events = [e for e in events if e["type"] == "out-payment"]
-        purchase_events = [e for e in events if e["type"] == "purchase"]
+        in_payment_events = events['receivable']
+        out_payment_events = events['payable']
+        purchase_events = events['purchases']
+
         events = []
+
+        def add_event(title, url, date, class_name):
+            if date < datetime.date.today():
+                class_name += " late"
+            events.append(dict(title=title,
+                               url=url,
+                               start=str(date),
+                               className=class_name))
         if in_payment_events:
-            title_format = stoqlib_ngettext(_("%d more account receivable"),
-                                            _("%d more accounts receivable"),
-                                            len(in_payment_events))
-            url = "stoq://show/in-payments-by-date?date=%s" % (date, )
-            events.append(dict(title=title_format % len(in_payment_events),
-                               url=url,
-                               start=date,
-                               className="summarize"))
+            if len(in_payment_events) == 1:
+                events.append(in_payment_events[0])
+            else:
+                title_format = stoqlib_ngettext(_("%d account receivable"),
+                                                _("%d accounts receivable"),
+                                                len(in_payment_events))
+                title = title_format % len(in_payment_events)
+                class_name = "receivable"
+                url = "stoq://show/in-payments-by-date?date=%s" % (date, )
+                add_event(title, url, date, class_name)
+
         if out_payment_events:
-            title_format = stoqlib_ngettext(_("%d more account payable"),
-                                            _("%d more accounts payable"),
-                                            len(out_payment_events))
-            url = "stoq://show/out-payments-by-date?date=%s" % (date, )
-            events.append(dict(title=title_format % len(out_payment_events),
-                               url=url,
-                               start=date,
-                               className="summarize"))
+            if len(out_payment_events) == 1:
+                events.append(out_payment_events[0])
+            else:
+                title_format = stoqlib_ngettext(_("%d account payable"),
+                                                _("%d accounts payable"),
+                                                len(out_payment_events))
+                title = title_format % len(out_payment_events)
+                class_name  = "payable"
+                url = "stoq://show/out-payments-by-date?date=%s" % (date, )
+                add_event(title, url, date, class_name)
+
         if purchase_events:
-            title_format = stoqlib_ngettext(_("%d more purchase"),
-                                            _("%d more purchases"),
-                                            len(purchase_events))
-            url = "stoq://show/purchases-by-date?date=%s" % (date, )
-            events.append(dict(title=title_format % len(purchase_events),
-                               url=url,
-                               start=date,
-                               className="summarize"))
+            if len(purchase_events) == 1:
+                events.append(purchase_events[0])
+            else:
+                title_format = stoqlib_ngettext(_("%d purchase"),
+                                                _("%d purchases"),
+                                                len(purchase_events))
+                title = title_format % len(purchase_events)
+                url = "stoq://show/purchases-by-date?date=%s" % (date, )
+                class_name = 'purchase'
+                add_event(title, url, date, class_name)
+
         return events
+
