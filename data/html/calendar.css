@@ -1,107 +1,66 @@
 * {
-  -webkit-user-select: none;
-  -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    font-family: Ubuntu;
 }
 
-.summarize,
-.fc-agenda .summarize .fc-event-time,
-.summarize a {
-  background: white;
-  color: black;
+#calendar {
+    font-size: 13px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
 }
 
-.out-payment,
-.fc-agenda .out-payment .fc-event-time,
-.out-payment a {
-  background: red;
-  border-color: black;
-  color: black;
+.fc-day-number {
 }
 
-.out-payment-late,
-.fc-agenda .out-payment-late .fc-event-time,
-.out-payment-late a {
-  background: red;
-  border-color: white;
-  color: white;
-  font-weight: bold;
-  text-shadow: 2px 2px black;
+.fc-day-content {
 }
 
-.out-payment-due,
-.fc-agenda .out-payment-due .fc-event-time,
-.out-payment-due a {
-  background: #ff6868;
-  border-color: black;
-  color: white;
-  text-shadow: 2px 2px black;
+.fc-event {
+    border: 1px solid #eee;
+    border-left: 5px solid black;
+    color: black;
 }
 
-.out-payment-paid,
-.fc-agenda .out-payment-paid .fc-event-time,
-.out-payment-paid a {
-  background: #ffc6c6;
-  border-color: #ffc6c6;
-  color: black;
+.fc-event-inner {
+    border-width: 0 !important;
+    padding: 0 2px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
-.in-payment,
-.fc-agenda .in-payment .fc-event-time,
-.in-payment a {
-  background: blue;
-  border-color: black;
-  color: white;
+.fc-view-basicWeek .fc-event {
+    font-size: 13px;
 }
 
-.in-payment-late,
-.fc-agenda .in-payment-late .fc-event-time,
-.in-payment-late a {
-  background: blue;
-  border-color: white;
-  color: white;
-  font-weight: bold;
-  text-shadow: 2px 2px black;
-}
-
-.in-payment-due,
-.fc-agenda .in-payment-due .fc-event-time,
-.in-payment-due a {
-  background: 686bff;
-  border-color: black;
-  color: white;
-  text-shadow: 2px 2px black;
-}
-
-.in-payment-paid,
-.fc-agenda .in-payment-paid .fc-event-time,
-.in-payment-paid a {
-  background: #c6c7ff;
-  border-color: #c6c7ff;
-  color: black;
-}
-
-.purchase-confirmed,
-.fc-agenda .purchase-confirmed .fc-event-time,
-.purchase-confirmed a {
-  background: #0000ff
-  border-color: #0000ff;
-  color: black;
-}
-
-.purchase-due,
-.fc-agenda .purchase-due .fc-event-time,
-.purchase-due a {
-  background: #0000ff
-  border-color: #0000ff;
-  color: black;
+.ui-tooltip {
+    font-size: 13px;
 }
 
 
-.purchase-late,
-.fc-agenda .purchase-late .fc-event-time,
-.purchase-late a {
-  background: #0000ff
-  border-color: #0000ff;
-  color: black;
+
+
+.summary {
+    border-left-color: #aaa;
 }
+
+.payable {
+    border-left-color: #cc0000;
+}
+
+.receivable {
+    border-left-color: #4e9a06;
+}
+
+.purchase {
+    border-left-color: #204a87;
+}
+
+.late {
+    font-weight: bold;
+}
+
 

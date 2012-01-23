@@ -2,18 +2,22 @@
 <html>
 
 <head>
-  <link rel='stylesheet' type='text/css' href='/web/static/calendar.css' />
   <link rel='stylesheet' type='text/css' href='/web/static/js/fullcalendar-1.5.2/fullcalendar/fullcalendar.css' />
+  <link rel='stylesheet' type='text/css' href='/web/static/js/qtip/jquery.qtip.css' />
+  <link rel='stylesheet' type='text/css' href='/web/static/calendar.css' />
   <script type='text/javascript' src='/web/static/js/fullcalendar-1.5.2/jquery/jquery-1.5.2.min.js'></script>
-  <script type='text/javascript' src='/web/static/js/fullcalendar-1.5.2/fullcalendar/fullcalendar.min.js'></script>
+  <script type='text/javascript' src='/web/static/js/fullcalendar-1.5.2/fullcalendar/fullcalendar.js'></script>
+  <script type='text/javascript' src='/web/static/js/qtip/jquery.qtip.js'></script>
 
   <script>
+  var timeout_id = 0;
   function startup(options) {
       options.aspectRatio = 2.3;
       options.events = function(start, end, callback) {
         var data = {};
         data.start = start.getTime() / 1000;
         data.end = end.getTime() / 1000;
+        data.group = $('#calendar').fullCalendar('getView').name == 'month';
         if ('data' in options) {
             $.extend(data, options.data);
         }
@@ -26,6 +30,19 @@
             }
         });
       };
+      options.eventRender = function(event, element) {
+        element.qtip({
+          content: event.title,
+          position: {
+            my: 'top center',
+            at: 'bottom center',
+            viewport: $('#calendar'),
+            adjust: {
+              method: 'shift',
+            }
+          }
+        });
+      }
 
       options.header = {
           left: '',
@@ -34,16 +51,23 @@
       };
       options.loading = function(isLoading, view) {
              if (isLoading) {
-                $('#loading').show();
+                timeout_id = setTimeout(function() {
+                    $('#loading').show();
+                }, 200);
              } else {
+              clearTimeout(timeout_id);
                 $('#loading').hide();
              }
       };
       $('#calendar').fullCalendar(options);
+      //$('#calendar').fullCalendar('gotoDate', 2010, 10)
+      //$('#calendar').fullCalendar('changeView', 'basicWeek')
   };
   $(function() {
      if (navigator.userAgent.search("Stoq") == -1) {
-        startup({});
+        startup({data: {'in_payments': true,
+                        'out_payments':  true,
+                        'purchase_orders': true}});
      }
   })
   </script>
@@ -54,7 +78,7 @@
     <div id='loading' style='margin:0em 0'>
       Loading calendar content, please wait...
     </div>
-    <div id='calendar' style='margin:3em 0;font-size:13px;position: fixed; top: 0'>
+    <div id='calendar' style='font-size:13px;position: fixed; top: 0'>
     </div>
   </div>
 </body>
