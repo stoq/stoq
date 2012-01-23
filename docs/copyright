@@ -47,9 +47,10 @@ can be downloaded from <http://download.gnome.org/sources/gnome-icon-theme/>:
 These pixwmaps were copied from evolution, licensed under LGPL-v2/v3:
 
 * stoq-calendar-app
-* stoq-calendar-week
+* stoq-calendar-list
 * stoq-calendar-month
 * stoq-calendar-today
+* stoq-calendar-week
 
 Stoq external
 =============
