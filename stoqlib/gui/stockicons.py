@@ -25,9 +25,10 @@
 STOQ_ADMIN_APP = "stoq-admin-app"
 STOQ_BILLS = "stoq-bills"
 STOQ_CALENDAR_APP = "stoq-calendar-app"
+STOQ_CALENDAR_LIST = "stoq-calendar-list"
 STOQ_CALENDAR_MONTH = "stoq-calendar-month"
-STOQ_CALENDAR_WEEK = "stoq-calendar-week"
 STOQ_CALENDAR_TODAY = "stoq-calendar-today"
+STOQ_CALENDAR_WEEK = "stoq-calendar-week"
 STOQ_CLIENTS = "stoq-clients"
 STOQ_EDIT = "stoq-edit"
 STOQ_DELIVERY = "stoq-delivery"
@@ -83,15 +84,18 @@ icon_info = [
     (STOQ_CALENDAR_APP,
      {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-24x24.svg",
       GTK_ICON_SIZE_DIALOG: "stoq-calendar-48x48.svg"}),
+    (STOQ_CALENDAR_LIST,
+     {GTK_ICON_SIZE_MENU: "stoq-calendar-list-16x16.png",
+      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-list-24x24.png"}),
     (STOQ_CALENDAR_MONTH,
      {GTK_ICON_SIZE_MENU: "stoq-calendar-month-16x16.png",
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-month-24x24.png"}),
-    (STOQ_CALENDAR_WEEK,
-     {GTK_ICON_SIZE_MENU: "stoq-calendar-week-16x16.png",
-      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-week-24x24.png"}),
     (STOQ_CALENDAR_TODAY,
      {GTK_ICON_SIZE_MENU: "stoq-calendar-today-16x16.png",
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-today-24x24.png"}),
+    (STOQ_CALENDAR_WEEK,
+     {GTK_ICON_SIZE_MENU: "stoq-calendar-week-16x16.png",
+      GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-calendar-week-24x24.png"}),
     (STOQ_CLIENTS,
      {GTK_ICON_SIZE_DIALOG: "stoq-clients-48x48.png"}),
     (STOQ_DELIVERY,
