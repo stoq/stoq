@@ -102,7 +102,6 @@ class CalendarView(WebView):
     def _update_calendar_size(self, width, height):
         self._calendar_run('option', 'aspectRatio', float(width) / height)
 
-
     #
     # Callbacks
     #
