@@ -31,7 +31,7 @@
   <p>
     Esses arquivos podem ser importados importados por um sistema de emissão de
     NF-e, como o
-    <link href="http://www.emissornfe.fazenda.sp.gov.br">Emissor de NF-e da Secretaria da Fazenda</link>.
+    <link href="http://www.emissornfe.fazenda.sp.gov.br/">Emissor de NF-e da Secretaria da Fazenda</link>.
     Após este passo a importação pode ser feita, de modo que toda nota
     importada estará automaticamente com o status “em digitação”. Todo restante
     do processo deve ser realizado no sistema da receita, entre eles a

@@ -21,7 +21,7 @@
   </p>
   <p>
     Tenha mais informações visitando o nosso website em:
-    <link href="http://www.stoq.com.br" />.
+    <link href="http://www.stoq.com.br/" />.
   </p>
 
   <section id="contact-us">
@@ -35,12 +35,7 @@
         <title>Comunicação ao vivo</title>
         <p>
           Possuímos uma equipe online principalmente em horário comercial no
-          canal <code>#stoq</code> do servidor
-          <link href="http://freenode.net">FreeNode</link>. Para se conectar,
-          utilize um
-          <link href="http://webchat.freenode.net">serviço online de chat</link>
-          ou algum cliente de IRC como o
-          <link href="http://xchat.org">X-Chat</link>.
+          <link href="http://chat.stoq.com.br/">Stoq Chat online</link>.
         </p>
       </item>
       <item>
