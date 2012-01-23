@@ -1,0 +1,65 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task 2column"
+      id="payment-method">
+
+  <title>Métodos de pagamentos</title>
+  <info>
+    <desc>
+      Métodos de pagamentos do Stoq
+    </desc>
+
+    <link type="guide" xref="app-admin" />
+    <link type="guide" xref="app-till" />
+    <link type="guide" xref="app-pos" />
+    <link type="seealso" xref="sale" />
+    <link type="seealso" xref="account-receivable" />
+    <link type="seealso" xref="bill" />
+    <link type="seealso" xref="plugin-tef" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    O Stoq possui suporte a diferentes métodos de pagamentos para
+    <link xref="account-receivable">contas a receber</link>, dentre eles
+    Dinheiro, Cartão, Cheque, Boleto, Fiado e Múltiplo (que é utilizado quando
+    uma <link xref="sale">venda</link> é paga dividida em vários métodos de
+    pagamentos).
+  </p>
+  <p>
+    Você pode acessar informações sobre os métodos de pagamentos disponíveis no
+    <link xref="app-admin" />, através do menu
+    <guiseq><gui>Configurar</gui><gui>Métodos de pagamentos</gui></guiseq>, ou
+    mesmo no ícone <gui>Métodos de pagamentos</gui> na lista do aplicativo.
+  </p>
+  <p>
+    Na listagem de métodos de pagamentos, a coluna <gui>Ativo</gui> indica se o
+    método está disponível para pagamento vendas. Se você não aceita Cheques e
+    Fiado, basta apenas desmarcar essa coluna para esses métodos (com excessão
+    do método Dinheiro, que deverá sempre estar disponível).
+  </p>
+  <p>
+    Com excessão dos métodos Múltiplo e Fiado, você pode configurar cada método
+    selecionando o método e clicando em <gui>Editar</gui>. No
+    <link xref="overview#editor">editor</link> que será aberto, você poderá
+    prover algumas informações extras referente ao método. Em todos, poderemos
+    informar a <gui>Conta Padrão</gui> de destino do pagamento no
+    <link xref="app-financial" /> que será sugerida ao realizar o pagamento.
+    Em alguns métodos, como Cheque, Cartão e Boleto, também poderá ser
+    informado o <gui>Máximo de parcelas</gui>, assim como os <gui>Juros</gui>
+    cobrados para parcelamento e etc.
+  </p>
+  <note style="important">
+    <p>
+      No método Boleto, a <link xref="account">Conta Padrão</link> informada
+      deverá ser do tipo Banco, caso você deseje realizar a impressão desses
+      <link xref="bill">boletos</link>.
+    </p>
+  </note>
+  <note style="tip">
+    <p>
+      O método Cartão pode ser utilizado com uma maior integração com o Stoq
+      utilizando o <link xref="plugin-tef">Plugin TEF</link>.
+    </p>
+  </note>
+
+</page>

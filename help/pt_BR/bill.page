@@ -13,64 +13,62 @@
   </info>
 
   <p>
-    O stoq possui um suporte inicial a geração e impressão de boletos para
-    <link xref="account-receivable">recebimento de pagamentos</link>.
+    O Stoq é capaz de imprimir boletos para
+    <link xref="account-receivable">contas a receber</link> para os seguintes
+    bancos: Banrisul, Bradesco, Banco do Brasil, Caixa Econômica Federal, Banco
+    Real e Banco Santander.
   </p>
-  <note style="bug">
-    <p>
-      No momento o processo exige a edição manual do arquivo de configurações
-      (exemplificada abaixo), porém, estamos trabalhando para uma maior
-      facilidade disso no futuro!
-    </p>
-  </note>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="section">
+    <title>Sumário</title>
+  </links>
 
   <section id="howto">
     <title>Configurando</title>
+    <steps>
+      <item>
+        <p>
+          No <link xref="app-financial" /> crie uma <gui>Conta</gui> do tipo
+          <gui>Banco</gui>. Você deve informar o <gui>Banco</gui>,a
+          <gui>Agência</gui> e a <gui>Conta</gui> onde o pagamento do boleto
+          será depositado.
+        </p>
+        <note style="important">
+          <p>
+            Dependendo do banco escolhido, alguns campos extrar precisarão ser
+            preenchidos (como <gui>Carteira</gui> para o Banco Itaú e Caixa
+            Econômica Federal e etc).
+          </p>
+        </note>
+      </item>
+      <item>
+        <p>
+          Após a criação da conta, edite o
+          <link xref="payment-method">método de pagamento</link> Boleto,
+          selecionando como <gui>Conta Padrão</gui> a conta criada acima.
+          Tenha certeza também do método estar ativo.
+        </p>
+      </item>
+      <item>
+        <p>
+          Pronto! O Stoq foi corretamente configurado e cocê já pode realizar a
+          <link xref="#printing">impressão de boletos</link>.
+        </p>
+      </item>
+    </steps>
+  </section>
+
+  <section id="printing">
+    <title>Imprimindo</title>
     <p>
-      Você deverá adicionar ao arquivo
-      <file>~/.stoq/stoq.conf</file> (~ representa a pasta pessoal do usuário)
-      uma sessão [Boleto] seguindo o exemplo abaixo:
-    </p>
-    <code>
-[Boleto]
-; Boleto section should inform the bank code, and can provide up to 3 lines
-; to add at the instructions field.
-
-; There should be another section named after the bank_id, that stores the
-; information abount the account destination of the bill
-banco = 104
-
-instrucao1 = Primeia linha da instrução
-instrucao2 = Segunda linha da instrução
-instrucao3 = Terceira linha da instrução
-
-[104]
-; Nossa Caixa
-carteira = 18
-agencia = 1565
-conta = 414
-
-[001]
-; Banco do Brasil
-convenio = 12345678
-len_convenio = 8
-agencia = 1172
-conta = 403005
-    </code>
-    <p>
-      Como pode ser visto no exemplo, informamos em "banco = 104" que iremos
-      utilizar o banco indicado na sessão [104] e abaixo. Além disso, podemos
-      informar em "instrucao1", "instrucao2" e "instrucao3" 3 linhas de
-      instruções que serão impressas no boleto.
-    </p>
-    <p>
-      Após isso, para imprimir o boleto, no <link xref="app-receivable" />,
-      realize uma
+      Para realizar a impressão de um boleto para uma
+      <link xref="account-receivable">conta a receber</link>, abra o
+      <link xref="app-receivable" />, realize uma
       <link ref="account-receivable-search">pesquisa por contas a receber</link>
       pela conta e questão e selecione o menu
       <guiseq><gui>Pagamento</gui><gui>Imprimir boleto</gui></guiseq>.
     </p>
   </section>
-
 
 </page>
