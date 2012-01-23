@@ -167,7 +167,7 @@ class EmployeeEditor(BasePersonRoleEditor):
     model_iface = IEmployee
     gladefile = 'BaseTemplate'
 
-    ui_form_name = 'client'
+    ui_form_name = 'employee'
 
     #
     # BaseEditor hooks
