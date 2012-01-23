@@ -52,6 +52,21 @@ class UIForm(Domain):
                                    connection=self.get_connection())
 
 
+def _add_fields_to_form(trans, ui_form, fields):
+    for (field_name, field_description,
+         visible, mandatory) in fields:
+        ui_field = UIField.selectOneBy(connection=trans,
+                                       ui_form=ui_form,
+                                       field_name=field_name)
+        if ui_field is not None:
+            continue
+        UIField(connection=trans,
+                ui_form=ui_form,
+                field_name=field_name,
+                description=field_description,
+                visible=visible,
+                mandatory=mandatory)
+
 def create_default_forms(trans):
     person_fields = [
         ('name', _('Name'), True, True),
@@ -69,6 +84,11 @@ def create_default_forms(trans):
         ('country', _('Country'), True, True),
         ]
 
+    employee_fields = [
+        ('role', _('Role'), True, True),
+        ('salary', _('Salary'), True, True),
+        ]
+
     for name, desc in [('user', _('User')),
                        ('client', _('Client')),
                        ('employee', _('Employee')),
@@ -76,21 +96,13 @@ def create_default_forms(trans):
                        ('transporter', _('Transporter')),
                        ('branch', _('Branch'))]:
         ui_form = UIForm.selectOneBy(connection=trans,
-                                    form_name=name)
+                                     form_name=name)
         if ui_form is None:
             ui_form = UIForm(connection=trans,
                              form_name=name,
                              description=desc)
-        for (field_name, field_description,
-             visible, mandatory) in person_fields:
-            ui_field = UIField.selectOneBy(connection=trans,
-                                           ui_form=ui_form,
-                                           field_name=field_name)
-            if ui_field is not None:
-                continue
-            UIField(connection=trans,
-                    ui_form=ui_form,
-                    field_name=field_name,
-                    description=field_description,
-                    visible=visible,
-                    mandatory=mandatory)
+        _add_fields_to_form(trans, ui_form, person_fields)
+
+    employee_form = UIForm.selectOneBy(connection=trans,
+                                       form_name='employee')
+    _add_fields_to_form(trans, employee_form, employee_fields)
