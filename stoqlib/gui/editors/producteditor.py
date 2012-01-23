@@ -585,6 +585,7 @@ class ProductEditor(SellableEditor):
     model_name = _('Product')
     model_type = Product
     help_section = 'product'
+    ui_form_name = 'product'
 
     _model_created = False
 
@@ -620,7 +621,8 @@ class ProductEditor(SellableEditor):
     #
 
     def setup_slaves(self):
-        details_slave = ProductDetailsSlave(self.conn, self.model.sellable)
+        details_slave = ProductDetailsSlave(self.conn, self.model.sellable,
+                                            self.db_form)
         self.add_extra_tab(_(u'Details'), details_slave)
 
         for tabname, tabslave in self.get_extra_tabs():

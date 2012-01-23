@@ -46,7 +46,8 @@ class ProductInformationSlave(BaseEditorSlave):
                      'height', 'depth', 'weight', 'ncm', 'ex_tipi', 'genero']
     storable_widgets = ['minimum_quantity', 'maximum_quantity']
 
-    def __init__(self, conn, model):
+    def __init__(self, conn, model, db_form):
+        self.db_form = db_form
         BaseEditorSlave.__init__(self, conn, model)
 
     def _setup_unit_labels(self):
@@ -67,6 +68,39 @@ class ProductInformationSlave(BaseEditorSlave):
             widget.set_adjustment(
                 gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
 
+        if not self.db_form:
+            return
+        self.db_form.update_widget(self.height, other=self.height_lbl)
+        self.db_form.update_widget(self.width, other=self.width_lbl)
+        self.db_form.update_widget(self.depth, other=self.depth_lbl)
+        self.db_form.update_widget(self.location, other=self.location_lbl)
+        self.db_form.update_widget(self.weight, other=[self.weight_lbl,
+                                                       self.kg_lbl])
+        self.db_form.update_widget(self.manufacturer,
+                                   other=self.manufacturer_lbl)
+        self.db_form.update_widget(self.part_number,
+                                   other=self.part_number_lbl)
+        # Stock details
+        self.db_form.update_widget(self.minimum_quantity,
+                                   other=[self.min_lbl,
+                                          self.min_unit])
+        self.db_form.update_widget(self.maximum_quantity,
+                                   other=[self.max_lbl,
+                                          self.max_unit])
+        if (not self.minimum_quantity.get_visible() and
+            not self.maximum_quantity.get_visible()):
+            self.stock_lbl.hide()
+
+        # Mercosul
+        self.db_form.update_widget(self.ncm, other=self.ncm_lbl)
+        self.db_form.update_widget(self.ex_tipi, other=self.ex_tipi_lbl)
+        self.db_form.update_widget(self.genero, other=self.genero_lbl)
+
+        if (not self.ncm.get_visible() and
+            not self.ex_tipi.get_visible() and
+            not self.genero.get_visible()):
+            self.mercosul_lbl.hide()
+
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(
@@ -78,7 +112,7 @@ class ProductInformationSlave(BaseEditorSlave):
                 storable, ProductInformationSlave.storable_widgets)
 
     def hide_stock_details(self):
-        self.stock_label.hide()
+        self.stock_lbl.hide()
         self.min_label.hide()
         self.max_label.hide()
         self.min_hbox.hide()
@@ -148,7 +182,8 @@ class ProductDetailsSlave(SellableDetailsSlave):
 
     def setup_slaves(self):
         self.setup_image_slave(self.model.product)
-        self.info_slave = ProductInformationSlave(self.conn, self.model.product)
+        self.info_slave = ProductInformationSlave(self.conn, self.model.product,
+                                                  self.db_form)
         self.attach_slave('details_holder', self.info_slave)
 
     def hide_stock_details(self):

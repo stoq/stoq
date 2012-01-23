@@ -39,7 +39,12 @@ class DatabaseForm(object):
         if field_name is None:
             field_name = widget.model_attribute
         field = self.form.get_field(field_name)
+        if field is None:
+            return
         widget.props.mandatory = field.mandatory
         widget.props.visible = field.visible
         if other:
-            other.props.visible = field.visible
+            if type(other) not in [list, tuple]:
+                other = [other]
+            for o in other:
+                o.props.visible = field.visible
