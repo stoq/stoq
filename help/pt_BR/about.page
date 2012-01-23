@@ -27,7 +27,8 @@
   <section id="contact-us">
     <title>Entre em contato</title>
     <p>
-      Utilize os seguintes meios para encontrar em contato:
+      Para maiores informações ou dúvidas não sanadas neste manual, você pode
+      entrar em contato conosco através de uma das seguintes formas:
     </p>
     <list>
       <item>
@@ -66,8 +67,14 @@
         <title>Contato comercial</title>
         <p>
           Para tratar de assuntos comerciais, entre em contato no email:
-          <em>comercial @ stoq.com.br</em> (sem espaços).
         </p>
+        <list>
+          <item>
+            <p>
+              <link href="comercial@stoq.com.br" />
+            </p>
+          </item>
+        </list>
       </item>
     </list>
   </section>

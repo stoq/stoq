@@ -25,6 +25,13 @@
     mesmo o seu <gui>Pai</gui>, podendo esta conta ser filha de uma outra conta
     existente.
   </p>
+  <note style="important">
+    <p>
+      O tipo <gui>Banco</gui> irá mostrar algumas informações extras de
+      preenchimento, que serão utilizadas para a geração e impressão de
+      <link xref="bill">boletos</link>.
+    </p>
+  </note>
   <p>
     Ao dar um duplo clique em uma conta, uma nova aba será aberta listando
     todas as <link xref="transaction">transações</link> referentes a mesma.

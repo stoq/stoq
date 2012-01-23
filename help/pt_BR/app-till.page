@@ -7,7 +7,8 @@
     <desc>
       <link xref="till" />,
       <link xref="sale" />,
-      <link xref="client" />...
+      <link xref="client" />,
+      <link xref="payment-method" />...
     </desc>
 
     <link type="guide" xref="index" />

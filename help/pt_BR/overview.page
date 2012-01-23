@@ -22,7 +22,8 @@
   <section id="launcher">
     <title>Lançador de aplicativos</title>
     <p>
-      Ao abrir o Stoq, cairemos na tela do lançador de
+      Ao abrir o Stoq e realizar o <link xref="user-login">login</link> com o
+      dado usuário, você será apresentado ao lançador de aplicativos:
       <link xref="#app">aplicativos</link>.
     </p>
     <figure>
@@ -33,9 +34,9 @@
       <media type="image" src="figures/stoq_launcher.png" />
     </figure>
     <p>
-      Nesta tela podemos iniciar os aplicativos do Stoq clicando dando um duplo
-      clique nos ícones ou navegar utilizando as setas no teclado e selecionar
-      apertando a tecla <key>Enter</key>.
+      Nesta tela podemos iniciar os aplicativos do Stoq com um duplo clique nos
+      ícones ou até mesmo navegando com as setas direcionais do teclado e
+      apertando <key>Enter</key>.
     </p>
     <p>
       Ao lançar um aplicativo, podemos retornar ao lançador através do menu
@@ -53,16 +54,16 @@
   <section id="app">
     <title>Aplicativos</title>
     <p>
-      Aplicativos são a base do funcionamento do Stoq. Eles são lançados
+      Os aplicativos são a base do funcionamento do Stoq. Eles são lançados
       através do <link xref="#launcher" /> e podem rodar conjuntamente
-      se lançados em janelas diferentes por
-      <guiseq><gui>Novo</gui><gui>Janela</gui></guiseq>.
+      se lançados em janelas diferentes (através do menu
+      <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Janela</gui></guiseq>).
     </p>
     <p>
-      Para a simplificação da vida dos usuários, o Stoq faz uma separação de
-      funcionalidades de um sistema de gestão comercial/industrial em diversos
-      aplicativos. Para saber mais sobre cada um dos aplicativos, de uma olhada
-      na <link xref="index">página inicial</link> do manual.
+      Para simplificar a da vida dos usuários e administradores de empresas, o
+      Stoq faz uma separação de funcionalidades de um sistema de gestão
+      comercial/industrial em diversos aplicativos. Você pode saber mais sobre
+      cada um na <link xref="index">página inicial</link> do manual.
     </p>
     <note style="important">
       <p>
@@ -125,8 +126,8 @@
         facilidade.
       </p>
       <p>
-        Para uma maior facilidade ainda, podemos clicar no registro com o botão
-        direito:
+        Para uma maior facilidade ainda, podemos acessar as mesmas opções
+        dando um clique com o botão direito do mouse no registro:
       </p>
       <media type="image" src="figures/stoq_results_popup.png" />
       <p>
@@ -144,17 +145,17 @@
       <link xref="app-sales" /> e produtos no menu
       <guiseq><gui>Pesquisar</gui><gui>Produtos</gui></guiseq> do
       <link xref="app-purchase" />. Realizamos a pesquisa digitando algum
-      padrão que queremos encontrar (como parte do nome de um produto) e
-      apertamos <key>Enter</key> ou clicamos no botão <gui>Localizar</gui> ao
-      lado.
+      padrão que queremos encontrar (como parte do nome de um produto, parte de
+      seu código de barras, etc) e apertamos <key>Enter</key> ou clicamos no
+      botão <gui>Localizar</gui> ao lado.
     </p>
     <media type="image" src="figures/stoq_search_search.png" />
     <note style="important">
       <p>
-        Em algumas pesquisas, mais notavelmente nos aplicativos o botão
+        Em algumas pesquisas, mais notavelmente nos aplicativos, o botão
         localizar pode estar escondido. Nessas pesquisas, a atualização da
         mesma é feita automaticamente, porém, você ainda pode utilizar a tecla
-        <key>Enter</key>.
+        <key>Enter</key> na caixa de pesquisa para forçar uma atualização.
       </p>
     </note>
     <p>
@@ -166,10 +167,9 @@
       O botão <gui>Novo</gui> irá abrir um
       <link xref="#editor">editor</link> para a criação de um novo
       registro, do mesmo tipo da pesquisa (na pesquisa de produtos, ele criará
-      um novo produto). O botão <gui>Editar</gui> ficará habilitado ao
-      selecionarmos um registro na lista e ao clicarmos nele, abrirá um
-      <link xref="#editor">editor</link> para a edição do registro
-      selecionado.
+      um novo produto). Ao selecionarmos um registro na lista, o botão
+      <gui>Editar</gui> será habilitado e poderá ser clicado. Isso abrirá um
+      <link xref="#editor">editor</link> para a edição do registro em questão.
     </p>
     <section id="search-filter">
       <title>Filtros</title>
@@ -179,9 +179,10 @@
       </p>
       <media type="image" src="figures/stoq_search_filter.png" />
       <p>
-        Esse <gui>Filtro</gui> é utilizado para adicionarmos filtros adicionais
-        de pesquisa, baseado nas colunas presentes, para que possamos realizar
-        uma busca mais avançada.
+        Esse <gui>Filtro</gui> é utilizado para incluirmos filtros adicionais
+        de pesquisa, baseado nas colunas presentes (mesmo que ocultas), para
+        que possamos realizar uma busca mais avançada (ex. Buscar vendas que
+        tenham sido realizadas no mês passado e por um dado vendedor).
       </p>
     </section>
     <section id="search-column">
@@ -204,7 +205,12 @@
           O Stoq respeita as opções de visualização de colunas do usuário, isto
           é, em todas as pesquisas, ele salva o tamanho das colunas, a
           ordenação e até mesmo a visibilidade das mesmas e restaura essas
-          opções na próxima vez que a pesquisa for rodada.
+          opções na próxima vez que a pesquisa for rodada. Essa funcionalidade
+          é realizada a nível de usuário e computador, ou seja, as alterações
+          nas colunas de um usuário X em um computador Y apenas surtirão efeito
+          para esse mesmo usuário utilizando o mesmo computador. O usuário Z
+          não irá ter suas colunas alteradas nesse computador Y, assim como
+          esse usuário X não terá as suas colunas alteradas no computador W.
         </p>
       </note>
     </section>
@@ -249,7 +255,7 @@
       <title>Validação de campos</title>
       <p>
         Para garantir a corretude dos dados e garantir que o Stoq não vá
-        apresentar erros estranhos, fazemos várias validações de campos em
+        apresentar erros estranhos, realizamos várias validações de campos em
         diversos editores. Indicamos um campo não válido tornando ele vermelho
         e mostrando um ícone de erro ao lado.
       </p>
@@ -262,8 +268,8 @@
       <media type="image" src="figures/stoq_validation_after.png" />
       <p>
         O Stoq não permitirá a confirmação do editor enquanto houverem campos
-        com problemas de validação. Corrija todos antes de apertar em
-        <gui>Ok</gui>.
+        com problemas de validação. O botão <gui>Ok</gui> somente será
+        habilitado após a correção de todos os erros.
       </p>
     </section>
   </section>
@@ -312,6 +318,15 @@
       Os dados do cabeçalho são preenchidos automaticamente de acordo com as
       informações da <link xref="branch">filiail</link>.
     </p>
+    <p>
+      Isso é uma facilidade muito grande para criarmos relatórios customizados.
+      ex: Queremos um relatório de todas as vendas realizadas no mês de janeiro
+      de 2012, pelo vendedor Claudio. Abrimos o <link xref="app-sales" /> e
+      adicionamos <link xref="#search-filter">filtros</link> para restringir as
+      vendas mostradas para exibir apenas as realizadas em 01/2012 pelo
+      vendedor Otávio. Mandamos então imprimir o relatório, que listará
+      exatamente o que estamos vendo na lista de resultados.
+    </p>
     <note style="important">
       <p>
         Apesar da facilidade em imprimir relatórios, pense em sua
@@ -319,7 +334,7 @@
         sumir do Stoq do dia para a noite..Imprima apenas se for totalmente
         necessário! Lembre-se também que as vezes é mais fácil utilizar a opção
         de impressão em PDF (oferecida pelo sistema operacional) onde o mesmo
-        pode ser anexado em um email.
+        pode ser anexado e enviado através de um email.
       </p>
     </note>
   </section>

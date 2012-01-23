@@ -5,7 +5,8 @@
   <title>Aplicativo Contas a receber</title>
   <info>
     <desc>
-      <link xref="account-receivable" />...
+      <link xref="account-receivable" />,
+      <link xref="payment-method" />...
     </desc>
 
     <link type="guide" xref="index" />
