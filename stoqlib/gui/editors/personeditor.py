@@ -198,7 +198,15 @@ class EmployeeEditor(BasePersonRoleEditor):
         self.role_slave = EmployeeRoleSlave(self.conn, self.model,
                                             edit_mode=self.edit_mode,
                                             visual_mode=self.visual_mode)
+        db_form = self._person_slave.db_form
         slave._person_slave.attach_role_slave(self.role_slave)
+
+        if db_form:
+            db_form.update_widget(self.role_slave.role,
+                                  other=self.role_slave.role_lbl)
+            db_form.update_widget(self.role_slave.salary,
+                                  other=self.role_slave.salary_lbl)
+
         history_tab_label = _("Role History")
         history_slave = EmployeeRoleHistorySlave(self.model)
         slave._person_slave.attach_extra_slave(history_slave,
