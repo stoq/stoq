@@ -415,6 +415,8 @@ CREATE TABLE product (
     ncm text,
     ex_tipi text,
     genero text,
+    production_time integer DEFAULT 0,
+    is_composed boolean DEFAULT FALSE,
     width numeric(10, 2) CONSTRAINT positive_width
         CHECK (width >= 0),
     height numeric(10, 2) CONSTRAINT positive_height
