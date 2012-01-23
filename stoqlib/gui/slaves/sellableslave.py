@@ -103,7 +103,8 @@ class SellableDetailsSlave(BaseEditorSlave):
     model_type = Sellable
     image_model = None
 
-    def __init__(self, conn, model=None):
+    def __init__(self, conn, model=None, db_form=None):
+        self.db_form = db_form
         BaseEditorSlave.__init__(self, conn, model)
 
     def setup_proxies(self):

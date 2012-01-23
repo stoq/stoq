@@ -68,6 +68,16 @@ def _add_fields_to_form(trans, ui_form, fields):
                 mandatory=mandatory)
 
 
+def _get_or_create_form(trans, name, desc):
+    ui_form = UIForm.selectOneBy(connection=trans,
+                                 form_name=name)
+    if ui_form is None:
+        ui_form = UIForm(connection=trans,
+                         form_name=name,
+                         description=desc)
+    return ui_form
+
+
 def create_default_forms(trans):
     person_fields = [
         ('name', _('Name'), True, True),
@@ -90,20 +100,35 @@ def create_default_forms(trans):
         ('salary', _('Salary'), True, True),
         ]
 
+    product_fields = [
+        ('code', _('Code'), True, False),
+        ('barcode', _('Barcode'), True, False),
+        ('category', _('Category'), True, False),
+        ('location', _('Location'), True, False),
+        ('part_number', _('Part number'), True, False),
+        ('width', _('Width'), True, False),
+        ('height', _('Height'), True, False),
+        ('depth', _('Depth'), True, False),
+        ('weight', _('Weight'), True, False),
+        ('minimum_quantity', _('Minimum quantity'), True, False),
+        ('maximum_quantity', _('Maximum quantity'), True, False),
+        ('manufacturer', _('Manufacturer'), True, False),
+        ('ncm', _('Mercosul NCM'), True, False),
+        ('ex_tipi', _('Mercosul EX Tipi'), True, False),
+        ('genero', _('Mercosul Género'), True, False),
+    ]
     for name, desc in [('user', _('User')),
                        ('client', _('Client')),
                        ('employee', _('Employee')),
                        ('supplier', _('Supplier')),
                        ('transporter', _('Transporter')),
                        ('branch', _('Branch'))]:
-        ui_form = UIForm.selectOneBy(connection=trans,
-                                     form_name=name)
-        if ui_form is None:
-            ui_form = UIForm(connection=trans,
-                             form_name=name,
-                             description=desc)
+        ui_form = _get_or_create_form(trans, name, desc)
         _add_fields_to_form(trans, ui_form, person_fields)
 
     employee_form = UIForm.selectOneBy(connection=trans,
                                        form_name='employee')
     _add_fields_to_form(trans, employee_form, employee_fields)
+
+    product_form = _get_or_create_form(trans, 'product', _('Product'))
+    _add_fields_to_form(trans, product_form, product_fields)

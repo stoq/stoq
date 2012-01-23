@@ -61,7 +61,7 @@
         <property name="row_spacing">6</property>
         <property name="visible">True</property>
         <child>
-          <object class="GtkLabel" id="label1">
+          <object class="GtkLabel" id="location_lbl">
             <property name="label" translatable="yes">Location:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -85,7 +85,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label2">
+          <object class="GtkLabel" id="width_lbl">
             <property name="label" translatable="yes">Width:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -98,7 +98,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label4">
+          <object class="GtkLabel" id="depth_lbl">
             <property name="label" translatable="yes">Depth:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -111,7 +111,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="stock_label">
+          <object class="GtkLabel" id="stock_lbl">
             <property name="label" translatable="yes">&lt;b&gt;Stock Details&lt;/b&gt;</property>
             <property name="use_markup">True</property>
             <property name="visible">True</property>
@@ -126,7 +126,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="min_label">
+          <object class="GtkLabel" id="min_lbl">
             <property name="label" translatable="yes">Minimum:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -138,7 +138,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label5">
+          <object class="GtkLabel" id="mercosul_lbl">
             <property name="label" translatable="yes">&lt;b&gt;Mercosul Details&lt;/b&gt;</property>
             <property name="use_markup">True</property>
             <property name="visible">True</property>
@@ -152,7 +152,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label6">
+          <object class="GtkLabel" id="ncm_lbl">
             <property name="label" translatable="yes">NCM:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -164,7 +164,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label10">
+          <object class="GtkLabel" id="genero_lbl">
             <property name="label">G&#xEA;nero:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -310,7 +310,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label3">
+          <object class="GtkLabel" id="height_lbl">
             <property name="label" translatable="yes">Height:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -325,7 +325,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label7">
+          <object class="GtkLabel" id="weight_lbl">
             <property name="label" translatable="yes">Weight:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -340,7 +340,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="max_label">
+          <object class="GtkLabel" id="max_lbl">
             <property name="label" translatable="yes">Maximum:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -354,7 +354,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label9">
+          <object class="GtkLabel" id="ex_tipi_lbl">
             <property name="label" translatable="yes">EX TIPI:</property>
             <property name="visible">True</property>
             <property name="xalign">1.0</property>
@@ -411,7 +411,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkLabel" id="label8">
+              <object class="GtkLabel" id="kg_lbl">
                 <property name="label" translatable="yes">Kg</property>
                 <property name="visible">True</property>
                 <property name="xalign">0.0</property>

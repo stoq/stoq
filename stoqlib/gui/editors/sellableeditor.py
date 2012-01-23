@@ -39,6 +39,7 @@ from stoqlib.domain.sellable import (SellableCategory, Sellable,
                                      ClientCategoryPrice)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.databaseform import DatabaseForm
 from stoqlib.gui.editors.baseeditor import (BaseEditor,
                                             BaseRelationshipEditorSlave)
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
@@ -264,7 +265,7 @@ class SellableEditor(BaseEditor):
 
     gladefile = 'SellableEditor'
     confirm_widgets = ['description', 'cost', 'price']
-
+    ui_form_name = None
     sellable_tax_widgets = ('tax_constant', 'tax_value', )
     sellable_widgets = ('code',
                         'barcode',
@@ -283,6 +284,11 @@ class SellableEditor(BaseEditor):
         self._demo_mode = sysparam(conn).DEMO_MODE
         self._requires_weighing_text = (
             "<b>%s</b>" % _("This unit type requires weighing"))
+
+        if self.ui_form_name:
+            self.db_form = DatabaseForm(conn, self.ui_form_name)
+        else:
+            self.db_form = None
         BaseEditor.__init__(self, conn, model)
         self.enable_window_controls()
         if self._demo_mode:
@@ -322,6 +328,7 @@ class SellableEditor(BaseEditor):
         self.set_main_tab_label(self.model_name)
         price_slave = CategoryPriceSlave(self.conn, self.model.sellable)
         self.add_extra_tab(_(u'Category Prices'), price_slave)
+        self._setup_ui_forms()
 
     def _add_demo_warning(self):
         self.add_message_bar(
@@ -358,6 +365,15 @@ class SellableEditor(BaseEditor):
 
         self._add_extra_button(label, None,
                                self._on_reopen_sellable_button__clicked)
+
+    def _setup_ui_forms(self):
+        if not self.db_form:
+            return
+
+        self.db_form.update_widget(self.code, other=self.code_lbl)
+        self.db_form.update_widget(self.barcode, other=self.barcode_lbl)
+        self.db_form.update_widget(self.category_combo,
+                                   other=self.category_lbl)
 
     #
     #  Public API
