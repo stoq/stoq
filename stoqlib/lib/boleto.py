@@ -145,7 +145,9 @@ class BankInfo(object):
         dv = self.calculate_dv_barcode(num.replace('X', '', 1))
 
         num = num.replace('X', str(dv), 1)
-        assert len(num) == 44, 'Código com %d caracteres' % len(num)
+        if len(num) != 44:
+            raise BoletoException(
+                'Código com %d caracteres' % len(num))
         return num
 
     @property
@@ -593,6 +595,7 @@ class BankBB(BankInfo):
         self.len_convenio = 7
         if 'len_convenio' in kwargs:
             self.len_convenio = int(kwargs.pop('len_convenio'))
+        self.convenio = ''
 
         self.format_nnumero = 1
         if 'format_nnumero' in kwargs:

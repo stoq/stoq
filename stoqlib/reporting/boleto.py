@@ -34,7 +34,7 @@ from reportlab.pdfgen import canvas
 
 from stoqlib.exceptions import ReportError
 from stoqlib.lib.crashreport import collect_traceback
-from stoqlib.lib.boleto import get_bank_info_by_number
+from stoqlib.lib.boleto import BoletoException, get_bank_info_by_number
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -736,7 +736,7 @@ class BoletoPDF(object):
 def _render_bill(bill):
     try:
         bill.render()
-    except ValueError:
+    except (BoletoException, ValueError):
         exc = sys.exc_info()
         tb_str = ''.join(traceback.format_exception(*exc))
         collect_traceback(exc, submit=True)
