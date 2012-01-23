@@ -1015,6 +1015,9 @@ CREATE TABLE device_constant (
                (constant_enum >= 40 AND constant_enum < 46)),
     device_value bytea,
     device_settings_id bigint REFERENCES device_settings(id)
+    -- FIXME: This is needed by the ECF plugin which doesn't have
+    --        infrastructure to deal with schema generations
+    ,is_valid_model bool
 );
 
 CREATE TABLE employee_role_history (
