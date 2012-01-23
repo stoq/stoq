@@ -113,8 +113,8 @@ class ProductInformationSlave(BaseEditorSlave):
 
     def hide_stock_details(self):
         self.stock_lbl.hide()
-        self.min_label.hide()
-        self.max_label.hide()
+        self.min_lbl.hide()
+        self.max_lbl.hide()
         self.min_hbox.hide()
         self.max_hbox.hide()
 
