@@ -67,6 +67,7 @@ def _add_fields_to_form(trans, ui_form, fields):
                 visible=visible,
                 mandatory=mandatory)
 
+
 def create_default_forms(trans):
     person_fields = [
         ('name', _('Name'), True, True),
