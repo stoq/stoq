@@ -33,7 +33,6 @@ from stoqlib.domain.purchase import PurchaseOrderView
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.payment.views import OutPaymentView
-from stoqlib.lib.formatters import get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 
 _ = stoqlib_gettext
@@ -193,7 +192,7 @@ class CalendarEvents(Resource):
                                                 _("%d accounts payable"),
                                                 len(out_payment_events))
                 title = title_format % len(out_payment_events)
-                class_name  = "payable"
+                class_name = "payable"
                 url = "stoq://show/out-payments-by-date?date=%s" % (date, )
                 add_event(title, url, date, class_name)
 
@@ -210,4 +209,3 @@ class CalendarEvents(Resource):
                 add_event(title, url, date, class_name)
 
         return events
-
