@@ -1120,8 +1120,20 @@ class SearchableAppWindow(AppWindow):
         self.attach_slave('search_holder', self.search)
 
         self.create_filters()
+        self._restore_filter_settings()
 
         self.search.focus_search_entry()
+
+    def _save_filter_settings(self):
+        filter_states = self.search.search.get_filter_states()
+        settings = self._app_settings.setdefault(self.app.name, {})
+        settings['filter-states'] = filter_states
+
+    def _restore_filter_settings(self):
+        settings = self._app_settings.setdefault(self.app.name, {})
+        filter_states = settings.get('filter-states')
+        if filter_states is not None:
+            self.search.search.set_filter_states(filter_states)
 
     #
     # AppWindow hooks
@@ -1220,6 +1232,7 @@ class SearchableAppWindow(AppWindow):
         has_results = len(results)
         for widget in (self.app.launcher.Print, self.app.launcher.ExportCSV):
             widget.set_sensitive(has_results)
+        self._save_filter_settings()
 
 
 class VersionChecker(object):
