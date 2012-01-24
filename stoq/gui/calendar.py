@@ -76,6 +76,8 @@ class CalendarView(WebView):
             'calendar-view', 'month')
 
         options['data'] = self._show_events
+        self.js_function_call("$('#loading').html",
+            _('Loading calendar content, please wait...'))
         self.js_function_call('startup', options)
         self._update_title()
 
@@ -105,8 +107,9 @@ class CalendarView(WebView):
 
     def _update_title(self):
         # Workaround to get the current calendar date
-        self._view.execute_script("document.title = $('.fc-header-title').text()")
-        title = self._view.get_property('title')
+        view = self.get_view()
+        view.execute_script("document.title = $('.fc-header-title').text()")
+        title = view.get_property('title')
         self.app.date_label.set_markup('<big><b>%s</b></big>' % title)
 
     #
