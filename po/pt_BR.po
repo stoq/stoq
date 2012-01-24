@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-13 18:13-0200\n"
-"PO-Revision-Date: 2012-01-19 10:50+0000\n"
-"Last-Translator: millemiglia <dnieper650@gmail.com>\n"
+"PO-Revision-Date: 2012-01-23 20:34+0000\n"
+"Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-20 04:44+0000\n"
-"X-Generator: Launchpad (build 14700)\n"
+"X-Launchpad-Export-Date: 2012-01-24 05:40+0000\n"
+"X-Generator: Launchpad (build 14713)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -9093,15 +9093,15 @@ msgstr "Erro cancelando cupom. Deseja tentar novamente?"
 
 #: ../stoqlib/gui/keybindings.py:37
 msgid "Toggle fullscreen"
-msgstr "Alterar para tela cheia"
+msgstr "Alternar tela cheia"
 
 #: ../stoqlib/gui/keybindings.py:39
 msgid "Toggle statusbar"
-msgstr "Alterar a barra de status"
+msgstr "Alternar a barra de estado"
 
 #: ../stoqlib/gui/keybindings.py:41
 msgid "Toggle toolbar"
-msgstr "Alterar a barra de ferramentas"
+msgstr "Alternar a barra de ferramentas"
 
 #: ../stoqlib/gui/keybindings.py:43
 msgid "Create a new Window"
