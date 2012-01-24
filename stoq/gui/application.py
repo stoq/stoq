@@ -1104,6 +1104,8 @@ class SearchableAppWindow(AppWindow):
         if self.search_table is None:
             raise TypeError("%r must define a search_table attribute" % self)
 
+        self._loading_filters = False
+
         self.executer = ORMObjectQueryExecuter(api.get_connection())
         self.executer.set_table(self.search_table)
 
@@ -1125,15 +1127,19 @@ class SearchableAppWindow(AppWindow):
         self.search.focus_search_entry()
 
     def _save_filter_settings(self):
+        if self._loading_filters:
+            return
         filter_states = self.search.search.get_filter_states()
         settings = self._app_settings.setdefault(self.app.name, {})
         settings['filter-states'] = filter_states
 
     def _restore_filter_settings(self):
+        self._loading_filters = True
         settings = self._app_settings.setdefault(self.app.name, {})
         filter_states = settings.get('filter-states')
         if filter_states is not None:
             self.search.search.set_filter_states(filter_states)
+        self._loading_filters = False
 
     #
     # AppWindow hooks
