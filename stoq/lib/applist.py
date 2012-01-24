@@ -42,8 +42,8 @@ _APPLICATIONS = {
                 "parameters."),
               STOQ_ADMIN_APP),
     'calendar': (_("Calendar"),
-                _("Shows payments, orders and other things that will happen
-                    in the future."),
+                _("Shows payments, orders and other things that will happen "
+                  "in the future."),
                  STOQ_CALENDAR_APP),
     'financial': (_("Financial"),
                   _("Control accounts and financial transactions."),
