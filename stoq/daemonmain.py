@@ -33,6 +33,7 @@ from twisted.internet import reactor
 
 from stoqlib.net.xmlrpcservice import XMLRPCService
 from stoqlib.lib.osutils import get_application_dir
+from stoqlib.lib.parameters import is_developer_mode
 from stoqlib.lib.translation import stoqlib_gettext
 from stoq.lib.options import get_option_parser
 
@@ -48,7 +49,10 @@ class Daemon(object):
         self._write_daemon_pids()
 
     def _start_xmlrpc(self):
-        self._xmlrpc = XMLRPCService()
+        port = None
+        if is_developer_mode():
+            port = 8080
+        self._xmlrpc = XMLRPCService(port)
         self._xmlrpc.serve()
 
     def _write_daemon_pids(self):
