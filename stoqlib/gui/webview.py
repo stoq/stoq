@@ -60,6 +60,7 @@ class WebView(gtk.ScrolledWindow):
         settings = self._view.props.settings
         settings.props.enable_developer_extras = True
         settings.props.user_agent = USER_AGENT
+        settings.props.enable_default_context_menu = False
 
         self._view.get_web_inspector().connect(
             'inspect-web-view',
