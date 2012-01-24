@@ -2,13 +2,13 @@
     -webkit-user-select: none;
     -webkit-user-drag: none;
     font-family: Ubuntu;
-    cursor: default;
     margin: 0;
 }
 
 #calendar {
     font-size: 13px;
     z-index: 10000 !important;
+    cursor: default;
 }
 
 #loading {
