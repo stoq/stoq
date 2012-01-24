@@ -30,6 +30,81 @@
     Cada um desses itens pode ser clicado para verificar mais detalhes.
   </p>
 
+  <section id="app-calendar-colors">
+    <title>Cores</title>
+    <p>Lista de cores utilizadas no calendário:</p>
+    <table rules="rows cols">
+      <tr>
+        <td>
+          <p>Cor</p>
+        </td>
+        <td>
+          <p>Tipo de evento</p>
+        </td>
+        <td>
+          <p>
+            Descrição do evento
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <media type="image" src="figures/color-729fcf.png">
+            <p>A cor azul</p>
+          </media>
+        </td>
+        <td>
+          <p><link xref="purchase">Pedido de compra</link></p>
+        </td>
+        <td>
+          <p>
+            Um pedido de compra aberta com uma data de recebimento esperada,
+            <em>atrasado em negrito</em>.
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <media type="image" src="figures/color-ef2929.png">
+            <p>A cor vermelho</p>
+          </media>
+        </td>
+        <td>
+          <p><link xref="account-payable">Conta a pagar</link></p>
+        </td>
+        <td>
+          <p>Um pagamento a pagar pendente, <em>atrasado em negrito</em></p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <media type="image" src="figures/color-4e9a06.png">
+            <p>A cor verde</p>
+          </media>
+        </td>
+        <td>
+          <p><link xref="account-receivable">Conta a receber</link></p>
+        </td>
+        <td>
+          <p>Um pagamento a receber pendente, <em>atrasado em negrito</em></p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <media type="image" src="figures/color-fcaf3e.png">
+            <p>A cor laranja</p>
+          </media>
+        </td>
+        <td>
+          <p><link xref="call">Chamada de cliente</link></p>
+        </td>
+        <td>
+          <p>Utilizado para mostrar chamas recibidas de um cliente</p>
+        </td>
+      </tr>
+    </table>
+  </section>
+
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">
     <title>Sumário</title>
