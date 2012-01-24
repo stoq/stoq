@@ -132,7 +132,6 @@ class ShortcutsEditor(BasicDialog):
     def _on_defaults_button__clicked(self, button):
         old = self.categories.get_selected()
         api.user_settings.remove('shortcuts')
-        api.user_settings.flush()
         remove_user_bindings()
         self._label.show()
         self.categories.refresh()
@@ -147,7 +146,6 @@ class ShortcutsEditor(BasicDialog):
         set_user_binding(binding.name, binding.shortcut)
         d = api.user_settings.get('shortcuts', {})
         d[binding.name] = binding.shortcut
-        api.user_settings.flush()
         self._label.show()
 
     def remove_binding(self, binding):
@@ -157,5 +155,4 @@ class ShortcutsEditor(BasicDialog):
             del d[binding.name]
         except KeyError:
             pass
-        api.user_settings.flush()
         self._label.show()
