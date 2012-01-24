@@ -257,18 +257,18 @@ class CalendarApp(AppWindow):
             self.ViewDay.props.active = True
 
     def create_ui(self):
-        hbox = gtk.HBox()
+        # Reparent the toolbar, to show the date next to it.
+        self.hbox = gtk.HBox()
         toolbar = self.uimanager.get_widget('/toolbar')
-        toolbar.get_parent().remove(toolbar)
-        hbox.pack_start(toolbar)
+        toolbar.reparent(self.hbox)
 
         # A label to show the current calendar date.
         self.date_label = gtk.Label('')
         self.date_label.show()
-        hbox.pack_start(self.date_label, False, False, 6)
-        hbox.show()
+        self.hbox.pack_start(self.date_label, False, False, 6)
+        self.hbox.show()
 
-        self.main_vbox.pack_start(hbox, False, False)
+        self.main_vbox.pack_start(self.hbox, False, False)
 
         self.main_vbox.pack_start(self._calendar)
         self._calendar.show()
@@ -280,6 +280,13 @@ class CalendarApp(AppWindow):
         self.app.launcher.Print.set_sensitive(True)
 
     def deactivate(self):
+        # Put the toolbar back at where it was
+        main_vbox = self.app.launcher.main_vbox
+        toolbar = self.uimanager.get_widget('/toolbar')
+        self.hbox.remove(toolbar)
+        main_vbox.pack_start(toolbar, False, False)
+        main_vbox.reorder_child(toolbar, 1)
+
         self.uimanager.remove_ui(self.calendar_ui)
         self.app.launcher.SearchToolItem.set_sensitive(True)
 
