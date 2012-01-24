@@ -11,18 +11,22 @@
     cursor: default;
 }
 
+#loading_box {
+    text-align: center;
+}
+
 #loading {
+    display: inline-block;
     z-index: 20000;
     position: relative;
-
-    background-color: #FFF8A1;
-    border: 1px solid #ccc;
-    padding: 4px;
+    background-color: #ffffa3;
+    border: 1px solid #f1d031;
+    border-top: 0;
+    padding: 8px 2em;
     text-align: center;
+    color: #555555;
     -webkit-border-radius: 0 0 7px 7px;
-    margin: 0 auto !important;
-    width: 20em;
-    opacity: 0.8;
+    opacity: 0.90;
 }
 
 .fc-day-number {
