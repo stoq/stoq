@@ -45,7 +45,6 @@ class CalendarEvents(Resource):
         end = datetime.datetime.fromtimestamp(
             float(resource.args['end'][0]))
 
-        print resource.args
         trans = api.new_transaction()
         day_events = {}
         if resource.args.get('in_payments', [''])[0] == 'true':

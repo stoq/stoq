@@ -60,7 +60,7 @@ class CalendarView(WebView):
         view = self.get_view()
         view.connect('size-allocate', self._on_view__size_allocate)
         x, y, width, height = view.get_allocation()
-        self._update_calendar_size(width - x, height - y)
+        self._update_calendar_size(width, height)
 
     def _startup(self):
         options = {}
@@ -77,6 +77,7 @@ class CalendarView(WebView):
 
         options['data'] = self._show_events
         self.js_function_call('startup', options)
+        self._update_title()
 
     def _calendar_run(self, name, *args):
         self.js_function_call("$('#calendar').fullCalendar", name, *args)
@@ -102,6 +103,12 @@ class CalendarView(WebView):
     def _update_calendar_size(self, width, height):
         self._calendar_run('option', 'aspectRatio', float(width) / height)
 
+    def _update_title(self):
+        # Workaround to get the current calendar date
+        self._view.execute_script("document.title = $('.fc-header-title').text()")
+        title = self._view.get_property('title')
+        self.app.date_label.set_markup('<big><b>%s</b></big>' % title)
+
     #
     # Callbacks
     #
@@ -111,7 +118,7 @@ class CalendarView(WebView):
 
     def _on_view__size_allocate(self, widget, req):
         x, y, width, height = req
-        self._update_calendar_size(width - x, height - y)
+        self._update_calendar_size(width, height)
 
     #
     # Public API
@@ -125,18 +132,22 @@ class CalendarView(WebView):
 
     def go_prev(self):
         self._calendar_run('prev')
+        self._update_title()
 
     def show_today(self):
         self._calendar_run('today')
+        self._update_title()
 
     def go_next(self):
         self._calendar_run('next')
+        self._update_title()
 
     def change_view(self, view_name):
         self._calendar_run('removeEvents')
         self._calendar_run('changeView', view_name)
         self._calendar_run('refetchEvents')
         api.user_settings.set('calendar-view', view_name)
+        self._update_title()
 
     def refresh(self):
         self.load()
@@ -146,8 +157,7 @@ class CalendarView(WebView):
 
     def update_events(self, **events):
         self._show_events.update(**events)
-        print self._show_events
-        self._calendar_run('option', 'data', self._show_events)
+        self.js_function_call("update_options", self._show_events)
 
         self._calendar_run('refetchEvents')
         self._save_user_settings()
@@ -244,6 +254,19 @@ class CalendarApp(AppWindow):
             self.ViewDay.props.active = True
 
     def create_ui(self):
+        hbox = gtk.HBox()
+        toolbar = self.uimanager.get_widget('/toolbar')
+        toolbar.get_parent().remove(toolbar)
+        hbox.pack_start(toolbar)
+
+        # A label to show the current calendar date.
+        self.date_label = gtk.Label('')
+        self.date_label.show()
+        hbox.pack_start(self.date_label, False, False, 6)
+        hbox.show()
+
+        self.main_vbox.pack_start(hbox, False, False)
+
         self.main_vbox.pack_start(self._calendar)
         self._calendar.show()
         self.app.launcher.Print.set_tooltip(_("Print this calendar"))

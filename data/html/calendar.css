@@ -2,20 +2,41 @@
     -webkit-user-select: none;
     -webkit-user-drag: none;
     font-family: Ubuntu;
+    cursor: default;
+    margin: 0;
 }
 
 #calendar {
     font-size: 13px;
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
+    z-index: 10000 !important;
+}
+
+#loading {
+    z-index: 20000;
+    position: relative;
+
+    background-color: #FFF8A1;
+    border: 1px solid #ccc;
+    padding: 4px;
+    text-align: center;
+    -webkit-border-radius: 0 0 7px 7px;
+    margin: 0 auto !important;
+    width: 20em;
+    opacity: 0.8;
 }
 
 .fc-day-number {
 }
 
 .fc-day-content {
+}
+
+.fc-header-title {
+    display: none;
+}
+
+.fc-today {
+    border: 1px solid #999 !important;
 }
 
 .fc-event {
@@ -32,7 +53,8 @@
     text-overflow:ellipsis;
 }
 
-.fc-view-basicWeek .fc-event {
+.fc-view-basicWeek .fc-event,
+.fc-view-basicDay .fc-event {
     font-size: 13px;
 }
 
@@ -48,7 +70,7 @@
 }
 
 .payable {
-    border-left-color: #cc0000;
+    border-left-color: #ef2929;
 }
 
 .receivable {
@@ -56,7 +78,7 @@
 }
 
 .purchase {
-    border-left-color: #204a87;
+    border-left-color: #729fcf;
 }
 
 .late {

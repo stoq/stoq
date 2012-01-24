@@ -6,25 +6,30 @@
   <link rel='stylesheet' type='text/css' href='/web/static/js/qtip/jquery.qtip.css' />
   <link rel='stylesheet' type='text/css' href='/web/static/calendar.css' />
   <script type='text/javascript' src='/web/static/js/fullcalendar-1.5.2/jquery/jquery-1.5.2.min.js'></script>
-  <script type='text/javascript' src='/web/static/js/fullcalendar-1.5.2/fullcalendar/fullcalendar.js'></script>
-  <script type='text/javascript' src='/web/static/js/qtip/jquery.qtip.js'></script>
+  <script type='text/javascript' src='/web/static/js/fullcalendar-1.5.2/fullcalendar/fullcalendar.min.js'></script>
+  <script type='text/javascript' src='/web/static/js/qtip/jquery.qtip.min.js'></script>
 
   <script>
   var timeout_id = 0;
+  var calendar_options = {};
+  function update_options(new_options) {
+    $.extend(calendar_options, new_options);
+  };
+
   function startup(options) {
       options.aspectRatio = 2.3;
       options.events = function(start, end, callback) {
-        var data = {};
-        data.start = start.getTime() / 1000;
-        data.end = end.getTime() / 1000;
-        data.group = $('#calendar').fullCalendar('getView').name == 'month';
+        calendar_options.start = start.getTime() / 1000;
+        calendar_options.end = end.getTime() / 1000;
+        calendar_options.group = $('#calendar').fullCalendar('getView').name == 'month';
         if ('data' in options) {
-            $.extend(data, options.data);
+          update_options(options.data)
+          options.data = {};
         }
         $.ajax({
             url: "/web/calendar-events.json",
             dataType: 'json',
-            data: data,
+            data: calendar_options,
             success: function(events) {
                 callback(events);
             }
@@ -52,22 +57,22 @@
       options.loading = function(isLoading, view) {
              if (isLoading) {
                 timeout_id = setTimeout(function() {
-                    $('#loading').show();
+                    $('#loading').slideDown();
                 }, 200);
              } else {
               clearTimeout(timeout_id);
-                $('#loading').hide();
+                $('#loading').slideUp();
              }
       };
       $('#calendar').fullCalendar(options);
-      //$('#calendar').fullCalendar('gotoDate', 2010, 10)
-      //$('#calendar').fullCalendar('changeView', 'basicWeek')
   };
   $(function() {
      if (navigator.userAgent.search("Stoq") == -1) {
         startup({data: {'in_payments': true,
                         'out_payments':  true,
                         'purchase_orders': true}});
+        //$('#calendar').fullCalendar('changeView', 'basicDay')
+        //$('#calendar').fullCalendar('gotoDate', 2010, 10)
      }
   })
   </script>
@@ -75,7 +80,7 @@
 
 <body>
   <div id='content'>
-    <div id='loading' style='margin:0em 0'>
+    <div id='loading'>
       Loading calendar content, please wait...
     </div>
     <div id='calendar' style='font-size:13px;position: fixed; top: 0'>
