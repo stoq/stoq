@@ -29,7 +29,9 @@ stoq/gui/calendar.py:
 
 import gettext
 
+from dateutil.relativedelta import MO
 import gtk
+
 from stoqlib.api import api
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.stockicons import (STOQ_CALENDAR_TODAY,
@@ -39,6 +41,7 @@ from stoqlib.gui.stockicons import (STOQ_CALENDAR_TODAY,
 from stoqlib.gui.webview import WebView
 from stoqlib.lib import dateconstants
 from stoqlib.lib.daemonutils import start_daemon
+from stoqlib.lib.defaults import get_weekday_start
 
 from stoq.gui.application import AppWindow
 
@@ -75,6 +78,50 @@ class CalendarView(WebView):
         options['defaultView'] = api.user_settings.get(
             'calendar-view', 'month')
 
+        # FIXME: This should not be tied to the language, rather be
+        #        picked up from libc, but it's a bit of work to translate
+        #        one into another so just take a shortcut
+        options['columnFormat'] = {
+            # month column format, eg "Mon", see:
+            # http://arshaw.com/fullcalendar/docs/text/columnFormat/
+            'month': _('ddd'),
+            # week column format: eg, "Mon 9/7", see:
+            # http://arshaw.com/fullcalendar/docs/text/columnFormat/
+            'week': _('ddd M/d'),
+            # day column format : eg "Monday 9/7", see:
+            # http://arshaw.com/fullcalendar/docs/text/columnFormat/
+            'day': _('dddd M/d'),
+            }
+
+        options['timeFormat'] = {
+            # for agendaWeek and agendaDay, eg "5:00 - 6:30", see:
+            # http://arshaw.com/fullcalendar/docs/text/timeFormat/
+            'agenda': _('h:mm{ - h:mm}'),
+            # for all other views, eg "7p", see:
+            # http://arshaw.com/fullcalendar/docs/text/timeFormat/
+            '': _('7p'),
+            }
+
+        options['titleFormat'] = {
+            # month title, eg "September 2009", see:
+            # http://arshaw.com/fullcalendar/docs/text/titleFormat/
+            'month': _('MMMM yyyy'),
+            # week title, eg "Sep 7 - 13 2009" see:
+            # http://arshaw.com/fullcalendar/docs/text/titleFormat/
+            'week': _("MMM d[ yyyy]{ '&#8212;'[ MMM] d yyyy}"),
+            # day time, eg "Tuesday, Sep 8, 2009" see:
+            # http://arshaw.com/fullcalendar/docs/text/titleFormat/
+            'day': _('dddd, MMM d, yyyy'),
+            }
+
+        if get_weekday_start() == MO:
+            firstday = 1
+        else:
+            firstday = 0
+
+        options['firstDay'] = firstday
+        options['isRTL'] = (
+            gtk.widget_get_default_direction() == gtk.TEXT_DIR_RTL)
         options['data'] = self._show_events
         self.js_function_call("$('#loading').html",
             _('Loading calendar content, please wait...'))
