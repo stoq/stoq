@@ -485,6 +485,8 @@ class AppWindow(GladeDelegate):
             toplevel.move(x, y)
 
     def _save_window_size(self):
+        if not hasattr(self, '_width'):
+            return
         # Do not save the size of the window when we are in fullscreen
         window = self.get_toplevel()
         if window.window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN:
