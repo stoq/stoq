@@ -140,7 +140,6 @@ class Shell(object):
         if not api.user_settings.get('show-welcome-dialog', True):
             return
         api.user_settings.set('show-welcome-dialog', False)
-        api.user_settings.flush()
 
         from stoq.gui.welcomedialog import WelcomeDialog
         from stoqlib.gui.base.dialogs import run_dialog
@@ -329,10 +328,10 @@ class Shell(object):
         return app
 
     def run_loop(self):
-        log.debug("Entering reactor")
         if not reactor.running:
+            log.debug("Entering reactor")
             reactor.run()
-            log.info("Shutting down application")
+            log.info("Leaving reactor")
 
 
 def get_shell():

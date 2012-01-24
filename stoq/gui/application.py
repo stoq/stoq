@@ -103,11 +103,6 @@ class App(object):
     def hide(self):
         self.main_window.hide()
 
-    def shutdown(self, *args):
-        print 'SHUTDOWN'
-        if reactor.running:
-            reactor.stop()
-
 
 class AppWindow(GladeDelegate):
     """ Class for the main window of applications.
@@ -138,7 +133,7 @@ class AppWindow(GladeDelegate):
         self._app_settings = api.user_settings.get('app-ui', {})
 
         self._create_ui_manager_ui()
-        GladeDelegate.__init__(self, delete_handler=self._on_delete_handler,
+        GladeDelegate.__init__(self,
                                keyactions=keyactions,
                                gladefile=self.gladefile,
                                toplevel_name=self.toplevel_name)
@@ -499,7 +494,6 @@ class AppWindow(GladeDelegate):
         d['height'] = str(self._height)
         d['x'] = str(self._x)
         d['y'] = str(self._y)
-        api.user_settings.flush()
 
     def _prepare_statusbar(self):
         # Disable border on statusbar
@@ -873,11 +867,17 @@ class AppWindow(GladeDelegate):
     #
 
     def shutdown_application(self, *args):
+        log.debug("Shutting down application")
         if not self.can_close_application():
             return False
 
         if self.current_app and self.current_app.search:
             self.current_app.search.save_columns()
+
+        self._save_window_size()
+        if self.app.name == 'launcher':
+            log.debug("Flushing user settings")
+            api.user_settings.flush()
         return True
 
     #
@@ -907,8 +907,8 @@ class AppWindow(GladeDelegate):
         if AppWindow.app_windows:
             return
 
-        self._save_window_size()
-        reactor.stop()
+        if self.shutdown_application():
+            reactor.stop()
 
     def _on_menu_item__select(self, menuitem, tooltip):
         self.statusbar.push(-1, tooltip)
@@ -1001,8 +1001,8 @@ class AppWindow(GladeDelegate):
         if self.current_app and not self.current_app.shutdown_application():
             return
 
-        self._save_window_size()
-        reactor.stop()
+        if self.shutdown_application():
+            reactor.stop()
 
     # View
 
@@ -1015,12 +1015,10 @@ class AppWindow(GladeDelegate):
         toolbar = self.uimanager.get_widget('/toolbar')
         toolbar.set_visible(action.get_active())
         self._current_app_settings['show-toolbar'] = action.get_active()
-        api.user_settings.flush()
 
     def _on_ToggleStatusbar__notify_active(self, action, pspec):
         self.statusbar.set_visible(action.get_active())
         self._current_app_settings['show-statusbar'] = action.get_active()
-        api.user_settings.flush()
 
     def _on_ToggleFullscreen__notify_active(self, action, spec):
         window = self.get_toplevel()
@@ -1037,7 +1035,6 @@ class AppWindow(GladeDelegate):
         # This is shared between apps, since it's weird to change fullscreen
         # between applications
         self._app_settings['show-fullscreen'] = is_active
-        api.user_settings.flush()
 
     # Help
 
@@ -1078,12 +1075,6 @@ class AppWindow(GladeDelegate):
         api.config.flush()
         if self.shutdown_application():
             reactor.stop()
-
-    def _on_delete_handler(self, *args):
-        self.shutdown_application()
-
-    def _on_quit_action__clicked(self, *args):
-        self.shutdown_application()
 
 
 class SearchableAppWindow(AppWindow):
@@ -1282,7 +1273,6 @@ class VersionChecker(object):
         api.user_settings.set('last-version-check',
                               datetime.date.today().strftime('%Y-%m-%d'))
         api.user_settings.set('latest-version', details['version'])
-        api.user_settings.flush()
 
     #
     #   Public API

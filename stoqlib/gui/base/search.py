@@ -102,8 +102,6 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
         columns = api.user_settings.get(self._settings_key, {})
         columns[self._restore_name] = d
 
-        api.user_settings.flush()
-
     def restore_columns(self):
         if not self._restore_name:
             return

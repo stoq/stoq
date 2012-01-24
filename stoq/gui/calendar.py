@@ -147,7 +147,6 @@ class CalendarView(WebView):
         events['in-payments'] = self._show_events['in_payments']
         events['out-payments'] = self._show_events['out_payments']
         events['purchase-orders'] = self._show_events['purchase_orders']
-        api.user_settings.flush()
 
     def _update_calendar_size(self, width, height):
         self._calendar_run('option', 'aspectRatio', float(width) / height)
