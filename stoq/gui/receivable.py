@@ -224,15 +224,22 @@ class ReceivableApp(SearchableAppWindow):
 
     def _update_widgets(self):
         selected = self.results.get_selected_rows()
+        one_item = len(selected) == 1
         self.Receive.set_sensitive(self._can_receive(selected))
-        self.Details.set_sensitive(self._can_show_details(selected))
-        self.Comments.set_sensitive(self._can_show_comments(selected))
-        self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
-        self.CancelPayment.set_sensitive(self._can_cancel_payment(selected))
-        self.PrintReceipt.set_sensitive(self._are_paid(selected,
-                                                       respect_sale=True))
-        self.SetNotPaid.set_sensitive(self._are_paid(selected,
-                                                     respect_sale=False))
+        self.Details.set_sensitive(
+            one_item and self._can_show_details(selected))
+        self.Comments.set_sensitive(
+            one_item and self._can_show_comments(selected))
+        self.ChangeDueDate.set_sensitive(
+            one_item and self._can_change_due_date(selected))
+        self.CancelPayment.set_sensitive(
+            one_item and self._can_cancel_payment(selected))
+        self.PrintReceipt.set_sensitive(
+            one_item and
+            self._are_paid(selected, respect_sale=True))
+        self.SetNotPaid.set_sensitive(
+            one_item and
+            self._are_paid(selected, respect_sale=False))
         self.PrintBill.set_sensitive(self._can_print_bill(selected))
 
     def _get_status_values(self):
@@ -514,7 +521,8 @@ class ReceivableApp(SearchableAppWindow):
             self.search.refresh()
 
     def on_PrintBill__activate(self, action):
-        item = self.results.get_selected_rows()[0]
-        if not BillReport.check_printable([item.payment]):
+        items = self.results.get_selected_rows()
+        payments = [item.payment for item in items]
+        if not BillReport.check_printable(payments):
             return False
-        print_report(BillReport, [item.payment])
+        print_report(BillReport, payments)
