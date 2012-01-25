@@ -276,3 +276,7 @@ class TestCard(DomainTest, _TestPaymentMethodsBase):
         card_data = method.operation.get_card_data_by_payment(
             payment.get_adapted())
         self.failUnless(card_data)
+
+
+class TestDeposit(DomainTest, _TestPaymentMethodsBase):
+    method_type = 'deposit'

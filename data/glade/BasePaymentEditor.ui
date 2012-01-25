@@ -167,10 +167,10 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="payment_type">
+          <object class="ProxyComboBox" id="method">
             <property name="visible">True</property>
-            <property name="xalign">0</property>
-            <property name="label" translatable="yes">Money</property>
+            <property name="data_type">object</property>
+            <property name="model_attribute">method</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
