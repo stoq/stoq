@@ -105,6 +105,7 @@ class RunnableView:
 class AbstractDialog(GladeDelegate, RunnableView):
     """Abstract Dialog class that defines a simple run API."""
     gladefile = None
+    help_section = None
 
     def __init__(self, delete_handler=None):
         if not delete_handler:
@@ -115,8 +116,31 @@ class AbstractDialog(GladeDelegate, RunnableView):
                                delete_handler=delete_handler,
                                keyactions=self.keyactions)
 
+        if self.help_section:
+            self._add_help_button(self.help_section)
+
+    #
+    #  Public API
+    #
+
     def setup_keyactions(self):
         self.keyactions = {}
+
+    #
+    #  Private
+    #
+
+    def _add_help_button(self, section):
+        def on_help__clicked(button):
+            from stoqlib.gui.help import show_section
+            show_section(section)
+
+        self.action_area.set_layout(gtk.BUTTONBOX_END)
+        button = gtk.Button(stock=gtk.STOCK_HELP)
+        button.connect('clicked', on_help__clicked)
+        self.action_area.add(button)
+        self.action_area.set_child_secondary(button, True)
+        button.show()
 
 #
 # Special note for BasicDialog and BasicPluggableDialog: if you inherit
