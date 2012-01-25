@@ -158,7 +158,7 @@ class UserSettings(object):
                  api.config.get('General', 'latest-version'))
 
         self.set('show-welcome-dialog',
-                 api.config.get('General', 'show_welcome_dialog') == 'True')
+                 api.config.get('General', 'show_welcome_dialog') != 'False')
 
         d = {}
         for k, v in api.config.items('Shortcuts'):
