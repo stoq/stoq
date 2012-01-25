@@ -30,9 +30,12 @@
     Cada um desses itens pode ser clicado para verificar mais detalhes.
   </p>
 
-  <section id="app-calendar-colors">
-    <title>Cores</title>
-    <p>Lista de cores utilizadas no calendário:</p>
+  <section id="colors">
+    <title>Cores dos eventos</title>
+    <p>
+      Utilizamos cores para a fácil diferenciação de eventos apresentados no
+      calendário. Apresentamos aqui uma lista de seus significados:
+    </p>
     <table rules="rows cols">
       <tr>
         <td>
@@ -59,7 +62,7 @@
         <td>
           <p>
             Um pedido de compra aberta com uma data de recebimento esperada,
-            <em>atrasado em negrito</em>.
+            <em>em negrito se estiver atrasado</em>.
           </p>
         </td>
       </tr>
@@ -73,7 +76,10 @@
           <p><link xref="account-payable">Conta a pagar</link></p>
         </td>
         <td>
-          <p>Um pagamento a pagar pendente, <em>atrasado em negrito</em></p>
+          <p>
+            Um pagamento a pagar pendente,
+            <em>em negrito se estiver atrasado</em>
+          </p>
         </td>
       </tr>
       <tr>
@@ -86,7 +92,10 @@
           <p><link xref="account-receivable">Conta a receber</link></p>
         </td>
         <td>
-          <p>Um pagamento a receber pendente, <em>atrasado em negrito</em></p>
+          <p>
+            Um pagamento a receber pendente,
+            <em>em negrito se estiver atrasado</em>
+          </p>
         </td>
       </tr>
       <tr>
@@ -96,7 +105,7 @@
           </media>
         </td>
         <td>
-          <p><link xref="call">Chamada de cliente</link></p>
+          <p><link xref="client-call">Chamada de cliente</link></p>
         </td>
         <td>
           <p>Utilizado para mostrar chamas recibidas de um cliente</p>
