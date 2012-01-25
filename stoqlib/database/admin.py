@@ -132,7 +132,7 @@ def create_main_branch(trans, name):
     return branch
 
 
-def register_payment_methods():
+def register_payment_methods(trans):
     """Registers the payment methods and creates persistent
     domain classes associated with them.
     """
@@ -140,12 +140,10 @@ def register_payment_methods():
     from stoqlib.domain.payment.operation import register_payment_operations
 
     pom = PaymentOperationManager()
-    provide_utility(IPaymentOperationManager, pom)
+    provide_utility(IPaymentOperationManager, pom, replace=True)
 
     log.info("Registering payment operations")
     register_payment_operations()
-
-    trans = new_transaction()
 
     log.info("Creating domain objects for payment methods")
     account = sysparam(trans).IMBALANCE_ACCOUNT
@@ -161,8 +159,6 @@ def register_payment_methods():
                                max_installments=1)
         pm.description = operation.description
         pm.max_installments = operation.max_installments
-
-    trans.commit(close=True)
 
 
 def register_accounts(trans):
@@ -346,8 +342,8 @@ def initialize_system():
     register_accounts(trans)
     from stoqlib.domain.uiform import create_default_forms
     create_default_forms(trans)
+    register_payment_methods(trans)
     trans.commit(close=True)
-    register_payment_methods()
     ensure_sellable_constants()
     ensure_system_parameters()
     _ensure_card_providers()
