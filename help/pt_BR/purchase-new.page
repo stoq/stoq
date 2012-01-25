@@ -10,6 +10,7 @@
 
     <link type="guide" xref="index" group="purchase-new" />
     <link type="guide" xref="purchase" />
+    <link type="guide" xref="app-calendar" />
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>
 

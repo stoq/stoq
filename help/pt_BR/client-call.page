@@ -1,0 +1,63 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="client-call">
+
+  <title>Registrando chamadas a clientes</title>
+  <info>
+    <desc>
+      Registrando chamadas a clientes no Stoq
+    </desc>
+
+    <link type="guide" xref="client" />
+    <link type="guide" xref="app-calendar" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para registrar chamadas a clientes, isto é,
+    informar ao Stoq que em dada data foi realizado um contato por meio
+    telefônico a um dado cliente.
+  </p>
+  <note style="tip">
+    <p>
+      As chamadas realizadas podem ser facilmente visualizadas no
+      <link xref="app-calendar" />.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-sales" />, realize uma
+        <link xref="client-search">pesquisa de clientes</link> pelo cliente em
+        questão e <link xref="client-edit">edite-o</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        No <link xref="overview#editor">editor</link> que será aberto, na aba
+        <gui>Identificação</gui> clique no botão <gui>Ligações</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Uma <link xref="overview#search">pesquisa</link> será aberta e nela
+        você poderá encontrar várias chamadas realizadas no passado, assim como
+        editá-las. Clique em <gui>Novo</gui> para iniciar a inserção.
+      </p>
+    </item>
+    <item>
+      <p>
+        Você deverá informar aqui a <gui>Data</gui> do contato, assim como o
+        <gui>Atendente</gui> responsável e uma <gui>Descrição</gui>. Após ter
+        certeza dos dados, clique em <gui>Ok</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! A sua chamada ao cliente foi registrada com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>
