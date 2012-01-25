@@ -206,6 +206,7 @@ class AccountEditor(BaseEditor):
         else:
             self._bank_widgets.extend([l, widget])
         l.show()
+        return l
 
     def _update_bank_type(self):
         self._remove_bank_option_widgets()
@@ -218,7 +219,8 @@ class AccountEditor(BaseEditor):
         self.bank_number = ProxyEntry()
         self.bank_number.props.data_type = int
         self.bank_number.set_sensitive(False)
-        self._add_widget(_("Number:"), self.bank_number, options=True)
+        bank_number_lbl = self._add_widget(_("Number:"),
+                                           self.bank_number, options=True)
 
         self.bank_branch = ProxyEntry()
         self.bank_branch.connect('validate', self._on_bank_branch__validate,
@@ -226,21 +228,28 @@ class AccountEditor(BaseEditor):
         self.bank_branch.props.data_type = 'str'
         self.bank_branch.props.mandatory = True
         self.bank_branch.model_attribute = "bank_branch"
-        self._add_widget(_("Agency:"), self.bank_branch, options=True)
-        self.bank_branch.show()
+        bank_branch_lbl = self._add_widget(_("Agency:"),
+                                             self.bank_branch, options=True)
+        if bank_number is not None:
+            bank_branch_lbl.show()
+            self.bank_branch.show()
+        else:
+            bank_branch_lbl.hide()
 
         self.bank_account = ProxyEntry()
         self.bank_account.connect('validate', self._on_bank_account__validate,
                                   bank_info)
+        self._add_widget(_("Account:"), self.bank_account, options=True)
         self.bank_account.model_attribute = "bank_account"
         self.bank_account.props.data_type = 'str'
-        self.bank_account.props.mandatory = True
-        self._add_widget(_("Account:"), self.bank_account, options=True)
+        if bank_number is not None:
+            self.bank_account.props.mandatory = True
         self.bank_account.show()
 
         attributes = ['bank_account', 'bank_branch',
                       'bank_number']
         if bank_number is not None:
+            bank_number_lbl.show()
             self.bank_number.show()
 
             self.bank_model.bank_number = bank_number
@@ -257,6 +266,8 @@ class AccountEditor(BaseEditor):
                 entry.show()
                 self._option_fields[option] = entry
                 attributes.append(entry.model_attribute)
+        else:
+            bank_number_lbl.hide()
 
         self.bank_proxy = self.add_proxy(
             self.bank_model, attributes)
@@ -295,10 +306,10 @@ class AccountEditor(BaseEditor):
                                self._on_bank_type__content_changed)
         self.bank_type.show()
 
-        banks = get_all_banks()
-        self.bank_type.prefill(
-            [(b.description,
-              b.bank_number) for b in banks])
+        banks = [(_('Generic'), None)]
+        banks.extend([(b.description,
+                       b.bank_number) for b in get_all_banks()])
+        self.bank_type.prefill(banks)
 
         if self.model.bank:
             try:
