@@ -252,7 +252,7 @@ class TransactionPage(object):
             description = transaction.get_account_description(self.model)
             value = transaction.get_value(self.model)
             self._add_transaction(transaction, description, value)
-        self._update_totals()
+        self.update_totals()
 
     def _populate_payable_payments(self, view_class):
         for view in view_class.select():
@@ -271,7 +271,7 @@ class TransactionPage(object):
         item.value = value
         item.code = transaction.code
 
-    def _update_totals(self):
+    def update_totals(self):
         total = decimal.Decimal('0')
         for item in self.search.results:
             total += item.value
@@ -293,7 +293,7 @@ class TransactionPage(object):
             self._update_transaction(item, transaction,
                                      transaction.edited_account.description,
                                      transaction.value)
-            self._update_totals()
+            self.update_totals()
             self.search.results.update(item)
             self.app.accounts.refresh_accounts(self.app.conn)
         api.finish_transaction(trans, transaction)
@@ -318,7 +318,7 @@ class TransactionPage(object):
             if other == model:
                 value = -value
             item = self._add_transaction(transaction, other.description, value)
-            self._update_totals()
+            self.update_totals()
             self.search.results.update(item)
             self.app.accounts.refresh_accounts(self.app.conn)
         api.finish_transaction(trans, transaction)
@@ -720,6 +720,7 @@ class FinancialApp(AppWindow):
             account_transaction = trans.get(item.transaction)
         account_transaction.delete(account_transaction.id, connection=trans)
         trans.commit(close=True)
+        account_transactions.update_totals()
 
     def _print_transaction_report(self):
         assert not self._is_accounts_tab()
@@ -788,6 +789,7 @@ class FinancialApp(AppWindow):
         transactions = self._get_current_page_widget()
         transaction = transactions.results.get_selected()
         self._delete_transaction(transaction)
+        self._refresh_accounts()
 
     # Financial
 
