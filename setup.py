@@ -81,7 +81,6 @@ scripts = [
     'bin/stoq',
     'bin/stoqcreatedbuser',
     'bin/stoqdbadmin',
-    'bin/stoqruncmd',
     ]
 data_files = [
     ('$datadir/csv', listfiles('data', 'csv', '*.csv')),
