@@ -58,6 +58,7 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{_bindir}/stoq
 %{_bindir}/stoqcreatedbuser
 %{_bindir}/stoqdbadmin
+%{_bindir}/stoq-daemon
 %{_libdir}/python*/site-packages/*.egg-info
 %{_sysconfdir}/stoq
 %{_datadir}/icons/hicolor/48x48/apps/stoq.png
