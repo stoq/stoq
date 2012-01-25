@@ -79,8 +79,11 @@ packages.extend(listpackages('stoqlib', exclude='stoqlib.tests'))
 
 scripts = [
     'bin/stoq',
-    'bin/stoqcreatedbuser',
     'bin/stoqdbadmin',
+
+    # FIXME: move these to /usr/lib/stoq/
+    'bin/stoqcreatedbuser',
+    'bin/stoq-daemon',
     ]
 data_files = [
     ('$datadir/csv', listfiles('data', 'csv', '*.csv')),
