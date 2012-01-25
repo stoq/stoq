@@ -25,6 +25,7 @@
 
 import ctypes
 from ctypes.util import find_library
+import os
 import re
 
 from decimal import Decimal
@@ -112,20 +113,26 @@ def get_weekday_start():
 
     @returns: a dateutil.realtivedelta.weekday instance
     """
-    libc = get_libc()
+    # Libc + ctypes is not working on natty and previous
+    #libc = get_libc()
+    #week_origin = libc.nl_langinfo(NL_TIME_WEEK_1STDAY)
+    #v = libc.nl_langinfo(NL_TIME_FIRST_WEEKDAY)
+    #first_weekday = ord(ctypes.cast(v, ctypes.c_char_p).value[0])
 
-    week_origin = libc.nl_langinfo(NL_TIME_WEEK_1STDAY)
+    # Workaround to libc .
+    process = os.popen("locale first_weekday week-1stday")
+    first_weekday, week_origin = process.read().split('\n')[:2]
+    process.close()
+
     # we will set week_1sday based on the dateutil.relativedelta.weekday mapping
-    if week_origin == 19971130: # Sunday
+    if week_origin == '19971130': # Sunday
         week_1stday = 6
-    elif week_origin == 19971201: # Monday
+    elif week_origin == '19971201': # Monday
         week_1stday = 0
     else:
         raise TypeError('Unknown NL_TIME_WEEK_1STDAY constant')
 
-    v = libc.nl_langinfo(NL_TIME_FIRST_WEEKDAY)
-    first_weekday = ord(ctypes.cast(v, ctypes.c_char_p).value[0])
-    week_start = (week_1stday + first_weekday - 1) % 7
+    week_start = (week_1stday + int(first_weekday) - 1) % 7
 
     return relativedelta.weekday(week_start)
 
