@@ -38,6 +38,7 @@ from stoqlib.gui.printing import print_report
 from stoqlib.lib.boleto import (get_all_banks,
                                 get_bank_info_by_number,
                                 BoletoException)
+from stoqlib.lib.message import info
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.boleto import BillTestReport
@@ -75,7 +76,7 @@ class AccountEditor(BaseEditor):
 
     def __init__(self, conn, model=None, parent_account=None):
         self._last_account_type = None
-        self._bank_number = None
+        self._bank_number = -1
         self._bank_widgets = []
         self._bank_option_widgets = []
         self._option_fields = {}
@@ -164,16 +165,17 @@ class AccountEditor(BaseEditor):
     # Private
 
     def _save_bank(self):
-        if self._bank_number is None:
-            return
-
         bank_account = self.model.bank
         if not bank_account:
             bank_account = BankAccount(account=self.model,
                                        connection=self.conn)
-        bank_account.set(bank_number=self.bank_model.bank_number,
-                         bank_account=self.bank_model.bank_account,
-                         bank_branch=self.bank_model.bank_branch)
+        kwargs = dict(
+            bank_account=self.bank_model.bank_account,
+            bank_branch=self.bank_model.bank_branch)
+        if self._bank_number is not None:
+            kwargs['bank_number'] = self.bank_model.bank_number
+
+        bank_account.set(**kwargs)
         self._save_bank_bill_options(bank_account)
 
     def _save_bank_bill_options(self, bank_account):
@@ -337,7 +339,11 @@ class AccountEditor(BaseEditor):
     def _print_test_bill(self):
         register_payment_operations()
 
-        bank_info = get_bank_info_by_number(self.bank_model.bank_number)
+        try:
+            bank_info = get_bank_info_by_number(self.bank_model.bank_number)
+        except NotImplementedError:
+            info(_("This bank does not support printing of bills"))
+            return
         kwargs = dict(
             valor_documento=12345.67,
             data_vencimento=datetime.date.today(),
