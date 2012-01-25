@@ -62,6 +62,15 @@ def _decode_dict(data):
     return rv
 
 
+def _encode_object(obj):
+    if hasattr(obj, 'isoformat'):
+        return obj.isoformat()
+
+    raise TypeError(
+        'Object of type %s with value of %r '
+        'is not JSON serializable' % (type(obj), obj))
+
+
 class UserSettings(object):
     domain = 'stoq'
 
@@ -87,7 +96,8 @@ class UserSettings(object):
     def flush(self):
         data = json.dumps(self._root,
                           indent=2,
-                          sort_keys=True)
+                          sort_keys=True,
+                          default=_encode_object)
         self._write(data)
 
     def get_filename(self):
