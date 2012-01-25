@@ -346,4 +346,4 @@ class TestReport(DomainTest):
         calls = CallsView.select(connection=self.trans).orderBy('id')
         search.results.add_list(calls, clear=True)
         self.checkPDF(CallsReport, search.results, list(search.results),
-                      date=datetime.date(2011, 1, 1), person_name=person.name)
+                      date=datetime.date(2011, 1, 1), person=person)
