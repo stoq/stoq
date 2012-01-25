@@ -778,8 +778,9 @@ class TestSale(DomainTest):
 
         self.failIf(account.transactions)
 
+        paid_date = datetime.datetime(2010, 1, 2)
         sale.confirm()
-        payment.pay()
+        payment.pay(paid_date)
 
         self.failUnless(account.transactions)
         self.assertEquals(account.transactions.count(), 1)
@@ -787,6 +788,7 @@ class TestSale(DomainTest):
         t = account.transactions[0]
         self.assertEquals(t.payment, payment)
         self.assertEquals(t.value, payment.value)
+        self.assertEquals(t.date, payment.paid_date)
 
     def testAccountTransactionMoney(self):
         sale = self.create_sale()

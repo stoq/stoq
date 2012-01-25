@@ -276,7 +276,7 @@ class AccountTransaction(Domain):
                    value=value,
                    description=payment.description,
                    code=str(payment.id),
-                   date=const.NOW(),
+                   date=payment.paid_date,
                    connection=trans,
                    payment=payment)
 
