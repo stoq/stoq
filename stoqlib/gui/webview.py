@@ -92,6 +92,17 @@ class WebView(gtk.ScrolledWindow):
             self.refresh()
         trans.close()
 
+    def _dialog_call(self, id):
+        from stoqlib.domain.person import Calls
+        from stoqlib.gui.editors.callseditor import CallsEditor
+
+        trans = api.new_transaction()
+        model = trans.get(Calls.get(int(id)))
+        retval = run_dialog(CallsEditor, self.app, trans, model, None, None)
+        if api.finish_transaction(trans, retval):
+            self.refresh()
+        trans.close()
+
     def _show_search_by_date(self, date, app_name):
         y, m, d = map(int, date.split('-'))
         date = datetime.date(y, m, d)
@@ -108,12 +119,23 @@ class WebView(gtk.ScrolledWindow):
     def _show_purchases_by_date(self, date):
         self._show_search_by_date(date, 'purchase')
 
+    def _show_client_calls_by_date(self, date):
+        from stoqlib.gui.search.callsearch import CallsSearch
+
+        trans = api.new_transaction()
+        y, m, d = map(int, date.split('-'))
+        date = datetime.date(y, m, d)
+        run_dialog(CallsSearch, self.app, trans, date=date)
+        trans.close()
+
     def _uri_run_dialog(self, result, kwargs):
         path = result.path
         if path == '/payment':
             self._dialog_payment_details(**kwargs)
         elif path == '/purchase':
             self._dialog_purchase(**kwargs)
+        elif path == '/call':
+            self._dialog_call(**kwargs)
         else:
             raise NotImplementedError(path)
 
@@ -125,6 +147,8 @@ class WebView(gtk.ScrolledWindow):
             self._show_out_payments_by_date(**kwargs)
         elif path == '/purchases-by-date':
             self._show_purchases_by_date(**kwargs)
+        elif path == '/client-calls-by-date':
+            self._show_client_calls_by_date(**kwargs)
         else:
             raise NotImplementedError(path)
 

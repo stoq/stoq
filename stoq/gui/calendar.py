@@ -140,13 +140,16 @@ class CalendarView(WebView):
         self._show_events = dict(
             in_payments=events.get('in-payments', True),
             out_payments=events.get('out-payments', True),
-            purchase_orders=events.get('purchase-orders', True))
+            purchase_orders=events.get('purchase-orders', True),
+            client_calls=events.get('client-calls', True),
+            )
 
     def _save_user_settings(self):
         events = api.user_settings.get('calendar-events', {})
         events['in-payments'] = self._show_events['in_payments']
         events['out-payments'] = self._show_events['out_payments']
         events['purchase-orders'] = self._show_events['purchase_orders']
+        events['client-calls'] = self._show_events['client_calls']
 
     def _update_calendar_size(self, width, height):
         self._calendar_run('option', 'aspectRatio', float(width) / height)
@@ -259,6 +262,8 @@ class CalendarApp(AppWindow):
              None, _("Show accounts receivable in the list")),
             ('PurchaseEvents', None, _("Purchases"),
              None, _("Show purchases in the list")),
+            ('ClientCallEvents', None, _("Client Calls"),
+             None, _("Show client calls in the list")),
             ]
         self.add_ui_actions('', toggle_actions, 'ToggleActions',
                             'toggle')
@@ -270,11 +275,16 @@ class CalendarApp(AppWindow):
             events['out_payments'])
         self.PurchaseEvents.props.active = (
             events['purchase_orders'])
+        self.ClientCallEvents.props.active = (
+            events['client_calls'])
+
         self.AccountsReceivableEvents.connect(
             'notify::active', self._update_events)
         self.AccountsPayableEvents.connect(
             'notify::active', self._update_events)
         self.PurchaseEvents.connect(
+            'notify::active', self._update_events)
+        self.ClientCallEvents.connect(
             'notify::active', self._update_events)
 
         radio_actions = [
@@ -342,7 +352,9 @@ class CalendarApp(AppWindow):
         self._calendar.update_events(
             out_payments=self.AccountsPayableEvents.get_active(),
             in_payments=self.AccountsReceivableEvents.get_active(),
-            purchase_orders=self.PurchaseEvents.get_active())
+            purchase_orders=self.PurchaseEvents.get_active(),
+            client_calls=self.ClientCallEvents.get_active(),
+            )
 
     #
     # Kiwi callbacks

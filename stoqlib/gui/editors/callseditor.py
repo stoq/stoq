@@ -38,15 +38,20 @@ class CallsEditor(BaseEditor):
     model_name = _("Calls")
     gladefile = 'CallsEditor'
     proxy_widgets = ('date',
+                     'person_combo',
                      'description',
                      'message',
                      'attendant')
     size = (400, 300)
 
-    def __init__(self, conn, model, person):
+    def __init__(self, conn, model, person, person_iface):
         self.person = person
+        self.person_iface = person_iface
         BaseEditor.__init__(self, conn, model)
-        self.set_description(self.model.person.name)
+        if self.model.person:
+            self.set_description(_('Call to %s') % self.model.person.name)
+        else:
+            self.set_description(_('call'))
 
     def create_model(self, conn):
         return Calls(date=datetime.date.today(),
@@ -58,7 +63,19 @@ class CallsEditor(BaseEditor):
 
     def setup_proxies(self):
         self._fill_attendant_combo()
-        self.proxy = self.add_proxy(self.model, CallsEditor.proxy_widgets)
+        self._fill_person_combo()
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    def _fill_person_combo(self):
+        if self.model.person:
+            self.person_combo.prefill([(self.model.person.name,
+                                        self.model.person)])
+            self.person_combo.set_sensitive(False)
+        else:
+            persons = [(p.person.name, p)
+                         for p in Person.iselect(self.person_iface,
+                                                 connection=self.conn)]
+            self.person_combo.prefill(sorted(persons))
 
     def _fill_attendant_combo(self):
         attendants = [(a.person.name, a)

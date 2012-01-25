@@ -41,6 +41,7 @@
           <menuitem action="AccountsPayableEvents"/>
           <menuitem action="AccountsReceivableEvents"/>
           <menuitem action="PurchaseEvents"/>
+          <menuitem action="ClientCallEvents"/>
         </menu>
         <menuitem action="Today"/>
         <menuitem action="Back"/>
