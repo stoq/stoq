@@ -15,7 +15,7 @@
 
   <p>
     Este processo é utilizado para registrar chamadas a clientes, isto é,
-    informar ao Stoq que em dada data foi realizado um contato por meio
+    informar ao Stoq que em certa data foi realizado um contato por meio
     telefônico a um dado cliente.
   </p>
   <note style="tip">
@@ -29,7 +29,7 @@
     <item>
       <p>
         No <link xref="app-sales" />, realize uma
-        <link xref="client-search">pesquisa de clientes</link> pelo cliente em
+        <link xref="client-search">pesquisa por clientes</link> pelo cliente em
         questão e <link xref="client-edit">edite-o</link>.
       </p>
     </item>
