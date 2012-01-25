@@ -132,7 +132,7 @@ def create_main_branch(trans, name):
     return branch
 
 
-def _register_payment_methods():
+def register_payment_methods():
     """Registers the payment methods and creates persistent
     domain classes associated with them.
     """
@@ -347,7 +347,7 @@ def initialize_system():
     from stoqlib.domain.uiform import create_default_forms
     create_default_forms(trans)
     trans.commit(close=True)
-    _register_payment_methods()
+    register_payment_methods()
     ensure_sellable_constants()
     ensure_system_parameters()
     _ensure_card_providers()

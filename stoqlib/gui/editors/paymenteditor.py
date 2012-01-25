@@ -102,6 +102,7 @@ class BasePaymentEditor(BaseEditor):
 
     def setup_proxies(self):
         self._fill_category_combo()
+        self._fill_method_combo()
         self.add_category.set_tooltip_text(_("Add a new payment category"))
         self.edit_category.set_tooltip_text(_("Edit the selected payment category"))
         if self.person_iface == ISupplier:
@@ -129,6 +130,9 @@ class BasePaymentEditor(BaseEditor):
         category = self.category.get_selected()
         if category is not None:
             self.model.category = category
+        method = self.method.get_selected()
+        if method is not None:
+            self.model.method = method
         return self.model
 
     def can_edit_details(self):
@@ -185,6 +189,14 @@ class BasePaymentEditor(BaseEditor):
         if self.model.category:
             self.category.select(self.model.category)
         self.edit_category.set_sensitive(False)
+
+    def _fill_method_combo(self):
+        methods = PaymentMethod.select(
+            connection=self.trans).orderBy('description')
+        self.method.set_sensitive(bool(methods))
+        self.method.prefill([(m.description, m) for m in methods
+                             if m.is_active and m.method_name != 'multiple'])
+        self.method.select(self.model.method)
 
     def _setup_widgets(self):
         self.person_label.set_label(self._person_label)

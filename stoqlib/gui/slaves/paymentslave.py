@@ -658,6 +658,22 @@ class MoneyMethodSlave(BasePaymentMethodSlave):
         self.installments_number.hide()
 
 
+class DepositMethodSlave(BasePaymentMethodSlave):
+    model_type = _BaseTemporaryMethodData
+    _data_editor_class = BasePaymentDataEditor
+
+    def __init__(self, wizard, parent, conn, sale, payment_method,
+                 outstanding_value=currency(0),
+                 first_duedate=None, installments_number=None):
+        BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
+                                        sale, payment_method,
+                                        outstanding_value=outstanding_value,
+                                        installments_number=installments_number,
+                                        first_duedate=first_duedate)
+        self.bank_combo.hide()
+        self.bank_label.hide()
+
+
 class StoreCreditMethodSlave(BasePaymentMethodSlave):
     model_type = _BaseTemporaryMethodData
     _data_editor_class = BasePaymentDataEditor
@@ -954,7 +970,8 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.remove_button.hide()
         self.cash_radio.connect('toggled', self._on_method__toggled)
         self.cash_radio.set_data('method', self._method)
-        for method in ['bill', 'check', 'card', 'store_credit']:
+        for method in ['bill', 'check', 'card', 'store_credit',
+                       'deposit']:
             self._add_method(PaymentMethod.get_by_name(self.conn, method))
 
         self.payments.set_columns(self._get_columns())
@@ -1246,7 +1263,8 @@ def register_payment_slaves():
         ('check', CheckMethodSlave),
         ('card', CardMethodSlave),
         ('store_credit', StoreCreditMethodSlave),
-        ('multiple', MultipleMethodSlave)]:
+        ('multiple', MultipleMethodSlave),
+        ('deposit', DepositMethodSlave)]:
 
         method = PaymentMethod.get_by_name(conn, method_name)
         dsm.register(method, slave_class)

@@ -380,8 +380,10 @@ class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
 
     def _lonely_setup_widgets(self):
         _InstallmentConfirmationSlave._setup_widgets(self)
-        self.details_box.hide()
-        self.expander.hide()
+        self.order_label.hide()
+        self.person_label.hide()
+        self.order_number.hide()
+        self.person_name.hide()
         self.details_button.hide()
 
     def create_model(self, conn):
@@ -414,7 +416,10 @@ class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         self.expander.hide()
 
         if isinstance(self.model, _LonelyConfirmationModel):
-            self.details_box.hide()
+            self.order_label.hide()
+            self.person_label.hide()
+            self.order_number.hide()
+            self.person_name.hide()
             self.details_button.hide()
 
     def create_model(self, conn):
