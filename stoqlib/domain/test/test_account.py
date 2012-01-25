@@ -26,6 +26,7 @@ from stoqlib.domain.account import (Account, AccountTransaction,
                                     AccountTransactionView)
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.interfaces import IDescribable
+from stoqlib.exceptions import PaymentError
 from stoqlib.lib.parameters import sysparam
 
 
@@ -211,10 +212,17 @@ class TestAccountTransaction(DomainTest):
 
     def testCreateFromPayment(self):
         sale = self.create_sale()
-        payment = self.add_payments(sale).payment
+        self.add_product(sale)
+        payment = self.add_payments(sale, method_type='check').payment
+        sale.order()
+        sale.confirm()
         account = self.create_account()
         payment.method.destination_account = account
+        self.assertRaises(PaymentError,
+                          AccountTransaction.create_from_payment, payment)
+        payment.pay()
         transaction = AccountTransaction.create_from_payment(payment)
+
         imbalance_account = sysparam(self.trans).IMBALANCE_ACCOUNT
         self.assertEquals(transaction.source_account, imbalance_account)
         self.assertEquals(transaction.account, account)

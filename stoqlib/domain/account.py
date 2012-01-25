@@ -26,11 +26,12 @@ from zope.interface import implements
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import ForeignKey, IntCol, UnicodeCol
 from stoqlib.database.orm import DateTimeCol
-from stoqlib.database.orm import const, OR, SingleJoin
+from stoqlib.database.orm import OR, SingleJoin
 from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IOutPayment
 from stoqlib.domain.station import BranchStation
+from stoqlib.exceptions import PaymentError
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -267,6 +268,8 @@ class AccountTransaction(Domain):
         @account: account where this payment will arrive
         @returns: the transaction
         """
+        if not payment.is_paid():
+            raise PaymentError(_("Payment needs to be paid"))
         trans = payment.get_connection()
         value = payment.paid_value
         if IOutPayment(payment, None):
