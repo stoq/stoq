@@ -99,7 +99,7 @@ class CalendarView(WebView):
             'agenda': _('h:mm{ - h:mm}'),
             # for all other views, eg "7p", see:
             # http://arshaw.com/fullcalendar/docs/text/timeFormat/
-            '': _('7p'),
+            '': _('h(:mm)t'),
             }
 
         options['titleFormat'] = {
