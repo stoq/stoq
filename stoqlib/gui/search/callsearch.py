@@ -31,6 +31,7 @@ from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.api import api
+from stoqlib.domain.interfaces import IClient
 from stoqlib.domain.person import CallsView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchEditor
@@ -50,9 +51,12 @@ class CallsSearch(SearchEditor):
     searching_by_date = True
     size = (700, 450)
 
-    def __init__(self, conn, person, reuse_transaction=False):
+    def __init__(self, conn, person=None, reuse_transaction=False,
+                 person_iface=IClient, date=None):
         self.conn = conn
         self.person = person
+        self._iface = person_iface
+        self._date = date
         self._reuse_transaction = reuse_transaction
         SearchEditor.__init__(self, conn)
 
@@ -88,14 +92,23 @@ class CallsSearch(SearchEditor):
         date_filter = DateSearchFilter(_("Date:"))
         self.search.add_filter(date_filter)
         self.date_filter = date_filter
+        if self._date:
+            date_filter.mode.select_item_by_position(5)
+            date_filter.start_date.set_date(self._date)
+            self.search.refresh()
 
     def get_columns(self):
-        return [Column('date', title=_('Date'),
+        columns = [Column('date', title=_('Date'),
                        data_type=datetime.date, width=150, sorted=True),
                 SearchColumn('description', title=_('Description'),
                              data_type=str, width=150, expand=True),
                 SearchColumn('attendant', title=_('Attendant'),
                              data_type=str, width=100, expand=True)]
+        if not self.person:
+            columns.insert(1,
+                SearchColumn('person', title=_('Person'),
+                             data_type=str, width=150, expand=True))
+        return columns
 
     def executer_query(self, query, having, conn):
         client = self.person
@@ -119,13 +132,14 @@ class CallsSearch(SearchEditor):
         if self._reuse_transaction:
             self.conn.savepoint('before_run_editor')
             retval = run_dialog(self.editor_class, self, self.conn,
-                                self.conn.get(obj), self.person)
+                                self.conn.get(obj), self.person,
+                                self._iface)
             if not retval:
                 self.conn.rollback_to_savepoint('before_run_editor')
         else:
             trans = api.new_transaction()
             retval = run_dialog(self.editor_class, self, trans,
-                                trans.get(obj), self.person)
+                                trans.get(obj), self.person, self._iface)
             api.finish_transaction(trans, retval)
             trans.close()
         return retval
@@ -145,4 +159,4 @@ class CallsSearch(SearchEditor):
     def _on_print_button__clicked(self, widget):
         print_report(CallsReport, self.results, list(self.results),
                      filters=self.search.get_search_filters(),
-                     person_name=self.person.name)
+                     person=self.person)

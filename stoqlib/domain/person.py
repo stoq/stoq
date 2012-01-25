@@ -1334,3 +1334,10 @@ class CallsView(Viewable):
                 query = date_query
 
         return cls.select(query, having=having, connection=connection)
+
+
+class ClientCallsView(CallsView):
+    joins = CallsView.joins[:]
+    joins.append(
+        INNERJOINOn(None, PersonAdaptToClient,
+                    PersonAdaptToClient.q.originalID == Person.q.id))

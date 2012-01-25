@@ -53,11 +53,26 @@ class CalendarEvents(Resource):
             self._collect_outpayments(start, end, day_events, trans)
         if resource.args.get('purchase_orders', [''])[0] == 'true':
             self._collect_purchase_orders(start, end, day_events, trans)
+        if resource.args.get('client_calls', [''])[0] == 'true':
+            self._collect_client_calls(start, end, day_events, trans)
 
         group = resource.args.get('group', [''])[0] == 'true'
         events = self._summarize_events(day_events, group)
         trans.close()
         return json.dumps(events)
+
+    @classmethod
+    def _append_event(cls, events, date, section, event):
+        d = events.setdefault(date,
+                     dict(receivable=[], payable=[], purchases=[],
+                          client_calls=[]))
+        d[section].append(event)
+
+    def _collect_client_calls(self, start, end, day_events, trans):
+        from stoqlib.domain.person import ClientCallsView
+        for pv in ClientCallsView.select(connection=trans):
+            date, ev = self._create_client_call(pv)
+            self._append_event(day_events, date, 'client_calls', ev)
 
     def _collect_inpayments(self, start, end, day_events, trans):
         query = AND(InPaymentView.q.status == Payment.STATUS_PENDING,
@@ -65,9 +80,7 @@ class CalendarEvents(Resource):
                     InPaymentView.q.due_date <= end)
         for pv in InPaymentView.select(query, connection=trans):
             date, ev = self._create_in_payment(pv)
-            d = day_events.setdefault(date, dict(receivable=[],
-                                        payable=[], purchases=[]))
-            d['receivable'].append(ev)
+            self._append_event(day_events, date, 'receivable', ev)
 
     def _collect_outpayments(self, start, end, day_events, trans):
         query = AND(OutPaymentView.q.status == Payment.STATUS_PENDING,
@@ -75,18 +88,25 @@ class CalendarEvents(Resource):
                     OutPaymentView.q.due_date <= end)
         for pv in OutPaymentView.select(query, connection=trans):
             date, ev = self._create_out_payment(pv)
-            d = day_events.setdefault(date, dict(receivable=[],
-                                        payable=[], purchases=[]))
-            d['payable'].append(ev)
+            self._append_event(day_events, date, 'payable', ev)
 
     def _collect_purchase_orders(self, start, end, day_events, trans):
         query = AND(PurchaseOrderView.q.expected_receival_date >= start,
                     PurchaseOrderView.q.expected_receival_date <= end),
         for ov in PurchaseOrderView.select(query, connection=trans):
             date, ev = self._create_order(ov)
-            d = day_events.setdefault(date, dict(receivable=[],
-                                        payable=[], purchases=[]))
-            d['purchases'].append(ev)
+            self._append_event(day_events, date, 'purchases', ev)
+
+    def _create_client_call(self, call_view):
+        title = call_view.description
+        date = call_view.date.date()
+
+        return date, {"title": title,
+                "id": call_view.id,
+                "type": "client-call",
+                "start": str(date),
+                "url": "stoq://dialog/call?id=" + str(call_view.id),
+                "className": 'client_call'}
 
     def _create_in_payment(self, payment_view):
         title = payment_view.description
@@ -155,12 +175,14 @@ class CalendarEvents(Resource):
                 normal_events.extend(events['receivable'])
                 normal_events.extend(events['payable'])
                 normal_events.extend(events['purchases'])
+                normal_events.extend(events['client_calls'])
         return normal_events
 
     def _create_summary_events(self, date, events):
         in_payment_events = events['receivable']
         out_payment_events = events['payable']
         purchase_events = events['purchases']
+        client_calls = events['client_calls']
 
         events = []
 
@@ -171,6 +193,18 @@ class CalendarEvents(Resource):
                                url=url,
                                start=str(date),
                                className=class_name))
+        if client_calls:
+            if len(client_calls) == 1:
+                events.append(client_calls[0])
+            else:
+                title_format = stoqlib_ngettext(_("%d client call"),
+                                                _("%d client calls"),
+                                                len(in_payment_events))
+                title = title_format % len(client_calls)
+                class_name = "client_call"
+                url = "stoq://show/client-calls-by-date?date=%s" % (date,)
+                add_event(title, url, date, class_name)
+
         if in_payment_events:
             if len(in_payment_events) == 1:
                 events.append(in_payment_events[0])

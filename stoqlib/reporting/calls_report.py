@@ -39,9 +39,10 @@ class CallsReport(ObjectListReport):
 
     def __init__(self, filename, objectlist, calls, *args, **kwargs):
         self.calls = calls
-        person_name = kwargs['person_name']
-        self.main_object_name = (_("performed call to %s") % person_name,
-                                 _("performed calls to %s") % person_name)
+        person = kwargs['person']
+        if person:
+            self.main_object_name = (_("performed call to %s") % person.name,
+                                     _("performed calls to %s") % person.name)
         ObjectListReport.__init__(self, filename, objectlist, calls,
                                   CallsReport.report_name, landscape=True,
                                   *args, **kwargs)
