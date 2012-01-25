@@ -95,6 +95,8 @@ _bindings = [
      _("Configure parameters")),
 
     # Calendar application
+    ('app.calendar.new_client_call', '',
+     _("Register a new client call")),
     ('app.calendar.go_back', '',
      _("Go back")),
     ('app.calendar.go_forward', '',
@@ -227,6 +229,7 @@ _bindings = [
     ('app.sales.sale_return', ''),
     ('app.sales.sale_edit', ''),
     ('app.sales.sale_details', ''),
+    ('app.sales.search_client_calls', ''),
     # books search books: <Control><Alt>B
     # books search publishers: <Control><Alt>P
 

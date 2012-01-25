@@ -39,6 +39,7 @@ from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.editors.invoiceeditor import SaleInvoicePrinterDialog
 from stoqlib.gui.keybindings import get_accels
+from stoqlib.gui.search.callsearch import CallsSearch
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -112,6 +113,9 @@ class SalesApp(SearchableAppWindow):
             ("SearchClient", STOQ_CLIENTS, _("Clients..."),
              group.get("search_clients"),
              _("Search for clients")),
+            ("SearchClientCalls", None, _("Client Calls..."),
+             group.get("search_client_calls"),
+             _("Search for client calls")),
             ("SearchCommission", None, _("Commissions..."),
              group.get("search_commissions"),
              _("Search for salespersons commissions")),
@@ -421,6 +425,9 @@ class SalesApp(SearchableAppWindow):
 
     def on_SearchCommission__activate(self, button):
         self.run_dialog(CommissionSearch, self.conn)
+
+    def on_SearchClientCalls__activate(self, action):
+        self.run_dialog(CallsSearch, self.conn)
 
     def on_SearchService__activate(self, button):
         self.run_dialog(ServiceSearch, self.conn, hide_toolbar=True)

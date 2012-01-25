@@ -72,7 +72,7 @@ class CallsEditor(BaseEditor):
                                         self.model.person)])
             self.person_combo.set_sensitive(False)
         else:
-            persons = [(p.person.name, p)
+            persons = [(p.person.name, p.person)
                          for p in Person.iselect(self.person_iface,
                                                  connection=self.conn)]
             self.person_combo.prefill(sorted(persons))
