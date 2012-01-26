@@ -813,4 +813,3 @@ class PurchaseOrderView(Viewable):
             query = AND(query, date_query)
 
         return cls.select(query, connection=connection)
-
