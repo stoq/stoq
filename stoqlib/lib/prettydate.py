@@ -33,13 +33,11 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-def _df(seconds, denominator=1, text='', past=True):
+def _df(seconds, denominator, past, text_future, text_past):
     if past:
-        # Translators: 15 [days|weeks|months|years] ago
-        return _('%s %s ago') % ((seconds + denominator / 2) / denominator, text)
+        return text_past % ((seconds + denominator / 2) / denominator, )
     else:
-        # Translators: in 15 [days|weeks|months|years]
-        return _('in %s %s') % ((seconds + denominator / 2) / denominator, text)
+        return text_future % ((seconds + denominator / 2) / denominator, )
 
 
 def pretty_date(time=False, asdays=False):
@@ -69,33 +67,47 @@ def pretty_date(time=False, asdays=False):
         if seconds < 10:
             return _('now')
         elif seconds < 60:
-            return _df(seconds, 1, _('seconds'), past)
+            return _df(seconds, 1, past,
+                       _('in %d seconds'),
+                       _('%d seconds ago'))
         elif seconds < 120:
-            return past and _('a minute ago') or _('in a minute')
+            return _('a minute ago') if past else _('in a minute')
         elif seconds < 3600:
-            return _df(seconds, 60, _('minutes'), past)
+            return _df(seconds, 60, past,
+                       _('in %d minutes'),
+                       _('%d minutes ago'))
         elif seconds < 7200:
-            return past and _('an hour ago') or _('in an hour')
+            return _('an hour ago') if past else _('in an hour')
         else:
-            return _df(seconds, 3600, _('hours'), past)
+            return _df(seconds, 3600, past,
+                       _('in %d hours'),
+                       _('%d hours ago'))
     else:
         if days == 0:
             return _('today')
         elif days == 1:
-            return past and _('yesterday') or _('tomorrow')
+            return _('yesterday') if past else _('tomorrow')
         elif days == 2:
-            return past and _('day before') or _('day after')
+            return _('day before') if past else _('day after')
         elif days < 7:
-            return _df(days, 1, _('days'), past)
+            return _df(days, 1, past,
+                       _('in %d days'),
+                       _('%d days ago'))
         elif days < 14:
-            return past and _('last week') or _('next week')
+            return _('last week') if past else _('next week')
         elif days < 31:
-            return _df(days, 7, _('weeks'), past)
+            return _df(days, 7, past,
+                       _('in %d weeks'),
+                       _('%d weeks ago'))
         elif days < 61:
-            return past and _('last month') or _('next month')
+            return _('last month') if past else _('next month')
         elif days < 365:
-            return _df(days, 30, _('months'), past)
+            return _df(days, 30, past,
+                       _('in %d months'),
+                       _('%d months ago'))
         elif days < 730:
-            return past and _('last year') or _('next year')
+            return _('last year') if past else _('next year')
         else:
-            return _df(days, 365, _('years'), past)
+            return _df(days, 365, past,
+                       _('in %d years'),
+                       _('%d years ago'))
