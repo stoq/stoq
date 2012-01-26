@@ -120,12 +120,12 @@ class WebView(gtk.ScrolledWindow):
         self._show_search_by_date(date, 'purchase')
 
     def _show_client_calls_by_date(self, date):
-        from stoqlib.gui.search.callsearch import CallsSearch
+        from stoqlib.gui.search.callsearch import ClientCallsSearch
 
         trans = api.new_transaction()
         y, m, d = map(int, date.split('-'))
         date = datetime.date(y, m, d)
-        run_dialog(CallsSearch, self.app, trans, date=date)
+        run_dialog(ClientCallsSearch, self.app, trans, date=date)
         trans.close()
 
     def _uri_run_dialog(self, result, kwargs):

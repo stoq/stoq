@@ -39,7 +39,7 @@ from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.editors.invoiceeditor import SaleInvoicePrinterDialog
 from stoqlib.gui.keybindings import get_accels
-from stoqlib.gui.search.callsearch import CallsSearch
+from stoqlib.gui.search.callsearch import ClientCallsSearch
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -427,7 +427,7 @@ class SalesApp(SearchableAppWindow):
         self.run_dialog(CommissionSearch, self.conn)
 
     def on_SearchClientCalls__activate(self, action):
-        self.run_dialog(CallsSearch, self.conn)
+        self.run_dialog(ClientCallsSearch, self.conn)
 
     def on_SearchService__activate(self, button):
         self.run_dialog(ServiceSearch, self.conn, hide_toolbar=True)

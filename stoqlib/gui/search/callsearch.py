@@ -32,7 +32,7 @@ from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.api import api
 from stoqlib.domain.interfaces import IClient
-from stoqlib.domain.person import CallsView
+from stoqlib.domain.person import CallsView, ClientCallsView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
@@ -45,17 +45,33 @@ _ = stoqlib_gettext
 
 
 class CallsSearch(SearchEditor):
-    title = _("Clients Calls")
+    """This search can be used directly, to show calls to any kind of person in
+    the system.
+
+    Subclasses can also override I{person_interface} to set the person type that
+    will be available when creating a new call, and I{person_name}, that will be
+    the column title in this search.
+    """
+    title = _("Calls Search")
     search_table = CallsView
     editor_class = CallsEditor
     searching_by_date = True
+    person_interface = None
+    person_name = _('Person')
     size = (700, 450)
 
-    def __init__(self, conn, person=None, reuse_transaction=False,
-                 person_iface=IClient, date=None):
+    def __init__(self, conn, person=None, date=None, reuse_transaction=False):
+        """
+        @param person: If not None, the search will show only call made to
+            this person.
+        @param date: If not None, the search will be filtered using this date by
+            default
+        @param reuse_transaction: When False, a new transaction will be
+            created/commited when creating a new call. When True, no transaction
+            will be created. In this case, I{conn} will be utilized.
+        """
         self.conn = conn
         self.person = person
-        self._iface = person_iface
         self._date = date
         self._reuse_transaction = reuse_transaction
         SearchEditor.__init__(self, conn)
@@ -106,7 +122,7 @@ class CallsSearch(SearchEditor):
                              data_type=str, width=100, expand=True)]
         if not self.person:
             columns.insert(1,
-                SearchColumn('person', title=_('Person'),
+                SearchColumn('person', title=self.person_name,
                              data_type=str, width=150, expand=True))
         return columns
 
@@ -133,13 +149,14 @@ class CallsSearch(SearchEditor):
             self.conn.savepoint('before_run_editor')
             retval = run_dialog(self.editor_class, self, self.conn,
                                 self.conn.get(obj), self.person,
-                                self._iface)
+                                self.person_interface)
             if not retval:
                 self.conn.rollback_to_savepoint('before_run_editor')
         else:
             trans = api.new_transaction()
             retval = run_dialog(self.editor_class, self, trans,
-                                trans.get(obj), self.person, self._iface)
+                                trans.get(obj), self.person,
+                                self.person_interface)
             api.finish_transaction(trans, retval)
             trans.close()
         return retval
@@ -160,3 +177,10 @@ class CallsSearch(SearchEditor):
         print_report(CallsReport, self.results, list(self.results),
                      filters=self.search.get_search_filters(),
                      person=self.person)
+
+
+class ClientCallsSearch(CallsSearch):
+    title = _("Calls Search")
+    search_table = ClientCallsView
+    person_interface = IClient
+    person_name = _('Client')
