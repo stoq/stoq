@@ -1335,6 +1335,11 @@ class CallsView(Viewable):
 
         return cls.select(query, having=having, connection=connection)
 
+    @classmethod
+    def select_by_date(cls, date, connection):
+        return cls.select_by_client_date(None, None, date,
+                                         connection=connection)
+
 
 class ClientCallsView(CallsView):
     joins = CallsView.joins[:]

@@ -28,11 +28,9 @@ import json
 from twisted.web.resource import Resource
 
 from stoqlib.api import api
-from stoqlib.database.orm import AND
+from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
+from stoqlib.domain.person import ClientCallsView
 from stoqlib.domain.purchase import PurchaseOrderView
-from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.payment.views import InPaymentView
-from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 
 _ = stoqlib_gettext
@@ -40,10 +38,8 @@ _ = stoqlib_gettext
 
 class CalendarEvents(Resource):
     def render_GET(self, resource):
-        start = datetime.datetime.fromtimestamp(
-            float(resource.args['start'][0]))
-        end = datetime.datetime.fromtimestamp(
-            float(resource.args['end'][0]))
+        start = datetime.date.fromtimestamp(float(resource.args['start'][0]))
+        end = datetime.date.fromtimestamp(float(resource.args['end'][0]))
 
         trans = api.new_transaction()
         day_events = {}
@@ -56,6 +52,8 @@ class CalendarEvents(Resource):
         if resource.args.get('client_calls', [''])[0] == 'true':
             self._collect_client_calls(start, end, day_events, trans)
 
+        # When grouping, events of the same type will be shown as only one, to
+        # save space.
         group = resource.args.get('group', [''])[0] == 'true'
         events = self._summarize_events(day_events, group)
         trans.close()
@@ -68,40 +66,38 @@ class CalendarEvents(Resource):
                           client_calls=[]))
         d[section].append(event)
 
+    #
+    #   Database Quering
+    #
+
     def _collect_client_calls(self, start, end, day_events, trans):
-        from stoqlib.domain.person import ClientCallsView
-        for pv in ClientCallsView.select(connection=trans):
-            date, ev = self._create_client_call(pv)
+        for v in ClientCallsView.select_by_date((start, end), connection=trans):
+            date, ev = self._create_client_call(v)
             self._append_event(day_events, date, 'client_calls', ev)
 
     def _collect_inpayments(self, start, end, day_events, trans):
-        query = AND(InPaymentView.q.status == Payment.STATUS_PENDING,
-                    InPaymentView.q.due_date >= start,
-                    InPaymentView.q.due_date <= end)
-        for pv in InPaymentView.select(query, connection=trans):
+        for pv in InPaymentView.select_pending((start, end), connection=trans):
             date, ev = self._create_in_payment(pv)
             self._append_event(day_events, date, 'receivable', ev)
 
     def _collect_outpayments(self, start, end, day_events, trans):
-        query = AND(OutPaymentView.q.status == Payment.STATUS_PENDING,
-                    OutPaymentView.q.due_date >= start,
-                    OutPaymentView.q.due_date <= end)
-        for pv in OutPaymentView.select(query, connection=trans):
+        for pv in OutPaymentView.select_pending((start, end), connection=trans):
             date, ev = self._create_out_payment(pv)
             self._append_event(day_events, date, 'payable', ev)
 
     def _collect_purchase_orders(self, start, end, day_events, trans):
-        query = AND(PurchaseOrderView.q.expected_receival_date >= start,
-                    PurchaseOrderView.q.expected_receival_date <= end),
-        for ov in PurchaseOrderView.select(query, connection=trans):
+        for ov in PurchaseOrderView.select_confirmed((start, end), connection=trans):
             date, ev = self._create_order(ov)
             self._append_event(day_events, date, 'purchases', ev)
 
+    #
+    #   Events creation
+    #
+
     def _create_client_call(self, call_view):
-        title = call_view.description
         date = call_view.date.date()
 
-        return date, {"title": title,
+        return date, {"title": call_view.person,
                 "id": call_view.id,
                 "type": "client-call",
                 "start": str(date),
@@ -163,6 +159,10 @@ class CalendarEvents(Resource):
                 "type": "purchase",
                 "url": "stoq://dialog/purchase?id=" + str(order_view.id),
                 "className": className}
+
+    #
+    #   Events summarization
+    #
 
     def _summarize_events(self, day_events, group):
         normal_events = []

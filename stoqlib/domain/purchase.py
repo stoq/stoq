@@ -798,3 +798,19 @@ class PurchaseOrderView(Viewable):
 
     def get_status_str(self):
         return PurchaseOrder.translate_status(self.status)
+
+    @classmethod
+    def select_confirmed(cls, due_date=None, connection=None):
+        query = cls.q.status == PurchaseOrder.ORDER_CONFIRMED
+
+        if due_date:
+            if isinstance(due_date, tuple):
+                date_query = AND(const.DATE(cls.q.expected_receival_date) >= due_date[0],
+                                 const.DATE(cls.q.expected_receival_date) <= due_date[1])
+            else:
+                date_query = const.DATE(cls.q.expected_receival_date) == due_date
+
+            query = AND(query, date_query)
+
+        return cls.select(query, connection=connection)
+
