@@ -519,6 +519,7 @@ class PosApp(AppWindow):
             double_click_confirm=True,
             info_message=message)
         if not sellable_view_item:
+            self.barcode.set_text("")
             return
 
         sellable = Sellable.get(sellable_view_item.id, connection=self.conn)
