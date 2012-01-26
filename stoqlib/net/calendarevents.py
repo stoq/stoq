@@ -186,8 +186,8 @@ class CalendarEvents(Resource):
 
         events = []
 
-        def add_event(title, url, date, class_name):
-            if date < datetime.date.today():
+        def add_event(title, url, date, class_name, show_late=True):
+            if show_late and date < datetime.date.today():
                 class_name += " late"
             events.append(dict(title=title,
                                url=url,
@@ -199,11 +199,11 @@ class CalendarEvents(Resource):
             else:
                 title_format = stoqlib_ngettext(_("%d client call"),
                                                 _("%d client calls"),
-                                                len(in_payment_events))
+                                                len(client_calls))
                 title = title_format % len(client_calls)
                 class_name = "client_call"
                 url = "stoq://show/client-calls-by-date?date=%s" % (date,)
-                add_event(title, url, date, class_name)
+                add_event(title, url, date, class_name, False)
 
         if in_payment_events:
             if len(in_payment_events) == 1:
