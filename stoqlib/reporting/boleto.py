@@ -897,6 +897,7 @@ class BillReport(object):
 
 class BillTestReport(object):
     def __init__(self, filename, data):
+        self.title = _("Bill")
         self._bill = BoletoPDF(filename, BoletoPDF.FORMAT_BOLETO)
         self._bill.add_data(data)
 
