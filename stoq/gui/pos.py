@@ -807,16 +807,13 @@ class PosApp(AppWindow):
         self._coupon.remove_item(sale_item)
 
     def _close_till(self):
-        # Only close the till if there are no open sale orders as they
-        # require an open till to finish.
-        can_close_till = not self._sale_started
-        if not can_close_till:
-            if yesno(_('You must finish or cancel the current sale before '
+        if self._sale_started:
+            if not yesno(_('You must finish or cancel the current sale before '
                        'you can close the till.'),
                      gtk.RESPONSE_NO, _("Cancel sale"), _("Finish sale")):
-                self._cancel_order(show_confirmation=False)
-                self._printer.close_till()
-        return
+                return
+            self._cancel_order(show_confirmation=False)
+        self._printer.close_till()
 
     #
     # Actions
