@@ -41,59 +41,80 @@ from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.person import Person, PersonAdaptToCreditProvider
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.domain.sale import Sale
 from stoqlib.lib.translation import stoqlib_gettext
 
 
 _ = stoqlib_gettext
 
 
-class InPaymentView(Viewable):
+class BasePaymentView(Viewable):
     columns = dict(
+        # Payment
         id=Payment.q.id,
         description=Payment.q.description,
-        drawee=Person.q.name,
         due_date=Payment.q.due_date,
         status=Payment.q.status,
         paid_date=Payment.q.paid_date,
         value=Payment.q.value,
         paid_value=Payment.q.paid_value,
-        sale_id=Sale.q.id,
-        color=PaymentCategory.q.color,
         payment_number=Payment.q.payment_number,
-        person_id=Person.q.id,
         group_id=Payment.q.groupID,
-        method_name=PaymentMethod.q.method_name,
-        renegotiation_id=PaymentRenegotiation.q.id,
+
+        # PaymentGroup
         renegotiated_id=PaymentGroup.q.renegotiationID,
+
+        # PaymentMethod
+        method_name=PaymentMethod.q.method_name,
+
+        # PaymentCategory
+        color=PaymentCategory.q.color,
+
+        # PaymentComment
         comments_number=const.COUNT(PaymentComment.q.id),
-        )
+
+        # Sale
+        sale_id=Sale.q.id,
+
+        # Purchase
+        purchase_id=PurchaseOrder.q.id,
+        purchase_status=PurchaseOrder.q.status,
+    )
+
+    PaymentGroup_Sale = Alias(PaymentGroup, 'payment_group_sale')
+    PaymentGroup_Purchase = Alias(PaymentGroup, 'payment_group_purchase')
 
     joins = [
-        INNERJOINOn(None, PaymentAdaptToInPayment,
-                    PaymentAdaptToInPayment.q.originalID == Payment.q.id),
         LEFTJOINOn(None, PaymentGroup,
                    PaymentGroup.q.id == Payment.q.groupID),
-        LEFTJOINOn(None, Person,
-                    PaymentGroup.q.payerID == Person.q.id),
-        LEFTJOINOn(None, Sale,
-                   Sale.q.groupID == PaymentGroup.q.id),
-        LEFTJOINOn(None, PaymentRenegotiation,
-                   PaymentRenegotiation.q.groupID == PaymentGroup.q.id),
         LEFTJOINOn(None, PaymentCategory,
                    PaymentCategory.q.id == Payment.q.categoryID),
         INNERJOINOn(None, PaymentMethod,
                     Payment.q.methodID == PaymentMethod.q.id),
         LEFTJOINOn(None, PaymentComment,
                    PaymentComment.q.paymentID == Payment.q.id),
-        ]
+
+        # Purchase
+        LEFTJOINOn(None, PaymentGroup_Purchase,
+                   PaymentGroup_Purchase.q.id == Payment.q.groupID),
+        LEFTJOINOn(None, PurchaseOrder,
+                   PurchaseOrder.q.groupID == PaymentGroup_Purchase.q.id),
+
+        # Sale
+        LEFTJOINOn(None, PaymentGroup_Sale,
+                   PaymentGroup_Sale.q.id == Payment.q.groupID),
+        LEFTJOINOn(None, Sale,
+                   Sale.q.groupID == PaymentGroup_Sale.q.id),
+    ]
 
     def can_change_due_date(self):
         return self.status not in [Payment.STATUS_PAID,
                                    Payment.STATUS_CANCELLED]
 
     def can_cancel_payment(self):
-        if self.sale_id:
+        """Only  lonely payments and pending can be cancelled
+        """
+        if self.sale_id or self.purchase_id:
             return False
 
         return self.status == Payment.STATUS_PENDING
@@ -115,17 +136,57 @@ class InPaymentView(Viewable):
         return self.status == Payment.STATUS_PAID
 
     @property
-    def sale(self):
-        if self.sale_id:
-            return Sale.get(self.sale_id)
-
-    @property
     def payment(self):
         return Payment.get(self.id, connection=self.get_connection())
 
     @property
     def group(self):
         return PaymentGroup.get(self.group_id, connection=self.get_connection())
+
+    @property
+    def purchase(self):
+        if self.purchase_id:
+            return PurchaseOrder.get(self.purchase_id)
+
+    @property
+    def sale(self):
+        if self.sale_id:
+            return Sale.get(self.sale_id)
+
+    @classmethod
+    def select_pending(cls, due_date=None, connection=None):
+        query = cls.q.status == Payment.STATUS_PENDING
+
+        if due_date:
+            if isinstance(due_date, tuple):
+                date_query = AND(const.DATE(cls.q.due_date) >= due_date[0],
+                                 const.DATE(cls.q.due_date) <= due_date[1])
+            else:
+                date_query = const.DATE(cls.q.due_date) == due_date
+
+            query = AND(query, date_query)
+
+        return cls.select(query, connection=connection)
+
+
+class InPaymentView(BasePaymentView):
+    columns = BasePaymentView.columns.copy()
+    columns.update(dict(
+        drawee=Person.q.name,
+        person_id=Person.q.id,
+        renegotiated_id=PaymentGroup.q.renegotiationID,
+        renegotiation_id=PaymentRenegotiation.q.id,
+        ))
+
+    joins = BasePaymentView.joins[:]
+    joins.extend([
+        INNERJOINOn(None, PaymentAdaptToInPayment,
+                    PaymentAdaptToInPayment.q.originalID == Payment.q.id),
+        LEFTJOINOn(None, Person,
+                    PaymentGroup.q.payerID == Person.q.id),
+        LEFTJOINOn(None, PaymentRenegotiation,
+                   PaymentRenegotiation.q.groupID == PaymentGroup.q.id),
+    ])
 
     @property
     def renegotiation(self):
@@ -143,75 +204,19 @@ class InPaymentView(Viewable):
         return self.sale or self.renegotiation
 
 
-class OutPaymentView(Viewable):
-
-    columns = dict(
-        id=Payment.q.id,
-        description=Payment.q.description,
+class OutPaymentView(BasePaymentView):
+    columns = BasePaymentView.columns.copy()
+    columns.update(dict(
         supplier_name=Person.q.name,
-        due_date=Payment.q.due_date,
-        status=Payment.q.status,
-        paid_date=Payment.q.paid_date,
-        value=Payment.q.value,
-        paid_value=Payment.q.paid_value,
-        purchase_id=PurchaseOrder.q.id,
-        purchase_status=PurchaseOrder.q.status,
-        sale_id=Sale.q.id,
-        color=PaymentCategory.q.color,
-        comments_number=const.COUNT(PaymentComment.q.id)
-        )
+    ))
 
-    PaymentGroup_Sale = Alias(PaymentGroup, 'payment_group_sale')
-    PaymentGroup_Purchase = Alias(PaymentGroup, 'payment_group_purchase')
-
-    joins = [
+    joins = BasePaymentView.joins[:]
+    joins.extend([
         INNERJOINOn(None, PaymentAdaptToOutPayment,
                     PaymentAdaptToOutPayment.q.originalID == Payment.q.id),
-        LEFTJOINOn(None, PaymentGroup_Purchase,
-                   PaymentGroup_Purchase.q.id == Payment.q.groupID),
-        LEFTJOINOn(None, PurchaseOrder,
-                   PurchaseOrder.q.groupID == PaymentGroup_Purchase.q.id),
-        LEFTJOINOn(None, PaymentGroup_Sale,
-                   PaymentGroup_Sale.q.id == Payment.q.groupID),
-        LEFTJOINOn(None, Sale,
-                   Sale.q.groupID == PaymentGroup_Sale.q.id),
         LEFTJOINOn(None, Person,
-                   Person.q.id == PaymentGroup_Sale.q.recipientID),
-        LEFTJOINOn(None, PaymentCategory,
-                   PaymentCategory.q.id == Payment.q.categoryID),
-        LEFTJOINOn(None, PaymentComment,
-                   PaymentComment.q.paymentID == Payment.q.id),
-        ]
-
-    def get_status_str(self):
-        return Payment.statuses[self.status]
-
-    def can_change_due_date(self):
-        return self.status not in [Payment.STATUS_PAID,
-                                   Payment.STATUS_CANCELLED]
-
-    def can_cancel_payment(self):
-        if self.sale_id or self.purchase_id:
-            return False
-
-        return self.status == Payment.STATUS_PENDING
-
-    def is_paid(self):
-        return self.status == Payment.STATUS_PAID
-
-    @property
-    def purchase(self):
-        if self.purchase_id:
-            return PurchaseOrder.get(self.purchase_id)
-
-    @property
-    def sale(self):
-        if self.sale_id:
-            return SaleView.select(SaleView.q.id == self.sale_id)[0]
-
-    @property
-    def payment(self):
-        return Payment.get(self.id, connection=self.get_connection())
+                   Person.q.id == BasePaymentView.PaymentGroup_Sale.q.recipientID),
+    ])
 
 
 class CardPaymentView(Viewable):

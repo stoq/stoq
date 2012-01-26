@@ -64,7 +64,7 @@ class _TemporaryOutPayment(object):
         self.paid_date = payment.paid_date
         self.status_str = payment.get_status_str()
         self.base_value = -payment.base_value
-        self.paid_value = -payment.paid_value
+        self.paid_value = -(payment.paid_value or 0)
 
 
 class SaleDetailsDialog(BaseEditor):
