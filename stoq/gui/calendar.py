@@ -35,6 +35,8 @@ import gtk
 from stoqlib.api import api
 from stoqlib.domain.interfaces import IClient
 from stoqlib.gui.editors.callseditor import CallsEditor
+from stoqlib.gui.editors.paymenteditor import (InPaymentEditor,
+                                               OutPaymentEditor)
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.stockicons import (STOQ_CALENDAR_TODAY,
                                     STOQ_CALENDAR_WEEK,
@@ -246,7 +248,11 @@ class CalendarApp(AppWindow):
         actions = [
             # File
             ('NewClientCall', None, _("Client call"),
-             group.get('new_client_call'), _("Register a new client call")),
+             group.get('new_client_call'), _("Add a new client call")),
+            ('NewPayable', None, _("Account payable"),
+             group.get('new_payable'), _("Add a new account payable")),
+            ('NewReceivable', None, _("Account receivable"),
+             group.get('new_receivable'), _("Add a new account receivable")),
             # View
             ('Back', gtk.STOCK_GO_BACK, _("Back"),
              group.get('go_back'), _("Go back")),
@@ -319,7 +325,9 @@ class CalendarApp(AppWindow):
             self.ViewDay.props.active = True
 
     def create_ui(self):
-        self.app.launcher.add_new_items([self.NewClientCall])
+        self.app.launcher.add_new_items([self.NewPayable,
+                                         self.NewReceivable,
+                                         self.NewClientCall])
 
         # Reparent the toolbar, to show the date next to it.
         self.hbox = gtk.HBox()
@@ -371,6 +379,13 @@ class CalendarApp(AppWindow):
         if trans.committed:
             self._update_events()
 
+    def _new_payment(self, editor):
+        with api.trans() as trans:
+            self.run_dialog(editor, trans)
+
+        if trans.committed:
+            self._update_events()
+
     #
     # Kiwi callbacks
     #
@@ -388,6 +403,12 @@ class CalendarApp(AppWindow):
 
     def on_NewClientCall__activate(self, action):
         self._new_client_call()
+
+    def on_NewPayable__activate(self, action):
+        self._new_payment(OutPaymentEditor)
+
+    def on_NewReceivable__activate(self, action):
+        self._new_payment(InPaymentEditor)
 
     def on_Back__activate(self, action):
         self._calendar.go_prev()

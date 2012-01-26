@@ -97,6 +97,10 @@ _bindings = [
     # Calendar application
     ('app.calendar.new_client_call', '',
      _("Register a new client call")),
+    ('app.calendar.new_payable', '',
+     _("Add a new account payable")),
+    ('app.calendar.new_receivable', '',
+     _("Add a new account receivable")),
     ('app.calendar.go_back', '',
      _("Go back")),
     ('app.calendar.go_forward', '',
