@@ -19,6 +19,10 @@ apidocs: stoqlib.pickle
 schemadocs:
 	schemaspy -t pgsql -host anthem -db $(USER) -u $(USER) -s public -o $(SCHEMADIR)
 
+manual:
+	mkdir html
+	yelp-build html -o html help/pt_BR
+
 web: apidocs
 	scp -r apidocs async.com.br:$(WEBDOC_DIR)/stoqlib-tmp
 	ssh async.com.br rm -fr $(WEBDOC_DIR)/stoqlib
