@@ -66,7 +66,7 @@ class BasePersonSearch(SearchEditor):
     search_lbl_text = None
     result_strings = None
 
-    def __init__(self, conn, title='', hide_footer=False):
+    def __init__(self, conn, title='', hide_footer=True):
         self.title = title or self.title
         SearchEditor.__init__(self, conn, self.table,
                               self.editor_class,
