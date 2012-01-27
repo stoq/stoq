@@ -17,6 +17,7 @@
   };
 
   function startup(options) {
+      $("#loading").html(options.loading_msg);
       options.aspectRatio = 2.3;
       options.events = function(start, end, callback) {
         calendar_options.start = start.getTime() / 1000;
