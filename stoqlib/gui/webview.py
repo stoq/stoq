@@ -152,6 +152,9 @@ class WebView(gtk.ScrolledWindow):
         else:
             raise NotImplementedError(path)
 
+    def _uri_self(self, result, kwargs):
+        self.web_open_uri(kwargs)
+
     def _parse_stoq_uri(self, uri):
         result = urlparse.urlparse(uri)
         kwargs = {}
@@ -163,6 +166,8 @@ class WebView(gtk.ScrolledWindow):
             self._uri_run_dialog(result, kwargs)
         elif result.hostname == 'show':
             self._uri_show(result, kwargs)
+        elif result.hostname == 'self':
+            self._uri_self(result, kwargs)
         else:
             raise NotImplementedError(result.hostname)
 
@@ -226,3 +231,6 @@ class WebView(gtk.ScrolledWindow):
 
         self._view.execute_script('%s(%s)' % (
             function, ', '.join(js_values)))
+
+    def web_open_uri(self, kwargs):
+        pass

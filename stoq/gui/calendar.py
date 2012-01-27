@@ -28,8 +28,11 @@ stoq/gui/calendar.py:
 """
 
 import gettext
+import urllib
 
-from dateutil.relativedelta import MO
+from dateutil.parser import parse
+from dateutil.relativedelta import MO, relativedelta
+from dateutil.tz import tzlocal, tzutc
 import gtk
 
 from stoqlib.api import api
@@ -50,6 +53,14 @@ from stoqlib.lib.defaults import get_weekday_start
 from stoq.gui.application import AppWindow
 
 _ = gettext.gettext
+
+
+def parse_javascript_date(jsdate):
+    dt = parse(jsdate, fuzzy=True)
+    dt = dt.replace(tzinfo=tzlocal())
+    date = dt.astimezone(tzutc())
+    date += relativedelta(months=-1)
+    return date
 
 
 class CalendarView(WebView):
@@ -176,6 +187,18 @@ class CalendarView(WebView):
         x, y, width, height = req
         self._update_calendar_size(width, height)
 
+    #
+    # WebView
+    #
+
+    def web_open_uri(self, kwargs):
+        if kwargs['method'] == 'changeView':
+            view = kwargs['view']
+            if view == 'basicDay':
+                self.app.ViewDay.set_active(True)
+                jsdate = urllib.unquote(kwargs['date'])
+                date = parse_javascript_date(jsdate)
+                self._calendar_run('gotoDate', date.year, date.month, date.day)
     #
     # Public API
     #

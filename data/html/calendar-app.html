@@ -48,6 +48,14 @@
           }
         });
       }
+      options.selectable = true;
+      options.selectHelper = true;
+      options.select = function(start, end, allDay) {
+          if ($('#calendar').fullCalendar('getView') == 'basicDay') {
+              return;
+          }
+          window.location = 'stoq://self/?method=changeView,view=basicDay,date=' + start;
+      };
 
       options.header = {
           left: '',
