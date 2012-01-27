@@ -41,10 +41,10 @@
           <menuitem action="ViewDay"/>
         </menu>
         <menu action="CalendarEvents">
+          <menuitem action="ClientCallEvents"/>
           <menuitem action="AccountsPayableEvents"/>
           <menuitem action="AccountsReceivableEvents"/>
           <menuitem action="PurchaseEvents"/>
-          <menuitem action="ClientCallEvents"/>
         </menu>
         <menuitem action="Today"/>
         <menuitem action="Back"/>
