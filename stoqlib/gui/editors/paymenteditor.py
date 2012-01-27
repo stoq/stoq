@@ -136,7 +136,7 @@ class PaymentEditor(BaseEditor):
 
     def can_edit_details(self):
         for widget in [self.value, self.due_date,
-                       self.add_person]:
+                       self.add_person, self.method]:
             widget.set_sensitive(True)
         self.details_button.hide()
         self.edit_person.set_sensitive(bool(self.person.get_selected()))
@@ -193,7 +193,7 @@ class PaymentEditor(BaseEditor):
     def _fill_method_combo(self):
         methods = PaymentMethod.select(
             connection=self.trans).orderBy('description')
-        self.method.set_sensitive(bool(methods))
+        self.method.set_sensitive(False)
         self.method.prefill([(m.description, m) for m in methods
                              if m.is_active and m.method_name != 'multiple'])
         self.method.select(self.model.method)
