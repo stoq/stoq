@@ -27,9 +27,9 @@
     <menu action="FileMenu">
       <menu action="NewMenu">
         <placeholder action="NewMenuItemPH">
+          <menuitem action="NewClientCall"/>
           <menuitem action="NewPayable"/>
           <menuitem action="NewReceivable"/>
-          <menuitem action="NewClientCall"/>
         </placeholder>
       </menu>
     </menu>

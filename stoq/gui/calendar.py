@@ -330,9 +330,9 @@ class CalendarApp(AppWindow):
             self.ViewDay.props.active = True
 
     def create_ui(self):
-        self.app.launcher.add_new_items([self.NewPayable,
-                                         self.NewReceivable,
-                                         self.NewClientCall])
+        self.app.launcher.add_new_items([self.NewClientCall,
+                                         self.NewPayable,
+                                         self.NewReceivable,])
 
         # Reparent the toolbar, to show the date next to it.
         self.hbox = gtk.HBox()
@@ -354,7 +354,7 @@ class CalendarApp(AppWindow):
     def activate(self, params):
         self.app.launcher.SearchToolItem.set_sensitive(False)
         # FIXME: Are we 100% sure we can always print something?
-        self.app.launcher.Print.set_sensitive(True)
+        # self.app.launcher.Print.set_sensitive(True)
 
     def deactivate(self):
         # Put the toolbar back at where it was
