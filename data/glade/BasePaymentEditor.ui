@@ -153,10 +153,11 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyComboEntry" id="category">
+          <object class="ProxyComboBox" id="category">
             <property name="visible">True</property>
             <property name="data_type">object</property>
             <property name="model_attribute">category</property>
+            <property name="color_attribute">color</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
