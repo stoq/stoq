@@ -127,9 +127,7 @@ class BasePaymentEditor(BaseEditor):
             setattr(self.model.group,
                     self.person_attribute,
                     person.person)
-        category = self.category.get_selected()
-        if category is not None:
-            self.model.category = category
+        self.model.category = self.category.get_selected()
         method = self.method.get_selected()
         if method is not None:
             self.model.method = method
@@ -185,9 +183,10 @@ class BasePaymentEditor(BaseEditor):
         categories = PaymentCategory.select(
             connection=self.trans).orderBy('name')
         self.category.set_sensitive(bool(categories))
-        self.category.prefill([(c.name, c) for c in categories])
-        if self.model.category:
-            self.category.select(self.model.category)
+        categories = [(c.name, c) for c in categories]
+        categories.insert(0, (_('No category'), None))
+        self.category.prefill(categories)
+        self.category.select(self.model.category)
         self.edit_category.set_sensitive(False)
 
     def _fill_method_combo(self):
