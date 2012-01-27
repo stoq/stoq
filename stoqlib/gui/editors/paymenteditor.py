@@ -56,8 +56,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class BasePaymentEditor(BaseEditor):
-    gladefile = "BasePaymentEditor"
+class PaymentEditor(BaseEditor):
+    gladefile = "PaymentEditor"
     model_type = Payment
     person_editor = None
     person_class = None
@@ -111,7 +111,7 @@ class BasePaymentEditor(BaseEditor):
         else:
             self.add_person.set_tooltip_text(_("Add a new client"))
             self.edit_person.set_tooltip_text(_("Edit the selected client"))
-        self.add_proxy(self.model, BasePaymentEditor.proxy_widgets)
+        self.add_proxy(self.model, PaymentEditor.proxy_widgets)
 
     def validate_confirm(self):
         # FIXME: the kiwi view should export it's state and it should
@@ -257,7 +257,7 @@ class BasePaymentEditor(BaseEditor):
         self._show_order_dialog()
 
 
-class InPaymentEditor(BasePaymentEditor):
+class InPaymentEditor(PaymentEditor):
     person_attribute = 'payer'
     person_editor = ClientEditor
     person_class = PersonAdaptToClient
@@ -273,13 +273,13 @@ class InPaymentEditor(BasePaymentEditor):
         @param model: a L{stoqlib.domain.payment.payment.Payment} object
                       or None
         """
-        BasePaymentEditor.__init__(self, conn, model)
+        PaymentEditor.__init__(self, conn, model)
         if model is None or not model.is_inpayment():
             self.model.addFacet(IInPayment, connection=self.conn)
             self.can_edit_details()
 
 
-class OutPaymentEditor(BasePaymentEditor):
+class OutPaymentEditor(PaymentEditor):
     person_attribute = 'recipient'
     person_editor = SupplierEditor
     person_class = PersonAdaptToSupplier
@@ -295,7 +295,7 @@ class OutPaymentEditor(BasePaymentEditor):
         @param model: a L{stoqlib.domain.payment.payment.Payment} object
                       or None
         """
-        BasePaymentEditor.__init__(self, conn, model)
+        PaymentEditor.__init__(self, conn, model)
         if model is None or not model.is_outpayment():
             self.model.addFacet(IOutPayment, connection=self.conn)
             self.can_edit_details()
