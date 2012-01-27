@@ -355,7 +355,7 @@ class CalendarApp(AppWindow):
     def create_ui(self):
         self.app.launcher.add_new_items([self.NewClientCall,
                                          self.NewPayable,
-                                         self.NewReceivable,])
+                                         self.NewReceivable])
 
         # Reparent the toolbar, to show the date next to it.
         self.hbox = gtk.HBox()
