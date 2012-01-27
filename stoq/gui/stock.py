@@ -310,6 +310,7 @@ class StockApp(SearchableAppWindow):
         model = self.run_dialog(StockTransferWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
+        self.search.refresh()
 
     def _receive_purchase(self):
         if self.check_open_inventory():
@@ -318,6 +319,7 @@ class StockApp(SearchableAppWindow):
         model = self.run_dialog(ReceivingOrderWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
+        self.search.refresh()
 
     #
     # Callbacks
@@ -367,12 +369,14 @@ class StockApp(SearchableAppWindow):
         model = self.run_dialog(StockDecreaseWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
+        self.search.refresh()
 
     def on_StockInitial__activate(self, action):
         if self.check_open_inventory():
             return
         branch = self.branch_filter.get_state().value
         self.run_dialog(InitialStockDialog, self.conn, branch)
+        self.search.refresh()
 
     def on_StockPictureViewer__activate(self, button):
         if self.image_viewer:
@@ -398,6 +402,7 @@ class StockApp(SearchableAppWindow):
         model = self.run_dialog(NewLoanWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
+        self.search.refresh()
 
     def on_LoanClose__activate(self, action):
         if self.check_open_inventory():
@@ -406,6 +411,7 @@ class StockApp(SearchableAppWindow):
         model = self.run_dialog(CloseLoanWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
+        self.search.refresh()
 
     def on_LoanSearch__activate(self, action):
         self.run_dialog(LoanSearch, self.conn)
