@@ -271,7 +271,9 @@ class SaleReturnSlave(BaseEditorSlave):
 
     def __init__(self, conn, model, return_data, visual_mode=False):
         self._return_data = return_data
-        self._till = Till.get_current(conn)
+        # Visual mode only shows details of returned sale, without need a till.
+        if not visual_mode:
+            self._till = Till.get_current(conn)
         BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def _hide_status_widgets(self):
