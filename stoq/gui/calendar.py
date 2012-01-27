@@ -65,6 +65,7 @@ def parse_javascript_date(jsdate):
 
 class CalendarView(WebView):
     def __init__(self, app):
+        self._loaded = False
         WebView.__init__(self)
         self.app = app
         self.get_view().connect(
@@ -79,6 +80,7 @@ class CalendarView(WebView):
         view.connect('size-allocate', self._on_view__size_allocate)
         x, y, width, height = view.get_allocation()
         self._update_calendar_size(width, height)
+        self._loaded = True
 
     def _startup(self):
         options = {}
@@ -138,12 +140,13 @@ class CalendarView(WebView):
         options['isRTL'] = (
             gtk.widget_get_default_direction() == gtk.TEXT_DIR_RTL)
         options['data'] = self._show_events
-        self.js_function_call("$('#loading').html",
-            _('Loading calendar content, please wait...'))
+        options['loading_msg'] = _('Loading calendar content, please wait...')
         self.js_function_call('startup', options)
         self._update_title()
 
     def _calendar_run(self, name, *args):
+        if not self._loaded:
+            return
         self.js_function_call("$('#calendar').fullCalendar", name, *args)
 
     def _load_daemon_path(self, path):
