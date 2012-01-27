@@ -184,6 +184,11 @@ class PersonRoleTypeStep(WizardEditorStep):
     def has_previous_step(self):
         return False
 
+    # Callbacks
+
+    def on_phone_number__activate(self, entry):
+       self.wizard.go_to_next()
+
 
 #
 # Main wizard
