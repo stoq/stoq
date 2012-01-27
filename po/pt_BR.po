@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-25 19:01-0200\n"
-"PO-Revision-Date: 2012-01-25 16:38+0000\n"
-"Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
+"PO-Revision-Date: 2012-01-26 10:00+0000\n"
+"Last-Translator: Johan Dahlin <jdahlin@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-26 05:32+0000\n"
-"X-Generator: Launchpad (build 14719)\n"
+"X-Launchpad-Export-Date: 2012-01-27 05:33+0000\n"
+"X-Generator: Launchpad (build 14727)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -387,7 +387,7 @@ msgstr "Mensagem:"
 
 #: ../data/glade/CallsEditor.ui.h:5
 msgid "Person:"
-msgstr ""
+msgstr "Pessoa:"
 
 #: ../data/glade/CashAdvanceEditor.ui.h:1
 msgid "Credit for Employee:"
@@ -4056,7 +4056,7 @@ msgstr "H:mm{ - H:mm}"
 #. http://arshaw.com/fullcalendar/docs/text/timeFormat/
 #: ../stoq/gui/calendar.py:104
 msgid "h(:mm)t"
-msgstr ""
+msgstr "H(:mm)"
 
 #. month title, eg "September 2009", see:
 #. http://arshaw.com/fullcalendar/docs/text/titleFormat/
@@ -8353,7 +8353,7 @@ msgstr "Agência:"
 
 #: ../stoqlib/gui/editors/accounteditor.py:311
 msgid "Generic"
-msgstr ""
+msgstr "Genérico"
 
 #: ../stoqlib/gui/editors/accounteditor.py:345
 msgid "This bank does not support printing of bills"
@@ -9563,7 +9563,7 @@ msgstr "Chamadas para clientes"
 
 #: ../stoqlib/gui/search/callsearch.py:109
 msgid "Person"
-msgstr ""
+msgstr "Pessoa"
 
 #: ../stoqlib/gui/search/categorysearch.py:45
 msgid "Sellable Category Search"
