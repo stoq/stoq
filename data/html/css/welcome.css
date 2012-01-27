@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background: #FFFFFF url(top.png) repeat-x;
+    background: #FFFFFF url(../images/top.png) repeat-x;
     font-family: Ubuntu, "Trebuchet MS", Arial, Helvetica, sans-serif;
     font-size: 13px;
     color: #666666;
