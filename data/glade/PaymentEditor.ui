@@ -3,7 +3,7 @@
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkWindow" id="BasePaymentEditor">
+  <object class="GtkWindow" id="PaymentEditor">
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <child>

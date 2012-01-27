@@ -135,7 +135,7 @@ def _test_slave(self, slave):
 def _create_slave_test():
     TODO = {}
     SKIP = {
-        'BasePaymentEditor': 'Base Class for other editors',
+        'PaymentEditor': 'Base Class for other editors',
         'BranchDialog': 'cannot provide ICurrentBranch twice',
         'BranchEditor': ' ',
         'CreditProviderEditor': ' ',
