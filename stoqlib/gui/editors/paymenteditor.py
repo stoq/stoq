@@ -103,6 +103,7 @@ class PaymentEditor(BaseEditor):
     def setup_proxies(self):
         self._fill_category_combo()
         self._fill_method_combo()
+        self._populate_person()
         self.add_category.set_tooltip_text(_("Add a new payment category"))
         self.edit_category.set_tooltip_text(_("Edit the selected payment category"))
         if self.person_iface == ISupplier:
