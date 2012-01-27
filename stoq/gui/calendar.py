@@ -280,24 +280,30 @@ class CalendarApp(AppWindow):
         self.add_ui_actions('', toggle_actions, 'ToggleActions',
                             'toggle')
 
-        events = self._calendar.get_events()
-        self.AccountsReceivableEvents.props.active = (
-            events['in_payments'])
-        self.AccountsPayableEvents.props.active = (
-            events['out_payments'])
-        self.PurchaseEvents.props.active = (
-            events['purchase_orders'])
-        self.ClientCallEvents.props.active = (
-            events['client_calls'])
 
-        self.AccountsReceivableEvents.connect(
-            'notify::active', self._update_events)
-        self.AccountsPayableEvents.connect(
-            'notify::active', self._update_events)
-        self.PurchaseEvents.connect(
-            'notify::active', self._update_events)
-        self.ClientCallEvents.connect(
-            'notify::active', self._update_events)
+        events_info = dict(
+            in_payments=(self.AccountsReceivableEvents, self.NewReceivable,
+                         'receivable'),
+            out_payments=(self.AccountsPayableEvents, self.NewPayable,
+                          'payable'),
+            purchase_orders=(self.PurchaseEvents, None, 'stock'),
+            client_calls=(self.ClientCallEvents, self.NewClientCall, 'sales'),
+        )
+
+        user = api.get_current_user(self.conn)
+        events = self._calendar.get_events()
+        for event_name, value in events_info.items():
+            view_action, new_action, app = value
+            view_action.props.active = events[event_name]
+            # Disable feature if user does not have acces to required
+            # application
+            if not user.profile.check_app_permission(app):
+                view_action.props.active = False
+                view_action.set_sensitive(False)
+                if new_action:
+                    new_action.set_sensitive(False)
+
+            view_action.connect('notify::active', self._update_events)
 
         radio_actions = [
             ('ViewMonth', STOQ_CALENDAR_MONTH, _("View as month"),
