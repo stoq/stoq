@@ -26,6 +26,7 @@
 import errno
 import json
 import os
+from decimal import Decimal
 
 from kiwi.log import Logger
 
@@ -65,6 +66,8 @@ def _decode_dict(data):
 def _encode_object(obj):
     if hasattr(obj, 'isoformat'):
         return obj.isoformat()
+    if isinstance(obj, Decimal):
+        return str(obj)
 
     raise TypeError(
         'Object of type %s with value of %r '
