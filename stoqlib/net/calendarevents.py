@@ -36,6 +36,18 @@ from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 _ = stoqlib_gettext
 
 
+def _color_to_rgb(c, alpha):
+    c = c.strip()
+    if c[0] == '#':
+        c = c[1:]
+    if len(c) != 6:
+        return '#000'
+    return 'rgba(%d, %d, %d, %f)' % (
+        int(c[:2], 16),
+        int(c[2:4], 16),
+        int(c[4:], 16), alpha)
+
+
 class CalendarEvents(Resource):
     def render_GET(self, resource):
         start = datetime.date.fromtimestamp(float(resource.args['start'][0]))
@@ -115,12 +127,17 @@ class CalendarEvents(Resource):
         if start < datetime.date.today():
             className += " late"
 
-        return start, {"title": title,
-                "id": payment_view.id,
-                "type": "in-payment",
-                "start": str(start),
-                "url": "stoq://dialog/payment?id=" + str(payment_view.id),
-                "className": className}
+        event = dict(id=payment_view.id,
+                     className=className,
+                     start=str(start),
+                     title=title,
+                     type="in-payment",
+                     url="stoq://dialog/payment?id=" + str(payment_view.id))
+
+        if payment_view.color:
+            event['backgroundColor'] = _color_to_rgb(payment_view.color, 0.1)
+
+        return start, event
 
     def _create_out_payment(self, payment_view):
         supplier_name = payment_view.supplier_name
@@ -136,12 +153,17 @@ class CalendarEvents(Resource):
         if start < datetime.date.today():
             className += " late"
 
-        return start, {"title": title,
-                "id": payment_view.id,
-                "type": "out-payment",
-                "start": str(start),
-                "url": "stoq://dialog/payment?id=" + str(payment_view.id),
-                "className": className}
+        event = dict(id=payment_view.id,
+                     className=className,
+                     start=str(start),
+                     title=title,
+                     type="out-payment",
+                     url="stoq://dialog/payment?id=" + str(payment_view.id))
+
+        if payment_view.color:
+            event['backgroundColor'] = _color_to_rgb(payment_view.color, 0.1)
+
+        return start, event
 
     def _create_order(self, order_view):
         title = _("Receival from %s") % (
