@@ -280,7 +280,6 @@ class CalendarApp(AppWindow):
         self.add_ui_actions('', toggle_actions, 'ToggleActions',
                             'toggle')
 
-
         events_info = dict(
             in_payments=(self.AccountsReceivableEvents, self.NewReceivable,
                          'receivable'),
