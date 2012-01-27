@@ -28,6 +28,7 @@ import operator
 import gtk
 from kiwi.component import get_utility
 from stoqlib.api import api
+from stoqlib.gui.base.dialogs import add_current_toplevel
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoq.gui.application import AppWindow
 from stoq.lib.applist import Application
@@ -66,6 +67,8 @@ class Launcher(AppWindow):
         return self.app_name
 
     def create_ui(self):
+        toplevel = self.get_toplevel().get_toplevel()
+        add_current_toplevel(toplevel)
         self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
         self.iconview.set_markup_column(COL_LABEL)
         self.iconview.set_pixbuf_column(COL_PIXBUF)

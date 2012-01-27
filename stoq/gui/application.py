@@ -39,8 +39,7 @@ from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.message import yesno
 from stoqlib.lib.webservice import WebService
-from stoqlib.gui.base.dialogs import (get_dialog, run_dialog,
-                                      add_current_toplevel)
+from stoqlib.gui.base.dialogs import (get_dialog, run_dialog)
 from stoqlib.gui.base.infobar import InfoBar
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
@@ -161,7 +160,6 @@ class AppWindow(GladeDelegate):
         toplevel = self.get_toplevel()
         toplevel.connect('delete-event', self._on_toplevel__delete_event)
         toplevel.connect('configure-event', self._on_toplevel__configure)
-        add_current_toplevel(toplevel)
         if self.size:
             toplevel.set_size_request(*self.size)
         toplevel.set_title(self.get_title())
