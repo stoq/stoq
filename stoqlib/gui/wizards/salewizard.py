@@ -321,7 +321,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         clients = self.client.get_model_items().values()
         if client in clients:
             if client.is_active:
-                self.client.update(client)
+                self.client.select(client)
             else:
                 # remove client from combo
                 self.client.select_item_by_data(client)
