@@ -187,7 +187,7 @@ class PersonRoleTypeStep(WizardEditorStep):
     # Callbacks
 
     def on_phone_number__activate(self, entry):
-       self.wizard.go_to_next()
+        self.wizard.go_to_next()
 
 
 #
