@@ -34,10 +34,11 @@ from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.api import api
 from stoqlib.database.orm import INNERJOINOn, Viewable
-from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
+from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
 from stoqlib.gui.base.search import SearchDialog
@@ -76,10 +77,10 @@ class TillFiscalOperationsView(Viewable):
                     PersonAdaptToBranch.q.id == BranchStation.q.branchID),
         INNERJOINOn(None, PaymentGroup,
                     PaymentGroup.q.id == Payment.q.groupID),
-        INNERJOINOn(None, FiscalBookEntry,
-                    FiscalBookEntry.q.payment_groupID == PaymentGroup.q.id),
+        INNERJOINOn(None, Sale,
+                    Sale.q.groupID == PaymentGroup.q.id),
         INNERJOINOn(None, CfopData,
-                    CfopData.q.id == FiscalBookEntry.q.cfopID),
+                    CfopData.q.id == Sale.q.cfopID),
         ]
 
 
