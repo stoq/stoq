@@ -27,9 +27,9 @@
 
 import datetime
 
+from dateutil.relativedelta import relativedelta
 import gtk
 import pango
-
 from kiwi.datatypes import currency, ValidationError, ValueUnset
 from kiwi.ui.widgets.list import Column
 
@@ -51,9 +51,14 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor
 from stoqlib.gui.editors.personeditor import ClientEditor, SupplierEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.lib.defaults import (INTERVALTYPE_WEEK,
+                                  INTERVALTYPE_MONTH)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+INTERVALTYPE_ONCE = -1
+INTERVALTYPE_BIWEEKLY = 10
+INTERVALTYPE_QUARTERLY = 11
 
 
 class PaymentEditor(BaseEditor):
@@ -104,6 +109,12 @@ class PaymentEditor(BaseEditor):
         self._fill_category_combo()
         self._fill_method_combo()
         self._populate_person()
+        self.repeat.prefill([
+            (_('Once'), INTERVALTYPE_ONCE),
+            (_('Weekly'), INTERVALTYPE_WEEK),
+            (_('Biweekly'), INTERVALTYPE_BIWEEKLY),
+            (_('Monthly'), INTERVALTYPE_MONTH),
+            (_('Quarterly'), INTERVALTYPE_QUARTERLY)])
         self.add_category.set_tooltip_text(_("Add a new payment category"))
         self.edit_category.set_tooltip_text(_("Edit the selected payment category"))
         if self.person_iface == ISupplier:
@@ -115,6 +126,9 @@ class PaymentEditor(BaseEditor):
         self.add_proxy(self.model, PaymentEditor.proxy_widgets)
 
     def validate_confirm(self):
+        if (self.repeat.get_selected() != INTERVALTYPE_ONCE and
+            self.end_date.get_date() is None):
+            return False
         # FIXME: the kiwi view should export it's state and it should
         #        be used by default
         return bool(self.model.description and
@@ -132,6 +146,9 @@ class PaymentEditor(BaseEditor):
         method = self.method.get_selected()
         if method is not None:
             self.model.method = method
+
+        if self.repeat.get_selected() != INTERVALTYPE_ONCE:
+            self._create_repeated_payments()
         return self.model
 
     def can_edit_details(self):
@@ -228,6 +245,53 @@ class PaymentEditor(BaseEditor):
         else:
             run_dialog(LonelyPaymentDetailsDialog, self, self.conn, self.model)
 
+    def _validate_date(self):
+        if self.end_date.props.sensitive and self.end_date.get_date() is None:
+            self.end_date.set_invalid(_("Date cannot be empty"))
+        else:
+            self.end_date.set_valid()
+
+    def _create_repeated_payments(self):
+        start_date = self.model.due_date.date()
+        end_date = self.end_date.get_date()
+        repeat_type = self.repeat.get_selected()
+        if repeat_type == INTERVALTYPE_WEEK:
+            delta = relativedelta(weeks=1)
+        elif repeat_type == INTERVALTYPE_BIWEEKLY:
+            delta = relativedelta(weeks=2)
+        elif repeat_type == INTERVALTYPE_MONTH:
+            delta = relativedelta(months=1)
+        elif repeat_type == INTERVALTYPE_QUARTERLY:
+            delta = relativedelta(months=3)
+        else:
+            raise AssertionError(repeat_type)
+
+        next_date = start_date + delta
+        dates = []
+        while next_date < end_date:
+            dates.append(next_date)
+            next_date = next_date + delta
+
+        description = self.model.description
+        self.model.description = '1/%d %s' % (len(dates), description)
+        for i, date in enumerate(dates):
+            p = Payment(open_date=self.model.open_date,
+                        status=self.model.status,
+                        description='%d/%d %s' % (i + 1, len(dates),
+                                                  description),
+                        value=self.model.value,
+                        base_value=self.model.base_value,
+                        due_date=date,
+                        method=self.model.method,
+                        group=self.model.group,
+                        till=self.model.till,
+                        category=self.model.category,
+                        connection=self.conn)
+            if self.model.is_inpayment():
+                p.addFacet(IInPayment, connection=self.conn)
+            elif self.model.is_outpayment():
+                p.addFacet(IOutPayment, connection=self.conn)
+
     #
     # Kiwi Callbacks
     #
@@ -235,6 +299,13 @@ class PaymentEditor(BaseEditor):
     def on_value__validate(self, widget, newvalue):
         if newvalue is None or newvalue <= 0:
             return ValidationError(_("The value must be greater than zero."))
+
+    def on_repeat__content_changed(self, repeat):
+        self.end_date.set_sensitive(repeat.get_selected() != INTERVALTYPE_ONCE)
+        self._validate_date()
+
+    def on_end_date__content_changed(self, repeat):
+        self._validate_date()
 
     def on_category__content_changed(self, category):
         self.edit_category.set_sensitive(bool(self.category.get_selected()))
