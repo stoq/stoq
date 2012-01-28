@@ -61,24 +61,3 @@ def button_set_image_with_label(button, stock_id, text):
 
     align.show_all()
     button.add(align)
-
-
-_pixbuf_cache = {}
-
-
-def render_pixbuf(color_name):
-    if color_name is None:
-        return None
-
-    pixbuf = _pixbuf_cache.get(color_name)
-    if pixbuf is not None:
-        return pixbuf
-
-    pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, 16, 16)
-    color = gtk.gdk.color_parse(color_name)
-    rgb = (((color.red / 256) << 24) +
-           ((color.green / 256) << 16) +
-           ((color.blue / 256) << 8)) + 0xff
-    pixbuf.fill(rgb)
-    _pixbuf_cache[color_name] = pixbuf
-    return pixbuf

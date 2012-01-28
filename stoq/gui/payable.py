@@ -37,13 +37,13 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.gadgets import render_pixbuf
 from stoqlib.api import api
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.gtkadds import render_pixbuf
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog

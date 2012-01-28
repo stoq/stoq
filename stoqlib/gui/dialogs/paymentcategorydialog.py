@@ -25,11 +25,11 @@
 """Dialog for listing payment categories"""
 
 import gtk
+from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.gui.base.gtkadds import render_pixbuf
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor
 from stoqlib.lib.translation import stoqlib_gettext
