@@ -54,6 +54,9 @@ def get_application_dir(appname="stoq"):
         appdir = os.path.join(os.environ['HOME'], '.' + appname)
     elif _system == 'Windows':
         appdir = os.path.join(os.environ['APPDATA'], appname)
+    elif _system == 'Darwin':
+        appdir = os.path.join(os.environ['HOME'], 'Library',
+            'Application Support', 'Stoq')
     else:
         raise SystemExit("unknown system: %s" % (_system, ))
     if not os.path.exists(appdir):
@@ -71,13 +74,15 @@ def get_documents_dir():
         folder = shell.SHGetDesktopFolder()
         pidl = folder.ParseDisplayName(0, None, MY_DOCUMENTS)[1]
         return shell.SHGetPathFromIDList(pidl)
+    elif _system == 'Darwin':
+        return os.path.join(os.environ['HOME'], 'Documents')
     else:
         raise SystemExit("unknown system: %s" % (_system, ))
 
 
 def get_username():
     """@returns: the current username"""
-    if _system == 'Linux':
+    if _system == 'Linux' or _system == 'Darwin':
         return os.environ['USER']
     elif _system == 'Windows':
         return os.environ['USERNAME']
