@@ -217,7 +217,8 @@ class Payment(Domain):
         from stoqlib.domain.payment.operation import register_payment_operations
         register_payment_operations()
 
-        if self.method.operation.create_transaction():
+        if (self.is_separate_payment() or
+            self.method.operation.create_transaction()):
             AccountTransaction.create_from_payment(self, account)
 
         if self.value == self.paid_value:
@@ -386,6 +387,23 @@ class Payment(Domain):
         @returns: True if it's outgoing"""
         return IOutPayment(self, None) is not None
 
+    def is_separate_payment(self):
+        # FIXME: This is a hack, we should rather store a flag
+        #        in the database that tells us how the payment was
+        #        created.
+        group = self.group
+        if not group:
+            # Should never happen
+            return False
+
+        if group.sale:
+            return False
+        elif group.purchase:
+            return False
+        elif group._renegotiation:
+            return False
+
+        return True
 
 class PaymentChangeHistory(Domain):
     """ A class to hold information about changes to a payment.
