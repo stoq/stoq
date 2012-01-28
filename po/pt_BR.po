@@ -24,13 +24,13 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-25 19:01-0200\n"
-"PO-Revision-Date: 2012-01-26 10:00+0000\n"
-"Last-Translator: Johan Dahlin <jdahlin@gmail.com>\n"
+"PO-Revision-Date: 2012-01-27 18:27+0000\n"
+"Last-Translator: Silvio Rangel <silvio@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-27 05:33+0000\n"
+"X-Launchpad-Export-Date: 2012-01-28 05:07+0000\n"
 "X-Generator: Launchpad (build 14727)\n"
 "Language: \n"
 
@@ -12061,7 +12061,7 @@ msgstr "Zimbábue"
 
 #: ../stoqlib/lib/dateconstants.py:31
 msgid "January"
-msgstr "janeiro"
+msgstr "Janeiro"
 
 #: ../stoqlib/lib/dateconstants.py:32
 msgid "February"
