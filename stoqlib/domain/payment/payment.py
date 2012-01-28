@@ -405,6 +405,7 @@ class Payment(Domain):
 
         return True
 
+
 class PaymentChangeHistory(Domain):
     """ A class to hold information about changes to a payment.
 
