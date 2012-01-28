@@ -35,8 +35,9 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
-from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
+from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import SearchColumn, Column
+from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from stoqlib.api import api
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
@@ -47,7 +48,6 @@ from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.gtkadds import render_pixbuf
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
