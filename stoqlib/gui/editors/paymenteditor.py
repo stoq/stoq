@@ -199,7 +199,7 @@ class PaymentEditor(BaseEditor):
         self.method.select(self.model.method)
 
     def _setup_widgets(self):
-        self.person_label.set_label(self._person_label)
+        self.person_lbl.set_label(self._person_label)
         if self.model.group.sale:
             label = _("Sale details")
         elif self.model.group.purchase:
