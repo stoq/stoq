@@ -324,7 +324,6 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://labix.org/python-dateutil/',
                           version=version)
 
-
         if (not hasattr(dateutil, "__version__") or
             map(int, dateutil.__version__.split('.')) < list(version)):
             self._too_old(project="Dateutil",
