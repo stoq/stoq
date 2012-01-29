@@ -129,6 +129,10 @@ class SupplierSearch(BasePersonSearch):
     search_lbl_text = _('Suppliers Matching:')
     result_strings = _('supplier'), _('suppliers')
 
+    def __init__(self, conn, **kwargs):
+        self.company_doc_l10n = api.get_l10n_field(conn, 'company_document')
+        SearchEditor.__init__(self, conn, **kwargs)
+
     #
     # SearchDialog hooks
     #
@@ -143,7 +147,8 @@ class SupplierSearch(BasePersonSearch):
                              format_func=format_phone_number, width=110),
                 SearchColumn('fancy_name', _('Fancy Name'), str,
                              width=180),
-                SearchColumn('cnpj', _('CNPJ'), str, width=140)]
+                SearchColumn('cnpj', self.company_doc_l10n.label,
+                             str, width=140)]
 
     def on_details_button_clicked(self, *args):
         selected = self.results.get_selected()
@@ -227,6 +232,10 @@ class ClientSearch(BasePersonSearch):
     search_lbl_text = _('matching:')
     result_strings = _('client'), _('clients')
 
+    def __init__(self, conn, **kwargs):
+        self.company_doc_l10n = api.get_l10n_field(conn, 'company_document')
+        SearchEditor.__init__(self, conn, **kwargs)
+
     #
     # SearchDialog Hooks
     #
@@ -248,7 +257,7 @@ class ClientSearch(BasePersonSearch):
                 SearchColumn('phone_number', _('Phone Number'), str,
                              format_func=format_phone_number, width=150),
                 Column('cnpj_or_cpf', _('Document'), str, width=150),
-                SearchColumn('cnpj', _('CNPJ'), str, width=150, visible=False),
+                SearchColumn('cnpj', self.company_doc_l10n.label, str, width=150, visible=False),
                 SearchColumn('cpf', _('CPF'), str, width=130, visible=False),
                 SearchColumn('rg_number', _('RG'), str, width=120)]
 
