@@ -247,7 +247,7 @@ class ClientSearch(BasePersonSearch):
                              width=150, visible=False),
                 SearchColumn('phone_number', _('Phone Number'), str,
                              format_func=format_phone_number, width=150),
-                Column('cnpj_or_cpf', _('CNPJ/CPF'), str, width=150),
+                Column('cnpj_or_cpf', _('Document'), str, width=150),
                 SearchColumn('cnpj', _('CNPJ'), str, width=150, visible=False),
                 SearchColumn('cpf', _('CPF'), str, width=130, visible=False),
                 SearchColumn('rg_number', _('RG'), str, width=120)]

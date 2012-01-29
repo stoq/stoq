@@ -28,11 +28,11 @@ from decimal import Decimal
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
+from stoqlib.api import api
 from stoqlib.database.admin import create_main_branch
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import validate_cnpj
 from stoqlib.gui.editors.addresseditor import AddressSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.interfaces import ICompany
@@ -95,8 +95,9 @@ class BranchDialog(BaseEditor):
 
     def _setup_widgets(self):
         self.name.grab_focus()
-        # FIXME: Not working with ProxyEntry via gtk-builder for some reason
-        self.cnpj.set_mask("00.000.000/0000-00")
+        self.document_l10n = api.get_l10n_field(self.conn, 'company_document')
+        self.cnp_lbl.set_label(self.document_l10n.label)
+        self.cnpj.set_mask(self.document_l10n.entry_mask)
 
     def _setup_slaves(self):
         address = self.model.get_main_address()
@@ -159,5 +160,6 @@ class BranchDialog(BaseEditor):
                                      "less than 0"))
 
     def on_cnpj__validate(self, widget, value):
-        if not validate_cnpj(value):
-            return ValidationError(_(u'The CNPJ is not valid.'))
+        if not self.document_l10n.validate(value):
+            return ValidationError(_('%s is not valid.') % (
+                self.document_l10n.label,))

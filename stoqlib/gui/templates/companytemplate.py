@@ -23,10 +23,11 @@
 
 from kiwi.datatypes import ValidationError
 
+from stoqlib.api import api
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import validate_cnpj
+
 
 _ = stoqlib_gettext
 
@@ -40,6 +41,9 @@ class CompanyDocumentsSlave(BaseEditorSlave):
                      'city_registry')
 
     def setup_proxies(self):
+        self.document_l10n = api.get_l10n_field(self.conn, 'company_document')
+        self.cnpj_lbl.set_label(self.document_l10n.label)
+        self.cnpj.set_mask(self.document_l10n.entry_mask)
         self.proxy = self.add_proxy(self.model,
                                     CompanyDocumentsSlave.proxy_widgets)
 
@@ -48,12 +52,14 @@ class CompanyDocumentsSlave(BaseEditorSlave):
         if self.cnpj.is_empty():
             return
 
-        if not validate_cnpj(value):
-            return ValidationError(_(u'The CNPJ is not valid.'))
+        if not self.document_l10n.validate(value):
+            return ValidationError(_('%s is not valid.') % (
+                self.document_l10n.label,))
 
         if self.model.check_cnpj_exists(value):
-            return ValidationError(_(u'A company with this CNPJ already '
-                                     'exists'))
+            return ValidationError(
+                _('A company with this %s already exists') % (
+                self.document_l10n.label))
 
 
 class CompanyEditorTemplate(BaseEditorSlave):
