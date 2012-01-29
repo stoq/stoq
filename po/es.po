@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-25 19:01-0200\n"
-"PO-Revision-Date: 2011-10-18 12:54+0000\n"
-"Last-Translator: Sergio Meneses <Unknown>\n"
+"PO-Revision-Date: 2012-01-29 03:52+0000\n"
+"Last-Translator: Fitoschido <fitoschido@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-26 05:32+0000\n"
-"X-Generator: Launchpad (build 14719)\n"
+"X-Launchpad-Export-Date: 2012-01-29 05:24+0000\n"
+"X-Generator: Launchpad (build 14727)\n"
 "Language: es\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -123,7 +123,7 @@ msgstr "_Eliminar"
 
 #: ../data/glade/AdditionListSlave.ui.h:4 ../data/glade/SearchEditor.ui.h:1
 msgid "_Edit..."
-msgstr "_Editar..."
+msgstr "_Editar…"
 
 #: ../data/glade/AddressSlave.ui.h:1
 msgid "City:"
