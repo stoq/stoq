@@ -41,6 +41,7 @@ from stoqlib.database.runtime import (get_current_branch,
 from stoqlib.lib.settings import get_settings
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.parameters import sysparam, is_developer_mode
+from stoqlib.l10n.l10n import get_l10n_field
 
 
 class StoqAPI(object):
@@ -132,5 +133,8 @@ class StoqAPI(object):
 
     def asyncReturn(self, value=None):
         return returnValue(value)
+
+    def get_l10n_field(self, conn, field_name):
+        return get_l10n_field(conn, field_name)
 
 api = StoqAPI()
