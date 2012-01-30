@@ -134,7 +134,6 @@ class PayableApp(SearchableAppWindow):
 
     def create_ui(self):
         self._setup_widgets()
-        self.search.search.search_button.hide()
 
     def activate(self, params):
         self.app.launcher.add_new_items([self.AddPayment])

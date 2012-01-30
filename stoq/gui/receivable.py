@@ -140,7 +140,6 @@ class ReceivableApp(SearchableAppWindow):
         self.popup = self.uimanager.get_widget('/ReceivableSelection')
 
     def create_ui(self):
-        self.search.search.search_button.hide()
         self.app.launcher.add_new_items([self.AddReceiving])
         self.app.launcher.Print.set_tooltip(
             _("Print a report of this payments"))
