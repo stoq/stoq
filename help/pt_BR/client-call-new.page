@@ -1,0 +1,50 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="client-call-new">
+
+  <title>Registrando uma chamada para cliente</title>
+  <info>
+    <desc>
+      Registrando uma chamada para cliente no Stoq
+    </desc>
+
+    <link type="guide" xref="client-call" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para cadastrar chamadas para clientes no Stoq,
+    isto é, informar ao Stoq que em certa data foi realizada uma chamada para
+    um certo <link xref="client">cliente</link> para tratar sobre um assunto em
+    específico.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-sales" />, abra a
+        <link xref="user-call-search">pesquisa de chamadas para clientes</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Clique no botão <gui>Novo</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto e nele você
+        deverá preencher dados como a <gui>Pessoa</gui> que foi realizada a
+        ligação, o <gui>Atendente</gui> responsável, assim como uma
+        <gui>Data</gui> e <gui>Descrição</gui>. Ao ter certeza dos dados,
+        clique em <gui>Ok</gui> para finalizar o processo.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Seu chamada para cliente foi registrada com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>

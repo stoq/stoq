@@ -1,0 +1,42 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="client-call-search">
+
+  <title>Pesquisando por uma chamada para um cliente</title>
+  <info>
+    <desc>
+      Pesquisando por um chamada para um cliente no Stoq
+    </desc>
+
+    <link type="guide" xref="client-call" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para encontrar chamadas para clientes registradas
+    no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-sales" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione o menu
+        <guiseq><gui>Pesquisar</gui><gui>Chamadas para clientes</gui></guiseq>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Uma <link xref="overview#search">pesquisa</link> será aberta e nela
+        você pode encontrar a chamada em questão. Utilize
+        <link xref="overview#search-filter">filtros</link> para facilitar a
+        pesquisa.
+      </p>
+    </item>
+  </steps>
+
+</page>

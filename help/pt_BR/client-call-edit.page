@@ -1,0 +1,55 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="client-call-edit">
+
+  <title>Editando uma chamada para cliente</title>
+  <info>
+    <desc>
+      Editando uma chamada para cliente no Stoq
+    </desc>
+
+    <link type="guide" xref="client-call" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para editar informações de chamadas para clientes
+    registradas no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        No <link xref="app-sales" />, abra a
+        <link xref="client-call-search">pesquisa de chamadas de clientes</link>,
+        procure pela chamada em questão e selecione-a.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo a chamada selecionada, clique em <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#editor">editor</link> será aberto e você poderá
+        editar as informações dessa chamada, como o <gui>Atendente</gui> e a
+        <gui>Mensagem</gui> da mesma. Após ter certeza de tudo, clique em
+        <gui>Ok</gui> para confirmar o processo.
+      </p>
+      <note style="tip">
+        <p>
+          Note que a qualquer momento caso você se arrependa da edição, você
+          pode clicar em <gui>Cancelar</gui> e assim descartar todas as
+          mudanças realizadas no momento.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Sua chamada para cliente foi editada com sucesso no Stoq!
+      </p>
+    </item>
+  </steps>
+
+</page>
