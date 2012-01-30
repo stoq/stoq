@@ -76,11 +76,11 @@ class CalendarView(WebView):
 
     def _load_finished(self):
         self._startup()
+        self._loaded = True
         view = self.get_view()
         view.connect('size-allocate', self._on_view__size_allocate)
         x, y, width, height = view.get_allocation()
         self._update_calendar_size(width, height)
-        self._loaded = True
 
     def _startup(self):
         options = {}
