@@ -260,7 +260,17 @@ class PaymentEditor(BaseEditor):
         elif repeat_type == INTERVALTYPE_BIWEEKLY:
             delta = relativedelta(weeks=2)
         elif repeat_type == INTERVALTYPE_MONTH:
-            delta = relativedelta(months=1)
+            # Check if we're on the last day of month and make
+            # sure the payment will always be the last day of the
+            # month.
+            next_date = start_date + relativedelta(days=1)
+            if start_date.month != next_date.month:
+                # This really means: last day of month, it'll never
+                # cross month boundaries even if there are less than
+                # 31 days.
+                delta = relativedelta(months=1, day=31)
+            else:
+                delta = relativedelta(months=1, day=start_date.day)
         elif repeat_type == INTERVALTYPE_QUARTERLY:
             delta = relativedelta(months=3)
         else:
