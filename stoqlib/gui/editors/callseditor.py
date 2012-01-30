@@ -38,6 +38,7 @@ class CallsEditor(BaseEditor):
     model_type = Calls
     model_name = _("Calls")
     gladefile = 'CallsEditor'
+    help_section = 'client-call'
     proxy_widgets = ('date',
                      'person_combo',
                      'description',
