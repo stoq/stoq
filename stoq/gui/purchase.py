@@ -188,7 +188,6 @@ class PurchaseApp(SearchableAppWindow):
                                       label=_('<b>Orders total:</b>'),
                                       format='<b>%s</b>',
                                       parent=self.get_statusbar_message_area())
-        self.search.search.search_button.hide()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.Confirm.set_sensitive(False)
 

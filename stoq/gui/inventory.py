@@ -105,7 +105,6 @@ class InventoryApp(SearchableAppWindow):
     def create_ui(self):
         self.popup = self.uimanager.get_widget('/InventorySelection')
 
-        self.search.search.search_button.hide()
         self.app.launcher.add_new_items([self.NewInventory])
         self.app.launcher.Print.set_tooltip(
             _("Print a report of these inventories"))

@@ -171,7 +171,6 @@ class StockApp(SearchableAppWindow):
                                       label=_('<b>Stock Total:</b>'),
                                       format='<b>%s</b>',
                                       parent=self.get_statusbar_message_area())
-        self.search.search.search_button.hide()
 
     def activate(self, params):
         self.app.launcher.NewToolItem.set_tooltip(
