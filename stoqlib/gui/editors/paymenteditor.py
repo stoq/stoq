@@ -127,7 +127,7 @@ class PaymentEditor(BaseEditor):
 
     def validate_confirm(self):
         if (self.repeat.get_selected() != INTERVALTYPE_ONCE and
-            self.end_date.get_date() is None):
+            not self._validate_date()):
             return False
         # FIXME: the kiwi view should export it's state and it should
         #        be used by default
@@ -246,10 +246,23 @@ class PaymentEditor(BaseEditor):
             run_dialog(LonelyPaymentDetailsDialog, self, self.conn, self.model)
 
     def _validate_date(self):
-        if self.end_date.props.sensitive and self.end_date.get_date() is None:
+        if not self.end_date.props.sensitive:
+            return True
+        end_date = self.end_date.get_date()
+        due_date = self.due_date.get_date()
+        if end_date and due_date:
+            if end_date < due_date:
+                self.end_date.set_invalid(_("End date must be before start date"))
+            else:
+                self.end_date.set_valid()
+                self.refresh_ok(self.is_valid)
+                return True
+        elif not end_date:
             self.end_date.set_invalid(_("Date cannot be empty"))
-        else:
-            self.end_date.set_valid()
+        elif not due_date:
+            self.due_date.set_invalid(_("Date cannot be empty"))
+        self.refresh_ok(False)
+        return False
 
     def _create_repeated_payments(self):
         start_date = self.model.due_date.date()
@@ -281,7 +294,8 @@ class PaymentEditor(BaseEditor):
         while next_date < end_date:
             dates.append(next_date)
             next_date = next_date + delta
-
+        if not dates:
+            return
         description = self.model.description
         self.model.description = '1/%d %s' % (len(dates), description)
         for i, date in enumerate(dates):
@@ -314,7 +328,10 @@ class PaymentEditor(BaseEditor):
         self.end_date.set_sensitive(repeat.get_selected() != INTERVALTYPE_ONCE)
         self._validate_date()
 
-    def on_end_date__content_changed(self, repeat):
+    def on_due_date__content_changed(self, due_date):
+        self._validate_date()
+
+    def on_end_date__content_changed(self, end_date):
         self._validate_date()
 
     def on_category__content_changed(self, category):
