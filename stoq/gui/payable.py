@@ -205,6 +205,7 @@ class PayableApp(SearchableAppWindow):
     #
 
     def search_for_date(self, date):
+        self.status_filter.select(None)
         dfilter = DateSearchFilter(_("Paid or due date"))
         dfilter.set_removable()
         dfilter.mode.select_item_by_position(5)
