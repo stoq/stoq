@@ -24,13 +24,13 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-31 15:17-0200\n"
-"PO-Revision-Date: 2012-01-31 17:58+0000\n"
-"Last-Translator: Ronaldo Maia <mainha+lp@gmail.com>\n"
+"PO-Revision-Date: 2012-01-31 22:04+0000\n"
+"Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-31 18:01+0000\n"
+"X-Launchpad-Export-Date: 2012-01-31 22:08+0000\n"
 "X-Generator: Launchpad (build 14734)\n"
 "Language: \n"
 
@@ -8393,7 +8393,7 @@ msgstr "Custo total"
 
 #: ../stoqlib/gui/editors/accounteditor.py:104
 msgid "Print a test bill"
-msgstr "Imprimir uma nota de teste"
+msgstr "Imprimir boleto de teste"
 
 #: ../stoqlib/gui/editors/accounteditor.py:233
 msgid "Agency:"
@@ -8405,7 +8405,7 @@ msgstr "Genérico"
 
 #: ../stoqlib/gui/editors/accounteditor.py:345
 msgid "This bank does not support printing of bills"
-msgstr "Este banco não suporta a impressão de contas"
+msgstr "Este banco não suporta a impressão de boletos"
 
 #: ../stoqlib/gui/editors/accounteditor.py:354
 #: ../stoqlib/gui/editors/addresseditor.py:232
@@ -13075,7 +13075,7 @@ msgstr ""
 
 #: ../stoqlib/lib/parameters.py:556
 msgid "Bill instructions "
-msgstr "Nota de instruções "
+msgstr "Instruções do boleto "
 
 #. Translators: do not translate $DATE
 #: ../stoqlib/lib/parameters.py:558
@@ -13084,9 +13084,9 @@ msgid ""
 "This usually includes instructions on how to pay the bill and the validity "
 "and the terms. $DATE will bereplaced with the due date of the bill"
 msgstr ""
-"Ao imprimir contas, incluir nas 3 primeiras linhas, notas sobre o projeto em "
-"si. Isso geralmente inclui instruções sobre como pagar a conta, a validade e "
-"os termos. $DATE será substituída com a data de vencimento da fatura"
+"Ao imprimir boletos, serão inclusas estas 3 primeiras linhas no mesmo. Isso "
+"geralmente inclui instruções sobre como pagar o boleto, a validade e os "
+"termos. $DATE será substituído com a data de vencimento do boleto."
 
 #: ../stoqlib/lib/parameters.py:867
 #, python-format
@@ -13300,7 +13300,7 @@ msgstr "Página % 2d"
 
 #: ../stoqlib/reporting/boleto.py:765
 msgid "Could not print Bill Report"
-msgstr "Não foi possível imprimir nota de relatório"
+msgstr "Não foi possível imprimir o boleto"
 
 #: ../stoqlib/reporting/boleto.py:775
 #, python-format
@@ -13315,8 +13315,8 @@ msgid ""
 "try again"
 msgstr ""
 "Conta '%s' deve ser uma conta bancária.\n"
-"Você precisa configurar o método de pagamento de contas na aplicação admin e "
-"tentar novamente"
+"Você precisa configurar o método de pagamento 'Boleto' no aplicativo admin e "
+"tentar novamente."
 
 #: ../stoqlib/reporting/boleto.py:789
 #, python-format
