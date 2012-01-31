@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-21 15:31-0300\n"
+"POT-Creation-Date: 2013-02-21 15:32-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -647,7 +647,10 @@ msgstr ""
 msgid "Please, fill the details about your database."
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:3 ../stoqlib/reporting/sale.py:83
+#: ../data/glade/DatabaseSettingsStep.ui.h:3
+#: ../stoqlib/reporting/payments_receipt.py:80
+#: ../stoqlib/reporting/payments_receipt.py:110
+#: ../stoqlib/reporting/sale.py:83
 msgid "Address:"
 msgstr ""
 
@@ -2564,10 +2567,6 @@ msgctxt "yes"
 msgid "Till Opened Since 01/01/2006"
 msgstr ""
 
-#: ../data/template/receipt.rml:31
-msgid " made in "
-msgstr ""
-
 #: ../plugins/books/bookssearch.py:42 ../plugins/books/booksui.py:76
 #: ../plugins/books/booksui.py:95 ../plugins/books/booksui.py:111
 msgid "Book Search"
@@ -2597,7 +2596,7 @@ msgstr ""
 #: ../plugins/books/bookssearch.py:72 ../plugins/books/publishersearch.py:65
 #: ../stoq/gui/inventory.py:166 ../stoq/gui/payable.py:430
 #: ../stoq/gui/production.py:188 ../stoq/gui/purchase.py:411
-#: ../stoq/gui/receivable.py:246 ../stoq/gui/sales.py:336
+#: ../stoq/gui/receivable.py:244 ../stoq/gui/sales.py:336
 #: ../stoq/gui/till.py:238 ../stoqlib/gui/base/search.py:418
 #: ../stoqlib/gui/base/search.py:433 ../stoqlib/gui/search/loansearch.py:60
 #: ../stoqlib/gui/search/paymentsearch.py:63
@@ -5328,10 +5327,12 @@ msgstr ""
 #: ../stoq/gui/receivable.py:192 ../stoqlib/gui/editors/accounteditor.py:354
 #: ../stoqlib/gui/search/fiscalsearch.py:127
 #: ../stoqlib/gui/search/paymentsearch.py:152
+#: ../stoqlib/reporting/payments_receipt.py:106
+#: ../stoqlib/reporting/payments_receipt.py:118
 msgid "Drawee"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:513
+#: ../stoq/gui/receivable.py:506
 msgid "Cannot renegotiate selected payments"
 msgstr ""
 
@@ -6401,7 +6402,7 @@ msgstr ""
 msgid "NOT PAID"
 msgstr ""
 
-#: ../stoqlib/domain/payment/payment.py:718
+#: ../stoqlib/domain/payment/payment.py:721
 msgid "This payment is already paid."
 msgstr ""
 
@@ -12835,7 +12836,40 @@ msgstr ""
 msgid "Transactions for account %s"
 msgstr ""
 
-#: ../stoqlib/reporting/payment_receipt.py:41
+#: ../stoqlib/reporting/payments_receipt.py:79
+msgid "I/We Received from:"
+msgstr ""
+
+#: ../stoqlib/reporting/payments_receipt.py:87
+msgid "The importance of:"
+msgstr ""
+
+#: ../stoqlib/reporting/payments_receipt.py:88
+msgid "Referring to:"
+msgstr ""
+
+#: ../stoqlib/reporting/payments_receipt.py:91
+msgid "Payer"
+msgstr ""
+
+#: ../stoqlib/reporting/payments_receipt.py:108
+msgid "Drawee:"
+msgstr ""
+
+#: ../stoqlib/reporting/payments_receipt.py:109
+msgid "CPF/CNPJ/RG:"
+msgstr ""
+
+#: ../stoqlib/reporting/payments_receipt.py:126
+#, python-format
+msgid "Receipt: %s - Value: %s - Date: %s"
+msgstr ""
+
+#: ../stoqlib/reporting/payments_receipt.py:135
+msgid "Receival receipt"
+msgstr ""
+
+#: ../stoqlib/reporting/payments_receipt.py:157
 msgid "Payment receipt"
 msgstr ""
 
@@ -13012,10 +13046,6 @@ msgstr ""
 msgid "Invoice Total"
 msgstr ""
 
-#: ../stoqlib/reporting/receival_receipt.py:40
-msgid "Receival receipt"
-msgstr ""
-
 #: ../stoqlib/reporting/sale.py:51
 msgid "Sale Order"
 msgstr ""
@@ -13179,66 +13209,12 @@ msgstr ""
 msgid "Transfer Receipt"
 msgstr ""
 
-#: ../data/template/receipt.rml.extracted.h:1
-msgid "RECEIPT"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:2
-#: ../data/template/transfer.rml.extracted.h:2
-msgid "NUMBER:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:3
-msgid "VALUE:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:4
-msgid "I/WE RECEIVED FROM"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:5
-msgid "ADDRESS:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:6
-msgid "THE IMPORTANCE OF:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:7
-msgid "REFERRING TO:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:8
-msgid "CHECK PAYMENT"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:9
-msgid "BANK:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:10
-msgid "AGENCY:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:11
-msgid "DRAWEE:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:12
-msgid "CPF/CNPJ/RG:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:13
-msgid "DATE:"
-msgstr ""
-
-#: ../data/template/receipt.rml.extracted.h:14
-#: ../data/template/transfer.rml.extracted.h:12
-msgid "SIGNATURE:"
-msgstr ""
-
 #: ../data/template/transfer.rml.extracted.h:1
 msgid "TRANSFER RECEIPT"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:2
+msgid "NUMBER:"
 msgstr ""
 
 #: ../data/template/transfer.rml.extracted.h:3
@@ -13275,6 +13251,10 @@ msgstr ""
 
 #: ../data/template/transfer.rml.extracted.h:11
 msgid "OPEN:"
+msgstr ""
+
+#: ../data/template/transfer.rml.extracted.h:12
+msgid "SIGNATURE:"
 msgstr ""
 
 #: ../data/template/transfer.rml.extracted.h:13

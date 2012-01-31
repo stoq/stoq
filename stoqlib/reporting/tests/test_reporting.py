@@ -47,6 +47,8 @@ from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.lib.parameters import sysparam
+from stoqlib.reporting.payments_receipt import (InPaymentReceipt,
+                                               OutPaymentReceipt)
 from stoqlib.reporting.calls_report import CallsReport
 from stoqlib.reporting.payment import (ReceivablePaymentReport,
                                        PayablePaymentReport,
@@ -187,6 +189,44 @@ class TestReport(DomainTest):
 
         self.checkPDF(BillCheckPaymentReport, search.results, list(search.results),
                       date=datetime.date(2007, 1, 1))
+
+    def testInPaymentReceipt(self):
+        payer = self.create_client()
+        address = self.create_address()
+        address.person = payer.person
+
+        method = PaymentMethod.get_by_name(self.trans, 'money')
+        group = self.create_payment_group()
+        inpayment = method.create_inpayment(group, Decimal(100))
+        payment = inpayment.get_adapted()
+
+        payment.description = "Test receivable account"
+        payment.group.payer = payer.person
+        payment.set_pending()
+        payment.pay()
+        payment.get_payment_number_str = lambda: '00036'
+        date = datetime.date(2012, 1, 1)
+
+        self.checkPDF(InPaymentReceipt, payment, sale=None, date=date)
+
+    def testOutPaymentReceipt(self):
+        drawee = self.create_supplier()
+        address = self.create_address()
+        address.person = drawee.person
+
+        method = PaymentMethod.get_by_name(self.trans, 'money')
+        group = self.create_payment_group()
+        outpayment = method.create_outpayment(group, Decimal(100))
+        payment = outpayment.get_adapted()
+
+        payment.description = "Test payable account"
+        payment.group.recipient = drawee.person
+        payment.set_pending()
+        payment.pay()
+        payment.get_payment_number_str = lambda: '00035'
+        date = datetime.date(2012, 1, 1)
+
+        self.checkPDF(OutPaymentReceipt, payment, purchase=None, date=date)
 
     def testTransferOrderReceipt(self):
         raise SkipTest('Issues with pdftohtml version.')

@@ -149,7 +149,7 @@ class Payment(Domain):
 
     @property
     def bank_account_number(self):
-        # This is mainly used by receipt.rml, and is a convenience
+        # This is used by test_payment_method, and is a convenience
         # property, ideally we should move it to payment operation
         # somehow
         if self.method.method_name == 'check':
@@ -376,6 +376,9 @@ class Payment(Domain):
         if self.open_date:
             return self.open_date.date().strftime('%x')
         return ""
+
+    def get_payment_number_str(self):
+        return u'%05d' % self.id
 
     def is_inpayment(self):
         """Find out if a payment is incoming
