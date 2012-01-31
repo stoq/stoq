@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -141,6 +141,8 @@ class ReceivableApp(SearchableAppWindow):
 
     def create_ui(self):
         self.app.launcher.add_new_items([self.AddReceiving])
+        self.app.launcher.add_search_items([self.BillCheckSearch,
+                                            self.CardPaymentSearch])
         self.app.launcher.Print.set_tooltip(
             _("Print a report of this payments"))
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
@@ -148,11 +150,11 @@ class ReceivableApp(SearchableAppWindow):
             label='<b>%s</b>' % (_("Total")),
             format='<b>%s</b>',
             parent=self.get_statusbar_message_area())
+        self.search.search.results.set_cell_data_func(
+            self._on_results__cell_data_func)
 
     def activate(self, params):
         self._update_widgets()
-        self.app.launcher.add_search_items([self.BillCheckSearch,
-                                            self.CardPaymentSearch])
 
         # FIXME: double negation is weird here
         if not params.get('no-refresh'):
@@ -173,9 +175,9 @@ class ReceivableApp(SearchableAppWindow):
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'drawee'])
-        self.add_filter(
-            ComboSearchFilter(_('Show payments'),
-                              self._get_status_values()),
+        self.status_filter = ComboSearchFilter(_('Show payments'),
+                                               self._get_status_values())
+        self.add_filter(self.status_filter,
             SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
@@ -275,9 +277,8 @@ class ReceivableApp(SearchableAppWindow):
                             payments=payments)
 
         if api.finish_transaction(trans, retval):
-            for view in receivable_views:
-                view.sync()
-                self.results.update(view)
+            # We need to refresh the whole list as the payment(s) can possibly
+            # disappear for the selected view
             self.refresh()
 
         trans.close()
@@ -443,6 +444,22 @@ class ReceivableApp(SearchableAppWindow):
     #
     # Kiwi callbacks
     #
+
+    def _on_results__cell_data_func(self, column, renderer, pv, text):
+        if not isinstance(renderer, gtk.CellRendererText):
+            return text
+
+        if pv.paid_date and self.status_filter.get_state().value is None:
+            renderer.set_property('strikethrough', True)
+            renderer.set_property('strikethrough-set', True)
+        else:
+            renderer.set_property('strikethrough-set', False)
+        if not pv.paid_date and pv.due_date < datetime.datetime.now():
+            renderer.set_property('weight', pango.WEIGHT_BOLD)
+            renderer.set_property('weight-set', True)
+        else:
+            renderer.set_property('weight-set', False)
+        return text
 
     def on_results__row_activated(self, klist, receivable_view):
         self._show_details(receivable_view)
