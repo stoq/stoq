@@ -7048,7 +7048,7 @@ msgid "Mercosul EX Tipi"
 msgstr ""
 
 #: ../stoqlib/domain/uiform.py:118
-msgid "Mercosul Género"
+msgid "Mercosul Gênero"
 msgstr ""
 
 #: ../stoqlib/domain/uiform.py:122 ../stoqlib/gui/editors/personeditor.py:165
@@ -8019,12 +8019,12 @@ msgstr ""
 msgid "Add %s"
 msgstr ""
 
-#: ../stoqlib/gui/editors/callseditor.py:58
+#: ../stoqlib/gui/editors/callseditor.py:59
 #, python-format
 msgid "Call to %s"
 msgstr ""
 
-#: ../stoqlib/gui/editors/callseditor.py:60
+#: ../stoqlib/gui/editors/callseditor.py:61
 #: ../stoqlib/reporting/calls_report.py:38
 msgid "call"
 msgstr ""
