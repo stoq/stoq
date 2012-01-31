@@ -25,7 +25,6 @@
 import gettext
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IEmployee, IBranch
 from stoqlib.domain.account import Account, BankAccount
 from stoqlib.importers.csvimporter import CSVImporter
 
