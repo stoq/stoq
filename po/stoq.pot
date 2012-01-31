@@ -1966,7 +1966,7 @@ msgid "Received Products"
 msgstr ""
 
 #: ../data/glade/ReceivingOrderDetailsDialog.ui.h:2
-#: ../stoqlib/gui/editors/paymenteditor.py:470
+#: ../stoqlib/gui/editors/paymenteditor.py:471
 #: ../stoqlib/reporting/purchase.py:295
 msgid "Receiving Details"
 msgstr ""
@@ -2287,7 +2287,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/purchasedetails.py:235
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:156
 #: ../stoqlib/gui/dialogs/saledetails.py:189
-#: ../stoqlib/gui/editors/paymenteditor.py:453
+#: ../stoqlib/gui/editors/paymenteditor.py:454
 #: ../stoqlib/reporting/stockdecreasereceipt.py:81
 msgid "Reason"
 msgstr ""
@@ -2594,9 +2594,9 @@ msgstr ""
 #. raise ValueError('You should have at least one branch at '
 #. 'this point')
 #: ../plugins/books/bookssearch.py:72 ../plugins/books/publishersearch.py:65
-#: ../stoq/gui/inventory.py:166 ../stoq/gui/payable.py:434
+#: ../stoq/gui/inventory.py:166 ../stoq/gui/payable.py:438
 #: ../stoq/gui/production.py:188 ../stoq/gui/purchase.py:411
-#: ../stoq/gui/receivable.py:247 ../stoq/gui/sales.py:336
+#: ../stoq/gui/receivable.py:250 ../stoq/gui/sales.py:336
 #: ../stoq/gui/till.py:238 ../stoqlib/gui/base/search.py:418
 #: ../stoqlib/gui/base/search.py:433 ../stoqlib/gui/search/loansearch.py:60
 #: ../stoqlib/gui/search/paymentsearch.py:63
@@ -2675,7 +2675,8 @@ msgstr ""
 msgid "Code"
 msgstr ""
 
-#: ../plugins/books/bookssearch.py:87 ../stoq/gui/stock.py:225
+#: ../plugins/books/bookssearch.py:87 ../stoq/gui/payable.py:202
+#: ../stoq/gui/receivable.py:209 ../stoq/gui/stock.py:225
 #: ../stoqlib/domain/uiform.py:106
 #: ../stoqlib/gui/dialogs/clientcategorydialog.py:47
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:89
@@ -3004,7 +3005,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:147
 #: ../stoqlib/gui/dialogs/saledetails.py:180
 #: ../stoqlib/gui/editors/paymenteditor.py:70
-#: ../stoqlib/gui/editors/paymenteditor.py:444
+#: ../stoqlib/gui/editors/paymenteditor.py:445
 #: ../stoqlib/gui/slaves/paymentslave.py:865
 msgid "Payment"
 msgstr ""
@@ -4478,7 +4479,7 @@ msgstr ""
 #: ../stoq/gui/inventory.py:147 ../stoq/gui/payable.py:194
 #: ../stoq/gui/production.py:153 ../stoq/gui/purchase.py:245
 #: ../stoq/gui/receivable.py:200 ../stoq/gui/sales.py:204
-#: ../stoq/gui/till.py:188 ../stoqlib/domain/payment/views.py:365
+#: ../stoq/gui/till.py:188 ../stoqlib/domain/payment/views.py:366
 #: ../stoqlib/gui/dialogs/clientdetails.py:99
 #: ../stoqlib/gui/dialogs/clientdetails.py:140
 #: ../stoqlib/gui/dialogs/purchasedetails.py:211
@@ -4519,12 +4520,20 @@ msgstr ""
 msgid "Opened"
 msgstr ""
 
+#: ../stoq/gui/inventory.py:154 ../stoq/gui/purchase.py:248
+msgid "Date Opened"
+msgstr ""
+
 #: ../stoq/gui/inventory.py:156 ../stoq/gui/production.py:161
 #: ../stoqlib/domain/inventory.py:168 ../stoqlib/domain/loan.py:118
 #: ../stoqlib/domain/payment/group.py:62 ../stoqlib/domain/production.py:70
 #: ../stoqlib/domain/purchase.py:154 ../stoqlib/domain/sellable.py:289
 #: ../stoqlib/domain/till.py:86 ../stoqlib/domain/transfer.py:81
 msgid "Closed"
+msgstr ""
+
+#: ../stoq/gui/inventory.py:157
+msgid "Date Closed"
 msgstr ""
 
 #: ../stoq/gui/inventory.py:178 ../stoq/gui/stock.py:257
@@ -4693,6 +4702,10 @@ msgstr ""
 msgid "#"
 msgstr ""
 
+#: ../stoq/gui/payable.py:176 ../stoq/gui/receivable.py:184
+msgid "Payment ID"
+msgstr ""
+
 #: ../stoq/gui/payable.py:181 ../stoq/gui/receivable.py:189
 msgid "Comments"
 msgstr ""
@@ -4732,11 +4745,24 @@ msgstr ""
 msgid "Paid"
 msgstr ""
 
-#: ../stoq/gui/payable.py:209 ../stoq/gui/receivable.py:216
+#: ../stoq/gui/payable.py:201 ../stoq/gui/receivable.py:207
+#: ../stoqlib/gui/dialogs/purchasedetails.py:217
+#: ../stoqlib/gui/dialogs/renegotiationdetails.py:132
+#: ../stoqlib/gui/dialogs/saledetails.py:161
+#: ../stoqlib/gui/slaves/installmentslave.py:251
+#: ../stoqlib/gui/wizards/purchasefinishwizard.py:138
+msgid "Paid value"
+msgstr ""
+
+#: ../stoq/gui/payable.py:203 ../stoq/gui/receivable.py:210
+msgid "Payment category"
+msgstr ""
+
+#: ../stoq/gui/payable.py:213 ../stoq/gui/receivable.py:219
 msgid "Paid or due date"
 msgstr ""
 
-#: ../stoq/gui/payable.py:339
+#: ../stoq/gui/payable.py:343
 msgid ""
 "Can't confirm the payment if the purchase is not completely received yet."
 msgstr ""
@@ -5332,7 +5358,7 @@ msgstr ""
 msgid "Drawee"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:525
+#: ../stoq/gui/receivable.py:528
 msgid "Cannot renegotiate selected payments"
 msgstr ""
 
@@ -5431,7 +5457,7 @@ msgstr ""
 msgid "Show details of the selected sale"
 msgstr ""
 
-#: ../stoq/gui/sales.py:144 ../stoqlib/gui/wizards/salequotewizard.py:401
+#: ../stoq/gui/sales.py:144 ../stoqlib/gui/wizards/salequotewizard.py:402
 msgid "New Sale Quote"
 msgstr ""
 
@@ -6410,7 +6436,7 @@ msgstr ""
 msgid "Renegotiated"
 msgstr ""
 
-#: ../stoqlib/domain/payment/views.py:363
+#: ../stoqlib/domain/payment/views.py:364
 msgid "Due Date"
 msgstr ""
 
@@ -7740,39 +7766,31 @@ msgstr ""
 msgid "Quantity Received"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/purchasedetails.py:217
-#: ../stoqlib/gui/dialogs/renegotiationdetails.py:132
-#: ../stoqlib/gui/dialogs/saledetails.py:161
-#: ../stoqlib/gui/slaves/installmentslave.py:251
-#: ../stoqlib/gui/wizards/purchasefinishwizard.py:138
-msgid "Paid value"
-msgstr ""
-
 #: ../stoqlib/gui/dialogs/purchasedetails.py:224
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:145
 #: ../stoqlib/gui/dialogs/saledetails.py:178
-#: ../stoqlib/gui/editors/paymenteditor.py:442
+#: ../stoqlib/gui/editors/paymenteditor.py:443
 msgid "When"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:229
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:150
 #: ../stoqlib/gui/dialogs/saledetails.py:183
-#: ../stoqlib/gui/editors/paymenteditor.py:447
+#: ../stoqlib/gui/editors/paymenteditor.py:448
 msgid "Changed"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:231
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:152
 #: ../stoqlib/gui/dialogs/saledetails.py:185
-#: ../stoqlib/gui/editors/paymenteditor.py:449
+#: ../stoqlib/gui/editors/paymenteditor.py:450
 msgid "From"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:233
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:154
 #: ../stoqlib/gui/dialogs/saledetails.py:187
-#: ../stoqlib/gui/editors/paymenteditor.py:451
+#: ../stoqlib/gui/editors/paymenteditor.py:452
 msgid "To"
 msgstr ""
 
@@ -8195,7 +8213,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/loaneditor.py:106
 #: ../stoqlib/gui/editors/saleeditor.py:127
-#: ../stoqlib/gui/wizards/salequotewizard.py:373
+#: ../stoqlib/gui/wizards/salequotewizard.py:374
 msgid "The price must be greater than zero."
 msgstr ""
 
@@ -8289,30 +8307,30 @@ msgstr ""
 msgid "Purchase details"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymenteditor.py:255
+#: ../stoqlib/gui/editors/paymenteditor.py:256
 msgid "End date must be before start date"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymenteditor.py:261
-#: ../stoqlib/gui/editors/paymenteditor.py:263
+#: ../stoqlib/gui/editors/paymenteditor.py:262
+#: ../stoqlib/gui/editors/paymenteditor.py:264
 msgid "Date cannot be empty"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymenteditor.py:325
+#: ../stoqlib/gui/editors/paymenteditor.py:326
 #: ../stoqlib/gui/slaves/paymentslave.py:1237
 msgid "The value must be greater than zero."
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymenteditor.py:364
+#: ../stoqlib/gui/editors/paymenteditor.py:365
 msgid "Payer:"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymenteditor.py:386
+#: ../stoqlib/gui/editors/paymenteditor.py:387
 #: ../stoqlib/reporting/payments_receipt.py:110
 msgid "Recipient:"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymenteditor.py:473
+#: ../stoqlib/gui/editors/paymenteditor.py:474
 msgid "Payment Details"
 msgstr ""
 
@@ -8614,7 +8632,7 @@ msgid "This product unit (%s) does not support fractions."
 msgstr ""
 
 #: ../stoqlib/gui/editors/saleeditor.py:133
-#: ../stoqlib/gui/wizards/salequotewizard.py:361
+#: ../stoqlib/gui/wizards/salequotewizard.py:362
 #, python-format
 msgid "Max discount for this product is %.2f%%"
 msgstr ""
@@ -9335,6 +9353,11 @@ msgstr ""
 
 #: ../stoqlib/gui/search/paymentsearch.py:73
 msgid "Bill or check number:"
+msgstr ""
+
+#: ../stoqlib/gui/search/paymentsearch.py:77
+#: ../stoqlib/gui/search/paymentsearch.py:149
+msgid "Id"
 msgstr ""
 
 #: ../stoqlib/gui/search/paymentsearch.py:78
@@ -10308,7 +10331,7 @@ msgid "Print receipt"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/loanwizard.py:468
-#: ../stoqlib/gui/wizards/salequotewizard.py:420
+#: ../stoqlib/gui/wizards/salequotewizard.py:421
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:237
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:293
 msgid "Don't print"
@@ -10533,16 +10556,20 @@ msgstr ""
 msgid "Lead Time"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salequotewizard.py:402
+#: ../stoqlib/gui/wizards/salequotewizard.py:350
+msgid "Missing products"
+msgstr ""
+
+#: ../stoqlib/gui/wizards/salequotewizard.py:403
 msgid "Edit Sale Quote"
 msgstr ""
 
 #. We can only print the details if the quote was confirmed.
-#: ../stoqlib/gui/wizards/salequotewizard.py:419
+#: ../stoqlib/gui/wizards/salequotewizard.py:420
 msgid "Would you like to print the quote details now?"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salequotewizard.py:420
+#: ../stoqlib/gui/wizards/salequotewizard.py:421
 msgid "Print quote details"
 msgstr ""
 

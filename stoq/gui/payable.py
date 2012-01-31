@@ -173,7 +173,7 @@ class PayableApp(SearchableAppWindow):
                         SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('#'), long_title='Payment ID',
+        return [SearchColumn('id', title=_('#'), long_title=_('Payment ID'),
                              width=60, data_type=int,
                              format='%04d'),
                 Column('color', title=_('Description'), width=20,
@@ -198,7 +198,11 @@ class PayableApp(SearchableAppWindow):
                 SearchColumn('value', title=_('Value'), data_type=currency,
                              width=90),
                 SearchColumn('paid_value', title=_('Paid'), data_type=currency,
-                              long_title='Paid value', width=90)]
+                             long_title=_('Paid value'), width=90),
+                SearchColumn('category', title=_('Category'), data_type=str,
+                             long_title=_('Payment category'), width=110,
+                             visible=False),
+                ]
 
     #
     # Public API

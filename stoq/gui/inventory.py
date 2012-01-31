@@ -151,10 +151,10 @@ class InventoryApp(SearchableAppWindow):
                 Column('branch.person.name', title=_('Branch'),
                        data_type=str, expand=True),
                 SearchColumn('open_date', title=_('Opened'),
-                       long_title='Date Opened',
+                       long_title=_('Date Opened'),
                        data_type=datetime.date, width=120),
-                SearchColumn('close_date', title=_(u'Closed'),
-                       long_title='Date Closed',
+                SearchColumn('close_date', title=_('Closed'),
+                       long_title=_('Date Closed'),
                        data_type=datetime.date, width=120)]
 
     #

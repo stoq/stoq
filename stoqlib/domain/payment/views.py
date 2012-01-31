@@ -69,6 +69,7 @@ class BasePaymentView(Viewable):
 
         # PaymentCategory
         color=PaymentCategory.q.color,
+        category=PaymentCategory.q.name,
 
         # PaymentComment
         comments_number=const.COUNT(PaymentComment.q.id),

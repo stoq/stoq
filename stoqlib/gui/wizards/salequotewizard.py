@@ -346,7 +346,8 @@ class SaleQuoteItemStep(SellableItemStep):
         class MyList(SimpleListDialog):
             size = (500, 200)
 
-        run_dialog(MyList, self, columns, self.missing.values(), title="Missing products")
+        run_dialog(MyList, self, columns, self.missing.values(),
+                   title=_("Missing products"))
 
     def _validate_sellable_price(self, price):
         s = self.proxy.model.sellable
