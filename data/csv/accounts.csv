@@ -1,0 +1,9 @@
+% parent, description, account_type, bank_number, bank_branch, bank_account
+Banks,Banco do Brasil,0,001,1234-5,78901-2
+,Conta de Investimento,4,,,
+,Saldos Iniciais,4,,,
+Expenses,Aluguel,5,,,
+Expenses,Luz,5,,,
+Expenses,Salários,5,,,
+Expenses,Telefonia,5,,,
+Expenses,Impostos,5,,,
