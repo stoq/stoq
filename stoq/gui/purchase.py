@@ -245,7 +245,7 @@ class PurchaseApp(SearchableAppWindow):
                 Column('status_str', title=_(u'Status'), data_type=str,
                        visible=False),
                 SearchColumn('open_date', title=_('Opened'),
-                              long_title='Date Opened', width=90,
+                              long_title=_('Date Opened'), width=90,
                               data_type=datetime.date, sorted=True,
                               order=gtk.SORT_DESCENDING),
                 SearchColumn('supplier_name', title=_('Supplier'),

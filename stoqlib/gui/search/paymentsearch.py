@@ -74,7 +74,7 @@ class _BaseBillCheckSearch(SearchDialog):
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), data_type=int, sorted=True,
-                             format='%04d', long_title='Id', width=55),
+                             format='%04d', long_title=_('Id'), width=55),
                 SearchColumn('method_description', title=_(u'Method'),
                              data_type=str, width=90),
                 SearchColumn('payment_number', title=_(u'Number'),
@@ -146,7 +146,7 @@ class CardPaymentSearch(SearchDialog):
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), data_type=int,
-                             sorted=True, format='%04d', long_title='Id'),
+                             sorted=True, format='%04d', long_title=_('Id')),
                 SearchColumn('description', title=_(u'Description'),
                              data_type=str, expand=True),
                 SearchColumn('drawee_name', title=_(u'Drawee'), data_type=str,
