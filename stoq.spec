@@ -2,7 +2,7 @@
 
 Summary: A powerful retail system
 Name: stoq
-Version: 1.1.1
+Version: 1.2
 Release: 1
 License: GPL
 Group: System Environment/Libraries
