@@ -172,7 +172,7 @@ class PayableApp(SearchableAppWindow):
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), long_title='Payment ID',
-                             width=60, data_type=int, sorted=True,
+                             width=60, data_type=int,
                              format='%04d'),
                 Column('color', title=_('Description'), width=20,
                        data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
@@ -185,7 +185,8 @@ class PayableApp(SearchableAppWindow):
                              data_type=str, width=140,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('due_date', title=_('Due date'),
-                             data_type=datetime.date, width=100),
+                             data_type=datetime.date, width=100,
+                             sorted=True),
                 SearchColumn('paid_date', title=_('Paid date'),
                              data_type=datetime.date, width=100),
                 SearchColumn('status_str', title=_('Status'), width=100,
@@ -345,6 +346,7 @@ class PayableApp(SearchableAppWindow):
             for view in payable_views:
                 view.sync()
                 self.results.update(view)
+            self.refresh()
 
         self._update_widgets()
 

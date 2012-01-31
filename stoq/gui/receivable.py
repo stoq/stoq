@@ -180,7 +180,7 @@ class ReceivableApp(SearchableAppWindow):
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), long_title="Payment ID",
-                             width=60, data_type=int, sorted=True,
+                             width=60, data_type=int,
                              format='%04d'),
                 Column('color', title=_('Description'), width=20,
                        data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
@@ -192,7 +192,7 @@ class ReceivableApp(SearchableAppWindow):
                 SearchColumn('drawee', title=_('Drawee'), data_type=str,
                              ellipsize=pango.ELLIPSIZE_END, width=140),
                 SearchColumn('due_date', title=_('Due date'),
-                             data_type=datetime.date, width=100),
+                             data_type=datetime.date, width=100, sorted=True),
                 SearchColumn('paid_date', title=_('Paid date'),
                              data_type=datetime.date, width=100),
                 SearchColumn('status_str', title=_('Status'), width=100,
@@ -278,6 +278,7 @@ class ReceivableApp(SearchableAppWindow):
             for view in receivable_views:
                 view.sync()
                 self.results.update(view)
+            self.refresh()
 
         trans.close()
         self._update_widgets()
