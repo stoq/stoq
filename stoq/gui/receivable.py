@@ -488,7 +488,7 @@ class ReceivableApp(SearchableAppWindow):
         payment = receivable_view.payment
         date = datetime.date.today()
         print_report(InPaymentReceipt, payment=payment,
-                     sale=receivable_view.sale, date=date)
+                     order=receivable_view.sale, date=date)
 
     def on_PaymentFlowHistory__activate(self, action):
         self.run_dialog(PaymentFlowHistoryDialog, self.conn)

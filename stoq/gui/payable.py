@@ -495,7 +495,7 @@ class PayableApp(SearchableAppWindow):
         payments = [v.payment for v in payment_views]
         date = datetime.date.today()
         print_report(OutPaymentReceipt, payment=payments[0],
-                     purchase=payment_views[0].purchase, date=date)
+                     order=payment_views[0].purchase, date=date)
 
     def on_PaymentFlowHistory__activate(self, action):
         self.run_dialog(PaymentFlowHistoryDialog, self.conn)
