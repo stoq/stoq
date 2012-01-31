@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -133,9 +133,6 @@ class PayableApp(SearchableAppWindow):
         self.popup = self.uimanager.get_widget('/PayableSelection')
 
     def create_ui(self):
-        self._setup_widgets()
-
-    def activate(self, params):
         self.app.launcher.add_new_items([self.AddPayment])
         self.app.launcher.NewToolItem.set_tooltip(self.AddPayment.get_tooltip())
         self.app.launcher.add_search_items([self.BillCheckSearch])
@@ -145,6 +142,11 @@ class PayableApp(SearchableAppWindow):
             _("Print a report of these payments"))
         self.Pay.set_sensitive(False)
         self.PrintReceipt.set_sensitive(False)
+        self._setup_widgets()
+        self.search.search.results.set_cell_data_func(
+            self._on_results__cell_data_func)
+
+    def activate(self, params):
         # FIXME: double negation is weird here
         if not params.get('no-refresh'):
             self.search.refresh()
@@ -165,10 +167,10 @@ class PayableApp(SearchableAppWindow):
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'supplier_name'])
-        self.add_filter(
-            ComboSearchFilter(_('Show payments'),
-                              self._get_status_values()),
-            SearchFilterPosition.TOP, ['status'])
+        self.status_filter = ComboSearchFilter(_('Show payments'),
+                                               self._get_status_values())
+        self.add_filter(self.status_filter,
+                        SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), long_title='Payment ID',
@@ -343,9 +345,8 @@ class PayableApp(SearchableAppWindow):
                        payments=payments)
 
         if trans.committed:
-            for view in payable_views:
-                view.sync()
-                self.results.update(view)
+            # We need to refresh the whole list as the payment(s) can possibly
+            # disappear for the selected view
             self.refresh()
 
         self._update_widgets()
@@ -446,6 +447,22 @@ class PayableApp(SearchableAppWindow):
     #
     # Kiwi callbacks
     #
+
+    def _on_results__cell_data_func(self, column, renderer, pv, text):
+        if not isinstance(renderer, gtk.CellRendererText):
+            return text
+
+        if pv.paid_date and self.status_filter.get_state().value is None:
+            renderer.set_property('strikethrough', True)
+            renderer.set_property('strikethrough-set', True)
+        else:
+            renderer.set_property('strikethrough-set', False)
+        if not pv.paid_date and pv.due_date < datetime.datetime.now():
+            renderer.set_property('weight', pango.WEIGHT_BOLD)
+            renderer.set_property('weight-set', True)
+        else:
+            renderer.set_property('weight-set', False)
+        return text
 
     def on_results__row_activated(self, klist, payable_view):
         if self._can_show_details([payable_view]):
