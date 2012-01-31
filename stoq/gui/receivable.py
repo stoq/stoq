@@ -44,8 +44,6 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
-from stoqlib.reporting.payment import ReceivablePaymentReport
-from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
@@ -60,6 +58,8 @@ from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
 from stoqlib.lib.message import warning
 from stoqlib.reporting.boleto import BillReport
+from stoqlib.reporting.payment import ReceivablePaymentReport
+from stoqlib.reporting.payments_receipt import InPaymentReceipt
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -234,11 +234,9 @@ class ReceivableApp(SearchableAppWindow):
         self.CancelPayment.set_sensitive(
             one_item and self._can_cancel_payment(selected))
         self.PrintReceipt.set_sensitive(
-            one_item and
-            self._are_paid(selected, respect_sale=True))
+            one_item and self._is_paid(selected))
         self.SetNotPaid.set_sensitive(
-            one_item and
-            self._are_paid(selected, respect_sale=False))
+            one_item and self._is_paid(selected))
         self.PrintBill.set_sensitive(self._can_print_bill(selected))
 
     def _get_status_values(self):
@@ -325,22 +323,16 @@ class ReceivableApp(SearchableAppWindow):
 
         trans.close()
 
-    def _are_paid(self, receivable_views, respect_sale=True):
+    def _is_paid(self, receivable_view):
         """
-        Determines if a list of receivable_views are paid.
-        To do so they must meet the following conditions:
-          - Be in the same sale
-            (This will be satistied only if respect_sale is True)
+        Determines if the selected payment is paid.
+        To do so he must meet the following condition:
           - The payment status needs to be set to PAID
         """
-        if not receivable_views:
+        if not receivable_view:
             return False
 
-        sale = receivable_views[0].sale_id
-        if sale is None and respect_sale:
-            return False
-        return all(view.sale_id == sale and view.is_paid()
-                   for view in receivable_views)
+        return receivable_view[0].is_paid()
 
     def _can_receive(self, receivable_views):
         """
@@ -473,10 +465,11 @@ class ReceivableApp(SearchableAppWindow):
 
     def on_PrintReceipt__activate(self, action):
         register_payment_operations()
-        receivable_views = self.results.get_selected_rows()
-        payments = [v.payment for v in receivable_views]
-        print_report(ReceivalReceipt, payments=payments,
-                     sale=receivable_views[0].sale)
+        receivable_view = self.results.get_selected_rows()[0]
+        payment = receivable_view.payment
+        date = datetime.date.today()
+        print_report(InPaymentReceipt, payment=payment,
+                     sale=receivable_view.sale, date=date)
 
     def on_PaymentFlowHistory__activate(self, action):
         self.run_dialog(PaymentFlowHistoryDialog, self.conn)

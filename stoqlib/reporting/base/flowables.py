@@ -111,7 +111,7 @@ class ReportLine(Flowable):
         canvas.saveState()
         canvas.setLineWidth(self.thickness)
         if self.dash_pattern:
-            canvas.setDash(self.dash_pattern, 0)
+            canvas.setDash(self.dash_pattern, 2)
         # We add a half of line thickness to the y coordinate because the
         # given y coordinate will be at the middle of the line. The 'error' is
         # only perceptible when the line is thick.

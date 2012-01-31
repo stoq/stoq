@@ -55,7 +55,7 @@ from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
 from stoqlib.lib.message import warning
 from stoqlib.reporting.payment import PayablePaymentReport
-from stoqlib.reporting.payment_receipt import PaymentReceipt
+from stoqlib.reporting.payments_receipt import OutPaymentReceipt
 
 from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.slaves.installmentslave import PurchaseInstallmentConfirmationSlave
@@ -380,7 +380,7 @@ class PayableApp(SearchableAppWindow):
             return False
 
         purchase = payable_views[0].purchase_id
-        if purchase is None and respect_purchase:
+        if not purchase and len(payable_views) > 1:
             return False
 
         return all((view.purchase_id == purchase or not respect_purchase) and
@@ -473,8 +473,9 @@ class PayableApp(SearchableAppWindow):
         register_payment_operations()
         payment_views = self.results.get_selected_rows()
         payments = [v.payment for v in payment_views]
-        print_report(PaymentReceipt, payments=payments,
-                     purchase=payment_views[0].purchase)
+        date = datetime.date.today()
+        print_report(OutPaymentReceipt, payment=payments[0],
+                     purchase=payment_views[0].purchase, date=date)
 
     def on_PaymentFlowHistory__activate(self, action):
         self.run_dialog(PaymentFlowHistoryDialog, self.conn)
