@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-31 12:09-0200\n"
+"POT-Creation-Date: 2012-01-31 14:40-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -645,8 +645,8 @@ msgid "<b>Database Settings</b>"
 msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:2
-#: ../stoqlib/reporting/payments_receipt.py:80
-#: ../stoqlib/reporting/payments_receipt.py:110
+#: ../stoqlib/reporting/payments_receipt.py:81
+#: ../stoqlib/reporting/payments_receipt.py:112
 #: ../stoqlib/reporting/sale.py:83
 msgid "Address:"
 msgstr ""
@@ -5453,8 +5453,8 @@ msgstr ""
 #: ../stoq/gui/receivable.py:192 ../stoqlib/gui/editors/accounteditor.py:354
 #: ../stoqlib/gui/search/fiscalsearch.py:127
 #: ../stoqlib/gui/search/paymentsearch.py:152
-#: ../stoqlib/reporting/payments_receipt.py:106
-#: ../stoqlib/reporting/payments_receipt.py:118
+#: ../stoqlib/reporting/payments_receipt.py:92
+#: ../stoqlib/reporting/payments_receipt.py:120
 msgid "Drawee"
 msgstr ""
 
@@ -8434,6 +8434,7 @@ msgid "Payer:"
 msgstr ""
 
 #: ../stoqlib/gui/editors/paymenteditor.py:386
+#: ../stoqlib/reporting/payments_receipt.py:110
 msgid "Recipient:"
 msgstr ""
 
@@ -12962,41 +12963,33 @@ msgstr ""
 msgid "Transactions for account %s"
 msgstr ""
 
-#: ../stoqlib/reporting/payments_receipt.py:79
+#: ../stoqlib/reporting/payments_receipt.py:43
+msgid "Payment receipt"
+msgstr ""
+
+#: ../stoqlib/reporting/payments_receipt.py:80
 msgid "I/We Received from:"
 msgstr ""
 
-#: ../stoqlib/reporting/payments_receipt.py:87
+#: ../stoqlib/reporting/payments_receipt.py:88
 msgid "The importance of:"
 msgstr ""
 
-#: ../stoqlib/reporting/payments_receipt.py:88
+#: ../stoqlib/reporting/payments_receipt.py:89
 msgid "Referring to:"
 msgstr ""
 
-#: ../stoqlib/reporting/payments_receipt.py:91
-msgid "Payer"
-msgstr ""
-
 #: ../stoqlib/reporting/payments_receipt.py:108
-msgid "Drawee:"
+msgid "Recipient"
 msgstr ""
 
-#: ../stoqlib/reporting/payments_receipt.py:109
+#: ../stoqlib/reporting/payments_receipt.py:111
 msgid "CPF/CNPJ/RG:"
 msgstr ""
 
-#: ../stoqlib/reporting/payments_receipt.py:126
+#: ../stoqlib/reporting/payments_receipt.py:128
 #, python-format
 msgid "Receipt: %s - Value: %s - Date: %s"
-msgstr ""
-
-#: ../stoqlib/reporting/payments_receipt.py:135
-msgid "Receival receipt"
-msgstr ""
-
-#: ../stoqlib/reporting/payments_receipt.py:157
-msgid "Payment receipt"
 msgstr ""
 
 #: ../stoqlib/reporting/product.py:47 ../stoqlib/reporting/product.py:76

@@ -207,7 +207,7 @@ class TestReport(DomainTest):
         payment.get_payment_number_str = lambda: '00036'
         date = datetime.date(2012, 1, 1)
 
-        self.checkPDF(InPaymentReceipt, payment, sale=None, date=date)
+        self.checkPDF(InPaymentReceipt, payment, order=None, date=date)
 
     def testOutPaymentReceipt(self):
         drawee = self.create_supplier()
@@ -226,7 +226,7 @@ class TestReport(DomainTest):
         payment.get_payment_number_str = lambda: '00035'
         date = datetime.date(2012, 1, 1)
 
-        self.checkPDF(OutPaymentReceipt, payment, purchase=None, date=date)
+        self.checkPDF(OutPaymentReceipt, payment, order=None, date=date)
 
     def testTransferOrderReceipt(self):
         raise SkipTest('Issues with pdftohtml version.')

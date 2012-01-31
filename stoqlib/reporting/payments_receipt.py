@@ -40,6 +40,7 @@ _ = stoqlib_gettext
 class BasePaymentReceipt(BaseStoqReport):
     """ Base account receipt
     """
+    report_name = _("Payment receipt")
 
     def __init__(self, filename, payment, order, date, *args, **kwargs):
         self.payment = payment
@@ -48,9 +49,9 @@ class BasePaymentReceipt(BaseStoqReport):
         BaseStoqReport.__init__(self, filename, self.report_name,
                                 do_footer=False, landscape=False, *args,
                                 **kwargs)
-        self.identify_payer()
-        self.add_blank_space()
         self.identify_drawee()
+        self.add_blank_space()
+        self.identify_recipient()
         self.add_signature()
 
         # Create separator to cut the receipt copy.
@@ -58,12 +59,12 @@ class BasePaymentReceipt(BaseStoqReport):
 
         # Duplicate data to generate a copy of receipt in same page.
         self.add_title(self.get_title())
-        self.identify_payer()
-        self.add_blank_space()
         self.identify_drawee()
+        self.add_blank_space()
+        self.identify_recipient()
         self.add_signature()
 
-    def get_payer(self):
+    def get_recipient(self):
         """This should be implemented in subclasses"""
         raise NotImplementedError
 
@@ -71,8 +72,8 @@ class BasePaymentReceipt(BaseStoqReport):
         """This should be implemented in subclasses"""
         raise NotImplementedError
 
-    def identify_payer(self):
-        payer = self.get_payer()
+    def identify_drawee(self):
+        payer = self.get_drawee()
         data = []
         if payer:
             data.extend([
@@ -88,26 +89,27 @@ class BasePaymentReceipt(BaseStoqReport):
             [_("Referring to:"), self.payment.description],
         ])
 
-        self.add_paragraph(_('Payer'), style='Normal-Bold')
+        self.add_paragraph(_('Drawee'), style='Normal-Bold')
         self.add_column_table(data, cols, do_header=False,
                               highlight=HIGHLIGHT_NEVER,
                               table_line=TABLE_LINE_BLANK)
 
-    def identify_drawee(self):
-        drawee = self.get_drawee()
-        company = ICompany(drawee, None)
-        document = company.cnpj
-        address = drawee.get_address_string()
-        drawee_name = drawee.name
+    def identify_recipient(self):
+        recipient = self.get_recipient()
+        company = ICompany(recipient, None)
+        if company:
+            document = company.cnpj
+        else:
+            document = ''
 
         cols = [TC('', style='Normal-Bold', width=150),
                 TC('', expand=True, truncate=True)]
 
-        self.add_paragraph(_('Drawee'), style='Normal-Bold')
+        self.add_paragraph(_('Recipient'), style='Normal-Bold')
         data = [
-            [_("Drawee:"), drawee_name],
+            [_("Recipient:"), recipient.name],
             [_("CPF/CNPJ/RG:"), document],
-            [_("Address:"), address],
+            [_("Address:"), recipient.get_address_string()],
         ]
 
         self.add_column_table(data, cols, do_header=False,
@@ -132,19 +134,13 @@ class BasePaymentReceipt(BaseStoqReport):
 class InPaymentReceipt(BasePaymentReceipt):
     """ Accounts receivable receipt
     """
-    report_name = _("Receival receipt")
-
-    def __init__(self, filename, payment, sale, date, *args, **kwargs):
-        self.sale = sale
-        BasePaymentReceipt.__init__(self, filename, payment, order=sale,
-                                    date=date, *args, **kwargs)
-
-    def get_payer(self):
-        return self.payment.group.payer
 
     def get_drawee(self):
-        if self.sale:
-            drawee = self.sale.branch.person
+        return self.payment.group.payer
+
+    def get_recipient(self):
+        if self.order:
+            drawee = self.order.branch.person
         else:
             conn = self.payment.get_connection()
             drawee = api.get_current_branch(conn).person
@@ -154,24 +150,18 @@ class InPaymentReceipt(BasePaymentReceipt):
 class OutPaymentReceipt(BasePaymentReceipt):
     """ Accounts payable receipt
     """
-    report_name = _("Payment receipt")
 
-    def __init__(self, filename, payment, purchase, date, *args, **kwargs):
-        self.purchase = purchase
-        BasePaymentReceipt.__init__(self, filename, payment, order=purchase,
-                                    date=date, *args, **kwargs)
-
-    def get_payer(self):
-        if self.purchase:
-            payer = self.purchase.branch.person
+    def get_drawee(self):
+        if self.order:
+            payer = self.order.branch.person
         else:
             conn = self.payment.get_connection()
             payer = api.get_current_branch(conn).person
         return payer
 
-    def get_drawee(self):
-        if self.purchase:
-            drawee = self.purchase.supplier.person
+    def get_recipient(self):
+        if self.order:
+            drawee = self.order.supplier.person
         else:
             drawee = self.payment.group.recipient
         return drawee
