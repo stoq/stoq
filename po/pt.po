@@ -23,15 +23,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-30 00:18-0200\n"
+"POT-Creation-Date: 2012-01-30 17:04-0200\n"
 "PO-Revision-Date: 2011-11-25 12:05+0000\n"
 "Last-Translator: Rafael Neri <Unknown>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-30 04:48+0000\n"
-"X-Generator: Launchpad (build 14727)\n"
+"X-Launchpad-Export-Date: 2012-01-31 05:10+0000\n"
+"X-Generator: Launchpad (build 14734)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -1800,7 +1800,7 @@ msgstr "Valor previsto de transporte"
 msgid "Export CSV"
 msgstr ""
 
-#: ../data/glade/PurchaseDetailsDialog.ui.h:14 ../stoq/gui/purchase.py:255
+#: ../data/glade/PurchaseDetailsDialog.ui.h:14 ../stoq/gui/purchase.py:254
 #: ../stoqlib/domain/sale.py:353 ../stoqlib/gui/dialogs/quotedialog.py:158
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:82
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:477
@@ -1809,7 +1809,7 @@ msgstr ""
 msgid "Ordered"
 msgstr "Pedido"
 
-#: ../data/glade/PurchaseDetailsDialog.ui.h:17 ../stoq/gui/purchase.py:258
+#: ../data/glade/PurchaseDetailsDialog.ui.h:17 ../stoq/gui/purchase.py:257
 #: ../stoqlib/gui/search/productsearch.py:268
 #: ../stoqlib/gui/search/purchasesearch.py:88
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:84
@@ -2015,7 +2015,7 @@ msgid "Received Products"
 msgstr "Produtos recebidos"
 
 #: ../data/glade/ReceivingOrderDetailsDialog.ui.h:3
-#: ../stoqlib/gui/editors/paymenteditor.py:443
+#: ../stoqlib/gui/editors/paymenteditor.py:470
 #: ../stoqlib/reporting/purchase.py:295
 msgid "Receiving Details"
 msgstr "Detalhes de recebimentos"
@@ -2338,7 +2338,7 @@ msgstr "Ativo:"
 #: ../stoqlib/gui/dialogs/purchasedetails.py:235
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:156
 #: ../stoqlib/gui/dialogs/saledetails.py:189
-#: ../stoqlib/gui/editors/paymenteditor.py:426
+#: ../stoqlib/gui/editors/paymenteditor.py:453
 #: ../stoqlib/reporting/stockdecreasereceipt.py:81
 msgid "Reason"
 msgstr "Razão"
@@ -2668,9 +2668,9 @@ msgstr "Na filial:"
 #. raise ValueError('You should have at least one branch at '
 #. 'this point')
 #: ../plugins/books/bookssearch.py:72 ../plugins/books/publishersearch.py:65
-#: ../stoq/gui/inventory.py:167 ../stoq/gui/payable.py:431
-#: ../stoq/gui/production.py:188 ../stoq/gui/purchase.py:412
-#: ../stoq/gui/receivable.py:247 ../stoq/gui/sales.py:336
+#: ../stoq/gui/inventory.py:166 ../stoq/gui/payable.py:430
+#: ../stoq/gui/production.py:188 ../stoq/gui/purchase.py:411
+#: ../stoq/gui/receivable.py:246 ../stoq/gui/sales.py:336
 #: ../stoq/gui/till.py:238 ../stoqlib/gui/base/search.py:418
 #: ../stoqlib/gui/base/search.py:433 ../stoqlib/gui/search/loansearch.py:60
 #: ../stoqlib/gui/search/paymentsearch.py:63
@@ -2693,7 +2693,7 @@ msgstr "Qualquer"
 msgid "with status:"
 msgstr "com situação:"
 
-#: ../plugins/books/bookssearch.py:83 ../stoq/gui/stock.py:224
+#: ../plugins/books/bookssearch.py:83 ../stoq/gui/stock.py:223
 #: ../stoqlib/domain/uiform.py:105
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:87
 #: ../stoqlib/gui/dialogs/sellablepricedialog.py:147
@@ -2706,8 +2706,8 @@ msgstr "Código de barras"
 
 #. XXX Bug #2430 will improve this part
 #: ../plugins/books/bookssearch.py:85 ../stoq/gui/financial.py:227
-#: ../stoq/gui/financial.py:245 ../stoq/gui/inventory.py:145
-#: ../stoq/gui/stock.py:221 ../stoqlib/domain/uiform.py:104
+#: ../stoq/gui/financial.py:245 ../stoq/gui/inventory.py:144
+#: ../stoq/gui/stock.py:220 ../stoqlib/domain/uiform.py:104
 #: ../stoqlib/gui/accounttree.py:73
 #: ../stoqlib/gui/dialogs/clientdetails.py:105
 #: ../stoqlib/gui/dialogs/clientdetails.py:119
@@ -2749,7 +2749,7 @@ msgstr "Código de barras"
 msgid "Code"
 msgstr "Código"
 
-#: ../plugins/books/bookssearch.py:87 ../stoq/gui/stock.py:226
+#: ../plugins/books/bookssearch.py:87 ../stoq/gui/stock.py:225
 #: ../stoqlib/domain/uiform.py:106
 #: ../stoqlib/gui/dialogs/clientcategorydialog.py:47
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:89
@@ -2997,7 +2997,7 @@ msgid "Device constant"
 msgstr "Constante de dispositivo"
 
 #: ../plugins/ecf/deviceconstanteditor.py:135 ../stoq/gui/financial.py:247
-#: ../stoq/gui/payable.py:196 ../stoq/gui/receivable.py:203
+#: ../stoq/gui/payable.py:195 ../stoq/gui/receivable.py:202
 #: ../stoqlib/gui/dialogs/clientdetails.py:142
 #: ../stoqlib/gui/dialogs/purchasedetails.py:212
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:128
@@ -3046,7 +3046,7 @@ msgid "fiscal printer is missing a constant for tax constant '%s'"
 msgstr "A impressora fiscal não tem a constante para o imposto '%s'"
 
 #. FIXME: This column should be virtual, waiting for bug #2764
-#: ../plugins/ecf/ecfdomain.py:249 ../stoq/gui/stock.py:235
+#: ../plugins/ecf/ecfdomain.py:249 ../stoq/gui/stock.py:234
 #: ../stoqlib/gui/dialogs/productadjustmentdialog.py:105
 #: ../stoqlib/gui/dialogs/productiondetails.py:86
 #: ../stoqlib/gui/dialogs/productiondetails.py:100
@@ -3081,7 +3081,7 @@ msgstr "Unidade"
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:147
 #: ../stoqlib/gui/dialogs/saledetails.py:180
 #: ../stoqlib/gui/editors/paymenteditor.py:70
-#: ../stoqlib/gui/editors/paymenteditor.py:417
+#: ../stoqlib/gui/editors/paymenteditor.py:444
 #: ../stoqlib/gui/slaves/paymentslave.py:865
 msgid "Payment"
 msgstr "Pagamento"
@@ -3435,8 +3435,8 @@ msgid "configs"
 msgstr ""
 
 #: ../plugins/magento/gui/search/magentosearch.py:58
-#: ../stoq/gui/payable.py:175 ../stoq/gui/purchase.py:243
-#: ../stoq/gui/receivable.py:183 ../stoq/gui/sales.py:207
+#: ../stoq/gui/payable.py:174 ../stoq/gui/purchase.py:242
+#: ../stoq/gui/receivable.py:182 ../stoq/gui/sales.py:207
 #: ../stoq/gui/till.py:186 ../stoqlib/gui/dialogs/clientdetails.py:90
 #: ../stoqlib/gui/dialogs/clientdetails.py:128
 #: ../stoqlib/gui/dialogs/productstockdetails.py:135
@@ -4441,10 +4441,10 @@ msgstr ""
 "Por favor, selecione outro."
 
 #: ../stoq/gui/financial.py:228 ../stoq/gui/financial.py:246
-#: ../stoq/gui/payable.py:178 ../stoq/gui/payable.py:182
+#: ../stoq/gui/payable.py:177 ../stoq/gui/payable.py:181
 #: ../stoq/gui/pos.py:246 ../stoq/gui/production.py:155
-#: ../stoq/gui/receivable.py:186 ../stoq/gui/receivable.py:190
-#: ../stoq/gui/stock.py:228 ../stoqlib/gui/dialogs/clientdetails.py:107
+#: ../stoq/gui/receivable.py:185 ../stoq/gui/receivable.py:189
+#: ../stoq/gui/stock.py:227 ../stoqlib/gui/dialogs/clientdetails.py:107
 #: ../stoqlib/gui/dialogs/clientdetails.py:122
 #: ../stoqlib/gui/dialogs/clientdetails.py:133
 #: ../stoqlib/gui/dialogs/clientdetails.py:154
@@ -4533,7 +4533,7 @@ msgid "Account"
 msgstr "Conta"
 
 #: ../stoq/gui/financial.py:239 ../stoq/gui/pos.py:252
-#: ../stoq/gui/purchase.py:261 ../stoq/gui/receivable.py:149
+#: ../stoq/gui/purchase.py:260 ../stoq/gui/receivable.py:148
 #: ../stoq/gui/sales.py:237 ../stoq/gui/till.py:201
 #: ../stoqlib/gui/accounttree.py:84
 #: ../stoqlib/gui/dialogs/clientdetails.py:101
@@ -4560,8 +4560,8 @@ msgstr "Conta"
 msgid "Total"
 msgstr "Total"
 
-#: ../stoq/gui/financial.py:244 ../stoq/gui/payable.py:188
-#: ../stoq/gui/receivable.py:195 ../stoqlib/gui/dialogs/clientdetails.py:136
+#: ../stoq/gui/financial.py:244 ../stoq/gui/payable.py:187
+#: ../stoq/gui/receivable.py:194 ../stoqlib/gui/dialogs/clientdetails.py:136
 #: ../stoqlib/gui/dialogs/purchasedetails.py:206
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:122
 #: ../stoqlib/gui/dialogs/saledetails.py:151
@@ -4753,22 +4753,22 @@ msgstr "Ajustar"
 msgid "Count"
 msgstr "Contar"
 
-#: ../stoq/gui/inventory.py:111
+#: ../stoq/gui/inventory.py:110
 msgid "Print a report of these inventories"
 msgstr ""
 
-#: ../stoq/gui/inventory.py:125
+#: ../stoq/gui/inventory.py:124
 msgid ""
 "You cannot open an inventory without having a branch with stock in it."
 msgstr ""
 
-#: ../stoq/gui/inventory.py:139
+#: ../stoq/gui/inventory.py:138
 msgid "Show inventories at:"
 msgstr "Exibir inventários em:"
 
-#: ../stoq/gui/inventory.py:148 ../stoq/gui/payable.py:192
-#: ../stoq/gui/production.py:153 ../stoq/gui/purchase.py:246
-#: ../stoq/gui/receivable.py:199 ../stoq/gui/sales.py:204
+#: ../stoq/gui/inventory.py:147 ../stoq/gui/payable.py:191
+#: ../stoq/gui/production.py:153 ../stoq/gui/purchase.py:245
+#: ../stoq/gui/receivable.py:198 ../stoq/gui/sales.py:204
 #: ../stoq/gui/till.py:188 ../stoqlib/domain/payment/views.py:365
 #: ../stoqlib/gui/dialogs/clientdetails.py:99
 #: ../stoqlib/gui/dialogs/clientdetails.py:140
@@ -4789,7 +4789,7 @@ msgstr "Exibir inventários em:"
 msgid "Status"
 msgstr "Situação"
 
-#: ../stoq/gui/inventory.py:152 ../stoqlib/domain/uiform.py:125
+#: ../stoq/gui/inventory.py:151 ../stoqlib/domain/uiform.py:125
 #: ../stoqlib/gui/editors/personeditor.py:312
 #: ../stoqlib/gui/search/loansearch.py:142
 #: ../stoqlib/gui/search/salesearch.py:186
@@ -4799,8 +4799,8 @@ msgstr "Situação"
 msgid "Branch"
 msgstr "Filial"
 
-#: ../stoq/gui/inventory.py:154 ../stoq/gui/production.py:159
-#: ../stoq/gui/purchase.py:248 ../stoqlib/domain/inventory.py:167
+#: ../stoq/gui/inventory.py:153 ../stoq/gui/production.py:159
+#: ../stoq/gui/purchase.py:247 ../stoqlib/domain/inventory.py:167
 #: ../stoqlib/domain/loan.py:117 ../stoqlib/domain/production.py:67
 #: ../stoqlib/domain/sale.py:349 ../stoqlib/domain/stockdecrease.py:104
 #: ../stoqlib/domain/till.py:85
@@ -4810,7 +4810,7 @@ msgstr "Filial"
 msgid "Opened"
 msgstr "Aberto"
 
-#: ../stoq/gui/inventory.py:157 ../stoq/gui/production.py:161
+#: ../stoq/gui/inventory.py:156 ../stoq/gui/production.py:161
 #: ../stoqlib/domain/inventory.py:168 ../stoqlib/domain/loan.py:118
 #: ../stoqlib/domain/payment/group.py:62 ../stoqlib/domain/production.py:70
 #: ../stoqlib/domain/purchase.py:154 ../stoqlib/domain/sellable.py:289
@@ -4818,25 +4818,25 @@ msgstr "Aberto"
 msgid "Closed"
 msgstr "Fechado"
 
-#: ../stoq/gui/inventory.py:179 ../stoq/gui/stock.py:258
+#: ../stoq/gui/inventory.py:178 ../stoq/gui/stock.py:257
 #: ../stoqlib/lib/defaults.py:157
 msgid "All branches"
 msgstr "Todas as filiais"
 
-#: ../stoq/gui/inventory.py:230
+#: ../stoq/gui/inventory.py:229
 msgid "Are you sure you want to cancel this inventory ?"
 msgstr "Você tem certeza que deseja cancelar este inventário?"
 
-#: ../stoq/gui/inventory.py:231 ../stoq/gui/pos.py:633
-#: ../stoq/gui/purchase.py:399 ../stoq/gui/sales.py:382
+#: ../stoq/gui/inventory.py:230 ../stoq/gui/pos.py:633
+#: ../stoq/gui/purchase.py:398 ../stoq/gui/sales.py:382
 msgid "Don't cancel"
 msgstr "Não cancelar"
 
-#: ../stoq/gui/inventory.py:231
+#: ../stoq/gui/inventory.py:230
 msgid "Cancel inventory"
 msgstr "Cancelar inventário"
 
-#: ../stoq/gui/inventory.py:292
+#: ../stoq/gui/inventory.py:291
 msgid "No products found in the inventory."
 msgstr "Nenhum produto encontrado no inventário."
 
@@ -4949,19 +4949,19 @@ msgstr "Ajuda do contas a pagar"
 msgid "Pay"
 msgstr "Pagar"
 
-#: ../stoq/gui/payable.py:146
+#: ../stoq/gui/payable.py:145
 msgid "Print a report of these payments"
 msgstr ""
 
-#: ../stoq/gui/payable.py:170 ../stoq/gui/receivable.py:178
+#: ../stoq/gui/payable.py:169 ../stoq/gui/receivable.py:177
 msgid "Show payments"
 msgstr "Exibir pagamentos"
 
-#: ../stoq/gui/payable.py:180 ../stoq/gui/receivable.py:188
+#: ../stoq/gui/payable.py:179 ../stoq/gui/receivable.py:187
 msgid "Comments"
 msgstr "Comentários"
 
-#: ../stoq/gui/payable.py:185 ../stoq/gui/purchase.py:252
+#: ../stoq/gui/payable.py:184 ../stoq/gui/purchase.py:251
 #: ../stoqlib/domain/uiform.py:123
 #: ../stoqlib/gui/dialogs/productstockdetails.py:141
 #: ../stoqlib/gui/editors/accounteditor.py:355
@@ -4976,7 +4976,7 @@ msgstr "Comentários"
 msgid "Supplier"
 msgstr "Fornecedor"
 
-#: ../stoq/gui/payable.py:190 ../stoq/gui/receivable.py:197
+#: ../stoq/gui/payable.py:189 ../stoq/gui/receivable.py:196
 #: ../stoqlib/gui/dialogs/clientdetails.py:138
 #: ../stoqlib/gui/dialogs/purchasedetails.py:209
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:125
@@ -4989,18 +4989,18 @@ msgstr "Fornecedor"
 msgid "Paid date"
 msgstr "Data do pagamento"
 
-#: ../stoq/gui/payable.py:198 ../stoq/gui/receivable.py:205
+#: ../stoq/gui/payable.py:197 ../stoq/gui/receivable.py:204
 #: ../stoqlib/domain/payment/payment.py:80
 #: ../stoqlib/domain/payment/renegotiation.py:56 ../stoqlib/domain/sale.py:351
 #: ../stoqlib/reporting/payment.py:137
 msgid "Paid"
 msgstr "Pago"
 
-#: ../stoq/gui/payable.py:206 ../stoq/gui/receivable.py:214
+#: ../stoq/gui/payable.py:205 ../stoq/gui/receivable.py:213
 msgid "Paid or due date"
 msgstr ""
 
-#: ../stoq/gui/payable.py:336
+#: ../stoq/gui/payable.py:335
 msgid ""
 "Can't confirm the payment if the purchase is not completely received yet."
 msgstr ""
@@ -5094,7 +5094,7 @@ msgstr ""
 msgid "Reference"
 msgstr "Referência"
 
-#: ../stoq/gui/pos.py:250 ../stoq/gui/stock.py:233 ../stoq/gui/till.py:198
+#: ../stoq/gui/pos.py:250 ../stoq/gui/stock.py:232 ../stoq/gui/till.py:198
 #: ../stoqlib/gui/dialogs/loandetails.py:64
 #: ../stoqlib/gui/dialogs/productiondetails.py:88
 #: ../stoqlib/gui/dialogs/productiondetails.py:120
@@ -5189,7 +5189,7 @@ msgstr ""
 msgid "This will cancel the current order. Are you sure?"
 msgstr "Isto irá cancelar o pedido selecionado. Você tem certeza?"
 
-#: ../stoq/gui/pos.py:633 ../stoq/gui/purchase.py:393
+#: ../stoq/gui/pos.py:633 ../stoq/gui/purchase.py:392
 msgid "Cancel order"
 msgstr "Cancelar pedido"
 
@@ -5334,7 +5334,7 @@ msgstr "Responsável"
 msgid "Order..."
 msgstr ""
 
-#: ../stoq/gui/purchase.py:94 ../stoq/gui/purchase.py:197
+#: ../stoq/gui/purchase.py:94 ../stoq/gui/purchase.py:196
 msgid "Create a new purchase order"
 msgstr ""
 
@@ -5468,73 +5468,73 @@ msgstr "Ajuda do compras"
 msgid "<b>Orders total:</b>"
 msgstr "<b>Total dos pedidos:</b>"
 
-#: ../stoq/gui/purchase.py:199
+#: ../stoq/gui/purchase.py:198
 msgid "Search for purchase orders"
 msgstr ""
 
-#: ../stoq/gui/purchase.py:201
+#: ../stoq/gui/purchase.py:200
 msgid "Print a report of these orders"
 msgstr ""
 
-#: ../stoq/gui/purchase.py:225
+#: ../stoq/gui/purchase.py:224
 msgid "No orders could be found."
 msgstr ""
 
-#: ../stoq/gui/purchase.py:226
+#: ../stoq/gui/purchase.py:225
 #, python-format
 msgid "Would you like to %s ?"
 msgstr ""
 
-#: ../stoq/gui/purchase.py:227
+#: ../stoq/gui/purchase.py:226
 msgid "create a new order"
 msgstr ""
 
-#: ../stoq/gui/purchase.py:238 ../stoq/gui/till.py:179
+#: ../stoq/gui/purchase.py:237 ../stoq/gui/till.py:179
 msgid "Show orders"
 msgstr "Exibir pedidos"
 
-#: ../stoq/gui/purchase.py:270
+#: ../stoq/gui/purchase.py:269
 msgid "Expected receival date"
 msgstr ""
 
-#: ../stoq/gui/purchase.py:354
+#: ../stoq/gui/purchase.py:353
 msgid "There are no pending orders selected."
 msgstr "Nenhum pedido pendente selecionado."
 
-#: ../stoq/gui/purchase.py:358
+#: ../stoq/gui/purchase.py:357
 msgid "The selected order will be marked as sent."
 msgstr "O pedido selecionado será marcado como enviado."
 
-#: ../stoq/gui/purchase.py:359
+#: ../stoq/gui/purchase.py:358
 #, python-format
 msgid "The %d selected orders will be marked as sent."
 msgstr "Os %d pedidos selecionados serão marcados como enviados."
 
-#: ../stoq/gui/purchase.py:362
+#: ../stoq/gui/purchase.py:361
 msgid "Confirm order"
 msgstr "Confirmar pedido"
 
-#: ../stoq/gui/purchase.py:363
+#: ../stoq/gui/purchase.py:362
 msgid "Confirm orders"
 msgstr "Confirmar pedidos"
 
-#: ../stoq/gui/purchase.py:365 ../stoq/gui/till.py:254
+#: ../stoq/gui/purchase.py:364 ../stoq/gui/till.py:254
 msgid "Don't confirm"
 msgstr "Não confirmar"
 
-#: ../stoq/gui/purchase.py:394
+#: ../stoq/gui/purchase.py:393
 msgid "Cancel orders"
 msgstr "Cancelar pedidos"
 
-#: ../stoq/gui/purchase.py:395
+#: ../stoq/gui/purchase.py:394
 msgid "The selected order will be cancelled."
 msgstr "O pedido selecionado será cancelado."
 
-#: ../stoq/gui/purchase.py:396
+#: ../stoq/gui/purchase.py:395
 msgid "The selected orders will be cancelled."
 msgstr "Os pedidos selecionados serão cancelados."
 
-#: ../stoq/gui/purchase.py:528
+#: ../stoq/gui/purchase.py:527
 msgid "Can't use prices editor without client categories"
 msgstr "Não é possível usar o editor de preços sem categorias de clientes"
 
@@ -5592,17 +5592,17 @@ msgstr "Ajuda do contas a receber"
 msgid "Receive"
 msgstr "Receber"
 
-#: ../stoq/gui/receivable.py:146
+#: ../stoq/gui/receivable.py:145
 msgid "Print a report of this payments"
 msgstr ""
 
-#: ../stoq/gui/receivable.py:193 ../stoqlib/gui/editors/accounteditor.py:354
+#: ../stoq/gui/receivable.py:192 ../stoqlib/gui/editors/accounteditor.py:354
 #: ../stoqlib/gui/search/fiscalsearch.py:127
 #: ../stoqlib/gui/search/paymentsearch.py:152
 msgid "Drawee"
 msgstr "Sacado"
 
-#: ../stoq/gui/receivable.py:514
+#: ../stoq/gui/receivable.py:513
 msgid "Cannot renegotiate selected payments"
 msgstr ""
 
@@ -5958,23 +5958,23 @@ msgstr ""
 msgid "<b>Stock Total:</b>"
 msgstr "<b>Estoque Total</b>"
 
-#: ../stoq/gui/stock.py:178
+#: ../stoq/gui/stock.py:177
 msgid "Create a new receiving order"
 msgstr ""
 
-#: ../stoq/gui/stock.py:180
+#: ../stoq/gui/stock.py:179
 msgid "Search for stock items"
 msgstr ""
 
-#: ../stoq/gui/stock.py:193
+#: ../stoq/gui/stock.py:192
 msgid "You cannot receive a purchase with an open inventory."
 msgstr ""
 
-#: ../stoq/gui/stock.py:216
+#: ../stoq/gui/stock.py:215
 msgid "Show by:"
 msgstr "Exibir por:"
 
-#: ../stoq/gui/stock.py:231 ../stoqlib/domain/uiform.py:107
+#: ../stoq/gui/stock.py:230 ../stoqlib/domain/uiform.py:107
 #: ../stoqlib/gui/dialogs/productiondetails.py:99
 #: ../stoqlib/gui/dialogs/productiondialog.py:318
 #: ../stoqlib/gui/search/productsearch.py:169
@@ -5983,7 +5983,7 @@ msgstr "Exibir por:"
 msgid "Location"
 msgstr "Localização"
 
-#: ../stoq/gui/stock.py:237
+#: ../stoq/gui/stock.py:236
 msgid "Picture"
 msgstr "Imagem"
 
@@ -8135,28 +8135,28 @@ msgstr "Valor pago"
 #: ../stoqlib/gui/dialogs/purchasedetails.py:224
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:145
 #: ../stoqlib/gui/dialogs/saledetails.py:178
-#: ../stoqlib/gui/editors/paymenteditor.py:415
+#: ../stoqlib/gui/editors/paymenteditor.py:442
 msgid "When"
 msgstr "Quando"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:229
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:150
 #: ../stoqlib/gui/dialogs/saledetails.py:183
-#: ../stoqlib/gui/editors/paymenteditor.py:420
+#: ../stoqlib/gui/editors/paymenteditor.py:447
 msgid "Changed"
 msgstr "Alterado"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:231
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:152
 #: ../stoqlib/gui/dialogs/saledetails.py:185
-#: ../stoqlib/gui/editors/paymenteditor.py:422
+#: ../stoqlib/gui/editors/paymenteditor.py:449
 msgid "From"
 msgstr "De"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:233
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:154
 #: ../stoqlib/gui/dialogs/saledetails.py:187
-#: ../stoqlib/gui/editors/paymenteditor.py:424
+#: ../stoqlib/gui/editors/paymenteditor.py:451
 msgid "To"
 msgstr "Até"
 
@@ -8673,24 +8673,29 @@ msgstr "Detalhes da venda"
 msgid "Purchase details"
 msgstr "Detalhes da compra"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:250
+#: ../stoqlib/gui/editors/paymenteditor.py:255
+msgid "End date must be before start date"
+msgstr ""
+
+#: ../stoqlib/gui/editors/paymenteditor.py:261
+#: ../stoqlib/gui/editors/paymenteditor.py:263
 msgid "Date cannot be empty"
 msgstr ""
 
-#: ../stoqlib/gui/editors/paymenteditor.py:301
+#: ../stoqlib/gui/editors/paymenteditor.py:325
 #: ../stoqlib/gui/slaves/paymentslave.py:1237
 msgid "The value must be greater than zero."
 msgstr "O valor deve ser maior que zero"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:337
+#: ../stoqlib/gui/editors/paymenteditor.py:364
 msgid "Payer:"
 msgstr "Cliente:"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:359
+#: ../stoqlib/gui/editors/paymenteditor.py:386
 msgid "Recipient:"
 msgstr "Destinatário:"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:446
+#: ../stoqlib/gui/editors/paymenteditor.py:473
 msgid "Payment Details"
 msgstr "Detalhes do pagamento"
 
@@ -13796,35 +13801,3 @@ msgstr "TRANSFERÊNCIA DE PRODUTOS"
 #: ../data/template/transfer.rml.extracted.h:13
 msgid "TRANSFER RECEIPT"
 msgstr "RECIBO DE TRANSFERÊNCIA"
-
-#~ msgid "CNPJ/CPF"
-#~ msgstr "CNPJ/CPF"
-
-#~ msgid "A company with this CNPJ already exists"
-#~ msgstr "Uma empresa com este CNPJ já existe"
-
-#, python-format
-#~ msgid "%s %s ago"
-#~ msgstr "%s %s Atrás"
-
-#, python-format
-#~ msgid "in %s %s"
-#~ msgstr "em %s %s"
-
-#~ msgid "seconds"
-#~ msgstr "segundos"
-
-#~ msgid "hours"
-#~ msgstr "horas"
-
-#~ msgid "minutes"
-#~ msgstr "minutos"
-
-#~ msgid "years"
-#~ msgstr "anos"
-
-#~ msgid "weeks"
-#~ msgstr "semanas"
-
-#~ msgid "months"
-#~ msgstr "meses"
