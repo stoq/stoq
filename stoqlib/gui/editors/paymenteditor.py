@@ -153,7 +153,7 @@ class PaymentEditor(BaseEditor):
 
     def can_edit_details(self):
         for widget in [self.value, self.due_date,
-                       self.add_person, self.method]:
+                       self.add_person, self.repeat, self.method]:
             widget.set_sensitive(True)
         self.details_button.hide()
         self.edit_person.set_sensitive(bool(self.person.get_selected()))
@@ -229,7 +229,8 @@ class PaymentEditor(BaseEditor):
         self.details_button.connect('clicked',
                                     self._on_details_button__clicked)
         for widget in [self.value, self.due_date, self.person,
-                       self.add_person, self.edit_person]:
+                       self.add_person, self.edit_person,
+                       self.repeat, self.end_date]:
             widget.set_sensitive(False)
 
     def _show_order_dialog(self):
