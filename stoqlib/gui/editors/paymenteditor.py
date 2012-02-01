@@ -297,12 +297,13 @@ class PaymentEditor(BaseEditor):
             next_date = next_date + delta
         if not dates:
             return
+        n_dates = len(dates) + 1
         description = self.model.description
-        self.model.description = '1/%d %s' % (len(dates), description)
+        self.model.description = '1/%d %s' % (n_dates, description)
         for i, date in enumerate(dates):
             p = Payment(open_date=self.model.open_date,
                         status=self.model.status,
-                        description='%d/%d %s' % (i + 1, len(dates),
+                        description='%d/%d %s' % (i + 2, n_dates,
                                                   description),
                         value=self.model.value,
                         base_value=self.model.base_value,
