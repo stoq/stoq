@@ -22,7 +22,7 @@
     Um cliente que pode estar vinculado a uma <link xref="sale">venda</link>
     realizada no Stoq.
   </p>
-  <note style="advanced">
+  <note>
     <p>
       Assim como todas as outras pessoas (físicas ou jurídicas) cadastradas no
       Stoq, um cliente pode realizar vários papeis ao mesmo tempo, como
