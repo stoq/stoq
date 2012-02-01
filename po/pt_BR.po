@@ -23,15 +23,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-31 15:17-0200\n"
-"PO-Revision-Date: 2012-01-31 23:51+0000\n"
+"POT-Creation-Date: 2012-02-01 12:43-0200\n"
+"PO-Revision-Date: 2012-02-01 17:25+0000\n"
 "Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-02-01 05:01+0000\n"
-"X-Generator: Launchpad (build 14734)\n"
+"X-Launchpad-Export-Date: 2012-02-01 17:52+0000\n"
+"X-Generator: Launchpad (build 14738)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -483,7 +483,7 @@ msgstr "Produtos"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:7
 #: ../data/glade/ProductStockHistoryDialog.ui.h:6 ../stoq/gui/sales.py:67
-#: ../stoq/lib/applist.py:69 ../stoqlib/lib/parameters.py:180
+#: ../stoq/lib/applist.py:70 ../stoqlib/lib/parameters.py:180
 #: ../stoqlib/lib/parameters.py:221 ../stoqlib/lib/parameters.py:239
 #: ../stoqlib/lib/parameters.py:247 ../stoqlib/lib/parameters.py:257
 #: ../stoqlib/lib/parameters.py:289 ../stoqlib/lib/parameters.py:297
@@ -2404,7 +2404,7 @@ msgid "Current Value:"
 msgstr "Valor atual:"
 
 #: ../data/glade/SystemParameterEditor.ui.h:2
-#: ../stoqlib/gui/keybindings.py:341 ../stoqlib/lib/parameters.py:154
+#: ../stoqlib/gui/keybindings.py:441 ../stoqlib/lib/parameters.py:154
 #: ../stoqlib/lib/parameters.py:162 ../stoqlib/lib/parameters.py:171
 #: ../stoqlib/lib/parameters.py:213 ../stoqlib/lib/parameters.py:265
 #: ../stoqlib/lib/parameters.py:273 ../stoqlib/lib/parameters.py:281
@@ -3672,7 +3672,7 @@ msgstr ""
 "Você deve definir um gerente para esta filial e então, poderá gerar o "
 "arquivo sintegra"
 
-#: ../stoq/gui/admin.py:252 ../stoq/lib/applist.py:40
+#: ../stoq/gui/admin.py:252 ../stoq/lib/applist.py:41
 msgid "Administrative"
 msgstr "Administrativo"
 
@@ -4085,7 +4085,7 @@ msgstr "dddd, MMM d, yyyy"
 msgid "Loading calendar content, please wait..."
 msgstr "Carregando conteúdo do calendário, por favor aguarde..."
 
-#: ../stoq/gui/calendar.py:250 ../stoq/lib/applist.py:44
+#: ../stoq/gui/calendar.py:250 ../stoq/lib/applist.py:45
 msgid "Calendar"
 msgstr "Calendário"
 
@@ -4604,7 +4604,7 @@ msgstr "Total"
 msgid "Due date"
 msgstr "Vencimento"
 
-#: ../stoq/gui/financial.py:333 ../stoq/lib/applist.py:48
+#: ../stoq/gui/financial.py:333 ../stoq/lib/applist.py:49
 msgid "Financial"
 msgstr "Financeiro"
 
@@ -4718,7 +4718,7 @@ msgstr "Remover transação"
 #. TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 #. Inventory
 #: ../stoq/gui/inventory.py:57 ../stoq/gui/inventory.py:77
-#: ../stoq/lib/applist.py:51
+#: ../stoq/lib/applist.py:52
 msgid "Inventory"
 msgstr "Inventário"
 
@@ -4757,7 +4757,7 @@ msgstr "Ajusta o estoque de acordo com a contagem do inventário selecionado"
 msgid "Cancel..."
 msgstr "Cancelar..."
 
-#: ../stoq/gui/inventory.py:88
+#: ../stoq/gui/inventory.py:88 ../stoqlib/gui/keybindings.py:133
 msgid "Cancel the selected inventory"
 msgstr "Cancela o inventário selecionado"
 
@@ -4904,7 +4904,7 @@ msgstr "contendo:"
 msgid "Account payable..."
 msgstr "Conta a pagar..."
 
-#: ../stoq/gui/payable.py:88
+#: ../stoq/gui/payable.py:88 ../stoqlib/gui/keybindings.py:139
 msgid "Create a new account payable"
 msgstr "Criar uma nova conta a pagar"
 
@@ -4912,11 +4912,13 @@ msgstr "Criar uma nova conta a pagar"
 msgid "Payment _flow history..."
 msgstr "Histórico de _fluxo de pagamentos"
 
-#: ../stoq/gui/payable.py:91
+#: ../stoq/gui/payable.py:91 ../stoqlib/gui/keybindings.py:141
+#: ../stoqlib/gui/keybindings.py:263
 msgid "Show a report of payment expected to receive grouped by day"
 msgstr "Mostrar um relatório de pagamentos a receber agrupados por dia"
 
 #: ../stoq/gui/payable.py:97 ../stoq/gui/receivable.py:99
+#: ../stoqlib/gui/keybindings.py:143 ../stoqlib/gui/keybindings.py:265
 msgid "Show details for the selected payment"
 msgstr "Mostra detalhes do pagamento selecionado"
 
@@ -4933,6 +4935,7 @@ msgid "Edit the selected payment details"
 msgstr "Edita os detalhes do pagamento selecionado"
 
 #: ../stoq/gui/payable.py:106 ../stoq/gui/receivable.py:105
+#: ../stoqlib/gui/keybindings.py:149 ../stoqlib/gui/keybindings.py:269
 msgid "Cancel the selected payment"
 msgstr "Cancelar o pagamento selecionado"
 
@@ -4941,6 +4944,7 @@ msgid "Set as not paid..."
 msgstr "Marcar como não pago..."
 
 #: ../stoq/gui/payable.py:109 ../stoq/gui/receivable.py:108
+#: ../stoqlib/gui/keybindings.py:151 ../stoqlib/gui/keybindings.py:271
 msgid "Mark the selected payment as not paid"
 msgstr "Marcar o pagamento selecionado como não pago"
 
@@ -4957,6 +4961,7 @@ msgid "Comments..."
 msgstr "Comentários..."
 
 #: ../stoq/gui/payable.py:115 ../stoq/gui/receivable.py:117
+#: ../stoqlib/gui/keybindings.py:155 ../stoqlib/gui/keybindings.py:277
 msgid "Add comments to the selected payment"
 msgstr "Adicionar comentários ao pagamento selecionado"
 
@@ -4965,6 +4970,7 @@ msgid "Print _receipt..."
 msgstr "Imp_rimir recibo..."
 
 #: ../stoq/gui/payable.py:118 ../stoq/gui/receivable.py:123
+#: ../stoqlib/gui/keybindings.py:157 ../stoqlib/gui/keybindings.py:281
 msgid "Print a receipt for the selected payment"
 msgstr "Imprimir um recibo para o pagamento selecionado"
 
@@ -5059,7 +5065,7 @@ msgid ""
 msgstr ""
 "Não é possível confirmar o pagamento se a compra não foi totalmente recebida."
 
-#: ../stoq/gui/pos.py:111 ../stoq/lib/applist.py:57
+#: ../stoq/gui/pos.py:111 ../stoq/lib/applist.py:58
 msgid "Point of Sales"
 msgstr "Ponto de vendas"
 
@@ -5265,7 +5271,7 @@ msgstr "Quantidade deve ser um número positivo."
 
 #. Production
 #: ../stoq/gui/production.py:55 ../stoq/gui/production.py:81
-#: ../stoq/lib/applist.py:60 ../stoqlib/gui/dialogs/startproduction.py:35
+#: ../stoq/lib/applist.py:61 ../stoqlib/gui/dialogs/startproduction.py:35
 msgid "Production"
 msgstr "Produção"
 
@@ -5285,7 +5291,7 @@ msgstr "Cotação de compra..."
 msgid "Start production..."
 msgstr "Iniciar produção..."
 
-#: ../stoq/gui/production.py:84
+#: ../stoq/gui/production.py:84 ../stoqlib/gui/keybindings.py:197
 msgid "Start the selected production"
 msgstr "Inicia a produção selecionada"
 
@@ -5293,7 +5299,7 @@ msgstr "Inicia a produção selecionada"
 msgid "Edit production..."
 msgstr "Editar produção..."
 
-#: ../stoq/gui/production.py:87
+#: ../stoq/gui/production.py:87 ../stoqlib/gui/keybindings.py:199
 msgid "Edit the selected production"
 msgstr "Edita a produção selecionada"
 
@@ -5310,12 +5316,13 @@ msgstr "Mostra detalhes de produção e registra itens produzidos"
 msgid "Production products..."
 msgstr "Produtos de produção..."
 
-#: ../stoq/gui/production.py:95
+#: ../stoq/gui/production.py:95 ../stoqlib/gui/keybindings.py:201
 msgid "Search for production products"
 msgstr "Pesquisa por produtos de produção"
 
 #: ../stoq/gui/production.py:98 ../stoq/gui/sales.py:109
-#: ../stoqlib/gui/keybindings.py:161
+#: ../stoqlib/gui/keybindings.py:181 ../stoqlib/gui/keybindings.py:203
+#: ../stoqlib/gui/keybindings.py:227 ../stoqlib/gui/keybindings.py:293
 msgid "Search for services"
 msgstr "Pesquisa por serviços"
 
@@ -5323,7 +5330,7 @@ msgstr "Pesquisa por serviços"
 msgid "Production items..."
 msgstr "Itens de produção..."
 
-#: ../stoq/gui/production.py:102
+#: ../stoq/gui/production.py:102 ../stoqlib/gui/keybindings.py:205
 msgid "Search for production items"
 msgstr "Pesquisa por itens de produção"
 
@@ -5331,7 +5338,7 @@ msgstr "Pesquisa por itens de produção"
 msgid "Production history..."
 msgstr "Histórico de produção..."
 
-#: ../stoq/gui/production.py:105
+#: ../stoq/gui/production.py:105 ../stoqlib/gui/keybindings.py:207
 msgid "Search for production history"
 msgstr "Pesquisa por histórico de produção"
 
@@ -5346,7 +5353,7 @@ msgstr "Nova produção"
 
 #. TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 #: ../stoq/gui/production.py:112 ../stoq/gui/purchase.py:76
-#: ../stoq/lib/applist.py:63 ../stoqlib/lib/invoice.py:317
+#: ../stoq/lib/applist.py:64 ../stoqlib/lib/invoice.py:317
 #: ../stoqlib/lib/parameters.py:189 ../stoqlib/lib/parameters.py:197
 #: ../stoqlib/lib/parameters.py:205 ../stoqlib/lib/parameters.py:389
 msgid "Purchase"
@@ -5390,6 +5397,7 @@ msgid "Order..."
 msgstr "Pedido..."
 
 #: ../stoq/gui/purchase.py:94 ../stoq/gui/purchase.py:196
+#: ../stoqlib/gui/keybindings.py:211
 msgid "Create a new purchase order"
 msgstr "Cria um novo pedido de compra"
 
@@ -5397,7 +5405,7 @@ msgstr "Cria um novo pedido de compra"
 msgid "Quote..."
 msgstr "Cotação..."
 
-#: ../stoq/gui/purchase.py:97
+#: ../stoq/gui/purchase.py:97 ../stoqlib/gui/keybindings.py:213
 msgid "Create a new purchase quote"
 msgstr "Cria uma nova cotação de compra"
 
@@ -5413,7 +5421,7 @@ msgstr "Cria uma nova consignação de compra"
 msgid "Product..."
 msgstr "Produto..."
 
-#: ../stoq/gui/purchase.py:103
+#: ../stoq/gui/purchase.py:103 ../stoqlib/gui/keybindings.py:217
 msgid "Create a new product"
 msgstr "Criar um novo produto"
 
@@ -5601,7 +5609,7 @@ msgstr "Não é possível usar o editor de preços sem categorias de clientes"
 msgid "Account receivable..."
 msgstr "Conta a receber..."
 
-#: ../stoq/gui/receivable.py:90
+#: ../stoq/gui/receivable.py:90 ../stoqlib/gui/keybindings.py:261
 msgid "Create a new account receivable"
 msgstr "Cria uma nova conta a receber"
 
@@ -5629,7 +5637,7 @@ msgstr "Renegocia os pagamentos selecionados"
 msgid "Print bill..."
 msgstr "Imprimir boleto..."
 
-#: ../stoq/gui/receivable.py:120
+#: ../stoq/gui/receivable.py:120 ../stoqlib/gui/keybindings.py:279
 msgid "Print a bill for the selected payment"
 msgstr "Imprime um boleto para o pagamento selecionado"
 
@@ -5637,7 +5645,7 @@ msgstr "Imprime um boleto para o pagamento selecionado"
 msgid "Card payments..."
 msgstr "Pagamentos com cartão..."
 
-#: ../stoq/gui/receivable.py:131
+#: ../stoq/gui/receivable.py:131 ../stoqlib/gui/keybindings.py:285
 msgid "Search for card payments"
 msgstr "Pesquisa por pagamentos com cartão"
 
@@ -5688,20 +5696,24 @@ msgstr "Fechar empréstimo..."
 msgid "Sold items by branch..."
 msgstr "Itens vendidos por filial..."
 
-#: ../stoq/gui/sales.py:103
+#: ../stoq/gui/sales.py:103 ../stoqlib/gui/keybindings.py:289
+#: ../stoqlib/gui/keybindings.py:353
 msgid "Search for sold items by branch"
 msgstr "Pesquisa por itens vendidos em uma filial"
 
-#: ../stoq/gui/sales.py:106 ../stoqlib/gui/keybindings.py:159
+#: ../stoq/gui/sales.py:106 ../stoqlib/gui/keybindings.py:179
+#: ../stoqlib/gui/keybindings.py:223 ../stoqlib/gui/keybindings.py:291
 msgid "Search for products"
 msgstr "Pesquisa por produtos"
 
-#: ../stoq/gui/sales.py:112 ../stoqlib/gui/keybindings.py:163
+#: ../stoq/gui/sales.py:112 ../stoqlib/gui/keybindings.py:183
+#: ../stoqlib/gui/keybindings.py:295
 msgid "Search for deliveries"
 msgstr "Pesquisa por entregas"
 
 #: ../stoq/gui/sales.py:115 ../stoq/gui/till.py:95
-#: ../stoqlib/gui/keybindings.py:157
+#: ../stoqlib/gui/keybindings.py:177 ../stoqlib/gui/keybindings.py:297
+#: ../stoqlib/gui/keybindings.py:349
 msgid "Search for clients"
 msgstr "Pesquisa por clientes"
 
@@ -5709,7 +5721,7 @@ msgstr "Pesquisa por clientes"
 msgid "Client Calls..."
 msgstr "Chamadas para clientes..."
 
-#: ../stoq/gui/sales.py:118
+#: ../stoq/gui/sales.py:118 ../stoqlib/gui/keybindings.py:315
 msgid "Search for client calls"
 msgstr "Pesquisa por chamadas para clientes"
 
@@ -5897,7 +5909,7 @@ msgstr ""
 "Esse usuário não tem credencial \n"
 "para o aplicativo %s"
 
-#: ../stoq/gui/stock.py:71 ../stoq/lib/applist.py:72
+#: ../stoq/gui/stock.py:71 ../stoq/lib/applist.py:73
 #: ../stoqlib/gui/dialogs/quotedialog.py:160
 #: ../stoqlib/gui/search/consignmentsearch.py:61
 #: ../stoqlib/gui/search/productsearch.py:182
@@ -5936,7 +5948,7 @@ msgstr "Pesquisa por pedidos de compra recebidos"
 msgid "Product history..."
 msgstr "Histórico de produtos..."
 
-#: ../stoq/gui/stock.py:99
+#: ../stoq/gui/stock.py:99 ../stoqlib/gui/keybindings.py:327
 msgid "Search for product history"
 msgstr "Pesquisa por histórico de produtos"
 
@@ -5948,7 +5960,7 @@ msgstr "Saídas manuais..."
 msgid "Search for manual stock decreases"
 msgstr "Pesquisa por saídas manuais de estoque"
 
-#: ../stoq/gui/stock.py:104
+#: ../stoq/gui/stock.py:104 ../stoqlib/gui/keybindings.py:239
 msgid "Search for purchased items"
 msgstr "Pesquisa por itens comprados"
 
@@ -5968,7 +5980,8 @@ msgstr "Pesquisa por transferências de estoque"
 msgid "Closed stock Items..."
 msgstr "Itens de estoque fechados..."
 
-#: ../stoq/gui/stock.py:113
+#: ../stoq/gui/stock.py:113 ../stoqlib/gui/keybindings.py:231
+#: ../stoqlib/gui/keybindings.py:335
 msgid "Search for closed stock items"
 msgstr "Pesquisa por itens fechados no estoque"
 
@@ -6023,7 +6036,8 @@ msgstr "<b>Estoque Total</b>"
 msgid "Create a new receiving order"
 msgstr "Cria um novo pedido de recebimento"
 
-#: ../stoq/gui/stock.py:179
+#: ../stoq/gui/stock.py:179 ../stoqlib/gui/keybindings.py:229
+#: ../stoqlib/gui/keybindings.py:331
 msgid "Search for stock items"
 msgstr "Pesquisa por itens de estoque"
 
@@ -6048,7 +6062,7 @@ msgstr "Localização"
 msgid "Picture"
 msgstr "Imagem"
 
-#: ../stoq/gui/till.py:72 ../stoq/lib/applist.py:75
+#: ../stoq/gui/till.py:72 ../stoq/lib/applist.py:76
 msgid "Till"
 msgstr "Caixa"
 
@@ -6068,7 +6082,7 @@ msgstr "Suprimento..."
 msgid "Cash removal..."
 msgstr "Sangria..."
 
-#: ../stoq/gui/till.py:98
+#: ../stoq/gui/till.py:98 ../stoqlib/gui/keybindings.py:351
 msgid "Search for sales"
 msgstr "Pesquisa por vendas"
 
@@ -6080,7 +6094,7 @@ msgstr "Pesquisa por itens vendidos por filial"
 msgid "Till history..."
 msgstr "Histórico do caixa..."
 
-#: ../stoq/gui/till.py:104
+#: ../stoq/gui/till.py:104 ../stoqlib/gui/keybindings.py:355
 msgid "Search for till history"
 msgstr "Pesquisa por históricos de caixa"
 
@@ -6088,7 +6102,7 @@ msgstr "Pesquisa por históricos de caixa"
 msgid "Fiscal till operations..."
 msgstr "Operações fiscais do caixa..."
 
-#: ../stoq/gui/till.py:107
+#: ../stoq/gui/till.py:107 ../stoqlib/gui/keybindings.py:357
 msgid "Search for fiscal till operations"
 msgstr "Pesquisa por operações fiscais de caixa"
 
@@ -6227,69 +6241,69 @@ msgstr "_Começar a usar Stoq"
 msgid "Welcome to Stoq"
 msgstr "Bem-vindo ao Stoq"
 
-#: ../stoq/lib/applist.py:41
+#: ../stoq/lib/applist.py:42
 msgid ""
 "Administer the branches, users, employees and configure system parameters."
 msgstr ""
 "Administra as filiais, usuários, empregados e configura parâmetros do "
 "sistema."
 
-#: ../stoq/lib/applist.py:45
+#: ../stoq/lib/applist.py:46
 msgid ""
 "Shows payments, orders and other things that will happen in the future."
 msgstr ""
 "Mostra pagamentos, pedidos e outras coisas que acontecerão no futuro."
 
-#: ../stoq/lib/applist.py:49
+#: ../stoq/lib/applist.py:50
 msgid "Control accounts and financial transactions."
 msgstr "Controla contas e transações financeiras."
 
-#: ../stoq/lib/applist.py:52
+#: ../stoq/lib/applist.py:53
 msgid "Audit and adjust the product stock."
 msgstr "Audita e ajusta o estoque de produtos."
 
 #. Tabs cache requires unique ids
-#: ../stoq/lib/applist.py:54 ../stoqlib/gui/accounttree.py:155
+#: ../stoq/lib/applist.py:55 ../stoqlib/gui/accounttree.py:155
 msgid "Accounts Payable"
 msgstr "Contas a pagar"
 
-#: ../stoq/lib/applist.py:55
+#: ../stoq/lib/applist.py:56
 msgid "Manage payment that needs to be paid."
 msgstr "Gerencia contas a pagar."
 
-#: ../stoq/lib/applist.py:58
+#: ../stoq/lib/applist.py:59
 msgid "Terminal and cash register for selling products and services."
 msgstr ""
 "Terminal de vendas e caixa registradora para venda de produtos e serviços."
 
-#: ../stoq/lib/applist.py:61
+#: ../stoq/lib/applist.py:62
 msgid "Manage the production process."
 msgstr "Gerencia o processo de produção."
 
-#: ../stoq/lib/applist.py:64
+#: ../stoq/lib/applist.py:65
 msgid "Create purchase orders and quotes"
 msgstr "Cria pedidos de compras e orçamentos."
 
-#: ../stoq/lib/applist.py:66 ../stoqlib/gui/accounttree.py:161
+#: ../stoq/lib/applist.py:67 ../stoqlib/gui/accounttree.py:161
 msgid "Accounts Receivable"
 msgstr "Contas a receber"
 
-#: ../stoq/lib/applist.py:67
+#: ../stoq/lib/applist.py:68
 msgid "Manage payments that needs to be received."
 msgstr "Gerencia contas a receber."
 
-#: ../stoq/lib/applist.py:70
+#: ../stoq/lib/applist.py:71
 msgid "Quotes management and commission calculation."
 msgstr "Gerenciamento de orçamentos e calculo de comissão."
 
-#: ../stoq/lib/applist.py:73
+#: ../stoq/lib/applist.py:74
 msgid ""
 "Stock management, receive products and transfer them between branches."
 msgstr ""
 "Gerenciamento do estoque, recebimento de produtos e transferência entre "
 "filiais."
 
-#: ../stoq/lib/applist.py:76
+#: ../stoq/lib/applist.py:77
 msgid "Control tills and their workflow."
 msgstr "Controle de caixa e seu fluxo."
 
@@ -6405,7 +6419,7 @@ msgstr "Receita"
 #: ../stoqlib/chart/paymentcharts.py:159 ../stoqlib/domain/account.py:88
 #: ../stoqlib/domain/account.py:98
 msgid "Expense"
-msgstr "Despesas"
+msgstr "Despesa"
 
 #: ../stoqlib/chart/paymentcharts.py:160
 msgid "Profit"
@@ -6584,19 +6598,19 @@ msgstr "Gastar"
 
 #: ../stoqlib/domain/account.py:85 ../stoqlib/domain/account.py:89
 msgid "Increase"
-msgstr "Adicionar"
+msgstr "Aumento"
 
 #: ../stoqlib/domain/account.py:85 ../stoqlib/domain/account.py:89
 msgid "Decrease"
-msgstr "Diminuir"
+msgstr "Baixa"
 
 #: ../stoqlib/domain/account.py:86 ../stoqlib/domain/account.py:87
 msgid "Charge"
-msgstr "Carga"
+msgstr "Despesa"
 
 #: ../stoqlib/domain/account.py:88
 msgid "Rebate"
-msgstr "Desconto"
+msgstr "Abatimento"
 
 #: ../stoqlib/domain/account.py:93
 msgid "Bank"
@@ -9525,7 +9539,7 @@ msgstr "Configurar métodos de pagamento"
 
 #: ../stoqlib/gui/keybindings.py:83
 msgid "Configure payment categories"
-msgstr "Confgurar categorias de pagamento"
+msgstr "Configurar categorias de pagamento"
 
 #: ../stoqlib/gui/keybindings.py:85
 msgid "Configure client categories"
@@ -9579,19 +9593,227 @@ msgstr "Criar uma nova transação"
 msgid "Edit an account or account transaction"
 msgstr "Editar uma conta ou transação"
 
-#: ../stoqlib/gui/keybindings.py:144
+#: ../stoqlib/gui/keybindings.py:127
+msgid "Open a new inventory"
+msgstr "Abre um novo inventário"
+
+#: ../stoqlib/gui/keybindings.py:129
+msgid "Count the selected inventory"
+msgstr "Conta o inventário selecionado"
+
+#: ../stoqlib/gui/keybindings.py:131
+msgid "Adjust the selected inventory"
+msgstr "Ajusta o inventário selecionado"
+
+#: ../stoqlib/gui/keybindings.py:135
+msgid "Print the product listing for the selected inventory"
+msgstr "Imprime a listagem de produtos do inventário selecionado"
+
+#: ../stoqlib/gui/keybindings.py:145
+msgid "Pay the selected payment"
+msgstr "Paga o pagamento selecionado"
+
+#: ../stoqlib/gui/keybindings.py:147
+msgid "Edit the selected payment"
+msgstr "Edita o pagamento selecionado"
+
+#: ../stoqlib/gui/keybindings.py:153 ../stoqlib/gui/keybindings.py:273
+msgid "Change the selected payment due date"
+msgstr "Altera a data de vencimento do pagamento selecionado"
+
+#: ../stoqlib/gui/keybindings.py:159
 msgid "Search for paid bills"
 msgstr "Pesquisa por boletos pagos"
 
-#: ../stoqlib/gui/keybindings.py:153
+#: ../stoqlib/gui/keybindings.py:163 ../stoqlib/gui/keybindings.py:345
+msgid "Open the till"
+msgstr "Abre o caixa"
+
+#: ../stoqlib/gui/keybindings.py:165 ../stoqlib/gui/keybindings.py:347
+msgid "Close the till"
+msgstr "Fecha o caixa"
+
+#: ../stoqlib/gui/keybindings.py:167
+msgid "Confirm the current order"
+msgstr "Confirma o pedido atual"
+
+#: ../stoqlib/gui/keybindings.py:169
+msgid "Cancel the current order"
+msgstr "Cancela o pedido atual"
+
+#: ../stoqlib/gui/keybindings.py:171
+msgid "Create a delivery for the current order"
+msgstr "Cria uma entrega paga o pedido atual"
+
+#: ../stoqlib/gui/keybindings.py:173
 msgid "Search for sales "
 msgstr "Pesquisa por vendas "
 
-#: ../stoqlib/gui/keybindings.py:155
+#: ../stoqlib/gui/keybindings.py:175
 msgid "Search for sold items"
 msgstr "Pesquisa por itens vendidos"
 
-#: ../stoqlib/gui/keybindings.py:350
+#: ../stoqlib/gui/keybindings.py:191
+msgid "Create a new production order"
+msgstr "Cria uma nova ordem de produção"
+
+#: ../stoqlib/gui/keybindings.py:193
+msgid "Create a new production quote"
+msgstr "Cria uma nova cotação de produção"
+
+#: ../stoqlib/gui/keybindings.py:195
+msgid "Show details for the selected production"
+msgstr "Mostra detalhes para a produção selecionada"
+
+#: ../stoqlib/gui/keybindings.py:215
+msgid "Create a new consignment"
+msgstr "Cria uma nova consignação"
+
+#: ../stoqlib/gui/keybindings.py:219
+msgid "Search for base categories"
+msgstr "Pesquisa por categorias base"
+
+#: ../stoqlib/gui/keybindings.py:221
+msgid "Search for categories"
+msgstr "Pesquisa por categorias"
+
+#: ../stoqlib/gui/keybindings.py:225
+msgid "Search for product units"
+msgstr "Pesquisa por unidades de produtos"
+
+#: ../stoqlib/gui/keybindings.py:233
+msgid "Search for suppliers"
+msgstr "Pesquisa por fornecedores"
+
+#: ../stoqlib/gui/keybindings.py:235
+msgid "Search for transporters"
+msgstr "Pesquisa por transportadoras"
+
+#: ../stoqlib/gui/keybindings.py:237
+msgid "Search for quotes"
+msgstr "Pesquisa por cotações"
+
+#: ../stoqlib/gui/keybindings.py:241
+msgid "Search for sold products"
+msgstr "Pesquisa por produtos vendidos"
+
+#: ../stoqlib/gui/keybindings.py:243
+msgid "Search for prices"
+msgstr "Pesquisa por preços"
+
+#: ../stoqlib/gui/keybindings.py:245
+msgid "Search for consignment items"
+msgstr "Pesquisa por itens consignados"
+
+#: ../stoqlib/gui/keybindings.py:247
+msgid "Confirm the selected purchase order"
+msgstr "Confirma o pedido de compra selecionado"
+
+#: ../stoqlib/gui/keybindings.py:249
+msgid "Cancel the selected purchase order"
+msgstr "Cancela o pedido de compra selecionado"
+
+#: ../stoqlib/gui/keybindings.py:251
+msgid "Edit the selected purchase order"
+msgstr "Edita o pedido de compra selecionado"
+
+#: ../stoqlib/gui/keybindings.py:253
+msgid "Show details for the selected purchase order"
+msgstr "Mostra detalhes sobre o pedido de compra selecionado"
+
+#: ../stoqlib/gui/keybindings.py:255
+msgid "Finish the selected purchase order"
+msgstr "Finaliza o pedido de compra selecionado"
+
+#: ../stoqlib/gui/keybindings.py:267
+msgid "Receive the selected payment"
+msgstr "Recebe o pagamento selecionado"
+
+#: ../stoqlib/gui/keybindings.py:275
+msgid "Renegotiate the selected payment"
+msgstr "Renegocia o pagamento selecionado"
+
+#: ../stoqlib/gui/keybindings.py:283
+msgid "Search for bills"
+msgstr "Pesquisa por boletos"
+
+#: ../stoqlib/gui/keybindings.py:299
+msgid "Search for commissions"
+msgstr "Pesquisa por comissões"
+
+#: ../stoqlib/gui/keybindings.py:301
+msgid "Search for loans"
+msgstr "Pesquisa por empréstimos"
+
+#: ../stoqlib/gui/keybindings.py:303
+msgid "Search for loan items"
+msgstr "Pesquisa por itens emprestados"
+
+#: ../stoqlib/gui/keybindings.py:305
+msgid "Cancel the selected sale"
+msgstr "Cancela a venda selecionada"
+
+#: ../stoqlib/gui/keybindings.py:307
+msgid "Print an invoice for the selected sale"
+msgstr "Imprime uma nota para a venda selecionada"
+
+#: ../stoqlib/gui/keybindings.py:309
+msgid "Return the selected sale"
+msgstr "Retorna a venda selecionada"
+
+#: ../stoqlib/gui/keybindings.py:311
+msgid "Edit the selected sale"
+msgstr "Edita a venda selecionada"
+
+#: ../stoqlib/gui/keybindings.py:313
+msgid "Show details for the selected sale"
+msgstr "Mostra detalhes sobre a venda selecionada"
+
+#: ../stoqlib/gui/keybindings.py:321
+msgid "Create a new receiving"
+msgstr "Cria um novo recebimento"
+
+#: ../stoqlib/gui/keybindings.py:323
+msgid "Create a new product transfer"
+msgstr "Cria uma nova transferência de produtos"
+
+#: ../stoqlib/gui/keybindings.py:325
+msgid "Search for receivings"
+msgstr "Pesquisa por recebimentos"
+
+#: ../stoqlib/gui/keybindings.py:329
+msgid "Search for purchased stock items"
+msgstr "Pesquisa por itens de estoque comprados"
+
+#: ../stoqlib/gui/keybindings.py:333
+msgid "Search for transfers"
+msgstr "Pesquisa por transferências"
+
+#: ../stoqlib/gui/keybindings.py:337
+msgid "Edit the selected product"
+msgstr "Edita o produto selecionado"
+
+#: ../stoqlib/gui/keybindings.py:339
+msgid "Show the selected product history"
+msgstr "Mostra o histórico do produto selecionado"
+
+#: ../stoqlib/gui/keybindings.py:341
+msgid "Toggle the picture viewer"
+msgstr "Alterna o visualizador de imagens"
+
+#: ../stoqlib/gui/keybindings.py:359
+msgid "Confirm the sale"
+msgstr "Confirma a venda"
+
+#: ../stoqlib/gui/keybindings.py:361
+msgid "Return the sale"
+msgstr "Retorna a venda"
+
+#: ../stoqlib/gui/keybindings.py:363
+msgid "Show details of the sale"
+msgstr "Mostra detalhes da venda"
+
+#: ../stoqlib/gui/keybindings.py:450
 #, python-format
 msgid "%s plugin"
 msgstr "Plugin %s"
