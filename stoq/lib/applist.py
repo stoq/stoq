@@ -25,6 +25,7 @@
 """ Listing and importing applications """
 
 import gettext
+import platform
 
 from kiwi.component import implements
 from stoqlib.lib.interfaces import IApplicationDescriptions
@@ -76,6 +77,9 @@ _APPLICATIONS = {
              _("Control tills and their workflow."),
              STOQ_TILL_APP),
 }
+
+if platform.system() == 'Windows':
+    del _APPLICATIONS['calendar']
 
 
 def get_application_names():
