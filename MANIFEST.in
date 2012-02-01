@@ -5,11 +5,11 @@ recursive-include data/glade *.ui
 recursive-include data/misc *.gtkrc
 recursive-include data/uixml *.xml
 recursive-include data/html *.html *.css *.png *.js
-recursive-include data/pixmaps *.png *.svg
+recursive-include data/pixmaps *.png *.svg *.jpg *.gif
 recursive-include data/sql *.sql *.py
 recursive-include data/template *.rml
 recursive-include docs *
-recursive-include external *.py *jpg *gif
+recursive-include external *.py
 recursive-include help *.page *.xml *.svg *.png
 recursive-include po *.po *.pot POTFILES.list
 recursive-include plugins *.csv *.py *.ui *.sql *.plugin
