@@ -87,10 +87,10 @@ class FormFieldEditor(BasicDialog):
                 Column('mandatory', data_type=bool,
                        width=120, editable=True)]
 
-    def confirm(self):
+    def confirm(self, *args):
         api.finish_transaction(self.conn, True)
-        BasicDialog.confirm(self)
+        BasicDialog.confirm(self, *args)
 
-    def cancel(self):
+    def cancel(self, *args):
         api.rollback_and_begin(self.conn)
-        BasicDialog.confirm(self)
+        BasicDialog.confirm(self, *args)
