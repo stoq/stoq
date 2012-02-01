@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-30 17:04-0200\n"
+"POT-Creation-Date: 2012-01-31 15:17-0200\n"
 "PO-Revision-Date: 2012-01-30 20:09+0000\n"
 "Last-Translator: Johan Dahlin <jdahlin@gmail.com>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-31 05:11+0000\n"
+"X-Launchpad-Export-Date: 2012-02-01 05:01+0000\n"
 "X-Generator: Launchpad (build 14734)\n"
 "Language: \n"
 
@@ -651,7 +651,10 @@ msgstr ""
 msgid "<b>Database Settings</b>"
 msgstr "<b>Database Settings</b>"
 
-#: ../data/glade/DatabaseSettingsStep.ui.h:2 ../stoqlib/reporting/sale.py:83
+#: ../data/glade/DatabaseSettingsStep.ui.h:2
+#: ../stoqlib/reporting/payments_receipt.py:81
+#: ../stoqlib/reporting/payments_receipt.py:112
+#: ../stoqlib/reporting/sale.py:83
 msgid "Address:"
 msgstr "Address:"
 
@@ -2016,7 +2019,7 @@ msgid "Received Products"
 msgstr "Received Products"
 
 #: ../data/glade/ReceivingOrderDetailsDialog.ui.h:3
-#: ../stoqlib/gui/editors/paymenteditor.py:470
+#: ../stoqlib/gui/editors/paymenteditor.py:471
 #: ../stoqlib/reporting/purchase.py:295
 msgid "Receiving Details"
 msgstr "Receiving Details"
@@ -2337,7 +2340,7 @@ msgstr "Active:"
 #: ../stoqlib/gui/dialogs/purchasedetails.py:235
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:156
 #: ../stoqlib/gui/dialogs/saledetails.py:189
-#: ../stoqlib/gui/editors/paymenteditor.py:453
+#: ../stoqlib/gui/editors/paymenteditor.py:454
 #: ../stoqlib/reporting/stockdecreasereceipt.py:81
 msgid "Reason"
 msgstr "Reason"
@@ -2639,10 +2642,6 @@ msgctxt "yes"
 msgid "Till Opened Since 01/01/2006"
 msgstr "Till Opened Since 01/01/2006"
 
-#: ../data/template/receipt.rml:31
-msgid " made in "
-msgstr " made in "
-
 #: ../plugins/books/bookssearch.py:42 ../plugins/books/booksui.py:76
 #: ../plugins/books/booksui.py:95 ../plugins/books/booksui.py:111
 msgid "Book Search"
@@ -2670,9 +2669,9 @@ msgstr "In branch:"
 #. raise ValueError('You should have at least one branch at '
 #. 'this point')
 #: ../plugins/books/bookssearch.py:72 ../plugins/books/publishersearch.py:65
-#: ../stoq/gui/inventory.py:166 ../stoq/gui/payable.py:430
+#: ../stoq/gui/inventory.py:166 ../stoq/gui/payable.py:438
 #: ../stoq/gui/production.py:188 ../stoq/gui/purchase.py:411
-#: ../stoq/gui/receivable.py:246 ../stoq/gui/sales.py:336
+#: ../stoq/gui/receivable.py:250 ../stoq/gui/sales.py:336
 #: ../stoq/gui/till.py:238 ../stoqlib/gui/base/search.py:418
 #: ../stoqlib/gui/base/search.py:433 ../stoqlib/gui/search/loansearch.py:60
 #: ../stoqlib/gui/search/paymentsearch.py:63
@@ -2751,7 +2750,8 @@ msgstr "Barcode"
 msgid "Code"
 msgstr "Code"
 
-#: ../plugins/books/bookssearch.py:87 ../stoq/gui/stock.py:225
+#: ../plugins/books/bookssearch.py:87 ../stoq/gui/payable.py:202
+#: ../stoq/gui/receivable.py:209 ../stoq/gui/stock.py:225
 #: ../stoqlib/domain/uiform.py:106
 #: ../stoqlib/gui/dialogs/clientcategorydialog.py:47
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:89
@@ -2999,7 +2999,7 @@ msgid "Device constant"
 msgstr "Device constant"
 
 #: ../plugins/ecf/deviceconstanteditor.py:135 ../stoq/gui/financial.py:247
-#: ../stoq/gui/payable.py:195 ../stoq/gui/receivable.py:202
+#: ../stoq/gui/payable.py:198 ../stoq/gui/receivable.py:204
 #: ../stoqlib/gui/dialogs/clientdetails.py:142
 #: ../stoqlib/gui/dialogs/purchasedetails.py:212
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:128
@@ -3083,7 +3083,7 @@ msgstr "Unit"
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:147
 #: ../stoqlib/gui/dialogs/saledetails.py:180
 #: ../stoqlib/gui/editors/paymenteditor.py:70
-#: ../stoqlib/gui/editors/paymenteditor.py:444
+#: ../stoqlib/gui/editors/paymenteditor.py:445
 #: ../stoqlib/gui/slaves/paymentslave.py:865
 msgid "Payment"
 msgstr "Payment"
@@ -3438,8 +3438,8 @@ msgid "configs"
 msgstr "configs"
 
 #: ../plugins/magento/gui/search/magentosearch.py:58
-#: ../stoq/gui/payable.py:174 ../stoq/gui/purchase.py:242
-#: ../stoq/gui/receivable.py:182 ../stoq/gui/sales.py:207
+#: ../stoq/gui/payable.py:176 ../stoq/gui/purchase.py:242
+#: ../stoq/gui/receivable.py:184 ../stoq/gui/sales.py:207
 #: ../stoq/gui/till.py:186 ../stoqlib/gui/dialogs/clientdetails.py:90
 #: ../stoqlib/gui/dialogs/clientdetails.py:128
 #: ../stoqlib/gui/dialogs/productstockdetails.py:135
@@ -4431,9 +4431,9 @@ msgstr ""
 "corrupted, please select another one."
 
 #: ../stoq/gui/financial.py:228 ../stoq/gui/financial.py:246
-#: ../stoq/gui/payable.py:177 ../stoq/gui/payable.py:181
+#: ../stoq/gui/payable.py:179 ../stoq/gui/payable.py:183
 #: ../stoq/gui/pos.py:246 ../stoq/gui/production.py:155
-#: ../stoq/gui/receivable.py:185 ../stoq/gui/receivable.py:189
+#: ../stoq/gui/receivable.py:187 ../stoq/gui/receivable.py:191
 #: ../stoq/gui/stock.py:227 ../stoqlib/gui/dialogs/clientdetails.py:107
 #: ../stoqlib/gui/dialogs/clientdetails.py:122
 #: ../stoqlib/gui/dialogs/clientdetails.py:133
@@ -4523,7 +4523,7 @@ msgid "Account"
 msgstr "Account"
 
 #: ../stoq/gui/financial.py:239 ../stoq/gui/pos.py:252
-#: ../stoq/gui/purchase.py:260 ../stoq/gui/receivable.py:148
+#: ../stoq/gui/purchase.py:260 ../stoq/gui/receivable.py:150
 #: ../stoq/gui/sales.py:237 ../stoq/gui/till.py:201
 #: ../stoqlib/gui/accounttree.py:84
 #: ../stoqlib/gui/dialogs/clientdetails.py:101
@@ -4550,8 +4550,8 @@ msgstr "Account"
 msgid "Total"
 msgstr "Total"
 
-#: ../stoq/gui/financial.py:244 ../stoq/gui/payable.py:187
-#: ../stoq/gui/receivable.py:194 ../stoqlib/gui/dialogs/clientdetails.py:136
+#: ../stoq/gui/financial.py:244 ../stoq/gui/payable.py:189
+#: ../stoq/gui/receivable.py:196 ../stoqlib/gui/dialogs/clientdetails.py:136
 #: ../stoqlib/gui/dialogs/purchasedetails.py:206
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:122
 #: ../stoqlib/gui/dialogs/saledetails.py:151
@@ -4758,10 +4758,10 @@ msgstr ""
 msgid "Show inventories at:"
 msgstr "Show inventories at:"
 
-#: ../stoq/gui/inventory.py:147 ../stoq/gui/payable.py:191
+#: ../stoq/gui/inventory.py:147 ../stoq/gui/payable.py:194
 #: ../stoq/gui/production.py:153 ../stoq/gui/purchase.py:245
-#: ../stoq/gui/receivable.py:198 ../stoq/gui/sales.py:204
-#: ../stoq/gui/till.py:188 ../stoqlib/domain/payment/views.py:365
+#: ../stoq/gui/receivable.py:200 ../stoq/gui/sales.py:204
+#: ../stoq/gui/till.py:188 ../stoqlib/domain/payment/views.py:366
 #: ../stoqlib/gui/dialogs/clientdetails.py:99
 #: ../stoqlib/gui/dialogs/clientdetails.py:140
 #: ../stoqlib/gui/dialogs/purchasedetails.py:211
@@ -4802,6 +4802,10 @@ msgstr "Branch"
 msgid "Opened"
 msgstr "Opened"
 
+#: ../stoq/gui/inventory.py:154 ../stoq/gui/purchase.py:248
+msgid "Date Opened"
+msgstr ""
+
 #: ../stoq/gui/inventory.py:156 ../stoq/gui/production.py:161
 #: ../stoqlib/domain/inventory.py:168 ../stoqlib/domain/loan.py:118
 #: ../stoqlib/domain/payment/group.py:62 ../stoqlib/domain/production.py:70
@@ -4809,6 +4813,10 @@ msgstr "Opened"
 #: ../stoqlib/domain/till.py:86 ../stoqlib/domain/transfer.py:81
 msgid "Closed"
 msgstr "Closed"
+
+#: ../stoq/gui/inventory.py:157
+msgid "Date Closed"
+msgstr ""
 
 #: ../stoq/gui/inventory.py:178 ../stoq/gui/stock.py:257
 #: ../stoqlib/lib/defaults.py:157
@@ -4941,19 +4949,23 @@ msgstr "Accounts payable help"
 msgid "Pay"
 msgstr "Pay"
 
-#: ../stoq/gui/payable.py:145
+#: ../stoq/gui/payable.py:142
 msgid "Print a report of these payments"
 msgstr "Print a report of these payments"
 
-#: ../stoq/gui/payable.py:169 ../stoq/gui/receivable.py:177
+#: ../stoq/gui/payable.py:170 ../stoq/gui/receivable.py:178
 msgid "Show payments"
 msgstr "Show payments"
 
-#: ../stoq/gui/payable.py:179 ../stoq/gui/receivable.py:187
+#: ../stoq/gui/payable.py:176 ../stoq/gui/receivable.py:184
+msgid "Payment ID"
+msgstr ""
+
+#: ../stoq/gui/payable.py:181 ../stoq/gui/receivable.py:189
 msgid "Comments"
 msgstr "Comments"
 
-#: ../stoq/gui/payable.py:184 ../stoq/gui/purchase.py:251
+#: ../stoq/gui/payable.py:186 ../stoq/gui/purchase.py:251
 #: ../stoqlib/domain/uiform.py:123
 #: ../stoqlib/gui/dialogs/productstockdetails.py:141
 #: ../stoqlib/gui/editors/accounteditor.py:355
@@ -4968,7 +4980,7 @@ msgstr "Comments"
 msgid "Supplier"
 msgstr "Supplier"
 
-#: ../stoq/gui/payable.py:189 ../stoq/gui/receivable.py:196
+#: ../stoq/gui/payable.py:192 ../stoq/gui/receivable.py:198
 #: ../stoqlib/gui/dialogs/clientdetails.py:138
 #: ../stoqlib/gui/dialogs/purchasedetails.py:209
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:125
@@ -4981,18 +4993,31 @@ msgstr "Supplier"
 msgid "Paid date"
 msgstr "Paid date"
 
-#: ../stoq/gui/payable.py:197 ../stoq/gui/receivable.py:204
+#: ../stoq/gui/payable.py:200 ../stoq/gui/receivable.py:206
 #: ../stoqlib/domain/payment/payment.py:80
 #: ../stoqlib/domain/payment/renegotiation.py:56 ../stoqlib/domain/sale.py:351
 #: ../stoqlib/reporting/payment.py:137
 msgid "Paid"
 msgstr "Paid"
 
-#: ../stoq/gui/payable.py:205 ../stoq/gui/receivable.py:213
+#: ../stoq/gui/payable.py:201 ../stoq/gui/receivable.py:207
+#: ../stoqlib/gui/dialogs/purchasedetails.py:217
+#: ../stoqlib/gui/dialogs/renegotiationdetails.py:132
+#: ../stoqlib/gui/dialogs/saledetails.py:161
+#: ../stoqlib/gui/slaves/installmentslave.py:251
+#: ../stoqlib/gui/wizards/purchasefinishwizard.py:138
+msgid "Paid value"
+msgstr "Paid value"
+
+#: ../stoq/gui/payable.py:203 ../stoq/gui/receivable.py:210
+msgid "Payment category"
+msgstr ""
+
+#: ../stoq/gui/payable.py:213 ../stoq/gui/receivable.py:219
 msgid "Paid or due date"
 msgstr "Paid or due date"
 
-#: ../stoq/gui/payable.py:335
+#: ../stoq/gui/payable.py:343
 msgid ""
 "Can't confirm the payment if the purchase is not completely received yet."
 msgstr ""
@@ -5587,17 +5612,19 @@ msgstr "Accounts receivable help"
 msgid "Receive"
 msgstr "Receive"
 
-#: ../stoq/gui/receivable.py:145
+#: ../stoq/gui/receivable.py:147
 msgid "Print a report of this payments"
 msgstr "Print a report of this payments"
 
-#: ../stoq/gui/receivable.py:192 ../stoqlib/gui/editors/accounteditor.py:354
+#: ../stoq/gui/receivable.py:194 ../stoqlib/gui/editors/accounteditor.py:354
 #: ../stoqlib/gui/search/fiscalsearch.py:127
 #: ../stoqlib/gui/search/paymentsearch.py:152
+#: ../stoqlib/reporting/payments_receipt.py:92
+#: ../stoqlib/reporting/payments_receipt.py:120
 msgid "Drawee"
 msgstr "Drawee"
 
-#: ../stoq/gui/receivable.py:513
+#: ../stoq/gui/receivable.py:528
 msgid "Cannot renegotiate selected payments"
 msgstr "Cannot renegotiate selected payments"
 
@@ -5696,7 +5723,7 @@ msgstr "Edit the selected sale, allowing you to change the details of it"
 msgid "Show details of the selected sale"
 msgstr "Show details of the selected sale"
 
-#: ../stoq/gui/sales.py:144 ../stoqlib/gui/wizards/salequotewizard.py:401
+#: ../stoq/gui/sales.py:144 ../stoqlib/gui/wizards/salequotewizard.py:402
 msgid "New Sale Quote"
 msgstr "New Sale Quote"
 
@@ -6739,7 +6766,7 @@ msgstr "Date can not be greather then future date"
 msgid "NOT PAID"
 msgstr "NOT PAID"
 
-#: ../stoqlib/domain/payment/payment.py:718
+#: ../stoqlib/domain/payment/payment.py:721
 msgid "This payment is already paid."
 msgstr "This payment is already paid."
 
@@ -6747,7 +6774,7 @@ msgstr "This payment is already paid."
 msgid "Renegotiated"
 msgstr "Renegotiated"
 
-#: ../stoqlib/domain/payment/views.py:363
+#: ../stoqlib/domain/payment/views.py:364
 msgid "Due Date"
 msgstr "Due Date"
 
@@ -7419,8 +7446,8 @@ msgid "Mercosul EX Tipi"
 msgstr "Mercosul EX Tipi"
 
 #: ../stoqlib/domain/uiform.py:118
-msgid "Mercosul Género"
-msgstr "Mercosul Género"
+msgid "Mercosul Gênero"
+msgstr ""
 
 #: ../stoqlib/domain/uiform.py:122 ../stoqlib/gui/editors/personeditor.py:165
 msgid "Employee"
@@ -8129,39 +8156,31 @@ msgstr "Purchase Details"
 msgid "Quantity Received"
 msgstr "Quantity Received"
 
-#: ../stoqlib/gui/dialogs/purchasedetails.py:217
-#: ../stoqlib/gui/dialogs/renegotiationdetails.py:132
-#: ../stoqlib/gui/dialogs/saledetails.py:161
-#: ../stoqlib/gui/slaves/installmentslave.py:251
-#: ../stoqlib/gui/wizards/purchasefinishwizard.py:138
-msgid "Paid value"
-msgstr "Paid value"
-
 #: ../stoqlib/gui/dialogs/purchasedetails.py:224
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:145
 #: ../stoqlib/gui/dialogs/saledetails.py:178
-#: ../stoqlib/gui/editors/paymenteditor.py:442
+#: ../stoqlib/gui/editors/paymenteditor.py:443
 msgid "When"
 msgstr "When"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:229
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:150
 #: ../stoqlib/gui/dialogs/saledetails.py:183
-#: ../stoqlib/gui/editors/paymenteditor.py:447
+#: ../stoqlib/gui/editors/paymenteditor.py:448
 msgid "Changed"
 msgstr "Changed"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:231
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:152
 #: ../stoqlib/gui/dialogs/saledetails.py:185
-#: ../stoqlib/gui/editors/paymenteditor.py:449
+#: ../stoqlib/gui/editors/paymenteditor.py:450
 msgid "From"
 msgstr "From"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:233
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:154
 #: ../stoqlib/gui/dialogs/saledetails.py:187
-#: ../stoqlib/gui/editors/paymenteditor.py:451
+#: ../stoqlib/gui/editors/paymenteditor.py:452
 msgid "To"
 msgstr "To"
 
@@ -8409,12 +8428,12 @@ msgstr "Edit Details of \"%s\""
 msgid "Add %s"
 msgstr "Add %s"
 
-#: ../stoqlib/gui/editors/callseditor.py:58
+#: ../stoqlib/gui/editors/callseditor.py:59
 #, python-format
 msgid "Call to %s"
 msgstr "Call to %s"
 
-#: ../stoqlib/gui/editors/callseditor.py:60
+#: ../stoqlib/gui/editors/callseditor.py:61
 #: ../stoqlib/reporting/calls_report.py:38
 msgid "call"
 msgstr "call"
@@ -8584,7 +8603,7 @@ msgstr "Loan Item"
 
 #: ../stoqlib/gui/editors/loaneditor.py:106
 #: ../stoqlib/gui/editors/saleeditor.py:127
-#: ../stoqlib/gui/wizards/salequotewizard.py:373
+#: ../stoqlib/gui/wizards/salequotewizard.py:374
 msgid "The price must be greater than zero."
 msgstr "The price must be greater than zero."
 
@@ -8678,29 +8697,30 @@ msgstr "Sale details"
 msgid "Purchase details"
 msgstr "Purchase details"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:255
+#: ../stoqlib/gui/editors/paymenteditor.py:256
 msgid "End date must be before start date"
 msgstr "End date must be before start date"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:261
-#: ../stoqlib/gui/editors/paymenteditor.py:263
+#: ../stoqlib/gui/editors/paymenteditor.py:262
+#: ../stoqlib/gui/editors/paymenteditor.py:264
 msgid "Date cannot be empty"
 msgstr "Date cannot be empty"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:325
+#: ../stoqlib/gui/editors/paymenteditor.py:326
 #: ../stoqlib/gui/slaves/paymentslave.py:1237
 msgid "The value must be greater than zero."
 msgstr "The value must be greater than zero."
 
-#: ../stoqlib/gui/editors/paymenteditor.py:364
+#: ../stoqlib/gui/editors/paymenteditor.py:365
 msgid "Payer:"
 msgstr "Payer:"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:386
+#: ../stoqlib/gui/editors/paymenteditor.py:387
+#: ../stoqlib/reporting/payments_receipt.py:110
 msgid "Recipient:"
 msgstr "Recipient:"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:473
+#: ../stoqlib/gui/editors/paymenteditor.py:474
 msgid "Payment Details"
 msgstr "Payment Details"
 
@@ -9009,7 +9029,7 @@ msgid "This product unit (%s) does not support fractions."
 msgstr "This product unit (%s) does not support fractions."
 
 #: ../stoqlib/gui/editors/saleeditor.py:133
-#: ../stoqlib/gui/wizards/salequotewizard.py:361
+#: ../stoqlib/gui/wizards/salequotewizard.py:362
 #, python-format
 msgid "Max discount for this product is %.2f%%"
 msgstr "Max discount for this product is %.2f%%"
@@ -9757,6 +9777,11 @@ msgstr "Bill & Check Payments Search"
 #: ../stoqlib/gui/search/paymentsearch.py:73
 msgid "Bill or check number:"
 msgstr "Bill or check number:"
+
+#: ../stoqlib/gui/search/paymentsearch.py:77
+#: ../stoqlib/gui/search/paymentsearch.py:149
+msgid "Id"
+msgstr ""
 
 #: ../stoqlib/gui/search/paymentsearch.py:78
 #: ../stoqlib/reporting/purchase.py:250
@@ -10738,7 +10763,7 @@ msgid "Print receipt"
 msgstr "Print receipt"
 
 #: ../stoqlib/gui/wizards/loanwizard.py:468
-#: ../stoqlib/gui/wizards/salequotewizard.py:420
+#: ../stoqlib/gui/wizards/salequotewizard.py:421
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:237
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:293
 msgid "Don't print"
@@ -10965,16 +10990,20 @@ msgstr "ICMS BC "
 msgid "Lead Time"
 msgstr "Lead Time"
 
-#: ../stoqlib/gui/wizards/salequotewizard.py:402
+#: ../stoqlib/gui/wizards/salequotewizard.py:350
+msgid "Missing products"
+msgstr ""
+
+#: ../stoqlib/gui/wizards/salequotewizard.py:403
 msgid "Edit Sale Quote"
 msgstr "Edit Sale Quote"
 
 #. We can only print the details if the quote was confirmed.
-#: ../stoqlib/gui/wizards/salequotewizard.py:419
+#: ../stoqlib/gui/wizards/salequotewizard.py:420
 msgid "Would you like to print the quote details now?"
 msgstr "Would you like to print the quote details now?"
 
-#: ../stoqlib/gui/wizards/salequotewizard.py:420
+#: ../stoqlib/gui/wizards/salequotewizard.py:421
 msgid "Print quote details"
 msgstr "Print quote details"
 
@@ -13356,9 +13385,34 @@ msgstr "transactions"
 msgid "Transactions for account %s"
 msgstr "Transactions for account %s"
 
-#: ../stoqlib/reporting/payment_receipt.py:41
+#: ../stoqlib/reporting/payments_receipt.py:43
 msgid "Payment receipt"
 msgstr "Payment receipt"
+
+#: ../stoqlib/reporting/payments_receipt.py:80
+msgid "I/We Received from:"
+msgstr ""
+
+#: ../stoqlib/reporting/payments_receipt.py:88
+msgid "The importance of:"
+msgstr ""
+
+#: ../stoqlib/reporting/payments_receipt.py:89
+msgid "Referring to:"
+msgstr ""
+
+#: ../stoqlib/reporting/payments_receipt.py:108
+msgid "Recipient"
+msgstr ""
+
+#: ../stoqlib/reporting/payments_receipt.py:111
+msgid "CPF/CNPJ/RG:"
+msgstr "CPF/CNPJ/RG:"
+
+#: ../stoqlib/reporting/payments_receipt.py:128
+#, python-format
+msgid "Receipt: %s - Value: %s - Date: %s"
+msgstr ""
 
 #: ../stoqlib/reporting/product.py:47 ../stoqlib/reporting/product.py:76
 #: ../stoqlib/reporting/product.py:101 ../stoqlib/reporting/product.py:118
@@ -13533,10 +13587,6 @@ msgstr "purchases"
 msgid "Invoice Total"
 msgstr "Invoice Total"
 
-#: ../stoqlib/reporting/receival_receipt.py:40
-msgid "Receival receipt"
-msgstr "Receival receipt"
-
 #: ../stoqlib/reporting/sale.py:51
 msgid "Sale Order"
 msgstr "Sale Order"
@@ -13700,64 +13750,6 @@ msgstr "till entries"
 msgid "Transfer Receipt"
 msgstr "Transfer Receipt"
 
-#: ../data/template/receipt.rml.extracted.h:1
-msgid "ADDRESS:"
-msgstr "ADDRESS:"
-
-#: ../data/template/receipt.rml.extracted.h:2
-msgid "AGENCY:"
-msgstr "AGENCY:"
-
-#: ../data/template/receipt.rml.extracted.h:3
-msgid "BANK:"
-msgstr "BANK:"
-
-#: ../data/template/receipt.rml.extracted.h:4
-msgid "CHECK PAYMENT"
-msgstr "CHECK PAYMENT"
-
-#: ../data/template/receipt.rml.extracted.h:5
-msgid "CPF/CNPJ/RG:"
-msgstr "CPF/CNPJ/RG:"
-
-#: ../data/template/receipt.rml.extracted.h:6
-msgid "DATE:"
-msgstr "DATE:"
-
-#: ../data/template/receipt.rml.extracted.h:7
-msgid "DRAWEE:"
-msgstr "DRAWEE:"
-
-#: ../data/template/receipt.rml.extracted.h:8
-msgid "I/WE RECEIVED FROM"
-msgstr "I/WE RECEIVED FROM"
-
-#: ../data/template/receipt.rml.extracted.h:9
-#: ../data/template/transfer.rml.extracted.h:4
-msgid "NUMBER:"
-msgstr "NUMBER:"
-
-#: ../data/template/receipt.rml.extracted.h:10
-msgid "RECEIPT"
-msgstr "RECEIPT"
-
-#: ../data/template/receipt.rml.extracted.h:11
-msgid "REFERRING TO:"
-msgstr "REFERRING TO:"
-
-#: ../data/template/receipt.rml.extracted.h:12
-#: ../data/template/transfer.rml.extracted.h:9
-msgid "SIGNATURE:"
-msgstr "SIGNATURE:"
-
-#: ../data/template/receipt.rml.extracted.h:13
-msgid "THE IMPORTANCE OF:"
-msgstr "THE IMPORTANCE OF:"
-
-#: ../data/template/receipt.rml.extracted.h:14
-msgid "VALUE:"
-msgstr "VALUE:"
-
 #: ../data/template/transfer.rml.extracted.h:1
 msgid "CODE"
 msgstr "CODE"
@@ -13769,6 +13761,10 @@ msgstr "DESCRIPTION"
 #: ../data/template/transfer.rml.extracted.h:3
 msgid "DESTINATION"
 msgstr "DESTINATION"
+
+#: ../data/template/transfer.rml.extracted.h:4
+msgid "NUMBER:"
+msgstr "NUMBER:"
 
 #: ../data/template/transfer.rml.extracted.h:5
 msgid "OPEN:"
@@ -13785,6 +13781,10 @@ msgstr "RECEIVAL:"
 #: ../data/template/transfer.rml.extracted.h:8
 msgid "RESPONSIBLE"
 msgstr "RESPONSIBLE"
+
+#: ../data/template/transfer.rml.extracted.h:9
+msgid "SIGNATURE:"
+msgstr "SIGNATURE:"
 
 #: ../data/template/transfer.rml.extracted.h:10
 msgid "SOURCE"
