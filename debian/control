@@ -9,8 +9,8 @@ Homepage: http://www.stoq.com.br/
 
 Package: stoq
 Architecture: all
-Provides: stoqlib
-Replaces: stoqlib (<< 1.0)
+Provides: stoqlib, stoq-docs, stoqdoc
+Replaces: stoqlib (<< 1.0), stoq-docs (<< 1.0), stoqdoc (<< 1.0)
 Breaks: stoqlib (<< 1.0)
 Depends: ${misc:Depends}, ${shlibs:Depends}, python, python-gtk2 (>= 2.17), python-zope.interface (>= 3.5.2)|python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.32), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 0.9.15), python-imaging (>= 1.1.5), python-reportlab (>= 2.4), postgresql-client, python-dateutil (>= 1.4.1), python-mako (>= 0.2.5), python-gudev, python-poppler (>= 0.12.1), python-webkit (>= 1.1.7), python-twisted-core (>= 10.0.0), python-twisted-web (>= 10.0.0), librsvg2-common
 Description: Stoq the Retail System
@@ -35,3 +35,17 @@ Description: Stoqlib dummy transitional package
  Homepage: http://www.stoq.com.br/
  .
  This package provides a dummy stoqlib package to fix upgrade.
+
+Package: stoq-docs
+Architecture: all
+Section: oldlibs
+Description: Stoq-docs dummy transitional package
+ Stoq is a suite of Retail Management System applications.
+ It includes the following applications;
+ Point of Sales, Cash register, Sales, Purchase Orders, Inventory control,
+ Customer Relationship Management (CRM), Financial Accounting, Accounts Payable and
+ Accounts Receivable, Printable Reports, Employees and Suppliers registry.
+ .
+ Homepage: http://www.stoq.com.br/
+ .
+ This package provides a dummy stoq-docs package to fix upgrade.
