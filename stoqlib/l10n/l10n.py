@@ -30,14 +30,16 @@ from stoqlib.l10n.generic import generic
 
 # This maps country lists in stoqlib.lib.countries to ISO 639-1
 iso639_list = {
-    'Brazil': 'br',
+    # FIXME: We should use a combo in parameters instead.
+    'brazil': 'br',
+    'brasil': 'br',
 }
 
 
 def get_l10n_module(conn):
     country = sysparam(conn).COUNTRY_SUGGESTED
 
-    short = iso639_list.get(country, None)
+    short = iso639_list.get(country.lower(), None)
     if short is None:
         return generic
 
