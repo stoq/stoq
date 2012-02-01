@@ -92,6 +92,8 @@ data_files = [
     ('$datadir/misc', listfiles('data/misc', '*.*')),
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.png')),
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.svg')),
+    ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.jpg')),
+    ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.gif')),
     ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
     ('$datadir/sql', listfiles('data', 'sql', '*.py')),
     ('$datadir/template', listfiles('data', 'template', '*.rml')),
@@ -115,14 +117,6 @@ data_files = [
 data_files += listexternal()
 templates = [
     ('share/applications', ['stoq.desktop'])]
-
-# Pyboleto bank logos
-data_files += [
-    ('lib/stoqlib/pyboleto/media',
-     listfiles('external', 'pyboleto', 'media', '*.jpg')),
-    ('lib/stoqlib/pyboleto/media',
-     listfiles('external', 'pyboleto', 'media', '*.gif')),
-    ]
 
 resources = dict(
     locale='$prefix/share/locale',
