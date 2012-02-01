@@ -102,7 +102,7 @@ class ProductTaxTemplateEditor(BaseEditor):
 
 
 class TaxTemplatesSearch(SearchEditor):
-    size = (480, 300)
+    size = (500, 350)
     title = _('Tax Classes Search')
 
     searchbar_label = _('Class Matching:')
