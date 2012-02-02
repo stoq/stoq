@@ -37,6 +37,13 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+def format_category_type(value):
+    if value == PaymentCategory.TYPE_PAYABLE:
+        return _('Payable')
+    elif value == PaymentCategory.TYPE_RECEIVABLE:
+        return _('Receivable')
+
+
 class PaymentCategoryDialog(ModelListDialog):
 
     # ModelListDialog
@@ -49,6 +56,8 @@ class PaymentCategoryDialog(ModelListDialog):
     columns = [
         Column('name', title=_('Category'),
                data_type=str, expand=True, sorted=True),
+        Column('category_type', data_type=int,
+               format_func=format_category_type),
         Column('color', title=_('Color'), width=20,
                data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
         Column('color', data_type=str, width=120,

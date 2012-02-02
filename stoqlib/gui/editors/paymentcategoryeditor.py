@@ -39,14 +39,25 @@ class PaymentCategoryEditor(BaseEditor):
     gladefile = 'PaymentCategoryEditor'
     confirm_widgets = ['name']
 
+    def __init__(self, conn, model=None,
+                 category_type=None):
+        self._category_type = category_type or PaymentCategory.TYPE_PAYABLE
+        BaseEditor.__init__(self, conn, model)
+        if category_type is not None:
+            self.category_type.set_sensitive(False)
+
     def create_model(self, trans):
         return PaymentCategory(name='',
                                color='#000000',
+                               category_type=int(self._category_type),
                                connection=trans)
 
     def setup_proxies(self):
         self.name.grab_focus()
-        self.add_proxy(self.model, ['name', 'color'])
+        self.category_type.prefill([
+            (_('Payable'), PaymentCategory.TYPE_PAYABLE),
+            (_('Receivable'), PaymentCategory.TYPE_RECEIVABLE)])
+        self.add_proxy(self.model, ['name', 'color', 'category_type'])
 
     #
     # Kiwi Callbacks

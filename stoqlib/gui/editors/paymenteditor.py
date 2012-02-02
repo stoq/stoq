@@ -183,7 +183,8 @@ class PaymentEditor(BaseEditor):
     def _run_payment_category_editor(self, category=None):
         trans = api.new_transaction()
         category = trans.get(category)
-        model = run_dialog(PaymentCategoryEditor, self, trans, category)
+        model = run_dialog(PaymentCategoryEditor, self, trans, category,
+                           self.category_type)
         rv = api.finish_transaction(trans, model)
         trans.close()
         if rv:
@@ -201,8 +202,9 @@ class PaymentEditor(BaseEditor):
             self.person.select(model)
 
     def _fill_category_combo(self):
-        categories = PaymentCategory.select(
-            connection=self.trans).orderBy('name')
+        categories = PaymentCategory.selectBy(
+            connection=self.trans,
+            category_type=self.category_type).orderBy('name')
         self.category.set_sensitive(bool(categories))
         categories = [(c.name, c) for c in categories]
         categories.insert(0, (_('No category'), None))
@@ -368,6 +370,7 @@ class InPaymentEditor(PaymentEditor):
     person_iface = IClient
     _person_label = _("Payer:")
     help_section = 'account-receivable'
+    category_type = PaymentCategory.TYPE_RECEIVABLE
 
     def __init__(self, conn, model=None, category=None):
         """ This dialog is responsible to create additional payments with
@@ -390,6 +393,7 @@ class OutPaymentEditor(PaymentEditor):
     person_iface = ISupplier
     _person_label = _("Recipient:")
     help_section = 'account-payable'
+    category_type = PaymentCategory.TYPE_PAYABLE
 
     def __init__(self, conn, model=None, category=None):
         """ This dialog is responsible to create additional payments with
