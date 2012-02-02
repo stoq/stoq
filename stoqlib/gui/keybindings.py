@@ -137,8 +137,6 @@ _bindings = [
     # Payable application
     ('app.payable.add_payable', '<Control>p',
      _("Create a new account payable")),
-    ('app.payable.payment_categories', '',
-     _("Show payment categories")),
     ('app.payable.payment_flow_history', '<Control>f',
      _('Show a report of payment expected to receive grouped by day')),
     ('app.payable.payment_details', '',
@@ -157,6 +155,8 @@ _bindings = [
      _("Add comments to the selected payment")),
     ('app.payable.payment_print_receipt', '<Control>r',
      _("Print a receipt for the selected payment")),
+    ('app.payable.search_payment_categories', '',
+     _("Search for payment categories")),
     ('app.payable.search_bills', '',
      _("Search for paid bills")),
 
@@ -261,8 +261,6 @@ _bindings = [
     # Receivable application
     ('app.receivable.add_receiving', '<Control>p',
      _("Create a new account receivable")),
-    ('app.receivable.payment_categories', '',
-     _("Show payment categories")),
     ('app.receivable.payment_flow_history', '<Control>f',
      _('Show a report of payment expected to receive grouped by day')),
     ('app.receivable.payment_details', '',
@@ -283,6 +281,8 @@ _bindings = [
      _("Print a bill for the selected payment")),
     ('app.receivable.payment_print_receipt', '<Control>r',
      _("Print a receipt for the selected payment")),
+    ('app.receivable.search_payment_categories', '',
+     _("Search for payment categories")),
     ('app.receivable.search_bills', '',
      _("Search for bills")),
     ('app.receivable.search_card_payments', '',

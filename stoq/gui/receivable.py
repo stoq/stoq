@@ -107,11 +107,6 @@ class ReceivableApp(SearchableAppWindow):
              _('Payment _flow history...'),
              group.get('payment_flow_history')),
 
-            # View
-            ('PaymentCategories', None, _("Payment categories"),
-            group.get('payment_categories'),
-            _('Show payment categories')),
-
             # Payment
             ('PaymentMenu', None, _('Payment')),
             ('Details', gtk.STOCK_INFO, _('Details...'),
@@ -143,6 +138,9 @@ class ReceivableApp(SearchableAppWindow):
              _('Print a receipt for the selected payment')),
 
             # Search
+            ('PaymentCategories', None, _("Payment categories..."),
+            group.get('search_payment_categories'),
+            _('Search for payment categories')),
             ('BillCheckSearch', None, _('Bills and checks...'),
              group.get('search_bills'),
              _('Search for bills and checks')),
