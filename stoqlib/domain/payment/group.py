@@ -219,9 +219,9 @@ class PaymentGroup(Domain):
             return _(u'order %s') % self.purchase.id
         elif self._renegotiation:
             return _(u'renegotiation %s') % self._renegotiation.id
-        # This breakes the tests.
-        #else:
-        #    raise AssertionError
+        # FIXME: Add a proper description
+        else:
+            return ''
 
     def get_pending_payments(self):
         return Payment.selectBy(group=self,
@@ -229,15 +229,16 @@ class PaymentGroup(Domain):
                                 connection=self.get_connection())
 
     def get_parent(self):
-        """Return the sale, purchase or renegotiation this group is part of"""
+        """Return the sale, purchase or renegotiation this group is part of.
+        """
         if self.sale:
             return self.sale
         elif self.purchase:
             return self.purchase
         elif self._renegotiation:
             return self._renegotiation
-        else:
-            raise AssertionError
+        return None
+
     #
     # Accessors
     #
