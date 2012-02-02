@@ -137,6 +137,8 @@ _bindings = [
     # Payable application
     ('app.payable.add_payable', '<Control>p',
      _("Create a new account payable")),
+    ('app.payable.payment_categories', '',
+     _("Show payment categories")),
     ('app.payable.payment_flow_history', '<Control>f',
      _('Show a report of payment expected to receive grouped by day')),
     ('app.payable.payment_details', '',
@@ -259,6 +261,8 @@ _bindings = [
     # Receivable application
     ('app.receivable.add_receiving', '<Control>p',
      _("Create a new account receivable")),
+    ('app.receivable.payment_categories', '',
+     _("Show payment categories")),
     ('app.receivable.payment_flow_history', '<Control>f',
      _('Show a report of payment expected to receive grouped by day')),
     ('app.receivable.payment_details', '',

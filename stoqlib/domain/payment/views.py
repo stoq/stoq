@@ -123,8 +123,14 @@ class BasePaymentView(Viewable):
     def get_status_str(self):
         return Payment.statuses[self.status]
 
-    def get_days_late(self):
+    def is_late(self):
         if self.status in [Payment.STATUS_PAID, Payment.STATUS_CANCELLED]:
+            return False
+
+        return (datetime.date.today() - self.due_date.date()).days > 0
+
+    def get_days_late(self):
+        if not self.is_late():
             return 0
 
         days_late = datetime.date.today() - self.due_date.date()
