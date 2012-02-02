@@ -503,8 +503,9 @@ class ReceivableApp(SearchableAppWindow):
         run_dialog(InPaymentBillCheckSearch, self, self.conn)
 
     def _update_filter_items(self):
-        categories = PaymentCategory.select(
-            connection=self.conn).orderBy('name')
+        categories = PaymentCategory.selectBy(
+            connection=self.conn,
+            category_type=PaymentCategory.TYPE_RECEIVABLE).orderBy('name')
         items = [(_('All payments'), None)]
         options = [
             _FilterItem(_('Received payments'), 'status:paid'),
