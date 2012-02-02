@@ -261,10 +261,13 @@ class AccountEditor(BaseEditor):
                 entry = ProxyEntry()
                 entry.model_attribute = name
                 setattr(self, name, entry)
+                # Set the model attr too so it can be validated
+                setattr(self.bank_model, name, '')
                 entry.props.data_type = 'str'
                 entry.connect('validate', self._on_bank_option__validate,
                               bank_info, option)
-                self._add_widget("<i>%s</i>:" % (option, ), entry, options=True)
+                self._add_widget("<i>%s</i>:" % (option.capitalize(), ),
+                                 entry, options=True)
                 entry.show()
                 self._option_fields[option] = entry
                 attributes.append(entry.model_attribute)
@@ -407,10 +410,12 @@ class AccountEditor(BaseEditor):
                 return ValidationError(str(e))
 
     def _on_bank_option__validate(self, entry, value, bank_info, option):
-        try:
-            bank_info.validate_option(option, value)
-        except BoletoException, e:
-            return ValidationError(str(e))
+        # Only validate if there's a value. Maybe it's not mandatory
+        if value:
+            try:
+                bank_info.validate_option(option, value)
+            except BoletoException, e:
+                return ValidationError(str(e))
         self.bank_model.set_option(option, value)
 
     def _on_test_button__clicked(self, button):
