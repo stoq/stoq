@@ -34,11 +34,6 @@
         <menuitem action="PaymentFlowHistory"/>
       </placeholder>
     </menu>
-    <menu action="ViewMenu">
-      <placeholder name="ViewMenuPH">
-        <menuitem action="PaymentCategories"/>
-      </placeholder>
-    </menu>
     <placeholder name="AppMenubarPH">
       <menu action="PaymentMenu">
         <menuitem action="Details"/>
@@ -56,6 +51,7 @@
     </placeholder>
     <menu action="SearchMenu">
       <placeholder name="SearchMenuPH">
+        <menuitem action="PaymentCategories"/>
         <menuitem action="BillCheckSearch"/>
         <menuitem action="CardPaymentSearch"/>
       </placeholder>
