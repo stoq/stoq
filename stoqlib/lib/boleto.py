@@ -682,8 +682,8 @@ class BankBB(BankInfo):
                 # TRANSLATORS: Do not translate 'Convenio'
                 raise BoletoException(_("Convenio must be a number"))
             if len(value) not in [6, 7, 8]:
-                # TRANSLATORS: Do not translate 'Convenio'
                 raise BoletoException(
+                    # TRANSLATORS: Do not translate 'Convenio'
                     _("Convenio length must be 6, 7 or 8. Try filing it with "
                       "'0's at the left."))
 
