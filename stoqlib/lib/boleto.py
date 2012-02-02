@@ -579,7 +579,6 @@ class BankBB(BankInfo):
     bank_number = 1
     logo = 'logo_bb.gif'
     options = {'convenio': BILL_OPTION_CUSTOM,
-               'len_convenio': BILL_OPTION_CUSTOM,
                'agencia': BILL_OPTION_BANK_BRANCH,
                'conta': BILL_OPTION_BANK_BRANCH}
 
@@ -590,10 +589,13 @@ class BankBB(BankInfo):
         if not 'carteira' in kwargs:
             kwargs['carteira'] = '18'
 
-        self.len_convenio = 7
-        if 'len_convenio' in kwargs:
-            self.len_convenio = int(kwargs.pop('len_convenio'))
-        self.convenio = ''
+        convenio = kwargs.pop('convenio', None)
+        if convenio:
+            self.len_convenio = len(convenio)
+            self.convenio = convenio
+        else:
+            self.len_convenio = 7
+            self.convenio = ''
 
         self.format_nnumero = 1
         if 'format_nnumero' in kwargs:
@@ -679,12 +681,11 @@ class BankBB(BankInfo):
             except ValueError:
                 # TRANSLATORS: Do not translate 'Convenio'
                 raise BoletoException(_("Convenio must be a number"))
-            if len(value) > 8:
-                raise BoletoException(_("Cannot be longer than %d") % (8,))
-
-        if option == 'len_convenio':
-            if value not in ['6', '7', '8']:
-                raise BoletoException(_('Must be 6, 7 or 8'))
+            if len(value) not in [6, 7, 8]:
+                # TRANSLATORS: Do not translate 'Convenio'
+                raise BoletoException(
+                    _("Convenio length must be 6, 7 or 8. Try filing it with "
+                      "'0's at the left."))
 
 
 @register_bank
