@@ -30,7 +30,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-02-01 17:52+0000\n"
+"X-Launchpad-Export-Date: 2012-02-02 06:04+0000\n"
 "X-Generator: Launchpad (build 14738)\n"
 "Language: \n"
 
@@ -14099,45 +14099,3 @@ msgstr "TRANSFERÊNCIA DE PRODUTOS"
 #: ../data/template/transfer.rml.extracted.h:13
 msgid "TRANSFER RECEIPT"
 msgstr "RECIBO DE TRANSFERÊNCIA"
-
-#~ msgid "Receival receipt"
-#~ msgstr "Recibo de recebimento"
-
-#~ msgid " made in "
-#~ msgstr " feito em "
-
-#~ msgid "ADDRESS:"
-#~ msgstr "ENDEREÇO:"
-
-#~ msgid "AGENCY:"
-#~ msgstr "AGÊNCIA:"
-
-#~ msgid "BANK:"
-#~ msgstr "BANCO:"
-
-#~ msgid "CHECK PAYMENT"
-#~ msgstr "PAGAMENTO EM CHEQUE"
-
-#~ msgid "DATE:"
-#~ msgstr "DATA:"
-
-#~ msgid "DRAWEE:"
-#~ msgstr "EMITENTE:"
-
-#~ msgid "I/WE RECEIVED FROM"
-#~ msgstr "EU/NÓS RECEBI(EMOS) DE"
-
-#~ msgid "RECEIPT"
-#~ msgstr "RECIBO"
-
-#~ msgid "REFERRING TO:"
-#~ msgstr "REFERENTE A:"
-
-#~ msgid "THE IMPORTANCE OF:"
-#~ msgstr "A IMPORTÂNCIA DE:"
-
-#~ msgid "VALUE:"
-#~ msgstr "VALOR:"
-
-#~ msgid "Drawee:"
-#~ msgstr "Sacado"
