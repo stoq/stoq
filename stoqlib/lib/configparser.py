@@ -181,6 +181,15 @@ class StoqConfig:
         if port:
             port = int(port)
         password = self.get_password()
+
+        database_section = self.get('General', 'database_section')
+        if database_section is not None:
+            rdbms = self.get(database_section, 'rdbms') or rdbms
+            address = self.get(database_section, 'address') or address
+            dbname = self.get(database_section, 'dbname') or dbname
+            username = self.get(database_section, 'dbusername') or username
+            port = self.get(database_section, 'port') or port
+
         return DatabaseSettings(rdbms, address, port,
                                 dbname, username, password)
 
