@@ -74,7 +74,7 @@ class PaymentEditor(BaseEditor):
                      'due_date',
                      ]
 
-    def __init__(self, conn, model=None):
+    def __init__(self, conn, model=None, category=None):
         """ A base class for additional payments
 
         @param conn: a database connection
@@ -83,6 +83,9 @@ class PaymentEditor(BaseEditor):
         """
         BaseEditor.__init__(self, conn, model)
         self._setup_widgets()
+        if category:
+            self.category.select_item_by_label(category)
+        self.description.grab_focus()
 
     #
     # BaseEditor hooks
@@ -366,7 +369,7 @@ class InPaymentEditor(PaymentEditor):
     _person_label = _("Payer:")
     help_section = 'account-receivable'
 
-    def __init__(self, conn, model=None):
+    def __init__(self, conn, model=None, category=None):
         """ This dialog is responsible to create additional payments with
         IInPayment facet.
 
@@ -374,7 +377,7 @@ class InPaymentEditor(PaymentEditor):
         @param model: a L{stoqlib.domain.payment.payment.Payment} object
                       or None
         """
-        PaymentEditor.__init__(self, conn, model)
+        PaymentEditor.__init__(self, conn, model, category=category)
         if model is None or not model.is_inpayment():
             self.model.addFacet(IInPayment, connection=self.conn)
             self.can_edit_details()
@@ -388,7 +391,7 @@ class OutPaymentEditor(PaymentEditor):
     _person_label = _("Recipient:")
     help_section = 'account-payable'
 
-    def __init__(self, conn, model=None):
+    def __init__(self, conn, model=None, category=None):
         """ This dialog is responsible to create additional payments with
         IOutPayment facet.
 
@@ -396,7 +399,7 @@ class OutPaymentEditor(PaymentEditor):
         @param model: a L{stoqlib.domain.payment.payment.Payment} object
                       or None
         """
-        PaymentEditor.__init__(self, conn, model)
+        PaymentEditor.__init__(self, conn, model, category=category)
         if model is None or not model.is_outpayment():
             self.model.addFacet(IOutPayment, connection=self.conn)
             self.can_edit_details()

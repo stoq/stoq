@@ -29,6 +29,7 @@ stoq/gui/receivable/receivable.py:
 
 import datetime
 import gettext
+import urllib
 
 import pango
 import gtk
@@ -39,6 +40,8 @@ from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import SearchColumn, Column
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from stoqlib.api import api
+from stoqlib.database.orm import AND, const
+from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
@@ -46,6 +49,7 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
@@ -64,6 +68,17 @@ from stoqlib.reporting.payments_receipt import InPaymentReceipt
 from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
+
+
+class _FilterItem(object):
+    def __init__(self, name, value, color=None, item_id=None):
+        self.name = name
+        self.value = value
+        self.color = color
+        self.id = item_id or name
+
+    def __repr__(self):
+        return '<FilterItem "%s">' % (self.name, )
 
 
 class ReceivableApp(SearchableAppWindow):
@@ -91,6 +106,11 @@ class ReceivableApp(SearchableAppWindow):
             ('PaymentFlowHistory', None,
              _('Payment _flow history...'),
              group.get('payment_flow_history')),
+
+            # View
+            ('PaymentCategories', None, _("Payment categories"),
+            group.get('payment_categories'),
+            _('Show payment categories')),
 
             # Payment
             ('PaymentMenu', None, _('Payment')),
@@ -137,14 +157,14 @@ class ReceivableApp(SearchableAppWindow):
         self.Receive.set_short_label(_('Receive'))
         self.Details.set_short_label(_('Details'))
         self.Receive.props.is_important = True
-        self.popup = self.uimanager.get_widget('/ReceivableSelection')
-
-    def create_ui(self):
         self.app.launcher.add_new_items([self.AddReceiving])
         self.app.launcher.add_search_items([self.BillCheckSearch,
                                             self.CardPaymentSearch])
         self.app.launcher.Print.set_tooltip(
             _("Print a report of this payments"))
+        self.popup = self.uimanager.get_widget('/ReceivableSelection')
+
+    def create_ui(self):
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.search.set_summary_label(column='value',
             label='<b>%s</b>' % (_("Total")),
@@ -169,16 +189,55 @@ class ReceivableApp(SearchableAppWindow):
     def search_activate(self):
         self._run_bill_check_search()
 
+    def search_completed(self, results, states):
+        if len(results):
+            return
+
+        state = states[1]
+        if state and state.value is None:
+            not_found = _("No payments found.")
+            payment_url = '<a href="new_payment">%s</a>?' % (
+                _("create a new payment"))
+            new_payment = _("Would you like to %s") % (payment_url, )
+            msg = "%s\n\n%s" % (not_found, new_payment)
+        else:
+            v = state.value.value
+            if v == 'status:late':
+                msg = _("No late payments found.")
+            elif v == 'status:paid':
+                msg = _("No paid payments found.")
+            elif v == 'status:not-paid':
+                msg = _("No payments to pay found.")
+            elif v.startswith('category:'):
+                category = v.split(':')[1].encode('utf-8')
+
+                not_found = _("No payments in the <b>%s</b> category were found." % (
+                    category, ))
+                payment_url = '<a href="new_payment?%s">%s</a>?' % (
+                    urllib.quote(category),
+                    _("create a new payment"))
+                msg = "%s\n\n%s" % (
+                    not_found,
+                    _("Would you like to %s") % (payment_url, ))
+            else:
+                return
+
+        self.search.set_message(msg)
+
+
     #
     # SearchableAppWindow hooks
     #
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'drawee'])
-        self.status_filter = ComboSearchFilter(_('Show payments'),
-                                               self._get_status_values())
-        self.add_filter(self.status_filter,
-            SearchFilterPosition.TOP, ['status'])
+        self.main_filter = self._create_main_filter()
+        self._update_filter_items()
+        self.executer.add_filter_query_callback(
+            self.main_filter,
+            self._on_main_filter__query_callback)
+        self.add_filter(self.main_filter, SearchFilterPosition.TOP)
+
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), long_title=_("Payment ID"),
@@ -288,9 +347,9 @@ class ReceivableApp(SearchableAppWindow):
         trans.close()
         self._update_widgets()
 
-    def _add_receiving(self):
+    def _add_receiving(self, category=None):
         trans = api.new_transaction()
-        retval = self.run_dialog(InPaymentEditor, trans)
+        retval = self.run_dialog(InPaymentEditor, trans, category=category)
         if api.finish_transaction(trans, retval):
             self.search.refresh()
 
@@ -445,6 +504,62 @@ class ReceivableApp(SearchableAppWindow):
     def _run_bill_check_search(self):
         run_dialog(InPaymentBillCheckSearch, self, self.conn)
 
+    def _update_filter_items(self):
+        categories = PaymentCategory.select(
+            connection=self.conn).orderBy('name')
+        items = [(_('All payments'), None)]
+        options = [
+            _FilterItem(_('Received payments'), 'status:paid'),
+            _FilterItem(_('To receive'), 'status:not-paid'),
+            _FilterItem(_('Late payments'), 'status:late'),
+            ]
+        if categories.count() > 0:
+            options.append(_FilterItem('sep', 'sep'))
+
+        items.extend([(item.name, item) for item in options])
+        for c in categories:
+            item = _FilterItem(c.name, 'category:%s' % (c.name, ),
+                               color=c.color,
+                               item_id=c.id)
+            items.append((item.name, item))
+
+        self.main_filter.combo.prefill(items)
+
+    def _create_main_filter(self):
+        main_filter = ComboSearchFilter(_('Show'), [])
+
+        combo = main_filter.combo
+        combo.color_attribute = 'color'
+        combo.set_row_separator_func(self._on_main_filter__row_separator_func)
+
+        return main_filter
+
+    def _create_main_query(self, state):
+        item = state.value
+        if item is None:
+            return None
+        kind, value = item.value.split(':')
+        if kind == 'status':
+            if value == 'paid':
+                return InPaymentView.q.status == Payment.STATUS_PAID
+            elif value == 'not-paid':
+                return InPaymentView.q.status == Payment.STATUS_PENDING
+            elif value == 'late':
+                return AND(
+                    InPaymentView.q.status != Payment.STATUS_PAID,
+                    InPaymentView.q.status != Payment.STATUS_CANCELLED,
+                    InPaymentView.q.due_date < const.NOW())
+        elif kind == 'category':
+            return InPaymentView.q.category == value
+
+        raise AssertionError(kind, value)
+
+    def _show_payment_categories(self):
+        trans = api.new_transaction()
+        self.run_dialog(PaymentCategoryDialog, trans)
+        self._update_filter_items()
+        trans.close()
+
     #
     # Kiwi callbacks
     #
@@ -453,17 +568,35 @@ class ReceivableApp(SearchableAppWindow):
         if not isinstance(renderer, gtk.CellRendererText):
             return text
 
-        if pv.paid_date and self.status_filter.get_state().value is None:
+        state = self.main_filter.get_state()
+        def show_strikethrough():
+            if state.value is None:
+                return True
+            if state.value.value.startswith('category:'):
+                return True
+            return False
+
+        is_pending = (pv.status == Payment.STATUS_PENDING)
+        show_strikethrough = not is_pending and show_strikethrough()
+        is_late = pv.is_late()
+
+        renderer.set_property('strikethrough-set', show_strikethrough)
+        renderer.set_property('weight-set', is_late)
+
+        if show_strikethrough:
             renderer.set_property('strikethrough', True)
-            renderer.set_property('strikethrough-set', True)
-        else:
-            renderer.set_property('strikethrough-set', False)
-        if not pv.paid_date and pv.due_date < datetime.datetime.now():
+        if is_late:
             renderer.set_property('weight', pango.WEIGHT_BOLD)
-            renderer.set_property('weight-set', True)
-        else:
-            renderer.set_property('weight-set', False)
+
         return text
+
+    def _on_main_filter__row_separator_func(self, model, titer):
+        if model[titer][0] == 'sep':
+            return True
+        return False
+
+    def _on_main_filter__query_callback(self, state):
+        return self._create_main_query(state)
 
     def on_results__row_activated(self, klist, receivable_view):
         self._show_details(receivable_view)
@@ -473,6 +606,14 @@ class ReceivableApp(SearchableAppWindow):
 
     def on_results__right_click(self, results, result, event):
         self.popup.popup(None, None, None, event.button, event.time)
+
+    def on_results__activate_link(self, results, uri):
+        if uri.startswith('new_payment'):
+            if '?' in uri:
+                category = urllib.unquote(uri.split('?', 1)[1])
+            else:
+                category = None
+            self._add_receiving(category=category)
 
     def on_Details__activate(self, button):
         selected = self.results.get_selected_rows()[0]
@@ -498,6 +639,9 @@ class ReceivableApp(SearchableAppWindow):
 
     def on_AddReceiving__activate(self, action):
         self._add_receiving()
+
+    def on_PaymentCategories__activate(self, action):
+        self._show_payment_categories()
 
     def on_CancelPayment__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]
