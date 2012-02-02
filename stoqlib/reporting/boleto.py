@@ -832,7 +832,11 @@ class BillReport(object):
 
     def _get_cedente(self):
         payment = self._payments[0]
-        branch = payment.group.get_parent().branch
+        parent = payment.group.get_parent()
+        if parent:
+            branch = parent.branch
+        else:
+            branch = sysparam(payment.get_connection()).MAIN_COMPANY
         return branch.get_description()
 
     def _get_account(self, payment):
