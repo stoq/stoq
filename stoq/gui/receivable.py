@@ -520,7 +520,7 @@ class ReceivableApp(SearchableAppWindow):
                                item_id=c.id)
             items.append((item.name, item))
 
-        self.main_filter.combo.prefill(items)
+        self.main_filter.update_values(items)
 
     def _create_main_filter(self):
         main_filter = ComboSearchFilter(_('Show'), [])
