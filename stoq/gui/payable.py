@@ -567,6 +567,7 @@ class PayableApp(SearchableAppWindow):
             return text
 
         state = self.main_filter.get_state()
+
         def show_strikethrough():
             if state.value is None:
                 return True
@@ -576,6 +577,7 @@ class PayableApp(SearchableAppWindow):
 
         is_pending = (pv.status == Payment.STATUS_PENDING)
         show_strikethrough = not is_pending and show_strikethrough()
+        is_late = pv.is_late()
 
         renderer.set_property('strikethrough-set', show_strikethrough)
         renderer.set_property('weight-set', is_late)

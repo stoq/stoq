@@ -224,7 +224,6 @@ class ReceivableApp(SearchableAppWindow):
 
         self.search.set_message(msg)
 
-
     #
     # SearchableAppWindow hooks
     #
@@ -237,7 +236,6 @@ class ReceivableApp(SearchableAppWindow):
             self.main_filter,
             self._on_main_filter__query_callback)
         self.add_filter(self.main_filter, SearchFilterPosition.TOP)
-
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), long_title=_("Payment ID"),
@@ -569,6 +567,7 @@ class ReceivableApp(SearchableAppWindow):
             return text
 
         state = self.main_filter.get_state()
+
         def show_strikethrough():
             if state.value is None:
                 return True
