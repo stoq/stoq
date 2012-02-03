@@ -35,7 +35,6 @@ from stoqlib.domain.address import CityLocation
 from stoqlib.domain.interfaces import IIndividual
 from stoqlib.domain.person import PersonAdaptToIndividual
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.lib.defaults import get_country_states
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -136,13 +135,14 @@ class _IndividualDetailsSlave(BaseEditorSlave):
         ]
 
     def __init__(self, conn, model, visual_mode=False):
+        self.state_l10n = api.get_l10n_field(conn, 'state')
         BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def _setup_widgets(self):
         self.male_check.set_active(self.model.is_male())
         self.female_check.set_active(self.model.is_female())
         self.marital_status.prefill(self.model.get_marital_statuses())
-        self.birth_state.prefill(get_country_states())
+        self.birth_state.prefill(self.state_l10n.state_list)
 
     def _update_marital_status(self):
         if self.model.is_married():

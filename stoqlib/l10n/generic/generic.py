@@ -46,3 +46,17 @@ class PersonDocument(object):
         return True
 
 person_document = PersonDocument()
+
+# This is not actually a state, it's more like a country subdivsion, see:
+# http://en.wikipedia.org/wiki/Country_subdivision
+
+
+class State(object):
+    label = _('State')
+
+    state_list = []
+
+    def validate(self, value):
+        return True
+
+state = State()
