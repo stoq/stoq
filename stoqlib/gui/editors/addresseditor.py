@@ -29,16 +29,15 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import AttributeForwarder
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.lib.countries import get_countries
-from stoqlib.lib.defaults import get_country_states
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import validate_state
 
 _ = stoqlib_gettext
 
@@ -102,6 +101,7 @@ class AddressSlave(BaseEditorSlave):
         self.is_main_address = (model and model.is_main_address
                                 or is_main_address)
         self.db_form = db_form
+        self.state_l10n = api.get_l10n_field(conn, 'state')
         if model is not None:
             model = conn.get(model)
             model = _AddressModel(model, conn)
@@ -133,7 +133,7 @@ class AddressSlave(BaseEditorSlave):
     #
 
     def setup_proxies(self):
-        self.state.prefill(get_country_states())
+        self.state.prefill(self.state_l10n.state_list)
         self.country.prefill(get_countries())
         if self.db_form:
             self._update_forms()
@@ -144,6 +144,7 @@ class AddressSlave(BaseEditorSlave):
         self.streetnumber_check.set_active(bool(self.model.streetnumber)
                                            or not self.edit_mode)
         self._update_streetnumber()
+        self.state_lbl.set_text(self.state_l10n.label)
 
     def can_confirm(self):
         return self.model.is_valid_model()
@@ -205,14 +206,9 @@ class AddressSlave(BaseEditorSlave):
     #
 
     def on_state__validate(self, entry, state):
-        if self.model.country != _("Brazil"):
-            # FIXME: When the country isn't Brazil, let something else
-            #        than Brazil's states.
-            #        Remove it when we have a list of other countries states.
-            return
-
-        if not validate_state(state):
-            return ValidationError(_("The State is not valid"))
+        if not self.state_l10n.validate(state):
+            return ValidationError(_("%s is not valid") % (
+                self.state_l10n.label))
 
     def on_streetnumber__validate(self, entry, streetnumber):
         if streetnumber <= 0:

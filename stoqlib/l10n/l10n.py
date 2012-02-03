@@ -25,7 +25,6 @@
 
 from kiwi.python import namedAny
 
-from stoqlib.lib.parameters import sysparam
 from stoqlib.l10n.generic import generic
 
 # This maps country lists in stoqlib.lib.countries to ISO 639-1
@@ -37,6 +36,7 @@ iso639_list = {
 
 
 def get_l10n_module(conn):
+    from stoqlib.lib.parameters import sysparam
     country = sysparam(conn).COUNTRY_SUGGESTED
 
     short = iso639_list.get(country.lower(), None)

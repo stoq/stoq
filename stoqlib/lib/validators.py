@@ -89,14 +89,6 @@ def validate_area_code(code):
     return 10 <= code <= 99
 
 
-def validate_state(state):
-    state_code = ("RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI",
-                  "CE", "RN", "PB", "PE", "AL", "SE", "BA", "MG", "ES",
-                  "RJ", "SP", "PR", "SC", "RS", "MS", "MT", "GO", "DF")
-    if state.upper() in state_code:
-        return True
-    return False
-
 #
 # Document Validators
 #

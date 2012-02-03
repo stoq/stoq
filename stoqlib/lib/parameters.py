@@ -33,18 +33,18 @@ from kiwi.python import namedAny, ClassInittableObject
 from stoqdrivers.enum import TaxType
 
 import stoqlib
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.domain.interfaces import ISupplier, IBranch
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.l10n.l10n import get_l10n_field
 from stoqlib.lib.imageutils import ImageHelper
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import (validate_int,
                                     validate_decimal,
                                     validate_directory,
                                     validate_area_code,
-                                    validate_percentage,
-                                    validate_state)
+                                    validate_percentage)
 from stoqlib.lib.barcode import BarcodeInfo
 
 _ = stoqlib_gettext
@@ -121,11 +121,13 @@ class ParameterDetails(object):
             return ValidationError(_("'%s' is not a valid percentage.")
                                    % value)
 
-    @staticmethod
-    def validate_state(state):
-        if not validate_state(state):
-            return ValidationError(_("'%s' is not a valid state.")
-                                   % state)
+    @classmethod
+    def validate_state(cls, value):
+        state_l10n = get_l10n_field(get_connection(), 'state')
+        if not state_l10n.validate(value):
+            return ValidationError(
+                _("'%s' is not a valid %s.")
+                % (value, state_l10n.label.lower(), ))
 
     #
     #  Private API
