@@ -806,7 +806,7 @@ class BillReport(object):
     def _get_instrucoes(self, payment):
         instructions = []
         data = sysparam(payment.get_connection()).BILL_INSTRUCTIONS
-        for line in data.split('\n')[:3]:
+        for line in data.split(r'\n')[:3]:
             line = line.replace('$DATE', payment.due_date.strftime('%d/%m/%Y'))
             instructions.append(line)
 

@@ -64,7 +64,7 @@ def custom_property(name, num_length):
             setattr(self, internal_attr, '-'.join(val))
 
         else:
-            raise BoletoException('Wrong value format')
+            raise BoletoException(_('Wrong value format'))
 
     return property(
         lambda self: getattr(self, internal_attr),
@@ -147,7 +147,7 @@ class BankInfo(object):
         num = num.replace('X', str(dv), 1)
         if len(num) != 44:
             raise BoletoException(
-                'Código com %d caracteres' % len(num))
+                _('The barcode must have 44 caracteres, found %d') % len(num))
         return num
 
     @property
@@ -242,12 +242,11 @@ class BankInfo(object):
         return self._sacado
 
     def _sacado_set(self, list_sacado):
-        if len(list_sacado) > 3:
-            raise BoletoException(u'Número de linhas do sacado maior que 3')
-        for line in list_sacado:
-            if len(line) > 80:
-                raise BoletoException(
-                    u'Linha de sacado possui mais que 80 caracteres')
+        # Just get 3 lines
+        list_sacado = list_sacado[:3]
+        for i, line in enumerate(list_sacado):
+            # Just get the first 80 characters
+            list_sacado[i] = list_sacado[i][:80]
         self._sacado = list_sacado
     sacado = property(_sacado_get, _sacado_set)
 
@@ -306,25 +305,20 @@ class BankInfo(object):
     @classmethod
     def validate_field(cls, field, dv_10=None, func=None):
         if ' ' in field:
-            raise BoletoException(
-                u'Campo não pode ter espaços')
+            raise BoletoException(_('The field cannot have spaces'))
         if '.' in field or ',' in field:
-            raise BoletoException(
-                u'Campo não pode ter pontos ou virgulas')
+            raise BoletoException(_('The field cannot have dots of commas'))
         dv = None
         if '-' in field:
             if field.count('-') != 1:
-                raise BoletoException(
-                    u'Só pode ter um hífen')
+                raise BoletoException(_('More than one hyphen found'))
             field, dv = field.split('-', 1)
             if not dv:
-                raise BoletoException(
-                    u'Digito verificador não pode ser vazio')
+                raise BoletoException(_('Verifier digit cannot be empty'))
         try:
             int(field)
         except ValueError:
-            raise BoletoException(
-                u'Conta precisa ser um número')
+            raise BoletoException(_('Account needs to be a number'))
 
         if dv and dv_10 is not None:
             func = cls.validate_field_func
@@ -343,19 +337,16 @@ class BankInfo(object):
                 elif (ret is not None and
                     str(ret) != dv.lower() and
                     ret < 10):
-                    raise BoletoException(
-                        u'Dígito verificador invalido')
+                    raise BoletoException(_('Invalid verifier digit'))
             else:
                 try:
                     dv = int(dv)
                 except ValueError:
                     raise BoletoException(
-                        u'Dígito verificador tem que ser um número ou %s' % (
-                        dv_10))
+                        _('Verifier digit must be a number or %s') % dv_10)
 
                 if ret is not None and ret != dv:
-                    raise BoletoException(
-                        u'Dígito verificador invalido')
+                    raise BoletoException(_('Invalid verifier digit'))
 
     @classmethod
     def validate_option(cls, option, value):
@@ -365,14 +356,14 @@ class BankInfo(object):
     def formata_numero(numero, tamanho):
         if len(numero) > tamanho:
             raise BoletoException(
-                u'Tamanho do numero maior que o permitido')
+                _('Number length must be less than %s') % tamanho)
         return numero.zfill(tamanho)
 
     @staticmethod
     def formata_texto(texto, tamanho):
         if len(texto) > tamanho:
             raise BoletoException(
-                u'Tamanho do texto maior que o permitido')
+                _('Text length must be less than %s') % tamanho)
         return texto.ljust(tamanho)
 
     @staticmethod
@@ -568,11 +559,16 @@ class BankBradesco(BankInfo):
             try:
                 value = int(value)
             except ValueError:
-                raise BoletoException("carteira tem que ser um número")
+                # TRANSLATORS: Do not translate 'Carteira'
+                raise BoletoException(_("Carteira must be a number"))
             if 0 > value:
-                raise BoletoException("carteira tem que ser entre 0 e 99")
+                raise BoletoException(
+                    # TRANSLATORS: Do not translate 'Carteira'
+                    _("Carteira must be a number between 0 and 99"))
             if value > 99:
-                raise BoletoException("carteira tem que ser entre 0 e 99")
+                raise BoletoException(
+                    # TRANSLATORS: Do not translate 'Carteira'
+                    _("Carteira must be a number between 0 and 99"))
 
 
 @register_bank
@@ -581,7 +577,6 @@ class BankBB(BankInfo):
     bank_number = 1
     logo = 'logo_bb.gif'
     options = {'convenio': BILL_OPTION_CUSTOM,
-               'len_convenio': BILL_OPTION_CUSTOM,
                'agencia': BILL_OPTION_BANK_BRANCH,
                'conta': BILL_OPTION_BANK_BRANCH}
 
@@ -592,10 +587,13 @@ class BankBB(BankInfo):
         if not 'carteira' in kwargs:
             kwargs['carteira'] = '18'
 
-        self.len_convenio = 7
-        if 'len_convenio' in kwargs:
-            self.len_convenio = int(kwargs.pop('len_convenio'))
-        self.convenio = ''
+        convenio = kwargs.pop('convenio', None)
+        if convenio:
+            self.len_convenio = len(convenio)
+            self.convenio = convenio
+        else:
+            self.len_convenio = 7
+            self.convenio = ''
 
         self.format_nnumero = 1
         if 'format_nnumero' in kwargs:
@@ -674,17 +672,18 @@ class BankBB(BankInfo):
     def validate_option(cls, option, value):
         if option == 'convenio':
             if value == '':
-                raise BoletoException('Convenio não pode ser vazio')
+                # TRANSLATORS: Do not translate 'Convenio'
+                raise BoletoException(_('Convenio cannot be empty'))
             try:
                 int(value)
             except ValueError:
-                raise BoletoException(_("Must be a number"))
-            if len(value) > 8:
-                raise BoletoException(_("Cannot be longer than %d") % (8,))
-
-        if option == 'len_convenio':
-            if value not in ['6', '7', '8']:
-                raise BoletoException('Tem que ser 6, 7 ou 8')
+                # TRANSLATORS: Do not translate 'Convenio'
+                raise BoletoException(_("Convenio must be a number"))
+            if len(value) not in [6, 7, 8]:
+                raise BoletoException(
+                    # TRANSLATORS: Do not translate 'Convenio'
+                    _("Convenio length must be 6, 7 or 8. Try filing it with "
+                      "'0's at the left."))
 
 
 @register_bank
