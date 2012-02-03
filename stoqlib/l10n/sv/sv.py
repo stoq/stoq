@@ -51,6 +51,7 @@ company_document = Organisationsnummer()
 #
 # Personnummer
 # http://sv.wikipedia.org/wiki/Personnummer
+# Skatteverket: SKV 707
 #
 
 class Personnummer(object):
@@ -67,8 +68,8 @@ person_document = Personnummer()
 
 
 #
-# Federal Units / Estado
-# http://en.wikipedia.org/wiki/States_of_Brazil
+# Counties / Län
+# http://en.wikipedia.org/wiki/Counties_of_Sweden
 #
 
 class County(object):
