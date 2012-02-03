@@ -24,7 +24,6 @@ UI:
 
 Misc:
 * Design chart arguments properly
-* Copy jquery/flot into stoq
 * move css to a file, to reduce html size
 * Consider AJAX for quering chart data
 * Chart overlays? Esp. interesting for specific time intervals
