@@ -239,6 +239,8 @@ class CalendarView(WebView):
 
     def update_events(self, **events):
         self._show_events.update(**events)
+        if not self._loaded:
+            return
         self.js_function_call("update_options", self._show_events)
 
         self._calendar_run('refetchEvents')
@@ -329,6 +331,7 @@ class CalendarApp(AppWindow):
                     new_action.set_sensitive(False)
 
             view_action.connect('notify::active', self._update_events)
+        self._update_events()
 
         radio_actions = [
             ('ViewMonth', STOQ_CALENDAR_MONTH, _("View as month"),
