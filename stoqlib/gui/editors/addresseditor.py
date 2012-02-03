@@ -144,7 +144,7 @@ class AddressSlave(BaseEditorSlave):
         self.streetnumber_check.set_active(bool(self.model.streetnumber)
                                            or not self.edit_mode)
         self._update_streetnumber()
-        self.state_lbl.set_text(self.state_l10n.label)
+        self.state_lbl.set_text(self.state_l10n.label + ':')
 
     def can_confirm(self):
         return self.model.is_valid_model()

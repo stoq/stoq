@@ -50,7 +50,7 @@ class _IndividualDocuments(BaseEditorSlave):
 
     def setup_proxies(self):
         self.document_l10n = api.get_l10n_field(self.conn, 'person_document')
-        self.cpf_lbl.set_label(self.document_l10n.label)
+        self.cpf_lbl.set_label(self.document_l10n.label + ':')
         self.cpf.set_mask(self.document_l10n.entry_mask)
         self.proxy = self.add_proxy(self.model,
                                     _IndividualDocuments.proxy_widgets)
