@@ -29,6 +29,7 @@ from kiwi.argcheck import argcheck
 from kiwi.datatypes import ValidationError
 from kiwi.python import AttributeForwarder
 
+from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.address import CityLocation
 from stoqlib.domain.interfaces import IIndividual
@@ -36,7 +37,6 @@ from stoqlib.domain.person import PersonAdaptToIndividual
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import validate_cpf
 
 _ = stoqlib_gettext
 
@@ -50,6 +50,9 @@ class _IndividualDocuments(BaseEditorSlave):
                      'rg_number')
 
     def setup_proxies(self):
+        self.document_l10n = api.get_l10n_field(self.conn, 'person_document')
+        self.cpf_lbl.set_label(self.document_l10n.label)
+        self.cpf.set_mask(self.document_l10n.entry_mask)
         self.proxy = self.add_proxy(self.model,
                                     _IndividualDocuments.proxy_widgets)
 
@@ -58,11 +61,13 @@ class _IndividualDocuments(BaseEditorSlave):
         if self.cpf.is_empty():
             return
 
-        if not validate_cpf(value):
-            return ValidationError(_(u'The CPF is not valid.'))
+        if not self.document_l10n.validate(value):
+            return ValidationError(_('%s is not valid.') % (
+                self.document_l10n.label,))
 
         if self.model.check_cpf_exists(value):
-            return ValidationError(_('A person with this CPF already exists'))
+            return ValidationError(_('A person with this %s already exists' % (
+                self.document_l10n.label,)))
 
 
 class _IndividualDetailsModel(AttributeForwarder):

@@ -36,3 +36,13 @@ class CompanyDocument(object):
         return True
 
 company_document = CompanyDocument()
+
+
+class PersonDocument(object):
+    label = _('Document')
+    entry_mask = None
+
+    def validate(self, value):
+        return True
+
+person_document = PersonDocument()

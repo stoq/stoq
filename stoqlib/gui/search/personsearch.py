@@ -234,6 +234,7 @@ class ClientSearch(BasePersonSearch):
 
     def __init__(self, conn, **kwargs):
         self.company_doc_l10n = api.get_l10n_field(conn, 'company_document')
+        self.person_doc_l10n = api.get_l10n_field(conn, 'person_document')
         SearchEditor.__init__(self, conn, **kwargs)
 
     #
@@ -258,7 +259,7 @@ class ClientSearch(BasePersonSearch):
                              format_func=format_phone_number, width=150),
                 Column('cnpj_or_cpf', _('Document'), str, width=150),
                 SearchColumn('cnpj', self.company_doc_l10n.label, str, width=150, visible=False),
-                SearchColumn('cpf', _('CPF'), str, width=130, visible=False),
+                SearchColumn('cpf', self.person_doc_l10n.label, str, width=130, visible=False),
                 SearchColumn('rg_number', _('RG'), str, width=120)]
 
     @argcheck(ClientView)
