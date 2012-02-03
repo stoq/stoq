@@ -32,6 +32,8 @@ iso639_list = {
     # FIXME: We should use a combo in parameters instead.
     'brazil': 'br',
     'brasil': 'br',
+    'sverige': 'sv',
+    'sweden': 'sv',
 }
 
 
