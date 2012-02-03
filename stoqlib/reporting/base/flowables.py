@@ -337,3 +337,9 @@ class Paragraph(RParagraph):
                     self._first_line_frags = [total_width, first_line_frags]
                     break
         return RParagraph.wrap(self, width, height)
+
+    def get_width(self):
+        width = sum([stringWidth(frag.text, frag.fontName,
+                                       frag.fontSize) for frag in self.frags])
+        # FIXME: Figure out how to calculate the extra space necessary
+        return width + 20

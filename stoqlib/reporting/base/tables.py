@@ -82,7 +82,7 @@ class Table(RTable):
                 if width in (None, '*'):
                     continue
 
-                self._colWidths[i] = (width / total_width) * avail_width
+                self._colWidths[i] = (float(width) / total_width) * avail_width
 
             self._argW = self._colWidths
 
@@ -203,9 +203,7 @@ class ReportTableBuilder(AbstractTableBuilder):
         """
         if self.header:
             kwargs['repeatRows'] = 1
-        self.update_style()
-        data = self.get_data()
-        return Table(data, style=self.style, *args, **kwargs)
+        return AbstractTableBuilder.create_table(self, *args, **kwargs)
 
     #
     # AbstractTableBuilder Hooks
@@ -391,10 +389,13 @@ class ObjectTableBuilder(ColumnTableBuilder):
         """ Return the column names representing the table header. """
         col_names = [col.name for col in self.columns]
         if not '' in col_names:
-            header = [Paragraph(col.name, style="TableHeader",
-                                align=col.get_translated_alignment())
-                          for col in self.columns]
-            return header
+            headers = []
+            for col in self.columns:
+                p = Paragraph(col.name, style="TableHeader",
+                              align=col.get_translated_alignment())
+                col.max_width = max(col.max_width, p.get_width())
+                headers.append(p)
+            return headers
 
         # If we set a virtual column in a table without header, the first line
         # (the supposed header) will have spanned cells
@@ -402,6 +403,16 @@ class ObjectTableBuilder(ColumnTableBuilder):
             raise RuntimeError('Virtual columns in a table (%r) without'
                                ' headers is not implemented' % self)
         return None
+
+    def create_table(self, *args, **kwargs):
+        """ Override ReportTableBuilder create_table method to allow specify
+        the columns width.
+        """
+        def choose_width(column):
+            return min(col.width, col.max_width)
+
+        col_widths = [choose_width(col) for col in self.columns]
+        return ReportTableBuilder.create_table(self, colWidths=col_widths)
 
     def get_row_data(self, value):
         """ Create the row list, formatting its column values if needed. """
@@ -679,6 +690,8 @@ class TableColumn:
         """
         self.name = name
         self.width = width
+        # Keep score of this columns's cells max with, so we dont waste space
+        self.max_width = 0
         self.format_string = format_string
         self.format_func = format_func
         self.truncate = truncate
@@ -707,8 +720,10 @@ class TableColumn:
             value = self.format_string % value
         if not isinstance(value, basestring):
             value = str(value)
-        return Paragraph(value, style=self._style, ellipsize=self.truncate,
-                         align=self.get_translated_alignment())
+        p = Paragraph(value, style=self._style, ellipsize=self.truncate,
+                      align=self.get_translated_alignment())
+        self.max_width = max(self.max_width, p.get_width())
+        return p
 
     def __repr__(self):
         return '<%s at 0x%x>' % (self.__class__.__name__, id(self))
