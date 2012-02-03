@@ -22,12 +22,6 @@ UI:
   * Copy URL menu popup + link
 * Figure out printing
 
-Stoq integration:
-* Require twisted & webkit in debian/dependencies
-* Change gtk.main() to use reactor.run()
-* Cleanup tcp port allocation, allow several stoq to run at the same time
-* Use new template module for reports
-
 Misc:
 * Design chart arguments properly
 * Copy jquery/flot into stoq

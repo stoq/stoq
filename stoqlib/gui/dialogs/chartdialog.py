@@ -23,25 +23,69 @@
 ##
 """ Chart Generation Dialog """
 
-import gtk
-import webkit
+import json
 
-from twisted.internet import reactor
+import gtk
+from twisted.web.client import getPage
+
+from stoqlib.api import api
+from stoqlib.lib.daemonutils import start_daemon
+from stoqlib.gui.webview import WebView
 
 
 class ChartDialog(gtk.Window):
     def __init__(self):
         gtk.Window.__init__(self)
-        self.connect('destroy', lambda x: reactor.stop())
         self.set_size_request(800, 480)
-        self._view = webkit.WebView()
+        self._view = WebView()
+        self._view.get_view().connect(
+            'load-finished',
+            self._on_view__document_load_finished)
         self.add(self._view)
-        self.set_title("Chart")
-        self.open_chart('MonthlyPaymentsChart', year=2009)
 
-    def open_chart(self, name, **kwargs):
-        port = 8080
-        url = 'http://localhost:%d/chart?name=%s&' % (port, name)
-        for key, value in kwargs.items():
-            url += key + '=' + str(value)
-        self._view.load_uri(url)
+        self._setup_daemon()
+
+    @api.async
+    def _setup_daemon(self):
+        daemon = yield start_daemon()
+        self._daemon_uri = daemon.base_uri
+
+        proxy = daemon.get_client()
+        yield proxy.callRemote('start_webservice')
+
+        def _get_chart_url(**kwargs):
+            params = []
+            for key, value in kwargs.items():
+                params.append(key + '=' + str(value))
+            print params
+            return '%s/web/payment-chart.json?%s' % (
+                self._daemon_uri, '&'.join(params))
+
+        #url = _get_chart_url(type='daily', year=2011, month=12)
+        url = _get_chart_url(type='month', year=2011)
+        page = yield getPage(url)
+        opt = {}
+        opt['data'] = json.loads(page)
+        opt['options'] = {
+            "xaxis": {"mode": "time"},
+            # XXX: _JS_DAY is not defined
+            #"bars": {"show": True, "barWidth": 20 * 1},
+            "points": {"show": True},
+            "lines": {"show": True},
+            "grid": {"hoverable": True,
+                     "clickable": True},
+        }
+        self._opt = opt
+        self._view.load_uri('%s/web/static/chart.html' % (
+                            self._daemon_uri,))
+
+    def _load_finished(self):
+        print self._opt
+        self._view.js_function_call("plot", self._opt, "foobar")
+
+    #
+    # Callbacks
+    #
+
+    def _on_view__document_load_finished(self, view, frame):
+        self._load_finished()
