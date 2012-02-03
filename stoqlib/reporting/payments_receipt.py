@@ -98,18 +98,22 @@ class BasePaymentReceipt(BaseStoqReport):
         recipient = self.get_recipient()
         company = ICompany(recipient, None)
         if company:
+            name = recipient.name
             document = company.cnpj
+            address = recipient.get_address_string()
         else:
+            name = ''
             document = ''
+            address = ''
 
         cols = [TC('', style='Normal-Bold', width=150),
                 TC('', expand=True, truncate=True)]
 
         self.add_paragraph(_('Recipient'), style='Normal-Bold')
         data = [
-            [_("Recipient:"), recipient.name],
+            [_("Recipient:"), name],
             [_("CPF/CNPJ/RG:"), document],
-            [_("Address:"), recipient.get_address_string()],
+            [_("Address:"), address],
         ]
 
         self.add_column_table(data, cols, do_header=False,

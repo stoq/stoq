@@ -122,8 +122,8 @@ COL_PADDING = 4
 
 DOC_DEFAULTS = {'topMargin': 10 * mm,
                 'leftMargin': 10 * mm,
-                'rightMarging': 10 * mm,
-                'bottomMargin': 20 * mm}
+                'rightMargin': 10 * mm,
+                'bottomMargin': 10 * mm}
 
 HIGHLIGHT_COLOR = colors.Color(0.9, 0.9, 0.9)
 SOFT_LINE_COLOR = colors.gray
