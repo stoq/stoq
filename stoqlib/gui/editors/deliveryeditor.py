@@ -46,8 +46,8 @@ _ = stoqlib_gettext
 
 
 class Delivery(object):
-    def __init__(self):
-        self.price = None
+    def __init__(self, price=None):
+        self.price = price
         self.estimated_fix_date = None
         self.notes = None
         self.client = None
@@ -175,7 +175,8 @@ class DeliveryEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        return Delivery()
+        price = sysparam(self.conn).DELIVERY_SERVICE.sellable.price
+        return Delivery(price=price)
 
     def setup_proxies(self):
         self._populate_person()
