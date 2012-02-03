@@ -244,7 +244,7 @@ class ObjectListReport(SearchResultsReport):
         else:
             align = 'LEFT'
 
-        width = column.width or column.treeview_column.get_width()
+        width = column.treeview_column.get_width()
         # Ignore width when expand parameter is set or the column will not be
         # expanded.
         if column.expand:
