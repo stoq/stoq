@@ -116,7 +116,6 @@ class TestBank(DomainTest):
         sale = self._create_bill_sale()
         self._configure_boleto("001",
                                convenio="12345678",
-                               len_convenio="8",
                                agency="1172",
                                account="00403005")
         self._diff(sale, 'boleto-001')
@@ -125,7 +124,6 @@ class TestBank(DomainTest):
         sale = self._create_bill_sale()
         self._configure_boleto("001",
                                convenio="12345678",
-                               len_convenio="8",
                                agency="1172-X",
                                account="00403005-X")
         self._diff(sale, 'boleto-001')
