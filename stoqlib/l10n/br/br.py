@@ -51,7 +51,7 @@ company_document = CNPJ()
 
 class CPF(object):
     label = 'CPF'
-    entry_mask = '00.000.000/0000-00'
+    entry_mask = '000.000.000-00'
 
     def validate(self, value):
         return validate_cpf(value)
