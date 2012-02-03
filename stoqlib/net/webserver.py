@@ -27,6 +27,7 @@ from twisted.web.static import File
 from kiwi.environ import environ
 
 from stoqlib.net.calendarevents import CalendarEvents
+from stoqlib.net.paymentcharts import PaymentCharts
 
 
 class WebResource(Resource):
@@ -36,3 +37,4 @@ class WebResource(Resource):
         path = environ.get_resource_paths('html')[0]
         self.putChild('static', File(path))
         self.putChild('calendar-events.json', CalendarEvents())
+        self.putChild('payment-chart.json', PaymentCharts())
