@@ -24,6 +24,8 @@
 ##
 """Dialog for listing payment categories"""
 
+import random
+
 from kiwi.datatypes import ValidationError
 
 from stoqlib.domain.payment.category import PaymentCategory
@@ -31,6 +33,36 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+_TANGO_PALETTE = [
+    '#eeeeec',
+    '#d3d7cf',
+    '#babdb6',
+    '#fce94f',
+    '#edd400',
+    '#c4a000',
+    '#8ae234',
+    '#73d216',
+    '#4e9a06',
+    '#fcaf3e',
+    '#f57900',
+    '#ce5c00',
+    '#e9b96e',
+    '#c17d11',
+    '#8f5902',
+    '#729fcf',
+    '#3465a4',
+    '#204a87',
+    '#ad7fa8',
+    '#75507b',
+    '#5c3566',
+    '#888a85',
+    '#555753',
+    '#2e3436',
+    '#ef2929',
+    '#cc0000',
+    '#a40000',
+    ]
 
 
 class PaymentCategoryEditor(BaseEditor):
@@ -47,8 +79,14 @@ class PaymentCategoryEditor(BaseEditor):
             self.category_type.set_sensitive(False)
 
     def create_model(self, trans):
+        used_colors = set([
+            pc.color for pc in PaymentCategory.select(connection=trans)])
+        random.shuffle(_TANGO_PALETTE)
+        for color in _TANGO_PALETTE:
+            if not color in used_colors:
+                break
         return PaymentCategory(name='',
-                               color='#000000',
+                               color=color,
                                category_type=int(self._category_type),
                                connection=trans)
 
