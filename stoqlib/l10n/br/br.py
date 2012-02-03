@@ -23,10 +23,11 @@
 ##
 ##
 
-from stoqlib.lib.validators import validate_cnpj
+from stoqlib.lib.validators import (validate_cpf,
+                                    validate_cnpj)
 
 #
-# CNPJ - Cadastro Nacion da Pessoa Juridica
+# CNPJ - Cadastro Nacional da Pessoa Juridica
 #
 # http://www.receita.fazenda.gov.br/pessoajuridica/cnpj/consulsitcadastralcnpj.htm
 #
@@ -40,3 +41,19 @@ class CNPJ(object):
         return validate_cnpj(value)
 
 company_document = CNPJ()
+
+
+#
+# CPF - Cadastro de Pessoas Físicas
+# http://www.receita.fazenda.gov.br/aplicacoes/atcta/cpf/default.htm
+#
+
+
+class CPF(object):
+    label = 'CPF'
+    entry_mask = '00.000.000/0000-00'
+
+    def validate(self, value):
+        return validate_cpf(value)
+
+person_document = CPF()
