@@ -150,13 +150,6 @@ class IPersonFacet(Interface):
     person = Attribute("a Person")
 
 
-class IPaymentFacet(IORMObject):
-    """A facet on a Payment, the only thing it has is a named reference
-    back to the payment itself.
-    """
-    payment = Attribute("a Payment")
-
-
 class IIndividual(IPersonFacet):
     """Being or characteristic of a single person, concerning one
     person exclusively
@@ -413,17 +406,6 @@ class ITransporter(IPersonFacet):
                                    'this transporter')
     freight_percentage = Attribute('The percentage amount of freight '
                                    'charged by this transporter')
-
-
-class IInPayment(IPaymentFacet):
-    """ Interface specification for InPayments. """
-
-
-class IOutPayment(IPaymentFacet):
-    """ Interface specification for OutPayments. """
-
-    def pay():
-        """ Confirm the payment."""
 
 
 class IPaymentTransaction(Interface):

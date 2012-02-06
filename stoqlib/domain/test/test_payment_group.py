@@ -50,7 +50,6 @@ class TestPaymentGroup(DomainTest):
 
         method = PaymentMethod.get_by_name(self.trans, 'bill')
         payment = method.create_inpayment(sale.group, Decimal(10))
-        payment = payment.get_adapted()
         self.assertEqual(payment.status, Payment.STATUS_PREVIEW)
         sale.group.confirm()
         self.assertEqual(payment.status, Payment.STATUS_PENDING)
@@ -146,9 +145,9 @@ class TestPaymentGroup(DomainTest):
         sale.confirm()
 
         # the commissions are created after the payment
-        payment1.get_adapted().pay()
-        payment2.get_adapted().pay()
-        payment3.get_adapted().pay()
+        payment1.pay()
+        payment2.pay()
+        payment3.pay()
 
         sale.return_(sale.create_sale_return_adapter())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
@@ -191,8 +190,7 @@ class TestPaymentGroup(DomainTest):
         sale.order()
         method = PaymentMethod.get_by_name(self.trans, 'check')
         inpayment = method.create_inpayment(sale.group, Decimal(900))
-        payment = inpayment.get_adapted()
-        payment.discount = 10
+        inpayment.discount = 10
         sale.confirm()
         self.assertEqual(group.get_total_discount(), 10)
 
@@ -210,8 +208,7 @@ class TestPaymentGroup(DomainTest):
         sale.order()
         method = PaymentMethod.get_by_name(self.trans, 'check')
         inpayment = method.create_inpayment(sale.group, Decimal(900))
-        payment = inpayment.get_adapted()
-        payment.interest = 15
+        inpayment.interest = 15
         sale.confirm()
         self.assertEqual(group.get_total_interest(), 15)
 
@@ -229,7 +226,6 @@ class TestPaymentGroup(DomainTest):
         sale.order()
         method = PaymentMethod.get_by_name(self.trans, 'check')
         inpayment = method.create_inpayment(sale.group, Decimal(900))
-        payment = inpayment.get_adapted()
-        payment.penalty = 25
+        inpayment.penalty = 25
         sale.confirm()
         self.assertEqual(group.get_total_penalty(), 25)

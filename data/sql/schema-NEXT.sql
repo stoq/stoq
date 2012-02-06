@@ -887,6 +887,8 @@ CREATE TABLE payment (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    payment_type integer CONSTRAINT valid_payment_type
+        CHECK (payment_type >= 0 AND payment_type < 2),
     status integer CONSTRAINT valid_status
         CHECK (status >= 0 AND status < 6),
     open_date timestamp,
@@ -1048,20 +1050,6 @@ CREATE TABLE parameter_data (
     field_name text NOT NULL UNIQUE,
     field_value text,
     is_editable boolean
-);
-
-CREATE TABLE payment_adapt_to_in_payment (
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    original_id bigint UNIQUE REFERENCES payment(id)
-);
-
-CREATE TABLE payment_adapt_to_out_payment (
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    original_id bigint UNIQUE REFERENCES payment(id)
 );
 
 CREATE TABLE profile_settings (

@@ -33,7 +33,6 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, ColoredColumn, SummaryLabel
 from kiwi.python import Settable
 
-from stoqlib.domain.interfaces import IInPayment
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
@@ -238,9 +237,9 @@ class PurchaseFinishWizard(BaseWizard):
                           group=self.purchase.group,
                           till=None,
                           category=None,
-                          connection=self.conn)
+                          connection=self.conn,
+                          payment_type=Payment.TYPE_IN)
         payment.set_pending()
-        payment.addFacet(IInPayment, connection=self.conn)
 
     def finish(self):
         model = self.model

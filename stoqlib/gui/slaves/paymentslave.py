@@ -42,7 +42,6 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.events import CreatePaymentEvent
-from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod, CreditCardData
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
@@ -203,9 +202,10 @@ class PaymentListSlave(GladeSlaveDelegate):
     gladefile = 'PaymentListSlave'
     gsignal('payment-edited')
 
-    def __init__(self, iface, group, method, total_value, editor_class, parent):
+    def __init__(self, payment_type, group, method, total_value,
+                 editor_class, parent):
         self.parent = parent
-        self.iface = iface
+        self.payment_type = payment_type
         self.group = group
         self.total_value = total_value
         self.editor_class = editor_class
@@ -338,7 +338,7 @@ class PaymentListSlave(GladeSlaveDelegate):
             due_date = datetime.datetime(p.due_date.year,
                                          p.due_date.month,
                                          p.due_date.day)
-            payment = self.method.create_payment(iface=self.iface,
+            payment = self.method.create_payment(payment_type=self.payment_type,
                                                  payment_group=self.group,
                                                  value=p.value,
                                                  due_date=due_date,
@@ -346,8 +346,7 @@ class PaymentListSlave(GladeSlaveDelegate):
                                                  payment_number=p.payment_number)
             if p.bank_account:
                 # Add the bank_account into the payment, if any.
-                adapted = payment.get_adapted()
-                bank_account = adapted.check_data.bank_account
+                bank_account = payment.check_data.bank_account
                 bank_account.bank_number = p.bank_account.bank_number
                 bank_account.bank_branch = p.bank_account.bank_branch
                 bank_account.bank_account = p.bank_account.bank_account
@@ -424,7 +423,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         # Note that 'order' may be a Sale or a PurchaseOrder object
         self.order = order_obj
         self.method = payment_method
-        self.method_iface = self._get_payment_method_iface()
+        self.payment_type = self._get_payment_type()
         self.total_value = outstanding_value or self._get_total_amount()
         self.payment_group = self.order.group
         self.payment_list = None
@@ -451,7 +450,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.wizard.refresh_next(validation_ok)
 
     def _setup_payment_list(self):
-        self.payment_list = PaymentListSlave(self.method_iface,
+        self.payment_list = PaymentListSlave(self.payment_type,
                                              self.payment_group,
                                              self.method,
                                              self.total_value,
@@ -494,13 +493,13 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         else:
             raise TypeError
 
-    def _get_payment_method_iface(self):
+    def _get_payment_type(self):
         if isinstance(self.order, Sale):
-            return IInPayment
+            return Payment.TYPE_IN
         elif isinstance(self.order, PurchaseOrder):
-            return IOutPayment
+            return Payment.TYPE_OUT
         elif isinstance(self.order, PaymentRenegotiation):
-            return IInPayment
+            return Payment.TYPE_IN
         else:
             raise TypeError
 
@@ -828,12 +827,11 @@ class CardMethodSlave(BaseEditorSlave):
 
         operation = self.method.operation
         for payment in payments:
-            adapted = payment.get_adapted()
-            data = operation.get_card_data_by_payment(adapted)
+            data = operation.get_card_data_by_payment(payment)
             data.card_type = payment_type
             data.provider = provider
             data.fee = provider.get_fee_for_payment(provider, data)
-            data.fee_value = data.fee * adapted.value / 100
+            data.fee_value = data.fee * payment.value / 100
 
     def _get_credit_providers(self):
         return PersonAdaptToCreditProvider.get_card_providers(
@@ -1147,10 +1145,10 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         if isinstance(self.model, PurchaseOrder):
             payment = self._method.create_outpayment(
-                self.model.group, payment_value).get_adapted()
+                self.model.group, payment_value)
         else:
             payment = self._method.create_inpayment(
-                self.model.group, payment_value).get_adapted()
+                self.model.group, payment_value)
         # We have to modify the payment, so the fiscal printer can calculate
         # and print the change.
         payment.base_value = self._holder.value

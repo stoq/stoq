@@ -24,7 +24,6 @@
 """ This module test all class in stoq/domain/purchase.py """
 
 
-from stoqlib.domain.interfaces import IInPayment
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 
@@ -111,7 +110,7 @@ class TestPurchaseOrder(DomainTest):
             self.assertEqual(payment.status, Payment.STATUS_PAID)
 
             # ... but there is one payback.
-            if IInPayment(payment, None):
+            if payment.is_inpayment():
                 self.assertEqual(payment.value, total_paid)
 
     def testCanCancelPartial(self):
@@ -157,7 +156,7 @@ class TestPurchaseOrder(DomainTest):
         order = self.create_purchase_order()
         order.status = PurchaseOrder.ORDER_PENDING
         order.add_item(self.create_sellable(), 1)
-        payment = self.add_payments(order, method_type='check').payment
+        payment = self.add_payments(order, method_type='check')
         account = self.create_account()
         payment.method.destination_account = account
         self.failIf(account.transactions)
@@ -177,7 +176,7 @@ class TestPurchaseOrder(DomainTest):
         order = self.create_purchase_order()
         order.status = PurchaseOrder.ORDER_PENDING
         order.add_item(self.create_sellable(), 1)
-        payment = self.add_payments(order, method_type='money').payment
+        payment = self.add_payments(order, method_type='money')
         account = self.create_account()
         payment.method.destination_account = account
         self.failIf(account.transactions)

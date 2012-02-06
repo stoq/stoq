@@ -32,7 +32,6 @@ from stoqlib.database.orm import ForeignKey, IntCol
 from stoqlib.database.orm import INNERJOINOn
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IOutPayment
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Person, PersonAdaptToSalesPerson
 from stoqlib.domain.sale import Sale
@@ -213,7 +212,7 @@ class CommissionView(Viewable):
 
     def get_payment_amount(self):
         # the returning payment should be shown as negative one
-        if IOutPayment(self.payment, None) is not None:
+        if self.payment.is_outpayment():
             return -self.payment.value
         return self.payment.value
 
@@ -221,8 +220,7 @@ class CommissionView(Viewable):
         # XXX: No, the sale amount does not change. But I return different
         # values based in type of the payment to guess how I might show the
         # total sale amount.
-        negative = IOutPayment(self.payment, None) is not None
-        if negative:
+        if self.payment.is_outpayment():
             return -self.sale.total_amount
         return self.sale.total_amount
 

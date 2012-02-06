@@ -27,14 +27,12 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency
 
-from stoqlib.database.orm import AND
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
-from stoqlib.domain.interfaces import IStorable, IInPayment, IOutPayment
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToOutPayment,
-                                            PaymentAdaptToInPayment)
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
@@ -257,13 +255,10 @@ class TestSale(DomainTest):
         till = Till.get_current(self.trans)
         self.assertEqual(sale.group.status, PaymentGroup.STATUS_CANCELLED)
         paid_payment = sale.payments[0]
-        payment = Payment.selectOne(
-            AND(Payment.q.groupID == sale.group.id,
-                Payment.q.tillID == till.id,
-                Payment.q.id == PaymentAdaptToOutPayment.q.originalID),
-            connection=self.trans)
+        payment = Payment.selectOneBy(group=sale.group, till=till,
+                                      payment_type=Payment.TYPE_OUT,
+                                      connection=self.trans)
         self.failUnless(payment)
-        self.failUnless(IOutPayment(payment, None))
         self.assertEqual(payment.value, paid_payment.value)
         self.assertEqual(payment.status, Payment.STATUS_PAID)
         self.assertEqual(payment.method.method_name, 'money')
@@ -307,22 +302,22 @@ class TestSale(DomainTest):
         self.assertEqual(sale.return_date.date(), datetime.date.today())
         self.assertEqual(sale.group.status, PaymentGroup.STATUS_CANCELLED)
 
-        paid_payment = Payment.selectOne(
-            AND(Payment.q.groupID == sale.group.id,
-                Payment.q.tillID == till.id,
-                Payment.q.id == PaymentAdaptToInPayment.q.originalID),
+        paid_payment = Payment.selectOneBy(
+            group=sale.group,
+            till=till,
+            payment_type=Payment.TYPE_IN,
             connection=self.trans)
         self.failUnless(paid_payment)
-        self.failUnless(IInPayment(paid_payment, None))
+        self.failUnless(paid_payment.is_inpayment())
         self.assertEqual(paid_payment.status, Payment.STATUS_PAID)
         self.assertEqual(paid_payment.method.method_name, 'money')
-        return_payment = Payment.selectOne(
-            AND(Payment.q.groupID == sale.group.id,
-                Payment.q.tillID == till.id,
-                Payment.q.id == PaymentAdaptToOutPayment.q.originalID),
+        return_payment = Payment.selectOneBy(
+            group=sale.group,
+            till=till,
+            payment_type=Payment.TYPE_OUT,
             connection=self.trans)
         self.failUnless(return_payment)
-        self.failUnless(IOutPayment(return_payment, None))
+        self.failUnless(return_payment.is_outpayment())
         self.assertEqual(return_payment.status, Payment.STATUS_PAID)
         self.assertEqual(return_payment.method.method_name, 'money')
         out_payment_plus_penalty = return_payment.value + renegotiation.penalty_value
@@ -368,7 +363,7 @@ class TestSale(DomainTest):
         self.assertEqual(sale.group.status, PaymentGroup.STATUS_CANCELLED)
         returned_amount = 0
         for payment in sale.payments:
-            if IOutPayment(payment, None) is not None:
+            if payment.is_outpayment():
                 returned_amount += payment.value
         self.assertEqual(returned_amount, currency(0))
 
@@ -394,7 +389,7 @@ class TestSale(DomainTest):
         sale.confirm()
 
         # Pay the first payment.
-        payment = payment1.get_adapted()
+        payment = payment1
         payment.pay()
         self.failUnless(sale.can_return())
 
@@ -410,7 +405,7 @@ class TestSale(DomainTest):
         self.assertEqual(sale.group.status, PaymentGroup.STATUS_CANCELLED)
         returned_amount = 0
         for payment in sale.payments:
-            if IOutPayment(payment, None) is not None:
+            if payment.is_outpayment():
                 returned_amount += payment.value
         self.assertEqual(payment.value, returned_amount)
 
@@ -445,7 +440,7 @@ class TestSale(DomainTest):
         self.assertEqual(sale.payments.count(), 3)
 
         # Pay the first payment
-        payment = payment1.get_adapted()
+        payment = payment1
         payment.pay()
         self.failUnless(sale.can_return())
 
@@ -477,21 +472,21 @@ class TestSale(DomainTest):
 
         p1, p2, p3, p4 = sale.payments.orderBy('open_date')
         # First three payments are incoming, one each of 50
-        self.failUnless(IInPayment(p1))
-        self.failIf(IOutPayment(p1, None))
+        self.failUnless(p1.is_inpayment())
+        self.failIf(p1.is_outpayment())
         self.assertEquals(p1.value, 100)
 
-        self.failUnless(IInPayment(p2))
-        self.failIf(IOutPayment(p2, None))
+        self.failUnless(p2.is_inpayment())
+        self.failIf(p2.is_outpayment())
         self.assertEquals(p2.value, 100)
 
-        self.failUnless(IInPayment(p3))
-        self.failIf(IOutPayment(p3, None))
+        self.failUnless(p3.is_inpayment())
+        self.failIf(p3.is_outpayment())
         self.assertEquals(p3.value, 100)
 
         # Last payment is outgoing and should be the same amount as the penalty
-        self.failIf(IInPayment(p4, None))
-        self.failUnless(IOutPayment(p4))
+        self.failIf(p4.is_inpayment())
+        self.failUnless(p4.is_outpayment())
         self.assertEquals(p4.value, penalty)
 
         # Paid payments: return money in the till, except the penality.
@@ -771,7 +766,7 @@ class TestSale(DomainTest):
         self.add_product(sale)
         sale.order()
 
-        payment = self.add_payments(sale, method_type='check').payment
+        payment = self.add_payments(sale, method_type='check')
 
         account = self.create_account()
         payment.method.destination_account = account
@@ -794,7 +789,7 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         self.add_product(sale)
         sale.order()
-        payment = self.add_payments(sale, method_type='money').payment
+        payment = self.add_payments(sale, method_type='money')
         account = self.create_account()
         payment.method.destination_account = account
         self.failIf(account.transactions)

@@ -609,11 +609,10 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
             return
 
         money = PaymentMethod.get_by_name(self.purchase.get_connection(), 'money')
-        in_payment = money.create_inpayment(
+        payment = money.create_inpayment(
             self.purchase.group, paid_value,
             description=_('%s Money Returned for Purchase %d') % (
             '1/1', self.purchase.id))
-        payment = in_payment.get_adapted()
         payment.set_pending()
         payment.pay()
 

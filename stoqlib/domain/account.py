@@ -29,7 +29,7 @@ from stoqlib.database.orm import DateTimeCol
 from stoqlib.database.orm import OR, SingleJoin
 from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IDescribable, IOutPayment
+from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.station import BranchStation
 from stoqlib.exceptions import PaymentError
 from stoqlib.lib.parameters import sysparam
@@ -272,7 +272,7 @@ class AccountTransaction(Domain):
             raise PaymentError(_("Payment needs to be paid"))
         trans = payment.get_connection()
         value = payment.paid_value
-        if IOutPayment(payment, None):
+        if payment.is_outpayment():
             value = -value
         return cls(source_account=sysparam(trans).IMBALANCE_ACCOUNT,
                    account=account or payment.method.destination_account,

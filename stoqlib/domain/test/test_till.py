@@ -43,7 +43,7 @@ class TestTill(DomainTest):
         sale.add_sellable(sellable, price=10)
         method = PaymentMethod.get_by_name(self.trans, 'bill')
         payment = method.create_inpayment(sale.group, Decimal(10))
-        return payment.get_adapted()
+        return payment
 
     def _create_outpayment(self):
         purchase = self.create_purchase_order()
@@ -51,7 +51,7 @@ class TestTill(DomainTest):
         purchase.add_item(sellable, 1)
         method = PaymentMethod.get_by_name(self.trans, 'bill')
         payment = method.create_outpayment(purchase.group, Decimal(10))
-        return payment.get_adapted()
+        return payment
 
     def testGetCurrentTillOpen(self):
         self.assertEqual(Till.get_current(self.trans), None)

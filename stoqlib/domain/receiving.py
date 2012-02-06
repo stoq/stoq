@@ -233,11 +233,10 @@ class ReceivingOrder(Domain):
 
         description = _(u'Freight for purchase %s') % (
                         self.purchase.get_order_number_str(), )
-        out_payment = money_method.create_outpayment(
+        payment = money_method.create_outpayment(
             group, self.freight_total,
             due_date=datetime.datetime.today(),
             description=description)
-        payment = out_payment.get_adapted()
         payment.set_pending()
         return payment
 
