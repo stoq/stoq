@@ -34,47 +34,48 @@ from stoqlib.gui.stockicons import (
     STOQ_PAYABLE_APP, STOQ_POS_APP, STOQ_PRODUCTION_APP,
     STOQ_PURCHASE_APP, STOQ_BILLS, STOQ_SALES_APP, STOQ_STOCK_APP,
     STOQ_TILL_APP)
-
-_ = gettext.gettext
+from stoqlib.lib.translation import N_
 
 _APPLICATIONS = {
-    'admin': (_("Administrative"),
-              _("Administer the branches, users, employees and configure system "
-                "parameters."),
+    'admin': (N_("Administrative"),
+              N_("Administer the branches, users, employees and configure "
+                 "system parameters."),
               STOQ_ADMIN_APP),
-    'calendar': (_("Calendar"),
-                _("Shows payments, orders and other things that will happen "
-                  "in the future."),
+    'calendar': (N_("Calendar"),
+                 N_("Shows payments, orders and other things that will happen "
+                    "in the future."),
                  STOQ_CALENDAR_APP),
-    'financial': (_("Financial"),
-                  _("Control accounts and financial transactions."),
+    'financial': (N_("Financial"),
+                  N_("Control accounts and financial transactions."),
                   STOQ_CALC),
-    'inventory': (_("Inventory"),
-                  _("Audit and adjust the product stock."),
+    'inventory': (N_("Inventory"),
+                  N_("Audit and adjust the product stock."),
                   STOQ_INVENTORY_APP),
-    'payable': (_("Accounts Payable"),
-                _("Manage payment that needs to be paid."),
+    'payable': (N_("Accounts Payable"),
+                N_("Manage payment that needs to be paid."),
                 STOQ_PAYABLE_APP),
-    'pos': (_("Point of Sales"),
-            _("Terminal and cash register for selling products and services."),
+    'pos': (N_("Point of Sales"),
+            N_("Terminal and cash register for selling products and "
+               "services."),
             STOQ_POS_APP),
-    'production': (_("Production"),
-                   _("Manage the production process."),
+    'production': (N_("Production"),
+                   N_("Manage the production process."),
                    STOQ_PRODUCTION_APP),
-    'purchase': (_("Purchase"),
-                 _("Create purchase orders and quotes"),
+    'purchase': (N_("Purchase"),
+                 N_("Create purchase orders and quotes"),
                  STOQ_PURCHASE_APP),
-    'receivable': (_("Accounts Receivable"),
-                   _("Manage payments that needs to be received."),
+    'receivable': (N_("Accounts Receivable"),
+                   N_("Manage payments that needs to be received."),
                    STOQ_BILLS),
-    'sales': (_("Sales"),
-              _("Quotes management and commission calculation."),
+    'sales': (N_("Sales"),
+              N_("Quotes management and commission calculation."),
               STOQ_SALES_APP),
-    'stock': (_("Stock"),
-              _("Stock management, receive products and transfer them between branches."),
+    'stock': (N_("Stock"),
+              N_("Stock management, receive products and transfer them "
+                 "between branches."),
               STOQ_STOCK_APP),
-    'till': (_("Till"),
-             _("Control tills and their workflow."),
+    'till': (N_("Till"),
+             N_("Control tills and their workflow."),
              STOQ_TILL_APP),
 }
 
@@ -100,7 +101,8 @@ class ApplicationDescriptions:
     def get_descriptions(self):
         app_desc = []
         for name, (label, description, icon) in _APPLICATIONS.items():
-            app_desc.append((name, label, icon, description))
+            app_desc.append((name, gettext.gettext(label),
+                             icon, gettext.gettext(description)))
         return app_desc
 
 
