@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
+  <object class="GtkWindow" id="PreferencesEditor">
+    <property name="default_width">440</property>
+    <property name="default_height">250</property>
+    <property name="mnemonics_visible">False</property>
+    <child>
+      <object class="GtkNotebook" id="preferences_notebook">
+        <property name="visible">True</property>
+        <property name="show_tabs">False</property>
+        <property name="show_border">False</property>
+        <child>
+          <object class="GtkVBox" id="general_tab">
+            <property name="visible">True</property>
+            <property name="border_width">6</property>
+            <child>
+              <object class="GtkFrame" id="frame1">
+                <property name="visible">True</property>
+                <property name="label_xalign">0</property>
+                <property name="shadow_type">none</property>
+                <child>
+                  <object class="GtkAlignment" id="alignment1">
+                    <property name="visible">True</property>
+                    <property name="left_padding">12</property>
+                    <child>
+                      <object class="GtkVBox" id="vbox1">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="ProxyLabel" id="notice_lbl">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">These options will only take effect after you restart Stoq.</property>
+                            <property name="model_attribute">notice_lbl</property>
+                            <attributes>
+                              <attribute name="style" value="italic"/>
+                              <attribute name="weight" value="bold"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkTable" id="table1">
+                            <property name="visible">True</property>
+                            <property name="n_rows">2</property>
+                            <property name="n_columns">2</property>
+                            <property name="column_spacing">6</property>
+                            <property name="row_spacing">6</property>
+                            <child>
+                              <object class="ProxyComboBox" id="language">
+                                <property name="visible">True</property>
+                                <property name="data_type">object</property>
+                                <property name="model_attribute">language</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                                <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="ProxyComboBox" id="toolbar_style">
+                                <property name="visible">True</property>
+                                <property name="data_type">object</property>
+                                <property name="model_attribute">toolbar_style</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="ProxyLabel" id="toolbar_style_lbl">
+                                <property name="visible">True</property>
+                                <property name="xalign">1</property>
+                                <property name="label" translatable="yes">Toolbar style:</property>
+                                <property name="model_attribute">toolbar_style_lbl</property>
+                              </object>
+                              <packing>
+                                <property name="x_options"></property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="ProxyLabel" id="language_lbl">
+                                <property name="visible">True</property>
+                                <property name="xalign">1</property>
+                                <property name="label" translatable="yes">Language:</property>
+                                <property name="model_attribute">language_lbl</property>
+                              </object>
+                              <packing>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                                <property name="x_options"></property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child type="label">
+                  <object class="GtkLabel" id="label1">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">&lt;b&gt;Settings&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

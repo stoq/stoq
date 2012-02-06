@@ -25,6 +25,7 @@
 """ Stoq startup routines"""
 
 import gettext
+import locale
 import logging
 import optparse
 import os
@@ -38,6 +39,25 @@ _restart = False
 _cur_exit_func = None
 # To avoid kiwi dependency at startup
 log = logging.getLogger('stoq.main')
+
+
+def _set_user_locale():
+    from stoqlib.lib.settings import get_settings
+
+    settings = get_settings()
+    lang = settings.get('user-locale', None)
+    if not lang:
+        return
+
+    lang += '.UTF-8'
+    try:
+        locale.setlocale(locale.LC_ALL, lang)
+    except locale.Error as err:
+        log.warning("Could not set locale to %s. Error message: %s" %
+                    (lang, err))
+    else:
+        os.environ['LANG'] = lang
+        os.environ['LANGUAGE'] = lang
 
 
 def _write_exception_hook(exctype, value, tb):
@@ -388,6 +408,7 @@ def main(args):
 
     # Do this as soon as possible, before we attempt to use the
     # external libraries/resources
+    _set_user_locale()
     _prepare_logfiles()
     _set_app_info()
     _check_dependencies()
