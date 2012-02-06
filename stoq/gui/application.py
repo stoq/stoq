@@ -43,6 +43,7 @@ from stoqlib.gui.base.dialogs import (get_dialog, run_dialog)
 from stoqlib.gui.base.infobar import InfoBar
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
+from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.keybindings import get_accel, get_accels
@@ -185,11 +186,10 @@ class AppWindow(GladeDelegate):
         AppWindow.app_windows.append(self)
         self._restore_window_size()
         self.hide_app()
-        self.Preferences.set_sensitive(False)
 
         self._check_demo_mode()
         self._check_version()
-        self._usability_hacks()
+        self._update_toolbar_style()
 
         if not stoq.stable and not api.is_developer_mode():
             self._display_unstable_version_message()
@@ -360,17 +360,6 @@ class AppWindow(GladeDelegate):
                 'While that inventory is open, you will be unable to do '
                 'operations that modify your stock.')
         self.inventory_bar = self.add_info_bar(gtk.MESSAGE_WARNING, msg)
-
-    def _usability_hacks(self):
-        """Adds some workarounds to improve stoq usability.
-
-        Currently, all it does is change the toolbar style to display both
-        icon and label (ubuntu defaults to show only icons)
-        """
-        if not hasattr(self, 'main_toolbar'):
-            return
-
-        self.main_toolbar.set_style(gtk.TOOLBAR_BOTH_HORIZ)
 
     def _check_demo_mode(self):
         if not api.sysparam(self.conn).DEMO_MODE:
@@ -545,6 +534,24 @@ class AppWindow(GladeDelegate):
         self.ToggleStatusbar.set_active(d.get('show-statusbar', True))
         self.ToggleToolbar.notify('active')
         self.ToggleStatusbar.notify('active')
+
+    def _update_toolbar_style(self):
+        toolbar = self.uimanager.get_widget('/toolbar')
+        if not toolbar:
+            return
+
+        style_map = {'icons': gtk.TOOLBAR_ICONS,
+                     'text': gtk.TOOLBAR_TEXT,
+                     'both': gtk.TOOLBAR_BOTH,
+                     'both-horizontal': gtk.TOOLBAR_BOTH_HORIZ}
+        # We set both horizontal as default to improve usability,
+        # it's easier for the user to know what some of the buttons
+        # in the toolbar does by having a label next to it
+        toolbar_style = api.user_settings.get('toolbar-style',
+                                              'both-horizontal')
+        value = style_map.get(toolbar_style)
+        if value:
+            toolbar.set_style(value)
 
     #
     # Overridables
@@ -1017,7 +1024,9 @@ class AppWindow(GladeDelegate):
     # View
 
     def _on_Preferences__activate(self, action):
-        pass
+        with api.trans() as trans:
+            self.run_dialog(PreferencesEditor, trans)
+        self._update_toolbar_style()
 
     # Edit
 
