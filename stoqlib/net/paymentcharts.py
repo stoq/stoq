@@ -30,10 +30,20 @@ import string
 from twisted.web.resource import Resource
 
 from stoqlib.api import api
-from stoqlib.chart.chart import Chart
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+
+class Chart(object):
+    def __init__(self, conn):
+        self.conn = conn
+
+    def execute(self, query):
+        return self.conn.queryAll(query)
+
+    def run(self):
+        pass
 
 
 class YearlyPaymentsChart(Chart):
