@@ -30,8 +30,9 @@ import shutil
 
 from twisted.internet import defer, reactor
 from twisted.web.xmlrpc import Proxy
+from kiwi.component import get_utility
 
-from stoqlib.api import api
+from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.process import Process
 
@@ -60,7 +61,8 @@ class DaemonManager(object):
 
         args = ['stoq-daemon',
                 '--daemon-id', self._daemon_id]
-        args.extend(api.db_settings.get_command_line_arguments())
+        db_settings = get_utility(IDatabaseSettings)
+        args.extend(db_settings.get_command_line_arguments())
         self._process = Process(args)
 
         reactor.callLater(0.1, self._check_active)
