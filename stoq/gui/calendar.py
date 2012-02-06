@@ -427,6 +427,8 @@ class CalendarApp(AppWindow):
     # Toolbar
 
     def new_activate(self):
+        if not self.NewClientCall.get_sensitive():
+            return
         self._new_client_call()
 
     def print_activate(self):
