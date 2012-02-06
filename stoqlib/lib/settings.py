@@ -28,8 +28,10 @@ import json
 import os
 from decimal import Decimal
 
+from kiwi.component import get_utility
 from kiwi.log import Logger
 
+from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.osutils import get_application_dir
 
 log = Logger('stoqlib.lib.settings')
@@ -142,29 +144,29 @@ class UserSettings(object):
         log.info("Migrating settings from Stoq.conf")
 
         # Migrate from old configuration settings
-        from stoqlib.api import api
+        config = get_utility(IStoqConfig)
 
         self.set('hide-demo-warning',
-                 api.config.get('UI', 'hide_demo_warning') == 'True')
+                 config.get('UI', 'hide_demo_warning') == 'True')
 
-        width = int(api.config.get('Launcher', 'window_width') or -1)
-        height = int(api.config.get('Launcher', 'window_height') or -1)
-        x = int(api.config.get('Launcher', 'window_x') or -1)
-        y = int(api.config.get('Launcher', 'window_y') or -1)
+        width = int(config.get('Launcher', 'window_width') or -1)
+        height = int(config.get('Launcher', 'window_height') or -1)
+        x = int(config.get('Launcher', 'window_x') or -1)
+        y = int(config.get('Launcher', 'window_y') or -1)
         self.set('launcher-geometry',
                  dict(width=width, height=height, x=x, y=y))
 
         self.set('last-version-check',
-                 api.config.get('General', 'last-version-check'))
+                 config.get('General', 'last-version-check'))
 
         self.set('latest-version',
-                 api.config.get('General', 'latest-version'))
+                 config.get('General', 'latest-version'))
 
         self.set('show-welcome-dialog',
-                 api.config.get('General', 'show_welcome_dialog') != 'False')
+                 config.get('General', 'show_welcome_dialog') != 'False')
 
         d = {}
-        for k, v in api.config.items('Shortcuts'):
+        for k, v in config.items('Shortcuts'):
             d[k] = v
         self.set('shortcuts', d)
 

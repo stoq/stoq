@@ -32,7 +32,6 @@ from kiwi.component import provide_utility
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.osutils import get_application_dir
-from stoqlib.database.settings import DatabaseSettings
 from stoqlib.exceptions import (FilePermissionError,
                                 NoConfigurationError)
 
@@ -190,6 +189,8 @@ class StoqConfig:
             username = self.get(database_section, 'dbusername') or username
             port = self.get(database_section, 'port') or port
 
+        # FIXME: This should be done elsewhere
+        from stoqlib.database.settings import DatabaseSettings
         return DatabaseSettings(rdbms, address, port,
                                 dbname, username, password)
 
