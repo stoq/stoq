@@ -127,15 +127,25 @@ class AppWindow(GladeDelegate):
         self.app = app
         self.conn = api.new_transaction()
         self.current_app = None
-        self.uimanager = self._create_ui_manager()
-        self.accel_group = self.uimanager.get_accel_group()
-        self._app_settings = api.user_settings.get('app-ui', {})
+        self.current_app_widget = None
+        self.uimanager = None
+        self.accel_group = None
 
-        self._create_ui_manager_ui()
+        self._pre_init()
         GladeDelegate.__init__(self,
                                keyactions=keyactions,
                                gladefile=self.gladefile,
                                toplevel_name=self.toplevel_name)
+        self._post_init()
+
+    def _pre_init(self):
+        api.user_settings.migrate()
+        self.uimanager = self._create_ui_manager()
+        self.accel_group = self.uimanager.get_accel_group()
+        self._app_settings = api.user_settings.get('app-ui', {})
+        self._create_ui_manager_ui()
+
+    def _post_init(self):
         self._configure_toplevel()
         self._create_shared_ui()
         self.create_ui()

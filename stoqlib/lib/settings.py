@@ -81,6 +81,7 @@ class UserSettings(object):
 
     def __init__(self):
         self._root = {}
+        self._migrated = False
         self._read()
 
     def set(self, name, value):
@@ -117,7 +118,6 @@ class UserSettings(object):
             fd = open(filename)
         except IOError, e:
             if e.errno == errno.ENOENT:
-                self._migrate()
                 return
             raise
         data = fd.read()
@@ -140,7 +140,9 @@ class UserSettings(object):
                 return
         fd.close()
 
-    def _migrate(self):
+    def migrate(self):
+        if self._migrated:
+            return
         log.info("Migrating settings from Stoq.conf")
 
         # Migrate from old configuration settings
@@ -169,6 +171,7 @@ class UserSettings(object):
         for k, v in config.items('Shortcuts'):
             d[k] = v
         self.set('shortcuts', d)
+        self._migrated = True
 
 _settings = None
 
