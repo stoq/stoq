@@ -162,6 +162,12 @@ def register_payment_methods(trans):
 
 
 def register_accounts(trans):
+    # FIXME: If you need to run this in a patch, you need to
+    #        make sure that selectOneBy is fixed, as accounts
+    #        with the same names are allowed.
+    #        It's for now okay to run this when creating a new
+    #        database.
+
     from stoqlib.domain.account import Account
     log.info("Creating Accounts")
     for name, atype in [(_("Assets"), Account.TYPE_ASSET),
@@ -172,6 +178,8 @@ def register_accounts(trans):
                         (_("Income"), Account.TYPE_INCOME),
                         (_("Tills"), Account.TYPE_CASH),
                         ]:
+        # FIXME: This needs to rewritten to not use selectOneBy,
+        #        see comment above.
         account = Account.selectOneBy(connection=trans,
                                       description=name)
         if not account:
