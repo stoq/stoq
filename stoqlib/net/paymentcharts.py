@@ -106,72 +106,77 @@ class MonthlyPaymentsChart(Chart):
     description = _("Total revenue, expenses and profit for all months in a year")
 
     in_payments_query = """
-SELECT $date_columns,
-        SUM(paid_value)
-   FROM payment
-  WHERE payment_type = 0 AND
-        $year_query
- GROUP BY $date_columns
- ORDER BY $date_columns
+  SELECT $date_columns,
+         SUM(paid_value)
+    FROM payment
+   WHERE payment_type = 0 AND
+         status = 2 AND
+         $year_query
+GROUP BY $date_columns
+ORDER BY $date_columns;
 """
 
     out_payments_query = """
-SELECT $date_columns,
+ SELECT $date_columns,
         SUM(paid_value)
    FROM payment
   WHERE payment_type = 1 AND
+         status = 2 AND
         $year_query
  GROUP BY $date_columns
- ORDER BY $date_columns
+ ORDER BY $date_columns;
 """
 
     def run(self, args):
         if 'year' in args:
+            year = int(args['year'][0])
             year_query = "extract(year FROM paid_date) = %s" % (
-                self.conn.sqlrepr(args['year'][0]))
-        elif 'last' in args:
-            year_query = "(NOW() - paid_date)::INTERVAL < %s::INTERVAL" % (
-                self.conn.sqlrepr(args['last'][0]))
+                self.conn.sqlrepr(year))
         else:
             raise TypeError("missing argument: year/last")
 
-        date_columns = "extract(year FROM paid_date)||'-'||lpad(extract(month FROM paid_date)::char, 2, '0')"
+        date_columns = "date_part('month', paid_date)"
         months = {}
         tmpl = string.Template(self.in_payments_query).substitute(
             dict(date_columns=date_columns,
                  year_query=year_query))
         res = self.execute(tmpl)
-        for date, total_in in res:
-            year, month = map(int, date.split('-'))
+        for month, total_in in res:
             months.setdefault((year, month), {})['in'] = total_in or 0
 
         tmpl = string.Template(self.out_payments_query).substitute(
             dict(date_columns=date_columns,
                  year_query=year_query))
         res = self.execute(tmpl)
-        for date, total_out in res:
-            year, month = map(int, date.split('-'))
+        for month, total_out in res:
             months.setdefault((year, month), {})['out'] = total_out or 0
 
-        data = []
-        revenue = []
-        expense = []
-        profit = []
+        revenues = ['revenue']
+        expenses = ['expense']
+        profits = ['profit']
 
+        from stoqlib.lib.dateconstants import get_month_names
+
+        items = []
         keys = sorted(months)
         for key in keys:
             values = months[key]
             year, month = key
+            month = int(month)
             total_in = values.get('in', 0)
             total_out = values.get('out', 0)
             unixtime = datetime.date(year, month, 1).strftime('%s')
-            revenue.append([float(unixtime) * 1000, float(total_in)])
-            expense.append([float(unixtime) * 1000, -float(total_out)])
-            profit.append([float(unixtime) * 1000, float(total_in - total_out)])
-        data.append(dict(label=_("Revenue"), data=revenue))
-        data.append(dict(label=_("Expense"), data=expense))
-        data.append(dict(label=_("Profit"), data=profit))
-        return data
+            jstime = float(unixtime) * 1000
+
+            revenues.append([jstime, float(total_in)])
+            expenses.append([jstime, float(total_out)])
+            profits.append([jstime, float(total_in - total_out)])
+
+            items.append({'time': "%s, %d" % (get_month_names()[month - 1], year),
+                          'revenue': int(total_in),
+                          'expense': int(total_out),
+                          'profit': int(total_in - total_out)})
+        return items, [revenues, expenses, profits]
 
 
 class DailyPaymentsChart(Chart):
@@ -243,6 +248,5 @@ class PaymentCharts(Resource):
             raise AssertionError
 
         chart = chart_class(conn)
-        print resource.args
         response = chart.run(resource.args)
         return json.dumps(list(response))

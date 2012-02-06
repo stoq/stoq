@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011-12 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -26,22 +26,41 @@
 import json
 
 import gtk
+from kiwi.currency import currency
+from kiwi.python import Settable
+from kiwi.ui.objectlist import ObjectList, Column
 from twisted.web.client import getPage
 
 from stoqlib.api import api
 from stoqlib.lib.daemonutils import start_daemon
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.webview import WebView
+
+_ = stoqlib_gettext
+
+
+reports = {
+    'month': [dict(name='time', title=_('Time unit'), expand=True),
+              dict(name='revenue', title=_("Revenue"), data_type=currency),
+              dict(name='expense', title=_("Expense"), data_type=currency),
+              dict(name='profit', title=_("Profit"), data_type=currency)]
+    }
 
 
 class ChartDialog(gtk.Window):
     def __init__(self):
         gtk.Window.__init__(self)
         self.set_size_request(800, 480)
+
+        self.vbox = gtk.VBox()
+        self.add(self.vbox)
+        self.vbox.show()
+
         self._view = WebView()
         self._view.get_view().connect(
             'load-finished',
             self._on_view__document_load_finished)
-        self.add(self._view)
+        self.vbox.pack_start(self._view, True, True)
 
         self._setup_daemon()
 
@@ -53,34 +72,70 @@ class ChartDialog(gtk.Window):
         proxy = daemon.get_client()
         yield proxy.callRemote('start_webservice')
 
+        # FIXME: This should be user options
+        report_name = 'month'
+        report = reports['month']
+        report_kwargs = dict(year=2011)
+
+        # Get chart data
+
+        data = yield self._invoke_chart(report_name, **report_kwargs)
+        self._render_chart(report, data)
+
+    @api.async
+    def _invoke_chart(self, report_name, **report_kwargs):
         def _get_chart_url(**kwargs):
             params = []
             for key, value in kwargs.items():
                 params.append(key + '=' + str(value))
-            print params
             return '%s/web/payment-chart.json?%s' % (
                 self._daemon_uri, '&'.join(params))
 
-        #url = _get_chart_url(type='daily', year=2011, month=12)
-        url = _get_chart_url(type='month', year=2011)
+        url = _get_chart_url(type=report_name, **report_kwargs)
         page = yield getPage(url)
+        data = json.loads(page)
+        api.asyncReturn(data)
+
+    def _get_chart_options(self):
         opt = {}
-        opt['data'] = json.loads(page)
         opt['options'] = {
             "xaxis": {"mode": "time"},
             # XXX: _JS_DAY is not defined
-            #"bars": {"show": True, "barWidth": 20 * 1},
             "points": {"show": True},
             "lines": {"show": True},
             "grid": {"hoverable": True,
                      "clickable": True},
         }
+        return opt
+
+    def _render_javascript(self, flot_data):
+        opt = self._get_chart_options()
+        opt['data'] = flot_data
         self._opt = opt
         self._view.load_uri('%s/web/static/chart.html' % (
                             self._daemon_uri,))
 
+    def _render_chart(self, report, data):
+        objectlist_data, flot_data = data
+
+        self._render_javascript(flot_data)
+        self._render_objectlist(report, objectlist_data)
+
+    def _render_objectlist(self, report, objectlist_data):
+        columns = []
+        for kwargs in report:
+            name = kwargs.pop('name')
+            columns.append(Column(name, **kwargs))
+        results = ObjectList(columns)
+
+        for item in objectlist_data:
+            settable = Settable(**item)
+            results.append(settable)
+
+        self.vbox.pack_start(results, True, True)
+        results.show()
+
     def _load_finished(self):
-        print self._opt
         self._view.js_function_call("plot", self._opt, "foobar")
 
     #
