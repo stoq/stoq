@@ -30,6 +30,9 @@ from kiwi.environ import environ
 from kiwi.log import Logger
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.algorithms import (modulo10,
+                                    modulo11,
+                                    calculaDuploDigito)
 
 _ = stoqlib_gettext
 log = Logger('stoqlib.lib.boleto')
@@ -159,7 +162,7 @@ class BankInfo(object):
         raise NotImplementedError
 
     def calculate_dv_barcode(self, line):
-        resto2 = self.modulo11(line, 9, 1)
+        resto2 = modulo11(line, 9, 1)
         if resto2 in [0, 1, 10]:
             dv = 1
         else:
@@ -266,7 +269,7 @@ class BankInfo(object):
     @property
     def codigo_dv_banco(self):
         num = '%03d' % (self.bank_number, )
-        cod = "%s-%s" % (num, self.modulo11(num))
+        cod = "%s-%s" % (num, modulo11(num))
         return cod
 
     @property
@@ -285,7 +288,7 @@ class BankInfo(object):
         assert linha, "Boleto doesn't have a barcode"
 
         def monta_campo(campo):
-            campo_dv = "%s%s" % (campo, self.modulo10(campo))
+            campo_dv = "%s%s" % (campo, modulo10(campo))
             return "%s.%s" % (campo_dv[0:5], campo_dv[5:])
 
         campo1 = monta_campo(linha[0:4] + linha[19:24])
@@ -325,9 +328,9 @@ class BankInfo(object):
         if dv and dv_10 is not None:
             func = cls.validate_field_func
             if func == 'modulo11':
-                ret = cls.modulo11(field)
+                ret = modulo11(field)
             elif func == 'modulo10':
-                ret = cls.modulo10(field)
+                ret = modulo10(field)
             else:
                 ret = None
 
@@ -377,50 +380,6 @@ class BankInfo(object):
         except AttributeError:
             pass
 
-    @staticmethod
-    def modulo10(num):
-        soma = 0
-        peso = 2
-        for i in range(len(num) - 1, -1, -1):
-            parcial = int(num[i]) * peso
-            if parcial > 9:
-                s = "%d" % parcial
-                parcial = int(s[0]) + int(s[1])
-            soma += parcial
-            if peso == 2:
-                peso = 1
-            else:
-                peso = 2
-
-        resto10 = soma % 10
-        if resto10 == 0:
-            modulo10 = 0
-        else:
-            modulo10 = 10 - resto10
-
-        return modulo10
-
-    @staticmethod
-    def modulo11(num, base=9, r=0):
-        soma = 0
-        fator = 2
-        for i in range(len(str(num))).__reversed__():
-            parcial10 = int(num[i]) * fator
-            soma += parcial10
-            if fator == base:
-                fator = 1
-            fator += 1
-        if r == 0:
-            soma = soma * 10
-            digito = soma % 11
-            if digito == 10:
-                digito = 0
-            return digito
-        if r == 1:
-            resto = soma % 11
-            return resto
-
-
 _banks = []
 
 
@@ -446,65 +405,12 @@ class BankBanrisul(BankInfo):
     def __init__(self, **kwargs):
         BankInfo.__init__(self, **kwargs)
 
-    # From http://jrimum.org/bopepo/browser/trunk/src/br/com/nordestefomento/jrimum/bopepo/campolivre/AbstractCLBanrisul.java
-    def calculaDuploDigito(self, seisPrimeirosCamposConcatenados):
-        def sum11(s, lmin, lmax):
-            soma = 0
-            peso = lmin
-            for c in reversed(s):
-                soma += peso * int(c)
-                peso += 1
-                if peso > lmax:
-                    peso = lmin
-            return soma
-        primeiroDV = self.modulo10(seisPrimeirosCamposConcatenados)
-        somaMod11 = sum11(
-            seisPrimeirosCamposConcatenados + str(primeiroDV), 2, 7)
-        restoMod11 = self.calculeRestoMod11(somaMod11)
-        while restoMod11 == 1:
-            primeiroDV = self.encontreValorValidoParaPrimeiroDV(primeiroDV)
-            somaMod11 = sum11(
-                seisPrimeirosCamposConcatenados + str(primeiroDV), 2, 7)
-            restoMod11 = self.calculeRestoMod11(somaMod11)
-        segundoDV = self.calculeSegundoDV(restoMod11)
-        return str(primeiroDV) + str(segundoDV)
-
-    def calculeSegundoDV(self, restoMod11):
-        if restoMod11 == 0:
-            return restoMod11
-        else:
-            return 11 - restoMod11
-
-    def calculePrimeiroDV(self, restoMod10):
-        if restoMod10 == 0:
-            return 0
-        else:
-            return 10 - restoMod10
-
-    def calculeRestoMod10(self, somaMod10):
-        if somaMod10 < 10:
-            return somaMod10
-        else:
-            return somaMod10 % 10
-
-    def encontreValorValidoParaPrimeiroDV(self, primeiroDV):
-        if primeiroDV == 9:
-            return 0
-        else:
-            return primeiroDV + 1
-
-    def calculeRestoMod11(self, somaMod11):
-        if somaMod11 < 11:
-            return somaMod11
-        else:
-            return somaMod11 % 11
-
     @property
     def campo_livre(self):
         content = '21%04d%07d%08d40' % (int(self.agencia),
                                         int(self.conta),
                                         int(self.nosso_numero))
-        dv = self.calculaDuploDigito(content)
+        dv = calculaDuploDigito(content)
         return '%s%s' % (content, dv)
 
 
@@ -533,7 +439,7 @@ class BankBradesco(BankInfo):
 
     @property
     def dv_nosso_numero(self):
-        resto2 = self.modulo11(self.nosso_numero, 7, 1)
+        resto2 = modulo11(self.nosso_numero, 7, 1)
         digito = 11 - resto2
         if digito == 10:
             dv = 'P'
@@ -642,14 +548,14 @@ class BankBB(BankInfo):
     def agencia_conta(self):
         return "%s-%s / %s-%s" % (
             self.agencia,
-            self.modulo11(self.agencia),
+            modulo11(self.agencia),
             self.conta,
-            self.modulo11(self.conta)
+            modulo11(self.conta)
         )
 
     @property
     def dv_nosso_numero(self):
-        return self.modulo11(self.nosso_numero)
+        return modulo11(self.nosso_numero)
 
     agencia = custom_property('agencia', 4)
     conta = custom_property('conta', 8)
@@ -713,7 +619,7 @@ class BankCaixa(BankInfo):
 
     @property
     def dv_nosso_numero(self):
-        resto2 = self.modulo11(self.nosso_numero.split('-')[0], 9, 1)
+        resto2 = modulo11(self.nosso_numero.split('-')[0], 9, 1)
         digito = 11 - resto2
         if digito == 10 or digito == 11:
             dv = 0
@@ -747,10 +653,10 @@ class BankItau(BankInfo):
     def dac_nosso_numero(self):
         agencia = self.agencia.split('-')[0]
         conta = self.conta.split('-')[0]
-        return self.modulo10(agencia +
-                             conta +
-                             self.carteira +
-                             self.nosso_numero)
+        return modulo10(agencia +
+                        conta +
+                        self.carteira +
+                        self.nosso_numero)
 
     def format_nosso_numero(self):
         return '%s/%s-%s' % (self.carteira,
@@ -763,7 +669,7 @@ class BankItau(BankInfo):
         conta = self.conta.split('-')[0]
         return '%s / %s-%s' % (agencia,
                                conta,
-                               self.modulo10(agencia + conta))
+                               modulo10(agencia + conta))
 
     @property
     def campo_livre(self):
@@ -775,7 +681,7 @@ class BankItau(BankInfo):
             self.dac_nosso_numero,
             agencia,
             conta,
-            self.modulo10(agencia + conta),
+            modulo10(agencia + conta),
             '000'
         )
 
@@ -800,7 +706,7 @@ class BankReal(BankInfo):
         num = "%s%s%s" % (self.nosso_numero,
                           self.agencia,
                           self.conta)
-        return self.modulo10(num)
+        return modulo10(num)
 
     @property
     def campo_livre(self):
@@ -835,12 +741,12 @@ class BankSantander(BankInfo):
     def format_nosso_numero(self):
         return "00000%s-%s" % (
             self.nosso_numero,
-            self.modulo11(self.nosso_numero))
+            modulo11(self.nosso_numero))
 
     @property
     def campo_livre(self):
         conta = self.formata_numero(self.conta, 7)
-        dv_nosso_numero = self.modulo11(self.nosso_numero)
+        dv_nosso_numero = modulo11(self.nosso_numero)
 
         return '%s%s00000%s%s%s%s' % (self.fixo,
                                       conta,
