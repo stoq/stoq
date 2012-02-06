@@ -100,6 +100,8 @@ def validate_cpf(cpf):
     if not cpf or len(cpf) < 11:
         return False
 
+    # FIXME: use modulo11 from algorithms.py
+
     # With the first 9 digits, we calculate the last two digits (verifiers)
     new = map(int, cpf)[:9]
 
@@ -129,6 +131,8 @@ def validate_cnpj(cnpj):
 
     if not cnpj or len(cnpj) < 14:
         return False
+
+    # FIXME: use modulo11 from algorithms.py
 
     # With the first 12 digts, we calculate the last 2 digits (verifiers)
     new = map(int, cnpj)[:12]
