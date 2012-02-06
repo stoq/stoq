@@ -213,7 +213,7 @@ class Tasks(object):
         self.app.run_dialog(CfopSearch, self.app.conn, hide_footer=True)
 
     def _open_keyboard_shortcuts(self):
-        self.app.run_dialog(ShortcutsEditor, self.app.conn)
+        self.app.run_dialog(ShortcutsEditor)
 
     def _open_sintegra(self):
         branch = api.get_current_branch(self.app.conn)
