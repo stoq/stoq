@@ -161,6 +161,8 @@ class TillApp(SearchableAppWindow):
         self.uimanager.remove_ui(self.till_ui)
 
     def new_activate(self):
+        if not self.TillAddCash.get_sensitive():
+            return
         self._run_add_cash_dialog()
 
     def search_activate(self):
