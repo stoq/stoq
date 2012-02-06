@@ -1040,11 +1040,10 @@ class SaleAdaptToPaymentTransaction(object):
             return
 
         money = PaymentMethod.get_by_name(conn, 'money')
-        out_payment = money.create_outpayment(
+        payment = money.create_outpayment(
             self.sale.group, paid_value,
             description=_('%s Money Returned for Sale %d') % (
             '1/1', self.sale.id), till=till)
-        payment = out_payment.get_adapted()
         payment.set_pending()
         payment.pay()
         self._restore_commission(payment)

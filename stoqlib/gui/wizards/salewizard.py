@@ -190,7 +190,7 @@ class BaseMethodSelectionStep(object):
 
             # We have to modify the payment, so the fiscal printer can
             # calculate and print the payback, if necessary.
-            payment = self.setup_cash_payment().get_adapted()
+            payment = self.setup_cash_payment()
             total = self.cash_change_slave.get_received_value()
             payment.base_value = total
 

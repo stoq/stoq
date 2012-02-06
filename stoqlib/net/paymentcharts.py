@@ -54,16 +54,16 @@ class YearlyPaymentsChart(Chart):
     in_payments_query = """
  SELECT extract(year FROM paid_date),
         SUM(paid_value)
-   FROM payment, payment_adapt_to_in_payment
-  WHERE payment.id = payment_adapt_to_in_payment.original_id
+   FROM payment
+  WHERE payment.payment_type = 0
  GROUP BY extract(year FROM paid_date)
  ORDER BY extract(year FROM paid_date);"""
 
     out_payments_query = """
  SELECT extract(year FROM paid_date),
         SUM(paid_value)
-   FROM payment, payment_adapt_to_out_payment
-  WHERE payment.id = payment_adapt_to_out_payment.original_id
+   FROM payment
+  WHERE payment.payment_type = 1
  GROUP BY extract(year FROM paid_date)
  ORDER BY extract(year FROM paid_date);"""
 
@@ -108,8 +108,8 @@ class MonthlyPaymentsChart(Chart):
     in_payments_query = """
 SELECT $date_columns,
         SUM(paid_value)
-   FROM payment, payment_adapt_to_in_payment
-  WHERE payment.id = payment_adapt_to_in_payment.original_id AND
+   FROM payment
+  WHERE payment_type = 0 AND
         $year_query
  GROUP BY $date_columns
  ORDER BY $date_columns
@@ -118,8 +118,8 @@ SELECT $date_columns,
     out_payments_query = """
 SELECT $date_columns,
         SUM(paid_value)
-   FROM payment, payment_adapt_to_out_payment
-  WHERE payment.id = payment_adapt_to_out_payment.original_id AND
+   FROM payment
+  WHERE payment_type = 1 AND
         $year_query
  GROUP BY $date_columns
  ORDER BY $date_columns
@@ -179,8 +179,8 @@ class DailyPaymentsChart(Chart):
     daily_in_payments = """
   SELECT extract(day FROM paid_date),
          SUM(paid_value)
-    FROM payment, payment_adapt_to_in_payment
-   WHERE payment.id = payment_adapt_to_in_payment.original_id AND
+    FROM payment
+   WHERE payment_type = 0 AND
          extract(month FROM paid_date) = $month AND
          extract(year FROM paid_date) = $year
 GROUP BY extract(day FROM paid_date)
@@ -189,8 +189,8 @@ ORDER BY extract(day FROM paid_date);"""
     daily_out_payments = """
   SELECT extract(day FROM paid_date),
          SUM(paid_value)
-    FROM payment, payment_adapt_to_out_payment
-   WHERE payment.id = payment_adapt_to_out_payment.original_id AND
+    FROM payment
+   WHERE payment_type = 1 AND
          extract(month FROM paid_date) = $month AND
          extract(year FROM paid_date) = $year
 GROUP BY extract(day FROM paid_date)

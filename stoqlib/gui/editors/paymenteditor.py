@@ -34,8 +34,7 @@ from kiwi.datatypes import currency, ValidationError, ValueUnset
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IClient,
-                                       ISupplier)
+from stoqlib.domain.interfaces import IClient, ISupplier
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
@@ -62,17 +61,21 @@ INTERVALTYPE_QUARTERLY = 11
 
 
 class PaymentEditor(BaseEditor):
-    gladefile = "PaymentEditor"
-    model_type = Payment
-    person_editor = None
-    person_class = None
-    person_iface = None
     title = _("Payment")
-    confirm_widgets = ['due_date']
+    gladefile = "PaymentEditor"
     proxy_widgets = ['value',
                      'description',
                      'due_date',
                      ]
+    confirm_widgets = ['due_date']
+
+    model_type = Payment
+
+    # Override in subclass
+    payment_type = None
+    person_editor = None
+    person_class = None
+    person_iface = None
 
     def __init__(self, conn, model=None, category=None):
         """ A base class for additional payments
@@ -106,6 +109,7 @@ class PaymentEditor(BaseEditor):
                        group=group,
                        till=None,
                        category=None,
+                       payment_type=self.payment_type,
                        connection=trans)
 
     def setup_proxies(self):
@@ -306,22 +310,19 @@ class PaymentEditor(BaseEditor):
         description = self.model.description
         self.model.description = '1/%d %s' % (n_dates, description)
         for i, date in enumerate(dates):
-            p = Payment(open_date=self.model.open_date,
-                        status=self.model.status,
-                        description='%d/%d %s' % (i + 2, n_dates,
-                                                  description),
-                        value=self.model.value,
-                        base_value=self.model.base_value,
-                        due_date=date,
-                        method=self.model.method,
-                        group=self.model.group,
-                        till=self.model.till,
-                        category=self.model.category,
-                        connection=self.conn)
-            if self.model.is_inpayment():
-                p.addFacet(IInPayment, connection=self.conn)
-            elif self.model.is_outpayment():
-                p.addFacet(IOutPayment, connection=self.conn)
+            Payment(open_date=self.model.open_date,
+                    payment_type=self.model.payment_type,
+                    status=self.model.status,
+                    description='%d/%d %s' % (i + 2, n_dates,
+                                              description),
+                    value=self.model.value,
+                    base_value=self.model.base_value,
+                    due_date=date,
+                    method=self.model.method,
+                    group=self.model.group,
+                    till=self.model.till,
+                    category=self.model.category,
+                    connection=self.conn)
 
     #
     # Kiwi Callbacks
@@ -364,6 +365,7 @@ class PaymentEditor(BaseEditor):
 
 
 class InPaymentEditor(PaymentEditor):
+    payment_type = Payment.TYPE_IN
     person_attribute = 'payer'
     person_editor = ClientEditor
     person_class = PersonAdaptToClient
@@ -373,20 +375,17 @@ class InPaymentEditor(PaymentEditor):
     category_type = PaymentCategory.TYPE_RECEIVABLE
 
     def __init__(self, conn, model=None, category=None):
-        """ This dialog is responsible to create additional payments with
-        IInPayment facet.
-
+        """Edit or display incoming payments
         @param conn: a database connection
-        @param model: a L{stoqlib.domain.payment.payment.Payment} object
-                      or None
+        @param model: a L{Payment} object or None
         """
         PaymentEditor.__init__(self, conn, model, category=category)
         if model is None or not model.is_inpayment():
-            self.model.addFacet(IInPayment, connection=self.conn)
             self.can_edit_details()
 
 
 class OutPaymentEditor(PaymentEditor):
+    payment_type = Payment.TYPE_OUT
     person_attribute = 'recipient'
     person_editor = SupplierEditor
     person_class = PersonAdaptToSupplier
@@ -396,16 +395,12 @@ class OutPaymentEditor(PaymentEditor):
     category_type = PaymentCategory.TYPE_PAYABLE
 
     def __init__(self, conn, model=None, category=None):
-        """ This dialog is responsible to create additional payments with
-        IOutPayment facet.
-
+        """Edit or display outgoing payments
         @param conn: a database connection
-        @param model: a L{stoqlib.domain.payment.payment.Payment} object
-                      or None
+        @param model: a L{Payment} object or None
         """
         PaymentEditor.__init__(self, conn, model, category=category)
         if model is None or not model.is_outpayment():
-            self.model.addFacet(IOutPayment, connection=self.conn)
             self.can_edit_details()
 
 

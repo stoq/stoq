@@ -27,7 +27,6 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency
 
-from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentFlowHistory
@@ -41,6 +40,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           category=None,
+                          payment_type=Payment.TYPE_OUT,
                           connection=self.trans)
         self.failUnless(payment.status == Payment.STATUS_PREVIEW)
 
@@ -56,6 +56,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           category=None,
+                          payment_type=Payment.TYPE_OUT,
                           connection=self.trans)
 
         for day, expected_value in [(0, 0),
@@ -93,6 +94,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           category=None,
+                          payment_type=Payment.TYPE_OUT,
                           connection=self.trans)
 
         for day, expected_value in [(0, 0),
@@ -129,6 +131,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           category=None,
+                          payment_type=Payment.TYPE_OUT,
                           connection=self.trans)
         self.failIf(payment.is_paid())
         payment.set_pending()
@@ -144,6 +147,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           category=None,
+                          payment_type=Payment.TYPE_OUT,
                           connection=self.trans)
         self.failIf(payment.is_cancelled())
         payment.set_pending()
@@ -161,6 +165,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           category=None,
+                          payment_type=Payment.TYPE_OUT,
                           connection=self.trans)
         today = datetime.datetime.today().strftime('%x')
         self.failIf(payment.get_paid_date_string() == today)
@@ -177,6 +182,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           category=None,
+                          payment_type=Payment.TYPE_OUT,
                           connection=self.trans)
         self.assertEqual(payment.get_open_date_string(), "")
         payment.open_date = datetime.datetime.now()
@@ -192,6 +198,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           category=None,
+                          payment_type=Payment.TYPE_OUT,
                           connection=self.trans)
         payment.set_pending()
         self.assertEqual(payment.get_days_late(), 4)
@@ -206,6 +213,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           category=None,
+                          payment_type=Payment.TYPE_OUT,
                           connection=self.trans)
         payment.set_pending()
         payment.pay()
@@ -267,10 +275,9 @@ class TestPaymentFlowHistory(DomainTest):
             self.trans, today)
         self.failIf(history.get_divergent_payments())
 
-        payment = self.create_payment()
+        payment = self.create_payment(Payment.TYPE_IN)
         payment.value = Decimal(100)
         payment.due_date = today
-        payment.addFacet(IInPayment, connection=self.trans)
         payment.set_pending()
 
         # not received
@@ -280,10 +287,9 @@ class TestPaymentFlowHistory(DomainTest):
         payment.paid_date = today
         self.failIf(payment in history.get_divergent_payments())
 
-        payment2 = self.create_payment()
+        payment2 = self.create_payment(Payment.TYPE_OUT)
         payment2.value = Decimal(10)
         payment2.due_date = today
-        payment2.addFacet(IOutPayment, connection=self.trans)
         payment2.set_pending()
 
         # not paid
@@ -294,10 +300,9 @@ class TestPaymentFlowHistory(DomainTest):
         # should be empty now
         self.failIf(history.get_divergent_payments())
 
-        payment3 = self.create_payment()
+        payment3 = self.create_payment(Payment.TYPE_IN)
         payment3.value = Decimal(30)
         payment3.due_date = today
-        payment3.addFacet(IInPayment, connection=self.trans)
         payment3.set_pending()
         payment3.interest = Decimal(1)
         payment3.pay()
@@ -305,10 +310,9 @@ class TestPaymentFlowHistory(DomainTest):
         # paid value is different
         self.failUnless(payment3 in history.get_divergent_payments())
 
-        payment4 = self.create_payment()
+        payment4 = self.create_payment(Payment.TYPE_OUT)
         payment4.value = Decimal(40)
         payment4.due_date = today + datetime.timedelta(days=-1)
-        payment4.addFacet(IOutPayment, connection=self.trans)
         payment4.set_pending()
         payment4.pay()
         payment4.paid_date = today
@@ -321,19 +325,17 @@ class TestPaymentFlowHistory(DomainTest):
             self.trans, today)
         old_to_receive = history.to_receive
 
-        payment = self.create_payment()
+        payment = self.create_payment(Payment.TYPE_IN)
         payment.value = Decimal(100)
         payment.due_date = today
-        payment.addFacet(IInPayment, connection=self.trans)
         payment.set_pending()
 
         self.assertEqual(old_to_receive + Decimal(100), history.to_receive)
 
         old_to_pay = history.to_pay
-        payment2 = self.create_payment()
+        payment2 = self.create_payment(Payment.TYPE_OUT)
         payment2.value = Decimal(10)
         payment2.due_date = today
-        payment2.addFacet(IOutPayment, connection=self.trans)
         payment2.set_pending()
         self.assertEqual(old_to_pay + Decimal(10), history.to_pay)
 
@@ -343,10 +345,9 @@ class TestPaymentFlowHistory(DomainTest):
             self.trans, today)
         old_to_receive = history.to_receive
 
-        payment = self.create_payment()
+        payment = self.create_payment(Payment.TYPE_IN)
         payment.value = Decimal(100)
         payment.due_date = today
-        payment.addFacet(IInPayment, connection=self.trans)
         payment.set_pending()
 
         self.assertEqual(old_to_receive + Decimal(100), history.to_receive)
@@ -354,10 +355,9 @@ class TestPaymentFlowHistory(DomainTest):
         self.assertEqual(old_to_receive, history.to_receive)
 
         old_to_pay = history.to_pay
-        payment2 = self.create_payment()
+        payment2 = self.create_payment(Payment.TYPE_OUT)
         payment2.value = Decimal(10)
         payment2.due_date = today
-        payment2.addFacet(IOutPayment, connection=self.trans)
         payment2.set_pending()
 
         self.assertEqual(old_to_pay + Decimal(10), history.to_pay)
@@ -370,20 +370,18 @@ class TestPaymentFlowHistory(DomainTest):
             self.trans, today)
         old_received = history.received
 
-        payment = self.create_payment()
+        payment = self.create_payment(Payment.TYPE_IN)
         payment.value = Decimal(100)
         payment.due_date = today
-        payment.addFacet(IInPayment, connection=self.trans)
         payment.set_pending()
         payment.pay()
 
         self.assertEqual(old_received + Decimal(100), history.received)
 
         old_paid = history.paid
-        payment2 = self.create_payment()
+        payment2 = self.create_payment(Payment.TYPE_OUT)
         payment2.value = Decimal(10)
         payment2.due_date = today
-        payment2.addFacet(IOutPayment, connection=self.trans)
         payment2.set_pending()
         payment2.pay()
         self.assertEqual(old_paid + Decimal(10), history.paid)
@@ -394,10 +392,9 @@ class TestPaymentFlowHistory(DomainTest):
             self.trans, today)
         old_received = history.received
 
-        payment = self.create_payment()
+        payment = self.create_payment(Payment.TYPE_IN)
         payment.value = Decimal(100)
         payment.due_date = today
-        payment.addFacet(IInPayment, connection=self.trans)
         payment.set_pending()
         payment.pay()
 
@@ -406,10 +403,9 @@ class TestPaymentFlowHistory(DomainTest):
         self.assertEqual(old_received, history.received)
 
         old_paid = history.paid
-        payment2 = self.create_payment()
+        payment2 = self.create_payment(Payment.TYPE_OUT)
         payment2.value = Decimal(10)
         payment2.due_date = today
-        payment2.addFacet(IOutPayment, connection=self.trans)
         payment2.set_pending()
         payment2.pay()
 
@@ -420,10 +416,10 @@ class TestPaymentFlowHistory(DomainTest):
 
 class TestPaymentComment(DomainTest):
     def test_comment(self):
-        payment = self.create_payment()
+        payment = self.create_payment(Payment.TYPE_OUT)
         self.assertEqual(payment.comments_number, 0)
         user = self.create_user()
         comment = PaymentComment(author=user, payment=payment, comment='',
-                                connection=self.trans)
+                                 connection=self.trans)
         self.assertEqual(payment.comments_number, 1)
         self.assertEqual(payment.comments[0], comment)

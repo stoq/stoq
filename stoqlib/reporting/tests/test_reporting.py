@@ -197,9 +197,7 @@ class TestReport(DomainTest):
 
         method = PaymentMethod.get_by_name(self.trans, 'money')
         group = self.create_payment_group()
-        inpayment = method.create_inpayment(group, Decimal(100))
-        payment = inpayment.get_adapted()
-
+        payment = method.create_inpayment(group, Decimal(100))
         payment.description = "Test receivable account"
         payment.group.payer = payer.person
         payment.set_pending()
@@ -216,9 +214,7 @@ class TestReport(DomainTest):
 
         method = PaymentMethod.get_by_name(self.trans, 'money')
         group = self.create_payment_group()
-        outpayment = method.create_outpayment(group, Decimal(100))
-        payment = outpayment.get_adapted()
-
+        payment = method.create_outpayment(group, Decimal(100))
         payment.description = "Test payable account"
         payment.group.recipient = drawee.person
         payment.set_pending()
@@ -264,8 +260,6 @@ class TestReport(DomainTest):
         sale.add_sellable(sellable, price=100)
         method = PaymentMethod.get_by_name(self.trans, 'bill')
         payment = method.create_inpayment(sale.group, Decimal(100))
-        inpayment = payment.get_adapted()
-
         TillEntry(value=25, id=20,
                   description="Cash In",
                   payment=None,
@@ -281,7 +275,7 @@ class TestReport(DomainTest):
 
         TillEntry(value=100, id=22,
                   description=sellable.get_description(),
-                  payment=inpayment,
+                  payment=payment,
                   till=till,
                   date=datetime.date(2007, 1, 1),
                   connection=self.trans)

@@ -32,7 +32,7 @@ from kiwi.component import get_utility
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.orm import AND, const
 from stoqlib.domain.devices import FiscalDayHistory
-from stoqlib.domain.interfaces import ICompany, IOutPayment
+from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.interfaces import IAppInfo
@@ -194,7 +194,7 @@ class StoqlibCATGenerator(object):
                 continue
 
             for payment in sale.payments:
-                if IOutPayment(payment, None):
+                if payment.is_outpayment():
                     continue
 
                 self.cat.add_payment_method(sale, history[0], payment,

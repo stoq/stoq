@@ -28,16 +28,14 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency
 from kiwi.log import Logger
-from zope.interface import implements
 
 from stoqlib.database.orm import (IntCol, DateTimeCol, UnicodeCol, ForeignKey,
                                   PriceCol)
 from stoqlib.database.orm import (const, DESC, AND, OR, MultipleJoin,
                                   SingleJoin)
-from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.account import AccountTransaction
-from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -56,6 +54,13 @@ class Payment(Domain):
         - I{penalty}: the absolute value for the penalty associated with
                        this payment.
     """
+
+    # Payment type
+    # IN = incoming to the company, accounts receivable
+    # OUT = outgoing from the company, accounts payable
+
+    (TYPE_IN,
+     TYPE_OUT) = range(2)
 
     # Status description
     # Sale: (PENDING, PAID, CANCELLED)
@@ -82,6 +87,7 @@ class Payment(Domain):
                 STATUS_CONFIRMED: _(u'Confirmed'),
                 STATUS_CANCELLED: _(u'Cancelled')}
 
+    payment_type = IntCol()
     status = IntCol(default=STATUS_PREVIEW)
     open_date = DateTimeCol(default=datetime.datetime.now)
     due_date = DateTimeCol()
@@ -125,17 +131,6 @@ class Payment(Domain):
         # have access to everything it needs
         payment = cls.get(obj_id, connection)
         payment.method.operation.payment_delete(payment)
-
-        # Remove from the In/Out tables, ideally this would
-        # be stored so we don't have to do trial and error
-        out_payment = IOutPayment(payment, None)
-        in_payment = IInPayment(payment, None)
-        if out_payment is not None:
-            PaymentAdaptToOutPayment.delete(
-                out_payment.id, connection)
-        elif in_payment is not None:
-            PaymentAdaptToInPayment.delete(
-                in_payment.id, connection)
 
         super(cls, Payment).delete(obj_id, connection)
 
@@ -204,6 +199,8 @@ class Payment(Domain):
 
     def pay(self, paid_date=None, paid_value=None, account=None):
         """Pay the current payment set its status as STATUS_PAID"""
+        if self.status != Payment.STATUS_PENDING:
+            raise ValueError(_("This payment is already paid."))
         self._check_status(self.STATUS_PENDING, 'pay')
 
         paid_value = paid_value or (self.value - self.discount +
@@ -383,12 +380,12 @@ class Payment(Domain):
     def is_inpayment(self):
         """Find out if a payment is incoming
         @returns: True if it's incoming"""
-        return IInPayment(self, None) is not None
+        return self.payment_type == self.TYPE_IN
 
     def is_outpayment(self):
         """Find out if a payment is outgoing
         @returns: True if it's outgoing"""
-        return IOutPayment(self, None) is not None
+        return self.payment_type == self.TYPE_OUT
 
     def is_separate_payment(self):
         # FIXME: This is a hack, we should rather store a flag
@@ -691,34 +688,3 @@ class PaymentFlowHistory(Domain):
         day_history = cls.get_or_create_flow_history(conn, reference_date)
         day_history._update_registers(payment, -payment.paid_value,
                                       accomplished=True)
-
-#
-# Payment adapters
-#
-
-
-class PaymentAdaptToInPayment(ModelAdapter):
-
-    implements(IInPayment)
-
-    @property
-    def payment(self):
-        return self.get_adapted()
-
-Payment.registerFacet(PaymentAdaptToInPayment, IInPayment)
-
-
-class PaymentAdaptToOutPayment(ModelAdapter):
-
-    implements(IOutPayment)
-
-    @property
-    def payment(self):
-        return self.get_adapted()
-
-    def pay(self):
-        if not self.payment.status == Payment.STATUS_PENDING:
-            raise ValueError(_("This payment is already paid."))
-        self.payment.pay()
-
-Payment.registerFacet(PaymentAdaptToOutPayment, IOutPayment)

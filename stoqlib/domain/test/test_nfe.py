@@ -125,12 +125,12 @@ class TestNfeGenerator(DomainTest):
         sale.order()
 
         method = PaymentMethod.get_by_name(self.trans, 'money')
-        ipayment = method.create_inpayment(sale.group,
+        payment = method.create_inpayment(sale.group,
                                            sale.get_sale_subtotal(),
                                            due_date=due_date)
         sale.confirm()
         # Workaround to avoid differences on nfe because of id
-        ipayment.payment.id = payment_id
+        payment.id = payment_id
 
         return sale
 

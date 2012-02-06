@@ -35,9 +35,7 @@ from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import (CheckData, PaymentMethod,
                                            CreditCardData)
-from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
-                                            PaymentAdaptToOutPayment,
-                                            PaymentChangeHistory)
+from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.person import Person, PersonAdaptToCreditProvider
 from stoqlib.domain.purchase import PurchaseOrder
@@ -187,13 +185,13 @@ class InPaymentView(BasePaymentView):
 
     joins = BasePaymentView.joins[:]
     joins.extend([
-        INNERJOINOn(None, PaymentAdaptToInPayment,
-                    PaymentAdaptToInPayment.q.originalID == Payment.q.id),
         LEFTJOINOn(None, Person,
                     PaymentGroup.q.payerID == Person.q.id),
         LEFTJOINOn(None, PaymentRenegotiation,
                    PaymentRenegotiation.q.groupID == PaymentGroup.q.id),
     ])
+
+    clause = (Payment.q.payment_type == Payment.TYPE_IN)
 
     @property
     def renegotiation(self):
@@ -219,11 +217,11 @@ class OutPaymentView(BasePaymentView):
 
     joins = BasePaymentView.joins[:]
     joins.extend([
-        INNERJOINOn(None, PaymentAdaptToOutPayment,
-                    PaymentAdaptToOutPayment.q.originalID == Payment.q.id),
         LEFTJOINOn(None, Person,
                    Person.q.id == BasePaymentView.PaymentGroup_Sale.q.recipientID),
     ])
+
+    clause = (Payment.q.payment_type == Payment.TYPE_OUT)
 
 
 class CardPaymentView(Viewable):
@@ -325,7 +323,7 @@ class InCheckPaymentView(_BillandCheckPaymentView):
     columns = _BillandCheckPaymentView.columns
     joins = _BillandCheckPaymentView.joins
     clause = AND(_BillandCheckPaymentView.clause,
-                 PaymentAdaptToInPayment.q.originalID == Payment.q.id)
+                 Payment.q.payment_type == Payment.TYPE_IN)
 
 
 class OutCheckPaymentView(_BillandCheckPaymentView):
@@ -334,7 +332,7 @@ class OutCheckPaymentView(_BillandCheckPaymentView):
     columns = _BillandCheckPaymentView.columns
     joins = _BillandCheckPaymentView.joins
     clause = AND(_BillandCheckPaymentView.clause,
-                 PaymentAdaptToOutPayment.q.originalID == Payment.q.id)
+                 Payment.q.payment_type == Payment.TYPE_OUT)
 
 
 class PaymentChangeHistoryView(Viewable):

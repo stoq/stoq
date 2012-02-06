@@ -59,7 +59,7 @@ class InvoiceTest(DomainTest):
         method = PaymentMethod.get_by_name(self.trans, 'money')
         payment = method.create_inpayment(sale.group,
                                           sale.get_sale_subtotal())
-        payment.get_adapted().due_date = datetime.datetime(2000, 1, 1)
+        payment.due_date = datetime.datetime(2000, 1, 1)
 
     def _add_product(self, sale, tax=None, price=None, code=None):
         product = self.create_product(price=price)

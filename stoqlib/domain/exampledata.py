@@ -673,10 +673,12 @@ class ExampleCreator(object):
                                short_name='Velec',
                                open_contract_date=datetime.date(2006, 01, 01))
 
-    def create_payment(self, date=None):
+    def create_payment(self, payment_type=None, date=None):
+        from stoqlib.domain.payment.payment import Payment
+        if payment_type is None:
+            payment_type = Payment.TYPE_OUT
         if not date:
             date = datetime.date.today()
-        from stoqlib.domain.payment.payment import Payment
         return Payment(group=None,
                        open_date=date,
                        due_date=date,
@@ -684,7 +686,8 @@ class ExampleCreator(object):
                        till=None,
                        method=self.get_payment_method(),
                        category=None,
-                       connection=self.trans)
+                       connection=self.trans,
+                       payment_type=payment_type)
 
     def create_payment_group(self):
         from stoqlib.domain.payment.group import PaymentGroup
@@ -797,8 +800,8 @@ class ExampleCreator(object):
             raise ValueError(obj)
 
         if date:
-            payment.payment.due_date = date
-            payment.payment.open_date = date
+            payment.due_date = date
+            payment.open_date = date
 
         return payment
 

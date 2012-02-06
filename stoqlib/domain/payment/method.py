@@ -34,10 +34,9 @@ from stoqlib.database.orm import PercentCol, PriceCol
 from stoqlib.database.orm import IntCol, ForeignKey, BoolCol, StringCol, UnicodeCol
 from stoqlib.database.orm import const, AND
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import (IInPayment, IActive, IOutPayment,
-                                       IDescribable)
+from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.payment.payment import Payment, PaymentAdaptToInPayment
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DatabaseInconsistency, PaymentMethodError
 from stoqlib.lib.defaults import quantize
@@ -200,12 +199,11 @@ class PaymentMethod(Domain):
                              % interest)
 
     def _calculate_payment_value(self, total_value, installments_number,
-                                iface, interest=None):
+                                 payment_type, interest=None):
         if not installments_number:
             raise ValueError(_('The payment_qty argument must be greater '
                                'than zero'))
-
-        if iface is IInPayment:
+        if payment_type == Payment.TYPE_IN:
             self._check_installments_number(installments_number)
 
         self._check_interest_value(interest)
@@ -224,14 +222,13 @@ class PaymentMethod(Domain):
     #       they don't really belong to the method itself.
     #       They should either go into the group or to a separate payment
     #       factory singleton.
-    @argcheck(object, PaymentGroup, Decimal, datetime.datetime,
+    @argcheck(int, PaymentGroup, Decimal, datetime.datetime,
               basestring, basestring, Till, basestring)
-    def create_payment(self, iface, payment_group, value, due_date=None,
+    def create_payment(self, payment_type, payment_group, value, due_date=None,
                        description=None, base_value=None, till=None,
                        payment_number=None):
         """Creates a new payment according to a payment method interface
-        @param iface: a payment method interface eg L{IOutPayment} or
-        L{IInPayment}
+        @param payment_type: the kind of payment, in or out
         @param payment_group: a L{PaymentGroup} subclass
         @param value: value of payment
         @param due_date: optional, due date of payment
@@ -240,17 +237,17 @@ class PaymentMethod(Domain):
         @param base_value: optional
         @param till: optional
         @param payment_number: optional
-        @returns: a L{PaymentAdaptToOutPayment} or L{PaymentAdaptToInPayment}
+        @returns: a L{Payment}
         """
         conn = self.get_connection()
 
         if due_date is None:
             due_date = const.NOW()
 
-        if iface is IInPayment:
+        if payment_type == Payment.TYPE_IN:
             query = AND(Payment.q.groupID == payment_group.id,
                         Payment.q.methodID == self.id,
-                        Payment.q.id == PaymentAdaptToInPayment.q.originalID)
+                        Payment.q.payment_type == Payment.TYPE_IN)
             payment_count = Payment.select(query,
                                 connection=self.get_connection()).count()
             if payment_count == self.max_installments:
@@ -269,14 +266,15 @@ class PaymentMethod(Domain):
         # If till is unset, do some clever guessing
         if till is None:
             # We only need a till for inpayments
-            if iface is IInPayment:
+            if payment_type == Payment.TYPE_IN:
                 till = Till.get_current(conn)
-            elif iface is IOutPayment:
+            elif payment_type == Payment.TYPE_OUT:
                 till = None
             else:
-                raise AssertionError(iface)
+                raise AssertionError(payment_type)
 
         payment = Payment(connection=conn,
+                          payment_type=payment_type,
                           due_date=due_date,
                           value=value,
                           base_value=base_value,
@@ -286,30 +284,27 @@ class PaymentMethod(Domain):
                           till=till,
                           description=description,
                           payment_number=payment_number)
-        facet = payment.addFacet(iface, connection=conn)
         self.operation.payment_create(payment)
-        return facet
+        return payment
 
-    @argcheck(object, PaymentGroup, Decimal, object)
-    def create_payments(self, iface, group, value, due_dates):
-        """Creates new payments according to a payment method interface.
+    @argcheck(int, PaymentGroup, Decimal, object)
+    def create_payments(self, payment_type, group, value, due_dates):
+        """Creates new payments
         The values of the individual payments are calculated by taking
         the value and dividing it by the number of payments.
         The number of payments is determined by the length of the due_dates
         sequence.
-        @param iface: a payment method interface eg L{IOutPayment} or
-        L{IInPayment}
+        @param payment_type: the kind of payment, in or out
         @param payment_group: a L{PaymentGroup} subclass
         @param value: value of payment
         @param due_dates: a list of datetime objects
-        @returns: a list of L{PaymentAdaptToOutPayment} or
-        L{PaymentAdaptToInPayment}
+        @returns: a list of L{Payment}
         """
         installments = len(due_dates)
         interest = Decimal(0)
 
         normalized_value = self._calculate_payment_value(
-            value, installments, iface, interest)
+            value, installments, payment_type, interest)
 
         normalized_value = quantize(normalized_value)
         if interest:
@@ -320,7 +315,7 @@ class PaymentMethod(Domain):
         payments = []
         payments_total = Decimal(0)
         for i, due_date in enumerate(due_dates):
-            payment = self.create_payment(iface,
+            payment = self.create_payment(payment_type,
                 group, normalized_value, due_date,
                 description=self.describe_payment(group, i + 1, installments))
             payments.append(payment)
@@ -329,8 +324,7 @@ class PaymentMethod(Domain):
         # Adjust the last payment so it the total will sum up nicely.
         difference = -(payments_total - interest_total - value)
         if difference:
-            adapted = payment.get_adapted()
-            adapted.value += difference
+            payment.value += difference
         return payments
 
     def describe_payment(self, payment_group, installment=1, installments=1):
@@ -361,9 +355,9 @@ class PaymentMethod(Domain):
         @param description: optional, description of the payment
         @param base_value: optional
         @param till: optional
-        @returns: a L{PaymentAdaptToInPayment}
+        @returns: a L{Payment}
         """
-        return self.create_payment(IInPayment, payment_group,
+        return self.create_payment(Payment.TYPE_IN, payment_group,
                                    value, due_date,
                                    description, base_value, till)
 
@@ -378,9 +372,9 @@ class PaymentMethod(Domain):
         @param description: optional, description of the payment
         @param base_value: optional
         @param till: optional
-        @returns: a L{PaymentAdaptToOutPayment}
+        @returns: a L{Payment}
         """
-        return self.create_payment(IOutPayment, payment_group,
+        return self.create_payment(Payment.TYPE_OUT, payment_group,
                                    value, due_date,
                                    description, base_value, till)
 
@@ -394,9 +388,9 @@ class PaymentMethod(Domain):
         @param payment_group: a L{PaymentGroup} subclass
         @param value: total value of all payments
         @param due_dates: a list of datetime objects
-        @returns: a list of L{PaymentAdaptToInPayment}
+        @returns: a list of L{Payment}
         """
-        return self.create_payments(IInPayment, payment_group,
+        return self.create_payments(Payment.TYPE_IN, payment_group,
                                     value, due_dates)
 
     @argcheck(PaymentGroup, Decimal, object)
@@ -409,15 +403,14 @@ class PaymentMethod(Domain):
         @param payment_group: a L{PaymentGroup} subclass
         @param value: total value of all payments
         @param due_dates: a list of datetime objects
-        @returns: a list of L{PaymentAdaptToOutPayment}
+        @returns: a list of L{Payment}
         """
-        return self.create_payments(IOutPayment, payment_group,
+        return self.create_payments(Payment.TYPE_OUT, payment_group,
                                     value, due_dates)
 
     @classmethod
     def get_active_methods(cls, conn):
-        """Returns a list of payment method interfaces tied with the
-        active payment methods
+        """Returns a list of active payment methods
         """
         return PaymentMethod.selectBy(is_active=True,
                                       connection=conn).orderBy('description')

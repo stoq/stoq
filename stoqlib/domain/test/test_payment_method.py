@@ -26,11 +26,8 @@ import datetime
 from decimal import Decimal
 
 from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.payment import (Payment,
-                                            PaymentAdaptToInPayment,
-                                            PaymentAdaptToOutPayment)
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
@@ -54,8 +51,7 @@ class _TestPaymentMethod:
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
         payments = method.create_inpayments(sale.group, Decimal(100),
                                             [d] * no)
-
-        return [p.get_adapted() for p in payments]
+        return payments
 
     def createOutPayments(self, no=3):
         purchase = self.create_purchase_order()
@@ -63,24 +59,24 @@ class _TestPaymentMethod:
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
         payments = method.create_outpayments(purchase.group, Decimal(100),
                                              [d] * no)
-        return [p.get_adapted() for p in payments]
+        return payments
 
-    def createPayment(self, iface):
-        if iface is IOutPayment:
+    def createPayment(self, payment_type):
+        if payment_type == Payment.TYPE_OUT:
             order = self.create_purchase_order()
-        elif iface is IInPayment:
+        elif payment_type == Payment.TYPE_IN:
             order = self.create_sale()
         else:
             order = None
 
         value = Decimal(100)
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        return method.create_payment(iface, order.group, value)
+        return method.create_payment(payment_type, order.group, value)
 
-    def createPayments(self, iface, no=3):
-        if iface is IOutPayment:
+    def createPayments(self, payment_type, no=3):
+        if payment_type == Payment.TYPE_OUT:
             order = self.create_purchase_order()
-        elif iface is IInPayment:
+        elif payment_type == Payment.TYPE_IN:
             order = self.create_sale()
         else:
             order = None
@@ -88,21 +84,17 @@ class _TestPaymentMethod:
         value = Decimal(100)
         due_dates = [datetime.datetime.today()] * no
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        return method.create_payments(iface, order.group, value, due_dates)
+        return method.create_payments(payment_type, order.group, value, due_dates)
 
 
 class _TestPaymentMethodsBase(_TestPaymentMethod):
     def testCreateInPayment(self):
         payment = self.createInPayment()
-        self.failUnless(isinstance(payment, PaymentAdaptToInPayment))
-        payment = payment.get_adapted()
         self.failUnless(isinstance(payment, Payment))
         self.assertEqual(payment.value, Decimal(100))
 
     def testCreateOutPayment(self):
         payment = self.createOutPayment()
-        self.failUnless(isinstance(payment, PaymentAdaptToOutPayment))
-        payment = payment.get_adapted()
         self.failUnless(isinstance(payment, Payment))
         self.assertEqual(payment.value, Decimal(100))
 
@@ -125,31 +117,25 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         self.assertEqual(payments[2].value, rest)
 
     def testCreatePayment(self):
-        inpayment = self.createPayment(IInPayment)
-        self.failUnless(isinstance(inpayment, PaymentAdaptToInPayment))
-        payment = inpayment.get_adapted()
+        payment = self.createPayment(Payment.TYPE_IN)
         self.failUnless(isinstance(payment, Payment))
         self.assertEqual(payment.value, Decimal(100))
 
-        outpayment = self.createPayment(IOutPayment)
-        self.failUnless(isinstance(outpayment, PaymentAdaptToOutPayment))
-        payment = outpayment.get_adapted()
+        payment = self.createPayment(Payment.TYPE_OUT)
         self.failUnless(isinstance(payment, Payment))
         self.assertEqual(payment.value, Decimal(100))
 
     def testCreatePayments(self):
-        inpayments = self.createPayments(IInPayment)
-        self.assertEqual(len(inpayments), 3)
-        payments = [p.get_adapted() for p in inpayments]
+        payments = self.createPayments(Payment.TYPE_IN)
+        self.assertEqual(len(payments), 3)
         athird = quantize(Decimal(100) / Decimal(3))
         rest = quantize(Decimal(100) - (athird * 2))
         self.assertEqual(payments[0].value, athird)
         self.assertEqual(payments[1].value, athird)
         self.assertEqual(payments[2].value, rest)
 
-        outpayments = self.createPayments(IOutPayment)
-        self.assertEqual(len(outpayments), 3)
-        payments = [p.get_adapted() for p in outpayments]
+        payments = self.createPayments(Payment.TYPE_OUT)
+        self.assertEqual(len(payments), 3)
         athird = quantize(Decimal(100) / Decimal(3))
         rest = quantize(Decimal(100) - (athird * 2))
         self.assertEqual(payments[0].value, athird)
@@ -198,7 +184,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
     def testCreateOutPaymentUnClosedTill(self):
         self._createUnclosedTill()
         payment = self.createOutPayment()
-        self.failUnless(isinstance(payment, PaymentAdaptToOutPayment))
+        self.failUnless(isinstance(payment, Payment))
 
     def testCreateOutPaymentsUnClosedTill(self):
         # Test for bug 3270
@@ -215,20 +201,17 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
 
     def testCreatePaymentUnClosedTill(self):
         self._createUnclosedTill()
-        self.assertRaises(TillError, self.createPayment, IInPayment)
+        self.assertRaises(TillError, self.createPayment,
+                          Payment.TYPE_IN)
 
-        outpayment = self.createPayment(IOutPayment)
-        self.failUnless(isinstance(outpayment, PaymentAdaptToOutPayment))
+        self.createPayment(Payment.TYPE_OUT)
 
     def testCreatePaymentsUnClosedTill(self):
         self._createUnclosedTill()
-        self.assertRaises(TillError, self.createPayments, IInPayment)
+        self.assertRaises(TillError, self.createPayments,
+                          Payment.TYPE_IN)
 
-        outpayments = self.createPayments(IOutPayment)
-        self.assertEqual(len(outpayments), 3)
-        for i in range(3):
-            self.failUnless(isinstance(outpayments[i],
-                                       PaymentAdaptToOutPayment))
+        self.createPayments(Payment.TYPE_OUT)
 
 
 class TestMoney(DomainTest, _TestPaymentMethodsBase):
@@ -250,17 +233,16 @@ class TestCheck(DomainTest, _TestPaymentMethodsBase):
     def testCheckDataCreated(self):
         payment = self.createInPayment()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        check_data = method.operation.get_check_data_by_payment(
-            payment.get_adapted())
+        check_data = method.operation.get_check_data_by_payment(payment)
         self.failUnless(check_data)
 
     def testBank(self):
         sale = self.create_sale()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
         payment = method.create_outpayment(sale.group, Decimal(10))
-        check_data = method.operation.get_check_data_by_payment(payment.get_adapted())
+        check_data = method.operation.get_check_data_by_payment(payment)
         check_data.bank_account.bank_number = 123
-        self.assertEquals(payment.get_adapted().bank_account_number, 123)
+        self.assertEquals(payment.bank_account_number, 123)
 
 
 class TestBill(DomainTest, _TestPaymentMethodsBase):
@@ -273,8 +255,7 @@ class TestCard(DomainTest, _TestPaymentMethodsBase):
     def testCardData(self):
         payment = self.createInPayment()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        card_data = method.operation.get_card_data_by_payment(
-            payment.get_adapted())
+        card_data = method.operation.get_card_data_by_payment(payment)
         self.failUnless(card_data)
 
 
