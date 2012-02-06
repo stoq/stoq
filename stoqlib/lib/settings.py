@@ -125,6 +125,9 @@ class UserSettings(object):
 
         self._root = json.loads(data, object_hook=_decode_dict)
 
+        # FIXME: should be loaded
+        self._migrated = True
+
     def _write(self, data):
         filename = self.get_filename()
         fd = open(filename, 'w')
