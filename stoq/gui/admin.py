@@ -318,7 +318,8 @@ class AdminApp(AppWindow):
 
     def activate(self, params):
         # Admin app doesn't have anything to print/export
-        for widget in (self.app.launcher.Print, self.app.launcher.ExportCSV):
+        for widget in [self.app.launcher.Print,
+                       self.app.launcher.ExportSpreadSheet]:
             widget.set_visible(False)
 
         self.app.launcher.add_new_items([self.NewUser])

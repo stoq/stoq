@@ -34,7 +34,7 @@
       <placeholder name="FileMenuPH"/>
       <separator/>
       <menuitem action="Print"/>
-      <menuitem action="ExportCSV"/>
+      <menuitem action="ExportSpreadSheet"/>
       <separator/>
       <menuitem action="ChangePassword"/>
       <menuitem action="SignOut"/>

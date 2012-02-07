@@ -34,7 +34,7 @@ from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.domain.payment.payment import Payment
@@ -237,8 +237,10 @@ class PurchaseDetailsDialog(BaseEditor):
                         ellipsize=pango.ELLIPSIZE_END)]
 
     def _export_csv(self):
-        run_dialog(CSVExporterDialog, self, None, PurchaseItemView,
-                   self.ordered_items)
+        run_dialog(SpreadSheetExporterDialog,
+                   object_list=self.ordered_items,
+                   name=_('Purchase items'),
+                   filename_prefix=_('purchase-items'))
 
     def _print_report(self):
         if self.model.status == PurchaseOrder.ORDER_QUOTING:

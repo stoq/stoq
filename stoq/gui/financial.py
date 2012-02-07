@@ -49,7 +49,7 @@ from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
-from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
+from stoqlib.gui.dialogs.csvexporterdialog import SpreedSheetExporterDialog
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
@@ -400,8 +400,8 @@ class FinancialApp(AppWindow):
     def print_activate(self):
         self._print_transaction_report()
 
-    def export_csv_activate(self):
-        self._export_csv()
+    def export_spreadsheet_activate(self):
+        self._export_spreadsheet()
 
     #
     # Private
@@ -413,7 +413,7 @@ class FinancialApp(AppWindow):
         self.TransactionMenu.set_visible(not is_accounts_tab)
         self.DeleteAccount.set_visible(is_accounts_tab)
         self.DeleteTransaction.set_visible(not is_accounts_tab)
-        self.app.launcher.ExportCSV.set_sensitive(not is_accounts_tab)
+        self.app.launcher.ExportSpreadSheet.set_sensitive(not is_accounts_tab)
         self.app.launcher.Print.set_sensitive(not is_accounts_tab)
 
         self.NewAccount.set_sensitive(self._can_add_account())
@@ -607,14 +607,15 @@ class FinancialApp(AppWindow):
         for page in self._pages.values():
             page.refresh()
 
-    def _export_csv(self):
+    def _export_spreadsheet(self):
         """Runs a dialog to export the current search results to a CSV file.
         """
         assert not self._is_accounts_tab()
 
         page = self._get_current_page_widget()
-        self.run_dialog(CSVExporterDialog, self, AccountTransactionView,
-                        page.results)
+        self.run_dialog(SpreedSheetExporterDialog, object_list=page.results,
+                        name=self.app_name,
+                        filename_prefix=self.app.name)
 
     def _can_add_account(self):
         if self._is_accounts_tab():

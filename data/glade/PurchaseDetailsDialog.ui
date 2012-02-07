@@ -911,7 +911,7 @@
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="export_csv">
-                <property name="label" translatable="yes">Export CSV</property>
+                <property name="label" translatable="yes">Export to spreadsheet</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>

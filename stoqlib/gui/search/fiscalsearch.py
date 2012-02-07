@@ -36,7 +36,7 @@ from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData, IcmsIpiView, IssView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchEditor, SearchDialog
-from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
 from stoqlib.gui.editors.fiscaleditor import (CfopEditor,
                                               FiscalBookEntryEditor)
 from stoqlib.lib.translation import stoqlib_gettext
@@ -149,7 +149,7 @@ class FiscalBookEntrySearch(SearchDialog):
         self.edit_button.show()
         self.edit_button.set_sensitive(False)
 
-        self.csv_button = self.add_button(label=_(u'Export CSV...'))
+        self.csv_button = self.add_button(label=_(u'Export to spreadsheet...'))
         self.csv_button.connect('clicked', self._on_export_csv_button__clicked)
         self.csv_button.show()
         self.csv_button.set_sensitive(False)
@@ -188,8 +188,10 @@ class FiscalBookEntrySearch(SearchDialog):
         trans.close()
 
     def _on_export_csv_button__clicked(self, widget):
-        run_dialog(CSVExporterDialog, self, self.conn, self.search_table,
-                   self.results)
+        run_dialog(SpreadSheetExporterDialog, self,
+                   object_list=self.results,
+                   name=_('Fiscal book'),
+                   filename_prefix=_('fiscal-book'))
 
     def _on_results__has_rows(self, widget, has_rows):
         self.csv_button.set_sensitive(has_rows)
