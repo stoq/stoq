@@ -68,6 +68,21 @@
                               </packing>
                             </child>
                             <child>
+                              <object class="ProxyComboBox" id="spreadsheet">
+                                <property name="visible">True</property>
+                                <property name="data_type">object</property>
+                                <property name="model_attribute">spreadsheet</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
+                                <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
                               <object class="ProxyComboBox" id="toolbar_style">
                                 <property name="visible">True</property>
                                 <property name="data_type">object</property>
@@ -102,6 +117,20 @@
                               <packing>
                                 <property name="top_attach">1</property>
                                 <property name="bottom_attach">2</property>
+                                <property name="x_options"></property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="ProxyLabel" id="spreadsheet_lbl">
+                                <property name="visible">True</property>
+                                <property name="xalign">1</property>
+                                <property name="label" translatable="yes">Spreadsheet action:</property>
+                                <property name="model_attribute">spreadsheet_lbl</property>
+                              </object>
+                              <packing>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
                                 <property name="x_options"></property>
                                 <property name="y_options"></property>
                               </packing>

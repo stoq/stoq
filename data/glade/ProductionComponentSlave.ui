@@ -29,7 +29,7 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkButton" id="export_csv_button">
-                <property name="label" translatable="yes">CSV...</property>
+                <property name="label" translatable="yes">Spreadsheet...</property>
                 <property name="visible">True</property>
               </object>
             </child>

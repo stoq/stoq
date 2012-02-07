@@ -42,7 +42,7 @@ from stoqlib.domain.views import (ProductFullStockView,
                                   PurchasedItemAndStockView)
 from stoqlib.exceptions import StockError
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
-from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
@@ -385,8 +385,10 @@ class ProductionComponentSlave(GladeSlaveDelegate):
                 self.component_list.remove(c)
 
     def _run_csv_exporter_dialog(self):
-        run_dialog(CSVExporterDialog, self, None,
-                   _TemporaryProductionItemComponent, self.component_list)
+        run_dialog(SpreadSheetExporterDialog, self,
+                   object_list=self.component_list,
+                   name=_('Production components'),
+                   filename_prefix=_('production-components'))
 
     #
     # Public API

@@ -40,7 +40,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
-from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.sale import Sale, SaleView, DeliveryView
@@ -153,7 +153,7 @@ class SoldItemsByBranchSearch(SearchDialog):
     size = (800, 450)
 
     def setup_widgets(self):
-        self.csv_button = self.add_button(label=_(u'Export CSV...'))
+        self.csv_button = self.add_button(label=_('Export to spreadsheet...'))
         self.csv_button.connect('clicked', self._on_export_csv_button__clicked)
         self.csv_button.show()
         self.csv_button.set_sensitive(False)
@@ -216,8 +216,10 @@ class SoldItemsByBranchSearch(SearchDialog):
         self._print_report()
 
     def _on_export_csv_button__clicked(self, widget):
-        run_dialog(CSVExporterDialog, self, self.conn, self.search_table,
-                   self.results)
+        run_dialog(SpreadSheetExporterDialog, self,
+                   object_list=self.results,
+                   name=_('Sales'),
+                   filename_prefix=_('sales'))
 
     def _on_results__has_rows(self, widget, has_rows):
         self.csv_button.set_sensitive(has_rows)

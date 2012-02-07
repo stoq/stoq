@@ -42,7 +42,7 @@ from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.dialogs import (get_dialog, run_dialog)
 from stoqlib.gui.base.infobar import InfoBar
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
-from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
 from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.introspection import introspect_slaves
@@ -230,7 +230,7 @@ class AppWindow(GladeDelegate):
             _('Sign out the currently logged in user and login as another')),
             ('Print', gtk.STOCK_PRINT, _("Print..."),
              group.get('print')),
-            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
+            ('ExportSpreadSheet', gtk.STOCK_SAVE_AS, _('Export to spreadsheet...')),
             ("Quit", gtk.STOCK_QUIT, _('Quit'),
              group.get('quit'),
              _('Exit the application')),
@@ -314,8 +314,8 @@ class AppWindow(GladeDelegate):
             'activate', self._on_SignOut__activate)
         self.Print.connect(
             'activate', self._on_Print__activate)
-        self.ExportCSV.connect(
-            'activate', self._on_ExportCSV__activate)
+        self.ExportSpreadSheet.connect(
+            'activate', self._on_ExportSpreadSheet__activate)
         self.Quit.connect(
             'activate', self._on_Quit__activate)
 
@@ -619,7 +619,7 @@ class AppWindow(GladeDelegate):
         """Called when the Print toolbar item is activated"""
         raise NotImplementedError
 
-    def export_csv_activate(self):
+    def export_spreadsheet_activate(self):
         """Called when the Export menu item is activated"""
         raise NotImplementedError
 
@@ -824,8 +824,8 @@ class AppWindow(GladeDelegate):
         self.SignOut.set_visible(False)
         self.Print.set_visible(True)
         self.Print.set_sensitive(False)
-        self.ExportCSV.set_visible(True)
-        self.ExportCSV.set_sensitive(False)
+        self.ExportSpreadSheet.set_visible(True)
+        self.ExportSpreadSheet.set_sensitive(False)
         self.Quit.set_visible(False)
         self.NewToolItem.set_tooltip("")
         self.NewToolItem.set_sensitive(True)
@@ -871,8 +871,8 @@ class AppWindow(GladeDelegate):
         self.Quit.set_visible(True)
         self.Print.set_sensitive(False)
         self.Print.set_visible(False)
-        self.ExportCSV.set_visible(False)
-        self.ExportCSV.set_sensitive(False)
+        self.ExportSpreadSheet.set_visible(False)
+        self.ExportSpreadSheet.set_sensitive(False)
         self.set_new_menu_sensitive(True)
         self.NewToolItem.set_tooltip(_("Open a new window"))
         self.SearchToolItem.set_tooltip("")
@@ -993,9 +993,9 @@ class AppWindow(GladeDelegate):
         if self.current_app:
             self.current_app.print_activate()
 
-    def _on_ExportCSV__activate(self, action):
+    def _on_ExportSpreadSheet__activate(self, action):
         if self.current_app:
-            self.current_app.export_csv_activate()
+            self.current_app.export_spreadsheet_activate()
 
     def _on_Close__activate(self, action):
         if self.current_app and self.current_app.shutdown_application():
@@ -1166,8 +1166,8 @@ class SearchableAppWindow(AppWindow):
         self.print_report(self.report_table, self.results, results,
                           do_footer=False)
 
-    def export_csv_activate(self):
-        self.export_csv()
+    def export_spreadsheet_activate(self):
+        self.export_spread_sheet()
 
     #
     # Public API
@@ -1215,11 +1215,13 @@ class SearchableAppWindow(AppWindow):
         """
         self.search.clear()
 
-    def export_csv(self):
+    def export_spread_sheet(self):
         """Runs a dialog to export the current search results to a CSV file.
         """
-        self.run_dialog(CSVExporterDialog, self, self.search_table,
-                        self.results)
+        self.run_dialog(SpreadSheetExporterDialog,
+                        object_list=self.results,
+                        name=self.app_name,
+                        filename_prefix=self.app.name)
 
     def select_result(self, result):
         """Select the object in the result list
@@ -1246,7 +1248,8 @@ class SearchableAppWindow(AppWindow):
         self.search_completed(results, states)
 
         has_results = len(results)
-        for widget in (self.app.launcher.Print, self.app.launcher.ExportCSV):
+        for widget in [self.app.launcher.Print,
+                       self.app.launcher.ExportSpreadSheet]:
             widget.set_sensitive(has_results)
         self._save_filter_settings()
 

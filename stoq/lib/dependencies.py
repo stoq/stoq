@@ -50,6 +50,7 @@ PYSERIAL_REQUIRED = (2, 1)
 REPORTLAB_REQUIRED = (2, 4)
 STOQDRIVERS_REQUIRED = (0, 9, 15)
 TWISTED_REQUIRED = (10, 0)
+XLWT_REQUIRED = (0, 7, 2)
 ZOPE_INTERFACE_REQUIRED = (3, 0)
 
 
@@ -75,6 +76,7 @@ class DependencyChecker(object):
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
         self._check_dateutil(DATEUTIL_REQUIRED)
         self._check_twisted(TWISTED_REQUIRED)
+        self._check_xlwt(XLWT_REQUIRED)
 
         # Postgres
         self._check_psql(PSQL_REQUIRED)
@@ -368,6 +370,21 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://www.twistedmatrix.com/',
                           required=version,
                           found=twisted.version.base())
+
+    def _check_xlwt(self, version):
+        try:
+            import xlwt
+            xlwt # pyflakes
+        except ImportError:
+            self._missing(project='xlwt',
+                          url='http://www.python-excel.org/',
+                          version=version)
+
+        if map(int, xlwt.__VERSION__.split('.')) < list(version):
+            self._too_old(project="xlwt",
+                          url='http://www.python-excel.org/',
+                          required=version,
+                          found=xlwt.__VERSION__)
 
 
 def check_dependencies(text_mode=False):

@@ -434,7 +434,7 @@ class CalendarApp(AppWindow):
     def print_activate(self):
         self._calendar.print_()
 
-    def export_csv_activate(self):
+    def export_spreadsheet_activate(self):
         pass
 
     def on_NewClientCall__activate(self, action):

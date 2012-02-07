@@ -24,6 +24,7 @@
 
 """Editors for user preferences"""
 
+import gio
 import gtk
 
 from stoqlib.api import api
@@ -34,27 +35,28 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+class _PrefField(object):
+    def __init__(self, pref):
+        self.pref = pref
+
+    def __set__(self, obj, value):
+        obj._set_preference(self.pref, value)
+
+    def __get__(self, obj, class_):
+        if obj is None:
+            return
+        return obj._get_preference(self.pref)
+
+
 class _PreferencesModel(object):
 
     #
     #  Properties
     #
 
-    def _get_language(self):
-        return self._get_preference('user-locale')
-
-    def _set_language(self, value):
-        return self._set_preference('user-locale', value)
-
-    language = property(_get_language, _set_language)
-
-    def _get_toolbar_style(self):
-        return self._get_preference('toolbar-style')
-
-    def _set_toolbar_style(self, value):
-        return self._set_preference('toolbar-style', value)
-
-    toolbar_style = property(_get_toolbar_style, _set_toolbar_style)
+    language = _PrefField('user-locale')
+    toolbar_style = _PrefField('toolbar-style')
+    spreadsheet = _PrefField('spreadsheet-action')
 
     #
     #  Private
@@ -74,8 +76,9 @@ class PreferencesEditor(BaseEditor):
     model_type = _PreferencesModel
     model_name = _('Preferences')
     size = (600, 400)
-    proxy_widgets = ('toolbar_style',
-                     'language')
+    proxy_widgets = ['toolbar_style',
+                     'language',
+                     'spreadsheet']
 
     def __init__(self, conn, *args, **kwargs):
         BaseEditor.__init__(self, conn, *args, **kwargs)
@@ -120,6 +123,7 @@ class PreferencesEditor(BaseEditor):
     def setup_proxies(self):
         self._prefill_toolbar_style_combo()
         self._prefill_language_combo()
+        self._prefill_spreadsheet()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def setup_slaves(self):
@@ -161,4 +165,13 @@ class PreferencesEditor(BaseEditor):
             (_("English (United States)"), 'en_US'),
             (_("Portuguese (Portugal)"), 'pt'),
             (_("Portuguese (Brazil)"), 'pt_BR'),
+            ])
+
+    def _prefill_spreadsheet(self):
+        app_info = gio.app_info_get_default_for_type(
+            'application/vnd.ms-excel', False)
+        self.spreadsheet.prefill([
+            (_("Ask"), None),
+            (_("Open with %s") % app_info.get_name(), 'open'),
+            (_("Save to disk"), 'save'),
             ])

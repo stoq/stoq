@@ -45,7 +45,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
                                      SearchDialogPrintSlave)
-from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductStockEditor)
 from stoqlib.gui.printing import print_report
@@ -124,7 +124,7 @@ class ProductSearch(SearchEditor):
     #
 
     def setup_widgets(self):
-        self.csv_button = self.add_button(label=_(u'Export CSV...'))
+        self.csv_button = self.add_button(label=_('Export to spreadsheet...'))
         self.csv_button.connect('clicked', self._on_export_csv_button__clicked)
         self.csv_button.show()
         self.csv_button.set_sensitive(False)
@@ -203,8 +203,10 @@ class ProductSearch(SearchEditor):
     #
 
     def _on_export_csv_button__clicked(self, widget):
-        run_dialog(CSVExporterDialog, self, self.conn, self.search_table,
-                   self.results)
+        run_dialog(SpreadSheetExporterDialog, self,
+                   object_list=self.results,
+                   name=_('Product'),
+                   filename_prefix=_('product'))
 
     def _on_results__has_rows(self, widget, has_rows):
         self.csv_button.set_sensitive(has_rows)
