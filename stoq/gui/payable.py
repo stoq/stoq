@@ -94,9 +94,6 @@ class PayableApp(SearchableAppWindow):
     #
 
     def create_actions(self):
-        from stoqlib.gui.dialogs.chartdialog import ChartDialog
-        c = ChartDialog()
-        c.show_all()
         group = get_accels('app.payable')
 
         actions = [
@@ -175,6 +172,12 @@ class PayableApp(SearchableAppWindow):
         if not params.get('no-refresh'):
             self.search.refresh()
         self._update_widgets()
+
+        # FIXME: Move this to a better place when done
+        if self.app.options.debug:
+            from stoqlib.gui.dialogs.chartdialog import ChartDialog
+            c = ChartDialog()
+            c.show_all()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.payable_ui)

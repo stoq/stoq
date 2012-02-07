@@ -751,7 +751,7 @@ class AppWindow(GladeDelegate):
         actions = [
             ('DebugMenu', None, _('Debug')),
             ('Introspect', None, _('Introspect slaves'),
-             None, None, self.on_Introspect_activate),
+             None, None, self._on_Introspect_activate),
             ]
 
         self.add_ui_actions(ui_string, actions, 'DebugActions')
