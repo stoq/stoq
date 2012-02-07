@@ -23,7 +23,6 @@
 ##
 """ Payment charts """
 
-import datetime
 import json
 import string
 
@@ -166,7 +165,6 @@ ORDER BY $date_columns;
             month = int(month)
             total_in = values.get('in', 0)
             total_out = values.get('out', 0)
-            unixtime = datetime.date(year, month, 1).strftime('%s')
 
             revenues.append(float(total_in))
             expenses.append(float(total_out))
