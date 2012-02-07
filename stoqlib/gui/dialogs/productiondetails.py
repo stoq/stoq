@@ -242,7 +242,7 @@ class ProductionDetailsDialog(BaseEditor):
 
     def on_materials__selection_changed(self, widget, item):
         self.lost_button.set_sensitive(bool(item) and
-                                       item.can_add_lost(Decimal(0.001)))
+                                       item.can_add_lost(Decimal('0.001')))
         self.allocate_button.set_sensitive(bool(item) and
                     self.model.status == ProductionOrder.ORDER_PRODUCING)
 
