@@ -2,26 +2,48 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <style type="text/css">
-body {
-  font-family: sans-serif;
-  font-size: 16px;
-  margin: 2px;
-  max-width: 1000px;
-}
-    </style>
+  <link rel="stylesheet" type="text/css" href="/web/static/css/jquery.jqplot.min.css"/>
   <script type='text/javascript' src='/web/static/js/jquery-1.5.2.min.js'></script>
-  <script type='text/javascript' src='/web/static/js/jquery.flot.min.js'></script>
-  <script type='text/javascript' src='/web/static/js/jquery.flot.stack.js'></script>
- </head>
+  <script type="text/javascript" src="/web/static/js/jquery.jqplot.min.js"></script>
+  <script type="text/javascript" src="/web/static/js/jqplot.barRenderer.min.js"></script>
+  <script type="text/javascript" src="/web/static/js/jqplot.categoryAxisRenderer.min.js"></script>
+  <script type="text/javascript" src="/web/static/js/jqplot.pointLabels.min.js"></script>
+</head>
 <body>
-  <div id="placeholder" style="width:600px;height:300px"></div>
+  <div id="chart"></div>
 
 <script type="text/javascript">
-  function plot(json, description) {
-    $.plot($("#placeholder"), json.data, json.options);
+  var options = {
+     seriesDefault: {
+       renderer: $.jqplot.BarRenderer,
+       rendererOptions: {fillToZero: true}
+     },
+     legend: {
+         show: true,
+         placement: "outsideGrid"
+     },
+     axes: {
+         // Use a category axis on the x axis and use our custom ticks.
+         xaxis: {
+             renderer: $.jqplot.CategoryAxisRenderer,
+         },
+         // Pad the y axis just a little so bars can get close to, but
+         // not touch, the grid boundaries.  1.2 is the default padding.
+         yaxis: {
+             pad: 1.05,
+             tickOptions: {formatString: "R$%d"}
+         }
+     }
+  };
+
+  function plot(data, extra) {
+    options.series = extra.series;
+    if (extra.xaxis_ticks) {
+       options.axes.xaxis.ticks = extra.xaxis_ticks;
+    }
+    $.jqplot("chart", data, options);
   }
 </script>
 
- </body>
+</body>
 </html>

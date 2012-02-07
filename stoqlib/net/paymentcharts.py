@@ -151,11 +151,12 @@ ORDER BY $date_columns;
         for month, total_out in res:
             months.setdefault((year, month), {})['out'] = total_out or 0
 
-        revenues = ['revenue']
-        expenses = ['expense']
-        profits = ['profit']
+        revenues = []
+        expenses = []
+        profits = []
 
-        from stoqlib.lib.dateconstants import get_month_names
+        from stoqlib.lib.dateconstants import (get_month_names,
+                                               get_short_month_names)
 
         items = []
         keys = sorted(months)
@@ -166,17 +167,22 @@ ORDER BY $date_columns;
             total_in = values.get('in', 0)
             total_out = values.get('out', 0)
             unixtime = datetime.date(year, month, 1).strftime('%s')
-            jstime = float(unixtime) * 1000
 
-            revenues.append([jstime, float(total_in)])
-            expenses.append([jstime, float(total_out)])
-            profits.append([jstime, float(total_in - total_out)])
+            revenues.append(float(total_in))
+            expenses.append(float(total_out))
+            profits.append(float(total_in - total_out))
 
-            items.append({'time': "%s, %d" % (get_month_names()[month - 1], year),
+            items.append({'short_title': '%s' % (get_short_month_names()[month - 1], ),
+                          'time': '%s, %d' % (get_month_names()[month - 1], year),
                           'revenue': int(total_in),
                           'expense': int(total_out),
                           'profit': int(total_in - total_out)})
-        return items, [revenues, expenses, profits]
+
+        return {'series': [_('Revenue'),
+                           _('Expenses'),
+                           _('Profits')],
+                'data': [revenues, expenses, profits],
+                'items': items}
 
 
 class DailyPaymentsChart(Chart):
@@ -249,4 +255,4 @@ class PaymentCharts(Resource):
 
         chart = chart_class(conn)
         response = chart.run(resource.args)
-        return json.dumps(list(response))
+        return json.dumps(response)
