@@ -94,6 +94,9 @@ class PayableApp(SearchableAppWindow):
     #
 
     def create_actions(self):
+        from stoqlib.gui.dialogs.chartdialog import ChartDialog
+        c = ChartDialog()
+        c.show_all()
         group = get_accels('app.payable')
 
         actions = [
