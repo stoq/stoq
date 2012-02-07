@@ -154,7 +154,7 @@ class PreferencesEditor(BaseEditor):
             (_("Icons only"), 'icons'),
             (_("Text only"), 'text'),
             (_("Both"), 'both'),
-            (_("Both horizontal (Stoq default)"), 'both-horizontal'),
+            (_("Both horizontal (default)"), 'both-horizontal'),
             ])
 
     def _prefill_language_combo(self):
@@ -170,8 +170,10 @@ class PreferencesEditor(BaseEditor):
     def _prefill_spreadsheet(self):
         app_info = gio.app_info_get_default_for_type(
             'application/vnd.ms-excel', False)
-        self.spreadsheet.prefill([
-            (_("Ask"), None),
-            (_("Open with %s") % app_info.get_name(), 'open'),
-            (_("Save to disk"), 'save'),
-            ])
+
+        options = [(_("Ask (default)"), None)]
+        if app_info:
+            options.append((_("Open with %s") % app_info.get_name(), 'open'))
+
+        options.append((_("Save to disk"), 'save'))
+        self.spreadsheet.prefill(options)

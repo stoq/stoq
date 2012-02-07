@@ -54,8 +54,11 @@ class SpreadSheetExporterDialog(gtk.Window):
         temporary = xls.save(self._filename_prefix)
         mime_type = 'application/vnd.ms-excel'
         app_info = gio.app_info_get_default_for_type(mime_type, False)
+        if app_info is None:
+            action = 'save'
+        else:
+            action = api.user_settings.get('spreadsheet-action', None)
 
-        action = api.user_settings.get('spreadsheet-action', None)
         if not action or action == 'ask':
             if yesno(_("A spreadsheet has been created, "
                        "what do you want to do with it?"),
