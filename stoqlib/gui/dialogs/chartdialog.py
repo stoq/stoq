@@ -49,6 +49,9 @@ reports = {
 
 class ChartDialog(gtk.Window):
     def __init__(self):
+        self._js_data = None
+        self._js_options = None
+
         gtk.Window.__init__(self)
         self.set_size_request(800, 480)
 
@@ -79,8 +82,8 @@ class ChartDialog(gtk.Window):
 
         # Get chart data
 
-        data = yield self._invoke_chart(report_name, **report_kwargs)
-        self._render_chart(report, data)
+        response = yield self._invoke_chart(report_name, **report_kwargs)
+        self._render_chart(report, response)
 
     @api.async
     def _invoke_chart(self, report_name, **report_kwargs):
@@ -96,39 +99,31 @@ class ChartDialog(gtk.Window):
         data = json.loads(page)
         api.asyncReturn(data)
 
-    def _get_chart_options(self):
-        opt = {}
-        opt['options'] = {
-            "xaxis": {"mode": "time"},
-            # XXX: _JS_DAY is not defined
-            "points": {"show": True},
-            "lines": {"show": True},
-            "grid": {"hoverable": True,
-                     "clickable": True},
-        }
-        return opt
+    def _render_chart(self, report, response):
+        self._render_javascript(report, response)
+        self._render_objectlist(report, response)
 
-    def _render_javascript(self, flot_data):
-        opt = self._get_chart_options()
-        opt['data'] = flot_data
-        self._opt = opt
+    def _render_javascript(self, report, response):
+        ticks = [item['short_title'] for item in response['items']]
+
+        self._js_data = response['data']
+
+        options = {}
+        options['series'] = [dict(label=serie) for serie in response['series']]
+        options['xaxis_ticks'] = ticks
+        self._js_options = options
+
         self._view.load_uri('%s/web/static/chart.html' % (
                             self._daemon_uri,))
 
-    def _render_chart(self, report, data):
-        objectlist_data, flot_data = data
-
-        self._render_javascript(flot_data)
-        self._render_objectlist(report, objectlist_data)
-
-    def _render_objectlist(self, report, objectlist_data):
+    def _render_objectlist(self, report, response):
         columns = []
         for kwargs in report:
             name = kwargs.pop('name')
             columns.append(Column(name, **kwargs))
         results = ObjectList(columns)
 
-        for item in objectlist_data:
+        for item in response['items']:
             settable = Settable(**item)
             results.append(settable)
 
@@ -136,7 +131,8 @@ class ChartDialog(gtk.Window):
         results.show()
 
     def _load_finished(self):
-        self._view.js_function_call("plot", self._opt, "foobar")
+        self._view.js_function_call(
+            "plot", self._js_data, self._js_options)
 
     #
     # Callbacks
