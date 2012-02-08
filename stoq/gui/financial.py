@@ -49,7 +49,7 @@ from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
-from stoqlib.gui.dialogs.csvexporterdialog import SpreedSheetExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
@@ -613,7 +613,7 @@ class FinancialApp(AppWindow):
         assert not self._is_accounts_tab()
 
         page = self._get_current_page_widget()
-        self.run_dialog(SpreedSheetExporterDialog, object_list=page.results,
+        self.run_dialog(SpreadSheetExporterDialog, object_list=page.results,
                         name=self.app_name,
                         filename_prefix=self.app.name)
 
