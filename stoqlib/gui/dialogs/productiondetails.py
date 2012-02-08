@@ -29,6 +29,8 @@ import pango
 import gtk
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
+from stoqlib.api import api
+from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -200,6 +202,11 @@ class ProductionDetailsDialog(BaseEditor):
                                    self._on_quality__test_updated)
         self.attach_slave('quality_holder', self.quality_slave)
 
+    def has_open_inventory(self):
+        has_open = Inventory.has_open(self.conn,
+                                      api.get_current_branch(self.conn))
+        return bool(has_open)
+
     #
     #   Actions
     #
@@ -238,13 +245,15 @@ class ProductionDetailsDialog(BaseEditor):
         print_report(ProductionOrderReport, self.model)
 
     def on_production_items__selection_changed(self, widget, item):
-        self.produce_button.set_sensitive(bool(item) and item.can_produce(1))
+        self.produce_button.set_sensitive(bool(item) and item.can_produce(1)
+                                          and not self.has_open_inventory())
 
     def on_materials__selection_changed(self, widget, item):
         self.lost_button.set_sensitive(bool(item) and
                                        item.can_add_lost(Decimal('0.001')))
         self.allocate_button.set_sensitive(bool(item) and
-                    self.model.status == ProductionOrder.ORDER_PRODUCING)
+                    self.model.status == ProductionOrder.ORDER_PRODUCING
+                    and not self.has_open_inventory())
 
     def on_produced_items__selection_changed(self, widget, items):
         products = set()

@@ -128,9 +128,14 @@ class ProductionApp(SearchableAppWindow):
         self.app.launcher.Print.set_tooltip(
             _("Print a report of these productions"))
 
+        self._inventory_widgets = [self.StartProduction]
+        self.register_sensitive_group(self._inventory_widgets,
+                                      lambda: not self.has_open_inventory())
+
     def activate(self, params):
         self.search.refresh()
         self._update_widgets()
+        self.check_open_inventory()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.production_ui)
@@ -165,6 +170,9 @@ class ProductionApp(SearchableAppWindow):
         # ProductionReport needs a status kwarg
         kwargs['status'] = self.status_filter.get_state().value
         super(ProductionApp, self).print_report(*args, **kwargs)
+
+    def set_open_inventory(self):
+        self.set_sensitive(self._inventory_widgets, False)
 
     #
     # Private
