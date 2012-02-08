@@ -50,6 +50,7 @@ from stoqlib.gui.keybindings import get_accel, get_accels
 from stoqlib.gui.openbrowser import open_browser
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.splash import hide_splash
+from stoqlib.gui.toolmenuaction import ToolMenuAction
 from stoqlib.domain.inventory import Inventory
 from twisted.internet import reactor
 
@@ -59,11 +60,6 @@ log = Logger('stoq.application')
 _ = gettext.gettext
 
 
-class ToolMenuAction(gtk.Action):
-    pass
-gobject.type_register(ToolMenuAction)
-ToolMenuAction.set_tool_item_type(
-    gobject.type_from_name('GtkMenuToolButton').pytype)
 
 
 class App(object):
@@ -442,23 +438,8 @@ class AppWindow(GladeDelegate):
         about.destroy()
 
     def _add_actions_to_tool_item(self, toolitem, actions):
-        new_item = toolitem.get_proxies()[0]
-        menu = new_item.get_menu()
-
-        # Insert a separator only if menu already had children
-        if len(menu.get_children()):
-            sep = gtk.SeparatorMenuItem()
-            sep.set_visible(True)
-            self._tool_items.append(sep)
-            menu.prepend(sep)
-        # Do this reversed because we are prepending
-        for action in reversed(actions):
-            action.set_accel_group(self.uimanager.get_accel_group())
-            menu_item = action.create_menu_item()
-            # Toolmenus doesn't use the trailing '...' menu pattern
-            menu_item.set_label(menu_item.get_label().replace('...', ''))
-            self._tool_items.append(menu_item)
-            menu.prepend(menu_item)
+        self._tool_items.extend(
+            toolitem.add_actions(uimanager, actions))
 
     def _show_uri(self, uri):
         toplevel = self.get_toplevel()
@@ -805,10 +786,12 @@ class AppWindow(GladeDelegate):
         return bar
 
     def add_new_items(self, actions):
-        self._add_actions_to_tool_item(self.NewToolItem, actions)
+        self._tool_items.extend(
+            self.NewToolItem.add_actions(self.uimanager, actions))
 
     def add_search_items(self, actions):
-        self._add_actions_to_tool_item(self.SearchToolItem, actions)
+        self._tool_items.extend(
+            self.SearchToolItem.add_actions(self.uimanager, actions))
 
     def set_new_menu_sensitive(self, sensitive):
         new_item = self.NewToolItem.get_proxies()[0]
