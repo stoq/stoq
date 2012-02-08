@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,6 @@
 import datetime
 import gettext
 import locale
-import gobject
 import gtk
 
 from kiwi.component import get_utility
@@ -58,8 +57,6 @@ import stoq
 
 log = Logger('stoq.application')
 _ = gettext.gettext
-
-
 
 
 class App(object):
@@ -436,10 +433,6 @@ class AppWindow(GladeDelegate):
 
         about.run()
         about.destroy()
-
-    def _add_actions_to_tool_item(self, toolitem, actions):
-        self._tool_items.extend(
-            toolitem.add_actions(uimanager, actions))
 
     def _show_uri(self, uri):
         toplevel = self.get_toplevel()
