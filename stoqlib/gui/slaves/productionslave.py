@@ -32,8 +32,9 @@ from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn
 from kiwi.utils import gsignal
 
-from stoqlib.database.runtime import get_current_user
+from stoqlib.database.runtime import get_current_user, get_current_branch
 from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.product import ProductQualityTest
 from stoqlib.domain.production import ProductionOrder, ProductionMaterial
 from stoqlib.lib.translation import stoqlib_gettext
@@ -160,6 +161,10 @@ class ProductionMaterialListSlave(BaseEditorSlave):
         self.edit_button.set_sensitive(False)
         if not self.visual_mode:
             self.start_production_check.hide()
+
+        has_open_inventory = Inventory.has_open(self.conn,
+                                                get_current_branch(self.conn))
+        self.start_production_check.set_sensitive(not bool(has_open_inventory))
 
         self.materials.set_columns(self._get_columns())
         for production_item in self.model.get_items():

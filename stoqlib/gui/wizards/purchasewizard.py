@@ -34,6 +34,7 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
 from stoqlib.domain.interfaces import IBranch, ITransporter, ISupplier
+from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.person import Person
@@ -429,6 +430,10 @@ class FinishPurchaseStep(WizardEditorStep):
 
     def __init__(self, wizard, previous, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
+
+        has_open_inventory = Inventory.has_open(self.conn,
+                                            api.get_current_branch(self.conn))
+        self.receive_now.set_sensitive(not bool(has_open_inventory))
 
     def _setup_transporter_entry(self):
         self.add_transporter.set_tooltip_text(_("Add a new transporter"))

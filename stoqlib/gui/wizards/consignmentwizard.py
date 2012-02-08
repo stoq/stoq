@@ -61,6 +61,7 @@ _ = stoqlib_gettext
 class StartConsignmentStep(StartPurchaseStep):
 
     def next_step(self):
+        self.wizard.all_products = self.all_products.get_active()
         return ConsignmentItemStep(self.wizard, self, self.conn, self.model)
 
 

@@ -191,6 +191,11 @@ class PurchaseApp(SearchableAppWindow):
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.Confirm.set_sensitive(False)
 
+        self._inventory_widgets = [self.NewConsignment,
+                                   self.CloseInConsignment]
+        self.register_sensitive_group(self._inventory_widgets,
+                                      lambda: not self.has_open_inventory())
+
     def activate(self, params):
         self.app.launcher.NewToolItem.set_tooltip(
             _("Create a new purchase order"))
@@ -201,6 +206,7 @@ class PurchaseApp(SearchableAppWindow):
         if not params.get('no-refresh'):
             self._update_view()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.check_open_inventory()
 
     def setup_focus(self):
         self.search.refresh()
@@ -227,6 +233,9 @@ class PurchaseApp(SearchableAppWindow):
                 ))
 
         # FIXME: Push number of results to Statusbar
+
+    def set_open_inventory(self):
+        self.set_sensitive(self._inventory_widgets, False)
 
     #
     # SearchableAppWindow
