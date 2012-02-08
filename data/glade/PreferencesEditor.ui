@@ -32,7 +32,7 @@
                         <child>
                           <object class="ProxyLabel" id="notice_lbl">
                             <property name="visible">True</property>
-                            <property name="label" translatable="yes">These options will only take effect after you restart Stoq.</property>
+                            <property name="label" translatable="yes">Some of these options will only take effect after you restart Stoq.</property>
                             <property name="model_attribute">notice_lbl</property>
                             <attributes>
                               <attribute name="style" value="italic"/>
