@@ -577,8 +577,8 @@ class PosApp(AppWindow):
         if storable is not None:
             if not self._check_available_stock(storable, sellable):
                 info(_("You cannot sell more items of product %s. "
-                       "The available quantity is not enough." %
-                        sellable.get_description()))
+                       "The available quantity is not enough.") %
+                        sellable.get_description())
                 self.barcode.set_text('')
                 self.barcode.grab_focus()
                 return
