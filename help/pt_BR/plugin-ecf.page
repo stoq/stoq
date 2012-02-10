@@ -43,6 +43,16 @@
       exibição ao Fisco, se solicitado.
     </p>
   </note>
+  <note style="important">
+      <p>
+        Se você habilitou o <link xref="param">parâmetro</link> de
+        <em>nota fiscal paulista</em>, tenha certeza de configurar o
+        <gui>Número de usuário</gui>, o <gui>Registro CRO</gui> e a
+        <gui>Data de registro</gui> da impressora fiscal. Esses dados podem ser
+        obtidos da própria impressora fiscal e configurados no editor de
+        <gui>Impressoras fiscais</gui> no <link xref="app-admin" />.
+      </p>
+  </note>
 
   <list>
     <title>Algumas considerações importantes</title>
@@ -54,6 +64,8 @@
         <link href="http://www.stoq.com.br/mais/#ecf">equipamentos suportados</link>
         pelo Stoq.
       </p>
+    </item>
+    <item>
       <p>
         Todas as operações do <link xref="till">caixa</link> são dependentes da
         situação da impressora fiscal presente no computador, desde a
