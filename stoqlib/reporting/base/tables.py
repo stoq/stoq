@@ -104,11 +104,11 @@ class AbstractTableBuilder:
     def __init__(self, data, style=None, extra_row=None):
         """ Creates a new AbstractTableBuilder object
 
-        @param data:   The table rows.
-        @type:         list
+        :param data:   The table rows.
+        :type:         list
 
-        @param style:  The table style.
-        @type:         TableStyle
+        :param style:  The table style.
+        :type:         TableStyle
         """
         self.style = TableStyle(parent=style)
         self.data = data
@@ -191,8 +191,8 @@ class ReportTableBuilder(AbstractTableBuilder):
     def set_highlight(self, highlight):
         """ Set the table highlight type:
 
-        @param highlight: The highlight type
-        @type:         One of HIGHLIGHT_ODD, HIGHLIGHT_NEVER, HIGHLIGHT_ALWAYS
+        :param highlight: The highlight type
+        :type:         One of HIGHLIGHT_ODD, HIGHLIGHT_NEVER, HIGHLIGHT_ALWAYS
                        constants
         """
         self.highlight = highlight
@@ -244,32 +244,32 @@ class ColumnTableBuilder(ReportTableBuilder):
                  summary_row=None, width=None):
         """ Creates a new ColumnTableBuilder object
 
-        @param data:   A list of lists, where each nested list represents a
+        :param data:   A list of lists, where each nested list represents a
                        row (naturally, each column of this nested list is a
                        table column).
-        @type:         list
+        :type:         list
 
-        @param columns: A list of TableColumn instances representing the
+        :param columns: A list of TableColumn instances representing the
                        table columns
-        @type:         list
+        :type:         list
 
-        @param style:  The table style.
-        @type          TableStyle
+        :param style:  The table style.
+        :type          TableStyle
 
-        @param table_line: Define the type of the line that is inserted between
+        :param table_line: Define the type of the line that is inserted between
                        the table rows.
-        @type:         One of TABLE_LINE or TABLE_LINE_BLANK constants.
+        :type:         One of TABLE_LINE or TABLE_LINE_BLANK constants.
 
-        @param do_header: Must the table header be drawed? Defaults to True
-        @type:         bool
+        :param do_header: Must the table header be drawed? Defaults to True
+        :type:         bool
 
-        @param extra_row: An list of strings to be inserted right after the
+        :param extra_row: An list of strings to be inserted right after the
                        table.
-        @type:         list
+        :type:         list
 
-        @param summary_row: A list of strings to be inserted after the table
+        :param summary_row: A list of strings to be inserted after the table
                        and that means the sum of one or more columns.
-        @type:         list
+        :type:         list
         """
         self.columns = columns
         self.progress_handler = progress_handler
@@ -301,8 +301,8 @@ class ColumnTableBuilder(ReportTableBuilder):
     def build_data(self, data):
         """ Create the table rows list.
 
-        @param data:   the row list passed by the user when creating the table
-        @type:         list
+        :param data:   the row list passed by the user when creating the table
+        :type:         list
         """
         prepared = []
         row_idx = 0
@@ -356,25 +356,25 @@ class ObjectTableBuilder(ColumnTableBuilder):
                  extra_row=None, summary_row=None):
         """ Creates a new ObjectTableBuilder object
 
-        @param objs: A instance list, where each instance is a table row.
-        @type  objs: list.
-        @param columns: A list of ObjectTableColumn, representing the
+        :param objs: A instance list, where each instance is a table row.
+        :type  objs: list.
+        :param columns: A list of ObjectTableColumn, representing the
           table columns.
-        @type  columns: list
-        @param style: The table style.
-        @type  style: TableStyle
-        @param width: The table width.
-        @type  width: int
-        @param table_line: Define the type of the line that is inserted between
+        :type  columns: list
+        :param style: The table style.
+        :type  style: TableStyle
+        :param width: The table width.
+        :type  width: int
+        :param table_line: Define the type of the line that is inserted between
           the table rows.
-        @type table_line: One of TABLE_LINE or TABLE_LINE_BLANK constants.
-        @param extra_row: An object with data to be inserted right after
+        :type table_line: One of TABLE_LINE or TABLE_LINE_BLANK constants.
+        :param extra_row: An object with data to be inserted right after
           the table. This data is included on the report as a normal data
           table after this object table.
-        @type extra_row: list
-        @param summary_row: A list of strings to be inserted after the table
+        :type extra_row: list
+        :param summary_row: A list of strings to be inserted after the table
           and that means the sum of one or more columns.
-        @type summary_row: list
+        :type summary_row: list
         """
         if extra_row and summary_row:
             raise ValueError("You can't use extra_row and summary_row at "
@@ -660,33 +660,33 @@ class TableColumn:
                  virtual=False, style='TableCell'):
         """ Column class for ColumnTable
 
-        @param name:   The column name
-        @type:         str
+        :param name:   The column name
+        :type:         str
 
-        @param width:  The column width
-        @type:         float
+        :param width:  The column width
+        :type:         float
 
-        @param format_string: A string that will be used to format the column
+        :param format_string: A string that will be used to format the column
                        value.
-        @type:         str
+        :type:         str
 
-        @param format_func: A function that will be called to format the column
+        :param format_func: A function that will be called to format the column
                        value
-        @type:
+        :type:
 
-        @param truncate: Must be the string be truncate if its length was
+        :param truncate: Must be the string be truncate if its length was
                        greater than the colum width?
-        @type:         bool
+        :type:         bool
 
-        @param expand: Must this column expand?
-        @type:         bool
+        :param expand: Must this column expand?
+        :type:         bool
 
-        @param virtual: If True, then the column *omit* its separator with the
+        :param virtual: If True, then the column *omit* its separator with the
                        last column and its header will be expanded with the one
                        of last column.
-        @type:         bool
-        @param style:  The cell style, defaults to 'TableCell'.
-        @type:         str
+        :type:         bool
+        :param style:  The cell style, defaults to 'TableCell'.
+        :type:         str
         """
         self.name = name
         self.width = width
@@ -746,23 +746,23 @@ class ObjectTableColumn(TableColumn):
                  style=None, *args, **kwargs):
         """ Creates a new ObjectTableColumn object
 
-        @param name:   The column name
-        @type:         str
+        :param name:   The column name
+        :type:         str
 
-        @param data_source: The attribute name where get the column value from.
+        :param data_source: The attribute name where get the column value from.
                        This can be a callable object too.
-        @type:         object
+        :type:         object
 
-        @param expand_factor: The column expand factor.
-        @type:         float
+        :param expand_factor: The column expand factor.
+        :type:         float
 
-        @param align:  The table alignment. One of LEFT, RIGHT, CENTER
+        :param align:  The table alignment. One of LEFT, RIGHT, CENTER
                        constants defined on stoqlib reporting flowables module.
-        @type:         One of LEFT, RIGHT or CENTER
+        :type:         One of LEFT, RIGHT or CENTER
 
-        @param truncate: If True, the column value will be truncate if its size
+        :param truncate: If True, the column value will be truncate if its size
                        was greater than the column width.
-        @type:         bool
+        :type:         bool
         """
         self.data_source = data_source
         self.expand_factor = expand_factor

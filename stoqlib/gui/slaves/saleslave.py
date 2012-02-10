@@ -100,8 +100,8 @@ class SaleDiscountSlave(BaseEditorSlave):
 
     def set_max_discount(self, discount):
         """Set the maximum percentage value for a discount.
-        @param discount: the value for a discount.
-        @type discount: L{int} in absolute value like 3
+        :param discount: the value for a discount.
+        :type discount: :class:`int` in absolute value like 3
         """
         self.max_discount = discount
 

@@ -186,11 +186,11 @@ class SearchDialog(BasicDialog):
     >>> def __init__(self, *args):
     ...     SearchDialog.__init__(self)
 
-    @cvar table: the table type which we will query on to get the objects.
-    @cvar searchbar_labels: labels for SearchBar entry and date fields
-    @cvar searchbar_result_strings: a tuple where each item has a singular
+    :cvar table: the table type which we will query on to get the objects.
+    :cvar searchbar_labels: labels for SearchBar entry and date fields
+    :cvar searchbar_result_strings: a tuple where each item has a singular
       and a plural form for searchbar results label
-    @cvar advanced_search: If the advanced search is enabled or disabled
+    :cvar advanced_search: If the advanced search is enabled or disabled
     """
     main_label_text = ''
     title = ''
@@ -207,13 +207,13 @@ class SearchDialog(BasicDialog):
         """
         A base class for search dialog inheritance
 
-        @param conn:
-        @param table:
-        @param search_table:
-        @param hide_footer:
-        @param title:
-        @param selection_mode:
-        @param double_click_confirm: If double click a item in the list should
+        :param conn:
+        :param table:
+        :param search_table:
+        :param hide_footer:
+        :param title:
+        :param selection_mode:
+        :param double_click_confirm: If double click a item in the list should
           automatically confirm
         """
 
@@ -308,9 +308,9 @@ class SearchDialog(BasicDialog):
     def add_button(self, label, stock=None, image=None):
         """Adds a button in the bottom of the dialog.
 
-        @param label: the text that will be displayed by the button.
-        @param stock: the gtk stock id to be used in the button.
-        @param image: the image filename.
+        :param label: the text that will be displayed by the button.
+        :param stock: the gtk stock id to be used in the button.
+        :param image: the image filename.
         """
         button = gtk.Button(label=label)
         if image:
@@ -341,7 +341,7 @@ class SearchDialog(BasicDialog):
 
     def confirm(self, retval=None):
         """Confirms the dialog
-        @retval: optional parameter which will be selected when the
+        :param retval: optional parameter which will be selected when the
           dialog is closed
         """
         if retval is None:
@@ -379,25 +379,25 @@ class SearchDialog(BasicDialog):
         pass
 
     def set_text_field_columns(self, columns):
-        """See L{SearchSlaveDelegate.set_text_field_columns}
+        """See :class:`SearchSlaveDelegate.set_text_field_columns`
         """
         self.search.set_text_field_columns(columns)
 
     def disable_search_entry(self):
-        """See L{SearchSlaveDelegate.disable_search_entry}
+        """See :class:`SearchSlaveDelegate.disable_search_entry`
         """
         self.search.disable_search_entry()
 
     def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
                    columns=None, callback=None):
-        """See L{SearchSlaveDelegate.add_filter}
+        """See :class:`SearchSlaveDelegate.add_filter`
         """
         self.search.add_filter(search_filter, position, columns, callback)
 
     def row_activate(self, obj):
         """This is called when an item in the results list is double clicked.
 
-        @param obj: the item that was double clicked.
+        :param obj: the item that was double clicked.
         """
         if self.double_click_confirm:
             # But only if its also confirmable with ok_button
@@ -554,17 +554,17 @@ class SearchEditor(SearchDialog):
                  hide_toolbar=False, double_click_confirm=False):
         """
         Create a new SearchEditor object.
-        @param conn:
-        @param table:
-        @param editor_class:
-        @param interface: The interface which we need to apply to the objects in
+        :param conn:
+        :param table:
+        :param editor_class:
+        :param interface: The interface which we need to apply to the objects in
           kiwi list to get adapter for the editor.
-        @param search_table:
-        @param hide_footer:
-        @param title:
-        @param selection_mode:
-        @param hide_toolbar:
-        @param double_click_confirm: If double click a item in the list should
+        :param search_table:
+        :param hide_footer:
+        :param title:
+        :param selection_mode:
+        :param hide_toolbar:
+        :param double_click_confirm: If double click a item in the list should
           automatically confirm. Double click confirms takes precedence over
           editor_class (ie, if double_click_confirmis is True, it will
           confirm the dialog, instead of opening the editor).
@@ -615,8 +615,8 @@ class SearchEditor(SearchDialog):
 
     def add_message_bar(self, message, message_type=gtk.MESSAGE_INFO):
         """Adds a message bar to the top of the search results
-        @message: message to add
-        @message_type: type of message to add
+        :param message: message to add
+        :param message_type: type of message to add
         """
         self._message_bar = MessageBar(message, message_type)
         self.main_vbox.pack_start(self._message_bar, False, False)
@@ -700,7 +700,7 @@ class SearchEditor(SearchDialog):
         return retval
 
     def row_activate(self, obj):
-        """See L{SearchDialog.row_activate}
+        """See :class:`SearchDialog.row_activate`
         """
         if self.double_click_confirm:
             SearchDialog.row_activate(self, obj)

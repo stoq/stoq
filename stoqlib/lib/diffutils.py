@@ -52,7 +52,7 @@ def diff_files(orig, new, verbose=False):
     """Diff two files.
 
     @return: True i the files differ otherwise False
-    @rtype: bool
+    :rtype: bool
     """
     return _diff(open(orig).readlines(),
                  open(new).readlines(),
@@ -64,7 +64,7 @@ def diff_strings(orig, new, verbose=False):
     """Diff two strings.
 
     @return: True i the files differ otherwise False
-    @rtype: bool
+    :rtype: bool
     """
     def _tolines(s):
         return [s + '\n' for line in s.split('\n')]

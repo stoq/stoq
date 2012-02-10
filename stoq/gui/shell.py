@@ -245,7 +245,7 @@ class Shell(object):
     def get_app_by_name(self, appname):
         """
         @param appname: a string
-        @returns: a L{Application} object
+        @returns: a :class:`Application` object
         """
         from stoq.lib.applist import Application
         descriptions = get_utility(IApplicationDescriptions).get_descriptions()

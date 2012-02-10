@@ -56,24 +56,24 @@ class Till(Domain):
       - Removing cash
       - Giving out an early salary
 
-    Each operation is associated with a L{TillEntry}.
+    Each operation is associated with a :class:`TillEntry`.
 
     You can only open a Till once per day, and you cannot open a new
     till before you closed the previously opened one.
 
-    @cvar STATUS_PENDING: this till is created, but not yet opened
-    @cvar STATUS_OPEN: this till is opened and we can make sales for it.
-    @cvar STATUS_CLOSED: end of the day, the till is closed and no more
+    :cvar STATUS_PENDING: this till is created, but not yet opened
+    :cvar STATUS_OPEN: this till is opened and we can make sales for it.
+    :cvar STATUS_CLOSED: end of the day, the till is closed and no more
       financial operations can be done in this store.
-    @ivar initial_cash_amount: The total amount we have in the moment we
+    :attribute initial_cash_amount: The total amount we have in the moment we
       are opening the till.
-    @ivar final_cash_amount: The total amount we have in the moment we
+    :attribute final_cash_amount: The total amount we have in the moment we
       are closing the till.
-    @ivar opening_date: When the till was opened or None if it has not yet
+    :attribute opening_date: When the till was opened or None if it has not yet
       been opened.
-    @ivar closing_date: When the till was closed or None if it has not yet
+    :attribute closing_date: When the till was closed or None if it has not yet
       been closed
-    @ivar station: the station associated with the till, eg the computer
+    :attribute station: the station associated with the till, eg the computer
       which opened it.
     """
 
@@ -99,8 +99,8 @@ class Till(Domain):
     @classmethod
     def get_current(cls, conn):
         """Fetches the Till for the current station.
-        @param conn: a database connection
-        @returns: a Till instance or None
+        :param conn: a database connection
+        :returns: a Till instance or None
         """
         station = get_current_station(conn)
         assert station is not None
@@ -121,7 +121,7 @@ class Till(Domain):
         """Fetches the last Till which was opened.
         If in doubt, use Till.get_current instead. This method is a special case
         which is used to be able to close a till without calling get_current()
-        @param conn: a database connection
+        :param conn: a database connection
         """
 
         result = Till.selectBy(status=Till.STATUS_OPEN,
@@ -185,7 +185,7 @@ class Till(Domain):
         sales associated. If there is a sale with a differente status than
         SALE_CONFIRMED, a new 'pending' till operation is created and
         these sales are associated with the current one.
-        @param removed:
+        :param removed:
         """
 
         if self.status == Till.STATUS_CLOSED:
@@ -203,9 +203,9 @@ class Till(Domain):
     def add_entry(self, payment):
         """
         Adds an entry to the till.
-        @param payment:
-        @returns: till entry representing the added debit
-        @rtype: L{TillEntry}
+        :param payment:
+        :returns: till entry representing the added debit
+        :rtype: :class:`TillEntry`
         """
         if payment.is_inpayment():
             value = payment.value
@@ -218,10 +218,10 @@ class Till(Domain):
 
     def add_debit_entry(self, value, reason=u""):
         """Add debit to the till
-        @param value: amount to add
-        @param reason: description of payment
-        @returns: till entry representing the added debit
-        @rtype: L{TillEntry}
+        :param value: amount to add
+        :param reason: description of payment
+        :returns: till entry representing the added debit
+        :rtype: :class:`TillEntry`
         """
         assert value >= 0
 
@@ -229,10 +229,10 @@ class Till(Domain):
 
     def add_credit_entry(self, value, reason=u""):
         """Add credit to the till
-        @param value: amount to add
-        @param reason: description of payment
-        @returns: till entry representing the added credit
-        @rtype: L{TillEntry}
+        :param value: amount to add
+        :param reason: description of payment
+        :returns: till entry representing the added credit
+        :rtype: :class:`TillEntry`
         """
         assert value >= 0
 
@@ -241,7 +241,7 @@ class Till(Domain):
     def needs_closing(self):
         """Checks if there's an open till that needs to be closed before
         we can do any further fiscal operations.
-        @returns: True if it needs to be closed, otherwise false
+        :returns: True if it needs to be closed, otherwise false
         """
         if self.status != Till.STATUS_OPEN:
             return False
@@ -255,8 +255,8 @@ class Till(Domain):
     def get_balance(self):
         """Returns the balance of all till operations plus the initial amount
         cash amount.
-        @returns: the balance
-        @rtype: currency
+        :returns: the balance
+        :rtype: currency
         """
         total = self.get_entries().sum('value') or 0
         return currency(self.initial_cash_amount + total)
@@ -265,8 +265,8 @@ class Till(Domain):
         """Returns the total cash amount on the till. That includes "extra"
         payments (like cash advance, till complement and so on), the money
         payments and the initial cash amount.
-        @returns: the cash amount on the till
-        @rtype: currency
+        :returns: the cash amount on the till
+        :rtype: currency
         """
         from stoqlib.domain.payment.method import PaymentMethod
         conn = self.get_connection()
@@ -284,16 +284,16 @@ class Till(Domain):
 
     def get_entries(self):
         """Fetches all the entries related to this till
-        @returns: all entries
-        @rtype: sequence of L{TillEntry}
+        :returns: all entries
+        :rtype: sequence of :class:`TillEntry`
         """
         return TillEntry.selectBy(
             till=self, connection=self.get_connection())
 
     def get_credits_total(self):
         """Calculates the total credit for all entries in this till
-        @returns: total credit
-        @rtype: currency
+        :returns: total credit
+        :rtype: currency
         """
         results = TillEntry.select(AND(TillEntry.q.value > 0,
                                        TillEntry.q.tillID == self.id),
@@ -302,8 +302,8 @@ class Till(Domain):
 
     def get_debits_total(self):
         """Calculates the total debit for all entries in this till
-        @returns: total debit
-        @rtype: currency
+        :returns: total debit
+        :rtype: currency
         """
         results = TillEntry.select(AND(TillEntry.q.value < 0,
                                        TillEntry.q.tillID == self.id),
@@ -333,15 +333,15 @@ class Till(Domain):
 
 
 class TillEntry(Domain):
-    """A TillEntry is a representing cash added or removed in a L{Till}.
+    """A TillEntry is a representing cash added or removed in a :class:`Till`.
     A positive value represents addition
     A negative value represents removal
 
-    @cvar date: the date the entry was created
-    @cvar description:
-    @cvar value: value of transaction
-    @cvar till: the till the entry takes part of
-    @cvar payment: optional, if a payment referrers the TillEntry
+    :cvar date: the date the entry was created
+    :cvar description:
+    :cvar value: value of transaction
+    :cvar till: the till the entry takes part of
+    :cvar payment: optional, if a payment referrers the TillEntry
     """
 
     date = DateTimeCol(default=datetime.datetime.now)

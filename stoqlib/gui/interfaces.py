@@ -33,12 +33,12 @@ class IDomainSlaveMapper(Interface):
 
     def register(domain_class, slave_class):
         """Register a slave class for a domain class.
-        @param domain_class:
-        @param slave_class:
+        :param domain_class:
+        :param slave_class:
         """
 
     def get_slave_class(domain_class):
         """Fetch a slave class given a domain class.
-        @param domain_class:
-        @returns: the slave class or None
+        :param domain_class:
+        :returns: the slave class or None
         """

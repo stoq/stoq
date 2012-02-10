@@ -1,0 +1,299 @@
+editors Package
+===============
+
+:mod:`editors` Package
+----------------------
+
+.. automodule:: stoqlib.gui.editors
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`accounteditor` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.editors.accounteditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`accounttransactioneditor` Module
+--------------------------------------
+
+.. automodule:: stoqlib.gui.editors.accounttransactioneditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`addresseditor` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.editors.addresseditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`baseeditor` Module
+------------------------
+
+.. automodule:: stoqlib.gui.editors.baseeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`callseditor` Module
+-------------------------
+
+.. automodule:: stoqlib.gui.editors.callseditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`categoryeditor` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.editors.categoryeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`clientcategoryeditor` Module
+----------------------------------
+
+.. automodule:: stoqlib.gui.editors.clientcategoryeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`contacteditor` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.editors.contacteditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`decreaseeditor` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.editors.decreaseeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`deliveryeditor` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.editors.deliveryeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`deviceseditor` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.editors.deviceseditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`fiscaleditor` Module
+--------------------------
+
+.. automodule:: stoqlib.gui.editors.fiscaleditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`formfieldeditor` Module
+-----------------------------
+
+.. automodule:: stoqlib.gui.editors.formfieldeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`invoiceeditor` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.editors.invoiceeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`loaneditor` Module
+------------------------
+
+.. automodule:: stoqlib.gui.editors.loaneditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`noteeditor` Module
+------------------------
+
+.. automodule:: stoqlib.gui.editors.noteeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`parameterseditor` Module
+------------------------------
+
+.. automodule:: stoqlib.gui.editors.parameterseditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`paymentcategoryeditor` Module
+-----------------------------------
+
+.. automodule:: stoqlib.gui.editors.paymentcategoryeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`paymenteditor` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.editors.paymenteditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`paymentmethodeditor` Module
+---------------------------------
+
+.. automodule:: stoqlib.gui.editors.paymentmethodeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`paymentseditor` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.editors.paymentseditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`personeditor` Module
+--------------------------
+
+.. automodule:: stoqlib.gui.editors.personeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`preferenceseditor` Module
+-------------------------------
+
+.. automodule:: stoqlib.gui.editors.preferenceseditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`producteditor` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.editors.producteditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`productioneditor` Module
+------------------------------
+
+.. automodule:: stoqlib.gui.editors.productioneditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`profileeditor` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.editors.profileeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`purchaseeditor` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.editors.purchaseeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`receivingeditor` Module
+-----------------------------
+
+.. automodule:: stoqlib.gui.editors.receivingeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`saleeditor` Module
+------------------------
+
+.. automodule:: stoqlib.gui.editors.saleeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`sellableeditor` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.editors.sellableeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`sellableuniteditor` Module
+--------------------------------
+
+.. automodule:: stoqlib.gui.editors.sellableuniteditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`serviceeditor` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.editors.serviceeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`shortcutseditor` Module
+-----------------------------
+
+.. automodule:: stoqlib.gui.editors.shortcutseditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`simpleeditor` Module
+--------------------------
+
+.. automodule:: stoqlib.gui.editors.simpleeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`stationeditor` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.editors.stationeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`tilleditor` Module
+------------------------
+
+.. automodule:: stoqlib.gui.editors.tilleditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+

@@ -54,8 +54,8 @@ class CheckData(Domain):
     """Stores check informations and also a history of possible
     devolutions.
 
-    @ivar bank_data: information about the bank account of this check.
-    @ivar payment: the payment object.
+    :attribute bank_data: information about the bank account of this check.
+    :attribute payment: the payment object.
     """
     payment = ForeignKey('Payment')
     bank_account = ForeignKey('BankAccount')
@@ -64,17 +64,17 @@ class CheckData(Domain):
 class CreditCardData(Domain):
     """Stores CreditCard specific state related to a payment
 
-    @ivar payment: the payment
-    @type payment: L{Payment}
-    @ivar card_type:
-    @type card_type: int, > 0, < 3
-    @ivar provider:
-    @type provider: L{PersonAdaptToCreditProvider}
-    @ivar installments: the installments number
-    @type installments: int, >= 1
-    @ivar entrance_value: the value of the first installment
+    :attribute payment: the payment
+    :type payment: :class:`Payment`
+    :attribute card_type:
+    :type card_type: int, > 0, < 3
+    :attribute provider:
+    :type provider: :class:`PersonAdaptToCreditProvider`
+    :attribute installments: the installments number
+    :type installments: int, >= 1
+    :attribute entrance_value: the value of the first installment
                           (when installments > 1)
-    @type entrance_value: currency
+    :type entrance_value: currency
     """
     (TYPE_CREDIT,
      TYPE_DEBIT,
@@ -109,19 +109,19 @@ class PaymentMethod(Domain):
     The logic itself for the various different methods are in the
     PaymentMethodOperation classes. Each PaymentMethod has a PaymentMethodOperation
     associated.
-    @ivar name:
-    @ivar description:
-    @ivar is_active:
-    @ivar daily_penalty:
-    @ivar interest: a value for the interest. It must always be in the format:
+    :attribute name:
+    :attribute description:
+    :attribute is_active:
+    :attribute daily_penalty:
+    :attribute interest: a value for the interest. It must always be in the format:
        0 <= interest <= 100
-    @ivar payment_day: which day in the month is the credit provider going
+    :attribute payment_day: which day in the month is the credit provider going
       to pay the store? Usually they pay in the same day
       every month.
-    @ivar closing_day: which day the credit provider stoq counting sales
+    :attribute closing_day: which day the credit provider stoq counting sales
       to pay in the payment_day? Sales after this day
       will be paid only in the next month.
-    @ivar account_destination: destination account for payment
+    :attribute account_destination: destination account for payment
       methods which creates transactions
     """
 
@@ -170,8 +170,8 @@ class PaymentMethod(Domain):
         """Get the operation for this method.
         The operation contains method specific logic when
         creating/deleting a payment.
-        @return: the operation associated with the method
-        @rtype: object implementing IPaymentOperation
+        :return: the operation associated with the method
+        :rtype: object implementing IPaymentOperation
         """
         return get_utility(IPaymentOperationManager).get(self.method_name)
 
@@ -228,16 +228,16 @@ class PaymentMethod(Domain):
                        description=None, base_value=None, till=None,
                        payment_number=None):
         """Creates a new payment according to a payment method interface
-        @param payment_type: the kind of payment, in or out
-        @param payment_group: a L{PaymentGroup} subclass
-        @param value: value of payment
-        @param due_date: optional, due date of payment
-        @param details: optional
-        @param description: optional, description of the payment
-        @param base_value: optional
-        @param till: optional
-        @param payment_number: optional
-        @returns: a L{Payment}
+        :param payment_type: the kind of payment, in or out
+        :param payment_group: a :class:`PaymentGroup` subclass
+        :param value: value of payment
+        :param due_date: optional, due date of payment
+        :param details: optional
+        :param description: optional, description of the payment
+        :param base_value: optional
+        :param till: optional
+        :param payment_number: optional
+        :returns: a :class:`Payment`
         """
         conn = self.get_connection()
 
@@ -294,11 +294,11 @@ class PaymentMethod(Domain):
         the value and dividing it by the number of payments.
         The number of payments is determined by the length of the due_dates
         sequence.
-        @param payment_type: the kind of payment, in or out
-        @param payment_group: a L{PaymentGroup} subclass
-        @param value: value of payment
-        @param due_dates: a list of datetime objects
-        @returns: a list of L{Payment}
+        :param payment_type: the kind of payment, in or out
+        :param payment_group: a :class:`PaymentGroup` subclass
+        :param value: value of payment
+        :param due_dates: a list of datetime objects
+        :returns: a list of :class:`Payment`
         """
         installments = len(due_dates)
         interest = Decimal(0)
@@ -332,10 +332,10 @@ class PaymentMethod(Domain):
         format: current_installment/total_of_installments payment_description
         for payment_group_description
 
-        @param payment_group: a L{PaymentGroup}
-        @param installment: current installment
-        @param installments: total installments
-        @returns: a payment description
+        :param payment_group: a :class:`PaymentGroup`
+        :param installment: current installment
+        :param installments: total installments
+        :returns: a payment description
         """
         assert installment > 0
         assert installments > 0
@@ -349,13 +349,13 @@ class PaymentMethod(Domain):
     def create_inpayment(self, payment_group, value, due_date=None,
                          description=None, base_value=None, till=None):
         """Creates a new inpayment
-        @param payment_group: a L{PaymentGroup} subclass
-        @param value: value of payment
-        @param due_date: optional, due date of payment
-        @param description: optional, description of the payment
-        @param base_value: optional
-        @param till: optional
-        @returns: a L{Payment}
+        :param payment_group: a :class:`PaymentGroup` subclass
+        :param value: value of payment
+        :param due_date: optional, due date of payment
+        :param description: optional, description of the payment
+        :param base_value: optional
+        :param till: optional
+        :returns: a :class:`Payment`
         """
         return self.create_payment(Payment.TYPE_IN, payment_group,
                                    value, due_date,
@@ -366,13 +366,13 @@ class PaymentMethod(Domain):
     def create_outpayment(self, payment_group, value, due_date=None,
                           description=None, base_value=None, till=None):
         """Creates a new outpayment
-        @param payment_group: a L{PaymentGroup} subclass
-        @param value: value of payment
-        @param due_date: optional, due date of payment
-        @param description: optional, description of the payment
-        @param base_value: optional
-        @param till: optional
-        @returns: a L{Payment}
+        :param payment_group: a :class:`PaymentGroup` subclass
+        :param value: value of payment
+        :param due_date: optional, due date of payment
+        :param description: optional, description of the payment
+        :param base_value: optional
+        :param till: optional
+        :returns: a :class:`Payment`
         """
         return self.create_payment(Payment.TYPE_OUT, payment_group,
                                    value, due_date,
@@ -385,10 +385,10 @@ class PaymentMethod(Domain):
         the number of payments.
         The number of payments is determined by the length of the due_dates
         sequence.
-        @param payment_group: a L{PaymentGroup} subclass
-        @param value: total value of all payments
-        @param due_dates: a list of datetime objects
-        @returns: a list of L{Payment}
+        :param payment_group: a :class:`PaymentGroup` subclass
+        :param value: total value of all payments
+        :param due_dates: a list of datetime objects
+        :returns: a list of :class:`Payment`
         """
         return self.create_payments(Payment.TYPE_IN, payment_group,
                                     value, due_dates)
@@ -400,10 +400,10 @@ class PaymentMethod(Domain):
         the number of payments.
         The number of payments is determined by the length of the due_dates
         sequence.
-        @param payment_group: a L{PaymentGroup} subclass
-        @param value: total value of all payments
-        @param due_dates: a list of datetime objects
-        @returns: a list of L{Payment}
+        :param payment_group: a :class:`PaymentGroup` subclass
+        :param value: total value of all payments
+        :param due_dates: a list of datetime objects
+        :returns: a list of :class:`Payment`
         """
         return self.create_payments(Payment.TYPE_OUT, payment_group,
                                     value, due_dates)
@@ -418,9 +418,9 @@ class PaymentMethod(Domain):
     @classmethod
     def get_by_name(cls, conn, name):
         """Returns the Payment method associated by the nmae
-        @param name: name of a payment method
-        @returns: the payment method class
-        @rtype: L{PaymentMethod} instance
+        :param name: name of a payment method
+        :returns: the payment method class
+        :rtype: :class:`PaymentMethod` instance
         """
         return PaymentMethod.selectOneBy(connection=conn,
                                          method_name=name)
@@ -428,6 +428,6 @@ class PaymentMethod(Domain):
     def selectable(self):
         """Finds out if the method is selectable, eg
         if the user can select it when doing a sale.
-        @returns: True if selectable, otherwise False
+        :returns: True if selectable, otherwise False
         """
         return self.operation.selectable(self)

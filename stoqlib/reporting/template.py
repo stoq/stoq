@@ -276,7 +276,7 @@ class ObjectListReport(SearchResultsReport):
     def get_columns(self):
         """Returns the report columns.
 
-        @returns: a list of ObjectTableColumns.
+        :returns: a list of ObjectTableColumns.
         """
         if not self._columns:
             self._columns = self._setup_columns_from_list()
@@ -285,15 +285,15 @@ class ObjectListReport(SearchResultsReport):
     def add_summary_by_column(self, column_name, value):
         """Includes the summary of a certain column in the summary row.
 
-        @param column_name: the name of the summarized column.
-        @param value: the summary value.
+        :param column_name: the name of the summarized column.
+        :param value: the summary value.
         """
         self._summary_row.update({column_name: value})
 
     def get_summary_row(self):
         """Returns the row used to summarize data.
 
-        @returns: the summary row.
+        :returns: the summary row.
         """
         row = []
         for column in self.get_columns():
@@ -338,8 +338,8 @@ class PriceReport(SearchResultsReport):
 class BaseRMLReport(object):
     """
     A base class for all rml reports
-    @cvar template_name: the name of the template to be used in report
-    @cvar title: the report title
+    :cvar template_name: the name of the template to be used in report
+    :cvar title: the report title
     """
     template_name = None
     title = _('Untitled')
@@ -347,8 +347,8 @@ class BaseRMLReport(object):
     def __init__(self, filename, template_name=None):
         """ Creates a new BaseRMLReport object
 
-        @param filename: filename to save report as
-        @param template_name: optional, name of the rml template to use
+        :param filename: filename to save report as
+        :param template_name: optional, name of the rml template to use
         """
         template_name = template_name or self.template_name
         lookup = TemplateLookup(directories=environ.get_resource_paths('template'))

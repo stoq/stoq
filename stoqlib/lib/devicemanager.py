@@ -63,12 +63,12 @@ if dbus:
 
 class SerialDevice(object):
     """An object representing a serial device
-    @ivar device_name: the device name, /dev/ttyXXX
+    :attribute device_name: the device name, /dev/ttyXXX
     """
     def __init__(self, device_name):
         """
         Create a new SerialDevice object.
-        @param device_name: name of the device
+        :param device_name: name of the device
         """
         self.device_name = device_name
 
@@ -122,7 +122,7 @@ class DeviceManager(object):
 
     def get_serial_devices(self):
         """Get a list of serial devices available on the system
-        @returns: a list of L{SerialDevice}
+        :returns: a list of :class:`SerialDevice`
         """
         if gudev:
             devices = self._get_gudev_devices()

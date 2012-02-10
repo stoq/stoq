@@ -67,7 +67,7 @@ class ReceivingOrderItem(Domain):
     def get_remaining_quantity(self):
         """Get the remaining quantity from the purchase order this item
         is included in.
-        @returns: the remaining quantity
+        :returns: the remaining quantity
         """
         return self.purchase_item.get_pending_quantity()
 
@@ -110,21 +110,21 @@ class ReceivingOrderItem(Domain):
 class ReceivingOrder(Domain):
     """Receiving order definition.
 
-    @cvar STATUS_PENDING: Products in the order was not received
+    :cvar STATUS_PENDING: Products in the order was not received
       or received partially.
-    @cvar STATUS_CLOSED: All products in the order has been received then
+    :cvar STATUS_CLOSED: All products in the order has been received then
         the order is closed.
-    @ivar status: status of the order
-    @ivar receival_date: Date that order has been closed.
-    @ivar confirm_date: Date that order was send to Stock application.
-    @ivar notes: Some optional additional information related to this order.
-    @ivar freight_type: Type of freight
-    @ivar freight_total: Total of freight paid in receiving order.
-    @ivar surcharge_value:
-    @ivar discount_value: Discount value in receiving order's payment.
-    @ivar secure_value: Secure value paid in receiving order's payment.
-    @ivar expense_value: Other expenditures paid in receiving order's payment.
-    @ivar invoice_number: The number of the order that has been received.
+    :attribute status: status of the order
+    :attribute receival_date: Date that order has been closed.
+    :attribute confirm_date: Date that order was send to Stock application.
+    :attribute notes: Some optional additional information related to this order.
+    :attribute freight_type: Type of freight
+    :attribute freight_total: Total of freight paid in receiving order.
+    :attribute surcharge_value:
+    :attribute discount_value: Discount value in receiving order's payment.
+    :attribute secure_value: Secure value paid in receiving order's payment.
+    :attribute expense_value: Other expenditures paid in receiving order's payment.
+    :attribute invoice_number: The number of the order that has been received.
     """
 
     (STATUS_PENDING,
@@ -198,7 +198,7 @@ class ReceivingOrder(Domain):
         created with the freight value. The other value as the surcharges and
         discounts will be included in the installments.
 
-        @param create_freight_payment: True if we should create a new payment
+        :param create_freight_payment: True if we should create a new payment
                                        with the freight value, False otherwise.
         """
         group = self.purchase.group
@@ -424,9 +424,9 @@ def get_receiving_items_by_purchase_order(purchase_order, receiving_order):
     """Returns a list of receiving items based on a list of purchase items
     that weren't received yet.
 
-    @param purchase_order: a PurchaseOrder instance that holds one or more
+    :param purchase_order: a PurchaseOrder instance that holds one or more
                            purchase items
-    @param receiving_order: a ReceivingOrder instance tied with the
+    :param receiving_order: a ReceivingOrder instance tied with the
                             receiving_items that will be created
     """
     conn = purchase_order.get_connection()

@@ -786,7 +786,7 @@ class PosApp(AppWindow):
         Should return -1 if the coupon was not added, but will return None if
         CONFIRM_SALES_ON_TILL is true
 
-        See L{stoqlib.gui.fiscalprinter.FiscalCoupon} for more information
+        See :class:`stoqlib.gui.fiscalprinter.FiscalCoupon` for more information
         """
         self._sale_started = True
         if self.param.CONFIRM_SALES_ON_TILL:

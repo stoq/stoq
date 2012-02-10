@@ -20,5 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
-"""Domain classes, the business logic in Stoq
+"""
+.. module:: stoqlib.domain
+   :synopsis: Domain classes, the business logic in SToq
 """

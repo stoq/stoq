@@ -34,8 +34,8 @@ class SynchronizationPolicy(object):
     """A SynchronizationPolicy contains a list of policies
     for all tables in the database which says how they
     should be synchronized.
-    @cvar name: name representing the policy
-    @cvar tables: list of tuples, table, policy
+    :cvar name: name representing the policy
+    :cvar tables: list of tuples, table, policy
     """
 
 
@@ -81,9 +81,9 @@ _policies.append(Shop)
 def get_policy_by_name(name):
     """Fetches a policy or raises LookupError if a policy cannot
     be found.
-    @param name: name of the polic
-    @returns: the policy
-    @rtype: SynchronizationPolicy
+    :param name: name of the polic
+    :returns: the policy
+    :rtype: SynchronizationPolicy
     """
 
     for policy in _policies:

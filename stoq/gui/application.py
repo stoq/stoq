@@ -618,7 +618,7 @@ class AppWindow(GladeDelegate):
             it's validation function will be tested and, if C{False}
             is returned, it will be set insensitive, ignoring C{value}
 
-        @param widgets: a L{list} of widgets
+        @param widgets: a :class:`list` of widgets
         @param value: either C{True} or C{False}
         """
         # FIXME: Maybe this should ne done on kiwi?
@@ -640,7 +640,7 @@ class AppWindow(GladeDelegate):
         then that will be used to decide if it gets sensitive or
         insensitive.
 
-        @param widgets: a L{list} of widgets
+        @param widgets: a :class:`list` of widgets
         @param validation_func: a function for validation. It should
             return either C{True} or C{False}.
         @param args: args that will be passed to C{validation_func}
@@ -1159,13 +1159,13 @@ class SearchableAppWindow(AppWindow):
     def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
                    columns=None, callback=None):
         """
-        See L{SearchSlaveDelegate.add_filter}
+        See :class:`SearchSlaveDelegate.add_filter`
         """
         self.search.add_filter(search_filter, position, columns, callback)
 
     def set_text_field_columns(self, columns):
         """
-        See L{SearchSlaveDelegate.set_text_field_columns}
+        See :class:`SearchSlaveDelegate.set_text_field_columns`
         """
         self.search.set_text_field_columns(columns)
 
@@ -1181,13 +1181,13 @@ class SearchableAppWindow(AppWindow):
 
     def refresh(self):
         """
-        See L{kiwi.ui.search.SearchSlaveDelegate.refresh}
+        See :class:`kiwi.ui.search.SearchSlaveDelegate.refresh`
         """
         self.search.refresh()
 
     def clear(self):
         """
-        See L{kiwi.ui.search.SearchSlaveDelegate.clear}
+        See :class:`kiwi.ui.search.SearchSlaveDelegate.clear`
         """
         self.search.clear()
 

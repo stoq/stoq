@@ -89,7 +89,7 @@ class CATFile(object):
     def add(self, register):
         """Add register to the file.
         @param register: a register
-        @type register: L{CATRegister}
+        @type register: :class:`CATRegister`
         """
         self._registers.append(register)
 

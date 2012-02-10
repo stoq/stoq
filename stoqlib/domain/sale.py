@@ -72,15 +72,15 @@ _ = stoqlib_gettext
 class SaleItem(Domain):
     """An item in a sale.
 
-    @param sellable: the kind of item
-    @param sale: the same
-    @param quantity: the quantity of the of sold item in this sale
-    @param price: the price of each individual item
-    @param base_price: original value the *product* had when adding the
+    :param sellable: the kind of item
+    :param sale: the same
+    :param quantity: the quantity of the of sold item in this sale
+    :param price: the price of each individual item
+    :param base_price: original value the *product* had when adding the
                        sale item
-    @param notes:
-    @param estimated_fix_date:
-    @param completion_date:
+    :param notes:
+    :param estimated_fix_date:
+    :param completion_date:
     """
     quantity = QuantityCol()
     base_price = PriceCol()
@@ -295,43 +295,43 @@ SaleItem.registerFacet(SaleItemAdaptToDelivery, IDelivery)
 class Sale(Domain):
     """Sale object implementation.
 
-    @cvar STATUS_INITIAL: The sale is opened, products or other sellable items
+    :cvar STATUS_INITIAL: The sale is opened, products or other sellable items
       might have been added.
-    @cvar STATUS_ORDERED: The sale is orded, it has sellable items but not any
+    :cvar STATUS_ORDERED: The sale is orded, it has sellable items but not any
       payments yet. This state is mainly used when the parameter
       CONFIRM_SALES_AT_TILL is enabled.
-    @cvar STATUS_CONFIRMED: The sale has been confirmed and all payments
+    :cvar STATUS_CONFIRMED: The sale has been confirmed and all payments
       have been registered, but not necessarily paid.
-    @cvar STATUS_CLOSED: All the payments of the sale has been confirmed
+    :cvar STATUS_CLOSED: All the payments of the sale has been confirmed
       and the client does not owe anything to us.
-    @cvar STATUS_CANCELLED: The sale has been canceled, this can only happen
+    :cvar STATUS_CANCELLED: The sale has been canceled, this can only happen
       to an sale which has not yet reached the SALE_CONFIRMED status.
-    @cvar STATUS_RETURNED: The sale has been returned, all the payments made
+    :cvar STATUS_RETURNED: The sale has been returned, all the payments made
       have been canceled and the client has been compensated for
       everything already paid.
-    @cvar CLIENT_INDIVIDUAL: The sale was done by an individual
-    @cvar CLIENT_COMPANY: The sale was done by a company
-    @ivar status: status of the sale
-    @ivar client: who we sold the sale to
-    @ivar salesperson: who sold the sale
-    @ivar branch: branch where the sale was done
-    @ivar till: The Till operation where this sale lives. Note that every
+    :cvar CLIENT_INDIVIDUAL: The sale was done by an individual
+    :cvar CLIENT_COMPANY: The sale was done by a company
+    :attribute status: status of the sale
+    :attribute client: who we sold the sale to
+    :attribute salesperson: who sold the sale
+    :attribute branch: branch where the sale was done
+    :attribute till: The Till operation where this sale lives. Note that every
        sale and payment generated are always in a till operation
        which defines a financial history of a store.
-    @ivar open_date: the date sale was created
-    @ivar close_date: the date sale was closed
-    @ivar confirm_date: the date sale was confirmed
-    @ivar cancel_date: the date sale was cancelled
-    @ivar return_date: the date sale was returned
-    @ivar discount_value:
-    @ivar surcharge_value:
-    @ivar total_amount: the total value of all the items in the same
-    @ivar notes: Some optional additional information related to this sale.
-    @ivar coupon_id: the id of the coupon printed by the ECF.
-    @ivar service_invoice_number:
-    @ivar cfop:
-    @ivar invoice_number: the sale invoice number.
-    @ivar client_category: The L{ClientCategory} that was used for price
+    :attribute open_date: the date sale was created
+    :attribute close_date: the date sale was closed
+    :attribute confirm_date: the date sale was confirmed
+    :attribute cancel_date: the date sale was cancelled
+    :attribute return_date: the date sale was returned
+    :attribute discount_value:
+    :attribute surcharge_value:
+    :attribute total_amount: the total value of all the items in the same
+    :attribute notes: Some optional additional information related to this sale.
+    :attribute coupon_id: the id of the coupon printed by the ECF.
+    :attribute service_invoice_number:
+    :attribute cfop:
+    :attribute invoice_number: the sale invoice number.
+    :attribute client_category: The :class:`ClientCategory` that was used for price
         determination.
     """
 
@@ -401,7 +401,7 @@ class Sale(Domain):
     @classmethod
     def get_last_confirmed(cls, conn):
         """Fetch the last confirmed sale
-        @param conn: a database connection
+        :param conn: a database connection
         """
         results = cls.select(AND(cls.q.status == cls.STATUS_CONFIRMED,
                                  cls.q.confirm_date != None),
@@ -415,8 +415,8 @@ class Sale(Domain):
         """Returns the last sale invoice number. If there is not an invoice
         number used, the returned value will be zero.
 
-        @param conn: a database connection
-        @returns: an integer representing the last sale invoice number
+        :param conn: a database connection
+        :returns: an integer representing the last sale invoice number
         """
         return cls.select(connection=conn).max('invoice_number') or 0
 
@@ -442,33 +442,33 @@ class Sale(Domain):
 
     def can_order(self):
         """Only newly created sales can be ordered
-        @returns: True if the sale can be ordered, otherwise False
+        :returns: True if the sale can be ordered, otherwise False
         """
         return (self.status == Sale.STATUS_INITIAL or
                 self.status == Sale.STATUS_QUOTE)
 
     def can_confirm(self):
         """Only ordered sales can be confirmed
-        @returns: True if the sale can be confirmed, otherwise False
+        :returns: True if the sale can be confirmed, otherwise False
         """
         return (self.status == Sale.STATUS_ORDERED or
                 self.status == Sale.STATUS_QUOTE)
 
     def can_set_paid(self):
         """Only confirmed sales can be paid
-        @returns: True if the sale can be set as paid, otherwise False
+        :returns: True if the sale can be set as paid, otherwise False
         """
         return self.status == Sale.STATUS_CONFIRMED
 
     def can_set_not_paid(self):
         """Only confirmed sales can be paid
-        @returns: True if the sale can be set as paid, otherwise False
+        :returns: True if the sale can be set as paid, otherwise False
         """
         return self.status == Sale.STATUS_PAID
 
     def can_set_renegotiated(self):
         """Only sales with status confirmed can be renegotiated.
-        @returns: True if the sale can be renegotiated, False otherwise.
+        :returns: True if the sale can be renegotiated, False otherwise.
         """
         # This should be as simple as:
         # return self.status == Sale.STATUS_CONFIRMED
@@ -478,14 +478,14 @@ class Sale(Domain):
 
     def can_cancel(self):
         """Only ordered, confirmed, paid and quoting sales can be cancelled.
-        @returns: True if the sale can be cancelled, otherwise False
+        :returns: True if the sale can be cancelled, otherwise False
         """
         return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID,
                                Sale.STATUS_ORDERED, Sale.STATUS_QUOTE)
 
     def can_return(self):
         """Only confirmed or paid sales can be returned
-        @returns: True if the sale can be returned, otherwise False
+        :returns: True if the sale can be returned, otherwise False
         """
         return (self.status == Sale.STATUS_CONFIRMED or
                 self.status == Sale.STATUS_PAID)
@@ -641,8 +641,8 @@ class Sale(Domain):
         A renegotiation object needs to be supplied which
         contains the invoice number and the eventual penalty
 
-        @param renegotiation: renegotiation information
-        @type renegotiation: L{RenegotiationData}
+        :param renegotiation: renegotiation information
+        :type renegotiation: :class:`RenegotiationData`
         """
         assert self.can_return()
 
@@ -679,7 +679,7 @@ class Sale(Domain):
             Sale total = Sum(product and service prices) + surcharge +
                              interest - discount
 
-        @returns: the total value
+        :returns: the total value
         """
         surcharge_value = self.surcharge_value or Decimal(0)
         discount_value = self.discount_value or Decimal(0)
@@ -690,7 +690,7 @@ class Sale(Domain):
     def get_sale_subtotal(self):
         """Fetch the subtotal for the sale, eg the sum of the
         prices for of all items
-        @returns: subtotal
+        :returns: subtotal
         """
         total = 0
         for i in self.get_items():
@@ -700,7 +700,7 @@ class Sale(Domain):
 
     def get_items_total_quantity(self):
         """Fetches the total number of items in the sale
-        @returns: number of items
+        :returns: number of items
         """
         return self.get_items().sum('quantity') or Decimal(0)
 
@@ -708,7 +708,7 @@ class Sale(Domain):
         """Returns the sale details. The details are composed by the sale
         notes, the items notes, the delivery address and the estimated fix
         date.
-        @returns: the sale details string.
+        :returns: the sale details string.
         """
         details = []
         if self.notes:
@@ -746,7 +746,7 @@ class Sale(Domain):
     def get_client_role(self):
         """Fetches the client role
 
-        @returns: the client role (a PersonAdaptToIndividual or a
+        :returns: the client role (a PersonAdaptToIndividual or a
         PersonAdaptToCompany) instance or None if the sale haven't a client.
         """
         if not self.client:
@@ -763,8 +763,8 @@ class Sale(Domain):
 
     def only_paid_with_money(self):
         """Find out if the sale is paid using money
-        @returns: True if the sale was paid with money, otherwise False
-        @rtype: bool
+        :returns: True if the sale was paid with money, otherwise False
+        :rtype: bool
         """
         for payment in self.group.payments:
             if payment.method.method_name != 'money':
@@ -778,9 +778,9 @@ class Sale(Domain):
 
     def add_sellable(self, sellable, quantity=1, price=None):
         """Adds a new sellable item to a sale
-        @param sellable: the sellable
-        @param quantity: quantity to add, defaults to 1
-        @param price: optional, the price, it not set the price
+        :param sellable: the sellable
+        :param quantity: quantity to add, defaults to 1
+        :param price: optional, the price, it not set the price
           from the sellable will be used
         """
         price = price or sellable.price
@@ -1067,7 +1067,7 @@ class SaleAdaptToPaymentTransaction(object):
         """A Brazil-specific method
         Calculates the icms total value
 
-        @param av_difference: the average difference for the sale items.
+        :param av_difference: the average difference for the sale items.
                               it means the average discount or surcharge
                               applied over all sale items
         """
@@ -1087,7 +1087,7 @@ class SaleAdaptToPaymentTransaction(object):
         """A Brazil-specific method
         Calculates the iss total value
 
-        @param av_difference: the average difference for the sale items.
+        :param av_difference: the average difference for the sale items.
                               it means the average discount or surcharge
                               applied over all sale items
         """
@@ -1156,23 +1156,23 @@ Sale.registerFacet(SaleAdaptToPaymentTransaction, IPaymentTransaction)
 class SaleView(Viewable):
     """Stores general informatios about sales
 
-    @cvar id: the id of the sale table
-    @cvar coupon_id: the id generated by the fiscal printer
-    @cvar open_date: the date when the sale was started
-    @cvar confirm_date: the date when the sale was confirmed
-    @cvar close_date: the date when the sale was closed
-    @cvar cancel_date: the date when the sale was cancelled
-    @cvar notes: sale order general notes
-    @cvar status: the sale status
-    @cvar salesperson_name: the salesperson name
-    @cvar client_name: the sale client name
-    @cvar client_id: the if of the client table
-    @cvar subtotal: the sum of all items in the sale
-    @cvar surcharge_value: the sale surcharge value
-    @cvar discount_value: the sale discount value
-    @cvar total: the subtotal - discount + charge
-    @cvar total_quantity: the items total quantity for the sale
-    @cvar invoice_number: the sale invoice number
+    :cvar id: the id of the sale table
+    :cvar coupon_id: the id generated by the fiscal printer
+    :cvar open_date: the date when the sale was started
+    :cvar confirm_date: the date when the sale was confirmed
+    :cvar close_date: the date when the sale was closed
+    :cvar cancel_date: the date when the sale was cancelled
+    :cvar notes: sale order general notes
+    :cvar status: the sale status
+    :cvar salesperson_name: the salesperson name
+    :cvar client_name: the sale client name
+    :cvar client_id: the if of the client table
+    :cvar subtotal: the sum of all items in the sale
+    :cvar surcharge_value: the sale surcharge value
+    :cvar discount_value: the sale discount value
+    :cvar total: the subtotal - discount + charge
+    :cvar total_quantity: the items total quantity for the sale
+    :cvar invoice_number: the sale invoice number
     """
 
     Person_Client = Alias(Person, 'person_client')
@@ -1275,16 +1275,16 @@ class SaleView(Viewable):
 class DeliveryView(Viewable):
     """Stores general informatios items that will be delivered.
 
-    @cvar id: the id of the sale item
-    @cvar sale_id: the id of the sale
-    @cvar quantity: the quantity of items that will be delivered
-    @cvar price: the sale item price
-    @cvar notes: sale item notes
-    @cvar estimated_fix_date: the estimated delivery date
-    @cvar completion_date: the real delivery date
-    @cvar address: the address where the item should be delivered
-    @cvar description: the sale item description
-    @cvar client_name: the sale client name
+    :cvar id: the id of the sale item
+    :cvar sale_id: the id of the sale
+    :cvar quantity: the quantity of items that will be delivered
+    :cvar price: the sale item price
+    :cvar notes: sale item notes
+    :cvar estimated_fix_date: the estimated delivery date
+    :cvar completion_date: the real delivery date
+    :cvar address: the address where the item should be delivered
+    :cvar description: the sale item description
+    :cvar client_name: the sale client name
     """
 
     columns = dict(

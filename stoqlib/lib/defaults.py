@@ -78,7 +78,7 @@ _libc = None
 def get_libc():
     """Returns an accessor to C library.
 
-    @returns: a ctypes.CDLL instance
+    :returns: a ctypes.CDLL instance
     """
     global _libc
     if _libc is None:
@@ -90,11 +90,11 @@ def calculate_delta_interval(interval_type, intervals):
     """Get the relativedelta value for a certain INTERVALTYPE_* constant.
 
     Intervals are useful modes to calculate payment duedates, just sum
-    them with a L{datetime.datetime} or L{datetime.date} object.
+    them with a :class:`datetime.datetime` or L{datetime.date} object.
 
-    @param interval_type: one of the INTERVALTYPE_* above
-    @param intervals: an int representing the number of intervals
-    @returns: a L{relativedelta.relativedelta} object
+    :param interval_type: one of the INTERVALTYPE_* above
+    :param intervals: an int representing the number of intervals
+    :returns: a :class:`relativedelta.relativedelta` object
     """
     if not interval_type in interval_types:
         raise KeyError('Invalid interval_type %r argument for '
@@ -111,7 +111,7 @@ def calculate_delta_interval(interval_type, intervals):
 def get_weekday_start():
     """Returns the dateutil.relativedelta.weekday based on the current locale.
 
-    @returns: a dateutil.realtivedelta.weekday instance
+    :returns: a dateutil.realtivedelta.weekday instance
     """
     # Libc + ctypes is not working on natty and previous
     #libc = get_libc()

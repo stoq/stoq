@@ -146,9 +146,9 @@ class WebService(object):
 
     def version(self, conn, app_version):
         """Fetches the latest version
-        @param conn: connection
-        @param app_version: application version
-        @returns: a deferred with the version_string as a parameter
+        :param conn: connection
+        :param app_version: application version
+        :returns: a deferred with the version_string as a parameter
         """
         params = {
             'dist': platform.dist(),

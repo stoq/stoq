@@ -38,7 +38,7 @@ _ = stoqlib_gettext
 
 
 class MagentoConfigEditor(BaseEditor):
-    """An editor for L{MagentoConfig}"""
+    """An editor for :class:`MagentoConfig`"""
 
     gladefile = 'MagentoConfigEditor'
     model_type = MagentoConfig

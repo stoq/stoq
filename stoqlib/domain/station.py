@@ -50,8 +50,8 @@ class BranchStation(Domain):
     @classmethod
     def get_active_stations(cls, conn):
         """Returns the currently active branch stations.
-        @param conn: a database connection
-        @returns: a sequence of currently active stations
+        :param conn: a database connection
+        :returns: a sequence of currently active stations
         """
         return cls.selectBy(is_active=True, connection=conn)
 
@@ -61,10 +61,10 @@ class BranchStation(Domain):
         Optionally a branch can be specified which will be set as the branch
         for created station.
 
-        @param conn: a database connection
-        @param branch: the branch
-        @param name: name of the station
-        @returns: a BranchStation instance
+        :param conn: a database connection
+        :param branch: the branch
+        :param name: name of the station
+        :returns: a BranchStation instance
         """
 
         if cls.get_station(conn, branch, name):
@@ -84,9 +84,9 @@ class BranchStation(Domain):
     def get_station(cls, conn, branch, name):
         """Fetches a station from a branch
 
-        @param conn: a database connection
-        @param branch: the branch
-        @param name: name of the station
+        :param conn: a database connection
+        :param branch: the branch
+        :param name: name of the station
         """
 
         if IBranch(branch, None) is None:

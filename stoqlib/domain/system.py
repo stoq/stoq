@@ -42,7 +42,7 @@ class SystemTable(ORMObject):
     @classmethod
     def is_available(cls, conn):
         """Checks if Stoqlib database is properly installed
-        @param conn: a database connection
+        :param conn: a database connection
         """
         table_name = cls.sqlmeta.table
         if not conn.tableExists(table_name):
@@ -57,10 +57,10 @@ class TransactionEntry(ORMObject):
     transaction. It's main use case is to know information about the system when
     a domain object is created or modified.
 
-    @cvar te_time:
-    @cvar type: if it represents a creation or modification
-    @cvar user_id:
-    @cvar station_id:
+    :cvar te_time:
+    :cvar type: if it represents a creation or modification
+    :cvar user_id:
+    :cvar station_id:
     """
 
     (CREATED,

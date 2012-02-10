@@ -184,7 +184,7 @@ class LoginHelper:
 
     def validate_user(self):
         """ Checks if an user can log in or not.
-        @returns: a user object
+        :returns: a user object
         """
         log.info("Showing login dialog")
         # Loop for logins

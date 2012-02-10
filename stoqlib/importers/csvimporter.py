@@ -53,9 +53,9 @@ class CSVRow(object):
 class CSVImporter(Importer):
     """Class to assist the process of importing csv files.
 
-    @cvar fields: field names, a list of strings
-    @cvar optional_fields: optional field names, a list of strings
-    @cvar dialect: optional, csv dialect, defaults to excel
+    :cvar fields: field names, a list of strings
+    :cvar optional_fields: optional field names, a list of strings
+    :cvar dialect: optional, csv dialect, defaults to excel
     """
     fields = []
     optional_fields = []
@@ -64,8 +64,8 @@ class CSVImporter(Importer):
     def __init__(self, lines=500, dry=False):
         """
         Create a new CSVImporter object.
-        @param lines: see L{set_lines_per_commit}
-        @param dry: see L{set_dry}
+        :param lines: see :class:`set_lines_per_commit`
+        :param dry: see :class:`set_dry`
         """
         Importer.__init__(self, items=lines, dry=dry)
         self.lines = lines
@@ -141,15 +141,15 @@ class CSVImporter(Importer):
     def process_one(self, row, fields, trans):
         """Processes one line in a csv file, you can access the columns
         using attributes on the data object.
-        @param row: object representing a row in the input
-        @param fields: a list of fields set in data
-        @param trans: a database transaction
+        :param row: object representing a row in the input
+        :param fields: a list of fields set in data
+        :param trans: a database transaction
         """
         raise NotImplementedError
 
     def read(self, iterable):
         """This can be overridden by as subclass which wishes to specialize
         the CSV reader.
-        @param iterable: a sequence of lines which are going to be read
-        @returns: a sequence of parsed items
+        :param iterable: a sequence of lines which are going to be read
+        :returns: a sequence of parsed items
         """

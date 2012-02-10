@@ -75,16 +75,16 @@ class ProductSearch(SearchEditor):
                  hide_price_column=False):
         """
         Create a new ProductSearch object.
-        @param conn: a orm Transaction instance
-        @param hide_footer: do I have to hide the dialog footer?
-        @param hide_toolbar: do I have to hide the dialog toolbar?
-        @param selection_mode: the kiwi list selection mode
-        @param hide_cost_column: if it's True, no need to show the
+        :param conn: a orm Transaction instance
+        :param hide_footer: do I have to hide the dialog footer?
+        :param hide_toolbar: do I have to hide the dialog toolbar?
+        :param selection_mode: the kiwi list selection mode
+        :param hide_cost_column: if it's True, no need to show the
                                  column 'cost'
-        @param use_product_statuses: a list instance that, if provided, will
+        :param use_product_statuses: a list instance that, if provided, will
                                      overwrite the statuses list defined in
                                      get_filter_slave method
-        @param hide_price_column: if it's True no need to show the
+        :param hide_price_column: if it's True no need to show the
                                   column 'price'
         """
         self.use_product_statuses = use_product_statuses

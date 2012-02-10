@@ -155,7 +155,7 @@ class MagentoConfig(Domain):
 class MagentoTableConfig(Domain):
     """Responsible for storing specific configurations for classes
 
-    @ivar config: the L{MagentoConfig} associated with this obj
+    @ivar config: the :class:`MagentoConfig` associated with this obj
     @ivar magento_table: the name of the table associated with this config
     """
 

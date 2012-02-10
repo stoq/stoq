@@ -51,12 +51,12 @@ class CommissionSource(Domain):
     which is used when the item is sold directly, eg one installment
     and another one which is used when the item is sold in installments.
 
-    @cvar direct_value: the commission value to be used in
+    :cvar direct_value: the commission value to be used in
       one-installment sales
-    @cvar installments_value: the commission value to be used in
+    :cvar installments_value: the commission value to be used in
       more than one installments sales
-    @ivar category: the sellable category
-    @ivar sellable: the sellable
+    :attribute category: the sellable category
+    :attribute sellable: the sellable
 
     The category and the sellable should not exist when sellable exists
     and the opposite is true.
@@ -75,14 +75,14 @@ class Commission(Domain):
     for a specific payment made by a Sale.
     One instance of this is created for each payment for each sale.
 
-    @cvar DIRECT: use direct commission to calculate the commission
+    :cvar DIRECT: use direct commission to calculate the commission
         amount
-    @cvar INSTALLMENTS: use installments commission to calculate the
+    :cvar INSTALLMENTS: use installments commission to calculate the
         commission amount
-    @cvar value: The commission amount
-    @ivar salesperson: who sold the sale
-    @ivar sale: the sale
-    @ivar payment:
+    :cvar value: The commission amount
+    :attribute salesperson: who sold the sale
+    :attribute sale: the sale
+    :attribute payment:
     """
 
     (DIRECT,

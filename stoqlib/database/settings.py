@@ -133,14 +133,14 @@ class DatabaseSettings(object):
     def get_connection_uri(self, filter_password=False):
         """Returns a uri representing the current database settings.
         It's used by the orm to connect to a database.
-        @param filter_password: if the password should be filtered out
-        @returns: a string like postgresql://username@localhost/dbname
+        :param filter_password: if the password should be filtered out
+        :returns: a string like postgresql://username@localhost/dbname
         """
         return self._build_uri(self.dbname, filter_password=filter_password)
 
     def get_connection(self):
         """Returns a connection to the configured database
-        @returns: a database connection
+        :returns: a database connection
         """
         return self._get_connection_internal(self.dbname)
 
@@ -149,7 +149,7 @@ class DatabaseSettings(object):
         different from the configred.
         This method is mainly here to able to create other databases,
         which will need a connection, Be careful when using this method.
-        @returns: a database connection
+        :returns: a database connection
         """
         return self._get_connection_internal(None)
 
@@ -166,7 +166,7 @@ class DatabaseSettings(object):
 
     def has_database(self):
         """Checks if the database specified in the settings exists
-        @return: if the database exists
+        :returns: if the database exists
         """
         try:
             conn = self.get_default_connection()

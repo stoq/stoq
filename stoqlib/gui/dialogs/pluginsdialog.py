@@ -43,8 +43,8 @@ class _PluginModel(object):
     """Temporary model for plugin objects. This model is a minimal
     representation of the plugin information.
 
-    @ivar name: The plugin name.
-    @ivar is_active: True if the plugin is installed, False otherwise.
+    :attribute name: The plugin name.
+    :attribute is_active: True if the plugin is installed, False otherwise.
     """
 
     def __init__(self, plugin_name, is_active):

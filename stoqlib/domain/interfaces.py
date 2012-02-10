@@ -86,9 +86,9 @@ class IStorable(IORMObject):
     def increase_stock(quantity, branch, cost=None):
         """When receiving a product, update the stock reference for this new
         item on a specific branch company.
-        @param quantity: amount to increase
-        @param branch: an object implement IBranch
-        @param cost: optional parameter indicating the unit cost of the new
+        :param quantity: amount to increase
+        :param branch: an object implement IBranch
+        :param cost: optional parameter indicating the unit cost of the new
                      stock items
         """
 
@@ -96,8 +96,8 @@ class IStorable(IORMObject):
         """When receiving a product, update the stock reference for the sold item
         this on a specific branch company. Returns the stock item that was
         decreased.
-        @param quantity: amount to decrease
-        @param branch: an object implement IBranch
+        :param quantity: amount to decrease
+        :param branch: an object implement IBranch
         """
 
     def increase_logic_stock(quantity, branch=None):
@@ -128,12 +128,12 @@ class IStorable(IORMObject):
 
     def get_stock_item(branch):
         """Fetch a stock item for a specific branch
-        @returns: a stock item
+        :returns: a stock item
         """
 
     def get_stock_items():
         """Fetches the stock items available for all branches.
-        @returns: a sequence of stock items
+        :returns: a sequence of stock items
         """
 
     def has_stock_by_branch(branch):
@@ -154,14 +154,14 @@ class IIndividual(IPersonFacet):
     """Being or characteristic of a single person, concerning one
     person exclusively
 
-    @type cpf: string
-    @type birth_location: integer
-    @type occupation: string
-    @type martial_status: enum
-    @type spouse: Individual
-    @type father_name: string
-    @type mother_name: string
-    @type rg_expedition_local: string
+    :type cpf: string
+    :type birth_location: integer
+    :type occupation: string
+    :type martial_status: enum
+    :type spouse: Individual
+    :type father_name: string
+    :type mother_name: string
+    :type rg_expedition_local: string
     """
 
     cpf = Attribute('A Brazilian government register number which allow to '
@@ -186,8 +186,8 @@ class IIndividual(IPersonFacet):
 
     def get_cpf_number():
         """Returns the cpf number without any non-numeric characters
-        @returns: the cpf number as a number
-        @rtype: integer
+        :returns: the cpf number as a number
+        :rtype: integer
         """
 
     def check_cpf_exists(cpf):
@@ -206,14 +206,14 @@ class ICompany(IPersonFacet):
 
     def get_cnpj_number():
         """Returns the cnpj number without any non-numeric characters
-        @returns: the cnpj number as a number
-        @rtype: integer
+        :returns: the cnpj number as a number
+        :rtype: integer
         """
 
     def get_state_registry_number():
         """Returns the state registry number without any non-numeric characters
-        @returns: the state registry number as a number
-        @rtype: integer
+        :returns: the state registry number as a number
+        :rtype: integer
         """
 
     def check_cnpj_exists(cnpj):
@@ -233,8 +233,8 @@ class IClient(IPersonFacet):
         """Fetch the date of the last purchased item by this client.
         None is returned if there are no sales yet made by the client
 
-        @returns: the date of the last purchased item
-        @rtype: datetime.date or None
+        :returns: the date of the last purchased item
+        :rtype: datetime.date or None
         """
 
     def get_client_sales():
@@ -273,20 +273,20 @@ class ISupplier(IPersonFacet):
         """Fetch the date of the last purchased item by this supplier.
         None is returned if there are no sales yet made by the client.
 
-        @returns: the date of the last purchased item
-        @rtype: datetime.date or None
+        :returns: the date of the last purchased item
+        :rtype: datetime.date or None
         """
 
     def get_name():
         """
-        @returns: the supplier's name
+        :returns: the supplier's name
         """
 
     def get_supplier_purchases():
         """
         Gets a list of PurchaseOrderViews representing all purchases done from
         this supplier.
-        @returns: a list of PurchaseOrderViews.
+        :returns: a list of PurchaseOrderViews.
         """
 
 
@@ -356,20 +356,20 @@ class IBranch(IPersonFacet):
         """Fetches the transaction entries (TIDs) for a specific table which
         were created using this station.
 
-        @param table: table to get objects in
-        @param timestamp: since when?
-        @param te_type: CREATED or MODIFIED
-        @param trans: a transaction
+        :param table: table to get objects in
+        :param timestamp: since when?
+        :param te_type: CREATED or MODIFIED
+        :param trans: a transaction
         """
 
     def fetchTIDsForOtherStations(table, timestamp, te_type, trans):
         """Fetches the transaction entries (TIDs) for a specific table which
         were created using any station except the specified one.
 
-        @param table: table to get objects in
-        @param timestamp: since when?
-        @param te_type: CREATED or MODIFIED
-        @param trans: a transaction
+        :param table: table to get objects in
+        :param timestamp: since when?
+        :param te_type: CREATED or MODIFIED
+        :param trans: a transaction
         """
 
 
@@ -430,7 +430,7 @@ class IPaymentTransaction(Interface):
         This means that all paid payments are paid back and
         all pending onces are cancelled.
         Commissions may also reversed.
-        @param renegotiation: renegotiation data
+        :param renegotiation: renegotiation data
         """
 
 
@@ -442,9 +442,9 @@ class IDelivery(Interface):
     def get_item_by_sellable(sellable):
         """Gets all delivery items for a sellable
 
-        @param sellable: a sellable
-        @type sellable: Sellable
-        @returns: a list of DeliveryItems
+        :param sellable: a sellable
+        :type sellable: Sellable
+        :returns: a list of DeliveryItems
         """
 
 

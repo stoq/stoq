@@ -49,9 +49,9 @@ class LoanItemEditor(BaseEditor):
         """An editor for a loan item. If the expaned_edition is True, the
         editor will enable the sale_quantity and return_quantity fields to be
         edited and will lock the quantity and price fields.
-        @param conn: a database connection.
-        @param model: a loan item.
-        @param expanded_edition: whether or not we should enable sale_quantity
+        :param conn: a database connection.
+        :param model: a loan item.
+        :param expanded_edition: whether or not we should enable sale_quantity
                                  and return_quantity fields to be edited.
         """
         self._expanded_edition = expanded_edition

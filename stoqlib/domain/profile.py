@@ -46,10 +46,10 @@ class ProfileSettings(Domain):
     def set_permission(cls, conn, profile, app, permission):
         """
         Set the permission for a user profile to use a application
-        @param conn: a database connection
-        @param profile: a UserProfile
-        @param app: name of the application
-        @param permission: a boolean of the permission
+        :param conn: a database connection
+        :param profile: a UserProfile
+        :param app: name of the application
+        :param permission: a boolean of the permission
         """
         setting = cls.selectOneBy(user_profile=profile,
                                   app_dir_name=app,
@@ -99,7 +99,7 @@ class UserProfile(Domain):
 
     def check_app_permission(self, app_name):
         """Check if the user has permission to use an application
-        @param app_name: name of application to check
+        :param app_name: name of application to check
         """
         return bool(ProfileSettings.selectOneBy(
             user_profile=self,

@@ -68,7 +68,7 @@ class YearlyPaymentsChart(Chart):
 
     def run(self, args):
         """
-        @returns: (year, total in payments, total out payments, profit)
+        :returns: (year, total in payments, total out payments, profit)
         """
 
         years = {}
@@ -209,7 +209,7 @@ ORDER BY extract(day FROM paid_date);"""
         """
         @year: year to show payments for
         @month: month to show payments for
-        @returns: (month, total in payments, total out payments, profit)
+        :returns: (month, total in payments, total out payments, profit)
         """
         year = int(args['year'][0])
         if 2100 > year < 1900:

@@ -60,24 +60,24 @@ class ProductSupplierInfo(Domain):
 
     Each product can has more than one supplier.
 
-    @ivar base_cost: the cost which helps the purchaser to define the
+    :attribute base_cost: the cost which helps the purchaser to define the
       main cost of a certain product. Each product can
       have multiple suppliers and for each supplier a
       base_cost is available. The purchaser in this case
       must decide how to define the main cost based in
       the base cost avarage of all suppliers.
-    @ivar notes:
-    @ivar is_main_supplier: defines if this object stores information
+    :attribute notes:
+    :attribute is_main_supplier: defines if this object stores information
         for the main supplier.
-    @ivar icms: a Brazil-specific attribute that means
+    :attribute icms: a Brazil-specific attribute that means
        'Imposto sobre circulacao de mercadorias e prestacao '
        'de servicos'
-    @ivar lead_time}: the number of days needed to deliver the product to
+    :attribute lead_time}: the number of days needed to deliver the product to
        purchaser.
-    @ivar minimum_purchase: the minimum amount that we can buy from this
+    :attribute minimum_purchase: the minimum amount that we can buy from this
        supplier.
-    @ivar supplier: the supplier of this relation
-    @ivar product: the product of this relation
+    :attribute supplier: the supplier of this relation
+    :attribute product: the product of this relation
     """
 
     base_cost = PriceCol(default=0)
@@ -130,26 +130,26 @@ class ProductSupplierInfo(Domain):
 class Product(Domain):
     """Class responsible to store basic products informations.
 
-    @ivar sellable: sellable of this product
-    @ivar suppliers: list of suppliers that sells this product
-    @ivar image: a thumbnail of this product
-    @ivar full_image: an image of this product
-    @ivar consignment:
-    @ivar is_composed:
-    @ivar production_time:
-    @ivar quality_tests:
-    @ivar location: physical location of this product, like a drawer
+    :attribute sellable: sellable of this product
+    :attribute suppliers: list of suppliers that sells this product
+    :attribute image: a thumbnail of this product
+    :attribute full_image: an image of this product
+    :attribute consignment:
+    :attribute is_composed:
+    :attribute production_time:
+    :attribute quality_tests:
+    :attribute location: physical location of this product, like a drawer
       or shelf number
-    @ivar manufacturer: name of the manufacturer for this product
-    @ivar part_number: a number representing this part
-    @ivar width: physical width of this product, unit not enforced
-    @ivar height: physical height of this product, unit not enforced
-    @ivar depth: depth of this product, unit not enforced
-    @ivar ncm: NFE: nomenclature comon do mercuosol
-    @ivar ex_tipi: NFE: see ncm
-    @ivar genero: NFE: see ncm
-    @ivar icms_template: ICMS tax template, brazil specific
-    @ivar ipi_template: IPI tax template, brazil specific
+    :attribute manufacturer: name of the manufacturer for this product
+    :attribute part_number: a number representing this part
+    :attribute width: physical width of this product, unit not enforced
+    :attribute height: physical height of this product, unit not enforced
+    :attribute depth: depth of this product, unit not enforced
+    :attribute ncm: NFE: nomenclature comon do mercuosol
+    :attribute ex_tipi: NFE: see ncm
+    :attribute genero: NFE: see ncm
+    :attribute icms_template: ICMS tax template, brazil specific
+    :attribute ipi_template: IPI tax template, brazil specific
     """
 
     sellable = ForeignKey('Sellable')
@@ -276,7 +276,7 @@ class Product(Domain):
             return self.suppliers.max('lead_time') or 0
 
     def get_history(self):
-        """Returns the list of L{ProductHistory} for this product.
+        """Returns the list of :class:`ProductHistory` for this product.
         """
         return ProductHistory.selectBy(sellable=self.sellable,
                                        connection=self.get_connection())
@@ -289,8 +289,8 @@ class Product(Domain):
         """Gets a list of main suppliers for a Product, the main supplier
         is the most recently selected supplier.
 
-        @returns: main supplier info
-        @rtype: ProductSupplierInfo or None if a product lacks
+        :returns: main supplier info
+        :rtype: ProductSupplierInfo or None if a product lacks
            a main suppliers
         """
         return ProductSupplierInfo.selectOneBy(
@@ -301,8 +301,8 @@ class Product(Domain):
     def get_suppliers_info(self):
         """Returns a list of suppliers for this product
 
-        @returns: a list of suppliers
-        @rtype: list of ProductSupplierInfo
+        :returns: a list of suppliers
+        :rtype: list of ProductSupplierInfo
         """
         return ProductSupplierInfo.selectBy(
             product=self, connection=self.get_connection())
@@ -310,7 +310,7 @@ class Product(Domain):
     def get_components(self):
         """Returns the products which are our components.
 
-        @returns: a sequence of ProductComponent instances
+        :returns: a sequence of ProductComponent instances
         """
         return ProductComponent.selectBy(product=self,
                                          connection=self.get_connection())
@@ -318,13 +318,13 @@ class Product(Domain):
     def has_components(self):
         """Returns if this product has components or not.
 
-        @returns: True if this product has components, False otherwise.
+        :returns: True if this product has components, False otherwise.
         """
         return self.get_components().count() > 0
 
     def get_production_cost(self):
         """ Return the production cost of one unit of the Product.
-        @returns: the production cost
+        :returns: the production cost
         """
         return self.sellable.cost
 
@@ -339,8 +339,8 @@ class Product(Domain):
     def is_composed_by(self, product):
         """Returns if we are composed by a given product or not.
 
-        @param product: a possible component of this product
-        @returns: True if the given product is one of our component or a
+        :param product: a possible component of this product
+        :returns: True if the given product is one of our component or a
         component of our components, otherwise False.
         """
         for component in self.get_components():
@@ -399,9 +399,9 @@ class ProductHistory(Domain):
         """Adds a sold item, populates the ProductHistory table using a
         product_sellable_item created during a sale.
 
-        @param conn: a database connection
-        @param branch: the branch
-        @param product_sellable_item: the sellable item for the sold
+        :param conn: a database connection
+        :param branch: the branch
+        :param product_sellable_item: the sellable item for the sold
         """
         cls(branch=branch,
             sellable=product_sellable_item.sellable,
@@ -415,9 +415,9 @@ class ProductHistory(Domain):
         Adds a received_item, populates the ProductHistory table using a
         receiving_order_item created during a purchase
 
-        @param conn: a database connection
-        @param branch: the branch
-        @param receiving_order_item: the item received for puchase
+        :param conn: a database connection
+        :param branch: the branch
+        :param receiving_order_item: the item received for puchase
         """
         cls(branch=branch, sellable=receiving_order_item.sellable,
             quantity_received=receiving_order_item.quantity,
@@ -430,9 +430,9 @@ class ProductHistory(Domain):
         Adds a transfered_item, populates the ProductHistory table using a
         transfered_order_item created during a transfer order
 
-        @param conn: a database connection
-        @param branch: the source branch
-        @param transfer_order_item: the item transfered from source branch
+        :param conn: a database connection
+        :param branch: the source branch
+        :param transfer_order_item: the item transfered from source branch
         """
         cls(branch=branch, sellable=transfer_order_item.sellable,
             quantity_transfered=transfer_order_item.quantity,
@@ -445,9 +445,9 @@ class ProductHistory(Domain):
         Adds a consumed_item, populates the ProductHistory table using a
         production_material item that was used in a production order.
 
-        @param conn: a database connection
-        @param branch: the source branch
-        @param retained_item: a ProductionMaterial instance
+        :param conn: a database connection
+        :param branch: the source branch
+        :param retained_item: a ProductionMaterial instance
         """
         cls(branch=branch, sellable=consumed_item.product.sellable,
             quantity_consumed=consumed_item.consumed,
@@ -460,9 +460,9 @@ class ProductHistory(Domain):
         Adds a produced_item, populates the ProductHistory table using a
         production_item that was produced in a production order.
 
-        @param conn: a database connection
-        @param branch: the source branch
-        @param retained_item: a ProductionItem instance
+        :param conn: a database connection
+        :param branch: the source branch
+        :param retained_item: a ProductionItem instance
         """
         cls(branch=branch, sellable=produced_item.product.sellable,
             quantity_produced=produced_item.produced,
@@ -474,9 +474,9 @@ class ProductHistory(Domain):
         Adds a lost_item, populates the ProductHistory table using a
         production_item/product_material that was lost in a production order.
 
-        @param conn: a database connection
-        @param branch: the source branch
-        @param lost_item: a ProductionItem or ProductionMaterial instance
+        :param conn: a database connection
+        :param branch: the source branch
+        :param lost_item: a ProductionItem or ProductionMaterial instance
         """
         cls(branch=branch, sellable=lost_item.product.sellable,
             quantity_lost=lost_item.lost,
@@ -488,9 +488,9 @@ class ProductHistory(Domain):
         Adds a decreased item, populates the ProductHistory table informing
         how many items wore manually decreased from stock.
 
-        @param conn: a database connection
-        @param branch: the source branch
-        @param item: a StockDecreaseItem instance
+        :param conn: a database connection
+        :param branch: the source branch
+        :param item: a StockDecreaseItem instance
         """
         cls(branch=branch, sellable=item.sellable,
             quantity_decreased=item.quantity,
@@ -501,12 +501,12 @@ class ProductStockItem(Domain):
     """Class that makes a reference to the product stock of a
     certain branch company.
 
-    @ivar stock_cost: the average stock price, will be updated as
+    :attribute stock_cost: the average stock price, will be updated as
       new stock items are received.
-    @ivar quantity: number of storables in the stock item
-    @ivar logic_quantity: ???
-    @ivar branch: the branch this stock item belongs to
-    @ivar storable: the storable the stock item refers to
+    :attribute quantity: number of storables in the stock item
+    :attribute logic_quantity: ???
+    :attribute branch: the branch this stock item belongs to
+    :attribute storable: the storable the stock item refers to
     """
 
     stock_cost = PriceCol(default=0)
@@ -517,8 +517,8 @@ class ProductStockItem(Domain):
 
     def update_cost(self, new_quantity, new_cost):
         """Update the stock_item according to new quantity and cost.
-        @param new_quantity: The new quantity added to stock.
-        @param new_cost: The cost of one unit of the added stock.
+        :param new_quantity: The new quantity added to stock.
+        :param new_cost: The cost of one unit of the added stock.
         """
         total_cost = self.quantity * self.stock_cost
         total_cost += new_quantity * new_cost

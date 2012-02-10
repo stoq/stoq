@@ -60,16 +60,16 @@ class SellableSearch(SearchEditor):
                  info_message=None):
         """
         Create a new SellableSearch object.
-        @param conn: a orm Transaction instance
-        @param hide_footer: do I have to hide the dialog footer?
-        @param hide_toolbar: do I have to hide the dialog toolbar?
-        @param selection_mode: the kiwi list selection mode
-        @param search_str: FIXME
-        @param sale_items: optionally, a list of sellables which will be
+        :param conn: a orm Transaction instance
+        :param hide_footer: do I have to hide the dialog footer?
+        :param hide_toolbar: do I have to hide the dialog toolbar?
+        :param selection_mode: the kiwi list selection mode
+        :param search_str: FIXME
+        :param sale_items: optionally, a list of sellables which will be
             used to deduct stock values
-        @param quantity: the quantity of stock to add to the order,
+        :param quantity: the quantity of stock to add to the order,
             is necessary to supply if you supply an order.
-        @param double_click_confirm: If double click a item in the list should
+        :param double_click_confirm: If double click a item in the list should
             automatically confirm
         """
         self._first_search = True

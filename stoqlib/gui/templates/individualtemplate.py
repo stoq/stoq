@@ -195,10 +195,10 @@ class IndividualEditorTemplate(BaseEditorSlave):
                  visual_mode=False):
         """ Creates a new IndividualEditorTemplate object
 
-        @param conn: a database connnection
-        @param model: model
-        @param person_slave: the person slave
-        @param visual_model:
+        :param conn: a database connnection
+        :param model: model
+        :param person_slave: the person slave
+        :param visual_model:
         """
         self._person_slave = person_slave
         BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)

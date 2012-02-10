@@ -127,19 +127,19 @@ class PaymentGroup(Domain):
 
     def can_cancel(self):
         """Everything can be called
-        @returns: True if the payment group can be cancelled, otherwise False
+        :returns: True if the payment group can be cancelled, otherwise False
         """
         return self.status != PaymentGroup.STATUS_CANCELLED
 
     def can_confirm(self):
         """Newly created payment groups can be confirmed
-        @returns: True if the payment group can be confirmed, otherwise False
+        :returns: True if the payment group can be confirmed, otherwise False
         """
         return self.status == PaymentGroup.STATUS_INITIAL
 
     def can_pay(self):
         """Confirmed payment groups can be paid
-        @returns: True if the payment group can be paid, otherwise False
+        :returns: True if the payment group can be paid, otherwise False
         """
         return self.status == PaymentGroup.STATUS_CONFIRMED
 
@@ -190,7 +190,7 @@ class PaymentGroup(Domain):
 
     def get_total_value(self):
         """Returns the sum of all payment values.
-        @returns: the total payment value or zero.
+        :returns: the total payment value or zero.
         """
         return currency(self.get_valid_payments().sum('value') or 0)
 
@@ -251,7 +251,7 @@ class PaymentGroup(Domain):
 
     def get_total_discount(self):
         """Returns the sum of all payment discounts.
-        @returns: the total payment discount or zero.
+        :returns: the total payment discount or zero.
         """
         discount = Payment.selectBy(
             group=self, connection=self.get_connection()).sum('discount')
@@ -260,7 +260,7 @@ class PaymentGroup(Domain):
 
     def get_total_interest(self):
         """Returns the sum of all payment interests.
-        @returns: the total payment interest or zero.
+        :returns: the total payment interest or zero.
         """
         interest = Payment.selectBy(
             group=self, connection=self.get_connection()).sum('interest')
@@ -269,7 +269,7 @@ class PaymentGroup(Domain):
 
     def get_total_penalty(self):
         """Returns the sum of all payment penalties.
-        @returns: the total payment penalty or zero.
+        :returns: the total payment penalty or zero.
         """
         penalty = Payment.selectBy(
             group=self, connection=self.get_connection()).sum('penalty')

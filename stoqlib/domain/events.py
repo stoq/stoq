@@ -38,7 +38,7 @@ class ProductCreateEvent(Event):
     """
     This event is emitted when a product is created.
 
-    @param product: the created product
+    :param product: the created product
     """
 
 
@@ -46,7 +46,7 @@ class ProductEditEvent(Event):
     """
     This event is emitted when a product is edited.
 
-    @param product: the edited product
+    :param product: the edited product
     """
 
 
@@ -54,7 +54,7 @@ class ProductRemoveEvent(Event):
     """
     This event is emitted when a product is about to be removed.
 
-    @param product: the removed product
+    :param product: the removed product
     """
 
 
@@ -62,10 +62,10 @@ class ProductStockUpdateEvent(Event):
     """
     This event is emitted when a product stock is in/decreased.
 
-    @param product: the product that had it's stock modified
-    @param branch: the branch on which the stock was modified
-    @param old_quantity: the old product stock quantity
-    @param new_quantity: the new product stock quantity
+    :param product: the product that had it's stock modified
+    :param branch: the branch on which the stock was modified
+    :param old_quantity: the old product stock quantity
+    :param new_quantity: the new product stock quantity
     """
 
 
@@ -77,7 +77,7 @@ class CategoryCreateEvent(Event):
     """
     This event is emitted when a category is created.
 
-    @param product: the created category
+    :param product: the created category
     """
 
 
@@ -85,7 +85,7 @@ class CategoryEditEvent(Event):
     """
     This event is emitted when a category is edited.
 
-    @param product: the edited category
+    :param product: the edited category
     """
 
 
@@ -97,8 +97,8 @@ class SaleStatusChangedEvent(Event):
     """
     This event is emitted when a sale is confirmed
 
-    @param sale: the sale which had it's status changed
-    @param old_status: the old sale status
+    :param sale: the sale which had it's status changed
+    :param old_status: the old sale status
     """
 
 
@@ -107,7 +107,7 @@ class ECFIsLastSaleEvent(Event):
     This event is emitted to compare the last sale with the last document
     in ECF.
 
-    @param sale: sale that will be compared.
+    :param sale: sale that will be compared.
     """
 
 #
@@ -120,10 +120,10 @@ class CreatePaymentEvent(Event):
     This event is emmited when a payment is about to be created and
     should be used to 'intercept' that payment creation.
 
-    return value should be one of L{enum.CreatePaymentStatus}
+    return value should be one of :class:`enum.CreatePaymentStatus`
 
-    @param payment_method: The selected payment method.
-    @param sale: The sale the payment should belong to
+    :param payment_method: The selected payment method.
+    :param sale: The sale the payment should belong to
     """
 
     returnclass = CreatePaymentStatus
@@ -135,8 +135,8 @@ class CardPaymentReceiptPrepareEvent(Event):
 
     Expected return value is a string to be printed
 
-    @param payment: the receipt of this payment
-    @param supports_duplicate: if the printer being used supports duplicate
+    :param payment: the receipt of this payment
+    :param supports_duplicate: if the printer being used supports duplicate
                                receipts
     """
 
@@ -145,7 +145,7 @@ class CardPaymentReceiptPrintedEvent(Event):
     """
     This gets emmited after a card payment receipt is successfully printed.
 
-    @param payment: the receipt of this payment
+    :param payment: the receipt of this payment
     """
 
 
@@ -179,15 +179,15 @@ class CheckECFStateEvent(Event):
 class TillOpenEvent(Event):
     """
     This event is emitted when a till is opened
-    @param till: the opened till
+    :param till: the opened till
     """
 
 
 class TillCloseEvent(Event):
     """
     This event is emitted when a till is closed
-    @param till: the closed till
-    @param previous_day: if the till wasn't closed previously
+    :param till: the closed till
+    :param previous_day: if the till wasn't closed previously
     """
 
 
@@ -201,16 +201,16 @@ class HasPendingReduceZ(Event):
 class TillAddCashEvent(Event):
     """
     This event is emitted when cash is added to a till
-    @param till: the closed till
-    @param value: amount added to the till
+    :param till: the closed till
+    :param value: amount added to the till
     """
 
 
 class TillRemoveCashEvent(Event):
     """
     This event is emitted when cash is removed from a till
-    @param till: the closed till
-    @param value: amount remove from the till
+    :param till: the closed till
+    :param value: amount remove from the till
     """
 
 
@@ -220,6 +220,6 @@ class TillAddTillEntryEvent(Event):
 
     cash is added to a till;
     cash is removed from a till;
-    @param till_entry: TillEntry object
-    @param conn: database connection
+    :param till_entry: TillEntry object
+    :param conn: database connection
     """

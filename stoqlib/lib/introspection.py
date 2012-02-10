@@ -42,7 +42,7 @@ from stoqlib.lib.component import Adapter
 def get_all_classes(package):
     """
     Gets a generator with classes.
-    @returns: a generator.
+    :returns: a generator.
     """
     for package in listpackages(package):
         # stoqlib.domain -> stoqlib/domain
@@ -69,7 +69,7 @@ def get_all_classes(package):
 def get_interfaces_for_package(package):
     """
     Gets a generator with classes which implements at least one interface.
-    @returns: a generator.
+    :returns: a generator.
     """
     for klass in get_all_classes(package):
         if not implementedBy(klass):
@@ -84,7 +84,7 @@ def get_interfaces_for_package(package):
 def get_all_adapters():
     """
     Gets a generator with adapter classes.
-    @returns: a generator.
+    :returns: a generator.
     """
     for klass in get_all_classes('stoqlib'):
         if not issubclass(klass, Adapter):

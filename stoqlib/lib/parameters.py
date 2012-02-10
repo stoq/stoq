@@ -894,7 +894,7 @@ def get_parameter_details(field_name):
 def check_parameter_presence(conn):
     """Check so the number of installed parameters are equal to
     the number of available ones
-    @returns: True if they're up to date, False otherwise
+    :returns: True if they're up to date, False otherwise
     """
 
     results = ParameterData.select(connection=conn)

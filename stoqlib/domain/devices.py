@@ -98,9 +98,9 @@ class DeviceSettings(Domain):
     def get_by_station_and_type(cls, conn, station, type):
         """Fetch all settings for a specific station and type.
 
-        @param conn: a database connection
-        @param station: a BranchStation instance
-        @param type: device type
+        :param conn: a database connection
+        :param station: a BranchStation instance
+        :param type: device type
         """
         return cls.select(
             AND(cls.q.stationID == station,
@@ -111,8 +111,8 @@ class DeviceSettings(Domain):
     def get_scale_settings(cls, conn):
         """
         Get the scale device settings for the current station
-        @param conn: a database connection
-        @returns: a L{DeviceSettings} object or None if there is none
+        :param conn: a database connection
+        :returns: a :class:`DeviceSettings` object or None if there is none
         """
         station = get_current_station(conn)
         return cls.selectOneBy(
@@ -146,7 +146,7 @@ class DeviceSettings(Domain):
 class FiscalDayTax(Domain):
     """This represents the information that needs to be used to
     generate a Sintegra file of type 60M.
-    @cvar code: four bytes, either the percental of the tax, 1800 for 18%
+    :cvar code: four bytes, either the percental of the tax, 1800 for 18%
     or one of::
        - I: Isento
        - F: Substitucao

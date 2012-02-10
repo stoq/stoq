@@ -47,15 +47,15 @@ class ReportTemplate(BaseReportTemplate):
                  do_footer=True, date=None, username=None, **kwargs):
         """ Common parameters to BaseReportTemplate was ommited, maybe
         you want look at BaseReportTemplate documentation?
-        @param timestamp: The time when the report was created must be
+        :param timestamp: The time when the report was created must be
                           drawed at the report footer? Defaults to False.
-        @type timestamp:  bool
-        @param do_header: Must a header be drawed on top of the report?
+        :type timestamp:  bool
+        :param do_header: Must a header be drawed on top of the report?
                           Defaults to True.
-        @type do_header:  bool
-        @param do_footer: Must a footer be drawed on each report page?
+        :type do_header:  bool
+        :param do_footer: Must a footer be drawed on each report page?
                           Defaults to True.
-        @type do_footer:  bool
+        :type do_footer:  bool
 
         """
         if timestamp and not do_footer:

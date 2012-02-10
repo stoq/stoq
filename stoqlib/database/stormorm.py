@@ -347,8 +347,8 @@ class SQLObjectBase(Storm):
     The general strategy for using Storm's SQLObject emulation layer
     is to create an application-specific subclass of SQLObjectBase
     (probably named "SQLObject") that provides an implementation of
-    _get_store to return an instance of L{storm.store.Store}. It may
-    even be implemented as returning a global L{Store} instance. Then
+    _get_store to return an instance of :class:`storm.store.Store`. It may
+    even be implemented as returning a global :class:`Store` instance. Then
     all database classes should subclass that class.
     """
     __metaclass__ = SQLObjectMeta

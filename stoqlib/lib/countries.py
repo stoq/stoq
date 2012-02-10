@@ -277,7 +277,7 @@ def get_countries():
 
     >>> [(translated label, label), ...]
 
-    @returns: a list of tuples
+    :returns: a list of tuples
     """
 
     # We store translated country names in a dictionary to ensure

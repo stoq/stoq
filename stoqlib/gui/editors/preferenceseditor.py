@@ -91,10 +91,10 @@ class PreferencesEditor(BaseEditor):
     def add_extra_tab(self, tab_name, slave_class, *args, **kwargs):
         """Add an extra tab on preferences
 
-        @param tab_name: the name of the tab
-        @param slave_class: the slave that will be attached to the new tab
-        @param args: additional args to slave
-        @param kwargs: additional kwargs to slave
+        :param tab_name: the name of the tab
+        :param slave_class: the slave that will be attached to the new tab
+        :param args: additional args to slave
+        :param kwargs: additional kwargs to slave
         """
         event_box = gtk.EventBox()
         self.preferences_notebook.append_page(event_box,

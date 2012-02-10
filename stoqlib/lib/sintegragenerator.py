@@ -354,11 +354,11 @@ def generate(filename, start, end):
     between start and end dates. Start and end are normally
     the first and last day of a month
 
-    @param filename: filename to save the sintegra file
-    @param start: start date
-    @type start: datetime.date
-    @param end: end date
-    @type start: datetime.date
+    :param filename: filename to save the sintegra file
+    :param start: start date
+    :type start: datetime.date
+    :param end: end date
+    :type start: datetime.date
     """
 
     generator = StoqlibSintegraGenerator(get_connection(), start, end)

@@ -25,19 +25,19 @@
 
 This file contains several editors used in the production process:
 
-L{ProductionItemEditor}: A base class with some information about the product or
+:class:`ProductionItemEditor`: A base class with some information about the product or
                          material (description, location, unit). See subclasses
                          for specifc usage.
 
-L{ProducedItemSlave}: A slave for serial number input.
+:class:`ProducedItemSlave`: A slave for serial number input.
 
-L{ProductionItemProducedEditor}: A dialog to enter the number of itens produced.
-                                 This uses the L{ProducedItemSlave} slave for
+:class:`ProductionItemProducedEditor`: A dialog to enter the number of itens produced.
+                                 This uses the :class:`ProducedItemSlave` slave for
                                  serial number input
-L{ProductionItemLostEditor}: A dialog to input the number of items lost.
+:class:`ProductionItemLostEditor`: A dialog to input the number of items lost.
 
-L{ProductionServiceEditor}: Editor for an service item in the production order
-L{ProductionMaterialEditor}: Item for an production material in the production
+:class:`ProductionServiceEditor`: Editor for an service item in the production order
+:class:`ProductionMaterialEditor`: Item for an production material in the production
                              order
 """
 

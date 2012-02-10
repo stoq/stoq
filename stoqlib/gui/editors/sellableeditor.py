@@ -426,8 +426,8 @@ class SellableEditor(BaseEditor):
         """Subclasses may override this method to provide a custom
         tax selection.
 
-        @returns: a list of tuples containing the tax description and a
-            L{stoqlib.domain.sellable.SellableTaxConstant} object.
+        :returns: a list of tuples containing the tax description and a
+            :class:`stoqlib.domain.sellable.SellableTaxConstant` object.
         """
         return []
 

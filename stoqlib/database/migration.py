@@ -59,14 +59,14 @@ create_log = Logger('stoqlib.database.create')
 class Patch(object):
     """A Database Patch
 
-    @ivar filename: patch filename
-    @ivar level: database level
+    :attribute filename: patch filename
+    :attribute level: database level
     """
     def __init__(self, filename, migration):
         """
         Create a new Patch object.
-        @param filename:
-        @param migration
+        :param filename:
+        :param migration
         """
         self.filename = filename
 
@@ -84,7 +84,7 @@ class Patch(object):
 
     def apply(self, conn):
         """Apply the patch
-        @param conn: A database connection
+        :param conn: A database connection
         """
 
         temporary = tempfile.mktemp(prefix="patch-%d-%d-" % self.get_version())
@@ -112,7 +112,7 @@ class Patch(object):
 
     def get_version(self):
         """Returns the patch version
-        @returns: a tuple with the patch generation and level
+        :returns: a tuple with the patch generation and level
         """
         return self.generation, self.level
 
@@ -203,7 +203,7 @@ class SchemaMigration(object):
     def check_uptodate(self):
         """
         Verify if the schema is up to date.
-        @returns: True or False.
+        :returns: True or False.
         """
         # Fetch the latest, eg the last in the list
         patches = self._get_patches()
@@ -260,7 +260,7 @@ class SchemaMigration(object):
         for a migration subclass
 
         This must be implemented in a subclass
-        @returns: the current database patch version
+        :returns: the current database patch version
         """
         raise NotImplementedError
 
@@ -270,8 +270,8 @@ class SchemaMigration(object):
         information
 
         This must be implemented in a subclass
-        @param patch: the patch that was applied
-        @returns: an SQL string
+        :param patch: the patch that was applied
+        :returns: an SQL string
         """
         raise NotImplementedError
 
@@ -409,9 +409,9 @@ class PluginSchemaMigration(SchemaMigration):
     def __init__(self, plugin_name, resource, patterns):
         """
         Create a new PluginSchemaMigration object.
-        @param plugin_name: name of the plugin
-        @param resource: resource to load sql patches from
-        @param patterns: sql patch pattern
+        :param plugin_name: name of the plugin
+        :param resource: resource to load sql patches from
+        :param patterns: sql patch pattern
         """
         self.plugin_name = plugin_name
         self.patch_resource = resource

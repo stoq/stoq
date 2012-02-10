@@ -123,9 +123,9 @@ class PurchaseItem(Domain):
     @classmethod
     def get_ordered_quantity(cls, conn, sellable):
         """Returns the quantity already ordered of a given sellable.
-        @param conn: a database connection
-        @param sellable: the sellable we want to know the quantity ordered.
-        @returns: the quantity already ordered of a given sellable or zero if
+        :param conn: a database connection
+        :param sellable: the sellable we want to know the quantity ordered.
+        :returns: the quantity already ordered of a given sellable or zero if
         no quantity have been ordered.
         """
         query = AND(PurchaseItem.q.sellableID == sellable.id,
@@ -279,7 +279,7 @@ class PurchaseOrder(Domain):
 
     def can_cancel(self):
         """Find out if it's possible to cancel the order
-        @returns: True if it's possible to cancel the order, otherwise False
+        :returns: True if it's possible to cancel the order, otherwise False
         """
         # FIXME: Canceling partial orders disabled until we fix bug 3282
         for item in self.get_items():
@@ -291,7 +291,7 @@ class PurchaseOrder(Domain):
 
     def can_close(self):
         """Find out if it's possible to close the order
-        @returns: True if it's possible to close the order, otherwise False
+        :returns: True if it's possible to close the order, otherwise False
         """
 
         # Consigned orders can be closed only after being confirmed
@@ -306,7 +306,7 @@ class PurchaseOrder(Domain):
     def confirm(self, confirm_date=None):
         """Confirms the purchase order
 
-        @param confirm_data: optional, datetime
+        :param confirm_data: optional, datetime
         """
         if confirm_date is None:
             confirm_date = const.NOW()
@@ -513,7 +513,7 @@ class Quotation(Domain):
     def is_closed(self):
         """Returns if the quotation is closed or not.
 
-        @returns: True if the quotation is closed, False otherwise.
+        :returns: True if the quotation is closed, False otherwise.
         """
         return self.purchase.status == PurchaseOrder.ORDER_CANCELLED
 
@@ -625,16 +625,16 @@ class PurchaseItemView(Viewable):
     a specific purchase. It's used by the PurchaseDetails dialog
     to display all the purchase items within a purchase
 
-    @param id: id of the purchase item
-    @param purchase_id: id of the purchase order the item belongs to
-    @param sellable: sellable of the item
-    @param cost: cost of the item
-    @param quantity: quantity ordered
-    @param quantity_received: quantity received
-    @param total: total value of the items purchased
-    @param total_received: total value of the items received
-    @param description: description of the sellable
-    @param unit: unit as a string or None if the product has no unit
+    :param id: id of the purchase item
+    :param purchase_id: id of the purchase order the item belongs to
+    :param sellable: sellable of the item
+    :param cost: cost of the item
+    :param quantity: quantity ordered
+    :param quantity_received: quantity received
+    :param total: total value of the items purchased
+    :param total_received: total value of the items received
+    :param description: description of the sellable
+    :param unit: unit as a string or None if the product has no unit
     """
     columns = dict(
         id=PurchaseItem.q.id,
@@ -690,25 +690,25 @@ class PurchaseItemView(Viewable):
 class PurchaseOrderView(Viewable):
     """General information about purchase orders
 
-    @cvar id: the id of purchase_order table
-    @cvar status: the purchase order status
-    @cvar open_date: the date when the order was started
-    @cvar quote_deadline: the date when the quotation expires
-    @cvar expected_receival_date: expected date to receive products
-    @cvar expected_pay_date: expected date to pay the products
-    @cvar receival_date: the date when the products were received
-    @cvar confirm_date: the date when the order was confirmed
-    @cvar salesperson_name: the name of supplier's salesperson
-    @cvar expected_freight: the expected freight value
-    @cvar surcharge_value: the surcharge value for the order total
-    @cvar discount_value: the discount_value for the order total
-    @cvar supplier_name: the supplier name
-    @cvar transporter_name: the transporter name
-    @cvar branch_name: the branch company name
-    @cvar ordered_quantity: the total quantity ordered
-    @cvar received_quantity: the total quantity received
-    @cvar subtotal: the order subtotal (sum of product values)
-    @cvar total: subtotal - discount_value + surcharge_value
+    :cvar id: the id of purchase_order table
+    :cvar status: the purchase order status
+    :cvar open_date: the date when the order was started
+    :cvar quote_deadline: the date when the quotation expires
+    :cvar expected_receival_date: expected date to receive products
+    :cvar expected_pay_date: expected date to pay the products
+    :cvar receival_date: the date when the products were received
+    :cvar confirm_date: the date when the order was confirmed
+    :cvar salesperson_name: the name of supplier's salesperson
+    :cvar expected_freight: the expected freight value
+    :cvar surcharge_value: the surcharge value for the order total
+    :cvar discount_value: the discount_value for the order total
+    :cvar supplier_name: the supplier name
+    :cvar transporter_name: the transporter name
+    :cvar branch_name: the branch company name
+    :cvar ordered_quantity: the total quantity ordered
+    :cvar received_quantity: the total quantity received
+    :cvar subtotal: the order subtotal (sum of product values)
+    :cvar total: subtotal - discount_value + surcharge_value
     """
 
     Person_Supplier = Alias(Person, 'person_supplier')

@@ -43,12 +43,12 @@ log = Logger('plugins.magento.magentolib')
 
 
 def get_proxy(config):
-    """Return a singleton instance of L{MagentoProxy}.
+    """Return a singleton instance of :class:`MagentoProxy`.
 
-    @attention: Always use this instead of instantializing L{MagentoProxy}
+    @attention: Always use this instead of instantializing :class:`MagentoProxy`
         directly, as it's designed to be a singleton.
 
-    @returns: a L{MagentoProxy} instance
+    @returns: a :class:`MagentoProxy` instance
     """
     proxy_mapper = get_utility(IMagentoProxyMapper, None)
     if not proxy_mapper:
@@ -125,8 +125,8 @@ class MagentoProxy(object):
     def call(self, method, args=None, lock=True):
         """Call C{method} with {args} on magento server.
 
-        @param method: the method path as a L{basestring}
-        @param args: a L{list} that will be used in call as the
+        @param method: the method path as a :class:`basestring`
+        @param args: a :class:`list` that will be used in call as the
             C{method} args
         @param lock: if this call should inhibit others
         @returns: the magento result

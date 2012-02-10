@@ -74,7 +74,7 @@ class PaymentRenegotiation(Domain):
 
     def can_set_renegotiated(self):
         """Only sales with status confirmed can be renegotiated.
-        @returns: True if the sale can be renegotiated, False otherwise.
+        :returns: True if the sale can be renegotiated, False otherwise.
         """
         # This should be as simple as:
         # return self.status == Sale.STATUS_CONFIRMED

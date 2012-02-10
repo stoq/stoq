@@ -38,7 +38,7 @@ _ = stoqlib_gettext
 
 
 class MagentoConfigSearch(SearchEditor):
-    """Search for L{MagentoConfig} objects"""
+    """Search for :class:`MagentoConfig` objects"""
 
     title = _('Magento config search')
     table = MagentoConfig

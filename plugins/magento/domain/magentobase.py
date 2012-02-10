@@ -50,7 +50,7 @@ class MagentoBase(Domain):
         processed again.
     @ivar magento_id: the record ID on Magento
     @ivar need_sync: if we need to sync this object
-    @ivar config: the L{magentoconfig.MagentoConfig} associated with
+    @ivar config: the :class:`magentoconfig.MagentoConfig` associated with
         this object.
     """
 
@@ -85,7 +85,7 @@ class MagentoBase(Domain):
             that means, the objs will be synchronized to the server
             pointed by C{config}.
 
-        @param config: the L{magentoconfig.MagentoConfig} that will
+        @param config: the :class:`magentoconfig.MagentoConfig` that will
             be used to synchronize objs
         @returns: C{True} if all sync went well, C{False} otherwise
         """
@@ -123,13 +123,13 @@ class MagentoBase(Domain):
     def list_remote(cls, config, *args, **kwargs):
         """Request a list of records on Magento
 
-        @param config: the L{magentoconfig.MagentoConfig} that will
+        @param config: the :class:`magentoconfig.MagentoConfig` that will
             be used to retrieve the record list
         @param args: additional args that will be used on info
             request
         @param kwargs: additional filters that will be used on
             info request
-        @returns: a L{list} of records
+        @returns: a :class:`list` of records
         """
         proxy = get_proxy(config)
         method = "%s.list" % cls.API_NAME
@@ -151,11 +151,11 @@ class MagentoBase(Domain):
     def info_remote(cls, config, id_, *args):
         """Request info about the record represented by C{id_} on Magento
 
-        @param config: the L{magentoconfig.MagentoConfig} that will
+        @param config: the :class:`magentoconfig.MagentoConfig` that will
             be used to retrieve the record information
         @param id_: the register identification on Magento
         @param args: additional args that will be used on info request
-        @returns: a L{dict} containing info
+        @returns: a :class:`dict` containing info
         """
         proxy = get_proxy(config)
         method = "%s.info" % cls.API_NAME
@@ -180,7 +180,7 @@ class MagentoBase(Domain):
         This can be implemented on subclasses to allow more advanced
         logic on C{synchronize}.
 
-        @param config: the L{MagentoConfig} we are working on
+        @param config: the :class:`MagentoConfig` we are working on
         @returns: C{True} if ensure went well, C{False} otherwise
         """
         return True
@@ -195,7 +195,7 @@ class MagentoBase(Domain):
         This must be implemented on subclasses to take actions on how
         to properly synchronize C{self}.
         @note: Use C{super} on subclasses to avoid breaking diamond
-            inheritances (like in L{MagentoBaseSyncBoth})
+            inheritances (like in :class:`MagentoBaseSyncBoth`)
 
         @returns: C{True} if all process went well, C{False} otherwise
         """
@@ -218,7 +218,7 @@ class MagentoBase(Domain):
 
 
 class MagentoBaseSyncUp(MagentoBase):
-    """A L{MagentoBase} that syncs from Stoq => Magento"""
+    """A :class:`MagentoBase` that syncs from Stoq => Magento"""
 
     #
     #  Public API
@@ -261,7 +261,7 @@ class MagentoBaseSyncUp(MagentoBase):
     @inlineCallbacks
     def process(self, **kwargs):
         """
-        @see: L{MagentoBase.process}
+        @see: :class:`MagentoBase.process`
         """
         # Allow more advanced logic on MagentoBaseSyncBoth
         sync_up = kwargs.get('sync_up', True)
@@ -283,7 +283,7 @@ class MagentoBaseSyncUp(MagentoBase):
 
 
 class MagentoBaseSyncDown(MagentoBase):
-    """A L{MagentoBase} that syncs from Magento => Stoq"""
+    """A :class:`MagentoBase` that syncs from Magento => Stoq"""
 
     #
     #  Public API
@@ -305,7 +305,7 @@ class MagentoBaseSyncDown(MagentoBase):
         This must be implemented on subclasses to take actions
         to properly create the Magento record on C{self}
 
-        @param info: a L{dict} containing the info returned by Magento
+        @param info: a :class:`dict` containing the info returned by Magento
         @returns: C{True} if cnot reate went well, C{False} otherwise
         """
         raise NotImplementedError
@@ -316,7 +316,7 @@ class MagentoBaseSyncDown(MagentoBase):
         This must be implemented on subclasses to take actions
         to properly update the Magento record on C{self}
 
-        @param info: a L{dict} containing the info returned by Magento
+        @param info: a :class:`dict` containing the info returned by Magento
         @returns: C{True} if update went well, C{False} otherwise
         """
         raise NotImplementedError
@@ -328,7 +328,7 @@ class MagentoBaseSyncDown(MagentoBase):
     @classmethod
     @inlineCallbacks
     def synchronize(cls, config):
-        """Extends L{MagentoBase.sync} functionality
+        """Extends :class:`MagentoBase.sync` functionality
 
         Before doing the real sync, we request for a list of records
         on Magento and mark their C{need_sync} attribute as C{True}.
@@ -374,7 +374,7 @@ class MagentoBaseSyncDown(MagentoBase):
     @inlineCallbacks
     def process(self, **kwargs):
         """
-        @see: L{MagentoBase.process}
+        @see: :class:`MagentoBase.process`
         """
         # Allow more advanced logic on MagentoBaseSyncBoth
         sync_down = kwargs.get('sync_down', True)
@@ -401,13 +401,13 @@ class MagentoBaseSyncDown(MagentoBase):
 
 
 class MagentoBaseSyncBoth(MagentoBaseSyncDown, MagentoBaseSyncUp):
-    """A combination of L{MagentoBaseSyncDown} and L{MagentoBaseSyncUp}
+    """A combination of :class:`MagentoBaseSyncDown` and L{MagentoBaseSyncUp}
 
     This implementation can synchronize Magento objects both ways (up
     and down) or represent something that can do that, but will choose
     which one to do.
-    @note: The C{process} mro will first call L{MagentoBaseSyncDown.process}
-        and then, L{MagentoBaseSyncUp.process}. Be prepared to workaround
+    @note: The C{process} mro will first call :class:`MagentoBaseSyncDown.process`
+        and then, :class:`MagentoBaseSyncUp.process`. Be prepared to workaround
         that if you need something else. C{self.keep_need_sync} can help
         a lot on that.
     """
@@ -419,7 +419,7 @@ class MagentoBaseSyncBoth(MagentoBaseSyncDown, MagentoBaseSyncUp):
     @inlineCallbacks
     def process(self, **kwargs):
         """
-        @see: L{MagentoBaseSyncDown.process} and L{MagentoBaseSyncUp.process}
+        @see: :class:`MagentoBaseSyncDown.process` and L{MagentoBaseSyncUp.process}
         """
         retval = yield maybeDeferred(super(MagentoBaseSyncBoth, self).process,
                                      **kwargs)

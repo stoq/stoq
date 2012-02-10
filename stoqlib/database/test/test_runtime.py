@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-"""Tests for module L{stoqlib.database.runtime}"""
+"""Tests for module :class:`stoqlib.database.runtime`"""
 
 from stoqlib.database.orm import UnicodeCol
 from stoqlib.domain.base import Domain

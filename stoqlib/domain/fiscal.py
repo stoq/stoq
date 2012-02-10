@@ -107,16 +107,16 @@ class FiscalBookEntry(Domain):
     def create_product_entry(cls, conn, group, cfop, invoice_number, value,
                              ipi_value=0):
         """Creates a new product entry in the fiscal book
-        @param conn: a database connection
-        @param group: payment group
-        @type  group: L{PaymentGroup}
-        @param cfop: cfop for the entry
-        @type  cfop: L{CfopData}
-        @param invoice_number: payment invoice number
-        @param value: value of the payment
-        @param ipi_value: ipi value of the payment
-        @returns: a fiscal book entry
-        @rtype: L{FiscalBookEntry}
+        :param conn: a database connection
+        :param group: payment group
+        :type  group: :class:`PaymentGroup`
+        :param cfop: cfop for the entry
+        :type  cfop: :class:`CfopData`
+        :param invoice_number: payment invoice number
+        :param value: value of the payment
+        :param ipi_value: ipi value of the payment
+        :returns: a fiscal book entry
+        :rtype: :class:`FiscalBookEntry`
         """
         return cls._create_fiscal_entry(
             conn,
@@ -128,15 +128,15 @@ class FiscalBookEntry(Domain):
     @classmethod
     def create_service_entry(cls, conn, group, cfop, invoice_number, value):
         """Creates a new service entry in the fiscal book
-        @param conn: a database connection
-        @param group: payment group
-        @type  group: L{PaymentGroup}
-        @param cfop: cfop for the entry
-        @type  cfop: L{CfopData}
-        @param invoice_number: payment invoice number
-        @param value: value of the payment
-        @returns: a fiscal book entry
-        @rtype: L{FiscalBookEntry}
+        :param conn: a database connection
+        :param group: payment group
+        :type  group: :class:`PaymentGroup`
+        :param cfop: cfop for the entry
+        :type  cfop: :class:`CfopData`
+        :param invoice_number: payment invoice number
+        :param value: value of the payment
+        :returns: a fiscal book entry
+        :rtype: :class:`FiscalBookEntry`
         """
         return cls._create_fiscal_entry(
             conn,
@@ -194,17 +194,17 @@ class IcmsIpiView(_FiscalBookEntryView):
     certain product.
     This view is used to query the product tax information.
 
-    @param id: the id of the fiscal_book_entry
-    @param icms_value: the total value of icms
-    @param ipi_value: the total value of ipi
-    @param date: the date when the entry was created
-    @param invoice_number: the invoice number
-    @param cfop_data_id: the cfop
-    @param cfop_code: the code of the cfop
-    @param drawee_name: the drawee name
-    @param drawee_id: the person
-    @param branch_id: the branch
-    @param payment_group_id: the payment group
+    :param id: the id of the fiscal_book_entry
+    :param icms_value: the total value of icms
+    :param ipi_value: the total value of ipi
+    :param date: the date when the entry was created
+    :param invoice_number: the invoice number
+    :param cfop_data_id: the cfop
+    :param cfop_code: the code of the cfop
+    :param drawee_name: the drawee name
+    :param drawee_id: the person
+    :param branch_id: the branch
+    :param payment_group_id: the payment group
     """
 
     columns = _FiscalBookEntryView.columns
@@ -223,16 +223,16 @@ class IssView(_FiscalBookEntryView):
     Stores information related to a service tax (ISS).
     This view is used to query the service tax information.
 
-    @param id: the id of the fiscal_book_entry
-    @param iss_value: the total value of ipi
-    @param date: the date when the entry was created
-    @param invoice_number: the invoice number
-    @param cfop_data_id: the if of the cfop_data table
-    @param cfop_code: the code of the cfop
-    @param drawee_name: the drawee name
-    @param drawee_id: the person
-    @param branch_id: the branch
-    @param payment_group_id: the payment group
+    :param id: the id of the fiscal_book_entry
+    :param iss_value: the total value of ipi
+    :param date: the date when the entry was created
+    :param invoice_number: the invoice number
+    :param cfop_data_id: the if of the cfop_data table
+    :param cfop_code: the code of the cfop
+    :param drawee_name: the drawee name
+    :param drawee_id: the person
+    :param branch_id: the branch
+    :param payment_group_id: the payment group
     """
 
     columns = _FiscalBookEntryView.columns

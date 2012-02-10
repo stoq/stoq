@@ -59,7 +59,7 @@ _handler = _KeyboardHandler()
 
 def install_global_keyhandler(keyval, callback):
     """ Installs a new key handler.
-    @param keyval:
-    @param callback:
+    :param keyval:
+    :param callback:
     """
     _handler.add_hook(keyval, callback)

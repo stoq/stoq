@@ -37,7 +37,7 @@ _ = stoqlib_gettext
 
 
 class SellableUnitEditor(BaseEditor):
-    """An editor for L{stoqlib.domain.sellable.SellableUnit}"""
+    """An editor for :class:`stoqlib.domain.sellable.SellableUnit`"""
 
     gladefile = 'SellableUnitEditor'
     model_type = SellableUnit

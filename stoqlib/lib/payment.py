@@ -41,8 +41,8 @@ class PaymentOperationManager(object):
 
     def register(self, name, klass):
         """
-        @param name:
-        @param klass:
+        :param name:
+        :param klass:
         """
         if not IPaymentOperation.providedBy(klass):
             raise ValueError(
@@ -61,10 +61,10 @@ def generate_payments_values(value, installments_number,
                              interest=Decimal(0)):
     """Calculates the values of payments
 
-    @param value: value of payment
-    @param installments_number: the number of installments
-    @param interest: a L{Decimal} with the interest
-    @returns: a list with the values
+    :param value: value of payment
+    :param installments_number: the number of installments
+    :param interest: a :class:`Decimal` with the interest
+    :returns: a list with the values
     """
     assert installments_number > 0
 
@@ -95,12 +95,12 @@ def generate_payments_due_dates(installments_number, first_due_date,
                                 interval, interval_type):
     """Calculates the due dates of payments
 
-    @param installments_number: the number of installments
-    @param first_due_date: a L{datetime.datetime} or L{datetime.date}
+    :param installments_number: the number of installments
+    :param first_due_date: a :class:`datetime.datetime` or L{datetime.date}
     object containing the first due date
-    @param interval: the interval between due_dates
-    @param interval_type: an interval_type from L{stoqlib.lib.defaults}
-    @returns: a list with the due_dates
+    :param interval: the interval between due_dates
+    :param interval_type: an interval_type from :class:`stoqlib.lib.defaults`
+    :returns: a list with the due_dates
     """
     assert installments_number > 0
 

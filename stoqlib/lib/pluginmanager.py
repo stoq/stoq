@@ -129,8 +129,8 @@ class PluginManager(object):
     def get_plugin(self, plugin_name):
         """Returns a plugin by it's name
 
-        @param plugin_name: the plugin's name
-        @returns: the L{IPlugin} implementation of the plugin
+        :param plugin_name: the plugin's name
+        :returns: the :class:`IPlugin` implementation of the plugin
         """
         if not plugin_name in self._plugin_descriptions:
             raise PluginError("%s plugin not found" % (plugin_name, ))
@@ -145,11 +145,11 @@ class PluginManager(object):
 
         This needs to be called by every plugin, or else, the manager
         won't know it's existence. It's usually a good idea to
-        use L{register_plugin} function on plugin code, so the
+        use :class:`register_plugin` function on plugin code, so the
         plugin will be registered as soon as it's module gets read
         by python.
 
-        @param plugin: the L{IPlugin} implementation of the plugin
+        :param plugin: the :class:`IPlugin` implementation of the plugin
         """
         if not IPlugin.providedBy(plugin):
             raise TypeError("The object %s does not implement IPlugin "
@@ -166,7 +166,7 @@ class PluginManager(object):
             probably will activate the same plugin twice, and that
             probably won't be good :)
 
-        @param plugin: the L{IPlugin} implementation of the plugin
+        :param plugin: the :class:`IPlugin` implementation of the plugin
         """
         if self.is_active(plugin_name):
             raise PluginError("Plugin %s is already active" % (plugin_name, ))
@@ -182,7 +182,7 @@ class PluginManager(object):
         @important: Calling this makes a plugin installed, but, it's
             your responsability to activate it!
 
-        @param plugin: the L{IPlugin} implementation of the plugin
+        :param plugin: the :class:`IPlugin` implementation of the plugin
         """
         # Try to get the plugin first. If it was't registered yet,
         # PluginError will be raised.
@@ -217,14 +217,14 @@ class PluginManager(object):
     def is_active(self, plugin_name):
         """Returns if a plugin with a certain name is active or not.
 
-        @returns: True if the given plugin name is active, False otherwise.
+        :returns: True if the given plugin name is active, False otherwise.
         """
         return plugin_name in self.active_plugins_names
 
     def is_installed(self, plugin_name):
         """Returns if a plugin with a certain name is installed or not
 
-        @returns: True if the given plugin name is active, False otherwise.
+        :returns: True if the given plugin name is active, False otherwise.
         """
         return plugin_name in self.installed_plugins_names
 
@@ -235,7 +235,7 @@ def register_plugin(plugin_class):
     Just a convenience function that can be added at the end of each
     plugin class definition to register it on manager.
 
-    @param plugin_class: class to register, must implement L{IPlugin}
+    :param plugin_class: class to register, must implement :class:`IPlugin`
     """
     manager = get_plugin_manager()
     manager.register_plugin(plugin_class())
@@ -247,7 +247,7 @@ def get_plugin_manager():
     @attention: Try to always use this instead of getting the utillity
         by hand, as that could not have been provided before.
 
-    @returns: an L{PluginManager} instance
+    :returns: an :class:`PluginManager` instance
     """
     manager = get_utility(IPluginManager, None)
     if not manager:

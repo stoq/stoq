@@ -32,10 +32,10 @@
 def to_words(num, unit_names=None):
     """
     Returns the integer as a cardinal number
-    @param num: the integer
-    @type: int
-    @param unit_names: a list of unit names
-    @type: list
+    :param num: the integer
+    :type: int
+    :param unit_names: a list of unit names
+    :type: list
     """
 
     if isinstance(num, float):
@@ -53,12 +53,12 @@ def to_words(num, unit_names=None):
 
 def to_words_as_money(num, currency_names):
     """Returns a amount as a cardinal number
-    @param num: the amount
-    @type: int or float
-    @param currency_names: a list of currency names
+    :param num: the amount
+    :type: int or float
+    :param currency_names: a list of currency names
     Example:
     currency_names = ['dollar', 'dollars', 'cent', 'cents']
-    @type: list
+    :type: list
     """
 
     ints = int(num)

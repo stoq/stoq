@@ -80,8 +80,8 @@ class PaymentEditor(BaseEditor):
     def __init__(self, conn, model=None, category=None):
         """ A base class for additional payments
 
-        @param conn: a database connection
-        @param model: a L{stoqlib.domain.payment.payment.Payment} object or None
+        :param conn: a database connection
+        :param model: a :class:`stoqlib.domain.payment.payment.Payment` object or None
 
         """
         BaseEditor.__init__(self, conn, model)
@@ -376,8 +376,8 @@ class InPaymentEditor(PaymentEditor):
 
     def __init__(self, conn, model=None, category=None):
         """Edit or display incoming payments
-        @param conn: a database connection
-        @param model: a L{Payment} object or None
+        :param conn: a database connection
+        :param model: a :class:`Payment` object or None
         """
         PaymentEditor.__init__(self, conn, model, category=category)
         if model is None or not model.is_inpayment():
@@ -396,8 +396,8 @@ class OutPaymentEditor(PaymentEditor):
 
     def __init__(self, conn, model=None, category=None):
         """Edit or display outgoing payments
-        @param conn: a database connection
-        @param model: a L{Payment} object or None
+        :param conn: a database connection
+        :param model: a :class:`Payment` object or None
         """
         PaymentEditor.__init__(self, conn, model, category=category)
         if model is None or not model.is_outpayment():
