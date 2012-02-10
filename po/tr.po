@@ -1,55 +1,54 @@
-# Swedish translation for stoqlib
-# Copyright (C) 2005 Async Open Source
-# This file is distributed under the same license as the stoqlib package.
-# Johan Dahlin <jdahlin@async.com.br> 2005
+# Turkish translation for stoq
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
+# This file is distributed under the same license as the stoq package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: stoqlib 0.2.0\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: stoq\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-02-01 12:43-0200\n"
-"PO-Revision-Date: 2012-01-25 01:19+0000\n"
-"Last-Translator: Johan Dahlin <jdahlin@gmail.com>\n"
-"Language-Team: Swedish <sv@li.org>\n"
+"PO-Revision-Date: 2012-02-09 10:01+0000\n"
+"Last-Translator: Ebubekir KARUL <Unknown>\n"
+"Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-02-10 04:57+0000\n"
+"X-Launchpad-Export-Date: 2012-02-10 04:58+0000\n"
 "X-Generator: Launchpad (build 14771)\n"
-"Language: sv\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account code:"
-msgstr "Kontokod:"
+msgstr "Hesap kodu:"
 
 #: ../data/glade/AccountEditor.ui.h:2
 msgid "Account name:"
-msgstr "Kontonamn:"
+msgstr "Hesap adı:"
 
 #: ../data/glade/AccountEditor.ui.h:3
 msgid "Hold control to remove selection."
-msgstr "Håll nere control för att ta bort markeringen"
+msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:4
 msgid "Parent:"
-msgstr "Förälder:"
+msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:5
 #: ../data/glade/DeviceConstantEditor.ui.h:4
 #: ../data/glade/PaymentEditor.ui.h:6
 msgid "Type:"
-msgstr "Typ:"
+msgstr "Tip:"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:1
 #: ../data/glade/EmployeeDetailsSlave.ui.h:1
 #: ../data/glade/InstallmentConfirmation.ui.h:1
 #: ../stoqlib/gui/editors/accounteditor.py:244
 msgid "Account:"
-msgstr "Konto:"
+msgstr "Hesap:"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:2 ../stoq/gui/financial.py:363
 msgid "Add a new account"
-msgstr "Lägg till ett nytt konto"
+msgstr "Yeni bir hesap ekle"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:3
 #: ../data/glade/SellableEditor.ui.h:5
@@ -75,7 +74,7 @@ msgstr "Kod:"
 #: ../stoqlib/gui/search/transfersearch.py:89
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:346
 msgid "Date:"
-msgstr "Datum:"
+msgstr "Tarih:"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:5
 #: ../data/glade/BaseSellableCategoryDataSlave.ui.h:3
@@ -94,14 +93,14 @@ msgstr "Datum:"
 #: ../data/glade/SellableEditor.ui.h:10
 #: ../data/glade/SellableUnitEditor.ui.h:2
 msgid "Description:"
-msgstr "Beskrivning:"
+msgstr "Açıklama:"
 
 #: ../data/glade/AccountTransactionEditor.ui.h:6
 #: ../data/glade/DeviceConstantEditor.ui.h:5
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:9
 #: ../data/glade/SellableTaxConstantEditor.ui.h:2
 msgid "Value:"
-msgstr "Värde:"
+msgstr "Değer:"
 
 #: ../data/glade/AdditionListSlave.ui.h:1 ../data/glade/SaleReturnSlave.ui.h:6
 #: ../data/glade/SearchDialogDetailsSlave.ui.h:1 ../stoq/gui/payable.py:131
@@ -112,23 +111,23 @@ msgstr "Värde:"
 #: ../stoqlib/gui/editors/paymenteditor.py:227
 #: ../stoqlib/gui/editors/producteditor.py:626
 msgid "Details"
-msgstr "Detaljer"
+msgstr "Detaylar"
 
 #: ../data/glade/AdditionListSlave.ui.h:2
 msgid "New..."
-msgstr "Ny..."
+msgstr "Yeni..."
 
 #: ../data/glade/AdditionListSlave.ui.h:3
 msgid "_Delete"
-msgstr "_Ta bort"
+msgstr "_Sil"
 
 #: ../data/glade/AdditionListSlave.ui.h:4 ../data/glade/SearchEditor.ui.h:1
 msgid "_Edit..."
-msgstr "_Redigera..."
+msgstr "_Düzenle..."
 
 #: ../data/glade/AddressSlave.ui.h:1
 msgid "City:"
-msgstr "Stad:"
+msgstr "Şehir:"
 
 #: ../data/glade/AddressSlave.ui.h:2
 msgid "Complement:"
@@ -137,11 +136,11 @@ msgstr ""
 #: ../data/glade/AddressSlave.ui.h:3
 #: ../plugins/books/glade/ProductBookSlave.ui.h:3
 msgid "Country:"
-msgstr "Land:"
+msgstr "Ülke:"
 
 #: ../data/glade/AddressSlave.ui.h:4
 msgid "District:"
-msgstr "Distrikt:"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:5
 #: ../data/glade/BasePaymentDataEditor.ui.h:2
@@ -149,57 +148,57 @@ msgstr "Distrikt:"
 #: ../data/glade/OpenProductionOrderStep.ui.h:4
 #: ../stoqlib/gui/editors/accounteditor.py:224
 msgid "Number:"
-msgstr "Nummer:"
+msgstr "Numara:"
 
 #: ../data/glade/AddressSlave.ui.h:6
 msgid "Postal Code:"
-msgstr "Postkod:"
+msgstr "Posta Kodu:"
 
 #: ../data/glade/AddressSlave.ui.h:7
 msgid "State:"
-msgstr "Landskap:"
+msgstr "Eyalet:"
 
 #: ../data/glade/AddressSlave.ui.h:8
 msgid "Street:"
-msgstr "Gata:"
+msgstr "Cadde:"
 
 #: ../data/glade/AdminPasswordStep.ui.h:1
 msgid "Enter the password and then click <b>Forward</b> to continue."
-msgstr "Ange lösenordet och klicka sedan på <b>Framåt</b> för att fortsätta."
+msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:1
 msgid "Bank Account:"
-msgstr "Bankkonto:"
+msgstr "Banka Hesabı"
 
 #: ../data/glade/BankDataSlave.ui.h:2
 msgid "Bank Branch:"
-msgstr "Bankkontor:"
+msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:3
 #: ../data/glade/EmployeeDetailsSlave.ui.h:3
 msgid "Bank ID:"
-msgstr "Bank-id:"
+msgstr ""
 
 #: ../data/glade/BaseCashSlave.ui.h:1 ../data/glade/TillOpening.ui.h:1
 msgid "Balance:"
-msgstr "Balans:"
+msgstr "Denge:"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/BaseCashSlave.ui.h:3
 msgid "Cash Amount ($CURRENCY):"
-msgstr "Pengabelopp ($CURRENCY)"
+msgstr ""
 
 #: ../data/glade/BasePaymentDataEditor.ui.h:1
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:3
 #: ../data/glade/PaymentEditor.ui.h:3
 msgid "Due date:"
-msgstr "Förfallodag:"
+msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/BasePaymentDataEditor.ui.h:4
 #: ../data/glade/PaymentEditor.ui.h:8
 msgid "Value ($CURRENCY):"
-msgstr "Valör ($CURRENCY)"
+msgstr "Değer ($CURRENCY):"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:1
 #: ../data/glade/CreditProviderMethodSlave.ui.h:1
@@ -214,20 +213,20 @@ msgstr "0"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:2
 msgid "Default Bank:"
-msgstr "Standardbank:"
+msgstr ""
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:3
 #: ../stoqlib/reporting/purchase.py:363
 msgid "Installments:"
-msgstr "Delbetalningar:"
+msgstr ""
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:4
 msgid "Start at:"
-msgstr "Börja på:"
+msgstr "Şurdan başla"
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:5
 msgid "With intervals of:"
-msgstr "Med intervall av:"
+msgstr ""
 
 #: ../data/glade/BaseSellableCategoryDataSlave.ui.h:2
 #: ../data/glade/BranchDialog.ui.h:2 ../data/glade/CommissionDataSlave.ui.h:3
@@ -248,12 +247,12 @@ msgstr "%"
 #: ../data/glade/BaseSellableCategoryDataSlave.ui.h:4
 #: ../data/glade/SellableCategoryDataSlave.ui.h:5
 msgid "Suggested Markup:"
-msgstr "Föreslagen marginal:"
+msgstr ""
 
 #: ../data/glade/BaseSellableCategoryDataSlave.ui.h:5
 #: ../data/glade/ProductTaxTemplateEditor.ui.h:2
 msgid "Tax:"
-msgstr "Skatte:"
+msgstr "KDV:"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:1
 #: ../data/glade/DeviceSettingsEditor.ui.h:1
@@ -274,11 +273,11 @@ msgstr "Skatte:"
 #: ../stoqlib/gui/search/personsearch.py:287
 #: ../stoqlib/gui/search/stationsearch.py:63
 msgid "Active"
-msgstr "Aktiv"
+msgstr "Aktif"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:2
 msgid "Branch status:"
-msgstr "Filialstatus:"
+msgstr ""
 
 #: ../data/glade/BranchDetailsSlave.ui.h:3
 #: ../data/glade/TransporterDataSlave.ui.h:5
@@ -292,74 +291,74 @@ msgstr "Filialstatus:"
 #: ../stoqlib/domain/test/test_person.py:481
 #: ../stoqlib/gui/search/personsearch.py:288
 msgid "Inactive"
-msgstr "Inaktiv"
+msgstr "Pasif"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:4
 msgid "Manager:"
-msgstr "Hanterare:"
+msgstr "Yönetici:"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:5
 msgid "Tax Polity:"
-msgstr "Filialform:"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:3
 #: ../data/glade/CompanyDocumentsSlave.ui.h:1
 #: ../data/glade/ProductsAdjustment.ui.h:2
 #: ../plugins/ecf/paulistainvoicedialog.py:70
 msgid "CNPJ:"
-msgstr "Företagsnummer:"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:4
 msgid "Company Details"
-msgstr "Företagsdetaljer:"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:5
 msgid "Company Name:"
-msgstr "Företagsnamn:"
+msgstr "Şirket İsmi"
 
 #: ../data/glade/BranchDialog.ui.h:6 ../data/glade/PersonEditorTemplate.ui.h:6
 msgid "Fax:"
-msgstr "Fax:"
+msgstr "Faks:"
 
 #: ../data/glade/BranchDialog.ui.h:7
 #: ../data/glade/ProductSupplierEditor.ui.h:8
 msgid "ICMS:"
-msgstr "ICMS:"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:8
 msgid "ISS:"
-msgstr "ISS:"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:9 ../data/glade/ContactEditor.ui.h:2
 #: ../data/glade/PersonEditorTemplate.ui.h:13
 msgid "Phone Number:"
-msgstr "Telefonnummer:"
+msgstr "Telefon Numarası:"
 
 #: ../data/glade/BranchDialog.ui.h:10
 #: ../data/glade/CompanyDocumentsSlave.ui.h:4
 #: ../data/glade/ProductsAdjustment.ui.h:5
 msgid "State Registry:"
-msgstr "Delstatsregister:"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:11
 msgid "Substitution ICMS:"
-msgstr "Substitions-ICMS:"
+msgstr ""
 
 #: ../data/glade/CSVExporterDialog.ui.h:1
 msgid "Encoding:"
-msgstr "Teckenkodning:"
+msgstr "Kodlama:"
 
 #: ../data/glade/CSVExporterDialog.ui.h:2
 msgid "Select the encoding to use when save the CSV file:"
-msgstr "Välj teckenkodning när CSV-filen sparas:"
+msgstr ""
 
 #: ../data/glade/CSVExporterDialog.ui.h:3
 msgid "Separator:"
-msgstr "Avdelare:"
+msgstr "Ayraç:"
 
 #: ../data/glade/CallsEditor.ui.h:1
 msgid "Attendant:"
-msgstr "Skötare:"
+msgstr ""
 
 #: ../data/glade/CallsEditor.ui.h:2 ../data/glade/SaleDetailsDialog.ui.h:3
 msgid "Client details"
@@ -367,29 +366,29 @@ msgstr ""
 
 #: ../data/glade/CallsEditor.ui.h:5
 msgid "Message:"
-msgstr "Meddelande:"
+msgstr "Mesaj:"
 
 #: ../data/glade/CallsEditor.ui.h:6
 msgid "Person:"
-msgstr ""
+msgstr "Kişi:"
 
 #: ../data/glade/CashAdvanceEditor.ui.h:1
 msgid "Credit for Employee:"
-msgstr "Anställningskredit:"
+msgstr ""
 
 #: ../data/glade/CashChangeSlave.ui.h:1
 msgid "Cash Change"
-msgstr "Pengaväxel"
+msgstr ""
 
 #: ../data/glade/CashChangeSlave.ui.h:2
 #: ../stoqlib/gui/slaves/paymentslave.py:1030
 msgid "Change:"
-msgstr "Växel:"
+msgstr "Değişiklik:"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/CashChangeSlave.ui.h:4
 msgid "Received: ($CURRENCY)"
-msgstr "Mottaget ($CURRENCY)"
+msgstr ""
 
 #: ../data/glade/CashInEditor.ui.h:1 ../data/glade/CashOutEditor.ui.h:1
 #: ../data/glade/PaymentChangeDialog.ui.h:4
@@ -397,7 +396,7 @@ msgstr "Mottaget ($CURRENCY)"
 #: ../data/glade/SaleReturnSlave.ui.h:8
 #: ../data/glade/StartStockDecreaseStep.ui.h:4
 msgid "Reason:"
-msgstr "Anledning:"
+msgstr "Sebep:"
 
 #: ../data/glade/CfopEditor.ui.h:1
 msgid "0.000"
@@ -408,7 +407,7 @@ msgstr "0.000"
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:2
 #: ../data/glade/SalesPersonStep.ui.h:5
 msgid "C.F.O.P.:"
-msgstr "C.F.O.P:"
+msgstr ""
 
 #: ../data/glade/ClientCategoryEditor.ui.h:1
 #: ../data/glade/ContactEditor.ui.h:1
@@ -420,12 +419,12 @@ msgstr "C.F.O.P:"
 #: ../data/glade/SellableTaxConstantEditor.ui.h:1
 #: ../data/glade/StationEditor.ui.h:3 ../data/glade/TefStep.ui.h:9
 msgid "Name:"
-msgstr "Namn:"
+msgstr "İsim:"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:1
 #: ../stoqlib/gui/editors/callseditor.py:39
 msgid "Calls"
-msgstr "Samtal"
+msgstr "Çağrılar"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:2
 #: ../data/glade/DeliveryEditor.ui.h:4
@@ -437,17 +436,17 @@ msgstr "Samtal"
 #: ../stoqlib/gui/search/paymentsearch.py:139
 #: ../stoqlib/reporting/loanreceipt.py:83 ../stoqlib/reporting/sale.py:80
 msgid "Client:"
-msgstr "Kund:"
+msgstr "İstemci:"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:3
 #: ../data/glade/SupplierDetailsDialog.ui.h:1
 msgid "Further Details"
-msgstr "Ytterligare detaljer"
+msgstr ""
 
 #: ../data/glade/ClientDetailsDialog.ui.h:4
 #: ../data/glade/SupplierDetailsDialog.ui.h:2
 msgid "Last Purchase Date:"
-msgstr "Senaste inköpsdatum:"
+msgstr ""
 
 #: ../data/glade/ClientDetailsDialog.ui.h:5
 #: ../data/glade/PurchaseDetailsDialog.ui.h:15
@@ -456,14 +455,14 @@ msgstr "Senaste inköpsdatum:"
 #: ../data/glade/SupplierDetailsDialog.ui.h:3
 #: ../plugins/ecf/deviceconstanteditor.py:204 ../stoqlib/lib/parameters.py:534
 msgid "Payments"
-msgstr "Betalningar"
+msgstr "Ödemeler"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:6
 #: ../data/glade/StockDecreaseDetails.ui.h:4
 #: ../data/glade/SupplierDetailsDialog.ui.h:4 ../stoq/gui/purchase.py:165
 #: ../stoq/gui/sales.py:146
 msgid "Products"
-msgstr "Produkter"
+msgstr "Ürünler"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:7
 #: ../data/glade/ProductStockHistoryDialog.ui.h:6 ../stoq/gui/sales.py:67
@@ -480,13 +479,13 @@ msgstr "Produkter"
 #: ../stoqlib/lib/parameters.py:445 ../stoqlib/lib/parameters.py:468
 #: ../stoqlib/lib/parameters.py:555 ../stoqlib/reporting/sale.py:252
 msgid "Sales"
-msgstr "Försäljning"
+msgstr "Satışlar"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:8
 #: ../data/glade/ProductionDetailsDialog.ui.h:13 ../stoq/gui/sales.py:147
 #: ../stoqlib/reporting/production.py:202
 msgid "Services"
-msgstr "Tjänster"
+msgstr "Hizmetler"
 
 #: ../data/glade/ClientDetailsDialog.ui.h:9
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:8
@@ -497,11 +496,11 @@ msgstr "Tjänster"
 #: ../data/glade/SupplierDetailsDialog.ui.h:6
 #: ../data/glade/UserStatusSlave.ui.h:3 ../stoqlib/reporting/purchase.py:268
 msgid "Status:"
-msgstr "Status:"
+msgstr "Durum:"
 
 #: ../data/glade/ClientStatusSlave.ui.h:1
 msgid "Available Credit:"
-msgstr "Tillgänglig kredit:"
+msgstr ""
 
 #: ../data/glade/ClientStatusSlave.ui.h:2 ../data/glade/PaymentEditor.ui.h:1
 #: ../data/glade/SellableEditor.ui.h:4
@@ -511,27 +510,27 @@ msgstr "Kategori:"
 #. Do not translate $CURRENCY
 #: ../data/glade/ClientStatusSlave.ui.h:4
 msgid "Credit Limit ($CURRENCY):"
-msgstr "Kreditgräns ($CURRENCY)"
+msgstr ""
 
 #: ../data/glade/ClientStatusSlave.ui.h:5
 msgid "Financial Status:"
-msgstr "Finansiell status:"
+msgstr "Finansal Durum:"
 
 #: ../data/glade/CommissionDataSlave.ui.h:1
 msgid " No Commission"
-msgstr " Ingen provision"
+msgstr ""
 
 #: ../data/glade/CommissionDataSlave.ui.h:4
 msgid "Direct Sale:      "
-msgstr "Direktförsäljning      "
+msgstr ""
 
 #: ../data/glade/CommissionDataSlave.ui.h:5
 msgid "In Installments:"
-msgstr "I delbetalningar:"
+msgstr ""
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:2
 msgid "City Registry:"
-msgstr "Stadsregister:"
+msgstr ""
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:3
 msgid "Fancy Name:"
@@ -551,11 +550,11 @@ msgstr ""
 
 #: ../data/glade/CreateDatabaseStep.ui.h:2
 msgid "Show details..."
-msgstr "Visa detaljinformation..."
+msgstr "Detayları göster..."
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:3
 msgid "Closing Day:"
-msgstr "Stängningsdag:"
+msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:4
 msgid "Credit Fee:"
@@ -579,7 +578,7 @@ msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:9
 msgid "Fees"
-msgstr ""
+msgstr "Ücretler"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:10
 msgid "Max Installments:"
@@ -604,7 +603,7 @@ msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:15
 msgid "Short Name:"
-msgstr "Kortnamn:"
+msgstr "Kısa isim:"
 
 #: ../data/glade/CreditProviderMethodSlave.ui.h:2
 msgid "Credit Provider:"
@@ -616,15 +615,15 @@ msgstr ""
 
 #: ../data/glade/CreditProviderMethodSlave.ui.h:4
 msgid "Payment Type:"
-msgstr "Betalningstyp:"
+msgstr ""
 
 #: ../data/glade/DatabaseLocationStep.ui.h:1
 msgid "<b>Database location</b>"
-msgstr ""
+msgstr "<b>Veritabanı yeri</b>"
 
 #: ../data/glade/DatabaseLocationStep.ui.h:2
 msgid "I want to manually configure the database connection."
-msgstr ""
+msgstr "Veritabanı bağlantısını kendim gerçekleştirmek istiyorum."
 
 #: ../data/glade/DatabaseLocationStep.ui.h:3
 msgid "I want to use Stoq just on this computer."
@@ -643,18 +642,18 @@ msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:1
 msgid "<b>Database Settings</b>"
-msgstr ""
+msgstr "<b>Veritabanı Ayarları</b>"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:2
 #: ../stoqlib/reporting/payments_receipt.py:81
 #: ../stoqlib/reporting/payments_receipt.py:112
 #: ../stoqlib/reporting/sale.py:83
 msgid "Address:"
-msgstr "Adress:"
+msgstr "Adres:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:3
 msgid "Authentication:"
-msgstr "Autentisering:"
+msgstr "Kimlik Doğrulama:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:4 ../data/glade/WelcomeStep.ui.h:1
 msgid "Click <b>Forward</b> to continue."
@@ -662,12 +661,12 @@ msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:5
 msgid "Database Name:"
-msgstr "Databasnamn:"
+msgstr "Veritabanı Adı:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:6
 #: ../data/glade/PasswordEditorSlave.ui.h:2
 msgid "Password:"
-msgstr "Lösenord:"
+msgstr "Şifre:"
 
 #: ../data/glade/DatabaseSettingsStep.ui.h:7
 msgid "Please, fill the details about your database."
@@ -682,7 +681,7 @@ msgstr "Port:"
 #: ../data/glade/DatabaseSettingsStep.ui.h:9
 #: ../data/glade/UserDetailsSlave.ui.h:4
 msgid "Username:"
-msgstr "Användarnamn:"
+msgstr "Kullanıcı Adı:"
 
 #: ../data/glade/DeliveryEditor.ui.h:1
 msgid "<b>Delivery Address:</b>"
@@ -690,11 +689,11 @@ msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:2
 msgid "Additional _Instructions"
-msgstr "Extra _instruktioner"
+msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:3
 msgid "Change _Address"
-msgstr "Ändra _adress"
+msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/DeliveryEditor.ui.h:6
@@ -703,11 +702,11 @@ msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:7
 msgid "Estimated Delivery _Date:"
-msgstr "Beräknat leverans_datum:"
+msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:8
 msgid "Products to Deliver:"
-msgstr "Varor att leverera:"
+msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:9
 msgid "There is Additional Instructions"
@@ -715,7 +714,7 @@ msgstr ""
 
 #: ../data/glade/DeviceConstantEditor.ui.h:1
 msgid "ASCII value:"
-msgstr "ASCII-värde:"
+msgstr ""
 
 #: ../data/glade/DeviceConstantEditor.ui.h:2
 msgid "HEX value:"
@@ -727,15 +726,15 @@ msgstr ""
 
 #: ../data/glade/DeviceSettingsEditor.ui.h:3
 msgid "Device Type:"
-msgstr "Enhetstyp:"
+msgstr "Aygıt Türü:"
 
 #: ../data/glade/DeviceSettingsEditor.ui.h:4
 msgid "Host:"
-msgstr "Värd:"
+msgstr "Sunucu:"
 
 #: ../data/glade/DeviceSettingsEditor.ui.h:5
 msgid "Model:"
-msgstr "Modell:"
+msgstr "Model:"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:2
 msgid "Admission Data"
@@ -743,12 +742,12 @@ msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:4
 msgid "Bank Information"
-msgstr "Bankinformation"
+msgstr "Banka Bilgisi"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:5
 #: ../stoqlib/gui/editors/accounteditor.py:306
 msgid "Bank:"
-msgstr "Bank:"
+msgstr "Banka:"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:6
 msgid "Branch Number:"
@@ -772,7 +771,7 @@ msgstr ""
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:14
 msgid "Personal Details"
-msgstr "Personliga detaljer"
+msgstr "Kişisel Ayrıntılar"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:15
 msgid "Registry:"
@@ -797,16 +796,16 @@ msgstr ""
 #: ../data/glade/EmployeeRoleSlave.ui.h:2
 #: ../data/glade/UserDetailsSlave.ui.h:3
 msgid "Role:"
-msgstr "Roll:"
+msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/EmployeeRoleSlave.ui.h:4
 msgid "Salary ($CURRENCY):"
-msgstr "Lön ($CURRENCY):"
+msgstr ""
 
 #: ../data/glade/EmployeeStatusSlave.ui.h:1
 msgid "Employee Status:"
-msgstr "Anställningsstatus"
+msgstr ""
 
 #: ../data/glade/ExistingPersonStep.ui.h:1
 msgid "Existing client"
@@ -858,7 +857,7 @@ msgstr ""
 #: ../data/glade/SaleDetailsDialog.ui.h:9 ../data/glade/StartQuoteStep.ui.h:3
 #: ../stoqlib/reporting/loanreceipt.py:95
 msgid "Notes"
-msgstr "Anteckningar"
+msgstr ""
 
 #: ../data/glade/FinishPurchaseStep.ui.h:3
 msgid "Receive all products now."
@@ -882,14 +881,14 @@ msgstr ""
 #: ../data/glade/SaleDetailsDialog.ui.h:7
 #: ../data/glade/SalesPersonStep.ui.h:10
 msgid "Invoice Number:"
-msgstr "Fakturanummer:"
+msgstr ""
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:1
 #: ../data/glade/ProductSupplierEditor.ui.h:3
 #: ../data/glade/PurchasePaymentSlave.ui.h:2
 #: ../data/glade/SaleInvoicePrinterDialog.ui.h:1
 msgid "1"
-msgstr "1"
+msgstr ""
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:2 ../stoq/gui/financial.py:226
 #: ../stoqlib/gui/dialogs/clientdetails.py:95
@@ -906,7 +905,7 @@ msgstr "1"
 #: ../stoqlib/gui/search/stockdecreasesearch.py:90
 #: ../stoqlib/gui/search/tillsearch.py:117
 msgid "Date"
-msgstr "Datum"
+msgstr ""
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:3
 msgid "End Date:"
@@ -919,7 +918,7 @@ msgstr ""
 #: ../data/glade/FiscalMemoryEditor.ui.h:5
 #: ../data/glade/OnSaleInfoSlave.ui.h:2 ../data/glade/QualityTestEditor.ui.h:2
 msgid "From:"
-msgstr "Från:"
+msgstr ""
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:6
 msgid "Reductions"
@@ -927,44 +926,44 @@ msgstr ""
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:7
 msgid "Start Date:"
-msgstr "Startdatum:"
+msgstr ""
 
 #: ../data/glade/FiscalMemoryEditor.ui.h:8
 #: ../data/glade/OnSaleInfoSlave.ui.h:5 ../data/glade/QualityTestEditor.ui.h:5
 msgid "To:"
-msgstr "Till:"
+msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:1
 msgid "Birth City:"
-msgstr "Födelsestad:"
+msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:2
 msgid "Birth Country:"
-msgstr "Födelseland:"
+msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:3
 msgid "Birth Date:"
-msgstr "Födelsedatum:"
+msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:4
 msgid "Birth State:"
-msgstr "Födelsestat:"
+msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:5
 msgid "Father's Name:"
-msgstr "Fars namn:"
+msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:6 ../stoqlib/domain/person.py:426
 msgid "Female"
-msgstr "Kvinna"
+msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:7
 msgid "Gender:"
-msgstr "Kön:"
+msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:8 ../stoqlib/domain/person.py:425
 msgid "Male"
-msgstr "Man"
+msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:9
 msgid "Marital Status:"
@@ -972,22 +971,22 @@ msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:10
 msgid "Mother's name:"
-msgstr "Mors namn:"
+msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:11
 msgid "Occupation:"
-msgstr "Yrke:"
+msgstr ""
 
 #: ../data/glade/IndividualDetailsSlave.ui.h:12
 msgid "Spouse:"
-msgstr "Make(a):"
+msgstr ""
 
 #: ../data/glade/IndividualDocuments.ui.h:1
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:3
 #: ../plugins/ecf/paulistainvoicedialog.py:64
 #: ../stoqlib/reporting/loanreceipt.py:153
 msgid "CPF:"
-msgstr "Personnummer:"
+msgstr ""
 
 #: ../data/glade/IndividualDocuments.ui.h:2
 msgid ""
@@ -1011,7 +1010,7 @@ msgstr ""
 
 #: ../data/glade/InitialStockDialog.ui.h:1
 msgid "<b></b>"
-msgstr "<b></b>"
+msgstr ""
 
 #: ../data/glade/InstallPostgresStep.ui.h:1
 msgid "<b>Installing PostgreSQL server</b>"
@@ -1061,7 +1060,7 @@ msgstr ""
 #: ../stoq/gui/sales.py:137 ../stoq/gui/till.py:116
 #: ../stoqlib/gui/dialogs/importerdialog.py:58
 msgid "Details..."
-msgstr "Detaljer..."
+msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/InstallmentConfirmation.ui.h:5
@@ -1102,7 +1101,7 @@ msgstr ""
 
 #: ../data/glade/InstallmentConfirmation.ui.h:15
 msgid "Total value:"
-msgstr "Totalt värde:"
+msgstr ""
 
 #: ../data/glade/InvoiceDetailsEditor.ui.h:1
 msgid "Expedition Date:"
@@ -1111,41 +1110,41 @@ msgstr ""
 #: ../data/glade/InvoiceDetailsEditor.ui.h:2
 #: ../data/glade/OpenInventoryDialog.ui.h:4
 msgid "Time:"
-msgstr "Tid:"
+msgstr ""
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:3
 msgid "Field:"
-msgstr "Fält:"
+msgstr ""
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:4
 #: ../data/glade/ProductInformationSlave.ui.h:6
 msgid "Height:"
-msgstr "Höjd:"
+msgstr ""
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:6
 msgid "Position:"
-msgstr "Position:"
+msgstr ""
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:7
 msgid "Size:"
-msgstr "Storlek:"
+msgstr ""
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:8
 #: ../data/glade/ProductInformationSlave.ui.h:16
 msgid "Width:"
-msgstr "Bredd:"
+msgstr ""
 
 #: ../data/glade/InvoicePrinterEditor.ui.h:1
 msgid "Computer:"
-msgstr "Dator:"
+msgstr ""
 
 #: ../data/glade/InvoicePrinterEditor.ui.h:3
 msgid "Device name:"
-msgstr "Enhetsnamn:"
+msgstr ""
 
 #: ../data/glade/InvoicePrinterEditor.ui.h:4
 msgid "Layout:"
-msgstr "Layout:"
+msgstr ""
 
 #: ../data/glade/LoanDetails.ui.h:1 ../data/glade/OpenInventoryDialog.ui.h:1
 #: ../data/glade/OpenProductionOrderStep.ui.h:1
@@ -1163,7 +1162,7 @@ msgstr "Layout:"
 #: ../stoqlib/reporting/purchase.py:350
 #: ../stoqlib/reporting/stockdecreasereceipt.py:70
 msgid "Branch:"
-msgstr "Avdelning:"
+msgstr ""
 
 #: ../data/glade/LoanDetails.ui.h:3 ../stoqlib/reporting/loanreceipt.py:70
 msgid "Confirm Date:"
@@ -1184,7 +1183,7 @@ msgstr ""
 #: ../stoqlib/reporting/production.py:120 ../stoqlib/reporting/purchase.py:267
 #: ../stoqlib/reporting/purchase.py:346
 msgid "Open Date:"
-msgstr "Öppningsdatum:"
+msgstr ""
 
 #. Responsible combo
 #: ../data/glade/LoanDetails.ui.h:6
@@ -1200,7 +1199,7 @@ msgstr "Öppningsdatum:"
 #: ../stoqlib/reporting/loanreceipt.py:83
 #: ../stoqlib/reporting/stockdecreasereceipt.py:71
 msgid "Responsible:"
-msgstr "Ansvarig:"
+msgstr ""
 
 #: ../data/glade/LoanItemSelectionStep.ui.h:1
 msgid ""
@@ -1215,12 +1214,12 @@ msgstr ""
 #: ../data/glade/LoginDialog.ui.h:2
 msgctxt "yes"
 msgid "_Password:"
-msgstr "_Lösenord:"
+msgstr ""
 
 #: ../data/glade/LoginDialog.ui.h:3
 msgctxt "yes"
 msgid "_Username:"
-msgstr "_Användarnamn:"
+msgstr ""
 
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:2
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:3
@@ -1229,14 +1228,14 @@ msgstr "_Användarnamn:"
 #: ../data/glade/SaleDetailsDialog.ui.h:5
 #: ../data/glade/SaleDiscountSlave.ui.h:3 ../stoqlib/reporting/sale.py:129
 msgid "Discount:"
-msgstr "Rabatt:"
+msgstr ""
 
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:4
 #: ../data/glade/PaymentMethodEditor.ui.h:6
 #: ../data/glade/PurchaseDetailsDialog.ui.h:9
 #: ../data/glade/SaleDetailsDialog.ui.h:6
 msgid "Interest:"
-msgstr "Ränta:"
+msgstr ""
 
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:6
 msgid "Paid value:"
@@ -1260,7 +1259,7 @@ msgstr ""
 
 #: ../data/glade/MultipleMethodSlave.ui.h:3
 msgid "Payments:"
-msgstr "Betalningar:"
+msgstr ""
 
 #: ../data/glade/MultipleMethodSlave.ui.h:4
 #: ../data/glade/PaymentListSlave.ui.h:2
@@ -1286,15 +1285,15 @@ msgstr "Betalningar:"
 #: ../stoqlib/reporting/loanreceipt.py:131 ../stoqlib/reporting/sale.py:129
 #: ../stoqlib/reporting/sale.py:310 ../stoqlib/reporting/template.py:333
 msgid "Total:"
-msgstr "Summa:"
+msgstr ""
 
 #: ../data/glade/MultipleMethodSlave.ui.h:5
 msgid "_Cash"
-msgstr "_Pengar"
+msgstr ""
 
 #: ../data/glade/NoteSlave.ui.h:1
 msgid "Notes:"
-msgstr "Noteringar:"
+msgstr ""
 
 #: ../data/glade/OnSaleInfoSlave.ui.h:1
 msgid "<u>Currently on Sale:</u>"
@@ -1312,13 +1311,13 @@ msgstr ""
 
 #: ../data/glade/OpenInventoryDialog.ui.h:5
 msgid "User:"
-msgstr "Användare:"
+msgstr ""
 
 #: ../data/glade/OpenInventoryDialog.ui.h:6
 #: ../data/glade/ProductionQuoteDialog.ui.h:2
 #: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:5
 msgid "_Unselect All"
-msgstr "_Avmarkera allt"
+msgstr ""
 
 #: ../data/glade/OpenProductionOrderStep.ui.h:3
 #: ../stoqlib/reporting/production.py:121
@@ -1327,27 +1326,27 @@ msgstr ""
 
 #: ../data/glade/ParameterSearch.ui.h:1
 msgid "Filter:"
-msgstr "Filter:"
+msgstr ""
 
 #: ../data/glade/ParameterSearch.ui.h:2
 msgid "_Show All"
-msgstr "_Visa alla"
+msgstr ""
 
 #: ../data/glade/PasswordEditor.ui.h:1
 msgid "Current Password:"
-msgstr "Nuvarande lösenord:"
+msgstr ""
 
 #: ../data/glade/PasswordEditorSlave.ui.h:1
 msgid "Confirm password:"
-msgstr "Bekräfta lösenord:"
+msgstr ""
 
 #: ../data/glade/PaymentCategoryEditor.ui.h:1
 msgid "Color:"
-msgstr "Färg:"
+msgstr ""
 
 #: ../data/glade/PaymentChangeDialog.ui.h:1
 msgid "Change to:"
-msgstr "Ändra till:"
+msgstr ""
 
 #: ../data/glade/PaymentChangeDialog.ui.h:3
 #: ../data/glade/ProductionDetailsDialog.ui.h:9
@@ -1355,7 +1354,7 @@ msgstr "Ändra till:"
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:16
 #: ../data/glade/StartPurchaseStep.ui.h:11
 msgid "Order Number:"
-msgstr "Ordernummer:"
+msgstr ""
 
 #: ../data/glade/PaymentEditor.ui.h:4
 msgid "End date:"
@@ -1372,7 +1371,7 @@ msgstr ""
 #: ../data/glade/PaymentListSlave.ui.h:1
 #: ../stoqlib/gui/slaves/paymentslave.py:266
 msgid "Outstanding:"
-msgstr "Utstående"
+msgstr ""
 
 #: ../data/glade/PaymentMethodEditor.ui.h:4
 msgid "Daily Penalty:"
@@ -1396,7 +1395,7 @@ msgstr ""
 #: ../data/glade/SaleDetailsDialog.ui.h:17
 #: ../data/glade/SalesPersonStep.ui.h:15
 msgid "Subtotal:"
-msgstr "Delsumma:"
+msgstr ""
 
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:5
 #: ../data/glade/PurchaseDetailsDialog.ui.h:24
@@ -1407,11 +1406,11 @@ msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:1
 msgid "Calls..."
-msgstr "Samtal..."
+msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:2
 msgid "Co_ntacts..."
-msgstr "Ko_ntrakt..."
+msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:3
 msgid "Custom Tab"
@@ -1419,7 +1418,7 @@ msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:4
 msgid "E-mail:"
-msgstr "E-post:"
+msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:5
 msgid "Extra Tab"
@@ -1431,7 +1430,7 @@ msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:8
 msgid "Identification"
-msgstr "Identifiering"
+msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:9
 #: ../stoqlib/gui/templates/persontemplate.py:176
@@ -1440,7 +1439,7 @@ msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:10
 msgid "Mobile:"
-msgstr "Mobil:"
+msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:11
 msgid "More _Addresses..."
@@ -1448,7 +1447,7 @@ msgstr ""
 
 #: ../data/glade/PersonRoleTypeStep.ui.h:1
 msgid "A new company"
-msgstr "Ett nytt företag"
+msgstr ""
 
 #: ../data/glade/PersonRoleTypeStep.ui.h:2
 msgid "A new individual"
@@ -1464,7 +1463,7 @@ msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:1
 msgid "<b>Plugins</b>"
-msgstr "<b>Plugin</b>"
+msgstr ""
 
 #: ../data/glade/PluginStep.ui.h:2
 msgid "ECF (Fiscal printer support)"
@@ -1509,7 +1508,7 @@ msgstr ""
 #: ../data/glade/ProductStockHistoryDialog.ui.h:4
 #: ../data/glade/ProductionProductSlave.ui.h:1
 msgid "Product:"
-msgstr "Vara:"
+msgstr ""
 
 #: ../data/glade/ProductAdjustmentDialog.ui.h:3
 msgid "Quantity for Adjustment:"
@@ -1519,7 +1518,7 @@ msgstr ""
 #: ../data/glade/ProductComponentSlave.ui.h:1
 #: ../data/glade/ProductQualityTestSlave.ui.h:1
 msgid "Component:"
-msgstr "Komponent:"
+msgstr ""
 
 #: ../data/glade/ProductComponentEditor.ui.h:2
 msgid "Design Reference:"
@@ -1532,7 +1531,7 @@ msgstr ""
 #: ../data/glade/SaleQuoteItemEditor.ui.h:6
 #: ../data/glade/SellableItemStep.ui.h:4 ../data/glade/pos.ui.h:4
 msgid "Quantity:"
-msgstr "Antal:"
+msgstr ""
 
 #: ../data/glade/ProductComponentSlave.ui.h:2
 msgid "Production time:"
@@ -1561,7 +1560,7 @@ msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:4
 msgid "Depth:"
-msgstr "Djup:"
+msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:5
 msgid "EX TIPI:"
@@ -1569,25 +1568,25 @@ msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:7
 msgid "Kg"
-msgstr "Kg"
+msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:8
 #: ../data/glade/ProductionItemEditor.ui.h:2
 msgid "Location:"
-msgstr "Plats:"
+msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:9
 msgid "Manufacturer:"
-msgstr "Tillverkare:"
+msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:10
 msgid "Maximum:"
-msgstr "Maximum:"
+msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:11
 #: ../data/glade/SellableItemStep.ui.h:3
 msgid "Minimum:"
-msgstr "Minimum:"
+msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:12
 msgid "NCM:"
@@ -1603,7 +1602,7 @@ msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:15
 msgid "Weight:"
-msgstr "Vikt:"
+msgstr ""
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:1
 msgid "Current Stock Balance:"
@@ -1611,7 +1610,7 @@ msgstr ""
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:2
 msgid "Loans"
-msgstr "Utlåningar"
+msgstr ""
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:3
 msgid "Manual Decrease"
@@ -1623,13 +1622,13 @@ msgstr ""
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:7
 msgid "Transfers"
-msgstr "Överföringar"
+msgstr ""
 
 #: ../data/glade/ProductSupplierEditor.ui.h:4
 #: ../data/glade/PurchaseItemEditor.ui.h:2
 #: ../data/glade/ReceivingItemEditor.ui.h:1
 msgid "1.00"
-msgstr "1,00"
+msgstr ""
 
 #: ../data/glade/ProductSupplierEditor.ui.h:5
 msgid ""
@@ -1639,7 +1638,7 @@ msgstr ""
 
 #: ../data/glade/ProductSupplierEditor.ui.h:7
 msgid "Day(s)"
-msgstr "Dygn"
+msgstr ""
 
 #: ../data/glade/ProductSupplierEditor.ui.h:9
 msgid "Lead Time:"
@@ -1663,12 +1662,12 @@ msgstr ""
 
 #: ../data/glade/ProductionComponentSlave.ui.h:1
 msgid "CSV..."
-msgstr "CSV..."
+msgstr ""
 
 #: ../data/glade/ProductionComponentSlave.ui.h:2
 #: ../stoqlib/gui/editors/producteditor.py:683
 msgid "Components"
-msgstr "Komponenter"
+msgstr ""
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:1
 msgid "Add Produced"
@@ -1681,14 +1680,14 @@ msgstr ""
 #: ../data/glade/ProductionDetailsDialog.ui.h:4
 #: ../stoqlib/reporting/production.py:122
 msgid "Close Date:"
-msgstr "Slutdatum"
+msgstr ""
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:5
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:5
 #: ../data/glade/SaleDetailsDialog.ui.h:8 ../stoq/gui/sales.py:234
 #: ../stoqlib/gui/search/salesearch.py:83
 msgid "Items"
-msgstr "Föremål"
+msgstr ""
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:6
 msgid "Lost Material"
@@ -1697,7 +1696,7 @@ msgstr ""
 #: ../data/glade/ProductionDetailsDialog.ui.h:7
 #: ../stoqlib/reporting/production.py:161
 msgid "Materials"
-msgstr "Material"
+msgstr ""
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:10
 #: ../data/glade/PurchaseDetailsDialog.ui.h:13
@@ -1710,12 +1709,12 @@ msgstr ""
 
 #: ../data/glade/ProductionItemEditor.ui.h:3
 msgid "Production:"
-msgstr "Produktion:"
+msgstr ""
 
 #: ../data/glade/ProductionItemEditor.ui.h:5
 #: ../data/glade/SellableEditor.ui.h:16
 msgid "Unit:"
-msgstr "Enhet:"
+msgstr ""
 
 #: ../data/glade/ProductionMaterialListSlave.ui.h:1
 msgid "<b>Listing all the components needed by the production:</b>"
@@ -1731,7 +1730,7 @@ msgstr ""
 
 #: ../data/glade/ProductsAdjustment.ui.h:6
 msgid "_Adjust"
-msgstr "_Justera"
+msgstr ""
 
 #: ../data/glade/ProgressDialog.ui.h:1
 msgid "Probing device..."
@@ -1739,7 +1738,7 @@ msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:1
 msgid "Additional Info"
-msgstr "Ytterligare information"
+msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:2
 msgid "Agreed Freight Type:"
@@ -1749,7 +1748,7 @@ msgstr ""
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:2
 #: ../data/glade/SaleDetailsDialog.ui.h:2
 msgid "Changes"
-msgstr "Ändringar"
+msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:6
 msgid "Expected Freight Value:"
@@ -1766,7 +1765,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/salequotewizard.py:338
 #: ../stoqlib/reporting/purchase.py:68
 msgid "Ordered"
-msgstr "Beställd"
+msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:17 ../stoq/gui/purchase.py:257
 #: ../stoqlib/gui/search/productsearch.py:268
@@ -1775,7 +1774,7 @@ msgstr "Beställd"
 #: ../stoqlib/reporting/payment.py:135 ../stoqlib/reporting/product.py:140
 #: ../stoqlib/reporting/purchase.py:70 ../stoqlib/reporting/purchase.py:99
 msgid "Received"
-msgstr "Mottagen"
+msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:18
 msgid "Received Freight Type:"
@@ -1790,7 +1789,7 @@ msgstr ""
 #: ../data/glade/SalesPersonStep.ui.h:14
 #: ../plugins/magento/glade/MagentoConfigEditor.ui.h:5
 msgid "Salesperson:"
-msgstr "Säljare:"
+msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:23
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:24
@@ -1800,7 +1799,7 @@ msgstr "Säljare:"
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:339
 #: ../stoqlib/reporting/purchase.py:269 ../stoqlib/reporting/purchase.py:349
 msgid "Supplier:"
-msgstr "Leverantör:"
+msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:25
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:3
@@ -1828,7 +1827,7 @@ msgstr ""
 #: ../data/glade/ReceivingItemEditor.ui.h:2
 #: ../data/glade/SellableItemStep.ui.h:1
 msgid "Cost:"
-msgstr "Kostnad:"
+msgstr ""
 
 #: ../data/glade/PurchaseItemEditor.ui.h:5
 msgid "Expected receival:"
@@ -1853,17 +1852,17 @@ msgstr ""
 
 #: ../data/glade/PurchasePaymentSlave.ui.h:4
 msgid "Number of installments:"
-msgstr "Antal delbetalningar:"
+msgstr ""
 
 #: ../data/glade/PurchaseSelectionStep.ui.h:1
 #: ../data/glade/SaleListToolbar.ui.h:2
 msgid "_Details"
-msgstr "_Detaljer"
+msgstr ""
 
 #: ../data/glade/PurchaseSelectionStep.ui.h:2 ../data/glade/purchase.ui.h:1
 #: ../stoqlib/reporting/purchase_receival.py:36
 msgid "purchase"
-msgstr "köp"
+msgstr ""
 
 #: ../data/glade/QualityTestEditor.ui.h:3
 msgid "Success Value:"
@@ -1891,7 +1890,7 @@ msgstr ""
 
 #: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:4
 msgid "_Select All"
-msgstr "_Markera allt"
+msgstr ""
 
 #: ../data/glade/QuoteSupplierStep.ui.h:1
 msgid "Include all products in quotes"
@@ -1918,7 +1917,7 @@ msgstr ""
 #: ../data/glade/TransporterDataSlave.ui.h:4
 #: ../stoqlib/reporting/purchase.py:339
 msgid "Freight:"
-msgstr "Frakt:"
+msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:9
@@ -1948,7 +1947,7 @@ msgstr ""
 #. Do not translate $CURRENCY
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:20
 msgid "Products Total ($CURRENCY):"
-msgstr "Varutotal ($CURRENCY)"
+msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:23
@@ -2003,11 +2002,11 @@ msgstr ""
 
 #: ../data/glade/SaleListToolbar.ui.h:1 ../data/glade/pos.ui.h:3
 msgid "Ed_it"
-msgstr "_Redigera"
+msgstr ""
 
 #: ../data/glade/SaleListToolbar.ui.h:3
 msgid "_Print"
-msgstr "Skriv _ut"
+msgstr ""
 
 #: ../data/glade/SaleListToolbar.ui.h:4
 msgid "_Return"
@@ -2016,7 +2015,7 @@ msgstr ""
 #: ../data/glade/SaleQuoteItemEditor.ui.h:1
 #: ../stoqlib/gui/editors/saleeditor.py:71
 msgid "Basic"
-msgstr "Enkel"
+msgstr ""
 
 #: ../data/glade/SaleQuoteItemEditor.ui.h:2
 msgid "CFOP:"
@@ -2024,7 +2023,7 @@ msgstr ""
 
 #: ../data/glade/SaleQuoteItemEditor.ui.h:5
 msgid "Price:"
-msgstr "Pris:"
+msgstr ""
 
 #: ../data/glade/SaleQuoteItemEditor.ui.h:7
 msgid "Return Quantity:"
@@ -2065,7 +2064,7 @@ msgstr ""
 
 #: ../data/glade/SalesPersonStep.ui.h:1
 msgid "0.00"
-msgstr "0,00"
+msgstr ""
 
 #: ../data/glade/SalesPersonStep.ui.h:2
 msgid "Add a new C.F.O.P."
@@ -2074,7 +2073,7 @@ msgstr ""
 #: ../data/glade/SalesPersonStep.ui.h:3
 #: ../stoqlib/gui/editors/paymenteditor.py:124
 msgid "Add a new client"
-msgstr "Lägg till ny klient"
+msgstr ""
 
 #: ../data/glade/SalesPersonStep.ui.h:4
 #: ../stoqlib/gui/wizards/purchasewizard.py:434
@@ -2092,7 +2091,7 @@ msgstr ""
 #: ../data/glade/SalesPersonStep.ui.h:9
 #: ../stoqlib/gui/wizards/loanwizard.py:253
 msgid "Expire"
-msgstr "Utgång"
+msgstr ""
 
 #: ../data/glade/SalesPersonStep.ui.h:12
 msgid "Operation Nature:"
@@ -2104,11 +2103,11 @@ msgstr ""
 
 #: ../data/glade/SearchEditor.ui.h:2
 msgid "_New..."
-msgstr "_Ny..."
+msgstr ""
 
 #: ../data/glade/SelectPaymentMethodSlave.ui.h:1
 msgid "C_ash"
-msgstr "_Pengar"
+msgstr ""
 
 #: ../data/glade/SelectPaymentMethodSlave.ui.h:2
 msgid "Payment method:"
@@ -2120,7 +2119,7 @@ msgstr ""
 
 #: ../data/glade/SellableDetailsSlave.ui.h:1 ../stoqlib/gui/printing.py:228
 msgid "Details:"
-msgstr "Detaljer:"
+msgstr ""
 
 #: ../data/glade/SellableDetailsSlave.ui.h:2
 msgid "Right-click image for more options"
@@ -2128,7 +2127,7 @@ msgstr ""
 
 #: ../data/glade/SellableEditor.ui.h:3 ../data/glade/pos.ui.h:2
 msgid "Barcode:"
-msgstr "Streckkod:"
+msgstr ""
 
 #: ../data/glade/SellableEditor.ui.h:6
 msgid "Consignment:"
@@ -2148,13 +2147,13 @@ msgstr ""
 #: ../stoqlib/gui/editors/parameterseditor.py:169
 #: ../stoqlib/gui/search/parametersearch.py:95
 msgid "No"
-msgstr "Nej"
+msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/SellableEditor.ui.h:13
 #: ../data/glade/SellablePriceEditor.ui.h:10
 msgid "Sale Price ($CURRENCY):"
-msgstr "Försäljningspris ($CURRENCY):"
+msgstr ""
 
 #: ../data/glade/SellableEditor.ui.h:15
 #: ../data/glade/TributarySituationSlave.ui.h:3
@@ -2167,11 +2166,11 @@ msgstr ""
 #: ../stoqlib/gui/search/parametersearch.py:95
 #: ../stoqlib/gui/wizards/personwizard.py:94
 msgid "Yes"
-msgstr "Ja"
+msgstr ""
 
 #: ../data/glade/SellableItemStep.ui.h:2
 msgid "Item:"
-msgstr "Föremål:"
+msgstr ""
 
 #: ../data/glade/SellableItemStep.ui.h:5
 msgid "Stock:"
@@ -2192,7 +2191,7 @@ msgstr ""
 
 #: ../data/glade/SellablePriceEditor.ui.h:5
 msgid "0,00"
-msgstr "0,00"
+msgstr ""
 
 #: ../data/glade/SellablePriceEditor.ui.h:6
 msgid "Base Cost:"
@@ -2200,11 +2199,11 @@ msgstr ""
 
 #: ../data/glade/SellablePriceEditor.ui.h:7
 msgid "Markup:"
-msgstr "Marginal:"
+msgstr ""
 
 #: ../data/glade/SellablePriceEditor.ui.h:8
 msgid "Max Discount:"
-msgstr "Maxrabatt:"
+msgstr ""
 
 #: ../data/glade/SellableUnitEditor.ui.h:1
 msgid "Allow Fractions (e.g 0.5Kg, 0.75mL)"
@@ -2212,7 +2211,7 @@ msgstr ""
 
 #: ../data/glade/ServiceItemEditor.ui.h:1
 msgid "  Price:"
-msgstr "  Pris:"
+msgstr ""
 
 #: ../data/glade/ServiceItemEditor.ui.h:2
 msgid "Estimated Fix Date:"
@@ -2225,7 +2224,7 @@ msgstr ""
 #. Do not translate $CURRENCY
 #: ../data/glade/StartPurchaseStep.ui.h:2
 msgid "$CURRENCY"
-msgstr "$CURRENCY"
+msgstr ""
 
 #: ../data/glade/StartPurchaseStep.ui.h:3
 #: ../stoqlib/gui/editors/paymenteditor.py:121
@@ -2250,7 +2249,7 @@ msgstr ""
 
 #: ../data/glade/StartPurchaseStep.ui.h:9
 msgid "Freight Type:"
-msgstr "Frakttyp:"
+msgstr ""
 
 #: ../data/glade/StartPurchaseStep.ui.h:12
 msgid "Show products from all suppliers"
@@ -2287,7 +2286,7 @@ msgstr ""
 
 #: ../data/glade/StationEditor.ui.h:1
 msgid "Active:"
-msgstr "Aktiv"
+msgstr ""
 
 #: ../data/glade/StockDecreaseDetails.ui.h:5
 #: ../stoqlib/gui/dialogs/purchasedetails.py:235
@@ -2296,7 +2295,7 @@ msgstr "Aktiv"
 #: ../stoqlib/gui/editors/paymenteditor.py:454
 #: ../stoqlib/reporting/stockdecreasereceipt.py:81
 msgid "Reason"
-msgstr "Anledning"
+msgstr ""
 
 #: ../data/glade/StockTransferFinishStep.ui.h:2
 #: ../data/glade/TransferOrderDetails.ui.h:3
@@ -2305,7 +2304,7 @@ msgstr ""
 
 #: ../data/glade/StockTransferFinishStep.ui.h:3
 msgid "Receiver:"
-msgstr "Mottagare:"
+msgstr ""
 
 #: ../data/glade/StockTransferFinishStep.ui.h:4
 msgid "Receiving branch:"
@@ -2313,7 +2312,7 @@ msgstr ""
 
 #: ../data/glade/StockTransferFinishStep.ui.h:5
 msgid "Sender:"
-msgstr "Avsändare:"
+msgstr ""
 
 #: ../data/glade/StockTransferFinishStep.ui.h:6
 msgid "Sending branch:"
@@ -2321,7 +2320,7 @@ msgstr ""
 
 #: ../data/glade/SupplierDetailsDialog.ui.h:5 ../stoq/gui/calendar.py:301
 msgid "Purchases"
-msgstr "Inköp"
+msgstr ""
 
 #: ../data/glade/SupplierDetailsSlave.ui.h:1
 msgid "Product Types:"
@@ -2333,7 +2332,7 @@ msgstr ""
 
 #: ../data/glade/SystemParameterEditor.ui.h:1
 msgid "Current Value:"
-msgstr "Aktuellt värde:"
+msgstr ""
 
 #: ../data/glade/SystemParameterEditor.ui.h:2
 #: ../stoqlib/gui/keybindings.py:441 ../stoqlib/lib/parameters.py:154
@@ -2344,11 +2343,11 @@ msgstr "Aktuellt värde:"
 #: ../stoqlib/lib/parameters.py:453 ../stoqlib/lib/parameters.py:460
 #: ../stoqlib/lib/parameters.py:527 ../stoqlib/lib/parameters.py:547
 msgid "General"
-msgstr "Allmän"
+msgstr ""
 
 #: ../data/glade/SystemParameterEditor.ui.h:3
 msgid "Group:"
-msgstr "Grupp:"
+msgstr ""
 
 #: ../data/glade/SystemParameterEditor.ui.h:4
 msgid "Parameter Name:"
@@ -2356,7 +2355,7 @@ msgstr ""
 
 #: ../data/glade/TaxICMSSlave.ui.h:1
 msgid "Origin:"
-msgstr "Ursprung:"
+msgstr ""
 
 #: ../data/glade/TefStep.ui.h:1
 msgid "<b>TEF Plugin</b>"
@@ -2370,7 +2369,7 @@ msgstr ""
 
 #: ../data/glade/TefStep.ui.h:3
 msgid "Email:"
-msgstr "E-post:"
+msgstr ""
 
 #: ../data/glade/TefStep.ui.h:4
 msgid ""
@@ -2389,7 +2388,7 @@ msgstr ""
 
 #: ../data/glade/TefStep.ui.h:10
 msgid "Phone:"
-msgstr "Telefon:"
+msgstr ""
 
 #: ../data/glade/TillClosing.ui.h:1
 msgid "<b>Cash Amounts:</b>"
@@ -2415,11 +2414,11 @@ msgstr ""
 #: ../data/glade/TillFiscalOperationsToolbar.ui.h:1
 #: ../stoqlib/gui/fiscalprinter.py:400 ../stoqlib/gui/fiscalprinter.py:407
 msgid "Resume"
-msgstr "Återuppta"
+msgstr ""
 
 #: ../data/glade/TillFiscalOperationsToolbar.ui.h:2
 msgid "Till Out..."
-msgstr "Kassautdrag..."
+msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/TillOpening.ui.h:3
@@ -2428,15 +2427,15 @@ msgstr ""
 
 #: ../data/glade/TillOpening.ui.h:4 ../stoqlib/gui/editors/tilleditor.py:95
 msgid "Till Opening"
-msgstr "Kassaöppning"
+msgstr ""
 
 #: ../data/glade/TransferOrderDetails.ui.h:1
 msgid "Destination:"
-msgstr "Destination:"
+msgstr ""
 
 #: ../data/glade/TransferOrderDetails.ui.h:5
 msgid "Source:"
-msgstr "Källa:"
+msgstr ""
 
 #: ../data/glade/TransporterDataSlave.ui.h:7
 msgid "Transporter Status:"
@@ -2460,15 +2459,15 @@ msgstr ""
 
 #: ../data/glade/UpdateWelcomeStep.ui.h:8
 msgid "Update Database"
-msgstr "Uppdatera databas"
+msgstr ""
 
 #: ../data/glade/UserDetailsSlave.ui.h:1
 msgid "Change Password..."
-msgstr "Byt lösenord..."
+msgstr ""
 
 #: ../data/glade/UserDetailsSlave.ui.h:2
 msgid "Profile:"
-msgstr "Profil:"
+msgstr ""
 
 #: ../data/glade/UserProfileEditor.ui.h:1
 msgid "Available Applications:"
@@ -2476,7 +2475,7 @@ msgstr ""
 
 #: ../data/glade/UserProfileEditor.ui.h:2
 msgid "Profile Name:"
-msgstr "Profilnamn:"
+msgstr ""
 
 #: ../data/glade/WelcomeStep.ui.h:2
 msgid ""
@@ -2502,13 +2501,13 @@ msgstr ""
 
 #: ../data/glade/calendar.ui.h:1
 msgid "calendar"
-msgstr "kalender"
+msgstr ""
 
 #: ../data/glade/financial.ui.h:1 ../stoq/gui/financial.py:438
 #: ../stoq/gui/financial.py:530 ../stoqlib/lib/parameters.py:506
 #: ../stoqlib/lib/parameters.py:513 ../stoqlib/lib/parameters.py:520
 msgid "Accounts"
-msgstr "Konton"
+msgstr ""
 
 #: ../data/glade/financial.ui.h:2 ../data/glade/payable.ui.h:1
 msgid "payable"
@@ -2557,7 +2556,7 @@ msgstr ""
 
 #: ../data/glade/sales_app.ui.h:1 ../stoqlib/reporting/sale.py:170
 msgid "sales"
-msgstr "försäljning"
+msgstr ""
 
 #: ../data/glade/stock.ui.h:1
 msgid "STOQ - Stock Application"
@@ -2618,12 +2617,12 @@ msgstr ""
 #: ../stoqlib/gui/search/servicesearch.py:90
 #: ../stoqlib/gui/search/tillsearch.py:106
 msgid "Any"
-msgstr "Vilken som helst"
+msgstr ""
 
 #: ../plugins/books/bookssearch.py:73 ../stoqlib/gui/search/loansearch.py:61
 #: ../stoqlib/gui/search/productsearch.py:148
 msgid "with status:"
-msgstr "med status:"
+msgstr ""
 
 #: ../plugins/books/bookssearch.py:83 ../stoq/gui/stock.py:223
 #: ../stoqlib/domain/uiform.py:105
@@ -2634,7 +2633,7 @@ msgstr "med status:"
 #: ../stoqlib/gui/search/servicesearch.py:108
 #: ../stoqlib/gui/wizards/abstractwizard.py:112
 msgid "Barcode"
-msgstr "Streckkod"
+msgstr ""
 
 #. XXX Bug #2430 will improve this part
 #: ../plugins/books/bookssearch.py:85 ../stoq/gui/financial.py:227
@@ -2679,7 +2678,7 @@ msgstr "Streckkod"
 #: ../stoqlib/reporting/stockdecreasereceipt.py:91
 #: ../stoqlib/reporting/template.py:322
 msgid "Code"
-msgstr "Kod"
+msgstr ""
 
 #: ../plugins/books/bookssearch.py:87 ../stoq/gui/payable.py:202
 #: ../stoq/gui/receivable.py:209 ../stoq/gui/stock.py:225
@@ -2713,7 +2712,7 @@ msgstr "Kod"
 #: ../stoqlib/reporting/loanreceipt.py:101
 #: ../stoqlib/reporting/purchase.py:129 ../stoqlib/reporting/purchase.py:325
 msgid "Category"
-msgstr "Kategori"
+msgstr ""
 
 #: ../plugins/books/bookssearch.py:89
 msgid "Subject"
@@ -2769,7 +2768,7 @@ msgstr ""
 #: ../stoqlib/reporting/product.py:66 ../stoqlib/reporting/purchase.py:138
 #: ../stoqlib/reporting/purchase.py:332 ../stoqlib/reporting/service.py:54
 msgid "Cost"
-msgstr "Kostnad"
+msgstr ""
 
 #: ../plugins/books/bookssearch.py:112 ../stoq/gui/pos.py:248
 #: ../stoqlib/gui/dialogs/loandetails.py:70
@@ -2784,11 +2783,11 @@ msgstr "Kostnad"
 #: ../stoqlib/reporting/loanreceipt.py:108 ../stoqlib/reporting/product.py:67
 #: ../stoqlib/reporting/sale.py:106 ../stoqlib/reporting/template.py:325
 msgid "Price"
-msgstr "Pris"
+msgstr ""
 
 #: ../plugins/books/bookssearch.py:115 ../stoqlib/reporting/product.py:68
 msgid "Stock Total"
-msgstr "Totalt lager"
+msgstr ""
 
 #: ../plugins/books/booksslave.py:46
 msgid "Book Details"
@@ -2889,7 +2888,7 @@ msgstr ""
 #: ../stoqlib/gui/slaves/liaisonslave.py:47
 #: ../stoqlib/gui/wizards/personwizard.py:104 ../stoqlib/reporting/sale.py:280
 msgid "Name"
-msgstr "Namn"
+msgstr ""
 
 #: ../plugins/ecf/catgenerator.py:69
 msgid "There must be a printer configured"
@@ -2948,7 +2947,7 @@ msgstr ""
 #: ../stoqlib/reporting/purchase.py:256 ../stoqlib/reporting/sale.py:290
 #: ../stoqlib/reporting/till.py:50
 msgid "Value"
-msgstr "Värde"
+msgstr ""
 
 #: ../plugins/ecf/deviceconstanteditor.py:202
 #: ../stoqlib/gui/search/sellableunitsearch.py:48
@@ -3002,7 +3001,7 @@ msgstr ""
 #: ../stoqlib/reporting/production.py:185
 #: ../stoqlib/reporting/production.py:210
 msgid "Unit"
-msgstr "Enhet"
+msgstr ""
 
 #. Payment
 #: ../plugins/ecf/ecfdomain.py:251 ../stoq/gui/payable.py:94
@@ -3014,7 +3013,7 @@ msgstr "Enhet"
 #: ../stoqlib/gui/editors/paymenteditor.py:445
 #: ../stoqlib/gui/slaves/paymentslave.py:865
 msgid "Payment"
-msgstr "Betalning"
+msgstr ""
 
 #: ../plugins/ecf/ecfmemorydialog.py:37
 msgid "Print Fiscal Memory"
@@ -3034,7 +3033,7 @@ msgstr ""
 
 #: ../plugins/ecf/ecfprinterdialog.py:68
 msgid "Fiscal Printer"
-msgstr "Skatteskrivare"
+msgstr ""
 
 #: ../plugins/ecf/ecfprinterdialog.py:123
 #, python-format
@@ -3137,15 +3136,15 @@ msgstr ""
 #: ../stoq/gui/inventory.py:100 ../stoq/gui/purchase.py:168
 #: ../stoq/gui/sales.py:149
 msgid "Cancel"
-msgstr "Avbryt"
+msgstr ""
 
 #: ../plugins/ecf/ecfui.py:239 ../plugins/ecf/ecfui.py:292
 msgid "Ignore"
-msgstr "Ignorera"
+msgstr ""
 
 #: ../plugins/ecf/ecfui.py:240 ../plugins/ecf/ecfui.py:293
 msgid "Try Again"
-msgstr "Försök igen"
+msgstr ""
 
 #: ../plugins/ecf/ecfui.py:272
 msgid ""
@@ -3188,7 +3187,7 @@ msgstr ""
 #: ../plugins/ecf/ecfui.py:417 ../stoqlib/gui/dialogs/pluginsdialog.py:122
 #: ../stoqlib/gui/fiscalprinter.py:143 ../stoqlib/gui/fiscalprinter.py:277
 msgid "Not now"
-msgstr "Inte nu"
+msgstr ""
 
 #: ../plugins/ecf/ecfui.py:424
 msgid "Cash out"
@@ -3230,7 +3229,7 @@ msgstr ""
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:5
 msgid "Printer:"
-msgstr "Skrivare:"
+msgstr ""
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:6
 msgid "Register CRO:"
@@ -3374,7 +3373,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:86
 #: ../stoqlib/reporting/purchase.py:248
 msgid "#"
-msgstr "#"
+msgstr ""
 
 #: ../plugins/magento/gui/search/magentosearch.py:60
 msgid "Server URL"
@@ -3435,7 +3434,7 @@ msgstr ""
 #: ../stoq/daemonmain.py:104 ../stoq/main.py:308
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
-msgstr "Ogiltlig konfigurationsinställning, fick felet '%s', av typ '%s'"
+msgstr ""
 
 #: ../stoq/daemonmain.py:118 ../stoq/main.py:324
 msgid "Could not connect to the database"
@@ -3451,7 +3450,7 @@ msgstr ""
 
 #: ../stoq/gui/admin.py:93 ../stoq/gui/sales.py:145
 msgid "Clients"
-msgstr "Klienter"
+msgstr ""
 
 #: ../stoq/gui/admin.py:94 ../stoqlib/gui/editors/fiscaleditor.py:38
 #: ../stoqlib/gui/search/fiscalsearch.py:62
@@ -3468,7 +3467,7 @@ msgstr ""
 
 #: ../stoq/gui/admin.py:96
 msgid "Devices"
-msgstr "Enheter"
+msgstr ""
 
 #: ../stoq/gui/admin.py:97
 msgid "Employees"
@@ -3528,7 +3527,7 @@ msgstr ""
 #: ../stoq/gui/admin.py:110 ../stoq/gui/purchase.py:166
 #: ../stoqlib/gui/editors/producteditor.py:636
 msgid "Suppliers"
-msgstr "Leverantörer"
+msgstr ""
 
 #: ../stoq/gui/admin.py:111
 msgid "Transporters"
@@ -3563,7 +3562,7 @@ msgstr ""
 
 #: ../stoq/gui/admin.py:265
 msgid "Employees..."
-msgstr "Anställda..."
+msgstr ""
 
 #: ../stoq/gui/admin.py:267
 msgid "Events..."
@@ -3679,7 +3678,7 @@ msgstr ""
 #: ../stoq/gui/application.py:212
 #: ../stoqlib/gui/dialogs/crashreportdialog.py:81
 msgid "Close"
-msgstr "Stäng"
+msgstr ""
 
 #: ../stoq/gui/application.py:214
 msgid "Close the current view and go back to the initial screen"
@@ -3712,11 +3711,11 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:127
 #: ../stoqlib/gui/search/salesearch.py:156
 msgid "Export CSV..."
-msgstr "Exportera CSV..."
+msgstr ""
 
 #: ../stoq/gui/application.py:224 ../stoqlib/database/runtime.py:283
 msgid "Quit"
-msgstr "Avsluta?"
+msgstr ""
 
 #: ../stoq/gui/application.py:226
 msgid "Exit the application"
@@ -3725,7 +3724,7 @@ msgstr ""
 #. Edit
 #: ../stoq/gui/application.py:229
 msgid "_Edit"
-msgstr "_Redigera"
+msgstr ""
 
 #: ../stoq/gui/application.py:230
 msgid "_Preferences"
@@ -3739,12 +3738,12 @@ msgstr ""
 #. Search
 #: ../stoq/gui/application.py:236
 msgid "_Search"
-msgstr "_Sök"
+msgstr ""
 
 #. Help
 #: ../stoq/gui/application.py:239
 msgid "_Help"
-msgstr "_Hjälp"
+msgstr ""
 
 #: ../stoq/gui/application.py:240
 msgid "Contents"
@@ -3814,11 +3813,6 @@ msgid ""
 "be aware that it may behave incorrectly, crash or even loose your data.\n"
 "<b>Do not use in production.</b>"
 msgstr ""
-"Du använder för närvarande en <b>instabil version</b> av Stoq som är under "
-"utvecklande,\n"
-"var medveten om att det kan uppföra sig felaktigt, krasha eller till och med "
-"förlora din data.\n"
-"<b>Använda inte i produktion</b>"
 
 #: ../stoq/gui/application.py:349
 msgid ""
@@ -3851,7 +3845,7 @@ msgstr ""
 #: ../stoq/gui/application.py:568
 #, python-format
 msgid "Stoq - %s"
-msgstr "Stoq - %s"
+msgstr ""
 
 #: ../stoq/gui/application.py:719
 msgid "Show help for this application"
@@ -3859,11 +3853,11 @@ msgstr ""
 
 #: ../stoq/gui/application.py:735
 msgid "Debug"
-msgstr "Debug"
+msgstr ""
 
 #: ../stoq/gui/application.py:736
 msgid "Introspect slaves"
-msgstr "Introspekta slav"
+msgstr ""
 
 #: ../stoq/gui/application.py:860
 msgid "Open a new window"
@@ -3880,16 +3874,16 @@ msgstr ""
 
 #: ../stoq/gui/application.py:1091
 msgid "Search:"
-msgstr "Sök:"
+msgstr ""
 
 #: ../stoq/gui/application.py:1252
 msgid "Learn More..."
-msgstr "Lär dig mer..."
+msgstr ""
 
 #: ../stoq/gui/application.py:1253
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
-msgstr "<b>En ny version (%s) av Stoq är tillgänglig</b>"
+msgstr ""
 
 #: ../stoq/gui/calendar.py:91 ../stoqlib/lib/prettydate.py:87
 msgid "today"
@@ -3897,7 +3891,7 @@ msgstr ""
 
 #: ../stoq/gui/calendar.py:92
 msgid "month"
-msgstr "månad"
+msgstr ""
 
 #: ../stoq/gui/calendar.py:93
 msgid "week"
@@ -3961,7 +3955,7 @@ msgstr ""
 
 #: ../stoq/gui/calendar.py:250 ../stoq/lib/applist.py:45
 msgid "Calendar"
-msgstr "Kalender"
+msgstr ""
 
 #. File
 #: ../stoq/gui/calendar.py:276
@@ -4012,7 +4006,7 @@ msgstr ""
 
 #: ../stoq/gui/calendar.py:289
 msgid "Calendar events"
-msgstr "Kalenderhändelser"
+msgstr ""
 
 #: ../stoq/gui/calendar.py:290
 msgid "Display view as"
@@ -4058,7 +4052,7 @@ msgstr ""
 
 #: ../stoq/gui/calendar.py:335
 msgid "Show one month"
-msgstr "Visa en månad"
+msgstr ""
 
 #: ../stoq/gui/calendar.py:336
 msgid "View as week"
@@ -4078,7 +4072,7 @@ msgstr ""
 
 #: ../stoq/gui/calendar.py:343
 msgid "Month"
-msgstr "Månad"
+msgstr ""
 
 #: ../stoq/gui/calendar.py:344
 msgid "Week"
@@ -4086,11 +4080,11 @@ msgstr ""
 
 #: ../stoq/gui/calendar.py:345 ../stoqlib/domain/product.py:124
 msgid "Day"
-msgstr "Dag"
+msgstr ""
 
 #: ../stoq/gui/calendar.py:378
 msgid "Print this calendar"
-msgstr "Skriv ut denna kalender"
+msgstr ""
 
 #: ../stoq/gui/config.py:225
 #, python-format
@@ -4099,15 +4093,15 @@ msgstr ""
 
 #: ../stoq/gui/config.py:228 ../stoq/gui/config.py:233
 msgid "Invalid database address"
-msgstr "Ogiltlig databasadress"
+msgstr ""
 
 #: ../stoq/gui/config.py:263
 msgid "Needs Password"
-msgstr "Kräv lösenord"
+msgstr ""
 
 #: ../stoq/gui/config.py:264
 msgid "Trust"
-msgstr "Lita"
+msgstr ""
 
 #: ../stoq/gui/config.py:405 ../stoqlib/gui/dialogs/crashreportdialog.py:101
 msgid "Sending..."
@@ -4210,7 +4204,7 @@ msgstr ""
 
 #: ../stoq/gui/config.py:669
 msgid "Don't create"
-msgstr "Skapa inte"
+msgstr ""
 
 #: ../stoq/gui/config.py:669
 msgid "Create database"
@@ -4218,7 +4212,7 @@ msgstr ""
 
 #: ../stoq/gui/config.py:743
 msgid "Creating database..."
-msgstr "Skapar databas..."
+msgstr ""
 
 #: ../stoq/gui/config.py:748
 msgid "Please wait while the database is being created."
@@ -4226,11 +4220,11 @@ msgstr ""
 
 #: ../stoq/gui/config.py:758
 msgid "Creating base schema..."
-msgstr "Skapar basschema"
+msgstr ""
 
 #: ../stoq/gui/config.py:762
 msgid "Creating schema, applying patches..."
-msgstr "Skapa schema, applicerar patcher..."
+msgstr ""
 
 #: ../stoq/gui/config.py:767
 #, python-format
@@ -4243,15 +4237,15 @@ msgstr ""
 
 #: ../stoq/gui/config.py:772
 msgid "Creating examples ..."
-msgstr "Skapar exempel ..."
+msgstr ""
 
 #: ../stoq/gui/config.py:775
 msgid "Activating plugins ..."
-msgstr "Aktiverar tillägg ..."
+msgstr ""
 
 #: ../stoq/gui/config.py:777
 msgid "This may take some time."
-msgstr "Detta kan ta ett tag."
+msgstr ""
 
 #. This probably happened because the user either;
 #. - pressed cancel in the authentication popup
@@ -4283,7 +4277,7 @@ msgstr ""
 
 #: ../stoq/gui/config.py:836
 msgid "Run Stoq"
-msgstr "Kör Stoq"
+msgstr ""
 
 #: ../stoq/gui/config.py:857 ../stoqlib/lib/parameters.py:548
 msgid "Online services"
@@ -4398,7 +4392,7 @@ msgstr ""
 #: ../stoqlib/reporting/production.py:208 ../stoqlib/reporting/purchase.py:252
 #: ../stoqlib/reporting/template.py:323
 msgid "Description"
-msgstr "Beskrivning"
+msgstr ""
 
 #: ../stoq/gui/financial.py:230 ../stoq/gui/financial.py:352
 msgid "Account"
@@ -4430,7 +4424,7 @@ msgstr ""
 #: ../stoqlib/reporting/sale.py:183 ../stoqlib/reporting/sale.py:231
 #: ../stoqlib/reporting/sale.py:241
 msgid "Total"
-msgstr "Totalt"
+msgstr ""
 
 #: ../stoq/gui/financial.py:244 ../stoq/gui/payable.py:189
 #: ../stoq/gui/receivable.py:196 ../stoqlib/gui/dialogs/clientdetails.py:136
@@ -4450,7 +4444,7 @@ msgstr ""
 
 #: ../stoq/gui/financial.py:333 ../stoq/lib/applist.py:49
 msgid "Financial"
-msgstr "Bokföring"
+msgstr ""
 
 #: ../stoq/gui/financial.py:351
 msgid "Transaction"
@@ -4527,7 +4521,7 @@ msgstr ""
 
 #: ../stoq/gui/financial.py:573
 msgid "Open Financial Exchange (OFX)"
-msgstr "Open Financial Exchange (OFX)"
+msgstr ""
 
 #: ../stoq/gui/financial.py:578
 msgid "GNUCash xml format"
@@ -4544,7 +4538,7 @@ msgstr ""
 
 #: ../stoq/gui/financial.py:691
 msgid "Remove account"
-msgstr "Ta bort konto"
+msgstr ""
 
 #: ../stoq/gui/financial.py:707
 #, python-format
@@ -4564,7 +4558,7 @@ msgstr ""
 #: ../stoq/gui/inventory.py:57 ../stoq/gui/inventory.py:77
 #: ../stoq/lib/applist.py:52
 msgid "Inventory"
-msgstr "Lager"
+msgstr ""
 
 #: ../stoq/gui/inventory.py:60 ../stoq/gui/stock.py:74
 msgid "Matching:"
@@ -4659,7 +4653,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:91
 #: ../stoqlib/reporting/payment.py:148 ../stoqlib/reporting/production.py:123
 msgid "Status"
-msgstr "Tillstånd"
+msgstr ""
 
 #: ../stoq/gui/inventory.py:151 ../stoqlib/domain/uiform.py:125
 #: ../stoqlib/gui/editors/personeditor.py:312
@@ -4669,7 +4663,7 @@ msgstr "Tillstånd"
 #: ../stoqlib/gui/search/stockdecreasesearch.py:92
 #: ../stoqlib/reporting/sale.py:238
 msgid "Branch"
-msgstr "Avdelning"
+msgstr ""
 
 #: ../stoq/gui/inventory.py:153 ../stoq/gui/production.py:159
 #: ../stoq/gui/purchase.py:247 ../stoqlib/domain/inventory.py:167
@@ -4680,7 +4674,7 @@ msgstr "Avdelning"
 #: ../stoqlib/gui/dialogs/productstockdetails.py:183
 #: ../stoqlib/gui/wizards/loanwizard.py:251
 msgid "Opened"
-msgstr "Öppnad"
+msgstr ""
 
 #: ../stoq/gui/inventory.py:154 ../stoq/gui/purchase.py:248
 msgid "Date Opened"
@@ -4692,7 +4686,7 @@ msgstr ""
 #: ../stoqlib/domain/purchase.py:154 ../stoqlib/domain/sellable.py:289
 #: ../stoqlib/domain/till.py:86 ../stoqlib/domain/transfer.py:81
 msgid "Closed"
-msgstr "Stängd"
+msgstr ""
 
 #: ../stoq/gui/inventory.py:157
 msgid "Date Closed"
@@ -4701,7 +4695,7 @@ msgstr ""
 #: ../stoq/gui/inventory.py:178 ../stoq/gui/stock.py:257
 #: ../stoqlib/lib/defaults.py:157
 msgid "All branches"
-msgstr "Alla avdelningar"
+msgstr ""
 
 #: ../stoq/gui/inventory.py:229
 msgid "Are you sure you want to cancel this inventory ?"
@@ -4802,7 +4796,7 @@ msgstr ""
 
 #: ../stoq/gui/payable.py:113 ../stoq/gui/receivable.py:115
 msgid "Comments..."
-msgstr "Kommentarer..."
+msgstr ""
 
 #: ../stoq/gui/payable.py:115 ../stoq/gui/receivable.py:117
 #: ../stoqlib/gui/keybindings.py:155 ../stoqlib/gui/keybindings.py:277
@@ -4849,7 +4843,7 @@ msgstr ""
 
 #: ../stoq/gui/payable.py:181 ../stoq/gui/receivable.py:189
 msgid "Comments"
-msgstr "Kommentarer"
+msgstr ""
 
 #: ../stoq/gui/payable.py:186 ../stoq/gui/purchase.py:251
 #: ../stoqlib/domain/uiform.py:123
@@ -4864,7 +4858,7 @@ msgstr "Kommentarer"
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:474
 #: ../stoqlib/gui/wizards/receivingwizard.py:99
 msgid "Supplier"
-msgstr "Leverantör"
+msgstr ""
 
 #: ../stoq/gui/payable.py:192 ../stoq/gui/receivable.py:198
 #: ../stoqlib/gui/dialogs/clientdetails.py:138
@@ -4884,7 +4878,7 @@ msgstr ""
 #: ../stoqlib/domain/payment/renegotiation.py:56 ../stoqlib/domain/sale.py:351
 #: ../stoqlib/reporting/payment.py:137
 msgid "Paid"
-msgstr "Betald"
+msgstr ""
 
 #: ../stoq/gui/payable.py:201 ../stoq/gui/receivable.py:207
 #: ../stoqlib/gui/dialogs/purchasedetails.py:217
@@ -4893,7 +4887,7 @@ msgstr "Betald"
 #: ../stoqlib/gui/slaves/installmentslave.py:251
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:138
 msgid "Paid value"
-msgstr "Betalad summa"
+msgstr ""
 
 #: ../stoq/gui/payable.py:203 ../stoq/gui/receivable.py:210
 msgid "Payment category"
@@ -4915,11 +4909,11 @@ msgstr ""
 #. File
 #: ../stoq/gui/pos.py:134
 msgid "Open Till..."
-msgstr "Öppna kassa..."
+msgstr ""
 
 #: ../stoq/gui/pos.py:136
 msgid "Close Till..."
-msgstr "Stäng kassa..."
+msgstr ""
 
 #. Order
 #. File
@@ -4945,7 +4939,7 @@ msgstr ""
 #. Search
 #: ../stoq/gui/pos.py:149 ../stoq/gui/till.py:96
 msgid "Sales..."
-msgstr "Försäljningningar..."
+msgstr ""
 
 #: ../stoq/gui/pos.py:151
 msgid "Sold Items by Branch..."
@@ -4953,16 +4947,16 @@ msgstr ""
 
 #: ../stoq/gui/pos.py:153 ../stoq/gui/sales.py:113 ../stoq/gui/till.py:93
 msgid "Clients..."
-msgstr "Klienter..."
+msgstr ""
 
 #: ../stoq/gui/pos.py:155 ../stoq/gui/purchase.py:114 ../stoq/gui/sales.py:104
 msgid "Products..."
-msgstr "Varor..."
+msgstr ""
 
 #: ../stoq/gui/pos.py:157 ../stoq/gui/production.py:96
 #: ../stoq/gui/purchase.py:118 ../stoq/gui/sales.py:107
 msgid "Services..."
-msgstr "Tjänster..."
+msgstr ""
 
 #: ../stoq/gui/pos.py:159 ../stoq/gui/sales.py:110
 msgid "Deliveries..."
@@ -5027,7 +5021,7 @@ msgstr ""
 #: ../stoqlib/reporting/sale.py:104 ../stoqlib/reporting/sale.py:230
 #: ../stoqlib/reporting/stockdecreasereceipt.py:96
 msgid "Quantity"
-msgstr "Kvantitet"
+msgstr ""
 
 #: ../stoq/gui/pos.py:299
 msgid "_Close"
@@ -5036,7 +5030,7 @@ msgstr ""
 #: ../stoq/gui/pos.py:343 ../stoq/gui/till.py:317
 #, python-format
 msgid "Total: %s"
-msgstr "Total: %s"
+msgstr ""
 
 #. It's not a common operation to add more than one item at
 #. a time, it's also problematic since you'd have to show
@@ -5053,7 +5047,7 @@ msgstr ""
 
 #: ../stoq/gui/pos.py:445 ../stoq/gui/till.py:424
 msgid "Till closed"
-msgstr "Kassa stängd"
+msgstr ""
 
 #: ../stoq/gui/pos.py:447
 msgid "Till blocked"
@@ -5107,7 +5101,7 @@ msgstr ""
 #: ../stoq/gui/production.py:55 ../stoq/gui/production.py:81
 #: ../stoq/lib/applist.py:61 ../stoqlib/gui/dialogs/startproduction.py:35
 msgid "Production"
-msgstr "Tillverkning"
+msgstr ""
 
 #: ../stoq/gui/production.py:73
 msgid "Production order..."
@@ -5191,7 +5185,7 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:189 ../stoqlib/lib/parameters.py:197
 #: ../stoqlib/lib/parameters.py:205 ../stoqlib/lib/parameters.py:389
 msgid "Purchase"
-msgstr "Köp"
+msgstr ""
 
 #: ../stoq/gui/production.py:113
 msgid "Search items"
@@ -5224,7 +5218,7 @@ msgstr ""
 #: ../stoqlib/reporting/purchase.py:378
 #: ../stoqlib/reporting/stockdecreasereceipt.py:114
 msgid "Responsible"
-msgstr "Ansvarig"
+msgstr ""
 
 #: ../stoq/gui/purchase.py:92
 msgid "Order..."
@@ -5275,7 +5269,7 @@ msgstr ""
 
 #: ../stoq/gui/purchase.py:112
 msgid "Categories..."
-msgstr "Kategorier..."
+msgstr ""
 
 #: ../stoq/gui/purchase.py:116
 msgid "Product units..."
@@ -5487,7 +5481,7 @@ msgstr ""
 #: ../stoq/gui/receivable.py:137 ../stoq/gui/stock.py:136
 #: ../stoqlib/domain/account.py:84
 msgid "Receive"
-msgstr "Ta emot"
+msgstr ""
 
 #: ../stoq/gui/receivable.py:147
 msgid "Print a report of this payments"
@@ -5666,7 +5660,7 @@ msgstr ""
 #: ../stoqlib/gui/search/salesearch.py:135
 #: ../stoqlib/gui/wizards/loanwizard.py:249
 msgid "Client"
-msgstr "Klient"
+msgstr ""
 
 #. FIXME: We need a way to set the default profile in the interface,
 #. instead of relying on the name (the user may change it)
@@ -5677,7 +5671,7 @@ msgstr "Klient"
 #: ../stoqlib/gui/search/commissionsearch.py:71
 #: ../stoqlib/gui/search/salesearch.py:81 ../stoqlib/lib/parameters.py:671
 msgid "Salesperson"
-msgstr "Säljare"
+msgstr ""
 
 #: ../stoq/gui/sales.py:295
 msgid "There are no invoice printer configured for this station"
@@ -5736,7 +5730,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:125
 #: ../stoqlib/lib/parameters.py:228 ../stoqlib/lib/parameters.py:397
 msgid "Stock"
-msgstr "Lager"
+msgstr ""
 
 #: ../stoq/gui/stock.py:86
 msgid "Order _receival..."
@@ -5811,7 +5805,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:251
 #: ../stoqlib/gui/wizards/salequotewizard.py:336
 msgid "Product"
-msgstr "Vara"
+msgstr ""
 
 #: ../stoq/gui/stock.py:117
 msgid "History..."
@@ -5881,7 +5875,7 @@ msgstr ""
 
 #: ../stoq/gui/till.py:72 ../stoq/lib/applist.py:76
 msgid "Till"
-msgstr "Kassa"
+msgstr ""
 
 #: ../stoq/gui/till.py:87
 msgid "Open till..."
@@ -5909,7 +5903,7 @@ msgstr ""
 
 #: ../stoq/gui/till.py:102
 msgid "Till history..."
-msgstr "Kassahistorik..."
+msgstr ""
 
 #: ../stoq/gui/till.py:104 ../stoqlib/gui/keybindings.py:355
 msgid "Search for till history"
@@ -5946,7 +5940,7 @@ msgstr ""
 #: ../stoqlib/gui/search/salesearch.py:76
 #: ../stoqlib/gui/wizards/receivingwizard.py:95
 msgid "Date Started"
-msgstr "Startdatum"
+msgstr ""
 
 #: ../stoq/gui/till.py:252
 msgid "This quote has expired. Confirm it anyway?"
@@ -5983,7 +5977,7 @@ msgstr ""
 #: ../stoq/gui/update.py:91
 #, python-format
 msgid "Applying patch %s ..."
-msgstr "Applicerar patch %s ..."
+msgstr ""
 
 #: ../stoq/gui/update.py:93
 msgid "Creating a database backup"
@@ -6031,7 +6025,7 @@ msgstr ""
 
 #: ../stoq/gui/update.py:159
 msgid "Updating Stoq"
-msgstr "Updaterar Stoq"
+msgstr ""
 
 #: ../stoq/gui/welcomedialog.py:55
 msgid "_Start using Stoq"
@@ -6039,7 +6033,7 @@ msgstr ""
 
 #: ../stoq/gui/welcomedialog.py:57
 msgid "Welcome to Stoq"
-msgstr "Välkommen till Stoq"
+msgstr ""
 
 #: ../stoq/lib/applist.py:42
 msgid ""
@@ -6062,7 +6056,7 @@ msgstr ""
 #. Tabs cache requires unique ids
 #: ../stoq/lib/applist.py:55 ../stoqlib/gui/accounttree.py:155
 msgid "Accounts Payable"
-msgstr "Skuldkonton"
+msgstr ""
 
 #: ../stoq/lib/applist.py:56
 msgid "Manage payment that needs to be paid."
@@ -6082,7 +6076,7 @@ msgstr ""
 
 #: ../stoq/lib/applist.py:67 ../stoqlib/gui/accounttree.py:161
 msgid "Accounts Receivable"
-msgstr "Fordringskonton"
+msgstr ""
 
 #: ../stoq/lib/applist.py:68
 msgid "Manage payments that needs to be received."
@@ -6145,7 +6139,7 @@ msgstr ""
 
 #: ../stoq/lib/startup.py:63 ../stoq/lib/startup.py:161
 msgid "Database schema error"
-msgstr "Databasschemafel"
+msgstr ""
 
 #: ../stoq/lib/startup.py:64
 msgid ""
@@ -6191,7 +6185,7 @@ msgstr ""
 #: ../stoqlib/chart/paymentcharts.py:159 ../stoqlib/domain/account.py:88
 #: ../stoqlib/domain/account.py:98
 msgid "Expense"
-msgstr "Kostnad"
+msgstr ""
 
 #: ../stoqlib/chart/paymentcharts.py:160
 msgid "Profit"
@@ -6209,28 +6203,28 @@ msgstr ""
 
 #: ../stoqlib/database/admin.py:167
 msgid "Assets"
-msgstr "Tillgångar"
+msgstr ""
 
 #: ../stoqlib/database/admin.py:168 ../stoqlib/database/admin.py:184
 msgid "Banks"
-msgstr "Banker"
+msgstr ""
 
 #: ../stoqlib/database/admin.py:169 ../stoqlib/domain/account.py:99
 msgid "Equity"
-msgstr "Värdeökning"
+msgstr ""
 
 #: ../stoqlib/database/admin.py:170
 msgid "Expenses"
-msgstr "Utgifter"
+msgstr ""
 
 #: ../stoqlib/database/admin.py:171 ../stoqlib/database/admin.py:188
 msgid "Imbalance"
-msgstr "Obalans"
+msgstr ""
 
 #: ../stoqlib/database/admin.py:172 ../stoqlib/domain/account.py:87
 #: ../stoqlib/domain/account.py:97
 msgid "Income"
-msgstr "Intäkt"
+msgstr ""
 
 #: ../stoqlib/database/admin.py:173 ../stoqlib/database/admin.py:186
 msgid "Tills"
@@ -6321,7 +6315,7 @@ msgstr ""
 #: ../stoqlib/database/runtime.py:319
 #, python-format
 msgid "ERROR: %s"
-msgstr "FEL: %s"
+msgstr ""
 
 #: ../stoqlib/database/runtime.py:339
 #, python-format
@@ -6343,47 +6337,47 @@ msgstr ""
 
 #: ../stoqlib/domain/account.py:83 ../stoqlib/domain/payment/operation.py:219
 msgid "Deposit"
-msgstr "Insättning"
+msgstr ""
 
 #: ../stoqlib/domain/account.py:83
 msgid "Withdrawal"
-msgstr "Uttag"
+msgstr ""
 
 #: ../stoqlib/domain/account.py:84
 msgid "Spend"
-msgstr "Spenderat"
+msgstr ""
 
 #: ../stoqlib/domain/account.py:85 ../stoqlib/domain/account.py:89
 msgid "Increase"
-msgstr "Ökning"
+msgstr ""
 
 #: ../stoqlib/domain/account.py:85 ../stoqlib/domain/account.py:89
 msgid "Decrease"
-msgstr "Minskning"
+msgstr ""
 
 #: ../stoqlib/domain/account.py:86 ../stoqlib/domain/account.py:87
 msgid "Charge"
-msgstr "Avgift"
+msgstr ""
 
 #: ../stoqlib/domain/account.py:88
 msgid "Rebate"
-msgstr "Återbäring"
+msgstr ""
 
 #: ../stoqlib/domain/account.py:93
 msgid "Bank"
-msgstr "Bank"
+msgstr ""
 
 #: ../stoqlib/domain/account.py:94
 msgid "Cash"
-msgstr "Pengar"
+msgstr ""
 
 #: ../stoqlib/domain/account.py:95
 msgid "Asset"
-msgstr "Tillgångar"
+msgstr ""
 
 #: ../stoqlib/domain/account.py:96
 msgid "Credit"
-msgstr "Kredit"
+msgstr ""
 
 #: ../stoqlib/domain/account.py:272
 msgid "Payment needs to be paid"
@@ -6392,15 +6386,15 @@ msgstr ""
 #: ../stoqlib/domain/address.py:141
 #: ../stoqlib/gui/editors/addresseditor.py:160
 msgid "N/A"
-msgstr "Ej tillgänglig"
+msgstr ""
 
 #: ../stoqlib/domain/devices.py:61
 msgid "Scale"
-msgstr "Våg"
+msgstr ""
 
 #: ../stoqlib/domain/devices.py:62
 msgid "Cheque Printer"
-msgstr "Checkskrivare"
+msgstr ""
 
 #. System related messages
 #: ../stoqlib/domain/event.py:56
@@ -6412,13 +6406,13 @@ msgstr ""
 #: ../stoqlib/domain/event.py:58 ../stoqlib/domain/uiform.py:120
 #: ../stoqlib/gui/editors/personeditor.py:80
 msgid "User"
-msgstr "Användare"
+msgstr ""
 
 #: ../stoqlib/domain/inventory.py:169 ../stoqlib/domain/payment/group.py:63
 #: ../stoqlib/domain/payment/payment.py:83 ../stoqlib/domain/purchase.py:150
 #: ../stoqlib/domain/sale.py:352
 msgid "Cancelled"
-msgstr "Avbruten"
+msgstr ""
 
 #: ../stoqlib/domain/loan.py:137 ../stoqlib/domain/sale.py:398
 #: ../stoqlib/domain/stockdecrease.py:123
@@ -6429,7 +6423,7 @@ msgstr ""
 #: ../stoqlib/domain/payment/group.py:60
 #: ../stoqlib/domain/payment/payment.py:78
 msgid "Preview"
-msgstr "Förhandsgranska"
+msgstr ""
 
 #: ../stoqlib/domain/payment/group.py:61
 #: ../stoqlib/domain/payment/payment.py:82
@@ -6437,17 +6431,17 @@ msgstr "Förhandsgranska"
 #: ../stoqlib/domain/purchase.py:153 ../stoqlib/domain/sale.py:350
 #: ../stoqlib/domain/stockdecrease.py:105
 msgid "Confirmed"
-msgstr "Bekräftad"
+msgstr ""
 
 #: ../stoqlib/domain/payment/group.py:217
 #, python-format
 msgid "sale %s"
-msgstr "försäljning %s"
+msgstr ""
 
 #: ../stoqlib/domain/payment/group.py:219
 #, python-format
 msgid "order %s"
-msgstr "order %s"
+msgstr ""
 
 #: ../stoqlib/domain/payment/group.py:221
 #, python-format
@@ -6456,11 +6450,11 @@ msgstr ""
 
 #: ../stoqlib/domain/payment/method.py:87
 msgid "Credit Card"
-msgstr "Kreditkort"
+msgstr ""
 
 #: ../stoqlib/domain/payment/method.py:88
 msgid "Debit Card"
-msgstr "Bankkort"
+msgstr ""
 
 #: ../stoqlib/domain/payment/method.py:89
 msgid "Credit Card Installments Store"
@@ -6509,21 +6503,21 @@ msgstr ""
 
 #: ../stoqlib/domain/payment/operation.py:50
 msgid "Money"
-msgstr "Pengar"
+msgstr ""
 
 #: ../stoqlib/domain/payment/operation.py:76
 msgid "Check"
-msgstr "Check"
+msgstr ""
 
 #. Reports need a title when printing
 #: ../stoqlib/domain/payment/operation.py:119
 #: ../stoqlib/reporting/boleto.py:756 ../stoqlib/reporting/boleto.py:900
 msgid "Bill"
-msgstr "Räkning"
+msgstr ""
 
 #: ../stoqlib/domain/payment/operation.py:145
 msgid "Card"
-msgstr "Kort"
+msgstr ""
 
 #: ../stoqlib/domain/payment/operation.py:192
 msgid "Store Credit"
@@ -6531,11 +6525,11 @@ msgstr ""
 
 #: ../stoqlib/domain/payment/operation.py:248
 msgid "Multiple"
-msgstr "Multipel"
+msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:79
 msgid "To Pay"
-msgstr "Att Betala"
+msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:81
 msgid "Reviewing"
@@ -6577,7 +6571,7 @@ msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:370
 msgid "NOT PAID"
-msgstr "INTE BETALAD"
+msgstr ""
 
 #: ../stoqlib/domain/payment/payment.py:721
 msgid "This payment is already paid."
@@ -6589,31 +6583,31 @@ msgstr ""
 
 #: ../stoqlib/domain/payment/views.py:364
 msgid "Due Date"
-msgstr "Förfallodatum"
+msgstr ""
 
 #: ../stoqlib/domain/person.py:415
 msgid "Single"
-msgstr "Enkel"
+msgstr ""
 
 #: ../stoqlib/domain/person.py:416
 msgid "Married"
-msgstr "Gift"
+msgstr ""
 
 #: ../stoqlib/domain/person.py:417
 msgid "Divorced"
-msgstr "Frånskild"
+msgstr ""
 
 #: ../stoqlib/domain/person.py:418
 msgid "Widowed"
-msgstr "Änka"
+msgstr ""
 
 #: ../stoqlib/domain/person.py:419
 msgid "Separated"
-msgstr "Separerad"
+msgstr ""
 
 #: ../stoqlib/domain/person.py:420
 msgid "Cohabitation"
-msgstr "Sambo"
+msgstr ""
 
 #: ../stoqlib/domain/person.py:543
 msgid "Solvent"
@@ -6629,23 +6623,23 @@ msgstr ""
 
 #: ../stoqlib/domain/person.py:657 ../stoqlib/domain/sellable.py:290
 msgid "Blocked"
-msgstr "Blockerad"
+msgstr ""
 
 #: ../stoqlib/domain/person.py:705
 msgid "Normal"
-msgstr "Normal"
+msgstr ""
 
 #: ../stoqlib/domain/person.py:706
 msgid "Away"
-msgstr "Frånvarande"
+msgstr ""
 
 #: ../stoqlib/domain/person.py:707
 msgid "Vacation"
-msgstr "Semester"
+msgstr ""
 
 #: ../stoqlib/domain/person.py:708
 msgid "Off"
-msgstr "Av"
+msgstr ""
 
 #: ../stoqlib/domain/person.py:773
 #, python-format
@@ -6678,7 +6672,7 @@ msgstr ""
 
 #: ../stoqlib/domain/person.py:971
 msgid "Globally"
-msgstr "Globalt"
+msgstr ""
 
 #: ../stoqlib/domain/person.py:972
 msgid "By Salesperson"
@@ -6706,7 +6700,7 @@ msgstr ""
 
 #: ../stoqlib/domain/product.py:121 ../stoqlib/lib/defaults.py:58
 msgid "Days"
-msgstr "Dagar"
+msgstr ""
 
 #: ../stoqlib/domain/product.py:550
 msgid "This company doesn't allow logic quantity operations"
@@ -6743,7 +6737,7 @@ msgstr ""
 
 #: ../stoqlib/domain/production.py:68
 msgid "Waiting"
-msgstr "Väntande"
+msgstr ""
 
 #: ../stoqlib/domain/production.py:69
 msgid "Producing"
@@ -6778,12 +6772,12 @@ msgstr ""
 
 #: ../stoqlib/domain/purchase.py:151 ../stoqlib/domain/sale.py:356
 msgid "Quoting"
-msgstr "Citering"
+msgstr ""
 
 #: ../stoqlib/domain/purchase.py:152 ../stoqlib/domain/till.py:84
 #: ../stoqlib/domain/transfer.py:80
 msgid "Pending"
-msgstr "Väntande"
+msgstr ""
 
 #: ../stoqlib/domain/purchase.py:155
 #: ../stoqlib/gui/search/consignmentsearch.py:63
@@ -6919,7 +6913,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/consignmentwizard.py:160
 #: ../stoqlib/gui/wizards/loanwizard.py:366
 msgid "Returned"
-msgstr "Återlämnad"
+msgstr ""
 
 #: ../stoqlib/domain/sale.py:504
 msgid "The sale must have sellable items"
@@ -7008,7 +7002,7 @@ msgstr ""
 #: ../stoqlib/domain/sale.py:743 ../stoqlib/reporting/purchase.py:196
 #: ../stoqlib/reporting/purchase.py:208
 msgid "Not Specified"
-msgstr "Ej Specifierad"
+msgstr ""
 
 #: ../stoqlib/domain/sale.py:757
 #, python-format
@@ -7041,11 +7035,11 @@ msgstr ""
 
 #: ../stoqlib/domain/sellable.py:287
 msgid "Available"
-msgstr "Tillgänglig"
+msgstr ""
 
 #: ../stoqlib/domain/sellable.py:288
 msgid "Unavailable"
-msgstr "Otillgänglig"
+msgstr ""
 
 #: ../stoqlib/domain/sellable.py:342
 #, python-format
@@ -7101,11 +7095,11 @@ msgstr ""
 
 #: ../stoqlib/domain/till.py:160
 msgid "Till is already open"
-msgstr "Kassan är redan öppen"
+msgstr ""
 
 #: ../stoqlib/domain/till.py:167
 msgid "A till has already been opened today"
-msgstr "En kassa har redan öppnats idag"
+msgstr ""
 
 #: ../stoqlib/domain/till.py:172
 msgid "Previous till was not closed"
@@ -7113,7 +7107,7 @@ msgstr ""
 
 #: ../stoqlib/domain/till.py:192
 msgid "Till is already closed"
-msgstr "Kassan är redan stängd"
+msgstr ""
 
 #: ../stoqlib/domain/till.py:195
 msgid ""
@@ -7164,12 +7158,12 @@ msgstr ""
 #: ../stoqlib/domain/uiform.py:93 ../stoqlib/gui/editors/addresseditor.py:277
 #: ../stoqlib/gui/editors/addresseditor.py:314
 msgid "City"
-msgstr "Stad"
+msgstr ""
 
 #: ../stoqlib/domain/uiform.py:94 ../stoqlib/gui/editors/addresseditor.py:279
 #: ../stoqlib/gui/editors/addresseditor.py:316
 msgid "State"
-msgstr "Landskap"
+msgstr ""
 
 #: ../stoqlib/domain/uiform.py:95
 msgid "Country"
@@ -7179,11 +7173,11 @@ msgstr ""
 #: ../stoqlib/gui/search/personsearch.py:329
 #: ../stoqlib/gui/slaves/employeeslave.py:239
 msgid "Role"
-msgstr "Roll"
+msgstr ""
 
 #: ../stoqlib/domain/uiform.py:100 ../stoqlib/gui/slaves/employeeslave.py:240
 msgid "Salary"
-msgstr "Lön"
+msgstr ""
 
 #: ../stoqlib/domain/uiform.py:108
 msgid "Part number"
@@ -7231,7 +7225,7 @@ msgstr ""
 
 #: ../stoqlib/domain/uiform.py:122 ../stoqlib/gui/editors/personeditor.py:165
 msgid "Employee"
-msgstr "Anstäld"
+msgstr ""
 
 #: ../stoqlib/domain/uiform.py:124 ../stoqlib/gui/editors/personeditor.py:283
 msgid "Transporter"
@@ -7244,7 +7238,7 @@ msgstr ""
 
 #: ../stoqlib/drivers/scale.py:54
 msgid "There is no scale configured"
-msgstr "Det finns ingen våg konfigurerad"
+msgstr ""
 
 #: ../stoqlib/drivers/scale.py:55
 #, python-format
@@ -7296,7 +7290,7 @@ msgstr ""
 
 #: ../stoqlib/gui/base/search.py:238
 msgid "Se_lect Items"
-msgstr "_Välj föremål"
+msgstr ""
 
 #. Provider
 #: ../stoqlib/gui/base/search.py:436
@@ -7318,15 +7312,15 @@ msgstr ""
 
 #: ../stoqlib/gui/base/search.py:802
 msgid "This month"
-msgstr "Denna månad"
+msgstr ""
 
 #: ../stoqlib/gui/base/search.py:812
 msgid "Last month"
-msgstr "Förra månaden"
+msgstr ""
 
 #: ../stoqlib/gui/base/search.py:822
 msgid "Next month"
-msgstr "Nästa månad"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/branchdialog.py:144
 msgid "ICMS can not be greater than 100"
@@ -7369,7 +7363,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/clientdetails.py:93
 #: ../stoqlib/gui/search/receivingsearch.py:87
 msgid "Invoice #"
-msgstr "Faktura #"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:109
 #: ../stoqlib/gui/dialogs/supplierdetails.py:132
@@ -7402,12 +7396,12 @@ msgstr ""
 #: ../stoqlib/gui/search/eventsearch.py:51
 #: ../stoqlib/gui/search/taxclasssearch.py:126
 msgid "Type"
-msgstr "Typ"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:146
 #: ../stoqlib/gui/dialogs/supplierdetails.py:154
 msgid "Days Late"
-msgstr "Dagar försenad"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:156
 #: ../stoqlib/gui/search/callsearch.py:121
@@ -7475,7 +7469,7 @@ msgstr ""
 
 #: ../stoqlib/gui/dialogs/devices.py:47
 msgid "Device Type"
-msgstr "Enhetsttyp"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/importerdialog.py:38
 msgid "Importer Dialog"
@@ -7552,7 +7546,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/loanwizard.py:364
 #: ../stoqlib/reporting/product.py:139
 msgid "Sold"
-msgstr "Såld"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/openinventorydialog.py:100
 msgid "Open Inventory"
@@ -7636,7 +7630,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/paymentmethod.py:84
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:41
 msgid "Payment Method"
-msgstr "Betalningsmetod"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/pluginsdialog.py:60
 msgid "Plugin Manager"
@@ -7871,7 +7865,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/productstockdetails.py:143
 #: ../stoqlib/gui/search/fiscalsearch.py:123
 msgid "Invoice"
-msgstr "faktura"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:169
 msgid "Date Created"
@@ -7943,7 +7937,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/saledetails.py:187
 #: ../stoqlib/gui/editors/paymenteditor.py:452
 msgid "To"
-msgstr "Till"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/quotedialog.py:88
 msgid "Quote Filling"
@@ -8025,7 +8019,7 @@ msgstr ""
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:52
 msgid "Month:"
-msgstr "Månad:"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/sintegradialog.py:64
 msgid "Save Sintegra file"
@@ -8079,7 +8073,7 @@ msgstr ""
 #: ../stoqlib/gui/slaves/paymentslave.py:244
 #: ../stoqlib/gui/wizards/receivingwizard.py:93
 msgid "Number"
-msgstr "Nummer"
+msgstr ""
 
 #: ../stoqlib/gui/dialogs/tillhistory.py:88
 msgid "Cash _Add..."
@@ -8123,7 +8117,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/addresseditor.py:312
 #: ../stoqlib/gui/search/salesearch.py:139
 msgid "Address"
-msgstr "Adress"
+msgstr ""
 
 #: ../stoqlib/gui/editors/accounteditor.py:356
 msgid "Demonstration"
@@ -8156,7 +8150,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/addresseditor.py:208 ../stoqlib/lib/countries.py:59
 msgid "Brazil"
-msgstr "Brasilien"
+msgstr ""
 
 #: ../stoqlib/gui/editors/addresseditor.py:215
 msgid "The State is not valid"
@@ -8251,7 +8245,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/deliveryeditor.py:59
 #: ../stoqlib/lib/parameters.py:843
 msgid "Delivery"
-msgstr "Leverans"
+msgstr ""
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:62
 msgid "New Delivery"
@@ -8278,7 +8272,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/deviceseditor.py:121
 #: ../stoqlib/gui/editors/deviceseditor.py:134
 msgid "Choose..."
-msgstr "Välj..."
+msgstr ""
 
 #: ../stoqlib/gui/editors/deviceseditor.py:159
 #, python-format
@@ -8344,7 +8338,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/invoiceeditor.py:288
 #: ../stoqlib/gui/search/tillsearch.py:121
 msgid "Station"
-msgstr "Dator"
+msgstr ""
 
 #: ../stoqlib/gui/editors/invoiceeditor.py:289
 msgid "Layout"
@@ -8499,11 +8493,11 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/personeditor.py:81
 msgid "New User"
-msgstr "Ny användare"
+msgstr ""
 
 #: ../stoqlib/gui/editors/personeditor.py:108
 msgid "User Details"
-msgstr "Användardetaljer"
+msgstr ""
 
 #: ../stoqlib/gui/editors/personeditor.py:126
 msgid "Credit Provider"
@@ -8519,11 +8513,11 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/personeditor.py:166
 msgid "New Employee"
-msgstr "Ny anställd"
+msgstr ""
 
 #: ../stoqlib/gui/editors/personeditor.py:191
 msgid "Employee Data"
-msgstr "Anställningsdata"
+msgstr ""
 
 #: ../stoqlib/gui/editors/personeditor.py:210
 msgid "Role History"
@@ -8539,7 +8533,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/personeditor.py:256
 msgid "New Supplier"
-msgstr "Ny leverantör"
+msgstr ""
 
 #: ../stoqlib/gui/editors/personeditor.py:284
 msgid "New Transporter"
@@ -8547,7 +8541,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/personeditor.py:313
 msgid "New Branch"
-msgstr "Ny avdelningSök"
+msgstr ""
 
 #. Translators: Ref. is for Reference (as in design reference)
 #: ../stoqlib/gui/editors/producteditor.py:136
@@ -8720,7 +8714,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/profileeditor.py:41
 msgid "User Profile"
-msgstr "Användarprofil"
+msgstr ""
 
 #: ../stoqlib/gui/editors/purchaseeditor.py:45
 msgid "Purchase Item"
@@ -8768,13 +8762,13 @@ msgstr ""
 #: ../stoqlib/gui/search/fiscalsearch.py:52
 #: ../stoqlib/gui/wizards/salequotewizard.py:289
 msgid "ICMS"
-msgstr "Moms"
+msgstr ""
 
 #: ../stoqlib/gui/editors/saleeditor.py:88
 #: ../stoqlib/gui/search/fiscalsearch.py:53
 #: ../stoqlib/gui/wizards/salequotewizard.py:290
 msgid "IPI"
-msgstr "IPI"
+msgstr ""
 
 #: ../stoqlib/gui/editors/saleeditor.py:97
 #: ../stoqlib/gui/wizards/abstractwizard.py:538
@@ -8866,7 +8860,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/sellableeditor.py:459
 msgid "No unit"
-msgstr "Ingen enhet"
+msgstr ""
 
 #: ../stoqlib/gui/editors/sellableeditor.py:487
 #, python-format
@@ -8935,7 +8929,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/serviceeditor.py:80
 #: ../stoqlib/gui/editors/serviceeditor.py:96
 msgid "Service"
-msgstr "Tjänst"
+msgstr ""
 
 #: ../stoqlib/gui/editors/serviceeditor.py:76
 #: ../stoqlib/gui/wizards/purchasewizard.py:527
@@ -8994,7 +8988,7 @@ msgstr ""
 #: ../stoqlib/importers/saleimporter.py:113
 #, python-format
 msgid "Amount removed from Till on %s"
-msgstr "Belopp utdraget ur kassan den %s"
+msgstr ""
 
 #: ../stoqlib/gui/editors/tilleditor.py:294
 msgid "Value cannot be less than zero"
@@ -9046,7 +9040,7 @@ msgstr ""
 
 #: ../stoqlib/gui/fiscalprinter.py:143 ../stoqlib/gui/fiscalprinter.py:277
 msgid "Close Till"
-msgstr "Stäng kassa"
+msgstr ""
 
 #. FIXME: Find a better description for the warning bellow.
 #: ../stoqlib/gui/fiscalprinter.py:209
@@ -9486,7 +9480,7 @@ msgstr ""
 
 #: ../stoqlib/gui/login.py:148
 msgid "This user is inactive"
-msgstr "Den här användaren är inaktiv"
+msgstr ""
 
 #: ../stoqlib/gui/login.py:156
 #, python-format
@@ -9618,7 +9612,7 @@ msgstr ""
 
 #: ../stoqlib/gui/search/fiscalsearch.py:54
 msgid "ISS"
-msgstr "ISS"
+msgstr ""
 
 #: ../stoqlib/gui/search/fiscalsearch.py:58
 msgid "C.F.O.P. Search"
@@ -9696,7 +9690,7 @@ msgstr ""
 #: ../stoqlib/gui/search/parametersearch.py:67
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:355
 msgid "Group"
-msgstr "Grupp"
+msgstr ""
 
 #: ../stoqlib/gui/search/parametersearch.py:69
 msgid "Parameter"
@@ -9739,7 +9733,7 @@ msgstr ""
 #: ../stoqlib/gui/search/paymentsearch.py:166
 #: ../stoqlib/reporting/payment.py:92
 msgid "Fee"
-msgstr "Avgift"
+msgstr ""
 
 #: ../stoqlib/gui/search/personsearch.py:61
 msgid "Person Search"
@@ -9789,7 +9783,7 @@ msgstr ""
 #: ../stoqlib/gui/slaves/liaisonslave.py:49
 #: ../stoqlib/gui/wizards/personwizard.py:106
 msgid "Phone Number"
-msgstr "Telefonnummer"
+msgstr ""
 
 #: ../stoqlib/gui/search/personsearch.py:148
 msgid "Fancy Name"
@@ -9941,7 +9935,7 @@ msgstr ""
 #: ../stoqlib/gui/search/personsearch.py:395
 #: ../stoqlib/gui/search/profilesearch.py:58
 msgid "Profile"
-msgstr "Profil"
+msgstr ""
 
 #: ../stoqlib/gui/search/productionsearch.py:50
 msgid "Production Product"
@@ -9967,25 +9961,25 @@ msgstr ""
 
 #: ../stoqlib/gui/search/productsearch.py:64
 msgid "Product Search"
-msgstr "Varusökning"
+msgstr ""
 
 #: ../stoqlib/gui/search/productsearch.py:69
 msgid "Add products"
-msgstr "Lägg till varor"
+msgstr ""
 
 #: ../stoqlib/gui/search/productsearch.py:70
 #: ../stoqlib/gui/search/productsearch.py:355
 #: ../stoqlib/reporting/product.py:119 ../stoqlib/reporting/product.py:178
 #: ../stoqlib/reporting/product.py:213 ../stoqlib/reporting/product.py:245
 msgid "product"
-msgstr "vara"
+msgstr ""
 
 #: ../stoqlib/gui/search/productsearch.py:70
 #: ../stoqlib/gui/search/productsearch.py:355
 #: ../stoqlib/reporting/product.py:119 ../stoqlib/reporting/product.py:178
 #: ../stoqlib/reporting/product.py:213 ../stoqlib/reporting/product.py:245
 msgid "products"
-msgstr "varor"
+msgstr ""
 
 #: ../stoqlib/gui/search/productsearch.py:102
 msgid "_Price table"
@@ -10018,7 +10012,7 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:399
 #: ../stoqlib/reporting/product.py:232
 msgid "Maximum"
-msgstr "Maximum"
+msgstr ""
 
 #: ../stoqlib/gui/search/productsearch.py:402
 #: ../stoqlib/reporting/product.py:233
@@ -10106,7 +10100,7 @@ msgstr ""
 #: ../stoqlib/reporting/sale.py:101
 #: ../stoqlib/reporting/stockdecreasereceipt.py:93
 msgid "Item"
-msgstr "Föremål"
+msgstr ""
 
 #: ../stoqlib/gui/search/salesearch.py:142
 msgid "Estimated"
@@ -10156,21 +10150,21 @@ msgstr ""
 
 #: ../stoqlib/gui/search/servicesearch.py:48
 msgid "Service Search"
-msgstr "Tjänstsökning"
+msgstr ""
 
 #: ../stoqlib/gui/search/servicesearch.py:54
 msgid "Add services"
-msgstr "Lägg till tjänster"
+msgstr ""
 
 #: ../stoqlib/gui/search/servicesearch.py:55
 #: ../stoqlib/reporting/service.py:42 ../stoqlib/reporting/service.py:63
 msgid "service"
-msgstr "tjänst"
+msgstr ""
 
 #: ../stoqlib/gui/search/servicesearch.py:55
 #: ../stoqlib/reporting/service.py:42 ../stoqlib/reporting/service.py:63
 msgid "services"
-msgstr "tjänster"
+msgstr ""
 
 #: ../stoqlib/gui/search/servicesearch.py:73
 msgid "Price table"
@@ -10274,11 +10268,11 @@ msgstr ""
 
 #: ../stoqlib/gui/slaves/employeeslave.py:235
 msgid "Began"
-msgstr "Började"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/employeeslave.py:237
 msgid "Ended"
-msgstr "Slutade"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/imageslaveslave.py:75
 msgid "Change"
@@ -10290,7 +10284,7 @@ msgstr ""
 
 #: ../stoqlib/gui/slaves/imageslaveslave.py:77
 msgid "Erase"
-msgstr "Radera"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/imageslaveslave.py:78
 msgid "Save"
@@ -10298,11 +10292,11 @@ msgstr ""
 
 #: ../stoqlib/gui/slaves/imageslaveslave.py:128
 msgid "Select Image"
-msgstr "Välj bild"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/installmentslave.py:207
 msgid "Confirm payment"
-msgstr "Verifierad betalning"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/installmentslave.py:248
 msgid "Due"
@@ -10332,7 +10326,7 @@ msgstr ""
 
 #: ../stoqlib/gui/slaves/installmentslave.py:415
 msgid "Supplier: "
-msgstr "Leverantör: "
+msgstr ""
 
 #: ../stoqlib/gui/slaves/liaisonslave.py:43
 msgid "Liasons"
@@ -10366,7 +10360,7 @@ msgstr ""
 #: ../stoqlib/gui/slaves/paymentslave.py:264
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:120
 msgid "Overpaid:"
-msgstr "Överbetalad"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/paymentslave.py:375
 msgid "Payment dates can't repeat or be lower than previous dates."
@@ -10486,17 +10480,17 @@ msgstr ""
 #: ../stoqlib/gui/slaves/saleslave.py:93
 #, python-format
 msgid "%s can not be greater then %d%%"
-msgstr "%s kan inte vara större än %d%%"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/saleslave.py:97
 #, python-format
 msgid "%s can not be less then 0"
-msgstr "%s kan inte vara mindre än 0"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/saleslave.py:122
 #: ../stoqlib/gui/slaves/saleslave.py:126
 msgid "Discount"
-msgstr "Rabatt"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/saleslave.py:209
 msgid "You must open the till first."
@@ -10520,7 +10514,7 @@ msgstr ""
 
 #: ../stoqlib/gui/slaves/sellableslave.py:59
 msgid "Sale price can not be 0"
-msgstr "Säljpriset kan inte vara 0"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/taxslave.py:275
 msgid "This date must be set in the future."
@@ -10539,20 +10533,20 @@ msgstr ""
 
 #: ../stoqlib/gui/slaves/userslave.py:148
 msgid "New Password:"
-msgstr "Nytt lösenord"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/userslave.py:149
 msgid "Retype New Password:"
-msgstr "Lösenord (igen)"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/userslave.py:163
 #, python-format
 msgid "Change \"%s\" Password"
-msgstr "Ändra lösenordet för \"%s\""
+msgstr ""
 
 #: ../stoqlib/gui/slaves/userslave.py:187
 msgid "Password doesn't match with the stored one"
-msgstr "Lösenordet stämmer inte överens med det sparade"
+msgstr ""
 
 #: ../stoqlib/gui/slaves/userslave.py:229
 msgid "No Role"
@@ -10585,7 +10579,7 @@ msgstr ""
 #: ../stoqlib/gui/templates/persontemplate.py:177
 #: ../stoqlib/gui/templates/persontemplate.py:187
 msgid "Company Data"
-msgstr "Företagsdata"
+msgstr ""
 
 #: ../stoqlib/gui/templates/persontemplate.py:179
 #: ../stoqlib/gui/templates/persontemplate.py:182
@@ -10712,7 +10706,7 @@ msgstr ""
 
 #: ../stoqlib/gui/wizards/personwizard.py:109
 msgid "Mobile"
-msgstr "Mobil"
+msgstr ""
 
 #: ../stoqlib/gui/wizards/personwizard.py:139
 #, python-format
@@ -10804,7 +10798,7 @@ msgstr ""
 
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:503
 msgid "Don't Cancel"
-msgstr "Avbryt inte"
+msgstr ""
 
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:541
 msgid "Should we close the quotes used to compose the purchase order ?"
@@ -11046,967 +11040,967 @@ msgstr ""
 #. evolution/addressbook/gui/contact-editor/e-contact-editor-address.c
 #: ../stoqlib/lib/countries.py:30
 msgid "Afghanistan"
-msgstr "Afghanistan"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:31
 msgid "Albania"
-msgstr "Albanien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:32
 msgid "Algeria"
-msgstr "Algeriet"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:33
 msgid "American Samoa"
-msgstr "Amerikanska Samoa"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:34
 msgid "Andorra"
-msgstr "Andorra"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:35
 msgid "Angola"
-msgstr "Angola"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:36
 msgid "Anguilla"
-msgstr "Anguilla"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:37
 msgid "Antarctica"
-msgstr "Antarktis"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:38
 msgid "Antigua And Barbuda"
-msgstr "Antigua och Barbados"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:39
 msgid "Argentina"
-msgstr "Argentina"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:40
 msgid "Armenia"
-msgstr "Armenien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:41
 msgid "Aruba"
-msgstr "Aruba"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:42
 msgid "Australia"
-msgstr "Australien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:43
 msgid "Austria"
-msgstr "Österrike"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:44
 msgid "Azerbaijan"
-msgstr "Azerbajdzjan"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:45
 msgid "Bahamas"
-msgstr "Bahamas"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:46
 msgid "Bahrain"
-msgstr "Bahrain"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:47
 msgid "Bangladesh"
-msgstr "Bangladesh"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:48
 msgid "Barbados"
-msgstr "Barbados"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:49
 msgid "Belarus"
-msgstr "Vitryssland"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:50
 msgid "Belgium"
-msgstr "Belgien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:51
 msgid "Belize"
-msgstr "Belize"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:52
 msgid "Benin"
-msgstr "Benin"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:53
 msgid "Bermuda"
-msgstr "Bermuda"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:54
 msgid "Bhutan"
-msgstr "Bhutan"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:55
 msgid "Bolivia"
-msgstr "Bolivia"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:56
 msgid "Bosnia And Herzegowina"
-msgstr "Bosnien och Hercegovina"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:57
 msgid "Botswana"
-msgstr "Botswana"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:58
 msgid "Bouvet Island"
-msgstr "Bouvetön"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:60
 msgid "British Indian Ocean Territory"
-msgstr "Brittiskt territorium i Indiska Oceanen"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:61
 msgid "Brunei Darussalam"
-msgstr "Brunei"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:62
 msgid "Bulgaria"
-msgstr "Bulgarien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:63
 msgid "Burkina Faso"
-msgstr "Burkina Faso"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:64
 msgid "Burundi"
-msgstr "Burundi"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:65
 msgid "Cambodia"
-msgstr "Kambodja"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:66
 msgid "Cameroon"
-msgstr "Kamerun"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:67
 msgid "Canada"
-msgstr "Kanada"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:68
 msgid "Cape Verde"
-msgstr "Kap Verde"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:69
 msgid "Cayman Islands"
-msgstr "Caymanöarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:70
 msgid "Central African Republic"
-msgstr "Centralafrikanska republiken"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:71
 msgid "Chad"
-msgstr "Tchad"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:72
 msgid "Chile"
-msgstr "Chile"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:73
 msgid "China"
-msgstr "Kina"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:74
 msgid "Christmas Island"
-msgstr "Julön"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:75
 msgid "Cocos (Keeling Islands)"
-msgstr "Kokosöarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:76
 msgid "Colombia"
-msgstr "Colombia"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:77
 msgid "Comoros"
-msgstr "Komorerna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:78
 msgid "Congo"
-msgstr "Kongo"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:79
 msgid "Congo, The Democratic Republic Of The"
-msgstr "Kongo, demokratiska republiken"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:80
 msgid "Cook Islands"
-msgstr "Cooköarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:81
 msgid "Costa Rica"
-msgstr "Costa Rica"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:82
 msgid "Cote d'Ivoire"
-msgstr "Elfenbenskusten"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:83
 msgid "Croatia"
-msgstr "Kroatien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:84
 msgid "Cuba"
-msgstr "Kuba"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:85
 msgid "Cyprus"
-msgstr "Cypern"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:86
 msgid "Czech Republic"
-msgstr "Tjeckien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:87
 msgid "Denmark"
-msgstr "Danmark"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:88
 msgid "Djibouti"
-msgstr "Djibouti"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:89
 msgid "Dominica"
-msgstr "Dominica"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:90
 msgid "Dominican Republic"
-msgstr "Dominikanska republiken"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:91
 msgid "Ecuador"
-msgstr "Ecuador"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:92
 msgid "Egypt"
-msgstr "Egypten"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:93
 msgid "El Salvador"
-msgstr "El Salvador"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:94
 msgid "Equatorial Guinea"
-msgstr "Ekvatorialguinea"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:95
 msgid "Eritrea"
-msgstr "Eritrea"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:96
 msgid "Estonia"
-msgstr "Estland"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:97
 msgid "Ethiopia"
-msgstr "Etiopien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:98
 msgid "Falkland Islands"
-msgstr "Falklandsöarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:99
 msgid "Faroe Islands"
-msgstr "Färöarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:100
 msgid "Fiji"
-msgstr "Fiji"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:101
 msgid "Finland"
-msgstr "Finland"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:102
 msgid "France"
-msgstr "Frankrike"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:103
 msgid "French Guiana"
-msgstr "Franska Guyana"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:104
 msgid "French Polynesia"
-msgstr "Polynesien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:105
 msgid "French Southern Territories"
-msgstr "Franska sydterritorierna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:106
 msgid "Gabon"
-msgstr "Gabon"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:107
 msgid "Gambia"
-msgstr "Gambia"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:108
 msgid "Georgia"
-msgstr "Georgien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:109
 msgid "Germany"
-msgstr "Tyskland"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:110
 msgid "Ghana"
-msgstr "Ghana"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:111
 msgid "Gibraltar"
-msgstr "Gibraltar"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:112
 msgid "Greece"
-msgstr "Grekland"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:113
 msgid "Greenland"
-msgstr "Grönland"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:114
 msgid "Grenada"
-msgstr "Grenada"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:115
 msgid "Guadeloupe"
-msgstr "Guadeloupe"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:116
 msgid "Guam"
-msgstr "Guam"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:117
 msgid "Guatemala"
-msgstr "Guatemala"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:118
 msgid "Guernsey"
-msgstr "Guernsey"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:119
 msgid "Guinea"
-msgstr "Guinea"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:120
 msgid "Guinea-bissau"
-msgstr "Guinea-Bissau"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:121
 msgid "Guyana"
-msgstr "Guyana"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:122
 msgid "Haiti"
-msgstr "Haiti"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:123
 msgid "Heard And McDonald Islands"
-msgstr "Heard och McDonald-öarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:124
 msgid "Holy See"
-msgstr "Vatikanstaten"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:125
 msgid "Honduras"
-msgstr "Honduras"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:126
 msgid "Hong Kong"
-msgstr "Hong Kong"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:127
 msgid "Hungary"
-msgstr "Ungern"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:128
 msgid "Iceland"
-msgstr "Island"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:129
 msgid "India"
-msgstr "Indien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:130
 msgid "Indonesia"
-msgstr "Indonesien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:131
 msgid "Iran"
-msgstr "Iran"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:132
 msgid "Iraq"
-msgstr "Irak"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:133
 msgid "Ireland"
-msgstr "Irland"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:134
 msgid "Isle of Man"
-msgstr "Isle of Man"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:135
 msgid "Israel"
-msgstr "Israel"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:136
 msgid "Italy"
-msgstr "Italien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:137
 msgid "Jamaica"
-msgstr "Jamaica"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:138
 msgid "Japan"
-msgstr "Japan"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:139
 msgid "Jersey"
-msgstr "Jersey"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:140
 msgid "Jordan"
-msgstr "Jordanien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:141
 msgid "Kazakhstan"
-msgstr "Kazakstan"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:142
 msgid "Kenya"
-msgstr "Kenya"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:143
 msgid "Kiribati"
-msgstr "Kiribati"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:144
 msgid "Korea, Democratic People's Republic Of"
-msgstr "Nordkorea"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:145
 msgid "Korea, Republic Of"
-msgstr "Sydkorea"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:146
 msgid "Kuwait"
-msgstr "Kuwait"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:147
 msgid "Kyrgyzstan"
-msgstr "Kirgizistan"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:148
 msgid "Laos"
-msgstr "Laos"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:149
 msgid "Latvia"
-msgstr "Lettland"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:150
 msgid "Lebanon"
-msgstr "Libanon"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:151
 msgid "Lesotho"
-msgstr "Lesotho"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:152
 msgid "Liberia"
-msgstr "Liberia"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:153
 msgid "Libya"
-msgstr "Libyen"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:154
 msgid "Liechtenstein"
-msgstr "Liechtenstein"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:155
 msgid "Lithuania"
-msgstr "Litauen"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:156
 msgid "Luxembourg"
-msgstr "Luxemburg"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:157
 msgid "Macao"
-msgstr "Macao"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:158
 msgid "Macedonia"
-msgstr "Makedonien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:159
 msgid "Madagascar"
-msgstr "Madagaskar"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:160
 msgid "Malawi"
-msgstr "Malawi"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:161
 msgid "Malaysia"
-msgstr "Malaysia"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:162
 msgid "Maldives"
-msgstr "Maldiverna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:163
 msgid "Mali"
-msgstr "Mali"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:164
 msgid "Malta"
-msgstr "Malta"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:165
 msgid "Marshall Islands"
-msgstr "Marshallöarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:166
 msgid "Martinique"
-msgstr "Martinique"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:167
 msgid "Mauritania"
-msgstr "Mauretanien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:168
 msgid "Mauritius"
-msgstr "Mauritius"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:169
 msgid "Mayotte"
-msgstr "Mayotte"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:170
 msgid "Mexico"
-msgstr "Mexiko"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:171
 msgid "Micronesia"
-msgstr "Mikronesien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:172
 msgid "Moldova, Republic Of"
-msgstr "Moldavien, republiken"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:173
 msgid "Monaco"
-msgstr "Monaco"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:174
 msgid "Mongolia"
-msgstr "Mongoliet"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:175
 msgid "Montserrat"
-msgstr "Montserrat"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:176
 msgid "Morocco"
-msgstr "Marocko"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:177
 msgid "Mozambique"
-msgstr "Moçambique"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:178
 msgid "Myanmar"
-msgstr "Myanmar (Burma)"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:179
 msgid "Namibia"
-msgstr "Namibia"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:180
 msgid "Nauru"
-msgstr "Nauru"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:181
 msgid "Nepal"
-msgstr "Nepal"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:182
 msgid "Netherlands"
-msgstr "Nederländerna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:183
 msgid "Netherlands Antilles"
-msgstr "Nederländska Antillerna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:184
 msgid "New Caledonia"
-msgstr "Nya Kaledonien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:185
 msgid "New Zealand"
-msgstr "Nya Zeeland"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:186
 msgid "Nicaragua"
-msgstr "Nicaragua"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:187
 msgid "Niger"
-msgstr "Niger"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:188
 msgid "Nigeria"
-msgstr "Nigeria"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:189
 msgid "Niue"
-msgstr "Niue"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:190
 msgid "Norfolk Island"
-msgstr "Norfolköarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:191
 msgid "Northern Mariana Islands"
-msgstr "Norra Marianeröarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:192
 msgid "Norway"
-msgstr "Norge"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:193
 msgid "Oman"
-msgstr "Oman"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:194
 msgid "Pakistan"
-msgstr "Pakistan"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:195
 msgid "Palau"
-msgstr "Palau"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:196
 msgid "Palestinian Territory"
-msgstr "Palestina"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:197
 msgid "Panama"
-msgstr "Panama"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:198
 msgid "Papua New Guinea"
-msgstr "Papua Nya Guinea"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:199
 msgid "Paraguay"
-msgstr "Paraguay"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:200
 msgid "Peru"
-msgstr "Peru"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:201
 msgid "Philippines"
-msgstr "Filippinerna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:202
 msgid "Pitcairn"
-msgstr "Pitcairn"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:203
 msgid "Poland"
-msgstr "Polen"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:204
 msgid "Portugal"
-msgstr "Portugal"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:205
 msgid "Puerto Rico"
-msgstr "Puerto Rico"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:206
 msgid "Qatar"
-msgstr "Qatar"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:207
 msgid "Reunion"
-msgstr "Réunion"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:208
 msgid "Romania"
-msgstr "Rumänien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:209
 msgid "Russian Federation"
-msgstr "Ryssland"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:210
 msgid "Rwanda"
-msgstr "Rwanda"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:211
 msgid "Saint Kitts And Nevis"
-msgstr "Saint Kitts och Nevis"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:212
 msgid "Saint Lucia"
-msgstr "Saint Lucia"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:213
 msgid "Saint Vincent And The Grenadines"
-msgstr "Saint Vincent och Grenadinerna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:214
 msgid "Samoa"
-msgstr "Samoa"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:215
 msgid "San Marino"
-msgstr "San Marino"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:216
 msgid "Sao Tome And Principe"
-msgstr "São Tomé och Principe"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:217
 msgid "Saudi Arabia"
-msgstr "Saudiarabien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:218
 msgid "Senegal"
-msgstr "Senegal"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:219
 msgid "Serbia And Montenegro"
-msgstr "Serbien och Montenegro"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:220
 msgid "Seychelles"
-msgstr "Seychellerna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:221
 msgid "Sierra Leone"
-msgstr "Sierra Leone"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:222
 msgid "Singapore"
-msgstr "Singapore"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:223
 msgid "Slovakia"
-msgstr "Slovakien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:224
 msgid "Slovenia"
-msgstr "Slovenien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:225
 msgid "Solomon Islands"
-msgstr "Solomonöarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:226
 msgid "Somalia"
-msgstr "Somalia"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:227
 msgid "South Africa"
-msgstr "Sydafrika"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:228
 msgid "South Georgia And The South Sandwich Islands"
-msgstr "Sydgeorgien och södra Sandwichöarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:229
 msgid "Spain"
-msgstr "Spanien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:230
 msgid "Sri Lanka"
-msgstr "Sri Lanka"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:231
 msgid "St. Helena"
-msgstr "St. Helena"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:232
 msgid "St. Pierre And Miquelon"
-msgstr "St. Pierre och Miquelon"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:233
 msgid "Sudan"
-msgstr "Sudan"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:234
 msgid "Suriname"
-msgstr "Surinam"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:235
 msgid "Svalbard And Jan Mayen Islands"
-msgstr "Svalbard och Jan Mayen"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:236
 msgid "Swaziland"
-msgstr "Swaziland"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:237
 msgid "Sweden"
-msgstr "Sverige"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:238
 msgid "Switzerland"
-msgstr "Schweiz"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:239
 msgid "Syria"
-msgstr "Syrien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:240
 msgid "Taiwan"
-msgstr "Taiwan"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:241
 msgid "Tajikistan"
-msgstr "Tadzjikistan"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:242
 msgid "Tanzania, United Republic Of"
-msgstr "Tanzania, förenade republiken"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:243
 msgid "Thailand"
-msgstr "Thailand"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:244
 msgid "Timor-Leste"
-msgstr "Östtimor"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:245
 msgid "Togo"
-msgstr "Togo"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:246
 msgid "Tokelau"
-msgstr "Tokelau"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:247
 msgid "Tonga"
-msgstr "Tonga"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:248
 msgid "Trinidad And Tobago"
-msgstr "Trinidad och Tobago"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:249
 msgid "Tunisia"
-msgstr "Tunisien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:250
 msgid "Turkey"
-msgstr "Turkiet"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:251
 msgid "Turkmenistan"
-msgstr "Turkmenistan"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:252
 msgid "Turks And Caicos Islands"
-msgstr "Turks och Caicosöarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:253
 msgid "Tuvalu"
-msgstr "Tuvalu"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:254
 msgid "Uganda"
-msgstr "Uganda"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:255
 msgid "Ukraine"
-msgstr "Ukraina"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:256
 msgid "United Arab Emirates"
-msgstr "Förenade Arabemiraten"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:257
 msgid "United Kingdom"
-msgstr "Storbritannien"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:258
 msgid "United States"
-msgstr "USA"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:259
 msgid "United States Minor Outlying Islands"
-msgstr "USA:s mindre avlägsna öar"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:260
 msgid "Uruguay"
-msgstr "Uruguay"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:261
 msgid "Uzbekistan"
-msgstr "Uzbekistan"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:262
 msgid "Vanuatu"
-msgstr "Vanuatu"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:263
 msgid "Venezuela"
-msgstr "Venezuela"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:264
 msgid "Viet Nam"
-msgstr "Vietnam"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:265
 msgid "Virgin Islands, British"
-msgstr "Brittiska Jungfruöarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:266
 msgid "Virgin Islands, U.S."
-msgstr "Amerikanska Jungfruöarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:267
 msgid "Wallis And Futuna Islands"
-msgstr "Wallis och Futunaöarna"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:268
 msgid "Western Sahara"
-msgstr "Västsahara"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:269
 msgid "Yemen"
-msgstr "Jemen"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:270
 msgid "Zambia"
-msgstr "Zambia"
+msgstr ""
 
 #: ../stoqlib/lib/countries.py:271
 msgid "Zimbabwe"
-msgstr "Zimbabwe"
+msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:31
 msgid "January"
@@ -12102,51 +12096,51 @@ msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:61
 msgid "Sunday"
-msgstr "Söndag"
+msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:62
 msgid "Monday"
-msgstr "Måndag"
+msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:63
 msgid "Tuesday"
-msgstr "Tisdag"
+msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:64
 msgid "Wednesday"
-msgstr "Onsdag"
+msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:65
 msgid "Thursday"
-msgstr "Torsdag"
+msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:66
 msgid "Friday"
-msgstr "Fredag"
+msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:67
 msgid "Saturday"
-msgstr "Lördag"
+msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:71
 msgid "Sun"
-msgstr "Sön"
+msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:72
 msgid "Mon"
-msgstr "Mån"
+msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:73
 msgid "Tue"
-msgstr "Tis"
+msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:74
 msgid "Wed"
-msgstr "Ons"
+msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:75
 msgid "Thu"
-msgstr "Tor"
+msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:76
 msgid "Fri"
@@ -12154,19 +12148,19 @@ msgstr ""
 
 #: ../stoqlib/lib/dateconstants.py:77
 msgid "Sat"
-msgstr "Lör"
+msgstr ""
 
 #: ../stoqlib/lib/defaults.py:59
 msgid "Weeks"
-msgstr "Veckor"
+msgstr ""
 
 #: ../stoqlib/lib/defaults.py:60
 msgid "Months"
-msgstr "Månader"
+msgstr ""
 
 #: ../stoqlib/lib/defaults.py:61
 msgid "Years"
-msgstr "År"
+msgstr ""
 
 #: ../stoqlib/lib/invoice.py:333
 msgid "Invoice number should be a positive number."
@@ -12666,7 +12660,7 @@ msgstr ""
 
 #: ../stoqlib/lib/parameters.py:406
 msgid "Default ICMS tax"
-msgstr "Standard MOMS-skattesats"
+msgstr ""
 
 #: ../stoqlib/lib/parameters.py:407
 msgid "Default ICMS to be applied on all the products of a sale. "
@@ -12720,7 +12714,7 @@ msgstr ""
 
 #: ../stoqlib/lib/parameters.py:446
 msgid "Default tax constant for products"
-msgstr "Standardskattesats för varor"
+msgstr ""
 
 #: ../stoqlib/lib/parameters.py:447
 msgid ""
@@ -12958,11 +12952,11 @@ msgstr ""
 
 #: ../stoqlib/lib/prettydate.py:103
 msgid "last month"
-msgstr "förra månaden"
+msgstr ""
 
 #: ../stoqlib/lib/prettydate.py:103
 msgid "next month"
-msgstr "nästa månad"
+msgstr ""
 
 #: ../stoqlib/lib/prettydate.py:106
 #, python-format
@@ -13065,7 +13059,7 @@ msgstr ""
 #: ../stoqlib/reporting/base/printing.py:99
 #, python-format
 msgid "Page % 2d"
-msgstr "Sida % 2d"
+msgstr ""
 
 #: ../stoqlib/reporting/boleto.py:765
 msgid "Could not print Bill Report"
@@ -13136,13 +13130,13 @@ msgstr ""
 #: ../stoqlib/reporting/stockdecreasereceipt.py:104
 #, python-format
 msgid "%s items"
-msgstr "%s föremål"
+msgstr ""
 
 #: ../stoqlib/reporting/loanreceipt.py:118 ../stoqlib/reporting/sale.py:119
 #: ../stoqlib/reporting/stockdecreasereceipt.py:106
 #, python-format
 msgid "%s item"
-msgstr "%s föremål"
+msgstr ""
 
 #: ../stoqlib/reporting/loanreceipt.py:138
 msgid ""
@@ -13184,7 +13178,7 @@ msgstr ""
 #: ../stoqlib/reporting/payment.py:112
 #, python-format
 msgid "Day: %s"
-msgstr "Dag: %s"
+msgstr ""
 
 #: ../stoqlib/reporting/payment.py:128
 msgid "Last balance"
@@ -13255,7 +13249,7 @@ msgstr ""
 #: ../stoqlib/reporting/product.py:47 ../stoqlib/reporting/product.py:76
 #: ../stoqlib/reporting/product.py:101 ../stoqlib/reporting/product.py:118
 msgid "Product Listing"
-msgstr "Varulistning"
+msgstr ""
 
 #: ../stoqlib/reporting/product.py:48 ../stoqlib/reporting/product.py:77
 #: ../stoqlib/reporting/product.py:102 ../stoqlib/reporting/production.py:47
@@ -13286,7 +13280,7 @@ msgstr ""
 
 #: ../stoqlib/reporting/product.py:157
 msgid "products sold"
-msgstr "sålda produkter"
+msgstr ""
 
 #: ../stoqlib/reporting/product.py:192
 msgid "Fiscal Class"
@@ -13310,11 +13304,11 @@ msgstr ""
 
 #: ../stoqlib/reporting/production.py:73 ../stoqlib/reporting/purchase.py:48
 msgid "order"
-msgstr "order"
+msgstr ""
 
 #: ../stoqlib/reporting/production.py:73 ../stoqlib/reporting/purchase.py:48
 msgid "orders"
-msgstr "order"
+msgstr ""
 
 #: ../stoqlib/reporting/production.py:74 ../stoqlib/reporting/purchase.py:49
 #: ../stoqlib/reporting/sale.py:171
@@ -13335,7 +13329,7 @@ msgstr ""
 #: ../stoqlib/reporting/production.py:201 ../stoqlib/reporting/purchase.py:169
 #: ../stoqlib/reporting/template.py:302
 msgid "Totals:"
-msgstr "Totalt:"
+msgstr ""
 
 #: ../stoqlib/reporting/purchase.py:47
 msgid "Purchase Order Report"
@@ -13399,7 +13393,7 @@ msgstr ""
 
 #: ../stoqlib/reporting/purchase.py:363
 msgid "Payment Method:"
-msgstr "Betalningsmetod:"
+msgstr ""
 
 #: ../stoqlib/reporting/purchase.py:364
 msgid "Intervals:"
@@ -13427,7 +13421,7 @@ msgstr ""
 
 #: ../stoqlib/reporting/sale.py:51
 msgid "Sale Order"
-msgstr "Försäljningsorder"
+msgstr ""
 
 #: ../stoqlib/reporting/sale.py:64
 msgid "No Client"
@@ -13456,7 +13450,7 @@ msgstr ""
 
 #: ../stoqlib/reporting/sale.py:169
 msgid "Sales Report"
-msgstr "Försäljningsrapport"
+msgstr ""
 
 #: ../stoqlib/reporting/sale.py:170
 msgid "sale"
@@ -13538,12 +13532,12 @@ msgstr ""
 #: ../stoqlib/reporting/template.py:131
 #, python-format
 msgid "Phone: %s"
-msgstr "Telefon: %s"
+msgstr ""
 
 #: ../stoqlib/reporting/template.py:134
 #, python-format
 msgid "Fax: %s"
-msgstr "Fax: %s"
+msgstr ""
 
 #: ../stoqlib/reporting/template.py:143
 #, python-format
@@ -13570,7 +13564,7 @@ msgstr ""
 
 #: ../stoqlib/reporting/template.py:345
 msgid "Untitled"
-msgstr "Namnlös"
+msgstr ""
 
 #: ../stoqlib/reporting/till.py:38
 msgid "Till History Listing"
@@ -13602,7 +13596,7 @@ msgstr ""
 
 #: ../data/template/transfer.rml.extracted.h:4
 msgid "NUMBER:"
-msgstr "NUMMER:"
+msgstr ""
 
 #: ../data/template/transfer.rml.extracted.h:5
 msgid "OPEN:"
