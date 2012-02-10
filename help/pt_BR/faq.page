@@ -22,22 +22,25 @@
   <section id="use-in-pt-br">
     <title>Instalei o Stoq em inglês, mas gostaria de utilizá-lo em português. Como faço?</title>
     <p>
-      Primeiramente você precisa ter instalado em seu sistema os pacotes de
-      linguagem do <link href="http://www.gtk.org">GTK</link> em Português do
-      Brasil.
+      O Stoq por padrão irá rodar na lingua do sistema do usuário. Isto é, se
+      você estiver utilizando o seu sistema operacional em inglês, o Stoq irá
+      abrir em inglês.
+    </p>
+    <p>
+      Essa opção pode ser fácilmente mudada nas preferências do usuário, no
+      menu <guiseq><gui>Editar</gui><gui>Preferências</gui></guiseq>. Lá você
+      pode escolher rodar o Stoq em Português do Brasil.
+    </p>
+    <p>
+      Caso essa opção deixe o Stoq "meio" traduzido, isto é, com algums partes
+      traduzidas e outras em inglês, significa que você não possui os pacotes
+      de tradução do <link href="http://www.gtk.org">GTK+</link> em
+      Português do Brasil.
     </p>
     <p>
       Se estiver utilizando o Ubuntu, basta apenas instalar o pacote
       <link href="apt:language-support-pt">language-support-pt</link>. A
-      partir daí você pode alterar a linguagem do sistema para pt_BR e o Stoq
-      será aberto em Português do Brasil.
-    </p>
-    <p>
-      Você também pode rodar o Stoq em português, mesmo utilizando outra
-      língua no sistema com o comando:
-    </p>
-    <p>
-      <cmd>$ LANGUAGE=pt_BR.UTF-8 stoq</cmd>
+      partir daí as configurações acima devem funcionar corretamente.
     </p>
   </section>
 
