@@ -228,7 +228,7 @@ class BasicDialog(AbstractDialog):
     def set_confirm_widget(self, widget):
         """Enables widget as a confirm widget, the dialog will be closed as
         confirmed if the widget is activated.
-        @param widget: a widget
+        :param widget: a widget
         """
         dialog = self.get_toplevel()
         if not widget.is_ancestor(dialog):
@@ -239,7 +239,7 @@ class BasicDialog(AbstractDialog):
     def set_cancel_widget(self, widget):
         """Enables widget as a cancel widget, the dialog will be closed as
         canceled if the widget is activated.
-        @param widget: a widget
+        :param widget: a widget
         """
         dialog = self.get_toplevel()
         if not widget.is_ancestor(dialog):
@@ -436,10 +436,10 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     """Runs a dialog and return the return value of it.
     If dialog is a class it will be instantiated before running the dialog.
 
-    @param dialog: the dialog, could be a class or instance
-    @param parent: parent of the dialog
-    @param args: custom positional argument
-    @param kwargs: custom keyword arguments
+    :param dialog: the dialog, could be a class or instance
+    :param parent: parent of the dialog
+    :param args: custom positional argument
+    :param kwargs: custom keyword arguments
     """
 
     if dialog is None:

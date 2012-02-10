@@ -67,15 +67,15 @@ class Importer(object):
     def __init__(self, items=500, dry=False):
         """
         Create a new Importer object.
-        @param items: see L{set_items_per_commit}
-        @param dry: see L{set_dry}
+        :param items: see :class:`set_items_per_commit`
+        :param dry: see :class:`set_dry`
         """
         self.items = items
         self.dry = dry
 
     def feed_file(self, filename):
         """Feeds csv data from filename to the importer
-        @param filename: filename
+        :param filename: filename
         """
         self.filename = filename
         self.feed(open(filename), filename)
@@ -84,14 +84,14 @@ class Importer(object):
         """Sets the number of items which should be parsed between commits.
         Defaults to 500. -1 means that the whole file should be parsed
         before committing
-        @param items: number of items or
+        :param items: number of items or
         """
         self.n_items = items
 
     def set_dry(self, dry):
         """Tells the CSVImporter to run in dry mode, eg without committing
         anything.
-        @param dry: dry mode
+        :param dry: dry mode
         """
         self.dry = dry
 
@@ -131,8 +131,8 @@ class Importer(object):
 
     def feed(self, fp, filename='<stdin>'):
         """Feeds csv data from an iterable
-        @param fp: a file descriptor
-        @param filename: optinal, name of input file
+        :param fp: a file descriptor
+        :param filename: optinal, name of input file
         """
         raise NotImplementedError
 
@@ -141,7 +141,7 @@ class Importer(object):
 
     def process_item(self, transaction, item_no):
         """
-        @returns True if the item was imported, False if not
+        :returns True if the item was imported, False if not
         """
         raise NotImplementedError
 
@@ -162,10 +162,10 @@ class Importer(object):
 
 def get_by_type(importer_type):
     """Gets an importers class, instantiates it returns it
-    @param importer_type: an importer
-    @type importer_type: string
-    @returns: an importer instance
-    @type: L{Importer} subclass
+    :param importer_type: an importer
+    :type importer_type: string
+    :returns: an importer instance
+    :type: :class:`Importer` subclass
     """
 
     if not importer_type in _available_importers:

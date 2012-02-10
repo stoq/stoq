@@ -55,19 +55,19 @@ _ = stoqlib_gettext
 class SellableUnit(Domain):
     """ A class used to represent the sellable unit.
 
-    @cvar SYSTEM_PRIMITIVES: The values on the list are enums used to fill
+    :cvar SYSTEM_PRIMITIVES: The values on the list are enums used to fill
       'unit_index' column above. That list is useful for many things,
       e.g. See if the user can delete the unit. It should not be possible
       to delete a primitive one.
-    @cvar description: The unit description
-    @cvar unit_index:  This column defines if this object represents a custom
+    :cvar description: The unit description
+    :cvar unit_index:  This column defines if this object represents a custom
       product unit (created by the user through the product editor) or
       a 'native unit', like 'Km', 'Lt' and 'pc'.
       This data is used mainly to interact with stoqdrivers, since when adding
       an item in a coupon we need to know if its unit must be specified as
       a description (using CUSTOM_PM constant) or as an index (using UNIT_*).
       Also, this is directly related to the DeviceSettings editor.
-    @cvar allow_fraction: If the unit allows to be represented in fractions.
+    :cvar allow_fraction: If the unit allows to be represented in fractions.
       e.g. We can have 1 car, 2 cars, but not 1/2 car.
     """
     implements(IDescribable)
@@ -112,9 +112,9 @@ class SellableTaxConstant(Domain):
     @classmethod
     def get_by_type(cls, tax_type, conn):
         """Fetch the tax constant for tax_type
-        @param tax_type: the tax constant to fetch
-        @param conn: a database connection
-        @returns: a L{SellableTaxConstant} or None if none is found
+        :param tax_type: the tax constant to fetch
+        :param conn: a database connection
+        :returns: a :class:`SellableTaxConstant` or None if none is found
         """
         return SellableTaxConstant.selectOneBy(
             tax_type=int(tax_type),
@@ -131,12 +131,12 @@ class SellableCategory(Domain):
     """ Sellable category. This class can represents a
     sellable's category as well its base category.
 
-    @cvar description: The category description
-    @cvar suggested_markup: Define the suggested markup when calculating the
+    :cvar description: The category description
+    :cvar suggested_markup: Define the suggested markup when calculating the
        sellable's price.
-    @cvar salesperson_comission: A percentage comission suggested for all the
+    :cvar salesperson_comission: A percentage comission suggested for all the
        sales which products belongs to this category.
-    @cvar category: base category of this category, None for base categories
+    :cvar category: base category of this category, None for base categories
        themselves
     """
 
@@ -151,7 +151,7 @@ class SellableCategory(Domain):
     def get_commission(self):
         """Returns the commission for this category.
         If it's unset, return the value of the base category, if any
-        @returns: the commission
+        :returns: the commission
         """
         if self.category:
             return (self.salesperson_commission or
@@ -161,7 +161,7 @@ class SellableCategory(Domain):
     def get_markup(self):
         """Returns the markup for this category.
         If it's unset, return the value of the base category, if any
-        @returns: the markup
+        :returns: the markup
         """
         if self.category:
             return self.suggested_markup or self.category.get_markup()
@@ -170,7 +170,7 @@ class SellableCategory(Domain):
     def get_tax_constant(self):
         """Returns the tax constant for this category.
         If it's unset, return the value of the base category, if any
-        @returns: the tax constant
+        :returns: the tax constant
         """
         if self.category:
             return self.tax_constant or self.category.get_tax_constant()
@@ -198,8 +198,8 @@ class SellableCategory(Domain):
     @classmethod
     def get_base_categories(cls, conn):
         """Returns all available base categories
-        @param conn: a database connection
-        @returns: categories
+        :param conn: a database connection
+        :returns: categories
         """
         return cls.select(cls.q.categoryID == None, connection=conn)
 # pylint: enable=E1101
@@ -219,10 +219,10 @@ class ClientCategoryPrice(Domain):
     """A table that stores special prices for clients based on their
     category.
 
-    @ivar sellable: The sellable that has a special price
-    @ivar category: The category that has the special price
-    @ivar price: The price for this (sellable, category)
-    @ivar max_discount: The max discount that may be applied.
+    :attribute sellable: The sellable that has a special price
+    :attribute category: The category that has the special price
+    :attribute price: The price for this (sellable, category)
+    :attribute max_discount: The max discount that may be applied.
     """
     sellable = ForeignKey('Sellable')
     category = ForeignKey('ClientCategory')
@@ -254,27 +254,27 @@ class Sellable(Domain):
     only its reference as a sellable. Concrete items are created by
     IContainer routines.
 
-    @ivar status: status the sellable is in
-    @type status: enum
-    @ivar price: price of sellable
-    @type price: float
-    @ivar description: full description of sallable
-    @type description: string
-    @ivar category: a reference to category table
-    @type category: L{SellableCategory}
-    @ivar markup: ((cost/price)-1)*100
-    @type markup: float
-    @ivar cost: final cost of sellable
-    @type cost: float
-    @ivar max_discount: maximum discount allowed
-    @type max_discount: float
-    @ivar commission: commission to pay after selling this sellable
-    @type commission: float
+    :attribute status: status the sellable is in
+    :type status: enum
+    :attribute price: price of sellable
+    :type price: float
+    :attribute description: full description of sallable
+    :type description: string
+    :attribute category: a reference to category table
+    :type category: :class:`SellableCategory`
+    :attribute markup: ((cost/price)-1)*100
+    :type markup: float
+    :attribute cost: final cost of sellable
+    :type cost: float
+    :attribute max_discount: maximum discount allowed
+    :type max_discount: float
+    :attribute commission: commission to pay after selling this sellable
+    :type commission: float
 
-    @ivar on_sale_price: A special price used when we have a "on sale" state
-    @type on_sale_price: float
-    @ivar on_sale_start_date:
-    @ivar on_sale_end_date:
+    :attribute on_sale_price: A special price used when we have a "on sale" state
+    :type on_sale_price: float
+    :attribute on_sale_start_date:
+    :attribute on_sale_end_date:
     """
 
     implements(IDescribable)
@@ -405,8 +405,8 @@ class Sellable(Domain):
 
     def can_be_sold(self):
         """Whether the sellable is available and can be sold.
-        @returns: if the item can be sold
-        @rtype: boolean
+        :returns: if the item can be sold
+        :rtype: boolean
         """
         # FIXME: Perhaps this should be done elsewhere. Johan 2008-09-26
         if self.service == sysparam(self.get_connection()).DELIVERY_SERVICE:
@@ -415,8 +415,8 @@ class Sellable(Domain):
 
     def is_unavailable(self):
         """Whether the sellable is unavailable.
-        @returns: if the item is unavailable
-        @rtype: boolean
+        :returns: if the item is unavailable
+        :rtype: boolean
         """
         return self.status == self.STATUS_UNAVAILABLE
 
@@ -429,7 +429,7 @@ class Sellable(Domain):
     def is_closed(self):
         """Whether the sellable is closed or not.
 
-        @returns: True if closed, False otherwise.
+        :returns: True if closed, False otherwise.
         """
         return self.status == Sellable.STATUS_CLOSED
 
@@ -485,7 +485,7 @@ class Sellable(Domain):
     def can_close(self):
         """Whether we can close this sellable.
 
-        @returns: True if the product has no stock left or the service
+        :returns: True if the product has no stock left or the service
             is not required by the system (i.e. Delivery service is
             required). False otherwise.
         """
@@ -498,21 +498,21 @@ class Sellable(Domain):
 
     def get_short_description(self):
         """Returns a short description of the current sale
-        @returns: description
-        @rtype: string
+        :returns: description
+        :rtype: string
         """
         return u'%s %s' % (self.id, self.description)
 
     def get_suggested_markup(self):
         """Returns the suggested markup for the sellable
-        @returns: suggested markup
-        @rtype: decimal
+        :returns: suggested markup
+        :rtype: decimal
         """
         return self.category and self.category.get_markup()
 
     def get_unit_description(self):
         """Returns the sellable category description
-        @returns: the category description or an empty string if no category
+        :returns: the category description or an empty string if no category
         was set.
         """
         return self.unit and self.unit.description or u""
@@ -520,7 +520,7 @@ class Sellable(Domain):
     def get_category_description(self):
         """Returns the description of this sellables category
         If it's unset, return the constant from the category, if any
-        @returns: sellable category description
+        :returns: sellable category description
         """
         category = self.category
         return category and category.description or u""
@@ -528,7 +528,7 @@ class Sellable(Domain):
     def get_tax_constant(self):
         """Returns the tax constant for this sellable.
         If it's unset, return the constant from the category, if any
-        @returns: the tax constant or None if unset
+        :returns: the tax constant or None if unset
         """
         if self.tax_constant:
             return self.tax_constant
@@ -543,10 +543,10 @@ class Sellable(Domain):
                                             connection=self.get_connection())
 
     def get_category_price_info(self, category):
-        """Returns the L{ClientCategoryPrice} information for the given
-        L{ClientCategory} and this sellabe.
+        """Returns the :class:`ClientCategoryPrice` information for the given
+        :class:`ClientCategory` and this sellabe.
 
-        @returns: the L{ClientCategoryPrice} or None
+        :returns: the :class:`ClientCategoryPrice` or None
         """
         info = ClientCategoryPrice.selectOneBy(sellable=self,
                                         category=category,
@@ -554,11 +554,11 @@ class Sellable(Domain):
         return info
 
     def get_price_for_category(self, category):
-        """Given the L{ClientCategory}, returns the price for that category
+        """Given the :class:`ClientCategory`, returns the price for that category
         or the default sellable price.
 
-        @param category: a L{ClientCategory}
-        @returns: The value that should be used as a price for this
+        :param category: a :class:`ClientCategory`
+        :returns: The value that should be used as a price for this
         sellable.
         """
         info = self.get_category_price_info(category)
@@ -607,7 +607,7 @@ class Sellable(Domain):
         If the new quantity is fractioned, check on this sellable unit if it
         allows fractioned quantities. If not, this new quantity cannot be used.
 
-        @returns: True if new quantity is Ok, False otherwise.
+        :returns: True if new quantity is Ok, False otherwise.
         """
         if self.unit and not self.unit.allow_fraction:
             return not bool(new_quantity % 1)
@@ -618,9 +618,9 @@ class Sellable(Domain):
         """Returns True if the new price respects the maximum discount
         configured for the sellable, otherwise returns False.
 
-        @param newprice: The new price that we are trying to sell this
+        :param newprice: The new price that we are trying to sell this
         sellable for.
-        @param category: Optionally define a category that we will get the
+        :param category: Optionally define a category that we will get the
         price info from.
         """
         info = None
@@ -730,9 +730,9 @@ class Sellable(Domain):
         """
         Returns unblocked sellable objects, which means the
         available sellables plus the sold ones.
-        @param conn: a database connection
-        @param storable: if True, only return Storables
-        @param supplier: a supplier or None, if set limit the returned
+        :param conn: a database connection
+        :param storable: if True, only return Storables
+        :param supplier: a supplier or None, if set limit the returned
           object to this supplier
         """
         query = cls.get_unblocked_sellables_query(conn, storable, supplier,
@@ -764,8 +764,8 @@ class Sellable(Domain):
         A sellable that can be sold can have only one possible
         status: STATUS_AVAILABLE
 
-        @param conn: a orm Transaction instance
-        @param barcode: a string representing a sellable barcode
+        :param conn: a orm Transaction instance
+        :param barcode: a string representing a sellable barcode
         """
         return cls._get_sellables_by_barcode(
             conn, barcode,
@@ -777,8 +777,8 @@ class Sellable(Domain):
         can be sold.  Here we will get sellables with the following
         statuses: STATUS_AVAILABLE, STATUS_UNAVAILABLE
 
-        @param conn: a orm Transaction instance
-        @param barcode: a string representing a sellable barcode
+        :param conn: a orm Transaction instance
+        :param barcode: a string representing a sellable barcode
         """
         statuses = [cls.STATUS_AVAILABLE, cls.STATUS_UNAVAILABLE]
         return cls._get_sellables_by_barcode(conn, barcode,
@@ -789,9 +789,9 @@ class Sellable(Domain):
                                     include_uncategorized=True):
         """Returns the available sellables by a list of categories.
 
-        @param conn: a orm Transaction instance
-        @param categories: a list of SellableCategory instances
-        @param include_uncategorized: whether or not include the sellables
+        :param conn: a orm Transaction instance
+        :param categories: a list of SellableCategory instances
+        :param include_uncategorized: whether or not include the sellables
             without a category
         """
         #FIXME: This query should be faster, waiting for #3696

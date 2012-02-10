@@ -215,10 +215,10 @@ class BasePersonRoleEditor(BaseEditor):
     """A base class for person role editors. This class can not be
     instantiated directly.
 
-    @ivar main_slave:
-    @ivar individual_slave:
-    @ivar company_slave:
-    @cvar help_section: the help button for this wizard,
+    :attribute main_slave:
+    :attribute individual_slave:
+    :attribute company_slave:
+    :cvar help_section: the help button for this wizard,
       usually describing how to create a new person
     """
     size = (700, -1)
@@ -229,11 +229,11 @@ class BasePersonRoleEditor(BaseEditor):
                  visual_mode=False):
         """ Creates a new BasePersonRoleEditor object
 
-        @param conn: a database connection
-        @param model:
-        @param none_type: None, ROLE_INDIVIDUAL or ROLE_COMPANY
-        @param person:
-        @param visual_mode:
+        :param conn: a database connection
+        :param model:
+        :param none_type: None, ROLE_INDIVIDUAL or ROLE_COMPANY
+        :param person:
+        :param visual_mode:
         """
         if not (model or role_type is not None):
             raise ValueError('A role_type attribute is required')

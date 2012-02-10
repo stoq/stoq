@@ -53,13 +53,13 @@ to make a person into a company:
     >>> person.addFacet(ICompany, connection=trans)
 
 The company facet provides additional persistent information related to
-companies, see L{stoqlib.domain.interfaces.IClient} for more information
+companies, see :class:`stoqlib.domain.interfaces.IClient` for more information
 
 To access the facet, do:
 
     >>> company = ICompany(person)
 
-See L{stoqlib.lib.component} for more information on adapters.
+See :class:`stoqlib.lib.component` for more information on adapters.
 
 """
 
@@ -120,8 +120,8 @@ class EmployeeRole(Domain):
 
     def has_other_role(self, name):
         """Check if there is another role with the same name
-        @param name: name of the role to check
-        @returns: True if it exists, otherwise False
+        :param name: name of the role to check
+        :returns: True if it exists, otherwise False
         """
         return self.check_unique_value_exists('name', name,
                                     case_sensitive=False)
@@ -274,8 +274,8 @@ class Person(Domain):
 
     def get_phone_number_number(self):
         """Returns the phone number without any non-numeric characters
-        @returns: the phone number as a number
-        @rtype: integer
+        :returns: the phone number as a number
+        :rtype: integer
         """
         if not self.phone_number:
             return 0
@@ -284,8 +284,8 @@ class Person(Domain):
 
     def get_fax_number_number(self):
         """Returns the fax number without any non-numeric characters
-        @returns: the fax number as a number
-        @rtype: integer
+        :returns: the fax number as a number
+        :rtype: integer
         """
         if not self.fax_number:
             return 0
@@ -449,8 +449,8 @@ class PersonAdaptToIndividual(PersonAdapter):
 
     def get_cpf_number(self):
         """Returns the cpf number without any non-numeric characters
-        @returns: the cpf number as a number
-        @rtype: integer
+        :returns: the cpf number as a number
+        :rtype: integer
         """
         if not self.cpf:
             return 0
@@ -484,8 +484,8 @@ class PersonAdaptToCompany(PersonAdapter):
 
     def get_cnpj_number(self):
         """Returns the cnpj number without any non-numeric characters
-        @returns: the cnpj number as a number
-        @rtype: integer
+        :returns: the cnpj number as a number
+        :rtype: integer
         """
         # FIXME: We should return cnpj as strings, since it can begin with 0
         num = ''.join([c for c in self.cnpj if c in '1234567890'])
@@ -495,9 +495,9 @@ class PersonAdaptToCompany(PersonAdapter):
 
     def get_state_registry_number(self):
         """Returns the state registry number without any non-numeric characters
-        @returns: the state registry number as a number or zero if there is
+        :returns: the state registry number as a number or zero if there is
                   no state registry.
-        @rtype: integer
+        :rtype: integer
         """
         numbers = ''.join([c for c in self.state_registry
                                     if c in '1234567890'])
@@ -515,7 +515,7 @@ Person.registerFacet(PersonAdaptToCompany, ICompany)
 class ClientCategory(Domain):
     """I am a client category.
     I contain a name
-    @ivar name: category name
+    :attribute name: category name
     """
 
     implements(IDescribable)
@@ -792,7 +792,7 @@ Person.registerFacet(PersonAdaptToUser, IUser)
 class PersonAdaptToBranch(PersonAdapter):
     """A branch facet of a person.
 
-    @ivar crt: Código de Regime Tributário
+    :attribute crt: Código de Regime Tributário
 
     1 – Simples Nacional
     2 – Simples Nacional – excesso de sublimite da receita bruta
@@ -916,8 +916,8 @@ class PersonAdaptToCreditProvider(PersonAdapter):
     @classmethod
     def get_provider_by_provider_id(cls, provider_id, conn):
         """Get a provider given a provider id string
-        @param provider_id: a string representing the provider
-        @param conn: a database connection
+        :param provider_id: a string representing the provider
+        :param conn: a database connection
         """
         return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_CARD,
                             provider_id=provider_id, connection=conn)
@@ -925,7 +925,7 @@ class PersonAdaptToCreditProvider(PersonAdapter):
     @classmethod
     def get_card_providers(cls, conn):
         """Get a list of all credit card providers.
-        @param conn: a database connection
+        :param conn: a database connection
         """
         return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_CARD,
                             connection=conn)
@@ -933,8 +933,8 @@ class PersonAdaptToCreditProvider(PersonAdapter):
     @classmethod
     def has_card_provider(cls, conn):
         """Find out if there is a card provider
-        @param conn: a database connection
-        @returns: if there is a card provider
+        :param conn: a database connection
+        :returns: if there is a card provider
         """
         return bool(cls.selectBy(is_active=True,
                                  provider_type=cls.PROVIDER_CARD,
@@ -1156,12 +1156,12 @@ class TransporterView(Viewable):
     """
     Stores information about transporters
 
-    @cvar id: the id of person table
-    @cvar name: the transporter name
-    @cvar phone_number: the transporter phone number
-    @cvar transporter_id: the id of person_adapt_to_transporter table
-    @cvar status: the current status of the transporter
-    @cvar freight_percentage: the freight percentage charged
+    :cvar id: the id of person table
+    :cvar name: the transporter name
+    :cvar phone_number: the transporter phone number
+    :cvar transporter_id: the id of person_adapt_to_transporter table
+    :cvar status: the current status of the transporter
+    :cvar freight_percentage: the freight percentage charged
     """
     columns = dict(
         id=Person.q.id,
@@ -1220,13 +1220,13 @@ class UserView(Viewable):
     """
     Retrieves information about user in the system.
 
-    @cvar id: the id of person table
-    @cvar name: the user full name
-    @cvar is_active: the current status of the transporter
-    @cvar username: the username (login)
-    @cvar user_id: the id of PersonAdaptToUser table
-    @cvar profile_id: the id of the user profile
-    @cvar profile_name: the name of the user profile (eg: Salesperson)
+    :cvar id: the id of person table
+    :cvar name: the user full name
+    :cvar is_active: the current status of the transporter
+    :cvar username: the username (login)
+    :cvar user_id: the id of PersonAdaptToUser table
+    :cvar profile_id: the id of the user profile
+    :cvar profile_name: the name of the user profile (eg: Salesperson)
     """
 
     columns = dict(

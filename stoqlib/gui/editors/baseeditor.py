@@ -47,9 +47,9 @@ class BaseEditorSlave(GladeSlaveDelegate):
     """ Base class for editor slaves inheritance. It offers methods for
     setting up focus sequence, required attributes and validated attrs.
 
-    @cvar gladefile:
-    @cvar model_type:
-    @cvar model_iface:
+    :cvar gladefile:
+    :cvar model_type:
+    :cvar model_iface:
     """
     gladefile = None
     model_type = None
@@ -59,9 +59,9 @@ class BaseEditorSlave(GladeSlaveDelegate):
     def __init__(self, conn, model=None, visual_mode=False):
         """ A base class for editor slaves inheritance
 
-        @param conn: a connection
-        @param model: the object model tied with the proxy widgets
-        @param visual_mode: does this slave must be opened in visual mode?
+        :param conn: a connection
+        :param model: the object model tied with the proxy widgets
+        :param visual_mode: does this slave must be opened in visual mode?
                             if so, all the proxy widgets will be disable
         """
         self.conn = self.trans = conn
@@ -124,7 +124,7 @@ class BaseEditorSlave(GladeSlaveDelegate):
         After this method is called, the model can be accessed as self.model.
         The default behavior is to raise a TypeError, which can
         be overridden in a subclass.
-        @param trans: a database transaction
+        :param trans: a database transaction
         """
         raise TypeError(
                 "%r needs a model, got None. Perhaps you want to "
@@ -169,12 +169,12 @@ class BaseEditor(BaseEditorSlave):
     """ Base class for editor dialogs. It offers methods of
     BaseEditorSlave, a windows title and OK/Cancel buttons.
 
-    @cvar model_name: the model type name of the model we are editing.
+    :cvar model_name: the model type name of the model we are editing.
        This value will be showed in the title of the editor and can not
        be merely the attribute __name__ of the object for usability reasons.
        Call sites will decide what could be the best name applicable in each
        situation.
-    @cvar confirm_widgets: a list of widget names that when activated will
+    :cvar confirm_widgets: a list of widget names that when activated will
         confirm the dialog
     """
 
@@ -251,13 +251,13 @@ class BaseEditor(BaseEditorSlave):
 
     def enable_window_controls(self):
         """Enables the window controls
-        See L{kiwi.ui.views.BaseView.enable_window_controls}.
+        See :class:`kiwi.ui.views.BaseView.enable_window_controls`.
         """
         self.main_dialog.enable_window_controls()
 
     def set_description(self, description):
         """Sets the description of the model object which is used by the editor
-        @param description:
+        :param description:
         """
         format = self._get_title_format()
         self.main_dialog.set_title(format % description)
@@ -273,10 +273,10 @@ class BaseEditor(BaseEditorSlave):
         """
         Adds a button to editor. The added button is returned which you
         can use to connect signals on.
-        @param label: label of the button
-        @param stock: stock label of the button
-        @param returns: the button added
-        @rtype: gtk.Button
+        :param label: label of the button
+        :param stock: stock label of the button
+        :param returns: the button added
+        :rtype: gtk.Button
         """
 
         if label is None and stock is None:
@@ -332,14 +332,14 @@ class BaseEditor(BaseEditorSlave):
         """
         Make a widget confirmable, eg activating that widget would
         close the dialog.
-        @param widget_name: name of the widget to be confirmable
+        :param widget_name: name of the widget to be confirmable
         """
         self.main_dialog.set_confirm_widget(widget_name)
 
     def add_message_bar(self, message, message_type=gtk.MESSAGE_INFO):
         """Adds a message bar to the top of the search results
-        @message: message to add
-        @message_type: type of message to add
+        :param message: message to add
+        :param message_type: type of message to add
         """
         self._message_bar = MessageBar(message, message_type)
         toplevel = self.main_dialog.get_toplevel()

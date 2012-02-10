@@ -907,7 +907,7 @@ class MultipleMethodSlave(BaseEditorSlave):
     def __init__(self, wizard, parent, conn, order, payment_method,
                  outstanding_value=currency(0), finish_on_total=True):
         """
-        @param finish_on_total: finalize the payment when the total value is
+        :param finish_on_total: finalize the payment when the total value is
                                 reached.
         """
         self.finish_on_total = finish_on_total

@@ -44,10 +44,10 @@ _ = stoqlib_gettext
 class LoanItem(Domain):
     """An item in a loan.
 
-    @param sellable: the kind of item
-    @param loan: the same
-    @param quantity: the quantity of the of sold item in this loan
-    @param price: the price of each individual item
+    :param sellable: the kind of item
+    :param loan: the same
+    :param quantity: the quantity of the of sold item in this loan
+    :param price: the price of each individual item
     """
     quantity = QuantityCol()
     sale_quantity = QuantityCol(default=Decimal(0))
@@ -95,18 +95,18 @@ class LoanItem(Domain):
 class Loan(Domain):
     """Loan object implementation.
 
-    @cvar STATUS_OPEN: The loan is opened, products or other sellable items
+    :cvar STATUS_OPEN: The loan is opened, products or other sellable items
       might have been added and might not be in stock.
-    @cvar STATUS_CLOSED: All the products or other sellable items have been
+    :cvar STATUS_CLOSED: All the products or other sellable items have been
     returned and are available in stock.
-    @ivar status: status of the loan
-    @ivar client: who we loan
-    @ivar responsinble: who is responsible for this loan
-    @ivar branch: branch where the loan was done
-    @ivar open_date: the date loan was created
-    @ivar close_date: the date loan was closed
-    @ivar expire_return_date: the expected date loan will return
-    @ivar notes: Some optional additional information related to this loan.
+    :attribute status: status of the loan
+    :attribute client: who we loan
+    :attribute responsinble: who is responsible for this loan
+    :attribute branch: branch where the loan was done
+    :attribute open_date: the date loan was created
+    :attribute close_date: the date loan was closed
+    :attribute expire_return_date: the expected date loan will return
+    :attribute notes: Some optional additional information related to this loan.
     """
 
     implements(IContainer)
@@ -155,9 +155,9 @@ class Loan(Domain):
 
     def add_sellable(self, sellable, quantity=1, price=None):
         """Adds a new sellable item to a loan
-        @param sellable: the sellable
-        @param quantity: quantity to add, defaults to 1
-        @param price: optional, the price, it not set the price
+        :param sellable: the sellable
+        :param quantity: quantity to add, defaults to 1
+        :param price: optional, the price, it not set the price
           from the sellable will be used
         """
         price = price or sellable.price
@@ -179,7 +179,7 @@ class Loan(Domain):
             Sale total = Sum(product and service prices) + surcharge +
                              interest - discount
 
-        @returns: the total value
+        :returns: the total value
         """
         return currency(self.get_items().sum(
             const.ROUND(LoanItem.q.price * LoanItem.q.quantity,
@@ -208,7 +208,7 @@ class Loan(Domain):
     def can_close(self):
         """Checks if the loan can be closed. A loan can be closed if it is
         opened and all the items have been returned or sold.
-        @returns: True if the loan can be closed, False otherwise.
+        :returns: True if the loan can be closed, False otherwise.
         """
         if self.status != Loan.STATUS_OPEN:
             return False

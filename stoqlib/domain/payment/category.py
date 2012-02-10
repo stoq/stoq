@@ -34,9 +34,9 @@ from stoqlib.domain.interfaces import IDescribable
 class PaymentCategory(Domain):
     """I am a payment category.
     I contain a name and a color
-    @ivar name: category name
-    @ivar color: category color, like #ff0000 for red.
-    @type color: string or None
+    :attribute name: category name
+    :attribute color: category color, like #ff0000 for red.
+    :type color: string or None
     """
 
     implements(IDescribable)

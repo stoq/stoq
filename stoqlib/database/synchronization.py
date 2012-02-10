@@ -93,10 +93,10 @@ def get_tables(policy, pfilter=None):
     A pfilter can optionally be specified to filter out tables
     which does not match a specific state.
 
-    @param policy: a SynchronizationPolicy
-    @param pfilter: a sequence of states to skip or None to fetch all
-    @returns: a list of tables
-    @rtype: list of sqlobject tables
+    :param policy: a SynchronizationPolicy
+    :param pfilter: a sequence of states to skip or None to fetch all
+    :returns: a list of tables
+    :rtype: list of sqlobject tables
     """
     tables = []
     for table_name, table_policy in policy.tables:
@@ -225,14 +225,14 @@ class SynchronizationService(XMLRPCService):
     def get_station_name(self):
         """
         Gets the name of the station.
-        @returns: the name of the station.
+        :returns: the name of the station.
         """
         return socket.gethostname()
 
     def set_station_by_name(self, name):
         """
         Set the currently station by given name.
-        @param name: name of the station
+        :param name: name of the station
         """
         station = BranchStation.selectOneBy(name=name, connection=self.conn)
 
@@ -252,7 +252,7 @@ class SynchronizationService(XMLRPCService):
     def sql_prepare(self):
         """
         Gets an integer that represents the database insert.
-        @returns: an integer representing the insert
+        :returns: an integer representing the insert
         """
         log.info('service.sql_prepare()')
         settings = get_utility(IDatabaseSettings)
@@ -287,8 +287,8 @@ class SynchronizationService(XMLRPCService):
     def sql_insert(self, sid, data):
         """
         Insert sid and date.
-        @param sid:
-        @param data:
+        :param sid:
+        :param data:
         """
         # XXX: rewrite the docstring
         # XMLRPC sends us unicode, postgres/subprocess expects utf-8
@@ -302,8 +302,8 @@ class SynchronizationService(XMLRPCService):
     def sql_finish(self, sid):
         """
         Finish an sql process.
-        @param sid:
-        @returns: None if successful, otherwise a string
+        :param sid:
+        :returns: None if successful, otherwise a string
         """
         # XXX: rewrite the docstring
         log.info('service.sql_finish(%d)' % (sid, ))
@@ -541,7 +541,7 @@ class SynchronizationClient(object):
     def update(self, station_name):
         """
         Update client.
-        @param station_name:
+        :param station_name:
         """
         # XXX: Rewrite docstring
         policy = self._get_policy('shop')
@@ -604,7 +604,7 @@ class SynchronizationClient(object):
         """Clones the database of the current machine and sends over the complete
         state to the client as raw SQL commands.
 
-        @param station_name:
+        :param station_name:
         """
         policy = self._get_policy('shop')
         if not transaction:

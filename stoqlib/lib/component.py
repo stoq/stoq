@@ -141,7 +141,7 @@ class Adapter(object):
     """
     def __init__(self, adaptable):
         """Creates a new Adapted for I{adaptable}
-        @param adaptable: the adapted object
+        :param adaptable: the adapted object
         """
         self._adaptable = adaptable
 
@@ -158,7 +158,7 @@ class Adapter(object):
 
     def get_adapted(self):
         """Get the adapted object
-        @returns: the adapted object
+        :returns: the adapted object
         """
         return self._adaptable
 
@@ -176,8 +176,8 @@ class Adaptable(object):
         """Fetches a facet type associated with an interface, or raise
         LookupError if the facet type cannot be found.
 
-        @param iface: interface name for the facet to grab
-        @returns: the facet type for the interface
+        :param iface: interface name for the facet to grab
+        :returns: the facet type for the interface
         """
 
         facets = getattr(cls, '_facets', [])
@@ -196,7 +196,7 @@ class Adaptable(object):
     @classmethod
     def getFacetTypes(cls):
         """Returns facet classes for this object
-        @returns: a list of facet classes
+        :returns: a list of facet classes
         """
 
         facets = getattr(cls, '_facets', {})
@@ -212,9 +212,9 @@ class Adaptable(object):
 
         Notes: the assigned key will have the name of the class cls.
 
-        @param cls:
-        @param facet:
-        @param ifaces: optional list of interfaces to attach
+        :param cls:
+        :param facet:
+        :param ifaces: optional list of interfaces to attach
         """
         if not hasattr(cls, '_facets'):
             cls._facets = {}
@@ -239,8 +239,8 @@ class Adaptable(object):
 
     def addFacet(self, iface, *args, **kwargs):
         """Adds a facet implementing iface for the current object
-        @param iface: interface of the facet to add
-        @returns: the facet
+        :param iface: interface of the facet to add
+        :returns: the facet
         """
 
         if isinstance(self, Adapter):
@@ -279,7 +279,7 @@ class Adaptable(object):
     def removeFacet(self, iface, *args, **kwargs):
         """Removes a facet from the current object
 
-        @param iface: interface of the facet to remove
+        :param iface: interface of the facet to remove
         """
         if not isinstance(iface, InterfaceClass):
             raise TypeError('iface must be an Interface')
@@ -301,7 +301,7 @@ class Adaptable(object):
 
     def getFacets(self):
         """Gets a list of facets assoicated with the current object.
-        @returns: a list of facets
+        :returns: a list of facets
         """
         facet_types = getattr(self, '_facets', [])
 

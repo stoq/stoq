@@ -48,8 +48,8 @@ log = Logger('stoqlib.db.database')
 
 def drop_database(dbname, settings=None):
     """Drops a database.
-    @param dbname: the name of the database to be dropped.
-    @param settings: optionally provide seetings, so that you dont have to
+    :param dbname: the name of the database to be dropped.
+    :param settings: optionally provide seetings, so that you dont have to
     provide IDatabaseSettings before calling this function.
     """
     if not settings:
@@ -75,7 +75,7 @@ def drop_database(dbname, settings=None):
 
 def clean_database(dbname):
     """Cleans a database. If the database does not exist, it will be created.
-    @param dbname: name of the database.
+    :param dbname: name of the database.
     """
     log.info("Cleaning database %s" % (dbname, ))
 
@@ -101,9 +101,9 @@ def clean_database(dbname):
 
 def execute_sql(filename):
     """Inserts Raw SQL commands into the database read from a file.
-    @param filename: filename with SQL commands
-    @returns: return code, 0 if succeeded, positive integer for failure
-    @rtype: int
+    :param filename: filename with SQL commands
+    :returns: return code, 0 if succeeded, positive integer for failure
+    :rtype: int
     """
     settings = get_utility(IDatabaseSettings)
 
@@ -172,8 +172,8 @@ def execute_sql(filename):
 def start_shell(command=None, quiet=False):
     """Runs a database shell using the current settings
 
-    @param command: tell psql to execute the command string
-    @param quiet: sets psql quiet option (-q)
+    :param command: tell psql to execute the command string
+    :param quiet: sets psql quiet option (-q)
     """
     settings = get_utility(IDatabaseSettings)
 
@@ -223,8 +223,8 @@ def test_local_database():
 
 def test_connection():
     """Test database connectivity for using command line tools
-    @returns: True for success, False if connection fails
-    @rtype: bool
+    :returns: True for success, False if connection fails
+    :rtype: bool
     """
     settings = get_utility(IDatabaseSettings)
 
@@ -250,7 +250,7 @@ def test_connection():
 
 def dump_database(filename):
     """Dump the contents of the current database
-    @param filename: filename to write the database dump to
+    :param filename: filename to write the database dump to
     """
     settings = get_utility(IDatabaseSettings)
     log.info("Dumping database to %s" % filename)
@@ -273,8 +273,8 @@ def dump_database(filename):
 
 def rename_database(src, dest):
     """Renames a database.
-    @param src: the name of the database we want to rename.
-    @param dest: the new database name.
+    :param src: the name of the database we want to rename.
+    :param dest: the new database name.
     """
     settings = get_utility(IDatabaseSettings)
 
@@ -288,7 +288,7 @@ def rename_database(src, dest):
 
 def restore_database(dump):
     """Restores the current database.
-    @param dump: a database dump file to be used to restore the database.
+    :param dump: a database dump file to be used to restore the database.
     """
     settings = get_utility(IDatabaseSettings)
 
@@ -317,8 +317,8 @@ def dump_table(table, filename=None):
     """Dump the contents of a table.
     Note this does not include the schema itself, just the data.
     To get the data call stdout.read() on the returned object.
-    @param table: table to write
-    @param proc: a Process instance
+    :param table: table to write
+    :param proc: a Process instance
     """
     settings = get_utility(IDatabaseSettings)
 

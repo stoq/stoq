@@ -117,8 +117,8 @@ def ensure_admin_user(administrator_password):
 
 def create_main_branch(trans, name):
     """Creates a new branch and sets it as the main branch for the system
-    @param trans: a database transaction
-    @param name: name of the new branch
+    :param trans: a database transaction
+    :param name: name of the new branch
     """
     person = Person(name=name, connection=trans)
     person.addFacet(ICompany, connection=trans)
@@ -220,8 +220,8 @@ def _ensure_card_providers():
 
 def get_admin_user(conn):
     """Retrieves the current administrator user for the system
-    @param conn: a database connection
-    @returns: the admin user for the system
+    :param conn: a database connection
+    :returns: the admin user for the system
     """
     return Person.iselectOneBy(IUser, username=USER_ADMIN_DEFAULT_NAME,
                                connection=conn)
@@ -257,8 +257,8 @@ def user_has_usesuper(trans):
     """This method checks if the currently logged in postgres user has
     `usesuper' access which is necessary for certain operations
 
-    @param trans: a database connection
-    @returns: if the user has `usesuper' access
+    :param trans: a database connection
+    :returns: if the user has `usesuper' access
     """
 
     results = trans.queryOne(

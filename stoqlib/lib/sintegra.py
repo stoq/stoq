@@ -48,8 +48,8 @@ class SintegraFile(object):
 
     def add(self, register):
         """Adds a register to the file
-        @param register: a register
-        @type register: L{SintegraRegister}
+        :param register: a register
+        :type register: :class:`SintegraRegister`
         """
         if not isinstance(register, SintegraRegister):
             raise TypeError("register must be a SintegraRegister instance")
@@ -68,16 +68,16 @@ class SintegraFile(object):
     def add_header(self, cgc, estadual, company, city, state, fax, start, end):
         """
         Receive values to generate Sintegra Register type 10.
-        @param cgc: the branch CNPJ number.
-        @param estadual: the branch 'Inscrição estadual' number or ISENTO.
-        @param company: the company fancy name.
-        @param city: the branch city.
-        @param state: the branch city state.
-        @param fax: the branch fax number.
-        @param start: start's date period, generally, the 1th month day.
-        @type start: datetime.date
-        @param end: end's date periodo, generally, the last month day.
-        @type end: datetime.date
+        :param cgc: the branch CNPJ number.
+        :param estadual: the branch 'Inscrição estadual' number or ISENTO.
+        :param company: the company fancy name.
+        :param city: the branch city.
+        :param state: the branch city state.
+        :param fax: the branch fax number.
+        :param start: start's date period, generally, the 1th month day.
+        :type start: datetime.date
+        :param end: end's date periodo, generally, the last month day.
+        :type end: datetime.date
         """
         self.add(SintegraRegister10(
             cgc, estadual, company,
@@ -90,13 +90,13 @@ class SintegraFile(object):
                               postal, name, phone):
         """
         Receive values to generate Sintegra Register type 11.
-        @param address: the branch address.
-        @param number: the number of the branch address.
-        @param complement: the complement of the branch address.
-        @param district: district of the branch address.
-        @param postal: postal code number of the branch address.
-        @param name: the branch manager name.
-        @param phone: the branch phone number.
+        :param address: the branch address.
+        :param number: the number of the branch address.
+        :param complement: the complement of the branch address.
+        :param district: district of the branch address.
+        :param postal: postal code number of the branch address.
+        :param name: the branch manager name.
+        :param phone: the branch phone number.
         """
         self.add(SintegraRegister11(
             address, number, complement, district,
@@ -107,18 +107,18 @@ class SintegraFile(object):
                           total):
         """
         Receive values for generate 60M Sintegra Register.
-        @param date: emission date of the fiscal coupon.
-        @type date: datetime.date
-        @param printerserial: serial number of the fiscal printer.
-        @param printerid: the refered number (id) for the fiscal printer
+        :param date: emission date of the fiscal coupon.
+        :type date: datetime.date
+        :param printerserial: serial number of the fiscal printer.
+        :param printerid: the refered number (id) for the fiscal printer
             in a branch.
-        @param coupon_start: the number in which the coupon fiscal starts.
-        @param coupon_end: the number in which the fiscal coupon ends.
-        @param crz: counter the number of 'Zs reduction' made by fiscal printer.
-        @param cro: counter how many times the fiscal printer was restarted
+        :param coupon_start: the number in which the coupon fiscal starts.
+        :param coupon_end: the number in which the fiscal coupon ends.
+        :param crz: counter the number of 'Zs reduction' made by fiscal printer.
+        :param cro: counter how many times the fiscal printer was restarted
             their operations.
-        @param period_total: value total in a fiscal day.
-        @param total: total acumulated in fiscal printer.
+        :param period_total: value total in a fiscal day.
+        :param total: total acumulated in fiscal printer.
         """
         if not isinstance(date, datetime.date):
             raise TypeError
@@ -132,11 +132,11 @@ class SintegraFile(object):
     def add_fiscal_tax(self, date, printerserial, code, value):
         """
         Receive values for generate 60A Sintegra Register.
-        @param date: emission date of the fiscal coupon.
-        @type date: datetime.date
-        @param printerserial: serial number of the fiscal printer.
-        @param code: the tax code.
-        @param value: the tax value.
+        :param date: emission date of the fiscal coupon.
+        :type date: datetime.date
+        :param printerserial: serial number of the fiscal printer.
+        :param code: the tax code.
+        :param value: the tax value.
         """
         self.add(SintegraRegister60A(
             'A', int(date.strftime('%Y%m%d')), printerserial,
@@ -261,8 +261,8 @@ class SintegraFile(object):
     def write(self, filename=None, fp=None):
         """Writes out of the content of the file to a filename or fp
 
-        @param filename: filename
-        @param fp: file object, anything implementing write(data)
+        :param filename: filename
+        :param fp: file object, anything implementing write(data)
         """
         if filename is None and fp is None:
             raise TypeError
@@ -287,10 +287,10 @@ class SintegraRegister(object):
     The arguments depends on what is defined in the class variable
     sintegra_fields
 
-    @cvar sintegra_number:
-    @cvar sintegra_fields:
-    @cvar sintegra_unique:
-    @cvar sintegra_requires:
+    :cvar sintegra_number:
+    :cvar sintegra_fields:
+    :cvar sintegra_unique:
+    :cvar sintegra_requires:
     """
 
     sintegra_number = 0
@@ -343,7 +343,7 @@ class SintegraRegister(object):
     def get_string(self):
         """
         Gets a string for all sintegra fields.
-        @returns: sintegra fields as string.
+        :returns: sintegra fields as string.
         """
         values = []
         for (name, _, _) in self.sintegra_fields:

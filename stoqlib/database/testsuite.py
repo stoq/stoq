@@ -140,12 +140,12 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
                               password=None, create=True):
     """
     Provide database settings.
-    @param dbname:
-    @param address:
-    @param port:
-    @param username:
-    @param password:
-    @param create: Create a new empty database if one is missing
+    :param dbname:
+    :param address:
+    :param port:
+    :param username:
+    :param password:
+    :param create: Create a new empty database if one is missing
     """
     if not username:
         username = pwd.getpwuid(os.getuid())[0]
@@ -193,8 +193,8 @@ def _provide_payment_operation_manager():
 def provide_utilities(station_name, branch_name=None):
     """
     Provide utilities like current user and current station.
-    @param station_name:
-    @param branch_name:
+    :param station_name:
+    :param branch_name:
     """
     _provide_current_user()
     _provide_current_station(station_name, branch_name)
@@ -206,13 +206,13 @@ def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
 
     """
     Test.
-    @param address:
-    @param dbname:
-    @param port:
-    @param username:
-    @param password:
-    @param station_name:
-    @param quick:
+    :param address:
+    :param dbname:
+    :param port:
+    :param username:
+    :param password:
+    :param station_name:
+    :param quick:
     """
     # XXX: Rewrite docstring
     try:

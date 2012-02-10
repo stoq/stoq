@@ -4,17 +4,9 @@ DEBPACKAGE=python-kiwi
 WEBDOC_DIR=/mondo/htdocs/stoq.com.br/doc/devel
 SCHEMADIR=/mondo/htdocs/stoq.com.br/devel/schema/
 
-stoqlib.pickle:
-	pydoctor --project-name="Stoqlib" \
-		 --add-package=stoqlib \
-		 -o stoqlib.pickle stoqlib
-
-apidocs: stoqlib.pickle
-	make -C ../stoqdrivers stoqdrivers.pickle
-	pydoctor --project-name="Stoqlib" \
-		 --make-html \
-		 --extra-system=../stoqdrivers/stoqdrivers.pickle:../stoqdrivers \
-		 -p stoqlib.pickle
+apidocs:
+	make -C docs/api/stoq pickle html devhelp
+	make -C docs/api/stoqlib pickle html devhelp
 
 schemadocs:
 	schemaspy -t pgsql -host anthem -db $(USER) -u $(USER) -s public -o $(SCHEMADIR)
@@ -45,4 +37,4 @@ check:
 
 include async.mk
 
-.PHONY: stoqlib.pickle TAGS
+.PHONY: TAGS

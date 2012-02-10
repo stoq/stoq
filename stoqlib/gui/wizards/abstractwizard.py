@@ -239,13 +239,13 @@ class SellableItemStep(WizardEditorStep):
 
     def get_quantity(self):
         """Returns the quantity of the current model or 1 if there is no model
-        @returns: the quantity
+        :returns: the quantity
         """
         return self.proxy.model and self.proxy.model.quantity or Decimal(1)
 
     def get_model_item_by_sellable(self, sellable):
         """Returns a model instance by the given sellable.
-        @returns: a model instance or None if we could not find the model.
+        :returns: a model instance or None if we could not find the model.
         """
         for item in self.slave.klist:
             if item.sellable is sellable:
@@ -279,8 +279,8 @@ class SellableItemStep(WizardEditorStep):
         This is a hook method that gets called when trying to add a
         sellable to the list. It can be rewritten on child classes for
         extra functionality
-        @param sellable: the selected sellable
-        @returns: True or False (True by default)
+        :param sellable: the selected sellable
+        :returns: True or False (True by default)
         """
         return True
 
@@ -288,7 +288,7 @@ class SellableItemStep(WizardEditorStep):
         """This will be called when a sellable is selected in the combo.
         It can be overriden in a subclass if they wish to do additional
         logic at that point
-        @param sellable: the selected sellable
+        :param sellable: the selected sellable
         """
 
         minimum = Decimal(0)
@@ -329,7 +329,7 @@ class SellableItemStep(WizardEditorStep):
         self.wizard.refresh_next(value and bool(len(self.slave.klist)))
 
     def remove_items(self, items):
-        """Remove items from the current L{IContainer}.
+        """Remove items from the current :class:`IContainer`.
 
         Subclasses can override this if special logic is necessary.
         """

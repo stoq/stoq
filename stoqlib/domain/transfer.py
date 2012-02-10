@@ -43,9 +43,9 @@ _ = stoqlib_gettext
 class TransferOrderItem(Domain):
     """Transfer order item
 
-    @ivar sellable: The sellable to transfer
-    @ivar transfer_order: The order this item belongs to
-    @ivar quantity: The quantity to transfer
+    :attribute sellable: The sellable to transfer
+    :attribute transfer_order: The order this item belongs to
+    :attribute quantity: The quantity to transfer
     """
     sellable = ForeignKey('Sellable')
     transfer_order = ForeignKey('TransferOrder')
@@ -63,13 +63,13 @@ class TransferOrderItem(Domain):
 class TransferOrder(Domain):
     """ Transfer Order class
 
-    @ivar open_date: The date the order was created
-    @ivar receival_date: The date the order was received
-    @ivar source_branch: The branch sending the stock
-    @ivar destination_branch: The branch receiving the stock
-    @ivar source_responsible: Employee responsible for the transfer at
+    :attribute open_date: The date the order was created
+    :attribute receival_date: The date the order was received
+    :attribute source_branch: The branch sending the stock
+    :attribute destination_branch: The branch receiving the stock
+    :attribute source_responsible: Employee responsible for the transfer at
         source branch
-     @ivar destination_responsible: Employee responsible for the transfer at
+     :attribute destination_responsible: Employee responsible for the transfer at
         destination branch
     """
     implements(IContainer)

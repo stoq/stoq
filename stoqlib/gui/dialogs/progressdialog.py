@@ -49,7 +49,7 @@ class ProgressDialog(GladeDelegate):
     def __init__(self, label='', pulse=True):
         """
         Create a new ProgressDialog object.
-        @param label: initial content of the label
+        :param label: initial content of the label
         """
         GladeDelegate.__init__(self, gladefile=self.gladefile)
         self.set_title(label)
@@ -61,7 +61,7 @@ class ProgressDialog(GladeDelegate):
 
     def start(self, wait=50):
         """Start the task, it'll pulsate the progress bar until stop() is called
-        @param wait: how many ms to wait before showing the dialog, defaults
+        :param wait: how many ms to wait before showing the dialog, defaults
           to 50
         """
         if self._pulse:
@@ -81,7 +81,7 @@ class ProgressDialog(GladeDelegate):
 
     def set_label(self, label):
         """Update the label of the dialog
-        @param label: the new content of the label
+        :param label: the new content of the label
         """
         self.label.set_label(label)
 

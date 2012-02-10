@@ -47,9 +47,9 @@ log = Logger('stoqlib.runtime')
 
 class StoqlibTransaction(Transaction):
     """
-    @ivar retval: The return value of a operation this transaction
+    :attribute retval: The return value of a operation this transaction
       is covering. Usually a domain object that was modified
-    @ivar needs_retval: If this is set to True, the retval variable
+    :attribute needs_retval: If this is set to True, the retval variable
       needs to be set to a non-zero value to be committed, see
       stoqlib.api.trans
     """
@@ -209,7 +209,7 @@ def get_connection():
     This function depends on the IDatabaseSettings utility which must be
     provided before it can be used.
 
-    @returns: a database connection
+    :returns: a database connection
     """
     conn = get_utility(IConnection, None)
     if conn is None:
@@ -232,7 +232,7 @@ def get_connection():
 def new_transaction():
     """
     Create a new transaction.
-    @returns: a transaction
+    :returns: a transaction
     """
     log.debug('Creating a new transaction in %s()'
               % sys._getframe(1).f_code.co_name)
@@ -244,7 +244,7 @@ def new_transaction():
 def rollback_and_begin(trans):
     """
     Abort changes in models and begins the transaction.
-    @param trans: a transaction
+    :param trans: a transaction
     """
     trans.rollback()
     trans.begin()
@@ -252,8 +252,8 @@ def rollback_and_begin(trans):
 
 def finish_transaction(trans, commit):
     """Encapsulated method for committing/aborting changes in models.
-    @param trans: a transaction
-    @param commit: True for commit, False for rollback_and_begin
+    :param trans: a transaction
+    :param commit: True for commit, False for rollback_and_begin
     """
 
     # Allow False/None
@@ -327,8 +327,8 @@ def _register_branch(conn, station_name):
 def set_current_branch_station(conn, station_name):
     """Registers the current station and the branch of the station
     as the current branch for the system
-    @param conn: a database connection
-    @param station_name: name of the station to register
+    :param conn: a database connection
+    :param station_name: name of the station to register
     """
     from stoqlib.domain.station import BranchStation
     station = BranchStation.selectOneBy(name=station_name, connection=conn)
@@ -354,8 +354,8 @@ def get_current_user(conn):
     a new database or running the migration script,
     at that point no users are logged in
 
-    @returns: currently logged in user or None
-    @rtype: an object implementing IUser
+    :returns: currently logged in user or None
+    :rtype: an object implementing IUser
     """
     user = get_utility(ICurrentUser, None)
     if user is not None:
@@ -365,8 +365,8 @@ def get_current_user(conn):
 def get_current_branch(conn):
     """Fetches the current branch company.
 
-    @returns: the current branch
-    @rtype: an object implementing IBranch
+    :returns: the current branch
+    :rtype: an object implementing IBranch
     """
 
     branch = get_utility(ICurrentBranch, None)
@@ -376,8 +376,8 @@ def get_current_branch(conn):
 
 def get_current_station(conn):
     """Fetches the current station (computer) which we are running on
-    @param: current station
-    @rtype: BranchStation
+    :param: current station
+    :rtype: BranchStation
     """
     station = get_utility(ICurrentBranchStation, None)
     if station is not None:

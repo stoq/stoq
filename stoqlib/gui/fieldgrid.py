@@ -293,9 +293,9 @@ class FieldGrid(gtk.Layout):
 
     def _get_coords(self, x, y):
         """Returns the grid coordinates given absolute coordinates
-        @param x: absolute x
-        @param y: absoluyte y
-        @returns: (gridx, gridy)
+        :param x: absolute x
+        :param y: absoluyte y
+        :returns: (gridx, gridy)
         """
         return (int(float(x) / (self._field_width + 1)),
                 int(float(y) / (self._field_height + 1)))
@@ -496,16 +496,16 @@ class FieldGrid(gtk.Layout):
     def add_field(self, text, description, x, y, width=-1, height=1):
         """Adds a new field to the grid
 
-        @param text: text of the field
-        @param description: description of the field
-        @param x: x position of the field
-        @param y: y position of the field
+        :param text: text of the field
+        :param description: description of the field
+        :param x: x position of the field
+        :param y: y position of the field
         """
         return self._add_field(text, description, x, y, width, height)
 
     def select_field(self, field):
         """Selects a field
-        @param field: the field to select, must be FieldInfo or None
+        :param field: the field to select, must be FieldInfo or None
         """
         if field == self._selected_field:
             return
@@ -516,31 +516,31 @@ class FieldGrid(gtk.Layout):
 
     def get_selected_field(self):
         """ Returns the currently selected field
-        @returns: the currently selected field
-        @rtype: FieldInfo
+        :returns: the currently selected field
+        :rtype: FieldInfo
         """
         return self._selected_field
 
     def get_fields(self):
         """ Returns a list of fields in the grid
-        @returns: a list of fields in the grid
+        :returns: a list of fields in the grid
         """
         return self._fields
 
     def objectlist_dnd_handler(self, item, x, y):
         """A subclass can implement this to support dnd from
         an ObjectList.
-        @param item: the row dragged from the objectlist
-        @param x: the x position it was dragged to
-        @param y: the y position it was dragged to
+        :param item: the row dragged from the objectlist
+        :param x: the x position it was dragged to
+        :param y: the y position it was dragged to
         """
         return False
 
     def resize(self, width, height):
         """
         Resize the grid.
-        @param width: the new width
-        @param height: the new height
+        :param width: the new width
+        :param height: the new height
         """
         self.width = width
         self.height = height

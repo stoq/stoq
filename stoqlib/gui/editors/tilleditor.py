@@ -164,7 +164,7 @@ class TillClosingEditor(BaseEditor):
                  close_ecf=True):
         """
         Create a new TillClosingEditor object.
-        @param previous_day: If the till wasn't closed previously
+        :param previous_day: If the till wasn't closed previously
         """
         self._previous_day = previous_day
         self.till = Till.get_last(conn)

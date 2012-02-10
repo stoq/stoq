@@ -42,8 +42,8 @@ def build_report(report_class, *args, **kwargs):
     important to note that this function create a temporary file where the
     report will be drawed to -- the name of the temporary file is returned.
 
-    @param report_class: The report class to be build.
-    @type:             A BaseReportTemplate instance
+    :param report_class: The report class to be build.
+    :type:             A BaseReportTemplate instance
 
     If specified, extra parameters will be send to the report class
     constructor.
@@ -58,14 +58,14 @@ def print_file(filename, printer=None, extra_opts=[]):
     """ Given a filename try to print it. If no printer is specified, print
     the file on the default one.
 
-    @param filename:   The filename to print.
-    @type:             str
+    :param filename:   The filename to print.
+    :type:             str
 
-    @param printer:    The printer name where to print.
-    @type:             str
+    :param printer:    The printer name where to print.
+    :type:             str
 
-    @param extra_opts: Extra options to be passed to the printing command.
-    @type:             list of strings
+    :param extra_opts: Extra options to be passed to the printing command.
+    :type:             list of strings
     """
     if not os.path.exists(filename):
         raise ValueError("File %s not found" % filename)
@@ -89,9 +89,9 @@ def print_preview(filename, keep_file=False):
     """ Try preview the filename using one of the PDF viewers registred in
     the package.
 
-    @param keep_file:  If the file don't must be deleted after the program
+    :param keep_file:  If the file don't must be deleted after the program
                        finish.
-    @type:             bool
+    :type:             bool
     """
     if not os.path.exists(filename):
         raise OSError("the file does not exist")

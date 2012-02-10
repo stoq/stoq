@@ -26,15 +26,15 @@
 
 def to_words(num, feminine=False, unit_names=None):
     """Retorna uma string representando o valor inteiro passado, por extenso
-    @param num: um inteiro
-    @type: int
-    @param feminine: indica se devemos usar o gênero feminino do
+    :param num: um inteiro
+    :type: int
+    :param feminine: indica se devemos usar o gênero feminino do
     número, falso por padrão
-    @type: boolean
-    @param unit_names: lista de nomes de uma unidade
+    :type: boolean
+    :param unit_names: lista de nomes de uma unidade
     Exemplo:
     unit_names = ['grama', 'gramas']
-    @type: list
+    :type: list
     """
 
     if isinstance(num, float):
@@ -54,12 +54,12 @@ def to_words(num, feminine=False, unit_names=None):
 def to_words_as_money(num, currency_names):
     """
     Retorna uma string representando a quantia passada, por extenso.
-    @param num: a quantia
-    @type: int ou float
-    @param currency: uma lista com os nomes da moeda a ser utilizada
+    :param num: a quantia
+    :type: int ou float
+    :param currency: uma lista com os nomes da moeda a ser utilizada
     Exemplo:
     currency_names = ['real', 'reais', 'centavo', 'centavos']
-    @type: list
+    :type: list
     """
 
     # "centavos" e "reais" são sempre masculinos

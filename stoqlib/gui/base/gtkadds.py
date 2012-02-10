@@ -38,9 +38,9 @@ def change_button_appearance(button, icon=None, text=None):
 
 def button_set_image_with_label(button, stock_id, text):
     """Sets an image above the text
-    @param button:
-    @param stock_id:
-    @param text:
+    :param button:
+    :param stock_id:
+    :param text:
     """
 
     # Base on code in gazpacho by Lorenzo Gil Sanchez.

@@ -51,10 +51,10 @@ _ = stoqlib_gettext
 class TillFiscalOperationsView(Viewable):
     """Stores informations about till payment tables
 
-    @ivar date:         the date when the entry was created
-    @ivar description:  the entry description
-    @ivar value:        the entry value
-    @ivar station_name: the value of name branch_station name column
+    :attribute date:         the date when the entry was created
+    :attribute description:  the entry description
+    :attribute value:        the entry value
+    :attribute station_name: the value of name branch_station name column
     """
 
     columns = dict(

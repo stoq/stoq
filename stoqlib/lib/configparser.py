@@ -85,7 +85,7 @@ class StoqConfig:
     def load(self, filename):
         """
         Loads the data from a configuration file
-        @param filename: filename
+        :param filename: filename
         """
         if not filename:
             raise TypeError("Missing filename option")
@@ -96,7 +96,7 @@ class StoqConfig:
     def load_settings(self, settings):
         """
         Load data from a DatabaseSettings object
-        @param settings: the settings object
+        :param settings: the settings object
         """
 
         self.set('General', 'logfile',
@@ -162,7 +162,7 @@ class StoqConfig:
 
     def get_password(self):
         """
-        @returns: password or None if it is not set
+        :returns: password or None if it is not set
         """
         configdir = self.get_config_directory()
         data_file = os.path.join(configdir, 'data')
@@ -197,7 +197,7 @@ class StoqConfig:
     def set_from_options(self, options):
         """
         Updates the configuration given a values instance
-        @param options: a optparse.Values instance
+        :param options: a optparse.Values instance
         """
 
         if options.address:

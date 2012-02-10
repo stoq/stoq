@@ -50,17 +50,17 @@ class ProductFullStockView(Viewable):
     """Stores information about products.
     This view is used to query stock information on a certain branch.
 
-    @cvar id: the id of the asellable table
-    @cvar barcode: the sellable barcode
-    @cvar status: the sellable status
-    @cvar cost: the sellable cost
-    @cvar price: the sellable price
-    @cvar description: the sellable description
-    @cvar unit: the unit of the product
-    @cvar product_id: the id of the product table
-    @cvar location: the location of the product
-    @cvar branch_id: the id of person_adapt_to_branch table
-    @cvar stock: the stock of the product
+    :cvar id: the id of the asellable table
+    :cvar barcode: the sellable barcode
+    :cvar status: the sellable status
+    :cvar cost: the sellable cost
+    :cvar price: the sellable price
+    :cvar description: the sellable description
+    :cvar unit: the unit of the product
+    :cvar product_id: the id of the product table
+    :cvar location: the location of the product
+    :cvar branch_id: the id of person_adapt_to_branch table
+    :cvar stock: the stock of the product
      """
 
     columns = dict(
@@ -187,16 +187,16 @@ class ProductWithStockView(ProductFullStockView):
     """Stores information about products, since product has a purchase or sale.
     This view is used to query stock information on a certain branch.
 
-    @cvar id: the id of the asellable table
-    @cvar barcode: the sellable barcode
-    @cvar status: the sellable status
-    @cvar cost: the sellable cost
-    @cvar price: the sellable price
-    @cvar description: the sellable description
-    @cvar unit: the unit of the product
-    @cvar product_id: the id of the product table
-    @cvar branch_id: the id of person_adapt_to_branch table
-    @cvar stock: the stock of the product
+    :cvar id: the id of the asellable table
+    :cvar barcode: the sellable barcode
+    :cvar status: the sellable status
+    :cvar cost: the sellable cost
+    :cvar price: the sellable price
+    :cvar description: the sellable description
+    :cvar unit: the unit of the product
+    :cvar product_id: the id of the product table
+    :cvar branch_id: the id of person_adapt_to_branch table
+    :cvar stock: the stock of the product
      """
 
     columns = ProductFullStockView.columns
@@ -248,15 +248,15 @@ class ProductFullStockItemView(ProductFullStockView):
 class ProductQuantityView(Viewable):
     """Stores information about products solded and received.
 
-    @cvar id: the id of the sellable_id of products_quantity table
-    @cvar description: the product description
-    @cvar branch_id: the id of person_adapt_to_branch table
-    @cvar quantity_sold: the quantity solded of product
-    @cvar quantity_transfered: the quantity transfered of product
-    @cvar quantity_received: the quantity received of product
-    @cvar branch: the id of the branch_id of producst_quantity table
-    @cvar date_sale: the date of product's sale
-    @cvar date_received: the date of product's received
+    :cvar id: the id of the sellable_id of products_quantity table
+    :cvar description: the product description
+    :cvar branch_id: the id of person_adapt_to_branch table
+    :cvar quantity_sold: the quantity solded of product
+    :cvar quantity_transfered: the quantity transfered of product
+    :cvar quantity_received: the quantity received of product
+    :cvar branch: the id of the branch_id of producst_quantity table
+    :cvar date_sale: the date of product's sale
+    :cvar date_received: the date of product's received
      """
 
     columns = dict(
@@ -290,16 +290,16 @@ class SellableFullStockView(Viewable):
     """Stores information about products.
     This view is used to query stock information on a certain branch.
 
-    @cvar id: the id of the asellable table
-    @cvar barcode: the sellable barcode
-    @cvar status: the sellable status
-    @cvar cost: the sellable cost
-    @cvar price: the sellable price
-    @cvar description: the sellable description
-    @cvar unit: the unit of the product or None
-    @cvar product_id: the id of the product table or None
-    @cvar branch_id: the id of person_adapt_to_branch table or None
-    @cvar stock: the stock of the product or None
+    :cvar id: the id of the asellable table
+    :cvar barcode: the sellable barcode
+    :cvar status: the sellable status
+    :cvar cost: the sellable cost
+    :cvar price: the sellable price
+    :cvar description: the sellable description
+    :cvar unit: the unit of the product or None
+    :cvar product_id: the id of the product table or None
+    :cvar branch_id: the id of person_adapt_to_branch table or None
+    :cvar stock: the stock of the product or None
      """
 
     columns = dict(
@@ -560,14 +560,14 @@ class PurchasedItemAndStockView(Viewable):
     This view is used to query which products are going to be delivered and if
     they are on time or not.
 
-    @cvar id: the id of the purchased item
-    @cvar product_id: the id of the product
-    @cvar purchased: the quantity purchased
-    @cvar received: the quantity already received
-    @cvar stocked: the quantity in stock
-    @cvar expected_receival_date: the date that the item might be deliverd
-    @cvar purchase_date: the date when the item was purchased
-    @cvar branch: the branch where the purchase was done
+    :cvar id: the id of the purchased item
+    :cvar product_id: the id of the product
+    :cvar purchased: the quantity purchased
+    :cvar received: the quantity already received
+    :cvar stocked: the quantity in stock
+    :cvar expected_receival_date: the date that the item might be deliverd
+    :cvar purchase_date: the date when the item was purchased
+    :cvar branch: the branch where the purchase was done
     """
 
     columns = dict(
@@ -620,15 +620,15 @@ class ConsignedItemAndStockView(PurchasedItemAndStockView):
 class PurchaseReceivingView(Viewable):
     """Stores information about received orders.
 
-    @cvar id: the id of the receiving order
-    @cvar receival_date: the date when the receiving order was closed
-    @cvar invoice_number: the number of the order that was received
-    @cvar invoice_total: the total value of the received order
-    @cvar purchase_id: the id of the received order
-    @cvar branch_id: the id branch where the order was received
-    @cvar purchase_responsible_name: the one who have confirmed the purchase
-    @cvar responsible_name: the one who has received the order
-    @cvar supplier_name: the supplier name
+    :cvar id: the id of the receiving order
+    :cvar receival_date: the date when the receiving order was closed
+    :cvar invoice_number: the number of the order that was received
+    :cvar invoice_total: the total value of the received order
+    :cvar purchase_id: the id of the received order
+    :cvar branch_id: the id branch where the order was received
+    :cvar purchase_responsible_name: the one who have confirmed the purchase
+    :cvar responsible_name: the one who has received the order
+    :cvar supplier_name: the supplier name
     """
     _Responsible = Alias(Person, "responsible")
     _Supplier = Alias(Person, "supplier")
@@ -707,17 +707,17 @@ class ReceivingItemView(Viewable):
     This view is used to query products that are going to be received or was
     already received and the information related to that process.
 
-    @cvar id: the id of the receiving item
-    @cvar order_id: the id of the receiving order
-    @cvar purchase_id: the id of the purchase order
-    @cvar purchase_item_id: the id of the purchase item
-    @cvar sellable_id: the id of the sellable related to the received item
-    @cvar invoice_number: the invoice number of the receiving order
-    @cvar receival_date: the date when the item was received
-    @cvar quantity: the received quantity
-    @cvar cost: the product cost
-    @cvar unit_description: the product unit description
-    @cvar supplier_name: the product supplier name
+    :cvar id: the id of the receiving item
+    :cvar order_id: the id of the receiving order
+    :cvar purchase_id: the id of the purchase order
+    :cvar purchase_item_id: the id of the purchase item
+    :cvar sellable_id: the id of the sellable related to the received item
+    :cvar invoice_number: the invoice number of the receiving order
+    :cvar receival_date: the date when the item was received
+    :cvar quantity: the received quantity
+    :cvar cost: the product cost
+    :cvar unit_description: the product unit description
+    :cvar supplier_name: the product supplier name
     """
     columns = dict(
         id=ReceivingOrderItem.q.id,

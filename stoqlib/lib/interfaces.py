@@ -35,15 +35,15 @@ class ICookieFile(Interface):
     def get():
         """Fetch the cookie or raise CookieError if a problem occurred
 
-        @returns: (username, password)
-        @rtype: tuple
+        :returns: (username, password)
+        :rtype: tuple
         """
 
     def store(username, password):
         """Stores a username and password
 
-        @param username: username
-        @param password: password
+        :param username: username
+        :param password: password
         """
 
     def clear():
@@ -58,7 +58,7 @@ class IApplicationDescriptions(Interface):
     def get_application_names():
         """
         Gets a list of application names.
-        @returns: a list of application names.
+        :returns: a list of application names.
         """
 
     def get_descriptions():
@@ -69,7 +69,7 @@ class IApplicationDescriptions(Interface):
         * Application full name
         * Application icon name
         * Application description
-        @returns: a list of tuples with Stoq application informations.
+        :returns: a list of tuples with Stoq application informations.
         """
 
 
@@ -110,7 +110,7 @@ class IPlugin(Interface):
     def get_migration():
         """Get the database migration for the plugin
 
-        @returns: a L{stoqlib.database.migration.PluginSchemaMigration}
+        :returns: a :class:`stoqlib.database.migration.PluginSchemaMigration`
         """
         pass
 
@@ -123,7 +123,7 @@ class IPlugin(Interface):
             translated into the C{tuple} ('a.b', ['C', 'D']).
         @note: this information is used for database synchronization
 
-        @returns: a C{list} of C{tuple} containing domain info
+        :returns: a C{list} of C{tuple} containing domain info
         """
         pass
 
@@ -133,7 +133,7 @@ class IPlugin(Interface):
         If C{self.has_product_slave} is C{True}, this should return a
             slave that will be used as an extra tab on product editor.
 
-        @returns: a L{stoqlib.gui.editors.baseeditor.BaseEditorSlave}
+        :returns: a :class:`stoqlib.gui.editors.baseeditor.BaseEditorSlave`
         """
         pass
 
@@ -149,25 +149,25 @@ class IPaymentOperation(Interface):
 
     def payment_create(payment):
         """This is called when a payment is created
-        @param payment: the created payment
+        :param payment: the created payment
         """
 
     def payment_delete(payment):
         """This is called just before a payment is deleted
-        @param payment: the payment which is going to be deleted
+        :param payment: the payment which is going to be deleted
         """
 
     def selectable(method):
         """This is called to find out if the method should
         be shown in the slave list of payment methods
-        @returns: True if it should be shown, otherwise
+        :returns: True if it should be shown, otherwise
         """
 
     def get_constant(payment):
         """This should return a stoqdriver payment method constant
-        @param payment: the payment whose method we shout return a stoqdrivers
+        :param payment: the payment whose method we shout return a stoqdrivers
                         constant
-        @returns: one L{PaymentMethodConstant}
+        :returns: one :class:`PaymentMethodConstant`
         """
 
 
@@ -177,21 +177,21 @@ class IPaymentOperationManager(Interface):
     """
     def get_operation_names():
         """Get the operation names registered in this manager
-        @returns: payment names
-        @rtype: list of strings
+        :returns: payment names
+        :rtype: list of strings
         """
 
     def register(name, operation):
         """Register a payment operation.
-        @param name: name of the payment operation
-        @param operation: the payment operation
-        @type operation: an object implementing L{IPaymentOperation}
+        :param name: name of the payment operation
+        :param operation: the payment operation
+        :type operation: an object implementing :class:`IPaymentOperation`
         """
     def get(name):
         """Get an operation given a name
-        @param name: name of the operation
-        @returns: the operation
-        @rtype operation: an object implementing L{IPaymentOperation}
+        :param name: name of the operation
+        :returns: the operation
+        :rtype operation: an object implementing :class:`IPaymentOperation`
         """
 
 
@@ -205,12 +205,12 @@ class IAppInfo(Interface):
     """
     def set(name, value):
         """Sets a variable to value
-        @param name: string, variable name
-        @param value: value of the key
+        :param name: string, variable name
+        :param value: value of the key
         """
 
     def get(name):
         """Gets a variable
-        @param name: name of the variable to fetch
-        @returns: the key for @name
+        :param name: name of the variable to fetch
+        :returns: the key for @name
         """

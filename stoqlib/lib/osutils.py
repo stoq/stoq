@@ -48,7 +48,7 @@ def get_application_dir(appname="stoq"):
     """Fetches a application specific directory,
     this can be used to save temporary files and other state.
     This also creates the directory if it doesn't exist
-    @returns: the application directory
+    :returns: the application directory
     """
     if _system == 'Linux':
         appdir = os.path.join(os.environ['HOME'], '.' + appname)
@@ -65,7 +65,7 @@ def get_application_dir(appname="stoq"):
 
 
 def get_documents_dir():
-    """@returns: the documents dir for the current user"""
+    """:returns: the documents dir for the current user"""
     if _system == 'Linux':
         return _get_xdg_dir("XDG_DOCUMENTS_DIR", "~/Documents")
     elif _system == 'Windows':
@@ -81,7 +81,7 @@ def get_documents_dir():
 
 
 def get_username():
-    """@returns: the current username"""
+    """:returns: the current username"""
     if _system == 'Linux' or _system == 'Darwin':
         return os.environ['USER']
     elif _system == 'Windows':

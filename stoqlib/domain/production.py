@@ -43,18 +43,18 @@ _ = stoqlib_gettext
 class ProductionOrder(Domain):
     """Production Order object implementation.
 
-    @cvar ORDER_OPENED: The production order is opened, production items might
+    :cvar ORDER_OPENED: The production order is opened, production items might
                         have been added.
-    @cvar ORDER_WAITING: The production order is waiting some conditions to
+    :cvar ORDER_WAITING: The production order is waiting some conditions to
                          start the manufacturing process.
-    @cvar ORDER_PRODUCTION: The production order have already started.
-    @cvar ORDER_CLOSED: The production have finished.
+    :cvar ORDER_PRODUCTION: The production order have already started.
+    :cvar ORDER_CLOSED: The production have finished.
 
-    @ivar status: the production order status
-    @ivar open_date: the date when the production order was created
-    @ivar close_date: the date when the production order have been closed
-    @ivar description: the production order description
-    @ivar responsible: the person responsible for the production order
+    :attribute status: the production order status
+    :attribute open_date: the date when the production order was created
+    :attribute close_date: the date when the production order have been closed
+    :attribute description: the production order description
+    :attribute responsible: the person responsible for the production order
     """
     implements(IContainer, IDescribable)
 
@@ -111,7 +111,7 @@ class ProductionOrder(Domain):
     def get_service_items(self):
         """Returns all the services needed by this production.
 
-        @returns: a sequence of L{ProductionService} instances.
+        :returns: a sequence of :class:`ProductionService` instances.
         """
         return ProductionService.selectBy(order=self,
                                           connection=self.get_connection())
@@ -127,7 +127,7 @@ class ProductionOrder(Domain):
     def get_material_items(self):
         """Returns all the material needed by this production.
 
-        @returns: a sequence of L{ProductionMaterial} instances.
+        :returns: a sequence of :class:`ProductionMaterial` instances.
         """
         return ProductionMaterial.selectBy(order=self,
                                            connection=self.get_connection())
@@ -218,11 +218,11 @@ class ProductionOrder(Domain):
 class ProductionItem(Domain):
     """Production Item object implementation.
 
-    @ivar order: The L{ProductionOrder} of this item.
-    @ivar product: The product that will be manufactured.
-    @ivar quantity: The product's quantity that will be manufactured.
-    @ivar produced: The product's quantity that was manufactured.
-    @ivar lost: The product's quantity that was lost.
+    :attribute order: The :class:`ProductionOrder` of this item.
+    :attribute product: The product that will be manufactured.
+    :attribute quantity: The product's quantity that will be manufactured.
+    :attribute produced: The product's quantity that was manufactured.
+    :attribute lost: The product's quantity that was lost.
     """
     implements(IDescribable)
 
@@ -259,7 +259,7 @@ class ProductionItem(Domain):
         quantity items until we reach the total quantity that will be
         manufactured minus the quantity that was lost.
 
-        @param quantity: the quantity that will be produced.
+        :param quantity: the quantity that will be produced.
         """
         assert quantity > 0
         if self.order.status != ProductionOrder.ORDER_PRODUCING:
@@ -275,7 +275,7 @@ class ProductionItem(Domain):
         produced only if there are enough materials allocated, otherwise a
         ValueError exception will be raised.
 
-        @param quantity: the quantity that will be produced.
+        :param quantity: the quantity that will be produced.
         """
         assert self.can_produce(quantity)
 
@@ -321,7 +321,7 @@ class ProductionItem(Domain):
         """Adds a quantity that was lost. The maximum quantity that can be
         lost is the total quantity minus the quantity already produced.
 
-        @param quantity: the quantity that was lost.
+        :param quantity: the quantity that was lost.
         """
         if self.lost + quantity > self.quantity - self.produced:
             raise ValueError(
@@ -346,13 +346,13 @@ class ProductionItem(Domain):
 class ProductionMaterial(Domain):
     """Production Material object implementation.
 
-    @ivar product: The L{Product} that will be consumed.
-    @ivar order: The L{ProductionOrder} that will consume this material.
-    @ivar needed: The quantity needed of this material.
-    @ivar consumed: The quantity already used of this material.
-    @ivar lost: The quantity lost of this material.
-    @ivar to_purchase: The quantity to purchase of this material.
-    @ivar to_make: The quantity to manufacture of this material.
+    :attribute product: The :class:`Product` that will be consumed.
+    :attribute order: The :class:`ProductionOrder` that will consume this material.
+    :attribute needed: The quantity needed of this material.
+    :attribute consumed: The quantity already used of this material.
+    :attribute lost: The quantity lost of this material.
+    :attribute to_purchase: The quantity to purchase of this material.
+    :attribute to_make: The quantity to manufacture of this material.
     """
     implements(IDescribable)
 
@@ -373,7 +373,7 @@ class ProductionMaterial(Domain):
     def can_add_lost(self, quantity):
         """Returns if we can loose a certain quantity of this material.
 
-        @param quantity: the quantity that will be lost.
+        :param quantity: the quantity that will be lost.
         """
         return self.can_consume(quantity)
 
@@ -391,7 +391,7 @@ class ProductionMaterial(Domain):
         quantity specified or raise a ValueError exception, if the quantity is
         not available.
 
-        @param quantity: the quantity to be allocated or None to allocate the
+        :param quantity: the quantity to be allocated or None to allocate the
                          maximum quantity possible.
         """
         stock = self.get_stock_quantity()
@@ -431,7 +431,7 @@ class ProductionMaterial(Domain):
         can be lost is given by the formula:
             - max_lost(quantity) = needed - consumed - lost - quantity
 
-        @param quantity: the quantity that was lost.
+        :param quantity: the quantity that was lost.
         """
         assert quantity > 0
 
@@ -452,7 +452,7 @@ class ProductionMaterial(Domain):
 
             - max_consumed(quantity) = needed - consumed - lost - quantity
 
-        @param quantity: the quantity to be consumed.
+        :param quantity: the quantity to be consumed.
         """
         assert quantity > 0
 
@@ -489,9 +489,9 @@ class ProductionMaterial(Domain):
 class ProductionService(Domain):
     """Production Service object implementation.
 
-    @ivar order: The L{ProductionOrder} of this service.
-    @ivar service: The service that will be used by the production.
-    @ivar quantity: The service's quantity.
+    :attribute order: The :class:`ProductionOrder` of this service.
+    :attribute service: The service that will be used by the production.
+    :attribute quantity: The service's quantity.
     """
     implements(IDescribable)
 

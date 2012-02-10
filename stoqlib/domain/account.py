@@ -19,7 +19,11 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-""" Domain classes to manage accounts """
+"""
+.. module: stoqlib.domain.account
+   :synopsis: accounts, banks, bill options and transactions
+
+"""
 
 from zope.interface import implements
 
@@ -47,8 +51,8 @@ class BillOption(Domain):
 class BankAccount(Domain):
     """Information specific to a bank
 
-    @ivar bank_branch: the bank branch where this account lives.
-    @ivar bank_account: an identifier of this account in the branch.
+    :attribute bank_branch: the bank branch where this account lives.
+    :attribute bank_account: an identifier of this account in the branch.
     """
     account = ForeignKey('Account', default=None)
 
@@ -65,10 +69,10 @@ class BankAccount(Domain):
 class Account(Domain):
     """An account, a collection of transactions
 
-    @ivar description: name of the account in Stoq
-    @ivar code: code which identifies the account
-    @ivar parent: parent account, can be None
-    @ivar station: for accounts connected to a specific station or None
+    :attribute description: name of the account in Stoq
+    :attribute code: code which identifies the account
+    :attribute parent: parent account, can be None
+    :attribute station: for accounts connected to a specific station or None
     """
 
     (TYPE_BANK,
@@ -122,9 +126,9 @@ class Account(Domain):
     @classmethod
     def get_by_station(cls, conn, station):
         """Fetch the account assoicated with a station
-        @param conn: a connection
-        @param station: a BranchStation
-        Returns: the account
+        :param conn: a connection
+        :param station: a BranchStation
+        :returns: the account
         """
         if station is None:
             raise TypeError("station cannot be None")
@@ -178,7 +182,7 @@ class Account(Domain):
     def remove(self, trans):
         """Remove the current account. This updates all transactions which
         refers to this account and removes them.
-        @param: a transaction
+        :param: a transaction
         """
         if not self.can_remove():
             raise TypeError("Account %r cannot be removed" % (self, ))
@@ -200,14 +204,14 @@ class Account(Domain):
         self.delete(self.id, connection=trans)
 
     def has_child_accounts(self):
-        """@returns: True if any other accounts has this account as a parent"""
+        """:returns: True if any other accounts has this account as a parent"""
         return bool(Account.selectBy(connection=self.get_connection(),
                                      parent=self))
 
     def get_type_label(self, out):
         """Returns the label to show for the increases/decreases
         for transactions of this account.
-        @param out: if the transaction is going out
+        :param out: if the transaction is going out
         """
         return self.account_labels[self.account_type][int(out)]
 
@@ -229,13 +233,13 @@ class AccountTransaction(Domain):
     or positive, it can never be zero though.
     A transaction can optionally be tied to a Payment
 
-    @ivar account: destination account
-    @ivar source_account: source account
-    @ivar description: short human readable summary of the transaction
-    @ivar code: identifier of this transaction within a account
-    @ivar value: value transfered, positive for credit, negative for debit
-    @ivar date: date the transaction was done
-    @ivar payment: payment this transaction relates to, can be None
+    :attribute account: destination account
+    :attribute source_account: source account
+    :attribute description: short human readable summary of the transaction
+    :attribute code: identifier of this transaction within a account
+    :attribute value: value transfered, positive for credit, negative for debit
+    :attribute date: date the transaction was done
+    :attribute payment: payment this transaction relates to, can be None
     """
 
     # FIXME: It's way to tricky to calculate the direction and it's
@@ -264,9 +268,9 @@ class AccountTransaction(Domain):
         It's normally used when creating a transaction which represents
         a payment, for instance when you receive a bill or a check from
         a client which will enter a bank account.
-        @payment: the payment to create the transaction for.
-        @account: account where this payment will arrive
-        @returns: the transaction
+        :param payment: the payment to create the transaction for.
+        :param account: account where this payment will arrive
+        :returns: the transaction
         """
         if not payment.is_paid():
             raise PaymentError(_("Payment needs to be paid"))
@@ -285,8 +289,8 @@ class AccountTransaction(Domain):
 
     def get_other_account(self, account):
         """Get the other end of a transaction
-        @param account: an account
-        @returns: the other end
+        :param account: an account
+        :returns: the other end
         """
         if self.source_account == account:
             return self.account
@@ -297,8 +301,8 @@ class AccountTransaction(Domain):
 
     def set_other_account(self, other, account):
         """Set the other end of a transaction
-        @param other: an account which we do not want to set
-        @param account: the account to set
+        :param other: an account which we do not want to set
+        :param account: the account to set
         """
         if self.source_account == other:
             self.account = account

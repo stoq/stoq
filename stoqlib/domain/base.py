@@ -78,8 +78,8 @@ def _adaptable_orm_adapter_hook(iface, obj):
     It fetches the facet type and does a select in the database to
     see if the object is present.
 
-    @param iface: the interface to adapt to
-    @param obj: object we want to adapt
+    :param iface: the interface to adapt to
+    :param obj: object we want to adapt
     """
 
     # We're only interested in Adaptable subclasses which defines
@@ -175,7 +175,7 @@ class AbstractModel(object):
         This hook can be overridden on child classes for improved
         functionality.
         @note: A trick you may want to use: Use C{self.get_connection}
-            to get the L{stoqlib.runtime.StoqlibTransaction} in which
+            to get the :class:`stoqlib.runtime.StoqlibTransaction` in which
             C{self} lives and do your modifications in it.
         """
         pass
@@ -186,7 +186,7 @@ class AbstractModel(object):
         This hook can be overridden on child classes for improved
         functionality.
         @note: A trick you may want to use: Use C{self.get_connection}
-            to get the L{stoqlib.runtime.StoqlibTransaction} in which
+            to get the :class:`stoqlib.runtime.StoqlibTransaction` in which
             C{self} lives and do your modifications in it.
         """
         pass
@@ -197,10 +197,10 @@ class AbstractModel(object):
         This hook can be overridden on child classes for improved
         functionality.
         @note: A trick you may want to use: Use C{self.get_connection}
-            to get the L{stoqlib.runtime.StoqlibTransaction} in which
+            to get the :class:`stoqlib.runtime.StoqlibTransaction` in which
             C{self} lives.
         @attention: Do not try to modify C{self}, as it was marked as
-            obsolet by L{stoqlib.database.orm.ORMObject} and it will
+            obsolet by :class:`stoqlib.database.orm.ORMObject` and it will
             result in errors.
         """
         pass
@@ -234,9 +234,9 @@ class _BaseDomain(AbstractModel, ORMObject):
         """Returns True if we already have the given attribute
         and value in the database, but ignoring myself.
 
-        @param attribute: the attribute that should be unique
-        @param value: value that we will check if exists in the database
-        @param case_sensitive: If the checking should be case sensitive or
+        :param attribute: the attribute that should be unique
+        :param value: value that we will check if exists in the database
+        :param case_sensitive: If the checking should be case sensitive or
             not.
         """
         if not value:
@@ -291,8 +291,8 @@ class Domain(_BaseDomain, AdaptableORMObject):
         """Like select, but search on the adapter implementing the interface iface
         associated with the domain class cls.
 
-        @param iface: interface
-        @returns: a ORMObject search result
+        :param iface: interface
+        :returns: a ORMObject search result
         """
         adapter = cls.getAdapterClass(iface)
         return adapter.select(*args, **kwargs)
@@ -302,8 +302,8 @@ class Domain(_BaseDomain, AdaptableORMObject):
         """Like selectBy, but search on the adapter implementing the interface iface
         associated with the domain class cls.
 
-        @param iface: interface
-        @returns: a ORMObject search result
+        :param iface: interface
+        :returns: a ORMObject search result
         """
         adapter = cls.getAdapterClass(iface)
         return adapter.selectBy(*args, **kwargs)
@@ -313,8 +313,8 @@ class Domain(_BaseDomain, AdaptableORMObject):
         """Like selectOne, but search on the adapter implementing the interface iface
         associated with the domain class cls.
 
-        @param iface: interface
-        @returns: None, object or raises ORMObjectMoreThanOneResultError
+        :param iface: interface
+        :returns: None, object or raises ORMObjectMoreThanOneResultError
         """
         adapter = cls.getAdapterClass(iface)
         return adapter.selectOne(*args, **kwargs)
@@ -324,8 +324,8 @@ class Domain(_BaseDomain, AdaptableORMObject):
         """Like selectOneBy, but search on the adapter implementing the interface iface
         associated with the domain class cls.
 
-        @param iface: interface
-        @returns: None, object or raises ORMObjectMoreThanOneResultError
+        :param iface: interface
+        :returns: None, object or raises ORMObjectMoreThanOneResultError
         """
         adapter = cls.getAdapterClass(iface)
         return adapter.selectOneBy(*args, **kwargs)
@@ -335,9 +335,9 @@ class Domain(_BaseDomain, AdaptableORMObject):
         """Like get, but gets on the adapter implementing the interface iface
         associated with the domain class cls.
 
-        @param iface: interface
-        @param object_id: id of object
-        @returns: the ORMObject
+        :param iface: interface
+        :param object_id: id of object
+        :returns: the ORMObject
         """
         adapter = cls.getAdapterClass(iface)
         return adapter.get(object_id, **kwargs)

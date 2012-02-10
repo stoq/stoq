@@ -30,8 +30,8 @@ from stoqlib.database.orm import StringCol, IntCol
 class InstalledPlugin(Domain):
     """This object represent an installed and activated plugin.
 
-    @cvar plugin_name: name of the plugin
-    @cvar plugin_version: version of the plugin
+    :cvar plugin_name: name of the plugin
+    :cvar plugin_version: version of the plugin
     """
     plugin_name = StringCol()
     plugin_version = IntCol()
@@ -39,7 +39,7 @@ class InstalledPlugin(Domain):
     @classmethod
     def get_plugin_names(cls, conn):
         """Fetchs a list of installed plugin names
-        @param conn: a connection
-        @returns: list of strings
+        :param conn: a connection
+        :returns: list of strings
         """
         return [p.plugin_name for p in cls.select(connection=conn)]

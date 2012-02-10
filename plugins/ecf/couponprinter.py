@@ -284,7 +284,7 @@ class Coupon(object):
 
     def add_item(self, item):
         """
-        @param item: A L{SellableItem} subclass
+        @param item: A :class:`SellableItem` subclass
         @returns: id of the item.:
           0 >= if it was added successfully
           -1 if an error happend

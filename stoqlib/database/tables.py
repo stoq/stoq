@@ -122,7 +122,7 @@ def _import():
 def get_table_type_by_name(table_name):
     """Gets a table by name.
 
-    @param table_name: name of the table
+    :param table_name: name of the table
     """
 
     if not _table_cache:

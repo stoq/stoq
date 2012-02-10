@@ -49,7 +49,7 @@ class PaymentFlowHistoryDialog(BaseEditor):
     def __init__(self, conn):
         """A dialog to print the PaymentFlowHistoryReport report.
 
-        @param conn: a database connection
+        :param conn: a database connection
         """
         executer = ORMObjectQueryExecuter(conn)
         executer.set_table(PaymentFlowHistory)

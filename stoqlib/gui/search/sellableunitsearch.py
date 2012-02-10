@@ -39,7 +39,7 @@ _ = stoqlib_gettext
 
 
 class SellableUnitSearch(SearchEditor):
-    """A search for L{stoqlib.domain.sellable.SellableUnit}"""
+    """A search for :class:`stoqlib.domain.sellable.SellableUnit`"""
 
     title = _("Search for Units")
     size = (-1, 450)

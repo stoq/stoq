@@ -47,7 +47,7 @@ class ModelListSlave(ListSlave):
                  orientation=gtk.ORIENTATION_VERTICAL):
         """
         Create a new ModelListDialog object.
-        @param conn: A database connection
+        :param conn: A database connection
         """
         if not conn:
             conn = api.get_connection()
@@ -128,21 +128,21 @@ class ModelListSlave(ListSlave):
 
     def set_model_type(self, model_type):
         """Set the type of the model this slave is containing
-        @param model_type: the model type
+        :param model_type: the model type
         """
         self._model_type = model_type
 
     def set_editor_class(self, editor_class):
         """Set the editor class which will be used to modify
         the mode of this slave
-        @param editor_class: the editor class
+        :param editor_class: the editor class
         """
         self._editor_class = editor_class
 
     def set_reuse_transaction(self, trans):
         """
         Reuse the transaction.
-        @param reuse_transaction: a transaction
+        :param reuse_transaction: a transaction
         """
         self._reuse_transaction = trans
 
@@ -182,8 +182,8 @@ class ModelListSlave(ListSlave):
         Deletes the model in a transaction.
         This can be overriden by a subclass which is useful when
         you have foreign keys which depends on this class.
-        @param model: model to delete
-        @param trans: the transaction to delete the model within
+        :param model: model to delete
+        :param trans: the transaction to delete the model within
         """
         self._model_type.delete(model.id, connection=trans)
 
@@ -192,13 +192,13 @@ class ModelListDialog(gtk.Dialog, ModelListSlave):
     """A dialog which displays all items in a table and allows you to
     add and remove items from it
 
-    @cvar model_type: an ORMObject for the table we want to modify, must
+    :cvar model_type: an ORMObject for the table we want to modify, must
       implement the IDescribable interface.
-    @cvar columns: a list of L{kiwi.ui.objectlist.Columns}
-    @cvar editor_class: class used to edit the model, must take the
+    :cvar columns: a list of :class:`kiwi.ui.objectlist.Columns`
+    :cvar editor_class: class used to edit the model, must take the
       constructor arguments (conn, model)
-    @cvar size: a two sized tuple;  (width, height) or None
-    @cvar title: window title
+    :cvar size: a two sized tuple;  (width, height) or None
+    :cvar title: window title
     """
     model_type = None
     editor_class = None
@@ -248,19 +248,19 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
                  klist_objects=None, visual_mode=False, restore_name=None):
         """ Creates a new AdditionListSlave object
 
-        @param conn:          a connection
-        @param columns:       column definitions
-        @type columns:        sequence of L{kiwi.ui.widgets.list.Columns}
-        @param editor_class:  the window that is going to be open when user
+        :param conn:          a connection
+        :param columns:       column definitions
+        :type columns:        sequence of :class:`kiwi.ui.widgets.list.Columns`
+        :param editor_class:  the window that is going to be open when user
                               clicks on add_button or edit_button.
-        @type: editor_class:  a L{stoqlib.gui.editors.BaseEditor} subclass
-        @param klist_objects: initial objects to insert into the list
-        @param visual_mode:   if we are working on visual mode, that means,
+        :type: editor_class:  a :class:`stoqlib.gui.editors.BaseEditor` subclass
+        :param klist_objects: initial objects to insert into the list
+        :param visual_mode:   if we are working on visual mode, that means,
                               not possible to edit the model on this object
         type visual_mode:     bool
-        @param restore_name:  the name used to save and restore the columns
+        :param restore_name:  the name used to save and restore the columns
                               on a cache system (e.g. pickle)
-        @type restore_name:   basestring
+        :type restore_name:   basestring
         """
         columns = columns or self.get_columns()
         StoqlibSearchSlaveDelegate.__init__(self, columns=columns,
@@ -393,7 +393,7 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
 
     def delete_model(self, model):
         """Deletes a model, can be overridden in subclass
-        @param model: model to delete
+        :param model: model to delete
         """
         model.__class__.delete(model.id, connection=self.conn)
 
@@ -472,12 +472,12 @@ class SimpleListDialog(BasicDialog):
                  title='', multiple=True):
         """
         Create a new SimpleListDialog.
-        @param columns:
-        @param objects:
-        @param hide_cancel_btn:
-        @param title:
-        @param multiple: if we're allowed to select multiple items
-        @type multiple: boolean
+        :param columns:
+        :param objects:
+        :param hide_cancel_btn:
+        :param title:
+        :param multiple: if we're allowed to select multiple items
+        :type multiple: boolean
         """
 
         BasicDialog.__init__(self)

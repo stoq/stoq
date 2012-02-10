@@ -122,7 +122,7 @@ class PurchaseOrderReport(BaseStoqReport):
 
     def _get_items_table_columns(self, include_received):
         """
-        @param include_received: If the received quantity and total columns
+        :param include_received: If the received quantity and total columns
         should be displayed
         """
         cols = [

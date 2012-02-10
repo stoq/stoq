@@ -121,7 +121,7 @@ class ECFPrinter(Domain):
         """
         Fetchs a list of constants for the current ECFPrinter object.
         @param constant_type: type of constant
-        @type constant_type: L{DeviceConstant}
+        @type constant_type: :class:`DeviceConstant`
         @returns: list of constants
         """
         return DeviceConstant.selectBy(printer=self,
@@ -132,7 +132,7 @@ class ECFPrinter(Domain):
         """
         @param payment: the payment whose method we will lookup the constant
         @returns: the payment constant
-        @rtype: L{DeviceConstant}
+        @rtype: :class:`DeviceConstant`
         """
         constant_enum = payment.method.operation.get_constant(payment)
 
@@ -151,9 +151,9 @@ class ECFPrinter(Domain):
         Raises DeviceError if a constant is not found
 
         @param sellable: sellable which has the tax codes
-        @type sellable: L{stoqlib.domain.sellable.Sellable}
+        @type sellable: :class:`stoqlib.domain.sellable.Sellable`
         @returns: the tax constant
-        @rtype: L{DeviceConstant}
+        @rtype: :class:`DeviceConstant`
         """
 
         sellable_constant = sellable.get_tax_constant()
@@ -264,12 +264,12 @@ class DeviceConstant(Domain):
         Fetches a custom tax constant.
 
         @param printer: printer to fetch constants from
-        @type printer: L{ECFPrinter}
+        @type printer: :class:`ECFPrinter`
         @param constant_enum: tax enum code
         @type constant_enum: int
         @param conn: a database connection
         @returns: the constant
-        @rtype: L{DeviceConstant}
+        @rtype: :class:`DeviceConstant`
         """
         return DeviceConstant.selectOneBy(
             printer=printer,
@@ -282,16 +282,16 @@ class DeviceConstant(Domain):
     def get_tax_constant(cls, printer, constant_enum, conn):
         """
         Fetches a tax constant.
-        Note that you need to use L{ECFPrinter.get_custom_tax_constant}
+        Note that you need to use :class:`ECFPrinter.get_custom_tax_constant`
         for custom tax constants.
 
         @param printer: printer to fetch constants from
-        @type printer: L{ECFPrinter}
+        @type printer: :class:`ECFPrinter`
         @param constant_enum: tax enum code
         @type constant_enum: int
         @param conn: a database connection
         @returns: the constant
-        @rtype: L{DeviceConstant}
+        @rtype: :class:`DeviceConstant`
         """
         if constant_enum == TaxType.CUSTOM:
             raise ValueError("Use get_custom_tax_constant for custom "

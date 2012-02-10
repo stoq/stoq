@@ -182,7 +182,7 @@ class Payment(Domain):
         """Set a STATUS_PAID payment as STATUS_PENDING. This requires clearing
         paid_date and paid_value
 
-        @param change_entry: an PaymentChangeHistory object, that will hold the changes
+        :param change_entry: an PaymentChangeHistory object, that will hold the changes
         information
         """
         self._check_status(self.STATUS_PAID, 'set_not_paid')
@@ -260,8 +260,8 @@ class Payment(Domain):
 
     def change_due_date(self, new_due_date):
         """Changes the payment due date.
-        @param new_due_date: The new due date for the payment.
-        @rtype: datetime.date
+        :param new_due_date: The new due date for the payment.
+        :rtype: datetime.date
         """
         if self.status in [Payment.STATUS_PAID, Payment.STATUS_CANCELLED]:
             raise StoqlibError(_("Invalid status for change_due_date operation, "
@@ -292,9 +292,9 @@ class Payment(Domain):
 
     def get_penalty(self, date=None):
         """Calculate the penalty in an absolute value
-        @param date: date of payment
-        @returns: penalty
-        @rtype: currency
+        :param date: date of payment
+        :returns: penalty
+        :rtype: currency
         """
         if not date:
             date = datetime.date.today()
@@ -314,9 +314,9 @@ class Payment(Domain):
 
     def get_interest(self, date=None):
         """Calculate the interest in an absolute value
-        @param date: date of payment
-        @returns: interest
-        @rtype: currency
+        :param date: date of payment
+        :returns: interest
+        :rtype: currency
         """
         if not date:
             date = datetime.date.today()
@@ -335,31 +335,31 @@ class Payment(Domain):
 
     def is_paid(self):
         """Check if the payment is paid.
-        @returns: True if the payment is paid, otherwise False
+        :returns: True if the payment is paid, otherwise False
         """
         return self.status == Payment.STATUS_PAID
 
     def is_pending(self):
         """Check if the payment is pending.
-        @returns: True if the payment is pending, otherwise False
+        :returns: True if the payment is pending, otherwise False
         """
         return self.status == Payment.STATUS_PENDING
 
     def is_preview(self):
         """Check if the payment is in preview state
-        @returns: True if the payment is paid, otherwise False
+        :returns: True if the payment is paid, otherwise False
         """
         return self.status == Payment.STATUS_PREVIEW
 
     def is_cancelled(self):
         """Check if the payment was cancelled.
-        @returns: True if the payment was cancelled, otherwise False.
+        :returns: True if the payment was cancelled, otherwise False.
         """
         return self.status == Payment.STATUS_CANCELLED
 
     def get_paid_date_string(self):
         """Get a paid date string
-        @returns: the paid date string or PAID DATE if the payment isn't
+        :returns: the paid date string or PAID DATE if the payment isn't
         paid
         """
         if self.paid_date:
@@ -368,7 +368,7 @@ class Payment(Domain):
 
     def get_open_date_string(self):
         """Get a open date string
-        @returns: the open date string or empty string
+        :returns: the open date string or empty string
         """
         if self.open_date:
             return self.open_date.date().strftime('%x')
@@ -379,12 +379,12 @@ class Payment(Domain):
 
     def is_inpayment(self):
         """Find out if a payment is incoming
-        @returns: True if it's incoming"""
+        :returns: True if it's incoming"""
         return self.payment_type == self.TYPE_IN
 
     def is_outpayment(self):
         """Find out if a payment is outgoing
-        @returns: True if it's outgoing"""
+        :returns: True if it's outgoing"""
         return self.payment_type == self.TYPE_OUT
 
     def is_separate_payment(self):
@@ -412,12 +412,12 @@ class PaymentChangeHistory(Domain):
     Only one tuple (last_due_date, new_due_date) or (last_status, new_status)
     should be non-null at a time.
 
-    @param payment: the payment changed
-    @param change_reason: the reason of the due date change
-    @param last_due_date: the due date that was set before the changed
-    @param new_due_date: the due date that was set after changed
-    @param last_status: status before the change
-    @param new_status: status after change
+    :param payment: the payment changed
+    :param change_reason: the reason of the due date change
+    :param last_due_date: the due date that was set before the changed
+    :param new_due_date: the due date that was set after changed
+    :param last_status: status before the change
+    :param new_status: status after change
     """
     payment = ForeignKey('Payment')
     change_reason = UnicodeCol(default=None)
@@ -431,15 +431,15 @@ class PaymentChangeHistory(Domain):
 class PaymentFlowHistory(Domain):
     """A class to hold information about the financial flow.
 
-    @param history_date: the date when payments were registered.
-    @param to_receive: the amount scheduled to be received in the
+    :param history_date: the date when payments were registered.
+    :param to_receive: the amount scheduled to be received in the
                        history_date.
-    @param received: the amount received in the history_date.
-    @param to_pay: the amount scheduled to be paid in the history_date.
-    @param paid: the amount paid in the history_date.
-    @param balance_expected: the balance of the last day plus the amount to be
+    :param received: the amount received in the history_date.
+    :param to_pay: the amount scheduled to be paid in the history_date.
+    :param paid: the amount paid in the history_date.
+    :param balance_expected: the balance of the last day plus the amount to be
                              received minus the amount to be paid.
-    @param balance_real: the balance of the last day plus the amount received
+    :param balance_real: the balance of the last day plus the amount received
                          minus the amount paid.
     """
 
@@ -473,7 +473,7 @@ class PaymentFlowHistory(Domain):
         return Decimal(0)
 
     def get_divergent_payments(self):
-        """Returns a L{Payment} sequence that meet to following requirements:
+        """Returns a :class:`Payment` sequence that meet to following requirements:
             - The payment due date, paid date or cancel date is the current
               PaymentFlowHistory date.
             - The payment was paid/received with different values (eg with
@@ -516,13 +516,13 @@ class PaymentFlowHistory(Domain):
                 next_day._update_balance()
 
     def _update_registers(self, payment, value, accomplished=True):
-        """Updates the L{PaymentFlowHistory} attributes according to the
+        """Updates the :class:`PaymentFlowHistory` attributes according to the
         payment facet, value and if the payment was accomplished or not.
 
-        @param payment: the payment that will be registered.
-        @param value: the value that will be used to update history
+        :param payment: the payment that will be registered.
+        :param value: the value that will be used to update history
                       attributes.
-        @param accomplished: indicates if we should update the attributes that
+        :param accomplished: indicates if we should update the attributes that
                              holds information about the accomplished payments
                              or attributes related to payments that will be
                              accomplished later.
@@ -568,13 +568,13 @@ class PaymentFlowHistory(Domain):
 
     @classmethod
     def get_last_day(cls, conn, reference_date=None):
-        """Returns the L{PaymentFlowHistory} instance of the last day
+        """Returns the :class:`PaymentFlowHistory` instance of the last day
         registered or None if there is no registry. If reference_date was not
         specified, the referente date will be the current date.
 
-        @param reference_date: the reference date to use when querying the
+        :param reference_date: the reference date to use when querying the
                                last day.
-        @param conn: a database connection.
+        :param conn: a database connection.
         """
         if reference_date is None:
             reference_date = datetime.date.today()
@@ -587,13 +587,13 @@ class PaymentFlowHistory(Domain):
 
     @classmethod
     def get_next_day(cls, conn, reference_date=None):
-        """Returns the L{PaymentFlowHistory} instance of the next day
+        """Returns the :class:`PaymentFlowHistory` instance of the next day
         registered or None if there is no registry. If reference_date was not
         specified, the referente date will be the current date.
 
-        @param reference_date: the reference date to use when querying the
+        :param reference_date: the reference date to use when querying the
                                next day.
-        @param conn: a database connection.
+        :param conn: a database connection.
         """
         if reference_date is None:
             reference_date = datetime.date.today()
@@ -606,10 +606,10 @@ class PaymentFlowHistory(Domain):
 
     @classmethod
     def get_or_create_flow_history(cls, conn, date):
-        """Returns a L{PaymentFlowHistory} instance.
+        """Returns a :class:`PaymentFlowHistory` instance.
 
-        @param conn: a database connection.
-        @param date: the date of the L{PaymentFlowHistory} we want to
+        :param conn: a database connection.
+        :param date: the date of the :class:`PaymentFlowHistory` we want to
                      retrieve or create.
         """
         if isinstance(date, datetime.datetime):
@@ -622,12 +622,12 @@ class PaymentFlowHistory(Domain):
 
     @classmethod
     def add_payment(cls, conn, payment, reference_date=None):
-        """Adds a payment in the L{PaymentFlowHistory} registry according to
+        """Adds a payment in the :class:`PaymentFlowHistory` registry according to
         the payment due date.
 
-        @param conn: a database connection.
-        @param payment: the payment to be added in the registry.
-        @param reference_date: the reference date to use when add the payment,
+        :param conn: a database connection.
+        :param payment: the payment to be added in the registry.
+        :param reference_date: the reference date to use when add the payment,
                                if not specified, the reference will be the
                                payment due date.
         """
@@ -639,12 +639,12 @@ class PaymentFlowHistory(Domain):
 
     @classmethod
     def add_paid_payment(cls, conn, payment, reference_date=None):
-        """Adds a paid payment in the L{PaymentFlowHistory} registry. The paid
+        """Adds a paid payment in the :class:`PaymentFlowHistory` registry. The paid
         payment will be added in the current day registry.
 
-        @param conn: a database connection.
-        @param payment: the paid payment to be added in the registry.
-        @param reference_date: the reference date to use when add the paid
+        :param conn: a database connection.
+        :param payment: the paid payment to be added in the registry.
+        :param reference_date: the reference date to use when add the paid
                                payment, if not specified, the reference will
                                be the current date.
         """
@@ -656,12 +656,12 @@ class PaymentFlowHistory(Domain):
 
     @classmethod
     def remove_payment(cls, conn, payment, reference_date=None):
-        """Removes a payment in the L{PaymentFlowHistory} registry. The
+        """Removes a payment in the :class:`PaymentFlowHistory` registry. The
         payment will be deducted from registry according to its due date.
 
-        @param conn: a database connection.
-        @param payment: the payment to be removed in the registry.
-        @param reference_date: the reference date to use when remove the
+        :param conn: a database connection.
+        :param payment: the payment to be removed in the registry.
+        :param reference_date: the reference date to use when remove the
                                payment, if not specified, the reference will
                                be the payment due date.
         """
@@ -674,12 +674,12 @@ class PaymentFlowHistory(Domain):
 
     @classmethod
     def remove_paid_payment(cls, conn, payment, reference_date=None):
-        """Removes a paid payment in the L{PaymentFlowHistory} registry. The paid
+        """Removes a paid payment in the :class:`PaymentFlowHistory` registry. The paid
         payment will be removed in the current day registry.
 
-        @param conn: a database connection.
-        @param payment: the paid payment to be removed in the registry.
-        @param reference_date: the reference date to use when remove the paid
+        :param conn: a database connection.
+        :param payment: the paid payment to be removed in the registry.
+        :param reference_date: the reference date to use when remove the paid
                                payment, if not specified, the reference will
                                be the current date.
         """

@@ -73,19 +73,19 @@ class ReportLine(Flowable):
                  dash_pattern=None):
         """ Creates a new ReportLine object
 
-        @param thickness: The line thickness
-        @type:         int
+        :param thickness: The line thickness
+        :type:         int
 
-        @param v_margins: How much vertical space between the line? Defaults
+        :param v_margins: How much vertical space between the line? Defaults
                        to 5
-        @type:         int
+        :type:         int
 
-        @param h_margins: How much horizontal space between the line?
+        :param h_margins: How much horizontal space between the line?
                        Defaults to 0
-        @type:         int
+        :type:         int
 
-        @param dash_pattern: The line dash pattern.
-        @type:         float
+        :param dash_pattern: The line dash pattern.
+        :type:         float
         """
         Flowable.__init__(self)
         self.thickness = thickness
@@ -129,24 +129,24 @@ class Signature(Flowable):
                  text_align=CENTER, style_data=None):
         """ Creates a new Signature object
 
-        @param labels: A list of string, with each string representing
+        :param labels: A list of string, with each string representing
                        a signature.
-        @type:         list
+        :type:         list
 
-        @param align:  The signature alignment
-        @type:         One of LEFT, CENTER or RIGHT constants
+        :param align:  The signature alignment
+        :type:         One of LEFT, CENTER or RIGHT constants
 
-        @param line_width: The line width
-        @type:         int/float
+        :param line_width: The line width
+        :type:         int/float
 
-        @param height: How much space before the signature line?
-        @type:         int/float
+        :param height: How much space before the signature line?
+        :type:         int/float
 
-        @param text_align: The signature text alignment.
-        @type:         One of CENTER, LEFT or RIGHT constants
+        :param text_align: The signature text alignment.
+        :type:         One of CENTER, LEFT or RIGHT constants
 
-        @param style_data: A string with the paragraph style.
-        @type:         One of the styles defined in the default_style
+        :param style_data: A string with the paragraph style.
+        :type:         One of the styles defined in the default_style
                        module.
         """
         self.labels = labels
@@ -252,22 +252,22 @@ class Paragraph(RParagraph):
                  frags=None, caseSensitive=1, align=TA_LEFT):
         """ Creates a new Paragraph object
 
-        @param text:   The paragraph text. You can use the same features
+        :param text:   The paragraph text. You can use the same features
                        available on reportlab's Paragraph.
-        @type text:    basestring
+        :type text:    basestring
 
-        @param style:  a string or ParagraphStyle instance representing
+        :param style:  a string or ParagraphStyle instance representing
                        the paragraph style. If you do use a string, it'll
                        be searched in the styles provided by
                        default_style module.
-        @type style:   object
+        :type style:   object
 
-        @param ellipsis: Define if the paragraph must use ellipsis when
+        :param ellipsis: Define if the paragraph must use ellipsis when
                        the text doesn't fits in the available width. If
                        not set, reportlab will try break the text into
                        multiple lines (which can be fail if the
                        text haven't the required amount of space chars)
-        @type ellipsis: bool
+        :type ellipsis: bool
         """
         if not isinstance(text, basestring):
             raise TypeError("Invalid text specified: %r" % text)

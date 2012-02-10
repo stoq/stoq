@@ -42,8 +42,8 @@ class Event(Domain):
     """An event represent something that happened in Stoq that
     should be logged and access at a later point.
 
-    @cvar date: the date the event was created
-    @cvar description: description of the event
+    :cvar date: the date the event was created
+    :cvar description: description of the event
     """
 
     (TYPE_SYSTEM,

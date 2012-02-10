@@ -96,8 +96,8 @@ class FiscalPrinterHelper(gobject.GObject):
 
     def __init__(self, conn, parent):
         """ Creates a new FiscalPrinterHelper object
-        @param conn:
-        @param parent: a gtk.Window subclass or None
+        :param conn:
+        :param parent: a gtk.Window subclass or None
         """
         gobject.GObject.__init__(self)
         self.conn = conn
@@ -131,9 +131,9 @@ class FiscalPrinterHelper(gobject.GObject):
         fixing an conflicting status: If the DB is open but the ECF is
         closed, or the other way around.
 
-        @param close_db: If the till in the DB should be closed
-        @param close_ecf: If the till in the ECF should be closed
-        @returns: True if the till was closed, otherwise False
+        :param close_db: If the till in the DB should be closed
+        :param close_ecf: If the till in the ECF should be closed
+        :returns: True if the till was closed, otherwise False
         """
 
         if not self._previous_day:
@@ -171,7 +171,7 @@ class FiscalPrinterHelper(gobject.GObject):
         """Checks if the last opened till was closed and asks the
         user if he wants to close it
 
-        @returns:
+        :returns:
             - CLOSE_TILL_BOTH if both DB and ECF needs closing.
             - CLOSE_TILL_DB if only DB needs closing.
             - CLOSE_TILL_ECF if only ECF needs closing.
@@ -197,7 +197,7 @@ class FiscalPrinterHelper(gobject.GObject):
 
     def create_coupon(self):
         """ Creates a new fiscal coupon
-        @returns: a new coupon
+        :returns: a new coupon
         """
 
         if sysparam(self.conn).DEMO_MODE:
@@ -343,8 +343,8 @@ class FiscalCoupon(gobject.GObject):
     def add_item(self, sale_item):
         """ Adds an item to fiscal coupon
 
-        @param sale_item: a sale item
-        @returns: id of the sale_item.:
+        :param sale_item: a sale item
+        :returns: id of the sale_item.:
           0 >= if it was added successfully
           -1 if an error happend
           0 if added but not printed (free deliveries)

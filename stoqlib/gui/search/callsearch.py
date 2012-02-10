@@ -62,11 +62,11 @@ class CallsSearch(SearchEditor):
 
     def __init__(self, conn, person=None, date=None, reuse_transaction=False):
         """
-        @param person: If not None, the search will show only call made to
+        :param person: If not None, the search will show only call made to
             this person.
-        @param date: If not None, the search will be filtered using this date by
+        :param date: If not None, the search will be filtered using this date by
             default
-        @param reuse_transaction: When False, a new transaction will be
+        :param reuse_transaction: When False, a new transaction will be
             created/commited when creating a new call. When True, no transaction
             will be created. In this case, I{conn} will be utilized.
         """

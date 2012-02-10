@@ -71,11 +71,11 @@ class CityLocation(Domain):
         """
         Returns a CityLocation. If it does not exist, create a new
         one and return it.
-        @param trans: a database transaction
-        @param city: city
-        @param state: state
-        @param country: country
-        @returns: a L{CityLocation} or None
+        :param trans: a database transaction
+        :param city: city
+        :param state: state
+        :param country: country
+        :returns: a :class:`CityLocation` or None
         """
         location = CityLocation.selectOne(
             AND(ILIKE(CityLocation.q.city, city),
@@ -125,8 +125,8 @@ class Address(Domain):
 
     def get_postal_code_number(self):
         """Returns the postal code without any non-numeric characters
-        @returns: the postal code as a number
-        @rtype: integer
+        :returns: the postal code as a number
+        :rtype: integer
         """
         if not self.postal_code:
             return 0

@@ -44,14 +44,14 @@ class InventoryItem(Domain):
     If those quantities are not identitical, it will also contain a reason
     and a cfop describing that.
 
-    @ivar product: the item
-    @ivar recorded_quantity: the recorded quantity of a product
-    @ivar actual_quantity: the actual quantity of a product
-    @ivar product_cost: the product's cost when the product was adjusted.
-    @ivar inventory: the inventory process that contains this item
-    @ivar cfop: the cfop used to adjust this item, this is only set when
+    :attribute product: the item
+    :attribute recorded_quantity: the recorded quantity of a product
+    :attribute actual_quantity: the actual quantity of a product
+    :attribute product_cost: the product's cost when the product was adjusted.
+    :attribute inventory: the inventory process that contains this item
+    :attribute cfop: the cfop used to adjust this item, this is only set when
         an adjustment is done
-    @ivar reason: the reason of why this item has been adjusted
+    :attribute reason: the reason of why this item has been adjusted
     """
 
     product = ForeignKey("Product")
@@ -155,11 +155,11 @@ class Inventory(Domain):
         - closed: all the inventory items have been counted (and
           eventually) adjusted.
 
-    @cvar STATUS_OPEN: The inventory process is open
-    @cvar STATUS_CLOSED: The inventory process is closed
-    @ivar open_date: the date inventory process was started
-    @ivar close_date: the date inventory process was closed
-    @ivar branch: branch where the inventory process was done
+    :cvar STATUS_OPEN: The inventory process is open
+    :cvar STATUS_CLOSED: The inventory process is closed
+    :attribute open_date: the date inventory process was started
+    :attribute close_date: the date inventory process was closed
+    :attribute branch: branch where the inventory process was done
     """
 
     (STATUS_OPEN, STATUS_CLOSED, STATUS_CANCELLED) = range(3)
@@ -187,8 +187,8 @@ class Inventory(Domain):
     def close(self, close_date=None):
         """Closes the inventory process
 
-        @param close_date: the closing date or None for right now.
-        @type: datetime.datetime
+        :param close_date: the closing date or None for right now.
+        :type: datetime.datetime
         """
         if not close_date:
             close_date = const.NOW()
@@ -216,8 +216,8 @@ class Inventory(Domain):
     def get_items(self):
         """Returns all the inventory items related to this inventory
 
-        @returns: items
-        @rtype: a sequence of L{InventoryItem}
+        :returns: items
+        :rtype: a sequence of :class:`InventoryItem`
         """
         conn = self.get_connection()
         return InventoryItem.selectBy(inventory=self, connection=conn)
@@ -227,8 +227,8 @@ class Inventory(Domain):
         """Retuns all the branches available to open the inventory
         process.
 
-        @returns: branches
-        @rtype: a sequence of L{PersonAdaptToBranch}
+        :returns: branches
+        :rtype: a sequence of :class:`PersonAdaptToBranch`
         """
         for branch in Person.iselect(IBranch, connection=conn):
             if not cls.selectOneBy(branch=branch, status=cls.STATUS_OPEN,
@@ -239,7 +239,7 @@ class Inventory(Domain):
     def has_open(cls, conn, branch):
         """Returns if there is an inventory opened at the moment or not.
 
-        @returns: The open inventory, if there is one. None otherwise.
+        :returns: The open inventory, if there is one. None otherwise.
         """
         return cls.selectOneBy(status=Inventory.STATUS_OPEN,
                                branch=branch, connection=conn)
@@ -248,8 +248,8 @@ class Inventory(Domain):
         """Returns all the inventory items that needs adjustment, that is
         the recorded quantity is different from the actual quantity.
 
-        @returns: items
-        @rtype: a sequence of L{InventoryItem}
+        :returns: items
+        :rtype: a sequence of :class:`InventoryItem`
         """
         query = AND(InventoryItem.q.inventoryID == self.id,
                     InventoryItem.q.recorded_quantity !=
@@ -262,7 +262,7 @@ class Inventory(Domain):
     def has_adjusted_items(self):
         """Returns if we already have an item adjusted or not.
 
-        @returns: True if there is one or more items adjusted, False
+        :returns: True if there is one or more items adjusted, False
         otherwise.
         """
         query = AND(InventoryItem.q.inventoryID == self.id,

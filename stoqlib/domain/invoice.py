@@ -36,12 +36,12 @@ class InvoicePrinter(Domain):
     connected to a branch station.
     It has a layout assigned which will be used to format the data sent
     to the printer
-    @param device_name: a operating system specific identifier for the
+    :param device_name: a operating system specific identifier for the
       device used to send the printer job, /dev/lpX on unix
-    @param description: a human friendly description of the printer, this
+    :param description: a human friendly description of the printer, this
       will appear in interfaces
-    @param station: the station this printer is connected to
-    @param layout: the layout used to format the invoices
+    :param station: the station this printer is connected to
+    :param layout: the layout used to format the invoices
     """
     implements(IDescribable)
 
@@ -53,7 +53,7 @@ class InvoicePrinter(Domain):
     def get_description(self):
         """
         Gets the description of the printer.
-        @returns: description
+        :returns: description
         """
         return self.description
 
@@ -62,9 +62,9 @@ class InvoicePrinter(Domain):
         """Gets the printer given a station.
         If there's no invoice printer configured for this station, return
         None.
-        @param station: the station
-        @param conn: database connection
-        @returns: an InvoiceLayout or None
+        :param station: the station
+        :param conn: database connection
+        :returns: an InvoiceLayout or None
         """
         return InvoicePrinter.selectOneBy(station=station,
                                           connection=conn)
@@ -72,10 +72,10 @@ class InvoicePrinter(Domain):
 
 class InvoiceLayout(Domain):
     """A layout of an invoice.
-    @param description: description of the layout, this is human friendly
+    :param description: description of the layout, this is human friendly
       string which is displayed in interfaces.
-    @param width: the width in units of the layout
-    @param height: the height in units of the layout
+    :param width: the width in units of the layout
+    :param height: the height in units of the layout
     """
     implements(IDescribable)
 
@@ -90,7 +90,7 @@ class InvoiceLayout(Domain):
     @property
     def fields(self):
         """Fetches all the fields tied to this layout
-        @returns: a sequence of InvoiceField
+        :returns: a sequence of InvoiceField
         """
         return InvoiceField.selectBy(
             connection=self.get_connection(),
@@ -98,7 +98,7 @@ class InvoiceLayout(Domain):
 
     def get_field_by_name(self, name):
         """Fetches an invoice field by using it's name
-        @param name: name of the field
+        :param name: name of the field
         """
         return InvoiceField.selectOneBy(
             connection=self.get_connection(),
@@ -108,20 +108,20 @@ class InvoiceLayout(Domain):
     def get_description(self):
         """
         Gets the description of the field
-        @returns: description.
+        :returns: description.
         """
         return self.description
 
 
 class InvoiceField(Domain):
     """Represents a field in an InvoiceLayout.
-    @ivar x: x position of the upper left corner of the field
-    @ivar y: y position of the upper left corner of the field
-    @ivar width: the width of the field, must be larger than 0
-    @ivar height: the height of the field, must be larger than 0
-    @ivar field_name: the name of the field, this is used to identify
+    :attribute x: x position of the upper left corner of the field
+    :attribute y: y position of the upper left corner of the field
+    :attribute width: the width of the field, must be larger than 0
+    :attribute height: the height of the field, must be larger than 0
+    :attribute field_name: the name of the field, this is used to identify
       and fetch the data when printing the invoice
-    @ivar layout: the layout this field belongs to
+    :attribute layout: the layout this field belongs to
     """
     x = IntCol()
     y = IntCol()

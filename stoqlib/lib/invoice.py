@@ -51,8 +51,8 @@ class InvoicePage(object):
     def __init__(self, width, height):
         """
         Create a new InvoicePage object.
-        @param width: the width of the page
-        @param height: the height of the page
+        :param width: the width of the page
+        :param height: the height of the page
         """
         self._data = []
 
@@ -115,12 +115,12 @@ class InvoicePage(object):
     def add(self, data_type, x, y, width, height, data):
         """
         Adds a new field to the page
-        @param data_type: data type of the field
-        @param x: x position of the left side of the field
-        @param y: y position of the upper side of the field
-        @param width: width of the field
-        @param height: height of the field
-        @param data: data to be printed at the field. This is dependent of
+        :param data_type: data type of the field
+        :param x: x position of the left side of the field
+        :param y: y position of the upper side of the field
+        :param width: width of the field
+        :param height: height of the field
+        :param data: data to be printed at the field. This is dependent of
           the data type
         """
         if data_type == bool:
@@ -216,7 +216,7 @@ class _Invoice(object):
             - field_type is the type of the field
             - lines is all the lines which should be printed on
               the current page
-        @returns: a dictionary
+        :returns: a dictionary
         """
 
         # Fetch the data from all list fields
@@ -239,8 +239,8 @@ class _Invoice(object):
     def generate_pages(self):
         """Formats the data from the sale according to the fields specified
         in the layout
-        @returns: pages printed
-        @rtype: a list of pages
+        :returns: pages printed
+        :rtype: a list of pages
         """
 
         list_field_data = self._fetch_list_fields()
@@ -274,7 +274,7 @@ class _Invoice(object):
     def has_invoice_number(self):
         """Returns if the invoice has an invoice number field or not.
 
-        @returns: True if there is an invoice field, False otherwise
+        :returns: True if there is an invoice field, False otherwise
         """
         for field in self.header_fields:
             if field.field_name == 'INVOICE_NUMBER':
@@ -283,8 +283,8 @@ class _Invoice(object):
 
     def send_to_printer(self, device):
         """Send the printer invoice to the printer
-        @param device: device name of the printer
-        @type device: string
+        :param device: device name of the printer
+        :type device: string
         """
         try:
             printer = EscPPrinter(device)
@@ -301,8 +301,8 @@ class _Invoice(object):
 class SaleInvoice(_Invoice):
     def __init__(self, sale, layout):
         """Creates a new sale invoice
-        @param sale: sale to print an invoice for
-        @param layout: the invoice layout to use
+        :param sale: sale to print an invoice for
+        :param layout: the invoice layout to use
         """
         _Invoice.__init__(self, layout)
         self.sale = sale
@@ -321,8 +321,8 @@ class PurchaseInvoice(_Invoice):
 def print_sale_invoice(sale_invoice, invoice_printer):
     """Utility function to print a sale invoice.
 
-    @param sale: a L{stoqlib.domain.sale.Sale} instance
-    @param invoice_printer: L{stoqlib.domain.invoice.InvoicePrinter} instance
+    :param sale: a :class:`stoqlib.domain.sale.Sale` instance
+    :param invoice_printer: :class:`stoqlib.domain.invoice.InvoicePrinter` instance
     """
     sale_invoice.send_to_printer(invoice_printer.device_name)
 

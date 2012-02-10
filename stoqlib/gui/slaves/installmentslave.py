@@ -218,8 +218,8 @@ class _InstallmentConfirmationSlave(BaseEditor):
 
     def __init__(self, conn, payments):
         """ Creates a new _InstallmentConfirmationSlave
-        @param conn: a database connection
-        @param payments: a list of payments
+        :param conn: a database connection
+        :param payments: a list of payments
         """
         self._payments = payments
         self._proxy = None
