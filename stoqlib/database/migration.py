@@ -48,7 +48,7 @@ from stoqlib.lib.defaults import stoqlib_gettext
 from stoqlib.lib.message import error, info
 from stoqlib.lib.parameters import (check_parameter_presence,
                                     ensure_system_parameters)
-from stoqlib.lib.pluginmanager import get_plugin_manager, PluginError
+from stoqlib.lib.pluginmanager import get_plugin_manager
 
 _ = stoqlib_gettext
 log = Logger('stoqlib.database.migration')
