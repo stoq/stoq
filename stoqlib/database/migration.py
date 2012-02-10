@@ -344,10 +344,14 @@ class StoqlibSchemaMigration(SchemaMigration):
         log.info("Migration done")
         return True
 
-    def update_plugins(self):
+    def _get_plugins(self):
         manager = get_plugin_manager()
         for plugin_name in manager.installed_plugins_names:
-            plugin = manager.get_plugin(plugin_name)
+            if plugin_name in manager.available_plugins_names:
+                yield manager.get_plugin(plugin_name)
+
+    def update_plugins(self):
+        for plugin in self._get_plugins():
             migration = plugin.get_migration()
             if migration:
                 migration.update()
@@ -356,18 +360,7 @@ class StoqlibSchemaMigration(SchemaMigration):
         # This cannot be done in check_uptodate since the plugin domain
         # classes were introduced as a patch and the way the callsites
         # works in stoq/lib/startup.py
-        manager = get_plugin_manager()
-        for plugin_name in manager.installed_plugins_names:
-            try:
-                plugin = manager.get_plugin(plugin_name)
-            except PluginError:
-                # tef is installed on the livecd, but we remove it when
-                # instaling to HDD. This workaround will ignore if the plugin is
-                # enabled but not installed. Figure out how to handle this
-                # properly.
-                if plugin_name == 'tef':
-                    continue
-                raise
+        for plugin in self._get_plugins():
             migration = plugin.get_migration()
             if not migration:
                 continue
