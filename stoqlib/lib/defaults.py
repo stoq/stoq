@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source
+## Copyright (C) 2005-2012 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -26,8 +26,8 @@
 import ctypes
 from ctypes.util import find_library
 import os
+import platform
 import re
-
 from decimal import Decimal
 
 from dateutil import relativedelta
@@ -113,26 +113,36 @@ def get_weekday_start():
 
     :returns: a dateutil.realtivedelta.weekday instance
     """
-    # Libc + ctypes is not working on natty and previous
-    #libc = get_libc()
-    #week_origin = libc.nl_langinfo(NL_TIME_WEEK_1STDAY)
-    #v = libc.nl_langinfo(NL_TIME_FIRST_WEEKDAY)
-    #first_weekday = ord(ctypes.cast(v, ctypes.c_char_p).value[0])
 
-    # Workaround to libc .
-    process = os.popen("locale first_weekday week-1stday")
-    first_weekday, week_origin = process.read().split('\n')[:2]
-    process.close()
+    _system = platform.system()
+    week_start = 0
+    if _system == 'Darwin':
+        # FIXME: Port this to use py objc
+        # http://stackoverflow.com/questions/3519207/how-to-calculate-first-nsdate-of-current-week
+        pass
+    elif _system == 'Windows':
+        # FIXME: GetLocaleInfo(LOCALE_IFIRSTDAYOFWEEK)
+        pass
+    elif _system == 'Linux':
+        # Libc + ctypes is not working on natty and previous
+        # libc = get_libc()
+        # week_origin = libc.nl_langinfo(NL_TIME_WEEK_1STDAY)
+        # v = libc.nl_langinfo(NL_TIME_FIRST_WEEKDAY)
+        # first_weekday = ord(ctypes.cast(v, ctypes.c_char_p).value[0])
 
-    # we will set week_1sday based on the dateutil.relativedelta.weekday mapping
-    if week_origin == '19971130': # Sunday
-        week_1stday = 6
-    elif week_origin == '19971201': # Monday
-        week_1stday = 0
-    else:
-        raise TypeError('Unknown NL_TIME_WEEK_1STDAY constant')
+        process = os.popen("locale first_weekday week-1stday")
+        first_weekday, week_origin = process.read().split('\n')[:2]
+        process.close()
 
-    week_start = (week_1stday + int(first_weekday) - 1) % 7
+        # we will set week_1sday based on the dateutil.relativedelta.weekday mapping
+        if week_origin == '19971130': # Sunday
+            week_1stday = 6
+        elif week_origin == '19971201': # Monday
+            week_1stday = 0
+        else:
+            raise TypeError('Unknown NL_TIME_WEEK_1STDAY constant')
+
+        week_start = (week_1stday + int(first_weekday) - 1) % 7
 
     return relativedelta.weekday(week_start)
 
