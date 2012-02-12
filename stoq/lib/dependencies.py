@@ -71,7 +71,7 @@ class DependencyChecker(object):
         self._check_pygtk(PYGTK_REQUIRED, GTK_REQUIRED)
         self._check_kiwi(KIWI_REQUIRED)
         self._check_pycairo(PYCAIRO_REQUIRED)
-        if platform.system() == 'Linux':
+        if platform.system() != 'Windows':
             self._check_pygtkwebkit(PYGTKWEBKIT_REQUIRED)
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
         self._check_dateutil(DATEUTIL_REQUIRED)
@@ -89,14 +89,14 @@ class DependencyChecker(object):
         self._check_pil(PIL_REQUIRED)
         self._check_reportlab(REPORTLAB_REQUIRED)
         self._check_mako(MAKO_REQUIRED)
-        if platform.system() != 'Windows':
+        if platform.system() not in ['Darwin', 'Windows']:
             self._check_pypoppler(PYPOPPLER_REQUIRED)
 
         # ECF
         # FIXME: makes sense to allow Stoq to run with all of these disabled.
         self._check_pyserial(PYSERIAL_REQUIRED)
         self._check_stoqdrivers(STOQDRIVERS_REQUIRED)
-        if platform.system() != 'Windows':
+        if platform.system() == 'Linux':
             self._check_gudev(GUDEV_REQUIRED)
 
     def _error(self, title, msg):
