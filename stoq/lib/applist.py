@@ -83,8 +83,8 @@ def get_application_icon(appname):
 
     return {'admin': STOQ_ADMIN_APP,
             'calendar': STOQ_CALENDAR_APP,
-            'financial':  STOQ_CALC,
-            'inventory':  STOQ_INVENTORY_APP,
+            'financial': STOQ_CALC,
+            'inventory': STOQ_INVENTORY_APP,
             'payable': STOQ_PAYABLE_APP,
             'pos': STOQ_POS_APP,
             'production': STOQ_PRODUCTION_APP,
