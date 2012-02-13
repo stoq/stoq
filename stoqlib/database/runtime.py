@@ -229,14 +229,16 @@ def get_connection():
     return conn
 
 
-def new_transaction():
+def new_transaction(conn=None):
     """
     Create a new transaction.
     :returns: a transaction
     """
     log.debug('Creating a new transaction in %s()'
               % sys._getframe(1).f_code.co_name)
-    _transaction = StoqlibTransaction(get_connection())
+    if not conn:
+        conn = get_connection()
+    _transaction = StoqlibTransaction(conn)
     assert _transaction is not None
     return _transaction
 
