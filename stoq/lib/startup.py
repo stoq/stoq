@@ -30,7 +30,6 @@ import os
 import socket
 import sys
 
-from kiwi.component import provide_utility
 from kiwi.log import Logger
 from stoqlib.database.admin import ensure_admin_user, initialize_system
 from stoqlib.database.database import check_version
@@ -45,7 +44,6 @@ from stoqlib.exceptions import (DatabaseError, StoqlibError,
                                 DatabaseInconsistency)
 from stoqlib.lib.configparser import register_config, StoqConfig
 from stoqlib.lib.crashreport import collect_traceback
-from stoqlib.lib.interfaces import  IApplicationDescriptions
 from stoqlib.lib.message import error
 from stoqlib.lib.osutils import read_registry_key
 
@@ -128,9 +126,6 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
 
     register_config(config)
 
-    from stoq.lib.applist import ApplicationDescriptions
-    provide_utility(IApplicationDescriptions, ApplicationDescriptions())
-
     if register_station:
         try:
             conn = get_connection()
@@ -166,17 +161,8 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         orm_startup()
 
     if options:
-        if options.debug:
-            from gtk import keysyms
-            from stoqlib.gui.keyboardhandler import install_global_keyhandler
-            from stoqlib.gui.introspection import introspect_slaves
-            install_global_keyhandler(keysyms.F12, introspect_slaves)
-
         if options.sqldebug:
             orm_enable_debugging()
-
-    from stoqlib.gui.keybindings import load_user_keybindings
-    load_user_keybindings()
 
 
 def needs_schema_update():

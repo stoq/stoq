@@ -333,6 +333,12 @@ def _initialize(options):
     from stoq.lib.startup import setup, needs_schema_update
     log.debug('calling setup()')
 
+    from kiwi.component import provide_utility
+    from stoqlib.lib.interfaces import IApplicationDescriptions
+    from stoq.lib.applist import ApplicationDescriptions
+    provide_utility(IApplicationDescriptions,
+                    ApplicationDescriptions())
+
     # XXX: progress dialog for connecting (if it takes more than
     # 2 seconds) or creating the database
     try:
@@ -399,6 +405,20 @@ def _parse_command_line(args):
     return options, appname
 
 
+def _load_key_bindings():
+    from stoqlib.gui.keybindings import load_user_keybindings
+    load_user_keybindings()
+
+
+def _setup_debug_options(options):
+    if not options.debug:
+        return
+    from gtk import keysyms
+    from stoqlib.gui.keyboardhandler import install_global_keyhandler
+    from stoqlib.gui.introspection import introspect_slaves
+    install_global_keyhandler(keysyms.F12, introspect_slaves)
+
+
 def main(args):
     try:
         options, appname = _parse_command_line(args)
@@ -420,4 +440,6 @@ def main(args):
     _setup_cookiefile()
 
     _initialize(options)
+    _load_key_bindings()
+    _setup_debug_options(options)
     run_app(options, appname)
