@@ -390,7 +390,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
 
     def _remove_quote(self):
         q = self.search.results.get_selected().quotation
-        msg = _('Are you sure you want to remove "%s" ?' % q.get_description())
+        msg = _('Are you sure you want to remove "%s" ?') % q.get_description()
         if not yesno(msg, gtk.RESPONSE_NO,
                      _("Remove quote"), _("Don't remove")):
             return

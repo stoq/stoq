@@ -270,7 +270,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             return ValidationError(_("Discount must be greater than zero"))
         if value > self.model.get_total():
             return ValidationError(_("Discount must be less "
-                                     "than %s" % (self.model.get_total(), )))
+                                     "than %s") % (self.model.get_total(),))
 
     def after_secure_value__content_changed(self, widget):
         try:

@@ -527,8 +527,8 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
 
         if product.is_supplied_by(supplier):
             product_desc = self._product.sellable.get_description()
-            info(_(u'%s is already supplied by %s' % (product_desc,
-                                                      supplier.person.name)))
+            info(_(u'%s is already supplied by %s') % (product_desc,
+                                                      supplier.person.name))
             return
 
         model = ProductSupplierInfo(product=product,

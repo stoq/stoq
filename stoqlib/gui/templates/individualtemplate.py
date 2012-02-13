@@ -65,8 +65,8 @@ class _IndividualDocuments(BaseEditorSlave):
                 self.document_l10n.label,))
 
         if self.model.check_cpf_exists(value):
-            return ValidationError(_('A person with this %s already exists' % (
-                self.document_l10n.label,)))
+            return ValidationError(_('A person with this %s already exists') % (
+                                                    self.document_l10n.label,))
 
 
 class _IndividualDetailsModel(AttributeForwarder):
