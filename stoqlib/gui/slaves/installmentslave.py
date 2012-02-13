@@ -359,7 +359,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
         total = self.model.get_installment_value()
         if value >= total:
             return ValidationError(_("Discount can not be greater or "
-                                     "equal than %.2f" % (total, )))
+                                     "equal than %.2f") % (total, ))
         if value < 0:
             return ValidationError(_("Discount can not be less than zero"))
 

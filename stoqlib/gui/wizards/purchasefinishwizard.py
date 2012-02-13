@@ -224,7 +224,7 @@ class PurchaseFinishWizard(BaseWizard):
 
     def _create_return_payment(self):
         money = PaymentMethod.get_by_name(self.conn, 'money')
-        description = _('Return payment for order %s' % self.purchase.id)
+        description = _('Return payment for order %s') % self.purchase.id
         value = currency(self.model.paid_value - self.model.received_value)
         today = datetime.date.today()
 

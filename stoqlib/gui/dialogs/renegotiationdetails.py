@@ -51,10 +51,10 @@ class _RenegotiationItem(object):
         self.open_date = parent.open_date
 
         if isinstance(parent, Sale):
-            desc = "Sale %04d" % (parent.id)
+            desc = _("Sale %04d") % (parent.id)
             self.total_amount = parent.total_amount
         elif isinstance(parent, PaymentRenegotiation):
-            desc = "Renegotiation %04d" % (parent.id)
+            desc = _("Renegotiation %04d") % (parent.id)
             self.total_amount = parent.total
 
         self.description = desc
