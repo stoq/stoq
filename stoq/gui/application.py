@@ -26,8 +26,9 @@
 import datetime
 import gettext
 import locale
-import gtk
+import platform
 
+import gtk
 from kiwi.component import get_utility
 from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
@@ -116,6 +117,7 @@ class AppWindow(GladeDelegate):
     size = ()
 
     def __init__(self, app, keyactions=None):
+        self._osx_app = None
         self._sensitive_group = dict()
         self._tool_items = []
         self.app = app
@@ -133,6 +135,13 @@ class AppWindow(GladeDelegate):
         self._post_init()
 
     def _pre_init(self):
+        if platform.system() == 'Darwin':
+            import gtk_osxapplication
+            self._osx_app = gtk_osxapplication.OSXApplication()
+            self._osx_app.connect(
+                'NSApplicationBlockTermination',
+                self._on_osx__block_termination)
+            self._osx_app.set_use_quartz_accelerators(True)
         api.user_settings.migrate()
         self.uimanager = self._create_ui_manager()
         self.accel_group = self.uimanager.get_accel_group()
@@ -144,6 +153,25 @@ class AppWindow(GladeDelegate):
         self._create_shared_ui()
         self.create_ui()
         self._ui_bootstrap()
+        if self._osx_app:
+            self._osx_setup_menus()
+
+    def _osx_setup_menus(self):
+        if self.app.name != 'launcher':
+            return
+        self.Quit.set_visible(False)
+        self.HelpAbout.set_visible(False)
+        self.HelpAbout.set_label(_('About Stoq'))
+        self._osx_app.set_help_menu(
+             self.HelpMenu.get_proxies()[0])
+        self._osx_app.insert_app_menu_item(
+             self.HelpAbout.get_proxies()[0], 0)
+        self._osx_app.insert_app_menu_item(
+             gtk.SeparatorMenuItem(), 1)
+        self.Preferences.set_visible(False)
+        self._osx_app.insert_app_menu_item(
+             self.Preferences.get_proxies()[0], 2)
+        self._osx_app.ready()
 
     def _create_ui_manager(self):
         if self.app.embedded:
@@ -326,12 +354,15 @@ class AppWindow(GladeDelegate):
             'activate', self._on_HelpAbout__activate)
 
         menubar = self.uimanager.get_widget('/menubar')
-        self.main_vbox.pack_start(menubar, False, False)
-        self.main_vbox.reorder_child(menubar, 0)
+        if self._osx_app:
+            self._osx_app.set_menu_bar(menubar)
+        else:
+            self.main_vbox.pack_start(menubar, False, False)
+            self.main_vbox.reorder_child(menubar, 0)
 
         toolbar = self.uimanager.get_widget('/toolbar')
         self.main_vbox.pack_start(toolbar, False, False)
-        self.main_vbox.reorder_child(toolbar, 1)
+        self.main_vbox.reorder_child(toolbar, len(self.main_vbox) - 4)
 
         self._prepare_statusbar()
 
@@ -844,7 +875,8 @@ class AppWindow(GladeDelegate):
         self.Close.set_sensitive(False)
         self.ChangePassword.set_visible(True)
         self.SignOut.set_visible(True)
-        self.Quit.set_visible(True)
+        if not self._osx_app:
+            self.Quit.set_visible(True)
         self.Print.set_sensitive(False)
         self.Print.set_visible(False)
         self.ExportSpreadSheet.set_visible(False)
@@ -947,6 +979,9 @@ class AppWindow(GladeDelegate):
                     self._on_tool_item__leave_notify_event)
             except TypeError:
                 pass
+
+    def _on_osx__block_termination(self, app):
+        return not self.shutdown_application()
 
     # File
 
