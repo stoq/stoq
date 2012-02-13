@@ -50,7 +50,7 @@ def drop_database(dbname, settings=None):
     """Drops a database.
     :param dbname: the name of the database to be dropped.
     :param settings: optionally provide seetings, so that you dont have to
-    provide IDatabaseSettings before calling this function.
+        provide IDatabaseSettings before calling this function.
     """
     if not settings:
         settings = get_utility(IDatabaseSettings)
@@ -73,18 +73,21 @@ def drop_database(dbname, settings=None):
         conn.close()
 
 
-def clean_database(dbname):
+def clean_database(dbname, settings=None):
     """Cleans a database. If the database does not exist, it will be created.
     :param dbname: name of the database.
+    :param settings: optionally provide seetings, so that you dont have to
+        provide IDatabaseSettings before calling this function.
     """
     log.info("Cleaning database %s" % (dbname, ))
+    if not settings:
+        settings = get_utility(IDatabaseSettings)
 
     try:
-        drop_database(dbname)
+        drop_database(dbname, settings)
     except Exception, e:
         raise e
 
-    settings = get_utility(IDatabaseSettings)
     if settings.dbname == dbname:
         conn = settings.get_default_connection()
     else:
@@ -99,13 +102,16 @@ def clean_database(dbname):
 #
 
 
-def execute_sql(filename):
+def execute_sql(filename, settings=None):
     """Inserts Raw SQL commands into the database read from a file.
     :param filename: filename with SQL commands
+    :param settings: optionally provide seetings, so that you dont have to
+        provide IDatabaseSettings before calling this function.
     :returns: return code, 0 if succeeded, positive integer for failure
     :rtype: int
     """
-    settings = get_utility(IDatabaseSettings)
+    if not settings:
+        settings = get_utility(IDatabaseSettings)
 
     log.info("Executing SQL script %s" % filename)
 
@@ -169,13 +175,16 @@ def execute_sql(filename):
         raise NotImplementedError(settings.rdbms)
 
 
-def start_shell(command=None, quiet=False):
+def start_shell(command=None, quiet=False, settings=None):
     """Runs a database shell using the current settings
 
     :param command: tell psql to execute the command string
     :param quiet: sets psql quiet option (-q)
+    :param settings: optionally provide seetings, so that you dont have to
+        provide IDatabaseSettings before calling this function.
     """
-    settings = get_utility(IDatabaseSettings)
+    if not settings:
+        settings = get_utility(IDatabaseSettings)
 
     if settings.rdbms == 'postgres':
         args = ['psql']
@@ -221,12 +230,15 @@ def test_local_database():
         return False
 
 
-def test_connection():
+def test_connection(settings=None):
     """Test database connectivity for using command line tools
+    :param settings: optionally provide seetings, so that you dont have to
+        provide IDatabaseSettings before calling this function.
     :returns: True for success, False if connection fails
     :rtype: bool
     """
-    settings = get_utility(IDatabaseSettings)
+    if not settings:
+        settings = get_utility(IDatabaseSettings)
 
     log.info("Testing database connectivity using command line tools")
 
@@ -248,17 +260,23 @@ def test_connection():
         raise NotImplementedError(settings.rdbms)
 
 
-def dump_database(filename):
+def dump_database(filename, settings=None, schema_only=False):
     """Dump the contents of the current database
     :param filename: filename to write the database dump to
+    :param settings: optionally provide seetings, so that you dont have to
+        provide IDatabaseSettings before calling this function.
+    :param schema_only: If only the database schema will be dumped
     """
-    settings = get_utility(IDatabaseSettings)
+    if not settings:
+        settings = get_utility(IDatabaseSettings)
     log.info("Dumping database to %s" % filename)
 
     if settings.rdbms == 'postgres':
         args = ['pg_dump',
                 '--format=custom',
                 '--encoding=UTF-8']
+        if schema_only:
+            args.append('--schema-only')
         if filename is not None:
             args.extend(['-f', filename])
         args.extend(settings.get_tool_args())
@@ -271,12 +289,15 @@ def dump_database(filename):
         raise NotImplementedError(settings.rdbms)
 
 
-def rename_database(src, dest):
+def rename_database(src, dest, settings=None):
     """Renames a database.
     :param src: the name of the database we want to rename.
     :param dest: the new database name.
+    :param settings: optionally provide seetings, so that you dont have to
+        provide IDatabaseSettings before calling this function.
     """
-    settings = get_utility(IDatabaseSettings)
+    if not settings:
+        settings = get_utility(IDatabaseSettings)
 
     log.info("Renaming %s database to %s" % (src, dest))
 
@@ -286,21 +307,28 @@ def rename_database(src, dest):
     conn.close()
 
 
-def restore_database(dump):
+def restore_database(dump, settings=None, new_name=None, clean_first=True):
     """Restores the current database.
     :param dump: a database dump file to be used to restore the database.
+    :param settings: optionally provide seetings, so that you dont have to
+        provide IDatabaseSettings before calling this function.
+    :param new_name: optional name for the new restored database.
+    :param clean_first: if a clean_database will be performed before restoring.
     """
-    settings = get_utility(IDatabaseSettings)
+    if not settings:
+        settings = get_utility(IDatabaseSettings)
 
     log.info("Restoring database %s using %s" % (settings.dbname, dump))
 
     if settings.rdbms == 'postgres':
         # This will create a new database
-        newname = "%s__backup_%s" % (settings.dbname,
-                                     time.strftime("%Y%m%d_%H%M"))
-        clean_database(newname)
+        if not new_name:
+            new_name = "%s__backup_%s" % (settings.dbname,
+                                         time.strftime("%Y%m%d_%H%M"))
+        if clean_first:
+            clean_database(new_name, settings)
 
-        args = ['pg_restore', '-d', newname]
+        args = ['pg_restore', '-d', new_name]
         args.extend(settings.get_tool_args())
         args.append(dump)
 
@@ -308,19 +336,22 @@ def restore_database(dump):
 
         proc = Process(args, stderr=PIPE)
         proc.wait()
-        return newname
+        return new_name
     else:
         raise NotImplementedError(settings.rdbms)
 
 
-def dump_table(table, filename=None):
+def dump_table(table, filename=None, settings=None):
     """Dump the contents of a table.
     Note this does not include the schema itself, just the data.
     To get the data call stdout.read() on the returned object.
     :param table: table to write
     :param proc: a Process instance
+    :param settings: optionally provide seetings, so that you dont have to
+        provide IDatabaseSettings before calling this function.
     """
-    settings = get_utility(IDatabaseSettings)
+    if not settings:
+        settings = get_utility(IDatabaseSettings)
 
     log.info("Dumping table to %s" % table)
 
@@ -343,8 +374,9 @@ def dump_table(table, filename=None):
         raise NotImplementedError(settings.rdbms)
 
 
-def query_server_time(conn):
-    settings = get_utility(IDatabaseSettings)
+def query_server_time(conn, settings=None):
+    if not settings:
+        settings = get_utility(IDatabaseSettings)
     conn = settings.get_default_connection()
 
     if settings.rdbms == 'postgres':
@@ -353,8 +385,9 @@ def query_server_time(conn):
         raise NotImplementedError
 
 
-def check_version(conn):
-    settings = get_utility(IDatabaseSettings)
+def check_version(conn, settings=None):
+    if not settings:
+        settings = get_utility(IDatabaseSettings)
     if settings.rdbms == 'postgres':
         version = conn.queryOne('SELECT VERSION();')[0]
         server_version = version.split(' ', 2)[1]
