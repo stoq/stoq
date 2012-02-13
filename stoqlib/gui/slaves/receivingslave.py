@@ -217,7 +217,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         if order_count > 0:
             supplier_name = self.model.supplier.person.name
             return ValidationError(_(u'Invoice %d already exists for '
-                                     'supplier %s.' % (value, supplier_name, )))
+                                     'supplier %s.') % (value, supplier_name, ))
 
     def after_freight_combo__content_changed(self, widget):
         value = widget.read()
