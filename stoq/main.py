@@ -29,6 +29,7 @@ import locale
 import logging
 import optparse
 import os
+import platform
 import sys
 
 _ = gettext.gettext
@@ -265,6 +266,13 @@ def _setup_ui_dialogs():
     from kiwi.environ import environ
     stock_app = environ.find_resource('pixmaps', 'stoq-stock-app-24x24.png')
     gtk.window_set_default_icon_from_file(stock_app)
+
+    if platform.system() == 'Darwin':
+        from AppKit import NSApplication, NSImage
+        stock_app = environ.find_resource('pixmaps', 'stoq-stock-app-48x48.png')
+        icon = NSImage.alloc().initWithContentsOfFile_(stock_app)
+        app = NSApplication.sharedApplication()
+        app.setApplicationIconImage_(icon)
 
 
 def _setup_cookiefile():

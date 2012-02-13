@@ -46,6 +46,7 @@ PSQL_REQUIRED = (8, 4)
 PSYCOPG_REQUIRED = (2, 0, 5)
 PYGTK_REQUIRED = (2, 16, 0)
 PYGTKWEBKIT_REQUIRED = (1, 1, 7)
+PYOBJC_REQUIRED = (2, 3)
 PYSERIAL_REQUIRED = (2, 1)
 REPORTLAB_REQUIRED = (2, 4)
 STOQDRIVERS_REQUIRED = (0, 9, 15)
@@ -73,6 +74,8 @@ class DependencyChecker(object):
         self._check_pycairo(PYCAIRO_REQUIRED)
         if platform.system() != 'Windows':
             self._check_pygtkwebkit(PYGTKWEBKIT_REQUIRED)
+        if platform.system() == 'Darwin':
+            self._check_pyobjc(PYOBJC_REQUIRED)
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
         self._check_dateutil(DATEUTIL_REQUIRED)
         self._check_twisted(TWISTED_REQUIRED)
@@ -385,6 +388,29 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://www.python-excel.org/',
                           required=version,
                           found=xlwt.__VERSION__)
+
+    def _check_pyobjc(self, version):
+        try:
+            import objc
+            objc # pyflakes
+        except ImportError:
+            self._missing(project='pyobjc',
+                          url='http://pyobjc.sf.net/',
+                          version=version)
+
+        if map(int, objc.__version__.split('.')) < list(version):
+            self._too_old(project="pyobjc",
+                          url='http://pyobjc.sf.net/',
+                          required=version,
+                          found=objc.__version__)
+
+        try:
+            import AppKit
+            AppKit # pyflakes
+        except ImportError:
+            self._missing(project='pyobjc with cocoa support',
+                          url='http://pyobjc.sf.net/',
+                          version=version)
 
 
 def check_dependencies(text_mode=False):
