@@ -341,12 +341,6 @@ def _initialize(options):
     from stoq.lib.startup import setup, needs_schema_update
     log.debug('calling setup()')
 
-    from kiwi.component import provide_utility
-    from stoqlib.lib.interfaces import IApplicationDescriptions
-    from stoq.lib.applist import ApplicationDescriptions
-    provide_utility(IApplicationDescriptions,
-                    ApplicationDescriptions())
-
     # XXX: progress dialog for connecting (if it takes more than
     # 2 seconds) or creating the database
     try:

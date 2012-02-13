@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -29,54 +29,37 @@ import platform
 
 from kiwi.component import implements
 from stoqlib.lib.interfaces import IApplicationDescriptions
-from stoqlib.gui.stockicons import (
-    STOQ_ADMIN_APP, STOQ_CALENDAR_APP, STOQ_CALC, STOQ_INVENTORY_APP,
-    STOQ_PAYABLE_APP, STOQ_POS_APP, STOQ_PRODUCTION_APP,
-    STOQ_PURCHASE_APP, STOQ_BILLS, STOQ_SALES_APP, STOQ_STOCK_APP,
-    STOQ_TILL_APP)
 from stoqlib.lib.translation import N_
 
 _APPLICATIONS = {
     'admin': (N_("Administrative"),
               N_("Administer the branches, users, employees and configure "
-                 "system parameters."),
-              STOQ_ADMIN_APP),
+                 "system parameters.")),
     'calendar': (N_("Calendar"),
                  N_("Shows payments, orders and other things that will happen "
-                    "in the future."),
-                 STOQ_CALENDAR_APP),
+                    "in the future.")),
     'financial': (N_("Financial"),
-                  N_("Control accounts and financial transactions."),
-                  STOQ_CALC),
+                  N_("Control accounts and financial transactions.")),
     'inventory': (N_("Inventory"),
-                  N_("Audit and adjust the product stock."),
-                  STOQ_INVENTORY_APP),
+                  N_("Audit and adjust the product stock.")),
     'payable': (N_("Accounts Payable"),
-                N_("Manage payment that needs to be paid."),
-                STOQ_PAYABLE_APP),
+                N_("Manage payment that needs to be paid.")),
     'pos': (N_("Point of Sales"),
             N_("Terminal and cash register for selling products and "
-               "services."),
-            STOQ_POS_APP),
+               "services.")),
     'production': (N_("Production"),
-                   N_("Manage the production process."),
-                   STOQ_PRODUCTION_APP),
+                   N_("Manage the production process.")),
     'purchase': (N_("Purchase"),
-                 N_("Create purchase orders and quotes"),
-                 STOQ_PURCHASE_APP),
+                 N_("Create purchase orders and quotes")),
     'receivable': (N_("Accounts Receivable"),
-                   N_("Manage payments that needs to be received."),
-                   STOQ_BILLS),
+                   N_("Manage payments that needs to be received.")),
     'sales': (N_("Sales"),
-              N_("Quotes management and commission calculation."),
-              STOQ_SALES_APP),
+              N_("Quotes management and commission calculation.")),
     'stock': (N_("Stock"),
               N_("Stock management, receive products and transfer them "
-                 "between branches."),
-              STOQ_STOCK_APP),
+                 "between branches.")),
     'till': (N_("Till"),
-             N_("Control tills and their workflow."),
-             STOQ_TILL_APP),
+             N_("Control tills and their workflow.")),
 }
 
 if platform.system() == 'Windows':
@@ -91,6 +74,27 @@ def get_application_names():
     return _APPLICATIONS.keys()
 
 
+def get_application_icon(appname):
+    from stoqlib.gui.stockicons import (
+        STOQ_ADMIN_APP, STOQ_CALENDAR_APP, STOQ_CALC, STOQ_INVENTORY_APP,
+        STOQ_PAYABLE_APP, STOQ_POS_APP, STOQ_PRODUCTION_APP,
+        STOQ_PURCHASE_APP, STOQ_BILLS, STOQ_SALES_APP, STOQ_STOCK_APP,
+        STOQ_TILL_APP)
+
+    return {'admin': STOQ_ADMIN_APP,
+            'calendar': STOQ_CALENDAR_APP,
+            'financial':  STOQ_CALC,
+            'inventory':  STOQ_INVENTORY_APP,
+            'payable': STOQ_PAYABLE_APP,
+            'pos': STOQ_POS_APP,
+            'production': STOQ_PRODUCTION_APP,
+            'purchase': STOQ_PURCHASE_APP,
+            'receivable': STOQ_BILLS,
+            'sales': STOQ_SALES_APP,
+            'stock': STOQ_STOCK_APP,
+            'till': STOQ_TILL_APP}[appname]
+
+
 class ApplicationDescriptions:
 
     implements(IApplicationDescriptions)
@@ -100,7 +104,8 @@ class ApplicationDescriptions:
 
     def get_descriptions(self):
         app_desc = []
-        for name, (label, description, icon) in _APPLICATIONS.items():
+        for name, (label, description) in _APPLICATIONS.items():
+            icon = get_application_icon(name)
             app_desc.append((name, gettext.gettext(label),
                              icon, gettext.gettext(description)))
         return app_desc
