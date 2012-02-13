@@ -191,8 +191,9 @@ class StoqConfig:
 
         # FIXME: This should be done elsewhere
         from stoqlib.database.settings import DatabaseSettings
-        return DatabaseSettings(rdbms, address, port,
+        self._settings = DatabaseSettings(rdbms, address, port,
                                 dbname, username, password)
+        return self._settings
 
     def set_from_options(self, options):
         """
