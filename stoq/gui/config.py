@@ -63,7 +63,8 @@ from kiwi.ui.wizard import WizardStep
 
 from stoqlib.api import api
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME, ensure_admin_user
+from stoqlib.database.admin import (USER_ADMIN_DEFAULT_NAME, ensure_admin_user,
+                                    create_default_profile_settings)
 from stoqlib.database.database import test_local_database
 from stoqlib.database.interfaces import (ICurrentBranchStation,
                                          ICurrentBranch)
@@ -87,7 +88,7 @@ from twisted.internet import reactor
 from stoq import library
 from stoq.gui.shell import PRIVACY_STRING
 from stoq.lib.options import get_option_parser
-from stoq.lib.startup import setup, set_default_profile_settings
+from stoq.lib.startup import setup
 
 _ = gettext.gettext
 
@@ -804,7 +805,7 @@ class CreateDatabaseStep(BaseWizardStep):
             return
         self.label.set_text("")
         self.wizard.load_config_and_call_setup()
-        set_default_profile_settings()
+        create_default_profile_settings()
         ensure_admin_user(self.wizard.config.get_password())
         self.progressbar.set_text(_("Done."))
         self.progressbar.set_fraction(1.0)

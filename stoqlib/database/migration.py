@@ -42,7 +42,7 @@ from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.system import SystemTable
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.defaults import stoqlib_gettext
 from stoqlib.lib.message import error, info
@@ -436,3 +436,18 @@ class PluginSchemaMigration(SchemaMigration):
         if self._plugin:
             return (0, self._plugin.plugin_version)
         return (0, 0)
+
+
+def needs_schema_update():
+    try:
+        migration = StoqlibSchemaMigration()
+    except StoqlibError:
+        error(_("Update Error"),
+             _("You need to call setup() before checking the database "
+               "schema."))
+
+    try:
+        update = not (migration.check_uptodate() and migration.check_plugins())
+    except DatabaseInconsistency, e:
+        error(str(e))
+    return update
