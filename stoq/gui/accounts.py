@@ -224,4 +224,3 @@ class BaseAccountWindow(SearchableAppWindow):
 
     def on_PaymentCategories__activate(self, action):
         self._show_payment_categories()
-
