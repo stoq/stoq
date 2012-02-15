@@ -517,12 +517,6 @@ class Shell(object):
         from stoqlib.lib.daemonutils import stop_daemon
         stop_daemon()
 
-        from stoqlib.lib.crashreport import has_tracebacks
-        if has_tracebacks() and not 'STOQ_DISABLE_CRASHREPORT' in os.environ:
-            from stoqlib.gui.dialogs.crashreportdialog import show_dialog
-            show_dialog()
-            raise SystemExit
-
         from stoqlib.database.runtime import get_current_user, get_connection
         from stoqlib.exceptions import StoqlibError
         from stoqlib.lib.process import Process
