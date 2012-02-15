@@ -48,10 +48,12 @@ from stoqlib.domain.person import (Person,
                                    PersonAdaptToUser,
                                    EmployeeRoleHistory,
                                    PersonAdaptToCreditProvider,
-                                   PersonAdaptToTransporter)
+                                   PersonAdaptToTransporter,
+                                   ClientCategory)
 from stoqlib.domain.product import Product
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -380,6 +382,26 @@ class TestClient(_PersonFacetTest, DomainTest):
         sale.add_sellable(product.sellable)
         one_more_sale = client.get_client_sales().count()
         self.assertEquals(count_sales + 1, one_more_sale)
+
+    def testClientCategory(self):
+        categories = ClientCategory.selectBy(name='Category',
+                                             connection=self.trans)
+        self.assertEquals(categories.count(), 0)
+
+        category = self.create_client_category('Category')
+        self.assertEquals(categories.count(), 1)
+
+        self.assertTrue(category.can_remove())
+        category.remove()
+        self.assertEquals(categories.count(), 0)
+
+        sellable = self.create_sellable(price=50)
+        category = self.create_client_category('Category')
+        ClientCategoryPrice(sellable=sellable,
+                            category=category,
+                            price=75,
+                            connection=self.trans)
+        self.assertFalse(category.can_remove())
 
 
 class TestSupplier(_PersonFacetTest, DomainTest):

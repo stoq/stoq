@@ -29,6 +29,7 @@ from kiwi.ui.objectlist import Column
 from stoqlib.domain.person import ClientCategory, PersonAdaptToClient
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.clientcategoryeditor import ClientCategoryEditor
+from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -49,7 +50,12 @@ class ClientCategoryDialog(ModelListDialog):
         ]
 
     def delete_model(self, model, trans):
+        if not model.can_remove():
+            self.refresh()
+            warning(_("%s cannot be deleted, because is used in one or more "
+                      "products.") % model.name)
+            return
         for client in PersonAdaptToClient.selectBy(category=model,
                                                    connection=trans):
             client.category = None
-        ClientCategory.delete(model.id, connection=trans)
+        model.remove()
