@@ -145,14 +145,6 @@ class PayableApp(BaseAccountWindow):
         self.app.launcher.Print.set_tooltip(
             _("Print a report of these payments"))
 
-    def create_ui(self):
-        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
-        self.search.set_summary_label(column='value',
-                                      label='<b>Total:</b>',
-                                      format='<b>%s</b>',
-                                      parent=self.get_statusbar_message_area())
-        self.results.set_cell_data_func(self._on_results__cell_data_func)
-
     def activate(self, params):
         # FIXME: double negation is weird here
         if not params.get('no-refresh'):
@@ -506,33 +498,6 @@ class PayableApp(BaseAccountWindow):
     #
     # Kiwi callbacks
     #
-
-    def _on_results__cell_data_func(self, column, renderer, pv, text):
-        if not isinstance(renderer, gtk.CellRendererText):
-            return text
-
-        state = self.main_filter.get_state()
-
-        def show_strikethrough():
-            if state.value is None:
-                return True
-            if state.value.value.startswith('category:'):
-                return True
-            return False
-
-        is_pending = (pv.status == Payment.STATUS_PENDING)
-        show_strikethrough = not is_pending and show_strikethrough()
-        is_late = pv.is_late()
-
-        renderer.set_property('strikethrough-set', show_strikethrough)
-        renderer.set_property('weight-set', is_late)
-
-        if show_strikethrough:
-            renderer.set_property('strikethrough', True)
-        if is_late:
-            renderer.set_property('weight', pango.WEIGHT_BOLD)
-
-        return text
 
     def on_results__row_activated(self, klist, payable_view):
         if self._can_show_details([payable_view]):
