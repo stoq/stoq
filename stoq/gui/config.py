@@ -88,7 +88,6 @@ from stoq import library
 from stoq.gui.shell import PRIVACY_STRING
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import setup, set_default_profile_settings
-from stoq.main import run_app
 
 _ = gettext.gettext
 
@@ -1037,6 +1036,9 @@ class FirstTimeConfigWizard(BaseWizard):
     # WizardStep hooks
     #
 
+    def cancel(self, *args):
+        raise SystemExit
+
     def finish(self, run=True):
         if self.has_installed_db:
             self.load_config_and_call_setup()
@@ -1054,5 +1056,3 @@ class FirstTimeConfigWizard(BaseWizard):
         self.config.flush()
 
         self.close()
-        if run:
-            run_app(self.options, 'admin')
