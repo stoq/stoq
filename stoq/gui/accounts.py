@@ -35,6 +35,7 @@ from stoqlib.api import api
 from stoqlib.database.orm import AND, const
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 
@@ -87,7 +88,10 @@ class BaseAccountWindow(SearchableAppWindow):
             elif v == 'status:paid':
                 msg = _("No paid payments found.")
             elif v == 'status:not-paid':
-                msg = _("No payments to pay found.")
+                if self.search_table == InPaymentView:
+                    msg = _("No payments to receive found.")
+                else:
+                    msg = _("No payments to pay found.")
             elif v.startswith('category:'):
                 category = v.split(':')[1].encode('utf-8')
 
