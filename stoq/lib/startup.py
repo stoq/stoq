@@ -129,7 +129,8 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     register_config(config)
 
     from stoq.lib.applist import ApplicationDescriptions
-    provide_utility(IApplicationDescriptions, ApplicationDescriptions())
+    provide_utility(IApplicationDescriptions, ApplicationDescriptions(),
+                    replace=True)
 
     if register_station:
         try:

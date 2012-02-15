@@ -1099,8 +1099,8 @@ class AppWindow(GladeDelegate):
                  _("Enable production mode")):
             return
 
-        from stoq.main import restart_stoq_atexit
-        restart_stoq_atexit()
+        from stoq.gui.shell import get_shell
+        get_shell().restart_atexit()
         api.config.set('Database', 'enable_production', 'True')
         api.config.flush()
         if self.shutdown_application():
