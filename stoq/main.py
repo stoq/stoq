@@ -363,7 +363,9 @@ def run_app(options, appname):
 
     from stoq.gui.shell import Shell
 
-    shell = Shell(options, appname)
+    shell = Shell(options)
+    shell.setup_login()
+    shell.run(appname=appname)
     shell.ran_wizard = _ran_wizard
     shell.run_loop()
 
