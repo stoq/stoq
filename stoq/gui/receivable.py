@@ -34,13 +34,11 @@ import urllib
 import pango
 import gtk
 from kiwi.datatypes import currency
-from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import SearchColumn, Column
-from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
+from kiwi.ui.search import DateSearchFilter
 from stoqlib.api import api
-from stoqlib.database.orm import AND, const
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
@@ -216,12 +214,7 @@ class ReceivableApp(BaseAccountWindow):
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'drawee'])
-        self.main_filter = self._create_main_filter()
-        self._update_filter_items()
-        self.executer.add_filter_query_callback(
-            self.main_filter,
-            self._on_main_filter__query_callback)
-        self.add_filter(self.main_filter, SearchFilterPosition.TOP)
+        self.create_main_filter()
 
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), long_title=_("Payment ID"),
@@ -490,55 +483,12 @@ class ReceivableApp(BaseAccountWindow):
         run_dialog(InPaymentBillCheckSearch, self, self.conn)
 
     def _update_filter_items(self):
-        categories = PaymentCategory.selectBy(
-            connection=self.conn,
-            category_type=PaymentCategory.TYPE_RECEIVABLE).orderBy('name')
-        items = [(_('All payments'), None)]
         options = [
             FilterItem(_('Received payments'), 'status:paid'),
             FilterItem(_('To receive'), 'status:not-paid'),
             FilterItem(_('Late payments'), 'status:late'),
             ]
-        if categories.count() > 0:
-            options.append(FilterItem('sep', 'sep'))
-
-        items.extend([(item.name, item) for item in options])
-        for c in categories:
-            item = FilterItem(c.name, 'category:%s' % (c.name, ),
-                              color=c.color,
-                              item_id=c.id)
-            items.append((item.name, item))
-
-        self.main_filter.update_values(items)
-
-    def _create_main_filter(self):
-        main_filter = ComboSearchFilter(_('Show'), [])
-
-        combo = main_filter.combo
-        combo.color_attribute = 'color'
-        combo.set_row_separator_func(self._on_main_filter__row_separator_func)
-
-        return main_filter
-
-    def _create_main_query(self, state):
-        item = state.value
-        if item is None:
-            return None
-        kind, value = item.value.split(':')
-        if kind == 'status':
-            if value == 'paid':
-                return InPaymentView.q.status == Payment.STATUS_PAID
-            elif value == 'not-paid':
-                return InPaymentView.q.status == Payment.STATUS_PENDING
-            elif value == 'late':
-                return AND(
-                    InPaymentView.q.status != Payment.STATUS_PAID,
-                    InPaymentView.q.status != Payment.STATUS_CANCELLED,
-                    InPaymentView.q.due_date < const.NOW())
-        elif kind == 'category':
-            return InPaymentView.q.category == value
-
-        raise AssertionError(kind, value)
+        self.add_filter_items(PaymentCategory.TYPE_RECEIVABLE, options)
 
     def _show_payment_categories(self):
         trans = api.new_transaction()
@@ -576,14 +526,6 @@ class ReceivableApp(BaseAccountWindow):
             renderer.set_property('weight', pango.WEIGHT_BOLD)
 
         return text
-
-    def _on_main_filter__row_separator_func(self, model, titer):
-        if model[titer][0] == 'sep':
-            return True
-        return False
-
-    def _on_main_filter__query_callback(self, state):
-        return self._create_main_query(state)
 
     def on_results__row_activated(self, klist, receivable_view):
         self._show_details(receivable_view)
