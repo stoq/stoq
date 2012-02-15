@@ -26,8 +26,10 @@ Base class for sharing code between accounts payable and receivable."""
 
 import gettext
 
+import gtk
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
+import pango
 from stoqlib.database.orm import AND, const
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
@@ -50,6 +52,23 @@ class FilterItem(object):
 
 class BaseAccountWindow(SearchableAppWindow):
     embedded = True
+
+    #
+    # Application
+    #
+
+    def create_ui(self):
+        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.search.set_summary_label(column='value',
+                                      label='<b>Total:</b>',
+                                      format='<b>%s</b>',
+                                      parent=self.get_statusbar_message_area())
+        self.results.set_cell_data_func(self._on_results__cell_data_func)
+
+
+    #
+    # Public API
+    #
 
     def create_main_filter(self):
         self.main_filter = ComboSearchFilter(_('Show'), [])
@@ -81,7 +100,9 @@ class BaseAccountWindow(SearchableAppWindow):
 
         self.main_filter.update_values(items)
 
-    # Callbacks
+    #
+    # Private
+    #
 
     def _create_main_query(self, state):
         item = state.value
@@ -104,6 +125,10 @@ class BaseAccountWindow(SearchableAppWindow):
 
         raise AssertionError(kind, value)
 
+    #
+    # Callbacks
+    #
+
     def _on_main_filter__row_separator_func(self, model, titer):
         if model[titer][0] == 'sep':
             return True
@@ -111,3 +136,31 @@ class BaseAccountWindow(SearchableAppWindow):
 
     def _on_main_filter__query_callback(self, state):
         return self._create_main_query(state)
+
+    def _on_results__cell_data_func(self, column, renderer, pv, text):
+        if not isinstance(renderer, gtk.CellRendererText):
+            return text
+
+        state = self.main_filter.get_state()
+
+        def show_strikethrough():
+            if state.value is None:
+                return True
+            if state.value.value.startswith('category:'):
+                return True
+            return False
+
+        is_pending = (pv.status == Payment.STATUS_PENDING)
+        show_strikethrough = not is_pending and show_strikethrough()
+        is_late = pv.is_late()
+
+        renderer.set_property('strikethrough-set', show_strikethrough)
+        renderer.set_property('weight-set', is_late)
+
+        if show_strikethrough:
+            renderer.set_property('strikethrough', True)
+        if is_late:
+            renderer.set_property('weight', pango.WEIGHT_BOLD)
+
+        return text
+
