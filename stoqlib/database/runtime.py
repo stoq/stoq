@@ -343,10 +343,10 @@ def set_current_branch_station(conn, station_name):
               _("To solve this, open the administrator application "
                 "and re-activate this computer."))
 
-    provide_utility(ICurrentBranchStation, station)
+    provide_utility(ICurrentBranchStation, station, replace=True)
 
     if station.branch:
-        provide_utility(ICurrentBranch, station.branch)
+        provide_utility(ICurrentBranch, station.branch, replace=True)
 
 
 def get_current_user(conn):

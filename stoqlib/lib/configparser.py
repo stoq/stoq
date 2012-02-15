@@ -252,8 +252,8 @@ def register_config(config):
     _config = config
 
     try:
-        provide_utility(IDatabaseSettings, config.get_settings())
-        provide_utility(IStoqConfig, config)
+        provide_utility(IDatabaseSettings, config.get_settings(), replace=True)
+        provide_utility(IStoqConfig, config, replace=True)
     except NoConfigurationError:
         msg = _(u"Error: Stoq configuration is not avaiable. Check that the "
              "current user has a configuration file (~/.stoq/stoq.conf).")
