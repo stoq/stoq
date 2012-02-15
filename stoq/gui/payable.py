@@ -158,7 +158,6 @@ class PayableApp(BaseAccountWindow):
         self.uimanager.remove_ui(self.payable_ui)
 
     def new_activate(self):
-        raise ValueError("bad")
         self.add_payment()
 
     def search_activate(self):
