@@ -65,23 +65,12 @@ from stoqlib.reporting.boleto import BillReport
 from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.payments_receipt import InPaymentReceipt
 
-from stoq.gui.application import SearchableAppWindow
+from stoq.gui.accounts import BaseAccountWindow, FilterItem
 
 _ = gettext.gettext
 
 
-class _FilterItem(object):
-    def __init__(self, name, value, color=None, item_id=None):
-        self.name = name
-        self.value = value
-        self.color = color
-        self.id = item_id or name
-
-    def __repr__(self):
-        return '<FilterItem "%s">' % (self.name, )
-
-
-class ReceivableApp(SearchableAppWindow):
+class ReceivableApp(BaseAccountWindow):
 
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 
@@ -90,7 +79,6 @@ class ReceivableApp(SearchableAppWindow):
     search_table = InPaymentView
     search_label = _('matching:')
     report_table = ReceivablePaymentReport
-    embedded = True
 
     #
     # Application
@@ -507,18 +495,18 @@ class ReceivableApp(SearchableAppWindow):
             category_type=PaymentCategory.TYPE_RECEIVABLE).orderBy('name')
         items = [(_('All payments'), None)]
         options = [
-            _FilterItem(_('Received payments'), 'status:paid'),
-            _FilterItem(_('To receive'), 'status:not-paid'),
-            _FilterItem(_('Late payments'), 'status:late'),
+            FilterItem(_('Received payments'), 'status:paid'),
+            FilterItem(_('To receive'), 'status:not-paid'),
+            FilterItem(_('Late payments'), 'status:late'),
             ]
         if categories.count() > 0:
-            options.append(_FilterItem('sep', 'sep'))
+            options.append(FilterItem('sep', 'sep'))
 
         items.extend([(item.name, item) for item in options])
         for c in categories:
-            item = _FilterItem(c.name, 'category:%s' % (c.name, ),
-                               color=c.color,
-                               item_id=c.id)
+            item = FilterItem(c.name, 'category:%s' % (c.name, ),
+                              color=c.color,
+                              item_id=c.id)
             items.append((item.name, item))
 
         self.main_filter.update_values(items)
