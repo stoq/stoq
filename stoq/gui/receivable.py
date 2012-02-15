@@ -29,7 +29,6 @@ stoq/gui/receivable/receivable.py:
 
 import datetime
 import gettext
-import urllib
 
 import pango
 import gtk
@@ -47,11 +46,9 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
-from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
@@ -159,45 +156,10 @@ class ReceivableApp(BaseAccountWindow):
         self.uimanager.remove_ui(self.receivable_ui)
 
     def new_activate(self):
-        self._add_receiving()
+        self.add_payment()
 
     def search_activate(self):
         self._run_bill_check_search()
-
-    def search_completed(self, results, states):
-        if len(results):
-            return
-
-        state = states[1]
-        if state and state.value is None:
-            not_found = _("No payments found.")
-            payment_url = '<a href="new_payment">%s</a>?' % (
-                _("create a new payment"))
-            new_payment = _("Would you like to %s") % (payment_url, )
-            msg = "%s\n\n%s" % (not_found, new_payment)
-        else:
-            v = state.value.value
-            if v == 'status:late':
-                msg = _("No late payments found.")
-            elif v == 'status:paid':
-                msg = _("No paid payments found.")
-            elif v == 'status:not-paid':
-                msg = _("No payments to pay found.")
-            elif v.startswith('category:'):
-                category = v.split(':')[1].encode('utf-8')
-
-                not_found = _("No payments in the <b>%s</b> category were found." % (
-                    category, ))
-                payment_url = '<a href="new_payment?%s">%s</a>?' % (
-                    urllib.quote(category),
-                    _("create a new payment"))
-                msg = "%s\n\n%s" % (
-                    not_found,
-                    _("Would you like to %s") % (payment_url, ))
-            else:
-                return
-
-        self.search.set_message(msg)
 
     #
     # SearchableAppWindow hooks
@@ -236,6 +198,19 @@ class ReceivableApp(BaseAccountWindow):
                 SearchColumn('category', title=_('Category'), data_type=str,
                              long_title=_('Payment category'), width=110,
                              visible=False)]
+
+
+    #
+    # BaseAccountWindow
+    #
+
+    def add_payment(self, category=None):
+        trans = api.new_transaction()
+        retval = self.run_dialog(InPaymentEditor, trans, category=category)
+        if api.finish_transaction(trans, retval):
+            self._update_filter_items()
+            self.search.refresh()
+
 
     #
     # Public API
@@ -314,13 +289,6 @@ class ReceivableApp(BaseAccountWindow):
 
         trans.close()
         self._update_widgets()
-
-    def _add_receiving(self, category=None):
-        trans = api.new_transaction()
-        retval = self.run_dialog(InPaymentEditor, trans, category=category)
-        if api.finish_transaction(trans, retval):
-            self._update_filter_items()
-            self.search.refresh()
 
     def _change_due_date(self, receivable_view):
         """ Receives a receivable_view and change the payment due date
@@ -481,12 +449,6 @@ class ReceivableApp(BaseAccountWindow):
             ]
         self.add_filter_items(PaymentCategory.TYPE_RECEIVABLE, options)
 
-    def _show_payment_categories(self):
-        trans = api.new_transaction()
-        self.run_dialog(PaymentCategoryDialog, trans)
-        self._update_filter_items()
-        trans.close()
-
     #
     # Kiwi callbacks
     #
@@ -499,14 +461,6 @@ class ReceivableApp(BaseAccountWindow):
 
     def on_results__right_click(self, results, result, event):
         self.popup.popup(None, None, None, event.button, event.time)
-
-    def on_results__activate_link(self, results, uri):
-        if uri.startswith('new_payment'):
-            if '?' in uri:
-                category = urllib.unquote(uri.split('?', 1)[1])
-            else:
-                category = None
-            self._add_receiving(category=category)
 
     def on_Details__activate(self, button):
         selected = self.results.get_selected_rows()[0]
@@ -527,14 +481,8 @@ class ReceivableApp(BaseAccountWindow):
         print_report(InPaymentReceipt, payment=payment,
                      order=receivable_view.sale, date=date)
 
-    def on_PaymentFlowHistory__activate(self, action):
-        self.run_dialog(PaymentFlowHistoryDialog, self.conn)
-
     def on_AddReceiving__activate(self, action):
-        self._add_receiving()
-
-    def on_PaymentCategories__activate(self, action):
-        self._show_payment_categories()
+        self.add_payment()
 
     def on_CancelPayment__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]

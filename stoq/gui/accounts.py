@@ -25,14 +25,18 @@
 Base class for sharing code between accounts payable and receivable."""
 
 import gettext
+import urllib
 
 import gtk
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 import pango
+from stoqlib.api import api
 from stoqlib.database.orm import AND, const
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
+from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -65,10 +69,47 @@ class BaseAccountWindow(SearchableAppWindow):
                                       parent=self.get_statusbar_message_area())
         self.results.set_cell_data_func(self._on_results__cell_data_func)
 
+    def search_completed(self, results, states):
+        if len(results):
+            return
+
+        state = states[1]
+        if state and state.value is None:
+            not_found = _("No payments found.")
+            payment_url = '<a href="new_payment">%s</a>?' % (
+                _("create a new payment"))
+            new_payment = _("Would you like to %s") % (payment_url, )
+            msg = "%s\n\n%s" % (not_found, new_payment)
+        else:
+            v = state.value.value
+            if v == 'status:late':
+                msg = _("No late payments found.")
+            elif v == 'status:paid':
+                msg = _("No paid payments found.")
+            elif v == 'status:not-paid':
+                msg = _("No payments to pay found.")
+            elif v.startswith('category:'):
+                category = v.split(':')[1].encode('utf-8')
+
+                not_found = _("No payments in the <b>%s</b> category were found." % (
+                    category, ))
+                payment_url = '<a href="new_payment?%s">%s</a>?' % (
+                    urllib.quote(category),
+                    _("create a new payment"))
+                msg = "%s\n\n%s" % (
+                    not_found,
+                    _("Would you like to %s") % (payment_url, ))
+            else:
+                return
+
+        self.search.set_message(msg)
 
     #
     # Public API
     #
+
+    def add_payment(self, category=None):
+        raise NotImplementedError("Must be implemented in base class")
 
     def create_main_filter(self):
         self.main_filter = ComboSearchFilter(_('Show'), [])
@@ -125,6 +166,12 @@ class BaseAccountWindow(SearchableAppWindow):
 
         raise AssertionError(kind, value)
 
+    def _show_payment_categories(self):
+        trans = api.new_transaction()
+        self.run_dialog(PaymentCategoryDialog, trans)
+        self._update_filter_items()
+        trans.close()
+
     #
     # Callbacks
     #
@@ -163,4 +210,18 @@ class BaseAccountWindow(SearchableAppWindow):
             renderer.set_property('weight', pango.WEIGHT_BOLD)
 
         return text
+
+    def on_results__activate_link(self, results, uri):
+        if uri.startswith('new_payment'):
+            if '?' in uri:
+                category = urllib.unquote(uri.split('?', 1)[1])
+            else:
+                category = None
+            self.add_payment(category=category)
+
+    def on_PaymentFlowHistory__activate(self, action):
+        self.run_dialog(PaymentFlowHistoryDialog, self.conn)
+
+    def on_PaymentCategories__activate(self, action):
+        self._show_payment_categories()
 

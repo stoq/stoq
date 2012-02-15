@@ -29,7 +29,6 @@ stoq/gui/payable/payable.py:
 
 import datetime
 import gettext
-import urllib
 
 import pango
 import gtk
@@ -45,11 +44,9 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
-from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
 from stoqlib.gui.editors.paymentseditor import PaymentsEditor
 from stoqlib.gui.keybindings import get_accels
@@ -161,45 +158,10 @@ class PayableApp(BaseAccountWindow):
         self.uimanager.remove_ui(self.payable_ui)
 
     def new_activate(self):
-        self._add_payment()
+        self.add_payment()
 
     def search_activate(self):
         run_dialog(OutPaymentBillCheckSearch, self, self.conn)
-
-    def search_completed(self, results, states):
-        if len(results):
-            return
-
-        state = states[1]
-        if state and state.value is None:
-            not_found = _("No payments found.")
-            payment_url = '<a href="new_payment">%s</a>?' % (
-                _("create a new payment"))
-            new_payment = _("Would you like to %s") % (payment_url, )
-            msg = "%s\n\n%s" % (not_found, new_payment)
-        else:
-            v = state.value.value
-            if v == 'status:late':
-                msg = _("No late payments found.")
-            elif v == 'status:paid':
-                msg = _("No paid payments found.")
-            elif v == 'status:not-paid':
-                msg = _("No payments to pay found.")
-            elif v.startswith('category:'):
-                category = v.split(':')[1].encode('utf-8')
-
-                not_found = _("No payments in the <b>%s</b> category were found." % (
-                    category, ))
-                payment_url = '<a href="new_payment?%s">%s</a>?' % (
-                    urllib.quote(category),
-                    _("create a new payment"))
-                msg = "%s\n\n%s" % (
-                    not_found,
-                    _("Would you like to %s") % (payment_url, ))
-            else:
-                return
-
-        self.search.set_message(msg)
 
     #
     # SearchableAppWindow
@@ -240,6 +202,21 @@ class PayableApp(BaseAccountWindow):
                              long_title=_('Payment category'), width=110,
                              visible=False),
                 ]
+
+
+    #
+    # BaseAccountWindow
+    #
+
+    def add_payment(self, category=None):
+        with api.trans() as trans:
+            self.run_dialog(OutPaymentEditor, trans, category=category)
+
+        self.search.refresh()
+        if trans.committed:
+            self._update_filter_items()
+            self.select_result(OutPaymentView.get(trans.retval.id))
+
 
     #
     # Public API
@@ -468,15 +445,6 @@ class PayableApp(BaseAccountWindow):
         items.insert(0, (_('Any'), None))
         return items
 
-    def _add_payment(self, category=None):
-        with api.trans() as trans:
-            self.run_dialog(OutPaymentEditor, trans, category=category)
-
-        self.search.refresh()
-        if trans.committed:
-            self._update_filter_items()
-            self.select_result(OutPaymentView.get(trans.retval.id))
-
     def _run_bill_check_search(self):
         run_dialog(OutPaymentBillCheckSearch, self, self.conn)
 
@@ -488,12 +456,6 @@ class PayableApp(BaseAccountWindow):
             ]
 
         self.add_filter_items(PaymentCategory.TYPE_PAYABLE, options)
-
-    def _show_payment_categories(self):
-        trans = api.new_transaction()
-        self.run_dialog(PaymentCategoryDialog, trans)
-        self._update_filter_items()
-        trans.close()
 
     #
     # Kiwi callbacks
@@ -508,14 +470,6 @@ class PayableApp(BaseAccountWindow):
 
     def on_results__selection_changed(self, results, selected):
         self._update_widgets()
-
-    def on_results__activate_link(self, results, uri):
-        if uri.startswith('new_payment'):
-            if '?' in uri:
-                category = urllib.unquote(uri.split('?', 1)[1])
-            else:
-                category = None
-            self._add_payment(category=category)
 
     def on_Comments__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]
@@ -539,14 +493,8 @@ class PayableApp(BaseAccountWindow):
         print_report(OutPaymentReceipt, payment=payments[0],
                      order=payment_views[0].purchase, date=date)
 
-    def on_PaymentFlowHistory__activate(self, action):
-        self.run_dialog(PaymentFlowHistoryDialog, self.conn)
-
     def on_AddPayment__activate(self, action):
-        self._add_payment()
-
-    def on_PaymentCategories__activate(self, action):
-        self._show_payment_categories()
+        self.add_payment()
 
     def on_CancelPayment__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]
