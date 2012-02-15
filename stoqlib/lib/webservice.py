@@ -39,6 +39,8 @@ from twisted.internet.protocol import Protocol
 from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 from twisted.web.iweb import IBodyProducer
+
+from stoqlib.api import api
 from stoqlib.database.runtime import get_connection
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.parameters import sysparam
@@ -52,11 +54,28 @@ class JsonDownloader(Protocol):
         self.finished = finished
         self.data = ''
 
+    def _try_show_html(self, data):
+        if not data:
+            return
+        if not '<html>' in data:
+            return
+        if not api.is_developer_mode():
+            return
+
+        from stoqlib.gui.webview import show_html
+        show_html(data)
+
     def dataReceived(self, bytes):
         self.data += bytes
 
     def connectionLost(self, reason):
-        self.finished.callback(json.loads(self.data))
+        try:
+            data = json.loads(self.data)
+        except ValueError:
+            self._try_show_html(self.data)
+            log.info(self.data)
+            data = None
+        self.finished.callback(data)
 
 
 class StringProducer(object):

@@ -216,6 +216,11 @@ class WebView(gtk.ScrolledWindow):
         log.info("Loading uri: %s" % (uri, ))
         self._view.load_uri(uri)
 
+    def load_string(self, html, mime_type='text/html',
+                    encoding='utf-8'):
+        log.info("Loading html: %r" % (html, ))
+        self._view.load_string(html, mime_type, encoding, '')
+
     def js_function_call(self, function, *args):
         js_values = []
         for arg in args:
@@ -234,3 +239,12 @@ class WebView(gtk.ScrolledWindow):
 
     def web_open_uri(self, kwargs):
         pass
+
+
+def show_html(html):
+    w = gtk.Window()
+    w.set_size_request(600, 400)
+    wv = WebView()
+    wv.load_string(html)
+    w.add(wv)
+    w.show_all()
