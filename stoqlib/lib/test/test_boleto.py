@@ -301,7 +301,7 @@ class TestBancoBradesco(unittest.TestCase):
 
         x.validate_option('carteira', '9')
         x.validate_option('carteira', '09')
-        x.validate_option('carteira', '')
+        self.assertRaises(BoletoException, x.validate_option, 'carteira', '')
         self.assertRaises(BoletoException, x.validate_option, 'carteira', 'CNR')
         self.assertRaises(BoletoException, x.validate_option, 'carteira', '-1')
         self.assertRaises(BoletoException, x.validate_option, 'carteira', '100')

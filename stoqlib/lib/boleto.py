@@ -463,7 +463,8 @@ class BankBradesco(BankInfo):
     def validate_option(cls, option, value):
         if option == 'carteira':
             if value == '':
-                return
+                # TRANSLATORS: Do not translate 'Carteira'
+                raise BoletoException(_("Carteira cannot be empty"))
             try:
                 value = int(value)
             except ValueError:

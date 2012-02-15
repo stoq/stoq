@@ -276,6 +276,7 @@ class AccountEditor(BaseEditor):
 
         self.bank_proxy = self.add_proxy(
             self.bank_model, attributes)
+        self._fill_bank_account()
 
     def _fill_bank_account(self):
         if not self.model.bank:
@@ -391,7 +392,6 @@ class AccountEditor(BaseEditor):
         if self._bank_number == bank_number:
             return
         self._update_bank_type()
-        self._fill_bank_account()
 
         self._bank_number = bank_number
 
@@ -410,12 +410,10 @@ class AccountEditor(BaseEditor):
                 return ValidationError(str(e))
 
     def _on_bank_option__validate(self, entry, value, bank_info, option):
-        # Only validate if there's a value. Maybe it's not mandatory
-        if value:
-            try:
-                bank_info.validate_option(option, value)
-            except BoletoException, e:
-                return ValidationError(str(e))
+        try:
+            bank_info.validate_option(option, value)
+        except BoletoException, e:
+            return ValidationError(str(e))
         self.bank_model.set_option(option, value)
 
     def _on_test_button__clicked(self, button):
