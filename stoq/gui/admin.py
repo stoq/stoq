@@ -42,7 +42,6 @@ from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog,
                                                InvoicePrinterDialog)
 from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
-from stoqlib.gui.editors.shortcutseditor import ShortcutsEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.eventsearch import EventSearch
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
@@ -59,7 +58,7 @@ from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.gui.stockicons import (
     STOQ_CALC, STOQ_ADMIN_APP, STOQ_CLIENTS, STOQ_DEVICES, STOQ_DELIVERY,
-    STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_KEYBOARD, STOQ_HR, STOQ_MONEY,
+    STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_HR, STOQ_MONEY,
     STOQ_PAYABLE_APP, STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAXES,
     STOQ_USER_PROFILES, STOQ_USERS)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
@@ -99,7 +98,6 @@ class Tasks(object):
             (_('Roles'), 'employee_roles', STOQ_USERS),
             (_('Fiscal Books'), 'fiscal_books', STOQ_EDIT),
             (_('Invoice Printers'), 'invoice_printers', gtk.STOCK_PRINT),
-            (_('Keyboard shortcuts'), 'keyboard_shortcuts', STOQ_KEYBOARD),
             (_('Forms'), 'forms', STOQ_FORMS),
             (_('Payment Categories'), 'payment_categories', STOQ_PAYABLE_APP),
             (_('Payment Methods'), 'payment_methods', STOQ_MONEY),
@@ -211,9 +209,6 @@ class Tasks(object):
 
     def _open_cfop(self):
         self.app.run_dialog(CfopSearch, self.app.conn, hide_footer=True)
-
-    def _open_keyboard_shortcuts(self):
-        self.app.run_dialog(ShortcutsEditor)
 
     def _open_sintegra(self):
         branch = api.get_current_branch(self.app.conn)
