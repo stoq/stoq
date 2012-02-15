@@ -56,6 +56,7 @@ from stoqlib.gui.splash import hide_splash
 from stoqlib.gui.toolmenuaction import ToolMenuAction
 from stoqlib.domain.inventory import Inventory
 from twisted.internet import reactor
+from twisted.internet.defer import succeed
 
 import stoq
 
@@ -563,9 +564,9 @@ class AppWindow(GladeDelegate):
 
     def _show_crash_reports(self):
         if not has_tracebacks():
-            return api.asyncReturn()
+            return succeed(None)
         if 'STOQ_DISABLE_CRASHREPORT' in os.environ:
-            return api.asyncReturn()
+            return succeed(None)
         return show_dialog()
 
     @api.async
@@ -948,10 +949,6 @@ class AppWindow(GladeDelegate):
             return True
 
         AppWindow.app_windows.remove(self)
-        # There are other windows running
-        if AppWindow.app_windows:
-            return
-
         self.shutdown_application()
 
     def _on_menu_item__select(self, menuitem, tooltip):
@@ -1047,7 +1044,7 @@ class AppWindow(GladeDelegate):
     def _on_Quit__activate(self, action):
         if self.current_app and not self.current_app.shutdown_application():
             return
-
+        AppWindow.app_windows.remove(self)
         self.shutdown_application()
 
     # View
@@ -1121,6 +1118,7 @@ class AppWindow(GladeDelegate):
         get_shell().restart_atexit()
         api.config.set('Database', 'enable_production', 'True')
         api.config.flush()
+        AppWindow.app_windows.remove(self)
         self.shutdown_application()
 
 
