@@ -332,6 +332,13 @@ def set_current_branch_station(conn, station_name):
     :param conn: a database connection
     :param station_name: name of the station to register
     """
+
+    # This might be called early, so make sure SQLObject
+    # knows about PersonAdaptToBranch which might not have
+    # been imported yet
+    from stoqlib.domain.person import PersonAdaptToBranch
+    PersonAdaptToBranch # pyflakes
+
     from stoqlib.domain.station import BranchStation
     station = BranchStation.selectOneBy(name=station_name, connection=conn)
     if station is None:

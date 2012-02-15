@@ -65,10 +65,13 @@ class Shell(object):
         self._user = None
 
     def _bootstrap(self):
+        self._set_uptime()
         # Do this as soon as possible, before we attempt to use the
         # external libraries/resources
-        self._set_uptime()
         self._set_user_locale()
+        # Do this as early as possible to get as much as possible into the
+        # log file itself, which means we cannot depend on the config or
+        # anything else
         self._prepare_logfiles()
         self._set_app_info()
         self._check_dependencies()
@@ -79,8 +82,9 @@ class Shell(object):
         self._setup_ui_dialogs()
         self._setup_cookiefile()
         self._register_stock_icons()
-
-        self._initialize()
+        self._setup_exception_hook()
+        self._setup_exit_hook()
+        self._setup_database()
         self._load_key_bindings()
         self._setup_debug_options()
 
@@ -238,22 +242,20 @@ class Shell(object):
         cookiefile = os.path.join(app_dir, "cookie")
         provide_utility(ICookieFile, Base64CookieFile(cookiefile))
 
-    def _initialize(self):
-        # Do this as early as possible to get as much as possible into the
-        # log file itself, which means we cannot depend on the config or
-        # anything else
-
+    def _setup_exception_hook(self):
         if self._options.debug:
             hook = self._debug_hook
         else:
             hook = self._write_exception_hook
         sys.excepthook = hook
 
+    def _setup_exit_hook(self):
         # Save any exiting exitfunc already set.
         if hasattr(sys, 'exitfunc'):
             self._cur_exit_func = sys.exitfunc
         sys.exitfunc = self._exit_func
 
+    def _setup_database(self):
         from stoqlib.lib.configparser import StoqConfig
         from stoqlib.lib.message import error
         log.debug('reading configuration')
@@ -282,7 +284,8 @@ class Shell(object):
 
         from stoqlib.exceptions import StoqlibError
         from stoqlib.database.exceptions import PostgreSQLError
-        from stoq.lib.startup import setup, needs_schema_update
+        from stoqlib.database.migration import needs_schema_update
+        from stoq.lib.startup import setup
         log.debug('calling setup()')
 
         # XXX: progress dialog for connecting (if it takes more than

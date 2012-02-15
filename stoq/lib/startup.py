@@ -32,19 +32,13 @@ import sys
 
 from kiwi.component import provide_utility
 from kiwi.log import Logger
-from stoqlib.database.admin import ensure_admin_user, initialize_system
 from stoqlib.database.database import check_version
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.orm import orm_enable_debugging, orm_startup
 from stoqlib.database.runtime import (get_connection,
-                                      set_current_branch_station,
-                                      new_transaction)
-from stoqlib.domain.profile import UserProfile
-from stoqlib.domain.profile import ProfileSettings
-from stoqlib.exceptions import (DatabaseError, StoqlibError,
-                                DatabaseInconsistency)
+                                      set_current_branch_station)
+from stoqlib.exceptions import DatabaseError
 from stoqlib.lib.configparser import register_config, StoqConfig
-from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.interfaces import  IApplicationDescriptions
 from stoqlib.lib.message import error
 from stoqlib.lib.osutils import read_registry_key
@@ -53,16 +47,6 @@ from stoq.lib.options import get_option_parser
 
 _ = gettext.gettext
 log = Logger('startup')
-
-
-def _check_tables():
-    # Check so SystemTable is present
-    conn = get_connection()
-    if not conn.tableExists('system_table'):
-        error(
-            _("Database schema error"),
-            _("Table 'system_table' does not exist.\n"
-              "Consult your database administrator to solve this problem."))
 
 
 def setup_path():
@@ -140,6 +124,9 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
 
         check_version(conn)
         orm_startup()
+        if options and options.sqldebug:
+            orm_enable_debugging()
+
         # For LTSP systems we cannot use the hostname as stoq is run
         # on a shared serve system. Instead the ip of the client system
         # is available in the LTSP_CLIENT environment variable
@@ -154,7 +141,12 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         manager.activate_installed_plugins()
 
     if check_schema:
-        _check_tables()
+        conn = get_connection()
+        if not conn.tableExists('system_table'):
+            error(
+                _("Database schema error"),
+                _("Table 'system_table' does not exist.\n"
+                  "Consult your database administrator to solve this problem."))
 
         migration = StoqlibSchemaMigration()
         if (not migration.check_uptodate() or
@@ -165,55 +157,5 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
                     "update the schema  to the latest available version."))
 
         orm_startup()
-
-    if options:
-        if options.sqldebug:
+        if options and options.sqldebug:
             orm_enable_debugging()
-
-
-def needs_schema_update():
-    try:
-        migration = StoqlibSchemaMigration()
-    except StoqlibError:
-        error(_("Update Error"),
-             _("You need to call setup() before checking the database "
-               "schema."))
-
-    try:
-        update = not (migration.check_uptodate() and migration.check_plugins())
-    except DatabaseInconsistency, e:
-        error(str(e))
-    return update
-
-
-def clean_database(config, options=None):
-    """Clean the database
-    @param config: a StoqConfig instance
-    @param options: a Optionparser instance
-    """
-    if not options:
-        password = ''
-    else:
-        password = options.password
-
-    try:
-        password = password or config.get_password()
-        initialize_system()
-        set_default_profile_settings()
-        ensure_admin_user(password)
-    except Exception:
-        collect_traceback(sys.exc_info(), submit=True)
-
-
-def set_default_profile_settings():
-    trans = new_transaction()
-    profile = UserProfile.selectOneBy(name=_('Salesperson'), connection=trans)
-    # Not sure what is happening. If it doesnt exist, check if it was not
-    # created in english. workaround for crash report 207 (bug 4587)
-    if not profile:
-        profile = UserProfile.selectOneBy(name='Salesperson', connection=trans)
-    assert profile
-    ProfileSettings.set_permission(trans, profile, 'pos', True)
-    ProfileSettings.set_permission(trans, profile, 'sales', True)
-    ProfileSettings.set_permission(trans, profile, 'till', True)
-    trans.commit(close=True)

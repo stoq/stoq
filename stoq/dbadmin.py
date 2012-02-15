@@ -114,8 +114,6 @@ class StoqCommandHandler:
         return 0
 
     def cmd_init(self, options):
-        from stoq.lib.startup import clean_database
-
         # Create a database user before trying to connect
         if options.create_dbuser:
             if not options.username:
@@ -127,7 +125,9 @@ class StoqCommandHandler:
         config = self._read_config(options, register_station=False,
                                    check_schema=False,
                                    load_plugins=False)
-        clean_database(config, options)
+
+        from stoqlib.database.admin import initialize_system
+        initialize_system(password=options.password or config.get_password())
 
         if options.create_examples or options.demo:
             from stoqlib.importers.stoqlibexamples import create

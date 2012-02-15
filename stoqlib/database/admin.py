@@ -29,7 +29,8 @@ tables, removing tables and configuring administration user.
 """
 
 import glob
-import os.path
+import os
+import sys
 
 from kiwi.component import get_utility, provide_utility
 from kiwi.datatypes import currency
@@ -50,10 +51,11 @@ from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                        ICreditProvider)
 from stoqlib.domain.person import EmployeeRole, Person
 from stoqlib.domain.person import EmployeeRoleHistory
-from stoqlib.domain.profile import UserProfile
+from stoqlib.domain.profile import ProfileSettings, UserProfile
 from stoqlib.domain.sellable import SellableTaxConstant, SellableUnit
 from stoqlib.exceptions import StoqlibError
 from stoqlib.importers.invoiceimporter import InvoiceImporter
+from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.interfaces import IPaymentOperationManager
 from stoqlib.lib.message import error
 from stoqlib.lib.payment import PaymentOperationManager
@@ -329,6 +331,20 @@ def create_default_profiles():
     trans.commit(close=True)
 
 
+def create_default_profile_settings():
+    trans = new_transaction()
+    profile = UserProfile.selectOneBy(name=_('Salesperson'), connection=trans)
+    # Not sure what is happening. If it doesnt exist, check if it was not
+    # created in english. workaround for crash report 207 (bug 4587)
+    if not profile:
+        profile = UserProfile.selectOneBy(name='Salesperson', connection=trans)
+    assert profile
+    ProfileSettings.set_permission(trans, profile, 'pos', True)
+    ProfileSettings.set_permission(trans, profile, 'sales', True)
+    ProfileSettings.set_permission(trans, profile, 'till', True)
+    trans.commit(close=True)
+
+
 def _install_invoice_templates():
     log.info("Installing invoice templates")
     importer = InvoiceImporter()
@@ -336,26 +352,34 @@ def _install_invoice_templates():
     importer.process()
 
 
-def initialize_system():
+def initialize_system(password=None, testsuite=False):
     """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration
     """
 
     log.info("Initialize_system")
-    settings = get_utility(IDatabaseSettings)
-    clean_database(settings.dbname)
-    create_base_schema()
-    create_log("INIT START")
-    trans = new_transaction()
-    register_accounts(trans)
-    register_payment_methods(trans)
-    from stoqlib.domain.uiform import create_default_forms
-    create_default_forms(trans)
-    trans.commit(close=True)
-    ensure_sellable_constants()
-    ensure_system_parameters()
-    _ensure_card_providers()
-    create_default_profiles()
-    _install_invoice_templates()
+    try:
+        settings = get_utility(IDatabaseSettings)
+        clean_database(settings.dbname)
+        create_base_schema()
+        create_log("INIT START")
+        trans = new_transaction()
+        register_accounts(trans)
+        register_payment_methods(trans)
+        from stoqlib.domain.uiform import create_default_forms
+        create_default_forms(trans)
+        trans.commit(close=True)
+        ensure_sellable_constants()
+        ensure_system_parameters()
+        _ensure_card_providers()
+        create_default_profiles()
+        _install_invoice_templates()
+
+        if not testsuite:
+            create_default_profile_settings()
+            ensure_admin_user(password)
+    except Exception:
+        if not testsuite:
+            collect_traceback(sys.exc_info(), submit=True)
 
     create_log("INIT DONE")
