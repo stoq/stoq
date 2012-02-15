@@ -1,7 +1,6 @@
 VERSION=$(shell BUILD=1 python -c "import stoq; print stoq.version")
 PACKAGE=stoq
 DEBPACKAGE=python-kiwi
-WEBDOC_DIR=/mondo/htdocs/stoq.com.br/doc/devel
 SCHEMADIR=/mondo/htdocs/stoq.com.br/devel/schema/
 
 apidocs:
@@ -16,10 +15,8 @@ manual:
 	yelp-build html -o html help/pt_BR
 
 web: apidocs
-	scp -r apidocs async.com.br:$(WEBDOC_DIR)/stoqlib-tmp
-	ssh async.com.br rm -fr $(WEBDOC_DIR)/stoqlib
-	ssh async.com.br mv $(WEBDOC_DIR)/stoqlib-tmp $(WEBDOC_DIR)/stoqlib
-	scp stoqlib.pickle async.com.br:$(WEBDOC_DIR)/stoqlib
+	scp -r docs/api/stoq/_build/html doc.stoq.com.br:/var/www/stoq.com.br/doc/api/stoq
+	scp -r docs/api/stoqlib/_build/html doc.stoq.com.br:/var/www/stoq.com.br/doc/api/stoqlib
 
 pep8:
 	trial stoqlib.test.test_pep8
