@@ -55,7 +55,7 @@ PRIVACY_STRING = _(
 
 
 class Shell(object):
-    def __init__(self, options, appname=None):
+    def __init__(self, options):
         global _shell
         _shell = self
         self._current_app = None
@@ -65,9 +65,11 @@ class Shell(object):
         self._blocked_apps = []
         self._hidden_apps = []
         self._options = options
-        self._login = LoginHelper(username=options.login_username)
+        self._login = None
         self.ran_wizard = False
 
+    def setup_login(self):
+        self._login = LoginHelper(username=self._options.login_username)
         try:
             if not self.login():
                 return
@@ -76,11 +78,6 @@ class Shell(object):
         self._check_param_main_branch()
         self._check_param_online_services()
         self._maybe_show_welcome_dialog()
-        if appname:
-            appdesc = self.get_app_by_name(appname)
-            self.run(appdesc)
-        else:
-            self.run()
 
     def _check_param_main_branch(self):
         from stoqlib.database.runtime import (get_connection, new_transaction,
@@ -281,7 +278,7 @@ class Shell(object):
         else:
             raise ValueError('%s was not blocked.' % appname)
 
-    def run(self, appdesc=None):
+    def run(self, appdesc=None, appname=None):
         from stoq.gui.launcher import Launcher
         app_window = Launcher(self._options, self)
         app_window.show()
@@ -292,6 +289,9 @@ class Shell(object):
         # when running a dialog using gtk_dialog_run/run_dialog.
         window_group = gtk.WindowGroup()
         window_group.add_window(app_window.get_toplevel())
+
+        if appname is not None:
+            appdesc = self.get_app_by_name(appname)
 
         if not appdesc:
             return
