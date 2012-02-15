@@ -85,6 +85,7 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IDescribable, IPersonFacet)
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.method import CreditCardData
+from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.profile import UserProfile
@@ -528,6 +529,15 @@ class ClientCategory(Domain):
 
     def get_description(self):
         return self.name
+
+    def can_remove(self):
+        """ Check if the client category is used in some product."""
+        return not ClientCategoryPrice.selectBy(category=self,
+                                            connection=self.get_connection())
+
+    def remove(self):
+        """Remove this client category from the database."""
+        self.delete(self.id, self.get_connection())
 
 
 class PersonAdaptToClient(PersonAdapter):
