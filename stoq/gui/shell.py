@@ -25,25 +25,11 @@
 
 import gettext
 import operator
-
-import gtk
-from kiwi.component import get_utility
-from kiwi.log import Logger
-from stoqlib.api import api
-from stoqlib.exceptions import LoginError
-from stoqlib.gui.events import StartApplicationEvent
-from stoqlib.gui.login import LoginHelper
-from stoqlib.gui.splash import hide_splash
-from stoqlib.lib.interfaces import IApplicationDescriptions
-from stoqlib.lib.message import error, info
-from stoqlib.lib.pluginmanager import get_plugin_manager
-from twisted.internet import reactor
-
-from stoq.gui.launcher import Launcher
+import logging
 
 _ = gettext.gettext
 _shell = None
-log = Logger('stoq.shell')
+log = logging.getLogger('stoq.shell')
 PRIVACY_STRING = _(
     "One of the new features of Stoq 1.0 is support for online "
     "services. Features using the online services include automatic "
@@ -69,6 +55,9 @@ class Shell(object):
         self.ran_wizard = False
 
     def setup_login(self):
+        from stoqlib.exceptions import LoginError
+        from stoqlib.gui.login import LoginHelper
+        from stoqlib.lib.message import error
         self._login = LoginHelper(username=self._options.login_username)
         try:
             if not self.login():
@@ -85,6 +74,7 @@ class Shell(object):
         from stoqlib.domain.person import Person
         from stoqlib.domain.interfaces import IBranch, ICompany
         from stoqlib.lib.parameters import sysparam
+        from stoqlib.lib.message import info
         conn = get_connection()
         compaines = Person.iselect(ICompany, connection=conn)
         if (compaines.count() == 0 or
@@ -108,6 +98,7 @@ class Shell(object):
     def _check_param_online_services(self):
         from stoqlib.database.runtime import new_transaction
         from stoqlib.lib.parameters import sysparam
+        import gtk
 
         trans = new_transaction()
         sparam = sysparam(trans)
@@ -134,6 +125,7 @@ class Shell(object):
         trans.commit()
 
     def _maybe_show_welcome_dialog(self):
+        from stoqlib.api import api
         if not api.user_settings.get('show-welcome-dialog', True):
             return
         api.user_settings.set('show-welcome-dialog', False)
@@ -143,6 +135,7 @@ class Shell(object):
         run_dialog(WelcomeDialog)
 
     def _load_app(self, appdesc, app_window):
+        import gtk
         module = __import__("stoq.gui.%s" % (appdesc.name, ),
                             globals(), locals(), [''])
         window = appdesc.name.capitalize() + 'App'
@@ -151,6 +144,7 @@ class Shell(object):
             raise SystemExit("%s app misses a %r attribute" % (
                 appdesc.name, window))
 
+        from stoqlib.gui.splash import hide_splash
         hide_splash()
 
         embedded = getattr(window_class, 'embedded', False)
@@ -162,11 +156,14 @@ class Shell(object):
         icon = toplevel.render_icon(appdesc.icon, gtk.ICON_SIZE_MENU)
         toplevel.set_icon(icon)
 
+        from stoqlib.gui.events import StartApplicationEvent
         StartApplicationEvent.emit(appdesc.name, app)
 
         return app
 
     def _get_available_applications(self):
+        from kiwi.component import get_utility
+        from stoqlib.lib.interfaces import IApplicationDescriptions
         from stoq.lib.applist import Application
 
         permissions = {}
@@ -189,6 +186,7 @@ class Shell(object):
         return available_applications
 
     def _get_current_username(self):
+        from stoqlib.api import api
         conn = api.get_connection()
         user = api.get_current_user(conn)
         return user.username
@@ -201,6 +199,8 @@ class Shell(object):
         @param try_cookie: Try to use a cookie if one is available
         @returns: True if login succeed, otherwise false
         """
+        from stoqlib.exceptions import LoginError
+        from stoqlib.lib.message import info
         user = None
         if try_cookie:
             user = self._login.cookie_login()
@@ -236,6 +236,7 @@ class Shell(object):
         # clear the cache, since we switched users
         self._application_cache.clear()
 
+        from stoq.gui.launcher import Launcher
         launcher = Launcher(self._options, self)
         launcher.show()
 
@@ -244,7 +245,9 @@ class Shell(object):
         @param appname: a string
         @returns: a :class:`Application` object
         """
+        from kiwi.component import get_utility
         from stoq.lib.applist import Application
+        from stoqlib.lib.interfaces import IApplicationDescriptions
         descriptions = get_utility(IApplicationDescriptions).get_descriptions()
         for name, full, icon, descr in descriptions:
             if name == appname:
@@ -280,6 +283,8 @@ class Shell(object):
 
     def run(self, appdesc=None, appname=None):
         from stoq.gui.launcher import Launcher
+        from stoqlib.lib.message import error
+        import gtk
         app_window = Launcher(self._options, self)
         app_window.show()
 
@@ -318,7 +323,9 @@ class Shell(object):
 
         # Possibly correct window position (livecd workaround for small
         # screens)
+        from stoqlib.lib.pluginmanager import get_plugin_manager
         manager = get_plugin_manager()
+        from stoqlib.api import api
         if (api.sysparam(api.get_connection()).DEMO_MODE
             and manager.is_active('ecf')):
             pos = app.main_window.toplevel.get_position()
@@ -328,6 +335,7 @@ class Shell(object):
         return app
 
     def run_loop(self):
+        from twisted.internet import reactor
         if not reactor.running:
             log.debug("Entering reactor")
             reactor.run()
