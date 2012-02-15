@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -27,7 +27,7 @@ import gtk
 
 from kiwi.component import get_utility
 from kiwi.ui.dialogs import HIGAlertDialog
-from twisted.internet import reactor
+from twisted.internet import defer
 
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.lib.crashreport import ReportSubmitter
@@ -49,6 +49,7 @@ class CrashReportDialog(object):
                                        self._on_report__failed)
         self._create_dialog()
         self.submitted = False
+        self.deferred = defer.Deferred()
 
     def _create_dialog(self):
         self._dialog = HIGAlertDialog(parent=self._parent,
@@ -116,15 +117,12 @@ class CrashReportDialog(object):
 
     def _destroy(self):
         self._dialog.destroy()
-        if reactor.running:
-            reactor.stop()
-        raise SystemExit
+        self.deferred.callback(None)
 
     def run(self):
         self._dialog.connect('response', self._on_dialog__response)
         self._dialog.show_all()
-        if not reactor.running:
-            reactor.run()
+        return self.deferred
 
     def _on_report__failed(self, response, failure):
         self._show_error()
@@ -140,4 +138,4 @@ def show_dialog(interactive=True):
     """
     parent = get_current_toplevel()
     crd = CrashReportDialog(parent)
-    crd.run()
+    return crd.run()

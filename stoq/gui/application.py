@@ -26,6 +26,7 @@
 import datetime
 import gettext
 import locale
+import os
 import platform
 
 import gtk
@@ -36,12 +37,14 @@ from kiwi.log import Logger
 from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
+from stoqlib.lib.crashreport import has_tracebacks
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.message import yesno
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.dialogs import (get_dialog, run_dialog)
 from stoqlib.gui.base.infobar import InfoBar
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
+from stoqlib.gui.dialogs.crashreportdialog import show_dialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
 from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
 from stoqlib.gui.help import show_contents, show_section
@@ -558,6 +561,20 @@ class AppWindow(GladeDelegate):
         if value:
             toolbar.set_style(value)
 
+    def _show_crash_reports(self):
+        if not has_tracebacks():
+            return api.asyncReturn()
+        if 'STOQ_DISABLE_CRASHREPORT' in os.environ:
+            return api.asyncReturn()
+        return show_dialog()
+
+    @api.async
+    def _quit_reactor(self):
+        if AppWindow.app_windows:
+            return
+        yield self._show_crash_reports()
+        reactor.stop()
+
     #
     # Overridables
     #
@@ -903,6 +920,9 @@ class AppWindow(GladeDelegate):
         if self.app.name == 'launcher':
             log.debug("Flushing user settings")
             api.user_settings.flush()
+
+            self._quit_reactor()
+
         return True
 
     #
@@ -932,8 +952,7 @@ class AppWindow(GladeDelegate):
         if AppWindow.app_windows:
             return
 
-        if self.shutdown_application():
-            reactor.stop()
+        self.shutdown_application()
 
     def _on_menu_item__select(self, menuitem, tooltip):
         self.statusbar.push(-1, tooltip)
@@ -1029,8 +1048,7 @@ class AppWindow(GladeDelegate):
         if self.current_app and not self.current_app.shutdown_application():
             return
 
-        if self.shutdown_application():
-            reactor.stop()
+        self.shutdown_application()
 
     # View
 
@@ -1103,8 +1121,7 @@ class AppWindow(GladeDelegate):
         get_shell().restart_atexit()
         api.config.set('Database', 'enable_production', 'True')
         api.config.flush()
-        if self.shutdown_application():
-            reactor.stop()
+        self.shutdown_application()
 
 
 class SearchableAppWindow(AppWindow):
