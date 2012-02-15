@@ -347,6 +347,7 @@ class ReceivableApp(SearchableAppWindow):
         trans = api.new_transaction()
         retval = self.run_dialog(InPaymentEditor, trans, category=category)
         if api.finish_transaction(trans, retval):
+            self._update_filter_items()
             self.search.refresh()
 
     def _change_due_date(self, receivable_view):
