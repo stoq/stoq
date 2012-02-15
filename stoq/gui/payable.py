@@ -203,7 +203,6 @@ class PayableApp(BaseAccountWindow):
                              visible=False),
                 ]
 
-
     #
     # BaseAccountWindow
     #
@@ -216,7 +215,6 @@ class PayableApp(BaseAccountWindow):
         if trans.committed:
             self._update_filter_items()
             self.select_result(OutPaymentView.get(trans.retval.id))
-
 
     #
     # Public API

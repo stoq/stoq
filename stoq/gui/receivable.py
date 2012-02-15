@@ -199,7 +199,6 @@ class ReceivableApp(BaseAccountWindow):
                              long_title=_('Payment category'), width=110,
                              visible=False)]
 
-
     #
     # BaseAccountWindow
     #
@@ -210,7 +209,6 @@ class ReceivableApp(BaseAccountWindow):
         if api.finish_transaction(trans, retval):
             self._update_filter_items()
             self.search.refresh()
-
 
     #
     # Public API
