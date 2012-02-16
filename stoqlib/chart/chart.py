@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,49 +23,36 @@
 ##
 """ Charting """
 
-import pprint
-
 from kiwi.python import namedAny
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
-class DateArgument(object):
-    pass
-
-
-class Month(DateArgument):
-    pass
-
-
-class Year(DateArgument):
-    pass
-
-
 class Chart(object):
+    description = None
+    name = None
+    series = []
+    columns = []
+
     def __init__(self, conn):
         self.conn = conn
-        self.args = {}
-
-    def set_argument(self, name, value):
-        self.args[name] = value
 
     def execute(self, query):
         return self.conn.queryAll(query)
 
-    def pretty_run(self):
-        return pprint.pformat(list(sorted(self.run())))
-
     def run(self):
         pass
 
+
 # Relative to stoqlib.chart
-_charts = {'paymentchart': ['MonthlyPaymentsChart']}
+_charts = {'MonthlyPayments': 'paymentcharts',
+           'YearlyPayments': 'paymentcharts',
+           'DailyPayments': 'paymentcharts'}
 
 
 def get_chart_class(chart_name):
     location = _charts.get(chart_name)
     if not location:
         raise ValueError(chart_name)
-    return namedAny(location)
+    return namedAny('stoqlib.chart.%s.%s' % (location, chart_name))

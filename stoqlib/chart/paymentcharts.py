@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-# vi:si:et:sw=4:sts=4:ts=4
-
 ##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -24,35 +21,30 @@
 """ Payment charts """
 
 import datetime
-import json
 import string
 
-from twisted.web.resource import Resource
+from dateutil.relativedelta import relativedelta
+from kiwi.currency import currency
 
-from stoqlib.api import api
+from stoqlib.chart.chart import Chart
 from stoqlib.lib.dateconstants import (get_month_names,
                                        get_short_month_names)
 from stoqlib.lib.translation import stoqlib_gettext
 
-
 _ = stoqlib_gettext
 
 
-class Chart(object):
-    def __init__(self, conn):
-        self.conn = conn
 
-    def execute(self, query):
-        return self.conn.queryAll(query)
-
-    def run(self):
-        pass
-
-
-class YearlyPaymentsChart(Chart):
-    name = _("Monthly payments")
-
+class YearlyPayments(Chart):
     description = _("Total revenue, expenses and profit for all years")
+
+    series = [_('Revenue'),
+              _('Expenses'),
+              _('Profits')]
+    columns = [dict(name='time', title=_('Year'), expand=True),
+               dict(name='revenue', title=_("Revenue"), data_type=currency),
+               dict(name='expense', title=_("Expense"), data_type=currency),
+               dict(name='profit', title=_("Profit"), data_type=currency)]
 
     in_payments_query = """
  SELECT extract(year FROM paid_date),
@@ -70,7 +62,24 @@ class YearlyPaymentsChart(Chart):
  GROUP BY extract(year FROM paid_date)
  ORDER BY extract(year FROM paid_date);"""
 
+    @classmethod
+    def get_values(cls):
+        today = datetime.date.today()
+        values = []
+        values.append((_('All years'),
+                       (datetime.date(1900, 1, 1),
+                        today)))
+        values.append((_('Last 5 years'),
+                       (datetime.date(today.year - 5, 1, 1),
+                        today)))
+        return values
+
     def run(self, args):
+        start = args['start']
+        end = args['end']
+
+        # FIXME: Use start & end
+
         """
         :returns: (year, total in payments, total out payments, profit)
         """
@@ -110,16 +119,20 @@ class YearlyPaymentsChart(Chart):
                 'expense': int(expense),
                 'profit': int(profit)})
 
-        return {'series': [_('Revenue'),
-                           _('Expenses'),
-                           _('Profits')],
-                'data': [revenues, expenses, profits],
+        return {'data': [revenues, expenses, profits],
                 'items': items}
 
 
-class MonthlyPaymentsChart(Chart):
-    name = _("Monthly payments")
+class MonthlyPayments(Chart):
     description = _("Total revenue, expenses and profit for all months in a year")
+
+    series = [_('Revenue'),
+              _('Expenses'),
+              _('Profits')]
+    columns = [dict(name='time', title=_('Month'), expand=True),
+               dict(name='revenue', title=_("Revenue"), data_type=currency),
+               dict(name='expense', title=_("Expense"), data_type=currency),
+               dict(name='profit', title=_("Profit"), data_type=currency)]
 
     in_payments_query = """
   SELECT $date_columns,
@@ -143,9 +156,25 @@ ORDER BY $date_columns;
  ORDER BY $date_columns;
 """
 
+    @classmethod
+    def get_values(cls):
+        values = []
+        today = datetime.date.today()
+        date = datetime.date(today.year, 1, 1)
+        # FIXME: Check database to determine range
+        for y in range(4):
+            start = date
+            end = date + relativedelta(month=12, day=31)
+            values.append((str(date.year), (start, end)))
+            date -= relativedelta(years=1)
+        start = today - relativedelta(years=1)
+        end = today
+        values.append((_('Last 12 months'), (start, end)))
+        return values
+
     def run(self, args):
-        start = datetime.date(*map(int, args['start'][0].split('-')))
-        end = datetime.date(*map(int, args['end'][0].split('-')))
+        start = args['start']
+        end = args['end']
 
         date_columns = "extract(year FROM paid_date)||'-'||lpad(extract(month FROM paid_date)::char, 2, '0')"
         months = {}
@@ -188,14 +217,19 @@ ORDER BY $date_columns;
                           'expense': int(total_out),
                           'profit': int(total_in - total_out)})
 
-        return {'series': [_('Revenue'),
-                           _('Expenses'),
-                           _('Profits')],
-                'data': [revenues, expenses, profits],
+        return {'data': [revenues, expenses, profits],
                 'items': items}
 
 
-class DailyPaymentsChart(Chart):
+class DailyPayments(Chart):
+    series = [_('Revenue'),
+              _('Expenses'),
+              _('Profits')]
+
+    columns =[dict(name='time', title=_('Day'), expand=True),
+              dict(name='revenue', title=_("Revenue"), data_type=currency),
+              dict(name='expense', title=_("Expense"), data_type=currency),
+              dict(name='profit', title=_("Profit"), data_type=currency)]
 
     daily_in_payments = """
   SELECT extract(day FROM paid_date),
@@ -217,17 +251,39 @@ ORDER BY extract(day FROM paid_date);"""
 GROUP BY extract(day FROM paid_date)
 ORDER BY extract(day FROM paid_date);"""
 
+    @classmethod
+    def get_values(cls):
+        values = []
+        today = datetime.date.today()
+        date = today + relativedelta(day=1)
+        year = date.year
+        month_names = get_month_names()
+        # FIXME: Check database to determine range
+        for m in range(6):
+            start = date
+            end = date + relativedelta(day=31)
+            month_name = month_names[start.month - 1]
+            if date.year != year:
+                month_name += ' ' + str(date.year)
+            values.append((month_name, (start, end)))
+            date -= relativedelta(months=1)
+
+        start = today - relativedelta(days=30)
+        end = today
+        values.append((_('Last 30 days'), (start, today)))
+
+        return values
+
     def run(self, args):
         """
         @year: year to show payments for
         @month: month to show payments for
         :returns: (month, total in payments, total out payments, profit)
         """
+        start = args['start']
+        end = args['end']
         # FIXME:
-        return {'series': [_('Revenue'),
-                           _('Expenses'),
-                           _('Profits')],
-                'data': [],
+        return {'data': [],
                 'items': {}}
 
         year = int(args['year'][0])
@@ -255,21 +311,3 @@ ORDER BY extract(day FROM paid_date);"""
             total_out = values.get('out', 0)
             #yield [float(day), float(total_in), float(total_out), float(total_in - total_out)]
 
-
-class PaymentCharts(Resource):
-    def render_GET(self, resource):
-        chart_type = resource.args['type'][0]
-
-        conn = api.get_connection()
-        if chart_type == 'year':
-            chart_class = YearlyPaymentsChart
-        elif chart_type == 'month':
-            chart_class = MonthlyPaymentsChart
-        elif chart_type == 'daily':
-            chart_class = DailyPaymentsChart
-        else:
-            raise AssertionError
-
-        chart = chart_class(conn)
-        response = chart.run(resource.args)
-        return json.dumps(response)
