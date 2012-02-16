@@ -36,7 +36,6 @@ import gobject
 import gtk
 from kiwi.currency import currency
 from kiwi.db.query import DateQueryState, DateIntervalQueryState
-from kiwi.db.sqlobj import SQLObjectQueryExecuter
 from kiwi.python import Settable
 from kiwi.ui.dialogs import open as open_dialog
 from kiwi.ui.objectlist import ColoredColumn, Column, ObjectList
@@ -45,6 +44,7 @@ from stoqlib.api import api
 from stoqlib.database.orm import const, OR, AND
 from stoqlib.domain.account import Account, AccountTransaction, AccountTransactionView
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
+from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.accounteditor import AccountEditor
@@ -121,7 +121,7 @@ class TransactionPage(object):
     def _create_search(self):
         self.search = TransactionSearchContainer(
             self, columns=self._get_columns(self.model.kind))
-        self.query = SQLObjectQueryExecuter()
+        self.query = ORMObjectQueryExecuter()
         self.search.set_query_executer(self.query)
         self.search.results.connect('row-activated', self._on_row__activated)
         self.results = self.search.results
