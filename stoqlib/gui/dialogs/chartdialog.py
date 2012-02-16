@@ -23,16 +23,20 @@
 ##
 """ Chart Generation Dialog """
 
+import datetime
 import json
 
+from dateutil.relativedelta import relativedelta
 import gtk
 from kiwi.currency import currency
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ObjectList, Column
+from kiwi.ui.widgets.combo import ProxyComboBox
 from twisted.web.client import getPage
 
 from stoqlib.api import api
 from stoqlib.lib.daemonutils import start_daemon
+from stoqlib.lib.dateconstants import get_month_names
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.webview import WebView
 
@@ -40,10 +44,18 @@ _ = stoqlib_gettext
 
 
 reports = {
-    'month': [dict(name='time', title=_('Time unit'), expand=True),
+    'day': [dict(name='time', title=_('Day'), expand=True),
+            dict(name='revenue', title=_("Revenue"), data_type=currency),
+            dict(name='expense', title=_("Expense"), data_type=currency),
+            dict(name='profit', title=_("Profit"), data_type=currency)],
+    'month': [dict(name='time', title=_('Month'), expand=True),
               dict(name='revenue', title=_("Revenue"), data_type=currency),
               dict(name='expense', title=_("Expense"), data_type=currency),
-              dict(name='profit', title=_("Profit"), data_type=currency)]
+              dict(name='profit', title=_("Profit"), data_type=currency)],
+    'year': [dict(name='time', title=_('Year'), expand=True),
+             dict(name='revenue', title=_("Revenue"), data_type=currency),
+             dict(name='expense', title=_("Expense"), data_type=currency),
+             dict(name='profit', title=_("Profit"), data_type=currency)]
     }
 
 
@@ -51,6 +63,7 @@ class ChartDialog(gtk.Window):
     def __init__(self):
         self._js_data = None
         self._js_options = None
+        self._current = None
 
         gtk.Window.__init__(self)
         self.set_size_request(800, 480)
@@ -59,11 +72,36 @@ class ChartDialog(gtk.Window):
         self.add(self.vbox)
         self.vbox.show()
 
+        hbox = gtk.HBox()
+        self.vbox.pack_start(hbox, False, False)
+        hbox.show()
+
+        label = gtk.Label('Period')
+        hbox.pack_start(label, False, False)
+        label.show()
+
+        self.period_type = ProxyComboBox()
+        self.period_type.connect(
+            'content-changed',
+            self._on_period_type__content_changed)
+        hbox.pack_start(self.period_type, False, False)
+        self.period_type.show()
+
+        self.period_values = ProxyComboBox()
+        self.period_values.connect(
+            'content-changed',
+            self._on_period_values__content_changed)
+        hbox.pack_start(self.period_values, False, False)
+        self.period_values.show()
+
         self._view = WebView()
         self._view.get_view().connect(
             'load-finished',
             self._on_view__document_load_finished)
         self.vbox.pack_start(self._view, True, True)
+
+        self.results = ObjectList()
+        self.vbox.pack_start(self.results, True, True)
 
         self._setup_daemon()
 
@@ -75,15 +113,11 @@ class ChartDialog(gtk.Window):
         proxy = daemon.get_client()
         yield proxy.callRemote('start_webservice')
 
-        # FIXME: This should be user options
-        report_name = 'month'
-        report = reports['month']
-        report_kwargs = dict(year=2011)
-
-        # Get chart data
-
-        response = yield self._invoke_chart(report_name, **report_kwargs)
-        self._render_chart(report, response)
+        self.period_type.prefill([
+            ('Month', 'month'),
+            ('Year', 'year'),
+            ('Day', 'day'),
+            ])
 
     @api.async
     def _invoke_chart(self, report_name, **report_kwargs):
@@ -119,20 +153,75 @@ class ChartDialog(gtk.Window):
     def _render_objectlist(self, report, response):
         columns = []
         for kwargs in report:
+            kwargs = kwargs.copy()
             name = kwargs.pop('name')
             columns.append(Column(name, **kwargs))
-        results = ObjectList(columns)
+        self.results.set_columns(columns)
 
+        items = []
         for item in response['items']:
             settable = Settable(**item)
-            results.append(settable)
-
-        self.vbox.pack_start(results, True, True)
-        results.show()
+            items.append(settable)
+        self.results.add_list(items, clear=True)
+        self.results.show()
 
     def _load_finished(self):
         self._view.js_function_call(
             "plot", self._js_data, self._js_options)
+
+    @api.async
+    def _show_one(self, kind, start, end):
+        report_name = kind
+        report = reports[kind]
+        report_kwargs = dict(start=start.strftime('%Y-%m-%d'),
+                             end=end.strftime('%Y-%m-%d'))
+
+        # Get chart datab
+        response = yield self._invoke_chart(report_name, **report_kwargs)
+        self._render_chart(report, response)
+
+    def _update_period_values(self):
+        today = datetime.datetime.today()
+        values = []
+
+        period_type = self.period_type.get_selected()
+        if period_type == 'year':
+            values = []
+            values.append((('All years'),
+                           (datetime.date(1900, 1, 1),
+                            today.date())))
+            values.append((('Last 5 years'),
+                           (datetime.date(today.year - 5, 1, 1),
+                            today.date())))
+        elif period_type == 'month':
+            date = datetime.datetime(today.year, 1, 1)
+            for y in range(4):
+                start = date
+                end = date + relativedelta(month=12, day=31)
+                values.append((str(date.year), (start.date(), end.date())))
+                date -= relativedelta(years=1)
+            start = today - relativedelta(years=1)
+            end = today
+            values.append((_('Last 12 months'), (start.date(), end.date())))
+        elif period_type == 'day':
+            date = today + relativedelta(day=1)
+            year = date.year
+            month_names = get_month_names()
+            for m in range(6):
+                start = date
+                end = date + relativedelta(day=31)
+                month_name = month_names[start.month - 1]
+                if date.year != year:
+                    month_name += ' ' + str(date.year)
+                values.append((month_name, (start.date(), end.date())))
+                date -= relativedelta(months=1)
+
+            start = today - relativedelta(days=30)
+            end = today
+            values.append((_('Last 30 days'), (start.date(), today.date())))
+        else:
+            return
+        self.period_values.prefill(values)
 
     #
     # Callbacks
@@ -140,3 +229,17 @@ class ChartDialog(gtk.Window):
 
     def _on_view__document_load_finished(self, view, frame):
         self._load_finished()
+
+    def _on_period_type__content_changed(self, combo):
+        self._update_period_values()
+
+    def _on_period_values__content_changed(self, combo):
+        kind = self.period_type.get_selected()
+        value = self.period_values.get_selected()
+        if not value:
+            return
+        start, end = value
+        if self._current == (kind, start, end):
+            return
+        self._show_one(kind, start, end)
+        self._current = kind, start, end

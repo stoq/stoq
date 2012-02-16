@@ -23,13 +23,17 @@
 ##
 """ Payment charts """
 
+import datetime
 import json
 import string
 
 from twisted.web.resource import Resource
 
 from stoqlib.api import api
+from stoqlib.lib.dateconstants import (get_month_names,
+                                       get_short_month_names)
 from stoqlib.lib.translation import stoqlib_gettext
+
 
 _ = stoqlib_gettext
 
@@ -70,7 +74,6 @@ class YearlyPaymentsChart(Chart):
         """
         :returns: (year, total in payments, total out payments, profit)
         """
-
         years = {}
         for year, total_in in self.execute(self.in_payments_query):
             if not year:
@@ -86,18 +89,32 @@ class YearlyPaymentsChart(Chart):
                 years[year] = {}
             years[year]['out'] = total_out or 0
 
-        data = dict(revenue=[],
-                    expense=[],
-                    profit=[],
-                    dates=[])
-        for year, values in years.items():
+        revenues = []
+        expenses = []
+        profits = []
+
+        items = []
+        for year, values in sorted(years.items()):
             total_in = values.get('in', 0)
             total_out = values.get('out', 0)
-            data['revenue'].append(float(total_in))
-            data['expense'].append(float(total_out))
-            data['profit'].apppend(float(total_in - total_out))
-            data['date'] = year
-            yield data
+            revenue = float(total_in)
+            expense = float(total_out)
+            profit = float(total_in - total_out)
+            revenues.append(revenue)
+            expenses.append(expense)
+            profits.append(profit)
+            items.append({
+                'short_title': year,
+                'time': int(year),
+                'revenue': int(revenue),
+                'expense': int(expense),
+                'profit': int(profit)})
+
+        return {'series': [_('Revenue'),
+                           _('Expenses'),
+                           _('Profits')],
+                'data': [revenues, expenses, profits],
+                'items': items}
 
 
 class MonthlyPaymentsChart(Chart):
@@ -110,7 +127,7 @@ class MonthlyPaymentsChart(Chart):
     FROM payment
    WHERE payment_type = 0 AND
          status = 2 AND
-         $year_query
+         payment.paid_date >= '$start' AND payment.paid_date < '$end'
 GROUP BY $date_columns
 ORDER BY $date_columns;
 """
@@ -120,42 +137,37 @@ ORDER BY $date_columns;
         SUM(paid_value)
    FROM payment
   WHERE payment_type = 1 AND
-         status = 2 AND
-        $year_query
+        status = 2 AND
+        payment.paid_date >= '$start' AND payment.paid_date < '$end'
  GROUP BY $date_columns
  ORDER BY $date_columns;
 """
 
     def run(self, args):
-        if 'year' in args:
-            year = int(args['year'][0])
-            year_query = "extract(year FROM paid_date) = %s" % (
-                self.conn.sqlrepr(year))
-        else:
-            raise TypeError("missing argument: year/last")
+        start = datetime.date(*map(int, args['start'][0].split('-')))
+        end = datetime.date(*map(int, args['end'][0].split('-')))
 
-        date_columns = "date_part('month', paid_date)"
+        date_columns = "extract(year FROM paid_date)||'-'||lpad(extract(month FROM paid_date)::char, 2, '0')"
         months = {}
-        tmpl = string.Template(self.in_payments_query).substitute(
-            dict(date_columns=date_columns,
-                 year_query=year_query))
+        ns = dict(date_columns=date_columns,
+                  start=start.strftime('%Y-%m-%d'),
+                  end=end.strftime('%Y-%m-%d'))
+
+        tmpl = string.Template(self.in_payments_query).substitute(ns)
         res = self.execute(tmpl)
-        for month, total_in in res:
+        for date, total_in in res:
+            year, month = map(int, date.split('-'))
             months.setdefault((year, month), {})['in'] = total_in or 0
 
-        tmpl = string.Template(self.out_payments_query).substitute(
-            dict(date_columns=date_columns,
-                 year_query=year_query))
+        tmpl = string.Template(self.out_payments_query).substitute(ns)
         res = self.execute(tmpl)
-        for month, total_out in res:
+        for date, total_out in res:
+            year, month = map(int, date.split('-'))
             months.setdefault((year, month), {})['out'] = total_out or 0
 
         revenues = []
         expenses = []
         profits = []
-
-        from stoqlib.lib.dateconstants import (get_month_names,
-                                               get_short_month_names)
 
         items = []
         keys = sorted(months)
@@ -211,6 +223,13 @@ ORDER BY extract(day FROM paid_date);"""
         @month: month to show payments for
         :returns: (month, total in payments, total out payments, profit)
         """
+        # FIXME:
+        return {'series': [_('Revenue'),
+                           _('Expenses'),
+                           _('Profits')],
+                'data': [],
+                'items': {}}
+
         year = int(args['year'][0])
         if 2100 > year < 1900:
             raise ValueError(year)
@@ -234,7 +253,7 @@ ORDER BY extract(day FROM paid_date);"""
         for day, values in days.items():
             total_in = values.get('in', 0)
             total_out = values.get('out', 0)
-            yield [float(day), float(total_in), float(total_out), float(total_in - total_out)]
+            #yield [float(day), float(total_in), float(total_out), float(total_in - total_out)]
 
 
 class PaymentCharts(Resource):
