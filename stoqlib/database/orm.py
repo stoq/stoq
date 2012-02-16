@@ -421,8 +421,19 @@ class ORMObjectQueryExecuter(QueryExecuter):
                 table_field.fieldName,
                 self.conn.sqlrepr(value)))
         else:
+            fieldName = table_field.fieldName
             text = '%%%s%%' % state.text.lower()
-            retval = LIKE(func.LOWER(table_field), text)
+
+            table_field = func.LOWER(table_field)
+            # Skip a couple of fields that do not contain real
+            # "string" data, perhaps we should have a way of mark this
+            # directly in the columns
+            if fieldName not in ['barcode', 'phone_number', 'cpf',
+                                 'rg_number', 'cnpj', 'code']:
+                table_field = func.stoq_normalize_string(table_field)
+                text = func.stoq_normalize_string(text)
+
+            retval = LIKE(table_field, text)
 
         if state.mode == StringQueryState.NOT_CONTAINS:
             retval = NOT(retval)
