@@ -163,7 +163,7 @@ class ChartDialog(gtk.Window):
     def _update_period_values(self):
         chart_type_name = self.chart_type.get_selected()
         chart_class = get_chart_class(chart_type_name)
-        values = chart_class.get_values()
+        values = chart_class.get_combo_labels()
         self.period_values.prefill(values)
 
     #
