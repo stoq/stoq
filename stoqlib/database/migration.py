@@ -181,6 +181,10 @@ class SchemaMigration(object):
                     continue
                 patches_to_apply.append(patch)
 
+            functions = environ.find_resource('sql', 'functions.sql')
+            if execute_sql(functions) != 0:
+                error('Failed to create functions')
+
             log.info("Applying %d patches" % (len(patches_to_apply), ))
             create_log.info("PATCHES:%d" % (len(patches_to_apply), ))
 

@@ -304,6 +304,11 @@ def create_base_schema():
     create_log.info("SCHEMA")
     settings = get_utility(IDatabaseSettings)
 
+    # Functions
+    functions = environ.find_resource('sql', 'functions.sql')
+    if execute_sql(functions) != 0:
+        error('Failed to create functions')
+
     # A Base schema shared between all RDBMS implementations
     schema = _get_latest_schema()
     if execute_sql(schema) != 0:
