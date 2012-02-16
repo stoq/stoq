@@ -34,7 +34,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-
 class YearlyPayments(Chart):
     description = _("Total revenue, expenses and profit for all years")
 
@@ -50,7 +49,8 @@ class YearlyPayments(Chart):
  SELECT extract(year FROM paid_date),
         SUM(paid_value)
    FROM payment
-  WHERE payment.payment_type = 0
+  WHERE payment.payment_type = 0 AND
+        payment.paid_date >= '$start' AND payment.paid_date < '$end'
  GROUP BY extract(year FROM paid_date)
  ORDER BY extract(year FROM paid_date);"""
 
@@ -58,12 +58,13 @@ class YearlyPayments(Chart):
  SELECT extract(year FROM paid_date),
         SUM(paid_value)
    FROM payment
-  WHERE payment.payment_type = 1
+  WHERE payment.payment_type = 1 AND
+        payment.paid_date >= '$start' AND payment.paid_date < '$end'
  GROUP BY extract(year FROM paid_date)
  ORDER BY extract(year FROM paid_date);"""
 
     @classmethod
-    def get_values(cls):
+    def get_combo_labels(cls):
         today = datetime.date.today()
         values = []
         values.append((_('All years'),
@@ -75,23 +76,26 @@ class YearlyPayments(Chart):
         return values
 
     def run(self, args):
-        start = args['start']
-        end = args['end']
-
-        # FIXME: Use start & end
-
         """
         :returns: (year, total in payments, total out payments, profit)
         """
+        start = args['start']
+        end = args['end']
+
+        ns = dict(start=start.strftime('%Y-%m-%d'),
+                  end=end.strftime('%Y-%m-%d'))
+
         years = {}
-        for year, total_in in self.execute(self.in_payments_query):
+        tmpl = string.Template(self.in_payments_query).substitute(ns)
+        for year, total_in in self.execute(tmpl):
             if not year:
                 continue
             if not year in years:
                 years[year] = {}
             years[year]['in'] = total_in or 0
 
-        for year, total_out in self.execute(self.out_payments_query):
+        tmpl = string.Template(self.out_payments_query).substitute(ns)
+        for year, total_out in self.execute(tmpl):
             if not year:
                 continue
             if not year in years:
@@ -157,7 +161,7 @@ ORDER BY $date_columns;
 """
 
     @classmethod
-    def get_values(cls):
+    def get_combo_labels(cls):
         values = []
         today = datetime.date.today()
         date = datetime.date(today.year, 1, 1)
@@ -226,18 +230,17 @@ class DailyPayments(Chart):
               _('Expenses'),
               _('Profits')]
 
-    columns =[dict(name='time', title=_('Day'), expand=True),
-              dict(name='revenue', title=_("Revenue"), data_type=currency),
-              dict(name='expense', title=_("Expense"), data_type=currency),
-              dict(name='profit', title=_("Profit"), data_type=currency)]
+    columns = [dict(name='time', title=_('Day'), expand=True),
+               dict(name='revenue', title=_("Revenue"), data_type=currency),
+               dict(name='expense', title=_("Expense"), data_type=currency),
+               dict(name='profit', title=_("Profit"), data_type=currency)]
 
     daily_in_payments = """
   SELECT extract(day FROM paid_date),
          SUM(paid_value)
     FROM payment
    WHERE payment_type = 0 AND
-         extract(month FROM paid_date) = $month AND
-         extract(year FROM paid_date) = $year
+         payment.paid_date >= '$start' AND payment.paid_date < '$end'
 GROUP BY extract(day FROM paid_date)
 ORDER BY extract(day FROM paid_date);"""
 
@@ -246,13 +249,12 @@ ORDER BY extract(day FROM paid_date);"""
          SUM(paid_value)
     FROM payment
    WHERE payment_type = 1 AND
-         extract(month FROM paid_date) = $month AND
-         extract(year FROM paid_date) = $year
+         payment.paid_date >= '$start' AND payment.paid_date < '$end'
 GROUP BY extract(day FROM paid_date)
 ORDER BY extract(day FROM paid_date);"""
 
     @classmethod
-    def get_values(cls):
+    def get_combo_labels(cls):
         values = []
         today = datetime.date.today()
         date = today + relativedelta(day=1)
@@ -282,32 +284,38 @@ ORDER BY extract(day FROM paid_date);"""
         """
         start = args['start']
         end = args['end']
-        # FIXME:
-        return {'data': [],
-                'items': {}}
 
-        year = int(args['year'][0])
-        if 2100 > year < 1900:
-            raise ValueError(year)
-        month = int(args['month'][0])
-        if 12 > month < 1:
-            raise ValueError(month)
+        ns = dict(start=start.strftime('%Y-%m-%d'),
+                  end=end.strftime('%Y-%m-%d'))
 
         days = {}
         for i in range(1, 32):
             days[i] = {'in': 0, 'out': 0}
-        tmpl = string.Template(self.daily_in_payments).substitute(
-            dict(month=month, year=year))
+        tmpl = string.Template(self.daily_in_payments).substitute(ns)
         for day, total_in in self.conn.queryAll(tmpl):
             days[day]['in'] = total_in
 
-        tmpl = string.Template(self.daily_out_payments).substitute(
-            dict(month=month, year=year))
+        tmpl = string.Template(self.daily_out_payments).substitute(ns)
         for day, total_out in self.conn.queryAll(tmpl):
             days[day]['out'] = total_out
 
-        for day, values in days.items():
+        revenues = []
+        expenses = []
+        profits = []
+
+        items = []
+        for day, values in sorted(days.items()):
             total_in = values.get('in', 0)
             total_out = values.get('out', 0)
-            #yield [float(day), float(total_in), float(total_out), float(total_in - total_out)]
+            revenues.append(float(total_in))
+            expenses.append(float(total_out))
+            profits.append(float(total_in - total_out))
+            items.append({
+                'short_title': day,
+                'revenuse': int(total_in),
+                'expense': int(total_out),
+                'profit': int(total_in - total_out),
+                })
 
+        return {'data': [revenues, expenses, profits],
+                'items': items}

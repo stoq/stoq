@@ -38,10 +38,14 @@ class Chart(object):
     def __init__(self, conn):
         self.conn = conn
 
+    @classmethod
+    def get_combo_labels(cls):
+        return []
+
     def execute(self, query):
         return self.conn.queryAll(query)
 
-    def run(self):
+    def run(self, args):
         pass
 
 
