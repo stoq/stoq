@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011-12 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,40 +23,21 @@
 ##
 """ Chart Generation Dialog """
 
-import datetime
 import json
 
-from dateutil.relativedelta import relativedelta
 import gtk
-from kiwi.currency import currency
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ObjectList, Column
 from kiwi.ui.widgets.combo import ProxyComboBox
 from twisted.web.client import getPage
 
 from stoqlib.api import api
+from stoqlib.chart.chart import get_chart_class
 from stoqlib.lib.daemonutils import start_daemon
-from stoqlib.lib.dateconstants import get_month_names
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.webview import WebView
 
 _ = stoqlib_gettext
-
-
-reports = {
-    'day': [dict(name='time', title=_('Day'), expand=True),
-            dict(name='revenue', title=_("Revenue"), data_type=currency),
-            dict(name='expense', title=_("Expense"), data_type=currency),
-            dict(name='profit', title=_("Profit"), data_type=currency)],
-    'month': [dict(name='time', title=_('Month'), expand=True),
-              dict(name='revenue', title=_("Revenue"), data_type=currency),
-              dict(name='expense', title=_("Expense"), data_type=currency),
-              dict(name='profit', title=_("Profit"), data_type=currency)],
-    'year': [dict(name='time', title=_('Year'), expand=True),
-             dict(name='revenue', title=_("Revenue"), data_type=currency),
-             dict(name='expense', title=_("Expense"), data_type=currency),
-             dict(name='profit', title=_("Profit"), data_type=currency)]
-    }
 
 
 class ChartDialog(gtk.Window):
@@ -80,12 +61,12 @@ class ChartDialog(gtk.Window):
         hbox.pack_start(label, False, False)
         label.show()
 
-        self.period_type = ProxyComboBox()
-        self.period_type.connect(
+        self.chart_type = ProxyComboBox()
+        self.chart_type.connect(
             'content-changed',
-            self._on_period_type__content_changed)
-        hbox.pack_start(self.period_type, False, False)
-        self.period_type.show()
+            self._on_chart_type__content_changed)
+        hbox.pack_start(self.chart_type, False, False)
+        self.chart_type.show()
 
         self.period_values = ProxyComboBox()
         self.period_values.connect(
@@ -113,46 +94,46 @@ class ChartDialog(gtk.Window):
         proxy = daemon.get_client()
         yield proxy.callRemote('start_webservice')
 
-        self.period_type.prefill([
-            ('Month', 'month'),
-            ('Year', 'year'),
-            ('Day', 'day'),
+        self.chart_type.prefill([
+            ('Month', 'MonthlyPayments'),
+            ('Year', 'YearlyPayments'),
+            ('Day', 'DailyPayments'),
             ])
 
     @api.async
-    def _invoke_chart(self, report_name, **report_kwargs):
+    def _invoke_chart(self, chart_type_name, **report_kwargs):
         def _get_chart_url(**kwargs):
             params = []
             for key, value in kwargs.items():
                 params.append(key + '=' + str(value))
-            return '%s/web/payment-chart.json?%s' % (
+            return '%s/web/chart.json?%s' % (
                 self._daemon_uri, '&'.join(params))
 
-        url = _get_chart_url(type=report_name, **report_kwargs)
+        url = _get_chart_url(type=chart_type_name, **report_kwargs)
         page = yield getPage(url)
         data = json.loads(page)
         api.asyncReturn(data)
 
-    def _render_chart(self, report, response):
-        self._render_javascript(report, response)
-        self._render_objectlist(report, response)
+    def _render_chart(self, chart_class, response):
+        self._render_javascript(chart_class, response)
+        self._render_objectlist(chart_class, response)
 
-    def _render_javascript(self, report, response):
+    def _render_javascript(self, chart_class, response):
         ticks = [item['short_title'] for item in response['items']]
 
         self._js_data = response['data']
 
         options = {}
-        options['series'] = [dict(label=serie) for serie in response['series']]
+        options['series'] = [dict(label=serie) for serie in chart_class.series]
         options['xaxis_ticks'] = ticks
         self._js_options = options
 
         self._view.load_uri('%s/web/static/chart.html' % (
                             self._daemon_uri,))
 
-    def _render_objectlist(self, report, response):
+    def _render_objectlist(self, chart_class, response):
         columns = []
-        for kwargs in report:
+        for kwargs in chart_class.columns:
             kwargs = kwargs.copy()
             name = kwargs.pop('name')
             columns.append(Column(name, **kwargs))
@@ -170,57 +151,19 @@ class ChartDialog(gtk.Window):
             "plot", self._js_data, self._js_options)
 
     @api.async
-    def _show_one(self, kind, start, end):
-        report_name = kind
-        report = reports[kind]
+    def _show_one(self, chart_type_name, start, end):
+        chart_class = get_chart_class(chart_type_name)
         report_kwargs = dict(start=start.strftime('%Y-%m-%d'),
                              end=end.strftime('%Y-%m-%d'))
 
         # Get chart datab
-        response = yield self._invoke_chart(report_name, **report_kwargs)
-        self._render_chart(report, response)
+        response = yield self._invoke_chart(chart_type_name, **report_kwargs)
+        self._render_chart(chart_class, response)
 
     def _update_period_values(self):
-        today = datetime.datetime.today()
-        values = []
-
-        period_type = self.period_type.get_selected()
-        if period_type == 'year':
-            values = []
-            values.append((('All years'),
-                           (datetime.date(1900, 1, 1),
-                            today.date())))
-            values.append((('Last 5 years'),
-                           (datetime.date(today.year - 5, 1, 1),
-                            today.date())))
-        elif period_type == 'month':
-            date = datetime.datetime(today.year, 1, 1)
-            for y in range(4):
-                start = date
-                end = date + relativedelta(month=12, day=31)
-                values.append((str(date.year), (start.date(), end.date())))
-                date -= relativedelta(years=1)
-            start = today - relativedelta(years=1)
-            end = today
-            values.append((_('Last 12 months'), (start.date(), end.date())))
-        elif period_type == 'day':
-            date = today + relativedelta(day=1)
-            year = date.year
-            month_names = get_month_names()
-            for m in range(6):
-                start = date
-                end = date + relativedelta(day=31)
-                month_name = month_names[start.month - 1]
-                if date.year != year:
-                    month_name += ' ' + str(date.year)
-                values.append((month_name, (start.date(), end.date())))
-                date -= relativedelta(months=1)
-
-            start = today - relativedelta(days=30)
-            end = today
-            values.append((_('Last 30 days'), (start.date(), today.date())))
-        else:
-            return
+        chart_type_name = self.chart_type.get_selected()
+        chart_class = get_chart_class(chart_type_name)
+        values = chart_class.get_values()
         self.period_values.prefill(values)
 
     #
@@ -230,11 +173,11 @@ class ChartDialog(gtk.Window):
     def _on_view__document_load_finished(self, view, frame):
         self._load_finished()
 
-    def _on_period_type__content_changed(self, combo):
+    def _on_chart_type__content_changed(self, combo):
         self._update_period_values()
 
     def _on_period_values__content_changed(self, combo):
-        kind = self.period_type.get_selected()
+        kind = self.chart_type.get_selected()
         value = self.period_values.get_selected()
         if not value:
             return
