@@ -58,4 +58,5 @@ class ClientCategoryDialog(ModelListDialog):
         for client in PersonAdaptToClient.selectBy(category=model,
                                                    connection=trans):
             client.category = None
+        model = trans.get(model)
         model.remove()
