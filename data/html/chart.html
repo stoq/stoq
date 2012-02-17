@@ -10,6 +10,7 @@
   <script type="text/javascript" src="/web/static/js/jqplot.pointLabels.min.js"></script>
 </head>
 <body>
+  <div id="description"></div>
   <div id="chart"></div>
 
 <script type="text/javascript">
@@ -41,6 +42,7 @@
     if (extra.xaxis_ticks) {
        options.axes.xaxis.ticks = extra.xaxis_ticks;
     }
+    $("#description").html(extra.description);
     $.jqplot("chart", data, options);
   }
 </script>
