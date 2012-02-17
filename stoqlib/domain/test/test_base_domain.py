@@ -24,7 +24,8 @@
 
 from zope.interface import implements, Interface
 
-from stoqlib.database.orm import ORMObjectMoreThanOneResultError, IntCol
+from stoqlib.database.orm import (ORMObjectMoreThanOneResultError, IntCol,
+                                  ForeignKey)
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.base import Domain, ModelAdapter
 
@@ -51,6 +52,7 @@ class Ding(Domain):
 class DingAdaptToDong(ModelAdapter):
     implements(IDong)
     facetfield = IntCol(default=0)
+    original = ForeignKey('Ding')
 
 Ding.registerFacet(DingAdaptToDong, IDong)
 

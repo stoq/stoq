@@ -55,21 +55,7 @@ class ORMObjectAdapter(Adapter):
 
 
 class AdaptableORMObject(Adaptable):
-    @classmethod
-    def registerFacet(cls, facet, *ifaces):
-        super(AdaptableORMObject, cls).registerFacet(facet, *ifaces)
-
-        if not issubclass(facet, ORMObject):
-            return
-
-        # This might not be the best location to do this, but it has
-        # a nice lazy property to it. The alternative would be to
-        # attach it to all domain objects during startup, or just
-        # load the schema definition from postgres dynamically.
-        if not hasattr(facet, 'original'):
-            facet.sqlmeta.addColumn(ForeignKey(cls.__name__,
-                                    name='original',
-                                    forceDBName=True))
+    pass
 
 
 def _adaptable_orm_adapter_hook(iface, obj):
