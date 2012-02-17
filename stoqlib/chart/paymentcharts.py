@@ -37,9 +37,6 @@ _ = stoqlib_gettext
 class YearlyPayments(Chart):
     description = _("Total revenue, expenses and profit for all years")
 
-    series = [_('Revenue'),
-              _('Expenses'),
-              _('Profits')]
     columns = [dict(name='time', title=_('Year'), expand=True),
                dict(name='revenue', title=_("Revenue"), data_type=currency),
                dict(name='expense', title=_("Expense"), data_type=currency),
@@ -130,9 +127,6 @@ class YearlyPayments(Chart):
 class MonthlyPayments(Chart):
     description = _("Total revenue, expenses and profit for all months in a year")
 
-    series = [_('Revenue'),
-              _('Expenses'),
-              _('Profits')]
     columns = [dict(name='time', title=_('Month'), expand=True),
                dict(name='revenue', title=_("Revenue"), data_type=currency),
                dict(name='expense', title=_("Expense"), data_type=currency),
@@ -226,9 +220,7 @@ ORDER BY $date_columns;
 
 
 class DailyPayments(Chart):
-    series = [_('Revenue'),
-              _('Expenses'),
-              _('Profits')]
+    description = _("Revenue, expenses and profit per day")
 
     columns = [dict(name='time', title=_('Day'), expand=True),
                dict(name='revenue', title=_("Revenue"), data_type=currency),
