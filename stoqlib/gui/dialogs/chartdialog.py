@@ -129,7 +129,8 @@ class ChartDialog(gtk.Window):
         self._js_data = response['data']
 
         options = {}
-        options['series'] = [dict(label=c['title']) for c in chart_class.columns]
+        options['description'] = response['description']
+        options['series'] = [dict(label=c['title']) for c in chart_class.columns][1:]
         options['xaxis_ticks'] = ticks
         self._js_options = options
 

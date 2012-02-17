@@ -35,12 +35,10 @@ _ = stoqlib_gettext
 
 
 class YearlyPayments(Chart):
-    description = _("Total revenue, expenses and profit for all years")
-
     columns = [dict(name='year', title=_('Year'), expand=True),
                dict(name='revenue', title=_("Revenue"), data_type=currency),
                dict(name='expense', title=_("Expense"), data_type=currency),
-               dict(name='profit', title=_("Profit"), data_type=currency)]
+               dict(name='profit', title=_("Gross profit"), data_type=currency)]
 
     in_payments_query = """
  SELECT extract(year FROM paid_date),
@@ -60,12 +58,14 @@ class YearlyPayments(Chart):
  GROUP BY extract(year FROM paid_date)
  ORDER BY extract(year FROM paid_date);"""
 
+    start_date = datetime.date(1900, 1, 1)
+
     @classmethod
     def get_combo_labels(cls):
         today = datetime.date.today()
         values = []
         values.append((_('All years'),
-                       (datetime.date(1900, 1, 1),
+                       (cls.start_date,
                         today)))
         values.append((_('Last 5 years'),
                        (datetime.date(today.year - 5, 1, 1),
@@ -73,11 +73,14 @@ class YearlyPayments(Chart):
         return values
 
     def run(self, args):
-        """
-        :returns: (year, total in payments, total out payments, profit)
-        """
         start = args['start']
         end = args['end']
+
+        if start == self.start_date:
+            description = _("Total revenue, expenses and gross profit for all years")
+        else:
+            description = _("Total revenue, expenses and gross profit between %s and %s") % (
+                start.year, end.year)
 
         ns = dict(start=start.strftime('%Y-%m-%d'),
                   end=end.strftime('%Y-%m-%d'))
@@ -121,16 +124,15 @@ class YearlyPayments(Chart):
                 'profit': int(profit)})
 
         return {'data': [revenues, expenses, profits],
+                'description': description,
                 'items': items}
 
 
 class MonthlyPayments(Chart):
-    description = _("Total revenue, expenses and profit for all months in a year")
-
     columns = [dict(name='time', title=_('Month'), expand=True),
                dict(name='revenue', title=_("Revenue"), data_type=currency),
                dict(name='expense', title=_("Expense"), data_type=currency),
-               dict(name='profit', title=_("Profit"), data_type=currency)]
+               dict(name='profit', title=_("Gross profit"), data_type=currency)]
 
     in_payments_query = """
   SELECT $date_columns,
@@ -173,6 +175,12 @@ ORDER BY $date_columns;
     def run(self, args):
         start = args['start']
         end = args['end']
+
+        if (start.month == 1 and start.day == 1 and
+            end.month == 12 and end.day == 31):
+            description = _("Total revenue, expenses and gross profit for %s") % (start.year, )
+        else:
+            description = _("Total revenue, expenses and gross profit for all months in a year")
 
         date_columns = "extract(year FROM paid_date)||'-'||lpad(extract(month FROM paid_date)::char, 2, '0')"
         months = {}
@@ -218,16 +226,15 @@ ORDER BY $date_columns;
                           'month': month})
 
         return {'data': [revenues, expenses, profits],
+                'description': description,
                 'items': items}
 
 
 class DailyPayments(Chart):
-    description = _("Revenue, expenses and profit per day")
-
     columns = [dict(name='time', title=_('Day'), expand=True),
                dict(name='revenue', title=_("Revenue"), data_type=currency),
                dict(name='expense', title=_("Expense"), data_type=currency),
-               dict(name='profit', title=_("Profit"), data_type=currency)]
+               dict(name='profit', title=_("Gross profit"), data_type=currency)]
 
     daily_in_payments = """
   SELECT extract(day FROM paid_date),
@@ -271,13 +278,17 @@ ORDER BY extract(day FROM paid_date);"""
         return values
 
     def run(self, args):
-        """
-        @year: year to show payments for
-        @month: month to show payments for
-        :returns: (month, total in payments, total out payments, profit)
-        """
         start = args['start']
         end = args['end']
+
+        if (start + relativedelta(days=31)) == end:
+            month_name = get_month_names()[start.month - 1]
+            link = 'chart://show_one/type=YearlyPayments&start=%d-01-01&end=%d-12-31' % (
+                start.year, start.year)
+            description = _('Revenue, expenses and gross profit for %s <a href="%s">%s</a>') % (
+                month_name, link, start.year)
+        else:
+            description = _("Revenue, expenses and gross profit per day")
 
         ns = dict(start=start.strftime('%Y-%m-%d'),
                   end=end.strftime('%Y-%m-%d'))
@@ -312,4 +323,5 @@ ORDER BY extract(day FROM paid_date);"""
                 })
 
         return {'data': [revenues, expenses, profits],
+                'description': description,
                 'items': items}
