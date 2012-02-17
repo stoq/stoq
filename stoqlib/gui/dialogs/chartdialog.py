@@ -54,25 +54,25 @@ class ChartDialog(gtk.Window):
         self.vbox.show()
 
         hbox = gtk.HBox()
-        self.vbox.pack_start(hbox, False, False)
+        self.vbox.pack_start(hbox, False, False, 6)
         hbox.show()
 
-        label = gtk.Label('Period')
-        hbox.pack_start(label, False, False)
+        label = gtk.Label('Period:')
+        hbox.pack_start(label, False, False, 6)
         label.show()
 
         self.chart_type = ProxyComboBox()
         self.chart_type.connect(
             'content-changed',
             self._on_chart_type__content_changed)
-        hbox.pack_start(self.chart_type, False, False)
+        hbox.pack_start(self.chart_type, False, False, 6)
         self.chart_type.show()
 
         self.period_values = ProxyComboBox()
         self.period_values.connect(
             'content-changed',
             self._on_period_values__content_changed)
-        hbox.pack_start(self.period_values, False, False)
+        hbox.pack_start(self.period_values, False, False, 6)
         self.period_values.show()
 
         self._view = WebView()
@@ -124,7 +124,7 @@ class ChartDialog(gtk.Window):
         self._js_data = response['data']
 
         options = {}
-        options['series'] = [dict(label=serie) for serie in chart_class.series]
+        options['series'] = [dict(label=c['title']) for c in chart_class.columns]
         options['xaxis_ticks'] = ticks
         self._js_options = options
 
