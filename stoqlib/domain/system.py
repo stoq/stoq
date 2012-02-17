@@ -72,7 +72,7 @@ class TransactionEntry(ORMObject):
     # us to use circular dependencies so instead we define them
     # as IntCol and implement our own ForeignKey like wrappers below
 
-    user_id = IntCol(default=None) # ForeignKey('PersonAdaptToUser')
+    user_id = IntCol(default=None) # ForeignKey('LoginUser')
     station_id = IntCol(default=None) # ForeignKey('BranchStation')
     type = IntCol()
 

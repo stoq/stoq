@@ -42,7 +42,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
 from stoqlib.gui.printing import print_report
-from stoqlib.domain.person import PersonAdaptToBranch
+from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale, SaleView, DeliveryView
 from stoqlib.domain.views import SoldItemsByBranchView
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
@@ -193,7 +193,7 @@ class SoldItemsByBranchSearch(SearchDialog):
     def executer_query(self, query, having, conn):
         branch = self.branch_filter.get_state().value
         if branch is not None:
-            branch = PersonAdaptToBranch.get(branch, connection=conn)
+            branch = Branch.get(branch, connection=conn)
 
         date = self.date_filter.get_state()
         if isinstance(date, DateQueryState):

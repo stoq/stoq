@@ -27,9 +27,9 @@ from stoqlib.database.orm import Viewable, Field, Alias
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.loan import Loan, LoanItem
-from stoqlib.domain.person import (Person, PersonAdaptToSupplier,
-                                   PersonAdaptToUser, PersonAdaptToBranch,
-                                   PersonAdaptToClient, PersonAdaptToEmployee)
+from stoqlib.domain.person import (Person, Supplier,
+                                   LoginUser, Branch,
+                                   Client, Employee)
 from stoqlib.domain.product import (Product,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
@@ -59,7 +59,7 @@ class ProductFullStockView(Viewable):
     :cvar unit: the unit of the product
     :cvar product_id: the id of the product table
     :cvar location: the location of the product
-    :cvar branch_id: the id of person_adapt_to_branch table
+    :cvar branch_id: the id of branch table
     :cvar stock: the stock of the product
      """
 
@@ -195,7 +195,7 @@ class ProductWithStockView(ProductFullStockView):
     :cvar description: the sellable description
     :cvar unit: the unit of the product
     :cvar product_id: the id of the product table
-    :cvar branch_id: the id of person_adapt_to_branch table
+    :cvar branch_id: the id of branch table
     :cvar stock: the stock of the product
      """
 
@@ -250,7 +250,7 @@ class ProductQuantityView(Viewable):
 
     :cvar id: the id of the sellable_id of products_quantity table
     :cvar description: the product description
-    :cvar branch_id: the id of person_adapt_to_branch table
+    :cvar branch_id: the id of branch table
     :cvar quantity_sold: the quantity solded of product
     :cvar quantity_transfered: the quantity transfered of product
     :cvar quantity_received: the quantity received of product
@@ -298,7 +298,7 @@ class SellableFullStockView(Viewable):
     :cvar description: the sellable description
     :cvar unit: the unit of the product or None
     :cvar product_id: the id of the product table or None
-    :cvar branch_id: the id of person_adapt_to_branch table or None
+    :cvar branch_id: the id of branch table or None
     :cvar stock: the stock of the product or None
      """
 
@@ -430,10 +430,10 @@ class QuotationView(Viewable):
     joins = [
         LEFTJOINOn(None, PurchaseOrder,
                    PurchaseOrder.q.id == Quotation.q.purchaseID),
-        LEFTJOINOn(None, PersonAdaptToSupplier,
-                   PersonAdaptToSupplier.q.id == PurchaseOrder.q.supplierID),
+        LEFTJOINOn(None, Supplier,
+                   Supplier.q.id == PurchaseOrder.q.supplierID),
         LEFTJOINOn(None, Person, Person.q.id ==
-                   PersonAdaptToSupplier.q.originalID),
+                   Supplier.q.originalID),
     ]
 
     clause = QuoteGroup.q.id == Quotation.q.groupID
@@ -528,10 +528,10 @@ class StockDecreaseItemsView(Viewable):
                    StockDecreaseItem.q.sellableID == Sellable.q.id),
         LEFTJOINOn(None, SellableUnit,
                    Sellable.q.unitID == SellableUnit.q.id),
-        INNERJOINOn(None, PersonAdaptToEmployee,
-                   StockDecrease.q.removed_byID == PersonAdaptToEmployee.q.id),
+        INNERJOINOn(None, Employee,
+                   StockDecrease.q.removed_byID == Employee.q.id),
         INNERJOINOn(None, Person,
-                   PersonAdaptToEmployee.q.originalID == Person.q.id),
+                   Employee.q.originalID == Person.q.id),
     ]
 
 
@@ -545,10 +545,10 @@ class SoldItemsByBranchView(SoldItemView):
     ))
 
     joins = SoldItemView.joins[:]
-    joins.append(LEFTJOINOn(None, PersonAdaptToBranch,
-                   PersonAdaptToBranch.q.id == Sale.q.branchID))
+    joins.append(LEFTJOINOn(None, Branch,
+                            Branch.q.id == Sale.q.branchID))
     joins.append(LEFTJOINOn(None, Person,
-                   PersonAdaptToBranch.q.originalID == Person.q.id))
+                            Branch.q.originalID == Person.q.id))
 
     clause = OR(SoldItemView.clause,
                 Sale.q.status == Sale.STATUS_RENEGOTIATED)
@@ -632,7 +632,7 @@ class PurchaseReceivingView(Viewable):
     """
     _Responsible = Alias(Person, "responsible")
     _Supplier = Alias(Person, "supplier")
-    _PurchaseUser = Alias(PersonAdaptToUser, "purchase_user")
+    _PurchaseUser = Alias(LoginUser, "purchase_user")
     _PurchaseResponsible = Alias(Person, "purchase_responsible")
 
     columns = dict(
@@ -654,14 +654,14 @@ class PurchaseReceivingView(Viewable):
                    PurchaseOrder.q.responsibleID == _PurchaseUser.q.id),
         LEFTJOINOn(None, _PurchaseResponsible,
                    _PurchaseUser.q.originalID == _PurchaseResponsible.q.id),
-        LEFTJOINOn(None, PersonAdaptToSupplier,
-                   ReceivingOrder.q.supplierID == PersonAdaptToSupplier.q.id),
+        LEFTJOINOn(None, Supplier,
+                   ReceivingOrder.q.supplierID == Supplier.q.id),
         LEFTJOINOn(None, _Supplier,
-                   PersonAdaptToSupplier.q.originalID == _Supplier.q.id),
-        LEFTJOINOn(None, PersonAdaptToUser,
-                   ReceivingOrder.q.responsibleID == PersonAdaptToUser.q.id),
+                   Supplier.q.originalID == _Supplier.q.id),
+        LEFTJOINOn(None, LoginUser,
+                   ReceivingOrder.q.responsibleID == LoginUser.q.id),
         LEFTJOINOn(None, _Responsible,
-                   PersonAdaptToUser.q.originalID == _Responsible.q.id),
+                   LoginUser.q.originalID == _Responsible.q.id),
     ]
 
 
@@ -690,10 +690,10 @@ class SaleItemsView(Viewable):
                    SaleItem.q.saleID == Sale.q.id),
         LEFTJOINOn(None, SellableUnit,
                    Sellable.q.unitID == SellableUnit.q.id),
-        LEFTJOINOn(None, PersonAdaptToClient,
-                   Sale.q.clientID == PersonAdaptToClient.q.id),
+        LEFTJOINOn(None, Client,
+                   Sale.q.clientID == Client.q.id),
         LEFTJOINOn(None, Person,
-                   PersonAdaptToClient.q.originalID == Person.q.id),
+                   Client.q.originalID == Person.q.id),
     ]
 
     clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
@@ -740,10 +740,10 @@ class ReceivingItemView(Viewable):
                    ReceivingOrderItem.q.sellableID == Sellable.q.id),
         LEFTJOINOn(None, SellableUnit,
                    Sellable.q.unitID == SellableUnit.q.id),
-        LEFTJOINOn(None, PersonAdaptToSupplier,
-                   ReceivingOrder.q.supplierID == PersonAdaptToSupplier.q.id),
+        LEFTJOINOn(None, Supplier,
+                   ReceivingOrder.q.supplierID == Supplier.q.id),
         LEFTJOINOn(None, Person,
-                   PersonAdaptToSupplier.q.originalID == Person.q.id),
+                   Supplier.q.originalID == Person.q.id),
     ]
 
 
@@ -795,19 +795,19 @@ class LoanView(Viewable):
                     total=const.SUM(LoanItem.q.quantity * LoanItem.q.price), )
     joins = [
         INNERJOINOn(None, LoanItem, Loan.q.id == LoanItem.q.loanID),
-        LEFTJOINOn(None, PersonAdaptToBranch,
-                   Loan.q.branchID == PersonAdaptToBranch.q.id),
-        LEFTJOINOn(None, PersonAdaptToUser,
-                   Loan.q.responsibleID == PersonAdaptToUser.q.id),
-        LEFTJOINOn(None, PersonAdaptToClient,
-                   Loan.q.clientID == PersonAdaptToClient.q.id),
+        LEFTJOINOn(None, Branch,
+                   Loan.q.branchID == Branch.q.id),
+        LEFTJOINOn(None, LoginUser,
+                   Loan.q.responsibleID == LoginUser.q.id),
+        LEFTJOINOn(None, Client,
+                   Loan.q.clientID == Client.q.id),
 
         LEFTJOINOn(None, PersonBranch,
-                   PersonAdaptToBranch.q.originalID == PersonBranch.q.id),
+                   Branch.q.originalID == PersonBranch.q.id),
         LEFTJOINOn(None, PersonResponsible,
-                   PersonAdaptToUser.q.originalID == PersonResponsible.q.id),
+                   LoginUser.q.originalID == PersonResponsible.q.id),
         LEFTJOINOn(None, PersonClient,
-                   PersonAdaptToClient.q.originalID == PersonClient.q.id),
+                   Client.q.originalID == PersonClient.q.id),
     ]
 
 

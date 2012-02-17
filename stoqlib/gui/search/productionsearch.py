@@ -31,7 +31,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import ComboSearchFilter
 
-from stoqlib.domain.person import PersonAdaptToBranch
+from stoqlib.domain.person import Branch
 from stoqlib.domain.product import ProductComponent
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.views import ProductComponentView, ProductionItemView
@@ -55,7 +55,7 @@ class ProductionProductSearch(ProductSearch):
     def executer_query(self, query, having, conn):
         branch = self.branch_filter.get_state().value
         if branch is not None:
-            branch = PersonAdaptToBranch.get(branch, connection=conn)
+            branch = Branch.get(branch, connection=conn)
         return ProductComponentView.select_by_branch(query, branch, connection=conn)
 
     #

@@ -40,7 +40,7 @@ from stoqlib.domain.events import (SaleStatusChangedEvent, TillAddCashEvent,
                                    CheckECFStateEvent,
                                    HasPendingReduceZ, ECFIsLastSaleEvent)
 from stoqlib.domain.interfaces import IIndividual, ICompany
-from stoqlib.domain.person import PersonAdaptToIndividual, PersonAdaptToCompany
+from stoqlib.domain.person import Individual, Company
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
@@ -502,10 +502,10 @@ class ECFUI(object):
         (FiscalSaleHistory.TYPE_CPF, FiscalSaleHistory.TYPE_CNPJ )
         """
         client_role = sale.get_client_role()
-        if isinstance(client_role, PersonAdaptToIndividual):
+        if isinstance(client_role, Individual):
             document_type = FiscalSaleHistory.TYPE_CPF
             document = client_role.cpf
-        elif isinstance(client_role, PersonAdaptToCompany):
+        elif isinstance(client_role, Company):
             document_type = FiscalSaleHistory.TYPE_CNPJ
             document = client_role.cnpj
         else:

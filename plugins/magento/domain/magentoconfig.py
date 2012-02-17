@@ -59,8 +59,8 @@ class MagentoConfig(Domain):
 
     tz_hours = DecimalCol(default=decimal.Decimal(0))
     qty_days_as_new = IntCol(default=45)
-    branch = ForeignKey('PersonAdaptToBranch')
-    salesperson = ForeignKey('PersonAdaptToSalesPerson')
+    branch = ForeignKey('PersonBranch')
+    salesperson = ForeignKey('PersonSalesPerson')
 
     default_product_set = IntCol(default=None)
     root_category = IntCol(default=None)

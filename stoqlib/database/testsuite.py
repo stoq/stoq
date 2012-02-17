@@ -36,7 +36,7 @@ from stoqlib.database.interfaces import (
 from stoqlib.database.orm import AND
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.database.settings import DatabaseSettings
-from stoqlib.domain.person import Person, PersonAdaptToBranch
+from stoqlib.domain.person import Person, Branch
 from stoqlib.domain.interfaces import IBranch, IUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.importers.stoqlibexamples import create
@@ -102,7 +102,7 @@ def _provide_current_station(station_name=None, branch_name=None):
     if branch_name:
         branch = Person.selectOne(
             AND(Person.q.name == branch_name,
-                PersonAdaptToBranch.q.originalID == Person.q.id),
+                Branch.q.originalID == Person.q.id),
             connection=trans)
     else:
         branches = Person.iselect(IBranch, connection=trans)

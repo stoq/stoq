@@ -35,7 +35,7 @@ from stoqdrivers.enum import TaxType
 
 
 from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.person import PersonAdaptToSupplier
+from stoqlib.domain.person import Supplier
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductComponent,
                                     ProductQualityTest)
@@ -506,7 +506,7 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
             self.target_combo.select(suggested)
 
     def get_targets(self):
-        suppliers = PersonAdaptToSupplier.get_active_suppliers(self.conn)
+        suppliers = Supplier.get_active_suppliers(self.conn)
         return [(s.person.name, s) for s in suppliers]
 
     def get_relations(self):

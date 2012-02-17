@@ -30,7 +30,7 @@ from kiwi.utils import gsignal
 from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.receiving import ReceivingOrder
-from stoqlib.domain.person import PersonAdaptToTransporter
+from stoqlib.domain.person import Transporter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
@@ -67,8 +67,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     #
 
     def _setup_transporter_entry(self):
-        # FIXME: Implement and use IDescribable on PersonAdaptToTransporter
-        table = PersonAdaptToTransporter
+        # FIXME: Implement and use IDescribable on Transporter
+        table = Transporter
         transporters = table.get_active_transporters(self.conn)
         items = [(t.person.name, t) for t in transporters]
         self.transporter.prefill(items)

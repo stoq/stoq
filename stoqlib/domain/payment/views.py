@@ -37,7 +37,7 @@ from stoqlib.domain.payment.method import (CheckData, PaymentMethod,
                                            CreditCardData)
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
-from stoqlib.domain.person import Person, PersonAdaptToCreditProvider
+from stoqlib.domain.person import Person, CreditProvider
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.translation import stoqlib_gettext
@@ -248,10 +248,10 @@ class CardPaymentView(Viewable):
                     PaymentMethod.q.id == Payment.q.methodID),
         INNERJOINOn(None, CreditCardData,
                     CreditCardData.q.paymentID == Payment.q.id),
-        INNERJOINOn(None, PersonAdaptToCreditProvider,
-              PersonAdaptToCreditProvider.q.id == CreditCardData.q.providerID),
+        INNERJOINOn(None, CreditProvider,
+              CreditProvider.q.id == CreditCardData.q.providerID),
         INNERJOINOn(None, _ProviderPerson,
-            _ProviderPerson.q.id == PersonAdaptToCreditProvider.q.originalID),
+            _ProviderPerson.q.id == CreditProvider.q.originalID),
         LEFTJOINOn(None, PaymentGroup,
                     PaymentGroup.q.id == Payment.q.groupID),
         LEFTJOINOn(None, _DraweePerson,

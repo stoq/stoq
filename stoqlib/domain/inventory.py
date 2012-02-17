@@ -172,7 +172,7 @@ class Inventory(Domain):
     invoice_number = IntCol(default=None)
     open_date = DateTimeCol(default=datetime.datetime.now)
     close_date = DateTimeCol(default=None)
-    branch = ForeignKey("PersonAdaptToBranch")
+    branch = ForeignKey("Branch")
 
     #
     # Public API
@@ -228,7 +228,7 @@ class Inventory(Domain):
         process.
 
         :returns: branches
-        :rtype: a sequence of :class:`PersonAdaptToBranch`
+        :rtype: a sequence of :class:`Branch`
         """
         for branch in Person.iselect(IBranch, connection=conn):
             if not cls.selectOneBy(branch=branch, status=cls.STATUS_OPEN,

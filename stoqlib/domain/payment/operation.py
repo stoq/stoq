@@ -35,7 +35,7 @@ from zope.interface import implements
 
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.method import CheckData, CreditCardData, Payment
-from stoqlib.domain.person import PersonAdaptToCreditProvider
+from stoqlib.domain.person import CreditProvider
 from stoqlib.lib.interfaces import IPaymentOperation, IPaymentOperationManager
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -172,7 +172,7 @@ class CardPaymentOperation(object):
         return True
 
     def selectable(self, method):
-        return PersonAdaptToCreditProvider.has_card_provider(
+        return CreditProvider.has_card_provider(
             method.get_connection())
 
     def get_constant(self, payment):

@@ -33,8 +33,8 @@ from stoqlib.database.runtime import get_connection, get_current_branch
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.inventory import Inventory
-from stoqlib.domain.person import (PersonAdaptToCompany,
-                                   PersonAdaptToIndividual)
+from stoqlib.domain.person import (Company,
+                                   Individual)
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.sintegra import SintegraFile, SintegraError
@@ -117,13 +117,13 @@ class StoqlibSintegraGenerator(object):
     def _get_cnpj_or_cpf(self, receiving_order):
         person = receiving_order.supplier.person
         company = person.has_individual_or_company_facets()
-        if isinstance(company, PersonAdaptToCompany):
+        if isinstance(company, Company):
             if not company.cnpj:
                 raise SintegraError(
                     _("You need to have a CNPJ number set on Company %s" % (
                     company.person.name)))
             cnpj = company.get_cnpj_number()
-        elif isinstance(company, PersonAdaptToIndividual):
+        elif isinstance(company, Individual):
             cnpj = company.get_cpf_number()
         else:
             raise AssertionError
@@ -131,13 +131,13 @@ class StoqlibSintegraGenerator(object):
 
     def _get_state_registry(self, receiving_order):
         company = receiving_order.supplier.person.has_individual_or_company_facets()
-        if isinstance(company, PersonAdaptToCompany):
+        if isinstance(company, Company):
             if not company.state_registry:
                 raise SintegraError(
                     _("You need to have a State Registry set on Company %s" % (
                     company.person.name)))
             return company.get_state_registry_number()
-        elif isinstance(company, PersonAdaptToIndividual):
+        elif isinstance(company, Individual):
             return "ISENTO"
         else:
             raise AssertionError

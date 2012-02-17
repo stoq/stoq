@@ -47,8 +47,8 @@ from stoqlib.domain.interfaces import (IContainer,
                                        IDelivery, IStorable)
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.person import (Person, PersonAdaptToClient,
-                                   PersonAdaptToSalesPerson)
+from stoqlib.domain.person import (Person, Client,
+                                   SalesPerson)
 from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sellable import Sellable
@@ -371,10 +371,10 @@ class Sale(Domain):
     invoice_number = IntCol(default=None)
     operation_nature = UnicodeCol(default='')
     cfop = ForeignKey("CfopData")
-    client = ForeignKey('PersonAdaptToClient', default=None)
-    salesperson = ForeignKey('PersonAdaptToSalesPerson')
-    branch = ForeignKey('PersonAdaptToBranch', default=None)
-    transporter = ForeignKey('PersonAdaptToTransporter', default=None)
+    client = ForeignKey('Client', default=None)
+    salesperson = ForeignKey('SalesPerson')
+    branch = ForeignKey('Branch', default=None)
+    transporter = ForeignKey('Transporter', default=None)
     group = ForeignKey('PaymentGroup')
     client_category = ForeignKey('ClientCategory', default=None)
 
@@ -746,8 +746,8 @@ class Sale(Domain):
     def get_client_role(self):
         """Fetches the client role
 
-        :returns: the client role (a PersonAdaptToIndividual or a
-        PersonAdaptToCompany) instance or None if the sale haven't a client.
+        :returns: the client role (a Individual or a
+        Company) instance or None if the sale haven't a client.
         """
         if not self.client:
             return None
@@ -1206,15 +1206,15 @@ class SaleView(Viewable):
         INNERJOINOn(None, SaleItem,
                     Sale.q.id == SaleItem.q.saleID),
 
-        LEFTJOINOn(None, PersonAdaptToClient,
-                   Sale.q.clientID == PersonAdaptToClient.q.id),
-        LEFTJOINOn(None, PersonAdaptToSalesPerson,
-                   Sale.q.salespersonID == PersonAdaptToSalesPerson.q.id),
+        LEFTJOINOn(None, Client,
+                   Sale.q.clientID == Client.q.id),
+        LEFTJOINOn(None, SalesPerson,
+                   Sale.q.salespersonID == SalesPerson.q.id),
 
         LEFTJOINOn(None, Person_Client,
-                   PersonAdaptToClient.q.originalID == Person_Client.q.id),
+                   Client.q.originalID == Person_Client.q.id),
         LEFTJOINOn(None, Person_SalesPerson,
-                   PersonAdaptToSalesPerson.q.originalID == Person_SalesPerson.q.id),
+                   SalesPerson.q.originalID == Person_SalesPerson.q.id),
 
         LEFTJOINOn(None, SaleItemIpi,
                    SaleItemIpi.q.id == SaleItem.q.ipi_infoID),
@@ -1305,10 +1305,10 @@ class DeliveryView(Viewable):
              LEFTJOINOn(None, DeliveryItem,
                         Sellable.q.id == DeliveryItem.q.sellableID),
              LEFTJOINOn(None, Sale, SaleItem.q.saleID == Sale.q.id),
-             LEFTJOINOn(None, PersonAdaptToClient,
-                        Sale.q.clientID == PersonAdaptToClient.q.id),
+             LEFTJOINOn(None, Client,
+                        Sale.q.clientID == Client.q.id),
              LEFTJOINOn(None, Person,
-                        PersonAdaptToClient.q.originalID == Person.q.id),
+                        Client.q.originalID == Person.q.id),
     ]
 
     clause = AND(SaleItemAdaptToDelivery.q.originalID == SaleItem.q.id,
@@ -1335,15 +1335,15 @@ class SoldSellableView(Viewable):
                     SaleItem.q.sellableID == Sellable.q.id),
         LEFTJOINOn(None, Sale,
                     Sale.q.id == SaleItem.q.saleID),
-        LEFTJOINOn(None, PersonAdaptToClient,
-                   Sale.q.clientID == PersonAdaptToClient.q.id),
-        LEFTJOINOn(None, PersonAdaptToSalesPerson,
-                   Sale.q.salespersonID == PersonAdaptToSalesPerson.q.id),
+        LEFTJOINOn(None, Client,
+                   Sale.q.clientID == Client.q.id),
+        LEFTJOINOn(None, SalesPerson,
+                   Sale.q.salespersonID == SalesPerson.q.id),
 
         LEFTJOINOn(None, Person_Client,
-                   PersonAdaptToClient.q.originalID == Person_Client.q.id),
+                   Client.q.originalID == Person_Client.q.id),
         LEFTJOINOn(None, Person_SalesPerson,
-                   PersonAdaptToSalesPerson.q.originalID == Person_SalesPerson.q.id),
+                   SalesPerson.q.originalID == Person_SalesPerson.q.id),
 
         LEFTJOINOn(None, SaleItemIpi,
                    SaleItemIpi.q.id == SaleItem.q.ipi_infoID),

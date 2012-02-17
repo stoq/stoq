@@ -41,10 +41,10 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
                                        IDescribable)
-from stoqlib.domain.person import (Person, PersonAdaptToBranch,
-                                   PersonAdaptToSupplier,
-                                   PersonAdaptToTransporter,
-                                   PersonAdaptToUser)
+from stoqlib.domain.person import (Person, Branch,
+                                   Supplier,
+                                   Transporter,
+                                   LoginUser)
 from stoqlib.domain.sellable import Sellable, SellableUnit
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.defaults import quantize
@@ -174,10 +174,10 @@ class PurchaseOrder(Domain):
     surcharge_value = PriceCol(default=0)
     discount_value = PriceCol(default=0)
     consigned = BoolCol(default=False)
-    supplier = ForeignKey('PersonAdaptToSupplier')
-    branch = ForeignKey('PersonAdaptToBranch')
-    transporter = ForeignKey('PersonAdaptToTransporter', default=None)
-    responsible = ForeignKey('PersonAdaptToUser')
+    supplier = ForeignKey('Supplier')
+    branch = ForeignKey('Branch')
+    transporter = ForeignKey('Transporter', default=None)
+    responsible = ForeignKey('LoginUser')
     group = ForeignKey('PaymentGroup')
 
     #
@@ -746,23 +746,23 @@ class PurchaseOrderView(Viewable):
         INNERJOINOn(None, PurchaseItem,
                     PurchaseOrder.q.id == PurchaseItem.q.orderID),
 
-        LEFTJOINOn(None, PersonAdaptToSupplier,
-                   PurchaseOrder.q.supplierID == PersonAdaptToSupplier.q.id),
-        LEFTJOINOn(None, PersonAdaptToTransporter,
-                   PurchaseOrder.q.transporterID == PersonAdaptToTransporter.q.id),
-        LEFTJOINOn(None, PersonAdaptToBranch,
-                   PurchaseOrder.q.branchID == PersonAdaptToBranch.q.id),
-        LEFTJOINOn(None, PersonAdaptToUser,
-                   PurchaseOrder.q.responsibleID == PersonAdaptToUser.q.id),
+        LEFTJOINOn(None, Supplier,
+                   PurchaseOrder.q.supplierID == Supplier.q.id),
+        LEFTJOINOn(None, Transporter,
+                   PurchaseOrder.q.transporterID == Transporter.q.id),
+        LEFTJOINOn(None, Branch,
+                   PurchaseOrder.q.branchID == Branch.q.id),
+        LEFTJOINOn(None, LoginUser,
+                   PurchaseOrder.q.responsibleID == LoginUser.q.id),
 
         LEFTJOINOn(None, Person_Supplier,
-                   PersonAdaptToSupplier.q.originalID == Person_Supplier.q.id),
+                   Supplier.q.originalID == Person_Supplier.q.id),
         LEFTJOINOn(None, Person_Transporter,
-                   PersonAdaptToTransporter.q.originalID == Person_Transporter.q.id),
+                   Transporter.q.originalID == Person_Transporter.q.id),
         LEFTJOINOn(None, Person_Branch,
-                   PersonAdaptToBranch.q.originalID == Person_Branch.q.id),
+                   Branch.q.originalID == Person_Branch.q.id),
        LEFTJOINOn(None, Person_Responsible,
-                   PersonAdaptToUser.q.originalID == Person_Responsible.q.id),
+                   LoginUser.q.originalID == Person_Responsible.q.id),
     ]
 
     #

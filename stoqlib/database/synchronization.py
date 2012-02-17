@@ -42,7 +42,7 @@ from stoqlib.database.runtime import (get_connection, new_transaction,
 from stoqlib.database.policy import get_policy_by_name
 from stoqlib.database.tables import get_table_type_by_name
 from stoqlib.domain.base import AdaptableORMObject
-from stoqlib.domain.person import PersonAdaptToUser
+from stoqlib.domain.person import LoginUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.synchronization import BranchSynchronization
 from stoqlib.domain.system import TransactionEntry
@@ -407,10 +407,10 @@ class SynchronizationClient(object):
         if combined:
             yield combined
 
-        # PersonAdaptToUser and BranchStation are now copied, add back the
+        # LoginUser and BranchStation are now copied, add back the
         # constraints on the TransactionEntry table.
         if TransactionEntry in tables:
-            assert PersonAdaptToUser in tables
+            assert LoginUser in tables
             assert BranchStation in tables
             yield '''ALTER TABLE %(t)s
               ADD CONSTRAINT %(t)s_user_id_fkey FOREIGN KEY(user_id)

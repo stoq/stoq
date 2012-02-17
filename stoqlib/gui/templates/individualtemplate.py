@@ -33,7 +33,7 @@ from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.address import CityLocation
 from stoqlib.domain.interfaces import IIndividual
-from stoqlib.domain.person import PersonAdaptToIndividual
+from stoqlib.domain.person import Individual
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -82,7 +82,7 @@ class _IndividualDetailsModel(AttributeForwarder):
         'gender'
         ]
 
-    @argcheck(PersonAdaptToIndividual, StoqlibTransaction)
+    @argcheck(Individual, StoqlibTransaction)
     def __init__(self, target, conn):
         AttributeForwarder.__init__(self, target)
         self.conn = conn
@@ -95,13 +95,13 @@ class _IndividualDetailsModel(AttributeForwarder):
 
     def is_married(self):
         return (self.target.marital_statuses ==
-                PersonAdaptToIndividual.STATUS_MARRIED)
+                Individual.STATUS_MARRIED)
 
     def is_male(self):
-        return self.target.gender == PersonAdaptToIndividual.GENDER_MALE
+        return self.target.gender == Individual.GENDER_MALE
 
     def is_female(self):
-        return self.target.gender == PersonAdaptToIndividual.GENDER_FEMALE
+        return self.target.gender == Individual.GENDER_FEMALE
 
     def birth_location_changed(self):
         return (self.birth_city != self.target.birth_location.city or
@@ -168,9 +168,9 @@ class _IndividualDetailsSlave(BaseEditorSlave):
 
     def on_confirm(self):
         if self.male_check.get_active():
-            self.model.gender = PersonAdaptToIndividual.GENDER_MALE
+            self.model.gender = Individual.GENDER_MALE
         else:
-            self.model.gender = PersonAdaptToIndividual.GENDER_FEMALE
+            self.model.gender = Individual.GENDER_FEMALE
 
         self.model.ensure_birth_location()
         return self.model

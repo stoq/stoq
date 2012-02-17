@@ -38,7 +38,7 @@ There are currently the following Person facets available:
   - SalesPerson
   - Supplier
   - Transporter
-  - User
+  - LoginUser
 
 To create a new person, just issue the following:
 
@@ -194,7 +194,7 @@ class Calls(Domain):
     description = UnicodeCol()
     message = UnicodeCol()
     person = ForeignKey('Person')
-    attendant = ForeignKey('PersonAdaptToUser')
+    attendant = ForeignKey('LoginUser')
 
     #
     # IDescribable implementation
@@ -394,7 +394,7 @@ class PersonAdapter(ModelAdapter):
         return self.person.name
 
 
-class PersonAdaptToIndividual(PersonAdapter):
+class Individual(PersonAdapter):
     """An individual facet of a person.
 
     B{Important attributes}:
@@ -463,10 +463,10 @@ class PersonAdaptToIndividual(PersonAdapter):
         """
         return self.check_unique_value_exists('cpf', cpf)
 
-Person.registerFacet(PersonAdaptToIndividual, IIndividual)
+Person.registerFacet(Individual, IIndividual)
 
 
-class PersonAdaptToCompany(PersonAdapter):
+class Company(PersonAdapter):
     """A company facet of a person.
 
     B{Important attributes}:
@@ -510,7 +510,7 @@ class PersonAdaptToCompany(PersonAdapter):
         """
         return self.check_unique_value_exists('cnpj', cnpj)
 
-Person.registerFacet(PersonAdaptToCompany, ICompany)
+Person.registerFacet(Company, ICompany)
 
 
 class ClientCategory(Domain):
@@ -540,7 +540,7 @@ class ClientCategory(Domain):
         self.delete(self.id, self.get_connection())
 
 
-class PersonAdaptToClient(PersonAdapter):
+class Client(PersonAdapter):
     """A client facet of a person."""
 
     (STATUS_SOLVENT,
@@ -571,12 +571,12 @@ class PersonAdaptToClient(PersonAdapter):
         return self.statuses[self.status]
 
     def inactivate(self):
-        if self.status == PersonAdaptToClient.STATUS_INACTIVE:
+        if self.status == Client.STATUS_INACTIVE:
             raise AssertionError('This client is already inactive')
         self.status = self.STATUS_INACTIVE
 
     def activate(self):
-        if self.status == PersonAdaptToClient.STATUS_SOLVENT:
+        if self.status == Client.STATUS_SOLVENT:
             raise AssertionError('This client is already active')
         self.status = self.STATUS_SOLVENT
 
@@ -647,10 +647,10 @@ class PersonAdaptToClient(PersonAdapter):
 
         return currency(self.credit_limit - debit)
 
-Person.registerFacet(PersonAdaptToClient, IClient)
+Person.registerFacet(Client, IClient)
 
 
-class PersonAdaptToSupplier(PersonAdapter):
+class Supplier(PersonAdapter):
     """A supplier facet of a person.
 
     B{Notes}:
@@ -700,10 +700,10 @@ class PersonAdaptToSupplier(PersonAdapter):
             return orders[-1].open_date.date()
 
 
-Person.registerFacet(PersonAdaptToSupplier, ISupplier)
+Person.registerFacet(Supplier, ISupplier)
 
 
-class PersonAdaptToEmployee(PersonAdapter):
+class Employee(PersonAdapter):
     """An employee facet of a person."""
     implements(IEmployee)
 
@@ -744,10 +744,10 @@ class PersonAdaptToEmployee(PersonAdapter):
             is_active=True,
             connection=self.get_connection())
 
-Person.registerFacet(PersonAdaptToEmployee, IEmployee)
+Person.registerFacet(Employee, IEmployee)
 
 
-class PersonAdaptToUser(PersonAdapter):
+class LoginUser(PersonAdapter):
     """An user facet of a person."""
     implements(IUser)
 
@@ -796,10 +796,10 @@ class PersonAdaptToUser(PersonAdapter):
             Event.log(Event.TYPE_USER,
                 _("User '%s' logged out") % (self.username, ))
 
-Person.registerFacet(PersonAdaptToUser, IUser)
+Person.registerFacet(LoginUser, IUser)
 
 
-class PersonAdaptToBranch(PersonAdapter):
+class Branch(PersonAdapter):
     """A branch facet of a person.
 
     :attribute crt: Código de Regime Tributário
@@ -817,7 +817,7 @@ class PersonAdaptToBranch(PersonAdapter):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
-    manager = ForeignKey('PersonAdaptToEmployee', default=None)
+    manager = ForeignKey('Employee', default=None)
     is_active = BoolCol(default=True)
     crt = IntCol(default=1)
 
@@ -876,10 +876,10 @@ class PersonAdaptToBranch(PersonAdapter):
         return cls.select(cls.q.is_active == True, connection=conn)
 
 
-Person.registerFacet(PersonAdaptToBranch, IBranch)
+Person.registerFacet(Branch, IBranch)
 
 
-class PersonAdaptToCreditProvider(PersonAdapter):
+class CreditProvider(PersonAdapter):
     """A credit provider facet of a person."""
     implements(ICreditProvider)
 
@@ -958,10 +958,10 @@ class PersonAdaptToCreditProvider(PersonAdapter):
         return getattr(self, provider.cards_type[data.card_type])
 
 
-Person.registerFacet(PersonAdaptToCreditProvider, ICreditProvider)
+Person.registerFacet(CreditProvider, ICreditProvider)
 
 
-class PersonAdaptToSalesPerson(PersonAdapter):
+class SalesPerson(PersonAdapter):
     """A sales person facet of a person.
 
     B{Important attributes}:
@@ -1003,10 +1003,10 @@ class PersonAdaptToSalesPerson(PersonAdapter):
         query = cls.q.is_active == True
         return cls.select(query, connection=conn)
 
-Person.registerFacet(PersonAdaptToSalesPerson, ISalesPerson)
+Person.registerFacet(SalesPerson, ISalesPerson)
 
 
-class PersonAdaptToTransporter(PersonAdapter):
+class Transporter(PersonAdapter):
     """A transporter facet of a person."""
     implements(ITransporter)
 
@@ -1025,7 +1025,7 @@ class PersonAdaptToTransporter(PersonAdapter):
         query = cls.q.is_active == True
         return cls.select(query, connection=conn)
 
-Person.registerFacet(PersonAdaptToTransporter, ITransporter)
+Person.registerFacet(Transporter, ITransporter)
 
 
 class EmployeeRoleHistory(Domain):
@@ -1035,7 +1035,7 @@ class EmployeeRoleHistory(Domain):
     ended = DateTimeCol(default=None)
     salary = PriceCol()
     role = ForeignKey('EmployeeRole')
-    employee = ForeignKey('PersonAdaptToEmployee')
+    employee = ForeignKey('Employee')
     is_active = BoolCol(default=True)
 
 #
@@ -1056,32 +1056,32 @@ class ClientView(Viewable):
 
     columns = dict(
         id=Person.q.id,
-        client_id=PersonAdaptToClient.q.id,
-        fancy_name=PersonAdaptToCompany.q.fancy_name,
+        client_id=Client.q.id,
+        fancy_name=Company.q.fancy_name,
         name=Person.q.name,
         phone_number=Person.q.phone_number,
-        status=PersonAdaptToClient.q.status,
-        cnpj=PersonAdaptToCompany.q.cnpj,
-        cpf=PersonAdaptToIndividual.q.cpf,
-        rg_number=PersonAdaptToIndividual.q.rg_number,
+        status=Client.q.status,
+        cnpj=Company.q.cnpj,
+        cpf=Individual.q.cpf,
+        rg_number=Individual.q.rg_number,
         client_category=ClientCategory.q.name
         )
 
     joins = [
-        INNERJOINOn(None, PersonAdaptToClient,
-                   Person.q.id == PersonAdaptToClient.q.originalID),
-        LEFTJOINOn(None, PersonAdaptToIndividual,
-                   Person.q.id == PersonAdaptToIndividual.q.originalID),
-        LEFTJOINOn(None, PersonAdaptToCompany,
-                   Person.q.id == PersonAdaptToCompany.q.originalID),
+        INNERJOINOn(None, Client,
+                   Person.q.id == Client.q.originalID),
+        LEFTJOINOn(None, Individual,
+                   Person.q.id == Individual.q.originalID),
+        LEFTJOINOn(None, Company,
+                   Person.q.id == Company.q.originalID),
         LEFTJOINOn(None, ClientCategory,
-                   PersonAdaptToClient.q.categoryID == ClientCategory.q.id),
+                   Client.q.categoryID == ClientCategory.q.id),
         ]
 
     @property
     def client(self):
-        return PersonAdaptToClient.get(self.client_id,
-                                       connection=self._connection)
+        return Client.get(self.client_id,
+                          connection=self._connection)
 
     @property
     def cnpj_or_cpf(self):
@@ -1089,48 +1089,48 @@ class ClientView(Viewable):
 
     def get_description(self):
         return self.name + (self.fancy_name
-                                and " (%s)" % self.fancy_name or "")
+                            and " (%s)" % self.fancy_name or "")
 
     @classmethod
     def get_active_clients(cls, conn):
         """Return a list of active clients.
         An active client is a person who are authorized to make new sales
         """
-        return cls.select(cls.q.status == PersonAdaptToClient.STATUS_SOLVENT,
+        return cls.select(cls.q.status == Client.STATUS_SOLVENT,
                           connection=conn).orderBy('name')
 
 
 class EmployeeView(Viewable):
     columns = dict(
         id=Person.q.id,
-        employee_id=PersonAdaptToEmployee.q.id,
+        employee_id=Employee.q.id,
         name=Person.q.name,
         role=EmployeeRole.q.name,
-        status=PersonAdaptToEmployee.q.status,
-        is_active=PersonAdaptToEmployee.q.is_active,
-        registry_number=PersonAdaptToEmployee.q.registry_number,
+        status=Employee.q.status,
+        is_active=Employee.q.is_active,
+        registry_number=Employee.q.registry_number,
         )
 
     joins = [
-        INNERJOINOn(None, PersonAdaptToEmployee,
-                   Person.q.id == PersonAdaptToEmployee.q.originalID),
+        INNERJOINOn(None, Employee,
+                   Person.q.id == Employee.q.originalID),
         INNERJOINOn(None, EmployeeRole,
-                   PersonAdaptToEmployee.q.roleID == EmployeeRole.q.id),
+                   Employee.q.roleID == EmployeeRole.q.id),
         ]
 
     def get_status_string(self):
-        return PersonAdaptToEmployee.statuses[self.status]
+        return Employee.statuses[self.status]
 
     @property
     def employee(self):
-        return PersonAdaptToEmployee.get(self.employee_id,
-                                         connection=self.get_connection())
+        return Employee.get(self.employee_id,
+                            connection=self.get_connection())
 
     @classmethod
     def get_active_employees(cls, conn):
         """Return a list of active employees."""
         return cls.select(
-            AND(cls.q.status == PersonAdaptToEmployee.STATUS_NORMAL,
+            AND(cls.q.status == Employee.STATUS_NORMAL,
                 cls.q.is_active == True),
                 connection=conn)
 
@@ -1140,26 +1140,26 @@ class SupplierView(Viewable):
         id=Person.q.id,
         name=Person.q.name,
         phone_number=Person.q.phone_number,
-        fancy_name=PersonAdaptToCompany.q.fancy_name,
-        cnpj=PersonAdaptToCompany.q.cnpj,
-        supplier_id=PersonAdaptToSupplier.q.id,
-        status=PersonAdaptToSupplier.q.status,
+        fancy_name=Company.q.fancy_name,
+        cnpj=Company.q.cnpj,
+        supplier_id=Supplier.q.id,
+        status=Supplier.q.status,
         )
 
     joins = [
-        INNERJOINOn(None, PersonAdaptToSupplier,
-                   Person.q.id == PersonAdaptToSupplier.q.originalID),
-        LEFTJOINOn(None, PersonAdaptToCompany,
-                   Person.q.id == PersonAdaptToCompany.q.originalID),
+        INNERJOINOn(None, Supplier,
+                   Person.q.id == Supplier.q.originalID),
+        LEFTJOINOn(None, Company,
+                   Person.q.id == Company.q.originalID),
         ]
 
     def get_status_string(self):
-        return PersonAdaptToSupplier.statuses[self.status]
+        return Supplier.statuses[self.status]
 
     @property
     def supplier(self):
-        return PersonAdaptToSupplier.get(self.supplier_id,
-                                         connection=self.get_connection())
+        return Supplier.get(self.supplier_id,
+                            connection=self.get_connection())
 
 
 class TransporterView(Viewable):
@@ -1169,7 +1169,7 @@ class TransporterView(Viewable):
     :cvar id: the id of person table
     :cvar name: the transporter name
     :cvar phone_number: the transporter phone number
-    :cvar transporter_id: the id of person_adapt_to_transporter table
+    :cvar transporter_id: the id of transporter table
     :cvar status: the current status of the transporter
     :cvar freight_percentage: the freight percentage charged
     """
@@ -1177,20 +1177,20 @@ class TransporterView(Viewable):
         id=Person.q.id,
         name=Person.q.name,
         phone_number=Person.q.phone_number,
-        transporter_id=PersonAdaptToTransporter.q.id,
-        freight_percentage=PersonAdaptToTransporter.q.freight_percentage,
-        is_active=PersonAdaptToTransporter.q.is_active,
+        transporter_id=Transporter.q.id,
+        freight_percentage=Transporter.q.freight_percentage,
+        is_active=Transporter.q.is_active,
         )
 
     joins = [
-        INNERJOINOn(None, PersonAdaptToTransporter,
-                   Person.q.id == PersonAdaptToTransporter.q.originalID),
+        INNERJOINOn(None, Transporter,
+                   Person.q.id == Transporter.q.originalID),
         ]
 
     @property
     def transporter(self):
-        return PersonAdaptToTransporter.get(self.transporter_id,
-                                            connection=self.get_connection())
+        return Transporter.get(self.transporter_id,
+                               connection=self.get_connection())
 
 
 class BranchView(Viewable):
@@ -1199,25 +1199,25 @@ class BranchView(Viewable):
     columns = dict(
         id=Person.q.id,
         name=Person.q.name,
-        branch_id=PersonAdaptToBranch.q.id,
+        branch_id=Branch.q.id,
         phone_number=Person.q.phone_number,
-        is_active=PersonAdaptToBranch.q.is_active,
+        is_active=Branch.q.is_active,
         manager_name=Manager_Person.q.name
         )
 
     joins = [
-        INNERJOINOn(None, PersonAdaptToBranch,
-                   Person.q.id == PersonAdaptToBranch.q.originalID),
-        LEFTJOINOn(None, PersonAdaptToEmployee,
-               PersonAdaptToBranch.q.managerID == PersonAdaptToEmployee.q.id),
+        INNERJOINOn(None, Branch,
+                   Person.q.id == Branch.q.originalID),
+        LEFTJOINOn(None, Employee,
+               Branch.q.managerID == Employee.q.id),
         LEFTJOINOn(None, Manager_Person,
-               PersonAdaptToEmployee.q.originalID == Manager_Person.q.id),
+               Employee.q.originalID == Manager_Person.q.id),
         ]
 
     @property
     def branch(self):
-        return PersonAdaptToBranch.get(self.branch_id,
-                                       connection=self.get_connection())
+        return Branch.get(self.branch_id,
+                          connection=self.get_connection())
 
     def get_status_str(self):
         if self.is_active:
@@ -1234,7 +1234,7 @@ class UserView(Viewable):
     :cvar name: the user full name
     :cvar is_active: the current status of the transporter
     :cvar username: the username (login)
-    :cvar user_id: the id of PersonAdaptToUser table
+    :cvar user_id: the id of User table
     :cvar profile_id: the id of the user profile
     :cvar profile_name: the name of the user profile (eg: Salesperson)
     """
@@ -1242,24 +1242,24 @@ class UserView(Viewable):
     columns = dict(
         id=Person.q.id,
         name=Person.q.name,
-        is_active=PersonAdaptToUser.q.is_active,
-        username=PersonAdaptToUser.q.username,
-        user_id=PersonAdaptToUser.q.id,
-        profile_id=PersonAdaptToUser.q.profileID,
+        is_active=LoginUser.q.is_active,
+        username=LoginUser.q.username,
+        user_id=LoginUser.q.id,
+        profile_id=LoginUser.q.profileID,
         profile_name=UserProfile.q.name,
         )
 
     joins = [
-        INNERJOINOn(None, PersonAdaptToUser,
-                   Person.q.id == PersonAdaptToUser.q.originalID),
+        INNERJOINOn(None, LoginUser,
+                   Person.q.id == LoginUser.q.originalID),
         LEFTJOINOn(None, UserProfile,
-               PersonAdaptToUser.q.profileID == UserProfile.q.id),
+               LoginUser.q.profileID == UserProfile.q.id),
         ]
 
     @property
     def user(self):
-        return PersonAdaptToUser.get(self.user_id,
-                                       connection=self.get_connection())
+        return LoginUser.get(self.user_id,
+                             connection=self.get_connection())
 
     def get_status_str(self):
         if self.is_active:
@@ -1272,27 +1272,27 @@ class CreditProviderView(Viewable):
     columns = dict(
         id=Person.q.id,
         name=Person.q.name,
-        provider_id=PersonAdaptToCreditProvider.q.id,
+        provider_id=CreditProvider.q.id,
         phone_number=Person.q.phone_number,
-        short_name=PersonAdaptToCreditProvider.q.short_name,
-        is_active=PersonAdaptToCreditProvider.q.is_active,
-        credit_fee=PersonAdaptToCreditProvider.q.credit_fee,
-        debit_fee=PersonAdaptToCreditProvider.q.debit_fee,
-        credit_installments_store_fee=PersonAdaptToCreditProvider.q.credit_installments_store_fee,
-        credit_installments_provider_fee=PersonAdaptToCreditProvider.q.credit_installments_provider_fee,
-        debit_pre_dated_fee=PersonAdaptToCreditProvider.q.debit_pre_dated_fee,
-        monthly_fee=PersonAdaptToCreditProvider.q.monthly_fee
+        short_name=CreditProvider.q.short_name,
+        is_active=CreditProvider.q.is_active,
+        credit_fee=CreditProvider.q.credit_fee,
+        debit_fee=CreditProvider.q.debit_fee,
+        credit_installments_store_fee=CreditProvider.q.credit_installments_store_fee,
+        credit_installments_provider_fee=CreditProvider.q.credit_installments_provider_fee,
+        debit_pre_dated_fee=CreditProvider.q.debit_pre_dated_fee,
+        monthly_fee=CreditProvider.q.monthly_fee
         )
 
     joins = [
-        INNERJOINOn(None, PersonAdaptToCreditProvider,
-                   Person.q.id == PersonAdaptToCreditProvider.q.originalID),
+        INNERJOINOn(None, CreditProvider,
+                   Person.q.id == CreditProvider.q.originalID),
         ]
 
     @property
     def provider(self):
-        return PersonAdaptToCreditProvider.get(self.provider_id,
-                                               connection=self.get_connection())
+        return CreditProvider.get(self.provider_id,
+                                  connection=self.get_connection())
 
 
 class CallsView(Viewable):
@@ -1311,10 +1311,10 @@ class CallsView(Viewable):
     joins = [
         LEFTJOINOn(None, Person,
                    Person.q.id == Calls.q.personID),
-        LEFTJOINOn(None, PersonAdaptToUser,
-                   PersonAdaptToUser.q.id == Calls.q.attendantID),
+        LEFTJOINOn(None, LoginUser,
+                   LoginUser.q.id == Calls.q.attendantID),
         LEFTJOINOn(None, Attendant_Person,
-                   PersonAdaptToUser.q.originalID == Attendant_Person.q.id),
+                   LoginUser.q.originalID == Attendant_Person.q.id),
         ]
 
     @property
@@ -1354,5 +1354,5 @@ class CallsView(Viewable):
 class ClientCallsView(CallsView):
     joins = CallsView.joins[:]
     joins.append(
-        INNERJOINOn(None, PersonAdaptToClient,
-                    PersonAdaptToClient.q.originalID == Person.q.id))
+        INNERJOINOn(None, Client,
+                    Client.q.originalID == Person.q.id))

@@ -69,7 +69,7 @@ class CreditCardData(Domain):
     :attribute card_type:
     :type card_type: int, > 0, < 3
     :attribute provider:
-    :type provider: :class:`PersonAdaptToCreditProvider`
+    :type provider: :class:`CreditProvider`
     :attribute installments: the installments number
     :type installments: int, >= 1
     :attribute entrance_value: the value of the first installment
@@ -93,7 +93,7 @@ class CreditCardData(Domain):
 
     payment = ForeignKey('Payment')
     card_type = IntCol(default=TYPE_CREDIT)
-    provider = ForeignKey('PersonAdaptToCreditProvider', default=None)
+    provider = ForeignKey('CreditProvider', default=None)
     fee = PercentCol(default=0)
     fee_value = PriceCol(default=0)
     nsu = IntCol(default=None)

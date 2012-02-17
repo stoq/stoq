@@ -53,7 +53,7 @@ class MagentoClient(MagentoBaseSyncDown):
     (GENDER_MALE,
      GENDER_FEMALE) = range(1, 3)
 
-    client = ForeignKey('PersonAdaptToClient', default=None)
+    client = ForeignKey('Client', default=None)
 
     #
     #  MagentoBaseSyncDown hooks
