@@ -47,8 +47,7 @@ from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.orm import const
 from stoqlib.database.runtime import get_connection, new_transaction
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
-                                       ISalesPerson, ICompany, IBranch,
-                                       ICreditProvider)
+                                       ISalesPerson, ICompany, IBranch)
 from stoqlib.domain.person import EmployeeRole, Person
 from stoqlib.domain.person import EmployeeRoleHistory
 from stoqlib.domain.profile import ProfileSettings, UserProfile
@@ -215,8 +214,11 @@ def _ensure_card_providers():
 
         person = Person(name=name, connection=trans)
         person.addFacet(ICompany, connection=trans)
-        person.addFacet(ICreditProvider, short_name=name, provider_id=name,
-                        open_contract_date=const.NOW(), connection=trans)
+        CreditProvider(original=person,
+                       short_name=name,
+                       provider_id=name,
+                       fopen_contract_date=const.NOW(),
+                       connection=trans)
     trans.commit(close=True)
 
 

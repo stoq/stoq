@@ -383,22 +383,6 @@ class ISalesPerson(IPersonFacet):
                                'object')
 
 
-class ICreditProvider(IPersonFacet):
-    provider_type = Attribute('This attribute must be either'
-                              'provider card or provider '
-                              'finance')
-    short_name = Attribute('A short description of this provider')
-    provider_id = Attribute('An identification for this provider')
-    open_contract_date = Attribute('The date when we start working with '
-                                   'this provider')
-
-    def get_card_providers(conn):
-        """Return a list of credit card providers"""
-
-    def get_fee_for_payment(provider, data):
-        """Returns the fee value for the payment data provided"""
-
-
 class ITransporter(IPersonFacet):
     """An individual or company engaged in the transportation"""
 
