@@ -27,14 +27,14 @@
 from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.domain.interfaces import ICreditProvider
+from stoqlib.domain.person import CreditProvider
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
 class CreditProviderDetailsSlave(BaseEditorSlave):
-    model_iface = ICreditProvider
+    model_type = CreditProvider
     gladefile = 'CredProviderDetailsSlave'
     proxy_widgets = ('provider_id',
                      'short_name',

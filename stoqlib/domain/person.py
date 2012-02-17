@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -81,7 +81,7 @@ from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
                                        ISalesPerson, IActive,
-                                       ICreditProvider, ITransporter,
+                                       ITransporter,
                                        IDescribable, IPersonFacet)
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.method import CreditCardData
@@ -333,11 +333,6 @@ class Person(Domain):
         adapter_klass = self.getAdapterClass(ISupplier)
         return adapter_klass(self, **kwargs)
 
-    def facet_ICreditProvider_add(self, **kwargs):
-        self._check_individual_or_company_facets()
-        adapter_klass = self.getAdapterClass(ICreditProvider)
-        return adapter_klass(self, **kwargs)
-
     def facet_IEmployee_add(self, **kwargs):
         IIndividual(self)
         adapter_klass = self.getAdapterClass(IEmployee)
@@ -358,6 +353,11 @@ class Person(Domain):
         IEmployee(self)
         adapter_klass = self.getAdapterClass(ISalesPerson)
         return adapter_klass(self, **kwargs)
+
+    @property
+    def credit_provider(self):
+        return CreditProvider.selectOneBy(original=self,
+                                          connection=self.get_connection())
 
 #
 # Adapters
@@ -886,9 +886,22 @@ class Branch(PersonAdapter):
 Person.registerFacet(Branch, IBranch)
 
 
-class CreditProvider(PersonAdapter):
-    """A credit provider facet of a person."""
-    implements(ICreditProvider)
+class CreditProvider(Domain):
+    """A credit provider
+    :param provider_type: This attribute must be either
+       provider card or provider finance
+    :ivar short_name: A short description of this provider
+    :ivar provider_id: An identification for this provider
+    :ivar open_contract_date: The date when we start working with
+      this provider
+    :ivar monthly_fee: values charged monthly by the credit provider
+    :ivar credit_fee: fee applied by the provider for each payment transaction,
+                       depending on the transaction type
+    :ivar credit_installments_providers_fee: see credit fee
+    :ivar credit_installments_store_fee: see credit fee
+    :ivar debit_fee: see credit fee
+    :ivar debit_pre_dated_fee: see credit fee
+     """
 
     (PROVIDER_CARD, ) = range(1)
 
@@ -903,13 +916,6 @@ class CreditProvider(PersonAdapter):
     }
 
     provider_types = {PROVIDER_CARD: _(u'Card Provider')}
-
-    """Fee columns
-    B{Important Attributes}:
-        - I{monthly_fee}: values charged monthly by the credit provider
-        - I{*_fee}: fee applied by the provider for each payment transaction,
-                    depending on the transaction type
-    """
 
     original = ForeignKey('Person')
     is_active = BoolCol(default=True)
@@ -928,7 +934,31 @@ class CreditProvider(PersonAdapter):
     debit_pre_dated_fee = PercentCol(default=0)
 
     #
-    # ICreditProvider implementation
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This person facet is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This personf facet is already active')
+        self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
+
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.person.name
+
+    #
+    # Public API
     #
 
     @classmethod
@@ -965,8 +995,11 @@ class CreditProvider(PersonAdapter):
     def get_fee_for_payment(self, provider, data):
         return getattr(self, provider.cards_type[data.card_type])
 
-
-Person.registerFacet(CreditProvider, ICreditProvider)
+    # FIXME: Remove this when all PersonAdapters are converted and
+    #        rename original to person
+    @property
+    def person(self):
+        return self.original
 
 
 class SalesPerson(PersonAdapter):

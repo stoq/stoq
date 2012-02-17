@@ -25,8 +25,8 @@
 
 from stoqlib.database.orm import const
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.interfaces import ICompany, ICreditProvider
-from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import ICompany
+from stoqlib.domain.person import Person, CreditProvider
 from stoqlib.importers.csvimporter import CSVImporter
 
 
@@ -72,6 +72,7 @@ class CreditProviderImporter(CSVImporter):
                 streetnumber=streetnumber,
                 district=data.district)
 
-        person.addFacet(ICreditProvider, connection=trans,
-                        open_contract_date=const.NOW(),
-                        short_name=data.provider_name)
+        CreditProvider(original=person,
+                       open_contract_date=const.NOW(),
+                       short_name=data.provider_name,
+                       connection=trans)

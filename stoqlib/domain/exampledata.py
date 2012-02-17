@@ -34,8 +34,7 @@ from stoqlib.database.runtime import (get_current_station,
 from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
                                        IIndividual, ISupplier,
                                        IStorable, ISalesPerson,
-                                       IClient, IUser, ITransporter,
-                                       ICreditProvider)
+                                       IClient, IUser, ITransporter)
 from stoqlib.lib.parameters import sysparam
 
 # Do not remove, these are used by doctests
@@ -666,12 +665,13 @@ class ExampleCreator(object):
                            account=account or self.create_account())
 
     def create_credit_provider(self):
+        from stoqlib.domain.person import CreditProvider
         person = self.create_person()
         person.addFacet(ICompany, connection=self.trans)
-        return person.addFacet(ICreditProvider,
-                               connection=self.trans,
-                               short_name='Velec',
-                               open_contract_date=datetime.date(2006, 01, 01))
+        return CreditProvider(original=person,
+                              connection=self.trans,
+                              short_name='Velec',
+                              open_contract_date=datetime.date(2006, 01, 01))
 
     def create_payment(self, payment_type=None, date=None):
         from stoqlib.domain.payment.payment import Payment

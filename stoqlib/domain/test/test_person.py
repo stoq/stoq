@@ -35,8 +35,7 @@ from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IClient,
                                        ITransporter, ISupplier,
-                                       ICreditProvider, IEmployee,
-                                       IUser, IBranch, ISalesPerson)
+                                       IEmployee, IUser, IBranch, ISalesPerson)
 from stoqlib.domain.person import (Person,
                                    EmployeeRole, WorkPermitData,
                                    MilitaryData, VoterData,
@@ -183,19 +182,6 @@ class TestPerson(DomainTest):
         assert not self._check_create_facet_fails(person, IIndividual)
         assert not self._check_create_facet_fails(person, ISupplier)
         assert not self._check_create_facet_fails(person, ICompany)
-
-    def testFacetICreditProviderAdd(self):
-        person = self.create_person()
-        short_name = 'Credicard'
-        date = datetime.date(2006, 06, 01)
-        assert self._check_create_facet_fails(person, ICreditProvider,
-                                              short_name=short_name,
-                                              open_contract_date=date)
-        assert not self._check_create_facet_fails(person, ICompany)
-        assert not self._check_create_facet_fails(person, ICreditProvider,
-                                                  short_name=short_name,
-                                                  open_contract_date=date)
-        assert not self._check_create_facet_fails(person, IIndividual)
 
     def testFacetIEmployeeAdd(self, **kwargs):
         person = self.create_person()

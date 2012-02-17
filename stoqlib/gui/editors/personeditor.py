@@ -42,7 +42,7 @@ from stoqlib.gui.slaves.supplierslave import SupplierDetailsSlave
 from stoqlib.gui.slaves.transporterslave import TransporterDataSlave
 from stoqlib.gui.slaves.branchslave import BranchDetailsSlave
 from stoqlib.domain.person import EmployeeRole, CreditProvider
-from stoqlib.domain.interfaces import (IClient, ICreditProvider, IEmployee,
+from stoqlib.domain.interfaces import (IClient, IEmployee,
                                        ISupplier, ITransporter, IUser,
                                        IIndividual, IBranch)
 
@@ -125,7 +125,7 @@ class UserEditor(BasePersonRoleEditor):
 class CreditProviderEditor(BasePersonRoleEditor):
     model_name = _('Credit Provider')
     title = _('New Credit Provider')
-    model_iface = ICreditProvider
+    model_type = CreditProvider
     gladefile = 'BaseTemplate'
     provtype = None
 
@@ -135,16 +135,16 @@ class CreditProviderEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        credprovider = ICreditProvider(person, None)
-        if credprovider:
-            return credprovider
+        if person.credit_provider:
+            return person.credit_provider
         if self.provtype is None:
             raise ValueError('Subclasses of CreditProviderEditor must '
                              'define a provtype attribute')
-        return person.addFacet(ICreditProvider, short_name='',
-                               provider_type=self.provtype,
-                               open_contract_date=datetime.datetime.today(),
-                               connection=conn)
+        return CreditProvider(original=person,
+                              short_name='',
+                              provider_type=self.provtype,
+                              open_contract_date=datetime.datetime.today(),
+                              connection=conn)
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
