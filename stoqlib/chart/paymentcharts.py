@@ -36,9 +36,9 @@ _ = stoqlib_gettext
 
 class YearlyPayments(Chart):
     columns = [dict(name='year', title=_('Year'), expand=True),
-               dict(name='revenue', title=_("Revenue"), data_type=currency),
-               dict(name='expense', title=_("Expense"), data_type=currency),
-               dict(name='profit', title=_("Gross profit"), data_type=currency)]
+               dict(name='revenue', title=_("Revenues"), data_type=currency),
+               dict(name='expense', title=_("Expenses"), data_type=currency),
+               dict(name='profit', title=_("Gross profits"), data_type=currency)]
 
     in_payments_query = """
  SELECT extract(year FROM paid_date),
@@ -130,9 +130,9 @@ class YearlyPayments(Chart):
 
 class MonthlyPayments(Chart):
     columns = [dict(name='time', title=_('Month'), expand=True),
-               dict(name='revenue', title=_("Revenue"), data_type=currency),
-               dict(name='expense', title=_("Expense"), data_type=currency),
-               dict(name='profit', title=_("Gross profit"), data_type=currency)]
+               dict(name='revenue', title=_("Revenues"), data_type=currency),
+               dict(name='expense', title=_("Expenses"), data_type=currency),
+               dict(name='profit', title=_("Gross profits"), data_type=currency)]
 
     in_payments_query = """
   SELECT $date_columns,
@@ -232,9 +232,9 @@ ORDER BY $date_columns;
 
 class DailyPayments(Chart):
     columns = [dict(name='time', title=_('Day'), expand=True),
-               dict(name='revenue', title=_("Revenue"), data_type=currency),
-               dict(name='expense', title=_("Expense"), data_type=currency),
-               dict(name='profit', title=_("Gross profit"), data_type=currency)]
+               dict(name='revenue', title=_("Revenues"), data_type=currency),
+               dict(name='expense', title=_("Expenses"), data_type=currency),
+               dict(name='profit', title=_("Gross profits"), data_type=currency)]
 
     daily_in_payments = """
   SELECT extract(day FROM paid_date),
