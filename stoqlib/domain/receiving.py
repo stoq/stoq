@@ -166,11 +166,11 @@ class ReceivingOrder(Domain):
     invoice_total = PriceCol(default=None)
     cfop = ForeignKey("CfopData")
 
-    responsible = ForeignKey('PersonAdaptToUser')
-    supplier = ForeignKey('PersonAdaptToSupplier')
-    branch = ForeignKey('PersonAdaptToBranch')
+    responsible = ForeignKey('LoginUser')
+    supplier = ForeignKey('Supplier')
+    branch = ForeignKey('Branch')
     purchase = ForeignKey('PurchaseOrder')
-    transporter = ForeignKey('PersonAdaptToTransporter', default=None)
+    transporter = ForeignKey('Transporter', default=None)
 
     def _create(self, id, **kw):
         conn = self.get_connection()

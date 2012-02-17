@@ -82,13 +82,13 @@ class Viewable(object):
             sum(quantity * price) AS subtotal,
             sum(quantity) AS total_quantity
 
-          FROM sale_item, person_adapt_to_sales_person, person, sale
+          FROM sale_item, sales_person, person, sale
 
-            LEFT JOIN person_adapt_to_client
-            ON (sale.client_id = person_adapt_to_client.id)
+            LEFT JOIN client
+            ON (sale.client_id = client.id)
 
             LEFT JOIN person AS client_person
-            ON (person_adapt_to_client.original_id = client_person.id)
+            ON (client.original_id = client_person.id)
 
           WHERE sale_item.sale_id = sale_id
 
@@ -107,10 +107,10 @@ class Viewable(object):
                 )
 
             joins = [
-                LEFTJOINOn(None, PersonAdaptToClient,
-                           PersonAdaptToClient.q.id == Sale.q.clientID),
+                LEFTJOINOn(None, Client,
+                           Client.q.id == Sale.q.clientID),
                 LEFTJOINOn(None, Person,
-                           Person.q.id == PersonAdaptToClient.q.originalID),
+                           Person.q.id == Client.q.originalID),
                 ]
 
             clause = AND(

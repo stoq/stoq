@@ -67,7 +67,7 @@ class FiscalBookEntry(Domain):
     is_reversal = BoolCol(default=False)
     invoice_number = IntCol()
     cfop = ForeignKey("CfopData")
-    branch = ForeignKey("PersonAdaptToBranch")
+    branch = ForeignKey("Branch")
     drawee = ForeignKey("Person", default=None)
     payment_group = ForeignKey("PaymentGroup", default=None)
     iss_value = PriceCol(default=None)

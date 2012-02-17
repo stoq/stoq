@@ -37,7 +37,7 @@ from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.domain.interfaces import IStorable, ISalesPerson
-from stoqlib.domain.person import (ClientView, PersonAdaptToUser,
+from stoqlib.domain.person import (ClientView, LoginUser,
                                    ClientCategory)
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.payment.group import PaymentGroup
@@ -86,7 +86,7 @@ class StartNewLoanStep(WizardEditorStep):
         # Responsible combo
         self.salesperson_lbl.set_text(_(u'Responsible:'))
         self.salesperson.set_property('model-attribute', 'responsible')
-        users = PersonAdaptToUser.selectBy(is_active=True, connection=self.conn)
+        users = LoginUser.selectBy(is_active=True, connection=self.conn)
         items = [(u.person.name, u) for u in users]
         self.salesperson.prefill(items)
         self.salesperson.set_sensitive(False)

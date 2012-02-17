@@ -55,7 +55,7 @@ from stoqlib.gui.slaves.saleslave import SaleDiscountSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import (Person, ClientView,
-                                   PersonAdaptToCreditProvider)
+                                   CreditProvider)
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
@@ -209,7 +209,7 @@ class BaseMethodSelectionStep(object):
 
             step_class = PaymentMethodStep
         elif selected_method.method_name == 'card':
-            providers = PersonAdaptToCreditProvider.get_card_providers(
+            providers = CreditProvider.get_card_providers(
                                                                      self.conn)
             if not providers:
                 warning(_("You need active credit providers to use the "

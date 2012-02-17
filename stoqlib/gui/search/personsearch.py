@@ -44,11 +44,11 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
 from stoqlib.domain.person import (EmployeeRole,
-                                   PersonAdaptToBranch, BranchView,
-                                   PersonAdaptToClient, ClientView,
-                                   PersonAdaptToCreditProvider,
+                                   Branch, BranchView,
+                                   Client, ClientView,
+                                   CreditProvider,
                                    CreditProviderView,
-                                   PersonAdaptToEmployee, EmployeeView,
+                                   Employee, EmployeeView,
                                    TransporterView,
                                    SupplierView, UserView)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
@@ -88,7 +88,7 @@ class EmployeeSearch(BasePersonSearch):
 
     def _get_status_values(self):
         items = [(value, key) for key, value in
-                 PersonAdaptToEmployee.statuses.items()]
+                 Employee.statuses.items()]
         items.insert(0, (_('Any'), None))
         return items
 
@@ -172,7 +172,7 @@ class AbstractCreditProviderSearch(BasePersonSearch):
     provider_type = None
 
     def __init__(self, conn, title='', hide_footer=True):
-        self.provider_table = PersonAdaptToCreditProvider
+        self.provider_table = CreditProvider
         BasePersonSearch.__init__(self, conn, title, hide_footer)
         self.results.connect('cell-edited', self._on_results__cell_edited)
 
@@ -222,7 +222,7 @@ class CardProviderSearch(AbstractCreditProviderSearch):
     editor_class = CardProviderEditor
     search_lbl_text = _('matching:')
     result_strings = _('provider'), _('providers')
-    provider_type = PersonAdaptToCreditProvider.PROVIDER_CARD
+    provider_type = CreditProvider.PROVIDER_CARD
 
 
 class ClientSearch(BasePersonSearch):
@@ -243,7 +243,7 @@ class ClientSearch(BasePersonSearch):
 
     def create_filters(self):
         self.set_text_field_columns(['name', 'cpf', 'rg_number', 'phone_number'])
-        statuses = [(v, k) for k, v in PersonAdaptToClient.statuses.items()]
+        statuses = [(v, k) for k, v in Client.statuses.items()]
         statuses.insert(0, (_('Any'), None))
         status_filter = ComboSearchFilter(_('Show clients with status'),
                                           statuses)
@@ -344,7 +344,7 @@ class BranchSearch(BasePersonSearch):
     def create_filters(self):
         self.set_text_field_columns(['name', 'phone_number'])
         statuses = [(value, key)
-                    for key, value in PersonAdaptToBranch.statuses.items()]
+                    for key, value in Branch.statuses.items()]
         statuses.insert(0, (_('Any'), None))
         status_filter = ComboSearchFilter(_('Show branches with status'),
                                           statuses)
@@ -369,10 +369,10 @@ class BranchSearch(BasePersonSearch):
     #
 
     def _get_status_query(self, state):
-        if state.value == PersonAdaptToBranch.STATUS_ACTIVE:
-            return PersonAdaptToBranch.q.is_active == True
-        elif state.value == PersonAdaptToBranch.STATUS_INACTIVE:
-            return PersonAdaptToBranch.q.is_active == False
+        if state.value == Branch.STATUS_ACTIVE:
+            return Branch.q.is_active == True
+        elif state.value == Branch.STATUS_INACTIVE:
+            return Branch.q.is_active == False
 
 
 class UserSearch(BasePersonSearch):

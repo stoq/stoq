@@ -157,7 +157,7 @@ _details = [
         _('Primary company'),
         _('The primary company which is the owner of all other '
           'branch companies'),
-        'person.PersonAdaptToBranch'),
+        'person.Branch'),
 
     ParameterDetails(
         'CUSTOM_LOGO_FOR_REPORTS',
@@ -192,7 +192,7 @@ _details = [
         _('Suggested supplier'),
         _('The supplier suggested when we are adding a new product in the '
           'system'),
-        'person.PersonAdaptToSupplier'),
+        'person.Supplier'),
 
     ParameterDetails(
         'SUGGESTED_UNIT',

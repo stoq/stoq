@@ -26,9 +26,9 @@
 
 from stoqlib.database.orm import DateTimeCol, ForeignKey, StringCol
 from stoqlib.database.orm import ORMObject
-from stoqlib.domain.person import PersonAdaptToBranch
+from stoqlib.domain.person import Branch
 
-PersonAdaptToBranch # pyflakes
+Branch # pyflakes
 
 
 class BranchSynchronization(ORMObject):
@@ -41,5 +41,5 @@ class BranchSynchronization(ORMObject):
     :cvar policy: policy used to update the branch
     """
     sync_time = DateTimeCol(notNone=True)
-    branch = ForeignKey('PersonAdaptToBranch', unique=True)
+    branch = ForeignKey('Branch', unique=True)
     policy = StringCol(notNone=True)

@@ -108,9 +108,9 @@ class StockDecrease(Domain):
     reason = UnicodeCol(default='')
     notes = UnicodeCol(default='')
     confirm_date = DateTimeCol(default=datetime.datetime.now)
-    responsible = ForeignKey('PersonAdaptToUser')
-    removed_by = ForeignKey('PersonAdaptToEmployee')
-    branch = ForeignKey('PersonAdaptToBranch', default=None)
+    responsible = ForeignKey('LoginUser')
+    removed_by = ForeignKey('Employee')
+    branch = ForeignKey('Branch', default=None)
     cfop = ForeignKey('CfopData')
 
     #

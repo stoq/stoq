@@ -40,15 +40,15 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IClient,
 from stoqlib.domain.person import (Person,
                                    EmployeeRole, WorkPermitData,
                                    MilitaryData, VoterData,
-                                   PersonAdaptToClient,
-                                   PersonAdaptToBranch,
-                                   PersonAdaptToSalesPerson,
-                                   PersonAdaptToSupplier,
-                                   PersonAdaptToEmployee,
-                                   PersonAdaptToUser,
+                                   Client,
+                                   Branch,
+                                   SalesPerson,
+                                   Supplier,
+                                   Employee,
+                                   LoginUser,
                                    EmployeeRoleHistory,
-                                   PersonAdaptToCreditProvider,
-                                   PersonAdaptToTransporter,
+                                   CreditProvider,
+                                   Transporter,
                                    ClientCategory)
 from stoqlib.domain.product import Product
 from stoqlib.domain.profile import UserProfile
@@ -343,7 +343,7 @@ class TestCompany(_PersonFacetTest, DomainTest):
 
 
 class TestClient(_PersonFacetTest, DomainTest):
-    facet = PersonAdaptToClient
+    facet = Client
 
     def testGetname(self):
         client = self.create_client()
@@ -357,7 +357,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(client.get_status_string(), status)
 
     def testGetactiveClients(self):
-        table = PersonAdaptToClient
+        table = Client
         active_clients = table.get_active_clients(self.trans).count()
         client = self.create_client()
         client.status = table.STATUS_SOLVENT
@@ -365,13 +365,13 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(active_clients + 1, one_more_active_client)
 
     def testGetclient_sales(self):
-        client = PersonAdaptToClient.select(connection=self.trans)
+        client = Client.select(connection=self.trans)
         assert client
         client = client[0]
         CfopData(code='123', description='bla', connection=self.trans)
-        branches = PersonAdaptToBranch.select(connection=self.trans)
+        branches = Branch.select(connection=self.trans)
         assert branches
-        people = PersonAdaptToSalesPerson.select(connection=self.trans)
+        people = SalesPerson.select(connection=self.trans)
         assert people
         count_sales = client.get_client_sales().count()
         sale = self.create_sale()
@@ -405,16 +405,16 @@ class TestClient(_PersonFacetTest, DomainTest):
 
 
 class TestSupplier(_PersonFacetTest, DomainTest):
-    facet = PersonAdaptToSupplier
+    facet = Supplier
 
     def testGetActiveSuppliers(self):
-        for supplier in PersonAdaptToSupplier.get_active_suppliers(self.trans):
+        for supplier in Supplier.get_active_suppliers(self.trans):
             self.assertEquals(supplier.status,
-                              PersonAdaptToSupplier.STATUS_ACTIVE)
+                              Supplier.STATUS_ACTIVE)
 
     def testGetAllSuppliers(self):
         query = AND(Person.q.name == "test",
-                    PersonAdaptToSupplier.q.originalID == Person.q.id)
+                    Supplier.q.originalID == Person.q.id)
 
         suppliers = Person.select(query, connection=self.trans)
         self.assertEqual(suppliers.count(), 0)
@@ -441,7 +441,7 @@ class TestSupplier(_PersonFacetTest, DomainTest):
 
 
 class TestEmployee(_PersonFacetTest, DomainTest):
-    facet = PersonAdaptToEmployee
+    facet = Employee
 
     def testRoleHistory(self):
         #this test depends bug 2457
@@ -480,10 +480,10 @@ class TestEmployee(_PersonFacetTest, DomainTest):
 
 
 class TestUser(_PersonFacetTest, DomainTest):
-    facet = PersonAdaptToUser
+    facet = LoginUser
 
     def testGetstatusStr(self):
-        users = PersonAdaptToUser.select(connection=self.trans)
+        users = LoginUser.select(connection=self.trans)
         assert users
         user = users[0]
         user.is_active = False
@@ -492,10 +492,10 @@ class TestUser(_PersonFacetTest, DomainTest):
 
 
 class TestBranch(_PersonFacetTest, DomainTest):
-    facet = PersonAdaptToBranch
+    facet = Branch
 
     def testGetstatusStr(self):
-        branches = PersonAdaptToBranch.select(connection=self.trans)
+        branches = Branch.select(connection=self.trans)
         assert branches
         branch = branches[0]
         branch.is_active = False
@@ -505,7 +505,7 @@ class TestBranch(_PersonFacetTest, DomainTest):
     def testGetactiveBranches(self):
         person = self.create_person()
         person.addFacet(ICompany, connection=self.trans)
-        count = PersonAdaptToBranch.get_active_branches(self.trans).count()
+        count = Branch.get_active_branches(self.trans).count()
         manager = self.create_employee()
         branch = person.addFacet(IBranch, connection=self.trans,
                                  manager=manager, is_active=True)
@@ -513,10 +513,10 @@ class TestBranch(_PersonFacetTest, DomainTest):
 
 
 class TestCreditProvider(_PersonFacetTest, DomainTest):
-    facet = PersonAdaptToCreditProvider
+    facet = CreditProvider
 
     def testGetCardProviders(self):
-        count = PersonAdaptToCreditProvider.get_card_providers(self.trans).count()
+        count = CreditProvider.get_card_providers(self.trans).count()
         facet = self._create_person_facet()
         self.assertEqual(facet.get_card_providers(self.trans).count(),
                          count + 1)
@@ -524,10 +524,10 @@ class TestCreditProvider(_PersonFacetTest, DomainTest):
 
 class SalesPersonTest(_PersonFacetTest, DomainTest):
 
-    facet = PersonAdaptToSalesPerson
+    facet = SalesPerson
 
     def testGetactiveSalespersons(self):
-        count = PersonAdaptToSalesPerson.get_active_salespersons(self.trans).count()
+        count = SalesPerson.get_active_salespersons(self.trans).count()
         salesperson = self.create_sales_person()
         one_more = salesperson.get_active_salespersons(self.trans).count()
         assert count + 1 == one_more
@@ -540,7 +540,7 @@ class SalesPersonTest(_PersonFacetTest, DomainTest):
 
 class TransporterTest(_PersonFacetTest, DomainTest):
 
-    facet = PersonAdaptToTransporter
+    facet = Transporter
 
     def testGetStatusString(self):
         transporter = self.create_transporter()
@@ -548,7 +548,7 @@ class TransporterTest(_PersonFacetTest, DomainTest):
         self.assertEquals(string, _(u'Active'))
 
     def testGetActiveTransporters(self):
-        count = PersonAdaptToTransporter.get_active_transporters(self.trans).count()
+        count = Transporter.get_active_transporters(self.trans).count()
         transporter = self.create_transporter()
         one_more = transporter.get_active_transporters(self.trans).count()
         self.assertEqual(count + 1, one_more)

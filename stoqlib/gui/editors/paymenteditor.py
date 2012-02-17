@@ -40,7 +40,7 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
-from stoqlib.domain.person import PersonAdaptToClient, PersonAdaptToSupplier
+from stoqlib.domain.person import Client, Supplier
 from stoqlib.domain.sale import SaleView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
@@ -169,7 +169,7 @@ class PaymentEditor(BaseEditor):
     # Private
 
     def _populate_person(self):
-        if self.person_class == PersonAdaptToSupplier:
+        if self.person_class == Supplier:
             facets = self.person_class.get_active_suppliers(self.trans)
         else:
             facets = self.person_class.get_active_clients(self.trans)
@@ -368,7 +368,7 @@ class InPaymentEditor(PaymentEditor):
     payment_type = Payment.TYPE_IN
     person_attribute = 'payer'
     person_editor = ClientEditor
-    person_class = PersonAdaptToClient
+    person_class = Client
     person_iface = IClient
     _person_label = _("Payer:")
     help_section = 'account-receivable'
@@ -388,7 +388,7 @@ class OutPaymentEditor(PaymentEditor):
     payment_type = Payment.TYPE_OUT
     person_attribute = 'recipient'
     person_editor = SupplierEditor
-    person_class = PersonAdaptToSupplier
+    person_class = Supplier
     person_iface = ISupplier
     _person_label = _("Recipient:")
     help_section = 'account-payable'

@@ -32,7 +32,7 @@ from stoqlib.database.orm import ForeignKey, IntCol, Viewable, Alias
 from stoqlib.database.orm import DateTimeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory
-from stoqlib.domain.person import Person, PersonAdaptToBranch
+from stoqlib.domain.person import Person, Branch
 from stoqlib.domain.interfaces import IContainer, IStorable
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -83,10 +83,10 @@ class TransferOrder(Domain):
     status = IntCol(default=STATUS_PENDING)
     open_date = DateTimeCol(default=datetime.datetime.now)
     receival_date = DateTimeCol(default=datetime.datetime.now)
-    source_branch = ForeignKey('PersonAdaptToBranch')
-    destination_branch = ForeignKey('PersonAdaptToBranch')
-    source_responsible = ForeignKey('PersonAdaptToEmployee')
-    destination_responsible = ForeignKey('PersonAdaptToEmployee')
+    source_branch = ForeignKey('Branch')
+    destination_branch = ForeignKey('Branch')
+    source_responsible = ForeignKey('Employee')
+    destination_responsible = ForeignKey('Employee')
 
     #
     # IContainer implementation
@@ -171,7 +171,7 @@ class TransferOrder(Domain):
 
 
 class TransferOrderView(Viewable):
-    BranchDest = Alias(PersonAdaptToBranch, 'branch_dest')
+    BranchDest = Alias(Branch, 'branch_dest')
     PersonDest = Alias(Person, 'person_dest')
 
     columns = dict(
@@ -189,10 +189,10 @@ class TransferOrderView(Viewable):
         INNERJOINOn(None, TransferOrderItem,
                     TransferOrder.q.id == TransferOrderItem.q.transfer_orderID),
         # Source
-        LEFTJOINOn(None, PersonAdaptToBranch,
-                   TransferOrder.q.source_branchID == PersonAdaptToBranch.q.id),
+        LEFTJOINOn(None, Branch,
+                   TransferOrder.q.source_branchID == Branch.q.id),
         LEFTJOINOn(None, Person,
-                   PersonAdaptToBranch.q.originalID == Person.q.id),
+                   Branch.q.originalID == Person.q.id),
         # Destination
         LEFTJOINOn(None, BranchDest,
                    TransferOrder.q.destination_branchID == BranchDest.q.id),

@@ -77,8 +77,8 @@ class ProductionOrder(Domain):
     start_date = DateTimeCol(default=None)
     close_date = DateTimeCol(default=None)
     description = UnicodeCol(default='')
-    responsible = ForeignKey('PersonAdaptToEmployee', default=None)
-    branch = ForeignKey('PersonAdaptToBranch')
+    responsible = ForeignKey('Employee', default=None)
+    branch = ForeignKey('Branch')
 
     produced_items = MultipleJoin('ProductionProducedItem',
                                   joinColumn='order_id', orderBy='id')
@@ -522,7 +522,7 @@ class ProductionProducedItem(Domain):
     # ProductionItem already has a reference to Product, but we need it for
     # constraint checks UNIQUE(product_id, serial_number)
     product = ForeignKey('Product')
-    produced_by = ForeignKey('PersonAdaptToUser')
+    produced_by = ForeignKey('LoginUser')
     produced_date = DateTimeCol()
     serial_number = IntCol()
     entered_stock = BoolCol(default=False)
@@ -604,7 +604,7 @@ class ProductionItemQualityResult(Domain):
 
     produced_item = ForeignKey('ProductionProducedItem')
     quality_test = ForeignKey('ProductQualityTest')
-    tested_by = ForeignKey('PersonAdaptToUser')
+    tested_by = ForeignKey('LoginUser')
     tested_date = DateTimeCol(default=None)
     result_value = UnicodeCol()
     test_passed = BoolCol(default=False)

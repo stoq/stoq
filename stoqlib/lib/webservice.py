@@ -146,15 +146,12 @@ class WebService(object):
         # for errors that happens in patches modifying any of the
         # tables in the FROM clause below
         conn = get_connection()
-        data = conn.queryOne("""SELECT person_adapt_to_company.cnpj
-          FROM parameter_data,
-               person_adapt_to_branch,
-               person_adapt_to_company,
-               person
+        data = conn.queryOne("""SELECT company.cnpj
+          FROM parameter_data, branch, company, person
          WHERE field_name = 'MAIN_COMPANY' AND
-               person_adapt_to_branch.id = field_value::int AND
-               person_adapt_to_branch.original_id = person.id AND
-               person_adapt_to_company.original_id = person.id;""")
+               branch.id = field_value::int AND
+               branch.original_id = person.id AND
+               company.original_id = person.id;""")
         if data:
             return data[0]
         return ''

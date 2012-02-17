@@ -26,7 +26,7 @@
 
 from stoqlib.api import api
 from stoqlib.domain.interfaces import IIndividual, ICompany
-from stoqlib.domain.person import Person, PersonAdaptToSupplier
+from stoqlib.domain.person import Person, Supplier
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.slaves import NoteSlave
@@ -308,7 +308,7 @@ class BasePersonRoleEditor(BaseEditor):
             self.individual_slave.on_confirm()
         else:
             self.company_slave.on_confirm()
-        if (isinstance(self.model, PersonAdaptToSupplier) and
+        if (isinstance(self.model, Supplier) and
                 not sysparam(self.conn).SUGGESTED_SUPPLIER):
             sysparam(self.conn).SUGGESTED_SUPPLIER = self.model.id
         return self.model

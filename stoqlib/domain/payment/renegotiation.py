@@ -63,9 +63,9 @@ class PaymentRenegotiation(Domain):
     discount_value = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     total = PriceCol(default=0)
-    responsible = ForeignKey('PersonAdaptToUser')
-    client = ForeignKey('PersonAdaptToClient', default=None)
-    branch = ForeignKey('PersonAdaptToBranch', default=None)
+    responsible = ForeignKey('LoginUser')
+    client = ForeignKey('Client', default=None)
+    branch = ForeignKey('Branch', default=None)
     group = ForeignKey('PaymentGroup')
 
     #

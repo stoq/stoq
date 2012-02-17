@@ -34,7 +34,7 @@ from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
 
 from stoqlib.api import api
 from stoqlib.database.orm import AND
-from stoqlib.domain.person import PersonAdaptToBranch
+from stoqlib.domain.person import Branch
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import (ProductQuantityView,
@@ -187,7 +187,7 @@ class ProductSearch(SearchEditor):
     def executer_query(self, query, having, conn):
         branch = self.branch_filter.get_state().value
         if branch is not None:
-            branch = PersonAdaptToBranch.get(branch, connection=conn)
+            branch = Branch.get(branch, connection=conn)
 
         composed_query = Product.q.is_composed == False
         if query:
@@ -321,7 +321,7 @@ class ProductsSoldSearch(SearchDialog):
         # duplicate values in the results.
         branch = self.branch_filter.get_state().value
         if branch is not None:
-            branch = PersonAdaptToBranch.get(branch, connection=conn)
+            branch = Branch.get(branch, connection=conn)
 
         date = self.date_filter.get_state()
         if isinstance(date, DateQueryState):
@@ -414,7 +414,7 @@ class ProductStockSearch(SearchEditor):
     def executer_query(self, query, having, conn):
         branch = self.branch_filter.get_state().value
         if branch is not None:
-            branch = PersonAdaptToBranch.get(branch, connection=conn)
+            branch = Branch.get(branch, connection=conn)
         return self.table.select_by_branch(query, branch, connection=conn)
 
 

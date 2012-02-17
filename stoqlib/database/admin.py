@@ -201,14 +201,14 @@ def register_accounts(trans):
 def _ensure_card_providers():
     """ Creates a list of default card providers """
     log.info("Creating Card Providers")
-    from stoqlib.domain.person import PersonAdaptToCreditProvider
+    from stoqlib.domain.person import CreditProvider
 
     providers = ['VISANET', 'REDECARD', 'AMEX', 'HIPERCARD',
                  'BANRISUL', 'PAGGO', 'CREDISHOP', 'CERTIF']
 
     trans = new_transaction()
     for name in providers:
-        person = PersonAdaptToCreditProvider.get_provider_by_provider_id(
+        person = CreditProvider.get_provider_by_provider_id(
                         name, trans)
         if person:
             continue

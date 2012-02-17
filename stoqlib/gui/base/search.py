@@ -409,8 +409,8 @@ class SearchDialog(BasicDialog):
     #
 
     def create_branch_filter(self, label=None):
-        from stoqlib.domain.person import PersonAdaptToBranch
-        branches = PersonAdaptToBranch.get_active_branches(self.conn)
+        from stoqlib.domain.person import Branch
+        branches = Branch.get_active_branches(self.conn)
         items = [(b.person.name, b.id) for b in branches]
         #if not items:
         #    raise ValueError('You should have at least one branch at '
@@ -427,8 +427,8 @@ class SearchDialog(BasicDialog):
         return branch_filter
 
     def create_provider_filter(self, label=None):
-        from stoqlib.domain.person import PersonAdaptToCreditProvider
-        providers = PersonAdaptToCreditProvider.get_active_providers(self.conn)
+        from stoqlib.domain.person import CreditProvider
+        providers = CreditProvider.get_active_providers(self.conn)
         items = [(p.person.name, p) for p in providers]
         items.insert(0, (_("Any"), None))
 

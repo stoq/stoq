@@ -43,7 +43,7 @@ class BranchStation(Domain):
 
     name = UnicodeCol(unique=True)
     is_active = BoolCol(default=False)
-    branch = ForeignKey("PersonAdaptToBranch")
+    branch = ForeignKey("Branch")
 
     # Public
 

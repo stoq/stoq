@@ -33,7 +33,7 @@ from stoqlib.database.orm import INNERJOINOn
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.person import Person, PersonAdaptToSalesPerson
+from stoqlib.domain.person import Person, SalesPerson
 from stoqlib.domain.sale import Sale
 
 from stoqlib.lib.translation import stoqlib_gettext
@@ -90,7 +90,7 @@ class Commission(Domain):
 
     commission_type = IntCol(default=DIRECT)
     value = PriceCol(default=0)
-    salesperson = ForeignKey('PersonAdaptToSalesPerson')
+    salesperson = ForeignKey('SalesPerson')
     sale = ForeignKey('Sale')
     payment = ForeignKey('Payment')
 
@@ -184,11 +184,11 @@ class CommissionView(Viewable):
             Commission.q.saleID == Sale.q.id),
 
         # person
-        INNERJOINOn(None, PersonAdaptToSalesPerson,
-            PersonAdaptToSalesPerson.q.id == Commission.q.salespersonID),
+        INNERJOINOn(None, SalesPerson,
+            SalesPerson.q.id == Commission.q.salespersonID),
 
         INNERJOINOn(None, Person,
-            Person.q.id == PersonAdaptToSalesPerson.q.originalID),
+            Person.q.id == SalesPerson.q.originalID),
 
         # payment
         INNERJOINOn(None, Payment,

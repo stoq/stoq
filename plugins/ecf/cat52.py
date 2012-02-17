@@ -131,7 +131,7 @@ class CATFile(object):
         @param initial_crz:
         @param final_crz:
         @param company:
-        @type company: PersonAdaptToCompany
+        @type company: PersonCompany
 
         """
         today = datetime.datetime.today()

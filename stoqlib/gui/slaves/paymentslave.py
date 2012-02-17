@@ -46,7 +46,7 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod, CreditCardData
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
-from stoqlib.domain.person import PersonAdaptToCreditProvider
+from stoqlib.domain.person import CreditProvider
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.drivers.cheque import get_current_cheque_printer_settings
@@ -834,7 +834,7 @@ class CardMethodSlave(BaseEditorSlave):
             data.fee_value = data.fee * payment.value / 100
 
     def _get_credit_providers(self):
-        return PersonAdaptToCreditProvider.get_card_providers(
+        return CreditProvider.get_card_providers(
             self.method.get_connection())
 
     #

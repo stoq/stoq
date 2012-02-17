@@ -334,10 +334,10 @@ def set_current_branch_station(conn, station_name):
     """
 
     # This might be called early, so make sure SQLObject
-    # knows about PersonAdaptToBranch which might not have
+    # knows about Branch which might not have
     # been imported yet
-    from stoqlib.domain.person import PersonAdaptToBranch
-    PersonAdaptToBranch # pyflakes
+    from stoqlib.domain.person import Branch
+    Branch # pyflakes
 
     from stoqlib.domain.station import BranchStation
     station = BranchStation.selectOneBy(name=station_name, connection=conn)
