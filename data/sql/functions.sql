@@ -72,4 +72,4 @@ input_string := translate(input_string, 'çÇ', 'cc');
 
 return input_string;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql IMMUTABLE;
