@@ -48,6 +48,7 @@ class PersonAdaptToPublisher(PersonAdapter):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
+    original = ForeignKey('Person')
     status = IntCol(default=STATUS_ACTIVE)
 
     @property

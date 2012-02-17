@@ -536,6 +536,7 @@ class ProductAdaptToStorable(ModelAdapter):
 
     implements(IStorable)
 
+    original = ForeignKey('Product')
     minimum_quantity = QuantityCol(default=0)
     maximum_quantity = QuantityCol(default=0)
 

@@ -261,6 +261,7 @@ class SaleItemAdaptToDelivery(ModelAdapter):
 
     implements(IDelivery, IContainer)
 
+    original = ForeignKey('SaleItem')
     address = UnicodeCol(default='')
 
     #

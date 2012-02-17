@@ -426,6 +426,7 @@ class Individual(PersonAdapter):
     genders = {GENDER_MALE: _(u'Male'),
                GENDER_FEMALE: _(u'Female')}
 
+    original = ForeignKey('Person')
     cpf = UnicodeCol(default='')
     rg_number = UnicodeCol(default='')
     birth_date = DateTimeCol(default=None)
@@ -476,6 +477,7 @@ class Company(PersonAdapter):
     """
     implements(ICompany)
 
+    original = ForeignKey('Person')
     # Cnpj, state_registry and city registry are Brazil-specific information.
     cnpj = UnicodeCol(default='')
     fancy_name = UnicodeCol(default='')
@@ -555,6 +557,7 @@ class Client(PersonAdapter):
                 STATUS_INSOLVENT: _(u'Insolvent'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
+    original = ForeignKey('Person')
     status = IntCol(default=STATUS_SOLVENT)
     days_late = IntCol(default=0)
     credit_limit = PriceCol(default=0)
@@ -666,6 +669,7 @@ class Supplier(PersonAdapter):
                 STATUS_INACTIVE: _(u'Inactive'),
                 STATUS_BLOCKED: _(u'Blocked')}
 
+    original = ForeignKey('Person')
     status = IntCol(default=STATUS_ACTIVE)
     product_desc = UnicodeCol(default='')
     is_active = BoolCol(default=True)
@@ -717,6 +721,7 @@ class Employee(PersonAdapter):
                 STATUS_VACATION: _(u'Vacation'),
                 STATUS_OFF: _(u'Off')}
 
+    original = ForeignKey('Person')
     admission_date = DateTimeCol(default=None)
     expire_vacation = DateTimeCol(default=None)
     salary = PriceCol(default=0)
@@ -756,6 +761,7 @@ class LoginUser(PersonAdapter):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
+    original = ForeignKey('Person')
     username = UnicodeCol(alternateID=True)
     password = UnicodeCol()
     is_active = BoolCol(default=True)
@@ -817,6 +823,7 @@ class Branch(PersonAdapter):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
+    original = ForeignKey('Person')
     manager = ForeignKey('Employee', default=None)
     is_active = BoolCol(default=True)
     crt = IntCol(default=1)
@@ -904,6 +911,7 @@ class CreditProvider(PersonAdapter):
                     depending on the transaction type
     """
 
+    original = ForeignKey('Person')
     is_active = BoolCol(default=True)
     provider_type = IntCol(default=PROVIDER_CARD)
     short_name = UnicodeCol()
@@ -989,6 +997,7 @@ class SalesPerson(PersonAdapter):
                                                          u'Category'),
                        COMMISSION_BY_SALE_TOTAL: _(u'By Sale Total')}
 
+    original = ForeignKey('Person')
     comission = PercentCol(default=0)
     comission_type = IntCol(default=COMMISSION_BY_SALESPERSON)
     is_active = BoolCol(default=True)
@@ -1010,6 +1019,7 @@ class Transporter(PersonAdapter):
     """A transporter facet of a person."""
     implements(ITransporter)
 
+    original = ForeignKey('Person')
     is_active = BoolCol(default=True)
     open_contract_date = DateTimeCol(default=datetime.datetime.now)
     #FIXME: not used in purchases.
