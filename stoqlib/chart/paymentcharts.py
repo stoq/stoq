@@ -37,7 +37,7 @@ _ = stoqlib_gettext
 class YearlyPayments(Chart):
     description = _("Total revenue, expenses and profit for all years")
 
-    columns = [dict(name='time', title=_('Year'), expand=True),
+    columns = [dict(name='year', title=_('Year'), expand=True),
                dict(name='revenue', title=_("Revenue"), data_type=currency),
                dict(name='expense', title=_("Expense"), data_type=currency),
                dict(name='profit', title=_("Profit"), data_type=currency)]
@@ -115,7 +115,7 @@ class YearlyPayments(Chart):
             profits.append(profit)
             items.append({
                 'short_title': year,
-                'time': int(year),
+                'year': int(year),
                 'revenue': int(revenue),
                 'expense': int(expense),
                 'profit': int(profit)})
@@ -213,7 +213,9 @@ ORDER BY $date_columns;
                           'time': '%s, %d' % (get_month_names()[month - 1], year),
                           'revenue': int(total_in),
                           'expense': int(total_out),
-                          'profit': int(total_in - total_out)})
+                          'profit': int(total_in - total_out),
+                          'year': year,
+                          'month': month})
 
         return {'data': [revenues, expenses, profits],
                 'items': items}

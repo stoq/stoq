@@ -23,9 +23,11 @@
 ##
 """ Chart Generation Dialog """
 
+import datetime
 import json
 
 import gtk
+from dateutil.relativedelta import relativedelta
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ObjectList, Column
 from kiwi.ui.widgets.combo import ProxyComboBox
@@ -82,6 +84,9 @@ class ChartDialog(gtk.Window):
         self.vbox.pack_start(self._view, True, True)
 
         self.results = ObjectList()
+        self.results.connect(
+            'row-activated',
+            self._on_results__row_activated)
         self.vbox.pack_start(self.results, True, True)
 
         self._setup_daemon()
@@ -95,8 +100,8 @@ class ChartDialog(gtk.Window):
         yield proxy.callRemote('start_webservice')
 
         self.chart_type.prefill([
-            ('Month', 'MonthlyPayments'),
             ('Year', 'YearlyPayments'),
+            ('Month', 'MonthlyPayments'),
             ('Day', 'DailyPayments'),
             ])
 
@@ -142,6 +147,7 @@ class ChartDialog(gtk.Window):
         items = []
         for item in response['items']:
             settable = Settable(**item)
+            settable.chart_class = chart_class
             items.append(settable)
         self.results.add_list(items, clear=True)
         self.results.show()
@@ -186,3 +192,17 @@ class ChartDialog(gtk.Window):
             return
         self._show_one(kind, start, end)
         self._current = kind, start, end
+
+    def _on_results__row_activated(self, results, item):
+        chart_type_name = item.chart_class.__name__
+        if chart_type_name == 'YearlyPayments':
+            start = datetime.date(item.year, 1, 1)
+            end = datetime.date(item.year, 12, 31)
+            chart_type_name = 'MonthlyPayments'
+        elif chart_type_name == 'MonthlyPayments':
+            start = datetime.date(item.year, item.month, 1)
+            end = start + relativedelta(days=31)
+            chart_type_name = 'DailyPayments'
+        else:
+            return
+        self._show_one(chart_type_name, start, end)
