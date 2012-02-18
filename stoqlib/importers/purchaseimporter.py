@@ -26,7 +26,7 @@
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.interfaces import (IBranch, ISupplier,
                                        ITransporter)
-from stoqlib.domain.person import LoginUser, Person
+from stoqlib.domain.person import Person
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
@@ -64,9 +64,9 @@ class PurchaseImporter(CSVImporter):
         if branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.branch_name, ))
-        user = LoginUser.selectOneBy(name=data.user_name,
-                                     connection=trans)
-        if user is None:
+        person = Person.selectOneBy(name=data.user_name,
+                                  connection=trans)
+        if person is None or person.login_user is None:
             raise ValueError("%s is not a valid user" % (
                 data.user_name, ))
 
@@ -94,7 +94,7 @@ class PurchaseImporter(CSVImporter):
         purchase.confirm()
 
         receiving_order = ReceivingOrder(purchase=purchase,
-                                         responsible=user,
+                                         responsible=person.login_user,
                                          supplier=supplier,
                                          invoice_number=int(data.invoice),
                                          transporter=transporter,
