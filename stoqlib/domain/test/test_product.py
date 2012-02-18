@@ -438,11 +438,11 @@ class TestProductQuality(DomainTest):
         test.set_range_value(Decimal(10), Decimal(20))
         self.assertEqual(test.get_range_value(), (Decimal(10), Decimal(20)))
 
-        self.assertFalse(test.result_value_passes(Decimal(9.99)))
+        self.assertFalse(test.result_value_passes(Decimal('9.99')))
         self.assertTrue(test.result_value_passes(Decimal(10)))
         self.assertTrue(test.result_value_passes(Decimal(15)))
         self.assertTrue(test.result_value_passes(Decimal(20)))
-        self.assertFalse(test.result_value_passes(Decimal(20.0001)))
+        self.assertFalse(test.result_value_passes(Decimal('20.0001')))
         self.assertFalse(test.result_value_passes(Decimal(30)))
 
         test.set_range_value(Decimal(30), Decimal(40))

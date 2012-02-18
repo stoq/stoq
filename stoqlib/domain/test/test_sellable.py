@@ -231,13 +231,13 @@ class TestSellable(DomainTest):
         # Now with a category, max_discount = 0
         self.assertFalse(sellable.is_valid_price(0, cat))
         self.assertFalse(sellable.is_valid_price(-10, cat))
-        self.assertFalse(sellable.is_valid_price(149.99, cat))
+        self.assertFalse(sellable.is_valid_price(Decimal('149.99'), cat))
         self.assertTrue(sellable.is_valid_price(150, cat))
         self.assertTrue(sellable.is_valid_price(151, cat))
 
         # Now with a category, max_discount = 10%
         cat_price.max_discount = 10
-        self.assertTrue(sellable.is_valid_price(149.99, cat))
+        self.assertTrue(sellable.is_valid_price(Decimal('149.99'), cat))
         self.assertTrue(sellable.is_valid_price(135, cat))
         self.assertFalse(sellable.is_valid_price(134, cat))
 

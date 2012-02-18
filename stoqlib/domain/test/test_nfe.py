@@ -105,10 +105,10 @@ class TestNfeGenerator(DomainTest):
         # [2] - Price
         # [3] - Quantity
         for data in [("Laranja", "1", Decimal(1), Decimal(10)),
-                     ("Limão", "2", Decimal(0.5), Decimal(15)),
+                     ("Limão", "2", Decimal('0.5'), Decimal(15)),
                      ("Abacaxi", "3", Decimal(3), Decimal(1)),
-                     ("Cenoura", "4", Decimal(1.5), Decimal(6)),
-                     ("Pêssego", "5", Decimal(3.5), Decimal(3))]:
+                     ("Cenoura", "4", Decimal('1.5'), Decimal(6)),
+                     ("Pêssego", "5", Decimal('3.5'), Decimal(3))]:
             sellable = self._create_sellable(data[0], data[1], data[2])
 
             storable = sellable.product.addFacet(IStorable,
