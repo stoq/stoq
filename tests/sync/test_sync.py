@@ -23,9 +23,9 @@
 ##
 
 from stoqlib.database.runtime import get_connection, new_transaction
-from stoqlib.domain.interfaces import (IEmployee, ISalesPerson, IUser,
+from stoqlib.domain.interfaces import (IEmployee, ISalesPerson,
                                        IIndividual)
-from stoqlib.domain.person import EmployeeRole, Person
+from stoqlib.domain.person import EmployeeRole, LoginUser, Person
 from stoqlib.domain.profile import UserProfile
 
 from tests.sync.base import SyncTest
@@ -142,8 +142,8 @@ class TestUpdate(SyncTest):
         person = Person.selectOneBy(name="Employee", connection=trans)
         self.failUnless(person)
         profile = UserProfile.selectOneBy(name='Administrator', connection=trans)
-        person.addFacet(IUser, username="username", password="password",
-                        profile=profile, connection=trans)
+        LoginUser(original=person, username="username", password="password",
+                  profile=profile, connection=trans)
         trans.commit()
 
         # Office
@@ -152,8 +152,7 @@ class TestUpdate(SyncTest):
 
         person = Person.selectOneBy(name="Employee", connection=trans)
         self.failUnless(person)
-        user = IUser(person, None)
-        self.failUnless(user)
+        self.failUnless(person.login_user)
         self.assertEquals(user.username, "username")
 
         # Shop

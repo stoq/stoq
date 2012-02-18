@@ -30,9 +30,9 @@ import gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
+from stoqlib.domain.person import EmployeeRole, LoginUser
 from stoqlib.domain.profile import UserProfile
-from stoqlib.domain.person import EmployeeRole
-from stoqlib.domain.interfaces import IEmployee, ISalesPerson, IUser
+from stoqlib.domain.interfaces import IEmployee, ISalesPerson
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.lib.defaults import MINIMUM_PASSWORD_CHAR_LEN
@@ -53,7 +53,7 @@ class LoginInfo:
 
 class UserStatusSlave(BaseEditorSlave):
     gladefile = 'UserStatusSlave'
-    model_iface = IUser
+    model_type = LoginUser
     proxy_widgets = ('active_check', )
 
     def setup_proxies(self):
@@ -197,7 +197,7 @@ class PasswordEditor(BaseEditor):
 
 class UserDetailsSlave(BaseEditorSlave):
     gladefile = 'UserDetailsSlave'
-    model_iface = IUser
+    model_type = LoginUser
     proxy_widgets = ('username',
                      'profile')
 

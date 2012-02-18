@@ -28,10 +28,10 @@ from decimal import Decimal
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        ISalesPerson, IClient,
-                                       IUser, IEmployee,
+                                       IEmployee,
                                        IIndividual)
 from stoqlib.domain.address import CityLocation
-from stoqlib.domain.person import Person, EmployeeRole
+from stoqlib.domain.person import LoginUser, Person, EmployeeRole
 from stoqlib.domain.sellable import SellableCategory
 from stoqlib.domain.service import Service
 from stoqlib.domain.profile import UserProfile
@@ -186,9 +186,9 @@ class TestParameter(DomainTest):
         person = Person(name='Craudinho', connection=self.trans)
         person.addFacet(IIndividual, connection=self.trans)
         profile = UserProfile(name='profile', connection=self.trans)
-        responsible = person.addFacet(IUser, connection=self.trans,
-                                      password='asdfgh', profile=profile,
-                                      username='craudio')
+        responsible = LoginUser(original=person, connection=self.trans,
+                                password='asdfgh', profile=profile,
+                                username='craudio')
         purchase = self.create_purchase_order()
         receiving_order = ReceivingOrder(responsible=responsible,
                                          branch=branch,

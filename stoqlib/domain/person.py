@@ -79,7 +79,7 @@ from stoqlib.domain.address import Address
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
-                                       IClient, ISupplier, IUser, IBranch,
+                                       IClient, ISupplier, IBranch,
                                        ISalesPerson, IActive,
                                        ITransporter,
                                        IDescribable, IPersonFacet)
@@ -338,11 +338,6 @@ class Person(Domain):
         adapter_klass = self.getAdapterClass(IEmployee)
         return adapter_klass(self, **kwargs)
 
-    def facet_IUser_add(self, **kwargs):
-        self._check_individual_or_company_facets()
-        adapter_klass = self.getAdapterClass(IUser)
-        return adapter_klass(self, **kwargs)
-
     def facet_IBranch_add(self, **kwargs):
         ICompany(self)
         adapter_klass = self.getAdapterClass(IBranch)
@@ -358,6 +353,11 @@ class Person(Domain):
     def credit_provider(self):
         return CreditProvider.selectOneBy(original=self,
                                           connection=self.get_connection())
+
+    @property
+    def login_user(self):
+        return LoginUser.selectOneBy(original=self,
+                                     connection=self.get_connection())
 
 #
 # Adapters
@@ -752,9 +752,13 @@ class Employee(PersonAdapter):
 Person.registerFacet(Employee, IEmployee)
 
 
-class LoginUser(PersonAdapter):
-    """An user facet of a person."""
-    implements(IUser)
+class LoginUser(Domain):
+    """A user that us able to login to the system
+    :param username: username
+    :param password: password
+    :param profile: A profile represents a colection of information
+      which represents what this user can do in the system
+    """
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
@@ -766,6 +770,34 @@ class LoginUser(PersonAdapter):
     password = UnicodeCol()
     is_active = BoolCol(default=True)
     profile = ForeignKey('UserProfile')
+
+    #
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This person facet is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This personf facet is already active')
+        self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
+
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.person.name
+
+    #
+    # Public API
+    #
 
     @classmethod
     def check_password_for(cls, username, password, conn):
@@ -802,7 +834,11 @@ class LoginUser(PersonAdapter):
             Event.log(Event.TYPE_USER,
                 _("User '%s' logged out") % (self.username, ))
 
-Person.registerFacet(LoginUser, IUser)
+    # FIXME: Remove this when all PersonAdapters are converted and
+    #        rename original to person
+    @property
+    def person(self):
+        return self.original
 
 
 class Branch(PersonAdapter):
