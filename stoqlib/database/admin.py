@@ -218,7 +218,7 @@ def _ensure_card_providers():
         CreditProvider(original=person,
                        short_name=name,
                        provider_id=name,
-                       fopen_contract_date=const.NOW(),
+                       open_contract_date=const.NOW(),
                        connection=trans)
     trans.commit(close=True)
 
