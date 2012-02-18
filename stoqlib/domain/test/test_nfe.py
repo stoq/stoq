@@ -29,6 +29,7 @@ from decimal import Decimal
 import os
 import sys
 
+import stoqlib
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.interfaces import IStorable, ICompany
@@ -40,7 +41,8 @@ from stoqlib.lib.diffutils import diff_files
 from stoqlib.lib.pluginmanager import get_plugin_manager
 
 # This test should be inside plugins/nfe, but it's not reachable there
-sys.path.append('plugins/nfe')
+sys.path.append(os.path.join(os.path.dirname(stoqlib.__file__), '..',
+    'plugins', 'nfe'))
 from nfegenerator import NFeGenerator, remove_accentuation, NFeIdentification
 
 
