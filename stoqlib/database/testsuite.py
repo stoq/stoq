@@ -36,8 +36,8 @@ from stoqlib.database.interfaces import (
 from stoqlib.database.orm import AND
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.database.settings import DatabaseSettings
-from stoqlib.domain.person import Person, Branch
-from stoqlib.domain.interfaces import IBranch, IUser
+from stoqlib.domain.person import Branch, LoginUser, Person
+from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.station import BranchStation
 from stoqlib.importers.stoqlibexamples import create
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
@@ -90,8 +90,8 @@ def _provide_database_settings():
 
 
 def _provide_current_user():
-    user = Person.iselectOneBy(IUser, username='admin',
-                               connection=get_connection())
+    user = LoginUser.selectOneBy(username='admin',
+                                 connection=get_connection())
     provide_utility(ICurrentUser, user, replace=True)
 
 

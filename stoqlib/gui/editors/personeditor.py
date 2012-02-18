@@ -41,9 +41,9 @@ from stoqlib.gui.slaves.userslave import UserDetailsSlave, UserStatusSlave
 from stoqlib.gui.slaves.supplierslave import SupplierDetailsSlave
 from stoqlib.gui.slaves.transporterslave import TransporterDataSlave
 from stoqlib.gui.slaves.branchslave import BranchDetailsSlave
-from stoqlib.domain.person import EmployeeRole, CreditProvider
+from stoqlib.domain.person import EmployeeRole, CreditProvider, LoginUser
 from stoqlib.domain.interfaces import (IClient, IEmployee,
-                                       ISupplier, ITransporter, IUser,
+                                       ISupplier, ITransporter,
                                        IIndividual, IBranch)
 
 _ = stoqlib_gettext
@@ -79,7 +79,7 @@ class ClientEditor(BasePersonRoleEditor):
 class UserEditor(BasePersonRoleEditor):
     model_name = _('User')
     title = _('New User')
-    model_iface = IUser
+    model_type = LoginUser
     gladefile = 'BaseTemplate'
     USER_TAB_POSITION = 0
 
@@ -93,9 +93,9 @@ class UserEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        user = IUser(person, None)
-        return user or person.addFacet(IUser, connection=conn, username="",
-                                       password="", profile=None)
+        return person.login_user or LoginUser(original=person,
+                                              connection=conn, username="",
+                                              password="", profile=None)
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
@@ -136,9 +136,9 @@ class CreditProviderEditor(BasePersonRoleEditor):
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
         if person.credit_provider:
-            return person.credit_provider
+            return person.credi_provider
         if self.provtype is None:
-            raise ValueError('Subclasses of CreditProviderEditor must '
+            raise ValueError('subclasses of CreditProviderEditor must '
                              'define a provtype attribute')
         return CreditProvider(original=person,
                               short_name='',

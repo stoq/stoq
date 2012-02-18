@@ -327,22 +327,6 @@ class IEmployee(IPersonFacet):
         """FIXME"""
 
 
-class IUser(IPersonFacet):
-    """An employee which have access to one or more Stoq applications"""
-
-    username = Attribute('Username')
-    profile = Attribute('A profile represents a colection of information '
-                        'which represents what this user can do in the '
-                        'system')
-    password = Attribute('Password')
-
-    def login():
-        pass
-
-    def logout():
-        pass
-
-
 class IBranch(IPersonFacet):
     """An administrative division of some larger or more complex
     organization"""

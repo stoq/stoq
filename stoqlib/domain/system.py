@@ -81,9 +81,8 @@ class TransactionEntry(ORMObject):
         """Returns the user associated with the TransactionEntry"""
         if not self.user_id:
             return
-        from stoqlib.domain.interfaces import IUser
-        from stoqlib.domain.person import Person
-        return Person.iget(IUser, self.user_id, connection=self._connection)
+        from stoqlib.domain.person import LoginUser
+        return LoginUser.get(self.user_id, connection=self._connection)
 
     @property
     def station(self):

@@ -34,7 +34,7 @@ from stoqlib.database.runtime import (get_current_station,
 from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
                                        IIndividual, ISupplier,
                                        IStorable, ISalesPerson,
-                                       IClient, IUser, ITransporter)
+                                       IClient, ITransporter)
 from stoqlib.lib.parameters import sysparam
 
 # Do not remove, these are used by doctests
@@ -69,7 +69,7 @@ def create_individual(trans):
 
 
 def create_user(trans):
-    return ExampleCreator.create(trans, 'IUser')
+    return ExampleCreator.create(trans, 'LoginUser')
 
 
 def create_storable(trans):
@@ -214,7 +214,7 @@ class ExampleCreator(object):
             'ISalesPerson': self.create_sales_person,
             'ISupplier': self.create_supplier,
             'ITransporter': self.create_transporter,
-            'IUser': self.create_user,
+            'LoginUser': self.create_user,
             'Payment': self.create_payment,
             'ParameterData': self.create_parameter_data,
             'Person': self.create_person,
@@ -319,12 +319,14 @@ class ExampleCreator(object):
         return person.addFacet(IIndividual, connection=self.trans)
 
     def create_user(self):
+        from stoqlib.domain.person import LoginUser
         individual = self.create_individual()
         profile = self.create_user_profile()
-        return individual.person.addFacet(IUser, username='username',
-                                          password='password',
-                                          profile=profile,
-                                          connection=self.trans)
+        return LoginUser(original=individual.person,
+                         username='username',
+                         password='password',
+                         profile=profile,
+                         connection=self.trans)
 
     def create_storable(self):
         from stoqlib.domain.product import Product

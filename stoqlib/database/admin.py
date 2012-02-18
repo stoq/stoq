@@ -46,9 +46,9 @@ from stoqlib.database.interfaces import (ICurrentBranch, ICurrentUser,
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.orm import const
 from stoqlib.database.runtime import get_connection, new_transaction
-from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
+from stoqlib.domain.interfaces import (IIndividual, IEmployee,
                                        ISalesPerson, ICompany, IBranch)
-from stoqlib.domain.person import EmployeeRole, Person
+from stoqlib.domain.person import EmployeeRole, LoginUser, Person
 from stoqlib.domain.person import EmployeeRoleHistory
 from stoqlib.domain.profile import ProfileSettings, UserProfile
 from stoqlib.domain.sellable import SellableTaxConstant, SellableUnit
@@ -98,10 +98,11 @@ def ensure_admin_user(administrator_password):
         if not profile:
             profile = UserProfile.selectOneBy(name='Administrator', connection=trans)
 
-        log.info("Attaching IUser facet (%s)" % (USER_ADMIN_DEFAULT_NAME, ))
-        person.addFacet(IUser, username=USER_ADMIN_DEFAULT_NAME,
-                        password=administrator_password,
-                        profile=profile, connection=trans)
+        log.info("Attaching a LoginUser (%s)" % (USER_ADMIN_DEFAULT_NAME, ))
+        LoginUser(original=person,
+                  username=USER_ADMIN_DEFAULT_NAME,
+                  password=administrator_password,
+                  profile=profile, connection=trans)
 
         trans.commit(close=True)
 
@@ -227,8 +228,8 @@ def get_admin_user(conn):
     :param conn: a database connection
     :returns: the admin user for the system
     """
-    return Person.iselectOneBy(IUser, username=USER_ADMIN_DEFAULT_NAME,
-                               connection=conn)
+    return LoginUser.selectOneBy(username=USER_ADMIN_DEFAULT_NAME,
+                                 connection=conn)
 
 
 def ensure_sellable_constants():

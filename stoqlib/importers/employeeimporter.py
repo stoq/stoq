@@ -24,9 +24,10 @@
 ##
 
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
+from stoqlib.domain.interfaces import (IIndividual, IEmployee,
                                        ISalesPerson)
-from stoqlib.domain.person import Person, EmployeeRole, EmployeeRoleHistory
+from stoqlib.domain.person import (LoginUser, Person,
+                                   EmployeeRole, EmployeeRoleHistory)
 from stoqlib.domain.profile import UserProfile
 from stoqlib.importers.csvimporter import CSVImporter
 
@@ -95,7 +96,7 @@ class EmployeeImporter(CSVImporter):
 
         profile = UserProfile.selectOneBy(name=data.profile, connection=trans)
 
-        person.addFacet(IUser, connection=trans, profile=profile,
-                        username=data.username,
-                        password=data.password)
+        LoginUser(original=person, connection=trans, profile=profile,
+                  username=data.username,
+                  password=data.password)
         person.addFacet(ISalesPerson, connection=trans)

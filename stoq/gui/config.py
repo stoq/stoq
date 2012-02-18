@@ -69,9 +69,8 @@ from stoqlib.database.database import test_local_database
 from stoqlib.database.interfaces import (ICurrentBranchStation,
                                          ICurrentBranch)
 from stoqlib.database.settings import DatabaseSettings
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, LoginUser
 from stoqlib.domain.station import BranchStation
-from stoqlib.domain.interfaces import IUser
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.base.wizards import BaseWizard, WizardEditorStep
@@ -924,9 +923,8 @@ class FirstTimeConfigWizard(BaseWizard):
 
     def _set_admin_password(self, trans):
         logger.info('_set_admin_password')
-        adminuser = Person.iselectOneBy(IUser,
-                                        username=USER_ADMIN_DEFAULT_NAME,
-                                        connection=trans)
+        adminuser = LoginUser.selectOneBy(username=USER_ADMIN_DEFAULT_NAME,
+                                          connection=trans)
         if adminuser is None:
             raise DatabaseInconsistency(
                 ("You should have a user with username: %s"

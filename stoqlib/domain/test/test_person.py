@@ -35,7 +35,7 @@ from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IClient,
                                        ITransporter, ISupplier,
-                                       IEmployee, IUser, IBranch, ISalesPerson)
+                                       IEmployee, IBranch, ISalesPerson)
 from stoqlib.domain.person import (Person,
                                    EmployeeRole, WorkPermitData,
                                    MilitaryData, VoterData,
@@ -50,7 +50,6 @@ from stoqlib.domain.person import (Person,
                                    Transporter,
                                    ClientCategory)
 from stoqlib.domain.product import Product
-from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.test.domaintest import DomainTest
@@ -199,17 +198,6 @@ class TestPerson(DomainTest):
                                                   military_data=military_data,
                                                   voter_data=voter_data,
                                                   bank_account=bank_account)
-        assert not self._check_create_facet_fails(person, ICompany)
-
-    def testFacetIUserAdd(self, **kwargs):
-        person = self.create_person()
-        assert self._check_create_facet_fails(person, IUser)
-        assert not self._check_create_facet_fails(person, IIndividual)
-        profile = UserProfile(name='profile', connection=self.trans)
-        assert not self._check_create_facet_fails(person, IUser,
-                                                  username='User',
-                                                  password='pass',
-                                                  profile=profile)
         assert not self._check_create_facet_fails(person, ICompany)
 
     def testFacetIBranchAdd(self, **kwargs):

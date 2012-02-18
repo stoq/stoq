@@ -364,7 +364,7 @@ def get_current_user(conn):
     at that point no users are logged in
 
     :returns: currently logged in user or None
-    :rtype: an object implementing IUser
+    :rtype: a LoginUser
     """
     user = get_utility(ICurrentUser, None)
     if user is not None:

@@ -32,8 +32,7 @@ from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
 from stoqlib.database.interfaces import ICurrentUser
 from stoqlib.exceptions import DatabaseError, LoginError, UserProfileError
-from stoqlib.domain.interfaces import IUser
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import LoginUser
 from stoqlib.gui.base.dialogs import RunnableView
 from stoqlib.gui.splash import hide_splash
 from stoqlib.lib.interfaces import CookieError, ICookieFile
@@ -138,8 +137,8 @@ class LoginHelper:
 
     def _check_user(self, username, password):
         # This function is really just a post-validation item.
-        user = Person.iselectOneBy(IUser, username=username,
-                                   connection=api.get_connection())
+        user = LoginUser.selectOneBy(username=username,
+                                     connection=api.get_connection())
 
         if not user:
             raise LoginError(_("Invalid user or password"))

@@ -25,8 +25,8 @@
 import datetime
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IUser, IClient
-from stoqlib.domain.person import Calls, Person
+from stoqlib.domain.interfaces import IClient
+from stoqlib.domain.person import Calls, LoginUser, Person
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
@@ -86,8 +86,7 @@ class CallsEditor(BaseEditor):
 
     def _fill_attendant_combo(self):
         attendants = [(a.person.name, a)
-                     for a in Person.iselect(IUser,
-                                             connection=self.conn)]
+                     for a in LoginUser.select(connection=self.conn)]
         self.attendant.prefill(sorted(attendants))
 
     def on_details_button__clicked(self, button):
