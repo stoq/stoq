@@ -27,6 +27,7 @@ import sys
 
 from kiwi.component import get_utility
 
+import stoqlib
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib import test
@@ -35,7 +36,8 @@ from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.pluginmanager import get_plugin_manager
 
 # This test should really be inside plugins/ecf, bug that is not supported yet.
-sys.path.append('plugins/ecf')
+sys.path.append(os.path.join(os.path.dirname(stoqlib.__file__), '..',
+    'plugins', 'ecf'))
 from cat52 import CATFile
 from catgenerator import async
 from ecfdomain import ECFPrinter, FiscalSaleHistory
