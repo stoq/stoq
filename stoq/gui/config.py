@@ -69,7 +69,7 @@ from stoqlib.database.database import test_local_database
 from stoqlib.database.interfaces import (ICurrentBranchStation,
                                          ICurrentBranch)
 from stoqlib.database.settings import DatabaseSettings
-from stoqlib.domain.person import Person, LoginUser
+from stoqlib.domain.person import LoginUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseError
