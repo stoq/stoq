@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-02-01 12:43-0200\n"
-"PO-Revision-Date: 2012-01-25 01:19+0000\n"
+"PO-Revision-Date: 2012-02-18 18:51+0000\n"
 "Last-Translator: Johan Dahlin <jdahlin@gmail.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-02-10 04:57+0000\n"
-"X-Generator: Launchpad (build 14771)\n"
+"X-Launchpad-Export-Date: 2012-02-19 05:55+0000\n"
+"X-Generator: Launchpad (build 14814)\n"
 "Language: sv\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -3313,7 +3313,7 @@ msgstr ""
 
 #: ../plugins/magento/glade/MagentoConfigEditor.ui.h:3
 msgid "API User:"
-msgstr ""
+msgstr "API-användare:"
 
 #: ../plugins/magento/glade/MagentoConfigEditor.ui.h:6
 msgid "Server URL:"
@@ -3845,7 +3845,7 @@ msgstr ""
 #: ../stoq/gui/application.py:525
 #, python-format
 msgid "User: %s"
-msgstr ""
+msgstr "Användare: %s"
 
 #. This method must be redefined in child when it's needed
 #: ../stoq/gui/application.py:568
@@ -4020,7 +4020,7 @@ msgstr ""
 
 #: ../stoq/gui/calendar.py:294
 msgid "Calendar help"
-msgstr ""
+msgstr "Kalenderhjälp"
 
 #. TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 #: ../stoq/gui/calendar.py:297 ../stoq/gui/payable.py:70
@@ -4054,7 +4054,7 @@ msgstr ""
 
 #: ../stoq/gui/calendar.py:334
 msgid "View as month"
-msgstr ""
+msgstr "Visa som månad"
 
 #: ../stoq/gui/calendar.py:335
 msgid "Show one month"
@@ -4496,7 +4496,7 @@ msgstr ""
 
 #: ../stoq/gui/financial.py:372
 msgid "Financial help"
-msgstr ""
+msgstr "Bokföringshjälp"
 
 #: ../stoq/gui/financial.py:373 ../stoq/gui/payable.py:130
 #: ../stoq/gui/production.py:115 ../stoq/gui/purchase.py:170
@@ -6053,7 +6053,7 @@ msgstr ""
 
 #: ../stoq/lib/applist.py:50
 msgid "Control accounts and financial transactions."
-msgstr ""
+msgstr "Kontrollera konton och finansiella transaktioner"
 
 #: ../stoq/lib/applist.py:53
 msgid "Audit and adjust the product stock."
@@ -12823,7 +12823,7 @@ msgstr ""
 
 #: ../stoqlib/lib/parameters.py:528
 msgid "Demonstration mode"
-msgstr ""
+msgstr "Demonstrationsläge"
 
 #: ../stoqlib/lib/parameters.py:529
 msgid "If Stoq is used in a demonstration mode"
