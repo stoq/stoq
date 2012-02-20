@@ -35,7 +35,6 @@ from stoqdrivers.enum import TaxType
 import stoqlib
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.domain.parameter import ParameterData
-from stoqlib.domain.interfaces import ISupplier, IBranch
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.l10n.l10n import get_l10n_field
 from stoqlib.lib.imageutils import ImageHelper
@@ -643,9 +642,9 @@ class ParameterAccess(ClassInittableObject):
         self._create_product_tax_constant()
 
     def _create_suggested_supplier(self):
+        from stoqlib.domain.person import Supplier
         key = "SUGGESTED_SUPPLIER"
-        from stoqlib.domain.person import Person
-        if self.get_parameter_by_field(key, Person.getAdapterClass(ISupplier)):
+        if self.get_parameter_by_field(key, Supplier):
             return
         self._set_schema(key, None)
 
@@ -675,9 +674,9 @@ class ParameterAccess(ClassInittableObject):
         self._set_schema(key, role.id, is_editable=False)
 
     def _create_main_company(self):
-        from stoqlib.domain.person import Person
+        from stoqlib.domain.person import Branch
         key = "MAIN_COMPANY"
-        if self.get_parameter_by_field(key, Person.getAdapterClass(IBranch)):
+        if self.get_parameter_by_field(key, Branch):
             return
         self._set_schema(key, None)
 

@@ -25,8 +25,7 @@
 
 """Editors for magento"""
 
-from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import ISalesPerson, IBranch
+from stoqlib.domain.person import Branch, SalesPerson
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -86,12 +85,12 @@ class MagentoConfigEditor(BaseEditor):
     def _setup_widgets(self):
         self.branch.prefill(
             [(branch.person.name, branch) for branch in
-              Person.iselect(IBranch, connection=self.conn)])
+              Branch.select(connection=self.conn)])
         if self.model.branch:
             self.branch.update(self.model.branch)
 
         self.salesperson.prefill(
             [(salesperson.person.name, salesperson) for salesperson in
-              Person.iselect(ISalesPerson, connection=self.conn)])
+              SalesPerson.select(connection=self.conn)])
         if self.model.salesperson:
             self.salesperson.update(self.model.salesperson)

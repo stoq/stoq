@@ -28,8 +28,7 @@ from kiwi.datatypes import  ValidationError
 from stoqlib.database.runtime import get_current_station
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.station import BranchStation
-from stoqlib.domain.interfaces import IBranch
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Branch
 from stoqlib.gui.editors.baseeditor import BaseEditor
 
 _ = stoqlib_gettext
@@ -62,7 +61,7 @@ class StationEditor(BaseEditor):
     def setup_proxies(self):
         statuses = []
         # FIXME: Implement and use IDescribable on Branch
-        for branch in Person.iselect(IBranch, connection=self.conn):
+        for branch in Branch.select(connection=self.conn):
             statuses.append((branch.person.name, branch))
         self.branch.prefill(sorted(statuses))
 

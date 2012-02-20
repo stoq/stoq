@@ -31,8 +31,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
-from stoqlib.domain.interfaces import IClient
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Client
 from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.renegotiation import RenegotiationData
@@ -216,8 +215,8 @@ class SaleDetailsDialog(BaseEditor):
         if not self.model.client_id:
             raise StoqlibError("You should never call ClientDetailsDialog "
                                "for sales which clients were not specified")
-        client = Person.iget(IClient, self.model.client_id,
-                             connection=self.conn)
+        client = Client.get(self.model.client_id,
+                            connection=self.conn)
         run_dialog(ClientDetailsDialog, self, self.conn, client)
 
     def on_status_details_button__clicked(self, button):

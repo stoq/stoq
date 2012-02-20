@@ -28,7 +28,6 @@ from dateutil.relativedelta import relativedelta
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
-from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.sintegra import SintegraFile
 from stoqlib.lib.diffutils import diff_files
@@ -73,7 +72,7 @@ class SintegraTest(DomainTest):
         user = self.create_employee()
         branch.manager = user
         manager = branch.manager.person
-        company = ICompany(branch.person)
+        company = branch.person.company
         address = branch.person.get_main_address()
 
         start = today + relativedelta(day=1)

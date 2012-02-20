@@ -298,11 +298,10 @@ def _register_branch(conn, station_name):
             trans.close()
             error(_("Must login as 'admin'"))
 
-    from stoqlib.domain.interfaces import IBranch
-    from stoqlib.domain.person import Person
+    from stoqlib.domain.person import Branch
     from stoqlib.domain.station import BranchStation
 
-    branches = Person.iselect(IBranch, connection=trans)
+    branches = Branch.select(connection=trans)
     if not branches:
         trans.close()
         error(_("Schema error, no branches found"))
@@ -375,7 +374,7 @@ def get_current_branch(conn):
     """Fetches the current branch company.
 
     :returns: the current branch
-    :rtype: an object implementing IBranch
+    :rtype: a branch
     """
 
     branch = get_utility(ICurrentBranch, None)

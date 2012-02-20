@@ -24,8 +24,7 @@
 ##
 
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.interfaces import ICompany, ITransporter
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Company, Person, Transporter
 from stoqlib.importers.csvimporter import CSVImporter
 
 
@@ -52,11 +51,11 @@ class TransporterImporter(CSVImporter):
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
-        person.addFacet(ICompany,
-                        connection=trans,
-                        cnpj=data.cnpj,
-                        fancy_name=data.name,
-                        state_registry=data.state_registry)
+        Company(original=person,
+                connection=trans,
+                cnpj=data.cnpj,
+                fancy_name=data.name,
+                state_registry=data.state_registry)
 
         ctloc = CityLocation.get_or_create(trans=trans,
                                            city=data.city,
@@ -75,4 +74,4 @@ class TransporterImporter(CSVImporter):
 
         dict(open_contract_date=self.parse_date(data.open_contract),
              freight_percentage=data.freight_percentage),
-        person.addFacet(ITransporter, connection=trans)
+        Transporter(original=person, connection=trans)

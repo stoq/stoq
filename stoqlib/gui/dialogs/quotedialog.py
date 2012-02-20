@@ -35,7 +35,6 @@ from kiwi.ui.listdialog import ListSlave
 
 from stoqlib.api import api
 from stoqlib.database.orm import AND, OR, LEFTJOINOn
-from stoqlib.domain.interfaces import IEmployee
 from stoqlib.domain.production import ProductionOrder, ProductionMaterial
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.sale import Sale
@@ -165,7 +164,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
         if self.sale.client:
             desc += ' (%s)' % self.sale.client.get_name()
         user = api.get_current_user(trans)
-        employee = IEmployee(user.person, None)
+        employee = user.person.employee
         order = ProductionOrder(branch=self.sale.branch,
                     status=ProductionOrder.ORDER_WAITING,
                     responsible=employee,

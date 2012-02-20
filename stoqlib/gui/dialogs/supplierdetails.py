@@ -33,7 +33,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import ISupplier
+from stoqlib.domain.person import Supplier
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import SupplierEditor
@@ -54,7 +54,7 @@ class SupplierDetailsDialog(BaseEditor):
     title = _(u"Supplier Details")
     hide_footer = True
     size = (780, 400)
-    model_iface = ISupplier
+    model_type = Supplier
     gladefile = "SupplierDetailsDialog"
     proxy_widgets = ('supplier',
                      'last_purchase_date',

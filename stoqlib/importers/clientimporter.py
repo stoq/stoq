@@ -24,8 +24,7 @@
 ##
 
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.interfaces import IIndividual, IClient
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Client, Individual, Person
 from stoqlib.importers.csvimporter import CSVImporter
 
 
@@ -50,10 +49,10 @@ class ClientImporter(CSVImporter):
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
-        person.addFacet(IIndividual,
-                        connection=trans,
-                        cpf=data.cpf,
-                        rg_number=data.rg)
+        Individual(original=person,
+                   connection=trans,
+                   cpf=data.cpf,
+                   rg_number=data.rg)
 
         ctloc = CityLocation.get_or_create(trans=trans,
                                            city=data.city,
@@ -70,4 +69,4 @@ class ClientImporter(CSVImporter):
             district=data.district
             )
 
-        person.addFacet(IClient, connection=trans)
+        Client(original=person, connection=trans)

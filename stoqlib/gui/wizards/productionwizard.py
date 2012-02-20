@@ -31,8 +31,7 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
 from stoqlib.database.orm import AND
-from stoqlib.domain.interfaces import IBranch
-from stoqlib.domain.person import Person, Employee
+from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.production import (ProductionOrder, ProductionItem,
                                        ProductionService)
 from stoqlib.domain.service import ServiceView
@@ -71,8 +70,7 @@ class OpenProductionOrderStep(WizardEditorStep):
 
     def _fill_branch_combo(self):
         # FIXME: Implement and use IDescribable on Branch
-        table = Person.getAdapterClass(IBranch)
-        branches = table.get_active_branches(self.conn)
+        branches = Branch.get_active_branches(self.conn)
         items = [(s.person.name, s) for s in branches]
         self.branch.prefill(sorted(items))
 

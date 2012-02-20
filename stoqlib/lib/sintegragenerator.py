@@ -31,7 +31,6 @@ from kiwi.db.query import DateIntervalQueryState
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import get_connection, get_current_branch
 from stoqlib.domain.devices import FiscalDayHistory
-from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import (Company,
                                    Individual)
@@ -72,7 +71,7 @@ class StoqlibSintegraGenerator(object):
     def _add_header(self):
         branch = get_current_branch(self.conn)
         manager = branch.manager.person
-        company = ICompany(branch.person)
+        company = branch.person.company
         address = branch.person.get_main_address()
 
         state_registry = company.get_state_registry_number()

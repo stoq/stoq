@@ -25,9 +25,9 @@
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.commission import CommissionSource
+from stoqlib.domain.person import Supplier
 from stoqlib.domain.product import Product, ProductSupplierInfo
-from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import IStorable, ISupplier
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sellable import (Sellable,
                                      SellableCategory,
                                      SellableUnit)
@@ -55,7 +55,7 @@ class ProductImporter(CSVImporter):
     def __init__(self):
         super(ProductImporter, self).__init__()
         conn = get_connection()
-        suppliers = Person.iselect(ISupplier, connection=conn)
+        suppliers = Supplier.select(connection=conn)
         if not suppliers.count():
             raise ValueError('You must have at least one suppliers on your '
                              'database at this point.')

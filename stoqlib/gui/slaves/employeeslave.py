@@ -34,17 +34,17 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.interfaces import IEmployee, ISalesPerson
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import (WorkPermitData, EmployeeRole,
-                                   EmployeeRoleHistory)
+                                   EmployeeRoleHistory,
+                                   Employee, SalesPerson)
 
 _ = stoqlib_gettext
 
 
 class EmployeeDetailsSlave(BaseEditorSlave):
     gladefile = 'EmployeeDetailsSlave'
-    model_iface = IEmployee
+    model_type = Employee
 
     #
     # Proxy widgets
@@ -93,7 +93,7 @@ class EmployeeDetailsSlave(BaseEditorSlave):
 
 class EmployeeStatusSlave(BaseEditorSlave):
     gladefile = 'EmployeeStatusSlave'
-    model_iface = IEmployee
+    model_type = Employee
     proxy_widgets = ('statuses_combo', )
 
     def setup_proxies(self):
@@ -114,7 +114,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
         self.max_results = sysparam(conn).MAX_SEARCH_RESULTS
         self.employee = employee
         self.person = employee.person
-        self.salesperson = ISalesPerson(self.person, None)
+        self.salesperson = self.person.salesperson
         self.is_edit_mode = edit_mode
         self.current_role_history = self._get_active_role_history()
         BaseEditorSlave.__init__(self, conn, visual_mode=visual_mode)
@@ -147,8 +147,8 @@ class EmployeeRoleSlave(BaseEditorSlave):
                     self.salesperson.activate()
             else:
                 conn = self.conn
-                self.salesperson = self.person.addFacet(ISalesPerson,
-                                                        connection=conn)
+                self.salesperson = SalesPerson(original=self.person,
+                                               connection=conn)
         elif self.salesperson:
             if self.salesperson.is_active:
                 self.salesperson.inactivate()

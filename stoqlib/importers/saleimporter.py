@@ -25,7 +25,6 @@
 import datetime
 
 from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.interfaces import IBranch, IClient, ISalesPerson
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import Person
@@ -50,22 +49,26 @@ class SaleImporter(CSVImporter):
               'due_date']
 
     def process_one(self, data, fields, trans):
-        branch = IBranch(Person.selectOneBy(name=data.branch_name,
-                                            connection=trans), None)
-        if branch is None:
+        person = Person.selectOneBy(name=data.branch_name,
+                                    connection=trans)
+        if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.branch_name, ))
-        client = IClient(Person.selectOneBy(name=data.client_name,
-                                            connection=trans), None)
-        if client is None:
+        branch = person.branch
+
+        person = Person.selectOneBy(name=data.client_name,
+                                    connection=trans)
+        if person is None or person.client is None:
             raise ValueError("%s is not a valid client" % (
                 data.client_name, ))
-        salesperson = ISalesPerson(
-            Person.selectOneBy(name=data.salesperson_name,
-                               connection=trans), None)
-        if salesperson is None:
-            raise ValueError("%s is not a valid salesperson" % (
+        client = person.client
+
+        person = Person.selectOneBy(name=data.salesperson_name,
+                                    connection=trans)
+        if person is None or person.salesperson is None:
+            raise ValueError("%s is not a valid sales person" % (
                 data.salesperson_name, ))
+        salesperson = person.salesperson
         group = PaymentGroup(connection=trans)
         sale = Sale(client=client,
                     open_date=self.parse_date(data.open_date),

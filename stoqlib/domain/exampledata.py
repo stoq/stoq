@@ -31,10 +31,7 @@ from stoqlib.database.orm import const
 from stoqlib.database.runtime import (get_current_station,
                                       get_current_branch,
                                       get_current_user)
-from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
-                                       IIndividual, ISupplier,
-                                       IStorable, ISalesPerson,
-                                       IClient, ITransporter)
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.lib.parameters import sysparam
 
 # Do not remove, these are used by doctests
@@ -45,27 +42,27 @@ def create_person(trans):
 
 
 def create_branch(trans):
-    return ExampleCreator.create(trans, 'IBranch')
+    return ExampleCreator.create(trans, 'Branch')
 
 
 def create_supplier(trans):
-    return ExampleCreator.create(trans, 'ISupplier')
+    return ExampleCreator.create(trans, 'Supplier')
 
 
 def create_employee(trans):
-    return ExampleCreator.create(trans, 'IEmployee')
+    return ExampleCreator.create(trans, 'Employee')
 
 
 def create_salesperson(trans):
-    return ExampleCreator.create(trans, 'ISalesPerson')
+    return ExampleCreator.create(trans, 'SalesPerson')
 
 
 def create_client(trans):
-    return ExampleCreator.create(trans, 'IClient')
+    return ExampleCreator.create(trans, 'Client')
 
 
 def create_individual(trans):
-    return ExampleCreator.create(trans, 'IIndividual')
+    return ExampleCreator.create(trans, 'Individual')
 
 
 def create_user(trans):
@@ -109,7 +106,7 @@ def create_parameter_data(trans):
 
 
 def create_company(trans):
-    return ExampleCreator.create(trans, 'ICompany')
+    return ExampleCreator.create(trans, 'Company')
 
 
 def create_till(trans):
@@ -204,16 +201,16 @@ class ExampleCreator(object):
             'ClientCategoryPrice': self.create_client_category_price,
             'EmployeeRole': self.create_employee_role,
             'FiscalBookEntry': self.create_fiscal_book_entry,
-            'IClient': self.create_client,
-            'ICompany': self.create_company,
-            'IBranch': self.create_branch,
-            'IEmployee': self.create_employee,
-            'IIndividual': self.create_individual,
+            'Client': self.create_client,
+            'Company': self.create_company,
+            'Branch': self.create_branch,
+            'Employee': self.create_employee,
+            'Individual': self.create_individual,
             'Inventory': self.create_inventory,
             'InventoryItem': self.create_inventory_item,
-            'ISalesPerson': self.create_sales_person,
-            'ISupplier': self.create_supplier,
-            'ITransporter': self.create_transporter,
+            'SalesPerson': self.create_sales_person,
+            'Supplier': self.create_supplier,
+            'Transporter': self.create_transporter,
             'LoginUser': self.create_user,
             'Payment': self.create_payment,
             'ParameterData': self.create_parameter_data,
@@ -274,20 +271,20 @@ class ExampleCreator(object):
         return Person(name='John', connection=self.trans)
 
     def create_branch(self, name='Dummy'):
-        from stoqlib.domain.person import Person
+        from stoqlib.domain.person import Branch, Company, Person
         person = Person(name=name, connection=self.trans)
         fancy_name = name + ' shop'
-        person.addFacet(ICompany, fancy_name=fancy_name,
-                        connection=self.trans)
-        return person.addFacet(IBranch, connection=self.trans)
+        Company(original=person, fancy_name=fancy_name,
+                connection=self.trans)
+        return Branch(original=person, connection=self.trans)
 
     def create_supplier(self):
-        from stoqlib.domain.person import Person
+        from stoqlib.domain.person import Company, Person, Supplier
         person = Person(name='Supplier', connection=self.trans)
-        person.addFacet(ICompany, fancy_name='Company Name',
-                        cnpj='90.117.749/7654-80',
-                        connection=self.trans)
-        return person.addFacet(ISupplier, connection=self.trans)
+        Company(original=person, fancy_name='Company Name',
+                cnpj='90.117.749/7654-80',
+                connection=self.trans)
+        return Supplier(original=person, connection=self.trans)
 
     def create_employee_role(self):
         if not self._role:
@@ -296,27 +293,28 @@ class ExampleCreator(object):
         return self._role
 
     def create_employee(self, name="SalesPerson"):
-        from stoqlib.domain.person import Person
+        from stoqlib.domain.person import Employee, Individual, Person
         person = Person(name=name, connection=self.trans)
-        person.addFacet(IIndividual, connection=self.trans)
-        return person.addFacet(IEmployee,
-                               role=self.create_employee_role(),
-                               connection=self.trans)
+        Individual(original=person, connection=self.trans)
+        return Employee(original=person,
+                        role=self.create_employee_role(),
+                        connection=self.trans)
 
     def create_sales_person(self):
+        from stoqlib.domain.person import SalesPerson
         employee = self.create_employee()
-        return employee.person.addFacet(ISalesPerson, connection=self.trans)
+        return SalesPerson(original=employee.person, connection=self.trans)
 
     def create_client(self):
-        from stoqlib.domain.person import Person
+        from stoqlib.domain.person import Client, Individual, Person
         person = Person(name='Client', connection=self.trans)
-        person.addFacet(IIndividual, connection=self.trans)
-        return person.addFacet(IClient, connection=self.trans)
+        Individual(original=person, connection=self.trans)
+        return Client(original=person, connection=self.trans)
 
     def create_individual(self):
-        from stoqlib.domain.person import Person
+        from stoqlib.domain.person import Individual, Person
         person = Person(name='individual', connection=self.trans)
-        return person.addFacet(IIndividual, connection=self.trans)
+        return Individual(original=person, connection=self.trans)
 
     def create_user(self):
         from stoqlib.domain.person import LoginUser
@@ -476,10 +474,10 @@ class ExampleCreator(object):
         return ParameterData.select(connection=self.trans)[0]
 
     def create_company(self):
-        from stoqlib.domain.person import Person
+        from stoqlib.domain.person import Company, Person
         person = Person(name='Dummy', connection=self.trans)
-        return person.addFacet(ICompany, fancy_name='Dummy shop',
-                               connection=self.trans)
+        return Company(original=person, fancy_name='Dummy shop',
+                       connection=self.trans)
 
     def create_till(self):
         from stoqlib.domain.till import Till
@@ -654,9 +652,11 @@ class ExampleCreator(object):
                                  responsible=person)
 
     def create_transporter(self):
+        from stoqlib.domain.person import Company, Transporter
         person = self.create_person()
-        person.addFacet(ICompany, connection=self.trans)
-        return person.addFacet(ITransporter, connection=self.trans)
+        Company(original=person, connection=self.trans)
+        return Transporter(original=person,
+                           connection=self.trans)
 
     def create_bank_account(self, account=None):
         from stoqlib.domain.account import BankAccount
@@ -667,9 +667,9 @@ class ExampleCreator(object):
                            account=account or self.create_account())
 
     def create_credit_provider(self):
-        from stoqlib.domain.person import CreditProvider
+        from stoqlib.domain.person import Company, CreditProvider
         person = self.create_person()
-        person.addFacet(ICompany, connection=self.trans)
+        Company(original=person, connection=self.trans)
         return CreditProvider(original=person,
                               connection=self.trans,
                               short_name='Velec',

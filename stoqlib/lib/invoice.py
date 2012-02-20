@@ -33,7 +33,6 @@ from kiwi.datatypes import ValidationError
 from stoqdrivers.enum import TaxType
 from stoqdrivers.escp import EscPPrinter
 
-from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
@@ -376,7 +375,7 @@ class F(InvoiceFieldDescription):
     length = 4
 
     def fetch(self, width, height):
-        return ICompany(self.sale.branch).cnpj
+        return self.sale.branch.person.company.cnpj
 
 _add_invoice_field(F)
 
@@ -433,11 +432,11 @@ class F(InvoiceFieldDescription):
     length = 14
 
     def fetch(self, width, height):
-        individual = IIndividual(self.sale.client, None)
+        individual = self.sale.client.person.individual
         if individual is not None:
             return individual.cpf
 
-        company = ICompany(self.sale.client, None)
+        company = self.sale.client.person.company
         if company is not None:
             return company.cnpj
 
@@ -529,7 +528,7 @@ class F(InvoiceFieldDescription):
     length = 14
 
     def fetch(self, width, height):
-        company = ICompany(self.sale.client, None)
+        company = self.sale.client.person.company
         if company is None:
             return ''
 
@@ -1092,7 +1091,7 @@ class F(InvoiceFieldDescription):
     length = 14
 
     def fetch(self, width, height):
-        return ICompany(self.sale.branch).state_registry
+        return self.sale.branch.person.company.state_registry
 
 _add_invoice_field(F)
 
@@ -1103,7 +1102,7 @@ class F(InvoiceFieldDescription):
     length = 14
 
     def fetch(self, width, height):
-        return ICompany(self.sale.branch).city_registry
+        return self.sale.branch.person.company.city_registry
 
 _add_invoice_field(F)
 

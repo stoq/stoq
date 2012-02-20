@@ -203,13 +203,12 @@ class StoqCommandHandler:
         # Register the current computer as a branch station
         import socket
         from stoqlib.database.runtime import new_transaction
-        from stoqlib.domain.interfaces import IBranch
-        from stoqlib.domain.person import Person
+        from stoqlib.domain.person import Branch
         from stoqlib.domain.station import BranchStation
         from stoqlib.exceptions import StoqlibError
         trans = new_transaction()
 
-        branches = Person.iselect(IBranch, connection=trans)
+        branches = Branch.select(connection=trans)
         if branches:
             branch = branches[0]
         else:

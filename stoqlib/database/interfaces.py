@@ -105,8 +105,8 @@ class ITransaction(IConnection):
 
 
 class ICurrentBranch(Interface):
-    """This is a mainly a marker for the current branch which is expected
-    to implement :class:`stoqlib.domain.interfaces.IBranch`
+    """This is a mainly a marker for the current branch of type
+    :class:`stoqlib.domain.person.Branch`
     It's mainly used by get_current_branch()
     """
 

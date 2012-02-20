@@ -22,18 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from zope.interface import implements, Interface
-
 from stoqlib.database.orm import (ORMObjectMoreThanOneResultError, IntCol,
-                                  ForeignKey)
-from stoqlib.database.runtime import new_transaction
-from stoqlib.domain.base import Domain, ModelAdapter
+                                  )
+from stoqlib.domain.base import Domain
 
 from stoqlib.domain.test.domaintest import DomainTest
-
-
-class IDong(Interface):
-    pass
 
 
 class Ding(Domain):
@@ -42,63 +35,6 @@ class Ding(Domain):
     def __init__(self, connection, field=None):
         Domain.__init__(self, connection=connection, field=field)
         self.called = False
-
-    def facet_IDong_add(self, **kwargs):
-        self.called = True
-        adapter_klass = self.getAdapterClass(IDong)
-        return adapter_klass(self, **kwargs)
-
-
-class DingAdaptToDong(ModelAdapter):
-    implements(IDong)
-    facetfield = IntCol(default=0)
-    original = ForeignKey('Ding')
-
-Ding.registerFacet(DingAdaptToDong, IDong)
-
-trans = new_transaction()
-for table in (Ding, DingAdaptToDong):
-    table_name = table.sqlmeta.table
-    if trans.tableExists(table_name):
-        trans.dropTable(table_name, cascade=True)
-    table.createTable(connection=trans)
-trans.commit()
-
-
-class TestFacet(DomainTest):
-    def testAdd(self):
-        ding = Ding(connection=self.trans)
-        self.assertEqual(IDong(ding, None), None)
-
-        dong = ding.addFacet(IDong, connection=self.trans)
-        self.assertEqual(IDong(ding), dong)
-
-    def testAddHook(self):
-        ding = Ding(connection=self.trans)
-        self.assertEqual(ding.called, False)
-        ding.addFacet(IDong, connection=self.trans)
-        self.assertEqual(ding.called, True)
-
-    def testGetFacets(self):
-        ding = Ding(connection=self.trans)
-        self.assertEqual(ding.getFacets(), [])
-
-        facet = ding.addFacet(IDong, connection=self.trans)
-        self.assertEqual(ding.getFacets(), [facet])
-
-    def testRegisterAndGetTypes(self):
-        class IDang(Interface):
-            pass
-
-        class DingAdaptToDang(ModelAdapter):
-            implements(IDang)
-
-        self.assertEqual(Ding.getFacetTypes(), [DingAdaptToDong])
-
-        Ding.registerFacet(DingAdaptToDang, IDang)
-
-        self.failUnless(len(Ding.getFacetTypes()), 2)
-        self.failUnless(DingAdaptToDang in Ding.getFacetTypes())
 
 
 class TestSelect(DomainTest):
@@ -122,54 +58,3 @@ class TestSelect(DomainTest):
         self.assertRaises(
             ORMObjectMoreThanOneResultError,
             Ding.selectOneBy, field=1, connection=self.trans)
-
-    def testISelect(self):
-        self.assertEqual(Ding.iselect(IDong, connection=self.trans).count(), 0)
-        ding = Ding(connection=self.trans)
-        ding.addFacet(IDong, connection=self.trans)
-        self.assertEqual(Ding.iselect(IDong, connection=self.trans).count(), 1)
-
-    def testISelectOne(self):
-        self.assertEqual(Ding.iselectOne(IDong, connection=self.trans), None)
-        ding = Ding(connection=self.trans)
-        dong = ding.addFacet(IDong, connection=self.trans)
-
-        self.assertEqual(Ding.iselectOne(IDong, connection=self.trans), dong)
-
-        ding2 = Ding(connection=self.trans)
-        ding2.addFacet(IDong, connection=self.trans)
-
-        self.assertRaises(
-            ORMObjectMoreThanOneResultError,
-            Ding.iselectOne, IDong, connection=self.trans)
-
-    def testISelectBy(self):
-        ding = Ding(connection=self.trans)
-        ding.addFacet(IDong, connection=self.trans)
-
-        results = Ding.iselectBy(IDong, facetfield=1, connection=self.trans)
-        self.assertEquals(results.count(), 0)
-
-        ding = Ding(connection=self.trans)
-        ding.addFacet(IDong, facetfield=1, connection=self.trans)
-
-        results = Ding.iselectBy(IDong, facetfield=1, connection=self.trans)
-        self.assertEquals(results.count(), 1)
-
-    def testISelectOneBy(self):
-        ding = Ding(connection=self.trans)
-        ding.addFacet(IDong, connection=self.trans)
-
-        self.assertEquals(
-            None, Ding.iselectOneBy(IDong, facetfield=1,
-                                    connection=self.trans))
-        ding1 = Ding(connection=self.trans)
-        dong1 = ding1.addFacet(IDong, facetfield=1, connection=self.trans)
-        self.assertEquals(
-            dong1, Ding.iselectOneBy(IDong, facetfield=1,
-                                     connection=self.trans))
-        ding2 = Ding(connection=self.trans)
-        ding2.addFacet(IDong, facetfield=1, connection=self.trans)
-        self.assertRaises(
-            ORMObjectMoreThanOneResultError,
-            Ding.iselectOneBy, IDong, facetfield=1, connection=self.trans)

@@ -27,8 +27,7 @@ from twisted.internet.defer import succeed
 
 from stoqlib.database.orm import ForeignKey
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.interfaces import IClient, IIndividual
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Client, Individual, Person
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import validate_cpf
@@ -85,13 +84,13 @@ class MagentoClient(MagentoBaseSyncDown):
 
     def update_local(self, info):
         person = self.client.person
-        individual = IIndividual(person, None)
+        individual = person.individual
         if not individual:
             # Just log if we don't have individual anymore. If we
             # try to fix this here, we will be masking the problem
             # somewhere else.
             log.warning("Unexpected error: Person '%s' is missing "
-                        "IIndividual facet" % person)
+                        "an individual" % person)
             return False
 
         person.email = info['email']
@@ -136,34 +135,36 @@ class MagentoClient(MagentoBaseSyncDown):
         person = Person.selectOneBy(connection=conn,
                                     email=email)
         if person:
-            if not IClient(person, None):
-                person.addFacet(IClient,
-                                connection=conn)
-            if not IIndividual(person, None):
-                person.addFacet(IIndividual,
-                                connection=conn,
-                                cpf=cpf)
-            return IClient(person)
+            if not person.client:
+                Client(original=person,
+                       connection=conn)
+            if not person.individual:
+                Individual(original=person,
+                           connection=conn,
+                           cpf=cpf)
+            return person.client
 
         # Check for existing person using the given cpf
         if cpf:
-            individual = Person.iselectOneBy(IIndividual, connection=conn,
-                                             cpf=cpf)
+            individual = Individual.selectOneBy(connection=conn,
+                                                cpf=cpf)
             if individual:
-                if not IClient(individual.person, None):
-                    individual.person.addFacet(IClient,
-                                               connection=conn)
-                return IClient(individual.person)
+                if not individual.person.client:
+                    Client(individual.person,
+                           connection=conn)
+                return individual.person.client
 
         # Create a new one
         person = Person(connection=conn,
                         name=name,
                         email=email)
-        person.addFacet(IIndividual, connection=conn,
-                        cpf=cpf)
-        person.addFacet(IClient, connection=conn)
+        Individual(original=person,
+                   connection=conn,
+                   cpf=cpf)
+        Client(original=person,
+               connection=conn)
 
-        return IClient(person)
+        return person.client
 
     def _get_gender(self, mag_gender):
         if mag_gender == self.GENDER_MALE:

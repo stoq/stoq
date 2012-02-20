@@ -26,15 +26,14 @@
 from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.domain.interfaces import IClient
-from stoqlib.domain.person import ClientCategory
+from stoqlib.domain.person import Client, ClientCategory
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
 class ClientStatusSlave(BaseEditorSlave):
-    model_iface = IClient
+    model_type = Client
     gladefile = 'ClientStatusSlave'
 
     proxy_widgets = ('statuses_combo', 'credit_limit',

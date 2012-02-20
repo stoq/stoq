@@ -25,14 +25,13 @@
 """ General slaves for branch management"""
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.domain.interfaces import IBranch
-from stoqlib.domain.person import EmployeeView
+from stoqlib.domain.person import Branch, EmployeeView
 from stoqlib.lib.parameters import sysparam
 
 
 class BranchDetailsSlave(BaseEditorSlave):
     gladefile = 'BranchDetailsSlave'
-    model_iface = IBranch
+    model_type = Branch
     proxy_widgets = ('active_check',
                      'manager',
                      'crt')

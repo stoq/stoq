@@ -34,7 +34,6 @@ from kiwi.datatypes import currency, ValidationError, ValueUnset
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IClient, ISupplier
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
@@ -124,7 +123,7 @@ class PaymentEditor(BaseEditor):
             (_('Quarterly'), INTERVALTYPE_QUARTERLY)])
         self.add_category.set_tooltip_text(_("Add a new payment category"))
         self.edit_category.set_tooltip_text(_("Edit the selected payment category"))
-        if self.person_iface == ISupplier:
+        if self.person_type == Supplier:
             self.add_person.set_tooltip_text(_("Add a new supplier"))
             self.edit_person.set_tooltip_text(_("Edit the selected supplier"))
         else:
@@ -369,7 +368,7 @@ class InPaymentEditor(PaymentEditor):
     person_attribute = 'payer'
     person_editor = ClientEditor
     person_class = Client
-    person_iface = IClient
+    person_type = Client
     _person_label = _("Payer:")
     help_section = 'account-receivable'
     category_type = PaymentCategory.TYPE_RECEIVABLE
@@ -389,7 +388,7 @@ class OutPaymentEditor(PaymentEditor):
     person_attribute = 'recipient'
     person_editor = SupplierEditor
     person_class = Supplier
-    person_iface = ISupplier
+    person_type = Supplier
     _person_label = _("Recipient:")
     help_section = 'account-payable'
     category_type = PaymentCategory.TYPE_PAYABLE

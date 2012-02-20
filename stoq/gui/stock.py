@@ -35,8 +35,7 @@ from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.api import api
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.domain.interfaces import IBranch
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Branch
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
@@ -249,7 +248,7 @@ class StockApp(SearchableAppWindow):
 
     def _get_branches(self):
         items = [(b.person.name, b)
-                  for b in Person.iselect(IBranch, connection=self.conn)]
+                  for b in Branch.select(connection=self.conn)]
         if not items:
             raise DatabaseInconsistency('You should have at least one '
                                         'branch on your database.'

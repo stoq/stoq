@@ -24,11 +24,11 @@
 """ Slaves for transporters"""
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.domain.interfaces import ITransporter
+from stoqlib.domain.person import Transporter
 
 
 class TransporterDataSlave(BaseEditorSlave):
-    model_iface = ITransporter
+    model_type = Transporter
     gladefile = 'TransporterDataSlave'
     proxy_widgets = ('freight',
                      'open_contract_date',

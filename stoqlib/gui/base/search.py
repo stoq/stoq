@@ -678,9 +678,6 @@ class SearchEditor(SearchDialog):
 
         rv = self.run_editor(obj)
         if rv:
-            if self.editor_class.model_iface:
-                rv = rv.get_adapted()
-
             self.search.refresh()
             self.enable_ok()
 

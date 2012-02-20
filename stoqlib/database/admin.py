@@ -46,9 +46,8 @@ from stoqlib.database.interfaces import (ICurrentBranch, ICurrentUser,
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.orm import const
 from stoqlib.database.runtime import get_connection, new_transaction
-from stoqlib.domain.interfaces import (IIndividual, IEmployee,
-                                       ISalesPerson, ICompany, IBranch)
-from stoqlib.domain.person import EmployeeRole, LoginUser, Person
+from stoqlib.domain.person import (Branch, Company, Employee, EmployeeRole,
+                                   Individual, LoginUser, Person, SalesPerson)
 from stoqlib.domain.person import EmployeeRoleHistory
 from stoqlib.domain.profile import ProfileSettings, UserProfile
 from stoqlib.domain.sellable import SellableTaxConstant, SellableUnit
@@ -79,8 +78,8 @@ def ensure_admin_user(administrator_password):
 
         # Dependencies to create an user.
         role = EmployeeRole(name=_('System Administrator'), connection=trans)
-        person.addFacet(IIndividual, connection=trans)
-        employee = person.addFacet(IEmployee, role=role, connection=trans)
+        Individual(original=person, connection=trans)
+        employee = Employee(original=person, role=role, connection=trans)
         EmployeeRoleHistory(connection=trans,
                             role=role,
                             employee=employee,
@@ -89,7 +88,7 @@ def ensure_admin_user(administrator_password):
 
         # This is usefull when testing a initial database. Admin user actually
         # must have all the facets.
-        person.addFacet(ISalesPerson, connection=trans)
+        SalesPerson(original=person, connection=trans)
 
         profile = UserProfile.selectOneBy(name=_('Administrator'), connection=trans)
         # Backwards compatibility. this profile used to be in english
@@ -123,8 +122,8 @@ def create_main_branch(trans, name):
     :param name: name of the new branch
     """
     person = Person(name=name, connection=trans)
-    person.addFacet(ICompany, connection=trans)
-    branch = person.addFacet(IBranch, connection=trans)
+    Company(original=person, connection=trans)
+    branch = Branch(original=person, connection=trans)
     trans.commit()
 
     sysparam(trans).MAIN_COMPANY = branch.id
@@ -214,7 +213,7 @@ def _ensure_card_providers():
             continue
 
         person = Person(name=name, connection=trans)
-        person.addFacet(ICompany, connection=trans)
+        Company(original=person, connection=trans)
         CreditProvider(original=person,
                        short_name=name,
                        provider_id=name,

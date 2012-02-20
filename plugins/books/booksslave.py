@@ -30,12 +30,11 @@ import gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.domain.person import Person
 from stoqlib.lib.countries import get_countries
 from stoqlib.lib.translation import stoqlib_gettext
 
-from booksinterfaces import IBook, IPublisher
-from booksdomain import ProductAdaptToBook
+from booksinterfaces import IBook
+from booksdomain import PersonAdaptToPublisher, ProductAdaptToBook
 
 
 _ = stoqlib_gettext
@@ -70,8 +69,7 @@ class ProductBookSlave(BaseEditorSlave):
         for widget in [self.pages, self.year]:
             widget.set_adjustment(
                 gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
-        table = Person.getAdapterClass(IPublisher)
-        publishers = table.select(connection=self.conn)
+        publishers = PersonAdaptToPublisher.select(connection=self.conn)
         self.publisher_combo.prefill([(p.person.name, p) for p in publishers])
 
     #

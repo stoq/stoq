@@ -22,7 +22,6 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.domain.interfaces import IEmployee, IBranch
 from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
@@ -40,30 +39,33 @@ class TransferImporter(CSVImporter):
               'quantity']
 
     def process_one(self, data, fields, trans):
-        source_branch = IBranch(Person.selectOneBy(
-            name=data.source_branch_name,
-            connection=trans), None)
-        if source_branch is None:
+        person = Person.selectOneBy(name=data.source_branch_name,
+                                    connection=trans)
+        if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.source_branch_name, ))
-        source_employee = IEmployee(Person.selectOneBy(
-            name=data.source_employee_name,
-            connection=trans), None)
-        if source_employee is None:
+        source_branch = person.branch
+
+        person = Person.selectOneBy(name=data.source_employee_name,
+                                    connection=trans)
+        if person is None or person.employee is None:
             raise ValueError("%s is not a valid employee" % (
                 data.source_employee_name, ))
-        dest_branch = IBranch(Person.selectOneBy(
-            name=data.dest_branch_name,
-            connection=trans), None)
-        if dest_branch is None:
+        source_employee = person.employee
+
+        person = Person.selectOneBy(name=data.dest_branch_name,
+                                    connection=trans)
+        if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.dest_branch_name, ))
-        dest_employee = IEmployee(Person.selectOneBy(
-            name=data.dest_employee_name,
-            connection=trans), None)
-        if dest_employee is None:
+        dest_branch = person.branch
+
+        person = Person.selectOneBy(name=data.dest_employee_name,
+                                    connection=trans)
+        if person is None or person.employee is None:
             raise ValueError("%s is not a valid employee" % (
                 data.dest_employee_name, ))
+        dest_employee = person.employee
 
         sellables = self.parse_multi(Sellable, data.sellable_list, trans)
 

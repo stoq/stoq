@@ -29,8 +29,7 @@ from stoqlib.database.orm import (DecimalCol, IntCol, UnicodeCol, DateTimeCol,
                                   BoolCol, ForeignKey)
 from stoqlib.database.runtime import get_current_branch, new_transaction
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import ISalesPerson, IEmployee, IIndividual
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Employee, Individual, Person, SalesPerson
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import SellableCategory
 from stoqlib.lib.parameters import sysparam
@@ -142,14 +141,14 @@ class MagentoConfig(Domain):
 
         person = Person(connection=conn,
                         name=name)
-        person.addFacet(IIndividual,
-                        occupation=occupation,
-                        connection=conn)
-        person.addFacet(IEmployee,
-                        role=role,
-                        connection=conn)
+        Individual(original=person,
+                   occupation=occupation,
+                   connection=conn)
+        Employee(original=person,
+                 role=role,
+                 connection=conn)
 
-        return person.addFacet(ISalesPerson, connection=conn)
+        return SalesPerson(original=person, connection=conn)
 
 
 class MagentoTableConfig(Domain):

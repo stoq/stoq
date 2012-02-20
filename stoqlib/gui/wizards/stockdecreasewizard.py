@@ -34,9 +34,8 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.api import api
 from stoqlib.database.orm import AND
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.interfaces import (IBranch,
-                                       IStorable, IEmployee)
-from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
@@ -70,13 +69,11 @@ class StartStockDecreaseStep(WizardEditorStep):
 
     def _fill_employee_combo(self):
         employees = [(e.person.name, e)
-                     for e in Person.iselect(IEmployee,
-                                             connection=self.conn)]
+                     for e in Employee.select(connection=self.conn)]
         self.removed_by.prefill(sorted(employees))
 
     def _fill_branch_combo(self):
-        table = Person.getAdapterClass(IBranch)
-        branches = table.get_active_branches(self.conn)
+        branches = Branch.get_active_branches(self.conn)
         items = [(s.person.name, s) for s in branches]
         self.branch.prefill(sorted(items))
 
@@ -222,7 +219,7 @@ class StockDecreaseWizard(BaseWizard):
     def _create_model(self, conn):
         branch = api.get_current_branch(conn)
         user = api.get_current_user(conn)
-        employee = IEmployee(user.person, None)
+        employee = user.person.employee
         cfop = sysparam(conn).DEFAULT_STOCK_DECREASE_CFOP
         return StockDecrease(responsible=user,
                              removed_by=employee,

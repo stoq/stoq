@@ -71,10 +71,7 @@ def _test_slave(self, slave):
         if arg in ['conn', 'trans']:
             value = self.trans
         elif arg == 'model':
-            if slave.model_type is None:
-                model_type = slave.model_iface
-            else:
-                model_type = slave.model_type
+            model_type = slave.model_type
 
             if slave.create_model == BaseEditor.create_model:
                 needs_model = True
@@ -161,7 +158,7 @@ def _create_slave_test():
         args = inspect.getargspec(slave.__init__)[0]
         if 'wizard' in args or 'model_type' in args:
             continue
-        if slave.model_iface is None and slave.model_type is None:
+        if slave.model_type is None:
             continue
         if slave.model_type is Settable:
             continue

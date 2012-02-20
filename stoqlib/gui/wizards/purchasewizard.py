@@ -33,11 +33,10 @@ from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IBranch, ITransporter, ISupplier
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Branch, Supplier, Transporter
 from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
@@ -81,16 +80,14 @@ class StartPurchaseStep(WizardEditorStep):
 
     def _fill_supplier_combo(self):
         # FIXME: Implement and use IDescribable on Supplier
-        table = Person.getAdapterClass(ISupplier)
-        suppliers = table.get_active_suppliers(self.conn)
+        suppliers = Supplier.get_active_suppliers(self.conn)
         items = [(s.person.name, s) for s in suppliers]
         self.supplier.prefill(sorted(items))
         self.edit_supplier.set_sensitive(len(items))
 
     def _fill_branch_combo(self):
         # FIXME: Implement and use IDescribable on Branch
-        table = Person.getAdapterClass(IBranch)
-        branches = table.get_active_branches(self.conn)
+        branches = Branch.get_active_branches(self.conn)
         items = [(s.person.name, s) for s in branches]
         self.branch.prefill(sorted(items))
 
@@ -439,9 +436,7 @@ class FinishPurchaseStep(WizardEditorStep):
         self.add_transporter.set_tooltip_text(_("Add a new transporter"))
         self.edit_transporter.set_tooltip_text(_("Edit the selected transporter"))
 
-        # FIXME: Implement and use IDescribable on Transporter
-        table = Person.getAdapterClass(ITransporter)
-        transporters = table.get_active_transporters(self.conn)
+        transporters = Transporter.get_active_transporters(self.conn)
         items = [(t.person.name, t) for t in transporters]
         self.transporter.prefill(items)
         self.transporter.set_sensitive(bool(items))

@@ -32,7 +32,7 @@ import sys
 import stoqlib
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.interfaces import IStorable, ICompany
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import ModelDataError
@@ -91,7 +91,7 @@ class TestNfeGenerator(DomainTest):
 
     def test_invalid_cnpj(self):
         sale = self._create_sale(2666, 2345, 5432)
-        company = ICompany(sale.branch.person)
+        company = sale.branch.person.company
         company.cnpj = '123.321.678/4567-90'
 
         generator = NFeGenerator(sale, self.trans)

@@ -25,8 +25,7 @@
 import datetime
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IClient
-from stoqlib.domain.person import Calls, LoginUser, Person
+from stoqlib.domain.person import Calls, LoginUser
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
@@ -46,9 +45,9 @@ class CallsEditor(BaseEditor):
                      'attendant')
     size = (400, 300)
 
-    def __init__(self, conn, model, person, person_iface):
+    def __init__(self, conn, model, person, person_type):
         self.person = person
-        self.person_iface = person_iface
+        self.person_type = person_type
         BaseEditor.__init__(self, conn, model)
         # If person is not None, this means we already are in this person
         # details dialog. No need for this option
@@ -80,8 +79,7 @@ class CallsEditor(BaseEditor):
             self.person_combo.set_sensitive(False)
         else:
             persons = [(p.person.name, p.person)
-                         for p in Person.iselect(self.person_iface,
-                                                 connection=self.conn)]
+                         for p in self.person_type.select(connection=self.conn)]
             self.person_combo.prefill(sorted(persons))
 
     def _fill_attendant_combo(self):
@@ -91,6 +89,6 @@ class CallsEditor(BaseEditor):
 
     def on_details_button__clicked(self, button):
         from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-        client = IClient(self.model.person, None)
+        client = self.model.person.client
         if client:
             run_dialog(ClientDetailsDialog, self, self.conn, client)

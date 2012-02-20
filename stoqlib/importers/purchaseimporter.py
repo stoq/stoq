@@ -24,8 +24,6 @@
 ##
 
 from stoqlib.database.runtime import get_current_user
-from stoqlib.domain.interfaces import (IBranch, ISupplier,
-                                       ITransporter)
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
@@ -47,28 +45,33 @@ class PurchaseImporter(CSVImporter):
               'quantity']
 
     def process_one(self, data, fields, trans):
-        supplier = ISupplier(
-            Person.selectOneBy(name=data.supplier_name,
-                               connection=trans), None)
-        if supplier is None:
+        person = Person.selectOneBy(name=data.branch_name,
+                                    connection=trans)
+        if person is None or person.supplier is None:
             raise ValueError("%s is not a valid supplier" % (
                 data.supplier_name, ))
-        transporter = ITransporter(
-            Person.selectOneBy(name=data.transporter_name,
-                               connection=trans), None)
-        if transporter is None:
+        supplier = person.supplier
+
+        person = Person.selectOneBy(name=data.transporter_name,
+                                    connection=trans)
+        if person is None or person.transporter is None:
             raise ValueError("%s is not a valid transporter" % (
                 data.transporter_name, ))
-        branch = IBranch(Person.selectOneBy(name=data.branch_name,
-                                            connection=trans), None)
-        if branch is None:
+        transporter = person.transporter
+
+        person = Person.selectOneBy(name=data.branch_name,
+                                    connection=trans)
+        if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.branch_name, ))
+        branch = person.branch
+
         person = Person.selectOneBy(name=data.user_name,
                                   connection=trans)
         if person is None or person.login_user is None:
             raise ValueError("%s is not a valid user" % (
                 data.user_name, ))
+        login_user = person.login_user
 
         group = PaymentGroup(connection=trans)
         purchase = PurchaseOrder(connection=trans,
@@ -94,7 +97,7 @@ class PurchaseImporter(CSVImporter):
         purchase.confirm()
 
         receiving_order = ReceivingOrder(purchase=purchase,
-                                         responsible=person.login_user,
+                                         responsible=login_user,
                                          supplier=supplier,
                                          invoice_number=int(data.invoice),
                                          transporter=transporter,

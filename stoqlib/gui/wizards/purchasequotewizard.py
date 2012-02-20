@@ -37,10 +37,9 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Branch
 from stoqlib.domain.purchase import (PurchaseOrder, PurchaseItem, QuoteGroup,
                                      Quotation)
-from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import QuotationView
 from stoqlib.gui.base.dialogs import run_dialog
@@ -79,8 +78,7 @@ class StartQuoteStep(WizardEditorStep):
         quote_group = "%05d" % self.wizard.quote_group.id
         self.quote_group.set_text(quote_group)
 
-        table = Person.getAdapterClass(IBranch)
-        branches = table.get_active_branches(self.conn)
+        branches = Branch.get_active_branches(self.conn)
         items = [(s.person.name, s) for s in branches]
         self.branch_combo.prefill(sorted(items))
         self.notes.set_accepts_tab(False)
