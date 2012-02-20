@@ -28,9 +28,9 @@ website = 'http://www.stoq.com.br'
 major_version = 1
 minor_version = 2
 micro_version = 0
-extra_version = 0
+extra_version = 90
 release_date = (2012, 2, 1)
-stable = True
+stable = False
 
 version = '%d.%d.%d' % (major_version, minor_version, micro_version)
 if extra_version > 0:
