@@ -24,16 +24,15 @@
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
+from stoqlib.domain.person import Company
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.domain.interfaces import ICompany
 from stoqlib.lib.translation import stoqlib_gettext
-
 
 _ = stoqlib_gettext
 
 
 class CompanyDocumentsSlave(BaseEditorSlave):
-    model_iface = ICompany
+    model_type = Company
     gladefile = 'CompanyDocumentsSlave'
     proxy_widgets = ('cnpj',
                      'fancy_name',
@@ -63,7 +62,7 @@ class CompanyDocumentsSlave(BaseEditorSlave):
 
 
 class CompanyEditorTemplate(BaseEditorSlave):
-    model_iface = ICompany
+    model_type = Company
     gladefile = 'BaseTemplate'
 
     def __init__(self, conn, model=None, person_slave=None,

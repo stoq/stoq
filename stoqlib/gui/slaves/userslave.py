@@ -30,9 +30,9 @@ import gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
-from stoqlib.domain.person import EmployeeRole, LoginUser
+from stoqlib.domain.person import (Employee, EmployeeRole,
+                                   LoginUser, SalesPerson)
 from stoqlib.domain.profile import UserProfile
-from stoqlib.domain.interfaces import IEmployee, ISalesPerson
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.lib.defaults import MINIMUM_PASSWORD_CHAR_LEN
@@ -213,7 +213,7 @@ class UserDetailsSlave(BaseEditorSlave):
         self._setup_profile_entry_completion()
         self._setup_role_entry_completition()
 
-        employee = IEmployee(self.model, None)
+        employee = self.model.person.employee
         if employee is not None:
             self.role.select(employee.role)
 
@@ -260,10 +260,10 @@ class UserDetailsSlave(BaseEditorSlave):
         #    are related to the facets the current profile will add
         profile = self.profile.get_selected()
         person = self.model.person
-        employee = IEmployee(person, None)
+        employee = person.employee
         if employee is None:
-            person.addFacet(IEmployee, role=self.role.read(),
-                            connection=self.conn)
+            Employee(original=person, role=self.role.read(),
+                     connection=self.conn)
         else:
             employee.role = self.role.read()
 
@@ -271,8 +271,8 @@ class UserDetailsSlave(BaseEditorSlave):
         can_access_pos = profile.check_app_permission("pos")
         can_access_sales = profile.check_app_permission("sales")
         can_do_sales = can_access_pos or can_access_sales
-        if can_do_sales and not ISalesPerson(person, None):
-            person.addFacet(ISalesPerson, connection=self.conn)
+        if can_do_sales and not person.salesperson:
+            SalesPerson(original=person, connection=self.conn)
 
     #
     # Kiwi handlers

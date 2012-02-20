@@ -15,7 +15,7 @@ Create a new transaction
 Create a branch we can use:
 
     >>> from stoqlib.domain.exampledata import ExampleCreator
-    >>> branch = ExampleCreator.create(trans, 'IBranch')
+    >>> branch = ExampleCreator.create(trans, 'Branch')
 
 Create a sellable we can use:
 

@@ -24,10 +24,9 @@
 ##
 
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.interfaces import (IIndividual, IEmployee,
-                                       ISalesPerson)
-from stoqlib.domain.person import (LoginUser, Person,
-                                   EmployeeRole, EmployeeRoleHistory)
+from stoqlib.domain.person import (Employee, EmployeeRole, EmployeeRoleHistory,
+                                   Individual, LoginUser, Person,
+                                   SalesPerson)
 from stoqlib.domain.profile import UserProfile
 from stoqlib.importers.csvimporter import CSVImporter
 
@@ -60,18 +59,18 @@ class EmployeeImporter(CSVImporter):
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
-        person.addFacet(IIndividual,
-                        connection=trans,
-                        cpf=data.cpf,
-                        rg_number=data.rg)
+        Individual(original=person,
+                   connection=trans,
+                   cpf=data.cpf,
+                   rg_number=data.rg)
 
         role = EmployeeRole(connection=trans, name=data.role)
 
-        employee = person.addFacet(IEmployee,
-                                   connection=trans,
-                                   role=role,
-                                   salary=int(data.salary),
-                                   registry_number=data.employee_number)
+        employee = Employee(original=person,
+                            connection=trans,
+                            role=role,
+                            salary=int(data.salary),
+                            registry_number=data.employee_number)
 
         start = self.parse_date(data.start)
         EmployeeRoleHistory(
@@ -99,4 +98,4 @@ class EmployeeImporter(CSVImporter):
         LoginUser(original=person, connection=trans, profile=profile,
                   username=data.username,
                   password=data.password)
-        person.addFacet(ISalesPerson, connection=trans)
+        SalesPerson(original=person, connection=trans)

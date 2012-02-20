@@ -23,9 +23,9 @@
 ##
 
 from stoqlib.database.runtime import get_connection, new_transaction
-from stoqlib.domain.interfaces import (IEmployee, ISalesPerson,
-                                       IIndividual)
-from stoqlib.domain.person import EmployeeRole, LoginUser, Person
+from stoqlib.domain.interfaces import IEmployee, ISalesPerson
+from stoqlib.domain.person import (Employee, EmployeeRole, LoginUser,
+                                   Person, Individual, SalesPerson)
 from stoqlib.domain.profile import UserProfile
 
 from tests.sync.base import SyncTest
@@ -85,31 +85,31 @@ class TestUpdate(SyncTest):
         self.switch_to_shop()
         trans = new_transaction()
         person = Person(name="Person 3", connection=trans)
-        person.addFacet(IIndividual, occupation="Sleeping",
-                        connection=trans)
+        Individual(person, occupation="Sleeping",
+                   connection=trans)
         trans.commit()
 
         # Office
         self.switch_to_office()
         trans = new_transaction()
         person = Person(name="Person 4", connection=trans)
-        person.addFacet(IIndividual, occupation="Working",
-                        connection=trans)
+        Individual(person, occupation="Working",
+                   connection=trans)
         trans.commit()
 
         self.update("shop-computer")
         conn = get_connection()
         self.failUnless(Person.selectOneBy(name="Person 3", connection=conn))
-        self.failUnless(Person.iselectOneBy(IIndividual, occupation="Sleeping",
-                                            connection=conn))
+        self.failUnless(Individual.selectOneBy(occupation="Sleeping",
+                                               connection=conn))
 
         # Shop
         self.switch_to_shop()
         conn = get_connection()
         self.failUnless(Person.selectOneBy(name="Person 4",
                                            connection=conn))
-        self.failUnless(Person.iselectOneBy(IIndividual, occupation="Working",
-                                            connection=conn))
+        self.failUnless(Individual.selectOneBy(occupation="Working",
+                                               connection=conn))
 
     def testDifferentFacets(self):
         # Create a person with an employee facet in the shop
@@ -121,9 +121,9 @@ class TestUpdate(SyncTest):
         self.switch_to_shop()
         trans = new_transaction()
         person = Person(name="Employee", connection=trans)
-        person.addFacet(IIndividual, connection=trans)
+        Individual(person, connection=trans)
         role = EmployeeRole.selectOneBy(name="Clerk", connection=trans)
-        person.addFacet(IEmployee, role=role, connection=trans)
+        Employee(original=person, role=role, connection=trans)
         trans.commit()
 
         # Office
@@ -133,7 +133,7 @@ class TestUpdate(SyncTest):
         trans = new_transaction()
         person = Person.selectOneBy(name="Employee", connection=trans)
         self.failUnless(person)
-        person.addFacet(ISalesPerson, comission=10, connection=trans)
+        SalesPerson(original=person comission=10, connection=trans)
         trans.commit()
 
         # Shop

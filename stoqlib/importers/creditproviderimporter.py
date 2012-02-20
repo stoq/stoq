@@ -25,8 +25,7 @@
 
 from stoqlib.database.orm import const
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.interfaces import ICompany
-from stoqlib.domain.person import Person, CreditProvider
+from stoqlib.domain.person import Company, Person, CreditProvider
 from stoqlib.importers.csvimporter import CSVImporter
 
 
@@ -53,11 +52,11 @@ class CreditProviderImporter(CSVImporter):
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
-        person.addFacet(ICompany,
-                        connection=trans,
-                        cnpj=data.cnpj,
-                        fancy_name=data.fancy_name,
-                        state_registry=data.state_registry)
+        Company(original=person,
+                connection=trans,
+                cnpj=data.cnpj,
+                fancy_name=data.fancy_name,
+                state_registry=data.state_registry)
 
         ctloc = CityLocation.get_or_create(trans=trans,
                                            city=data.city,

@@ -32,7 +32,6 @@ from kiwi.python import AttributeForwarder
 from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.address import CityLocation
-from stoqlib.domain.interfaces import IIndividual
 from stoqlib.domain.person import Individual
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.translation import stoqlib_gettext
@@ -41,7 +40,7 @@ _ = stoqlib_gettext
 
 
 class _IndividualDocuments(BaseEditorSlave):
-    model_iface = IIndividual
+    model_type = Individual
     gladefile = 'IndividualDocuments'
     proxy_widgets = ('cpf',
                      'rg_expedition_date',
@@ -188,7 +187,7 @@ class _IndividualDetailsSlave(BaseEditorSlave):
 
 
 class IndividualEditorTemplate(BaseEditorSlave):
-    model_iface = IIndividual
+    model_type = Individual
     gladefile = 'BaseTemplate'
 
     def __init__(self, conn, model=None, person_slave=None,

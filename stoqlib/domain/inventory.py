@@ -30,9 +30,9 @@ from stoqlib.database.orm import QuantityCol, PriceCol
 from stoqlib.database.orm import ForeignKey, DateTimeCol, IntCol, UnicodeCol
 from stoqlib.database.orm import const, AND, ISNOTNULL
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IBranch, IStorable
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Branch
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -230,7 +230,7 @@ class Inventory(Domain):
         :returns: branches
         :rtype: a sequence of :class:`Branch`
         """
-        for branch in Person.iselect(IBranch, connection=conn):
+        for branch in Branch.select(connection=conn):
             if not cls.selectOneBy(branch=branch, status=cls.STATUS_OPEN,
                                    connection=conn):
                 yield branch

@@ -36,7 +36,7 @@ from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
-from stoqlib.domain.interfaces import IStorable, ISalesPerson
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.person import (ClientView, LoginUser,
                                    ClientCategory)
 from stoqlib.domain.loan import Loan, LoanItem
@@ -335,7 +335,7 @@ class LoanItemSelectionStep(BaseWizardStep):
         sale = Sale(connection=self.conn,
                     branch=self.loan.branch,
                     client=self.loan.client,
-                    salesperson=ISalesPerson(user.person),
+                    salesperson=user.person.salesperson,
                     cfop=sysparam(self.conn).DEFAULT_SALES_CFOP,
                     group=PaymentGroup(connection=self.conn),
                     coupon_id=None)

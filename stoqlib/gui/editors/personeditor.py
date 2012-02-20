@@ -41,10 +41,9 @@ from stoqlib.gui.slaves.userslave import UserDetailsSlave, UserStatusSlave
 from stoqlib.gui.slaves.supplierslave import SupplierDetailsSlave
 from stoqlib.gui.slaves.transporterslave import TransporterDataSlave
 from stoqlib.gui.slaves.branchslave import BranchDetailsSlave
-from stoqlib.domain.person import EmployeeRole, CreditProvider, LoginUser
-from stoqlib.domain.interfaces import (IClient, IEmployee,
-                                       ISupplier, ITransporter,
-                                       IIndividual, IBranch)
+from stoqlib.domain.person import (Client, Branch, Employee, EmployeeRole,
+                                   CreditProvider, Individual, LoginUser,
+                                   Supplier, Transporter)
 
 _ = stoqlib_gettext
 
@@ -52,7 +51,7 @@ _ = stoqlib_gettext
 class ClientEditor(BasePersonRoleEditor):
     model_name = _('Client')
     title = _('New Client')
-    model_iface = IClient
+    model_type = Client
     gladefile = 'BaseTemplate'
 
     help_section = 'client'
@@ -64,9 +63,9 @@ class ClientEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        client = IClient(person, None)
+        client = person.client
         if client is None:
-            client = person.addFacet(IClient, connection=conn)
+            client = Client(original=person, connection=conn)
         return client
 
     def setup_slaves(self):
@@ -164,7 +163,7 @@ class CardProviderEditor(CreditProviderEditor):
 class EmployeeEditor(BasePersonRoleEditor):
     model_name = _('Employee')
     title = _('New Employee')
-    model_iface = IEmployee
+    model_type = Employee
     gladefile = 'BaseTemplate'
 
     ui_form_name = 'employee'
@@ -175,11 +174,11 @@ class EmployeeEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        if not IIndividual(person, None):
-            person.addFacet(IIndividual, connection=self.conn)
-        employee = IEmployee(person, None)
+        if person.individual:
+            Individual(original=person, connection=self.conn)
+        employee = person.employee
         if not employee:
-            employee = person.addFacet(IEmployee, connection=conn, role=None)
+            employee = Employee(original=person, connection=conn, role=None)
         return employee
 
     def setup_slaves(self):
@@ -254,7 +253,7 @@ class EmployeeRoleEditor(SimpleEntryEditor):
 class SupplierEditor(BasePersonRoleEditor):
     model_name = _('Supplier')
     title = _('New Supplier')
-    model_iface = ISupplier
+    model_type = Supplier
     gladefile = 'BaseTemplate'
 
     help_section = 'supplier'
@@ -266,9 +265,9 @@ class SupplierEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        supplier = ISupplier(person, None)
+        supplier = person.supplier
         if supplier is None:
-            supplier = person.addFacet(ISupplier, connection=conn)
+            supplier = Supplier(original=person, connection=conn)
         return supplier
 
     def setup_slaves(self):
@@ -282,7 +281,7 @@ class SupplierEditor(BasePersonRoleEditor):
 class TransporterEditor(BasePersonRoleEditor):
     model_name = _('Transporter')
     title = _('New Transporter')
-    model_iface = ITransporter
+    model_type = Transporter
     gladefile = 'BaseTemplate'
 
     help_section = 'transporter'
@@ -294,9 +293,10 @@ class TransporterEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        transporter = ITransporter(person, None)
+        transporter = person.transporter
         if transporter is None:
-            transporter = person.addFacet(ITransporter, connection=conn)
+            transporter = Transporter(original=person,
+                                      connection=conn)
         return transporter
 
     def setup_slaves(self):
@@ -311,7 +311,7 @@ class TransporterEditor(BasePersonRoleEditor):
 class BranchEditor(BasePersonRoleEditor):
     model_name = _('Branch')
     title = _('New Branch')
-    model_iface = IBranch
+    model_type = Branch
     gladefile = 'BaseTemplate'
 
     help_section = 'branch'
@@ -323,9 +323,9 @@ class BranchEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        branch = IBranch(person, None)
+        branch = person.branch
         if branch is None:
-            branch = person.addFacet(IBranch, connection=conn)
+            branch = Branch(original=person, connection=conn)
 
         return branch
 

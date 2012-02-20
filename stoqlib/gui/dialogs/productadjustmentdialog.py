@@ -33,7 +33,6 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.inventory import Inventory, InventoryItem
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -60,7 +59,7 @@ class ProductsAdjustmentDialog(BaseEditor):
         self.main_dialog.ok_button.set_label(_(u'_Finish Inventory'))
         self.main_dialog.cancel_button.set_label(gtk.STOCK_CLOSE)
 
-        company = ICompany(self.model.branch, None)
+        company = self.model.branch.person.company
         if company is not None:
             self.branch_lbl.set_text(company.fancy_name)
             self.state_registry_lbl.set_text(company.state_registry)

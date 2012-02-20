@@ -26,12 +26,10 @@
 from decimal import Decimal
 
 from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
-                                       ISalesPerson, IClient,
-                                       IEmployee,
-                                       IIndividual)
 from stoqlib.domain.address import CityLocation
-from stoqlib.domain.person import LoginUser, Person, EmployeeRole
+from stoqlib.domain.person import (Branch, Client, Company, Employee,
+                                   EmployeeRole, Individual, LoginUser,
+                                   Person, SalesPerson, Supplier)
 from stoqlib.domain.sellable import SellableCategory
 from stoqlib.domain.service import Service
 from stoqlib.domain.profile import UserProfile
@@ -45,15 +43,15 @@ class TestParameter(DomainTest):
 
     def _create_examples(self):
         person = Person(name='Jonas', connection=self.trans)
-        person.addFacet(IIndividual, connection=self.trans)
+        Individual(original=person, connection=self.trans)
         role = EmployeeRole(connection=self.trans, name='desenvolvedor')
-        person.addFacet(IEmployee, connection=self.trans,
-                        role=role)
-        self.salesperson = person.addFacet(ISalesPerson,
-                                           connection=self.trans)
-        person.addFacet(ICompany, connection=self.trans)
-        client = person.addFacet(IClient, connection=self.trans)
-        self.branch = person.addFacet(IBranch, connection=self.trans)
+        Employee(original=person, connection=self.trans,
+                 role=role)
+        self.salesperson = SalesPerson(original=person,
+                                       connection=self.trans)
+        Company(original=person, connection=self.trans)
+        client = Client(original=person, connection=self.trans)
+        self.branch = Branch(original=person, connection=self.trans)
 
         group = self.create_payment_group()
         self.sale = Sale(coupon_id=123, client=client,
@@ -72,7 +70,7 @@ class TestParameter(DomainTest):
 
     def testMainCompany(self):
         company = self.sparam.MAIN_COMPANY
-        branchTable = Person.getAdapterClass(IBranch)
+        branchTable = Branch
         assert isinstance(company, branchTable)
         assert isinstance(company.person, Person)
 
@@ -82,12 +80,7 @@ class TestParameter(DomainTest):
 
     def testSuggestedSupplier(self):
         supplier = self.sparam.SUGGESTED_SUPPLIER
-        supplierTable = Person.getAdapterClass(ISupplier)
-        assert isinstance(supplier, supplierTable)
-        person = supplier.person
-        assert isinstance(person, Person)
-        supplier = ISupplier(person)
-        assert isinstance(supplier, supplierTable)
+        assert isinstance(supplier, Supplier)
 
     def testDefaultBaseCategory(self):
         base_category = self.sparam.DEFAULT_BASE_CATEGORY
@@ -184,7 +177,7 @@ class TestParameter(DomainTest):
         branch = self.create_branch()
         param = self.sparam.DEFAULT_RECEIVING_CFOP
         person = Person(name='Craudinho', connection=self.trans)
-        person.addFacet(IIndividual, connection=self.trans)
+        Individual(original=person, connection=self.trans)
         profile = UserProfile(name='profile', connection=self.trans)
         responsible = LoginUser(original=person, connection=self.trans,
                                 password='asdfgh', profile=profile,

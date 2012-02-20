@@ -30,7 +30,6 @@ import random
 from xml.etree.ElementTree import Element
 from xml.sax.saxutils import escape
 
-from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -142,15 +141,15 @@ class NFeGenerator(object):
     def _get_today_date(self):
         return datetime.date.today()
 
-    def _get_cnpj(self, person):
-        company = ICompany(person, None)
+    def _get_cnpj(self, branch):
+        company = branch.person.company
         assert company is not None
 
         #FIXME: fix get_cnpj_number method (fails if start with zero).
         cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
         if not validate_cnpj(cnpj):
             raise ModelDataError(_("The CNPJ of %s is not valid.")
-                                   % person.person.name)
+                                   % branch.person.name)
 
         return cnpj
 
@@ -208,11 +207,11 @@ class NFeGenerator(object):
         self._nfe_data.append(nfe_identification)
         self.root.append(self._nfe_data.element)
 
-    def _add_issuer(self, issuer):
-        cnpj = self._get_cnpj(issuer)
-        person = issuer.person
-        name = person.name
-        company = ICompany(issuer, None)
+    def _add_issuer(self, branch):
+        cnpj = self._get_cnpj(branch)
+        name = branch.person.name
+        person = branch.person
+        company = person.company
         state_registry = company.state_registry
         crt = self._sale.branch.crt
         self._nfe_issuer = NFeIssuer(name, cnpj=cnpj,
@@ -223,13 +222,13 @@ class NFeGenerator(object):
     def _add_recipient(self, recipient):
         person = recipient.person
         name = person.name
-        individual = IIndividual(person, None)
+        individual = person.individual
         if individual is not None:
             cpf = ''.join([c for c in individual.cpf if c in '1234567890'])
             self._nfe_recipient = NFeRecipient(name, cpf=cpf)
         else:
             cnpj = self._get_cnpj(recipient)
-            company = ICompany(person, None)
+            company = person.company
             state_registry = company.state_registry
             self._nfe_recipient = NFeRecipient(name, cnpj=cnpj,
                                                state_registry=state_registry)
@@ -1576,12 +1575,12 @@ class NFeTransporter(BaseNFeXMLGroup):
         name = person.name
         self.set_attr('xNome', name)
 
-        individual = IIndividual(person, None)
+        individual = person.individual
         if individual is not None:
             cpf = ''.join([c for c in individual.cpf if c in '1234567890'])
             self.set_attr('CPF', cpf)
         else:
-            company = ICompany(person)
+            company = person.company
             cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
             self.set_attr('CNPJ', cnpj)
             self.set_attr('IE', company.state_registry)

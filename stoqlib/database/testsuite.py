@@ -37,7 +37,6 @@ from stoqlib.database.orm import AND
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.person import Branch, LoginUser, Person
-from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.station import BranchStation
 from stoqlib.importers.stoqlibexamples import create
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
@@ -105,11 +104,10 @@ def _provide_current_station(station_name=None, branch_name=None):
                 Branch.q.originalID == Person.q.id),
             connection=trans)
     else:
-        branches = Person.iselect(IBranch, connection=trans)
+        branches = Branch.select(connection=trans)
         assert branches
         branch = branches[0]
 
-    branch = IBranch(branch)
     provide_utility(ICurrentBranch, branch)
 
     station = BranchStation.get_station(trans, branch, station_name)

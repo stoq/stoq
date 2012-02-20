@@ -28,27 +28,15 @@ import datetime
 from kiwi.datatypes import currency
 
 from stoqlib.database.orm import ORMObjectMoreThanOneResultError, AND
-from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import Calls, Liaison
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.interfaces import (IIndividual, ICompany, IClient,
-                                       ITransporter, ISupplier,
-                                       IEmployee, IBranch, ISalesPerson)
-from stoqlib.domain.person import (Person,
-                                   EmployeeRole, WorkPermitData,
-                                   MilitaryData, VoterData,
-                                   Client,
-                                   Branch,
-                                   SalesPerson,
-                                   Supplier,
-                                   Employee,
-                                   LoginUser,
-                                   EmployeeRoleHistory,
-                                   CreditProvider,
-                                   Transporter,
-                                   ClientCategory)
+from stoqlib.domain.person import (Branch, Client, ClientCategory, Company,
+                                   CreditProvider, Employee, EmployeeRole,
+                                   EmployeeRoleHistory, Individual,
+                                   LoginUser, Person, SalesPerson, Supplier,
+                                   Transporter)
 from stoqlib.domain.product import Product
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import ClientCategoryPrice
@@ -119,113 +107,6 @@ class TestPerson(DomainTest):
         self.assertEquals(person.get_address_string(), _(u'%s %s, %s') % (
             address.street, address.streetnumber, address.district))
 
-    #This method is used by test_check_individual_or_company_facets() method
-    def _check_has_individual_or_company_facets(self, person):
-        try:
-            person._check_individual_or_company_facets()
-        # yuck.
-        except TypeError:
-            return False
-        else:
-            return True
-
-    def testCheckIndividualOrCompanyFacets(self):
-        #First Person testcase without facets
-        person = self.create_person()
-        assert not self._check_has_individual_or_company_facets(person)
-
-        #Second Person testcase with an individual facet
-        person = self.create_person()
-        assert not self._check_has_individual_or_company_facets(person)
-        person.addFacet(IIndividual, connection=self.trans)
-        assert self._check_has_individual_or_company_facets(person)
-
-        #Third Person testcase with 2 primordial facets
-        person.addFacet(ICompany, connection=self.trans)
-        assert self._check_has_individual_or_company_facets(person)
-
-        #Fourth Person testcase with company facet
-        company = self.create_person()
-        assert not self._check_has_individual_or_company_facets(company)
-        company.addFacet(ICompany, connection=self.trans)
-        assert self._check_has_individual_or_company_facets(company)
-
-    def _check_create_facet_fails(self, person, iface, **kwargs):
-        try:
-            person.addFacet(iface, connection=self.trans, **kwargs)
-        # yuck.
-        except (TypeError, ValueError):
-            # Ok, it should actually fail since we did not create an
-            # individual or company facets
-            return True
-        else:
-            return False
-
-    def testFacetIClientAdd(self):
-        person = self.create_person()
-        assert self._check_create_facet_fails(person, IClient)
-        assert not self._check_create_facet_fails(person, IIndividual)
-        assert not self._check_create_facet_fails(person, IClient)
-        assert not self._check_create_facet_fails(person, ICompany)
-
-    def testFacetITransporterAdd(self):
-        person = self.create_person()
-        assert self._check_create_facet_fails(person, ITransporter)
-        assert not self._check_create_facet_fails(person, ICompany)
-        assert not self._check_create_facet_fails(person, ITransporter)
-        assert not self._check_create_facet_fails(person, IIndividual)
-
-    def testFacetISupplierAdd(self):
-        person = self.create_person()
-        assert self._check_create_facet_fails(person, ISupplier)
-        assert not self._check_create_facet_fails(person, IIndividual)
-        assert not self._check_create_facet_fails(person, ISupplier)
-        assert not self._check_create_facet_fails(person, ICompany)
-
-    def testFacetIEmployeeAdd(self, **kwargs):
-        person = self.create_person()
-        assert self._check_create_facet_fails(person, IEmployee)
-        assert not self._check_create_facet_fails(person, IIndividual)
-        role = EmployeeRole(connection=self.trans, name='Escriba')
-        workpermit_data = WorkPermitData(connection=self.trans)
-        military_data = MilitaryData(connection=self.trans)
-        voter_data = VoterData(connection=self.trans)
-        bank_account = BankAccount(connection=self.trans, bank_number=1,
-                bank_account=' ', bank_branch=' ')
-        assert not self._check_create_facet_fails(person, IEmployee,
-                                                  role=role,
-                                                  workpermit_data=workpermit_data,
-                                                  military_data=military_data,
-                                                  voter_data=voter_data,
-                                                  bank_account=bank_account)
-        assert not self._check_create_facet_fails(person, ICompany)
-
-    def testFacetIBranchAdd(self, **kwargs):
-        person = self.create_person()
-        assert self._check_create_facet_fails(person, IBranch)
-        assert not self._check_create_facet_fails(person, ICompany)
-        assert not self._check_create_facet_fails(person, IBranch)
-        assert not self._check_create_facet_fails(person, IIndividual)
-
-    def testFacetISalesPersonAdd(self, **kwargs):
-        person = self.create_person()
-        assert self._check_create_facet_fails(person, ISalesPerson)
-        assert not self._check_create_facet_fails(person, IIndividual)
-        assert self._check_create_facet_fails(person, ISalesPerson)
-        role = EmployeeRole(connection=self.trans, name='Escrivaum')
-        workpermit_data = WorkPermitData(connection=self.trans)
-        military_data = MilitaryData(connection=self.trans)
-        voter_data = VoterData(connection=self.trans)
-        bank_account = BankAccount(connection=self.trans, bank_number=1,
-                bank_account=' ', bank_branch=' ')
-        assert not self._check_create_facet_fails(person, IEmployee,
-                                                  role=role,
-                                                  workpermit_data=workpermit_data,
-                                                  military_data=military_data,
-                                                  voter_data=voter_data,
-                                                  bank_account=bank_account)
-        assert not self._check_create_facet_fails(person, ICompany)
-
     def testGetPhoneNumberNumber(self):
         person = self.create_person()
         person.phone_number = '0321-12345'
@@ -286,11 +167,11 @@ class _PersonFacetTest(object):
 
 
 class TestIndividual(_PersonFacetTest, DomainTest):
-    facet = Person.getAdapterClass(IIndividual)
+    facet = Individual
 
     def testIndividual(self):
         person = self.create_person()
-        individual = person.addFacet(IIndividual, connection=self.trans)
+        individual = Individual(original=person, connection=self.trans)
 
         statuses = individual.get_marital_statuses()
         self.assertEqual(type(statuses), list)
@@ -308,7 +189,7 @@ class TestIndividual(_PersonFacetTest, DomainTest):
 
 
 class TestCompany(_PersonFacetTest, DomainTest):
-    facet = Person.getAdapterClass(ICompany)
+    facet = Company
 
     def testGetCnpjNumberNumber(self):
         company = self.create_company()
@@ -478,11 +359,11 @@ class TestBranch(_PersonFacetTest, DomainTest):
 
     def testGetactiveBranches(self):
         person = self.create_person()
-        person.addFacet(ICompany, connection=self.trans)
+        Company(original=person, connection=self.trans)
         count = Branch.get_active_branches(self.trans).count()
         manager = self.create_employee()
-        branch = person.addFacet(IBranch, connection=self.trans,
-                                 manager=manager, is_active=True)
+        branch = Branch(original=person, connection=self.trans,
+                        manager=manager, is_active=True)
         assert branch.get_active_branches(self.trans).count() == count + 1
 
 

@@ -24,8 +24,7 @@
 ##
 
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.interfaces import ICompany, IBranch
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Company, Branch, Person
 from stoqlib.importers.csvimporter import CSVImporter
 from stoqlib.lib.parameters import sysparam
 
@@ -53,10 +52,10 @@ class BranchImporter(CSVImporter):
             phone_number=data.phone_number,
             fax_number=data.fax_number)
 
-        person.addFacet(ICompany, cnpj=data.cnpj,
-                        state_registry=data.state_registry,
-                        fancy_name=data.fancy_name,
-                        connection=trans)
+        Company(original=person, cnpj=data.cnpj,
+                state_registry=data.state_registry,
+                fancy_name=data.fancy_name,
+                connection=trans)
 
         ctloc = CityLocation.get_or_create(trans=trans,
                                            city=data.city,
@@ -74,15 +73,15 @@ class BranchImporter(CSVImporter):
             postal_code=data.postal_code
             )
 
-        person.addFacet(IBranch, connection=trans)
+        Branch(original=person, connection=trans)
 
     def when_done(self, trans):
         sparam = sysparam(trans)
         if sparam.MAIN_COMPANY:
             return
 
-        branch = Person.iselect(IBranch, limit=2,
-                                connection=trans).orderBy('id')
+        branch = Branch.select(limit=2,
+                               connection=trans).orderBy('id')
         if not branch.count():
             return
 

@@ -40,7 +40,7 @@ from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
                                    GerencialReportCancelEvent,
                                    CancelPendingPaymentsEvent,
                                    HasPendingReduceZ)
-from stoqlib.domain.interfaces import ICompany, IContainer
+from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.exceptions import DeviceError, TillError
@@ -202,7 +202,7 @@ class FiscalPrinterHelper(gobject.GObject):
 
         if sysparam(self.conn).DEMO_MODE:
             branch = api.get_current_branch(self.conn)
-            company = ICompany(branch.person, None)
+            company = branch.person.company
             if company and company.cnpj not in ['24.198.774/7322-35',
                                                 '66.873.574/0001-82']:
                 # FIXME: Find a better description for the warning bellow.

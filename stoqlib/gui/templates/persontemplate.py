@@ -25,8 +25,7 @@
 """ Templates implementation for person editors.  """
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IIndividual, ICompany
-from stoqlib.domain.person import Person, Supplier
+from stoqlib.domain.person import Company, Individual, Person, Supplier
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.slaves import NoteSlave
@@ -166,19 +165,19 @@ class _PersonEditorTemplate(BaseEditorSlave):
     #
 
     def _setup_widgets(self):
-        facet_individual = IIndividual(self.model, None)
-        facet_company = ICompany(self.model, None)
-        if not (facet_individual or facet_company):
+        individual = self.model.individual
+        company = self.model.company
+        if not (individual or company):
             raise DatabaseInconsistency('A person must have at least a '
-                                        'company or an individual facet.')
+                                        'company or an individual set.')
         tab_child = self.person_data_tab
-        if facet_individual and facet_company:
+        if individual and company:
             tab_text = _('Individual/Company Data')
             self.company_frame.set_label(_('Company Data'))
             self.company_frame.show()
             self.individual_frame.set_label(_('Individual Data'))
             self.individual_frame.show()
-        elif facet_individual:
+        elif individual:
             tab_text = _('Individual Data')
             self.company_frame.hide()
             self.individual_frame.set_label('')
@@ -262,18 +261,18 @@ class BasePersonRoleEditor(BaseEditor):
             raise ValueError("Invalid value for role_type attribute, %r" % (
                 self.role_type, ))
         if (self.role_type == Person.ROLE_INDIVIDUAL and
-            not IIndividual(self.person, None)):
-            self.person.addFacet(IIndividual, connection=conn)
+            not self.person.individual):
+            Individual(original=self.person, connection=conn)
         elif (self.role_type == Person.ROLE_COMPANY and
-              not ICompany(self.person, None)):
-            self.person.addFacet(ICompany, connection=conn)
+              not self.person.company):
+            Company(original=self.person, connection=conn)
         else:
             pass
         return self.person
 
     def setup_slaves(self):
-        individual = IIndividual(self.model.person, None)
-        company = ICompany(self.model.person, None)
+        individual = self.model.person.individual
+        company = self.model.person.company
         assert individual or company
 
         self._person_slave = _PersonEditorTemplate(self.conn,
@@ -309,7 +308,7 @@ class BasePersonRoleEditor(BaseEditor):
         else:
             self.company_slave.on_confirm()
         if (isinstance(self.model, Supplier) and
-                not sysparam(self.conn).SUGGESTED_SUPPLIER):
+            not sysparam(self.conn).SUGGESTED_SUPPLIER):
             sysparam(self.conn).SUGGESTED_SUPPLIER = self.model.id
         return self.model
 

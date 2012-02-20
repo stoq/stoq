@@ -37,8 +37,8 @@ from stoqlib.database.orm import const, AND, LEFTJOINOn
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)
-from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import (IStorable, IBranch, IDescribable)
+from stoqlib.domain.person import Branch, Person
+from stoqlib.domain.interfaces import (IStorable, IDescribable)
 from stoqlib.exceptions import StockError, DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
@@ -571,7 +571,7 @@ class ProductAdaptToStorable(ModelAdapter):
                 _('Quantity to sell is greater than the available stock.'))
         return qty_ok
 
-    @argcheck(Person.getAdapterClass(IBranch))
+    @argcheck(Branch)
     def _get_stocks(self, branch=None):
         # FIXME: Get rid of this after fixing all call sites.
         query_args = {}

@@ -32,7 +32,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IClient
+from stoqlib.domain.person import Client
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
@@ -53,7 +53,7 @@ class ClientDetailsDialog(BaseEditor):
     title = _(u"Client Details")
     hide_footer = True
     size = (780, 400)
-    model_iface = IClient
+    model_type = Client
     gladefile = "ClientDetailsDialog"
     proxy_widgets = ('client',
                      'last_purchase_date',

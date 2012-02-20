@@ -38,8 +38,7 @@ from stoqlib.database.runtime import new_transaction
 from stoqlib.database.synchronization import SynchronizationClient
 from stoqlib.database.testsuite import (provide_database_settings,
                                         provide_utilities, bootstrap_testsuite)
-from stoqlib.domain.interfaces import ICompany, IBranch
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Company, Branch, Person
 from stoqlib.domain.station import BranchStation
 from stoqlib.lib.process import Process
 
@@ -137,8 +136,8 @@ def _create_shop_database(conn):
 def _register_shop_station(trans):
     log.info("Registering a new station for the shop.")
     person = Person(name="Second branch", connection=trans)
-    person.addFacet(ICompany, connection=trans)
-    branch = person.addFacet(IBranch, connection=trans)
+    Company(original=person, connection=trans)
+    branch = Branch(original=person, connection=trans)
     station = BranchStation(branch=branch, name="shop-computer",
                             connection=trans)
     station.activate()

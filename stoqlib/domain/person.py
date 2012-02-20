@@ -35,10 +35,10 @@ There are currently the following Person facets available:
   - CreditProvider
   - Employee
   - Individual
+  - LoginUser
   - SalesPerson
   - Supplier
   - Transporter
-  - LoginUser
 
 To create a new person, just issue the following:
 
@@ -46,20 +46,6 @@ To create a new person, just issue the following:
     >>> trans = new_transaction()
 
     >>> person = Person(name="A new person", connection=trans)
-
-To assign a new role to a person, use addFacet method, for instance
-to make a person into a company:
-
-    >>> person.addFacet(ICompany, connection=trans)
-
-The company facet provides additional persistent information related to
-companies, see :class:`stoqlib.domain.interfaces.IClient` for more information
-
-To access the facet, do:
-
-    >>> company = ICompany(person)
-
-See :class:`stoqlib.lib.component` for more information on adapters.
 
 """
 
@@ -76,13 +62,9 @@ from stoqlib.database.orm import const, OR, AND, INNERJOINOn, LEFTJOINOn, Alias
 from stoqlib.database.orm import Viewable
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.address import Address
-from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
-from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
-                                       IClient, ISupplier, IBranch,
-                                       ISalesPerson, IActive,
-                                       ITransporter,
-                                       IDescribable, IPersonFacet)
+from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.method import CreditCardData
 from stoqlib.domain.sellable import ClientCategoryPrice
@@ -221,14 +203,6 @@ class Person(Domain):
     addresses = MultipleJoin('Address')
     calls = MultipleJoin('Calls')
 
-    # FIXME: This can be removed after we have killed NoneInterface:
-    #        Then we can just do the IClient(self), IEmployee(self
-    #        calls a TypeError will automatically be issued
-    def _check_individual_or_company_facets(self):
-        if not self.has_individual_or_company_facets():
-            raise TypeError('The person you want to adapt must have at '
-                            'least an individual or a company facet')
-
     @property
     def address(self):
         return self.get_main_address()
@@ -312,42 +286,22 @@ class Person(Domain):
     #
 
     def has_individual_or_company_facets(self):
-        return (IIndividual(self, None) or ICompany(self, None))
+        return self.individual or self.company
 
-    #
-    # Facet hooks
-    #
+    @property
+    def branch(self):
+        return Branch.selectOneBy(original=self,
+                                  connection=self.get_connection())
 
-    def facet_IClient_add(self, **kwargs):
-        self._check_individual_or_company_facets()
-        adapter_klass = self.getAdapterClass(IClient)
-        return adapter_klass(self, **kwargs)
+    @property
+    def client(self):
+        return Client.selectOneBy(original=self,
+                                  connection=self.get_connection())
 
-    def facet_ITransporter_add(self, **kwargs):
-        self._check_individual_or_company_facets()
-        adapter_klass = self.getAdapterClass(ITransporter)
-        return adapter_klass(self, **kwargs)
-
-    def facet_ISupplier_add(self, **kwargs):
-        self._check_individual_or_company_facets()
-        adapter_klass = self.getAdapterClass(ISupplier)
-        return adapter_klass(self, **kwargs)
-
-    def facet_IEmployee_add(self, **kwargs):
-        IIndividual(self)
-        adapter_klass = self.getAdapterClass(IEmployee)
-        return adapter_klass(self, **kwargs)
-
-    def facet_IBranch_add(self, **kwargs):
-        ICompany(self)
-        adapter_klass = self.getAdapterClass(IBranch)
-        branch = adapter_klass(self, **kwargs)
-        return branch
-
-    def facet_ISalesPerson_add(self, **kwargs):
-        IEmployee(self)
-        adapter_klass = self.getAdapterClass(ISalesPerson)
-        return adapter_klass(self, **kwargs)
+    @property
+    def company(self):
+        return Company.selectOneBy(original=self,
+                                   connection=self.get_connection())
 
     @property
     def credit_provider(self):
@@ -355,56 +309,63 @@ class Person(Domain):
                                           connection=self.get_connection())
 
     @property
+    def employee(self):
+        return Employee.selectOneBy(original=self,
+                                    connection=self.get_connection())
+
+    @property
+    def individual(self):
+        return Individual.selectOneBy(original=self,
+                                      connection=self.get_connection())
+
+    @property
     def login_user(self):
         return LoginUser.selectOneBy(original=self,
                                      connection=self.get_connection())
 
-#
-# Adapters
-#
-
-
-class PersonAdapter(ModelAdapter):
-    implements(IActive, IDescribable, IPersonFacet)
+    @property
+    def salesperson(self):
+        return SalesPerson.selectOneBy(original=self,
+                                       connection=self.get_connection())
 
     @property
-    def person(self):
-        return self.get_adapted()
+    def supplier(self):
+        return Supplier.selectOneBy(original=self,
+                                    connection=self.get_connection())
 
-    #
-    # IActive implementation
-    #
-
-    def inactivate(self):
-        assert self.is_active, ('This person facet is already inactive')
-        self.is_active = False
-
-    def activate(self):
-        assert not self.is_active, ('This personf facet is already active')
-        self.is_active = True
-
-    def get_status_string(self):
-        if self.is_active:
-            return _('Active')
-        return _('Inactive')
-
-    # IDescribable
-
-    def get_description(self):
-        return self.person.name
+    @property
+    def transporter(self):
+        return Transporter.selectOneBy(original=self,
+                                       connection=self.get_connection())
 
 
-class Individual(PersonAdapter):
-    """An individual facet of a person.
+class Individual(Domain):
+    """Being or characteristic of a single person, concerning one
+    person exclusively
 
-    B{Important attributes}:
-        - I{rg_*}: Is a reference to RG ("Registro Geral"), this is
-                   Brazil-specific information.
-        - I{cpf}: ("Cadastro de Pessoa Fisica"), this is a Brazil-specific
-                  information.
+    :ivar cpf: a number identifiyng the individual for tax reasons
+    :type cpf: string
+    :ivar rg_number: A Brazilian government register which identify an
+      individual
+    :ivar birth_location: where the individual was born
+    :type birth_location: CityLocation
+    :ivar occupation: The current job
+    :type occupation: string
+    :ivar martial_status: single, married, divored or widowed
+    :type martial_status: enum
+    :ivar spouse: An individual's partner in marriage - also a
+       reference to another individual
+    :type spouse: Individual
+    :ivar father_name: Name of this individuals father
+    :type father_name: string
+    :ivar father_name: Name of this individuals mother
+    :type mother_name: string
+    :ivar rg_expedition_date: When the rg number was issued
+    :type rg_expedition_date: datetime
+    :ivar rg_expedition_date: Where the rg number was issued
+    :type rg_expedition_local: string
+    :ivar gender: male or female
     """
-
-    implements(IIndividual)
 
     (STATUS_SINGLE,
      STATUS_MARRIED,
@@ -442,6 +403,30 @@ class Individual(PersonAdapter):
     is_active = BoolCol(default=True)
 
     #
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This individual is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This individual is already active')
+        self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.person.name
+
+    #
     # Public API
     #
 
@@ -464,26 +449,50 @@ class Individual(PersonAdapter):
         """
         return self.check_unique_value_exists('cpf', cpf)
 
-Person.registerFacet(Individual, IIndividual)
+    @property
+    def person(self):
+        return self.original
 
 
-class Company(PersonAdapter):
-    """A company facet of a person.
+class Company(Domain):
+    """An institution created to conduct business
 
-    B{Important attributes}:
-        - I{cnpj}: ("Cadastro Nacional de Pessoa Juridica"), this is
-                   Brazil-specific information.
-        - I{fancy_name}: Represents the fancy name of a company.
+    :ivar cnpj: a number identifing the company
+    :ivar fancy_name:  The secondary company name
+    :ivar state_registry: Brazilian register number associated with
+       a certain state
     """
-    implements(ICompany)
 
     original = ForeignKey('Person')
-    # Cnpj, state_registry and city registry are Brazil-specific information.
+    # Cnpj, state_registry and city registry are
+    # Brazil-specific information.
     cnpj = UnicodeCol(default='')
     fancy_name = UnicodeCol(default='')
     state_registry = UnicodeCol(default='')
     city_registry = UnicodeCol(default='')
     is_active = BoolCol(default=True)
+
+    #
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This company is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This company is already active')
+        self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
+
+    # IDescribable
+
+    def get_description(self):
+        return self.person.name
 
     def get_cnpj_number(self):
         """Returns the cnpj number without any non-numeric characters
@@ -512,7 +521,11 @@ class Company(PersonAdapter):
         """
         return self.check_unique_value_exists('cnpj', cnpj)
 
-Person.registerFacet(Company, ICompany)
+    # FIXME: Remove this when all PersonAdapters are converted and
+    #        rename original to person
+    @property
+    def person(self):
+        return self.original
 
 
 class ClientCategory(Domain):
@@ -542,15 +555,17 @@ class ClientCategory(Domain):
         self.delete(self.id, self.get_connection())
 
 
-class Client(PersonAdapter):
-    """A client facet of a person."""
+class Client(Domain):
+    """An individual or a company who pays for goods or services
 
+    :ivar status: ok, indebted, insolvent, inactive
+    :ivar days_late: How many days is this client indebted
+    :ivar credit_limit: How much the user can spend on store credit
+    """
     (STATUS_SOLVENT,
      STATUS_INDEBTED,
      STATUS_INSOLVENT,
      STATUS_INACTIVE) = range(4)
-
-    implements(IClient)
 
     statuses = {STATUS_SOLVENT: _(u'Solvent'),
                 STATUS_INDEBTED: _(u'Indebted'),
@@ -593,11 +608,18 @@ class Client(PersonAdapter):
             self.inactivate()
     is_active = property(_get_is_active, _set_is_active)
 
+    # IDescribable
+
+    def get_description(self):
+        return self.person.name
+
     #
-    # Auxiliar methods
+    # Public API
     #
 
     def get_name(self):
+        """Name of the client
+        """
         return self.person.name
 
     @classmethod
@@ -608,23 +630,34 @@ class Client(PersonAdapter):
         return cls.select(cls.q.status == cls.STATUS_SOLVENT, connection=conn)
 
     def get_client_sales(self):
+        """Returns a list of sales from a SaleView tied with the
+        current client
+        """
         from stoqlib.domain.sale import SaleView
         return SaleView.select(SaleView.q.client_id == self.id,
                                connection=self.get_connection(),
                                orderBy=SaleView.q.open_date)
 
     def get_client_services(self):
+        """Returns a list of services from SoldServicesView with services
+        consumed by the client
+        """
         from stoqlib.domain.sale import SoldServicesView
         return SoldServicesView.select(SoldServicesView.q.client_id == self.id,
                                connection=self.get_connection(),
                                orderBy=SoldServicesView.q.estimated_fix_date)
 
     def get_client_products(self):
+        """Returns a list of products from SoldProductsView with products
+        sold to the client
+        """
         from stoqlib.domain.sale import SoldProductsView
         return SoldProductsView.select(SoldProductsView.q.client_id == self.id,
                                connection=self.get_connection(),)
 
     def get_client_payments(self):
+        """Returns a list of payment from InPaymentView with client's payments
+        """
         from stoqlib.domain.payment.views import InPaymentView
         return InPaymentView.select(
                                InPaymentView.q.person_id == self.originalID,
@@ -632,6 +665,12 @@ class Client(PersonAdapter):
                                orderBy=InPaymentView.q.due_date)
 
     def get_last_purchase_date(self):
+        """Fetch the date of the last purchased item by this client.
+        None is returned if there are no sales yet made by the client
+
+        :returns: the date of the last purchased item
+        :rtype: datetime.date or None
+        """
         max_date = self.get_client_sales().max('open_date')
         if max_date:
             return max_date.date()
@@ -650,16 +689,22 @@ class Client(PersonAdapter):
 
         return currency(self.credit_limit - debit)
 
-Person.registerFacet(Client, IClient)
+    # FIXME: Remove this when all PersonAdapters are converted and
+    #        rename original to person
+    @property
+    def person(self):
+        return self.original
 
 
-class Supplier(PersonAdapter):
-    """A supplier facet of a person.
+class Supplier(Domain):
+    """A company or an individual that produces, provides, or furnishes
+    an item or service
 
-    B{Notes}:
-        - I{product_desc}: Basic description of the products of a supplier.
+    :ivar product_desc: A short description telling which products
+        this supplier produces')
+    :ivar status: active/inactive/blocked
+    :ivar product_desc: Basic description of the products of a supplier.
     """
-    implements(ISupplier)
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE,
@@ -675,10 +720,37 @@ class Supplier(PersonAdapter):
     is_active = BoolCol(default=True)
 
     #
-    # Auxiliar methods
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This supplier is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This supplier is already active')
+        self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.person.name
+
+    #
+    # Public API
     #
 
     def get_name(self):
+        """
+        :returns: the supplier's name
+        """
         return self.person.name
 
     @classmethod
@@ -688,6 +760,11 @@ class Supplier(PersonAdapter):
         return cls.select(query, connection=conn, orderBy=Person.q.name)
 
     def get_supplier_purchases(self):
+        """
+        Gets a list of PurchaseOrderViews representing all purchases done from
+        this supplier.
+        :returns: a list of PurchaseOrderViews.
+        """
         from stoqlib.domain.purchase import PurchaseOrderView
         return PurchaseOrderView.select(
             # FIXME: should of course use id, fix this
@@ -697,19 +774,45 @@ class Supplier(PersonAdapter):
             orderBy=PurchaseOrderView.q.open_date)
 
     def get_last_purchase_date(self):
+        """Fetch the date of the last purchased item by this supplier.
+        None is returned if there are no sales yet made by the client.
+
+        :returns: the date of the last purchased item
+        :rtype: datetime.date or None
+        """
         orders = self.get_supplier_purchases()
         if orders:
             # The get_client_sales method already returns a sorted list of
             # sales by open_date column
             return orders[-1].open_date.date()
 
+    # FIXME: Remove this when all PersonAdapters are converted and
+    #        rename original to person
+    @property
+    def person(self):
+        return self.original
 
-Person.registerFacet(Supplier, ISupplier)
 
+class Employee(Domain):
+    """An individual who performs work for an employer under a verbal
+    or written understanding where the employer gives direction as to
+    what tasks are done
 
-class Employee(PersonAdapter):
-    """An employee facet of a person."""
-    implements(IEmployee)
+    :ivar admission_date: admission_date
+    :ivar expire_vacation: when the vaction expires for this
+    :ivar salary: salary for this employee
+    :ivar status: normal/away/vacation/off
+    :ivar registry_number:
+    :ivar education_level:
+    :ivar dependent_person_number:
+
+    -- This is Brazil-specific information
+    :ivar workpermit_data:
+    :ivar military_data:
+    :ivar voter_data:
+    :ivar bank_account:
+    :ivar role: A reference to an employee role object
+    """
 
     (STATUS_NORMAL,
      STATUS_AWAY,
@@ -738,6 +841,34 @@ class Employee(PersonAdapter):
     voter_data = ForeignKey('VoterData', default=None)
     bank_account = ForeignKey('BankAccount', default=None)
 
+    #
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This employee is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This employee is already active')
+        self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.person.name
+
+    #
+    # Public API
+    #
+
     def get_role_history(self):
         return EmployeeRoleHistory.selectBy(
             employee=self,
@@ -749,7 +880,11 @@ class Employee(PersonAdapter):
             is_active=True,
             connection=self.get_connection())
 
-Person.registerFacet(Employee, IEmployee)
+    # FIXME: Remove this when all PersonAdapters are converted and
+    #        rename original to person
+    @property
+    def person(self):
+        return self.original
 
 
 class LoginUser(Domain):
@@ -776,11 +911,11 @@ class LoginUser(Domain):
     #
 
     def inactivate(self):
-        assert self.is_active, ('This person facet is already inactive')
+        assert self.is_active, ('This user is already inactive')
         self.is_active = False
 
     def activate(self):
-        assert not self.is_active, ('This personf facet is already active')
+        assert not self.is_active, ('This user is already active')
         self.is_active = True
 
     def get_status_string(self):
@@ -841,17 +976,17 @@ class LoginUser(Domain):
         return self.original
 
 
-class Branch(PersonAdapter):
-    """A branch facet of a person.
+class Branch(Domain):
+    """An administrative division of some larger or more complex
+    organization
 
     :attribute crt: Código de Regime Tributário
-
+    :ivar manager: An employee which is in charge of this branch
     1 – Simples Nacional
     2 – Simples Nacional – excesso de sublimite da receita bruta
     3 – Regime Normal
 
     """
-    implements(IBranch)
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
@@ -865,7 +1000,31 @@ class Branch(PersonAdapter):
     crt = IntCol(default=1)
 
     #
-    # Branch Company methods
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This branch is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This branch is already active')
+        self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.person.name
+
+    #
+    # Public API
     #
 
     def get_active_stations(self):
@@ -875,6 +1034,14 @@ class Branch(PersonAdapter):
             connection=self.get_connection())
 
     def fetchTIDs(self, table, timestamp, te_type, trans):
+        """Fetches the transaction entries (TIDs) for a specific table which
+        were created using this station.
+
+        :param table: table to get objects in
+        :param timestamp: since when?
+        :param te_type: CREATED or MODIFIED
+        :param trans: a transaction
+        """
         if table == TransactionEntry:
             return
 
@@ -884,6 +1051,14 @@ class Branch(PersonAdapter):
             connection=trans)
 
     def fetchTIDsForOtherStations(self, table, timestamp, te_type, trans):
+        """Fetches the transaction entries (TIDs) for a specific table which
+        were created using any station except the specified one.
+
+        :param table: table to get objects in
+        :param timestamp: since when?
+        :param te_type: CREATED or MODIFIED
+        :param trans: a transaction
+        """
         if table == TransactionEntry:
             return
 
@@ -918,8 +1093,11 @@ class Branch(PersonAdapter):
     def get_active_branches(cls, conn):
         return cls.select(cls.q.is_active == True, connection=conn)
 
-
-Person.registerFacet(Branch, IBranch)
+    # FIXME: Remove this when all PersonAdapters are converted and
+    #        rename original to person
+    @property
+    def person(self):
+        return self.original
 
 
 class CreditProvider(Domain):
@@ -974,11 +1152,11 @@ class CreditProvider(Domain):
     #
 
     def inactivate(self):
-        assert self.is_active, ('This person facet is already inactive')
+        assert self.is_active, ('This credit provider is already inactive')
         self.is_active = False
 
     def activate(self):
-        assert not self.is_active, ('This personf facet is already active')
+        assert not self.is_active, ('This credit provider is already active')
         self.is_active = True
 
     def get_status_string(self):
@@ -1038,14 +1216,14 @@ class CreditProvider(Domain):
         return self.original
 
 
-class SalesPerson(PersonAdapter):
-    """A sales person facet of a person.
+class SalesPerson(Domain):
+    """An employee in charge of making sales
 
-    B{Important attributes}:
-        - I{commission_type}: specifies the type of commission to be used by
-                             the salesman.
+    :ivar commission: The percentege of commission the company must pay
+        for this salesman
+    :ivar commission_type: A rule used to calculate the amount of
+        commission. This is a reference to another object
     """
-    implements(ISalesPerson)
 
     (COMMISSION_GLOBAL,
      COMMISSION_BY_SALESPERSON,
@@ -1072,7 +1250,31 @@ class SalesPerson(PersonAdapter):
     is_active = BoolCol(default=True)
 
     #
-    # Auxiliar methods
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This sales person is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This sales person is already active')
+        self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.person.name
+
+    #
+    # Public API
     #
 
     @classmethod
@@ -1081,12 +1283,21 @@ class SalesPerson(PersonAdapter):
         query = cls.q.is_active == True
         return cls.select(query, connection=conn)
 
-Person.registerFacet(SalesPerson, ISalesPerson)
+    # FIXME: Remove this when all PersonAdapters are converted and
+    #        rename original to person
+    @property
+    def person(self):
+        return self.original
 
 
-class Transporter(PersonAdapter):
-    """A transporter facet of a person."""
-    implements(ITransporter)
+class Transporter(Domain):
+    """An individual or company engaged in the transportation
+
+    :ivar open_contract_date: The date when we start working with
+      this transporter
+    :ivar freight_percentage: The percentage amount of freight
+      charged by this transporter
+    """
 
     original = ForeignKey('Person')
     is_active = BoolCol(default=True)
@@ -1095,7 +1306,31 @@ class Transporter(PersonAdapter):
     freight_percentage = PercentCol(default=0)
 
     #
-    # Auxiliar methods
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This transporter is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This transporter is already active')
+        self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
+
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.person.name
+
+    #
+    # Public API
     #
 
     @classmethod
@@ -1104,7 +1339,11 @@ class Transporter(PersonAdapter):
         query = cls.q.is_active == True
         return cls.select(query, connection=conn)
 
-Person.registerFacet(Transporter, ITransporter)
+    # FIXME: Remove this when all PersonAdapters are converted and
+    #        rename original to person
+    @property
+    def person(self):
+        return self.original
 
 
 class EmployeeRoleHistory(Domain):

@@ -26,21 +26,22 @@ from zope.interface import implements
 
 from stoqlib.database.orm import IntCol, UnicodeCol, ForeignKey
 from stoqlib.database.orm import LEFTJOINOn, INNERJOINOn, Viewable
-from stoqlib.domain.base import ModelAdapter
-from stoqlib.domain.person import Person, PersonAdapter
+from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.translation import stoqlib_gettext as _
 
-from booksinterfaces import IPublisher, IBook
+from booksinterfaces import IBook
 
 #
 # Publisher person facet implementation
 #
 
 
-class PersonAdaptToPublisher(PersonAdapter):
-    implements(IPublisher)
+# FIXME: Rename to Publisher
+class PersonAdaptToPublisher(Domain):
+    """An institution created to publish books"""
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
@@ -51,11 +52,33 @@ class PersonAdaptToPublisher(PersonAdapter):
     original = ForeignKey('Person')
     status = IntCol(default=STATUS_ACTIVE)
 
+    #
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This person facet is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This personf facet is already active')
+        self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.person.name
+
     @property
     def person(self):
-        return self.get_adapted()
-
-Person.registerFacet(PersonAdaptToPublisher, IPublisher)
+        return self.original
 
 
 class PublisherView(Viewable):
@@ -84,6 +107,7 @@ class PublisherView(Viewable):
 class ProductAdaptToBook(ModelAdapter):
     implements(IBook)
 
+    original = ForeignKey('Product')
     publisher = ForeignKey('PersonAdaptToPublisher', default=None)
     author = UnicodeCol(default='')
     series = UnicodeCol(default='')

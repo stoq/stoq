@@ -32,7 +32,6 @@ from kiwi.ui.listdialog import ListContainer
 from kiwi.ui.widgets.label import ProxyLabel
 
 from stoqlib.database.runtime import StoqlibTransaction
-from stoqlib.lib.component import Adapter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
 from stoqlib.gui.base.messagebar import MessageBar
@@ -49,11 +48,9 @@ class BaseEditorSlave(GladeSlaveDelegate):
 
     :cvar gladefile:
     :cvar model_type:
-    :cvar model_iface:
     """
     gladefile = None
     model_type = None
-    model_iface = None
     proxy_widgets = ()
 
     def __init__(self, conn, model=None, visual_mode=False):
@@ -82,25 +79,15 @@ class BaseEditorSlave(GladeSlaveDelegate):
         log.info("%s editor using a %smodel %s" % (
             self.__class__.__name__, created, type(model).__name__))
 
-        if self.model_iface:
-            if not isinstance(model, Adapter):
-                model = self.model_iface(model)
-            elif not self.model_iface.providedBy(model):
-                raise TypeError(
-                    "%s editor requires a model implementing %s, got a %r" % (
-                    self.__class__.__name__, self.model_iface.__name__,
-                    model))
-            self.model_type = self.model_type or type(model)
-
-        elif self.model_type:
+        if self.model_type:
             if not isinstance(model, self.model_type):
                 raise TypeError(
                     '%s editor requires a model of type %s, got a %r' % (
                     self.__class__.__name__, self.model_type.__name__,
                     model))
         else:
-            raise ValueError("Editor %s must define a model_type or "
-                             "model_iface attributes" % (
+            raise ValueError("Editor %s must define a model_type "
+                             "attribute" % (
                 self.__class__.__name__, ))
         self.model = model
 

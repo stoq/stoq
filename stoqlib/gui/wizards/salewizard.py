@@ -54,13 +54,12 @@ from stoqlib.gui.slaves.paymentslave import register_payment_slaves
 from stoqlib.gui.slaves.saleslave import SaleDiscountSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.person import (Person, ClientView,
-                                   CreditProvider)
+from stoqlib.domain.person import (ClientView,
+                                   CreditProvider, SalesPerson, Transporter)
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.interfaces import ISalesPerson, ITransporter
 
 N_ = _ = stoqlib_gettext
 
@@ -293,8 +292,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def _fill_transporter_combo(self):
         marker('Filling transporters')
-        table = Person.getAdapterClass(ITransporter)
-        transporters = table.get_active_transporters(self.conn)
+        transporters = Transporter.get_active_transporters(self.conn)
         items = [(t.person.name, t) for t in transporters]
         self.transporter.prefill(items)
         self.transporter.set_sensitive(len(items))
@@ -371,7 +369,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.client.set_property('mandatory', mandatory_client)
 
         marker('Filling sales persons')
-        salespersons = Person.iselect(ISalesPerson, connection=self.conn)
+        salespersons = SalesPerson.select(connection=self.conn)
         items = [(s.person.name, s) for s in salespersons]
         self.salesperson.prefill(items)
         marker('Finished filling sales persons')
@@ -480,7 +478,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         trans = api.new_transaction()
         transporter = trans.get(self.model.transporter)
         model = run_person_role_dialog(TransporterEditor, self.wizard, trans,
-                                        transporter)
+                                       transporter)
         rv = api.finish_transaction(trans, model)
         trans.close()
         if rv:

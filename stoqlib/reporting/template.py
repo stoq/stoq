@@ -39,7 +39,6 @@ from trml2pdf.trml2pdf import parseString
 
 from stoqlib.database.runtime import (get_current_branch, get_connection,
                                       get_current_user)
-from stoqlib.domain.interfaces import ICompany
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
@@ -91,7 +90,7 @@ class BaseStoqReport(ReportTemplate):
         canvas.saveState()
         person = get_current_branch(get_connection()).person
         main_address = person.get_main_address()
-        company = ICompany(person, None)
+        company = person.company
 
         logo_width, logo_height = self._logotype.getSize()
         header_y = self._topMargin - logo_height - BaseStoqReport.logo_border

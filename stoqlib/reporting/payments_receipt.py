@@ -26,7 +26,6 @@
 
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import ICompany
 from stoqlib.lib.cardinal_formatters import get_price_cardinal
 from stoqlib.lib.formatters import get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext
@@ -96,7 +95,7 @@ class BasePaymentReceipt(BaseStoqReport):
 
     def identify_recipient(self):
         recipient = self.get_recipient()
-        company = ICompany(recipient, None)
+        company = recipient.company
         if company:
             name = recipient.name
             document = company.cnpj

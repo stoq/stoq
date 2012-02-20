@@ -31,8 +31,7 @@ from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IClient
-from stoqlib.domain.person import CallsView, ClientCallsView
+from stoqlib.domain.person import CallsView, Client, ClientCallsView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
@@ -184,5 +183,5 @@ class CallsSearch(SearchEditor):
 class ClientCallsSearch(CallsSearch):
     title = _("Calls Search")
     search_table = ClientCallsView
-    person_interface = IClient
+    person_type = Client
     person_name = _('Client')

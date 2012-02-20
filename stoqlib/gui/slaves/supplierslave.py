@@ -25,11 +25,11 @@
 
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.domain.interfaces import ISupplier
+from stoqlib.domain.person import Supplier
 
 
 class SupplierDetailsSlave(BaseEditorSlave):
-    model_iface = ISupplier
+    model_type = Supplier
     gladefile = 'SupplierDetailsSlave'
     proxy_widgets = ('statuses_combo', 'product_desc')
 

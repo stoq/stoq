@@ -35,7 +35,6 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.addresseditor import AddressSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.person import Person
 
 _ = stoqlib_gettext
@@ -126,7 +125,7 @@ class BranchDialog(BaseEditor):
         self.tax_proxy = self.add_proxy(model, widgets)
 
         widgets = self.company_widgets
-        model = ICompany(self.model, None)
+        model = self.model.company
         if not model is None:
             self.company_proxy = self.add_proxy(model, widgets)
 

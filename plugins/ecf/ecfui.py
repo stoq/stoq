@@ -39,7 +39,6 @@ from stoqlib.domain.events import (SaleStatusChangedEvent, TillAddCashEvent,
                                    GerencialReportCancelEvent,
                                    CheckECFStateEvent,
                                    HasPendingReduceZ, ECFIsLastSaleEvent)
-from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import Individual, Company
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
@@ -575,18 +574,17 @@ class ECFUI(object):
         coupon.open()
 
     def _on_coupon__identify_customer(self, coupon, person):
-        if IIndividual(person, None):
-            individual = IIndividual(person)
+        if person.individual:
+            individual = person.individual
             document_type = FiscalSaleHistory.TYPE_CPF
             document = individual.cpf
-        elif ICompany(person, None):
-            company = ICompany(person)
+        elif person.company:
+            company = person.company
             document_type = FiscalSaleHistory.TYPE_CNPJ
             document = company.cnpj
         else:
             raise TypeError(
-                "identify_customer needs an object implementing "
-                "IIndividual or ICompany")
+                "identify_customer needs a individual or a company")
         name = person.name
         address = person.get_address_string()
 

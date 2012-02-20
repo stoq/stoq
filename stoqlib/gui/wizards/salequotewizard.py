@@ -35,11 +35,11 @@ from kiwi.python import Settable
 
 from stoqlib.api import api
 from stoqlib.database.orm import AND, OR
-from stoqlib.domain.interfaces import ISalesPerson, IStorable
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
-from stoqlib.domain.person import Person, ClientView, ClientCategory
+from stoqlib.domain.person import ClientView, ClientCategory, SalesPerson
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.sellable import Sellable
@@ -85,7 +85,7 @@ class StartSaleQuoteStep(WizardEditorStep):
         self.invoice_number.hide()
 
         # Salesperson combo
-        salespersons = Person.iselect(ISalesPerson, connection=self.conn)
+        salespersons = SalesPerson.select(connection=self.conn)
         items = [(s.person.name, s) for s in salespersons]
         self.salesperson.prefill(items)
         if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
@@ -404,7 +404,7 @@ class SaleQuoteWizard(BaseWizard):
 
     def _create_model(self, conn):
         user = api.get_current_user(conn)
-        salesperson = ISalesPerson(user.person)
+        salesperson = user.person.salesperson
 
         return Sale(coupon_id=None,
                     status=Sale.STATUS_QUOTE,

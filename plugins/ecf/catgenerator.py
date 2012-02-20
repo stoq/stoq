@@ -32,7 +32,6 @@ from kiwi.component import get_utility
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.orm import AND, const
 from stoqlib.domain.devices import FiscalDayHistory
-from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.interfaces import IAppInfo
@@ -138,7 +137,7 @@ class StoqlibCATGenerator(object):
             total = items[-1].total
 
         branch = get_current_branch(self.conn)
-        company = ICompany(branch.person)
+        company = branch.person.company
         self.cat.add_ecf_identification(self.driver, company, initial_crz,
                                         final_crz, self.start, self.end)
 

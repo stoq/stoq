@@ -32,9 +32,8 @@ from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.inventory import Inventory
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Branch
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
@@ -167,7 +166,7 @@ class InventoryApp(SearchableAppWindow):
         return values
 
     def _get_branches(self):
-        return Person.iselect(IBranch, connection=self.conn)
+        return Branch.select(connection=self.conn)
 
     def _get_branches_for_filter(self):
         items = [(b.person.name, b.id) for b in self._get_branches()]

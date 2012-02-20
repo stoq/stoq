@@ -37,8 +37,7 @@ from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
                                    TillAddTillEntryEvent,
                                    TillAddCashEvent, TillRemoveCashEvent)
-from stoqlib.domain.interfaces import IEmployee
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Employee
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
@@ -360,7 +359,7 @@ class CashAdvanceEditor(BaseEditor):
     def _setup_widgets(self):
         # FIXME: Implement and use IDescribable on Employee
         employees = [(e.person.name, e)
-                     for e in Person.iselect(IEmployee, connection=self.conn)]
+                     for e in Employee.select(connection=self.conn)]
         self.employee_combo.prefill(employees)
         self.employee_combo.set_active(0)
 

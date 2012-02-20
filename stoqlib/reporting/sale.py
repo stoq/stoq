@@ -28,7 +28,6 @@ from kiwi.datatypes import currency
 
 from stoqlib.database.runtime import get_connection, get_current_branch
 from stoqlib.domain.commission import CommissionView
-from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.views import SoldItemsByBranchView
 from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
@@ -87,10 +86,10 @@ class SaleOrderReport(BaseStoqReport):
                               table_line=TABLE_LINE_BLANK)
 
     def _get_person_document(self, person):
-        individual = IIndividual(person, None)
+        individual = person.individual
         if individual is not None:
             return individual.cpf
-        company = ICompany(person, None)
+        company = person.company
         if company is not None:
             return company.cnpj
 

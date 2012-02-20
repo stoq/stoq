@@ -272,62 +272,6 @@ class Domain(_BaseDomain, AdaptableORMObject):
     def user(self):
         return self.te_modified.user
 
-    @classmethod
-    def iselect(cls, iface, *args, **kwargs):
-        """Like select, but search on the adapter implementing the interface iface
-        associated with the domain class cls.
-
-        :param iface: interface
-        :returns: a ORMObject search result
-        """
-        adapter = cls.getAdapterClass(iface)
-        return adapter.select(*args, **kwargs)
-
-    @classmethod
-    def iselectBy(cls, iface, *args, **kwargs):
-        """Like selectBy, but search on the adapter implementing the interface iface
-        associated with the domain class cls.
-
-        :param iface: interface
-        :returns: a ORMObject search result
-        """
-        adapter = cls.getAdapterClass(iface)
-        return adapter.selectBy(*args, **kwargs)
-
-    @classmethod
-    def iselectOne(cls, iface, *args, **kwargs):
-        """Like selectOne, but search on the adapter implementing the interface iface
-        associated with the domain class cls.
-
-        :param iface: interface
-        :returns: None, object or raises ORMObjectMoreThanOneResultError
-        """
-        adapter = cls.getAdapterClass(iface)
-        return adapter.selectOne(*args, **kwargs)
-
-    @classmethod
-    def iselectOneBy(cls, iface, *args, **kwargs):
-        """Like selectOneBy, but search on the adapter implementing the interface iface
-        associated with the domain class cls.
-
-        :param iface: interface
-        :returns: None, object or raises ORMObjectMoreThanOneResultError
-        """
-        adapter = cls.getAdapterClass(iface)
-        return adapter.selectOneBy(*args, **kwargs)
-
-    @classmethod
-    def iget(cls, iface, object_id, **kwargs):
-        """Like get, but gets on the adapter implementing the interface iface
-        associated with the domain class cls.
-
-        :param iface: interface
-        :param object_id: id of object
-        :returns: the ORMObject
-        """
-        adapter = cls.getAdapterClass(iface)
-        return adapter.get(object_id, **kwargs)
-
 
 class BaseSQLView:
     """A base marker class for SQL Views"""

@@ -32,7 +32,6 @@ from stoqlib.gui.search.personsearch import BasePersonSearch
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 
 from booksdomain import PersonAdaptToPublisher, PublisherView
-from booksinterfaces import IPublisher
 
 _ = stoqlib_gettext
 
@@ -40,14 +39,16 @@ _ = stoqlib_gettext
 class PublisherEditor(BasePersonRoleEditor):
     model_name = _(u'Publisher')
     title = _(u'New Publisher')
-    model_iface = IPublisher
+    model_type = PersonAdaptToPublisher
     gladefile = 'BaseTemplate'
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        publisher = IPublisher(person, None)
+        publisher = PersonAdaptToPublisher.selectOneBy(original=person,
+                                                       connection=conn)
         if publisher is None:
-            publisher = person.addFacet(IPublisher, connection=conn)
+            publisher = PersonAdaptToPublisher(original=person,
+                                               connection=conn)
         return publisher
 
 

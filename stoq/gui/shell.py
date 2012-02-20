@@ -353,12 +353,11 @@ class Shell(object):
     def _check_param_main_branch(self):
         from stoqlib.database.runtime import (get_connection, new_transaction,
                                               get_current_station)
-        from stoqlib.domain.person import Person
-        from stoqlib.domain.interfaces import IBranch, ICompany
+        from stoqlib.domain.person import Company
         from stoqlib.lib.parameters import sysparam
         from stoqlib.lib.message import info
         conn = get_connection()
-        compaines = Person.iselect(ICompany, connection=conn)
+        compaines = Company.select(connection=conn)
         if (compaines.count() == 0 or
             not sysparam(conn).MAIN_COMPANY):
             from stoqlib.gui.base.dialogs import run_dialog
@@ -372,7 +371,7 @@ class Shell(object):
             person = run_dialog(BranchDialog, None, trans)
             if not person:
                 raise SystemExit
-            branch = IBranch(person)
+            branch = person.branch
             sysparam(trans).MAIN_COMPANY = branch.id
             get_current_station(trans).branch = branch
             trans.commit()
