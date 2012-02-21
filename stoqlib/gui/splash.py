@@ -33,6 +33,7 @@ import pangocairo
 
 from kiwi.component import get_utility
 from kiwi.environ import environ
+from kiwi.ui.pixbufutils import pixbuf_from_string
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -40,7 +41,6 @@ WIDTH = 400
 HEIGHT = 260
 BORDER = 8 # This includes shadow out border from GtkFrame
 _ = stoqlib_gettext
-
 
 class SplashScreen(gtk.Window):
 
@@ -61,8 +61,8 @@ class SplashScreen(gtk.Window):
         frame.add(darea)
 
         self.show_all()
-        filename = environ.find_resource("pixmaps", "splash.png")
-        self._pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
+        pixbuf_data = environ.get_resource_string("stoq", "pixmaps", "splash.png")
+        self._pixbuf = pixbuf_from_string(pixbuf_data)
 
     def _get_label(self):
         info = get_utility(IAppInfo, None)
