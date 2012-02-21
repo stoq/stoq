@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-requires gtk+ 2.6 -->
+  <!-- interface-naming-policy toplevel-contextual -->
+  <object class="GtkDialog" id="PluggableWizard">
+    <property name="default_width">320</property>
+    <property name="default_height">260</property>
+    <property name="type_hint">normal</property>
+    <property name="has_separator">False</property>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="PluggableWizard-vbox">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkVBox" id="vbox1">
+            <property name="visible">True</property>
+            <child>
+              <object class="ProxyLabel" id="header_lbl">
+                <property name="visible">True</property>
+                <property name="data_type">str</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEventBox" id="slave_area">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="notification_lbl">
+                <property name="visible">True</property>
+                <property name="data_type">str</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox1">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkHButtonBox" id="buttonbox">
+                    <property name="visible">True</property>
+                    <property name="border_width">6</property>
+                    <property name="spacing">6</property>
+                    <property name="layout-style">end</property>
+                    <child>
+                      <object class="GtkButton" id="cancel_button">
+                        <property name="label">gtk-cancel</property>
+                        <property name="width_request">90</property>
+                        <property name="visible">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="previous_button">
+                        <property name="label">gtk-go-back</property>
+                        <property name="width_request">90</property>
+                        <property name="visible">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="next_button">
+                        <property name="label">gtk-go-forward</property>
+                        <property name="width_request">90</property>
+                        <property name="visible">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="ok_button">
+                        <property name="label">gtk-ok</property>
+                        <property name="visible">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="pack_type">end</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area1"/>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
