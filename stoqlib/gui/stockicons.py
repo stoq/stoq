@@ -182,6 +182,7 @@ icon_info = [
 def register():
     import gtk
     from kiwi.environ import environ
+    from kiwi.ui.pixbufutils import pixbuf_from_string
 
     iconfactory = gtk.IconFactory()
     stock_ids = gtk.stock_list_ids()
@@ -192,8 +193,15 @@ def register():
         iconset = gtk.IconSet()
         for size, filename in arg.items():
             iconsource = gtk.IconSource()
-            filename = environ.find_resource('pixmaps', filename)
-            iconsource.set_filename(filename)
+            data = environ.get_resource_string('stoq', 'pixmaps', filename)
+            if filename.endswith('png'):
+                format = 'png'
+            elif filename.endswith('svg'):
+                format = 'svg'
+            else:
+                raise NotImplementedError(format)
+            pixbuf = pixbuf_from_string(data, format)
+            iconsource.set_pixbuf(pixbuf)
             iconsource.set_size(size)
             iconset.add_source(iconsource)
         iconfactory.add(stock_id, iconset)

@@ -156,8 +156,7 @@ class Shell(object):
         # Byte 2 should ideally be allowed to be 0, but neither C nor Python
         #        allows that.
         #
-        stoq_rc = environ.find_resource("misc", "stoq.gtkrc")
-        data = open(stoq_rc).read()
+        data = environ.get_resource_string("stoq", "misc", "stoq.gtkrc")
         data = data.replace('\\x7f\\x01', '\x7f\x01')
 
         gtk.rc_parse_string(data)
@@ -222,13 +221,15 @@ class Shell(object):
 
         import gtk
         from kiwi.environ import environ
-        stock_app = environ.find_resource('pixmaps', 'stoq-stock-app-24x24.png')
-        gtk.window_set_default_icon_from_file(stock_app)
+        from kiwi.ui.pixbufutils import pixbuf_from_string
+        data = environ.get_resource_string('stoq', 'pixmaps', 'stoq-stock-app-24x24.png')
+        gtk.window_set_default_icon(pixbuf_from_string(data))
 
         if platform.system() == 'Darwin':
-            from AppKit import NSApplication, NSImage
-            stock_app = environ.find_resource('pixmaps', 'stoq-stock-app-48x48.png')
-            icon = NSImage.alloc().initWithContentsOfFile_(stock_app)
+            from AppKit import NSApplication, NSData, NSImage
+            bytes= environ.get_resource_string('stoq', 'pixmaps', 'stoq-stock-app-48x48.png')
+            data = NSData.alloc().initWithBytes_length_(bytes, len(bytes))
+            icon = NSImage.alloc().initWithData_(data)
             app = NSApplication.sharedApplication()
             app.setApplicationIconImage_(icon)
 
