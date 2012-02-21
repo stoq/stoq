@@ -227,7 +227,7 @@ class Shell(object):
 
         if platform.system() == 'Darwin':
             from AppKit import NSApplication, NSData, NSImage
-            bytes= environ.get_resource_string('stoq', 'pixmaps', 'stoq-stock-app-48x48.png')
+            bytes = environ.get_resource_string('stoq', 'pixmaps', 'stoq-stock-app-48x48.png')
             data = NSData.alloc().initWithBytes_length_(bytes, len(bytes))
             icon = NSImage.alloc().initWithData_(data)
             app = NSApplication.sharedApplication()
