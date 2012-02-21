@@ -66,10 +66,10 @@ def listplugins(plugins, exts):
         for kind, suffix in exts:
             x = listfiles('plugins', plugin, kind, suffix)
             if x:
-                path = '$prefix/lib/stoqlib/plugins/%s/%s'
+                path = 'lib/stoqlib/plugins/%s/%s'
                 files.append((path % (plugin, kind), x))
 
-        files.append(('$prefix/lib/stoqlib/plugins/' +  plugin,
+        files.append(('lib/stoqlib/plugins/' +  plugin,
                       listfiles('plugins', plugin, '*.py')))
 
     return files
