@@ -22,68 +22,66 @@
 ##
 -->
 
-<ui>
-  <menubar action="menubar">
-    <menu action="FileMenu">
-      <menu action="NewMenu">
-        <placeholder name="NewMenuItemPH"/>
-        <separator/>
-        <menuitem action="NewWindow"/>
-      </menu>
+<menubar action="menubar">
+  <menu action="FileMenu">
+    <menu action="NewMenu">
+      <placeholder name="NewMenuItemPH"/>
       <separator/>
-      <placeholder name="FileMenuPH"/>
-      <separator/>
-      <menuitem action="Print"/>
-      <menuitem action="ExportSpreadSheet"/>
-      <separator/>
-      <menuitem action="ChangePassword"/>
-      <menuitem action="SignOut"/>
-      <separator/>
-      <menuitem action="Close"/>
-      <menuitem action="Quit"/>
+      <menuitem action="NewWindow"/>
     </menu>
-    <menu action="EditMenu">
-      <placeholder name="EditMenuPH"/>
-      <separator/>
-      <menuitem action="Preferences"/>
+    <separator/>
+    <placeholder name="FileMenuPH"/>
+    <separator/>
+    <menuitem action="Print"/>
+    <menuitem action="ExportSpreadSheet"/>
+    <separator/>
+    <menuitem action="ChangePassword"/>
+    <menuitem action="SignOut"/>
+    <separator/>
+    <menuitem action="Close"/>
+    <menuitem action="Quit"/>
+  </menu>
+  <menu action="EditMenu">
+    <placeholder name="EditMenuPH"/>
+    <separator/>
+    <menuitem action="Preferences"/>
+  </menu>
+  <menu action="ViewMenu">
+    <placeholder name="ViewMenuPH"/>
+    <separator/>
+    <menuitem action="ToggleToolbar"/>
+    <menuitem action="ToggleStatusbar"/>
+    <separator/>
+    <menuitem action="ToggleFullscreen"/>
+  </menu>
+  <placeholder name="AppMenubarPH"/>
+  <menu action="SearchMenu">
+    <placeholder name="SearchMenuPH"/>
+  </menu>
+  <placeholder name="ExtraMenubarPH"/>
+  <menu action="HelpMenu">
+    <placeholder name="HelpPH"/>
+    <menuitem action="HelpContents"/>
+    <separator/>
+    <menuitem action="HelpSupport"/>
+    <menuitem action="HelpChat"/>
+    <menuitem action="HelpTranslate"/>
+    <separator/>
+    <menuitem action="HelpAbout"/>
+  </menu>
+</menubar>
+<toolbar action="toolbar">
+  <toolitem action="NewToolItem">
+    <menu action="NewToolMenu">
+      <menuitem action="NewWindow"/>
     </menu>
-    <menu action="ViewMenu">
-      <placeholder name="ViewMenuPH"/>
-      <separator/>
-      <menuitem action="ToggleToolbar"/>
-      <menuitem action="ToggleStatusbar"/>
-      <separator/>
-      <menuitem action="ToggleFullscreen"/>
+  </toolitem>
+  <toolitem action="SearchToolItem">
+    <menu action="SearchToolMenu">
     </menu>
-    <placeholder name="AppMenubarPH"/>
-    <menu action="SearchMenu">
-      <placeholder name="SearchMenuPH"/>
-    </menu>
-    <placeholder name="ExtraMenubarPH"/>
-    <menu action="HelpMenu">
-      <placeholder name="HelpPH"/>
-      <menuitem action="HelpContents"/>
-      <separator/>
-      <menuitem action="HelpSupport"/>
-      <menuitem action="HelpChat"/>
-      <menuitem action="HelpTranslate"/>
-      <separator/>
-      <menuitem action="HelpAbout"/>
-    </menu>
-  </menubar>
-  <toolbar action="toolbar">
-      <toolitem action="NewToolItem">
-        <menu action="NewToolMenu">
-          <menuitem action="NewWindow"/>
-        </menu>
-      </toolitem>
-      <toolitem action="SearchToolItem">
-        <menu action="SearchToolMenu">
-        </menu>
-      </toolitem>
-      <separator/>
-      <toolitem action="Print"/>
-    <toolitem action="Quit"/>
-    <placeholder name="AppToolbarPH"/>
-  </toolbar>
-</ui>
+  </toolitem>
+  <separator/>
+  <toolitem action="Print"/>
+  <toolitem action="Quit"/>
+  <placeholder name="AppToolbarPH"/>
+</toolbar>
