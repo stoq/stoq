@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from stoqlib.database.runtime import new_transaction
 from stoqlib.database.orm import (ORMObjectMoreThanOneResultError, IntCol,
                                   )
 from stoqlib.domain.base import Domain
@@ -35,6 +36,15 @@ class Ding(Domain):
     def __init__(self, connection, field=None):
         Domain.__init__(self, connection=connection, field=field)
         self.called = False
+
+
+trans = new_transaction()
+for table in (Ding,):
+    table_name = table.sqlmeta.table
+    if trans.tableExists(table_name):
+        trans.dropTable(table_name, cascade=True)
+    table.createTable(connection=trans)
+trans.commit()
 
 
 class TestSelect(DomainTest):
