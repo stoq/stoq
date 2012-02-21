@@ -38,7 +38,7 @@ from kiwi.ui.widgets.list import Column
 from kiwi.ui.widgets.contextmenu import ContextMenu, ContextMenuItem
 from stoqdrivers.enum import UnitType
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IDelivery, ISalesPerson
+from stoqlib.domain.interfaces import IDelivery
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.product import IStorable
@@ -684,7 +684,7 @@ class PosApp(AppWindow):
     def _create_sale(self, trans):
         user = api.get_current_user(trans)
         branch = api.get_current_branch(trans)
-        salesperson = ISalesPerson(user.person)
+        salesperson = user.person.salesperson
         cfop = api.sysparam(trans).DEFAULT_SALES_CFOP
         group = PaymentGroup(connection=trans)
         sale = Sale(connection=trans,

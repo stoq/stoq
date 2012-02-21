@@ -23,7 +23,6 @@
 ##
 
 from stoqlib.database.runtime import get_connection, new_transaction
-from stoqlib.domain.interfaces import IEmployee, ISalesPerson
 from stoqlib.domain.person import (Employee, EmployeeRole, LoginUser,
                                    Person, Individual, SalesPerson)
 from stoqlib.domain.profile import UserProfile
@@ -159,6 +158,6 @@ class TestUpdate(SyncTest):
         self.switch_to_shop()
         person = Person.selectOneBy(name="Employee", connection=trans)
         self.failUnless(person)
-        salesperson = ISalesPerson(person, None)
+        salesperson = person.salesperson
         self.failUnless(salesperson)
         self.assertEquals(salesperson.comission, 10)
