@@ -32,7 +32,6 @@ import pango
 from kiwi.accessor import kgetattr
 from kiwi.environ import environ
 from kiwi.ui.objectlist import ObjectList
-from mako.lookup import TemplateLookup
 from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 from trml2pdf.trml2pdf import parseString
@@ -40,9 +39,10 @@ from trml2pdf.trml2pdf import parseString
 from stoqlib.database.runtime import (get_current_branch, get_connection,
                                       get_current_user)
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 from stoqlib.lib.formatters import format_phone_number, format_quantity
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.template import render_template
+from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 
@@ -349,9 +349,7 @@ class BaseRMLReport(object):
         :param filename: filename to save report as
         :param template_name: optional, name of the rml template to use
         """
-        template_name = template_name or self.template_name
-        lookup = TemplateLookup(directories=environ.get_resource_paths('template'))
-        self._template = lookup.get_template(template_name)
+        self.template_name = template_name or self.template_name
         self.filename = filename
 
     def save(self):
@@ -362,10 +360,10 @@ class BaseRMLReport(object):
                 "%s.get_namespace must return a dictionary, not $r" %
                 (self.__class__.__name__, ns))
         self._complete_namespace(ns)
-        template = self._template.render(**ns)
+        trml_data = render_template(self.template_name, ns)
         pdf_file = open(self.filename, 'w')
         # create the pdf file
-        pdf_file.write(parseString(template))
+        pdf_file.write(parseString(trml_data))
         pdf_file.close()
 
     def _complete_namespace(self, ns):
