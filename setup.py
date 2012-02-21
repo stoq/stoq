@@ -36,18 +36,28 @@ dc.check_kiwi([1, 9, 26])
 # Package installation
 #
 
+import sys
+
 from kiwi.dist import setup, listfiles, listpackages
 
 from stoq import website, version
+
+
+if 'bdist_egg' in sys.argv:
+    python_dir = ''
+else:
+    python_dir = 'lib/stoqlib/'
+
 
 def listexternal():
     dirs = []
     for package in listpackages('external'):
         # strip external
         dirs.append(package.replace('.', '/'))
+
     files = []
     for directory in dirs:
-        files.append(('lib/stoqlib/' + directory[9:],
+        files.append((python_dir + directory[9:],
                       listfiles(directory, '*.py')))
     return files
 
@@ -66,10 +76,10 @@ def listplugins(plugins, exts):
         for kind, suffix in exts:
             x = listfiles('plugins', plugin, kind, suffix)
             if x:
-                path = 'lib/stoqlib/plugins/%s/%s'
+                path = python_dir + '/plugins/%s/%s'
                 files.append((path % (plugin, kind), x))
 
-        files.append(('lib/stoqlib/plugins/' +  plugin,
+        files.append((python_dir + 'plugins/' +  plugin,
                       listfiles('plugins', plugin, '*.py')))
 
     return files
