@@ -22,45 +22,43 @@
 ##
 -->
 
-<ui>
-  <menubar action="menubar">
-    <menu action="FileMenu">
-      <menu action="NewMenu">
-        <placeholder name="NewMenuItemPH">
-          <menuitem action="NewProduction"/>
-          <menuitem action="ProductionPurchaseQuote"/>
-        </placeholder>
-      </menu>
-    </menu>
-    <placeholder name="AppMenubarPH">
-      <menu action="ProductionMenu">
-        <menuitem action="ProductionDetails"/>
-        <separator/>
-        <menuitem action="StartProduction"/>
-        <menuitem action="EditProduction"/>
-      </menu>
-    </placeholder>
-    <menu action="SearchMenu">
-      <placeholder name="SearchMenuPH">
-        <menuitem action="SearchProduct"/>
-        <menuitem action="SearchService"/>
-        <menuitem action="SearchProductionItem"/>
-        <menuitem action="SearchProductionHistory"/>
+<menubar action="menubar">
+  <menu action="FileMenu">
+    <menu action="NewMenu">
+      <placeholder name="NewMenuItemPH">
+        <menuitem action="NewProduction"/>
+        <menuitem action="ProductionPurchaseQuote"/>
       </placeholder>
     </menu>
-  </menubar>
-  <popup name="ProductionSelection">
-    <menuitem action="ProductionDetails"/>
-    <separator/>
-    <menuitem action="StartProduction"/>
-    <menuitem action="EditProduction"/>
-  </popup>
-  <toolbar action="toolbar">
-    <placeholder name="AppToolbarPH">
+  </menu>
+  <placeholder name="AppMenubarPH">
+    <menu action="ProductionMenu">
+      <menuitem action="ProductionDetails"/>
       <separator/>
-      <toolitem action="StartProduction"/>
-      <toolitem action="EditProduction"/>
-      <toolitem action="ProductionDetails"/>
+      <menuitem action="StartProduction"/>
+      <menuitem action="EditProduction"/>
+    </menu>
+  </placeholder>
+  <menu action="SearchMenu">
+    <placeholder name="SearchMenuPH">
+      <menuitem action="SearchProduct"/>
+      <menuitem action="SearchService"/>
+      <menuitem action="SearchProductionItem"/>
+      <menuitem action="SearchProductionHistory"/>
     </placeholder>
-  </toolbar>
-</ui>
+  </menu>
+</menubar>
+<popup name="ProductionSelection">
+  <menuitem action="ProductionDetails"/>
+  <separator/>
+  <menuitem action="StartProduction"/>
+  <menuitem action="EditProduction"/>
+</popup>
+<toolbar action="toolbar">
+  <placeholder name="AppToolbarPH">
+    <separator/>
+    <toolitem action="StartProduction"/>
+    <toolitem action="EditProduction"/>
+    <toolitem action="ProductionDetails"/>
+  </placeholder>
+</toolbar>

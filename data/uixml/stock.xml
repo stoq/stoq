@@ -22,57 +22,55 @@
 ##
 -->
 
-<ui>
-  <menubar action="menubar">
-    <menu action="FileMenu">
-      <menu action="NewMenu">
-        <placeholder name="NewMenuItemPH">
-          <menuitem action="NewReceiving"/>
-          <menuitem action="NewTransfer"/>
-          <menuitem action="NewStockDecrease"/>
-          <menuitem action="LoanNew"/>
-        </placeholder>
-      </menu>
-      <placeholder name="FileMenuPH">
-        <menuitem action="StockInitial"/>
-        <menuitem action="LoanClose"/>
+<menubar action="menubar">
+  <menu action="FileMenu">
+    <menu action="NewMenu">
+      <placeholder name="NewMenuItemPH">
+        <menuitem action="NewReceiving"/>
+        <menuitem action="NewTransfer"/>
+        <menuitem action="NewStockDecrease"/>
+        <menuitem action="LoanNew"/>
       </placeholder>
     </menu>
-    <menu action="ViewMenu">
-      <placeholder name="ViewMenuPH">
-        <menuitem action="StockPictureViewer"/>
-      </placeholder>
-    </menu>
-    <menu action="SearchMenu">
-      <placeholder name="SearchMenuPH">
-        <menuitem action="SearchPurchaseReceiving"/>
-        <menuitem action="SearchProductHistory"/>
-        <menuitem action="SearchTransfer"/>
-        <menuitem action="SearchStockDecrease"/>
-        <menuitem action="SearchPurchasedStockItems"/>
-        <menuitem action="SearchStockItems"/>
-        <menuitem action="SearchClosedStockItems"/>
-        <separator/>
-        <menuitem action="LoanSearch"/>
-        <menuitem action="LoanSearchItems"/>
-      </placeholder>
-    </menu>
-    <placeholder name="AppMenubarPH">
-      <menu action="ProductMenu">
-        <menuitem action="ProductStockHistory"/>
-        <menuitem action="EditProduct"/>
-      </menu>
+    <placeholder name="FileMenuPH">
+      <menuitem action="StockInitial"/>
+      <menuitem action="LoanClose"/>
     </placeholder>
-  </menubar>
-  <popup name="StockSelection">
-    <menuitem action="ProductStockHistory"/>
-    <menuitem action="EditProduct"/>
-  </popup>
-  <toolbar action="toolbar">
-    <placeholder name="AppToolbarPH">
+  </menu>
+  <menu action="ViewMenu">
+    <placeholder name="ViewMenuPH">
+      <menuitem action="StockPictureViewer"/>
+    </placeholder>
+  </menu>
+  <menu action="SearchMenu">
+    <placeholder name="SearchMenuPH">
+      <menuitem action="SearchPurchaseReceiving"/>
+      <menuitem action="SearchProductHistory"/>
+      <menuitem action="SearchTransfer"/>
+      <menuitem action="SearchStockDecrease"/>
+      <menuitem action="SearchPurchasedStockItems"/>
+      <menuitem action="SearchStockItems"/>
+      <menuitem action="SearchClosedStockItems"/>
       <separator/>
-      <toolitem action="ProductStockHistory"/>
-      <toolitem action="EditProduct"/>
+      <menuitem action="LoanSearch"/>
+      <menuitem action="LoanSearchItems"/>
     </placeholder>
-  </toolbar>
-</ui>
+  </menu>
+  <placeholder name="AppMenubarPH">
+    <menu action="ProductMenu">
+      <menuitem action="ProductStockHistory"/>
+      <menuitem action="EditProduct"/>
+    </menu>
+  </placeholder>
+</menubar>
+<popup name="StockSelection">
+  <menuitem action="ProductStockHistory"/>
+  <menuitem action="EditProduct"/>
+</popup>
+<toolbar action="toolbar">
+  <placeholder name="AppToolbarPH">
+    <separator/>
+    <toolitem action="ProductStockHistory"/>
+    <toolitem action="EditProduct"/>
+  </placeholder>
+</toolbar>

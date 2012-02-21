@@ -22,57 +22,55 @@
 ##
 -->
 
-<ui>
-  <menubar action="menubar">
-    <menu action="FileMenu">
-      <menu action="NewMenu">
-        <placeholder name="NewMenuItemPH">
-          <menuitem action="AddReceiving"/>
-        </placeholder>
-      </menu>
-      <placeholder name="FileMenuPH">
-        <menuitem action="PaymentFlowHistory"/>
+<menubar action="menubar">
+  <menu action="FileMenu">
+    <menu action="NewMenu">
+      <placeholder name="NewMenuItemPH">
+        <menuitem action="AddReceiving"/>
       </placeholder>
     </menu>
-    <placeholder name="AppMenubarPH">
-      <menu action="PaymentMenu">
-        <menuitem action="Details"/>
-        <separator/>
-        <menuitem action="Receive"/>
-        <menuitem action="CancelPayment"/>
-        <menuitem action="SetNotPaid"/>
-        <menuitem action="ChangeDueDate"/>
-        <menuitem action="Renegotiate"/>
-        <menuitem action="Comments"/>
-        <separator/>
-        <menuitem action="PrintBill"/>
-        <menuitem action="PrintReceipt"/>
-      </menu>
+    <placeholder name="FileMenuPH">
+      <menuitem action="PaymentFlowHistory"/>
     </placeholder>
-    <menu action="SearchMenu">
-      <placeholder name="SearchMenuPH">
-        <menuitem action="PaymentCategories"/>
-        <menuitem action="BillCheckSearch"/>
-        <menuitem action="CardPaymentSearch"/>
-      </placeholder>
+  </menu>
+  <placeholder name="AppMenubarPH">
+    <menu action="PaymentMenu">
+      <menuitem action="Details"/>
+      <separator/>
+      <menuitem action="Receive"/>
+      <menuitem action="CancelPayment"/>
+      <menuitem action="SetNotPaid"/>
+      <menuitem action="ChangeDueDate"/>
+      <menuitem action="Renegotiate"/>
+      <menuitem action="Comments"/>
+      <separator/>
+      <menuitem action="PrintBill"/>
+      <menuitem action="PrintReceipt"/>
     </menu>
-  </menubar>
-  <popup name="ReceivableSelection">
-    <menuitem action="Details"/>
-    <separator/>
-    <menuitem action="Receive"/>
-    <menuitem action="CancelPayment"/>
-    <menuitem action="SetNotPaid"/>
-    <menuitem action="ChangeDueDate"/>
-    <menuitem action="Renegotiate"/>
-    <menuitem action="Comments"/>
-    <separator/>
-    <menuitem action="PrintBill"/>
-    <menuitem action="PrintReceipt"/>
- </popup>
- <toolbar action="toolbar">
-    <separator/>
-    <toolitem action="Receive"/>
-    <toolitem action="Details"/>
-  </toolbar>
-</ui>
+  </placeholder>
+  <menu action="SearchMenu">
+    <placeholder name="SearchMenuPH">
+      <menuitem action="PaymentCategories"/>
+      <menuitem action="BillCheckSearch"/>
+      <menuitem action="CardPaymentSearch"/>
+    </placeholder>
+  </menu>
+</menubar>
+<popup name="ReceivableSelection">
+  <menuitem action="Details"/>
+  <separator/>
+  <menuitem action="Receive"/>
+  <menuitem action="CancelPayment"/>
+  <menuitem action="SetNotPaid"/>
+  <menuitem action="ChangeDueDate"/>
+  <menuitem action="Renegotiate"/>
+  <menuitem action="Comments"/>
+  <separator/>
+  <menuitem action="PrintBill"/>
+  <menuitem action="PrintReceipt"/>
+</popup>
+<toolbar action="toolbar">
+  <separator/>
+  <toolitem action="Receive"/>
+  <toolitem action="Details"/>
+</toolbar>

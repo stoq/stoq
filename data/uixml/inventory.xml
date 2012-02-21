@@ -22,39 +22,37 @@
 ##
 -->
 
-<ui>
-  <menubar action="menubar">
-    <menu action="FileMenu">
-      <menu action="NewMenu">
-        <placeholder name="NewMenuItemPH">
-          <menuitem action="NewInventory"/>
-        </placeholder>
-      </menu>
+<menubar action="menubar">
+  <menu action="FileMenu">
+    <menu action="NewMenu">
+      <placeholder name="NewMenuItemPH">
+        <menuitem action="NewInventory"/>
+      </placeholder>
     </menu>
-    <placeholder name="AppMenubarPH">
-      <menu action="InventoryMenu">
-        <menuitem action="CountingAction"/>
-        <menuitem action="AdjustAction"/>
-        <menuitem action="Cancel"/>
-        <separator/>
-        <menuitem action="PrintProductListing"/>
-      </menu>
-    </placeholder>
-  </menubar>
-  <popup name="InventorySelection">
-    <menuitem action="CountingAction"/>
-    <menuitem action="AdjustAction"/>
-    <menuitem action="Cancel"/>
-    <separator/>
-    <menuitem action="PrintProductListing"/>
-  </popup>
-  <toolbar action="toolbar">
-    <placeholder name="AppToolbarPH">
+  </menu>
+  <placeholder name="AppMenubarPH">
+    <menu action="InventoryMenu">
+      <menuitem action="CountingAction"/>
+      <menuitem action="AdjustAction"/>
+      <menuitem action="Cancel"/>
       <separator/>
-      <toolitem action="CountingAction"/>
-      <toolitem action="AdjustAction"/>
-      <toolitem action="Cancel"/>
-    </placeholder>
-  </toolbar>
-</ui>
+      <menuitem action="PrintProductListing"/>
+    </menu>
+  </placeholder>
+</menubar>
+<popup name="InventorySelection">
+  <menuitem action="CountingAction"/>
+  <menuitem action="AdjustAction"/>
+  <menuitem action="Cancel"/>
+  <separator/>
+  <menuitem action="PrintProductListing"/>
+</popup>
+<toolbar action="toolbar">
+  <placeholder name="AppToolbarPH">
+    <separator/>
+    <toolitem action="CountingAction"/>
+    <toolitem action="AdjustAction"/>
+    <toolitem action="Cancel"/>
+  </placeholder>
+</toolbar>
 

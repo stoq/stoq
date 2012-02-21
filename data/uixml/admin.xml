@@ -22,37 +22,35 @@
 ##
 -->
 
-<ui>
-  <menubar action="menubar">
-    <menu action="SearchMenu">
-      <placeholder action="SearchMenuPH">
-        <menuitem action="SearchRole"/>
-        <menuitem action="SearchEmployee"/>
-        <menuitem action="SearchCfop"/>
-        <menuitem action="SearchFiscalBook"/>
-        <menuitem action="SearchUserProfile"/>
-        <menuitem action="SearchUser"/>
-        <menuitem action="SearchBranch"/>
-        <menuitem action="SearchComputer"/>
-        <menuitem action="SearchTaxTemplate"/>
-        <menuitem action="SearchEvents"/>
-      </placeholder>
-     </menu>
-    <placeholder action="AppMenubarPH">
-      <menu action="ConfigureMenu">
-        <menuitem action="ConfigureDevices"/>
-        <menuitem action="ConfigurePaymentMethods"/>
-        <menuitem action="ConfigurePaymentCategories"/>
-        <menuitem action="ConfigureClientCategories"/>
-        <menuitem action="ConfigureTaxes"/>
-        <menuitem action="ConfigureSintegra"/>
-        <menuitem action="ConfigureParameters"/>
-        <menuitem action="ConfigureInvoices"/>
-        <menuitem action="ConfigureInvoicePrinters"/>
-        <separator/>
-        <menuitem action="ConfigurePlugins"/>
-        <placeholder name="ConfigurePH"/>
-      </menu>
+<menubar action="menubar">
+  <menu action="SearchMenu">
+    <placeholder action="SearchMenuPH">
+      <menuitem action="SearchRole"/>
+      <menuitem action="SearchEmployee"/>
+      <menuitem action="SearchCfop"/>
+      <menuitem action="SearchFiscalBook"/>
+      <menuitem action="SearchUserProfile"/>
+      <menuitem action="SearchUser"/>
+      <menuitem action="SearchBranch"/>
+      <menuitem action="SearchComputer"/>
+      <menuitem action="SearchTaxTemplate"/>
+      <menuitem action="SearchEvents"/>
     </placeholder>
-  </menubar>
-</ui>
+   </menu>
+  <placeholder action="AppMenubarPH">
+    <menu action="ConfigureMenu">
+      <menuitem action="ConfigureDevices"/>
+      <menuitem action="ConfigurePaymentMethods"/>
+      <menuitem action="ConfigurePaymentCategories"/>
+      <menuitem action="ConfigureClientCategories"/>
+      <menuitem action="ConfigureTaxes"/>
+      <menuitem action="ConfigureSintegra"/>
+      <menuitem action="ConfigureParameters"/>
+      <menuitem action="ConfigureInvoices"/>
+      <menuitem action="ConfigureInvoicePrinters"/>
+      <separator/>
+      <menuitem action="ConfigurePlugins"/>
+      <placeholder name="ConfigurePH"/>
+    </menu>
+  </placeholder>
+</menubar>

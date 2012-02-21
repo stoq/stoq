@@ -22,37 +22,35 @@
 ##
 -->
 
-<ui>
-  <menubar action="menubar">
-    <menu action="FileMenu">
-      <placeholder name="FileMenuPH">
-        <separator/>
-        <menuitem action="TillOpen"/>
-        <menuitem action="TillClose"/>
-      </placeholder>
-    </menu>
-    <menu action="EditMenu">
-      <placeholder name="EditMenuPH">
-      </placeholder>
-    </menu>
-    <menu action="SearchMenu">
-       <placeholder name="SearchMenuPH">
-         <menuitem action="Sales"/>
-         <menuitem action="SoldItemsByBranchSearch"/>
-         <menuitem action="Clients"/>
-         <menuitem action="ProductSearch"/>
-         <menuitem action="ServiceSearch"/>
-         <menuitem action="DeliverySearch"/>
-      </placeholder>
-    </menu>
-    <placeholder name="AppMenubarPH">
-      <menu action="OrderMenu">
-        <menuitem action="ConfirmOrder"/>
-        <menuitem action="CancelOrder"/>
-        <separator/>
-        <menuitem action="NewDelivery"/>
-      </menu>
+<menubar action="menubar">
+  <menu action="FileMenu">
+    <placeholder name="FileMenuPH">
+      <separator/>
+      <menuitem action="TillOpen"/>
+      <menuitem action="TillClose"/>
     </placeholder>
-    <placeholder name="ExtraMenu"/>
-  </menubar>
-</ui>
+  </menu>
+  <menu action="EditMenu">
+    <placeholder name="EditMenuPH">
+    </placeholder>
+  </menu>
+  <menu action="SearchMenu">
+     <placeholder name="SearchMenuPH">
+       <menuitem action="Sales"/>
+       <menuitem action="SoldItemsByBranchSearch"/>
+       <menuitem action="Clients"/>
+       <menuitem action="ProductSearch"/>
+       <menuitem action="ServiceSearch"/>
+       <menuitem action="DeliverySearch"/>
+    </placeholder>
+  </menu>
+  <placeholder name="AppMenubarPH">
+    <menu action="OrderMenu">
+      <menuitem action="ConfirmOrder"/>
+      <menuitem action="CancelOrder"/>
+      <separator/>
+      <menuitem action="NewDelivery"/>
+    </menu>
+  </placeholder>
+  <placeholder name="ExtraMenu"/>
+</menubar>
