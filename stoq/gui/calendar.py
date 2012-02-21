@@ -37,7 +37,7 @@ import gtk
 
 from stoqlib.api import api
 from stoqlib.domain.person import Client
-from stoqlib.gui.editors.callsedior import CallsEditor
+from stoqlib.gui.editors.callseditor import CallsEditor
 from stoqlib.gui.editors.paymenteditor import (InPaymentEditor,
                                                OutPaymentEditor)
 from stoqlib.gui.keybindings import get_accels
