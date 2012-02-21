@@ -45,7 +45,7 @@ class PurchaseImporter(CSVImporter):
               'quantity']
 
     def process_one(self, data, fields, trans):
-        person = Person.selectOneBy(name=data.branch_name,
+        person = Person.selectOneBy(name=data.supplier_name,
                                     connection=trans)
         if person is None or person.supplier is None:
             raise ValueError("%s is not a valid supplier" % (
