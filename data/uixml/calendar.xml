@@ -22,46 +22,44 @@
 ##
 -->
 
-<ui>
-  <menubar action="menubar">
-    <menu action="FileMenu">
-      <menu action="NewMenu">
-        <placeholder action="NewMenuItemPH">
-          <menuitem action="NewClientCall"/>
-          <menuitem action="NewPayable"/>
-          <menuitem action="NewReceivable"/>
-        </placeholder>
-      </menu>
-    </menu>
-    <menu action="ViewMenu">
-      <placeholder name="ViewMenuPH">
-        <menu action="CurrentView">
-          <menuitem action="ViewMonth"/>
-          <menuitem action="ViewWeek"/>
-          <menuitem action="ViewDay"/>
-        </menu>
-        <menu action="CalendarEvents">
-          <menuitem action="ClientCallEvents"/>
-          <menuitem action="AccountsPayableEvents"/>
-          <menuitem action="AccountsReceivableEvents"/>
-          <menuitem action="PurchaseEvents"/>
-        </menu>
-        <menuitem action="Today"/>
-        <menuitem action="Back"/>
-        <menuitem action="Forward"/>
+<menubar action="menubar">
+  <menu action="FileMenu">
+    <menu action="NewMenu">
+      <placeholder action="NewMenuItemPH">
+        <menuitem action="NewClientCall"/>
+        <menuitem action="NewPayable"/>
+        <menuitem action="NewReceivable"/>
       </placeholder>
     </menu>
-  </menubar>
-  <toolbar action="toolbar">
-    <placeholder action="ApplicationToolbar">
-      <separator/>
-      <toolitem action="Back"/>
-      <toolitem action="Today"/>
-      <toolitem action="Forward"/>
-      <separator/>
-      <toolitem action="ViewMonth"/>
-      <toolitem action="ViewWeek"/>
-      <toolitem action="ViewDay"/>
+  </menu>
+  <menu action="ViewMenu">
+    <placeholder name="ViewMenuPH">
+      <menu action="CurrentView">
+        <menuitem action="ViewMonth"/>
+        <menuitem action="ViewWeek"/>
+        <menuitem action="ViewDay"/>
+      </menu>
+      <menu action="CalendarEvents">
+        <menuitem action="ClientCallEvents"/>
+        <menuitem action="AccountsPayableEvents"/>
+        <menuitem action="AccountsReceivableEvents"/>
+        <menuitem action="PurchaseEvents"/>
+      </menu>
+      <menuitem action="Today"/>
+      <menuitem action="Back"/>
+      <menuitem action="Forward"/>
     </placeholder>
-  </toolbar>
-</ui>
+  </menu>
+</menubar>
+<toolbar action="toolbar">
+  <placeholder action="ApplicationToolbar">
+    <separator/>
+    <toolitem action="Back"/>
+    <toolitem action="Today"/>
+    <toolitem action="Forward"/>
+    <separator/>
+    <toolitem action="ViewMonth"/>
+    <toolitem action="ViewWeek"/>
+    <toolitem action="ViewDay"/>
+  </placeholder>
+</toolbar>

@@ -22,44 +22,42 @@
 ##
 -->
 
-<ui>
-  <menubar action="menubar">
-    <menu action="FileMenu">
-      <menu action="NewMenu">
-        <placeholder action="NewMenuItemPH">
-          <menuitem action="NewAccount"/>
-          <menuitem action="NewTransaction"/>
-        </placeholder>
-      </menu>
-      <placeholder name="FileMenuPH">
-        <menuitem action="Import"/>
+<menubar action="menubar">
+  <menu action="FileMenu">
+    <menu action="NewMenu">
+      <placeholder action="NewMenuItemPH">
+        <menuitem action="NewAccount"/>
+        <menuitem action="NewTransaction"/>
       </placeholder>
     </menu>
-    <placeholder name="AppMenubarPH">
-      <menu action="TransactionMenu">
-        <menuitem action="Edit"/>
-        <menuitem action="DeleteTransaction"/>
-      </menu>
-      <menu action="AccountMenu">
-        <menuitem action="Edit"/>
-        <menuitem action="DeleteAccount"/>
-      </menu>
+    <placeholder name="FileMenuPH">
+      <menuitem action="Import"/>
     </placeholder>
-  </menubar>
-  <popup name="AccountSelection">
-    <menuitem action="Edit"/>
-    <menuitem action="DeleteAccount"/>
-  </popup>
-  <popup name="TransactionSelection">
-    <menuitem action="Edit"/>
-    <menuitem action="DeleteTransaction"/>
-  </popup>
-  <toolbar action="toolbar">
-    <placeholder action="ApplicationToolbar">
-      <separator/>
-      <toolitem action="Edit"/>
-      <toolitem action="DeleteAccount"/>
-      <toolitem action="DeleteTransaction"/>
-    </placeholder>
-  </toolbar>
-</ui>
+  </menu>
+  <placeholder name="AppMenubarPH">
+    <menu action="TransactionMenu">
+      <menuitem action="Edit"/>
+      <menuitem action="DeleteTransaction"/>
+    </menu>
+    <menu action="AccountMenu">
+      <menuitem action="Edit"/>
+      <menuitem action="DeleteAccount"/>
+    </menu>
+  </placeholder>
+</menubar>
+<popup name="AccountSelection">
+  <menuitem action="Edit"/>
+  <menuitem action="DeleteAccount"/>
+</popup>
+<popup name="TransactionSelection">
+  <menuitem action="Edit"/>
+  <menuitem action="DeleteTransaction"/>
+</popup>
+<toolbar action="toolbar">
+  <placeholder action="ApplicationToolbar">
+    <separator/>
+    <toolitem action="Edit"/>
+    <toolitem action="DeleteAccount"/>
+    <toolitem action="DeleteTransaction"/>
+  </placeholder>
+</toolbar>

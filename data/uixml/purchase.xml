@@ -22,70 +22,68 @@
 ##
 -->
 
-<ui>
-  <menubar action="menubar">
-    <menu action="FileMenu">
-      <menu action="NewMenu">
-        <placeholder name="NewMenuItemPH">
-          <menuitem action="NewOrder"/>
-          <menuitem action="NewQuote"/>
-          <menuitem action="NewProduct"/>
-          <menuitem action="NewConsignment"/>
-        </placeholder>
-      </menu>
-      <placeholder name="FileMenuPH">
-        <menuitem action="CloseInConsignment"/>
+<menubar action="menubar">
+  <menu action="FileMenu">
+    <menu action="NewMenu">
+      <placeholder name="NewMenuItemPH">
+        <menuitem action="NewOrder"/>
+        <menuitem action="NewQuote"/>
+        <menuitem action="NewProduct"/>
+        <menuitem action="NewConsignment"/>
       </placeholder>
     </menu>
-    <menu action="EditMenu">
-      <placeholder name="EditMenuPH">
-        <menuitem action="StockCost"/>
-      </placeholder>
-    </menu>
-    <menu action="SearchMenu">
-      <placeholder name="SearchMenuPH">
-        <menuitem action="BaseCategories"/>
-        <menuitem action="Categories"/>
-        <menuitem action="ProductUnits"/>
-        <menuitem action="Products"/>
-        <menuitem action="Services"/>
-        <menuitem action="SearchStockItems"/>
-        <menuitem action="SearchClosedStockItems"/>
-        <menuitem action="Transporter"/>
-        <menuitem action="Suppliers"/>
-        <menuitem action="SearchQuotes"/>
-        <menuitem action="SearchPurchasedItems"/>
-        <menuitem action="ProductsSoldSearch"/>
-        <menuitem action="ProductsPriceSearch"/>
-        <menuitem action="SearchInConsignmentItems"/>
-      </placeholder>
-    </menu>
-    <placeholder name="AppMenubarPH">
-      <menu action="OrderMenu">
-        <menuitem action="Details"/>
-        <separator/>
-        <menuitem action="Edit"/>
-        <menuitem action="Confirm"/>
-        <menuitem action="Finish"/>
-        <menuitem action="Cancel"/>
-      </menu>
+    <placeholder name="FileMenuPH">
+      <menuitem action="CloseInConsignment"/>
     </placeholder>
-  </menubar>
-  <popup name="PurchaseSelection">
-    <menuitem action="Details"/>
-    <separator/>
-    <menuitem action="Edit"/>
-    <menuitem action="Confirm"/>
-    <menuitem action="Finish"/>
-    <menuitem action="Cancel"/>
-  </popup>
-  <toolbar action="toolbar">
-    <placeholder name="AppToolbarPH">
+  </menu>
+  <menu action="EditMenu">
+    <placeholder name="EditMenuPH">
+      <menuitem action="StockCost"/>
+    </placeholder>
+  </menu>
+  <menu action="SearchMenu">
+    <placeholder name="SearchMenuPH">
+      <menuitem action="BaseCategories"/>
+      <menuitem action="Categories"/>
+      <menuitem action="ProductUnits"/>
+      <menuitem action="Products"/>
+      <menuitem action="Services"/>
+      <menuitem action="SearchStockItems"/>
+      <menuitem action="SearchClosedStockItems"/>
+      <menuitem action="Transporter"/>
+      <menuitem action="Suppliers"/>
+      <menuitem action="SearchQuotes"/>
+      <menuitem action="SearchPurchasedItems"/>
+      <menuitem action="ProductsSoldSearch"/>
+      <menuitem action="ProductsPriceSearch"/>
+      <menuitem action="SearchInConsignmentItems"/>
+    </placeholder>
+  </menu>
+  <placeholder name="AppMenubarPH">
+    <menu action="OrderMenu">
+      <menuitem action="Details"/>
       <separator/>
-      <toolitem action="Confirm"/>
-      <toolitem action="Edit"/>
-      <toolitem action="Cancel"/>
-      <toolitem action="Details"/>
-    </placeholder>
-  </toolbar>
-</ui>
+      <menuitem action="Edit"/>
+      <menuitem action="Confirm"/>
+      <menuitem action="Finish"/>
+      <menuitem action="Cancel"/>
+    </menu>
+  </placeholder>
+</menubar>
+<popup name="PurchaseSelection">
+  <menuitem action="Details"/>
+  <separator/>
+  <menuitem action="Edit"/>
+  <menuitem action="Confirm"/>
+  <menuitem action="Finish"/>
+  <menuitem action="Cancel"/>
+</popup>
+<toolbar action="toolbar">
+  <placeholder name="AppToolbarPH">
+    <separator/>
+    <toolitem action="Confirm"/>
+    <toolitem action="Edit"/>
+    <toolitem action="Cancel"/>
+    <toolitem action="Details"/>
+  </placeholder>
+</toolbar>
