@@ -77,6 +77,7 @@ class Shell(object):
         self._check_dependencies()
         self._show_splash()
         self._setup_gtk()
+        self._setup_kiwi()
         self._setup_twisted()
         self._check_version_policy()
         self._setup_ui_dialogs()
@@ -166,6 +167,10 @@ class Shell(object):
         gtk.Button()
         settings = gtk.settings_get_default()
         settings.props.gtk_button_images = True
+
+    def _setup_kiwi(self):
+        from kiwi.ui.views import set_glade_loader_func
+        set_glade_loader_func(self._glade_loader_func)
 
     def _setup_twisted(self):
         from twisted.internet import gtk2reactor
@@ -533,6 +538,14 @@ class Shell(object):
         if self._restart:
             Process([sys.argv[0]], shell=True)
 
+    def _glade_loader_func(self, view, filename, domain):
+        from kiwi.environ import environ
+        from kiwi.ui.builderloader import BuilderWidgetTree
+        if not filename.endswith('ui'):
+            filename += '.ui'
+        ui_string = environ.get_resource_string('stoq', 'glade', filename)
+
+        return BuilderWidgetTree(view, None, domain, ui_string)
     #
     # Public API
     #
