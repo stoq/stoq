@@ -28,3 +28,4 @@ include CONTRIBUTORS
 include stoq.desktop
 include stoq.spec
 include data/br.com.stoq.createdatabase.policy
+include __main__.py

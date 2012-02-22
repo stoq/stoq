@@ -43,10 +43,13 @@ from kiwi.dist import setup, listfiles, listpackages
 from stoq import website, version
 
 
-if 'bdist_egg' in sys.argv:
+building_egg = 'bdist_egg' in sys.argv
+if building_egg:
     python_dir = ''
+    plugin_dir = 'stoq/data'
 else:
     python_dir = 'lib/stoqlib/'
+    plugin_dir = python_dir
 
 
 def listexternal():
@@ -55,9 +58,14 @@ def listexternal():
         # strip external
         dirs.append(package.replace('.', '/'))
 
+    if python_dir:
+        base = python_dir + '/'
+    else:
+        base = ''
+
     files = []
     for directory in dirs:
-        files.append((python_dir + directory[9:],
+        files.append((base + directory[9:],
                       listfiles(directory, '*.py')))
     return files
 
@@ -95,6 +103,7 @@ scripts = [
     'bin/stoqcreatedbuser',
     'bin/stoq-daemon',
     ]
+templates = []
 data_files = [
     ('$datadir/csv', listfiles('data', 'csv', '*.csv')),
     ('$datadir/glade', listfiles('data', 'glade', '*.ui')),
@@ -112,9 +121,12 @@ data_files = [
     ('$datadir/html/css', listfiles('data', 'html', 'css', '*.css')),
     ('$datadir/html/images', listfiles('data', 'html', 'images', '*.png')),
     ('$datadir/html/js', listfiles('data', 'html', 'js', '*.js')),
-    ('$sysconfdir/stoq',  ''),
     ('share/doc/stoq', ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
                         'COPYING.stoqlib', 'README', 'docs/copyright']),
+    ]
+
+if not building_egg:
+    data_files.extend([
     ('share/gnome/help/stoq/C', listfiles('help/pt_BR', '*.page')),
     ('share/gnome/help/stoq/C', listfiles('help/pt_BR', '*.xml')),
     ('share/gnome/help/stoq/C/figures',
@@ -123,10 +135,11 @@ data_files = [
      listfiles('help/pt_BR/figures', '*.svg')),
     ('share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
     ('share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
-    ]
+    ('$sysconfdir/stoq',  ''),
+    ])
+    templates.append(
+        ('share/applications', ['stoq.desktop']))
 data_files += listexternal()
-templates = [
-    ('share/applications', ['stoq.desktop'])]
 
 resources = dict(
     locale='$prefix/share/locale',
@@ -170,4 +183,5 @@ setup(name='stoq',
       scripts=scripts,
       resources=resources,
       global_resources=global_resources,
-      templates=templates)
+      templates=templates,
+      zip_safe=True)
