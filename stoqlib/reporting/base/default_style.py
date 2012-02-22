@@ -23,8 +23,6 @@
     texts.
 """
 
-import os
-
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle, StyleSheet1
 from reportlab.lib.units import mm
