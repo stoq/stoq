@@ -721,10 +721,8 @@ class AppWindow(GladeDelegate):
             raise ValueError(action_type)
         self.uimanager.insert_action_group(ag, 0)
         if filename is not None:
-            filename = environ.find_resource('uixml', filename)
-            ui_id = self.uimanager.add_ui_from_file(filename)
-        else:
-            ui_id = self.uimanager.add_ui_from_string(ui_string)
+            ui_string = environ.get_resource_string('stoq', 'uixml', filename)
+        ui_id = self.uimanager.add_ui_from_string(ui_string)
         for action in ag.list_actions():
             setattr(self, action.get_name(), action)
         return ui_id
