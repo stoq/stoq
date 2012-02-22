@@ -34,16 +34,13 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from kiwi.environ import environ
 
-fonts_dir = environ.get_resource_paths("fonts")[0]
-
-pdfmetrics.registerFont(TTFont("Vera",
-                               os.path.join(fonts_dir, "Vera.ttf")))
-pdfmetrics.registerFont(TTFont("Vera-B",
-                               os.path.join(fonts_dir, "VeraBd.ttf")))
-pdfmetrics.registerFont(TTFont("Vera-I",
-                               os.path.join(fonts_dir, "VeraIt.ttf")))
-pdfmetrics.registerFont(TTFont("Vera-BI",
-                               os.path.join(fonts_dir, "VeraBI.ttf")))
+for name, filename in [('Vera', 'Vera.ttf'),
+                       ('Vera-B', 'VeraBd.ttf'),
+                       ('Vera-I', 'VeraIt.ttf'),
+                       ('Vera-BI', 'VeraBI.ttf')]:
+    # FIXME: find a way to load a font without extracting a file
+    extracted = environ.get_resource_filename('stoq', 'fonts', filename)
+    pdfmetrics.registerFont(TTFont(name, extracted))
 
 # FIXME: Add support for TTF fonts
 STYLE_SHEET = StyleSheet1()
