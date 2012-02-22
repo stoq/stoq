@@ -50,7 +50,7 @@ CREATE TABLE client_category (
     name text UNIQUE
 );
 
-CREATE TABLE person_adapt_to_client (
+CREATE TABLE client (
     id serial NOT NULL PRIMARY KEY,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -65,7 +65,7 @@ CREATE TABLE person_adapt_to_client (
     category_id bigint REFERENCES client_category(id)
 );
 
-CREATE TABLE person_adapt_to_company (
+CREATE TABLE company (
     id serial NOT NULL PRIMARY KEY,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -77,7 +77,7 @@ CREATE TABLE person_adapt_to_company (
     original_id bigint UNIQUE REFERENCES person(id)
 );
 
-CREATE TABLE person_adapt_to_credit_provider (
+CREATE TABLE credit_provider (
     id serial NOT NULL PRIMARY KEY,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -127,7 +127,7 @@ CREATE TABLE city_location (
     UNIQUE(country, state, city)
 );
 
-CREATE TABLE person_adapt_to_individual (
+CREATE TABLE individual (
     id serial NOT NULL PRIMARY KEY,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -206,7 +206,7 @@ CREATE TABLE bill_option (
     bank_account_id bigint REFERENCES bank_account(id)
 );
 
-CREATE TABLE person_adapt_to_employee (
+CREATE TABLE employee (
     id serial NOT NULL PRIMARY KEY,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -228,17 +228,17 @@ CREATE TABLE person_adapt_to_employee (
     original_id bigint UNIQUE REFERENCES person(id)
 );
 
-CREATE TABLE person_adapt_to_branch (
+CREATE TABLE branch (
     id serial NOT NULL PRIMARY KEY,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    manager_id bigint REFERENCES person_adapt_to_employee(id),
+    manager_id bigint REFERENCES employee(id),
     is_active boolean,
     crt integer DEFAULT 1,
     original_id bigint UNIQUE REFERENCES person(id)
 );
 
-CREATE TABLE person_adapt_to_sales_person (
+CREATE TABLE sales_person (
     id serial NOT NULL PRIMARY KEY,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -250,7 +250,7 @@ CREATE TABLE person_adapt_to_sales_person (
     original_id bigint UNIQUE REFERENCES person(id)
 );
 
-CREATE TABLE person_adapt_to_supplier (
+CREATE TABLE supplier (
     id serial NOT NULL PRIMARY KEY,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -261,7 +261,7 @@ CREATE TABLE person_adapt_to_supplier (
     original_id bigint UNIQUE REFERENCES person(id)
 );
 
-CREATE TABLE person_adapt_to_transporter (
+CREATE TABLE transporter (
     id serial NOT NULL PRIMARY KEY,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -280,7 +280,7 @@ CREATE TABLE user_profile (
     name text
 );
 
-CREATE TABLE person_adapt_to_user (
+CREATE TABLE login_user (
     id serial NOT NULL PRIMARY KEY,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -466,7 +466,7 @@ CREATE TABLE product_supplier_info (
     lead_time integer DEFAULT 1 CONSTRAINT positive_lead_time
         CHECK (lead_time > 0),
     minimum_purchase numeric(20, 3) DEFAULT 1,
-    supplier_id bigint NOT NULL REFERENCES person_adapt_to_supplier(id),
+    supplier_id bigint NOT NULL REFERENCES supplier(id),
     product_id bigint NOT NULL REFERENCES product(id)
 );
 
@@ -492,7 +492,7 @@ CREATE TABLE product_history (
     decreased_date timestamp,
     quantity_decreased numeric(20, 3) CONSTRAINT positive_decreased
         CHECK (quantity_decreased > 0),
-    branch_id bigint REFERENCES person_adapt_to_branch(id),
+    branch_id bigint REFERENCES branch(id),
     sellable_id bigint REFERENCES sellable(id)
 );
 
@@ -519,9 +519,9 @@ CREATE TABLE payment_renegotiation (
     total numeric(20, 2) CONSTRAINT positive_total
         CHECK (total >= 0),
     notes text,
-    client_id bigint REFERENCES person_adapt_to_client(id),
-    responsible_id bigint REFERENCES person_adapt_to_user(id),
-    branch_id bigint REFERENCES person_adapt_to_branch(id)
+    client_id bigint REFERENCES client(id),
+    responsible_id bigint REFERENCES login_user(id),
+    branch_id bigint REFERENCES branch(id)
     -- group_id bigint REFERENCES payment_group(id)
 );
 
@@ -581,10 +581,10 @@ CREATE TABLE purchase_order (
     discount_value numeric(20, 2) CONSTRAINT positive_discount_value
         CHECK (discount_value >= 0),
     consigned boolean DEFAULT FALSE,
-    supplier_id bigint REFERENCES person_adapt_to_supplier(id),
-    branch_id bigint REFERENCES person_adapt_to_branch(id),
-    transporter_id bigint REFERENCES person_adapt_to_transporter(id),
-    responsible_id bigint REFERENCES person_adapt_to_user(id),
+    supplier_id bigint REFERENCES supplier(id),
+    branch_id bigint REFERENCES branch(id),
+    transporter_id bigint REFERENCES transporter(id),
+    responsible_id bigint REFERENCES login_user(id),
     group_id bigint REFERENCES payment_group(id)
 );
 
@@ -634,7 +634,7 @@ CREATE TABLE branch_station (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     name text UNIQUE,
     is_active boolean,
-    branch_id bigint REFERENCES person_adapt_to_branch(id)
+    branch_id bigint REFERENCES branch(id)
 );
 
 CREATE TABLE till (
@@ -689,13 +689,13 @@ CREATE TABLE sale (
     expire_date timestamp,
     operation_nature text,
     notes text,
-    client_id bigint REFERENCES person_adapt_to_client(id),
+    client_id bigint REFERENCES client(id),
     client_category_id bigint REFERENCES client_category(id),
     cfop_id bigint REFERENCES cfop_data(id),
-    salesperson_id bigint REFERENCES person_adapt_to_sales_person(id),
-    branch_id bigint REFERENCES person_adapt_to_branch(id),
+    salesperson_id bigint REFERENCES sales_person(id),
+    branch_id bigint REFERENCES branch(id),
     group_id bigint REFERENCES payment_group(id),
-    transporter_id bigint REFERENCES person_adapt_to_transporter(id)
+    transporter_id bigint REFERENCES transporter(id)
 );
 
 CREATE TABLE sale_item_icms (
@@ -781,7 +781,7 @@ CREATE TABLE product_stock_item (
     logic_quantity numeric(20, 3) CONSTRAINT positive_logic_quantity
         CHECK (logic_quantity >= 0),
     storable_id bigint REFERENCES product_adapt_to_storable(id),
-    branch_id bigint REFERENCES person_adapt_to_branch(id)
+    branch_id bigint REFERENCES branch(id)
 );
 
 CREATE TABLE address (
@@ -802,7 +802,7 @@ CREATE TABLE address (
 CREATE TABLE branch_synchronization (
     id serial NOT NULL PRIMARY KEY,
     sync_time timestamp  NOT NULL,
-    branch_id bigint REFERENCES person_adapt_to_branch(id),
+    branch_id bigint REFERENCES branch(id),
     policy text NOT NULL
 );
 
@@ -814,7 +814,7 @@ CREATE TABLE calls (
     message text,
     description text,
     person_id bigint REFERENCES person(id),
-    attendant_id bigint REFERENCES person_adapt_to_user(id)
+    attendant_id bigint REFERENCES login_user(id)
 );
 
 CREATE TABLE card_installment_settings (
@@ -923,7 +923,7 @@ CREATE TABLE payment_comment (
     date timestamp,
     comment text,
     payment_id bigint REFERENCES payment(id),
-    author_id bigint REFERENCES person_adapt_to_user(id)
+    author_id bigint REFERENCES login_user(id)
 );
 
 CREATE TABLE check_data (
@@ -958,7 +958,7 @@ CREATE TABLE credit_card_data (
     fee numeric(10, 2) NOT NULL DEFAULT 0,
     fee_value numeric(20, 2) DEFAULT 0,
     payment_id bigint UNIQUE REFERENCES payment(id),
-    provider_id bigint REFERENCES person_adapt_to_credit_provider(id)
+    provider_id bigint REFERENCES credit_provider(id)
 );
 
 CREATE TABLE payment_change_history (
@@ -1030,7 +1030,7 @@ CREATE TABLE employee_role_history (
     ended timestamp,
     salary numeric(20, 2),
     role_id bigint REFERENCES employee_role(id),
-    employee_id bigint REFERENCES person_adapt_to_employee(id),
+    employee_id bigint REFERENCES employee(id),
     is_active boolean
 );
 
@@ -1083,11 +1083,11 @@ CREATE TABLE receiving_order (
        CHECK (invoice_number >= 1 AND invoice_number <= 999999),
     invoice_total numeric(20, 2),
     cfop_id bigint REFERENCES cfop_data(id),
-    responsible_id bigint REFERENCES person_adapt_to_user(id),
-    supplier_id bigint REFERENCES person_adapt_to_supplier(id),
-    branch_id bigint REFERENCES person_adapt_to_branch(id),
+    responsible_id bigint REFERENCES login_user(id),
+    supplier_id bigint REFERENCES supplier(id),
+    branch_id bigint REFERENCES branch(id),
     purchase_id bigint NOT NULL REFERENCES purchase_order(id),
-    transporter_id bigint REFERENCES person_adapt_to_transporter(id),
+    transporter_id bigint REFERENCES transporter(id),
     secure_value numeric(20, 2) CONSTRAINT positive_secure_value
         CHECK (secure_value >= 0),
     expense_value numeric(20, 2) CONSTRAINT positive_expense_value
@@ -1155,7 +1155,7 @@ CREATE TABLE fiscal_book_entry (
     invoice_number integer CONSTRAINT positive_invoice_number
         CHECK (invoice_number >= 0),
     cfop_id bigint REFERENCES cfop_data(id),
-    branch_id bigint REFERENCES person_adapt_to_branch(id),
+    branch_id bigint REFERENCES branch(id),
     drawee_id bigint REFERENCES person(id),
     payment_group_id bigint REFERENCES payment_group(id)
 );
@@ -1235,7 +1235,7 @@ CREATE TABLE commission (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     value numeric(20, 2) NOT NULL,
     commission_type integer NOT NULL,
-    salesperson_id bigint NOT NULL REFERENCES person_adapt_to_sales_person(id),
+    salesperson_id bigint NOT NULL REFERENCES sales_person(id),
     sale_id bigint NOT NULL REFERENCES sale(id),
     payment_id bigint NOT NULL UNIQUE REFERENCES payment(id)
 );
@@ -1248,10 +1248,10 @@ CREATE TABLE transfer_order (
     receival_date timestamp,
     status integer CONSTRAINT valid_status
         CHECK (status >= 0 AND status < 2),
-    source_branch_id bigint NOT NULL REFERENCES person_adapt_to_branch(id),
-    destination_branch_id bigint NOT NULL REFERENCES person_adapt_to_branch(id),
-    source_responsible_id bigint NOT NULL REFERENCES person_adapt_to_employee(id),
-    destination_responsible_id bigint NOT NULL REFERENCES person_adapt_to_employee(id)
+    source_branch_id bigint NOT NULL REFERENCES branch(id),
+    destination_branch_id bigint NOT NULL REFERENCES branch(id),
+    source_responsible_id bigint NOT NULL REFERENCES employee(id),
+    destination_responsible_id bigint NOT NULL REFERENCES employee(id)
 );
 
 CREATE TABLE transfer_order_item (
@@ -1311,7 +1311,7 @@ CREATE TABLE inventory (
     close_date timestamp,
     invoice_number integer CONSTRAINT positive_invoice_number
         CHECK (invoice_number > 0  and invoice_number < 999999),
-    branch_id bigint NOT NULL REFERENCES person_adapt_to_branch(id)
+    branch_id bigint NOT NULL REFERENCES branch(id)
 );
 
 CREATE TABLE inventory_item (
@@ -1341,8 +1341,8 @@ CREATE TABLE production_order (
     expected_start_date timestamp,
     start_date timestamp,
     description text,
-    responsible_id bigint REFERENCES person_adapt_to_employee(id),
-    branch_id bigint REFERENCES person_adapt_to_branch(id)
+    responsible_id bigint REFERENCES employee(id),
+    branch_id bigint REFERENCES branch(id)
 );
 
 CREATE TABLE production_item (
@@ -1400,9 +1400,9 @@ CREATE TABLE loan (
         CHECK (status >= 0 AND status < 6),
     notes text,
     removed_by text,
-    client_id bigint REFERENCES person_adapt_to_client(id),
-    responsible_id bigint REFERENCES person_adapt_to_user(id),
-    branch_id bigint REFERENCES person_adapt_to_branch(id)
+    client_id bigint REFERENCES client(id),
+    responsible_id bigint REFERENCES login_user(id),
+    branch_id bigint REFERENCES branch(id)
 );
 
 CREATE TABLE loan_item (
@@ -1430,9 +1430,9 @@ CREATE TABLE stock_decrease (
         CHECK (status >= 0 AND status < 8),
     reason text,
     notes text,
-    responsible_id bigint REFERENCES person_adapt_to_user(id),
-    removed_by_id bigint REFERENCES person_adapt_to_employee(id),
-    branch_id bigint REFERENCES person_adapt_to_branch(id),
+    responsible_id bigint REFERENCES login_user(id),
+    removed_by_id bigint REFERENCES employee(id),
+    branch_id bigint REFERENCES branch(id),
     cfop_id bigint REFERENCES cfop_data(id)
 );
 
@@ -1505,7 +1505,7 @@ CREATE TABLE production_produced_item (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     order_id bigint REFERENCES production_order(id),
     product_id bigint REFERENCES product(id),
-    produced_by_id bigint REFERENCES person_adapt_to_user(id),
+    produced_by_id bigint REFERENCES login_user(id),
     produced_date timestamp,
     serial_number integer,
     entered_stock boolean,
@@ -1520,7 +1520,7 @@ CREATE TABLE production_item_quality_result (
 
     produced_item_id bigint REFERENCES production_produced_item(id),
     quality_test_id bigint REFERENCES product_quality_test(id),
-    tested_by_id bigint REFERENCES person_adapt_to_user(id),
+    tested_by_id bigint REFERENCES login_user(id),
     tested_date timestamp,
 
     result_value text,
@@ -1535,7 +1535,7 @@ CREATE TABLE production_item_quality_result (
 
 ALTER TABLE transaction_entry
     ADD CONSTRAINT transaction_entry_user_id_fkey FOREIGN KEY
-        (user_id) REFERENCES person_adapt_to_user (id),
+        (user_id) REFERENCES login_user (id),
     ADD CONSTRAINT transaction_entry_station_id_fkey FOREIGN KEY
         (station_id) REFERENCES branch_station (id);
 
