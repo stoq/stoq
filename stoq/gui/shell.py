@@ -519,6 +519,12 @@ class Shell(object):
 
     # FIXME: this logic should be inside stoqlib.
     def _exit_func(self):
+        # This removes all temporary files created when
+        # calling get_resource_filename() that actually extract files
+        # to the file system
+        import pkg_resources
+        pkg_resources.cleanup_resources()
+
         from stoqlib.lib.daemonutils import stop_daemon
         stop_daemon()
 
