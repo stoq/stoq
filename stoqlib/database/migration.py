@@ -204,6 +204,22 @@ class SchemaMigration(object):
 
     # Public API
 
+    def check(self, check_plugins=True):
+        if self.check_uptodate():
+            return True
+
+        if not check_plugins:
+            return True
+
+        if self.check_plugins():
+            return True
+
+        error(_("Database schema error"),
+              _("The database schema has changed, but the database has "
+                "not been updated. Run 'stoqdbadmin updateschema` to "
+                "update the schema  to the latest available version."))
+        return False
+
     def check_uptodate(self):
         """
         Verify if the schema is up to date.

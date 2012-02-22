@@ -123,7 +123,12 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
             error(e.short, str(e.msg))
 
         check_version(conn)
+
+        migration = StoqlibSchemaMigration()
+        migration.check()
+
         orm_startup()
+
         if options and options.sqldebug:
             orm_enable_debugging()
 
@@ -149,12 +154,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
                   "Consult your database administrator to solve this problem."))
 
         migration = StoqlibSchemaMigration()
-        if (not migration.check_uptodate() or
-            (load_plugins and not migration.check_plugins())):
-            error(_("Database schema error"),
-                  _("The database schema has changed, but the database has "
-                    "not been updated. Run 'stoqdbadmin updateschema` to "
-                    "update the schema  to the latest available version."))
+        migration.check()
 
         orm_startup()
         if options and options.sqldebug:
