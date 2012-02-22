@@ -41,7 +41,7 @@ class ProgressDialog(GladeDelegate):
         - Emitted when a the cancel button is clicked
 
     """
-    gladefile = "ProgressDialog.glade"
+    gladefile = "ProgressDialog"
     toplevel_name = "ProgressDialog"
 
     gsignal('cancel')
