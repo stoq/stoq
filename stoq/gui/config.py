@@ -59,7 +59,6 @@ from kiwi.log import Logger
 from kiwi.python import Settable
 from kiwi.ui.dialogs import info
 from kiwi.ui.delegates import GladeSlaveDelegate
-from kiwi.ui.wizard import WizardStep
 
 from stoqlib.api import api
 from stoqlib.exceptions import DatabaseInconsistency
@@ -73,7 +72,8 @@ from stoqlib.domain.person import LoginUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseError
-from stoqlib.gui.base.wizards import BaseWizard, WizardEditorStep
+from stoqlib.gui.base.wizards import (BaseWizard, WizardEditorStep,
+                                      WizardStep)
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.processview import ProcessView
 from stoqlib.lib.configparser import StoqConfig

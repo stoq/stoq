@@ -26,12 +26,12 @@ import inspect
 import gc
 
 from kiwi.python import Settable
-from kiwi.ui.wizard import WizardStep
 from twisted.trial.unittest import SkipTest
 
 from stoqlib.api import api
 from stoqlib.lib.introspection import get_all_classes
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
+from stoqlib.gui.base.wizards import WizardStep
 from stoqlib.domain.person import Person
 
 from stoqlib.domain.test.domaintest import DomainTest
