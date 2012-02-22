@@ -72,7 +72,7 @@ class CouponPrinter(object):
         log.info("Opening till")
 
         self._register_emitted_document(ECFDocumentHistory.TYPE_SUMMARY)
-        self._driver.summarize()
+        self._driver.open_till()
 
     def has_pending_reduce(self):
         return self._driver.has_pending_reduce()
