@@ -22,8 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
 from kiwi.environ import environ
+from kiwi.ui.pixbufutils import pixbuf_from_string
 
 sizes = {
     'config': (91, 32),
@@ -36,6 +36,5 @@ sizes = {
 
 def render_logo_pixbuf(size):
     width, height = sizes.get(size, (91, 32))
-    logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
-    return gtk.gdk.pixbuf_new_from_file_at_size(logo_file, width,
-                                                heigh)
+    logo = environ.get_resource_string('stoq', 'pixmaps', 'stoq_logo.svg')
+    return pixbuf_from_string(logo, 'svg')
