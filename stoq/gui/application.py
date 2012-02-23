@@ -443,7 +443,7 @@ class AppWindow(GladeDelegate):
         release_date = stoq.release_date
         about.set_comments('Release Date: %s' %
                            datetime.datetime(*release_date).strftime('%x'))
-        about.set_copyright('Copyright (C) 2005-2011 Async Open Source')
+        about.set_copyright('Copyright (C) 2005-2012 Async Open Source')
 
         about.set_logo(render_logo_pixbuf('about'))
 
