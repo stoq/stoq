@@ -121,12 +121,18 @@ data_files = [
     ('$datadir/html/css', listfiles('data', 'html', 'css', '*.css')),
     ('$datadir/html/images', listfiles('data', 'html', 'images', '*.png')),
     ('$datadir/html/js', listfiles('data', 'html', 'js', '*.js')),
-    ('share/doc/stoq', ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
-                        'COPYING.stoqlib', 'README', 'docs/copyright']),
     ]
 
-if not building_egg:
+if building_egg:
+    data_files.append(
+        ('stoq/data/docs',
+         ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
+          'COPYING.stoqlib', 'README', 'docs/copyright']))
+
+else:
     data_files.extend([
+    ('share/doc/stoq', ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
+                        'COPYING.stoqlib', 'README', 'docs/copyright']),
     ('share/gnome/help/stoq/C', listfiles('help/pt_BR', '*.page')),
     ('share/gnome/help/stoq/C', listfiles('help/pt_BR', '*.xml')),
     ('share/gnome/help/stoq/C/figures',
