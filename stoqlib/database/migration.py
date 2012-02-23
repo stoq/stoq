@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007-2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 """Schema migration
 """
 
-import glob
+import fnmatch
 import os
 import re
 import shutil
@@ -144,19 +144,23 @@ class SchemaMigration(object):
         # simple checking of the patch naming convention
         valid_patterns = ["patch-\d\d-\d\d.sql", "patch-\d\d-\d\d.py"]
         for valid_pattern in valid_patterns:
-            if re.match(valid_pattern, os.path.basename(filename)) is not None:
+            if re.match(valid_pattern, filename) is not None:
                 return True
         return False
 
     def _get_patches(self):
         patches = []
-        for directory in environ.get_resource_paths(self.patch_resource):
+        directory = environ.get_resource_paths(self.patch_resource)[0]
+        for filename in os.listdir(directory):
             for pattern in self.patch_patterns:
-                for filename in glob.glob(os.path.join(directory, pattern)):
-                    if self._patchname_is_valid(filename):
-                        patches.append(Patch(filename, self))
-                    else:
-                        print "Invalid patch name: %s" % filename
+                if not fnmatch.fnmatch(filename, pattern):
+                    continue
+                if not self._patchname_is_valid(filename):
+                    print "Invalid patch name: %s" % filename
+                    continue
+                filename = os.path.join(directory, filename)
+                patches.append(Patch(filename, self))
+
         return sorted(patches)
 
     def _update_schema(self):
