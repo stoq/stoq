@@ -426,13 +426,13 @@ class AppWindow(GladeDelegate):
         self._version_checker.check_new_version()
 
     def _read_resource(self, domain, name):
-        try:
-            license = environ.find_resource(domain, name)
-            return file(license)
-        except EnvironmentError:
-            import gzip
-            license = environ.find_resource(domain, name + '.gz')
-            return gzip.GzipFile(license)
+        data = environ.get_resource_string('stoq', domain, name)
+        if data:
+            return data
+
+        import gzip
+        license = environ.find_resource(domain, name + '.gz')
+        return gzip.GzipFile(license).read()
 
     def _run_about(self):
         info = get_utility(IAppInfo)
@@ -453,15 +453,15 @@ class AppWindow(GladeDelegate):
             filename = 'COPYING.pt_BR'
         else:
             filename = 'COPYING'
-        fp = self._read_resource('docs', filename)
-        about.set_license(fp.read())
+        data = self._read_resource('docs', filename)
+        about.set_license(data)
 
         # Authors & Contributors
-        fp = self._read_resource('docs', 'AUTHORS')
-        lines = [a.strip() for a in fp.readlines()]
+        data = self._read_resource('docs', 'AUTHORS')
+        lines = data.split('\n')
         lines.append('') # separate authors from contributors
-        fp = self._read_resource('docs', 'CONTRIBUTORS')
-        lines.extend([c.strip() for c in fp.readlines()])
+        data = self._read_resource('docs', 'CONTRIBUTORS')
+        lines.extend([c.strip() for c in data.split()])
         about.set_authors(lines)
 
         about.run()
