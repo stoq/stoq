@@ -28,7 +28,7 @@ from kiwi.log import Logger
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.events import StartApplicationEvent
+from stoqlib.gui.events import StartApplicationEvent, StopApplicationEvent
 from stoqlib.gui.keybindings import add_bindings, get_accels
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -42,8 +42,10 @@ log = Logger("stoq-books-plugin")
 
 class BooksUI(object):
     def __init__(self):
+        self._ui = None
         self.conn = get_connection()
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
+        StopApplicationEvent.connect(self._on_StopApplicationEvent)
         add_bindings([
             ('plugin.books.search_books', '<Control><Alt>B'),
             ('plugin.books.search_publishers', '<Control><Alt>P'),
@@ -56,7 +58,7 @@ class BooksUI(object):
     def _get_menu_ui_string(self):
         return """<ui>
             <menubar name="menubar">
-                <placeholder name="ExtraMenu">
+                <placeholder name="ExtraMenubarPH">
                     <menu action="BooksMenu">
                     %s
                     </menu>
@@ -82,7 +84,7 @@ class BooksUI(object):
         ])
 
         uimanager.insert_action_group(ag, 0)
-        uimanager.add_ui_from_string(ui_string)
+        self._ui = uimanager.add_ui_from_string(ui_string)
 
     def _add_sale_menus(self, uimanager):
         menu_items_str = '<menuitem action="BookSearch"/>'
@@ -98,7 +100,7 @@ class BooksUI(object):
         ])
 
         uimanager.insert_action_group(ag, 0)
-        uimanager.add_ui_from_string(ui_string)
+        self._ui = uimanager.add_ui_from_string(ui_string)
 
     def _add_pos_menus(self, uimanager):
         menu_items_str = '<menuitem action="BookSearch"/>'
@@ -114,7 +116,13 @@ class BooksUI(object):
         ])
 
         uimanager.insert_action_group(ag, 0)
-        uimanager.add_ui_from_string(ui_string)
+        self._ui = uimanager.add_ui_from_string(ui_string)
+
+    def _remove_app_ui(self, uimanager):
+        if not self._ui:
+            return
+        uimanager.remove_ui(self._ui)
+        self._ui = None
 
     #
     # Accessors
@@ -135,6 +143,9 @@ class BooksUI(object):
             self._add_sale_menus(app.main_window.uimanager)
         elif appname == 'pos':
             self._add_pos_menus(app.main_window.uimanager)
+
+    def _on_StopApplicationEvent(self, appname, app):
+        self._remove_app_ui(app.main_window.uimanager)
 
     #
     # Callbacks

@@ -33,7 +33,19 @@ from stoqlib.lib.event import Event
 #
 
 class StartApplicationEvent(Event):
-    pass
+    """Emmited when an application is activated
+
+    :param appname: the name of the application
+    :param app: the app itself
+    """
+
+
+class StopApplicationEvent(Event):
+    """Emmited when an application is deactivated
+
+    :param appname: the name of the application
+    :param app: the app itself
+    """
 
 
 #
