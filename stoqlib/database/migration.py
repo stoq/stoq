@@ -158,7 +158,7 @@ class SchemaMigration(object):
                 if not self._patchname_is_valid(filename):
                     print "Invalid patch name: %s" % filename
                     continue
-                filename = os.path.join(directory, filename)
+                filename = environ.get_resource_filename('stoq', self.patch_resource, filename)
                 patches.append(Patch(filename, self))
 
         return sorted(patches)
@@ -185,7 +185,7 @@ class SchemaMigration(object):
                     continue
                 patches_to_apply.append(patch)
 
-            functions = environ.find_resource('sql', 'functions.sql')
+            functions = environ.get_resource_filename('stoq', 'sql', 'functions. sql')
             if execute_sql(functions) != 0:
                 error('Failed to create functions')
 
