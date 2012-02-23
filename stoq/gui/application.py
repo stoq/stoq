@@ -50,6 +50,7 @@ from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.keybindings import get_accel, get_accels
+from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.openbrowser import open_browser
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.splash import hide_splash
@@ -444,10 +445,7 @@ class AppWindow(GladeDelegate):
                            datetime.datetime(*release_date).strftime('%x'))
         about.set_copyright('Copyright (C) 2005-2011 Async Open Source')
 
-        # Logo
-        icon_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
-        logo = gtk.gdk.pixbuf_new_from_file(icon_file)
-        about.set_logo(logo)
+        about.set_logo(render_logo_pixbuf('about'))
 
         # License
 
