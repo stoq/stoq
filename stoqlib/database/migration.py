@@ -150,8 +150,7 @@ class SchemaMigration(object):
 
     def _get_patches(self):
         patches = []
-        directory = environ.get_resource_paths(self.patch_resource)[0]
-        for filename in os.listdir(directory):
+        for filename in environ.get_resource_names('stoq', self.patch_resource):
             for pattern in self.patch_patterns:
                 if not fnmatch.fnmatch(filename, pattern):
                     continue
