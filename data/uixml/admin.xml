@@ -49,8 +49,9 @@
       <menuitem action="ConfigureInvoices"/>
       <menuitem action="ConfigureInvoicePrinters"/>
       <separator/>
-      <menuitem action="ConfigurePlugins"/>
       <placeholder name="ConfigurePH"/>
+      <separator/>
+      <menuitem action="ConfigurePlugins"/>
     </menu>
   </placeholder>
 </menubar>

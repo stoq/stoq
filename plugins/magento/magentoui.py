@@ -28,7 +28,7 @@ import gtk
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.events import StartApplicationEvent
+from stoqlib.gui.events import StartApplicationEvent, StopApplicationEvent
 from stoqlib.lib.translation import stoqlib_gettext
 
 from gui.search.magentosearch import MagentoConfigSearch
@@ -40,7 +40,9 @@ class MagentoUI(object):
     """UI object for magento"""
 
     def __init__(self):
+        self._ui = None
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
+        StopApplicationEvent.connect(self._on_StopApplicationEvent)
 
     #
     #  Private
@@ -63,7 +65,13 @@ class MagentoUI(object):
              None, None, self._on_MagentoConfigSearch__activate),
             ])
         uimanager.insert_action_group(ag, 0)
-        uimanager.add_ui_from_string(ui_string)
+        self._ui = uimanager.add_ui_from_string(ui_string)
+
+    def _remove_app_ui(self, uimanager):
+        if not self._ui:
+            return
+        uimanager.remove_ui(self._ui)
+        self._ui = None
 
     #
     #  Callbacks
@@ -75,3 +83,6 @@ class MagentoUI(object):
     def _on_StartApplicationEvent(self, appname, app):
         if appname == 'admin':
             self._add_admin_menus(app.main_window.uimanager)
+
+    def _on_StopApplicationEvent(self, appname, app):
+        self._remove_app_ui()

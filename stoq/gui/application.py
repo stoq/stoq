@@ -47,6 +47,7 @@ from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.crashreportdialog import show_dialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
 from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
+from stoqlib.gui.events import StopApplicationEvent
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.keybindings import get_accel, get_accels
@@ -879,6 +880,9 @@ class AppWindow(GladeDelegate):
                 self.uimanager.remove_ui(self.current_app.help_ui)
                 self.current_app.help_ui = None
             self.current_widget.destroy()
+
+            app = self.current_app.app
+            StopApplicationEvent.emit(app.name, app)
             self.current_app = None
 
         self.get_toplevel().set_title(self.get_title())

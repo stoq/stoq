@@ -46,7 +46,8 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError
 from stoqlib.gui.keybindings import add_bindings, get_accels
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.events import StartApplicationEvent, CouponCreatedEvent
+from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
+                                CouponCreatedEvent)
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -65,6 +66,7 @@ log = Logger("stoq-ecf-plugin")
 
 class ECFUI(object):
     def __init__(self):
+        self._ui = None
         self.conn = get_connection()
         self._printer_verified = False
         self._printer = self._create_printer()
@@ -77,6 +79,7 @@ class ECFUI(object):
         TillAddTillEntryEvent.connect(self._on_AddTillEntry)
         TillRemoveCashEvent.connect(self._on_TillRemoveCash)
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
+        StopApplicationEvent.connect(self._on_StopApplicationEvent)
         CouponCreatedEvent.connect(self._on_CouponCreatedEvent)
         GerencialReportPrintEvent.connect(self._on_GerencialReportPrintEvent)
         GerencialReportCancelEvent.connect(self._on_GerencialReportCancelEvent)
@@ -127,14 +130,22 @@ class ECFUI(object):
                 _('Fiscal Printers'), 'fiscal-printer', 'printer',
                 self._on_ConfigurePrinter__activate)
 
+    def _remove_ui_menus(self, uimanager):
+        if not self._ui:
+            return
+        uimanager.remove_ui(self._ui)
+        self._ui = None
+
     def _add_admin_menus(self, uimanager):
         ui_string = """<ui>
           <menubar name="menubar">
-            <menu action="ConfigureMenu">
-            <placeholder name="ConfigurePH">
-              <menuitem action="ConfigurePrinter"/>
+            <placeholder action="AppMenubarPH">
+              <menu action="ConfigureMenu">
+              <placeholder name="ConfigurePH">
+                <menuitem action="ConfigurePrinter"/>
+              </placeholder>
+              </menu>
             </placeholder>
-            </menu>
           </menubar>
         </ui>"""
 
@@ -145,7 +156,7 @@ class ECFUI(object):
              None, None, self._on_ConfigurePrinter__activate),
             ])
         uimanager.insert_action_group(ag, 0)
-        uimanager.add_ui_from_string(ui_string)
+        self._ui = uimanager.add_ui_from_string(ui_string)
 
     def _add_pos_menus(self, uimanager):
         if sysparam(self.conn).POS_SEPARATE_CASHIER:
@@ -153,7 +164,7 @@ class ECFUI(object):
 
         ui_string = """<ui>
           <menubar name="menubar">
-            <placeholder name="ExtraMenu">
+            <placeholder name="ExtraMenubarPH">
               <menu action="ECFMenu">
                 <menuitem action="CancelLastDocument" name="CancelLastDocument"/>
                 <menuitem action="Summary" name="Summary"/>
@@ -177,12 +188,12 @@ class ECFUI(object):
                                  group.get('summarize'))
 
         uimanager.insert_action_group(ag, 0)
-        uimanager.add_ui_from_string(ui_string)
+        self._ui = uimanager.add_ui_from_string(ui_string)
 
     def _add_till_menus(self, uimanager):
         ui_string = """<ui>
           <menubar name="menubar">
-            <placeholder name="ExtraMenu">
+            <placeholder name="ExtraMenubarPH">
               <menu action="ECFMenu">
                 <menuitem action="Summary"/>
                 <menuitem action="ReadMemory"/>
@@ -201,7 +212,7 @@ class ECFUI(object):
         ag.add_action_with_accel(self._till_summarize_action,
                                  group.get('summarize'))
         uimanager.insert_action_group(ag, 0)
-        uimanager.add_ui_from_string(ui_string)
+        self._ui = uimanager.add_ui_from_string(ui_string)
 
     def _check_ecf_state(self):
         log.info('ecfui._check_printer')
@@ -532,6 +543,9 @@ class ECFUI(object):
 
     def _on_StartApplicationEvent(self, appname, app):
         self._add_ui_menus(appname, app, app.main_window.uimanager)
+
+    def _on_StopApplicationEvent(self, appname, app):
+        self._remove_ui_menus(app.main_window.uimanager)
 
     def _on_SaleStatusChanged(self, sale, old_status):
         if sale.status == Sale.STATUS_CONFIRMED:
