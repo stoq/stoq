@@ -351,8 +351,6 @@ class PurchaseApp(SearchableAppWindow):
                         model=order_views[0].purchase)
 
     def _send_selected_items_to_supplier(self):
-        api.rollback_and_begin(self.conn)
-
         orders = self.results.get_selected_rows()
         valid_order_views = [
             order for order in orders

@@ -126,7 +126,7 @@ class AppWindow(GladeDelegate):
         self._sensitive_group = dict()
         self._tool_items = []
         self.app = app
-        self.conn = api.new_transaction()
+        self.conn = api.get_connection()
         self.current_app = None
         self.current_app_widget = None
         self.uimanager = None
