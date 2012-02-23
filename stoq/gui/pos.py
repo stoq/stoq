@@ -374,7 +374,8 @@ class PosApp(AppWindow):
         sale_item = _SaleItem(sellable=sellable,
                               quantity=quantity)
         if is_service:
-            rv = self.run_dialog(ServiceItemEditor, self.conn, sale_item)
+            with api.trans() as trans:
+                rv = self.run_dialog(ServiceItemEditor, trans, sale_item)
             if not rv:
                 return
         self._update_added_item(sale_item)
@@ -608,7 +609,8 @@ class PosApp(AppWindow):
             if sale_item.sellable.service == delivery_service:
                 self._edit_delivery()
                 return
-            model = self.run_dialog(ServiceItemEditor, self.conn, sale_item)
+            with api.trans() as trans:
+                model = self.run_dialog(ServiceItemEditor, trans, sale_item)
             if model:
                 self.sale_items.update(sale_item)
         else:
@@ -732,9 +734,6 @@ class PosApp(AppWindow):
             log.info("Checking out")
             trans.close()
 
-            # self.conn is infact a transaction, do a commit to bring
-            # the objects from trans into self.conn
-            self.conn.commit()
         self._coupon = None
         self._clear_order()
 
@@ -820,7 +819,8 @@ class PosApp(AppWindow):
         self.run_dialog(ClientSearch, self.conn, hide_footer=True)
 
     def on_Sales__activate(self, action):
-        self.run_dialog(SaleSearch, self.conn)
+        with api.trans() as trans:
+            self.run_dialog(SaleSearch, trans)
 
     def on_SoldItemsByBranchSearch__activate(self, action):
         self.run_dialog(SoldItemsByBranchSearch, self.conn)
