@@ -349,12 +349,14 @@ class Shell(object):
         self._login = LoginHelper(username=self._options.login_username)
         try:
             if not self.login():
-                return
+                return False
         except LoginError, e:
             error(e)
+            return False
         self._check_param_main_branch()
         self._check_param_online_services()
         self._maybe_show_welcome_dialog()
+        return True
 
     def _check_param_main_branch(self):
         from stoqlib.database.runtime import (get_connection, new_transaction,
@@ -648,7 +650,8 @@ class Shell(object):
         self._restart = True
 
     def run(self, appdesc=None, appname=None):
-        self._do_login()
+        if not self._do_login():
+            raise SystemExit
         from stoq.gui.launcher import Launcher
         from stoqlib.lib.message import error
         import gtk
