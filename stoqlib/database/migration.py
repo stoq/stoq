@@ -184,7 +184,8 @@ class SchemaMigration(object):
                     continue
                 patches_to_apply.append(patch)
 
-            functions = environ.get_resource_filename('stoq', 'sql', 'functions. sql')
+            functions = environ.get_resource_filename('stoq', 'sql', 'functions.sql')
+            print type(functions)
             if execute_sql(functions) != 0:
                 error('Failed to create functions')
 
