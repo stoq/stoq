@@ -54,7 +54,6 @@ import gtk
 import gobject
 from kiwi.component import provide_utility
 from kiwi.datatypes import ValidationError
-from kiwi.environ import environ
 from kiwi.log import Logger
 from kiwi.python import Settable
 from kiwi.ui.dialogs import info
@@ -74,6 +73,7 @@ from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.base.wizards import (BaseWizard, WizardEditorStep,
                                       WizardStep)
+from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.processview import ProcessView
 from stoqlib.lib.configparser import StoqConfig
@@ -124,10 +124,7 @@ class WelcomeStep(BaseWizardStep):
         self._update_widgets()
 
     def _update_widgets(self):
-        logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
-        logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
-                                                    LOGO_HEIGHT)
-        self.image1.set_from_pixbuf(logo)
+        self.image1.set_from_pixbuf(render_logo_pixbuf('config'))
         self.title_label.set_bold(True)
 
     def _postgres_from_stoq_installer(self):

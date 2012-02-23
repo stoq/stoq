@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2009-2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2009-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -28,10 +28,10 @@ import gettext
 
 import glib
 import gtk
-from kiwi.environ import environ
 
 from stoqlib.api import api
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
+from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.processview import ProcessView
 
 import stoq
@@ -49,8 +49,7 @@ class UpdateWelcomeStep(BaseWizardStep):
     def post_init(self):
         self.title_label.set_size('xx-large')
         self.title_label.set_bold(True)
-        logo = environ.find_resource('pixmaps', 'stoq_logo.svg')
-        self.logo.set_from_file(logo)
+        self.logo.set_from_pixbuf(render_logo_pixbuf('update'))
         self.wizard.next_button.grab_focus()
 
     def next_step(self):

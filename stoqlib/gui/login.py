@@ -25,7 +25,6 @@
 
 import gtk
 from kiwi.component import get_utility, provide_utility
-from kiwi.environ import environ
 from kiwi.log import Logger
 from kiwi.ui.delegates import GladeDelegate
 
@@ -34,6 +33,7 @@ from stoqlib.database.interfaces import ICurrentUser
 from stoqlib.exceptions import DatabaseError, LoginError, UserProfileError
 from stoqlib.domain.person import LoginUser
 from stoqlib.gui.base.dialogs import RunnableView
+from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.splash import hide_splash
 from stoqlib.lib.interfaces import CookieError, ICookieFile
 from stoqlib.lib.message import warning
@@ -63,11 +63,9 @@ class LoginDialog(GladeDelegate, RunnableView):
         self.get_toplevel().set_size_request(*self.size)
         self.notification_label.set_text('')
         self.notification_label.set_color('black')
-        filename = environ.find_resource("pixmaps", "stoq_logo.svg")
 
         gtkimage = gtk.Image()
-        gtkimage.set_from_file(filename)
-
+        gtkimage.set_from_pixbuf(render_logo_pixbuf('login'))
         self.logo_container.add(gtkimage)
         self.logo_container.show_all()
 

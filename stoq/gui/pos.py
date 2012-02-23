@@ -31,7 +31,6 @@ import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import ValidationError
-from kiwi.environ import environ
 from kiwi.log import Logger
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
@@ -56,6 +55,7 @@ from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.keybindings import get_accels
+from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import (SaleSearch, DeliverySearch,
@@ -100,10 +100,6 @@ class _SaleItem(object):
             qtd_string = '%s' % self.quantity.normalize()
 
         return '%s %s' % (qtd_string, self.unit)
-
-
-LOGO_WIDTH = 91
-LOGO_HEIGHT = 32
 
 
 class PosApp(AppWindow):
@@ -309,10 +305,7 @@ class PosApp(AppWindow):
         self.register_sensitive_group(self._inventory_widgets,
                                       lambda: not self.has_open_inventory())
 
-        logo_file = environ.find_resource('pixmaps', 'stoq_logo.svg')
-        logo = gtk.gdk.pixbuf_new_from_file_at_size(logo_file, LOGO_WIDTH,
-                                                    LOGO_HEIGHT)
-        self.stoq_logo.set_from_pixbuf(logo)
+        self.stoq_logo.set_from_pixbuf(render_logo_pixbuf('pos'))
 
         self.till_status_label.set_size('xx-large')
         self.till_status_label.set_bold(True)
