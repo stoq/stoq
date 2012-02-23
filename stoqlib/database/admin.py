@@ -385,8 +385,8 @@ def initialize_system(password=None, testsuite=False):
         if not testsuite:
             create_default_profile_settings()
             ensure_admin_user(password)
-    except Exception:
+    except Exception, e:
         if not testsuite:
             collect_traceback(sys.exc_info(), submit=True)
-
+        raise SystemExit("Could not initialize system: %r" % (e, ))
     create_log("INIT DONE")
