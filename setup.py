@@ -104,6 +104,7 @@ scripts = [
     'bin/stoq-daemon',
     ]
 templates = []
+install_requires = []
 data_files = [
     ('$datadir/csv', listfiles('data', 'csv', '*.csv')),
     ('$datadir/glade', listfiles('data', 'glade', '*.ui')),
@@ -128,7 +129,7 @@ if building_egg:
         ('stoq/data/docs',
          ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
           'COPYING.stoqlib', 'README', 'docs/copyright']))
-
+    install_requires.append('stoqdrivers')
 else:
     data_files.extend([
     ('share/doc/stoq', ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
@@ -188,6 +189,7 @@ setup(name='stoq',
       data_files=data_files,
       scripts=scripts,
       resources=resources,
+      install_requires=install_requires,
       global_resources=global_resources,
       templates=templates,
       zip_safe=True)
