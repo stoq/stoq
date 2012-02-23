@@ -812,6 +812,12 @@ class ParameterAccess(ClassInittableObject):
                     return None
                 else:
                     param = bool(int(value))
+            elif field_type is str:
+                # This that happens during startup if we haven't set
+                # the default encoding to utf-8 which normally pango or gtk does.
+                # Just make sure the string is utf-8 encoded instead of passing it
+                # to str which is not (yet) expecting utf-8.
+                param = value.encode('utf-8')
             else:
                 param = field_type(value)
         self._cache[field_name] = param
