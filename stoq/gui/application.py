@@ -534,9 +534,8 @@ class AppWindow(GladeDelegate):
         branch = api.get_current_branch(self.conn)
         station = api.get_current_station(self.conn)
         status_str = '   |   '.join([
-            _("User: %s") % (user.person.name,),
-            _("Branch: %s") % (branch.person.name,),
-            _("Station: %s") % (station.name,)
+            _("User: %s") % (user.get_description(),),
+            _("Computer: %s") % (station.name,)
             ])
         self.statusbar.push(0, status_str)
 
@@ -613,7 +612,8 @@ class AppWindow(GladeDelegate):
 
     def get_title(self):
         # This method must be redefined in child when it's needed
-        return _('Stoq - %s') % self.app_name
+        branch = api.get_current_branch(self.conn)
+        return _('[%s] - %s') % (branch.get_description(), self.app_name)
 
     def can_change_application(self):
         """Define if we can change the current application or not.

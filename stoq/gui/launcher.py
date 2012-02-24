@@ -63,9 +63,6 @@ class Launcher(AppWindow):
     # AppWindow
     #
 
-    def get_title(self):
-        return self.app_name
-
     def create_ui(self):
         toplevel = self.get_toplevel().get_toplevel()
         add_current_toplevel(toplevel)
