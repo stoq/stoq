@@ -64,7 +64,7 @@ from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.address import Address
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
-from stoqlib.domain.interfaces import IDescribable
+from stoqlib.domain.interfaces import IDescribable, IActive
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.method import CreditCardData
 from stoqlib.domain.sellable import ClientCategoryPrice
@@ -367,6 +367,8 @@ class Individual(Domain):
     :ivar gender: male or female
     """
 
+    implements(IActive, IDescribable)
+
     (STATUS_SINGLE,
      STATUS_MARRIED,
      STATUS_DIVORCED,
@@ -462,6 +464,8 @@ class Company(Domain):
     :ivar state_registry: Brazilian register number associated with
        a certain state
     """
+
+    implements(IActive, IDescribable)
 
     original = ForeignKey('Person')
     # Cnpj, state_registry and city registry are
@@ -562,6 +566,9 @@ class Client(Domain):
     :ivar days_late: How many days is this client indebted
     :ivar credit_limit: How much the user can spend on store credit
     """
+
+    implements(IActive, IDescribable)
+
     (STATUS_SOLVENT,
      STATUS_INDEBTED,
      STATUS_INSOLVENT,
@@ -706,6 +713,8 @@ class Supplier(Domain):
     :ivar product_desc: Basic description of the products of a supplier.
     """
 
+    implements(IActive, IDescribable)
+
     (STATUS_ACTIVE,
      STATUS_INACTIVE,
      STATUS_BLOCKED) = range(3)
@@ -814,6 +823,8 @@ class Employee(Domain):
     :ivar role: A reference to an employee role object
     """
 
+    implements(IActive, IDescribable)
+
     (STATUS_NORMAL,
      STATUS_AWAY,
      STATUS_VACATION,
@@ -894,6 +905,8 @@ class LoginUser(Domain):
     :param profile: A profile represents a colection of information
       which represents what this user can do in the system
     """
+
+    implements(IActive, IDescribable)
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
@@ -987,6 +1000,8 @@ class Branch(Domain):
     3 – Regime Normal
 
     """
+
+    implements(IActive, IDescribable)
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
@@ -1117,6 +1132,8 @@ class CreditProvider(Domain):
     :ivar debit_pre_dated_fee: see credit fee
      """
 
+    implements(IActive, IDescribable)
+
     (PROVIDER_CARD, ) = range(1)
 
     cards_type = {
@@ -1225,6 +1242,8 @@ class SalesPerson(Domain):
         commission. This is a reference to another object
     """
 
+    implements(IActive, IDescribable)
+
     (COMMISSION_GLOBAL,
      COMMISSION_BY_SALESPERSON,
      COMMISSION_BY_SELLABLE,
@@ -1298,6 +1317,8 @@ class Transporter(Domain):
     :ivar freight_percentage: The percentage amount of freight
       charged by this transporter
     """
+
+    implements(IActive, IDescribable)
 
     original = ForeignKey('Person')
     is_active = BoolCol(default=True)
