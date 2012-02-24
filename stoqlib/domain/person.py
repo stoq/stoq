@@ -1036,7 +1036,8 @@ class Branch(Domain):
     #
 
     def get_description(self):
-        return self.person.name
+        person = self.person
+        return person.company.fancy_name or person.name
 
     #
     # Public API
