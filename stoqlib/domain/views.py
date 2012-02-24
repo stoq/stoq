@@ -23,7 +23,7 @@
 ##
 
 from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn, OR
-from stoqlib.database.orm import Viewable, Field, Alias
+from stoqlib.database.orm import Viewable, Field, Alias, ISNOTNULL
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.loan import Loan, LoanItem
@@ -70,6 +70,7 @@ class ProductFullStockView(Viewable):
         status=Sellable.q.status,
         cost=Sellable.q.cost,
         description=Sellable.q.description,
+        image_id=Sellable.q.imageID,
         product_id=Product.q.id,
         location=Product.q.location,
         tax_description=SellableTaxConstant.q.description,
@@ -157,6 +158,10 @@ class ProductFullStockView(Viewable):
         # FIXME: This could be done here, without the extra query
         sellable = Sellable.get(self.id, connection=self.get_connection())
         return sellable.price
+
+    @property
+    def has_image(self):
+        return self.image_id is not None
 
 
 class ProductFullWithClosedStockView(ProductFullStockView):
