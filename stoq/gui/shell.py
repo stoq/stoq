@@ -290,21 +290,31 @@ class Shell(object):
 
         from stoqlib.exceptions import StoqlibError
         from stoqlib.database.exceptions import PostgreSQLError
-        from stoqlib.database.migration import needs_schema_update
         from stoq.lib.startup import setup
         log.debug('calling setup()')
 
         # XXX: progress dialog for connecting (if it takes more than
         # 2 seconds) or creating the database
         try:
-            setup(config, self._options, register_station=True,
-                  check_schema=False)
-            if needs_schema_update():
-                self._run_update_wizard()
+            setup(config, self._options, register_station=False,
+                  check_schema=True, load_plugins=False)
         except (StoqlibError, PostgreSQLError), e:
             error(_('Could not connect to the database'),
                   'error=%s uri=%s' % (str(e), conn_uri))
             raise SystemExit("Error: bad connection settings provided")
+
+        from stoqlib.database.migration import needs_schema_update
+        if needs_schema_update():
+            self._run_update_wizard()
+
+        from stoqlib.lib.pluginmanager import get_plugin_manager
+        manager = get_plugin_manager()
+        manager.activate_installed_plugins()
+
+        from stoqlib.database.runtime import (get_connection,
+                                              set_current_branch_station)
+        conn = get_connection()
+        set_current_branch_station(conn, station_name=None)
 
     def _load_key_bindings(self):
         from stoqlib.gui.keybindings import load_user_keybindings
