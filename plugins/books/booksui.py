@@ -47,8 +47,8 @@ class BooksUI(object):
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         StopApplicationEvent.connect(self._on_StopApplicationEvent)
         add_bindings([
-            ('plugin.books.search_books', '<Control><Alt>B'),
-            ('plugin.books.search_publishers', '<Control><Alt>P'),
+            ('plugin.books.search_books', '<Primary><Alt>B'),
+            ('plugin.books.search_publishers', '<Primary><Alt>P'),
             ])
 
     #

@@ -92,8 +92,8 @@ class ECFUI(object):
             'activate', self._on_TillSummary__activate)
 
         add_bindings([
-            ('plugin.ecf.read_memory', '<Control>F9'),
-            ('plugin.ecf.summarize', '<Control>F11'),
+            ('plugin.ecf.read_memory', '<Primary>F9'),
+            ('plugin.ecf.summarize', '<Primary>F11'),
             ])
 
     #
