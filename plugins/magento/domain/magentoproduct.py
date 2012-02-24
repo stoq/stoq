@@ -159,9 +159,9 @@ class MagentoProduct(MagentoBaseSyncUp):
                          magento_id=self.magento_id,
                          config=self.config,
                          magento_product=self)
-            image = self.product.full_image
+            image = self.product.sellable.image
             if image:
-                self._update_main_image(image)
+                self._update_main_image(image.image)
             category = self.product.sellable.category
             if category:
                 self._update_category(category)
@@ -175,9 +175,11 @@ class MagentoProduct(MagentoBaseSyncUp):
             retval = yield self.remove_remote()
             returnValue(retval)
 
-        image = self.product.full_image
+        # FIXME: Probably this isn't updating because image is in a separate
+        #        class now. Maybe we should use it directly.
+        image = self.product.sellable.image
         if image:
-            self._update_main_image(image)
+            self._update_main_image(image.image)
         category = self.product.sellable.category
         if category:
             self._update_category(category)

@@ -40,7 +40,7 @@ from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
-from stoqlib.gui.dialogs.productimage import ProductImageViewer
+from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.editors.receivingeditor import ReceivingItemEditor
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
@@ -207,16 +207,15 @@ class ReceivingOrderProductStep(SellableItemStep):
 
     def _on_purchase_item_selection_changed(self, klist, items):
         if items and self._image_viewer:
-            product = items[0].purchase_item.sellable.product
-            self._image_viewer.set_product(product)
+            sellable = items[0].purchase_item.sellable
+            self._image_viewer.set_sellable(sellable)
 
     def _open_image_viewer(self):
-        self._image_viewer = ProductImageViewer()
+        self._image_viewer = SellableImageViewer()
         self._image_viewer.toplevel.set_property("visible", True)
         selected = self.slave.klist.get_selected_rows()
         if selected:
-            self._image_viewer.set_product(
-                selected[0].purchase_item.sellable.product)
+            self._image_viewer.set_sellable(selected[0].purchase_item.sellable)
 
     def _close_image_viewer(self):
         self._image_viewer.destroy()

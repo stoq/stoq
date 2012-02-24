@@ -28,7 +28,7 @@ import decimal
 
 import pango
 import gtk
-from kiwi.datatypes import converter, ValidationError
+from kiwi.datatypes import converter
 from kiwi.enums import SearchFilterPosition
 from kiwi.log import Logger
 from kiwi.ui.search import ComboSearchFilter
@@ -42,7 +42,7 @@ from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
-from stoqlib.gui.dialogs.productimage import ProductImageViewer
+from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.editors.producteditor import ProductStockEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
@@ -232,7 +232,7 @@ class StockApp(SearchableAppWindow):
                              data_type=decimal.Decimal, width=100),
                 SearchColumn('unit', title=_("Unit"), data_type=str,
                              width=40, visible=False),
-                Column('product.has_image', title=_('Picture'),
+                Column('sellable.has_image', title=_('Picture'),
                        data_type=bool, width=80),
                  ]
 
@@ -262,29 +262,19 @@ class StockApp(SearchableAppWindow):
         is_main_branch = self.branch_filter.get_state().value is branch
         item = self.results.get_selected()
 
-        pixbuf = None
-        if item:
-            try:
-                pixbuf = self.pixbuf_converter.from_string(item.product.image)
-                if pixbuf:
-                    # FIXME: get this icon size from settings
-                    icon_size = 24
-                    pixbuf = pixbuf.scale_simple(icon_size, icon_size,
-                                                 gtk.gdk.INTERP_BILINEAR)
-            except ValidationError:
-                # FIXME: Find a better way of treating this. Somehow image
-                #        is not valid for some user. See bug 4611
+        sellable = item and item.product.sellable
+        if sellable:
+            if sellable.has_image:
+                thumbnail = sellable.image.thumbnail
+                pixbuf = self.pixbuf_converter.from_string(thumbnail)
+            else:
                 pixbuf = None
-                log.warning("It was not possible to load the image "
-                            "of product %s" % item.product)
 
+            self._update_edit_image(pixbuf)
             if self.image_viewer:
-                self.image_viewer.set_product(item.product)
-
-        if pixbuf:
-            self.image.set_from_pixbuf(pixbuf)
+                self.image_viewer.set_sellable(sellable)
         else:
-            self.image.set_from_stock(gtk.STOCK_EDIT, gtk.ICON_SIZE_LARGE_TOOLBAR)
+            self._update_edit_image()
 
         self.set_sensitive([self.EditProduct], bool(item))
         self.set_sensitive([self.ProductStockHistory],
@@ -297,6 +287,18 @@ class StockApp(SearchableAppWindow):
         self.set_sensitive([self.NewTransfer],
                            transfer_active and has_branches)
         self.set_sensitive([self.SearchTransfer], has_branches)
+
+    def _update_edit_image(self, pixbuf=None):
+        if not pixbuf:
+            self.image.set_from_stock(gtk.STOCK_EDIT,
+                                      gtk.ICON_SIZE_LARGE_TOOLBAR)
+            return
+
+        # FIXME: get this icon size from settings
+        icon_size = 24
+        pixbuf = pixbuf.scale_simple(icon_size, icon_size,
+                                     gtk.gdk.INTERP_BILINEAR)
+        self.image.set_from_pixbuf(pixbuf)
 
     def _update_filter_slave(self, slave):
         self.refresh()
@@ -383,10 +385,10 @@ class StockApp(SearchableAppWindow):
             self.image_viewer = None
         else:
             self.StockPictureViewer.props.active = True
-            self.image_viewer = ProductImageViewer()
+            self.image_viewer = SellableImageViewer()
             selected = self.results.get_selected()
             if selected:
-                self.image_viewer.set_product(selected.product)
+                self.image_viewer.set_sellable(selected.product.sellable)
             self.image_viewer.toplevel.connect(
                 "delete-event", self.on_image_viewer_closed)
             self.image_viewer.toplevel.set_property("visible", True)

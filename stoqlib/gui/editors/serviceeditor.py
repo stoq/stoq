@@ -88,7 +88,6 @@ class ServiceEditor(SellableEditor):
 
     def setup_slaves(self):
         details_slave = SellableDetailsSlave(self.conn, self.model.sellable)
-        details_slave.setup_image_slave(self.model)
         self.attach_slave('slave_holder', details_slave)
 
     def setup_widgets(self):

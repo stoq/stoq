@@ -181,7 +181,6 @@ class ProductInformationSlave(BaseEditorSlave):
 class ProductDetailsSlave(SellableDetailsSlave):
 
     def setup_slaves(self):
-        self.setup_image_slave(self.model.product)
         self.info_slave = ProductInformationSlave(self.conn, self.model.product,
                                                   self.db_form)
         self.attach_slave('details_holder', self.info_slave)

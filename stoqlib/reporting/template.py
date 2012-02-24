@@ -25,10 +25,12 @@
 """ Base class implementation for all Stoq reports """
 
 from decimal import Decimal
+import tempfile
 
 import gtk
 import pango
 
+from kiwi.datatypes import converter, ValidationError
 from kiwi.accessor import kgetattr
 from kiwi.environ import environ
 from kiwi.ui.objectlist import ObjectList
@@ -56,12 +58,23 @@ TEXT_HEIGHT = 13
 
 
 def _get_logotype_path(trans):
-    logofile = sysparam(trans).CUSTOM_LOGO_FOR_REPORTS
-    if logofile.is_valid():
-        logofile.resize(LOGO_SIZE)
-        return str(logofile.image_path)
-    else:
-        return environ.find_resource("pixmaps", "stoq_logo_bgwhite.png")
+    logo_domain = sysparam(trans).CUSTOM_LOGO_FOR_REPORTS
+    if logo_domain and logo_domain.image:
+        pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
+        try:
+            pixbuf = pixbuf_converter.from_string(logo_domain.image)
+        except ValidationError:
+            pixbuf = None
+
+        if pixbuf:
+            w, h = LOGO_SIZE
+            pixbuf = pixbuf.scale_simple(w, h, gtk.gdk.INTERP_BILINEAR)
+            tmp_file = tempfile.NamedTemporaryFile(prefix='stoq-logo')
+            tmp_file.close()
+            pixbuf.save(tmp_file.name, 'png')
+            return tmp_file.name
+
+    return environ.find_resource("pixmaps", "stoq_logo_bgwhite.png")
 
 
 class BaseStoqReport(ReportTemplate):
