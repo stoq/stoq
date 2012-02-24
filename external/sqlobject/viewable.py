@@ -88,7 +88,7 @@ class Viewable(object):
             ON (sale.client_id = client.id)
 
             LEFT JOIN person AS client_person
-            ON (client.original_id = client_person.id)
+            ON (client.person_id = client_person.id)
 
           WHERE sale_item.sale_id = sale_id
 
@@ -110,7 +110,7 @@ class Viewable(object):
                 LEFTJOINOn(None, Client,
                            Client.q.id == Sale.q.clientID),
                 LEFTJOINOn(None, Person,
-                           Person.q.id == Client.q.originalID),
+                           Person.q.id == Client.q.personID),
                 ]
 
             clause = AND(

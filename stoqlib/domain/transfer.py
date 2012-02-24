@@ -192,12 +192,12 @@ class TransferOrderView(Viewable):
         LEFTJOINOn(None, Branch,
                    TransferOrder.q.source_branchID == Branch.q.id),
         LEFTJOINOn(None, Person,
-                   Branch.q.originalID == Person.q.id),
+                   Branch.q.personID == Person.q.id),
         # Destination
         LEFTJOINOn(None, BranchDest,
                    TransferOrder.q.destination_branchID == BranchDest.q.id),
         LEFTJOINOn(None, PersonDest,
-                   BranchDest.q.originalID == PersonDest.q.id),
+                   BranchDest.q.personID == PersonDest.q.id),
     ]
 
     @property

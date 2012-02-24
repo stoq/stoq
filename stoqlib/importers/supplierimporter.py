@@ -50,7 +50,7 @@ class SupplierImporter(CSVImporter):
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
-        Company(original=person,
+        Company(person=person,
                 connection=trans,
                 cnpj=data.cnpj,
                 fancy_name=data.name,
@@ -71,7 +71,7 @@ class SupplierImporter(CSVImporter):
             district=data.district
             )
 
-        Supplier(original=person, connection=trans)
+        Supplier(person=person, connection=trans)
 
     def when_done(self, trans):
         sparam = sysparam(trans)

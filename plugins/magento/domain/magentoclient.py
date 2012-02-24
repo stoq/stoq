@@ -136,10 +136,10 @@ class MagentoClient(MagentoBaseSyncDown):
                                     email=email)
         if person:
             if not person.client:
-                Client(original=person,
+                Client(person=person,
                        connection=conn)
             if not person.individual:
-                Individual(original=person,
+                Individual(person=person,
                            connection=conn,
                            cpf=cpf)
             return person.client
@@ -158,10 +158,10 @@ class MagentoClient(MagentoBaseSyncDown):
         person = Person(connection=conn,
                         name=name,
                         email=email)
-        Individual(original=person,
+        Individual(person=person,
                    connection=conn,
                    cpf=cpf)
-        Client(original=person,
+        Client(person=person,
                connection=conn)
 
         return person.client

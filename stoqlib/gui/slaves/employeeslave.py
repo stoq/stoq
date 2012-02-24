@@ -147,7 +147,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
                     self.salesperson.activate()
             else:
                 conn = self.conn
-                self.salesperson = SalesPerson(original=self.person,
+                self.salesperson = SalesPerson(person=self.person,
                                                connection=conn)
         elif self.salesperson:
             if self.salesperson.is_active:

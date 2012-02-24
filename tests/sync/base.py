@@ -136,8 +136,8 @@ def _create_shop_database(conn):
 def _register_shop_station(trans):
     log.info("Registering a new station for the shop.")
     person = Person(name="Second branch", connection=trans)
-    Company(original=person, connection=trans)
-    branch = Branch(original=person, connection=trans)
+    Company(person=person, connection=trans)
+    branch = Branch(person=person, connection=trans)
     station = BranchStation(branch=branch, name="shop-computer",
                             connection=trans)
     station.activate()

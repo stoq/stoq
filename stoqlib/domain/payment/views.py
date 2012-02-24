@@ -251,7 +251,7 @@ class CardPaymentView(Viewable):
         INNERJOINOn(None, CreditProvider,
               CreditProvider.q.id == CreditCardData.q.providerID),
         INNERJOINOn(None, _ProviderPerson,
-            _ProviderPerson.q.id == CreditProvider.q.originalID),
+            _ProviderPerson.q.id == CreditProvider.q.personID),
         LEFTJOINOn(None, PaymentGroup,
                     PaymentGroup.q.id == Payment.q.groupID),
         LEFTJOINOn(None, _DraweePerson,

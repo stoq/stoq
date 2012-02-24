@@ -141,14 +141,14 @@ class MagentoConfig(Domain):
 
         person = Person(connection=conn,
                         name=name)
-        Individual(original=person,
+        Individual(person=person,
                    occupation=occupation,
                    connection=conn)
-        Employee(original=person,
+        Employee(person=person,
                  role=role,
                  connection=conn)
 
-        return SalesPerson(original=person, connection=conn)
+        return SalesPerson(person=person, connection=conn)
 
 
 class MagentoTableConfig(Domain):

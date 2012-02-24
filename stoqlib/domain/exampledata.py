@@ -274,17 +274,17 @@ class ExampleCreator(object):
         from stoqlib.domain.person import Branch, Company, Person
         person = Person(name=name, connection=self.trans)
         fancy_name = name + ' shop'
-        Company(original=person, fancy_name=fancy_name,
+        Company(person=person, fancy_name=fancy_name,
                 connection=self.trans)
-        return Branch(original=person, connection=self.trans)
+        return Branch(person=person, connection=self.trans)
 
     def create_supplier(self):
         from stoqlib.domain.person import Company, Person, Supplier
         person = Person(name='Supplier', connection=self.trans)
-        Company(original=person, fancy_name='Company Name',
+        Company(person=person, fancy_name='Company Name',
                 cnpj='90.117.749/7654-80',
                 connection=self.trans)
-        return Supplier(original=person, connection=self.trans)
+        return Supplier(person=person, connection=self.trans)
 
     def create_employee_role(self):
         if not self._role:
@@ -295,32 +295,32 @@ class ExampleCreator(object):
     def create_employee(self, name="SalesPerson"):
         from stoqlib.domain.person import Employee, Individual, Person
         person = Person(name=name, connection=self.trans)
-        Individual(original=person, connection=self.trans)
-        return Employee(original=person,
+        Individual(person=person, connection=self.trans)
+        return Employee(person=person,
                         role=self.create_employee_role(),
                         connection=self.trans)
 
     def create_sales_person(self):
         from stoqlib.domain.person import SalesPerson
         employee = self.create_employee()
-        return SalesPerson(original=employee.person, connection=self.trans)
+        return SalesPerson(person=employee.person, connection=self.trans)
 
     def create_client(self):
         from stoqlib.domain.person import Client, Individual, Person
         person = Person(name='Client', connection=self.trans)
-        Individual(original=person, connection=self.trans)
-        return Client(original=person, connection=self.trans)
+        Individual(person=person, connection=self.trans)
+        return Client(person=person, connection=self.trans)
 
     def create_individual(self):
         from stoqlib.domain.person import Individual, Person
         person = Person(name='individual', connection=self.trans)
-        return Individual(original=person, connection=self.trans)
+        return Individual(person=person, connection=self.trans)
 
     def create_user(self):
         from stoqlib.domain.person import LoginUser
         individual = self.create_individual()
         profile = self.create_user_profile()
-        return LoginUser(original=individual.person,
+        return LoginUser(person=individual.person,
                          username='username',
                          password='password',
                          profile=profile,
@@ -476,7 +476,7 @@ class ExampleCreator(object):
     def create_company(self):
         from stoqlib.domain.person import Company, Person
         person = Person(name='Dummy', connection=self.trans)
-        return Company(original=person, fancy_name='Dummy shop',
+        return Company(person=person, fancy_name='Dummy shop',
                        connection=self.trans)
 
     def create_till(self):
@@ -654,8 +654,8 @@ class ExampleCreator(object):
     def create_transporter(self):
         from stoqlib.domain.person import Company, Transporter
         person = self.create_person()
-        Company(original=person, connection=self.trans)
-        return Transporter(original=person,
+        Company(person=person, connection=self.trans)
+        return Transporter(person=person,
                            connection=self.trans)
 
     def create_bank_account(self, account=None):
@@ -669,8 +669,8 @@ class ExampleCreator(object):
     def create_credit_provider(self):
         from stoqlib.domain.person import Company, CreditProvider
         person = self.create_person()
-        Company(original=person, connection=self.trans)
-        return CreditProvider(original=person,
+        Company(person=person, connection=self.trans)
+        return CreditProvider(person=person,
                               connection=self.trans,
                               short_name='Velec',
                               open_contract_date=datetime.date(2006, 01, 01))

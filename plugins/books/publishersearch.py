@@ -44,10 +44,10 @@ class PublisherEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        publisher = PersonAdaptToPublisher.selectOneBy(original=person,
+        publisher = PersonAdaptToPublisher.selectOneBy(person=person,
                                                        connection=conn)
         if publisher is None:
-            publisher = PersonAdaptToPublisher(original=person,
+            publisher = PersonAdaptToPublisher(person=person,
                                                connection=conn)
         return publisher
 

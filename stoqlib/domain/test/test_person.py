@@ -171,7 +171,7 @@ class TestIndividual(_PersonFacetTest, DomainTest):
 
     def testIndividual(self):
         person = self.create_person()
-        individual = Individual(original=person, connection=self.trans)
+        individual = Individual(person=person, connection=self.trans)
 
         statuses = individual.get_marital_statuses()
         self.assertEqual(type(statuses), list)
@@ -269,7 +269,7 @@ class TestSupplier(_PersonFacetTest, DomainTest):
 
     def testGetAllSuppliers(self):
         query = AND(Person.q.name == "test",
-                    Supplier.q.originalID == Person.q.id)
+                    Supplier.q.personID == Person.q.id)
 
         suppliers = Person.select(query, connection=self.trans)
         self.assertEqual(suppliers.count(), 0)
@@ -359,10 +359,10 @@ class TestBranch(_PersonFacetTest, DomainTest):
 
     def testGetactiveBranches(self):
         person = self.create_person()
-        Company(original=person, connection=self.trans)
+        Company(person=person, connection=self.trans)
         count = Branch.get_active_branches(self.trans).count()
         manager = self.create_employee()
-        branch = Branch(original=person, connection=self.trans,
+        branch = Branch(person=person, connection=self.trans,
                         manager=manager, is_active=True)
         assert branch.get_active_branches(self.trans).count() == count + 1
 

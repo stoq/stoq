@@ -51,7 +51,7 @@ class TransporterImporter(CSVImporter):
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
-        Company(original=person,
+        Company(person=person,
                 connection=trans,
                 cnpj=data.cnpj,
                 fancy_name=data.name,
@@ -74,4 +74,4 @@ class TransporterImporter(CSVImporter):
 
         dict(open_contract_date=self.parse_date(data.open_contract),
              freight_percentage=data.freight_percentage),
-        Transporter(original=person, connection=trans)
+        Transporter(person=person, connection=trans)

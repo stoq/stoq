@@ -78,8 +78,8 @@ def ensure_admin_user(administrator_password):
 
         # Dependencies to create an user.
         role = EmployeeRole(name=_('System Administrator'), connection=trans)
-        Individual(original=person, connection=trans)
-        employee = Employee(original=person, role=role, connection=trans)
+        Individual(person=person, connection=trans)
+        employee = Employee(person=person, role=role, connection=trans)
         EmployeeRoleHistory(connection=trans,
                             role=role,
                             employee=employee,
@@ -88,7 +88,7 @@ def ensure_admin_user(administrator_password):
 
         # This is usefull when testing a initial database. Admin user actually
         # must have all the facets.
-        SalesPerson(original=person, connection=trans)
+        SalesPerson(person=person, connection=trans)
 
         profile = UserProfile.selectOneBy(name=_('Administrator'), connection=trans)
         # Backwards compatibility. this profile used to be in english
@@ -98,7 +98,7 @@ def ensure_admin_user(administrator_password):
             profile = UserProfile.selectOneBy(name='Administrator', connection=trans)
 
         log.info("Attaching a LoginUser (%s)" % (USER_ADMIN_DEFAULT_NAME, ))
-        LoginUser(original=person,
+        LoginUser(person=person,
                   username=USER_ADMIN_DEFAULT_NAME,
                   password=administrator_password,
                   profile=profile, connection=trans)
@@ -122,8 +122,8 @@ def create_main_branch(trans, name):
     :param name: name of the new branch
     """
     person = Person(name=name, connection=trans)
-    Company(original=person, connection=trans)
-    branch = Branch(original=person, connection=trans)
+    Company(person=person, connection=trans)
+    branch = Branch(person=person, connection=trans)
     trans.commit()
 
     sysparam(trans).MAIN_COMPANY = branch.id
@@ -213,8 +213,8 @@ def _ensure_card_providers():
             continue
 
         person = Person(name=name, connection=trans)
-        Company(original=person, connection=trans)
-        CreditProvider(original=person,
+        Company(person=person, connection=trans)
+        CreditProvider(person=person,
                        short_name=name,
                        provider_id=name,
                        open_contract_date=const.NOW(),

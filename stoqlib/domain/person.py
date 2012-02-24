@@ -290,52 +290,52 @@ class Person(Domain):
 
     @property
     def branch(self):
-        return Branch.selectOneBy(original=self,
+        return Branch.selectOneBy(person=self,
                                   connection=self.get_connection())
 
     @property
     def client(self):
-        return Client.selectOneBy(original=self,
+        return Client.selectOneBy(person=self,
                                   connection=self.get_connection())
 
     @property
     def company(self):
-        return Company.selectOneBy(original=self,
+        return Company.selectOneBy(person=self,
                                    connection=self.get_connection())
 
     @property
     def credit_provider(self):
-        return CreditProvider.selectOneBy(original=self,
+        return CreditProvider.selectOneBy(person=self,
                                           connection=self.get_connection())
 
     @property
     def employee(self):
-        return Employee.selectOneBy(original=self,
+        return Employee.selectOneBy(person=self,
                                     connection=self.get_connection())
 
     @property
     def individual(self):
-        return Individual.selectOneBy(original=self,
+        return Individual.selectOneBy(person=self,
                                       connection=self.get_connection())
 
     @property
     def login_user(self):
-        return LoginUser.selectOneBy(original=self,
+        return LoginUser.selectOneBy(person=self,
                                      connection=self.get_connection())
 
     @property
     def salesperson(self):
-        return SalesPerson.selectOneBy(original=self,
+        return SalesPerson.selectOneBy(person=self,
                                        connection=self.get_connection())
 
     @property
     def supplier(self):
-        return Supplier.selectOneBy(original=self,
+        return Supplier.selectOneBy(person=self,
                                     connection=self.get_connection())
 
     @property
     def transporter(self):
-        return Transporter.selectOneBy(original=self,
+        return Transporter.selectOneBy(person=self,
                                        connection=self.get_connection())
 
 
@@ -389,7 +389,7 @@ class Individual(Domain):
     genders = {GENDER_MALE: _(u'Male'),
                GENDER_FEMALE: _(u'Female')}
 
-    original = ForeignKey('Person')
+    person = ForeignKey('Person')
     cpf = UnicodeCol(default='')
     rg_number = UnicodeCol(default='')
     birth_date = DateTimeCol(default=None)
@@ -451,10 +451,6 @@ class Individual(Domain):
         """
         return self.check_unique_value_exists('cpf', cpf)
 
-    @property
-    def person(self):
-        return self.original
-
 
 class Company(Domain):
     """An institution created to conduct business
@@ -467,7 +463,7 @@ class Company(Domain):
 
     implements(IActive, IDescribable)
 
-    original = ForeignKey('Person')
+    person = ForeignKey('Person')
     # Cnpj, state_registry and city registry are
     # Brazil-specific information.
     cnpj = UnicodeCol(default='')
@@ -525,12 +521,6 @@ class Company(Domain):
         """
         return self.check_unique_value_exists('cnpj', cnpj)
 
-    # FIXME: Remove this when all PersonAdapters are converted and
-    #        rename original to person
-    @property
-    def person(self):
-        return self.original
-
 
 class ClientCategory(Domain):
     """I am a client category.
@@ -579,7 +569,7 @@ class Client(Domain):
                 STATUS_INSOLVENT: _(u'Insolvent'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
-    original = ForeignKey('Person')
+    person = ForeignKey('Person')
     status = IntCol(default=STATUS_SOLVENT)
     days_late = IntCol(default=0)
     credit_limit = PriceCol(default=0)
@@ -667,7 +657,7 @@ class Client(Domain):
         """
         from stoqlib.domain.payment.views import InPaymentView
         return InPaymentView.select(
-                               InPaymentView.q.person_id == self.originalID,
+                               InPaymentView.q.person_id == self.personID,
                                connection=self.get_connection(),
                                orderBy=InPaymentView.q.due_date)
 
@@ -696,12 +686,6 @@ class Client(Domain):
 
         return currency(self.credit_limit - debit)
 
-    # FIXME: Remove this when all PersonAdapters are converted and
-    #        rename original to person
-    @property
-    def person(self):
-        return self.original
-
 
 class Supplier(Domain):
     """A company or an individual that produces, provides, or furnishes
@@ -723,7 +707,7 @@ class Supplier(Domain):
                 STATUS_INACTIVE: _(u'Inactive'),
                 STATUS_BLOCKED: _(u'Blocked')}
 
-    original = ForeignKey('Person')
+    person = ForeignKey('Person')
     status = IntCol(default=STATUS_ACTIVE)
     product_desc = UnicodeCol(default='')
     is_active = BoolCol(default=True)
@@ -765,7 +749,7 @@ class Supplier(Domain):
     @classmethod
     def get_active_suppliers(cls, conn):
         query = AND(cls.q.status == cls.STATUS_ACTIVE,
-                    cls.q.originalID == Person.q.id)
+                    cls.q.personID == Person.q.id)
         return cls.select(query, connection=conn, orderBy=Person.q.name)
 
     def get_supplier_purchases(self):
@@ -794,12 +778,6 @@ class Supplier(Domain):
             # The get_client_sales method already returns a sorted list of
             # sales by open_date column
             return orders[-1].open_date.date()
-
-    # FIXME: Remove this when all PersonAdapters are converted and
-    #        rename original to person
-    @property
-    def person(self):
-        return self.original
 
 
 class Employee(Domain):
@@ -835,7 +813,7 @@ class Employee(Domain):
                 STATUS_VACATION: _(u'Vacation'),
                 STATUS_OFF: _(u'Off')}
 
-    original = ForeignKey('Person')
+    person = ForeignKey('Person')
     admission_date = DateTimeCol(default=None)
     expire_vacation = DateTimeCol(default=None)
     salary = PriceCol(default=0)
@@ -891,12 +869,6 @@ class Employee(Domain):
             is_active=True,
             connection=self.get_connection())
 
-    # FIXME: Remove this when all PersonAdapters are converted and
-    #        rename original to person
-    @property
-    def person(self):
-        return self.original
-
 
 class LoginUser(Domain):
     """A user that us able to login to the system
@@ -913,7 +885,7 @@ class LoginUser(Domain):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
-    original = ForeignKey('Person')
+    person = ForeignKey('Person')
     username = UnicodeCol(alternateID=True)
     password = UnicodeCol()
     is_active = BoolCol(default=True)
@@ -982,12 +954,6 @@ class LoginUser(Domain):
             Event.log(Event.TYPE_USER,
                 _("User '%s' logged out") % (self.username, ))
 
-    # FIXME: Remove this when all PersonAdapters are converted and
-    #        rename original to person
-    @property
-    def person(self):
-        return self.original
-
 
 class Branch(Domain):
     """An administrative division of some larger or more complex
@@ -1009,7 +975,7 @@ class Branch(Domain):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
-    original = ForeignKey('Person')
+    person = ForeignKey('Person')
     manager = ForeignKey('Employee', default=None)
     is_active = BoolCol(default=True)
     crt = IntCol(default=1)
@@ -1109,12 +1075,6 @@ class Branch(Domain):
     def get_active_branches(cls, conn):
         return cls.select(cls.q.is_active == True, connection=conn)
 
-    # FIXME: Remove this when all PersonAdapters are converted and
-    #        rename original to person
-    @property
-    def person(self):
-        return self.original
-
 
 class CreditProvider(Domain):
     """A credit provider
@@ -1149,7 +1109,7 @@ class CreditProvider(Domain):
 
     provider_types = {PROVIDER_CARD: _(u'Card Provider')}
 
-    original = ForeignKey('Person')
+    person = ForeignKey('Person')
     is_active = BoolCol(default=True)
     provider_type = IntCol(default=PROVIDER_CARD)
     short_name = UnicodeCol()
@@ -1227,12 +1187,6 @@ class CreditProvider(Domain):
     def get_fee_for_payment(self, provider, data):
         return getattr(self, provider.cards_type[data.card_type])
 
-    # FIXME: Remove this when all PersonAdapters are converted and
-    #        rename original to person
-    @property
-    def person(self):
-        return self.original
-
 
 class SalesPerson(Domain):
     """An employee in charge of making sales
@@ -1264,7 +1218,7 @@ class SalesPerson(Domain):
                                                          u'Category'),
                        COMMISSION_BY_SALE_TOTAL: _(u'By Sale Total')}
 
-    original = ForeignKey('Person')
+    person = ForeignKey('Person')
     comission = PercentCol(default=0)
     comission_type = IntCol(default=COMMISSION_BY_SALESPERSON)
     is_active = BoolCol(default=True)
@@ -1303,12 +1257,6 @@ class SalesPerson(Domain):
         query = cls.q.is_active == True
         return cls.select(query, connection=conn)
 
-    # FIXME: Remove this when all PersonAdapters are converted and
-    #        rename original to person
-    @property
-    def person(self):
-        return self.original
-
 
 class Transporter(Domain):
     """An individual or company engaged in the transportation
@@ -1321,7 +1269,7 @@ class Transporter(Domain):
 
     implements(IActive, IDescribable)
 
-    original = ForeignKey('Person')
+    person = ForeignKey('Person')
     is_active = BoolCol(default=True)
     open_contract_date = DateTimeCol(default=datetime.datetime.now)
     #FIXME: not used in purchases.
@@ -1360,12 +1308,6 @@ class Transporter(Domain):
         """Get a list of all available transporters"""
         query = cls.q.is_active == True
         return cls.select(query, connection=conn)
-
-    # FIXME: Remove this when all PersonAdapters are converted and
-    #        rename original to person
-    @property
-    def person(self):
-        return self.original
 
 
 class EmployeeRoleHistory(Domain):
@@ -1409,11 +1351,11 @@ class ClientView(Viewable):
 
     joins = [
         INNERJOINOn(None, Client,
-                   Person.q.id == Client.q.originalID),
+                   Person.q.id == Client.q.personID),
         LEFTJOINOn(None, Individual,
-                   Person.q.id == Individual.q.originalID),
+                   Person.q.id == Individual.q.personID),
         LEFTJOINOn(None, Company,
-                   Person.q.id == Company.q.originalID),
+                   Person.q.id == Company.q.personID),
         LEFTJOINOn(None, ClientCategory,
                    Client.q.categoryID == ClientCategory.q.id),
         ]
@@ -1453,7 +1395,7 @@ class EmployeeView(Viewable):
 
     joins = [
         INNERJOINOn(None, Employee,
-                   Person.q.id == Employee.q.originalID),
+                   Person.q.id == Employee.q.personID),
         INNERJOINOn(None, EmployeeRole,
                    Employee.q.roleID == EmployeeRole.q.id),
         ]
@@ -1488,9 +1430,9 @@ class SupplierView(Viewable):
 
     joins = [
         INNERJOINOn(None, Supplier,
-                   Person.q.id == Supplier.q.originalID),
+                   Person.q.id == Supplier.q.personID),
         LEFTJOINOn(None, Company,
-                   Person.q.id == Company.q.originalID),
+                   Person.q.id == Company.q.personID),
         ]
 
     def get_status_string(self):
@@ -1524,7 +1466,7 @@ class TransporterView(Viewable):
 
     joins = [
         INNERJOINOn(None, Transporter,
-                   Person.q.id == Transporter.q.originalID),
+                   Person.q.id == Transporter.q.personID),
         ]
 
     @property
@@ -1547,11 +1489,11 @@ class BranchView(Viewable):
 
     joins = [
         INNERJOINOn(None, Branch,
-                   Person.q.id == Branch.q.originalID),
+                   Person.q.id == Branch.q.personID),
         LEFTJOINOn(None, Employee,
                Branch.q.managerID == Employee.q.id),
         LEFTJOINOn(None, Manager_Person,
-               Employee.q.originalID == Manager_Person.q.id),
+               Employee.q.personID == Manager_Person.q.id),
         ]
 
     @property
@@ -1591,7 +1533,7 @@ class UserView(Viewable):
 
     joins = [
         INNERJOINOn(None, LoginUser,
-                   Person.q.id == LoginUser.q.originalID),
+                   Person.q.id == LoginUser.q.personID),
         LEFTJOINOn(None, UserProfile,
                LoginUser.q.profileID == UserProfile.q.id),
         ]
@@ -1626,7 +1568,7 @@ class CreditProviderView(Viewable):
 
     joins = [
         INNERJOINOn(None, CreditProvider,
-                   Person.q.id == CreditProvider.q.originalID),
+                   Person.q.id == CreditProvider.q.personID),
         ]
 
     @property
@@ -1654,7 +1596,7 @@ class CallsView(Viewable):
         LEFTJOINOn(None, LoginUser,
                    LoginUser.q.id == Calls.q.attendantID),
         LEFTJOINOn(None, Attendant_Person,
-                   LoginUser.q.originalID == Attendant_Person.q.id),
+                   LoginUser.q.personID == Attendant_Person.q.id),
         ]
 
     @property
@@ -1695,4 +1637,4 @@ class ClientCallsView(CallsView):
     joins = CallsView.joins[:]
     joins.append(
         INNERJOINOn(None, Client,
-                    Client.q.originalID == Person.q.id))
+                    Client.q.personID == Person.q.id))
