@@ -22,14 +22,20 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import platform
+
 from kiwi.component import get_utility
 
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-
 _user_bindings = {}
+
+if platform.system() == 'Darwin':
+    default_pref_shortcut = '<Primary>comma'
+else:
+    default_pref_shortcut = ''
 
 _bindings = [
     # Common application shortcuts
@@ -49,6 +55,8 @@ _bindings = [
      _('Close window')),
     ('app.common.print', '<Primary>p',
      _("Print"),),
+    ('app.common.preferences', default_pref_shortcut,
+     _("Show preferences")),
     ('app.common.quit', '<Primary>q',
      _("Quit the application")),
     ('app.common.help', 'F1',
