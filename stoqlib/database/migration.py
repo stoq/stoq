@@ -41,7 +41,6 @@ from stoqlib.database.database import (execute_sql, dump_database,
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.profile import update_profile_applications
-from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.defaults import stoqlib_gettext
@@ -393,21 +392,8 @@ class StoqlibSchemaMigration(SchemaMigration):
         return True
 
     def get_current_version(self):
-        assert self.conn.tableExists('system_table')
-
-        if self.conn.tableHasColumn('system_table', 'generation'):
-            results = SystemTable.select(connection=self.conn)
-            current_generation = results.max('generation')
-            results = SystemTable.selectBy(generation=current_generation,
-                                           connection=self.conn)
-            current_patchlevel = results.max('patchlevel')
-        elif self.conn.tableHasColumn('asellable', 'code'):
-            raise SystemExit(
-                _("Unsupported database version, you need to reinstall"))
-        else:
-            current_generation, current_patchlevel = 0
-
-        return current_generation, current_patchlevel
+        return self.conn.queryOne(
+            "SELECT MAX(generation), MAX(patchlevel) FROM system_table")
 
     def after_update(self):
         # checks if there is new applications and update all the user
