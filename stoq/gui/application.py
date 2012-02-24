@@ -531,7 +531,6 @@ class AppWindow(GladeDelegate):
         # Set the initial text, the currently logged in user and the actual
         # branch and station.
         user = api.get_current_user(self.conn)
-        branch = api.get_current_branch(self.conn)
         station = api.get_current_station(self.conn)
         status_str = '   |   '.join([
             _("User: %s") % (user.get_description(),),
