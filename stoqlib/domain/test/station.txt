@@ -100,7 +100,7 @@ Branch name
 We can get the name of the branch from the station by calling get_branch_name():
 
     >>> station.get_branch_name()
-    u'Dummy'
+    u'Dummy shop'
 
 
     Finally close the transaction we used in the test
