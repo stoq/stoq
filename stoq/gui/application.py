@@ -953,8 +953,8 @@ class AppWindow(GladeDelegate):
         self._height = event.height
 
     def _on_toplevel__delete_event(self, *args):
-        if self.current_app and not self.current_app.shutdown_application():
-            # We must return True to avoid closing
+        if self.current_app:
+            self.hide_app()
             return True
 
         AppWindow.app_windows.remove(self)
