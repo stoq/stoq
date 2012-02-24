@@ -111,6 +111,9 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
 
     register_config(config)
 
+    if options and options.sqldebug:
+        orm_enable_debugging()
+
     from stoq.lib.applist import ApplicationDescriptions
     provide_utility(IApplicationDescriptions, ApplicationDescriptions(),
                     replace=True)
@@ -150,5 +153,3 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         migration.check()
 
         orm_startup()
-        if options and options.sqldebug:
-            orm_enable_debugging()
