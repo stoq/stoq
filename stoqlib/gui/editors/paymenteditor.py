@@ -74,7 +74,6 @@ class PaymentEditor(BaseEditor):
     payment_type = None
     person_editor = None
     person_class = None
-    person_iface = None
 
     def __init__(self, conn, model=None, category=None):
         """ A base class for additional payments
@@ -180,7 +179,8 @@ class PaymentEditor(BaseEditor):
 
         person = getattr(self.model.group, self.person_attribute)
         if person:
-            facet = self.person_iface(person)
+            facet = self.person_type.selectOneBy(original=person,
+                                        connection=person.get_connection())
             self.person.select(facet)
 
     def _run_payment_category_editor(self, category=None):
