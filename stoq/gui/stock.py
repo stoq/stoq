@@ -232,7 +232,7 @@ class StockApp(SearchableAppWindow):
                              data_type=decimal.Decimal, width=100),
                 SearchColumn('unit', title=_("Unit"), data_type=str,
                              width=40, visible=False),
-                Column('sellable.has_image', title=_('Picture'),
+                Column('has_image', title=_('Picture'),
                        data_type=bool, width=80),
                  ]
 
