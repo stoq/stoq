@@ -401,7 +401,7 @@ class KeyBindingCategory(object):
         self.label = label
 
 
-_pre_gtk_2_24 = gtk.gtk_version < (2, 24)
+_pre_gtk_2_24_9 = gtk.gtk_version < (2, 24, 9)
 
 
 class KeyBindingGroup(object):
@@ -412,7 +412,7 @@ class KeyBindingGroup(object):
         if not name in self._bindings:
             raise AttributeError(name)
         binding = self._bindings[name]
-        if _pre_gtk_2_24:
+        if _pre_gtk_2_24_9:
             binding = binding.replace('<Primary>', '<Control>')
         if platform.system() == 'Darwin':
             binding = binding.replace('<Alt>', '<Control>')
