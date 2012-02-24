@@ -32,7 +32,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import PriceCol, DecimalCol, QuantityCol
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
-                                  BoolCol, BLOBCol, IntCol, PercentCol)
+                                  BoolCol, IntCol, PercentCol)
 from stoqlib.database.orm import const, AND, LEFTJOINOn
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
@@ -132,8 +132,6 @@ class Product(Domain):
 
     :attribute sellable: sellable of this product
     :attribute suppliers: list of suppliers that sells this product
-    :attribute image: a thumbnail of this product
-    :attribute full_image: an image of this product
     :attribute consignment:
     :attribute is_composed:
     :attribute production_time:
@@ -154,8 +152,6 @@ class Product(Domain):
 
     sellable = ForeignKey('Sellable')
     suppliers = MultipleJoin('ProductSupplierInfo')
-    image = BLOBCol(default='')
-    full_image = BLOBCol(default='')
     consignment = BoolCol(default=False)
 
     # Production
@@ -188,10 +184,6 @@ class Product(Domain):
 
     def has_quality_tests(self):
         return bool(self.quality_tests)
-
-    @property
-    def has_image(self):
-        return self.image != ''
 
     @property
     def description(self):

@@ -106,11 +106,28 @@ class SellableDetailsSlave(BaseEditorSlave):
     def __init__(self, conn, model=None, db_form=None):
         self.db_form = db_form
         BaseEditorSlave.__init__(self, conn, model)
+        self._setup_image_slave(model and model.image)
+
+    #
+    #  BaseEditorSlave hooks
+    #
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
                                     SellableDetailsSlave.proxy_widgets)
 
-    def setup_image_slave(self, image_model):
+    #
+    #  Private
+    #
+
+    def _setup_image_slave(self, image_model):
         slave = ImageSlave(self.conn, image_model)
+        slave.connect('image-changed', self._on_image_slave__image_changed)
         self.attach_slave('sellable_image_holder', slave)
+
+    #
+    #  Callbacks
+    #
+
+    def _on_image_slave__image_changed(self, slave, image):
+        self.model.image = image

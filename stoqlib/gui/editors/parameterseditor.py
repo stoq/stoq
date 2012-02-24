@@ -32,9 +32,10 @@ from kiwi.ui.widgets.textview import ProxyTextView
 from kiwi.ui.widgets.combo import ProxyComboEntry, ProxyComboBox
 
 from stoqlib.domain.base import AbstractModel
+from stoqlib.domain.image import Image
 from stoqlib.domain.parameter import ParameterData
+from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.imageutils import ImageHelper
 from stoqlib.lib.parameters import (sysparam, get_parameter_details,
                                     DirectoryParameter)
 from stoqlib.lib.translation import stoqlib_gettext
@@ -52,6 +53,10 @@ class SystemParameterEditor(BaseEditor):
     def __init__(self, conn, model):
         if not model:
             raise ValueError("This editor can't be called without a model")
+        # By default, if the user sets a value to None (e.g. selecting nothing
+        # on a comboentry) we block it's update. Change this to False if the
+        # param itself can accept None.
+        self._block_none_value = True
         self.sensitive = True
         if model.field_name in ['DEMO_MODE']:
             self.sensitive = False
@@ -140,6 +145,24 @@ class SystemParameterEditor(BaseEditor):
         self.container.add(hbox)
         hbox.show()
 
+    def _setup_image_slave(self):
+        event_box = gtk.EventBox()
+        event_box.show()
+
+        field_name = self.model.field_name
+        model = sysparam(self.conn).get_parameter_by_field(field_name,
+                                                           Image)
+
+        self.container.add(event_box)
+        self._image_slave = ImageSlave(self.conn, model)
+        self._image_slave.connect('image-changed',
+                                  self._on_image_slave__image_changed)
+        self._image_slave.show()
+        self.attach_slave('image_slave', self._image_slave, event_box)
+
+        # Images can have field_value as None
+        self._block_none_value = False
+
     def _setup_comboboxentry_slave(self):
         widget = ProxyComboEntry()
         widget.props.sensitive = self.sensitive
@@ -205,10 +228,10 @@ class SystemParameterEditor(BaseEditor):
         sparam = sysparam(self.conn)
         self.constant = sparam.get_parameter_constant(self.model.field_name)
         field_type = self.constant.get_parameter_type()
-        if issubclass(field_type, AbstractModel):
+        if issubclass(field_type, Image):
+            self._setup_image_slave()
+        elif issubclass(field_type, AbstractModel):
             self._setup_comboboxentry_slave()
-        elif issubclass(field_type, ImageHelper):
-            self._setup_entry_with_filechooser_button_slave()
         elif issubclass(field_type, DirectoryParameter):
             self._setup_entry_with_filechooser_button_slave(dir_only=True)
         elif issubclass(field_type, bool):
@@ -233,13 +256,16 @@ class SystemParameterEditor(BaseEditor):
                                           field_type))
 
     def on_confirm(self):
-        if self.model.field_value is None:
+        if self._block_none_value and self.model.field_value is None:
             return False
         return self.model
 
     #
     # Callbacks
     #
+
+    def _on_image_slave__image_changed(self, slave, image):
+        self.model.field_value = image and str(image.id)
 
     def _on_entry__validate(self, widget, value):
         validate_func = self.constant.get_parameter_validator()

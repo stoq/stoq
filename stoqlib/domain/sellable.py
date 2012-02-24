@@ -302,7 +302,7 @@ class Sellable(Domain):
 
     notes = UnicodeCol(default='')
     unit = ForeignKey("SellableUnit", default=None)
-
+    image = ForeignKey('Image', default=None)
     category = ForeignKey('SellableCategory', default=None)
     tax_constant = ForeignKey('SellableTaxConstant', default=None)
 
@@ -363,6 +363,10 @@ class Sellable(Domain):
     #
     # Properties
     #
+
+    @property
+    def has_image(self):
+        return bool(self.image and self.image.image)
 
     def _get_markup(self):
         if self.cost == 0:

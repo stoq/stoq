@@ -31,7 +31,6 @@ from stoqlib.api import api
 from stoqlib.domain.base import AbstractModel
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.parameter import ParameterData
-from stoqlib.lib.imageutils import ImageHelper
 from stoqlib.lib.parameters import sysparam, DirectoryParameter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.columns import AccessorColumn
@@ -87,8 +86,6 @@ class ParameterSearch(BaseEditor):
             return data.get_description()
         elif constant.options:
             return constant.options[int(obj.field_value)]
-        elif isinstance(data, ImageHelper):
-            return data.image_path
         elif isinstance(data, DirectoryParameter):
             return data.path
         elif isinstance(data, bool):

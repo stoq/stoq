@@ -25,7 +25,6 @@
 
 from zope.interface import implements
 
-from stoqlib.database.orm import BLOBCol
 from stoqlib.database.orm import ForeignKey
 from stoqlib.database.orm import INNERJOINOn, LEFTJOINOn
 from stoqlib.database.orm import Viewable
@@ -49,7 +48,6 @@ class Service(Domain):
 
     implements(IDescribable)
 
-    image = BLOBCol(default='')
     sellable = ForeignKey('Sellable')
 
     def remove(self):
