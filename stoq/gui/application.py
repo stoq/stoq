@@ -528,10 +528,17 @@ class AppWindow(GladeDelegate):
             area.show()
 
         self.statusbar_message_area = area
-
-        # Set the initial text, the currently logged in user
+        # Set the initial text, the currently logged in user and the actual
+        # branch and station.
         user = api.get_current_user(self.conn)
-        self.statusbar.push(0, _("User: %s") % (user.person.name, ))
+        branch = api.get_current_branch(self.conn)
+        station = api.get_current_station(self.conn)
+        status_str = '   |   '.join([
+            _("User: %s") % (user.person.name,),
+            _("Branch: %s") % (branch.person.name,),
+            _("Station: %s") % (station.name,)
+            ])
+        self.statusbar.push(0, status_str)
 
     def _empty_message_area(self):
         area = self.get_statusbar_message_area()
