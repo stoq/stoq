@@ -37,4 +37,4 @@ sizes = {
 def render_logo_pixbuf(size):
     width, height = sizes.get(size, (91, 32))
     logo = environ.get_resource_string('stoq', 'pixmaps', 'stoq_logo.svg')
-    return pixbuf_from_string(logo, 'svg')
+    return pixbuf_from_string(logo, 'svg', width=width, height=height)
