@@ -264,7 +264,9 @@ class AppWindow(GladeDelegate):
 
             # Edit
             ('EditMenu', None, _("_Edit")),
-            ('Preferences', None, _("_Preferences")),
+            ('Preferences', None, _("_Preferences"),
+             group.get('preferences'),
+             _('Show preferences')),
 
             # View
             ('ViewMenu', None, _("_View")),
