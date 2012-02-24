@@ -464,7 +464,7 @@ class AppWindow(GladeDelegate):
         lines = data.split('\n')
         lines.append('') # separate authors from contributors
         data = self._read_resource('docs', 'CONTRIBUTORS')
-        lines.extend([c.strip() for c in data.split()])
+        lines.extend([c.strip() for c in data.split('\n')])
         about.set_authors(lines)
 
         about.run()
