@@ -262,7 +262,7 @@ class UserDetailsSlave(BaseEditorSlave):
         person = self.model.person
         employee = person.employee
         if employee is None:
-            Employee(original=person, role=self.role.read(),
+            Employee(person=person, role=self.role.read(),
                      connection=self.conn)
         else:
             employee.role = self.role.read()
@@ -272,7 +272,7 @@ class UserDetailsSlave(BaseEditorSlave):
         can_access_sales = profile.check_app_permission("sales")
         can_do_sales = can_access_pos or can_access_sales
         if can_do_sales and not person.salesperson:
-            SalesPerson(original=person, connection=self.conn)
+            SalesPerson(person=person, connection=self.conn)
 
     #
     # Kiwi handlers

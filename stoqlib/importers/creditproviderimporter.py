@@ -52,7 +52,7 @@ class CreditProviderImporter(CSVImporter):
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
-        Company(original=person,
+        Company(person=person,
                 connection=trans,
                 cnpj=data.cnpj,
                 fancy_name=data.fancy_name,
@@ -71,7 +71,7 @@ class CreditProviderImporter(CSVImporter):
                 streetnumber=streetnumber,
                 district=data.district)
 
-        CreditProvider(original=person,
+        CreditProvider(person=person,
                        open_contract_date=const.NOW(),
                        short_name=data.provider_name,
                        connection=trans)

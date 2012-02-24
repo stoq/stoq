@@ -49,7 +49,7 @@ class ClientImporter(CSVImporter):
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
-        Individual(original=person,
+        Individual(person=person,
                    connection=trans,
                    cpf=data.cpf,
                    rg_number=data.rg)
@@ -69,4 +69,4 @@ class ClientImporter(CSVImporter):
             district=data.district
             )
 
-        Client(original=person, connection=trans)
+        Client(person=person, connection=trans)

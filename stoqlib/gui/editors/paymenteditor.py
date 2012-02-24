@@ -179,7 +179,7 @@ class PaymentEditor(BaseEditor):
 
         person = getattr(self.model.group, self.person_attribute)
         if person:
-            facet = self.person_type.selectOneBy(original=person,
+            facet = self.person_type.selectOneBy(person=person,
                                         connection=person.get_connection())
             self.person.select(facet)
 

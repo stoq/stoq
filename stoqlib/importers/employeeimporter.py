@@ -59,14 +59,14 @@ class EmployeeImporter(CSVImporter):
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
-        Individual(original=person,
+        Individual(person=person,
                    connection=trans,
                    cpf=data.cpf,
                    rg_number=data.rg)
 
         role = EmployeeRole(connection=trans, name=data.role)
 
-        employee = Employee(original=person,
+        employee = Employee(person=person,
                             connection=trans,
                             role=role,
                             salary=int(data.salary),
@@ -95,7 +95,7 @@ class EmployeeImporter(CSVImporter):
 
         profile = UserProfile.selectOneBy(name=data.profile, connection=trans)
 
-        LoginUser(original=person, connection=trans, profile=profile,
+        LoginUser(person=person, connection=trans, profile=profile,
                   username=data.username,
                   password=data.password)
-        SalesPerson(original=person, connection=trans)
+        SalesPerson(person=person, connection=trans)

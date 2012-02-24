@@ -1213,9 +1213,9 @@ class SaleView(Viewable):
                    Sale.q.salespersonID == SalesPerson.q.id),
 
         LEFTJOINOn(None, Person_Client,
-                   Client.q.originalID == Person_Client.q.id),
+                   Client.q.personID == Person_Client.q.id),
         LEFTJOINOn(None, Person_SalesPerson,
-                   SalesPerson.q.originalID == Person_SalesPerson.q.id),
+                   SalesPerson.q.personID == Person_SalesPerson.q.id),
 
         LEFTJOINOn(None, SaleItemIpi,
                    SaleItemIpi.q.id == SaleItem.q.ipi_infoID),
@@ -1309,7 +1309,7 @@ class DeliveryView(Viewable):
              LEFTJOINOn(None, Client,
                         Sale.q.clientID == Client.q.id),
              LEFTJOINOn(None, Person,
-                        Client.q.originalID == Person.q.id),
+                        Client.q.personID == Person.q.id),
     ]
 
     clause = AND(SaleItemAdaptToDelivery.q.originalID == SaleItem.q.id,
@@ -1342,9 +1342,9 @@ class SoldSellableView(Viewable):
                    Sale.q.salespersonID == SalesPerson.q.id),
 
         LEFTJOINOn(None, Person_Client,
-                   Client.q.originalID == Person_Client.q.id),
+                   Client.q.personID == Person_Client.q.id),
         LEFTJOINOn(None, Person_SalesPerson,
-                   SalesPerson.q.originalID == Person_SalesPerson.q.id),
+                   SalesPerson.q.personID == Person_SalesPerson.q.id),
 
         LEFTJOINOn(None, SaleItemIpi,
                    SaleItemIpi.q.id == SaleItem.q.ipi_infoID),

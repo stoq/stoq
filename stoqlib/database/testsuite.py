@@ -101,7 +101,7 @@ def _provide_current_station(station_name=None, branch_name=None):
     if branch_name:
         branch = Person.selectOne(
             AND(Person.q.name == branch_name,
-                Branch.q.originalID == Person.q.id),
+                Branch.q.personID == Person.q.id),
             connection=trans)
     else:
         branches = Branch.select(connection=trans)

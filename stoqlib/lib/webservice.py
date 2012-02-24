@@ -150,8 +150,8 @@ class WebService(object):
           FROM parameter_data, branch, company, person
          WHERE field_name = 'MAIN_COMPANY' AND
                branch.id = field_value::int AND
-               branch.original_id = person.id AND
-               company.original_id = person.id;""")
+               branch.person_id = person.id AND
+               company.person_id = person.id;""")
         if data:
             return data[0]
         return ''

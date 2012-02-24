@@ -122,7 +122,7 @@ class TestUpdate(SyncTest):
         person = Person(name="Employee", connection=trans)
         Individual(person, connection=trans)
         role = EmployeeRole.selectOneBy(name="Clerk", connection=trans)
-        Employee(original=person, role=role, connection=trans)
+        Employee(person=person, role=role, connection=trans)
         trans.commit()
 
         # Office
@@ -132,7 +132,7 @@ class TestUpdate(SyncTest):
         trans = new_transaction()
         person = Person.selectOneBy(name="Employee", connection=trans)
         self.failUnless(person)
-        SalesPerson(original=person comission=10, connection=trans)
+        SalesPerson(person=person comission=10, connection=trans)
         trans.commit()
 
         # Shop
@@ -141,7 +141,7 @@ class TestUpdate(SyncTest):
         person = Person.selectOneBy(name="Employee", connection=trans)
         self.failUnless(person)
         profile = UserProfile.selectOneBy(name='Administrator', connection=trans)
-        LoginUser(original=person, username="username", password="password",
+        LoginUser(person=person, username="username", password="password",
                   profile=profile, connection=trans)
         trans.commit()
 

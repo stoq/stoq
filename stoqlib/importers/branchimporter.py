@@ -52,7 +52,7 @@ class BranchImporter(CSVImporter):
             phone_number=data.phone_number,
             fax_number=data.fax_number)
 
-        Company(original=person, cnpj=data.cnpj,
+        Company(person=person, cnpj=data.cnpj,
                 state_registry=data.state_registry,
                 fancy_name=data.fancy_name,
                 connection=trans)
@@ -73,7 +73,7 @@ class BranchImporter(CSVImporter):
             postal_code=data.postal_code
             )
 
-        Branch(original=person, connection=trans)
+        Branch(person=person, connection=trans)
 
     def when_done(self, trans):
         sparam = sysparam(trans)

@@ -61,7 +61,7 @@ CREATE TABLE client (
     credit_limit numeric(20, 2) CONSTRAINT positive_credit_limit
         CHECK (credit_limit >= 0)
         DEFAULT 0,
-    original_id bigint UNIQUE REFERENCES person(id),
+    person_id bigint UNIQUE REFERENCES person(id),
     category_id bigint REFERENCES client_category(id)
 );
 
@@ -74,7 +74,7 @@ CREATE TABLE company (
     fancy_name text,
     state_registry text,
     city_registry text,
-    original_id bigint UNIQUE REFERENCES person(id)
+    person_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE credit_provider (
@@ -114,7 +114,7 @@ CREATE TABLE credit_provider (
     short_name text,
     provider_id text,
     open_contract_date timestamp,
-    original_id bigint UNIQUE REFERENCES person(id)
+    person_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE city_location (
@@ -146,7 +146,7 @@ CREATE TABLE individual (
         CHECK (gender >= 0 AND gender < 2),
     spouse_name text,
     birth_location_id bigint REFERENCES city_location(id),
-    original_id bigint UNIQUE REFERENCES person(id)
+    person_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE employee_role (
@@ -225,7 +225,7 @@ CREATE TABLE employee (
     military_data_id bigint REFERENCES military_data(id),
     voter_data_id bigint REFERENCES voter_data(id),
     bank_account_id bigint REFERENCES bank_account(id),
-    original_id bigint UNIQUE REFERENCES person(id)
+    person_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE branch (
@@ -235,7 +235,7 @@ CREATE TABLE branch (
     manager_id bigint REFERENCES employee(id),
     is_active boolean,
     crt integer DEFAULT 1,
-    original_id bigint UNIQUE REFERENCES person(id)
+    person_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE sales_person (
@@ -247,7 +247,7 @@ CREATE TABLE sales_person (
     comission_type integer CONSTRAINT check_valid_comission_type
         CHECK (comission_type >= 0 AND comission_type < 7),
     is_active boolean,
-    original_id bigint UNIQUE REFERENCES person(id)
+    person_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE supplier (
@@ -258,7 +258,7 @@ CREATE TABLE supplier (
     status integer CONSTRAINT valid_status
         CHECK (status >= 0 AND status < 3),
     product_desc text,
-    original_id bigint UNIQUE REFERENCES person(id)
+    person_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE transporter (
@@ -270,7 +270,7 @@ CREATE TABLE transporter (
     freight_percentage numeric(10, 2) NOT NULL
         CONSTRAINT positive_freight_percentage
         CHECK (freight_percentage >= 0),
-    original_id bigint UNIQUE REFERENCES person(id)
+    person_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE user_profile (
@@ -288,7 +288,7 @@ CREATE TABLE login_user (
     "password" text,
     is_active boolean,
     profile_id bigint REFERENCES user_profile(id),
-    original_id bigint UNIQUE REFERENCES person(id)
+    person_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE product_tax_template (

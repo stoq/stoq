@@ -262,10 +262,10 @@ class BasePersonRoleEditor(BaseEditor):
                 self.role_type, ))
         if (self.role_type == Person.ROLE_INDIVIDUAL and
             not self.person.individual):
-            Individual(original=self.person, connection=conn)
+            Individual(person=self.person, connection=conn)
         elif (self.role_type == Person.ROLE_COMPANY and
               not self.person.company):
-            Company(original=self.person, connection=conn)
+            Company(person=self.person, connection=conn)
         else:
             pass
         return self.person

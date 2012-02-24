@@ -43,15 +43,15 @@ class TestParameter(DomainTest):
 
     def _create_examples(self):
         person = Person(name='Jonas', connection=self.trans)
-        Individual(original=person, connection=self.trans)
+        Individual(person=person, connection=self.trans)
         role = EmployeeRole(connection=self.trans, name='desenvolvedor')
-        Employee(original=person, connection=self.trans,
+        Employee(person=person, connection=self.trans,
                  role=role)
-        self.salesperson = SalesPerson(original=person,
+        self.salesperson = SalesPerson(person=person,
                                        connection=self.trans)
-        Company(original=person, connection=self.trans)
-        client = Client(original=person, connection=self.trans)
-        self.branch = Branch(original=person, connection=self.trans)
+        Company(person=person, connection=self.trans)
+        client = Client(person=person, connection=self.trans)
+        self.branch = Branch(person=person, connection=self.trans)
 
         group = self.create_payment_group()
         self.sale = Sale(coupon_id=123, client=client,
@@ -177,9 +177,9 @@ class TestParameter(DomainTest):
         branch = self.create_branch()
         param = self.sparam.DEFAULT_RECEIVING_CFOP
         person = Person(name='Craudinho', connection=self.trans)
-        Individual(original=person, connection=self.trans)
+        Individual(person=person, connection=self.trans)
         profile = UserProfile(name='profile', connection=self.trans)
-        responsible = LoginUser(original=person, connection=self.trans,
+        responsible = LoginUser(person=person, connection=self.trans,
                                 password='asdfgh', profile=profile,
                                 username='craudio')
         purchase = self.create_purchase_order()

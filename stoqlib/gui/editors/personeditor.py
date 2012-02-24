@@ -65,7 +65,7 @@ class ClientEditor(BasePersonRoleEditor):
         person = BasePersonRoleEditor.create_model(self, conn)
         client = person.client
         if client is None:
-            client = Client(original=person, connection=conn)
+            client = Client(person=person, connection=conn)
         return client
 
     def setup_slaves(self):
@@ -92,7 +92,7 @@ class UserEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        return person.login_user or LoginUser(original=person,
+        return person.login_user or LoginUser(person=person,
                                               connection=conn, username="",
                                               password="", profile=None)
 
@@ -139,7 +139,7 @@ class CreditProviderEditor(BasePersonRoleEditor):
         if self.provtype is None:
             raise ValueError('subclasses of CreditProviderEditor must '
                              'define a provtype attribute')
-        return CreditProvider(original=person,
+        return CreditProvider(person=person,
                               short_name='',
                               provider_type=self.provtype,
                               open_contract_date=datetime.datetime.today(),
@@ -175,10 +175,10 @@ class EmployeeEditor(BasePersonRoleEditor):
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
         if person.individual:
-            Individual(original=person, connection=self.conn)
+            Individual(person=person, connection=self.conn)
         employee = person.employee
         if not employee:
-            employee = Employee(original=person, connection=conn, role=None)
+            employee = Employee(person=person, connection=conn, role=None)
         return employee
 
     def setup_slaves(self):
@@ -267,7 +267,7 @@ class SupplierEditor(BasePersonRoleEditor):
         person = BasePersonRoleEditor.create_model(self, conn)
         supplier = person.supplier
         if supplier is None:
-            supplier = Supplier(original=person, connection=conn)
+            supplier = Supplier(person=person, connection=conn)
         return supplier
 
     def setup_slaves(self):
@@ -295,7 +295,7 @@ class TransporterEditor(BasePersonRoleEditor):
         person = BasePersonRoleEditor.create_model(self, conn)
         transporter = person.transporter
         if transporter is None:
-            transporter = Transporter(original=person,
+            transporter = Transporter(person=person,
                                       connection=conn)
         return transporter
 
@@ -325,7 +325,7 @@ class BranchEditor(BasePersonRoleEditor):
         person = BasePersonRoleEditor.create_model(self, conn)
         branch = person.branch
         if branch is None:
-            branch = Branch(original=person, connection=conn)
+            branch = Branch(person=person, connection=conn)
 
         return branch
 
