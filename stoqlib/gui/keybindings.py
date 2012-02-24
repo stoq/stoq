@@ -24,6 +24,7 @@
 
 import platform
 
+import gtk
 from kiwi.component import get_utility
 
 from stoqlib.lib.interfaces import IApplicationDescriptions
@@ -181,13 +182,13 @@ _bindings = [
      _("Create a delivery for the current order")),
     ('app.pos.search_sales', '<Primary><Alt>a',
      _("Search for sales ")),
-    ('app.pos.search_sold_items', '<Contrl><Alt>a',
+    ('app.pos.search_sold_items', '<Primary><Alt>a',
      _("Search for sold items")),
     ('app.pos.search_clients', '<Primary><Alt>c',
      _("Search for clients")),
     ('app.pos.search_products', '<Primary><Alt>p',
      _("Search for products")),
-    ('app.pos.search_services', '<Contro><Alt>s',
+    ('app.pos.search_services', '<Primary><Alt>s',
      _("Search for services")),
     ('app.pos.search_deliveries', '<Primary><Alt>e',
      _("Search for deliveries")),
@@ -361,11 +362,11 @@ _bindings = [
      _("Search for clients")),
     ('app.till.search_sale', '<Primary><Alt>a',
      _("Search for sales")),
-    ('app.till.search_sold_items_by_branch', '<Contrl><Alt>d',
+    ('app.till.search_sold_items_by_branch', '<Primary><Alt>d',
      _("Search for sold items by branch")),
     ('app.till.search_till_history', '<Primary><Alt>t',
      _("Search for till history")),
-    ('app.till.search_fiscal_till_operations', '<Contro><Alt>f',
+    ('app.till.search_fiscal_till_operations', '<Primary><Alt>f',
      _("Search for fiscal till operations")),
     ('app.till.confirm_sale', '',
      _("Confirm the sale")),
@@ -400,6 +401,9 @@ class KeyBindingCategory(object):
         self.label = label
 
 
+_pre_gtk_2_24 = gtk.gtk_version < (2, 24)
+
+
 class KeyBindingGroup(object):
     def __init__(self, bindings):
         self._bindings = bindings
@@ -407,7 +411,12 @@ class KeyBindingGroup(object):
     def get(self, name):
         if not name in self._bindings:
             raise AttributeError(name)
-        return self._bindings[name]
+        binding = self._bindings[name]
+        if _pre_gtk_2_24:
+            binding = binding.replace('<Primary>', '<Control>')
+        if platform.system() == 'Darwin':
+            binding = binding.replace('<Alt>', '<Control>')
+        return binding
 
 
 def add_bindings(bindings):
