@@ -23,7 +23,9 @@
 ##
 """ Runtime routines for applications"""
 
+import os
 import sys
+import socket
 
 from kiwi.component import get_utility, provide_utility, implements
 from kiwi.log import Logger
@@ -337,6 +339,14 @@ def set_current_branch_station(conn, station_name):
     # been imported yet
     from stoqlib.domain.person import Branch
     Branch # pyflakes
+
+    if station_name is None:
+        # For LTSP systems we cannot use the hostname as stoq is run
+        # on a shared serve system. Instead the ip of the client system
+        # is available in the LTSP_CLIENT environment variable
+        station_name = os.environ.get('LTSP_CLIENT_HOSTNAME', None)
+        if station_name is None:
+            station_name = socket.gethostname()
 
     from stoqlib.domain.station import BranchStation
     station = BranchStation.selectOneBy(name=station_name, connection=conn)
