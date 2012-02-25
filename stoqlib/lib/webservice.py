@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -117,19 +117,24 @@ class WebService(object):
 
     def _do_request(self, method, document, **params):
         url = '%s/%s' % (self.API_SERVER, document)
-        log.info("Doing a %s on %r" % (method, document))
-
         headers = self._get_headers()
 
         if method == 'GET':
-            # FIXME: Remove q=
-            url += '?q=' + urllib.quote(json.dumps(params))
+            # FIXME: Get rid of this
+            if document in ['bugreport.json',
+                            'tefrequest.json',
+                            'version.json']:
+                url += '?q=' + urllib.quote(json.dumps(params))
+            else:
+                url += '?' + urllib.urlencode(params)
             producer = None
         elif method == 'POST':
             producer = StringProducer(urllib.urlencode(params))
             headers['Content-Type'] = ['application/x-www-form-urlencoded']
         else:
             raise AssertionError(method)
+
+        log.info("Requsting %s %s %r" % (method, url, headers))
 
         agent = Agent(reactor)
         d = agent.request(method, url, Headers(headers), producer)
@@ -198,3 +203,24 @@ class WebService(object):
             'phone': phone,
         }
         return self._do_request('GET', 'tefrequest.json', **params)
+
+    def feedback(self, screen, email, feedback):
+        app_info = get_utility(IAppInfo, None)
+        if app_info:
+            app_version = app_info.get('version')
+        else:
+            app_version = 'Unknown'
+        conn = get_connection()
+        params = {
+            'cnpj': self._get_cnpj(),
+            'demo': sysparam(conn).DEMO_MODE,
+            'dist': platform.dist(),
+            'email': email,
+            'feedback': feedback,
+            'plugins': InstalledPlugin.get_plugin_names(conn),
+            'screen': screen,
+            'time': datetime.datetime.today().isoformat(),
+            'uname': platform.uname(),
+            'version': app_version,
+        }
+        return self._do_request('GET', 'feedback.json', **params)
