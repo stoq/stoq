@@ -188,6 +188,12 @@ def _provide_payment_operation_manager():
     register_payment_operations()
 
 
+def _provide_domain_slave_mapper():
+    from stoqlib.gui.interfaces import IDomainSlaveMapper
+    from stoqlib.gui.domainslavemapper import DefaultDomainSlaveMapper
+    provide_utility(IDomainSlaveMapper, DefaultDomainSlaveMapper(),
+                    replace=True)
+
 def provide_utilities(station_name, branch_name=None):
     """
     Provide utilities like current user and current station.
@@ -197,7 +203,7 @@ def provide_utilities(station_name, branch_name=None):
     _provide_current_user()
     _provide_current_station(station_name, branch_name)
     _provide_payment_operation_manager()
-
+    _provide_domain_slave_mapper()
 
 def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
                         password="", station_name=None, quick=False):
