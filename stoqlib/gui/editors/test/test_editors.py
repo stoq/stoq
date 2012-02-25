@@ -25,16 +25,23 @@
 import inspect
 import gc
 
+from kiwi.component import provide_utility
 from kiwi.python import Settable
 from twisted.trial.unittest import SkipTest
 
 from stoqlib.api import api
 from stoqlib.lib.introspection import get_all_classes
+from stoqlib.gui.domainslavemapper import DefaultDomainSlaveMapper
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
+from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.gui.base.wizards import WizardStep
 from stoqlib.domain.person import Person
 
 from stoqlib.domain.test.domaintest import DomainTest
+
+
+provide_utility(IDomainSlaveMapper, DefaultDomainSlaveMapper(),
+                replace=True)
 
 
 def get_all_slaves():
