@@ -172,6 +172,10 @@ class Shell(object):
         from kiwi.ui.views import set_glade_loader_func
         set_glade_loader_func(self._glade_loader_func)
 
+        from kiwi.datatypes import get_localeconv
+        from kiwi.ui.widgets.label import ProxyLabel
+        ProxyLabel.replace('$CURRENCY', get_localeconv()['currency_symbol'])
+
     def _setup_twisted(self):
         from twisted.internet import gtk2reactor
         gtk2reactor.install()
