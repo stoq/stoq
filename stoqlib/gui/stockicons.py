@@ -31,6 +31,7 @@ STOQ_CALENDAR_TODAY = "stoq-calendar-today"
 STOQ_CALENDAR_WEEK = "stoq-calendar-week"
 STOQ_CLIENTS = "stoq-clients"
 STOQ_EDIT = "stoq-edit"
+STOQ_FEEDBACK = "stoq-feedback"
 STOQ_DELIVERY = "stoq-delivery"
 STOQ_HR = "stoq-hr"
 STOQ_INVENTORY_APP = "stoq-inventory-app"
@@ -104,6 +105,8 @@ icon_info = [
       GTK_ICON_SIZE_DIALOG: "stoq-delivery-48x48.png"}),
     (STOQ_EDIT,
      {GTK_ICON_SIZE_DIALOG: "stoq-edit-48x48.png"}),
+    (STOQ_FEEDBACK,
+     {GTK_ICON_SIZE_MENU: "stoq-feedback-16x16.png"}),
     (STOQ_FORMS,
      {GTK_ICON_SIZE_DIALOG: "stoq-forms-48x48.png"}),
     (STOQ_HR,

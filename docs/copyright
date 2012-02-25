@@ -44,13 +44,17 @@ can be downloaded from <http://download.gnome.org/sources/gnome-icon-theme/>:
 * stoq-taxes
 * stoq-user-profiles
 
-These pixwmaps were copied from evolution, licensed under LGPL-v2/v3:
+These pixmaps were copied from evolution, licensed under LGPL-v2/v3:
 
 * stoq-calendar-app
 * stoq-calendar-list
 * stoq-calendar-month
 * stoq-calendar-today
 * stoq-calendar-week
+
+These pixmaps were copied from monodevelop, licensed under LGPLv2:
+
+* stoq-feedback
 
 Stoq external
 =============
