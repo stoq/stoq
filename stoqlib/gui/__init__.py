@@ -23,5 +23,3 @@
 """Graphical User Interface: Dialogs, Editors, Search, Slaves, Wizards etc
 """
 
-from stoqlib.gui.bootstrap import bootstrap
-bootstrap()
