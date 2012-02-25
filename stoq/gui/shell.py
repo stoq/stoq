@@ -86,6 +86,7 @@ class Shell(object):
         self._setup_exception_hook()
         self._setup_exit_hook()
         self._setup_database()
+        self._setup_domain_slave_mapper()
         self._load_key_bindings()
         self._setup_debug_options()
 
@@ -241,6 +242,13 @@ class Shell(object):
             icon = NSImage.alloc().initWithData_(data)
             app = NSApplication.sharedApplication()
             app.setApplicationIconImage_(icon)
+
+    def _setup_domain_slave_mapper(self):
+        from kiwi.component import provide_utility
+        from stoqlib.gui.interfaces import IDomainSlaveMapper
+        from stoqlib.gui.domainslavemapper import DefaultDomainSlaveMapper
+        provide_utility(IDomainSlaveMapper, DefaultDomainSlaveMapper(),
+                        replace=True)
 
     def _setup_cookiefile(self):
         log.debug('setting up cookie file')
