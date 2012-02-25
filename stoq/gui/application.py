@@ -29,6 +29,7 @@ import locale
 import os
 import platform
 
+import gobject
 import gtk
 from kiwi.component import get_utility
 from kiwi.enums import SearchFilterPosition
@@ -64,6 +65,54 @@ import stoq
 
 log = Logger('stoq.application')
 _ = gettext.gettext
+
+
+class Statusbar(gtk.Statusbar):
+    def __init__(self):
+        gtk.Statusbar.__init__(self)
+        self._disable_border()
+        self.message_area = self._create_message_area()
+        self._create_default_widgets()
+
+    def _disable_border(self):
+        # Disable border on statusbar
+        children = self.get_children()
+        if children and isinstance(children[0], gtk.Frame):
+            frame = children[0]
+            frame.set_shadow_type(gtk.SHADOW_NONE)
+
+    def _create_message_area(self):
+        for child in self.get_children():
+            self.remove(child)
+        area = gtk.HBox(False, 4)
+        self.add(area)
+        area.show()
+        return area
+
+    def _create_default_widgets(self):
+        alignment = gtk.Alignment(0.0, 0.0, 1.0, 1.0)
+        # FIXME: These looks good on Mac, might need to tweak
+        # on Linux to look good
+        alignment.set_padding(2, 3, 5, 5)
+        self.message_area.pack_start(alignment, True, True)
+        alignment.show()
+
+        self.message_area = gtk.HBox(False, 4)
+        alignment.add(self.message_area)
+        self.message_area.show()
+
+        self._text_label = gtk.Label()
+        self._text_label.set_alignment(0.0, 0.5)
+        self.message_area.pack_start(self._text_label, True, True)
+        self._text_label.show()
+
+    def do_text_popped(self, ctx, text):
+        self._text_label.set_label(text)
+
+    def do_text_pushed(self, ctx, text):
+        self._text_label.set_label(text)
+
+gobject.type_register(Statusbar)
 
 
 class App(object):
@@ -370,9 +419,11 @@ class AppWindow(GladeDelegate):
 
         toolbar = self.uimanager.get_widget('/toolbar')
         self.main_vbox.pack_start(toolbar, False, False)
-        self.main_vbox.reorder_child(toolbar, len(self.main_vbox) - 4)
+        self.main_vbox.reorder_child(toolbar, len(self.main_vbox) - 3)
 
-        self._prepare_statusbar()
+        self.statusbar = self._create_statusbar()
+        self.main_vbox.pack_start(self.statusbar, False, False)
+        self.main_vbox.reorder_child(self.statusbar, len(self.main_vbox) - 1)
 
         # FIXME: For some reason, without this hack, some apps like Stock and
         #        Purchase shows an extra search tool menu labeled 'empty'
@@ -504,30 +555,9 @@ class AppWindow(GladeDelegate):
         d['x'] = str(self._x)
         d['y'] = str(self._y)
 
-    def _prepare_statusbar(self):
-        # Disable border on statusbar
-        children = self.statusbar.get_children()
-        if children and isinstance(children[0], gtk.Frame):
-            frame = children[0]
-            frame.set_shadow_type(gtk.SHADOW_NONE)
+    def _create_statusbar(self):
+        statusbar = Statusbar()
 
-        # Setup the message area, more complicated than it
-        # should be since we're maintaining support for
-        # PyGTK 2.17
-        if hasattr(self.statusbar, 'get_message_area'):
-            area = self.statusbar.get_message_area()
-        else:
-            area = gtk.HBox(False, 4)
-
-            frame = self.statusbar.get_children()[0]
-            label = frame.get_child()
-            frame.remove(label)
-            frame.add(area)
-
-            area.add(label)
-            area.show()
-
-        self.statusbar_message_area = area
         # Set the initial text, the currently logged in user and the actual
         # branch and station.
         user = api.get_current_user(self.conn)
@@ -536,7 +566,8 @@ class AppWindow(GladeDelegate):
             _("User: %s") % (user.get_description(),),
             _("Computer: %s") % (station.name,)
             ])
-        self.statusbar.push(0, status_str)
+        statusbar.push(0, status_str)
+        return statusbar
 
     def _empty_message_area(self):
         area = self.get_statusbar_message_area()
@@ -658,7 +689,7 @@ class AppWindow(GladeDelegate):
     #
 
     def get_statusbar_message_area(self):
-        return self.app.launcher.statusbar_message_area
+        return self.app.launcher.statusbar.message_area
 
     def print_report(self, report_class, *args, **kwargs):
         filters = self.search.get_search_filters()
