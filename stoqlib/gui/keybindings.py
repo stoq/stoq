@@ -96,7 +96,7 @@ _bindings = [
      _("Configure invoices")),
     ('app.admin.config_invoice_printers', '<Primary>f',
      _("Configure invoice printers")),
-    ('app.admin.config_sintegra', '<Primary>w',
+    ('app.admin.config_sintegra', '',
      _("Configure sintegra")),
     ('app.admin.config_taxes', '<Primary>l',
      _("Configure tax classes")),
