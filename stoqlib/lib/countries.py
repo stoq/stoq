@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import locale
+
 from stoqlib.lib.translation import dgettext
 
 
@@ -291,7 +293,9 @@ def get_countries():
     :returns: a list of tuples
     """
 
-    # We store translated country names in a dictionary to ensure
+    # We store translated country names in a set to ensure
     # there are no dupes because the combo expects that.
-    return sorted(
-        dict((dgettext("iso_3166", c), c) for c in countries).items())
+    items = set()
+    for country in countries:
+        items.add((dgettext("iso_3166", country), country))
+    return sorted(items)
