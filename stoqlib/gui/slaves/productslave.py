@@ -155,7 +155,7 @@ class ProductInformationSlave(BaseEditorSlave):
 
     def on_genero__validate(self, widget, value):
         if len(value) not in (0, 2):
-            return ValidationError(_(u'NCM must have 2 digits.'))
+            return ValidationError(_(u'Gênero must have 2 digits.'))
 
     def on_minimum_quantity__validate(self, widget, value):
         if value and value < 0:
