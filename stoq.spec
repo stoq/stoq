@@ -26,6 +26,7 @@ Requires: pywebkitgtk >= 1.1.7
 Requires: python-twisted-core >= 10.0.0
 Requires: python-twisted-web >= 10.0.0
 Requires: python-xlwt >= 0.7.2
+Requires: iso-codes >= 3.12
 BuildRequires: python-kiwi >= 1.9.28
 BuildArch: noarch
 
