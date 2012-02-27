@@ -25,6 +25,7 @@
 
 import datetime
 from decimal import Decimal
+import operator
 
 from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column
@@ -37,7 +38,7 @@ from stoqlib.domain.production import (ProductionOrder, ProductionItem,
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductComponentView
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
@@ -72,13 +73,16 @@ class OpenProductionOrderStep(WizardEditorStep):
         # FIXME: Implement and use IDescribable on Branch
         branches = Branch.get_active_branches(self.conn)
         items = [(s.person.name, s) for s in branches]
-        self.branch.prefill(sorted(items))
+        self.branch.prefill(locale_sorted(
+            items, key=operator.itemgetter(0)))
 
     def _fill_responsible_combo(self):
         employees = Employee.selectBy(
             status=Employee.STATUS_NORMAL,
             connection=self.conn)
-        self.responsible.prefill([(e.person.name, e) for e in employees])
+        items = [(e.person.name, e) for e in employees]
+        self.responsible.prefill(locale_sorted(
+            items, key=operator.itemgetter(0)))
 
     def _setup_widgets(self):
         self._fill_branch_combo()

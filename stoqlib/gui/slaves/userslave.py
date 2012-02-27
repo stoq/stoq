@@ -26,6 +26,8 @@
 
 """ User editor slaves implementation.  """
 
+import operator
+
 import gtk
 from kiwi.datatypes import ValidationError
 
@@ -36,7 +38,7 @@ from stoqlib.domain.profile import UserProfile
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.lib.defaults import MINIMUM_PASSWORD_CHAR_LEN
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 
 _ = stoqlib_gettext
@@ -221,13 +223,16 @@ class UserDetailsSlave(BaseEditorSlave):
         if self.model.profile is None:
             self.model.profile = UserProfile.get_default(conn=self.conn)
         profiles = UserProfile.select(connection=self.conn, orderBy='name')
-        self.profile.prefill([(p.name, p) for p in profiles])
+        items = [(p.name, p) for p in profiles]
+        self.profile.prefill(locale_sorted(
+            items, key=operator.itemgetter(0)))
 
     def _setup_role_entry_completition(self):
         roles = EmployeeRole.select(connection=self.conn)
         items = [(role.name, role) for role in roles]
         items.insert(0, (_("No Role"), None))
-        self.role.prefill(items)
+        self.role.prefill(locale_sorted(
+            items, key=operator.itemgetter(0)))
 
     def _attach_slaves(self):
         self.password_slave = PasswordEditorSlave(self.conn)

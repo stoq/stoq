@@ -25,21 +25,22 @@
 """ Installment confirmation slave """
 
 import datetime
+import operator
 
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.objectlist import Column
 from kiwi import ValueUnset
 
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -301,7 +302,8 @@ class _InstallmentConfirmationSlave(BaseEditor):
 
         destinations = Account.select(connection=self.conn)
         items = [(a.long_description, a) for a in destinations]
-        self.account.prefill(sorted(items))
+        self.account.prefill(locale_sorted(
+            items, key=operator.itemgetter(0)))
         self.account.select(payment.method.destination_account)
 
     #

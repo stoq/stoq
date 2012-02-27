@@ -24,11 +24,11 @@
 ##
 """ Loan wizard"""
 
-import gtk
-
 from decimal import Decimal
 import datetime
+import operator
 
+import gtk
 from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 from kiwi.ui.widgets.entry import ProxyEntry
@@ -44,7 +44,7 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.views import LoanView, ProductFullStockItemView
 from stoqlib.lib.message import info, yesno
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.gui.base.dialogs import run_dialog
@@ -88,7 +88,8 @@ class StartNewLoanStep(WizardEditorStep):
         self.salesperson.set_property('model-attribute', 'responsible')
         users = LoginUser.selectBy(is_active=True, connection=self.conn)
         items = [(u.person.name, u) for u in users]
-        self.salesperson.prefill(items)
+        self.salesperson.prefill(locale_sorted(
+            items, key=operator.itemgetter(0)))
         self.salesperson.set_sensitive(False)
 
         self._fill_clients_combo()
@@ -122,14 +123,16 @@ class StartNewLoanStep(WizardEditorStep):
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         clients = clients[:max_results]
         items = [(c.name, c.client) for c in clients]
-        self.client.prefill(sorted(items))
+        self.client.prefill(locale_sorted(
+            items, key=operator.itemgetter(0)))
         self.client.set_property('mandatory', True)
 
     def _fill_clients_category_combo(self):
         cats = ClientCategory.select(connection=self.conn).orderBy('name')
         items = [(c.get_description(), c) for c in cats]
         items.insert(0, ['', None])
-        self.client_category.prefill(items)
+        self.client_category.prefill(locale_sorted(
+            items, key=operator.itemgetter(0)))
 
     def _replace_widget(self, old_widget, new_widget):
         # retrieve the position, since we will replace two widgets later.

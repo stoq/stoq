@@ -25,6 +25,7 @@
 """ Purchase wizard definition """
 
 import datetime
+import operator
 import sys
 
 import gtk
@@ -42,7 +43,7 @@ from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.domain.sellable import Sellable
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -82,14 +83,16 @@ class StartPurchaseStep(WizardEditorStep):
         # FIXME: Implement and use IDescribable on Supplier
         suppliers = Supplier.get_active_suppliers(self.conn)
         items = [(s.person.name, s) for s in suppliers]
-        self.supplier.prefill(sorted(items))
+        self.supplier.prefill(locale_sorted(
+            items, key=operator.itemgetter(0)))
         self.edit_supplier.set_sensitive(len(items))
 
     def _fill_branch_combo(self):
         # FIXME: Implement and use IDescribable on Branch
         branches = Branch.get_active_branches(self.conn)
         items = [(s.person.name, s) for s in branches]
-        self.branch.prefill(sorted(items))
+        self.branch.prefill(locale_sorted(
+            items, key=operator.itemgetter(0)))
 
     def _setup_widgets(self):
         allow_outdated = sysparam(self.conn).ALLOW_OUTDATED_OPERATIONS

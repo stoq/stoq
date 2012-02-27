@@ -23,8 +23,9 @@
 ##
 
 import locale
+import operator
 
-from stoqlib.lib.translation import dgettext
+from stoqlib.lib.translation import dgettext, locale_sorted
 
 
 # The country list is part of the evolution source code:
@@ -293,9 +294,11 @@ def get_countries():
     :returns: a list of tuples
     """
 
+    def cmp_func(a, b):
+        return locale.strcoll(a[0], b[0])
     # We store translated country names in a set to ensure
     # there are no dupes because the combo expects that.
     items = set()
     for country in countries:
         items.add((dgettext("iso_3166", country), country))
-    return sorted(items)
+    return locale_sorted(items, key=operator.itemgetter(0))
