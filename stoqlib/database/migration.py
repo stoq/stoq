@@ -184,7 +184,6 @@ class SchemaMigration(object):
                 patches_to_apply.append(patch)
 
             functions = environ.get_resource_filename('stoq', 'sql', 'functions.sql')
-            print type(functions)
             if execute_sql(functions) != 0:
                 error('Failed to create functions')
 
@@ -393,7 +392,10 @@ class StoqlibSchemaMigration(SchemaMigration):
 
     def get_current_version(self):
         return self.conn.queryOne(
-            "SELECT MAX(generation), MAX(patchlevel) FROM system_table")
+            """SELECT generation, patchlevel
+                 FROM system_table
+             ORDER BY updated DESC
+                LIMIT 1;""")
 
     def after_update(self):
         # checks if there is new applications and update all the user
