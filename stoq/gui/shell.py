@@ -328,7 +328,6 @@ class Shell(object):
         manager = get_plugin_manager()
         manager.activate_installed_plugins()
 
-
     def _load_key_bindings(self):
         from stoqlib.gui.keybindings import load_user_keybindings
         load_user_keybindings()
