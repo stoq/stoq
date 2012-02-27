@@ -25,6 +25,7 @@
 
 import datetime
 from decimal import Decimal
+import operator
 
 from kiwi.datatypes import ValidationError
 from kiwi.python import any
@@ -40,7 +41,7 @@ from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -133,7 +134,8 @@ class DeliveryEditor(BaseEditor):
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         clients = clients[:max_results]
         items = [(c.name, c.client) for c in clients]
-        self.client.prefill(sorted(items))
+        self.client.prefill(locale_sorted(
+            items, key=operator.itemgetter(0)))
         self.client.set_sensitive(len(items))
 
     #

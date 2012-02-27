@@ -23,12 +23,13 @@
 ##
 
 import datetime
+import operator
 
 from stoqlib.api import api
 from stoqlib.domain.person import Calls, LoginUser
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -80,12 +81,14 @@ class CallsEditor(BaseEditor):
         else:
             persons = [(p.person.name, p.person)
                          for p in self.person_type.select(connection=self.conn)]
-            self.person_combo.prefill(sorted(persons))
+            self.person_combo.prefill(locale_sorted(
+                persons, key=operator.itemgetter(0)))
 
     def _fill_attendant_combo(self):
         attendants = [(a.person.name, a)
                      for a in LoginUser.select(connection=self.conn)]
-        self.attendant.prefill(sorted(attendants))
+        self.attendant.prefill(locale_sorted(
+            attendants, key=operator.itemgetter(0)))
 
     def on_details_button__clicked(self, button):
         from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog

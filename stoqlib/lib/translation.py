@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -26,6 +26,7 @@
 """Translation utilities for stoqlib"""
 
 import gettext as gettext_
+import locale
 
 
 def stoqlib_gettext(message):
@@ -53,3 +54,13 @@ def gettext(message):
 
 def N_(message):
     return message
+
+
+def locale_sorted(iterable, cmp=None, key=None, reverse=False):
+    if cmp is not None:
+        raise TypeError("cmp is not supported")
+
+    def cmp_func(a, b):
+        return locale.strcoll(a.encode('utf-8'),
+                              b.encode('utf-8'))
+    return sorted(iterable, cmp_func, key, reverse)

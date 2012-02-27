@@ -40,6 +40,8 @@ try:
 except ImportError:
     dbus = None
 
+from stoqlib.lib.translation import locale_sorted
+
 if dbus:
     class _HALDevice(object):
         def __init__(self, bus, udi):
@@ -130,4 +132,4 @@ class DeviceManager(object):
             devices = self._get_hal_devices()
         else:
             devices = self._get_default_devices()
-        return sorted(devices, key=operator.attrgetter('device_name'))
+        return locale_sorted(devices, key=operator.attrgetter('device_name'))

@@ -30,6 +30,7 @@ from kiwi.component import get_utility
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import add_current_toplevel
 from stoqlib.lib.interfaces import IApplicationDescriptions
+from stoqlib.lib.translation import locale_sorted
 from stoq.gui.application import AppWindow
 from stoq.lib.applist import Application
 
@@ -128,8 +129,8 @@ class Launcher(AppWindow):
         available_applications = []
 
         # sorting by app_full_name
-        for name, full, icon, descr in sorted(descriptions,
-                                              key=operator.itemgetter(1)):
+        for name, full, icon, descr in locale_sorted(
+            descriptions, key=operator.itemgetter(1)):
             #FIXME:
             #if name in self._hidden_apps:
             #    continue

@@ -24,9 +24,12 @@
 ##
 """ General slaves for branch management"""
 
+import operator
+
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.domain.person import Branch, EmployeeView
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import locale_sorted
 
 
 class BranchDetailsSlave(BaseEditorSlave):
@@ -47,7 +50,8 @@ class BranchDetailsSlave(BaseEditorSlave):
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         employees = employees[:max_results]
         items = [(e.name, e.employee) for e in employees]
-        self.manager.prefill(sorted(items))
+        self.manager.prefill(locale_sorted(
+            items, key=operator.itemgetter(0)))
 
     def _setup_crt_combo(self):
         self.crt.prefill(self.crt_options)

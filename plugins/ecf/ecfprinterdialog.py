@@ -23,6 +23,7 @@
 ##
 ##
 
+import operator
 import platform
 
 import gtk
@@ -42,7 +43,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.devicemanager import DeviceManager
 from stoqlib.lib.message import info, yesno, warning
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 from ecfprinterstatus import ECFAsyncPrinterStatus
 from ecfdomain import ECFPrinter, DeviceConstant
@@ -204,7 +205,8 @@ class ECFEditor(BaseEditor):
             printer = _PrinterModel('virtual', Simple)
             printers.append((printer.get_description(), printer))
 
-        self.printer.prefill(sorted(printers))
+        self.printer.prefill(locale_sorted(
+            printers, key=operator.itemgetter(0)))
 
     def _populate_serial_ports(self):
         values = []

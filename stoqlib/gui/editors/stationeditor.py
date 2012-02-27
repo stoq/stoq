@@ -23,10 +23,12 @@
 ##
 """ Editor dialog for station objects """
 
+import operator
+
 from kiwi.datatypes import  ValidationError
 
 from stoqlib.database.runtime import get_current_station
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.person import Branch
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -63,7 +65,8 @@ class StationEditor(BaseEditor):
         # FIXME: Implement and use IDescribable on Branch
         for branch in Branch.select(connection=self.conn):
             statuses.append((branch.person.name, branch))
-        self.branch.prefill(sorted(statuses))
+        self.branch.prefill(locale_sorted(
+            statuses, key=operator.itemgetter(0)))
 
         self.add_proxy(self.model, StationEditor.proxy_widgets)
         if not self.edit_mode:
