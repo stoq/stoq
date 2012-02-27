@@ -319,14 +319,15 @@ class Shell(object):
         if needs_schema_update():
             self._run_update_wizard()
 
-        from stoqlib.lib.pluginmanager import get_plugin_manager
-        manager = get_plugin_manager()
-        manager.activate_installed_plugins()
-
         from stoqlib.database.runtime import (get_connection,
                                               set_current_branch_station)
         conn = get_connection()
         set_current_branch_station(conn, station_name=None)
+
+        from stoqlib.lib.pluginmanager import get_plugin_manager
+        manager = get_plugin_manager()
+        manager.activate_installed_plugins()
+
 
     def _load_key_bindings(self):
         from stoqlib.gui.keybindings import load_user_keybindings
