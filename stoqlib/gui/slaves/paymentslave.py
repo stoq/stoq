@@ -24,14 +24,12 @@
 ##
 """ Slaves for payment management """
 
-import gtk
-
-
 from copy import deepcopy
 import datetime
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 
+import gtk
 from kiwi import ValueUnset
 from kiwi.component import get_utility
 from kiwi.datatypes import format_price, currency, ValidationError
@@ -709,7 +707,6 @@ class CardMethodSlave(BaseEditorSlave):
         self._payment_group = self.model.group
         self.total_value = (outstanding_value or
                             self._get_total_amount())
-        self.providers = self._get_credit_providers()
         self._selected_type = CreditCardData.TYPE_CREDIT
         BaseEditorSlave.__init__(self, conn)
         self.register_validate_function(self._refresh_next)
@@ -744,7 +741,9 @@ class CardMethodSlave(BaseEditorSlave):
         self.credit_provider.select_item_by_position(0)
 
     def create_model(self, conn):
-        if not self.providers:
+        providers = CreditProvider.get_card_providers(
+            self.method.get_connection())
+        if providers.count() == 0:
             raise ValueError('You must have credit providers information '
                              'stored in the database before start doing '
                              'sales')
@@ -761,8 +760,9 @@ class CardMethodSlave(BaseEditorSlave):
             raise TypeError
 
     def _setup_widgets(self):
-        provider_items = [(p.short_name, p) for p in self.providers]
-        self.credit_provider.prefill(provider_items)
+        providers = CreditProvider.get_card_providers(
+            self.method.get_connection())
+        self.credit_provider.prefill(api.for_combo(providers))
 
         self._radio_group = None
 
@@ -832,10 +832,6 @@ class CardMethodSlave(BaseEditorSlave):
             data.provider = provider
             data.fee = provider.get_fee_for_payment(provider, data)
             data.fee_value = data.fee * payment.value / 100
-
-    def _get_credit_providers(self):
-        return CreditProvider.get_card_providers(
-            self.method.get_connection())
 
     #
     #   Callbacks

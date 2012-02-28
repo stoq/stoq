@@ -26,7 +26,6 @@
 
 from decimal import Decimal
 import datetime
-import operator
 
 import gtk
 from kiwi.datatypes import ValidationError, currency
@@ -44,7 +43,7 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.views import LoanView, ProductFullStockItemView
 from stoqlib.lib.message import info, yesno
-from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.gui.base.dialogs import run_dialog
@@ -87,9 +86,7 @@ class StartNewLoanStep(WizardEditorStep):
         self.salesperson_lbl.set_text(_(u'Responsible:'))
         self.salesperson.set_property('model-attribute', 'responsible')
         users = LoginUser.selectBy(is_active=True, connection=self.conn)
-        items = [(u.person.name, u) for u in users]
-        self.salesperson.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
+        self.salesperson.prefill(api.for_combo(users))
         self.salesperson.set_sensitive(False)
 
         self._fill_clients_combo()
@@ -119,20 +116,18 @@ class StartNewLoanStep(WizardEditorStep):
         self.nature_lbl.hide()
 
     def _fill_clients_combo(self):
+        # FIXME: This should not be using a normal ProxyComboEntry,
+        #        we need a specialized widget that does the searching
+        #        on demand.
         clients = ClientView.get_active_clients(self.conn)
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        clients = clients[:max_results]
-        items = [(c.name, c.client) for c in clients]
-        self.client.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
+        clients = clients.orderBy('name')
+        clients = clients.limit(sysparam(self.conn).MAX_SEARCH_RESULTS)
+        self.client.prefill([(c.name, c.client) for c in clients])
         self.client.set_property('mandatory', True)
 
     def _fill_clients_category_combo(self):
-        cats = ClientCategory.select(connection=self.conn).orderBy('name')
-        items = [(c.get_description(), c) for c in cats]
-        items.insert(0, ['', None])
-        self.client_category.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
+        categories = ClientCategory.select(connection=self.conn)
+        self.client_category.prefill(api.for_combo(categories, empty=''))
 
     def _replace_widget(self, old_widget, new_widget):
         # retrieve the position, since we will replace two widgets later.

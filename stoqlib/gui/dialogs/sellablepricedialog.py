@@ -31,6 +31,7 @@ from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
+from stoqlib.api import api
 from stoqlib.database.orm import LEFTJOINOn
 from stoqlib.domain.sellable import (Sellable, ClientCategoryPrice,
                                      SellableCategory)
@@ -119,8 +120,7 @@ class SellablePriceDialog(BaseEditor):
         self._setup_widgets()
 
     def _setup_widgets(self):
-        cats = [(i.get_description(), i) for i in self.categories]
-        self.category.prefill(cats)
+        self.category.prefill(api.for_combo(self.categories))
 
         prices = CategoryPriceView.select(connection=self.conn)
         category_prices = {}

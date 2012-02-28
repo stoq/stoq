@@ -30,6 +30,7 @@ from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType, UnitType
 
+from stoqlib.api import api
 from stoqlib.database.exceptions import IntegrityError
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import ClientCategory
@@ -436,29 +437,23 @@ class SellableEditor(BaseEditor):
     #
 
     def setup_sellable_combos(self):
-        category_list = SellableCategory.select(
+        categories = SellableCategory.select(
             SellableCategory.q.categoryID != None,
-            connection=self.conn).orderBy('description')
-
-        items = [(cat.get_description(), cat) for cat in category_list]
-        self.category_combo.prefill(items)
+            connection=self.conn)
+        self.category_combo.prefill(api.for_combo(categories))
 
         self.statuses_combo.prefill(
                     [(v, k) for k, v in Sellable.statuses.items()])
         self.statuses_combo.set_sensitive(False)
 
-        cfop_items = [(item.get_description(), item)
-                        for item in CfopData.select(connection=self.conn)]
-        cfop_items.insert(0, ('', None))
-        self.default_sale_cfop.prefill(cfop_items)
+        cfops = CfopData.select(connection=self.conn)
+        self.default_sale_cfop.prefill(api.for_combo(cfops, empty=''))
 
         self.setup_unit_combo()
 
     def setup_unit_combo(self):
         units = SellableUnit.select(connection=self.conn)
-        items = [(_("No unit"), None)]
-        items.extend([(unit.description, unit) for unit in units])
-        self.unit_combo.prefill(items)
+        self.unit_combo.prefill(api.for_combo(units, empty=_('No units')))
 
     def setup_tax_constants(self):
         taxes = self.get_taxes()

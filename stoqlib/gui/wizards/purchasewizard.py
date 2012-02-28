@@ -25,7 +25,6 @@
 """ Purchase wizard definition """
 
 import datetime
-import operator
 import sys
 
 import gtk
@@ -43,7 +42,7 @@ from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.domain.sellable import Sellable
-from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -80,19 +79,12 @@ class StartPurchaseStep(WizardEditorStep):
         WizardEditorStep.__init__(self, conn, wizard, model)
 
     def _fill_supplier_combo(self):
-        # FIXME: Implement and use IDescribable on Supplier
         suppliers = Supplier.get_active_suppliers(self.conn)
-        items = [(s.person.name, s) for s in suppliers]
-        self.supplier.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
-        self.edit_supplier.set_sensitive(len(items))
+        self.supplier.prefill(api.for_combo(suppliers))
 
     def _fill_branch_combo(self):
-        # FIXME: Implement and use IDescribable on Branch
         branches = Branch.get_active_branches(self.conn)
-        items = [(s.person.name, s) for s in branches]
-        self.branch.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
+        self.branch.prefill(api.for_combo(branches))
 
     def _setup_widgets(self):
         allow_outdated = sysparam(self.conn).ALLOW_OUTDATED_OPERATIONS
@@ -439,8 +431,7 @@ class FinishPurchaseStep(WizardEditorStep):
         self.add_transporter.set_tooltip_text(_("Add a new transporter"))
         self.edit_transporter.set_tooltip_text(_("Edit the selected transporter"))
 
-        transporters = Transporter.get_active_transporters(self.conn)
-        items = [(t.person.name, t) for t in transporters]
+        items = api.for_combo(Transporter.get_active_transporters(self.conn))
         self.transporter.prefill(items)
         self.transporter.set_sensitive(bool(items))
         self.edit_transporter.set_sensitive(bool(items))

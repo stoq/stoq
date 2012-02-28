@@ -25,7 +25,6 @@
 """ Stock Decrease wizard definition """
 
 from decimal import Decimal
-import operator
 
 import gtk
 from kiwi.datatypes import ValidationError
@@ -41,7 +40,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.editors.decreaseeditor import DecreaseItemEditor
@@ -68,22 +67,17 @@ class StartStockDecreaseStep(WizardEditorStep):
                      )
 
     def _fill_employee_combo(self):
-        employees = [(e.person.name, e)
-                     for e in Employee.select(connection=self.conn)]
-        self.removed_by.prefill(locale_sorted(
-            employees, key=operator.itemgetter(0)))
+        self.removed_by.prefill(api.for_combo(
+            Employee, connection=self.conn))
 
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.conn)
-        items = [(s.person.name, s) for s in branches]
-        self.branch.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
+        self.branch.prefill(api.for_combo(branches))
 
     def _fill_cfop_combo(self):
-        cfops = [(cfop.get_description(), cfop)
-                    for cfop in CfopData.select(connection=self.conn)]
-        self.cfop.prefill(locale_sorted(
-            cfops, key=operator.itemgetter(0)))
+        cfops = CfopData.select(connection=self.conn)
+        self.cfop.prefill(api.for_combo(
+            cfops, connection=self.conn))
 
     def _setup_widgets(self):
         self.confirm_date.set_sensitive(False)
