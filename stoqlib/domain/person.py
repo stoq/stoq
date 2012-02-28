@@ -91,7 +91,7 @@ class EmployeeRole(Domain):
     name = UnicodeCol(alternateID=True)
 
     #
-    # IDescribable implementation
+    # IDescribable
     #
 
     def get_description(self):
@@ -154,7 +154,7 @@ class Liaison(Domain):
     person = ForeignKey('Person')
 
     #
-    # IDescribable implementation
+    # IDescribable
     #
 
     def get_description(self):
@@ -179,7 +179,7 @@ class Calls(Domain):
     attendant = ForeignKey('LoginUser')
 
     #
-    # IDescribable implementation
+    # IDescribable
     #
 
     def get_description(self):
@@ -405,7 +405,7 @@ class Individual(Domain):
     is_active = BoolCol(default=True)
 
     #
-    # IActive implementation
+    # IActive
     #
 
     def inactivate(self):
@@ -422,7 +422,7 @@ class Individual(Domain):
         return _('Inactive')
 
     #
-    # IDescribable implementation
+    # IDescribable
     #
 
     def get_description(self):
@@ -473,7 +473,7 @@ class Company(Domain):
     is_active = BoolCol(default=True)
 
     #
-    # IActive implementation
+    # IActive
     #
 
     def inactivate(self):
@@ -489,7 +489,9 @@ class Company(Domain):
             return _('Active')
         return _('Inactive')
 
+    #
     # IDescribable
+    #
 
     def get_description(self):
         return self.person.name
@@ -533,7 +535,7 @@ class ClientCategory(Domain):
     name = UnicodeCol(unique=True)
 
     #
-    # IDescribable implementation
+    # IDescribable
     #
 
     def get_description(self):
@@ -576,7 +578,7 @@ class Client(Domain):
     category = ForeignKey('ClientCategory', default=None)
 
     #
-    # IActive implementation
+    # IActive
     #
 
     def get_status_string(self):
@@ -605,7 +607,9 @@ class Client(Domain):
             self.inactivate()
     is_active = property(_get_is_active, _set_is_active)
 
+    #
     # IDescribable
+    #
 
     def get_description(self):
         return self.person.name
@@ -713,7 +717,7 @@ class Supplier(Domain):
     is_active = BoolCol(default=True)
 
     #
-    # IActive implementation
+    # IActive
     #
 
     def inactivate(self):
@@ -730,7 +734,7 @@ class Supplier(Domain):
         return _('Inactive')
 
     #
-    # IDescribable implementation
+    # IDescribable
     #
 
     def get_description(self):
@@ -831,7 +835,7 @@ class Employee(Domain):
     bank_account = ForeignKey('BankAccount', default=None)
 
     #
-    # IActive implementation
+    # IActive
     #
 
     def inactivate(self):
@@ -848,7 +852,7 @@ class Employee(Domain):
         return _('Inactive')
 
     #
-    # IDescribable implementation
+    # IDescribable
     #
 
     def get_description(self):
@@ -892,7 +896,7 @@ class LoginUser(Domain):
     profile = ForeignKey('UserProfile')
 
     #
-    # IActive implementation
+    # IActive
     #
 
     def inactivate(self):
@@ -981,7 +985,7 @@ class Branch(Domain):
     crt = IntCol(default=1)
 
     #
-    # IActive implementation
+    # IActive
     #
 
     def inactivate(self):
@@ -998,7 +1002,7 @@ class Branch(Domain):
         return _('Inactive')
 
     #
-    # IDescribable implementation
+    # IDescribable
     #
 
     def get_description(self):
@@ -1126,7 +1130,7 @@ class CreditProvider(Domain):
     debit_pre_dated_fee = PercentCol(default=0)
 
     #
-    # IActive implementation
+    # IActive
     #
 
     def inactivate(self):
@@ -1224,7 +1228,7 @@ class SalesPerson(Domain):
     is_active = BoolCol(default=True)
 
     #
-    # IActive implementation
+    # IActive
     #
 
     def inactivate(self):
@@ -1241,7 +1245,7 @@ class SalesPerson(Domain):
         return _('Inactive')
 
     #
-    # IDescribable implementation
+    # IDescribable
     #
 
     def get_description(self):
@@ -1276,7 +1280,7 @@ class Transporter(Domain):
     freight_percentage = PercentCol(default=0)
 
     #
-    # IActive implementation
+    # IActive
     #
 
     def inactivate(self):
@@ -1336,6 +1340,8 @@ class ClientView(Viewable):
        phone_number        - the client phone_number
     """
 
+    implements(IDescribable)
+
     columns = dict(
         id=Person.q.id,
         client_id=Client.q.id,
@@ -1360,6 +1366,18 @@ class ClientView(Viewable):
                    Client.q.categoryID == ClientCategory.q.id),
         ]
 
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.name + (self.fancy_name
+                            and " (%s)" % self.fancy_name or "")
+
+    #
+    # Public API
+    #
+
     @property
     def client(self):
         return Client.get(self.client_id,
@@ -1368,10 +1386,6 @@ class ClientView(Viewable):
     @property
     def cnpj_or_cpf(self):
         return self.cnpj or self.cpf
-
-    def get_description(self):
-        return self.name + (self.fancy_name
-                            and " (%s)" % self.fancy_name or "")
 
     @classmethod
     def get_active_clients(cls, conn):
@@ -1383,6 +1397,9 @@ class ClientView(Viewable):
 
 
 class EmployeeView(Viewable):
+
+    implements(IDescribable)
+
     columns = dict(
         id=Person.q.id,
         employee_id=Employee.q.id,
@@ -1399,6 +1416,17 @@ class EmployeeView(Viewable):
         INNERJOINOn(None, EmployeeRole,
                    Employee.q.roleID == EmployeeRole.q.id),
         ]
+
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.name
+
+    #
+    # Public API
+    #
 
     def get_status_string(self):
         return Employee.statuses[self.status]
@@ -1418,6 +1446,9 @@ class EmployeeView(Viewable):
 
 
 class SupplierView(Viewable):
+
+    implements(IDescribable)
+
     columns = dict(
         id=Person.q.id,
         name=Person.q.name,
@@ -1434,6 +1465,17 @@ class SupplierView(Viewable):
         LEFTJOINOn(None, Company,
                    Person.q.id == Company.q.personID),
         ]
+
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.name
+
+    #
+    # Public API
+    #
 
     def get_status_string(self):
         return Supplier.statuses[self.status]
@@ -1455,6 +1497,9 @@ class TransporterView(Viewable):
     :cvar status: the current status of the transporter
     :cvar freight_percentage: the freight percentage charged
     """
+
+    implements(IDescribable)
+
     columns = dict(
         id=Person.q.id,
         name=Person.q.name,
@@ -1469,6 +1514,17 @@ class TransporterView(Viewable):
                    Person.q.id == Transporter.q.personID),
         ]
 
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.name
+
+    #
+    # Public API
+    #
+
     @property
     def transporter(self):
         return Transporter.get(self.transporter_id,
@@ -1476,6 +1532,8 @@ class TransporterView(Viewable):
 
 
 class BranchView(Viewable):
+    implements(IDescribable)
+
     Manager_Person = Alias(Person, 'person_manager')
 
     columns = dict(
@@ -1495,6 +1553,17 @@ class BranchView(Viewable):
         LEFTJOINOn(None, Manager_Person,
                Employee.q.personID == Manager_Person.q.id),
         ]
+
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.name
+
+    #
+    # Public API
+    #
 
     @property
     def branch(self):
@@ -1521,6 +1590,8 @@ class UserView(Viewable):
     :cvar profile_name: the name of the user profile (eg: Salesperson)
     """
 
+    implements(IDescribable)
+
     columns = dict(
         id=Person.q.id,
         name=Person.q.name,
@@ -1538,6 +1609,17 @@ class UserView(Viewable):
                LoginUser.q.profileID == UserProfile.q.id),
         ]
 
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.name
+
+    #
+    # Public API
+    #
+
     @property
     def user(self):
         return LoginUser.get(self.user_id,
@@ -1551,6 +1633,9 @@ class UserView(Viewable):
 
 
 class CreditProviderView(Viewable):
+
+    implements(IDescribable)
+
     columns = dict(
         id=Person.q.id,
         name=Person.q.name,
@@ -1571,6 +1656,17 @@ class CreditProviderView(Viewable):
                    Person.q.id == CreditProvider.q.personID),
         ]
 
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.name
+
+    #
+    # Public API
+    #
+
     @property
     def provider(self):
         return CreditProvider.get(self.provider_id,
@@ -1580,6 +1676,9 @@ class CreditProviderView(Viewable):
 class CallsView(Viewable):
     """Store information about the realized calls to client.
     """
+
+    implements(IDescribable)
+
     Attendant_Person = Alias(Person, 'attendant_person')
     columns = dict(
         id=Calls.q.id,
@@ -1598,6 +1697,17 @@ class CallsView(Viewable):
         LEFTJOINOn(None, Attendant_Person,
                    LoginUser.q.personID == Attendant_Person.q.id),
         ]
+
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.name
+
+    #
+    # Public API
+    #
 
     @property
     def call(self):
