@@ -121,7 +121,7 @@ class CallsSearch(SearchEditor):
                              data_type=str, width=100, expand=True)]
         if not self.person:
             columns.insert(1,
-                SearchColumn('person', title=self.person_name,
+                SearchColumn('name', title=self.person_name,
                              data_type=str, width=150, expand=True))
         return columns
 
