@@ -346,7 +346,9 @@ class ReceivableApp(BaseAccountWindow):
             return False
 
         # Until we fix bug 3703, don't allow receiving store credit payments
-        if any(view.method_name == 'store_credit'
+        # Also, do not allow the receiving of online payments. They are done
+        # automatically.
+        if any(view.method_name in ('store_credit', 'online')
                for view in receivable_views):
             return False
 
@@ -392,6 +394,11 @@ class ReceivableApp(BaseAccountWindow):
         if len(receivable_views) != 1:
             return False
 
+        # Do not allow the cancelling of online payments. This is done
+        # automatically.
+        if any(view.method_name == 'online' for view in receivable_views):
+            return False
+
         return receivable_views[0].can_cancel_payment()
 
     def _can_change_due_date(self, receivable_views):
@@ -402,6 +409,11 @@ class ReceivableApp(BaseAccountWindow):
           - The payment was not paid
         """
         if len(receivable_views) != 1:
+            return False
+
+        # Do not allow the due date changing of online payments. This is done
+        # automatically.
+        if any(view.method_name == 'online' for view in receivable_views):
             return False
 
         return receivable_views[0].can_change_due_date()

@@ -239,6 +239,33 @@ class DepositPaymentOperation(object):
         return PaymentMethodType.MONEY
 
 
+class OnlinePaymentOperation(object):
+    implements(IPaymentOperation)
+
+    description = _('Online')
+    max_installments = 1
+
+    #
+    # IPaymentOperation
+    #
+
+    def payment_create(self, payment):
+        pass
+
+    def payment_delete(self, payment):
+        pass
+
+    def create_transaction(self):
+        return True
+
+    def selectable(self, method):
+        return False
+
+    def get_constant(self, payment):
+        # FIXME: Using MONEY for now..Maybe we should add a new constant.
+        return PaymentMethodType.MONEY
+
+
 # The MultiplePaymentOperation is not a payment operation, but we need to
 # register it, so it could be activated or not. It will not create anything
 # related to payments.
@@ -283,3 +310,4 @@ def register_payment_operations():
     pmm.register('store_credit', StoreCreditPaymentOperation())
     pmm.register('multiple', MultiplePaymentOperation())
     pmm.register('deposit', DepositPaymentOperation())
+    pmm.register('online', OnlinePaymentOperation())
