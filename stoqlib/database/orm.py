@@ -45,7 +45,7 @@ from sqlobject.dbconnection import connectionForURI, Transaction
 from sqlobject.joins import MultipleJoin as _MultipleJoin, SingleJoin
 from sqlobject.joins import SOSingleJoin, SOMultipleJoin
 from sqlobject.main import sqlhub, SQLObject
-from sqlobject.sqlbuilder import (AND, NOT, DESC, Alias, IN, INNERJOINOn,
+from sqlobject.sqlbuilder import (AND, NOT, DESC, Alias, NOTIN, IN, INNERJOINOn,
                                   ISNOTNULL, LEFTJOINOn, LIKE, OR, Update, Field,
                                   NoDefault, SQLExpression, const, sqlIdentifier, func)
 from sqlobject.sresults import SelectResults
@@ -509,6 +509,7 @@ Alias = Alias
 Field = Field
 AND = AND
 IN = IN
+NOTIN = NOTIN
 INNERJOINOn = INNERJOINOn
 ISNOTNULL = ISNOTNULL
 LEFTJOINOn = LEFTJOINOn
