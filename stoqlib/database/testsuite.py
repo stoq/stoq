@@ -105,8 +105,11 @@ def _provide_current_station(station_name=None, branch_name=None):
             connection=trans)
     else:
         branches = Branch.select(connection=trans)
-        assert branches
-        branch = branches[0]
+        if branches.count() == 0:
+            person = Person(name="test", connection=trans)
+            branch = Branch(person=person, connection=trans)
+        else:
+            branch = branches[0]
 
     provide_utility(ICurrentBranch, branch)
 
@@ -233,7 +236,6 @@ def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
             sysparam(get_connection()).clear_cache()
             initialize_system(testsuite=True)
             ensure_admin_user("")
-            create(utilities=True)
     except Exception:
         # Work around trial
         import traceback
