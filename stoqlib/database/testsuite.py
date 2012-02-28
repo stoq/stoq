@@ -236,6 +236,7 @@ def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
             sysparam(get_connection()).clear_cache()
             initialize_system(testsuite=True)
             ensure_admin_user("")
+            create(utilities=True)
     except Exception:
         # Work around trial
         import traceback
