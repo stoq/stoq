@@ -29,6 +29,7 @@ Singleton object which makes it easier to common stoqlib APIs without
 having to import their symbols.
 """
 from contextlib import contextmanager
+import operator
 
 from kiwi.component import get_utility
 from twisted.internet.defer import inlineCallbacks, returnValue
@@ -38,9 +39,11 @@ from stoqlib.database.runtime import (get_connection, new_transaction,
                                       rollback_and_begin, finish_transaction)
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station, get_current_user)
-from stoqlib.lib.settings import get_settings
+from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.parameters import sysparam, is_developer_mode
+from stoqlib.lib.settings import get_settings
+from stoqlib.lib.translation import locale_sorted
 from stoqlib.l10n.l10n import get_l10n_field
 
 
@@ -136,5 +139,36 @@ class StoqAPI(object):
 
     def get_l10n_field(self, conn, field_name):
         return get_l10n_field(conn, field_name)
+
+    def for_combo(self, resultset, attr=None, empty=None, sorted=True):
+        """
+        Prepares the result of a table for inserting into a combo.
+        Formats the item and sorts them according to the current locale
+
+        @resultset: a resultset
+        @attr: attribute to use instead of IDescribable
+        @empty: if set, add an initial None item with this parameter as
+          a label
+
+        Example:
+
+        suppliers = Supplier.get_active_suppliers(connection=conn)
+        self.suppliers.prefill(api.for_combo(suppliers))
+
+        """
+        if attr is not None:
+            items = [(getattr(obj, attr), obj) for obj in resultset]
+        elif IDescribable.implementedBy(resultset.sourceClass):
+            items = [(obj.get_description(), obj) for obj in resultset]
+        else:
+            raise Exception(
+                "Need an attribute or a class implementing IDescribable")
+
+        if sorted:
+            items = locale_sorted(items, key=operator.itemgetter(0))
+
+        if empty is not None:
+            items.insert(0, (empty, None))
+        return items
 
 api = StoqAPI()
