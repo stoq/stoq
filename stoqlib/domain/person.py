@@ -1704,7 +1704,7 @@ class CallsView(Viewable):
     #
 
     def get_description(self):
-        return self.name
+        return self.description
 
     #
     # Public API
