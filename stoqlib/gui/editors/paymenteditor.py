@@ -26,7 +26,6 @@
 
 
 import datetime
-import operator
 
 from dateutil.relativedelta import relativedelta
 import gtk
@@ -53,7 +52,7 @@ from stoqlib.gui.editors.personeditor import ClientEditor, SupplierEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.defaults import (INTERVALTYPE_WEEK,
                                   INTERVALTYPE_MONTH)
-from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 INTERVALTYPE_ONCE = -1
@@ -177,8 +176,7 @@ class PaymentEditor(BaseEditor):
 
         if facets:
             items = [(f.person.name, f) for f in facets]
-            self.person.prefill(locale_sorted(
-                items, key=operator.itemgetter(0)))
+            self.person.prefill(items)
         self.person.set_sensitive(bool(facets))
 
         person = getattr(self.model.group, self.person_attribute)
@@ -213,9 +211,9 @@ class PaymentEditor(BaseEditor):
             connection=self.trans,
             category_type=self.category_type).orderBy('name')
         self.category.set_sensitive(bool(categories))
-        categories = [(c.name, c) for c in categories]
-        categories.insert(0, (_('No category'), None))
-        self.category.prefill(categories)
+        self.category.prefill(api.for_combo(categories,
+                                            empty=_('No category'),
+                                            attr='name'))
         self.category.select(self.model.category)
         self.edit_category.set_sensitive(False)
 

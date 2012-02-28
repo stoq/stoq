@@ -25,7 +25,6 @@
 
 import datetime
 from decimal import Decimal
-import operator
 
 import gtk
 from kiwi.datatypes import currency, ValidationError
@@ -53,7 +52,7 @@ from stoqlib.gui.wizards.purchasewizard import (PurchaseItemStep,
                                                 PurchaseWizard)
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.reporting.purchase import PurchaseQuoteReport
 
@@ -78,9 +77,7 @@ class StartQuoteStep(WizardEditorStep):
         self.quote_group.set_text(quote_group)
 
         branches = Branch.get_active_branches(self.conn)
-        items = [(s.person.name, s) for s in branches]
-        self.branch_combo.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
+        self.branch_combo.prefill(api.for_combo(branches))
         self.notes.set_accepts_tab(False)
 
     def post_init(self):

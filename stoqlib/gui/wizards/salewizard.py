@@ -24,8 +24,6 @@
 ##
 """ Sale wizard definition """
 
-import operator
-
 import gtk
 from kiwi.component import get_utility
 from kiwi.datatypes import currency, ValidationError
@@ -40,7 +38,7 @@ from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import warning, marker
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
-from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard, BaseWizardStep
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -282,30 +280,29 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def _fill_clients_combo(self):
         marker('Filling clients')
+        # FIXME: This should not be using a normal ProxyComboEntry,
+        #        we need a specialized widget that does the searching
+        #        on demand.
         clients = ClientView.get_active_clients(self.conn)
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        clients = clients[:max_results]
+        clients = clients.orderBy('name')
+        clients = clients.limit(sysparam(self.conn).MAX_SEARCH_RESULTS)
         items = [(c.name, c.client) for c in clients]
-        self.client.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
+        self.client.prefill(items)
         self.client.set_sensitive(len(items))
         marker('Filled clients')
 
     def _fill_transporter_combo(self):
         marker('Filling transporters')
         transporters = Transporter.get_active_transporters(self.conn)
-        items = [(t.person.name, t) for t in transporters]
-        self.transporter.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
+        items = api.for_combo(transporters)
+        self.transporter.prefill(items)
         self.transporter.set_sensitive(len(items))
         marker('Filled transporters')
 
     def _fill_cfop_combo(self):
         marker('Filling CFOPs')
-        items = [(cfop.get_description(), cfop)
-                 for cfop in CfopData.select(connection=self.conn)]
-        self.cfop.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
+        cfops = CfopData.select(connection=self.conn)
+        self.cfop.prefill(api.for_combo(cfops))
         marker('Filled CFOPs')
 
     def _create_client(self):
@@ -373,9 +370,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
         marker('Filling sales persons')
         salespersons = SalesPerson.select(connection=self.conn)
-        items = [(s.person.name, s) for s in salespersons]
-        self.salesperson.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
+        self.salesperson.prefill(api.for_combo(salespersons))
         marker('Finished filling sales persons')
 
         marker('Read parameter')

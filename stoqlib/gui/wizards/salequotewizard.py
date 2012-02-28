@@ -24,11 +24,10 @@
 ##
 """ Sale quote wizard"""
 
-import gtk
-
 from decimal import Decimal
 import datetime
 
+import gtk
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
@@ -86,8 +85,7 @@ class StartSaleQuoteStep(WizardEditorStep):
 
         # Salesperson combo
         salespersons = SalesPerson.select(connection=self.conn)
-        items = [(s.person.name, s) for s in salespersons]
-        self.salesperson.prefill(items)
+        self.salesperson.prefill(api.for_combo(salespersons))
         if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
             self.salesperson.set_sensitive(False)
         else:
@@ -95,9 +93,8 @@ class StartSaleQuoteStep(WizardEditorStep):
 
         # CFOP combo
         if sysparam(self.conn).ASK_SALES_CFOP:
-            cfops = [(cfop.get_description(), cfop)
-                        for cfop in CfopData.select(connection=self.conn)]
-            self.cfop.prefill(cfops)
+            cfops = CfopData.select(connection=self.conn)
+            self.cfop.prefill(api.for_combo(cfops))
         else:
             self.cfop_lbl.hide()
             self.cfop.hide()
@@ -111,17 +108,17 @@ class StartSaleQuoteStep(WizardEditorStep):
         self._fill_clients_category_combo()
 
     def _fill_clients_combo(self):
+        # FIXME: This should not be using a normal ProxyComboEntry,
+        #        we need a specialized widget that does the searching
+        #        on demand.
         clients = ClientView.get_active_clients(self.conn)
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        clients = clients[:max_results]
-        items = [(c.get_description(), c.client) for c in clients]
-        self.client.prefill(items)
+        clients = clients.orderBy('name')
+        clients = clients.limit(sysparam(self.conn).MAX_SEARCH_RESULTS)
+        self.client.prefill([(c.name, c.client) for c in clients])
 
     def _fill_clients_category_combo(self):
-        cats = ClientCategory.select(connection=self.conn).orderBy('name')
-        items = [(c.get_description(), c) for c in cats]
-        items.insert(0, ['', None])
-        self.client_category.prefill(items)
+        categories = ClientCategory.select(connection=self.conn).orderBy('name')
+        self.client_category.prefill(api.for_combo(categories, empty=''))
 
     def post_init(self):
         self.toogle_client_details()

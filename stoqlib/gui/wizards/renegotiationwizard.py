@@ -33,9 +33,9 @@ from stoqlib.api import api
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.wizards.salewizard import BaseMethodSelectionStep
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 

@@ -25,6 +25,7 @@
 
 from kiwi.datatypes import ValidationError
 
+from stoqlib.api import api
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.domain.person import Client, ClientCategory
 from stoqlib.lib.translation import stoqlib_gettext
@@ -44,11 +45,8 @@ class ClientStatusSlave(BaseEditorSlave):
     #
 
     def setup_proxies(self):
-        category_list = ClientCategory.select(
-            connection=self.conn).orderBy('name')
-        category_items = [(cat.get_description(), cat) for cat in category_list]
-        category_items.insert(0, ('', None))
-        self.category_combo.prefill(category_items)
+        categories = ClientCategory.select(connection=self.conn)
+        self.category_combo.prefill(api.for_combo(categories, empty=''))
         table = self.model_type
         items = [(value, constant)
                     for constant, value in table.statuses.items()]

@@ -24,16 +24,15 @@
 """ Editors for payment method management.  """
 
 
-import operator
-
 from kiwi.datatypes import ValidationError
 
+from stoqlib.api import api
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.search.personsearch import CardProviderSearch
-from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext
 
 
 _ = stoqlib_gettext
@@ -59,10 +58,9 @@ class PaymentMethodEditor(BaseEditor):
         self.set_description(model.description)
 
     def _setup_widgets(self):
-        destinations = Account.select(connection=self.conn)
-        items = [(a.long_description, a) for a in destinations]
-        self.account.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
+        accounts = Account.select(connection=self.conn)
+        self.account.prefill(api.for_combo(
+            accounts, attr='long_description'))
         self.account.select(self.model.destination_account)
 
     #

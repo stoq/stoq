@@ -25,6 +25,7 @@
 
 import datetime
 from decimal import Decimal
+import operator
 
 import gtk
 from kiwi.datatypes import ValidationError
@@ -44,7 +45,7 @@ from stoqlib.gui.base.wizards import (BaseWizard, BaseWizardStep)
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.message import yesno
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 from stoqlib.reporting.transfer_receipt import TransferOrderReceipt
 
 _ = stoqlib_gettext
@@ -225,18 +226,19 @@ class StockTransferFinishStep(BaseWizardStep):
                                     StockTransferFinishStep.proxy_widgets)
 
     def _setup_widgets(self):
-        branches = [(b.person.name, b)
+        items = [(b.person.name, b)
                     for b in Branch.select(connection=self.conn)
                         if b is not self.branch]
-        self.destination_branch.prefill(branches)
+        self.destination_branch.prefill(locale_sorted(
+            items, key=operator.itemgetter(0)))
         self.source_branch.set_text(self.branch.person.name)
-        employees = [(e.person.name, e)
-                     for e in Employee.select(connection=self.conn)]
-        self.source_responsible.prefill(employees)
-        self.destination_responsible.prefill(employees)
+
+        employees = Employee.select(connection=self.conn)
+        self.source_responsible.prefill(api.for_combo(employees))
+        self.destination_responsible.prefill(api.for_combo(employees))
 
         self.transfer_order.source_branch = self.branch
-        self.transfer_order.destination_branch = branches[0][1]
+        self.transfer_order.destination_branch = items[0][1]
 
     #
     # WizardStep hooks

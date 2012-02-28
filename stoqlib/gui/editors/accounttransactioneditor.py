@@ -23,7 +23,6 @@
 ##
 
 import datetime
-import operator
 
 import gtk
 from kiwi.currency import currency
@@ -38,7 +37,7 @@ from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.paymenteditor import get_dialog_for_payment
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -141,9 +140,9 @@ class AccountTransactionEditor(BaseEditor):
 
     def _populate_accounts(self):
         accounts = Account.select(connection=self.conn)
-        items = [(a.long_description, a) for a in accounts]
-        self.account.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
+        self.account.prefill(api.for_combo(
+            accounts,
+            attr='long_description'))
 
     def _get_account(self):
         if self.model.account == self.parent_account:

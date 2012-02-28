@@ -67,11 +67,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     #
 
     def _setup_transporter_entry(self):
-        # FIXME: Implement and use IDescribable on Transporter
-        table = Transporter
-        transporters = table.get_active_transporters(self.conn)
-        items = [(t.person.name, t) for t in transporters]
-        self.transporter.prefill(items)
+        transporters = Transporter.get_active_transporters(self.conn)
+        self.transporter.prefill(api.for_combo(transporters))
 
     def _setup_freight_combo(self):
         freight_items = [(value, key) for (key, value) in
@@ -109,10 +106,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         self._setup_transporter_entry()
         self._setup_freight_combo()
 
-        # CFOP entry setup
-        cfop_items = [(item.get_description(), item)
-                      for item in CfopData.select(connection=self.conn)]
-        self.cfop.prefill(cfop_items)
+        cfops = CfopData.select(connection=self.conn)
+        self.cfop.prefill(api.for_combo(cfops))
         self.table.set_focus_chain([self.invoice_hbox,
                                     self.cfop,
                                     self.transporter,

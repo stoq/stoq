@@ -30,14 +30,15 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.list import Column
 from kiwi.datatypes import ValidationError
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.lib.parameters import sysparam
+from stoqlib.api import api
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import (WorkPermitData, EmployeeRole,
                                    EmployeeRoleHistory,
                                    Employee, SalesPerson)
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.parameters import sysparam
 
 _ = stoqlib_gettext
 
@@ -121,9 +122,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
 
     def _setup_entry_completion(self):
         roles = EmployeeRole.select(connection=self.conn)
-        items = [(role.name, role)
-                 for role in roles.limit(self.max_results)]
-        self.role.prefill(items)
+        self.role.prefill(api.for_combo(roles.limit(self.max_results)))
 
     def _setup_widgets(self):
         self._setup_entry_completion()
