@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-21 15:33-0300\n"
+"POT-Creation-Date: 2013-02-21 15:35-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -10564,7 +10564,7 @@ msgid "EX TIPI must have 2 or 3 digits."
 msgstr ""
 
 #: ../stoqlib/gui/slaves/productslave.py:158
-msgid "NCM must have 2 digits."
+msgid "Gênero must have 2 digits."
 msgstr ""
 
 #: ../stoqlib/gui/slaves/productslave.py:162
