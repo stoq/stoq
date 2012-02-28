@@ -109,12 +109,12 @@ class CalendarEvents(Resource):
     def _create_client_call(self, call_view):
         date = call_view.date.date()
 
-        return date, {"title": call_view.person,
-                "id": call_view.id,
-                "type": "client-call",
-                "start": str(date),
-                "url": "stoq://dialog/call?id=" + str(call_view.id),
-                "className": 'client_call'}
+        return date, {"title": call_view.name,
+                      "id": call_view.id,
+                      "type": "client-call",
+                      "start": str(date),
+                      "url": "stoq://dialog/call?id=" + str(call_view.id),
+                      "className": 'client_call'}
 
     def _create_in_payment(self, payment_view):
         title = payment_view.description

@@ -1682,7 +1682,8 @@ class CallsView(Viewable):
     Attendant_Person = Alias(Person, 'attendant_person')
     columns = dict(
         id=Calls.q.id,
-        person=Person.q.name,
+        person_id=Person.q.id,
+        name=Person.q.name,
         date=Calls.q.date,
         description=Calls.q.description,
         message=Calls.q.message,
@@ -1712,6 +1713,10 @@ class CallsView(Viewable):
     @property
     def call(self):
         return Calls.get(self.id, connection=self.get_connection())
+
+    @property
+    def person(self):
+        return Person.get(self.person_id, connection=self.get_connection())
 
     @classmethod
     def select_by_client_date(cls, query, client, date,
