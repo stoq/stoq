@@ -6,7 +6,7 @@
     <property name="default_height">250</property>
     <property name="default_width">350</property>
     <property name="destroy_with_parent">True</property>
-    <property name="title" translatable="yes">Sellable Picture Viewer</property>
+    <property name="title" translatable="yes">Picture Viewer</property>
     <child>
       <object class="GtkEventBox" id="eventbox1">
         <property name="visible">True</property>
