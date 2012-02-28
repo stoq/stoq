@@ -40,10 +40,9 @@ from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 from twisted.web.iweb import IBodyProducer
 
-from stoqlib.api import api
 from stoqlib.database.runtime import get_connection
 from stoqlib.lib.interfaces import IAppInfo
-from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.parameters import is_developer_mode, sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
 
 log = Logger('stoqlib.webservice')
@@ -59,7 +58,7 @@ class JsonDownloader(Protocol):
             return
         if not '<html>' in data:
             return
-        if not api.is_developer_mode():
+        if not is_developer_mode():
             return
 
         from stoqlib.gui.webview import show_html
