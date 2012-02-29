@@ -147,9 +147,13 @@ class Shell(object):
 
     def _setup_gobject(self):
         assert not 'gobject' in sys.modules
+        assert not 'gtk' in sys.modules
+
+        if 'STOQ_USE_GI' in os.environ:
+            from stoq.lib import gicompat
+            gicompat.enable()
 
     def _setup_gtk(self):
-        assert not 'gtk' in sys.modules
         import gtk
         from kiwi.environ import environ
 
