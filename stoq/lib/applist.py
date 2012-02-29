@@ -27,9 +27,7 @@
 import gettext
 import platform
 
-from kiwi.component import implements
-from stoqlib.lib.interfaces import IApplicationDescriptions
-from stoqlib.lib.translation import N_
+N_ = lambda s: s
 
 _APPLICATIONS = {
     'admin': (N_("Administrative"),
@@ -97,7 +95,7 @@ def get_application_icon(appname):
 
 class ApplicationDescriptions:
 
-    implements(IApplicationDescriptions)
+    # implements(IApplicationDescriptions)
 
     def get_application_names(self):
         return get_application_names()
