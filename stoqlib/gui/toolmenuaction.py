@@ -53,5 +53,10 @@ class ToolMenuAction(gtk.Action):
 
 
 gobject.type_register(ToolMenuAction)
-ToolMenuAction.set_tool_item_type(
-    gobject.type_from_name('GtkMenuToolButton').pytype)
+
+# FIXME: This is at least present in PyGTK 2.22
+MenuToolButton = getattr(gtk, 'MenuToolButton', None)
+if MenuToolButton is None:
+    MenuToolButton = gobject.type_from_name('GtkMenuToolButton').pytype
+
+ToolMenuAction.set_tool_item_type(MenuToolButton)
