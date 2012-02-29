@@ -85,7 +85,7 @@ class Statusbar(gtk.Statusbar):
 
     def _create_message_area(self):
         for child in self.get_children():
-            self.remove(child)
+            gtk.Container.remove(self, child)
         area = gtk.HBox(False, 4)
         self.add(area)
         area.show()
@@ -458,9 +458,14 @@ class AppWindow(GladeDelegate):
         self.main_vbox.pack_start(self.statusbar, False, False)
         self.main_vbox.reorder_child(self.statusbar, len(self.main_vbox) - 1)
 
+        menu_tool_button = self.SearchToolItem.get_proxies()[0]
+        # This happens when we couldn't set the GType of ToolMenuAction
+        # properly
+        if not hasattr(menu_tool_button, 'get_menu'):
+            return
+        search_tool_menu = menu_tool_button.get_menu()
         # FIXME: For some reason, without this hack, some apps like Stock and
         #        Purchase shows an extra search tool menu labeled 'empty'
-        search_tool_menu = self.SearchToolItem.get_proxies()[0].get_menu()
         for child in search_tool_menu.get_children():
             search_tool_menu.remove(child)
 
@@ -1048,10 +1053,13 @@ class AppWindow(GladeDelegate):
             widget.connect('select', self._on_menu_item__select, tooltip)
             widget.connect('deselect', self._on_menu_item__deselect)
         elif isinstance(widget, gtk.ToolItem):
-            widget.child.connect('enter-notify-event',
-                    self._on_tool_item__enter_notify_event, tooltip)
-            widget.child.connect('leave-notify-event',
-                    self._on_tool_item__leave_notify_event)
+            child = widget.get_child()
+            if child is None:
+                return
+            child.connect('enter-notify-event',
+                          self._on_tool_item__enter_notify_event, tooltip)
+            child.connect('leave-notify-event',
+                          self._on_tool_item__leave_notify_event)
 
     def _on_uimanager__disconnect_proxy(self, uimgr, action, widget):
         tooltip = action.get_tooltip()
