@@ -24,13 +24,13 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-02-27 17:10-0300\n"
-"PO-Revision-Date: 2012-02-27 23:12+0000\n"
-"Last-Translator: Rafael Neri <Unknown>\n"
+"PO-Revision-Date: 2012-02-28 16:56+0000\n"
+"Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-02-28 05:53+0000\n"
+"X-Launchpad-Export-Date: 2012-02-29 04:45+0000\n"
 "X-Generator: Launchpad (build 14874)\n"
 "Language: \n"
 
@@ -7804,6 +7804,8 @@ msgstr "Categorias de cliente"
 #, python-format
 msgid "%s cannot be deleted, because is used in one or more products."
 msgstr ""
+"%s não pode ser deletado, porque está sendo utilizado por um ou mais "
+"produtos."
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:53
 msgid "Client Details"
@@ -7998,7 +8000,7 @@ msgstr "Não foram encontrados produtos nas categorias selecionadas."
 #: ../stoqlib/gui/dialogs/paymentcategorydialog.py:42
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:96
 msgid "Payable"
-msgstr "A Pagar"
+msgstr "A pagar"
 
 #: ../stoqlib/gui/dialogs/paymentcategorydialog.py:44
 #: ../stoqlib/gui/editors/paymentcategoryeditor.py:97
@@ -8659,7 +8661,7 @@ msgstr "Valor deve ser maior que zero"
 #: ../stoqlib/gui/editors/addresseditor.py:210
 #, python-format
 msgid "%s is not valid"
-msgstr ""
+msgstr "%s não é válido"
 
 #: ../stoqlib/gui/editors/addresseditor.py:215
 msgid "Number cannot be zero or less than zero"
@@ -9079,23 +9081,23 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:163
 msgid "English (Australia)"
-msgstr ""
+msgstr "Inglês (Austrália)"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:164
 msgid "English (United Kingdom)"
-msgstr ""
+msgstr "Inglês (Reino Unido)"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:165
 msgid "English (United States)"
-msgstr ""
+msgstr "Inglês (Estados Unidos)"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:166
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Português (Portugal)"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:167
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Português (Brasil)"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:174
 msgid "Ask (default)"
