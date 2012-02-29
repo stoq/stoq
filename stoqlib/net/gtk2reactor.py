@@ -21,7 +21,8 @@ integration.
 """
 
 # System Imports
-import sys, signal
+import sys
+import signal
 
 from zope.interface import implements
 
@@ -31,7 +32,8 @@ try:
         import pygtk
         pygtk.require('2.0')
 except (ImportError, AttributeError):
-    pass # maybe we're using pygtk before this hack existed.
+    pass  # maybe we're using pygtk before this hack existed.
+
 import gobject
 if hasattr(gobject, "threads_init"):
     # recent versions of python-gtk expose this. python-gtk=2.4.1
@@ -54,7 +56,6 @@ INFLAGS = gobject.IO_IN | POLL_DISCONNECTED
 OUTFLAGS = gobject.IO_OUT | POLL_DISCONNECTED
 
 
-
 def _our_mainquit():
     # XXX: gtk.main_quit() (which is used for crash()) raises an exception if
     # gtk.main_level() == 0; however, all the tests freeze if we use this
@@ -64,7 +65,6 @@ def _our_mainquit():
     import gtk
     if gtk.main_level():
         gtk.main_quit()
-
 
 
 class Gtk2Reactor(posixbase.PosixReactorBase):
@@ -106,7 +106,6 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
             self.__crash = _our_mainquit
             self.__run = gtk.main
 
-
     if runtime.platformType == 'posix':
         def _handleSignals(self):
             # Let the base class do its thing, but pygtk is probably
@@ -116,9 +115,11 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
             # different implementation of installHandler for
             # _SIGCHLDWaker to use.  Then, at least, we could fall
             # back to our extension module.  See #4286.
-            from twisted.internet.process import reapAllProcesses as _reapAllProcesses
+            from twisted.internet.process import (
+                reapAllProcesses as _reapAllProcesses)
             base._SignalReactorMixin._handleSignals(self)
-            signal.signal(signal.SIGCHLD, lambda *a: self.callFromThread(_reapAllProcesses))
+            signal.signal(signal.SIGCHLD,
+                          lambda *a: self.callFromThread(_reapAllProcesses))
             if getattr(signal, "siginterrupt", None) is not None:
                 signal.siginterrupt(signal.SIGCHLD, False)
             # Like the base, reap processes now in case a process
@@ -143,7 +144,6 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
         else:
             return gobject.io_add_watch(source, condition, callback)
 
-
     def _add(self, source, primary, other, primaryFlag, otherFlag):
         """
         Add the given L{FileDescriptor} for monitoring either for reading or
@@ -160,13 +160,11 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
         self._sources[source] = self.input_add(source, flags, self.callback)
         primary.add(source)
 
-
     def addReader(self, reader):
         """
         Add a L{FileDescriptor} for monitoring of data available to read.
         """
         self._add(reader, self._reads, self._writes, INFLAGS, OUTFLAGS)
-
 
     def addWriter(self, writer):
         """
@@ -174,13 +172,11 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
         """
         self._add(writer, self._writes, self._reads, OUTFLAGS, INFLAGS)
 
-
     def getReaders(self):
         """
         Retrieve the list of current L{FileDescriptor} monitored for reading.
         """
         return list(self._reads)
-
 
     def getWriters(self):
         """
@@ -188,13 +184,11 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
         """
         return list(self._writes)
 
-
     def removeAll(self):
         """
         Remove monitoring for all registered L{FileDescriptor}s.
         """
         return self._removeAll(self._reads, self._writes)
-
 
     def _remove(self, source, primary, other, flags):
         """
@@ -212,13 +206,11 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
         else:
             self._sources.pop(source)
 
-
     def removeReader(self, reader):
         """
         Stop monitoring the given L{FileDescriptor} for reading.
         """
         self._remove(reader, self._reads, self._writes, OUTFLAGS)
-
 
     def removeWriter(self, writer):
         """
@@ -226,17 +218,16 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
         """
         self._remove(writer, self._writes, self._reads, INFLAGS)
 
-
     doIterationTimer = None
 
     def doIterationTimeout(self, *args):
         self.doIterationTimer = None
-        return 0 # auto-remove
-
+        return 0  # auto-remove
 
     def doIteration(self, delay):
         # flush some pending events, return if there was something to do
-        # don't use the usual "while self.context.pending(): self.context.iteration()"
+        # don't use the usual "while self.context.pending():
+        # self.context.iteration()"
         # idiom because lots of IO (in particular test_tcp's
         # ProperlyCloseFilesTestCase) can keep us from ever exiting.
         log.msg(channel='system', event='iteration', reactor=self)
@@ -245,11 +236,11 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
             return
         # nothing to do, must delay
         if delay == 0:
-            return # shouldn't delay, so just return
+            return  # shouldn't delay, so just return
         self.doIterationTimer = gobject.timeout_add(int(delay * 1000),
                                                 self.doIterationTimeout)
         # This will either wake up from IO or from a timeout.
-        self.__iteration(1) # block
+        self.__iteration(1)  # block
         # note: with the .simulate timer below, delays > 0.1 will always be
         # woken up by the .simulate timer
         if self.doIterationTimer:
@@ -257,18 +248,15 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
             gobject.source_remove(self.doIterationTimer)
             self.doIterationTimer = None
 
-
     def crash(self):
         posixbase.PosixReactorBase.crash(self)
         self.__crash()
-
 
     def run(self, installSignalHandlers=1):
         self.startRunning(installSignalHandlers=installSignalHandlers)
         gobject.timeout_add(0, self.simulate)
         if self._started:
             self.__run()
-
 
     def _doReadOrWrite(self, source, condition, faildict={
         error.ConnectionDone: failure.Failure(error.ConnectionDone()),
@@ -300,12 +288,10 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
         if why:
             self._disconnectSelectable(source, why, inRead)
 
-
     def callback(self, source, condition):
         log.callWithLogger(source, self._doReadOrWrite, source, condition)
-        self.simulate() # fire Twisted timers
-        return 1 # 1=don't auto-remove the source
-
+        self.simulate()  # fire Twisted timers
+        return 1  # 1=don't auto-remove the source
 
     def simulate(self):
         """
@@ -319,7 +305,6 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
             timeout = 0.1
         # grumble
         self._simtag = gobject.timeout_add(int(timeout * 1010), self.simulate)
-
 
 
 class PortableGtkReactor(selectreactor.SelectReactor):
@@ -340,7 +325,6 @@ class PortableGtkReactor(selectreactor.SelectReactor):
             else:
                 gtk.mainquit()
 
-
     def run(self, installSignalHandlers=1):
         import gtk
         self.startRunning(installSignalHandlers=installSignalHandlers)
@@ -350,7 +334,6 @@ class PortableGtkReactor(selectreactor.SelectReactor):
             gtk.main()
         else:
             gtk.mainloop()
-
 
     def simulate(self):
         """
@@ -366,7 +349,6 @@ class PortableGtkReactor(selectreactor.SelectReactor):
         self._simtag = gobject.timeout_add(int(timeout * 1010), self.simulate)
 
 
-
 def install(useGtk=True):
     """
     Configure the twisted mainloop to be run inside the gtk mainloop.
@@ -380,7 +362,6 @@ def install(useGtk=True):
     return reactor
 
 
-
 def portableInstall(useGtk=True):
     """
     Configure the twisted mainloop to be run inside the gtk mainloop.
@@ -391,10 +372,8 @@ def portableInstall(useGtk=True):
     return reactor
 
 
-
 if runtime.platform.getType() != 'posix':
     install = portableInstall
-
 
 
 __all__ = ['install']
