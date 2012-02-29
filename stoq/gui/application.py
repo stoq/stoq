@@ -1152,7 +1152,7 @@ class AppWindow(GladeDelegate):
 
     def _on_ToggleFullscreen__notify_active(self, action, spec):
         window = self.get_toplevel()
-        if not (window.flags() & gtk.REALIZED):
+        if not window.get_realized():
             return
         is_active = action.get_active()
         is_fullscreen = window.window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN

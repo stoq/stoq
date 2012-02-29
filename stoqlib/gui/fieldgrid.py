@@ -362,7 +362,7 @@ class FieldGrid(gtk.Layout):
     def do_expose_event(self, event):
         window = event.window
 
-        if not (self.flags() & gtk.REALIZED):
+        if not self.get_realized():
             return
 
         for c in self._fields:
