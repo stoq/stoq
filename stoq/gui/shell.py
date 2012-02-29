@@ -188,7 +188,7 @@ class Shell(object):
 
     def _setup_twisted(self):
         assert not 'twisted' in sys.modules
-        from twisted.internet import gtk2reactor
+        from stoqlib.net import gtk2reactor
         gtk2reactor.install()
 
     def _check_version_policy(self):
