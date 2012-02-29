@@ -174,7 +174,7 @@ class App(object):
     def show(self, params=None):
         if self.embedded:
             win = self.main_window.get_toplevel()
-            self.launcher.show_app(self.main_window, win.child, params)
+            self.launcher.show_app(self.main_window, win.get_child(), params)
             win.hide()
         else:
             self.main_window.show()
