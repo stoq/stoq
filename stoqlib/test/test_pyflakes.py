@@ -26,8 +26,11 @@
 Useful to early find syntax errors and other common problems.
 """
 
+import _ast
 import compiler
 import sys
+
+import pyflakes
 
 from stoqlib.lib.unittestutils import SourceTest
 from twisted.trial import unittest
@@ -40,14 +43,11 @@ class TestPyflakes(SourceTest, unittest.TestCase):
     # stolen from pyflakes
     def _check(self, codeString, filename, warnings):
         try:
-            try:
+            if pyflakes.__version__ == '0.4.0':
                 compile(codeString, filename, "exec")
-            except MemoryError:
-                # Python 2.4 will raise MemoryError if the source can't be
-                # decoded.
-                if sys.version_info[:2] == (2, 4):
-                    raise SyntaxError(None)
-                raise
+                tree = compiler.parse(codeString)
+            else:
+                tree = compile(codeString, filename, "exec", _ast.PyCF_ONLY_AST)
         except (SyntaxError, IndentationError), value:
             msg = value.args[0]
 
@@ -78,7 +78,6 @@ class TestPyflakes(SourceTest, unittest.TestCase):
         else:
             # Okay, it's syntactically valid.  Now parse it into an ast and check
             # it.
-            tree = compiler.parse(codeString)
             w = self.checker.Checker(tree, filename)
             warnings.extend(w.messages)
             return len(warnings)
