@@ -124,10 +124,11 @@ class Shell(object):
         from kiwi.component import provide_utility
         from stoqlib.lib.interfaces import IAppInfo
         from stoqlib.lib.appinfo import AppInfo
+        import stoqlib
         import stoq
         stoq_version = stoq.version
-        if hasattr(stoq.library, 'get_revision'):
-            rev = stoq.library.get_revision()
+        if hasattr(stoqlib.library, 'get_revision'):
+            rev = stoqlib.library.get_revision()
             if rev is not None:
                 stoq_version += ' r' + rev
         info = AppInfo()
