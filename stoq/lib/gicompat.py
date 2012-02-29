@@ -30,6 +30,8 @@ def enable():
     from gi.repository import Gio
     sys.modules['gio'] = Gio
 
+_unset = object()
+
 
 def enable_gtk():
     # set the default encoding like PyGTK
@@ -55,10 +57,13 @@ def enable_gtk():
 
     # gdk
     gi.require_version('Gdk', '2.0')
+    gi.require_version('GdkPixbuf', '2.0')
     from gi.repository import Gdk
+    from gi.repository import GdkPixbuf
     sys.modules['gtk.gdk'] = Gdk
     for enum_type in [Gdk.CursorType,
-                      Gdk.WindowTypeHint]:
+                      Gdk.WindowTypeHint,
+                      GdkPixbuf.InterpType]:
         install_enum(Gdk, enum_type)
     for flags_type in [Gdk.EventMask,
                        Gdk.WindowState,
@@ -66,8 +71,6 @@ def enable_gtk():
         install_flags(Gdk, flags_type)
     Gdk.BUTTON_PRESS = 4
 
-    gi.require_version('GdkPixbuf', '2.0')
-    from gi.repository import GdkPixbuf
     Gdk.Pixbuf = GdkPixbuf.Pixbuf
     Gdk.pixbuf_new_from_file = GdkPixbuf.Pixbuf.new_from_file
     Gdk.PixbufLoader = GdkPixbuf.PixbufLoader.new_with_type
@@ -85,13 +88,13 @@ def enable_gtk():
     from gi.repository import Gtk
     sys.modules['gtk'] = Gtk
     Gtk.gdk = Gdk
-    Gtk.settings_get_default = Gtk.Settings.get_default
 
     Gtk.pygtk_version = (2, 99, 0)
 
     Gtk.gtk_version = (2, 22, 0)
     for enum_type in [Gtk.ArrowType,
                       Gtk.ButtonsType,
+                      Gtk.EntryIconPosition,
                       Gtk.Justification,
                       Gtk.IconSize,
                       Gtk.MessageType,
@@ -115,21 +118,28 @@ def enable_gtk():
     for flags_type in [Gtk.DialogFlags]:
         install_flags(Gtk, flags_type)
 
-    class GenericCellRenderer(Gtk.CellRenderer):
-        pass
-    Gtk.GenericCellRenderer = GenericCellRenderer
+    # Action
 
-    Gtk.expander_new_with_mnemonic = Gtk.Expander.new_with_mnemonic
-    Gtk.icon_theme_get_default = Gtk.IconTheme.get_default
-    Gtk.image_new_from_stock = Gtk.Image.new_from_stock
-    Gtk.widget_get_default_direction = Gtk.Widget.get_default_direction
-    Gtk.window_set_default_icon = Gtk.Window.set_default_icon
+    def set_tool_item_type(menuaction, gtype):
+        print 'set_tool_item_type is not supported'
+    Gtk.Action.set_tool_item_type = classmethod(set_tool_item_type)
 
-    def install_child_property(container, flag, pspec):
-        print 'install_child_property is not supported'
-    Gtk.Container.install_child_property = classmethod(install_child_property)
+    # Alignment
 
-    # box
+    orig_Alignment = Gtk.Alignment
+
+    class Alignment(orig_Alignment):
+        def __init__(self, xalign=0.0, yalign=0.0, xscale=0.0, yscale=0.0):
+            orig_Alignment.__init__(self)
+            self.props.xalign = xalign
+            self.props.yalign = yalign
+            self.props.xscale = xscale
+            self.props.yscale = yscale
+
+    Gtk.Alignment = Alignment
+
+    # Box
+
     orig_pack_end = Gtk.Box.pack_end
 
     def pack_end(self, child, expand=True, fill=True, padding=0):
@@ -143,6 +153,7 @@ def enable_gtk():
     Gtk.Box.pack_start = pack_start
 
     # CellLayout
+
     orig_cell_pack_end = Gtk.CellLayout.pack_end
 
     def cell_pack_end(self, cell, expand=True):
@@ -155,21 +166,46 @@ def enable_gtk():
         orig_cell_pack_start(self, cell, expand)
     Gtk.CellLayout.pack_start = cell_pack_start
 
-    def set_tool_item_type(menuaction, gtype):
-        print 'set_tool_item_type is not supported'
-    Gtk.Action.set_tool_item_type = classmethod(set_tool_item_type)
+    orig_cell_data_func = Gtk.CellLayout.set_cell_data_func
 
-    orig_Alignment = Gtk.Alignment
+    def cell_data_func(self, func, user_data=_unset):
+        def callback(*args):
+            if args[-1] == _unset:
+                args = args[:-1]
+            return func(*args)
+        orig_cell_data_func(self, callback, user_data)
+    Gtk.CellLayout.set_cell_data_func = cell_data_func
 
-    class Alignment(orig_Alignment):
-        def __init__(self, xalign=0.0, yalign=0.0, xscale=0.0, yscale=0.0):
-            orig_Alignment.__init__(self)
-            self.props.xalign = xalign
-            self.props.yalign = yalign
-            self.props.xscale = xscale
-            self.props.yscale = yscale
+    # CellRenderer
 
-    Gtk.Alignment = Alignment
+    class GenericCellRenderer(Gtk.CellRenderer):
+        pass
+    Gtk.GenericCellRenderer = GenericCellRenderer
+
+    # ComboBox
+
+    orig_combo_row_separator_func = Gtk.ComboBox.set_row_separator_func
+
+    def combo_row_separator_func(self, func, user_data=_unset):
+        def callback(*args):
+            if args[-1] == _unset:
+                args = args[:-1]
+            return func(*args)
+        orig_combo_row_separator_func(self, callback, user_data)
+    Gtk.ComboBox.set_row_separator_func = combo_row_separator_func
+
+    # Container
+
+    def install_child_property(container, flag, pspec):
+        print 'install_child_property is not supported'
+    Gtk.Container.install_child_property = classmethod(install_child_property)
+
+    Gtk.expander_new_with_mnemonic = Gtk.Expander.new_with_mnemonic
+    Gtk.icon_theme_get_default = Gtk.IconTheme.get_default
+    Gtk.image_new_from_stock = Gtk.Image.new_from_stock
+    Gtk.settings_get_default = Gtk.Settings.get_default
+    Gtk.widget_get_default_direction = Gtk.Widget.get_default_direction
+    Gtk.window_set_default_icon = Gtk.Window.set_default_icon
 
     # gtk.unixprint
     class UnixPrint(object):
