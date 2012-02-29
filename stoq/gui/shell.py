@@ -65,6 +65,7 @@ class Shell(object):
         self._user = None
 
     def _bootstrap(self):
+        self._setup_gobject()
         self._set_uptime()
         # Do this as soon as possible, before we attempt to use the
         # external libraries/resources
@@ -74,7 +75,6 @@ class Shell(object):
         # anything else
         self._prepare_logfiles()
         self._set_app_info()
-        self._check_dependencies()
         self._setup_gtk()
         self._setup_kiwi()
         self._show_splash()
@@ -145,7 +145,11 @@ class Shell(object):
         from stoqlib.gui.splash import show_splash
         show_splash()
 
+    def _setup_gobject(self):
+        assert not 'gobject' in sys.modules
+
     def _setup_gtk(self):
+        assert not 'gtk' in sys.modules
         import gtk
         from kiwi.environ import environ
 
@@ -179,6 +183,7 @@ class Shell(object):
         ProxyLabel.replace('$CURRENCY', get_localeconv()['currency_symbol'])
 
     def _setup_twisted(self):
+        assert not 'twisted' in sys.modules
         from twisted.internet import gtk2reactor
         gtk2reactor.install()
 
