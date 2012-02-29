@@ -996,6 +996,10 @@ class AppWindow(GladeDelegate):
 
             self._quit_reactor()
 
+            # oneiric didn't need this, but it is required for
+            # precise for reasons unknown
+            raise SystemExit
+
         return True
 
     #
