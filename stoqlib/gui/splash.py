@@ -77,6 +77,8 @@ class SplashScreen(gtk.Window):
 
     def expose(self, widget, event):
         cr = widget.window.cairo_create()
+        if not hasattr(cr, 'set_source_pixbuf'):
+            return
         # Draw splash
         cr.set_source_pixbuf(self._pixbuf, 0, 0)
         cr.paint()
