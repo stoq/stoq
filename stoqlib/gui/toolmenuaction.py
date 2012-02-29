@@ -30,6 +30,9 @@ import gtk
 class ToolMenuAction(gtk.Action):
     def add_actions(self, uimanager, actions):
         new_item = self.get_proxies()[0]
+        # FIXME: Temporary workaround until set_tool_item_type works
+        if not hasattr(new_item, 'get_menu'):
+            return []
         menu = new_item.get_menu()
 
         menu_items = []
