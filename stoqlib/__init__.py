@@ -32,11 +32,24 @@ __all__ = ['library']
 
 library = Library('stoq', root='..')
 if library.uninstalled:
+    library.add_global_resource('config', 'data/config')
+    library.add_global_resource('csv', 'data/csv')
+    library.add_global_resource('docs', '.')
+    library.add_global_resource('fonts', 'data/fonts')
+    library.add_global_resource('glade', 'data/glade')
+    library.add_global_resource('html', 'data/html')
+    library.add_global_resource('misc', 'data/misc')
+    library.add_global_resource('pixmaps', 'data/pixmaps')
+    library.add_global_resource('sql', 'data/sql')
+    library.add_global_resource('template', 'data/template')
+    library.add_global_resource('uixml', 'data/uixml')
     library.add_resource('plugin', 'plugins')
     externals = os.path.join(library.get_root(), 'external')
 else:
     # root = $prefix/lib/pythonX.Y/site-packages
     # We want $prefix/lib/stoqlib, eg ../../stoqlib
     externals = os.path.join(library.prefix, 'lib', 'stoqlib')
+
+library.set_application_domain('stoq')
 sys.path.insert(0, externals)
 library.enable_translation(domain="stoq")
