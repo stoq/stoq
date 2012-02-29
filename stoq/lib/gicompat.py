@@ -1,5 +1,7 @@
 import sys
 
+import gi
+
 
 def install_enum(mod, enum):
     modname = mod.__name__.rsplit('.', 1)[1].upper()
@@ -18,37 +20,38 @@ def install_flags(mod, flags):
 
 
 def enable():
-    try:
-        import gi
-    except ImportError, e:
-        print e
-        return False
-
     # gobject
     from gi.repository import GObject
     sys.modules['gobject'] = GObject
     from gi._gobject import propertyhelper
     sys.modules['gobject.propertyhelper'] = propertyhelper
 
+    # gio
+    from gi.repository import Gio
+    sys.modules['gio'] = Gio
+
+
+def enable_gtk():
+    # set the default encoding like PyGTK
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
     # atk
     gi.require_version('Atk', '1.0')
     from gi.repository import Atk
-    sys.modules['gtk'] = Atk
+    sys.modules['atk'] = Atk
 
     # pango
     gi.require_version('Pango', '1.0')
     from gi.repository import Pango
     sys.modules['pango'] = Pango
+    for enum_type in [Pango.EllipsizeMode]:
+        install_enum(Pango, enum_type)
 
     # pangocairo
     gi.require_version('PangoCairo', '1.0')
     from gi.repository import PangoCairo
     sys.modules['pangocairo'] = PangoCairo
-
-    # poppler
-    gi.require_version('Poppler', '0.18')
-    from gi.repository import Poppler
-    sys.modules['poppler'] = Poppler
 
     # gdk
     gi.require_version('Gdk', '2.0')
@@ -58,6 +61,7 @@ def enable():
                       Gdk.WindowTypeHint]:
         install_enum(Gdk, enum_type)
     for flags_type in [Gdk.EventMask,
+                       Gdk.WindowState,
                        Gdk.ModifierType]:
         install_flags(Gdk, flags_type)
     Gdk.BUTTON_PRESS = 4
@@ -66,6 +70,15 @@ def enable():
     from gi.repository import GdkPixbuf
     Gdk.Pixbuf = GdkPixbuf.Pixbuf
     Gdk.pixbuf_new_from_file = GdkPixbuf.Pixbuf.new_from_file
+    Gdk.PixbufLoader = GdkPixbuf.PixbufLoader.new_with_type
+
+    orig_get_frame_extents = Gdk.Window.get_frame_extents
+
+    def get_frame_extents(window):
+        rect = Gdk.Rectangle(0, 0, 0, 0)
+        orig_get_frame_extents(window, rect)
+        return rect
+    Gdk.Window.get_frame_extents = get_frame_extents
 
     # gtk
     gi.require_version('Gtk', '2.0')
@@ -87,12 +100,14 @@ def enable():
                       Gtk.PolicyType,
                       Gtk.PositionType,
                       Gtk.ResponseType,
+                      Gtk.ReliefStyle,
                       Gtk.SelectionMode,
                       Gtk.ShadowType,
                       Gtk.SizeGroupMode,
                       Gtk.SortType,
                       Gtk.StateType,
                       Gtk.TextDirection,
+                      Gtk.ToolbarStyle,
                       Gtk.TreeViewColumnSizing,
                       Gtk.WindowPosition,
                       Gtk.WindowType]:
@@ -104,10 +119,15 @@ def enable():
         pass
     Gtk.GenericCellRenderer = GenericCellRenderer
 
-    Gtk.image_new_from_stock = Gtk.Image.new_from_stock
     Gtk.expander_new_with_mnemonic = Gtk.Expander.new_with_mnemonic
-    Gtk.widget_get_default_direction = Gtk.Widget.get_default_direction
     Gtk.icon_theme_get_default = Gtk.IconTheme.get_default
+    Gtk.image_new_from_stock = Gtk.Image.new_from_stock
+    Gtk.widget_get_default_direction = Gtk.Widget.get_default_direction
+    Gtk.window_set_default_icon = Gtk.Window.set_default_icon
+
+    def install_child_property(container, flag, pspec):
+        print 'install_child_property is not supported'
+    Gtk.Container.install_child_property = classmethod(install_child_property)
 
     # box
     orig_pack_end = Gtk.Box.pack_end
@@ -135,6 +155,22 @@ def enable():
         orig_cell_pack_start(self, cell, expand)
     Gtk.CellLayout.pack_start = cell_pack_start
 
+    def set_tool_item_type(menuaction, gtype):
+        print 'set_tool_item_type is not supported'
+    Gtk.Action.set_tool_item_type = classmethod(set_tool_item_type)
+
+    orig_Alignment = Gtk.Alignment
+
+    class Alignment(orig_Alignment):
+        def __init__(self, xalign=0.0, yalign=0.0, xscale=0.0, yscale=0.0):
+            orig_Alignment.__init__(self)
+            self.props.xalign = xalign
+            self.props.yalign = yalign
+            self.props.xscale = xscale
+            self.props.yscale = yscale
+
+    Gtk.Alignment = Alignment
+
     # gtk.unixprint
     class UnixPrint(object):
         pass
@@ -155,9 +191,23 @@ def enable():
             value = getattr(Gdk, name)
             setattr(keysyms, target, value)
 
+
+def enable_vte():
     # vte
     gi.require_version('Vte', '0.0')
     from gi.repository import Vte
     sys.modules['vte'] = Vte
 
-    return True
+
+def enable_poppler():
+    # poppler
+    gi.require_version('Poppler', '0.18')
+    from gi.repository import Poppler
+    sys.modules['poppler'] = Poppler
+
+
+def enable_webkit():
+    # poppler
+    gi.require_version('WebKit', '1.0')
+    from gi.repository import WebKit
+    sys.modules['webkit'] = WebKit
