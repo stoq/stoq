@@ -35,11 +35,6 @@ except (ImportError, AttributeError):
     pass  # maybe we're using pygtk before this hack existed.
 
 import gobject
-if hasattr(gobject, "threads_init"):
-    # recent versions of python-gtk expose this. python-gtk=2.4.1
-    # (wrapping glib-2.4.7) does. python-gtk=2.0.0 (wrapping
-    # glib-2.2.3) does not.
-    gobject.threads_init()
 
 # Twisted Imports
 from twisted.python import log, runtime, failure
