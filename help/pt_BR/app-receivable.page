@@ -18,6 +18,11 @@
     <link xref="account-receivable">contas a receber</link>, normalmente
     provindas de <link xref="sale">vendas</link>.
   </p>
+  <p>
+    Os pagamentos mostrados aqui utilizam marcações para facilitar a
+    visualização de seus status. <em>Pagamentos em negrito</em> estão
+    atrasados, enquanto que <em>pagamentos ricados</em> já foram recebidos.
+  </p>
 
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">
