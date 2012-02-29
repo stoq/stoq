@@ -174,15 +174,25 @@
     <section id="search-filter">
       <title>Filtros</title>
       <p>
-        Nos dialogos de pesquisa, encontraremos ao lado direito um botão
-        <gui>Filtro</gui>.
+        Nos dialogos de pesquisa, podemos clicar no ícone da caixa de pesquisa
+        para criar filtros adicionais:
       </p>
       <media type="image" src="figures/stoq_search_filter.png" />
       <p>
-        Esse <gui>Filtro</gui> é utilizado para incluirmos filtros adicionais
-        de pesquisa, baseado nas colunas presentes (mesmo que ocultas), para
-        que possamos realizar uma busca mais avançada (ex. Buscar vendas que
-        tenham sido realizadas no mês passado e por um dado vendedor).
+        Este é um exemplo do <link xref="app-receivable" />.
+      </p>
+      <p>
+        Cada um dos itens existentes nessa pop-up representa uma
+        <link xref="#search-column">coluna</link> da pesquisa, mesmo que
+        oculta. Ao selecionar um desses itens, será possível refinar a pesquisa
+        através deste atributo. ex: Ao selecionar <gui>Data do pagamento</gui>,
+        será possível filtrar os pagamentos para exibir apenas os que foram
+        pagos no dia de ontem, no mês passado, ou mesmo entre 2 datas.
+      </p>
+      <p>
+        Você é livre para adicionar quantos filtros forem necessários. Isso
+        inclusive é extremamente útil para gerar
+        <link xref="#report">relatórios</link> customizados.
       </p>
     </section>
     <section id="search-column">
