@@ -20,27 +20,17 @@ event loop or the GTK+ event loop which is based on it but adds GUI
 integration.
 """
 
-# System Imports
 import sys
 import signal
 
+import gobject
 from zope.interface import implements
 
-try:
-    if not hasattr(sys, 'frozen'):
-        # Don't want to check this for py2exe
-        import pygtk
-        pygtk.require('2.0')
-except (ImportError, AttributeError):
-    pass  # maybe we're using pygtk before this hack existed.
-
-import gobject
-
-# Twisted Imports
 from twisted.python import log, runtime, failure
 from twisted.python.compat import set
 from twisted.internet.interfaces import IReactorFDSet
 from twisted.internet import main, base, posixbase, error, selectreactor
+
 
 POLL_DISCONNECTED = gobject.IO_HUP | gobject.IO_ERR | gobject.IO_NVAL
 
