@@ -43,6 +43,7 @@ from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.databaseform import DatabaseForm
 from stoqlib.gui.editors.baseeditor import (BaseEditor,
                                             BaseRelationshipEditorSlave)
+from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
 from stoqlib.lib.message import info, yesno, warning
@@ -432,15 +433,19 @@ class SellableEditor(BaseEditor):
         """
         return []
 
+    def _fill_categories(self):
+        categories = SellableCategory.select(
+            SellableCategory.q.categoryID != None,
+            connection=self.conn)
+        self.category_combo.prefill(api.for_combo(categories))
+
     #
     # BaseEditor hooks
     #
 
     def setup_sellable_combos(self):
-        categories = SellableCategory.select(
-            SellableCategory.q.categoryID != None,
-            connection=self.conn)
-        self.category_combo.prefill(api.for_combo(categories))
+        self._fill_categories()
+        self.edit_category.set_sensitive(False)
 
         self.statuses_combo.prefill(
                     [(v, k) for k, v in Sellable.statuses.items()])
@@ -463,6 +468,8 @@ class SellableEditor(BaseEditor):
         self.set_widget_formats()
         self._sellable = self.model.sellable
 
+        self.add_category.set_tooltip_text(_("Add a new category"))
+        self.edit_category.set_tooltip_text(_("Edit the selected category"))
         self.setup_sellable_combos()
         self.setup_tax_constants()
         self.tax_proxy = self.add_proxy(self._sellable,
@@ -473,6 +480,15 @@ class SellableEditor(BaseEditor):
 
         self.update_requires_weighing_label()
 
+    def _run_category_editor(self, category=None):
+        trans = api.new_transaction()
+        category = trans.get(category)
+        model = run_dialog(SellableCategoryEditor, self, trans, category)
+        rv = api.finish_transaction(trans, model)
+        trans.close()
+        if rv:
+            self._fill_categories()
+            self.category_combo.select(model)
     #
     # Kiwi handlers
     #
@@ -519,6 +535,9 @@ class SellableEditor(BaseEditor):
         self._sellable.set_unavailable()
         self.confirm()
 
+    def on_category_combo__content_changed(self, category):
+        self.edit_category.set_sensitive(bool(category.get_selected()))
+
     def on_tax_constant__changed(self, combo):
         self._update_tax_value()
 
@@ -527,6 +546,12 @@ class SellableEditor(BaseEditor):
 
     def on_sale_price_button__clicked(self, button):
         self.edit_sale_price()
+
+    def on_add_category__clicked(self, widget):
+        self._run_category_editor()
+
+    def on_edit_category__clicked(self, widget):
+        self._run_category_editor(self.category_combo.get_selected())
 
     def on_code__validate(self, widget, value):
         if not value:
