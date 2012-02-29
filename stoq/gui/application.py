@@ -85,7 +85,7 @@ class Statusbar(gtk.Statusbar):
 
     def _create_message_area(self):
         for child in self.get_children():
-            gtk.Container.remove(self, child)
+            child.hide()
         area = gtk.HBox(False, 4)
         self.add(area)
         area.show()
