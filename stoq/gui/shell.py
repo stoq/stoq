@@ -152,6 +152,9 @@ class Shell(object):
         if 'STOQ_USE_GI' in os.environ:
             from stoq.lib import gicompat
             gicompat.enable()
+            gicompat.enable_gtk()
+            gicompat.enable_poppler()
+            gicompat.enable_webkit()
 
     def _setup_gtk(self):
         import gtk
