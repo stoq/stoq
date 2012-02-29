@@ -1073,10 +1073,11 @@ class AppWindow(GladeDelegate):
                 # Maybe it was already disconnected
                 pass
         elif isinstance(widget, gtk.ToolItem):
+            child = widget.get_child()
             try:
-                widget.child.disconnect_by_func(
+                child.disconnect_by_func(
                     self._on_tool_item__enter_notify_event)
-                widget.child.disconnect_by_func(
+                child.disconnect_by_func(
                     self._on_tool_item__leave_notify_event)
             except TypeError:
                 pass
