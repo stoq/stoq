@@ -1003,6 +1003,7 @@ class AppWindow(GladeDelegate):
 
             # oneiric didn't need this, but it is required for
             # precise for reasons unknown
+            # see login.py as well
             raise SystemExit
 
         return True

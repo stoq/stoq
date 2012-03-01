@@ -92,6 +92,10 @@ class LoginDialog(GladeDelegate, RunnableView):
     def on_quit_button__clicked(self, button):
         gtk.main_quit()
         self.retval = False
+        # oneiric didn't need this, but it is required for
+        # precise for reasons unknown
+        # application.py as well
+        raise SystemExit
 
     def on_username__activate(self, entry):
         self.password.grab_focus()
