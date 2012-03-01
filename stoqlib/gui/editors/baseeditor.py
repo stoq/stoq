@@ -447,7 +447,7 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
         if not self.editor:
             return model
 
-        res = run_dialog(self.editor, self, self.conn, model)
+        res = run_dialog(self.editor, self._parent, self.conn, model)
 
         if not res:
             self.model_type.delete(id=model.id, connection=self.conn)
@@ -455,7 +455,7 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
         return res
 
     def edit(self, model):
-        return run_dialog(self.editor, self, self.conn, model)
+        return run_dialog(self.editor, self._parent, self.conn, model)
 
     def remove(self, model):
         self.model_type.delete(model.id, connection=self.conn)
