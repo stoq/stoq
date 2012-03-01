@@ -32,6 +32,7 @@ import stoqlib
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.gui.openbrowser import open_browser
 
+
 def show_contents(screen=None):
     show_section('', screen=screen)
 
@@ -57,4 +58,3 @@ def show_section(section, screen=None):
     except gobject.GError:
         open_browser('http://doc.stoq.com.br/manual/%s.html' % (
             section or 'index', ), screen)
-
