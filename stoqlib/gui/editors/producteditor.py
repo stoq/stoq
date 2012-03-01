@@ -590,9 +590,10 @@ class ProductEditor(SellableEditor):
     _model_created = False
 
     def get_taxes(self):
-        constants = SellableTaxConstant.select(connection=self.conn)
-        return [(c.description, c) for c in constants
-                                   if c.tax_type != TaxType.SERVICE]
+        query = (SellableTaxConstant.q.tax_type != int(TaxType.SERVICE))
+        constants = SellableTaxConstant.select(query,
+                                        connection=self.conn).orderBy('id')
+        return [(c.description, c) for c in constants]
 
     def update_status_unavailable_label(self):
         text = ''
