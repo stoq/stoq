@@ -175,14 +175,20 @@ class Tasks(object):
                             hide_toolbar=True)
 
     def _open_forms(self):
-        self.app.run_dialog(FormFieldEditor, self.app.conn)
+        trans = api.new_transaction()
+        model = self.app.run_dialog(FormFieldEditor, trans)
+        api.finish_transaction(trans, model)
+        trans.close()
 
     def _open_fiscal_books(self):
         self.app.run_dialog(FiscalBookEntrySearch, self.app.conn,
                             hide_footer=True)
 
     def _open_invoice_layouts(self):
-        self.app.run_dialog(InvoiceLayoutDialog, self.app.conn)
+        trans = api.new_transaction()
+        model = self.app.run_dialog(InvoiceLayoutDialog, trans)
+        api.finish_transaction(trans, model)
+        trans.close()
 
     def _open_invoice_printers(self):
         if not InvoiceLayout.select(connection=self.app.conn):
@@ -190,7 +196,10 @@ class Tasks(object):
                    "before adding an invoice printer"))
             return
 
-        self.app.run_dialog(InvoicePrinterDialog, self.app.conn)
+        trans = api.new_transaction()
+        model = self.app.run_dialog(InvoicePrinterDialog, trans)
+        api.finish_transaction(trans, model)
+        trans.close()
 
     def _open_payment_categories(self):
         trans = api.new_transaction()
@@ -199,13 +208,22 @@ class Tasks(object):
         trans.close()
 
     def _open_payment_methods(self):
-        self.app.run_dialog(PaymentMethodsDialog, self.app.conn)
+        trans = api.new_transaction()
+        model = self.app.run_dialog(PaymentMethodsDialog, trans)
+        api.finish_transaction(trans, model)
+        trans.close()
 
     def _open_parameters(self):
-        self.app.run_dialog(ParameterSearch, self.app.conn)
+        trans = api.new_transaction()
+        model = self.app.run_dialog(ParameterSearch, trans)
+        api.finish_transaction(trans, model)
+        trans.close()
 
     def _open_plugins(self):
-        self.app.run_dialog(PluginManagerDialog, self.app.conn)
+        trans = api.new_transaction()
+        model = self.app.run_dialog(PluginManagerDialog, trans)
+        api.finish_transaction(trans, model)
+        trans.close()
 
     def _open_cfop(self):
         self.app.run_dialog(CfopSearch, self.app.conn, hide_footer=True)
