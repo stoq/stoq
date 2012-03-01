@@ -23,7 +23,8 @@
 ##
 
 from stoqlib.domain.account import (Account, AccountTransaction,
-                                    AccountTransactionView)
+                                    AccountTransactionView,
+                                    BillOption)
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import PaymentError
@@ -131,6 +132,15 @@ class TestAccount(DomainTest):
 
         self.assertEquals(t1.account, imbalance_account)
         self.assertEquals(t2.source_account, imbalance_account)
+
+    def testAccountRemoveWithBankAccount(self):
+        account = self.create_account()
+        bank = self.create_bank_account(account=account)
+        BillOption(option='foo',
+                   value='bar',
+                   bank_account=bank,
+                   connection=self.trans)
+        account.remove(self.trans)
 
     def testHasChildAccounts(self):
         a1 = self.create_account()
