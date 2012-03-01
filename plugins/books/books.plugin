@@ -1,8 +1,10 @@
 [Plugin]
 Module=booksplugin
 Version=1
-Name=Books Plugin
+Name=Books
 Name[pt_BR]=Plugin Livros
+Description=Use Stoq in Bookshop
+Description[pt_BR]=Use Stoq numa Livraria
 Authors=Stoq Team <stoq-devel@async.com.br>
-Copyright=Copyright © 2010 Async Open Source
+Copyright=Copyright © 2010-2012 Async Open Source
 Website=http://www.stoq.com.br/

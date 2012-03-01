@@ -24,6 +24,7 @@
 
 STOQ_ADMIN_APP = "stoq-admin-app"
 STOQ_BILLS = "stoq-bills"
+STOQ_CALC = "stoq-calc"
 STOQ_CALENDAR_APP = "stoq-calendar-app"
 STOQ_CALENDAR_LIST = "stoq-calendar-list"
 STOQ_CALENDAR_MONTH = "stoq-calendar-month"
@@ -33,6 +34,8 @@ STOQ_CLIENTS = "stoq-clients"
 STOQ_EDIT = "stoq-edit"
 STOQ_FEEDBACK = "stoq-feedback"
 STOQ_DELIVERY = "stoq-delivery"
+STOQ_DEVICES = "stoq-devices"
+STOQ_DOCUMENTS = "stoq-documents"
 STOQ_HR = "stoq-hr"
 STOQ_INVENTORY_APP = "stoq-inventory-app"
 STOQ_FORMS = "stoq-forms"
@@ -41,6 +44,7 @@ STOQ_MONEY = "stoq-money"
 STOQ_MONEY_ADD = "stoq-money-add"
 STOQ_MONEY_REMOVE = "stoq-money-remove"
 STOQ_PAYABLE_APP = "stoq-payable-app"
+STOQ_PLUGIN = "stoq-plugin"
 STOQ_POS_APP = "stoq-pos-app"
 STOQ_PRODUCTION_APP = "stoq-production-app"
 STOQ_PRODUCTS = "stoq-products"
@@ -50,13 +54,10 @@ STOQ_SALES_APP = "stoq-sales-app"
 STOQ_SERVICES = "stoq-services"
 STOQ_STOCK_APP = "stoq-stock-app"
 STOQ_SUPPLIERS = "stoq-suppliers"
+STOQ_SYSTEM = "stoq-system"
+STOQ_TAXES = "stoq-taxes"
 STOQ_TILL_APP = "stoq-till-app"
 STOQ_USERS = "stoq-users"
-STOQ_SYSTEM = "stoq-system"
-STOQ_CALC = "stoq-calc"
-STOQ_TAXES = "stoq-taxes"
-STOQ_DOCUMENTS = "stoq-documents"
-STOQ_DEVICES = "stoq-devices"
 STOQ_USER_PROFILES = "stoq-user-profiles"
 
 
@@ -130,6 +131,11 @@ icon_info = [
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-money-remove-24x24.png"}),
     (STOQ_PAYABLE_APP,
      {GTK_ICON_SIZE_DIALOG: "stoq-payable-app-48x48.png"}),
+    (STOQ_PLUGIN,
+     {GTK_ICON_SIZE_MENU: "stoq-plugin-16x16.png",
+      GTK_ICON_SIZE_BUTTON: "stoq-plugin-22x22.png",
+      GTK_ICON_SIZE_DND: "stoq-plugin-32x32.png",
+      GTK_ICON_SIZE_DIALOG: "stoq-plugin-48x48.png"}),
     (STOQ_POS_APP,
      {GTK_ICON_SIZE_MENU: "stoq-pos-app-16x16.png",
       GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-pos-app-24x24.png",

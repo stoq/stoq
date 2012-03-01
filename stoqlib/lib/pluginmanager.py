@@ -47,6 +47,8 @@ class PluginDescription(object):
         self.name = os.path.basename(os.path.dirname(filename))
         self.entry = config.get('Plugin', 'Module')
         self.filename = filename
+        self.long_name = config.get('Plugin', 'Name')
+        self.description = config.get('Plugin', 'Description')
 
     @property
     def dirname(self):
@@ -84,6 +86,9 @@ class PluginManager(object):
         """A list of names of all installed plugins"""
         return [installed_plugin.plugin_name for installed_plugin in
                 InstalledPlugin.select(connection=get_connection())]
+
+    def get_description_by_name(self, plugin_name):
+        return self._plugin_descriptions.get(plugin_name)
 
     @property
     def active_plugins_names(self):

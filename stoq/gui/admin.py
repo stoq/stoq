@@ -59,7 +59,7 @@ from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.gui.stockicons import (
     STOQ_CALC, STOQ_ADMIN_APP, STOQ_CLIENTS, STOQ_DEVICES, STOQ_DELIVERY,
     STOQ_DOCUMENTS, STOQ_EDIT, STOQ_FORMS, STOQ_HR, STOQ_MONEY,
-    STOQ_PAYABLE_APP, STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAXES,
+    STOQ_PAYABLE_APP, STOQ_PLUGIN, STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAXES,
     STOQ_USER_PROFILES, STOQ_USERS)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.message import info
@@ -102,7 +102,7 @@ class Tasks(object):
             (_('Payment Categories'), 'payment_categories', STOQ_PAYABLE_APP),
             (_('Payment Methods'), 'payment_methods', STOQ_MONEY),
             (_('Parameters'), 'parameters', gtk.STOCK_PREFERENCES),
-            (_('Plugins'), 'plugins', gtk.STOCK_PROPERTIES),
+            (_('Plugins'), 'plugins', STOQ_PLUGIN),
             (_('Taxes'), 'taxes', STOQ_TAXES),
             (_('Tax Classes'), 'tax_templates', STOQ_DOCUMENTS),
             (_('Suppliers'), 'suppliers', STOQ_SUPPLIERS),
