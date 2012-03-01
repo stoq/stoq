@@ -1,8 +1,10 @@
 [Plugin]
 Module=nfeplugin
 Version=1
-Name=NF-e Plugin
-Name[pt_BR]=Plugin NF-e (Nota Fiscal Eletrônica)
+Name=Nota Fiscal Eletrônica
+Name[pt_BR]=Nota Fiscal Eletrônica
+Description=Permits emission of NF-e (Nota Fiscal Eletrônica)
+Description[pt_BR]=Permite emission de NF-e (Nota Fiscal Eletrônica)
 Authors=Stoq Team <stoq-devel@async.com.br>
-Copyright=Copyright © 2009 Async Open Source
+Copyright=Copyright © 2009-2012 Async Open Source
 Website=http://www.stoq.com.br/

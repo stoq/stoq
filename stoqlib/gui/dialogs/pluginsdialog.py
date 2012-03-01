@@ -35,6 +35,7 @@ from stoqlib.lib.parameters import is_developer_mode
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import yesno
 from stoqlib.lib.pluginmanager import get_plugin_manager
+from stoqlib.gui.stockicons import STOQ_PLUGIN
 
 _ = stoqlib_gettext
 
@@ -47,12 +48,19 @@ class _PluginModel(object):
     :attribute is_active: True if the plugin is installed, False otherwise.
     """
 
-    def __init__(self, plugin_name, is_active):
+    def __init__(self, plugin_name, is_active, desc):
         self.name = plugin_name
         self.is_active = is_active
+        self.desc = desc
+        self.icon = STOQ_PLUGIN
 
     def can_activate(self):
         return not self.is_active
+
+    @property
+    def description(self):
+        return '<b>%s</b>\n%s' % (self.desc.long_name,
+                                  self.desc.description)
 
 
 class PluginManagerDialog(BasicDialog):
@@ -89,11 +97,15 @@ class PluginManagerDialog(BasicDialog):
             if platform.system() == 'Windows':
                 if name in ['ecf', 'tef']:
                     continue
+
+            desc = self._manager.get_description_by_name(name)
             plugins.append(_PluginModel(name, name in
-                                        self._manager.installed_plugins_names))
+                                        self._manager.installed_plugins_names,
+                                        desc))
 
         self.klist = ObjectList(self._get_columns(), plugins,
                                 gtk.SELECTION_BROWSE)
+        self.klist.set_headers_visible(False)
         self.klist.connect("selection-changed",
                            self._on_klist__selection_changed)
         self.main.remove(self.main.get_child())
@@ -101,9 +113,11 @@ class PluginManagerDialog(BasicDialog):
         self.klist.show()
 
     def _get_columns(self):
-        return [Column('name', title=_('Plugin'), data_type=str,
-                       expand=True),
-                Column('is_active', title=_('Active'), data_type=bool)]
+        return [Column('is_active', title=_('Active'), width=20, data_type=bool),
+                Column('icon', data_type=str, width=24, use_stock=True,
+                       icon_size=gtk.ICON_SIZE_BUTTON),
+                Column('description', data_type=str, expand=True,
+                       use_markup=True)]
 
     def _enable_plugin(self, plugin_model):
         plugin_name = plugin_model.name
