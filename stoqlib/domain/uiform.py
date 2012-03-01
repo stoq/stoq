@@ -24,7 +24,7 @@
 from stoqlib.database.orm import ForeignKey, BoolCol, UnicodeCol
 from stoqlib.database.orm import SingleJoin
 from stoqlib.domain.base import Domain
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext, N_
 
 _ = stoqlib_gettext
 
@@ -80,49 +80,49 @@ def _get_or_create_form(trans, name, desc):
 
 def create_default_forms(trans):
     person_fields = [
-        ('name', _('Name'), True, True),
-        ('phone_number', _('Phone number'), True, False),
-        ('mobile_number', _('Mobile number'), True, False),
-        ('fax', _('Fax'), True, False),
-        ('email', _('Email'), True, False),
-        ('street', _('Street'), True, True),
-        ('street_number', _('Street number'), True, True),
-        ('postal_code', _('Postal code'), True, False),
-        ('district', _('District'), True, True),
-        ('complement', _('Complement'), True, False),
-        ('city', _('City'), True, False),
-        ('state', _('State'), True, True),
-        ('country', _('Country'), True, True),
+        ('name', N_('Name'), True, True),
+        ('phone_number', N_('Phone number'), True, False),
+        ('mobile_number', N_('Mobile number'), True, False),
+        ('fax', N_('Fax'), True, False),
+        ('email', N_('Email'), True, False),
+        ('street', N_('Street'), True, True),
+        ('street_number', N_('Street number'), True, True),
+        ('postal_code', N_('Postal code'), True, False),
+        ('district', N_('District'), True, True),
+        ('complement', N_('Complement'), True, False),
+        ('city', N_('City'), True, False),
+        ('state', N_('State'), True, True),
+        ('country', N_('Country'), True, True),
         ]
 
     employee_fields = [
-        ('role', _('Role'), True, True),
-        ('salary', _('Salary'), True, True),
+        ('role', N_('Role'), True, True),
+        ('salary', N_('Salary'), True, True),
         ]
 
     product_fields = [
-        ('code', _('Code'), True, False),
-        ('barcode', _('Barcode'), True, False),
-        ('category', _('Category'), True, False),
-        ('location', _('Location'), True, False),
-        ('part_number', _('Part number'), True, False),
-        ('width', _('Width'), True, False),
-        ('height', _('Height'), True, False),
-        ('depth', _('Depth'), True, False),
-        ('weight', _('Weight'), True, False),
-        ('minimum_quantity', _('Minimum quantity'), True, False),
-        ('maximum_quantity', _('Maximum quantity'), True, False),
-        ('manufacturer', _('Manufacturer'), True, False),
-        ('ncm', _('Mercosul NCM'), True, False),
-        ('ex_tipi', _('Mercosul EX Tipi'), True, False),
-        ('genero', _('Mercosul Gênero'), True, False),
+        ('code', N_('Code'), True, False),
+        ('barcode', N_('Barcode'), True, False),
+        ('category', N_('Category'), True, False),
+        ('location', N_('Location'), True, False),
+        ('part_number', N_('Part number'), True, False),
+        ('width', N_('Width'), True, False),
+        ('height', N_('Height'), True, False),
+        ('depth', N_('Depth'), True, False),
+        ('weight', N_('Weight'), True, False),
+        ('minimum_quantity', N_('Minimum quantity'), True, False),
+        ('maximum_quantity', N_('Maximum quantity'), True, False),
+        ('manufacturer', N_('Manufacturer'), True, False),
+        ('ncm', N_('Mercosul NCM'), True, False),
+        ('ex_tipi', N_('Mercosul EX Tipi'), True, False),
+        ('genero', N_('Mercosul Gênero'), True, False),
     ]
-    for name, desc in [('user', _('User')),
-                       ('client', _('Client')),
-                       ('employee', _('Employee')),
-                       ('supplier', _('Supplier')),
-                       ('transporter', _('Transporter')),
-                       ('branch', _('Branch'))]:
+    for name, desc in [('user', N_('User')),
+                       ('client', N_('Client')),
+                       ('employee', N_('Employee')),
+                       ('supplier', N_('Supplier')),
+                       ('transporter', N_('Transporter')),
+                       ('branch', N_('Branch'))]:
         ui_form = _get_or_create_form(trans, name, desc)
         _add_fields_to_form(trans, ui_form, person_fields)
 
@@ -130,5 +130,5 @@ def create_default_forms(trans):
                                        form_name='employee')
     _add_fields_to_form(trans, employee_form, employee_fields)
 
-    product_form = _get_or_create_form(trans, 'product', _('Product'))
+    product_form = _get_or_create_form(trans, 'product', N_('Product'))
     _add_fields_to_form(trans, product_form, product_fields)
