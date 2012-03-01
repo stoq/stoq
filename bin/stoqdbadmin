@@ -52,8 +52,18 @@ else:
 # We only support portuguese locale on Windows for now
 import platform
 if platform.system() == 'Windows':
-    os.environ['LANGUAGE'] = 'pt_BR.UTF-8'
     import errno
+    import locale
+    import os
+    from ctypes import cdll
+
+    def putenv(key, value):
+        os.environ[key] = value
+        cdll.msvcrt._putenv('%s=%s' % (key, value, ))
+
+    locale.setlocale(locale.LC_ALL, '')
+    putenv('LANGUAGE', 'pt_BR')
+
     logdir = os.path.join(os.environ['APPDATA'], 'stoqdbadmin', "logs")
     if not os.path.exists(logdir):
         os.makedirs(logdir)
