@@ -313,7 +313,7 @@ class Shell(object):
                   _("Invalid config file settings, got error '%s', "
                     "of type '%s'") % (value, type))
 
-        from stoqlib.exceptions import StoqlibError
+        from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
         from stoqlib.database.exceptions import PostgreSQLError
         from stoq.lib.startup import setup
         log.debug('calling setup()')
@@ -323,7 +323,11 @@ class Shell(object):
         try:
             setup(config, self._options, register_station=False,
                   check_schema=True, load_plugins=False)
-        except (StoqlibError, PostgreSQLError), e:
+        except DatabaseInconsistency as e:
+            error(_('The database version differs from your installed '
+                    'version.'), str(e))
+            raise SystemExit("Error: database inconsistency")
+        except (StoqlibError, PostgreSQLError) as e:
             error(_('Could not connect to the database'),
                   'error=%s uri=%s' % (str(e), conn_uri))
             raise SystemExit("Error: bad connection settings provided")
