@@ -527,7 +527,7 @@
                         <child>
                           <object class="GtkImage" id="image3">
                             <property name="visible">True</property>
-                            <property name="stock">gtk-edit</property>
+                            <property name="stock">gtk-info</property>
                           </object>
                         </child>
                       </object>

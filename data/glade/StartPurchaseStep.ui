@@ -339,7 +339,7 @@
                       <object class="GtkImage" id="image2">
                         <property name="visible">True</property>
                         <property name="tooltip_text" translatable="yes">Edit selected supplier</property>
-                        <property name="stock">gtk-edit</property>
+                        <property name="stock">gtk-info</property>
                         <property name="icon-size">1</property>
                       </object>
                     </child>
