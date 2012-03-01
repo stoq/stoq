@@ -23,10 +23,8 @@
 ##
 """ This module test all class in stoq/domain/station.py """
 
-from stoqlib.domain.interfaces import IDelivery
-from stoqlib.domain.sale import DeliveryItem
+from stoqlib.domain.sale import Delivery
 from stoqlib.domain.service import Service, ServiceView
-from stoqlib.exceptions import SellError
 
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -34,20 +32,23 @@ from stoqlib.domain.test.domaintest import DomainTest
 class TestServiceSellableItem(DomainTest):
     def test_addItem(self):
         sale = self.create_sale()
+        delivery = Delivery(connection=self.trans)
 
         service = self.create_service()
         service_item = sale.add_sellable(service.sellable, quantity=1, price=10)
-        self.assertRaises(SellError,
-                          DeliveryItem.create_from_sellable_item, service_item)
+        self.assertFalse(service_item in list(delivery.delivery_items))
+        self.assertFalse(service_item in delivery.get_items())
+        delivery.add_item(service_item)
+        self.assertTrue(service_item in list(delivery.delivery_items))
+        self.assertTrue(service_item in delivery.get_items())
 
         product = self.create_product()
         product_item = sale.add_sellable(product.sellable, quantity=1, price=10)
-        delivery_item = DeliveryItem.create_from_sellable_item(product_item)
-
-        delivery = service_item.addFacet(IDelivery, connection=self.trans)
-        self.assertEquals(list(delivery.get_items()), [])
-        delivery.add_item(delivery_item)
-        self.assertEquals(list(delivery.get_items()), [delivery_item])
+        self.assertFalse(product_item in list(delivery.delivery_items))
+        self.assertFalse(product_item in delivery.get_items())
+        delivery.add_item(product_item)
+        self.assertTrue(product_item in list(delivery.delivery_items))
+        self.assertTrue(product_item in delivery.get_items())
 
 
 class TestService(DomainTest):

@@ -428,7 +428,7 @@ class MagentoShipment(MagentoBaseSyncUp):
         transporter = self.magento_sale.sale.transporter
         transporter = transporter and transporter.name
         # FIXME: Get the track service and number from delivery.
-        #        Waiting for some support on SaleItemAdaptToDelivery
+        #        Waiting for some support on Delivery
         track_service = 'SEDEX'
         track_number = 'BR1234567890'
 

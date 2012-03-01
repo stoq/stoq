@@ -169,20 +169,6 @@ class IPaymentTransaction(Interface):
         """
 
 
-class IDelivery(Interface):
-    """ Specification of a Delivery interface for a sellable. """
-
-    address = Attribute('The delivery address.')
-
-    def get_item_by_sellable(sellable):
-        """Gets all delivery items for a sellable
-
-        :param sellable: a sellable
-        :type sellable: Sellable
-        :returns: a list of DeliveryItems
-        """
-
-
 class IReversal(Interface):
     """A financial entry which support reversal operations"""
 

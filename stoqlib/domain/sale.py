@@ -32,19 +32,18 @@ from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
-from stoqlib.database.orm import ForeignKey, UnicodeCol, DateTimeCol, IntCol
+from stoqlib.database.orm import (ForeignKey, UnicodeCol, DateTimeCol, IntCol,
+                                  PriceCol, QuantityCol, MultipleJoin)
 from stoqlib.database.orm import AND, const
-from stoqlib.database.orm import PriceCol, QuantityCol
 from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn, INNERJOINOn
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
-from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.events import SaleStatusChangedEvent, ECFIsLastSaleEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.interfaces import (IContainer,
-                                       IPaymentTransaction,
-                                       IDelivery, IStorable)
+from stoqlib.domain.interfaces import (IContainer, IPaymentTransaction,
+                                       IStorable)
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Person, Client,
@@ -88,6 +87,7 @@ class SaleItem(Domain):
     price = PriceCol()
     sale = ForeignKey('Sale')
     sellable = ForeignKey('Sellable')
+    delivery = ForeignKey('Delivery', default=None)
     cfop = ForeignKey('CfopData', default=None)
 
     # This is currently only used by services
@@ -157,22 +157,6 @@ class SaleItem(Domain):
     def get_quantity_unit_string(self):
         return "%s %s" % (self.quantity, self.sellable.get_unit_description())
 
-    def get_quantity_delivered(self):
-        delivered = Decimal(0)
-        for service in self.sale.services:
-            delivery = IDelivery(service, None)
-            if not delivery:
-                continue
-            item = delivery.get_item_by_sellable(self.sellable)
-            if not item:
-                continue
-            delivered += item.quantity
-
-        return delivered
-
-    def has_been_totally_delivered(self):
-        return self.get_quantity_delivered() == self.quantity
-
     def get_description(self):
         return self.sellable.get_description()
 
@@ -225,72 +209,92 @@ class SaleItem(Domain):
         return self.sale.cfop.code.replace('.', '')
 
 
-class DeliveryItem(Domain):
-    """Class responsible to store all the products for a certain delivery"""
+class Delivery(Domain):
+    """Delivery implementation
 
-    quantity = QuantityCol()
-    sellable = ForeignKey('Sellable')
-    delivery = ForeignKey('SaleItem', default=None)
+    :cvar STATUS_INITIAL: The delivery was created
+    :cvar STATUS_DELIVERING: The delivery was sent to delivery
+    :cvar STATUS_RECEIVED: The delivery was received by the client
+
+    :attribute status: the delivery status
+    :attribute open_date: the date which the delivery was created
+    :attribute deliver_date: the date which the delivery sent to deliver
+    :attribute receive_date: the date which the delivery received by
+        the client
+    :attribute tracking_code: the delivery tracking code
+    :attribute address: the delivery address
+    :attribute transporter: the delivery
+        :class:`stoqlib.domain.person.PersonAdaptToTransporter`
+    :attrribute delivery_items: list of :class:`SaleItem` which will
+        be delivered
+    """
+
+    implements(IContainer)
+
+    (STATUS_INITIAL,
+     STATUS_DELIVERING,
+     STATUS_RECEIVED) = range(3)
+
+    statuses = {STATUS_INITIAL: _("Waiting for deliver"),
+                STATUS_DELIVERING: _("Delivering"),
+                STATUS_RECEIVED: _("Received")}
+
+    status = IntCol(default=STATUS_INITIAL)
+    open_date = DateTimeCol(default=None)
+    deliver_date = DateTimeCol(default=None)
+    receive_date = DateTimeCol(default=None)
+    tracking_code = UnicodeCol(default='')
+    address = ForeignKey('Address', default=None)
+    transporter = ForeignKey('Transporter', default=None)
+    service_item = ForeignKey('SaleItem', default=None)
+
+    delivery_items = MultipleJoin('SaleItem', joinColumn='delivery_id')
 
     #
-    # Accessors
+    #  Properties
     #
 
-    def get_price(self):
-        return self.sellable.price
+    @property
+    def status_str(self):
+        return self.statuses[self.status]
 
-    def get_total(self):
-        return currency(self.get_price() * self.quantity)
+    @property
+    def address_str(self):
+        if self.address:
+            return self.address.get_address_string()
+        return ''
 
-    @classmethod
-    def create_from_sellable_item(cls, sale_item):
-        if not sale_item.sellable.product:
-            # FIXME: Maybe we should allow delivering services as well.
-            raise SellError(
-                _("It's only possible to deliver products, not %r") % (
-                type(sale_item), ))
-
-        quantity = sale_item.quantity - sale_item.get_quantity_delivered()
-        return cls(connection=sale_item.get_connection(),
-                   sellable=sale_item.sellable,
-                   quantity=quantity)
-
-
-class SaleItemAdaptToDelivery(ModelAdapter):
-    """A service implementation as a delivery facet."""
-
-    implements(IDelivery, IContainer)
-
-    original = ForeignKey('SaleItem')
-    address = UnicodeCol(default='')
+    @property
+    def client_str(self):
+        client = self.service_item.sale.client
+        if client:
+            return client.get_description()
+        return ''
 
     #
-    # IContainer implementation
+    #  ORMObject hooks
     #
 
-    @argcheck(DeliveryItem)
+    def _create(self, id, **kwargs):
+        if not 'open_date' in kwargs:
+            kwargs['open_date'] = const.NOW()
+
+        super(Delivery, self)._create(id, **kwargs)
+
+    #
+    #  IContainer implementation
+    #
+
+    @argcheck(SaleItem)
     def add_item(self, item):
         item.delivery = self
 
     def get_items(self):
-        return DeliveryItem.selectBy(connection=self.get_connection(),
-                                     delivery=self)
+        return list(self.delivery_items)
 
-    @argcheck(DeliveryItem)
+    @argcheck(SaleItem)
     def remove_item(self, item):
-        DeliveryItem.delete(item.id, connection=item.get_connection())
-
-    #
-    # General methods
-    #
-
-    @argcheck(Sellable)
-    def get_item_by_sellable(self, sellable):
-        return DeliveryItem.selectOneBy(connection=self.get_connection(),
-                                        delivery=self,
-                                        sellable=sellable)
-
-SaleItem.registerFacet(SaleItemAdaptToDelivery, IDelivery)
+        item.delivery = None
 
 
 class Sale(Domain):
@@ -375,6 +379,7 @@ class Sale(Domain):
     client = ForeignKey('Client', default=None)
     salesperson = ForeignKey('SalesPerson')
     branch = ForeignKey('Branch', default=None)
+    # FIXME: transporter should only be used on Delivery.
     transporter = ForeignKey('Transporter', default=None)
     group = ForeignKey('PaymentGroup')
     client_category = ForeignKey('ClientCategory', default=None)
@@ -717,7 +722,10 @@ class Sale(Domain):
         delivery_added = False
         for sale_item in self.get_items():
             if delivery_added is False:
-                delivery = IDelivery(sale_item, None)
+                # FIXME: Add the delivery info just once can lead to an error.
+                #        It's possible that some item went to delivery X while
+                #        some went to delivery Y.
+                delivery = sale_item.delivery
             if delivery is not None:
                 details.append(_('Delivery Address: %s') % delivery.address)
                 # At the moment, we just support only one delivery per sale.
@@ -1271,49 +1279,6 @@ class SaleView(Viewable):
 
     def get_status_name(self):
         return Sale.get_status_name(self.status)
-
-
-class DeliveryView(Viewable):
-    """Stores general informatios items that will be delivered.
-
-    :cvar id: the id of the sale item
-    :cvar sale_id: the id of the sale
-    :cvar quantity: the quantity of items that will be delivered
-    :cvar price: the sale item price
-    :cvar notes: sale item notes
-    :cvar estimated_fix_date: the estimated delivery date
-    :cvar completion_date: the real delivery date
-    :cvar address: the address where the item should be delivered
-    :cvar description: the sale item description
-    :cvar client_name: the sale client name
-    """
-
-    columns = dict(
-        id=SaleItem.q.id,
-        sale_id=SaleItem.q.saleID,
-        quantity=SaleItem.q.quantity,
-        price=SaleItem.q.price,
-        notes=SaleItem.q.notes,
-        estimated_fix_date=SaleItem.q.estimated_fix_date,
-        completion_date=SaleItem.q.completion_date,
-        address=SaleItemAdaptToDelivery.q.address,
-        description=Sellable.q.description,
-        client_name=Person.q.name,
-    )
-
-    joins = [LEFTJOINOn(None, Sellable,
-                        SaleItem.q.sellableID == Sellable.q.id),
-             LEFTJOINOn(None, DeliveryItem,
-                        Sellable.q.id == DeliveryItem.q.sellableID),
-             LEFTJOINOn(None, Sale, SaleItem.q.saleID == Sale.q.id),
-             LEFTJOINOn(None, Client,
-                        Sale.q.clientID == Client.q.id),
-             LEFTJOINOn(None, Person,
-                        Client.q.personID == Person.q.id),
-    ]
-
-    clause = AND(SaleItemAdaptToDelivery.q.originalID == SaleItem.q.id,
-                 SaleItemAdaptToDelivery.q.id == DeliveryItem.q.deliveryID, )
 
 
 class SoldSellableView(Viewable):
