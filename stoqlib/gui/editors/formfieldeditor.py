@@ -23,6 +23,8 @@
 ##
 ##
 
+import gettext
+
 import gtk
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.list import Column
@@ -52,7 +54,8 @@ class FormFieldEditor(BasicDialog):
         hbox.show()
 
         self.forms = ObjectList(
-            [Column('description', sorted=True, expand=True)],
+            [Column('description', title=_('Description'), sorted=True,
+                    expand=True, format_func=gettext.gettext)],
             UIForm.select(connection=self.conn),
             gtk.SELECTION_BROWSE)
         self.forms.connect('selection-changed',
@@ -80,11 +83,12 @@ class FormFieldEditor(BasicDialog):
                                               ui_form=form), clear=True)
 
     def _get_columns(self):
-        return [Column('description', data_type=str,
-                       expand=True, sorted=True),
-                Column('visible', data_type=bool,
+        return [Column('description', title=_('Description'), data_type=str,
+                       expand=True, sorted=True,
+                       format_func=gettext.gettext),
+                Column('visible', title=_('Visible'), data_type=bool,
                        width=120, editable=True),
-                Column('mandatory', data_type=bool,
+                Column('mandatory', title=_('Mandatory'), data_type=bool,
                        width=120, editable=True)]
 
     def confirm(self, *args):
