@@ -166,15 +166,15 @@ def enable_gtk():
         orig_cell_pack_start(self, cell, expand)
     Gtk.CellLayout.pack_start = cell_pack_start
 
-    orig_cell_data_func = Gtk.CellLayout.set_cell_data_func
+    orig_set_cell_data_func = Gtk.CellLayout.set_cell_data_func
 
-    def cell_data_func(self, func, user_data=_unset):
+    def set_cell_data_func(self, cell, func, user_data=_unset):
         def callback(*args):
             if args[-1] == _unset:
                 args = args[:-1]
             return func(*args)
-        orig_cell_data_func(self, callback, user_data)
-    Gtk.CellLayout.set_cell_data_func = cell_data_func
+        orig_set_cell_data_func(self, cell, callback, user_data)
+    Gtk.CellLayout.set_cell_data_func = set_cell_data_func
 
     # CellRenderer
 
