@@ -43,6 +43,7 @@ from kiwi.ui.search import Any, DateSearchFilter, DateSearchOption, SearchContai
 from stoqlib.api import api
 from stoqlib.database.orm import const, OR, AND
 from stoqlib.domain.account import Account, AccountTransaction, AccountTransactionView
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.gui.accounttree import AccountTree
@@ -686,10 +687,25 @@ class FinancialApp(AppWindow):
         self._refresh_accounts()
 
     def _delete_account(self, account_view):
-        msg = _('Are you sure you want to remove account "%s" ?' %
-                (account_view.description, ))
-        if yesno(msg, gtk.RESPONSE_YES,
-                 _("Keep account"), _("Remove account")):
+        trans = api.new_transaction()
+        account = trans.get(account_view.account)
+        methods = PaymentMethod.selectBy(
+            destination_account=account,
+            connection=trans)
+        if methods.count() > 0:
+            if yesno(
+                _('This account are used in at least one payment method.\n'
+                  'To be able to delete it the payment methods needs to be'
+                  're-configured first'), gtk.RESPONSE_YES,
+                _("Keep account"), _("Configure payment methods")):
+                trans.close()
+                return
+
+        elif yesno(
+            _('Are you sure you want to remove account "%s" ?' %
+              (account_view.description, )), gtk.RESPONSE_YES,
+            _("Keep account"), _("Remove account")):
+            trans.close()
             return
 
         if account_view.id in self._pages:
@@ -699,8 +715,10 @@ class FinancialApp(AppWindow):
         self.accounts.remove(account_view)
         self.accounts.flush()
 
-        trans = api.new_transaction()
-        account = trans.get(account_view.account)
+        imbalance = api.sysparam(trans).IMBALANCE_ACCOUNT
+        for method in methods:
+            method.destination_account = imbalance
+
         account.remove(trans)
         trans.commit(close=True)
 

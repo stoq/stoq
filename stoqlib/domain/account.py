@@ -201,6 +201,12 @@ class Account(Domain):
             transaction.source_account = imbalance_account
             transaction.sync()
 
+        bank = self.bank
+        if bank:
+            for options in bank.options:
+                options.delete(options.id, connection=trans)
+            bank.delete(bank.id, connection=trans)
+
         self.delete(self.id, connection=trans)
 
     def has_child_accounts(self):
