@@ -239,7 +239,8 @@ class SchemaMigration(object):
             latest = "(%d.%d)" % latest_available
             raise DatabaseInconsistency(
                 _('The current version of database %s is greater than the '
-                  'latest available version %s') % (current, latest))
+                  'latest available version %s. Try upgrading your '
+                  'installation.') % (current, latest))
 
         return False
 
