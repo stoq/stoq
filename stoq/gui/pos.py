@@ -37,11 +37,10 @@ from kiwi.ui.widgets.list import Column
 from kiwi.ui.widgets.contextmenu import ContextMenu, ContextMenuItem
 from stoqdrivers.enum import UnitType
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IDelivery
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.product import IStorable
-from stoqlib.domain.sale import Sale, DeliveryItem
+from stoqlib.domain.sale import Sale, Delivery
 from stoqlib.domain.sellable import Sellable
 from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TaxError
@@ -51,15 +50,15 @@ from stoqlib.lib.message import warning, info, yesno, marker
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.gui.base.dialogs import push_fullscreen, pop_fullscreen
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
-from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
+from stoqlib.gui.editors.deliveryeditor import CreateDeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.logo import render_logo_pixbuf
+from stoqlib.gui.search.deliverysearch import DeliverySearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.salesearch import (SaleSearch, DeliverySearch,
-                                           SoldItemsByBranchSearch)
+from stoqlib.gui.search.salesearch import SaleSearch, SoldItemsByBranchSearch
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 
@@ -653,27 +652,30 @@ class PosApp(AppWindow):
         @returns: The delivery
         """
         #FIXME: Canceling the editor still saves the changes.
-        return self.run_dialog(DeliveryEditor, self.conn,
+        return self.run_dialog(CreateDeliveryEditor, self.conn,
                                self._delivery,
                                sale_items=self._get_deliverable_items())
 
-    def _add_delivery_item(self, delivery, delivery_service):
+    def _add_delivery_item(self, delivery, delivery_sellable):
         for sale_item in self.sale_items:
-            if sale_item.sellable == delivery_service:
+            if sale_item.sellable == delivery_sellable:
                 sale_item.price = delivery.price
                 sale_item.notes = delivery.notes
-                delivery_item = sale_item
+                sale_item.estimated_fix_date = delivery.estimated_fix_date
+                self._delivery_item = sale_item
                 new_item = False
                 break
         else:
-            delivery_item = _SaleItem(sellable=delivery_service,
-                                      quantity=1,
-                                      notes=delivery.notes,
-                                      price=delivery.price)
-            delivery_item.estimated_fix_date = delivery.estimated_fix_date
+            self._delivery_item = _SaleItem(
+                sellable=delivery_sellable,
+                quantity=1,
+                notes=delivery.notes,
+                price=delivery.price,
+                )
+            self._delivery_item.estimated_fix_date = delivery.estimated_fix_date
             new_item = True
 
-        self._update_added_item(delivery_item,
+        self._update_added_item(self._delivery_item,
                                 new_item=new_item)
 
     def _create_sale(self, trans):
@@ -691,8 +693,15 @@ class PosApp(AppWindow):
                     operation_nature=api.sysparam(trans).DEFAULT_OPERATION_NATURE)
 
         if self._delivery:
-            address_string = self._delivery.address.get_address_string()
             sale.client = self._delivery.client
+            sale.transporter = self._delivery.transporter
+            delivery = Delivery(
+                connection=trans,
+                address=self._delivery.address,
+                transporter=self._delivery.transporter,
+                )
+        else:
+            delivery = None
 
         for fake_sale_item in self.sale_items:
             sale_item = sale.add_sellable(fake_sale_item.sellable,
@@ -701,14 +710,11 @@ class PosApp(AppWindow):
             sale_item.notes = fake_sale_item.notes
             sale_item.estimated_fix_date = fake_sale_item.estimated_fix_date
 
-            if self._delivery and fake_sale_item.deliver:
-                item = sale_item.addFacet(IDelivery,
-                                          connection=trans)
-                item.address = address_string
-                DeliveryItem(sellable=fake_sale_item.sellable,
-                             quantity=fake_sale_item.quantity,
-                             delivery=item,
-                             connection=trans)
+            if delivery and fake_sale_item.deliver:
+                delivery.add_item(sale_item)
+            elif delivery and fake_sale_item == self._delivery_item:
+                delivery.service_item = sale_item
+
         return sale
 
     def _checkout(self):

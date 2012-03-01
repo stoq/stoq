@@ -143,6 +143,7 @@ def _create_slave_test():
         'BranchDialog': 'cannot provide ICurrentBranch twice',
         'BranchEditor': ' ',
         'CreditProviderEditor': ' ',
+        'DeliveryEditor': 'need implement create_model',
         'ICMSTemplateSlave': 'Unkown type',
         'IPITemplateSlave': 'Unkown type',
         'InConsignmentItemEditor': ' ',

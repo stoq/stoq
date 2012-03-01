@@ -43,7 +43,7 @@ from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.domain.person import Branch
-from stoqlib.domain.sale import Sale, SaleView, DeliveryView
+from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.views import SoldItemsByBranchView
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.reporting.sale import SoldItemsByBranchReport
@@ -115,35 +115,6 @@ class SaleSearch(SearchDialog):
     def _on_sale__returned(self, slave, sale_returned):
         if sale_returned:
             self._update_widgets(self.results.get_selected())
-
-
-class DeliverySearch(SearchDialog):
-    title = _(u'Delivery Search')
-    table = search_table = DeliveryView
-    searching_by_date = True
-    size = (750, 450)
-
-    def create_filters(self):
-        self.set_text_field_columns(['description'])
-        self.set_searchbar_labels(_('Items matching:'))
-
-    def get_columns(self):
-        return [SearchColumn('id', title=_('#'), data_type=int,
-                             order=gtk.SORT_DESCENDING),
-                SearchColumn('description', title=_('Item'),
-                             data_type=str, expand=True),
-                SearchColumn('client_name', title=_('Client'),
-                             data_type=str,
-                             ellipsize=pango.ELLIPSIZE_END,
-                             visible=False),
-                SearchColumn('address', title=_('Address'),
-                             data_type=str, width=250,
-                             ellipsize=pango.ELLIPSIZE_END),
-                SearchColumn('estimated_fix_date', title=_('Estimated'),
-                             data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                SearchColumn('quantity', title=_('Qty'), data_type=Decimal,
-                             format_func=format_quantity),
-                ]
 
 
 class SoldItemsByBranchSearch(SearchDialog):

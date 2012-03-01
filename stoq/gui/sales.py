@@ -41,10 +41,11 @@ from stoqlib.gui.editors.invoiceeditor import SaleInvoicePrinterDialog
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.callsearch import ClientCallsSearch
 from stoqlib.gui.search.commissionsearch import CommissionSearch
+from stoqlib.gui.search.deliverysearch import DeliverySearch
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.salesearch import DeliverySearch, SoldItemsByBranchSearch
+from stoqlib.gui.search.salesearch import SoldItemsByBranchSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.stockicons import (STOQ_PRODUCTS, STOQ_SERVICES,
