@@ -237,7 +237,7 @@ class ECFEditor(BaseEditor):
                 if not constant:
                     constant = SellableTaxConstant(tax_value=value,
                                            tax_type=int(TaxType.CUSTOM),
-                                           description='%d %%' % value,
+                                           description='%0.2f %%' % value,
                                            connection=self.conn)
             elif tax_enum == TaxType.SERVICE:
                 constant = DeviceConstant.selectOneBy(
@@ -257,7 +257,7 @@ class ECFEditor(BaseEditor):
                     continue
 
             if value:
-                constant_name = '%d %%' % (value, )
+                constant_name = '%0.2f %%' % (value, )
             elif constant:
                 constant_name = constant.description
             else:
