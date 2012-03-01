@@ -28,7 +28,7 @@ from kiwi.ui.pixbufutils import pixbuf_from_string
 sizes = {
     'config': (91, 32),
     'login': (206, 60),
-    'about': (288, 60),
+    'about': (170, 60),
     'pos': (91, 32),
     'update': (170, 60),
 }
