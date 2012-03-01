@@ -1035,16 +1035,16 @@ class AppWindow(GladeDelegate):
         self.shutdown_application()
 
     def _on_menu_item__select(self, menuitem, tooltip):
-        self.statusbar.push(-1, tooltip)
+        self.statusbar.push(0xff, tooltip)
 
     def _on_menu_item__deselect(self, menuitem):
-        self.statusbar.pop(-1)
+        self.statusbar.pop(0xff)
 
     def _on_tool_item__enter_notify_event(self, toolitem, event, tooltip):
-        self.statusbar.push(-1, tooltip)
+        self.statusbar.push(0xff, tooltip)
 
     def _on_tool_item__leave_notify_event(self, toolitem, event):
-        self.statusbar.pop(-1)
+        self.statusbar.pop(0xff)
 
     def _on_uimanager__connect_proxy(self, uimgr, action, widget):
         tooltip = action.get_tooltip()
