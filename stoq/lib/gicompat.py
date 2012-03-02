@@ -251,6 +251,7 @@ def enable_webkit():
     sys.modules['webkit'] = WebKit
     WebKit.WebView.get_web_inspector = WebKit.WebView.get_inspector
 
+
 def enable_gudev():
     gi.require_version('GUdev', '1.0')
     from gi.repository import GUdev
