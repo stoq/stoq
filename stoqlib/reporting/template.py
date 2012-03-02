@@ -52,7 +52,7 @@ _ = stoqlib_gettext
 
 
 FANCYNAME_FONT = ("Vera-B", 14)
-LOGO_SIZE = (171, 59)
+LOGO_SIZE = (170, 65)
 SMALL_FONT = ("Vera", 12)
 TEXT_HEIGHT = 13
 
@@ -68,6 +68,12 @@ def _get_logotype_path(trans):
 
         if pixbuf:
             w, h = LOGO_SIZE
+            ow, oh = pixbuf.props.width, pixbuf.props.height
+            if ow > oh:
+                w = int(h * (ow/float(oh)))
+            else:
+                w = int(h * (oh/float(ow)))
+
             pixbuf = pixbuf.scale_simple(w, h, gtk.gdk.INTERP_BILINEAR)
             tmp_file = tempfile.NamedTemporaryFile(prefix='stoq-logo')
             tmp_file.close()
@@ -78,7 +84,7 @@ def _get_logotype_path(trans):
 
 
 class BaseStoqReport(ReportTemplate):
-    logo_border = 5 * mm
+    logo_border = 4 * mm
     report_name_prefix = "Stoq - "
 
     def __init__(self, *args, **kwargs):
@@ -91,8 +97,7 @@ class BaseStoqReport(ReportTemplate):
         # vertical position where the document really must starts be
         # drawed (this is used to not override the space reserved to
         # the logotype)
-        self.header_height = (self._logotype.getSize()[1]
-                              + BaseStoqReport.logo_border)
+        self.header_height = LOGO_SIZE[1]
         title = self.get_title()
         if title:
             if not type(title) is tuple:
