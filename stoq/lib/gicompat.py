@@ -21,6 +21,10 @@ def install_flags(mod, flags):
 
 def enable():
     # gobject
+    from gi.repository import GLib
+    sys.modules['glib'] = GLib
+
+    # gobject
     from gi.repository import GObject
     sys.modules['gobject'] = GObject
     from gi._gobject import propertyhelper
@@ -245,7 +249,7 @@ def enable_webkit():
     gi.require_version('WebKit', '1.0')
     from gi.repository import WebKit
     sys.modules['webkit'] = WebKit
-
+    WebKit.WebView.get_web_inspector = WebKit.WebView.get_inspector
 
 def enable_gudev():
     gi.require_version('GUdev', '1.0')
