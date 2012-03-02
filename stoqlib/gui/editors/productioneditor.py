@@ -53,7 +53,7 @@ from stoqlib.domain.production import ProductionProducedItem
 from stoqlib.domain.production import (ProductionItem, ProductionMaterial,
                                        ProductionService)
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
-from stoqlib.lib.defaults import DECIMAL_PRECISION
+from stoqlib.lib.defaults import QUANTITY_PRECISION
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -88,7 +88,7 @@ class ProductionItemEditor(BaseEditor):
         self.order_number.set_text("%04d" % self.model.order.id)
         self.quantity.set_adjustment(
             gtk.Adjustment(lower=0, upper=self.get_max_quantity(), step_incr=1))
-        self.quantity.set_digits(DECIMAL_PRECISION)
+        self.quantity.set_digits(QUANTITY_PRECISION)
 
     def get_max_quantity(self):
         """Returns the maximum quantity allowed in the quantity spinbutton.

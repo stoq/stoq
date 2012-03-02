@@ -49,6 +49,7 @@ from stoqlib.gui.editors.baseeditor import (BaseEditor, BaseEditorSlave,
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.gui.slaves.productslave import (ProductDetailsSlave,
                                              ProductTaxSlave)
+from stoqlib.lib.defaults import quantize
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -90,7 +91,7 @@ class _TemporaryProductComponent(object):
     #
 
     def get_total_production_cost(self):
-        return self.production_cost * self.quantity
+        return quantize(self.production_cost * self.quantity)
 
     def delete_product_component(self, connection):
         component = self._get_product_component(connection)
@@ -308,12 +309,12 @@ class ProductComponentSlave(BaseEditorSlave):
         return len(self.component_tree) > 0
 
     def get_component_cost(self):
-        value = 0
+        value = Decimal('0')
         for component in self.component_tree:
             if self.component_tree.get_parent(component):
                 continue
             value += component.get_total_production_cost()
-        return value
+        return quantize(value)
 
     #
     # Kiwi Callbacks

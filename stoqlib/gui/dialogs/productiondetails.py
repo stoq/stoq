@@ -245,7 +245,8 @@ class ProductionDetailsDialog(BaseEditor):
         print_report(ProductionOrderReport, self.model)
 
     def on_production_items__selection_changed(self, widget, item):
-        self.produce_button.set_sensitive(bool(item) and item.can_produce(1)
+        self.produce_button.set_sensitive(bool(item)
+                                          and item.can_produce(Decimal('0.001'))
                                           and not self.has_open_inventory())
 
     def on_materials__selection_changed(self, widget, item):
