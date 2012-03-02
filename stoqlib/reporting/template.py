@@ -70,9 +70,9 @@ def _get_logotype_path(trans):
             w, h = LOGO_SIZE
             ow, oh = pixbuf.props.width, pixbuf.props.height
             if ow > oh:
-                w = int(h * (ow/float(oh)))
+                w = int(h * (ow / float(oh)))
             else:
-                w = int(h * (oh/float(ow)))
+                w = int(h * (oh / float(ow)))
 
             pixbuf = pixbuf.scale_simple(w, h, gtk.gdk.INTERP_BILINEAR)
             tmp_file = tempfile.NamedTemporaryFile(prefix='stoq-logo')
