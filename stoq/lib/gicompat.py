@@ -202,6 +202,7 @@ def enable_gtk():
 
     Gtk.expander_new_with_mnemonic = Gtk.Expander.new_with_mnemonic
     Gtk.icon_theme_get_default = Gtk.IconTheme.get_default
+    Gtk.image_new_from_pixbuf = Gtk.Image.new_from_pixbuf
     Gtk.image_new_from_stock = Gtk.Image.new_from_stock
     Gtk.settings_get_default = Gtk.Settings.get_default
     Gtk.widget_get_default_direction = Gtk.Widget.get_default_direction
@@ -229,21 +230,24 @@ def enable_gtk():
 
 
 def enable_vte():
-    # vte
     gi.require_version('Vte', '0.0')
     from gi.repository import Vte
     sys.modules['vte'] = Vte
 
 
 def enable_poppler():
-    # poppler
     gi.require_version('Poppler', '0.18')
     from gi.repository import Poppler
     sys.modules['poppler'] = Poppler
 
 
 def enable_webkit():
-    # poppler
     gi.require_version('WebKit', '1.0')
     from gi.repository import WebKit
     sys.modules['webkit'] = WebKit
+
+
+def enable_gudev():
+    gi.require_version('GUdev', '1.0')
+    from gi.repository import GUdev
+    sys.modules['gudev'] = GUdev
