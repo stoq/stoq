@@ -112,6 +112,9 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
             saved = self._migrate_from_pickle()
 
         for col in self._columns:
+            # Expanded columns should not have a width set.
+            if col.expand:
+                continue
             props = saved.get(col.title)
             if props:
                 col.visible = props[0]
