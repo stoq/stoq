@@ -307,7 +307,7 @@ class PaymentEditor(BaseEditor):
 
         next_date = start_date + delta
         dates = []
-        while next_date < end_date:
+        while next_date <= end_date:
             dates.append(next_date)
             next_date = next_date + delta
         if not dates:
