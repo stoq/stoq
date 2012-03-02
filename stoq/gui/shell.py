@@ -155,6 +155,7 @@ class Shell(object):
             gicompat.enable_gtk()
             gicompat.enable_poppler()
             gicompat.enable_webkit()
+            gicompat.enable_gudev()
 
     def _setup_gtk(self):
         import gtk
