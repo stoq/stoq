@@ -396,6 +396,12 @@ class PosApp(AppWindow):
                                         status=Sellable.STATUS_AVAILABLE,
                                         connection=self.conn)
 
+        # If the barcode didnt match, maybe the user typed the product code
+        if not sellable:
+            sellable = Sellable.selectOneBy(code=barcode,
+                                        status=Sellable.STATUS_AVAILABLE,
+                                        connection=self.conn)
+
         # If the barcode has the price information, we need to calculate the
         # corresponding weight.
         if info and sellable and info.mode == BarcodeInfo.MODE_PRICE:
