@@ -61,19 +61,14 @@ STOQ_USERS = "stoq-users"
 STOQ_USER_PROFILES = "stoq-user-profiles"
 
 
-# Add aliases so we don't need to import gtk
-# 16: GTK_ICON_SIZE_MENU
-# 18: GTK_ICON_SIZE_SMALL_TOOLBAR
-# 20: GTK_ICON_SIZE_BUTTON
-# 24: GTK_ICON_SIZE_LARGE_TOOLBAR
-# 32: GTK_ICON_SIZE_DND
-# 48: GTK_ICON_SIZE_DIALOG
-GTK_ICON_SIZE_MENU = 16
-GTK_ICON_SIZE_SMALL_TOOLBAR = 18
-GTK_ICON_SIZE_BUTTON = 20
-GTK_ICON_SIZE_LARGE_TOOLBAR = 24
-GTK_ICON_SIZE_DND = 32
-GTK_ICON_SIZE_DIALOG = 48
+# Add aliases so we don't need to import gtk here
+(GTK_ICON_SIZE_MENU,           # 16x16
+ GTK_ICON_SIZE_SMALL_TOOLBAR,  # 18x18
+ GTK_ICON_SIZE_BUTTON,         # 20x20
+ GTK_ICON_SIZE_LARGE_TOOLBAR,  # 24x24
+ GTK_ICON_SIZE_DND,            # 32x32
+ GTK_ICON_SIZE_DIALOG,         # 48x48
+ ) = range(6)
 
 icon_info = [
     (STOQ_ADMIN_APP,
@@ -193,6 +188,15 @@ def register():
     from kiwi.environ import environ
     from kiwi.ui.pixbufutils import pixbuf_from_string
 
+    size_dict = {
+        GTK_ICON_SIZE_BUTTON: gtk.ICON_SIZE_BUTTON,
+        GTK_ICON_SIZE_DIALOG: gtk.ICON_SIZE_DIALOG,
+        GTK_ICON_SIZE_DND: gtk.ICON_SIZE_DND,
+        GTK_ICON_SIZE_LARGE_TOOLBAR: gtk.ICON_SIZE_LARGE_TOOLBAR,
+        GTK_ICON_SIZE_MENU: gtk.ICON_SIZE_MENU,
+        GTK_ICON_SIZE_SMALL_TOOLBAR: gtk.ICON_SIZE_SMALL_TOOLBAR,
+        }
+
     iconfactory = gtk.IconFactory()
     stock_ids = gtk.stock_list_ids()
     for stock_id, arg in icon_info:
@@ -211,7 +215,7 @@ def register():
                 raise NotImplementedError(format)
             pixbuf = pixbuf_from_string(data, format)
             iconsource.set_pixbuf(pixbuf)
-            iconsource.set_size(size)
+            iconsource.set_size(size_dict[size])
             iconset.add_source(iconsource)
         iconfactory.add(stock_id, iconset)
     iconfactory.add_default()
