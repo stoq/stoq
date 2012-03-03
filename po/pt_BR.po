@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-02-27 17:10-0300\n"
-"PO-Revision-Date: 2012-02-28 16:56+0000\n"
+"PO-Revision-Date: 2012-03-02 16:12+0000\n"
 "Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-02-29 04:45+0000\n"
-"X-Generator: Launchpad (build 14874)\n"
+"X-Launchpad-Export-Date: 2012-03-03 05:25+0000\n"
+"X-Generator: Launchpad (build 14886)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -852,7 +852,7 @@ msgstr "E-mail:"
 
 #: ../data/glade/FeedbackDialog.ui.h:2
 msgid "Feedback:"
-msgstr "Sugestões e críticas:"
+msgstr "Sugestões:"
 
 #: ../data/glade/FinishInstallationStep.ui.h:1
 msgid "<b>Installation complete</b>"
@@ -1574,11 +1574,11 @@ msgstr "Algumas destas opções só terá efeito depois de reiniciar o Stoq."
 
 #: ../data/glade/PreferencesEditor.ui.h:4
 msgid "Spreadsheet action:"
-msgstr ""
+msgstr "Ação de planilha:"
 
 #: ../data/glade/PreferencesEditor.ui.h:5
 msgid "Toolbar style:"
-msgstr "Estilo da barra te ferramentas:"
+msgstr "Estilo da barra de ferramentas:"
 
 #: ../data/glade/ProducedItemSlave.ui.h:1
 msgid ""
@@ -2261,7 +2261,7 @@ msgstr "Sim"
 
 #: ../data/glade/SellableImageViewer.ui.h:1
 msgid "Sellable Picture Viewer"
-msgstr ""
+msgstr "Visualizador de figuras de vendável"
 
 #: ../data/glade/SellableItemStep.ui.h:2
 msgid "Item:"
@@ -3426,7 +3426,7 @@ msgstr "Programa de comercio eletrônico"
 #: ../plugins/magento/domain/magentosale.py:158
 #, python-format
 msgid "Magento sale #%s\n"
-msgstr "Vendas Magento #%s\n"
+msgstr "Venda no Magento #%s\n"
 
 #: ../plugins/magento/domain/magentosale.py:371
 #, python-format
@@ -3436,7 +3436,7 @@ msgstr "Nota para pedido: %s"
 #: ../plugins/magento/domain/magentosale.py:453
 #, python-format
 msgid "Shipment for order: %s"
-msgstr "Remessa para ordem: %s"
+msgstr "Entrega para pedido: %s"
 
 #: ../plugins/magento/glade/MagentoConfigEditor.ui.h:1
 msgid "<b>Server configuration</b>"
@@ -3522,7 +3522,7 @@ msgstr "A url informada não é válida"
 
 #: ../plugins/magento/magentolib.py:92
 msgid "Access denied for the given user"
-msgstr "Acesso negado para o usuário dado"
+msgstr "Acesso negado para o dado usuário"
 
 #: ../plugins/magento/magentoplugin.py:155
 msgid "Invalid command given"
@@ -3589,28 +3589,28 @@ msgstr "criar um novo pagamento"
 #: ../stoq/gui/accounts.py:82 ../stoq/gui/accounts.py:105
 #, python-format
 msgid "Would you like to %s"
-msgstr ""
+msgstr "Você gostaria de %s"
 
 #: ../stoq/gui/accounts.py:87
 msgid "No late payments found."
-msgstr ""
+msgstr "Nenhum pagamento atrasado encontrado."
 
 #: ../stoq/gui/accounts.py:89
 msgid "No paid payments found."
-msgstr ""
+msgstr "Nenhum pagamento pago encontrado."
 
 #: ../stoq/gui/accounts.py:92
 msgid "No payments to receive found."
-msgstr ""
+msgstr "Nenhum pagamento a receber encontrado."
 
 #: ../stoq/gui/accounts.py:94
 msgid "No payments to pay found."
-msgstr ""
+msgstr "Nenhum pagamento a pagar encontrado."
 
 #: ../stoq/gui/accounts.py:98
 #, python-format
 msgid "No payments in the <b>%s</b> category were found."
-msgstr ""
+msgstr "Nenhum pagamento na categoria <b>%s</b> foi encontrado."
 
 #: ../stoq/gui/accounts.py:119
 msgid "Show"
@@ -3840,7 +3840,7 @@ msgstr "Pesquisa por usuários"
 
 #: ../stoq/gui/application.py:115
 msgid "Feedback"
-msgstr "Sugestões e criticas"
+msgstr "Sugestões"
 
 #: ../stoq/gui/application.py:252
 msgid "About Stoq"
@@ -6490,7 +6490,7 @@ msgstr "Despesas"
 #: ../stoqlib/chart/paymentcharts.py:41 ../stoqlib/chart/paymentcharts.py:135
 #: ../stoqlib/chart/paymentcharts.py:237
 msgid "Gross profits"
-msgstr ""
+msgstr "Lucro bruto"
 
 #: ../stoqlib/chart/paymentcharts.py:67
 msgid "All years"
@@ -6502,12 +6502,12 @@ msgstr "Últimos 5 anos"
 
 #: ../stoqlib/chart/paymentcharts.py:80
 msgid "Total revenue, expenses and gross profit for all years"
-msgstr ""
+msgstr "Receita total, gastos e lucro bruto de todos os anos"
 
 #: ../stoqlib/chart/paymentcharts.py:82
 #, python-format
 msgid "Total revenue, expenses and gross profit between %s and %s"
-msgstr ""
+msgstr "Receita total, gastos e lucro bruto entre %s e %s"
 
 #: ../stoqlib/chart/paymentcharts.py:172
 msgid "Last 12 months"
@@ -6516,11 +6516,11 @@ msgstr "Últimos 12 meses"
 #: ../stoqlib/chart/paymentcharts.py:181
 #, python-format
 msgid "Total revenue, expenses and gross profit for %s"
-msgstr ""
+msgstr "Receita total, gastos e lucro bruto para %s"
 
 #: ../stoqlib/chart/paymentcharts.py:183
 msgid "Total revenue, expenses and gross profit for all months in a year"
-msgstr ""
+msgstr "Receita total, gastos e lucro bruto para todos os meses do ano"
 
 #: ../stoqlib/chart/paymentcharts.py:276
 msgid "Last 30 days"
@@ -6529,11 +6529,11 @@ msgstr "Últimos 30 dias"
 #: ../stoqlib/chart/paymentcharts.py:288
 #, python-format
 msgid "Revenue, expenses and gross profit for %s <a href=\"%s\">%s</a>"
-msgstr ""
+msgstr "Receita total, gastos e lucro bruto para %s <a href=\"%s\">%s</a>"
 
 #: ../stoqlib/chart/paymentcharts.py:291
 msgid "Revenue, expenses and gross profit per day"
-msgstr ""
+msgstr "Receita total, gastos e lucro bruto por dia"
 
 #: ../stoqlib/database/admin.py:77 ../stoqlib/database/admin.py:93
 #: ../stoqlib/database/admin.py:334
@@ -6785,7 +6785,7 @@ msgstr "Usuário"
 #: ../stoqlib/domain/image.py:61
 #, python-format
 msgid "Stoq image #%d"
-msgstr ""
+msgstr "Imagem Stoq #%d"
 
 #: ../stoqlib/domain/inventory.py:169 ../stoqlib/domain/payment/group.py:63
 #: ../stoqlib/domain/payment/payment.py:88 ../stoqlib/domain/purchase.py:150
@@ -7674,7 +7674,7 @@ msgstr ""
 
 #: ../stoqlib/exporters/xlsexporter.py:47
 msgid "Stoq sheet"
-msgstr ""
+msgstr "Planilha Stoq"
 
 #. Translators: This is the default date format in excel
 #. columns, see the xlwt python library for more information
@@ -7684,7 +7684,7 @@ msgstr "D-MMM-YY"
 
 #: ../stoqlib/exporters/xlsexporter.py:122
 msgid "Retail Managment"
-msgstr ""
+msgstr "Gestão comercial"
 
 #: ../stoqlib/gui/accounttree.py:69
 msgid "Account name"
@@ -7900,7 +7900,7 @@ msgstr "Tipo de dispositivo"
 
 #: ../stoqlib/gui/dialogs/feedbackdialog.py:47
 msgid "Stoq feedback"
-msgstr ""
+msgstr "Feedback Stoq"
 
 #: ../stoqlib/gui/dialogs/feedbackdialog.py:97
 #, python-format
@@ -8261,11 +8261,11 @@ msgstr "A receber"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:390
 msgid "Production components"
-msgstr ""
+msgstr "Componentes de produção"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:391
 msgid "production-components"
-msgstr ""
+msgstr "componentes-de-produção"
 
 #: ../stoqlib/gui/dialogs/productiondialog.py:429
 msgid "Production Dialog"
@@ -8403,11 +8403,11 @@ msgstr "Até"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:242
 msgid "Purchase items"
-msgstr ""
+msgstr "Itens comprados"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:243
 msgid "purchase-items"
-msgstr ""
+msgstr "itens-comprados"
 
 #: ../stoqlib/gui/dialogs/quotedialog.py:87
 msgid "Quote Filling"
@@ -8458,12 +8458,12 @@ msgstr "Recebido em <b>%s</b> pela filial <b>%s</b>"
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:54
 #, python-format
 msgid "Sale %04d"
-msgstr ""
+msgstr "Venda %04d"
 
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:57
 #, python-format
 msgid "Renegotiation %04d"
-msgstr ""
+msgstr "Renegociação %04d"
 
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:66
 msgid "Renegotiation Details"
@@ -8479,7 +8479,7 @@ msgstr "Detalhes do cancelamento da venda"
 
 #: ../stoqlib/gui/dialogs/sellableimage.py:38
 msgid "Sellable Image Viewer"
-msgstr ""
+msgstr "Visualizador de imagens de vendável"
 
 #: ../stoqlib/gui/dialogs/sellablepricedialog.py:111
 msgid "Price Change Dialog"
@@ -8517,29 +8517,29 @@ msgstr "%s %s"
 
 #: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:42
 msgid "Exporter to Spreadseet"
-msgstr ""
+msgstr "Exportador para planilha"
 
 #: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:74
 msgid "A spreadsheet has been created, what do you want to do with it?"
-msgstr ""
+msgstr "Uma planilha foi criada, o que você gostaria de fazer com ela?"
 
 #: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:77
 msgid "Save it to disk"
-msgstr ""
+msgstr "Salvar para o disco"
 
 #: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:78
 #: ../stoqlib/gui/editors/preferenceseditor.py:176
 #, python-format
 msgid "Open with %s"
-msgstr ""
+msgstr "Abrir com %s"
 
 #: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:90
 msgid "Export Spreadsheet..."
-msgstr ""
+msgstr "Exportar planilha..."
 
 #: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:97
 msgid "Excel Files"
-msgstr ""
+msgstr "Arquivos Exel"
 
 #: ../stoqlib/gui/dialogs/startproduction.py:37
 msgid "Start Production"
@@ -9052,32 +9052,32 @@ msgstr "Nova filial"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:77
 msgid "Preferences"
-msgstr ""
+msgstr "Preferências"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:147
 msgid "Shortcuts"
-msgstr ""
+msgstr "Atalhos"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:153
 #: ../stoqlib/gui/editors/preferenceseditor.py:162
 msgid "System default"
-msgstr ""
+msgstr "Padrão do sistema"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:154
 msgid "Icons only"
-msgstr ""
+msgstr "Apenas ícones"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:155
 msgid "Text only"
-msgstr ""
+msgstr "Apenas texto"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:156
 msgid "Both"
-msgstr ""
+msgstr "Ambos"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:157
 msgid "Both horizontal (default)"
-msgstr ""
+msgstr "Ambos horizontal (padrão)"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:163
 msgid "English (Australia)"
@@ -9101,11 +9101,11 @@ msgstr "Português (Brasil)"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:174
 msgid "Ask (default)"
-msgstr ""
+msgstr "Perguntar (padrão)"
 
 #: ../stoqlib/gui/editors/preferenceseditor.py:178
 msgid "Save to disk"
-msgstr ""
+msgstr "Salvar no disco"
 
 #. Translators: Ref. is for Reference (as in design reference)
 #: ../stoqlib/gui/editors/producteditor.py:136
@@ -10277,11 +10277,11 @@ msgstr "Mostrar entradas do tipo"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:193
 msgid "Fiscal book"
-msgstr ""
+msgstr "Livro fiscal"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:194
 msgid "fiscal-book"
-msgstr ""
+msgstr "livro-fiscal"
 
 #: ../stoqlib/gui/search/loansearch.py:48
 msgid "Loan Items Search"
@@ -11189,7 +11189,7 @@ msgstr "Uma empresa com este %s já existe"
 #: ../stoqlib/gui/templates/individualtemplate.py:67
 #, python-format
 msgid "A person with this %s already exists"
-msgstr ""
+msgstr "Uma pessoa com este %s já existe"
 
 #: ../stoqlib/gui/templates/individualtemplate.py:186
 msgid "Birth date must be less than today"
@@ -11508,7 +11508,7 @@ msgstr "Total do Pedido"
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:285
 msgid "Qty to receive"
-msgstr ""
+msgstr "Qtde a receber"
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:349
 msgid "Receiving Order"
@@ -11662,82 +11662,83 @@ msgstr "Código de 6 dígitos com Peso"
 
 #: ../stoqlib/lib/boleto.py:70
 msgid "Wrong value format"
-msgstr ""
+msgstr "Formato de valor errado"
 
 #: ../stoqlib/lib/boleto.py:153
 #, python-format
 msgid "The barcode must have 44 caracteres, found %d"
-msgstr ""
+msgstr "O código de barras deve possuir 44 caracteres, %d encontrados"
 
 #: ../stoqlib/lib/boleto.py:311
 msgid "The field cannot have spaces"
-msgstr ""
+msgstr "O campo não pode conter espaços"
 
 #: ../stoqlib/lib/boleto.py:313
 msgid "The field cannot have dots of commas"
-msgstr ""
+msgstr "O campo não pode conter pontos ou virgulas"
 
 #: ../stoqlib/lib/boleto.py:317
 msgid "More than one hyphen found"
-msgstr ""
+msgstr "Mais de um hífen encontrado"
 
 #: ../stoqlib/lib/boleto.py:320
 msgid "Verifier digit cannot be empty"
-msgstr ""
+msgstr "O dígito verificador não pode ser vazio"
 
 #: ../stoqlib/lib/boleto.py:324
 msgid "Account needs to be a number"
-msgstr ""
+msgstr "Conta precisa ser um número"
 
 #: ../stoqlib/lib/boleto.py:343 ../stoqlib/lib/boleto.py:352
 msgid "Invalid verifier digit"
-msgstr ""
+msgstr "Dígito verificador inválido"
 
 #: ../stoqlib/lib/boleto.py:349
 #, python-format
 msgid "Verifier digit must be a number or %s"
-msgstr ""
+msgstr "Dígito verificador deve ser um número ou %s"
 
 #: ../stoqlib/lib/boleto.py:362
 #, python-format
 msgid "Number length must be less than %s"
-msgstr ""
+msgstr "Tamanho do número deve ser menor que %s"
 
 #: ../stoqlib/lib/boleto.py:369
 #, python-format
 msgid "Text length must be less than %s"
-msgstr ""
+msgstr "Tamanho do texto deve ser menor que %s"
 
 #. TRANSLATORS: Do not translate 'Carteira'
 #: ../stoqlib/lib/boleto.py:465
 msgid "Carteira cannot be empty"
-msgstr ""
+msgstr "Carteira não pode ser vazia"
 
 #. TRANSLATORS: Do not translate 'Carteira'
 #: ../stoqlib/lib/boleto.py:470
 msgid "Carteira must be a number"
-msgstr ""
+msgstr "Carteira deve ser um número"
 
 #. TRANSLATORS: Do not translate 'Carteira'
 #: ../stoqlib/lib/boleto.py:474 ../stoqlib/lib/boleto.py:478
 msgid "Carteira must be a number between 0 and 99"
-msgstr ""
+msgstr "Carteira deve ser um número entre 0 e 99"
 
 #. TRANSLATORS: Do not translate 'Convenio'
 #: ../stoqlib/lib/boleto.py:583
 msgid "Convenio cannot be empty"
-msgstr ""
+msgstr "Convenio não pode ser vazio"
 
 #. TRANSLATORS: Do not translate 'Convenio'
 #: ../stoqlib/lib/boleto.py:588
 msgid "Convenio must be a number"
-msgstr ""
+msgstr "Convenio deve ser um número"
 
 #. TRANSLATORS: Do not translate 'Convenio'
 #: ../stoqlib/lib/boleto.py:592
 msgid ""
 "Convenio length must be 6, 7 or 8. Try filing it with '0's at the left."
 msgstr ""
+"Tamanho do convênio deve ser 6, 7 ou 8. Tente completar com '0's a esquerda."
 
 #: ../stoqlib/lib/configparser.py:258
 msgid ""
@@ -12123,7 +12124,7 @@ msgstr "'%s' não é um percentual válido."
 #: ../stoqlib/lib/parameters.py:127
 #, python-format
 msgid "'%s' is not a valid %s."
-msgstr ""
+msgstr "'%s' não é um %s válido."
 
 #: ../stoqlib/lib/parameters.py:155
 msgid "Primary company"
