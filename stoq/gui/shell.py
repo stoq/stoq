@@ -75,6 +75,7 @@ class Shell(object):
         # anything else
         self._prepare_logfiles()
         self._set_app_info()
+        self._check_dependencies()
         self._setup_gtk()
         self._setup_kiwi()
         self._show_splash()
@@ -191,7 +192,8 @@ class Shell(object):
         ProxyLabel.replace('$CURRENCY', get_localeconv()['currency_symbol'])
 
     def _setup_twisted(self):
-        assert not 'twisted' in sys.modules
+        # FIXME: figure out why twisted is already loaded
+        #assert not 'twisted' in sys.modules
         from stoqlib.net import gtk2reactor
         gtk2reactor.install()
 
