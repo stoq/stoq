@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2008-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -47,7 +47,7 @@ _ = stoqlib_gettext
 class MoneyPaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _(u'Money')
+    description = _('Money')
     max_installments = 1
 
     #
@@ -66,6 +66,12 @@ class MoneyPaymentOperation(object):
     def selectable(self, method):
         return True
 
+    def creatable(self, method, payment_type, separate):
+        # FIXME: This needs an editor
+        if payment_type == Payment.TYPE_OUT:
+            return False
+        return True
+
     def get_constant(self, payment):
         return PaymentMethodType.MONEY
 
@@ -73,7 +79,7 @@ class MoneyPaymentOperation(object):
 class CheckPaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _(u'Check')
+    description = _('Check')
     max_installments = 12
 
     def payment_create(self, payment):
@@ -99,6 +105,9 @@ class CheckPaymentOperation(object):
     def selectable(self, method):
         return True
 
+    def creatable(self, method, payment_type, separate):
+        return True
+
     def get_constant(self, payment):
         return PaymentMethodType.CHECK
 
@@ -116,7 +125,7 @@ class CheckPaymentOperation(object):
 class BillPaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _(u'Bill')
+    description = _('Bill')
     max_installments = 12
 
     #
@@ -135,6 +144,9 @@ class BillPaymentOperation(object):
     def selectable(self, method):
         return True
 
+    def creatable(self, method, payment_type, separate):
+        return True
+
     def get_constant(self, payment):
         return PaymentMethodType.BILL
 
@@ -142,7 +154,7 @@ class BillPaymentOperation(object):
 class CardPaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _(u'Card')
+    description = _('Card')
     max_installments = 12
 
     CARD_METHOD_CONSTANTS = {
@@ -175,6 +187,12 @@ class CardPaymentOperation(object):
         return CreditProvider.has_card_provider(
             method.get_connection())
 
+    def creatable(self, method, payment_type, separate):
+        # FIXME: this needs more work, probably just a simple bug
+        if payment_type == Payment.TYPE_OUT:
+            return False
+        return True
+
     def get_constant(self, payment):
         card_data = self.get_card_data_by_payment(payment)
         return self.CARD_METHOD_CONSTANTS.get(card_data.card_type)
@@ -189,7 +207,7 @@ class CardPaymentOperation(object):
 class StoreCreditPaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _(u'Store Credit')
+    description = _('Store Credit')
     max_installments = 1
 
     #
@@ -208,6 +226,13 @@ class StoreCreditPaymentOperation(object):
     def selectable(self, method):
         return True
 
+    def creatable(self, method, payment_type, separate):
+        # Store credits are only allowed when selling of course.
+        if payment_type != Payment.TYPE_IN:
+            return False
+
+        return True
+
     def get_constant(self, payment):
         # FIXME: Add another constant to stoqdrivers?
         return PaymentMethodType.CUSTOM
@@ -216,7 +241,7 @@ class StoreCreditPaymentOperation(object):
 class DepositPaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _(u'Deposit')
+    description = _('Deposit')
     max_installments = 12
 
     #
@@ -234,6 +259,9 @@ class DepositPaymentOperation(object):
 
     def selectable(self, method):
         return False
+
+    def creatable(self, method, payment_type, separate):
+        return True
 
     def get_constant(self, payment):
         return PaymentMethodType.MONEY
@@ -261,6 +289,9 @@ class OnlinePaymentOperation(object):
     def selectable(self, method):
         return False
 
+    def creatable(self, method, payment_type, separate):
+        return False
+
     def get_constant(self, payment):
         # FIXME: Using MONEY for now..Maybe we should add a new constant.
         return PaymentMethodType.MONEY
@@ -272,7 +303,7 @@ class OnlinePaymentOperation(object):
 class MultiplePaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _(u'Multiple')
+    description = _('Multiple')
     max_installments = 12
 
     #
@@ -289,6 +320,18 @@ class MultiplePaymentOperation(object):
         return True
 
     def selectable(self, method):
+        return True
+
+    def creatable(self, method, payment_type, separate):
+        # FIXME: This is currently not implemented, we just need
+        #        a new interface for that.
+        if separate:
+            return False
+
+        # FIXME: This is just a bug, needs some debugging
+        if payment_type == Payment.TYPE_OUT:
+            return False
+
         return True
 
     def get_constant(self, payment):

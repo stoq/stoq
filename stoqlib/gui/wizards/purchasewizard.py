@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -29,6 +29,7 @@ import sys
 
 import gtk
 
+from kiwi.component import get_utility
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
 
@@ -36,25 +37,26 @@ from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Branch, Supplier, Transporter
 from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.domain.sellable import Sellable
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
+from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
+from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
-from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
-from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave,
-                                             BillMethodSlave, MoneyMethodSlave)
+from stoqlib.gui.slaves.paymentslave import register_payment_slaves
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.reporting.purchase import PurchaseOrderReport
 
 _ = stoqlib_gettext
@@ -318,10 +320,6 @@ class PurchasePaymentStep(WizardEditorStep):
     gladefile = 'PurchasePaymentStep'
     model_type = PaymentGroup
 
-    slave_classes = {'bill': BillMethodSlave,
-                     'check': CheckMethodSlave,
-                     'money': MoneyMethodSlave}
-
     def __init__(self, wizard, previous, conn, model,
                  outstanding_value=currency(0)):
         self.order = model
@@ -347,9 +345,10 @@ class PurchasePaymentStep(WizardEditorStep):
         WizardEditorStep.__init__(self, conn, wizard, model.group, previous)
 
     def _setup_widgets(self):
-        methods = self.slave_classes.keys()
+        register_payment_slaves()
+
         self._ms = SelectPaymentMethodSlave(connection=self.conn,
-                                            available_methods=methods,
+                                            payment_type=Payment.TYPE_OUT,
                                             default_method=self._method)
         self._ms.connect_after('method-changed',
                                self._after_method_select__method_changed)
@@ -360,7 +359,10 @@ class PurchasePaymentStep(WizardEditorStep):
     def _set_method_slave(self):
         """Sets the payment method slave"""
         method = self._ms.get_selected_method()
-        slave_class = self.slave_classes.get(method.method_name)
+        if not method:
+            return
+        domain_mapper = get_utility(IDomainSlaveMapper)
+        slave_class = domain_mapper.get_slave_class(method)
         if slave_class:
             self.wizard.payment_group = self.model
             self.slave = slave_class(self.wizard, self,

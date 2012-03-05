@@ -34,7 +34,6 @@ from kiwi.datatypes import currency, ValidationError, ValueUnset
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.database.orm import NOTIN
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
@@ -219,15 +218,14 @@ class PaymentEditor(BaseEditor):
 
     def _fill_method_combo(self):
         if self._is_new_model:
-            # Cannot create online payments, but they should be editable
-            clause = NOTIN(PaymentMethod.q.method_name, ['multiple', 'online'])
+            methods = PaymentMethod.get_creatable_methods(
+                self.trans,
+                self.payment_type,
+                separate=True)
         else:
-            clause = PaymentMethod.q.method_name != 'multiple'
-        methods = PaymentMethod.select(connection=self.trans,
-                                       clause=clause).orderBy('description')
+            methods = [self.model.method]
         self.method.set_sensitive(False)
-        self.method.prefill([(m.description, m) for m in
-                             methods if m.is_active])
+        self.method.prefill([(m.description, m) for m in methods])
         self.method.select(self.model.method)
 
     def _setup_widgets(self):

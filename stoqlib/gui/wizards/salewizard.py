@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -33,6 +33,14 @@ from stoqlib.api import api
 from stoqlib.database.exceptions import IntegrityError
 from stoqlib.database.orm import AND
 from stoqlib.domain.events import CreatePaymentEvent
+from stoqlib.domain.fiscal import CfopData
+from stoqlib.domain.person import (ClientView,
+                                   CreditProvider, SalesPerson, Transporter)
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.operation import register_payment_operations
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
+from stoqlib.domain.sale import Sale
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import warning, marker
@@ -51,13 +59,6 @@ from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import register_payment_slaves
 from stoqlib.gui.slaves.saleslave import SaleDiscountSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.person import (ClientView,
-                                   CreditProvider, SalesPerson, Transporter)
-from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.operation import register_payment_operations
-from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
-from stoqlib.domain.sale import Sale
 
 N_ = _ = stoqlib_gettext
 
@@ -161,10 +162,9 @@ class BaseMethodSelectionStep(object):
     #
 
     def setup_slaves(self):
-        methods = SelectPaymentMethodSlave.AVAILABLE_METHODS
         marker('SelectPaymentMethodSlave')
         self.pm_slave = SelectPaymentMethodSlave(connection=self.conn,
-                                                 available_methods=methods)
+                                                 payment_type=Payment.TYPE_IN)
         self.pm_slave.connect('method-changed', self.on_payment_method_changed)
         self.attach_slave('select_method_holder', self.pm_slave)
 
@@ -206,8 +206,7 @@ class BaseMethodSelectionStep(object):
 
             step_class = PaymentMethodStep
         elif selected_method.method_name == 'card':
-            providers = CreditProvider.get_card_providers(
-                                                                     self.conn)
+            providers = CreditProvider.get_card_providers(self.conn)
             if not providers:
                 warning(_("You need active credit providers to use the "
                           "card payment method."))

@@ -146,6 +146,7 @@ class ReceivableApp(BaseAccountWindow):
         self.popup = self.uimanager.get_widget('/ReceivableSelection')
 
     def activate(self, params):
+        register_payment_operations()
         self._update_widgets()
 
         # FIXME: double negation is weird here
@@ -485,7 +486,6 @@ class ReceivableApp(BaseAccountWindow):
         self._show_comments(receivable_view)
 
     def on_PrintReceipt__activate(self, action):
-        register_payment_operations()
         receivable_view = self.results.get_selected_rows()[0]
         payment = receivable_view.payment
         date = datetime.date.today()

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,6 +25,7 @@
 
 from decimal import Decimal
 import datetime
+import operator
 
 from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
@@ -41,7 +42,7 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import DatabaseInconsistency, PaymentMethodError
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.interfaces import IPaymentOperationManager
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -424,6 +425,23 @@ class PaymentMethod(Domain):
         """
         return PaymentMethod.selectOneBy(connection=conn,
                                          method_name=name)
+
+    @classmethod
+    def get_creatable_methods(cls, conn, payment_type, separate):
+        """Gets a list of methods that are creatable.
+        Eg, you can use them to create new payments.
+        :returns: a list of :class:`PaymentMethod` instances
+        """
+        methods = []
+        for method in cls.select(connection=conn):
+            if not method.operation.creatable(method, payment_type,
+                                              separate):
+                continue
+            if not method.is_active:
+                continue
+            methods.append(method)
+        return locale_sorted(methods,
+                             key=operator.attrgetter('description'))
 
     def selectable(self):
         """Finds out if the method is selectable, eg

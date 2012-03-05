@@ -28,74 +28,62 @@ import gtk
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
-from stoqlib.domain.payment.views import PaymentMethodView
-from stoqlib.exceptions import StoqlibError
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.lib.translation import stoqlib_gettext
 
 N_ = _ = stoqlib_gettext
 
 
 class SelectPaymentMethodSlave(GladeSlaveDelegate):
-    """ This slave show a radion button group with three payment method options:
-    Money and Other (any other method supported by the system).
-    The visibility of these buttons are directly related to payment method
-    availability in the company.
-    """
     gladefile = 'SelectPaymentMethodSlave'
     gsignal('method-changed', object)
 
-    AVAILABLE_METHODS = ['money', 'card', 'bill', 'check',
-                         'store_credit', 'multiple']
-
-    def __init__(self, connection=None, available_methods=[],
+    def __init__(self, connection=None,
+                 payment_type=None,
+                 methods=[],
                  default_method=None):
+        self._widgets = {}
+        self._methods = {}
+        self._selected_method = None
+
+        if payment_type is None:
+            raise ValueError("payment_type must be set")
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
 
         self.conn = connection
-        self._options = {}
-        self._methods = {}
-        for method in list(PaymentMethodView.select(connection=self.conn)):
-            self._methods[method.method_name] = method
+        self._setup_payment_methods(payment_type)
 
-        self._setup_widgets()
-        self.cash_check.set_active(True)
-        self._setup_payment_methods(available_methods, default_method)
+        if default_method is None:
+            default_method = 'money'
+        self._select_method_by_name(default_method)
 
-    def _setup_payment_methods(self, available_methods, default_method):
-        self._selected_method = self._methods['money']
-        self.cash_check.connect('toggled', self._on_method__toggled)
-        self.cash_check.set_data('method', self._selected_method)
-        self.cash_check.set_sensitive('money' in available_methods)
+    def _setup_payment_methods(self, payment_type):
+        methods = PaymentMethod.get_creatable_methods(
+            self.conn, payment_type, separate=False)
+        group = None
+        for method in methods:
+            method_name = method.method_name
+            widget = gtk.RadioButton(group, N_(method.description))
+            widget.connect('toggled', self._on_method__toggled)
+            widget.set_data('method', method)
+            if group is None:
+                group = widget
+            self.methods_box.pack_start(widget, False, False, 6)
+            widget.show()
 
-        methods = [method for method
-                   in SelectPaymentMethodSlave.AVAILABLE_METHODS
-                   if method != 'money']
-        for method_name in methods:
-            set_active = method_name == default_method
-            self._add_payment_method(method_name,
-                                     set_active=set_active)
-            self.method_set_sensitive(method_name,
-                                      method_name in available_methods)
+            self._methods[method_name] = method
+            self._widgets[method_name] = widget
+            self.method_set_sensitive(method_name, True)
 
-    def _add_payment_method(self, method_name, set_active=False):
+        # Don't allow the user to change the kind of payment method if
+        # there's only one
+        if len(methods) == 1:
+            self._widgets[methods[0].method_name].set_sensitive(False)
+
+    def _select_method_by_name(self, method_name):
         method = self._methods[method_name]
-        if not method.is_active:
-            return
-
-        radio = gtk.RadioButton(self.cash_check, N_(method.description))
-        self.methods_box.pack_start(radio)
-        radio.connect('toggled', self._on_method__toggled)
-        radio.set_data('method', method)
-        radio.set_active(set_active)
-        radio.show()
-
-        self._options[method_name] = radio
-
-    def _setup_widgets(self):
-        money_method = self._methods['money']
-        if not money_method.is_active:
-            raise StoqlibError("The money payment method should be always "
-                               "available")
+        self._selected_method = method
+        self._widgets[method_name].set_active(True)
 
     #
     #   Public API
@@ -105,15 +93,12 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         return self._methods[name]
 
     def get_selected_method(self):
-        return self._selected_method.method
+        return self._selected_method
 
     def method_set_sensitive(self, method_name, sensitive):
-        if method_name in self._options.keys():
-            self._options[method_name].set_sensitive(sensitive)
-
-            if self._options[method_name].get_active():
-                # Active the money method as a fallback.
-                self.cash_check.set_active(True)
+        if method_name in self._widgets:
+            widget = self._widgets[method_name]
+            widget.set_visible(sensitive)
 
     #
     # Kiwi callbacks

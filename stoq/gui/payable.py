@@ -143,6 +143,7 @@ class PayableApp(BaseAccountWindow):
             _("Print a report of these payments"))
 
     def activate(self, params):
+        register_payment_operations()
         # FIXME: double negation is weird here
         if not params.get('no-refresh'):
             self.search.refresh()
@@ -485,7 +486,6 @@ class PayableApp(BaseAccountWindow):
         self._edit(self.results.get_selected_rows())
 
     def on_PrintReceipt__activate(self, action):
-        register_payment_operations()
         payment_views = self.results.get_selected_rows()
         payments = [v.payment for v in payment_views]
         date = datetime.date.today()
