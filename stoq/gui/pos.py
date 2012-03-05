@@ -306,9 +306,6 @@ class PosApp(AppWindow):
 
         self.stoq_logo.set_from_pixbuf(render_logo_pixbuf('pos'))
 
-        self.till_status_label.set_size('xx-large')
-        self.till_status_label.set_bold(True)
-
         self.order_total_label.set_size('xx-large')
         self.order_total_label.set_bold(True)
         self._create_context_menu()
@@ -440,13 +437,21 @@ class PosApp(AppWindow):
         self.till_status_label.set_text(text)
 
     def _till_status_changed(self, closed, blocked):
+        def large(s):
+            return '<span weight="bold" size="xx-large">%s</span>' % (s, )
+
         if closed:
-            text = _(u"Till closed")
+            text = large(_("Till closed"))
+            if not blocked:
+                text += '\n\n<span size="large"><a href="open-till">%s</a></span>' % (
+                    _('Open the till'))
         elif blocked:
-            text = _(u"Till blocked")
+            text = large(_("Till blocked"))
         else:
-            text = _(u"Till open")
-        self.till_status_label.set_text(text)
+            text = large(_("Till open"))
+        self.till_status_label.set_use_markup(True)
+        self.till_status_label.set_justify(gtk.JUSTIFY_CENTER)
+        self.till_status_label.set_markup(text)
 
         self.set_sensitive([self.TillOpen], closed)
         self.set_sensitive([self.TillClose], not closed or blocked)
@@ -875,6 +880,11 @@ class PosApp(AppWindow):
         if selected:
             return False
 
+        return True
+
+    def on_till_status_label__activate_link(self, button, link):
+        if link == 'open-till':
+            self._printer.open_till()
         return True
 
     def on_advanced_search__clicked(self, button):
