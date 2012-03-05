@@ -174,7 +174,7 @@ class EmployeeEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        if person.individual:
+        if not person.individual:
             Individual(person=person, connection=self.conn)
         employee = person.employee
         if not employee:
