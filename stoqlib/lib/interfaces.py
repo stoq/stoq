@@ -160,7 +160,15 @@ class IPaymentOperation(Interface):
     def selectable(method):
         """This is called to find out if the method should
         be shown in the slave list of payment methods
-        :returns: True if it should be shown, otherwise
+        :returns: True if it should be shown
+        """
+
+    def creatable(method, payment_type, separate):
+        """If it's possible to create new payments of this payment method type
+        :param method: payment method
+        :param payment_type: kind of payment
+        :param separate: if it's created separately from a sale/purchase
+        :returns: True if you can create new methods of this type
         """
 
     def get_constant(payment):

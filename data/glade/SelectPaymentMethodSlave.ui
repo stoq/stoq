@@ -17,15 +17,6 @@
                 <property name="border_width">6</property>
                 <property name="spacing">6</property>
                 <property name="visible">True</property>
-                <child>
-                  <object class="ProxyRadioButton" id="cash_check">
-                    <property name="data_type">bool</property>
-                    <property name="label" translatable="yes">C_ash</property>
-                    <property name="model_attribute">cash_check</property>
-                    <property name="use_underline">True</property>
-                    <property name="visible">True</property>
-                  </object>
-                </child>
               </object>
             </child>
           </object>
