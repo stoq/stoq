@@ -118,6 +118,8 @@ _bindings = [
      _("Show today")),
 
     # Financial application
+    ('app.financial.configure_payment_methods', '',
+     _("Configure payment methods")),
     ('app.financial.import', '<Primary>i',
      _("Import transactions")),
     ('app.financial.delete_account', '',
