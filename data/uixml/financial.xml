@@ -34,6 +34,11 @@
       <menuitem action="Import"/>
     </placeholder>
   </menu>
+  <menu action="EditMenu">
+    <placeholder name="EditMenuPH">
+      <menuitem action="ConfigurePaymentMethods"/>
+    </placeholder>
+  </menu>
   <placeholder name="AppMenubarPH">
     <menu action="TransactionMenu">
       <menuitem action="Edit"/>

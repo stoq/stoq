@@ -353,6 +353,10 @@ class FinancialApp(AppWindow):
             ('AccountMenu', None, _('Account')),
             ('Import', gtk.STOCK_ADD, _('Import...'),
              group.get('import'), _('Import a GnuCash or OFX file')),
+            ('ConfigurePaymentMethods', None,
+             _('Payment methods'),
+             group.get('configure_payment_methods'),
+             _('Select accounts for the payment methods on the system')),
             ('DeleteAccount', gtk.STOCK_DELETE, _('Delete...'),
              group.get('delete_account'),
              _('Delete the selected account')),
@@ -374,6 +378,10 @@ class FinancialApp(AppWindow):
         self.Edit.set_short_label(_('Edit'))
         self.DeleteAccount.set_short_label(_('Delete'))
         self.DeleteTransaction.set_short_label(_('Delete'))
+
+        user = api.get_current_user(self.conn)
+        if not user.profile.check_app_permission('admin'):
+            self.ConfigurePaymentMethods.set_sensitive(False)
 
     def create_ui(self):
         self.trans_popup = self.uimanager.get_widget('/TransactionSelection')
@@ -814,3 +822,11 @@ class FinancialApp(AppWindow):
 
     def on_Import__activate(self, action):
         self._import()
+
+    # Edit
+    def on_ConfigurePaymentMethods__activate(self, action):
+        from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
+        trans = api.new_transaction()
+        model = self.run_dialog(PaymentMethodsDialog, trans)
+        api.finish_transaction(trans, model)
+        trans.close()
