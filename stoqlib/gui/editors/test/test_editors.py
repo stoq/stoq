@@ -140,6 +140,7 @@ def _create_slave_test():
     TODO = {}
     SKIP = {
         'PaymentEditor': 'Base Class for other editors',
+        'OutPaymentEditor': 'missing method',
         'BranchDialog': 'cannot provide ICurrentBranch twice',
         'BranchEditor': ' ',
         'CreditProviderEditor': ' ',
