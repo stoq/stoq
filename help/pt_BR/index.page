@@ -18,9 +18,10 @@
   </title>
 
   <links type="topic" style="mouseovers"
-         groups="about product-new purchase-new purchase-receival sale-new
-                 overview faq">
+    groups="about installation product-new purchase-new purchase-receival
+            sale-new overview faq">
     <e:mouseover src="figures/stoq_splash.png"/>
+    <e:mouseover match="installation" src="figures/stoq_installation.png"/>
     <e:mouseover match="product-new" src="figures/stoq_new_product.png"/>
     <e:mouseover match="purchase-new" src="figures/stoq_new_purchase.png"/>
     <e:mouseover match="purchase-receival" src="figures/stoq_new_receival.png"/>
