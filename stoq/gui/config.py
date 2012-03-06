@@ -230,6 +230,7 @@ class DatabaseSettingsStep(WizardEditorStep):
                 self.force_validation()
             return False
 
+        self.wizard.write_pgpass()
         settings = self.wizard.settings
 
         # If we configured setting to localhost, try connecting
@@ -644,9 +645,7 @@ class CreateDatabaseStep(BaseWizardStep):
             self._launch_stoqdbadmin()
             return
 
-        # Save password if using password authentication
-        if self.wizard.auth_type == PASSWORD_AUTHENTICATION:
-            self._setup_pgpass()
+        self.wizard.write_pgpass()
         settings = self.wizard.settings
         self.wizard.config.load_settings(settings)
 
@@ -668,43 +667,6 @@ class CreateDatabaseStep(BaseWizardStep):
         else:
             self.process_view.feed("** Not creating database\r\n")
             self.wizard.disable_next()
-
-    def _setup_pgpass(self):
-        logger.info('_setup_pgpass')
-        # There's no way to pass in the password to psql, so we need
-        # to setup a ~/.pgpass where we store the password entered here
-        if platform.system() == 'Windows':
-            directory = os.path.join(os.environ['APPDATA'],
-                                     'postgresql')
-            passfile = os.path.join(directory, 'pgpass.conf')
-        else:
-            directory = os.environ.get('HOME', '/')
-            passfile = os.path.join(directory, '.pgpass')
-        pgpass = os.environ.get('PGPASSFILE', passfile)
-
-        if os.path.exists(pgpass):
-            lines = []
-            for line in open(pgpass):
-                if line[-1] == '\n':
-                    line = line[:-1]
-                lines.append(line)
-        else:
-            lines = []
-
-        settings = self.wizard.settings
-        line = '%s:%s:%s:%s:%s' % (settings.address, settings.port,
-                                   settings.dbname,
-                                   settings.username, settings.password)
-        if line in lines:
-            return
-
-        lines.append(line)
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-        fd = open(pgpass, 'w')
-        fd.write('\n'.join(lines))
-        fd.write('\n')
-        os.chmod(pgpass, 0600)
 
     def _launch_stoqdbadmin(self):
         logger.info('_launch_stoqdbadmin')
@@ -1028,6 +990,50 @@ class FirstTimeConfigWizard(BaseWizard):
             return FinishInstallationStep(self)
 
         return InstallationModeStep(self, step)
+
+    def write_pgpass(self):
+        # Only save password if using password authentication
+        if self.auth_type != PASSWORD_AUTHENTICATION:
+            return
+
+        logger.info('write_pgpass')
+        # There's no way to pass in the password to psql via the command line,
+        # so we need to setup a pgpass where we store the password entered here
+        if platform.system() == 'Windows':
+            directory = os.path.join(os.environ['APPDATA'],
+                                     'postgresql')
+            passfile = os.path.join(directory, 'pgpass.conf')
+        else:
+            directory = os.environ.get('HOME', '/')
+            passfile = os.path.join(directory, '.pgpass')
+        pgpass = os.environ.get('PGPASSFILE', passfile)
+
+        # FIXME: remove duplicates when trying several different passwords
+        if os.path.exists(pgpass):
+            lines = []
+            for line in open(pgpass):
+                if line[-1] == '\n':
+                    line = line[:-1]
+                lines.append(line)
+        else:
+            lines = []
+
+        line = '%s:%s:%s:%s:%s' % (self.settings.address,
+                                   self.settings.port,
+                                   self.settings.dbname,
+                                   self.settings.username,
+                                   self.settings.password)
+        if line in lines:
+            return
+
+        lines.append(line)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        fd = open(pgpass, 'w')
+        fd.write('\n'.join(lines))
+        fd.write('\n')
+        os.chmod(pgpass, 0600)
+
     #
     # WizardStep hooks
     #
