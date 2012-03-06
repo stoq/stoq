@@ -43,7 +43,7 @@ def get_l10n_module(conn):
 
     short = iso639_list.get(country.lower(), None)
     if short is None:
-        return generic
+        short = 'br'
 
     path = 'stoqlib.l10n.%s.%s' % (short, short)
     try:
