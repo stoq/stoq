@@ -1,0 +1,163 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="installation">
+
+  <title>Instalando o Stoq</title>
+  <info>
+    <desc>
+      Instalando o Stoq.
+    </desc>
+
+    <link type="guide" xref="index" group="installation" />
+    <link type="seealso" xref="about" />
+    <link type="seealso" xref="overview" />
+    <link type="seealso" xref="faq" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <!--This will automatically list all sections bellow-->
+  <links type="section">
+    <title>Sumário</title>
+  </links>
+
+  <section id="packages">
+    <title>Instalando os pacotes do Stoq</title>
+    <p>
+      O modo mais fácil de testar/instalar o Stoq é através do CD de
+      demonstração. Você pode baixá-lo por aqui:
+      <link href="http://www.stoq.com.br/livecd">CD de demonstração do Stoq</link>.
+    </p>
+    <p>
+      Alternativamente, se você estiver utilizando o
+      <link href="http://www.ubuntu.com">Ubuntu</link>, você pode seguir essas
+      instruções:
+      <link href="http://www.stoq.com.br/ubuntu">Instalando o Stoq no Ubuntu</link>.
+    </p>
+  </section>
+
+  <section id="server">
+    <title>Configurando o servidor</title>
+    <p>
+      O Stoq é desenvolvido para ter suporte a vários computadores conectados
+      na mesma base de dados. Isso porque todos os dados ficam armazenados na
+      base de dados <link href="http://www.postgresql.org">Postgresql</link>.
+    </p>
+    <steps>
+      <item>
+        <p>
+          No computador que servirá como servidor, instale o postgresql. Caso
+          esteja utilizando o
+          <link href="http://www.ubuntu.com">Ubuntu</link>, você pode
+          simplesmente clicar aqui:
+          <link href="apt:postgresql">instalar o postgresql</link>.
+        </p>
+        <note style="advanced">
+          <p>
+            Neste computador que está servindo como servidor, a menos que ele
+            também vá ser utilizado como cliente (isto é, algum usuário vai
+            utilizar o Stoq nesse computador) não é necessário instalar os
+            <link xref="#packages">pacotes do Stoq</link>.
+          </p>
+        </note>
+      </item>
+      <item>
+        <p>
+          Após a instalação, é preciso criar um usuário no postgres para que
+          possamos realizar a conexão em nossas estações. No Ubuntu, você pode
+          utilizar o seguinte comando:
+        </p>
+        <list>
+          <item>
+            <p>
+              <cmd>sudo -u postgres createuser $USER -dsP</cmd>
+              (substitua $USER pelo nome de usuário desejado).
+            </p>
+          </item>
+        </list>
+      </item>
+      <item>
+        <p>
+          Pronto! O servidor está configurado e você já pode começar a
+          <link xref="#client">configurar os computadores clientes</link>.
+        </p>
+      </item>
+    </steps>
+  </section>
+
+  <section id="client">
+    <title>Configurando os computadores clientes</title>
+    <steps>
+      <item>
+        <p>
+          Abra o <app>Stoq</app> em seu computador. Tenha certeza de ter
+          <link xref="#packages">instalado seus pacotes</link> antes.
+        </p>
+      </item>
+      <item>
+        <p>
+          Ao abrir o aplicativo pela primeira vez, você será apresentado a um
+          <link xref="overview#wizzard">assistente</link> de configuração.
+        </p>
+      </item>
+      <item>
+        <p>
+          O assistente te perguntará onde está localizada a
+          base de dados. Escolha a opção <gui>Configurar manualmente</gui>
+          e preencha os dados de acordo com os dados de seu
+          <link xref="#server">servidor</link>. Caso não exista uma base com o
+          mesmo nome do <gui>Nome do banco</gui>, uma nova base será criada
+          para você.
+        </p>
+        <note style="important">
+          <p>
+            Em casos simples, onde apenas um computador será utilizado para
+            toda a empresa, você pode simplesmente escolher a opção
+            <gui>Eu quero usar o Stoq apenas neste computador</gui>. Esta opção
+            irá criar um usuário e uma base de dados automáticamente para você,
+            te livrando do trabalho de
+            <link xref="#server">configurar um servidor</link>.
+          </p>
+        </note>
+      </item>
+      <item>
+        <p>
+          Caso a base de dados seja nova, o assistente irá te perguntar sobre o
+          tipo de base de dados. Existem 2 tipos de bases que podem ser
+          criadas:
+        </p>
+        <list>
+          <item>
+            <p>
+              <em>Base de produção</em>: Uma base vazia, pronta para ser
+              utilizada em produção na sua empresa.
+            </p>
+          </item>
+          <item>
+            <p>
+              <em>Base de demonstração</em>: Esta é aconselhada para quem
+              nunca utilizou o Stoq antes. O Stoq será configurado com vários
+              dados de exemplos para você poder testar a vontade! Aproveite
+              para <link xref="product-new">criar novos produtos</link>,
+              <link xref="sale-new">realizar vendas</link>,
+              <link xref="stock-decrease">realizar baixas de estoque</link>,
+              etc. Aprenda o máximo que puder!!
+            </p>
+          </item>
+        </list>
+        <p>
+          Além disso, você será questinado sobre a ativação de
+          <link xref="plugin">plugins</link>, a criação de um usuário
+          administrador e o cadastro de
+          <link xref="branch">da empresa</link>.
+        </p>
+      </item>
+      <item>
+        <p>
+          Após a finalização do assistente, o Stoq foi configurado com sucesso
+          em seu computador e está pronto para ser utilizado em sua empresa!
+        </p>
+      </item>
+    </steps>
+  </section>
+
+</page>

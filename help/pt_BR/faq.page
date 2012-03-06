@@ -11,6 +11,7 @@
     <link type="guide" xref="index" group="faq" />
     <link type="seealso" xref="overview" />
     <link type="seealso" xref="about" />
+    <link type="seealso" xref="installation" />
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>
 
