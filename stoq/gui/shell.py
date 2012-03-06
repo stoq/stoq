@@ -248,12 +248,14 @@ class Shell(object):
         import gtk
         from kiwi.environ import environ
         from kiwi.ui.pixbufutils import pixbuf_from_string
-        data = environ.get_resource_string('stoq', 'pixmaps', 'stoq-stock-app-24x24.png')
+        data = environ.get_resource_string(
+            'stoq', 'pixmaps', 'stoq-stock-app-24x24.png')
         gtk.window_set_default_icon(pixbuf_from_string(data))
 
         if platform.system() == 'Darwin':
             from AppKit import NSApplication, NSData, NSImage
-            bytes = environ.get_resource_string('stoq', 'pixmaps', 'stoq-stock-app-48x48.png')
+            bytes = environ.get_resource_string(
+                'stoq', 'pixmaps', 'stoq-stock-app-48x48.png')
             data = NSData.alloc().initWithBytes_length_(bytes, len(bytes))
             icon = NSImage.alloc().initWithData_(data)
             app = NSApplication.sharedApplication()
