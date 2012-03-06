@@ -79,6 +79,10 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         # there's only one
         if len(methods) == 1:
             self._widgets[methods[0].method_name].set_sensitive(False)
+        else:
+            widget = self._widgets.get('money')
+            if widget is not None:
+                self.methods_box.reorder_child(widget, 0)
 
     def _select_method_by_name(self, method_name):
         method = self._methods[method_name]
