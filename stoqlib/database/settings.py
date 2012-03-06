@@ -193,7 +193,8 @@ class DatabaseSettings(object):
         args.extend(['-p', str(self.port)])
         args.extend(['-u', self.username])
         if self.password:
-            args.extend(['-w', self.password])
+            # -w, do not show password prompt
+            args.extend(['-w'])
         return args
 
     def get_tool_args(self):
