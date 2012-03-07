@@ -195,7 +195,7 @@ class IPaymentOperation(Interface):
         :param payment: the payment to pay
         """
 
-    def can_print_(payment):
+    def can_print(payment):
         """
         If it's possible to print this payment
         :param payment: the payment to print
