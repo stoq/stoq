@@ -405,6 +405,12 @@ class Payment(Domain):
 
         return True
 
+    def is_money(self):
+        """Find out if the payment was made with money
+        :returns: True if it's a money payment
+        """
+        return self.method.method_name == 'money'
+
 
 class PaymentChangeHistory(Domain):
     """ A class to hold information about changes to a payment.

@@ -543,8 +543,7 @@ class Sale(Domain):
         self._set_sale_status(Sale.STATUS_CONFIRMED)
 
         # do not log money payments twice
-        if not all(payment.method.method_name == 'money'
-                   for payment in self.group.payments):
+        if not self.only_paid_with_money():
             if self.client:
                 msg = _("Sale {sale_number} to client {client_name} was "
                         "confirmed with value {total_value:.2f}.").format(
@@ -576,8 +575,7 @@ class Sale(Domain):
         self.close_date = const.NOW()
         self._set_sale_status(Sale.STATUS_PAID)
 
-        if all(payment.method.method_name == 'money'
-                for payment in self.group.payments):
+        if self.only_paid_with_money():
             # Money payments are confirmed and paid, so lof them that way
             if self.client:
                 msg = _("Sale {sale_number} to client {client_name} was paid "
@@ -775,14 +773,11 @@ class Sale(Domain):
         :returns: True if the sale was paid with money, otherwise False
         :rtype: bool
         """
-        for payment in self.group.payments:
-            if payment.method.method_name != 'money':
-                return False
-        return True
+        return all(payment.is_money() for payment in self.group.payments)
 
     def pay_money_payments(self):
         for payment in self.group.payments:
-            if payment.method.method_name == 'money':
+            if payment.is_money():
                 payment.pay()
 
     def add_sellable(self, sellable, quantity=1, price=None):
@@ -991,7 +986,7 @@ class SaleAdaptToPaymentTransaction(object):
             till.add_entry(payment)
 
         # FIXME: Move this to a payment method specific hook
-        if payments.count() == 1 and payment.method.method_name == 'money':
+        if payments.count() == 1 and payment.is_money():
             self.sale.group.pay()
             self.pay()
 
