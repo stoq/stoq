@@ -64,6 +64,7 @@ class BasePaymentView(Viewable):
 
         # PaymentMethod
         method_name=PaymentMethod.q.method_name,
+        method_id=PaymentMethod.q.id,
 
         # PaymentCategory
         color=PaymentCategory.q.color,
@@ -152,6 +153,12 @@ class BasePaymentView(Viewable):
     def purchase(self):
         if self.purchase_id:
             return PurchaseOrder.get(self.purchase_id)
+
+    @property
+    def operation(self):
+        method = PaymentMethod.get(self.method_id,
+                                   connection=self.get_connection())
+        return method.operation
 
     @property
     def sale(self):
