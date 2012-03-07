@@ -383,7 +383,7 @@ class Coupon(object):
 
             # When adding a money payment, use base_value so that the payback
             # is show correctly.
-            if payment.method.method_name == 'money':
+            if payment.is_money():
                 self._driver.add_payment(constant.device_value,
                                          payment.base_value)
 

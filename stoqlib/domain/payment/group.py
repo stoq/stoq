@@ -172,7 +172,7 @@ class PaymentGroup(Domain):
         assert self.can_pay(), self.get_status_string()
 
         for payment in self.get_valid_payments():
-            if payment.method.method_name == 'money':
+            if payment.is_money():
                 payment.pay()
 
     def cancel(self):
