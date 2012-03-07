@@ -32,18 +32,6 @@
               <object class="GtkHBox" id="methods_box">
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
-                <child>
-                  <object class="GtkRadioButton" id="cash_radio">
-                    <property name="label" translatable="yes">_Cash</property>
-                    <property name="visible">True</property>
-                    <property name="use_underline">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
               </object>
               <packing>
                 <property name="expand">True</property>

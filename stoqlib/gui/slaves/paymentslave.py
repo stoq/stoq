@@ -958,15 +958,22 @@ class MultipleMethodSlave(BaseEditorSlave):
             # payment group - witch should not be considered here.)
             return self.model.group.get_total_value()
         else:
-            raise TypeError
+            raise AssertionError
 
     def _setup_widgets(self):
         self.remove_button.hide()
-        self.cash_radio.connect('toggled', self._on_method__toggled)
-        self.cash_radio.set_data('method', self._method)
-        for method in ['bill', 'check', 'card', 'store_credit',
-                       'deposit']:
-            self._add_method(PaymentMethod.get_by_name(self.conn, method))
+        if isinstance(self.model, (PaymentRenegotiation, Sale)):
+            payment_type = Payment.TYPE_IN
+        elif isinstance(self.model, PurchaseOrder):
+            payment_type = Payment.TYPE_OUT
+        else:
+            raise AssertionError
+
+        for method in PaymentMethod.get_creatable_methods(
+            self.conn, payment_type, separate=False):
+            if method.method_name == 'multiple':
+                continue
+            self._add_method(method)
 
         self.payments.set_columns(self._get_columns())
         self.payments.add_list(self.model.group.get_items())
@@ -1046,8 +1053,13 @@ class MultipleMethodSlave(BaseEditorSlave):
                   payment_method.method_name == 'store_credit'):
                 return
 
-        radio = gtk.RadioButton(self.cash_radio,
-                                payment_method.get_description())
+        children = self.methods_box.get_children()
+        if children:
+            group = children[0]
+        else:
+            group = None
+
+        radio = gtk.RadioButton(group, payment_method.get_description())
         self.methods_box.pack_start(radio)
         radio.connect('toggled', self._on_method__toggled)
         radio.set_data('method', payment_method)
