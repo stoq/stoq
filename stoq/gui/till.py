@@ -398,7 +398,7 @@ class TillApp(SearchableAppWindow):
 
         sale_view = self._check_selected()
 
-        with api.new_transaction() as trans:
+        with api.trans() as trans:
             return_sale(self.get_toplevel(), sale_view, trans)
 
         if trans.committed:
