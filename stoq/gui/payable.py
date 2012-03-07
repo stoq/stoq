@@ -320,7 +320,11 @@ class PayableApp(BaseAccountWindow):
         if len(payable_views) != 1:
             return False
 
-        return payable_views[0].can_cancel_payment()
+        if not any(view.operation.can_cancel(view.payment)
+                   for view in payable_views):
+            return False
+
+        return payable_views[0].can_cancel_paymenat()
 
     def _can_change_due_date(self, payable_views):
         """ Determines if a list of payables_views can have it's due
@@ -329,6 +333,10 @@ class PayableApp(BaseAccountWindow):
             - The payment was not paid
         """
         if len(payable_views) != 1:
+            return False
+
+        if not any(view.operation.can_change_due_date(view.payment)
+                   for view in payable_views):
             return False
 
         return payable_views[0].can_change_due_date()
@@ -378,6 +386,10 @@ class PayableApp(BaseAccountWindow):
           - The payment status needs to be set to PENDING
         """
         if not payable_views:
+            return False
+
+        if not any(view.operation.can_pay(view.payment)
+                   for view in payable_views):
             return False
 
         if len(payable_views) == 1:

@@ -56,7 +56,6 @@ from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
 from stoqlib.lib.message import warning
-from stoqlib.reporting.boleto import BillReport
 from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.payments_receipt import InPaymentReceipt
 
@@ -245,7 +244,7 @@ class ReceivableApp(BaseAccountWindow):
             one_item and self._is_paid(selected))
         self.SetNotPaid.set_sensitive(
             one_item and self._is_paid(selected))
-        self.PrintBill.set_sensitive(self._can_print_bill(selected))
+        self.PrintBill.set_sensitive(self._can_print(selected))
 
     def _get_status_values(self):
         values = [(v, k) for k, v in Payment.statuses.items()]
@@ -347,11 +346,8 @@ class ReceivableApp(BaseAccountWindow):
         if not receivable_views:
             return False
 
-        # Until we fix bug 3703, don't allow receiving store credit payments
-        # Also, do not allow the receiving of online payments. They are done
-        # automatically.
-        if any(view.method_name in ('store_credit', 'online')
-               for view in receivable_views):
+        if not any(view.operation.can_pay(view.payment)
+                   for view in receivable_views):
             return False
 
         if len(receivable_views) == 1:
@@ -396,9 +392,8 @@ class ReceivableApp(BaseAccountWindow):
         if len(receivable_views) != 1:
             return False
 
-        # Do not allow the cancelling of online payments. This is done
-        # automatically.
-        if any(view.method_name == 'online' for view in receivable_views):
+        if not any(view.operation.can_cancel(view.payment)
+                   for view in receivable_views):
             return False
 
         return receivable_views[0].can_cancel_payment()
@@ -413,9 +408,8 @@ class ReceivableApp(BaseAccountWindow):
         if len(receivable_views) != 1:
             return False
 
-        # Do not allow the due date changing of online payments. This is done
-        # automatically.
-        if any(view.method_name == 'online' for view in receivable_views):
+        if not any(view.operation.can_change_due_date(view.payment)
+                   for view in receivable_views):
             return False
 
         return receivable_views[0].can_change_due_date()
@@ -442,10 +436,11 @@ class ReceivableApp(BaseAccountWindow):
     def _can_show_comments(self, receivable_views):
         return len(receivable_views) == 1
 
-    def _can_print_bill(self, receivable_views):
-        return (len(receivable_views) == 1 and
-                receivable_views[0].method_name == 'bill' and
-                receivable_views[0].status == Payment.STATUS_PENDING)
+    def _can_print(self, receivable_views):
+        if len(receivable_views) == 1:
+            view = receivable_views[0]
+            return view.operation.can_print(view.payment)
+        return False
 
     def _run_card_payment_search(self):
         run_dialog(CardPaymentSearch, self, self.conn)
@@ -531,8 +526,8 @@ class ReceivableApp(BaseAccountWindow):
             self.search.refresh()
 
     def on_PrintBill__activate(self, action):
-        items = self.results.get_selected_rows()
-        payments = [item.payment for item in items]
-        if not BillReport.check_printable(payments):
-            return False
-        print_report(BillReport, payments)
+        view = self.results.get_selected_rows()[0]
+        payments = [view.payment]
+        report = view.operation.print_(payments)
+        if report is not None:
+            print_report(report, payments)

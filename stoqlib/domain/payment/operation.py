@@ -75,6 +75,21 @@ class MoneyPaymentOperation(object):
     def get_constant(self, payment):
         return PaymentMethodType.MONEY
 
+    def can_cancel(self, payment):
+        return True
+
+    def can_change_due_date(self, payment):
+        return True
+
+    def can_pay(self, payment):
+        return True
+
+    def can_print(self, payment):
+        return False
+
+    def print_(self, payment):
+        pass
+
 
 class CheckPaymentOperation(object):
     implements(IPaymentOperation)
@@ -111,6 +126,21 @@ class CheckPaymentOperation(object):
     def get_constant(self, payment):
         return PaymentMethodType.CHECK
 
+    def can_cancel(self, payment):
+        return True
+
+    def can_change_due_date(self, payment):
+        return True
+
+    def can_pay(self, payment):
+        return True
+
+    def can_print(self, payment):
+        return False
+
+    def print_(self, payment):
+        pass
+
     #
     # Public API
     #
@@ -146,6 +176,29 @@ class BillPaymentOperation(object):
 
     def creatable(self, method, payment_type, separate):
         return True
+
+    def payable(self, payment_type):
+        return True
+
+    def can_cancel(self, payment):
+        return True
+
+    def can_change_due_date(self, payment):
+        return True
+
+    def can_pay(self, payment):
+        return True
+
+    def can_print(self, payment):
+        if payment.status != Payment.STATUS_PENDING:
+            return False
+        return True
+
+    def print_(self, payments):
+        from stoqlib.reporting.boleto import BillReport
+        if not BillReport.check_printable(payments):
+            return None
+        return BillReport
 
     def get_constant(self, payment):
         return PaymentMethodType.BILL
@@ -193,6 +246,21 @@ class CardPaymentOperation(object):
             return False
         return True
 
+    def can_cancel(self, payment):
+        return True
+
+    def can_change_due_date(self, payment):
+        return True
+
+    def can_pay(self, payment):
+        return True
+
+    def can_print(self, payment):
+        return False
+
+    def print_(self, payment):
+        pass
+
     def get_constant(self, payment):
         card_data = self.get_card_data_by_payment(payment)
         return self.CARD_METHOD_CONSTANTS.get(card_data.card_type)
@@ -209,7 +277,6 @@ class StoreCreditPaymentOperation(object):
 
     description = _('Store Credit')
     max_installments = 1
-
     #
     # IPaymentOperation
     #
@@ -232,6 +299,22 @@ class StoreCreditPaymentOperation(object):
             return False
 
         return True
+
+    def can_cancel(self, payment):
+        return True
+
+    def can_change_due_date(self, payment):
+        return True
+
+    def can_pay(self, payment):
+        # Until we fix bug 3703, don't allow receiving store credit payments
+        return False
+
+    def can_print(self, payment):
+        return False
+
+    def print_(self, payment):
+        pass
 
     def get_constant(self, payment):
         # FIXME: Add another constant to stoqdrivers?
@@ -266,6 +349,21 @@ class DepositPaymentOperation(object):
     def get_constant(self, payment):
         return PaymentMethodType.MONEY
 
+    def can_cancel(self, payment):
+        return True
+
+    def can_change_due_date(self, payment):
+        return True
+
+    def can_pay(self, payment):
+        return True
+
+    def can_print(self, payment):
+        return False
+
+    def print_(self, payment):
+        pass
+
 
 class OnlinePaymentOperation(object):
     implements(IPaymentOperation)
@@ -295,6 +393,21 @@ class OnlinePaymentOperation(object):
     def get_constant(self, payment):
         # FIXME: Using MONEY for now..Maybe we should add a new constant.
         return PaymentMethodType.MONEY
+
+    def can_cancel(self, payment):
+        return False
+
+    def can_change_due_date(self, payment):
+        return False
+
+    def can_pay(self, payment):
+        return False
+
+    def can_print(self, payment):
+        return False
+
+    def print_(self, payment):
+        pass
 
 
 # The MultiplePaymentOperation is not a payment operation, but we need to
@@ -333,6 +446,21 @@ class MultiplePaymentOperation(object):
             return False
 
         return True
+
+    def can_cancel(self, payment):
+        return False
+
+    def can_change_due_date(self, payment):
+        return False
+
+    def can_pay(self, payment):
+        return False
+
+    def can_print(self, payment):
+        return False
+
+    def print_(self, payment):
+        pass
 
     def get_constant(self, payment):
         return PaymentMethodType.MULTIPLE

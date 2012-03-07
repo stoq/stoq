@@ -157,6 +157,12 @@ class IPaymentOperation(Interface):
         :param payment: the payment which is going to be deleted
         """
 
+    def create_transaction():
+        """If this payment method should create a transaction when
+          paid
+        :returns: True if an AccountTransaction should be created
+        """
+
     def selectable(method):
         """This is called to find out if the method should
         be shown in the slave list of payment methods
@@ -169,6 +175,35 @@ class IPaymentOperation(Interface):
         :param payment_type: kind of payment
         :param separate: if it's created separately from a sale/purchase
         :returns: True if you can create new methods of this type
+        """
+
+    def can_cancel(payment):
+        """
+        If it's possible to cancel a payment
+        :param payment: the payment to cancel
+        """
+
+    def can_change_due_date(payment):
+        """
+        If it's possible to change the due date of a payment
+        :param payment: the payment to change due date
+        """
+
+    def can_pay(payment):
+        """
+        If it's possible to pay a payable
+        :param payment: the payment to pay
+        """
+
+    def can_print_(payment):
+        """
+        If it's possible to print this payment
+        :param payment: the payment to print
+        """
+
+    def print_(payment):
+        """Prints this payment
+        :param payment: the payment to print
         """
 
     def get_constant(payment):
