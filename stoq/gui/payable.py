@@ -324,7 +324,8 @@ class PayableApp(BaseAccountWindow):
                    for view in payable_views):
             return False
 
-        return payable_views[0].can_cancel_paymenat()
+        return payable_views[0].can_cancel_payment()
+
 
     def _can_change_due_date(self, payable_views):
         """ Determines if a list of payables_views can have it's due
