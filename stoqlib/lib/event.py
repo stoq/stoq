@@ -33,7 +33,8 @@ class Event(object):
 
     @classmethod
     def emit(cls, *args, **kwargs):
-        log.info('emitting event %r %r' % (args, kwargs))
+        log.info('emitting event %s %r %r' % (cls.__name__,
+                                              args, kwargs))
         rv = send(cls, cls, *args, **kwargs)
         # Pick the last return value which is not None
         for func, retval in reversed(rv):
