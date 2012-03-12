@@ -25,7 +25,7 @@
 """ General slaves for branch management"""
 
 from stoqlib.api import api
-from stoqlib.domain.person import Branch, EmployeeView
+from stoqlib.domain.person import Branch, Employee
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.parameters import sysparam
 
@@ -44,7 +44,7 @@ class BranchDetailsSlave(BaseEditorSlave):
     )
 
     def _setup_manager_entry(self):
-        employees = EmployeeView.get_active_employees(self.conn)
+        employees = Employee.get_active_employees(self.conn)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         self.manager.prefill(api.for_combo(employees.limit(max_results)))
 

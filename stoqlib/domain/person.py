@@ -873,6 +873,14 @@ class Employee(Domain):
             is_active=True,
             connection=self.get_connection())
 
+    @classmethod
+    def get_active_employees(cls, conn):
+        """Return a list of active employees."""
+        return cls.select(
+            AND(cls.q.status == cls.STATUS_NORMAL,
+                cls.q.is_active == True),
+                connection=conn)
+
 
 class LoginUser(Domain):
     """A user that us able to login to the system
