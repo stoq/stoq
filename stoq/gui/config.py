@@ -128,6 +128,8 @@ class WelcomeStep(BaseWizardStep):
         self.title_label.set_bold(True)
 
     def _postgres_from_stoq_installer(self):
+        # We only support postgres user for now
+        return True
         if read_registry_key(
             'HKCC', r'Software\Stoq',
             'InstalledPostgres') != 1:
@@ -490,6 +492,8 @@ class PostgresAdminPasswordStep(PasswordStep):
 
     def next_step(self):
         self.wizard.settings.password = str(self.password_slave.model.new_password)
+        self.wizard.auth_type = PASSWORD_AUTHENTICATION
+        self.wizard.write_pgpass()
         return self.wizard.connect_for_settings(self)
 
 
