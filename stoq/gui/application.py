@@ -38,6 +38,7 @@ from kiwi.log import Logger
 from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.crashreport import has_tracebacks
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.message import yesno
@@ -580,7 +581,7 @@ class AppWindow(GladeDelegate):
         if x != -1 and y != -1:
             toplevel.move(x, y)
 
-    def _save_window_size(self):
+    def _save_launcher_window_size(self):
         if not hasattr(self, '_width'):
             return
         # Do not save the size of the window when we are in fullscreen
@@ -637,6 +638,45 @@ class AppWindow(GladeDelegate):
         if value:
             toolbar.set_style(value)
 
+    def _terminate(self):
+        log.info("Terminating Stoq")
+
+        log.debug('Logging out the current user')
+        try:
+            user = api.get_current_user(api.get_connection())
+            if user:
+                user.logout()
+        except StoqlibError:
+            pass
+
+        self._save_launcher_window_size()
+
+        # Write user settings to disk, this obviously only happens on successful
+        # terminations which is the right place to do
+        log.debug("Flushing user settings")
+        api.user_settings.flush()
+
+        # This removes all temporary files created when calling
+        # get_resource_filename() that extract files to the file system
+        import pkg_resources
+        pkg_resources.cleanup_resources()
+
+        log.debug('Stopping deamon')
+        from stoqlib.lib.daemonutils import stop_daemon
+        stop_daemon()
+
+        # Finally, go out of the reactor and show possible crash reports
+        self._quit_reactor_and_maybe_show_crashreports()
+
+        log.debug("Terminating by calling os._exit()")
+
+        # os._exit() forces a quit without running atexit handlers
+        # and does not block on any running threads
+        # FIXME: This is the wrong solution, we should figure out why there
+        #        are any running threads/processes at this point
+        os._exit(0)
+        raise AssertionError("Should never happen")
+
     def _show_crash_reports(self):
         if not has_tracebacks():
             return succeed(None)
@@ -645,10 +685,10 @@ class AppWindow(GladeDelegate):
         return show_dialog()
 
     @api.async
-    def _quit_reactor(self):
-        if AppWindow.app_windows:
-            return
+    def _quit_reactor_and_maybe_show_crashreports(self):
+        log.debug("Show some crash reports")
         yield self._show_crash_reports()
+        log.debug("Shutdown reactor")
         reactor.stop()
 
     #
@@ -986,27 +1026,53 @@ class AppWindow(GladeDelegate):
     # AppWindow
     #
 
-    def shutdown_application(self, *args):
-        log.debug("Shutting down application")
+    def shutdown_application(self):
+        """Shutdown the application:
+        There are 3 possible outcomes of calling this function, depending
+        on how many windows and applications are open:
+          - Hide application, save state, show launcher
+          - Close window, save state, show launcher
+          - Close window, save global state, terminate application
+
+        This function is called in the following situations:
+          - When closing a window (delete-event)
+          - When clicking File->Close in an application
+          - When clicking File->Quit in the launcher
+          - When clicking enable production mode
+          - Pressing Ctrl-w/F5 in an application
+          - Pressing Ctrl-q in the launcher
+          - Pressing Alt-F4 on Win32
+          - Pressing Cmd-q on Mac
+
+        :returns: True if shutdown was successful, False if not
+        """
+
+        if self.app.name == 'launcher':
+            log.debug("Shutting down launcher")
+        else:
+            log.debug("Shutting down application %s" % (self.app.name, ))
+
+        # Ask the application if we can close, currently this only happens
+        # when trying to close the POS app if there's a sale in progress
         if not self.can_close_application():
             return False
 
+        # Here we save app specific state such as object list
+        # column position/ordering
         if self.current_app and self.current_app.search:
             self.current_app.search.save_columns()
 
-        self._save_window_size()
-        if self.app.name == 'launcher':
-            log.debug("Flushing user settings")
-            api.user_settings.flush()
+        # If there are other windows open, do not terminate the application, just
+        # close the current window and leave the others alone
+        if AppWindow.app_windows:
+            return True
 
-            self._quit_reactor()
+        # The rest of the code only applies when closing down the launcher,
+        # eg terminating the application.
+        if self.app.name != 'launcher':
+            return True
 
-            # oneiric didn't need this, but it is required for
-            # precise for reasons unknown
-            # see login.py as well
-            raise SystemExit
-
-        return True
+        self._terminate()
 
     #
     # Callbacks

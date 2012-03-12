@@ -565,30 +565,17 @@ class Shell(object):
 
     # FIXME: this logic should be inside stoqlib.
     def _exit_func(self):
-        # This removes all temporary files created when
-        # calling get_resource_filename() that actually extract files
-        # to the file system
-        import pkg_resources
-        pkg_resources.cleanup_resources()
-
-        from stoqlib.lib.daemonutils import stop_daemon
-        stop_daemon()
-
-        from stoqlib.database.runtime import get_current_user, get_connection
-        from stoqlib.exceptions import StoqlibError
-        from stoqlib.lib.process import Process
-        try:
-            user = get_current_user(get_connection())
-            if user:
-                user.logout()
-        except StoqlibError:
-            pass
+        log.debug('Entering atexit()')
 
         if self._cur_exit_func:
+            log.info('Running foreign atexit function')
             self._cur_exit_func()
 
         if self._restart:
+            from stoqlib.lib.process import Process
+            log.info('Restarting Stoq')
             Process([sys.argv[0]], shell=True)
+        log.debug('Leaving atexit()')
 
     def _glade_loader_func(self, view, filename, domain):
         from kiwi.environ import environ
@@ -598,6 +585,7 @@ class Shell(object):
         ui_string = environ.get_resource_string('stoq', 'glade', filename)
 
         return BuilderWidgetTree(view, None, domain, ui_string)
+
     #
     # Public API
     #
