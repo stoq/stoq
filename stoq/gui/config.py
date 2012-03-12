@@ -127,34 +127,8 @@ class WelcomeStep(BaseWizardStep):
         self.image1.set_from_pixbuf(render_logo_pixbuf('config'))
         self.title_label.set_bold(True)
 
-    def _postgres_from_stoq_installer(self):
-        # We only support postgres user for now
-        return True
-        if read_registry_key(
-            'HKCC', r'Software\Stoq',
-            'InstalledPostgres') != 1:
-            return False
-        # Make sure PostgreSQL is still installed
-        basedir = read_registry_key(
-            'HKLM', r'Software\PostgreSQL\Installations\postgresql-8.4',
-            'Base Directory')
-        return basedir is not None
-
-    def _get_postgres_port(self):
-        return read_registry_key(
-            'HKLM', r'Software\PostgreSQL\Services\postgresql-8.4',
-            'Port')
-
     def next_step(self):
-        if self._postgres_from_stoq_installer():
-            settings = self.wizard.settings
-            settings.address = "localhost"
-            settings.dbname = "stoq"
-            settings.username = "postgres"
-            settings.port = self._get_postgres_port()
-            return PostgresAdminPasswordStep(self.wizard, self)
-        else:
-            return DatabaseLocationStep(self.wizard, self)
+        return DatabaseLocationStep(self.wizard, self)
 
 
 class DatabaseLocationStep(BaseWizardStep):
@@ -171,10 +145,16 @@ class DatabaseLocationStep(BaseWizardStep):
             return DatabaseSettingsStep(self.wizard, self)
 
         settings = self.wizard.settings
-        settings.address = "" # Unix socket really
         # FIXME: Allow developers to specify another database
         #        is_developer_mode() or STOQ_DATABASE_NAME
         settings.dbname = "stoq"
+        if platform.system() == 'Windows':
+            settings.address = "localhost"
+            settings.username = "postgres"
+            settings.port = self.wizard.get_win32_postgres_port()
+            return PostgresAdminPasswordStep(self.wizard, self)
+        else:
+            settings.address = "" # Unix socket really
 
         return self.wizard.connect_for_settings(self)
 
@@ -898,6 +878,13 @@ class FirstTimeConfigWizard(BaseWizard):
         logger.info('_set_online_services (%s)' %
                             self.enable_online_services)
         api.sysparam(trans).ONLINE_SERVICES = int(self.enable_online_services)
+
+    # Public API
+
+    def get_win32_postgres_port(self):
+        return read_registry_key(
+            'HKLM', r'Software\PostgreSQL\Services\postgresql-8.4',
+            'Port')
 
     def try_connect(self, settings, warn=True):
         logger.info('try_connect (warn=%s)' % (warn))
