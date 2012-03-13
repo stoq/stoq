@@ -125,11 +125,26 @@ class BaseMethodSelectionStep(object):
     and a cash_change_holder EventBox in the glade file
     """
 
+    def __init__(self, create_payment=True):
+        self._create_payment = create_payment
+
+        if not create_payment:
+            for widget in [
+                self.select_method_holder,
+                self.cash_change_holder,
+                self.subtotal_expander,
+                ]:
+                widget.hide()
+
     #
     #   Private API
     #
 
     def _update_next_step(self, method):
+        if not self._create_payment:
+            self.wizard.enable_finish()
+            return
+
         if method and method.method_name == 'money':
             self.wizard.enable_finish()
             self.cash_change_slave.enable_cash_change()
@@ -175,6 +190,9 @@ class BaseMethodSelectionStep(object):
             'activate', lambda entry: self.wizard.go_to_next())
 
     def next_step(self):
+        if not self._create_payment:
+            return
+
         selected_method = self.get_selected_method()
         if selected_method.method_name == 'money':
             if not self.cash_change_slave.can_finish():
@@ -259,8 +277,17 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.payment_group = payment_group
         marker("WizardEditorStep.__init__")
         WizardEditorStep.__init__(self, conn, wizard, model)
+
+        # If the sale already have payments and they match its total amount,
+        # we cannot let the user create more, or even edit the existing ones.
+        if (payment_group.get_items().count() and
+            payment_group.get_total_value() == model.get_total_sale_amount()):
+            create_payment = False
+        else:
+            create_payment = True
+
         marker("BaseMethodSelectionStep.__init__")
-        BaseMethodSelectionStep.__init__(self)
+        BaseMethodSelectionStep.__init__(self, create_payment)
         self.update_discount_and_surcharge()
 
     #
@@ -410,7 +437,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     def post_init(self):
         marker('Entering post_init')
         self.toogle_client_details()
-        self.wizard.payment_group.clear_unused()
+        if self._create_payment:
+            self.wizard.payment_group.clear_unused()
         self.register_validate_function(self.wizard.refresh_next)
         self._update_next_step(self.get_selected_method())
 

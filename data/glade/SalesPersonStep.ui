@@ -431,7 +431,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox2">
+          <object class="GtkVBox" id="total_box">
             <property name="visible">True</property>
             <child>
               <object class="GtkHBox" id="hbox2">
