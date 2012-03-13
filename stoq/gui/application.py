@@ -586,7 +586,8 @@ class AppWindow(GladeDelegate):
             return
         # Do not save the size of the window when we are in fullscreen
         window = self.get_toplevel()
-        if window.window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN:
+        window = window.get_window()
+        if window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN:
             return
         d = api.user_settings.get('launcher-geometry', {})
         d['width'] = str(self._width)
@@ -1085,7 +1086,8 @@ class AppWindow(GladeDelegate):
         return True
 
     def _on_toplevel__configure(self, widget, event):
-        rect = widget.window.get_frame_extents()
+        window = widget.get_window()
+        rect = window.get_frame_extents()
         self._x = rect.x
         self._y = rect.y
         self._width = event.width
@@ -1223,7 +1225,8 @@ class AppWindow(GladeDelegate):
         if not window.get_realized():
             return
         is_active = action.get_active()
-        is_fullscreen = window.window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN
+        window = window.get_window()
+        is_fullscreen = window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN
         if is_active != is_fullscreen:
             if is_active:
                 window.fullscreen()
