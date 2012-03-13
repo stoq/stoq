@@ -3,6 +3,7 @@ import sys
 import gi
 from gi.repository import GObject
 
+
 def install_enums(mod):
     modname = mod.__name__.rsplit('.', 1)[1].upper()
     for attr in dir(mod):
@@ -26,7 +27,6 @@ def install_enums(mod):
                         setattr(mod, name, flag)
         except TypeError:
             continue
-
 
 
 def enable():
@@ -227,6 +227,7 @@ def enable_poppler():
     from gi.repository import Poppler
     sys.modules['poppler'] = Poppler
     Poppler.pypoppler_version = (1, 0, 0)
+
 
 def enable_webkit(version='1.0'):
     gi.require_version('WebKit', version)
