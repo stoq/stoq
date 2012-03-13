@@ -214,11 +214,11 @@ class TransactionPage(object):
     def _get_account_columns(self):
         def format_withdrawal(value):
             if value < 0:
-                return '%.2f' % (abs(value), )
+                return currency(abs(value)).format(symbol=True, precision=2)
 
         def format_deposit(value):
             if value > 0:
-                return '%.2f' % (value, )
+                return currency(value).format(symbol=True, precision=2)
 
         if self.model.account_type == Account.TYPE_INCOME:
             color_func = lambda x: False
