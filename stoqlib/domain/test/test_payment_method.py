@@ -25,6 +25,8 @@
 import datetime
 from decimal import Decimal
 
+from kiwi import ValueUnset
+
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
@@ -35,15 +37,17 @@ from stoqlib.lib.defaults import quantize
 
 
 class _TestPaymentMethod:
-    def createInPayment(self):
+    def createInPayment(self, till=ValueUnset):
         sale = self.create_sale()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        return method.create_inpayment(sale.group, Decimal(100))
+        return method.create_inpayment(sale.group, Decimal(100),
+                                       till=till)
 
-    def createOutPayment(self):
+    def createOutPayment(self, till=ValueUnset):
         purchase = self.create_purchase_order()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        return method.create_outpayment(purchase.group, Decimal(100))
+        return method.create_outpayment(purchase.group, Decimal(100),
+                                        till=till)
 
     def createInPayments(self, no=3):
         sale = self.create_sale()
@@ -92,11 +96,23 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         payment = self.createInPayment()
         self.failUnless(isinstance(payment, Payment))
         self.assertEqual(payment.value, Decimal(100))
+        self.assertEqual(payment.till, Till.get_current(self.trans))
+
+        payment_without_till = self.createInPayment(till=None)
+        self.failUnless(isinstance(payment, Payment))
+        self.assertEqual(payment_without_till.value, Decimal(100))
+        self.assertEqual(payment_without_till.till, None)
 
     def testCreateOutPayment(self):
         payment = self.createOutPayment()
         self.failUnless(isinstance(payment, Payment))
         self.assertEqual(payment.value, Decimal(100))
+        self.assertEqual(payment.till, None)
+
+        payment_without_till = self.createOutPayment(till=None)
+        self.failUnless(isinstance(payment, Payment))
+        self.assertEqual(payment_without_till.value, Decimal(100))
+        self.assertEqual(payment_without_till.till, None)
 
     def testCreateInPayments(self):
         payments = self.createInPayments()
