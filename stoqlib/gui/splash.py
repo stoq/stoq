@@ -58,7 +58,10 @@ class SplashScreen(gtk.Window):
         self.add(frame)
 
         darea = gtk.DrawingArea()
-        darea.connect("expose-event", self.expose)
+        try:
+            darea.connect("expose-event", self.expose)
+        except TypeError:
+            darea.connect("draw", self.draw)
         frame.add(darea)
 
         self.show_all()
@@ -74,6 +77,21 @@ class SplashScreen(gtk.Window):
             ver, rev = version.split(' ')
             version = '%s <b>%s</b>' % (ver, rev)
         return _("Version: %s") % (version, )
+
+    def draw(self, widget, cr):
+        window = widget.get_window()
+        gtk.gdk.cairo_set_source_pixbuf(cr, self._pixbuf, 0, 0)
+        cr.paint()
+
+        cr.set_source_rgb(.1, .1, .1)
+        layout = pangocairo.create_layout(cr)
+        desc = pango.FontDescription('Sans 14')
+        layout.set_font_description(desc)
+        layout.set_markup(self._get_label(), -1)
+        pangocairo.update_layout(cr, layout)
+        w, h = layout.get_pixel_size()
+        cr.move_to(WIDTH - w - BORDER, HEIGHT - h - BORDER)
+        pangocairo.show_layout(cr, layout)
 
     def expose(self, widget, event):
         cr = widget.window.cairo_create()
