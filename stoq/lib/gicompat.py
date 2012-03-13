@@ -1,22 +1,32 @@
 import sys
 
 import gi
+from gi.repository import GObject
 
-
-def install_enum(mod, enum):
+def install_enums(mod):
     modname = mod.__name__.rsplit('.', 1)[1].upper()
-    for value, enum in enum.__enum_values__.items():
-        name = enum.value_name
-        name = name.replace(modname + '_', '')
-        setattr(mod, name, enum)
+    for attr in dir(mod):
+        try:
+            obj = getattr(mod, attr, None)
+        except:
+            continue
+        try:
+            if issubclass(obj, GObject.GEnum):
+                for value, enum in obj.__enum_values__.items():
+                    name = enum.value_name
+                    name = name.replace(modname + '_', '')
+                    setattr(mod, name, enum)
+        except TypeError:
+            continue
+        try:
+            if issubclass(obj, GObject.GFlags):
+                for value, flag in obj.__flags_values__.items():
+                    for name in flag.value_names:
+                        name = name.replace(modname + '_', '')
+                        setattr(mod, name, flag)
+        except TypeError:
+            continue
 
-
-def install_flags(mod, flags):
-    modname = mod.__name__.rsplit('.', 1)[1].upper()
-    for value, flag in flags.__flags_values__.items():
-        for name in flag.value_names:
-            name = name.replace(modname + '_', '')
-            setattr(mod, name, flag)
 
 
 def enable():
@@ -51,8 +61,7 @@ def enable_gtk(version='2.0'):
     gi.require_version('Pango', '1.0')
     from gi.repository import Pango
     sys.modules['pango'] = Pango
-    for enum_type in [Pango.EllipsizeMode]:
-        install_enum(Pango, enum_type)
+    install_enums(Pango)
 
     # pangocairo
     gi.require_version('PangoCairo', '1.0')
@@ -65,14 +74,7 @@ def enable_gtk(version='2.0'):
     from gi.repository import Gdk
     from gi.repository import GdkPixbuf
     sys.modules['gtk.gdk'] = Gdk
-    for enum_type in [Gdk.CursorType,
-                      Gdk.WindowTypeHint,
-                      GdkPixbuf.InterpType]:
-        install_enum(Gdk, enum_type)
-    for flags_type in [Gdk.EventMask,
-                       Gdk.WindowState,
-                       Gdk.ModifierType]:
-        install_flags(Gdk, flags_type)
+    install_enums(Gdk)
     Gdk.BUTTON_PRESS = 4
 
     Gdk.Pixbuf = GdkPixbuf.Pixbuf
@@ -90,6 +92,8 @@ def enable_gtk(version='2.0'):
         return rect
     Gdk.Window.get_frame_extents = get_frame_extents
 
+    Gdk._2BUTTON_PRESS = 5
+
     # gtk
     gi.require_version('Gtk', version)
     from gi.repository import Gtk
@@ -99,31 +103,7 @@ def enable_gtk(version='2.0'):
     Gtk.pygtk_version = (2, 99, 0)
 
     Gtk.gtk_version = (2, 22, 0)
-    for enum_type in [Gtk.ArrowType,
-                      Gtk.ButtonsType,
-                      Gtk.EntryIconPosition,
-                      Gtk.Justification,
-                      Gtk.IconSize,
-                      Gtk.MessageType,
-                      Gtk.Orientation,
-                      Gtk.PackType,
-                      Gtk.PolicyType,
-                      Gtk.PositionType,
-                      Gtk.ResponseType,
-                      Gtk.ReliefStyle,
-                      Gtk.SelectionMode,
-                      Gtk.ShadowType,
-                      Gtk.SizeGroupMode,
-                      Gtk.SortType,
-                      Gtk.StateType,
-                      Gtk.TextDirection,
-                      Gtk.ToolbarStyle,
-                      Gtk.TreeViewColumnSizing,
-                      Gtk.WindowPosition,
-                      Gtk.WindowType]:
-        install_enum(Gtk, enum_type)
-    for flags_type in [Gtk.DialogFlags]:
-        install_flags(Gtk, flags_type)
+    install_enums(Gtk)
 
     # Action
 
