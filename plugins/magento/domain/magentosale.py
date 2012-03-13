@@ -254,7 +254,7 @@ class MagentoSale(MagentoBaseSyncBoth):
                 MagentoInvoice(connection=conn,
                                config=self.config,
                                magento_sale=self)
-            retval = yield self._create_delivery()
+            retval = self._create_delivery()
         elif (self.sale.status == Sale.STATUS_CANCELLED and
               self.status != self.STATUS_CANCELLED):
             # FIXME: If the sale was already invoiced on Magento, it's
@@ -270,10 +270,9 @@ class MagentoSale(MagentoBaseSyncBoth):
     #  Private
     #
 
-    @inlineCallbacks
     def _create_delivery(self):
         if self.magento_delivery:
-            returnValue(True)
+            return True
 
         conn = self.get_connection()
         sysparam_ = sysparam(conn)
@@ -306,7 +305,7 @@ class MagentoSale(MagentoBaseSyncBoth):
                                        magento_sale=self,
                                        delivery=delivery)
 
-        returnValue(bool(mag_delivery))
+        return bool(mag_delivery)
 
 
 class MagentoInvoice(MagentoBaseSyncBoth):
