@@ -152,10 +152,16 @@ class Shell(object):
 
         if 'STOQ_USE_GI' in os.environ:
             from stoq.lib import gicompat
+            if os.environ['STOQ_USE_GI'] == '3.0':
+                gtk_version = '3.0'
+                webkit_version = '3.0'
+            else:
+                gtk_version = '2.0'
+                webkit_version = '1.0'
             gicompat.enable()
-            gicompat.enable_gtk()
+            gicompat.enable_gtk(version=gtk_version)
             gicompat.enable_poppler()
-            gicompat.enable_webkit()
+            gicompat.enable_webkit(version=webkit_version)
             gicompat.enable_gudev()
 
     def _setup_gtk(self):
@@ -541,7 +547,7 @@ class Shell(object):
 
         window = get_current_toplevel()
         if window:
-            window_name = window.name
+            window_name = window.get_name()
         else:
             window_name = 'unknown'
 

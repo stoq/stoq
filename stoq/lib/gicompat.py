@@ -37,7 +37,7 @@ def enable():
 _unset = object()
 
 
-def enable_gtk():
+def enable_gtk(version='2.0'):
     # set the default encoding like PyGTK
     reload(sys)
     sys.setdefaultencoding('utf-8')
@@ -60,7 +60,7 @@ def enable_gtk():
     sys.modules['pangocairo'] = PangoCairo
 
     # gdk
-    gi.require_version('Gdk', '2.0')
+    gi.require_version('Gdk', version)
     gi.require_version('GdkPixbuf', '2.0')
     from gi.repository import Gdk
     from gi.repository import GdkPixbuf
@@ -82,13 +82,16 @@ def enable_gtk():
     orig_get_frame_extents = Gdk.Window.get_frame_extents
 
     def get_frame_extents(window):
-        rect = Gdk.Rectangle(0, 0, 0, 0)
-        orig_get_frame_extents(window, rect)
+        try:
+            rect = Gdk.Rectangle()
+            orig_get_frame_extents(window, rect)
+        except TypeError:
+            rect = orig_get_frame_extents(window)
         return rect
     Gdk.Window.get_frame_extents = get_frame_extents
 
     # gtk
-    gi.require_version('Gtk', '2.0')
+    gi.require_version('Gtk', version)
     from gi.repository import Gtk
     sys.modules['gtk'] = Gtk
     Gtk.gdk = Gdk
@@ -243,10 +246,10 @@ def enable_poppler():
     gi.require_version('Poppler', '0.18')
     from gi.repository import Poppler
     sys.modules['poppler'] = Poppler
+    Poppler.pypoppler_version = (1, 0, 0)
 
-
-def enable_webkit():
-    gi.require_version('WebKit', '1.0')
+def enable_webkit(version='1.0'):
+    gi.require_version('WebKit', version)
     from gi.repository import WebKit
     sys.modules['webkit'] = WebKit
     WebKit.WebView.get_web_inspector = WebKit.WebView.get_inspector
