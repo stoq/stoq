@@ -24,6 +24,7 @@
 """ Main gui definition for admin application.  """
 
 import gettext
+import operator
 
 import glib
 import gtk
@@ -63,6 +64,7 @@ from stoqlib.gui.stockicons import (
     STOQ_USER_PROFILES, STOQ_USERS)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.message import info
+from stoqlib.lib.translation import locale_sorted
 
 from stoq.gui.application import AppWindow
 
@@ -88,30 +90,31 @@ class Tasks(object):
     def add_defaults(self):
         items = [
             (_('Branches'), 'branches', gtk.STOCK_HOME),
+            (_('C.F.O.P.'), 'cfop', STOQ_CALC),
             (_('Client Categories'), 'client_categories', STOQ_CLIENTS),
             (_('Clients'), 'clients', STOQ_CLIENTS),
-            (_('C.F.O.P.'), 'cfop', STOQ_CALC),
             (_('Computers'), 'stations', STOQ_SYSTEM),
             (_('Devices'), 'devices', STOQ_DEVICES),
             (_('Employees'), 'employees', STOQ_ADMIN_APP),
             (_('Events'), 'events', gtk.STOCK_DIALOG_WARNING),
-            (_('Roles'), 'employee_roles', STOQ_USERS),
             (_('Fiscal Books'), 'fiscal_books', STOQ_EDIT),
-            (_('Invoice Printers'), 'invoice_printers', gtk.STOCK_PRINT),
             (_('Forms'), 'forms', STOQ_FORMS),
+            (_('Invoice Printers'), 'invoice_printers', gtk.STOCK_PRINT),
+            (_('Parameters'), 'parameters', gtk.STOCK_PREFERENCES),
             (_('Payment Categories'), 'payment_categories', STOQ_PAYABLE_APP),
             (_('Payment Methods'), 'payment_methods', STOQ_MONEY),
-            (_('Parameters'), 'parameters', gtk.STOCK_PREFERENCES),
             (_('Plugins'), 'plugins', STOQ_PLUGIN),
+            (_('Roles'), 'employee_roles', STOQ_USERS),
             (_('Taxes'), 'taxes', STOQ_TAXES),
-            (_('Tax Classes'), 'tax_templates', STOQ_DOCUMENTS),
             (_('Suppliers'), 'suppliers', STOQ_SUPPLIERS),
+            (_('Tax Classes'), 'tax_templates', STOQ_DOCUMENTS),
             (_('Transporters'), 'transporters', STOQ_DELIVERY),
-            (_('Users'), 'users', STOQ_HR),
             (_('User Profiles'), 'user_profiles', STOQ_USER_PROFILES),
+            (_('Users'), 'users', STOQ_HR),
             ]
 
-        for label, name, pixbuf in items:
+        for label, name, pixbuf in locale_sorted(
+            items, key=operator.itemgetter(0)):
             self.add_item(label, name, pixbuf)
 
     def add_item(self, label, name, pixbuf=None, cb=None):
