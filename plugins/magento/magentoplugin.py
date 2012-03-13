@@ -42,7 +42,10 @@ from stoqlib.database.runtime import get_connection
 from stoqlib.domain.events import (ProductCreateEvent, ProductRemoveEvent,
                                    ProductEditEvent, ProductStockUpdateEvent,
                                    CategoryCreateEvent, CategoryEditEvent,
-                                   SaleStatusChangedEvent)
+                                   ImageCreateEvent, ImageEditEvent,
+                                   ImageRemoveEvent, SaleStatusChangedEvent,
+                                   DeliveryStatusChangedEvent)
+from stoqlib.domain.sellable import Sellable
 from stoqlib.lib.interfaces import IPlugin
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.pluginmanager import register_plugin
@@ -115,12 +118,18 @@ class MagentoPlugin(object):
         ProductEditEvent.connect(self._on_product_update)
         ProductStockUpdateEvent.connect(self._on_product_stock_update)
 
+        # Connect image events
+        ImageCreateEvent.connect(self._on_image_create)
+        ImageEditEvent.connect(self._on_image_update)
+        ImageRemoveEvent.connect(self._on_image_delete)
+
         # Connect category events
         CategoryCreateEvent.connect(self._on_category_create)
         CategoryEditEvent.connect(self._on_category_update)
 
         # Connect sale events
         SaleStatusChangedEvent.connect(self._on_sale_status_change)
+        DeliveryStatusChangedEvent.connect(self._on_delivery_status_change)
 
     def get_tables(self):
         return [
@@ -139,7 +148,8 @@ class MagentoPlugin(object):
 
     def get_migration(self):
         environ.add_resource('magentosql', os.path.join(plugin_root, 'sql'))
-        return PluginSchemaMigration(self.name, 'magentosql', ['*.sql'])
+        return PluginSchemaMigration(self.name, 'magentosql',
+                                     ['*.sql', '*.py'])
 
     def get_dbadmin_commands(self):
         return ['sync']
@@ -164,7 +174,7 @@ class MagentoPlugin(object):
 
         log.info("Start synchronizing %s on server %s" % (mag_table, url))
         retval = yield mag_table.synchronize(config)
-        log.info("Start synchronizing %s on server %s with retval %s" %
+        log.info("Finished synchronizing %s on server %s with retval %s" %
                  (mag_table, url, retval))
 
         returnValue(retval)
@@ -213,6 +223,41 @@ class MagentoPlugin(object):
                                                    magento_product=mag_product):
                 mag_stock.need_sync = True
 
+    def _on_image_create(self, image, **kwargs):
+        conn = image.get_connection()
+        sellable = Sellable.selectOneBy(connection=conn,
+                                        image=image)
+        if sellable:
+            product = sellable.product
+            for mag_product in self._get_magento_products_by_product(product):
+                for mag_image in mag_product.magento_images:
+                    if mag_image.is_main:
+                        # If it already have a main image, just update it.
+                        mag_image.image = image
+                        mag_image.need_sync = True
+                else:
+                    MagentoImage(connection=conn,
+                                 config=mag_product.config,
+                                 image=image,
+                                 magento_product=mag_product,
+                                 is_main=True)
+
+    def _on_image_update(self, image, **kwargs):
+        conn = image.get_connection()
+        for mag_image in MagentoImage.selectBy(connection=conn,
+                                               image=image):
+            mag_image.need_sync = True
+
+    def _on_image_delete(self, image, **kwargs):
+        conn = image.get_connection()
+        for mag_image in MagentoImage.selectBy(connection=conn,
+                                               image=image):
+            # Remove the foreign key reference, so the image can be
+            # deleted on stoq without problems. This deletion will happen
+            # later when synchronizing images.
+            mag_image.image = None
+            mag_image.need_sync = True
+
     def _on_category_create(self, category, **kwargs):
         conn = category.get_connection()
         for config in MagentoConfig.select(connection=conn):
@@ -230,6 +275,14 @@ class MagentoPlugin(object):
                                            sale=sale)
         if mag_sale:
             mag_sale.need_sync = True
+
+    def _on_delivery_status_change(self, delivery, old_status, **kwargs):
+        mag_delivery = MagentoShipment.selectOneBy(
+            connection=delivery.get_connection(),
+            delivery=delivery,
+            )
+        if mag_delivery:
+            mag_delivery.need_sync = True
 
 
 register_plugin(MagentoPlugin)
@@ -285,3 +338,4 @@ class _MagentoCmd(object):
         print _("Magento synchronization finished:")
         print _("    Status: %s") % (status,)
         print _("    Time took: %s") % (t_delta,)
+        print

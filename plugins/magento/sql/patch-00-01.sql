@@ -15,8 +15,8 @@ CREATE TABLE magento_config (
     tz_hours numeric(10, 2),
     default_product_set integer,
     root_category integer,
-    branch_id bigint REFERENCES person_adapt_to_branch(id),
-    salesperson_id bigint REFERENCES person_adapt_to_sales_person(id)
+    branch_id bigint REFERENCES branch(id),
+    salesperson_id bigint REFERENCES sales_person(id)
 );
 
 CREATE TABLE magento_table_config (
@@ -97,7 +97,7 @@ CREATE TABLE magento_client (
     magento_id bigint,
     need_sync boolean,
     config_id bigint REFERENCES magento_config(id),
-    client_id bigint REFERENCES person_adapt_to_client(id)
+    client_id bigint REFERENCES client(id)
 );
 
 CREATE TABLE magento_address (

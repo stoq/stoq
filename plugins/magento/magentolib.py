@@ -249,6 +249,7 @@ class MagentoProxy(object):
         try:
             # Magento date comes in isoformat. Convert it to datetime.
             arg = datetime.datetime.strptime(arg, '%Y-%m-%d %H:%M:%S')
+            arg += self._rdelta
         except (TypeError, ValueError):
             pass
         else:

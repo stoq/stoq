@@ -23,22 +23,21 @@
 ##
 
 from kiwi.log import Logger
-from twisted.internet.defer import (inlineCallbacks, returnValue, succeed,
+from twisted.internet.defer import (inlineCallbacks, returnValue,
                                     maybeDeferred)
 from twisted.web.xmlrpc import Fault
 
 from stoqlib.database.orm import (IntCol, UnicodeCol, BoolCol, ForeignKey,
                                   SingleJoin)
-from stoqlib.domain.interfaces import IDelivery
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.sale import Sale, DeliveryItem
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
+from stoqlib.domain.sale import Sale, Delivery
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 from domain.magentobase import MagentoBaseSyncUp, MagentoBaseSyncBoth
-from domain.magentoclient import MagentoClient
+from domain.magentoclient import MagentoClient, MagentoAddress
 from domain.magentoproduct import MagentoProduct
 
 _ = stoqlib_gettext
@@ -65,16 +64,15 @@ class MagentoSale(MagentoBaseSyncBoth):
     STATUS_PAYMENT_REVIEW = 'payment_review'
     STATUS_PENDING_PAYMENT = 'pending_payment'
 
-    # Is there a way to differentiate check from money? Magento doesn't
-    PAYMENT_METHOD_MONEY = 'checkmo'
-    PAYMENT_METHOD_CARD = 'ccsave'
-
     status = UnicodeCol(default=STATUS_NEW)
     sale = ForeignKey('Sale', default=None)
     magento_client = ForeignKey('MagentoClient', default=None)
+    magento_address = ForeignKey('MagentoAddress', default=None)
 
     magento_invoice = SingleJoin('MagentoInvoice',
                                  joinColumn='magento_sale_id')
+    magento_delivery = SingleJoin('MagentoShipment',
+                                  joinColumn='magento_sale_id')
 
     #
     #  Public API
@@ -115,6 +113,19 @@ class MagentoSale(MagentoBaseSyncBoth):
         except Fault as err:
             log.error("An error occurred when trying to unhold a sale on "
                       "Magento: %s" % err.faultString)
+            returnValue(False)
+
+        returnValue(retval)
+
+    @inlineCallbacks
+    def add_comment_remote(self, msg, notify_user=True):
+        data = [self.magento_id, self.status, msg, notify_user]
+
+        try:
+            retval = yield self.proxy.call('order.addComment', data)
+        except Fault as err:
+            log.error("An error occurred when trying to add a comment on a "
+                      "sale on Magento: %s" % err.faultString)
             returnValue(False)
 
         returnValue(retval)
@@ -168,12 +179,6 @@ class MagentoSale(MagentoBaseSyncBoth):
                          notes=notes,
                          coupon_id=None)
 
-        mag_address = info['shipping_address']
-        address = "%s\n%s\n%s - %s" % (mag_address['street'] or '',
-                                       mag_address['postcode'] or '',
-                                       mag_address['city'] or '',
-                                       mag_address['region'] or '')
-
         delivery_service = sysparam_.DELIVERY_SERVICE
         delivery_price = info['shipping_amount'] or 0
         self.sale.add_sellable(delivery_service.sellable,
@@ -193,35 +198,40 @@ class MagentoSale(MagentoBaseSyncBoth):
             price = item['price']
             quantity = item['qty_ordered']
 
-            sale_item = self.sale.add_sellable(sellable,
-                                               quantity=quantity,
-                                               price=price)
-
-            DeliveryItem.create_from_sellable_item(sale_item)
-            delivery = sale_item.addFacet(IDelivery,
-                                          connection=conn)
-            delivery.address = address
-
-        payment_info = info['payment']
-        payment_method = payment_info['method']
-
-        if payment_method == self.PAYMENT_METHOD_MONEY:
-            method_name = 'money'
-        elif payment_method == self.PAYMENT_METHOD_CARD:
-            method_name = 'card'
-        else:
-            log.error("Unknow payment method: %s" % payment_method)
-            return False
+            self.sale.add_sellable(sellable,
+                                   quantity=quantity,
+                                   price=price)
 
         register_payment_operations()
-        method = PaymentMethod.get_by_name(conn, method_name)
-        method.create_inpayment(group, info['grand_total'])
+        method = PaymentMethod.get_by_name(conn, 'online')
+        # Till needs to be None, or else, it will try to get the current one,
+        # which doesn't exists on daemon
+        method.create_inpayment(group, info['grand_total'], till=None)
+        group.confirm()
 
         self.sale.order()
 
         return self.update_local(info)
 
     def update_local(self, info):
+        conn = self.get_connection()
+        if not self.magento_address:
+
+            mag_address_id = (info['shipping_address']['customer_address_id'] or
+                              info['billing_address']['customer_address_id'])
+            mag_address = MagentoAddress.selectOneBy(
+                connection=conn,
+                config=self.config,
+                magento_id=mag_address_id,
+                )
+            if not mag_address:
+                log.error("Unexpected error: Could not find the magento "
+                          "address by id %s. It should be synchronized "
+                          "at this point" % (mag_address_id,))
+                return False
+
+            self.magento_address = mag_address
+
         self.status = info['status']
 
         return True
@@ -245,6 +255,7 @@ class MagentoSale(MagentoBaseSyncBoth):
                 MagentoInvoice(connection=conn,
                                config=self.config,
                                magento_sale=self)
+            retval = yield self._create_delivery()
         elif (self.sale.status == Sale.STATUS_CANCELLED and
               self.status != self.STATUS_CANCELLED):
             # FIXME: If the sale was already invoiced on Magento, it's
@@ -255,6 +266,48 @@ class MagentoSale(MagentoBaseSyncBoth):
                 returnValue(False)
 
         returnValue(True)
+
+    #
+    #  Private
+    #
+
+    @inlineCallbacks
+    def _create_delivery(self):
+        if self.magento_delivery:
+            returnValue(True)
+
+        conn = self.get_connection()
+        sysparam_ = sysparam(conn)
+        sale_items = set(self.sale.get_items())
+
+        delivery_sellable = sysparam_.DELIVERY_SERVICE.sellable
+        for item in sale_items:
+            if item.sellable == delivery_sellable:
+                service_item = item
+                sale_items.remove(item)
+                break
+        else:
+            # Just a precaution. If the user changed the service sellable, get
+            # the one with service. Magento isn't syncing services anyway
+            for item in self.sale.get_items():
+                if item.sellable.service:
+                    service_item = item
+                    sale_items.remove(item)
+                    break
+
+        delivery = Delivery(connection=conn,
+                            address=self.magento_address.address,
+                            service_item=service_item,
+                            transporter=self.sale.transporter)
+        for item in sale_items:
+            delivery.add_item(item)
+
+        mag_delivery = MagentoShipment(connection=conn,
+                                       config=self.config,
+                                       magento_sale=self,
+                                       delivery=delivery)
+
+        returnValue(bool(mag_delivery))
 
 
 class MagentoInvoice(MagentoBaseSyncBoth):
@@ -329,12 +382,6 @@ class MagentoInvoice(MagentoBaseSyncBoth):
     #  MagentoBase hooks
     #
 
-    @classmethod
-    def list_remote(cls, *args, **kwargs):
-        # There's not need to import invoices, since we create them on
-        # MagentoSale. We only need to update it's info.
-        return succeed([])
-
     @inlineCallbacks
     def process(self, **kwargs):
         if not self.magento_id:
@@ -352,12 +399,51 @@ class MagentoInvoice(MagentoBaseSyncBoth):
     #
 
     def need_create_local(self):
-        # We dont import invoices.
-        return False
+        return not self.magento_sale
+
+    def create_local(self, info):
+        conn = self.get_connection()
+        mag_sale_id = info['order_increment_id']
+        mag_sale = MagentoSale.selectOneBy(connection=conn,
+                                           config=self.config,
+                                           magento_id=mag_sale_id)
+        if not mag_sale:
+            log.error("Unexpected error: Could not find the magento sale by "
+                      "id %s. It should be synchronized at this point" %
+                      (mag_sale_id,))
+            return False
+
+        self.magento_sale = mag_sale
+        if info['state'] == self.STATUS_OPEN:
+            # Make sure we will try to capture the invoice online
+            self.keep_need_sync = True
+
+        return self.update_local(info)
 
     def update_local(self, info):
-        self.status = info['state']
+        new_status = info['state']
         self.can_void = bool(info['can_void_flag'])
+
+        table_config = self.config.get_table_config(self.__class__)
+        # Update this by hand since this isn't visible on list.
+        # See MagentoBaseSyncDown.synchronize for more information
+        table_config.last_sync_date = max(table_config.last_sync_date,
+                                          info['updated_at'])
+
+        if (self.status == self.STATUS_OPEN and
+            new_status == self.STATUS_PAID):
+            sale = self.magento_sale.sale
+            if not sale.can_set_paid():
+                # The sale wasn't confirmed yet. Wait until it's confirmed,
+                # and then mark it as paid.
+                self.keep_need_sync = True
+                return True
+
+            sale.group.pay()
+            sale.set_paid()
+            self.magento_sale.need_sync = True
+
+        self.status = new_status
 
         return True
 
@@ -414,6 +500,7 @@ class MagentoShipment(MagentoBaseSyncUp):
      ERROR_SHIPMENT_TRACKING_NOT_DELETED) = range(100, 106)
 
     was_track_added = BoolCol(default=False)
+    delivery = ForeignKey('Delivery')
     magento_sale = ForeignKey('MagentoSale', default=None)
 
     #
@@ -423,14 +510,12 @@ class MagentoShipment(MagentoBaseSyncUp):
     @inlineCallbacks
     def add_track_remote(self):
         magento_id = self.magento_id
-        # FIXME: The transporter needs to be registered on magento first.
-        #        How to do that?
-        transporter = self.magento_sale.sale.transporter
-        transporter = transporter and transporter.name
-        # FIXME: Get the track service and number from delivery.
-        #        Waiting for some support on Delivery
-        track_service = 'SEDEX'
-        track_number = 'BR1234567890'
+        # FIXME: Should we inform the track_service? If yes, we need to add
+        #        that kind of support on Delivery
+        transporter = self.delivery.transporter
+        transporter = transporter.get_description() if transporter else ''
+        track_service = ''
+        track_number = self.delivery.tracking_code
 
         data = [magento_id, transporter, track_service, track_number]
         try:
@@ -449,6 +534,11 @@ class MagentoShipment(MagentoBaseSyncUp):
 
     @inlineCallbacks
     def create_remote(self):
+        if self.delivery.status == Delivery.STATUS_INITIAL:
+            # Fool the syncdaemon. When delivery change status, since we
+            # still don't have a magento_id, it will come back here again.
+            returnValue(True)
+
         magento_id = self.magento_sale.magento_id
         comment = _("Shipment for order: %s") % self.magento_id
         include_comment = True
@@ -473,8 +563,13 @@ class MagentoShipment(MagentoBaseSyncUp):
 
     @inlineCallbacks
     def update_remote(self):
+        retval = True
+
         if not self.was_track_added:
+            # FIXME: Can't add track for now. See FIXME note on method
+            returnValue(retval)
             retval = yield self.add_track_remote()
             self.was_track_added = retval
+            self.keep_need_sync = not retval
 
         returnValue(retval)

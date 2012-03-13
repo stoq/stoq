@@ -97,8 +97,12 @@ class MagentoClient(MagentoBaseSyncDown):
         if info['dob']:
             birth_date = info['dob']
             individual.birth_date = birth_date
-        if info['gender']:
-            individual.gender = self._get_gender(info['gender'])
+        mag_gender = info.get('gender', None)
+        if mag_gender:
+            if mag_gender == self.GENDER_MALE:
+                individual.gender = individual.GENDER_MALE
+            if mag_gender == self.GENDER_FEMALE:
+                individual.gender = individual.GENDER_FEMALE
 
         if not individual.cpf and validate_cpf(info['taxvat']):
             # Just update the cpf if we did not have any before
@@ -165,14 +169,6 @@ class MagentoClient(MagentoBaseSyncDown):
                connection=conn)
 
         return person.client
-
-    def _get_gender(self, mag_gender):
-        if mag_gender == self.GENDER_MALE:
-            return Person.GENDER_MALE
-        if mag_gender == self.GENDER_FEMALE:
-            return Person.GENDER_FEMALE
-
-        return None
 
 
 class MagentoAddress(MagentoBaseSyncDown):

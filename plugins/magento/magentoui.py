@@ -85,4 +85,4 @@ class MagentoUI(object):
             self._add_admin_menus(app.main_window.uimanager)
 
     def _on_StopApplicationEvent(self, appname, app):
-        self._remove_app_ui()
+        self._remove_app_ui(app.main_window.uimanager)

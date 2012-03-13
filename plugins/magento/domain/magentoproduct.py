@@ -22,7 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import base64
 import datetime
 import urllib
 
@@ -31,15 +30,16 @@ from kiwi.log import Logger
 from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.web.xmlrpc import Fault
 
-from stoqlib.database.orm import (IntCol, UnicodeCol, DateTimeCol, BLOBCol,
-                                  BoolCol, ForeignKey, SingleJoin,
-                                  MultipleJoin, IN)
+from stoqlib.database.orm import (IntCol, UnicodeCol, DateTimeCol, BoolCol,
+                                  ForeignKey, SingleJoin, MultipleJoin, IN)
 from stoqlib.database.runtime import get_connection
+from stoqlib.domain.image import Image
 from stoqlib.domain.interfaces import IStorable
 
 from domain.magentobase import MagentoBaseSyncUp
 from magentolib import get_proxy
 
+Image # pyflakes
 log = Logger('plugins.magento.domain.magentoproduct')
 
 
@@ -159,9 +159,6 @@ class MagentoProduct(MagentoBaseSyncUp):
                          magento_id=self.magento_id,
                          config=self.config,
                          magento_product=self)
-            image = self.product.sellable.image
-            if image:
-                self._update_main_image(image.image)
             category = self.product.sellable.category
             if category:
                 self._update_category(category)
@@ -175,11 +172,6 @@ class MagentoProduct(MagentoBaseSyncUp):
             retval = yield self.remove_remote()
             returnValue(retval)
 
-        # FIXME: Probably this isn't updating because image is in a separate
-        #        class now. Maybe we should use it directly.
-        image = self.product.sellable.image
-        if image:
-            self._update_main_image(image.image)
         category = self.product.sellable.category
         if category:
             self._update_category(category)
@@ -239,28 +231,6 @@ class MagentoProduct(MagentoBaseSyncUp):
         self.magento_category = mag_category
         self.magento_category.need_sync = True
 
-    def _update_main_image(self, image):
-        conn = self.get_connection()
-        mag_image = MagentoImage.selectOneBy(connection=conn,
-                                             magento_product=self,
-                                             is_main=True)
-
-        if mag_image and mag_image.image == image:
-            # Nothing changed..return here to skip processing bellow
-            return
-        elif mag_image and mag_image.image != image:
-            # This won't be the main image anymore.
-            mag_image.is_main = False
-
-        label = self.product.sellable.get_description()
-        mag_image = MagentoImage(connection=conn,
-                                 magento_id=self.magento_id,
-                                 config=self.config,
-                                 image=image,
-                                 is_main=True,
-                                 label=label,
-                                 magento_product=self)
-
     def _generate_initial_data(self):
         sellable = self.product.sellable
         config = self.config
@@ -276,7 +246,8 @@ class MagentoProduct(MagentoBaseSyncUp):
             self.news_to_date = (self.news_from_date +
                                  relativedelta(days=config.qty_days_as_new))
         if not self.url_key:
-            self.url_key = urllib.quote_plus(str(sellable.get_description()))
+            self.url_key = urllib.quote_plus(
+                sellable.get_description().encode('utf-8'))
 
     def _get_data(self):
         sellable = self.product.sellable
@@ -285,11 +256,13 @@ class MagentoProduct(MagentoBaseSyncUp):
         tax_class_id = (self.TAX_TAXABLE_GOODS if sellable.tax_constant else
                         self.TAX_NONE)
 
+        name = sellable.get_description()
+
         return {
             'status': status,
             'name': sellable.get_description(),
-            'description': sellable.notes,
-            'short_description': sellable.notes.split('\n')[0],
+            'description': sellable.notes or name,
+            'short_description': sellable.notes.split('\n')[0] or name,
             'cost': sellable.cost,
             'price': sellable.price,
             'tax_class_id': tax_class_id,
@@ -371,7 +344,8 @@ class MagentoStock(MagentoBaseSyncUp):
 
         return {
             'qty': quantity,
-            'is_in_stock': int(product.sellable.can_be_sold()),
+            'manage_stock': True,
+            'is_in_stock': product.sellable.can_be_sold(),
             }
 
 
@@ -394,10 +368,9 @@ class MagentoImage(MagentoBaseSyncUp):
     TYPE_SMALL_IMAGE = 'small_image'
     TYPE_THUMBNAIL = 'thumbnail'
 
-    image = BLOBCol()
-    filename = UnicodeCol(default=None)
+    image = ForeignKey('Image')
+    filename = UnicodeCol(default='')
     is_main = BoolCol(default=False)
-    label = UnicodeCol(default=None)
     visible = BoolCol(default=True)
     magento_product = ForeignKey('MagentoProduct')
 
@@ -414,11 +387,17 @@ class MagentoImage(MagentoBaseSyncUp):
 
     @inlineCallbacks
     def create_remote(self):
+        # If no image, that means we need to remove it from magento
+        if not self.image:
+            retval = yield self.remove_remote()
+            returnValue(retval)
+
         image_data = self._get_data()
+        image_description = self.image.get_description()
         image_data.update({
             'file': {
-                'name': urllib.quote('%s%s' % (self.label, self.id)),
-                'content': base64.b64encode(self.image),
+                'name': urllib.quote(image_description.encode('utf-8')),
+                'content': self.image.get_base64_encoded(),
                 # All of our images are stored as png
                 'mime': 'image/png',
                 }
@@ -438,6 +417,11 @@ class MagentoImage(MagentoBaseSyncUp):
 
     @inlineCallbacks
     def update_remote(self):
+        # If no image, that means we need to remove it from magento
+        if not self.image:
+            retval = yield self.remove_remote()
+            returnValue(retval)
+
         image_data = self._get_data()
         data = [self.magento_product.magento_id, self.filename, image_data]
 
@@ -447,6 +431,26 @@ class MagentoImage(MagentoBaseSyncUp):
             log.warning("An error occurried when trying to update a product's "
                         "image on magento: %s" % err.faultString)
             returnValue(False)
+
+        returnValue(retval)
+
+    @inlineCallbacks
+    def remove_remote(self):
+        data = [self.magento_product.magento_id, self.filename]
+
+        try:
+            retval = yield self.proxy.call('product_media.remove', data)
+        except Fault as err:
+            if err.faultCode in (self.ERROR_IMAGE_PRODUCT_NOT_EXISTS,
+                                 self.ERROR_IMAGE_NOT_EXISTS):
+                # The image was already deleted! That's what we wanted!
+                retval = True
+            else:
+                log.warning("An error occurried when trying to delete a "
+                            "product's image on magento: %s" % err.faultString)
+                returnValue(False)
+
+        self.delete(self.id, self.get_connection())
 
         returnValue(retval)
 
@@ -462,7 +466,7 @@ class MagentoImage(MagentoBaseSyncUp):
 
         return {
             'types': types,
-            'label': self.label,
+            'label': self.image.get_description(),
             'exclude': not self.visible,
             }
 

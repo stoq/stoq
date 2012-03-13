@@ -55,17 +55,22 @@ class MagentoConfigEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        return MagentoConfig(connection=conn, url=u'')
+        return MagentoConfig(connection=conn,
+                             url=u'',
+                             # defaults to brazil
+                             tz_hours=-3)
 
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     self.proxy_widgets)
 
-    def on_confirm(self):
-        url, api_user, api_key = (self.model.url,
-                                  self.model.api_user,
-                                  self.model.api_key)
+    def validate_confirm(self):
+        url = self._get_fixed_url(self.model.url)
+        self.model.url = url
+
+        api_user, api_key = (self.model.api_user, self.model.api_key)
+
         try:
             if not validate_connection(url, api_user, api_key):
                 warning(_("Could not validate the connection. "
@@ -76,7 +81,7 @@ class MagentoConfigEditor(BaseEditor):
                       "connection:"), err.message)
             return False
 
-        return super(MagentoConfigEditor, self).on_confirm()
+        return super(MagentoConfigEditor, self).validate_confirm()
 
     #
     #  Private
@@ -94,3 +99,15 @@ class MagentoConfigEditor(BaseEditor):
               SalesPerson.select(connection=self.conn)])
         if self.model.salesperson:
             self.salesperson.update(self.model.salesperson)
+
+    def _get_fixed_url(self, url):
+        if not url.startswith('http'):
+            url = 'http://' + url
+        if not url.endswith('xmlrpc'):
+            while url.endswith('/'):
+                url = url[:-1]
+            if not url.endswith('index.php'):
+                url = url + '/index.php'
+            url = url + '/api/xmlrpc'
+
+        return url

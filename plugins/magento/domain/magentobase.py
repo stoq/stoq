@@ -31,9 +31,11 @@ from twisted.web.xmlrpc import Fault
 from stoqlib.database.orm import BoolCol, IntCol, ForeignKey, AND
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.base import Domain
+from stoqlib.lib.translation import stoqlib_gettext
 
 from magentolib import get_proxy
 
+_ = stoqlib_gettext
 log = Logger('plugins.magento.domain.magentobase')
 
 
@@ -114,6 +116,16 @@ class MagentoBase(Domain):
             obj.keep_need_sync = False
 
             finish_transaction(trans, retval)
+
+        if retval_list:
+            objs_ok = len([retval for retval in retval_list if retval])
+            objs_fail = len([retval for retval in retval_list if not retval])
+            if objs_fail:
+                print (_("    %s: %d records synchronized, %d failing.") %
+                       (cls.__name__, objs_ok, objs_fail))
+            else:
+                print (_("    %s: %d records synchronized.") %
+                       (cls.__name__, objs_ok))
 
         trans.close()
         returnValue(not retval_list or all(retval_list))
@@ -341,7 +353,7 @@ class MagentoBaseSyncDown(MagentoBase):
         last_sync_date = table_config.last_sync_date
         filters = {
             # Only retrieve records modified after last_sync_date
-            'updated_at': {'gteq': last_sync_date},
+            'updated_at': {'gt': last_sync_date},
             }
         mag_records = yield cls.list_remote(config, **filters)
 
