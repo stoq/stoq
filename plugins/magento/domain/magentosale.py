@@ -207,7 +207,6 @@ class MagentoSale(MagentoBaseSyncBoth):
         # Till needs to be None, or else, it will try to get the current one,
         # which doesn't exists on daemon
         method.create_inpayment(group, info['grand_total'], till=None)
-        group.confirm()
 
         self.sale.order()
 
