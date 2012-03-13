@@ -40,7 +40,8 @@ from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
-from stoqlib.domain.events import SaleStatusChangedEvent, ECFIsLastSaleEvent
+from stoqlib.domain.events import (SaleStatusChangedEvent, ECFIsLastSaleEvent,
+                                   DeliveryStatusChangedEvent)
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import (IContainer, IPaymentTransaction,
                                        IStorable)
@@ -272,6 +273,19 @@ class Delivery(Domain):
         return ''
 
     #
+    #  Public API
+    #
+
+    def set_initial(self):
+        self._set_delivery_status(self.STATUS_INITIAL)
+
+    def set_delivering(self):
+        self._set_delivery_status(self.STATUS_DELIVERING)
+
+    def set_received(self):
+        self._set_delivery_status(self.STATUS_RECEIVED)
+
+    #
     #  ORMObject hooks
     #
 
@@ -295,6 +309,15 @@ class Delivery(Domain):
     @argcheck(SaleItem)
     def remove_item(self, item):
         item.delivery = None
+
+    #
+    #  Private
+    #
+
+    def _set_delivery_status(self, status):
+        old_status = self.status
+        DeliveryStatusChangedEvent.emit(self, old_status)
+        self.status = status
 
 
 class Sale(Domain):

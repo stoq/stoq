@@ -130,6 +130,15 @@ class SaleStatusChangedEvent(Event):
     """
 
 
+class DeliveryStatusChangedEvent(Event):
+    """
+    This event is emitted when a delivery has it's status changed
+
+    :param delivery: the delivery which had it's status changed
+    :param old_status: the old delivery status
+    """
+
+
 class ECFIsLastSaleEvent(Event):
     """
     This event is emitted to compare the last sale with the last document
