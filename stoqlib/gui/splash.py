@@ -79,7 +79,6 @@ class SplashScreen(gtk.Window):
         return _("Version: %s") % (version, )
 
     def draw(self, widget, cr):
-        window = widget.get_window()
         gtk.gdk.cairo_set_source_pixbuf(cr, self._pixbuf, 0, 0)
         cr.paint()
 
