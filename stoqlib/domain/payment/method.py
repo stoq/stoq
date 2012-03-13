@@ -27,6 +27,7 @@ from decimal import Decimal
 import datetime
 import operator
 
+from kiwi import ValueUnset
 from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
 from zope.interface import implements
@@ -224,9 +225,9 @@ class PaymentMethod(Domain):
     #       They should either go into the group or to a separate payment
     #       factory singleton.
     @argcheck(int, PaymentGroup, Decimal, datetime.datetime,
-              basestring, basestring, Till, basestring)
+              basestring, basestring, object, basestring)
     def create_payment(self, payment_type, payment_group, value, due_date=None,
-                       description=None, base_value=None, till=None,
+                       description=None, base_value=None, till=ValueUnset,
                        payment_number=None):
         """Creates a new payment according to a payment method interface
         :param payment_type: the kind of payment, in or out
@@ -265,7 +266,7 @@ class PaymentMethod(Domain):
             description = self.describe_payment(payment_group)
 
         # If till is unset, do some clever guessing
-        if till is None:
+        if till is ValueUnset:
             # We only need a till for inpayments
             if payment_type == Payment.TYPE_IN:
                 till = Till.get_current(conn)
@@ -346,9 +347,9 @@ class PaymentMethod(Domain):
                                         payment_group.get_description())
 
     @argcheck(PaymentGroup, Decimal, datetime.datetime,
-              basestring, Decimal, Till)
+              basestring, Decimal, object)
     def create_inpayment(self, payment_group, value, due_date=None,
-                         description=None, base_value=None, till=None):
+                         description=None, base_value=None, till=ValueUnset):
         """Creates a new inpayment
         :param payment_group: a :class:`PaymentGroup` subclass
         :param value: value of payment
@@ -363,9 +364,9 @@ class PaymentMethod(Domain):
                                    description, base_value, till)
 
     @argcheck(PaymentGroup, Decimal, datetime.datetime,
-              basestring, Decimal, Till)
+              basestring, Decimal, object)
     def create_outpayment(self, payment_group, value, due_date=None,
-                          description=None, base_value=None, till=None):
+                          description=None, base_value=None, till=ValueUnset):
         """Creates a new outpayment
         :param payment_group: a :class:`PaymentGroup` subclass
         :param value: value of payment
