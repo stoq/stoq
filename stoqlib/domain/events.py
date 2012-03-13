@@ -77,7 +77,7 @@ class CategoryCreateEvent(Event):
     """
     This event is emitted when a category is created.
 
-    :param product: the created category
+    :param category: the created category
     """
 
 
@@ -85,7 +85,35 @@ class CategoryEditEvent(Event):
     """
     This event is emitted when a category is edited.
 
-    :param product: the edited category
+    :param category: the edited category
+    """
+
+
+#
+# Image events
+#
+
+class ImageCreateEvent(Event):
+    """
+    This event is emitted when an image is created.
+
+    :param image: the created image
+    """
+
+
+class ImageEditEvent(Event):
+    """
+    This event is emitted when an image is edited.
+
+    :param image: the edited image
+    """
+
+
+class ImageRemoveEvent(Event):
+    """
+    This event is emitted when an image is removed.
+
+    :param image: the removed image
     """
 
 
@@ -95,7 +123,7 @@ class CategoryEditEvent(Event):
 
 class SaleStatusChangedEvent(Event):
     """
-    This event is emitted when a sale is confirmed
+    This event is emitted when a sale is has it's status changed
 
     :param sale: the sale which had it's status changed
     :param old_status: the old sale status

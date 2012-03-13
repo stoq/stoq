@@ -24,10 +24,14 @@
 
 """Images domains"""
 
+import base64
+
 from zope.interface import implements
 
 from stoqlib.database.orm import BLOBCol, UnicodeCol
 from stoqlib.domain.base import Domain
+from stoqlib.domain.events import (ImageCreateEvent, ImageEditEvent,
+                                   ImageRemoveEvent)
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -52,6 +56,13 @@ class Image(Domain):
     description = UnicodeCol(default='')
 
     #
+    #  Public API
+    #
+
+    def get_base64_encoded(self):
+        return base64.b64encode(self.image)
+
+    #
     #  IDescribable implementation
     #
 
@@ -59,3 +70,22 @@ class Image(Domain):
         if self.description:
             return self.description
         return _("Stoq image #%d" % (self.id,))
+
+    #
+    #  ORMObject hooks
+    #
+
+    @classmethod
+    def delete(cls, id, conn):
+        ImageRemoveEvent.emit(cls.get(id, conn))
+        super(Image, cls).delete(id, conn)
+
+    #
+    # AbstractModel Hooks
+    #
+
+    def on_create(self):
+        ImageCreateEvent.emit(self)
+
+    def on_update(self):
+        ImageEditEvent.emit(self)

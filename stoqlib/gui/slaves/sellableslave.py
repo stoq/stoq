@@ -130,4 +130,7 @@ class SellableDetailsSlave(BaseEditorSlave):
     #
 
     def _on_image_slave__image_changed(self, slave, image):
+        if image:
+            image.description = ('%s #%d' %
+                                 (self.model.get_description(), self.model.id))
         self.model.image = image
