@@ -282,6 +282,7 @@ class DeliveryEditor(BaseEditor):
         ]
 
     def __init__(self, conn, *args, **kwargs):
+        self._configuring_proxies = False
         user = api.get_current_user(conn)
         # Only users with admin or purchase permission can modify persons
         self._can_modify_person = any((
@@ -296,10 +297,12 @@ class DeliveryEditor(BaseEditor):
     #
 
     def setup_proxies(self):
+        self._configuring_proxies = True
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, DeliveryEditor.proxy_widgets)
         self._update_status_widgets()
         self._update_widgets()
+        self._configuring_proxies = False
 
     def setup_slaves(self):
         self.delivery_items = ObjectList(
@@ -393,9 +396,14 @@ class DeliveryEditor(BaseEditor):
         if not self.model.deliver_date:
             self.proxy.update('deliver_date', datetime.date.today())
 
-        status = (Delivery.STATUS_DELIVERING if active else
-                  Delivery.STATUS_INITIAL)
-        self.model.status = status
+        if self._configuring_proxies:
+            # Do not change status above
+            return
+
+        if active:
+            self.model.set_delivering()
+        else:
+            self.model.set_initial()
 
     def on_was_received_check__toggled(self, button):
         active = button.get_active()
@@ -412,6 +420,11 @@ class DeliveryEditor(BaseEditor):
         if not self.model.receive_date:
             self.proxy.update('receive_date', datetime.date.today())
 
-        status = (Delivery.STATUS_RECEIVED if active else
-                  Delivery.STATUS_DELIVERING)
-        self.model.status = status
+        if self._configuring_proxies:
+            # Do not change status above
+            return
+
+        if active:
+            self.model.set_received()
+        else:
+            self.model.set_delivering()
