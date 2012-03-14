@@ -103,7 +103,7 @@ class SaleDetailsDialog(BaseEditor):
         self.payments_info_list.set_columns(self._get_payments_info_columns())
 
     def _get_payments(self, sale):
-        for payment in sale.payments:
+        for payment in sale.group.payments:
             if payment.is_outpayment():
                 yield _TemporaryOutPayment(payment)
             else:

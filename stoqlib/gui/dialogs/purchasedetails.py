@@ -150,7 +150,7 @@ class PurchaseDetailsDialog(BaseEditor):
         self.received_items.add_list(purchase_items)
 
         self.payments_list.set_columns(self._get_payments_columns())
-        self.payments_list.add_list(self.model.payments)
+        self.payments_list.add_list(self.model.group.payments)
 
         changes = PaymentChangeHistoryView.select_by_group(
             self.model.group,

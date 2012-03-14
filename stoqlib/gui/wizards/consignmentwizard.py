@@ -299,7 +299,7 @@ class CloseInConsignmentWizard(BaseWizard):
         can_close = all([i.quantity_received == i.quantity_sold +
                                                 i.quantity_returned
                          for i in purchase.get_items()])
-        for payment in purchase.group.get_items():
+        for payment in purchase.group.payments:
             if payment.is_preview():
                 payment.set_pending()
 

@@ -69,7 +69,7 @@ class SupplierDetailsDialog(BaseEditor):
         product_dict = {}
         for purchase_view in purchases:
             purchase = PurchaseOrder.get(purchase_view.id, connection=self.conn)
-            self.payments.extend(purchase.payments)
+            self.payments.extend(purchase.group.payments)
             for purchase_item in purchase.get_items():
                 qty = purchase_item.quantity
                 cost = purchase_item.cost

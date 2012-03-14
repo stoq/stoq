@@ -976,7 +976,7 @@ class MultipleMethodSlave(BaseEditorSlave):
             self._add_method(method)
 
         self.payments.set_columns(self._get_columns())
-        self.payments.add_list(self.model.group.get_items())
+        self.payments.add_list(self.model.group.payments)
 
         self.total_value.set_bold(True)
         self.received_value.set_bold(True)
@@ -1169,7 +1169,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         # rename the payments at runtime.
         self.payments.clear()
         payment_group = self.model.group
-        payments = payment_group.get_items()
+        payments = payment_group.payments
         npayments = payments.count()
 
         for i, payment in enumerate(payments.orderBy('id')):

@@ -181,6 +181,6 @@ class PaymentRenegotiationWizard(BaseWizard):
 
     def finish(self):
         self.retval = True
-        for payment in self.model.group.get_items():
+        for payment in self.model.group.payments:
             payment.set_pending()
         self.close()
