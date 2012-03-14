@@ -50,6 +50,7 @@ from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
+from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.search.paymentsearch import CardPaymentSearch
@@ -519,9 +520,18 @@ class ReceivableApp(BaseAccountWindow):
             warning(_('Cannot renegotiate selected payments'))
             return
         trans = api.new_transaction()
-        groups = list(set([trans.get(v.group) for v in receivable_views]))
-        retval = run_dialog(PaymentRenegotiationWizard, self, trans,
-                            groups)
+
+        sale_id = receivable_views[0].sale_id
+        can_edit = all(rv.sale_id == sale_id for rv in receivable_views)
+
+        if can_edit:
+            sale = trans.get(receivable_views[0].sale)
+            retval = run_dialog(SalePaymentsEditor, self, trans, sale)
+        else:
+            groups = list(set([trans.get(v.group) for v in receivable_views]))
+            retval = run_dialog(PaymentRenegotiationWizard, self, trans,
+                                groups)
+
         if api.finish_transaction(trans, retval):
             self.search.refresh()
 
