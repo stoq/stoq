@@ -4,8 +4,10 @@ import gi
 from gi.repository import GObject
 
 
-def install_enums(mod):
-    modname = mod.__name__.rsplit('.', 1)[1].upper()
+def install_enums(mod, dest=None):
+    if dest is None:
+        dest = mod
+    modname = dest.__name__.rsplit('.', 1)[1].upper()
     for attr in dir(mod):
         try:
             obj = getattr(mod, attr, None)
@@ -16,7 +18,7 @@ def install_enums(mod):
                 for value, enum in obj.__enum_values__.items():
                     name = enum.value_name
                     name = name.replace(modname + '_', '')
-                    setattr(mod, name, enum)
+                    setattr(dest, name, enum)
         except TypeError:
             continue
         try:
@@ -24,7 +26,7 @@ def install_enums(mod):
                 for value, flag in obj.__flags_values__.items():
                     for name in flag.value_names:
                         name = name.replace(modname + '_', '')
-                        setattr(mod, name, flag)
+                        setattr(dest, name, flag)
         except TypeError:
             continue
 
@@ -75,6 +77,7 @@ def enable_gtk(version='2.0'):
     from gi.repository import GdkPixbuf
     sys.modules['gtk.gdk'] = Gdk
     install_enums(Gdk)
+    install_enums(GdkPixbuf, dest=Gdk)
     Gdk.BUTTON_PRESS = 4
 
     Gdk.Pixbuf = GdkPixbuf.Pixbuf
@@ -85,7 +88,10 @@ def enable_gtk(version='2.0'):
 
     def get_frame_extents(window):
         try:
-            rect = Gdk.Rectangle()
+            try:
+                rect = Gdk.Rectangle(0, 0, 0, 0)
+            except TypeError:
+                rect = Gdk.Rectangle()
             orig_get_frame_extents(window, rect)
         except TypeError:
             rect = orig_get_frame_extents(window)
@@ -102,7 +108,9 @@ def enable_gtk(version='2.0'):
 
     Gtk.pygtk_version = (2, 99, 0)
 
-    Gtk.gtk_version = (2, 22, 0)
+    Gtk.gtk_version = (Gtk.MAJOR_VERSION,
+                       Gtk.MINOR_VERSION,
+                       Gtk.MICRO_VERSION)
     install_enums(Gtk)
 
     # Action
