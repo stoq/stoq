@@ -204,6 +204,27 @@ def enable_gtk(version='2.0'):
     Gtk.widget_get_default_direction = Gtk.Widget.get_default_direction
     Gtk.window_set_default_icon = Gtk.Window.set_default_icon
 
+    class BaseGetter(object):
+        def __init__(self, widget):
+            self.widget = widget
+            self.context = self.widget.get_style_context()
+
+        def __getitem__(self, state):
+            color = self.context.get_background_color(state)
+            return Gdk.Color(red=color.red,
+                             green=color.green,
+                             blue=color.blue)
+
+    class Styles(object):
+        def __init__(self, widget):
+            self._widget = widget
+            self.base = BaseGetter(widget)
+
+    class StyleDescriptor(object):
+        def __get__(self, instance, class_):
+            return Styles(instance)
+    Gtk.Widget.style = StyleDescriptor()
+
     # gtk.unixprint
     class UnixPrint(object):
         pass
