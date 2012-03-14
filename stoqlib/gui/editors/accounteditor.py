@@ -327,14 +327,14 @@ class AccountEditor(BaseEditor):
 
     def _remove_bank_widgets(self):
         for widget in self._bank_widgets:
-            widget.parent.remove(widget)
+            widget.get_parent().remove(widget)
             widget.destroy()
         self.table.resize(5, 2)
         self._bank_widgets = []
 
     def _remove_bank_option_widgets(self):
         for widget in self._bank_option_widgets:
-            widget.parent.remove(widget)
+            widget.get_parent().remove(widget)
             widget.destroy()
         self.table.resize(5 + len(self._bank_widgets) / 2, 2)
         self._bank_option_widgets = []
