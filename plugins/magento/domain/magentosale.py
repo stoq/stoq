@@ -419,7 +419,7 @@ class MagentoInvoice(MagentoBaseSyncBoth):
         return self.update_local(info)
 
     def update_local(self, info):
-        new_status = info['state']
+        self.status = info['state']
         self.can_void = bool(info['can_void_flag'])
 
         table_config = self.config.get_table_config(self.__class__)
@@ -428,9 +428,9 @@ class MagentoInvoice(MagentoBaseSyncBoth):
         table_config.last_sync_date = max(table_config.last_sync_date,
                                           info['updated_at'])
 
-        if (self.status == self.STATUS_OPEN and
-            new_status == self.STATUS_PAID):
-            sale = self.magento_sale.sale
+        sale = self.magento_sale.sale
+        if (self.status == self.STATUS_PAID and not
+            sale.status == Sale.STATUS_PAID):
             if not sale.can_set_paid():
                 # The sale wasn't confirmed yet. Wait until it's confirmed,
                 # and then mark it as paid.
@@ -440,8 +440,6 @@ class MagentoInvoice(MagentoBaseSyncBoth):
             sale.group.pay()
             sale.set_paid()
             self.magento_sale.need_sync = True
-
-        self.status = new_status
 
         return True
 
