@@ -206,6 +206,7 @@ class AppWindow(GladeDelegate):
     size = ()
 
     def __init__(self, app, keyactions=None):
+        self._action_groups = {}
         self._osx_app = None
         self._sensitive_group = dict()
         self._tool_items = []
@@ -469,6 +470,14 @@ class AppWindow(GladeDelegate):
         #        Purchase shows an extra search tool menu labeled 'empty'
         for child in search_tool_menu.get_children():
             search_tool_menu.remove(child)
+
+    def _get_action_group(self, name):
+        action_group = self.app.launcher._action_groups.get(name)
+        if action_group is None:
+            action_group = gtk.ActionGroup(name)
+            self.uimanager.insert_action_group(action_group, 0)
+            self.app.launcher._action_groups[name] = action_group
+        return action_group
 
     def _display_unstable_version_message(self):
         msg = _(
@@ -827,7 +836,13 @@ class AppWindow(GladeDelegate):
 
     def add_ui_actions(self, ui_string, actions, name='Actions',
                        action_type='normal', filename=None):
-        ag = gtk.ActionGroup(name)
+        ag = self._get_action_group(name)
+
+        to_add = [entry[0] for entry in actions]
+        for action in ag.list_actions():
+            if action.get_name() in to_add:
+                ag.remove_action(action)
+
         if action_type == 'normal':
             ag.add_actions(actions)
         elif action_type == 'toggle':
@@ -836,7 +851,6 @@ class AppWindow(GladeDelegate):
             ag.add_radio_actions(actions)
         else:
             raise ValueError(action_type)
-        self.uimanager.insert_action_group(ag, 0)
         if filename is not None:
             ui_string = environ.get_resource_string('stoq', 'uixml', filename)
         ui_id = self.uimanager.add_ui_from_string(ui_string)
@@ -845,8 +859,7 @@ class AppWindow(GladeDelegate):
         return ui_id
 
     def add_tool_menu_actions(self, actions):
-        group = gtk.ActionGroup(name="ToolMenuGroup")
-        self.uimanager.insert_action_group(group, 0)
+        group = self._get_action_group("ToolMenuGroup")
         for name, label, tooltip, stock_id in actions:
             action = ToolMenuAction(name=name,
                                     label=label,
