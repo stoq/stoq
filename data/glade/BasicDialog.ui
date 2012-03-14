@@ -2,7 +2,6 @@
 <interface>
     <requires lib="gtk+" version="2.16"/>
     <object class="GtkDialog" id="BasicDialog">
-        <property name="has_separator">False</property>
         <property name="role"></property>
         <property name="title" translatable="yes"></property>
         <property name="type_hint">normal</property>
