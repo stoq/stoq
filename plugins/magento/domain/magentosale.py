@@ -453,9 +453,9 @@ class MagentoInvoice(MagentoBaseSyncBoth):
     @inlineCallbacks
     def create_remote(self):
         magento_id = self.magento_sale.magento_id
-        comment = _("Invoice for order: %s") % self.magento_id
+        comment = ''
         include_comment = True
-        send_email = True
+        send_email = False
 
         # [] means all products will be invoiced.
         data = [magento_id, [], comment, send_email, include_comment]
@@ -539,7 +539,7 @@ class MagentoShipment(MagentoBaseSyncUp):
             returnValue(True)
 
         magento_id = self.magento_sale.magento_id
-        comment = _("Shipment for order: %s") % self.magento_id
+        comment = ''
         include_comment = True
         send_email = True
 
