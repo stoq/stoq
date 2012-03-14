@@ -248,7 +248,6 @@ class MagentoSale(MagentoBaseSyncBoth):
         assert not self.need_create_local()
         conn = self.get_connection()
 
-
         if self.sale.status == Sale.STATUS_CONFIRMED:
             if not self.magento_invoice:
                 # Just creating. It'll be syncronized soon
