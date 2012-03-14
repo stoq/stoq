@@ -7,7 +7,6 @@
     <property name="default_width">320</property>
     <property name="default_height">260</property>
     <property name="type_hint">normal</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="PluggableWizard-vbox">
         <property name="visible">True</property>
