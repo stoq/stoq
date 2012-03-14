@@ -29,6 +29,7 @@ from kiwi.datatypes import currency
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.sale import Sale
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
@@ -37,11 +38,11 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class PaymentsEditor(BaseEditor):
+class _PaymentsEditor(BaseEditor):
     """Editor that offers a generic entry to input a string value."""
     gladefile = "HolderTemplate"
     title = _('Payments Editor')
-    model_type = PurchaseOrder
+    model_type = object
     size = (750, 400)
 
     def __init__(self, conn, model):
@@ -77,3 +78,11 @@ class PaymentsEditor(BaseEditor):
 
     def disable_back(self):
         pass
+
+
+class PurchasePaymentsEditor(_PaymentsEditor):
+    model_type = PurchaseOrder
+
+
+class SalePaymentsEditor(_PaymentsEditor):
+    model_type = Sale

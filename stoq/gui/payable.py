@@ -48,7 +48,7 @@ from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
-from stoqlib.gui.editors.paymentseditor import PaymentsEditor
+from stoqlib.gui.editors.paymentseditor import PurchasePaymentsEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
@@ -344,7 +344,7 @@ class PayableApp(BaseAccountWindow):
     def _edit(self, payable_views):
         with api.trans() as trans:
             order = trans.get(payable_views[0].purchase)
-            run_dialog(PaymentsEditor, self, trans, order)
+            run_dialog(PurchasePaymentsEditor, self, trans, order)
 
     def _pay(self, payable_views):
         """
