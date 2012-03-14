@@ -346,6 +346,9 @@ class PayableApp(BaseAccountWindow):
             order = trans.get(payable_views[0].purchase)
             run_dialog(PurchasePaymentsEditor, self, trans, order)
 
+        if trans.committed:
+            self.refresh()
+
     def _pay(self, payable_views):
         """
         Pay a list of items from a payable_views, note that
