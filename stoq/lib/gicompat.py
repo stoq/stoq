@@ -58,6 +58,7 @@ def enable_gtk(version='2.0'):
     gi.require_version('Atk', '1.0')
     from gi.repository import Atk
     sys.modules['atk'] = Atk
+    install_enums(Atk)
 
     # pango
     gi.require_version('Pango', '1.0')
