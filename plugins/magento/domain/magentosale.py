@@ -248,12 +248,14 @@ class MagentoSale(MagentoBaseSyncBoth):
         assert not self.need_create_local()
         conn = self.get_connection()
 
-        if self.sale.status == Sale.STATUS_PAID:
+
+        if self.sale.status == Sale.STATUS_CONFIRMED:
             if not self.magento_invoice:
                 # Just creating. It'll be syncronized soon
                 MagentoInvoice(connection=conn,
                                config=self.config,
                                magento_sale=self)
+        elif self.sale.status == Sale.STATUS_PAID:
             retval = self._create_delivery()
         elif (self.sale.status == Sale.STATUS_CANCELLED and
               self.status != self.STATUS_CANCELLED):
@@ -437,7 +439,8 @@ class MagentoInvoice(MagentoBaseSyncBoth):
                 self.keep_need_sync = True
                 return True
 
-            sale.group.pay()
+            if not sale.group.status == PaymentGroup.STATUS_PAID:
+                sale.group.pay()
             sale.set_paid()
             self.magento_sale.need_sync = True
 
