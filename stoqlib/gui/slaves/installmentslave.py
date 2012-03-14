@@ -140,7 +140,7 @@ class _SaleConfirmationModel(_ConfirmationModel):
             return self._sale.client.person.name
 
     def confirm(self):
-        paid = [p.is_paid() for p in self._sale.group.get_items()]
+        paid = [p.is_paid() for p in self._sale.payments]
         if all(paid):
             self._sale.set_paid()
 

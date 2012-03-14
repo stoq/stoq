@@ -176,7 +176,7 @@ class NFeGenerator(object):
         nnf = self._sale.invoice_number
         assert nnf
 
-        payments = self._sale.group.get_items()
+        payments = self._sale.payments
         series = sysparam(self.conn).NFE_SERIAL_NUMBER
         orientation = sysparam(self.conn).NFE_DANFE_ORIENTATION
         ecf_info = self._sale.get_nfe_coupon_info()
@@ -308,7 +308,7 @@ class NFeGenerator(object):
                          self._sale.discount_value, sale_total)
         self._nfe_data.append(fat)
 
-        payments = self._sale.group.get_items()
+        payments = self._sale.payments
         for p in payments:
             dup = NFeDuplicata(p.id, p.due_date, p.value)
             self._nfe_data.append(dup)

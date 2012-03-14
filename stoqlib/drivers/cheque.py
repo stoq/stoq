@@ -51,7 +51,7 @@ def print_cheques_for_payment_group(conn, group):
     """ Given a instance that implements the PaymentGroup interface, iterate
     over all its items printing a cheque for them.
     """
-    payments = group.get_items()
+    payments = group.get_valid_payments()
     printer = get_current_cheque_printer_settings(conn)
     if not printer:
         return

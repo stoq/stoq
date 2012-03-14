@@ -38,7 +38,6 @@ from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
                                        IDescribable)
 from stoqlib.domain.person import (Person, Branch,
@@ -253,8 +252,15 @@ class PurchaseOrder(Domain):
 
     @property
     def payments(self):
-        return Payment.selectBy(group=self.group,
-                                connection=self.get_connection())
+        """Returns all valid payments for this purchase
+
+        This will return a list of valid payments for this purchase, that
+        is, all payments on the payment group that were not cancelled.
+        If you need to get the cancelled too, use self.group.payments.
+
+        :returns: a list of :class:`stoqlib.domain.payment.payment.Payment`
+        """
+        return self.group.get_valid_payments()
 
     #
     # Private
@@ -272,7 +278,7 @@ class PurchaseOrder(Domain):
     #
 
     def is_paid(self):
-        for payment in self.group.get_items():
+        for payment in self.payments:
             if not payment.is_paid():
                 return False
         return True

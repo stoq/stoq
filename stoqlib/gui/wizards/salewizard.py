@@ -280,7 +280,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
         # If the sale already have payments and they match its total amount,
         # we cannot let the user create more, or even edit the existing ones.
-        if (payment_group.get_items().count() and
+        if (payment_group.payments.count() and
             payment_group.get_total_value() == model.get_total_sale_amount()):
             create_payment = False
         else:

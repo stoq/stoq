@@ -586,7 +586,7 @@ class Sale(Domain):
         """
         assert self.can_set_paid()
 
-        for payment in self.group.payments:
+        for payment in self.payments:
             if not payment.is_paid():
                 raise StoqlibError(
                     _("You cannot close a sale without paying all the payment. "
@@ -796,10 +796,10 @@ class Sale(Domain):
         :returns: True if the sale was paid with money, otherwise False
         :rtype: bool
         """
-        return all(payment.is_money() for payment in self.group.payments)
+        return all(payment.is_money() for payment in self.payments)
 
     def pay_money_payments(self):
-        for payment in self.group.payments:
+        for payment in self.payments:
             if payment.is_money():
                 payment.pay()
 
@@ -852,8 +852,15 @@ class Sale(Domain):
 
     @property
     def payments(self):
-        return Payment.selectBy(group=self.group,
-                                connection=self.get_connection())
+        """Returns all valid payments for this sale
+
+        This will return a list of valid payments for this sale, that
+        is, all payments on the payment group that were not cancelled.
+        If you need to get the cancelled too, use self.group.payments.
+
+        :returns: a list of :class:`stoqlib.domain.payment.payment.Payment`
+        """
+        return self.group.get_valid_payments()
 
     def _get_discount_by_percentage(self):
         discount_value = self.discount_value
@@ -1021,7 +1028,7 @@ class SaleAdaptToPaymentTransaction(object):
         from stoqlib.domain.commission import Commission
 
         nitems = 0
-        for item in self.sale.group.payments:
+        for item in self.sale.payments:
             if not item.is_outpayment():
                 nitems += 1
 

@@ -187,6 +187,29 @@ class TestPurchaseOrder(DomainTest):
 
         self.failIf(account.transactions)
 
+    def testPayments(self):
+        order = self.create_purchase_order()
+        order.add_item(self.create_sellable(), 2)
+
+        check_payment = self.add_payments(order, method_type='check')
+        self.assertEqual(order.payments.count(), 1)
+        self.assertTrue(check_payment in order.payments)
+        self.assertEqual(order.group.payments.count(), 1)
+        self.assertTrue(check_payment in order.group.payments)
+
+        check_payment.cancel()
+        # Cancelled payments should not appear on order, just on group
+        self.assertEqual(order.payments.count(), 0)
+        self.assertFalse(check_payment in order.payments)
+        self.assertEqual(order.group.payments.count(), 1)
+        self.assertTrue(check_payment in order.group.payments)
+
+        money_payment = self.add_payments(order, method_type='money')
+        self.assertEqual(order.payments.count(), 1)
+        self.assertTrue(money_payment in order.payments)
+        self.assertEqual(order.group.payments.count(), 2)
+        self.assertTrue(money_payment in order.group.payments)
+
 
 class TestQuoteGroup(DomainTest):
 

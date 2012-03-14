@@ -467,10 +467,10 @@ class TestSale(DomainTest):
         # Penality is still 50
         self.assertEqual(renegotiation.penalty_value, penalty)
 
-        # We know have four payments in the sale, the outpayment as well
-        self.assertEqual(sale.payments.count(), 4)
+        # We know have four payments in the group, the outpayment as well
+        self.assertEqual(sale.group.payments.count(), 4)
 
-        p1, p2, p3, p4 = sale.payments.orderBy('open_date')
+        p1, p2, p3, p4 = sale.group.payments.orderBy('open_date')
         # First three payments are incoming, one each of 50
         self.failUnless(p1.is_inpayment())
         self.failIf(p1.is_outpayment())
@@ -795,6 +795,30 @@ class TestSale(DomainTest):
         self.failIf(account.transactions)
         sale.confirm()
         self.failIf(account.transactions)
+
+    def testPayments(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+
+        check_payment = self.add_payments(sale, method_type='check')
+        self.assertEqual(sale.payments.count(), 1)
+        self.assertTrue(check_payment in sale.payments)
+        self.assertEqual(sale.group.payments.count(), 1)
+        self.assertTrue(check_payment in sale.group.payments)
+
+        check_payment.cancel()
+        # Cancelled payments should not appear on sale, just on group
+        self.assertEqual(sale.payments.count(), 0)
+        self.assertFalse(check_payment in sale.payments)
+        self.assertEqual(sale.group.payments.count(), 1)
+        self.assertTrue(check_payment in sale.group.payments)
+
+        money_payment = self.add_payments(sale, method_type='money')
+        self.assertEqual(sale.payments.count(), 1)
+        self.assertTrue(money_payment in sale.payments)
+        self.assertEqual(sale.group.payments.count(), 2)
+        self.assertTrue(money_payment in sale.group.payments)
 
 
 class TestSaleItem(DomainTest):

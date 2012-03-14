@@ -105,7 +105,7 @@ class PaymentRenegotiation(Domain):
 
     @property
     def payments(self):
-        return self.group.get_items()
+        return self.group.get_valid_payments()
 
     #
     #   IContainer Implementation

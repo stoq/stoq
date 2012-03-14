@@ -103,6 +103,10 @@ class PaymentGroup(Domain):
 
     @property
     def payments(self):
+        """Returns all payments of this group
+
+        :returns: a list of :class:`stoqlib.domain.payment.payment.Payment`
+        """
         return self.get_items()
 
     @property
