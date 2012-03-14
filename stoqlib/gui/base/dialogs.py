@@ -32,7 +32,6 @@ from kiwi.ui.dialogs import error, warning, info, yesno
 from kiwi.ui.delegates import GladeSlaveDelegate, GladeDelegate
 from kiwi.ui.views import BaseView
 from kiwi.utils import gsignal
-from kiwi.argcheck import argcheck
 from zope.interface import implements
 
 from stoqlib.exceptions import ModelDataError
@@ -403,7 +402,6 @@ def get_current_toplevel():
         return _toplevel_stack[-1]
 
 
-@argcheck(gtk.Window)
 def add_current_toplevel(toplevel):
     _toplevel_stack.append(toplevel)
 
