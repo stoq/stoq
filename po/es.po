@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-02-27 17:10-0300\n"
-"PO-Revision-Date: 2012-01-29 03:52+0000\n"
+"PO-Revision-Date: 2012-03-14 04:19+0000\n"
 "Last-Translator: Fitoschido <fitoschido@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-03-11 04:48+0000\n"
-"X-Generator: Launchpad (build 14914)\n"
+"X-Launchpad-Export-Date: 2012-03-14 04:47+0000\n"
+"X-Generator: Launchpad (build 14933)\n"
 "Language: es\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -1306,7 +1306,7 @@ msgstr ""
 
 #: ../data/glade/MultipleMethodSlave.ui.h:5
 msgid "_Cash"
-msgstr ""
+msgstr "E_fectivo"
 
 #: ../data/glade/NoteSlave.ui.h:1
 msgid "Notes:"
