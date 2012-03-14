@@ -78,7 +78,7 @@ class SplashScreen(gtk.Window):
             version = '%s <b>%s</b>' % (ver, rev)
         return _("Version: %s") % (version, )
 
-    def draw(self, widget, cr):
+    def _draw_gi(self, cr):
         gtk.gdk.cairo_set_source_pixbuf(cr, self._pixbuf, 0, 0)
         cr.paint()
 
@@ -92,9 +92,13 @@ class SplashScreen(gtk.Window):
         cr.move_to(WIDTH - w - BORDER, HEIGHT - h - BORDER)
         pangocairo.show_layout(cr, layout)
 
+    def draw(self, widget, cr):
+        self._draw_gi(cr)
+
     def expose(self, widget, event):
         cr = widget.window.cairo_create()
         if not hasattr(cr, 'set_source_pixbuf'):
+            self._draw_gi(cr)
             return
         # Draw splash
         cr.set_source_pixbuf(self._pixbuf, 0, 0)
