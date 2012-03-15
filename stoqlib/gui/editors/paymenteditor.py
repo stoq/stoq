@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007-2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -26,6 +26,7 @@
 
 
 import datetime
+import operator
 
 from dateutil.relativedelta import relativedelta
 import gtk
@@ -51,7 +52,7 @@ from stoqlib.gui.editors.personeditor import ClientEditor, SupplierEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.defaults import (INTERVALTYPE_WEEK,
                                   INTERVALTYPE_MONTH)
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 _ = stoqlib_gettext
 INTERVALTYPE_ONCE = -1
@@ -218,14 +219,15 @@ class PaymentEditor(BaseEditor):
 
     def _fill_method_combo(self):
         if self._is_new_model:
-            methods = PaymentMethod.get_creatable_methods(
+            methods = set(PaymentMethod.get_creatable_methods(
                 self.trans,
                 self.payment_type,
-                separate=True)
-        else:
-            methods = [self.model.method]
+                separate=True))
+        methods.add(self.model.method)
         self.method.set_sensitive(False)
-        self.method.prefill([(m.description, m) for m in methods])
+        self.method.prefill(locale_sorted(
+            [(m.description, m) for m in methods],
+            key=operator.itemgetter(0)))
         self.method.select(self.model.method)
 
     def _setup_widgets(self):
