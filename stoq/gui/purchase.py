@@ -495,7 +495,8 @@ class PurchaseApp(SearchableAppWindow):
         self.run_dialog(SellableCategorySearch, self.conn)
 
     def on_SearchQuotes__activate(self, action):
-        self.run_dialog(ReceiveQuoteWizard, self.conn)
+        with api.trans() as trans:
+            self.run_dialog(ReceiveQuoteWizard, trans)
         self.refresh()
 
     def on_SearchPurchasedItems__activate(self, action):

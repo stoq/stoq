@@ -256,7 +256,8 @@ class ProductionApp(SearchableAppWindow):
         self._start_production_order()
 
     def on_ProductionPurchaseQuote__activate(self, action):
-        self.run_dialog(ProductionQuoteDialog, self.conn)
+        with api.trans() as trans:
+            self.run_dialog(ProductionQuoteDialog, trans)
 
     # Search
 
