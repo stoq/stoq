@@ -256,8 +256,8 @@ class MagentoSale(MagentoBaseSyncBoth):
                                magento_sale=self)
         elif self.sale.status == Sale.STATUS_PAID:
             retval = self._create_delivery()
-        elif (self.sale.status == Sale.STATUS_CANCELLED and
-              self.status != self.STATUS_CANCELLED):
+        elif (self.sale.status in (Sale.STATUS_CANCELLED, Sale.STATUS_RETURNED)
+              and self.status != self.STATUS_CANCELLED):
             # FIXME: If the sale was already invoiced on Magento, it's
             #        unlikly it will let us cancel it. Maybe we should
             #        avoid that on Stoq.
