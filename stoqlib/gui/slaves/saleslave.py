@@ -208,8 +208,10 @@ class SaleListToolbar(GladeSlaveDelegate):
         if till is None:
             return info(_(u'You must open the till first.'))
         sale = self.sales.get_selected()
-        retval = return_sale(self.get_parent(), sale, self.conn)
-        api.finish_transaction(self.conn, retval)
+        trans = api.new_transaction()
+        retval = return_sale(self.get_parent(), sale, trans)
+        api.finish_transaction(trans, retval)
+        trans.close()
 
         if retval:
             self.emit('sale-returned', retval)
