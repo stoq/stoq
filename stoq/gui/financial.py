@@ -340,6 +340,7 @@ class FinancialApp(AppWindow):
         self.accounts = AccountTree()
         AppWindow.__init__(self, app)
         self._tills_account = api.sysparam(self.conn).TILLS_ACCOUNT
+        self._imbalance_account = api.sysparam(self.conn).IMBALANCE_ACCOUNT
         self._banks_account = api.sysparam(self.conn).BANKS_ACCOUNT
 
     #
@@ -644,8 +645,10 @@ class FinancialApp(AppWindow):
         if account_view.kind != 'account':
             return False
 
-        if account_view.id == self._banks_account.id:
-            return
+        if account_view.id in [self._banks_account.id,
+                               self._imbalance_account.id,
+                               self._tills_account.id]:
+            return False
         return True
 
     def _can_delete_account(self):
