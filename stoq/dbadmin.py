@@ -318,7 +318,18 @@ class StoqCommandHandler:
 
         if output == '-':
             output = None
-        dump_database(output)
+        dump_database(output, gzip=options.gzip,
+                      format=options.format)
+
+    def opt_dump(self, parser, group):
+        group.add_option('-z', '--gzip',
+                         action='store_true',
+                         dest='gzip')
+        group.add_option('-F', '--format',
+                         action='store',
+                         default='custom',
+                         help="dump format see man pg_dump for more information",
+                         dest='format')
 
     def cmd_restore(self, options, schema):
         from stoqlib.database.database import execute_sql
