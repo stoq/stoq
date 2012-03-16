@@ -260,7 +260,8 @@ def test_connection(settings=None):
         raise NotImplementedError(settings.rdbms)
 
 
-def dump_database(filename, settings=None, schema_only=False):
+def dump_database(filename, settings=None, schema_only=False,
+                  gzip=False, format='custom'):
     """Dump the contents of the current database
     :param filename: filename to write the database dump to
     :param settings: optionally provide seetings, so that you dont have to
@@ -273,8 +274,10 @@ def dump_database(filename, settings=None, schema_only=False):
 
     if settings.rdbms == 'postgres':
         args = ['pg_dump',
-                '--format=custom',
+                '--format=%s' % (format, ),
                 '--encoding=UTF-8']
+        if gzip:
+            args.append('--compress=9')
         if schema_only:
             args.append('--schema-only')
         if filename is not None:
