@@ -407,6 +407,9 @@ class Sale(Domain, Adaptable):
     group = ForeignKey('PaymentGroup')
     client_category = ForeignKey('ClientCategory', default=None)
 
+    def __init__(self, *args, **kwargs):
+        self.addFacet(IPaymentTransaction)
+        Domain.__init__(self, *args, **kwargs)
     #
     # ORMObject hooks
     #

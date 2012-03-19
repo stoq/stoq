@@ -325,25 +325,20 @@ class Adaptable(object):
 def _adapter_hook(iface, obj):
     # Twisted's IPathImportMapper occasionally sends in None
     # which breaks isinstance, work-around. Johan 2008-09-29
+    if not isinstance(obj, Adaptable):
+        return
+
+    name = qual(iface)
+    adapterCache = getattr(obj, '_adapterCache', {})
+    if name in adapterCache:
+        return adapterCache[name]
+
     try:
-        is_adaptable = isinstance(obj, Adaptable)
-    except TypeError:
-        is_adaptable = False
-
-    if is_adaptable:
-        name = qual(iface)
-        adapterCache = getattr(obj, '_adapterCache', {})
-        if name in adapterCache:
-            return adapterCache[name]
-
-        try:
-            facetType = obj.getFacetType(iface)
-        except LookupError:
-            # zope.interface will handle this and raise TypeError,
-            # see InterfaceClass.__call__ in zope/interface/interface.py
-            return None
-
-        return facetType(obj)
+        obj.getFacetType(iface)
+    except LookupError:
+        # zope.interface will handle this and raise TypeError,
+        # see InterfaceClass.__call__ in zope/interface/interface.py
+        return None
 
 adapter_hooks.append(_adapter_hook)
 
