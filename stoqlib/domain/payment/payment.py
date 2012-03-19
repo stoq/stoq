@@ -37,14 +37,13 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.lib.component import Adaptable
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 log = Logger('stoqlib.domain.payment.payment')
 
 
-class Payment(Domain, Adaptable):
+class Payment(Domain):
     """ The payment representation in Stoq.
 
     B{Importante attributes}:
@@ -534,10 +533,6 @@ class PaymentFlowHistory(Domain):
                              or attributes related to payments that will be
                              accomplished later.
         """
-        if not payment.getFacets():
-            log.info('Payment %r will not be registered in %r: missing '
-                     'payment facets.' % (payment, self))
-
         if value > 0:
             payment_qty = 1
         else:
