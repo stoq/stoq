@@ -79,7 +79,7 @@ class TestTransferOrder(DomainTest):
         self.assertEqual(order.can_close(), True)
         order.send_item(item)
 
-        storable = item.sellable.product.storable
+        storable = item.sellable.product_storable
         if storable.has_stock_by_branch(order.destination_branch):
             before_qty = storable.get_full_balance()
         else:

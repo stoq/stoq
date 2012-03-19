@@ -190,7 +190,7 @@ class DecreaseItemStep(SellableItemStep):
         if not value or value <= Decimal(0):
             return ValidationError(_(u'Quantity must be greater than zero'))
 
-        storable = sellable.product.storable
+        storable = sellable.product_storable
         assert storable
         balance = storable.get_full_balance(branch=self.model.branch)
         for i in self.slave.klist:

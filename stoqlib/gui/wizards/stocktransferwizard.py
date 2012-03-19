@@ -131,7 +131,7 @@ class StockTransferProductStep(SellableItemStep):
             ]
 
     def _get_stock_quantity(self, item):
-        storable = item.sellable.product.storable
+        storable = item.sellable.product_storable
         stock_item = storable.get_stock_item(self.branch)
         return stock_item.quantity or 0
 
@@ -146,7 +146,7 @@ class StockTransferProductStep(SellableItemStep):
         self.summary = None
 
     def _get_stock_balance(self, sellable):
-        storable = sellable.product.storable
+        storable = sellable.product_storable
         quantity = storable.get_full_balance(self.branch) or Decimal(0)
         # do not count the added quantity
         for item in self.slave.klist:
@@ -162,7 +162,7 @@ class StockTransferProductStep(SellableItemStep):
         if sellable is None:
             return
 
-        storable = sellable.product.storable
+        storable = sellable.product_storable
         stock_item = storable.get_stock_item(self.branch)
         self.stock_quantity.set_label("%s" % stock_item.quantity or 0)
 

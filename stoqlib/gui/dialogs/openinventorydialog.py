@@ -233,7 +233,7 @@ class OpenInventoryDialog(BaseEditor):
                               branch=self.model.branch,
                               connection=self.conn)
         for sellable in self._get_sellables():
-            storable = sellable.product.storable
+            storable = sellable.product_storable
             if storable is None:
                 continue
             # a sellable without stock can't be part of inventory

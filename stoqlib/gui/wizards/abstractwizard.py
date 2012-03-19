@@ -300,7 +300,7 @@ class SellableItemStep(WizardEditorStep):
             description = "<b>%s</b>" % sellable.get_description()
             cost = sellable.cost
             quantity = Decimal(1)
-            storable = sellable.product.storable
+            storable = sellable.product_storable
             if storable:
                 minimum = storable.minimum_quantity
                 stock = storable.get_full_balance(self.model.branch)

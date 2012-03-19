@@ -130,7 +130,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
             self._validate_step(True)
 
     def _return_single_item(self, sellable, quantity):
-        storable = sellable.product.storable
+        storable = sellable.product_storable
         assert storable
 
         branch = self.consignment.branch

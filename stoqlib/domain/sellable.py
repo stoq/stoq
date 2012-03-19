@@ -365,6 +365,18 @@ class Sellable(Domain):
     #
 
     @property
+    def product_storable(self):
+        """If this is a product and has stock, fetch the storable for this.
+        This is a shortcut to avoid having to do multiple queries and
+        check if product isn't none before fetching the storable.
+        :returns: The storable or None if there isn't one
+        """
+        from stoqlib.domain.product import Product, Storable
+        return Storable.selectOne(AND(Storable.q.productID == Product.q.id,
+                                      Product.q.sellableID == self.id),
+                                  connection=self.get_connection())
+
+    @property
     def has_image(self):
         return bool(self.image and self.image.image)
 
@@ -548,7 +560,7 @@ class Sellable(Domain):
 
     def get_category_price_info(self, category):
         """Returns the :class:`ClientCategoryPrice` information for the given
-        :class:`ClientCategory` and this sellabe.
+        :class:`ClientCategory` and this sellable.
 
         :returns: the :class:`ClientCategoryPrice` or None
         """
