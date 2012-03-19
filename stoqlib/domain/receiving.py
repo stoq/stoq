@@ -33,7 +33,6 @@ from stoqlib.database.orm import PriceCol, QuantityCol
 from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
@@ -99,7 +98,7 @@ class ReceivingOrderItem(Domain):
                 self.get_remaining_quantity()))
 
         branch = self.receiving_order.branch
-        storable = IStorable(self.sellable.product, None)
+        storable = self.sellable.product.storable
         if storable is not None:
             storable.increase_stock(self.quantity, branch, self.cost)
         purchase = self.purchase_item.order

@@ -29,7 +29,6 @@ import datetime
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.inventory import Inventory, InventoryItem
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -234,7 +233,7 @@ class OpenInventoryDialog(BaseEditor):
                               branch=self.model.branch,
                               connection=self.conn)
         for sellable in self._get_sellables():
-            storable = IStorable(sellable.product, None)
+            storable = sellable.product.storable
             if storable is None:
                 continue
             # a sellable without stock can't be part of inventory

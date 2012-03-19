@@ -41,7 +41,6 @@ from kiwi.python import Settable
 
 from stoqlib.api import api
 from stoqlib.database.orm import AND, ORMObject
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.service import ServiceView
@@ -301,7 +300,7 @@ class SellableItemStep(WizardEditorStep):
             description = "<b>%s</b>" % sellable.get_description()
             cost = sellable.cost
             quantity = Decimal(1)
-            storable = IStorable(sellable.product, None)
+            storable = sellable.product.storable
             if storable:
                 minimum = storable.minimum_quantity
                 stock = storable.get_full_balance(self.model.branch)

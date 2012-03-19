@@ -31,7 +31,7 @@ from zope.interface import implements
 from stoqlib.database.orm import ForeignKey, UnicodeCol, DateTimeCol, IntCol
 from stoqlib.database.orm import QuantityCol
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IContainer, IStorable
+from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.product import ProductHistory
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
@@ -64,7 +64,7 @@ class StockDecreaseItem(Domain):
     def decrease(self, branch):
         assert branch
 
-        storable = IStorable(self.sellable.product, None)
+        storable = self.sellable.product.storable
         if storable:
             storable.decrease_stock(self.quantity, branch)
 

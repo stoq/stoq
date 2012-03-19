@@ -29,7 +29,6 @@ import gtk
 
 from kiwi.datatypes import ValidationError
 
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.loan import LoanItem
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -86,7 +85,7 @@ class LoanItemEditor(BaseEditor):
                 widget.hide()
 
     def _has_stock(self, quantity):
-        storable = IStorable(self.model.sellable.product, None)
+        storable = self.model.sellable.product.storable
         if storable is not None:
             available = storable.get_full_balance(self._branch)
         else:

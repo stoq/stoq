@@ -25,7 +25,6 @@
 from decimal import Decimal
 
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -150,7 +149,7 @@ class TestInventoryItem(DomainTest):
         invoice_number = 13
         item.adjust(invoice_number)
 
-        storable = IStorable(item.product)
+        storable = item.product.storable
         current_stock = storable.get_full_balance(item.inventory.branch)
         self.assertEqual(current_stock, item.actual_quantity)
 

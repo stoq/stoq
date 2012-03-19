@@ -33,7 +33,7 @@ from stoqlib.database.orm import DateTimeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.person import Person, Branch
-from stoqlib.domain.interfaces import IContainer, IStorable
+from stoqlib.domain.interfaces import IContainer
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -121,7 +121,7 @@ class TransferOrder(Domain):
         """Sends a product of this order to it's destination branch"""
         assert self.can_close()
 
-        storable = IStorable(transfer_item.sellable.product)
+        storable = transfer_item.sellable.product.storable
         storable.decrease_stock(transfer_item.quantity, self.source_branch)
         conn = self.get_connection()
         ProductHistory.add_transfered_item(conn, self.source_branch,
@@ -136,7 +136,7 @@ class TransferOrder(Domain):
         self.receival_date = receival_date
 
         for item in self.get_items():
-            storable = IStorable(item.sellable.product)
+            storable = item.sellable.product.storable
             from_stock = storable.get_stock_item(self.source_branch)
             storable.increase_stock(item.quantity,
                                     self.destination_branch,

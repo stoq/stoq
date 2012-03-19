@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.product import Storable
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -60,7 +60,7 @@ class TestStockDecrease(DomainTest):
 
         branch = decrease.branch
 
-        storable = sellable.product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=sellable.product, connection=self.trans)
         storable.increase_stock(100, branch)
 
         self.assertEqual(storable.get_stock_item(branch).quantity, 100)

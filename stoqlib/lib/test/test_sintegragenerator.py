@@ -5,10 +5,10 @@ from stoqdrivers.enum import TaxType
 from stoqlib.database.runtime import get_current_branch
 
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.inventory import Inventory, InventoryItem
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.product import Storable
+from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
 from stoqlib.lib.test.test_sintegra import compare_sintegra_file
@@ -72,7 +72,8 @@ class TestSintegraGenerator(DomainTest):
 
         sale.add_sellable(sellable3, quantity=1)
 
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product,
+                            connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
 
         sale.order()

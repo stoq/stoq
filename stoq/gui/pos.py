@@ -39,7 +39,6 @@ from stoqdrivers.enum import UnitType
 from stoqlib.api import api
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.product import IStorable
 from stoqlib.domain.sale import Sale, Delivery
 from stoqlib.domain.sellable import Sellable
 from stoqlib.drivers.scale import read_scale_info
@@ -577,7 +576,7 @@ class PosApp(AppWindow):
                 self._scale_settings):
                 self._read_scale(sellable)
 
-        storable = IStorable(sellable.product, None)
+        storable = sellable.product.storable
         if storable is not None:
             if not self._check_available_stock(storable, sellable):
                 info(_("You cannot sell more items of product %s. "

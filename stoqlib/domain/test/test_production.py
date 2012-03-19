@@ -25,7 +25,6 @@
 
 from decimal import Decimal
 
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.product import ProductQualityTest
 from stoqlib.domain.production import (ProductionOrder, ProductionMaterial,
                                        ProductionItem, ProductionService)
@@ -90,7 +89,7 @@ class TestProductionItem(DomainTest):
         item = self.create_production_item(quantity=2)
         branch = item.order.branch
         for material in item.order.get_material_items():
-            storable = IStorable(material.product)
+            storable = material.product.storable
             storable.increase_stock(2, branch)
 
         order = item.order
@@ -115,7 +114,7 @@ class TestProductionItem(DomainTest):
         order = item.order
         branch = order.branch
         for component in item.get_components():
-            storable = IStorable(component.component)
+            storable = component.component.storable
             storable.increase_stock(2, branch)
 
         self.assertEqual(order.status, ProductionOrder.ORDER_OPENED)
@@ -170,7 +169,7 @@ class TestProductionMaterial(DomainTest):
         material = self.create_production_material()
         branch = material.order.branch
         product = material.product
-        storable = IStorable(product)
+        storable = product.storable
         storable.increase_stock(10, branch)
         material.needed = 20
         self.assertEqual(material.get_stock_quantity(), 10)
@@ -192,7 +191,7 @@ class TestProductionMaterial(DomainTest):
         material = self.create_production_material()
         branch = material.order.branch
         product = material.product
-        storable = IStorable(product)
+        storable = product.storable
         storable.increase_stock(10, branch)
         self.assertEqual(material.get_stock_quantity(), 10)
 
@@ -211,7 +210,7 @@ class TestProductionMaterial(DomainTest):
         order = item.order
         branch = order.branch
         for component in item.get_components():
-            storable = IStorable(component.component)
+            storable = component.component.storable
             storable.increase_stock(1, branch)
 
         order.start_production()
@@ -231,7 +230,7 @@ class TestProductionMaterial(DomainTest):
         order = item.order
         branch = order.branch
         for material in item.order.get_material_items():
-            storable = IStorable(material.product)
+            storable = material.product.storable
             storable.increase_stock(10, branch)
 
         item.order.start_production()
@@ -254,7 +253,7 @@ class TestProductionQuality(DomainTest):
         order = self.create_production_order()
         item = self.create_production_item(quantity=4, order=order)
         for material in item.order.get_material_items():
-            storable = IStorable(material.product)
+            storable = material.product.storable
             storable.increase_stock(4, order.branch)
 
         test1 = ProductQualityTest(connection=self.trans, product=item.product,
@@ -271,7 +270,7 @@ class TestProductionQuality(DomainTest):
         user = self.create_user()
 
         # We still dont have any stock for this product
-        storable = IStorable(item.product)
+        storable = item.product.storable
         self.assertEqual(storable.get_full_balance(order.branch), 0)
 
         self.assertEqual(order.produced_items.count(), 0)
@@ -333,5 +332,5 @@ class TestProductionQuality(DomainTest):
         for p_item in order.produced_items:
             self.assertEqual(p_item.entered_stock, True)
 
-        storable = IStorable(item.product)
+        storable = item.product.storable
         self.assertEqual(storable.get_full_balance(order.branch), 4)

@@ -24,7 +24,7 @@
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.loan import Loan
-from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.product import Storable
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -66,7 +66,7 @@ class TestLoanItem(DomainTest):
     def testDoLoan(self):
         loan = self.create_loan()
         product = self.create_product()
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product, connection=self.trans)
         branch = get_current_branch(self.trans)
         storable.increase_stock(1, branch)
         initial = storable.get_full_balance(branch)
@@ -79,7 +79,7 @@ class TestLoanItem(DomainTest):
     def testReturnProduct(self):
         loan = self.create_loan()
         product = self.create_product()
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product, connection=self.trans)
         branch = get_current_branch(self.trans)
         loan.branch = branch
         initial = storable.get_full_balance(branch)

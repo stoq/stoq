@@ -34,11 +34,11 @@ from stoqlib.database.orm import PriceCol, DecimalCol, QuantityCol
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
                                   BoolCol, IntCol, PercentCol)
 from stoqlib.database.orm import const, AND, LEFTJOINOn
-from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)
 from stoqlib.domain.person import Branch, Person
-from stoqlib.domain.interfaces import (IStorable, IDescribable)
+from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import StockError, DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
@@ -175,9 +175,6 @@ class Product(Domain):
     ex_tipi = UnicodeCol(default=None)
     genero = UnicodeCol(default=None)
 
-    def facet_IStorable_add(self, **kwargs):
-        return ProductAdaptToStorable(self, **kwargs)
-
     #
     # General Methods
     #
@@ -189,10 +186,15 @@ class Product(Domain):
     def description(self):
         return self.sellable.description
 
+    @property
+    def storable(self):
+        return Storable.selectOneBy(product=self,
+                                    connection=self.get_connection())
+
     def remove(self):
         """Deletes this product from the database.
         """
-        storable = IStorable(self, None)
+        storable = self.storable
         if storable:
             storable.delete(storable.id, self.get_connection())
         for i in self.get_suppliers_info():
@@ -211,7 +213,7 @@ class Product(Domain):
         from stoqlib.domain.production import ProductionItem
         if self.get_history().count():
             return False
-        storable = IStorable(self, None)
+        storable = self.storable
         if storable and storable.get_stock_items().count():
             return False
         # Return False if the product is component of other.
@@ -240,7 +242,7 @@ class Product(Domain):
         # Components maximum lead time
         comp_max_time = 0
         for i in self.get_components():
-            storable = IStorable(i.component)
+            storable = i.component.storable
             needed = quantity * i.quantity
             stock = storable.get_full_balance(branch)
             # We have enought of this component items to produce.
@@ -505,7 +507,7 @@ class ProductStockItem(Domain):
     quantity = QuantityCol(default=0)
     logic_quantity = QuantityCol(default=0)
     branch = ForeignKey('Branch')
-    storable = ForeignKey('ProductAdaptToStorable')
+    storable = ForeignKey('Storable')
 
     def update_cost(self, new_quantity, new_cost):
         """Update the stock_item according to new quantity and cost.
@@ -518,17 +520,8 @@ class ProductStockItem(Domain):
         self.stock_cost = total_cost / total_items
 
 
-#
-# Adapters
-#
-
-
-class ProductAdaptToStorable(ModelAdapter):
-    """A product implementation as a storable facet."""
-
-    implements(IStorable)
-
-    original = ForeignKey('Product')
+class Storable(Domain):
+    product = ForeignKey('Product')
     minimum_quantity = QuantityCol(default=0)
     maximum_quantity = QuantityCol(default=0)
 
@@ -577,15 +570,14 @@ class ProductAdaptToStorable(ModelAdapter):
     # Properties
     #
 
-    @property
-    def product(self):
-        return self.get_adapted()
-
-    #
-    # IStorable implementation
-    #
-
     def increase_stock(self, quantity, branch, unit_cost=None):
+        """When receiving a product, update the stock reference for this new
+        item on a specific branch company.
+        :param quantity: amount to increase
+        :param branch: a branch
+        :param cost: optional parameter indicating the unit cost of the new
+                     stock items
+        """
         if quantity <= 0:
             raise ValueError(_("quantity must be a positive number"))
 
@@ -614,6 +606,12 @@ class ProductAdaptToStorable(ModelAdapter):
                                      stock_item.quantity)
 
     def decrease_stock(self, quantity, branch):
+        """When receiving a product, update the stock reference for the sold item
+        this on a specific branch company. Returns the stock item that was
+        decreased.
+        :param quantity: amount to decrease
+        :param branch: a branch
+        """
         # The function get_full_balance returns the current amount of items
         # in the stock. If get_full_balance == 0 we have no more stock for
         # this product and we need to set it as sold.
@@ -651,12 +649,17 @@ class ProductAdaptToStorable(ModelAdapter):
         return stock_item
 
     def increase_logic_stock(self, quantity, branch=None):
+        """When receiving a product, update the stock logic quantity
+        reference for this new item. If no branch company is supplied,
+        update all branches."""
         self._check_logic_quantity()
         stocks = self._get_stocks(branch)
         for stock_item in stocks:
             stock_item.logic_quantity += quantity
 
     def decrease_logic_stock(self, quantity, branch=None):
+        """When selling a product, update the stock logic reference for the sold
+        item. If no branch company is supplied, update all branches."""
         self._check_logic_quantity()
 
         stocks = self._get_stocks(branch)
@@ -665,7 +668,10 @@ class ProductAdaptToStorable(ModelAdapter):
             stock_item.logic_quantity -= quantity
 
     def get_full_balance(self, branch=None):
-        """ Get the stock balance and the logic balance."""
+        """Return the stock balance for the current product. If a branch
+        company is supplied, get the stock balance for this branch,
+        otherwise, get the stock balance for all the branches.
+        We get also the sum of logic_quantity attributes"""
         stocks = self._get_stocks(branch)
         value = Decimal(0)
         if not stocks:
@@ -678,12 +684,19 @@ class ProductAdaptToStorable(ModelAdapter):
         return value
 
     def get_logic_balance(self, branch=None):
+        """Return the stock logic balance for the current product. If a branch
+        company is supplied, get the stock balance for this branch,
+        otherwise, get the stock balance for all the branches."""
         stocks = self._get_stocks(branch)
         assert stocks.count() >= 1
         values = [stock_item.logic_quantity for stock_item in stocks]
         return sum(values, Decimal(0))
 
     def get_average_stock_price(self):
+        """Average stock price is: SUM(total_cost attribute, StockItem
+        object) of all the branches DIVIDED BY SUM(quantity atribute,
+        StockReference object)
+        """
         total_cost = Decimal(0)
         total_qty = Decimal(0)
         for stock_item in self.get_stock_items():
@@ -695,6 +708,10 @@ class ProductAdaptToStorable(ModelAdapter):
         return currency(total_cost / total_qty)
 
     def has_stock_by_branch(self, branch):
+        """Returns True if there is at least one item on stock for the
+        given branch or False if not.
+        This method also considers the logic stock
+        """
         stock = self._get_stocks(branch)
         qty = stock.count()
         if not qty:
@@ -707,15 +724,19 @@ class ProductAdaptToStorable(ModelAdapter):
         return stock.quantity + stock.logic_quantity > 0
 
     def get_stock_items(self):
+        """Fetches the stock items available for all branches.
+        :returns: a sequence of stock items
+        """
         return ProductStockItem.selectBy(storable=self,
                                          connection=self.get_connection())
 
     def get_stock_item(self, branch):
+        """Fetch a stock item for a specific branch
+        :returns: a stock item
+        """
         return ProductStockItem.selectOneBy(branch=branch,
                                             storable=self,
                                             connection=self.get_connection())
-
-Product.registerFacet(ProductAdaptToStorable, IStorable)
 
 
 class ProductComponent(Domain):

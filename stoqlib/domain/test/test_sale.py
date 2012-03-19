@@ -29,7 +29,6 @@ from kiwi.datatypes import currency
 
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
@@ -217,7 +216,7 @@ class TestSale(DomainTest):
     def testReturn(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
-        storable = IStorable(sellable.product)
+        storable = sellable.product.storable
         balance_before_sale = storable.get_full_balance()
         sale.order()
         self.add_payments(sale)
@@ -517,7 +516,7 @@ class TestSale(DomainTest):
     def testCancel(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
-        storable = IStorable(sellable.product)
+        storable = sellable.product.storable
         inital_quantity = storable.get_full_balance()
         sale.order()
         sale.cancel()
@@ -528,7 +527,7 @@ class TestSale(DomainTest):
     def testCancelPaid(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
-        storable = IStorable(sellable.product)
+        storable = sellable.product.storable
         initial_quantity = storable.get_full_balance()
         sale.order()
 
@@ -550,7 +549,7 @@ class TestSale(DomainTest):
     def testCancelNotPaid(self):
         sale = self.create_sale()
         sellable = self.add_product(sale, price=300)
-        storable = IStorable(sellable.product)
+        storable = sellable.product.storable
         initial_quantity = storable.get_full_balance()
         sale.order()
         self.failUnless(sale.can_cancel())
@@ -571,7 +570,7 @@ class TestSale(DomainTest):
     def testCancelQuote(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
-        storable = IStorable(sellable.product)
+        storable = sellable.product.storable
         inital_quantity = storable.get_full_balance()
         sale.status = Sale.STATUS_QUOTE
         sale.cancel()

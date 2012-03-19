@@ -34,7 +34,6 @@ from kiwi.python import Settable
 
 from stoqlib.api import api
 from stoqlib.database.orm import AND, OR
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
@@ -256,7 +255,7 @@ class SaleQuoteItemStep(SellableItemStep):
             product = i.sellable.product
             if not product:
                 continue
-            storable = IStorable(product, None)
+            storable = product.storable
             if not storable:
                 continue
             stock = storable.get_full_balance(self.model.branch)

@@ -29,7 +29,6 @@ import gtk
 
 from kiwi.datatypes import ValidationError
 
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.stockdecrease import StockDecreaseItem
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
@@ -63,7 +62,7 @@ class DecreaseItemEditor(PurchaseItemEditor):
             return ValidationError(_(u'Quantity must be greater than zero'))
 
         sellable = self.model.sellable
-        storable = IStorable(sellable.product)
+        storable = sellable.product.storable
         branch = self.model.stock_decrease.branch
         balance = storable.get_full_balance(branch=branch)
 

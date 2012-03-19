@@ -34,7 +34,6 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import Column, ColoredColumn
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.product import Product
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
@@ -109,7 +108,7 @@ class _TemporaryProductionItemComponent(object):
     def _get_stock_quantity(self):
         """Returns the quantity we have in stock of this component
         """
-        storable = IStorable(self.product, None)
+        storable = self.product.storable
         if storable is None:
             return Decimal(0)
 

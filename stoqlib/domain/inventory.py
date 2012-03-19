@@ -30,7 +30,6 @@ from stoqlib.database.orm import QuantityCol, PriceCol
 from stoqlib.database.orm import ForeignKey, DateTimeCol, IntCol, UnicodeCol
 from stoqlib.database.orm import const, AND, ISNOTNULL
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import Branch
 from stoqlib.lib.translation import stoqlib_gettext
@@ -76,7 +75,7 @@ class InventoryItem(Domain):
         with the related cfop data and change the product quantity
         available in stock.
         """
-        storable = IStorable(self.product, None)
+        storable = self.product.storable
         if storable is None:
             raise TypeError(
                 "The adjustment item must be a storable product.")

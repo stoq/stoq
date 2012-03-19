@@ -31,10 +31,10 @@ from stoqlib.domain.person import (Person, Supplier,
                                    LoginUser, Branch,
                                    Client, Employee)
 from stoqlib.domain.product import (Product,
-                                    ProductAdaptToStorable,
                                     ProductStockItem,
                                     ProductHistory,
-                                    ProductComponent)
+                                    ProductComponent,
+                                    Storable)
 from stoqlib.domain.production import ProductionOrder, ProductionItem
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
                                      PurchaseItem)
@@ -96,11 +96,10 @@ class ProductFullStockView(Viewable):
         INNERJOINOn(None, Product,
                     Product.q.sellableID == Sellable.q.id),
         # Product Stock Item
-        LEFTJOINOn(None, ProductAdaptToStorable,
-                   ProductAdaptToStorable.q.originalID == Product.q.id),
+        LEFTJOINOn(None, Storable,
+                   Storable.q.productID == Product.q.id),
         LEFTJOINOn(None, ProductStockItem,
-                   ProductStockItem.q.storableID ==
-                   ProductAdaptToStorable.q.id),
+                   ProductStockItem.q.storableID == Storable.q.id),
         ]
 
     clause = Sellable.q.status != Sellable.STATUS_CLOSED
@@ -238,12 +237,12 @@ class ProductFullStockItemView(ProductFullStockView):
 
     columns = ProductFullStockView.columns.copy()
     columns.update(dict(
-        minimum_quantity=ProductAdaptToStorable.q.minimum_quantity,
-        maximum_quantity=ProductAdaptToStorable.q.maximum_quantity,
+        minimum_quantity=Storable.q.minimum_quantity,
+        maximum_quantity=Storable.q.maximum_quantity,
         to_receive_quantity=Field('_purchase_total', 'to_receive'),
         difference=(const.SUM(
             ProductStockItem.q.quantity + ProductStockItem.q.logic_quantity) -
-            ProductAdaptToStorable.q.minimum_quantity)))
+            Storable.q.minimum_quantity)))
 
     joins = ProductFullStockView.joins[:]
     joins.append(LEFTJOINOn(None, _purchase_total,
@@ -334,11 +333,10 @@ class SellableFullStockView(Viewable):
         LEFTJOINOn(None, Product,
                    Product.q.sellableID == Sellable.q.id),
         # Product Stock Item
-        LEFTJOINOn(None, ProductAdaptToStorable,
-                   ProductAdaptToStorable.q.originalID == Product.q.id),
+        LEFTJOINOn(None, Storable,
+                   Storable.q.productID == Product.q.id),
         LEFTJOINOn(None, ProductStockItem,
-                   ProductStockItem.q.storableID ==
-                   ProductAdaptToStorable.q.id),
+                   ProductStockItem.q.storableID == Storable.q.id),
         ]
 
     @classmethod
@@ -596,10 +594,10 @@ class PurchasedItemAndStockView(Viewable):
                     Sellable.q.id == PurchaseItem.q.sellableID),
         LEFTJOINOn(None, Product,
                    Product.q.sellableID == PurchaseItem.q.sellableID),
-        LEFTJOINOn(None, ProductAdaptToStorable,
-                   ProductAdaptToStorable.q.originalID == Product.q.id),
+        LEFTJOINOn(None, Storable,
+                   Storable.q.productID == Product.q.id),
         LEFTJOINOn(None, ProductStockItem,
-                   ProductStockItem.q.storableID == ProductAdaptToStorable.q.id),
+                   ProductStockItem.q.storableID == Storable.q.id),
     ]
 
     clause = AND(PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED,

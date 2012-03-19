@@ -26,9 +26,9 @@ import os
 from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.product import Storable
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.diffutils import diff_files
@@ -72,7 +72,8 @@ class InvoiceTest(DomainTest):
             tax_value=tax,
             connection=self.trans)
         sale.add_sellable(sellable, quantity=1)
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product,
+                            connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
         return sellable
 

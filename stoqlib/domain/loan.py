@@ -33,7 +33,7 @@ from zope.interface import implements
 from stoqlib.database.orm import ForeignKey, UnicodeCol, DateTimeCol, IntCol
 from stoqlib.database.orm import PriceCol, const, QuantityCol
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IContainer, IStorable
+from stoqlib.domain.interfaces import IContainer
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.translation import stoqlib_gettext
@@ -66,7 +66,7 @@ class LoanItem(Domain):
         """Performs the loan of the product. The quantity requested of the
         product will be out of stock of the given branch.
         """
-        storable = IStorable(self.sellable.product, None)
+        storable = self.sellable.product.storable
         if storable is not None:
             storable.decrease_stock(self.quantity, branch)
 
@@ -75,7 +75,7 @@ class LoanItem(Domain):
         quantity returned should be lesser or equal than the total quantity.
         """
         assert quantity <= self.quantity
-        storable = IStorable(self.sellable.product, None)
+        storable = self.sellable.product.storable
         if storable is not None:
             branch = self.loan.branch
             storable.increase_stock(quantity, branch)

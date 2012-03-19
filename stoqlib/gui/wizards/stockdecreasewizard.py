@@ -33,7 +33,6 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.api import api
 from stoqlib.database.orm import AND
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sellable import Sellable
@@ -191,7 +190,7 @@ class DecreaseItemStep(SellableItemStep):
         if not value or value <= Decimal(0):
             return ValidationError(_(u'Quantity must be greater than zero'))
 
-        storable = IStorable(sellable.product, None)
+        storable = sellable.product.storable
         assert storable
         balance = storable.get_full_balance(branch=self.model.branch)
         for i in self.slave.klist:

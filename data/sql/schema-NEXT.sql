@@ -442,11 +442,11 @@ CREATE TABLE product_component (
         CONSTRAINT different_products CHECK (product_id != component_id)
 );
 
-CREATE TABLE product_adapt_to_storable (
+CREATE TABLE storable (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    original_id bigint UNIQUE REFERENCES product(id),
+    product_id bigint UNIQUE REFERENCES product(id),
     minimum_quantity numeric(20, 3) DEFAULT 0
         CONSTRAINT positive_minimum_quantity CHECK (minimum_quantity >= 0),
     maximum_quantity numeric(20, 3) DEFAULT 0
