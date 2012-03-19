@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -43,11 +43,7 @@ class Domain(ORMObject):
 
     if orm_name == 'storm':
         def __repr__(self):
-            return '<%s %r %s>' \
-                   % (self.__class__.__name__,
-                      self.id,
-                      ''
-                      )
+            return '<%s %r>' % (self.__class__.__name__, self.id)
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -113,7 +109,6 @@ class Domain(ORMObject):
             to get the :class:`stoqlib.runtime.StoqlibTransaction` in which
             C{self} lives and do your modifications in it.
         """
-        pass
 
     def on_update(self):
         """Called when C{self} is about to be updated on the database
@@ -124,7 +119,6 @@ class Domain(ORMObject):
             to get the :class:`stoqlib.runtime.StoqlibTransaction` in which
             C{self} lives and do your modifications in it.
         """
-        pass
 
     def on_delete(self):
         """Called when C{self} is about to be deleted on the database
@@ -138,7 +132,6 @@ class Domain(ORMObject):
             obsolet by :class:`stoqlib.database.orm.ORMObject` and it will
             result in errors.
         """
-        pass
 
     def clone(self):
         """Get a persistent copy of an existent object. Remember that we can
