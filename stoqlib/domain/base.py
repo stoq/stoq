@@ -150,8 +150,6 @@ class Domain(ORMObject):
 
         kwargs = {}
         for column in columns:
-            if column.origName == 'childName':
-                continue
             kwargs[column.origName] = getattr(self, column.origName)
 
         klass = type(self)

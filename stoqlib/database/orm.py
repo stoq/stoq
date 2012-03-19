@@ -185,8 +185,6 @@ def orm_get_unittest_value(klass, test, tables_dict, name, column):
             except ValueError:
                 raise ORMTestError("No default for %r" % column)
 
-    if not klass._inheritable and name == 'childName':
-        return None
     return value
 
 orm_name = 'sqlobject'
