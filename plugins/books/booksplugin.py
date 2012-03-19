@@ -51,7 +51,7 @@ class BooksPlugin(object):
         return PluginSchemaMigration(self.name, 'booksql', ['*.sql'])
 
     def get_tables(self):
-        return [('bookdomain', ['PersonAdaptToPublisher', 'ProductAdaptToBook'])]
+        return [('bookdomain', ['BookPublisher', 'Book'])]
 
     def activate(self):
         environ.add_resource('glade', os.path.join(plugin_root, 'glade'))

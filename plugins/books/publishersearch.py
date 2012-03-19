@@ -31,7 +31,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.search.personsearch import BasePersonSearch
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 
-from booksdomain import PersonAdaptToPublisher, PublisherView
+from booksdomain import BookPublisher, PublisherView
 
 _ = stoqlib_gettext
 
@@ -39,16 +39,16 @@ _ = stoqlib_gettext
 class PublisherEditor(BasePersonRoleEditor):
     model_name = _(u'Publisher')
     title = _(u'New Publisher')
-    model_type = PersonAdaptToPublisher
+    model_type = BookPublisher
     gladefile = 'BaseTemplate'
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        publisher = PersonAdaptToPublisher.selectOneBy(person=person,
-                                                       connection=conn)
+        publisher = BookPublisher.selectOneBy(person=person,
+                                              connection=conn)
         if publisher is None:
-            publisher = PersonAdaptToPublisher(person=person,
-                                               connection=conn)
+            publisher = BookPublisher(person=person,
+                                      connection=conn)
         return publisher
 
 
@@ -62,7 +62,7 @@ class PublisherSearch(BasePersonSearch):
 
     def _get_status_values(self):
         items = [(value, key) for key, value in
-                 PersonAdaptToPublisher.statuses.items()]
+                 BookPublisher.statuses.items()]
         items.insert(0, (_('Any'), None))
         return items
 

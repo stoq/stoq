@@ -33,8 +33,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.countries import get_countries
 from stoqlib.lib.translation import stoqlib_gettext
 
-from booksinterfaces import IBook
-from booksdomain import PersonAdaptToPublisher, ProductAdaptToBook
+from booksdomain import BookPublisher, Book
 
 
 _ = stoqlib_gettext
@@ -43,7 +42,7 @@ _ = stoqlib_gettext
 class ProductBookSlave(BaseEditorSlave):
     gladefile = 'ProductBookSlave'
     title = _(u'Book Details')
-    model_type = ProductAdaptToBook
+    model_type = Book
     proxy_widgets = ['author', 'series', 'edition', 'subject', 'isbn',
                      'language', 'pages', 'synopsis', 'country_combo',
                      'decorative_finish', 'year',
@@ -54,9 +53,11 @@ class ProductBookSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, model)
 
     def create_model(self, conn):
-        model = IBook(self._product, None)
+        model = Book.selectOneBy(product=self._product,
+                                 connection=conn)
         if model is None:
-            model = self._product.addFacet(IBook, connection=conn)
+            model = Book(product=self._product,
+                         connection=conn)
         return model
 
     def setup_proxies(self):
@@ -69,7 +70,7 @@ class ProductBookSlave(BaseEditorSlave):
         for widget in [self.pages, self.year]:
             widget.set_adjustment(
                 gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
-        publishers = PersonAdaptToPublisher.select(connection=self.conn)
+        publishers = BookPublisher.select(connection=self.conn)
         self.publisher_combo.prefill([(p.person.name, p) for p in publishers])
 
     #
