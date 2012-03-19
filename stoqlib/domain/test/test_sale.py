@@ -216,7 +216,7 @@ class TestSale(DomainTest):
     def testReturn(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
-        storable = sellable.product.storable
+        storable = sellable.product_storable
         balance_before_sale = storable.get_full_balance()
         sale.order()
         self.add_payments(sale)
@@ -516,7 +516,7 @@ class TestSale(DomainTest):
     def testCancel(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
-        storable = sellable.product.storable
+        storable = sellable.product_storable
         inital_quantity = storable.get_full_balance()
         sale.order()
         sale.cancel()
@@ -527,7 +527,7 @@ class TestSale(DomainTest):
     def testCancelPaid(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
-        storable = sellable.product.storable
+        storable = sellable.product_storable
         initial_quantity = storable.get_full_balance()
         sale.order()
 
@@ -549,7 +549,7 @@ class TestSale(DomainTest):
     def testCancelNotPaid(self):
         sale = self.create_sale()
         sellable = self.add_product(sale, price=300)
-        storable = sellable.product.storable
+        storable = sellable.product_storable
         initial_quantity = storable.get_full_balance()
         sale.order()
         self.failUnless(sale.can_cancel())
@@ -570,7 +570,7 @@ class TestSale(DomainTest):
     def testCancelQuote(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
-        storable = sellable.product.storable
+        storable = sellable.product_storable
         inital_quantity = storable.get_full_balance()
         sale.status = Sale.STATUS_QUOTE
         sale.cancel()

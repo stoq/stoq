@@ -263,7 +263,7 @@ class TillApp(SearchableAppWindow):
             # Skip services, since we don't need stock to sell.
             if sale_item.is_service():
                 continue
-            storable = sale_item.sellable.product.storable
+            storable = sale_item.sellable.product_storable
             prod_sold.setdefault(storable, 0)
             prod_sold[storable] += sale_item.quantity
             prod_desc[storable] = sale_item.sellable.get_description()

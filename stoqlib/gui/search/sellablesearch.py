@@ -87,7 +87,7 @@ class SellableSearch(SearchEditor):
                 raise TypeError("You need to specify a quantity "
                                 "when supplying an order")
             for item in sale_items:
-                if item.sellable.product.storable:
+                if item.sellable.product_storable:
                     quantity = self.current_sale_stock.get(item.sellable.id, 0)
                     quantity += item.quantity
                     self.current_sale_stock[item.sellable.id] = quantity
@@ -157,7 +157,7 @@ class SellableSearch(SearchEditor):
         if not sellable_view:
             return
         sellable = Sellable.get(sellable_view.id, self.conn)
-        if (sellable.product.storable and
+        if (sellable.product_storable and
             self.quantity > self._get_available_stock(sellable_view)):
             self.ok_button.set_sensitive(False)
         else:

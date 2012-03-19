@@ -62,7 +62,7 @@ class DecreaseItemEditor(PurchaseItemEditor):
             return ValidationError(_(u'Quantity must be greater than zero'))
 
         sellable = self.model.sellable
-        storable = sellable.product.storable
+        storable = sellable.product_storable
         branch = self.model.stock_decrease.branch
         balance = storable.get_full_balance(branch=branch)
 

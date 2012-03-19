@@ -66,7 +66,7 @@ class LoanItem(Domain):
         """Performs the loan of the product. The quantity requested of the
         product will be out of stock of the given branch.
         """
-        storable = self.sellable.product.storable
+        storable = self.sellable.product_storable
         if storable is not None:
             storable.decrease_stock(self.quantity, branch)
 
@@ -75,7 +75,7 @@ class LoanItem(Domain):
         quantity returned should be lesser or equal than the total quantity.
         """
         assert quantity <= self.quantity
-        storable = self.sellable.product.storable
+        storable = self.sellable.product_storable
         if storable is not None:
             branch = self.loan.branch
             storable.increase_stock(quantity, branch)

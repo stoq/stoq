@@ -85,7 +85,7 @@ class LoanItemEditor(BaseEditor):
                 widget.hide()
 
     def _has_stock(self, quantity):
-        storable = self.model.sellable.product.storable
+        storable = self.model.sellable.product_storable
         if storable is not None:
             available = storable.get_full_balance(self._branch)
         else:

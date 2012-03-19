@@ -64,7 +64,7 @@ class StockDecreaseItem(Domain):
     def decrease(self, branch):
         assert branch
 
-        storable = self.sellable.product.storable
+        storable = self.sellable.product_storable
         if storable:
             storable.decrease_stock(self.quantity, branch)
 

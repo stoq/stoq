@@ -211,7 +211,7 @@ class LoanItemStep(SaleQuoteItemStep):
         self.slave.set_editor(LoanItemEditor)
 
     def _has_stock(self, sellable, quantity):
-        storable = sellable.product.storable
+        storable = sellable.product_storable
         if storable is not None:
             balance = storable.get_full_balance(self.model.branch)
         else:
