@@ -186,7 +186,3 @@ class Domain(ORMObject):
     @property
     def user(self):
         return self.te_modified.user
-
-
-class BaseSQLView:
-    """A base marker class for SQL Views"""
