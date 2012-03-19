@@ -72,7 +72,7 @@ class Image(Domain):
         return _("Stoq image #%d" % (self.id,))
 
     #
-    #  ORMObject hooks
+    #  ORMObject
     #
 
     @classmethod
@@ -81,7 +81,7 @@ class Image(Domain):
         super(Image, cls).delete(id, conn)
 
     #
-    # AbstractModel Hooks
+    # Domain
     #
 
     def on_create(self):

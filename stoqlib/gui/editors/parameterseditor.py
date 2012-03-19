@@ -31,7 +31,7 @@ from kiwi.ui.widgets.spinbutton import ProxySpinButton
 from kiwi.ui.widgets.textview import ProxyTextView
 from kiwi.ui.widgets.combo import ProxyComboEntry, ProxyComboBox
 
-from stoqlib.domain.base import AbstractModel
+from stoqlib.domain.base import Domain
 from stoqlib.domain.image import Image
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.gui.slaves.imageslaveslave import ImageSlave
@@ -230,7 +230,7 @@ class SystemParameterEditor(BaseEditor):
         field_type = self.constant.get_parameter_type()
         if issubclass(field_type, Image):
             self._setup_image_slave()
-        elif issubclass(field_type, AbstractModel):
+        elif issubclass(field_type, Domain):
             self._setup_comboboxentry_slave()
         elif issubclass(field_type, DirectoryParameter):
             self._setup_entry_with_filechooser_button_slave(dir_only=True)

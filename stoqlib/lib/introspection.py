@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-"""Introspection helpers for fetching classes, interfaces and adapters
+"""Introspection helpers for fetching classes and interfaces
 """
 
 import glob
@@ -33,10 +33,6 @@ from kiwi.dist import listpackages
 from kiwi.python import namedAny
 from zope.interface import implementedBy
 from zope.interface.interface import InterfaceClass
-
-from stoqlib.domain.base import ModelAdapter, ORMObjectAdapter
-
-from stoqlib.lib.component import Adapter
 
 
 def get_all_classes(package):
@@ -78,19 +74,4 @@ def get_interfaces_for_package(package):
             continue
         if issubclass(klass, InterfaceClass):
             continue
-        yield klass
-
-
-def get_all_adapters():
-    """
-    Gets a generator with adapter classes.
-    :returns: a generator.
-    """
-    for klass in get_all_classes('stoqlib'):
-        if not issubclass(klass, Adapter):
-            continue
-        # Skip bases classes
-        if klass in [Adapter, ORMObjectAdapter, ModelAdapter]:
-            continue
-
         yield klass

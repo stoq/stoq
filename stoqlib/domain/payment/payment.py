@@ -37,13 +37,14 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
+from stoqlib.lib.component import Adaptable
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 log = Logger('stoqlib.domain.payment.payment')
 
 
-class Payment(Domain):
+class Payment(Domain, Adaptable):
     """ The payment representation in Stoq.
 
     B{Importante attributes}:

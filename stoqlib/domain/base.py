@@ -24,86 +24,30 @@
 """ Base routines for domain modules """
 
 # pylint: disable=E1101
-from zope.interface.interface import adapter_hooks
-
-from stoqlib.database.orm import orm_name, ForeignKey, IntCol
+from stoqlib.database.orm import orm_name, ForeignKey
 from stoqlib.database.orm import ORMObject, const, AND, ILIKE
 from stoqlib.database.runtime import (StoqlibTransaction,
                                       get_current_user, get_current_station)
 from stoqlib.domain.system import TransactionEntry
-from stoqlib.lib.component import Adapter, Adaptable
 
 
-DATABASE_ENCODING = 'UTF-8'
-
-#
-# Persistent ORMObject adapters
-#
-
-
-class ORMObjectAdapter(Adapter):
-    def __init__(self, adaptable, kwargs):
-        Adapter.__init__(self, adaptable)
-
-        if adaptable:
-            kwargs['original'] = adaptable
-
-        self.__dict__['original'] = adaptable
-
-    def get_adapted(self):
-        return self.original
-
-
-class AdaptableORMObject(Adaptable):
-    pass
-
-
-def _adaptable_orm_adapter_hook(iface, obj):
-    """A zope.interface hook used to fetch an adapter when calling
-    iface(adaptable).
-    It fetches the facet type and does a select in the database to
-    see if the object is present.
-
-    :param iface: the interface to adapt to
-    :param obj: object we want to adapt
+class Domain(ORMObject):
+    """Base class for domain objects in Stoq.
     """
 
-    # We're only interested in Adaptable subclasses which defines
-    # the getFacetType method
-    if not isinstance(obj, AdaptableORMObject):
-        return
+    te_created = ForeignKey('TransactionEntry', default=None)
+    te_modified = ForeignKey('TransactionEntry', default=None)
 
-    try:
-        facetType = obj.getFacetType(iface)
-    except LookupError:
-        # zope.interface will handle this and raise TypeError,
-        # see InterfaceClass.__call__ in zope/interface/interface.py
-        return None
+    def __init__(self, *args, **kwargs):
+        ORMObject.__init__(self, *args, **kwargs)
 
-    if not facetType:
-        return
-
-    # Persistant Adapters
-    if issubclass(facetType, ORMObjectAdapter):
-        # FIXME: Use selectOneBy
-        results = facetType.selectBy(
-            originalID=obj.id, connection=obj.get_connection())
-
-        if results.count() == 1:
-            return results[0]
-    # Non-Persistant Adapters
-    else:
-        return facetType(obj)
-
-adapter_hooks.append(_adaptable_orm_adapter_hook)
-
-#
-# Abstract classes
-#
-
-
-class AbstractModel(object):
-    """Generic methods for any domain classes."""
+    if orm_name == 'storm':
+        def __repr__(self):
+            return '<%s %r %s>' \
+                   % (self.__class__.__name__,
+                      self.id,
+                      ''
+                      )
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -114,10 +58,15 @@ class AbstractModel(object):
         return self.id == other.id
 
     #
-    # Overwriting some ORMObject methods
+    # ORMObject
     #
 
     def _create(self, *args, **kwargs):
+        if not isinstance(self._connection, StoqlibTransaction):
+            raise TypeError(
+                "creating a %s instance needs a StoqlibTransaction, not %s"
+                % (self.__class__.__name__,
+                   self._connection.__class__.__name__))
         # Don't flush right now. The object being created is not complete
         # yet!
         conn = self._connection
@@ -134,17 +83,17 @@ class AbstractModel(object):
                 station_id=station and station.id,
                 type=entry_type,
                 connection=conn)
-        super(AbstractModel, self)._create(*args, **kwargs)
+        super(Domain, self)._create(*args, **kwargs)
         conn.add_created_object(self)
 
     def destroySelf(self):
-        super(AbstractModel, self).destroySelf()
+        super(Domain, self).destroySelf()
 
         if isinstance(self._connection, StoqlibTransaction):
             self._connection.add_deleted_object(self)
 
     def _SO_setValue(self, name, value, from_, to):
-        super(AbstractModel, self)._SO_setValue(name, value, from_, to)
+        super(Domain, self)._SO_setValue(name, value, from_, to)
 
         if not self.sqlmeta._creating:
             connection = self._connection
@@ -152,7 +101,7 @@ class AbstractModel(object):
                 connection.add_modified_object(self)
 
     #
-    # General methods
+    # Public API
     #
 
     def on_create(self):
@@ -211,10 +160,6 @@ class AbstractModel(object):
     def get_connection(self):
         return self._connection
 
-
-class _BaseDomain(AbstractModel, ORMObject):
-    """An abstract mixin class for domain classes"""
-
     def check_unique_value_exists(self, attribute, value,
                                   case_sensitive=True):
         """Returns True if we already have the given attribute
@@ -238,36 +183,6 @@ class _BaseDomain(AbstractModel, ORMObject):
             query = AND(query, self.q.id != self.id)
         return self.select(query, connection=self.get_connection()).count() > 0
 
-#
-# Base classes
-#
-
-
-class Domain(_BaseDomain, AdaptableORMObject):
-    """If you want to be able to extend a certain class with adapters or
-    even just have a simple class without sublasses, this is the right
-    choice.
-    """
-    def __init__(self, *args, **kwargs):
-        _BaseDomain.__init__(self, *args, **kwargs)
-        AdaptableORMObject.__init__(self)
-
-    def _create(self, id, **kw):
-        if not isinstance(self._connection, StoqlibTransaction):
-            raise TypeError(
-                "creating a %s instance needs a StoqlibTransaction, not %s"
-                % (self.__class__.__name__,
-                   self._connection.__class__.__name__))
-        _BaseDomain._create(self, id, **kw)
-
-    if orm_name == 'storm':
-        def __repr__(self):
-            return '<%s %r %s>' \
-                   % (self.__class__.__name__,
-                      self.id,
-                      ''
-                      )
-
     @property
     def user(self):
         return self.te_modified.user
@@ -275,26 +190,3 @@ class Domain(_BaseDomain, AdaptableORMObject):
 
 class BaseSQLView:
     """A base marker class for SQL Views"""
-
-
-#
-# Adapters
-#
-
-
-class ModelAdapter(_BaseDomain, ORMObjectAdapter):
-
-    if orm_name == 'storm':
-        originalID = IntCol('original_id')
-
-    def __init__(self, original=None, *args, **kwargs):
-        ORMObjectAdapter.__init__(self, original, kwargs) # Modifies kwargs
-        _BaseDomain.__init__(self, *args, **kwargs)
-
-
-for klass in (Domain, ModelAdapter):
-    sqlmeta = klass.sqlmeta
-    sqlmeta.addColumn(ForeignKey('TransactionEntry', name='te_created',
-                                 default=None))
-    sqlmeta.addColumn(ForeignKey('TransactionEntry', name='te_modified',
-                                 default=None))

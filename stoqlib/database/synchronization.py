@@ -36,12 +36,11 @@ from stoqlib.database.admin import create_base_schema
 from stoqlib.database.database import dump_table
 from stoqlib.database.interfaces import (ICurrentBranchStation, ICurrentBranch,
                                          IDatabaseSettings)
-from stoqlib.database.orm import ORMObject, ORMObjectNotFound, const
+from stoqlib.database.orm import ORMObjectNotFound, const
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       get_current_branch)
 from stoqlib.database.policy import get_policy_by_name
 from stoqlib.database.tables import get_table_type_by_name
-from stoqlib.domain.base import AdaptableORMObject
 from stoqlib.domain.person import LoginUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.synchronization import BranchSynchronization
@@ -79,13 +78,6 @@ def _collect_table(tables, table):
    ##        _collect_table(tables, foreign_table)
 
     tables.append(table)
-
-    if issubclass(table, AdaptableORMObject):
-        # FIXME: Remove this and put the adapter tables in
-        #        the policy list directly instead
-        for facet_type in table.getFacetTypes():
-            if issubclass(facet_type, ORMObject):
-                _collect_table(tables, facet_type)
 
 
 def get_tables(policy, pfilter=None):

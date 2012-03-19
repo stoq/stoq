@@ -46,6 +46,7 @@ from stoqlib.domain.person import (Person, Branch,
                                    LoginUser)
 from stoqlib.domain.sellable import Sellable, SellableUnit
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
+from stoqlib.lib.component import Adaptable
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity, get_formatted_price
@@ -134,7 +135,7 @@ class PurchaseItem(Domain):
         return ordered_items.sum('quantity') or Decimal(0)
 
 
-class PurchaseOrder(Domain):
+class PurchaseOrder(Domain, Adaptable):
     """Purchase and order definition."""
 
     implements(IContainer)

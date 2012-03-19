@@ -749,7 +749,7 @@ class ParameterAccess(ClassInittableObject):
         self.rebuild_cache_for(parameter_name)
 
     def rebuild_cache_for(self, param_name):
-        from stoqlib.domain.base import AbstractModel
+        from stoqlib.domain.base import Domain
         try:
             value = self._cache[param_name]
         except KeyError:
@@ -757,7 +757,7 @@ class ParameterAccess(ClassInittableObject):
 
         param = get_parameter_by_field(param_name, self.conn)
         value_type = type(value)
-        if not issubclass(value_type, AbstractModel):
+        if not issubclass(value_type, Domain):
             # XXX: workaround to works with boolean types:
             data = param.field_value
             if value_type is bool:
@@ -792,12 +792,12 @@ class ParameterAccess(ClassInittableObject):
             return detail.type
 
     def get_parameter_by_field(self, field_name, field_type):
-        from stoqlib.domain.base import AbstractModel
+        from stoqlib.domain.base import Domain
         if isinstance(field_type, basestring):
             field_type = namedAny('stoqlib.domain.' + field_type)
         if field_name in self._cache:
             param = self._cache[field_name]
-            if issubclass(field_type, AbstractModel):
+            if issubclass(field_type, Domain):
                 return field_type.get(param.id, connection=self.conn)
             elif issubclass(field_type, DirectoryParameter):
                 return param
@@ -807,7 +807,7 @@ class ParameterAccess(ClassInittableObject):
                                           connection=self.conn)
         if value is None:
             return
-        if issubclass(field_type, AbstractModel):
+        if issubclass(field_type, Domain):
             if value.field_value == '' or value.field_value is None:
                 return
             param = field_type.get(value.field_value, connection=self.conn)
