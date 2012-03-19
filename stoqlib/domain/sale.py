@@ -56,6 +56,7 @@ from stoqlib.domain.taxes import SaleItemIcms, SaleItemIpi
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
                                 StoqlibError)
+from stoqlib.lib.component import Adaptable
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -319,7 +320,7 @@ class Delivery(Domain):
         self.status = status
 
 
-class Sale(Domain):
+class Sale(Domain, Adaptable):
     """Sale object implementation.
 
     :cvar STATUS_INITIAL: The sale is opened, products or other sellable items

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -330,8 +330,21 @@ def _adapter_hook(iface, obj):
     except TypeError:
         is_adaptable = False
 
-    if is_adaptable and hasattr(obj, '_adapterCache'):
-        return obj._adapterCache.get(qual(iface))
+    if is_adaptable:
+        name = qual(iface)
+        adapterCache = getattr(obj, '_adapterCache', {})
+        if name in adapterCache:
+            return adapterCache[name]
+
+        try:
+            facetType = obj.getFacetType(iface)
+        except LookupError:
+            # zope.interface will handle this and raise TypeError,
+            # see InterfaceClass.__call__ in zope/interface/interface.py
+            return None
+
+        return facetType(obj)
+
 adapter_hooks.append(_adapter_hook)
 
 

@@ -28,7 +28,7 @@ from kiwi.ui.objectlist import Column
 from zope.interface import providedBy
 
 from stoqlib.api import api
-from stoqlib.domain.base import AbstractModel
+from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.lib.parameters import sysparam, DirectoryParameter
@@ -79,7 +79,7 @@ class ParameterSearch(BaseEditor):
         constant = sysparam(self.conn).get_parameter_constant(
                                                         obj.field_name)
         data = getattr(sysparam(self.conn), obj.field_name)
-        if isinstance(data, AbstractModel):
+        if isinstance(data, Domain):
             if not (IDescribable in providedBy(data)):
                 raise TypeError("Parameter `%s' must implement IDescribable "
                                 "interface." % obj.field_name)

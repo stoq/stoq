@@ -6,18 +6,12 @@ The `base
 <http://www.async.com.br/projects/stoq/docs/package/public/stoqlib.domain.base-module.html>`_
 module has all abstract mixin classes used to build all domain classes.
 
-These classes are mixin for domain components, domain adapters and domain
+These classes are mixin for domain components, domain
 interfaces. The component model is based on top of twisted components and
 the persistent layer use SQLObject to store all domain information on SQL
 database.
 
-AbstractModel is the base abstract class of all domain classes: base adapted
-classes (Domain, InheritableModel), adapter classes (ModelAdapter,
-InheritableModelAdapter).
-
-ComponetizedModel and ConnMetaInterface are especializated versions of base
-twisted classes:Componetized and MetaInterface, and have some mofications to
-be used on stoq, and to be compatible with SQLObject.
+Domain is the base class of all domain classes
 
 We need to import modules and classes inherited from classes defined in
 stoqlib/domain/base.py.
@@ -29,7 +23,7 @@ Create a new transaction object:
 
     >>> trans = new_transaction()
 
-To create a unique code for a ProductAdaptToSellable object, I use datetime
+To create a unique code for a Sellable object, I use datetime
 module
 
     >>> import datetime

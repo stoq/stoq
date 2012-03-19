@@ -43,7 +43,6 @@ from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.component import Adapter
 from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
@@ -673,11 +672,7 @@ class SearchEditor(SearchDialog):
         if obj:
             obj = self.get_editor_model(obj)
         if obj and self.interface:
-            if isinstance(obj, Adapter):
-                adapted = obj.get_adapted()
-            else:
-                adapted = obj
-            obj = self.interface(adapted)
+            obj = self.interface(obj)
 
         rv = self.run_editor(obj)
         if rv:

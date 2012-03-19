@@ -345,7 +345,7 @@ class Product(Domain):
         return False
 
     #
-    # AbstractModel Hooks
+    # Domain
     #
 
     def on_create(self):
