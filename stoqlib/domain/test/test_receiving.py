@@ -30,8 +30,7 @@ from kiwi.datatypes import currency
 from stoqlib.database.exceptions import IntegrityError
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.product import ProductStockItem
-from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.product import ProductStockItem, Storable
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -91,7 +90,7 @@ class TestReceivingOrder(DomainTest):
         self.assertRaises(ValueError, order.confirm)
         self.assertRaises(ValueError, order.confirm)
 
-        storable = IStorable(order_item.sellable.product)
+        storable = order_item.sellable.product.sellable
         stock_item = storable.get_stock_item(branch=order.branch)
         for item in order.purchase.get_items():
             item.quantity_received = 0
@@ -110,7 +109,7 @@ class TestReceivingOrder(DomainTest):
 
     def testOrderReceiveSell(self):
         product = self.create_product()
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product, connection=self.trans)
         self.failIf(ProductStockItem.selectOneBy(storable=storable,
                                                  connection=self.trans))
         purchase_order = self.create_purchase_order()

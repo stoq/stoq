@@ -33,7 +33,6 @@ from kiwi.ui.objectlist import Column, ColoredColumn
 from kiwi.utils import gsignal
 
 from stoqlib.database.runtime import get_current_user, get_current_branch
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.product import ProductQualityTest
 from stoqlib.domain.production import ProductionOrder, ProductionMaterial
@@ -50,7 +49,7 @@ _ = stoqlib_gettext
 #     when handling production items and materials.
 class _TemporaryMaterial(object):
     def __init__(self, production, component, conn):
-        storable = IStorable(component, None)
+        storable = component.storable
         if storable is not None:
             self.stock_quantity = storable.get_full_balance(production.branch)
         else:

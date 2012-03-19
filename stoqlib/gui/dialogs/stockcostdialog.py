@@ -31,7 +31,6 @@ from kiwi.ui.listdialog import ListSlave
 
 from stoqlib.api import api
 from stoqlib.domain.views import ProductFullStockView
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -90,7 +89,7 @@ class StockCostDialog(BaseEditor):
     def _validate_confirm(self, item, trans):
         if (item.stock_cost is not ValueUnset and
             item.stock_cost > 0):
-            storable = IStorable(item.obj.product)
+            storable = item.obj.product.storable
             stock_item = trans.get(storable.get_stock_item(self._branch))
             stock_item.stock_cost = item.stock_cost
 

@@ -35,7 +35,6 @@ from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.person import (ClientView, LoginUser,
                                    ClientCategory)
 from stoqlib.domain.loan import Loan, LoanItem
@@ -212,7 +211,7 @@ class LoanItemStep(SaleQuoteItemStep):
         self.slave.set_editor(LoanItemEditor)
 
     def _has_stock(self, sellable, quantity):
-        storable = IStorable(sellable.product, None)
+        storable = sellable.product.storable
         if storable is not None:
             balance = storable.get_full_balance(self.model.branch)
         else:

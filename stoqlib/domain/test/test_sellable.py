@@ -27,9 +27,9 @@ from decimal import Decimal
 from kiwi.datatypes import currency
 
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.domain.product import Storable
 from stoqlib.domain.sellable import (Sellable,
                                      SellableCategory, ClientCategoryPrice)
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import (ProductFullStockView,
@@ -318,7 +318,7 @@ class TestSellable(DomainTest):
         sellable = self.create_sellable()
         self.failUnless(sellable.can_close())
 
-        storable = sellable.product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=sellable.product, connection=self.trans)
         storable.increase_stock(1, branch=get_current_branch(self.trans))
         self.failIf(sellable.can_close())
 
@@ -329,7 +329,7 @@ class TestSellable(DomainTest):
     def testCanRemove(self):
         branch = get_current_branch(self.trans)
         sellable = self.create_sellable()
-        storable = sellable.product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=sellable.product, connection=self.trans)
         self.failUnless(sellable.can_remove())
 
         storable.increase_stock(1, branch=branch)
@@ -342,7 +342,7 @@ class TestSellable(DomainTest):
         # Can't remove the sellable if it's in a purchase.
         from stoqlib.domain.purchase import PurchaseItem
         sellable = self.create_sellable()
-        sellable.product.addFacet(IStorable, connection=self.trans)
+        Storable(product=sellable.product, connection=self.trans)
         self.assertTrue(sellable.can_remove())
         PurchaseItem(connection=self.trans,
                      quantity=8, quantity_received=0,
@@ -358,7 +358,7 @@ class TestSellable(DomainTest):
     def testRemove(self):
         # Remove category price and sellable
         sellable = self.create_sellable()
-        sellable.product.addFacet(IStorable, connection=self.trans)
+        Storable(product=sellable.product, connection=self.trans)
 
         ClientCategoryPrice(sellable=sellable,
                             category=self.create_client_category(),

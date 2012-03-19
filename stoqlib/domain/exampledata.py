@@ -31,7 +31,6 @@ from stoqlib.database.orm import const
 from stoqlib.database.runtime import (get_current_station,
                                       get_current_branch,
                                       get_current_user)
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.lib.parameters import sysparam
 
 # Do not remove, these are used by doctests
@@ -70,7 +69,7 @@ def create_user(trans):
 
 
 def create_storable(trans):
-    return ExampleCreator.create(trans, 'ProductAdaptToStorable')
+    return ExampleCreator.create(trans, 'Storable')
 
 
 def create_product(trans):
@@ -226,7 +225,7 @@ class ExampleCreator(object):
             'Transporter': self.create_transporter,
             'LoginUser': self.create_user,
             'Product': self.create_product,
-            'ProductAdaptToStorable': self.create_storable,
+            'Storable': self.create_storable,
             'PurchaseOrder': self.create_purchase_order,
             'PurchaseItem': self.create_purchase_order_item,
             'ReceivingOrder': self.create_receiving_order,
@@ -327,14 +326,14 @@ class ExampleCreator(object):
                          connection=self.trans)
 
     def create_storable(self):
-        from stoqlib.domain.product import Product
+        from stoqlib.domain.product import Product, Storable
         sellable = self.create_sellable()
         product = Product(sellable=sellable, connection=self.trans)
-        return product.addFacet(IStorable, connection=self.trans)
+        return Storable(product=product, connection=self.trans)
 
     def create_product(self, price=None, create_supplier=True,
                        branch=None, stock=None):
-        from stoqlib.domain.product import ProductSupplierInfo
+        from stoqlib.domain.product import ProductSupplierInfo, Storable
         sellable = self.create_sellable(price=price)
         if create_supplier:
             ProductSupplierInfo(connection=self.trans,
@@ -346,7 +345,7 @@ class ExampleCreator(object):
             branch = get_current_branch(self.trans)
 
         if stock:
-            storable = product.addFacet(IStorable, connection=self.trans)
+            storable = Storable(product=product, connection=self.trans)
             storable.increase_stock(stock, branch, unit_cost=10)
 
         return product
@@ -525,13 +524,13 @@ class ExampleCreator(object):
                                connection=self.trans)
 
     def create_production_item(self, quantity=1, order=None):
-        from stoqlib.domain.product import ProductComponent
+        from stoqlib.domain.product import ProductComponent, Storable
         from stoqlib.domain.production import (ProductionItem,
                                                ProductionMaterial)
         product = self.create_product(10)
-        product.addFacet(IStorable, connection=self.trans)
+        Storable(product=product, connection=self.trans)
         component = self.create_product(5)
-        component.addFacet(IStorable, connection=self.trans)
+        Storable(product=component, connection=self.trans)
         ProductComponent(product=product,
                          component=component,
                          connection=self.trans)
@@ -587,12 +586,13 @@ class ExampleCreator(object):
     def create_receiving_order_item(self, receiving_order=None, sellable=None,
                                     purchase_item=None, quantity=8):
         from stoqlib.domain.receiving import ReceivingOrderItem
+        from stoqlib.domain.product import Storable
         if receiving_order is None:
             receiving_order = self.create_receiving_order()
         if sellable is None:
             sellable = self.create_sellable()
             product = sellable.product
-            product.addFacet(IStorable, connection=self.trans)
+            Storable(product=product, connection=self.trans)
         if purchase_item is None:
             purchase_item = receiving_order.purchase.add_item(
                 sellable, quantity)
@@ -722,7 +722,7 @@ class ExampleCreator(object):
                              connection=self.trans)
 
     def create_transfer_order_item(self, order=None, quantity=5):
-        from stoqlib.domain.product import Product
+        from stoqlib.domain.product import Product, Storable
         from stoqlib.domain.sellable import Sellable
         from stoqlib.domain.transfer import TransferOrderItem
         if not order:
@@ -730,7 +730,7 @@ class ExampleCreator(object):
         sellable = self.create_sellable()
         sellable.status = Sellable.STATUS_AVAILABLE
         product = Product.selectOneBy(sellable=sellable, connection=self.trans)
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product, connection=self.trans)
         storable.increase_stock(quantity, order.source_branch)
         return TransferOrderItem(sellable=sellable,
                                  transfer_order=order,
@@ -744,11 +744,12 @@ class ExampleCreator(object):
 
     def create_inventory_item(self, inventory=None, quantity=5):
         from stoqlib.domain.inventory import InventoryItem
+        from stoqlib.domain.product import Storable
         if not inventory:
             inventory = self.create_inventory()
         sellable = self.create_sellable()
         product = sellable.product
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product, connection=self.trans)
         storable.increase_stock(quantity, inventory.branch)
         return InventoryItem(product=product,
                              product_cost=product.sellable.cost,
@@ -780,11 +781,12 @@ class ExampleCreator(object):
         return CityLocation.get_default(self.trans)
 
     def add_product(self, sale, price=None, quantity=1):
+        from stoqlib.domain.product import Storable
         product = self.create_product(price=price)
         sellable = product.sellable
         sellable.tax_constant = self.create_sellable_tax_constant()
         sale.add_sellable(sellable, quantity=quantity)
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product, connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
         return sellable
 

@@ -26,8 +26,7 @@ from kiwi.log import Logger
 from twisted.internet.defer import inlineCallbacks, returnValue
 
 from stoqlib.database.runtime import new_transaction, finish_transaction
-from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.product import Product
+from stoqlib.domain.product import Product, Storable
 from stoqlib.domain.sellable import Sellable
 
 from domain.magentoproduct import MagentoProduct, MagentoStock
@@ -81,7 +80,7 @@ def import_products(config):
             weight=product_info['weight'],
             )
 
-        storable = product.addFacet(IStorable, connection=trans)
+        storable = Storable(product=product, connection=trans)
         # FIXME: If there's stock on Magento, but product status is
         #        disabled, how to indicate that on Stoq? (we can only close
         #        products that does not have any stock available)

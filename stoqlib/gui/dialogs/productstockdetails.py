@@ -34,7 +34,6 @@ from kiwi.ui.widgets.list import SummaryLabel
 from stoqlib.database.orm import AND
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.loan import Loan
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem
@@ -209,5 +208,5 @@ class ProductStockHistoryDialog(BaseEditor):
     def setup_proxies(self):
         self.add_proxy(self.model, ['description'])
 
-        storable = IStorable(self.model.product)
+        storable = self.model.product.storable
         self.add_proxy(storable, ['full_balance'])

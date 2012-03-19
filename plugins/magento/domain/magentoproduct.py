@@ -34,7 +34,6 @@ from stoqlib.database.orm import (IntCol, UnicodeCol, DateTimeCol, BoolCol,
                                   ForeignKey, SingleJoin, MultipleJoin, IN)
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.image import Image
-from stoqlib.domain.interfaces import IStorable
 
 from domain.magentobase import MagentoBaseSyncUp
 from magentolib import get_proxy
@@ -333,7 +332,7 @@ class MagentoStock(MagentoBaseSyncUp):
     def _get_data(self):
         quantity = 0
         product = self.magento_product.product
-        storable = IStorable(product, None)
+        storable = product.storable
 
         if storable:
             # Get stock items from branch on config

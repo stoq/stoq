@@ -40,7 +40,6 @@ from stoqlib.api import api
 from stoqlib.exceptions import (StoqlibError, TillError, SellError,
                                 ModelDataError)
 from stoqlib.database.orm import AND, OR, const
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
 from stoqlib.lib.formatters import format_quantity
@@ -264,7 +263,7 @@ class TillApp(SearchableAppWindow):
             # Skip services, since we don't need stock to sell.
             if sale_item.is_service():
                 continue
-            storable = IStorable(sale_item.sellable.product, None)
+            storable = sale_item.sellable.product.storable
             prod_sold.setdefault(storable, 0)
             prod_sold[storable] += sale_item.quantity
             prod_desc[storable] = sale_item.sellable.get_description()

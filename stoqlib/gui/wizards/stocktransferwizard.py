@@ -34,7 +34,6 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
 from stoqlib.database.orm import AND
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sellable import Sellable
@@ -132,7 +131,7 @@ class StockTransferProductStep(SellableItemStep):
             ]
 
     def _get_stock_quantity(self, item):
-        storable = IStorable(item.sellable.product)
+        storable = item.sellable.product.storable
         stock_item = storable.get_stock_item(self.branch)
         return stock_item.quantity or 0
 
@@ -147,7 +146,7 @@ class StockTransferProductStep(SellableItemStep):
         self.summary = None
 
     def _get_stock_balance(self, sellable):
-        storable = IStorable(sellable.product)
+        storable = sellable.product.storable
         quantity = storable.get_full_balance(self.branch) or Decimal(0)
         # do not count the added quantity
         for item in self.slave.klist:
@@ -163,7 +162,7 @@ class StockTransferProductStep(SellableItemStep):
         if sellable is None:
             return
 
-        storable = IStorable(sellable.product)
+        storable = sellable.product.storable
         stock_item = storable.get_stock_item(self.branch)
         self.stock_quantity.set_label("%s" % stock_item.quantity or 0)
 

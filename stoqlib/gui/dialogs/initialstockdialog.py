@@ -34,7 +34,7 @@ from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
 from stoqlib.api import api
-from stoqlib.domain.product import ProductAdaptToStorable
+from stoqlib.domain.product import Storable
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -75,7 +75,7 @@ class InitialStockDialog(BaseEditor):
                                             self._branch.person.name)
 
         self._storables = [_TemporaryStorableItem(s)
-            for s in ProductAdaptToStorable.select(connection=self.conn)
+            for s in Storable.select(connection=self.conn)
                 if s.get_stock_item(self._branch) is None]
 
         self.slave.listcontainer.add_items(self._storables)

@@ -32,8 +32,8 @@ import sys
 import stoqlib
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.product import Storable
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib import test
@@ -113,8 +113,8 @@ class TestNfeGenerator(DomainTest):
                      ("Pêssego", "5", Decimal('3.5'), Decimal(3))]:
             sellable = self._create_sellable(data[0], data[1], data[2])
 
-            storable = sellable.product.addFacet(IStorable,
-                                                 connection=self.trans)
+            storable = Storable(product=sellable.product,
+                                connection=self.trans)
             storable.increase_stock(data[3], get_current_branch(self.trans))
 
             sale.add_sellable(sellable, data[3])

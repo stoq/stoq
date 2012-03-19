@@ -31,7 +31,6 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.product import Product
 from stoqlib.domain.taxes import ProductTaxTemplate
 from stoqlib.lib.translation import stoqlib_gettext
@@ -106,7 +105,7 @@ class ProductInformationSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(
             self.model, ProductInformationSlave.proxy_widgets)
 
-        storable = IStorable(self.model, None)
+        storable = self.model.storable
         if storable is not None:
             self.storable_proxy = self.add_proxy(
                 storable, ProductInformationSlave.storable_widgets)

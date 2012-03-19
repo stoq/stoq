@@ -27,18 +27,14 @@ from decimal import Decimal
 import sys
 
 import gtk
-
 from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
-
 from stoqdrivers.enum import TaxType
 
-
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.person import Supplier
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductComponent,
-                                    ProductQualityTest)
+                                    ProductQualityTest, Storable)
 from stoqlib.domain.sellable import (Sellable,
                                      SellableTaxConstant)
 from stoqlib.domain.views import ProductFullStockView
@@ -656,7 +652,7 @@ class ProductEditor(SellableEditor):
                             connection=conn)
         sellable.unit = sysparam(self.conn).SUGGESTED_UNIT
         model = Product(connection=conn, sellable=sellable)
-        model.addFacet(IStorable, connection=conn)
+        Storable(product=model, connection=conn)
         return model
 
     def on_consignment_yes_button__toggled(self, widget):

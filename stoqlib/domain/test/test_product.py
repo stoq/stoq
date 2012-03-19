@@ -28,10 +28,10 @@ import decimal
 from stoqlib.database.runtime import get_current_branch, new_transaction
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent)
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
-                                    ProductHistory, ProductComponent)
+                                    ProductHistory, ProductComponent,
+                                    Storable)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import Sellable
 
@@ -173,7 +173,7 @@ class TestProduct(DomainTest):
 
     def testCanRemove(self):
         product = self.create_product()
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product, connection=self.trans)
         self.assertTrue(product.can_remove())
 
         storable.increase_stock(1, get_current_branch(self.trans))
@@ -195,7 +195,7 @@ class TestProduct(DomainTest):
         from stoqlib.domain.product import ProductComponent
         product = self.create_product(10)
         component = self.create_product(5)
-        component.addFacet(IStorable, connection=self.trans)
+        Storable(product=component, connection=self.trans)
         self.assertTrue(component.can_remove())
 
         ProductComponent(product=product,
@@ -207,7 +207,7 @@ class TestProduct(DomainTest):
         # Product is used in a production.
         from stoqlib.domain.production import ProductionItem
         product = self.create_product()
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product, connection=self.trans)
         self.assertTrue(product.can_remove())
         order = self.create_production_order()
         ProductionItem(product=product,
@@ -219,7 +219,7 @@ class TestProduct(DomainTest):
 
     def testRemove(self):
         product = self.create_product()
-        product.addFacet(IStorable, connection=self.trans)
+        Storable(product=product, connection=self.trans)
 
         total = Product.selectBy(id=product.id, connection=self.trans).count()
         self.assertEquals(total, 1)
@@ -231,7 +231,7 @@ class TestProduct(DomainTest):
     def testIncreaseDecreaseStock(self):
         branch = get_current_branch(self.trans)
         product = self.create_product()
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product, connection=self.trans)
         stock_item = storable.get_stock_item(branch)
         self.failIf(stock_item is not None)
 
@@ -256,7 +256,7 @@ class TestProduct(DomainTest):
 
     def test_lead_time(self):
         product = self.create_product()
-        product.addFacet(IStorable, connection=self.trans)
+        Storable(product=product, connection=self.trans)
         branch = get_current_branch(self.trans)
         #storable.increase_stock(1, get_current_branch(self.trans))
 
@@ -275,10 +275,10 @@ class TestProduct(DomainTest):
         product = self.create_product(create_supplier=False)
         product.is_composed = True
         product.production_time = 5
-        product.addFacet(IStorable, connection=self.trans)
+        Storable(product=product, connection=self.trans)
 
         component = self.create_product(create_supplier=False)
-        component.addFacet(IStorable, connection=self.trans)
+        Storable(product=component, connection=self.trans)
         ProductSupplierInfo(connection=self.trans, product=component,
                             supplier=supplier1, lead_time=7)
         self.assertEqual(component.get_max_lead_time(1, branch), 7)
@@ -289,7 +289,7 @@ class TestProduct(DomainTest):
         self.assertEqual(product.get_max_lead_time(1, branch), 12)
 
         # Increase the component stock
-        IStorable(component).increase_stock(1, branch)
+        component.storable.increase_stock(1, branch)
 
         self.assertEqual(product.get_max_lead_time(1, branch), 5)
 
@@ -306,7 +306,7 @@ class TestProductSellableItem(DomainTest):
                             connection=self.trans)
         product = Product(sellable=sellable, connection=self.trans)
         sale_item = sale.add_sellable(product.sellable)
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product, connection=self.trans)
 
         branch = get_current_branch(self.trans)
         storable.increase_stock(2, branch)
@@ -347,7 +347,7 @@ class TestProductHistory(DomainTest):
         sellable = self.create_sellable()
         sellable.status = Sellable.STATUS_AVAILABLE
         product = sellable.product
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product, connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
         sale_item = sale.add_sellable(sellable, quantity=5)
 
@@ -388,7 +388,7 @@ class TestProductQuality(DomainTest):
 
     def test_quality_tests(self):
         product = self.create_product()
-        product.addFacet(IStorable, connection=self.trans)
+        Storable(product=product, connection=self.trans)
 
         # There are still no tests for this product
         self.assertEqual(product.quality_tests.count(), 0)
@@ -403,7 +403,7 @@ class TestProductQuality(DomainTest):
 
         # Different product
         product2 = self.create_product()
-        product2.addFacet(IStorable, connection=self.trans)
+        Storable(product=product2, connection=self.trans)
 
         # With different test
         test2 = ProductQualityTest(connection=self.trans, product=product2,

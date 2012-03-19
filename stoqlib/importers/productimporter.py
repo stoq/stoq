@@ -26,8 +26,8 @@
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.person import Supplier
-from stoqlib.domain.product import Product, ProductSupplierInfo
-from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.product import (Product, ProductSupplierInfo,
+                                    Storable)
 from stoqlib.domain.sellable import (Sellable,
                                      SellableCategory,
                                      SellableUnit)
@@ -116,4 +116,4 @@ class ProductImporter(CSVImporter):
                             is_main_supplier=True,
                             base_cost=float(data.cost),
                             product=product)
-        product.addFacet(IStorable, connection=trans)
+        Storable(product=product, connection=trans)

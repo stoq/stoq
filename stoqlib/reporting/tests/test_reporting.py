@@ -34,12 +34,12 @@ import stoqlib
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
                                           InCheckPaymentView,
                                           OutCheckPaymentView)
 from stoqlib.domain.person import CallsView
+from stoqlib.domain.product import Storable
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.test.domaintest import DomainTest
@@ -302,7 +302,7 @@ class TestReport(DomainTest):
         sale.salesperson = salesperson
         sale.add_sellable(sellable, quantity=1)
 
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product, connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
 
         CommissionSource(sellable=sellable,
@@ -335,7 +335,7 @@ class TestReport(DomainTest):
         sale.get_order_number_str = lambda: '9090'
 
         sale.add_sellable(sellable, quantity=1)
-        storable = product.addFacet(IStorable, connection=self.trans)
+        storable = Storable(product=product, connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
         sale.order()
         self.checkPDF(SaleOrderReport, sale, date=default_date)

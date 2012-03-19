@@ -31,7 +31,6 @@ from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrderView, PurchaseOrder
@@ -131,7 +130,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
             self._validate_step(True)
 
     def _return_single_item(self, sellable, quantity):
-        storable = IStorable(sellable.product, None)
+        storable = sellable.product.storable
         assert storable
 
         branch = self.consignment.branch

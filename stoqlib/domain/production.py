@@ -33,7 +33,7 @@ from stoqlib.database.orm import (UnicodeCol, ForeignKey, DateTimeCol, IntCol,
 from stoqlib.database.orm import AND
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory
-from stoqlib.domain.interfaces import IContainer, IDescribable, IStorable
+from stoqlib.domain.interfaces import IContainer, IDescribable
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -310,7 +310,7 @@ class ProductionItem(Domain):
         else:
             # There are no quality tests for this product. Increase stock
             # right now.
-            storable = IStorable(self.product, None)
+            storable = self.product.storable
             storable.increase_stock(quantity, self.order.branch)
 
         self.produced += quantity
@@ -395,7 +395,7 @@ class ProductionMaterial(Domain):
                          maximum quantity possible.
         """
         stock = self.get_stock_quantity()
-        storable = IStorable(self.product, None)
+        storable = self.product.storable
         assert storable is not None
 
         if quantity is None:
@@ -422,7 +422,7 @@ class ProductionMaterial(Domain):
         assert remaining >= 0
         if not remaining:
             return
-        storable = IStorable(self.product)
+        storable = self.product.storable
         storable.increase_stock(remaining, self.order.branch)
         self.allocated -= remaining
 
@@ -481,7 +481,7 @@ class ProductionMaterial(Domain):
         return self.product.sellable.get_unit_description()
 
     def get_stock_quantity(self):
-        storable = IStorable(self.product, None)
+        storable = self.product.storable
         assert storable is not None
         return storable.get_full_balance(self.order.branch)
 
@@ -553,7 +553,7 @@ class ProductionProducedItem(Domain):
         if self.entered_stock:
             return
 
-        storable = IStorable(self.product, None)
+        storable = self.product.storable
         storable.increase_stock(1, self.order.branch)
         self.entered_stock = True
 

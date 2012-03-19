@@ -32,7 +32,6 @@ from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.api import api
 from stoqlib.database.orm import AND
-from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.gui.base.columns import AccessorColumn
@@ -88,7 +87,7 @@ class SellableSearch(SearchEditor):
                 raise TypeError("You need to specify a quantity "
                                 "when supplying an order")
             for item in sale_items:
-                if IStorable(item.sellable.product, None):
+                if item.sellable.product.storable:
                     quantity = self.current_sale_stock.get(item.sellable.id, 0)
                     quantity += item.quantity
                     self.current_sale_stock[item.sellable.id] = quantity
@@ -158,7 +157,7 @@ class SellableSearch(SearchEditor):
         if not sellable_view:
             return
         sellable = Sellable.get(sellable_view.id, self.conn)
-        if (IStorable(sellable.product, None) and
+        if (sellable.product.storable and
             self.quantity > self._get_available_stock(sellable_view)):
             self.ok_button.set_sensitive(False)
         else:
