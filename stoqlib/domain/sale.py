@@ -132,9 +132,9 @@ class SaleItem(Domain):
             raise SellError(_(u"%r does not have enough stock to be sold.")
                               % self.sellable.get_description())
 
-        storable = self.sellable.product.storable
-        if storable:
-            item = storable.decrease_stock(self.quantity, branch)
+        product = self.sellable.product
+        if product and product.storable:
+            item = product.storable.decrease_stock(self.quantity, branch)
             self.average_cost = item.stock_cost
 
     def cancel(self, branch):
