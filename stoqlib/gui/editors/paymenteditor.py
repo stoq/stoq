@@ -218,11 +218,12 @@ class PaymentEditor(BaseEditor):
         self.edit_category.set_sensitive(False)
 
     def _fill_method_combo(self):
+        methods = set()
         if self._is_new_model:
-            methods = set(PaymentMethod.get_creatable_methods(
+            methods.update(set(PaymentMethod.get_creatable_methods(
                 self.trans,
                 self.payment_type,
-                separate=True))
+                separate=True)))
         methods.add(self.model.method)
         self.method.set_sensitive(False)
         self.method.prefill(locale_sorted(
