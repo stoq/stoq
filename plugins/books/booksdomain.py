@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2010 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2010-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,25 +22,16 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from zope.interface import implements
-
 from stoqlib.database.orm import IntCol, UnicodeCol, ForeignKey
 from stoqlib.database.orm import LEFTJOINOn, INNERJOINOn, Viewable
-from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.translation import stoqlib_gettext as _
 
-from booksinterfaces import IBook
 
-#
-# Publisher person facet implementation
-#
-
-
-# FIXME: Rename to Publisher
-class PersonAdaptToPublisher(Domain):
+class BookPublisher(Domain):
     """An institution created to publish books"""
 
     (STATUS_ACTIVE,
@@ -49,7 +40,7 @@ class PersonAdaptToPublisher(Domain):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
-    original = ForeignKey('Person')
+    person = ForeignKey('Person')
     status = IntCol(default=STATUS_ACTIVE)
 
     #
@@ -76,39 +67,30 @@ class PersonAdaptToPublisher(Domain):
     def get_description(self):
         return self.person.name
 
-    @property
-    def person(self):
-        return self.original
-
 
 class PublisherView(Viewable):
     columns = dict(
         id=Person.q.id,
-        publisher_id=PersonAdaptToPublisher.q.id,
+        publisher_id=BookPublisher.q.id,
         name=Person.q.name,
-        status=PersonAdaptToPublisher.q.status,
+        status=BookPublisher.q.status,
     )
 
     joins = [
-        INNERJOINOn(None, PersonAdaptToPublisher,
-                    Person.q.id == PersonAdaptToPublisher.q.originalID),
+        INNERJOINOn(None, BookPublisher,
+                    Person.q.id == BookPublisher.q.personID),
     ]
 
     @property
     def publisher(self):
-        return PersonAdaptToPublisher.get(self.publisher_id,
-                                          connection=self.get_connection())
+        return BookPublisher.get(self.publisher_id,
+                                 connection=self.get_connection())
 
 
-#
-# Book product facet implementation
-#
-
-class ProductAdaptToBook(ModelAdapter):
-    implements(IBook)
-
-    original = ForeignKey('Product')
-    publisher = ForeignKey('PersonAdaptToPublisher', default=None)
+class Book(Domain):
+    """ A book class for products, holding specific data about books  """
+    product = ForeignKey('Product')
+    publisher = ForeignKey('BookPublisher', default=None)
     author = UnicodeCol(default='')
     series = UnicodeCol(default='')
     edition = UnicodeCol(default='')
@@ -121,26 +103,24 @@ class ProductAdaptToBook(ModelAdapter):
     year = IntCol(default=0)
     synopsis = UnicodeCol(default='')
 
-Product.registerFacet(ProductAdaptToBook, IBook)
-
 
 class ProductBookFullStockView(ProductFullStockView):
     columns = ProductFullStockView.columns.copy()
     columns.update(dict(
         publisher=Person.q.name,
-        author=ProductAdaptToBook.q.author,
-        series=ProductAdaptToBook.q.series,
-        edition=ProductAdaptToBook.q.edition,
-        subject=ProductAdaptToBook.q.subject,
-        isbn=ProductAdaptToBook.q.isbn,
-        language=ProductAdaptToBook.q.language,
-        pages=ProductAdaptToBook.q.pages,
+        author=Book.q.author,
+        series=Book.q.series,
+        edition=Book.q.edition,
+        subject=Book.q.subject,
+        isbn=Book.q.isbn,
+        language=Book.q.language,
+        pages=Book.q.pages,
     ))
     joins = ProductFullStockView.joins[:]
     joins.extend([
-        INNERJOINOn(None, ProductAdaptToBook,
-                    ProductAdaptToBook.q.originalID == Product.q.id),
+        INNERJOINOn(None, Book,
+                    Book.q.productID == Product.q.id),
         LEFTJOINOn(None, Person,
-                   Person.q.id == ProductAdaptToBook.q.publisherID),
+                   Person.q.id == Book.q.publisherID),
     ])
     clause = ProductFullStockView.clause
