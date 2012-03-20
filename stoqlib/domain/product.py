@@ -26,7 +26,6 @@
 import datetime
 from decimal import Decimal
 
-from kiwi.argcheck import argcheck
 from zope.interface import implements
 
 from stoqlib.database.orm import PriceCol, DecimalCol, QuantityCol
@@ -36,7 +35,7 @@ from stoqlib.database.orm import const, AND, LEFTJOINOn
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)
-from stoqlib.domain.person import Branch, Person
+from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import StockError
 from stoqlib.lib.translation import stoqlib_gettext
@@ -563,33 +562,27 @@ class Storable(Domain):
                 _('Quantity to sell is greater than the available stock.'))
         return qty_ok
 
-    @argcheck(Branch)
-    def _get_stocks(self, branch=None):
-        # FIXME: Get rid of this after fixing all call sites.
-        query_args = {}
-        if branch:
-            query_args['branch'] = branch.id
-        return ProductStockItem.selectBy(storable=self,
-                                         connection=self.get_connection(),
-                                         **query_args)
-
-    def _get_logic_balance(self, branch=None):
+    def _get_logic_balance(self, branch):
         """Return the stock logic balance for the current product. If a branch
         company is supplied, get the stock balance for this branch,
         otherwise, get the stock balance for all the branches."""
-        stocks = self._get_stocks(branch)
-        assert stocks.count() >= 1
-        values = [stock_item.logic_quantity for stock_item in stocks]
-        return sum(values, Decimal(0))
+        stock_items = ProductStockItem.selectBy(
+            storable=self,
+            branch=branch,
+            connection=self.get_connection())
+        return stock_items.sum('logic_quantity') or Decimal(0)
 
-    def _decrease_logic_stock(self, quantity, branch=None):
+    def _decrease_logic_stock(self, quantity, branch):
         """When selling a product, update the stock logic reference for the sold
         item. If no branch company is supplied, update all branches."""
         self._check_logic_quantity()
 
-        stocks = self._get_stocks(branch)
-        self._check_rejected_stocks(stocks, quantity, check_logic=True)
-        for stock_item in stocks:
+        stock_items = ProductStockItem.selectBy(
+            storable=self,
+            branch=branch,
+            connection=self.get_connection())
+        self._check_rejected_stocks(stock_items, quantity, check_logic=True)
+        for stock_item in stock_items:
             stock_item.logic_quantity -= quantity
 
     #
@@ -606,7 +599,8 @@ class Storable(Domain):
         """
         if quantity <= 0:
             raise ValueError(_("quantity must be a positive number"))
-
+        if branch is None:
+            raise ValueError("branch cannot be None")
         stock_item = self.get_stock_item(branch)
         if stock_item is None:
             # If the stock_item is missing create a new one
@@ -638,6 +632,11 @@ class Storable(Domain):
         :param quantity: amount to decrease
         :param branch: a branch
         """
+        if quantity <= 0:
+            raise ValueError(_("quantity must be a positive number"))
+        if branch is None:
+            raise ValueError("branch cannot be None")
+
         # The function get_balance_for_branch() returns the current amount
         # of items in the stock. If balance == 0 we have no more stock for
         # this product and we need to set it as sold.
