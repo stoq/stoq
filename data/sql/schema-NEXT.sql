@@ -299,6 +299,14 @@ CREATE TABLE product_tax_template (
     tax_type integer
 );
 
+CREATE TABLE image (
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    image bytea,
+    thumbnail bytea,
+    description text
+);
 
 CREATE TABLE sellable_tax_constant (
     id serial NOT NULL PRIMARY KEY,
@@ -359,6 +367,7 @@ CREATE TABLE sellable (
        CHECK (on_sale_price >= 0),
     on_sale_start_date timestamp,
     on_sale_end_date timestamp,
+    image_id bigint UNIQUE REFERENCES image(id),
     unit_id bigint REFERENCES sellable_unit(id),
     category_id bigint REFERENCES sellable_category(id),
     tax_constant_id bigint REFERENCES sellable_tax_constant(id),
@@ -407,8 +416,6 @@ CREATE TABLE product (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     consignment boolean NOT NULL DEFAULT FALSE,
-    full_image bytea,
-    image bytea,
     location text,
     part_number text,
     manufacturer text,
@@ -500,8 +507,7 @@ CREATE TABLE service (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    sellable_id bigint REFERENCES sellable(id),
-    image bytea
+    sellable_id bigint REFERENCES sellable(id)
 );
 
 CREATE TABLE payment_renegotiation (
