@@ -552,18 +552,21 @@ class Storable(Domain):
                 branch=branch,
                 connection=self.get_connection())
 
-        # If previously lacked quantity change the status of the sellable
-        if not stock_item.quantity:
-            sellable = self.product.sellable
-            if sellable:
-                # Rename see bug 2669
-                sellable.can_sell()
-
+        # Unit cost must be updated here as
+        # 1) we need the stock item which might not exist
+        # 2) it needs to be updated before we change the quantity of the
+        #    stock item
         if unit_cost is not None:
             stock_item.update_cost(quantity, unit_cost)
 
         old_quantity = stock_item.quantity
         stock_item.quantity += quantity
+
+        # If previously lacked quantity change the status of the sellable
+        if not old_quantity:
+            sellable = self.product.sellable
+            if sellable:
+                sellable.can_sell()
 
         ProductStockUpdateEvent.emit(self.product, branch, old_quantity,
                                      stock_item.quantity)
@@ -580,25 +583,17 @@ class Storable(Domain):
         if branch is None:
             raise ValueError("branch cannot be None")
 
-        balance = self.get_balance_for_branch(branch)
-        if quantity > balance:
+        stock_item = self.get_stock_item(branch)
+        if stock_item is None or quantity > stock_item.quantity:
             raise StockError(
                 _('Quantity to sell is greater than the available stock.'))
 
-        # The function get_balance_for_branch() returns the current amount
-        # of items in the stock. If balance == 0 we have no more stock for
-        # this product and we need to set it as sold.
-        stock_item = self.get_stock_item(branch)
-        if stock_item.quantity < quantity:
-            raise StockError(
-                _('Quantity to decrease is greater than available stock.'))
-
         old_quantity = stock_item.quantity
         stock_item.quantity -= quantity
-        if stock_item.quantity < 0:
-            raise ValueError(_("Quantity cannot be negative"))
 
-        # We emptied the entire stock, we need to change the status of the
+        # We emptied the entire stock in all branches, we need to change
+        # the status of the sellable to unavailable as we cannot sell
+        # it anymore
         if not ProductStockItem.selectBy(
             storable=self,
             connection=self.get_connection()).sum(ProductStockItem.q.quantity):
