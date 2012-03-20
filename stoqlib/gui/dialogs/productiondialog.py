@@ -97,9 +97,9 @@ class _TemporaryProductionItemComponent(object):
         self.stock_quantity = self._get_stock_quantity()
         self.purchase_quantity = self._get_purchase_quantity()
         self.make_quantity = self._get_make_quantity()
-
-        #XXX: workaround!
         conn = api.get_connection()
+        self.branch = api.get_current_branch(conn)
+        #XXX: workaround!
         items = PurchasedItemAndStockView.select(
             Product.q.id == self.product.id, connection=conn)
         self.to_receive = sum(
@@ -113,7 +113,7 @@ class _TemporaryProductionItemComponent(object):
             return Decimal(0)
 
         try:
-            quantity = storable.get_balance()
+            quantity = storable.get_balance_for_branch(self.branch)
         except StockError:
             quantity = Decimal(0)
 

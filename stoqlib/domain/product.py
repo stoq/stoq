@@ -599,14 +599,15 @@ class Storable(Domain):
             raise ValueError(_("Quantity cannot be negative"))
 
         # We emptied the entire stock, we need to change the status of the
-        if not self.get_balance():
+        if not ProductStockItem.selectBy(
+            storable=self,
+            connection=self.get_connection()).sum(ProductStockItem.q.quantity):
             sellable = self.product.sellable
             if sellable:
                 sellable.set_unavailable()
 
         ProductStockUpdateEvent.emit(self.product, branch, old_quantity,
                                      stock_item.quantity)
-
         return stock_item
 
     def get_balance_for_branch(self, branch):
@@ -618,16 +619,6 @@ class Storable(Domain):
         stock_items = ProductStockItem.selectBy(storable=self,
                                                 connection=conn,
                                                 branch=branch)
-        return stock_items.sum(ProductStockItem.q.quantity) or Decimal(0)
-
-    def get_balance(self):
-        """Return the stock balance for the product in all branches
-        :returns: the amount of stock available in all branches
-        """
-        # FIXME: Kill this method, doesn't seem useful in general
-        conn = self.get_connection()
-        stock_items = ProductStockItem.selectBy(storable=self,
-                                                connection=conn)
         return stock_items.sum(ProductStockItem.q.quantity) or Decimal(0)
 
     def get_stock_items(self):

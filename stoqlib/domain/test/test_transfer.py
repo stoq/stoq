@@ -80,7 +80,7 @@ class TestTransferOrder(DomainTest):
         order.send_item(item)
 
         storable = item.sellable.product_storable
-        before_qty = storable.get_balance()
+        before_qty = storable.get_balance_for_branch(order.destination_branch)
         order.receive()
         after_qty = storable.get_balance_for_branch(order.destination_branch)
         self.assertEqual(order.can_close(), False)
