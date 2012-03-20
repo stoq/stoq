@@ -794,8 +794,6 @@ CREATE TABLE product_stock_item (
     stock_cost numeric(20, 8),
     quantity numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (quantity >= 0),
-    logic_quantity numeric(20, 3) CONSTRAINT positive_logic_quantity
-        CHECK (logic_quantity >= 0),
     storable_id bigint REFERENCES product_adapt_to_storable(id),
     branch_id bigint REFERENCES branch(id)
 );

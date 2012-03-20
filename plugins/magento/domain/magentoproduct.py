@@ -339,7 +339,7 @@ class MagentoStock(MagentoBaseSyncUp):
             branch = self.config.branch
             stock_item = storable.get_stock_item(branch)
             if stock_item:
-                quantity = stock_item.quantity + stock_item.logic_quantity
+                quantity = stock_item.quantity
 
         return {
             'qty': quantity,

@@ -77,8 +77,7 @@ class ProductFullStockView(Viewable):
         category_description=SellableCategory.q.description,
         total_stock_cost=const.SUM(
                 ProductStockItem.q.stock_cost * ProductStockItem.q.quantity),
-        stock=const.COALESCE(const.SUM(ProductStockItem.q.quantity +
-                                       ProductStockItem.q.logic_quantity), 0),
+        stock=const.COALESCE(const.SUM(ProductStockItem.q.quantity), 0),
         unit=SellableUnit.q.description,
         )
 
@@ -207,7 +206,6 @@ class ProductWithStockView(ProductFullStockView):
     clause = AND(
         ProductFullStockView.clause,
         ProductStockItem.q.quantity >= 0,
-        ProductStockItem.q.logic_quantity >= 0,
         )
     ProductFullStockView.joins
 
@@ -240,9 +238,8 @@ class ProductFullStockItemView(ProductFullStockView):
         minimum_quantity=Storable.q.minimum_quantity,
         maximum_quantity=Storable.q.maximum_quantity,
         to_receive_quantity=Field('_purchase_total', 'to_receive'),
-        difference=(const.SUM(
-            ProductStockItem.q.quantity + ProductStockItem.q.logic_quantity) -
-            Storable.q.minimum_quantity)))
+        difference=(const.SUM(ProductStockItem.q.quantity) -
+                    Storable.q.minimum_quantity)))
 
     joins = ProductFullStockView.joins[:]
     joins.append(LEFTJOINOn(None, _purchase_total,
@@ -318,8 +315,7 @@ class SellableFullStockView(Viewable):
         category_description=SellableCategory.q.description,
         base_price=Sellable.q.base_price,
         max_discount=Sellable.q.max_discount,
-        stock=const.COALESCE(const.SUM(ProductStockItem.q.quantity +
-                                       ProductStockItem.q.logic_quantity), 0),
+        stock=const.COALESCE(const.SUM(ProductStockItem.q.quantity), 0),
         )
 
     joins = [
@@ -579,8 +575,7 @@ class PurchasedItemAndStockView(Viewable):
         description=Sellable.q.description,
         purchased=PurchaseItem.q.quantity,
         received=PurchaseItem.q.quantity_received,
-        stocked=const.SUM(ProductStockItem.q.quantity +
-                          ProductStockItem.q.logic_quantity),
+        stocked=const.SUM(ProductStockItem.q.quantity),
         expected_receival_date=PurchaseItem.q.expected_receival_date,
         order_id=PurchaseOrder.q.id,
         purchased_date=PurchaseOrder.q.open_date,

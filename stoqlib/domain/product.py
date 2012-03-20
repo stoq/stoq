@@ -39,7 +39,6 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import StockError
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
 
 _ = stoqlib_gettext
 
@@ -496,14 +495,12 @@ class ProductStockItem(Domain):
     :attribute stock_cost: the average stock price, will be updated as
       new stock items are received.
     :attribute quantity: number of storables in the stock item
-    :attribute logic_quantity: ???
     :attribute branch: the branch this stock item belongs to
     :attribute storable: the storable the stock item refers to
     """
 
     stock_cost = PriceCol(default=0)
     quantity = QuantityCol(default=0)
-    logic_quantity = QuantityCol(default=0)
     branch = ForeignKey('Branch')
     storable = ForeignKey('Storable')
 
@@ -532,60 +529,6 @@ class Storable(Domain):
     maximum_quantity = QuantityCol(default=0)
 
     #
-    # Private
-    #
-
-    def _check_logic_quantity(self):
-        if sysparam(self.get_connection()).USE_LOGIC_QUANTITY:
-            return
-        raise StockError(
-            _("This company doesn't allow logic quantity operations"))
-
-    def _check_rejected_stocks(self, stocks, quantity, check_logic=False):
-        for stock_item in stocks:
-            if check_logic:
-                base_qty = stock_item.logic_quantity
-            else:
-                base_qty = stock_item.quantity
-            if base_qty < quantity:
-                raise StockError(
-                    _('Quantity to decrease is greater than available stock.'))
-
-    def _has_qty_available(self, quantity, branch):
-        logic_qty = self._get_logic_balance(branch)
-        balance = self.get_balance_for_branch(branch) - logic_qty
-        qty_ok = quantity <= balance
-        logic_qty_ok = quantity <= self.get_balance_for_branch(branch)
-        has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
-        if not qty_ok and not (has_logic_qty and logic_qty_ok):
-            raise StockError(
-                _('Quantity to sell is greater than the available stock.'))
-        return qty_ok
-
-    def _get_logic_balance(self, branch):
-        """Return the stock logic balance for the current product. If a branch
-        company is supplied, get the stock balance for this branch,
-        otherwise, get the stock balance for all the branches."""
-        stock_items = ProductStockItem.selectBy(
-            storable=self,
-            branch=branch,
-            connection=self.get_connection())
-        return stock_items.sum('logic_quantity') or Decimal(0)
-
-    def _decrease_logic_stock(self, quantity, branch):
-        """When selling a product, update the stock logic reference for the sold
-        item. If no branch company is supplied, update all branches."""
-        self._check_logic_quantity()
-
-        stock_items = ProductStockItem.selectBy(
-            storable=self,
-            branch=branch,
-            connection=self.get_connection())
-        self._check_rejected_stocks(stock_items, quantity, check_logic=True)
-        for stock_item in stock_items:
-            stock_item.logic_quantity -= quantity
-
-    #
     # Properties
     #
 
@@ -602,8 +545,8 @@ class Storable(Domain):
         if branch is None:
             raise ValueError("branch cannot be None")
         stock_item = self.get_stock_item(branch)
+        # If the stock_item is missing create a new one
         if stock_item is None:
-            # If the stock_item is missing create a new one
             stock_item = ProductStockItem(
                 storable=self,
                 branch=branch,
@@ -637,21 +580,18 @@ class Storable(Domain):
         if branch is None:
             raise ValueError("branch cannot be None")
 
+        balance = self.get_balance_for_branch(branch)
+        if quantity > balance:
+            raise StockError(
+                _('Quantity to sell is greater than the available stock.'))
+
         # The function get_balance_for_branch() returns the current amount
         # of items in the stock. If balance == 0 we have no more stock for
         # this product and we need to set it as sold.
-
-        if not self._has_qty_available(quantity, branch):
-            # Of course that here we must use the logic quantity balance
-            # as an addition to our main stock
-            logic_qty = self._get_logic_balance(branch)
-            balance = self.get_balance_for_branch(branch) - logic_qty
-            logic_sold_qty = quantity - balance
-            quantity -= logic_sold_qty
-            self._decrease_logic_stock(logic_sold_qty, branch)
-
         stock_item = self.get_stock_item(branch)
-        self._check_rejected_stocks([stock_item], quantity)
+        if stock_item.quantity < quantity:
+            raise StockError(
+                _('Quantity to decrease is greater than available stock.'))
 
         old_quantity = stock_item.quantity
         stock_item.quantity -= quantity
@@ -659,13 +599,9 @@ class Storable(Domain):
             raise ValueError(_("Quantity cannot be negative"))
 
         # We emptied the entire stock, we need to change the status of the
-        # sellable, but only if there is no stock in any other branch.
-        has_stock = any([s.quantity > 0 for s in self.get_stock_items()])
-        if not has_stock:
+        if not self.get_balance():
             sellable = self.product.sellable
             if sellable:
-                # FIXME: rename sell() to something more useful which is not
-                #        confusing a sale and a sellable, Bug 2669
                 sellable.set_unavailable()
 
         ProductStockUpdateEvent.emit(self.product, branch, old_quantity,
@@ -675,7 +611,6 @@ class Storable(Domain):
 
     def get_balance_for_branch(self, branch):
         """Return the stock balance for the product in a branch.
-        We get take logic_quantity into account if it's configured.
         :param branch: the branch to get the stock balance for
         :returns: the amount of stock available in the branch
         """
@@ -683,28 +618,17 @@ class Storable(Domain):
         stock_items = ProductStockItem.selectBy(storable=self,
                                                 connection=conn,
                                                 branch=branch)
-        if sysparam(conn).USE_LOGIC_QUANTITY:
-            stock_sum = (ProductStockItem.q.quantity +
-                         ProductStockItem.q.logic_quantity)
-        else:
-            stock_sum = ProductStockItem.q.quantity
-        return stock_items.sum(stock_sum) or Decimal(0)
+        return stock_items.sum(ProductStockItem.q.quantity) or Decimal(0)
 
     def get_balance(self):
         """Return the stock balance for the product in all branches
-        We get take logic_quantity into account if it's configured.
         :returns: the amount of stock available in all branches
         """
         # FIXME: Kill this method, doesn't seem useful in general
         conn = self.get_connection()
         stock_items = ProductStockItem.selectBy(storable=self,
                                                 connection=conn)
-        if sysparam(conn).USE_LOGIC_QUANTITY:
-            stock_sum = (ProductStockItem.q.quantity +
-                         ProductStockItem.q.logic_quantity)
-        else:
-            stock_sum = ProductStockItem.q.quantity
-        return stock_items.sum(stock_sum) or Decimal(0)
+        return stock_items.sum(ProductStockItem.q.quantity) or Decimal(0)
 
     def get_stock_items(self):
         """Fetches the stock items available for all branches.

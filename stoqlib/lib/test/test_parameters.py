@@ -35,7 +35,6 @@ from stoqlib.domain.service import Service
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.sale import Sale
-from stoqlib.exceptions import StockError
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -91,14 +90,6 @@ class TestParameter(DomainTest):
         assert isinstance(service, Service)
 
     # System constants based on stoq.lib.parameters
-
-    def testUseLogicQuantity(self):
-        storable = self.create_storable()
-        self.assertEqual(storable._check_logic_quantity(), None)
-        self.sparam.update_parameter(parameter_name='USE_LOGIC_QUANTITY',
-                                     value=u'0')
-        self.failUnlessRaises(StockError,
-                              storable._check_logic_quantity)
 
     def testPOSFullScreen(self):
         param = self.sparam.POS_FULL_SCREEN
