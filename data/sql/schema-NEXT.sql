@@ -880,6 +880,8 @@ CREATE TABLE payment_category (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     name text UNIQUE,
+    category_type integer DEFAULT 0 CONSTRAINT valid_category_type
+        CHECK (category_type >= 0 AND category_type <= 1),
     color text
 );
 
