@@ -216,8 +216,7 @@ class TestSale(DomainTest):
 
     def testReturn(self):
         sale = self.create_sale()
-        sellable = self.add_product(sale)
-        storable = sellable.product_storable
+        self.add_product(sale)
         sale.order()
         self.add_payments(sale)
         sale.confirm()
