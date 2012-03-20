@@ -38,7 +38,7 @@ from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)
 from stoqlib.domain.person import Branch, Person
 from stoqlib.domain.interfaces import IDescribable
-from stoqlib.exceptions import StockError, DatabaseInconsistency
+from stoqlib.exceptions import StockError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 
