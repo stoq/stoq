@@ -15,8 +15,8 @@
   <p>
     O Stoq é capaz de imprimir boletos para
     <link xref="account-receivable">contas a receber</link> para os seguintes
-    bancos: Banrisul, Bradesco, Banco do Brasil, Caixa Econômica Federal, Banco
-    Real e Banco Santander.
+    bancos: Banco do Brasil, Banco Itaú, Banco Real, Banrisul, Bradesco,
+    Caixa Econômica Federal e Santander.
   </p>
 
   <!--This will automatically list all pages that links to this page-->
