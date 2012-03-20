@@ -215,7 +215,6 @@ class MagentoSale(MagentoBaseSyncBoth):
     def update_local(self, info):
         conn = self.get_connection()
         if not self.magento_address:
-
             mag_address_id = (info['shipping_address']['customer_address_id'] or
                               info['billing_address']['customer_address_id'])
             mag_address = MagentoAddress.selectOneBy(
@@ -248,13 +247,12 @@ class MagentoSale(MagentoBaseSyncBoth):
         assert not self.need_create_local()
         conn = self.get_connection()
 
-        if self.sale.status == Sale.STATUS_CONFIRMED:
+        if self.sale.status == Sale.STATUS_PAID:
             if not self.magento_invoice:
                 # Just creating. It'll be syncronized soon
                 MagentoInvoice(connection=conn,
                                config=self.config,
                                magento_sale=self)
-        elif self.sale.status == Sale.STATUS_PAID:
             retval = self._create_delivery()
         elif (self.sale.status in (Sale.STATUS_CANCELLED, Sale.STATUS_RETURNED)
               and self.status != self.STATUS_CANCELLED):
@@ -430,8 +428,8 @@ class MagentoInvoice(MagentoBaseSyncBoth):
                                           info['updated_at'])
 
         sale = self.magento_sale.sale
-        if (self.status == self.STATUS_PAID and not
-            sale.status == Sale.STATUS_PAID):
+        if (self.status == self.STATUS_PAID and
+            sale.status != Sale.STATUS_PAID):
             if not sale.can_set_paid():
                 # The sale wasn't confirmed yet. Wait until it's confirmed,
                 # and then mark it as paid.
@@ -442,6 +440,13 @@ class MagentoInvoice(MagentoBaseSyncBoth):
                 sale.group.pay()
             sale.set_paid()
             self.magento_sale.need_sync = True
+        elif (self.status == self.STATUS_CANCELLED and
+              sale.status != Sale.STATUS_CANCELLED):
+            # The payment was cancelled on gateway the gateway.
+            # Cancel it on Stoq too.
+            if sale.group.can_cancel():
+                sale.group.cancel()
+            self.sale.cancel()
 
         return True
 
