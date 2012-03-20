@@ -751,7 +751,8 @@ class Sale(Domain, Adaptable):
                 #        some went to delivery Y.
                 delivery = sale_item.delivery
             if delivery is not None:
-                details.append(_('Delivery Address: %s') % delivery.address)
+                details.append(_('Delivery Address: %s') %
+                               delivery.address.get_address_string())
                 # At the moment, we just support only one delivery per sale.
                 delivery_added = True
                 delivery = None
