@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,6 @@
 import datetime
 from decimal import Decimal
 
-from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
@@ -521,6 +520,14 @@ class ProductStockItem(Domain):
 
 
 class Storable(Domain):
+    '''Storable represents the stock of a Product.
+
+    The actual stock of an item is in ProductStockItem.
+
+    :ivar product: the product the stock represents
+    :ivar maximum_quantity: maximum quantity of stock items allowed
+    :ivar minimum_quantity: minimum quantity of stock items allowed
+    '''
     product = ForeignKey('Product')
     minimum_quantity = QuantityCol(default=0)
     maximum_quantity = QuantityCol(default=0)
@@ -546,7 +553,7 @@ class Storable(Domain):
                     _('Quantity to decrease is greater than available stock.'))
 
     def _has_qty_available(self, quantity, branch):
-        logic_qty = self.get_logic_balance(branch)
+        logic_qty = self._get_logic_balance(branch)
         balance = self.get_full_balance(branch) - logic_qty
         qty_ok = quantity <= balance
         logic_qty_ok = quantity <= self.get_full_balance(branch)
@@ -565,6 +572,25 @@ class Storable(Domain):
         return ProductStockItem.selectBy(storable=self,
                                          connection=self.get_connection(),
                                          **query_args)
+
+    def _get_logic_balance(self, branch=None):
+        """Return the stock logic balance for the current product. If a branch
+        company is supplied, get the stock balance for this branch,
+        otherwise, get the stock balance for all the branches."""
+        stocks = self._get_stocks(branch)
+        assert stocks.count() >= 1
+        values = [stock_item.logic_quantity for stock_item in stocks]
+        return sum(values, Decimal(0))
+
+    def _decrease_logic_stock(self, quantity, branch=None):
+        """When selling a product, update the stock logic reference for the sold
+        item. If no branch company is supplied, update all branches."""
+        self._check_logic_quantity()
+
+        stocks = self._get_stocks(branch)
+        self._check_rejected_stocks(stocks, quantity, check_logic=True)
+        for stock_item in stocks:
+            stock_item.logic_quantity -= quantity
 
     #
     # Properties
@@ -619,11 +645,11 @@ class Storable(Domain):
         if not self._has_qty_available(quantity, branch):
             # Of course that here we must use the logic quantity balance
             # as an addition to our main stock
-            logic_qty = self.get_logic_balance(branch)
+            logic_qty = self._get_logic_balance(branch)
             balance = self.get_full_balance(branch) - logic_qty
             logic_sold_qty = quantity - balance
             quantity -= logic_sold_qty
-            self.decrease_logic_stock(logic_sold_qty, branch)
+            self._decrease_logic_stock(logic_sold_qty, branch)
 
         stock_item = self.get_stock_item(branch)
         self._check_rejected_stocks([stock_item], quantity)
@@ -648,25 +674,6 @@ class Storable(Domain):
 
         return stock_item
 
-    def increase_logic_stock(self, quantity, branch=None):
-        """When receiving a product, update the stock logic quantity
-        reference for this new item. If no branch company is supplied,
-        update all branches."""
-        self._check_logic_quantity()
-        stocks = self._get_stocks(branch)
-        for stock_item in stocks:
-            stock_item.logic_quantity += quantity
-
-    def decrease_logic_stock(self, quantity, branch=None):
-        """When selling a product, update the stock logic reference for the sold
-        item. If no branch company is supplied, update all branches."""
-        self._check_logic_quantity()
-
-        stocks = self._get_stocks(branch)
-        self._check_rejected_stocks(stocks, quantity, check_logic=True)
-        for stock_item in stocks:
-            stock_item.logic_quantity -= quantity
-
     def get_full_balance(self, branch=None):
         """Return the stock balance for the current product. If a branch
         company is supplied, get the stock balance for this branch,
@@ -682,46 +689,6 @@ class Storable(Domain):
             if has_logic_qty:
                 value += stock_item.logic_quantity
         return value
-
-    def get_logic_balance(self, branch=None):
-        """Return the stock logic balance for the current product. If a branch
-        company is supplied, get the stock balance for this branch,
-        otherwise, get the stock balance for all the branches."""
-        stocks = self._get_stocks(branch)
-        assert stocks.count() >= 1
-        values = [stock_item.logic_quantity for stock_item in stocks]
-        return sum(values, Decimal(0))
-
-    def get_average_stock_price(self):
-        """Average stock price is: SUM(total_cost attribute, StockItem
-        object) of all the branches DIVIDED BY SUM(quantity atribute,
-        StockReference object)
-        """
-        total_cost = Decimal(0)
-        total_qty = Decimal(0)
-        for stock_item in self.get_stock_items():
-            total_cost += stock_item.stock_cost
-            total_qty += stock_item.quantity
-
-        if not total_qty:
-            return currency(0)
-        return currency(total_cost / total_qty)
-
-    def has_stock_by_branch(self, branch):
-        """Returns True if there is at least one item on stock for the
-        given branch or False if not.
-        This method also considers the logic stock
-        """
-        stock = self._get_stocks(branch)
-        qty = stock.count()
-        if not qty:
-            return False
-        elif qty > 1:
-            raise DatabaseInconsistency(
-                _("You should have only one stock item for this branch, "
-                  "got %d") % qty)
-        stock = stock[0]
-        return stock.quantity + stock.logic_quantity > 0
 
     def get_stock_items(self):
         """Fetches the stock items available for all branches.
