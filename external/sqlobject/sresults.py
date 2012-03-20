@@ -113,6 +113,17 @@ class SelectResults(object):
             clause = sqlbuilder.SQLConstant('(%s)' % self.clause)
         return self.newClause(sqlbuilder.AND(clause, filter_clause))
 
+    def filterBy(self, **kwargs):
+        conn = self._getConnection()
+        filter_clause = conn._SO_columnClause(self.sourceClass, kwargs)
+        if filter_clause is None:
+            # None doesn't filter anything, it's just a no-op:
+            return self
+        clause = self.clause
+        if isinstance(clause, (str, unicode)):
+            clause = sqlbuilder.SQLConstant('(%s)' % self.clause)
+        return self.newClause(conn.sqlrepr(clause) + ' AND ' +  filter_clause)
+
     def __getitem__(self, value):
         if type(value) is type(slice(1)):
             assert not value.step, "Slices do not support steps"
