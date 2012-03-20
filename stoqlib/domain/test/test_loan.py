@@ -69,11 +69,11 @@ class TestLoanItem(DomainTest):
         storable = Storable(product=product, connection=self.trans)
         branch = get_current_branch(self.trans)
         storable.increase_stock(1, branch)
-        initial = storable.get_full_balance(branch)
+        initial = storable.get_balance_for_branch(branch)
         sellable = product.sellable
         loan_item = loan.add_sellable(sellable, quantity=1, price=10)
         loan_item.do_loan(branch)
-        final = storable.get_full_balance(branch)
+        final = storable.get_balance_for_branch(branch)
         self.assertEquals(final, initial - 1)
 
     def testReturnProduct(self):
@@ -82,10 +82,10 @@ class TestLoanItem(DomainTest):
         storable = Storable(product=product, connection=self.trans)
         branch = get_current_branch(self.trans)
         loan.branch = branch
-        initial = storable.get_full_balance(branch)
+        initial = storable.get_balance_for_branch(branch)
         sellable = product.sellable
         loan_item = loan.add_sellable(sellable, quantity=1, price=10)
         loan_item.return_quantity = loan_item.quantity
         loan_item.return_product(loan_item.quantity)
-        final = storable.get_full_balance(branch)
+        final = storable.get_balance_for_branch(branch)
         self.assertEquals(final, initial + 1)

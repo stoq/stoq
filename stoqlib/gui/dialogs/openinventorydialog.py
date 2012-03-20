@@ -238,7 +238,7 @@ class OpenInventoryDialog(BaseEditor):
                 continue
             # a sellable without stock can't be part of inventory
             if storable.get_stock_item(self.model.branch) is not None:
-                recorded_quantity = storable.get_full_balance(self.model.branch)
+                recorded_quantity = storable.get_balance_for_branch(self.model.branch)
                 InventoryItem(product=sellable.product,
                               product_cost=sellable.cost,
                               recorded_quantity=recorded_quantity,

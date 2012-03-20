@@ -217,7 +217,7 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         sellable = self.add_product(sale)
         storable = sellable.product_storable
-        balance_before_sale = storable.get_full_balance()
+        balance_before_sale = storable.get_balance()
         sale.order()
         self.add_payments(sale)
         sale.confirm()
@@ -228,7 +228,7 @@ class TestSale(DomainTest):
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
 
-        balance_after_sale = storable.get_full_balance()
+        balance_after_sale = storable.get_balance()
         self.assertEqual(balance_before_sale, balance_after_sale)
 
     def testReturnPaid(self):
@@ -517,18 +517,18 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         sellable = self.add_product(sale)
         storable = sellable.product_storable
-        inital_quantity = storable.get_full_balance()
+        inital_quantity = storable.get_balance()
         sale.order()
         sale.cancel()
         self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
-        final_quantity = storable.get_full_balance()
+        final_quantity = storable.get_balance()
         self.assertEquals(inital_quantity, final_quantity)
 
     def testCancelPaid(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
         storable = sellable.product_storable
-        initial_quantity = storable.get_full_balance()
+        initial_quantity = storable.get_balance()
         sale.order()
 
         self.add_payments(sale)
@@ -536,46 +536,46 @@ class TestSale(DomainTest):
         sale.set_paid()
         self.failUnless(sale.can_cancel())
 
-        after_confirmed_quantity = storable.get_full_balance()
+        after_confirmed_quantity = storable.get_balance()
         self.assertEquals(initial_quantity - 1, after_confirmed_quantity)
 
         self.failUnless(sale.can_cancel())
         sale.cancel()
         self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
 
-        final_quantity = storable.get_full_balance()
+        final_quantity = storable.get_balance()
         self.assertEquals(initial_quantity, final_quantity)
 
     def testCancelNotPaid(self):
         sale = self.create_sale()
         sellable = self.add_product(sale, price=300)
         storable = sellable.product_storable
-        initial_quantity = storable.get_full_balance()
+        initial_quantity = storable.get_balance()
         sale.order()
         self.failUnless(sale.can_cancel())
 
         self.add_payments(sale)
         sale.confirm()
 
-        after_confirmed_quantity = storable.get_full_balance()
+        after_confirmed_quantity = storable.get_balance()
         self.assertEquals(initial_quantity - 1, after_confirmed_quantity)
 
         self.failUnless(sale.can_cancel())
         sale.cancel()
         self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
 
-        final_quantity = storable.get_full_balance()
+        final_quantity = storable.get_balance()
         self.assertEquals(initial_quantity, final_quantity)
 
     def testCancelQuote(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
         storable = sellable.product_storable
-        inital_quantity = storable.get_full_balance()
+        inital_quantity = storable.get_balance()
         sale.status = Sale.STATUS_QUOTE
         sale.cancel()
         self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
-        final_quantity = storable.get_full_balance()
+        final_quantity = storable.get_balance()
         self.assertEquals(inital_quantity, final_quantity)
 
     def testCanSetRenegotiated(self):

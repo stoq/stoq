@@ -64,7 +64,7 @@ class DecreaseItemEditor(PurchaseItemEditor):
         sellable = self.model.sellable
         storable = sellable.product_storable
         branch = self.model.stock_decrease.branch
-        balance = storable.get_full_balance(branch=branch)
+        balance = storable.get_balance_for_branch(branch=branch)
 
         # Also consider the items already removed from stock.
         for i in self.all_items:

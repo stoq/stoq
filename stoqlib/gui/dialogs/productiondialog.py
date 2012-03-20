@@ -113,7 +113,7 @@ class _TemporaryProductionItemComponent(object):
             return Decimal(0)
 
         try:
-            quantity = storable.get_full_balance()
+            quantity = storable.get_balance()
         except StockError:
             quantity = Decimal(0)
 

@@ -483,7 +483,7 @@ class ProductionMaterial(Domain):
     def get_stock_quantity(self):
         storable = self.product.storable
         assert storable is not None
-        return storable.get_full_balance(self.order.branch)
+        return storable.get_balance_for_branch(self.order.branch)
 
 
 class ProductionService(Domain):

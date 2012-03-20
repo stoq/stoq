@@ -591,7 +591,7 @@ class PosApp(AppWindow):
 
     def _check_available_stock(self, storable, sellable):
         branch = api.get_current_branch(self.conn)
-        available = storable.get_full_balance(branch)
+        available = storable.get_balance_for_branch(branch)
         added = sum([sale_item.quantity
                      for sale_item in self.sale_items
                          if sale_item.sellable == sellable])

@@ -243,7 +243,7 @@ class Product(Domain):
         for i in self.get_components():
             storable = i.component.storable
             needed = quantity * i.quantity
-            stock = storable.get_full_balance(branch)
+            stock = storable.get_balance_for_branch(branch)
             # We have enought of this component items to produce.
             if  stock >= needed:
                 continue
@@ -554,9 +554,9 @@ class Storable(Domain):
 
     def _has_qty_available(self, quantity, branch):
         logic_qty = self._get_logic_balance(branch)
-        balance = self.get_full_balance(branch) - logic_qty
+        balance = self.get_balance_for_branch(branch) - logic_qty
         qty_ok = quantity <= balance
-        logic_qty_ok = quantity <= self.get_full_balance(branch)
+        logic_qty_ok = quantity <= self.get_balance_for_branch(branch)
         has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
         if not qty_ok and not (has_logic_qty and logic_qty_ok):
             raise StockError(
@@ -638,15 +638,15 @@ class Storable(Domain):
         :param quantity: amount to decrease
         :param branch: a branch
         """
-        # The function get_full_balance returns the current amount of items
-        # in the stock. If get_full_balance == 0 we have no more stock for
+        # The function get_balance_for_branch() returns the current amount
+        # of items in the stock. If balance == 0 we have no more stock for
         # this product and we need to set it as sold.
 
         if not self._has_qty_available(quantity, branch):
             # Of course that here we must use the logic quantity balance
             # as an addition to our main stock
             logic_qty = self._get_logic_balance(branch)
-            balance = self.get_full_balance(branch) - logic_qty
+            balance = self.get_balance_for_branch(branch) - logic_qty
             logic_sold_qty = quantity - balance
             quantity -= logic_sold_qty
             self._decrease_logic_stock(logic_sold_qty, branch)
@@ -674,21 +674,38 @@ class Storable(Domain):
 
         return stock_item
 
-    def get_full_balance(self, branch=None):
-        """Return the stock balance for the current product. If a branch
-        company is supplied, get the stock balance for this branch,
-        otherwise, get the stock balance for all the branches.
-        We get also the sum of logic_quantity attributes"""
-        stocks = self._get_stocks(branch)
-        value = Decimal(0)
-        if not stocks:
-            return value
-        has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
-        for stock_item in stocks:
-            value += stock_item.quantity
-            if has_logic_qty:
-                value += stock_item.logic_quantity
-        return value
+    def get_balance_for_branch(self, branch):
+        """Return the stock balance for the product in a branch.
+        We get take logic_quantity into account if it's configured.
+        :param branch: the branch to get the stock balance for
+        :returns: the amount of stock available in the branch
+        """
+        conn = self.get_connection()
+        stock_items = ProductStockItem.selectBy(storable=self,
+                                                connection=conn,
+                                                branch=branch)
+        if sysparam(conn).USE_LOGIC_QUANTITY:
+            stock_sum = (ProductStockItem.q.quantity +
+                         ProductStockItem.q.logic_quantity)
+        else:
+            stock_sum = ProductStockItem.q.quantity
+        return stock_items.sum(stock_sum) or Decimal(0)
+
+    def get_balance(self):
+        """Return the stock balance for the product in all branches
+        We get take logic_quantity into account if it's configured.
+        :returns: the amount of stock available in all branches
+        """
+        # FIXME: Kill this method, doesn't seem useful in general
+        conn = self.get_connection()
+        stock_items = ProductStockItem.selectBy(storable=self,
+                                                connection=conn)
+        if sysparam(conn).USE_LOGIC_QUANTITY:
+            stock_sum = (ProductStockItem.q.quantity +
+                         ProductStockItem.q.logic_quantity)
+        else:
+            stock_sum = ProductStockItem.q.quantity
+        return stock_items.sum(stock_sum) or Decimal(0)
 
     def get_stock_items(self):
         """Fetches the stock items available for all branches.
