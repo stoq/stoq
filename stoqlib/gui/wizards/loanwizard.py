@@ -213,7 +213,7 @@ class LoanItemStep(SaleQuoteItemStep):
     def _has_stock(self, sellable, quantity):
         storable = sellable.product_storable
         if storable is not None:
-            balance = storable.get_full_balance(self.model.branch)
+            balance = storable.get_balance_for_branch(self.model.branch)
         else:
             balance = Decimal(0)
         return balance >= quantity

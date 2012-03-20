@@ -271,7 +271,7 @@ class TestProductionQuality(DomainTest):
 
         # We still dont have any stock for this product
         storable = item.product.storable
-        self.assertEqual(storable.get_full_balance(order.branch), 0)
+        self.assertEqual(storable.get_balance_for_branch(order.branch), 0)
 
         self.assertEqual(order.produced_items.count(), 0)
         item.produce(1, user, [123456])
@@ -333,4 +333,4 @@ class TestProductionQuality(DomainTest):
             self.assertEqual(p_item.entered_stock, True)
 
         storable = item.product.storable
-        self.assertEqual(storable.get_full_balance(order.branch), 4)
+        self.assertEqual(storable.get_balance_for_branch(order.branch), 4)

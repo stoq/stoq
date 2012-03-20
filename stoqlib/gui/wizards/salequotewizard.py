@@ -258,7 +258,7 @@ class SaleQuoteItemStep(SellableItemStep):
             storable = product.storable
             if not storable:
                 continue
-            stock = storable.get_full_balance(self.model.branch)
+            stock = storable.get_balance_for_branch(self.model.branch)
             i._stock_quantity = stock
 
         return list(items)

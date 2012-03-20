@@ -271,7 +271,7 @@ class TillApp(SearchableAppWindow):
         branch = self.current_branch
         missing = []
         for storable in prod_sold.keys():
-            stock = storable.get_full_balance(branch)
+            stock = storable.get_balance_for_branch(branch)
             if stock < prod_sold[storable]:
                 missing.append(Settable(storable=storable,
                                         description=prod_desc[storable],

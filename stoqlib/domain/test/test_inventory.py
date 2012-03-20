@@ -150,7 +150,7 @@ class TestInventoryItem(DomainTest):
         item.adjust(invoice_number)
 
         storable = item.product.storable
-        current_stock = storable.get_full_balance(item.inventory.branch)
+        current_stock = storable.get_balance_for_branch(item.inventory.branch)
         self.assertEqual(current_stock, item.actual_quantity)
 
         entry = FiscalBookEntry.selectOneBy(

@@ -87,7 +87,7 @@ class LoanItemEditor(BaseEditor):
     def _has_stock(self, quantity):
         storable = self.model.sellable.product_storable
         if storable is not None:
-            available = storable.get_full_balance(self._branch)
+            available = storable.get_balance_for_branch(self._branch)
         else:
             available = 0
         return available >= quantity
