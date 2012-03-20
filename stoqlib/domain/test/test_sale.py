@@ -215,11 +215,9 @@ class TestSale(DomainTest):
         self.assertEqual(sale.close_date.date(), datetime.date.today())
 
     def testReturn(self):
-        branch = api.get_current_branch(self.trans)
         sale = self.create_sale()
         sellable = self.add_product(sale)
         storable = sellable.product_storable
-        balance_before_sale = storable.get_balance_for_branch(sale.branch)
         sale.order()
         self.add_payments(sale)
         sale.confirm()
