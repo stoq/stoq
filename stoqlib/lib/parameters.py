@@ -224,15 +224,6 @@ _details = [
         _('The default delivery service in the system.'),
         'service.Service'),
 
-    ParameterDetails(
-        'USE_LOGIC_QUANTITY',
-        _('Stock'),
-        _('Use logic quantity'),
-        _('An integer that defines if the company can work or not with '
-          'logic quantities during stock operations. See StockItem '
-          'documentation.'),
-          bool, initial=True),
-
     # XXX This parameter is POS-specific. How to deal with that
     # in a better way?
     ParameterDetails(
