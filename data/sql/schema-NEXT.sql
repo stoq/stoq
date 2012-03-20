@@ -769,13 +769,23 @@ CREATE TABLE sale_item (
     cfop_id bigint REFERENCES cfop_data(id)
 );
 
-CREATE TABLE sale_item_adapt_to_delivery (
+CREATE TABLE delivery (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    address text,
-    original_id bigint UNIQUE REFERENCES sale_item(id)
+    status integer CONSTRAINT valid_status
+        CHECK (status >= 0 AND status < 3),
+    open_date timestamp,
+    deliver_date timestamp,
+    receive_date timestamp,
+    tracking_code text,
+    address_id bigint REFERENCES address(id),
+    transporter_id bigint REFERENCES transporter(id),
+    service_item_id bigint REFERENCES sale_item(id)
 );
+
+ALTER TABLE sale_item ADD COLUMN delivery_id bigint
+    REFERENCES delivery(id);
 
 CREATE TABLE product_stock_item (
     id serial NOT NULL PRIMARY KEY,
@@ -1127,16 +1137,6 @@ CREATE TABLE renegotiation_data (
     responsible_id bigint REFERENCES person(id),
     new_order_id bigint REFERENCES sale(id),
     sale_id bigint UNIQUE REFERENCES sale(id)
-);
-
-CREATE TABLE delivery_item (
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    quantity numeric(20, 3) CONSTRAINT positive_quantity
-        CHECK (quantity >= 0),
-    sellable_id bigint REFERENCES sellable(id),
-    delivery_id bigint REFERENCES sale_item_adapt_to_delivery(id)
 );
 
 CREATE TABLE till_entry (
