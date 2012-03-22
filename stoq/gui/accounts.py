@@ -172,7 +172,7 @@ class BaseAccountWindow(SearchableAppWindow):
 
     def _show_payment_categories(self):
         trans = api.new_transaction()
-        self.run_dialog(PaymentCategoryDialog, trans)
+        self.run_dialog(PaymentCategoryDialog, trans, self.payment_category_type)
         self._update_filter_items()
         trans.close()
 
