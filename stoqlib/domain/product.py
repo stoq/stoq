@@ -132,7 +132,7 @@ class Product(Domain):
     :attribute consignment:
     :attribute is_composed:
     :attribute production_time:
-    :attribute quality_tests:
+    :attribute quality_tests: Used for composed products only
     :attribute location: physical location of this product, like a drawer
       or shelf number
     :attribute manufacturer: name of the manufacturer for this product
@@ -160,14 +160,13 @@ class Product(Domain):
     height = DecimalCol(default=0)
     depth = DecimalCol(default=0)
     weight = DecimalCol(default=0)
-    quality_tests = MultipleJoin('ProductQualityTest')   # Used for composed products only
+    quality_tests = MultipleJoin('ProductQualityTest')
     production_time = IntCol(default=1)
 
     # Tax details
     icms_template = ForeignKey('ProductIcmsTemplate', default=None)
     ipi_template = ForeignKey('ProductIpiTemplate', default=None)
 
-    # Nomenclatura Comum do Mercosul related details
     ncm = UnicodeCol(default=None)
     ex_tipi = UnicodeCol(default=None)
     genero = UnicodeCol(default=None)
