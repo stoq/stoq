@@ -64,6 +64,22 @@ class PaymentCategoryDialog(ModelListDialog):
                column='color')
         ]
 
+    def __init__(self, conn, category_type=None):
+        self.category_type = category_type
+        
+        ModelListDialog.__init__(self, conn)
+
+        column = self.listcontainer.list.get_column_by_name('category_type')
+        column.treeview_column.set_visible(category_type is None)
+
+    def populate(self):
+        results = super(PaymentCategoryDialog, self).populate()
+        
+        if self.category_type is not None:
+            results = results.filterBy(category_type=self.category_type)
+
+        return results
+
     def delete_model(self, model, trans):
         for payment in Payment.selectBy(category=model,
                                         connection=trans):

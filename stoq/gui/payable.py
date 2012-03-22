@@ -72,6 +72,8 @@ class PayableApp(BaseAccountWindow):
     search_label = _('matching:')
     report_table = PayablePaymentReport
 
+    payment_category_type = PaymentCategory.TYPE_PAYABLE
+
     #
     # Application
     #

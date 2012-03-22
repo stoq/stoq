@@ -75,6 +75,8 @@ class ReceivableApp(BaseAccountWindow):
     search_label = _('matching:')
     report_table = ReceivablePaymentReport
 
+    payment_category_type = PaymentCategory.TYPE_RECEIVABLE
+
     #
     # Application
     #
