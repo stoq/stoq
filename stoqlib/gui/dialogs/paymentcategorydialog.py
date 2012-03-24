@@ -66,7 +66,7 @@ class PaymentCategoryDialog(ModelListDialog):
 
     def __init__(self, conn, category_type=None):
         self.category_type = category_type
-        
+
         ModelListDialog.__init__(self, conn)
 
         column = self.listcontainer.list.get_column_by_name('category_type')
@@ -74,7 +74,7 @@ class PaymentCategoryDialog(ModelListDialog):
 
     def populate(self):
         results = super(PaymentCategoryDialog, self).populate()
-        
+
         if self.category_type is not None:
             results = results.filterBy(category_type=self.category_type)
 
