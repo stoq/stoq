@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-02-27 17:10-0300\n"
-"PO-Revision-Date: 2012-03-02 16:12+0000\n"
+"PO-Revision-Date: 2012-03-23 17:31+0000\n"
 "Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-03-11 04:48+0000\n"
-"X-Generator: Launchpad (build 14914)\n"
+"X-Launchpad-Export-Date: 2012-03-24 05:04+0000\n"
+"X-Generator: Launchpad (build 14981)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -544,7 +544,7 @@ msgstr "Venda à vista:      "
 
 #: ../data/glade/CommissionDataSlave.ui.h:5
 msgid "In Installments:"
-msgstr "Parceladas"
+msgstr "Parceladas:"
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:2
 msgid "City Registry:"
