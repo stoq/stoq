@@ -244,7 +244,7 @@ class SaleListToolbar(GladeSlaveDelegate):
 
     def on_edit_button__clicked(self, button):
         sale = self.sales.get_selected()
-        self._edit_sale(sale)
+        self.edit(sale)
 
     def on_details_button__clicked(self, button):
         self.show_details()
