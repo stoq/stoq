@@ -322,6 +322,8 @@ class ECFUI(object):
             generator = StoqlibCATGenerator(self.conn, day, printer)
             generator.write(dir)
 
+        self._reset_last_doc()
+
         return retval
 
     def _needs_cat52(self, printer):
@@ -349,6 +351,14 @@ class ECFUI(object):
         printer = trans.get(self._printer._printer)
         printer.last_till_entry = till_entry
         printer.last_sale = None
+
+    def _reset_last_doc(self):
+        # Last ecf document is not a sale or a till_entry anymore.
+        trans = new_transaction()
+        printer = trans.get(self._printer._printer)
+        printer.last_till_entry = None
+        printer.last_sale = None
+        trans.commit()
 
     def _add_cash(self, till, value):
         log.info('ECFCouponPrinter.add_cash(%r, %r)' % (till, value, ))
@@ -473,7 +483,7 @@ class ECFUI(object):
 
         if last_doc.last_till_entry:
             self._cancel_last_till_entry(last_doc, trans)
-        else:
+        elif last_doc.last_sale:
             # Verify till balance before cancel the last sale.
             till = Till.get_current(trans)
             if last_doc.last_sale.total_amount > till.get_balance():
@@ -497,6 +507,7 @@ class ECFUI(object):
             return
 
         self._printer.summarize()
+        self._reset_last_doc()
 
     def _fiscal_memory_dialog(self):
         try:
@@ -504,7 +515,9 @@ class ECFUI(object):
         except DeviceError, e:
             warning(e)
             return
-        run_dialog(FiscalMemoryDialog, None, self.conn, self._printer)
+        retval = run_dialog(FiscalMemoryDialog, None, self.conn, self._printer)
+        if retval:
+            self._reset_last_doc()
 
     def _get_client_document(self, sale):
         """Returns a Settable with two attributes: document, a string with
