@@ -1,29 +1,63 @@
 Stoq
 ====
 
-Copyright (C) 2005-2011 Async Open Source
+Copyright (C) 2005-2012 Async Open Source
 
 Stoq is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-More details at COPYING
+More details in COPYING
 
-Stoqlib
-=======
-
-Copyright (C) 2005-2011 Async Open Source
+Copyright (C) 2005-2012 Async Open Source
 
 Stoqlib is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
 as published by the Free Software Foundation; either version 2
 of the License, or (at your option) any later version.
 
-More details at COPYING.stoqlib
+More details in COPYING.stoqlib
 
-Contains code from PyBoleto <http://code.google.com/p/pyboleto> that
-is under the MIT license.
+Contains code derived from:
+
+* PyBoleto <http://code.google.com/p/pyboleto>
+  License: MIT
+  Files: stoqlib/lib/boleto.py, stoqlib/reporting/boleto.py
+* Latscii decoder/encoder <http://www.python.org>
+  License: PFSL
+  Files: stoqlib/lib/latscii.py
+* prettydate <..>
+  License: WTFL license
+  Files: stoqlib/lib/prettydate.py
+* Storm <http://storm.canonical.com>
+  License: LGPL-v2.1+
+  stoqlib/lib/storm.py
+* Cardinals by Raja Sooriamurthi <raja@cs.indiana.edu> from
+  http://mail.python.org/pipermail/python-list/2000-October/643196.html
+  License: Unknown
+  Files: * stoqlib/lib/cardinals_en.py
+* FormEncode <http://pypi.python.org/pypi/FormEncode>
+  Licence: PFSL
+  Files: external/formencode
+* PyDispatcher <http://pypi.python.org/pypi/PyDispatcher>
+  Licence: BSD
+  Files: external/pydispatcher
+* SQLObject: <http://sqlobject.org>
+  Licence: LGPL-v2.1+
+  Files: external/sqlobject
+* trml2pdf <http://pypi.python.org/pypi/trml2pdf>
+  Licence: LGPL-v2.1+
+  FileS: external/trml2pdf
+* fullcalendar: <http://arshaw.com/fullcalendar>
+  Licence MIT/GPLv2
+  Files: data/html/js/fullcalendar*, data/html/css/fullcalendar*
+* qTip: <http://craigsworks.com/projects/qtip2/>
+  License: MIT/GPLv2
+  Files: data/html/js/jquery.qtip*, data/html/css/jquery.qtip*
+* jqplot: <http://www.jqplot.com/>
+  License: MIT/GPLv2
+  Files: data/html/js/jqplot*
 
 Stoq pixmaps
 ============
@@ -59,20 +93,4 @@ These pixmaps were copied from monodevelop, licensed under LGPLv2:
 These pixmaps were copied from libpeas, licensed under LGPLv2:
 
 * stoq-plugin
-
-Stoq external
-=============
-
-These softwares are included/forked on Stoq source:
-
-* FormEncode <http://pypi.python.org/pypi/FormEncode>
-  Licence: PFS
-* PyDispatcher <http://pypi.python.org/pypi/PyDispatcher>
-  Licence: BSD
-* SQLObject: <http://sqlobject.org>
-  Licence: LGPL-v2.1+
-* trml2pdf <http://pypi.python.org/pypi/trml2pdf>
-  Licence: LGPL-v2.1+
-* fullcalendar: <http://arshaw.com/fullcalendar>
-  Licence MIT/GPLv2
 
