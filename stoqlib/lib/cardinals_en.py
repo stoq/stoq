@@ -22,9 +22,8 @@
 ## Author(s) : Raja Sooriamurthi    <raja@cs.indiana.edu>
 ##             Stoq Team <stoq-devel@async.com.br>
 ##
-## NOTE: This a modified version of cardinals.py
-## (http://tinyurl.com/2xlrtj) authored by:
-## Raja Sooriamurthi    <raja@cs.indiana.edu>
+## NOTE: This a modified version of cardinals.py from:
+## http://mail.python.org/pipermail/python-list/2000-October/643196.html
 ##
 ##
 
