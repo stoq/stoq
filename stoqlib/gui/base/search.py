@@ -74,14 +74,14 @@ class _SearchDialogDetailsSlave(GladeSlaveDelegate):
 
 
 class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
-    def __init__(self, columns, restore_name=None):
+    def __init__(self, columns, tree=False, restore_name=None):
         self._columns = columns
         self._restore_name = restore_name
         self._settings_key = 'search-columns-%s' % (
             api.get_current_user(api.get_connection()).username, )
         self.restore_columns()
 
-        SearchSlaveDelegate.__init__(self, self._columns)
+        SearchSlaveDelegate.__init__(self, self._columns, tree=tree)
         self.search.connect("search-completed",
                             self._on_search__search_completed)
 
@@ -202,6 +202,7 @@ class SearchDialog(BasicDialog):
     selection_mode = gtk.SELECTION_BROWSE
     size = ()
     advanced_search = True
+    tree = False
 
     @argcheck(object, object, object, bool, basestring, int, bool)
     def __init__(self, conn, table=None, search_table=None, hide_footer=True,
@@ -264,8 +265,11 @@ class SearchDialog(BasicDialog):
         return selection_mode
 
     def _setup_search(self):
-        self.search = StoqlibSearchSlaveDelegate(self.get_columns(),
-                                         restore_name=self.__class__.__name__)
+        self.search = StoqlibSearchSlaveDelegate(
+            self.get_columns(),
+            tree=self.tree,
+            restore_name=self.__class__.__name__,
+            )
         self.search.set_query_executer(self.executer)
         if self.advanced_search:
             self.search.enable_advanced_search()
