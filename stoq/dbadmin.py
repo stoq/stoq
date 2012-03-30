@@ -445,7 +445,6 @@ class StoqCommandHandler:
 
 
 def main(args):
-    pname = args[0]
     args = args[1:]
     if not args:
         # defaults to help
