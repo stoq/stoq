@@ -58,6 +58,9 @@ Contains code derived from:
 * jqplot: <http://www.jqplot.com/>
   License: MIT/GPLv2
   Files: data/html/js/jqplot*
+* Twisted: <http://www.twistedmatrix.com/>
+  License: MIT
+  Files: stoqlib/net/gtk2reactor.py
 
 Stoq pixmaps
 ============
