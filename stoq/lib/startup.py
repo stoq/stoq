@@ -126,8 +126,9 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
 
         check_version(conn)
 
-        migration = StoqlibSchemaMigration()
-        migration.check()
+        if check_schema:
+            migration = StoqlibSchemaMigration()
+            migration.check()
 
         orm_startup()
 
@@ -149,7 +150,8 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
                 _("Table 'system_table' does not exist.\n"
                   "Consult your database administrator to solve this problem."))
 
-        migration = StoqlibSchemaMigration()
-        migration.check()
+        if check_schema:
+            migration = StoqlibSchemaMigration()
+            migration.check()
 
         orm_startup()
