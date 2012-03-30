@@ -359,7 +359,8 @@ def _install_invoice_templates():
     importer.process()
 
 
-def initialize_system(password=None, testsuite=False):
+def initialize_system(password=None, testsuite=False,
+                      force=False):
     """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration
     """
@@ -367,7 +368,7 @@ def initialize_system(password=None, testsuite=False):
     log.info("Initialize_system")
     try:
         settings = get_utility(IDatabaseSettings)
-        clean_database(settings.dbname)
+        clean_database(settings.dbname, force=force)
         create_base_schema()
         create_log("INIT START")
         trans = new_transaction()
@@ -386,6 +387,7 @@ def initialize_system(password=None, testsuite=False):
             create_default_profile_settings()
             ensure_admin_user(password)
     except Exception, e:
+        raise
         if not testsuite:
             collect_traceback(sys.exc_info(), submit=True)
         raise SystemExit("Could not initialize system: %r" % (e, ))
