@@ -93,13 +93,27 @@ class StoqCommandHandler:
         return func(options, *args)
 
     def cmd_help(self, options):
-        cmds = [attr[4:] for attr in dir(self) if attr.startswith('cmd_')]
-        cmds.sort()
-        cmds.remove('help')
+        """Show available commands help"""
+        cmds = []
+        max_len = 0
 
+        for attr in dir(self):
+            if not attr.startswith('cmd_'):
+                continue
+
+            name = attr[4:]
+            doc = getattr(self, attr).__doc__ or ''
+            max_len = max(max_len, len(name))
+            cmds.append((name, doc.split(r'\n')[0]))
+
+        max_len = max_len + 2
+
+        print 'Usage: stoqdbadmin [plugin] <command> [<args>]'
+        print
         print 'Available commands:'
-        for name in cmds:
-            print '  ', name
+
+        for name, doc in cmds:
+            print '  %s%s' % (name.ljust(max_len), doc)
 
         self._read_config(options, load_plugins=False,
                           register_station=False)
@@ -114,6 +128,7 @@ class StoqCommandHandler:
         return 0
 
     def cmd_init(self, options):
+        """Creates and initializes a database"""
         # Create a database user before trying to connect
         if options.create_dbuser:
             if not options.username:
@@ -163,6 +178,7 @@ class StoqCommandHandler:
                          dest='create_dbuser')
 
     def cmd_configure(self, options):
+        """Save initial configuration"""
         if not options.dbname:
             print 'dbname missing'
             return 1
@@ -174,6 +190,7 @@ class StoqCommandHandler:
         config.flush()
 
     def cmd_register(self, options):
+        """Register a station computer"""
         self._read_config(options, register_station=False)
 
         self._register_station()
@@ -256,6 +273,7 @@ class StoqCommandHandler:
                          dest='disable_backup')
 
     def cmd_updateschema(self, options):
+        """Update the database schema"""
         from stoqlib.database.migration import StoqlibSchemaMigration
 
         self._read_config(options, check_schema=False, load_plugins=False,
@@ -268,6 +286,7 @@ class StoqCommandHandler:
             return 1
 
     def cmd_serve(self, options):
+        """Start a synchronization server"""
         from stoqlib.database.synchronization import SynchronizationService
         self._read_config(options, check_schema=False, register_station=False)
         service = SynchronizationService("", 9000)
@@ -294,6 +313,7 @@ class StoqCommandHandler:
                          dest='dry')
 
     def cmd_update(self, options, hostname, station):
+        """Update the database from a synchronization server"""
         from stoqlib.database.synchronization import SynchronizationClient
         self._read_config(options)
 
@@ -313,6 +333,7 @@ class StoqCommandHandler:
                          dest='dry')
 
     def cmd_dump(self, options, output):
+        """Create a database dump"""
         from stoqlib.database.database import dump_database
         self._read_config(options)
 
@@ -332,6 +353,7 @@ class StoqCommandHandler:
                          dest='format')
 
     def cmd_restore(self, options, schema):
+        """Restore a database dump"""
         from stoqlib.database.database import execute_sql
 
         self._read_config(options, register_station=False,
@@ -339,6 +361,7 @@ class StoqCommandHandler:
         execute_sql(schema)
 
     def cmd_enable_plugin(self, options, plugin_name):
+        """Enable a plugin on Stoq"""
         self._read_config(options, register_station=False,
                           check_schema=False,
                           load_plugins=False)
@@ -346,6 +369,7 @@ class StoqCommandHandler:
         self._enable_plugins([plugin_name])
 
     def cmd_generate_sintegra(self, options, filename, month):
+        """Generate a sintegra file"""
         import datetime
         self._read_config(options)
 
@@ -361,6 +385,7 @@ class StoqCommandHandler:
         generate(filename, start, end)
 
     def cmd_shell(self, options):
+        """Drop to a Stoq python shell"""
         from stoqlib.database.database import start_shell
         self._read_config(options, register_station=False,
                           check_schema=False)
@@ -373,6 +398,7 @@ class StoqCommandHandler:
                          dest='command')
 
     def cmd_import(self, options):
+        """Import data into Stoq"""
         self._read_config(options, register_station=False)
         from stoqlib.importers import importer
         importer = importer.get_by_type(options.type)
@@ -390,6 +416,7 @@ class StoqCommandHandler:
                          dest="filename")
 
     def cmd_console(self, options):
+        """Drop to a console for executing SQL queries"""
         from stoqlib.lib.console import Console
         self._read_config(options, register_station=False)
         console = Console()
@@ -421,8 +448,8 @@ def main(args):
     pname = args[0]
     args = args[1:]
     if not args:
-        print "Type '%s help' for usage." % pname
-        return 1
+        # defaults to help
+        args.append('help')
 
     cmd = args[0]
     args = args[1:]
