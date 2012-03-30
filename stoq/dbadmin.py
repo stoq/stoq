@@ -142,7 +142,8 @@ class StoqCommandHandler:
                                    load_plugins=False)
 
         from stoqlib.database.admin import initialize_system
-        initialize_system(password=options.password or config.get_password())
+        initialize_system(password=options.password or config.get_password(),
+                          force=options.force)
 
         if options.create_examples or options.demo:
             from stoqlib.importers.stoqlibexamples import create
@@ -176,6 +177,9 @@ class StoqCommandHandler:
         group.add_option('', '--create-dbuser',
                          action='store_true',
                          dest='create_dbuser')
+        group.add_option('', '--force',
+                         action='store_true',
+                         dest='force')
 
     def cmd_configure(self, options):
         """Save initial configuration"""

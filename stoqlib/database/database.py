@@ -73,7 +73,39 @@ def drop_database(dbname, settings=None):
         conn.close()
 
 
-def clean_database(dbname, settings=None):
+# As of 2012-03-30:
+# 604 is the number of entries that are created when you create an
+# empty database
+# 1174 when you create examples
+_ENTRIES_DELETE_THRESHOLD = 1000
+
+
+def database_exists_and_should_be_dropped(settings, dbname, force):
+    conn = settings.get_connection()
+    if not conn.tableExists('transaction_entry'):
+        # FIXME: Check if there are any other tables, we don't want to
+        #        delete other databases
+        conn.close()
+        return False
+
+    entries = conn.queryOne("SELECT COUNT(*) FROM transaction_entry")[0]
+    if entries > _ENTRIES_DELETE_THRESHOLD:
+        conn.close()
+        return False
+
+    conn.close()
+
+    if force:
+        text = raw_input(
+            "Database %s has existing tables, "
+            "do you really want to delete it?\n[yes/no] " % (dbname, ))
+        if text == 'yes':
+            return False
+
+    return True
+
+
+def clean_database(dbname, settings=None, force=False):
     """Cleans a database. If the database does not exist, it will be created.
     :param dbname: name of the database.
     :param settings: optionally provide seetings, so that you dont have to
@@ -83,16 +115,19 @@ def clean_database(dbname, settings=None):
     if not settings:
         settings = get_utility(IDatabaseSettings)
 
+    if database_exists_and_should_be_dropped(settings, dbname, force):
+        if force:
+            raise SystemExit("Not dropping database")
+        else:
+            raise SystemExit("Cannot drop a database with existing "
+                             "tables (use --force to really drop it)")
+
     try:
         drop_database(dbname, settings)
     except Exception, e:
         raise e
 
-    if settings.dbname == dbname:
-        conn = settings.get_default_connection()
-    else:
-        conn = settings.get_connection()
-
+    conn = settings.get_default_connection()
     conn.createDatabase(dbname)
     conn.close()
 
