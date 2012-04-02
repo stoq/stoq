@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-02-27 17:10-0300\n"
-"PO-Revision-Date: 2012-03-14 04:19+0000\n"
+"PO-Revision-Date: 2012-04-01 06:28+0000\n"
 "Last-Translator: Fitoschido <fitoschido@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-03-15 04:49+0000\n"
-"X-Generator: Launchpad (build 14933)\n"
+"X-Launchpad-Export-Date: 2012-04-02 04:40+0000\n"
+"X-Generator: Launchpad (build 15032)\n"
 "Language: es\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -24,7 +24,7 @@ msgstr "Código de cuenta:"
 
 #: ../data/glade/AccountEditor.ui.h:2
 msgid "Account name:"
-msgstr "Nombre de cuenta:"
+msgstr "Nombre de la cuenta:"
 
 #: ../data/glade/AccountEditor.ui.h:3
 msgid "Hold control to remove selection."
