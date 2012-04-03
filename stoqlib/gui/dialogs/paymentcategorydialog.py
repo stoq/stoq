@@ -85,3 +85,7 @@ class PaymentCategoryDialog(ModelListDialog):
                                         connection=trans):
             payment.category = None
         PaymentCategory.delete(model.id, connection=trans)
+
+    def run_editor(self, trans, model):
+        return self.run_dialog(self._editor_class, conn=trans,
+                               model=model, category_type=self.category_type)
