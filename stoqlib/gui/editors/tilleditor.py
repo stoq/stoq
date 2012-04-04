@@ -24,6 +24,7 @@
 """ Editors implementation for open/close operation on till operation"""
 
 import datetime
+from datetime import timedelta
 
 from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
@@ -74,12 +75,22 @@ class _TillClosingModel(object):
         self.value = value
 
     def get_opening_date(self):
+        # self.till is None only in the special case that the user added the ECF
+        # to Stoq with a pending reduce Z, so we need to close the till on the
+        # ECF, but not on Stoq.
+        # Return a date in the past
+        if not self.till:
+            return datetime.datetime.now() - timedelta(1)
         return self.till.opening_date
 
     def get_cash_amount(self):
+        if not self.till:
+            return currency(0)
         return currency(self.till.get_cash_amount() - self.value)
 
     def get_balance(self):
+        if not self.till:
+            return currency(0)
         return currency(self.till.get_balance() - self.value)
 
 
@@ -167,7 +178,8 @@ class TillClosingEditor(BaseEditor):
         """
         self._previous_day = previous_day
         self.till = Till.get_last(conn)
-        assert self.till
+        if close_db:
+            assert self.till
         self._close_db = close_db
         self._close_ecf = close_ecf
         BaseEditor.__init__(self, conn, model)
@@ -193,6 +205,10 @@ class TillClosingEditor(BaseEditor):
         self.day_history_box.pack_start(summary_day_history, False)
 
     def _get_day_history(self):
+        if not self.till:
+            assert self._close_ecf and not self._close_db
+            return
+
         day_history = {}
         day_history[_(u'Initial Amount')] = self.till.initial_cash_amount
 
@@ -228,7 +244,7 @@ class TillClosingEditor(BaseEditor):
         return _TillClosingModel(till=self.till, value=currency(0))
 
     def setup_proxies(self):
-        if not self.till.get_balance():
+        if self.till and not self.till.get_balance():
             self.value.set_sensitive(False)
         self.proxy = self.add_proxy(self.model,
                                     TillClosingEditor.proxy_widgets)
