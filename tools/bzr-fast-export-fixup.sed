@@ -1,6 +1,17 @@
 # This script fixes up the output of bzr fast-export command
 # so it can be properly imported into another VCS
-
+#
+# For instance, for importing _one_ branch into git;
+#
+#   cd ..
+#   mkdir -p stoq-git
+#   cd stoq-git
+#   git init
+#   bzr fast-export ../stoq | \
+#     sed -f ../stoq/tools/bzr-fast-export-fixup.sed | \
+#     git fast-import
+#   git reset --hard master
+#
 
 # This is a bug in bzr fast-export related to renames
 /^R / {
