@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-02-27 17:10-0300\n"
-"PO-Revision-Date: 2012-01-30 20:09+0000\n"
-"Last-Translator: Johan Dahlin <jdahlin@gmail.com>\n"
+"PO-Revision-Date: 2012-04-05 14:52+0000\n"
+"Last-Translator: Rafael Neri <Unknown>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-03-11 04:48+0000\n"
-"X-Generator: Launchpad (build 14914)\n"
+"X-Launchpad-Export-Date: 2012-04-06 04:39+0000\n"
+"X-Generator: Launchpad (build 15060)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -837,7 +837,7 @@ msgstr "Email:"
 
 #: ../data/glade/FeedbackDialog.ui.h:2
 msgid "Feedback:"
-msgstr ""
+msgstr "Feedback:"
 
 #: ../data/glade/FinishInstallationStep.ui.h:1
 msgid "<b>Installation complete</b>"
@@ -1547,7 +1547,7 @@ msgstr "TEF (Credit card support)"
 
 #: ../data/glade/PreferencesEditor.ui.h:1
 msgid "<b>Settings</b>"
-msgstr ""
+msgstr "<b>Settings</b>"
 
 #: ../data/glade/PreferencesEditor.ui.h:2
 #: ../plugins/books/glade/ProductBookSlave.ui.h:7
@@ -1556,15 +1556,15 @@ msgstr "Language:"
 
 #: ../data/glade/PreferencesEditor.ui.h:3
 msgid "Some of these options will only take effect after you restart Stoq."
-msgstr ""
+msgstr "Some of these options will only take effect after you restart Stoq."
 
 #: ../data/glade/PreferencesEditor.ui.h:4
 msgid "Spreadsheet action:"
-msgstr ""
+msgstr "Spreadsheet action:"
 
 #: ../data/glade/PreferencesEditor.ui.h:5
 msgid "Toolbar style:"
-msgstr ""
+msgstr "Toolbar style:"
 
 #: ../data/glade/ProducedItemSlave.ui.h:1
 msgid ""
@@ -1739,7 +1739,7 @@ msgstr "Components"
 
 #: ../data/glade/ProductionComponentSlave.ui.h:2
 msgid "Spreadsheet..."
-msgstr ""
+msgstr "Spreadsheet..."
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:1
 msgid "Add Produced"
@@ -1828,7 +1828,7 @@ msgstr "Expected Freight Value:"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:8
 msgid "Export to spreadsheet"
-msgstr ""
+msgstr "Export to spreadsheet"
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:14 ../stoq/gui/purchase.py:263
 #: ../stoqlib/domain/sale.py:354 ../stoqlib/gui/dialogs/quotedialog.py:157
@@ -2244,7 +2244,7 @@ msgstr "Yes"
 
 #: ../data/glade/SellableImageViewer.ui.h:1
 msgid "Sellable Picture Viewer"
-msgstr ""
+msgstr "Sellable Picture Viewer"
 
 #: ../data/glade/SellableItemStep.ui.h:2
 msgid "Item:"
@@ -3554,45 +3554,45 @@ msgstr "Could not connect to the database"
 
 #: ../stoq/gui/accounts.py:79
 msgid "No payments found."
-msgstr ""
+msgstr "No payments found."
 
 #: ../stoq/gui/accounts.py:81 ../stoq/gui/accounts.py:102
 msgid "create a new payment"
-msgstr ""
+msgstr "create a new payment"
 
 #: ../stoq/gui/accounts.py:82 ../stoq/gui/accounts.py:105
 #, python-format
 msgid "Would you like to %s"
-msgstr ""
+msgstr "Would you like to %s?"
 
 #: ../stoq/gui/accounts.py:87
 msgid "No late payments found."
-msgstr ""
+msgstr "No late payments found."
 
 #: ../stoq/gui/accounts.py:89
 msgid "No paid payments found."
-msgstr ""
+msgstr "No paid payments found."
 
 #: ../stoq/gui/accounts.py:92
 msgid "No payments to receive found."
-msgstr ""
+msgstr "No payments to receive found."
 
 #: ../stoq/gui/accounts.py:94
 msgid "No payments to pay found."
-msgstr ""
+msgstr "No payments to pay found."
 
 #: ../stoq/gui/accounts.py:98
 #, python-format
 msgid "No payments in the <b>%s</b> category were found."
-msgstr ""
+msgstr "No payments in the <b>%s</b> category were found."
 
 #: ../stoq/gui/accounts.py:119
 msgid "Show"
-msgstr ""
+msgstr "Show"
 
 #: ../stoq/gui/accounts.py:134
 msgid "All payments"
-msgstr ""
+msgstr "All payments"
 
 #: ../stoq/gui/admin.py:90
 msgid "Branches"
@@ -3813,11 +3813,11 @@ msgstr "Search for users"
 
 #: ../stoq/gui/application.py:115
 msgid "Feedback"
-msgstr ""
+msgstr "Feedback"
 
 #: ../stoq/gui/application.py:252
 msgid "About Stoq"
-msgstr ""
+msgstr "About Stoq"
 
 #. Menus
 #: ../stoq/gui/application.py:324
@@ -3872,7 +3872,7 @@ msgstr "Print..."
 #: ../stoqlib/gui/search/productsearch.py:127
 #: ../stoqlib/gui/search/salesearch.py:156
 msgid "Export to spreadsheet..."
-msgstr ""
+msgstr "Export to spreadsheet..."
 
 #: ../stoq/gui/application.py:343 ../stoqlib/database/runtime.py:287
 msgid "Quit"
@@ -3893,7 +3893,7 @@ msgstr "_Preferences"
 
 #: ../stoq/gui/application.py:351 ../stoqlib/gui/keybindings.py:60
 msgid "Show preferences"
-msgstr ""
+msgstr "Show preferences"
 
 #. View
 #: ../stoq/gui/application.py:354
@@ -4018,12 +4018,12 @@ msgstr "User: %s"
 #: ../stoq/gui/application.py:600
 #, python-format
 msgid "Computer: %s"
-msgstr ""
+msgstr "Computer: %s"
 
 #: ../stoq/gui/application.py:679
 #, python-format
 msgid "[%s] - %s"
-msgstr ""
+msgstr "[%s] - %s"
 
 #: ../stoq/gui/application.py:828
 msgid "Show help for this application"
@@ -4880,7 +4880,7 @@ msgstr "Opened"
 
 #: ../stoq/gui/inventory.py:153 ../stoq/gui/purchase.py:257
 msgid "Date Opened"
-msgstr ""
+msgstr "Date Opened"
 
 #: ../stoq/gui/inventory.py:155 ../stoq/gui/production.py:166
 #: ../stoqlib/domain/inventory.py:168 ../stoqlib/domain/loan.py:118
@@ -4892,7 +4892,7 @@ msgstr "Closed"
 
 #: ../stoq/gui/inventory.py:156
 msgid "Date Closed"
-msgstr ""
+msgstr "Date Closed"
 
 #: ../stoq/gui/inventory.py:177 ../stoq/gui/stock.py:256
 #: ../stoqlib/lib/defaults.py:167
@@ -5017,7 +5017,7 @@ msgstr "Print a receipt for the selected payment"
 #: ../stoq/gui/payable.py:121 ../stoq/gui/receivable.py:126
 #: ../stoqlib/gui/keybindings.py:168 ../stoqlib/gui/keybindings.py:294
 msgid "Search for payment categories"
-msgstr ""
+msgstr "Search for payment categories"
 
 #: ../stoq/gui/payable.py:122 ../stoq/gui/receivable.py:127
 msgid "Bills and checks..."
@@ -5041,7 +5041,7 @@ msgstr "Print a report of these payments"
 
 #: ../stoq/gui/payable.py:175 ../stoq/gui/receivable.py:173
 msgid "Payment ID"
-msgstr ""
+msgstr "Payment ID"
 
 #: ../stoq/gui/payable.py:180 ../stoq/gui/receivable.py:178
 msgid "Comments"
@@ -5093,7 +5093,7 @@ msgstr "Paid value"
 
 #: ../stoq/gui/payable.py:202 ../stoq/gui/receivable.py:199
 msgid "Payment category"
-msgstr ""
+msgstr "Payment category"
 
 #: ../stoq/gui/payable.py:225 ../stoq/gui/receivable.py:219
 msgid "Paid or due date"
@@ -5107,7 +5107,7 @@ msgstr ""
 
 #: ../stoq/gui/payable.py:451
 msgid "Paid payments"
-msgstr ""
+msgstr "Paid payments"
 
 #: ../stoq/gui/payable.py:452 ../stoqlib/reporting/payment.py:133
 msgid "To pay"
