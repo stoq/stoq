@@ -1,12 +1,14 @@
 #!/usr/bin/env python
-import optparse
+
 import fnmatch
-import re
+import optparse
 import os
+import re
 import sys
 import textwrap
-import warnings
 import time
+import warnings
+
 try:
     from paste.deploy import appconfig
 except ImportError:
@@ -14,8 +16,9 @@ except ImportError:
 
 import sqlobject
 from sqlobject import col
-from sqlobject.util import moduleloader
+from sqlobject.classregistry import findClass
 from sqlobject.declarative import DeclarativeMeta
+from sqlobject.util import moduleloader
 
 # It's not very unsafe to use tempnam like we are doing:
 warnings.filterwarnings(
@@ -62,7 +65,7 @@ def db_differences(soClass, conn):
                 existing[col.dbName] = col
             missing = {}
             for col in soClass.sqlmeta.columnList:
-                if existing.has_key(col.dbName):
+                if col.dbName in existing:
                     del existing[col.dbName]
                 else:
                     missing[col.dbName] = col
@@ -181,6 +184,81 @@ class Command(object):
 
     help = ''
 
+    def orderClassesByDependencyLevel(self, classes):
+        """
+        Return classes ordered by their depth in the class dependency
+        tree (this is *not* the inheritance tree), from the
+        top level (independant) classes to the deepest level.
+        The dependency tree is defined by the foreign key relations.
+        """
+        # @@: written as a self-contained function for now, to prevent
+        # having to modify any core SQLObject component and namespace
+        # contamination.
+        # yemartin - 2006-08-08
+
+        class SQLObjectCircularReferenceError(Exception): pass
+
+        def findReverseDependencies(cls):
+            """
+            Return a list of classes that cls depends on. Note that
+            "depends on" here mean "has a foreign key pointing to".
+            """
+            depended = []
+            for col in cls.sqlmeta.columnList:
+                if col.foreignKey:
+                    other = findClass(col.foreignKey,
+                                      col.soClass.sqlmeta.registry)
+                    if (other is not cls) and (other not in depended):
+                        depended.append(other)
+            return depended
+
+        # Cache to save already calculated dependency levels.
+        dependency_levels = {}
+        def calculateDependencyLevel(cls, dependency_stack=[]):
+            """
+            Recursively calculate the dependency level of cls, while
+            using the dependency_stack to detect any circular reference.
+            """
+            # Return value from the cache if already calculated
+            if cls in dependency_levels:
+                return dependency_levels[cls]
+            # Check for circular references
+            if cls in dependency_stack:
+                dependency_stack.append(cls)
+                raise SQLObjectCircularReferenceError, (
+                        "Found a circular reference: %s " %
+                        (' --> '.join([x.__name__
+                                       for x in dependency_stack])))
+            dependency_stack.append(cls)
+            # Recursively inspect dependent classes.
+            depended = findReverseDependencies(cls)
+            if depended:
+                level = max([calculateDependencyLevel(x, dependency_stack)
+                             for x in depended]) + 1
+            else:
+                level = 0
+            dependency_levels[cls] = level
+            return level
+
+        # Now simply calculate and sort by dependency levels:
+        try:
+            sorter = []
+            for cls in classes:
+                level = calculateDependencyLevel(cls)
+                sorter.append((level, cls))
+            sorter.sort()
+            ordered_classes = [cls for level, cls in sorter]
+        except SQLObjectCircularReferenceError, msg:
+            # Failsafe: return the classes as-is if a circular reference
+            # prevented the dependency levels to be calculated.
+            print ("Warning: a circular reference was detected in the "
+                    "model. Unable to sort the classes by dependency: they "
+                    "will be treated in alphabetic order. This may or may "
+                    "not work depending on your database backend. "
+                    "The error was:\n%s" % msg)
+            return classes
+        return ordered_classes
+
     def __classinit__(cls, new_args):
         if cls.__bases__ == (object,):
             # This abstract base class
@@ -285,7 +363,7 @@ class Command(object):
             else:
                 print 'No eggs specified'
             sys.exit(1)
-        return all
+        return self.orderClassesByDependencyLevel(all)
 
     def classes_from_module(self, module):
         all = []
@@ -553,7 +631,13 @@ class CommandCreate(Command):
             if (self.options.create_db
                 and soClass._connection not in dbs_created):
                 if not self.options.simulate:
-                    soClass._connection.createEmptyDatabase()
+                    try:
+                        soClass._connection.createEmptyDatabase()
+                    except soClass._connection.module.ProgrammingError, e:
+                        if str(e).find('already exists') != -1:
+                            print 'Database already exists'
+                        else:
+                            raise
                 else:
                     print '(simulating; cannot create database)'
                 dbs_created.append(soClass._connection)
@@ -567,23 +651,26 @@ class CommandCreate(Command):
                 else:
                     print 'Creating %s' % soClass.__name__
             if v >= 2:
-                print soClass.createTableSQL()
+                sql, extra = soClass.createTableSQL()
+                print sql
             if (not self.options.simulate
                 and not exists):
                 if self.options.interactive:
                     if self.ask('Create %s' % soClass.__name__):
                         created += 1
-                        tableConstraints = soClass.createTable()
+                        tableConstraints = soClass.createTable(applyConstraints=False)
                         if tableConstraints:
                             constraints[soClass._connection].append(tableConstraints)
                     else:
                         print 'Cancelled'
                 else:
                     created += 1
-                    tableConstraints = soClass.createTable()
+                    tableConstraints = soClass.createTable(applyConstraints=False)
                     if tableConstraints:
                         constraints[soClass._connection].append(tableConstraints)
         for connection in constraints.keys():
+            if v >= 2:
+                print 'Creating constraints'
             for constraintList in constraints[connection]:
                 for constraint in constraintList:
                     if constraint:
@@ -604,7 +691,7 @@ class CommandDrop(Command):
         v = self.options.verbose
         dropped = 0
         not_existing = 0
-        for soClass in self.classes():
+        for soClass in reversed(self.classes()):
             exists = soClass._connection.tableExists(soClass.sqlmeta.table)
             if v >= 1:
                 if exists:
@@ -679,7 +766,7 @@ class CommandStatus(Command):
                 existing[col.dbName] = col
             missing = {}
             for col in soClass.sqlmeta.columnList:
-                if existing.has_key(col.dbName):
+                if col.dbName in existing:
                     del existing[col.dbName]
                 else:
                     missing[col.dbName] = col
@@ -789,7 +876,7 @@ class CommandRecord(Command):
     help = ('Record state of table definitions.  The state of each '
             'table is written out to a separate file in a directory, '
             'and that directory forms a "version".  A table is also '
-            'added to you datebase (%s) that reflects the version the '
+            'added to your database (%s) that reflects the version the '
             'database is currently at.  Use the upgrade command to '
             'sync databases with code.'
             % SQLObjectVersionTable.sqlmeta.table)
@@ -881,7 +968,7 @@ class CommandRecord(Command):
             for fn in os.listdir(last_version_dir):
                 if not fn.endswith('.sql'):
                     continue
-                if not files_copy.has_key(fn):
+                if not fn in files_copy:
                     if v > 1:
                         print "Missing file %s" % fn
                     break
@@ -921,25 +1008,25 @@ class CommandRecord(Command):
                 f = open(os.path.join(output_dir, fn), 'w')
                 f.write(content)
                 f.close()
-        all_diffs = []
-        for cls in self.classes():
-            for conn in conns:
-                diffs = db_differences(cls, conn)
-                for diff in diffs:
-                    if len(conns) > 1:
-                        diff = '  (%s).%s: %s' % (
-                            conn.uri(), cls.sqlmeta.table, diff)
-                    else:
-                        diff = '  %s: %s' % (cls.sqlmeta.table, diff)
-                    all_diffs.append(diff)
-        if all_diffs:
-            print 'Database does not match schema:'
-            print '\n'.join(all_diffs)
-            if self.options.db_record:
-                print '(Not updating database version)'
-        elif self.options.db_record:
-            for conn in conns:
-                self.update_db(version, conn)
+        if self.options.db_record:
+            all_diffs = []
+            for cls in self.classes():
+                for conn in conns:
+                    diffs = db_differences(cls, conn)
+                    for diff in diffs:
+                        if len(conns) > 1:
+                            diff = '  (%s).%s: %s' % (
+                                conn.uri(), cls.sqlmeta.table, diff)
+                        else:
+                            diff = '  %s: %s' % (cls.sqlmeta.table, diff)
+                        all_diffs.append(diff)
+            if all_diffs:
+                print 'Database does not match schema:'
+                print '\n'.join(all_diffs)
+                for conn in conns:
+                    self.update_db(version, conn)
+        else:
+            all_diffs = []
         if self.options.open_editor:
             if not last_version_dir:
                 print ("Cannot edit upgrader because there is no "
@@ -1171,7 +1258,7 @@ class CommandUpgrade(CommandRecord):
         return upgraders[-1]
 
 def update_sys_path(paths, verbose):
-    if isinstance(paths, (str, unicode)):
+    if isinstance(paths, basestring):
         paths = [paths]
     for path in paths:
         path = os.path.abspath(path)

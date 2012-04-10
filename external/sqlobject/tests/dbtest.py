@@ -10,6 +10,12 @@ import py
 import sqlobject
 import sqlobject.conftest as conftest
 
+try:
+    import logging
+    loggingModuleAvailable = True
+except ImportError:
+    loggingModuleAvailable = False
+
 if sys.platform[:3] == "win":
     def getcwd():
         return os.getcwd().replace(':', '|')
@@ -32,15 +38,15 @@ and you can use it like::
             return
 """
 supportsMatrix = {
-    '+restrictedEnum': 'postgres',
-    '-transactions': 'mysql',
+    '+exceptions': 'mysql postgres sqlite',
+    '-transactions': 'mysql rdbhost',
     '-dropTableCascade': 'sybase mssql',
-    '-fromDatabase': 'sqlite sybase firebird',
     '-expressionIndex': 'mysql sqlite firebird mssql',
-    '-blobData': 'mssql',
+    '-blobData': 'mssql rdbhost',
     '-decimalColumn': 'mssql',
     '-emptyTable': 'mssql',
-    '-limitSelect' : 'mssql'
+    '-limitSelect' : 'mssql',
+    '+schema' : 'postgres',
     }
 
 
@@ -93,7 +99,7 @@ def getConnection(**kw):
 
 def getConnectionURI():
     name = conftest.option.Database
-    if conftest.connectionShortcuts.has_key(name):
+    if name in conftest.connectionShortcuts:
         name = conftest.connectionShortcuts[name]
     return name
 
@@ -114,10 +120,11 @@ class InstalledTestDatabase(sqlobject.SQLObject):
     """
 
     _connection = installedDBTracker
-    tableName = sqlobject.StringCol(notNull=True)
+    table_name = sqlobject.StringCol(notNull=True)
     createSQL = sqlobject.StringCol(notNull=True)
     connectionURI = sqlobject.StringCol(notNull=True)
 
+    @classmethod
     def installOrClear(cls, soClasses, force=False):
         cls.setup()
         reversed = list(soClasses)[:]
@@ -133,7 +140,7 @@ class InstalledTestDatabase(sqlobject.SQLObject):
             if not soClass._connection.tableExists(table):
                 continue
             items = list(cls.selectBy(
-                tableName=table,
+                table_name=table,
                 connectionURI=soClass._connection.uri()))
             if items:
                 instance = items[0]
@@ -156,8 +163,8 @@ class InstalledTestDatabase(sqlobject.SQLObject):
             table = soClass.sqlmeta.table
             if not soClass._connection.tableExists(table):
                 cls.install(soClass)
-    installOrClear = classmethod(installOrClear)
 
+    @classmethod
     def install(cls, soClass):
         """
         Creates the given table in its database.
@@ -171,13 +178,13 @@ class InstalledTestDatabase(sqlobject.SQLObject):
             sql, extra_sql = soClass.createTableSQL()
             soClass.createTable(applyConstraints=False)
             all_extra.extend(extra_sql)
-        cls(tableName=soClass.sqlmeta.table,
+        cls(table_name=soClass.sqlmeta.table,
             createSQL=sql,
             connectionURI=soClass._connection.uri())
         for extra_sql in all_extra:
             soClass._connection.query(extra_sql)
-    install = classmethod(install)
 
+    @classmethod
     def drop(cls, soClass):
         """
         Drops a the given table from its database
@@ -187,22 +194,21 @@ class InstalledTestDatabase(sqlobject.SQLObject):
             soClass._connection.query(sql)
         else:
             soClass.dropTable()
-    drop = classmethod(drop)
 
+    @classmethod
     def clear(cls, soClass):
         """
         Removes all the rows from a table.
         """
         soClass.clearTable()
-    clear = classmethod(clear)
 
+    @classmethod
     def setup(cls):
         """
         This sets up *this* table.
         """
         if not cls._connection.tableExists(cls.sqlmeta.table):
             cls.createTable()
-    setup = classmethod(setup)
 
 installOrClear = InstalledTestDatabase.installOrClear
 
@@ -270,8 +276,21 @@ def supports(feature):
         "The supportMatrix does not list this feature: %r"
         % feature)
 
+    
 # To avoid name clashes:
 _inserts = inserts
+
+def setSQLiteConnectionFactory(TableClass, factory):
+    from sqlobject.sqlite.sqliteconnection import SQLiteConnection
+    conn = TableClass._connection
+    TableClass._connection = SQLiteConnection(
+        filename=conn.filename,
+        name=conn.name, debug=conn.debug, debugOutput=conn.debugOutput,
+        cache=conn.cache, style=conn.style, autoCommit=conn.autoCommit,
+        debugThreading=conn.debugThreading, registry=conn.registry,
+        factory=factory
+    )
+    installOrClear([TableClass])
 
 def deprecated_module():
     sqlobject.main.warnings_level = None
@@ -294,6 +313,17 @@ def teardown_module(mod=None):
     sqlobject.main.warnings_level = None
     sqlobject.main.exception_level = 0
 
+def setupLogging():
+    if not loggingModuleAvailable:
+        return
+    fmt = '[%(asctime)s] %(name)s %(levelname)s: %(message)s'
+    formatter = logging.Formatter(fmt)
+    hdlr = logging.StreamHandler(sys.stderr)
+    hdlr.setFormatter(formatter)
+    hdlr.setLevel(logging.NOTSET)
+    logger = logging.getLogger()
+    logger.addHandler(hdlr)
+
 __all__ = ['getConnection', 'getConnectionURI', 'setupClass', 'Dummy', 'raises',
            'd', 'inserts', 'supports', 'deprecated_module',
-           'setup_module', 'teardown_module']
+           'setup_module', 'teardown_module', 'setupLogging']

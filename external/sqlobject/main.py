@@ -7,16 +7,8 @@ SQLObject
 SQLObject is a object-relational mapper.  See SQLObject.html or
 SQLObject.txt for more.
 
-Modified by:
-
-* Daniel Savard, Xsoli Inc <sqlobject xsoli.com> 7 Feb 2004
-  Added support for simple table inheritance.
-
-* Oleg Broytmann, SIA "ANK" <phd@phd.pp.ru> 3 Feb 2005
-  Split inheritance support into a number of separate modules and classes -
-  InheritableSQLObject at al.
-
-* And others...
+With the help by Oleg Broytman and many other contributors.
+See Authors.txt.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as
@@ -35,6 +27,7 @@ USA.
 """
 
 import threading
+import weakref
 import sqlbuilder
 import dbconnection
 import col
@@ -47,18 +40,23 @@ import classregistry
 import declarative
 import events
 from sresults import SelectResults
+from util.threadinglocal import local
 
 import sys
-if sys.version_info[:3] < (2, 2, 0):
-    raise ImportError, "SQLObject requires Python 2.2.0 or later"
+if sys.version_info[:3] < (2, 4, 0):
+    raise ImportError, "SQLObject requires Python 2.4.0 or later"
+
+"""
+This thread-local storage is needed for RowCreatedSignals. It gathers
+code-blocks to execute _after_ the whole hierachy of inherited SQLObjects
+is created. See SQLObject._create
+"""
+_postponed_local = local()
 
 NoDefault = sqlbuilder.NoDefault
 
 class SQLObjectNotFound(LookupError): pass
 class SQLObjectIntegrityError(Exception): pass
-class SQLObjectMoreThanOneResultError(Exception): pass
-
-True, False = 1==1, 0==1
 
 def makeProperties(obj):
     """
@@ -94,11 +92,10 @@ def makeProperties(obj):
         elif var.startswith('_doc_'):
             props.setdefault(var[5:], {})['doc'] = value
     for var, setters in props.items():
-        if len(setters) == 1 and setters.has_key('doc'):
+        if len(setters) == 1 and 'doc' in setters:
             continue
-        if d.has_key(var):
-            if isinstance(d[var], types.MethodType) \
-                   or isinstance(d[var], types.FunctionType):
+        if var in d:
+            if isinstance(d[var], (types.MethodType, types.FunctionType)):
                 warnings.warn(
                     "I tried to set the property %r, but it was "
                     "already set, as a method (%r).  Methods have "
@@ -122,7 +119,7 @@ def unmakeProperties(obj):
     for var, value in d.items():
         if isinstance(value, property):
             for prop in [value.fget, value.fset, value.fdel]:
-                if prop and not d.has_key(prop.__name__):
+                if prop and not prop.__name__ in d:
                     delFunc(obj, var)
                     break
 
@@ -131,6 +128,11 @@ def findDependencies(name, registry=None):
     for klass in classregistry.registry(registry).allClasses():
         if findDependantColumns(name, klass):
             depends.append(klass)
+        else:
+            for join in klass.sqlmeta.joins:
+                if isinstance(join, joins.SORelatedJoin) and join.otherClassName == name:
+                    depends.append(klass)
+                    break
     return depends
 
 def findDependantColumns(name, klass):
@@ -140,26 +142,18 @@ def findDependantColumns(name, klass):
             depends.append(col)
     return depends
 
-def _collectAttributes(cls, new_attrs, look_for_class, delete=True,
-                       set_name=False, sort=False):
-    """
-    Finds all attributes in `new_attrs` that are instances of
-    `look_for_class`.  Returns them as a list.  If `delete` is true
-    they are also removed from the `cls`.  If `set_name` is true, then
-    the ``.name`` attribute is set for any matching objects.  If
-    `sort` is true, then they will be sorted by ``obj.creationOrder``.
+def _collectAttributes(cls, new_attrs, look_for_class):
+    """Finds all attributes in `new_attrs` that are instances of
+    `look_for_class`. The ``.name`` attribute is set for any matching objects.
+    Returns them as a list.
+
     """
     result = []
     for attr, value in new_attrs.items():
         if isinstance(value, look_for_class):
+            value.name = attr
+            delattr(cls, attr)
             result.append(value)
-            if set_name:
-                value.name = attr
-            if delete:
-                delattr(cls, attr)
-    if sort:
-        result.sort(
-            lambda a, b: cmp(a.creationOrder, b.creationOrder))
     return result
 
 class CreateNewSQLObject:
@@ -180,6 +174,7 @@ class sqlmeta(object):
 
     table = None
     idName = None
+    idSequence = None
     # This function is used to coerce IDs into the proper format,
     # so you should replace it with str, or another function, if you
     # aren't using integer IDs
@@ -205,15 +200,13 @@ class sqlmeta(object):
     columnDefinitions = {}
 
     # These are lists of the join and index objects:
-    joins = []
     indexes = []
     indexDefinitions = []
+    joins = []
     joinDefinitions = []
 
-    __metaclass__ = declarative.DeclarativeMeta
-
     # These attributes shouldn't be shared with superclasses:
-    _unshared_attributes = ['table', 'idName', 'columns', 'childName']
+    _unshared_attributes = ['table', 'columns', 'childName']
 
     # These are internal bookkeeping attributes; the class-level
     # definition is a default for the instances, instances will
@@ -238,20 +231,28 @@ class sqlmeta(object):
     childClasses = {} # References to child classes, keyed by childName
     childName = None # Class name for inheritance child object creation
 
+    # Does the row require syncing?
+    dirty = False
+
+    # Default encoding for UnicodeCol's
+    dbEncoding = None
+
+    __metaclass__ = declarative.DeclarativeMeta
+
     def __classinit__(cls, new_attrs):
         for attr in cls._unshared_attributes:
-            if not new_attrs.has_key(attr):
+            if attr not in new_attrs:
                 setattr(cls, attr, None)
         declarative.setup_attributes(cls, new_attrs)
 
     def __init__(self, instance):
-        self.instance = instance
+        self.instance = weakref.proxy(instance)
 
+    @classmethod
     def send(cls, signal, *args, **kw):
         events.send(signal, cls.soClass, *args, **kw)
 
-    send = classmethod(send)
-
+    @classmethod
     def setClass(cls, soClass):
         cls.soClass = soClass
         if not cls.style:
@@ -290,8 +291,6 @@ class sqlmeta(object):
         cls.joins = []
         cls.joinDefinitions = cls.joinDefinitions[:]
 
-    setClass = classmethod(setClass)
-
     ############################################################
     ## Adding special values, like columns and indexes
     ############################################################
@@ -300,6 +299,7 @@ class sqlmeta(object):
     ## Column handling
     ########################################
 
+    @classmethod
     def addColumn(cls, columnDef, changeSchema=False, connection=None):
         post_funcs = []
         cls.send(events.AddColumnSignal, cls.soClass, connection,
@@ -312,13 +312,22 @@ class sqlmeta(object):
         assert name != 'id', (
             "The 'id' column is implicit, and should not be defined as "
             "a column")
-        if name in sqlmeta.columns:
-            raise KeyError(
+        assert name not in sqlmeta.columns, (
             "The class %s.%s already has a column %r (%r), you cannot "
             "add the column %r"
             % (soClass.__module__, soClass.__name__, name,
-               sqlmeta.columnDefinitions[name],
-               columnDef))
+               sqlmeta.columnDefinitions[name], columnDef))
+        # Collect columns from the parent classes to test
+        # if the column is not in a parent class
+        parent_columns = []
+        for base in soClass.__bases__:
+            if hasattr(base, "sqlmeta"):
+                parent_columns.extend(base.sqlmeta.columns.keys())
+        if hasattr(soClass, name):
+            assert  (name in parent_columns) or (name == "childName"), (
+                "The class %s.%s already has a variable or method %r, you cannot "
+                "add the column %r"
+                % (soClass.__module__, soClass.__name__, name, name))
         sqlmeta.columnDefinitions[name] = columnDef
         sqlmeta.columns[name] = column
         # A stable-ordered version of the list...
@@ -380,37 +389,32 @@ class sqlmeta(object):
         # SQLObject instance.
         if column.foreignKey:
 
-            # We go through the standard _SO_get_columnName
-            # deal, except chopping off the "ID" ending since
+            # We go through the standard _SO_get_columnName deal
             # we're giving the object, not the ID of the
             # object this time:
+            origName = column.origName
             if sqlmeta.cacheValues:
                 # self._SO_class_className is a reference
                 # to the class in question.
-                getter = eval('lambda self: self._SO_foreignKey(self._SO_loadValue(%r), self._SO_class_%s)' % (instanceName(name), column.foreignKey))
+                getter = eval('lambda self: self._SO_foreignKey(self._SO_loadValue(%r), self._SO_class_%s, %s)' % (instanceName(name), column.foreignKey, column.refColumn and repr(column.refColumn)))
             else:
                 # Same non-caching version as above.
-                getter = eval('lambda self: self._SO_foreignKey(self._SO_getValue(%s), self._SO_class_%s)' % (repr(name), column.foreignKey))
-            if column.origName.upper().endswith('ID'):
-                origName = column.origName[:-2]
-            else:
-                origName = column.origName
+                getter = eval('lambda self: self._SO_foreignKey(self._SO_getValue(%s), self._SO_class_%s, %s)' % (repr(name), column.foreignKey, column.refColumn and repr(column.refColumn)))
             setattr(soClass, rawGetterName(origName), getter)
 
             # And we set the _get_columnName version
-            # (sans ID ending)
-            if not hasattr(soClass, getterName(name)[:-2]):
-                setattr(soClass, getterName(name)[:-2], getter)
-                sqlmeta._plainForeignGetters[name[:-2]] = 1
+            if not hasattr(soClass, getterName(origName)):
+                setattr(soClass, getterName(origName), getter)
+                sqlmeta._plainForeignGetters[origName] = 1
 
             if not column.immutable:
                 # The setter just gets the ID of the object,
                 # and then sets the real column.
-                setter = eval('lambda self, val: setattr(self, %s, self._SO_getID(val))' % (repr(name)))
-                setattr(soClass, rawSetterName(name)[:-2], setter)
-                if not hasattr(soClass, setterName(name)[:-2]):
-                    setattr(soClass, setterName(name)[:-2], setter)
-                    sqlmeta._plainForeignSetters[name[:-2]] = 1
+                setter = eval('lambda self, val: setattr(self, %s, self._SO_getID(val, %s))' % (repr(name), column.refColumn and repr(column.refColumn)))
+                setattr(soClass, rawSetterName(origName), setter)
+                if not hasattr(soClass, setterName(origName)):
+                    setattr(soClass, setterName(origName), setter)
+                    sqlmeta._plainForeignSetters[origName] = 1
 
             classregistry.registry(sqlmeta.registry).addClassCallback(
                 column.foreignKey,
@@ -431,22 +435,27 @@ class sqlmeta(object):
         for func in post_funcs:
             func(soClass, column)
 
-    addColumn = classmethod(addColumn)
-
+    @classmethod
     def addColumnsFromDatabase(sqlmeta, connection=None):
         soClass = sqlmeta.soClass
         conn = connection or soClass._connection
         for columnDef in conn.columnsFromSchema(sqlmeta.table, soClass):
             if columnDef.name not in sqlmeta.columnDefinitions:
+                if isinstance(columnDef.name, unicode):
+                    columnDef.name = columnDef.name.encode('ascii')
                 sqlmeta.addColumn(columnDef)
 
-    addColumnsFromDatabase = classmethod(addColumnsFromDatabase)
-
+    @classmethod
     def delColumn(cls, column, changeSchema=False, connection=None):
         sqlmeta = cls
         soClass = sqlmeta.soClass
         if isinstance(column, str):
-            column = sqlmeta.columns[column]
+            if column in sqlmeta.columns:
+                column = sqlmeta.columns[column]
+            elif column+'ID' in sqlmeta.columns:
+                column = sqlmeta.columns[column+'ID']
+            else:
+                raise ValueError('Unknown column ' + column)
         if isinstance(column, col.Col):
             for c in sqlmeta.columns.values():
                 if column is c.columnDef:
@@ -456,44 +465,44 @@ class sqlmeta(object):
                 raise IndexError(
                     "Column with definition %r not found" % column)
         post_funcs = []
-        cls.send(events.DeleteColumnSignal, connection, column.name, column,
-                 post_funcs)
+        cls.send(events.DeleteColumnSignal, cls.soClass, connection,
+                 column.name, column, post_funcs)
         name = column.name
         del sqlmeta.columns[name]
         del sqlmeta.columnDefinitions[name]
         sqlmeta.columnList.remove(column)
         delattr(soClass, rawGetterName(name))
-        if sqlmeta._plainGetters.has_key(name):
+        if name in sqlmeta._plainGetters:
             delattr(soClass, getterName(name))
         delattr(soClass, rawSetterName(name))
-        if sqlmeta._plainSetters.has_key(name):
+        if name in sqlmeta._plainSetters:
             delattr(soClass, setterName(name))
         if column.foreignKey:
-            delattr(soClass, rawGetterName(name)[:-2])
-            if sqlmeta._plainForeignGetters.has_key(name[:-2]):
-                delattr(soClass, getterName(name)[:-2])
-            delattr(soClass, rawSetterName(name)[:-2])
-            if sqlmeta._plainForeignSetters.has_key(name[:-2]):
-                delattr(soClass, setterName(name)[:-2])
+            delattr(soClass, rawGetterName(soClass.sqlmeta.style.instanceIDAttrToAttr(name)))
+            if name in sqlmeta._plainForeignGetters:
+                delattr(soClass, getterName(name))
+            delattr(soClass, rawSetterName(soClass.sqlmeta.style.instanceIDAttrToAttr(name)))
+            if name in sqlmeta._plainForeignSetters:
+                delattr(soClass, setterName(name))
         if column.alternateMethodName:
             delattr(soClass, column.alternateMethodName)
 
         if changeSchema:
             conn = connection or soClass._connection
-            conn.delColumn(sqlmeta.table, column)
+            conn.delColumn(sqlmeta, column)
 
         if soClass._SO_finishedClassCreation:
             unmakeProperties(soClass)
+            makeProperties(soClass)
 
         for func in post_funcs:
             func(soClass, column)
-
-    delColumn = classmethod(delColumn)
 
     ########################################
     ## Join handling
     ########################################
 
+    @classmethod
     def addJoin(cls, joinDef):
         sqlmeta = cls
         soClass = cls.soClass
@@ -542,8 +551,7 @@ class sqlmeta(object):
         if soClass._SO_finishedClassCreation:
             makeProperties(soClass)
 
-    addJoin = classmethod(addJoin)
-
+    @classmethod
     def delJoin(sqlmeta, joinDef):
         soClass = sqlmeta.soClass
         for join in sqlmeta.joins:
@@ -565,47 +573,51 @@ class sqlmeta(object):
                 # by index.
                 sqlmeta.joins[i] = None
         delattr(soClass, rawGetterName(meth))
-        if sqlmeta._plainJoinGetters.has_key(meth):
+        if meth in sqlmeta._plainJoinGetters:
             delattr(soClass, getterName(meth))
         if hasattr(join, 'remove'):
             delattr(soClass, '_SO_remove' + join.addRemovePrefix)
-            if sqlmeta._plainJoinRemovers.has_key(meth):
+            if meth in sqlmeta._plainJoinRemovers:
                 delattr(soClass, 'remove' + join.addRemovePrefix)
         if hasattr(join, 'add'):
             delattr(soClass, '_SO_add' + join.addRemovePrefix)
-            if sqlmeta._plainJoinAdders.has_key(meth):
+            if meth in sqlmeta._plainJoinAdders:
                 delattr(soClass, 'add' + join.addRemovePrefix)
 
         if soClass._SO_finishedClassCreation:
             unmakeProperties(soClass)
-
-    delJoin = classmethod(delJoin)
+            makeProperties(soClass)
 
     ########################################
     ## Indexes
     ########################################
 
+    @classmethod
     def addIndex(cls, indexDef):
         cls.indexDefinitions.append(indexDef)
         index = indexDef.withClass(cls.soClass)
         cls.indexes.append(index)
         setattr(cls.soClass, index.name, index)
-    addIndex = classmethod(addIndex)
 
     ########################################
     ## Utility methods
     ########################################
+
+    @classmethod
+    def getColumns(sqlmeta):
+        return sqlmeta.columns.copy()
 
     def asDict(self):
         """
         Return the object as a dictionary of columns to values.
         """
         result = {}
-        for key in self.columns:
+        for key in self.getColumns():
             result[key] = getattr(self.instance, key)
         result['id'] = self.instance.id
         return result
 
+    @classmethod
     def expireAll(sqlmeta, connection=None):
         """
         Expire all instances of this class.
@@ -617,7 +629,6 @@ class sqlmeta(object):
         for item in cache_set.getAll(soClass):
             item.expire()
 
-    expireAll = classmethod(expireAll)
 
 sqlhub = dbconnection.ConnectionHub()
 
@@ -642,15 +653,18 @@ class _sqlmeta_attr(object):
 warnings_level = 1
 exception_level = None
 # Current levels:
-#  1) Actively deprecated in version after 0.6.1 (0.7?); removed after
-#  2) Deprecated after 1 (0.8?)
-#  3) Deprecated after 2 (0.9?)
+#  1) Actively deprecated
+#  2) Deprecated after 1
+#  3) Deprecated after 2
 
 def deprecated(message, level=1, stacklevel=2):
     if exception_level is not None and exception_level <= level:
         raise NotImplementedError(message)
     if warnings_level is not None and warnings_level <= level:
         warnings.warn(message, DeprecationWarning, stacklevel=stacklevel)
+
+#if sys.version_info[:3] < (2, 5, 0):
+#    deprecated("Support for Python 2.4 has been declared obsolete and will be removed in the next release of SQLObject")
 
 def setDeprecationLevel(warning=1, exception=None):
     """
@@ -663,8 +677,8 @@ def setDeprecationLevel(warning=1, exception=None):
 
     The levels currently mean:
 
-      1) Deprecated in current version (0.7).  Will be removed in next
-         version (0.8)
+      1) Deprecated in current version (0.9).  Will be removed in next
+         version (0.10)
 
       2) Planned to deprecate in next version, remove later.
 
@@ -703,9 +717,6 @@ class SQLObject(object):
     _inheritable = False # Is this class inheritable?
     _parent = None # A reference to the parent instance
     childName = None # Children name (to be able to get a subclass)
-    # moved to sqlmeta in 0.8:
-    _parentClass = _sqlmeta_attr('parentClass', 2)
-    _childClasses = _sqlmeta_attr('childClasses', 2)
 
     # The law of Demeter: the class should not call another classes by name
     SelectResultsClass = SelectResults
@@ -718,45 +729,24 @@ class SQLObject(object):
 
         cls._SO_setupSqlmeta(new_attrs, is_base)
 
-        implicitColumns = _collectAttributes(
-            cls, new_attrs, col.Col, set_name=True, sort=True)
-        implicitJoins = _collectAttributes(
-            cls, new_attrs, joins.Join, set_name=True)
-        implicitIndexes = _collectAttributes(
-            cls, new_attrs, index.DatabaseIndex, set_name=True)
+        implicitColumns = _collectAttributes(cls, new_attrs, col.Col)
+        implicitJoins = _collectAttributes(cls, new_attrs, joins.Join)
+        implicitIndexes = _collectAttributes(cls, new_attrs, index.DatabaseIndex)
 
         if not is_base:
             cls._SO_cleanDeprecatedAttrs(new_attrs)
 
-        if new_attrs.has_key('_connection'):
+        if '_connection' in new_attrs:
             connection = new_attrs['_connection']
             del cls._connection
-            assert not new_attrs.has_key('connection')
-        elif new_attrs.has_key('connection'):
+            assert 'connection' not in new_attrs
+        elif 'connection' in new_attrs:
             connection = new_attrs['connection']
             del cls.connection
         else:
             connection = None
 
         cls._SO_finishedClassCreation = False
-
-        if '_columns' in new_attrs and not is_base:
-            deprecated(
-                'The _columns attribute you gave (%r) is deprecated; '
-                'columns should be added as class attributes'
-                % new_attrs['_columns'], level=1)
-            for column in new_attrs['_columns']:
-                if isinstance(column, str):
-                    column = col.Col(column)
-                implicitColumns.append(column)
-
-        if '_joins' in new_attrs and not is_base:
-            deprecated(
-                'The _joins attribute you gave (%r) is deprecated; '
-                'joins should be added as class attributes'
-                % new_attrs['_joins'], level=1)
-            for j in new_attrs['_joins']:
-                implicitJoins.append(j)
 
         ######################################################
         # Set some attributes to their defaults, if necessary.
@@ -768,35 +758,49 @@ class SQLObject(object):
             if hasattr(mod, '__connection__'):
                 connection = mod.__connection__
 
-        if connection and not hasattr(cls, '_connection'):
+        # Do not check hasattr(cls, '_connection') here - it is possible
+        # SQLObject parent class has a connection attribute that came
+        # from sqlhub, e.g.; check __dict__ only.
+        if connection and ('_connection' not in cls.__dict__):
             cls.setConnection(connection)
 
-        # Now the class is in an essentially OK-state, so we can
-        # set up any magic attributes:
-        declarative.setup_attributes(cls, new_attrs)
+        sqlmeta = cls.sqlmeta
 
         # We have to check if there are columns in the inherited
         # _columns where the attribute has been set to None in this
         # class.  If so, then we need to remove that column from
         # _columns.
-        for key in cls.sqlmeta.columnDefinitions.keys():
+        for key in sqlmeta.columnDefinitions.keys():
             if (key in new_attrs
                 and new_attrs[key] is None):
-                del cls.sqlmeta.columnDefinitions[key]
+                del sqlmeta.columnDefinitions[key]
 
-        for column in cls.sqlmeta.columnDefinitions.values():
-            cls.sqlmeta.addColumn(column)
+        for column in sqlmeta.columnDefinitions.values():
+            sqlmeta.addColumn(column)
 
         for column in implicitColumns:
-            cls.sqlmeta.addColumn(column)
+            sqlmeta.addColumn(column)
 
-        if cls.sqlmeta.fromDatabase:
-            cls.sqlmeta.addColumnsFromDatabase()
+        # Now the class is in an essentially OK-state, so we can
+        # set up any magic attributes:
+        declarative.setup_attributes(cls, new_attrs)
+
+        if sqlmeta.fromDatabase:
+            sqlmeta.addColumnsFromDatabase()
 
         for j in implicitJoins:
-            cls.sqlmeta.addJoin(j)
+            sqlmeta.addJoin(j)
         for i in implicitIndexes:
-            cls.sqlmeta.addIndex(i)
+            sqlmeta.addIndex(i)
+
+        order_getter = lambda o: o.creationOrder
+        sqlmeta.columnList.sort(key=order_getter)
+        sqlmeta.indexes.sort(key=order_getter)
+        sqlmeta.indexDefinitions.sort(key=order_getter)
+        # Joins cannot be sorted because addJoin created accessors
+        # that remember indexes.
+        #sqlmeta.joins.sort(key=order_getter)
+        sqlmeta.joinDefinitions.sort(key=order_getter)
 
         # We don't setup the properties until we're finished with the
         # batch adding of all the columns...
@@ -809,30 +813,11 @@ class SQLObject(object):
         # more.
         if not is_base:
             cls.q = sqlbuilder.SQLObjectTable(cls)
+            cls.j = sqlbuilder.SQLObjectTableWithJoins(cls)
 
-        classregistry.registry(cls.sqlmeta.registry).addClass(cls)
+        classregistry.registry(sqlmeta.registry).addClass(cls)
 
-    _style = _sqlmeta_attr('style', 2)
-    _table = _sqlmeta_attr('table', 2)
-    _idName = _sqlmeta_attr('idName', 2)
-    _lazyUpdate = _sqlmeta_attr('lazyUpdate', 2)
-    _defaultOrder = _sqlmeta_attr('defaultOrder', 2)
-    _cacheValues = _sqlmeta_attr('cacheValues', 2)
-    _registry = _sqlmeta_attr('registry', 2)
-    _idType = _sqlmeta_attr('idType', 2)
-    _fromDatabase = _sqlmeta_attr('fromDatabase', 2)
-    _expired = _sqlmeta_attr('expired', 2)
-    _columns = _sqlmeta_attr('columnList', 1)
-    _columnDict = _sqlmeta_attr('columns', 1)
-    addColumn = _sqlmeta_attr('addColumn', 2)
-    delColumn = _sqlmeta_attr('delColumn', 2)
-    addJoin = _sqlmeta_attr('addJoin', 2)
-    delJoin = _sqlmeta_attr('delJoin', 2)
-    addIndex = _sqlmeta_attr('addIndex', 2)
-    delIndex = _sqlmeta_attr('delIndex', 2)
-    getSchema = _sqlmeta_attr('getSchema', 2)
-
-    # @classmethod
+    @classmethod
     def _SO_setupSqlmeta(cls, new_attrs, is_base):
         """
         This fixes up the sqlmeta attribute.  It handles both the case
@@ -841,11 +826,10 @@ class SQLObject(object):
         inheritance.  Lastly it calls sqlmeta.setClass, which handles
         much of the setup.
         """
-        if (not new_attrs.has_key('sqlmeta')
+        if ('sqlmeta' not in new_attrs
             and not is_base):
             # We have to create our own subclass, usually.
-            # type(className, bases_tuple, attr_dict) creates a new
-            # subclass:
+            # type(className, bases_tuple, attr_dict) creates a new subclass.
             cls.sqlmeta = type('sqlmeta', (cls.sqlmeta,), {})
         if not issubclass(cls.sqlmeta, sqlmeta):
             # We allow no superclass and an object superclass, instead
@@ -872,36 +856,23 @@ class SQLObject(object):
                     del values[key]
             cls.sqlmeta = type('sqlmeta', (superclass,), values)
 
-        cls.sqlmeta.setClass(cls)
+        if not is_base: # Do not pollute the base sqlmeta class
+            cls.sqlmeta.setClass(cls)
 
-    _SO_setupSqlmeta = classmethod(_SO_setupSqlmeta)
-
-    # @classmethod
+    @classmethod
     def _SO_cleanDeprecatedAttrs(cls, new_attrs):
         """
         This removes attributes on SQLObject subclasses that have
         been deprecated; they are moved to the sqlmeta class, and
         a deprecation warning is given.
         """
-        for attr in ['_table', '_lazyUpdate', '_style', '_idName',
-                     '_defaultOrder', '_cacheValues', '_registry',
-                     '_idType', '_fromDatabase']:
-            if new_attrs.has_key(attr):
-                new_name = attr[1:]
-                deprecated("%r is deprecated; please set the %r "
-                           "attribute in sqlmeta instead" %
-                           (attr, new_name), level=2,
-                           stacklevel=5)
-                setattr(cls.sqlmeta, new_name, new_attrs[attr])
-                delattr(cls, attr)
-        for attr in ['_expired']:
-            if new_attrs.has_key(attr):
+        for attr in ():
+            if attr in new_attrs:
                 deprecated("%r is deprecated and read-only; please do "
                            "not use it in your classes until it is fully "
-                           "deprecated" % attr, level=3, stacklevel=5)
+                           "deprecated" % attr, level=1, stacklevel=5)
 
-    _SO_cleanDeprecatedAttrs = classmethod(_SO_cleanDeprecatedAttrs)
-
+    @classmethod
     def get(cls, id, connection=None, selectResults=None):
 
         assert id is not None, 'None is not a possible id for %s' % cls.__name__
@@ -919,12 +890,12 @@ class SQLObject(object):
         if val is None:
             try:
                 val = cls(_SO_fetch_no_create=1)
-                val._SO_validatorState = SQLObjectState(val)
+                val._SO_validatorState = sqlbuilder.SQLObjectState(val)
                 val._init(id, connection, selectResults)
                 cache.put(id, cls, val)
             finally:
                 cache.finishPut(cls)
-        elif selectResults and not val.dirty:
+        elif selectResults and not val.sqlmeta.dirty:
             val._SO_writeLock.acquire()
             try:
                 val._SO_selectInit(selectResults)
@@ -933,11 +904,9 @@ class SQLObject(object):
                 val._SO_writeLock.release()
         return val
 
-    get = classmethod(get)
-
+    @classmethod
     def _notifyFinishClassCreation(cls):
         pass
-    _notifyFinishClassCreation = classmethod(_notifyFinishClassCreation)
 
     def _init(self, id, connection=None, selectResults=None):
         assert id is not None
@@ -950,7 +919,8 @@ class SQLObject(object):
         # If no connection was given, we'll inherit the class
         # instance variable which should have a _connection
         # attribute.
-        if connection is not None:
+        if (connection is not None) and \
+                (getattr(self, '_connection', None) is not connection):
             self._connection = connection
             # Sometimes we need to know if this instance is
             # global or tied to a particular connection.
@@ -964,7 +934,7 @@ class SQLObject(object):
                 raise SQLObjectNotFound, "The object %s by the ID %s does not exist" % (self.__class__.__name__, self.id)
         self._SO_selectInit(selectResults)
         self._SO_createValues = {}
-        self.dirty = False
+        self.sqlmeta.dirty = False
 
     def _SO_loadValue(self, attrName):
         try:
@@ -1018,10 +988,15 @@ class SQLObject(object):
                 values = [(self.sqlmeta.columns[v[0]].dbName, v[1])
                           for v in self._SO_createValues.items()]
                 self._connection._SO_update(self, values)
-            self.dirty = False
+            self.sqlmeta.dirty = False
             self._SO_createValues = {}
         finally:
             self._SO_writeLock.release()
+
+        post_funcs = []
+        self.sqlmeta.send(events.RowUpdatedSignal, self, post_funcs)
+        for func in post_funcs:
+            func(self)
 
     def expire(self):
         if self.sqlmeta.expired:
@@ -1031,10 +1006,7 @@ class SQLObject(object):
             if self.sqlmeta.expired:
                 return
             for column in self.sqlmeta.columnList:
-                iname = instanceName(column.name)
-                # It may be already invalidated by other callsite
-                if hasattr(self, iname):
-                    delattr(self, iname)
+                delattr(self, instanceName(column.name))
             self.sqlmeta.expired = True
             self._connection.cache.expire(self.id, self.__class__)
             self._SO_createValues = {}
@@ -1050,10 +1022,14 @@ class SQLObject(object):
         # the parts are set.  So we just keep them in a
         # dictionary until later:
         d = {name: value}
-        if not self.sqlmeta._creating:
+        if not self.sqlmeta._creating and not getattr(self.sqlmeta, "row_update_sig_suppress", False):
             self.sqlmeta.send(events.RowUpdateSignal, self, d)
         if len(d) != 1 or name not in d:
-            return self.set(**d)
+            # Already called RowUpdateSignal, don't call it again
+            # inside .set()
+            self.sqlmeta.row_update_sig_suppress = True
+            self.set(**d)
+            del self.sqlmeta.row_update_sig_suppress
         value = d[name]
         if from_python:
             dbValue = from_python(value, self._SO_validatorState)
@@ -1062,7 +1038,7 @@ class SQLObject(object):
         if to_python:
             value = to_python(dbValue, self._SO_validatorState)
         if self.sqlmeta._creating or self.sqlmeta.lazyUpdate:
-            self.dirty = True
+            self.sqlmeta.dirty = True
             self._SO_createValues[name] = dbValue
             setattr(self, instanceName(name), value)
             return
@@ -1072,20 +1048,15 @@ class SQLObject(object):
                     dbValue)])
 
         if self.sqlmeta.cacheValues:
-            i_name = instanceName(name)
-            # This is a SQL call, meaning its value will be determined
-            # only after sql execution. Invalidate cache so that the
-            # actual value is reloaded
-            should_invalidate = (isinstance(value, sqlbuilder.SQLCall)
-                                 or self.sqlmeta.columns[name].noCache)
-            if should_invalidate:
-                if hasattr(self, i_name):
-                    delattr(self, i_name)
-            else:
-                setattr(self, i_name, value)
+            setattr(self, instanceName(name), value)
 
-    def set(self, **kw):
-        if not self.sqlmeta._creating:
+        post_funcs = []
+        self.sqlmeta.send(events.RowUpdatedSignal, self, post_funcs)
+        for func in post_funcs:
+            func(self)
+
+    def set(self, _suppress_set_sig=False, **kw):
+        if not self.sqlmeta._creating and not getattr(self.sqlmeta, "row_update_sig_suppress", False) and not _suppress_set_sig:
             self.sqlmeta.send(events.RowUpdateSignal, self, kw)
         # set() is used to update multiple values at once,
         # potentially with one SQL statement if possible.
@@ -1093,7 +1064,7 @@ class SQLObject(object):
         # Filter out items that don't map to column names.
         # Those will be set directly on the object using
         # setattr(obj, name, value).
-        is_column = self.sqlmeta._plainSetters.has_key
+        is_column = lambda _c: _c in self.sqlmeta._plainSetters
         f_is_column = lambda item: is_column(item[0])
         f_not_column = lambda item: not is_column(item[0])
         items = kw.items()
@@ -1126,7 +1097,7 @@ class SQLObject(object):
                 except AttributeError, e:
                     raise AttributeError, '%s (with attribute %r)' % (e, name)
 
-            self.dirty = True
+            self.sqlmeta.dirty = True
             return
 
         self._SO_writeLock.acquire()
@@ -1171,6 +1142,11 @@ class SQLObject(object):
         finally:
             self._SO_writeLock.release()
 
+        post_funcs = []
+        self.sqlmeta.send(events.RowUpdatedSignal, self, post_funcs)
+        for func in post_funcs:
+            func(self)
+
     def _SO_selectInit(self, row):
         for col, colValue in zip(self.sqlmeta.columnList, row):
             if col.to_python:
@@ -1194,51 +1170,79 @@ class SQLObject(object):
             value = column.to_python(value, self._SO_validatorState)
         return value
 
-    def _SO_foreignKey(self, id, joinClass):
-        if id is None:
+    def _SO_foreignKey(self, value, joinClass, idName=None):
+        if value is None:
             return None
-        elif self.sqlmeta._perConnection:
-            return joinClass.get(id, connection=self._connection)
+        if self.sqlmeta._perConnection:
+            connection = self._connection
         else:
-            return joinClass.get(id)
+            connection = None
+        if idName is None: # Get by id
+            return joinClass.get(value, connection=connection)
+        return joinClass.select(
+            getattr(joinClass.q, idName)==value, connection=connection).getOne()
 
     def __init__(self, **kw):
-        # We shadow the sqlmeta class with an instance of sqlmeta
-        # that points to us (our sqlmeta buddy object; where the
-        # sqlmeta class is our class's buddy class)
-        self.sqlmeta = self.__class__.sqlmeta(self)
-        # The get() classmethod/constructor uses a magic keyword
-        # argument when it wants an empty object, fetched from the
-        # database.  So we have nothing more to do in that case:
-        if kw.has_key('_SO_fetch_no_create'):
-            return
+        # If we are the outmost constructor of a hiearchy of
+        # InheritableSQLObjects (or simlpy _the_ constructor of a "normal"
+        # SQLObject), we create a threadlocal list that collects the
+        # RowCreatedSignals, and executes them if this very constructor is left
+        try:
+            _postponed_local.postponed_calls
+            postponed_created = False
+        except AttributeError:
+            _postponed_local.postponed_calls = []
+            postponed_created = True
 
-        post_funcs = []
-        self.sqlmeta.send(events.RowCreateSignal, kw, post_funcs)
+        try:
+            # We shadow the sqlmeta class with an instance of sqlmeta
+            # that points to us (our sqlmeta buddy object; where the
+            # sqlmeta class is our class's buddy class)
+            self.sqlmeta = self.__class__.sqlmeta(self)
+            # The get() classmethod/constructor uses a magic keyword
+            # argument when it wants an empty object, fetched from the
+            # database.  So we have nothing more to do in that case:
+            if '_SO_fetch_no_create' in kw:
+                return
 
-        # Pass the connection object along if we were given one.
-        if kw.has_key('connection'):
-            self._connection = kw['connection']
-            self.sqlmeta._perConnection = True
-            del kw['connection']
+            post_funcs = []
+            self.sqlmeta.send(events.RowCreateSignal, self, kw, post_funcs)
 
-        self._SO_writeLock = threading.Lock()
+            # Pass the connection object along if we were given one.
+            if 'connection' in kw:
+                connection = kw.pop('connection')
+                if getattr(self, '_connection', None) is not connection:
+                    self._connection = connection
+                    self.sqlmeta._perConnection = True
 
-        if kw.has_key('id'):
-            id = self.sqlmeta.idType(kw['id'])
-            del kw['id']
-        else:
-            id = None
+            self._SO_writeLock = threading.Lock()
 
-        self._create(id, **kw)
-        for func in post_funcs:
-            func(self)
+            if 'id' in kw:
+                id = self.sqlmeta.idType(kw['id'])
+                del kw['id']
+            else:
+                id = None
+
+            self._create(id, **kw)
+
+            for func in post_funcs:
+                func(self)
+        finally:
+            # if we are the creator of the tl-storage, we
+            # have to exectute and under all circumstances
+            # remove the tl-storage
+            if postponed_created:
+                try:
+                    for func in _postponed_local.postponed_calls:
+                        func()
+                finally:
+                    del _postponed_local.postponed_calls
 
     def _create(self, id, **kw):
 
         self.sqlmeta._creating = True
         self._SO_createValues = {}
-        self._SO_validatorState = SQLObjectState(self)
+        self._SO_validatorState = sqlbuilder.SQLObjectState(self)
 
         # First we do a little fix-up on the keywords we were
         # passed:
@@ -1246,21 +1250,28 @@ class SQLObject(object):
 
             # Then we check if the column wasn't passed in, and
             # if not we try to get the default.
-            if not kw.has_key(column.name) and not kw.has_key(column.foreignName):
+            if column.name not in kw and column.foreignName not in kw:
                 default = column.default
 
                 # If we don't get it, it's an error:
+                # If we specified an SQL DEFAULT, then we should use that
                 if default is NoDefault:
-                    raise TypeError, "%s() did not get expected keyword argument %s" % (self.__class__.__name__, column.name)
+                    if column.defaultSQL is None:
+                        raise TypeError, "%s() did not get expected keyword argument '%s'" % (self.__class__.__name__, column.name)
+                    else:
+                        # There is defaultSQL for the column - do not put
+                        # the column to kw so that the backend creates the value
+                        continue
+
                 # Otherwise we put it in as though they did pass
                 # that keyword:
+
                 kw[column.name] = default
 
         self.set(**kw)
 
         # Then we finalize the process:
         self._SO_finishCreate(id)
-        self.sqlmeta._creating = False
 
     def _SO_finishCreate(self, id=None):
         # Here's where an INSERT is finalized.
@@ -1273,7 +1284,7 @@ class SQLObject(object):
         # Get rid of _SO_create*, we aren't creating anymore.
         # Doesn't have to be threadsafe because we're still in
         # new(), which doesn't need to be threadsafe.
-        self.dirty = False
+        self.sqlmeta.dirty = False
         if not self.sqlmeta.lazyUpdate:
             del self._SO_createValues
         else:
@@ -1289,22 +1300,37 @@ class SQLObject(object):
         cache.created(id, self.__class__, self)
         self._init(id)
         post_funcs = []
-        kw = dict([('class',self.__class__),('id',id)])
-        self.sqlmeta.send(events.RowCreatedSignal, kw, post_funcs)
+        kw = dict([('class', self.__class__), ('id', id)])
+        def _send_RowCreatedSignal():
+            self.sqlmeta.send(events.RowCreatedSignal, self, kw, post_funcs)
+            for func in post_funcs:
+                func(self)
+        _postponed_local.postponed_calls.append(_send_RowCreatedSignal)
 
+    def _SO_getID(self, obj, refColumn=None):
+        return getID(obj, refColumn)
 
-    def _SO_getID(self, obj):
-        return getID(obj)
-
+    @classmethod
     def _findAlternateID(cls, name, dbName, value, connection=None):
+        if isinstance(name, str):
+            name = (name,)
+            value = (value,)
+        if len(name) != len(value):
+            raise ValueError, "'column' and 'value' tuples must be of the same size"
+        new_value = []
+        for n, v in zip(name, value):
+            from_python = getattr(cls, '_SO_from_python_' + n)
+            if from_python:
+                v = from_python(v, sqlbuilder.SQLObjectState(cls, connection=connection))
+            new_value.append(v)
+        condition = sqlbuilder.AND(*[getattr(cls.q, n)==v for n,v in zip(name, new_value)])
         return (connection or cls._connection)._SO_selectOneAlt(
             cls,
             [cls.sqlmeta.idName] +
-            [col.dbName for col in cls.sqlmeta.columnList],
-            dbName,
-            value), None
-    _findAlternateID = classmethod(_findAlternateID)
+            [column.dbName for column in cls.sqlmeta.columnList],
+            condition), None
 
+    @classmethod
     def _SO_fetchAlternateID(cls, name, dbName, value, connection=None, idxName=None):
         result, obj = cls._findAlternateID(name, dbName, value, connection)
         if not result:
@@ -1323,88 +1349,44 @@ class SQLObject(object):
         else:
             obj = cls.get(result[0], selectResults=result[1:])
         return obj
-    _SO_fetchAlternateID = classmethod(_SO_fetchAlternateID)
 
+    @classmethod
     def _SO_depends(cls):
         return findDependencies(cls.__name__, cls.sqlmeta.registry)
-    _SO_depends = classmethod(_SO_depends)
 
+    @classmethod
     def select(cls, clause=None, clauseTables=None,
                orderBy=NoDefault, limit=None,
                lazyColumns=False, reversed=False,
                distinct=False, connection=None,
-               join=None, having=None):
+               join=None, forUpdate=False):
         return cls.SelectResultsClass(cls, clause,
                              clauseTables=clauseTables,
                              orderBy=orderBy,
                              limit=limit,
-                             having=having,
                              lazyColumns=lazyColumns,
                              reversed=reversed,
                              distinct=distinct,
                              connection=connection,
-                             join=join)
-    select = classmethod(select)
+                             join=join, forUpdate=forUpdate)
 
+    @classmethod
     def selectBy(cls, connection=None, **kw):
         conn = connection or cls._connection
         return cls.SelectResultsClass(cls,
-                                      conn._SO_columnClause(cls, kw),
-                                      connection=conn)
+                             conn._SO_columnClause(cls, kw),
+                             connection=conn)
 
-    selectBy = classmethod(selectBy)
-
-    def selectOne(cls, clause=None, clauseTables=None, lazyColumns=False,
-                  connection=None):
-        """A variant of select to return a single result.
-
-        If clause finds no results, this returns None.  If it finds one result,
-        it returns it.  If it finds more than one result, it raises a
-        SQLObjectMoreThanOneResultError.
-        """
-        results = list(cls.SelectResultsClass(
-            cls, clause,
-            clauseTables=clauseTables,
-            lazyColumns=lazyColumns,
-            connection=connection).limit(2))
-
-        if len(results) == 0:
-            return None
-        elif len(results) == 1:
-            return results[0]
-        else:
-            raise SQLObjectMoreThanOneResultError(
-                "%d rows retrieved by selectOne" % len(results))
-
-    selectOne = classmethod(selectOne)
-
-    def selectOneBy(cls, connection=None, **kw):
-        """A variant of selectBy to return a single result.
-
-        If it finds no results, this returns None.  If it finds one result,
-        it returns it.  If it finds more than one result, it raises a
-        SQLObjectMoreThanOneResultError.
-        """
+    @classmethod
+    def tableExists(cls, connection=None):
         conn = connection or cls._connection
-        results = list(cls.SelectResultsClass(
-            cls,
-            clause=conn._SO_columnClause(cls, kw),
-            connection=conn).limit(2))
+        return conn.tableExists(cls.sqlmeta.table)
 
-        if len(results) == 0:
-            return None
-        elif len(results) == 1:
-            return results[0]
-        else:
-            raise SQLObjectMoreThanOneResultError(
-                "%d rows retrieved by selectOne" % len(results))
-
-    selectOneBy = classmethod(selectOneBy)
-
+    @classmethod
     def dropTable(cls, ifExists=False, dropJoinTables=True, cascade=False,
                   connection=None):
         conn = connection or cls._connection
-        if ifExists and not conn.tableExists(cls.sqlmeta.table):
+        if ifExists and not cls.tableExists(connection=conn):
             return
         extra_sql = []
         post_funcs = []
@@ -1417,13 +1399,13 @@ class SQLObject(object):
             connection.query(sql)
         for func in post_funcs:
             func(cls, conn)
-    dropTable = classmethod(dropTable)
 
+    @classmethod
     def createTable(cls, ifNotExists=False, createJoinTables=True,
                     createIndexes=True, applyConstraints=True,
                     connection=None):
         conn = connection or cls._connection
-        if ifNotExists and conn.tableExists(cls.sqlmeta.table):
+        if ifNotExists and cls.tableExists(connection=conn):
             return
         extra_sql = []
         post_funcs = []
@@ -1444,50 +1426,48 @@ class SQLObject(object):
         for func in post_funcs:
             func(cls, conn)
         return extra_sql
-    createTable = classmethod(createTable)
 
+    @classmethod
     def createTableSQL(cls, createJoinTables=True, createIndexes=True,
                        connection=None):
         conn = connection or cls._connection
         sql, constraints = conn.createTableSQL(cls)
         if createJoinTables:
-            sql += '\n' + cls.createJoinTablesSQL(connection=conn)
+            join_sql = cls.createJoinTablesSQL(connection=conn)
+            if join_sql:
+                sql += ';\n' + join_sql
         if createIndexes:
-            sql += '\n' + cls.createIndexesSQL(connection=conn)
+            index_sql = cls.createIndexesSQL(connection=conn)
+            if index_sql:
+                sql += ';\n' + index_sql
         return sql, constraints
-    createTableSQL = classmethod(createTableSQL)
 
+    @classmethod
     def createJoinTables(cls, ifNotExists=False, connection=None):
         conn = connection or cls._connection
         for join in cls._getJoinsToCreate():
-            if not getattr(join, 'createRelatedTable', True):
-                # This join has requested not to be created
-                continue
             if (ifNotExists and
                 conn.tableExists(join.intermediateTable)):
                 continue
             conn._SO_createJoinTable(join)
-    createJoinTables = classmethod(createJoinTables)
 
+    @classmethod
     def createJoinTablesSQL(cls, connection=None):
         conn = connection or cls._connection
         sql = []
         for join in cls._getJoinsToCreate():
-            if not getattr(join, 'createRelatedTable', True):
-                # This join has requested not to be created
-                continue
             sql.append(conn._SO_createJoinTableSQL(join))
-        return '\n'.join(sql)
-    createJoinTablesSQL = classmethod(createJoinTablesSQL)
+        return ';\n'.join(sql)
 
+    @classmethod
     def createIndexes(cls, ifNotExists=False, connection=None):
         conn = connection or cls._connection
         for index in cls.sqlmeta.indexes:
             if not index:
                 continue
             conn._SO_createIndex(cls, index)
-    createIndexes = classmethod(createIndexes)
 
+    @classmethod
     def createIndexesSQL(cls, connection=None):
         conn = connection or cls._connection
         sql = []
@@ -1495,28 +1475,28 @@ class SQLObject(object):
             if not index:
                 continue
             sql.append(conn.createIndexSQL(cls, index))
-        return '\n'.join(sql)
-    createIndexesSQL = classmethod(createIndexesSQL)
+        return ';\n'.join(sql)
 
+    @classmethod
     def _getJoinsToCreate(cls):
         joins = []
         for join in cls.sqlmeta.joins:
             if not join:
                 continue
-            if not join.hasIntermediateTable():
+            if not join.hasIntermediateTable() or not getattr(join, 'createRelatedTable', True):
                 continue
             if join.soClass.__name__ > join.otherClass.__name__:
                 continue
             joins.append(join)
         return joins
-    _getJoinsToCreate = classmethod(_getJoinsToCreate)
 
+    @classmethod
     def dropJoinTables(cls, ifExists=False, connection=None):
         conn = connection or cls._connection
         for join in cls.sqlmeta.joins:
             if not join:
                 continue
-            if not join.hasIntermediateTable():
+            if not join.hasIntermediateTable() or not getattr(join, 'createRelatedTable', True):
                 continue
             if join.soClass.__name__ > join.otherClass.__name__:
                 continue
@@ -1525,8 +1505,7 @@ class SQLObject(object):
                 continue
             conn._SO_dropJoinTable(join)
 
-    dropJoinTables = classmethod(dropJoinTables)
-
+    @classmethod
     def clearTable(cls, connection=None, clearJoinTables=True):
         # 3-03 @@: Maybe this should check the cache... but it's
         # kind of crude anyway, so...
@@ -1535,23 +1514,42 @@ class SQLObject(object):
         if clearJoinTables:
             for join in cls._getJoinsToCreate():
                 conn.clearTable(join.intermediateTable)
-    clearTable = classmethod(clearTable)
 
     def destroySelf(self):
-        self.sqlmeta.send(events.RowDestroySignal, self)
+        post_funcs = []
+        self.sqlmeta.send(events.RowDestroySignal, self, post_funcs)
         # Kills this object.  Kills it dead!
-        depends = []
+
         klass = self.__class__
+
+        # Free related joins on the base class
+        for join in klass.sqlmeta.joins:
+            if isinstance(join, joins.SORelatedJoin):
+                q = "DELETE FROM %s WHERE %s=%d" % (join.intermediateTable, join.joinColumn, self.id)
+                self._connection.query(q)
+
+        depends = []
         depends = self._SO_depends()
         for k in depends:
+            # Free related joins
+            for join in k.sqlmeta.joins:
+                if isinstance(join, joins.SORelatedJoin) and join.otherClassName == klass.__name__:
+                    q = "DELETE FROM %s WHERE %s=%d" % (join.intermediateTable, join.otherColumn, self.id)
+                    self._connection.query(q)
+
             cols = findDependantColumns(klass.__name__, k)
+
+            # Don't confuse the rest of the process
+            if len(cols) == 0:
+                continue
+
             query = []
             delete = setnull = restrict = False
             for col in cols:
                 if col.cascade == False:
                     # Found a restriction
                     restrict = True
-                query.append("%s = %s" % (col.dbName, self.id))
+                query.append(getattr(k.q, col.name) == self.id)
                 if col.cascade == 'null':
                     setnull = col.name
                 elif col.cascade:
@@ -1560,7 +1558,7 @@ class SQLObject(object):
                 "Class %s depends on %s accoriding to "
                 "findDependantColumns, but this seems inaccurate"
                 % (k, klass))
-            query = ' OR '.join(query)
+            query = sqlbuilder.OR(*query)
             results = k.select(query, connection=self._connection)
             if restrict:
                 if results.count():
@@ -1581,11 +1579,29 @@ class SQLObject(object):
         self._connection._SO_delete(self)
         self._connection.cache.expire(self.id, self.__class__)
 
+        for func in post_funcs:
+            func(self)
+
+        post_funcs = []
+        self.sqlmeta.send(events.RowDestroyedSignal, self, post_funcs)
+        for func in post_funcs:
+            func(self)
+
+    @classmethod
     def delete(cls, id, connection=None):
         obj = cls.get(id, connection=connection)
         obj.destroySelf()
 
-    delete = classmethod(delete)
+    @classmethod
+    def deleteMany(cls, where=NoDefault, connection=None):
+        conn = connection or cls._connection
+        conn.query(conn.sqlrepr(sqlbuilder.Delete(cls.sqlmeta.table, where)))
+
+    @classmethod
+    def deleteBy(cls, connection=None, **kw):
+        conn = connection or cls._connection
+        conn.query(conn.sqlrepr(sqlbuilder.Delete(cls.sqlmeta.table,
+            conn._SO_columnClause(cls, kw))))
 
     def __repr__(self):
         if not hasattr(self, 'id'):
@@ -1596,18 +1612,19 @@ class SQLObject(object):
                   self.id,
                   ' '.join(['%s=%s' % (name, repr(value)) for name, value in self._reprItems()]))
 
+    def __sqlrepr__(self, db):
+        return str(self.id)
+
+    @classmethod
     def sqlrepr(cls, value, connection=None):
         return (connection or cls._connection).sqlrepr(value)
 
-    sqlrepr = classmethod(sqlrepr)
-
+    @classmethod
     def coerceID(cls, value):
         if isinstance(value, cls):
             return value.id
         else:
             return cls.sqlmeta.idType(value)
-
-    coerceID = classmethod(coerceID)
 
     def _reprItems(self):
         items = []
@@ -1619,14 +1636,55 @@ class SQLObject(object):
             items.append((col.name, value))
         return items
 
+    @classmethod
     def setConnection(cls, value):
-        if isinstance(value, (str, unicode)):
+        if isinstance(value, basestring):
             value = dbconnection.connectionForURI(value)
         cls._connection = value
-    setConnection = classmethod(setConnection)
 
-def capitalize(name):
-    return name[0].capitalize() + name[1:]
+    def tablesUsedImmediate(self):
+        return [self.__class__.q]
+
+
+    # Comparison
+
+    def __eq__(self, other):
+        if self.__class__ is other.__class__:
+            if self.id == other.id:
+                return True
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __lt__(self, other):
+        return NotImplemented
+
+    def __le__(self, other):
+        return NotImplemented
+
+    def __gt__(self, other):
+        return NotImplemented
+
+    def __ge__(self, other):
+        return NotImplemented
+
+
+    def __getstate__(self):
+        if self.sqlmeta._perConnection:
+            from pickle import PicklingError
+            raise PicklingError('Cannot pickle an SQLObject instance that has a per-instance connection')
+        d = self.__dict__.copy()
+        del d['sqlmeta']
+        del d['_SO_writeLock']
+        return d
+
+    def __setstate__(self, d):
+        self.__init__(_SO_fetch_no_create=1)
+        self._SO_writeLock = threading.Lock()
+        self.__dict__.update(d)
+        self.__class__._connection.cache.put(self.id, self.__class__, self)
+
 
 def setterName(name):
     return '_set_%s' % name
@@ -1640,25 +1698,18 @@ def instanceName(name):
     return '_SO_val_%s' % name
 
 
-class SQLObjectState(object):
-
-    def __init__(self, soObject):
-        self.soObject = soObject
-        self.protocol = 'sql'
-
-
 ########################################
 ## Utility functions (for external consumption)
 ########################################
 
-def getID(obj):
+def getID(obj, refColumn=None):
     if isinstance(obj, SQLObject):
-        return obj.id
-    elif type(obj) is type(1):
+        return getattr(obj, refColumn or 'id')
+    elif isinstance(obj, int):
         return obj
-    elif type(obj) is type(1L):
+    elif isinstance(obj, long):
         return int(obj)
-    elif type(obj) is type(""):
+    elif isinstance(obj, str):
         try:
             return int(obj)
         except ValueError:
@@ -1667,11 +1718,11 @@ def getID(obj):
         return None
 
 def getObject(obj, klass):
-    if type(obj) is type(1):
+    if isinstance(obj, int):
         return klass(obj)
-    elif type(obj) is type(1L):
+    elif isinstance(obj, long):
         return klass(int(obj))
-    elif type(obj) is type(""):
+    elif isinstance(obj, str):
         return klass(int(obj))
     elif obj is None:
         return None
@@ -1680,5 +1731,5 @@ def getObject(obj, klass):
 
 __all__ = ['NoDefault', 'SQLObject', 'sqlmeta',
            'getID', 'getObject',
-           'SQLObjectNotFound', 'SQLObjectMoreThanOneResultError', 'sqlhub',
+           'SQLObjectNotFound', 'sqlhub',
            'setDeprecationLevel']

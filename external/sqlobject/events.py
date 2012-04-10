@@ -1,8 +1,8 @@
 import sys
 import types
+from pydispatch import dispatcher
 from weakref import ref
 
-from pydispatch import dispatcher
 
 subclassClones = {}
 
@@ -70,7 +70,7 @@ dispatcher.connect(_makeSubclassConnections, signal=ClassCreateSignal)
 class RowCreateSignal(Signal):
     """
     Called before an instance is created, with the class as the
-    sender.  Called with the arguments ``(kwargs, post_funcs)``.
+    sender.  Called with the arguments ``(instance, kwargs, post_funcs)``.
     There may be a ``connection`` argument.  ``kwargs``may be usefully
     modified.  ``post_funcs`` is a list of callbacks, intended to have
     functions appended to it, and are called with the arguments
@@ -82,7 +82,7 @@ class RowCreateSignal(Signal):
 class RowCreatedSignal(Signal):
     """
     Called after an instance is created, with the class as the
-    sender.  Called with the arguments ``(kwargs, post_funcs)``.
+    sender.  Called with the arguments ``(instance, kwargs, post_funcs)``.
     There may be a ``connection`` argument.  ``kwargs``may be usefully
     modified.  ``post_funcs`` is a list of callbacks, intended to have
     functions appended to it, and are called with the arguments
@@ -97,9 +97,16 @@ class RowCreatedSignal(Signal):
 class RowDestroySignal(Signal):
     """
     Called before an instance is deleted.  Sender is the instance's
-    class.  Arguments are ``(instance)``.  You cannot cancel the delete,
-    but you can raise an exception (which will probably cancel the
-    delete, but also cause an uncaught exception if not expected).
+    class.  Arguments are ``(instance, post_funcs)``.
+
+    ``post_funcs`` is a list of callbacks, intended to have
+    functions appended to it, and are called with arguments ``(instance)``.
+    If any of the post_funcs raises an exception, the deletion is only
+    affected if this will prevent a commit.
+
+    You cannot cancel the delete, but you can raise an exception (which will
+    probably cancel the delete, but also cause an uncaught exception if not
+    expected).
 
     Note: this is not called when an instance is destroyed through
     garbage collection.
@@ -108,12 +115,34 @@ class RowDestroySignal(Signal):
     row can be deleted without first fetching it?
     """
 
+class RowDestroyedSignal(Signal):
+    """
+    Called after an instance is deleted.  Sender is the instance's
+    class.  Arguments are ``(instance)``.
+
+    This is called before the post_funcs of RowDestroySignal
+
+    Note: this is not called when an instance is destroyed through
+    garbage collection.
+    """
+
 class RowUpdateSignal(Signal):
     """
-    Called when an instance is updated through a call to ``.set()``.
-    The arguments are ``(instance, kwargs)``.  ``kwargs`` can be
-    modified.  This is run *before* the instance is updated; if you
-    want to look at the current values, simply look at ``instance``.
+    Called when an instance is updated through a call to ``.set()``
+    (or a column attribute assignment).  The arguments are
+    ``(instance, kwargs)``.  ``kwargs`` can be modified.  This is run
+    *before* the instance is updated; if you want to look at the
+    current values, simply look at ``instance``.
+    """
+
+class RowUpdatedSignal(Signal):
+    """
+    Called when an instance is updated through a call to ``.set()``
+    (or a column attribute assignment).  The arguments are
+    ``(instance, post_funcs)``. ``post_funcs`` is a list of callbacks,
+    intended to have functions appended to it, and are called with the
+    arguments ``(new_instance)``. This is run *after* the instance is
+    updated; Works better with lazyUpdate = True.
     """
 
 class AddColumnSignal(Signal):
@@ -280,23 +309,6 @@ def nice_repr(v):
     else:
         return repr(v)
 
-try:
-    sorted
-except NameError:
-    # For Python 2.2 and 2.3:
-    def sorted(lst, cmp=None, key=None, reverse=False):
-        if key:
-            lst = [(key(i), i) for i in lst]
-        lst = lst[:]
-        if cmp:
-            lst.sort(cmp)
-        else:
-            lst.sort()
-        if key:
-            lst = [i for k, i in lst]
-        if reverse:
-            lst.reverse()
-        return lst
 
 __all__ = ['listen', 'send']
 for name, value in globals().items():

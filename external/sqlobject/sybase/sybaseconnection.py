@@ -1,42 +1,42 @@
 from sqlobject.dbconnection import DBAPI
 from sqlobject import col
-Sybase = None
 
 class SybaseConnection(DBAPI):
 
     supportTransactions = False
     dbName = 'sybase'
     schemes = [dbName]
+    NumericType = None
 
-    def __init__(self, db, user, password='', host='localhost',
+    def __init__(self, db, user, password='', host='localhost', port=None,
                  locking=1, **kw):
         db = db.strip('/')
-        global Sybase
-        if Sybase is None:
-            import Sybase
-            Sybase._ctx.debug = 0
+        import Sybase
+        Sybase._ctx.debug = 0
+        if SybaseConnection.NumericType is None:
             from Sybase import NumericType
+            SybaseConnection.NumericType = NumericType
             from sqlobject.converters import registerConverter, IntConverter
             registerConverter(NumericType, IntConverter)
         self.module = Sybase
         self.locking = int(locking)
         self.host = host
+        self.port = port
         self.db = db
         self.user = user
         self.password = password
         autoCommit = kw.get('autoCommit')
         if autoCommit:
-            autoCommmit = int(autoCommit)
+           autoCommmit = int(autoCommit)
         else:
             autoCommit = None
         kw['autoCommit'] = autoCommit
         DBAPI.__init__(self, **kw)
 
-    def connectionFromURI(cls, uri):
-        user, password, host, port, path, args = cls._parseURI(uri)
-        return cls(user=user, password=password, host=host or 'localhost',
-                   db=path, **args)
-    connectionFromURI = classmethod(connectionFromURI)
+    @classmethod
+    def _connectionFromParams(cls, user, password, host, port, path, args):
+        return cls(user=user, password=password,
+                   host=host or 'localhost', port=port, db=path, **args)
 
     def insert_id(self, conn):
         """
@@ -48,7 +48,7 @@ class SybaseConnection(DBAPI):
         return c.fetchone()[0]
 
     def makeConnection(self):
-        return Sybase.connect(self.host, self.user, self.password,
+        return self.module.connect(self.host, self.user, self.password,
                               database=self.db, auto_commit=self.autoCommit,
                               locking=self.locking)
 
@@ -76,17 +76,16 @@ class SybaseConnection(DBAPI):
             values = [id] + values
 
         has_identity = self._hasIdentity(conn, table)
-        if has_identity:
-            if id is not None:
-                c.execute('SET IDENTITY_INSERT %s ON' % table)
-            else:
-                c.execute('SET IDENTITY_INSERT %s OFF' % table)
+        identity_insert_on = False
+        if has_identity and (id is not None):
+            identity_insert_on = True
+            c.execute('SET IDENTITY_INSERT %s ON' % table)
 
         q = self._insertSQL(table, names, values)
         if self.debug:
             print 'QueryIns: %s' % q
         c.execute(q)
-        if has_identity:
+        if has_identity and identity_insert_on:
             c.execute('SET IDENTITY_INSERT %s OFF' % table)
         if id is None:
             id = self.insert_id(conn)
@@ -94,9 +93,15 @@ class SybaseConnection(DBAPI):
             self.printDebug(conn, id, 'QueryIns', 'result')
         return id
 
-    def _queryAddLimitOffset(self, query, start, end):
-        # XXX Sybase doesn't support LIMIT
+    @classmethod
+    def _queryAddLimitOffset(cls, query, start, end):
+        # XXX Sybase doesn't support OFFSET
+        if end:
+            return "SET ROWCOUNT %i %s SET ROWCOUNT 0" % (end, query)
         return query
+
+    def createReferenceConstraint(self, soClass, col):
+        return None
 
     def createColumn(self, soClass, col):
         return col.sybaseCreateSQL()
@@ -123,10 +128,8 @@ class SybaseConnection(DBAPI):
                    (tableName,
                     column.sybaseCreateSQL()))
 
-    def delColumn(self, tableName, column):
-        self.query('ALTER TABLE %s DROP COLUMN %s' %
-                   (tableName,
-                    column.dbName))
+    def delColumn(self, sqlmeta, column):
+        self.query('ALTER TABLE %s DROP COLUMN %s' % (sqlmeta.table, column.dbName))
 
     SHOW_COLUMNS=('SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS '
                   'WHERE TABLE_NAME = \'%s\'')
@@ -135,10 +138,11 @@ class SybaseConnection(DBAPI):
                                 % tableName)
         results = []
         for field, t, nullAllowed, default in colData:
-            if field == 'id':
+            if field == soClass.sqlmeta.idName:
                 continue
             colClass, kw = self.guessClass(t)
             kw['name'] = soClass.sqlmeta.style.dbColumnToPythonAttr(field)
+            kw['dbName'] = field
             kw['notNone'] = not nullAllowed
             kw['default'] = default
             # @@ skip key...

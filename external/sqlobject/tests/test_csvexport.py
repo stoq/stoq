@@ -87,3 +87,4 @@ def test_zip():
     assert isinstance(s, str) and s
     s = export_csv_zip([SimpleCSV.selectBy(name='Bob'),
                         (ComplexCSV, list(ComplexCSV.selectBy(fname='John')))])
+

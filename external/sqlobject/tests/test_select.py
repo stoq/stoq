@@ -1,17 +1,8 @@
-from __future__ import generators # for enumerate
 from sqlobject import *
+from sqlobject.sqlbuilder import func
 from sqlobject.main import SQLObjectIntegrityError
-from sqlobject.tests.dbtest import *
-from py.test import raises
-
-try:
-    enumerate
-except NameError:
-    def enumerate(iterable):
-        i = 0
-        for obj in iterable:
-            yield i, obj
-            i += 1
+from dbtest import *
+from dbtest import setSQLiteConnectionFactory
 
 class IterTest(SQLObject):
     name = StringCol(dbName='name_col')
@@ -73,6 +64,28 @@ def test_04_indexed_ended_by_exception():
         pass
     assert count == len(names)
 
+def test_05_select_limit():
+    setupIter()
+    assert len(list(IterTest.select(limit=2))) == 2
+    raises(AssertionError, IterTest.select(limit=2).count)
+
+def test_06_contains():
+    setupIter()
+    assert len(list(IterTest.select(IterTest.q.name.startswith('a')))) == 1
+    assert len(list(IterTest.select(IterTest.q.name.contains('a')))) == 1
+    assert len(list(IterTest.select(IterTest.q.name.contains(func.lower('A'))))) == 1
+    assert len(list(IterTest.select(IterTest.q.name.contains("a'b")))) == 0
+    assert len(list(IterTest.select(IterTest.q.name.endswith('a')))) == 1
+
+def test_07_contains_special():
+    setupClass(IterTest)
+    a = IterTest(name='\\test')
+    b = IterTest(name='100%')
+    c = IterTest(name='test_')
+    assert list(IterTest.select(IterTest.q.name.startswith('\\'))) == [a]
+    assert list(IterTest.select(IterTest.q.name.contains('%'))) == [b]
+    assert list(IterTest.select(IterTest.q.name.endswith('_'))) == [c]
+
 def test_select_getOne():
     setupClass(IterTest)
     a = IterTest(name='a')
@@ -99,6 +112,16 @@ def test_selectBy_kwargs():
         return
     assert False, "IterTest(nonexistant='b') should raise TypeError"
 
+class UniqTest(SQLObject):
+    name = StringCol(dbName='name_col', unique=True)
+
+def test_by_uniq():
+    setupClass(UniqTest)
+    a = UniqTest(name='a')
+    b = UniqTest(name='b')
+    assert UniqTest.byName('a') is a
+    assert UniqTest.byName('b') is b
+
 class Counter2(SQLObject):
 
     n1 = IntCol(notNull=True)
@@ -119,21 +142,13 @@ class TestSelect:
         assert func([c.n1 for c in counters]) == value
 
     def test_1(self):
-        try:
-            sum
-        except NameError:
-            def sum(sequence):
-                s = 0
-                for item in sequence:
-                    s = s + item
-                return s
         self.accumulateEqual(sum,Counter2.select(orderBy='n1'),
                              sum(range(10)) * 10)
 
     def test_2(self):
         self.accumulateEqual(len,Counter2.select('all'), 100)
 
-def test_sqlbuilder_LIKE():
+def test_select_LIKE():
     setupClass(IterTest)
     IterTest(name='sqlobject')
     IterTest(name='sqlbuilder')
@@ -142,12 +157,11 @@ def test_sqlbuilder_LIKE():
     assert IterTest.select(LIKE(IterTest.q.name, "sqlb%")).count() == 1
     assert IterTest.select(LIKE(IterTest.q.name, "sqlx%")).count() == 0
 
-def test_sqlbuilder_RLIKE():
+def test_select_RLIKE():
     setupClass(IterTest)
 
     if IterTest._connection.dbName == "sqlite":
-        from sqlobject.sqlite.sqliteconnection import using_sqlite2
-        if not using_sqlite2:
+        if not IterTest._connection.using_sqlite2:
             return
 
         # Implement regexp() function for SQLite; only works with PySQLite2
@@ -155,12 +169,14 @@ def test_sqlbuilder_RLIKE():
         def regexp(regexp, test):
             return bool(re.search(regexp, test))
 
-        _get_connection = IterTest._connection.getConnection
-        def new_get_connection(*args, **kw):
-            _connection = _get_connection(*args, **kw)
-            _connection.create_function("regexp", 2, regexp)
-            return _connection
-        IterTest._connection.getConnection = new_get_connection
+        def SQLiteConnectionFactory(sqlite):
+            class MyConnection(sqlite.Connection):
+                def __init__(self, *args, **kwargs):
+                    super(MyConnection, self).__init__(*args, **kwargs)
+                    self.create_function("regexp", 2, regexp)
+            return MyConnection
+
+        setSQLiteConnectionFactory(IterTest, SQLiteConnectionFactory)
 
     IterTest(name='sqlobject')
     IterTest(name='sqlbuilder')
@@ -168,3 +184,13 @@ def test_sqlbuilder_RLIKE():
     assert IterTest.select(RLIKE(IterTest.q.name, "^sqlb.*$")).count() == 1
     assert IterTest.select(RLIKE(IterTest.q.name, "^sqlb.*$")).count() == 1
     assert IterTest.select(RLIKE(IterTest.q.name, "^sqlx.*$")).count() == 0
+
+def test_select_sqlbuilder():
+    setupClass(IterTest)
+    IterTest(name='sqlobject')
+    IterTest.select(IterTest.q.name==u'sqlobject')
+
+def test_select_perConnection():
+    setupClass(IterTest)
+    IterTest(name='a')
+    assert not IterTest.select().getOne().sqlmeta._perConnection

@@ -1,12 +1,15 @@
-import sqlbuilder
-NoDefault = sqlbuilder.NoDefault
-import styles
+from itertools import count
 import classregistry
-from col import popKey
 import events
+import styles
+import sqlbuilder
+from styles import capword
 
 __all__ = ['MultipleJoin', 'SQLMultipleJoin', 'RelatedJoin', 'SQLRelatedJoin',
            'SingleJoin', 'ManyToMany', 'OneToMany']
+
+creationOrder = count()
+NoDefault = sqlbuilder.NoDefault
 
 def getID(obj):
     try:
@@ -19,10 +22,8 @@ class Join(object):
     def __init__(self, otherClass=None, **kw):
         kw['otherClass'] = otherClass
         self.kw = kw
-        if self.kw.has_key('joinMethodName'):
-            self._joinMethodName = popKey(self.kw, 'joinMethodName')
-        else:
-            self._joinMethodName = None
+        self._joinMethodName = self.kw.pop('joinMethodName', None)
+        self.creationOrder = creationOrder.next()
 
     def _set_joinMethodName(self, value):
         assert self._joinMethodName == value or self._joinMethodName is None, "You have already given an explicit joinMethodName (%s), and you are now setting it to %s" % (self._joinMethodName, value)
@@ -35,10 +36,11 @@ class Join(object):
     name = joinMethodName
 
     def withClass(self, soClass):
-        if self.kw.has_key('joinMethodName'):
+        if 'joinMethodName' in self.kw:
             self._joinMethodName = self.kw['joinMethodName']
             del self.kw['joinMethodName']
-        return self.baseClass(soClass=soClass,
+        return self.baseClass(creationOrder=self.creationOrder,
+                              soClass=soClass,
                               joinDef=self,
                               joinMethodName=self._joinMethodName,
                               **self.kw)
@@ -49,12 +51,14 @@ class Join(object):
 class SOJoin(object):
 
     def __init__(self,
+                 creationOrder,
                  soClass=None,
                  otherClass=None,
                  joinColumn=None,
                  joinMethodName=None,
                  orderBy=NoDefault,
                  joinDef=None):
+        self.creationOrder = creationOrder
         self.soClass = soClass
         self.joinDef = joinDef
         self.otherClassName = otherClass
@@ -62,13 +66,19 @@ class SOJoin(object):
             otherClass, self._setOtherClass)
         self.joinColumn = joinColumn
         self.joinMethodName = joinMethodName
-        self.orderBy = orderBy
+        self._orderBy = orderBy
         if not self.joinColumn:
             # Here we set up the basic join, which is
             # one-to-many, where the other class points to
             # us.
             self.joinColumn = styles.getStyle(
                 self.soClass).tableReference(self.soClass.sqlmeta.table)
+
+    def orderBy(self):
+        if self._orderBy is NoDefault:
+            self._orderBy = self.otherClass.sqlmeta.defaultOrder
+        return self._orderBy
+    orderBy = property(orderBy)
 
     def _setOtherClass(self, cls):
         self.otherClass = cls
@@ -77,14 +87,12 @@ class SOJoin(object):
         return False
 
     def _applyOrderBy(self, results, defaultSortClass):
-        if self.orderBy is NoDefault:
-            self.orderBy = defaultSortClass.sqlmeta.defaultOrder
         if self.orderBy is not None:
             results.sort(sorter(self.orderBy))
         return results
 
 def sorter(orderBy):
-    if isinstance(orderBy, tuple) or isinstance(orderBy, list):
+    if isinstance(orderBy, (tuple, list)):
         if len(orderBy) == 1:
             orderBy = orderBy[0]
         else:
@@ -132,10 +140,10 @@ class SOMultipleJoin(SOJoin):
             else:
                 name = name + "s"
             self.joinMethodName = name
-        if not addRemoveName:
-            self.addRemoveName = capitalize(self.otherClassName)
-        else:
+        if addRemoveName:
             self.addRemoveName = addRemoveName
+        else:
+            self.addRemoveName = capword(self.otherClassName)
 
     def performJoin(self, inst):
         ids = inst._connection._SO_selectJoin(
@@ -148,15 +156,24 @@ class SOMultipleJoin(SOJoin):
             conn = None
         return self._applyOrderBy([self.otherClass.get(id, conn) for (id,) in ids if id is not None], self.otherClass)
 
+    def _dbNameToPythonName(self):
+        for column in self.otherClass.sqlmeta.columns.values():
+            if column.dbName == self.joinColumn:
+                return column.name
+        return self.soClass.sqlmeta.style.dbColumnToPythonAttr(self.joinColumn)
+
 class MultipleJoin(Join):
     baseClass = SOMultipleJoin
 
 class SOSQLMultipleJoin(SOMultipleJoin):
 
     def performJoin(self, inst):
-        results = self.otherClass.select(getattr(self.otherClass.q, self.soClass.sqlmeta.style.dbColumnToPythonAttr(self.joinColumn)) == inst.id)
-        if self.orderBy is NoDefault:
-            self.orderBy = self.otherClass.sqlmeta.defaultOrder
+        if inst.sqlmeta._perConnection:
+            conn = inst._connection
+        else:
+            conn = None
+        pythonColumn = self._dbNameToPythonName()
+        results = self.otherClass.select(getattr(self.otherClass.q, pythonColumn) == inst.id, connection=conn)
         return results.orderBy(self.orderBy)
 
 class SQLMultipleJoin(Join):
@@ -223,42 +240,72 @@ class SORelatedJoin(SOMultipleJoin):
 class RelatedJoin(MultipleJoin):
     baseClass = SORelatedJoin
 
+# helper classes to SQLRelatedJoin
+class OtherTableToJoin(sqlbuilder.SQLExpression):
+    def __init__(self, otherTable, otherIdName, interTable, joinColumn):
+        self.otherTable = otherTable
+        self.otherIdName = otherIdName
+        self.interTable = interTable
+        self.joinColumn = joinColumn
+
+    def tablesUsedImmediate(self):
+        return [self.otherTable, self.interTable]
+
+    def __sqlrepr__(self, db):
+        return '%s.%s = %s.%s' % (self.otherTable, self.otherIdName, self.interTable, self.joinColumn)
+
+class JoinToTable(sqlbuilder.SQLExpression):
+    def __init__(self, table, idName, interTable, joinColumn):
+        self.table = table
+        self.idName = idName
+        self.interTable = interTable
+        self.joinColumn = joinColumn
+
+    def tablesUsedImmediate(self):
+        return [self.table, self.interTable]
+
+    def __sqlrepr__(self, db):
+        return '%s.%s = %s.%s' % (self.interTable, self.joinColumn, self.table, self.idName)
+
+class TableToId(sqlbuilder.SQLExpression):
+    def __init__(self, table, idName, idValue):
+        self.table = table
+        self.idName = idName
+        self.idValue = idValue
+
+    def tablesUsedImmediate(self):
+        return [self.table]
+
+    def __sqlrepr__(self, db):
+        return '%s.%s = %s' % (self.table, self.idName, self.idValue)
+
 class SOSQLRelatedJoin(SORelatedJoin):
     def performJoin(self, inst):
-        options={
-            'otherTable' : self.otherClass.sqlmeta.table,
-            'otherID' : self.otherClass.sqlmeta.idName,
-            'interTable' : self.intermediateTable,
-            'table' : self.soClass.sqlmeta.table,
-            'ID' : self.soClass.sqlmeta.idName,
-            'joinCol' : self.joinColumn,
-            'otherCol' : self.otherColumn,
-            'idValue' : inst.id,
-        }
-        clause = '''\
-%(otherTable)s.%(otherID)s = %(interTable)s.%(otherCol)s and
-%(interTable)s.%(joinCol)s = %(table)s.%(ID)s and
-%(table)s.%(ID)s = %(idValue)s''' % options
-        results = self.otherClass.select(sqlbuilder.SQLConstant(clause),
-            clauseTables=(
-                options['table'],
-                options['otherTable'],
-                options['interTable'],
-            )
-        )
-        # TODO (michelts): apply orderBy on the selection
-        return results
+        if inst.sqlmeta._perConnection:
+            conn = inst._connection
+        else:
+            conn = None
+        results = self.otherClass.select(sqlbuilder.AND(
+            OtherTableToJoin(
+                self.otherClass.sqlmeta.table, self.otherClass.sqlmeta.idName,
+                self.intermediateTable, self.otherColumn
+            ),
+            JoinToTable(
+                self.soClass.sqlmeta.table, self.soClass.sqlmeta.idName,
+                self.intermediateTable, self.joinColumn
+            ),
+            TableToId(self.soClass.sqlmeta.table, self.soClass.sqlmeta.idName, inst.id),
+        ), clauseTables=(self.soClass.sqlmeta.table, self.otherClass.sqlmeta.table, self.intermediateTable),
+        connection=conn)
+        return results.orderBy(self.orderBy)
 
 class SQLRelatedJoin(RelatedJoin):
     baseClass = SOSQLRelatedJoin
 
-def capitalize(name):
-    return name[0].capitalize() + name[1:]
-
 class SOSingleJoin(SOMultipleJoin):
 
     def __init__(self, **kw):
-        self.makeDefault = popKey(kw, 'makeDefault', False)
+        self.makeDefault = kw.pop('makeDefault', False)
         SOMultipleJoin.__init__(self, **kw)
 
     def performJoin(self, inst):
@@ -266,7 +313,7 @@ class SOSingleJoin(SOMultipleJoin):
             conn = inst._connection
         else:
             conn = None
-        pythonColumn = self.soClass.sqlmeta.style.dbColumnToPythonAttr(self.joinColumn)
+        pythonColumn = self._dbNameToPythonName()
         results = self.otherClass.select(
             getattr(self.otherClass.q, pythonColumn) == inst.id,
             connection=conn
@@ -275,12 +322,8 @@ class SOSingleJoin(SOMultipleJoin):
             if not self.makeDefault:
                 return None
             else:
-                kw = {pythonColumn[:-2]: inst} # skipping the ID (from foreignkeyID)
+                kw = {self.soClass.sqlmeta.style.instanceIDAttrToAttr(pythonColumn): inst}
                 return self.otherClass(**kw) # instanciating the otherClass with all
-                # values to their defaults, except the foreign key
-                # TODO I don't think this is the best way to know the column as foreignKey
-                # reather than foreignKeyID, but I don't found a sqlmeta.style function
-                # to do the work, if there isn't such function, I must create it.
         else:
             return results[0]
 
@@ -387,7 +430,7 @@ class _ManyToManySelectWrapper(object):
     def __getattr__(self, attr):
         # @@: This passes through private variable access too... should it?
         # Also magic methods, like __str__
-        return getattr(self, select, attr)
+        return getattr(self.select, attr)
 
     def __repr__(self):
         return '<%s for: %s>' % (self.__class__.__name__, repr(self.select))

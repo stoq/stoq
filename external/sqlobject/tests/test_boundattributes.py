@@ -1,7 +1,8 @@
 from sqlobject import declarative
 from sqlobject import boundattributes
+import py.test
 
-disabled = True
+pytestmark = py.test.mark.skipif('True')
 
 class TestMe(object):
 
@@ -15,6 +16,7 @@ class AttrReplace(boundattributes.BoundAttribute):
 
     replace = None
 
+    @declarative.classinstancemethod
     def make_object(self, cls, added_class, attr_name, **attrs):
         if not self:
             return cls.singleton().make_object(
@@ -25,8 +27,6 @@ class AttrReplace(boundattributes.BoundAttribute):
         del attrs['replace']
         self.replace.attrs = attrs
         return self.replace
-
-    make_object = declarative.classinstancemethod(make_object)
 
 class Holder:
     def __init__(self, name):

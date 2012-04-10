@@ -52,7 +52,7 @@ def test_transaction_commit_sync():
     finally:
         TestSOTrans._connection.autoCommit = True
 
-def test_transaction_delete():
+def test_transaction_delete(close=False):
     if not supports('transactions'):
         return
     setupClass(TestSOTrans)
@@ -63,5 +63,15 @@ def test_transaction_delete():
         bIn.destroySelf()
         bOut = TestSOTrans.select(TestSOTrans.q.name=='bob')
         assert bOut.count() == 1
+        bOutInst = bOut[0]
+        bOutID = bOutInst.id
+        trans.commit(close=close)
+        assert bOut.count() == 0
+        raises(SQLObjectNotFound, "TestSOTrans.get(bOutID)")
+        raises(SQLObjectNotFound, "bOutInst.name")
     finally:
+        trans.rollback()
         TestSOTrans._connection.autoCommit = True
+
+def test_transaction_delete_with_close():
+    test_transaction_delete(close=True)

@@ -55,7 +55,7 @@ class ClassRegistry(object):
         created.  If it's already been created, the callback will be
         called immediately.
         """
-        if self.classes.has_key(className):
+        if className in self.classes:
             callback(self.classes[className], *args, **kw)
         else:
             self.callbacks.setdefault(className, []).append((callback, args, kw))
@@ -90,7 +90,7 @@ class ClassRegistry(object):
                    getattr(sys.modules.get(cls.__module__),
                            '__file__', '(unknown)')))
         self.classes[cls.__name__] = cls
-        if self.callbacks.has_key(cls.__name__):
+        if cls.__name__ in self.callbacks:
             for callback, args, kw in self.callbacks[cls.__name__]:
                 callback(cls, *args, **kw)
             del self.callbacks[cls.__name__]
@@ -124,7 +124,7 @@ class _MasterRegistry(object):
         self.registries = {}
 
     def registry(self, item):
-        if not self.registries.has_key(item):
+        if item not in self.registries:
             self.registries[item] = ClassRegistry(item)
         return self.registries[item]
 

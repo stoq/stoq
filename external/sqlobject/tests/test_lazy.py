@@ -43,50 +43,50 @@ class TestLazyTest:
         # We just did an insert, but not an update:
         assert not self.conn.didUpdate
         obj.set(name='joe')
-        assert obj.dirty
+        assert obj.sqlmeta.dirty
         assert obj.name == 'joe'
         assert not self.conn.didUpdate
         obj.syncUpdate()
         assert obj.name == 'joe'
         assert self.conn.didUpdate
-        assert not obj.dirty
+        assert not obj.sqlmeta.dirty
         assert obj.name == 'joe'
         self.conn.didUpdate = False
 
         obj = Lazy(name='frank')
         obj.name = 'joe'
         assert not self.conn.didUpdate
-        assert obj.dirty
+        assert obj.sqlmeta.dirty
         assert obj.name == 'joe'
         obj.name = 'joe2'
         assert not self.conn.didUpdate
-        assert obj.dirty
+        assert obj.sqlmeta.dirty
         assert obj.name == 'joe2'
         obj.syncUpdate()
         assert obj.name == 'joe2'
-        assert not obj.dirty
+        assert not obj.sqlmeta.dirty
         assert self.conn.didUpdate
         self.conn.didUpdate = False
 
         obj = Lazy(name='loaded')
-        assert not obj.dirty
+        assert not obj.sqlmeta.dirty
         assert not self.conn.didUpdate
         assert obj.name == 'loaded'
         obj.name = 'unloaded'
-        assert obj.dirty
+        assert obj.sqlmeta.dirty
         assert obj.name == 'unloaded'
         assert not self.conn.didUpdate
         obj.sync()
-        assert not obj.dirty
+        assert not obj.sqlmeta.dirty
         assert obj.name == 'unloaded'
         assert self.conn.didUpdate
         self.conn.didUpdate = False
         obj.name = 'whatever'
-        assert obj.dirty
+        assert obj.sqlmeta.dirty
         assert obj.name == 'whatever'
         assert not self.conn.didUpdate
         obj._SO_loadValue('name')
-        assert obj.dirty
+        assert obj.sqlmeta.dirty
         assert obj.name == 'whatever'
         assert not self.conn.didUpdate
         obj._SO_loadValue('other')
@@ -101,24 +101,24 @@ class TestLazyTest:
         obj_id = obj.id
         old_state = obj._SO_validatorState
         obj = Lazy.get(obj_id)
-        assert not obj.dirty
+        assert not obj.sqlmeta.dirty
         assert not self.conn.didUpdate
         assert obj._SO_validatorState is old_state
         assert obj.name == 'whatever'
         obj.name = 'unloaded'
         assert obj.name == 'unloaded'
-        assert obj.dirty
+        assert obj.sqlmeta.dirty
         assert not self.conn.didUpdate
         # Fetch the object again with get() and
-        # make sure dirty is still set, as the
+        # make sure sqlmeta.dirty is still set, as the
         # object should come from the cache.
         obj = Lazy.get(obj_id)
-        assert obj.dirty
+        assert obj.sqlmeta.dirty
         assert not self.conn.didUpdate
         assert obj.name == 'unloaded'
         obj.syncUpdate()
         assert self.conn.didUpdate
-        assert not obj.dirty
+        assert not obj.sqlmeta.dirty
         self.conn.didUpdate = False
 
         # Then clear the cache, and try a get()
@@ -126,23 +126,23 @@ class TestLazyTest:
         # is properly initialized.
         self.conn.cache.clear()
         obj = Lazy.get(obj_id)
-        assert not obj.dirty
+        assert not obj.sqlmeta.dirty
         assert not self.conn.didUpdate
         assert obj.name == 'unloaded'
         obj.name = 'spongebob'
         assert obj.name == 'spongebob'
-        assert obj.dirty
+        assert obj.sqlmeta.dirty
         assert not self.conn.didUpdate
         obj.syncUpdate()
         assert self.conn.didUpdate
-        assert not obj.dirty
+        assert not obj.sqlmeta.dirty
         self.conn.didUpdate = False
 
         obj = Lazy(name='last')
-        assert not obj.dirty
+        assert not obj.sqlmeta.dirty
         obj.syncUpdate()
         assert not self.conn.didUpdate
-        assert not obj.dirty
+        assert not obj.sqlmeta.dirty
         # Check that setting multiple values
         # actually works. This was broken
         # and just worked because we were testing
@@ -155,8 +155,8 @@ class TestLazyTest:
         assert obj.name == 'first'
         assert obj.other == 'who'
         assert obj.third == 'yes'
-        assert obj.dirty
+        assert obj.sqlmeta.dirty
         assert not self.conn.didUpdate
         obj.syncUpdate()
         assert self.conn.didUpdate
-        assert not obj.dirty
+        assert not obj.sqlmeta.dirty

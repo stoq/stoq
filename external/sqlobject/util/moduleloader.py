@@ -9,7 +9,7 @@ def load_module(module_name):
     return mod
 
 def load_module_from_name(filename, module_name):
-    if sys.modules.has_key(module_name):
+    if module_name in sys.modules:
         return sys.modules[module_name]
     init_filename = os.path.join(os.path.dirname(filename), '__init__.py')
     if not os.path.exists(init_filename):
@@ -22,7 +22,7 @@ def load_module_from_name(filename, module_name):
         f.write('#\n')
         f.close()
     fp = None
-    if sys.modules.has_key(module_name):
+    if module_name in sys.modules:
         return sys.modules[module_name]
     if '.' in module_name:
         parent_name = '.'.join(module_name.split('.')[:-1])

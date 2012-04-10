@@ -35,16 +35,14 @@ def test_cache():
     assert not s.sqlmeta.expired
     CacheTest.sqlmeta.expireAll()
     assert s.sqlmeta.expired
-    del s
     CacheTest.sqlmeta.expireAll()
-    s = CacheTest.get(s_id)
+    s1 = CacheTest.get(s_id)
     # We should have a new object:
-    assert id(s) != obj_id
-    obj_id2 = id(s)
-    del s
+    assert id(s1) != obj_id
+    obj_id2 = id(s1)
     CacheTest._connection.expireAll()
-    s = CacheTest.get(s_id)
-    assert id(s) != obj_id and id(s) != obj_id2
+    s2 = CacheTest.get(s_id)
+    assert id(s2) != obj_id and id(s2) != obj_id2
 
 def test_cache_cull():
     setupClass(CacheTest)

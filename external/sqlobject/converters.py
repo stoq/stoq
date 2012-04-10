@@ -1,4 +1,10 @@
-import array
+from array import array
+import datetime
+from decimal import Decimal
+import sys
+import time
+from types import ClassType, InstanceType, NoneType
+
 
 try:
     import mx.DateTime.ISO
@@ -14,56 +20,26 @@ except ImportError:
         DateTimeType = None
         DateTimeDeltaType = None
 
-import time
-try:
-    import datetime
-except ImportError:
-    datetime = None
-
 try:
     import Sybase
     NumericType=Sybase.NumericType
 except ImportError:
     NumericType = None
 
-if type(1==1) == type(1):
-    class BOOL(object):
-        def __init__(self, value):
-            self.value = not not value
-        def __nonzero__(self):
-            return self.value
-        def __repr__(self):
-            if self:
-                return 'TRUE'
-            else:
-                return 'FALSE'
-    TRUE = BOOL(1)
-    FALSE = BOOL(0)
-else:
-    TRUE = 1==1
-    FALSE = 0==1
-
-from types import InstanceType, ClassType, TypeType
-
-try:
-    from decimal import Decimal
-except ImportError:
-    Decimal = None
 
 ########################################
 ## Quoting
 ########################################
 
-# FIXME: This sould be left to the library to escape.
 sqlStringReplace = [
-    ('\\', '\\\\'),
     ("'", "''"),
+    ('\\', '\\\\'),
     ('\000', '\\0'),
     ('\b', '\\b'),
     ('\n', '\\n'),
     ('\r', '\\r'),
     ('\t', '\\t'),
-    ]
+]
 
 def isoStr(val):
     """
@@ -89,7 +65,7 @@ class ConverterRegistry:
             self.basic[typ] = func
 
     def lookupConverter(self, value, default=None):
-        if type(value) == InstanceType:
+        if type(value) is InstanceType:
             # lookup on klasses dict
             return self.klass.get(value.__class__, default)
         return self.basic.get(type(value), default)
@@ -98,47 +74,46 @@ converters = ConverterRegistry()
 registerConverter = converters.registerConverter
 lookupConverter = converters.lookupConverter
 
-array_type = type(array.array('c', '')) # In Python 2.2 array.array and buffer
-buffer_type = type(buffer('')) # are functions, not classes
-
 def StringLikeConverter(value, db):
-    if isinstance(value, array_type):
+    if isinstance(value, array):
         try:
             value = value.tounicode()
         except ValueError:
             value = value.tostring()
-    elif isinstance(value, buffer_type):
+    elif isinstance(value, buffer):
         value = str(value)
 
-    if db in ('mysql', 'postgres'):
+    if db in ('mysql', 'postgres', 'rdbhost'):
         for orig, repl in sqlStringReplace:
             value = value.replace(orig, repl)
     elif db in ('sqlite', 'firebird', 'sybase', 'maxdb', 'mssql'):
         value = value.replace("'", "''")
     else:
         assert 0, "Database %s unknown" % db
+    if db in ('postgres', 'rdbhost') and ('\\' in value):
+        return "E'%s'" % value
     return "'%s'" % value
 
-registerConverter(type(""), StringLikeConverter)
-registerConverter(type(u""), StringLikeConverter)
-registerConverter(array_type, StringLikeConverter)
-registerConverter(buffer_type, StringLikeConverter)
+registerConverter(str, StringLikeConverter)
+registerConverter(unicode, StringLikeConverter)
+registerConverter(array, StringLikeConverter)
+registerConverter(buffer, StringLikeConverter)
 
 def IntConverter(value, db):
     return repr(int(value))
 
-registerConverter(type(1), IntConverter)
+registerConverter(int, IntConverter)
 
 def LongConverter(value, db):
     return str(value)
 
-registerConverter(type(0L), LongConverter)
+registerConverter(long, LongConverter)
 
 if NumericType:
     registerConverter(NumericType, IntConverter)
 
 def BoolConverter(value, db):
-    if db in ('postgres',):
+    if db in ('postgres', 'rdbhost'):
         if value:
             return "'t'"
         else:
@@ -149,16 +124,12 @@ def BoolConverter(value, db):
         else:
             return '0'
 
-if type(TRUE) == InstanceType:
-    # Python 2.2 compatibility:
-    registerConverter(BOOL, BoolConverter)
-else:
-    registerConverter(type(TRUE), BoolConverter)
+registerConverter(bool, BoolConverter)
 
 def FloatConverter(value, db):
     return repr(value)
 
-registerConverter(type(1.0), FloatConverter)
+registerConverter(float, FloatConverter)
 
 if DateTimeType:
     def DateTimeConverter(value, db):
@@ -174,13 +145,20 @@ if DateTimeType:
 def NoneConverter(value, db):
     return "NULL"
 
-registerConverter(type(None), NoneConverter)
+registerConverter(NoneType, NoneConverter)
 
 def SequenceConverter(value, db):
     return "(%s)" % ", ".join([sqlrepr(v, db) for v in value])
 
-registerConverter(type(()), SequenceConverter)
-registerConverter(type([]), SequenceConverter)
+registerConverter(tuple, SequenceConverter)
+registerConverter(list, SequenceConverter)
+registerConverter(dict, SequenceConverter)
+registerConverter(set, SequenceConverter)
+registerConverter(frozenset, SequenceConverter)
+if sys.version_info[:3] < (2, 6, 0): # Module sets was deprecated in Python 2.6
+   from sets import Set, ImmutableSet
+   registerConverter(Set, SequenceConverter)
+   registerConverter(ImmutableSet, SequenceConverter)
 
 if hasattr(time, 'struct_time'):
     def StructTimeConverter(value, db):
@@ -188,34 +166,36 @@ if hasattr(time, 'struct_time'):
 
     registerConverter(time.struct_time, StructTimeConverter)
 
-if datetime:
-    def DateTimeConverter(value, db):
-        if db ==  "sqlite":
-            return "'%4d-%02d-%02d'" % (
-                value.year, value.month, value.day)
-            return "'%4d-%02d-%02d %02d:%02d:%02d'" % (
-                value.year, value.month, value.day,
-                value.hour, value.minute, value.second)
-        else:
-            return "'%s'" % value.isoformat('T')
+def DateTimeConverter(value, db):
+    return "'%04d-%02d-%02d %02d:%02d:%02d'" % (
+        value.year, value.month, value.day,
+        value.hour, value.minute, value.second)
 
-    registerConverter(datetime.datetime, DateTimeConverter)
+registerConverter(datetime.datetime, DateTimeConverter)
 
-    def DateConverter(value, db):
-        return "'%4d-%02d-%02d'" % (value.year, value.month, value.day)
+def DateConverter(value, db):
+    return "'%04d-%02d-%02d'" % (value.year, value.month, value.day)
 
-    registerConverter(datetime.date, DateConverter)
+registerConverter(datetime.date, DateConverter)
 
-    def TimeConverter(value, db):
-        return "'%02d:%02d:%02d'" % (value.hour, value.minute, value.second)
+def TimeConverter(value, db):
+    return "'%02d:%02d:%02d'" % (value.hour, value.minute, value.second)
 
-    registerConverter(datetime.time, TimeConverter)
+registerConverter(datetime.time, TimeConverter)
 
-if Decimal:
-    def DecimalConverter(value, db):
-        return value.to_eng_string()
+def DecimalConverter(value, db):
+    # See http://mail.python.org/pipermail/python-dev/2008-March/078189.html
+    return str(value.to_eng_string()) # Convert to str to work around a bug in Python 2.5.2
 
-    registerConverter(Decimal, DecimalConverter)
+registerConverter(Decimal, DecimalConverter)
+
+def TimedeltaConverter(value, db):
+
+    return """INTERVAL '%d days %d seconds'""" % \
+        (value.days, value.seconds)
+
+registerConverter(datetime.timedelta, TimedeltaConverter)
+
 
 def sqlrepr(obj, db=None):
     try:
@@ -228,3 +208,17 @@ def sqlrepr(obj, db=None):
         return converter(obj, db)
     else:
         return reprFunc(db)
+
+
+def quote_str(s, db):
+    if db in ('postgres', 'rdbhost') and ('\\' in s):
+        return "E'%s'" % s
+    return "'%s'" % s
+
+def unquote_str(s):
+    if s.upper().startswith("E'") and s.endswith("'"):
+        return s[2:-1]
+    elif s.startswith("'") and s.endswith("'"):
+        return s[1:-1]
+    else:
+        return s

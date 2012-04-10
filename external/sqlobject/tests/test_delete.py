@@ -13,6 +13,20 @@ def testSelect():
     assert list(TestSO1.select('all')) == []
 
 ########################################
+## Delete many rows at once
+########################################
+
+def testDeleteMany():
+    setupGetters(TestSO1)
+    TestSO1.deleteMany(OR(TestSO1.q.name=="bob", TestSO1.q.name=="fred"))
+    assert len(list(TestSO1.select('all'))) == 2
+
+def testDeleteBy():
+    setupGetters(TestSO1)
+    TestSO1.deleteBy(name="dave")
+    assert len(list(TestSO1.select())) == 3
+
+########################################
 ## Delete without caching
 ########################################
 
@@ -26,3 +40,22 @@ def testDestroySelf():
     value = NoCache(name='test')
     value.destroySelf()
     NoCache._connection.cache = old
+
+########################################
+## Delete from related joins
+########################################
+
+class Service(SQLObject):
+    groups = RelatedJoin("ServiceGroup")
+
+class ServiceGroup(SQLObject):
+    services = RelatedJoin("Service")
+
+def testDeleteRelatedJoins():
+    setupClass([Service, ServiceGroup])
+    service = Service()
+    service_group = ServiceGroup()
+    service.addServiceGroup(service_group)
+    service.destroySelf()
+    service_group = ServiceGroup.get(service_group.id)
+    assert len(service_group.services) == 0

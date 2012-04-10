@@ -2,8 +2,6 @@
 Constraints
 """
 
-True, False = (1==1), (0==1)
-
 class BadValue(ValueError):
 
     def __init__(self, desc, obj, col, value, *args):
@@ -19,7 +17,7 @@ class BadValue(ValueError):
         ValueError.__init__(self, fullDesc, *args)
 
 def isString(obj, col, value):
-    if type(value) is not type(""):
+    if not isinstance(value, str):
         raise BadValue("only allows strings", obj, col, value)
 
 def notNull(obj, col, value):
@@ -27,15 +25,15 @@ def notNull(obj, col, value):
         raise BadValue("is defined NOT NULL", obj, col, value)
 
 def isInt(obj, col, value):
-    if type(value) not in (type(1), type(1L)):
+    if not isinstance(value, (int, long)):
         raise BadValue("only allows integers", obj, col, value)
 
 def isFloat(obj, col, value):
-    if type(value) not in (type(1), type(1L), type(1.1)):
+    if not isinstance(value, (int, long, float)):
         raise BadValue("only allows floating point numbers", obj, col, value)
 
 def isBool(obj, col, value):
-    if type(value) not in (type(True),):
+    if not isinstance(value, bool):
         raise BadValue("only allows booleans", obj, col, value)
 
 class InList:

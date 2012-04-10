@@ -49,9 +49,7 @@ objects, as well as the proper SQL representation of basic Python
 types (None==NULL).
 
 There are a number of DB-specific SQL features that this does not
-implement.  There are a bunch of normal ANSI features also not present
--- particularly left joins, among others.  You may wish to only use
-this to generate ``WHERE`` clauses.
+implement.  There are a bunch of normal ANSI features also not present.
 
 See the bottom of this module for some examples, and run it (i.e.
 ``python sql.py``) to see the results of those examples.
@@ -62,25 +60,33 @@ See the bottom of this module for some examples, and run it (i.e.
 ## Constants
 ########################################
 
+import fnmatch
+import operator
+import re
+import threading
+import types
+import weakref
+
+import classregistry
+from converters import registerConverter, sqlrepr, quote_str, unquote_str
+
+
 class VersionError(Exception):
     pass
 class NoDefault:
     pass
 
-True, False = (1==1), (0==1)
 
-import re, fnmatch
-import operator
-import threading
-import types
+class SQLObjectState(object):
+    def __init__(self, soObject, connection=None):
+        self.soObject = weakref.proxy(soObject)
+        self.connection = connection
 
-from converters import sqlrepr, registerConverter, TRUE, FALSE
 
-TRUE, FALSE # pyflakes
 safeSQLRE = re.compile(r'^[a-zA-Z_][a-zA-Z0-9_\.]*$')
 def sqlIdentifier(obj):
     # some db drivers return unicode column names
-    return isinstance(obj, types.StringTypes) and bool(safeSQLRE.search(obj.strip()))
+    return isinstance(obj, basestring) and bool(safeSQLRE.search(obj.strip()))
 
 
 def execute(expr, executor):
@@ -88,6 +94,12 @@ def execute(expr, executor):
         return expr.execute(executor)
     else:
         return expr
+
+
+def _str_or_sqlrepr(expr, db):
+    if isinstance(expr, basestring):
+        return expr
+    return sqlrepr(expr, db)
 
 ########################################
 ## Expression generation
@@ -121,7 +133,7 @@ class SQLExpression:
     def __abs__(self):
         return SQLConstant("ABS")(self)
     def __mod__(self, other):
-        return SQLConstant("MOD")(self, other)
+        return SQLModulo(self, other)
     def __rmod__(self, other):
         return SQLConstant("MOD")(other, self)
 
@@ -183,29 +195,16 @@ class SQLExpression:
     def components(self):
         return []
 
-    def hasSQLCall(self):
-        if isinstance(self, SQLCall):
-            return True
-
-        for i in self.components():
-            if isinstance(i, SQLCall):
-                return True
-
-            if len(i.components()):
-                if i.hasSQLCall():
-                    return True
-
-        return False
-
-
-    def tablesUsed(self):
-        return self.tablesUsedDict().keys()
-    def tablesUsedDict(self):
-        tables = {}
+    def tablesUsed(self, db):
+        return self.tablesUsedSet(db)
+    def tablesUsedSet(self, db):
+        tables = set()
         for table in self.tablesUsedImmediate():
-            tables[table] = 1
+            if hasattr(table, '__sqlrepr__'):
+                table = sqlrepr(table, db)
+            tables.add(table)
         for component in self.components():
-            tables.update(tablesUsedDict(component))
+            tables.update(tablesUsedSet(component, db))
         return tables
     def tablesUsedImmediate(self):
         return []
@@ -219,9 +218,9 @@ def SQLExprConverter(value, db):
 
 registerConverter(SQLExpression, SQLExprConverter)
 
-def tablesUsedDict(obj):
-    if hasattr(obj, "tablesUsedDict"):
-        return obj.tablesUsedDict()
+def tablesUsedSet(obj, db):
+    if hasattr(obj, "tablesUsedSet"):
+        return obj.tablesUsedSet(db)
     else:
         return {}
 
@@ -246,7 +245,13 @@ class SQLOp(SQLExpression):
         self.expr1 = expr1
         self.expr2 = expr2
     def __sqlrepr__(self, db):
-        return "(%s %s %s)" % (sqlrepr(self.expr1, db), self.op, sqlrepr(self.expr2, db))
+        s1 = sqlrepr(self.expr1, db)
+        s2 = sqlrepr(self.expr2, db)
+        if s1[0] != '(' and s1 != 'NULL':
+            s1 = '(' + s1 + ')'
+        if s2[0] != '(' and s2 != 'NULL':
+            s2 = '(' + s2 + ')'
+        return "(%s %s %s)" % (s1, self.op, s2)
     def components(self):
         return [self.expr1, self.expr2]
     def execute(self, executor):
@@ -260,7 +265,18 @@ class SQLOp(SQLExpression):
             return operatorMap[self.op.upper()](execute(self.expr1, executor),
                                                 execute(self.expr2, executor))
 
+class SQLModulo(SQLOp):
+    def __init__(self, expr1, expr2):
+        SQLOp.__init__(self, '%', expr1, expr2)
+    def __sqlrepr__(self, db):
+        if db == 'sqlite':
+            return SQLOp.__sqlrepr__(self, db)
+        s1 = sqlrepr(self.expr1, db)
+        s2 = sqlrepr(self.expr2, db)
+        return "MOD(%s, %s)" % (s1, s2)
+
 registerConverter(SQLOp, SQLExprConverter)
+registerConverter(SQLModulo, SQLExprConverter)
 
 class SQLCall(SQLExpression):
     def __init__(self, expr, args):
@@ -285,11 +301,11 @@ class SQLPrefix(SQLExpression):
         return [self.expr]
     def execute(self, executor):
         expr = execute(self.expr, executor)
-        if self.prefix == "+":
+        if prefix == "+":
             return expr
-        elif self.prefix == "-":
+        elif prefix == "-":
             return -expr
-        elif self.prefix.upper() == "NOT":
+        elif prefix.upper() == "NOT":
             return not expr
 
 registerConverter(SQLPrefix, SQLExprConverter)
@@ -330,11 +346,38 @@ class Field(SQLExpression):
         return executor.field(self.tableName, self.fieldName)
 
 class SQLObjectField(Field):
-    def __init__(self, tableName, fieldName, original):
-        self.original = original
+    def __init__(self, tableName, fieldName, original, soClass, column):
         Field.__init__(self, tableName, fieldName)
+        self.original = original
+        self.soClass = soClass
+        self.column = column
+    def _from_python(self, value):
+        column = self.column
+        if not isinstance(value, SQLExpression) and column and column.from_python:
+            value = column.from_python(value, SQLObjectState(self.soClass))
+        return value
+    def __eq__(self, other):
+        if other is None:
+            return ISNULL(self)
+        other = self._from_python(other)
+        return SQLOp('=', self, other)
+    def __ne__(self, other):
+        if other is None:
+            return ISNOTNULL(self)
+        other = self._from_python(other)
+        return SQLOp('<>', self, other)
+    def startswith(self, s):
+        s = self._from_python(s)
+        return STARTSWITH(self, s)
+    def endswith(self, s):
+        s = self._from_python(s)
+        return ENDSWITH(self, s)
+    def contains(self, s):
+        s = self._from_python(s)
+        return CONTAINSSTRING(self, s)
 
 registerConverter(SQLObjectField, SQLExprConverter)
+
 
 class Table(SQLExpression):
     FieldClass = Field
@@ -346,7 +389,7 @@ class Table(SQLExpression):
             raise AttributeError
         return self.FieldClass(self.tableName, attr)
     def __sqlrepr__(self, db):
-        return str(self.tableName)
+        return _str_or_sqlrepr(self.tableName, db)
     def execute(self, executor):
         raise ValueError, "Tables don't have values"
 
@@ -364,11 +407,46 @@ class SQLObjectTable(Table):
         if attr.startswith('__'):
             raise AttributeError
         if attr == 'id':
-            return self.FieldClass(self.tableName, self.soClass.sqlmeta.idName, attr)
+            return self._getattrFromID(attr)
+        elif attr in self.soClass.sqlmeta.columns:
+            column = self.soClass.sqlmeta.columns[attr]
+            return self._getattrFromColumn(column, attr)
+        elif attr+'ID' in [k for (k, v) in self.soClass.sqlmeta.columns.items() if v.foreignKey]:
+            attr += 'ID'
+            column = self.soClass.sqlmeta.columns[attr]
+            return self._getattrFromColumn(column, attr)
         else:
-            name = self.soClass.sqlmeta.columns[attr].dbName
-            table = self.tableName
-        return self.FieldClass(table, name, attr)
+            raise AttributeError("%s instance has no attribute '%s'" % (self.soClass.__name__, attr))
+
+    def _getattrFromID(self, attr):
+        return self.FieldClass(self.tableName, self.soClass.sqlmeta.idName, attr, self.soClass, None)
+
+    def _getattrFromColumn(self, column, attr):
+        return self.FieldClass(self.tableName, column.dbName, attr, self.soClass, column)
+
+class SQLObjectTableWithJoins(SQLObjectTable):
+
+    def __getattr__(self, attr):
+        if attr+'ID' in [k for (k, v) in self.soClass.sqlmeta.columns.items() if v.foreignKey]:
+            column = self.soClass.sqlmeta.columns[attr+'ID']
+            return self._getattrFromForeignKey(column, attr)
+        elif attr in [x.joinMethodName for x in self.soClass.sqlmeta.joins]:
+            join = [x for x in self.soClass.sqlmeta.joins if x.joinMethodName == attr][0]
+            return self._getattrFromJoin(join, attr)
+        else:
+            return SQLObjectTable.__getattr__(self, attr)
+
+    def _getattrFromForeignKey(self, column, attr):
+        ret =  getattr(self, column.name) == \
+              getattr(self.soClass, '_SO_class_'+column.foreignKey).q.id
+        return ret
+
+    def _getattrFromJoin(self, join, attr):
+        if hasattr(join, 'otherColumn'):
+            return AND(join.otherClass.q.id == Field(join.intermediateTable, join.otherColumn),
+                            Field(join.intermediateTable, join.joinColumn) == self.soClass.q.id)
+        else:
+            return getattr(join.otherClass.q, join.joinColumn)==self.soClass.q.id
 
 class TableSpace:
     TableClass = Table
@@ -390,17 +468,22 @@ class ConstantSpace:
 ########################################
 
 class AliasField(Field):
-    def __init__(self, tableName, fieldName, alias):
+    def __init__(self, tableName, fieldName, alias, aliasTable):
         Field.__init__(self, tableName, fieldName)
         self.alias = alias
+        self.aliasTable = aliasTable
 
     def __sqlrepr__(self, db):
-        return self.alias + "." + self.fieldName
+        fieldName = self.fieldName
+        if isinstance(fieldName, SQLExpression):
+            fieldName = sqlrepr(fieldName, db)
+        return self.alias + "." + fieldName
 
     def tablesUsedImmediate(self):
-        return ["%s AS %s" % (self.tableName, self.alias)]
+        return [self.aliasTable]
 
 class AliasTable(Table):
+    as_string = '' # set it to "AS" if your database requires it
     FieldClass = AliasField
 
     _alias_lock = threading.Lock()
@@ -408,9 +491,13 @@ class AliasTable(Table):
 
     def __init__(self, table, alias=None):
         if hasattr(table, "sqlmeta"):
-            tableName = table.sqlmeta.table
+            tableName = SQLConstant(table.sqlmeta.table)
+        elif isinstance(table, (Select, Union)):
+            assert alias is not None, "Alias name cannot be constructed from Select instances, please provide 'alias' kw."
+            tableName = Subquery('', table)
+            table = None
         else:
-            tableName = table
+            tableName = SQLConstant(table)
             table = None
         Table.__init__(self, tableName)
         self.table = table
@@ -428,72 +515,197 @@ class AliasTable(Table):
             raise AttributeError
         if self.table:
             attr = getattr(self.table.q, attr).fieldName
-        return self.FieldClass(self.tableName, attr, self.alias)
+        return self.FieldClass(self.tableName, attr, self.alias, self)
 
-class Alias:
+    def __sqlrepr__(self, db):
+        return "%s %s %s" % (sqlrepr(self.tableName, db), self.as_string, self.alias)
+
+class Alias(SQLExpression):
     def __init__(self, table, alias=None):
         self.q = AliasTable(table, alias)
 
-    def get_select_alias(self, db):
-        from viewable import Viewable
-        if issubclass(self.q.table, Viewable):
-            # We just want the SELECT sql for the viewable, so we dont
-            # need a real connection. Just create a fake one representing
-            # the current rdbms
-            from sqlobject.dbconnection import DBAPI, DBConnection
-            class FakeConn(DBAPI):
-                dbName = db
+    def __sqlrepr__(self, db):
+        return sqlrepr(self.q, db)
 
-                def __init__(self, **kw):
-                    DBConnection.__init__(self, **kw)
-
-            alias = "(%s) AS %s" % (self.q.table.select(connection=FakeConn()), self.q.alias)
-        else:
-            alias = "%s AS %s" % (self.q.tableName, self.q.alias)
-        return alias
+    def components(self):
+        return [self.q]
 
 
+class Union(SQLExpression):
+    def __init__(self, *tables):
+        tabs = []
+        for t in tables:
+            if not isinstance(t, SQLExpression) and hasattr(t, 'sqlmeta'):
+                t = t.sqlmeta.table
+                if isinstance(t, Alias):
+                    t = t.q
+                if isinstance(t, Table):
+                    t = t.tableName
+                if not isinstance(t, SQLExpression):
+                    t = SQLConstant(t)
+            tabs.append(t)
+        self.tables = tabs
+
+    def __sqlrepr__(self, db):
+        return " UNION ".join([str(sqlrepr(t, db)) for t in self.tables])
 
 ########################################
 ## SQL Statements
 ########################################
 
 class Select(SQLExpression):
-    def __init__(self, items, where=NoDefault, groupBy=NoDefault,
-                 having=NoDefault, orderBy=NoDefault, limit=NoDefault):
-        if type(items) is not type([]) and type(items) is not type(()):
+    def __init__(self, items=NoDefault, where=NoDefault, groupBy=NoDefault,
+                 having=NoDefault, orderBy=NoDefault, limit=NoDefault,
+                 join=NoDefault, lazyColumns=False, distinct=False,
+                 start=0, end=None, reversed=False, forUpdate=False,
+                 clause=NoDefault, staticTables=NoDefault, distinctOn=NoDefault):
+        self.ops = {}
+        if not isinstance(items, (list, tuple, types.GeneratorType)):
             items = [items]
-        self.items = items
-        self.whereClause = where
-        self.groupBy = groupBy
-        self.having = having
-        self.orderBy = orderBy
-        self.limit = limit
+        if clause is NoDefault and where is not NoDefault:
+            clause = where
+        if staticTables is NoDefault:
+            staticTables = []
+        self.ops['items'] = items
+        self.ops['clause'] = clause
+        self.ops['groupBy'] = groupBy
+        self.ops['having'] = having
+        self.ops['orderBy'] = orderBy
+        self.ops['limit'] = limit
+        self.ops['join']  = join
+        self.ops['lazyColumns'] = lazyColumns
+        self.ops['distinct'] = distinct
+        self.ops['distinctOn'] = distinctOn
+        self.ops['start'] = start
+        self.ops['end'] = end
+        self.ops['reversed'] = reversed
+        self.ops['forUpdate'] = forUpdate
+        self.ops['staticTables'] = staticTables
+
+    def clone(self, **newOps):
+        ops = self.ops.copy()
+        ops.update(newOps)
+        return self.__class__(**ops)
+
+    def newItems(self, items):
+        return self.clone(items=items)
+
+    def newClause(self, new_clause):
+        return self.clone(clause=new_clause)
+
+    def orderBy(self, orderBy):
+        return self.clone(orderBy=orderBy)
+
+    def unlimited(self):
+        return self.clone(limit=NoDefault, start=0, end=None)
+
+    def limit(self, limit):
+        self.clone(limit=limit)
+
+    def lazyColumns(self, value):
+        return self.clone(lazyColumns=value)
+
+    def reversed(self):
+        return self.clone(reversed=not self.ops.get('reversed', False))
+
+    def distinct(self):
+        return self.clone(distinct=True)
+
+    def filter(self, filter_clause):
+        if filter_clause is None:
+            # None doesn't filter anything, it's just a no-op:
+            return self
+        clause = self.ops['clause']
+        if isinstance(clause, basestring):
+            clause = SQLConstant('(%s)' % clause)
+
+        if clause == SQLTrueClause:
+            newClause = filter_clause
+        else:
+            newClause = AND(clause, filter_clause)
+        return self.newClause(newClause)
 
     def __sqlrepr__(self, db):
-        select = "SELECT %s" % ", ".join([sqlrepr(v, db) for v in self.items])
 
-        tables = {}
-        things = self.items[:]
-        if self.whereClause is not NoDefault:
-            things.append(self.whereClause)
+        select = "SELECT"
+        if self.ops['distinct']:
+            select += " DISTINCT"
+            if self.ops['distinctOn'] is not NoDefault:
+                select += " ON(%s)" % _str_or_sqlrepr(self.ops['distinctOn'], db)
+        if not self.ops['lazyColumns']:
+            select += " %s" % ", ".join([str(_str_or_sqlrepr(v, db)) for v in self.ops['items']])
+        else:
+            select += " %s" % _str_or_sqlrepr(self.ops['items'][0], db)
+
+        join = []
+        join_str = ''
+        if self.ops['join'] is not NoDefault and self.ops['join'] is not None:
+            _join = self.ops['join']
+            if isinstance(_join, str):
+                join_str = " " + _join
+            elif isinstance(_join, SQLJoin):
+                join.append(_join)
+            else:
+                join.extend(_join)
+        tables = set()
+        for x in self.ops['staticTables']:
+            if isinstance(x, SQLExpression):
+                x = sqlrepr(x, db)
+            tables.add(x)
+        things = list(self.ops['items']) + join
+        if self.ops['clause'] is not NoDefault:
+            things.append(self.ops['clause'])
         for thing in things:
             if isinstance(thing, SQLExpression):
-                tables.update(tablesUsedDict(thing))
-        tables = tables.keys()
+                tables.update(tablesUsedSet(thing, db))
+        for j in join:
+            t1 = _str_or_sqlrepr(j.table1, db)
+            if t1 in tables: tables.remove(t1)
+            t2 = _str_or_sqlrepr(j.table2, db)
+            if t2 in tables: tables.remove(t2)
         if tables:
             select += " FROM %s" % ", ".join(tables)
+        elif join:
+            select += " FROM"
+        tablesYet = tables
+        for j in join:
+            if tablesYet and j.table1:
+                sep = ", "
+            else:
+                sep = " "
+            select += sep + sqlrepr(j, db)
+            tablesYet = True
 
-        if self.whereClause is not NoDefault:
-            select += " WHERE %s" % sqlrepr(self.whereClause, db)
-        if self.groupBy is not NoDefault:
-            select += " GROUP BY %s" % sqlrepr(self.groupBy, db)
-        if self.having is not NoDefault:
-            select += " HAVING %s" % sqlrepr(self.having, db)
-        if self.orderBy is not NoDefault:
-            select += " ORDER BY %s" % sqlrepr(self.orderBy, db)
-        if self.limit is not NoDefault:
-            select += " LIMIT %s" % sqlrepr(self.limit, db)
+        if join_str:
+            select += join_str
+
+        if self.ops['clause'] is not NoDefault:
+            select += " WHERE %s" % _str_or_sqlrepr(self.ops['clause'], db)
+        if self.ops['groupBy'] is not NoDefault:
+            groupBy = _str_or_sqlrepr(self.ops['groupBy'], db)
+            if isinstance(self.ops['groupBy'], (list, tuple)):
+                groupBy = groupBy[1:-1] # Remove parens
+            select += " GROUP BY %s" % groupBy
+        if self.ops['having'] is not NoDefault:
+            select += " HAVING %s" % _str_or_sqlrepr(self.ops['having'], db)
+        if self.ops['orderBy'] is not NoDefault and self.ops['orderBy'] is not None:
+            orderBy = self.ops['orderBy']
+            if self.ops['reversed']:
+                reverser = DESC
+            else:
+                reverser = lambda x: x
+            if isinstance(orderBy, (list, tuple)):
+                select += " ORDER BY %s" % ", ".join([_str_or_sqlrepr(reverser(x), db) for x in orderBy])
+            else:
+                select += " ORDER BY %s" % _str_or_sqlrepr(reverser(orderBy), db)
+        start, end = self.ops['start'], self.ops['end']
+        if self.ops['limit'] is not NoDefault:
+            end = start + self.ops['limit']
+        if start or end:
+            from dbconnection import dbConnectionForScheme
+            select = dbConnectionForScheme(db)._queryAddLimitOffset(select, start, end)
+        if self.ops['forUpdate']:
+            select += " FOR UPDATE"
         return select
 
 registerConverter(Select, SQLExprConverter)
@@ -514,25 +726,23 @@ class Insert(SQLExpression):
         insert = "INSERT INTO %s" % self.table
         allowNonDict = True
         template = self.template
-        if template is NoDefault and type(self.valueList[0]) is type({}):
+        if (template is NoDefault) and isinstance(self.valueList[0], dict):
             template = self.valueList[0].keys()
             allowNonDict = False
         if template is not NoDefault:
             insert += " (%s)" % ", ".join(template)
-        first = True
         insert += " VALUES "
+        listToJoin = []
+        listToJoin_app = listToJoin.append
         for value in self.valueList:
-            if first:
-                first = False
-            else:
-                insert += ", "
-            if type(value) is type({}):
+            if isinstance(value, dict):
                 if template is NoDefault:
                     raise TypeError, "You can't mix non-dictionaries with dictionaries in an INSERT if you don't provide a template (%s)" % repr(value)
                 value = dictToList(template, value)
             elif not allowNonDict:
                 raise TypeError, "You can't mix non-dictionaries with dictionaries in an INSERT if you don't provide a template (%s)" % repr(value)
-            insert += "(%s)" % ", ".join([sqlrepr(v, db) for v in value])
+            listToJoin_app("(%s)" % ", ".join([sqlrepr(v, db) for v in value]))
+        insert = "%s%s" % (insert, ", ".join(listToJoin))
         return insert
 
 registerConverter(Insert, SQLExprConverter)
@@ -569,18 +779,8 @@ class Update(SQLExpression):
                 else:
                     update += ","
                 update += " %s=%s" % (key, sqlrepr(value, db))
-
-        tables = {}
         if self.whereClause is not NoDefault:
-            if isinstance(self.whereClause, SQLExpression):
-                tables.update(tablesUsedDict(self.whereClause))
-
-            tables = tables.keys()
-            if tables:
-                update += " FROM %s" % ", ".join(tables)
-
-            update += " WHERE %s" % sqlrepr(self.whereClause, db)
-
+            update += " WHERE %s" % _str_or_sqlrepr(self.whereClause, db)
         return update
     def sqlName(self):
         return "UPDATE"
@@ -596,10 +796,11 @@ class Delete(SQLExpression):
             raise TypeError, "You must give a where clause or pass in None to indicate no where clause"
         self.whereClause = where
     def __sqlrepr__(self, db):
-        if self.whereClause is None:
+        whereClause = self.whereClause
+        if whereClause is None:
             return "DELETE FROM %s" % self.table
-        return "DELETE FROM %s WHERE %s" \
-               % (self.table, sqlrepr(self.whereClause, db))
+        whereClause = _str_or_sqlrepr(whereClause, db)
+        return "DELETE FROM %s WHERE %s" % (self.table, whereClause)
 
 registerConverter(Delete, SQLExprConverter)
 
@@ -625,7 +826,7 @@ class DESC(SQLExpression):
 
 def AND(*ops):
     if not ops:
-        return
+        return None
     op1 = ops[0]
     ops = ops[1:]
     if ops:
@@ -635,7 +836,7 @@ def AND(*ops):
 
 def OR(*ops):
     if not ops:
-        return
+        return None
     op1 = ops[0]
     ops = ops[1:]
     if ops:
@@ -650,6 +851,11 @@ def _IN(item, list):
     return SQLOp("IN", item, list)
 
 def IN(item, list):
+    from sresults import SelectResults # Import here to avoid circular import
+    if isinstance(list, SelectResults):
+        query = list.queryForSelect()
+        query.ops['items'] = [list.sourceClass.q.id]
+        list = query
     if isinstance(list, Select):
         return INSubquery(item, list)
     else:
@@ -661,14 +867,14 @@ def NOTIN(item, list):
     else:
         return NOT(_IN(item, list))
 
-def STARTSWITH(expr, string):
-    return SQLOp("LIKE", expr, _LikeQuoted(string) + '%')
+def STARTSWITH(expr, pattern):
+    return LIKE(expr, _LikeQuoted(pattern) + '%', escape='\\')
 
-def ENDSWITH(expr, string):
-    return SQLOp("LIKE", expr, '%' + _LikeQuoted(string))
+def ENDSWITH(expr, pattern):
+    return LIKE(expr, '%' + _LikeQuoted(pattern), escape='\\')
 
-def CONTAINSSTRING(expr, string):
-    return SQLOp("LIKE", expr, '%' + _LikeQuoted(string) + '%')
+def CONTAINSSTRING(expr, pattern):
+    return LIKE(expr, '%' + _LikeQuoted(pattern) + '%', escape='\\')
 
 def ISNULL(expr):
     return SQLOp("IS", expr, None)
@@ -676,7 +882,18 @@ def ISNULL(expr):
 def ISNOTNULL(expr):
     return SQLOp("IS NOT", expr, None)
 
+class ColumnAS(SQLOp):
+    ''' Just like SQLOp('AS', expr, name) except without the parentheses '''
+    def __init__(self, expr, name):
+        if isinstance(name, basestring):
+            name = SQLConstant(name)
+        SQLOp.__init__(self, 'AS', expr, name)
+    def __sqlrepr__(self, db):
+        return "%s %s %s" % (sqlrepr(self.expr1, db), self.op, sqlrepr(self.expr2, db))
+
 class _LikeQuoted:
+    # It assumes prefix and postfix are strings; usually just a percent sign.
+
     # @@: I'm not sure what the quoting rules really are for all the
     # databases
 
@@ -694,12 +911,32 @@ class _LikeQuoted:
         return self
 
     def __sqlrepr__(self, db):
-        s = sqlrepr(self.expr, db)[1:-1] # remove quotes
-        if db in ('postgres', 'mysql'):
-            s = s.replace('%', '\\%')
+        s = self.expr
+        if isinstance(s, SQLExpression):
+            values = []
+            if self.prefix:
+                values.append(quote_str(self.prefix, db))
+            s = _quote_like_special(sqlrepr(s, db), db)
+            values.append(s)
+            if self.postfix:
+                values.append(quote_str(self.postfix, db))
+            if db == "mysql":
+                return "CONCAT(%s)" % ", ".join(values)
+            else:
+                return " || ".join(values)
+        elif isinstance(s, basestring):
+            s = _quote_like_special(unquote_str(sqlrepr(s, db)), db)
+            return quote_str("%s%s%s" % (self.prefix, s, self.postfix), db)
         else:
-            s = s.replace('%', '%%')
-        return "'%s%s%s'" % (self.prefix, s, self.postfix)
+           raise TypeError, "expected str, unicode or SQLExpression, got %s" % type(s)
+
+def _quote_like_special(s, db):
+    if db in ('postgres', 'rdbhost'):
+        escape = r'\\'
+    else:
+        escape = '\\'
+    s = s.replace('\\', r'\\').replace('%', escape+'%').replace('_', escape+'_')
+    return s
 
 ########################################
 ## SQL JOINs
@@ -707,35 +944,23 @@ class _LikeQuoted:
 
 class SQLJoin(SQLExpression):
     def __init__(self, table1, table2, op=','):
-        self._table2 = table2
-        if table1 and type(table1) <> str:
-            if isinstance(table1, Alias):
-                table1 = "%s AS %s" % (table1.q.tableName, table1.q.alias)
-            else:
-                table1 = table1.sqlmeta.table
-        if type(table2) <> str:
-            if isinstance(table2, Alias):
-                table2 = "%s AS %s" % (table2.q.tableName, table2.q.alias)
-            else:
-                table2 = table2.sqlmeta.table
+        if hasattr(table1, 'sqlmeta'):
+            table1 = table1.sqlmeta.table
+        if hasattr(table2, 'sqlmeta'):
+            table2 = table2.sqlmeta.table
+        if isinstance(table1, str):
+            table1 = SQLConstant(table1)
+        if isinstance(table2, str):
+            table2 = SQLConstant(table2)
         self.table1 = table1
         self.table2 = table2
         self.op = op
 
-    def get_table(self, table, db):
-        if type(table) <> str:
-            if isinstance(table, Alias):
-                table = table.get_select_alias(db)
-            else:
-                table = table.sqlmeta.table
-        return table
-
     def __sqlrepr__(self, db):
         if self.table1:
-            return "%s%s %s" % (self.table1, self.op,
-                                self.get_table(self._table2, db))
+            return "%s%s %s" % (sqlrepr(self.table1, db), self.op, sqlrepr(self.table2, db))
         else:
-            return "%s %s" % (self.op, self.get_table(self._table2, db))
+            return "%s %s" % (self.op, sqlrepr(self.table2, db))
 
 registerConverter(SQLJoin, SQLExprConverter)
 
@@ -813,10 +1038,9 @@ class SQLJoinConditional(SQLJoin):
             on_condition = self.on_condition
             if hasattr(on_condition, "__sqlrepr__"):
                 on_condition = sqlrepr(on_condition, db)
-            join = "%s %s ON %s" % (self.op,
-                                    self.get_table(self._table2, db), on_condition)
+            join = "%s %s ON %s" % (self.op, sqlrepr(self.table2, db), on_condition)
             if self.table1:
-                join = "%s %s" % (self.table1, join)
+                join = "%s %s" % (sqlrepr(self.table1, db), join)
             return join
         elif self.using_columns:
             using_columns = []
@@ -824,11 +1048,10 @@ class SQLJoinConditional(SQLJoin):
                 if hasattr(col, "__sqlrepr__"):
                     col = sqlrepr(col, db)
                 using_columns.append(col)
-            using_columns = ", ".join()
-            join = "%s %s USING (%s)" % (self.op,
-                                         self.get_table(self._table2, db), using_columns)
+            using_columns = ", ".join(using_columns)
+            join = "%s %s USING (%s)" % (self.op, sqlrepr(self.table2, db), using_columns)
             if self.table1:
-                join = "%s %s" % (self.table1, join)
+                join = "%s %s" % (sqlrepr(self.table1, db), join)
             return join
         else:
             RuntimeError, "Impossible error"
@@ -941,11 +1164,17 @@ class Outer:
 class LIKE(SQLExpression):
     op = "LIKE"
 
-    def __init__(self, expr, string):
+    def __init__(self, expr, string, escape=None):
         self.expr = expr
         self.string = string
+        self.escape = escape
     def __sqlrepr__(self, db):
-        return "(%s %s %s)" % (sqlrepr(self.expr, db), self.op, sqlrepr(self.string, db))
+        escape = self.escape
+        like = "%s %s (%s)" % (sqlrepr(self.expr, db), self.op, sqlrepr(self.string, db))
+        if escape is None:
+            return "(%s)" % like
+        else:
+            return "(%s ESCAPE %s)" % (like, sqlrepr(escape, db))
     def components(self):
         return [self.expr, self.string]
     def execute(self, executor):
@@ -963,17 +1192,19 @@ class LIKE(SQLExpression):
 class RLIKE(LIKE):
     op = "RLIKE"
 
+    op_db = {
+        'firebird': 'RLIKE',
+        'maxdb': 'RLIKE',
+        'mysql': 'RLIKE',
+        'postgres': '~',
+        'rdbhost': '~',
+        'sqlite': 'REGEXP'
+    }
+
     def _get_op(self, db):
-        if db in ('mysql', 'maxdb', 'firebird'):
-            return "RLIKE"
-        elif db == 'sqlite':
-            return "REGEXP"
-        elif db == 'postgres':
-            return "~"
-        else:
-            return "LIKE"
+        return self.op_db.get(db, 'LIKE')
     def __sqlrepr__(self, db):
-        return "(%s %s %s)" % (
+        return "(%s %s (%s))" % (
             sqlrepr(self.expr, db), self._get_op(db), sqlrepr(self.string, db)
         )
     def execute(self, executor):
@@ -1018,6 +1249,74 @@ def ANY(subquery):
 
 def ALL(subquery):
     return Subquery("ALL", subquery)
+
+####
+
+class ImportProxyField(SQLObjectField):
+    def tablesUsedImmediate(self):
+        return [str(self.tableName)]
+
+class ImportProxy(SQLExpression):
+    '''Class to be used in column definitions that rely on other tables that might
+        not yet be in a classregistry.
+    '''
+    FieldClass = ImportProxyField
+    def __init__(self, clsName, registry=None):
+        self.tableName = _DelayClass(self, clsName)
+        self.sqlmeta = _Delay_proxy(table=_DelayClass(self, clsName))
+        self.q = self
+        self.soClass = None
+        classregistry.registry(registry).addClassCallback(clsName, lambda foreign, me: setattr(me, 'soClass', foreign), self)
+
+    def __nonzero__(self):
+        return True
+
+    def __getattr__(self, attr):
+        if self.soClass is None:
+            return _Delay(self, attr)
+        return getattr(self.soClass.q, attr)
+
+class _Delay(SQLExpression):
+    def __init__(self, proxy, attr):
+        self.attr = attr
+        self.proxy = proxy
+
+    def __sqlrepr__(self, db):
+        if self.proxy.soClass is None:
+            return '_DELAYED_' + self.attr
+        val = self._resolve()
+        if isinstance(val, SQLExpression):
+            val = sqlrepr(val, db)
+        return val
+
+    def tablesUsedImmediate(self):
+        return getattr(self._resolve(), 'tablesUsedImmediate', lambda: [])()
+
+    def components(self):
+        return getattr(self._resolve(), 'components', lambda: [])()
+
+    def _resolve(self):
+        return getattr(self.proxy, self.attr)
+
+    # For AliasTable etc
+    def fieldName(self):
+        class _aliasFieldName(SQLExpression):
+            def __init__(self, proxy):
+                self.proxy = proxy
+            def __sqlrepr__(self, db):
+                return self.proxy._resolve().fieldName
+        return _aliasFieldName(self)
+    fieldName = property(fieldName)
+
+class _DelayClass(_Delay):
+    def _resolve(self):
+        return self.proxy.soClass.sqlmeta.table
+
+class _Delay_proxy(object):
+    def __init__(self, **kw):
+        self.__dict__.update(kw)
+
+######
 
 
 ########################################

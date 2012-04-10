@@ -33,10 +33,10 @@ def test_join_sqlrepr():
     u2.complexes.add(c2)
     u2.complexes.add(c3)
     assert list(Complex.selectBy(name='c1')) == [c1]
-
+    
     assert list(cg1.unit_models) == [u1]
     assert list(cg2.unit_models) == [u1, u2, u2]
     assert list(cg2.unit_models.distinct()) == [u1, u2]
-
+    
     assert list(
         cg2.unit_models.filter(UnitModel.q.name=='u1')) == [u1]

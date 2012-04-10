@@ -18,39 +18,31 @@ So, in summary: Col objects are what you define, but SOCol objects
 are what gets used.
 """
 
-import time
+from array import array
+from itertools import count
+import re, time
 try:
     import cPickle as pickle
 except ImportError:
-    pickle # pyflakes in the try
     import pickle
-
-import sqlbuilder
 # Sadly the name "constraints" conflicts with many of the function
 # arguments in this module, so we rename it:
-import constraints as consts
-from formencode import compound
-from formencode import validators
+from formencode import compound, validators
 from classregistry import findClass
-from converters import array_type, buffer_type
-from util.backports import count
+import constraints as constrs
+import sqlbuilder
+from styles import capword
 
 NoDefault = sqlbuilder.NoDefault
-True, False = 1==1, 0==1
 
-try:
-    import datetime
-except ImportError: # Python 2.2
-    datetime_available = False
-else:
-    datetime_available = True
+import datetime
+datetime_available = True
 
 try:
     from mx import DateTime
 except ImportError:
     try:
-        import DateTime # old version of mxDateTime
-        DateTime # pyflakes in the try
+        import DateTime # old version of mxDateTime, or Zope's Version if we're running with Zope
     except ImportError:
         mxdatetime_available = False
     else:
@@ -62,40 +54,23 @@ DATETIME_IMPLEMENTATION = "datetime"
 MXDATETIME_IMPLEMENTATION = "mxDateTime"
 
 if mxdatetime_available:
-    DateTimeType = type(DateTime.now())
-    TimeType = type(DateTime.Time())
+    if hasattr(DateTime, "Time"):
+        DateTimeType = type(DateTime.now())
+        TimeType = type(DateTime.Time())
+    else: # Zope
+        DateTimeType = type(DateTime.DateTime())
+        TimeType = type(DateTime.DateTime.Time(DateTime.DateTime()))
 
-if datetime_available:
-    default_datetime_implementation = DATETIME_IMPLEMENTATION
-elif mxdatetime_available:
-    default_datetime_implementation = MXDATETIME_IMPLEMENTATION
-else:
-    default_datetime_implementation = None
+default_datetime_implementation = DATETIME_IMPLEMENTATION
 
 __all__ = ["datetime_available", "mxdatetime_available",
-    "default_datetime_implementation"
-]
-if datetime_available:
-    __all__.append("DATETIME_IMPLEMENTATION")
+        "default_datetime_implementation", "DATETIME_IMPLEMENTATION"]
+
 if mxdatetime_available:
     __all__.append("MXDATETIME_IMPLEMENTATION")
 
 
 creationOrder = count()
-
-class SQLValidator(compound.All):
-    def attemptConvert(self, value, state, validate):
-        if validate is validators.to_python:
-            vlist = list(self.validators[:])
-            vlist.reverse()
-        elif validate is validators.from_python:
-            vlist = self.validators
-        else:
-            raise RuntimeError
-        for validator in vlist:
-            value = validate(validator, value, state)
-        return value
-
 
 ########################################
 ## Columns
@@ -111,6 +86,7 @@ class SOCol(object):
                  creationOrder,
                  dbName=None,
                  default=NoDefault,
+                 defaultSQL=None,
                  foreignKey=None,
                  alternateID=False,
                  alternateMethodName=None,
@@ -121,6 +97,7 @@ class SOCol(object):
                  sqlType=None,
                  columnDef=None,
                  validator=None,
+                 validator2=None,
                  immutable=False,
                  cascade=None,
                  lazy=False,
@@ -159,7 +136,7 @@ class SOCol(object):
                 "The only string value allowed for cascade is 'null' (you gave: %r)" % cascade)
         self.cascade = cascade
 
-        if type(constraints) not in (type([]), type(())):
+        if not isinstance(constraints, (list, tuple)):
             constraints = [constraints]
         self.constraints = self.autoConstraints() + constraints
 
@@ -172,21 +149,26 @@ class SOCol(object):
         elif notNone is not NoDefault:
             self.notNone = notNone
         if self.notNone:
-            self.constraints = [consts.notNull] + self.constraints
+            self.constraints = [constrs.notNull] + self.constraints
 
         self.name = name
         self.soClass = soClass
         self._default = default
+        self.defaultSQL = defaultSQL
         self.customSQLType = sqlType
 
+        # deal with foreign keys
         self.foreignKey = foreignKey
         if self.foreignKey:
-            #assert self.name.upper().endswith('ID'), "All foreign key columns must end with 'ID' (%s)" % repr(self.name)
-            if not self.name.upper().endswith('ID'):
-                self.foreignName = self.name
-                self.name = self.name + "ID"
+            if origName is not None:
+                idname = soClass.sqlmeta.style.instanceAttrToIDAttr(origName)
             else:
-                self.foreignName = self.name[:-2]
+                idname = soClass.sqlmeta.style.instanceAttrToIDAttr(name)
+            if self.name != idname:
+                self.foreignName = self.name
+                self.name = idname
+            else:
+                self.foreignName = soClass.sqlmeta.style.instanceIDAttrToAttr(self.name)
         else:
             self.foreignName = None
 
@@ -201,22 +183,26 @@ class SOCol(object):
         # alternateID means that this is a unique column that
         # can be used to identify rows
         self.alternateID = alternateID
-        if self.alternateID and alternateMethodName is None:
-            self.alternateMethodName = 'by' + self.name[0].capitalize() + self.name[1:]
-        else:
-            self.alternateMethodName = alternateMethodName
 
         if unique is NoDefault:
             self.unique = alternateID
         else:
             self.unique = unique
+        if self.unique and alternateMethodName is None:
+            self.alternateMethodName = 'by' + capword(self.name)
+        else:
+            self.alternateMethodName = alternateMethodName
 
         _validators = self.createValidators()
-        if _validators:
-            if validator: _validators.append(validator)
-            self.validator = SQLValidator.join(_validators[0], *_validators[1:])
-        else:
-            self.validator = validator
+        if validator: _validators.append(validator)
+        if validator2: _validators.insert(0, validator2)
+        _vlen = len(_validators)
+        if _vlen == 0:
+            self.validator = None # Set sef.{from,to}_python
+        elif _vlen == 1:
+            self.validator = _validators[0]
+        elif _vlen > 1:
+            self.validator = compound.All.join(_validators[0], *_validators[1:])
         self.noCache = noCache
         self.lazy = lazy
         # this is in case of ForeignKey, where we rename the column
@@ -264,8 +250,7 @@ class SOCol(object):
     default = property(_get_default, None, None)
 
     def _get_joinName(self):
-        assert self.name[-2:] == 'ID'
-        return self.name[:-2]
+        return self.soClass.sqlmeta.style.instanceIDAttrToAttr(self.name)
     joinName = property(_get_joinName, None, None)
 
     def __repr__(self):
@@ -281,7 +266,7 @@ class SOCol(object):
         return r + '>'
 
     def createSQL(self):
-        return ' '.join([self._sqlType() + self._extraSQL()])
+        return ' '.join([self._sqlType()] + self._extraSQL())
 
     def _extraSQL(self):
         result = []
@@ -289,6 +274,8 @@ class SOCol(object):
             result.append('NOT NULL')
         if self.unique or self.alternateID:
             result.append('UNIQUE')
+        if self.defaultSQL is not None:
+            result.append("DEFAULT %s" % self.defaultSQL)
         return result
 
     def _sqlType(self):
@@ -337,7 +324,8 @@ class SOCol(object):
     def sybaseCreateSQL(self):
         return ' '.join([self.dbName, self._sybaseType()] + self._extraSQL())
 
-    def mssqlCreateSQL(self):
+    def mssqlCreateSQL(self, connection=None):
+        self.connection = connection
         return ' '.join([self.dbName, self._mssqlType()] + self._extraSQL())
 
     def firebirdCreateSQL(self):
@@ -350,20 +338,21 @@ class SOCol(object):
             return ' '.join([self.dbName] + [self._firebirdType()[0]] + self._extraSQL() + [self._firebirdType()[1]])
 
     def maxdbCreateSQL(self):
-        return ' '.join([self.dbName, self._maxdbType()] + self._extraSQL())
+       return ' '.join([self.dbName, self._maxdbType()] + self._extraSQL())
 
     def __get__(self, obj, type=None):
         if obj is None:
             # class attribute, return the descriptor itself
             return self
-        if obj.sqlmeta.obsolete:
-            raise '@@: figure out the exception for a delete'
+        if obj.sqlmeta._obsolete:
+            raise RuntimeError('The object <%s %s> is obsolete' % (
+                obj.__class__.__name__, obj.id))
         if obj.sqlmeta.cacheColumns:
             columns = obj.sqlmeta._columnCache
             if columns is None:
                 obj.sqlmeta.loadValues()
             try:
-                return columns[self.name]
+                return columns[name]
             except KeyError:
                 return obj.sqlmeta.loadColumn(self)
         else:
@@ -425,9 +414,9 @@ class Col(object):
 class SOStringLikeCol(SOCol):
     """A common ancestor for SOStringCol and SOUnicodeCol"""
     def __init__(self, **kw):
-        self.length = popKey(kw, 'length')
-        self.varchar = popKey(kw, 'varchar', 'auto')
-        self.char_binary = popKey(kw, 'char_binary', None) # A hack for MySQL
+        self.length = kw.pop('length', None)
+        self.varchar = kw.pop('varchar', 'auto')
+        self.char_binary = kw.pop('char_binary', None) # A hack for MySQL
         if not self.length:
             assert self.varchar == 'auto' or not self.varchar, \
                    "Without a length strings are treated as TEXT, not varchar"
@@ -438,9 +427,9 @@ class SOStringLikeCol(SOCol):
         super(SOStringLikeCol, self).__init__(**kw)
 
     def autoConstraints(self):
-        constraints = [consts.isString]
+        constraints = [constrs.isString]
         if self.length is not None:
-            constraints += [consts.MaxLength(self.length)]
+            constraints += [constrs.MaxLength(self.length)]
         return constraints
 
     def _sqlType(self):
@@ -479,8 +468,13 @@ class SOStringLikeCol(SOCol):
         return type
 
     def _mssqlType(self):
+        if self.customSQLType is not None:
+            return self.customSQLType
         if not self.length:
-            type = 'varchar(4000)'
+            if self.connection and self.connection.can_use_max_types():
+                type = 'VARCHAR(MAX)'
+            else:
+                type = 'varchar(4000)'
         elif self.varchar:
             type = 'VARCHAR(%i)' % self.length
         else:
@@ -509,23 +503,31 @@ class StringValidator(validators.Validator):
     def to_python(self, value, state):
         if value is None:
             return None
+        try:
+            connection = state.connection or state.soObject._connection
+        except AttributeError:
+            dbEncoding = "ascii"
+            binaryType = type(None) # Just a simple workaround
+        else:
+            dbEncoding = getattr(connection, "dbEncoding", None) or "ascii"
+            binaryType = connection._binaryType
         if isinstance(value, unicode):
-            return value.encode("ascii")
-        return value
-
-    def from_python(self, value, state):
-        if value is None:
-            return None
-        if isinstance(value, str):
+            return value.encode(dbEncoding)
+        if self.dataType and isinstance(value, self.dataType):
             return value
-        if isinstance(value, unicode):
-            return value.encode("ascii")
-        return value
+        if isinstance(value, (str, buffer, binaryType, sqlbuilder.SQLExpression)):
+            return value
+        if hasattr(value, '__unicode__'):
+            return unicode(value).encode(dbEncoding)
+        raise validators.Invalid("expected a str in the StringCol '%s', got %s %r instead" % \
+            (self.name, type(value), value), value, state)
+
+    from_python = to_python
 
 class SOStringCol(SOStringLikeCol):
 
-    def createValidators(self):
-        return [StringValidator()] + \
+    def createValidators(self, dataType=None):
+        return [StringValidator(name=self.name, dataType=dataType)] + \
             super(SOStringCol, self).createValidators()
 
 class StringCol(Col):
@@ -533,28 +535,62 @@ class StringCol(Col):
 
 class UnicodeStringValidator(validators.Validator):
 
+    def getDbEncoding(self, state):
+        try:
+            return self.dbEncoding
+        except AttributeError:
+            return self.soCol.getDbEncoding(state)
+
     def to_python(self, value, state):
         if value is None:
             return None
-        if isinstance(value, unicode):
+        if isinstance(value, (unicode, sqlbuilder.SQLExpression)):
             return value
-        return unicode(value, self.db_encoding)
+        if isinstance(value, str):
+            return unicode(value, self.getDbEncoding(state))
+        if isinstance(value, array): # MySQL
+            return unicode(value.tostring(), self.getDbEncoding(state))
+        if hasattr(value, '__unicode__'):
+            return unicode(value)
+        raise validators.Invalid("expected a str or a unicode in the UnicodeCol '%s', got %s %r instead" % \
+            (self.name, type(value), value), value, state)
 
     def from_python(self, value, state):
         if value is None:
             return None
-        if isinstance(value, str):
+        if isinstance(value, (str, sqlbuilder.SQLExpression)):
             return value
-        return value.encode(self.db_encoding)
+        if isinstance(value, unicode):
+            return value.encode(self.getDbEncoding(state))
+        if hasattr(value, '__unicode__'):
+            return unicode(value).encode(self.getDbEncoding(state))
+        raise validators.Invalid("expected a str or a unicode in the UnicodeCol '%s', got %s %r instead" % \
+            (self.name, type(value), value), value, state)
 
 class SOUnicodeCol(SOStringLikeCol):
     def __init__(self, **kw):
-        self.dbEncoding = popKey(kw, 'dbEncoding', 'UTF-8')
+        self.dbEncoding = kw.pop('dbEncoding', None)
         super(SOUnicodeCol, self).__init__(**kw)
 
     def createValidators(self):
-        return [UnicodeStringValidator(db_encoding=self.dbEncoding)] + \
+        return [UnicodeStringValidator(name=self.name, soCol=self)] + \
             super(SOUnicodeCol, self).createValidators()
+
+    def getDbEncoding(self, state):
+        if self.dbEncoding:
+            return self.dbEncoding
+        dbEncoding = state.soObject.sqlmeta.dbEncoding
+        if dbEncoding:
+            return dbEncoding
+        try:
+            connection = state.connection or state.soObject._connection
+        except AttributeError:
+            dbEncoding = None
+        else:
+            dbEncoding = getattr(connection, "dbEncoding", None)
+        if not dbEncoding:
+            dbEncoding = "utf-8"
+        return dbEncoding
 
 class UnicodeCol(Col):
     baseClass = SOUnicodeCol
@@ -567,70 +603,107 @@ class IntValidator(validators.Validator):
             return None
         if isinstance(value, (int, long, sqlbuilder.SQLExpression)):
             return value
-        try:
-            try:
-                return int(value)
-            except OverflowError: # for Python 2.2
-                return long(value)
-        except:
-            raise validators.Invalid("expected an int in the IntCol '%s', got %s %r instead" % \
+        for converter, attr_name in (int, '__int__'), (long, '__long__'):
+            if hasattr(value, attr_name):
+                try:
+                    return converter(value)
+                except:
+                    break
+        raise validators.Invalid("expected an int in the IntCol '%s', got %s %r instead" % \
                 (self.name, type(value), value), value, state)
 
-    def from_python(self, value, state):
-        if value is None:
-            return None
-        if not isinstance(value, (int, long, sqlbuilder.SQLExpression)):
-            raise validators.Invalid("expected an int in the IntCol '%s', got %s %r instead" % \
-                (self.name, type(value), value), value, state)
-        return value
+    from_python = to_python
 
 class SOIntCol(SOCol):
     # 3-03 @@: support precision, maybe max and min directly
+    def __init__(self, **kw):
+        self.length = kw.pop('length', None)
+        self.unsigned = bool(kw.pop('unsigned', None))
+        self.zerofill = bool(kw.pop('zerofill', None))
+        SOCol.__init__(self, **kw)
 
     def autoConstraints(self):
-        return [consts.isInt]
+        return [constrs.isInt]
 
     def createValidators(self):
         return [IntValidator(name=self.name)] + \
             super(SOIntCol, self).createValidators()
 
+    def addSQLAttrs(self, str):
+        _ret = str
+        if str is None or len(str) < 1:
+            return None
+
+        if self.length >= 1:
+            _ret = "%s(%d)" % (_ret, self.length)
+        if self.unsigned:
+            _ret = _ret + " UNSIGNED"
+        if self.zerofill:
+            _ret = _ret + " ZEROFILL"
+        return _ret
+
     def _sqlType(self):
-        return 'INT'
+        return self.addSQLAttrs("INT")
 
 class IntCol(Col):
     baseClass = SOIntCol
+
+class SOTinyIntCol(SOIntCol):
+    def _sqlType(self):
+        return self.addSQLAttrs("TINYINT")
+
+class TinyIntCol(Col):
+    baseClass = SOTinyIntCol
+
+class SOSmallIntCol(SOIntCol):
+    def _sqlType(self):
+        return self.addSQLAttrs("SMALLINT")
+
+class SmallIntCol(Col):
+    baseClass = SOSmallIntCol
+
+class SOMediumIntCol(SOIntCol):
+    def _sqlType(self):
+        return self.addSQLAttrs("MEDIUMINT")
+
+class MediumIntCol(Col):
+    baseClass = SOMediumIntCol
+
+class SOBigIntCol(SOIntCol):
+    def _sqlType(self):
+        return self.addSQLAttrs("BIGINT")
+
+class BigIntCol(Col):
+    baseClass = SOBigIntCol
+
 
 class BoolValidator(validators.Validator):
 
     def to_python(self, value, state):
         if value is None:
             return None
-        elif not value:
-            return sqlbuilder.FALSE
-        else:
-            return sqlbuilder.TRUE
+        if isinstance(value, (bool, sqlbuilder.SQLExpression)):
+            return value
+        if isinstance(value, (int, long)) or hasattr(value, '__nonzero__'):
+            return bool(value)
+        raise validators.Invalid("expected a bool or an int in the BoolCol '%s', got %s %r instead" % \
+            (self.name, type(value), value), value, state)
 
-    def from_python(self, value, state):
-        if value is None:
-            return None
-        elif value:
-            return sqlbuilder.TRUE
-        else:
-            return sqlbuilder.FALSE
+    from_python = to_python
 
 class SOBoolCol(SOCol):
     def autoConstraints(self):
-        return [consts.isBool]
+        return [constrs.isBool]
 
     def createValidators(self):
-        return [BoolValidator()] + \
+        return [BoolValidator(name=self.name)] + \
             super(SOBoolCol, self).createValidators()
 
     def _postgresType(self):
         return 'BOOL'
 
     def _mysqlType(self):
-        return "TINYINT"
+        return "BOOL"
 
     def _sybaseType(self):
         return "BIT"
@@ -645,7 +718,7 @@ class SOBoolCol(SOCol):
         return "BOOLEAN"
 
     def _sqliteType(self):
-        return "TINYINT"
+        return "BOOLEAN"
 
 class BoolCol(Col):
     baseClass = SOBoolCol
@@ -656,27 +729,24 @@ class FloatValidator(validators.Validator):
     def to_python(self, value, state):
         if value is None:
             return None
-        if isinstance(value, (int, long, float, sqlbuilder.SQLExpression)):
+        if isinstance(value, (float, int, long, sqlbuilder.SQLExpression)):
             return value
-        try:
-            return float(value)
-        except:
-            raise validators.Invalid("expected a float in the FloatCol '%s', got %s %r instead" % \
-                (self.name, type(value), value), value, state)
+        for converter, attr_name in  (float, '__float__'), (int, '__int__'), (long, '__long__'):
+            if hasattr(value, attr_name):
+                try:
+                    return converter(value)
+                except:
+                    break
+        raise validators.Invalid("expected a float in the FloatCol '%s', got %s %r instead" % \
+            (self.name, type(value), value), value, state)
 
-    def from_python(self, value, state):
-        if value is None:
-            return None
-        if not isinstance(value, (int, long, float, sqlbuilder.SQLExpression)):
-            raise validators.Invalid("expected a float in the FloatCol '%s', got %s %r instead" % \
-                (self.name, type(value), value), value, state)
-        return value
+    from_python = to_python
 
 class SOFloatCol(SOCol):
     # 3-03 @@: support precision (e.g., DECIMAL)
 
     def autoConstraints(self):
-        return [consts.isFloat]
+        return [constrs.isFloat]
 
     def createValidators(self):
         return [FloatValidator(name=self.name)] + \
@@ -693,11 +763,14 @@ class FloatCol(Col):
 
 
 class SOKeyCol(SOCol):
-    # Henrique 2006-09-28: use BIGINT for 64-bit ids
-    key_type = {int: "BIGINT", str: "TEXT"}
+    key_type = {int: "INT", str: "TEXT"}
 
     # 3-03 @@: this should have a simplified constructor
     # Should provide foreign key information for other DBs.
+
+    def __init__(self, **kw):
+        self.refColumn = kw.pop('refColumn', None)
+        super(SOKeyCol, self).__init__(**kw)
 
     def _sqlType(self):
         return self.key_type[self.soClass.sqlmeta.idType]
@@ -719,13 +792,37 @@ class SOForeignKey(SOKeyCol):
     def __init__(self, **kw):
         foreignKey = kw['foreignKey']
         style = kw['soClass'].sqlmeta.style
-        if not kw.get('name'):
-            kw['name'] = style.instanceAttrToIDAttr(style.pythonClassToAttr(foreignKey))
-        else:
+        if kw.get('name'):
             kw['origName'] = kw['name']
-            if not kw['name'].upper().endswith('ID'):
-                kw['name'] = style.instanceAttrToIDAttr(kw['name'])
+            kw['name'] = style.instanceAttrToIDAttr(kw['name'])
+        else:
+            kw['name'] = style.instanceAttrToIDAttr(style.pythonClassToAttr(foreignKey))
         super(SOForeignKey, self).__init__(**kw)
+
+    def sqliteCreateSQL(self):
+        sql = SOKeyCol.sqliteCreateSQL(self)
+        other = findClass(self.foreignKey, self.soClass.sqlmeta.registry)
+        tName = other.sqlmeta.table
+        idName = self.refColumn or other.sqlmeta.idName
+        if self.cascade is not None:
+            if self.cascade == 'null':
+                action = 'ON DELETE SET NULL'
+            elif self.cascade:
+                action = 'ON DELETE CASCADE'
+            else:
+                action = 'ON DELETE RESTRICT'
+        else:
+            action = ''
+        constraint = ('CONSTRAINT %(colName)s_exists '
+                      #'FOREIGN KEY(%(colName)s) '
+                      'REFERENCES %(tName)s(%(idName)s) '
+                      '%(action)s' %
+                      {'tName': tName,
+                       'colName': self.dbName,
+                       'idName': idName,
+                       'action': action})
+        sql = ' '.join([sql, constraint])
+        return sql
 
     def postgresCreateSQL(self):
         sql = SOKeyCol.postgresCreateSQL(self)
@@ -735,7 +832,7 @@ class SOForeignKey(SOKeyCol):
         sTName = self.soClass.sqlmeta.table
         other = findClass(self.foreignKey, self.soClass.sqlmeta.registry)
         tName = other.sqlmeta.table
-        idName = other.sqlmeta.idName
+        idName = self.refColumn or other.sqlmeta.idName
         if self.cascade is not None:
             if self.cascade == 'null':
                 action = 'ON DELETE SET NULL'
@@ -758,9 +855,10 @@ class SOForeignKey(SOKeyCol):
 
     def mysqlCreateReferenceConstraint(self):
         sTName = self.soClass.sqlmeta.table
+        sTLocalName = sTName.split('.')[-1]
         other = findClass(self.foreignKey, self.soClass.sqlmeta.registry)
         tName = other.sqlmeta.table
-        idName = other.sqlmeta.idName
+        idName = self.refColumn or other.sqlmeta.idName
         if self.cascade is not None:
             if self.cascade == 'null':
                 action = 'ON DELETE SET NULL'
@@ -770,7 +868,7 @@ class SOForeignKey(SOKeyCol):
                 action = 'ON DELETE RESTRICT'
         else:
             action = ''
-        constraint = ('ALTER TABLE %(sTName)s ADD CONSTRAINT %(sTName)s_%(colName)s_exists '
+        constraint = ('ALTER TABLE %(sTName)s ADD CONSTRAINT %(sTLocalName)s_%(colName)s_exists '
                       'FOREIGN KEY (%(colName)s) '
                       'REFERENCES %(tName)s (%(idName)s) '
                       '%(action)s' %
@@ -778,45 +876,18 @@ class SOForeignKey(SOKeyCol):
                        'colName': self.dbName,
                        'idName': idName,
                        'action': action,
-                       'sTName': sTName})
-        return constraint
-
-    def mysqlCreateReferenceConstraint(self):
-        sTName = self.soClass.sqlmeta.table
-        other = findClass(self.foreignKey, self.soClass.sqlmeta.registry)
-        tName = other.sqlmeta.table
-        idName = other.sqlmeta.idName
-        if self.cascade is not None:
-            if self.cascade == 'null':
-                action = 'ON DELETE SET NULL'
-            elif self.cascade:
-                action = 'ON DELETE CASCADE'
-            else:
-                action = 'ON DELETE RESTRICT'
-        else:
-            action = ''
-        constraint = ('ALTER TABLE %(sTName)s ADD CONSTRAINT %(sTName)s_%(colName)s_to_%(tName)s '
-                      'FOREIGN KEY (%(colName)s) '
-                      'REFERENCES %(tName)s (%(idName)s) '
-                      '%(action)s' %
-                      {'tName': tName,
-                       'colName': self.dbName,
-                       'idName': idName,
-                       'action': action,
-                       'sTName': sTName})
+                       'sTName': sTName,
+                       'sTLocalName': sTLocalName})
         return constraint
 
     def mysqlCreateSQL(self):
         return SOKeyCol.mysqlCreateSQL(self)
 
-    def mysqlCreateReferenceConstraint(self):
-        return None
-
     def sybaseCreateSQL(self):
         sql = SOKeyCol.sybaseCreateSQL(self)
-        other = findClass(self.foreignKey)
+        other = findClass(self.foreignKey, self.soClass.sqlmeta.registry)
         tName = other.sqlmeta.table
-        idName = other.sqlmeta.idName
+        idName = self.refColumn or other.sqlmeta.idName
         reference = ('REFERENCES %(tName)s(%(idName)s) ' %
                      {'tName':tName,
                       'idName':idName})
@@ -827,11 +898,11 @@ class SOForeignKey(SOKeyCol):
         # @@: Code from above should be moved here
         return None
 
-    def mssqlCreateSQL(self):
-        sql = SOKeyCol.mssqlCreateSQL(self)
-        other = findClass(self.foreignKey)
+    def mssqlCreateSQL(self, connection=None):
+        sql = SOKeyCol.mssqlCreateSQL(self, connection)
+        other = findClass(self.foreignKey, self.soClass.sqlmeta.registry)
         tName = other.sqlmeta.table
-        idName = other.sqlmeta.idName
+        idName = self.refColumn or other.sqlmeta.idName
         reference = ('REFERENCES %(tName)s(%(idName)s) ' %
                      {'tName':tName,
                       'idName':idName})
@@ -843,12 +914,12 @@ class SOForeignKey(SOKeyCol):
         return None
 
     def maxdbCreateSQL(self):
-        other = findClass(self.foreignKey)
+        other = findClass(self.foreignKey, self.soClass.sqlmeta.registry)
         fidName = self.dbName
         #I assume that foreign key name is identical to the id of the reference table
         sql = ' '.join([fidName, self._maxdbType()])
         tName = other.sqlmeta.table
-        idName  = other.sqlmeta.idName
+        idName  = self.refColumn or other.sqlmeta.idName
         sql=sql + ',' + '\n'
         sql=sql + 'FOREIGN KEY (%s) REFERENCES %s(%s)'%(fidName,tName,idName)
         return sql
@@ -864,23 +935,42 @@ class ForeignKey(KeyCol):
     def __init__(self, foreignKey=None, **kw):
         super(ForeignKey, self).__init__(foreignKey=foreignKey, **kw)
 
+
+class EnumValidator(validators.Validator):
+
+    def to_python(self, value, state):
+        if value in self.enumValues:
+            return value
+        elif not self.notNone and value is None:
+            return None
+        raise validators.Invalid("expected a member of %r in the EnumCol '%s', got %r instead" % \
+            (self.enumValues, self.name, value), value, state)
+
+    from_python = to_python
+
 class SOEnumCol(SOCol):
 
     def __init__(self, **kw):
-        self.enumValues = popKey(kw, 'enumValues', None)
+        self.enumValues = kw.pop('enumValues', None)
         assert self.enumValues is not None, \
                'You must provide an enumValues keyword argument'
         super(SOEnumCol, self).__init__(**kw)
 
     def autoConstraints(self):
-        return [consts.isString, consts.InList(self.enumValues)]
+        return [constrs.isString, constrs.InList(self.enumValues)]
 
     def createValidators(self):
-        return [EnumValidator(name = self.name, enumValues = self.enumValues)] + \
+        return [EnumValidator(name=self.name, enumValues=self.enumValues,
+                              notNone=self.notNone)] + \
             super(SOEnumCol, self).createValidators()
 
     def _mysqlType(self):
-        return "ENUM(%s)" % ', '.join([sqlbuilder.sqlrepr(v, 'mysql') for v in self.enumValues])
+        # We need to map None in the enum expression to an appropriate
+        # condition on NULL
+        if None in self.enumValues:
+            return "ENUM(%s)" % ', '.join([sqlbuilder.sqlrepr(v, 'mysql') for v in self.enumValues if v is not None])
+        else:
+            return "ENUM(%s) NOT NULL" % ', '.join([sqlbuilder.sqlrepr(v, 'mysql') for v in self.enumValues])
 
     def _postgresType(self):
         length = max(map(self._getlength, self.enumValues))
@@ -888,8 +978,7 @@ class SOEnumCol(SOCol):
         checkConstraint = "CHECK (%s in (%s))" % (self.dbName, enumValues)
         return "VARCHAR(%i) %s" % (length, checkConstraint)
 
-    def _sqliteType(self):
-        return self._postgresType()
+    _sqliteType = _postgresType
 
     def _sybaseType(self):
         return self._postgresType()
@@ -905,7 +994,7 @@ class SOEnumCol(SOCol):
         return "VARCHAR(%i)" % (length), checkConstraint
 
     def _maxdbType(self):
-        raise "Enum type is not supported"
+        raise TypeError("Enum type is not supported on MAX DB")
 
     def _getlength(self, obj):
         """
@@ -916,62 +1005,87 @@ class SOEnumCol(SOCol):
         else:
             return len(obj)
 
-class EnumValidator(validators.Validator):
-
-    def to_python(self, value, state):
-        if value in self.enumValues:
-            return value
-        else:
-            raise validators.Invalid("expected a member of %r in the EnumCol '%s', got %r instead" % \
-                                     (self.enumValues, self.name, value), value, state)
-
-    def from_python(self, value, state):
-        return self.to_python(value, state)
-
 class EnumCol(Col):
     baseClass = SOEnumCol
 
 
-if datetime_available:
-    class DateTimeValidator(validators.DateValidator):
-        def to_python(self, value, state):
-            if value is None:
-                return None
-            if isinstance(value, (datetime.datetime, datetime.date, datetime.time, sqlbuilder.SQLExpression)):
-                return value
-            if mxdatetime_available:
-                if isinstance(value, DateTimeType):
-                    # convert mxDateTime instance to datetime
-                    if (self.format.find("%H") >= 0) or (self.format.find("%T")) >= 0:
-                        return datetime.datetime(value.year, value.month, value.day,
-                            value.hour, value.minute, int(value.second))
-                    else:
-                        return datetime.date(value.year, value.month, value.day)
-                elif isinstance(value, TimeType):
-                    # convert mxTime instance to time
-                    if self.format.find("%d") >= 0:
-                        return datetime.timedelta(seconds=value.seconds)
-                    else:
-                        return datetime.time(value.hour, value.minute, int(value.second))
-            try:
-                stime = time.strptime(value, self.format)
-            except:
-                try:
-                    stime = time.strptime(value, '%Y-%m-%d')
-                except:
-                    raise validators.Invalid("expected an date/time string of the '%s' format in the DateTimeCol '%s', got %s %r instead" % \
-                    (self.format, self.name, type(value), value), value, state)
-            return datetime.datetime(*stime[:7])
+class SetValidator(validators.Validator):
+    """
+    Translates Python tuples into SQL comma-delimited SET strings.
+    """
 
-        def from_python(self, value, state):
-            if value is None:
-                return None
-            if isinstance(value, (datetime.datetime, datetime.date, datetime.time, sqlbuilder.SQLExpression)):
-                return value
-            if hasattr(value, "strftime"):
-                return value.strftime(self.format)
-            raise validators.Invalid("expected a datetime in the DateTimeCol '%s', got %s %r instead" % \
+    def to_python(self, value, state):
+        if isinstance(value, str):
+            return tuple(value.split(","))
+        raise validators.Invalid("expected a string in the SetCol '%s', got %s %r instead" % \
+            (self.name, type(value), value), value, state)
+
+    def from_python(self, value, state):
+        if isinstance(value, basestring):
+            value = (value,)
+        try:
+            return ",".join(value)
+        except:
+            raise validators.Invalid("expected a string or a sequence of stringsin the SetCol '%s', got %s %r instead" % \
                 (self.name, type(value), value), value, state)
+
+class SOSetCol(SOCol):
+    def __init__(self, **kw):
+        self.setValues = kw.pop('setValues', None)
+        assert self.setValues is not None, \
+                'You must provide a setValues keyword argument'
+        super(SOSetCol, self).__init__(**kw)
+
+    def autoConstraints(self):
+        return [constrs.isString, constrs.InList(self.setValues)]
+
+    def createValidators(self):
+        return [SetValidator(name=self.name, setValues=self.setValues)] + \
+            super(SOSetCol, self).createValidators()
+
+    def _mysqlType(self):
+        return "SET(%s)" % ', '.join([sqlbuilder.sqlrepr(v, 'mysql') for v in self.setValues])
+
+class SetCol(Col):
+    baseClass = SOSetCol
+
+
+class DateTimeValidator(validators.DateValidator):
+    def to_python(self, value, state):
+        if value is None:
+            return None
+        if isinstance(value, (datetime.datetime, datetime.date, datetime.time, sqlbuilder.SQLExpression)):
+            return value
+        if mxdatetime_available:
+            if isinstance(value, DateTimeType):
+                # convert mxDateTime instance to datetime
+                if (self.format.find("%H") >= 0) or (self.format.find("%T")) >= 0:
+                    return datetime.datetime(value.year, value.month, value.day,
+                        value.hour, value.minute, int(value.second))
+                else:
+                    return datetime.date(value.year, value.month, value.day)
+            elif isinstance(value, TimeType):
+                # convert mxTime instance to time
+                if self.format.find("%d") >= 0:
+                    return datetime.timedelta(seconds=value.seconds)
+                else:
+                    return datetime.time(value.hour, value.minute, int(value.second))
+        try:
+            stime = time.strptime(value, self.format)
+        except:
+            raise validators.Invalid("expected a date/time string of the '%s' format in the DateTimeCol '%s', got %s %r instead" % \
+                (self.format, self.name, type(value), value), value, state)
+        return datetime.datetime(*stime[:6])
+
+    def from_python(self, value, state):
+        if value is None:
+            return None
+        if isinstance(value, (datetime.datetime, datetime.date, datetime.time, sqlbuilder.SQLExpression)):
+            return value
+        if hasattr(value, "strftime"):
+            return value.strftime(self.format)
+        raise validators.Invalid("expected a datetime in the DateTimeCol '%s', got %s %r instead" % \
+            (self.name, type(value), value), value, state)
 
 if mxdatetime_available:
     class MXDateTimeValidator(validators.DateValidator):
@@ -980,18 +1094,17 @@ if mxdatetime_available:
                 return None
             if isinstance(value, (DateTimeType, TimeType, sqlbuilder.SQLExpression)):
                 return value
-            if datetime_available: # convert datetime instance to mxDateTime
-                if isinstance(value, datetime.datetime):
-                    return DateTime.DateTime(value.year, value.month, value.day,
-                        value.hour, value.minute, value.second)
-                elif isinstance(value, datetime.date):
-                    return DateTime.Date(value.year, value.month, value.day)
-                elif isinstance(value, datetime.time):
-                    return DateTime.Time(value.hour, value.minute, value.second)
+            if isinstance(value, datetime.datetime):
+                return DateTime.DateTime(value.year, value.month, value.day,
+                    value.hour, value.minute, value.second)
+            elif isinstance(value, datetime.date):
+                return DateTime.Date(value.year, value.month, value.day)
+            elif isinstance(value, datetime.time):
+                return DateTime.Time(value.hour, value.minute, value.second)
             try:
                 stime = time.strptime(value, self.format)
             except:
-                raise validators.Invalid("expected an date/time string of the '%s' format in the DateTimeCol '%s', got %s %r instead" % \
+                raise validators.Invalid("expected a date/time string of the '%s' format in the DateTimeCol '%s', got %s %r instead" % \
                     (self.format, self.name, type(value), value), value, state)
             return DateTime.mktime(stime)
 
@@ -1009,7 +1122,7 @@ class SODateTimeCol(SOCol):
     datetimeFormat = '%Y-%m-%d %H:%M:%S'
 
     def __init__(self, **kw):
-        datetimeFormat = popKey(kw, 'datetimeFormat')
+        datetimeFormat = kw.pop('datetimeFormat', None)
         if datetimeFormat:
             self.datetimeFormat = datetimeFormat
         super(SODateTimeCol, self).__init__(**kw)
@@ -1047,6 +1160,7 @@ class SODateTimeCol(SOCol):
 
 class DateTimeCol(Col):
     baseClass = SODateTimeCol
+    @staticmethod
     def now():
         if default_datetime_implementation == DATETIME_IMPLEMENTATION:
             return datetime.datetime.now()
@@ -1056,26 +1170,26 @@ class DateTimeCol(Col):
             assert 0, ("No datetime implementation available "
                        "(DATETIME_IMPLEMENTATION=%r)"
                        % DATETIME_IMPLEMENTATION)
-    now = staticmethod(now)
 
 
-if datetime_available:
-    class DateValidator(DateTimeValidator):
-        def to_python(self, value, state):
-            if isinstance(value, datetime.date):
-                return value
-            value = super(DateValidator, self).to_python(value, state)
-            if isinstance(value, datetime.datetime):
-                value = value.date()
+class DateValidator(DateTimeValidator):
+    def to_python(self, value, state):
+        if isinstance(value, datetime.datetime):
+            value = value.date()
+        if isinstance(value, (datetime.date, sqlbuilder.SQLExpression)):
             return value
+        value = super(DateValidator, self).to_python(value, state)
+        if isinstance(value, datetime.datetime):
+            value = value.date()
+        return value
 
-        from_python = to_python
+    from_python = to_python
 
 class SODateCol(SOCol):
     dateFormat = '%Y-%m-%d'
 
     def __init__(self, **kw):
-        dateFormat = popKey(kw, 'dateFormat')
+        dateFormat = kw.pop('dateFormat', None)
         if dateFormat: self.dateFormat = dateFormat
         super(SODateCol, self).__init__(**kw)
 
@@ -1118,21 +1232,28 @@ class DateCol(Col):
     baseClass = SODateCol
 
 
-if datetime_available:
-    class TimeValidator(DateTimeValidator):
-        def to_python(self, value, state):
-            if isinstance(value, datetime.time):
-                return value
-            value = super(TimeValidator, self).to_python(value, state)
-            if isinstance(value, datetime.datetime):
-                value = value.time()
+class TimeValidator(DateTimeValidator):
+    def to_python(self, value, state):
+        if isinstance(value, (datetime.time, sqlbuilder.SQLExpression)):
             return value
+        if isinstance(value, datetime.timedelta):
+            if value.days:
+                raise validators.Invalid(
+                    "the value for the TimeCol '%s' must has days=0, it has days=%d" %
+                        (self.name, value.days), value, state)
+            return datetime.time(*time.gmtime(value.seconds)[3:6])
+        value = super(TimeValidator, self).to_python(value, state)
+        if isinstance(value, datetime.datetime):
+            value = value.time()
+        return value
+
+    from_python = to_python
 
 class SOTimeCol(SOCol):
     timeFormat = '%H:%M:%S'
 
     def __init__(self, **kw):
-        timeFormat = popKey(kw, 'timeFormat')
+        timeFormat = kw.pop('timeFormat', None)
         if timeFormat:
             self.timeFormat = timeFormat
         super(SOTimeCol, self).__init__(**kw)
@@ -1169,11 +1290,42 @@ class TimeCol(Col):
     baseClass = SOTimeCol
 
 
-try:
-    from decimal import Decimal
-except ImportError:
-    Decimal = float
-    Decimal # pyflakes in the try
+class SOTimestampCol(SODateTimeCol):
+    """
+    Necessary to support MySQL's use of TIMESTAMP versus DATETIME types
+    """
+
+    def __init__(self, **kw):
+        if 'default' not in kw:
+            kw['default'] = None
+        SOCol.__init__(self, **kw)
+
+    def _mysqlType(self):
+        return 'TIMESTAMP'
+
+class TimestampCol(Col):
+    baseClass = SOTimestampCol
+
+
+class TimedeltaValidator(validators.Validator):
+    def to_python(self, value, state):
+        return value
+
+    from_python = to_python
+
+class SOTimedeltaCol(SOCol):
+    def _postgresType(self):
+        return 'INTERVAL'
+
+    def createValidators(self):
+        return [TimedeltaValidator(name=self.name)] + \
+            super(SOTimedeltaCol, self).createValidators()
+
+class TimedeltaCol(Col):
+    baseClass = SOTimedeltaCol
+
+
+from decimal import Decimal
 
 class DecimalValidator(validators.Validator):
     def to_python(self, value, state):
@@ -1183,9 +1335,13 @@ class DecimalValidator(validators.Validator):
             return value
         if isinstance(value, float):
             value = str(value)
-        connection = state.soObject._connection
-        if hasattr(connection, "decimalSeparator"):
-            value = value.replace(connection.decimalSeparator, ".")
+        try:
+            connection = state.connection or state.soObject._connection
+        except AttributeError:
+            pass
+        else:
+            if hasattr(connection, "decimalSeparator"):
+                value = value.replace(connection.decimalSeparator, ".")
         try:
             return Decimal(value)
         except:
@@ -1197,27 +1353,31 @@ class DecimalValidator(validators.Validator):
             return None
         if isinstance(value, float):
             value = str(value)
-        if isinstance(value, (str, unicode)):
-            connection = state.soObject._connection
-            if hasattr(connection, "decimalSeparator"):
-                value = value.replace(connection.decimalSeparator, ".")
+        if isinstance(value, basestring):
+            try:
+                connection = state.connection or state.soObject._connection
+            except AttributeError:
+                pass
+            else:
+                if hasattr(connection, "decimalSeparator"):
+                    value = value.replace(connection.decimalSeparator, ".")
             try:
                 return Decimal(value)
             except:
                 raise validators.Invalid("can not parse Decimal value '%s' in the DecimalCol from '%s'" %
                     (value, getattr(state, 'soObject', '(unknown)')), value, state)
-        if not isinstance(value, (int, long, Decimal, sqlbuilder.SQLExpression)):
-            raise validators.Invalid("expected a decimal in the DecimalCol '%s', got %s %r instead" % \
-                (self.name, type(value), value), value, state)
-        return value
+        if isinstance(value, (int, long, Decimal, sqlbuilder.SQLExpression)):
+            return value
+        raise validators.Invalid("expected a Decimal in the DecimalCol '%s', got %s %r instead" % \
+            (self.name, type(value), value), value, state)
 
 class SODecimalCol(SOCol):
 
     def __init__(self, **kw):
-        self.size = popKey(kw, 'size', NoDefault)
+        self.size = kw.pop('size', NoDefault)
         assert self.size is not NoDefault, \
                "You must give a size argument"
-        self.precision = popKey(kw, 'precision', NoDefault)
+        self.precision = kw.pop('precision', NoDefault)
         assert self.precision is not NoDefault, \
                "You must give a precision argument"
         super(SODecimalCol, self).__init__(**kw)
@@ -1226,7 +1386,7 @@ class SODecimalCol(SOCol):
         return 'DECIMAL(%i, %i)' % (self.size, self.precision)
 
     def createValidators(self):
-        return [DecimalValidator()] + \
+        return [DecimalValidator(name=self.name)] + \
             super(SODecimalCol, self).createValidators()
 
 class DecimalCol(Col):
@@ -1243,6 +1403,55 @@ class CurrencyCol(DecimalCol):
     baseClass = SOCurrencyCol
 
 
+class DecimalStringValidator(DecimalValidator):
+    def to_python(self, value, state):
+        value = super(DecimalStringValidator, self).to_python(value, state)
+        if self.precision and isinstance(value, Decimal):
+            assert value < self.max, \
+                    "Value must be less than %s" % int(self.max)
+            value = value.quantize(self.precision)
+        return value
+
+    def from_python(self, value, state):
+        value = super(DecimalStringValidator, self).from_python(value, state)
+        if isinstance(value, Decimal):
+            if self.precision:
+                assert value < self.max, \
+                        "Value must be less than %s" % int(self.max)
+                value = value.quantize(self.precision)
+            value = value.to_eng_string()
+        elif isinstance(value, (int, long)):
+            value = str(value)
+        return value
+
+class SODecimalStringCol(SOStringCol):
+    def __init__(self, **kw):
+        self.size = kw.pop('size', NoDefault)
+        assert (self.size is not NoDefault) and (self.size >= 0), \
+            "You must give a size argument as a positive integer"
+        self.precision = kw.pop('precision', NoDefault)
+        assert (self.precision is not NoDefault) and (self.precision >= 0), \
+               "You must give a precision argument as a positive integer"
+        kw['length'] = int(self.size) + int(self.precision)
+        self.quantize = kw.pop('quantize', False)
+        assert isinstance(self.quantize, bool), \
+                "quantize argument must be Boolean True/False"
+        super(SODecimalStringCol, self).__init__(**kw)
+
+    def createValidators(self):
+        if self.quantize:
+            v = DecimalStringValidator(name=self.name,
+                precision=Decimal(10) ** (-1 * int(self.precision)),
+                max=Decimal(10) ** (int(self.size) - int(self.precision)))
+        else:
+            v = DecimalStringValidator(name=self.name, precision=0)
+        return [v] + \
+            super(SODecimalStringCol, self).createValidators(dataType=Decimal)
+
+class DecimalStringCol(StringCol):
+    baseClass = SODecimalStringCol
+
+
 class BinaryValidator(validators.Validator):
     """
     Validator for binary types.
@@ -1256,16 +1465,23 @@ class BinaryValidator(validators.Validator):
     def to_python(self, value, state):
         if value is None:
             return None
+        try:
+            connection = state.connection or state.soObject._connection
+        except AttributeError:
+            dbName = None
+            binaryType = type(None) # Just a simple workaround
+        else:
+            dbName = connection.dbName
+            binaryType = connection._binaryType
         if isinstance(value, str):
-            module = state.soObject._connection.module
-            if module.__name__ in ("sqlite", "pysqlite2.dbapi2"):
-                value = module.decode(value)
+            if dbName == "sqlite":
+                value = connection.module.decode(value)
             return value
-        if isinstance(value, (buffer_type, state.soObject._connection._binaryType)):
+        if isinstance(value, (buffer, binaryType)):
             cachedValue = self._cachedValue
             if cachedValue and cachedValue[1] == value:
                 return cachedValue[0]
-            if isinstance(value, array_type): # MySQL
+            if isinstance(value, array): # MySQL
                 return value.tostring()
             return str(value) # buffer => string
         raise validators.Invalid("expected a string in the BLOBCol '%s', got %s %r instead" % \
@@ -1274,11 +1490,17 @@ class BinaryValidator(validators.Validator):
     def from_python(self, value, state):
         if value is None:
             return None
-        binary = state.soObject._connection.createBinary(value)
+        connection = state.connection or state.soObject._connection
+        binary = connection.createBinary(value)
         self._cachedValue = (value, binary)
         return binary
 
 class SOBLOBCol(SOStringCol):
+    def __init__(self, **kw):
+        # Change the default from 'auto' to False - this is a (mostly) binary column
+        if 'varchar' not in kw: kw['varchar'] = False
+        super(SOBLOBCol, self).__init__(**kw)
+
     def createValidators(self):
         return [BinaryValidator(name=self.name)] + \
             super(SOBLOBCol, self).createValidators()
@@ -1298,7 +1520,10 @@ class SOBLOBCol(SOStringCol):
         return 'BYTEA'
 
     def _mssqlType(self):
-        return "IMAGE"
+        if self.connection and self.connection.can_use_max_types():
+            return 'VARBINARY(MAX)'
+        else:
+            return "IMAGE"
 
 class BLOBCol(StringCol):
     baseClass = SOBLOBCol
@@ -1318,7 +1543,13 @@ class PickleValidator(BinaryValidator):
         if value is None:
             return None
         if isinstance(value, unicode):
-            value = value.encode("ascii")
+            try:
+                connection = state.connection or state.soObject._connection
+            except AttributeError:
+                dbEncoding = "ascii"
+            else:
+                dbEncoding = getattr(connection, "dbEncoding", None) or "ascii"
+            value = value.encode(dbEncoding)
         if isinstance(value, str):
             return pickle.loads(value)
         raise validators.Invalid("expected a pickle string in the PickleCol '%s', got %s %r instead" % \
@@ -1327,36 +1558,38 @@ class PickleValidator(BinaryValidator):
     def from_python(self, value, state):
         if value is None:
             return None
-        return pickle.dumps(value)
+        return pickle.dumps(value, self.pickleProtocol)
 
 class SOPickleCol(SOBLOBCol):
 
     def __init__(self, **kw):
-        self.pickleProtocol = popKey(kw, 'pickleProtocol', 1)
+        self.pickleProtocol = kw.pop('pickleProtocol', pickle.HIGHEST_PROTOCOL)
         super(SOPickleCol, self).__init__(**kw)
 
     def createValidators(self):
-        return [PickleValidator(
-            name=self.name, pickleProtocol=self.pickleProtocol)] + \
+        return [PickleValidator(name=self.name,
+                pickleProtocol=self.pickleProtocol)] + \
             super(SOPickleCol, self).createValidators()
+
+    def _mysqlType(self):
+        length = self.length
+        if length >= 2**24:
+            return "LONGBLOB"
+        if length >= 2**16:
+            return "MEDIUMBLOB"
+        return "BLOB"
 
 class PickleCol(BLOBCol):
     baseClass = SOPickleCol
 
-def popKey(kw, name, default=None):
-    if not kw.has_key(name):
-        return default
-    value = kw[name]
-    del kw[name]
-    return value
 
 def pushKey(kw, name, value):
-    if not kw.has_key(name):
+    if not name in kw:
         kw[name] = value
 
 all = []
 for key, value in globals().items():
-    if isinstance(value, type) and (issubclass(value, Col) or issubclass(value, SOCol)):
+    if isinstance(value, type) and (issubclass(value, (Col, SOCol))):
         all.append(key)
 __all__.extend(all)
 del all

@@ -1,9 +1,11 @@
 from dbtest import *
 from sqlobject import sqlhub, SQLObject, StringCol
+import py.test
 try:
     from sqlobject.wsgi_middleware import make_middleware
 except ImportError:
-    disabled = True
+    pytestmark = py.test.mark.skipif('True')
+
 
 class NameOnly(SQLObject):
     name = StringCol()
@@ -77,3 +79,4 @@ def test_other():
     setup()
     assert runapp(use_transaction=True)
     assert names() == ['app1', 'app2']
+    

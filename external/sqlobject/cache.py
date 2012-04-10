@@ -10,8 +10,6 @@ import threading
 from weakref import ref
 from time import time as now
 
-True, False = 1==1, 0==1
-
 class CacheFactory(object):
 
     """
@@ -182,18 +180,31 @@ class CacheFactory(object):
             self.expiredCache[id] = ref(obj)
 
     def cull(self):
-        """
-        Runs through the cache and expires objects.  E.g., if
-        ``cullFraction`` is 3, then every third object is moved to
+        """Runs through the cache and expires objects
+
+        E.g., if ``cullFraction`` is 3, then every third object is moved to
         the 'expired' (aka weakref) cache.
+
         """
         self.lock.acquire()
         try:
+            #remove dead references from the expired cache
+            keys = self.expiredCache.keys()
+            for key in keys:
+                if self.expiredCache[key]() is None:
+                    self.expiredCache.pop(key, None)
+
             keys = self.cache.keys()
             for i in xrange(self.cullOffset, len(keys), self.cullFraction):
                 id = keys[i]
-                self.expiredCache[id] = ref(self.cache[id])
+                # create a weakref, then remove from the cache
+                obj = ref(self.cache[id])
                 del self.cache[id]
+
+                #the object may have been gc'd when removed from the cache
+                #above, no need to place in expiredCache
+                if obj() is not None:
+                    self.expiredCache[id] = obj
             # This offset tries to balance out which objects we
             # expire, so no object will just hang out in the cache
             # forever.
@@ -219,9 +230,9 @@ class CacheFactory(object):
             return
         self.lock.acquire()
         try:
-            if self.cache.has_key(id):
+            if id in self.cache:
                 del self.cache[id]
-            if self.expiredCache.has_key(id):
+            if id in self.expiredCache:
                 del self.expiredCache[id]
         finally:
             self.lock.release()
@@ -312,7 +323,7 @@ class CacheSet(object):
         if cls is None:
             for cache in self.caches.values():
                 cache.clear()
-        elif self.caches.has_key(cls.__name__):
+        elif cls.__name__ in self.caches:
             self.caches[cls.__name__].clear()
 
     def tryGet(self, id, cls):
@@ -345,7 +356,7 @@ class CacheSet(object):
         if cls is None:
             for cache in self.caches.values():
                 cache.expireAll()
-        elif self.caches.has_key(cls.__name__):
+        elif cls.__name__ in self.caches:
             self.caches[cls.__name__].expireAll()
 
     def getAll(self, cls=None):
@@ -362,3 +373,4 @@ class CacheSet(object):
             return self.caches[cls.__name__].getAll()
         else:
             return []
+        

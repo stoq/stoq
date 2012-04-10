@@ -1,8 +1,12 @@
-from sqlobject.sqlbuilder import sqlrepr, TRUE, FALSE
+from datetime import timedelta
+import sys
+
+from sqlobject.converters import registerConverter, sqlrepr, \
+     quote_str, unquote_str
 from sqlobject.sqlbuilder import SQLExpression, SQLObjectField, \
      Select, Insert, Update, Delete, Replace, \
-     SQLTrueClauseClass, SQLConstant, SQLPrefix, SQLCall, SQLOp
-from sqlobject.converters import registerConverter
+     SQLTrueClauseClass, SQLConstant, SQLPrefix, SQLCall, SQLOp, \
+     _LikeQuoted
 
 class TestClass:
 
@@ -39,23 +43,23 @@ def test_simple_string():
     assert sqlrepr('A String', 'firebird') == "'A String'"
 
 def test_string_newline():
-    assert sqlrepr('A String\nAnother', 'postgres') == "'A String\\nAnother'"
+    assert sqlrepr('A String\nAnother', 'postgres') == "E'A String\\nAnother'"
     assert sqlrepr('A String\nAnother', 'sqlite') == "'A String\nAnother'"
 
 def test_string_tab():
-    assert sqlrepr('A String\tAnother', 'postgres') == "'A String\\tAnother'"
+    assert sqlrepr('A String\tAnother', 'postgres') == "E'A String\\tAnother'"
 
 def test_string_r():
-    assert sqlrepr('A String\rAnother', 'postgres') == "'A String\\rAnother'"
+    assert sqlrepr('A String\rAnother', 'postgres') == "E'A String\\rAnother'"
 
 def test_string_b():
-    assert sqlrepr('A String\bAnother', 'postgres') == "'A String\\bAnother'"
+    assert sqlrepr('A String\bAnother', 'postgres') == "E'A String\\bAnother'"
 
 def test_string_000():
-    assert sqlrepr('A String\000Another', 'postgres') == "'A String\\0Another'"
+    assert sqlrepr('A String\000Another', 'postgres') == "E'A String\\0Another'"
 
 def test_string_():
-    assert sqlrepr('A String\'Another', 'postgres') == "'A String\\'Another'"
+    assert sqlrepr('A String\tAnother', 'postgres') == "E'A String\\tAnother'"
     assert sqlrepr('A String\'Another', 'firebird') == "'A String''Another'"
 
 def test_simple_unicode():
@@ -77,10 +81,10 @@ def test_tuple():
     assert sqlrepr(('one','two','three'), 'postgres') == "('one', 'two', 'three')"
 
 def test_bool():
-    assert sqlrepr(TRUE, 'postgres') == "'t'"
-    assert sqlrepr(FALSE, 'postgres') == "'f'"
-    assert sqlrepr(TRUE, 'mysql') == "1"
-    assert sqlrepr(FALSE, 'mysql') == "0"
+    assert sqlrepr(True, 'postgres') == "'t'"
+    assert sqlrepr(False, 'postgres') == "'f'"
+    assert sqlrepr(True, 'mysql') == "1"
+    assert sqlrepr(False, 'mysql') == "0"
 
 def test_datetime():
     from datetime import datetime, date, time
@@ -104,16 +108,46 @@ def test_sqlexpr():
     assert sqlrepr(instance) == repr(instance)
 
 def test_sqlobjectfield():
-    instance = SQLObjectField('test', 'test', 'test')
+    instance = SQLObjectField('test', 'test', 'test', None, None)
     assert sqlrepr(instance) == repr(instance)
 
 def test_select():
     instance = Select('test')
-    assert sqlrepr(instance, 'mysql') == "SELECT 'test'"
+    assert sqlrepr(instance, 'mysql') == "SELECT test"
 
 def test_insert():
+    # Single column, no keyword arguments.
     instance = Insert('test', [('test',)])
     assert sqlrepr(instance, 'mysql') == "INSERT INTO test VALUES ('test')"
+
+    # Multiple columns, no keyword arguments.
+    instance2 = Insert('test', [('1st', '2nd', '3th', '4th')])
+    assert sqlrepr(instance2, 'postgres') == "INSERT INTO test VALUES ('1st', '2nd', '3th', '4th')"
+
+    # Multiple rows, multiple columns, "valueList" keyword argument.
+    instance3 = Insert('test', valueList=[('a1', 'b1'), ('a2', 'b2'), ('a3', 'b3')])
+    assert sqlrepr(instance3, 'sqlite') == "INSERT INTO test VALUES ('a1', 'b1'), ('a2', 'b2'), ('a3', 'b3')"
+
+    # Multiple columns, "values" keyword argument.
+    instance4 = Insert('test', values=('v1', 'v2', 'v3'))
+    assert sqlrepr(instance4, 'mysql') == "INSERT INTO test VALUES ('v1', 'v2', 'v3')"
+
+    # Single column, "valueList" keyword argument.
+    instance5 = Insert('test', valueList=[('v1',)])
+    assert sqlrepr(instance5, 'mysql') == "INSERT INTO test VALUES ('v1')"
+
+    # Multiple rows, Multiple columns, template.
+    instance6 = Insert('test', valueList=[('a1', 'b1'), ('a2', 'b2')], template=['col1', 'col2'])
+    assert sqlrepr(instance6, 'mysql') == "INSERT INTO test (col1, col2) VALUES ('a1', 'b1'), ('a2', 'b2')"
+
+    # Multiple columns, implicit template (dictionary value).
+    instance7 = Insert('test', valueList=[{'col1': 'a1', 'col2': 'b1'}])
+    assert sqlrepr(instance7, 'mysql') == "INSERT INTO test (col2, col1) VALUES ('b1', 'a1')"
+
+    # Multiple rows, Multiple columns, implicit template.
+    instance8 = Insert('test', valueList=[{'col1': 'a1', 'col2': 'b1'},
+                                        {'col1': 'a2', 'col2': 'b2'}])
+    assert sqlrepr(instance8, 'mysql') == "INSERT INTO test (col2, col1) VALUES ('b1', 'a1'), ('b2', 'a2')"
 
 def test_update():
     instance = Update('test', {'test':'test'})
@@ -133,7 +167,7 @@ def test_trueclause():
 
 def test_op():
     instance = SQLOp('and', 'this', 'that')
-    assert sqlrepr(instance, 'mysql') == "('this' AND 'that')"
+    assert sqlrepr(instance, 'mysql') == "(('this') AND ('that'))"
 
 def test_call():
     instance = SQLCall('test', ('test',))
@@ -146,3 +180,40 @@ def test_constant():
 def test_prefix():
     instance = SQLPrefix('test', 'test')
     assert sqlrepr(instance, 'mysql') == "test 'test'"
+
+def test_dict():
+    assert sqlrepr({"key": "value"}, "sqlite") == "('key')"
+
+def test_sets():
+    try:
+        set
+    except NameError:
+        pass
+    else:
+        assert sqlrepr(set([1])) == "(1)"
+    if sys.version_info[:3] < (2, 6, 0): # Module sets was deprecated in Python 2.6
+        try:
+            from sets import Set
+        except ImportError:
+            pass
+        else:
+            assert sqlrepr(Set([1])) == "(1)"
+
+def test_timedelta():
+    assert sqlrepr(timedelta(seconds=30*60)) == \
+        "INTERVAL '0 days 1800 seconds'"
+
+def test_quote_unquote_str():
+    assert quote_str('test%', 'postgres') == "'test%'"
+    assert quote_str('test%', 'sqlite') == "'test%'"
+    assert quote_str('test\%', 'postgres') == "E'test\\%'"
+    assert quote_str('test\\%', 'sqlite') == "'test\%'"
+    assert unquote_str("'test%'") == 'test%'
+    assert unquote_str("'test\\%'") == 'test\\%'
+    assert unquote_str("E'test\\%'") == 'test\\%'
+
+def test_like_quoted():
+    assert sqlrepr(_LikeQuoted('test'), 'postgres') == "'test'"
+    assert sqlrepr(_LikeQuoted('test'), 'sqlite') == "'test'"
+    assert sqlrepr(_LikeQuoted('test%'), 'postgres') == r"E'test\\%'"
+    assert sqlrepr(_LikeQuoted('test%'), 'sqlite') == r"'test\%'"

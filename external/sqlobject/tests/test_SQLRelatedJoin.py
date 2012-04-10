@@ -42,3 +42,17 @@ def test_1():
     for i, j in zip(t1.fightersAsList, t1.fightersAsSResult):
         assert i is j
     assert len(t2.fightersAsList) == t2.fightersAsSResult.count()
+
+def test_related_join_transaction():
+    if not supports('transactions'):
+        return
+    createAllTables()
+    trans = Tourtment._connection.transaction()
+    try:
+        t1=Tourtment(name='Tourtment #1', connection=trans)
+        t1.addFighter(Fighter(name='Jim', connection=trans))
+        assert t1.fightersAsSResult.count() == 1
+        assert t1.fightersAsSResult[0]._connection == trans
+    finally:
+        Tourtment._connection.autoCommit = True
+

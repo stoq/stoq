@@ -1,16 +1,21 @@
 try:
     import doctest
     doctest.OutputChecker
-except AttributeError:
+except AttributeError: # Python < 2.4
     import util.doctest24 as doctest
-import elementtree.ElementTree as et
+try:
+    import xml.etree.ElementTree as ET
+except ImportError:
+    import elementtree.ElementTree as ET
 from xml.parsers.expat import ExpatError as XMLParseError
 
 RealOutputChecker = doctest.OutputChecker
 
+
 def debug(*msg):
     import sys
     print >> sys.stderr, ' '.join(map(str, msg))
+
 
 class HTMLOutputChecker(RealOutputChecker):
 
@@ -20,7 +25,7 @@ class HTMLOutputChecker(RealOutputChecker):
             return normal
         try:
             want_xml = make_xml(want)
-        except XMLParseError, e:
+        except XMLParseError:
             pass
         else:
             try:
@@ -49,7 +54,10 @@ class HTMLOutputChecker(RealOutputChecker):
             got_xml = make_xml(got)
             got_norm = make_string(got_xml)
         except XMLParseError, e:
-            got_norm = '(bad XML: %s)' % e
+            if example.want.startswith('<'):
+                got_norm = '(bad XML: %s)' % e
+            else:
+                return actual
         s = '%s\nXML Wanted: %s\nXML Got   : %s\n' % (
             actual, want_norm, got_norm)
         if got_xml and want_xml:
@@ -57,6 +65,7 @@ class HTMLOutputChecker(RealOutputChecker):
             xml_compare(want_xml, got_xml, result.append)
             s += 'Difference report:\n%s\n' % '\n'.join(result)
         return s
+
 
 def xml_compare(x1, x2, reporter=None):
     if x1.tag != x2.tag:
@@ -70,7 +79,7 @@ def xml_compare(x1, x2, reporter=None):
                          % (name, value, name, x2.attrib.get(name)))
             return False
     for name in x2.attrib.keys():
-        if not x1.attrib.has_key(name):
+        if name not in x1.attrib:
             if reporter:
                 reporter('x2 has an attribute x1 is missing: %s'
                          % name)
@@ -100,22 +109,29 @@ def xml_compare(x1, x2, reporter=None):
             return False
     return True
 
+
 def text_compare(t1, t2):
     if not t1 and not t2:
         return True
+    if t1 == '*' or t2 == '*':
+        return True
     return (t1 or '').strip() == (t2 or '').strip()
 
+
 def make_xml(s):
-    return et.XML('<xml>%s</xml>' % s)
+    return ET.XML('<xml>%s</xml>' % s)
+
 
 def make_string(xml):
     if isinstance(xml, (str, unicode)):
         xml = make_xml(xml)
-    s = et.tostring(xml)
+    s = ET.tostring(xml)
     if s == '<xml />':
         return ''
     assert s.startswith('<xml>') and s.endswith('</xml>'), repr(s)
     return s[5:-6]
 
+
 def install():
     doctest.OutputChecker = HTMLOutputChecker
+

@@ -56,12 +56,16 @@ Examples::
 
 """
 
-from __future__ import generators
-
 from cgi import escape
-import elementtree.ElementTree as et
+try:
+    import xml.etree.ElementTree as ET
+except ImportError: # Python < 2.5
+    import elementtree.ElementTree as ET
+
+__all__ = ['html']
 
 default_encoding = 'utf-8'
+
 
 class _HTML:
 
@@ -74,10 +78,10 @@ class _HTML:
         if attr.find('__') != -1:
             attr = attr.replace('__', ':')
         if attr == 'comment':
-            return Element(et.Comment, {})
+            return Element(ET.Comment, {})
         else:
             return Element(attr, {})
-
+        
     def __call__(self, *args):
         return ElementList(args)
 
@@ -102,17 +106,17 @@ class _HTML:
 
 html = _HTML()
 
-class Element(et._ElementInterface):
+
+class Element(ET._ElementInterface):
 
     def __call__(self, *args, **kw):
         el = self.__class__(self.tag, self.attrib)
-        if kw.has_key('c'):
+        if 'c' in kw:
             if args:
                 raise ValueError(
                     "You may either provide positional arguments or a "
                     "'c' keyword argument, but not both")
-            args = kw['c']
-            del kw['c']
+            args = kw.pop('c')
             if not isinstance(args, (list, tuple)):
                 args = (args,)
         for name, value in kw.items():
@@ -136,7 +140,7 @@ class Element(et._ElementInterface):
         for arg in flatten(args):
             if arg is None:
                 continue
-            if not et.iselement(arg):
+            if not ET.iselement(arg):
                 if last is None:
                     if el.text is None:
                         el.text = unicode(arg)
@@ -153,7 +157,7 @@ class Element(et._ElementInterface):
         return el
 
     def __str__(self):
-        return et.tostring(self, default_encoding)
+        return ET.tostring(self, default_encoding)
 
     def __unicode__(self):
         # This is lame!
@@ -167,13 +171,15 @@ class Element(et._ElementInterface):
             content = repr(content)
         return '<Element %r>' % content
 
-class ElementList(list):
 
+class ElementList(list):
+    
     def __str__(self):
         return html.str(self)
 
     def __repr__(self):
         return 'ElementList(%s)' % list.__repr__(self)
+
 
 def flatten(items):
     for item in items:
@@ -182,5 +188,3 @@ def flatten(items):
                 yield sub
         else:
             yield item
-
-__all__ = ['html']

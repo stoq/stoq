@@ -1,6 +1,7 @@
 """
-Interfaces for FormEncode
+Interfaces for FormEncode (for documentation purposes only)
 """
+
 
 class Attribute(object):
 
@@ -8,8 +9,10 @@ class Attribute(object):
         self.description = description
         self.name = name
 
+
 class Interface(object):
     pass
+
 
 class IDeclarative(Interface):
 
@@ -61,6 +64,7 @@ class IValidator(IDeclarative):
         Return the message (from the `messages` attribute) that goes
         with `name`, or return default if `name` not found `default`.
         """
+
 
 class ISchema(IValidator):
 

@@ -1,9 +1,6 @@
 """
-VariableDecode.py
-Ian Bicking <ianb@colorstudy.com>
-
-Takes GET/POST variable dictionary, as might be returned by
-`cgi`, and turns them into lists and dictionaries.
+Takes GET/POST variable dictionary, as might be returned by ``cgi``,
+and turns them into lists and dictionaries.
 
 Keys (variable names) can have subkeys, with a ``.`` and
 can be numbered with ``-``, like ``a.b-3=something`` means that
@@ -16,21 +13,27 @@ This doesn't deal with multiple keys, like in a query string of
 '20']}``.  That's left to someplace else to interpret.  If you want to
 represent lists in this model, you use indexes, and the lists are
 explicitly ordered.
+
+If you want to change the character that determines when to split for
+a dict or list, both variable_decode and variable_encode take dict_char
+and list_char keyword args. For example, to have the GET/POST variables,
+``a_1=something`` as a list, you would use a list_char='_'.
 """
 
 import api
 
 __all__ = ['variable_decode', 'variable_encode', 'NestedVariables']
 
-def variable_decode(d):
+
+def variable_decode(d, dict_char='.', list_char='-'):
     """
-    Decodes the flat dictionary d into a nested structure.
+    Decode the flat dictionary d into a nested structure.
     """
     result = {}
     dicts_to_sort = {}
     known_lengths = {}
     for key, value in d.items():
-        keys = key.split('.')
+        keys = key.split(dict_char)
         new_keys = []
         was_repetition_count = False
         for key in keys:
@@ -40,8 +43,8 @@ def variable_decode(d):
                 known_lengths[tuple(new_keys)] = int(value)
                 was_repetition_count = True
                 break
-            elif '-' in key:
-                key, index = key.split('-')
+            elif list_char in key:
+                key, index = key.split(list_char)
                 new_keys.append(key)
                 dicts_to_sort[tuple(new_keys)] = 1
                 new_keys.append(int(index))
@@ -53,13 +56,13 @@ def variable_decode(d):
         place = result
         for i in range(len(new_keys)-1):
             try:
-                if isinstance(place[new_keys[i]], (str, unicode, list)):
+                if not isinstance(place[new_keys[i]], dict):
                     place[new_keys[i]] = {None: place[new_keys[i]]}
                 place = place[new_keys[i]]
             except KeyError:
                 place[new_keys[i]] = {}
                 place = place[new_keys[i]]
-        if place.has_key(new_keys[-1]):
+        if new_keys[-1] in place:
             if isinstance(place[new_keys[-1]], dict):
                 place[new_keys[-1]][None] = value
             elif isinstance(place[new_keys[-1]], list):
@@ -76,8 +79,11 @@ def variable_decode(d):
         else:
             place[new_keys[-1]] = value
 
-    to_sort_keys = dicts_to_sort.keys()
-    to_sort_keys.sort(lambda a, b: -cmp(len(a), len(b)))
+    try:
+        to_sort_keys = sorted(dicts_to_sort, key=len, reverse=True)
+    except NameError: # Python < 2.4
+        to_sort_keys = dicts_to_sort.keys()
+        to_sort_keys.sort(lambda a, b: -cmp(len(a), len(b)))
     for key in to_sort_keys:
         to_sort = result
         source = None
@@ -86,25 +92,26 @@ def variable_decode(d):
             source = to_sort
             last_key = sub_key
             to_sort = to_sort[sub_key]
-        if to_sort.has_key(None):
-            noneVals = [(0, x) for x in to_sort[None]]
-            del to_sort[None]
+        if None in to_sort:
+            noneVals = [(0, x) for x in to_sort.pop(None)]
             noneVals.extend(to_sort.items())
             to_sort = noneVals
         else:
             to_sort = to_sort.items()
         to_sort.sort()
         to_sort = [v for k, v in to_sort]
-        if known_lengths.has_key(key):
+        if key in known_lengths:
             if len(to_sort) < known_lengths[key]:
                 to_sort.extend(['']*(known_lengths[key] - len(to_sort)))
         source[last_key] = to_sort
-
+        
     return result
 
-def variable_encode(d, prepend='', result=None):
+
+def variable_encode(d, prepend='', result=None, add_repetitions=True,
+                    dict_char='.', list_char='-'):
     """
-    Encodes a nested structure into a flat dictionary.
+    Encode a nested structure into a flat dictionary.
     """
     if result is None:
         result = {}
@@ -115,24 +122,31 @@ def variable_encode(d, prepend='', result=None):
             elif not prepend:
                 name = key
             else:
-                name = "%s.%s" % (prepend, key)
-            variable_encode(value, name, result)
+                name = "%s%s%s" % (prepend, dict_char, key)
+            variable_encode(value, name, result, add_repetitions,
+                            dict_char=dict_char, list_char=list_char)
     elif isinstance(d, list):
         for i in range(len(d)):
-            variable_encode(d[i], "%s-%i" % (prepend, i), result)
-        if prepend:
-            repName = '%s--repetitions' % prepend
-        else:
-            repName = '__repetitions__'
-        result[repName] = str(len(d))
+            variable_encode(d[i], "%s%s%i" % (prepend, list_char, i), result,
+                            add_repetitions, dict_char=dict_char, list_char=list_char)
+        if add_repetitions:
+            if prepend:
+                repName = '%s--repetitions' % prepend
+            else:
+                repName = '__repetitions__'
+            result[repName] = str(len(d))
     else:
         result[prepend] = d
     return result
+
 
 class NestedVariables(api.FancyValidator):
 
     def _to_python(self, value, state):
         return variable_decode(value)
-
+    
     def _from_python(self, value, state):
         return variable_encode(value)
+
+    def empty_value(self, value):
+        return {}
