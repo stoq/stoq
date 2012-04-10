@@ -39,3 +39,4 @@ class Test5(SQLObject):
     class sqlmeta:
         createSQL = {'mysql': 'CREATE SEQUENCE db_test5_seq;'}
     test5 = StringCol()
+

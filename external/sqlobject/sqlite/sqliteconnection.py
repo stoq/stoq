@@ -1,11 +1,11 @@
-from sqlobject.dbconnection import DBAPI
-from sqlobject.col import popKey
+import base64
+import os
+import thread
+import urllib
+from sqlobject.dbconnection import DBAPI, Boolean
 from sqlobject import col, sqlbuilder
 from sqlobject.dberrors import *
-import thread
 
-sqlite = None
-using_sqlite2 = False
 sqlite2_Binary = None
 
 class ErrorMessage(str):
@@ -23,95 +23,110 @@ class SQLiteConnection(DBAPI):
     schemes = [dbName]
 
     def __init__(self, filename, autoCommit=1, **kw):
-        global sqlite
-        global using_sqlite2
-        if sqlite is None:
+        drivers = kw.pop('driver', None) or 'pysqlite2,sqlite3,sqlite'
+        for driver in drivers.split(','):
+            driver = driver.strip()
+            if not driver:
+                continue
             try:
-                import sqlite3 as sqlite
-                using_sqlite2 = True
+                if driver in ('sqlite2', 'pysqlite2'):
+                        from pysqlite2 import dbapi2 as sqlite
+                        self.using_sqlite2 = True
+                elif driver == 'sqlite3':
+                        import sqlite3 as sqlite
+                        self.using_sqlite2 = True
+                elif driver in ('sqlite', 'sqlite1'):
+                        import sqlite
+                        self.using_sqlite2 = False
+                else:
+                    raise ValueError('Unknown SQLite driver "%s", expected pysqlite2, sqlite3 or sqlite' % driver)
             except ImportError:
-                try:
-                    from pysqlite2 import dbapi2 as sqlite
-                    using_sqlite2 = True
-                except ImportError:
-                    import sqlite
-                    using_sqlite2 = False
+                pass
+            else:
+                break
+        else:
+            raise ImportError('Cannot find an SQLite driver, tried %s' % drivers)
+        if self.using_sqlite2:
+            sqlite.encode = base64.encodestring
+            sqlite.decode = base64.decodestring
         self.module = sqlite
         self.filename = filename  # full path to sqlite-db-file
         self._memory = filename == ':memory:'
-        if self._memory:
-            if not using_sqlite2:
-                raise ValueError(
-                    "You must use sqlite2 to use in-memory databases")
+        if self._memory and not self.using_sqlite2:
+            raise ValueError("You must use sqlite2 to use in-memory databases")
         # connection options
         opts = {}
-        if using_sqlite2:
+        if self.using_sqlite2:
             if autoCommit:
                 opts["isolation_level"] = None
-            if 'encoding' in kw:
-                import warnings
-                warnings.warn(DeprecationWarning("pysqlite2 does not support the encoding option"))
-            opts["detect_types"] = sqlite.PARSE_DECLTYPES
-            for col_type in "text", "char", "varchar", "date", "time", "datetime", "timestamp":
-                sqlite.register_converter(col_type, stop_pysqlite2_converting_strings)
-                sqlite.register_converter(col_type.upper(), stop_pysqlite2_converting_strings)
-            try:
-                from sqlite import encode, decode
-            except ImportError:
-                import base64
-                sqlite.encode = base64.encodestring
-                sqlite.decode = base64.decodestring
-            else:
-                sqlite.encode = encode
-                sqlite.decode = decode
             global sqlite2_Binary
             if sqlite2_Binary is None:
                 sqlite2_Binary = sqlite.Binary
                 sqlite.Binary = lambda s: sqlite2_Binary(sqlite.encode(s))
             if 'factory' in kw:
-                factory = popKey(kw, 'factory')
+                factory = kw.pop('factory')
                 if isinstance(factory, str):
                     factory = globals()[factory]
                 opts['factory'] = factory(sqlite)
         else:
-            opts['autocommit'] = bool(autoCommit)
+            opts['autocommit'] = Boolean(autoCommit)
             if 'encoding' in kw:
-                opts['encoding'] = popKey(kw, 'encoding')
+                opts['encoding'] = kw.pop('encoding')
             if 'mode' in kw:
-                opts['mode'] = int(popKey(kw, 'mode'), 0)
+                opts['mode'] = int(kw.pop('mode'), 0)
         if 'timeout' in kw:
-            if using_sqlite2:
-                opts['timeout'] = float(popKey(kw, 'timeout'))
+            if self.using_sqlite2:
+                opts['timeout'] = float(kw.pop('timeout'))
             else:
-                opts['timeout'] = int(float(popKey(kw, 'timeout')) * 1000)
+                opts['timeout'] = int(float(kw.pop('timeout')) * 1000)
         if 'check_same_thread' in kw:
-            opts["check_same_thread"] = bool(popKey(kw, 'check_same_thread'))
+            opts["check_same_thread"] = Boolean(kw.pop('check_same_thread'))
         # use only one connection for sqlite - supports multiple)
         # cursors per connection
         self._connOptions = opts
-        self.use_table_info = popKey(kw, "use_table_info", False)
+        self.use_table_info = Boolean(kw.pop("use_table_info", True))
         DBAPI.__init__(self, **kw)
         self._threadPool = {}
         self._threadOrigination = {}
         if self._memory:
             self._memoryConn = sqlite.connect(
                 self.filename, **self._connOptions)
+            # Convert text data from SQLite to str, not unicode -
+            # SQLObject converts it to unicode itself.
+            self._memoryConn.text_factory = str
 
-    def connectionFromURI(cls, uri):
-        user, password, host, port, path, args = cls._parseURI(uri)
-        assert host is None, (
+    @classmethod
+    def _connectionFromParams(cls, user, password, host, port, path, args):
+        assert host is None and port is None, (
             "SQLite can only be used locally (with a URI like "
-            "sqlite:///file or sqlite:/file, not %r)" % uri)
+            "sqlite:/file or sqlite:///file, not sqlite://%s%s)" %
+            (host, port and ':%r' % port or ''))
         assert user is None and password is None, (
             "You may not provide usernames or passwords for SQLite "
             "databases")
         if path == "/:memory:":
             path = ":memory:"
         return cls(filename=path, **args)
-    connectionFromURI = classmethod(connectionFromURI)
+
+    def oldUri(self):
+        path = self.filename
+        if path == ":memory:":
+            path = "/:memory:"
+        else:
+            path = "//" + path
+        return 'sqlite:%s' % path
 
     def uri(self):
-        return 'sqlite:///%s' % self.filename
+        path = self.filename
+        if path == ":memory:":
+            path = "/:memory:"
+        else:
+            if path.startswith('/'):
+                path = "//" + path
+            else:
+                path = "///" + path
+            path = urllib.quote(path)
+        return 'sqlite:%s' % path
 
     def getConnection(self):
         # SQLite can't share connections between threads, and so can't
@@ -124,7 +139,7 @@ class SQLiteConnection(DBAPI):
             return conn
         threadid = thread.get_ident()
         if (self._pool is not None
-            and self._threadPool.has_key(threadid)):
+            and threadid in self._threadPool):
             conn = self._threadPool[threadid]
             del self._threadPool[threadid]
             if conn in self._pool:
@@ -148,7 +163,7 @@ class SQLiteConnection(DBAPI):
         threadid = self._threadOrigination.get(id(conn))
         DBAPI.releaseConnection(self, conn, explicit=explicit)
         if (self._pool is not None and threadid
-            and not self._threadPool.has_key(threadid)):
+            and threadid not in self._threadPool):
             self._threadPool[threadid] = conn
         else:
             if self._pool and conn in self._pool:
@@ -156,7 +171,7 @@ class SQLiteConnection(DBAPI):
             conn.close()
 
     def _setAutoCommit(self, conn, auto):
-        if using_sqlite2:
+        if self.using_sqlite2:
             if auto:
                 conn.isolation_level = None
             else:
@@ -165,18 +180,22 @@ class SQLiteConnection(DBAPI):
             conn.autocommit = auto
 
     def _setIsolationLevel(self, conn, level):
-        if not using_sqlite2:
+        if not self.using_sqlite2:
             return
         conn.isolation_level = level
 
     def makeConnection(self):
         if self._memory:
             return self._memoryConn
-        return sqlite.connect(self.filename, **self._connOptions)
+        conn = self.module.connect(self.filename, **self._connOptions)
+        conn.text_factory = str # Convert text data to str, not unicode
+        return conn
+
+    def close(self):
+        DBAPI.close(self)
+        self._threadPool = {}
 
     def _executeRetry(self, conn, cursor, query):
-        query = query.replace('NOW()', "datetime('now')")
-
         if self.debug:
             self.printDebug(conn, query, 'QueryR')
         try:
@@ -233,7 +252,8 @@ class SQLiteConnection(DBAPI):
         else:
             return DBAPI._insertSQL(self, table, names, values)
 
-    def _queryAddLimitOffset(self, query, start, end):
+    @classmethod
+    def _queryAddLimitOffset(cls, query, start, end):
         if not start:
             return "%s LIMIT %i" % (query, end)
         if not end:
@@ -250,8 +270,9 @@ class SQLiteConnection(DBAPI):
         return self._createIDColumn(soClass.sqlmeta)
 
     def _createIDColumn(self, sqlmeta):
-        key_type = {int: "INTEGER", str: "TEXT"}[sqlmeta.idType]
-        return '%s %s PRIMARY KEY' % (sqlmeta.idName, key_type)
+        if sqlmeta.idType == str:
+            return '%s TEXT PRIMARY KEY' % sqlmeta.idName
+        return '%s INTEGER PRIMARY KEY AUTOINCREMENT' % sqlmeta.idName
 
     def joinSQLType(self, join):
         return 'INT NOT NULL'
@@ -260,40 +281,6 @@ class SQLiteConnection(DBAPI):
         result = self.queryOne("SELECT tbl_name FROM sqlite_master WHERE type='table' AND tbl_name = '%s'" % tableName)
         # turn it into a boolean:
         return not not result
-
-    def viewExists(self, tableName):
-        result = self.queryOne("SELECT tbl_name FROM sqlite_master WHERE type='view' AND tbl_name = '%s'" % tableName)
-        # turn it into a boolean:
-        return not not result
-
-    def tableHasColumn(self, tableName, columnName):
-        colData = self.queryOne("SELECT sql FROM sqlite_master WHERE type='table' AND name='%s'"
-                                % tableName)
-        if not colData:
-            return False
-        colData = colData[0].split('(', 1)[1].strip()[:-2]
-        while colData.find('(') > -1:
-            st = colData.find('(')
-            en = colData.find(')')
-            if en == -1:
-                break
-            colData = colData[:st] + colData[en+1:]
-        results = []
-        fields = set()
-        for colDesc in colData.split(','):
-            parts = colDesc.strip().split(' ', 2)
-            field = parts[0].strip()
-            # skip comments
-            if field.startswith('--'):
-                continue
-            # get rid of enclosing quotes
-            if field[0] == field[-1] == '"':
-                field = field[1:-1]
-            fields.add(field)
-        return columnName in fields
-
-    def dropColumn(self, tableName, column):
-        pass
 
     def createIndexSQL(self, soClass, index):
         return index.sqliteCreateIndexSQL(soClass)
@@ -312,10 +299,10 @@ class SQLiteConnection(DBAPI):
         self.query('ALTER TABLE %s RENAME TO %s' % (sqlmeta.table, new_name))
         cols = [self._createIDColumn(sqlmeta)] \
                      + [self.createColumn(None, col)
-                        for col in sqlmeta.columnList if col.name != column]
+                        for col in sqlmeta.columnList if col.name != column.name]
         cols = ",\n".join(["    %s" % c for c in cols])
         self.query('CREATE TABLE %s (\n%s\n)' % (sqlmeta.table, cols))
-        all_columns = ', '.join(['id'] + [col.dbName for col in sqlmeta.columnList])
+        all_columns = ', '.join([sqlmeta.idName] + [col.dbName for col in sqlmeta.columnList])
         self.query('INSERT INTO %s (%s) SELECT %s FROM %s' % (
             sqlmeta.table, all_columns, all_columns, new_name))
         self.query('DROP TABLE %s' % new_name)
@@ -330,9 +317,12 @@ class SQLiteConnection(DBAPI):
         colData = self.queryAll("PRAGMA table_info(%s)" % tableName)
         results = []
         for index, field, t, nullAllowed, default, key in colData:
-            if field == 'id':
+            if field == soClass.sqlmeta.idName:
                 continue
             colClass, kw = self.guessClass(t)
+            if default == 'NULL':
+                nullAllowed = True
+                default = None
             kw['name'] = soClass.sqlmeta.style.dbColumnToPythonAttr(field)
             kw['dbName'] = field
             kw['notNone'] = not nullAllowed
@@ -346,12 +336,14 @@ class SQLiteConnection(DBAPI):
         colData = self.queryOne("SELECT sql FROM sqlite_master WHERE type='table' AND name='%s'"
                                 % tableName)
         if not colData:
-            raise ValueError('The table %s ws not found in the database. Load failed.' % tableName)
+            raise ValueError('The table %s was not found in the database. Load failed.' % tableName)
         colData = colData[0].split('(', 1)[1].strip()[:-2]
-        while colData.find('(') > -1:
-            st = colData.find('(')
-            en = colData.find(')')
-            colData = colData[:st] + colData[en+1:]
+        while True:
+            start = colData.find('(')
+            if start == -1: break
+            end = colData.find(')', start)
+            if end == -1: break
+            colData = colData[:start] + colData[end+1:]
         results = []
         for colDesc in colData.split(','):
             parts = colDesc.strip().split(' ', 2)
@@ -370,6 +362,7 @@ class SQLiteConnection(DBAPI):
             else:
                 index_info = parts[2].strip().upper()
             kw['name'] = soClass.sqlmeta.style.dbColumnToPythonAttr(field)
+            kw['dbName'] = field
             import re
             nullble = re.search(r'(\b\S*)\sNULL', index_info)
             default = re.search(r"DEFAULT\s((?:\d[\dA-FX.]*)|(?:'[^']*')|(?:#[^#]*#))", index_info)
@@ -382,25 +375,27 @@ class SQLiteConnection(DBAPI):
 
     def guessClass(self, t):
         t = t.upper()
-        if t.find('INT') > 0:
+        if t.find('INT') >= 0:
             return col.IntCol, {}
-        elif t.find('TEXT') > 0 or t.find('CHAR') > 0 or t.find('CLOB') > 0:
+        elif t.find('TEXT') >= 0 or t.find('CHAR') >= 0 or t.find('CLOB') >= 0:
             return col.StringCol, {'length': 2**32-1}
-        elif t.find('BLOB') > 0:
+        elif t.find('BLOB') >= 0:
             return col.BLOBCol, {"length": 2**32-1}
-        elif t.find('REAL') > 0 or t.find('FLOAT') > 0:
+        elif t.find('REAL') >= 0 or t.find('FLOAT') >= 0:
             return col.FloatCol, {}
-        elif t.find('DECIMAL') > 0:
-            return col.DecimalCol, {}
+        elif t.find('DECIMAL') >= 0:
+            return col.DecimalCol, {'size': None, 'precision': None}
+        elif t.find('BOOL') >= 0:
+            return col.BoolCol, {}
         else:
             return col.Col, {}
 
-    def dropDatabase(self, dbname, ifExists=False):
-        if os.path.exists(dbname):
-            os.unlink(dbname)
+    def createEmptyDatabase(self):
+        if self._memory:
+            return
+        open(self.filename, 'w').close()
 
-    def createDatabase(self, dbname):
-        pass
-
-def stop_pysqlite2_converting_strings(s):
-    return s
+    def dropDatabase(self):
+        if self._memory:
+            return
+        os.unlink(self.filename)

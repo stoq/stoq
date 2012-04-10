@@ -33,6 +33,7 @@ class B1(Declarative):
         Declarative.__instanceinit__(self, new_attrs)
         self.attrs = self.add_attrs(self.attrs, new_attrs)
 
+    @staticmethod
     def add_attrs(old_attrs, new_attrs):
         old_attrs = old_attrs[:]
         for name in new_attrs.keys():
@@ -43,7 +44,6 @@ class B1(Declarative):
             old_attrs.append(name)
         old_attrs.sort()
         return old_attrs
-    add_attrs = staticmethod(add_attrs)
 
     c = 1
 

@@ -1,8 +1,9 @@
-import sqlbuilder
 import dbconnection
+import joins
 import main
+import sqlbuilder
 
-StringType = type('')
+__all__ = ['SelectResults']
 
 class SelectResults(object):
     IterationClass = dbconnection.Iteration
@@ -12,25 +13,48 @@ class SelectResults(object):
         self.sourceClass = sourceClass
         if clause is None or isinstance(clause, str) and clause == 'all':
             clause = sqlbuilder.SQLTrueClause
+        if not isinstance(clause, sqlbuilder.SQLExpression):
+            clause = sqlbuilder.SQLConstant(clause)
         self.clause = clause
-        tablesDict = sqlbuilder.tablesUsedDict(self.clause)
-        tablesDict[sourceClass.sqlmeta.table] = 1
-        if clauseTables:
-            for table in clauseTables:
-                tablesDict[table] = 1
-        self.clauseTables = clauseTables
-        self.tables = tablesDict.keys()
         self.ops = ops
-        if self.ops.get('orderBy', sqlbuilder.NoDefault) is sqlbuilder.NoDefault:
-            self.ops['orderBy'] = sourceClass.sqlmeta.defaultOrder
-        orderBy = self.ops['orderBy']
-        if isinstance(orderBy, list) or isinstance(orderBy, tuple):
+        if ops.get('orderBy', sqlbuilder.NoDefault) is sqlbuilder.NoDefault:
+            ops['orderBy'] = sourceClass.sqlmeta.defaultOrder
+        orderBy = ops['orderBy']
+        if isinstance(orderBy, (tuple, list)):
             orderBy = map(self._mungeOrderBy, orderBy)
         else:
             orderBy = self._mungeOrderBy(orderBy)
-        self.ops['dbOrderBy'] = orderBy
-        if ops.has_key('connection') and ops['connection'] is None:
+        ops['dbOrderBy'] = orderBy
+        if 'connection' in ops and ops['connection'] is None:
             del ops['connection']
+        if ops.get('limit', None):
+            assert not ops.get('start', None) and not ops.get('end', None), \
+               "'limit' cannot be used with 'start' or 'end'"
+            ops["start"] = 0
+            ops["end"] = ops.pop("limit")
+
+        tablesSet = sqlbuilder.tablesUsedSet(self.clause, self._getConnection().dbName)
+        if clauseTables:
+            for table in clauseTables:
+                tablesSet.add(table)
+        self.clauseTables = clauseTables
+        # Explicitly post-adding-in sqlmeta.table, sqlbuilder.Select will handle sqlrepr'ing and dupes
+        self.tables = list(tablesSet) + [sourceClass.sqlmeta.table]
+
+    def queryForSelect(self):
+        columns = [self.sourceClass.q.id] + [getattr(self.sourceClass.q, x.name) for x in self.sourceClass.sqlmeta.columnList]
+        query = sqlbuilder.Select(columns,
+                                  where=self.clause,
+                                  join=self.ops.get('join', sqlbuilder.NoDefault),
+                                  distinct=self.ops.get('distinct',False),
+                                  lazyColumns=self.ops.get('lazyColumns', False),
+                                  start=self.ops.get('start', 0),
+                                  end=self.ops.get('end', None),
+                                  orderBy=self.ops.get('dbOrderBy',sqlbuilder.NoDefault),
+                                  reversed=self.ops.get('reversed', False),
+                                  staticTables=self.tables,
+                                  forUpdate=self.ops.get('forUpdate', False))
+        return query
 
     def __repr__(self):
         return "<%s at %x>" % (self.__class__.__name__, id(self))
@@ -42,35 +66,23 @@ class SelectResults(object):
         conn = self._getConnection()
         return conn.queryForSelect(self)
 
-    def __nonzero__(self):
-        start = self.ops.get('start', 0)
-        if start is None:
-            start = 0
-        end = self.ops.get('end', None)
-        if end is None:
-            end = start + 1
-        end = min(end, start + 1)
-        clone = self.clone(start=start, end=end, distinct=False, orderBy='')
-        # do we get any rows?
-        results = list(clone)
-        return len(results) != 0
-
     def _mungeOrderBy(self, orderBy):
         if isinstance(orderBy, str) and orderBy.startswith('-'):
             orderBy = orderBy[1:]
             desc = True
         else:
             desc = False
-        if isinstance(orderBy, (str, unicode)):
+        if isinstance(orderBy, basestring):
             if orderBy in self.sourceClass.sqlmeta.columns:
-                val = self.sourceClass.sqlmeta.columns[orderBy].dbName
+                val = getattr(self.sourceClass.q, self.sourceClass.sqlmeta.columns[orderBy].name)
                 if desc:
-                    return '-' + val
+                    return sqlbuilder.DESC(val)
                 else:
                     return val
             else:
+                orderBy = sqlbuilder.SQLConstant(orderBy)
                 if desc:
-                    return '-' + orderBy
+                    return sqlbuilder.DESC(orderBy)
                 else:
                     return orderBy
         else:
@@ -109,23 +121,12 @@ class SelectResults(object):
             # None doesn't filter anything, it's just a no-op:
             return self
         clause = self.clause
-        if isinstance(clause, (str, unicode)):
+        if isinstance(clause, basestring):
             clause = sqlbuilder.SQLConstant('(%s)' % self.clause)
         return self.newClause(sqlbuilder.AND(clause, filter_clause))
 
-    def filterBy(self, **kwargs):
-        conn = self._getConnection()
-        filter_clause = conn._SO_columnClause(self.sourceClass, kwargs)
-        if filter_clause is None:
-            # None doesn't filter anything, it's just a no-op:
-            return self
-        clause = self.clause
-        if isinstance(clause, (str, unicode)):
-            clause = sqlbuilder.SQLConstant('(%s)' % self.clause)
-        return self.newClause(conn.sqlrepr(clause) + ' AND ' +  filter_clause)
-
     def __getitem__(self, value):
-        if type(value) is type(slice(1)):
+        if isinstance(value, slice):
             assert not value.step, "Slices do not support steps"
             if not value.start and not value.stop:
                 # No need to copy, I'm immutable
@@ -153,8 +154,8 @@ class SelectResults(object):
                         end = start
                     else:
                         end = value.stop + self.ops.get('start', 0)
-                        if self.ops.get('end', None) is not None \
-                           and value['end'] < end:
+                        if self.ops.get('end', None) is not None and \
+                                self.ops['end'] < end:
                             # truncated by previous slice:
                             end = self.ops['end']
                 else:
@@ -177,7 +178,7 @@ class SelectResults(object):
         # @@: This could be optimized, using a simpler algorithm
         # since we don't have to worry about garbage collection,
         # etc., like we do with .lazyIter()
-        return self.lazyIter()
+        return iter(list(self.lazyIter()))
 
     def lazyIter(self):
         """
@@ -194,21 +195,26 @@ class SelectResults(object):
             Return the accumulate result
         """
         conn = self._getConnection()
-        return conn.accumulateSelect(self, *expressions)
+        exprs = []
+        for expr in expressions:
+            if not isinstance(expr, sqlbuilder.SQLExpression):
+                expr = sqlbuilder.SQLConstant(expr)
+            exprs.append(expr)
+        return conn.accumulateSelect(self, *exprs)
 
     def count(self):
         """ Counting elements of current select results """
+        assert not self.ops.get('start') and not self.ops.get('end'), \
+            "start/end/limit have no meaning with 'count'"
         assert not (self.ops.get('distinct') and (self.ops.get('start')
                                                   or self.ops.get('end'))), \
-               "distinct-counting of sliced objects is not supported"
+            "distinct-counting of sliced objects is not supported"
         if self.ops.get('distinct'):
             # Column must be specified, so we are using unique ID column.
             # COUNT(DISTINCT column) is supported by MySQL and PostgreSQL,
             # but not by SQLite. Perhaps more portable would be subquery:
             #  SELECT COUNT(*) FROM (SELECT DISTINCT id FROM table)
-            count = self.accumulate('COUNT(DISTINCT %s.%s)' % (
-                                             self.sourceClass.sqlmeta.table,
-                                             self.sourceClass.sqlmeta.idName))
+            count = self.accumulate('COUNT(DISTINCT %s)' % self._getConnection().sqlrepr(self.sourceClass.q.id))
         else:
             count = self.accumulate('COUNT(*)')
         if self.ops.get('start'):
@@ -225,11 +231,15 @@ class SelectResults(object):
             or a dot-q attribute (like Table.q.aColumn)
         """
         expressions = []
+        conn = self._getConnection()
+        if self.ops.get('distinct'):
+            distinct = 'DISTINCT '
+        else:
+            distinct = ''
         for func_name, attribute in attributes:
-            if type(attribute) == StringType:
-                expression = '%s(%s)' % (func_name, attribute)
-            else:
-                expression = getattr(sqlbuilder.func, func_name)(attribute)
+            if not isinstance(attribute, str):
+                attribute = conn.sqlrepr(attribute)
+            expression = '%s(%s%s)' % (func_name, distinct, attribute)
             expressions.append(expression)
         return self.accumulate(*expressions)
 
@@ -277,4 +287,60 @@ class SelectResults(object):
                 % results)
         return results[0]
 
-__all__ = ['SelectResults']
+    def throughTo(self):
+        class _throughTo_getter(object):
+            def __init__(self, inst):
+                self.sresult = inst
+            def __getattr__(self, attr):
+                return self.sresult._throughTo(attr)
+        return _throughTo_getter(self)
+    throughTo = property(throughTo)
+
+    def _throughTo(self, attr):
+        otherClass = None
+        orderBy = sqlbuilder.NoDefault
+
+        ref = self.sourceClass.sqlmeta.columns.get(attr.endswith('ID') and attr or attr+'ID', None)
+        if ref and ref.foreignKey:
+            otherClass, clause = self._throughToFK(ref)
+        else:
+            join = [x for x in self.sourceClass.sqlmeta.joins if x.joinMethodName==attr]
+            if join:
+                join = join[0]
+                orderBy = join.orderBy
+                if hasattr(join, 'otherColumn'):
+                    otherClass, clause = self._throughToRelatedJoin(join)
+                else:
+                    otherClass, clause = self._throughToMultipleJoin(join)
+
+        if not otherClass:
+            raise AttributeError("throughTo argument (got %s) should be name of foreignKey or SQL*Join in %s" % (attr, self.sourceClass))
+
+        return otherClass.select(clause,
+                                orderBy=orderBy,
+                                connection=self._getConnection())
+
+    def _throughToFK(self, col):
+        otherClass = getattr(self.sourceClass, "_SO_class_"+col.foreignKey)
+        colName = col.name
+        query = self.queryForSelect().newItems([sqlbuilder.ColumnAS(getattr(self.sourceClass.q, colName), colName)]).orderBy(None).distinct()
+        query = sqlbuilder.Alias(query, "%s_%s" % (self.sourceClass.__name__, col.name))
+        return otherClass, otherClass.q.id==getattr(query.q, colName)
+
+    def _throughToMultipleJoin(self, join):
+        otherClass = join.otherClass
+        colName = join.soClass.sqlmeta.style.dbColumnToPythonAttr(join.joinColumn)
+        query = self.queryForSelect().newItems([sqlbuilder.ColumnAS(self.sourceClass.q.id, 'id')]).orderBy(None).distinct()
+        query = sqlbuilder.Alias(query, "%s_%s" % (self.sourceClass.__name__, join.joinMethodName))
+        joinColumn = getattr(otherClass.q, colName)
+        return otherClass, joinColumn==query.q.id
+
+    def _throughToRelatedJoin(self, join):
+        otherClass = join.otherClass
+        intTable = sqlbuilder.Table(join.intermediateTable)
+        colName = join.joinColumn
+        query = self.queryForSelect().newItems([sqlbuilder.ColumnAS(self.sourceClass.q.id, 'id')]).orderBy(None).distinct()
+        query = sqlbuilder.Alias(query, "%s_%s" % (self.sourceClass.__name__, join.joinMethodName))
+        clause = sqlbuilder.AND(otherClass.q.id == getattr(intTable, join.otherColumn),
+                     getattr(intTable, colName) == query.q.id)
+        return otherClass, clause

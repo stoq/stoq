@@ -27,4 +27,25 @@ class EnumWithNone(SQLObject):
 def testNone():
     setupClass(EnumWithNone)
     for l in [None, 'a', 'bcd', 'a', 'e', None]:
-        EnumWithNone(l=l)
+        e = EnumWithNone(l=l)
+        assert e.l == l
+
+class EnumWithDefaultNone(SQLObject):
+
+    l = EnumCol(enumValues=['a', 'bcd', 'e', None], default=None)
+
+def testDefaultNone():
+    setupClass(EnumWithDefaultNone)
+
+    e = EnumWithDefaultNone()
+    assert e.l == None
+
+class EnumWithDefaultOther(SQLObject):
+
+    l = EnumCol(enumValues=['a', 'bcd', 'e', None], default='a')
+
+def testDefaultOther():
+    setupClass(EnumWithDefaultOther)
+
+    e = EnumWithDefaultOther()
+    assert e.l == 'a'

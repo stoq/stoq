@@ -3,33 +3,52 @@ import re
 from sqlobject import col
 from sqlobject import sqlbuilder
 from sqlobject.converters import registerConverter
-psycopg = None
-pgdb = None
+from sqlobject.dberrors import *
+
+class ErrorMessage(str):
+    def __new__(cls, e):
+        obj = str.__new__(cls, e[0])
+        obj.code = None
+        obj.module = e.__module__
+        obj.exception = e.__class__.__name__
+        return obj
 
 class PostgresConnection(DBAPI):
 
     supportTransactions = True
     dbName = 'postgres'
-    schemes = [dbName, 'postgresql', 'psycopg']
+    schemes = [dbName, 'postgresql']
 
     def __init__(self, dsn=None, host=None, port=None, db=None,
-                 user=None, password=None, usePygresql=False, unicodeCols=False,
-                 **kw):
-        global psycopg, pgdb
-        self.usePygresql = usePygresql
-        if usePygresql:
-            if pgdb is None:
-                import pgdb
-            self.module = pgdb
-        else:
-            if psycopg is None:
-                try:
+                 user=None, password=None, **kw):
+        drivers = kw.pop('driver', None) or 'psycopg'
+        for driver in drivers.split(','):
+            driver = driver.strip()
+            if not driver:
+                continue
+            try:
+                if driver == 'psycopg2':
                     import psycopg2 as psycopg
-                    psycopg # pyflakes
-                except ImportError:
+                elif driver == 'psycopg1':
                     import psycopg
+                elif driver == 'psycopg':
+                    try:
+                        import psycopg2 as psycopg
+                    except ImportError:
+                        import psycopg
+                elif driver == 'pygresql':
+                    import pgdb
+                    self.module = pgdb
+                else:
+                    raise ValueError('Unknown PostgreSQL driver "%s", expected psycopg2, psycopg1 or pygresql' % driver)
+            except ImportError:
+                pass
+            else:
+                break
+        else:
+            raise ImportError('Cannot find a PostgreSQL driver, tried %s' % drivers)
+        if driver.startswith('psycopg'):
             self.module = psycopg
-
             # Register a converter for psycopg Binary type.
             registerConverter(type(psycopg.Binary('')),
                               PsycoBinaryConverter)
@@ -43,19 +62,25 @@ class PostgresConnection(DBAPI):
         if host:
             dsn_dict["host"] = host
         if port:
-            if usePygresql:
+            if driver == 'pygresql':
                 dsn_dict["host"] = "%s:%d" % (host, port)
             else:
-                dsn_dict["port"] = str(port)
+                if psycopg.__version__.split('.')[0] == '1':
+                    dsn_dict["port"] = str(port)
+                else:
+                    dsn_dict["port"] = port
         if db:
             dsn_dict["database"] = db
         if user:
             dsn_dict["user"] = user
         if password:
             dsn_dict["password"] = password
+        sslmode = kw.pop("sslmode", None)
+        if sslmode:
+            dsn_dict["sslmode"] = sslmode
         self.use_dsn = dsn is not None
         if dsn is None:
-            if usePygresql:
+            if driver == 'pygresql':
                 dsn = ''
                 if host:
                     dsn += host
@@ -80,24 +105,32 @@ class PostgresConnection(DBAPI):
                     dsn.append('host=%s' % host)
                 if port:
                     dsn.append('port=%d' % port)
+                if sslmode:
+                    dsn.append('sslmode=%s' % sslmode)
                 dsn = ' '.join(dsn)
+        self.driver = driver
         self.dsn = dsn
-        self.unicodeCols = unicodeCols
+        self.unicodeCols = kw.pop('unicodeCols', False)
+        self.schema = kw.pop('schema', None)
+        self.dbEncoding = kw.pop("charset", None)
         DBAPI.__init__(self, **kw)
 
-        # Server version cache
-        self._server_version = None # Not yet initialized
-
-    def connectionFromURI(cls, uri):
-        user, password, host, port, path, args = cls._parseURI(uri)
+    @classmethod
+    def _connectionFromParams(cls, user, password, host, port, path, args):
         path = path.strip('/')
+        if (host is None) and path.count('/'): # Non-default unix socket
+            path_parts = path.split('/')
+            host = '/' + '/'.join(path_parts[:-1])
+            path = path_parts[-1]
         return cls(host=host, port=port, db=path, user=user, password=password, **args)
-    connectionFromURI = classmethod(connectionFromURI)
 
     def _setAutoCommit(self, conn, auto):
         # psycopg2 does not have an autocommit method.
-        if hasattr(conn, 'autocommit') and callable(conn.autocommit):
-            conn.autocommit(auto)
+        if hasattr(conn, 'autocommit'):
+            try:
+                conn.autocommit(auto)
+            except TypeError:
+                conn.autocommit = auto
 
     def makeConnection(self):
         try:
@@ -106,33 +139,71 @@ class PostgresConnection(DBAPI):
             else:
                 conn = self.module.connect(**self.dsn_dict)
         except self.module.OperationalError, e:
-            raise self.module.OperationalError("%s; used connection string %r" % (e, self.dsn))
-        if self.autoCommit:
-            # psycopg2 does not have an autocommit method.
-            if hasattr(conn, 'autocommit') and callable(conn.autocommit):
-                conn.autocommit(1)
+            raise OperationalError("%s; used connection string %r" % (e, self.dsn))
+
+        # For printDebug in _executeRetry
+        self._connectionNumbers[id(conn)] = self._connectionCount
+
+        if self.autoCommit: self._setAutoCommit(conn, 1)
+        c = conn.cursor()
+        if self.schema:
+            self._executeRetry(conn, c, "SET search_path TO " + self.schema)
+        dbEncoding = self.dbEncoding
+        if dbEncoding:
+            self._executeRetry(conn, c, "SET client_encoding TO '%s'" % dbEncoding)
         return conn
+
+    def _executeRetry(self, conn, cursor, query):
+        if self.debug:
+            self.printDebug(conn, query, 'QueryR')
+        try:
+            return cursor.execute(query)
+        except self.module.OperationalError, e:
+            raise OperationalError(ErrorMessage(e))
+        except self.module.IntegrityError, e:
+            msg = ErrorMessage(e)
+            if e.pgcode == '23505':
+                raise DuplicateEntryError(msg)
+            else:
+                raise IntegrityError(msg)
+        except self.module.InternalError, e:
+            raise InternalError(ErrorMessage(e))
+        except self.module.ProgrammingError, e:
+            raise ProgrammingError(ErrorMessage(e))
+        except self.module.DataError, e:
+            raise DataError(ErrorMessage(e))
+        except self.module.NotSupportedError, e:
+            raise NotSupportedError(ErrorMessage(e))
+        except self.module.DatabaseError, e:
+            raise DatabaseError(ErrorMessage(e))
+        except self.module.InterfaceError, e:
+            raise InterfaceError(ErrorMessage(e))
+        except self.module.Warning, e:
+            raise Warning(ErrorMessage(e))
+        except self.module.Error, e:
+            raise Error(ErrorMessage(e))
 
     def _queryInsertID(self, conn, soInstance, id, names, values):
         table = soInstance.sqlmeta.table
         idName = soInstance.sqlmeta.idName
-        sequenceName = getattr(soInstance, '_idSequence',
-                               '%s_%s_seq' % (table, idName))
+        sequenceName = soInstance.sqlmeta.idSequence or \
+                               '%s_%s_seq' % (table, idName)
         c = conn.cursor()
         if id is None:
-            c.execute("SELECT NEXTVAL('%s')" % sequenceName)
+            self._executeRetry(conn, c, "SELECT NEXTVAL('%s')" % sequenceName)
             id = c.fetchone()[0]
         names = [idName] + names
         values = [id] + values
         q = self._insertSQL(table, names, values)
         if self.debug:
             self.printDebug(conn, q, 'QueryIns')
-        c.execute(q)
+        self._executeRetry(conn, c, q)
         if self.debugOutput:
             self.printDebug(conn, id, 'QueryIns', 'result')
         return id
 
-    def _queryAddLimitOffset(self, query, start, end):
+    @classmethod
+    def _queryAddLimitOffset(cls, query, start, end):
         if not start:
             return "%s LIMIT %i" % (query, end)
         if not end:
@@ -149,18 +220,12 @@ class PostgresConnection(DBAPI):
         return index.postgresCreateIndexSQL(soClass)
 
     def createIDColumn(self, soClass):
-        # Johan 2006-09-25: use BIGSERIAL for 64-bit ids
-        key_type = {int: "BIGSERIAL", str: "TEXT"}[soClass.sqlmeta.idType]
+        key_type = {int: "SERIAL", str: "TEXT"}[soClass.sqlmeta.idType]
         return '%s %s PRIMARY KEY' % (soClass.sqlmeta.idName, key_type)
 
     def dropTable(self, tableName, cascade=False):
-        if self.server_version[:3] <= "7.2":
-            cascade=False
         self.query("DROP TABLE %s %s" % (tableName,
                                          cascade and 'CASCADE' or ''))
-
-    def dropView(self, tableName):
-        self.query("DROP VIEW %s" % tableName)
 
     def joinSQLType(self, join):
         return 'INT NOT NULL'
@@ -170,93 +235,13 @@ class PostgresConnection(DBAPI):
                                % self.sqlrepr(tableName))
         return result[0]
 
-    viewExists = tableExists
-
-    def renameDatabase(self, src, dest):
-        conn = self.getConnection()
-        cur = conn.cursor()
-        cur.execute('COMMIT')
-        cur.execute('ALTER DATABASE %s RENAME TO %s' % (src, dest))
-        cur.close()
-
-        return True
-
-    # Johan 2006-09-24: Add Sequence methods
-    def sequenceExists(self, sequence):
-        return self.tableExists(sequence)
-
-    def createSequence(self, sequence):
-        self.query('CREATE SEQUENCE "%s"' % sequence)
-
-    def dropSequence(self, sequence):
-        self.query('DROP SEQUENCE "%s"' % sequence)
-
-    def bumpSequence(self, sequence, start, minvalue, maxvalue):
-        self.query('ALTER SEQUENCE "%s" START %d MINVALUE %d MAXVALUE %d' % (
-            sequence, start, minvalue, maxvalue))
-
-    # Johan 2006-10-27: Add Database methods
-    def createDatabase(self, name, ifNotExists=False):
-        if ifNotExists and self.databaseExists(name):
-            return False
-
-        # We must close the transaction with a commit so that
-        # the CREATE DATABASE can work (which can't be in a transaction):
-        conn = self.getConnection()
-        cur = conn.cursor()
-        cur.execute('COMMIT')
-        cur.execute('CREATE DATABASE "%s"' % name)
-        cur.close()
-
-        return True
-
-    def dropDatabase(self, name, ifExists=False):
-        if ifExists and not self.databaseExists(name):
-            return False
-
-        # We must close the transaction with a commit so that
-        # the DROP DATABASE can work (which can't be in a transaction):
-        conn = self.getConnection()
-        cur = conn.cursor()
-        cur.execute('COMMIT')
-        cur.execute('DROP DATABASE "%s"' % name)
-        cur.close()
-
-        return True
-
-    def databaseExists(self, name):
-        res = self.queryOne(
-            "SELECT COUNT(*) FROM pg_database WHERE datname='%s'" %
-            name)
-        return res[0] == 1
-
-    def tableHasColumn(self, table_name, column):
-        res = self.queryOne(
-            """SELECT 1 FROM pg_class, pg_attribute
-             WHERE pg_attribute.attrelid = pg_class.oid AND
-                   pg_class.relname=%s AND
-                   attname=%s""" % (self.sqlrepr(table_name),
-                                    self.sqlrepr(column)))
-        return bool(res)
-
-    def dbVersion(self):
-        # PostgreSQL 8.4.8 on i686-pc-linux-gnu,
-        # PostgreSQL 8.4.8, compiled by Visual C++
-        version_string = self.queryOne('SELECT VERSION();')[0]
-        version = version_string.split(' ', 2)[1]
-        if version.endswith(','):
-            version = version[:-1]
-        return tuple(map(int, version.split('.')))
-
     def addColumn(self, tableName, column):
         self.query('ALTER TABLE %s ADD COLUMN %s' %
                    (tableName,
                     column.postgresCreateSQL()))
 
-    def delColumn(self, tableName, column):
-        self.query('ALTER TABLE %s DROP COLUMN %s' %
-                   (tableName,
-                    column.dbName))
+    def delColumn(self, sqlmeta, column):
+        self.query('ALTER TABLE %s DROP COLUMN %s' % (sqlmeta.table, column.dbName))
 
     def columnsFromSchema(self, tableName, soClass):
 
@@ -316,24 +301,32 @@ class PostgresConnection(DBAPI):
         for field, t, notnull, defaultstr in colData:
             if field == primaryKey:
                 continue
-            colClass, kw = self.guessClass(t)
-            if self.unicodeCols and colClass == col.StringCol:
-                colClass = col.UnicodeCol
-                kw['dbEncoding'] = client_encoding
-            kw['name'] = soClass.sqlmeta.style.dbColumnToPythonAttr(field)
+            if field in keymap:
+                colClass = col.ForeignKey
+                kw = {'foreignKey': soClass.sqlmeta.style.dbTableToPythonClass(keymap[field])}
+                name = soClass.sqlmeta.style.dbColumnToPythonAttr(field)
+                if name.endswith('ID'):
+                    name = name[:-2]
+                kw['name'] = name
+            else:
+                colClass, kw = self.guessClass(t)
+                if self.unicodeCols and colClass is col.StringCol:
+                    colClass = col.UnicodeCol
+                    kw['dbEncoding'] = client_encoding
+                kw['name'] = soClass.sqlmeta.style.dbColumnToPythonAttr(field)
             kw['dbName'] = field
             kw['notNone'] = notnull
             if defaultstr is not None:
                 kw['default'] = self.defaultFromSchema(colClass, defaultstr)
             elif not notnull:
                 kw['default'] = None
-            if keymap.has_key(field):
-                kw['foreignKey'] = keymap[field]
             results.append(colClass(**kw))
         return results
 
     def guessClass(self, t):
-        if t.count('int'):
+        if t.count('point'): # poINT before INT
+            return col.StringCol, {}
+        elif t.count('int'):
             return col.IntCol, {}
         elif t.count('varying') or t.count('varchar'):
             if '(' in t:
@@ -372,20 +365,11 @@ class PostgresConnection(DBAPI):
                 return True
         return getattr(sqlbuilder.const, defaultstr)
 
-    def server_version(self):
-        if self._server_version is None:
-            # The result is something like
-            # ' PostgreSQL 7.2.1 on i686-pc-linux-gnu, compiled by GCC 2.95.4'
-            server_version = self.queryOne("SELECT version()")[0]
-            self._server_version = server_version.split()[1]
-        return self._server_version
-    server_version = property(server_version)
-
-    def createEmptyDatabase(self):
+    def _createOrDropDatabase(self, op="CREATE"):
         # We have to connect to *some* database, so we'll connect to
         # template1, which is a common open database.
         # @@: This doesn't use self.use_dsn or self.dsn_dict
-        if self.usePygresql:
+        if self.driver == 'pygresql':
             dsn = '%s:template1:%s:%s' % (
                 self.host or '', self.user or '', self.password or '')
         else:
@@ -397,9 +381,19 @@ class PostgresConnection(DBAPI):
             if self.host:
                 dsn += ' host=%s' % self.host
         conn = self.module.connect(dsn)
-        conn.createDatabase(self.db)
+        cur = conn.cursor()
+        # We must close the transaction with a commit so that
+        # the CREATE DATABASE can work (which can't be in a transaction):
+        self._executeRetry(conn, cur, 'COMMIT')
+        self._executeRetry(conn, cur, '%s DATABASE %s' % (op, self.db))
+        cur.close()
         conn.close()
 
+    def createEmptyDatabase(self):
+        self._createOrDropDatabase()
+
+    def dropDatabase(self):
+        self._createOrDropDatabase(op="DROP")
 
 
 # Converter for psycopg Binary type.

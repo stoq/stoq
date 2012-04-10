@@ -1,26 +1,22 @@
-from __future__ import generators
-
-True, False = 1==1, 0==1
-
-import threading
-from util.threadinglocal import local as threading_local
-import re
-import warnings
 import atexit
-import os
+from cgi import parse_qsl
+import inspect
 import new
+import os
+import sys
+import threading
 import types
 import urllib
+import warnings
 import weakref
-import inspect
-import sqlbuilder
+
 from cache import CacheSet
-import col
-popKey = col.popKey
-import main
-from joins import sorter
-from converters import sqlrepr
 import classregistry
+import col
+from converters import sqlrepr
+import main
+import sqlbuilder
+from util.threadinglocal import local as threading_local
 
 warnings.filterwarnings("ignore", "DB-API extension cursor.lastrowid used")
 
@@ -31,53 +27,118 @@ def _closeConnection(ref):
     if conn is not None:
         conn.close()
 
+class ConsoleWriter:
+    def __init__(self, connection, loglevel):
+        # loglevel: None or empty string for stdout; or 'stderr'
+        self.loglevel = loglevel or "stdout"
+        self.dbEncoding = getattr(connection, "dbEncoding", None) or "ascii"
+    def write(self, text):
+        logfile = getattr(sys, self.loglevel)
+        if isinstance(text, unicode):
+            try:
+                text = text.encode(self.dbEncoding)
+            except UnicodeEncodeError:
+                text = repr(text)[2:-1] # Remove u'...' from the repr
+        logfile.write(text + '\n')
+
+class LogWriter:
+    def __init__(self, connection, logger, loglevel):
+        self.logger = logger
+        self.loglevel = loglevel
+        self.logmethod = getattr(logger, loglevel)
+    def write(self, text):
+        self.logmethod(text)
+
+def makeDebugWriter(connection, loggerName, loglevel):
+    if not loggerName:
+        return ConsoleWriter(connection, loglevel)
+    import logging
+    logger = logging.getLogger(loggerName)
+    return LogWriter(connection, logger, loglevel)
+
+class Boolean(object):
+    """A bool class that also understands some special string keywords (yes/no, true/false, on/off, 1/0)"""
+    _keywords = {'1': True, 'yes': True, 'true': True, 'on': True,
+                 '0': False, 'no': False, 'false': False, 'off': False}
+    def __new__(cls, value):
+        try:
+            return Boolean._keywords[value.lower()]
+        except (AttributeError, KeyError):
+            return bool(value)
+
 class DBConnection:
 
     def __init__(self, name=None, debug=False, debugOutput=False,
                  cache=True, style=None, autoCommit=True,
-                 debugThreading=False, registry=None):
+                 debugThreading=False, registry=None,
+                 logger=None, loglevel=None):
         self.name = name
-        self.debug = debug
-        self.debugOutput = debugOutput
-        self.debugThreading = debugThreading
-        self.cache = CacheSet(cache=cache)
-        self.doCache = cache
+        self.debug = Boolean(debug)
+        self.debugOutput = Boolean(debugOutput)
+        self.debugThreading = Boolean(debugThreading)
+        self.debugWriter = makeDebugWriter(self, logger, loglevel)
+        self.doCache = Boolean(cache)
+        self.cache = CacheSet(cache=self.doCache)
         self.style = style
         self._connectionNumbers = {}
         self._connectionCount = 1
-        self.autoCommit = autoCommit
+        self.autoCommit = Boolean(autoCommit)
         self.registry = registry or None
-        classregistry.registry(self.registry).addCallback(
-            self.soClassAdded)
+        classregistry.registry(self.registry).addCallback(self.soClassAdded)
         registerConnectionInstance(self)
         atexit.register(_closeConnection, weakref.ref(self))
 
-    def uri(self):
-        auth = getattr(self, 'user', None) or ''
+    def oldUri(self):
+        auth = getattr(self, 'user', '') or ''
         if auth:
             if self.password:
-                auth = auth + '@' + self.password
-            auth = auth + ':'
+                auth = auth + ':' + self.password
+            auth = auth + '@'
         else:
             assert not getattr(self, 'password', None), (
                 'URIs cannot express passwords without usernames')
         uri = '%s://%s' % (self.dbName, auth)
         if self.host:
-            uri += self.host + '/'
+            uri += self.host
+            if self.port:
+                uri += ':%d' % self.port
+        uri += '/'
         db = self.db
         if db.startswith('/'):
-            db = path[1:]
+            db = db[1:]
         return uri + db
 
-    def isSupported(cls):
-        raise NotImplemented
-    isSupported = classmethod(isSupported)
+    def uri(self):
+        auth = getattr(self, 'user', '') or ''
+        if auth:
+            auth = urllib.quote(auth)
+            if self.password:
+                auth = auth + ':' + urllib.quote(self.password)
+            auth = auth + '@'
+        else:
+            assert not getattr(self, 'password', None), (
+                'URIs cannot express passwords without usernames')
+        uri = '%s://%s' % (self.dbName, auth)
+        if self.host:
+            uri += self.host
+            if self.port:
+                uri += ':%d' % self.port
+        uri += '/'
+        db = self.db
+        if db.startswith('/'):
+            db = db[1:]
+        return uri + urllib.quote(db)
 
+    @classmethod
+    def connectionFromOldURI(cls, uri):
+        return cls._connectionFromParams(*cls._parseOldURI(uri))
+
+    @classmethod
     def connectionFromURI(cls, uri):
-        raise NotImplemented
-    connectionFromURI = classmethod(connectionFromURI)
+        return cls._connectionFromParams(*cls._parseURI(uri))
 
-    def _parseURI(uri):
+    @staticmethod
+    def _parseOldURI(uri):
         schema, rest = uri.split(':', 1)
         assert rest.startswith('/'), "URIs must start with scheme:/ -- you did not include a / (in %r)" % rest
         if rest.startswith('/') and not rest.startswith('//'):
@@ -94,7 +155,7 @@ class DBConnection:
             else:
                 host, rest = rest.split('/', 1)
         if host and host.find('@') != -1:
-            user, host = host.split('@', 1)
+            user, host = host.rsplit('@', 1)
             if user.find(':') != -1:
                 user, password = user.split(':', 1)
             else:
@@ -125,7 +186,45 @@ class DBConnection:
                 argvalue = urllib.unquote(argvalue)
                 args[argname] = argvalue
         return user, password, host, port, path, args
-    _parseURI = staticmethod(_parseURI)
+
+    @staticmethod
+    def _parseURI(uri):
+        protocol, request = urllib.splittype(uri)
+        user, password, port = None, None, None
+        host, path = urllib.splithost(request)
+
+        if host:
+            # Python < 2.7 have a problem - splituser() calls unquote() too early
+            #user, host = urllib.splituser(host)
+            if '@' in host:
+                user, host = host.split('@', 1)
+            if user:
+                user, password = [x and urllib.unquote(x) or None for x in urllib.splitpasswd(user)]
+            host, port = urllib.splitport(host)
+            if port: port = int(port)
+        elif host == '':
+            host = None
+
+        # hash-tag is splitted but ignored
+        path, tag = urllib.splittag(path)
+        path, query = urllib.splitquery(path)
+
+        path = urllib.unquote(path)
+        if (os.name == 'nt') and (len(path) > 2):
+            # Preserve backward compatibility with URIs like /C|/path;
+            # replace '|' by ':'
+            if path[2] == '|':
+                path = "%s:%s" % (path[0:2], path[3:])
+            # Remove leading slash
+            if (path[0] == '/') and (path[2] == ':'):
+                path = path[1:]
+
+        args = {}
+        if query:
+            for name, value in parse_qsl(query):
+                args[name] = value
+
+        return user, password, host, port, path, args
 
     def soClassAdded(self, soClass):
         """
@@ -298,9 +397,12 @@ class DBAPI(DBConnection):
             threadName = (':' + threadName + ' '*(8-len(threadName)))
         else:
             threadName = ''
-        print '%(n)2i%(threadName)s/%(name)s%(spaces)s%(sep)s %(s)s' % locals()
+        msg = '%(n)2i%(threadName)s/%(name)s%(spaces)s%(sep)s %(s)s' % locals()
+        self.debugWriter.write(msg)
 
     def _executeRetry(self, conn, cursor, query):
+        if self.debug:
+            self.printDebug(conn, query, 'QueryR')
         return cursor.execute(query)
 
     def _query(self, conn, s):
@@ -373,144 +475,15 @@ class DBAPI(DBConnection):
         """ Apply an accumulate function(s) (SUM, COUNT, MIN, AVG, MAX, etc...)
             to the select object.
         """
-        ops = select.ops
-        join = ops.get('join')
-        if join:
-            tables = self._fixTablesForJoins(select)
-        else:
-            tables = select.tables
-        q = "SELECT %s" % ", ".join([str(expression) for expression in expressions])
-        q += " FROM %s" % ", ".join(tables)
-        if join:
-            q += self._addJoins(select, tables)
-        q += " WHERE"
-        q = self._addWhereClause(select, q, limit=0, order=0)
+        q = select.queryForSelect().newItems(expressions).unlimited().orderBy(None)
+        q = self.sqlrepr(q)
         val = self.queryOne(q)
         if len(expressions) == 1:
             val = val[0]
         return val
 
     def queryForSelect(self, select):
-        ops = select.ops
-        join = ops.get('join')
-        cls = select.sourceClass
-        if join:
-            tables = self._fixTablesForJoins(select)
-        else:
-            tables = select.tables
-        if ops.get('distinct', False):
-            q = 'SELECT DISTINCT '
-        else:
-            q = 'SELECT '
-        if ops.get('lazyColumns', 0):
-            q += "%s.%s FROM %s" % \
-                 (cls.sqlmeta.table, cls.sqlmeta.idName,
-                  ", ".join(tables))
-        else:
-            columns = ", ".join(["%s.%s" % (cls.sqlmeta.table, col.dbName)
-                                 for col in cls.sqlmeta.columnList])
-            if columns:
-                q += "%s.%s, %s FROM %s" % \
-                     (cls.sqlmeta.table, cls.sqlmeta.idName, columns,
-                      ", ".join(tables))
-            else:
-                q += "%s.%s FROM %s" % \
-                     (cls.sqlmeta.table, cls.sqlmeta.idName,
-                      ", ".join(tables))
-
-        if join:
-            q += self._addJoins(select, tables)
-        q += " WHERE"
-        return self._addWhereClause(select, q)
-
-    def _fixTablesForJoins(self, select):
-        ops = select.ops
-        join = ops.get('join')
-        tables = select.tables
-        if type(join) is str:
-            return tables
-        else:
-            tables = tables[:] # maka a copy for modification
-            if isinstance(join, sqlbuilder.SQLJoin):
-                if join.table1 in tables: tables.remove(join.table1)
-                if join.table2 in tables: tables.remove(join.table2)
-            else:
-                for j in join:
-                    if j.table1 in tables: tables.remove(j.table1)
-                    if j.table2 in tables: tables.remove(j.table2)
-            return tables
-
-    def _addJoins(self, select, tables):
-        ops = select.ops
-        join = ops.get('join')
-        if type(join) is str:
-            join_str = ' ' + join
-        elif isinstance(join, sqlbuilder.SQLJoin):
-            if tables and join.table1:
-                join_str = ", "
-            else:
-                join_str = ' '
-            join_str += self.sqlrepr(join)
-        else:
-            if tables and join[0].table1:
-                join_str = ", "
-            else:
-                join_str = ' '
-            join_str += " ".join([self.sqlrepr(j) for j in join])
-        return join_str
-
-    def _addWhereClause(self, select, startSelect, limit=1, order=1):
-
-        q = select.clause
-        if type(q) not in [type(''), type(u'')]:
-            q = self.sqlrepr(q)
-        ops = select.ops
-
-        if order and ops.get('dbOrderBy'):
-            q = self._queryAddOrderByClause(select, q)
-
-        start = ops.get('start', 0)
-        end = ops.get('end', None)
-
-        q = startSelect + ' ' + q
-
-        if limit and (start or end):
-            # @@: Raising an error might be an annoyance, but some warning is
-            # in order.
-            #assert ops.get('orderBy'), "Getting a slice of an unordered set is unpredictable!"
-            q = self._queryAddLimitOffset(q, start, end)
-
-        return q
-
-    def _queryAddOrderByClause(self, select, q):
-        def clauseList(lst, desc=False):
-            if type(lst) not in (type([]), type(())):
-                lst = [lst]
-            lst = [clauseQuote(i) for i in lst]
-            if desc:
-                lst = [sqlbuilder.DESC(i) for i in lst]
-            return ', '.join([self.sqlrepr(i) for i in lst])
-
-        def clauseQuote(s):
-            if type(s) is type(""):
-                if s.startswith('-'):
-                    desc = True
-                    s = s[1:]
-                else:
-                    desc = False
-                assert sqlbuilder.sqlIdentifier(s), "Strings in clauses are expected to be column identifiers.  I got: %r" % s
-                if s in select.sourceClass.sqlmeta.columns:
-                    s = select.sourceClass.sqlmeta.columns[s].dbName
-                if desc:
-                    return sqlbuilder.DESC(sqlbuilder.SQLConstant(s))
-                else:
-                    return sqlbuilder.SQLConstant(s)
-            else:
-                return s
-
-        ops = select.ops
-        return "%s ORDER BY %s" % (q, clauseList(ops['dbOrderBy'],
-                                   ops.get('reversed', False)))
+        return self.sqlrepr(select.queryForSelect())
 
     def _SO_createJoinTable(self, join):
         self.query(self._SO_createJoinTableSQL(join))
@@ -607,59 +580,41 @@ class DBAPI(DBConnection):
     # in the SQLObject class.
 
     def _SO_update(self, so, values):
-        self.query("UPDATE %s SET %s WHERE %s = %s" %
+        self.query("UPDATE %s SET %s WHERE %s = (%s)" %
                    (so.sqlmeta.table,
-                    ", ".join(["%s = %s" % (dbName, self.sqlrepr(value))
+                    ", ".join(["%s = (%s)" % (dbName, self.sqlrepr(value))
                                for dbName, value in values]),
                     so.sqlmeta.idName,
                     self.sqlrepr(so.id)))
 
     def _SO_selectOne(self, so, columnNames):
-        columns = ", ".join(columnNames)
-        if columns:
-            return self.queryOne(
-                "SELECT %s FROM %s WHERE %s = %s" %
-                (columns,
-                 so.sqlmeta.table,
-                 so.sqlmeta.idName,
-                 self.sqlrepr(so.id)))
-        else:
-            return self.queryOne(
-                "SELECT NULL FROM %s WHERE %s = %s" %
-                (so.sqlmeta.table,
-                 so.sqlmeta.idName,
-                 self.sqlrepr(so.id)))
+        return self._SO_selectOneAlt(so, columnNames, so.q.id==so.id)
 
-    def _SO_selectOneAlt(self, cls, columnNames, column, value):
-        if isinstance(column, str):
-            column = (column,)
-            value = (value,)
-        if len(column) != len(value):
-            raise ValueError, "'column' and 'value' tuples must be of the same size"
-        columns = []
-        for i in xrange(len(column)):
-            columns.append("%s = %s" % (column[i], self.sqlrepr(value[i])))
-        condition = ' AND '.join(columns)
-        return self.queryOne("SELECT %s FROM %s WHERE %s" %
-                             (", ".join(columnNames),
-                              cls.sqlmeta.table,
-                              condition))
+
+    def _SO_selectOneAlt(self, so, columnNames, condition):
+        if columnNames:
+            columns = [isinstance(x, basestring) and sqlbuilder.SQLConstant(x) or x for x in columnNames]
+        else:
+            columns = None
+        return self.queryOne(self.sqlrepr(sqlbuilder.Select(columns,
+                                                            staticTables=[so.sqlmeta.table],
+                                                            clause=condition)))
 
     def _SO_delete(self, so):
-        self.query("DELETE FROM %s WHERE %s = %s" %
+        self.query("DELETE FROM %s WHERE %s = (%s)" %
                    (so.sqlmeta.table,
                     so.sqlmeta.idName,
                     self.sqlrepr(so.id)))
 
     def _SO_selectJoin(self, soClass, column, value):
-        return self.queryAll("SELECT %s FROM %s WHERE %s = %s" %
+        return self.queryAll("SELECT %s FROM %s WHERE %s = (%s)" %
                              (soClass.sqlmeta.idName,
                               soClass.sqlmeta.table,
                               column,
                               self.sqlrepr(value)))
 
     def _SO_intermediateJoin(self, table, getColumn, joinColumn, value):
-        return self.queryAll("SELECT %s FROM %s WHERE %s = %s" %
+        return self.queryAll("SELECT %s FROM %s WHERE %s = (%s)" %
                              (getColumn,
                               table,
                               joinColumn,
@@ -667,7 +622,7 @@ class DBAPI(DBConnection):
 
     def _SO_intermediateDelete(self, table, firstColumn, firstValue,
                                secondColumn, secondValue):
-        self.query("DELETE FROM %s WHERE %s = %s AND %s = %s" %
+        self.query("DELETE FROM %s WHERE %s = (%s) AND %s = (%s)" %
                    (table,
                     firstColumn,
                     self.sqlrepr(firstValue),
@@ -687,12 +642,15 @@ class DBAPI(DBConnection):
         ops = {None: "IS"}
         data = {}
         if 'id' in kw:
-            data[soClass.sqlmeta.idName] = popKey(kw, 'id')
+            data[soClass.sqlmeta.idName] = kw.pop('id')
         for key, col in soClass.sqlmeta.columns.items():
             if key in kw:
-                data[col.dbName] = popKey(kw, key)
+                value = kw.pop(key)
+                if col.from_python:
+                    value = col.from_python(value, sqlbuilder.SQLObjectState(soClass, connection=self))
+                data[col.dbName] = value
             elif col.foreignName in kw:
-                obj = popKey(kw, col.foreignName)
+                obj = kw.pop(col.foreignName)
                 if isinstance(obj, main.SQLObject):
                     data[col.dbName] = obj.id
                 else:
@@ -742,12 +700,6 @@ class DBAPI(DBConnection):
         """
         raise NotImplementedError
 
-    def block_implicit_flushes(self):
-        pass
-
-    def unblock_implicit_flushes(self):
-        pass
-
 class Iteration(object):
 
     def __init__(self, dbconn, rawconn, select, keepConnection=False):
@@ -793,12 +745,14 @@ class Iteration(object):
 class Transaction(object):
 
     def __init__(self, dbConnection):
-        self._obsolete = False
+        # this is to skip __del__ in case of an exception in this __init__
+        self._obsolete = True
         self._dbConnection = dbConnection
         self._connection = dbConnection.getConnection()
         self._dbConnection._setAutoCommit(self._connection, 0)
         self.cache = CacheSet(cache=dbConnection.doCache)
         self._deletedCache = {}
+        self._obsolete = False
 
     def assertActive(self):
         assert not self._obsolete, "This transaction has already gone through ROLLBACK; begin another transaction"
@@ -827,12 +781,12 @@ class Transaction(object):
         # still iterating through the results.
         # @@: But would it be okay for psycopg, with threadsafety
         # level 2?
-        return select.IterationClass(self, self._connection,
-                                   select, keepConnection=True)
+        return iter(list(select.IterationClass(self, self._connection,
+                                   select, keepConnection=True)))
 
     def _SO_delete(self, inst):
         cls = inst.__class__.__name__
-        if not self._deletedCache.has_key(cls):
+        if not cls in self._deletedCache:
             self._deletedCache[cls] = []
         self._deletedCache[cls].append(inst.id)
         meth = new.instancemethod(self._dbConnection._SO_delete.im_func, self, self.__class__)
@@ -845,8 +799,6 @@ class Transaction(object):
         if self._dbConnection.debug:
             self._dbConnection.printDebug(self._connection, '', 'COMMIT')
         self._connection.commit()
-        if close:
-            self._makeObsolete()
         subCaches = [(sub[0], sub[1].allIDs()) for sub in self.cache.allSubCachesByClassNames().items()]
         subCaches.extend([(x[0], x[1]) for x in self._deletedCache.items()])
         for cls, ids in subCaches:
@@ -854,6 +806,8 @@ class Transaction(object):
                 inst = self._dbConnection.cache.tryGetByName(id, cls)
                 if inst is not None:
                     inst.expire()
+        if close:
+            self._makeObsolete()
 
     def rollback(self):
         if self._obsolete:
@@ -912,6 +866,9 @@ class Transaction(object):
             return
         self.rollback()
 
+    def close(self):
+        raise TypeError('You cannot just close transaction - you should either call rollback(), commit() or commit(close=True) to close the underlying connection.')
+
 class ConnectionHub(object):
 
     """
@@ -940,7 +897,7 @@ class ConnectionHub(object):
         # I'm a little surprised we have to do this, but apparently
         # the object's private dictionary of attributes doesn't
         # override this descriptor.
-        if obj and obj.__dict__.has_key('_connection'):
+        if (obj is not None) and '_connection' in obj.__dict__:
             return obj.__dict__['_connection']
         return self.getConnection()
 
@@ -973,9 +930,17 @@ class ConnectionHub(object):
         """
         # @@: In Python 2.5, something usable with with: should also
         # be added.
-        old_conn = self.getConnection()
+        try:
+            old_conn = self.threadingLocal.connection
+            old_conn_is_threading = True
+        except AttributeError:
+            old_conn = self.processConnection
+            old_conn_is_threading = False
         conn = old_conn.transaction()
-        self.threadConnection = conn
+        if old_conn_is_threading:
+            self.threadConnection = conn
+        else:
+            self.processConnection = conn
         try:
             try:
                 value = func(*args, **kw)
@@ -983,10 +948,13 @@ class ConnectionHub(object):
                 conn.rollback()
                 raise
             else:
-                conn.commit()
+                conn.commit(close=True)
                 return value
         finally:
-            self.threadConnection = old_conn
+            if old_conn_is_threading:
+                self.threadConnection = old_conn
+            else:
+                self.processConnection = old_conn
 
     def _set_threadConnection(self, value):
         self.threadingLocal.connection = value
@@ -1005,50 +973,67 @@ class ConnectionURIOpener(object):
 
     def __init__(self):
         self.schemeBuilders = {}
-        self.schemeSupported = {}
         self.instanceNames = {}
         self.cachedURIs = {}
 
-    def registerConnection(self, schemes, builder, isSupported):
+    def registerConnection(self, schemes, builder):
         for uriScheme in schemes:
-            assert not self.schemeBuilders.has_key(uriScheme) \
+            assert not uriScheme in self.schemeBuilders \
                    or self.schemeBuilders[uriScheme] is builder, \
                    "A driver has already been registered for the URI scheme %s" % uriScheme
             self.schemeBuilders[uriScheme] = builder
-            self.schemeSupported = isSupported
 
     def registerConnectionInstance(self, inst):
         if inst.name:
-            assert not self.instanceNames.has_key(inst.name) \
+            assert not inst.name in self.instanceNames \
                    or self.instanceNames[inst.name] is cls, \
                    "A instance has already been registered with the name %s" % inst.name
             assert inst.name.find(':') == -1, "You cannot include ':' in your class names (%r)" % cls.name
             self.instanceNames[inst.name] = inst
 
-    def connectionForURI(self, uri, **args):
+    def connectionForURI(self, uri, oldUri=False, **args):
         if args:
             if '?' not in uri:
-                uri += '?'
-            uri += urllib.urlencode(args)
-        if self.cachedURIs.has_key(uri):
+                uri += '?' + urllib.urlencode(args)
+            else:
+                uri += '&' + urllib.urlencode(args)
+        if uri in self.cachedURIs:
             return self.cachedURIs[uri]
         if uri.find(':') != -1:
             scheme, rest = uri.split(':', 1)
-            assert self.schemeBuilders.has_key(scheme), (
-                   "No SQLObject driver exists for %s (only %s)"
-                   % (scheme, ', '.join(self.schemeBuilders.keys())))
-            conn = self.schemeBuilders[scheme]().connectionFromURI(uri)
+            connCls = self.dbConnectionForScheme(scheme)
+            if oldUri:
+                conn = connCls.connectionFromOldURI(uri)
+            else:
+                conn = connCls.connectionFromURI(uri)
         else:
             # We just have a name, not a URI
-            assert self.instanceNames.has_key(uri), \
+            assert uri in self.instanceNames, \
                    "No SQLObject driver exists under the name %s" % uri
             conn = self.instanceNames[uri]
         # @@: Do we care if we clobber another connection?
         self.cachedURIs[uri] = conn
         return conn
 
+    def dbConnectionForScheme(self, scheme):
+        assert scheme in self.schemeBuilders, (
+               "No SQLObject driver exists for %s (only %s)"
+               % (scheme, ', '.join(self.schemeBuilders.keys())))
+        return self.schemeBuilders[scheme]()
+
 TheURIOpener = ConnectionURIOpener()
 
 registerConnection = TheURIOpener.registerConnection
 registerConnectionInstance = TheURIOpener.registerConnectionInstance
 connectionForURI = TheURIOpener.connectionForURI
+dbConnectionForScheme = TheURIOpener.dbConnectionForScheme
+
+# Register DB URI schemas
+import firebird
+import maxdb
+import mssql
+import mysql
+import postgres
+import rdbhost
+import sqlite
+import sybase

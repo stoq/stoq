@@ -3,8 +3,6 @@ import re
 __all__ = ["Style", "MixedCaseUnderscoreStyle", "DefaultStyle",
            "MixedCaseStyle"]
 
-True, False = 1==1, 0==1
-
 class Style(object):
 
     """
@@ -54,9 +52,10 @@ class Style(object):
         return lowerword(className)
 
     def instanceAttrToIDAttr(self, attr):
-        # @@: Right now, because of how names are created for foreign
-        # keys, you can't really change this style.
         return attr + "ID"
+
+    def instanceIDAttrToAttr(self, attr):
+        return attr[:-2]
 
     def tableReference(self, table):
         return table + "_id"
@@ -72,10 +71,7 @@ class MixedCaseUnderscoreStyle(Style):
         return mixedToUnder(attr)
 
     def dbColumnToPythonAttr(self, col):
-        if col.endswith('_id'):
-            return col[:-3] + "ID"
-        return col
-
+        return underToMixed(col)
 
     def pythonClassToDBTable(self, className):
         return className[0].lower() \

@@ -1,6 +1,8 @@
+from itertools import count
 from types import *
-import col
 from converters import sqlrepr
+
+creationOrder = count()
 
 class SODatabaseIndex(object):
 
@@ -8,34 +10,35 @@ class SODatabaseIndex(object):
                  soClass,
                  name,
                  columns,
+                 creationOrder,
                  unique=False):
         self.soClass = soClass
         self.name = name
         self.descriptions = self.convertColumns(columns)
+        self.creationOrder = creationOrder
         self.unique = unique
 
     def get(self, *args, **kw):
         if not self.unique:
             raise AttributeError, (
                 "'%s' object has no attribute 'get' (index is not unique)" % self.name)
-        connection = col.popKey(kw, 'connection', None)
+        connection = kw.pop('connection', None)
         if args and kw:
             raise TypeError, "You cannot mix named and unnamed arguments"
         columns = [d['column'] for d in self.descriptions
-            if d.has_key('column')]
-        if kw:
-            args = []
-            for i in xrange(len(columns)):
-                args.append(kw[columns[i].name])
-                del kw[columns[i].name]
-        if kw or len(args) != len(columns):
+            if 'column' in d]
+        if kw and len(kw) != len(columns) or args and len(args) != len(columns):
             raise TypeError, ("get() takes exactly %d argument and an optional "
                 "named argument 'connection' (%d given)" % (
                 len(columns), len(args)+len(kw)))
-        cols = [c.name for c in columns]
-        dbcols = [c.dbName for c in columns]
-        return self.soClass._SO_fetchAlternateID(cols, dbcols, args,
-            connection=connection, idxName=self.name)
+        if args:
+            kw = {}
+            for i in range(len(args)):
+                if columns[i].foreignName is not None:
+                    kw[columns[i].foreignName] = args[i]
+                else:
+                    kw[columns[i].name] = args[i]
+        return self.soClass.selectBy(connection=connection, **kw).getOne()
 
     def convertColumns(self, columns):
         """
@@ -46,12 +49,12 @@ class SODatabaseIndex(object):
         for desc in columns:
             if not isinstance(desc, dict):
                 desc = {'column': desc}
-            if desc.has_key('expression'):
-                assert not desc.has_key('column'), (
+            if 'expression' in desc:
+                assert 'column' not in desc, (
                     'You cannot provide both an expression and a column '
                     '(for %s in index %s in %s)' %
                     (desc, self.name, self.soClass))
-                assert not desc.has_key('length'), (
+                assert 'length' not in desc, (
                     'length does not apply to expressions (for %s in '
                     'index %s in %s)' %
                     (desc, self.name, self.soClass))
@@ -61,7 +64,7 @@ class SODatabaseIndex(object):
             if not isinstance(columnName, str):
                 columnName = columnName.name
             colDict = self.soClass.sqlmeta.columns
-            if not colDict.has_key(columnName):
+            if columnName not in colDict:
                 for possible in colDict.values():
                     if possible.origName == columnName:
                         column = possible
@@ -88,7 +91,7 @@ class SODatabaseIndex(object):
             uniqueOrIndex = 'INDEX'
         spec = []
         for desc in self.descriptions:
-            if desc.has_key('expression'):
+            if 'expression' in desc:
                 spec.append(self.getExpression(desc, 'sqlite'))
             else:
                 spec.append(desc['column'].dbName)
@@ -100,7 +103,7 @@ class SODatabaseIndex(object):
                ', '.join(spec))
         return ret
 
-    postgresCreateIndexSQL = maxdbCreateIndexSQL = mssqlCreateIndexSQL = sybaseCreateIndexSQL = firebirdCreateIndexSQL = sqliteCreateIndexSQL
+    postgresCreateIndexSQL = maxdbCreateIndexSQL = mssqlCreateIndexSQL = sybaseCreateIndexSQL = firebirdCreateIndexSQL = sqliteCreateIndexSQL 
     def mysqlCreateIndexSQL(self, soClass):
         if self.unique:
             uniqueOrIndex = 'UNIQUE'
@@ -108,9 +111,9 @@ class SODatabaseIndex(object):
             uniqueOrIndex = 'INDEX'
         spec = []
         for desc in self.descriptions:
-            if desc.has_key('expression'):
+            if 'expression' in desc:
                 spec.append(self.getExpression(desc, 'mysql'))
-            elif desc.has_key('length'):
+            elif 'length' in desc:
                 spec.append('%s(%d)' % (desc['column'].dbName, desc['length']))
             else:
                 spec.append(desc['column'].dbName)
@@ -150,13 +153,14 @@ class DatabaseIndex(object):
     def __init__(self, *columns, **kw):
         kw['columns'] = columns
         self.kw = kw
+        self.creationOrder = creationOrder.next()
 
     def setName(self, value):
         assert self.kw.get('name') is None, "You cannot change a name after it has already been set (from %s to %s)" % (self.kw['name'], value)
         self.kw['name'] = value
 
     def _get_name(self):
-        return kw['name']
+        return self.kw['name']
 
     def _set_name(self, value):
         self.setName(value)
@@ -164,7 +168,8 @@ class DatabaseIndex(object):
     name = property(_get_name, _set_name)
 
     def withClass(self, soClass):
-        return self.baseClass(soClass=soClass, **self.kw)
+        return self.baseClass(soClass=soClass,
+            creationOrder=self.creationOrder, **self.kw)
 
     def __repr__(self):
         return '<%s %s %s>' % (

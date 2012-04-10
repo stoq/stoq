@@ -68,6 +68,7 @@ class BoundAttribute(declarative.Declarative):
         declarative.Declarative.__instanceinit__(self, new_attrs)
         self.__dict__['_all_attrs'] = self._add_attrs(self, new_attrs)
 
+    @staticmethod
     def _add_attrs(this_object, new_attrs):
         private = this_object._private_variables
         all_attrs = list(this_object._all_attrs)
@@ -77,8 +78,8 @@ class BoundAttribute(declarative.Declarative):
             if key not in all_attrs:
                 all_attrs.append(key)
         return tuple(all_attrs)
-    _add_attrs = staticmethod(_add_attrs)
 
+    @declarative.classinstancemethod
     def __addtoclass__(self, cls, added_class, attr_name):
         me = self or cls
         attrs = {}
@@ -101,17 +102,13 @@ class BoundAttribute(declarative.Declarative):
 
         me.set_object(added_class, attr_name, obj)
 
-    __addtoclass__ = declarative.classinstancemethod(__addtoclass__)
-
+    @classmethod
     def set_object(cls, added_class, attr_name, obj):
         setattr(added_class, attr_name, obj)
 
-    set_object = classmethod(set_object)
-
+    @classmethod
     def make_object(cls, added_class, attr_name, *args, **attrs):
         raise NotImplementedError
-
-    make_object = classmethod(make_object)
 
     def __setattr__(self, name, value):
         self.__dict__['_all_attrs'] = self._add_attrs(self, {name: value})

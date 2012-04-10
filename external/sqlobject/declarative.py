@@ -32,24 +32,14 @@ Also defines classinstancemethod, which acts as either a class method
 or an instance method depending on where it is called.
 """
 
-from __future__ import generators
-import threading
+import copy
 import events
+
+import itertools
+counter = itertools.count()
 
 __all__ = ('classinstancemethod', 'DeclarativeMeta', 'Declarative')
 
-import copy
-
-try:
-    import itertools
-    counter = itertools.count()
-except ImportError:
-    def _counter():
-        i = 0
-        while 1:
-            i += 1
-            yield i
-    counter = _counter()
 
 class classinstancemethod(object):
     """
@@ -73,7 +63,7 @@ class _methodwrapper(object):
         self.type = type
 
     def __call__(self, *args, **kw):
-        assert not kw.has_key('self') and not kw.has_key('cls'), (
+        assert not 'self' in kw and not 'cls' in kw, (
             "You cannot use 'self' or 'cls' arguments to a "
             "classinstancemethod")
         return self.func(*((self.obj, self.type) + args), **kw)
@@ -86,20 +76,6 @@ class _methodwrapper(object):
             return ('<bound method %s.%s of %r>'
                     % (self.type.__name__, self.func.func_name, self.obj))
 
-def threadSafeMethod(lock):
-    def decorator(fn):
-        def _wrapper(self, *args, **kwargs):
-            lock.acquire()
-            return_value = fn(self, *args, **kwargs)
-            lock.release()
-            return return_value
-        try:
-            _wrapper.func_name = fn.func_name
-        except TypeError:
-            pass
-        return _wrapper
-    return decorator
-
 class DeclarativeMeta(type):
 
     def __new__(meta, class_name, bases, new_attrs):
@@ -111,12 +87,9 @@ class DeclarativeMeta(type):
         cls = type.__new__(meta, class_name, bases, new_attrs)
         for func in early_funcs:
             func(cls)
-        if new_attrs.has_key('__classinit__'):
+        if '__classinit__' in new_attrs:
             cls.__classinit__ = staticmethod(cls.__classinit__.im_func)
         cls.__classinit__(cls, new_attrs)
-        if new_attrs.has_key('__init__'):
-            lock = threading.RLock()
-            cls.__init__ = threadSafeMethod(lock)(cls.__init__)
         for func in post_funcs:
             func(cls)
         return cls
@@ -134,7 +107,7 @@ class Declarative(object):
     def __classinit__(cls, new_attrs):
         cls.declarative_count = counter.next()
         for name in cls.__mutableattributes__:
-            if not new_attrs.has_key(name):
+            if name not in new_attrs:
                 setattr(cls, copy.copy(getattr(cls, name)))
 
     def __instanceinit__(self, new_attrs):
@@ -146,7 +119,7 @@ class Declarative(object):
                         % (self.__class__.__name__, name))
         for name, value in new_attrs.items():
             setattr(self, name, value)
-        if not new_attrs.has_key('declarative_count'):
+        if 'declarative_count' not in new_attrs:
             self.declarative_count = counter.next()
 
     def __init__(self, *args, **kw):
@@ -154,7 +127,7 @@ class Declarative(object):
             assert len(self.__unpackargs__) == 2, \
                    "When using __unpackargs__ = ('*', varname), you must only provide a single variable name (you gave %r)" % self.__unpackargs__
             name = self.__unpackargs__[1]
-            if kw.has_key(name):
+            if name in kw:
                 raise TypeError(
                     "keyword parameter '%s' was given by position and name"
                     % name)
@@ -167,14 +140,14 @@ class Declarative(object):
                        len(self.__unpackargs__),
                        len(args)))
             for name, arg in zip(self.__unpackargs__, args):
-                if kw.has_key(name):
+                if name in kw:
                     raise TypeError(
                         "keyword parameter '%s' was given by position and name"
                         % name)
                 kw[name] = arg
-        if kw.has_key('__alsocopy'):
+        if '__alsocopy' in kw:
             for name, value in kw['__alsocopy'].items():
-                if not kw.has_key(name):
+                if name not in kw:
                     if name in self.__mutableattributes__:
                         value = copy.copy(value)
                     kw[name] = value
@@ -185,6 +158,7 @@ class Declarative(object):
         kw['__alsocopy'] = self.__dict__
         return self.__class__(*args, **kw)
 
+    @classinstancemethod
     def singleton(self, cls):
         if self:
             return self
@@ -192,8 +166,8 @@ class Declarative(object):
         if not hasattr(cls, name):
             setattr(cls, name, cls(declarative_count=cls.declarative_count))
         return getattr(cls, name)
-    singleton = classinstancemethod(singleton)
 
+    @classinstancemethod
     def __repr__(self, cls):
         if self:
             name = '%s object' % self.__class__.__name__
@@ -201,7 +175,7 @@ class Declarative(object):
         else:
             name = '%s class' % cls.__name__
             v = cls.__dict__.copy()
-        if v.has_key('declarative_count'):
+        if 'declarative_count' in v:
             name = '%s %i' % (name, v['declarative_count'])
             del v['declarative_count']
         # @@: simplifying repr:
@@ -215,17 +189,16 @@ class Declarative(object):
         else:
             return '<%s %s>' % (name, ' '.join(args))
 
+    @staticmethod
     def _repr_vars(dictNames):
         names = [n for n in dictNames
                  if not n.startswith('_')
                  and n != 'declarative_count']
         names.sort()
         return names
-    _repr_vars = staticmethod(_repr_vars)
-
-    __repr__ = classinstancemethod(__repr__)
 
 def setup_attributes(cls, new_attrs):
     for name, value in new_attrs.items():
         if hasattr(value, '__addtoclass__'):
             value.__addtoclass__(cls, name)
+

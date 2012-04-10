@@ -11,11 +11,10 @@ connection creation sample::
 
     __connection__ = DBConnection.maxdbConnection(
         host=hostname, database=dbname,
-        user=user_name, password=user_password,autoCommit=1,debug=1)
+        user=user_name, password=user_password, autoCommit=1, debug=1)
 """
 from sqlobject.dbconnection import DBAPI
 from sqlobject import col
-dbapi = None
 
 
 
@@ -26,7 +25,7 @@ class maxdbException(Exception):
 
     def __str__(self):
         return repr(self.value)
-    
+
 class LowerBoundOfSliceIsNotSupported(maxdbException):
     def __init__(self, value):
         maxdbException.__init__(self, '')
@@ -52,37 +51,36 @@ class PrimaryKeyNotFounded(maxdbException):
             self,
             "No primary key was defined on table %r" % value)
 
-SAPDBMAX_ID_LENGTH=32  
+SAPDBMAX_ID_LENGTH=32
 
 class MaxdbConnection(DBAPI):
-    
+
     supportTransactions = True
     dbName = 'maxdb'
     schemes = [dbName]
-   
-    def __init__ (self, user, password, database,
-                  host='', autoCommit=1, sqlmode='internal',
+
+    def __init__ (self, host='', port=None, user=None, password=None,
+                  database=None, autoCommit=1, sqlmode='internal',
                   isolation=None, timeout=None, **kw):
-        global dbapi
-        if dbapi is None:
-            from sapdb import dbapi
+        from sapdb import dbapi
         self.module = dbapi
-        self.autoCommit = autoCommit
+        self.host      = host
+        self.port      = port
         self.user      = user
         self.password  = password
-        self.database  = database
-        self.host      = host
+        self.db        = database
+        self.autoCommit = autoCommit
         self.sqlmode   = sqlmode
         self.isolation = isolation
         self.timeout   = timeout
 
         DBAPI.__init__(self, **kw)
 
-    def connectionFromURI(cls, uri):
-        auth, password, host, port, path, args = cls._parseURI(uri)
+    @classmethod
+    def _connectionFromParams(cls, auth, password, host, port, path, args):
         path = path.replace('/', os.path.sep)
-        return cls(host, db=path, user=auth, password=password, **args)
-    connectionFromURI = classmethod(connectionFromURI)
+        return cls(host, port, user=auth, password=password,
+            database=path, **args)
 
     def _getConfigParams(self,sqlmode,auto):
         autocommit='off'
@@ -99,10 +97,9 @@ class MaxdbConnection(DBAPI):
 
     def _setAutoCommit(self, conn, auto):
         conn.close()
-        conn.__init__(self.user, self.password, self.database,
-                      self.host,
-                      **self._getConfigParams(self.sqlmode,auto))
- 
+        conn.__init__(self.user, self.password, self.db, self.host,
+                      **self._getConfigParams(self.sqlmode, auto))
+
     def createSequenceName(self,table):
         """
         sequence name are builded with the concatenation of the table
@@ -114,9 +111,9 @@ class MaxdbConnection(DBAPI):
         return '%s_SEQ'%(table[:SAPDBMAX_ID_LENGTH -4])
 
     def makeConnection(self):
-        conn = dbapi.Connection(
-            self.user, self.password, self.database, self.host,
-            **self._getConfigParams(self.sqlmode,self.autoCommit))
+        conn = self.module.Connection(
+            self.user, self.password, self.db, self.host,
+            **self._getConfigParams(self.sqlmode, self.autoCommit))
         return conn
 
     def _queryInsertID(self, conn, soInstance, id, names, values):
@@ -136,7 +133,8 @@ class MaxdbConnection(DBAPI):
             self.printDebug(conn, id, 'QueryIns', 'result')
         return id
 
-    def sqlAddLimit(self,query,limit):
+    @classmethod
+    def sqlAddLimit(cls,query,limit):
         sql = query
         sql = sql.replace("SELECT","SELECT ROWNO, ")
         if sql.find('WHERE') != -1:
@@ -145,22 +143,22 @@ class MaxdbConnection(DBAPI):
             sql = sql + 'WHERE ' + limit
         return sql
 
-    def _queryAddLimitOffset(self, query, start, end):
+    @classmethod
+    def _queryAddLimitOffset(cls, query, start, end):
         if start:
             raise LowerBoundOfSliceIsNotSupported
         limit = ' ROWNO   <= %d ' % (end)
-        return self.sqlAddLimit(query,limit)
+        return cls.sqlAddLimit(query,limit)
 
-    
     def createTable(self, soClass):
         #we create the table in a transaction because the addition of the
-        #table and the sequence must be atomic 
+        #table and the sequence must be atomic
 
-        #i tried to use the transaction class but i get a recursion limit error    
+        #i tried to use the transaction class but i get a recursion limit error
         #t=self.transaction()
         # t.query('CREATE TABLE %s (\n%s\n)' % \
         #            (soClass.sqlmeta.table, self.createColumns(soClass)))
-        # 
+        #
         # t.query("CREATE SEQUENCE %s" % self.createSequenceName(soClass.sqlmeta.table))
         # t.commit()
         #so use transaction when the problem will be solved
@@ -168,7 +166,8 @@ class MaxdbConnection(DBAPI):
                    (soClass.sqlmeta.table, self.createColumns(soClass)))
         self.query("CREATE SEQUENCE %s"
                    % self.createSequenceName(soClass.sqlmeta.table))
- 
+        return []
+
     def createReferenceConstraint(self, soClass, col):
         return col.maxdbCreateReferenceConstraint()
 
@@ -184,7 +183,7 @@ class MaxdbConnection(DBAPI):
 
     def dropTable(self, tableName,cascade=False):
         #we drop the table in a transaction because the removal of the
-        #table and the sequence must be atomic 
+        #table and the sequence must be atomic
         #i tried to use the transaction class but i get a recursion limit error
         # try:
         #     t=self.transaction()
@@ -211,10 +210,8 @@ class MaxdbConnection(DBAPI):
                    (tableName,
                     column.maxdbCreateSQL()))
 
-    def delColumn(self, tableName, column):
-        self.query('ALTER TABLE %s DROP COLUMN %s' %
-                   (tableName,
-                    column.dbName))
+    def delColumn(self, sqlmeta, column):
+        self.query('ALTER TABLE %s DROP COLUMN %s' % (sqlmeta.table, column.dbName))
 
     GET_COLUMNS = """
     SELECT COLUMN_NAME, NULLABLE, DATA_DEFAULT, DATA_TYPE,
@@ -224,7 +221,7 @@ class MaxdbConnection(DBAPI):
     GET_PK_AND_FK = """
     SELECT constraint_cols.column_name, constraints.constraint_type,
            refname,reftablename
-    FROM user_cons_columns constraint_cols 
+    FROM user_cons_columns constraint_cols
     INNER JOIN user_constraints constraints
     ON constraint_cols.constraint_name = constraints.constraint_name
     LEFT OUTER JOIN show_foreign_key fk
@@ -244,7 +241,7 @@ class MaxdbConnection(DBAPI):
             pkmap[col_name]=False
             if cons_type == 'R':
                 keymap[col_name]=reftable.lower()
-                
+
             elif cons_type == 'P':
                 pkmap[col_name]=True
 
@@ -255,14 +252,15 @@ class MaxdbConnection(DBAPI):
              data_scale) in colData:
             # id is defined as primary key --> ok
             # We let sqlobject raise error if the 'id' is used for another column
-            field_name = field.lower() 
-            if field_name == 'id' and  pkmap[field_name]:
+            field_name = field.lower()
+            if (field_name == soClass.sqlmeta.idName) and pkmap[field_name]:
                 continue
-            
+
             colClass, kw = self.guessClass(data_type,data_len,data_scale)
             kw['name'] = field_name
+            kw['dbName'] = field
 
-            if nullAllowed == 'Y' : 
+            if nullAllowed == 'Y' :
                 nullAllowed=False
             else:
                 nullAllowed=True
@@ -271,13 +269,13 @@ class MaxdbConnection(DBAPI):
             if default is not None:
                 kw['default'] = default
 
-            if keymap.has_key(field_name):
+            if field_name in keymap:
                 kw['foreignKey'] = keymap[field_name]
 
             results.append(colClass(**kw))
-            
+
         return results
-    
+
     _numericTypes=['INTEGER', 'INT','SMALLINT']
     _dateTypes=['DATE','TIME','TIMESTAMP']
 

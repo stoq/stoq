@@ -2,67 +2,83 @@ from sqlobject.dbconnection import DBAPI
 from sqlobject import col
 import re
 
-sqlmodule = None
-
 class MSSQLConnection(DBAPI):
 
     supportTransactions = True
     dbName = 'mssql'
     schemes = [dbName]
 
-    def __init__(self, db, user, password='', host='localhost',
+    limit_re = re.compile('^\s*(select )(.*)', re.IGNORECASE)
+
+    def __init__(self, db, user, password='', host='localhost', port=None,
                  autoCommit=0, **kw):
-        global sqlmodule
-        if not sqlmodule:
+        drivers = kw.pop('driver', None) or 'adodb,pymssql'
+        for driver in drivers.split(','):
+            driver = driver.strip()
+            if not driver:
+                continue
             try:
-                import adodbapi as sqlmodule
-                self.dbconnection = sqlmodule.connect
-                # ADO uses unicode only (AFAIK)
-                self.usingUnicodeStrings = True
-
-                # Need to use SQLNCLI provider for SQL Server Express Edition
-                if kw.get("ncli"):
-                    conn_str = "Provider=SQLNCLI;"
+                if driver in ('adodb', 'adodbapi'):
+                    import adodbapi as sqlmodule
+                elif driver == 'pymssql':
+                    import pymssql as sqlmodule
                 else:
-                    conn_str = "Provider=SQLOLEDB;"
+                    raise ValueError('Unknown MSSQL driver "%s", expected adodb or pymssql' % driver)
+            except ImportError:
+                pass
+            else:
+                break
+        else:
+            raise ImportError('Cannot find an MSSQL driver, tried %s' % drivers)
+        self.module = sqlmodule
 
-                conn_str += "Data Source=%s;Initial Catalog=%s;"
+        if sqlmodule.__name__ == 'adodbapi':
+            self.dbconnection = sqlmodule.connect
+            # ADO uses unicode only (AFAIK)
+            self.usingUnicodeStrings = True
 
-                # MSDE does not allow SQL server login
-                if kw.get("sspi"):
-                    conn_str += "Integrated Security=SSPI;Persist Security Info=False"
-                    self.make_conn_str = lambda keys: [conn_str % (keys.host, keys.db)]
-                else:
-                    conn_str += "User Id=%s;Password=%s"
-                    self.make_conn_str = lambda keys: [conn_str % (keys.host, keys.db, keys.user, keys.password)]
+            # Need to use SQLNCLI provider for SQL Server Express Edition
+            if kw.get("ncli"):
+                conn_str = "Provider=SQLNCLI;"
+            else:
+                conn_str = "Provider=SQLOLEDB;"
 
-                col.popKey(kw, "sspi")
-                col.popKey(kw, "ncli")
+            conn_str += "Data Source=%s;Initial Catalog=%s;"
 
-            except ImportError: # raise the exceptions other than ImportError for adodbapi absence
-                import pymssql as sqlmodule
-                self.dbconnection = sqlmodule.connect
-                sqlmodule.Binary = lambda st: str(st)
-                # don't know whether pymssql uses unicode
-                self.usingUnicodeStrings = False
-                self.make_conn_str = lambda keys:  \
-                       ["", keys.user, keys.password, keys.host, keys.db]
+            # MSDE does not allow SQL server login 
+            if kw.get("sspi"):
+                conn_str += "Integrated Security=SSPI;Persist Security Info=False"
+                self.make_conn_str = lambda keys: [conn_str % (keys.host, keys.db)]
+            else:
+                conn_str += "User Id=%s;Password=%s"
+                self.make_conn_str = lambda keys: [conn_str % (keys.host, keys.db, keys.user, keys.password)]
+
+            kw.pop("sspi", None)
+            kw.pop("ncli", None)
+
+        else: # pymssql
+            self.dbconnection = sqlmodule.connect
+            sqlmodule.Binary = lambda st: str(st)
+            # don't know whether pymssql uses unicode
+            self.usingUnicodeStrings = False
+            self.make_conn_str = lambda keys:  \
+                   ["", keys.user, keys.password, keys.host, keys.db]
+
         self.autoCommit=int(autoCommit)
         self.host = host
+        self.port = port
         self.db = db
         self.user = user
         self.password = password
-        self.limit_re = re.compile('^\s*(select )(.*)', re.IGNORECASE)
         self.password = password
-        self.module = sqlmodule
+        self._can_use_max_types = None
         DBAPI.__init__(self, **kw)
 
-    def connectionFromURI(cls, uri):
-        user, password, host, port, path, args = cls._parseURI(uri)
+    @classmethod
+    def _connectionFromParams(cls, user, password, host, port, path, args):
         path = path.strip('/')
-        return cls(user=user, password=password, host=host or 'localhost',
-                   db=path, **args)
-    connectionFromURI = classmethod(connectionFromURI)
+        return cls(user=user, password=password,
+                   host=host or 'localhost', port=port, db=path, **args)
 
     def insert_id(self, conn):
         """
@@ -138,11 +154,12 @@ class MSSQLConnection(DBAPI):
             self.printDebug(conn, id, 'QueryIns', 'result')
         return id
 
-    def _queryAddLimitOffset(self, query, start, end):
+    @classmethod
+    def _queryAddLimitOffset(cls, query, start, end):
         if end and not start:
             limit_str = "SELECT TOP %i" % end
 
-            match = self.limit_re.match(query)
+            match = cls.limit_re.match(query)
             if match and len(match.groups()) == 2:
                 return ' '.join([limit_str, match.group(2)])
         else:
@@ -152,7 +169,7 @@ class MSSQLConnection(DBAPI):
         return col.mssqlCreateReferenceConstraint()
 
     def createColumn(self, soClass, col):
-        return col.mssqlCreateSQL()
+        return col.mssqlCreateSQL(self)
 
     def createIDColumn(self, soClass):
         key_type = {int: "INT", str: "TEXT"}[soClass.sqlmeta.idType]
@@ -174,14 +191,12 @@ class MSSQLConnection(DBAPI):
     def addColumn(self, tableName, column):
         self.query('ALTER TABLE %s ADD %s' %
                    (tableName,
-                    column.mssqlCreateSQL()))
+                    column.mssqlCreateSQL(self)))
 
-    def delColumn(self, tableName, column):
-        self.query('ALTER TABLE %s DROP COLUMN %s' %
-                   (tableName,
-                    column.dbName))
+    def delColumn(self, sqlmeta, column):
+        self.query('ALTER TABLE %s DROP COLUMN %s' % (tableName.table, column.dbName))
 
-    # precision and scale is gotten from column table so that we can create
+    # precision and scale is gotten from column table so that we can create 
     # decimal columns if needed
     SHOW_COLUMNS = """
         select
@@ -212,12 +227,12 @@ class MSSQLConnection(DBAPI):
                                 % tableName)
         results = []
         for field, size, t, precision, scale, nullAllowed, default, defaultText, is_identity in colData:
-            # Seems strange to skip the pk column?  What if it's not 'id'?
-            if field == 'id':
+            if field == soClass.sqlmeta.idName:
                 continue
             # precision is needed for decimal columns
             colClass, kw = self.guessClass(t, size, precision, scale)
-            kw['name'] = soClass.sqlmeta.style.dbColumnToPythonAttr(field)
+            kw['name'] = str(soClass.sqlmeta.style.dbColumnToPythonAttr(field))
+            kw['dbName'] = str(field)
             kw['notNone'] = not nullAllowed
             if (defaultText):
                 # Strip ( and )
@@ -271,3 +286,21 @@ class MSSQLConnection(DBAPI):
                                    'precision': scale}
         else:
             return col.Col, {}
+
+    def server_version(self):
+        try:
+            server_version = self.queryAll("SELECT SERVERPROPERTY('productversion')")[0][0]
+            server_version = server_version.split('.')[0]
+            server_version = int(server_version)
+        except:
+            server_version = None # unknown
+        self.server_version = server_version # cache it forever
+        return server_version
+
+    def can_use_max_types(self):
+        if self._can_use_max_types is not None:
+            return self._can_use_max_types
+        server_version = self.server_version()
+        self._can_use_max_types = can_use_max_types = \
+            (server_version is not None) and (server_version >= 9)
+        return can_use_max_types

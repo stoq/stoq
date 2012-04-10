@@ -18,11 +18,11 @@ def make_middleware(app, global_conf, database=None, use_transaction=False,
 
     ``sqlobject.get_connection()``:
       Returns the connection object
-
+      
     ``sqlobject.abort()``:
       Aborts the transaction.  Does not raise an error, but at the *end*
       of the request there will be a rollback.
-
+      
     ``sqlobject.begin()``:
       Starts a transaction.  First commits (or rolls back if aborted) if
       this is run in a transaction.
@@ -94,3 +94,4 @@ class SQLObjectMiddleware(object):
         environ['sqlobject.in_transaction'] = in_transaction
         return catch_errors(self.app, environ, start_response,
                             error_callback=error, ok_callback=ok)
+        

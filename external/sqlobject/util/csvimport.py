@@ -10,7 +10,7 @@ Supported types:
     A python expression, run through ``eval()``.  This can be a
     security risk, pass in ``allow_python=False`` if you don't want to
     allow it.
-
+    
 ``:int``:
     Integer
 
@@ -134,7 +134,7 @@ def create_data(data, class_getter, keyorder=None):
                 else:
                     objects[name] = inst
     return objects
-
+                
 
 def load_csv_from_directory(directory,
                             allow_python=True, default_type=DEFAULT_TYPE,
@@ -171,7 +171,7 @@ def load_csv(csvreader, allow_python=True, default_type=DEFAULT_TYPE,
     current_class = default_class
     current_headers = None
     results = {}
-
+    
     for row in csvreader:
         if not [cell for cell in row if cell.strip()]:
             # empty row
@@ -321,7 +321,7 @@ def parse_datetime(v):
         else:
             parsed = time.strptime(v, fmts[-1])
         return datetime.fromtimestamp(time.mktime(parsed))
-
+    
 register_coercer('datetime', parse_datetime)
 
 class Reference(object):

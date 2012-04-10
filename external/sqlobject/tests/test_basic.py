@@ -79,7 +79,7 @@ def test_boolCol():
     setupClass(Student)
     student = Student(is_smart=False)
     assert student.is_smart == False
-    student2 = Student(is_smart='false')
+    student2 = Student(is_smart=1)
     assert student2.is_smart == True
 
 class TestSO3(SQLObject):
@@ -290,3 +290,18 @@ def test_nonexisting_attr():
         pass
     else:
         assert 0, "Expected an AttributeError"
+
+class TestSO12(SQLObject):
+    name = StringCol()
+    value = IntCol(defaultSQL='1')
+
+def test_defaultSQL():
+    setupClass(TestSO12)
+    test = TestSO12(name="test")
+    assert test.value == 1
+
+def test_connection_override():
+    sqlhub.processConnection = connectionForURI('sqlite:///db1')
+    class TestSO13(SQLObject):
+        _connection = connectionForURI('sqlite:///db2')
+    assert TestSO13._connection.uri() == 'sqlite:///db2'

@@ -1,11 +1,10 @@
+from datetime import datetime
+now = datetime.now
+
 from sqlobject import *
 from sqlobject.tests.dbtest import *
 from sqlobject import classregistry
-try:
-    from datetime import datetime
-    now = datetime.now
-except ImportError:
-    from mx.DateTime import now
+from py.test import raises
 
 ########################################
 ## Dynamic column tests
@@ -47,7 +46,7 @@ class TestPeople:
         Person.sqlmeta.delColumn(nickname, changeSchema=True)
 
     def test_dynamicJoin(self):
-        col = KeyCol('personID', foreignKey='Person')
+        col = KeyCol('person', foreignKey='Person')
         Phone.sqlmeta.addColumn(col, changeSchema=True)
         join = MultipleJoin('Phone')
         Person.sqlmeta.addJoin(join)
@@ -61,6 +60,17 @@ class TestPeople:
         assert l == ['555-394-2930', '555-555-5555']
         Phone.sqlmeta.delColumn(col, changeSchema=True)
         Person.sqlmeta.delJoin(join)
+
+    def _test_collidingName(self):
+        class CollidingName(SQLObject):
+            expire = StringCol()
+
+    def test_collidingName(self):
+        raises(AssertionError, Person.sqlmeta.addColumn, StringCol(name="name"))
+        raises(AssertionError, Person.sqlmeta.addColumn, StringCol(name="_init"))
+        raises(AssertionError, Person.sqlmeta.addColumn, StringCol(name="expire"))
+        raises(AssertionError, Person.sqlmeta.addColumn, StringCol(name="set"))
+        raises(AssertionError, self._test_collidingName)
 
 ########################################
 ## Auto class generation
@@ -87,10 +97,36 @@ class TestAuto:
       first_name VARCHAR(100),
       last_name VARCHAR(200) NOT NULL,
       age INT DEFAULT 0,
+      created TIMESTAMP NOT NULL,
+      happy char(1) DEFAULT 'Y' NOT NULL,
+      long_field TEXT,
+      wannahavefun BOOL DEFAULT FALSE NOT NULL
+    )
+    """
+
+    rdbhostCreate = """
+    CREATE TABLE auto_test (
+      auto_id SERIAL PRIMARY KEY,
+      first_name VARCHAR(100),
+      last_name VARCHAR(200) NOT NULL,
+      age INT DEFAULT 0,
       created VARCHAR(40) NOT NULL,
       happy char(1) DEFAULT 'Y' NOT NULL,
       long_field TEXT,
       wannahavefun BOOL DEFAULT FALSE NOT NULL
+    )
+    """
+
+    sqliteCreate = """
+    CREATE TABLE auto_test (
+      auto_id INTEGER PRIMARY KEY AUTOINCREMENT ,
+      first_name VARCHAR(100),
+      last_name VARCHAR(200) NOT NULL,
+      age INT DEFAULT NULL,
+      created DATETIME NOT NULL,
+      happy char(1) DEFAULT 'Y' NOT NULL,
+      long_field TEXT,
+      wannahavefun INT DEFAULT 0 NOT NULL
     )
     """
 
@@ -100,7 +136,7 @@ class TestAuto:
       first_name VARCHAR(100),
       last_name VARCHAR(200) NOT NULL,
       age INT DEFAULT 0,
-      created VARCHAR(40) NOT NULL,
+      created DATETIME NOT NULL,
       happy char(1) DEFAULT 'Y' NOT NULL,
       long_field TEXT,
       wannahavefun BIT default(0) NOT NULL
@@ -113,7 +149,7 @@ class TestAuto:
       first_name VARCHAR(100),
       last_name VARCHAR(200) NOT NULL,
       age INT DEFAULT 0,
-      created VARCHAR(40) NOT NULL,
+      created DATETIME NOT NULL,
       happy char(1) DEFAULT 'Y' NOT NULL,
       long_field TEXT,
       wannahavefun BIT default(0) NOT NULL
@@ -128,11 +164,7 @@ class TestAuto:
     DROP TABLE auto_test
     """
 
-    sybaseDrop = """
-    DROP TABLE auto_test
-    """
-
-    mssqlDrop = sybaseDrop
+    sqliteDrop = sybaseDrop = mssqlDrop = rdbhostDrop = postgresDrop
 
     def setup_method(self, meth):
         conn = getConnection()
@@ -149,8 +181,6 @@ class TestAuto:
             conn.query(dropper)
 
     def test_classCreate(self):
-        if not supports('fromDatabase'):
-            return
         class AutoTest(SQLObject):
             _connection = getConnection()
             class sqlmeta(sqlmeta):
@@ -174,3 +204,7 @@ class TestAuto:
         assert jane.longField == 'x'*1000
         del classregistry.registry(
             AutoTest.sqlmeta.registry).classes['AutoTest']
+
+        columns = AutoTest.sqlmeta.columns
+        assert columns["lastName"].dbName == "last_name"
+        assert columns["wannahavefun"].dbName == "wannahavefun"

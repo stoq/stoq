@@ -15,6 +15,12 @@ class TestJoin2(SQLObject):
 class TestJoin3(SQLObject):
     col3 = StringCol()
 
+class TestJoin4(SQLObject):
+    col4 = StringCol()
+
+class TestJoin5(SQLObject):
+    col5 = StringCol()
+
 def setup():
     setupClass(TestJoin1)
     setupClass(TestJoin2)
@@ -35,7 +41,7 @@ def test_2select_syntax():
             on_condition=(TestJoin1.q.col1 == TestJoin2.q.col2))
     )
     assert str(select) == \
-        "SELECT test_join1.id, test_join1.col1 FROM  test_join1 LEFT JOIN test_join2 ON (test_join1.col1 = test_join2.col2) WHERE 1 = 1"
+        "SELECT test_join1.id, test_join1.col1 FROM test_join1 LEFT JOIN test_join2 ON ((test_join1.col1) = (test_join2.col2)) WHERE 1 = 1"
 
 def test_3perform_join():
     setup()
@@ -69,3 +75,32 @@ def test_5join_3tables_syntax2():
     )
     assert str(select) == \
         "SELECT test_join1.id, test_join1.col1 FROM test_join1  LEFT JOIN test_join2  LEFT JOIN test_join3 WHERE 1 = 1"
+
+    select = TestJoin1.select(
+        join=(LEFTJOIN(TestJoin1, TestJoin2), LEFTJOIN(TestJoin1, TestJoin3))
+    )
+    assert str(select) == \
+        "SELECT test_join1.id, test_join1.col1 FROM test_join1 LEFT JOIN test_join2, test_join1 LEFT JOIN test_join3 WHERE 1 = 1"
+
+def test_6join_using():
+    setup()
+    setupClass(TestJoin3)
+
+    select = TestJoin1.select(
+        join=LEFTJOINUsing(None, TestJoin2, [TestJoin2.q.id])
+    )
+    assert str(select) == \
+        "SELECT test_join1.id, test_join1.col1 FROM test_join1 LEFT JOIN test_join2 USING (test_join2.id) WHERE 1 = 1"
+
+def test_7join_on():
+    setup()
+    setupClass(TestJoin3)
+    setupClass(TestJoin4)
+    setupClass(TestJoin5)
+
+    select = TestJoin1.select(join=(
+        LEFTJOINOn(TestJoin2, TestJoin3, TestJoin2.q.col2 == TestJoin3.q.col3),
+        LEFTJOINOn(TestJoin4, TestJoin5, TestJoin4.q.col4 == TestJoin5.q.col5)
+    ))
+    assert str(select) == \
+        "SELECT test_join1.id, test_join1.col1 FROM test_join1, test_join2 LEFT JOIN test_join3 ON ((test_join2.col2) = (test_join3.col3)), test_join4 LEFT JOIN test_join5 ON ((test_join4.col4) = (test_join5.col5)) WHERE 1 = 1"

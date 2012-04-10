@@ -1,8 +1,11 @@
-from declarative import DeclarativeMeta, Declarative
+"""
+Validators for applying validations in sequence.
+"""
+
 from api import *
 
 # @@ ianb 2005-05: should CompoundValidator be included?
-__all__ = ['Any', 'All']
+__all__ = ['Any', 'All', 'Pipe']
 
 ############################################################
 ## Compound Validators
@@ -11,10 +14,12 @@ __all__ = ['Any', 'All']
 def to_python(validator, value, state):
     return validator.to_python(value, state)
 
+
 def from_python(validator, value, state):
     return validator.from_python(value, state)
 
-class CompoundValidator(Validator):
+
+class CompoundValidator(FancyValidator):
 
     if_invalid = NoDefault
 
@@ -49,16 +54,19 @@ class CompoundValidator(Validator):
     def attempt_convert(self, value, state, convertFunc):
         raise NotImplementedError, "Subclasses must implement attempt_convert"
 
-    def to_python(self, value, state=None):
+    def _to_python(self, value, state=None):
         return self.attempt_convert(value, state,
                                     to_python)
-
-    def from_python(self, value, state=None):
+    
+    def _from_python(self, value, state=None):
         return self.attempt_convert(value, state,
                                     from_python)
 
-class Any(CompoundValidator):
+    def subvalidators(self):
+        return self.validators
 
+
+class Any(CompoundValidator):
     """
     This class is like an 'or' operator for validators.  The first
     validator/converter that validates the value will be used.  (You
@@ -81,8 +89,19 @@ class Any(CompoundValidator):
         else:
             return self.if_invalid
 
-class All(CompoundValidator):
+    def not_empty__get(self):
+        not_empty = True
+        for validator in self.validators:
+            not_empty = not_empty and getattr(validator, 'not_empty', False)
+        return not_empty
+    not_empty = property(not_empty__get)
 
+    def is_empty(self, value):
+        # sub-validators should handle emptiness.
+        return False
+
+
+class All(CompoundValidator):
     """
     This class is like an 'and' operator for validators.  All
     validators must work, and the results are passed in turn through
@@ -119,7 +138,7 @@ class All(CompoundValidator):
             new.extend(validator)
         else:
             new.append(validator)
-        return self.__class__(*new, **{'if_invalid': self.if_invalid})
+        return self.__class__(*new, **dict(if_invalid=self.if_invalid))
 
     def join(cls, *validators):
         """
@@ -145,3 +164,58 @@ class All(CompoundValidator):
                 return v
         return NoDefault
     if_missing = property(if_missing__get)
+
+    def not_empty__get(self):
+        not_empty = False
+        for validator in self.validators:
+            not_empty = not_empty or getattr(validator, 'not_empty', False)
+        return not_empty
+    not_empty = property(not_empty__get)
+
+    def is_empty(self, value):
+        # sub-validators should handle emptiness.
+        return False
+
+
+class Pipe(All):
+    """
+    This class works like 'All', all validators muss pass, but the result
+    of one validation pass is handled over to the next validator. A behaviour
+    known to Unix and GNU users as 'pipe'.
+
+    ::
+
+        >>> from validators import DictConverter
+        >>> pv = Pipe(validators=[DictConverter({1: 2}), DictConverter({2: 3}), DictConverter({3: 4})])
+        >>> pv.to_python(1)
+        4
+        >>> pv.to_python(1)
+        4
+        >>> pv.from_python(4)
+        1
+        >>> pv.from_python(4)
+        1
+        >>> pv.to_python(1)
+        4
+
+    """
+
+    def __repr__(self):
+        return '<Pipe %s>' % self.validators
+
+    def attempt_convert(self, value, state, validate):
+        # To preserve the order of the transformations, we do them
+        # differently when we are converting to and from Python.
+        if validate is from_python:
+            validators = list(self.validators)
+            validators.reverse()
+        else:
+            validators = self.validators
+        try:
+            for validator in validators:
+                value = validate(validator, value, state)
+            return value
+        except Invalid:
+            if self.if_invalid is NoDefault:
+                raise
+            return self.if_invalid
