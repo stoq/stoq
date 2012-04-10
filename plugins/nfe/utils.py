@@ -107,7 +107,7 @@ def get_city_code(city_name, state=None, code=None):
     assert state_code is not None
 
     city_name = remove_accentuation(city_name)
-    query = AND(NFeCityData.q.state_code == state_code,
+    query = AND(NFeCityData.q.state_code == int(state_code),
                 ILIKE(NFeCityData.q.city_name, city_name))
     city_data = NFeCityData.selectOne(query, connection=get_connection())
     if city_data is not None:
