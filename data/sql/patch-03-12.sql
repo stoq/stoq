@@ -1,0 +1,4 @@
+-- #2737: Remove DEFAULT_BASE_CATEGORY
+
+DELETE FROM parameter_data
+    WHERE field_name = 'DEFAULT_BASE_CATEGORY';

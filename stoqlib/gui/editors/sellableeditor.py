@@ -434,10 +434,9 @@ class SellableEditor(BaseEditor):
         return []
 
     def _fill_categories(self):
-        categories = SellableCategory.select(
-            SellableCategory.q.categoryID != None,
-            connection=self.conn)
-        self.category_combo.prefill(api.for_combo(categories))
+        categories = SellableCategory.select(connection=self.conn)
+        self.category_combo.prefill(api.for_combo(categories,
+                                                  attr='full_description'))
 
     #
     # BaseEditor hooks

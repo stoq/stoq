@@ -59,43 +59,6 @@ class OnSaleInfoSlave(BaseEditorSlave):
             return ValidationError(_("Sale price can not be 0"))
 
 
-class TributarySituationSlave(BaseEditorSlave):
-    """This is base slave for tributary taxes applied to product, service
-    and it's category if any.
-    """
-    gladefile = "TributarySituationSlave"
-    proxy_widgets = ("tax_constant", "tax_value")
-    model_type = None
-
-    def __init__(self, conn, model=None):
-        self.proxy = None
-        BaseEditorSlave.__init__(self, conn, model)
-
-    def setup_combos(self):
-        """The child class must fill the combo
-        """
-
-    def _update_tax_value(self):
-        constant = self.tax_constant.get_selected_data()
-        if constant:
-            self.model.tax_value = constant.tax_value
-            if self.proxy:
-                self.proxy.update('tax_value')
-
-    #
-    # BaseEditorSlave hooks
-    #
-
-    def setup_proxies(self):
-        self.setup_combos()
-        self.proxy = self.add_proxy(self.model,
-                                    TributarySituationSlave.proxy_widgets)
-        self._update_tax_value()
-
-    def on_tax_constant__changed(self, combo):
-        self._update_tax_value()
-
-
 class SellableDetailsSlave(BaseEditorSlave):
     """This is base slave for product or service details."""
     gladefile = 'SellableDetailsSlave'

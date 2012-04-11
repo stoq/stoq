@@ -60,7 +60,7 @@ class CommissionSlave(BaseEditorSlave):
 
     def _get_source(self):
         sellable = self.model
-        return CommissionSource.selectOneBy(sellable=sellable.id,
+        return CommissionSource.selectOneBy(sellable=sellable,
                                             connection=self.conn)
 
     def _create_source(self):
@@ -90,10 +90,10 @@ class CommissionSlave(BaseEditorSlave):
         return not self.commission_check_btn.get_active()
 
     def _get_direct_commission(self):
-        return self.commission_spin.get_value()
+        return self.commission_spin.read()
 
     def _get_installments_commission(self):
-        return self.commission_inst_spin.get_value()
+        return self.commission_inst_spin.read()
 
     #
     # Kiwi callbacks
@@ -111,7 +111,7 @@ class CategoryCommissionSlave(CommissionSlave):
     model_type = SellableCategory
 
     def _get_source(self):
-        return CommissionSource.selectOneBy(category=self.model.id,
+        return CommissionSource.selectOneBy(category=self.model,
                                             connection=self.conn)
 
     def _create_source(self):
@@ -121,3 +121,18 @@ class CategoryCommissionSlave(CommissionSlave):
                          installments_value=inst,
                          category=self.model,
                          connection=self.conn)
+
+    def on_commission_check_btn__content_changed(self, widget):
+        CommissionSlave.on_commission_check_btn__content_changed(self, widget)
+
+        if widget.get_active():
+            category = self.model.category
+            while category:
+                cs = CommissionSource.selectOneBy(connection=self.conn,
+                                                  category=category)
+                if cs:
+                    self.commission_spin.update(cs.direct_value)
+                    self.commission_inst_spin.update(cs.installments_value)
+                    break
+
+                category = category.category
