@@ -664,13 +664,8 @@ class Sellable(Domain):
     #
 
     def on_update(self):
-        product = self.product
-        if product:
-            product.on_update()
-
-        service = self.service
-        if service:
-            service.on_update()
+        obj = self.product or self.service
+        obj.on_update()
 
     #
     # Classmethods
