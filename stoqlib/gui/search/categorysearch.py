@@ -32,8 +32,7 @@ from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
-from stoqlib.gui.editors.categoryeditor import (BaseSellableCategoryEditor,
-                                                SellableCategoryEditor)
+from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
 from stoqlib.domain.sellable import SellableCategory
 from stoqlib.domain.views import SellableCategoryView
 
@@ -43,10 +42,10 @@ _ = stoqlib_gettext
 class SellableCategorySearch(SearchEditor):
     size = (750, 500)
     title = _('Sellable Category Search')
-
     searchbar_label = _('Categories Matching:')
     result_strings = _('category'), _('categories')
     table = search_table = SellableCategoryView
+    tree = True
     editor = SellableCategoryEditor
 
     def __init__(self, conn):
@@ -54,9 +53,12 @@ class SellableCategorySearch(SearchEditor):
         self.set_searchbar_labels(self.searchbar_label)
         self.set_result_strings(*self.result_strings)
 
+    #
+    #  SearchEditor
+    #
+
     def create_filters(self):
         self.set_text_field_columns(['description'])
-        self.executer.add_query_callback(self._get_query)
 
     def get_columns(self):
         return [
@@ -75,27 +77,7 @@ class SellableCategorySearch(SearchEditor):
         """Search Editor hook"""
         return commission_source_category_view.category
 
-    #
-    # Private
-    #
-
-    def _get_query(self, states):
-        return SellableCategory.q.categoryID != None
-
-
-class BaseSellableCatSearch(SellableCategorySearch):
-    title = _('Base Sellable Category Search')
-    searchbar_label = _('Base Categories Matching:')
-    result_strings = _('base category'), _('base categories')
-    editor = BaseSellableCategoryEditor
-
-    def create_filters(self):
-        self.set_text_field_columns(['description'])
-        self.executer.add_query_callback(self._get_query)
-
-    #
-    # Private
-    #
-
-    def _get_query(self, states):
-        return SellableCategory.q.categoryID == None
+    def run_dialog(self, *args, **kwargs):
+        parent_view = self.results.get_selected()
+        kwargs['parent_category'] = parent_view and parent_view.category
+        return SearchEditor.run_dialog(self, *args, **kwargs)

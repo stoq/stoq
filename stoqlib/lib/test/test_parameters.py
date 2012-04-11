@@ -30,7 +30,6 @@ from stoqlib.domain.address import CityLocation
 from stoqlib.domain.person import (Branch, Client, Company, Employee,
                                    EmployeeRole, Individual, LoginUser,
                                    Person, SalesPerson, Supplier)
-from stoqlib.domain.sellable import SellableCategory
 from stoqlib.domain.service import Service
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.receiving import ReceivingOrder
@@ -80,10 +79,6 @@ class TestParameter(DomainTest):
     def testSuggestedSupplier(self):
         supplier = self.sparam.SUGGESTED_SUPPLIER
         assert isinstance(supplier, Supplier)
-
-    def testDefaultBaseCategory(self):
-        base_category = self.sparam.DEFAULT_BASE_CATEGORY
-        assert isinstance(base_category, SellableCategory)
 
     def testDeliveryService(self):
         service = self.sparam.DELIVERY_SERVICE

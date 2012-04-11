@@ -202,14 +202,6 @@ _details = [
         'sellable.SellableUnit'),
 
     ParameterDetails(
-        'DEFAULT_BASE_CATEGORY',
-        _('Purchase'),
-        _('Default base sellable category'),
-        _('A default base sellable category which we always get as a '
-          'suggestion when adding a new Sellable on the system'),
-        'sellable.SellableCategory'),
-
-    ParameterDetails(
         'ALLOW_OUTDATED_OPERATIONS',
         _('General'),
         _('Allow outdated operations'),
@@ -627,7 +619,6 @@ class ParameterAccess(ClassInittableObject):
         self._create_default_stock_decrease_cfop()
         self._create_suggested_supplier()
         self._create_suggested_unit()
-        self._create_default_base_category()
         self._create_default_salesperson_role()
         self._create_main_company()
         self._create_delivery_service()
@@ -653,15 +644,6 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, SellableUnit):
             return
         self._set_schema(key, None)
-
-    def _create_default_base_category(self):
-        from stoqlib.domain.sellable import SellableCategory
-        key = "DEFAULT_BASE_CATEGORY"
-        if self.get_parameter_by_field(key, SellableCategory):
-            return
-        base_category = SellableCategory(description=key,
-                                         connection=self.conn)
-        self._set_schema(key, base_category.id)
 
     def _create_default_salesperson_role(self):
         from stoqlib.domain.person import EmployeeRole

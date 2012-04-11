@@ -41,22 +41,26 @@ from stoqlib.lib.parameters import sysparam
 class TestSellableCategory(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
-        base_category = SellableCategory(description="Monitor",
-                                         connection=self.trans)
-        self._category = SellableCategory(description="LCD",
-                                          category=base_category,
-                                          connection=self.trans)
+        self._base_category = self._create_category('Monitor')
 
     def testGetDescription(self):
-        self.failUnless(self._category.get_description() == "LCD")
-        self.failUnless(self._category.get_full_description() == "Monitor LCD")
+        category = self._create_category('LCD', parent=self._base_category)
+        self.failUnless(category.get_description() == "LCD")
+        self.failUnless(category.full_description == "Monitor:LCD")
 
     def testMarkup(self):
-        self._category.suggested_markup = currency(10)
-        self._category.category.suggested_markup = currency(20)
-        self.failUnless(self._category.get_markup() == currency(10))
-        self._category.suggested_markup = None
-        self.failUnless(self._category.get_markup() == currency(20))
+        self._base_category.suggested_markup = currency('10')
+        category1 = self._create_category('LCD', parent=self._base_category)
+        category2 = self._create_category('LCD', parent=self._base_category)
+        category3 = self._create_category('LCD', parent=self._base_category)
+
+        category1.suggested_markup = None
+        category2.suggested_markup = currency(0)
+        category3.suggested_markup = currency(5)
+
+        self.assertEqual(category1.get_markup(), 10)
+        self.assertEqual(category2.get_markup(), 0)
+        self.assertEqual(category3.get_markup(), 5)
 
     def testGetBaseCategories(self):
         categories = SellableCategory.get_base_categories(self.trans)
@@ -72,21 +76,22 @@ class TestSellableCategory(DomainTest):
         self.assertEqual(categories.count(), count + 1)
 
     def testGetTaxConstant(self):
-        base_category = SellableCategory(description="Monitor",
-                                         connection=self.trans)
-        category = SellableCategory(description="LCD Monitor",
-                                    category=base_category,
-                                    connection=self.trans)
+        category = self._create_category('LCD', parent=self._base_category)
 
         self.assertEquals(category.get_tax_constant(), None)
 
         constant = self.create_sellable_tax_constant()
-        base_category.tax_constant = constant
+        self._base_category.tax_constant = constant
         self.assertEquals(category.get_tax_constant(), constant)
 
         constant2 = self.create_sellable_tax_constant()
         category.tax_constant = constant2
         self.assertEquals(category.get_tax_constant(), constant2)
+
+    def _create_category(self, description, parent=None):
+        return SellableCategory(description=description,
+                                category=parent,
+                                connection=self.trans)
 
 
 class TestSellable(DomainTest):

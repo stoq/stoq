@@ -371,7 +371,7 @@ class SellableCategoryView(Viewable):
         id=SellableCategory.q.id,
         commission=CommissionSource.q.direct_value,
         installments_commission=CommissionSource.q.installments_value,
-        category_id=SellableCategory.q.id,
+        parent_id=SellableCategory.q.categoryID,
         description=SellableCategory.q.description,
         suggested_markup=SellableCategory.q.suggested_markup,
     )
@@ -385,32 +385,62 @@ class SellableCategoryView(Viewable):
 
     @property
     def category(self):
-        return SellableCategory.get(self.category_id,
+        return SellableCategory.get(self.id,
                                     connection=self.get_connection())
 
+    def get_parent(self):
+        if not self.parent_id:
+            return None
+
+        category_views = SellableCategoryView.select(
+            connection=self.get_connection(),
+            clause=SellableCategoryView.q.id == self.parent_id)
+        return category_views[0]
+
+    def get_suggested_markup(self):
+        if hasattr(self, '_suggested_markup'):
+            return self._suggested_markup
+
+        category = self
+        while category:
+            # Compare to None as suggested_markup can be 0
+            if category.suggested_markup is not None:
+                self._suggested_markup = category.suggested_markup
+                return self._suggested_markup
+
+            category = category.get_parent()
+
     def get_commission(self):
-        if self.commission:
+        # Compare to None as commission can be 0
+        if self.commission is not None:
             return self.commission
 
-        source = self._get_base_source_commission()
+        source = self._get_parent_source_commission()
         if source:
             return source.direct_value
 
     def get_installments_commission(self):
-        if self.commission:
+        # Compare to None as commission can be 0
+        if self.commission is not None:
             return self.installments_commission
 
-        source = self._get_base_source_commission()
+        source = self._get_parent_source_commission()
         if source:
             return source.installments_value
 
-    def _get_base_source_commission(self):
-        base_category = self.category.category
-        if not base_category:
-            return
+    def _get_parent_source_commission(self):
+        if hasattr(self, '_source'):
+            return self._source
 
-        return CommissionSource.selectOneBy(category=base_category,
-                                            connection=self.get_connection())
+        parent = self.get_parent()
+        while parent:
+            source = CommissionSource.selectOneBy(
+                category=parent.category, connection=self.get_connection())
+            if source:
+                self._source = source
+                return source
+
+            parent = parent.get_parent()
 
 
 class QuotationView(Viewable):

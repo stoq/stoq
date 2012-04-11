@@ -23,124 +23,138 @@
 ##
 """ Sellable category editors implementation"""
 
+import gtk
 from kiwi.datatypes import ValidationError
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.slaves.categoryslave import CategoryTributarySituationSlave
-from stoqlib.gui.slaves.commissionslave import CategoryCommissionSlave
-
-from stoqlib.lib.parameters import sysparam
+from stoqlib.api import api
 from stoqlib.domain.sellable import SellableCategory, SellableTaxConstant
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.slaves.commissionslave import CategoryCommissionSlave
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-#
-# Helper functions
-#
-
-
-def _validate_category_description(category, description, conn):
-    retval = category.check_category_description_exists(description, conn)
-    if not retval:
-        return ValidationError(_(u'Category already exists.'))
-
-#
-# Main editors
-#
-
-
-class BaseSellableCategoryEditor(BaseEditor):
-    gladefile = 'BaseSellableCategoryDataSlave'
-    model_type = SellableCategory
-    model_name = _('Base Category')
-    proxy_widgets = ('description',
-                     'markup',
-                     'tax_constant')
-    size = (300, -1)
-
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
-        self.set_description(self.model.get_description())
-
-    def create_model(self, conn):
-        return SellableCategory(description=u"", category=None, connection=conn)
-
-    def setup_combo(self):
-        self.tax_constant.prefill(
-            [(c.description, c)
-                  for c in SellableTaxConstant.select(connection=self.conn)])
-
-    def setup_proxies(self):
-        self.setup_combo()
-        self.add_proxy(model=self.model,
-                       widgets=BaseSellableCategoryEditor.proxy_widgets)
-
-    def setup_slaves(self):
-        slave = CategoryCommissionSlave(self.conn, self.model)
-        self.attach_slave('on_commission_data_holder', slave)
-
-    def on_confirm(self):
-        slave = self.get_slave('on_commission_data_holder')
-        slave.confirm()
-        return self.model
-
-    def on_description__validate(self, widget, value):
-        return _validate_category_description(self.model, value, self.conn)
-
 
 class SellableCategoryEditor(BaseEditor):
-    gladefile = 'SellableCategoryDataSlave'
+    gladefile = 'SellableCategoryEditor'
     model_type = SellableCategory
     model_name = _('Category')
+    size = (500, 350)
     proxy_widgets = ('description',
                      'suggested_markup',
+                     'tax_constant',
                      'category')
 
-    def __init__(self, conn, model):
+    def __init__(self, conn, model, parent_category=None):
+        self._parent_category = parent_category
         BaseEditor.__init__(self, conn, model)
         self.set_description(self.model.get_description())
 
+    #
+    #  Public API
+    #
+
+    def add_extra_tab(self, tab_label, slave):
+        event_box = gtk.EventBox()
+        self.category_notebook.append_page(event_box, gtk.Label(tab_label))
+        self.attach_slave(tab_label, slave, event_box)
+        event_box.show()
+
+    #
+    #  BaseEditor
+    #
+
     def create_model(self, conn):
-        return SellableCategory(
-            description=u"", category=sysparam(conn).DEFAULT_BASE_CATEGORY,
-            connection=conn)
-
-    def get_combo_entries(self):
-        return SellableCategory.get_base_categories(self.conn)
-
-    def setup_combo(self):
-        self.category.prefill(
-            [(c.description, c)
-                  for c in self.get_combo_entries()])
+        return SellableCategory(description='',
+                                category=self._parent_category,
+                                connection=conn)
 
     def setup_slaves(self):
-        commission_slave = CategoryCommissionSlave(self.conn, self.model)
-        self.attach_slave('on_commission_data_holder', commission_slave)
-        cat = self.category.get_selected_label()
-        commission_slave.change_label(
-            _(u'Calculate Commission From: %s') % cat)
+        self.commission_slave = CategoryCommissionSlave(self.conn,
+                                                        self.model)
+        self.commission_slave.change_label(_("Get from parent"))
+        self.add_extra_tab(_("Commission"), self.commission_slave)
 
-        tax_slave = CategoryTributarySituationSlave(self.conn,
-                                                    self.model)
-        self.attach_slave("on_tax_holder", tax_slave)
+        self._update_widgets()
 
     def setup_proxies(self):
         # We need to prefill combobox before to set a proxy, since we want
         # the attribute 'group' be set properly in the combo.
-        self.setup_combo()
-        self.add_proxy(model=self.model,
-                       widgets=SellableCategoryEditor.proxy_widgets)
+        self._setup_widgets()
+        self.proxy = self.add_proxy(
+            model=self.model, widgets=SellableCategoryEditor.proxy_widgets)
 
-    def on_category__content_changed(self, widget):
-        slave = self.get_slave('on_commission_data_holder')
-        cat = self.category.get_selected_label()
-        slave.change_label(_('Calculate Commission From: %s') % cat)
+        if not self.edit_mode and self._parent_category:
+            for widget in (self.markup_check, self.tax_check):
+                widget.set_active(True)
+        elif self.model.category:
+            # Update check status. Use 'is None' to differentiate from cases
+            # where the value is 0 or something evaluated to False
+            self.markup_check.set_active(self.model.suggested_markup is None)
+            self.tax_check.set_active(self.model.tax_constant is None)
 
     def on_confirm(self):
-        slave = self.get_slave('on_commission_data_holder')
-        slave.confirm()
+        self.commission_slave.confirm()
+
+        if self.markup_check.get_active():
+            self.model.suggested_markup = None
+        if self.tax_check.get_active():
+            self.model.tax_constant = None
+
         return self.model
 
+    #
+    #  Private
+    #
+
+    def _setup_widgets(self):
+        self.tax_constant.prefill(
+            api.for_combo(SellableTaxConstant.select(connection=self.conn)))
+
+        categories = set(SellableCategory.select(
+            connection=self.conn,
+            clause=SellableCategory.q.id != self.model.id))
+        # Remove all children recursively to avoid creating
+        # a circular hierarchy
+        categories -= self.model.get_children_recursively()
+
+        self.category.prefill(
+            api.for_combo(categories, attr='full_description'))
+
+    def _update_widgets(self):
+        category_lbl = self.category.get_selected_label()
+
+        for widget in [self.commission_slave.commission_check_btn,
+                       self.markup_check, self.tax_check]:
+            widget.set_sensitive(bool(category_lbl))
+            if not category_lbl:
+                # We are not updating the widget active state directly like
+                # it's visibility because we don't want to overwrite the
+                # user choices. We set it to false when there is no parent
+                # to update to call the callbacks bellow.
+                widget.set_active(False)
+
+    #
+    #  Callbacks
+    #
+
+    def on_markup_check__toggled(self, widget):
+        active = widget.get_active()
+        self.suggested_markup.set_sensitive(not active)
+        if active:
+            self.model.suggested_markup = self.model.category.get_markup()
+        self.proxy.update('suggested_markup')
+
+    def on_tax_check__toggled(self, widget):
+        active = widget.get_active()
+        self.tax_constant.set_sensitive(not active)
+        if active:
+            self.model.tax_constant = self.model.category.get_tax_constant()
+        self.proxy.update('tax_constant')
+
+    def on_category__content_changed(self, widget):
+        self._update_widgets()
+
     def on_description__validate(self, widget, value):
-        return _validate_category_description(self.model, value, self.conn)
+        if not self.model.check_category_description_exists(value, self.conn):
+            return ValidationError(_('Category already exists.'))

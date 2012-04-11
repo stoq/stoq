@@ -22,7 +22,6 @@ SellableCategory
 ..     def get_description(self):
 ..     def get_commission(self):
 ..     def get_markup(self):
-..     def get_full_description(self):
 
 
 Sellable

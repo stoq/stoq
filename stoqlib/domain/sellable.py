@@ -34,7 +34,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import BoolCol, PriceCol, PercentCol
 from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, ForeignKey
-from stoqlib.database.orm import SingleJoin
+from stoqlib.database.orm import SingleJoin, MultipleJoin
 from stoqlib.database.orm import AND, IN, OR
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.base import Domain
@@ -146,7 +146,49 @@ class SellableCategory(Domain):
     category = ForeignKey('SellableCategory', default=None)
     tax_constant = ForeignKey('SellableTaxConstant', default=None)
 
+    children = MultipleJoin('SellableCategory',
+                            joinColumn='category_id')
+
     implements(IDescribable)
+
+    #
+    #  Properties
+    #
+
+    @property
+    def full_description(self):
+        if not self.category:
+            return self.description
+
+        return '%s:%s' % (self.category.get_description(), self.description)
+
+    #
+    #  Public API
+    #
+
+    def get_children_recursively(self):
+        """Return all the children from this category, recursively
+
+        This will return all children recursively, e.g.:
+
+                      A
+                     / \
+                    B   C
+                   / \
+                  D   E
+
+        In this example, calling this from A will return set([B, C, D, E])
+        """
+        children = set(self.children)
+
+        if not len(children):
+            # Base case for the leafs
+            return set()
+
+        for child in list(children):
+            children |= child.get_children_recursively()
+
+        return children
 
     def get_commission(self):
         """Returns the commission for this category.
@@ -164,7 +206,10 @@ class SellableCategory(Domain):
         :returns: the markup
         """
         if self.category:
-            return self.suggested_markup or self.category.get_markup()
+            # Compare to None as markup can be '0'
+            if self.suggested_markup is not None:
+                return self.suggested_markup
+            return  self.category.get_markup()
         return self.suggested_markup
 
     def get_tax_constant(self):
@@ -176,20 +221,17 @@ class SellableCategory(Domain):
             return self.tax_constant or self.category.get_tax_constant()
         return self.tax_constant
 
-    # FIXME: Remove?
-    def get_description(self):
-        return self.description
-
-    def get_full_description(self):
-        if self.category:
-            return ("%s %s"
-                    % (self.category.get_description(), self.description))
-        return self.description
-
     def check_category_description_exists(self, description, conn):
         category = SellableCategory.selectOneBy(description=description,
                                                 connection=conn)
         return category is None or category is self
+
+    #
+    #  IDescribable
+    #
+
+    def get_description(self):
+        return self.description
 
     #
     # Classmethods
@@ -202,7 +244,6 @@ class SellableCategory(Domain):
         :returns: categories
         """
         return cls.select(cls.q.categoryID == None, connection=conn)
-# pylint: enable=E1101
 
     #
     # Domain hooks
@@ -213,6 +254,9 @@ class SellableCategory(Domain):
 
     def on_update(self):
         CategoryEditEvent.emit(self)
+
+
+# pylint: enable=E1101
 
 
 class ClientCategoryPrice(Domain):

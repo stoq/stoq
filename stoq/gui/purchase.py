@@ -42,8 +42,7 @@ from stoqlib.gui.dialogs.sellablepricedialog import SellablePriceDialog
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.keybindings import get_accels
-from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
-                                               BaseSellableCatSearch)
+from stoqlib.gui.search.categorysearch import SellableCategorySearch
 from stoqlib.gui.search.consignmentsearch import ConsignmentItemSearch
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.search.productsearch import (ProductSearch,
@@ -107,8 +106,6 @@ class PurchaseApp(SearchableAppWindow):
             ("StockCost", None, _("_Stock cost...")),
 
             # Search
-            ("BaseCategories", None, _("Base categories..."),
-             group.get("search_base_categories")),
             ("Categories", None, _("Categories..."),
              group.get("search_categories")),
             ("Products", STOQ_PRODUCTS, _("Products..."),
@@ -516,9 +513,6 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_ProductUnits__activate(self, action):
         self.run_dialog(SellableUnitSearch, self.conn)
-
-    def on_BaseCategories__activate(self, action):
-        self.run_dialog(BaseSellableCatSearch, self.conn)
 
     def on_Services__activate(self, action):
         self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)

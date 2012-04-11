@@ -158,6 +158,7 @@ def _create_slave_test():
         'AccountTransactionEditor': 'needs to set a value',
         'PurchaseInstallmentConfirmationSlave': 'pending payment',
         'SaleInstallmentConfirmationSlave': 'pending payment',
+        'SellableCategoryEditor': 'Needs a parent category',
         'EmployeeEditor': 'bank account',
         'EmployeeDetailsSlave': 'bank account',
         }

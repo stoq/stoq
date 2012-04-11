@@ -683,8 +683,8 @@ class SearchEditor(SearchDialog):
             self.search.refresh()
             self.enable_ok()
 
-    def run_dialog(self, editor_class, parent, *args):
-        return run_dialog(editor_class, parent, *args)
+    def run_dialog(self, editor_class, parent, *args, **kwargs):
+        return run_dialog(editor_class, parent, *args, **kwargs)
 
     def run_editor(self, obj):
         trans = api.new_transaction()

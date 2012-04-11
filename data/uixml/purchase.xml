@@ -43,7 +43,6 @@
   </menu>
   <menu action="SearchMenu">
     <placeholder name="SearchMenuPH">
-      <menuitem action="BaseCategories"/>
       <menuitem action="Categories"/>
       <menuitem action="ProductUnits"/>
       <menuitem action="Products"/>
