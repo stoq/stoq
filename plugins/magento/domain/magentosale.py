@@ -66,6 +66,7 @@ class MagentoSale(MagentoBaseSyncBoth):
 
     status = UnicodeCol(default=STATUS_NEW)
     sale = ForeignKey('Sale', default=None)
+    can_deliver = BoolCol(default=False)
     magento_client = ForeignKey('MagentoClient', default=None)
     magento_address = ForeignKey('MagentoAddress', default=None)
 
@@ -179,11 +180,6 @@ class MagentoSale(MagentoBaseSyncBoth):
                          notes=notes,
                          coupon_id=None)
 
-        delivery_service = sysparam_.DELIVERY_SERVICE
-        delivery_price = info['shipping_amount'] or 0
-        self.sale.add_sellable(delivery_service.sellable,
-                               price=delivery_price)
-
         for item in info['items']:
             mag_product = MagentoProduct.selectOneBy(connection=conn,
                                                      config=self.config,
@@ -194,13 +190,23 @@ class MagentoSale(MagentoBaseSyncBoth):
                           "at this point" % item['sku'])
                 return False
 
-            sellable = mag_product.product.sellable
+            sellable = mag_product.sellable
+            if sellable.product:
+                # If we have at least one product, we can deliver it.
+                self.can_deliver = True
+
             price = item['price']
             quantity = item['qty_ordered']
 
             self.sale.add_sellable(sellable,
                                    quantity=quantity,
                                    price=price)
+
+        if self.can_deliver:
+            delivery_service = sysparam_.DELIVERY_SERVICE
+            delivery_price = info['shipping_amount'] or 0
+            self.sale.add_sellable(delivery_service.sellable,
+                                   price=delivery_price)
 
         register_payment_operations()
         method = PaymentMethod.get_by_name(conn, 'online')
@@ -214,7 +220,7 @@ class MagentoSale(MagentoBaseSyncBoth):
 
     def update_local(self, info):
         conn = self.get_connection()
-        if not self.magento_address:
+        if self.can_deliver and not self.magento_address:
             mag_address_id = (info['shipping_address']['customer_address_id'] or
                               info['billing_address']['customer_address_id'])
             mag_address = MagentoAddress.selectOneBy(
@@ -253,7 +259,10 @@ class MagentoSale(MagentoBaseSyncBoth):
                 MagentoInvoice(connection=conn,
                                config=self.config,
                                magento_sale=self)
-            retval = self._create_delivery()
+            if self.can_deliver:
+                retval = self._create_delivery()
+            else:
+                retval = True
         elif (self.sale.status in (Sale.STATUS_CANCELLED, Sale.STATUS_RETURNED)
               and self.status != self.STATUS_CANCELLED):
             # FIXME: If the sale was already invoiced on Magento, it's
@@ -277,20 +286,17 @@ class MagentoSale(MagentoBaseSyncBoth):
         sysparam_ = sysparam(conn)
         sale_items = set(self.sale.get_items())
 
+        service_item = None
         delivery_sellable = sysparam_.DELIVERY_SERVICE.sellable
-        for item in sale_items:
-            if item.sellable == delivery_sellable:
-                service_item = item
-                sale_items.remove(item)
-                break
-        else:
-            # Just a precaution. If the user changed the service sellable, get
-            # the one with service. Magento isn't syncing services anyway
-            for item in self.sale.get_items():
-                if item.sellable.service:
+        # Use list here, or we will have a RuntimeError when set changes size
+        for item in list(sale_items):
+            sellable = item.sellable
+            if sellable.service:
+                if sellable == delivery_sellable:
                     service_item = item
-                    sale_items.remove(item)
-                    break
+                # Stoq does not deliver services
+                sale_items.remove(item)
+                continue
 
         delivery = Delivery(connection=conn,
                             address=self.magento_address.address,

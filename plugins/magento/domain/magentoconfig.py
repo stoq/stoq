@@ -30,8 +30,7 @@ from stoqlib.database.orm import (DecimalCol, IntCol, UnicodeCol, DateTimeCol,
 from stoqlib.database.runtime import get_current_branch, new_transaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Employee, Individual, Person, SalesPerson
-from stoqlib.domain.product import Product
-from stoqlib.domain.sellable import SellableCategory
+from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -105,14 +104,19 @@ class MagentoConfig(Domain):
     def on_create(self):
         from magentoproduct import MagentoProduct, MagentoCategory
         conn = self.get_connection()
+        sysparam_ = sysparam(conn)
 
         # When commiting, ensure we known all products to synchronize using the
         # server registered on self. Events should take care of creating others
-        for product in Product.select(connection=conn):
+        for sellable in Sellable.select(connection=conn):
+            if sellable.service == sysparam_.DELIVERY_SERVICE:
+                # Do not sync delivery service
+                continue
+
             # Just need to create. All other information will be synchronized
             # on MagentoProduct.synchronize
             mag_product = MagentoProduct(connection=conn,
-                                         product=product,
+                                         sellable=sellable,
                                          config=self)
             assert mag_product
         # Like products above, ensure we know all categories to synchronize.

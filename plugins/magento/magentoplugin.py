@@ -44,6 +44,8 @@ from stoqlib.domain.events import (ProductCreateEvent, ProductRemoveEvent,
                                    CategoryCreateEvent, CategoryEditEvent,
                                    ImageCreateEvent, ImageEditEvent,
                                    ImageRemoveEvent, SaleStatusChangedEvent,
+                                   ServiceCreateEvent, ServiceEditEvent,
+                                   ServiceRemoveEvent,
                                    DeliveryStatusChangedEvent)
 from stoqlib.domain.sellable import Sellable
 from stoqlib.lib.interfaces import IPlugin
@@ -118,6 +120,11 @@ class MagentoPlugin(object):
         ProductEditEvent.connect(self._on_product_update)
         ProductStockUpdateEvent.connect(self._on_product_stock_update)
 
+        # Connect service events
+        ServiceCreateEvent.connect(self._on_service_create)
+        ServiceRemoveEvent.connect(self._on_service_delete)
+        ServiceEditEvent.connect(self._on_service_update)
+
         # Connect image events
         ImageCreateEvent.connect(self._on_image_create)
         ImageEditEvent.connect(self._on_image_update)
@@ -182,7 +189,13 @@ class MagentoPlugin(object):
     def _get_magento_products_by_product(self, product):
         conn = product.get_connection()
         mag_products = MagentoProduct.selectBy(connection=conn,
-                                               product=product)
+                                               sellable=product.sellable)
+        return mag_products
+
+    def _get_magento_products_by_service(self, service):
+        conn = service.get_connection()
+        mag_products = MagentoProduct.selectBy(connection=conn,
+                                               sellable=service.sellable)
         return mag_products
 
     def _get_magento_categories_by_category(self, category):
@@ -200,7 +213,7 @@ class MagentoPlugin(object):
         for config in MagentoConfig.select(connection=conn):
             # Just create the registry and it will be synchronized later.
             MagentoProduct(connection=conn,
-                           product=product,
+                           sellable=product.sellable,
                            config=config)
 
     def _on_product_update(self, product, **kwargs):
@@ -212,7 +225,7 @@ class MagentoPlugin(object):
             # Remove the foreign key reference, so the product can be
             # deleted on stoq without problems. This deletion will happen
             # later when synchronizing products.
-            mag_product.product = None
+            mag_product.sellable = None
             mag_product.need_sync = True
 
     def _on_product_stock_update(self, product, branch, old_quantity,
@@ -222,6 +235,30 @@ class MagentoPlugin(object):
             for mag_stock in MagentoStock.selectBy(connection=conn,
                                                    magento_product=mag_product):
                 mag_stock.need_sync = True
+
+    def _on_service_create(self, service, **kwargs):
+        conn = service.get_connection()
+        for config in MagentoConfig.select(connection=conn):
+            # Just create the registry and it will be synchronized later.
+            MagentoProduct(connection=conn,
+                           sellable=service.sellable,
+                           config=config)
+
+    def _on_service_update(self, service, **kwargs):
+        for mag_product in self._get_magento_products_by_service(service):
+            mag_product.need_sync = True
+            if mag_product.magento_stock:
+                # Services does not have stock, so mark them
+                # as need_sync in here too
+                mag_product.magento_stock.need_sync = True
+
+    def _on_service_delete(self, service, **kwargs):
+        for mag_product in self._get_magento_products_by_service(service):
+            # Remove the foreign key reference, so the service can be
+            # deleted on stoq without problems. This deletion will happen
+            # later when synchronizing products.
+            mag_product.sellable = None
+            mag_product.need_sync = True
 
     def _on_image_create(self, image, **kwargs):
         conn = image.get_connection()

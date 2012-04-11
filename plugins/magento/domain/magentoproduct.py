@@ -76,19 +76,31 @@ class MagentoProduct(MagentoBaseSyncUp):
     TAX_SHIPPING = 4
 
     sku = UnicodeCol(default=None)
-    product_type = UnicodeCol(default=TYPE_SIMPLE)
+    product_type = UnicodeCol(default=None)
     product_set = IntCol(default=None)
     visibility = IntCol(default=VISIBILITY_CATALOG_SEARCH)
     url_key = UnicodeCol(default=None)
     news_from_date = DateTimeCol(default=None)
     news_to_date = DateTimeCol(default=None)
     magento_category = ForeignKey('MagentoCategory', default=None)
-    product = ForeignKey('Product')
+    sellable =  ForeignKey('Sellable')
 
     magento_stock = SingleJoin('MagentoStock',
                                joinColumn='magento_product_id')
     magento_images = MultipleJoin('MagentoImage',
                                   joinColumn='magento_product_id')
+
+    #
+    #  Properties
+    #
+
+    @property
+    def product(self):
+        return self.sellable.product
+
+    @property
+    def service(self):
+        return self.sellable.service
 
     #
     #  MagentoBase hooks
@@ -127,10 +139,10 @@ class MagentoProduct(MagentoBaseSyncUp):
     def create_remote(self):
         assert not self.magento_id
 
-        # If no product, that means we need to remove it from magento.
-        # Can happen if one creates a product and deletes it, before we could
+        # If no sellable, that means we need to remove it from magento.
+        # Can happen if one creates a sellable and deletes it, before we could
         # sync self and create it on Magento.
-        if not self.product:
+        if not self.sellable:
             retval = yield self.remove_remote()
             returnValue(retval)
 
@@ -158,7 +170,7 @@ class MagentoProduct(MagentoBaseSyncUp):
                          magento_id=self.magento_id,
                          config=self.config,
                          magento_product=self)
-            category = self.product.sellable.category
+            category = self.sellable.category
             if category:
                 self._update_category(category)
 
@@ -166,12 +178,12 @@ class MagentoProduct(MagentoBaseSyncUp):
 
     @inlineCallbacks
     def update_remote(self):
-        # If no product, that means we need to remove it from magento
-        if not self.product:
+        # If no sellable, that means we need to remove it from magento
+        if not self.sellable:
             retval = yield self.remove_remote()
             returnValue(retval)
 
-        category = self.product.sellable.category
+        category = self.sellable.category
         if category:
             self._update_category(category)
 
@@ -231,9 +243,17 @@ class MagentoProduct(MagentoBaseSyncUp):
         self.magento_category.need_sync = True
 
     def _generate_initial_data(self):
-        sellable = self.product.sellable
+        sellable = self.sellable
         config = self.config
 
+        if not self.product_type:
+            if self.service:
+                # Magento use virtual products for products that doesn't
+                # have a physical counterpart. Exactly the same way we
+                # treat services.
+                self.product_type = self.TYPE_VIRTUAL
+            else:
+                self.product_type = self.TYPE_SIMPLE
         if not self.product_set:
             self.product_set = config.default_product_set
         if not self.sku:
@@ -249,7 +269,7 @@ class MagentoProduct(MagentoBaseSyncUp):
                 sellable.get_description().encode('utf-8'))
 
     def _get_data(self):
-        sellable = self.product.sellable
+        sellable = self.sellable
         status = (self.STATUS_DISABLED if sellable.is_closed() else
                   self.STATUS_ENABLED)
         tax_class_id = (self.TAX_TAXABLE_GOODS if sellable.tax_constant else
@@ -257,7 +277,7 @@ class MagentoProduct(MagentoBaseSyncUp):
 
         name = sellable.get_description()
 
-        return {
+        data = {
             'status': status,
             'name': sellable.get_description(),
             'description': sellable.notes or name,
@@ -269,8 +289,12 @@ class MagentoProduct(MagentoBaseSyncUp):
             'news_from_date': self.news_from_date,
             'news_to_date': self.news_to_date,
             'visibility': self.visibility,
-            'weight': self.product.weight or 1,
             }
+
+        if self.product:
+            data['weight'] = self.product.weight or 1
+
+        return data
 
 
 class MagentoStock(MagentoBaseSyncUp):
@@ -330,22 +354,34 @@ class MagentoStock(MagentoBaseSyncUp):
     #
 
     def _get_data(self):
-        quantity = 0
-        product = self.magento_product.product
-        storable = product.storable
+        sellable = self.magento_product.sellable
 
-        if storable:
-            # Get stock items from branch on config
-            branch = self.config.branch
-            stock_item = storable.get_stock_item(branch)
-            if stock_item:
-                quantity = stock_item.quantity
-
-        return {
-            'qty': quantity,
+        data = {
             'manage_stock': True,
-            'is_in_stock': product.sellable.can_be_sold(),
+            'is_in_stock': sellable.can_be_sold(),
             }
+
+        if sellable.product:
+            quantity = 0
+            storable = sellable.product.storable
+
+            if storable:
+                # Get stock items from branch on config
+                branch = self.config.branch
+                stock_item = storable.get_stock_item(branch)
+                if stock_item:
+                    quantity = stock_item.quantity
+
+            data['qty'] = quantity
+        elif sellable.service:
+            # If we set 'manage_stock' to False, magento will allow users to
+            # buy services, even if they are not available.  But if we set it
+            # to True, it will overwrite 'is_in_stock' when 'qty' id 0, and not
+            # let any user buy nothing of the service. So set this to a high
+            # value. This is very ugly but we have no alternative.
+            data['qty'] = 999999
+
+        return data
 
 
 class MagentoImage(MagentoBaseSyncUp):
