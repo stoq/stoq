@@ -70,6 +70,35 @@ class ProductStockUpdateEvent(Event):
 
 
 #
+# Service events
+#
+
+
+class ServiceCreateEvent(Event):
+    """
+    This event is emitted when a service is created.
+
+    :param service: the created service
+    """
+
+
+class ServiceEditEvent(Event):
+    """
+    This event is emitted when a service is edited.
+
+    :param service: the edited service
+    """
+
+
+class ServiceRemoveEvent(Event):
+    """
+    This event is emitted when a service is about to be removed.
+
+    :param product: the removed service
+    """
+
+
+#
 # Category events
 #
 
