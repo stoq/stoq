@@ -896,6 +896,7 @@ class AppWindow(GladeDelegate):
           <menubar name="menubar">
             <menu action="DebugMenu">
               <menuitem action="Introspect"/>
+              <menuitem action="RemoveSettingsCache"/>
             </menu>
           </menubar>
         </ui>"""
@@ -903,6 +904,8 @@ class AppWindow(GladeDelegate):
             ('DebugMenu', None, _('Debug')),
             ('Introspect', None, _('Introspect slaves'),
              None, None, self._on_Introspect_activate),
+            ('RemoveSettingsCache', None, _('Remove settings cache'),
+             None, None, self._on_RemoveSettingsCache_activate),
             ]
 
         self.add_ui_actions(ui_string, actions, 'DebugActions')
@@ -1272,6 +1275,17 @@ class AppWindow(GladeDelegate):
     def _on_Introspect_activate(self, action):
         window = self.get_toplevel()
         introspect_slaves(window)
+
+    def _on_RemoveSettingsCache_activate(self, action):
+        keys = ['app-ui', 'launcher-geometry']
+        keys.append('search-columns-%s' % (
+            api.get_current_user(api.get_connection()).username, ))
+
+        for key in keys:
+            try:
+                api.user_settings.remove(key)
+            except KeyError:
+                pass
 
     def _on_enable_production__clicked(self, button):
         if not self.can_close_application():
