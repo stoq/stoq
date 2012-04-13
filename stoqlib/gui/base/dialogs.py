@@ -38,6 +38,7 @@ from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.interfaces import ISystemNotifier
 from stoqlib.gui.base.gtkadds import change_button_appearance
+from stoqlib.gui.events import DialogCreateEvent
 
 _ = stoqlib_gettext
 _toplevel_stack = []
@@ -181,6 +182,8 @@ class BasicDialog(AbstractDialog):
         if hide_footer:
             self.hide_footer()
         self.ok_button.set_use_underline(True)
+
+        DialogCreateEvent.emit(self)
 
     def _try_confirm(self, *args):
         """Only confirm if ok button is actually enabled.

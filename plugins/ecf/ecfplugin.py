@@ -39,7 +39,6 @@ sys.path.append(plugin_root)
 class ECFPlugin(object):
     implements(IPlugin)
     name = 'ecf'
-    has_product_slave = False
 
     def __init__(self):
         self.ui = None

@@ -28,7 +28,9 @@ from kiwi.log import Logger
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.events import StartApplicationEvent, StopApplicationEvent
+from stoqlib.gui.editors.producteditor import ProductEditor
+from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
+                                EditorSlaveCreateEvent)
 from stoqlib.gui.keybindings import add_bindings, get_accels
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -46,6 +48,7 @@ class BooksUI(object):
         self.conn = get_connection()
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         StopApplicationEvent.connect(self._on_StopApplicationEvent)
+        EditorSlaveCreateEvent.connect(self._on_EditorSlaveCreateEvent)
         add_bindings([
             ('plugin.books.search_books', '<Primary><Alt>B'),
             ('plugin.books.search_publishers', '<Primary><Alt>P'),
@@ -124,13 +127,9 @@ class BooksUI(object):
         uimanager.remove_ui(self._ui)
         self._ui = None
 
-    #
-    # Accessors
-    #
-
-    def get_book_slave(self):
-        """Returns the slave class for product book details UI."""
-        return ProductBookSlave
+    def _add_product_slave(self, editor, model, conn):
+        editor.add_extra_tab(ProductBookSlave.title,
+                             ProductBookSlave(conn, model))
 
     #
     # Events
@@ -146,6 +145,14 @@ class BooksUI(object):
 
     def _on_StopApplicationEvent(self, appname, app):
         self._remove_app_ui(app.main_window.uimanager)
+
+    def _on_EditorSlaveCreateEvent(self, editor, model, conn, *args):
+        # Use type() instead of isinstance so tab does
+        # not appear on production product editor
+        if not type(editor) is ProductEditor:
+            return
+
+        self._add_product_slave(editor, model, conn)
 
     #
     # Callbacks
