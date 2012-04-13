@@ -29,9 +29,8 @@ import tempfile
 import gio
 import gtk
 
-from stoqlib.api import api
-from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.exceptions import ReportError
+from stoqlib.gui.base.dialogs import BasicDialog, get_current_toplevel
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.base.utils import print_file, print_preview
@@ -80,56 +79,38 @@ except ImportError:
     gtkunixprint = None
 
 
-class GtkPrintDialog(object):
+class GtkPrintDialog(BasicDialog):
     """A dialog to print PDFs using the printer dialog in Gtk+ 2.10+
+
+    :attr report: a file object pointing to the report as a pdf file
     """
     def __init__(self, report):
-        self._report = report
+        self.report = report
         self._dialog = self._create_dialog()
 
-    def _create_dialog(self):
-        dialog = gtkunixprint.PrintUnixDialog(parent=get_current_toplevel())
-        dialog.set_manual_capabilities(gtkunixprint.PRINT_CAPABILITY_COPIES |
-                                       gtkunixprint.PRINT_CAPABILITY_PAGE_SET)
-        button = self._add_preview_button(dialog)
+        super(GtkPrintDialog, self).__init__(self._dialog.destroy)
+
+        # Add a preview button
+        button = self.add_extra_button(stock=gtk.STOCK_PRINT_PREVIEW)
         button.connect('clicked', self._on_preview_button__clicked)
 
-        # FIXME: Enable before release
-        #button = self._add_mailto_button(dialog)
-        #button.connect('clicked', self._on_mailto_button__clicked)
+        self._initialize()
+
+    def _create_dialog(self):
+        dialog = gtkunixprint.PrintUnixDialog(parent=self.get_toplevel())
+        dialog.set_manual_capabilities(gtkunixprint.PRINT_CAPABILITY_COPIES |
+                                       gtkunixprint.PRINT_CAPABILITY_PAGE_SET)
+
         return dialog
 
-    def _add_preview_button(self, dialog):
-        # Add a preview button
-        button = gtk.Button(stock=gtk.STOCK_PRINT_PREVIEW)
-        dialog.action_area.pack_start(button)
-        dialog.action_area.reorder_child(button, 0)
-        button.show()
-        return button
-
-    def _add_mailto_button(self, dialog):
-        # Add a mailto button
-        button = gtk.Button(label=_('Send PDF by e-mail'))
-        dialog.action_area.pack_start(button)
-        dialog.action_area.reorder_child(button, 0)
-        button.show()
-        return button
-
     def _send_to_printer(self, printer, settings, page_setup):
-        job = gtkunixprint.PrintJob(self._report.title, printer,
+        job = gtkunixprint.PrintJob(self.report.title, printer,
                                     settings, page_setup)
-        job.set_source_file(self._report.filename)
+        job.set_source_file(self.report.filename)
         job.send(self._on_print_job_complete)
 
     def _print_preview(self):
-        print_preview(self._report.filename, keep_file=True)
-
-    def _pdfmailto(self):
-        if not os.path.exists(self._report.filename):
-            raise OSError("the file does not exist")
-        user = api.get_current_user(api.get_connection())
-        os.system("/usr/local/bin/pdfmailto %s '%s'" % (
-                                self._report.filename, user.person.name))
+        print_preview(self.report.filename, keep_file=True)
 
     #
     # Public API
@@ -150,15 +131,21 @@ class GtkPrintDialog(object):
         else:
             raise AssertionError("unhandled response: %d" % (response, ))
 
+    def add_extra_button(self, label=None, stock=None):
+        button = gtk.Button(label=label, stock=stock)
+
+        self._dialog.action_area.pack_start(button)
+        self._dialog.action_area.reorder_child(button, 0)
+
+        button.show()
+        return button
+
     #
     # Callbacks
     #
 
     def _on_preview_button__clicked(self, button):
         self._print_preview()
-
-    def _on_mailto_button__clicked(self, button):
-        self._pdfmailto()
 
     def _on_print_job_complete(self, job, data, error):
         if error:
