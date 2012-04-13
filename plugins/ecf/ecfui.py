@@ -539,16 +539,25 @@ class ECFUI(object):
                             document=document)
 
     def _identify_customer(self, coupon, sale=None):
+        if not sysparam(self.conn).ENABLE_PAULISTA_INVOICE:
+            return
+
         model = None
+        initial_client_document = None
         if sale:
             model = self._get_client_document(sale)
 
-        if sysparam(self.conn).ENABLE_PAULISTA_INVOICE and not model:
-            model = run_dialog(PaulistaInvoiceDialog, self, self.conn)
-
+        # Sale may have no client.
         if model:
-            coupon.identify_customer('-', '-', model.document,
-                                     model.document_type)
+            initial_client_document = model.document
+
+        model = run_dialog(PaulistaInvoiceDialog, self, self.conn, model)
+
+        # User cancelled the dialog or the document didn't change.
+        if not model or model.document == initial_client_document:
+            return
+        coupon.identify_customer('-', '-', model.document,
+                                 model.document_type)
 
     #
     # Events
