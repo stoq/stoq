@@ -23,6 +23,7 @@
 ##
 """ Login dialog for users authentication"""
 
+import hashlib
 import gtk
 from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
@@ -111,6 +112,7 @@ class LoginDialog(GladeDelegate, RunnableView):
     def _do_login(self):
         username = self.username.get_text().strip()
         password = self.password.get_text().strip()
+        password = hashlib.md5(password).hexdigest()
         self.retval = username, password
         self.set_field_sensitivity(False)
         self.notification_label.set_color('black')
@@ -148,7 +150,7 @@ class LoginHelper:
         if not user.is_active:
             raise LoginError(_('This user is inactive'))
 
-        if user.password is not None and user.password != password:
+        if user.pw_hash != password:
             raise LoginError(_("Invalid user or password"))
 
         # Dont know why, but some users have this empty. Prevent user from
@@ -241,7 +243,7 @@ class LoginHelper:
 
                 if dialog.remember.get_active():
                     get_utility(ICookieFile).store(user.username,
-                                                   user.password)
+                                                   user.pw_hash)
 
                 if dialog:
                     dialog.destroy()

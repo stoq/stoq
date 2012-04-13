@@ -50,6 +50,7 @@ To create a new person, just issue the following:
 """
 
 import datetime
+import hashlib
 
 from zope.interface import implements
 
@@ -885,7 +886,7 @@ class Employee(Domain):
 class LoginUser(Domain):
     """A user that us able to login to the system
     :param username: username
-    :param password: password
+    :param pw_hash: a hash (md5) for the user password
     :param profile: A profile represents a colection of information
       which represents what this user can do in the system
     """
@@ -899,9 +900,15 @@ class LoginUser(Domain):
 
     person = ForeignKey('Person')
     username = UnicodeCol(alternateID=True)
-    password = UnicodeCol()
+    pw_hash = UnicodeCol()
     is_active = BoolCol(default=True)
     profile = ForeignKey('UserProfile')
+
+    def _create(self, id, **kw):
+        if 'password' in kw:
+            kw['pw_hash'] = hashlib.md5(kw['password'] or '').hexdigest()
+            del kw['password']
+        Domain._create(self, id, **kw)
 
     #
     # IActive
@@ -932,19 +939,16 @@ class LoginUser(Domain):
     #
 
     @classmethod
-    def check_password_for(cls, username, password, conn):
-        user = cls.selectOneBy(username=username, password=password,
-                               connection=conn)
-        if user is None:
-            return True
-        return user.password == password
-
-    @classmethod
     def get_status_str(self):
         """Returns the status description of a user"""
         if self.is_active:
             return self.statuses[self.STATUS_ACTIVE]
         return self.statuses[self.STATUS_INACTIVE]
+
+    def set_password(self, password):
+        """Changes the user password.
+        """
+        self.pw_hash = hashlib.md5(password or '').hexdigest()
 
     def login(self):
         station = get_current_station(self.get_connection())

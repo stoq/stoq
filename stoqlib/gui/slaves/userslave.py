@@ -26,6 +26,8 @@
 
 """ User editor slaves implementation.  """
 
+import hashlib
+
 import gtk
 from kiwi.datatypes import ValidationError
 
@@ -140,7 +142,7 @@ class PasswordEditor(BaseEditor):
 
     def __init__(self, conn, user, visual_mode=False):
         self.user = user
-        self.old_password = self.user.password
+        self.old_password = self.user.pw_hash
         BaseEditor.__init__(self, conn, visual_mode=visual_mode)
         self._setup_widgets()
 
@@ -183,7 +185,8 @@ class PasswordEditor(BaseEditor):
     def validate_confirm(self):
         if not self._needs_password_confirmation():
             return True
-        if self.model.current_password != self.old_password:
+        pw_hash = hashlib.md5(self.model.current_password).hexdigest()
+        if pw_hash != self.old_password:
             msg = _(u"Password doesn't match with the stored one")
             self.current_password.set_invalid(msg)
             return False
@@ -191,7 +194,7 @@ class PasswordEditor(BaseEditor):
 
     def on_confirm(self):
         self.password_slave.on_confirm()
-        self.user.password = self.model.new_password
+        self.user.set_password(self.model.new_password)
         return self.user
 
 
@@ -252,7 +255,7 @@ class UserDetailsSlave(BaseEditorSlave):
 
     def on_confirm(self):
         if self.show_password_fields:
-            self.model.password = self.password_slave.model.new_password
+            self.model.set_password(self.password_slave.model.new_password)
 
         # FIXME:
         # 1) Move this hook into each instance of ProfileSettings

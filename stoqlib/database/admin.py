@@ -109,7 +109,7 @@ def ensure_admin_user(administrator_password):
     user = get_admin_user(conn)
     assert user
 
-    user.password = administrator_password
+    user.set_password(administrator_password)
 
     # We can't provide the utility until it's actually in the database
     log.info('providing utility ICurrentUser')
