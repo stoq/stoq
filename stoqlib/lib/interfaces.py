@@ -103,7 +103,7 @@ class IPlugin(Interface):
         """Called everytime the plugins gets activated
 
         This is where the init plugin logic should be, like events
-            connection and so on.
+        connection and so on.
         """
         pass
 
@@ -118,9 +118,9 @@ class IPlugin(Interface):
         """Returns a C{list} of domain classes
 
         This should return a C{list} of tuples, each one containing the
-            domain path as the first item, and a list of classes as
-            the second. e.g. A 'from a.b import C, D' should be
-            translated into the C{tuple} ('a.b', ['C', 'D']).
+        domain path as the first item, and a list of classes as
+        the second. e.g. A 'from a.b import C, D' should be
+        translated into the C{tuple} ('a.b', ['C', 'D']).
         @note: this information is used for database synchronization
 
         :returns: a C{list} of C{tuple} containing domain info
@@ -134,6 +134,22 @@ class IPlugin(Interface):
             slave that will be used as an extra tab on product editor.
 
         :returns: a :class:`stoqlib.gui.editors.baseeditor.BaseEditorSlave`
+        """
+        pass
+
+    def get_dbadmin_commands():
+        """Returns a list of available commands for dbadmin
+
+        :returns: a C{list} of available commands
+        """
+        pass
+
+    def handle_dbadmin_command(command, options, args):
+        """Handle a dbadmin command
+
+        :param command: the command string
+        :param options: extra optparser options
+        :param args: a list of C{args}
         """
         pass
 
