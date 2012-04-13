@@ -123,7 +123,7 @@ class ICurrentUser(Interface):
     """
 
     username = Attribute('Username')
-    password = Attribute('Password')
+    pw_hash = Attribute('A hash of the user password')
     profile = Attribute('A profile represents a colection of information '
                         'which represents what this user can do in the '
                         'system')
