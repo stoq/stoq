@@ -800,6 +800,8 @@ class Sale(Domain, Adaptable):
         :returns: True if the sale was paid with money, otherwise False
         :rtype: bool
         """
+        if not self.payments:
+            return False
         return all(payment.is_money() for payment in self.payments)
 
     def pay_money_payments(self):

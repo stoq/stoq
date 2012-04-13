@@ -46,30 +46,38 @@ class PaulistaInvoiceDialog(BaseEditor):
     cpf_mask = u"000.000.000-00"
     cnpj_mask = u"00.000.000/0000-00"
 
-    def __init__(self, conn):
-        self.model = self._create_model()
-        BaseEditor.__init__(self, conn, self.model)
+    def __init__(self, conn, model):
+        BaseEditor.__init__(self, conn, model)
         self._setup_widgets()
 
-    def _create_model(self):
+    def create_model(self, conn):
         return Settable(document=u'',
                         document_type=FiscalSaleHistory.TYPE_CPF)
 
     def _setup_widgets(self):
+        self._initial_document = self.model.document
+        self._initial_document_type = self.model.document_type
         self.handler_block(self.document, 'validate')
-        self._set_cpf()
+        if self._initial_document_type == FiscalSaleHistory.TYPE_CPF:
+            self._set_cpf()
+        else:
+            self.cnpj.set_active(True)
         self.handler_unblock(self.document, 'validate')
 
     def _set_cpf(self):
         self.doc_label.set_text(_(u"CPF:"))
         self.document.set_mask(self.cpf_mask)
         self.model.document_type = FiscalSaleHistory.TYPE_CPF
+        if self._initial_document_type == FiscalSaleHistory.TYPE_CPF:
+            self.document.set_text(self._initial_document)
         self.document.grab_focus()
 
     def _set_cnpj(self):
         self.doc_label.set_text(_(u"CNPJ:"))
         self.document.set_mask(self.cnpj_mask)
         self.model.document_type = FiscalSaleHistory.TYPE_CNPJ
+        if self._initial_document_type == FiscalSaleHistory.TYPE_CNPJ:
+            self.document.set_text(self._initial_document)
         self.document.grab_focus()
 
     #
