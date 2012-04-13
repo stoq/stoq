@@ -389,7 +389,7 @@ class StoqCommandHandler:
         generate(filename, start, end)
 
     def cmd_shell(self, options):
-        """Drop to a Stoq python shell"""
+        """Drop to a shell for executing SQL queries"""
         from stoqlib.database.database import start_shell
         self._read_config(options, register_station=False,
                           check_schema=False)
@@ -420,7 +420,7 @@ class StoqCommandHandler:
                          dest="filename")
 
     def cmd_console(self, options):
-        """Drop to a console for executing SQL queries"""
+        """Drop to a Stoq python console"""
         from stoqlib.lib.console import Console
         self._read_config(options, register_station=False)
         console = Console()
