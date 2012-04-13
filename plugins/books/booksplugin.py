@@ -46,6 +46,10 @@ class BooksPlugin(object):
     def __init__(self):
         self.ui = None
 
+    #
+    #  IPlugin
+    #
+
     def get_migration(self):
         environ.add_resource('booksql', os.path.join(plugin_root, 'sql'))
         return PluginSchemaMigration(self.name, 'booksql', ['*.sql'])
@@ -56,14 +60,6 @@ class BooksPlugin(object):
     def activate(self):
         environ.add_resource('glade', os.path.join(plugin_root, 'glade'))
         self.ui = BooksUI()
-
-    #
-    # Custom accessors
-    #
-
-    def get_product_slave_class(self):
-        if self.ui is not None:
-            return self.ui.get_book_slave()
 
 
 register_plugin(BooksPlugin)

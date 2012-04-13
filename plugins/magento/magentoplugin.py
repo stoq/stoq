@@ -71,7 +71,6 @@ class MagentoPlugin(object):
     implements(IPlugin)
 
     name = 'magento'
-    has_product_slave = False
 
     def __init__(self):
         self._lock = DeferredLock()

@@ -49,6 +49,29 @@ class StopApplicationEvent(Event):
 
 
 #
+# Dialog events
+#
+
+class DialogCreateEvent(Event):
+    """Emited when a dialog is instantialized
+
+    :param dialog: an instance of :class:`stoqlib.gui.base.dialogs.BasicDialog`
+    """
+
+
+class EditorSlaveCreateEvent(Event):
+    """Emited when a dialog is instantialized
+
+    :param editor: a subclass of
+        :class:`stoqlib.gui.editor.baseeditor.BaseEditorSlave`
+    :param model: a subclass of :class:`stoqlib.domain.base.Domain`
+    :param conn: the connection used in editor and model
+    :param visual_mode: a bool defining if the editor was created
+        on visual_mode.
+    """
+
+
+#
 # CouponCreatedEvent
 #
 

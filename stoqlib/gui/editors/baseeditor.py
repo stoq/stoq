@@ -35,6 +35,7 @@ from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
 from stoqlib.gui.base.messagebar import MessageBar
+from stoqlib.gui.events import EditorSlaveCreateEvent
 from stoqlib.gui.help import show_section
 
 log = Logger('stoqlib.gui.editors')
@@ -96,6 +97,8 @@ class BaseEditorSlave(GladeSlaveDelegate):
             self._setup_visual_mode()
         self.setup_proxies()
         self.setup_slaves()
+
+        EditorSlaveCreateEvent.emit(self, model, conn, visual_mode)
 
     def _setup_visual_mode(self):
         widgets = self.__class__.proxy_widgets

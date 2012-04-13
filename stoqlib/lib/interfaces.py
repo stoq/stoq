@@ -97,7 +97,6 @@ class IPluginManager(Interface):
 class IPlugin(Interface):
 
     name = Attribute('name')
-    has_product_slave = Attribute('has_product_slave')
 
     def activate():
         """Called everytime the plugins gets activated
@@ -124,16 +123,6 @@ class IPlugin(Interface):
         @note: this information is used for database synchronization
 
         :returns: a C{list} of C{tuple} containing domain info
-        """
-        pass
-
-    def get_product_slave_class():
-        """Returns a slave that will be appended on product editor
-
-        If C{self.has_product_slave} is C{True}, this should return a
-            slave that will be used as an extra tab on product editor.
-
-        :returns: a :class:`stoqlib.gui.editors.baseeditor.BaseEditorSlave`
         """
         pass
 

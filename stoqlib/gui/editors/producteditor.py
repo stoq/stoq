@@ -50,7 +50,6 @@ from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
-from stoqlib.lib.pluginmanager import get_plugin_manager
 
 _ = stoqlib_gettext
 
@@ -601,19 +600,6 @@ class ProductEditor(SellableEditor):
 
         self.status_unavailable_label.set_text(text)
 
-    def _get_plugin_tabs(self):
-        manager = get_plugin_manager()
-        tab_list = []
-
-        for plugin_name in manager.active_plugins_names:
-            plugin = manager.get_plugin(plugin_name)
-            if plugin.has_product_slave:
-                slave_class = plugin.get_product_slave_class()
-                plugin_product_slave = slave_class(self.conn, self.model)
-                tab_list.append((slave_class.title, plugin_product_slave))
-
-        return tab_list
-
     #
     # BaseEditor
     #
@@ -628,7 +614,6 @@ class ProductEditor(SellableEditor):
 
     def get_extra_tabs(self):
         extra_tabs = []
-        extra_tabs.extend(self._get_plugin_tabs())
 
         suppliers_slave = ProductSupplierSlave(self.conn, self.model)
         extra_tabs.append((_(u'Suppliers'), suppliers_slave))
