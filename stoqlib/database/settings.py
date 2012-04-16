@@ -193,7 +193,7 @@ class DatabaseSettings(object):
         args.extend(['-p', str(self.port)])
         args.extend(['-u', self.username])
         if self.password:
-            # This is for stoqdbadmin (not psql). -w takes the password
+            # This is for stoqdbadmin (not psql). -w takes a password
             args.extend(['-w', self.password])
         return args
 

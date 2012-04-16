@@ -93,14 +93,14 @@ def database_exists_and_should_be_dropped(settings, dbname, force):
 
     conn = settings.get_connection()
 
-    # There is not table transaction_entry. Safe to drop.
+    # There is no transaction_entry table. Safe to drop.
     if not conn.tableExists('transaction_entry'):
         # FIXME: Check if there are any other tables, we don't want to
         #        delete other databases
         conn.close()
         return False
 
-    # Insignificant ammount of data in the database. Safe to drop
+    # Insignificant amount of data in the database. Safe to drop
     entries = conn.queryOne("SELECT COUNT(*) FROM transaction_entry")[0]
     if entries < _ENTRIES_DELETE_THRESHOLD:
         conn.close()
@@ -110,7 +110,7 @@ def database_exists_and_should_be_dropped(settings, dbname, force):
 
     # Right now: 1) Not forcing, 2) Database exists, 3) There are tables, 4)
     # There is is a significant amount of data.
-    # Aks if the user really wants to drop.
+    # Ask if the user really wants to drop.
     text = raw_input(
         "Database %s has existing tables, "
         "do you really want to delete it?\n[yes/no] " % (dbname, ))
