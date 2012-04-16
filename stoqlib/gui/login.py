@@ -65,6 +65,10 @@ class LoginDialog(GladeDelegate, RunnableView):
         self.notification_label.set_text('')
         self.notification_label.set_color('black')
 
+        if api.sysparam(api.get_connection()).DISABLE_COOKIES:
+            self.remember.hide()
+            self.remember.set_active(False)
+
         gtkimage = gtk.Image()
         gtkimage.set_from_pixbuf(render_logo_pixbuf('login'))
         self.logo_container.add(gtkimage)
@@ -170,6 +174,10 @@ class LoginHelper:
         return user
 
     def cookie_login(self):
+        if api.sysparam(api.get_connection()).DISABLE_COOKIES:
+            log.info("Cookies disable by parameter")
+            return
+
         try:
             username, password = get_utility(ICookieFile).get()
         except CookieError:
