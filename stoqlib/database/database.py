@@ -81,6 +81,9 @@ _ENTRIES_DELETE_THRESHOLD = 1000
 
 
 def database_exists_and_should_be_dropped(settings, dbname, force):
+    if not settings.has_database():
+        return False
+
     conn = settings.get_connection()
     if not conn.tableExists('transaction_entry'):
         # FIXME: Check if there are any other tables, we don't want to
