@@ -81,6 +81,8 @@ _ENTRIES_DELETE_THRESHOLD = 1000
 
 
 def database_exists_and_should_be_dropped(settings, dbname, force):
+    """Return False if it is safe to drop the database
+    """
     if not settings.has_database():
         return False
 
@@ -92,7 +94,7 @@ def database_exists_and_should_be_dropped(settings, dbname, force):
         return False
 
     entries = conn.queryOne("SELECT COUNT(*) FROM transaction_entry")[0]
-    if entries > _ENTRIES_DELETE_THRESHOLD:
+    if entries < _ENTRIES_DELETE_THRESHOLD:
         conn.close()
         return False
 
