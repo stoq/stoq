@@ -294,6 +294,8 @@ class TillApp(SearchableAppWindow):
             if coupon.confirm(sale, trans):
                 trans.commit()
                 self.refresh()
+            else:
+                coupon.cancel()
         except SellError as err:
             warning(err)
         except ModelDataError as err:
