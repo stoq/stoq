@@ -24,6 +24,7 @@
 
 import datetime
 
+from stoqlib.database.orm import Viewable
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 from stoqlib.domain.test.domaintest import DomainTest
@@ -34,6 +35,39 @@ from stoqlib.domain.views import QuotationView
 from stoqlib.domain.views import SellableCategoryView
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.domain.views import SoldItemView
+from stoqlib.lib.introspection import get_all_classes
+
+
+def _get_all_views():
+    for klass in get_all_classes('stoqlib/domain'):
+        try:
+            # Exclude Viewable, since we just want to test it's subclasses
+            if not issubclass(klass, Viewable) or klass is Viewable:
+                continue
+        except TypeError:
+            continue
+
+        yield klass
+
+
+class TestViewsGeneric(DomainTest):
+    """Generic tests for views"""
+
+    def _test_view(self, view):
+        results_list = list(view.select(connection=self.trans))
+
+        # See if there are no duplicates
+        ids_set = set()
+        for result in results_list:
+            self.assertFalse(result.id in ids_set)
+            ids_set.add(result.id)
+
+
+for view in _get_all_views():
+    name = 'test' + view.__name__
+    func = lambda s, v=view: TestViewsGeneric._test_view(s, v)
+    func.__name__ = name
+    setattr(TestViewsGeneric, name, func)
 
 
 class TestSellableFullStockView(DomainTest):

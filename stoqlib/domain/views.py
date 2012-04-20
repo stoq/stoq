@@ -177,7 +177,7 @@ class ProductClosedStockView(ProductFullWithClosedStockView):
 
 
 class ProductComponentView(ProductFullStockView):
-    columns = ProductFullStockView.columns
+
     clause = AND(ProductFullStockView.clause,
                  ProductComponent.q.productID == Product.q.id, )
 
@@ -202,12 +202,10 @@ class ProductWithStockView(ProductFullStockView):
     :cvar stock: the stock of the product
      """
 
-    columns = ProductFullStockView.columns
     clause = AND(
         ProductFullStockView.clause,
         ProductStockItem.q.quantity >= 0,
         )
-    ProductFullStockView.joins
 
 
 class _PurchaseItemTotal(Viewable):
@@ -640,7 +638,6 @@ class ConsignedItemAndStockView(PurchasedItemAndStockView):
         sold=PurchaseItem.q.quantity_sold,
         returned=PurchaseItem.q.quantity_returned,
     ))
-    joins = PurchasedItemAndStockView.joins[:]
     clause = AND(PurchaseOrder.q.consigned == True,
                  PurchaseOrder.q.branchID == ProductStockItem.q.branchID)
 
@@ -659,7 +656,7 @@ class PurchaseReceivingView(Viewable):
     :cvar supplier_name: the supplier name
     """
     _Responsible = Alias(Person, "responsible")
-    _Supplier = Alias(Person, "supplier")
+    _Supplier = Alias(Person, "supplier_person")
     _PurchaseUser = Alias(LoginUser, "purchase_user")
     _PurchaseResponsible = Alias(Person, "purchase_responsible")
 

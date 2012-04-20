@@ -33,7 +33,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import (UnicodeCol, DateTimeCol, ForeignKey, IntCol,
                                   BoolCol)
-from stoqlib.database.orm import AND, LEFTJOINOn, const
+from stoqlib.database.orm import LEFTJOINOn, INNERJOINOn, const
 from stoqlib.database.orm import Viewable
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.runtime import get_current_branch
@@ -175,11 +175,11 @@ class _FiscalBookEntryView(Viewable):
         drawee_name=Person.q.name,
         )
 
-    clause = CfopData.q.id == FiscalBookEntry.q.cfopID
-
     joins = [
         LEFTJOINOn(None, Person,
                    Person.q.id == FiscalBookEntry.q.draweeID),
+        INNERJOINOn(None, CfopData,
+                    CfopData.q.id == FiscalBookEntry.q.cfopID)
         ]
 
     @property
@@ -207,15 +207,11 @@ class IcmsIpiView(_FiscalBookEntryView):
     :param payment_group_id: the payment group
     """
 
-    columns = _FiscalBookEntryView.columns
+    columns = _FiscalBookEntryView.columns.copy()
     columns['icms_value'] = FiscalBookEntry.q.icms_value
     columns['ipi_value'] = FiscalBookEntry.q.ipi_value
 
-    clause = AND(
-        _FiscalBookEntryView.clause,
-        FiscalBookEntry.q.entry_type == FiscalBookEntry.TYPE_PRODUCT,
-        )
-    joins = _FiscalBookEntryView.joins
+    clause = FiscalBookEntry.q.entry_type == FiscalBookEntry.TYPE_PRODUCT
 
 
 class IssView(_FiscalBookEntryView):
@@ -235,11 +231,7 @@ class IssView(_FiscalBookEntryView):
     :param payment_group_id: the payment group
     """
 
-    columns = _FiscalBookEntryView.columns
+    columns = _FiscalBookEntryView.columns.copy()
     columns['iss_value'] = FiscalBookEntry.q.iss_value
 
-    clause = AND(
-        _FiscalBookEntryView.clause,
-        FiscalBookEntry.q.entry_type == FiscalBookEntry.TYPE_SERVICE,
-        )
-    joins = _FiscalBookEntryView.joins
+    clause = FiscalBookEntry.q.entry_type == FiscalBookEntry.TYPE_SERVICE
