@@ -1344,7 +1344,7 @@ class EmployeeRoleHistory(Domain):
 class ClientView(Viewable):
     """Stores information about clients.
     Available fields are::
-       id                  - the id of the person table
+       id                  - the id of the client table
        name                - the client name
        status              - the client financial status
        cpf                 - the brazil-specific cpf attribute
@@ -1355,8 +1355,8 @@ class ClientView(Viewable):
     implements(IDescribable)
 
     columns = dict(
-        id=Person.q.id,
-        client_id=Client.q.id,
+        id=Client.q.id,
+        person_id=Person.q.id,
         fancy_name=Company.q.fancy_name,
         name=Person.q.name,
         phone_number=Person.q.phone_number,
@@ -1368,7 +1368,7 @@ class ClientView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, Client,
+        INNERJOINOn(None, Person,
                    Person.q.id == Client.q.personID),
         LEFTJOINOn(None, Individual,
                    Person.q.id == Individual.q.personID),
@@ -1392,7 +1392,7 @@ class ClientView(Viewable):
 
     @property
     def client(self):
-        return Client.get(self.client_id,
+        return Client.get(self.id,
                           connection=self._connection)
 
     @property
@@ -1413,8 +1413,8 @@ class EmployeeView(Viewable):
     implements(IDescribable)
 
     columns = dict(
-        id=Person.q.id,
-        employee_id=Employee.q.id,
+        id=Employee.q.id,
+        person_id=Person.q.id,
         name=Person.q.name,
         role=EmployeeRole.q.name,
         status=Employee.q.status,
@@ -1423,7 +1423,7 @@ class EmployeeView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, Employee,
+        INNERJOINOn(None, Person,
                    Person.q.id == Employee.q.personID),
         INNERJOINOn(None, EmployeeRole,
                    Employee.q.roleID == EmployeeRole.q.id),
@@ -1445,7 +1445,7 @@ class EmployeeView(Viewable):
 
     @property
     def employee(self):
-        return Employee.get(self.employee_id,
+        return Employee.get(self.id,
                             connection=self.get_connection())
 
     @classmethod
@@ -1462,17 +1462,17 @@ class SupplierView(Viewable):
     implements(IDescribable)
 
     columns = dict(
-        id=Person.q.id,
+        id=Supplier.q.id,
+        person_id=Person.q.id,
         name=Person.q.name,
         phone_number=Person.q.phone_number,
         fancy_name=Company.q.fancy_name,
         cnpj=Company.q.cnpj,
-        supplier_id=Supplier.q.id,
         status=Supplier.q.status,
         )
 
     joins = [
-        INNERJOINOn(None, Supplier,
+        INNERJOINOn(None, Person,
                    Person.q.id == Supplier.q.personID),
         LEFTJOINOn(None, Company,
                    Person.q.id == Company.q.personID),
@@ -1494,7 +1494,7 @@ class SupplierView(Viewable):
 
     @property
     def supplier(self):
-        return Supplier.get(self.supplier_id,
+        return Supplier.get(self.id,
                             connection=self.get_connection())
 
 
@@ -1502,10 +1502,10 @@ class TransporterView(Viewable):
     """
     Stores information about transporters
 
-    :cvar id: the id of person table
+    :cvar id: the id of transporter table
     :cvar name: the transporter name
     :cvar phone_number: the transporter phone number
-    :cvar transporter_id: the id of transporter table
+    :cvar person_id: the id of person table
     :cvar status: the current status of the transporter
     :cvar freight_percentage: the freight percentage charged
     """
@@ -1513,16 +1513,16 @@ class TransporterView(Viewable):
     implements(IDescribable)
 
     columns = dict(
-        id=Person.q.id,
+        id=Transporter.q.id,
+        person_id=Person.q.id,
         name=Person.q.name,
         phone_number=Person.q.phone_number,
-        transporter_id=Transporter.q.id,
         freight_percentage=Transporter.q.freight_percentage,
         is_active=Transporter.q.is_active,
         )
 
     joins = [
-        INNERJOINOn(None, Transporter,
+        INNERJOINOn(None, Person,
                    Person.q.id == Transporter.q.personID),
         ]
 
@@ -1539,7 +1539,7 @@ class TransporterView(Viewable):
 
     @property
     def transporter(self):
-        return Transporter.get(self.transporter_id,
+        return Transporter.get(self.id,
                                connection=self.get_connection())
 
 
@@ -1549,16 +1549,16 @@ class BranchView(Viewable):
     Manager_Person = Alias(Person, 'person_manager')
 
     columns = dict(
-        id=Person.q.id,
+        id=Branch.q.id,
+        person_id=Person.q.id,
         name=Person.q.name,
-        branch_id=Branch.q.id,
         phone_number=Person.q.phone_number,
         is_active=Branch.q.is_active,
         manager_name=Manager_Person.q.name
         )
 
     joins = [
-        INNERJOINOn(None, Branch,
+        INNERJOINOn(None, Person,
                    Person.q.id == Branch.q.personID),
         LEFTJOINOn(None, Employee,
                Branch.q.managerID == Employee.q.id),
@@ -1579,7 +1579,7 @@ class BranchView(Viewable):
 
     @property
     def branch(self):
-        return Branch.get(self.branch_id,
+        return Branch.get(self.id,
                           connection=self.get_connection())
 
     def get_status_str(self):
@@ -1593,11 +1593,11 @@ class UserView(Viewable):
     """
     Retrieves information about user in the system.
 
-    :cvar id: the id of person table
+    :cvar id: the id of user table
     :cvar name: the user full name
     :cvar is_active: the current status of the transporter
     :cvar username: the username (login)
-    :cvar user_id: the id of User table
+    :cvar person_id: the id of person table
     :cvar profile_id: the id of the user profile
     :cvar profile_name: the name of the user profile (eg: Salesperson)
     """
@@ -1605,17 +1605,17 @@ class UserView(Viewable):
     implements(IDescribable)
 
     columns = dict(
-        id=Person.q.id,
+        id=LoginUser.q.id,
+        person_id=Person.q.id,
         name=Person.q.name,
         is_active=LoginUser.q.is_active,
         username=LoginUser.q.username,
-        user_id=LoginUser.q.id,
         profile_id=LoginUser.q.profileID,
         profile_name=UserProfile.q.name,
         )
 
     joins = [
-        INNERJOINOn(None, LoginUser,
+        INNERJOINOn(None, Person,
                    Person.q.id == LoginUser.q.personID),
         LEFTJOINOn(None, UserProfile,
                LoginUser.q.profileID == UserProfile.q.id),
@@ -1634,7 +1634,7 @@ class UserView(Viewable):
 
     @property
     def user(self):
-        return LoginUser.get(self.user_id,
+        return LoginUser.get(self.id,
                              connection=self.get_connection())
 
     def get_status_str(self):
@@ -1649,9 +1649,9 @@ class CreditProviderView(Viewable):
     implements(IDescribable)
 
     columns = dict(
-        id=Person.q.id,
+        id=CreditProvider.q.id,
+        person_id=Person.q.id,
         name=Person.q.name,
-        provider_id=CreditProvider.q.id,
         phone_number=Person.q.phone_number,
         short_name=CreditProvider.q.short_name,
         is_active=CreditProvider.q.is_active,
@@ -1664,7 +1664,7 @@ class CreditProviderView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, CreditProvider,
+        INNERJOINOn(None, Person,
                    Person.q.id == CreditProvider.q.personID),
         ]
 
@@ -1681,7 +1681,7 @@ class CreditProviderView(Viewable):
 
     @property
     def provider(self):
-        return CreditProvider.get(self.provider_id,
+        return CreditProvider.get(self.id,
                                   connection=self.get_connection())
 
 
