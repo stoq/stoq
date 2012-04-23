@@ -42,7 +42,7 @@ class XLSExporter(object):
         self._column_types = None
         self._headers = None
 
-        self._wb = xlwt.Workbook()
+        self._wb = xlwt.Workbook(encoding='utf8')
         if not name:
             name = _('Stoq sheet')
         self._ws = self._wb.add_sheet(name)
