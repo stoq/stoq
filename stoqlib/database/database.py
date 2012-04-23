@@ -29,6 +29,7 @@
 import os
 import platform
 import socket
+import sys
 import time
 
 from kiwi.component import get_utility
@@ -111,6 +112,9 @@ def database_exists_and_should_be_dropped(settings, dbname, force):
     # Right now: 1) Not forcing, 2) Database exists, 3) There are tables, 4)
     # There is is a significant amount of data.
     # Ask if the user really wants to drop.
+    if not os.isatty(sys.__stdin__.fileno()):
+        return False
+
     text = raw_input(
         "Database %s has existing tables, "
         "do you really want to delete it?\n[yes/no] " % (dbname, ))
