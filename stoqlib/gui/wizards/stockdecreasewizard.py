@@ -67,7 +67,7 @@ class StartStockDecreaseStep(WizardEditorStep):
 
     def _fill_employee_combo(self):
         self.removed_by.prefill(api.for_combo(
-            Employee, connection=self.conn))
+            Employee.select(connection=self.conn)))
 
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.conn)
@@ -75,8 +75,7 @@ class StartStockDecreaseStep(WizardEditorStep):
 
     def _fill_cfop_combo(self):
         cfops = CfopData.select(connection=self.conn)
-        self.cfop.prefill(api.for_combo(
-            cfops, connection=self.conn))
+        self.cfop.prefill(api.for_combo(cfops))
 
     def _setup_widgets(self):
         self.confirm_date.set_sensitive(False)
