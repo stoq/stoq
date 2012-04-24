@@ -24,6 +24,7 @@
 ##
 """ Implementation of event search """
 
+import datetime
 from kiwi.ui.objectlist import Column
 
 from stoqlib.gui.base.search import SearchEditor
@@ -54,7 +55,7 @@ class EventSearch(SearchEditor):
             Column('description', title=_('Description'),
                    data_type=str, expand=True),
             Column('date', title=_('Date'),
-                   data_type=str,
+                   data_type=datetime.datetime,
                    sorted=True,
                    format_func=pretty_date,
-                   width=150, searchable=True)]
+                   width=150)]
