@@ -80,8 +80,7 @@ class BranchImporter(CSVImporter):
         if sparam.MAIN_COMPANY:
             return
 
-        branch = Branch.select(limit=2,
-                               connection=trans).orderBy('id')
+        branch = Branch.select(connection=trans).orderBy('id')
         if not branch.count():
             return
 
