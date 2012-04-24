@@ -480,12 +480,9 @@ class SellableEditor(BaseEditor):
         self.update_requires_weighing_label()
 
     def _run_category_editor(self, category=None):
-        trans = api.new_transaction()
-        category = trans.get(category)
-        model = run_dialog(SellableCategoryEditor, self, trans, category)
-        rv = api.finish_transaction(trans, model)
-        trans.close()
-        if rv:
+        # Editing this in a new transaction is causing a deadlock
+        model = run_dialog(SellableCategoryEditor, self, self.conn, category)
+        if model:
             self._fill_categories()
             self.category_combo.select(model)
     #
