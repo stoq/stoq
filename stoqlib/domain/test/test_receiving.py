@@ -41,7 +41,7 @@ class TestReceivingOrder(DomainTest):
         try:
             order.invoice_number = value
         except IntegrityError, e:
-            self.failUnless('valid_invoice_number' in e.pgerror)
+            self.failUnless('valid_invoice_number' in str(e))
         else:
             raise AssertionError
 
