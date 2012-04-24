@@ -675,7 +675,15 @@ class Select(SQLExpression):
         for j in join:
             t1 = _str_or_sqlrepr(j.table1, db)
             if t1 in tables: tables.remove(t1)
-            t2 = _str_or_sqlrepr(j.table2, db)
+
+            from sqlobject.viewable import Viewable
+            if (isinstance(j.table2, Alias) and
+                issubclass(j.table2.q.table, Viewable)):
+                # Workaround for not referring joined Viewables on FROM clause
+                t2 = _str_or_sqlrepr(j.table2.q.alias, db)
+            else:
+                t2 = _str_or_sqlrepr(j.table2, db)
+
             if t2 in tables: tables.remove(t2)
         if tables:
             select += " FROM %s" % ", ".join(tables)

@@ -1232,7 +1232,7 @@ class SaleView(Viewable):
         notes=Sale.q.notes,
         surcharge_value=Sale.q.surcharge_value,
         discount_value=Sale.q.discount_value,
-        client_id=Sale.q.clientID,
+        client_id=Client.q.id,
         salesperson_name=Person_SalesPerson.q.name,
         client_name=Person_Client.q.name,
         v_ipi=const.SUM(SaleItemIpi.q.v_ipi),
@@ -1283,6 +1283,12 @@ class SaleView(Viewable):
     def can_cancel(self):
         return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID,
                                Sale.STATUS_ORDERED, Sale.STATUS_QUOTE)
+
+    def get_surcharge_value(self):
+        return currency(self.surcharge_value or 0)
+
+    def get_discount_value(self):
+        return currency(self.discount_value or 0)
 
     def get_subtotal(self):
         if self.v_ipi is not None:
