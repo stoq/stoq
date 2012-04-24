@@ -30,8 +30,9 @@ from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
 from stoqlib.api import api
-from stoqlib.domain.views import ProductFullStockView
+from stoqlib.domain.views import ProductWithStockView
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -61,12 +62,11 @@ class StockCostDialog(BaseEditor):
         self._setup_widgets()
 
     def _setup_widgets(self):
-        # XXX: the branch should be in bold font
-        self.branch_label.set_text(
-            _(u"Fixing stock cost for products in %s") %
+        self.branch_label.set_markup(
+            _(u"Fixing stock cost for products in <b>%s</b>") %
                                             self._branch.person.name)
 
-        items = ProductFullStockView.select_by_branch(None, branch=self._branch,
+        items = ProductWithStockView.select_by_branch(None, branch=self._branch,
                                                       connection=self.conn)
         self._storables = [_TemporaryItem(s) for s in items]
         self.slave.listcontainer.add_items(self._storables)
@@ -77,14 +77,8 @@ class StockCostDialog(BaseEditor):
                 Column("description", title=_(u"Description"),
                         data_type=str, expand=True),
                 Column("stock_cost", title=_(u"Stock Cost"), width=120,
-                        data_type=currency, format_func=self._format_func,
+                        data_type=currency, format_func=get_formatted_cost,
                         editable=True)]
-
-    def _format_func(self, quantity):
-        if quantity is ValueUnset:
-            return None
-        if quantity >= 0:
-            return quantity
 
     def _validate_confirm(self, item, trans):
         if (item.stock_cost is not ValueUnset and
