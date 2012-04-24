@@ -45,14 +45,6 @@ class Domain(ORMObject):
         def __repr__(self):
             return '<%s %r>' % (self.__class__.__name__, self.id)
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __eq__(self, other):
-        if type(self) is not type(other):
-            return False
-        return self.id == other.id
-
     #
     # ORMObject
     #
