@@ -1007,7 +1007,10 @@ class SQLObject(object):
             if self.sqlmeta.expired:
                 return
             for column in self.sqlmeta.columnList:
-                delattr(self, instanceName(column.name))
+                iname = instanceName(column.name)
+                # It may be already invalidated by other callsite
+                if hasattr(self, iname):
+                    delattr(self, iname)
             self.sqlmeta.expired = True
             self._connection.cache.expire(self.id, self.__class__)
             self._SO_createValues = {}
@@ -1049,7 +1052,17 @@ class SQLObject(object):
                     dbValue)])
 
         if self.sqlmeta.cacheValues:
-            setattr(self, instanceName(name), value)
+            i_name = instanceName(name)
+            # This is a SQL call, meaning its value will be determined
+            # only after sql execution. Invalidate cache so that the
+            # actual value is reloaded
+            should_invalidate = (isinstance(value, sqlbuilder.SQLCall)
+                                 or self.sqlmeta.columns[name].noCache)
+            if should_invalidate:
+                if hasattr(self, i_name):
+                    delattr(self, i_name)
+            else:
+                setattr(self, i_name, value)
 
         post_funcs = []
         self.sqlmeta.send(events.RowUpdatedSignal, self, post_funcs)
