@@ -62,7 +62,8 @@ def drop_database(dbname, settings=None):
         # before showing an error
         for i in range(3):
             try:
-                conn.dropDatabase(dbname, ifExists=True)
+                if conn.databaseExists(dbname):
+                    conn.dropDatabase(dbname)
                 log.info("Dropped database %s" % (dbname, ))
                 break
             except Exception, e:
@@ -147,7 +148,7 @@ def clean_database(dbname, settings=None, force=False):
         raise e
 
     conn = settings.get_default_connection()
-    conn.createDatabase(dbname)
+    conn.createEmptyDatabase(dbname)
     conn.close()
 
 

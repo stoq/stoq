@@ -365,7 +365,7 @@ class PostgresConnection(DBAPI):
                 return True
         return getattr(sqlbuilder.const, defaultstr)
 
-    def _createOrDropDatabase(self, op="CREATE"):
+    def _createOrDropDatabase(self, op="CREATE", dbname=None):
         # We have to connect to *some* database, so we'll connect to
         # template1, which is a common open database.
         # @@: This doesn't use self.use_dsn or self.dsn_dict
@@ -385,15 +385,54 @@ class PostgresConnection(DBAPI):
         # We must close the transaction with a commit so that
         # the CREATE DATABASE can work (which can't be in a transaction):
         self._executeRetry(conn, cur, 'COMMIT')
-        self._executeRetry(conn, cur, '%s DATABASE %s' % (op, self.db))
+        dbname = dbname or self.db
+        self._executeRetry(conn, cur, '%s DATABASE %s' % (op, dbname))
         cur.close()
         conn.close()
 
-    def createEmptyDatabase(self):
-        self._createOrDropDatabase()
+    def createEmptyDatabase(self, dbname=None):
+        self._createOrDropDatabase(dbname=dbname)
 
-    def dropDatabase(self):
-        self._createOrDropDatabase(op="DROP")
+    def dropDatabase(self, dbname=None):
+        self._createOrDropDatabase(op="DROP", dbname=dbname)
+
+    def databaseExists(self, dbname):
+        res = self.queryOne(
+            "SELECT COUNT(*) FROM pg_database WHERE datname='%s'" % dbname)
+        return res[0] == 1
+
+    def renameDatabase(self, src, dest):
+        conn = self.getConnection()
+        cur = conn.cursor()
+        cur.execute('COMMIT')
+        cur.execute('ALTER DATABASE %s RENAME TO %s' % (src, dest))
+        cur.close()
+
+        return True
+
+    def dbVersion(self):
+        # PostgreSQL 8.4.8 on i686-pc-linux-gnu,
+        # PostgreSQL 8.4.8, compiled by Visual C++
+        version_string = self.queryOne('SELECT VERSION();')[0]
+        version = version_string.split(' ', 2)[1]
+        if version.endswith(','):
+            version = version[:-1]
+        return tuple(map(int, version.split('.')))
+
+    # Johan 2006-09-24: Add Sequence methods
+    def sequenceExists(self, sequence):
+        return self.tableExists(sequence)
+
+    def createSequence(self, sequence):
+        self.query('CREATE SEQUENCE "%s"' % sequence)
+
+    def dropSequence(self, sequence):
+        self.query('DROP SEQUENCE "%s"' % sequence)
+
+    def bumpSequence(self, sequence, start, minvalue, maxvalue):
+        self.query('ALTER SEQUENCE "%s" START %d MINVALUE %d MAXVALUE %d' % (
+            sequence, start, minvalue, maxvalue))
+
 
 
 # Converter for psycopg Binary type.

@@ -700,6 +700,12 @@ class DBAPI(DBConnection):
         """
         raise NotImplementedError
 
+    def block_implicit_flushes(self):
+        pass
+
+    def unblock_implicit_flushes(self):
+        pass
+
 class Iteration(object):
 
     def __init__(self, dbconn, rawconn, select, keepConnection=False):
