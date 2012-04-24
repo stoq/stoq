@@ -1394,6 +1394,26 @@ class SQLObject(object):
                              connection=conn)
 
     @classmethod
+    def selectOne(cls, clause=None, clauseTables=None, lazyColumns=False,
+                  connection=None):
+        results = cls.select(clause=clause, clauseTables=clauseTables,
+                             lazyColumns=lazyColumns, connection=connection)
+        try:
+            return results.getOne()
+        except SQLObjectNotFound:
+            # No result was found.
+            return None
+
+    @classmethod
+    def selectOneBy(cls, connection=None, **kw):
+        results = cls.selectBy(connection=connection, **kw)
+        try:
+            return results.getOne()
+        except SQLObjectNotFound:
+            # No result was found.
+            return None
+
+    @classmethod
     def tableExists(cls, connection=None):
         conn = connection or cls._connection
         return conn.tableExists(cls.sqlmeta.table)
