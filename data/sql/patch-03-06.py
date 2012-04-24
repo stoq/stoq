@@ -25,15 +25,17 @@ def apply_patch(trans):
 
     # Migrate all Product images to Image
     product_image_list = trans.queryAll("""
-                               SELECT id, image, full_image
-                                   FROM product
-                                   WHERE image != ''
-                               ;""")
+                   SELECT id FROM product WHERE image != '';""")
+
     if product_image_list:
-        for id, image, full_image in product_image_list:
-            image = Image(connection=trans,
-                          thumbnail=image,
-                          image=full_image)
+        for id, in product_image_list:
+            image = Image(connection=trans)
+            query = """UPDATE image
+                        SET image = p.full_image,
+                            thumbnail =  p.image
+                        FROM product p
+                        WHERE p.id = %d AND image.id =  %d"""
+            trans.query(query % (id, image.id))
             product = Product.get(id, connection=trans)
             product.sellable.image = image
 
