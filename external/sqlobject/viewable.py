@@ -28,8 +28,8 @@ import copy
 from sqlobject.dbconnection import Iteration
 from sqlobject.declarative import DeclarativeMeta, setup_attributes
 from sqlobject.main import sqlhub
-from sqlobject.sqlbuilder import (SQLCall, SQLObjectField,
-                                  NoDefault, AND)
+from sqlobject.sqlbuilder import (AND, ColumnAS, NoDefault, Select, SQLCall,
+                                  SQLObjectField, Alias)
 from sqlobject.sresults import SelectResults
 from sqlobject.classregistry import registry
 
@@ -59,8 +59,10 @@ class SQLObjectView(object):
 
     def __getattr__(self, attr):
         if attr == 'id':
+            column = self.columns[attr]
             return SQLObjectField(self.cls.sqlmeta.table,
-                                  self.cls.sqlmeta.idName, attr)
+                                  self.cls.sqlmeta.idName, column.original,
+                                  column.soClass, column.column)
         if not attr in self.columns:
             raise AttributeError("%s object has no attribute %s" % (
                 self.cls.__name__, attr))
@@ -224,12 +226,7 @@ class Viewable(object):
         instance = cls()
         instance.id = idValue
         for name, value in zip(cls.sqlmeta.columnNames, selectResults):
-            col = cls.sqlmeta.columns[name]
-
-            if hasattr(col, 'to_python') and col.to_python:
-                instance.__dict__[name] = col.to_python(value, None)
-            else:
-                instance.__dict__[name] = value
+            setattr(instance, name, value)
 
         instance._connection = connection
 
@@ -273,69 +270,55 @@ class Viewable(object):
         return self._connection
 
 def queryForSelect(conn, select):
-    ops = select.ops
-    join = ops.get('join')
-    having = ops.get('having')
+    having = select.ops.get('having', NoDefault) or NoDefault
 
-    cls = select.sourceClass
-    if join:
-        tables = conn._fixTablesForJoins(select)
-    else:
-        tables = select.tables
-    if ops.get('distinct', False):
-        q = 'SELECT DISTINCT '
-    else:
-        q = 'SELECT '
+    ns = select.ops['ns'].copy()
+    columns = ([ColumnAS(ns.pop('id'), 'id')] +
+               [ColumnAS(ns[item], item) for item in sorted(ns.keys())])
 
-    if ops.get('lazyColumns', 0):
-        q += "%s.%s FROM %s" % (
-            cls.sqlmeta.table, cls.sqlmeta.idName,
-            ", ".join(tables))
-    else:
-        ns = select.ops['ns'].copy()
-        q += '%s AS id, %s FROM %s' % (
-            ns.pop('id'),
-            ', '.join(['%s AS %s' % (ns[item], item)
-                       for item in sorted(ns.keys())]),
-            ", ".join(tables))
-
-    if join:
-        q += conn._addJoins(select, tables)
-
-        if not tables:
-            q = q[:-1]
-
-    q += " WHERE"
-    q = conn._addWhereClause(select, q, limit=0, order=0)
-
-    groupBy = False
+    ns = select.ops['ns']
+    groupBy = NoDefault
     for item in ns.values():
         if isinstance(item, SQLCall):
-            groupBy = True
+            items = []
+            for item in ns.values():
+                # If the field has an aggregate function, than it should not be
+                # in the GROUP BY clause
+                if not item.hasSQLCall():
+                    items.append(item)
+            groupBy = items
             break
 
-    if groupBy:
-        items = []
-        for item in ns.values():
-            # If the field has an aggregate function, than it should not be
-            # in the GROUP BY clause
-            if not item.hasSQLCall():
-                items.append(str(item))
-        items.append(str(select.ops['ns']['id']))
-        q += " GROUP BY %s" % ', '.join(items)
+    joins = select.ops.get('join', [])
+    for join in joins:
+        if isinstance(join.table2, Alias):
+            table = join.table2
+            if issubclass(table.q.table, Viewable):
+                # When joining a Viewable, it should join as a subquery
+                sqlrepr = ("%s (%s) AS %s ON %s" %
+                           (join.op,
+                            table.q.table.select(connection=conn),
+                            table.q.alias,
+                            join.on_condition))
+                join.__sqlrepr__ = lambda db, sql=sqlrepr: sql
 
-    if having:
-        q += " HAVING %s" % ' AND '.join([str(i) for i in having])
+    query = Select(
+        columns,
+        where=select.clause,
+        groupBy=groupBy,
+        having=having,
+        join=joins or NoDefault,
+        distinct=select.ops.get('distinct', False),
+        lazyColumns=select.ops.get('lazyColumns', False),
+        start=select.ops.get('start', 0),
+        end=select.ops.get('end', None),
+        orderBy=select.ops.get('dbOrderBy', NoDefault),
+        reversed=select.ops.get('reversed', False),
+        staticTables=select.tables,
+        forUpdate=select.ops.get('forUpdate', False),
+        )
 
-    if ops.get('dbOrderBy'):
-        q = conn._queryAddOrderByClause(select, q)
-
-    start = ops.get('start', 0)
-    end = ops.get('end', None)
-    if start or end:
-        q = conn._queryAddLimitOffset(q, start, end)
-
-    return q
+    return conn.sqlrepr(query)
 
 
 class ViewableIteration(Iteration):
@@ -367,6 +350,9 @@ class ViewableSelectResults(SelectResults):
 
     def __str__(self):
         return queryForSelect(self._getConnection(), self)
+
+    def count(self):
+        return len(list(self))
 
 
 _cache = {}
