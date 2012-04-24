@@ -177,7 +177,7 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
         conn = db_settings.get_default_connection()
         if not conn.databaseExists(dbname):
             log.warning('Database %s missing, creating it' % dbname)
-            conn.createDatabase(dbname, ifNotExists=True)
+            conn.createEmptyDatabase(dbname)
             rv = True
         conn.close()
 
