@@ -123,7 +123,10 @@ class UserSettings(object):
         data = fd.read()
         fd.close()
 
-        self._root = json.loads(data, object_hook=_decode_dict)
+        try:
+            self._root = json.loads(data, object_hook=_decode_dict)
+        except ValueError:
+            self._root = {}
 
         # FIXME: should be loaded
         self._migrated = True
