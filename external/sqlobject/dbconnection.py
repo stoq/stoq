@@ -401,8 +401,6 @@ class DBAPI(DBConnection):
         self.debugWriter.write(msg)
 
     def _executeRetry(self, conn, cursor, query):
-        if self.debug:
-            self.printDebug(conn, query, 'QueryR')
         return cursor.execute(query)
 
     def _query(self, conn, s):
