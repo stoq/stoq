@@ -112,7 +112,6 @@ class EmployeeRoleSlave(BaseEditorSlave):
                      'salary', )
 
     def __init__(self, conn, employee, edit_mode, visual_mode=False):
-        self.max_results = sysparam(conn).MAX_SEARCH_RESULTS
         self.employee = employee
         self.person = employee.person
         self.salesperson = self.person.salesperson
@@ -122,7 +121,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
 
     def _setup_entry_completion(self):
         roles = EmployeeRole.select(connection=self.conn)
-        self.role.prefill(api.for_combo(roles.limit(self.max_results)))
+        self.role.prefill(api.for_combo(roles))
 
     def _setup_widgets(self):
         self._setup_entry_completion()

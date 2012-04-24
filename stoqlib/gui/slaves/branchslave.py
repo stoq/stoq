@@ -27,7 +27,6 @@
 from stoqlib.api import api
 from stoqlib.domain.person import Branch, Employee
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.lib.parameters import sysparam
 
 
 class BranchDetailsSlave(BaseEditorSlave):
@@ -45,8 +44,7 @@ class BranchDetailsSlave(BaseEditorSlave):
 
     def _setup_manager_entry(self):
         employees = Employee.get_active_employees(self.conn)
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        self.manager.prefill(api.for_combo(employees.limit(max_results)))
+        self.manager.prefill(api.for_combo(employees))
 
     def _setup_crt_combo(self):
         self.crt.prefill(self.crt_options)

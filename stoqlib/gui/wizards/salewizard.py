@@ -311,7 +311,6 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         #        on demand.
         clients = ClientView.get_active_clients(self.conn)
         clients = clients.orderBy('name')
-        clients = clients.limit(sysparam(self.conn).MAX_SEARCH_RESULTS)
         items = [(c.name, c.client) for c in clients]
         self.client.prefill(items)
         self.client.set_sensitive(len(items))

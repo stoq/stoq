@@ -110,7 +110,6 @@ class PosApp(AppWindow):
         AppWindow.__init__(self, app)
         self._delivery = None
         self.param = api.sysparam(self.conn)
-        self.max_results = self.param.MAX_SEARCH_RESULTS
         self._coupon = None
         # Cant use self._coupon to verify if there is a sale, since
         # CONFIRM_SALES_ON_TILL doesnt create a coupon
