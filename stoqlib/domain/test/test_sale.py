@@ -471,7 +471,7 @@ class TestSale(DomainTest):
         # We know have four payments in the group, the outpayment as well
         self.assertEqual(sale.group.payments.count(), 4)
 
-        p1, p2, p3, p4 = sale.group.payments.orderBy('open_date')
+        p1, p2, p3, p4 = sale.group.payments.orderBy('id')
         # First three payments are incoming, one each of 50
         self.failUnless(p1.is_inpayment())
         self.failIf(p1.is_outpayment())

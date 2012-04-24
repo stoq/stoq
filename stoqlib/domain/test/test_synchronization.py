@@ -42,6 +42,8 @@ class TestBranchSynchronization(DomainTest):
         self.assertEqual(results.count(), 0)
 
         t1 = datetime.datetime.now()
+        # Datetime columns doesn't store microseconds
+        t1 = t1.replace(microsecond=0)
         obj = BranchSynchronization(branch=self.branch,
                                     policy="shop",
                                     sync_time=t1,
@@ -57,6 +59,8 @@ class TestBranchSynchronization(DomainTest):
         self.assertEqual(obj.branch, self.branch)
 
         t2 = datetime.datetime.now()
+        # Datetime columns doesn't store microseconds
+        t2 = t2.replace(microsecond=0)
         obj.sync_time = t2
 
         results = BranchSynchronization.select(

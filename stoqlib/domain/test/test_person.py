@@ -27,7 +27,7 @@ import datetime
 
 from kiwi.datatypes import currency
 
-from stoqlib.database.orm import ORMObjectMoreThanOneResultError, AND
+from stoqlib.database.orm import ORMObjectIntegrityError, AND
 from stoqlib.domain.person import Calls, Liaison
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
@@ -326,7 +326,8 @@ class TestEmployee(_PersonFacetTest, DomainTest):
                             employee=employee,
                             connection=self.trans,
                             salary=currency(320))
-        self.assertRaises(ORMObjectMoreThanOneResultError, employee.get_active_role_history)
+        self.assertRaises(ORMObjectIntegrityError,
+                          employee.get_active_role_history)
 
         #now with one employeerolehistory
         #FIXME: this breaks in buildbot, figure out why.

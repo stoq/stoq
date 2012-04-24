@@ -178,8 +178,11 @@ class ProductClosedStockView(ProductFullWithClosedStockView):
 
 class ProductComponentView(ProductFullStockView):
 
-    clause = AND(ProductFullStockView.clause,
-                 ProductComponent.q.productID == Product.q.id, )
+    joins = ProductFullStockView.joins[:]
+    joins.extend([
+        INNERJOINOn(None, ProductComponent,
+                    ProductComponent.q.productID == Product.q.id),
+        ])
 
     @property
     def sellable(self):
@@ -866,21 +869,8 @@ class LoanItemView(Viewable):
 
 class AccountView(Viewable):
 
-    class _SourceSum(Viewable):
-        columns = dict(
-             id=AccountTransaction.q.source_accountID,
-             value=const.SUM(AccountTransaction.q.value),
-             )
-
-        joins = []
-
-    class _DestSum(Viewable):
-        columns = dict(
-             id=AccountTransaction.q.accountID,
-             value=const.SUM(AccountTransaction.q.value),
-              )
-
-        joins = []
+    SourceSum = Alias(AccountTransaction, 'source_sum')
+    DestSum = Alias(AccountTransaction, 'dest_sum')
 
     columns = dict(
         id=Account.q.id,
@@ -889,15 +879,15 @@ class AccountView(Viewable):
         dest_accountID=Account.q.parentID,
         description=Account.q.description,
         code=Account.q.code,
-        source_value=Field('source_sum', 'value'),
-        dest_value=Field('dest_sum', 'value')
+        source_value=const.SUM(SourceSum.q.value),
+        dest_value=const.SUM(DestSum.q.value),
         )
 
     joins = [
-        LEFTJOINOn(None, Alias(_SourceSum, 'source_sum'),
-                   Field('source_sum', 'id') == Account.q.id),
-        LEFTJOINOn(None, Alias(_DestSum, 'dest_sum'),
-                   Field('dest_sum', 'id') == Account.q.id),
+        LEFTJOINOn(None, SourceSum,
+                   Account.q.id == SourceSum.q.source_accountID),
+        LEFTJOINOn(None, DestSum,
+                   Account.q.id == DestSum.q.accountID),
         ]
 
     @property

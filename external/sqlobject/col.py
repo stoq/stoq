@@ -763,7 +763,7 @@ class FloatCol(Col):
 
 
 class SOKeyCol(SOCol):
-    key_type = {int: "INT", str: "TEXT"}
+    key_type = {int: "BIGINT", str: "TEXT"}
 
     # 3-03 @@: this should have a simplified constructor
     # Should provide foreign key information for other DBs.

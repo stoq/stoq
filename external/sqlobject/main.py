@@ -312,7 +312,8 @@ class sqlmeta(object):
         assert name != 'id', (
             "The 'id' column is implicit, and should not be defined as "
             "a column")
-        assert name not in sqlmeta.columns, (
+        if name in sqlmeta.columns:
+            raise KeyError(
             "The class %s.%s already has a column %r (%r), you cannot "
             "add the column %r"
             % (soClass.__module__, soClass.__name__, name,
@@ -1006,7 +1007,10 @@ class SQLObject(object):
             if self.sqlmeta.expired:
                 return
             for column in self.sqlmeta.columnList:
-                delattr(self, instanceName(column.name))
+                iname = instanceName(column.name)
+                # It may be already invalidated by other callsite
+                if hasattr(self, iname):
+                    delattr(self, iname)
             self.sqlmeta.expired = True
             self._connection.cache.expire(self.id, self.__class__)
             self._SO_createValues = {}
@@ -1048,7 +1052,17 @@ class SQLObject(object):
                     dbValue)])
 
         if self.sqlmeta.cacheValues:
-            setattr(self, instanceName(name), value)
+            i_name = instanceName(name)
+            # This is a SQL call, meaning its value will be determined
+            # only after sql execution. Invalidate cache so that the
+            # actual value is reloaded
+            should_invalidate = (isinstance(value, sqlbuilder.SQLCall)
+                                 or self.sqlmeta.columns[name].noCache)
+            if should_invalidate:
+                if hasattr(self, i_name):
+                    delattr(self, i_name)
+            else:
+                setattr(self, i_name, value)
 
         post_funcs = []
         self.sqlmeta.send(events.RowUpdatedSignal, self, post_funcs)
@@ -1272,6 +1286,7 @@ class SQLObject(object):
 
         # Then we finalize the process:
         self._SO_finishCreate(id)
+        self.sqlmeta._creating = False
 
     def _SO_finishCreate(self, id=None):
         # Here's where an INSERT is finalized.
@@ -1359,11 +1374,12 @@ class SQLObject(object):
                orderBy=NoDefault, limit=None,
                lazyColumns=False, reversed=False,
                distinct=False, connection=None,
-               join=None, forUpdate=False):
+               join=None, forUpdate=False, having=None):
         return cls.SelectResultsClass(cls, clause,
                              clauseTables=clauseTables,
                              orderBy=orderBy,
                              limit=limit,
+                             having=having,
                              lazyColumns=lazyColumns,
                              reversed=reversed,
                              distinct=distinct,
@@ -1376,6 +1392,26 @@ class SQLObject(object):
         return cls.SelectResultsClass(cls,
                              conn._SO_columnClause(cls, kw),
                              connection=conn)
+
+    @classmethod
+    def selectOne(cls, clause=None, clauseTables=None, lazyColumns=False,
+                  connection=None):
+        results = cls.select(clause=clause, clauseTables=clauseTables,
+                             lazyColumns=lazyColumns, connection=connection)
+        try:
+            return results.getOne()
+        except SQLObjectNotFound:
+            # No result was found.
+            return None
+
+    @classmethod
+    def selectOneBy(cls, connection=None, **kw):
+        results = cls.selectBy(connection=connection, **kw)
+        try:
+            return results.getOne()
+        except SQLObjectNotFound:
+            # No result was found.
+            return None
 
     @classmethod
     def tableExists(cls, connection=None):
@@ -1649,7 +1685,7 @@ class SQLObject(object):
     # Comparison
 
     def __eq__(self, other):
-        if self.__class__ is other.__class__:
+        if type(self) is type(other):
             if self.id == other.id:
                 return True
         return False

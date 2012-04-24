@@ -401,8 +401,6 @@ class DBAPI(DBConnection):
         self.debugWriter.write(msg)
 
     def _executeRetry(self, conn, cursor, query):
-        if self.debug:
-            self.printDebug(conn, query, 'QueryR')
         return cursor.execute(query)
 
     def _query(self, conn, s):
@@ -700,6 +698,12 @@ class DBAPI(DBConnection):
         """
         raise NotImplementedError
 
+    def block_implicit_flushes(self):
+        pass
+
+    def unblock_implicit_flushes(self):
+        pass
+
 class Iteration(object):
 
     def __init__(self, dbconn, rawconn, select, keepConnection=False):
@@ -781,8 +785,10 @@ class Transaction(object):
         # still iterating through the results.
         # @@: But would it be okay for psycopg, with threadsafety
         # level 2?
-        return iter(list(select.IterationClass(self, self._connection,
-                                   select, keepConnection=True)))
+        # Use IterationClass directly instead of iter(list(IterationClass))
+        # so we can improve performance a little.
+        return select.IterationClass(self, self._connection,
+                                     select, keepConnection=True)
 
     def _SO_delete(self, inst):
         cls = inst.__class__.__name__

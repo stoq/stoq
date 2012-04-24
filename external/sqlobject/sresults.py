@@ -66,6 +66,21 @@ class SelectResults(object):
         conn = self._getConnection()
         return conn.queryForSelect(self)
 
+    def __nonzero__(self):
+        # FIXME: Remove this. We should test results existence by using
+        #        results.count() > 0 or len(list(results)) > 0
+        start = self.ops.get('start', 0)
+        if start is None:
+            start = 0
+        end = self.ops.get('end', None)
+        if end is None:
+            end = start + 1
+        end = min(end, start + 1)
+        clone = self.clone(start=start, end=end, distinct=False)
+        # do we get any rows?
+        results = list(clone)
+        return len(results) != 0
+
     def _mungeOrderBy(self, orderBy):
         if isinstance(orderBy, str) and orderBy.startswith('-'):
             orderBy = orderBy[1:]
@@ -125,6 +140,17 @@ class SelectResults(object):
             clause = sqlbuilder.SQLConstant('(%s)' % self.clause)
         return self.newClause(sqlbuilder.AND(clause, filter_clause))
 
+    def filterBy(self, **kwargs):
+        conn = self._getConnection()
+        filter_clause = conn._SO_columnClause(self.sourceClass, kwargs)
+        if filter_clause is None:
+            # None doesn't filter anything, it's just a no-op:
+            return self
+        clause = self.clause
+        if isinstance(clause, (str, unicode)):
+            clause = sqlbuilder.SQLConstant('(%s)' % self.clause)
+        return self.newClause(conn.sqlrepr(clause) + ' AND ' +  filter_clause)
+
     def __getitem__(self, value):
         if isinstance(value, slice):
             assert not value.step, "Slices do not support steps"
@@ -178,7 +204,9 @@ class SelectResults(object):
         # @@: This could be optimized, using a simpler algorithm
         # since we don't have to worry about garbage collection,
         # etc., like we do with .lazyIter()
-        return iter(list(self.lazyIter()))
+        # Use self.lazyIter directly instead of iter(list(self.lazyIter))
+        # so we can improve performance a little.
+        return self.lazyIter()
 
     def lazyIter(self):
         """
