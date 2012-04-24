@@ -33,8 +33,7 @@ from kiwi.db.query import NumberQueryState, StringQueryState, \
      DateQueryState, DateIntervalQueryState, QueryExecuter, \
      NumberIntervalQueryState
 from kiwi.interfaces import ISearchFilter
-from sqlobject import (SQLObjectNotFound,
-                       SQLObjectMoreThanOneResultError)
+from sqlobject.main import SQLObjectNotFound, SQLObjectIntegrityError
 from sqlobject.col import DateTimeCol as _DateTimeCol
 from sqlobject.col import (BoolCol, BLOBCol,
                            ForeignKey, IntCol, StringCol, UnicodeCol)
@@ -194,7 +193,7 @@ orm_name = 'sqlobject'
 # ORMObject.get raises this
 ORMObjectNotFound = SQLObjectNotFound
 # ORMObject.selectOneBy raises this
-ORMObjectMoreThanOneResultError = SQLObjectMoreThanOneResultError
+ORMObjectIntegrityError = SQLObjectIntegrityError
 
 
 class _FTI(SQLExpression):

@@ -23,8 +23,7 @@
 ##
 
 from stoqlib.database.runtime import new_transaction
-from stoqlib.database.orm import (ORMObjectMoreThanOneResultError, IntCol,
-                                  )
+from stoqlib.database.orm import ORMObjectIntegrityError, IntCol
 from stoqlib.domain.base import Domain
 
 from stoqlib.domain.test.domaintest import DomainTest
@@ -53,7 +52,7 @@ class TestSelect(DomainTest):
         ding1 = Ding(connection=self.trans)
         self.assertEquals(Ding.selectOne(connection=self.trans), ding1)
         Ding(connection=self.trans)
-        self.assertRaises(ORMObjectMoreThanOneResultError,
+        self.assertRaises(ORMObjectIntegrityError,
                           Ding.selectOne, connection=self.trans)
 
     def testSelectOneBy(self):
@@ -66,5 +65,5 @@ class TestSelect(DomainTest):
             ding1, Ding.selectOneBy(field=1, connection=self.trans))
         Ding(connection=self.trans, field=1)
         self.assertRaises(
-            ORMObjectMoreThanOneResultError,
+            ORMObjectIntegrityError,
             Ding.selectOneBy, field=1, connection=self.trans)

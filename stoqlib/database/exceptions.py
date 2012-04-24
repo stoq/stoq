@@ -29,12 +29,15 @@ Database exceptions
 This is just a layer on top of the Python DBAPI we're using to access the
 database
 """
-import psycopg2
+from sqlobject.dberrors import (Error,
+                                IntegrityError as _IntegrityError,
+                                ProgrammingError as _ProgrammingError,
+                                OperationalError as _OperationalError)
 
-PostgreSQLError = psycopg2.Error
-IntegrityError = psycopg2.IntegrityError
-ProgrammingError = psycopg2.ProgrammingError
-OperationalError = psycopg2.OperationalError
+PostgreSQLError = Error
+IntegrityError = _IntegrityError
+ProgrammingError = _ProgrammingError
+OperationalError = _OperationalError
 
 
 class ORMTestError(Exception):

@@ -1239,7 +1239,7 @@ orm_name = 'storm'
 # ORMObject.get raises this
 ORMObjectNotFound = SQLObjectNotFound
 # ORMObject.selectOneBy raises this
-ORMObjectMoreThanOneResultError = NotOneError
+ORMObjectIntegrityError = NotOneError
 
 ORMObjectQueryExecuter = StormQueryExecuter
 
