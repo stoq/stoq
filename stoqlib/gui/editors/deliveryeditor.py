@@ -165,8 +165,6 @@ class CreateDeliveryEditor(BaseEditor):
 
     def _prefill_client(self):
         clients = ClientView.get_active_clients(self.conn)
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        clients = clients[:max_results]
         items = [(c.name, c.client) for c in clients]
         self.client.prefill(locale_sorted(
             items, key=operator.itemgetter(0)))

@@ -112,7 +112,6 @@ class StartSaleQuoteStep(WizardEditorStep):
         #        on demand.
         clients = ClientView.get_active_clients(self.conn)
         clients = clients.orderBy('name')
-        clients = clients.limit(sysparam(self.conn).MAX_SEARCH_RESULTS)
         self.client.prefill([(c.name, c.client) for c in clients])
 
     def _fill_clients_category_combo(self):
