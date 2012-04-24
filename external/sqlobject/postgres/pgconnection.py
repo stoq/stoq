@@ -220,7 +220,8 @@ class PostgresConnection(DBAPI):
         return index.postgresCreateIndexSQL(soClass)
 
     def createIDColumn(self, soClass):
-        key_type = {int: "SERIAL", str: "TEXT"}[soClass.sqlmeta.idType]
+        # Johan 2006-09-25: use BIGSERIAL for 64-bit ids
+        key_type = {int: "BIGSERIAL", str: "TEXT"}[soClass.sqlmeta.idType]
         return '%s %s PRIMARY KEY' % (soClass.sqlmeta.idName, key_type)
 
     def dropTable(self, tableName, cascade=False):
