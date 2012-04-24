@@ -195,6 +195,20 @@ class SQLExpression:
     def components(self):
         return []
 
+    def hasSQLCall(self):
+        if isinstance(self, SQLCall):
+            return True
+
+        for i in self.components():
+            if isinstance(i, SQLCall):
+                return True
+
+            if len(i.components()):
+                if i.hasSQLCall():
+                    return True
+
+        return False
+
     def tablesUsed(self, db):
         return self.tablesUsedSet(db)
     def tablesUsedSet(self, db):
