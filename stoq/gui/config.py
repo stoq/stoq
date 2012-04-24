@@ -872,7 +872,7 @@ class FirstTimeConfigWizard(BaseWizard):
             raise DatabaseInconsistency(
                 ("You should have a user with username: %s"
                  % USER_ADMIN_DEFAULT_NAME))
-        adminuser.password = self.login_password
+        adminuser.set_password(self.login_password)
 
     def _set_online_services(self, trans):
         logger.info('_set_online_services (%s)' %
