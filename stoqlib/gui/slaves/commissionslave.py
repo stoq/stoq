@@ -85,6 +85,9 @@ class CommissionSlave(BaseEditorSlave):
             self.commission_check_btn.set_active(False)
             self.commission_spin.set_value(source.direct_value)
             self.commission_inst_spin.set_value(source.installments_value)
+        else:
+            self.commission_spin.set_value(0)
+            self.commission_inst_spin.set_value(0)
 
     def _is_checked(self):
         return not self.commission_check_btn.get_active()
