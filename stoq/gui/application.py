@@ -532,7 +532,7 @@ class AppWindow(GladeDelegate):
         about.set_version(info.get("version"))
         about.set_website(stoq.website)
         release_date = stoq.release_date
-        about.set_comments('Release Date: %s' %
+        about.set_comments(_('Release date: %s') %
                            datetime.datetime(*release_date).strftime('%x'))
         about.set_copyright('Copyright (C) 2005-2012 Async Open Source')
 
