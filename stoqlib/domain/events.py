@@ -289,3 +289,9 @@ class TillAddTillEntryEvent(Event):
     :param till_entry: TillEntry object
     :param conn: database connection
     """
+
+
+class HasOpenCouponEvent(Event):
+    """
+    This event is emitted to check for opened coupon.
+    """

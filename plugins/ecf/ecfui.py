@@ -38,7 +38,8 @@ from stoqlib.domain.events import (SaleStatusChangedEvent, TillAddCashEvent,
                                    GerencialReportPrintEvent,
                                    GerencialReportCancelEvent,
                                    CheckECFStateEvent,
-                                   HasPendingReduceZ, ECFIsLastSaleEvent)
+                                   HasPendingReduceZ, ECFIsLastSaleEvent,
+                                   HasOpenCouponEvent)
 from stoqlib.domain.person import Individual, Company
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
@@ -85,6 +86,7 @@ class ECFUI(object):
         GerencialReportCancelEvent.connect(self._on_GerencialReportCancelEvent)
         CheckECFStateEvent.connect(self._on_CheckECFStateEvent)
         HasPendingReduceZ.connect(self._on_HasPendingReduceZ)
+        HasOpenCouponEvent.connect(self._on_HasOpenCouponEvent)
 
         self._till_summarize_action = gtk.Action(
             'Summary', _('Summary'), None, None)
@@ -222,8 +224,10 @@ class ECFUI(object):
             warning('Não foi possível comunicar com a impressora.')
             raise SystemExit
 
-        has_open = self._printer.has_open_coupon()
-        if has_open:
+        self._has_open_coupon()
+
+    def _has_open_coupon(self):
+        if self._printer and self._printer.has_open_coupon():
             warning('A ECF tem um cupom aberto. Ele será cancelado agora.')
             self._printer.cancel()
 
@@ -598,6 +602,9 @@ class ECFUI(object):
 
     def _on_HasPendingReduceZ(self):
         return self._has_pending_reduce()
+
+    def _on_HasOpenCouponEvent(self):
+        self._has_open_coupon()
 
     #
     # Callbacks
