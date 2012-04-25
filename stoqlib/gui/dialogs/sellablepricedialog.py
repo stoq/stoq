@@ -55,8 +55,6 @@ class CategoryPriceView(Viewable):
         max_discount=ClientCategoryPrice.q.max_discount,
     )
 
-    joins = []
-
 
 class SellableView(Viewable):
     columns = dict(
