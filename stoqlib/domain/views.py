@@ -869,8 +869,17 @@ class LoanItemView(Viewable):
 
 class AccountView(Viewable):
 
-    SourceSum = Alias(AccountTransaction, 'source_sum')
-    DestSum = Alias(AccountTransaction, 'dest_sum')
+    class _SourceSum(Viewable):
+        columns = dict(
+            id=AccountTransaction.q.source_accountID,
+            value=const.SUM(AccountTransaction.q.value),
+            )
+
+    class _DestSum(Viewable):
+        columns = dict(
+            id=AccountTransaction.q.accountID,
+            value=const.SUM(AccountTransaction.q.value),
+            )
 
     columns = dict(
         id=Account.q.id,
@@ -879,15 +888,15 @@ class AccountView(Viewable):
         dest_accountID=Account.q.parentID,
         description=Account.q.description,
         code=Account.q.code,
-        source_value=const.SUM(SourceSum.q.value),
-        dest_value=const.SUM(DestSum.q.value),
+        source_value=Field('source_sum', 'value'),
+        dest_value=Field('dest_sum', 'value'),
         )
 
     joins = [
-        LEFTJOINOn(None, SourceSum,
-                   Account.q.id == SourceSum.q.source_accountID),
-        LEFTJOINOn(None, DestSum,
-                   Account.q.id == DestSum.q.accountID),
+        LEFTJOINOn(None, Alias(_SourceSum, 'source_sum'),
+                   Field('source_sum', 'id') == Account.q.id),
+        LEFTJOINOn(None, Alias(_DestSum, 'dest_sum'),
+                   Field('dest_sum', 'id') == Account.q.id),
         ]
 
     @property
@@ -911,11 +920,11 @@ class AccountView(Viewable):
     def get_combined_value(self):
         """Returns the combined value of incoming and outgoing
         transactions"""
-        if self.dest_value is None and self.source_value is None:
+        if not self.dest_value and not self.source_value:
             return 0
-        elif self.dest_value is None:
+        elif not self.dest_value:
             return -self.source_value
-        elif self.source_value is None:
+        elif not self.source_value:
             return self.dest_value
         else:
             return self.dest_value - self.source_value

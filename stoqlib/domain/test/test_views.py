@@ -390,27 +390,37 @@ class TestAccountView(DomainTest):
         self.failUnless(list(results))
         self.assertEquals(results[0].get_combined_value(), 0)
 
-        t1 = self.create_account_transaction(a1)
+        t1 = self.create_account_transaction(a1, 1)
         t1.source_account = a1
         t1.account = a2
         t1.sync()
-
-        results = AccountView.select(AccountView.q.id == a1.id,
-                                     connection=self.trans)
-        self.failUnless(list(results))
-        self.assertEquals(results.count(), 1)
-        self.assertEquals(results[0].get_combined_value(), -1)
-
-        t2 = self.create_account_transaction(a2)
-        t2.source_account = a2
-        t2.account = a1
+        t2 = self.create_account_transaction(a1, 9)
+        t2.source_account = a1
+        t2.account = a2
         t2.sync()
 
         results = AccountView.select(AccountView.q.id == a1.id,
                                      connection=self.trans)
         self.failUnless(list(results))
         self.assertEquals(results.count(), 1)
-        self.assertEquals(results[0].get_combined_value(), 0)
+        # The negative sum of t1 and t2
+        self.assertEquals(results[0].get_combined_value(), -10)
+
+        t3 = self.create_account_transaction(a2, 10)
+        t3.source_account = a2
+        t3.account = a1
+        t3.sync()
+        t4 = self.create_account_transaction(a2, 90)
+        t4.source_account = a2
+        t4.account = a1
+        t4.sync()
+
+        results = AccountView.select(AccountView.q.id == a1.id,
+                                     connection=self.trans)
+        self.failUnless(list(results))
+        self.assertEquals(results.count(), 1)
+        # The negative sum of t1 and t2 plus the sum of t3 and t4
+        self.assertEquals(results[0].get_combined_value(), 90)
 
     def testRepr(self):
         a1 = self.create_account()

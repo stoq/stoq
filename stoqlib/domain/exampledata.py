@@ -815,13 +815,13 @@ class ExampleCreator(object):
                        account_type=Account.TYPE_CASH,
                        connection=self.trans)
 
-    def create_account_transaction(self, account):
+    def create_account_transaction(self, account, value=1):
         from stoqlib.domain.account import AccountTransaction
         return AccountTransaction(
             description="Test Account Transaction",
             code="Code",
             date=datetime.datetime.now(),
-            value=1,
+            value=value,
             account=account,
             source_account=sysparam(self.trans).IMBALANCE_ACCOUNT,
             connection=self.trans)
