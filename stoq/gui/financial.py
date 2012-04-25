@@ -705,7 +705,7 @@ class FinancialApp(AppWindow):
             connection=trans)
         if methods.count() > 0:
             if yesno(
-                _('This account are used in at least one payment method.\n'
+                _('This account is used in at least one payment method.\n'
                   'To be able to delete it the payment methods needs to be'
                   're-configured first'), gtk.RESPONSE_YES,
                 _("Keep account"), _("Configure payment methods")):
