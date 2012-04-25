@@ -46,6 +46,10 @@ RETRY_NUMBER = 3
 log = Logger('stoq. config')
 
 
+def _encrypt_password(password):
+    return hashlib.md5(password).hexdigest()
+
+
 class LoginDialog(GladeDelegate, RunnableView):
     toplevel_name = gladefile = "LoginDialog"
     size = (-1, -1)
@@ -116,7 +120,7 @@ class LoginDialog(GladeDelegate, RunnableView):
     def _do_login(self):
         username = self.username.get_text().strip()
         password = self.password.get_text().strip()
-        password = hashlib.md5(password).hexdigest()
+        password = _encrypt_password(password)
         self.retval = username, password
         self.set_field_sensitivity(False)
         self.notification_label.set_color('black')
@@ -178,11 +182,27 @@ class LoginHelper:
             log.info("Cookies disable by parameter")
             return
 
+        cookie_file = get_utility(ICookieFile)
         try:
-            username, password = get_utility(ICookieFile).get()
+            username, password = cookie_file.get()
         except CookieError:
             log.info("Not using cookie based login")
             return
+
+        def is_md5(password):
+            # This breaks for passwords that are 32 characters long,
+            # uses only digits and lowercase a-f, pretty unlikely as
+            # real-world password
+            if len(password) != 32:
+                return False
+            for c in '1234567890abcdef':
+                password = password.replace(c, '')
+            return password == ''
+
+        # Migrate old passwords to md5 hashes.
+        if not is_md5(password):
+            password = _encrypt_password(password)
+            cookie_file.store(username, password)
 
         try:
             user = self._check_user(username, password)
