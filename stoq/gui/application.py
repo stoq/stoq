@@ -504,22 +504,11 @@ class AppWindow(GladeDelegate):
         desc = (_("Some features are limited due to fiscal reasons. "
                   "Click on '%s' to remove the limitations and finish the demonstration.")
                 % button_label)
-        label = gtk.Label('<b>%s</b>\n%s' % (title, desc))
-        label.set_use_markup(True)
-        label.set_line_wrap(True)
-        label.set_width_chars(100)
+        msg = '<b>%s</b>\n%s' % (title, desc)
 
         button = gtk.Button(button_label)
         button.connect('clicked', self._on_enable_production__clicked)
-
-        bar = InfoBar()
-        bar.get_content_area().add(label)
-        bar.add_action_widget(button, 0)
-        bar.set_message_type(gtk.MESSAGE_WARNING)
-        bar.show_all()
-
-        self.main_vbox.pack_start(bar, False, False, 0)
-        self.main_vbox.reorder_child(bar, 2)
+        self.add_info_bar(gtk.MESSAGE_WARNING, msg, action_widget=button)
 
     def _check_version(self):
         if not api.sysparam(self.conn).ONLINE_SERVICES:
@@ -944,17 +933,23 @@ class AppWindow(GladeDelegate):
         """
         label = gtk.Label(label)
         label.set_use_markup(True)
+        label.set_line_wrap(True)
+        label.set_width_chars(100)
+        label.set_alignment(0, 0)
+        label.set_padding(12, 0)
         label.show()
 
         bar = InfoBar()
         bar.get_content_area().add(label)
         if action_widget:
             bar.add_action_widget(action_widget, 0)
+            action_widget.show()
         bar.set_message_type(message_type)
         bar.show()
 
         self.main_vbox.pack_start(bar, False, False, 0)
-        self.main_vbox.reorder_child(bar, 0)
+        # 0 = menubar, 1 = toolbar, 2 is above iconview
+        self.main_vbox.reorder_child(bar, 2)
 
         return bar
 
