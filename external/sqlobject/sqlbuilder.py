@@ -691,7 +691,7 @@ class Select(SQLExpression):
             # Convert the set back to a list, and keep the last table in place.
             tables = list(tables)
             main_table = self.ops['staticTables'][-1]
-            if tables[-1] != main_table:
+            if main_table in tables and tables[-1] != main_table:
                 tables.remove(main_table)
                 tables.append(main_table)
             select += " FROM %s" % ", ".join(tables)
