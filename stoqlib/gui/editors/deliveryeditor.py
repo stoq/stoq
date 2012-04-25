@@ -330,7 +330,7 @@ class DeliveryEditor(BaseEditor):
         if self.model.status == Delivery.STATUS_INITIAL:
             for widget in (self.was_delivered_check, self.was_received_check):
                 widget.set_active(False)
-        elif self.model.status == Delivery.STATUS_DELIVERING:
+        elif self.model.status == Delivery.STATUS_SENT:
             self.was_delivered_check.set_active(True)
             self.was_received_check.set_active(False)
         elif self.model.status == Delivery.STATUS_RECEIVED:
@@ -399,7 +399,7 @@ class DeliveryEditor(BaseEditor):
             return
 
         if active:
-            self.model.set_delivering()
+            self.model.set_sent()
         else:
             self.model.set_initial()
 
@@ -425,4 +425,4 @@ class DeliveryEditor(BaseEditor):
         if active:
             self.model.set_received()
         else:
-            self.model.set_delivering()
+            self.model.set_sent()
