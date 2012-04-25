@@ -29,6 +29,7 @@ from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.domain.station import BranchStation
 from stoqlib.database.runtime import new_transaction
 from stoqlib.importers.accountimporter import AccountImporter
+from stoqlib.importers.accounttransactionimporter import AccountTransactionImporter
 from stoqlib.importers.branchimporter import BranchImporter
 from stoqlib.importers.clientimporter import ClientImporter
 from stoqlib.importers.creditproviderimporter import CreditProviderImporter
@@ -78,3 +79,4 @@ def create(utilities=False):
     _import_one(SaleImporter, 'sales.csv')
     _import_one(TransferImporter, 'transfers.csv')
     _import_one(AccountImporter, 'accounts.csv')
+    _import_one(AccountTransactionImporter, 'transactions.csv')
