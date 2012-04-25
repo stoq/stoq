@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-25 11:27-0300\n"
+"POT-Creation-Date: 2012-04-25 16:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -743,7 +743,7 @@ msgid "Was received by client?"
 msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:7
-msgid "Deliver date:"
+msgid "Delivery date:"
 msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:8
@@ -2700,7 +2700,7 @@ msgstr ""
 #: ../plugins/books/bookssearch.py:83 ../stoq/gui/stock.py:222
 #: ../stoqlib/domain/uiform.py:105
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:86
-#: ../stoqlib/gui/dialogs/sellablepricedialog.py:147
+#: ../stoqlib/gui/dialogs/sellablepricedialog.py:145
 #: ../stoqlib/gui/search/productsearch.py:164
 #: ../stoqlib/gui/search/sellablesearch.py:141
 #: ../stoqlib/gui/search/servicesearch.py:108
@@ -2723,7 +2723,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/productstockdetails.py:184
 #: ../stoqlib/gui/dialogs/receivingdialog.py:78
 #: ../stoqlib/gui/dialogs/saledetails.py:166
-#: ../stoqlib/gui/dialogs/sellablepricedialog.py:145
+#: ../stoqlib/gui/dialogs/sellablepricedialog.py:143
 #: ../stoqlib/gui/dialogs/stockcostdialog.py:75
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:61
 #: ../stoqlib/gui/dialogs/supplierdetails.py:128
@@ -2762,7 +2762,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/productiondialog.py:234
 #: ../stoqlib/gui/dialogs/productiondialog.py:314
 #: ../stoqlib/gui/dialogs/productstockdetails.py:185
-#: ../stoqlib/gui/dialogs/sellablepricedialog.py:149
+#: ../stoqlib/gui/dialogs/sellablepricedialog.py:147
 #: ../stoqlib/gui/editors/categoryeditor.py:41
 #: ../stoqlib/gui/editors/producteditor.py:130
 #: ../stoqlib/gui/editors/sellableeditor.py:209
@@ -2826,7 +2826,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/purchasedetails.py:194
 #: ../stoqlib/gui/dialogs/quotedialog.py:102
 #: ../stoqlib/gui/dialogs/receivingdialog.py:85
-#: ../stoqlib/gui/dialogs/sellablepricedialog.py:153
+#: ../stoqlib/gui/dialogs/sellablepricedialog.py:151
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:85
 #: ../stoqlib/gui/editors/producteditor.py:517
 #: ../stoqlib/gui/search/productsearch.py:176
@@ -3028,11 +3028,6 @@ msgstr ""
 msgid "Tax"
 msgstr ""
 
-#: ../plugins/ecf/ecfdomain.py:111
-#, python-format
-msgid "%0.2f %%"
-msgstr ""
-
 #: ../plugins/ecf/ecfdomain.py:171
 #, python-format
 msgid "fiscal printer is missing a constant for the custom tax constant '%s'"
@@ -3144,7 +3139,7 @@ msgstr ""
 msgid "This printer is already known to the system"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:303 ../plugins/ecf/ecfui.py:130
+#: ../plugins/ecf/ecfprinterdialog.py:303 ../plugins/ecf/ecfui.py:132
 msgid "Fiscal Printers"
 msgstr ""
 
@@ -3166,123 +3161,123 @@ msgstr ""
 msgid "Cant edit a virtual printer"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:90
+#: ../plugins/ecf/ecfui.py:92
 msgid "Summary"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:113
+#: ../plugins/ecf/ecfui.py:115
 msgid "This operation requires a connected fiscal printer"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:118
+#: ../plugins/ecf/ecfui.py:120
 msgid "Fiscalprinters serial number is different!"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:154 ../plugins/ecf/ecfui.py:181
-#: ../plugins/ecf/ecfui.py:208
+#: ../plugins/ecf/ecfui.py:156 ../plugins/ecf/ecfui.py:183
+#: ../plugins/ecf/ecfui.py:210
 msgid "ECF"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:155
+#: ../plugins/ecf/ecfui.py:157
 msgid "Configure fiscal printer..."
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:182 ../plugins/ecf/ecfui.py:209
+#: ../plugins/ecf/ecfui.py:184 ../plugins/ecf/ecfui.py:211
 msgid "Read Memory"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:184 ../plugins/ecf/ecfui.py:436
+#: ../plugins/ecf/ecfui.py:186 ../plugins/ecf/ecfui.py:440
 msgid "Cancel Last Document"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:245
+#: ../plugins/ecf/ecfui.py:249
 msgid ""
 "It's not possible to emit a read X for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:248 ../plugins/ecf/ecfui.py:301
+#: ../plugins/ecf/ecfui.py:252 ../plugins/ecf/ecfui.py:305
 #: ../stoq/gui/inventory.py:99 ../stoq/gui/purchase.py:165
 #: ../stoq/gui/sales.py:150
 msgid "Cancel"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:249 ../plugins/ecf/ecfui.py:302
+#: ../plugins/ecf/ecfui.py:253 ../plugins/ecf/ecfui.py:306
 msgid "Ignore"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:250 ../plugins/ecf/ecfui.py:303
+#: ../plugins/ecf/ecfui.py:254 ../plugins/ecf/ecfui.py:307
 msgid "Try Again"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:282
+#: ../plugins/ecf/ecfui.py:286
 msgid ""
 "You need to set some details about your ECF if you want to save the paulista "
 "invoice file. Go to the admin application and fill the required information "
 "for the ECF."
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:286
+#: ../plugins/ecf/ecfui.py:290
 msgid "Cancel Close Till"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:298
+#: ../plugins/ecf/ecfui.py:302
 msgid ""
 "It's not possible to emit a reduce Z for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:419
+#: ../plugins/ecf/ecfui.py:423
 msgid "There is no sale nor till entry to cancel"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:423
+#: ../plugins/ecf/ecfui.py:427
 #, python-format
 msgid "Do you really want to cancel the sale number %d and value %.2f ?"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:427
+#: ../plugins/ecf/ecfui.py:431
 #, python-format
 msgid ""
 "Do you really want to cancel the last cash added number %d and value %.2f ?"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:432
+#: ../plugins/ecf/ecfui.py:436
 #, python-format
 msgid ""
 "Do you really want to cancel the last cash removed number %d and value %.2f ?"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:437 ../stoqlib/gui/dialogs/pluginsdialog.py:136
+#: ../plugins/ecf/ecfui.py:441 ../stoqlib/gui/dialogs/pluginsdialog.py:136
 #: ../stoqlib/gui/fiscalprinter.py:143 ../stoqlib/gui/fiscalprinter.py:277
 msgid "Not now"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:444
+#: ../plugins/ecf/ecfui.py:448
 msgid "Cash out"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:446
+#: ../plugins/ecf/ecfui.py:450
 msgid "Cash in"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:449 ../plugins/ecf/ecfui.py:469
+#: ../plugins/ecf/ecfui.py:453 ../plugins/ecf/ecfui.py:473
 msgid "Document was cancelled"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:451
+#: ../plugins/ecf/ecfui.py:455
 msgid "Cancelling failed, nothing to cancel"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:459
+#: ../plugins/ecf/ecfui.py:463
 msgid "Cancel last document"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:490 ../stoqlib/gui/slaves/saleslave.py:336
+#: ../plugins/ecf/ecfui.py:494 ../stoqlib/gui/slaves/saleslave.py:336
 msgid "You do not have this value on till."
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:495
+#: ../plugins/ecf/ecfui.py:499
 msgid "Cancelling sale failed, nothing to cancel"
 msgstr ""
 
@@ -4466,7 +4461,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:138
 #: ../stoqlib/gui/dialogs/saledetails.py:148
 #: ../stoqlib/gui/dialogs/saledetails.py:169
-#: ../stoqlib/gui/dialogs/sellablepricedialog.py:151
+#: ../stoqlib/gui/dialogs/sellablepricedialog.py:149
 #: ../stoqlib/gui/dialogs/stockcostdialog.py:77
 #: ../stoqlib/gui/dialogs/stockdecreasedialog.py:63
 #: ../stoqlib/gui/dialogs/supplierdetails.py:130
@@ -4668,7 +4663,7 @@ msgstr ""
 
 #: ../stoq/gui/financial.py:708
 msgid ""
-"This account are used in at least one payment method.\n"
+"This account is used in at least one payment method.\n"
 "To be able to delete it the payment methods needs to bere-configured first"
 msgstr ""
 
@@ -5206,7 +5201,7 @@ msgstr ""
 msgid "POS operations requires a connected fiscal printer."
 msgstr ""
 
-#: ../stoq/gui/pos.py:443 ../stoq/gui/till.py:437
+#: ../stoq/gui/pos.py:443 ../stoq/gui/till.py:438
 msgid "Till closed"
 msgstr ""
 
@@ -6137,15 +6132,15 @@ msgstr ""
 msgid "Cancel coupon"
 msgstr ""
 
-#: ../stoq/gui/till.py:419
+#: ../stoq/gui/till.py:420
 msgid "Till operations requires a connected fiscal printer"
 msgstr ""
 
-#: ../stoq/gui/till.py:441
+#: ../stoq/gui/till.py:442
 msgid "Till blocked from previous day"
 msgstr ""
 
-#: ../stoq/gui/till.py:444
+#: ../stoq/gui/till.py:445
 #, python-format
 msgid "Till opened on %s"
 msgstr ""
@@ -6587,7 +6582,7 @@ msgid "Payment needs to be paid"
 msgstr ""
 
 #: ../stoqlib/domain/address.py:141
-#: ../stoqlib/gui/editors/addresseditor.py:161
+#: ../stoqlib/gui/editors/addresseditor.py:162
 msgid "N/A"
 msgstr ""
 
@@ -6930,7 +6925,7 @@ msgstr ""
 msgid "Decimal"
 msgstr ""
 
-#: ../stoqlib/domain/production.py:68
+#: ../stoqlib/domain/production.py:68 ../stoqlib/domain/sale.py:239
 msgid "Waiting"
 msgstr ""
 
@@ -7096,12 +7091,8 @@ msgstr ""
 msgid "%r does not have enough stock to be sold."
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:239
-msgid "Waiting for deliver"
-msgstr ""
-
 #: ../stoqlib/domain/sale.py:240
-msgid "Delivering"
+msgid "Sent"
 msgstr ""
 
 #: ../stoqlib/domain/sale.py:382 ../stoqlib/gui/dialogs/loandetails.py:68
@@ -7353,13 +7344,13 @@ msgstr ""
 msgid "Complement"
 msgstr ""
 
-#: ../stoqlib/domain/uiform.py:93 ../stoqlib/gui/editors/addresseditor.py:273
-#: ../stoqlib/gui/editors/addresseditor.py:310
+#: ../stoqlib/domain/uiform.py:93 ../stoqlib/gui/editors/addresseditor.py:286
+#: ../stoqlib/gui/editors/addresseditor.py:323
 msgid "City"
 msgstr ""
 
-#: ../stoqlib/domain/uiform.py:94 ../stoqlib/gui/editors/addresseditor.py:275
-#: ../stoqlib/gui/editors/addresseditor.py:312 ../stoqlib/l10n/br/br.py:73
+#: ../stoqlib/domain/uiform.py:94 ../stoqlib/gui/editors/addresseditor.py:288
+#: ../stoqlib/gui/editors/addresseditor.py:325 ../stoqlib/l10n/br/br.py:73
 #: ../stoqlib/l10n/generic/generic.py:55
 msgid "State"
 msgstr ""
@@ -8234,15 +8225,15 @@ msgstr ""
 msgid "Sellable Image Viewer"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/sellablepricedialog.py:112
+#: ../stoqlib/gui/dialogs/sellablepricedialog.py:110
 msgid "Price Change Dialog"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/sellablepricedialog.py:155
+#: ../stoqlib/gui/dialogs/sellablepricedialog.py:153
 msgid "Default Price"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/sellablepricedialog.py:190
+#: ../stoqlib/gui/dialogs/sellablepricedialog.py:188
 msgid "Updating items"
 msgstr ""
 
@@ -8375,9 +8366,9 @@ msgid "This bank does not support printing of bills"
 msgstr ""
 
 #: ../stoqlib/gui/editors/accounteditor.py:358
-#: ../stoqlib/gui/editors/addresseditor.py:228
-#: ../stoqlib/gui/editors/addresseditor.py:271
-#: ../stoqlib/gui/editors/addresseditor.py:308
+#: ../stoqlib/gui/editors/addresseditor.py:241
+#: ../stoqlib/gui/editors/addresseditor.py:284
+#: ../stoqlib/gui/editors/addresseditor.py:321
 #: ../stoqlib/gui/search/deliverysearch.py:74
 msgid "Address"
 msgstr ""
@@ -8411,20 +8402,20 @@ msgstr ""
 msgid "Value must be greater than zero"
 msgstr ""
 
-#: ../stoqlib/gui/editors/addresseditor.py:210
+#: ../stoqlib/gui/editors/addresseditor.py:222
 #, python-format
 msgid "%s is not valid"
 msgstr ""
 
-#: ../stoqlib/gui/editors/addresseditor.py:215
+#: ../stoqlib/gui/editors/addresseditor.py:227
 msgid "Number cannot be zero or less than zero"
 msgstr ""
 
-#: ../stoqlib/gui/editors/addresseditor.py:267
+#: ../stoqlib/gui/editors/addresseditor.py:280
 msgid "Additional Addresses"
 msgstr ""
 
-#: ../stoqlib/gui/editors/addresseditor.py:304
+#: ../stoqlib/gui/editors/addresseditor.py:317
 msgid "Select an address"
 msgstr ""
 
@@ -9807,40 +9798,40 @@ msgstr ""
 msgid "%s plugin"
 msgstr ""
 
-#: ../stoqlib/gui/login.py:123
+#: ../stoqlib/gui/login.py:127
 msgid " Authenticating user..."
 msgstr ""
 
-#: ../stoqlib/gui/login.py:152 ../stoqlib/gui/login.py:158
+#: ../stoqlib/gui/login.py:156 ../stoqlib/gui/login.py:162
 msgid "Invalid user or password"
 msgstr ""
 
-#: ../stoqlib/gui/login.py:155
+#: ../stoqlib/gui/login.py:159
 msgid "This user is inactive"
 msgstr ""
 
-#: ../stoqlib/gui/login.py:163
+#: ../stoqlib/gui/login.py:167
 #, python-format
 msgid "User '%s' has no profile set, but this should not happen."
 msgstr ""
 
-#: ../stoqlib/gui/login.py:165
+#: ../stoqlib/gui/login.py:169
 msgid "Please contact your system administrator or Stoq team."
 msgstr ""
 
-#: ../stoqlib/gui/login.py:167
+#: ../stoqlib/gui/login.py:171
 msgid "User does not have a profile"
 msgstr ""
 
-#: ../stoqlib/gui/login.py:213
+#: ../stoqlib/gui/login.py:233
 msgid "Stoq - Access Control"
 msgstr ""
 
-#: ../stoqlib/gui/login.py:231
+#: ../stoqlib/gui/login.py:251
 msgid "specify an username"
 msgstr ""
 
-#: ../stoqlib/gui/login.py:263
+#: ../stoqlib/gui/login.py:283
 msgid "Depleted attempts of authentication"
 msgstr ""
 
