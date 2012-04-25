@@ -47,7 +47,7 @@ class CallsSearch(SearchEditor):
     """This search can be used directly, to show calls to any kind of person in
     the system.
 
-    Subclasses can also override I{person_interface} to set the person type that
+    Subclasses can also override I{person_type} to set the person type that
     will be available when creating a new call, and I{person_name}, that will be
     the column title in this search.
     """
@@ -55,7 +55,7 @@ class CallsSearch(SearchEditor):
     search_table = CallsView
     editor_class = CallsEditor
     searching_by_date = True
-    person_interface = None
+    person_type = None
     person_name = _('Person')
     size = (700, 450)
 
@@ -148,14 +148,14 @@ class CallsSearch(SearchEditor):
             self.conn.savepoint('before_run_editor_calls')
             retval = run_dialog(self.editor_class, self, self.conn,
                                 self.conn.get(obj), self.person,
-                                self.person_interface)
+                                self.person_type)
             if not retval:
                 self.conn.rollback_to_savepoint('before_run_editor_calls')
         else:
             trans = api.new_transaction()
             retval = run_dialog(self.editor_class, self, trans,
                                 trans.get(obj), self.person,
-                                self.person_interface)
+                                self.person_type)
             api.finish_transaction(trans, retval)
             trans.close()
         return retval
