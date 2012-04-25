@@ -83,7 +83,7 @@ class CallsEditor(BaseEditor):
 
     def _fill_attendant_combo(self):
         login_users = LoginUser.select(connection=self.conn)
-        self.attendant.prefill(login_users)
+        self.attendant.prefill(api.for_combo(login_users))
 
     def on_details_button__clicked(self, button):
         from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
