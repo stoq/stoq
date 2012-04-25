@@ -145,12 +145,12 @@ class CallsSearch(SearchEditor):
 
     def run_editor(self, obj):
         if self._reuse_transaction:
-            self.conn.savepoint('before_run_editor')
+            self.conn.savepoint('before_run_editor_calls')
             retval = run_dialog(self.editor_class, self, self.conn,
                                 self.conn.get(obj), self.person,
                                 self.person_interface)
             if not retval:
-                self.conn.rollback_to_savepoint('before_run_editor')
+                self.conn.rollback_to_savepoint('before_run_editor_calls')
         else:
             trans = api.new_transaction()
             retval = run_dialog(self.editor_class, self, trans,

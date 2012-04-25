@@ -292,11 +292,11 @@ class AddressAdditionDialog(ModelListDialog):
             connection=self.trans)
 
     def run_editor(self, trans, model):
-        trans.savepoint('before_run_editor')
+        trans.savepoint('before_run_editor_address')
         retval = self.run_dialog(AddressEditor, conn=trans,
                                   person=self.person, address=model)
         if not retval:
-            trans.rollback_to_savepoint('before_run_editor')
+            trans.rollback_to_savepoint('before_run_editor_address')
         return retval
 
 

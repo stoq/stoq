@@ -212,10 +212,10 @@ class ProductionDetailsDialog(BaseEditor):
     #
 
     def _run_editor(self, editor_class, item):
-        self.conn.savepoint('before_run_editor')
+        self.conn.savepoint('before_run_editor_production')
         retval = run_dialog(editor_class, self, self.conn, item)
         if not retval:
-            self.conn.rollback_to_savepoint('before_run_editor')
+            self.conn.rollback_to_savepoint('before_run_editor_production')
         else:
             self.conn.commit()
             self._setup_data()

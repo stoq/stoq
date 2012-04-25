@@ -72,10 +72,10 @@ class ModelListSlave(ListSlave):
 
     def _prepare_run_editor(self, item):
         if self._reuse_transaction:
-            self._reuse_transaction.savepoint('before_run_editor')
+            self._reuse_transaction.savepoint('before_run_editor_list')
             retval = self.run_editor(self._reuse_transaction, item)
             if not retval:
-                self._reuse_transaction.rollback_to_savepoint('before_run_editor')
+                self._reuse_transaction.rollback_to_savepoint('before_run_editor_list')
         else:
             # 1) Create a new transaction
             # 2) Fetch the model from that transactions POW
@@ -384,11 +384,11 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
                 "%s cannot create or edit items without the editor_class "
                 "argument set" % (self.__class__.__name__))
 
-        self.conn.savepoint('before_run_editor')
+        self.conn.savepoint('before_run_editor_addition')
         retval = run_dialog(self._editor_class, None, conn=self.conn,
                           model=model, **self._editor_kwargs)
         if not retval:
-            self.conn.rollback_to_savepoint('before_run_editor')
+            self.conn.rollback_to_savepoint('before_run_editor_addition')
         return retval
 
     def delete_model(self, model):
