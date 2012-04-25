@@ -214,7 +214,7 @@ class Delivery(Domain):
     """Delivery implementation
 
     :cvar STATUS_INITIAL: The delivery was created
-    :cvar STATUS_DELIVERING: The delivery was sent to delivery
+    :cvar STATUS_SENT: The delivery was sent to deliver
     :cvar STATUS_RECEIVED: The delivery was received by the client
 
     :attribute status: the delivery status
@@ -233,11 +233,11 @@ class Delivery(Domain):
     implements(IContainer)
 
     (STATUS_INITIAL,
-     STATUS_DELIVERING,
+     STATUS_SENT,
      STATUS_RECEIVED) = range(3)
 
-    statuses = {STATUS_INITIAL: _("Waiting for deliver"),
-                STATUS_DELIVERING: _("Delivering"),
+    statuses = {STATUS_INITIAL: _("Waiting"),
+                STATUS_SENT: _("Sent"),
                 STATUS_RECEIVED: _("Received")}
 
     status = IntCol(default=STATUS_INITIAL)
@@ -279,8 +279,8 @@ class Delivery(Domain):
     def set_initial(self):
         self._set_delivery_status(self.STATUS_INITIAL)
 
-    def set_delivering(self):
-        self._set_delivery_status(self.STATUS_DELIVERING)
+    def set_sent(self):
+        self._set_delivery_status(self.STATUS_SENT)
 
     def set_received(self):
         self._set_delivery_status(self.STATUS_RECEIVED)
