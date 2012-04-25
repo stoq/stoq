@@ -39,7 +39,7 @@ from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
                                    GerencialReportPrintEvent,
                                    GerencialReportCancelEvent,
                                    CancelPendingPaymentsEvent,
-                                   HasPendingReduceZ)
+                                   HasPendingReduceZ, CheckECFStateEvent)
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
@@ -278,6 +278,9 @@ class FiscalPrinterHelper(gobject.GObject):
             return self.close_till(close_db, close_ecf)
 
         return False
+
+    def check_ecf_state(self):
+        CheckECFStateEvent.emit()
 
     def check_till(self):
         try:
