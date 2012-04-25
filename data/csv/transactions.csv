@@ -1,0 +1,19 @@
+% source parent, source account, dest parent, dest account, date, code, description, value
+,Income,Banks,Banco do Brasil,2012-01-01,010101,Saldo inicial,27378.82
+Banks,Banco do Brasil,Expenses,Aluguel,2012-01-01,010102,Aluguel Janeiro,850.00
+Banks,Banco do Brasil,Expenses,Luz,2012-01-04,010401,Luz Fevereiro,120.18
+Banks,Banco do Brasil,Expenses,Telefonia,2012-01-08,010801,Conta telefonia,79.90
+Banks,Banco do Brasil,Expenses,Telefonia,2012-01-19,011901,Conta celular,152.40
+,Income,Banks,Banco do Brasil,2012-01-23,012301,Receita Janeiro,18374.00
+Banks,Banco do Brasil,Expenses,Impostos,2012-01-27,022701,Impostos Janeiro,6843.91
+Banks,Banco do Brasil,Expenses,Salários,2012-01-28,012801,Salarío Cleusa Janeiro,945.82
+Banks,Banco do Brasil,Expenses,Salários,2012-01-28,012802,Salarío Deivis Janeiro,1012.00
+Banks,Banco do Brasil,Expenses,Salários,2012-01-28,012803,Salarío Maria Janeiro,934.94
+Banks,Banco do Brasil,Expenses,Salários,2012-01-28,012804,Salarío Osvaldo Janeiro,1800.00
+Banks,Banco do Brasil,Expenses,Aluguel,2012-02-01,020101,Aluguel Fevereiro,850.00
+Banks,Banco do Brasil,Expenses,Luz,2012-02-04,020104,Luz Fevereiro,138.48
+Banks,Banco do Brasil,Expenses,Impostos,2012-02-27,022701,Impostos Feveiro,2834.39
+Banks,Banco do Brasil,Expenses,Salários,2012-02-28,022801,Salarío Cleusa Fevereiro,945.82
+Banks,Banco do Brasil,Expenses,Salários,2012-02-28,022802,Salarío Deivis Fevereiro,802.43
+Banks,Banco do Brasil,Expenses,Salários,2012-02-28,022803,Salarío Maria Fevereiro,954.23
+Banks,Banco do Brasil,Expenses,Salários,2012-02-28,022804,Salarío Osvaldo Fevereiro,1800.00
