@@ -36,6 +36,7 @@ from stoqlib.domain.person import Person
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.lib.countries import get_countries
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -133,7 +134,6 @@ class AddressSlave(BaseEditorSlave):
     #
 
     def setup_proxies(self):
-        self.state.prefill(self.state_l10n.state_list)
         self.country.prefill(get_countries())
         if self.db_form:
             self._update_forms()
@@ -145,6 +145,7 @@ class AddressSlave(BaseEditorSlave):
                                            or not self.edit_mode)
         self._update_streetnumber()
         self.state_lbl.set_text(self.state_l10n.label + ':')
+        self._prefill_states()
 
     def can_confirm(self):
         return self.model.is_valid_model()
@@ -201,11 +202,22 @@ class AddressSlave(BaseEditorSlave):
             cities = set(c.city_name for c in plugin.get_matching_cities(city))
             self.city.prefill(list(cities))
 
+    def _prefill_states(self):
+        # FIXME: This should prefill the country states list
+        if self.model.country != sysparam(self.conn).COUNTRY_SUGGESTED:
+            self.state.prefill([])
+            return
+
+        self.state.prefill(self.state_l10n.state_list)
+
     #
     # Kiwi callbacks
     #
 
     def on_state__validate(self, entry, state):
+        if self.model.country != sysparam(self.conn).COUNTRY_SUGGESTED:
+            return
+
         if not self.state_l10n.validate(state):
             return ValidationError(_("%s is not valid") % (
                 self.state_l10n.label))
@@ -221,6 +233,7 @@ class AddressSlave(BaseEditorSlave):
         self._complete_cities()
 
     def after_country__content_changed(self, widget):
+        self._prefill_states()
         self.state.validate(force=True)
 
 
