@@ -414,7 +414,8 @@ class TillApp(SearchableAppWindow):
 
         # We dont have an ecf. Disable till related operations
         widgets = [self.TillOpen, self.TillClose, self.TillAddCash,
-                   self.TillRemoveCash, self.SearchTillHistory, self.app_vbox]
+                   self.TillRemoveCash, self.SearchTillHistory, self.app_vbox,
+                   self.Confirm, self.Return, self.Details]
         self.set_sensitive(widgets, has_ecf)
         text = _(u"Till operations requires a connected fiscal printer")
         self.till_status_label.set_text(text)
