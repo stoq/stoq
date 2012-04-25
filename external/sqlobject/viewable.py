@@ -140,6 +140,7 @@ class Viewable(object):
     sqlmeta = ViewableMeta
     columns = {}
     clause = None
+    joins = []
     hidden_columns = []
 
     def __classinit__(cls, new_attrs):

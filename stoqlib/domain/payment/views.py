@@ -399,8 +399,6 @@ class PaymentMethodView(Viewable):
         is_active=PaymentMethod.q.is_active
     )
 
-    joins = []
-
     @classmethod
     def get_by_name(cls, conn, name):
         results = cls.select(PaymentMethod.q.method_name == name,
