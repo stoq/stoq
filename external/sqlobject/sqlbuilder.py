@@ -686,6 +686,14 @@ class Select(SQLExpression):
 
             if t2 in tables: tables.remove(t2)
         if tables:
+            # Viewables fix the order of staticTables (the main table should be
+            # the last one). But creating the set above breakes that order.
+            # Convert the set back to a list, and keep the last table in place.
+            tables = list(tables)
+            main_table = self.ops['staticTables'][-1]
+            if tables[-1] != main_table:
+                tables.remove(main_table)
+                tables.append(main_table)
             select += " FROM %s" % ", ".join(tables)
         elif join:
             select += " FROM"
