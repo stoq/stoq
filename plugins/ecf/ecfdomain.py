@@ -108,7 +108,7 @@ class ECFPrinter(Domain):
             # FIXME: Looks like this is not used and/or is duplicating code from
             # ecfpriterdialog.py (_populate_constants)
             if constant == TaxType.CUSTOM:
-                constant_name = _('%0.2f %%') % value
+                constant_name = '%0.2f %%' % value
             else:
                 constant_name = describe_constant(constant)
             DeviceConstant(constant_type=DeviceConstant.TYPE_TAX,
