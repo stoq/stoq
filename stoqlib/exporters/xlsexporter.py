@@ -39,7 +39,6 @@ class XLSExporter(object):
         self._current_column = 1
         self._n_columns = -1
         self._column_styles = None
-        self._column_types = None
         self._headers = None
 
         self._wb = xlwt.Workbook(encoding='utf8')
@@ -87,8 +86,7 @@ class XLSExporter(object):
         if data is None:
             data = ''
         else:
-            column_type = self._column_types[i]
-            if column_type == datetime.datetime:
+            if isinstance(data, datetime.date):
                 data = data.strftime('%Y-%m-%d')
             elif isinstance(data, str):
                 data = unicode(data, 'utf-8')
@@ -105,7 +103,7 @@ class XLSExporter(object):
     def set_column_types(self, column_types):
         css = []
         for i, column_type in enumerate(column_types):
-            if column_type == datetime.datetime:
+            if column_type in (datetime.datetime, datetime.date):
                 style = self._style_date
             elif column_type in [int, long, float, currency]:
                 style = self._style_number
@@ -114,7 +112,6 @@ class XLSExporter(object):
             css.append(style)
 
         self._column_styles = css
-        self._column_types = column_types
         self._n_columns = len(column_types)
 
     def add_cells(self, cells):
