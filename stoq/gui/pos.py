@@ -443,7 +443,7 @@ class PosApp(AppWindow):
             text = large(_("Till closed"))
             if not blocked:
                 text += '\n\n<span size="large"><a href="open-till">%s</a></span>' % (
-                    _('Open the till'))
+                    _('Open till'))
         elif blocked:
             text = large(_("Till blocked"))
         else:
