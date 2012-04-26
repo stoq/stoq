@@ -332,7 +332,8 @@ class SaleReturnSlave(BaseEditorSlave):
             return ValidationError(_(u"Deduction value can not be greater "
                                       "then the paid value"))
         till_balance = self._till.get_balance()
-        if self._return_data.paid_total > till_balance:
+        value_to_return = self._return_data.paid_total - value
+        if value_to_return > till_balance:
             return ValidationError(_(u'You do not have this value on till.'))
 
     def after_penalty_value__changed(self, *args):
