@@ -83,7 +83,7 @@ class StartNewLoanStep(WizardEditorStep):
 
         # Responsible combo
         self.salesperson_lbl.set_text(_(u'Responsible:'))
-        self.salesperson.set_property('model-attribute', 'responsible')
+        self.salesperson.model_attribute = 'responsible'
         users = LoginUser.selectBy(is_active=True, connection=self.conn)
         self.salesperson.prefill(api.for_combo(users))
         self.salesperson.set_sensitive(False)
@@ -91,7 +91,7 @@ class StartNewLoanStep(WizardEditorStep):
         self._fill_clients_combo()
         self._fill_clients_category_combo()
 
-        self.expire_date.set_property('mandatory', True)
+        self.expire_date.mandatory = True
 
         # CFOP combo
         self.cfop_lbl.hide()
@@ -104,7 +104,7 @@ class StartNewLoanStep(WizardEditorStep):
 
         # removed_by widget
         self.removed_by = ProxyEntry(unicode)
-        self.removed_by.set_property('model-attribute', 'removed_by')
+        self.removed_by.model_attribute = 'removed_by'
         if 'removed_by' not in self.proxy_widgets:
             self.proxy_widgets.append('removed_by')
         self.removed_by.show()
@@ -121,7 +121,7 @@ class StartNewLoanStep(WizardEditorStep):
         clients = ClientView.get_active_clients(self.conn)
         clients = clients.orderBy('name')
         self.client.prefill([(c.name, c.client) for c in clients])
-        self.client.set_property('mandatory', True)
+        self.client.mandatory = True
 
     def _fill_clients_category_combo(self):
         categories = ClientCategory.select(connection=self.conn)
