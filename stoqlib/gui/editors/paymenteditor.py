@@ -67,6 +67,9 @@ class PaymentEditor(BaseEditor):
                      'description',
                      'due_date',
                      ]
+    # FIXME: Person should really be a proxy_widget attribute,
+    # but it breaks when displaying an existing payment
+
     confirm_widgets = ['due_date']
 
     model_type = Payment
