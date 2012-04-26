@@ -154,8 +154,6 @@ class PostgresConnection(DBAPI):
         return conn
 
     def _executeRetry(self, conn, cursor, query):
-        if self.debug:
-            self.printDebug(conn, query, 'QueryR')
         try:
             return cursor.execute(query)
         except self.module.OperationalError, e:

@@ -204,6 +204,7 @@ class Viewable(object):
                 # but first make a copy of the column.
                 col = copy.copy(col)
                 col.origName = name
+                col.name = name
 
         if not col:
             col = DynamicViewColumn(cls, name)
