@@ -25,8 +25,6 @@
 import gobject
 import gtk
 
-from kiwi.utils import gsignal
-
 try:
     from aptdaemon.client import AptClient
     from aptdaemon.enums import ERROR_UNKNOWN
@@ -38,15 +36,19 @@ except ImportError:
 
 
 class AptPackageInstaller(gobject.GObject):
-    gsignal('done', object)
-    gsignal('auth-failed')
+    # This avoids kiwi dependency since this is used early on.
+    __gsignals__ = {
+        'auth-failed': (gobject.SIGNAL_RUN_LAST, None, ()),
+        'done': (gobject.SIGNAL_RUN_LAST, None, (object,)),
+        }
+
 
     def __init__(self, parent=None):
         gobject.GObject.__init__(self)
         self.client = AptClient()
         self.parent = parent
 
-    def install(self, package):
+    def install(self, *packages):
         def reply(transaction):
             transaction.connect("finished", self._on_transaction__finished)
             self._transaction = transaction
@@ -57,12 +59,11 @@ class AptPackageInstaller(gobject.GObject):
                     break
             else:
                 self._install()
-        self.client.install_packages([package],
+        self.client.install_packages(list(packages),
                                      reply_handler=reply,
                                      error_handler=self._error_handler)
 
     def _on_transaction__finished(self, transaction, exitcode):
-        print transaction, exitcode
         if exitcode not in [0, 'exit-success']:
             error = exitcode
         else:
