@@ -107,7 +107,6 @@
           <object class="ProxyComboEntry" id="person">
             <property name="visible">True</property>
             <property name="data_type">object</property>
-            <property name="mandatory">True</property>
             <property name="model_attribute">person</property>
           </object>
           <packing>
