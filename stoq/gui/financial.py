@@ -286,7 +286,7 @@ class TransactionPage(object):
             account_transaction = trans.get(item.transaction)
         model = getattr(self.model, 'account', self.model)
 
-        transaction = run_dialog(AccountTransactionEditor, self,
+        transaction = run_dialog(AccountTransactionEditor, self.app,
                                  trans, account_transaction, model)
 
         if transaction:
@@ -310,7 +310,7 @@ class TransactionPage(object):
         model = getattr(self.model, 'account', self.model)
         model = trans.get(model)
 
-        transaction = run_dialog(AccountTransactionEditor, self,
+        transaction = run_dialog(AccountTransactionEditor, self.app,
                                  trans, None, model)
         if transaction:
             transaction.sync()
@@ -590,7 +590,7 @@ class FinancialApp(AppWindow):
         gnucash_filter.add_mime_type('application/x-gzip')
         ffilters.append(gnucash_filter)
 
-        filename, file_chooser = open_dialog("Import", parent=self.financial,
+        filename, file_chooser = open_dialog("Import", parent=self.get_toplevel(),
                                              filter=ffilters, with_file_chooser=True)
         if filename is None:
             file_chooser.destroy()
@@ -610,7 +610,7 @@ class FinancialApp(AppWindow):
 
         file_chooser.destroy()
 
-        run_dialog(ImporterDialog, self.financial, format, filename)
+        run_dialog(ImporterDialog, self, format, filename)
 
         # Refresh everthing after an import
         self.accounts.refresh_accounts(self.conn)
