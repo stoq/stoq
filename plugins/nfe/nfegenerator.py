@@ -905,40 +905,43 @@ class NFeICMS(BaseNFeXMLGroup):
 
 
 class BaseNFeICMS(BaseNFeXMLGroup):
+    # (name, precision)
     INFO_NAME_MAP = {
-        'orig': 'orig',
-        'CST': 'cst',
-        'modBC': 'mod_bc',
-        'modBCST': 'mod_bc_st',
+        'orig': ('orig', None),
+        'CST': ('cst', None),
+        'modBC': ('mod_bc', None),
+        'modBCST': ('mod_bc_st', None),
 
-        'vBC': 'v_bc',
-        'vBCST': 'v_bc_st',
-        'vICMS': 'v_icms',
-        'vICMSST': 'v_icms_st',
+        'vBC': ('v_bc', 2),
+        'vBCST': ('v_bc_st', 2),
+        'vICMS': ('v_icms', 2),
+        'vICMSST': ('v_icms_st', 2),
 
-        'pICMS': 'p_icms',
-        'pMVAST': 'p_mva_st',
-        'pRedBC': 'p_red_bc',
-        'pRedBCST': 'p_red_bc_st',
-        'pICMSST': 'p_icms_st',
+        'pICMS': ('p_icms', 2),
+        'pMVAST': ('p_mva_st', 2),
+        'pRedBC': ('p_red_bc', 2),
+        'pRedBCST': ('p_red_bc_st', 2),
+        'pICMSST': ('p_icms_st', 2),
 
         # Simples Nacional
-        'CSOSN': 'csosn',
-        'pCredSN': 'p_cred_sn',
-        'vCredICMSSN': 'v_cred_icms_sn',
-        'vBCSTRet': 'v_bc_st_ret',
-        'vICMSSTRet': 'v_icms_st_ret',
+        'CSOSN': ('csosn', 0),
+        'pCredSN': ('p_cred_sn', 2),
+        'vCredICMSSN': ('v_cred_icms_sn', 2),
+        'vBCSTRet': ('v_bc_st_ret', 2),
+        'vICMSSTRet': ('v_icms_st_ret', 2),
     }
 
     def __init__(self, sale_icms_info):
         BaseNFeXMLGroup.__init__(self)
 
         for (name, default) in self.attributes:
-            info_name = self.INFO_NAME_MAP.get(name)
+            info_name, precision = self.INFO_NAME_MAP.get(name)
             if not info_name:
                 continue
 
             value = getattr(sale_icms_info, info_name, '')
+            if precision is not None:
+                value = self.format_value(value, precision)
             if value is None:
                 value = ''
             self.set_attr(name, value)
