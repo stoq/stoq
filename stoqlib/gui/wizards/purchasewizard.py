@@ -44,6 +44,7 @@ from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.domain.sellable import Sellable
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
 from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
@@ -597,3 +598,13 @@ class PurchaseWizard(BaseWizard):
             self.receiving_model.confirm()
 
         self.close()
+
+
+def test():
+    creator = api.prepare_test()
+    retval = run_dialog(PurchaseWizard, None, creator.trans)
+    api.finish_transaction(creator.trans, retval)
+
+
+if __name__ == '__main__':
+    test()
