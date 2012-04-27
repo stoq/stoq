@@ -47,7 +47,7 @@ PRIVACY_STRING = _(
 
 
 class Shell(object):
-    def __init__(self, options):
+    def __init__(self, options, initial=True):
         global _shell
         _shell = self
         self._application_cache = {}
@@ -56,6 +56,7 @@ class Shell(object):
         self._current_app = None
         self._cur_exit_func = None
         self._hidden_apps = []
+        self._initial = initial
         self._login = None
         self._log_filename = None
         self._options = options
@@ -64,7 +65,7 @@ class Shell(object):
         self._stream = None
         self._user = None
 
-    def _bootstrap(self):
+    def bootstrap(self):
         self._setup_gobject()
         self._set_uptime()
         # Do this as soon as possible, before we attempt to use the
@@ -147,6 +148,8 @@ class Shell(object):
         show_splash()
 
     def _setup_gobject(self):
+        if not self._initial:
+            return
         assert not 'gobject' in sys.modules
         assert not 'gtk' in sys.modules
 
@@ -201,7 +204,12 @@ class Shell(object):
         # FIXME: figure out why twisted is already loaded
         #assert not 'twisted' in sys.modules
         from stoqlib.net import gtk2reactor
-        gtk2reactor.install()
+        from twisted.internet.error import ReactorAlreadyInstalledError
+        try:
+            gtk2reactor.install()
+        except ReactorAlreadyInstalledError:
+            if self._initial:
+                raise
 
     def _check_version_policy(self):
         # No need to bother version checking when not running in developer mode
@@ -743,7 +751,7 @@ class Shell(object):
         return app
 
     def main(self, appname):
-        self._bootstrap()
+        self.bootstrap()
         self.run(appname=appname)
 
         from twisted.internet import reactor

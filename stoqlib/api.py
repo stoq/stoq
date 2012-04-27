@@ -178,8 +178,13 @@ class StoqAPI(object):
         @returns: a :class:`ExampleCreator
         """
         # FIXME: We need to move this into stoqlib
-        from stoq.lib.startup import setup
-        setup()
+        from stoq.gui.shell import Shell
+        from stoq.lib.options import get_option_parser
+        parser = get_option_parser()
+        options = parser.parse_args([])[0]
+        options.wizard = False
+        shell = Shell(options, initial=False)
+        shell.bootstrap()
 
         from stoqlib.domain.exampledata import ExampleCreator
         ec = ExampleCreator()
