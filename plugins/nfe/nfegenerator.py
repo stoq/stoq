@@ -223,15 +223,17 @@ class NFeGenerator(object):
         person = recipient.person
         name = person.name
         individual = person.individual
+        email = person.email
         if individual is not None:
             cpf = ''.join([c for c in individual.cpf if c in '1234567890'])
-            self._nfe_recipient = NFeRecipient(name, cpf=cpf)
+            self._nfe_recipient = NFeRecipient(name, cpf=cpf, email=email)
         else:
             cnpj = self._get_cnpj(recipient)
             company = person.company
             state_registry = company.state_registry
             self._nfe_recipient = NFeRecipient(name, cnpj=cnpj,
-                                               state_registry=state_registry)
+                                               state_registry=state_registry,
+                                               email=email)
 
         self._nfe_recipient.set_address(*self._get_address_data(person))
         self._nfe_data.append(self._nfe_recipient)
@@ -706,12 +708,20 @@ class NFeRecipient(NFeIssuer):
     doc_cnpj_tag = 'E02'
     doc_cpf_tag = 'E03'
 
+    def __init__(self, name, cpf=None, cnpj=None, state_registry=None,
+                 email=None):
+        NFeIssuer.__init__(self, name=name, cpf=cpf, cnpj=cnpj,
+                           state_registry=state_registry)
+        if email is not None:
+            self.set_attr('email', email)
+
     def as_txt(self):
         if self.get_attr('CNPJ'):
             ie = self._ie or 'ISENTO'
         else:
             ie = ''
-        base = '%s|%s|%s||\n' % (self.txttag, self.get_attr('xNome'), ie)
+        base = '%s|%s|%s||%s\n' % (self.txttag, self.get_attr('xNome'), ie,
+                                   self.get_attr('email'))
         return base + self.get_doc_txt() + self._address.as_txt()
 
 # Pg. 102
