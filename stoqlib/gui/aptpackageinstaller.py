@@ -42,7 +42,6 @@ class AptPackageInstaller(gobject.GObject):
         'done': (gobject.SIGNAL_RUN_LAST, None, (object,)),
         }
 
-
     def __init__(self, parent=None):
         gobject.GObject.__init__(self)
         self.client = AptClient()
