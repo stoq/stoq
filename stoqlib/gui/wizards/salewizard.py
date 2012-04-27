@@ -612,3 +612,25 @@ class ConfirmSaleWizard(BaseWizard):
             else:
                 break
         self.close()
+
+
+def _provide_domain_slave_mapper():
+    from kiwi.component import provide_utility
+    from stoqlib.gui.interfaces import IDomainSlaveMapper
+    from stoqlib.gui.domainslavemapper import DefaultDomainSlaveMapper
+    provide_utility(IDomainSlaveMapper, DefaultDomainSlaveMapper(),
+                    replace=True)
+
+
+def test():
+    creator = api.prepare_test()
+    _provide_domain_slave_mapper()
+
+    sale_item = creator.create_sale_item()
+    retval = run_dialog(ConfirmSaleWizard, None, creator.trans,
+                        sale_item.sale)
+    api.finish_transaction(creator.trans, retval)
+
+
+if __name__ == '__main__':
+    test()
