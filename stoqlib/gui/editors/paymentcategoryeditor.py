@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2008-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,9 @@ import random
 
 from kiwi.datatypes import ValidationError
 
+from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -108,3 +110,13 @@ class PaymentCategoryEditor(BaseEditor):
         if self.model.check_unique_value_exists('name', new_name):
             return ValidationError(
                 _(u"The payment category '%s' already exists.") % new_name)
+
+
+def test():
+    creator = api.prepare_test()
+    retval = run_dialog(PaymentCategoryEditor, None, creator.trans, None)
+    api.finish_transaction(creator.trans, retval)
+
+
+if __name__ == '__main__':
+    test()

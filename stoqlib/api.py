@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011 Async Open Source
+## Copyright (C) 2011-2012 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -170,5 +170,21 @@ class StoqAPI(object):
         if empty is not None:
             items.insert(0, (empty, None))
         return items
+
+    def prepare_test(self):
+        """Prepares to run a standalone test.
+        This initializes Stoq and creates a transaction and returns
+        an example creator.
+        @returns: a :class:`ExampleCreator
+        """
+        # FIXME: We need to move this into stoqlib
+        from stoq.lib.startup import setup
+        setup()
+
+        from stoqlib.domain.exampledata import ExampleCreator
+        ec = ExampleCreator()
+        trans = self.new_transaction()
+        ec.set_transaction(trans)
+        return ec
 
 api = StoqAPI()

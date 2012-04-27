@@ -108,3 +108,14 @@ class MoneyPaymentMethodEditor(PaymentMethodEditor):
     def __init__(self, conn, model):
         PaymentMethodEditor.__init__(self, conn, model)
         self.slave_holder.hide()
+
+
+def test():
+    creator = api.prepare_test()
+    money = PaymentMethod.get_by_name(creator.trans, 'bill')
+    retval = run_dialog(PaymentMethodEditor, None, creator.trans, money)
+    api.finish_transaction(creator.trans, retval)
+
+
+if __name__ == '__main__':
+    test()

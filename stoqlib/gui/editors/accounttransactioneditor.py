@@ -25,8 +25,7 @@
 import datetime
 
 import gtk
-from kiwi.currency import currency
-from kiwi.datatypes import ValidationError
+from kiwi.datatypes import currency, ValidationError
 from kiwi.python import Settable
 from kiwi.utils import gsignal
 
@@ -195,3 +194,15 @@ class AccountTransactionEditor(BaseEditor):
             self.account.select(account)
             self.emit('account-added')
         trans.close()
+
+
+def test():
+    creator = api.prepare_test()
+    account = creator.create_account()
+    retval = run_dialog(AccountTransactionEditor, None, creator.trans,
+                        None, account)
+    api.finish_transaction(creator.trans, retval)
+
+
+if __name__ == '__main__':
+    test()
