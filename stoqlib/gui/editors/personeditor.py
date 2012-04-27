@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -27,6 +27,7 @@ import datetime
 
 from kiwi.datatypes import ValidationError
 
+from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.simpleeditor import SimpleEntryEditor
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
@@ -334,3 +335,14 @@ class BranchEditor(BasePersonRoleEditor):
         self.status_slave = BranchDetailsSlave(self.conn, self.model,
                                                visual_mode=self.visual_mode)
         self.main_slave.attach_person_slave(self.status_slave)
+
+
+def test():
+    from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+    creator = api.prepare_test()
+    retval = run_person_role_dialog(ClientEditor, None, creator.trans, None)
+    api.finish_transaction(creator.trans, retval)
+
+
+if __name__ == '__main__':
+    test()

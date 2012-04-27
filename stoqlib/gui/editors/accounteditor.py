@@ -29,10 +29,12 @@ from kiwi.datatypes import  ValidationError
 from kiwi.ui.widgets.combo import ProxyComboBox
 from kiwi.ui.widgets.entry import ProxyEntry
 
+from stoqlib.api import api
 from stoqlib.domain.account import (Account, BankAccount,
                                     BillOption)
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.gui.accounttree import AccountTree
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.boleto import (get_all_banks,
@@ -418,3 +420,14 @@ class AccountEditor(BaseEditor):
 
     def _on_test_button__clicked(self, button):
         self._print_test_bill()
+
+
+def test():
+    creator = api.prepare_test()
+    retval = run_dialog(AccountEditor, None, creator.trans, None,
+                        parent_account=None)
+    api.finish_transaction(creator.trans, retval)
+
+
+if __name__ == '__main__':
+    test()
