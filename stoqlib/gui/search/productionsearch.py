@@ -34,7 +34,8 @@ from kiwi.ui.search import ComboSearchFilter
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import ProductComponent
 from stoqlib.domain.production import ProductionOrder
-from stoqlib.domain.views import ProductComponentView, ProductionItemView
+from stoqlib.domain.views import (ProductComponentWithClosedView,
+                                  ProductionItemView)
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.editors.producteditor import ProductionProductEditor
 from stoqlib.gui.printing import print_report
@@ -49,14 +50,15 @@ _ = stoqlib_gettext
 class ProductionProductSearch(ProductSearch):
     title = _(u'Production Product')
     table = ProductComponent
-    search_table = ProductComponentView
+    search_table = ProductComponentWithClosedView
     editor_class = ProductionProductEditor
 
     def executer_query(self, query, having, conn):
         branch = self.branch_filter.get_state().value
         if branch is not None:
             branch = Branch.get(branch, connection=conn)
-        return ProductComponentView.select_by_branch(query, branch, connection=conn)
+        return self.search_table.select_by_branch(query, branch,
+                                                  connection=conn)
 
     #
     # SearchEditor Hooks

@@ -177,6 +177,7 @@ class ProductClosedStockView(ProductFullWithClosedStockView):
 
 
 class ProductComponentView(ProductFullStockView):
+    """Stores information about production products"""
 
     joins = ProductFullStockView.joins[:]
     joins.extend([
@@ -184,9 +185,11 @@ class ProductComponentView(ProductFullStockView):
                     ProductComponent.q.productID == Product.q.id),
         ])
 
-    @property
-    def sellable(self):
-        return Sellable.get(self.id, connection=self.get_connection())
+
+class ProductComponentWithClosedView(ProductComponentView):
+    """Stores information about production products, including closed ones"""
+
+    clause = None
 
 
 class ProductWithStockView(ProductFullStockView):
