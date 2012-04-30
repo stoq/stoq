@@ -24,10 +24,11 @@
 
 import datetime
 import os
-from serial import SerialException
 import time
 
 import gtk
+from serial import SerialException
+
 from kiwi.log import Logger
 from kiwi.python import Settable
 from stoqdrivers.exceptions import CouponOpenError, DriverError
