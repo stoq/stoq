@@ -30,9 +30,9 @@ from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
 from zope.interface import implements
 
-from stoqlib import library
 from stoqlib.database.runtime import get_connection, new_transaction
 from stoqlib.domain.plugin import InstalledPlugin
+from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.interfaces import IPlugin, IPluginManager
 
 log = Logger('stoq.pluginmanager')

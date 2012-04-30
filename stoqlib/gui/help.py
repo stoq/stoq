@@ -28,7 +28,7 @@ import os
 import gobject
 import gtk
 
-import stoqlib
+from stoqlib.lib.kiwilibrary import library
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.gui.openbrowser import open_browser
 
@@ -38,8 +38,8 @@ def show_contents(screen=None):
 
 
 def show_section(section, screen=None):
-    if stoqlib.library.uninstalled:
-        root = stoqlib.library.get_root()
+    if library.uninstalled:
+        root = library.get_root()
         uri = os.path.join(root, 'help', 'pt_BR')
         if section != '':
             uri += '/' + section + '.page'
