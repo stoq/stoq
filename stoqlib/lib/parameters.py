@@ -32,18 +32,18 @@ from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
 from stoqdrivers.enum import TaxType
 
-import stoqlib
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.l10n.l10n import get_l10n_field
+from stoqlib.lib.barcode import BarcodeInfo
+from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import (validate_int,
                                     validate_decimal,
                                     validate_directory,
                                     validate_area_code,
                                     validate_percentage)
-from stoqlib.lib.barcode import BarcodeInfo
 
 _ = stoqlib_gettext
 log = Logger('stoqlib.parameters')
@@ -908,4 +908,4 @@ def ensure_system_parameters(update=False):
 def is_developer_mode():
     if os.environ.get('STOQ_DEVELOPER_MODE') == '0':
         return
-    return stoqlib.library.uninstalled
+    return library.uninstalled

@@ -59,7 +59,6 @@ from kiwi.python import Settable
 from kiwi.ui.dialogs import info
 from kiwi.ui.delegates import GladeSlaveDelegate
 
-from stoqlib import library
 from stoqlib.api import api
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.admin import (USER_ADMIN_DEFAULT_NAME, ensure_admin_user,
@@ -78,10 +77,11 @@ from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.processview import ProcessView
 from stoqlib.lib.configparser import StoqConfig
+from stoqlib.lib.formatters import raw_phone_number
+from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.osutils import read_registry_key
 from stoqlib.lib.validators import validate_email
-from stoqlib.lib.formatters import raw_phone_number
 from stoqlib.lib.webservice import WebService
 from twisted.internet import reactor
 
