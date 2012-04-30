@@ -24,6 +24,7 @@
 
 import datetime
 import os
+from serial import SerialException
 import time
 
 import gtk
@@ -70,7 +71,9 @@ class ECFUI(object):
         self._ui = None
         self.conn = get_connection()
         self._printer_verified = False
-        self._printer = self._create_printer()
+        # Delay printer creation until we are accessing pos or till app. Other
+        # applications should still be accessible without a printer
+        self._printer = None
 
         SaleStatusChangedEvent.connect(self._on_SaleStatusChanged)
         ECFIsLastSaleEvent.connect(self._on_ECFIsLastSale)
@@ -103,11 +106,22 @@ class ECFUI(object):
     #
 
     def _create_printer(self):
+        if self._printer:
+            return self._printer
+
         station = get_current_station(self.conn)
         printer = ECFPrinter.selectOneBy(station=station, is_active=True,
                                          connection=self.conn)
-        if printer:
-            return CouponPrinter(printer)
+        if not printer:
+            return None
+
+        try:
+            self._printer = CouponPrinter(printer)
+        except SerialException, e:
+            warning('Error opening serial port', str(e))
+        except DriverError, e:
+            warning(str(e))
+        return None
 
     def _validate_printer(self):
         if self._printer is None:
@@ -123,8 +137,10 @@ class ECFUI(object):
 
     def _add_ui_menus(self, appname, app, uimanager):
         if appname == 'pos':
+            self._create_printer()
             self._add_pos_menus(uimanager)
         elif appname == 'till':
+            self._create_printer()
             self._add_till_menus(uimanager)
         elif appname == 'admin':
             self._add_admin_menus(uimanager)
