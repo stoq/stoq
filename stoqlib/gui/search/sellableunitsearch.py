@@ -47,17 +47,14 @@ class SellableUnitSearch(SearchEditor):
     editor_class = SellableUnitEditor
     searchbar_result_strings = _("Unit"), _("Units")
 
+    def __init__(self, *args, **kwargs):
+        super(SellableUnitSearch, self).__init__(*args, **kwargs)
+
+        self.results.connect('selection-changed', self._on_selection__changed)
+
     #
     #  Private API
     #
-
-    def _update_edit_button_visibility(self):
-        selected = self.get_selection()
-
-        can_edit = bool(selected and (selected.unit_index not in
-                                      SellableUnit.SYSTEM_PRIMITIVES))
-        self.set_edit_button_sensitive(can_edit)
-        self.accept_edit_data = can_edit
 
     def _format_unit_index(self, value):
         return value in SellableUnit.SYSTEM_PRIMITIVES
@@ -65,9 +62,6 @@ class SellableUnitSearch(SearchEditor):
     #
     #  SearchDialog Hooks
     #
-
-    def update_widgets(self):
-        self._update_edit_button_visibility()
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
@@ -80,3 +74,9 @@ class SellableUnitSearch(SearchEditor):
                        width=100),
                 SearchColumn('allow_fraction', title=_('Fraction'),
                              data_type=bool)]
+
+    def _on_selection__changed(self, results, selected):
+        can_edit = bool(selected and (selected.unit_index not in
+                                      SellableUnit.SYSTEM_PRIMITIVES))
+        self.set_edit_button_sensitive(can_edit)
+        self.accept_edit_data = can_edit
