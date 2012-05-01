@@ -238,14 +238,14 @@ class ECFUI(object):
         try:
             self._validate_printer()
         except (DriverError, DeviceError):
-            warning('Não foi possível comunicar com a impressora.')
+            warning(_("It was not possible to communicate with the printer"))
             raise SystemExit
 
         self._has_open_coupon()
 
     def _has_open_coupon(self):
         if self._printer and self._printer.has_open_coupon():
-            warning('A ECF tem um cupom aberto. Ele será cancelado agora.')
+            warning(_("The ECF has an open coupon. It will be canceled now."))
             self._printer.cancel()
 
     def _open_till(self, till):
