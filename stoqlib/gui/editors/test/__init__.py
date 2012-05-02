@@ -20,7 +20,3 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
-# FIXME: This should be moved into a common testsuite setup function
-from stoqlib.library import kiwilibrary
-kiwilibrary  # pyflakes
-

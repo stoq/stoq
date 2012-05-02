@@ -27,6 +27,11 @@
 import datetime
 from decimal import Decimal
 
+# This makes sure that we can import SQLObject/formencode when running
+# from the testsuite
+from stoqlib.lib.kiwilibrary import library
+library   # pyflakes
+
 from formencode.validators import Validator
 from kiwi.datatypes import currency
 from kiwi.db.query import NumberQueryState, StringQueryState, \
