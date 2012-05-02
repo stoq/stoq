@@ -403,8 +403,11 @@ class SellableCategoryView(Viewable):
             clause=SellableCategoryView.q.id == self.parent_id)
         return category_views[0]
 
-    @cached_property(ttl=0)
     def get_suggested_markup(self):
+        return self._suggested_markup
+
+    @cached_property(ttl=0)
+    def _suggested_markup(self):
         category = self
         while category:
             # Compare to None as suggested_markup can be 0
@@ -418,7 +421,7 @@ class SellableCategoryView(Viewable):
         if self.commission is not None:
             return self.commission
 
-        source = self._get_parent_source_commission()
+        source = self._parent_source_commission
         if source:
             return source.direct_value
 
@@ -427,12 +430,12 @@ class SellableCategoryView(Viewable):
         if self.commission is not None:
             return self.installments_commission
 
-        source = self._get_parent_source_commission()
+        source = self._parent_source_commission
         if source:
             return source.installments_value
 
     @cached_property(ttl=0)
-    def _get_parent_source_commission(self):
+    def _parent_source_commission(self):
         parent = self.get_parent()
         while parent:
             source = CommissionSource.selectOneBy(
