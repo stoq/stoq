@@ -132,6 +132,7 @@ if building_egg:
     install_requires.append('stoqdrivers')
 else:
     data_files.extend([
+    ('share/applications', ['stoq.desktop']),
     ('share/doc/stoq', ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
                         'COPYING.stoqlib', 'README', 'docs/copyright']),
     ('share/gnome/help/stoq/C', listfiles('help/pt_BR', '*.page')),
@@ -142,10 +143,7 @@ else:
      listfiles('help/pt_BR/figures', '*.svg')),
     ('share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
     ('share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
-    ('$sysconfdir/stoq',  ''),
-    ])
-    templates.append(
-        ('share/applications', ['stoq.desktop']))
+    ('$sysconfdir/stoq',  '')])
 data_files += listexternal()
 
 resources = dict(
