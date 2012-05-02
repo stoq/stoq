@@ -378,7 +378,7 @@ class BaseRMLReport(object):
                 "%s.get_namespace must return a dictionary, not $r" %
                 (self.__class__.__name__, ns))
         self._complete_namespace(ns)
-        trml_data = render_template(self.template_name, ns)
+        trml_data = render_template(self.template_name, **ns)
         pdf_file = open(self.filename, 'w')
         # create the pdf file
         pdf_file.write(parseString(trml_data))
