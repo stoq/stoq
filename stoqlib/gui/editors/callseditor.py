@@ -25,7 +25,7 @@
 import datetime
 
 from stoqlib.api import api
-from stoqlib.domain.person import Calls, LoginUser
+from stoqlib.domain.person import Calls, LoginUser, Person
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
@@ -52,8 +52,9 @@ class CallsEditor(BaseEditor):
         # If person is not None, this means we already are in this person
         # details dialog. No need for this option
         if person:
-            self.details_button.set_sensitive(False)
+            self.details_button.hide()
 
+        self.details_button.set_sensitive(self.model.person is not None)
         if self.model.person:
             self.set_description(_('Call to %s') % self.model.person.name)
         else:
@@ -78,8 +79,10 @@ class CallsEditor(BaseEditor):
                                         self.model.person)])
             self.person_combo.set_sensitive(False)
         else:
-            persons = self.person_type.select(connection=self.conn)
-            self.person_combo.prefill(api.for_combo(persons))
+            # Get only persons of person_type by joining with the table
+            query = (self.person_type.q.personID == Person.q.id)
+            persons = Person.select(query, connection=self.conn)
+            self.person_combo.prefill(api.for_combo(persons, attr='name'))
 
     def _fill_attendant_combo(self):
         login_users = LoginUser.select(connection=self.conn)
@@ -90,3 +93,6 @@ class CallsEditor(BaseEditor):
         client = self.model.person.client
         if client:
             run_dialog(ClientDetailsDialog, self, self.conn, client)
+
+    def on_person_combo__changed(self, combo):
+        self.details_button.set_sensitive(combo.read() is not None)
