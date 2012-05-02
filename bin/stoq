@@ -56,6 +56,10 @@ else:
     if os.environ.get('LIBOVERLAY_SCROLLBAR') != '1':
         os.environ['LIBOVERLAY_SCROLLBAR'] = '0'
 
+    # Disable global menu for stoq, since it breakes the order and removal of
+    # our dinamic menus
+    os.environ['UBUNTU_MENUPROXY'] = '0'
+
 # We only support portuguese locale on Windows for now
 import platform
 if platform.system() == 'Windows':
