@@ -23,6 +23,11 @@
 ##
 """Database routines which are used by the testsuite"""
 
+# This needs to before the other commits, so the externals/
+# path is properly setup.
+from stoqlib.lib.kiwilibrary import library
+library  # pyflakes
+
 import os
 import pwd
 import socket
