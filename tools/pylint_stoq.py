@@ -103,7 +103,6 @@ class FakeBuilder(object):
 
         t += '    q = None\n'
         t += '    _connection = None\n'
-        t += '    def get_connection(self): pass\n'
         t += '    def selectOneBy(self, connection=None): pass\n'
 
         orm_ti = dt.orm_classes.get(orm_name)
@@ -215,6 +214,14 @@ class FakeBuilder(object):
 
 def stoq_transform(module):
     fake = FakeBuilder(module)
+    if module.name == 'hashlib':
+        nodes = fake.builder.string_build("""
+class _Internal:
+    def hexdigest(self):
+        return hash('foo')
+def md5(enc):
+    return _Internal()""")
+        module.locals = nodes.locals
     if module.name == 'stoqlib.domain.base':
         pass
     if module.name == 'stoqlib.domain.interfaces':

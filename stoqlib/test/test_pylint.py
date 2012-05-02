@@ -43,4 +43,6 @@ class TestPylint(SourceTest, unittest.TestCase):
                 "-E",
                 filename]
         p = Process(args)
-        p.wait()
+        retval = p.wait()
+        if retval:
+            raise Exception("Pylint errors")

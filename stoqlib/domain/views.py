@@ -45,6 +45,8 @@ from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      SellableTaxConstant)
 from stoqlib.domain.stockdecrease import (StockDecrease, StockDecreaseItem)
 
+from stoqlib.lib.decorators import cached_property
+
 
 class ProductFullStockView(Viewable):
     """Stores information about products.
@@ -401,16 +403,13 @@ class SellableCategoryView(Viewable):
             clause=SellableCategoryView.q.id == self.parent_id)
         return category_views[0]
 
+    @cached_property(ttl=0)
     def get_suggested_markup(self):
-        if hasattr(self, '_suggested_markup'):
-            return self._suggested_markup
-
         category = self
         while category:
             # Compare to None as suggested_markup can be 0
             if category.suggested_markup is not None:
-                self._suggested_markup = category.suggested_markup
-                return self._suggested_markup
+                return category.suggested_markup
 
             category = category.get_parent()
 
@@ -432,16 +431,13 @@ class SellableCategoryView(Viewable):
         if source:
             return source.installments_value
 
+    @cached_property(ttl=0)
     def _get_parent_source_commission(self):
-        if hasattr(self, '_source'):
-            return self._source
-
         parent = self.get_parent()
         while parent:
             source = CommissionSource.selectOneBy(
                 category=parent.category, connection=self.get_connection())
             if source:
-                self._source = source
                 return source
 
             parent = parent.get_parent()
