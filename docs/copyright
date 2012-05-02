@@ -61,6 +61,9 @@ Contains code derived from:
 * Twisted: <http://www.twistedmatrix.com/>
   License: MIT
   Files: stoqlib/net/gtk2reactor.py
+* PythonDecoratorLibrary: <http://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties>
+  License: MIT
+  Files stoqlib/lib/decorators.py
 
 Stoq pixmaps
 ============
