@@ -30,7 +30,7 @@ pylint:
 	    stoqlib/domain/payment/*.py
 
 check:
-	LC_ALL=C trial stoq stoqlib
+	LC_ALL=C LANG=C LANGUAGE=C trial stoq stoqlib
 
 include async.mk
 
