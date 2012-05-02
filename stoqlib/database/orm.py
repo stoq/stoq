@@ -375,14 +375,15 @@ class ORMObjectQueryExecuter(QueryExecuter):
         res = self.conn.queryOne(
             """SELECT 1
             FROM information_schema.columns
-            WHERE table_name = '%s' AND
-                  column_name = '%s' AND
+            WHERE table_name = %s AND
+                  column_name = %s AND
                   udt_name = 'tsvector';""" % (
-            self.conn.sqlrepr(table_name), column_name))
+            self.conn.sqlrepr(table_name),
+            self.conn.sqlrepr(column_name)))
         return bool(res)
 
     def _check_has_fulltext_index(self, table_name, field_name):
-        fullname = self.conn.sqlrepr(table_name + field_name)
+        fullname = table_name + field_name
         if fullname in self._full_text_indexes:
             return self._full_text_indexes[fullname]
         else:

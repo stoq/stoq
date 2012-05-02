@@ -350,8 +350,8 @@ registerConverter(SQLTrueClauseClass, SQLExprConverter)
 
 class Field(SQLExpression):
     def __init__(self, tableName, fieldName):
-        self.tableName = tableName
-        self.fieldName = fieldName
+        self.tableName = str(tableName)
+        self.fieldName = str(fieldName)
     def __sqlrepr__(self, db):
         return self.tableName + "." + self.fieldName
     def tablesUsedImmediate(self):
