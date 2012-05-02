@@ -68,6 +68,7 @@ for view in _get_all_views():
     func = lambda s, v=view: TestViewsGeneric._test_view(s, v)
     func.__name__ = name
     setattr(TestViewsGeneric, name, func)
+    del func
 
 
 class TestSellableFullStockView(DomainTest):
