@@ -185,17 +185,17 @@ class MagentoPlugin(object):
 
         returnValue(retval)
 
-    def _get_magento_products_by_product(self, product):
-        conn = product.get_connection()
+    def _get_magento_products_by_sellable(self, sellable):
+        conn = sellable.get_connection()
         mag_products = MagentoProduct.selectBy(connection=conn,
-                                               sellable=product.sellable)
+                                               sellable=sellable)
         return mag_products
 
+    def _get_magento_products_by_product(self, product):
+        return self._get_magento_products_by_sellable(product.sellable)
+
     def _get_magento_products_by_service(self, service):
-        conn = service.get_connection()
-        mag_products = MagentoProduct.selectBy(connection=conn,
-                                               sellable=service.sellable)
-        return mag_products
+        return self._get_magento_products_by_sellable(service.sellable)
 
     def _get_magento_categories_by_category(self, category):
         conn = category.get_connection()
@@ -210,10 +210,13 @@ class MagentoPlugin(object):
     def _on_product_create(self, product, **kwargs):
         conn = product.get_connection()
         for config in MagentoConfig.select(connection=conn):
-            # Just create the registry and it will be synchronized later.
-            MagentoProduct(connection=conn,
-                           sellable=product.sellable,
-                           config=config)
+            if not MagentoProduct.selectOneBy(connection=conn,
+                                              sellable=product.sellable,
+                                              config=config):
+                # Just create the registry and it will be synchronized later.
+                MagentoProduct(connection=conn,
+                               sellable=product.sellable,
+                               config=config)
 
     def _on_product_update(self, product, **kwargs):
         for mag_product in self._get_magento_products_by_product(product):
@@ -238,10 +241,13 @@ class MagentoPlugin(object):
     def _on_service_create(self, service, **kwargs):
         conn = service.get_connection()
         for config in MagentoConfig.select(connection=conn):
-            # Just create the registry and it will be synchronized later.
-            MagentoProduct(connection=conn,
-                           sellable=service.sellable,
-                           config=config)
+            if not MagentoProduct.selectOneBy(connection=conn,
+                                              sellable=service.sellable,
+                                              config=config):
+                # Just create the registry and it will be synchronized later.
+                MagentoProduct(connection=conn,
+                               sellable=service.sellable,
+                               config=config)
 
     def _on_service_update(self, service, **kwargs):
         for mag_product in self._get_magento_products_by_service(service):
@@ -264,8 +270,7 @@ class MagentoPlugin(object):
         sellable = Sellable.selectOneBy(connection=conn,
                                         image=image)
         if sellable:
-            product = sellable.product
-            for mag_product in self._get_magento_products_by_product(product):
+            for mag_product in self._get_magento_products_by_sellable(sellable):
                 for mag_image in mag_product.magento_images:
                     if mag_image.is_main:
                         # If it already have a main image, just update it.
@@ -297,10 +302,13 @@ class MagentoPlugin(object):
     def _on_category_create(self, category, **kwargs):
         conn = category.get_connection()
         for config in MagentoConfig.select(connection=conn):
-            # Just create the registry and it will be synchronized later.
-            MagentoCategory(connection=conn,
-                            category=category,
-                            config=config)
+            if not MagentoCategory.selectOneBy(connection=conn,
+                                               category=category,
+                                               config=config):
+                # Just create the registry and it will be synchronized later.
+                MagentoCategory(connection=conn,
+                                category=category,
+                                config=config)
 
     def _on_category_update(self, category, **kwargs):
         for mag_category in self._get_magento_categories_by_category(category):
