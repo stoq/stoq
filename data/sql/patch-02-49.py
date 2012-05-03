@@ -1,5 +1,6 @@
 from stoqlib.domain.uiform import create_default_forms
 
+
 def apply_patch(trans):
     trans.query("""
 CREATE TABLE ui_form (

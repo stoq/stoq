@@ -6,6 +6,7 @@ from stoqlib.database.orm import IntCol, PriceCol
 
 from stoqlib.domain.payment.method import CreditCardData
 
+
 def apply_patch(trans):
     # Patch 2-24 introduces these ones
     try:

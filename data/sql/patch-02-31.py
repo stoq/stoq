@@ -5,7 +5,6 @@
 # Changes for bug #4421
 #
 
-from stoqlib.domain.parameter import ParameterData
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.product import Product
@@ -13,8 +12,8 @@ from stoqlib.lib.parameters import sysparam
 
 Product # pyflakes
 
-def apply_patch(trans):
 
+def apply_patch(trans):
     param_name = 'DELIVERY_SERVICE'
 
     # Get the param as a Sellable to get it's service

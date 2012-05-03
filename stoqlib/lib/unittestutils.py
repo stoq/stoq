@@ -31,12 +31,14 @@ from stoqlib.lib.osutils import list_recursively
 
 
 def get_stoq_sources(root):
-    for dirpath in ['stoq', 'stoqlib', 'plugins']:
+    for dirpath in ['bin', 'data', 'plugins', 'stoq', 'stoqlib']:
         path = os.path.join(root, dirpath)
         for fname in list_recursively(path, '*.py'):
             if fname.endswith('__init__.py'):
                 continue
             yield fname
+
+        yield os.path.join(root, 'setup.py')
 
 
 class SourceTest(ClassInittableObject):
