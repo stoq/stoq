@@ -672,18 +672,16 @@ class AppWindow(GladeDelegate):
         self._quit_reactor_and_maybe_show_crashreports()
 
         if restart:
-            # This is a special case of shutting down, instead of just shutting
-            # down, restart after shutting down. We need atexit() to be called
-            # properly here so really use sys.exit()
-            log.debug("Terminating by calling sys.exit()")
-            sys.exit(0)
-        else:
-            # os._exit() forces a quit without running atexit handlers
-            # and does not block on any running threads
-            # FIXME: This is the wrong solution, we should figure out why there
-            #        are any running threads/processes at this point
-            log.debug("Terminating by calling os._exit()")
-            os._exit(0)
+            from stoqlib.lib.process import Process
+            log.info('Restarting Stoq')
+            Process([sys.argv[0]], shell=True)
+
+        # os._exit() forces a quit without running atexit handlers
+        # and does not block on any running threads
+        # FIXME: This is the wrong solution, we should figure out why there
+        #        are any running threads/processes at this point
+        log.debug("Terminating by calling os._exit()")
+        os._exit(0)
 
         raise AssertionError("Should never happen")
 
@@ -1304,7 +1302,6 @@ class AppWindow(GladeDelegate):
             return
 
         from stoq.gui.shell import get_shell
-        get_shell().restart_atexit()
         api.config.set('Database', 'enable_production', 'True')
         api.config.flush()
         AppWindow.app_windows.remove(self)
