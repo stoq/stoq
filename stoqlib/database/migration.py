@@ -198,11 +198,11 @@ class SchemaMigration(object):
             assert patches_to_apply
             log.info("All patches (%s) applied." % (
                 ''.join(str(p.level) for p in patches_to_apply)))
-            last_level = patches_to_apply[-1]
+            last_level = patches_to_apply[-1].get_version()
 
         self.after_update()
 
-        return current_version, last_level.get_version()
+        return current_version, last_level
 
     # Public API
 
