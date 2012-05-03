@@ -32,6 +32,7 @@ from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
 from stoqdrivers.enum import TaxType
 
+from stoqlib.database.orm import ORMObjectNotFound
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.exceptions import DatabaseInconsistency
@@ -783,7 +784,10 @@ class ParameterAccess(ClassInittableObject):
         if issubclass(field_type, Domain):
             if value.field_value == '' or value.field_value is None:
                 return
-            param = field_type.get(value.field_value, connection=self.conn)
+            try:
+                param = field_type.get(value.field_value, connection=self.conn)
+            except ORMObjectNotFound:
+                return None
         else:
             # XXX: workaround to works with boolean types:
             value = value.field_value
