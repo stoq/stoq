@@ -41,7 +41,7 @@ def apply_patch(trans):
             # we mark the delivery as delivered, but if it's just
             # confirmed, we just mark it delivering.
             status = (Delivery.STATUS_RECEIVED if sale.close_date else
-                      Delivery.STATUS_DELIVERING)
+                      Delivery.STATUS_SENT)
 
             service_item = _get_service_item(sale, trans)
 
