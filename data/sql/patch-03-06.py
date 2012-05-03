@@ -6,6 +6,7 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.service import Service
 from stoqlib.lib.parameters import sysparam
 
+
 def apply_patch(trans):
     # Create tables for Image and a reference on Product and Service
     trans.query("""

@@ -5,6 +5,7 @@
 from stoqlib.domain.payment.payment import Payment, PaymentFlowHistory
 from stoqlib.lib.message import info
 
+
 def apply_patch(trans):
     info(u'The schema update might take a long time to complete, depending '
           'the size of your database and your hardware.')

@@ -69,6 +69,7 @@ def listexternal():
                       listfiles(directory, '*.py')))
     return files
 
+
 def listplugins(plugins, exts):
     dirs = []
     for package in listpackages('plugins'):
@@ -143,7 +144,7 @@ else:
      listfiles('help/pt_BR/figures', '*.svg')),
     ('share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
     ('share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
-    ('$sysconfdir/stoq',  '')])
+    ('$sysconfdir/stoq', '')])
 data_files += listexternal()
 
 resources = dict(

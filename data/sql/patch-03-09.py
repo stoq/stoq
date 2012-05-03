@@ -1,6 +1,10 @@
 from stoqlib.domain.sale import SaleItem, Delivery
 from stoqlib.domain.address import Address
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
+
 
 def apply_patch(trans):
     # Create Delivery table and add a reference on SaleItem
@@ -87,6 +91,7 @@ def _get_address_string(address):
 
     return u''
 
+
 def _get_or_create_address_by_str(address, client, trans):
     for c_address in client.person.addresses:
         # Most of cases the client address didn't change, therefore they have
@@ -126,6 +131,7 @@ def _get_or_create_address_by_str(address, client, trans):
         streetnumber=streetnumber,
         district=district,
         )
+
 
 def _get_service_item(sale, trans):
     delivery_service = sysparam(trans).DELIVERY_SERVICE

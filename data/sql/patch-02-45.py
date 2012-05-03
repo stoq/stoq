@@ -3,6 +3,7 @@
 # #4504: Calendar application
 from stoqlib.domain.profile import ProfileSettings
 
+
 def apply_patch(trans):
     profiles = ProfileSettings.selectBy(app_dir_name='admin',
                                         connection=trans)

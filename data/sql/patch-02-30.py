@@ -4,6 +4,7 @@ from stoqlib.database.admin import register_accounts
 from stoqlib.database.orm import IntCol
 from stoqlib.domain.account import Account
 
+
 def apply_patch(trans):
     trans.query("""ALTER TABLE account ADD COLUMN account_type int;""")
 

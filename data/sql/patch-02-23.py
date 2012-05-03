@@ -15,6 +15,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 def apply_patch(trans):
     #Creation of new column in stock_decrease table.
     #And added new Cfop to cfop_data table.
@@ -95,7 +96,6 @@ def apply_patch(trans):
                        quantity_decreased=decrease_item.quantity,
                        decreased_date=decrease.confirm_date,
                        connection=trans)
-
 
     trans.query("""ALTER TABLE product_history
                    DROP COLUMN quantity_retained;""")

@@ -4,6 +4,7 @@
 from stoqlib.database.admin import register_accounts
 from stoqlib.domain.profile import ProfileSettings
 
+
 def apply_patch(trans):
     profiles = ProfileSettings.selectBy(app_dir_name='admin',
                                         connection=trans)

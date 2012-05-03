@@ -10,6 +10,7 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 # otherwise the payment method will be added automaticaly when setting up the
 # system.
 
+
 def apply_patch(trans):
     has_methods = PaymentMethod.select(connection=trans).count() > 0
     if has_methods:
