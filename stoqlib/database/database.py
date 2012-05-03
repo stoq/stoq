@@ -111,6 +111,13 @@ def database_exists_and_should_be_dropped(settings, dbname, force):
         conn.close()
         return False
 
+    # In demo mode, we can always remove the database
+    demo_mode = conn.queryOne("""SELECT field_value FROM parameter_data
+                                 WHERE field_name = 'DEMO_MODE'""")[0]
+    if demo_mode == '1':
+        conn.close()
+        return False
+
     # Insignificant amount of data in the database. Safe to drop
     entries = conn.queryOne("SELECT COUNT(*) FROM transaction_entry")[0]
     if entries < _ENTRIES_DELETE_THRESHOLD:
