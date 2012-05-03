@@ -28,6 +28,7 @@ import gettext
 import locale
 import os
 import platform
+import sys
 
 import gobject
 import gtk
@@ -640,7 +641,7 @@ class AppWindow(GladeDelegate):
         if value:
             toolbar.set_style(value)
 
-    def _terminate(self):
+    def _terminate(self, restart=False):
         log.info("Terminating Stoq")
 
         log.debug('Logging out the current user')
@@ -670,13 +671,20 @@ class AppWindow(GladeDelegate):
         # Finally, go out of the reactor and show possible crash reports
         self._quit_reactor_and_maybe_show_crashreports()
 
-        log.debug("Terminating by calling os._exit()")
+        if restart:
+            # This is a special case of shutting down, instead of just shutting
+            # down, restart after shutting down. We need atexit() to be called
+            # properly here so really use sys.exit()
+            log.debug("Terminating by calling sys.exit()")
+            sys.exit(0)
+        else:
+            # os._exit() forces a quit without running atexit handlers
+            # and does not block on any running threads
+            # FIXME: This is the wrong solution, we should figure out why there
+            #        are any running threads/processes at this point
+            log.debug("Terminating by calling os._exit()")
+            os._exit(0)
 
-        # os._exit() forces a quit without running atexit handlers
-        # and does not block on any running threads
-        # FIXME: This is the wrong solution, we should figure out why there
-        #        are any running threads/processes at this point
-        os._exit(0)
         raise AssertionError("Should never happen")
 
     def _show_crash_reports(self):
@@ -1041,7 +1049,7 @@ class AppWindow(GladeDelegate):
     # AppWindow
     #
 
-    def shutdown_application(self):
+    def shutdown_application(self, restart=False):
         """Shutdown the application:
         There are 3 possible outcomes of calling this function, depending
         on how many windows and applications are open:
@@ -1053,7 +1061,7 @@ class AppWindow(GladeDelegate):
           - When closing a window (delete-event)
           - When clicking File->Close in an application
           - When clicking File->Quit in the launcher
-          - When clicking enable production mode
+          - When clicking enable production mode (restart=True)
           - Pressing Ctrl-w/F5 in an application
           - Pressing Ctrl-q in the launcher
           - Pressing Alt-F4 on Win32
@@ -1087,7 +1095,7 @@ class AppWindow(GladeDelegate):
         if self.app.name != 'launcher':
             return True
 
-        self._terminate()
+        self._terminate(restart=restart)
 
     #
     # Callbacks
@@ -1300,7 +1308,7 @@ class AppWindow(GladeDelegate):
         api.config.set('Database', 'enable_production', 'True')
         api.config.flush()
         AppWindow.app_windows.remove(self)
-        self.shutdown_application()
+        self.shutdown_application(restart=True)
 
 
 class SearchableAppWindow(AppWindow):
