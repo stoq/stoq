@@ -54,14 +54,12 @@ class Shell(object):
         self._appname = None
         self._blocked_apps = []
         self._current_app = None
-        self._cur_exit_func = None
         self._hidden_apps = []
         self._initial = initial
         self._login = None
         self._log_filename = None
         self._options = options
         self._ran_wizard = False
-        self._restart = False
         self._stream = None
         self._user = None
 
@@ -86,7 +84,6 @@ class Shell(object):
         self._setup_cookiefile()
         self._register_stock_icons()
         self._setup_exception_hook()
-        self._setup_exit_hook()
         self._setup_database()
         self._setup_domain_slave_mapper()
         self._load_key_bindings()
@@ -298,12 +295,6 @@ class Shell(object):
         else:
             hook = self._write_exception_hook
         sys.excepthook = hook
-
-    def _setup_exit_hook(self):
-        # Save any exiting exitfunc already set.
-        if hasattr(sys, 'exitfunc'):
-            self._cur_exit_func = sys.exitfunc
-        sys.exitfunc = self._exit_func
 
     def _setup_database(self):
         from stoqlib.lib.configparser import StoqConfig
@@ -577,20 +568,6 @@ class Shell(object):
         import pdb
         pdb.pm()
 
-    # FIXME: this logic should be inside stoqlib.
-    def _exit_func(self):
-        log.debug('Entering atexit()')
-
-        if self._cur_exit_func:
-            log.info('Running foreign atexit function')
-            self._cur_exit_func()
-
-        if self._restart:
-            from stoqlib.lib.process import Process
-            log.info('Restarting Stoq')
-            Process([sys.argv[0]], shell=True)
-        log.debug('Leaving atexit()')
-
     def _glade_loader_func(self, view, filename, domain):
         from kiwi.environ import environ
         from kiwi.ui.builderloader import BuilderWidgetTree
@@ -691,9 +668,6 @@ class Shell(object):
             self._blocked_apps.remove(appname)
         else:
             raise ValueError('%s was not blocked.' % appname)
-
-    def restart_atexit(self):
-        self._restart = True
 
     def run(self, appdesc=None, appname=None):
         if not self._do_login():
