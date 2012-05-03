@@ -517,9 +517,12 @@ class AppWindow(GladeDelegate):
         self._version_checker.check_new_version()
 
     def _read_resource(self, domain, name):
-        data = environ.get_resource_string('stoq', domain, name)
-        if data:
-            return data
+        try:
+            data = environ.get_resource_string('stoq', domain, name)
+            if data:
+                return data
+        except EnvironmentError:
+            pass
 
         import gzip
         license = environ.find_resource(domain, name + '.gz')
