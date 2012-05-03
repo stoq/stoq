@@ -1301,7 +1301,6 @@ class AppWindow(GladeDelegate):
                  _("Enable production mode")):
             return
 
-        from stoq.gui.shell import get_shell
         api.config.set('Database', 'enable_production', 'True')
         api.config.flush()
         AppWindow.app_windows.remove(self)
