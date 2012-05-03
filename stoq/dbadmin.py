@@ -35,10 +35,7 @@ class StoqCommandHandler:
     def _read_config(self, options, create=False, register_station=True,
                      check_schema=True, load_plugins=True):
         from stoqlib.lib.configparser import StoqConfig
-        # import library or else externals won't be on sys.path
-        from stoqlib.lib.kiwilibrary import library
         from stoq.lib.startup import setup
-        library # pyflakes
         config = StoqConfig()
         if options.load_config and options.filename:
             config.load(options.filename)
@@ -459,6 +456,10 @@ def main(args):
 
     cmd = args[0]
     args = args[1:]
+
+    # import library or else externals won't be on sys.path
+    from stoqlib.lib.kiwilibrary import library
+    library # pyflakes
 
     from stoq.lib.options import get_option_parser
     parser = get_option_parser()
