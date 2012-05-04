@@ -641,6 +641,7 @@ class AppWindow(GladeDelegate):
         if value:
             toolbar.set_style(value)
 
+    @api.async
     def _terminate(self, restart=False):
         log.info("Terminating Stoq")
 
@@ -669,7 +670,7 @@ class AppWindow(GladeDelegate):
         stop_daemon()
 
         # Finally, go out of the reactor and show possible crash reports
-        self._quit_reactor_and_maybe_show_crashreports()
+        yield self._quit_reactor_and_maybe_show_crashreports()
 
         if restart:
             from stoqlib.lib.process import Process
