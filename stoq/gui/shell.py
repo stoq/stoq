@@ -199,7 +199,7 @@ class Shell(object):
         from kiwi.ui.widgets.label import ProxyLabel
         ProxyLabel.replace('$CURRENCY', get_localeconv()['currency_symbol'])
 
-    def _setup_twisted(self):
+    def _setup_twisted(self, raise_=True):
         # FIXME: figure out why twisted is already loaded
         #assert not 'twisted' in sys.modules
         from stoqlib.net import gtk2reactor
@@ -207,7 +207,7 @@ class Shell(object):
         try:
             gtk2reactor.install()
         except ReactorAlreadyInstalledError:
-            if self._initial:
+            if self._initial and raise_:
                 raise
 
     def _check_version_policy(self):
@@ -541,7 +541,7 @@ class Shell(object):
         #       dependencies, so we can crash reports that happens really
         #       really early on for users with weird environments.
         if not self._entered_main:
-            self._setup_twisted()
+            self._setup_twisted(raise_=False)
 
         appname = 'unknown'
         try:
