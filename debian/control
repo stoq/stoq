@@ -12,7 +12,7 @@ Architecture: all
 Provides: stoqlib, stoq-docs, stoqdoc
 Replaces: stoqlib (<< 1.0), stoq-docs (<< 1.0), stoqdoc (<< 1.0)
 Breaks: stoqlib (<< 1.0)
-Depends: ${misc:Depends}, ${shlibs:Depends}, python, python-gtk2 (>= 2.20), python-zope.interface (>= 3.5.2)|python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.33), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 1:0.9.15), python-imaging (>= 1.1.5), python-reportlab (>= 2.4), postgresql-client, python-dateutil (>= 1.4.1), python-mako (>= 0.2.5), python-gudev, python-poppler (>= 0.12.1), python-webkit (>= 1.1.7), python-twisted-core (>= 10.0.0), python-twisted-web (>= 10.0.0), librsvg2-common, python-xlwt (>= 0.7.2), iso-codes (>= 3.12.1-1)
+Depends: ${misc:Depends}, ${shlibs:Depends}, python, python-gtk2 (>= 2.20), python-zope.interface (>= 3.5.2)|python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.33), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 1:0.9.15), python-imaging (>= 1.1.5), python-reportlab (>= 2.4), postgresql-client, python-dateutil (>= 1.4.1), python-mako (>= 0.2.5), python-gudev, python-poppler (>= 0.12.1), python-webkit (>= 1.1.7), python-twisted-core (>= 10.0.0), python-twisted-web (>= 10.0.0), librsvg2-common, python-xlwt (>= 0.7.2), iso-codes (>= 3.12.1-1), python-aptdaemon.gtkwidgets
 Description: Stoq the Retail System
  Stoq is a suite of Retail Management System applications.
  It includes the following applications;
