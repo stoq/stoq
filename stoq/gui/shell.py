@@ -31,6 +31,7 @@ import logging
 import operator
 import os
 import platform
+import traceback
 import sys
 
 _ = gettext.gettext
@@ -54,6 +55,7 @@ class Shell(object):
         self._appname = None
         self._blocked_apps = []
         self._current_app = None
+        self._entered_main = False
         self._hidden_apps = []
         self._initial = initial
         self._login = None
@@ -75,6 +77,7 @@ class Shell(object):
         self._prepare_logfiles()
         self._set_app_info()
         self._check_dependencies()
+        self._setup_exception_hook()
         self._setup_gtk()
         self._setup_kiwi()
         self._show_splash()
@@ -83,7 +86,6 @@ class Shell(object):
         self._setup_ui_dialogs()
         self._setup_cookiefile()
         self._register_stock_icons()
-        self._setup_exception_hook()
         self._setup_database()
         self._setup_domain_slave_mapper()
         self._load_key_bindings()
@@ -534,21 +536,30 @@ class Shell(object):
     #
 
     def _write_exception_hook(self, exctype, value, tb):
-        import traceback
-        from stoq.gui.shell import get_shell
-        from stoqlib.gui.base.dialogs import get_current_toplevel
+        # NOTE: This exception hook depends on gtk, kiwi, twisted being present
+        #       In the future we might want it to run without some of these
+        #       dependencies, so we can crash reports that happens really
+        #       really early on for users with weird environments.
+        if not self._entered_main:
+            self._setup_twisted()
 
-        shell = get_shell()
-        if shell:
-            appname = shell.get_current_app_name()
-        else:
-            appname = 'unknown'
+        appname = 'unknown'
+        try:
+            from stoq.gui.shell import get_shell
+            shell = get_shell()
+            if shell:
+                appname = shell.get_current_app_name()
+        except ImportError:
+            pass
 
-        window = get_current_toplevel()
-        if window:
-            window_name = window.get_name()
-        else:
-            window_name = 'unknown'
+        window_name = 'unknown'
+        try:
+            from stoqlib.gui.base.dialogs import get_current_toplevel
+            window = get_current_toplevel()
+            if window:
+                window_name = window.get_name()
+        except ImportError:
+            pass
 
         log.info('An error occurred in application "%s", toplevel window=%s:' % (
             appname, window_name))
@@ -557,6 +568,16 @@ class Shell(object):
 
         from stoqlib.lib.crashreport import collect_traceback
         collect_traceback((exctype, value, tb))
+
+        if self._entered_main:
+            return
+
+        from stoqlib.gui.dialogs.crashreportdialog import show_dialog
+        d = show_dialog()
+        from twisted.internet import reactor
+        d.addCallback(lambda *x: reactor.stop())
+        reactor.run()
+        raise SystemExit
 
     def _debug_hook(self, exctype, value, tb):
         import traceback
@@ -730,6 +751,7 @@ class Shell(object):
 
         from twisted.internet import reactor
         log.debug("Entering reactor")
+        self._entered_main = True
         reactor.run()
         log.info("Leaving reactor")
 
