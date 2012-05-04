@@ -52,14 +52,14 @@ class EmployeeDetailsSlave(BaseEditorSlave):
     #
 
     employee_widgets = ('admission_date',
-                           'registry_number',
-                           'expire_vacation',
-                           'dependent_person_number',
-                           'education_level')
+                        'registry_number',
+                        'expire_vacation',
+                        'dependent_person_number',
+                        'education_level')
 
-    bank_account_widgets = ('name',
-                            'account',
-                            'branch')
+    bank_account_widgets = ('bank_number',
+                            'bank_account',
+                            'bank_branch')
 
     work_permit_widgets = ('workpermit_number',
                            'workpermit_serie',
