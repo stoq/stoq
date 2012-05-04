@@ -41,6 +41,7 @@ from twisted.web.http_headers import Headers
 from twisted.web.iweb import IBodyProducer
 
 from stoqlib.database.runtime import get_connection
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.parameters import is_developer_mode, sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
@@ -149,7 +150,10 @@ class WebService(object):
         # We avoid using SQLObject, otherwise crash-reporting will break
         # for errors that happens in patches modifying any of the
         # tables in the FROM clause below
-        conn = get_connection()
+        try:
+            conn = get_connection()
+        except StoqlibError:
+            return ''
         data = conn.queryOne("""SELECT company.cnpj
           FROM parameter_data, branch, company, person
          WHERE field_name = 'MAIN_COMPANY' AND
