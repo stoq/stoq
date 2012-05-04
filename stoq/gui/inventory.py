@@ -187,6 +187,7 @@ class InventoryApp(SearchableAppWindow):
             has_open = selected.is_open()
             has_adjusted = selected.has_adjusted_items()
 
+        self.set_sensitive([self.PrintProductListing], bool(selected))
         self.set_sensitive([self.Cancel], has_open and not has_adjusted)
         self.set_sensitive([self.NewInventory], self._can_open())
         self.set_sensitive([self.CountingAction], has_open)
