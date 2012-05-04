@@ -105,7 +105,8 @@ class OpenProductionOrderStep(WizardEditorStep):
             self.model, OpenProductionOrderStep.proxy_widgets)
         self.proxy.update('order_number', u'%04d' % self.model.id)
         # suggests a responsible for the production order
-        self.responsible.select_item_by_position(0)
+        if not self.model.responsible:
+            self.responsible.select_item_by_position(0)
 
     #
     # Kiwi Callbacks
