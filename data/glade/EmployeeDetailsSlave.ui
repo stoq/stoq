@@ -240,9 +240,9 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="ProxyEntry" id="name">
+                  <object class="ProxyEntry" id="bank_number">
                     <property name="data_type">int</property>
-                    <property name="model_attribute">bank_id</property>
+                    <property name="model_attribute">bank_number</property>
                     <property name="visible">True</property>
                     <property name="xalign">1.0</property>
                   </object>
@@ -253,9 +253,9 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="ProxyEntry" id="branch">
+                  <object class="ProxyEntry" id="bank_branch">
                     <property name="data_type">unicode</property>
-                    <property name="model_attribute">branch</property>
+                    <property name="model_attribute">bank_branch</property>
                     <property name="visible">True</property>
                   </object>
                   <packing>
@@ -267,9 +267,9 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="ProxyEntry" id="account">
+                  <object class="ProxyEntry" id="bank_account">
                     <property name="data_type">unicode</property>
-                    <property name="model_attribute">account</property>
+                    <property name="model_attribute">bank_account</property>
                     <property name="visible">True</property>
                   </object>
                   <packing>
