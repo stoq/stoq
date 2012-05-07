@@ -27,7 +27,6 @@ import gtk
 from kiwi.datatypes import currency
 
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -46,7 +45,6 @@ class _PaymentsEditor(BaseEditor):
     size = (750, 400)
 
     def __init__(self, conn, model):
-        register_payment_operations()
         register_payment_slaves()
         BaseEditor.__init__(self, conn, model)
         self._method = PaymentMethod.get_by_name(conn, 'money')

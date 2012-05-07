@@ -34,7 +34,6 @@ from kiwi.ui.widgets.list import Column, ColoredColumn, SummaryLabel
 from kiwi.python import Settable
 
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
 from stoqlib.lib.defaults import payment_value_colorize
@@ -201,7 +200,6 @@ class PurchaseFinishWizard(BaseWizard):
             raise ValueError('Invalid order status. It should '
                              'be ORDER_CONFIRMED')
 
-        register_payment_operations()
         first_step = PurchaseFinishProductListStep(conn, self, model)
         BaseWizard.__init__(self, conn, first_step, model)
 

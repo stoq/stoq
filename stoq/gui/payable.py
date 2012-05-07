@@ -39,7 +39,6 @@ from kiwi.ui.objectlist import Column, SearchColumn
 from kiwi.ui.gadgets import render_pixbuf
 from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.domain.purchase import PurchaseOrder
@@ -145,7 +144,6 @@ class PayableApp(BaseAccountWindow):
             _("Print a report of these payments"))
 
     def activate(self, params):
-        register_payment_operations()
         # FIXME: double negation is weird here
         if not params.get('no-refresh'):
             self.search.refresh()

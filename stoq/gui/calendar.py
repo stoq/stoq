@@ -36,7 +36,6 @@ from dateutil.tz import tzlocal, tzutc
 import gtk
 
 from stoqlib.api import api
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.person import Client
 from stoqlib.gui.editors.callseditor import CallsEditor
 from stoqlib.gui.editors.paymenteditor import (InPaymentEditor,
@@ -382,7 +381,6 @@ class CalendarApp(AppWindow):
         self.app.launcher.Print.set_tooltip(_("Print this calendar"))
 
     def activate(self, params):
-        register_payment_operations()
         self.app.launcher.SearchToolItem.set_sensitive(False)
         # FIXME: Are we 100% sure we can always print something?
         # self.app.launcher.Print.set_sensitive(True)

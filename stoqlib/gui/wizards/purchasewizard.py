@@ -36,7 +36,6 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Branch, Supplier, Transporter
 from stoqlib.domain.product import ProductSupplierInfo
@@ -563,7 +562,6 @@ class PurchaseWizard(BaseWizard):
         if model.status != PurchaseOrder.ORDER_PENDING:
             raise ValueError('Invalid order status. It should '
                              'be ORDER_PENDING')
-        register_payment_operations()
         first_step = StartPurchaseStep(self, conn, model)
         BaseWizard.__init__(self, conn, first_step, model, title=title,
                             edit_mode=edit_mode)

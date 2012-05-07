@@ -30,7 +30,6 @@ from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -154,7 +153,6 @@ class PaymentRenegotiationWizard(BaseWizard):
     title = _('Payments Renegotiation Wizard')
 
     def __init__(self, conn, groups):
-        register_payment_operations()
         self.groups = groups
         self._create_model(conn)
         first = PaymentRenegotiationPaymentListStep(conn, self, self.model, self.groups)

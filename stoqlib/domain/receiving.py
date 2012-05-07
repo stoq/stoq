@@ -35,7 +35,6 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.lib.defaults import quantize
@@ -218,8 +217,6 @@ class ReceivingOrder(Domain):
             self._create_freight_payment()
 
     def _create_freight_payment(self):
-        register_payment_operations()
-
         conn = self.get_connection()
         money_method = PaymentMethod.get_by_name(conn, 'money')
         # If we have a transporter, the freight payment will be for him

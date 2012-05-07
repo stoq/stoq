@@ -32,7 +32,6 @@ from kiwi.ui.widgets.entry import ProxyEntry
 from stoqlib.api import api
 from stoqlib.domain.account import (Account, BankAccount,
                                     BillOption)
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -343,8 +342,6 @@ class AccountEditor(BaseEditor):
         self._option_fields = {}
 
     def _print_test_bill(self):
-        register_payment_operations()
-
         try:
             bank_info = get_bank_info_by_number(self.bank_model.bank_number)
         except NotImplementedError:

@@ -31,7 +31,6 @@ from stoqlib.database.orm import (IntCol, UnicodeCol, BoolCol, ForeignKey,
                                   SingleJoin)
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.sale import Sale, Delivery
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -208,7 +207,6 @@ class MagentoSale(MagentoBaseSyncBoth):
             self.sale.add_sellable(delivery_service.sellable,
                                    price=delivery_price)
 
-        register_payment_operations()
         method = PaymentMethod.get_by_name(conn, 'online')
         # Till needs to be None, or else, it will try to get the current one,
         # which doesn't exists on daemon
