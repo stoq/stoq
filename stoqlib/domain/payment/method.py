@@ -434,11 +434,9 @@ class PaymentMethod(Domain):
         :returns: a list of :class:`PaymentMethod` instances
         """
         methods = []
-        for method in cls.select(connection=conn):
+        for method in cls.get_active_methods(conn):
             if not method.operation.creatable(method, payment_type,
                                               separate):
-                continue
-            if not method.is_active:
                 continue
             methods.append(method)
         return locale_sorted(methods,
