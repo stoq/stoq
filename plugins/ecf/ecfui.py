@@ -119,7 +119,7 @@ class ECFUI(object):
         try:
             self._printer = CouponPrinter(printer)
         except SerialException, e:
-            warning('Error opening serial port', str(e))
+            warning(_('Error opening serial port'), str(e))
         except DriverError, e:
             warning(str(e))
         return None
