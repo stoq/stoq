@@ -35,7 +35,6 @@ from kiwi.python import all
 from kiwi.ui.objectlist import Column, SearchColumn
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from stoqlib.api import api
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.sellablepricedialog import SellablePriceDialog
@@ -390,7 +389,6 @@ class PurchaseApp(SearchableAppWindow):
         self.select_result(order_views)
 
     def _cancel_order(self):
-        register_payment_operations()
         order_views = self.results.get_selected_rows()
         assert all(ov.purchase.can_cancel() for ov in order_views)
         cancel_label = gettext.ngettext(_("Cancel order"),

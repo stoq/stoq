@@ -36,7 +36,6 @@ from stoqlib.api import api
 from stoqlib.database.orm import AND, OR
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.person import ClientView, ClientCategory, SalesPerson
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sale import Sale, SaleItem
@@ -387,7 +386,6 @@ class SaleQuoteWizard(BaseWizard):
             raise ValueError('Invalid sale status. It should '
                              'be STATUS_QUOTE')
 
-        register_payment_operations()
         first_step = StartSaleQuoteStep(conn, self, model)
         BaseWizard.__init__(self, conn, first_step, model, title=title,
                             edit_mode=False)

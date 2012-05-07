@@ -37,7 +37,6 @@ from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import (ClientView,
                                    CreditProvider, SalesPerson, Transporter)
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.sale import Sale
@@ -556,7 +555,6 @@ class ConfirmSaleWizard(BaseWizard):
     def __init__(self, conn, model):
         marker('ConfirmSaleWizard')
         self._check_payment_group(model, conn)
-        register_payment_operations()
 
         # invoice_model is a Settable so avoid bug 4218, where more
         # than one checkout may try to use the same invoice number.

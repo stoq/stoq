@@ -39,7 +39,6 @@ from kiwi.ui.objectlist import SearchColumn, Column
 from kiwi.ui.search import DateSearchFilter
 from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.till import Till
@@ -148,7 +147,6 @@ class ReceivableApp(BaseAccountWindow):
         self.popup = self.uimanager.get_widget('/ReceivableSelection')
 
     def activate(self, params):
-        register_payment_operations()
         self._update_widgets()
 
         # FIXME: double negation is weird here

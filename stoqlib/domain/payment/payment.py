@@ -211,9 +211,6 @@ class Payment(Domain):
 
         PaymentFlowHistory.add_paid_payment(self.get_connection(), self)
 
-        from stoqlib.domain.payment.operation import register_payment_operations
-        register_payment_operations()
-
         if (self.is_separate_payment() or
             self.method.operation.create_transaction()):
             AccountTransaction.create_from_payment(self, account)

@@ -38,7 +38,6 @@ from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.person import Client, Supplier
@@ -502,7 +501,6 @@ def get_dialog_for_payment(payment):
 
 
 def test():
-    register_payment_operations()
     creator = api.prepare_test()
     retval = run_dialog(InPaymentEditor, None, creator.trans, None)
     api.finish_transaction(creator.trans, retval)

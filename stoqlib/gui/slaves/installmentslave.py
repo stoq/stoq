@@ -32,7 +32,6 @@ from kiwi import ValueUnset
 
 from stoqlib.api import api
 from stoqlib.domain.account import Account
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.base.dialogs import run_dialog
@@ -292,7 +291,6 @@ class _InstallmentConfirmationSlave(BaseEditor):
     def _update_accounts(self):
         if len(self._payments) != 1:
             return
-        register_payment_operations()
 
         payment = self._payments[0]
         create_transaction = payment.method.operation.create_transaction()

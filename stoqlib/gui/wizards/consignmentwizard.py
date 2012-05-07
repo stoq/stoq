@@ -32,7 +32,6 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrderView, PurchaseOrder
 from stoqlib.domain.receiving import (ReceivingOrder,
                                       get_receiving_items_by_purchase_order)
@@ -267,7 +266,6 @@ class ConsignmentWizard(PurchaseWizard):
 
         # If we receive the order right after the purchase.
         self.receiving_model = None
-        register_payment_operations()
         first_step = StartConsignmentStep(self, conn, model)
         BaseWizard.__init__(self, conn, first_step, model)
 
@@ -282,7 +280,6 @@ class CloseInConsignmentWizard(BaseWizard):
     size = (790, 400)
 
     def __init__(self, conn):
-        register_payment_operations()
         register_payment_slaves()
         self.purchase_model = None
         first_step = ConsignmentSelectionStep(self, conn)
