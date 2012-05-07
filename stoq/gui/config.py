@@ -965,7 +965,7 @@ class FirstTimeConfigWizard(BaseWizard):
               options=self.options,
               check_schema=True,
               register_station=False,
-              load_plugins=True)
+              load_plugins=False)
 
     def connect_for_settings(self, step):
         # Try to connect, we don't care if we can connect,
