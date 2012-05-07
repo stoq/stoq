@@ -280,7 +280,10 @@ class FiscalPrinterHelper(gobject.GObject):
         return False
 
     def check_open_coupon(self):
-        HasOpenCouponEvent.emit()
+        try:
+            HasOpenCouponEvent.emit()
+        except (DeviceError, DriverError), e:
+            warning(e)
 
     def check_till(self):
         try:
