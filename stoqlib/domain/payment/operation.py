@@ -466,6 +466,54 @@ class MultiplePaymentOperation(object):
         return PaymentMethodType.MULTIPLE
 
 
+class InvalidPaymentOperation(object):
+    """This operation will be used as a fallback for methods that wore removed
+    from stoq, but may still exist in the database (they cannot be removed,
+    since payments may have been created using that method).
+    """
+    implements(IPaymentOperation)
+
+    description = _('Invalid payment')
+    max_installments = 1
+
+    #
+    # IPaymentOperation
+    #
+
+    def payment_create(self, payment):
+        pass
+
+    def payment_delete(self, payment):
+        pass
+
+    def create_transaction(self):
+        return False
+
+    def selectable(self, method):
+        return False
+
+    def creatable(self, method, payment_type, separate):
+        return False
+
+    def get_constant(self, payment):
+        return PaymentMethodType.MONEY
+
+    def can_cancel(self, payment):
+        return True
+
+    def can_change_due_date(self, payment):
+        return True
+
+    def can_pay(self, payment):
+        return True
+
+    def can_print(self, payment):
+        return False
+
+    def print_(self, payment):
+        pass
+
+
 def register_payment_operations():
     pmm = get_utility(IPaymentOperationManager, None)
     if pmm is None:
@@ -482,3 +530,4 @@ def register_payment_operations():
     pmm.register('multiple', MultiplePaymentOperation())
     pmm.register('deposit', DepositPaymentOperation())
     pmm.register('online', OnlinePaymentOperation())
+    pmm.register_fallback(InvalidPaymentOperation())

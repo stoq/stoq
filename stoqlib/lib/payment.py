@@ -38,6 +38,7 @@ class PaymentOperationManager(object):
 
     def __init__(self):
         self._methods = {}
+        self._fallback_operation = None
 
     def register(self, name, klass):
         """
@@ -46,15 +47,25 @@ class PaymentOperationManager(object):
         """
         if not IPaymentOperation.providedBy(klass):
             raise ValueError(
-                "%r does not  implement required interface "
+                "%r does not implement required interface "
                 "IPaymentOperation" % (klass, ))
         self._methods[name] = klass
+
+    def register_fallback(self, klass):
+        if not IPaymentOperation.providedBy(klass):
+            raise ValueError(
+                "%r does not implement required interface "
+                "IPaymentOperation" % (klass, ))
+        self._fallback_operation = klass
 
     def get_operation_names(self):
         return self._methods.keys()
 
     def get(self, name):
-        return self._methods.get(name)
+        operation = self._methods.get(name)
+        if not operation:
+            operation = self._fallback_operation
+        return operation
 
 
 def generate_payments_values(value, installments_number,
