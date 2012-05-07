@@ -402,8 +402,12 @@ class UserSearch(BasePersonSearch):
                        width=80)]
 
     def on_details_button_clicked(self, *args):
-        selected = self.results.get_selected()
-        run_dialog(UserEditor, self, self.conn, selected.user)
+        # FIXME: Person editor/slaves are depending on the connection being a
+        # StoqlibTransaction. See bug 5012
+        with api.trans() as trans:
+            selected = self.results.get_selected()
+            user = trans.get(selected.user)
+            run_dialog(UserEditor, self, trans, user, visual_mode=True)
 
     def update_widgets(self, *args):
         user_view = self.results.get_selected()
