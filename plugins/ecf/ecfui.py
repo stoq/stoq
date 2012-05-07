@@ -130,6 +130,7 @@ class ECFUI(object):
                 _("This operation requires a connected fiscal printer"))
 
         if not self._printer_verified:
+            log.info('ecfui._validate_printer')
             if not self._printer.check_serial():
                 raise DeviceError(
                     _("Fiscalprinters serial number is different!"))
@@ -244,7 +245,8 @@ class ECFUI(object):
         self._has_open_coupon()
 
     def _has_open_coupon(self):
-        if self._printer and self._printer.has_open_coupon():
+        self._validate_printer()
+        if self._printer.has_open_coupon():
             warning(_("The ECF has an open coupon. It will be canceled now."))
             self._printer.cancel()
 
