@@ -58,6 +58,9 @@ class UserStatusSlave(BaseEditorSlave):
     model_type = LoginUser
     proxy_widgets = ('active_check', )
 
+    def update_visual_mode(self):
+        self.inactive_check.set_sensitive(False)
+
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
                                     UserStatusSlave.proxy_widgets)
@@ -247,6 +250,10 @@ class UserDetailsSlave(BaseEditorSlave):
     #
     # BaseEditorSlave Hooks
     #
+
+    def update_visual_mode(self):
+        self.role.set_sensitive(False)
+        self.change_password_button.set_sensitive(False)
 
     def setup_proxies(self):
         self._setup_widgets()
