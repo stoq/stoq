@@ -241,6 +241,13 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
         if self._started:
             self.__run()
 
+    def prepare_restart(self):
+        """This will stop the reactor and reset internal state, so it can be
+        started again
+        """
+        self.stop()
+        self._startedBefore = False
+
     def _doReadOrWrite(self, source, condition, faildict={
         error.ConnectionDone: failure.Failure(error.ConnectionDone()),
         error.ConnectionLost: failure.Failure(error.ConnectionLost()),
