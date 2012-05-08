@@ -60,6 +60,9 @@ def is_date_in_interval(date, start_date, end_date):
 
 
 def validate_phone_number(phone_number):
+    if not isinstance(phone_number, basestring):
+        return False
+
     phone_number = raw_phone_number(phone_number)
     digits = len(phone_number)
     if digits == 11:
