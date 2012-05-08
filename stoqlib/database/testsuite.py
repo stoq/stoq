@@ -44,13 +44,10 @@ from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.person import Branch, LoginUser, Person
 from stoqlib.domain.station import BranchStation
 from stoqlib.importers.stoqlibexamples import create
-from stoqlib.lib.interfaces import (IApplicationDescriptions,
-                                    IPaymentOperationManager,
-                                    ISystemNotifier)
+from stoqlib.lib.interfaces import (IApplicationDescriptions, ISystemNotifier)
 from stoqlib.lib.message import DefaultSystemNotifier
 from stoqlib.lib.osutils import get_username
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.payment import PaymentOperationManager
 
 log = Logger('stoqlib.database.testsuite')
 
@@ -189,13 +186,6 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     return rv
 
 
-def _provide_payment_operation_manager():
-    from stoqlib.domain.payment.operation import register_payment_operations
-
-    provide_utility(IPaymentOperationManager, PaymentOperationManager())
-    register_payment_operations()
-
-
 def _provide_domain_slave_mapper():
     from stoqlib.gui.interfaces import IDomainSlaveMapper
     from stoqlib.gui.domainslavemapper import DefaultDomainSlaveMapper
@@ -211,7 +201,6 @@ def provide_utilities(station_name, branch_name=None):
     """
     _provide_current_user()
     _provide_current_station(station_name, branch_name)
-    _provide_payment_operation_manager()
     _provide_domain_slave_mapper()
 
 

@@ -514,20 +514,41 @@ class InvalidPaymentOperation(object):
         pass
 
 
-def register_payment_operations():
+def get_payment_operation_manager():
+    """Returns the payment operation manager"""
     pmm = get_utility(IPaymentOperationManager, None)
-    if pmm is None:
+
+    if not pmm:
         from stoqlib.lib.payment import PaymentOperationManager
         pmm = PaymentOperationManager()
         provide_utility(IPaymentOperationManager, pmm)
 
-    # FIXME: maybe we should be doing this just once
-    pmm.register('money', MoneyPaymentOperation())
-    pmm.register('check', CheckPaymentOperation())
-    pmm.register('bill', BillPaymentOperation())
-    pmm.register('card', CardPaymentOperation())
-    pmm.register('store_credit', StoreCreditPaymentOperation())
-    pmm.register('multiple', MultiplePaymentOperation())
-    pmm.register('deposit', DepositPaymentOperation())
-    pmm.register('online', OnlinePaymentOperation())
-    pmm.register_fallback(InvalidPaymentOperation())
+        for method_name, klass in [
+            ('money', MoneyPaymentOperation),
+            ('check', CheckPaymentOperation),
+            ('bill', BillPaymentOperation),
+            ('card', CardPaymentOperation),
+            ('store_credit', StoreCreditPaymentOperation),
+            ('multiple', MultiplePaymentOperation),
+            ('deposit', DepositPaymentOperation),
+            ('online', OnlinePaymentOperation),
+            ]:
+            pmm.register(method_name, klass())
+        # Also, register InvalidPaymentOperation as a fallback operation
+        pmm.register_fallback(InvalidPaymentOperation())
+
+    return pmm
+
+
+def get_payment_operation(method_name):
+    """Returns the payment operation for method_name
+
+    :param method_name: the method name
+    """
+    pmm = get_payment_operation_manager()
+    pm = pmm.get(method_name)
+    if not pm:
+        raise KeyError("There's no payment operation for method '%s'" %
+                       method_name)
+
+    return pm

@@ -118,9 +118,6 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     provide_utility(IApplicationDescriptions, ApplicationDescriptions(),
                     replace=True)
 
-    from stoqlib.domain.payment.operation import register_payment_operations
-    register_payment_operations()
-
     if register_station:
         try:
             conn = get_connection()
