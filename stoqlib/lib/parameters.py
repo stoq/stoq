@@ -145,9 +145,9 @@ class ParameterDetails(object):
 _details = [
     ParameterDetails(
         'EDIT_CODE_PRODUCT',
-        ('Products'),
-        ('Disable edit code products'),
-        ('Disable edit code products on purchase application'),
+        _('Products'),
+        _('Disable edit code products'),
+        _('Disable edit code products on purchase application'),
         bool, initial=False),
 
     ParameterDetails(
