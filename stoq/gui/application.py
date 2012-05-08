@@ -1218,10 +1218,14 @@ class AppWindow(GladeDelegate):
         self.app.shell.relogin()
 
     def _on_Quit__activate(self, action):
-        if self.current_app and not self.current_app.shutdown_application():
+        if self.current_app:
+            if self.current_app.shutdown_application():
+                self.hide_app()
             return
+
         AppWindow.app_windows.remove(self)
         self.shutdown_application()
+        self.get_toplevel().destroy()
 
     # View
 
