@@ -117,8 +117,8 @@ def read_registry_key(root, key, value):
 
 def list_recursively(directory, pattern):
     """Returns files recursively from directory matching pattern
-    @directory: directory to list
-    @pattern: glob mattern to match
+    :param directory: directory to list
+    :param pattern: glob mattern to match
     """
     matches = []
     for root, dirnames, filenames in os.walk(directory):
@@ -129,3 +129,15 @@ def list_recursively(directory, pattern):
                 continue
             matches.append(os.path.join(root, filename))
     return matches
+
+
+def find_program(program):
+    """Looks for program in PATH.
+    :param program: name of the program to find
+    :returns: the complete path of the program or None if it couldn't be found
+    """
+
+    for path in os.environ['PATH'].split(':'):
+        fullpath = os.path.join(path, program)
+        if os.path.exists(fullpath):
+            return fullpath

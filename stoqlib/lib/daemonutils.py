@@ -27,13 +27,14 @@ import errno
 import os
 import signal
 import shutil
+import sys
 
 from twisted.internet import defer, reactor
 from twisted.web.xmlrpc import Proxy
 from kiwi.component import get_utility
 
 from stoqlib.database.interfaces import IDatabaseSettings
-from stoqlib.lib.osutils import get_application_dir
+from stoqlib.lib.osutils import find_program, get_application_dir
 from stoqlib.lib.process import Process
 
 
@@ -59,7 +60,11 @@ class DaemonManager(object):
         else:
             return defer.succeed(self)
 
-        args = ['stoq-daemon',
+        stoq_daemon = find_program('stoq-daemon')
+        if not stoq_daemon:
+            raise AssertionError
+        args = [sys.executable,
+                stoq_daemon,
                 '--daemon-id', self._daemon_id]
         db_settings = get_utility(IDatabaseSettings)
         args.extend(db_settings.get_command_line_arguments())
