@@ -641,6 +641,14 @@ class AppWindow(GladeDelegate):
         if value:
             toolbar.set_style(value)
 
+    def _hide_current_application(self):
+        if not self.current_app:
+            return False
+
+        if self.current_app.shutdown_application():
+            self.hide_app()
+        return True
+
     @api.async
     def _terminate(self, restart=False):
         log.info("Terminating Stoq")
@@ -1115,9 +1123,7 @@ class AppWindow(GladeDelegate):
         self._height = event.height
 
     def _on_toplevel__delete_event(self, *args):
-        if self.current_app:
-            if self.current_app.shutdown_application():
-                self.hide_app()
+        if self._hide_current_application():
             return True
 
         AppWindow.app_windows.remove(self)
@@ -1201,8 +1207,7 @@ class AppWindow(GladeDelegate):
             self.current_app.export_spreadsheet_activate()
 
     def _on_Close__activate(self, action):
-        if self.current_app and self.current_app.shutdown_application():
-            self.hide_app()
+        self._hide_current_application()
 
     def _on_ChangePassword__activate(self, action):
         from stoqlib.gui.slaves.userslave import PasswordEditor
@@ -1218,9 +1223,7 @@ class AppWindow(GladeDelegate):
         self.app.shell.relogin()
 
     def _on_Quit__activate(self, action):
-        if self.current_app:
-            if self.current_app.shutdown_application():
-                self.hide_app()
+        if self._hide_current_application():
             return
 
         AppWindow.app_windows.remove(self)
