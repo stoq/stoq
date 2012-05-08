@@ -50,7 +50,8 @@ PYOBJC_REQUIRED = (2, 3)
 PYSERIAL_REQUIRED = (2, 1)
 REPORTLAB_REQUIRED = (2, 4)
 STOQDRIVERS_REQUIRED = (0, 9, 15)
-TWISTED_REQUIRED = (10, 0)
+TWISTED_CORE_REQUIRED = (10, 0)
+TWISTED_WEB_REQUIRED = (10, 0)
 XLWT_REQUIRED = (0, 7, 2)
 ZOPE_INTERFACE_REQUIRED = (3, 0)
 
@@ -78,7 +79,8 @@ class DependencyChecker(object):
             self._check_pyobjc(PYOBJC_REQUIRED)
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
         self._check_dateutil(DATEUTIL_REQUIRED)
-        self._check_twisted(TWISTED_REQUIRED)
+        self._check_twisted_core(TWISTED_CORE_REQUIRED)
+        self._check_twisted_web(TWISTED_WEB_REQUIRED)
         self._check_xlwt(XLWT_REQUIRED)
 
         # Postgres
@@ -359,20 +361,34 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://pyserial.sourceforge.net/',
                           version=version)
 
-    def _check_twisted(self, version):
+    def _check_twisted_core(self, version):
         try:
             import twisted
             twisted # pyflakes
         except ImportError:
-            self._missing(project='twisted',
+            self._missing(project='TwistedCore',
                           url='http://twistedmatrix.com/',
                           version=version)
 
         if map(int, twisted.version.base().split('.')) < list(version):
-            self._too_old(project="twisted",
+            self._too_old(project="TwistedCore",
                           url='http://www.twistedmatrix.com/',
                           required=version,
                           found=twisted.version.base())
+
+    def _check_twisted_web(self, version):
+        try:
+            import twisted.web
+        except ImportError:
+            self._missing(project='TwistedWeb',
+                          url='http://twistedmatrix.com/',
+                          version=version)
+
+        if map(int, twisted.web.version.base().split('.')) < list(version):
+            self._too_old(project="TwistedWeb",
+                          url='http://www.twistedmatrix.com/',
+                          required=version,
+                          found=twisted.web.version.base())
 
     def _check_xlwt(self, version):
         try:
