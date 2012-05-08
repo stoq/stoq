@@ -282,8 +282,11 @@ class FiscalPrinterHelper(gobject.GObject):
     def check_open_coupon(self):
         try:
             HasOpenCouponEvent.emit()
+            return True
         except (DeviceError, DriverError), e:
             warning(e)
+            self.emit('ecf-changed', False)
+            return False
 
     def check_till(self):
         try:
@@ -292,6 +295,18 @@ class FiscalPrinterHelper(gobject.GObject):
         except (DeviceError, DriverError), e:
             warning(e)
             self.emit('ecf-changed', False)
+
+    def run_initial_checks(self):
+        """This will check:
+
+        1) If printer has open coupon, cancel it
+        2) If printer has pending reduce Z, offer to close the till
+
+        If the first check fails, the second one will not happen
+        """
+        if not self.check_open_coupon():
+            return
+        self.check_till()
 
 
 class FiscalCoupon(gobject.GObject):

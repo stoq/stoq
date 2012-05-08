@@ -198,8 +198,7 @@ class PosApp(AppWindow):
         # This is important to do after the other calls, since
         # it emits signals that disable UI which might otherwise
         # be enabled.
-        self._printer.check_open_coupon()
-        self._printer.check_till()
+        self._printer.run_initial_checks()
 
     def deactivate(self):
         self.uimanager.remove_ui(self.pos_ui)

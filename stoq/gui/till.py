@@ -153,8 +153,7 @@ class TillApp(SearchableAppWindow):
                                             self.SearchSale])
         self.app.launcher.Print.set_tooltip(_("Print a report of these sales"))
         self.refresh()
-        self._printer.check_open_coupon()
-        self._printer.check_till()
+        self._printer.run_initial_checks()
         self.check_open_inventory()
 
     def deactivate(self):
