@@ -1049,3 +1049,9 @@ class FirstTimeConfigWizard(BaseWizard):
         self.config.flush()
 
         self.close()
+
+        # This wizard is shown with run_dialog, that creates a new main loop,
+        # but we may have created another main loop when calling reactor.run()
+        # above. Make sure to leave only one main loop running after the wizard.
+        if reactor.running:
+            reactor.prepare_restart()
