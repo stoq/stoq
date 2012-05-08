@@ -54,9 +54,7 @@ from stoqlib.domain.sellable import SellableTaxConstant, SellableUnit
 from stoqlib.exceptions import StoqlibError
 from stoqlib.importers.invoiceimporter import InvoiceImporter
 from stoqlib.lib.crashreport import collect_traceback
-from stoqlib.lib.interfaces import IPaymentOperationManager
 from stoqlib.lib.message import error
-from stoqlib.lib.payment import PaymentOperationManager
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -138,13 +136,10 @@ def register_payment_methods(trans):
     domain classes associated with them.
     """
     from stoqlib.domain.payment.method import PaymentMethod
-    from stoqlib.domain.payment.operation import register_payment_operations
-
-    pom = PaymentOperationManager()
-    provide_utility(IPaymentOperationManager, pom, replace=True)
+    from stoqlib.domain.payment.operation import get_payment_operation_manager
 
     log.info("Registering payment operations")
-    register_payment_operations()
+    pom = get_payment_operation_manager()
 
     log.info("Creating domain objects for payment methods")
     account = sysparam(trans).IMBALANCE_ACCOUNT

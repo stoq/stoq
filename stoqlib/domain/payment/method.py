@@ -29,7 +29,6 @@ import operator
 
 from kiwi import ValueUnset
 from kiwi.argcheck import argcheck
-from kiwi.component import get_utility
 from zope.interface import implements
 
 from stoqlib.database.orm import PercentCol, PriceCol
@@ -42,7 +41,6 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DatabaseInconsistency, PaymentMethodError
 from stoqlib.lib.defaults import quantize
-from stoqlib.lib.interfaces import IPaymentOperationManager
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -175,7 +173,8 @@ class PaymentMethod(Domain):
         :return: the operation associated with the method
         :rtype: object implementing IPaymentOperation
         """
-        return get_utility(IPaymentOperationManager).get(self.method_name)
+        from stoqlib.domain.payment.operation import get_payment_operation
+        return get_payment_operation(self.method_name)
 
     #
     # Private API
