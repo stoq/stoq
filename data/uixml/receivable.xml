@@ -42,6 +42,7 @@
       <menuitem action="SetNotPaid"/>
       <menuitem action="ChangeDueDate"/>
       <menuitem action="Renegotiate"/>
+      <menuitem action="Edit"/>
       <menuitem action="Comments"/>
       <separator/>
       <menuitem action="PrintBill"/>
@@ -64,6 +65,7 @@
   <menuitem action="SetNotPaid"/>
   <menuitem action="ChangeDueDate"/>
   <menuitem action="Renegotiate"/>
+  <menuitem action="Edit"/>
   <menuitem action="Comments"/>
   <separator/>
   <menuitem action="PrintBill"/>
