@@ -111,6 +111,9 @@ class ReceivableApp(BaseAccountWindow):
             ('Renegotiate', None, _('Renegotiate...'),
              group.get('payment_renegotiate'),
              _('Renegotiate the selected payments')),
+            ('Edit', None, _('Edit installments...'),
+             group.get('payment_edit_installments'),
+             _('Edit the selected payment installments')),
             ('Comments', None, _('Comments...'),
              group.get('payment_comments'),
              _('Add comments to the selected payment')),
@@ -245,6 +248,7 @@ class ReceivableApp(BaseAccountWindow):
             one_item and self._is_paid(selected))
         self.SetNotPaid.set_sensitive(
             one_item and self._is_paid(selected))
+        self.Edit.set_sensitive(self._can_edit(selected))
         self.PrintBill.set_sensitive(self._can_print(selected))
 
     def _get_status_values(self):
@@ -387,6 +391,15 @@ class ReceivableApp(BaseAccountWindow):
                    view.get_parent().can_set_renegotiated()
                    for view in receivable_views)
 
+    def _can_edit(self, views):
+        """Determines if we can edit the selected payments
+        """
+        if not views:
+            return False
+        sale_id = views[0].sale_id
+        can_edit = all(rv.sale_id == sale_id for rv in views)
+        return can_edit
+
     def _can_cancel_payment(self, receivable_views):
         """whether or not we can cancel the receiving.
         """
@@ -521,16 +534,24 @@ class ReceivableApp(BaseAccountWindow):
             return
         trans = api.new_transaction()
 
-        sale_id = receivable_views[0].sale_id
-        can_edit = all(rv.sale_id == sale_id for rv in receivable_views)
+        groups = list(set([trans.get(v.group) for v in receivable_views]))
+        retval = run_dialog(PaymentRenegotiationWizard, self, trans,
+                            groups)
 
-        if can_edit:
-            sale = trans.get(receivable_views[0].sale)
-            retval = run_dialog(SalePaymentsEditor, self, trans, sale)
-        else:
-            groups = list(set([trans.get(v.group) for v in receivable_views]))
-            retval = run_dialog(PaymentRenegotiationWizard, self, trans,
-                                groups)
+        if api.finish_transaction(trans, retval):
+            self.search.refresh()
+
+    def on_Edit__activate(self, action):
+        try:
+            Till.get_current(self.conn)
+        except TillError, e:
+            warning(str(e))
+            return
+
+        trans = api.new_transaction()
+        views = self.results.get_selected_rows()
+        sale = trans.get(views[0].sale)
+        retval = run_dialog(SalePaymentsEditor, self, trans, sale)
 
         if api.finish_transaction(trans, retval):
             self.search.refresh()
