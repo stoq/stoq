@@ -55,7 +55,7 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
 
         if default_method is None:
             default_method = 'money'
-        self._select_method_by_name(default_method)
+        self._select_default_method(default_method)
 
     def _setup_payment_methods(self, payment_type):
         methods = PaymentMethod.get_creatable_methods(
@@ -91,8 +91,11 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
                 self.methods_box.reorder_child(
                     widget, len(self.methods_box) - 1)
 
-    def _select_method_by_name(self, method_name):
-        method = self._methods[method_name]
+    def _select_default_method(self, method_name):
+        method = self._methods.get(method_name)
+        # Fallback in case the requested method is not available
+        if not method:
+            method_name, method = self._methods.items()[0]
         self._selected_method = method
         self._widgets[method_name].set_active(True)
 
