@@ -646,8 +646,11 @@ class Shell(object):
         self._application_cache.clear()
 
         from stoq.gui.launcher import Launcher
+        from stoqlib.gui.events import StartApplicationEvent
         launcher = Launcher(self._options, self)
         launcher.show()
+        app = launcher.app
+        StartApplicationEvent.emit(app.name, app)
 
     def get_app_by_name(self, appname):
         """
@@ -694,10 +697,13 @@ class Shell(object):
         if not self._do_login():
             raise SystemExit
         from stoq.gui.launcher import Launcher
+        from stoqlib.gui.events import StartApplicationEvent
         from stoqlib.lib.message import error
         import gtk
         app_window = Launcher(self._options, self)
         app_window.show()
+        app = app_window.app
+        StartApplicationEvent.emit(app.name, app)
 
         # A GtkWindowGroup controls grabs (blocking mouse/keyboard interaction),
         # by default all windows are added to the same window group.
