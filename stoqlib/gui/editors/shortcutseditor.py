@@ -86,7 +86,7 @@ class ShortcutsEditor(BasicDialog):
     def _create_ui(self):
         self.cancel_button.hide()
 
-        hbox = gtk.HBox()
+        hbox = gtk.HBox(spacing=6)
         self.main.remove(self.main.get_child())
         self.main.add(hbox)
         hbox.show()
@@ -102,7 +102,7 @@ class ShortcutsEditor(BasicDialog):
         hbox.pack_start(self.categories, False, False)
         self.categories.show()
 
-        box = gtk.VBox()
+        box = gtk.VBox(spacing=6)
         hbox.pack_start(box)
         box.show()
 
