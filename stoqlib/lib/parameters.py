@@ -25,6 +25,7 @@
 
 from decimal import Decimal
 import os
+import sys
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import ValidationError
@@ -120,8 +121,8 @@ class ParameterDetails(object):
             return ValidationError(_("'%s' is not a valid percentage.")
                                    % value)
 
-    @classmethod
-    def validate_state(cls, value):
+    @staticmethod
+    def validate_state(value):
         state_l10n = get_l10n_field(get_connection(), 'state')
         if not state_l10n.validate(value):
             return ValidationError(
@@ -290,7 +291,7 @@ _details = [
         _('Max search results'),
         _('The maximum number of results we must show after searching '
           'in any dialog.'),
-        int, initial=600),
+        int, initial=600, range=(1, sys.maxint)),
 
     ParameterDetails(
         'CONFIRM_SALES_ON_TILL',
@@ -324,7 +325,7 @@ _details = [
         _('Sales'),
         _('Max discount for sales'),
         _('The max discount for salesperson in a sale'),
-        Decimal, initial=5,
+        Decimal, initial=5, range=(0, 100),
         validator=ParameterDetails.validate_percentage),
 
     ParameterDetails(
@@ -392,7 +393,7 @@ _details = [
         _('Default ICMS to be applied on all the products of a sale. ') + ' ' +
         _('This is a percentage value and must be between 0 and 100.') + ' ' +
         _('E.g: 18, which means 18% of tax.'),
-        Decimal, initial=18,
+        Decimal, initial=18, range=(0, 100),
         validator=ParameterDetails.validate_percentage),
 
     ParameterDetails(
@@ -402,7 +403,7 @@ _details = [
         _('Default ISS to be applied on all the services of a sale. ') + ' ' +
         _('This is a percentage value and must be between 0 and 100.') + ' ' +
         _('E.g: 12, which means 12% of tax.'),
-        Decimal, initial=18,
+        Decimal, initial=18, range=(0, 100),
         validator=ParameterDetails.validate_percentage),
 
     ParameterDetails(
@@ -413,7 +414,7 @@ _details = [
         ' ' +
         _('This is a percentage value and must be between 0 and 100.') + ' ' +
         _('E.g: 16, which means 16% of tax.'),
-        Decimal, initial=18,
+        Decimal, initial=18, range=(0, 100),
         validator=ParameterDetails.validate_percentage),
 
     ParameterDetails(
@@ -446,7 +447,7 @@ _details = [
         _('Number of digits to use for product cost'),
         _('Set this parameter accordingly to the number of digits of the '
           'products you purchase'),
-        int, initial=2, range=[2, 8]),
+        int, initial=2, range=(2, 8)),
 
     ParameterDetails(
         'SCALE_BARCODE_FORMAT',

@@ -91,13 +91,16 @@ class SystemParameterEditor(BaseEditor):
         self._entry = widget
 
     def _setup_spin_entry_slave(self, box=None):
-        widget = ProxySpinButton()
+        data_type = self.constant.get_parameter_type()
+        widget = ProxySpinButton(data_type=data_type)
         widget.props.sensitive = self.sensitive
-        widget.data_type = int
         widget.set_range(self.constant.range[0], self.constant.range[1])
-        widget.set_value(int(self.model.field_value))
+        widget.set_value(data_type(self.model.field_value))
         widget.set_increments(1, 10)
-        widget.connect('changed', self._on_spin_changed)
+        if issubclass(data_type, Decimal):
+            widget.props.digits = 2
+
+        widget.connect('value-changed', self._on_spin__value_changed)
         if box is None:
             self.container.add(widget)
         else:
@@ -236,7 +239,7 @@ class SystemParameterEditor(BaseEditor):
             self._setup_entry_with_filechooser_button_slave(dir_only=True)
         elif issubclass(field_type, bool):
             self._setup_radio_slave()
-        elif issubclass(field_type, (int, float)):
+        elif issubclass(field_type, (int, float, Decimal)):
             if self.constant.options:
                 self._setup_options_combo_slave()
             elif self.constant.range:
@@ -248,8 +251,6 @@ class SystemParameterEditor(BaseEditor):
                 self._setup_text_view_slave()
             else:
                 self._setup_entry_slave()
-        elif issubclass(field_type, Decimal):
-            self._setup_entry_slave()
         else:
             raise TypeError("ParameterData for `%s' has an invalid "
                             "type: %r" % (self.model.field_name,
@@ -282,8 +283,15 @@ class SystemParameterEditor(BaseEditor):
     def _on_yes_radio__toggled(self, widget):
         self.model.field_value = str(int(widget.get_active()))
 
-    def _on_spin_changed(self, widget):
-        self.model.field_value = str(widget.get_value_as_int())
+    def _on_spin__value_changed(self, widget):
+        data_type = self.constant.get_parameter_type()
+        if data_type is int:
+            # float and Decimal are subclasses of int
+            value = widget.get_value_as_int()
+        else:
+            value = widget.read()
+
+        self.model.field_value = str(value)
 
     def _on_filechooser_button__selection_changed(self, widget):
         filename = widget.get_filename()
