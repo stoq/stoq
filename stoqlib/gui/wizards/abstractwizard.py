@@ -157,6 +157,7 @@ class _SellableSearch(SearchEditor):
             # If we created a new object, confirm the dialog automatically
             if obj is None:
                 self.confirm(product)
+                trans.close()
                 return
         trans.close()
 

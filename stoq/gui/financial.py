@@ -298,6 +298,7 @@ class TransactionPage(object):
             self.search.results.update(item)
             self.app.accounts.refresh_accounts(self.app.conn)
         api.finish_transaction(trans, transaction)
+        trans.close()
 
     def on_dialog__opened(self, dialog):
         dialog.connect('account-added', self.on_dialog__account_added)
@@ -323,6 +324,7 @@ class TransactionPage(object):
             self.search.results.update(item)
             self.app.accounts.refresh_accounts(self.app.conn)
         api.finish_transaction(trans, transaction)
+        trans.close()
 
     def _on_row__activated(self, objectlist, item):
         if self.model.kind == 'account':
@@ -486,6 +488,7 @@ class FinancialApp(AppWindow):
                                  parent_account=parent_account)
         if api.finish_transaction(trans, retval):
             self.accounts.refresh_accounts(self.conn)
+        trans.close()
 
         return retval
 

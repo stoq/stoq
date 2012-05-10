@@ -364,6 +364,7 @@ class AdminApp(AppWindow):
         trans = api.new_transaction()
         model = run_person_role_dialog(UserEditor, self, trans)
         api.finish_transaction(trans, model)
+        trans.close()
     #
     # Callbacks
     #

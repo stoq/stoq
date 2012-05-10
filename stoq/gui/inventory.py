@@ -234,6 +234,7 @@ class InventoryApp(SearchableAppWindow):
         inventory = trans.get(self.results.get_selected())
         inventory.cancel()
         trans.commit()
+        trans.close()
         self.refresh()
         self._update_widgets()
 

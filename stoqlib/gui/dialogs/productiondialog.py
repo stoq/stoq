@@ -501,6 +501,8 @@ class ProductionDialog(GladeSlaveDelegate):
         trans = api.new_transaction()
         order = self._create_purchase_order(trans)
         if not order:
+            api.finish_transaction(trans, False)
+            trans.close()
             # FIXME: We should close the connection above if this really happens
             return False
 

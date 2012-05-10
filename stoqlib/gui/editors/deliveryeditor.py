@@ -150,6 +150,7 @@ class CreateDeliveryEditor(BaseEditor):
         trans = api.new_transaction()
         client = run_person_role_dialog(ClientEditor, self, trans, None)
         api.finish_transaction(trans, client)
+        trans.close()
 
         if client is not None:
             self._prefill_client()

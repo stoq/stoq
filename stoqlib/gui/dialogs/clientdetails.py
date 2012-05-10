@@ -172,3 +172,4 @@ class ClientDetailsDialog(BaseEditor):
         run_person_role_dialog(ClientEditor, self, trans,
                                self.model, visual_mode=True)
         api.finish_transaction(trans, False)
+        trans.close()
