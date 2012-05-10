@@ -101,8 +101,6 @@ class DependencyChecker(object):
         # FIXME: makes sense to allow Stoq to run with all of these disabled.
         self._check_pyserial(PYSERIAL_REQUIRED)
         self._check_stoqdrivers(STOQDRIVERS_REQUIRED)
-        if platform.system() == 'Linux':
-            self._check_gudev(GUDEV_REQUIRED)
 
     def _error(self, title, msg):
         if self.text_mode:
@@ -203,15 +201,6 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://www.cairographics.org/pycairo/',
                           found=cairo.version,
                           required=version)
-
-    def _check_gudev(self, version):
-        try:
-            import gudev
-            gudev # pyflakes
-        except ImportError:
-            self._missing(project="python-gudev",
-                          url='https://github.com/nzjrs/python-gudev/',
-                          version=version)
 
     def _check_pypoppler(self, version):
         try:
