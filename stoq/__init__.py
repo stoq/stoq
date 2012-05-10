@@ -27,9 +27,9 @@ program_name = "Stoq"
 website = 'http://www.stoq.com.br'
 major_version = 1
 minor_version = 3
-micro_version = '0rc3'
+micro_version = 0
 extra_version = 0
-release_date = (2012, 5, 3)
+release_date = (2012, 5, 10)
 stable = True
 
 version = '%s.%s.%s' % (major_version, minor_version, micro_version)
