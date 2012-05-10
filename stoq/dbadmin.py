@@ -204,6 +204,7 @@ class StoqCommandHandler:
         trans = new_transaction()
         trans.query("UPDATE parameter_data SET field_value = '1' WHERE field_name = 'DEMO_MODE';")
         trans.commit()
+        trans.close()
 
     def _enable_plugins(self, plugin_names):
         from stoqlib.lib.pluginmanager import (PluginError,
@@ -244,6 +245,7 @@ class StoqCommandHandler:
             raise SystemExit("ERROR: %s" % e)
 
         trans.commit()
+        trans.close()
 
     def _create_dbuser(self, username):
         import os

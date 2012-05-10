@@ -172,3 +172,4 @@ class SupplierDetailsDialog(BaseEditor):
         run_person_role_dialog(SupplierEditor, self, trans,
                                self.model, visual_mode=True)
         api.finish_transaction(trans, False)
+        trans.close()

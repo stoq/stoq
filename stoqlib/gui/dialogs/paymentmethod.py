@@ -102,6 +102,7 @@ class PaymentMethodsDialog(BasicDialog):
         item = trans.get(item)
         retval = run_dialog(editor, self, trans, item)
         api.finish_transaction(trans, retval)
+        trans.close()
 
     #
     # Callbacks

@@ -1215,6 +1215,7 @@ class AppWindow(GladeDelegate):
         user = api.get_current_user(trans)
         retval = self.run_dialog(PasswordEditor, trans, user)
         api.finish_transaction(trans, retval)
+        trans.close()
 
     def _on_SignOut__activate(self, action):
         from stoqlib.lib.interfaces import ICookieFile
