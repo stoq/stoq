@@ -37,7 +37,6 @@ from kiwi.log import Logger
 
 from stoqlib.database.exceptions import SQLError
 from stoqlib.database.interfaces import IDatabaseSettings
-from stoqlib.database.settings import DatabaseSettings
 
 from stoqlib.lib.message import warning
 from stoqlib.lib.process import Process, PIPE
@@ -93,10 +92,8 @@ def database_exists_and_should_be_dropped(settings, dbname, force):
     # We are trying to delete another database. This happens when restoring a
     # backup
     if dbname != settings.dbname:
-        settings = DatabaseSettings(rdbms=settings.rdbms,
-                        address=settings.address, port=settings.port,
-                        dbname=dbname, username=settings.username,
-                        password=settings.password)
+        settings = settings.copy()
+        settings.dbname = dbname
 
     # There is no database. Safe to drop.
     if not settings.has_database():

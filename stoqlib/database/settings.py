@@ -153,6 +153,14 @@ class DatabaseSettings(object):
         """
         return self._get_connection_internal(None)
 
+    def copy(self):
+        return DatabaseSettings(address=self.address,
+                                dbname=self.dbname,
+                                rdbms=self.rdbms,
+                                port=self.port,
+                                username=self.username,
+                                password=self.password)
+
     # FIXME: Remove/Rethink
     def check_database_address(self):
         if not self.address:
