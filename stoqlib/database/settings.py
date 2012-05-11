@@ -33,6 +33,7 @@ import socket
 from kiwi.log import Logger
 from zope.interface import implements
 
+from stoqlib.database.database import test_local_database
 from stoqlib.database.exceptions import OperationalError
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.database.orm import connectionForURI
@@ -116,6 +117,12 @@ class DatabaseSettings(object):
 
         try:
             conn = connectionForURI(conn_uri)
+            # FIXME: This should be done in _build_uri but
+            #        SQLObject can't handle uris to unix sockets,
+            #        PostgresConnection._connectionFromParams is busted.
+            if self.address == "":
+                pair = test_local_database()
+                conn.dsn_dict['host'], conn.dsn_dict['port'] = pair
             conn.makeConnection()
         except OperationalError, e:
             log.info('OperationalError: %s' % e)
