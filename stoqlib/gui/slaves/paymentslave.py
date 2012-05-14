@@ -675,6 +675,11 @@ class StoreCreditMethodSlave(BasePaymentMethodSlave):
     model_type = _BaseTemporaryMethodData
     _data_editor_class = BasePaymentDataEditor
 
+
+class MoneyMethodSlave(BasePaymentMethodSlave):
+    model_type = _BaseTemporaryMethodData
+    _data_editor_class = BasePaymentDataEditor
+
     def __init__(self, wizard, parent, conn, total_amount,
                  payment_method, outstanding_value=currency(0),
                  first_duedate=None, installments_number=None):
@@ -1267,6 +1272,7 @@ def register_payment_slaves():
     dsm = get_utility(IDomainSlaveMapper)
     conn = api.get_connection()
     for method_name, slave_class in [
+        ('money', MoneyMethodSlave),
         ('bill', BillMethodSlave),
         ('check', CheckMethodSlave),
         ('card', CardMethodSlave),

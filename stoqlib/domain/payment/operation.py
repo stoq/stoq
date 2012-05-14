@@ -67,9 +67,6 @@ class MoneyPaymentOperation(object):
         return True
 
     def creatable(self, method, payment_type, separate):
-        # FIXME: This needs an editor
-        if payment_type == Payment.TYPE_OUT:
-            return False
         return True
 
     def get_constant(self, payment):

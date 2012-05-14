@@ -107,7 +107,6 @@ class MoneyPaymentMethodEditor(PaymentMethodEditor):
 
     def __init__(self, conn, model):
         PaymentMethodEditor.__init__(self, conn, model)
-        self.slave_holder.hide()
 
 
 def test():
