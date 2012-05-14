@@ -969,7 +969,8 @@ class MultipleMethodSlave(BaseEditorSlave):
         else:
             raise AssertionError
 
-        self._add_method(self._method)
+        money_method = PaymentMethod.get_by_name(self.conn, 'money')
+        self._add_method(money_method)
         for method in PaymentMethod.get_creatable_methods(
             self.conn, payment_type, separate=False):
             if method.method_name in ['multiple', 'money']:
