@@ -27,7 +27,7 @@
 import datetime
 from kiwi.ui.objectlist import Column
 
-from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.base.search import SearchDialog
 from stoqlib.domain.event import Event
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.prettydate import pretty_date
@@ -35,11 +35,10 @@ from stoqlib.lib.prettydate import pretty_date
 _ = stoqlib_gettext
 
 
-class EventSearch(SearchEditor):
+class EventSearch(SearchDialog):
     title = _('Search for events')
     size = (750, 500)
     table = search_table = Event
-    editor_class = None
     #model_list_lookup_attr = 'product_id'
     searchbar_result_strings = (_('event'), _('events'))
 

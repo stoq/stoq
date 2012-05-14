@@ -174,8 +174,7 @@ class Tasks(object):
         self.app.run_dialog(EmployeeRoleSearch, self.app.conn)
 
     def _open_events(self):
-        self.app.run_dialog(EventSearch, self.app.conn,
-                            hide_toolbar=True)
+        self.app.run_dialog(EventSearch, self.app.conn)
 
     def _open_forms(self):
         trans = api.new_transaction()
