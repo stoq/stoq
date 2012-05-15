@@ -268,6 +268,29 @@ class AdminApp(AppWindow):
     gladefile = "admin"
     embedded = True
 
+    ACTION_TASKS = {
+        'SearchRole': 'employee_roles',
+        'SearchEmployee': 'employees',
+        'SearchFiscalBook': 'fiscal_books',
+        'SearchCfop': 'cfop',
+        'SearchUserProfile': 'user_profiles',
+        'SearchUser': 'users',
+        'SearchBranch': 'branches',
+        'SearchComputer': 'stations',
+        'SearchTaxTemplate': 'tax_templates',
+        'SearchEvents': 'events',
+        'ConfigureDevices': 'devices',
+        'ConfigurePaymentMethods': 'payment_methods',
+        'ConfigurePaymentCategories': 'payment_categories',
+        'ConfigureClientCategories': 'client_categories',
+        'ConfigureTaxes': 'taxes',
+        'ConfigureSintegra': 'sintegra',
+        'ConfigureParameters': 'parameters',
+        'ConfigureInvoices': 'invoice_layouts',
+        'ConfigureInvoicePrinters': 'invoice_printers',
+        'ConfigurePlugins': 'plugins',
+    }
+
     #
     # Application
     #
@@ -331,6 +354,11 @@ class AdminApp(AppWindow):
         self.iconview.connect('item-activated', self.tasks.on_item_activated)
         self.iconview.select_path(self.model[0].path)
 
+        # Connect releated actions and tasks
+        for action_name, task in self.ACTION_TASKS.items():
+            action = getattr(self, action_name)
+            action.connect('activate', self._on_action__activate, task)
+
     def activate(self, params):
         # Admin app doesn't have anything to print/export
         for widget in [self.app.launcher.Print,
@@ -368,69 +396,8 @@ class AdminApp(AppWindow):
     # Callbacks
     #
 
-    # Search
-
-    def on_SearchRole__activate(self, action):
-        self.tasks.run_task('employee_roles')
-
-    def on_SearchEmployee__activate(self, action):
-        self.tasks.run_task('employees')
-
-    def on_SearchFiscalBook__activate(self, button):
-        self.tasks.run_task('fiscal_books')
-
-    def on_SearchCfop__activate(self, action):
-        self.tasks.run_task('cfop')
-
-    def on_SearchUserProfile__activate(self, action):
-        self.tasks.run_task('user_profiles')
-
-    def on_SearchUser__activate(self, action):
-        self.tasks.run_task('users')
-
-    def on_SearchBranch__activate(self, action):
-        self.tasks.run_task('branches')
-
-    def on_SearchComputer__activate(self, action):
-        self.tasks.run_task('stations')
-
-    def on_SearchTaxTemplate__activate(self, action):
-        self.tasks.run_task('tax_templates')
-
-    def on_SearchEvents__activate(self, action):
-        self.tasks.run_task('events')
-
-    # Configure
-
-    def on_ConfigureDevices__activate(self, action):
-        self.tasks.run_task('devices')
-
-    def on_ConfigurePaymentMethods__activate(self, action):
-        self.tasks.run_task('payment_methods')
-
-    def on_ConfigurePaymentCategories__activate(self, action):
-        self.tasks.run_task('payment_categories')
-
-    def on_ConfigureClientCategories__activate(self, action):
-        self.tasks.run_task('client_categories')
-
-    def on_ConfigureTaxes__activate(self, action):
-        self.tasks.run_task('taxes')
-
-    def on_ConfigureSintegra__activate(self, action):
-        self.tasks.run_task('sintegra')
-
-    def on_ConfigureParameters__activate(self, action):
-        self.tasks.run_task('parameters')
-
-    def on_ConfigureInvoices__activate(self, action):
-        self.tasks.run_task('invoice_layouts')
-
-    def on_ConfigureInvoicePrinters__activate(self, action):
-        self.tasks.run_task('invoice_printers')
-
-    def on_ConfigurePlugins__activate(self, action):
-        self.tasks.run_task('plugins')
+    def _on_action__activate(self, action, task):
+        self.tasks.run_task(task)
 
     # New
     def on_NewUser__activate(self, action):
