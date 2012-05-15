@@ -209,7 +209,10 @@ class SaleDetailsDialog(BaseEditor):
     def on_print_bills__clicked(self, button):
         if not BillReport.check_printable(self.payments_list):
             return False
-        print_report(BillReport, self.payments_list)
+
+        print_report(BillReport,
+                     # Print only not cancelled payments
+                     [p for p in self.payments_list if not p.is_cancelled()])
 
     def on_details_button__clicked(self, button):
         if not self.model.client_id:
