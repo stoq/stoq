@@ -26,12 +26,15 @@
 
 import random
 
+import gtk
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -80,6 +83,31 @@ class PaymentCategoryEditor(BaseEditor):
         if category_type is not None:
             self.category_type.set_sensitive(False)
 
+    #
+    # BaseEditor
+    #
+
+    def validate_confirm(self):
+        category_type = self.model.category_type
+        if (not self.edit_mode or
+            self._original_category_type == category_type):
+            return True
+
+        payments = Payment.selectBy(connection=self.conn,
+                                    category=self.model)
+        payments_count = payments.count()
+
+        if (payments_count > 0 and not
+            yesno(_("Changing the payment type will remove this category "
+                    "from %s payments. Are you sure?") % payments_count,
+                  gtk.RESPONSE_NO, _("Change"), _("Don't change"))):
+            return False
+
+        for p in payments:
+            p.category = None
+
+        return True
+
     def create_model(self, trans):
         used_colors = set([
             pc.color for pc in PaymentCategory.select(connection=trans)])
@@ -98,6 +126,7 @@ class PaymentCategoryEditor(BaseEditor):
             (_('Payable'), PaymentCategory.TYPE_PAYABLE),
             (_('Receivable'), PaymentCategory.TYPE_RECEIVABLE)])
         self.add_proxy(self.model, ['name', 'color', 'category_type'])
+        self._original_category_type = self.model.category_type
 
     #
     # Kiwi Callbacks
