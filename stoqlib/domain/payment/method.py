@@ -248,7 +248,8 @@ class PaymentMethod(Domain):
         if payment_type == Payment.TYPE_IN:
             query = AND(Payment.q.groupID == payment_group.id,
                         Payment.q.methodID == self.id,
-                        Payment.q.payment_type == Payment.TYPE_IN)
+                        Payment.q.payment_type == Payment.TYPE_IN,
+                        Payment.q.status != Payment.STATUS_CANCELLED)
             payment_count = Payment.select(query,
                                 connection=self.get_connection()).count()
             if payment_count == self.max_installments:
