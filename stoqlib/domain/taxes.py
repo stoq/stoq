@@ -171,7 +171,7 @@ class SaleItemIcms(BaseICMS):
     v_icms_st_ret = PriceCol(default=None)
 
     def _calc_cred_icms_sn(self, sale_item):
-        if self.p_cred_sn > 0:
+        if self.p_cred_sn >= 0:
             self.v_cred_icms_sn = sale_item.get_total() * self.p_cred_sn / 100
 
     def _calc_st(self, sale_item):
@@ -245,6 +245,8 @@ class SaleItemIcms(BaseICMS):
             self.v_icms_st_ret = 0
 
         if self.csosn in [101, 201]:
+            if self.p_cred_sn is None:
+                self.p_cred_sn = Decimal(0)
             self._calc_cred_icms_sn(sale_item)
 
     def update_values(self):

@@ -297,8 +297,10 @@ class SaleItemICMSSlave(BaseICMSSlave):
             widget.connect_after('changed', self._after_field_changed)
 
         self.bc_include_ipi.connect_after('toggled', self._after_field_changed)
-        self.bc_st_include_ipi.connect_after('toggled', self._after_field_changed)
+        self.bc_st_include_ipi.connect_after('toggled',
+                                             self._after_field_changed)
         self.cst.connect_after('changed', self._after_field_changed)
+        self.csosn.connect_after('changed', self._after_field_changed)
 
     def update_values(self):
         self.model.update_values()
