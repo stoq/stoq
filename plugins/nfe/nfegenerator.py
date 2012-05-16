@@ -392,7 +392,7 @@ class BaseNFeXMLGroup(object):
         return date.strftime('%Y-%m-%d')
 
     def format_value(self, value, precision=2):
-        return '%.*f' % (precision, value)
+        return '%.*f' % (precision, value or 0)
 
     def escape(self, string):
         # Pg. 71
@@ -1739,9 +1739,9 @@ NFE_ICMS_CSOSN_MAP = {
     101: NFeICMSSN101,
     102: NFeICMSSN102,
     103: NFeICMSSN102,
-    201: NFeICMSSN101,
-    202: NFeICMSSN102,
-    203: NFeICMSSN102,
+    201: NFeICMSSN201,
+    202: NFeICMSSN202,
+    203: NFeICMSSN202,
     300: NFeICMSSN102,
     400: NFeICMSSN102,
     500: NFeICMSSN500,
