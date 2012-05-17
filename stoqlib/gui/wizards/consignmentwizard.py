@@ -147,7 +147,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
 
     def get_columns(self):
         return [
-            Column('order.id', title=_('Order'), width=60, data_type=str,
+            Column('order.id', title=_('Order'), width=60, data_type=int,
                    sorted=True),
             Column('sellable.code', title=_('Code'), width=70, data_type=str),
             Column('sellable.description', title=_('Description'),
