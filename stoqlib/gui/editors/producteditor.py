@@ -28,6 +28,7 @@ import sys
 
 import gtk
 from kiwi.datatypes import ValidationError, currency
+from kiwi.enums import ListType
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqdrivers.enum import TaxType
 
@@ -112,11 +113,12 @@ class _TemporaryProductComponent(object):
 class ProductComponentSlave(BaseEditorSlave):
     gladefile = 'ProductComponentSlave'
     model_type = _TemporaryProductComponent
+    proxy_widgets = ['production_time']
 
-    def __init__(self, conn, product=None):
+    def __init__(self, conn, product=None, visual_mode=False):
         self._product = product
         self._remove_component_list = []
-        BaseEditorSlave.__init__(self, conn, model=None)
+        BaseEditorSlave.__init__(self, conn, model=None, visual_mode=visual_mode)
         self._setup_widgets()
 
     def _get_columns(self):
@@ -148,6 +150,10 @@ class ProductComponentSlave(BaseEditorSlave):
         self.component_label.show()
         self.component_tree_vbox.pack_start(self.component_label, False)
         self._update_widgets()
+        if self.visual_mode:
+            self.component_combo.set_sensitive(False)
+            self.add_button.set_sensitive(False)
+            self.sort_components_check.set_sensitive(False)
 
     def _get_products(self, sort_by_name=True):
         # FIXME: This is a kind of workaround until we have the
@@ -284,9 +290,7 @@ class ProductComponentSlave(BaseEditorSlave):
     #
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self._product, ['production_time'])
-        # FIXME:
-        self.production_time.set_value(self._product.production_time)
+        self.proxy = self.add_proxy(self._product, self.proxy_widgets)
 
     def create_model(self, conn):
         return _TemporaryProductComponent(product=self._product)
@@ -319,12 +323,18 @@ class ProductComponentSlave(BaseEditorSlave):
         self._update_widgets()
 
     def on_component_tree__selection_changed(self, widget, value):
+        if self.visual_mode:
+            return
         self._update_widgets()
 
     def on_component_tree__row_activated(self, widget, selected):
+        if self.visual_mode:
+            return
         self._edit_component()
 
     def on_component_tree__row_expanded(self, widget, value):
+        if self.visual_mode:
+            return
         self._update_widgets()
 
     def on_add_button__clicked(self, widget):
@@ -406,12 +416,14 @@ class QualityTestEditor(BaseEditor):
 class ProductQualityTestSlave(ModelListSlave):
     model_type = ProductQualityTest
 
-    def __init__(self, conn, product):
+    def __init__(self, conn, product, visual_mode=False):
         self._product = product
         ModelListSlave.__init__(self)
         self.set_reuse_transaction(self._product.get_connection())
         self.set_editor_class(QualityTestEditor)
         self.set_model_type(self.model_type)
+        if visual_mode:
+            self.set_list_type(ListType.READONLY)
 
     #
     #   ListSlave Implementation
@@ -661,9 +673,11 @@ class ProductionProductEditor(ProductEditor):
         return model
 
     def get_extra_tabs(self):
-        self._component_slave = ProductComponentSlave(self.conn, self.model)
-        tax_slave = ProductTaxSlave(self.conn, self.model)
-        quality_slave = ProductQualityTestSlave(self.conn, self.model)
+        self._component_slave = ProductComponentSlave(self.conn, self.model,
+                                                      self.visual_mode)
+        tax_slave = ProductTaxSlave(self.conn, self.model, self.visual_mode)
+        quality_slave = ProductQualityTestSlave(self.conn, self.model,
+                                                self.visual_mode)
         return [(_(u'Components'), self._component_slave),
                 (_(u'Taxes'), tax_slave),
                 (_(u'Quality'), quality_slave),
