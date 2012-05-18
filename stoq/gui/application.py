@@ -43,6 +43,7 @@ from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.crashreport import has_tracebacks
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.message import yesno
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.dialogs import get_dialog, run_dialog
 from stoqlib.gui.base.infobar import InfoBar
@@ -1336,7 +1337,13 @@ class SearchableAppWindow(AppWindow):
 
         self._loading_filters = False
 
-        self.executer = ORMObjectQueryExecuter(api.get_connection())
+        conn = api.get_connection()
+        self.executer = ORMObjectQueryExecuter()
+        # FIXME: Remove this limit, but we need to migrate all existing
+        #        searches to use lazy lists first. That in turn require
+        #        us to rewrite the queries in such a way that count(*)
+        #        will work properly.
+        self.executer.set_limit(sysparam(conn).MAX_SEARCH_RESULTS)
         self.executer.set_table(self.search_table)
 
         self.search = StoqlibSearchSlaveDelegate(self.get_columns(),
