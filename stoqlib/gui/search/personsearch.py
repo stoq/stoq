@@ -59,7 +59,6 @@ _ = stoqlib_gettext
 class BasePersonSearch(SearchEditor):
     size = (-1, 500)
     title = _('Person Search')
-    editor_class = None
     table = None
     interface = None
     editor_class = None
