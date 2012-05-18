@@ -40,8 +40,8 @@ class CfopEditor(BaseEditor):
     gladefile = 'CfopEditor'
     proxy_widgets = ('code', 'description')
 
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, conn, model, visual_mode=False):
+        BaseEditor.__init__(self, conn, model, visual_mode)
         self.set_description(self.model.code)
     #
     # BaseEditor Hooks
