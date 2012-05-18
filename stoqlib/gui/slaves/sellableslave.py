@@ -66,9 +66,9 @@ class SellableDetailsSlave(BaseEditorSlave):
     model_type = Sellable
     image_model = None
 
-    def __init__(self, conn, model=None, db_form=None):
+    def __init__(self, conn, model=None, db_form=None, visual_mode=False):
         self.db_form = db_form
-        BaseEditorSlave.__init__(self, conn, model)
+        BaseEditorSlave.__init__(self, conn, model, visual_mode)
         self._setup_image_slave(model and model.image)
 
     #
@@ -84,7 +84,7 @@ class SellableDetailsSlave(BaseEditorSlave):
     #
 
     def _setup_image_slave(self, image_model):
-        slave = ImageSlave(self.conn, image_model)
+        slave = ImageSlave(self.conn, image_model, visual_mode=self.visual_mode)
         slave.connect('image-changed', self._on_image_slave__image_changed)
         self.attach_slave('sellable_image_holder', slave)
 

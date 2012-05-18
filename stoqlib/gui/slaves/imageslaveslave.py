@@ -57,11 +57,12 @@ class ImageSlave(BaseEditorSlave):
 
     gsignal('image-changed', object)
 
-    def __init__(self, conn, model, can_change=True, can_erase=True):
+    def __init__(self, conn, model, can_change=True, can_erase=True,
+                 visual_mode=False):
         self._image_model = model
         model = _DummyImageModel()
 
-        BaseEditorSlave.__init__(self, conn, model)
+        BaseEditorSlave.__init__(self, conn, model, visual_mode)
         self._setup_image_model()
         self._setup_widgets()
 
@@ -112,6 +113,8 @@ class ImageSlave(BaseEditorSlave):
         self.save_item.connect("activate", self._on_popup_save__activate)
         self.popmenu.show_all()
         self._update_widgets()
+        if self.visual_mode:
+            self.image.set_sensitive(False)
 
     def _update_widgets(self):
         if self._thumbnail:
@@ -202,6 +205,8 @@ class ImageSlave(BaseEditorSlave):
     # image has no windows, using eventbox to catch events
 
     def on_eventbox__button_press_event(self, eventbox, event):
+        if self.visual_mode:
+            return
         if event.button == 1:
             self._edit_image()
         elif event.button == 3:
