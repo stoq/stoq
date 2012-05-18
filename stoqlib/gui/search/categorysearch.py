@@ -33,7 +33,6 @@ from kiwi.ui.objectlist import SearchColumn
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
-from stoqlib.domain.sellable import SellableCategory
 from stoqlib.domain.views import SellableCategoryView
 
 _ = stoqlib_gettext
@@ -44,12 +43,12 @@ class SellableCategorySearch(SearchEditor):
     title = _('Sellable Category Search')
     searchbar_label = _('Categories Matching:')
     result_strings = _('category'), _('categories')
-    table = search_table = SellableCategoryView
+    search_table = SellableCategoryView
     tree = True
-    editor = SellableCategoryEditor
+    editor_class = SellableCategoryEditor
 
     def __init__(self, conn):
-        SearchEditor.__init__(self, conn, SellableCategory, self.editor)
+        SearchEditor.__init__(self, conn)
         self.set_searchbar_labels(self.searchbar_label)
         self.set_result_strings(*self.result_strings)
 

@@ -45,8 +45,8 @@ class StationEditor(BaseEditor):
     #
     # BaseEditor Hooks
     #
-    def __init__(self, conn, model=None):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, conn, model=None, visual_mode=False):
+        BaseEditor.__init__(self, conn, model, visual_mode)
 
         # do not let the user change the current station
         if model and get_current_station(conn) == model:

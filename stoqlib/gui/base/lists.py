@@ -41,6 +41,7 @@ from stoqlib.lib.message import yesno
 _ = stoqlib_gettext
 
 
+# FIXME: Add persmissions verification to ModelList
 class ModelListSlave(ListSlave):
 
     def __init__(self, columns=None, conn=None,
