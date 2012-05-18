@@ -493,9 +493,9 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
     editor = ProductSupplierEditor
     model_type = ProductSupplierInfo
 
-    def __init__(self, conn, product):
+    def __init__(self, conn, product, visual_mode=False):
         self._product = product
-        BaseRelationshipEditorSlave.__init__(self, conn)
+        BaseRelationshipEditorSlave.__init__(self, conn, visual_mode=visual_mode)
 
         suggested = sysparam(conn).SUGGESTED_SUPPLIER
         if suggested is not None:
@@ -606,7 +606,7 @@ class ProductEditor(SellableEditor):
 
     def setup_slaves(self):
         details_slave = ProductDetailsSlave(self.conn, self.model.sellable,
-                                            self.db_form)
+                                            self.db_form, self.visual_mode)
         self.add_extra_tab(_(u'Details'), details_slave)
 
         for tabname, tabslave in self.get_extra_tabs():
@@ -615,10 +615,11 @@ class ProductEditor(SellableEditor):
     def get_extra_tabs(self):
         extra_tabs = []
 
-        suppliers_slave = ProductSupplierSlave(self.conn, self.model)
+        suppliers_slave = ProductSupplierSlave(self.conn, self.model,
+                                               self.visual_mode)
         extra_tabs.append((_(u'Suppliers'), suppliers_slave))
 
-        tax_slave = ProductTaxSlave(self.conn, self.model)
+        tax_slave = ProductTaxSlave(self.conn, self.model, self.visual_mode)
         extra_tabs.append((_(u'Taxes'), tax_slave))
         return extra_tabs
 

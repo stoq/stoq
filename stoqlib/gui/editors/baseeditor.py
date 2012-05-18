@@ -376,9 +376,10 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
     model_type = None
     editor = None
 
-    def __init__(self, conn, parent=None):
+    def __init__(self, conn, parent=None, visual_mode=False):
         self._parent = parent
         self.conn = conn
+        self.visual_mode = visual_mode
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self._setup_widgets()
 
@@ -413,6 +414,11 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
             self.relations_list.edit_button.set_sensitive(False)
 
         self.relations_list.add_items(self.get_relations())
+
+        if self.visual_mode:
+            self.target_combo.set_sensitive(False)
+            self.add_button.set_sensitive(False)
+            self.relations_list.set_list_type(ListType.READONLY)
 
     def get_targets(self):
         """Returns a list of valid taret objects.
@@ -484,7 +490,7 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
 
     def on_target_combo__content_changed(self, widget):
         has_selected = self.target_combo.read() is not None
-        self.add_button.set_sensitive(has_selected)
+        self.add_button.set_sensitive(has_selected and not self.visual_mode)
 
     def _on_edit_item__clicked(self, list, item):
         result = self._run_editor(item)
