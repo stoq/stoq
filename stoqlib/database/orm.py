@@ -319,7 +319,11 @@ class ORMObjectQueryExecuter(QueryExecuter):
             having = AND(self._having)
 
         result = self._query(query, having, self.conn)
-        return result.limit(self.get_limit())
+
+        limit = self.get_limit()
+        if limit != -1:
+            return result.limit(limit)
+        return result
 
     #
     # Private
