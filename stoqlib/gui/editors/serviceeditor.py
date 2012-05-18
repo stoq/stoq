@@ -87,7 +87,8 @@ class ServiceEditor(SellableEditor):
         return [(_(u'No tax'), None), (service_tax.description, service_tax)]
 
     def setup_slaves(self):
-        details_slave = SellableDetailsSlave(self.conn, self.model.sellable)
+        details_slave = SellableDetailsSlave(self.conn, self.model.sellable,
+                                             visual_mode=self.visual_mode)
         self.attach_slave('slave_holder', details_slave)
 
     def setup_widgets(self):

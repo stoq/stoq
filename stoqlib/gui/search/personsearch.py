@@ -59,7 +59,6 @@ _ = stoqlib_gettext
 class BasePersonSearch(SearchEditor):
     size = (-1, 500)
     title = _('Person Search')
-    editor_class = None
     table = None
     interface = None
     editor_class = None
@@ -75,8 +74,8 @@ class BasePersonSearch(SearchEditor):
         self.set_searchbar_labels(self.search_lbl_text)
         self.set_result_strings(*self.result_strings)
 
-    def run_dialog(self, editor_class, parent, *args):
-        return run_person_role_dialog(editor_class, parent, *args)
+    def run_dialog(self, editor_class, parent, *args, **kwargs):
+        return run_person_role_dialog(editor_class, parent, *args, **kwargs)
 
 
 class EmployeeSearch(BasePersonSearch):

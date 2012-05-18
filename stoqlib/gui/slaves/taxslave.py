@@ -87,6 +87,8 @@ class BaseTaxSlave(BaseEditorSlave):
         pass
 
     def set_valid_widgets(self, valid_widgets):
+        if self.visual_mode:
+            return
         for widget in self.all_widgets:
             if widget in valid_widgets:
                 getattr(self, widget).set_sensitive(True)

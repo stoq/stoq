@@ -210,9 +210,9 @@ class CategoryPriceSlave(BaseRelationshipEditorSlave):
     editor = CategoryPriceEditor
     model_type = ClientCategoryPrice
 
-    def __init__(self, conn, sellable):
+    def __init__(self, conn, sellable, visual_mode=False):
         self._sellable = sellable
-        BaseRelationshipEditorSlave.__init__(self, conn)
+        BaseRelationshipEditorSlave.__init__(self, conn, visual_mode=visual_mode)
 
     def get_targets(self):
         cats = ClientCategory.select(connection=self.conn).orderBy('name')
@@ -280,7 +280,7 @@ class SellableEditor(BaseEditor):
                         'unit_combo')
     proxy_widgets = (sellable_tax_widgets + sellable_widgets)
 
-    def __init__(self, conn, model=None):
+    def __init__(self, conn, model=None, visual_mode=False):
         is_new = not model
         self._sellable = None
         self._demo_mode = sysparam(conn).DEMO_MODE
@@ -291,14 +291,14 @@ class SellableEditor(BaseEditor):
             self.db_form = DatabaseForm(conn, self.ui_form_name)
         else:
             self.db_form = None
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, conn, model, visual_mode)
         self.enable_window_controls()
         if self._demo_mode:
             self._add_demo_warning()
 
         # code suggestion
         edit_code_product = sysparam(self.conn).EDIT_CODE_PRODUCT
-        self.code.set_sensitive(not edit_code_product)
+        self.code.set_sensitive(not edit_code_product and not self.visual_mode)
         if not self.code.read():
             code = u'%d' % self._sellable.id
             self.code.update(code)
@@ -318,7 +318,7 @@ class SellableEditor(BaseEditor):
                                     ])
         self.setup_widgets()
 
-        if not is_new:
+        if not is_new and not self.visual_mode:
             if self._sellable.is_closed():
                 self._add_reopen_button()
             elif self._sellable.can_close():
@@ -328,7 +328,8 @@ class SellableEditor(BaseEditor):
                 self._add_delete_button()
 
         self.set_main_tab_label(self.model_name)
-        price_slave = CategoryPriceSlave(self.conn, self.model.sellable)
+        price_slave = CategoryPriceSlave(self.conn, self.model.sellable,
+                                         self.visual_mode)
         self.add_extra_tab(_(u'Category Prices'), price_slave)
         self._setup_ui_forms()
 

@@ -45,9 +45,9 @@ class ProductInformationSlave(BaseEditorSlave):
                      'height', 'depth', 'weight', 'ncm', 'ex_tipi', 'genero']
     storable_widgets = ['minimum_quantity', 'maximum_quantity']
 
-    def __init__(self, conn, model, db_form):
+    def __init__(self, conn, model, db_form, visual_mode=False):
         self.db_form = db_form
-        BaseEditorSlave.__init__(self, conn, model)
+        BaseEditorSlave.__init__(self, conn, model, visual_mode)
 
     def _setup_unit_labels(self):
         unit = self.model.sellable.unit
@@ -109,6 +109,10 @@ class ProductInformationSlave(BaseEditorSlave):
         if storable is not None:
             self.storable_proxy = self.add_proxy(
                 storable, ProductInformationSlave.storable_widgets)
+
+    def update_visual_mode(self):
+        self.minimum_quantity.set_sensitive(False)
+        self.maximum_quantity.set_sensitive(False)
 
     def hide_stock_details(self):
         self.stock_lbl.hide()
@@ -181,7 +185,7 @@ class ProductDetailsSlave(SellableDetailsSlave):
 
     def setup_slaves(self):
         self.info_slave = ProductInformationSlave(self.conn, self.model.product,
-                                                  self.db_form)
+                                                  self.db_form, self.visual_mode)
         self.attach_slave('details_holder', self.info_slave)
 
     def hide_stock_details(self):
@@ -192,6 +196,10 @@ class ProductTaxSlave(BaseEditorSlave):
     gladefile = 'ProductTaxSlave'
     model_type = Product
     proxy_widgets = ['icms_template', 'ipi_template']
+
+    def update_visual_mode(self):
+        self.icms_template.set_sensitive(False)
+        self.ipi_template.set_sensitive(False)
 
     def _fill_combo(self, combo, type):
         types = [(None, None)]

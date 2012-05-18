@@ -50,13 +50,13 @@ class ProductTaxTemplateEditor(BaseEditor):
     size = (-1, -1)
     help_section = 'tax-class'
 
-    def __init__(self, conn, model):
+    def __init__(self, conn, model, visual_mode=False):
         self.slave_model = None
         self.edit_mode = bool(model)
         if model:
             self.slave_model = model.get_tax_model()
 
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, conn, model, visual_mode)
 
     def create_model(self, conn):
         model = ProductTaxTemplate(name=u"",
@@ -94,7 +94,7 @@ class ProductTaxTemplateEditor(BaseEditor):
 
         # Attach new slave.
         slave_class = TYPE_SLAVES[self.model.tax_type]
-        slave = slave_class(self.conn, self.slave_model)
+        slave = slave_class(self.conn, self.slave_model, self.visual_mode)
         self.attach_slave('tax_template_holder', slave)
 
     def on_tax_type__changed(self, widget):
@@ -107,11 +107,11 @@ class TaxTemplatesSearch(SearchEditor):
 
     searchbar_label = _('Class Matching:')
     result_strings = _('class'), _('classes')
-    table = search_table = ProductTaxTemplate
-    editor = ProductTaxTemplateEditor
+    search_table = ProductTaxTemplate
+    editor_class = ProductTaxTemplateEditor
 
     def __init__(self, conn):
-        SearchEditor.__init__(self, conn, self.table, self.editor)
+        SearchEditor.__init__(self, conn)
         self.set_searchbar_labels(self.searchbar_label)
         self.set_result_strings(*self.result_strings)
 
