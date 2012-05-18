@@ -45,9 +45,9 @@ class SellableCategoryEditor(BaseEditor):
                      'tax_constant',
                      'category')
 
-    def __init__(self, conn, model, parent_category=None):
+    def __init__(self, conn, model, parent_category=None, visual_mode=False):
         self._parent_category = parent_category
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, conn, model, visual_mode)
         self.set_description(self.model.get_description())
 
     #

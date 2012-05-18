@@ -48,8 +48,8 @@ class PurchaseItemEditor(BaseEditor):
                      'quantity',
                      'total']
 
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, conn, model, visual_mode=False):
+        BaseEditor.__init__(self, conn, model, visual_mode)
         order = self.model.order
         if order.status == PurchaseOrder.ORDER_CONFIRMED:
             self._set_not_editable()
