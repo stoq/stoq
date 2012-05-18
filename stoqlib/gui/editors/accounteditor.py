@@ -422,7 +422,7 @@ class AccountEditor(BaseEditor):
 def test():
     creator = api.prepare_test()
     retval = run_dialog(AccountEditor, None, creator.trans, None,
-                        parent_account=None)
+                        parent_account=None, visual_mode=True)
     api.finish_transaction(creator.trans, retval)
 
 
