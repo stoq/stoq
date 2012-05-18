@@ -233,6 +233,10 @@ class SearchDialog(BasicDialog):
                                 size=self.size)
 
         self.executer = ORMObjectQueryExecuter(api.get_connection())
+        # FIXME: Remove this limit, but we need to migrate all existing
+        #        searches to use lazy lists first. That in turn require
+        #        us to rewrite the queries in such a way that count(*)
+        #        will work properly.
         self.executer.set_limit(sysparam(self.conn).MAX_SEARCH_RESULTS)
         self.set_table(self.search_table)
 
