@@ -28,7 +28,7 @@ from kiwi.datatypes import converter
 
 from stoqlib.database.orm import AND, OR, const
 from stoqlib.database.orm import Alias, LEFTJOINOn, INNERJOINOn
-from stoqlib.database.orm import Viewable
+from stoqlib.database.orm import Select, Viewable
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.comment import PaymentComment
@@ -84,15 +84,13 @@ class BasePaymentView(Viewable):
     PaymentGroup_Sale = Alias(PaymentGroup, 'payment_group_sale')
     PaymentGroup_Purchase = Alias(PaymentGroup, 'payment_group_purchase')
 
-    joins = [
+    _count_joins = [
         LEFTJOINOn(None, PaymentGroup,
                    PaymentGroup.q.id == Payment.q.groupID),
         LEFTJOINOn(None, PaymentCategory,
                    PaymentCategory.q.id == Payment.q.categoryID),
         INNERJOINOn(None, PaymentMethod,
                     Payment.q.methodID == PaymentMethod.q.id),
-        LEFTJOINOn(None, PaymentComment,
-                   PaymentComment.q.paymentID == Payment.q.id),
 
         # Purchase
         LEFTJOINOn(None, PaymentGroup_Purchase,
@@ -106,6 +104,19 @@ class BasePaymentView(Viewable):
         LEFTJOINOn(None, Sale,
                    Sale.q.groupID == PaymentGroup_Sale.q.id),
     ]
+
+    joins = _count_joins + [
+        LEFTJOINOn(None, PaymentComment,
+                   PaymentComment.q.paymentID == Payment.q.id),
+        ]
+
+    @classmethod
+    def count_callback(cls, conn, sresults):
+        query = Select(['COUNT(*)'],
+                       join=cls._count_joins,
+                       clause=sresults.clause,
+                       staticTables=sresults.tables)
+        return conn.queryOne(conn.sqlrepr(query))[0]
 
     def can_change_due_date(self):
         return self.status not in [Payment.STATUS_PAID,

@@ -142,6 +142,7 @@ class Viewable(object):
     clause = None
     joins = []
     hidden_columns = []
+    count_callback = False
 
     def __classinit__(cls, new_attrs):
         if not cls.__bases__ == (object,):
@@ -258,7 +259,8 @@ class Viewable(object):
                                      connection=connection,
                                      join=cls.joins,
                                      having=having,
-                                     ns=cls.columns)
+                                     ns=cls.columns,
+                                     count_callback=cls.count_callback)
 
     def sync(self):
         obj = self.select(
@@ -341,9 +343,10 @@ class ViewableSelectResults(SelectResults):
     IterationClass = ViewableIteration
 
     def __init__(self, sourceClass, clause, clauseTables=None,
+                 count_callback=False,
                  **ops):
         SelectResults.__init__(self, sourceClass, clause, clauseTables, **ops)
-
+        self.count_callback = count_callback
         # The table we're joining from must be the last one in the FROM-clause
         table = sourceClass.sqlmeta.table
         if self.tables[-1] != table:
@@ -354,6 +357,8 @@ class ViewableSelectResults(SelectResults):
         return queryForSelect(self._getConnection(), self)
 
     def count(self):
+        if self.count_callback:
+            return self.count_callback(self._getConnection(), self)
         return len(list(self))
 
 

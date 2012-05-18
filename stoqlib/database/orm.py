@@ -51,7 +51,8 @@ from sqlobject.joins import SOSingleJoin, SOMultipleJoin
 from sqlobject.main import sqlhub, SQLObject
 from sqlobject.sqlbuilder import (AND, NOT, DESC, Alias, NOTIN, IN, INNERJOINOn,
                                   ISNOTNULL, LEFTJOINOn, LIKE, OR, Update, Field,
-                                  NoDefault, SQLExpression, const, sqlIdentifier, func)
+                                  NoDefault, SQLExpression, const, sqlIdentifier, func,
+                                  Select)
 from sqlobject.sresults import SelectResults
 from sqlobject.util.csvexport import export_csv
 from sqlobject.viewable import Viewable
@@ -536,6 +537,7 @@ Transaction = Transaction
 # Misc
 export_csv = export_csv
 SelectResults = SelectResults
+Select = Select
 NoDefault = NoDefault
 Update = Update
 Viewable = Viewable
