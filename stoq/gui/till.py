@@ -342,7 +342,7 @@ class TillApp(SearchableAppWindow):
         self._inventory_widgets = [self.Confirm, self.SearchSale,
                                    self.Return]
         self.register_sensitive_group(self._inventory_widgets,
-                                      lambda: not self.has_open_inventory())
+                                      lambda: not self.has_open_inventory)
 
         self.total_label.set_size('xx-large')
         self.total_label.set_bold(True)

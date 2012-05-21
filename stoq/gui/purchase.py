@@ -190,7 +190,7 @@ class PurchaseApp(SearchableAppWindow):
         self._inventory_widgets = [self.NewConsignment,
                                    self.CloseInConsignment]
         self.register_sensitive_group(self._inventory_widgets,
-                                      lambda: not self.has_open_inventory())
+                                      lambda: not self.has_open_inventory)
 
     def activate(self, params):
         self.app.launcher.NewToolItem.set_tooltip(
