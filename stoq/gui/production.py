@@ -130,7 +130,7 @@ class ProductionApp(SearchableAppWindow):
 
         self._inventory_widgets = [self.StartProduction]
         self.register_sensitive_group(self._inventory_widgets,
-                                      lambda: not self.has_open_inventory())
+                                      lambda: not self.has_open_inventory)
 
     def activate(self, params):
         self.search.refresh()

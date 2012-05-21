@@ -157,7 +157,7 @@ class StockApp(SearchableAppWindow):
                                    self.StockInitial, self.NewStockDecrease,
                                    self.LoanNew, self.LoanClose]
         self.register_sensitive_group(self._inventory_widgets,
-                                      lambda: not self.has_open_inventory())
+                                      lambda: not self.has_open_inventory)
 
         self.image_viewer = None
 
