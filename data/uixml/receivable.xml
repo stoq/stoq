@@ -45,7 +45,7 @@
       <menuitem action="Edit"/>
       <menuitem action="Comments"/>
       <separator/>
-      <menuitem action="PrintBill"/>
+      <menuitem action="PrintDocument"/>
       <menuitem action="PrintReceipt"/>
     </menu>
   </placeholder>
@@ -68,7 +68,7 @@
   <menuitem action="Edit"/>
   <menuitem action="Comments"/>
   <separator/>
-  <menuitem action="PrintBill"/>
+  <menuitem action="PrintDocument"/>
   <menuitem action="PrintReceipt"/>
 </popup>
 <toolbar action="toolbar">

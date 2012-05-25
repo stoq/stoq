@@ -705,6 +705,20 @@
             <property name="spacing">6</property>
             <property name="layout_style">end</property>
             <child>
+              <object class="GtkButton" id="print_booklets">
+                <property name="label" translatable="yes">Print booklets</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkButton" id="print_bills">
                 <property name="label" translatable="yes">Print Bills</property>
                 <property name="visible">True</property>
@@ -715,7 +729,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">0</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -730,7 +744,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
