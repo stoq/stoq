@@ -136,14 +136,10 @@ class SaleDetailsDialog(BaseEditor):
             connection=self.conn)
         self.payments_info_list.add_list(changes)
 
-        has_bills = any([p.method.method_name == 'bill'
-                         for p in self.payments_list])
-        if not has_bills:
-            self.print_bills.hide()
-
-        has_booklets = any([p.method.method_name == 'store_credit'
-                            for p in self.payments_list])
-        self.print_booklets.set_visible(has_booklets)
+        for widget, method_name in [(self.print_bills, 'bill'),
+                                    (self.print_booklets, 'store_credit')]:
+            widget.set_visible(any([p.method.method_name == method_name
+                                    for p in self.payments_list]))
 
     def _get_payments_columns(self):
         return [Column('id', "#", data_type=int, width=50,
