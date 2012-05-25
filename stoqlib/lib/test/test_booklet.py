@@ -104,9 +104,9 @@ class TestBooklet(DomainTest):
     def _diff_expected(self, payments, expected_name):
         basedir = test.__path__[0]
         expected = os.path.join(basedir,
-                                'booklet-%s-expected.pdf.html' % expected_name)
+                                'booklet-%s.pdf.html' % expected_name)
         output = os.path.join(basedir,
-                              'booklet-%s-output.pdf.html' % expected_name)
+                              'booklet-%s-tmp.pdf.html' % expected_name)
 
         def save_report(filename, payments):
             report = BookletReport(fp_tmp.name, payments)

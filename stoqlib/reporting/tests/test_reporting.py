@@ -26,11 +26,11 @@
 import datetime
 from decimal import Decimal
 import os
+import tempfile
 import sys
 
 from twisted.trial.unittest import SkipTest
 
-import stoqlib
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
@@ -47,6 +47,7 @@ from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.lib.parameters import sysparam
+from stoqlib.reporting import tests
 from stoqlib.reporting.payments_receipt import (InPaymentReceipt,
                                                OutPaymentReceipt)
 from stoqlib.reporting.calls_report import CallsReport
@@ -59,7 +60,7 @@ from stoqlib.reporting.purchase import PurchaseQuoteReport
 from stoqlib.reporting.service import ServicePriceReport
 from stoqlib.reporting.sale import SaleOrderReport, SalesPersonReport
 from stoqlib.reporting.till import TillHistoryReport
-from stoqlib.lib.diffutils import diff_files
+from stoqlib.lib.diffutils import diff_pdf_htmls
 from stoqlib.lib.pdf import pdftohtml
 
 _search_restore_columns = StoqlibSearchSlaveDelegate.restore_columns
@@ -81,65 +82,30 @@ class TestReport(DomainTest):
         StoqlibSearchSlaveDelegate.restore_columns = _search_restore_columns
 
     def checkPDF(self, report_class, *args, **kwargs):
-        exists_pdf = False
         frame = sys._getframe(1)
-        filename = "%s.pdf" % (frame.f_code.co_name[4:], )
-        filename = os.path.join(os.path.dirname(stoqlib.__file__),
-                               "reporting", "tests", "data", filename)
-        if os.path.exists(filename):
-            original_filename = filename
-            exists_pdf = True
-            filename = filename + '.tmp'
-        report = report_class(filename, *args, **kwargs)
-        report.save()
+        basename = frame.f_code.co_name[4:]
+        basedir = os.path.join(tests.__path__[0], 'data')
+        expected = os.path.join(basedir, '%s.pdf.html' % basename)
+        output = os.path.join(basedir, '%s-tmp.pdf.html' % basename)
 
-        if exists_pdf:
-            path = os.path.split(filename)[0]
-            olddir = os.getcwd()
-            os.chdir(path)
+        if not os.path.isfile(expected):
+            with tempfile.NamedTemporaryFile(prefix='stoq-report') as fp_tmp:
+                report = report_class(fp_tmp.name, *args, **kwargs)
+                report.save()
+                with open(expected, 'w') as fp:
+                    pdftohtml(fp_tmp.name, fp.name)
+            return
+        with tempfile.NamedTemporaryFile(prefix='stoq-report') as fp_tmp:
+            report = report_class(fp_tmp.name, *args, **kwargs)
+            report.save()
+            with open(output, 'w') as fp:
+                pdftohtml(fp_tmp.name, fp.name)
 
-            for name in (original_filename, filename):
-                pdftohtml(name, name)
-            try:
-                self._comparePDF(original_filename, filename)
-            finally:
-                os.chdir(olddir)
+        # Diff and compare
+        diff = diff_pdf_htmls(expected, output)
+        os.unlink(output)
 
-        if filename.endswith('.tmp'):
-            os.unlink(filename)
-
-    def _comparePDF(self, original_filename, filename):
-        original_filename_html = "%s.html" % (original_filename, )
-        tmp_html = "%s.html" % (filename, )
-
-        out_original_filename = "%s.htm" % (original_filename, )
-        out_tmp = "%s.htm" % (filename, )
-
-        input_original = open(original_filename_html)
-        input_filename = open(tmp_html)
-        output_original = open(out_original_filename, "w")
-        output_tmp = open(out_tmp, "w")
-
-        for line in input_original:
-            if line.startswith("<META"):
-                continue
-            output_original.write(line, )
-        for line in input_filename:
-            if line.startswith("<META"):
-                continue
-            output_tmp.write(line, )
-        for file in (input_original, input_filename, output_original,
-                     output_tmp):
-            file.close()
-        diff = diff_files(out_original_filename, out_tmp)
-        os.unlink(tmp_html)
-        os.unlink(out_tmp)
-        os.unlink(out_original_filename)
-        os.unlink(original_filename_html)
-        if diff:
-            if filename.endswith('.tmp'):
-                os.unlink(filename)
-            self.fail('%s\n%s' % ("Files differ, output:", diff))
+        self.failIf(diff, '%s\n%s' % ("Files differ, output:", diff))
 
     def testPayablePaymentReport(self):
         raise SkipTest('We need a SearchDialog to test this report.')

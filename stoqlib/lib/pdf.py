@@ -26,5 +26,6 @@ import os
 
 
 def pdftohtml(filename, output):
-    cmd = 'pdftohtml -noframes -i -q %s %s' % (filename, output)
-    return os.system(cmd)
+    # FIXME: Change this to use popen
+    return os.system('pdftohtml -stdout -xml -noframes -i -q %s | '
+                     'xmllint --format - > %s' % (filename, output))
