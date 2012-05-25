@@ -131,15 +131,15 @@ class TestReport(DomainTest):
         for file in (input_original, input_filename, output_original,
                      output_tmp):
             file.close()
-        retval = diff_files(out_original_filename, out_tmp)
+        diff = diff_files(out_original_filename, out_tmp)
         os.unlink(tmp_html)
         os.unlink(out_tmp)
         os.unlink(out_original_filename)
         os.unlink(original_filename_html)
-        if retval:
+        if diff:
             if filename.endswith('.tmp'):
                 os.unlink(filename)
-            raise AssertionError("Files differ, check output above")
+            self.fail('%s\n%s' % ("Files differ, output:", diff))
 
     def testPayablePaymentReport(self):
         raise SkipTest('We need a SearchDialog to test this report.')

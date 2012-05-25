@@ -109,8 +109,8 @@ class TestBank(DomainTest):
     def _diff(self, sale, name):
         generated = self._render_bill_to_html(sale)
         expected = self._get_expected(name, generated)
-        if diff_pdf_htmls(expected, generated):
-            raise AssertionError("files differ, see output above")
+        diff = diff_pdf_htmls(expected, generated)
+        self.failIf(diff, '%s\n%s' % ("Files differ, output:", diff))
 
     def testBancoDoBrasil(self):
         sale = self._create_bill_sale()

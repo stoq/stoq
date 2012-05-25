@@ -129,7 +129,7 @@ class TestBooklet(DomainTest):
                 pdftohtml(fp_tmp.name, fp.name)
 
         # Diff and compare
-        retval = diff_pdf_htmls(expected, output)
+        diff = diff_pdf_htmls(expected, output)
         os.unlink(output)
 
-        self.failIf(retval, "Files differ, check output above")
+        self.failIf(diff, '%s\n%s' % ("Files differ, output:", diff))

@@ -84,10 +84,10 @@ class TestNfeGenerator(DomainTest):
             fp.write(remove_accentuation(generator._as_txt()))
 
         # Diff and compare
-        retval = diff_files(expected, output)
+        diff = diff_files(expected, output)
         os.unlink(output)
 
-        self.failIf(retval, "Files differ, check output above")
+        self.failIf(diff, '%s\n%s' % ("Files differ, output:", diff))
 
     def test_invalid_cnpj(self):
         sale = self._create_sale(2666, 2345, 5432)

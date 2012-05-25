@@ -48,10 +48,10 @@ def compare_invoice_file(invoice, basename):
         fp.write('-- PAGE %d - END ----\n' % (n + 1, ))
     fp.close()
     expected = os.path.join(test.__path__[0], expected)
-    retval = diff_files(expected, output)
+    diff = diff_files(expected, output)
     os.unlink(output)
-    if retval:
-        raise AssertionError("Files differ, check output above")
+    if diff:
+        raise AssertionError('%s\n%s' % ("Files differ, output:", diff))
 
 
 class InvoiceTest(DomainTest):
@@ -95,7 +95,10 @@ class InvoiceTest(DomainTest):
         invoice = SaleInvoice(sale, layout)
         invoice.today = datetime.datetime(2007, 1, 1, 10, 20, 30)
 
-        compare_invoice_file(invoice, 'sale-invoice')
+        try:
+            compare_invoice_file(invoice, 'sale-invoice')
+        except AssertionError as e:
+            self.fail(e)
 
     def testHasInvoiceNumber(self):
         sale = self.create_sale()
