@@ -672,7 +672,6 @@ class DepositMethodSlave(BasePaymentMethodSlave):
 
 
 class StoreCreditMethodSlave(BasePaymentMethodSlave):
-    model_type = _BaseTemporaryMethodData
     _data_editor_class = BasePaymentDataEditor
 
 
@@ -690,8 +689,6 @@ class MoneyMethodSlave(BasePaymentMethodSlave):
                                         first_duedate=first_duedate)
         self.bank_label.hide()
         self.bank_combo.hide()
-        self.first_duedate_lbl.hide()
-        self.first_duedate.hide()
 
 
 class CardMethodSlave(BaseEditorSlave):
