@@ -31,21 +31,9 @@ import re
 def _diff(orig, new, short, verbose):
     lines = difflib.unified_diff(orig, new)
     if not lines:
-        return
+        return ''
 
-    diff = False
-    try:
-        first = lines.next()
-        diff = True
-    except StopIteration:
-        pass
-    else:
-        print
-        print '%s: %s' % (short, first[:-1])
-        for line in lines:
-            print '%s: %s' % (short, line[:-1])
-
-    return diff
+    return ''.join('%s: %s' % (short, line) for line in lines)
 
 
 def diff_files(orig, new, verbose=False):
@@ -54,10 +42,12 @@ def diff_files(orig, new, verbose=False):
     @return: True i the files differ otherwise False
     :rtype: bool
     """
-    return _diff(open(orig).readlines(),
-                 open(new).readlines(),
-                 short=os.path.basename(orig),
-                 verbose=verbose)
+    with open(orig) as f_orig:
+        with open(new) as f_new:
+            return _diff(f_orig.readlines(),
+                         f_new.readlines(),
+                         short=os.path.basename(orig),
+                         verbose=verbose)
 
 
 def diff_strings(orig, new, verbose=False):
@@ -77,9 +67,12 @@ def diff_strings(orig, new, verbose=False):
 
 def diff_pdf_htmls(original_filename, filename):
     # REPLACE all generated dates with %%DATE%%
-    data = open(filename).read()
-    data = re.sub(r'name="date" content="(.*)"',
-                  r'name="date" content="%%DATE%%"', data)
-    open(filename, 'w').write(data)
+    for fname in [original_filename, filename]:
+        with open(fname) as f:
+            data = f.read()
+            data = re.sub(r'name="date" content="(.*)"',
+                          r'name="date" content="%%DATE%%"', data)
+        with open(fname, 'w') as f:
+            f.write(data)
 
     return diff_files(original_filename, filename)

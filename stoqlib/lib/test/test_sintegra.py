@@ -40,10 +40,10 @@ def compare_sintegra_file(sfile, basename):
 
     sfile.write(output)
     expected = os.path.join(test.__path__[0], expected)
-    retval = diff_files(expected, output)
+    diff = diff_files(expected, output)
     os.unlink(output)
-    if retval:
-        raise AssertionError("Files differ, check output above")
+    if diff:
+        raise AssertionError('%s\n%s' % ("Files differ, output:", diff))
 
 
 class SintegraTest(DomainTest):
@@ -104,4 +104,7 @@ class SintegraTest(DomainTest):
                                  tax.code, tax.value)
         s.close()
 
-        compare_sintegra_file(s, 'sintegra')
+        try:
+            compare_sintegra_file(s, 'sintegra')
+        except AssertionError as e:
+            self.fail(e)

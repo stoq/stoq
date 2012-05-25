@@ -107,4 +107,7 @@ class TestSintegraGenerator(DomainTest):
                                              datetime.date(2007, 6, 1),
                                              datetime.date(2007, 6, 30))
 
-        compare_sintegra_file(generator.sintegra, 'sintegra-receival')
+        try:
+            compare_sintegra_file(generator.sintegra, 'sintegra-receival')
+        except AssertionError as e:
+            self.fail(e)
