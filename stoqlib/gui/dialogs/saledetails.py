@@ -44,6 +44,7 @@ from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.reporting.boleto import BillReport
+from stoqlib.reporting.booklet import BookletReport
 from stoqlib.reporting.sale import SaleOrderReport
 
 _ = stoqlib_gettext
@@ -140,6 +141,10 @@ class SaleDetailsDialog(BaseEditor):
         if not has_bills:
             self.print_bills.hide()
 
+        has_booklets = any([p.method.method_name == 'store_credit'
+                            for p in self.payments_list])
+        self.print_booklets.set_visible(has_booklets)
+
     def _get_payments_columns(self):
         return [Column('id', "#", data_type=int, width=50,
                        format='%04d', justify=gtk.JUSTIFY_RIGHT),
@@ -211,6 +216,11 @@ class SaleDetailsDialog(BaseEditor):
             return False
 
         print_report(BillReport,
+                     # Print only not cancelled payments
+                     [p for p in self.payments_list if not p.is_cancelled()])
+
+    def on_print_booklets__clicked(self, button):
+        print_report(BookletReport,
                      # Print only not cancelled payments
                      [p for p in self.payments_list if not p.is_cancelled()])
 

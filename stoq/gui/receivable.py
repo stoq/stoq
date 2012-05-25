@@ -117,7 +117,7 @@ class ReceivableApp(BaseAccountWindow):
             ('Comments', None, _('Comments...'),
              group.get('payment_comments'),
              _('Add comments to the selected payment')),
-            ('PrintBill', gtk.STOCK_PRINT, _('Print bill...'),
+            ('PrintDocument', gtk.STOCK_PRINT, _('Print document...'),
              group.get('payment_print_bill'),
              _('Print a bill for the selected payment')),
             ('PrintReceipt', None, _('Print _receipt...'),
@@ -249,7 +249,7 @@ class ReceivableApp(BaseAccountWindow):
         self.SetNotPaid.set_sensitive(
             one_item and self._is_paid(selected))
         self.Edit.set_sensitive(self._can_edit(selected))
-        self.PrintBill.set_sensitive(self._can_print(selected))
+        self.PrintDocument.set_sensitive(self._can_print(selected))
 
     def _get_status_values(self):
         values = [(v, k) for k, v in Payment.statuses.items()]
@@ -556,7 +556,7 @@ class ReceivableApp(BaseAccountWindow):
         if api.finish_transaction(trans, retval):
             self.search.refresh()
 
-    def on_PrintBill__activate(self, action):
+    def on_PrintDocument__activate(self, action):
         view = self.results.get_selected_rows()[0]
         payments = [view.payment]
         report = view.operation.print_(payments)
