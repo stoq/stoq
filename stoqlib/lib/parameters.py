@@ -547,7 +547,16 @@ _details = [
           'replaced with the due date of the bill'),
         str, multiline=True, initial=""),
 
-]
+    ParameterDetails(
+        'BOOKLET_INSTRUCTIONS',
+        _('Sales'),
+        _('Booklet instructions '),
+        _('When printing booklets, include the first 4 lines of these on it. '
+          'This usually includes instructions on how to pay the booklet and '
+          'the validity and the terms.'),
+        str, multiline=True,
+        initial=_("Payable at any branch on presentation of this booklet")),
+    ]
 
 
 class ParameterAccess(ClassInittableObject):
