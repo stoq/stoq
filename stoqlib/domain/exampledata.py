@@ -405,13 +405,13 @@ class ExampleCreator(object):
                     connection=self.trans,
                     **extra_args)
 
-    def create_sale_item(self):
+    def create_sale_item(self, sale=None):
         from stoqlib.domain.sale import SaleItem
         sellable = self.create_sellable()
         return SaleItem(connection=self.trans,
                         quantity=1,
                         price=100,
-                        sale=self.create_sale(),
+                        sale=sale or self.create_sale(),
                         sellable=sellable)
 
     def create_sale_item_icms(self):
@@ -675,7 +675,8 @@ class ExampleCreator(object):
                               short_name='Velec',
                               open_contract_date=datetime.date(2006, 01, 01))
 
-    def create_payment(self, payment_type=None, date=None):
+    def create_payment(self, payment_type=None, date=None,
+                       value=None, method=None):
         from stoqlib.domain.payment.payment import Payment
         if payment_type is None:
             payment_type = Payment.TYPE_OUT
@@ -686,7 +687,7 @@ class ExampleCreator(object):
                        due_date=date,
                        value=Decimal(10),
                        till=None,
-                       method=self.get_payment_method(),
+                       method=method or self.get_payment_method(),
                        category=None,
                        connection=self.trans,
                        payment_type=payment_type)
