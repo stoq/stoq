@@ -285,7 +285,7 @@ class StoreCreditPaymentOperation(object):
         pass
 
     def create_transaction(self):
-        return False
+        return True
 
     def selectable(self, method):
         return True
@@ -304,14 +304,24 @@ class StoreCreditPaymentOperation(object):
         return True
 
     def can_pay(self, payment):
-        # Until we fix bug 3703, don't allow receiving store credit payments
-        return False
+        return True
 
     def can_print(self, payment):
-        return False
+        # FIXME: Because of bug #5039, it's possible to create an alone
+        #        store_credit payment without a payer. It makes no sense
+        #        to print those as none will pay. Remove this when fixed
+        print payment.group.payer
+        print payment.status != Payment.STATUS_PENDING
+        if not payment.group.payer:
+            return False
+        if payment.status != Payment.STATUS_PENDING:
+            return False
 
-    def print_(self, payment):
-        pass
+        return True
+
+    def print_(self, payments):
+        from stoqlib.reporting.booklet import BookletReport
+        return BookletReport
 
     def get_constant(self, payment):
         # FIXME: Add another constant to stoqdrivers?
