@@ -50,7 +50,8 @@ class PaymentMethodsDialog(BasicDialog):
                       'money': MoneyPaymentMethodEditor,
                       'check': PaymentMethodEditor,
                       'bill': PaymentMethodEditor,
-                      'deposit': PaymentMethodEditor}
+                      'deposit': PaymentMethodEditor,
+                      'store_credit': PaymentMethodEditor}
 
     def __init__(self, conn):
         BasicDialog.__init__(self)
