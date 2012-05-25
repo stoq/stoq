@@ -208,17 +208,23 @@ class SaleDetailsDialog(BaseEditor):
                      Sale.get(self.model.id, connection=self.conn))
 
     def on_print_bills__clicked(self, button):
-        if not BillReport.check_printable(self.payments_list):
+        # Remove cancelled and not bill payments
+        payments = [p for p in self.payments_list if
+                    p.method.method_name == 'bill' and
+                    not p.is_cancelled()]
+
+        if not BillReport.check_printable(payments):
             return False
 
-        print_report(BillReport,
-                     # Print only not cancelled payments
-                     [p for p in self.payments_list if not p.is_cancelled()])
+        print_report(BillReport, payments)
 
     def on_print_booklets__clicked(self, button):
-        print_report(BookletReport,
-                     # Print only not cancelled payments
-                     [p for p in self.payments_list if not p.is_cancelled()])
+        # Remove cancelled and not store_credit payments
+        payments = [p for p in self.payments_list if
+                    p.method.method_name == 'store_credit' and
+                    not p.is_cancelled()]
+
+        print_report(BookletReport, payments)
 
     def on_details_button__clicked(self, button):
         if not self.model.client_id:
