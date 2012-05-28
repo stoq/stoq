@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-05-25 12:06-0300\n"
-"PO-Revision-Date: 2012-04-01 06:28+0000\n"
+"PO-Revision-Date: 2012-05-27 15:33+0000\n"
 "Last-Translator: Fitoschido <fitoschido@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-05-26 05:16+0000\n"
+"X-Launchpad-Export-Date: 2012-05-28 05:30+0000\n"
 "X-Generator: Launchpad (build 15288)\n"
 "Language: es\n"
 
@@ -29,7 +29,7 @@ msgstr "Código de cuenta:"
 #: ../data/glade/AccountEditor.ui.h:3
 #: ../data/glade/SellableCategoryEditor.ui.h:2
 msgid "Parent:"
-msgstr ""
+msgstr "Padre:"
 
 #: ../data/glade/AccountEditor.ui.h:4
 #: ../data/glade/DeviceConstantEditor.ui.h:1
@@ -126,7 +126,7 @@ msgstr "_Editar…"
 #: ../stoqlib/gui/editors/paymenteditor.py:246
 #: ../stoqlib/gui/editors/producteditor.py:622
 msgid "Details"
-msgstr ""
+msgstr "Detalles"
 
 #: ../data/glade/AddressSlave.ui.h:1
 msgid "Street:"
@@ -190,13 +190,13 @@ msgstr "Balance:"
 #. Do not translate $CURRENCY
 #: ../data/glade/BaseCashSlave.ui.h:4
 msgid "Cash Amount ($CURRENCY):"
-msgstr ""
+msgstr "Cantidad de efectivo ($MONEDA):"
 
 #: ../data/glade/BasePaymentDataEditor.ui.h:1
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:2
 #: ../data/glade/PaymentEditor.ui.h:4
 msgid "Due date:"
-msgstr ""
+msgstr "Fecha de vencimiento:"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/BasePaymentDataEditor.ui.h:3
@@ -356,11 +356,11 @@ msgstr "Mensaje:"
 
 #: ../data/glade/CallsEditor.ui.h:5
 msgid "Person:"
-msgstr ""
+msgstr "Persona:"
 
 #: ../data/glade/CallsEditor.ui.h:6 ../data/glade/SaleDetailsDialog.ui.h:7
 msgid "Client details"
-msgstr ""
+msgstr "Detalles del cliente"
 
 #: ../data/glade/CashAdvanceEditor.ui.h:1
 msgid "Credit for Employee:"
@@ -514,11 +514,11 @@ msgstr " Sin comisión"
 
 #: ../data/glade/CommissionDataSlave.ui.h:4
 msgid "Direct sale commission:"
-msgstr ""
+msgstr "Comisión de venta directa:"
 
 #: ../data/glade/CommissionDataSlave.ui.h:5
 msgid "In installments commission:"
-msgstr ""
+msgstr "En comisión de plazos:"
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:1
 msgid "Fancy Name:"
@@ -566,7 +566,7 @@ msgstr ""
 
 #: ../data/glade/CreateDeliveryEditor.ui.h:6
 msgid "Create a new client"
-msgstr ""
+msgstr "Crear un cliente nuevo"
 
 #: ../data/glade/CreateDeliveryEditor.ui.h:7
 msgid "Show details of the selected client"
@@ -575,7 +575,7 @@ msgstr ""
 #: ../data/glade/CreateDeliveryEditor.ui.h:8
 #: ../data/glade/SalesPersonStep.ui.h:7
 msgid "Client details."
-msgstr ""
+msgstr "Detalles del cliente."
 
 #: ../data/glade/CreateDeliveryEditor.ui.h:9
 #: ../data/glade/DeliveryEditor.ui.h:3
