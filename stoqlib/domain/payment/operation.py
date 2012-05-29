@@ -310,8 +310,6 @@ class StoreCreditPaymentOperation(object):
         # FIXME: Because of bug #5039, it's possible to create an alone
         #        store_credit payment without a payer. It makes no sense
         #        to print those as none will pay. Remove this when fixed
-        print payment.group.payer
-        print payment.status != Payment.STATUS_PENDING
         if not payment.group.payer:
             return False
         if payment.status != Payment.STATUS_PENDING:
