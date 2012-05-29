@@ -108,7 +108,7 @@ class _TemporaryBankData(object):
 # Editors
 #
 
-class BasePaymentDataEditor(BaseEditor):
+class _BasePaymentDataEditor(BaseEditor):
     """A base editor to set payment information.
     """
 
@@ -156,7 +156,7 @@ class BasePaymentDataEditor(BaseEditor):
                                       "a positive number"))
 
 
-class CheckDataEditor(BasePaymentDataEditor):
+class CheckDataEditor(_BasePaymentDataEditor):
     """An editor to set payment information of check payment method.
     """
 
@@ -403,15 +403,12 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
     gladefile = 'BasePaymentMethodSlave'
     model_type = _BaseTemporaryMethodData
+    data_editor_class = _BasePaymentDataEditor
     slave_holder = 'slave_holder'
     proxy_widgets = ('interval_type_combo',
                      'intervals',
                      'first_duedate',
                      'installments_number')
-
-    # This attribute must be defined in child.
-    # Use BasePaymentDataEditor or one of it's children.
-    _data_editor_class = None
 
     def __init__(self, wizard, parent, conn, order_obj, payment_method,
                  outstanding_value=currency(0), first_duedate=None,
@@ -435,6 +432,10 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn)
         self.register_validate_function(self._refresh_next)
 
+        # Most of slaves don't have bank information
+        self.bank_combo.hide()
+        self.bank_label.hide()
+
     #
     # Private Methods
     #
@@ -452,7 +453,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                              self.payment_group,
                                              self.method,
                                              self.total_value,
-                                             self._data_editor_class,
+                                             self.data_editor_class,
                                              self.wizard)
         if self.get_slave(BasePaymentMethodSlave.slave_holder):
             self.detach_slave(BasePaymentMethodSlave.slave_holder)
@@ -602,22 +603,24 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
 
 class BillMethodSlave(BasePaymentMethodSlave):
-    _data_editor_class = BasePaymentDataEditor
-
-    def __init__(self, wizard, parent, conn, sale, payment_method,
-                 outstanding_value=currency(0),
-                 first_duedate=None, installments_number=None):
-        BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
-                                        sale, payment_method,
-                                        outstanding_value=outstanding_value,
-                                        installments_number=installments_number,
-                                        first_duedate=first_duedate)
-        self.bank_label.hide()
-        self.bank_combo.hide()
+    """Bill method slave"""
 
 
 class CheckMethodSlave(BasePaymentMethodSlave):
-    _data_editor_class = CheckDataEditor
+    """Check method slave"""
+
+    data_editor_class = CheckDataEditor
+
+    def __init__(self, wizard, parent, conn, total_amount,
+                 payment_method, outstanding_value=currency(0),
+                 first_duedate=None, installments_number=None):
+        BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
+                                        total_amount, payment_method,
+                                        outstanding_value=outstanding_value,
+                                        installments_number=installments_number,
+                                        first_duedate=first_duedate)
+        self.bank_combo.show()
+        self.bank_label.show()
 
     def _setup_widgets(self):
         printer = get_current_cheque_printer_settings(self.conn)
@@ -632,63 +635,16 @@ class CheckMethodSlave(BasePaymentMethodSlave):
         BasePaymentMethodSlave._setup_widgets(self)
 
 
-class MoneyMethodSlave(BasePaymentMethodSlave):
-    model_type = _BaseTemporaryMethodData
-    _data_editor_class = BasePaymentDataEditor
-
-    def __init__(self, wizard, parent, conn, sale, payment_method,
-                 outstanding_value=currency(0),
-                 first_duedate=None, installments_number=None):
-        BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
-                                        sale, payment_method,
-                                        outstanding_value=outstanding_value,
-                                        installments_number=installments_number,
-                                        first_duedate=first_duedate)
-        self.bank_label.hide()
-        self.bank_combo.hide()
-        self.first_duedate_lbl.hide()
-        self.first_duedate.hide()
-        self.intervals_lbl.hide()
-        self.intervals.hide()
-        self.interval_type_combo.hide()
-        self.installments_number_lbl.hide()
-        self.installments_number.hide()
-
-
 class DepositMethodSlave(BasePaymentMethodSlave):
-    model_type = _BaseTemporaryMethodData
-    _data_editor_class = BasePaymentDataEditor
-
-    def __init__(self, wizard, parent, conn, sale, payment_method,
-                 outstanding_value=currency(0),
-                 first_duedate=None, installments_number=None):
-        BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
-                                        sale, payment_method,
-                                        outstanding_value=outstanding_value,
-                                        installments_number=installments_number,
-                                        first_duedate=first_duedate)
-        self.bank_combo.hide()
-        self.bank_label.hide()
+    """Deposit method slave"""
 
 
 class StoreCreditMethodSlave(BasePaymentMethodSlave):
-    _data_editor_class = BasePaymentDataEditor
+    """Store credit method slave"""
 
 
 class MoneyMethodSlave(BasePaymentMethodSlave):
-    model_type = _BaseTemporaryMethodData
-    _data_editor_class = BasePaymentDataEditor
-
-    def __init__(self, wizard, parent, conn, total_amount,
-                 payment_method, outstanding_value=currency(0),
-                 first_duedate=None, installments_number=None):
-        BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
-                                        total_amount, payment_method,
-                                        outstanding_value=outstanding_value,
-                                        installments_number=installments_number,
-                                        first_duedate=first_duedate)
-        self.bank_label.hide()
-        self.bank_combo.hide()
+    """Money method slave"""
 
 
 class CardMethodSlave(BaseEditorSlave):
