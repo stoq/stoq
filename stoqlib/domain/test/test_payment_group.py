@@ -224,3 +224,30 @@ class TestPaymentGroup(DomainTest):
         inpayment.penalty = 25
         sale.confirm()
         self.assertEqual(group.get_total_penalty(), 25)
+
+    def testGetPaymentByMethodName(self):
+        group = self.create_payment_group()
+
+        method = PaymentMethod.get_by_name(self.trans, 'money')
+        money_payment1 = self.create_payment(method=method)
+        group.add_item(money_payment1)
+        money_payment2 = self.create_payment(method=method)
+        group.add_item(money_payment2)
+
+        method = PaymentMethod.get_by_name(self.trans, 'check')
+        check_payment1 = self.create_payment(method=method)
+        group.add_item(check_payment1)
+        check_payment2 = self.create_payment(method=method)
+        group.add_item(check_payment2)
+
+        money_payments = group.get_payments_by_method_name('money')
+        for payment in [money_payment1, money_payment2]:
+            self.assertTrue(payment in money_payments)
+        for payment in [check_payment1, check_payment2]:
+            self.assertFalse(payment in money_payments)
+
+        check_payments = group.get_payments_by_method_name('check')
+        for payment in [check_payment1, check_payment2]:
+            self.assertTrue(payment in check_payments)
+        for payment in [money_payment1, money_payment2]:
+            self.assertFalse(payment in check_payments)

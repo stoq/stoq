@@ -42,7 +42,7 @@ from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.sale import Sale
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.message import warning, marker
+from stoqlib.lib.message import warning, yesno, marker
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
@@ -53,11 +53,14 @@ from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor, TransporterEditor
 from stoqlib.gui.interfaces import IDomainSlaveMapper
+from stoqlib.gui.printing import print_report
 from stoqlib.gui.slaves.cashchangeslave import CashChangeSlave
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import register_payment_slaves
 from stoqlib.gui.slaves.saleslave import SaleDiscountSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.reporting.boleto import BillReport
+from stoqlib.reporting.booklet import BookletReport
 
 N_ = _ = stoqlib_gettext
 
@@ -609,7 +612,26 @@ class ConfirmSaleWizard(BaseWizard):
                     invoice_number += 1
             else:
                 break
+
         self.close()
+
+        group = self.model.group
+        # FIXME: This is set too late on Sale.confirm(). If PaymentGroup don't
+        #        have a payer, we won't be able to print bills/booklets.
+        group.payer = self.model.client and self.model.client.person
+
+        booklets = list(group.get_payments_by_method_name('store_credit'))
+        bills = list(group.get_payments_by_method_name('bill'))
+
+        if (booklets and
+            yesno(_("Do you want to print the booklets for this sale?"),
+                  gtk.RESPONSE_YES, _("Print booklets"), _("Don't print"))):
+            print_report(BookletReport, booklets)
+
+        if (bills and BillReport.check_printable(bills) and
+            yesno(_("Do you want to print the bills for this sale?"),
+                  gtk.RESPONSE_YES, _("Print bills"), _("Don't print"))):
+            print_report(BillReport, bills)
 
 
 def test():

@@ -243,10 +243,6 @@ class PaymentGroup(Domain):
             return self._renegotiation
         return None
 
-    #
-    # Accessors
-    #
-
     def get_status_string(self):
         if not self.status in PaymentGroup.statuses.keys():
             raise DatabaseInconsistency("Invalid status, got %d"
@@ -285,4 +281,11 @@ class PaymentGroup(Domain):
         """
         return Payment.select(AND(Payment.q.groupID == self.id,
                                   Payment.q.status != Payment.STATUS_CANCELLED),
+                              connection=self.get_connection())
+
+    def get_payments_by_method_name(self, method_name):
+        from stoqlib.domain.payment.method import PaymentMethod
+        return Payment.select(AND(Payment.q.groupID == self.id,
+                                  Payment.q.methodID == PaymentMethod.q.id,
+                                  PaymentMethod.q.method_name == method_name),
                               connection=self.get_connection())
