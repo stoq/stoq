@@ -26,7 +26,6 @@
 
 import time
 
-import gobject
 import gtk
 import pango
 import pangocairo
@@ -40,6 +39,9 @@ from stoqlib.lib.translation import stoqlib_gettext
 WIDTH = 400
 HEIGHT = 260
 BORDER = 8 # This includes shadow out border from GtkFrame
+_WINDOW_TIMEOUT = 100 # How often we should check if there are
+                      # other visible windows
+
 _ = stoqlib_gettext
 
 
@@ -67,6 +69,16 @@ class SplashScreen(gtk.Window):
         self.show_all()
         pixbuf_data = environ.get_resource_string("stoq", "pixmaps", "splash.png")
         self._pixbuf = pixbuf_from_string(pixbuf_data)
+
+        gtk.timeout_add(_WINDOW_TIMEOUT, self._hide_splash_timeout)
+
+    def _hide_splash_timeout(self):
+        # Hide the splash screen as soon as there is another window
+        # created
+        if len(gtk.window_list_toplevels()) > 1:
+            self.destroy()
+            return False
+        return True
 
     def _get_label(self):
         info = get_utility(IAppInfo, None)
@@ -131,10 +143,3 @@ def show_splash():
     global _splash
     _splash = SplashScreen()
     _splash.show()
-
-
-def hide_splash():
-    global _splash
-    if _splash:
-        gobject.idle_add(_splash.destroy)
-        _splash = None

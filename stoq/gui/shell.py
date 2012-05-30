@@ -378,17 +378,13 @@ class Shell(object):
     def _run_first_time_wizard(self, config=None):
         from stoqlib.gui.base.dialogs import run_dialog
         from stoq.gui.config import FirstTimeConfigWizard
-        from stoqlib.gui.splash import hide_splash
         self._ran_wizard = True
-        hide_splash()
         # This may run Stoq
         run_dialog(FirstTimeConfigWizard, None, self._options, config)
 
     def _run_update_wizard(self):
         from stoqlib.gui.base.dialogs import run_dialog
         from stoq.gui.update import SchemaUpdateWizard
-        from stoqlib.gui.splash import hide_splash
-        hide_splash()
         retval = run_dialog(SchemaUpdateWizard, None)
         if not retval:
             raise SystemExit()
@@ -483,9 +479,6 @@ class Shell(object):
         if window_class is None:
             raise SystemExit("%s app misses a %r attribute" % (
                 appdesc.name, window))
-
-        from stoqlib.gui.splash import hide_splash
-        hide_splash()
 
         embedded = getattr(window_class, 'embedded', False)
         from stoq.gui.application import App

@@ -60,7 +60,6 @@ from stoqlib.gui.keybindings import get_accel, get_accels
 from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.openbrowser import open_browser
 from stoqlib.gui.printing import print_report
-from stoqlib.gui.splash import hide_splash
 from stoqlib.gui.toolmenuaction import ToolMenuAction
 from stoqlib.domain.inventory import Inventory
 from twisted.internet import reactor
@@ -296,7 +295,6 @@ class AppWindow(GladeDelegate):
         if self.app.name != 'launcher':
             return
 
-        hide_splash()
         AppWindow.app_windows.append(self)
         self._restore_window_size()
         self.hide_app()

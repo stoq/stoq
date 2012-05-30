@@ -35,7 +35,6 @@ from stoqlib.exceptions import DatabaseError, LoginError, UserProfileError
 from stoqlib.domain.person import LoginUser
 from stoqlib.gui.base.dialogs import RunnableView
 from stoqlib.gui.logo import render_logo_pixbuf
-from stoqlib.gui.splash import hide_splash
 from stoqlib.lib.interfaces import CookieError, ICookieFile
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -222,8 +221,6 @@ class LoginHelper:
         retry = 0
         retry_msg = None
         dialog = None
-
-        hide_splash()
 
         while retry < RETRY_NUMBER:
             username = self._force_username
