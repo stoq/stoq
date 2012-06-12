@@ -66,7 +66,6 @@ class LoanItemEditor(BaseEditor):
             self._original_sale_qty = 0
             self._original_return_qty = 0
 
-
         BaseEditor.__init__(self, conn, model)
 
     def _setup_widgets(self):
