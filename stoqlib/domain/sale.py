@@ -522,6 +522,12 @@ class Sale(Domain, Adaptable):
         return (self.status == Sale.STATUS_CONFIRMED or
                 self.status == Sale.STATUS_PAID)
 
+    def can_edit(self):
+        """Only quoting sales can be edited.
+        :returns: True if the sale can be edited, otherwise False
+        """
+        return self.status == Sale.STATUS_QUOTE
+
     def order(self):
         """Orders the sale
 
