@@ -494,6 +494,18 @@ class TestSale(DomainTest):
         # To Pay payments: not return money, the value must remain in the till.
         self.assertEqual(till.get_balance(), balance_after_return)
 
+    def testCanEdit(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+        sale.status = Sale.STATUS_QUOTE
+        self.failUnless(sale.can_edit())
+
+        self.add_payments(sale)
+        sale.confirm()
+        self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
+        self.failIf(sale.can_edit())
+
     def testCanCancel(self):
         sale = self.create_sale()
         self.failIf(sale.can_cancel())

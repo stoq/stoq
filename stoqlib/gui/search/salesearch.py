@@ -102,8 +102,10 @@ class SaleSearch(SearchDialog):
             return
 
         sale = sale_view.sale
+        can_edit = sale.can_edit()
         can_return = sale.can_return() or sale.can_cancel()
         self._sale_toolbar.return_sale_button.set_sensitive(can_return)
+        self._sale_toolbar.edit_button.set_sensitive(can_edit)
 
     #
     # Callbacks
