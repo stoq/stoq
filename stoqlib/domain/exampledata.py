@@ -761,12 +761,18 @@ class ExampleCreator(object):
     def create_loan(self):
         from stoqlib.domain.loan import Loan
         user = self.create_user()
-        return Loan(responsible=user, connection=self.trans)
+        return Loan(responsible=user,
+                    branch=self.create_branch(),
+                    connection=self.trans)
 
     def create_loan_item(self):
         from stoqlib.domain.loan import LoanItem
+        from stoqlib.domain.product import Storable
         loan = self.create_loan()
         sellable = self.create_sellable()
+        storable = Storable(product=sellable.product,
+                            connection=self.trans)
+        storable.increase_stock(10, loan.branch)
         return LoanItem(loan=loan, sellable=sellable, price=10,
                         quantity=1, connection=self.trans)
 

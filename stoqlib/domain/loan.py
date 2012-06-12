@@ -49,40 +49,64 @@ class LoanItem(Domain):
     :param quantity: the quantity of the of sold item in this loan
     :param price: the price of each individual item
     """
+
+    # FIXME: Implement lazy updates in here to avoid all the _set_* bellow
+
     quantity = QuantityCol()
     sale_quantity = QuantityCol(default=Decimal(0))
     return_quantity = QuantityCol(default=Decimal(0))
     price = PriceCol()
-    sellable = ForeignKey('Sellable')
+    sellable = ForeignKey('Sellable', notNull=True)
     loan = ForeignKey('Loan')
 
-    def _create(self, id, **kw):
-        if not 'kw' in kw:
-            if not 'sellable' in kw:
-                raise TypeError('You must provide a sellable argument')
-        Domain._create(self, id, **kw)
+    @property
+    def branch(self):
+        return self.loan.branch
 
-    def do_loan(self, branch):
-        """Performs the loan of the product. The quantity requested of the
-        product will be out of stock of the given branch.
-        """
-        storable = self.sellable.product_storable
-        if storable is not None:
-            storable.decrease_stock(self.quantity, branch)
+    @property
+    def storable(self):
+        return self.sellable.product_storable
 
-    def return_product(self, quantity):
-        """Returns a certain quantity of the loan product to stock. The
-        quantity returned should be lesser or equal than the total quantity.
-        """
-        assert quantity <= self.quantity
-        storable = self.sellable.product_storable
-        if storable is not None:
-            branch = self.loan.branch
-            storable.increase_stock(quantity, branch)
+    def __init__(self, *args, **kwargs):
+        self._diff_quantity = 0
+        super(LoanItem, self).__init__(*args, **kwargs)
 
     #
-    # Accessors
+    # ORMObject
     #
+
+    def _set_quantity(self, quantity):
+        diff_quantity = getattr(self, 'quantity', 0) - quantity
+
+        self._diff_quantity += diff_quantity
+        self._SO_set_quantity(quantity)
+
+    def _set_return_quantity(self, quantity):
+        diff_quantity = quantity - getattr(self, 'return_quantity', 0)
+
+        self._diff_quantity += diff_quantity
+        self._SO_set_return_quantity(quantity)
+
+    def _set_sale_quantity(self, quantity):
+        diff_quantity = quantity - getattr(self, 'sale_quantity', 0)
+
+        self._diff_quantity += diff_quantity
+        self._SO_set_sale_quantity(quantity)
+
+    #
+    # Public API
+    #
+
+    def sync_stock(self):
+        diff_quantity = self._diff_quantity
+
+        if diff_quantity > 0:
+            self.storable.increase_stock(diff_quantity, self.branch)
+        elif diff_quantity < 0:
+            diff_quantity = - diff_quantity
+            self.storable.decrease_stock(diff_quantity, self.branch)
+
+        self._diff_quantity = 0
 
     def get_quantity_unit_string(self):
         return "%s %s" % (self.quantity,
@@ -205,6 +229,10 @@ class Loan(Domain):
     # Public API
     #
 
+    def sync_stock(self):
+        for loan_item in self.get_items():
+            loan_item.sync_stock()
+
     def can_close(self):
         """Checks if the loan can be closed. A loan can be closed if it is
         opened and all the items have been returned or sold.
@@ -221,5 +249,5 @@ class Loan(Domain):
         """Closes the loan. At this point, all the loan items have been
         returned to stock or sold."""
         assert self.can_close()
-        self.close_date = datetime.date.today()
+        self.close_date = datetime.datetime.now()
         self.status = Loan.STATUS_CLOSED

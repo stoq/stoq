@@ -33,6 +33,9 @@ class TestLoan(DomainTest):
     def testAddSellable(self):
         loan = self.create_loan()
         sellable = self.create_sellable()
+        storable = Storable(product=sellable.product,
+                            connection=self.trans)
+        storable.increase_stock(2, loan.branch)
         loan.add_sellable(sellable, quantity=1, price=10)
         items = list(loan.get_items())
         self.assertEquals(len(items), 1)
@@ -45,7 +48,6 @@ class TestLoan(DomainTest):
         self.failIf(loan.can_close())
 
         loan_item.return_quantity = loan_item.quantity
-        loan_item.return_product(loan_item.quantity)
         self.failUnless(loan.can_close())
 
     def testClose(self):
@@ -55,7 +57,6 @@ class TestLoan(DomainTest):
         self.failIf(loan.can_close())
 
         loan_item.return_quantity = loan_item.quantity
-        loan_item.return_product(loan_item.quantity)
         self.failUnless(loan.can_close())
         loan.close()
         self.assertEquals(loan.status, Loan.STATUS_CLOSED)
@@ -63,29 +64,34 @@ class TestLoan(DomainTest):
 
 class TestLoanItem(DomainTest):
 
-    def testDoLoan(self):
-        loan = self.create_loan()
-        product = self.create_product()
-        storable = Storable(product=product, connection=self.trans)
-        branch = get_current_branch(self.trans)
-        storable.increase_stock(1, branch)
-        initial = storable.get_balance_for_branch(branch)
-        sellable = product.sellable
-        loan_item = loan.add_sellable(sellable, quantity=1, price=10)
-        loan_item.do_loan(branch)
-        final = storable.get_balance_for_branch(branch)
-        self.assertEquals(final, initial - 1)
-
-    def testReturnProduct(self):
+    def test_sync_stock(self):
         loan = self.create_loan()
         product = self.create_product()
         storable = Storable(product=product, connection=self.trans)
         branch = get_current_branch(self.trans)
         loan.branch = branch
+        storable.increase_stock(4, branch)
         initial = storable.get_balance_for_branch(branch)
         sellable = product.sellable
-        loan_item = loan.add_sellable(sellable, quantity=1, price=10)
-        loan_item.return_quantity = loan_item.quantity
-        loan_item.return_product(loan_item.quantity)
-        final = storable.get_balance_for_branch(branch)
-        self.assertEquals(final, initial + 1)
+
+        quantity = 2
+        loan_item = loan.add_sellable(sellable, quantity=quantity, price=10)
+        loan_item.sync_stock()
+        self.assertEquals(loan_item.quantity, quantity)
+        self.assertEquals(loan_item.return_quantity, 0)
+        self.assertEquals(loan_item.sale_quantity, 0)
+        # The quantity loaned items should be removed from stock
+        self.assertEquals(
+            storable.get_balance_for_branch(branch),
+            initial - quantity)
+
+        loan_item.return_quantity = 1
+        loan_item.sale_quantity = 1
+        loan_item.sync_stock()
+        self.assertEquals(loan_item.quantity, quantity)
+        self.assertEquals(loan_item.return_quantity, 1)
+        self.assertEquals(loan_item.sale_quantity, 1)
+        # The return_quantity and sale_quantity should be returned to the stock
+        self.assertEquals(
+            storable.get_balance_for_branch(branch),
+            initial - quantity + loan_item.return_quantity + loan_item.sale_quantity)
