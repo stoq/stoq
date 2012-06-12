@@ -22,4 +22,3 @@
 
 """Graphical User Interface: Dialogs, Editors, Search, Slaves, Wizards etc
 """
-
