@@ -239,7 +239,7 @@ class LoanSelectionStep(BaseWizardStep):
 
     def _get_columns(self):
         return [SearchColumn('id', title=_('#'), sorted=True,
-                             data_type=int, width=80),
+                             data_type=int),
                 SearchColumn('responsible_name', title=_(u'Responsible'),
                              data_type=str, expand=True),
                 SearchColumn('client_name', title=_(u'Client'),
@@ -285,10 +285,10 @@ class LoanSelectionStep(BaseWizardStep):
         self.force_validation()
 
     def next_step(self):
-        loan = Loan.get(self.search.results.get_selected().id,
-                        connection=self.conn)
-        self.wizard.model = loan
-        return LoanItemSelectionStep(self.wizard, self, self.conn, loan)
+        loan = self.search.results.get_selected().loan
+        # FIXME: For some reason, the loan isn't in self.conn transaction
+        self.wizard.model = self.conn.get(loan)
+        return LoanItemSelectionStep(self.wizard, self, self.conn)
 
     #
     # Callbacks
@@ -301,8 +301,8 @@ class LoanSelectionStep(BaseWizardStep):
 class LoanItemSelectionStep(BaseWizardStep):
     gladefile = 'LoanItemSelectionStep'
 
-    def __init__(self, wizard, previous, conn, loan):
-        self.loan = loan
+    def __init__(self, wizard, previous, conn):
+        self.loan = wizard.model
         BaseWizardStep.__init__(self, conn, wizard, previous)
         self._original_items = {}
         self._setup_widgets()
@@ -316,30 +316,11 @@ class LoanItemSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(value)
 
     def _edit_item(self, item):
-        trans = api.new_transaction()
-        model = trans.get(item)
-        retval = run_dialog(LoanItemEditor, self.wizard, trans, model,
+        retval = run_dialog(LoanItemEditor, self.wizard, self.conn, item,
                             expanded_edition=True)
-        retval = api.finish_transaction(trans, retval)
+        self.loan_items.update(item)
         if retval:
-            self.loan_items.update(item)
             self._validate_step(True)
-        trans.close()
-
-    def _create_sale(self, sale_items):
-        user = api.get_current_user(self.conn)
-        sale = Sale(connection=self.conn,
-                    branch=self.loan.branch,
-                    client=self.loan.client,
-                    salesperson=user.person.salesperson,
-                    cfop=sysparam(self.conn).DEFAULT_SALES_CFOP,
-                    group=PaymentGroup(connection=self.conn),
-                    coupon_id=None)
-        for item, quantity in sale_items:
-            sale.add_sellable(item.sellable, price=item.price,
-                               quantity=quantity)
-        sale.order()
-        return sale
 
     def get_saved_items(self):
         for item in self.loan.get_items():
@@ -350,8 +331,7 @@ class LoanItemSelectionStep(BaseWizardStep):
 
     def get_columns(self):
         return [
-            Column('id', title=_('# '), width=60, data_type=str,
-                   sorted=True),
+            Column('id', title=_('#'), data_type=int, sorted=True),
             Column('sellable.code', title=_('Code'), width=70, data_type=str),
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
@@ -381,34 +361,32 @@ class LoanItemSelectionStep(BaseWizardStep):
         return True
 
     def next_step(self):
-        has_returned = False
         sale_items = []
         for final in self.loan_items:
             initial = self._original_items[final.id]
             sale_quantity = final.sale_quantity - initial.sale_qty
             if sale_quantity > 0:
                 sale_items.append((final, sale_quantity))
-                # we have to return the product, so it will be available when
-                # the user confirm the created sale.
-                final.return_product(sale_quantity)
 
-            return_quantity = final.return_quantity - initial.return_qty
-            if return_quantity > 0:
-                final.return_product(return_quantity)
-                if not has_returned:
-                    has_returned = True
-
-        msg = ''
         if sale_items:
-            self._create_sale(sale_items)
-            msg = _(u'A sale was created from loan items. You can confirm '
-                     'the sale in the Till application.')
-        if has_returned:
-            msg += _(u'\nSome products have returned to stock. You can '
-                    'check the stock of the items in the Stock application.')
-        if sale_items or has_returned:
-            info(_(u'Close loan details...'), msg)
-            self.wizard.finish()
+            user = api.get_current_user(self.conn)
+            sale = Sale(connection=self.conn,
+                        branch=self.loan.branch,
+                        client=self.loan.client,
+                        salesperson=user.person.salesperson,
+                        cfop=sysparam(self.conn).DEFAULT_SALES_CFOP,
+                        group=PaymentGroup(connection=self.conn),
+                        coupon_id=None)
+
+            for item, quantity in sale_items:
+                sale.add_sellable(item.sellable, quantity, item.price)
+
+            sale.order()
+            info(_("Close loan details..."),
+                 _("A sale was created from loan items. You can confirm "
+                   "that sale in the Till application later."))
+
+        self.wizard.finish()
 
     #
     # Kiwi Callbacks
@@ -469,9 +447,7 @@ class NewLoanWizard(BaseWizard):
     #
 
     def finish(self):
-        branch = self.model.branch
-        for item in self.model.get_items():
-            item.do_loan(branch)
+        self.model.sync_stock()
         self.retval = self.model
         self.close()
         self._print_receipt(self.model)
@@ -492,6 +468,7 @@ class CloseLoanWizard(BaseWizard):
     #
 
     def finish(self):
+        self.model.sync_stock()
         if self.model.can_close():
             self.model.close()
         self.retval = self.model

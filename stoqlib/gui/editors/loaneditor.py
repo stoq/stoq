@@ -29,6 +29,7 @@ import gtk
 
 from kiwi.datatypes import ValidationError
 
+from stoqlib.api import api
 from stoqlib.domain.loan import LoanItem
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -55,8 +56,17 @@ class LoanItemEditor(BaseEditor):
         """
         self._expanded_edition = expanded_edition
         self._branch = model.loan.branch
-        self._original_sale_qty = model.sale_quantity
-        self._original_return_qty = model.return_quantity
+
+        orig_model = LoanItem.selectOneBy(connection=api.get_connection(),
+                                          id=model.id)
+        if orig_model:
+            self._original_sale_qty = orig_model.sale_quantity
+            self._original_return_qty = orig_model.return_quantity
+        else:
+            self._original_sale_qty = 0
+            self._original_return_qty = 0
+
+
         BaseEditor.__init__(self, conn, model)
 
     def _setup_widgets(self):

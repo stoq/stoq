@@ -840,6 +840,10 @@ class LoanView(Viewable):
                    Client.q.personID == PersonClient.q.id),
     ]
 
+    @property
+    def loan(self):
+        return Loan.get(self.id, connection=self.get_connection())
+
 
 class LoanItemView(Viewable):
     columns = dict(id=LoanItem.q.id,
