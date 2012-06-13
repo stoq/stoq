@@ -157,10 +157,14 @@ class SellableCategory(Domain):
 
     @property
     def full_description(self):
-        if not self.category:
-            return self.description
+        descriptions = [self.description]
 
-        return '%s:%s' % (self.category.get_description(), self.description)
+        parent = self.category
+        while parent:
+            descriptions.append(parent.description)
+            parent = parent.category
+
+        return ':'.join(reversed(descriptions))
 
     #
     #  Public API
