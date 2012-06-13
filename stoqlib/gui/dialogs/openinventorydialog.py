@@ -47,50 +47,11 @@ class _TemporaryInventory(object):
 
 class _TemporaryCategory(object):
     def __init__(self, category=None, parent=None):
-        self.obj = category
+        self.category = category
         self.parent = parent
         self.children = []
-        if category is not None:
-            self.description = category.description
-            self.selected = True
-        else:
-            self.description = None
-            self.selected = False
-
-    def has_children(self):
-        # do not consider this special case
-        # see OpenInventoryDialog._setup_category_tree
-        if len(self.children) == 1 and self.children[0].obj is None:
-            return False
-        else:
-            return self.children
-
-    def get_subcategories(self, conn):
-        """Returns the categories which I am the base category of them"""
-        return SellableCategory.selectBy(category=self.obj,
-                                         connection=conn)
-
-    def _get_selected(self, categories):
-        return [c.obj for c in categories if c.selected]
-
-    def get_selected_subcategories(self, conn):
-        """Returns a list of selected categories.
-        If I am a parent node:
-            - Return all my selected children
-        If I am a child node:
-            - Return all my selected siblings
-        """
-        if self.parent is None:
-            if not self.selected:
-                return []
-
-            if not self.has_children():
-                return list(self.get_subcategories(conn))
-            else:
-                return self._get_selected(self.children)
-        else:
-            siblings = self.parent.children
-            return self._get_selected(siblings)
+        self.description = category.description
+        self.selected = True
 
 
 class OpenInventoryDialog(BaseEditor):
@@ -103,7 +64,6 @@ class OpenInventoryDialog(BaseEditor):
     def __init__(self, conn, branches):
         BaseEditor.__init__(self, conn, model=None)
         self._branches = branches
-        self._categories = []
         self._setup_widgets()
         self._update_widgets()
 
@@ -121,15 +81,14 @@ class OpenInventoryDialog(BaseEditor):
         self.open_time.set_text(self.model.open_date.strftime("%X"))
         # load categories
         self.category_tree.set_columns(self._get_columns())
-        self._setup_category_tree()
+        for category in SellableCategory.get_base_categories(self.conn):
+            self._append_category(category)
 
         self.category_tree.connect(
             'cell-edited', self._on_category_tree__cell_edited)
-        self.category_tree.connect(
-            'row-expanded', self._on_category_tree__row_expanded)
 
     def _update_widgets(self):
-        all_selected = all([c.selected for c in self._categories])
+        all_selected = all([c.selected for c in self.category_tree])
         self.select_all.set_sensitive(not all_selected)
         has_selected = self._has_selected()
         self.unselect_all.set_sensitive(has_selected)
@@ -142,71 +101,34 @@ class OpenInventoryDialog(BaseEditor):
                         data_type=str, expand=True, sorted=True,
                         expander=True)]
 
-    def _setup_category_tree(self):
-        base_categories = SellableCategory.get_base_categories(self.conn)
-        for base_category in base_categories:
-            row = self.category_tree.append(
-                    None, _TemporaryCategory(base_category))
-            self._categories.append(row)
-            # for each node we add a dummy child, forcing the expander
-            # visibility. When it be expanded, we'll query for the real
-            # child of a node.
-            dummy_child = _TemporaryCategory()
-            self.category_tree.append(row, dummy_child)
-            row.children.append(dummy_child)
+    def _append_category(self, category, parent=None):
+        row = self.category_tree.append(parent, _TemporaryCategory(category))
+
+        for child in category.children:
+            self._append_category(child, parent=row)
 
     def _get_sellables(self):
-        selected = []
-        for category in self._categories:
-            selected.extend(category.get_selected_subcategories(self.conn))
-
-        if not selected:
-            return []
-
+        selected = [c.category for c in self.category_tree if c.selected]
         include_uncategorized = self.include_uncategorized_check.get_active()
+
         return Sellable.get_unblocked_by_categories(self.conn, selected,
                                                     include_uncategorized)
 
     def _select(self, categories, select_value):
+        if not categories:
+            return
+
         for category in categories:
             category.selected = select_value
             self.category_tree.update(category)
-            if category.children:
-                self._select(category.children, select_value)
+            # (un)select all row's children too
+            self._select(self.category_tree.get_descendants(category),
+                         select_value)
+
         self._update_widgets()
 
-    def _select_all(self):
-        self._select(self._categories, True)
-
-    def _unselect_all(self):
-        self._select(self._categories, False)
-
-    def _update_category_selection(self, category):
-        if category.parent is None:
-            # The children follow the father's selection value
-            self._select(category.children, category.selected)
-        else:
-            parent = category.parent
-            has_child_selected = any([c.selected for c in parent.children])
-            parent.selected = has_child_selected
-            self.category_tree.update(parent)
-
-    def _expand_category_tree(self, category):
-        if not category.has_children():
-            children = category.children
-            # remove our dummy child
-            self.category_tree.remove(children[0])
-            children.remove(children[0])
-            # then add the real ones
-            for child_category in category.get_subcategories(self.conn):
-                child = _TemporaryCategory(child_category, parent=category)
-                child.selected = category.selected
-                self.category_tree.append(category, child)
-                children.append(child)
-            self.category_tree.expand(category)
-
     def _has_selected(self):
-        return any([c.selected for c in self._categories])
+        return any([c.selected for c in self.category_tree])
 
     #
     # BaseEditorSlave
@@ -251,14 +173,10 @@ class OpenInventoryDialog(BaseEditor):
     #
 
     def on_select_all__clicked(self, widget):
-        self._select_all()
+        self._select(list(self.category_tree), select_value=True)
 
     def on_unselect_all__clicked(self, widget):
-        self._unselect_all()
+        self._select(list(self.category_tree), select_value=False)
 
     def _on_category_tree__cell_edited(self, tree, category, attr):
-        self._update_category_selection(category)
-        self._update_widgets()
-
-    def _on_category_tree__row_expanded(self, tree, parent_category):
-        self._expand_category_tree(parent_category)
+        self._select([category], select_value=category.selected)
