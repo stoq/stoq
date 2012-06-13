@@ -45,8 +45,12 @@ class TestSellableCategory(DomainTest):
 
     def testGetDescription(self):
         category = self._create_category('LCD', parent=self._base_category)
-        self.failUnless(category.get_description() == "LCD")
-        self.failUnless(category.full_description == "Monitor:LCD")
+        self.assertEqual(category.get_description(), "LCD")
+        self.assertEqual(category.full_description, "Monitor:LCD")
+
+        sub_category = self._create_category("29'", category)
+        self.assertEqual(sub_category.get_description(), "29'")
+        self.assertEqual(sub_category.full_description, "Monitor:LCD:29'")
 
     def testMarkup(self):
         self._base_category.suggested_markup = currency('10')
