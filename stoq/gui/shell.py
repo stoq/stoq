@@ -334,19 +334,22 @@ class Shell(object):
         # 2 seconds) or creating the database
         try:
             setup(config, self._options, register_station=False,
-                  check_schema=True, load_plugins=False)
-        except DatabaseInconsistency as e:
-            error(_('The database version differs from your installed '
-                    'version.'), str(e))
-            raise SystemExit("Error: database inconsistency")
+                  check_schema=False, load_plugins=False)
         except (StoqlibError, PostgreSQLError) as e:
             error(_('Could not connect to the database'),
                   'error=%s uri=%s' % (str(e), conn_uri))
-            raise SystemExit("Error: bad connection settings provided")
 
         from stoqlib.database.migration import needs_schema_update
         if needs_schema_update():
             self._run_update_wizard()
+
+        from stoqlib.database.migration import StoqlibSchemaMigration
+        migration = StoqlibSchemaMigration()
+        try:
+            migration.check()
+        except DatabaseInconsistency as e:
+            error(_('The database version differs from your installed '
+                    'version.'), str(e))
 
         from stoqlib.database.runtime import (get_connection,
                                               set_current_branch_station)
