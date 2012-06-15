@@ -32,6 +32,7 @@ from kiwi.enums import ListType
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqdrivers.enum import TaxType
 
+from stoqlib.api import api
 from stoqlib.domain.person import Supplier
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductComponent,
@@ -713,3 +714,14 @@ class ProductStockEditor(BaseEditor):
         details_slave = ProductDetailsSlave(self.conn, self.model.sellable)
         details_slave.hide_stock_details()
         self.attach_slave('place_holder', details_slave)
+
+
+def test_product():
+    ec = api.prepare_test()
+    product = ec.create_product()
+    run_dialog(ProductEditor,
+               parent=None, conn=ec.trans, model=product)
+
+
+if __name__ == '__main__':
+    test_product()
