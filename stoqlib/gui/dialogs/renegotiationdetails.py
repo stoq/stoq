@@ -32,6 +32,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
 
+from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -85,7 +86,7 @@ class RenegotiationDetailsDialog(BaseEditor):
     def _setup_summary_labels(self):
         summary_label = SummaryLabel(klist=self.payments_list,
                                      column='paid_value',
-                                     label='<b>%s</b>' % _(u"Total:"),
+                                     label='<b>%s</b>' % api.escape(_(u"Total:")),
                                      value_format='<b>%s</b>')
         summary_label.show()
         self.payments_vbox.pack_start(summary_label, False)

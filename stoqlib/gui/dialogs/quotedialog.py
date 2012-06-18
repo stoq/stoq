@@ -137,8 +137,9 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
     def __init__(self, sale, missing_items):
         self.sale = sale
         self.missing = missing_items
-        msg = '<b>%s</b>' % _("The following items don't have enough stock to "
-                              "confirm the sale")
+        msg = '<b>%s</b>' % (
+            api.escape(_("The following items don't have enough stock to "
+                         "confirm the sale")))
         SimpleListDialog.__init__(self, self._get_columns(), missing_items,
                                   hide_cancel_btn=False,
                                   title=_('Missing items'))

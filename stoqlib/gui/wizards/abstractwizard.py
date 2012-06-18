@@ -298,7 +298,7 @@ class SellableItemStep(WizardEditorStep):
         description = u''
 
         if sellable:
-            description = "<b>%s</b>" % sellable.get_description()
+            description = "<b>%s</b>" % api.escape(sellable.get_description())
             cost = sellable.cost
             quantity = Decimal(1)
             storable = sellable.product_storable

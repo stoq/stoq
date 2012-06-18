@@ -198,7 +198,7 @@ class PurchaseSelectionStep(BaseWizardStep):
 class ReceivingOrderProductStep(SellableItemStep):
     model_type = ReceivingOrder
     item_table = ReceivingOrderItem
-    summary_label_text = "<b>%s</b>" % _('Total Received:')
+    summary_label_text = "<b>%s</b>" % api.escape(_('Total Received:'))
 
     def _validate(self, value):
         has_receivings = self.model.get_total() > 0

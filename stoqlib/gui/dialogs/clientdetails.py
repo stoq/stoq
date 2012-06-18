@@ -77,7 +77,7 @@ class ClientDetailsDialog(BaseEditor):
         self.calls_list.add_list(self.model.person.calls)
 
         value_format = '<b>%s</b>'
-        total_label = "<b>%s</b>" % _("Total:")
+        total_label = "<b>%s</b>" % api.escape(_("Total:"))
         sales_summary_label = SummaryLabel(klist=self.sales_list,
                                               column='total',
                                               label=total_label,

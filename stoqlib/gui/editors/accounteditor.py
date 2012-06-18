@@ -195,7 +195,7 @@ class AccountEditor(BaseEditor):
     def _add_widget(self, label, widget, options=False):
         n_rows = self.table.props.n_rows
         l = gtk.Label()
-        l.set_markup(label)
+        l.set_markup(api.escape(label))
         l.props.xalign = 1.0
         self.table.resize(n_rows + 1, 2)
         self.table.attach(

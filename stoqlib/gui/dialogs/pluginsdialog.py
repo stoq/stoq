@@ -30,12 +30,13 @@ import gtk
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog
+from stoqlib.gui.stockicons import STOQ_PLUGIN
 from stoqlib.lib.parameters import is_developer_mode
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import yesno
 from stoqlib.lib.pluginmanager import get_plugin_manager
-from stoqlib.gui.stockicons import STOQ_PLUGIN
 
 _ = stoqlib_gettext
 
@@ -59,7 +60,7 @@ class _PluginModel(object):
 
     @property
     def description(self):
-        return '<b>%s</b>\n%s' % (self.desc.long_name,
+        return '<b>%s</b>\n%s' % (api.escape(self.desc.long_name),
                                   self.desc.description)
 
 

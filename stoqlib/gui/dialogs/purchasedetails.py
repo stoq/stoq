@@ -31,16 +31,17 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
 
+from stoqlib.api import api
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.views import PaymentChangeHistoryView
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
+from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.printing import print_report
-from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.payment.views import PaymentChangeHistoryView
-from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
-from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
 
 _ = stoqlib_gettext
@@ -131,10 +132,11 @@ class PurchaseDetailsDialog(BaseEditor):
                        'receiving_total')
 
     def _setup_summary_labels(self):
-        order_summary_label = SummaryLabel(klist=self.ordered_items,
-                                           column='total',
-                                           label='<b>%s</b>' % _(u"Total"),
-                                           value_format='<b>%s</b>')
+        order_summary_label = SummaryLabel(
+            klist=self.ordered_items,
+            column='total',
+            label='<b>%s</b>' % api.escape(_(u"Total")),
+            value_format='<b>%s</b>')
         order_summary_label.show()
         self.ordered_vbox.pack_start(order_summary_label, False)
 

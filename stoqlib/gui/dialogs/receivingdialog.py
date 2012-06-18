@@ -30,12 +30,13 @@ from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.datatypes import currency
 
+from stoqlib.api import api
+from stoqlib.domain.receiving import (ReceivingOrderItem,
+                                      ReceivingOrder)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
-from stoqlib.domain.receiving import (ReceivingOrderItem,
-                                      ReceivingOrder)
 
 _ = stoqlib_gettext
 
@@ -65,7 +66,7 @@ class ReceivingOrderDetailsDialog(BaseEditor):
         self.product_list.add_list(list(products))
 
         value_format = '<b>%s</b>'
-        total_label = value_format % _("Total:")
+        total_label = value_format % api.escape(_("Total:"))
         products_summary_label = SummaryLabel(klist=self.product_list,
                                               column='total',
                                              label=total_label,
@@ -96,7 +97,8 @@ class ReceivingOrderDetailsDialog(BaseEditor):
         receiving_date = self.model.get_receival_date_str()
         branch_name = self.model.get_branch_name()
         text = _('Received in <b>%s</b> for branch <b>%s</b>')
-        header_text = text % (receiving_date, branch_name)
+        header_text = text % (api.escape(receiving_date),
+                              api.escape(branch_name))
         self.header_label.set_markup(header_text)
         self.add_proxy(self.model, ['notes'])
 

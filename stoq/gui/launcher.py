@@ -78,7 +78,9 @@ class Launcher(AppWindow):
 
         for app in self._get_available_applications():
             pixbuf = self.get_toplevel().render_icon(app.icon, gtk.ICON_SIZE_DIALOG)
-            text = '<b>%s</b>\n<small>%s</small>' % (app.fullname, app.description)
+            text = '<b>%s</b>\n<small>%s</small>' % (
+                api.escape(app.fullname),
+                api.escape(app.description))
             self.model.append([text, pixbuf, app])
 
         # FIXME: last opened application

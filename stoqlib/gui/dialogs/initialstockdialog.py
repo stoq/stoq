@@ -71,7 +71,7 @@ class InitialStockDialog(BaseEditor):
     def _setup_widgets(self):
         self.branch_label.set_markup(
             _(u"Registering initial stock for products in <b>%s</b>") %
-                                            self._branch.person.name)
+            api.escape(self._branch.person.name))
 
         self._storables = [_TemporaryStorableItem(s)
             for s in Storable.select(connection=self.conn)

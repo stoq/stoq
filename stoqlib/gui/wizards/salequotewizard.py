@@ -185,7 +185,7 @@ class SaleQuoteItemStep(SellableItemStep):
     """ Wizard step for purchase order's items selection """
     model_type = Sale
     item_table = SaleItem
-    summary_label_text = "<b>%s</b>" % _('Total Ordered:')
+    summary_label_text = "<b>%s</b>" % api.escape(_('Total Ordered:'))
     sellable = None
     sellable_view = SellableFullStockView
 
@@ -233,7 +233,8 @@ class SaleQuoteItemStep(SellableItemStep):
         if missing:
             msg = _('Not enough stock. '
                'Estimated time to obtain missing items: %d days.') % max_lead_time
-            self.slave.set_message('<b>%s</b>' % msg, self._show_missing_details)
+            self.slave.set_message(
+                '<b>%s</b>' % (api.escape(msg)), self._show_missing_details)
         else:
             self.slave.clear_message()
 

@@ -177,7 +177,8 @@ class CalendarView(WebView):
         view = self.get_view()
         view.execute_script("document.title = $('.fc-header-title').text()")
         title = view.get_property('title')
-        self.app.date_label.set_markup('<big><b>%s</b></big>' % title)
+        self.app.date_label.set_markup(
+            '<big><b>%s</b></big>' % api.escape(title))
 
     #
     # Callbacks

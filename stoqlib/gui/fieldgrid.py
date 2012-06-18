@@ -32,6 +32,7 @@
 import pickle
 
 import gobject
+import glib
 import pango
 import gtk
 from gtk import gdk
@@ -201,7 +202,8 @@ class FieldGrid(gtk.Layout):
         if not description:
             description = text
         label.set_markup(
-            '<span letter_spacing="3072">%s</span>' % (description, ))
+            '<span letter_spacing="3072">%s</span>' % (
+            glib.markup_escape_text(description), ))
         label.modify_font(self.font)
         field = FieldInfo(self, text, label, x, y, width, height)
         self._fields.append(field)
