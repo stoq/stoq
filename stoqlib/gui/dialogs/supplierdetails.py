@@ -104,7 +104,7 @@ class SupplierDetailsDialog(BaseEditor):
         self.payments_list.add_list(self.payments)
 
         value_format = '<b>%s</b>'
-        total_label = "<b>%s</b>" % _("Total:")
+        total_label = "<b>%s</b>" % api.escape(_("Total:"))
         purchases_summary_label = SummaryLabel(klist=self.purchases_list,
                                               column='total',
                                               label=total_label,

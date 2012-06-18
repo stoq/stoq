@@ -415,7 +415,8 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
                 self.message_details_button.disconnect(self._callback_id)
             self._callback_id = self.message_details_button.connect(
                                                 'clicked', details_callback)
-        self.message_label.set_markup(message)
+        self.message_label.set_markup(
+            api.escape(message))
 
     def clear_message(self):
         self.message_hbox.set_visible(False)

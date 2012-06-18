@@ -436,13 +436,14 @@ class PosApp(AppWindow):
 
     def _till_status_changed(self, closed, blocked):
         def large(s):
-            return '<span weight="bold" size="xx-large">%s</span>' % (s, )
+            return '<span weight="bold" size="xx-large">%s</span>' % (
+                api.escape(s), )
 
         if closed:
             text = large(_("Till closed"))
             if not blocked:
                 text += '\n\n<span size="large"><a href="open-till">%s</a></span>' % (
-                    _('Open till'))
+                    api.escape(_('Open till')))
         elif blocked:
             text = large(_("Till blocked"))
         else:

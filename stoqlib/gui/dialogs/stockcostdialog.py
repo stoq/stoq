@@ -64,7 +64,7 @@ class StockCostDialog(BaseEditor):
     def _setup_widgets(self):
         self.branch_label.set_markup(
             _(u"Fixing stock cost for products in <b>%s</b>") %
-                                            self._branch.person.name)
+            api.escape(self._branch.person.name))
 
         items = ProductWithStockView.select_by_branch(None, branch=self._branch,
                                                       connection=self.conn)

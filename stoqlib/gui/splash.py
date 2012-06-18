@@ -26,6 +26,7 @@
 
 import time
 
+import glib
 import gtk
 import pango
 import pangocairo
@@ -87,7 +88,7 @@ class SplashScreen(gtk.Window):
         version = info.get("version")
         if ' ' in version:
             ver, rev = version.split(' ')
-            version = '%s <b>%s</b>' % (ver, rev)
+            version = '%s <b>%s</b>' % (ver, glib.markup_escape_text(rev))
         return _("Version: %s") % (version, )
 
     def _draw_gi(self, cr):

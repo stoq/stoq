@@ -187,7 +187,7 @@ class PurchaseItemStep(SellableItemStep):
     """ Wizard step for purchase order's items selection """
     model_type = PurchaseOrder
     item_table = PurchaseItem
-    summary_label_text = "<b>%s</b>" % _('Total Ordered:')
+    summary_label_text = "<b>%s</b>" % api.escape(_('Total Ordered:'))
     sellable_editable = True
 
     def _set_expected_receival_date(self, item):

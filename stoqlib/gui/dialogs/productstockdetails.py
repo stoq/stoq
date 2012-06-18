@@ -31,14 +31,15 @@ import gtk
 from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.list import SummaryLabel
 
+from stoqlib.api import api
 from stoqlib.database.orm import AND
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.loan import Loan
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem
 from stoqlib.domain.views import (ReceivingItemView, SaleItemsView,
                                   LoanItemView, StockDecreaseItemsView)
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.editors.baseeditor import BaseEditor
 
 _ = stoqlib_gettext
 
@@ -95,7 +96,7 @@ class ProductStockHistoryDialog(BaseEditor):
         self.decrease_list.add_list(list(items))
 
         value_format = '<b>%s</b>'
-        total_label = "<b>%s</b>" % _("Total:")
+        total_label = "<b>%s</b>" % api.escape(_("Total:"))
         receiving_summary_label = SummaryLabel(klist=self.receiving_list,
                                                column='quantity',
                                                label=total_label,

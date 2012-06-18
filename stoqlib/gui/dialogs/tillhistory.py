@@ -78,7 +78,7 @@ class TillHistoryDialog(SearchDialog):
         self.add_filter(date_filter, columns=['date'])
         # add summary label
         value_format = '<b>%s</b>'
-        total_label = '<b>%s</b>' % _(u'Total:')
+        total_label = '<b>%s</b>' % api.escape(_(u'Total:'))
         self.search.set_summary_label('value', total_label, value_format)
 
     def setup_widgets(self):

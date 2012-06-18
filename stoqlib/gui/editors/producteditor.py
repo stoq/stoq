@@ -144,10 +144,11 @@ class ProductComponentSlave(BaseEditorSlave):
 
         self.component_tree.set_columns(self._get_columns())
         self._populate_component_tree()
-        self.component_label = SummaryLabel(klist=self.component_tree,
-                                            column='total_production_cost',
-                                            label='<b>%s</b>' % _(u'Total:'),
-                                            value_format='<b>%s</b>')
+        self.component_label = SummaryLabel(
+            klist=self.component_tree,
+            column='total_production_cost',
+            label='<b>%s</b>' % api.escape(_(u'Total:')),
+            value_format='<b>%s</b>')
         self.component_label.show()
         self.component_tree_vbox.pack_start(self.component_label, False)
         self._update_widgets()
@@ -608,8 +609,9 @@ class ProductEditor(SellableEditor):
         text = ''
         if self.statuses_combo.read() == Sellable.STATUS_UNAVAILABLE:
             text = ("<b>%s</b>"
-                    % _("This status changes automatically when the\n"
-                        "product is purchased or an inicial stock is added."))
+                    % api.escape(
+                _("This status changes automatically when the\n"
+                  "product is purchased or an inicial stock is added.")))
 
         self.status_unavailable_label.set_text(text)
 

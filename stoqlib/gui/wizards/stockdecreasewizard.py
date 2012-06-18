@@ -110,7 +110,7 @@ class DecreaseItemStep(SellableItemStep):
     """ Wizard step for purchase order's items selection """
     model_type = StockDecrease
     item_table = StockDecreaseItem
-    summary_label_text = "<b>%s</b>" % _('Total Ordered:')
+    summary_label_text = "<b>%s</b>" % api.escape(_('Total Ordered:'))
     summary_label_column = None
     sellable_editable = False
 

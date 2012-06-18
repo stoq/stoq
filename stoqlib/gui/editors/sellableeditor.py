@@ -285,7 +285,7 @@ class SellableEditor(BaseEditor):
         self._sellable = None
         self._demo_mode = sysparam(conn).DEMO_MODE
         self._requires_weighing_text = (
-            "<b>%s</b>" % _("This unit type requires weighing"))
+            "<b>%s</b>" % api.escape(_("This unit type requires weighing")))
 
         if self.ui_form_name:
             self.db_form = DatabaseForm(conn, self.ui_form_name)

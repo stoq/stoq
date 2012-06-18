@@ -122,7 +122,7 @@ class OpenProductionOrderStep(WizardEditorStep):
 class ProductionServiceStep(SellableItemStep):
     model_type = ProductionOrder
     item_table = ProductionService
-    summary_label_text = "<b>%s</b>" % _('Total:')
+    summary_label_text = "<b>%s</b>" % api.escape(_('Total:'))
     summary_label_column = 'quantity'
     sellable_view = ServiceView
 
@@ -206,7 +206,7 @@ class ProductionItemStep(SellableItemStep):
     """ Wizard step for production items selection """
     model_type = ProductionOrder
     item_table = ProductionItem
-    summary_label_text = "<b>%s</b>" % _('Total:')
+    summary_label_text = "<b>%s</b>" % (api.escape(_('Total:')),)
     summary_label_column = 'quantity'
     sellable_view = ProductComponentView
 
