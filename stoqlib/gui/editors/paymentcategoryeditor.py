@@ -28,13 +28,13 @@ import random
 
 import gtk
 from kiwi.datatypes import ValidationError
+from kiwi.ui.forms import ColorField, ChoiceField, TextField
 
 from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.fields import ColorField, ChoiceField, TextField
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
