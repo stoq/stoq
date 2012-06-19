@@ -45,4 +45,3 @@ class PaymentCommentsDialog(ModelListDialog):
     def __init__(self, conn, payment):
         self.payment = payment
         ModelListDialog.__init__(self, conn)
-

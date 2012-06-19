@@ -60,4 +60,3 @@ class DeviceSettingsDialog(ModelListDialog):
     list_slave_class = DeviceSettingsListSlave
     title = _('Device settings')
     size = (750, 300)
-

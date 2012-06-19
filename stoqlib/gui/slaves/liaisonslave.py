@@ -69,4 +69,3 @@ class LiaisonListDialog(ModelListDialog):
         ModelListDialog.__init__(self, trans)
         if reuse_transaction:
             self.list_slave.set_reuse_transaction(trans)
-

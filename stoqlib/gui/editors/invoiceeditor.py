@@ -236,7 +236,6 @@ class InvoiceLayoutDialog(ModelListDialog):
     title = _("Invoice Layouts")
 
 
-
 class InvoicePrinterEditor(BaseEditor):
     model_name = _(u'Invoice Printers')
     model_type = InvoicePrinter

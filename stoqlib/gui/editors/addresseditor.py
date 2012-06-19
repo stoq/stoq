@@ -307,14 +307,12 @@ class AddressAdditionDialog(ModelListDialog):
     title = _('Additional Addresses')
     size = (600, 250)
 
-
     def __init__(self, trans, person, reuse_transaction=False):
         self.person = person
         self.trans = trans
         ModelListDialog.__init__(self, trans)
         if reuse_transaction:
             self.list_slave.set_reuse_transaction(trans)
-
 
 
 class AddressSelectionDialog(ModelListDialog):

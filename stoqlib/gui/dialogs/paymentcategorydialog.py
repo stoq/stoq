@@ -90,4 +90,3 @@ class PaymentCategoryDialog(ModelListDialog):
 
         column = self.list_slave.listcontainer.list.get_column_by_name('category_type')
         column.treeview_column.set_visible(category_type is None)
-
