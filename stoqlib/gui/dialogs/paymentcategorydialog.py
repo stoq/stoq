@@ -30,7 +30,7 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -44,15 +44,9 @@ def format_category_type(value):
         return _('Receivable')
 
 
-class PaymentCategoryDialog(ModelListDialog):
-
-    # ModelListDialog
+class PaymentCategoryListSlave(ModelListSlave):
     model_type = PaymentCategory
     editor_class = PaymentCategoryEditor
-    title = _('Payment categories')
-    size = (620, 300)
-
-    # ListDialog
     columns = [
         Column('name', title=_('Category'),
                data_type=str, expand=True, sorted=True),
@@ -64,19 +58,11 @@ class PaymentCategoryDialog(ModelListDialog):
                column='color')
         ]
 
-    def __init__(self, conn, category_type=None):
-        self.category_type = category_type
-
-        ModelListDialog.__init__(self, conn)
-
-        column = self.listcontainer.list.get_column_by_name('category_type')
-        column.treeview_column.set_visible(category_type is None)
-
     def populate(self):
-        results = super(PaymentCategoryDialog, self).populate()
+        results = super(PaymentCategoryListSlave, self).populate()
 
-        if self.category_type is not None:
-            results = results.filterBy(category_type=self.category_type)
+        if self.parent.category_type is not None:
+            results = results.filterBy(category_type=self.parent.category_type)
 
         return results
 
@@ -87,5 +73,21 @@ class PaymentCategoryDialog(ModelListDialog):
         PaymentCategory.delete(model.id, connection=trans)
 
     def run_editor(self, trans, model):
-        return self.run_dialog(self._editor_class, conn=trans,
-                               model=model, category_type=self.category_type)
+        return self.run_dialog(self.editor_class, conn=trans,
+                               model=model,
+                               category_type=self.parent.category_type)
+
+
+class PaymentCategoryDialog(ModelListDialog):
+    list_slave_class = PaymentCategoryListSlave
+    size = (620, 300)
+    title = _('Payment categories')
+
+    def __init__(self, conn, category_type=None):
+        self.category_type = category_type
+
+        ModelListDialog.__init__(self, conn)
+
+        column = self.list_slave.listcontainer.list.get_column_by_name('category_type')
+        column.treeview_column.set_visible(category_type is None)
+

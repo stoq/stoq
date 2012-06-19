@@ -40,7 +40,7 @@ from stoqlib.domain.sellable import (SellableCategory, Sellable,
                                      SellableTaxConstant,
                                      ClientCategoryPrice)
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.databaseform import DatabaseForm
 from stoqlib.gui.editors.baseeditor import (BaseEditor,
                                             BaseRelationshipEditorSlave)
@@ -85,15 +85,9 @@ class SellableTaxConstantEditor(BaseEditor):
                                    connection=conn)
 
 
-class SellableTaxConstantsDialog(ModelListDialog):
-
-    # ModelListDialog
+class SellableTaxConstantsListSlave(ModelListSlave):
     model_type = SellableTaxConstant
     editor_class = SellableTaxConstantEditor
-    size = (500, 300)
-    title = _("Taxes")
-
-    # ListDialog
     columns = [
         Column('description', _('Description'), data_type=str, expand=True),
         Column('value', _('Tax rate'), data_type=str, width=150),
@@ -116,6 +110,12 @@ class SellableTaxConstantsDialog(ModelListDialog):
             info(msg)
         else:
             SellableTaxConstant.delete(model.id, connection=trans)
+
+
+class SellableTaxConstantsDialog(ModelListDialog):
+    list_slave_class = SellableTaxConstantsListSlave
+    size = (500, 300)
+    title = _("Taxes")
 
 
 class BasePriceEditor(BaseEditor):

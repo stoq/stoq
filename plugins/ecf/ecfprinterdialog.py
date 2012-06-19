@@ -37,7 +37,7 @@ from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.till import Till
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.dialogs.progressdialog import ProgressDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.devicemanager import DeviceManager
@@ -299,11 +299,9 @@ class ECFEditor(BaseEditor):
                            connection=self.conn)
 
 
-class ECFListDialog(ModelListDialog):
-    title = _('Fiscal Printers')
-    size = (600, 250)
+class ECFListSlave(ModelListSlave):
     editor_class = ECFEditor
-
+    model_type = ECFPrinter
     columns = [
         Column('description', title=_('Model'), data_type=str, expand=True),
         Column('device_serial', title=_('Serial'), data_type=str, width=100),
@@ -311,13 +309,9 @@ class ECFListDialog(ModelListDialog):
         Column('is_active', title=_('Active'), data_type=bool, width=60),
         ]
 
-    model_type = ECFPrinter
-
-    def __init__(self):
-        ModelListDialog.__init__(self)
+    def __init__(self, parent):
+        ModelListSlave.__init__(self, parent)
         self.set_list_type(ListType.UNREMOVABLE)
-
-    # ModelListDialog
 
     def populate(self):
         return ECFPrinter.selectBy(
@@ -329,3 +323,9 @@ class ECFListDialog(ModelListDialog):
             info(_("Cant edit a virtual printer"))
             return False
         return ModelListDialog.edit_item(self, item)
+
+
+class ECFListDialog(ModelListDialog):
+    list_slave_class = ECFListSlave
+    title = _('Fiscal Printers')
+    size = (600, 250)

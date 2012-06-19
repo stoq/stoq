@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -33,7 +33,7 @@ from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.person import Person
-from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.lib.countries import get_countries
 from stoqlib.lib.parameters import sysparam
@@ -276,10 +276,8 @@ class AddressEditor(BaseEditor):
         return self.address_slave.confirm()
 
 
-class AddressAdditionDialog(ModelListDialog):
-    title = _('Additional Addresses')
-    size = (600, 250)
-
+class AddressAdditionListSlave(ModelListSlave):
+    model_type = Address
     columns = [
         Column('address_string', title=_('Address'),
                data_type=str, width=250, expand=True),
@@ -288,29 +286,35 @@ class AddressAdditionDialog(ModelListDialog):
         Column('state', title=_('State'), data_type=str),
         ]
 
-    model_type = Address
+    def populate(self):
+        # This is only additional addresses, eg non-main ones
+        return Address.selectBy(
+            person=self.parent.person,
+            is_main_address=False,
+            connection=self.parent.trans)
+
+    def run_editor(self, trans, model):
+        trans.savepoint('before_run_editor_address')
+        retval = self.run_dialog(AddressEditor, conn=trans,
+                                 person=self.parent.person, address=model)
+        if not retval:
+            trans.rollback_to_savepoint('before_run_editor_address')
+        return retval
+
+
+class AddressAdditionDialog(ModelListDialog):
+    list_slave_class = AddressAdditionListSlave
+    title = _('Additional Addresses')
+    size = (600, 250)
+
 
     def __init__(self, trans, person, reuse_transaction=False):
         self.person = person
         self.trans = trans
         ModelListDialog.__init__(self, trans)
         if reuse_transaction:
-            self.set_reuse_transaction(trans)
+            self.list_slave.set_reuse_transaction(trans)
 
-    def populate(self):
-        # This is only additional addresses, eg non-main ones
-        return Address.selectBy(
-            person=self.person,
-            is_main_address=False,
-            connection=self.trans)
-
-    def run_editor(self, trans, model):
-        trans.savepoint('before_run_editor_address')
-        retval = self.run_dialog(AddressEditor, conn=trans,
-                                  person=self.person, address=model)
-        if not retval:
-            trans.rollback_to_savepoint('before_run_editor_address')
-        return retval
 
 
 class AddressSelectionDialog(ModelListDialog):

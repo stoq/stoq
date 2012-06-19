@@ -28,21 +28,14 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.devices import DeviceSettings
-from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.deviceseditor import DeviceSettingsEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
-class DeviceSettingsDialog(ModelListDialog):
-
-    # ModelListDialog
-    model_type = DeviceSettings
-    title = _('Device settings')
-    size = (750, 300)
-
-    # ListDialog
+class DeviceSettingsListSlave(ModelListSlave):
     columns = [
         Column('device_type_name', title=_('Device Type'),
                data_type=str, sorted=True, width=180),
@@ -52,11 +45,19 @@ class DeviceSettingsDialog(ModelListDialog):
                data_type=str, width=150, searchable=True),
         Column('is_active', title=_("Active"),
                data_type=bool, width=70)]
+    model_type = DeviceSettings
 
     def _populate(self):
-        return DeviceSettings.select(connection=self.trans)
+        return DeviceSettings.select(connection=self.parent.trans)
 
     def run_editor(self, trans, model):
         return self.run_dialog(DeviceSettingsEditor, conn=trans,
                                model=model,
                                station=get_current_station(trans))
+
+
+class DeviceSettingsDialog(ModelListDialog):
+    list_slave_class = DeviceSettingsListSlave
+    title = _('Device settings')
+    size = (750, 300)
+

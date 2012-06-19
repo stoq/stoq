@@ -27,7 +27,7 @@
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.person import ClientCategory, Client
-from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.clientcategoryeditor import ClientCategoryEditor
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -35,15 +35,9 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class ClientCategoryDialog(ModelListDialog):
-
-    #ModelListDialog
-    model_type = ClientCategory
+class ClientCategoryListSlave(ModelListSlave):
     editor_class = ClientCategoryEditor
-    title = _('Client categories')
-    size = (620, 300)
-
-    #ListDialog
+    model_type = ClientCategory
     columns = [
         Column('name', title=_('Category'),
                 data_type=str, expand=True, sorted=True)
@@ -55,8 +49,13 @@ class ClientCategoryDialog(ModelListDialog):
             warning(_("%s cannot be deleted, because is used in one or more "
                       "products.") % model.name)
             return
-        for client in Client.selectBy(category=model,
-                                                   connection=trans):
+        for client in Client.selectBy(category=model, connection=trans):
             client.category = None
         model = trans.get(model)
         model.remove()
+
+
+class ClientCategoryDialog(ModelListDialog):
+    list_slave_class = ClientCategoryListSlave
+    title = _('Client categories')
+    size = (620, 300)
