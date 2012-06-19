@@ -115,7 +115,7 @@ class FiscalPrinterHelper(gobject.GObject):
         try:
             model = run_dialog(TillOpeningEditor, self._parent, trans)
         except TillError, e:
-            warning(e)
+            warning(str(e))
             model = None
 
         retval = api.finish_transaction(trans, model)
@@ -284,7 +284,7 @@ class FiscalPrinterHelper(gobject.GObject):
             HasOpenCouponEvent.emit()
             return True
         except (DeviceError, DriverError), e:
-            warning(e)
+            warning(str(e))
             self.emit('ecf-changed', False)
             return False
 
@@ -293,7 +293,7 @@ class FiscalPrinterHelper(gobject.GObject):
             self._check_needs_closing()
             self.emit('ecf-changed', True)
         except (DeviceError, DriverError), e:
-            warning(e)
+            warning(str(e))
             self.emit('ecf-changed', False)
 
     def run_initial_checks(self):

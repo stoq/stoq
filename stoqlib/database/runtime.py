@@ -294,7 +294,7 @@ def _register_branch(conn, station_name):
             user = h.validate_user()
         except LoginError, e:
             trans.close()
-            error(e)
+            error(str(e))
 
         if not user:
             trans.close()

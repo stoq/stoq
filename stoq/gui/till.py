@@ -297,9 +297,9 @@ class TillApp(SearchableAppWindow):
             else:
                 coupon.cancel()
         except SellError as err:
-            warning(err)
+            warning(str(err))
         except ModelDataError as err:
-            warning(err)
+            warning(str(err))
 
         trans.close()
 
@@ -387,7 +387,7 @@ class TillApp(SearchableAppWindow):
                 run_dialog(CashInEditor, self, trans)
             except TillError as err:
                 # Inform the error to the user instead of crashing
-                warning(err)
+                warning(str(err))
                 return
 
         if trans.committed:

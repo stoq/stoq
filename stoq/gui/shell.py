@@ -404,7 +404,7 @@ class Shell(object):
             if not self.login():
                 return False
         except LoginError, e:
-            error(e)
+            error(str(e))
             return False
         self._check_param_main_branch()
         self._check_param_online_services()
