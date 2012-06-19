@@ -155,6 +155,7 @@ class Product(Domain):
     is_composed = BoolCol(default=False)
     location = UnicodeCol(default='')
     manufacturer = UnicodeCol(default='')
+    model = UnicodeCol(default='')
     part_number = UnicodeCol(default='')
     width = DecimalCol(default=0)
     height = DecimalCol(default=0)

@@ -266,6 +266,10 @@ class SaleQuoteItemStep(SellableItemStep):
         columns = [
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
+            Column('manufacturer', title=_('Manufacturer'),
+                   data_type=str, visible=False),
+            Column('model', title=_('Model'),
+                   data_type=str, visible=False),
             Column('sellable.category_description', title=_('Category'),
                    data_type=str, expand=True, searchable=True),
             Column('quantity', title=_('Quantity'), data_type=float, width=60,

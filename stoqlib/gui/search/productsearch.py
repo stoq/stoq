@@ -166,6 +166,10 @@ class ProductSearch(SearchEditor):
                              data_type=str, width=120),
                 SearchColumn('description', title=_(u'Description'),
                              expand=True, data_type=str),
+                SearchColumn('manufacturer', title=_('Manufacturer'), data_type=str,
+                             visible=False),
+                SearchColumn('model', title=_('Model'), data_type=str,
+                             visible=False),
                 SearchColumn('location', title=_('Location'), data_type=str,
                               visible=False)]
         # The price/cost columns must be controlled by hide_cost_column and
@@ -397,6 +401,10 @@ class ProductStockSearch(SearchEditor):
                              data_type=str, width=100),
                 SearchColumn('description', title=_('Description'), data_type=str,
                              expand=True, sorted=True),
+                SearchColumn('manufacturer', title=_('Manufacturer'), data_type=str,
+                             visible=False),
+                SearchColumn('model', title=_('Model'), data_type=str,
+                             visible=False),
                 SearchColumn('location', title=_('Location'), data_type=str,
                              visible=False),
                 SearchColumn('maximum_quantity', title=_('Maximum'),

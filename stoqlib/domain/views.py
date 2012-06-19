@@ -75,6 +75,8 @@ class ProductFullStockView(Viewable):
         image_id=Sellable.q.imageID,
         product_id=Product.q.id,
         location=Product.q.location,
+        manufacturer=Product.q.manufacturer,
+        model=Product.q.model,
         tax_description=SellableTaxConstant.q.description,
         category_description=SellableCategory.q.description,
         total_stock_cost=const.SUM(
@@ -318,6 +320,8 @@ class SellableFullStockView(Viewable):
         description=Sellable.q.description,
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
+        manufacturer=Product.q.manufacturer,
+        model=Product.q.model,
         category_description=SellableCategory.q.description,
         base_price=Sellable.q.base_price,
         max_discount=Sellable.q.max_discount,
