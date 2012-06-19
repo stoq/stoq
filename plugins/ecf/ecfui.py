@@ -495,7 +495,7 @@ class ECFUI(object):
         try:
             self._validate_printer()
         except DeviceError, e:
-            warning(e)
+            warning(str(e))
             return
 
         trans = new_transaction()
@@ -526,7 +526,7 @@ class ECFUI(object):
         try:
             self._validate_printer()
         except DeviceError, e:
-            warning(e)
+            warning(str(e))
             return
 
         self._printer.summarize()
@@ -536,7 +536,7 @@ class ECFUI(object):
         try:
             self._validate_printer()
         except DeviceError, e:
-            warning(e)
+            warning(str(e))
             return
         retval = run_dialog(FiscalMemoryDialog, None, self.conn, self._printer)
         if retval:
@@ -705,7 +705,7 @@ class ECFUI(object):
         try:
             self._validate_printer()
         except DeviceError, e:
-            warning(e)
+            warning(str(e))
             return
 
         if close_previous:
