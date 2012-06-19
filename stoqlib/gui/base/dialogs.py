@@ -248,7 +248,6 @@ class BasicWrappingDialog(BasicDialog):
         slave.run = self.run
         slave.set_transient_for = self.set_transient_for
 
-
     def confirm(self, *args):
         if not self.slave.validate_confirm():
             return
