@@ -31,7 +31,6 @@ from kiwi.log import Logger
 from kiwi.ui.dialogs import error, warning, info, yesno
 from kiwi.ui.delegates import GladeDelegate
 from kiwi.ui.views import BaseView
-from kiwi.utils import gsignal
 from zope.interface import implements
 
 from stoqlib.lib.translation import stoqlib_gettext
@@ -68,13 +67,11 @@ class RunnableView:
         self.show()
 
 #
-# Special note for BasicDialog and BasicWrappingDialog: if you inherit
-# from this class, you *must* call Basic*Dialog._initialize() right after
-# calling Basic*Dialog.__init__() or the dialog will not be set up
+# Special note for BasicDialog: if you inherit
+# from this class, you *must* call BasicDialog._initialize() right after
+# calling BasicDialog.__init__() or the dialog will not be set up
 # correctly. Initialization has been broken into two steps to allow it to
-# be called conveniently from a consumer refresh() method. See
-# NotifyDialog/PluggableNotifyDialog for an example of how __init__ should
-# behave.
+# be called conveniently from a consumer refresh() method.
 #
 
 
@@ -216,59 +213,6 @@ class BasicDialog(GladeDelegate, RunnableView):
 
     def on_cancel_button__clicked(self, button):
         self.cancel()
-
-
-#
-# Wrapping variants, which take a slave as a parameter and set it up to
-# have a "normal" dialog API, which follows the BasicDialog
-# interface for stoqlib.services run_dialog compatibility.
-#
-
-class BasicWrappingDialog(BasicDialog):
-    """Abstract class for Pluggable*Dialog; two buttons and a slave area,
-    run and set_transient_for to the wrapped slave and ok_button sensitivity
-    control """
-    slave = None
-    gsignal('confirm', object)
-
-    def __init__(self, slave, title=" ", header_text="", size=None,
-                 hide_footer=False):
-        BasicDialog.__init__(self)
-        if self.slave:
-            log.warn("%s had self.slave set to %s!" % (self, self.slave))
-        self.slave = slave
-        self.attach_slave("main", slave)
-        self._initialize(title=title, header_text=header_text,
-                         size=size, hide_footer=hide_footer)
-        # This helps kiwis ui test, set the name of ourselves to
-        # the classname of the slave, which is much more helpful than
-        # just "BasicWrappingDialog"
-        self.get_toplevel().set_name(slave.__class__.__name__)
-
-        slave.run = self.run
-        slave.set_transient_for = self.set_transient_for
-
-    def confirm(self, *args):
-        if not self.slave.validate_confirm():
-            return
-
-        # self.slave.on_confirm() should return a considered success
-        # value. It can be an integer or a model object.
-        self.retval = self.slave.on_confirm()
-        self.close()
-        self.emit('confirm', self.retval)
-
-        log.info("%s: Closed (confirmed), retval=%r" % (
-            self.slave.__class__.__name__, self.retval))
-
-    def cancel(self, *args):
-        # self.slave.on_cancel() should return a considered failure
-        # value
-        self.retval = self.slave.on_cancel()
-        self.close()
-
-        log.info("%s: Closed (cancelled), retval=%r" % (
-            self.slave.__class__.__name__, self.retval))
 
 
 #

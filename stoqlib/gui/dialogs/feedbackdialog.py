@@ -84,7 +84,7 @@ class FeedbackDialog(BaseEditor):
     def _on_feedback_reply(self, details):
         log.info("Feedback details: %s" % (details, ))
         api.user_settings.set('feedback-email', self.model.email)
-        self.main_dialog.retval = self.model
+        self.retval = self.model
         self.main_dialog.close()
 
     #

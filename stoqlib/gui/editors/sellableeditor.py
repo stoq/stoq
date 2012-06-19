@@ -501,7 +501,7 @@ class SellableEditor(BaseEditor):
             return
         # We don't call self.confirm since it will call validate_confirm
         self.cancel()
-        self.main_dialog.retval = True
+        self.retval = True
 
     def _on_close_sellable_button__clicked(self, button,
                                            parent_button_label=None):
