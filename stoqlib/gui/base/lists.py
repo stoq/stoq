@@ -31,7 +31,7 @@ from kiwi.utils import gsignal
 from stoqlib.api import api
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import SelectionError, StoqlibError
-from stoqlib.gui.base.dialogs import run_dialog, get_dialog, BasicDialog
+from stoqlib.gui.base.dialogs import run_dialog, BasicDialog
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.base.wizards import BaseWizard
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -44,20 +44,32 @@ _ = stoqlib_gettext
 # FIXME: Add persmissions verification to ModelList
 class ModelListSlave(ListSlave):
 
-    def __init__(self, columns=None, conn=None,
+    model_type = None
+    editor_class = None
+    columns = None
+
+    def __init__(self, parent=None, conn=None,
                  orientation=gtk.ORIENTATION_VERTICAL):
         """
         Create a new ModelListDialog object.
         :param conn: A database connection
         """
+        if self.columns is None:
+            raise TypeError(
+                "%s needs to set it's columns attribute" % (
+                self.__class__.__name__, ))
+        if self.model_type is None:
+            raise TypeError(
+                "%s needs to set it's model_type attribute" % (
+                self.__class__.__name__, ))
+
         if not conn:
             conn = api.get_connection()
         self.conn = conn
 
-        self._model_type = None
+        self.parent = parent
         self._reuse_transaction = False
-        self._editor_class = None
-        columns = columns or self.get_columns()
+        columns = self.columns or self.get_columns()
         ListSlave.__init__(self, columns, orientation)
 
     def _delete_with_transaction(self, model, trans):
@@ -92,7 +104,7 @@ class ModelListSlave(ListSlave):
             retval = self.run_editor(trans, model)
             api.finish_transaction(trans, retval)
             if retval:
-                retval = self._model_type.get(retval.id, connection=self.conn)
+                retval = self.model_type.get(retval.id, connection=self.conn)
             trans.close()
         return retval
 
@@ -127,19 +139,6 @@ class ModelListSlave(ListSlave):
     # Public API
     #
 
-    def set_model_type(self, model_type):
-        """Set the type of the model this slave is containing
-        :param model_type: the model type
-        """
-        self._model_type = model_type
-
-    def set_editor_class(self, editor_class):
-        """Set the editor class which will be used to modify
-        the mode of this slave
-        :param editor_class: the editor class
-        """
-        self._editor_class = editor_class
-
     def set_reuse_transaction(self, trans):
         """
         Reuse the transaction.
@@ -152,9 +151,7 @@ class ModelListSlave(ListSlave):
         when a transaction is reused, it's safe to use when it's disabled,
         so always use this in your run_editor hook
         """
-        dialog = get_dialog(self, dialog_class, *args, **kwargs)
-
-        retval = run_dialog(dialog, parent=self)
+        retval = run_dialog(dialog_class, parent=self.parent, *args, **kwargs)
         if not retval:
             # We must return None because of ListDialog's add-item signal
             # expects that
@@ -170,12 +167,12 @@ class ModelListSlave(ListSlave):
         """This can be override by a subclass who wants to send in
         custom arguments to the editor.
         """
-        if self._editor_class is None:
+        if self.editor_class is None:
             raise ValueError("editor_class cannot be None in %s" % (
                 type(self).__name__))
 
         return self.run_dialog(
-            self._editor_class,
+            self.editor_class,
             conn=trans, model=model)
 
     def delete_model(self, model, trans):
@@ -186,45 +183,36 @@ class ModelListSlave(ListSlave):
         :param model: model to delete
         :param trans: the transaction to delete the model within
         """
-        self._model_type.delete(model.id, connection=trans)
+        self.model_type.delete(model.id, connection=trans)
 
 
-class ModelListDialog(gtk.Dialog, ModelListSlave):
+class ModelListDialog(BasicDialog):
     """A dialog which displays all items in a table and allows you to
     add and remove items from it
 
-    :cvar model_type: an ORMObject for the table we want to modify, must
-      implement the IDescribable interface.
     :cvar columns: a list of :class:`kiwi.ui.objectlist.Columns`
-    :cvar editor_class: class used to edit the model, must take the
-      constructor arguments (conn, model)
     :cvar size: a two sized tuple;  (width, height) or None
     :cvar title: window title
     """
-    model_type = None
-    editor_class = None
+    list_slave_class = None
     columns = None
     size = None
     title = None
 
     def __init__(self, conn=None):
-        if self.model_type is None:
-            raise TypeError("%s must define a model_type class attribute" %
-                            type(self).__name__)
-        if not IDescribable.implementedBy(self.model_type):
-            raise TypeError("%s must provide the IDescribable interface" %
-                            self.model_type.__name__)
+        if self.list_slave_class is None:
+            raise TypeError(
+                "%s needs to set it's list_slave_class attribute" % (
+                self.__class__.__name__, ))
+        self.list_slave = self.list_slave_class(self)
 
-        gtk.Dialog.__init__(self)
-        if self.size:
-            self.set_size_request(*self.size)
-        if self.title:
-            self.set_title(self.title)
-        self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
-        ModelListSlave.__init__(self, self.columns)
-        self.set_model_type(self.model_type)
-        self.set_editor_class(self.editor_class)
-        self.vbox.pack_start(self.listcontainer)
+        BasicDialog.__init__(self)
+        BasicDialog._initialize(self, title=self.title, size=self.size)
+
+        self.vbox = gtk.VBox()
+        self.vbox.pack_start(self.list_slave.listcontainer)
+        self.add(self.vbox)
+        self.vbox.show()
 
 
 class AdditionListSlave(StoqlibSearchSlaveDelegate):

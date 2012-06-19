@@ -27,7 +27,7 @@
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.contacteditor import ContactEditor
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.domain.person import Liaison
@@ -35,35 +35,38 @@ from stoqlib.domain.person import Liaison
 _ = stoqlib_gettext
 
 
-class LiaisonListDialog(ModelListDialog):
-
-    # ModelListDialog
+class LiaisonListSlave(ModelListSlave):
     model_type = Liaison
     editor_class = ContactEditor
-    title = _("Liasons")
-    size = (500, 250)
-
-    # ListDialog
     columns = [Column('name', title=_('Name'),
                       data_type=str, expand=True),
                Column('phone_number', title=_('Phone Number'),
                       format_func=format_phone_number,
                       data_type=str, width=200)]
 
+    def populate(self):
+        return Liaison.selectBy(person=self.parent.person,
+                                connection=self.parent.trans)
+
+    def run_editor(self, trans, model):
+        trans.savepoint('before_run_editor_liaison')
+        retval = self.run_dialog(ContactEditor, conn=trans,
+                                 model=model,
+                                 person=self.parent.person)
+        if not retval:
+            trans.rollback_to_savepoint('before_run_editor_liaison')
+        return retval
+
+
+class LiaisonListDialog(ModelListDialog):
+    list_slave_class = LiaisonListSlave
+    title = _("Liasons")
+    size = (500, 250)
+
     def __init__(self, trans, person, reuse_transaction=False):
         self.person = person
         self.trans = trans
         ModelListDialog.__init__(self, trans)
         if reuse_transaction:
-            self.set_reuse_transaction(trans)
+            self.list_slave.set_reuse_transaction(trans)
 
-    def populate(self):
-        return Liaison.selectBy(person=self.person, connection=self.trans)
-
-    def run_editor(self, trans, model):
-        trans.savepoint('before_run_editor_liaison')
-        retval = self.run_dialog(ContactEditor, conn=trans,
-                                  model=model, person=self.person)
-        if not retval:
-            trans.rollback_to_savepoint('before_run_editor_liaison')
-        return retval

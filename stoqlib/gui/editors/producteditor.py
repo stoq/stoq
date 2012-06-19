@@ -417,33 +417,34 @@ class QualityTestEditor(BaseEditor):
 
 class ProductQualityTestSlave(ModelListSlave):
     model_type = ProductQualityTest
+    editor_class = QualityTestEditor
+    columns = [
+        Column('description', title=_(u'Description'),
+               data_type=str, expand=True),
+        Column('type_str', title=_(u'Type'), data_type=str),
+        Column('success_value_str', title=_(u'Success Value'), data_type=str),
+        ]
 
-    def __init__(self, conn, product, visual_mode=False):
+    def __init__(self, parent, conn, product, visual_mode=False):
         self._product = product
-        ModelListSlave.__init__(self)
-        self.set_reuse_transaction(self._product.get_connection())
-        self.set_editor_class(QualityTestEditor)
-        self.set_model_type(self.model_type)
+        ModelListSlave.__init__(self, parent)
+        trans = self._product.get_connection()
+        self.set_reuse_transaction(trans)
         if visual_mode:
             self.set_list_type(ListType.READONLY)
+
+        self.refresh()
 
     #
     #   ListSlave Implementation
     #
 
-    def get_columns(self):
-        return [Column('description', title=_(u'Description'),
-                        data_type=str, expand=True),
-                Column('type_str', title=_(u'Type'), data_type=str),
-                Column('success_value_str', title=_(u'Success Value'), data_type=str),
-                ]
-
     def populate(self):
         return self._product.quality_tests
 
-    def run_dialog(self, dialog_class, *args, **kwargs):
-        kwargs['product'] = self._product
-        return ModelListSlave.run_dialog(self, dialog_class, *args, **kwargs)
+    def run_editor(self, trans, model):
+        return self.run_dialog(self.editor_class, conn=trans, model=model,
+                               product=self._product)
 
 
 #
@@ -599,6 +600,12 @@ class ProductEditor(SellableEditor):
 
     _model_created = False
 
+    def __init__(self, conn, model, visual_mode=False):
+        SellableEditor.__init__(self, conn, model, visual_mode=visual_mode)
+        # This can't be done in setup_slaves() as we need to access
+        # self.main_dialog when setting up the quality test slave
+        self._add_extra_tabs()
+
     def get_taxes(self):
         query = (SellableTaxConstant.q.tax_type != int(TaxType.SERVICE))
         constants = SellableTaxConstant.select(query,
@@ -624,6 +631,7 @@ class ProductEditor(SellableEditor):
                                             self.db_form, self.visual_mode)
         self.add_extra_tab(_(u'Details'), details_slave)
 
+    def _add_extra_tabs(self):
         for tabname, tabslave in self.get_extra_tabs():
             self.add_extra_tab(tabname, tabslave)
 
@@ -679,7 +687,7 @@ class ProductionProductEditor(ProductEditor):
         self._component_slave = ProductComponentSlave(self.conn, self.model,
                                                       self.visual_mode)
         tax_slave = ProductTaxSlave(self.conn, self.model, self.visual_mode)
-        quality_slave = ProductQualityTestSlave(self.conn, self.model,
+        quality_slave = ProductQualityTestSlave(self, self.conn, self.model,
                                                 self.visual_mode)
         return [(_(u'Components'), self._component_slave),
                 (_(u'Taxes'), tax_slave),

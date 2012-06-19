@@ -4,16 +4,13 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.payment.comment import PaymentComment
-from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
-class PaymentCommentsDialog(ModelListDialog):
+class PaymentCommentsListSlave(ModelListSlave):
     model_type = PaymentComment
-    title = _(u'Payment Comments')
-    size = (600, 250)
-
     columns = [
         Column('date', title=_('Date'),
                data_type=datetime.date, width=100),
@@ -23,19 +20,29 @@ class PaymentCommentsDialog(ModelListDialog):
                data_type=str, expand=True),
     ]
 
-    def __init__(self, conn, payment):
-        self.payment = payment
-        self.conn = conn
-        ModelListDialog.__init__(self, conn)
-
     def populate(self):
-        return self.payment.comments or []
+        return self.parent.payment.comments or []
 
     def run_editor(self, trans, model):
         if not model:
             model = PaymentComment(author=api.get_current_user(trans),
-                                   payment=trans.get(self.payment),
+                                   payment=trans.get(self.parent.payment),
                                    comment=u"",
                                    connection=trans)
-        return self.run_dialog(NoteEditor, trans, model,
-                               "comment", _(u"Payment Comment"))
+        return self.run_dialog(
+            NoteEditor,
+            conn=trans,
+            model=model,
+            attr_name="comment",
+            title=_(u"Payment Comment"))
+
+
+class PaymentCommentsDialog(ModelListDialog):
+    list_slave_class = PaymentCommentsListSlave
+    title = _(u'Payment Comments')
+    size = (600, 250)
+
+    def __init__(self, conn, payment):
+        self.payment = payment
+        ModelListDialog.__init__(self, conn)
+

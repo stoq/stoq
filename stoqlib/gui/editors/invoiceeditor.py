@@ -35,7 +35,7 @@ from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
-from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.fieldgrid import FieldGrid
 from stoqlib.lib.invoice import (get_invoice_fields, SaleInvoice,
@@ -214,15 +214,9 @@ class InvoiceLayoutEditor(BaseEditor):
                 print repr(line.tostring())
 
 
-class InvoiceLayoutDialog(ModelListDialog):
-
-    # ModelListDialog
+class InvoiceLayoutListSlave(ModelListSlave):
     model_type = InvoiceLayout
     editor_class = InvoiceLayoutEditor
-    size = (500, 300)
-    title = _("Invoice Layouts")
-
-    # ListDialog
     columns = [
         Column('description', _('Description'), data_type=str,
                expand=True, sorted=True),
@@ -234,6 +228,13 @@ class InvoiceLayoutDialog(ModelListDialog):
         for field in model.fields:
             InvoiceField.delete(field.id, trans)
         ModelListDialog.delete_model(self, model, trans)
+
+
+class InvoiceLayoutDialog(ModelListDialog):
+    list_slave_class = InvoiceLayoutListSlave
+    size = (500, 300)
+    title = _("Invoice Layouts")
+
 
 
 class InvoicePrinterEditor(BaseEditor):
