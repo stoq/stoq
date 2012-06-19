@@ -113,7 +113,11 @@ class _SellableSearch(SearchEditor):
                    SearchColumn('category_description', title=_('Category'),
                                 data_type=str, width=120),
                    SearchColumn('description', title=_('Description'),
-                                data_type=str, expand=True, sorted=True)]
+                                data_type=str, expand=True, sorted=True),
+                   SearchColumn('manufacturer', title=_('Manufacturer'),
+                                data_type=str, visible=False),
+                   SearchColumn('model', title=_('Model'),
+                                data_type=str, visible=False)]
 
         if 'minimum_quantity' in self._table.columns:
             columns.append(SearchColumn('minimum_quantity',

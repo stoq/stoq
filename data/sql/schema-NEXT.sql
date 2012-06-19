@@ -419,6 +419,7 @@ CREATE TABLE product (
     location text,
     part_number text,
     manufacturer text,
+    model text,
     ncm text,
     ex_tipi text,
     genero text,
