@@ -180,7 +180,7 @@ class ECFEditor(BaseEditor):
             raise SystemExit
 
         # FIXME: move to base dialogs or base editor
-        self.main_dialog.retval = self.model
+        self.retval = self.model
         self.main_dialog.close()
 
     def _printer_status__timeout(self, status):

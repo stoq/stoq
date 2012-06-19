@@ -33,7 +33,7 @@ from kiwi.ui.widgets.label import ProxyLabel
 
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
+from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.events import EditorSlaveCreateEvent
 from stoqlib.gui.help import show_section
@@ -185,14 +185,22 @@ class BaseEditor(BaseEditorSlave):
         self._message_bar = None
         self._confirm_disabled = False
 
+        # FIXME:
+        # BasicEditor should inheirt from BasicDialog and instantiate
+        # the slave inside here, but it requires some major surgery
         BaseEditorSlave.__init__(self, conn, model,
                                  visual_mode=visual_mode)
 
-        self.main_dialog = BasicWrappingDialog(self,
-                                               self.get_title(self.model),
-                                               self.header, self.size)
-        self.main_dialog.connect(
-            'confirm', self._on_main_dialog__confirm)
+        self.main_dialog = BasicDialog()
+        self.main_dialog._initialize(title=self.get_title(self.model),
+                                     header_text=self.header,
+                                     size=self.size)
+        self.main_dialog.attach_slave("main", self)
+
+        # This helps kiwis ui test, set the name of ourselves to
+        # the classname of the slave, which is much more helpful than
+        # just "BasicDialog"
+        self.main_dialog.get_toplevel().set_name(self.__class__.__name__)
 
         if self.hide_footer or self.visual_mode:
             self.main_dialog.hide_footer()
@@ -216,10 +224,6 @@ class BaseEditor(BaseEditorSlave):
         self.main_dialog.action_area.add(button)
         self.main_dialog.action_area.set_child_secondary(button, True)
         button.show()
-
-    def _on_main_dialog__confirm(self, dialog, retval):
-        if isinstance(self.conn, StoqlibTransaction):
-            self.conn.retval = retval
 
     def _get_title_format(self):
         if self.visual_mode:
@@ -283,19 +287,35 @@ class BaseEditor(BaseEditorSlave):
         button.show()
         return button
 
-    def cancel(self):
+    def cancel(self, *args):
         """
         Cancel the dialog.
         """
-        self.main_dialog.cancel()
+        # self.on_cancel() should return a considered failure value
+        self.retval = self.on_cancel()
+        self.main_dialog.close()
 
-    def confirm(self):
+        log.info("%s: Closed (cancelled), retval=%r" % (
+            self.__class__.__name__, self.retval))
+
+    def confirm(self, *args):
         """
         Confirm the dialog.
         """
         if not self.is_valid or self._confirm_disabled:
             return
-        self.main_dialog.confirm()
+        if not self.validate_confirm():
+            return
+
+        # self.on_confirm() should return a considered success
+        # value. It can be an integer or a model object.
+        self.retval = self.on_confirm()
+        self.main_dialog.close()
+        if isinstance(self.conn, StoqlibTransaction):
+            self.conn.retval = self.retval
+
+        log.info("%s: Closed (confirmed), retval=%r" % (
+            self.__class__.__name__, self.retval))
 
     def enable_ok(self):
         """
@@ -352,6 +372,12 @@ class BaseEditor(BaseEditorSlave):
 
     def has_message_bar(self):
         return self._message_bar is not None
+
+    def run(self):
+        self.main_dialog.run()
+
+    def set_transient_for(self, window):
+        self.main_dialog.set_transient_for(window)
 
     # Callbacks
 
