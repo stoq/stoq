@@ -26,12 +26,13 @@
 import datetime
 
 from dateutil.relativedelta import relativedelta
+import gtk
 from kiwi.ui.dialogs import save
 from kiwi.ui.search import DateSearchFilter
 
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.domain.system import SystemTable
-from stoqlib.gui.base.dialogs import ConfirmDialog
+from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning
 from stoqlib.lib.sintegra import SintegraError
@@ -40,12 +41,14 @@ from stoqlib.lib.dateconstants import get_month_names
 _ = stoqlib_gettext
 
 
-class SintegraDialog(ConfirmDialog):
-    size = (780, -1)
+class SintegraDialog(BasicDialog):
     title = _('Fiscal Printer History')
 
     def __init__(self, conn):
-        ConfirmDialog.__init__(self)
+        BasicDialog.__init__(self)
+        self.justify_label(gtk.JUSTIFY_CENTER)
+        BasicDialog._initialize(self, title=self.title)
+
         self.conn = conn
         self.ok_button.set_label(_("Generate"))
 

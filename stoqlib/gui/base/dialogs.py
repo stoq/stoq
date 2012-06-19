@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source
+## Copyright (C) 2005-2012 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -29,12 +29,11 @@ import gtk
 from gtk import keysyms
 from kiwi.log import Logger
 from kiwi.ui.dialogs import error, warning, info, yesno
-from kiwi.ui.delegates import GladeSlaveDelegate, GladeDelegate
+from kiwi.ui.delegates import GladeDelegate
 from kiwi.ui.views import BaseView
 from kiwi.utils import gsignal
 from zope.interface import implements
 
-from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.interfaces import ISystemNotifier
 from stoqlib.gui.base.gtkadds import change_button_appearance
@@ -48,35 +47,6 @@ log = Logger('stoqlib.dialogs')
 #
 # Helper classes
 #
-
-
-class Warnbox(GladeSlaveDelegate):
-    def __init__(self):
-        GladeSlaveDelegate.__init__(self, gladefile='Warnbox')
-
-    def setup_label(self, message):
-        self.label.set_bold(True)
-        self.label.set_color('red')
-        self.label.set_justify(gtk.JUSTIFY_LEFT)
-        self.label.set_text(message)
-
-    def error(self, message):
-        self.alert_icon.hide()
-        self.error_icon.show()
-        self.setup_label(message)
-        self.get_toplevel().show()
-
-    def alert(self, message):
-        self.alert_icon.show()
-        self.error_icon.hide()
-        self.setup_label(message)
-        self.get_toplevel().show()
-
-    def clear_notices(self):
-        # Don't hide warnbox or the vbox collapses it
-        self.alert_icon.hide()
-        self.error_icon.hide()
-        self.label.set_text("")
 
 
 class RunnableView:
@@ -98,52 +68,7 @@ class RunnableView:
         self.show()
 
 #
-# Abstract classes: inherit only, do not use.
-#
-
-
-class AbstractDialog(GladeDelegate, RunnableView):
-    """Abstract Dialog class that defines a simple run API."""
-    gladefile = None
-    help_section = None
-
-    def __init__(self, delete_handler=None):
-        if not delete_handler:
-            delete_handler = self.close
-
-        self.setup_keyactions()
-        GladeDelegate.__init__(self, gladefile=self.gladefile,
-                               delete_handler=delete_handler,
-                               keyactions=self.keyactions)
-
-        if self.help_section:
-            self._add_help_button(self.help_section)
-
-    #
-    #  Public API
-    #
-
-    def setup_keyactions(self):
-        self.keyactions = {}
-
-    #
-    #  Private
-    #
-
-    def _add_help_button(self, section):
-        def on_help__clicked(button):
-            from stoqlib.gui.help import show_section
-            show_section(section)
-
-        self.action_area.set_layout(gtk.BUTTONBOX_END)
-        button = gtk.Button(stock=gtk.STOCK_HELP)
-        button.connect('clicked', on_help__clicked)
-        self.action_area.add(button)
-        self.action_area.set_child_secondary(button, True)
-        button.show()
-
-#
-# Special note for BasicDialog and BasicPluggableDialog: if you inherit
+# Special note for BasicDialog and BasicWrappingDialog: if you inherit
 # from this class, you *must* call Basic*Dialog._initialize() right after
 # calling Basic*Dialog.__init__() or the dialog will not be set up
 # correctly. Initialization has been broken into two steps to allow it to
@@ -153,16 +78,22 @@ class AbstractDialog(GladeDelegate, RunnableView):
 #
 
 
-class BasicDialog(AbstractDialog):
+class BasicDialog(GladeDelegate, RunnableView):
     """Abstract class that offers a Dialog with two buttons. It should be
     subclassed and customized.
     """
     gladefile = "BasicDialog"
+    help_section = None
 
     def __init__(self, delete_handler=None):
         if not delete_handler:
             delete_handler = self.cancel
-        AbstractDialog.__init__(self, delete_handler=delete_handler)
+        self.setup_keyactions()
+        GladeDelegate.__init__(self, delete_handler=delete_handler,
+                               gladefile=self.gladefile,
+                               keyactions=self.keyactions)
+        if self.help_section:
+            self._add_help_button(self.help_section)
 
     # Yes, title=" ". Use a single space to work around *cough* BROKEN
     # window managers that want to set the title as Unnamed or ? when an
@@ -196,7 +127,9 @@ class BasicDialog(AbstractDialog):
             self.confirm()
 
     def setup_keyactions(self):
-        self.keyactions = {keysyms.Escape: self.cancel}
+        self.keyactions = {keysyms.Escape: self.cancel,
+                           keysyms.Return: self.confirm,
+                           keysyms.KP_Enter: self.confirm}
 
     def confirm(self, *args):
         self.retval = True
@@ -259,6 +192,22 @@ class BasicDialog(AbstractDialog):
         return self.get_toplevel().action_area
 
     #
+    # Private
+    #
+
+    def _add_help_button(self, section):
+        def on_help__clicked(button):
+            from stoqlib.gui.help import show_section
+            show_section(section)
+
+        self.action_area.set_layout(gtk.BUTTONBOX_END)
+        button = gtk.Button(stock=gtk.STOCK_HELP)
+        button.connect('clicked', on_help__clicked)
+        self.action_area.add(button)
+        self.action_area.set_child_secondary(button, True)
+        button.show()
+
+    #
     # Kiwi handlers
     #
 
@@ -268,54 +217,37 @@ class BasicDialog(AbstractDialog):
     def on_cancel_button__clicked(self, button):
         self.cancel()
 
+
 #
-# Main classes start here. There are two basic types: Notify and
-# Confirm dialogs, the only difference between them being that Notify
-# offers only an OK button and Confirm offering both OK and Cancel. The
-# second set offers a pluggable slave area.
+# Wrapping variants, which take a slave as a parameter and set it up to
+# have a "normal" dialog API, which follows the BasicDialog
+# interface for stoqlib.services run_dialog compatibility.
 #
 
-
-class BasicPluggableDialog(BasicDialog):
-    """Abstract class for Pluggable*Dialog; two buttons and a slave area"""
-    warnbox = None
+class BasicWrappingDialog(BasicDialog):
+    """Abstract class for Pluggable*Dialog; two buttons and a slave area,
+    run and set_transient_for to the wrapped slave and ok_button sensitivity
+    control """
     slave = None
     gsignal('confirm', object)
 
-    def _initialize(self, slave, title=" ", header_text="", size=None,
-                    hide_footer=False):
-        """May be called by refresh by subdialogs, as necessary"""
+    def __init__(self, slave, title=" ", header_text="", size=None,
+                 hide_footer=False):
+        BasicDialog.__init__(self)
         if self.slave:
             log.warn("%s had self.slave set to %s!" % (self, self.slave))
         self.slave = slave
         self.attach_slave("main", slave)
-        if self.warnbox:
-            self.clear_notices()
-            self.warnbox = None
-        BasicDialog._initialize(self, title=title, header_text=header_text,
-                                size=size, hide_footer=hide_footer)
+        self._initialize(title=title, header_text=header_text,
+                         size=size, hide_footer=hide_footer)
+        # This helps kiwis ui test, set the name of ourselves to
+        # the classname of the slave, which is much more helpful than
+        # just "BasicWrappingDialog"
+        self.get_toplevel().set_name(slave.__class__.__name__)
 
-    def enable_notices(self):
-        """Enables display of notice messages with icons using alert() and
-        error().
-        """
-        self.warnbox = Warnbox()
-        self.clear_notices()
-        self.attach_slave('notice', self.warnbox)
-        self.warnbox.get_toplevel().hide()
+        slave.run = self.run
+        slave.set_transient_for = self.set_transient_for
 
-    def clear_notices(self):
-        self.warnbox.clear_notices()
-
-    def error(self, message):
-        if not self.warnbox:
-            raise AssertionError
-        self.warnbox.error(message)
-
-    def alert(self, message):
-        if not self.warnbox:
-            raise AssertionError
-        self.warnbox.alert(message)
 
     def confirm(self, *args):
         if not self.slave.validate_confirm():
@@ -338,62 +270,6 @@ class BasicPluggableDialog(BasicDialog):
 
         log.info("%s: Closed (cancelled), retval=%r" % (
             self.slave.__class__.__name__, self.retval))
-
-#
-# Wrapping variants, which take a slave as a parameter and set it up to
-# have a "normal" dialog API, which follows the BasicPluggableDialog
-# interface for stoqlib.services run_dialog compatibility.
-#
-
-
-class BasicWrappingDialog(BasicPluggableDialog):
-    """ Abstract class for Wrapping*Dialog; run and set_transient_for to
-    the wrapped slave and ok_button sensitivity control """
-    def __init__(self, slave, title=" ", header_text="", size=None,
-                 hide_footer=False):
-        BasicPluggableDialog.__init__(self)
-        BasicPluggableDialog._initialize(self, slave, title, header_text,
-                                         size, hide_footer=hide_footer)
-        # This helps kiwis ui test, set the name of ourselves to
-        # the classname of the slave, which is much more helpful than
-        # just "BasicWrappingDialog"
-        self.get_toplevel().set_name(slave.__class__.__name__)
-        slave.run = self.run
-        slave.set_transient_for = self.set_transient_for
-
-
-class ConfirmDialog(BasicDialog):
-    """Dialog offers an option to confirm or cancel an event. It prints text
-    in a label and offers OK/Cancel buttons.
-    """
-
-    title = _('Confirmation')
-
-    def __init__(self, text='', title=None, size=None, ok_label=None):
-        BasicDialog.__init__(self)
-        self.justify_label(gtk.JUSTIFY_CENTER)
-        BasicDialog._initialize(self, text,
-                                title=title or self.title, size=size)
-        if ok_label:
-            self.set_ok_label(ok_label)
-
-    def setup_keyactions(self):
-        self.keyactions = {keysyms.Escape: self.cancel,
-                           keysyms.Return: self.confirm,
-                           keysyms.KP_Enter: self.confirm}
-
-
-class NotifyDialog(ConfirmDialog):
-    """Dialog that notifies an event. It prints text in a label and offers a
-    single OK button.
-    """
-
-    title = _('Notification')
-
-    def __init__(self, text, title=None, size=None, ok_label=None):
-        ConfirmDialog.__init__(self, text, title, size=size,
-                               ok_label=ok_label)
-        self.cancel_button.hide()
 
 
 #
@@ -495,16 +371,6 @@ def push_fullscreen(window):
 def pop_fullscreen(window):
     global _fullscreen
     _fullscreen = None
-
-
-def notify_if_raises(win, check_func, exceptions=ModelDataError,
-                     text="An error ocurred: %s"):
-    try:
-        check_func()
-    except exceptions, e:
-        warning(text % e)
-        return True
-    return False
 
 
 class DialogSystemNotifier:
