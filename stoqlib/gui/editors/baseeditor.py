@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source
+## Copyright (C) 2005-2012 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -166,6 +166,7 @@ class BaseEditor(BaseEditorSlave):
        situation.
     :cvar confirm_widgets: a list of widget names that when activated will
         confirm the dialog
+    :cvar fields: a dictionary that contains :class:`stoqlib.gui.field.Field` attributes
     """
 
     model_name = None
@@ -175,12 +176,15 @@ class BaseEditor(BaseEditorSlave):
     hide_footer = False
     confirm_widgets = ()
     help_section = None
+    fields = None
+    form_holder_name = 'toplevel'
 
     def __init__(self, conn, model=None, visual_mode=False):
         if conn is not None and isinstance(conn, StoqlibTransaction):
             conn.needs_retval = True
         self._message_bar = None
         self._confirm_disabled = False
+
         BaseEditorSlave.__init__(self, conn, model,
                                  visual_mode=visual_mode)
 

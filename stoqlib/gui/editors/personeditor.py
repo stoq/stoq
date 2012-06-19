@@ -26,11 +26,15 @@
 import datetime
 
 from kiwi.datatypes import ValidationError
+from kiwi.ui.forms import TextField
 
 from stoqlib.api import api
+from stoqlib.domain.person import (Client, Branch, Employee, EmployeeRole,
+                                   CreditProvider, Individual, LoginUser,
+                                   Supplier, Transporter)
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.simpleeditor import SimpleEntryEditor
-from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.clientslave import ClientStatusSlave
 from stoqlib.gui.slaves.credproviderslave import CreditProviderDetailsSlave
 from stoqlib.gui.slaves.employeeslave import (EmployeeDetailsSlave,
@@ -38,13 +42,10 @@ from stoqlib.gui.slaves.employeeslave import (EmployeeDetailsSlave,
                                       EmployeeRoleSlave,
                                       EmployeeRoleHistorySlave)
 from stoqlib.gui.slaves.userslave import UserDetailsSlave, UserStatusSlave
-
 from stoqlib.gui.slaves.supplierslave import SupplierDetailsSlave
 from stoqlib.gui.slaves.transporterslave import TransporterDataSlave
 from stoqlib.gui.slaves.branchslave import BranchDetailsSlave
-from stoqlib.domain.person import (Client, Branch, Employee, EmployeeRole,
-                                   CreditProvider, Individual, LoginUser,
-                                   Supplier, Transporter)
+from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 
 _ = stoqlib_gettext
 
@@ -219,15 +220,17 @@ class EmployeeEditor(BasePersonRoleEditor):
         return self.model
 
 
-class EmployeeRoleEditor(SimpleEntryEditor):
+class EmployeeRoleEditor(BaseEditor):
     model_type = EmployeeRole
     model_name = _('Employee Role')
-    size = (330, 130)
+    confirm_widgets = ['name']
+
+    fields = dict(
+        name=TextField(_('Name'), proxy=True, mandatory=True),
+        )
 
     def __init__(self, conn, model, visual_mode=False):
-        SimpleEntryEditor.__init__(self, conn, model, attr_name='name',
-                                   name_entry_label=_('Role Name:'),
-                                   visual_mode=visual_mode)
+        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
         self.set_description(self.model.name)
 
     #
@@ -247,7 +250,7 @@ class EmployeeRoleEditor(SimpleEntryEditor):
     # Kiwi handlers
     #
 
-    def on_name_entry__validate(self, widget, value):
+    def on_name__validate(self, widget, value):
         if self.model.has_other_role(value):
             return ValidationError('This role already exists!')
 
@@ -338,12 +341,19 @@ class BranchEditor(BasePersonRoleEditor):
         self.main_slave.attach_person_slave(self.status_slave)
 
 
-def test():
+def test_client():
     from stoqlib.gui.wizards.personwizard import run_person_role_dialog
     creator = api.prepare_test()
     retval = run_person_role_dialog(ClientEditor, None, creator.trans, None)
     api.finish_transaction(creator.trans, retval)
 
 
+def test_employee_role():
+    creator = api.prepare_test()
+    role = creator.create_employee_role()
+    run_dialog(EmployeeRoleEditor, parent=None, conn=creator.trans,
+               model=role)
+
+
 if __name__ == '__main__':
-    test()
+    test_employee_role()

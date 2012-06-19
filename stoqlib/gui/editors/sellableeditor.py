@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -27,6 +27,7 @@ import sys
 
 import gtk
 from kiwi.datatypes import ValidationError, currency
+from kiwi.ui.forms import PriceField, TextField
 from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType, UnitType
 
@@ -65,14 +66,13 @@ _DEMO_PRODUCT_LIMIT = 30
 
 
 class SellableTaxConstantEditor(BaseEditor):
-    gladefile = 'SellableTaxConstantEditor'
     model_type = SellableTaxConstant
     model_name = _('Taxes and Tax rates')
-    proxy_widgets = ('description',
-                     'tax_value')
 
-    def __init__(self, conn, model=None):
-        BaseEditor.__init__(self, conn, model)
+    fields = dict(
+        description=TextField(_('Name'), proxy=True, mandatory=True),
+        tax_value=PriceField(_('Value'), proxy=True, mandatory=True),
+        )
 
     #
     # BaseEditor
@@ -83,10 +83,6 @@ class SellableTaxConstantEditor(BaseEditor):
                                    tax_value=None,
                                    description=u'',
                                    connection=conn)
-
-    def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model,
-                                    SellableTaxConstantEditor.proxy_widgets)
 
 
 class SellableTaxConstantsDialog(ModelListDialog):
@@ -574,3 +570,15 @@ class SellableEditor(BaseEditor):
     def on_cost__validate(self, entry, value):
         if value <= 0:
             return ValidationError(_("Cost cannot be zero or negative"))
+
+
+def test_sellable_tax_constant():
+    ec = api.prepare_test()
+    tax_constant = api.sysparam(ec.trans).DEFAULT_PRODUCT_TAX_CONSTANT
+    run_dialog(SellableTaxConstantEditor,
+                       parent=None, conn=ec.trans, model=tax_constant)
+    print tax_constant
+
+
+if __name__ == '__main__':
+    test_sellable_tax_constant()

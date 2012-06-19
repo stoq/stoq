@@ -34,6 +34,7 @@ from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.fields import ColorField, ChoiceField, TextField
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -73,8 +74,13 @@ _TANGO_PALETTE = [
 class PaymentCategoryEditor(BaseEditor):
     model_name = _('Payment Category')
     model_type = PaymentCategory
-    gladefile = 'PaymentCategoryEditor'
     confirm_widgets = ['name']
+
+    fields = dict(
+        name=TextField(_('Name')),
+        color=ColorField(_('Color')),
+        category_type=ChoiceField(_('Type'), data_type=int),
+    )
 
     def __init__(self, conn, model=None,
                  category_type=None):
