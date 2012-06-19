@@ -43,8 +43,8 @@ class FormFieldEditor(BasicDialog):
 
     def __init__(self, conn):
         self.conn = conn
-        BasicDialog.__init__(self)
-        self._initialize(size=FormFieldEditor.size, title=FormFieldEditor.title)
+        BasicDialog.__init__(self, size=FormFieldEditor.size,
+                             title=FormFieldEditor.title)
         self._create_ui()
 
     def _create_ui(self):

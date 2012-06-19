@@ -38,8 +38,7 @@ class ImporterDialog(BasicDialog):
     title = _("Importer Dialog")
 
     def __init__(self, format, filename):
-        BasicDialog.__init__(self)
-        self._initialize(size=self.size, title=self.title)
+        BasicDialog.__init__(self, size=self.size, title=self.title)
 
         self.format = format
         self.filename = filename

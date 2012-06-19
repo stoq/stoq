@@ -66,14 +66,6 @@ class RunnableView:
         """
         self.show()
 
-#
-# Special note for BasicDialog: if you inherit
-# from this class, you *must* call BasicDialog._initialize() right after
-# calling BasicDialog.__init__() or the dialog will not be set up
-# correctly. Initialization has been broken into two steps to allow it to
-# be called conveniently from a consumer refresh() method.
-#
-
 
 class BasicDialog(GladeDelegate, RunnableView):
     """Abstract class that offers a Dialog with two buttons. It should be
@@ -82,7 +74,9 @@ class BasicDialog(GladeDelegate, RunnableView):
     gladefile = "BasicDialog"
     help_section = None
 
-    def __init__(self, delete_handler=None):
+    def __init__(self, main_label_text=None, title=" ",
+                 header_text="", size=None, hide_footer=False,
+                 delete_handler=None):
         if not delete_handler:
             delete_handler = self.cancel
         self.setup_keyactions()
@@ -92,11 +86,6 @@ class BasicDialog(GladeDelegate, RunnableView):
         if self.help_section:
             self._add_help_button(self.help_section)
 
-    # Yes, title=" ". Use a single space to work around *cough* BROKEN
-    # window managers that want to set the title as Unnamed or ? when an
-    # empty string is set to it.
-    def _initialize(self, main_label_text=None, title=" ",
-                    header_text="", size=None, hide_footer=False):
         self.set_title(title)
         if size:
             self.get_toplevel().set_size_request(*size)

@@ -79,8 +79,8 @@ class ShortcutsEditor(BasicDialog):
     title = _("Keyboard shortcuts")
 
     def __init__(self):
-        BasicDialog.__init__(self)
-        self._initialize(size=ShortcutsEditor.size, title=ShortcutsEditor.title)
+        BasicDialog.__init__(self, size=ShortcutsEditor.size,
+                             title=ShortcutsEditor.title)
         self._create_ui()
 
     def _create_ui(self):

@@ -182,9 +182,8 @@ class DeviceConstantsDialog(BasicDialog):
         self.conn = conn
         self.printer = printer
 
-        BasicDialog.__init__(self)
-        BasicDialog._initialize(self, hide_footer=False, title='edit',
-                                size=self.size)
+        BasicDialog.__init__(self, hide_footer=False, title='edit',
+                             size=self.size)
         self.main.set_border_width(6)
 
         self._create_ui()

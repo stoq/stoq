@@ -191,10 +191,9 @@ class BaseEditor(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, model,
                                  visual_mode=visual_mode)
 
-        self.main_dialog = BasicDialog()
-        self.main_dialog._initialize(title=self.get_title(self.model),
-                                     header_text=self.header,
-                                     size=self.size)
+        self.main_dialog = BasicDialog(title=self.get_title(self.model),
+                                       header_text=self.header,
+                                       size=self.size)
         self.main_dialog.attach_slave("main", self)
 
         # This helps kiwis ui test, set the name of ourselves to

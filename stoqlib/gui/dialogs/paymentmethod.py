@@ -54,9 +54,9 @@ class PaymentMethodsDialog(BasicDialog):
                       'store_credit': PaymentMethodEditor}
 
     def __init__(self, conn):
-        BasicDialog.__init__(self)
-        self._initialize(hide_footer=True, size=PaymentMethodsDialog.size,
-                         title=PaymentMethodsDialog.title)
+        BasicDialog.__init__(self,
+                             hide_footer=True, size=PaymentMethodsDialog.size,
+                             title=PaymentMethodsDialog.title)
         self._can_edit = False
         self.conn = conn
         self._setup_list()

@@ -70,12 +70,12 @@ class PluginManagerDialog(BasicDialog):
     help_section = 'plugin'
 
     def __init__(self, conn):
-        BasicDialog.__init__(self)
         header = _(u'Select the plugin you want to activate and click in '
                     'the apply button.')
-        self._initialize(hide_footer=False, size=PluginManagerDialog.size,
-                         title=PluginManagerDialog.title, header_text=header)
-
+        BasicDialog.__init__(self, hide_footer=False,
+                             size=PluginManagerDialog.size,
+                             title=PluginManagerDialog.title,
+                             header_text=header)
         self.conn = conn
         self._manager = get_plugin_manager()
         self._setup_widgets()

@@ -45,9 +45,8 @@ class SintegraDialog(BasicDialog):
     title = _('Fiscal Printer History')
 
     def __init__(self, conn):
-        BasicDialog.__init__(self)
+        BasicDialog.__init__(self, title=self.title)
         self.justify_label(gtk.JUSTIFY_CENTER)
-        BasicDialog._initialize(self, title=self.title)
 
         self.conn = conn
         self.ok_button.set_label(_("Generate"))
