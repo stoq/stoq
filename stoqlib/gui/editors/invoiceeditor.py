@@ -277,6 +277,8 @@ class InvoicePrinterDialog(ModelListDialog):
     # ModelListDialog
     model_type = InvoicePrinter
     editor_class = InvoicePrinterEditor
+    list_slave_class = InvoiceLayoutListSlave
+
     size = (700, 300)
     title = _("Invoice Printers")
 
