@@ -25,7 +25,6 @@
 
 from decimal import Decimal
 
-import gtk
 from gtk import gdk
 
 from kiwi.datatypes import currency
@@ -35,16 +34,12 @@ from kiwi.ui.objectlist import Column, ColoredColumn
 
 from stoqlib.api import api
 from stoqlib.domain.product import Product
-from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
+from stoqlib.domain.purchase import  PurchaseItem
 from stoqlib.domain.views import (ProductFullStockView,
                                   PurchasedItemAndStockView)
 from stoqlib.exceptions import StockError
-from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
-from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
-from stoqlib.lib.message import warning, yesno
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -422,110 +417,3 @@ class ProductionComponentSlave(GladeSlaveDelegate):
 
     def on_export_csv_button__clicked(self, widget):
         self._run_csv_exporter_dialog()
-
-
-class ProductionDialog(GladeSlaveDelegate):
-    title = _('Production Dialog')
-    size = (780, 580)
-    gladefile = 'ProductionDialog'
-
-    def __init__(self, conn, model=None):
-        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
-        self.main_dialog = BasicWrappingDialog(self, self.title, size=self.size)
-        self.main_dialog.enable_window_controls()
-        self.main_dialog.ok_button.set_label(_(u'Create _purchase order'))
-        self.main_dialog.ok_button.set_sensitive(False)
-        self.conn = conn
-        self._setup_widgets()
-
-    def _setup_widgets(self):
-        self.product_slave = ProductionProductSlave(self.conn)
-        self.product_slave.connect(
-            'added-product', self._on_production_item__added)
-        self.product_slave.connect(
-            'removed-product', self._on_production_item__removed)
-        self.product_slave.connect(
-            'updated-product', self._on_production_item__updated)
-        self.attach_slave('products_holder', self.product_slave)
-
-        self.component_slave = ProductionComponentSlave()
-        self.attach_slave('components_holder', self.component_slave)
-
-    def _update_widgets(self):
-        self.main_dialog.ok_button.set_sensitive(self.component_slave.has_rows)
-
-    def _has_valid_components(self):
-        if not self.component_slave.has_valid_components():
-            warning(_(u"You don't have any components to purchase"))
-            return False
-
-        for component in self.component_slave.get_components():
-            if component.can_purchase():
-                if not component.has_valid_purchase_quantity():
-                    msg = _('The quantity needed of some components is bigger '
-                            'than the quantity you will purchase.\n\n'
-                            'Would you like to continue the purchase ?')
-                    return not yesno(msg, gtk.RESPONSE_NO,
-                                     _("Abort purchase"),
-                                     _("Continue purchase"))
-        return True
-
-    def _create_purchase_order(self, trans):
-        supplier = sysparam(trans).SUGGESTED_SUPPLIER
-        branch = api.get_current_branch(trans)
-        group = PaymentGroup(connection=trans)
-        order = PurchaseOrder(supplier=supplier, branch=branch,
-                              status=PurchaseOrder.ORDER_PENDING,
-                              group=group,
-                              connection=trans)
-
-        for component in self.component_slave.get_components():
-            component.create_purchase_item(order, trans)
-        return order
-
-    #
-    # BasicPluggableDialog Callbacks
-    #
-
-    def on_cancel(self):
-        return False
-
-    def on_confirm(self):
-        return True
-
-    def validate_confirm(self):
-        if not self._has_valid_components():
-            return False
-        # Let's create the purchase order here, so the user might create
-        # several orders without leave this dialog
-        trans = api.new_transaction()
-        order = self._create_purchase_order(trans)
-        if not order:
-            api.finish_transaction(trans, False)
-            trans.close()
-            # FIXME: We should close the connection above if this really happens
-            return False
-
-        retval = run_dialog(PurchaseWizard, self, trans, order)
-        api.finish_transaction(trans, retval)
-        trans.close()
-        return retval
-
-    #
-    # Callbacks
-    #
-
-    def _on_production_item__added(self, widget, production_item):
-        components = production_item.get_components()
-        self.component_slave.add_components(components)
-        self._update_widgets()
-
-    def _on_production_item__removed(self, widget, production_item, quantity):
-        components = production_item.get_components()
-        self.component_slave.remove_components(components, quantity)
-        self._update_widgets()
-
-    def _on_production_item__updated(self, widget, production_item, quantity):
-        components = production_item.get_components()
-        self.component_slave.update_components(components, quantity)
-        self._update_widgets()
