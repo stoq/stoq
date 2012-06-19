@@ -33,6 +33,7 @@ import gtk
 import pango
 from kiwi.datatypes import currency, ValidationError, ValueUnset
 from kiwi.ui.widgets.list import Column
+from kiwi.ui.forms import ChoiceField, DateField, PriceField, TextField
 
 from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
@@ -47,9 +48,7 @@ from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor
-from stoqlib.gui.editors.personeditor import ClientEditor, SupplierEditor
-from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.gui.fields import PaymentCategoryField, PersonField
 from stoqlib.lib.defaults import (INTERVALTYPE_WEEK,
                                   INTERVALTYPE_MONTH)
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
@@ -62,22 +61,25 @@ INTERVALTYPE_QUARTERLY = 11
 
 class PaymentEditor(BaseEditor):
     title = _("Payment")
-    gladefile = "PaymentEditor"
-    proxy_widgets = ['value',
-                     'description',
-                     'due_date',
-                     ]
-    # FIXME: Person should really be a proxy_widget attribute,
-    # but it breaks when displaying an existing payment
-
     confirm_widgets = ['due_date']
-
     model_type = Payment
 
     # Override in subclass
-    payment_type = None
-    person_editor = None
-    person_class = None
+    person_type = None
+    category_type = None
+
+    # FIXME: Person should really be a proxy_widget attribute,
+    # but it breaks when displaying an existing payment
+    fields = dict(
+        method=ChoiceField(_('Method')),
+        description=TextField(_('Description'), proxy=True, mandatory=True),
+        person=PersonField(),
+        value=PriceField(_('Value'), proxy=True, mandatory=True),
+        due_date=DateField(_('Due date'), proxy=True, mandatory=True),
+        category=PaymentCategoryField(_('Category')),
+        repeat=ChoiceField(_('Repeat')),
+        end_date=DateField(_('End date')),
+        )
 
     def __init__(self, conn, model=None, category=None):
         """ A base class for additional payments
@@ -87,6 +89,9 @@ class PaymentEditor(BaseEditor):
 
         """
         self._is_new_model = not model
+        self.fields['person'].person_type = self.person_type
+        self.fields['category'].category_type = self.category_type
+
         BaseEditor.__init__(self, conn, model)
         self._setup_widgets()
         if category:
@@ -116,23 +121,13 @@ class PaymentEditor(BaseEditor):
                        connection=trans)
 
     def setup_proxies(self):
-        self._fill_category_combo()
         self._fill_method_combo()
-        self._populate_person()
         self.repeat.prefill([
             (_('Once'), INTERVALTYPE_ONCE),
             (_('Weekly'), INTERVALTYPE_WEEK),
             (_('Biweekly'), INTERVALTYPE_BIWEEKLY),
             (_('Monthly'), INTERVALTYPE_MONTH),
             (_('Quarterly'), INTERVALTYPE_QUARTERLY)])
-        self.add_category.set_tooltip_text(_("Add a new payment category"))
-        self.edit_category.set_tooltip_text(_("Edit the selected payment category"))
-        if self.person_type == Supplier:
-            self.add_person.set_tooltip_text(_("Add a new supplier"))
-            self.edit_person.set_tooltip_text(_("Edit the selected supplier"))
-        else:
-            self.add_person.set_tooltip_text(_("Add a new client"))
-            self.edit_person.set_tooltip_text(_("Edit the selected client"))
         self.add_proxy(self.model, PaymentEditor.proxy_widgets)
 
     def validate_confirm(self):
@@ -162,63 +157,12 @@ class PaymentEditor(BaseEditor):
         return self.model
 
     def can_edit_details(self):
-        for widget in [self.value, self.due_date,
-                       self.add_person, self.repeat, self.method]:
+        for widget in [self.value, self.due_date, self.person,
+                       self.repeat, self.method]:
             widget.set_sensitive(True)
         self.details_button.hide()
-        self.edit_person.set_sensitive(bool(self.person.get_selected()))
-        self._populate_person()
 
     # Private
-
-    def _populate_person(self):
-        if self.person_class == Supplier:
-            facets = self.person_class.get_active_suppliers(self.trans)
-        else:
-            facets = self.person_class.get_active_clients(self.trans)
-
-        if facets:
-            items = [(f.person.name, f) for f in facets]
-            self.person.prefill(items)
-        self.person.set_sensitive(bool(facets))
-
-        person = getattr(self.model.group, self.person_attribute)
-        if person:
-            facet = self.person_type.selectOneBy(person=person,
-                                        connection=person.get_connection())
-            self.person.select(facet)
-
-    def _run_payment_category_editor(self, category=None):
-        trans = api.new_transaction()
-        category = trans.get(category)
-        model = run_dialog(PaymentCategoryEditor, self, trans, category,
-                           self.category_type)
-        rv = api.finish_transaction(trans, model)
-        trans.close()
-        if rv:
-            self._fill_category_combo()
-            self.category.select(model)
-
-    def _run_person_editor(self, person=None):
-        trans = api.new_transaction()
-        person = trans.get(person)
-        model = run_person_role_dialog(self.person_editor, self, trans, person)
-        rv = api.finish_transaction(trans, model)
-        trans.close()
-        if rv:
-            self._populate_person()
-            self.person.select(model)
-
-    def _fill_category_combo(self):
-        categories = PaymentCategory.selectBy(
-            connection=self.trans,
-            category_type=self.category_type).orderBy('name')
-        self.category.set_sensitive(bool(categories))
-        self.category.prefill(api.for_combo(categories,
-                                            empty=_('No category'),
-                                            attr='name'))
-        self.category.select(self.model.category)
-        self.edit_category.set_sensitive(False)
 
     def _fill_method_combo(self):
         methods = set()
@@ -248,7 +192,6 @@ class PaymentEditor(BaseEditor):
         self.details_button.connect('clicked',
                                     self._on_details_button__clicked)
         for widget in [self.value, self.due_date, self.person,
-                       self.add_person, self.edit_person,
                        self.repeat, self.end_date]:
             widget.set_sensitive(False)
 
@@ -352,24 +295,6 @@ class PaymentEditor(BaseEditor):
     def on_end_date__content_changed(self, end_date):
         self._validate_date()
 
-    def on_category__content_changed(self, category):
-        self.edit_category.set_sensitive(bool(self.category.get_selected()))
-
-    def on_person__content_changed(self, person):
-        self.edit_person.set_sensitive(bool(self.person.get_selected()))
-
-    def on_add_category__clicked(self, widget):
-        self._run_payment_category_editor()
-
-    def on_edit_category__clicked(self, widget):
-        self._run_payment_category_editor(self.category.get_selected())
-
-    def on_add_person__clicked(self, widget):
-        self._run_person_editor()
-
-    def on_edit_person__clicked(self, widget):
-        self._run_person_editor(self.person.get_selected())
-
     def _on_details_button__clicked(self, widget):
         self._show_order_dialog()
 
@@ -377,8 +302,6 @@ class PaymentEditor(BaseEditor):
 class InPaymentEditor(PaymentEditor):
     payment_type = Payment.TYPE_IN
     person_attribute = 'payer'
-    person_editor = ClientEditor
-    person_class = Client
     person_type = Client
     _person_label = _("Payer:")
     help_section = 'account-receivable'
@@ -397,8 +320,6 @@ class InPaymentEditor(PaymentEditor):
 class OutPaymentEditor(PaymentEditor):
     payment_type = Payment.TYPE_OUT
     person_attribute = 'recipient'
-    person_editor = SupplierEditor
-    person_class = Supplier
     person_type = Supplier
     _person_label = _("Recipient:")
     help_section = 'account-payable'
@@ -416,7 +337,6 @@ class OutPaymentEditor(PaymentEditor):
 
 class LonelyPaymentDetailsDialog(BaseEditor):
     gladefile = 'LonelyPaymentDetailsDialog'
-    model_type = Payment
     size = (550, 350)
     proxy_widgets = ['value',
                      'interest',

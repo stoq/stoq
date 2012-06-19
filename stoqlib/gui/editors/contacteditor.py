@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,9 +25,13 @@
 """Person Liaisons editor implementation"""
 
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.baseeditor import BaseEditor
+from kiwi.ui.forms import TextField
+
+from stoqlib.api import api
 from stoqlib.domain.person import Liaison
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -35,8 +39,11 @@ _ = stoqlib_gettext
 class ContactEditor(BaseEditor):
     model_name = _('Liaison')
     model_type = Liaison
-    gladefile = 'ContactEditor'
-    proxy_widgets = ('name', 'phone_number')
+
+    fields = dict(
+        name=TextField('Name', mandatory=True, proxy=True),
+        phone_number=TextField('Phone Number', mandatory=True, proxy=True),
+        )
 
     def __init__(self, conn, model, person):
         self.person = person
@@ -50,5 +57,9 @@ class ContactEditor(BaseEditor):
     def create_model(self, conn):
         return Liaison(person=self.person, connection=conn)
 
-    def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, ContactEditor.proxy_widgets)
+
+if __name__ == '__main__':
+    ec = api.prepare_test()
+    client = ec.create_client()
+    run_dialog(ContactEditor, parent=None, conn=ec.trans, model=None,
+               person=client.person)

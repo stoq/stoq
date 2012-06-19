@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2010 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2010-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,8 +25,11 @@
 """Dialog for listing client categories"""
 
 from kiwi.datatypes import ValidationError
+from kiwi.ui.forms import TextField
 
+from stoqlib.api import api
 from stoqlib.domain.person import ClientCategory
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -36,24 +39,32 @@ _ = stoqlib_gettext
 class ClientCategoryEditor(BaseEditor):
     model_name = _('Client Category')
     model_type = ClientCategory
-    gladefile = 'ClientCategoryEditor'
     confirm_widgets = ['name']
+
+    fields = dict(
+        name=TextField(_('Name'), proxy=True),
+        )
 
     def create_model(self, trans):
         return ClientCategory(name='', connection=trans)
 
     def setup_proxies(self):
         self.name.grab_focus()
-        self.add_proxy(self.model, ['name'])
 
     #
-    #Kiwi Callbacks
+    # Kiwi Callbacks
     #
 
     def on_name__validate(self, widget, new_name):
         if not new_name:
             return ValidationError(
-                _(u"The client category should have a name."))
+                _("The client category should have a name."))
         if self.model.check_unique_value_exists('name', new_name):
             return ValidationError(
-                _(u"The client category '%s' already exists.") % new_name)
+                _("The client category '%s' already exists.") % new_name)
+
+if __name__ == '__main__':
+    ec = api.prepare_test()
+    model = ec.create_client_category()
+    run_dialog(ClientCategoryEditor,
+               parent=None, conn=ec.trans, model=model)

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,9 +25,12 @@
 """Editors for fiscal objects"""
 
 from kiwi.datatypes import ValidationError
+from kiwi.ui.forms import TextField
 
+from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_cfop
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 
@@ -37,12 +40,17 @@ _ = stoqlib_gettext
 class CfopEditor(BaseEditor):
     model_name = _('C.F.O.P.')
     model_type = CfopData
-    gladefile = 'CfopEditor'
-    proxy_widgets = ('code', 'description')
+
+    fields = dict(
+        code=TextField(_('C.F.O.P.'), input_mask=_("0.000"), mandatory=True,
+                       proxy=True),
+        description=TextField(_('Description'), mandatory=True, proxy=True),
+        )
 
     def __init__(self, conn, model, visual_mode=False):
         BaseEditor.__init__(self, conn, model, visual_mode)
         self.set_description(self.model.code)
+
     #
     # BaseEditor Hooks
     #
@@ -50,9 +58,6 @@ class CfopEditor(BaseEditor):
     def create_model(self, conn):
         return CfopData(code=u"", description=u"",
                         connection=conn)
-
-    def setup_proxies(self):
-        self.add_proxy(self.model, CfopEditor.proxy_widgets)
 
     #
     # Kiwi handlers
@@ -87,3 +92,8 @@ class FiscalBookEntryEditor(BaseEditor):
         self._setup_widgets()
         self.add_proxy(self.model,
                        FiscalBookEntryEditor.proxy_widgets)
+
+if __name__ == '__main__':
+    ec = api.prepare_test()
+    cfop = ec.create_cfop_data()
+    run_dialog(CfopEditor, parent=None, conn=ec.trans, model=cfop)
