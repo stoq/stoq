@@ -226,11 +226,10 @@ class SearchDialog(BasicDialog):
         self.summary_label = None
         self.double_click_confirm = double_click_confirm
 
-        BasicDialog.__init__(self)
-        BasicDialog._initialize(self, hide_footer=hide_footer,
-                                main_label_text=self.main_label_text,
-                                title=title or self.title,
-                                size=self.size)
+        BasicDialog.__init__(self, hide_footer=hide_footer,
+                             main_label_text=self.main_label_text,
+                             title=title or self.title,
+                             size=self.size)
 
         self.executer = ORMObjectQueryExecuter(api.get_connection())
         # FIXME: Remove this limit, but we need to migrate all existing

@@ -94,8 +94,6 @@ class GtkPrintDialog(BasicDialog):
         button = self.add_extra_button(stock=gtk.STOCK_PRINT_PREVIEW)
         button.connect('clicked', self._on_preview_button__clicked)
 
-        self._initialize()
-
     def _create_dialog(self):
         dialog = gtkunixprint.PrintUnixDialog(parent=self.get_toplevel())
         dialog.set_manual_capabilities(gtkunixprint.PRINT_CAPABILITY_COPIES |

@@ -206,8 +206,7 @@ class ModelListDialog(BasicDialog):
                 self.__class__.__name__, ))
         self.list_slave = self.list_slave_class(self)
 
-        BasicDialog.__init__(self)
-        BasicDialog._initialize(self, title=self.title, size=self.size)
+        BasicDialog.__init__(self, title=self.title, size=self.size)
 
         self.vbox = gtk.VBox()
         self.vbox.pack_start(self.list_slave.listcontainer)
@@ -470,8 +469,7 @@ class SimpleListDialog(BasicDialog):
         :type multiple: boolean
         """
 
-        BasicDialog.__init__(self)
-        BasicDialog._initialize(self, size=self.size, title=title)
+        BasicDialog.__init__(self, size=self.size, title=title)
         if hide_cancel_btn:
             self.cancel_button.hide()
 
