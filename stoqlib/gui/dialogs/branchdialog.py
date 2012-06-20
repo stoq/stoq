@@ -29,6 +29,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
 from stoqlib.api import api
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.database.admin import create_main_branch
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.parameters import sysparam
@@ -162,3 +163,13 @@ class BranchDialog(BaseEditor):
         if not self.document_l10n.validate(value):
             return ValidationError(_('%s is not valid.') % (
                 self.document_l10n.label,))
+
+
+def test():
+    ec = api.prepare_test()
+    person = run_dialog(BranchDialog, None, ec.trans)
+    print 'RETVAL', person
+
+
+if __name__ == '__main__':
+    test()
