@@ -88,7 +88,7 @@ class GtkPrintDialog(BasicDialog):
         self.report = report
         self._dialog = self._create_dialog()
 
-        super(GtkPrintDialog, self).__init__(self._dialog.destroy)
+        super(GtkPrintDialog, self).__init__(delete_handler=self._dialog.destroy)
 
         # Add a preview button
         button = self.add_extra_button(stock=gtk.STOCK_PRINT_PREVIEW)
