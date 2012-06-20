@@ -51,7 +51,7 @@ from stoqlib.gui.base.infobar import InfoBar
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.crashreportdialog import show_dialog
 from stoqlib.gui.dialogs.feedbackdialog import FeedbackDialog
-from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
 from stoqlib.gui.events import StopApplicationEvent
 from stoqlib.gui.help import show_contents, show_section
@@ -1445,10 +1445,10 @@ class SearchableAppWindow(AppWindow):
     def export_spread_sheet(self):
         """Runs a dialog to export the current search results to a CSV file.
         """
-        self.run_dialog(SpreadSheetExporterDialog,
-                        object_list=self.results,
-                        name=self.app_name,
-                        filename_prefix=self.app.name)
+        sse = SpreadSheetExporter(),
+        sse.export(object_list=self.results,
+                   name=self.app_name,
+                   filename_prefix=self.app.name)
 
     def select_result(self, result):
         """Select the object in the result list

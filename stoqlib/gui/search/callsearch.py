@@ -34,7 +34,7 @@ from stoqlib.api import api
 from stoqlib.domain.person import CallsView, Client, ClientCallsView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchEditor
-from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.callseditor import CallsEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
@@ -165,8 +165,8 @@ class CallsSearch(SearchEditor):
     #
 
     def _on_export_csv_button__clicked(self, widget):
-        run_dialog(SpreadSheetExporterDialog, self,
-                   object_list=self.results,
+        sse = SpreadSheetExporter()
+        sse.export(object_list=self.results,
                    name=_('Calls'),
                    filename_prefix=_('calls'))
 

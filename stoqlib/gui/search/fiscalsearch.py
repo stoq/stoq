@@ -36,7 +36,7 @@ from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData, IcmsIpiView, IssView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchEditor, SearchDialog
-from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.fiscaleditor import (CfopEditor,
                                               FiscalBookEntryEditor)
 from stoqlib.lib.translation import stoqlib_gettext
@@ -188,8 +188,8 @@ class FiscalBookEntrySearch(SearchDialog):
         trans.close()
 
     def _on_export_csv_button__clicked(self, widget):
-        run_dialog(SpreadSheetExporterDialog, self,
-                   object_list=self.results,
+        sse = SpreadSheetExporter()
+        sse.export(object_list=self.results,
                    name=_('Fiscal book'),
                    filename_prefix=_('fiscal-book'))
 
