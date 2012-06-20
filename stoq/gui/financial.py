@@ -81,8 +81,10 @@ class TransactionSearchContainer(SearchContainer):
         self.model = page.model
         SearchContainer.__init__(self, columns)
 
-    def add_results(self, results):
-        self.page.search.results.clear()
+    def add_results(self, results, clear=True):
+        if clear:
+            self.page.search.results.clear()
+
         if self.page.query.table == AccountTransactionView:
             self.page.append_transactions(results)
         else:
@@ -793,8 +795,13 @@ class FinancialApp(AppWindow):
         self.acc_popup.popup(None, None, None, event.button, event.time)
 
     def on_Edit__activate(self, button):
-        account_view = self.accounts.get_selected()
-        self._edit_existing_account(account_view)
+        if self._is_accounts_tab():
+            account_view = self.accounts.get_selected()
+            self._edit_existing_account(account_view)
+        elif self._is_transaction_tab():
+            page = self._get_current_page_widget()
+            transaction = page.results.get_selected()
+            page._edit_transaction_dialog(transaction)
 
     def after_notebook__switch_page(self, notebook, page, page_id):
         self._update_actions()
