@@ -394,6 +394,7 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
 
     def set_message(self, message, details_callback=None):
         """Display a simple message on a label, next to the add, edit, delete buttons
+        :param message: a message with properly escaped markup
         """
         self.message_hbox.set_visible(True)
         self.message_details_button.set_visible(bool(details_callback))
@@ -402,8 +403,8 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
                 self.message_details_button.disconnect(self._callback_id)
             self._callback_id = self.message_details_button.connect(
                                                 'clicked', details_callback)
-        self.message_label.set_markup(
-            api.escape(message))
+
+        self.message_label.set_markup(message)
 
     def clear_message(self):
         self.message_hbox.set_visible(False)

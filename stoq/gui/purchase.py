@@ -181,7 +181,7 @@ class PurchaseApp(SearchableAppWindow):
             self.SearchQuotes,
             self.Services])
         self.search.set_summary_label(column='total',
-                                      label=_('<b>Orders total:</b>'),
+                                      label=_('<b>%s</b>' % (api.escape('Orders total:'), )),
                                       format='<b>%s</b>',
                                       parent=self.get_statusbar_message_area())
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
@@ -225,7 +225,8 @@ class PurchaseApp(SearchableAppWindow):
             self.search.set_message("%s\n\n%s" % (
                 _("No orders could be found."),
                 _("Would you like to %s ?") % (
-                    '<a href="new_order">%s</a>' % _("create a new order"))
+                    '<a href="new_order">%s</a>' % (
+                api.escape(_("create a new order"), ))
                 ))
 
         # FIXME: Push number of results to Statusbar
