@@ -424,11 +424,11 @@ class PurchaseApp(SearchableAppWindow):
 
     def _new_product(self):
         with api.trans() as trans:
-            self.run_dialog(ProductEditor, trans)
+            self.run_dialog(ProductEditor, trans, model=None)
 
     def _new_consignment(self):
         with api.trans() as trans:
-            self.run_dialog(ConsignmentWizard, trans)
+            self.run_dialog(ConsignmentWizard, trans, model=None)
 
         if trans.committed:
             self.refresh()
