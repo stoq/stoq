@@ -38,8 +38,7 @@ from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
@@ -239,8 +238,8 @@ class PurchaseDetailsDialog(BaseEditor):
                         ellipsize=pango.ELLIPSIZE_END)]
 
     def _export_csv(self):
-        run_dialog(SpreadSheetExporterDialog,
-                   object_list=self.ordered_items,
+        sse = SpreadSheetExporter()
+        sse.export(object_list=self.ordered_items,
                    name=_('Purchase items'),
                    filename_prefix=_('purchase-items'))
 

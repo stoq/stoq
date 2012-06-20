@@ -38,8 +38,7 @@ from stoqlib.domain.purchase import  PurchaseItem
 from stoqlib.domain.views import (ProductFullStockView,
                                   PurchasedItemAndStockView)
 from stoqlib.exceptions import StockError
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -379,8 +378,8 @@ class ProductionComponentSlave(GladeSlaveDelegate):
                 self.component_list.remove(c)
 
     def _run_csv_exporter_dialog(self):
-        run_dialog(SpreadSheetExporterDialog, self,
-                   object_list=self.component_list,
+        sse = SpreadSheetExporter()
+        sse.export(object_list=self.component_list,
                    name=_('Production components'),
                    filename_prefix=_('production-components'))
 

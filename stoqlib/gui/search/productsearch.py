@@ -41,11 +41,10 @@ from stoqlib.domain.views import (ProductQuantityView,
                                   ProductFullStockItemView, SoldItemView,
                                   ProductFullWithClosedStockView,
                                   ProductClosedStockView)
-from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
                                      SearchDialogPrintSlave)
-from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductStockEditor)
 from stoqlib.gui.printing import print_report
@@ -207,8 +206,8 @@ class ProductSearch(SearchEditor):
     #
 
     def _on_export_csv_button__clicked(self, widget):
-        run_dialog(SpreadSheetExporterDialog, self,
-                   object_list=self.results,
+        sse = SpreadSheetExporter()
+        sse.export(object_list=self.results,
                    name=_('Product'),
                    filename_prefix=_('product'))
 

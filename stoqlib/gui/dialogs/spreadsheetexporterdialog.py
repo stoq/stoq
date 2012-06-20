@@ -36,22 +36,15 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class SpreadSheetExporterDialog(gtk.Window):
+class SpreadSheetExporter:
     """A dialog to export data to a spreadsheet
     """
     title = _('Exporter to Spreadseet')
 
-    def __init__(self, object_list=None, name=None, filename_prefix=None):
-        self._object_list = object_list
-        self._name = name
-        self._filename_prefix = filename_prefix
-
-        gtk.Window.__init__(self)
-
-    def run(self):
-        xls = XLSExporter(self._name)
-        xls.add_from_object_list(self._object_list)
-        temporary = xls.save(self._filename_prefix)
+    def export(self, object_list, name, filename_prefix):
+        xls = XLSExporter(name)
+        xls.add_from_object_list(object_list)
+        temporary = xls.save(filename_prefix)
         mime_type = 'application/vnd.ms-excel'
         app_info = gio.app_info_get_default_for_type(mime_type, False)
         if app_info:

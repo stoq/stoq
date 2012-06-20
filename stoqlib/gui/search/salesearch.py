@@ -38,9 +38,8 @@ from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
-from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
-from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporterDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.printing import print_report
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale, SaleView
@@ -189,8 +188,8 @@ class SoldItemsByBranchSearch(SearchDialog):
         self._print_report()
 
     def _on_export_csv_button__clicked(self, widget):
-        run_dialog(SpreadSheetExporterDialog, self,
-                   object_list=self.results,
+        sse = SpreadSheetExporter()
+        sse.export(object_list=self.results,
                    name=_('Sales'),
                    filename_prefix=_('sales'))
 
