@@ -220,7 +220,6 @@ class PurchaseApp(SearchableAppWindow):
         if len(results):
             return
 
-        link_markup("new_order", _("Create a new order"))
         supplier, status = states[:2]
         if len(states) > 2 or (supplier.text == '' and status.value is None):
             self.search.set_message("%s\n\n%s" % (
