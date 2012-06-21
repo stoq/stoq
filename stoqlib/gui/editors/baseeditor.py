@@ -33,10 +33,9 @@ from kiwi.ui.widgets.label import ProxyLabel
 
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
+from stoqlib.gui.base.dialogs import RunnableView, BasicDialog, run_dialog
 from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.events import EditorSlaveCreateEvent
-from stoqlib.gui.help import show_section
 
 log = Logger('stoqlib.gui.editors')
 
@@ -155,7 +154,7 @@ class BaseEditorSlave(GladeSlaveDelegate):
         return True
 
 
-class BaseEditor(BaseEditorSlave):
+class BaseEditor(BaseEditorSlave, RunnableView):
     """ Base class for editor dialogs. It offers methods of
     BaseEditorSlave, a windows title and OK/Cancel buttons.
 
@@ -193,8 +192,11 @@ class BaseEditor(BaseEditorSlave):
 
         self.main_dialog = BasicDialog(title=self.get_title(self.model),
                                        header_text=self.header,
+                                       help_section=self.help_section,
                                        size=self.size)
         self.main_dialog.attach_slave("main", self)
+        self.main_dialog.connect('confirm', self._on_main_dialog__confirm)
+        self.main_dialog.connect('cancel', self._on_main_dialog__cancel)
 
         # This helps kiwis ui test, set the name of ourselves to
         # the classname of the slave, which is much more helpful than
@@ -209,20 +211,6 @@ class BaseEditor(BaseEditorSlave):
 
         self.register_validate_function(self._validation_function)
         self.force_validation()
-
-        if self.help_section:
-            self._add_help_button(self.help_section)
-
-    def _add_help_button(self, section):
-        def on_help__clicked(button):
-            show_section(section)
-
-        self.main_dialog.action_area.set_layout(gtk.BUTTONBOX_END)
-        button = gtk.Button(stock=gtk.STOCK_HELP)
-        button.connect('clicked', on_help__clicked)
-        self.main_dialog.action_area.add(button)
-        self.main_dialog.action_area.set_child_secondary(button, True)
-        button.show()
 
     def _get_title_format(self):
         if self.visual_mode:
@@ -286,7 +274,7 @@ class BaseEditor(BaseEditorSlave):
         button.show()
         return button
 
-    def cancel(self, *args):
+    def cancel(self):
         """
         Cancel the dialog.
         """
@@ -297,7 +285,7 @@ class BaseEditor(BaseEditorSlave):
         log.info("%s: Closed (cancelled), retval=%r" % (
             self.__class__.__name__, self.retval))
 
-    def confirm(self, *args):
+    def confirm(self):
         """
         Confirm the dialog.
         """
@@ -372,13 +360,31 @@ class BaseEditor(BaseEditorSlave):
     def has_message_bar(self):
         return self._message_bar is not None
 
+    # RunnableView
+    # This delegate everything to self.main_dialog
+
+    def close(self):
+        self.main_dialog.close()
+
     def run(self):
         self.main_dialog.run()
+
+    def get_current_toplevel(self):
+        return self.main_dialog.get_current_toplevel()
+
+    def destroy(self):
+        self.main_dialog.destroy()
 
     def set_transient_for(self, window):
         self.main_dialog.set_transient_for(window)
 
     # Callbacks
+
+    def _on_main_dialog__cancel(self, dialog, retval):
+        self.cancel()
+
+    def _on_main_dialog__confirm(self, dialog, retval):
+        self.confirm()
 
     def _validation_function(self, is_valid):
         self.refresh_ok(is_valid)

@@ -31,7 +31,7 @@ from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.gui.base.dialogs import BasicDialog
+from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.stockicons import STOQ_PLUGIN
 from stoqlib.lib.parameters import is_developer_mode
 from stoqlib.lib.translation import stoqlib_gettext
@@ -147,3 +147,8 @@ class PluginManagerDialog(BasicDialog):
 
     def _on_klist__selection_changed(self, list, data):
         self._update_widgets()
+
+
+if __name__ == '__main__':
+    ec = api.prepare_test()
+    run_dialog(PluginManagerDialog, None, ec.trans)

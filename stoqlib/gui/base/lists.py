@@ -459,7 +459,7 @@ class SimpleListDialog(BasicDialog):
     size = (500, 400)
 
     def __init__(self, columns, objects, hide_cancel_btn=True,
-                 title='', multiple=True):
+                 title='', multiple=True, header_text=""):
         """
         Create a new SimpleListDialog.
         :param columns:
@@ -470,7 +470,8 @@ class SimpleListDialog(BasicDialog):
         :type multiple: boolean
         """
 
-        BasicDialog.__init__(self, size=self.size, title=title)
+        BasicDialog.__init__(self, size=self.size, title=title,
+                             header_text=header_text)
         if hide_cancel_btn:
             self.cancel_button.hide()
 

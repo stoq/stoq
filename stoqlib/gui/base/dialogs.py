@@ -31,6 +31,7 @@ from kiwi.log import Logger
 from kiwi.ui.dialogs import error, warning, info, yesno
 from kiwi.ui.delegates import GladeDelegate
 from kiwi.ui.views import BaseView
+from kiwi.utils import gsignal
 from zope.interface import implements
 
 from stoqlib.lib.translation import stoqlib_gettext
@@ -66,41 +67,128 @@ class RunnableView:
         """
         self.show()
 
+    def get_current_toplevel(self):
+        return self.get_toplevel()
+
+    def set_transient_for(self, window):
+        self.get_toplevel().set_transient_for(window)
+
 
 class BasicDialog(GladeDelegate, RunnableView):
     """Abstract class that offers a Dialog with two buttons. It should be
     subclassed and customized.
     """
-    gladefile = "BasicDialog"
     help_section = None
+    gsignal('confirm', object)
+    gsignal('cancel', object)
 
     def __init__(self, main_label_text=None, title=" ",
                  header_text="", size=None, hide_footer=False,
-                 delete_handler=None):
-        if not delete_handler:
-            delete_handler = self.cancel
-        self.setup_keyactions()
-        GladeDelegate.__init__(self, delete_handler=delete_handler,
+                 delete_handler=None, help_section=None):
+        self._build_ui()
+        self._setup_keyactions()
+        GladeDelegate.__init__(self, delete_handler=delete_handler or self._cancel,
                                gladefile=self.gladefile,
                                keyactions=self.keyactions)
-        if self.help_section:
-            self._add_help_button(self.help_section)
+        help_section = help_section or self.help_section
+        if help_section:
+            self._add_help_button(help_section)
 
+        # FIXME: Create more widgets lazily when needed
         self.set_title(title)
         if size:
             self.get_toplevel().set_size_request(*size)
         if main_label_text:
             self.main_label.set_text(main_label_text)
         if header_text:
-            self.header_label.set_text(header_text)
-        else:
-            self.header_label.hide()
-            self.top_separator.hide()
+            header_label = gtk.Label()
+            header_label.set_markup(header_text)
+            self.header.add(header_label)
+            header_label.show()
         if hide_footer:
             self.hide_footer()
-        self.ok_button.set_use_underline(True)
 
         DialogCreateEvent.emit(self)
+
+    #
+    # Private
+    #
+
+    def _build_ui(self):
+        self.toplevel = gtk.Dialog()
+
+        self.vbox = gtk.VBox()
+        internal_vbox = self.toplevel.get_content_area()
+        internal_vbox.pack_start(self.vbox, True, True)
+        self.vbox.show()
+
+        # FIXME
+        # stoqlib/gui/base/search.py - hides the header
+        self.header = gtk.EventBox()
+        self.vbox.pack_start(self.header, False, False)
+        self.header.show()
+
+        self.main = gtk.EventBox()
+        self.vbox.pack_start(self.main)
+        self.main.show()
+
+        # FIXME
+        # stoqlib/gui/dialogs/importerdialog.py - setting
+        # stoqlib/gui/base/lists.py - removes the label
+        # stoqlib/gui/base/search.py - removes the label
+        # plugins/ecf/deviceconstanteditor.py - removes the label
+        self.main_label = gtk.Label()
+        self.main.add(self.main_label)
+        self.main_label.show()
+
+        hbox1 = gtk.HBox()
+        self.vbox.pack_start(hbox1, False)
+        hbox1.show()
+
+        # FIXME
+        # stoqlib/gui/dialogs/paymentmethod.py
+        # stoqlib/gui/search/salesearch.py
+        self.extra_holder = gtk.EventBox()
+        hbox1.pack_start(self.extra_holder, True, True)
+        self.extra_holder.show()
+
+        # FIXME
+        # stoqlib/gui/search/productsearch.py
+        # stoqlib/gui/search/servicesearch.py
+        self.print_holder = gtk.EventBox()
+        hbox1.pack_start(self.print_holder, True, True)
+        self.print_holder.show()
+
+        # FIXME
+        # stoqlib/gui/base/search.py
+        # stoqlib/gui/slaves/productslave.py
+        self.details_holder = gtk.EventBox()
+        hbox1.pack_end(self.details_holder, False, False)
+        self.details_holder.show()
+
+        # FIXME
+        # stoqlib/gui/dialogs/quotedialog.py
+        self.notice = gtk.EventBox()
+        hbox1.pack_start(self.notice, False)
+        self.notice.show()
+
+        action_area = self.toplevel.get_action_area()
+        action_area.set_border_width(6)
+        action_area.set_layout(gtk.BUTTONBOX_END)
+
+        self.cancel_button = gtk.Button(stock=gtk.STOCK_CANCEL)
+        action_area.pack_start(self.cancel_button, True, True)
+        self.cancel_button.show()
+
+        self.ok_button = gtk.Button(stock=gtk.STOCK_OK)
+        self.ok_button.set_use_underline(True)
+        action_area.pack_start(self.ok_button, True, True)
+        self.ok_button.show()
+
+    def _setup_keyactions(self):
+        self.keyactions = {keysyms.Escape: self._cancel,
+                           keysyms.Return: self._confirm,
+                           keysyms.KP_Enter: self._confirm}
 
     def _try_confirm(self, *args):
         """Only confirm if ok button is actually enabled.
@@ -110,20 +198,33 @@ class BasicDialog(GladeDelegate, RunnableView):
         """
         # FIXME: There should be a better way to findout valid status
         if self.ok_button.get_sensitive():
-            self.confirm()
+            self._confirm()
 
-    def setup_keyactions(self):
-        self.keyactions = {keysyms.Escape: self.cancel,
-                           keysyms.Return: self.confirm,
-                           keysyms.KP_Enter: self.confirm}
+    def _add_help_button(self, section):
+        def on_help__clicked(button):
+            from stoqlib.gui.help import show_section
+            show_section(section)
 
-    def confirm(self, *args):
+        self.action_area.set_layout(gtk.BUTTONBOX_END)
+        button = gtk.Button(stock=gtk.STOCK_HELP)
+        button.connect('clicked', on_help__clicked)
+        self.action_area.add(button)
+        self.action_area.set_child_secondary(button, True)
+        button.show()
+
+    def _confirm(self, *args):
         self.retval = True
+        self.emit('confirm', self.retval)
         self.close()
 
-    def cancel(self, *args):
+    def _cancel(self, *args):
         self.retval = False
+        self.emit('cancel', self.retval)
         self.close()
+
+    #
+    # Public API
+    #
 
     def hide_footer(self):
         self.ok_button.hide()
@@ -140,9 +241,8 @@ class BasicDialog(GladeDelegate, RunnableView):
             icon = gtk.STOCK_OK
         change_button_appearance(self.ok_button, icon, text)
 
-    def set_cancel_label(self, text):
-        self.cancel_button.set_label(text)
-
+    # FIXME: Remove
+    # Callsites: stoqlib/gui/dialogs/sintegradialog.py
     def justify_label(self, just):
         self.main_label.set_justify(just)
 
@@ -157,17 +257,6 @@ class BasicDialog(GladeDelegate, RunnableView):
                 dialog, widget))
         widget.connect('activate', self._try_confirm)
 
-    def set_cancel_widget(self, widget):
-        """Enables widget as a cancel widget, the dialog will be closed as
-        canceled if the widget is activated.
-        :param widget: a widget
-        """
-        dialog = self.get_toplevel()
-        if not widget.is_ancestor(dialog):
-            raise ValueError("dialog %r is not an ancestor of widget %r" % (
-                dialog, widget))
-        widget.connect('activate', self.cancel)
-
     def add(self, widget):
         for child in self.main.get_children():
             self.main.remove(child)
@@ -178,30 +267,14 @@ class BasicDialog(GladeDelegate, RunnableView):
         return self.get_toplevel().action_area
 
     #
-    # Private
-    #
-
-    def _add_help_button(self, section):
-        def on_help__clicked(button):
-            from stoqlib.gui.help import show_section
-            show_section(section)
-
-        self.action_area.set_layout(gtk.BUTTONBOX_END)
-        button = gtk.Button(stock=gtk.STOCK_HELP)
-        button.connect('clicked', on_help__clicked)
-        self.action_area.add(button)
-        self.action_area.set_child_secondary(button, True)
-        button.show()
-
-    #
     # Kiwi handlers
     #
 
     def on_ok_button__clicked(self, button):
-        self.confirm()
+        self._confirm()
 
     def on_cancel_button__clicked(self, button):
-        self.cancel()
+        self._cancel()
 
 
 #
@@ -254,6 +327,10 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     if dialog is None:
         raise TypeError("dialog cannot be None")
 
+    if not issubclass(dialog, RunnableView):
+        raise TypeError("dialog %r must be a RunnableView" % (dialog, ))
+
+    # FIXME: Move this into RunnableView
     parent = getattr(parent, 'main_dialog', parent)
     parent = parent or get_current_toplevel()
     if inspect.isclass(dialog):
@@ -263,10 +340,7 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
 
     dialog = get_dialog(parent, dialog, *args, **kwargs)
     orig_dialog = dialog
-    if hasattr(dialog, 'main_dialog'):
-        dialog = dialog.main_dialog
-
-    toplevel = dialog.get_toplevel()
+    toplevel = dialog.get_current_toplevel()
     add_current_toplevel(toplevel)
 
     if _fullscreen is not None:
@@ -286,7 +360,7 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     # See http://stackoverflow.com/questions/3504739/twisted-gtk-should-i-run-gui-things-in-threads-or-in-the-reactor-thread
     toplevel.run()
 
-    retval = getattr(dialog, 'retval', None)
+    retval = dialog.retval
     dialog.destroy()
 
     _pop_current_toplevel()

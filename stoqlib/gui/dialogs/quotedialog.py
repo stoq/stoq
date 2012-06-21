@@ -38,6 +38,7 @@ from stoqlib.database.orm import AND, OR, LEFTJOINOn
 from stoqlib.domain.production import ProductionOrder, ProductionMaterial
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.sale import Sale
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.formatters import get_formatted_cost
@@ -142,9 +143,8 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
                          "confirm the sale")))
         SimpleListDialog.__init__(self, self._get_columns(), missing_items,
                                   hide_cancel_btn=False,
-                                  title=_('Missing items'))
-        self.header_label.set_markup(msg)
-        self.header_label.show()
+                                  title=_('Missing items'),
+                                  header_text=msg)
 
         if sale.status == Sale.STATUS_QUOTE:
             label = gtk.Label(_('Do you want to order the sale instead?'))
@@ -207,3 +207,14 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
             api.finish_transaction(trans, True)
             trans.close()
         return SimpleListDialog.confirm(self, *args)
+
+
+if __name__ == '__main__':
+    from kiwi.python import Settable
+    ec = api.prepare_test()
+    sale = ec.create_sale()
+    sale.status = Sale.STATUS_QUOTE
+    missing = [Settable(description='foo',
+                        ordered=False,
+                        stock=True)]
+    run_dialog(ConfirmSaleMissingDialog, None, sale, missing)
