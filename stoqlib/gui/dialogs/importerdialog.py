@@ -116,13 +116,3 @@ class ImporterDialog(BasicDialog):
 
     def _on_processview__finished(self, view, returncode):
         self._finish(returncode)
-
-
-class ImporterProgressDialog(object):
-    """ Progress Dialog for importing items """
-
-    def __init__(self, format, filename):
-        self.format = format
-        self.filename = filename
-
-        self._build_ui()
