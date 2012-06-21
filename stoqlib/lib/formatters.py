@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -62,31 +62,47 @@ def get_formatted_cost(float_value, symbol=True):
 #  Phone number formatters
 #
 
-def _format_phone_number(digits, phone):
-    if digits == 11 and phone[:1] == '0':
-        phone = phone[1:]
-        digits -= 1
-    if digits == 7:
-        return '%s-%s' % (phone[:3], phone[3:7])
-    if digits == 8:
-        return '%s-%s' % (phone[:4], phone[4:8])
-    if digits == 9:
-        return '(%s) %s-%s' % (phone[:2], phone[2:5], phone[5:9])
-    if digits == 10:
-        return '(%s) %s-%s' % (phone[:2], phone[2:6], phone[6:10])
-    return phone
-
-
 def raw_phone_number(phone_number):
     return re.sub('[^0-9]', '', phone_number)
 
 
 def format_phone_number(phone_number):
-    from stoqlib.lib.validators import validate_phone_number
-    if validate_phone_number(phone_number):
-        phone_number = raw_phone_number(phone_number)
-        return _format_phone_number(len(phone_number), phone_number)
-    return phone_number
+    phone = raw_phone_number(phone_number)
+    digits = len(phone)
+    # 190, 192, 193: emergency services
+    # 1052, 1056: phone companies
+    if digits == 3 or digits == 4:
+        return phone
+    elif digits == 5:
+        return '%s %s' % (phone[:3], phone[3:])
+    elif digits == 7:
+        return '%s-%s' % (phone[:3], phone[3:7])
+    elif digits == 8:
+        return '%s-%s' % (phone[:4], phone[4:8])
+    elif digits == 9:
+        return '(%s) %s-%s' % (phone[:2], phone[2:5], phone[5:9])
+    elif digits == 10:
+        # 0[358]00 XXX-XXX
+        if phone[1] in '358':
+            return '%s %s-%s' % (phone[:4], phone[4:7],
+                                 phone[7:])
+        return '(%s) %s-%s' % (phone[:2], phone[2:6], phone[6:10])
+    elif digits == 11:
+        # 0[358]00 XXX-XXXX
+        if phone[1] in '358':
+            return '%s %s-%s' % (phone[:4], phone[4:7],
+                                 phone[7:])
+        if phone[:1] == '0':
+            return '(%s) %s-%s' % (phone[1:3], phone[3:7], phone[7:11])
+        else:
+            return '(%s) %s-%s' % (phone[:2], phone[2:7], phone[7:11])
+    elif digits == 12:
+        # DDD 11 in São Paulo will have 9 numbers starting 2012-07-29
+        if phone[:1] == '0':
+            phone = phone[1:]
+        return '(%s) %s-%s' % (phone[:2], phone[2:7], phone[7:11])
+
+    return phone
 
 #
 #  Adress formatters
