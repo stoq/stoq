@@ -87,7 +87,9 @@ class BasicDialog(GladeDelegate, RunnableView):
                  delete_handler=None, help_section=None):
         self._build_ui()
         self._setup_keyactions()
-        GladeDelegate.__init__(self, delete_handler=delete_handler or self._cancel,
+        if delete_handler is None:
+            delete_handler = self._delete_handler
+        GladeDelegate.__init__(self, delete_handler=delete_handler,
                                gladefile=self.gladefile,
                                keyactions=self.keyactions)
         help_section = help_section or self.help_section
@@ -116,10 +118,12 @@ class BasicDialog(GladeDelegate, RunnableView):
 
     def _build_ui(self):
         self.toplevel = gtk.Dialog()
+        # FIXME
+        # stoqlib/gui/base/search.py - adds messagebar
+        self.main_vbox = self.toplevel.get_content_area()
 
         self.vbox = gtk.VBox()
-        internal_vbox = self.toplevel.get_content_area()
-        internal_vbox.pack_start(self.vbox, True, True)
+        self.main_vbox.pack_start(self.vbox, True, True)
         self.vbox.show()
 
         # FIXME
@@ -186,9 +190,9 @@ class BasicDialog(GladeDelegate, RunnableView):
         self.ok_button.show()
 
     def _setup_keyactions(self):
-        self.keyactions = {keysyms.Escape: self._cancel,
-                           keysyms.Return: self._confirm,
-                           keysyms.KP_Enter: self._confirm}
+        self.keyactions = {keysyms.Escape: self.cancel,
+                           keysyms.Return: self.confirm,
+                           keysyms.KP_Enter: self.confirm}
 
     def _try_confirm(self, *args):
         """Only confirm if ok button is actually enabled.
@@ -198,7 +202,7 @@ class BasicDialog(GladeDelegate, RunnableView):
         """
         # FIXME: There should be a better way to findout valid status
         if self.ok_button.get_sensitive():
-            self._confirm()
+            self.confirm()
 
     def _add_help_button(self, section):
         def on_help__clicked(button):
@@ -212,19 +216,21 @@ class BasicDialog(GladeDelegate, RunnableView):
         self.action_area.set_child_secondary(button, True)
         button.show()
 
-    def _confirm(self, *args):
+    #
+    # Public API
+    #
+
+    def confirm(self):
+        # SearchDialog and SellableSearch overrides this
         self.retval = True
         self.emit('confirm', self.retval)
         self.close()
 
-    def _cancel(self, *args):
+    def cancel(self):
+        # SearchDialog overrides this
         self.retval = False
         self.emit('cancel', self.retval)
         self.close()
-
-    #
-    # Public API
-    #
 
     def hide_footer(self):
         self.ok_button.hide()
@@ -271,10 +277,13 @@ class BasicDialog(GladeDelegate, RunnableView):
     #
 
     def on_ok_button__clicked(self, button):
-        self._confirm()
+        self.confirm()
 
     def on_cancel_button__clicked(self, button):
-        self._cancel()
+        self.cancel()
+
+    def _delete_handler(self, window, event):
+        self.cancel()
 
 
 #

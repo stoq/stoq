@@ -357,11 +357,13 @@ class SearchDialog(BasicDialog):
             retval = self.get_selection()
         self.retval = retval
         self.search.save_columns()
+        # FIXME: This should chain up so the "confirm" signal gets emitted
         self.close()
 
     def cancel(self, *args):
         self.retval = []
         self.search.save_columns()
+        # FIXME: This should chain up so the "cancel" signal gets emitted
         self.close()
 
     def set_table(self, table):
