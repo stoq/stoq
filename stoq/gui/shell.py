@@ -617,7 +617,7 @@ class Shell(object):
             try:
                 user = self._login.validate_user()
             except LoginError, e:
-                info(e)
+                info(str(e))
 
         if user:
             self._user = user
