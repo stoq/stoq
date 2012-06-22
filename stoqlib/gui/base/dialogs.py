@@ -189,9 +189,7 @@ class BasicDialog(GladeDelegate, RunnableView):
         self.ok_button.show()
 
     def _setup_keyactions(self):
-        self.keyactions = {keysyms.Escape: self.cancel,
-                           keysyms.Return: self.confirm,
-                           keysyms.KP_Enter: self.confirm}
+        self.keyactions = {keysyms.Escape: self.cancel}
 
     def _try_confirm(self, *args):
         """Only confirm if ok button is actually enabled.
