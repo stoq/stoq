@@ -37,6 +37,7 @@ from zope.interface import implements
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.interfaces import ISystemNotifier
 from stoqlib.gui.base.gtkadds import change_button_appearance
+from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.events import DialogCreateEvent
 
 _ = stoqlib_gettext
@@ -118,12 +119,10 @@ class BasicDialog(GladeDelegate, RunnableView):
 
     def _build_ui(self):
         self.toplevel = gtk.Dialog()
-        # FIXME
-        # stoqlib/gui/base/search.py - adds messagebar
-        self.main_vbox = self.toplevel.get_content_area()
+        self._main_vbox = self.toplevel.get_content_area()
 
         self.vbox = gtk.VBox()
-        self.main_vbox.pack_start(self.vbox, True, True)
+        self._main_vbox.pack_start(self.vbox, True, True)
         self.vbox.show()
 
         # FIXME
@@ -271,6 +270,27 @@ class BasicDialog(GladeDelegate, RunnableView):
     @property
     def action_area(self):
         return self.get_toplevel().action_area
+
+    def add_message_bar(self, message, message_type=gtk.MESSAGE_INFO):
+        """Adds a message bar to the top of the search results
+        :param message: message to add
+        :param message_type: type of message to add
+        """
+        self._message_bar = MessageBar(message, message_type)
+        self._main_vbox.pack_start(self._message_bar, False, False)
+        self._main_vbox.reorder_child(self._message_bar, 0)
+        self._message_bar.show_all()
+        return self._message_bar
+
+    def remove_message_bar(self):
+        """Removes the message bar if there was one added"""
+        if not self._message_bar:
+            return
+        self._message_bar.destroy()
+        self._message_bar = None
+
+    def has_message_bar(self):
+        return self._message_bar is not None
 
     #
     # Kiwi handlers
