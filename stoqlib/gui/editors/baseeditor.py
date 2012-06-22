@@ -34,7 +34,6 @@ from kiwi.ui.widgets.label import ProxyLabel
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import RunnableView, BasicDialog, run_dialog
-from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.events import EditorSlaveCreateEvent
 
 log = Logger('stoqlib.gui.editors')
@@ -342,23 +341,14 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         :param message: message to add
         :param message_type: type of message to add
         """
-        self._message_bar = MessageBar(message, message_type)
-        toplevel = self.main_dialog.get_toplevel()
-        widget = toplevel.get_child()
-        widget.pack_start(self._message_bar, False, False)
-        widget.reorder_child(self._message_bar, 0)
-        self._message_bar.show_all()
-        return self._message_bar
+        self.main_dialog.add_message_bar(message, message_type)
 
     def remove_message_bar(self):
         """Removes the message bar if there was one added"""
-        if not self._message_bar:
-            return
-        self._message_bar.destroy()
-        self._message_bar = None
+        self.main_dialog.remove_message_bar()
 
     def has_message_bar(self):
-        return self._message_bar is not None
+        return self.main_dialog.has_message_bar()
 
     # RunnableView
     # This delegate everything to self.main_dialog

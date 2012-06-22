@@ -41,7 +41,6 @@ from stoqlib.database.orm import ORMObject, ORMObjectQueryExecuter
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
-from stoqlib.gui.base.messagebar import MessageBar
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.osutils import get_application_dir
@@ -623,27 +622,6 @@ class SearchEditor(SearchDialog):
         self.attach_slave('extra_holder', self._toolbar)
 
     # Public API
-
-    def add_message_bar(self, message, message_type=gtk.MESSAGE_INFO):
-        """Adds a message bar to the top of the search results
-        :param message: message to add
-        :param message_type: type of message to add
-        """
-        self._message_bar = MessageBar(message, message_type)
-        self.main_vbox.pack_start(self._message_bar, False, False)
-        self.main_vbox.reorder_child(self._message_bar, 0)
-        self._message_bar.show_all()
-        return self._message_bar
-
-    def remove_message_bar(self):
-        """Removes the message bar if there was one added"""
-        if not self._message_bar:
-            return
-        self._message_bar.destroy()
-        self._message_bar = None
-
-    def has_message_bar(self):
-        return self._message_bar is not None
 
     @argcheck(bool)
     def set_edit_button_sensitive(self, value):
