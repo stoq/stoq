@@ -1,57 +1,56 @@
-# Greek translation for stoq
-# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# Japanese translation for stoq
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
 # This file is distributed under the same license as the stoq package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: stoq\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-05-25 12:06-0300\n"
-"PO-Revision-Date: 2012-06-23 15:22+0000\n"
-"Last-Translator: tzem <athmakrigiannis@gmail.com>\n"
-"Language-Team: Greek <el@li.org>\n"
+"PO-Revision-Date: 2012-06-23 07:59+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2012-06-24 05:38+0000\n"
 "X-Generator: Launchpad (build 15461)\n"
-"Language: el\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account name:"
-msgstr "Όνομα λογαριασμού:"
+msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:2
 msgid "Account code:"
-msgstr "Κωδικός λογαριασμού"
+msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:3
 #: ../data/glade/SellableCategoryEditor.ui.h:2
 msgid "Parent:"
-msgstr "Μητρική:"
+msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:4
 #: ../data/glade/DeviceConstantEditor.ui.h:1
 #: ../data/glade/PaymentCategoryEditor.ui.h:3
 #: ../data/glade/PaymentEditor.ui.h:6
 msgid "Type:"
-msgstr "Τύπος :"
+msgstr ""
 
 #: ../data/glade/AccountEditor.ui.h:5
 msgid "Hold control to remove selection."
-msgstr "Κρατήστε το Ctrl για να αφαιρέσετε την επιλογή."
+msgstr ""
 
 #: ../data/glade/AccountTransactionEditor.ui.h:1
 #: ../data/glade/EmployeeDetailsSlave.ui.h:11
 #: ../data/glade/InstallmentConfirmation.ui.h:12
 #: ../stoqlib/gui/editors/accounteditor.py:245
 msgid "Account:"
-msgstr "Λογαριασμός:"
+msgstr ""
 
 #: ../data/glade/AccountTransactionEditor.ui.h:2 ../stoq/gui/financial.py:371
 msgid "Add a new account"
-msgstr "Προσθήκη νέου λογαριασμού"
+msgstr ""
 
 #. Date
 #: ../data/glade/AccountTransactionEditor.ui.h:3
@@ -72,7 +71,7 @@ msgstr "Προσθήκη νέου λογαριασμού"
 #: ../stoqlib/gui/search/transfersearch.py:89
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:341
 msgid "Date:"
-msgstr "Ημερομηνία:"
+msgstr ""
 
 #: ../data/glade/AccountTransactionEditor.ui.h:4
 #: ../data/glade/CallsEditor.ui.h:3 ../data/glade/CfopEditor.ui.h:2
@@ -89,31 +88,31 @@ msgstr "Ημερομηνία:"
 #: ../data/glade/SellableCategoryEditor.ui.h:1
 #: ../data/glade/SellableEditor.ui.h:4 ../data/glade/SellableUnitEditor.ui.h:1
 msgid "Description:"
-msgstr "Περιγραφή:"
+msgstr ""
 
 #: ../data/glade/AccountTransactionEditor.ui.h:5
 #: ../data/glade/SellableEditor.ui.h:1
 msgid "Code:"
-msgstr "Κωδικός:"
+msgstr ""
 
 #: ../data/glade/AccountTransactionEditor.ui.h:6
 #: ../data/glade/DeviceConstantEditor.ui.h:3
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:3
 #: ../data/glade/SellableTaxConstantEditor.ui.h:2
 msgid "Value:"
-msgstr "Αξία:"
+msgstr ""
 
 #: ../data/glade/AdditionListSlave.ui.h:1
 msgid "New..."
-msgstr "Νέο..."
+msgstr ""
 
 #: ../data/glade/AdditionListSlave.ui.h:2
 msgid "_Delete"
-msgstr "_Διαγραφή"
+msgstr ""
 
 #: ../data/glade/AdditionListSlave.ui.h:3 ../data/glade/SearchEditor.ui.h:2
 msgid "_Edit..."
-msgstr "_Επεξεργασία..."
+msgstr ""
 
 #: ../data/glade/AdditionListSlave.ui.h:4
 #: ../data/glade/SaleReturnSlave.ui.h:12
@@ -126,11 +125,11 @@ msgstr "_Επεξεργασία..."
 #: ../stoqlib/gui/editors/paymenteditor.py:246
 #: ../stoqlib/gui/editors/producteditor.py:622
 msgid "Details"
-msgstr "Λεπτομέρεις"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:1
 msgid "Street:"
-msgstr "Οδός:"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:2
 #: ../data/glade/BasePaymentDataEditor.ui.h:4
@@ -138,66 +137,64 @@ msgstr "Οδός:"
 #: ../data/glade/OpenProductionOrderStep.ui.h:5
 #: ../stoqlib/gui/editors/accounteditor.py:225
 msgid "Number:"
-msgstr "Αριθμός:"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:3
 msgid "Complement:"
-msgstr "Συμπλήρωμα"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:4
 msgid "State:"
-msgstr "Κατάσταση:"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:5
 msgid "Postal Code:"
-msgstr "Ταχ. κώδικας:"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:6
 msgid "District:"
-msgstr "Περιοχή:"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:7
 msgid "City:"
-msgstr "Πόλη:"
+msgstr ""
 
 #: ../data/glade/AddressSlave.ui.h:8
 #: ../plugins/books/glade/ProductBookSlave.ui.h:13
 msgid "Country:"
-msgstr "Χώρα:"
+msgstr ""
 
 #: ../data/glade/AdminPasswordStep.ui.h:1
 msgid "Enter the password and then click <b>Forward</b> to continue."
 msgstr ""
-"Εισάγετε τον κωδικό πρόσβασης και στη συνέχεια κάντε κλικ <b>Μπροστά</b> για "
-"να συνεχίσετε."
 
 #: ../data/glade/BankDataSlave.ui.h:1
 #: ../data/glade/EmployeeDetailsSlave.ui.h:9
 msgid "Bank ID:"
-msgstr "Κωδ. Τράπεζας:"
+msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:2
 msgid "Bank Branch:"
-msgstr "Υποκατάστημα Τράπεζας"
+msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:3
 msgid "Bank Account:"
-msgstr "Τραπεζικός Λογαριασμός:"
+msgstr ""
 
 #: ../data/glade/BaseCashSlave.ui.h:2 ../data/glade/TillOpening.ui.h:2
 msgid "Balance:"
-msgstr "Ισορροπία:"
+msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/BaseCashSlave.ui.h:4
 msgid "Cash Amount ($CURRENCY):"
-msgstr "Ποσό σε μετρητά ($CURRENCY):"
+msgstr ""
 
 #: ../data/glade/BasePaymentDataEditor.ui.h:1
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:2
 #: ../data/glade/PaymentEditor.ui.h:4
 msgid "Due date:"
-msgstr "Ημερομηνία λήξης:"
+msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/BasePaymentDataEditor.ui.h:3
@@ -219,7 +216,7 @@ msgstr ""
 #: ../data/glade/PurchasePaymentSlave.ui.h:4 ../data/glade/TaxIPISlave.ui.h:1
 #: ../plugins/books/glade/ProductBookSlave.ui.h:8
 msgid "0"
-msgstr "0"
+msgstr ""
 
 #: ../data/glade/BasePaymentMethodSlave.ui.h:3
 msgid "Default Bank:"
@@ -235,7 +232,7 @@ msgstr ""
 
 #: ../data/glade/BranchDetailsSlave.ui.h:1
 msgid "Manager:"
-msgstr "Διαχειριστής:"
+msgstr ""
 
 #: ../data/glade/BranchDetailsSlave.ui.h:2
 msgid "Tax Polity:"
@@ -269,7 +266,7 @@ msgstr ""
 #: ../stoqlib/gui/search/personsearch.py:287
 #: ../stoqlib/gui/search/stationsearch.py:63
 msgid "Active"
-msgstr "Ενεργό"
+msgstr ""
 
 #: ../data/glade/BranchDetailsSlave.ui.h:5
 #: ../data/glade/TransporterDataSlave.ui.h:4
@@ -288,7 +285,7 @@ msgstr "Ενεργό"
 #: ../stoqlib/domain/test/test_person.py:359
 #: ../stoqlib/gui/search/personsearch.py:288
 msgid "Inactive"
-msgstr "Ανενεργό"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:1
 msgid "Company Details"
@@ -308,7 +305,7 @@ msgstr ""
 #: ../data/glade/BranchDialog.ui.h:4
 #: ../data/glade/ProductSupplierEditor.ui.h:7
 msgid "ICMS:"
-msgstr "ICMS:"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:6 ../data/glade/CommissionDataSlave.ui.h:3
 #: ../data/glade/CredProviderDetailsSlave.ui.h:8
@@ -322,7 +319,7 @@ msgstr "ICMS:"
 #: ../data/glade/TransporterDataSlave.ui.h:7
 #, no-c-format
 msgid "%"
-msgstr "%"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:7
 msgid "Substitution ICMS:"
@@ -330,11 +327,11 @@ msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:8 ../data/glade/PersonEditorTemplate.ui.h:3
 msgid "Fax:"
-msgstr "Φαξ:"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:9
 msgid "ISS:"
-msgstr "ISS:"
+msgstr ""
 
 #: ../data/glade/BranchDialog.ui.h:10
 #: ../data/glade/CompanyDocumentsSlave.ui.h:4
@@ -353,11 +350,11 @@ msgstr ""
 
 #: ../data/glade/CallsEditor.ui.h:4
 msgid "Message:"
-msgstr "Μήνυμα:"
+msgstr ""
 
 #: ../data/glade/CallsEditor.ui.h:5
 msgid "Person:"
-msgstr "Άτομο:"
+msgstr ""
 
 #: ../data/glade/CallsEditor.ui.h:6 ../data/glade/SaleDetailsDialog.ui.h:7
 msgid "Client details"
@@ -398,7 +395,7 @@ msgstr ""
 
 #: ../data/glade/CfopEditor.ui.h:3
 msgid "0.000"
-msgstr "0.000"
+msgstr ""
 
 #: ../data/glade/ClientCategoryEditor.ui.h:1
 #: ../data/glade/ContactEditor.ui.h:1
@@ -410,7 +407,7 @@ msgstr "0.000"
 #: ../data/glade/SellableTaxConstantEditor.ui.h:1
 #: ../data/glade/StationEditor.ui.h:1 ../data/glade/TefStep.ui.h:5
 msgid "Name:"
-msgstr "Όνομα:"
+msgstr ""
 
 #: ../data/glade/ClientDetailsDialog.ui.h:1
 #: ../data/glade/CreateDeliveryEditor.ui.h:1
@@ -438,7 +435,7 @@ msgstr ""
 #: ../data/glade/SupplierDetailsDialog.ui.h:3
 #: ../data/glade/UserStatusSlave.ui.h:1 ../stoqlib/reporting/purchase.py:268
 msgid "Status:"
-msgstr "Κατάσταση:"
+msgstr ""
 
 #: ../data/glade/ClientDetailsDialog.ui.h:4
 #: ../data/glade/SupplierDetailsDialog.ui.h:4
@@ -461,20 +458,20 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:454 ../stoqlib/lib/parameters.py:541
 #: ../stoqlib/lib/parameters.py:552 ../stoqlib/reporting/sale.py:251
 msgid "Sales"
-msgstr "Πωλήσεις"
+msgstr ""
 
 #: ../data/glade/ClientDetailsDialog.ui.h:6
 #: ../data/glade/StockDecreaseDetails.ui.h:6
 #: ../data/glade/SupplierDetailsDialog.ui.h:6 ../stoq/gui/purchase.py:161
 #: ../stoq/gui/sales.py:147 ../stoqlib/lib/parameters.py:149
 msgid "Products"
-msgstr "Προϊόντα"
+msgstr ""
 
 #: ../data/glade/ClientDetailsDialog.ui.h:7
 #: ../data/glade/ProductionDetailsDialog.ui.h:13 ../stoq/gui/sales.py:148
 #: ../stoqlib/reporting/production.py:202
 msgid "Services"
-msgstr "Υπηρεσίες"
+msgstr ""
 
 #: ../data/glade/ClientDetailsDialog.ui.h:8
 #: ../data/glade/PurchaseDetailsDialog.ui.h:12
@@ -483,13 +480,13 @@ msgstr "Υπηρεσίες"
 #: ../data/glade/SupplierDetailsDialog.ui.h:7
 #: ../plugins/ecf/deviceconstanteditor.py:204 ../stoqlib/lib/parameters.py:520
 msgid "Payments"
-msgstr "Πληρωμές"
+msgstr ""
 
 #: ../data/glade/ClientDetailsDialog.ui.h:9
 #: ../stoqlib/gui/editors/callseditor.py:38
 #: ../stoqlib/gui/search/callsearch.py:170
 msgid "Calls"
-msgstr "Κλήσεις"
+msgstr ""
 
 #: ../data/glade/ClientStatusSlave.ui.h:1
 msgid "Financial Status:"
@@ -498,7 +495,7 @@ msgstr ""
 #: ../data/glade/ClientStatusSlave.ui.h:2 ../data/glade/PaymentEditor.ui.h:5
 #: ../data/glade/SellableEditor.ui.h:13
 msgid "Category:"
-msgstr "Κατηγορία:"
+msgstr ""
 
 #. Do not translate $CURRENCY
 #: ../data/glade/ClientStatusSlave.ui.h:4
@@ -543,7 +540,7 @@ msgstr ""
 
 #: ../data/glade/CreateDatabaseStep.ui.h:2
 msgid "Show details..."
-msgstr "Εμφάνιση λεπτομερειών..."
+msgstr ""
 
 #: ../data/glade/CreateDeliveryEditor.ui.h:2
 #: ../data/glade/DeliveryEditor.ui.h:2 ../data/glade/FinishPurchaseStep.ui.h:2
@@ -3515,7 +3512,7 @@ msgstr ""
 #: ../stoq/daemonmain.py:104 ../stoq/gui/shell.py:325
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
-msgstr "Προβληματικό αρχείο ρυθμίσεων config, πήρε λάθος '%s', τύπου '%s'"
+msgstr ""
 
 #: ../stoq/daemonmain.py:118 ../stoq/gui/shell.py:343
 msgid "Could not connect to the database"
@@ -3944,11 +3941,6 @@ msgid ""
 "be aware that it may behave incorrectly, crash or even loose your data.\n"
 "<b>Do not use in production.</b>"
 msgstr ""
-"Αυτήν τη στιγμή χρησιμοποιείτε ένα <b>ασταθή έκδοση</ b> του Stoq που είναι "
-"υπό ανάπτυξη,\n"
-"Πρέπει να γνωρίζετε ότι μπορεί να συμπεριφέρεται, εσφαλμένα κλεισίματα ή "
-"ακόμα και χαλάσει τα δεδομένα σας.\n"
-"<b> Να μη την χρησιμοποιείται σε παραγωγή. </ b>"
 
 #: ../stoq/gui/application.py:493
 msgid ""
@@ -3998,7 +3990,7 @@ msgstr ""
 
 #: ../stoq/gui/application.py:913
 msgid "Debug"
-msgstr "Απασφαλμάτωση"
+msgstr ""
 
 #: ../stoq/gui/application.py:914
 msgid "Introspect slaves"
@@ -4023,16 +4015,16 @@ msgstr ""
 
 #: ../stoq/gui/application.py:1333
 msgid "Search:"
-msgstr "Αναζήτηση:"
+msgstr ""
 
 #: ../stoq/gui/application.py:1503
 msgid "Learn More..."
-msgstr "Μάθετε περισσότερα ..."
+msgstr ""
 
 #: ../stoq/gui/application.py:1504
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
-msgstr "<b>Υπάρχει μια νέα έκδοση Stoq διαθέσιμη (%s)</b>"
+msgstr ""
 
 #: ../stoq/gui/calendar.py:91 ../stoqlib/lib/prettydate.py:87
 msgid "today"
@@ -4243,15 +4235,15 @@ msgstr ""
 
 #: ../stoq/gui/config.py:206 ../stoq/gui/config.py:211
 msgid "Invalid database address"
-msgstr "Μη έγκυρη διεύθυνση βάσης δεδομένων"
+msgstr ""
 
 #: ../stoq/gui/config.py:242
 msgid "Needs Password"
-msgstr "Χρειάζονται κωδικοί πρόσβασης"
+msgstr ""
 
 #: ../stoq/gui/config.py:243
 msgid "Trust"
-msgstr "Έμπιστο"
+msgstr ""
 
 #: ../stoq/gui/config.py:384 ../stoqlib/gui/dialogs/crashreportdialog.py:102
 msgid "Sending..."
@@ -4343,7 +4335,7 @@ msgstr ""
 #: ../stoq/gui/config.py:639
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
-msgstr "Stoq απαιτεί PostgreSQL 8.1 ή νεότερη, αλλά βρέθηκε το %s"
+msgstr ""
 
 #: ../stoq/gui/config.py:646
 #, python-format
@@ -4351,8 +4343,6 @@ msgid ""
 "The specifed database '%s' does not exist.\n"
 "Do you want to create it?"
 msgstr ""
-"Η συγκεκριμένη βάση δεδομένων '%s' δεν υπάρχει.\n"
-"Θέλετε να την δημιουργήστε;"
 
 #: ../stoq/gui/config.py:648
 msgid "Don't create"
@@ -4364,7 +4354,7 @@ msgstr ""
 
 #: ../stoq/gui/config.py:685
 msgid "Creating database..."
-msgstr "Δημιουργία βάσης δεδομένων..."
+msgstr ""
 
 #: ../stoq/gui/config.py:690
 msgid "Please wait while the database is being created."
@@ -4372,25 +4362,24 @@ msgstr ""
 
 #: ../stoq/gui/config.py:700
 msgid "Creating base schema..."
-msgstr "Δημιουργία σχήματος βάσης ..."
+msgstr ""
 
 #: ../stoq/gui/config.py:704
 msgid "Creating schema, applying patches..."
 msgstr ""
-"Δημιουργία σχήματος, με την εφαρμογή ενημερωμένες εκδόσεις κώδικα ..."
 
 #: ../stoq/gui/config.py:709
 #, python-format
 msgid "Creating schema, applying patch %d ..."
-msgstr "Δημιουργία σχήματος, εφαρμογή ενημερωμένης έκδοσης κώδικα %d ..."
+msgstr ""
 
 #: ../stoq/gui/config.py:711
 msgid "Creating additional database objects ..."
-msgstr "Η δημιουργία πρόσθετων αντικειμένων βάσης δεδομένων ..."
+msgstr ""
 
 #: ../stoq/gui/config.py:714
 msgid "Creating examples ..."
-msgstr "Δημιουργία παραδειγμάτων ..."
+msgstr ""
 
 #: ../stoq/gui/config.py:717
 msgid "Activating plugins ..."
@@ -4419,7 +4408,6 @@ msgstr ""
 #: ../stoq/gui/config.py:745
 msgid "Something went wrong while trying to create the Stoq database"
 msgstr ""
-"Κάτι πήγε στραβά κατά την προσπάθεια να δημιουργήσει τη βάση δεδομένων Stoq"
 
 #: ../stoq/gui/config.py:752
 msgid "Done."
@@ -4431,7 +4419,7 @@ msgstr ""
 
 #: ../stoq/gui/config.py:778
 msgid "Run Stoq"
-msgstr "Εκτέλεση Stoq"
+msgstr ""
 
 #: ../stoq/gui/config.py:799 ../stoqlib/lib/parameters.py:534
 msgid "Online services"
