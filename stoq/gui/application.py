@@ -47,7 +47,6 @@ from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.dialogs import get_dialog, run_dialog
-from stoqlib.gui.base.infobar import InfoBar
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.crashreportdialog import show_dialog
 from stoqlib.gui.dialogs.feedbackdialog import FeedbackDialog
@@ -958,7 +957,7 @@ class AppWindow(GladeDelegate):
         label.set_padding(12, 0)
         label.show()
 
-        bar = InfoBar()
+        bar = gtk.InfoBar()
         bar.get_content_area().add(label)
         if action_widget:
             bar.add_action_widget(action_widget, 0)
