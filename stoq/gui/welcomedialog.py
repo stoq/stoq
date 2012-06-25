@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 ##
-## Copyright (C) 2011 Async Open Source
+## Copyright (C) 2011-2012 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -28,34 +28,54 @@ from kiwi.environ import environ
 import gtk
 
 from stoqlib.api import api
+from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.openbrowser import open_browser
 
 _ = gettext.gettext
 
 
-class WelcomeDialog(gtk.Dialog):
-    def __init__(self):
-        gtk.Dialog.__init__(self)
-        self.set_size_request(800, 480)
-        self.set_deletable(False)
+class WelcomeDialog(BasicDialog):
+    title = _("Welcome to Stoq")
+    size = (800, 400)
 
+    def __init__(self):
+        BasicDialog.__init__(self, title=self.title, size=self.size)
+        self.toplevel.set_deletable(False)
+
+        self._build_ui()
+        self._setup_buttons()
+        uri = self.get_uri()
+        self._open_uri(uri)
+
+    def _build_ui(self):
         sw = gtk.ScrolledWindow()
         sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        self.get_content_area().pack_start(sw)
+        self.vbox.remove(self.main)
+        self.vbox.add(sw)
+        sw.show()
 
-        if platform.system() == 'Windows':
-            return
-        import webkit
-        self._view = webkit.WebView()
-        self._view.connect(
-            'navigation-policy-decision-requested',
-            self._on_view__navigation_policy_decision_requested)
-        sw.add(self._view)
+        if platform.system() != 'Windows':
+            import webkit
+            self._view = webkit.WebView()
+            self._view.connect(
+                'navigation-policy-decision-requested',
+                self._on_view__navigation_policy_decision_requested)
+            sw.add(self._view)
+            self._view.show()
+        else:
+            self._view =None
 
-        self.button = self.add_button(_("_Start using Stoq"), gtk.RESPONSE_OK)
+    def _setup_buttons(self):
+        self.cancel_button.hide()
+        self.ok_button.set_label(_("_Start using Stoq"))
 
-        self.set_title(_("Welcome to Stoq"))
-        self.show_all()
+    def _open_uri(self, uri):
+        if self._view:
+            self._view.load_uri(uri)
+            self.ok_button.grab_focus()
+        else:
+            open_browser(uri, self.get_screen())
+            self.toplevel.hide()
 
     def get_uri(self):
         if locale.getlocale()[0] == 'pt_BR' or platform.system() == 'Windows':
@@ -65,15 +85,6 @@ class WelcomeDialog(gtk.Dialog):
         if api.sysparam(api.get_connection()).DEMO_MODE:
             content += '?demo-mode'
         return 'file:///' + content
-
-    def run(self):
-        uri = self.get_uri()
-        if platform.system() == 'Windows':
-            open_browser(uri, self.get_screen())
-            return
-        self._view.load_uri(uri)
-        self.button.grab_focus()
-        return super(WelcomeDialog, self).run()
 
     def _on_view__navigation_policy_decision_requested(self, view, frame,
                                                        request, action,

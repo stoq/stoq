@@ -86,7 +86,7 @@ class BasicDialog(GladeDelegate, RunnableView):
     def __init__(self, main_label_text=None, title=" ",
                  header_text="", size=None, hide_footer=False,
                  delete_handler=None, help_section=None):
-        self._build_ui()
+        self._create_dialog_ui()
         self._setup_keyactions()
         if delete_handler is None:
             delete_handler = self._delete_handler
@@ -117,7 +117,7 @@ class BasicDialog(GladeDelegate, RunnableView):
     # Private
     #
 
-    def _build_ui(self):
+    def _create_dialog_ui(self):
         self.toplevel = gtk.Dialog()
         self._main_vbox = self.toplevel.get_content_area()
 
