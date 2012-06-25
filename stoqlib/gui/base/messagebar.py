@@ -25,6 +25,7 @@
 
 import gtk
 
+
 class MessageBar(gtk.InfoBar):
     def __init__(self, message, message_type=gtk.MESSAGE_INFO):
         label = gtk.Label(message)
