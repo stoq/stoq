@@ -63,7 +63,7 @@ class WelcomeDialog(BasicDialog):
             sw.add(self._view)
             self._view.show()
         else:
-            self._view =None
+            self._view = None
 
     def _setup_buttons(self):
         self.cancel_button.hide()
