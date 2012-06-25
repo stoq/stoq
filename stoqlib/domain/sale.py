@@ -34,7 +34,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import (ForeignKey, UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol, MultipleJoin)
-from stoqlib.database.orm import AND, const
+from stoqlib.database.orm import AND, const, Field
 from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn, INNERJOINOn
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
@@ -1199,6 +1199,20 @@ Sale.registerFacet(SaleAdaptToPaymentTransaction, IPaymentTransaction)
 # Views
 #
 
+class _SaleItemSummary(Viewable):
+    columns = dict(
+        id=SaleItem.q.saleID,
+        v_ipi=const.SUM(SaleItemIpi.q.v_ipi),
+        total_quantity=const.SUM(SaleItem.q.quantity),
+        subtotal=const.SUM(SaleItem.q.quantity * SaleItem.q.price),
+    )
+
+    joins = [
+        LEFTJOINOn(None, SaleItemIpi,
+                   SaleItemIpi.q.id == SaleItem.q.ipi_infoID),
+    ]
+
+
 class SaleView(Viewable):
     """Stores general informatios about sales
 
@@ -1223,6 +1237,7 @@ class SaleView(Viewable):
 
     Person_Client = Alias(Person, 'person_client')
     Person_SalesPerson = Alias(Person, 'person_sales_person')
+    SaleItemSummary = Alias(_SaleItemSummary, '_sale_item')
 
     columns = dict(
         id=Sale.q.id,
@@ -1241,17 +1256,16 @@ class SaleView(Viewable):
         client_id=Client.q.id,
         salesperson_name=Person_SalesPerson.q.name,
         client_name=Person_Client.q.name,
-        v_ipi=const.SUM(SaleItemIpi.q.v_ipi),
-        total_quantity=const.SUM(SaleItem.q.quantity),
-        subtotal=const.SUM(SaleItem.q.quantity * SaleItem.q.price),
-        total=const.SUM(SaleItem.q.price * SaleItem.q.quantity) - \
+        v_ipi=Field('_sale_item', 'v_ipi'),
+        subtotal=Field('_sale_item', 'subtotal'),
+        total_quantity=Field('_sale_item', 'total_quantity'),
+        total=Field('_sale_item', 'subtotal') - \
               Sale.q.discount_value + Sale.q.surcharge_value
     )
 
     joins = [
-        INNERJOINOn(None, SaleItem,
-                    Sale.q.id == SaleItem.q.saleID),
-
+        INNERJOINOn(None, SaleItemSummary,
+                    Field('_sale_item', 'id') == Sale.q.id),
         LEFTJOINOn(None, Client,
                    Sale.q.clientID == Client.q.id),
         LEFTJOINOn(None, SalesPerson,
@@ -1261,9 +1275,6 @@ class SaleView(Viewable):
                    Client.q.personID == Person_Client.q.id),
         LEFTJOINOn(None, Person_SalesPerson,
                    SalesPerson.q.personID == Person_SalesPerson.q.id),
-
-        LEFTJOINOn(None, SaleItemIpi,
-                   SaleItemIpi.q.id == SaleItem.q.ipi_infoID),
     ]
 
     #
