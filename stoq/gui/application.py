@@ -1008,14 +1008,13 @@ class AppWindow(GladeDelegate):
         app.activate(params or {})
 
         self.uimanager.ensure_update()
+        self.current_app = app
+        self.current_widget = app_window
         while gtk.events_pending():
             gtk.main_iteration()
         app_window.show()
         app.toplevel = self.get_toplevel()
         app.setup_focus()
-
-        self.current_app = app
-        self.current_widget = app_window
 
     def hide_app(self):
         self.application_box.hide()
