@@ -120,12 +120,13 @@ class BasePaymentView(Viewable):
         ]
 
     @classmethod
-    def count_callback(cls, conn, sresults):
-        query = Select(['COUNT(*)'],
-                       join=cls._count_joins,
-                       clause=sresults.clause,
-                       staticTables=sresults.tables)
-        return conn.queryOne(conn.sqlrepr(query))[0]
+    def post_search_callback(cls, conn, sresults):
+        select = Select(['COUNT(*) as count',
+                         'SUM(value) as sum'],
+                        join=cls._count_joins,
+                        clause=sresults.clause,
+                        staticTables=sresults.tables)
+        return conn.sqlrepr(select)
 
     def can_change_due_date(self):
         return self.status not in [Payment.STATUS_PAID,
