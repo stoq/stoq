@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,14 +25,11 @@
 
 import gtk
 
-from stoqlib.gui.base.infobar import InfoBar
-
-
-class MessageBar(InfoBar):
+class MessageBar(gtk.InfoBar):
     def __init__(self, message, message_type=gtk.MESSAGE_INFO):
         label = gtk.Label(message)
         label.set_use_markup(True)
 
-        InfoBar.__init__(self)
+        gtk.InfoBar.__init__(self)
         self.get_content_area().add(label)
         self.set_message_type(message_type)
