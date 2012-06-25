@@ -214,6 +214,7 @@ class ReceivableApp(BaseAccountWindow):
         if api.finish_transaction(trans, retval):
             self._update_filter_items()
             self.search.refresh()
+        trans.close()
 
     #
     # Public API
@@ -270,6 +271,7 @@ class ReceivableApp(BaseAccountWindow):
         retval = run_dialog(PaymentCommentsDialog, self, trans,
                             receivable_view.payment)
         api.finish_transaction(trans, retval)
+        trans.close()
 
     def _receive(self, receivable_views):
         """
@@ -540,6 +542,7 @@ class ReceivableApp(BaseAccountWindow):
 
         if api.finish_transaction(trans, retval):
             self.search.refresh()
+        trans.close()
 
     def on_Edit__activate(self, action):
         try:
@@ -555,6 +558,7 @@ class ReceivableApp(BaseAccountWindow):
 
         if api.finish_transaction(trans, retval):
             self.search.refresh()
+        trans.close()
 
     def on_PrintDocument__activate(self, action):
         view = self.results.get_selected_rows()[0]
