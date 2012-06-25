@@ -38,6 +38,7 @@ from kiwi.db.query import NumberQueryState, StringQueryState, \
      DateQueryState, DateIntervalQueryState, QueryExecuter, \
      NumberIntervalQueryState
 from kiwi.interfaces import ISearchFilter
+from kiwi.python import Settable
 from sqlobject.main import SQLObjectNotFound, SQLObjectIntegrityError
 from sqlobject.col import DateTimeCol as _DateTimeCol
 from sqlobject.col import (BoolCol, BLOBCol,
@@ -219,6 +220,7 @@ class ORMObjectQueryExecuter(QueryExecuter):
         self._filter_query_callbacks = {}
         self._query = self._default_query
         self._full_text_indexes = {}
+        self.post_result = None
 
     #
     # Public API
@@ -319,7 +321,10 @@ class ORMObjectQueryExecuter(QueryExecuter):
         if self._having:
             having = AND(self._having)
 
+        self.post_result = None
         result = self._query(query, having, self.conn)
+        if hasattr(self.table, 'post_search_callback'):
+            self.post_result = self._fetch_post_result(result)
 
         limit = self.get_limit()
         if limit != -1:
@@ -459,6 +464,15 @@ class ORMObjectQueryExecuter(QueryExecuter):
             queries.append(func.DATE(table_field) <= state.end)
         if queries:
             return AND(*queries)
+
+    def _fetch_post_result(self, result):
+        conn = result._getConnection()
+        query = self.table.post_search_callback(conn, result)
+        descs, values = conn.queryAllDescription(query)
+        data = {}
+        for desc, value in zip(descs, list(values[0])):
+            data[desc.name] = value
+        return Settable(**data)
 
 
 # Columns

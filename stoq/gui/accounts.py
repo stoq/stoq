@@ -63,13 +63,13 @@ class BaseAccountWindow(SearchableAppWindow):
     #
 
     def create_ui(self):
+        self.search.search.enable_lazy_search()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.search.set_summary_label(column='value',
                                       label='<b>%s</b>' % (_('Total'), ),
                                       format='<b>%s</b>',
                                       parent=self.get_statusbar_message_area())
         self.results.set_cell_data_func(self._on_results__cell_data_func)
-        self.search.search.enable_lazy_search()
 
     def search_completed(self, results, states):
         if len(results):
