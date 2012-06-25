@@ -28,7 +28,7 @@ from kiwi.datatypes import converter
 
 from stoqlib.database.orm import AND, OR, const
 from stoqlib.database.orm import Alias, LEFTJOINOn, INNERJOINOn
-from stoqlib.database.orm import Select, Viewable
+from stoqlib.database.orm import Select, Viewable, Field
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.comment import PaymentComment
@@ -46,7 +46,16 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+class _CommentsSummary(Viewable):
+    columns = dict(
+        id=PaymentComment.q.paymentID,
+        comments_number=const.COUNT(PaymentComment.q.id),
+    )
+
+
 class BasePaymentView(Viewable):
+    CommentsSummary = Alias(_CommentsSummary, '_comments')
+
     columns = dict(
         # Payment
         id=Payment.q.id,
@@ -71,7 +80,7 @@ class BasePaymentView(Viewable):
         category=PaymentCategory.q.name,
 
         # PaymentComment
-        comments_number=const.COUNT(PaymentComment.q.id),
+        comments_number=Field('_comments', 'comments_number'),
 
         # Sale
         sale_id=Sale.q.id,
@@ -106,8 +115,8 @@ class BasePaymentView(Viewable):
     ]
 
     joins = _count_joins + [
-        LEFTJOINOn(None, PaymentComment,
-                   PaymentComment.q.paymentID == Payment.q.id),
+        LEFTJOINOn(None, CommentsSummary,
+                   Field('_comments', 'id') == Payment.q.id),
         ]
 
     @classmethod

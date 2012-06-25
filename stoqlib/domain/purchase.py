@@ -32,7 +32,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn, const
-from stoqlib.database.orm import Viewable, Alias
+from stoqlib.database.orm import Viewable, Alias, Field
 from stoqlib.database.orm import PriceCol, BoolCol, QuantityCol
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.base import Domain
@@ -697,6 +697,22 @@ class PurchaseItemView(Viewable):
 # Views
 #
 
+class _PurchaseItemSummary(Viewable):
+    """Summary for Purchased items
+
+    Its faster to do the SUM() bellow in a subselect, since aggregate
+    functions require group by for every other column, and grouping all the
+    columns in PurchaseOrderView is extremelly slow, as it requires sorting all
+    those columns
+    """
+
+    columns = dict(
+        id=PurchaseItem.q.orderID,
+        ordered_quantity=const.SUM(PurchaseItem.q.quantity),
+        received_quantity=const.SUM(PurchaseItem.q.quantity_received),
+        subtotal=const.SUM(PurchaseItem.q.cost * PurchaseItem.q.quantity),
+    )
+
 
 class PurchaseOrderView(Viewable):
     """General information about purchase orders
@@ -726,6 +742,7 @@ class PurchaseOrderView(Viewable):
     Person_Transporter = Alias(Person, 'person_transporter')
     Person_Branch = Alias(Person, 'person_branch')
     Person_Responsible = Alias(Person, 'person_responsible')
+    PurchaseItemSummary = Alias(_PurchaseItemSummary, '_purchase_item')
 
     columns = dict(
         id=PurchaseOrder.q.id,
@@ -746,16 +763,16 @@ class PurchaseOrderView(Viewable):
         branch_name=Person_Branch.q.name,
         responsible_name=Person_Responsible.q.name,
 
-        ordered_quantity=const.SUM(PurchaseItem.q.quantity),
-        received_quantity=const.SUM(PurchaseItem.q.quantity_received),
-        subtotal=const.SUM(PurchaseItem.q.cost * PurchaseItem.q.quantity),
-        total=const.SUM(PurchaseItem.q.cost * PurchaseItem.q.quantity) - \
+        ordered_quantity=Field('_purchase_item', 'ordered_quantity'),
+        received_quantity=Field('_purchase_item', 'received_quantity'),
+        subtotal=Field('_purchase_item', 'subtotal'),
+        total=Field('_purchase_item', 'subtotal') - \
             PurchaseOrder.q.discount_value + PurchaseOrder.q.surcharge_value
     )
 
     joins = [
-        INNERJOINOn(None, PurchaseItem,
-                    PurchaseOrder.q.id == PurchaseItem.q.orderID),
+        INNERJOINOn(None, PurchaseItemSummary,
+                    Field('_purchase_item', 'id') == PurchaseOrder.q.id),
 
         LEFTJOINOn(None, Supplier,
                    PurchaseOrder.q.supplierID == Supplier.q.id),
