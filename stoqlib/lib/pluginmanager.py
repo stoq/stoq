@@ -194,7 +194,7 @@ class PluginManager(object):
         plugin = self.get_plugin(plugin_name)
 
         if plugin_name in self.installed_plugins_names:
-            raise PluginError("Plugin %s is already installed on database"
+            raise PluginError("Plugin %s is already enabled."
                               % (plugin_name, ))
 
         trans = new_transaction()

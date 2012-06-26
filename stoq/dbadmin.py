@@ -212,13 +212,17 @@ class StoqCommandHandler:
         manager = get_plugin_manager()
 
         for plugin_name in plugin_names:
+            if plugin_name not in manager.installed_plugins_names:
+                print 'ERROR:', plugin_name, 'is not installed.'
+                print "Available plugins are:"
+                for plugin_name in manager.available_plugins_names:
+                    print "  %s" % (plugin_name, )
+                return
+
             try:
                 manager.install_plugin(plugin_name)
             except PluginError as err:
-                print err
-                print "Available plugins:"
-                for plugin_name in manager.available_plugins_names:
-                    print "  %s" % (plugin_name, )
+                print 'ERROR:', err
                 return
 
     def _register_station(self):
