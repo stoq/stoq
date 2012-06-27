@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
+
 from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn, OR
 from stoqlib.database.orm import Viewable, Field, Alias
 from stoqlib.domain.account import Account, AccountTransaction
@@ -44,8 +46,9 @@ from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      SellableCategory,
                                      SellableTaxConstant)
 from stoqlib.domain.stockdecrease import (StockDecrease, StockDecreaseItem)
-
 from stoqlib.lib.decorators import cached_property
+from stoqlib.lib.validators import is_date_in_interval
+
 
 
 class ProductFullStockView(Viewable):
@@ -73,6 +76,10 @@ class ProductFullStockView(Viewable):
         cost=Sellable.q.cost,
         description=Sellable.q.description,
         image_id=Sellable.q.imageID,
+        base_price=Sellable.q.base_price,
+        on_sale_price=Sellable.q.on_sale_price,
+        on_sale_start_date=Sellable.q.on_sale_start_date,
+        on_sale_end_date=Sellable.q.on_sale_end_date,
         product_id=Product.q.id,
         location=Product.q.location,
         manufacturer=Product.q.manufacturer,
@@ -155,11 +162,14 @@ class ProductFullStockView(Viewable):
 
     @property
     def price(self):
-        # This property is needed because the price value in the view column
-        # might not be the price used (check on_sale_* properties on Sellable).
-        # FIXME: This could be done here, without the extra query
-        sellable = Sellable.get(self.id, connection=self.get_connection())
-        return sellable.price
+        # See Sellable.price property
+        if self.on_sale_price:
+            today = datetime.datetime.today()
+            start_date = self.on_sale_start_date
+            end_date = self.on_sale_end_date
+            if is_date_in_interval(today, start_date, end_date):
+                return self.on_sale_price
+        return self.base_price
 
     @property
     def has_image(self):
@@ -318,6 +328,9 @@ class SellableFullStockView(Viewable):
         status=Sellable.q.status,
         cost=Sellable.q.cost,
         description=Sellable.q.description,
+        on_sale_price=Sellable.q.on_sale_price,
+        on_sale_start_date=Sellable.q.on_sale_start_date,
+        on_sale_end_date=Sellable.q.on_sale_end_date,
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
         manufacturer=Product.q.manufacturer,
@@ -364,11 +377,14 @@ class SellableFullStockView(Viewable):
 
     @property
     def price(self):
-        # This property is needed because the price value in the view column
-        # might not be the price used (check on_sale_* properties on Sellable).
-        # FIXME: This could be done here, without the extra query
-        sellable = Sellable.get(self.id, connection=self.get_connection())
-        return sellable.price
+        # See Sellable.price property
+        if self.on_sale_price:
+            today = datetime.datetime.today()
+            start_date = self.on_sale_start_date
+            end_date = self.on_sale_end_date
+            if is_date_in_interval(today, start_date, end_date):
+                return self.on_sale_price
+        return self.base_price
 
 
 class SellableCategoryView(Viewable):
