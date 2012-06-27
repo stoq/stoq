@@ -23,6 +23,7 @@
 ##
 
 import datetime
+from decimal import Decimal
 
 from stoqlib.database.orm import Viewable
 from stoqlib.database.runtime import get_current_branch
@@ -69,21 +70,6 @@ for view in _get_all_views():
     func.__name__ = name
     setattr(TestViewsGeneric, name, func)
     del func
-
-
-class TestSellableFullStockView(DomainTest):
-    def testSelectByBranch(self):
-        branch = get_current_branch(self.trans)
-        results = SellableFullStockView.select_by_branch(
-            SellableFullStockView.q.product_id == None,
-            None, connection=self.trans)
-        self.failUnless(list(results))
-
-        # Bug 3458 We should have services even if send in a branch
-        results = SellableFullStockView.select_by_branch(
-            SellableFullStockView.q.product_id == None,
-            branch, connection=self.trans)
-        self.failUnless(list(results))
 
 
 class TestProductFullStockView(DomainTest):
@@ -176,6 +162,32 @@ class TestProductFullStockView(DomainTest):
         pv = results[0]
         self.assertEquals(pv.price, 10)
 
+        # Set a sale price
+        sellable = p1.sellable
+        sellable.on_sale_price = Decimal('5.55')
+
+        # And a interval that includes today
+        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        tomorrow = datetime.date.today() + datetime.timedelta(days=1)
+        sellable.on_sale_start_date = yesterday
+        sellable.on_sale_end_date = tomorrow
+
+        results = ProductFullStockView.select_by_branch(
+            ProductFullStockView.q.product_id == p1.id,
+            None, connection=self.trans)
+        self.assertEquals(results[0].price, Decimal('5.55'))
+
+        # Testing with a sale price set, but in the past
+        date1 = datetime.date.today() - datetime.timedelta(days=10)
+        date2 = datetime.date.today() - datetime.timedelta(days=5)
+        sellable.on_sale_start_date = date1
+        sellable.on_sale_end_date = date2
+
+        results = ProductFullStockView.select_by_branch(
+            ProductFullStockView.q.product_id == p1.id,
+            None, connection=self.trans)
+        self.assertEquals(results[0].price, 10)
+
 
 class TestProductComponentView(DomainTest):
     def testSellable(self):
@@ -216,13 +228,39 @@ class TestSellableFullStockView(DomainTest):
 
     def testPrice(self):
         branch = self.create_branch()
-        p1 = self.create_product(branch=branch, stock=1)
+        p1 = self.create_product(branch=branch, stock=1, price=Decimal('10.15'))
         results = SellableFullStockView.select_by_branch(
             SellableFullStockView.q.product_id == p1.id,
             branch, connection=self.trans)
         self.failUnless(list(results))
 
-        self.assertEquals(results[0].price, 10)
+        self.assertEquals(results[0].price, Decimal('10.15'))
+
+        # Set a sale price
+        sellable = p1.sellable
+        sellable.on_sale_price = Decimal('5.55')
+
+        # And a interval that includes today
+        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        tomorrow = datetime.date.today() + datetime.timedelta(days=1)
+        sellable.on_sale_start_date = yesterday
+        sellable.on_sale_end_date = tomorrow
+
+        results = SellableFullStockView.select_by_branch(
+            SellableFullStockView.q.product_id == p1.id,
+            branch, connection=self.trans)
+        self.assertEquals(results[0].price, Decimal('5.55'))
+
+        # Testing with a sale price set, but in the past
+        date1 = datetime.date.today() - datetime.timedelta(days=10)
+        date2 = datetime.date.today() - datetime.timedelta(days=5)
+        sellable.on_sale_start_date = date1
+        sellable.on_sale_end_date = date2
+
+        results = SellableFullStockView.select_by_branch(
+            SellableFullStockView.q.product_id == p1.id,
+            branch, connection=self.trans)
+        self.assertEquals(results[0].price, Decimal('10.15'))
 
 
 class TestSellableCategoryView(DomainTest):
