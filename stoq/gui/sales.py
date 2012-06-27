@@ -387,6 +387,7 @@ class SalesApp(SearchableAppWindow):
         sale = trans.get(sale_view.sale)
         sale.cancel()
         api.finish_transaction(trans, True)
+        trans.close()
         self.search.refresh()
 
     def on_SalesPrintInvoice__activate(self, action):
