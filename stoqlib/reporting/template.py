@@ -104,11 +104,17 @@ class BaseStoqReport(ReportTemplate):
                 title = (title, )
             self.add_title(*title)
 
+        # Keep this cached here, otherwise, for every page, extra queries will
+        # be made.
+        self._person = get_current_branch(get_connection()).person
+        self._main_address = self._person.get_main_address()
+        self._company = self._person.company
+
     def draw_header(self, canvas):
         canvas.saveState()
-        person = get_current_branch(get_connection()).person
-        main_address = person.get_main_address()
-        company = person.company
+        person = self._person
+        main_address = self._main_address
+        company = self._company
 
         logo_width, logo_height = self._logotype.getSize()
         header_y = self._topMargin - logo_height - BaseStoqReport.logo_border
