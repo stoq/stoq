@@ -158,6 +158,7 @@ class FiscalPrinterHelper(gobject.GObject):
 
         if not model:
             api.finish_transaction(trans, model)
+            trans.close()
             return
 
         # TillClosingEditor closes the till
