@@ -406,7 +406,7 @@ class OnlinePaymentOperation(object):
         return False
 
     def can_pay(self, payment):
-        return False
+        return True
 
     def can_print(self, payment):
         return False
