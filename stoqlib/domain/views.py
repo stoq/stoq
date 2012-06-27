@@ -50,7 +50,6 @@ from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.validators import is_date_in_interval
 
 
-
 class ProductFullStockView(Viewable):
     """Stores information about products.
     This view is used to query stock information on a certain branch.
