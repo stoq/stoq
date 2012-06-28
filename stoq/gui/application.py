@@ -1200,10 +1200,14 @@ class AppWindow(GladeDelegate):
     def _on_Print__activate(self, action):
         if self.current_app:
             self.current_app.print_activate()
+        else:
+            print 'FIXME'
 
     def _on_ExportSpreadSheet__activate(self, action):
         if self.current_app:
             self.current_app.export_spreadsheet_activate()
+        else:
+            print 'FIXME'
 
     def _on_Close__activate(self, action):
         self._hide_current_application()
