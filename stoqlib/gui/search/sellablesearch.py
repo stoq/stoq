@@ -104,7 +104,7 @@ class SellableSearch(SearchEditor):
         self.set_ok_label(self.footer_ok_label)
 
         if info_message:
-            self.add_message_bar(info_message, gtk.MESSAGE_INFO)
+            self.set_message(info_message)
 
         if search_str:
             self.set_searchbar_search_string(search_str)
@@ -170,7 +170,7 @@ class SellableSearch(SearchEditor):
     def search_completed(self, results, states):
         if not self._first_search:
             if self._first_search_string != self.get_searchbar_search_string():
-                self.remove_message_bar()
+                self.set_message(None)
 
         if len(results) >= 1:
             results.select(results[0])

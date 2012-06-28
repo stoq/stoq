@@ -86,6 +86,7 @@ class BasicDialog(GladeDelegate, RunnableView):
     def __init__(self, main_label_text=None, title=" ",
                  header_text="", size=None, hide_footer=False,
                  delete_handler=None, help_section=None):
+        self._message_bar = None
         self._create_dialog_ui()
         self._setup_keyactions()
         if delete_handler is None:
@@ -269,26 +270,21 @@ class BasicDialog(GladeDelegate, RunnableView):
     def action_area(self):
         return self.get_toplevel().action_area
 
-    def add_message_bar(self, message, message_type=gtk.MESSAGE_INFO):
-        """Adds a message bar to the top of the search results
-        :param message: message to add
+    def set_message(self, message, message_type=gtk.MESSAGE_INFO):
+        """Sets a message for this editor
+        :param message: message to add or None to remove previous message
         :param message_type: type of message to add
         """
+        if self._message_bar is not None:
+            self._message_bar.destroy()
+            self._message_bar = None
+        if message is None:
+            return
         self._message_bar = MessageBar(message, message_type)
         self._main_vbox.pack_start(self._message_bar, False, False)
         self._main_vbox.reorder_child(self._message_bar, 0)
         self._message_bar.show_all()
         return self._message_bar
-
-    def remove_message_bar(self):
-        """Removes the message bar if there was one added"""
-        if not self._message_bar:
-            return
-        self._message_bar.destroy()
-        self._message_bar = None
-
-    def has_message_bar(self):
-        return self._message_bar is not None
 
     #
     # Kiwi handlers

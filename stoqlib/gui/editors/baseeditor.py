@@ -180,7 +180,6 @@ class BaseEditor(BaseEditorSlave, RunnableView):
     def __init__(self, conn, model=None, visual_mode=False):
         if conn is not None and isinstance(conn, StoqlibTransaction):
             conn.needs_retval = True
-        self._message_bar = None
         self._confirm_disabled = False
 
         # FIXME:
@@ -336,19 +335,12 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         """
         self.main_dialog.set_confirm_widget(widget_name)
 
-    def add_message_bar(self, message, message_type=gtk.MESSAGE_INFO):
-        """Adds a message bar to the top of the search results
+    def set_message(self, message, message_type=gtk.MESSAGE_INFO):
+        """Sets a message for this editor
         :param message: message to add
         :param message_type: type of message to add
         """
-        self.main_dialog.add_message_bar(message, message_type)
-
-    def remove_message_bar(self):
-        """Removes the message bar if there was one added"""
-        self.main_dialog.remove_message_bar()
-
-    def has_message_bar(self):
-        return self.main_dialog.has_message_bar()
+        self.main_dialog.set_message(message, message_type)
 
     # RunnableView
     # This delegate everything to self.main_dialog
