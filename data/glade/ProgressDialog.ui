@@ -5,7 +5,7 @@
   <object class="GtkWindow" id="ProgressDialog">
     <property name="resizable">False</property>
     <property name="modal">True</property>
-    <property name="type_hint">notification</property>
+    <property name="type_hint">dialog</property>
     <property name="deletable">False</property>
     <child>
       <object class="GtkVBox" id="vbox1">
