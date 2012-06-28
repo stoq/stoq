@@ -330,7 +330,7 @@ class SellableEditor(BaseEditor):
         self._setup_ui_forms()
 
     def _add_demo_warning(self):
-        self.add_message_bar(
+        self.set_message(
             _("This is a demostration mode of Stoq, you cannot create more than %d products.\n"
               "To avoid this limitation, enable production mode.") % (
             _DEMO_PRODUCT_LIMIT))
