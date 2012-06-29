@@ -175,7 +175,7 @@ class StoqAPI(object):
     def escape(self, string):
         """Escapes the text and makes it suitable for use with a
         PangoMarkup, usually via Label.set_markup()"""
-        return glib.markup_escape_text(string)
+        return unicode(glib.markup_escape_text(string))
 
     def prepare_test(self):
         """Prepares to run a standalone test.
