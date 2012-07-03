@@ -140,9 +140,6 @@ class Domain(ORMObject):
         klass = type(self)
         return klass(connection=self._connection, **kwargs)
 
-    def get_connection(self):
-        return self._connection
-
     def check_unique_value_exists(self, attribute, value,
                                   case_sensitive=True):
         """Returns True if we already have the given attribute
