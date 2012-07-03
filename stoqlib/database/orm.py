@@ -124,7 +124,9 @@ class PriceCol(DecimalCol):
 # MainObject
 
 class ORMObject(SQLObject):
-    pass
+
+    def get_connection(self):
+        return self._connection
 
 
 def orm_enable_debugging():
