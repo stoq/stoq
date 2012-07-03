@@ -35,7 +35,6 @@ from stoqlib.lib.pluginmanager import register_plugin
 plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
 from nfeui import NFeUI
-from utils import get_cities_by_name
 
 
 class NFePlugin(object):
@@ -45,23 +44,19 @@ class NFePlugin(object):
     def __init__(self):
         self.ui = None
 
+    #
+    #  IPlugin
+    #
+
     def get_migration(self):
-        environ.add_resource('nfecsv', os.path.join(plugin_root, 'csv'))
         environ.add_resource('nfesql', os.path.join(plugin_root, 'sql'))
-        return PluginSchemaMigration(self.name, 'nfesql', ['*.sql', '*.py'])
+        return PluginSchemaMigration(self.name, 'nfesql', ['*.sql'])
 
     def get_tables(self):
-        return [('nfedomain', ['NFeCityData'])]
+        return []
 
     def activate(self):
         self.ui = NFeUI()
-
-    #
-    # Accessors
-    #
-
-    def get_matching_cities(self, city):
-        return get_cities_by_name(city)
 
 
 register_plugin(NFePlugin)

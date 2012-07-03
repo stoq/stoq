@@ -119,11 +119,11 @@ CREATE TABLE credit_provider (
 
 CREATE TABLE city_location (
     id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     country text,
     city text,
     state text,
+    city_code integer,
+    state_code integer,
     UNIQUE(country, state, city)
 );
 

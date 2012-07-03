@@ -138,8 +138,8 @@ class StoqAPI(object):
     def asyncReturn(self, value=None):
         return returnValue(value)
 
-    def get_l10n_field(self, conn, field_name):
-        return get_l10n_field(conn, field_name)
+    def get_l10n_field(self, conn, field_name, country=None):
+        return get_l10n_field(conn, field_name, country=country)
 
     def for_combo(self, resultset, attr=None, empty=None, sorted=True):
         """

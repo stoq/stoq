@@ -129,6 +129,15 @@ class ParameterDetails(object):
                 _("'%s' is not a valid %s.")
                 % (value, state_l10n.label.lower(), ))
 
+    @staticmethod
+    def validate_city(value):
+        city_l10n = get_l10n_field(get_connection(), 'city')
+        state = sysparam(get_connection()).STATE_SUGGESTED
+        country = sysparam(get_connection()).COUNTRY_SUGGESTED
+        if not city_l10n.validate(value, state=state, country=country):
+            return ValidationError(_("'%s' is not a valid %s.") %
+                                   (value, city_l10n.label.lower()))
+
     #
     #  Private API
     #
@@ -252,7 +261,8 @@ _details = [
         _('Default city'),
         _('When adding a new address for a certain person we will always '
           'suggest this city.'),
-        str, initial='Sao Carlos'),
+        str, initial='São Carlos',
+        validator=ParameterDetails.validate_city),
 
     ParameterDetails(
         'STATE_SUGGESTED',
@@ -268,7 +278,18 @@ _details = [
         _('Default country'),
         _('When adding a new address for a certain person we will always '
           'suggest this country.'),
+        # FIXME: When fixing bug 5100, change this to BR
         str, initial='Brazil'),
+
+    ParameterDetails(
+        'ALLOW_REGISTER_NEW_LOCATIONS',
+        _('General'),
+        _('Allow registration of new city locations'),
+        # Change the note here when we have more locations to reflect it
+        _('Allow to register new city locations. A city location is a'
+          'single set of a country + state + city.\n'
+          'NOTE: Right now this will only work for brazilian locations.'),
+        bool, initial=False),
 
     ParameterDetails(
         'HAS_DELIVERY_MODE',

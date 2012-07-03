@@ -60,3 +60,12 @@ class State(object):
         return True
 
 state = State()
+
+
+class City(object):
+    label = _('City')
+
+    def validate(self, city, state=None, country=None):
+        return True
+
+city = City()
