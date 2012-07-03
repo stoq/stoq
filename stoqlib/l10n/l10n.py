@@ -27,6 +27,7 @@ from kiwi.python import namedAny
 
 from stoqlib.l10n.generic import generic
 
+# FIXME: When fixing bug 5100, this won't be necessary anymore.
 # This maps country lists in stoqlib.lib.countries to ISO 639-1
 iso639_list = {
     # FIXME: We should use a combo in parameters instead.
@@ -37,13 +38,14 @@ iso639_list = {
 }
 
 
-def get_l10n_module(conn):
-    from stoqlib.lib.parameters import sysparam
-    country = sysparam(conn).COUNTRY_SUGGESTED
+def get_l10n_module(conn, country=None):
+    if not country:
+        from stoqlib.lib.parameters import sysparam
+        country = sysparam(conn).COUNTRY_SUGGESTED
 
     short = iso639_list.get(country.lower(), None)
     if short is None:
-        short = 'br'
+        return generic
 
     path = 'stoqlib.l10n.%s.%s' % (short, short)
     try:
@@ -54,8 +56,8 @@ def get_l10n_module(conn):
     return module
 
 
-def get_l10n_field(conn, field_name):
-    module = get_l10n_module(conn)
+def get_l10n_field(conn, field_name, country=None):
+    module = get_l10n_module(conn, country)
     field = getattr(module, field_name, None)
     if field is None:
         assert hasattr(generic, field_name)
