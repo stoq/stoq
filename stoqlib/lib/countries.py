@@ -293,7 +293,8 @@ def get_countries():
 
     :returns: a list of tuples
     """
-
+    # FIXME: Get this lazely from /usr/share/xml/iso-codes/iso_3166.xml
+    #        as pointed out on bug 5100.
     def cmp_func(a, b):
         return locale.strcoll(a[0], b[0])
     # We store translated country names in a set to ensure

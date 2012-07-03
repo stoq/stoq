@@ -29,6 +29,8 @@ from decimal import Decimal
 import os
 import sys
 
+from kiwi.python import strip_accents
+
 import stoqlib
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.address import Address, CityLocation
@@ -43,7 +45,7 @@ from stoqlib.lib.pluginmanager import get_plugin_manager
 # This test should be inside plugins/nfe, but it's not reachable there
 sys.path.append(os.path.join(os.path.dirname(stoqlib.__file__), '..',
     'plugins', 'nfe'))
-from nfegenerator import NFeGenerator, remove_accentuation, NFeIdentification
+from nfegenerator import NFeGenerator, NFeIdentification
 
 
 class TestNfeGenerator(DomainTest):
@@ -78,10 +80,10 @@ class TestNfeGenerator(DomainTest):
         output = os.path.join(basedir, "nfe-output.txt")
         if not os.path.isfile(expected):
             with open(expected, 'w') as fp:
-                fp.write(remove_accentuation(generator._as_txt()))
+                fp.write(strip_accents(generator._as_txt()))
             return
         with open(output, 'w') as fp:
-            fp.write(remove_accentuation(generator._as_txt()))
+            fp.write(strip_accents(generator._as_txt()))
 
         # Diff and compare
         diff = diff_files(expected, output)

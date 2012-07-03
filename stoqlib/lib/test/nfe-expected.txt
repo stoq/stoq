@@ -6,7 +6,7 @@ C02|24198774732235|
 C05|Avendia Sao Carlos|2333||Centro|3548906|Sao Carlos|SP|13560001|1058|BRASIL|48763983|
 E|Client|||
 E03||
-E05|Rua dos Tomates|2666|||3548906|Sao Carlos|SP|87654321|1058|BRASIL|0|
+E05|Rua dos Tomates|2666|||3548906|Sao Carlos|SP|87654321|1058|BRASIL||
 H|1||
 I|1||Laranja|||5102|un|10.0000|1.0000|10.00||un|10.0000|1.0000|||||1|||
 M|

@@ -131,6 +131,20 @@ def create_main_branch(trans, name):
     return branch
 
 
+def populate_initial_data(trans):
+    from stoqlib.domain.system import SystemTable
+    generation = SystemTable.select(connection=trans).max('generation')
+    if generation < 4:
+        # FIXME: Initial data can (and needs to) only be sourced on schemas
+        #        greater or equal than 4. Remove this in the future.
+        return
+
+    log.info('Populating initial data')
+    initial_data = environ.find_resource('sql', 'initial.sql')
+    if execute_sql(initial_data) != 0:
+        error('Failed to populate initial data')
+
+
 def register_payment_methods(trans):
     """Registers the payment methods and creates persistent
     domain classes associated with them.
@@ -367,6 +381,7 @@ def initialize_system(password=None, testsuite=False,
         create_base_schema()
         create_log("INIT START")
         trans = new_transaction()
+        populate_initial_data(trans)
         register_accounts(trans)
         register_payment_methods(trans)
         from stoqlib.domain.uiform import create_default_forms

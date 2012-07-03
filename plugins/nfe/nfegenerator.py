@@ -27,8 +27,11 @@ import datetime
 import math
 import os.path
 import random
-from xml.etree.ElementTree import Element
+import StringIO
+from xml.etree import ElementTree
 from xml.sax.saxutils import escape
+
+from kiwi.python import strip_accents
 
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.parameters import sysparam
@@ -37,8 +40,28 @@ from stoqlib.lib.validators import validate_cnpj
 from stoqlib.enums import NFeDanfeOrientation
 
 
-from utils import (get_state_code, get_city_code, nfe_tostring,
-                   remove_accentuation)
+def nfe_tostring(element):
+    """Returns the canonical XML string of a certain element with line feeds
+    and carriage return stripped.
+
+    @param element: a xml.etree.Element instance.
+    @returns: a XML string of the element.
+    """
+    message = ElementTree.tostring(element, 'utf8')
+    node = ElementTree.XML(message)
+    tree = ElementTree.ElementTree(node)
+    # The transformation of the XML to its canonical form is required along
+    # all the NF-e specification and its not supported by the xml.etree module
+    # of the standard python library. See http://www.w3.org/TR/xml-c14n for
+    # details.
+    xml = StringIO.StringIO()
+    tree.write_c14n(xml)
+
+    xml_str = xml.getvalue()
+    xml_str = xml_str.replace('\r', '')
+    xml_str = xml_str.replace('\n', '')
+    return xml_str
+
 
 #
 # the page numbers refers to the "Manual de integração do contribuinte v3.00"
@@ -55,7 +78,8 @@ class NFeGenerator(object):
     def __init__(self, sale, conn):
         self._sale = sale
         self.conn = conn
-        self.root = Element('NFe', xmlns='http://www.portalfiscal.inf.br/nfe')
+        self.root = ElementTree.Element(
+            'NFe', xmlns='http://www.portalfiscal.inf.br/nfe')
 
     #
     # Public API
@@ -102,7 +126,7 @@ class NFeGenerator(object):
         fp = open(filename, 'w')
         # we need to remove the accentuation to avoid import errors from
         # external applications.
-        fp.write(remove_accentuation(self._as_txt()))
+        fp.write(strip_accents(self._as_txt()))
         fp.close()
 
     #
@@ -153,22 +177,10 @@ class NFeGenerator(object):
 
         return cnpj
 
-    def _get_address_data(self, person):
-        """Returns a tuple in the following format:
-        (street, streetnumber, complement, district, city, state, postal_code,
-         phone_number)
-        """
-        address = person.get_main_address()
-        postal_code = ''.join([i for i in address.postal_code if i in '1234567890'])
-        location = address.city_location
-        return (address.street, address.streetnumber, address.complement,
-                address.district, location.city, location.state,
-                postal_code, person.get_phone_number_number())
-
     def _add_identification(self, branch):
         # Pg. 71
         branch_location = branch.person.get_main_address().city_location
-        cuf = str(get_state_code(branch_location.state) or '')
+        cuf = str(branch_location.state_code or '')
 
         today = self._get_today_date()
         aamm = today.strftime('%y%m')
@@ -182,7 +194,7 @@ class NFeGenerator(object):
         ecf_info = self._sale.get_nfe_coupon_info()
         nat_op = self._sale.operation_nature or ''
 
-        nfe_identification = NFeIdentification(cuf, branch_location.city,
+        nfe_identification = NFeIdentification(cuf, branch_location,
                                                series, nnf, today,
                                                list(payments), orientation,
                                                ecf_info, nat_op)
@@ -216,7 +228,8 @@ class NFeGenerator(object):
         crt = self._sale.branch.crt
         self._nfe_issuer = NFeIssuer(name, cnpj=cnpj,
                                      state_registry=state_registry, crt=crt)
-        self._nfe_issuer.set_address(*self._get_address_data(person))
+        self._nfe_issuer.set_address(person.get_main_address(),
+                                     person.get_phone_number_number())
         self._nfe_data.append(self._nfe_issuer)
 
     def _add_recipient(self, recipient):
@@ -235,7 +248,8 @@ class NFeGenerator(object):
                                                state_registry=state_registry,
                                                email=email)
 
-        self._nfe_recipient.set_address(*self._get_address_data(person))
+        self._nfe_recipient.set_address(person.get_main_address(),
+                                        person.get_phone_number_number())
         self._nfe_data.append(self._nfe_recipient)
 
     def _add_sale_items(self, sale_items):
@@ -357,14 +371,14 @@ class BaseNFeXMLGroup(object):
         if self._element is not None:
             return self._element
 
-        self._element = Element(self.tag)
+        self._element = ElementTree.Element(self.tag)
         for key, value in self.attributes:
             element_value = self._data[key] or value
             # ignore empty values
             if element_value is None:
                 continue
 
-            sub_element = Element(key)
+            sub_element = ElementTree.Element(key)
             sub_element.text = self.escape(str(element_value))
             self._element.append(sub_element)
 
@@ -534,7 +548,7 @@ class NFeIdentification(BaseNFeXMLGroup):
         NFeDanfeOrientation.LANDSCAPE: '2',
     }
 
-    def __init__(self, cUF, city, series, nnf, emission_date, payments,
+    def __init__(self, cUF, city_location, series, nnf, emission_date, payments,
                  orientation, ecf_info, nat_op):
         BaseNFeXMLGroup.__init__(self)
 
@@ -555,7 +569,7 @@ class NFeIdentification(BaseNFeXMLGroup):
         self.set_attr('nNF', nnf)
         self.set_attr('serie', series)
         self.set_attr('dEmi', self.format_date(emission_date))
-        self.set_attr('cMunFG', get_city_code(city, code=cUF) or '')
+        self.set_attr('cMunFG', str(city_location.city_code or ''))
         self.set_attr('tpImp', self.danfe_orientation[orientation])
         self.set_attr('natOp', nat_op[:60] or 'Venda')
 
@@ -620,17 +634,21 @@ class NFeAddress(BaseNFeXMLGroup):
                   (u'XPais', 'BRASIL'),
                   (u'Fone', '')]
 
-    def __init__(self, tag, street, number, complement, district, city, state,
-                 postal_code='', phone_number=''):
+    def __init__(self, tag, address, phone_number=''):
         self.tag = tag
         BaseNFeXMLGroup.__init__(self)
-        self.set_attr('xLgr', street)
-        self.set_attr('nro', number or '')
-        self.set_attr('xCpl', complement)
-        self.set_attr('xBairro', district)
-        self.set_attr('xMun', city)
-        self.set_attr('cMun', str(get_city_code(city, state) or ''))
-        self.set_attr('UF', state)
+
+        location = address.city_location
+        postal_code = ''.join([i for i in
+                               address.postal_code if i in '1234567890'])
+
+        self.set_attr('xLgr', address.street)
+        self.set_attr('nro', address.streetnumber or '')
+        self.set_attr('xCpl', address.complement)
+        self.set_attr('xBairro', address.district)
+        self.set_attr('xMun', location.city)
+        self.set_attr('cMun', str(location.city_code or ''))
+        self.set_attr('UF', location.state)
         self.set_attr('CEP', postal_code)
         self.set_attr('Fone', phone_number)
 
@@ -667,15 +685,13 @@ class NFeIssuer(BaseNFeXMLGroup):
         self.set_attr('CRT', crt)
         self._ie = state_registry
 
-    def set_address(self, street, number, complement, district, city, state,
-                    postal_code='', phone_number=''):
-        self._address = NFeAddress(
-            self.address_tag, street, number, complement, district, city,
-            state, postal_code, phone_number)
+    def set_address(self, address, phone_number=None):
+        self._address = NFeAddress(self.address_tag, address,
+                                   phone_number or '')
         self._address.txttag = self.address_txt_tag
         self.append(self._address)
         # If we set IE in the __init__, the order will not be correct. :(
-        ie_element = Element(u'IE')
+        ie_element = ElementTree.Element(u'IE')
         ie_element.text = self._ie
         self.element.append(ie_element)
 

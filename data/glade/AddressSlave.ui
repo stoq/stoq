@@ -163,7 +163,6 @@
         </child>
         <child>
           <object class="ProxyEntry" id="state">
-            <property name="completion">True</property>
             <property name="data_type">unicode</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">state</property>
@@ -234,7 +233,6 @@
         </child>
         <child>
           <object class="ProxyEntry" id="city">
-            <property name="completion">True</property>
             <property name="data_type">unicode</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">city</property>

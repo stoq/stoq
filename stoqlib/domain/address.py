@@ -23,20 +23,26 @@
 ##
 
 from kiwi.argcheck import argcheck
+from kiwi.python import strip_accents
 from zope.interface import implements
 
-from stoqlib.database.orm import (AND, UnicodeCol, IntCol, ForeignKey,
-                                  BoolCol, ILIKE)
+from stoqlib.database.orm import (ORMObject, AND, UnicodeCol, IntCol,
+                                  BoolCol, ForeignKey, func)
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
+from stoqlib.l10n.l10n import get_l10n_field
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+_get_equal_clause = lambda table, value: (
+    func.lower(func.stoq_normalize_string(table)) ==
+    strip_accents(value.lower()))
 
-class CityLocation(Domain):
+
+class CityLocation(ORMObject):
     """Base class to store the locations. Used to store a person's address
     or birth location.
     """
@@ -44,6 +50,12 @@ class CityLocation(Domain):
     country = UnicodeCol(default=u"")
     city = UnicodeCol(default=u"")
     state = UnicodeCol(default=u"")
+    city_code = IntCol(default=None)
+    state_code = IntCol(default=None)
+
+    #
+    #  Classmethods
+    #
 
     @classmethod
     @argcheck(StoqlibTransaction)
@@ -52,18 +64,7 @@ class CityLocation(Domain):
         state = sysparam(trans).STATE_SUGGESTED
         country = sysparam(trans).COUNTRY_SUGGESTED
 
-        location = CityLocation.selectOneBy(city=city, state=state,
-                                            country=country,
-                                            connection=trans)
-
-        # FIXME: Move this to database initialization ?
-        if location is None:
-            location = CityLocation(city=city, state=state, country=country,
-                                    connection=trans)
-        return location
-
-    def is_valid_model(self):
-        return bool(self.country and self.city and self.state)
+        return cls.get_or_create(trans, city, state, country)
 
     @classmethod
     @argcheck(StoqlibTransaction, basestring, basestring, basestring)
@@ -77,18 +78,51 @@ class CityLocation(Domain):
         :param country: country
         :returns: a :class:`CityLocation` or None
         """
-        location = CityLocation.selectOne(
-            AND(ILIKE(CityLocation.q.city, city),
-                ILIKE(CityLocation.q.state, state),
-                ILIKE(CityLocation.q.country, country)),
+        location = cls.selectOne(
+            AND(_get_equal_clause(cls.q.city, city),
+                _get_equal_clause(cls.q.state, state),
+                _get_equal_clause(cls.q.country, country)),
             connection=trans)
-        if not location:
-            location = CityLocation(
-                city=city,
-                state=state,
-                country=country,
-                connection=trans)
-        return location
+
+        if location:
+            return location
+
+        return cls(city=city,
+                   state=state,
+                   country=country,
+                   connection=trans)
+
+    @classmethod
+    def get_cities_by(cls, conn, state=None, country=None):
+        clause = None
+
+        if state:
+            clause_ = _get_equal_clause(cls.q.state, state)
+            clause = AND(clause, clause_) if clause else clause_
+        if country:
+            clause_ = _get_equal_clause(cls.q.country, country)
+            clause = AND(clause, clause_) if clause else clause_
+
+        return [result.city for result in
+                cls.select(clause, connection=conn)]
+
+    @classmethod
+    def exists(cls, conn, city, state, country):
+        return bool(cls.selectOne(
+            AND(_get_equal_clause(cls.q.city, city),
+                _get_equal_clause(cls.q.state, state),
+                _get_equal_clause(cls.q.country, country)),
+            connection=conn))
+
+    #
+    #  Public API
+    #
+
+    def is_valid_model(self):
+        city_l10n = get_l10n_field(self.get_connection(), 'city', self.country)
+        return bool(self.country and self.city and self.state and
+                    city_l10n.validate(self.city,
+                                       state=self.state, country=self.country))
 
 
 class Address(Domain):
