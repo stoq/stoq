@@ -33,6 +33,7 @@ from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.address import CityLocation
 from stoqlib.domain.person import Individual
+from stoqlib.gui.editors.addresseditor import CityLocationMixin
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -88,9 +89,9 @@ class _IndividualDetailsModel(AttributeForwarder):
         if not target.birth_location:
             target.birth_location = CityLocation.get_default(conn)
 
-        self.birth_city = target.birth_location.city
-        self.birth_state = target.birth_location.state
-        self.birth_country = target.birth_location.country
+        self.city = target.birth_location.city
+        self.state = target.birth_location.state
+        self.country = target.birth_location.country
 
     def is_married(self):
         return (self.target.marital_statuses ==
@@ -103,21 +104,21 @@ class _IndividualDetailsModel(AttributeForwarder):
         return self.target.gender == Individual.GENDER_FEMALE
 
     def birth_location_changed(self):
-        return (self.birth_city != self.target.birth_location.city or
-                self.birth_state != self.target.birth_location.state or
-                self.birth_country != self.target.birth_location.country)
+        return (self.city != self.target.birth_location.city or
+                self.state != self.target.birth_location.state or
+                self.country != self.target.birth_location.country)
 
     def ensure_birth_location(self):
         changed = self.birth_location_changed()
         if changed:
             self.target.birth_location = CityLocation.get_or_create(
-                city=self.birth_city,
-                state=self.birth_state,
-                country=self.birth_country,
+                city=self.city,
+                state=self.state,
+                country=self.country,
                 trans=self.conn)
 
 
-class _IndividualDetailsSlave(BaseEditorSlave):
+class _IndividualDetailsSlave(BaseEditorSlave, CityLocationMixin):
     model_type = _IndividualDetailsModel
     gladefile = 'IndividualDetailsSlave'
 
@@ -128,20 +129,15 @@ class _IndividualDetailsSlave(BaseEditorSlave):
         'occupation',
         'spouse_name',
         'marital_status',
-        'birth_city',
-        'birth_country',
-        'birth_state',
+        'city',
+        'country',
+        'state',
         ]
-
-    def __init__(self, conn, model, visual_mode=False):
-        self.state_l10n = api.get_l10n_field(conn, 'state')
-        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def _setup_widgets(self):
         self.male_check.set_active(self.model.is_male())
         self.female_check.set_active(self.model.is_female())
         self.marital_status.prefill(self.model.get_marital_statuses())
-        self.birth_state.prefill(self.state_l10n.state_list)
 
     def _update_marital_status(self):
         if self.model.is_married():
@@ -156,6 +152,8 @@ class _IndividualDetailsSlave(BaseEditorSlave):
     #
 
     def setup_proxies(self):
+        CityLocationMixin.setup_proxies(self)
+
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     _IndividualDetailsSlave.proxy_widgets)

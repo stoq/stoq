@@ -78,7 +78,95 @@ class _AddressModel(AttributeForwarder):
             self.target.city_location = location
 
 
-class AddressSlave(BaseEditorSlave):
+class CityLocationMixin(object):
+    """A mixin class for city locations
+
+    Use this mixin in a multiple inheritance editor to have
+    it's city location validated and prefilled with right data.
+
+    For this to happen, you need to have:
+      - A proxy entry for 'city' accessible at self.city
+      - A proxy entry for 'state' accessible at self.state
+      - A proxy combo entry for 'country' accessible at self.country
+    """
+
+    #
+    #  BaseEditorSlave
+    #
+
+    def setup_proxies(self):
+        self.country.prefill(get_countries())
+        self._cache_l10n_fields()
+
+        self._prefill_states()
+
+        self.city.set_exact_completion()
+        city_completion = self.city.get_completion()
+        city_completion.set_minimum_key_length = 2
+
+    #
+    #  Private
+    #
+
+    def _cache_l10n_fields(self):
+        self._city_l10n = api.get_l10n_field(self.conn, 'city',
+                                             self.model.country)
+        self._state_l10n = api.get_l10n_field(self.conn, 'state',
+                                              self.model.country)
+
+    def _prefill_states(self):
+        self.state.prefill(self._state_l10n.state_list)
+
+    def _prefill_cities(self, force=False):
+        completion = self.city.get_completion()
+        if not completion:
+            # Completion wasn't set yet
+            return
+
+        if len(completion.get_model()) and not force:
+            return
+
+        self.city.prefill([]) # mimic missing .clear method
+        cities = CityLocation.get_cities_by(self.conn,
+                                            state=self.model.state,
+                                            country=self.model.country)
+        self.city.prefill(list(cities))
+
+    #
+    #  Callbacks
+    #
+
+    def on_state__validate(self, entry, state):
+        if not self._state_l10n.validate(state):
+            return ValidationError(_("%s is not valid") % self._state_l10n.label)
+
+    def on_city__validate(self, entry, city):
+        if sysparam(self.conn).ALLOW_REGISTER_NEW_LOCATIONS:
+            return
+
+        # FIXME: Try to avoid lots of database queries here
+        if not self._city_l10n.validate(city,
+                                        self.model.state, self.model.country):
+            return ValidationError(_("%s is not valid") % self._city_l10n.label)
+
+    def on_city__content_changed(self, widget):
+        city = widget.read()
+        if city:
+            self._prefill_cities()
+
+    def after_state__content_changed(self, widget):
+        self._prefill_cities(force=True)
+        self.city.validate(force=True)
+
+    def after_country__content_changed(self, widget):
+        self._cache_l10n_fields()
+        self._prefill_states()
+        self._prefill_cities(force=True)
+        self.state.validate(force=True)
+        self.city.validate(force=True)
+
+
+class AddressSlave(BaseEditorSlave, CityLocationMixin):
     model_type = _AddressModel
     gladefile = 'AddressSlave'
 
@@ -132,28 +220,27 @@ class AddressSlave(BaseEditorSlave):
         return self.model.target
 
     def setup_proxies(self):
-        self.country.prefill(get_countries())
+        CityLocationMixin.setup_proxies(self)
+
         if self.db_form:
             self._update_forms()
-
-        self._cache_l10n_fields()
         self.proxy = self.add_proxy(self.model,
                                     AddressSlave.proxy_widgets)
+
+        # Not using self._statel10n and self._city_l10n here because we need
+        # to get the label name based on SUGGESTED_COUNTRY and not on the
+        # country on model.
+        for field, label in [
+            ('state', self.state_lbl),
+            ('city', self.city_lbl),
+            ]:
+            l10n_field = api.get_l10n_field(self.conn, field)
+            label.set_text(l10n_field.label + ':')
 
         # Enable if we already have a number or if we are adding a new address.
         self.streetnumber_check.set_active(bool(self.model.streetnumber)
                                            or not self.edit_mode)
         self._update_streetnumber()
-
-        # Not using self._statel10n here because we need to get the label
-        # name based on SUGGESTED_COUNTRY and not on the country on model.
-        state_l10n = api.get_l10n_field(self.conn, 'state')
-        self.state_lbl.set_text(state_l10n.label + ':')
-        self._prefill_states()
-
-        self.city.set_exact_completion()
-        completion = self.city.get_completion()
-        completion.set_minimum_key_length = 2
 
     def can_confirm(self):
         return self.model.is_valid_model()
@@ -161,12 +248,6 @@ class AddressSlave(BaseEditorSlave):
     #
     #  Private
     #
-
-    def _cache_l10n_fields(self):
-        self._city_l10n = api.get_l10n_field(self.conn, 'city',
-                                             self.model.country)
-        self._state_l10n = api.get_l10n_field(self.conn, 'state',
-                                              self.model.country)
 
     def _update_streetnumber(self):
         if not self.visual_mode:
@@ -199,40 +280,9 @@ class AddressSlave(BaseEditorSlave):
         self.db_form.update_widget(self.country,
                                    other=self.country_lbl)
 
-    def _prefill_states(self):
-        self.state.prefill(self._state_l10n.state_list)
-
-    def _prefill_cities(self, force=False):
-        completion = self.city.get_completion()
-        if not completion:
-            # Completion wasn't set yet
-            return
-
-        if len(completion.get_model()) and not force:
-            return
-
-        self.city.prefill([]) # mimic missing .clear method
-        cities = CityLocation.get_cities_by(self.conn,
-                                            state=self.model.state,
-                                            country=self.model.country)
-        self.city.prefill(list(cities))
-
     #
     # Kiwi callbacks
     #
-
-    def on_state__validate(self, entry, state):
-        if not self._state_l10n.validate(state):
-            return ValidationError(_("%s is not valid") % self._state_l10n.label)
-
-    def on_city__validate(self, entry, city):
-        if sysparam(self.conn).ALLOW_REGISTER_NEW_LOCATIONS:
-            return
-
-        # FIXME: Try to avoid lots of database queries here
-        if not self._city_l10n.validate(city,
-                                        self.model.state, self.model.country):
-            return ValidationError(_("%s is not valid") % self._city_l10n.label)
 
     def on_streetnumber__validate(self, entry, streetnumber):
         if streetnumber <= 0:
@@ -240,22 +290,6 @@ class AddressSlave(BaseEditorSlave):
 
     def on_streetnumber_check__clicked(self, check_button):
         self._update_streetnumber()
-
-    def on_city__content_changed(self, widget):
-        city = widget.read()
-        if city:
-            self._prefill_cities()
-
-    def after_state__content_changed(self, widget):
-        self._prefill_cities(force=True)
-        self.city.validate(force=True)
-
-    def after_country__content_changed(self, widget):
-        self._cache_l10n_fields()
-        self._prefill_states()
-        self._prefill_cities(force=True)
-        self.state.validate(force=True)
-        self.city.validate(force=True)
 
 
 class AddressEditor(BaseEditor):
