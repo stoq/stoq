@@ -73,7 +73,7 @@ class PaymentEditor(BaseEditor):
     fields = dict(
         method=ChoiceField(_('Method')),
         description=TextField(_('Description'), proxy=True, mandatory=True),
-        person=PersonField(),
+        person=PersonField(proxy=True),
         value=PriceField(_('Value'), proxy=True, mandatory=True),
         due_date=DateField(_('Due date'), proxy=True, mandatory=True),
         category=PaymentCategoryField(_('Category')),
@@ -227,6 +227,14 @@ class PaymentEditor(BaseEditor):
         self.refresh_ok(False)
         return False
 
+    def _validate_person(self):
+        payment_type = self.payment_type
+        method = self.method.get_selected()
+        if method.operation.require_person(payment_type):
+            self.person.set_property('mandatory', True)
+        else:
+            self.person.set_property('mandatory', False)
+
     def _create_repeated_payments(self):
         start_date = self.model.due_date.date()
         end_date = self.end_date.get_date()
@@ -297,6 +305,9 @@ class PaymentEditor(BaseEditor):
 
     def _on_details_button__clicked(self, widget):
         self._show_order_dialog()
+
+    def on_method__content_changed(self, method):
+        self._validate_person()
 
 
 class InPaymentEditor(PaymentEditor):

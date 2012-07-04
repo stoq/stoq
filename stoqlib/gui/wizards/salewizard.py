@@ -302,7 +302,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.cash_change_slave.update_total_sale_amount()
 
     def _update_widgets(self):
-        has_client = bool(self.model.client)
+        has_client = bool(self.client.get_selected())
         self.pm_slave.method_set_sensitive('store_credit', has_client)
         self.pm_slave.method_set_sensitive('bill', has_client)
 
