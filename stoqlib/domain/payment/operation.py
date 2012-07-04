@@ -87,6 +87,9 @@ class MoneyPaymentOperation(object):
     def print_(self, payment):
         pass
 
+    def require_person(self, payment_type):
+        return False
+
 
 class CheckPaymentOperation(object):
     implements(IPaymentOperation)
@@ -137,6 +140,9 @@ class CheckPaymentOperation(object):
 
     def print_(self, payment):
         pass
+
+    def require_person(self, payment_type):
+        return False
 
     #
     # Public API
@@ -200,6 +206,11 @@ class BillPaymentOperation(object):
     def get_constant(self, payment):
         return PaymentMethodType.BILL
 
+    def require_person(self, payment_type):
+        if payment_type == Payment.TYPE_IN:
+            return True
+        return False
+
 
 class CardPaymentOperation(object):
     implements(IPaymentOperation)
@@ -261,6 +272,9 @@ class CardPaymentOperation(object):
     def get_constant(self, payment):
         card_data = self.get_card_data_by_payment(payment)
         return self.CARD_METHOD_CONSTANTS.get(card_data.card_type)
+
+    def require_person(self, payment_type):
+        return False
 
     @argcheck(Payment)
     def get_card_data_by_payment(self, payment):
@@ -325,6 +339,11 @@ class StoreCreditPaymentOperation(object):
         # FIXME: Add another constant to stoqdrivers?
         return PaymentMethodType.CUSTOM
 
+    def require_person(self, payment_type):
+        if payment_type == Payment.TYPE_IN:
+            return True
+        return False
+
 
 class DepositPaymentOperation(object):
     implements(IPaymentOperation)
@@ -368,6 +387,9 @@ class DepositPaymentOperation(object):
 
     def print_(self, payment):
         pass
+
+    def require_person(self, payment_type):
+        return False
 
 
 class OnlinePaymentOperation(object):
