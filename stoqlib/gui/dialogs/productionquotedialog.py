@@ -31,10 +31,9 @@ from kiwi.ui.objectlist import Column
 from stoqlib.api import api
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.production import ProductionOrder
-from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup, Quotation
+from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.message import info
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -42,19 +41,26 @@ _ = stoqlib_gettext
 
 class _TemporaryQuoteGroup(object):
 
-    def _create_purchase_order(self, trans):
-        return PurchaseOrder(supplier=sysparam(trans).SUGGESTED_SUPPLIER,
-                             branch=api.get_current_branch(trans),
-                             status=PurchaseOrder.ORDER_QUOTING,
-                             expected_receival_date=None,
-                             responsible=api.get_current_user(trans),
-                             group=PaymentGroup(connection=trans),
-                             connection=trans)
+    def _create_purchase_order(self, trans, supplier, items):
+        order = PurchaseOrder(supplier=supplier,
+                              branch=api.get_current_branch(trans),
+                              status=PurchaseOrder.ORDER_QUOTING,
+                              expected_receival_date=None,
+                              responsible=api.get_current_user(trans),
+                              group=PaymentGroup(connection=trans),
+                              connection=trans)
+
+        for sellable, quantity in items:
+            order.add_item(sellable, quantity)
+
+        return order
 
     def create_quote_group(self, productions, trans):
-        group = QuoteGroup(connection=trans)
-        order = self._create_purchase_order(trans)
+        quote_data = {}
         to_quote_items = {}
+
+        # For each select production, we get all materials that need to be
+        # purchased.
         for production in productions:
             for material in production.get_material_items():
                 if material.to_purchase <= 0:
@@ -68,10 +74,22 @@ class _TemporaryQuoteGroup(object):
                 else:
                     to_quote_items[sellable] = quantity
 
-        for sellable, quantity in to_quote_items.iteritems():
-            order.add_item(sellable, quantity)
+        # For each material we need to buy, we build a dictionary relating
+        # them to the suppliers.
+        for sellable, quantity in to_quote_items.items():
+            product = sellable.product
+            for supplier_info in product.suppliers:
+                supplier = supplier_info.supplier
+                quote_data.setdefault(supplier, []).append((sellable, quantity))
 
-        Quotation(group=group, purchase=order, connection=trans)
+        group = QuoteGroup(connection=trans)
+
+        # For each supplier that offer a material we need, we create a quote
+        # with all the materials he offers and add it to the group.
+        for supplier, items in quote_data.items():
+            order = self._create_purchase_order(trans, supplier, items)
+            group.add_item(order)
+
         return group
 
 
