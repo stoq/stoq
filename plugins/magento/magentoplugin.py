@@ -311,8 +311,12 @@ class MagentoPlugin(object):
                                 config=config)
 
     def _on_category_update(self, category, **kwargs):
-        for mag_category in self._get_magento_categories_by_category(category):
-            mag_category.need_sync = True
+        categories = set([category])
+        # Child categories need to update data on magento too
+        categories = categories.union(category.get_children_recursively())
+        for category in categories:
+            for mag_category in self._get_magento_categories_by_category(category):
+                mag_category.need_sync = True
 
     def _on_sale_status_change(self, sale, old_status, **kwargs):
         mag_sale = MagentoSale.selectOneBy(connection=sale.get_connection(),

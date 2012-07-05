@@ -28,10 +28,14 @@ import gtk
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.events import StartApplicationEvent, StopApplicationEvent
+from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
+from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
+                                EditorSlaveCreateEvent)
 from stoqlib.lib.translation import stoqlib_gettext
 
+from domain.magentoconfig import MagentoConfig
 from gui.search.magentosearch import MagentoConfigSearch
+from gui.slave.magentoslave import MagentoCategorySlave
 
 _ = stoqlib_gettext
 
@@ -41,6 +45,8 @@ class MagentoUI(object):
 
     def __init__(self):
         self._ui = None
+
+        EditorSlaveCreateEvent.connect(self._on_EditorSlaveCreateEvent)
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         StopApplicationEvent.connect(self._on_StopApplicationEvent)
 
@@ -70,8 +76,17 @@ class MagentoUI(object):
     def _remove_app_ui(self, uimanager):
         if not self._ui:
             return
+
         uimanager.remove_ui(self._ui)
         self._ui = None
+
+    def _add_category_slave(self, editor, model, conn):
+        if not MagentoConfig.select(connection=conn).count():
+            # Do not add the slave if we don't have any magento config
+            return
+
+        editor.add_extra_tab(MagentoCategorySlave.title,
+                             MagentoCategorySlave(conn, model))
 
     #
     #  Callbacks
@@ -86,3 +101,7 @@ class MagentoUI(object):
 
     def _on_StopApplicationEvent(self, appname, app):
         self._remove_app_ui(app.main_window.uimanager)
+
+    def _on_EditorSlaveCreateEvent(self, editor, model, conn, *args):
+        if isinstance(editor, SellableCategoryEditor):
+            self._add_category_slave(editor, model, conn)

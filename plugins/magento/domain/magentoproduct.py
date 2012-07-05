@@ -79,6 +79,7 @@ class MagentoProduct(MagentoBaseSyncUp):
     product_type = UnicodeCol(default=None)
     product_set = IntCol(default=None)
     visibility = IntCol(default=VISIBILITY_CATALOG_SEARCH)
+    status = IntCol(default=STATUS_NONE)
     url_key = UnicodeCol(default=None)
     news_from_date = DateTimeCol(default=None)
     news_to_date = DateTimeCol(default=None)
@@ -270,8 +271,21 @@ class MagentoProduct(MagentoBaseSyncUp):
 
     def _get_data(self):
         sellable = self.sellable
-        status = (self.STATUS_DISABLED if sellable.is_closed() else
-                  self.STATUS_ENABLED)
+        mag_category = self.magento_category
+
+        if sellable.is_closed():
+            # If sellable is closed, for sure we can't sell it on magento
+            status = self.STATUS_DISABLED
+        elif self.status == self.STATUS_NONE and mag_category:
+            # If self didn't change the default status, get it from category
+            status = (self.STATUS_ENABLED if mag_category.get_active() else
+                      self.STATUS_DISABLED)
+        elif self.status == self.STATUS_NONE:
+            # Defaults to status enabled
+            status = self.STATUS_ENABLED
+        else:
+            status = self.status
+
         tax_class_id = (self.TAX_TAXABLE_GOODS if sellable.tax_constant else
                         self.TAX_NONE)
 
@@ -520,12 +534,22 @@ class MagentoCategory(MagentoBaseSyncUp):
      ERROR_CATEGORY_NOT_DELETED,
      ERROR_CATEGORY_PRODUCT_NOT_ASSIGNED) = range(100, 107)
 
-    is_active = BoolCol(default=True)
+    is_active = BoolCol(default=None)
     category = ForeignKey('SellableCategory')
-    parent = ForeignKey('MagentoCategory', default=None)
+    description = UnicodeCol(default=None)
+    meta_keywords = UnicodeCol(default=None)
 
     magento_products = MultipleJoin('MagentoProduct',
                                     joinColumn='magento_category_id')
+
+    #
+    #  Properties
+    #
+
+    @property
+    def parent(self):
+        return MagentoCategory.selectOneBy(connection=self.get_connection(),
+                                           category=self.category.category)
 
     #
     #  Classmethods
@@ -551,6 +575,22 @@ class MagentoCategory(MagentoBaseSyncUp):
     #
     #  Public API
     #
+
+    def get_active(self):
+        """Check if self is active, taking it's parents in consideration
+
+        A child of a non active category should not be active (due to
+        the recursively nature of categories) unless explicitly on it.
+        So, use this instead of checking category.is_active directly.
+        """
+        if self.is_active is not None:
+            return self.is_active
+
+        if not self.parent:
+            # Defaults to True
+            return True
+
+        return self.parent.get_active()
 
     @inlineCallbacks
     def assigned_products_remote(self):
@@ -663,6 +703,8 @@ class MagentoCategory(MagentoBaseSyncUp):
                             in assigned_products]
 
             for mag_product in self.magento_products:
+                mag_product.need_sync = True
+
                 if mag_product.magento_id in assigned_ids:
                     # Remove the id from the list, to allow us to find the ones
                     # that we need to remove bellow.
@@ -671,12 +713,14 @@ class MagentoCategory(MagentoBaseSyncUp):
 
                 retval_ = yield self.assign_product_remote(mag_product)
                 retval_list.append(retval_)
+
             # Deassign products not listed on self anymore
             if assigned_ids:
                 for mag_product in MagentoProduct.select(
                     connection=conn,
                     clause=IN(MagentoProduct.q.magento_id, assigned_ids),
                     ):
+                    mag_product.need_sync = True
                     retval_ = yield self.remove_product_remote(mag_product)
                     retval_list.append(retval_)
 
@@ -685,21 +729,36 @@ class MagentoCategory(MagentoBaseSyncUp):
         returnValue(retval)
 
     #
+    #  Domain hooks
+    #
+
+    def _create(self, id, **kw):
+        if not 'is_active' in kw:
+            category = kw['category']
+            # By default, if the category has a parent, that parent
+            # will dictate it's activeness. Otherwise, it's True.
+            kw['is_active'] = None if category.category else True
+
+        super(MagentoCategory, self)._create(id, **kw)
+
+    #
     #  Private
     #
 
     def _get_data(self):
         name = self.category.get_description()
-        # Base categories are not visible.
-        include_in_menu = bool(self.category.category)
 
         available_sort_by = ['name', 'price']
         default_sort_by = available_sort_by[0]
 
         return {
             'name': name,
-            'is_active': self.is_active,
-            'include_in_menu': include_in_menu,
+            'is_active': self.get_active(),
+            'include_in_menu': True,
             'available_sort_by': available_sort_by,
             'default_sort_by': default_sort_by,
+            'description': self.description,
+            'meta_title': name,
+            'meta_description': self.description,
+            'meta_keywords': self.meta_keywords,
             }
