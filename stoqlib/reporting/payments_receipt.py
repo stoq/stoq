@@ -95,14 +95,19 @@ class BasePaymentReceipt(BaseStoqReport):
 
     def identify_recipient(self):
         recipient = self.get_recipient()
-        company = recipient.company
-        if company:
+        if recipient:
             name = recipient.name
-            document = company.cnpj
             address = recipient.get_address_string()
+            if recipient.individual:
+                individual = recipient.individual
+                doc = individual.cpf or individual.rg_number or ''
+            elif recipient.company:
+                doc = recipient.company.cnpj or ''
+            else:
+                raise AssertionError('Person should be individual or company')
         else:
             name = ''
-            document = ''
+            doc = ''
             address = ''
 
         cols = [TC('', style='Normal-Bold', width=150),
@@ -111,7 +116,7 @@ class BasePaymentReceipt(BaseStoqReport):
         self.add_paragraph(_('Recipient'), style='Normal-Bold')
         data = [
             [_("Recipient:"), name],
-            [_("CPF/CNPJ/RG:"), document],
+            [_("RG/CPF/CNPJ:"), doc],
             [_("Address:"), address],
         ]
 
@@ -120,7 +125,7 @@ class BasePaymentReceipt(BaseStoqReport):
                               table_line=TABLE_LINE_BLANK)
 
     def add_signature(self):
-        self.add_signatures([_("Drawee")])
+        self.add_signatures([_("Recipient")])
 
     #
     # BaseReportTemplate hooks
