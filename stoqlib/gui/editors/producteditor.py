@@ -31,6 +31,7 @@ from kiwi.datatypes import ValidationError, currency
 from kiwi.enums import ListType
 from kiwi.ui.forms import TextField
 from kiwi.ui.widgets.list import Column, SummaryLabel
+
 from stoqdrivers.enum import TaxType
 
 from stoqlib.api import api
@@ -50,7 +51,7 @@ from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.gui.slaves.productslave import (ProductDetailsSlave,
                                              ProductTaxSlave)
 from stoqlib.lib.defaults import quantize
-from stoqlib.lib.message import info, yesno
+from stoqlib.lib.message import info, yesno, warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
@@ -451,6 +452,16 @@ class ProductQualityTestSlave(ModelListSlave):
     def run_editor(self, trans, model):
         return self.run_dialog(self.editor_class, conn=trans, model=model,
                                product=self._product)
+
+    def remove_item(self, item):
+        # If the test was used before in a production, it cannot be
+        # removed
+        if not item.can_remove():
+            warning(_(u'You can not remove this test, since it\'s already '
+                            'been used.'))
+            return False
+
+        return ModelListSlave.remove_item(self, item)
 
 
 #
