@@ -44,7 +44,7 @@ class CommissionSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
         self._setup_commissions()
 
-    def confirm(self):
+    def on_confirm(self):
         """The editor must call this method to create, update or delete
             the commission source
         """

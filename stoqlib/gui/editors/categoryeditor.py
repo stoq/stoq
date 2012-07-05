@@ -94,7 +94,8 @@ class SellableCategoryEditor(BaseEditor):
             self.tax_check.set_active(self.model.tax_constant is None)
 
     def on_confirm(self):
-        self.commission_slave.confirm()
+        for slave in self.slaves.values():
+            slave.on_confirm()
 
         if self.markup_check.get_active():
             self.model.suggested_markup = None
