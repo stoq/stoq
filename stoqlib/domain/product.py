@@ -35,8 +35,8 @@ from stoqlib.database.orm import const, AND, LEFTJOINOn
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)
-from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IDescribable
+from stoqlib.domain.person import Person
 from stoqlib.exceptions import StockError
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -725,3 +725,10 @@ class ProductQualityTest(Domain):
         else:
             a, b = self.get_range_value()
             return a <= value <= b
+
+    def can_remove(self):
+        from stoqlib.domain.production import ProductionItemQualityResult
+        if ProductionItemQualityResult.selectBy(quality_test=self,
+                    connection=self.get_connection()).count():
+            return False
+        return True

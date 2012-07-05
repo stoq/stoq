@@ -23,7 +23,8 @@
 ##
 """ This module test all class in stoqlib/domain/product.py """
 
-import decimal
+from decimal import Decimal
+import datetime
 
 from stoqlib.database.runtime import get_current_branch, new_transaction
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
@@ -31,10 +32,11 @@ from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductHistory, ProductComponent,
-                                    Storable)
+                                    ProductQualityTest, Storable)
+from stoqlib.domain.production import (ProductionProducedItem,
+                                       ProductionItemQualityResult)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import Sellable
-
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -380,10 +382,6 @@ class TestProductHistory(DomainTest):
         self.assertEqual(prod_hist.quantity_transfered, qty)
 
 
-from stoqlib.domain.product import ProductQualityTest
-from decimal import Decimal
-
-
 class TestProductQuality(DomainTest):
 
     def test_quality_tests(self):
@@ -455,6 +453,32 @@ class TestProductQuality(DomainTest):
 
         self.assertRaises(AssertionError, test.get_boolean_value)
 
+    def test_can_remove(self):
+        product = self.create_product()
+        test = ProductQualityTest(connection=self.trans, product=product)
+
+        # Test has never been used
+        self.assertTrue(test.can_remove())
+
+        order = self.create_production_order()
+        user = self.create_user()
+        item = ProductionProducedItem(product=product,
+                                      order=order,
+                                      produced_by=user,
+                                      produced_date=datetime.date.today(),
+                                      serial_number=1,
+                                      connection=self.trans)
+        self.assertTrue(test.can_remove())
+
+        # Test has been used in a production
+        ProductionItemQualityResult(produced_item=item,
+                                    quality_test=test,
+                                    tested_by=user,
+                                    result_value='True',
+                                    test_passed=True,
+                                    connection=self.trans)
+        self.assertFalse(test.can_remove())
+
 
 class TestProductEvent(DomainTest):
     def testCreateEvent(self):
@@ -470,7 +494,7 @@ class TestProductEvent(DomainTest):
         sellable = Sellable(
             connection=trans,
             description='Test 1234',
-            price=decimal.Decimal(2),
+            price=Decimal(2),
             )
         product = Product(
             connection=trans,
@@ -490,7 +514,7 @@ class TestProductEvent(DomainTest):
         product = trans.get(product)
         sellable.notes = 'Notes'
         sellable.description = 'Test 666'
-        product.weight = decimal.Decimal(10)
+        product.weight = Decimal(10)
         trans.commit()
         self.assertTrue(p_data.was_edited)
         self.assertFalse(p_data.was_created)
@@ -518,7 +542,7 @@ class TestProductEvent(DomainTest):
         trans_list.append(trans)
         sellable = trans.get(sellable)
         product = trans.get(product)
-        product.weight = decimal.Decimal(1)
+        product.weight = Decimal(1)
         trans.commit()
         self.assertTrue(p_data.was_edited)
         self.assertFalse(p_data.was_created)
@@ -532,7 +556,7 @@ class TestProductEvent(DomainTest):
         trans_list.append(trans)
         sellable = trans.get(sellable)
         product = trans.get(product)
-        product.weight = decimal.Decimal(1)
+        product.weight = Decimal(1)
         trans.commit()
         self.assertTrue(p_data.was_edited)
         self.assertFalse(p_data.was_created)
