@@ -142,7 +142,11 @@ class ProductComponentSlave(BaseEditorSlave):
                 ]
 
     def _setup_widgets(self):
-        self.component_combo.prefill(list(self._get_products()))
+        component_list = list(self._get_products())
+        if component_list:
+            self.component_combo.prefill(component_list)
+        else:
+            self.sort_components_check.set_sensitive(False)
 
         self.component_tree.set_columns(self._get_columns())
         self._populate_component_tree()
