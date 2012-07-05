@@ -29,6 +29,7 @@ import sys
 import gtk
 from kiwi.datatypes import ValidationError, currency
 from kiwi.enums import ListType
+from kiwi.ui.forms import TextField
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqdrivers.enum import TaxType
 
@@ -36,7 +37,8 @@ from stoqlib.api import api
 from stoqlib.domain.person import Supplier
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductComponent,
-                                    ProductQualityTest, Storable)
+                                    ProductQualityTest, Storable,
+                                    ProductManufacturer)
 from stoqlib.domain.sellable import (Sellable,
                                      SellableTaxConstant)
 from stoqlib.domain.views import ProductFullStockView
@@ -724,6 +726,34 @@ class ProductStockEditor(BaseEditor):
         details_slave = ProductDetailsSlave(self.conn, self.model.sellable)
         details_slave.hide_stock_details()
         self.attach_slave('place_holder', details_slave)
+
+
+class ProductManufacturerEditor(BaseEditor):
+    model_name = _('Manufacturer')
+    model_type = ProductManufacturer
+    confirm_widgets = ['name']
+
+    fields = dict(
+        name=TextField(_('Name'), proxy=True, mandatory=True),
+        )
+
+    def create_model(self, trans):
+        return ProductManufacturer(name='', connection=trans)
+
+    def setup_proxies(self):
+        self.name.grab_focus()
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_name__validate(self, widget, new_name):
+        if not new_name:
+            return ValidationError(
+                _("The manufacturer should have a name."))
+        if self.model.check_unique_value_exists('name', new_name):
+            return ValidationError(
+                _("The manufacturer '%s' already exists.") % new_name)
 
 
 def test_product():

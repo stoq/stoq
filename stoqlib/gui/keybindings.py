@@ -234,6 +234,8 @@ _bindings = [
      _("Search for products")),
     ('app.purchase.search_product_units', '<Primary>u',
      _("Search for product units")),
+    ('app.purchase.search_product_manufacturers', '',
+     _("Search for product manufacturers")),
     ('app.purchase.search_services', '<Primary>s',
      _("Search for services")),
     ('app.purchase.search_stock_items', '<Primary>i',
