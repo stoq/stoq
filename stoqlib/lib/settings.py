@@ -94,7 +94,8 @@ class UserSettings(object):
         return self._root[name]
 
     def remove(self, name):
-        del self._root[name]
+        if name in self._root:
+            del self._root[name]
 
     def items(self):
         return self._root.items()
