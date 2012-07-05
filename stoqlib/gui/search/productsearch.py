@@ -179,7 +179,7 @@ class ProductSearch(SearchEditor):
             cols.append(SearchColumn('cost', _('Cost'), data_type=currency,
                                      format_func=get_formatted_cost, width=90))
         if not self.hide_price_column:
-            cols.append(SearchColumn('price', title=_('Price'),
+            cols.append(Column('price', title=_('Price'),
                                      data_type=currency, width=90))
 
         cols.append(Column('stock', title=_('Stock'),
