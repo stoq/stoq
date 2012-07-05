@@ -179,7 +179,7 @@ class SellablePriceEditor(BasePriceEditor):
 
     def on_confirm(self):
         slave = self.get_slave('on_commission_data_holder')
-        slave.confirm()
+        slave.on_confirm()
         return self.model
 
 
