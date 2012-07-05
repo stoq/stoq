@@ -154,7 +154,7 @@ class Product(Domain):
     # Production
     is_composed = BoolCol(default=False)
     location = UnicodeCol(default='')
-    manufacturer = UnicodeCol(default='')
+    manufacturer = ForeignKey('ProductManufacturer', default=None)
     model = UnicodeCol(default='')
     part_number = UnicodeCol(default='')
     width = DecimalCol(default=0)
@@ -362,6 +362,33 @@ class Product(Domain):
             emitted_trans_list.add(trans)
 
         self._emitted_trans_list = emitted_trans_list
+
+
+class ProductManufacturer(Domain):
+    """Product manufacturer.
+
+    :attribute name: manufacturer's name
+    """
+
+    implements(IDescribable)
+
+    name = UnicodeCol(unique=True)
+
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.name
+
+    def can_remove(self):
+        """ Check if the manufacturer is used in some product."""
+        return not Product.selectBy(manufacturer=self,
+                                    connection=self.get_connection()).count()
+
+    def remove(self):
+        """Remove this registry from the database."""
+        self.delete(self.id, self.get_connection())
 
 
 class ProductHistory(Domain):

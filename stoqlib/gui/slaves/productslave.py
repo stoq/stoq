@@ -29,9 +29,10 @@ import gtk
 
 from kiwi.datatypes import ValidationError
 
+from stoqlib.api import api
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
-from stoqlib.domain.product import Product
+from stoqlib.domain.product import Product, ProductManufacturer
 from stoqlib.domain.taxes import ProductTaxTemplate
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -42,7 +43,8 @@ class ProductInformationSlave(BaseEditorSlave):
     gladefile = 'ProductInformationSlave'
     model_type = Product
     proxy_widgets = ['location', 'part_number', 'manufacturer', 'width',
-                     'height', 'depth', 'weight', 'ncm', 'ex_tipi', 'genero']
+                     'height', 'depth', 'weight', 'ncm', 'ex_tipi', 'genero',
+                     'product_model']
     storable_widgets = ['minimum_quantity', 'maximum_quantity']
 
     def __init__(self, conn, model, db_form, visual_mode=False):
@@ -59,8 +61,13 @@ class ProductInformationSlave(BaseEditorSlave):
         for label in [self.min_unit, self.max_unit]:
             label.set_text(unit_desc)
 
+    def _fill_manufacturers(self):
+        options = ProductManufacturer.select(connection=self.conn)
+        self.manufacturer.prefill(api.for_combo(options, empty=''))
+
     def _setup_widgets(self):
         self._setup_unit_labels()
+        self._fill_manufacturers()
 
         for widget in [self.minimum_quantity, self.maximum_quantity,
                        self.width, self.height, self.depth, self.weight]:
@@ -87,7 +94,8 @@ class ProductInformationSlave(BaseEditorSlave):
                                    other=[self.max_lbl,
                                           self.max_unit])
         if (not self.minimum_quantity.get_visible() and
-            not self.maximum_quantity.get_visible()):
+            not self.maximum_quantity.get_visible() and
+            not self.location.get_visible()):
             self.stock_lbl.hide()
 
         # Mercosul
@@ -115,7 +123,6 @@ class ProductInformationSlave(BaseEditorSlave):
         self.maximum_quantity.set_sensitive(False)
 
     def hide_stock_details(self):
-        self.stock_lbl.hide()
         self.min_lbl.hide()
         self.max_lbl.hide()
         self.min_hbox.hide()
@@ -125,6 +132,8 @@ class ProductInformationSlave(BaseEditorSlave):
         self.part_number.hide()
         self.manufacturer_lbl.hide()
         self.manufacturer.hide()
+        self.model_lbl.hide()
+        self.product_model.hide()
 
     #
     # Kiwi Callbacks

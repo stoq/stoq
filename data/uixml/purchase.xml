@@ -45,6 +45,7 @@
     <placeholder name="SearchMenuPH">
       <menuitem action="Categories"/>
       <menuitem action="ProductUnits"/>
+      <menuitem action="ProductManufacturers"/>
       <menuitem action="Products"/>
       <menuitem action="Services"/>
       <menuitem action="SearchStockItems"/>

@@ -36,6 +36,7 @@ from stoqlib.domain.product import (Product,
                                     ProductStockItem,
                                     ProductHistory,
                                     ProductComponent,
+                                    ProductManufacturer,
                                     Storable)
 from stoqlib.domain.production import ProductionOrder, ProductionItem
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
@@ -81,7 +82,7 @@ class ProductFullStockView(Viewable):
         on_sale_end_date=Sellable.q.on_sale_end_date,
         product_id=Product.q.id,
         location=Product.q.location,
-        manufacturer=Product.q.manufacturer,
+        manufacturer=ProductManufacturer.q.name,
         model=Product.q.model,
         tax_description=SellableTaxConstant.q.description,
         category_description=SellableCategory.q.description,
@@ -109,6 +110,9 @@ class ProductFullStockView(Viewable):
                    Storable.q.productID == Product.q.id),
         LEFTJOINOn(None, ProductStockItem,
                    ProductStockItem.q.storableID == Storable.q.id),
+        # Manufacturer
+        LEFTJOINOn(None, ProductManufacturer,
+                   Product.q.manufacturerID == ProductManufacturer.q.id),
         ]
 
     clause = Sellable.q.status != Sellable.STATUS_CLOSED

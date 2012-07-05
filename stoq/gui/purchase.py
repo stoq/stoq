@@ -39,6 +39,7 @@ from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.sellablepricedialog import SellablePriceDialog
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
+from stoqlib.gui.dialogs.manufacturerdialog import ProductManufacturerDialog
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.categorysearch import SellableCategorySearch
@@ -111,6 +112,8 @@ class PurchaseApp(SearchableAppWindow):
              group.get("search_products")),
             ("ProductUnits", None, _("Product units..."),
              group.get("search_product_units")),
+            ("ProductManufacturers", None, _("Manufacturers..."),
+             group.get("search_product_manufacturers")),
             ("Services", None, _("Services..."),
              group.get("search_services")),
             ("SearchStockItems", None, _("Stock items..."),
@@ -512,6 +515,9 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_ProductUnits__activate(self, action):
         self.run_dialog(SellableUnitSearch, self.conn)
+
+    def on_ProductManufacturers__activate(self, action):
+        self.run_dialog(ProductManufacturerDialog, self.conn)
 
     def on_Services__activate(self, action):
         self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
