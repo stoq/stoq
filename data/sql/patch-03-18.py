@@ -1,6 +1,7 @@
 from kiwi.python import strip_accents
 from stoqlib.domain.product import ProductManufacturer
 
+
 def apply_patch(trans):
     trans.query("""
         CREATE TABLE product_manufacturer (
