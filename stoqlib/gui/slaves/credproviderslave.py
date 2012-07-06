@@ -29,6 +29,7 @@ from kiwi.datatypes import ValidationError
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.domain.person import CreditProvider
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import validate_percentage
 
 _ = stoqlib_gettext
 
@@ -57,18 +58,27 @@ class CreditProviderDetailsSlave(BaseEditorSlave):
     # Kiwi Callbacks
     #
 
-    def _validate(self, widget, value):
-        if value > 100:
-            return ValidationError(_(u'The fee can not be greater to 100%.'))
-        if value < 0:
-            return ValidationError(_(u'The fee must be positive.'))
-
-    on_credit_fee__validate = _validate
-    on_credit_installments_store_fee__validate = _validate
-    on_credit_installments_provider_fee__validate = _validate
-    on_debit_fee__validate = _validate
-    on_debit_pre_dated_fee__validate = _validate
-
     def on_monthly_fee__validate(self, widget, value):
         if value < 0:
             return ValidationError(_(u'The monthly fee must be positive.'))
+
+    def _validate_day(self, widget, value):
+        # 28 is the maximum allowed number on schema
+        # Also, do not allow day 0 and negative for obvious reasons
+        if not 1 <= value <= 28:
+            return ValidationError(_('%s is not a valid day') % value)
+
+    # day validators
+    on_payment_day__validate = _validate_day
+    on_closing_day__validate = _validate_day
+
+    def _validate_percentage(self, widget, value):
+        if not validate_percentage(value):
+            return ValidationError(_('%s is not a valid percentage') % value)
+
+    # percentage validators
+    on_credit_fee__validate = _validate_percentage
+    on_credit_installments_store_fee__validate = _validate_percentage
+    on_credit_installments_provider_fee__validate = _validate_percentage
+    on_debit_fee__validate = _validate_percentage
+    on_debit_pre_dated_fee__validate = _validate_percentage
