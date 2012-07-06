@@ -323,6 +323,7 @@ class SellableItemStep(WizardEditorStep):
 
         has_sellable = bool(sellable)
         self.add_sellable_button.set_sensitive(has_sellable)
+        self.force_validation()
         self.quantity.set_sensitive(has_sellable)
         self.cost.set_sensitive(has_sellable)
 
