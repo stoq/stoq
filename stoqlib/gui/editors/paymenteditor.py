@@ -236,6 +236,7 @@ class PaymentEditor(BaseEditor):
             self.person.set_property('mandatory', False)
 
     def _create_repeated_payments(self):
+        # FIXME: Move most of this to stoqlib.domain.payment
         start_date = self.model.due_date.date()
         end_date = self.end_date.get_date()
         repeat_type = self.repeat.get_selected()
