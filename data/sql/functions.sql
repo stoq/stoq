@@ -55,20 +55,52 @@ DROP FUNCTION stoq_create_language_plpgsql();
 -- Source: http://wiki.postgresql.org/wiki/Strip_accents_from_strings,_and_output_in_lowercase
 -- Author: Thom Brown
 --
+-- Source: http://lehelk.com/2011/05/06/script-to-remove-diacritics/
+--
 
 CREATE OR REPLACE FUNCTION stoq_normalize_string(text) RETURNS text AS $$
 DECLARE
     input_string text := $1;
 BEGIN
 
--- These are the must common cases for latin based charceter sets
+input_string := LOWER(input_string);
 
-input_string := translate(input_string, 'áâãäåāăąàÁÂÃÄÅĀĂĄÀ', 'aaaaaaaaaaaaaaaaaa');
-input_string := translate(input_string, 'èééêëēĕėęěĒĔĖĘĚ', 'eeeeeeeeeeeeeee');
-input_string := translate(input_string, 'ìíîïìĩīĭÌÍÎÏÌĨĪĬ', 'iiiiiiiiiiiiiiii');
-input_string := translate(input_string, 'óôõöōŏőÒÓÔÕÖŌŎŐ', 'ooooooooooooooo');
-input_string := translate(input_string, 'ùúûüũūŭůÙÚÛÜŨŪŬŮ', 'uuuuuuuuuuuuuuuu');
-input_string := translate(input_string, 'çÇ', 'cc');
+-- These are the must common cases for latin based charceter sets
+input_string := translate(input_string, 'ẚàáâầấẫẩãāăằắẵẳȧǡäǟảåǻǎȁȃạậặḁąⱥɐ',
+                                        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+input_string := translate(input_string, 'èéêềếễểẽēḕḗĕėëẻěȅȇẹệȩḝęḙḛɇɛǝ',
+                                        'eeeeeeeeeeeeeeeeeeeeeeeeeeee');
+input_string := translate(input_string, 'ìíîĩīĭïḯỉǐȉȋịįḭɨı',
+                                        'iiiiiiiiiiiiiiiii');
+input_string := translate(input_string, 'òóôồốỗổõṍȭṏōṑṓŏȯȱöȫỏőǒȍȏơờớỡởợọộǫǭøǿɔꝋꝍɵ',
+                                        'oooooooooooooooooooooooooooooooooooooooo');
+input_string := translate(input_string, 'ùúûũṹūṻŭüǜǘǖǚủůűǔȕȗưừứữửựụṳųṷṵʉ',
+                                        'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu');
+input_string := translate(input_string, 'çñ',
+                                        'cn');
+
+-- Not putting those characteres to avoid extra overhead
+--input_string := translate(input_string, 'ḃḅḇƀƃɓ', 'bbbbbb');
+--input_string := translate(input_string, 'ćĉċčçḉƈȼꜿↄ', 'cccccccccc');
+--input_string := translate(input_string, 'ḋďḍḑḓḏđƌɖɗꝺ', 'ddddddddddd');
+--input_string := translate(input_string, 'ḟƒꝼ', 'fff');
+--input_string := translate(input_string, 'ǵĝḡğġǧģǥɠᵹꝿ', 'ggggggggggg');
+--input_string := translate(input_string, 'ĥḣḧȟḥḩḫẖħⱨⱶɥ', 'hhhhhhhhhhhh');
+--input_string := translate(input_string, 'ĵǰɉ', 'jjj');
+--input_string := translate(input_string, 'ḱǩḳķḵƙⱪꝁꝃꝅ', 'kkkkkkkkkk');
+--input_string := translate(input_string, 'ŀĺľḷḹļḽḻſłƚɫⱡꝉꞁꝇ', 'llllllllllllllll');
+--input_string := translate(input_string, 'ḿṁṃɱɯ', 'mmmmm');
+--input_string := translate(input_string, 'ǹńñṅňṇņṋṉƞɲŉꞑ', 'nnnnnnnnnnnnn');
+--input_string := translate(input_string, 'ṕṗƥᵽꝑꝓ', 'pppppp');
+--input_string := translate(input_string, 'ɋꝗ', 'qq');
+--input_string := translate(input_string, 'ŕṙřȑȓṛṝŗṟɍɽꞃ', 'rrrrrrrrrrrr');
+--input_string := translate(input_string, 'ßśṥŝṡšṧṣṩșşȿꞅẛ', 'ssssssssssssss');
+--input_string := translate(input_string, 'ṫẗťṭțţṱṯŧƭʈⱦꞇ', 'ttttttttttttt');
+--input_string := translate(input_string, 'ṽṿʋʌ', 'vvvv');
+--input_string := translate(input_string, 'ẁẃŵẇẅẘẉⱳ', 'wwwwwwww');
+--input_string := translate(input_string, 'ẋẍ', 'xx');
+--input_string := translate(input_string, 'ỳýŷỹȳẏÿỷẙỵƴɏỿ', 'yyyyyyyyyyyyy');
+--input_string := translate(input_string, 'źẑżžẓẕƶȥɀⱬ', 'zzzzzzzzzz');
 
 return input_string;
 END;

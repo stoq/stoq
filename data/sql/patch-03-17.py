@@ -17,7 +17,7 @@ def apply_patch(trans):
                                              connection=trans):
         clause = AND(
             CityLocation.q.state == city_location.state,
-            (func.lower(func.stoq_normalize_string(CityLocation.q.city)) ==
+            (func.stoq_normalize_string(CityLocation.q.city) ==
              strip_accents(city_location.city).lower()))
         alikes = list(CityLocation.select(clause=clause,
                                           connection=trans))

@@ -38,7 +38,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 _get_equal_clause = lambda table, value: (
-    func.lower(func.stoq_normalize_string(table)) ==
+    func.stoq_normalize_string(table) ==
     strip_accents(value.lower()))
 
 
