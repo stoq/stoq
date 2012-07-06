@@ -76,11 +76,11 @@ class ProductsAdjustmentDialog(BaseEditor):
     def _update_widgets(self):
         if not hasattr(self, 'main_dialog'):
             return
-        if not self._is_valid_invoice_number():
-            self.adjust_button.set_sensitive(False)
-        else:
-            has_selected = self.inventory_items.get_selected() is not None
-            self.adjust_button.set_sensitive(has_selected)
+
+        has_selected = bool(self.inventory_items.get_selected())
+        self.adjust_button.set_sensitive(has_selected and
+                                         self.invoice_number.is_valid())
+
         self.refresh_ok(not self._has_rows())
 
     def _refresh_inventory_items(self):
@@ -88,13 +88,6 @@ class ProductsAdjustmentDialog(BaseEditor):
         self.inventory_items.add_list(items)
         self.inventory_items.refresh(True)
         self._update_widgets()
-
-    def _is_valid_invoice_number(self):
-        invoice_number = self.invoice_number.read()
-        if invoice_number <= 0 or invoice_number > 999999:
-            return False
-
-        return True
 
     def _get_columns(self):
         return [Column('code', title=_(u"Code"), data_type=str,
@@ -163,14 +156,16 @@ class ProductsAdjustmentDialog(BaseEditor):
         self._run_adjustment_dialog(selected)
 
     def on_inventory_items__row_activated(self, objectlist, item):
-        if self._is_valid_invoice_number():
-            self._run_adjustment_dialog(item)
+        if not self.invoice_number.is_valid():
+            return
+
+        self._run_adjustment_dialog(item)
 
     def on_inventory_items__selection_changed(self, objectlist, item):
         self._update_widgets()
 
     def on_invoice_number__validate(self, widget, value):
-        if not self._is_valid_invoice_number():
+        if not 0 < value < 999999:
             return ValidationError(_(u'The invoice number must be '
                                      'between 1 and 999999'))
 
