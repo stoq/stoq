@@ -336,7 +336,7 @@ class SellableFullStockView(Viewable):
         on_sale_end_date=Sellable.q.on_sale_end_date,
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
-        manufacturer=Product.q.manufacturer,
+        manufacturer=ProductManufacturer.q.name,
         model=Product.q.model,
         category_description=SellableCategory.q.description,
         base_price=Sellable.q.base_price,
@@ -359,6 +359,9 @@ class SellableFullStockView(Viewable):
                    Storable.q.productID == Product.q.id),
         LEFTJOINOn(None, ProductStockItem,
                    ProductStockItem.q.storableID == Storable.q.id),
+        # Manufacturer
+        LEFTJOINOn(None, ProductManufacturer,
+                   Product.q.manufacturerID == ProductManufacturer.q.id),
         ]
 
     @classmethod
