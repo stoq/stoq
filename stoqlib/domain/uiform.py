@@ -44,7 +44,7 @@ class UIForm(Domain):
     """This describes a form which has a number of fields"""
     form_name = UnicodeCol()
     description = UnicodeCol()
-    fields = SingleJoin('UIField')
+    fields = SingleJoin('UIField', joinColumn='ui_form_id')
 
     def get_field(self, field_name):
         return UIField.selectOneBy(field_name=field_name,

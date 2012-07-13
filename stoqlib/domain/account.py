@@ -110,7 +110,7 @@ class Account(Domain):
     parent = ForeignKey('Account', default=None)
     station = ForeignKey('BranchStation', default=None)
     account_type = IntCol(default=None)
-    bank = SingleJoin('BankAccount')
+    bank = SingleJoin('BankAccount', joinColumn='account_id')
 
     #
     # IDescribable implementation
