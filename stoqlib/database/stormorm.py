@@ -398,8 +398,11 @@ class SQLObjectBase(Storm):
     @classmethod
     def _get_store(cls):
         from stoqlib.database.runtime import get_connection
-        cls._connection = cls.connection = get_connection()
+        cls.connection = get_connection()
         return cls.connection.store
+
+    def get_connection(self):
+        return self._connection
 
     @classmethod
     def delete(cls, id, connection=None):
@@ -947,6 +950,10 @@ class QuantityCol(DecimalCol):
     variable_class = QuantityVariable
 
 
+class PercentCol(DecimalCol):
+    pass
+
+
 class MyDateTimeVariable(DateTimeVariable, DateVariable):
     def parse_set(self, value, from_db):
         if isinstance(value, datetime.date):
@@ -1277,6 +1284,7 @@ def MyLeftJoin(table1, table2, clause):
 
 # SQLBuilder
 const = ConstantSpace()
+func = const
 Alias = ClassAlias
 AND = And
 IN = In
@@ -1286,8 +1294,13 @@ INNERJOINOn = MyJoin
 def ISNOTNULL(arg):
     return arg != None
 
+class ILike(Like):
+    oper = ' ILIKE '
+    
+
 LEFTJOINOn = MyLeftJoin
 LIKE = Like
+ILIKE = ILike
 NOT = Not
 OR = Or
 DESC = Desc
