@@ -365,7 +365,6 @@ class SQLObjectBase(Storm):
     __metaclass__ = SQLObjectMeta
 
     q = DotQ()
-    _SO_creating = False
 
     def __init__(self, *args, **kwargs):
         self._connection = kwargs.get('connection')
@@ -376,6 +375,16 @@ class SQLObjectBase(Storm):
         except:
             store.remove(self)
             raise
+        get_obj_info(self).event.hook('changed', self._on_object_changed)
+
+    # FIXME: Fix stoqlib.domain.base.Domain to not use this method
+    def _SO_setValue(self, name, value, from_, to):
+        pass
+
+    def _on_object_changed(self, obj_info, variable, old_value, new_value,
+                           fromdb):
+        if new_value is not AutoReload and not fromdb:
+            self._SO_setValue('foo', 'bar', 'bin', 'buz')
 
     def __storm_loaded__(self):
         self._init(None)
@@ -384,9 +393,9 @@ class SQLObjectBase(Storm):
         store = self._get_store()
         if self._connection is None:
             self._connection = kwargs.pop('connection', store._connection)
-        self._SO_creating = True
+        self.sqlmeta._creating = True
         self.set(**kwargs)
-        del self._SO_creating
+        self.sqlmeta._creating = False
         self._init(None)
 
     def _init(self, id, *args, **kwargs):
