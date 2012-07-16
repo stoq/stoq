@@ -350,7 +350,6 @@ def GetAlias(klass, name):
         return MyAlias(klass, name)
     else:
         return ClassAlias(klass, name)
-        
 
 
 class SQLObjectBase(Storm):
@@ -1349,9 +1348,10 @@ INNERJOINOn = MyJoin
 def ISNOTNULL(arg):
     return arg != None
 
+
 class ILike(Like):
     oper = ' ILIKE '
-    
+
 
 LEFTJOINOn = MyLeftJoin
 LIKE = Like
