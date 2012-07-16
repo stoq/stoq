@@ -37,9 +37,11 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+# strip_accents return str, they should return the same type as the original
+# value
 _get_equal_clause = lambda table, value: (
     func.stoq_normalize_string(table) ==
-    strip_accents(value.lower()))
+    unicode(strip_accents(value.lower())))
 
 
 class CityLocation(ORMObject):
