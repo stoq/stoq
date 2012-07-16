@@ -880,24 +880,25 @@ class Viewable(Declarative):
 
     def __classinit__(cls, new_attrs):
         cols = new_attrs.get('columns')
+        if not cols and hasattr(cls, 'columns'):
+            cols = cls.columns
         if not cols:
             return
 
         group_by = []
         needs_group_by = False
         for name, col in cols.items():
+            if isinstance(col, expr.Alias):
+                col = col.expr
+
             if not has_sql_call(col):
-                # FIXME: When grouping we should use the original column,
-                # not the alias
-                #if isinstance(col, expr.Alias):
-                #    pass
                 group_by.append(col)
             else:
                 needs_group_by = True
-            if not isinstance(col, expr.Alias):
-                col = cols[name] = expr.Alias(col, name)
 
+            col = cols[name] = expr.Alias(col, name)
             setattr(cls, name, col)
+
         if needs_group_by:
             cls.group_by = group_by
         else:
@@ -910,17 +911,25 @@ class Viewable(Declarative):
         else:
             first_table = cols['id'].table
 
-        tables = [first_table]
-        for join in new_attrs.get('joins', []):
-            # If the table is actually another Viewable, join with a Subselect
-            table = join.right
-            if isinstance(table, MyAlias) and issubclass(table.expr, Viewable):
-                subselect = table.expr.get_select()
-                subselect = expr.Alias(subselect, table.name)
-                join = join.__class__(subselect, join.on)
-            tables.append(join)
+        if 'joins' not in new_attrs and hasattr(cls, 'joins'):
+            # Joins are not defined for this class, but are defined in the base
+            # class. We should not reconstruct the list of queries
+            tables = []
+        else:
+            # Joins is defined in this class, but not in the base class. So we
+            # should build the list of tables to be used here
+            tables = [first_table]
 
-        cls.tables = tables
+            for join in new_attrs.get('joins', []):
+                # If the table is actually another Viewable, join with a Subselect
+                table = join.right
+                if isinstance(table, MyAlias) and issubclass(table.expr, Viewable):
+                    subselect = table.expr.get_select()
+                    subselect = expr.Alias(subselect, table.name)
+                    join = join.__class__(subselect, join.on)
+                tables.append(join)
+
+            cls.tables = tables
 
     def get_connection(self):
         return None
@@ -1210,6 +1219,10 @@ def has_sql_call(column):
 
     elif isinstance(column, expr.BinaryExpr):
         if has_sql_call(column.expr1) or has_sql_call(column.expr2):
+            return True
+
+    elif isinstance(column, expr.Alias):
+        if has_sql_call(column.expr):
             return True
 
     return False
