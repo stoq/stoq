@@ -99,14 +99,14 @@ class DatabaseSettings(object):
             password = ""
         authority = '%s%s@%s:%s' % (
             self.username, password, self.address, self.port)
-        if dbname is None:
-            # postgres is a special database which is always present,
-            # it was added in 8.1 which is thus our requirement'
-            dbname = 'postgres'
 
         return '%s://%s/%s' % (self.rdbms, authority, dbname)
 
-    def _get_connection_internal(self, dbname):
+    def _get_connection_internal(self, dbname=None):
+        # postgres is a special database which is always present,
+        # it was added in 8.1 which is thus our requirement'
+        dbname = dbname or 'postgres'
+
         # Do not output the password in the logs
         if not self.first:
             log.info('connecting to %s' % self._build_uri(
@@ -131,10 +131,10 @@ class DatabaseSettings(object):
                     self.port = port
                 from storm.uri import URI
                 conn_uri = URI(':')
-                conn_uri.database = self.dbname
+                conn_uri.database = dbname
                 conn_uri.scheme = self.rdbms
                 conn_uri.host = self.address
-                conn_uri.port = self.port
+                conn_uri.port = int(self.port)
                 conn_uri.username = self.username
                 conn_uri.password = self.password
                 conn = connectionForURI(conn_uri)

@@ -777,9 +777,10 @@ class ParameterAccess(ClassInittableObject):
 
         self._cache[param_name] = table.get(obj_id, connection=self.conn)
 
-    def clear_cache(self):
+    @classmethod
+    def clear_cache(cls):
         log.info("Clearing cache")
-        ParameterAccess._cache = {}
+        cls._cache = {}
 
     def get_parameter_constant(self, field_name):
         for detail in _details:
