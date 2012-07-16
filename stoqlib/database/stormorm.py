@@ -47,7 +47,7 @@ from storm.database import create_database
 from storm.exceptions import StormError, NotOneError
 from storm.expr import (
     SQL, SQLRaw, Desc, And, Or, Not, In, Like, AutoTables, LeftJoin,
-    Alias, Update, Join, NamedFunc)
+    Alias, Update, Join, NamedFunc, Select)
 from storm.info import get_cls_info, get_obj_info, ClassAlias
 from storm.properties import (
     RawStr, Int, Bool, Float, DateTime, Date, TimeDelta, Unicode,
@@ -61,7 +61,8 @@ from storm.variables import (Variable, BoolVariable, DateVariable,
                              DateTimeVariable, RawStrVariable, DecimalVariable,
                              IntVariable)
 
-from stoqlib.database.exceptions import ORMTestError
+# FIXME:This is importing from sqlobject
+#from stoqlib.database.exceptions import ORMTestError
 
 _IGNORED = object()
 
@@ -334,11 +335,22 @@ class BoundDotQAlias(object):
             #self._alias.name + '.id'
             return
         else:
-            return getattr(self._alias, attr)
+            return getattr(self._alias.expr, attr)
 
 
-class Alias(Alias):
+class MyAlias(Alias):
     q = DotQAlias()
+
+
+def GetAlias(klass, name):
+    # If it is a viewable we should use our own Alias that handles it
+    # correctly. We cant use ClassAlias as that depends on __storm_id__ and
+    # __storm_table__
+    if issubclass(klass, Viewable):
+        return MyAlias(klass, name)
+    else:
+        return ClassAlias(klass, name)
+        
 
 
 class SQLObjectBase(Storm):
@@ -390,7 +402,10 @@ class SQLObjectBase(Storm):
 
     def set(self, **kwargs):
         for attr, value in kwargs.iteritems():
-            setattr(self, attr, value)
+            # FIXME: storm is not setting foreign keys correctly if the
+            # value is None (NULL)
+            if value is not None:
+                setattr(self, attr, value)
 
     def destroySelf(self):
         Store.of(self).remove(self)
@@ -497,6 +512,8 @@ class SQLObjectResultSet(object):
         self._join = join
         self._distinct = distinct
         self._selectAlso = selectAlso
+        # FIXME: Fix stoqlib.api.for_combo to not use this property
+        self.sourceClass = cls
 
         # Parameters not mapping SQLObject:
         self._by = by
@@ -853,7 +870,9 @@ class SQLObjectView(object):
         if not attr in self.columns:
             raise AttributeError("%s object has no attribute %s" % (
                 self.cls.__name__, attr))
-        return self.columns[attr]
+        # This is an Alias, so we should return the original name (as this
+        # is used to construct queries clauses)
+        return self.columns[attr].expr
 
 
 class Viewable(Declarative):
@@ -866,25 +885,52 @@ class Viewable(Declarative):
             return
 
         group_by = []
+        needs_group_by = False
         for name, col in cols.items():
-            if has_sql_call(col):
-                col = cols[name] = expr.Alias(col, name)
-            else:
+            if not has_sql_call(col):
+                # FIXME: When grouping we should use the original column,
+                # not the alias
+                #if isinstance(col, expr.Alias):
+                #    pass
                 group_by.append(col)
+            else:
+                needs_group_by = True
+            if not isinstance(col, expr.Alias):
+                col = cols[name] = expr.Alias(col, name)
 
             setattr(cls, name, col)
-        cls.group_by = group_by
+        if needs_group_by:
+            cls.group_by = group_by
+        else:
+            cls.group_by = []
 
         cls.q = SQLObjectView(cls, cols)
 
-        tables = [cols['id'].table]
+        if isinstance(cols['id'], expr.Alias):
+            first_table = cols['id'].expr.table
+        else:
+            first_table = cols['id'].table
+
+        tables = [first_table]
         for join in new_attrs.get('joins', []):
+            # If the table is actually another Viewable, join with a Subselect
+            table = join.right
+            if isinstance(table, MyAlias) and issubclass(table.expr, Viewable):
+                subselect = table.expr.get_select()
+                subselect = expr.Alias(subselect, table.name)
+                join = join.__class__(subselect, join.on)
             tables.append(join)
 
         cls.tables = tables
 
     def get_connection(self):
         return None
+
+    @classmethod
+    def get_select(cls):
+        attributes, columns = zip(*cls.columns.items())
+        return Select(columns, cls.clause or Undef, cls.tables,
+                      group_by=cls.group_by or Undef)
 
     @classmethod
     def select(cls, clause=None, having=None, connection=None):
@@ -920,6 +966,8 @@ class Viewable(Declarative):
             results = results.group_by(*cls.group_by)
 
         results._load_objects = _load_view_objects
+        # FIXME: Fix the callsites of orderBy
+        results.orderBy = results.order_by
         return results
 
 
@@ -1028,6 +1076,7 @@ class Connection(object):
         self.store = None
 
     def dbVersion(self):
+        # FIXME
         return (8, 3)
 
     def queryOne(self, query):
@@ -1057,7 +1106,8 @@ class Connection(object):
     def tableExists(self, tableName):
         res = self.store.execute(
             SQL("SELECT COUNT(relname) FROM pg_class WHERE relname = ?",
-                (tableName, )))
+                # FIXME: Figure out why this is not comming as unicode
+                (unicode(tableName), )))
         return res.get_one()[0]
 
     viewExists = tableExists
@@ -1117,7 +1167,7 @@ class Connection(object):
     def databaseExists(self, name):
         res = self.execute(
             SQL("SELECT COUNT(*) FROM pg_database WHERE datname=?",
-                (name, )))
+                (unicode(name), )))
         return res.get_one()[0]
 
     def commit(self):
@@ -1148,8 +1198,11 @@ def has_sql_call(column):
         return False
 
     if isinstance(column, expr.NamedFunc):
-        if column.name in ('SUM', 'AVG', 'MIN', 'MAX'):
+        if column.name in ('SUM', 'AVG', 'MIN', 'MAX', 'COUNT'):
             return True
+        for e in column.args:
+            if has_sql_call(e):
+                return True
 
     elif isinstance(column, expr.CompoundExpr):
         for e in column.exprs:
@@ -1215,6 +1268,7 @@ def orm_get_random(column):
 
 
 def orm_get_unittest_value(klass, test, tables_dict, name, column):
+    from stoqlib.database.exceptions import ORMTestError
     value = None
     if isinstance(column, PropertyColumn):
         if column.variable_factory.keywords['value'] is not Undef:
@@ -1285,7 +1339,8 @@ def MyLeftJoin(table1, table2, clause):
 # SQLBuilder
 const = ConstantSpace()
 func = const
-Alias = ClassAlias
+#Alias = ClassAlias
+Alias = GetAlias
 AND = And
 IN = In
 INNERJOINOn = MyJoin
