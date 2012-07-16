@@ -107,25 +107,44 @@ class DatabaseSettings(object):
         return '%s://%s/%s' % (self.rdbms, authority, dbname)
 
     def _get_connection_internal(self, dbname):
-        conn_uri = self._build_uri(dbname)
-
         # Do not output the password in the logs
         if not self.first:
             log.info('connecting to %s' % self._build_uri(
                 dbname, filter_password=True))
             self.first = False
 
+        use_storm = 'STOQLIB_USE_STORM' in os.environ
         try:
-            conn = connectionForURI(conn_uri)
-            # FIXME: This should be done in _build_uri but
-            #        SQLObject can't handle uris to unix sockets,
-            #        PostgresConnection._connectionFromParams is busted.
+            host = None
+            port = None
             if self.address == "":
                 pair = test_local_database()
                 if pair is None:
                     raise DatabaseError(
                         _("Could not find a database server on this computer"))
-                conn.dsn_dict['host'], conn.dsn_dict['port'] = pair
+                host, port = pair
+
+            if use_storm:
+                if host is not None:
+                    self.address = host
+                if port is not None:
+                    self.port = port
+                from storm.uri import URI
+                conn_uri = URI(':')
+                conn_uri.database = self.dbname
+                conn_uri.scheme = self.rdbms
+                conn_uri.host = self.address
+                conn_uri.port = self.port
+                conn_uri.username = self.username
+                conn_uri.password = self.password
+                conn = connectionForURI(conn_uri)
+            else:
+                conn_uri = self._build_uri(dbname)
+                conn = connectionForURI(conn_uri)
+                if host is not None:
+                    conn.dsn_dict['host'] = host
+                if port is not None:
+                    conn.dsn_dict['port'] = port
             conn.makeConnection()
         except OperationalError, e:
             log.info('OperationalError: %s' % e)
