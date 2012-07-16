@@ -122,6 +122,9 @@ class DatabaseSettings(object):
             #        PostgresConnection._connectionFromParams is busted.
             if self.address == "":
                 pair = test_local_database()
+                if pair is None:
+                    raise DatabaseError(
+                        _("Could not find a database server on this computer"))
                 conn.dsn_dict['host'], conn.dsn_dict['port'] = pair
             conn.makeConnection()
         except OperationalError, e:
