@@ -47,7 +47,7 @@ from stoqlib.importers.stoqlibexamples import create
 from stoqlib.lib.interfaces import (IApplicationDescriptions, ISystemNotifier)
 from stoqlib.lib.message import DefaultSystemNotifier
 from stoqlib.lib.osutils import get_username
-from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.parameters import ParameterAccess
 
 log = Logger('stoqlib.database.testsuite')
 
@@ -227,7 +227,8 @@ def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
         else:
             # XXX: Why clearing_cache if initialize_system will drop the
             # database?!
-            sysparam(get_connection()).clear_cache()
+            ParameterAccess.clear_cache()
+
             initialize_system(testsuite=True, force=True)
             ensure_admin_user("")
             create(utilities=True)
