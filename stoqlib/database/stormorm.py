@@ -1089,6 +1089,10 @@ class Transaction(object):
     def unblock_implicit_flushes(self):
         self.store.unblock_implicit_flushes()
 
+    def remove_from_cache(self, obj):
+        info = get_obj_info(obj)
+        self.store._cache.remove(info)
+
 
 class Connection(object):
     def __init__(self, db):
