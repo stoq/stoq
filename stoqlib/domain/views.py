@@ -486,6 +486,8 @@ class QuotationView(Viewable):
     )
 
     joins = [
+        INNERJOINOn(None, QuoteGroup,
+                    QuoteGroup.q.id == Quotation.q.groupID),
         LEFTJOINOn(None, PurchaseOrder,
                    PurchaseOrder.q.id == Quotation.q.purchaseID),
         LEFTJOINOn(None, Supplier,
@@ -493,8 +495,6 @@ class QuotationView(Viewable):
         LEFTJOINOn(None, Person, Person.q.id ==
                    Supplier.q.personID),
     ]
-
-    clause = QuoteGroup.q.id == Quotation.q.groupID
 
     @property
     def group(self):
@@ -642,7 +642,7 @@ class PurchasedItemAndStockView(Viewable):
     )
 
     joins = [
-        LEFTJOINOn(None, PurchaseItem,
+        LEFTJOINOn(None, PurchaseOrder,
                    PurchaseItem.q.orderID == PurchaseOrder.q.id),
         LEFTJOINOn(None, Sellable,
                     Sellable.q.id == PurchaseItem.q.sellableID),

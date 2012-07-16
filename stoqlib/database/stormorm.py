@@ -1040,6 +1040,9 @@ class Transaction(object):
     def query(self, stmt):
         return self._connection.execute(stmt)
 
+    def queryOne(self, stmt):
+        return self._connection.execute(stmt).get_one()
+
     def queryAll(self, query):
         res = self.store.execute(
             SQL(query))
@@ -1137,7 +1140,7 @@ class Connection(object):
                    attname=?""", (table_name, column_name)))
         return bool(res.get_one())
 
-    def createDatabase(self, name, ifNotExists=False):
+    def createEmptyDatabase(self, name, ifNotExists=False):
         #print 'Connection.createDatabase(%r, %r)' % (name, ifNotExists)
         if ifNotExists and self.databaseExists(name):
             return False
