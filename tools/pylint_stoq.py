@@ -5,7 +5,7 @@ from logilab.astng import MANAGER, From, AssName
 from logilab.astng.builder import ASTNGBuilder
 
 from kiwi.python import namedAny
-from stoqlib.database.orm import SOCol, Col, SOForeignKey
+from stoqlib.database.orm import SOForeignKey
 from stoqlib.database.orm import SOSingleJoin, SOMultipleJoin
 from stoqlib.database.orm import ORMObject, Viewable
 from stoqlib.lib.parameters import get_all_details
