@@ -200,9 +200,9 @@ class Person(Domain):
     fax_number = UnicodeCol(default='')
     email = UnicodeCol(default='')
     notes = UnicodeCol(default='')
-    liaisons = MultipleJoin('Liaison')
-    addresses = MultipleJoin('Address')
-    calls = MultipleJoin('Calls')
+    liaisons = MultipleJoin('Liaison', 'person_id')
+    addresses = MultipleJoin('Address', 'person_id')
+    calls = MultipleJoin('Calls', 'person_id')
 
     @property
     def address(self):

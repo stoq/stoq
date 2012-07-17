@@ -512,6 +512,10 @@ class MySOMultipleJoin(SOMultipleJoin):
 class MultipleJoin(_MultipleJoin):
     baseClass = MySOMultipleJoin
 
+    def __init__(self, otherClass, joinColumn=None, orderBy=None):
+        _MultipleJoin.__init__(self, otherClass, joinColumn=joinColumn,
+                               orderBy=orderBy)
+
 
 # Column classes
 Col = Col

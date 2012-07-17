@@ -175,5 +175,5 @@ class FiscalDayHistory(Domain):
     crz = IntCol()
     period_total = PriceCol()
     total = PriceCol()
-    taxes = MultipleJoin('FiscalDayTax')
+    taxes = MultipleJoin('FiscalDayTax', 'fiscal_day_history_id')
     reduction_date = DateTimeCol()

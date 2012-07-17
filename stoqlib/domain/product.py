@@ -148,7 +148,7 @@ class Product(Domain):
     """
 
     sellable = ForeignKey('Sellable')
-    suppliers = MultipleJoin('ProductSupplierInfo')
+    suppliers = MultipleJoin('ProductSupplierInfo', 'product_id')
     consignment = BoolCol(default=False)
 
     # Production
@@ -161,7 +161,7 @@ class Product(Domain):
     height = DecimalCol(default=0)
     depth = DecimalCol(default=0)
     weight = DecimalCol(default=0)
-    quality_tests = MultipleJoin('ProductQualityTest')
+    quality_tests = MultipleJoin('ProductQualityTest', 'product_id')
     production_time = IntCol(default=1)
 
     # Tax details
