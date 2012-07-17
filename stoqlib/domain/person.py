@@ -693,7 +693,7 @@ class Client(Domain):
                     InPaymentView.q.method_name == 'store_credit')
 
         debit = InPaymentView.select(query,
-             connection=self.get_connection()).sum('value') or currency('0.0')
+             connection=self.get_connection()).sum(InPaymentView.q.value) or currency('0.0')
 
         return currency(self.credit_limit - debit)
 
