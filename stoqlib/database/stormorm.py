@@ -1073,6 +1073,8 @@ class Transaction(object):
 
     def rollback(self):
         self.store.rollback()
+        # sqlobject closes the connection after a rollback
+        self.store.close()
 
     def begin(self):
         pass
