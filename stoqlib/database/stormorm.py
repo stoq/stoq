@@ -432,7 +432,7 @@ class SQLObjectBase(Storm):
     def delete(cls, id, connection=None):
         # destroySelf() should be extended to support cascading, so
         # we'll mimic what SQLObject does here, even if more expensive.
-        obj = cls.get(id)
+        obj = cls.get(id, connection=connection)
         obj.destroySelf()
 
     @classmethod
@@ -946,7 +946,7 @@ class Viewable(Declarative):
             cls.tables = tables
 
     def get_connection(self):
-        return None
+        return self._connection
 
     @classmethod
     def get_select(cls):
@@ -974,6 +974,7 @@ class Viewable(Declarative):
 
         def _load_view_objects(result, values):
             instance = cls()
+            instance._connection = connection
             for attribute, value in zip(attributes, values):
                 # Convert values according to the column specification
                 if hasattr(cls.columns[attribute], 'variable_factory'):
