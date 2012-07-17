@@ -1447,7 +1447,7 @@ class SearchableAppWindow(AppWindow):
     def export_spread_sheet(self):
         """Runs a dialog to export the current search results to a CSV file.
         """
-        sse = SpreadSheetExporter(),
+        sse = SpreadSheetExporter()
         sse.export(object_list=self.results,
                    name=self.app_name,
                    filename_prefix=self.app.name)
