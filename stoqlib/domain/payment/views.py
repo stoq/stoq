@@ -28,7 +28,7 @@ from kiwi.datatypes import converter
 
 from stoqlib.database.orm import AND, OR, const
 from stoqlib.database.orm import Alias, LEFTJOINOn, INNERJOINOn
-from stoqlib.database.orm import Select, Viewable, Field
+from stoqlib.database.orm import Viewable, Field
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.comment import PaymentComment
@@ -121,6 +121,8 @@ class BasePaymentView(Viewable):
 
     @classmethod
     def post_search_callback(cls, conn, sresults):
+        # FIXME: Use storm api to create this query storm.expr.compile
+        from stoqlib.database.orm import Select
         select = Select(['COUNT(*) as count',
                          'SUM(value) as sum'],
                         join=cls._count_joins,
