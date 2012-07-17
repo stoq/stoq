@@ -810,6 +810,8 @@ class SQLMultipleJoin(ReferenceSet):
 
     def __init__(self, otherClass=None, joinColumn=None,
                  intermediateTable=None, otherColumn=None, orderBy=None):
+        if joinColumn and joinColumn.endswith('_id'):
+            joinColumn = joinColumn[:-3] + 'ID'
         if intermediateTable:
             args = ("<primary key>",
                     "%s.%s" % (intermediateTable, joinColumn),
