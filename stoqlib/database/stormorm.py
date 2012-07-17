@@ -37,6 +37,7 @@ import re
 import datetime
 import decimal
 import warnings
+from weakref import WeakValueDictionary
 
 from kiwi.db.stormintegration import StormQueryExecuter
 from kiwi.datatypes import currency
@@ -387,26 +388,22 @@ class SQLObjectBase(Storm):
             self._SO_setValue('foo', 'bar', 'bin', 'buz')
 
     def __storm_loaded__(self):
+        # When __storm_loaded__ is called, __init__ is not, but we still
+        # need a connection. Set it to None, and later it will be updated.
+        # This is the case when a object is restored from the database, and
+        # was not just created
+        self._connection = None
         self._init(None)
 
     def _create(self, _id_, **kwargs):
-        store = self._get_store()
-        if self._connection is None:
-            self._connection = kwargs.pop('connection', store._connection)
         self.sqlmeta._creating = True
         self.set(**kwargs)
         self.sqlmeta._creating = False
         self._init(None)
 
     def _init(self, id, *args, **kwargs):
-        self._connection = kwargs.get('connection',
-                                      getattr(self, '_connection', None))
         if self._connection is None:
-            self._get_store()
-
-        store = get_obj_info(self)['store']
-        if store.transactions:
-            self._connection = store.transactions[-1]
+            self._connection = STORE_TRANS_MAP[Store.of(self)]
 
     def set(self, **kwargs):
         for attr, value in kwargs.iteritems():
@@ -418,13 +415,17 @@ class SQLObjectBase(Storm):
     def destroySelf(self):
         Store.of(self).remove(self)
 
-    @classmethod
-    def _get_store(cls):
-        from stoqlib.database.runtime import get_connection
-        cls.connection = get_connection()
-        return cls.connection.store
+    def _get_store(self):
+        # This happens then the object is restored from the database, so it
+        # should have a store
+        if not self._connection:
+            return Store.of(self)
+        return self._connection.store
 
     def get_connection(self):
+        if not self._connection:
+            self._connection = STORE_TRANS_MAP[self._get_store()]
+
         return self._connection
 
     @classmethod
@@ -437,7 +438,7 @@ class SQLObjectBase(Storm):
     @classmethod
     def get(cls, id, connection=None):
         id = cls._idType(id)
-        store = cls._get_store()
+        store = connection.store
         obj = store.get(cls, id)
         if obj is None:
             raise SQLObjectNotFound("Object not found")
@@ -473,7 +474,7 @@ class SQLObjectBase(Storm):
         return SQLObjectResultSet(cls, *args, **kwargs)._one()
 
     @classmethod
-    def selectOneBy(cls, connection=None, **kwargs):
+    def selectOneBy(cls, connection, **kwargs):
         return SQLObjectResultSet(cls, by=kwargs,
                                   connection=connection)._one()
 
@@ -520,6 +521,7 @@ class SQLObjectResultSet(object):
         self._join = join
         self._distinct = distinct
         self._selectAlso = selectAlso
+        self._connection = connection
         # FIXME: Fix stoqlib.api.for_combo to not use this property
         self.sourceClass = cls
 
@@ -537,7 +539,7 @@ class SQLObjectResultSet(object):
         return copy
 
     def _prepare_result_set(self):
-        store = self._cls._get_store()
+        store = self._connection.store
 
         args = []
         if self._clause:
@@ -825,6 +827,7 @@ class SQLMultipleJoin(ReferenceSet):
         bound_reference_set = ReferenceSet.__get__(self, obj)
         target_cls = bound_reference_set._target_cls
         where_clause = bound_reference_set._get_where_clause()
+        # FIXME: This needs a connection
         return SQLObjectResultSet(target_cls, where_clause,
                                   orderBy=self._orderBy)
 
@@ -1039,18 +1042,23 @@ class ConstantSpace(object):
         return type(attr, (NamedFunc, ), {'name': attr})
 
 
+STORE_TRANS_MAP = WeakValueDictionary()
+
+
 class Transaction(object):
     def __init__(self, conn):
         # FIXME: s.d.runtime uses this
         self._connection = conn
-        self.store = conn.store
-        self.store.transactions.append(self)
+        #self.store = conn.store
+        self.store = Store(self._connection.db)
+        STORE_TRANS_MAP[self.store] = self
+        #self.store.transactions.append(self)
 
     def query(self, stmt):
-        return self._connection.execute(stmt)
+        return self.store.execute(stmt)
 
     def queryOne(self, stmt):
-        return self._connection.execute(stmt).get_one()
+        return self.store.execute(stmt).get_one()
 
     def queryAll(self, query):
         res = self.store.execute(
@@ -1058,13 +1066,13 @@ class Transaction(object):
         return res.get_all()
 
     def commit(self, close=False):
-        self._connection.commit()
+        self.store.commit()
         if close:
-            self._connection.close()
-            self.store.transactions.remove(self)
+            self.store.close()
+            #self.store.transactions.remove(self)
 
     def rollback(self):
-        self._connection.rollback()
+        self.store.rollback()
 
     def begin(self):
         pass
@@ -1121,6 +1129,7 @@ class Connection(object):
 
     def makeConnection(self):
         self.store = Store(self.db)
+        STORE_TRANS_MAP[self.store] = self
         if not hasattr(self.store, 'transactions'):
             self.store.transactions = []
 
