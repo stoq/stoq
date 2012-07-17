@@ -105,9 +105,12 @@ class SintegraDialog(BasicDialog):
         # make sure that they are translated
         month_names = get_month_names()
         for start, end in intervals:
-            # Translators: Month Year, eg: 'May 2007'
-            name = _('%s %s') % (
-                _(month_names[start.month]), start.year)
+            # Translators: Do not translate 'month' and 'year'. You can
+            #              change it's positions. In the way it is,
+            #              it will product for example 'December 2012'
+            name = _('{month} {year}').format(
+                month=month_names[start.month - 1],
+                year=start.year)
             date_filter.add_option_fixed_interval(
                 name, start, end, position=0)
 
