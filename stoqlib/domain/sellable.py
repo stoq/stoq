@@ -775,6 +775,7 @@ class Sellable(Domain):
                         Sellable.q.id == Product.q.sellableID,
                         Storable.q.productID == Product.q.id)
 
+        # FIXME: Inserting ProductSupplierInfo in this query breaks storm
         if supplier:
             query = AND(query,
                         Sellable.q.id == Product.q.sellableID,
