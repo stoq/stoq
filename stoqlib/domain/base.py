@@ -135,7 +135,16 @@ class Domain(ORMObject):
 
         kwargs = {}
         for column in columns:
-            kwargs[column.origName] = getattr(self, column.origName)
+            # FIXME: Make sure this is cloning correctly
+            if orm_name == 'storm':
+                name = column.name
+                if name == 'id':
+                    continue
+                if name.endswith('_id'):
+                    name = name[:-3]
+            else:
+                name = column.origName
+            kwargs[name] = getattr(self, name)
 
         klass = type(self)
         return klass(connection=self._connection, **kwargs)

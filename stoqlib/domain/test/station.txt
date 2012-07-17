@@ -33,7 +33,9 @@ need to send in a branch and a name:
     >>> station = BranchStation.create(trans, branch=branch, name="comp")
 
     >>> station
-    <BranchStation ...name=u'comp'...>
+    <BranchStation ...>
+    >>> station.name
+    u'comp'
 
 We can now query for the station:
 

@@ -827,8 +827,8 @@ class SQLMultipleJoin(ReferenceSet):
         bound_reference_set = ReferenceSet.__get__(self, obj)
         target_cls = bound_reference_set._target_cls
         where_clause = bound_reference_set._get_where_clause()
-        # FIXME: This needs a connection
         return SQLObjectResultSet(target_cls, where_clause,
+                                  connection=obj.get_connection(),
                                   orderBy=self._orderBy)
 
     def _get_bound_reference_set(self, obj):
