@@ -781,7 +781,7 @@ class BillReport(object):
             not account.bank):
             msg = _("Account '%s' must be a bank account.\n"
                     "You need to configure the bill payment method in "
-                    "the admin application and try again" % (account.description, ))
+                    "the admin application and try again") % account.description
             return msg
 
         bank = account.bank
