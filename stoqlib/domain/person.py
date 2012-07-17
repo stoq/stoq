@@ -502,6 +502,9 @@ class Company(Domain):
         :returns: the cnpj number as a number
         :rtype: integer
         """
+        if not self.cnpj:
+            return 0
+
         # FIXME: We should return cnpj as strings, since it can begin with 0
         num = ''.join([c for c in self.cnpj if c in '1234567890'])
         if num:
@@ -514,6 +517,9 @@ class Company(Domain):
                   no state registry.
         :rtype: integer
         """
+        if not self.state_registry:
+            return 0
+
         numbers = ''.join([c for c in self.state_registry
                                     if c in '1234567890'])
         return int(numbers or 0)
