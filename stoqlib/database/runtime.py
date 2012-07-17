@@ -96,7 +96,10 @@ class StoqlibTransaction(Transaction):
             self._reset_pending_objs()
 
     def close(self):
-        self._connection.close()
+        if orm_name == 'sqlobject':
+            self._connection.close()
+        else:
+            self.store.close()
         self._obsolete = True
 
     def get(self, obj):

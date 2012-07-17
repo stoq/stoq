@@ -36,7 +36,7 @@ from zope.interface import implements
 from stoqlib.database.database import test_local_database
 from stoqlib.database.exceptions import OperationalError
 from stoqlib.database.interfaces import IDatabaseSettings
-from stoqlib.database.orm import connectionForURI
+from stoqlib.database.orm import connectionForURI, orm_name
 from stoqlib.exceptions import ConfigError, DatabaseError
 from stoqlib.lib.osutils import get_username
 from stoqlib.lib.translation import stoqlib_gettext
@@ -113,7 +113,6 @@ class DatabaseSettings(object):
                 dbname, filter_password=True))
             self.first = False
 
-        use_storm = 'STOQLIB_USE_STORM' in os.environ
         try:
             host = None
             port = None
@@ -124,7 +123,7 @@ class DatabaseSettings(object):
                         _("Could not find a database server on this computer"))
                 host, port = pair
 
-            if use_storm:
+            if orm_name == 'storm':
                 if host is not None:
                     self.address = host
                 if port is not None:
@@ -137,6 +136,7 @@ class DatabaseSettings(object):
                 conn_uri.port = int(self.port)
                 conn_uri.username = self.username
                 conn_uri.password = self.password
+                conn_uri.options['isolation'] = 'read-committed'
                 conn = connectionForURI(conn_uri)
             else:
                 conn_uri = self._build_uri(dbname)
