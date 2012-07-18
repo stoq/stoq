@@ -1333,6 +1333,36 @@ def orm_get_unittest_value(klass, test, tables_dict, name, column):
             raise ORMTestError("No example for %s" % cls)
     return value
 
+
+class ORMTypeInfo(object):
+    def __init__(self, orm_type):
+        self.orm_type = orm_type
+
+    def get_column_names(self):
+        info = get_cls_info(self.orm_type)
+        for name, attr in info.attributes.items():
+            yield name
+
+    def get_foreign_columns(self):
+        info = get_cls_info(self.orm_type)
+        for name, attr in info.attributes.items():
+            if not name.endswith('ID'):
+                continue
+
+            name = name[:-2]
+            ref = getattr(self.orm_type, name)
+            other_class = ref._remote_key.split('.')[0]
+            yield name, other_class
+
+    def get_single_joins(self):
+
+        for name, v in self.orm_type._attr_to_prop.items():
+            if not isinstance(v, Reference):
+                continue
+            other_class = v._remote_key.split('.')[0]
+            yield name, other_class
+
+
 orm_name = 'storm'
 
 #debug(True)

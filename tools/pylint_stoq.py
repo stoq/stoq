@@ -5,34 +5,10 @@ from logilab.astng import MANAGER, From, AssName
 from logilab.astng.builder import ASTNGBuilder
 
 from kiwi.python import namedAny
-from stoqlib.database.orm import SOForeignKey
-from stoqlib.database.orm import SOSingleJoin, SOMultipleJoin
-from stoqlib.database.orm import ORMObject, Viewable
+from stoqlib.database.orm import ORMObject, Viewable, ORMTypeInfo
 from stoqlib.lib.parameters import get_all_details
 import stoqlib.domain
 import stoqlib.domain.payment
-
-
-class ORMTypeInfo(object):
-    def __init__(self, orm_type):
-        self.orm_type = orm_type
-
-    def get_columns(self):
-        return self.orm_type.sqlmeta.columns.values()
-
-    def get_foreign_columns(self):
-        foreign = []
-        for column in self.get_columns():
-            if isinstance(column, SOForeignKey):
-                foreign.append(column)
-        return foreign
-
-    def get_single_joins(self):
-        signle = []
-        for column in self.orm_type.sqlmeta.joins:
-            if isinstance(column, (SOSingleJoin, SOMultipleJoin)):
-                signle.append(column)
-        return signle
 
 
 class DomainTypeInfo(object):
@@ -42,7 +18,6 @@ class DomainTypeInfo(object):
         self.done = set()
 
     def _scan_modules(self):
-        classes = {}
         for package, module in [
             ('stoqlib.domain', stoqlib.domain),
             ('stoqlib.domain.payment',
@@ -90,7 +65,6 @@ class FakeBuilder(object):
         if orm_type in dt.done:
             return
         dt.done.add(orm_type)
-        selectOneByArgs = ['connection']
         module_name = orm_type.__module__
         pymodule = namedAny(module_name)
         assert pymodule
@@ -106,26 +80,25 @@ class FakeBuilder(object):
         t += '    def selectOneBy(self, connection=None): pass\n'
 
         orm_ti = dt.orm_classes.get(orm_name)
-        for col in sorted(orm_ti.get_columns()):
-            t += '    def _SO_set_%s(self, value): pass\n' % (col.name, )
+        for name in sorted(orm_ti.get_column_names()):
+            # Enable this later to detect sqlobject specific api usage
+            #if orm_name == 'sqlobject':
+            #    t += '    def _SO_set_%s(self, value): pass\n' % (name, )
+            t += '    def _SO_set_%s(self, value): pass\n' % (name, )
+            t += '    %s = None\n' % (name, )
 
-        for col in sorted(orm_ti.get_columns()):
-            t += '    %s = None\n' % (col.name, )
+        for name, class_name in sorted(orm_ti.get_foreign_columns()):
+            self.add_ormobject(dt.orm_classes[class_name].orm_type,
+                               class_name)
+            t += '    %s = None\n' % (class_name, )
+            t += '    %s = %s()\n' % (name, class_name)
+            #t += '    %sID = None\n' % (name, )
 
-        for col in sorted(orm_ti.get_foreign_columns()):
+        for name, class_name in sorted(orm_ti.get_single_joins()):
             self.add_ormobject(
-                dt.orm_classes[col.foreignKey].orm_type,
-                col.foreignKey)
-            t += '    %s = None\n' % (col.name, )
-            t += '    %s = %s()\n' % (col.foreignName,
-                                      col.foreignKey)
-
-        for join in sorted(orm_ti.get_single_joins()):
-            self.add_ormobject(
-                dt.orm_classes[join.otherClassName].orm_type,
-                join.otherClassName)
-            t += '    %s = %s()\n' % (join.joinMethodName,
-                                      join.otherClassName)
+                dt.orm_classes[class_name].orm_type,
+                class_name)
+            t += '    %s = %s()\n' % (name, class_name)
 
         t += '\n'
         nodes = self.builder.string_build(t)
