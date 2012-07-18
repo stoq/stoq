@@ -195,6 +195,31 @@ def orm_get_unittest_value(klass, test, tables_dict, name, column):
 
     return value
 
+
+class ORMTypeInfo(object):
+    def __init__(self, orm_type):
+        self.orm_type = orm_type
+
+    def get_columns(self):
+        return self.orm_type.sqlmeta.columns.values()
+
+    def get_column_names(self):
+        for c in self.get_columns():
+            yield c.name
+
+    def get_foreign_columns(self):
+        foreign = []
+        for column in self.get_columns():
+            if isinstance(column, SOForeignKey):
+                # Class of the column, name of the column in the obj
+                yield column.foreignName, column.foreignKey
+
+    def get_single_joins(self):
+        for column in self.orm_type.sqlmeta.joins:
+            if isinstance(column, (SOSingleJoin, SOMultipleJoin)):
+                yield column.joinMethodName, column.otherClassName,
+
+
 orm_name = 'sqlobject'
 
 # Exceptions
