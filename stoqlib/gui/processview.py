@@ -27,6 +27,7 @@
 
 import errno
 import os
+import platform
 
 import glib
 import gtk
@@ -103,9 +104,13 @@ class ProcessView(gtk.ScrolledWindow):
     def execute_command(self, args):
         self.feed('Executing: %s\r\n' % (' '.join(args)))
         kwargs = {}
-        if self.listen_stdout:
+        # On Windows you have to passin stdout/stdin = PIPE or
+        # it will result in an invalid handle, see
+        # * CR2012071248
+        # * http://bugs.python.org/issue3905
+        if self.listen_stdout or platform.system() == 'Windows':
             kwargs['stdout'] = PIPE
-        if self.listen_stderr:
+        if self.listen_stderr or platform.system() == 'Windows':
             kwargs['stderr'] = PIPE
         self.proc = Process(args, **kwargs)
         if self.listen_stdout:
