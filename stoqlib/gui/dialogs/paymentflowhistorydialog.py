@@ -64,12 +64,13 @@ class PaymentFlowHistoryDialog(BaseEditor):
 
     def validate_confirm(self):
         results = self.model.executer.search([self._date_filter.get_state()])
-        if results:
-            ordered = results.orderBy(PaymentFlowHistory.q.history_date)
-            print_report(PaymentFlowHistoryReport, payment_histories=ordered)
-            return True
-        else:
-            info(_(u'No payment history found.'))
+        if not results:
+            info(_('No payment history found.'))
+            return False
+
+        ordered = results.orderBy(PaymentFlowHistory.q.history_date)
+        print_report(PaymentFlowHistoryReport, payment_histories=ordered)
+        return True
 
     #
     # Private

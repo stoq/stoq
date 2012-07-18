@@ -192,6 +192,8 @@ class BaseEditor(BaseEditorSlave, RunnableView):
                                        header_text=self.header,
                                        help_section=self.help_section,
                                        size=self.size)
+        # Do not close the dialog if re return False on self.confirm
+        self.main_dialog.enable_confirm_validation = True
         self.main_dialog.attach_slave("main", self)
         self.main_dialog.connect('confirm', self._on_main_dialog__confirm)
         self.main_dialog.connect('cancel', self._on_main_dialog__cancel)
@@ -288,9 +290,9 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         Confirm the dialog.
         """
         if not self.is_valid or self._confirm_disabled:
-            return
+            return False
         if not self.validate_confirm():
-            return
+            return False
 
         # self.on_confirm() should return a considered success
         # value. It can be an integer or a model object.
@@ -301,6 +303,8 @@ class BaseEditor(BaseEditorSlave, RunnableView):
 
         log.info("%s: Closed (confirmed), retval=%r" % (
             self.__class__.__name__, self.retval))
+
+        return True
 
     def enable_ok(self):
         """
@@ -366,7 +370,7 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         self.cancel()
 
     def _on_main_dialog__confirm(self, dialog, retval):
-        self.confirm()
+        return self.confirm()
 
     def _validation_function(self, is_valid):
         self.refresh_ok(is_valid)
