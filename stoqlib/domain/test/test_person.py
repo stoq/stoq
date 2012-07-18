@@ -53,9 +53,9 @@ class TestEmployeeRoleHistory(DomainTest):
 
     def testHasRole(self):
         role = EmployeeRole(connection=self.trans, name='role')
-        self.failIf(role.has_other_role('Role'))
+        self.failIf(role.has_other_role(u'Role'))
         role = EmployeeRole(connection=self.trans, name='Role')
-        self.failUnless(role.has_other_role('role'))
+        self.failUnless(role.has_other_role(u'role'))
 
 
 class TestEmployeeRole(DomainTest):

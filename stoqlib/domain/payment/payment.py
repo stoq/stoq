@@ -106,7 +106,7 @@ class Payment(Domain):
     till = ForeignKey('Till')
     category = ForeignKey('PaymentCategory')
 
-    comments = MultipleJoin('PaymentComment')
+    comments = MultipleJoin('PaymentComment', 'payment_id')
     check_data = SingleJoin('CheckData', joinColumn='payment_id')
 
     def _check_status(self, status, operation_name):
