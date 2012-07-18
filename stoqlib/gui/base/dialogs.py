@@ -348,7 +348,7 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     """Runs a dialog and return the return value of it.
     If dialog is a class it will be instantiated before running the dialog.
 
-    :param dialog: the dialog, could be a class or instance
+    :param dialog: the dialog class
     :param parent: parent of the dialog
     :param args: custom positional argument
     :param kwargs: custom keyword arguments
@@ -358,7 +358,8 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
         raise TypeError("dialog cannot be None")
 
     if not issubclass(dialog, RunnableView):
-        raise TypeError("dialog %r must be a RunnableView" % (dialog, ))
+        raise TypeError("dialog %r must be subclass of RunnableView" % (
+            dialog, ))
 
     # FIXME: Move this into RunnableView
     parent = getattr(parent, 'main_dialog', parent)
