@@ -960,7 +960,7 @@ class Viewable(Declarative):
                       group_by=cls.group_by or Undef)
 
     @classmethod
-    def select(cls, clause=None, having=None, connection=None):
+    def select(cls, clause=None, having=None, connection=None, orderBy=None):
         attributes, columns = zip(*cls.columns.items())
 
         if connection is None:
@@ -992,6 +992,8 @@ class Viewable(Declarative):
         results = store.using(*cls.tables).find(columns, *clauses)
         if cls.group_by:
             results = results.group_by(*cls.group_by)
+        if orderBy:
+            results = results.order_by(orderBy)
 
         results._load_objects = _load_view_objects
         # FIXME: Fix the callsites of orderBy
