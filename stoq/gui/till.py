@@ -513,8 +513,7 @@ class TillApp(SearchableAppWindow):
         self._run_search_dialog(SoldItemsByBranchSearch)
 
     def on_SearchTillHistory__activate(self, button):
-        dialog = TillHistoryDialog(self.conn)
-        self.run_dialog(dialog, self.conn)
+        self.run_dialog(TillHistoryDialog, self.conn)
 
     def on_SearchFiscalTillOperations__activate(self, button):
         self._run_search_dialog(TillFiscalOperationsSearch)
