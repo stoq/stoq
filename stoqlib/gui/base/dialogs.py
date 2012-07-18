@@ -80,12 +80,13 @@ class BasicDialog(GladeDelegate, RunnableView):
     subclassed and customized.
     """
     help_section = None
-    gsignal('confirm', object)
+    gsignal('confirm', object, retval=bool)
     gsignal('cancel', object)
 
     def __init__(self, main_label_text=None, title=" ",
                  header_text="", size=None, hide_footer=False,
                  delete_handler=None, help_section=None):
+        self.enable_confirm_validation = False
         self._message_bar = None
         self._create_dialog_ui()
         self._setup_keyactions()
@@ -221,7 +222,13 @@ class BasicDialog(GladeDelegate, RunnableView):
     def confirm(self):
         # SearchDialog and SellableSearch overrides this
         self.retval = True
-        self.emit('confirm', self.retval)
+        # FIXME: Confirm validation should be enabled by default,
+        #        but we need to change the dialog API and existing
+        #        callsites for that to work.
+        if (self.enable_confirm_validation and not
+            self.emit('confirm', self.retval)):
+            return
+
         self.close()
 
     def cancel(self):

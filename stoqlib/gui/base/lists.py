@@ -499,4 +499,4 @@ class SimpleListDialog(BasicDialog):
     # BasicDialog 'confirm' method override
     def confirm(self):
         self.retval = self.get_selection()
-        self.close()
+        return True
