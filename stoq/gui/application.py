@@ -46,7 +46,8 @@ from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.webservice import WebService
-from stoqlib.gui.base.dialogs import get_dialog, run_dialog
+from stoqlib.gui.base.dialogs import (get_dialog, run_dialog,
+                                      get_current_toplevel)
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.crashreportdialog import show_dialog
 from stoqlib.gui.dialogs.feedbackdialog import FeedbackDialog
@@ -558,6 +559,7 @@ class AppWindow(GladeDelegate):
         lines.extend([c.strip() for c in data.split('\n')])
         about.set_authors(lines)
 
+        about.set_transient_for(get_current_toplevel())
         about.run()
         about.destroy()
 
