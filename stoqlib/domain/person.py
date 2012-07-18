@@ -56,7 +56,7 @@ from zope.interface import implements
 
 from kiwi.datatypes import currency
 
-from stoqlib.database.orm import PriceCol, PercentCol
+from stoqlib.database.orm import PriceCol, PercentCol, orm_name
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
                                   ForeignKey, MultipleJoin, BoolCol)
 from stoqlib.database.orm import const, OR, AND, INNERJOINOn, LEFTJOINOn, Alias
@@ -679,7 +679,8 @@ class Client(Domain):
         :returns: the date of the last purchased item
         :rtype: datetime.date or None
         """
-        max_date = self.get_client_sales().max('open_date')
+        from stoqlib.domain.sale import Sale
+        max_date = self.get_client_sales().max(Sale.q.open_date)
         if max_date:
             return max_date.date()
 
@@ -785,10 +786,13 @@ class Supplier(Domain):
         :rtype: datetime.date or None
         """
         orders = self.get_supplier_purchases()
-        if orders:
+        if orders.count():
             # The get_client_sales method already returns a sorted list of
             # sales by open_date column
-            return orders[-1].open_date.date()
+            if orm_name == 'storm':
+                return orders.last().open_date.date()
+            else:
+                return orders[-1].open_date.date()
 
 
 class Employee(Domain):

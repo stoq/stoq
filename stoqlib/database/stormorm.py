@@ -373,7 +373,11 @@ class SQLObjectBase(Storm):
         store = self._get_store()
         store.add(self)
         try:
-            self._create(None, **kwargs)
+            id_ = None
+            if kwargs.get('id'):
+                id_ = kwargs['id']
+                del kwargs['id']
+            self._create(id_, **kwargs)
         except:
             store.remove(self)
             raise
@@ -398,9 +402,9 @@ class SQLObjectBase(Storm):
 
     def _create(self, _id_, **kwargs):
         self.sqlmeta._creating = True
-        self.set(**kwargs)
+        self.set(id=_id_, **kwargs)
         self.sqlmeta._creating = False
-        self._init(None)
+        self._init(_id_)
 
     def _init(self, id, *args, **kwargs):
         if self._connection is None:
@@ -900,9 +904,14 @@ class Viewable(Declarative):
         if not cols:
             return
 
+        hidden_columns = new_attrs.get('hidden_columns', [])
         group_by = []
         needs_group_by = False
         for name, col in cols.items():
+            if name in hidden_columns:
+                del cols[name]
+                continue
+
             if isinstance(col, expr.Alias):
                 col = col.expr
 
@@ -956,7 +965,7 @@ class Viewable(Declarative):
                       group_by=cls.group_by or Undef)
 
     @classmethod
-    def select(cls, clause=None, having=None, connection=None):
+    def select(cls, clause=None, having=None, connection=None, orderBy=None):
         attributes, columns = zip(*cls.columns.items())
 
         if connection is None:
@@ -988,6 +997,8 @@ class Viewable(Declarative):
         results = store.using(*cls.tables).find(columns, *clauses)
         if cls.group_by:
             results = results.group_by(*cls.group_by)
+        if orderBy:
+            results = results.order_by(orderBy)
 
         results._load_objects = _load_view_objects
         # FIXME: Fix the callsites of orderBy

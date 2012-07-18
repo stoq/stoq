@@ -283,7 +283,7 @@ class TestSupplier(_PersonFacetTest, DomainTest):
     def testGetSupplierPurchase(self):
         supplier = self.create_supplier()
 
-        self.failIf(supplier.get_supplier_purchases())
+        self.failIf(supplier.get_supplier_purchases().count())
 
         order = self.create_receiving_order()
         order.purchase.supplier = supplier
@@ -292,7 +292,10 @@ class TestSupplier(_PersonFacetTest, DomainTest):
         order.purchase.confirm()
         order.confirm()
 
-        self.failUnless(supplier.get_supplier_purchases())
+        self.failUnless(supplier.get_supplier_purchases().count())
+
+        last_date = supplier.get_last_purchase_date()
+        self.assertEquals(last_date, order.purchase.open_date.date())
 
 
 class TestEmployee(_PersonFacetTest, DomainTest):
