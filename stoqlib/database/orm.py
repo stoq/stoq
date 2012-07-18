@@ -208,7 +208,6 @@ class ORMTypeInfo(object):
             yield c.name
 
     def get_foreign_columns(self):
-        foreign = []
         for column in self.get_columns():
             if isinstance(column, SOForeignKey):
                 # Class of the column, name of the column in the obj
