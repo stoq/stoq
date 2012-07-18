@@ -37,12 +37,17 @@ class Ding(Domain):
         self.called = False
 
 
+RECREATE_SQL = """
+DROP TABLE IF EXISTS ding;
+CREATE TABLE ding (
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    field integer default 0
+    );
+"""
 trans = new_transaction()
-for table in (Ding,):
-    table_name = table.sqlmeta.table
-    if trans.tableExists(table_name):
-        trans.dropTable(table_name, cascade=True)
-    table.createTable(connection=trans)
+trans.query(RECREATE_SQL)
 trans.commit()
 
 

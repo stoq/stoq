@@ -142,6 +142,7 @@ class SQLObjectStyle(object):
 class _SQLMeta(object):
     def __init__(self, cls):
         self.soClass = cls
+        self.table = cls.__storm_table__
 
     @property
     def columnList(self):

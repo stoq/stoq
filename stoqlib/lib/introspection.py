@@ -57,6 +57,9 @@ def get_all_classes(package):
 
             # stoqlib/domain/base.py -> stoqlib.domain.base
             modulename = filename[:-3].replace(os.path.sep, '.')
+            use_storm = 'STOQLIB_USE_STORM' in os.environ
+            if modulename == 'stoqlib.database.orm' and use_storm:
+                modulename = 'stoqlib.database.stormorm'
             module = namedAny(modulename)
             for unused, klass in inspect.getmembers(module, inspect.isclass):
                 yield klass
