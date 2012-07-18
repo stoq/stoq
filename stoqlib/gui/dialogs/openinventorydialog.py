@@ -142,7 +142,9 @@ class OpenInventoryDialog(BaseEditor):
             self.model, OpenInventoryDialog.proxy_branch_widgets)
 
     def validate_confirm(self, value=None):
-        if not self._get_sellables():
+        # This is a generator. It'll be evaluated to True
+        # even if it's len should be 0. Use a list for comparison instead.
+        if not list(self._get_sellables()):
             info(_(u'No products have been found in the selected '
                     'categories.'))
             return False
