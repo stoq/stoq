@@ -326,6 +326,7 @@ class StockApp(SearchableAppWindow):
     #
 
     def on_image_viewer_closed(self, window, event):
+        self.StockPictureViewer.props.active = False
         self.image_viewer = None
 
     def on_results__has_rows(self, results, product):
