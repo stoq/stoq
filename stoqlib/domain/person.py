@@ -790,7 +790,9 @@ class Supplier(Domain):
             # The get_client_sales method already returns a sorted list of
             # sales by open_date column
             if orm_name == 'storm':
+                # pylint: disable=E1101
                 return orders.last().open_date.date()
+                # pylint: enable=E1101
             else:
                 return orders[-1].open_date.date()
 
