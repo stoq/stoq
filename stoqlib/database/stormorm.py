@@ -904,9 +904,14 @@ class Viewable(Declarative):
         if not cols:
             return
 
+        hidden_columns = new_attrs.get('hidden_columns', [])
         group_by = []
         needs_group_by = False
         for name, col in cols.items():
+            if name in hidden_columns:
+                del cols[name]
+                continue
+
             if isinstance(col, expr.Alias):
                 col = col.expr
 

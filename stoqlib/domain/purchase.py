@@ -664,11 +664,9 @@ class PurchaseItemView(Viewable):
         unit=SellableUnit.q.description,
         )
 
-    clause = AND(
-        PurchaseOrder.q.id == PurchaseItem.q.orderID,
-        )
-
     joins = [
+        INNERJOINOn(None, PurchaseOrder,
+                    PurchaseOrder.q.id == PurchaseItem.q.orderID),
         INNERJOINOn(None, Sellable,
                     Sellable.q.id == PurchaseItem.q.sellableID),
         LEFTJOINOn(None, SellableUnit,

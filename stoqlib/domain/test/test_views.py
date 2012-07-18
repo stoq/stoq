@@ -80,13 +80,15 @@ class TestProductFullStockView(DomainTest):
         results = ProductFullStockView.select_by_branch(
             None, branch, connection=self.trans)
         self.failUnless(list(results))
-        self.assertEquals(results.count(), 1)
+        # FIXME: Storm does not support count() with group_by
+        #self.assertEquals(results.count(), 1)
+        self.assertEquals(len(list(results)), 1)
 
         results = ProductFullStockView.select_by_branch(
             ProductFullStockView.q.product_id == p1.id,
             branch, connection=self.trans)
         self.failUnless(list(results))
-        self.assertEquals(results.count(), 1)
+        self.assertEquals(len(list(results)), 1)
 
     def testUnitDescription(self):
         p1 = self.create_product()
@@ -213,7 +215,9 @@ class TestSellableFullStockView(DomainTest):
             ProductFullStockView.q.product_id == p2.id,
             branch, connection=self.trans)
         self.failUnless(list(results))
-        self.assertEquals(results.count(), 1)
+        # FIXME: Storm does not support count() with group_by
+        #self.assertEquals(results.count(), 1)
+        self.assertEquals(len(list(results)), 1)
 
     def testSellable(self):
         branch = self.create_branch()
@@ -361,19 +365,21 @@ class TestSoldItemView(DomainTest):
         results = SoldItemView.select_by_branch_date(
             SoldItemView.q.id == sellable.id, branch, None,
             connection=self.trans)
-        self.assertEquals(results.count(), 1)
+        # FIXME: Storm does not support count() with group_by
+        #self.assertEquals(results.count(), 1)
+        self.assertEquals(len(list(results)), 1)
 
         today = datetime.date.today()
         results = SoldItemView.select_by_branch_date(
             SoldItemView.q.id == sellable.id, None, today,
             connection=self.trans)
-        self.assertEquals(results.count(), 1)
+        self.assertEquals(len(list(results)), 1)
 
         yesterday = today - datetime.timedelta(days=1)
         results = SoldItemView.select_by_branch_date(
             SoldItemView.q.id == sellable.id, None, (yesterday, today),
             connection=self.trans)
-        self.assertEquals(results.count(), 1)
+        self.assertEquals(len(list(results)), 1)
 
         yesterday = today - datetime.timedelta(days=1)
         results = SoldItemView.select_by_branch_date(
