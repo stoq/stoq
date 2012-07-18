@@ -42,7 +42,7 @@ class _PaymentsEditor(BaseEditor):
     gladefile = "HolderTemplate"
     title = _('Payments Editor')
     model_type = object
-    size = (750, 400)
+    size = (-1, 400)
 
     def __init__(self, conn, model):
         register_payment_slaves()

@@ -815,7 +815,7 @@ class _MultipleMethodEditor(BaseEditor):
     gladefile = 'HolderTemplate'
     model_type = PaymentGroup
     model_name = _(u'Payment')
-    size = (600, 375)
+    size = (-1, 375)
 
     def __init__(self, wizard, parent, conn, order, payment_method,
                  outstanding_value=currency(0)):
@@ -1142,7 +1142,7 @@ class MultipleMethodSlave(BaseEditorSlave):
 
     def _run_payment_editor(self):
         if self._wizard:
-            toplevel = self._wizard.get_toplevel()
+            toplevel = self._wizard.get_current_toplevel()
         else:
             toplevel = None
         retval = run_dialog(_MultipleMethodEditor, toplevel, self._wizard,
