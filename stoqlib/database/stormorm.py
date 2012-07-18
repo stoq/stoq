@@ -373,7 +373,11 @@ class SQLObjectBase(Storm):
         store = self._get_store()
         store.add(self)
         try:
-            self._create(None, **kwargs)
+            id_ = None
+            if kwargs.get('id'):
+                id_ = kwargs['id']
+                del kwargs['id']
+            self._create(id_, **kwargs)
         except:
             store.remove(self)
             raise
@@ -398,9 +402,9 @@ class SQLObjectBase(Storm):
 
     def _create(self, _id_, **kwargs):
         self.sqlmeta._creating = True
-        self.set(**kwargs)
+        self.set(id=_id_, **kwargs)
         self.sqlmeta._creating = False
-        self._init(None)
+        self._init(_id_)
 
     def _init(self, id, *args, **kwargs):
         if self._connection is None:
