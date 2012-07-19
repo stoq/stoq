@@ -577,6 +577,17 @@ _details = [
           'the validity and the terms.'),
         str, multiline=True,
         initial=_("Payable at any branch on presentation of this booklet")),
+
+    ParameterDetails(
+        'SMART_LIST_LOADING',
+        _('Smart lists'),
+        _('Load items intelligently from the database'),
+        _('This is useful when you have several thousand items, but it may cause '
+          'some problems as it\'s new and untested. If you want to preserve the old '
+          'list behavior in the payable and receivable applications, '
+          'disable this parameter.'),
+        bool,
+        initial=True),
     ]
 
 

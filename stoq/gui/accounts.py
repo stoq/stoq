@@ -63,7 +63,8 @@ class BaseAccountWindow(SearchableAppWindow):
     #
 
     def create_ui(self):
-        self.search.search.enable_lazy_search()
+        if api.sysparam(self.conn).SMART_LIST_LOADING:
+            self.search.search.enable_lazy_search()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.search.set_summary_label(column='value',
                                       label='<b>%s</b>' % (_('Total'), ),
