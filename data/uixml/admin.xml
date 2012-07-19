@@ -23,6 +23,13 @@
 -->
 
 <menubar action="menubar">
+  <menu action="FileMenu">
+    <menu action="NewMenu">
+      <placeholder name="NewMenuItemPH">
+        <menuitem action="NewUser"/>
+      </placeholder>
+    </menu>
+  </menu>
   <menu action="SearchMenu">
     <placeholder action="SearchMenuPH">
       <menuitem action="SearchRole"/>
