@@ -50,6 +50,7 @@ class SplashScreen(gtk.Window):
 
     def __init__(self):
         gtk.Window.__init__(self)
+        self.set_name('SplashWindow')
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_SPLASHSCREEN)
         self.resize(WIDTH, HEIGHT)
         # Ubuntu has backported the 3.0 has-resize-grip property,
