@@ -212,7 +212,7 @@ class StoqCommandHandler:
         manager = get_plugin_manager()
 
         for plugin_name in plugin_names:
-            if plugin_name not in manager.installed_plugins_names:
+            if plugin_name not in manager.available_plugins_names:
                 print 'ERROR:', plugin_name, 'is not installed.'
                 print "Available plugins are:"
                 for plugin_name in manager.available_plugins_names:
