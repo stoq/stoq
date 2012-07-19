@@ -143,6 +143,8 @@ class Shell(object):
         check_dependencies()
 
     def _show_splash(self):
+        if not self._options.splashscreen:
+            return
         from stoqlib.gui.splash import show_splash
         show_splash()
 

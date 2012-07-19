@@ -47,6 +47,11 @@ def main(args):
                      dest="login_username",
                      default=None,
                      help='Username to login to stoq with')
+    group.add_option('', '--no-splash-screen',
+                     action="store_false",
+                     dest="splashscreen",
+                     default=True,
+                     help='Disable the splash screen')
     parser.add_option_group(group)
 
     options, args = parser.parse_args(args)
