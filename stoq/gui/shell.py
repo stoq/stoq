@@ -51,7 +51,6 @@ class Shell(object):
     def __init__(self, options, initial=True):
         global _shell
         _shell = self
-        self._application_cache = {}
         self._appname = None
         self._blocked_apps = []
         self._current_app = None
@@ -526,12 +525,6 @@ class Shell(object):
 
         return available_applications
 
-    def _get_current_username(self):
-        from stoqlib.api import api
-        conn = api.get_connection()
-        user = api.get_current_user(conn)
-        return user.username
-
     #
     # Global functions
     #
@@ -603,7 +596,7 @@ class Shell(object):
     # Public API
     #
 
-    def login(self, try_cookie=True):
+    def login(self):
         """
         Do a login
         @param try_cookie: Try to use a cookie if one is available
@@ -611,9 +604,7 @@ class Shell(object):
         """
         from stoqlib.exceptions import LoginError
         from stoqlib.lib.message import info
-        user = None
-        if try_cookie:
-            user = self._login.cookie_login()
+        user = self._login.cookie_login()
 
         if not user:
             try:
@@ -624,34 +615,6 @@ class Shell(object):
         if user:
             self._user = user
         return bool(user)
-
-    def relogin(self):
-        """
-        Do a relogin, eg switch users
-        """
-        if self._current_app:
-            self._current_app.hide()
-
-        old_user = self._get_current_username()
-
-        if not self.login(try_cookie=False):
-            return
-
-        # If the username is the same
-        if (old_user == self._get_current_username() and
-            self._current_app):
-            self._current_app.show()
-            return
-
-        # clear the cache, since we switched users
-        self._application_cache.clear()
-
-        from stoq.gui.launcher import Launcher
-        from stoqlib.gui.events import StartApplicationEvent
-        launcher = Launcher(self._options, self)
-        launcher.show()
-        app = launcher.app
-        StartApplicationEvent.emit(app.name, app)
 
     def get_app_by_name(self, appname):
         """
