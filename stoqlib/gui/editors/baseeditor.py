@@ -374,7 +374,6 @@ class BaseEditor(BaseEditorSlave, RunnableView):
 
     def _validation_function(self, is_valid):
         self.refresh_ok(is_valid)
-        self.is_valid = is_valid
 
 
 class BaseRelationshipEditorSlave(GladeSlaveDelegate):
