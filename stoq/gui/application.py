@@ -684,7 +684,7 @@ class AppWindow(GladeDelegate):
         if restart:
             from stoqlib.lib.process import Process
             log.info('Restarting Stoq')
-            Process([sys.argv[0]], shell=True)
+            Process([sys.argv[0], '--no-splash-screen'])
 
         # os._exit() forces a quit without running atexit handlers
         # and does not block on any running threads
@@ -1225,8 +1225,8 @@ class AppWindow(GladeDelegate):
     def _on_SignOut__activate(self, action):
         from stoqlib.lib.interfaces import ICookieFile
         get_utility(ICookieFile).clear()
-        self.get_toplevel().hide()
-        self.app.shell.relogin()
+        AppWindow.app_windows.remove(self)
+        self.shutdown_application(restart=True)
 
     def _on_Quit__activate(self, action):
         if self._hide_current_application():
