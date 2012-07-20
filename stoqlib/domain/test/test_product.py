@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -26,6 +26,8 @@
 from decimal import Decimal
 import datetime
 
+# Import domaintest first so that externals is setup properly
+from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.runtime import get_current_branch, new_transaction
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent)
@@ -37,7 +39,6 @@ from stoqlib.domain.production import (ProductionProducedItem,
                                        ProductionItemQualityResult)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestProductSupplierInfo(DomainTest):
