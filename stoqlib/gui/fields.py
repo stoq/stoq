@@ -95,6 +95,46 @@ class DomainChoiceField(ChoiceField):
         raise NotImplementedError
 
 
+class AddressField(DomainChoiceField):
+    default_overrides = DomainChoiceField.default_overrides.copy()
+    default_overrides.update(use_entry=True)
+
+    person = gobject.property(type=object, default=None)
+
+    # Field
+
+    def attach(self):
+        self.connect('notify::person', self._on_person__notify)
+        super(AddressField, self).attach()
+
+    def populate(self, address, trans):
+        from stoqlib.domain.address import Address
+        self.person = address.person if address else None
+        addresses = Address.selectBy(
+            connection=trans,
+            person=self.person).orderBy('street')
+
+        self.widget.prefill(api.for_combo(addresses))
+        self.widget.set_sensitive(bool(addresses))
+        if address:
+            self.widget.select(address)
+
+        self.add_button.set_tooltip_text(_("Add a new address"))
+        self.edit_button.set_tooltip_text(_("Edit the selected address"))
+
+    def run_dialog(self, trans, address):
+        from stoqlib.gui.editors.addresseditor import AddressEditor
+        from stoqlib.gui.base.dialogs import run_dialog
+        return run_dialog(AddressEditor, self, trans, self.person, address,
+                          visual_mode=not self.can_edit)
+
+    # Private
+
+    def _on_person__notify(self, obj, pspec):
+        # An address needs a person to be created
+        self.add_button.set_sensitive(bool(self.person))
+
+
 class PaymentCategoryField(DomainChoiceField):
     category_type = gobject.property(type=object, default=None)
 
