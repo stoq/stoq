@@ -983,8 +983,12 @@ class AppWindow(GladeDelegate):
         bar.show()
 
         self.main_vbox.pack_start(bar, False, False, 0)
-        # 0 = menubar, 1 = toolbar, 2 is above iconview
-        self.main_vbox.reorder_child(bar, 2)
+        if self.app.name == 'launcher':
+            # 0 = menubar, 1 = toolbar, 2 is above iconview
+            self.main_vbox.reorder_child(bar, 2)
+        else:
+            # If its any other app, 0 is right bellow the toolbar
+            self.main_vbox.reorder_child(bar, 0)
 
         return bar
 
