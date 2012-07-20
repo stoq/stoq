@@ -24,8 +24,8 @@
 
 from twisted.trial.unittest import SkipTest
 
-from stoqlib.database.exceptions import ORMTestError
-from stoqlib.database.orm import (orm_get_columns, orm_get_random,
+from stoqlib.database.orm import (ORMTestError,
+                                  orm_get_columns, orm_get_random,
                                   orm_get_unittest_value)
 from stoqlib.database.tables import get_table_types
 from stoqlib.domain.test.domaintest import DomainTest
