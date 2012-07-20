@@ -41,6 +41,7 @@ from weakref import WeakValueDictionary
 
 from kiwi.db.stormintegration import StormQueryExecuter
 from kiwi.datatypes import currency
+from psycopg2 import IntegrityError
 
 from storm import expr, Undef
 from storm.base import Storm
@@ -1384,12 +1385,17 @@ orm_name = 'storm'
 
 # Exceptions
 
+
+class ORMTestError(Exception):
+    pass
+
 # ORMObject.get raises this
 ORMObjectNotFound = SQLObjectNotFound
 # ORMObject.selectOneBy raises this
 ORMObjectIntegrityError = NotOneError
 
 ORMObjectQueryExecuter = StormQueryExecuter
+IntegrityError = IntegrityError
 
 # Columns
 BLOBCol = BLOBCol

@@ -24,14 +24,16 @@
 
 """ This module test all class in stoq/domain/receiving.py """
 
+import os
+
 from decimal import Decimal
 from kiwi.datatypes import currency
 
+from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.exceptions import IntegrityError
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.product import ProductStockItem, Storable
-from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestReceivingOrder(DomainTest):
@@ -40,6 +42,9 @@ class TestReceivingOrder(DomainTest):
         order = self.create_receiving_order()
         try:
             order.invoice_number = value
+            if 'STOQLIB_USE_STORM' in os.environ:
+                from storm.store import Store
+                Store.of(order).flush()
         except IntegrityError, e:
             self.failUnless('valid_invoice_number' in str(e))
         else:

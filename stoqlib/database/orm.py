@@ -46,6 +46,7 @@ from sqlobject.col import (BoolCol, BLOBCol,
 from sqlobject.col import (Col, SOCol, SOBoolCol, SODateTimeCol, SODecimalCol,
                            SOForeignKey, SOIntCol, SOStringCol, SOUnicodeCol)
 from sqlobject.converters import registerConverter
+from sqlobject.dberrors import IntegrityError
 from sqlobject.dbconnection import connectionForURI, Transaction
 from sqlobject.joins import MultipleJoin as _MultipleJoin, SingleJoin
 from sqlobject.joins import SOSingleJoin, SOMultipleJoin
@@ -58,8 +59,8 @@ from sqlobject.sresults import SelectResults
 from sqlobject.util.csvexport import export_csv
 from sqlobject.viewable import Viewable
 
-from stoqlib.database.exceptions import ORMTestError
 from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
+
 
 # Currency
 
@@ -222,6 +223,12 @@ class ORMTypeInfo(object):
 orm_name = 'sqlobject'
 
 # Exceptions
+
+
+class ORMTestError(Exception):
+    pass
+
+IntegrityError = IntegrityError
 
 # ORMObject.get raises this
 ORMObjectNotFound = SQLObjectNotFound
