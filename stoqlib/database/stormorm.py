@@ -441,10 +441,10 @@ class SQLObjectBase(Storm):
         obj.destroySelf()
 
     @classmethod
-    def get(cls, id, connection=None):
-        id = cls._idType(id)
+    def get(cls, obj_id, connection=None):
+        obj_id = cls._idType(obj_id)
         store = connection.store
-        obj = store.get(cls, id)
+        obj = store.get(cls, obj_id)
         if obj is None:
             raise SQLObjectNotFound("Object not found")
         return obj
