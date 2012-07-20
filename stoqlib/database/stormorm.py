@@ -693,6 +693,9 @@ class SQLObjectResultSet(object):
         result_set = self._result_set
         return result_set.max(attribute)
 
+    def filterBy(self, **kwargs):
+        return self._copy(by=kwargs)
+
 
 def detuplelize(item):
     """If item is a tuple, return first element, otherwise the item itself.
