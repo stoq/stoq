@@ -297,7 +297,7 @@ class AddressEditor(BaseEditor):
     model_type = Address
     gladefile = 'AddressEditor'
 
-    def __init__(self, conn, person, address=None):
+    def __init__(self, conn, person, address=None, visual_mode=False):
         self.person = person
         if not isinstance(person, Person):
             raise TypeError("Invalid type for person argument. It should "
@@ -305,7 +305,7 @@ class AddressEditor(BaseEditor):
                             % type(person))
         self.current_main_address = self.person.get_main_address()
 
-        BaseEditor.__init__(self, conn, address)
+        BaseEditor.__init__(self, conn, address, visual_mode=visual_mode)
         self.set_description(self.model_name)
 
     #

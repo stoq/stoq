@@ -83,9 +83,9 @@ class PaymentCategoryEditor(BaseEditor):
     )
 
     def __init__(self, conn, model=None,
-                 category_type=None):
+                 category_type=None, visual_mode=False):
         self._category_type = category_type or PaymentCategory.TYPE_PAYABLE
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
         if category_type is not None:
             self.category_type.set_sensitive(False)
 
