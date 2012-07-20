@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-05-25 12:06-0300\n"
-"PO-Revision-Date: 2012-05-27 15:33+0000\n"
-"Last-Translator: Adolfo Jayme Barrientos <fitoschido@gmail.com>\n"
+"PO-Revision-Date: 2012-07-19 19:21+0000\n"
+"Last-Translator: Jose Luis Tirado <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-07-11 05:19+0000\n"
-"X-Generator: Launchpad (build 15593)\n"
+"X-Launchpad-Export-Date: 2012-07-20 04:43+0000\n"
+"X-Generator: Launchpad (build 15644)\n"
 "Language: es\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -177,7 +177,7 @@ msgstr "ID bancaria:"
 
 #: ../data/glade/BankDataSlave.ui.h:2
 msgid "Bank Branch:"
-msgstr ""
+msgstr "Sucursal bancaria:"
 
 #: ../data/glade/BankDataSlave.ui.h:3
 msgid "Bank Account:"
@@ -238,7 +238,7 @@ msgstr "Gestor:"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:2
 msgid "Tax Polity:"
-msgstr ""
+msgstr "Política fiscal:"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:3
 msgid "Branch status:"
@@ -562,7 +562,7 @@ msgstr "Gastos de envios ($CURRENCY)"
 
 #: ../data/glade/CreateDeliveryEditor.ui.h:5
 msgid "Estimated Delivery _Date:"
-msgstr ""
+msgstr "_Fecha de entrega estimada:"
 
 #: ../data/glade/CreateDeliveryEditor.ui.h:6
 msgid "Create a new client"
@@ -570,7 +570,7 @@ msgstr "Crear un cliente nuevo"
 
 #: ../data/glade/CreateDeliveryEditor.ui.h:7
 msgid "Show details of the selected client"
-msgstr ""
+msgstr "Mostrar los  detalles del cliente seleccionado"
 
 #: ../data/glade/CreateDeliveryEditor.ui.h:8
 #: ../data/glade/SalesPersonStep.ui.h:7
@@ -626,7 +626,7 @@ msgstr ""
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:5
 msgid "Payment Day:"
-msgstr ""
+msgstr "Día de pago:"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:6
 msgid "Closing Day:"
@@ -747,11 +747,11 @@ msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:6
 msgid "Was received by client?"
-msgstr ""
+msgstr "¿Fue recibida por el cliente?"
 
 #: ../data/glade/DeliveryEditor.ui.h:7
 msgid "Delivery date:"
-msgstr ""
+msgstr "Fecha de entrega:"
 
 #: ../data/glade/DeliveryEditor.ui.h:8
 msgid "Tracking code:"
@@ -763,11 +763,11 @@ msgstr ""
 
 #: ../data/glade/DeliveryEditor.ui.h:10
 msgid "Deliver address:"
-msgstr ""
+msgstr "Dirección de envío:"
 
 #: ../data/glade/DeliveryEditor.ui.h:11
 msgid "Change address"
-msgstr ""
+msgstr "Cambiar la dirección"
 
 #: ../data/glade/DeliveryEditor.ui.h:12
 msgid "<b>Delivery</b>"
@@ -811,7 +811,7 @@ msgstr "Vacaciones:"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:5
 msgid "Work Permit"
-msgstr ""
+msgstr "Permiso de trabajo"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:7
 msgid "Serie:"
@@ -843,6 +843,8 @@ msgid ""
 "Education \n"
 "Level:"
 msgstr ""
+"Nivel de \n"
+"educación"
 
 #: ../data/glade/EmployeeDetailsSlave.ui.h:17
 msgid ""
@@ -882,7 +884,7 @@ msgstr "No, es un cliente nuevo"
 
 #: ../data/glade/FeedbackDialog.ui.h:1 ../data/glade/TefStep.ui.h:6
 msgid "Email:"
-msgstr ""
+msgstr "Correo electrónico:"
 
 #: ../data/glade/FeedbackDialog.ui.h:2
 msgid "Feedback:"
@@ -1085,6 +1087,13 @@ msgid ""
 "database cluster before the PostgreSQL server can be started. Please consult "
 "the distribution documentation for more information."
 msgstr ""
+"El servidor de PostgreSQL no está corriendo correctamente en este equipo. Es "
+"necesario instalarlo y arrancarlo para que Stoq sea capaz de ejecutarse.\n"
+"\n"
+"Tenga en cuenta que algunas distribuciones, como Fedora, requieren que se "
+"cree el grupo de base de datos para que se pueda arrancar el servidor de "
+"PostgreSQL. Consulte la documentación de su distribución para más "
+"información."
 
 #: ../data/glade/InstallPostgresStep.ui.h:5
 msgid "Click <b>Forward</b> to begin installing the PostgreSQL server."
@@ -1115,6 +1124,11 @@ msgid ""
 "<a href=\"http://www.stoq.com.br/contato\">Send the data</a> you want "
 "imported to us, and we will give a response within 2 business days."
 msgstr ""
+"¿Quiere importar sus datos de otras aplicaciones o de una hoja de cálculo? "
+"Podemos ayudarle.\n"
+"\n"
+"<a href=\"http://www.stoq.com.br/contato\">Envíenos los datos</a> que quiere "
+"importar, y le responderemos en dos días laborables."
 
 #: ../data/glade/InstallmentConfirmation.ui.h:1
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:7
@@ -1143,7 +1157,7 @@ msgstr "Descuento ($CURRENCY):"
 
 #: ../data/glade/InstallmentConfirmation.ui.h:9
 msgid "Total value:"
-msgstr ""
+msgstr "Valor total:"
 
 #: ../data/glade/InstallmentConfirmation.ui.h:10
 msgid "Order number:"
@@ -1171,41 +1185,41 @@ msgstr "Fecha de Expedición:"
 #: ../data/glade/InvoiceDetailsEditor.ui.h:2
 #: ../data/glade/OpenInventoryDialog.ui.h:4
 msgid "Time:"
-msgstr ""
+msgstr "Hora:"
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:2
 #: ../data/glade/ProductInformationSlave.ui.h:3
 msgid "Width:"
-msgstr ""
+msgstr "Anchura:"
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:4
 #: ../data/glade/ProductInformationSlave.ui.h:12
 msgid "Height:"
-msgstr ""
+msgstr "Altura:"
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:5
 msgid "Field:"
-msgstr ""
+msgstr "Campo:"
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:7
 msgid "Position:"
-msgstr ""
+msgstr "Posición:"
 
 #: ../data/glade/InvoiceLayoutEditor.ui.h:8
 msgid "Size:"
-msgstr ""
+msgstr "Tamaño:"
 
 #: ../data/glade/InvoicePrinterEditor.ui.h:2
 msgid "Device name:"
-msgstr ""
+msgstr "Nombre de dispositivo:"
 
 #: ../data/glade/InvoicePrinterEditor.ui.h:3
 msgid "Computer:"
-msgstr ""
+msgstr "Equipo:"
 
 #: ../data/glade/InvoicePrinterEditor.ui.h:4
 msgid "Layout:"
-msgstr ""
+msgstr "Diseño:"
 
 #: ../data/glade/LoanDetails.ui.h:1 ../data/glade/OpenInventoryDialog.ui.h:3
 #: ../data/glade/OpenProductionOrderStep.ui.h:1
@@ -1252,7 +1266,7 @@ msgstr ""
 #: ../stoqlib/reporting/loanreceipt.py:83
 #: ../stoqlib/reporting/stockdecreasereceipt.py:71
 msgid "Responsible:"
-msgstr ""
+msgstr "Responsable:"
 
 #: ../data/glade/LoanDetails.ui.h:4 ../stoqlib/reporting/loanreceipt.py:70
 msgid "Confirm Date:"
@@ -1271,23 +1285,23 @@ msgstr ""
 #: ../data/glade/LoginDialog.ui.h:1
 msgctxt "yes"
 msgid "_Username:"
-msgstr ""
+msgstr "Nombre de _usuario:"
 
 #: ../data/glade/LoginDialog.ui.h:2
 msgctxt "yes"
 msgid "_Password:"
-msgstr ""
+msgstr "_Contraseña:"
 
 #: ../data/glade/LoginDialog.ui.h:3
 msgid "Remember me"
-msgstr ""
+msgstr "Recuérdeme"
 
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:4
 #: ../data/glade/PaymentMethodEditor.ui.h:3
 #: ../data/glade/PurchaseDetailsDialog.ui.h:8
 #: ../data/glade/SaleDetailsDialog.ui.h:14
 msgid "Interest:"
-msgstr ""
+msgstr "Interés:"
 
 #: ../data/glade/LonelyPaymentDetailsDialog.ui.h:5
 msgid "Paid value:"
@@ -1306,7 +1320,7 @@ msgstr "Multa"
 #: ../data/glade/SaleDetailsDialog.ui.h:9
 #: ../data/glade/SaleDiscountSlave.ui.h:1 ../stoqlib/reporting/sale.py:128
 msgid "Discount:"
-msgstr ""
+msgstr "Descuento:"
 
 #: ../data/glade/MultipleMethodSlave.ui.h:1
 msgid "<b>Method:</b>"
@@ -1314,7 +1328,7 @@ msgstr "<b>Método:</b>"
 
 #: ../data/glade/MultipleMethodSlave.ui.h:2
 msgid "Payments:"
-msgstr ""
+msgstr "Pagos:"
 
 #: ../data/glade/MultipleMethodSlave.ui.h:3
 #: ../data/glade/PaymentListSlave.ui.h:2
@@ -1340,7 +1354,7 @@ msgstr ""
 #: ../stoqlib/reporting/loanreceipt.py:131 ../stoqlib/reporting/sale.py:128
 #: ../stoqlib/reporting/sale.py:309 ../stoqlib/reporting/template.py:350
 msgid "Total:"
-msgstr ""
+msgstr "Total:"
 
 #: ../data/glade/MultipleMethodSlave.ui.h:4
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.ui.h:4
@@ -1350,7 +1364,7 @@ msgstr "Falta:"
 
 #: ../data/glade/NoteSlave.ui.h:1
 msgid "Notes:"
-msgstr ""
+msgstr "Observaciones:"
 
 #: ../data/glade/OnSaleInfoSlave.ui.h:1
 msgid "<u>Currently on Sale:</u>"
@@ -1364,7 +1378,7 @@ msgstr "Precio ($CURRENCY):"
 
 #: ../data/glade/OpenInventoryDialog.ui.h:1
 msgid "User:"
-msgstr ""
+msgstr "Usuario:"
 
 #: ../data/glade/OpenInventoryDialog.ui.h:5
 #: ../data/glade/ProductionQuoteDialog.ui.h:2
@@ -1383,23 +1397,23 @@ msgstr "Inicio de la Fecha Prevista:"
 
 #: ../data/glade/ParameterSearch.ui.h:1
 msgid "Filter:"
-msgstr ""
+msgstr "Filtro:"
 
 #: ../data/glade/ParameterSearch.ui.h:2
 msgid "_Show All"
-msgstr ""
+msgstr "Mo_strar Todo"
 
 #: ../data/glade/PasswordEditor.ui.h:1
 msgid "Current Password:"
-msgstr ""
+msgstr "Contraseña actual:"
 
 #: ../data/glade/PasswordEditorSlave.ui.h:2
 msgid "Confirm password:"
-msgstr ""
+msgstr "Confirme contraseña:"
 
 #: ../data/glade/PaymentCategoryEditor.ui.h:2
 msgid "Color:"
-msgstr ""
+msgstr "Color:"
 
 #: ../data/glade/PaymentChangeDialog.ui.h:1
 #: ../data/glade/ProductionDetailsDialog.ui.h:4
@@ -1411,15 +1425,15 @@ msgstr ""
 
 #: ../data/glade/PaymentChangeDialog.ui.h:4
 msgid "Change to:"
-msgstr ""
+msgstr "Cambiar a:"
 
 #: ../data/glade/PaymentEditor.ui.h:7
 msgid "Repeat:"
-msgstr ""
+msgstr "Repetir:"
 
 #: ../data/glade/PaymentEditor.ui.h:8
 msgid "End date:"
-msgstr ""
+msgstr "Fecha de finalización:"
 
 #: ../data/glade/PaymentFlowHistoryDialog.ui.h:1
 msgid "<b>Select a date or a range to be visualised in the report:</b>"
@@ -1441,7 +1455,7 @@ msgstr "Plazos Máximos:"
 
 #: ../data/glade/PaymentMethodEditor.ui.h:4
 msgid "Daily Penalty:"
-msgstr ""
+msgstr "Penalización diaria:"
 
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:2
 msgid "<b>The following payments will be renegotiated.</b>"
@@ -1453,7 +1467,7 @@ msgstr "<b>Los siguientes pagos serán renegociados.</ b>"
 #: ../data/glade/SaleDetailsDialog.ui.h:11
 #: ../data/glade/SalesPersonStep.ui.h:13
 msgid "Subtotal:"
-msgstr ""
+msgstr "Subtotal:"
 
 #: ../data/glade/PaymentRenegotiationPaymentListStep.ui.h:5
 #: ../data/glade/PurchaseDetailsDialog.ui.h:15
@@ -1464,15 +1478,15 @@ msgstr "Recargo:"
 
 #: ../data/glade/PersonEditorTemplate.ui.h:4
 msgid "E-mail:"
-msgstr ""
+msgstr "Correo electrónico:"
 
 #: ../data/glade/PersonEditorTemplate.ui.h:5
 msgid "Mobile:"
-msgstr ""
+msgstr "Móvil:"
 
 #: ../data/glade/PersonEditorTemplate.ui.h:6
 msgid "Co_ntacts..."
-msgstr ""
+msgstr "Co_ntactos…"
 
 #: ../data/glade/PersonEditorTemplate.ui.h:7
 msgid "Calls..."
@@ -1484,7 +1498,7 @@ msgstr ""
 
 #: ../data/glade/PersonEditorTemplate.ui.h:9
 msgid "Identification"
-msgstr ""
+msgstr "Identificación"
 
 #: ../data/glade/PersonEditorTemplate.ui.h:10
 #: ../stoqlib/gui/templates/persontemplate.py:175
@@ -1521,7 +1535,7 @@ msgstr "Cúal es su número telefónico?"
 
 #: ../data/glade/PluginStep.ui.h:1
 msgid "<b>Plugins</b>"
-msgstr ""
+msgstr "<b>Complementos</b>"
 
 #: ../data/glade/PluginStep.ui.h:2
 msgid ""
@@ -1559,15 +1573,16 @@ msgstr ""
 #: ../data/glade/PreferencesEditor.ui.h:1
 msgid "Some of these options will only take effect after you restart Stoq."
 msgstr ""
+"Algunas de estas opciones sólo tendrán efecto después de que reinicie Stoq."
 
 #: ../data/glade/PreferencesEditor.ui.h:2
 msgid "Toolbar style:"
-msgstr ""
+msgstr "Estilo de la barra de herramientas:"
 
 #: ../data/glade/PreferencesEditor.ui.h:3
 #: ../plugins/books/glade/ProductBookSlave.ui.h:11
 msgid "Language:"
-msgstr ""
+msgstr "Idioma:"
 
 #: ../data/glade/PreferencesEditor.ui.h:4
 msgid "Spreadsheet action:"
@@ -1579,7 +1594,7 @@ msgstr ""
 
 #: ../data/glade/ProducedItemSlave.ui.h:1
 msgid "Serial Number:"
-msgstr ""
+msgstr "Número de serie:"
 
 #: ../data/glade/ProducedItemSlave.ui.h:2
 msgid ""
@@ -1591,7 +1606,7 @@ msgstr ""
 #: ../data/glade/ProductStockHistoryDialog.ui.h:1
 #: ../data/glade/ProductionProductSlave.ui.h:1
 msgid "Product:"
-msgstr ""
+msgstr "Producto:"
 
 #: ../data/glade/ProductAdjustmentDialog.ui.h:2
 msgid "Quantity for Adjustment:"
@@ -1601,7 +1616,7 @@ msgstr ""
 #: ../data/glade/ProductComponentSlave.ui.h:3
 #: ../data/glade/ProductQualityTestSlave.ui.h:1
 msgid "Component:"
-msgstr ""
+msgstr "Componente:"
 
 #: ../data/glade/ProductComponentEditor.ui.h:2
 #: ../data/glade/ProductionItemEditor.ui.h:3
@@ -1610,7 +1625,7 @@ msgstr ""
 #: ../data/glade/SaleQuoteItemEditor.ui.h:7
 #: ../data/glade/SellableItemStep.ui.h:2 ../data/glade/pos.ui.h:3
 msgid "Quantity:"
-msgstr ""
+msgstr "Cantidad:"
 
 #: ../data/glade/ProductComponentEditor.ui.h:3
 msgid "Design Reference:"
@@ -1622,7 +1637,7 @@ msgstr ""
 
 #: ../data/glade/ProductComponentSlave.ui.h:2
 msgid "days"
-msgstr ""
+msgstr "días"
 
 #: ../data/glade/ProductComponentSlave.ui.h:4
 #: ../data/glade/ProductQualityTestSlave.ui.h:2
@@ -1632,7 +1647,7 @@ msgstr "Ordenar los componentes por categoría"
 #: ../data/glade/ProductInformationSlave.ui.h:1
 #: ../data/glade/ProductionItemEditor.ui.h:4
 msgid "Location:"
-msgstr ""
+msgstr "Ubicación:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:2
 msgid "Part-Number:"
@@ -1640,7 +1655,7 @@ msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:4
 msgid "Depth:"
-msgstr ""
+msgstr "Profundidad:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:5
 msgid "<b>Stock Details</b>"
@@ -1649,7 +1664,7 @@ msgstr ""
 #: ../data/glade/ProductInformationSlave.ui.h:6
 #: ../data/glade/SellableItemStep.ui.h:3
 msgid "Minimum:"
-msgstr ""
+msgstr "Mínimo:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:7
 msgid "<b>Mercosul Details</b>"
@@ -1665,15 +1680,15 @@ msgstr ""
 
 #: ../data/glade/ProductInformationSlave.ui.h:11
 msgid "Manufacturer:"
-msgstr ""
+msgstr "Fabricante:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:13
 msgid "Weight:"
-msgstr ""
+msgstr "Peso:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:14
 msgid "Maximum:"
-msgstr ""
+msgstr "Máximo:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:15
 msgid "EX TIPI:"
@@ -1681,7 +1696,7 @@ msgstr "EX TIPI:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:16
 msgid "Kg"
-msgstr ""
+msgstr "Kg"
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:2
 msgid "Current Stock Balance:"
@@ -1693,11 +1708,11 @@ msgstr ""
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:5
 msgid "Transfers"
-msgstr ""
+msgstr "Transferencias"
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:6
 msgid "Loans"
-msgstr ""
+msgstr "Préstamos"
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:7
 msgid "Manual Decrease"
@@ -1716,10 +1731,12 @@ msgid ""
 "Additional \n"
 "Information:"
 msgstr ""
+"Información \n"
+"adicional"
 
 #: ../data/glade/ProductSupplierEditor.ui.h:6
 msgid "Day(s)"
-msgstr ""
+msgstr "Día(s)"
 
 #: ../data/glade/ProductSupplierEditor.ui.h:8
 msgid "Minimum Purchase:"
