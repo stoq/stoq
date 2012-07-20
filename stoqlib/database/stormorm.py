@@ -63,9 +63,6 @@ from storm.variables import (Variable, BoolVariable, DateVariable,
                              DateTimeVariable, RawStrVariable, DecimalVariable,
                              IntVariable)
 
-# FIXME:This is importing from sqlobject
-#from stoqlib.database.exceptions import ORMTestError
-
 _IGNORED = object()
 
 
@@ -1326,7 +1323,6 @@ def orm_get_random(column):
 
 
 def orm_get_unittest_value(klass, test, tables_dict, name, column):
-    from stoqlib.database.exceptions import ORMTestError
     value = None
     if isinstance(column, PropertyColumn):
         if column.variable_factory.keywords['value'] is not Undef:
