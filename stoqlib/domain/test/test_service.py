@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,14 +25,13 @@
 
 import decimal
 
+from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.events import (ServiceCreateEvent, ServiceEditEvent,
                                    ServiceRemoveEvent)
 from stoqlib.domain.sale import Delivery
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service, ServiceView
-
-from stoqlib.domain.test.domaintest import DomainTest
 
 
 class _ServiceEventData(object):
@@ -94,71 +93,73 @@ class TestService(DomainTest):
         ServiceEditEvent.connect(p_data.on_edit)
         ServiceRemoveEvent.connect(p_data.on_delete)
 
-        # Test service being created
-        trans = new_transaction()
-        trans_list.append(trans)
-        sellable = Sellable(
-            connection=trans,
-            description='Test 1234',
-            price=decimal.Decimal(2),
-            )
-        service = Service(
-            connection=trans,
-            sellable=sellable,
-            )
-        trans.commit()
-        self.assertTrue(p_data.was_created)
-        self.assertFalse(p_data.was_edited)
-        self.assertFalse(p_data.was_deleted)
-        self.assertEqual(p_data.service, service)
-        p_data.reset()
+        try:
+            # Test service being created
+            trans = new_transaction()
+            trans_list.append(trans)
+            sellable = Sellable(
+                connection=trans,
+                description='Test 1234',
+                price=decimal.Decimal(2),
+                )
+            service = Service(
+                connection=trans,
+                sellable=sellable,
+                )
+            trans.commit()
+            self.assertTrue(p_data.was_created)
+            self.assertFalse(p_data.was_edited)
+            self.assertFalse(p_data.was_deleted)
+            self.assertEqual(p_data.service, service)
+            p_data.reset()
 
-        # Test service being edited and emmiting the event just once
-        trans = new_transaction()
-        trans_list.append(trans)
-        sellable = trans.get(sellable)
-        service = trans.get(service)
-        sellable.notes = 'Notes'
-        sellable.description = 'Test 666'
-        service.weight = decimal.Decimal(10)
-        trans.commit()
-        self.assertTrue(p_data.was_edited)
-        self.assertFalse(p_data.was_created)
-        self.assertFalse(p_data.was_deleted)
-        self.assertEqual(p_data.service, service)
-        self.assertEqual(p_data.emit_count, 1)
-        p_data.reset()
+            # Test service being edited and emmiting the event just once
+            trans = new_transaction()
+            trans_list.append(trans)
+            sellable = trans.get(sellable)
+            service = trans.get(service)
+            sellable.notes = 'Notes'
+            sellable.description = 'Test 666'
+            service.weight = decimal.Decimal(10)
+            trans.commit()
+            self.assertTrue(p_data.was_edited)
+            self.assertFalse(p_data.was_created)
+            self.assertFalse(p_data.was_deleted)
+            self.assertEqual(p_data.service, service)
+            self.assertEqual(p_data.emit_count, 1)
+            p_data.reset()
 
-        # Test service being edited, editing Sellable
-        trans = new_transaction()
-        trans_list.append(trans)
-        sellable = trans.get(sellable)
-        service = trans.get(service)
-        sellable.notes = 'Notes for test'
-        trans.commit()
-        self.assertTrue(p_data.was_edited)
-        self.assertFalse(p_data.was_created)
-        self.assertFalse(p_data.was_deleted)
-        self.assertEqual(p_data.service, service)
-        self.assertEqual(p_data.emit_count, 1)
-        p_data.reset()
+            # Test service being edited, editing Sellable
+            trans = new_transaction()
+            trans_list.append(trans)
+            sellable = trans.get(sellable)
+            service = trans.get(service)
+            sellable.notes = 'Notes for test'
+            trans.commit()
+            self.assertTrue(p_data.was_edited)
+            self.assertFalse(p_data.was_created)
+            self.assertFalse(p_data.was_deleted)
+            self.assertEqual(p_data.service, service)
+            self.assertEqual(p_data.emit_count, 1)
+            p_data.reset()
 
-        # Test service being removed
-        trans = new_transaction()
-        trans_list.append(trans)
-        sellable = trans.get(sellable)
-        service = trans.get(service)
-        sellable.remove()
-        trans.commit()
-        self.assertTrue(p_data.was_deleted)
-        self.assertFalse(p_data.was_created)
-        self.assertFalse(p_data.was_edited)
-        self.assertEqual(p_data.service, service)
-        self.assertEqual(p_data.emit_count, 1)
-        p_data.reset()
+        finally:
+            # Test service being removed
+            trans = new_transaction()
+            trans_list.append(trans)
+            sellable = trans.get(sellable)
+            service = trans.get(service)
+            sellable.remove()
+            trans.commit()
+            self.assertTrue(p_data.was_deleted)
+            self.assertFalse(p_data.was_created)
+            self.assertFalse(p_data.was_edited)
+            self.assertEqual(p_data.service, service)
+            self.assertEqual(p_data.emit_count, 1)
+            p_data.reset()
 
-        for trans in trans_list:
-            trans.close()
+            for trans in trans_list:
+                trans.close()
 
     def test_remove(self):
         service = self.create_service()
