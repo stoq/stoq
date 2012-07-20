@@ -340,6 +340,11 @@ def get_dialog(parent, dialog, *args, **kwargs):
     if isinstance(parent, BaseView):
         parent = parent.get_toplevel().get_toplevel()
         if parent and not _fullscreen:
+            # FIXME: This should not be necessary, but gnome shell hides window
+            # decorations for HINT_DIALOG. We should study what dialogs should
+            # have HINT_NORMAL (with window decorations) and what can have
+            # HINT_DIALOG
+            dialog.get_toplevel().set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NORMAL)
             dialog.set_transient_for(parent)
     return dialog
 
