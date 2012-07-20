@@ -2,13 +2,18 @@ VERSION=$(shell BUILD=1 python -c "import stoq; print stoq.version")
 PACKAGE=stoq
 DEBPACKAGE=python-kiwi
 SCHEMADIR=/mondo/htdocs/stoq.com.br/devel/schema/
+JS_AD="http://pagead2.googlesyndication.com/pagead/show_ads.js"
 
 apidocs:
 	make -C docs/api/stoq pickle html devhelp
 	make -C docs/api/stoqlib pickle html devhelp
 
 schemadocs:
-	schemaspy -t pgsql -host anthem -db $(USER) -u $(USER) -s public -o $(SCHEMADIR)
+	schemaspy -t pgsql -host anthem -db $(USER) -u $(USER) -s public -o $(SCHEMADIR) \
+	    -X '(.*\.te_created_id)|(.*\.te_modified_id)' -norows
+	sed -i "s|$(JS_AD)||" $(SCHEMADIR)/*html
+	sed -i "s|$(JS_AD)||" $(SCHEMADIR)/tables/*html
+
 
 manual:
 	mkdir html
