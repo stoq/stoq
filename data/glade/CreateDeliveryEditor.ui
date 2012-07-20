@@ -4,40 +4,26 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="CreateDeliveryEditor">
+    <property name="can_focus">False</property>
     <property name="border_width">6</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkTable" id="table2">
             <property name="visible">True</property>
-            <property name="n_rows">2</property>
+            <property name="can_focus">False</property>
+            <property name="n_rows">3</property>
             <property name="n_columns">4</property>
             <property name="column_spacing">6</property>
             <property name="row_spacing">6</property>
             <child>
-              <object class="GtkLabel" id="label5">
-                <property name="visible">True</property>
-                <property name="xalign">1</property>
-                <property name="label" translatable="yes">Client:</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label6">
-                <property name="visible">True</property>
-                <property name="xalign">1</property>
-                <property name="label" translatable="yes">Transporter:</property>
-              </object>
-              <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
               <object class="ProxyLabel" id="label2">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Delivery cost ($CURRENCY):</property>
                 <property name="use_underline">True</property>
@@ -73,6 +59,7 @@
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Estimated Delivery _Date:</property>
                 <property name="use_underline">True</property>
@@ -87,6 +74,7 @@
             <child>
               <object class="ProxyDateEntry" id="estimated_fix_date">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="data_type">date</property>
                 <property name="model_attribute">estimated_fix_date</property>
               </object>
@@ -95,130 +83,44 @@
                 <property name="right_attach">4</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
+                <property name="y_options"></property>
               </packing>
             </child>
             <child>
-              <object class="GtkTable" id="table3">
+              <object class="GtkEventBox" id="forms">
                 <property name="visible">True</property>
-                <property name="n_rows">2</property>
-                <property name="n_columns">3</property>
+                <property name="can_focus">False</property>
                 <child>
-                  <object class="ProxyComboEntry" id="client">
-                    <property name="visible">True</property>
-                    <property name="data_type">object</property>
-                    <property name="mandatory">True</property>
-                    <property name="model_attribute">client</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="ProxyComboEntry" id="transporter">
-                    <property name="visible">True</property>
-                    <property name="data_type">object</property>
-                    <property name="model_attribute">transporter</property>
-                  </object>
-                  <packing>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="create_client">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Create a new client</property>
-                    <property name="resize_mode">queue</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="relief">none</property>
-                    <child>
-                      <object class="GtkImage" id="image1">
-                        <property name="visible">True</property>
-                        <property name="stock">gtk-add</property>
-                        <property name="icon-size">1</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="client_details">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Show details of the selected client</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="relief">none</property>
-                    <child>
-                      <object class="GtkImage" id="image4">
-                        <property name="visible">True</property>
-                        <property name="tooltip_text" translatable="yes">Client details.</property>
-                        <property name="stock">gtk-info</property>
-                        <property name="icon-size">1</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="create_transporter">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Create a new transporter</property>
-                    <property name="resize_mode">queue</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="relief">none</property>
-                    <child>
-                      <object class="GtkImage" id="image2">
-                        <property name="visible">True</property>
-                        <property name="tooltip_text" translatable="yes">Create a new transporter</property>
-                        <property name="stock">gtk-add</property>
-                        <property name="icon-size">1</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="transporter_details">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Show details of the selected transporter</property>
-                    <property name="use_action_appearance">False</property>
-                    <property name="relief">none</property>
-                    <child>
-                      <object class="GtkImage" id="image3">
-                        <property name="visible">True</property>
-                        <property name="tooltip_text" translatable="yes">Show details of the selected transporter</property>
-                        <property name="stock">gtk-info</property>
-                        <property name="icon-size">1</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                  </packing>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
-                <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
-                <property name="bottom_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label5">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label6">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
               </packing>
             </child>
           </object>
@@ -229,20 +131,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHSeparator" id="hseparator1">
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
+          <placeholder/>
         </child>
         <child>
-          <object class="GtkLabel" id="label3">
+          <object class="GtkHSeparator" id="hseparator1">
             <property name="visible">True</property>
-            <property name="xalign">0</property>
-            <property name="label" translatable="yes">Products to Deliver:</property>
+            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -251,89 +145,33 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEventBox" id="addition_list_holder">
+          <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Products to Deliver:</property>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">3</property>
           </packing>
         </child>
         <child>
-          <object class="GtkHSeparator" id="hseparator2">
+          <object class="GtkEventBox" id="addition_list_holder">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">4</property>
           </packing>
         </child>
         <child>
-          <object class="GtkTable" id="table1">
+          <object class="GtkHSeparator" id="hseparator2">
             <property name="visible">True</property>
-            <property name="n_rows">2</property>
-            <property name="n_columns">2</property>
-            <property name="column_spacing">5</property>
-            <property name="row_spacing">5</property>
-            <child>
-              <object class="GtkLabel" id="label4">
-                <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="label" translatable="yes">&lt;b&gt;Delivery Address:&lt;/b&gt;</property>
-                <property name="use_markup">True</property>
-              </object>
-              <packing>
-                <property name="y_options">GTK_FILL</property>
-              </packing>
-            </child>
-            <child>
-              <object class="ProxyLabel" id="delivery_address">
-                <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="data_type">unicode</property>
-                <property name="model_attribute">delivery_address</property>
-              </object>
-              <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options">GTK_FILL</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="change_address_button">
-                <property name="label" translatable="yes">Change _Address</property>
-                <property name="visible">True</property>
-                <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
-                <property name="use_underline">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options">GTK_FILL</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="additional_info_button">
-                <property name="label" translatable="yes">Additional _Instructions</property>
-                <property name="visible">True</property>
-                <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
-                <property name="use_underline">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="y_options">GTK_FILL</property>
-              </packing>
-            </child>
+            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -342,11 +180,49 @@
           </packing>
         </child>
         <child>
+          <object class="GtkTable" id="table1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="n_columns">2</property>
+            <property name="column_spacing">5</property>
+            <property name="row_spacing">5</property>
+            <child>
+              <object class="GtkButton" id="additional_info_button">
+                <property name="label" translatable="yes">Additional _Instructions</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_underline">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
+                <property name="y_options">GTK_FILL</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label4">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkAlignment" id="alignment1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <object class="ProxyLabel" id="additional_info_label">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">There is Additional Instructions</property>
                 <property name="data_type">unicode</property>
@@ -356,7 +232,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">6</property>
+            <property name="position">7</property>
           </packing>
         </child>
       </object>
