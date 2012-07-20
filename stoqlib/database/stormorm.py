@@ -397,6 +397,8 @@ class SQLObjectBase(Storm):
         # was not just created
         self._connection = None
         self._init(None)
+        self.sqlmeta._creating = False
+        get_obj_info(self).event.hook('changed', self._on_object_changed)
 
     def _create(self, _id_, **kwargs):
         self.sqlmeta._creating = True
