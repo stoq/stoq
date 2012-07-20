@@ -47,8 +47,15 @@ class BaseTax(Domain):
             return
 
         for column in template.sqlmeta.columnList:
-            if column.name in ('te_createdID', 'te_modifiedID',
-                               'product_tax_templateID'):
+            if column.name in [
+                'product_tax_template_id',
+                'te_created_id',
+                'te_modified_id',
+                # FIXME: SQLObject only, remove post storm migration
+                'te_createdID',
+                'te_modifiedID',
+                'product_tax_templateID',
+                ]:
                 continue
 
             value = getattr(template, column.name)

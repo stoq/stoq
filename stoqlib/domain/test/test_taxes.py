@@ -40,7 +40,7 @@ class TestBaseTax(DomainTest):
         icms_template = ProductIcmsTemplate(
             connection=self.trans,
             product_tax_template=tax_template)
-        icms_template.set_from_template(tax_template)
+        icms_template.set_from_template(icms_template)
 
 
 class TestProductTaxTemplate(DomainTest):
