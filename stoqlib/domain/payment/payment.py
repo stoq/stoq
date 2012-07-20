@@ -89,6 +89,8 @@ class Payment(Domain):
 
     payment_type = IntCol()
     status = IntCol(default=STATUS_PREVIEW)
+    # FIXME: use const.NOW() instead to avoid server/client date
+    #        inconsistencies
     open_date = DateTimeCol(default=datetime.datetime.now)
     due_date = DateTimeCol()
     paid_date = DateTimeCol(default=None)
