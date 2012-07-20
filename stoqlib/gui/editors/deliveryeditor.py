@@ -95,7 +95,7 @@ class CreateDeliveryEditor(BaseEditor):
 
     def _setup_widgets(self):
         self.additional_info_label.set_size('small')
-        self.additional_info_label.set_color('Red')
+        self.additional_info_label.set_color('red')
         self.register_validate_function(self._validate_widgets)
         self.set_description(self.model_name)
 
@@ -105,7 +105,6 @@ class CreateDeliveryEditor(BaseEditor):
             user.profile.check_app_permission('admin'),
             user.profile.check_app_permission('purchase'),
             ))
-        can_modify_transporter = False
         self.fields['transporter'].can_add = can_modify_transporter
         self.fields['transporter'].can_edit = can_modify_transporter
 
@@ -156,9 +155,7 @@ class CreateDeliveryEditor(BaseEditor):
     def on_client__content_changed(self, combo):
         client = combo.get_selected_data()
         if client:
-            address = client.person.get_main_address()
-            self.fields['address'].populate(address, self.conn)
-            self.fields['address'].person = client.person
+            self.fields['address'].set_from_client(client)
 
     def _on_items__cell_edited(self, items, item, attribute):
         self.force_validation()

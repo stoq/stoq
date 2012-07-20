@@ -127,6 +127,12 @@ class AddressField(DomainChoiceField):
         return run_dialog(AddressEditor, self, trans, self.person, address,
                           visual_mode=not self.can_edit)
 
+    # Public
+
+    def set_from_client(self, client):
+        self.person = client.person
+        self.populate(self.person.get_main_address(), self.conn)
+
     # Private
 
     def _on_person__notify(self, obj, pspec):
