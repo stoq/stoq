@@ -30,18 +30,16 @@ This is just a layer on top of the Python DBAPI we're using to access the
 database
 """
 from sqlobject.dberrors import (Error,
-                                IntegrityError as _IntegrityError,
                                 ProgrammingError as _ProgrammingError,
                                 OperationalError as _OperationalError)
 
+from stoqlib.database.orm import IntegrityError
+
+
 PostgreSQLError = Error
-IntegrityError = _IntegrityError
 ProgrammingError = _ProgrammingError
 OperationalError = _OperationalError
-
-
-class ORMTestError(Exception):
-    pass
+IntegrityError = IntegrityError
 
 
 class SQLError(Exception):
