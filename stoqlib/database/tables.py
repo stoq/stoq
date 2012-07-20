@@ -44,7 +44,9 @@ log = Logger('stoqlib.database.tables')
 _tables = [
      ('system', ["SystemTable", "TransactionEntry"]),
      ('parameter', ["ParameterData"]),
-     ('account', ["BankAccount"]),
+     ('account', ['Account',
+                  'AccountTransaction',
+                  'BankAccount']),
      ('profile', ["UserProfile", "ProfileSettings"]),
      ('person', ["Person"]),
      ('address', ["CityLocation", "Address"]),
@@ -64,7 +66,8 @@ _tables = [
                  "SalesPerson",
                  "CreditProvider",
                  "Transporter",
-                 "EmployeeRoleHistory"]),
+                 "EmployeeRoleHistory",
+                 "ClientCategory"]),
      ('synchronization', ["BranchSynchronization"]),
      ('station', ["BranchStation"]),
      ('till', ["Till", "TillEntry"]),
@@ -72,6 +75,7 @@ _tables = [
      ('payment.group', ["PaymentGroup"]),
      ('payment.method', ["PaymentMethod", "CheckData"]),
      ('payment.payment', ["Payment"]),
+     ('payment.renegotiation', ["PaymentRenegotiation"]),
      ('fiscal', ["CfopData", "FiscalBookEntry"]),
      ('sale', ["SaleItem",
                "Delivery",
@@ -101,7 +105,6 @@ _tables = [
                      "ProductionItem",
                      "ProductionMaterial",
                      "ProductionService"]),
-
 ]
 
 # fullname (eg "stoqlib.domain.person.Person") -> class
