@@ -177,15 +177,12 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
                           due_date=datetime.datetime.now(),
-                          open_date=None,
                           method=method,
                           group=None,
                           till=None,
                           category=None,
                           payment_type=Payment.TYPE_OUT,
                           connection=self.trans)
-        self.assertEqual(payment.get_open_date_string(), "")
-        payment.open_date = datetime.datetime.now()
         self.assertNotEqual(payment.get_open_date_string(), "")
 
     def testGetDaysLate(self):
