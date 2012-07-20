@@ -115,7 +115,6 @@ class AddressField(DomainChoiceField):
             person=self.person).orderBy('street')
 
         self.widget.prefill(api.for_combo(addresses))
-        self.widget.set_sensitive(bool(addresses))
         if address:
             self.widget.select(address)
 
@@ -152,7 +151,6 @@ class PaymentCategoryField(DomainChoiceField):
         # FIXME: Move to noun
         self.add_button.set_tooltip_text(_("Add a new payment category"))
         self.edit_button.set_tooltip_text(_("Edit the selected payment category"))
-        self.widget.set_sensitive(bool(categories))
 
     def run_dialog(self, trans, category):
         from stoqlib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor
@@ -193,7 +191,6 @@ class PersonField(DomainChoiceField):
 
         items = [(f.person.name, f) for f in facets]
         self.widget.prefill(items)
-        self.widget.set_sensitive(bool(items))
 
         if person:
             facet = person_type.selectOneBy(
