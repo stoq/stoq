@@ -105,6 +105,12 @@ class BaseEditorSlave(GladeSlaveDelegate):
             if isinstance(widget, ProxyLabel):
                 continue
             widget.set_sensitive(False)
+
+        if self.fields:
+            for field in self.fields.values():
+                field.set_read_only()
+                field.can_edit = False
+
         self.update_visual_mode()
 
     def create_model(self, trans):
