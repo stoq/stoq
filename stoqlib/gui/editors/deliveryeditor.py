@@ -25,24 +25,20 @@
 
 import datetime
 import decimal
-import operator
 
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column, ObjectList
 
 from stoqlib.api import api
-from stoqlib.domain.person import ClientView, TransporterView
+from stoqlib.domain.person import Client, Transporter
 from stoqlib.domain.sale import Delivery
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.gui.editors.addresseditor import AddressSelectionDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.editors.personeditor import ClientEditor, TransporterEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.gui.fields import AddressField, PersonField
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -67,26 +63,28 @@ class CreateDeliveryEditor(BaseEditor):
 
     model_name = _('Delivery')
     model_type = object
+    form_holder_name = 'forms'
     gladefile = 'CreateDeliveryEditor'
     title = _('New Delivery')
     size = (750, 550)
 
     proxy_widgets = [
         'client',
-        'delivery_address',
+        'address',
         'estimated_fix_date',
         'price',
         'transporter',
         ]
 
-    def __init__(self, conn, model=None, sale_items=None):
-        user = api.get_current_user(conn)
-        # Only users with admin or purchase permission can modify persons
-        self._can_modify_person = any((
-            user.profile.check_app_permission('admin'),
-            user.profile.check_app_permission('purchase'),
-            ))
+    fields = dict(
+        client=PersonField(_("Client"), proxy=True, mandatory=True,
+                           person_type=Client),
+        transporter=PersonField(_("Transporter"), proxy=True,
+                                person_type=Transporter),
+        address=AddressField(_("Address"), proxy=True, mandatory=True),
+        )
 
+    def __init__(self, conn, model=None, sale_items=None):
         if not model:
             for sale_item in sale_items:
                 sale_item.deliver = True
@@ -101,8 +99,17 @@ class CreateDeliveryEditor(BaseEditor):
         self.register_validate_function(self._validate_widgets)
         self.set_description(self.model_name)
 
-        for widget in (self.create_transporter, self.create_client):
-            widget.set_sensitive(self._can_modify_person)
+        # Only users with admin or purchase permission can modify transporters
+        user = api.get_current_user(self.conn)
+        can_modify_transporter = any((
+            user.profile.check_app_permission('admin'),
+            user.profile.check_app_permission('purchase'),
+            ))
+        can_modify_transporter = False
+        self.fields['transporter'].can_add = can_modify_transporter
+        self.fields['transporter'].can_edit = can_modify_transporter
+
+        self.fields['client'].person_type = Client
 
         self._update_widgets()
 
@@ -113,13 +120,8 @@ class CreateDeliveryEditor(BaseEditor):
 
     def _update_widgets(self):
         has_selected_client = bool(self.client.get_selected())
-        for widget in (self.client_details, self.change_address_button):
-            widget.set_sensitive(has_selected_client)
-
-        has_selected_transporter = bool(self.transporter.get_selected())
-        self.transporter_details.set_sensitive(has_selected_transporter)
-
         self.refresh_ok(has_selected_client)
+
         if self.model.notes:
             self.additional_info_label.show()
         else:
@@ -135,55 +137,9 @@ class CreateDeliveryEditor(BaseEditor):
                 Column('deliver', title=_('Deliver'),
                        data_type=bool, editable=True)]
 
-    def _show_address_editor(self):
-        address = run_dialog(AddressSelectionDialog, self,
-                             self.conn, self.model.client.person)
-        if address:
-            self._update_address(address)
-
-    def _update_address(self, address):
-        text = address.get_address_string()
-        self.delivery_address.set_text(text)
-        self.model.address = address
-
-    def _create_client(self):
-        trans = api.new_transaction()
-        client = run_person_role_dialog(ClientEditor, self, trans, None)
-        api.finish_transaction(trans, client)
-        trans.close()
-
-        if client is not None:
-            self._prefill_client()
-            self.client.select(client)
-
-    def _create_transporter(self):
-        with api.trans() as trans:
-            transporter = run_person_role_dialog(TransporterEditor, self,
-                                                 trans, None)
-        if transporter:
-            self._prefill_transporter()
-            self.transporter.select(transporter)
-
-    def _prefill_client(self):
-        clients = ClientView.get_active_clients(self.conn)
-        items = [(c.name, c.client) for c in clients]
-        self.client.prefill(locale_sorted(
-            items, key=operator.itemgetter(0)))
-        self.client.set_sensitive(len(items))
-
-    def _prefill_transporter(self):
-        transporters = TransporterView.select(connection=self.conn)
-        items = [(t.name, t.transporter) for t in transporters]
-        self.transporter.prefill(locale_sorted(items,
-                                               key=operator.itemgetter(0)))
-        self.transporter.set_sensitive(len(items))
-
     #
     # Callbacks
     #
-
-    def on_change_address_button__clicked(self, button):
-        self._show_address_editor()
 
     def on_additional_info_button__clicked(self, button):
         if run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
@@ -203,28 +159,11 @@ class CreateDeliveryEditor(BaseEditor):
     def on_client__content_changed(self, combo):
         client = combo.get_selected_data()
         if client:
-            self._update_address(client.person.get_main_address())
+            address = client.person.get_main_address()
+            self.fields['address'].populate(address, self.conn)
+            self.fields['address'].person = client.person
+
         self._update_widgets()
-
-    def on_create_client__clicked(self, button):
-        self._create_client()
-
-    def on_client_details__clicked(self, button):
-        client = self.model.client
-        run_dialog(ClientDetailsDialog, self, self.conn, client)
-
-    def on_transporter__content_changed(self, widget):
-        self._update_widgets()
-
-    def on_create_transporter__clicked(self, button):
-        self._create_transporter()
-
-    def on_transporter_details__clicked(self, button):
-        visual_mode = not self._can_modify_person
-        with api.trans() as trans:
-            run_person_role_dialog(TransporterEditor, self,
-                                   trans, self.model.transporter,
-                                   visual_mode=visual_mode)
 
     def _on_items__cell_edited(self, items, item, attribute):
         self.force_validation()
@@ -238,12 +177,8 @@ class CreateDeliveryEditor(BaseEditor):
         return _CreateDeliveryModel(price=price)
 
     def setup_proxies(self):
-        self._prefill_client()
-        self._prefill_transporter()
         self.proxy = self.add_proxy(self.model,
                                     CreateDeliveryEditor.proxy_widgets)
-        if not self.model.client:
-            self.change_address_button.set_sensitive(False)
 
     def setup_slaves(self):
         self.items = ObjectList(columns=self._get_sale_items_columns(),
@@ -271,8 +206,10 @@ class DeliveryEditor(BaseEditor):
     size = (600, 400)
     model_type = Delivery
     model_name = _('Delivery')
+    form_holder_name = 'forms'
+
     proxy_widgets = [
-        'address_str',
+        'address',
         'client_str',
         'deliver_date',
         'receive_date',
@@ -280,14 +217,15 @@ class DeliveryEditor(BaseEditor):
         'transporter',
         ]
 
+    fields = dict(
+        transporter=PersonField(_("Transporter"), proxy=True,
+                                person_type=Transporter),
+        address=AddressField(_("Address"), proxy=True, mandatory=True)
+        )
+
     def __init__(self, conn, *args, **kwargs):
         self._configuring_proxies = False
-        user = api.get_current_user(conn)
-        # Only users with admin or purchase permission can modify persons
-        self._can_modify_person = any((
-            user.profile.check_app_permission('admin'),
-            user.profile.check_app_permission('purchase'),
-            ))
+        #self.fields['transporter'].person_type = Transporter
 
         super(DeliveryEditor, self).__init__(conn, *args, **kwargs)
 
@@ -300,7 +238,6 @@ class DeliveryEditor(BaseEditor):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, DeliveryEditor.proxy_widgets)
         self._update_status_widgets()
-        self._update_widgets()
         self._configuring_proxies = False
 
     def setup_slaves(self):
@@ -316,16 +253,18 @@ class DeliveryEditor(BaseEditor):
     #
 
     def _setup_widgets(self):
-        self._prefill_transporter()
         for widget in (self.receive_date, self.deliver_date,
                        self.tracking_code):
             widget.set_sensitive(False)
 
-        self.create_transporter.set_sensitive(self._can_modify_person)
-
-    def _update_widgets(self):
-        has_transporter = bool(self.transporter.get_selected())
-        self.transporter_details.set_sensitive(has_transporter)
+        # Only users with admin or purchase permission can modify transporters
+        user = api.get_current_user(self.conn)
+        can_modify_transporter = any((
+            user.profile.check_app_permission('admin'),
+            user.profile.check_app_permission('purchase'),
+            ))
+        self.fields['transporter'].can_add = can_modify_transporter
+        self.fields['transporter'].can_edit = can_modify_transporter
 
     def _update_status_widgets(self):
         if self.model.status == Delivery.STATUS_INITIAL:
@@ -349,41 +288,9 @@ class DeliveryEditor(BaseEditor):
                    format_func=format_quantity),
             ]
 
-    def _prefill_transporter(self):
-        transporters = TransporterView.select(connection=self.conn)
-        items = [(t.name, t.transporter) for t in transporters]
-        self.transporter.prefill(locale_sorted(items,
-                                               key=operator.itemgetter(0)))
-        self.transporter.set_sensitive(len(items))
-
     #
     #  Callbacks
     #
-
-    def on_transporter__content_changed(self, widget):
-        self._update_widgets()
-
-    def on_create_transporter__clicked(self, button):
-        with api.trans() as trans:
-            transporter = run_person_role_dialog(TransporterEditor, self,
-                                                 trans, None)
-        if transporter:
-            self._prefill_transporter()
-            self.transporter.select(transporter)
-
-    def on_transporter_details__clicked(self, button):
-        visual_mode = not self._can_modify_person
-        with api.trans() as trans:
-            run_person_role_dialog(TransporterEditor, self,
-                                   trans, self.model.transporter,
-                                   visual_mode=visual_mode)
-
-    def on_change_address_button__clicked(self, button):
-        person = self.model.service_item.sale.client.person
-        address = run_dialog(AddressSelectionDialog, self, self.conn, person)
-        if address:
-            self.model.address = address
-            self.proxy.update('address_str', address)
 
     def on_was_delivered_check__toggled(self, button):
         active = button.get_active()
