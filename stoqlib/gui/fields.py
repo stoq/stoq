@@ -35,11 +35,21 @@ _ = stoqlib_gettext
 
 
 class DomainChoiceField(ChoiceField):
-    editor = gobject.property(type=object)
+    default_overrides = dict(has_add_button=True, has_edit_button=True)
 
-    default_overrides = dict(can_add=True, can_edit=True)
+    can_add = gobject.property(type=bool, default=True)
+    can_edit = gobject.property(type=bool, default=True)
+    can_view = gobject.property(type=bool, default=True)
 
     # Field
+
+    def attach(self):
+        self.connect('notify::can-add', self._on_can_add__notify)
+        self.connect('notify::can-edit', self._on_can_edit__notify)
+        self.connect('notify::can-view', self._on_can_view__notify)
+        # Make sure we set the buttons state properly
+        self._update_add_button_sensitivity()
+        self._update_edit_button_sensitivity()
 
     def add_button_clicked(self, button):
         self._run_editor()
@@ -48,8 +58,7 @@ class DomainChoiceField(ChoiceField):
         self._run_editor(self.widget.get_selected())
 
     def content_changed(self):
-        self.edit_button.set_sensitive(
-            bool(self.widget.get_selected()))
+        self._update_edit_button_sensitivity()
 
     # Private
 
@@ -63,6 +72,23 @@ class DomainChoiceField(ChoiceField):
             self.widget.select(model)
         trans.close()
 
+    def _update_add_button_sensitivity(self):
+        self.add_button.set_sensitive(self.can_add)
+
+    def _update_edit_button_sensitivity(self):
+        has_selected = bool(self.widget.get_selected())
+        can_edit_or_view = self.can_edit or self.can_view
+        self.edit_button.set_sensitive(has_selected and can_edit_or_view)
+
+    def _on_can_add__notify(self, obj, pspec):
+        self._update_add_button_sensitivity()
+
+    def _on_can_edit__notify(self, obj, pspec):
+        self._update_edit_button_sensitivity()
+
+    def _on_can_view__notify(self, obj, pspec):
+        self._update_edit_button_sensitivity()
+
     # Overrides
 
     def run_dialog(self, trans, model):
@@ -71,6 +97,8 @@ class DomainChoiceField(ChoiceField):
 
 class PaymentCategoryField(DomainChoiceField):
     category_type = gobject.property(type=object, default=None)
+
+    # Field
 
     def populate(self, value, trans):
         from stoqlib.domain.payment.category import PaymentCategory
@@ -84,14 +112,13 @@ class PaymentCategoryField(DomainChoiceField):
         # FIXME: Move to noun
         self.add_button.set_tooltip_text(_("Add a new payment category"))
         self.edit_button.set_tooltip_text(_("Edit the selected payment category"))
-        self.edit_button.set_sensitive(False)
         self.widget.set_sensitive(bool(categories))
 
     def run_dialog(self, trans, category):
         from stoqlib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor
         from stoqlib.gui.base.dialogs import run_dialog
         return run_dialog(PaymentCategoryEditor, self, trans, category,
-                          self.category_type)
+                          self.category_type, visual_mode=not self.can_edit)
 
 
 class PersonField(DomainChoiceField):
@@ -99,6 +126,8 @@ class PersonField(DomainChoiceField):
     default_overrides.update(use_entry=True)
 
     person_type = gobject.property(type=object)
+
+    # Field
 
     def populate(self, person, trans):
         from stoqlib.domain.person import Client, Supplier, Transporter, SalesPerson
@@ -146,4 +175,5 @@ class PersonField(DomainChoiceField):
             raise NotImplementedError(self.person_type)
 
         from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-        return run_person_role_dialog(editor, self, trans, person)
+        return run_person_role_dialog(editor, self, trans, person,
+                                      visual_mode=not self.can_edit)
