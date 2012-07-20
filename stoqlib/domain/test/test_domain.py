@@ -68,8 +68,8 @@ def _create_domain_test():
                 setattr(obj, name, value)
 
     TODO = {
-        'Account' : 'SQLObject/Storm',
-        'AccountTransaction' : 'SQLObject/Storm',
+        'Account': 'SQLObject/Storm',
+        'AccountTransaction': 'SQLObject/Storm',
         'CommissionSource': '',
         'PurchaseItem': 'quantity_return cant be random',
         'PaymentMethod': 'missing account',
