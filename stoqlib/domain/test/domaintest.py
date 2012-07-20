@@ -23,6 +23,9 @@
 ##
 """ Base module to be used by all domain test modules"""
 
+from stoqlib.lib.kiwilibrary import library
+library  # pyflakes
+
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.exampledata import ExampleCreator
 
