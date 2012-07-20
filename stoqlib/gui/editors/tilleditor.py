@@ -387,6 +387,7 @@ class CashAdvanceEditor(BaseEditor):
         till = Till.get_current(self.conn)
         return Settable(employee=None,
                         payment=None,
+                        # FIXME: should send in consts.now()
                         open_date=None,
                         till=till,
                         balance=till.get_balance(),
