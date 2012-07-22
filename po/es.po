@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-05-25 12:06-0300\n"
-"PO-Revision-Date: 2012-07-20 16:01+0000\n"
+"PO-Revision-Date: 2012-07-21 06:39+0000\n"
 "Last-Translator: Jose Luis Tirado <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-07-21 05:11+0000\n"
+"X-Launchpad-Export-Date: 2012-07-22 04:47+0000\n"
 "X-Generator: Launchpad (build 15654)\n"
 "Language: es\n"
 
@@ -1675,7 +1675,7 @@ msgstr "Profundidad:"
 
 #: ../data/glade/ProductInformationSlave.ui.h:5
 msgid "<b>Stock Details</b>"
-msgstr ""
+msgstr "<b>Detalles del stock</b>"
 
 #: ../data/glade/ProductInformationSlave.ui.h:6
 #: ../data/glade/SellableItemStep.ui.h:3
@@ -1844,6 +1844,8 @@ msgstr "Comenzar la producción incluso si faltan componentes"
 #: ../data/glade/ProductionQuoteDialog.ui.h:1
 msgid "<b>Select the orders to generate a quote group for purchase:</b>"
 msgstr ""
+"<b>Seleccione los pedidos para generar un grupo de cotización para "
+"compra:</b>"
 
 #: ../data/glade/ProductsAdjustment.ui.h:6
 msgid "_Adjust"
@@ -1988,11 +1990,11 @@ msgstr ""
 
 #: ../data/glade/QualityTestEditor.ui.h:5
 msgid "Test Type:"
-msgstr ""
+msgstr "Tipo de prueba:"
 
 #: ../data/glade/QualityTestResultSlave.ui.h:1
 msgid "Quality Test Result:"
-msgstr ""
+msgstr "Resultado de prueba de calidad:"
 
 #: ../data/glade/QuoteGroupItemsSelectionStep.ui.h:1
 msgid "Select one or more quoted items to compose an order:"
@@ -2040,7 +2042,7 @@ msgstr "Comentarios..."
 #. Do not translate $CURRENCY
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:11
 msgid "Products Total ($CURRENCY):"
-msgstr ""
+msgstr "Productos totales ($CURRENCY):"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:13
@@ -2092,7 +2094,7 @@ msgstr "Productos recibidos"
 #: ../stoqlib/gui/editors/paymenteditor.py:484
 #: ../stoqlib/reporting/purchase.py:295
 msgid "Receiving Details"
-msgstr ""
+msgstr "Detalles de la recepción:"
 
 #: ../data/glade/RelationshipEditor.ui.h:1
 msgid "Model name:"
@@ -2108,7 +2110,7 @@ msgstr "<b>Número de venta:</b>"
 
 #: ../data/glade/SaleDetailsDialog.ui.h:8
 msgid "Status details"
-msgstr ""
+msgstr "Detalles del estado"
 
 #: ../data/glade/SaleDetailsDialog.ui.h:20
 msgid "Print booklets"
@@ -2124,7 +2126,7 @@ msgstr "<b>Número de factura:</b>"
 
 #: ../data/glade/SaleListToolbar.ui.h:1
 msgid "_Return"
-msgstr ""
+msgstr "_Devolución"
 
 #: ../data/glade/SaleListToolbar.ui.h:2 ../data/glade/pos.ui.h:8
 msgid "Ed_it"
@@ -2148,7 +2150,7 @@ msgstr ""
 
 #: ../data/glade/SaleQuoteItemEditor.ui.h:6
 msgid "Return Quantity:"
-msgstr ""
+msgstr "Cantidad devuelta:"
 
 #: ../data/glade/SaleQuoteItemEditor.ui.h:9
 #: ../stoqlib/gui/editors/saleeditor.py:71
@@ -2170,7 +2172,7 @@ msgstr "Deducción ($CURRENCY):"
 
 #: ../data/glade/SaleReturnSlave.ui.h:7
 msgid "Return Value:"
-msgstr ""
+msgstr "Valor devuelto:"
 
 #: ../data/glade/SaleReturnSlave.ui.h:9
 msgid "Cancellation Type:"
@@ -2205,7 +2207,7 @@ msgstr "Vencimiento"
 
 #: ../data/glade/SalesPersonStep.ui.h:11
 msgid "Add a new C.F.O.P."
-msgstr ""
+msgstr "Añadir un nuevo C.F.O.P."
 
 #: ../data/glade/SalesPersonStep.ui.h:12
 msgid "Client Category:"
@@ -2238,7 +2240,7 @@ msgstr ""
 #: ../data/glade/SellableCategoryEditor.ui.h:7
 #: ../stoqlib/gui/editors/categoryeditor.py:75
 msgid "Get from parent"
-msgstr ""
+msgstr "Obtener del padre"
 
 #: ../data/glade/SellableDetailsSlave.ui.h:1 ../stoqlib/gui/printing.py:215
 msgid "Details:"
@@ -2269,7 +2271,7 @@ msgstr "Precio de venta ($CURRENCY):"
 
 #: ../data/glade/SellableEditor.ui.h:9
 msgid "Consignment:"
-msgstr ""
+msgstr "Remesa"
 
 #: ../data/glade/SellableEditor.ui.h:10 ../stoqlib/gui/base/dialogs.py:527
 #: ../stoqlib/gui/dialogs/productiondialog.py:154
@@ -2300,7 +2302,7 @@ msgstr "Artículo:"
 
 #: ../data/glade/SellableItemStep.ui.h:5
 msgid "Stock:"
-msgstr ""
+msgstr "Stock:"
 
 #: ../data/glade/SellablePriceDialog.ui.h:1
 msgid "Apply Markup:"
@@ -2337,7 +2339,7 @@ msgstr "Permitir fracciones (p.e. 0.5Kg, 0.75mL)"
 
 #: ../data/glade/ServiceItemEditor.ui.h:1
 msgid "Estimated Fix Date:"
-msgstr ""
+msgstr "Fecha estimada de solución:"
 
 #: ../data/glade/ServiceItemEditor.ui.h:2
 msgid "  Price:"
@@ -2353,11 +2355,11 @@ msgstr "Tipo de carga:"
 
 #: ../data/glade/StartPurchaseStep.ui.h:5
 msgid "CIF (Cost Insurance Freight)"
-msgstr ""
+msgstr "CIF (coste, seguro y flete)"
 
 #: ../data/glade/StartPurchaseStep.ui.h:6
 msgid "FOB (Free On Board)"
-msgstr ""
+msgstr "FOB (franco a bordo)"
 
 #: ../data/glade/StartPurchaseStep.ui.h:8
 msgid "Expected Freight:"
@@ -2390,11 +2392,11 @@ msgstr ""
 #. To be filled
 #: ../data/glade/StartQuoteStep.ui.h:2 ../stoqlib/reporting/purchase.py:348
 msgid "Deadline:"
-msgstr ""
+msgstr "Fecha límite:"
 
 #: ../data/glade/StartQuoteStep.ui.h:4
 msgid "Quote group:"
-msgstr ""
+msgstr "Grupo de cotización:"
 
 #. Transporter/RemovedBy Combo
 #: ../data/glade/StartStockDecreaseStep.ui.h:3
@@ -2408,11 +2410,11 @@ msgstr ""
 #: ../data/glade/StartStockDecreaseStep.ui.h:5
 #: ../data/glade/StockDecreaseDetails.ui.h:4
 msgid "Cfop:"
-msgstr ""
+msgstr "Cfop:"
 
 #: ../data/glade/StationEditor.ui.h:2
 msgid "Active:"
-msgstr ""
+msgstr "Activo:"
 
 #: ../data/glade/StockDecreaseDetails.ui.h:7
 #: ../stoqlib/gui/dialogs/purchasedetails.py:235
@@ -2421,7 +2423,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/paymenteditor.py:467
 #: ../stoqlib/reporting/stockdecreasereceipt.py:81
 msgid "Reason"
-msgstr ""
+msgstr "Motivo"
 
 #: ../data/glade/StockTransferFinishStep.ui.h:1
 msgid "Sending branch:"
@@ -2429,7 +2431,7 @@ msgstr ""
 
 #: ../data/glade/StockTransferFinishStep.ui.h:3
 msgid "Sender:"
-msgstr ""
+msgstr "Remitente:"
 
 #: ../data/glade/StockTransferFinishStep.ui.h:4
 msgid "Receiving branch:"
@@ -2438,35 +2440,35 @@ msgstr ""
 #: ../data/glade/StockTransferFinishStep.ui.h:5
 #: ../data/glade/TransferOrderDetails.ui.h:4
 msgid "Receival date:"
-msgstr ""
+msgstr "Fecha de recepción:"
 
 #: ../data/glade/StockTransferFinishStep.ui.h:6
 msgid "Receiver:"
-msgstr ""
+msgstr "Receptor:"
 
 #: ../data/glade/SupplierDetailsDialog.ui.h:5 ../stoq/gui/calendar.py:303
 msgid "Purchases"
-msgstr ""
+msgstr "Compras"
 
 #: ../data/glade/SupplierDetailsSlave.ui.h:1
 msgid "Supplier Status:"
-msgstr ""
+msgstr "Estado del proveedor:"
 
 #: ../data/glade/SupplierDetailsSlave.ui.h:2
 msgid "Product Types:"
-msgstr ""
+msgstr "Tipos de productos:"
 
 #: ../data/glade/SystemParameterEditor.ui.h:1
 msgid "Group:"
-msgstr ""
+msgstr "Grupo:"
 
 #: ../data/glade/SystemParameterEditor.ui.h:2
 msgid "Parameter Name:"
-msgstr ""
+msgstr "Nombre del parámetro:"
 
 #: ../data/glade/SystemParameterEditor.ui.h:3
 msgid "Current Value:"
-msgstr ""
+msgstr "Valor actual:"
 
 #: ../data/glade/SystemParameterEditor.ui.h:4
 #: ../stoqlib/gui/editors/preferenceseditor.py:140
@@ -2478,15 +2480,15 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:439 ../stoqlib/lib/parameters.py:446
 #: ../stoqlib/lib/parameters.py:513 ../stoqlib/lib/parameters.py:533
 msgid "General"
-msgstr ""
+msgstr "General"
 
 #: ../data/glade/TaxICMSSlave.ui.h:1
 msgid "Origin:"
-msgstr ""
+msgstr "Origen:"
 
 #: ../data/glade/TefStep.ui.h:1
 msgid "<b>TEF Plugin</b>"
-msgstr ""
+msgstr "<b>Complemento TEF</b>"
 
 #: ../data/glade/TefStep.ui.h:2
 msgid ""
@@ -2494,24 +2496,31 @@ msgid ""
 "\n"
 "Please fill in your details and will contact you within two business days:"
 msgstr ""
+"Para activar TEF se requiere de la instalación de software adicional.\n"
+"\n"
+"Por favor, rellene los detalles y nos podremos en contacto con usted en los "
+"próximos dos días laborables:"
 
 #: ../data/glade/TefStep.ui.h:7
 msgid "Phone:"
-msgstr ""
+msgstr "Teléfono:"
 
 #: ../data/glade/TefStep.ui.h:8
 msgid "Enviando Dados..."
-msgstr ""
+msgstr "Enviando datos..."
 
 #: ../data/glade/TefStep.ui.h:9
 msgid ""
 "An error ocurred sending your details. Please <a "
 "href=\"http://www.stoq.com.br/contato\">contact us</a>."
 msgstr ""
+"Ha ocurrido un error al enviar los detalles. Por favor, <a "
+"href=\"http://www.stoq.com.br/contato\">póngase en contacto con nostros</a>."
 
 #: ../data/glade/TefStep.ui.h:10
 msgid "Fill in the form above and then click <b>Forward</b> to continue."
 msgstr ""
+"Rellene el formulario anterior y pulse <b>Siguiente</b> para continuar."
 
 #: ../data/glade/TillClosing.ui.h:1
 msgid "Till Closing"
@@ -2519,11 +2528,11 @@ msgstr ""
 
 #: ../data/glade/TillClosing.ui.h:2
 msgid "<b>General Details:</b>"
-msgstr ""
+msgstr "<b>Detalles generales:</b>"
 
 #: ../data/glade/TillClosing.ui.h:4
 msgid "<b>Cash Amounts:</b>"
-msgstr ""
+msgstr "<b>Cantidades de efectivo:</b>"
 
 #: ../data/glade/TillClosing.ui.h:5
 msgid "Float Remaining:"
@@ -2566,7 +2575,7 @@ msgstr ""
 
 #: ../data/glade/UpdateSchemaStep.ui.h:1
 msgid "<b>Updating Database Schema</b>"
-msgstr ""
+msgstr "<b>Actualizando el esquema de la base de datos</b>"
 
 #: ../data/glade/UpdateWelcomeStep.ui.h:1
 msgid "Update Database"
@@ -2583,6 +2592,16 @@ msgid ""
 "It is always a good idea to <b>create a backup</b> of your database before "
 "updating."
 msgstr ""
+"Stoq ya estaba actualizado, pero todavía hace falta actualizar el esquema de "
+"la base de datos.\n"
+"\n"
+"\n"
+"Pulse <b>Siguiente</b> para comenzar la actualización del esquema de la base "
+"de datos.\n"
+"\n"
+"\n"
+"Siempre es una buena idea <b>hacer una copia de seguridad</b> de su base de "
+"datos antes de actualizar."
 
 #: ../data/glade/UserDetailsSlave.ui.h:2
 msgid "Profile:"
@@ -2703,7 +2722,7 @@ msgstr ""
 
 #: ../plugins/books/bookssearch.py:51
 msgid "<b>Total:</b>"
-msgstr ""
+msgstr "<b>Total:</b>"
 
 #. Branch
 #: ../plugins/books/bookssearch.py:65
@@ -3447,7 +3466,7 @@ msgstr ""
 
 #: ../plugins/magento/glade/MagentoConfigEditor.ui.h:7
 msgid "<b>Server configuration</b>"
-msgstr ""
+msgstr "<b>Configuración del servidor</b>"
 
 #: ../plugins/magento/gui/editor/magentoeditor.py:44
 msgid "Magento config"
@@ -3599,7 +3618,7 @@ msgstr ""
 #: ../stoq/gui/accounts.py:99
 #, python-format
 msgid "No payments in the <b>%s</b> category were found."
-msgstr ""
+msgstr "No se han encontrado pagos en la categoría <b>%s</b>."
 
 #: ../stoq/gui/accounts.py:120
 msgid "Show"
@@ -3990,6 +4009,11 @@ msgid ""
 "be aware that it may behave incorrectly, crash or even loose your data.\n"
 "<b>Do not use in production.</b>"
 msgstr ""
+"Actualmente está usando una <b>versión inestable</b> de Stoq que esta en "
+"desarrollo,\n"
+"tenga en cuenta de que puede comportarse incorrectamente, fallar o incluso "
+"perder sus datos.\n"
+"<b>No la use en producción.</b>"
 
 #: ../stoq/gui/application.py:493
 msgid ""
@@ -4073,7 +4097,7 @@ msgstr ""
 #: ../stoq/gui/application.py:1504
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
-msgstr ""
+msgstr "<b>Hay una  nueva versión de Stoq disponible (%s)</b>"
 
 #: ../stoq/gui/calendar.py:91 ../stoqlib/lib/prettydate.py:87
 msgid "today"
@@ -4464,7 +4488,7 @@ msgstr ""
 
 #: ../stoq/gui/config.py:756
 msgid "Installation successful, click <b>Forward</b> to continue."
-msgstr ""
+msgstr "Instalación con éxito, pulse <b>Siguiente</b> para continuar."
 
 #: ../stoq/gui/config.py:778
 msgid "Run Stoq"
@@ -5586,7 +5610,7 @@ msgstr ""
 
 #: ../stoq/gui/purchase.py:184
 msgid "<b>Orders total:</b>"
-msgstr ""
+msgstr "<b>Total de pedidos:</b>"
 
 #: ../stoq/gui/purchase.py:199
 msgid "Search for purchase orders"
