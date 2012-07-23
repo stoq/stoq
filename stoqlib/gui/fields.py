@@ -189,8 +189,7 @@ class PersonField(DomainChoiceField):
         else:
             raise AssertionError(self.person_class)
 
-        items = [(f.person.name, f) for f in facets]
-        self.widget.prefill(items)
+        self.widget.prefill(api.for_person_combo(facets))
 
         if person:
             facet = person_type.selectOneBy(

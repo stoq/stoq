@@ -82,11 +82,11 @@ class StartPurchaseStep(WizardEditorStep):
 
     def _fill_supplier_combo(self):
         suppliers = Supplier.get_active_suppliers(self.conn)
-        self.supplier.prefill(api.for_combo(suppliers))
+        self.supplier.prefill(api.for_person_combo(suppliers))
 
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.conn)
-        self.branch.prefill(api.for_combo(branches))
+        self.branch.prefill(api.for_person_combo(branches))
 
     def _setup_widgets(self):
         allow_outdated = sysparam(self.conn).ALLOW_OUTDATED_OPERATIONS
@@ -433,8 +433,8 @@ class FinishPurchaseStep(WizardEditorStep):
         self.add_transporter.set_tooltip_text(_("Add a new transporter"))
         self.edit_transporter.set_tooltip_text(_("Edit the selected transporter"))
 
-        items = api.for_combo(Transporter.get_active_transporters(self.conn))
-        self.transporter.prefill(items)
+        items = Transporter.get_active_transporters(self.conn)
+        self.transporter.prefill(api.for_person_combo(items))
         self.transporter.set_sensitive(bool(items))
         self.edit_transporter.set_sensitive(bool(items))
 

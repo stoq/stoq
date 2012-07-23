@@ -35,7 +35,7 @@ from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
-from stoqlib.domain.person import (ClientView, LoginUser,
+from stoqlib.domain.person import (Client, LoginUser,
                                    ClientCategory)
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.payment.group import PaymentGroup
@@ -85,7 +85,7 @@ class StartNewLoanStep(WizardEditorStep):
         self.salesperson_lbl.set_text(_(u'Responsible:'))
         self.salesperson.model_attribute = 'responsible'
         users = LoginUser.selectBy(is_active=True, connection=self.conn)
-        self.salesperson.prefill(api.for_combo(users))
+        self.salesperson.prefill(api.for_person_combo(users))
         self.salesperson.set_sensitive(False)
 
         self._fill_clients_combo()
@@ -118,9 +118,8 @@ class StartNewLoanStep(WizardEditorStep):
         # FIXME: This should not be using a normal ProxyComboEntry,
         #        we need a specialized widget that does the searching
         #        on demand.
-        clients = ClientView.get_active_clients(self.conn)
-        clients = clients.orderBy('name')
-        self.client.prefill([(c.name, c.client) for c in clients])
+        clients = Client.get_active_clients(self.conn)
+        self.client.prefill(api.for_person_combo(clients))
         self.client.mandatory = True
 
     def _fill_clients_category_combo(self):

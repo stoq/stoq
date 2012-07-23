@@ -141,6 +141,15 @@ class StoqAPI(object):
     def get_l10n_field(self, conn, field_name, country=None):
         return get_l10n_field(conn, field_name, country=country)
 
+    def for_person_combo(self, resultset):
+        # This is fetching all persons to cache the objects and avoid extra
+        # queries when constructing the combo strings.
+        from stoqlib.domain.person import Person
+        people = list(Person.select((Person.q.id == resultset.sourceClass.q.personID),
+                                    connection=resultset._getConnection()))
+        people  # pyflakes
+        return self.for_combo(resultset)
+
     def for_combo(self, resultset, attr=None, empty=None, sorted=True):
         """
         Prepares the result of a table for inserting into a combo.

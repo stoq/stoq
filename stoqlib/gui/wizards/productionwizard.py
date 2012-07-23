@@ -70,12 +70,12 @@ class OpenProductionOrderStep(WizardEditorStep):
 
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.conn)
-        self.branch.prefill(api.for_combo(branches))
+        self.branch.prefill(api.for_person_combo(branches))
 
     def _fill_responsible_combo(self):
         employees = Employee.selectBy(status=Employee.STATUS_NORMAL,
                                       connection=self.conn)
-        self.responsible.prefill(api.for_combo(employees))
+        self.responsible.prefill(api.for_person_combo(employees))
 
     def _setup_widgets(self):
         self._fill_branch_combo()

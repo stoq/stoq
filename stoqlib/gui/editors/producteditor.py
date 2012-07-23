@@ -535,7 +535,7 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
 
     def get_targets(self):
         suppliers = Supplier.get_active_suppliers(self.conn)
-        return [(s.person.name, s) for s in suppliers]
+        return api.for_person_combo(suppliers)
 
     def get_relations(self):
         return self._product.get_suppliers_info()
