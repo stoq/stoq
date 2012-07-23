@@ -303,6 +303,12 @@ class AppWindow(GladeDelegate):
         self._check_version()
         self._update_toolbar_style()
 
+        # json will restore tuples as lists. We need to convert them
+        # to tuples or the comparison bellow won't work.
+        actual_version = tuple(api.user_settings.get('actual-version', (0,)))
+        if stoq.stoq_version > actual_version:
+            self._display_changelog_message()
+
         if not stoq.stable and not api.is_developer_mode():
             self._display_unstable_version_message()
 
@@ -492,6 +498,15 @@ class AppWindow(GladeDelegate):
                 'While that inventory is open, you will be unable to do '
                 'operations that modify your stock.')
         self.inventory_bar = self.add_info_bar(gtk.MESSAGE_WARNING, msg)
+
+    def _display_changelog_message(self):
+        msg = _("Welcome to Stoq version %s!") % stoq.version
+
+        button = gtk.Button(_("See what's new"))
+        button.connect('clicked', self._on_show_chagelog__clicked)
+
+        self._changelog_bar = self.add_info_bar(gtk.MESSAGE_INFO, msg,
+                                                action_widget=button)
 
     def _check_demo_mode(self):
         if not api.sysparam(self.conn).DEMO_MODE:
@@ -1304,6 +1319,11 @@ class AppWindow(GladeDelegate):
                 api.user_settings.remove(key)
             except KeyError:
                 pass
+
+    def _on_show_chagelog__clicked(self, button):
+        show_section('changelog')
+        self._changelog_bar.hide()
+        api.user_settings.set('actual-version', stoq.stoq_version)
 
     def _on_enable_production__clicked(self, button):
         if not self.can_close_application():

@@ -1,0 +1,52 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="changelog">
+
+  <title>Novidades da versão</title>
+  <info>
+    <desc>
+      Novidades da versão 1.4
+    </desc>
+
+    <link type="guide" xref="index" group="changelog" />
+    <link type="seealso" xref="about" />
+    <link type="seealso" xref="overview" />
+    <link type="seealso" xref="faq" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Confira as principais novidades introduzidas no último lançamento do
+    <app>Stoq</app>.
+  </p>
+  <note style="tip">
+    <p>
+      Você pode encontrar um histórico de lançamentos antigos em:
+      <link href="http://www.stoq.com.br/historico/">Histórico de Lançamentos</link>
+    </p>
+  </note>
+
+  <section id="last-version">
+    <title>Novidades da versão 1.4</title>
+    <p>
+      Data do lançamento: TBA
+    </p>
+    <list>
+      <title>Principais novidades</title>
+      <item>
+        <p>
+          TODO
+        </p>
+      </item>
+    </list>
+    <list>
+      <title>Bugs importantes corrigidos</title>
+      <item>
+        <p>
+          TODO
+        </p>
+      </item>
+    </list>
+  </section>
+
+</page>

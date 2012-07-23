@@ -32,6 +32,8 @@ extra_version = 0
 release_date = (2012, 5, 10)
 stable = True
 
-version = '%s.%s.%s' % (major_version, minor_version, micro_version)
+stoq_version = (major_version, minor_version, micro_version)
 if extra_version > 0:
-    version += '.%d' % (extra_version, )
+    stoq_version = stoq_version + (extra_version,)
+
+version = '.'.join(map(str, stoq_version))
