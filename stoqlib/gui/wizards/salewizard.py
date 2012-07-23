@@ -34,7 +34,7 @@ from stoqlib.database.exceptions import IntegrityError
 from stoqlib.database.orm import AND
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.person import (ClientView,
+from stoqlib.domain.person import (Client,
                                    CreditProvider, SalesPerson, Transporter)
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
@@ -311,17 +311,16 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         # FIXME: This should not be using a normal ProxyComboEntry,
         #        we need a specialized widget that does the searching
         #        on demand.
-        clients = ClientView.get_active_clients(self.conn)
-        clients = clients.orderBy('name')
-        items = [(c.name, c.client) for c in clients]
-        self.client.prefill(items)
-        self.client.set_sensitive(len(items))
+
+        clients = Client.get_active_clients(self.conn)
+        self.client.prefill(api.for_person_combo(clients))
+        self.client.set_sensitive(len(self.client.get_model()))
         marker('Filled clients')
 
     def _fill_transporter_combo(self):
         marker('Filling transporters')
         transporters = Transporter.get_active_transporters(self.conn)
-        items = api.for_combo(transporters)
+        items = api.for_person_combo(transporters)
         self.transporter.prefill(items)
         self.transporter.set_sensitive(len(items))
         marker('Filled transporters')
@@ -397,7 +396,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
         marker('Filling sales persons')
         salespersons = SalesPerson.select(connection=self.conn)
-        self.salesperson.prefill(api.for_combo(salespersons))
+        self.salesperson.prefill(api.for_person_combo(salespersons))
         marker('Finished filling sales persons')
 
         marker('Read parameter')

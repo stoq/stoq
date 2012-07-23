@@ -373,10 +373,8 @@ class CashAdvanceEditor(BaseEditor):
         return self.employee_combo.get_selected_label()
 
     def _setup_widgets(self):
-        # FIXME: Implement and use IDescribable on Employee
-        employees = [(e.person.name, e)
-                     for e in Employee.select(connection=self.conn)]
-        self.employee_combo.prefill(employees)
+        employees = Employee.select(connection=self.conn)
+        self.employee_combo.prefill(api.for_person_combo(employees))
         self.employee_combo.set_active(0)
 
     #

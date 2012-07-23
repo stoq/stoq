@@ -77,7 +77,7 @@ class StartQuoteStep(WizardEditorStep):
         self.quote_group.set_text(quote_group)
 
         branches = Branch.get_active_branches(self.conn)
-        self.branch_combo.prefill(api.for_combo(branches))
+        self.branch_combo.prefill(api.for_person_combo(branches))
         self.notes.set_accepts_tab(False)
 
     def post_init(self):

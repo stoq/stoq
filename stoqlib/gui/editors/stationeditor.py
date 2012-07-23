@@ -62,7 +62,7 @@ class StationEditor(BaseEditor):
 
     def setup_proxies(self):
         branches = Branch.select(connection=self.conn)
-        self.branch.prefill(api.for_combo(branches))
+        self.branch.prefill(api.for_person_combo(branches))
 
         self.add_proxy(self.model, StationEditor.proxy_widgets)
         if not self.edit_mode:

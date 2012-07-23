@@ -36,7 +36,7 @@ from stoqlib.api import api
 from stoqlib.database.orm import AND, OR
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.person import ClientView, ClientCategory, SalesPerson
+from stoqlib.domain.person import ClientCategory, SalesPerson, Client
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.sellable import Sellable
@@ -83,7 +83,7 @@ class StartSaleQuoteStep(WizardEditorStep):
 
         # Salesperson combo
         salespersons = SalesPerson.select(connection=self.conn)
-        self.salesperson.prefill(api.for_combo(salespersons))
+        self.salesperson.prefill(api.for_person_combo(salespersons))
         if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
             self.salesperson.set_sensitive(False)
         else:
@@ -109,9 +109,10 @@ class StartSaleQuoteStep(WizardEditorStep):
         # FIXME: This should not be using a normal ProxyComboEntry,
         #        we need a specialized widget that does the searching
         #        on demand.
-        clients = ClientView.get_active_clients(self.conn)
-        clients = clients.orderBy('name')
-        self.client.prefill([(c.name, c.client) for c in clients])
+        clients = Client.get_active_clients(self.conn)
+        self.client.prefill(api.for_person_combo(clients))
+        # TODO: Implement a has_items() in kiwi
+        self.client.set_sensitive(len(self.client.get_model()))
 
     def _fill_clients_category_combo(self):
         categories = ClientCategory.select(connection=self.conn).orderBy('name')
