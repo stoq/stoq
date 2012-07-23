@@ -88,7 +88,6 @@ class PaymentEditor(BaseEditor):
         :param model: a :class:`stoqlib.domain.payment.payment.Payment` object or None
 
         """
-        self._is_new_model = not model
         self.fields['person'].person_type = self.person_type
         self.fields['category'].category_type = self.category_type
 
@@ -156,17 +155,11 @@ class PaymentEditor(BaseEditor):
             self._create_repeated_payments()
         return self.model
 
-    def can_edit_details(self):
-        for widget in [self.value, self.due_date, self.person,
-                       self.repeat, self.method]:
-            widget.set_sensitive(True)
-        self.details_button.hide()
-
     # Private
 
     def _fill_method_combo(self):
         methods = set()
-        if self._is_new_model:
+        if not self.edit_mode:
             methods.update(set(PaymentMethod.get_creatable_methods(
                 self.trans,
                 self.payment_type,
@@ -191,9 +184,13 @@ class PaymentEditor(BaseEditor):
         self.details_button = self.add_button(label)
         self.details_button.connect('clicked',
                                     self._on_details_button__clicked)
-        for widget in [self.value, self.due_date, self.person,
-                       self.repeat, self.end_date]:
-            widget.set_sensitive(False)
+
+        self.end_date.set_sensitive(False)
+        if self.edit_mode:
+            for field_name in ['value', 'due_date', 'person',
+                               'repeat', 'end_date']:
+                field = self.fields[field_name]
+                field.set_read_only()
 
     def _show_order_dialog(self):
         group = self.model.group
@@ -319,15 +316,6 @@ class InPaymentEditor(PaymentEditor):
     help_section = 'account-receivable'
     category_type = PaymentCategory.TYPE_RECEIVABLE
 
-    def __init__(self, conn, model=None, category=None):
-        """Edit or display incoming payments
-        :param conn: a database connection
-        :param model: a :class:`Payment` object or None
-        """
-        PaymentEditor.__init__(self, conn, model, category=category)
-        if model is None or not model.is_inpayment():
-            self.can_edit_details()
-
 
 class OutPaymentEditor(PaymentEditor):
     payment_type = Payment.TYPE_OUT
@@ -336,15 +324,6 @@ class OutPaymentEditor(PaymentEditor):
     _person_label = _("Recipient:")
     help_section = 'account-payable'
     category_type = PaymentCategory.TYPE_PAYABLE
-
-    def __init__(self, conn, model=None, category=None):
-        """Edit or display outgoing payments
-        :param conn: a database connection
-        :param model: a :class:`Payment` object or None
-        """
-        PaymentEditor.__init__(self, conn, model, category=category)
-        if model is None or not model.is_outpayment():
-            self.can_edit_details()
 
 
 class LonelyPaymentDetailsDialog(BaseEditor):
