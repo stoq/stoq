@@ -190,7 +190,7 @@ class PaymentEditor(BaseEditor):
             for field_name in ['value', 'due_date', 'person',
                                'repeat', 'end_date']:
                 field = self.fields[field_name]
-                field.set_read_only()
+                field.set_sensitive(False)
 
     def _show_order_dialog(self):
         group = self.model.group
