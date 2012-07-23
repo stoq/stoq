@@ -23,11 +23,21 @@
 ##
 """ Crash report dialog """
 
+# When running this file we need to explicitly say that we want to use
+# the gtk2reactor, otherwise the poll reactor will be installed when
+# t.i.reactor is first accessed/used.
+if __name__ == '__main__':
+    from stoqlib.net import gtk2reactor
+    gtk2reactor.install()
+
+import os
+
 import gtk
 
+from stoqlib.api import api
 from kiwi.component import get_utility
 from kiwi.ui.dialogs import HIGAlertDialog
-from twisted.internet import defer
+from twisted.internet import defer, reactor
 
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.lib.crashreport import ReportSubmitter
@@ -139,3 +149,13 @@ def show_dialog(interactive=True):
     parent = get_current_toplevel()
     crd = CrashReportDialog(parent)
     return crd.run()
+
+
+if __name__ == '__main__':
+    ec = api.prepare_test()
+    d = show_dialog()
+
+    def cb(*args):
+        os._exit(0)
+    d.addCallback(cb)
+    reactor.run()
