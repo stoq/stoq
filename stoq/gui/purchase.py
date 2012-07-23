@@ -184,7 +184,8 @@ class PurchaseApp(SearchableAppWindow):
             self.SearchQuotes,
             self.Services])
         self.search.set_summary_label(column='total',
-                                      label=_('<b>%s</b>' % (api.escape('Orders total:'), )),
+                                      label=('<b>%s</b>' %
+                                             api.escape(_('Orders total:'))),
                                       format='<b>%s</b>',
                                       parent=self.get_statusbar_message_area())
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)

@@ -286,7 +286,7 @@ _details = [
         _('General'),
         _('Allow registration of new city locations'),
         # Change the note here when we have more locations to reflect it
-        _('Allow to register new city locations. A city location is a'
+        _('Allow to register new city locations. A city location is a '
           'single set of a country + state + city.\n'
           'NOTE: Right now this will only work for brazilian locations.'),
         bool, initial=False),
