@@ -108,7 +108,7 @@ class BaseEditorSlave(GladeSlaveDelegate):
 
         if self.fields:
             for field in self.fields.values():
-                field.set_read_only()
+                field.set_sensitive(False)
                 field.can_edit = False
 
         self.update_visual_mode()
