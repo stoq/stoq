@@ -286,7 +286,7 @@ def _register_branch(conn, station_name):
     trans = new_transaction()
     if not sysparam(trans).DEMO_MODE:
         settings = get_utility(IDatabaseSettings)
-        if yesno(_("The computer <u>%s</u> is not registered to the Stoq "
+        if yesno(_("The computer '%s' is not registered to the Stoq "
                    "server at %s.\n\n"
                    "Do you want to register it "
                    "(requires administrator access) ?") %
