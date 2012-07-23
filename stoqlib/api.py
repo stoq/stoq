@@ -200,6 +200,7 @@ class StoqAPI(object):
         parser = get_option_parser()
         options = parser.parse_args([])[0]
         options.wizard = False
+        options.splashscreen = False
         shell = Shell(options, initial=False)
         shell.bootstrap()
 
