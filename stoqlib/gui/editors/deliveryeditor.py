@@ -119,9 +119,6 @@ class CreateDeliveryEditor(BaseEditor):
         self.refresh_ok(validation_value)
 
     def _update_widgets(self):
-        has_selected_client = bool(self.client.get_selected())
-        self.refresh_ok(has_selected_client)
-
         if self.model.notes:
             self.additional_info_label.show()
         else:
@@ -162,8 +159,6 @@ class CreateDeliveryEditor(BaseEditor):
             address = client.person.get_main_address()
             self.fields['address'].populate(address, self.conn)
             self.fields['address'].person = client.person
-
-        self._update_widgets()
 
     def _on_items__cell_edited(self, items, item, attribute):
         self.force_validation()
