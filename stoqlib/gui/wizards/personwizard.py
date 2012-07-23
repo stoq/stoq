@@ -245,6 +245,8 @@ argcheck(BasePersonRoleEditor, object, Transaction, object)
 def run_person_role_dialog(role_editor, parent, conn, model=None,
                            **editor_kwargs):
     if not model:
+        if 'visual_mode' in editor_kwargs:
+            del editor_kwargs['visual_mode']
         return run_dialog(PersonRoleWizard, parent, conn, role_editor,
                           **editor_kwargs)
     return run_dialog(role_editor, parent, conn, model, **editor_kwargs)
