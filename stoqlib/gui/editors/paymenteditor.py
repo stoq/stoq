@@ -190,7 +190,15 @@ class PaymentEditor(BaseEditor):
             for field_name in ['value', 'due_date', 'person',
                                'repeat', 'end_date']:
                 field = self.fields[field_name]
+                field.can_add = False
+                field.can_edit = False
                 field.set_sensitive(False)
+
+        person = getattr(self.model.group, self.person_attribute)
+        if person:
+            facet = self.person_type.selectOneBy(person=person,
+                                    connection=person.get_connection())
+            self.person.select(facet)
 
     def _show_order_dialog(self):
         group = self.model.group

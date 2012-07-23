@@ -69,7 +69,6 @@ class DomainChoiceField(ChoiceField):
         rv = api.finish_transaction(trans, model)
         if rv:
             self.populate(model, trans)
-            self.widget.select(model)
         trans.close()
 
     def _update_add_button_sensitivity(self):
@@ -131,7 +130,8 @@ class AddressField(DomainChoiceField):
 
     def set_from_client(self, client):
         self.person = client.person
-        self.populate(self.person.get_main_address(), self.conn)
+        self.populate(self.person.get_main_address(),
+                      self.person.get_connection())
 
     # Private
 
@@ -198,9 +198,8 @@ class PersonField(DomainChoiceField):
         self.widget.prefill(api.for_person_combo(facets))
 
         if person:
-            facet = person_type.selectOneBy(
-                person=person, connection=person.get_connection())
-            self.widget.select(facet)
+            assert isinstance(person, person_type)
+            self.widget.select(person)
 
     def run_dialog(self, trans, person):
         from stoqlib.domain.person import Client, Supplier, Transporter
