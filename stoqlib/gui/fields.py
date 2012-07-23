@@ -124,8 +124,8 @@ class AddressField(DomainChoiceField):
     def run_dialog(self, trans, address):
         from stoqlib.gui.editors.addresseditor import AddressEditor
         from stoqlib.gui.base.dialogs import run_dialog
-        return run_dialog(AddressEditor, self, trans, self.person, address,
-                          visual_mode=not self.can_edit)
+        return run_dialog(AddressEditor, self.toplevel, trans, self.person,
+                          address, visual_mode=not self.can_edit)
 
     # Public
 
@@ -161,7 +161,7 @@ class PaymentCategoryField(DomainChoiceField):
     def run_dialog(self, trans, category):
         from stoqlib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor
         from stoqlib.gui.base.dialogs import run_dialog
-        return run_dialog(PaymentCategoryEditor, self, trans, category,
+        return run_dialog(PaymentCategoryEditor, self.toplevel, trans, category,
                           self.category_type, visual_mode=not self.can_edit)
 
 
@@ -217,5 +217,5 @@ class PersonField(DomainChoiceField):
             raise NotImplementedError(self.person_type)
 
         from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-        return run_person_role_dialog(editor, self, trans, person,
+        return run_person_role_dialog(editor, self.toplevel, trans, person,
                                       visual_mode=not self.can_edit)
