@@ -50,7 +50,9 @@ class SourceTest(ClassInittableObject):
             testname = filename[len(root):]
             if not cls.filename_filter(testname):
                 continue
-            testname = testname[:-3].replace('/', '_')
+            testname = testname[:-3]
+            testname = testname.replace('/', '_')
+            testname = testname.replace('-', '_')
             name = 'test_%s' % (testname, )
             func = lambda self, r=root, f=filename: self.check_filename(r, f)
             func.__name__ = name
