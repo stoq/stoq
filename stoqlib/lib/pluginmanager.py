@@ -175,10 +175,11 @@ class PluginManager(object):
 
         This will activate the C{plugin}, calling it's C{activate}
         method and possibly doing some extra logic (e.g. logging).
-        @important: Always activate a plugin using this method because
-            the manager keeps track of all active plugins. Else you
-            probably will activate the same plugin twice, and that
-            probably won't be good :)
+
+        :param important: Always activate a plugin using this method because
+          the manager keeps track of all active plugins. Else you
+          probably will activate the same plugin twice, and that
+          probably won't be good :)
 
         :param plugin: the :class:`IPlugin` implementation of the plugin
         """

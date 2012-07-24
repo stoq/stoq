@@ -112,8 +112,8 @@ class InvoicePage(object):
                      width, height, line)
 
     def add(self, data_type, x, y, width, height, data):
-        """
-        Adds a new field to the page
+        """Adds a new field to the page
+
         :param data_type: data type of the field
         :param x: x position of the left side of the field
         :param y: y position of the upper side of the field

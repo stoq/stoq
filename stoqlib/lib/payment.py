@@ -108,7 +108,7 @@ def generate_payments_due_dates(installments_number, first_due_date,
 
     :param installments_number: the number of installments
     :param first_due_date: a :class:`datetime.datetime` or L{datetime.date}
-    object containing the first due date
+      object containing the first due date
     :param interval: the interval between due_dates
     :param interval_type: an interval_type from :class:`stoqlib.lib.defaults`
     :returns: a list with the due_dates

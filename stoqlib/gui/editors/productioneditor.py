@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2009-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,24 +21,17 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-""" Production editors
+"""Production editors
 
 This file contains several editors used in the production process:
 
-:class:`ProductionItemEditor`: A base class with some information about the product or
-                         material (description, location, unit). See subclasses
-                         for specifc usage.
-
-:class:`ProducedItemSlave`: A slave for serial number input.
-
-:class:`ProductionItemProducedEditor`: A dialog to enter the number of itens produced.
-                                 This uses the :class:`ProducedItemSlave` slave for
-                                 serial number input
-:class:`ProductionItemLostEditor`: A dialog to input the number of items lost.
-
-:class:`ProductionServiceEditor`: Editor for an service item in the production order
-:class:`ProductionMaterialEditor`: Item for an production material in the production
-                             order
+* :py:class:`ProductionItemEditor`: A base class with some information about the product or
+  material (description, location, unit). See subclassesfor specifc usage.
+* :py:class:`ProducedItemSlave`: A slave for serial number input.
+* :py:class:`ProductionItemProducedEditor`: A dialog to enter the number of itens produced.
+  This uses the :py:class:`ProducedItemSlave` slave for serial number input
+* :py:class:`ProductionServiceEditor`: Editor for an service item in the production order
+* :py:class:`ProductionMaterialEditor`: Item for an production material in the production order
 """
 
 import sys
@@ -62,10 +55,10 @@ _ = stoqlib_gettext
 
 class ProductionItemEditor(BaseEditor):
     """This is a base class for all items used in a production:
-        - ProductionItem (For both Produced and Lost items)
-        - ProductionService (When adding services to a production order)
-        - ProductionMaterial (The material that will be consumed by an
-          order)
+
+    * :py:class:`~stoqlib.domain.production.ProductionItem` (For both Produced and Lost items)
+    * :py:class:`~stoqlib.domain.production.ProductionService` (When adding services to a production order)
+    * :py:class:`~stoqlib.domain.production.ProductionMaterial` (The material that will be consumed by an order)
 
     """
 

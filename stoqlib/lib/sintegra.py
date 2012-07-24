@@ -66,8 +66,8 @@ class SintegraFile(object):
         self._registers.append(register)
 
     def add_header(self, cgc, estadual, company, city, state, fax, start, end):
-        """
-        Receive values to generate Sintegra Register type 10.
+        """Receive values to generate Sintegra Register type 10.
+
         :param cgc: the branch CNPJ number.
         :param estadual: the branch 'Inscrição estadual' number or ISENTO.
         :param company: the company fancy name.
@@ -88,8 +88,8 @@ class SintegraFile(object):
 
     def add_complement_header(self, address, number, complement, district,
                               postal, name, phone):
-        """
-        Receive values to generate Sintegra Register type 11.
+        """Receive values to generate Sintegra Register type 11.
+
         :param address: the branch address.
         :param number: the number of the branch address.
         :param complement: the complement of the branch address.
@@ -105,18 +105,18 @@ class SintegraFile(object):
     def add_fiscal_coupon(self, date, printerserial, printerid,
                           coupon_start, coupon_end, crz, cro, period_total,
                           total):
-        """
-        Receive values for generate 60M Sintegra Register.
+        """Receive values for generate 60M Sintegra Register.
+
         :param date: emission date of the fiscal coupon.
         :type date: datetime.date
         :param printerserial: serial number of the fiscal printer.
         :param printerid: the refered number (id) for the fiscal printer
-            in a branch.
+          in a branch.
         :param coupon_start: the number in which the coupon fiscal starts.
         :param coupon_end: the number in which the fiscal coupon ends.
         :param crz: counter the number of 'Zs reduction' made by fiscal printer.
         :param cro: counter how many times the fiscal printer was restarted
-            their operations.
+          their operations.
         :param period_total: value total in a fiscal day.
         :param total: total acumulated in fiscal printer.
         """
