@@ -29,7 +29,7 @@ import datetime
 import gtk
 import pango
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.ui.widgets.list import Column, ColoredColumn, SummaryLabel
 from kiwi.python import Settable
 

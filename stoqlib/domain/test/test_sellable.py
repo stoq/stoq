@@ -24,7 +24,7 @@
 
 from decimal import Decimal
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.product import Storable

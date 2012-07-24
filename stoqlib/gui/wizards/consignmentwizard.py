@@ -26,7 +26,7 @@
 
 from decimal import Decimal
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 

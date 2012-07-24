@@ -30,7 +30,7 @@ from decimal import Decimal
 
 import pango
 import gtk
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter

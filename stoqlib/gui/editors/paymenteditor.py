@@ -31,7 +31,9 @@ import operator
 from dateutil.relativedelta import relativedelta
 import gtk
 import pango
-from kiwi.datatypes import currency, ValidationError, ValueUnset
+from kiwi import ValueUnset
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 from kiwi.ui.forms import ChoiceField, DateField, PriceField, TextField
 

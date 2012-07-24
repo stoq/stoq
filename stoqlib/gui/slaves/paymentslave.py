@@ -32,7 +32,8 @@ from decimal import Decimal
 import gtk
 from kiwi import ValueUnset
 from kiwi.component import get_utility
-from kiwi.datatypes import format_price, currency, ValidationError
+from kiwi.currency import format_price, currency
+from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.utils import gsignal
 from kiwi.ui.delegates import GladeSlaveDelegate

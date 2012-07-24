@@ -25,7 +25,7 @@
 
 import datetime
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 
 from stoqlib.database.orm import ORMObjectIntegrityError, AND
 from stoqlib.domain.person import Calls, Liaison

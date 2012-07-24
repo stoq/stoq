@@ -27,7 +27,7 @@ from decimal import Decimal
 
 from gtk import gdk
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.utils import gsignal
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import Column, ColoredColumn

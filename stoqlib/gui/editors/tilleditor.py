@@ -26,7 +26,8 @@
 import datetime
 from datetime import timedelta
 
-from kiwi.datatypes import ValidationError, currency
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 

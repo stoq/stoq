@@ -27,7 +27,7 @@
 import datetime
 
 import gtk
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.ui.search import DateSearchFilter, Today
 from kiwi.ui.widgets.list import Column, ColoredColumn
 

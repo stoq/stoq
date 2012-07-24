@@ -27,7 +27,7 @@
 import datetime
 from decimal import Decimal
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.api import api

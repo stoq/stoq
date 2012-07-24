@@ -29,7 +29,8 @@ import operator
 import sys
 import traceback
 
-from kiwi.datatypes import converter, currency, ValidationError
+from kiwi.currency import currency
+from kiwi.datatypes import converter, ValidationError
 from kiwi.python import Settable
 from reportlab.lib import colors, pagesizes, utils
 from reportlab.lib.units import mm

@@ -27,7 +27,7 @@ from decimal import Decimal
 
 import gtk
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.enums import ListType
 from kiwi.python import AttributeForwarder
 from kiwi.ui.objectlist import Column

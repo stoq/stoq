@@ -27,7 +27,7 @@ import datetime
 from decimal import Decimal
 
 from kiwi.argcheck import argcheck
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 
 from stoqlib.database.orm import PriceCol, QuantityCol
 from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol

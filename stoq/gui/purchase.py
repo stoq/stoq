@@ -29,7 +29,7 @@ from decimal import Decimal
 
 import pango
 import gtk
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.objectlist import Column, SearchColumn

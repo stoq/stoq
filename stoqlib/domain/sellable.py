@@ -28,7 +28,7 @@ or a service, implemented in your own modules.
 import datetime
 from decimal import Decimal
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from stoqdrivers.enum import TaxType, UnitType
 from zope.interface import implements
 

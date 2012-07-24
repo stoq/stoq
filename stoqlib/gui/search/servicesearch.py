@@ -26,7 +26,7 @@
 
 import gtk
 from kiwi.argcheck import argcheck
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import ComboSearchFilter

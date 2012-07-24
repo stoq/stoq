@@ -24,7 +24,7 @@
 
 import gtk
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.purchase import PurchaseOrder

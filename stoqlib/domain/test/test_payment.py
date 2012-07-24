@@ -25,7 +25,7 @@
 import datetime
 from decimal import Decimal
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 
 from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.method import PaymentMethod

@@ -26,9 +26,10 @@
 
 import datetime
 
-from kiwi.datatypes import currency, ValidationError
-from kiwi.ui.objectlist import Column
 from kiwi import ValueUnset
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
+from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.account import Account

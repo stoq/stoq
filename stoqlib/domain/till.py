@@ -26,7 +26,7 @@
 
 import datetime
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.log import Logger
 
 from stoqlib.database.orm import PriceCol

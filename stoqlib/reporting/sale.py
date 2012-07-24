@@ -24,7 +24,7 @@
 ##
 """ Sales report implementation """
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 
 from stoqlib.database.runtime import get_connection, get_current_branch
 from stoqlib.domain.commission import CommissionView

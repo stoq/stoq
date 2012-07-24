@@ -27,7 +27,8 @@ import datetime
 from decimal import Decimal
 
 import gtk
-from kiwi.datatypes import currency, ValidationError
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.widgets.list import Column

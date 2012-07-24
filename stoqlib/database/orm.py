@@ -33,7 +33,7 @@ from stoqlib.lib.kiwilibrary import library
 library   # pyflakes
 
 from formencode.validators import Validator
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.db.query import NumberQueryState, StringQueryState, \
      DateQueryState, DateIntervalQueryState, QueryExecuter, \
      NumberIntervalQueryState

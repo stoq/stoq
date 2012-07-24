@@ -54,7 +54,7 @@ import hashlib
 
 from zope.interface import implements
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 
 from stoqlib.database.orm import PriceCol, PercentCol, orm_name
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,

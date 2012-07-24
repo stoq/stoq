@@ -26,7 +26,7 @@
 import datetime
 
 import gtk
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import enum
 from kiwi.ui.search import ComboSearchFilter

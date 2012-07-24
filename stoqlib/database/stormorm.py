@@ -40,7 +40,7 @@ import warnings
 from weakref import WeakValueDictionary
 
 from kiwi.db.stormintegration import StormQueryExecuter
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from psycopg2 import IntegrityError
 
 from storm import expr, Undef

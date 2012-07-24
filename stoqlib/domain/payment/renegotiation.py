@@ -26,7 +26,7 @@
 import datetime
 from zope.interface import implements
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 
 from stoqlib.database.orm import PriceCol, const
 from stoqlib.database.orm import ForeignKey, UnicodeCol, IntCol, DateTimeCol
