@@ -89,6 +89,7 @@ class Shell(object):
         self._setup_domain_slave_mapper()
         self._load_key_bindings()
         self._setup_debug_options()
+        self._check_locale()
 
     #
     # Private
@@ -101,6 +102,7 @@ class Shell(object):
     def _set_user_locale(self):
         from stoqlib.lib.settings import get_settings
 
+        self._locale_error = None
         settings = get_settings()
         lang = settings.get('user-locale', None)
         if not lang:
@@ -110,8 +112,10 @@ class Shell(object):
         try:
             locale.setlocale(locale.LC_ALL, lang)
         except locale.Error as err:
-            log.warning("Could not set locale to %s. Error message: %s" %
-                        (lang, err))
+            msg = _("Could not set locale to %s. Make sure that you have "
+                    "the packages for this locale installed.") % lang[:-6]
+            self._locale_error = (msg, err)
+            log.warning(msg)
         else:
             os.environ['LANG'] = lang
             os.environ['LANGUAGE'] = lang
@@ -363,6 +367,13 @@ class Shell(object):
         from stoqlib.lib.pluginmanager import get_plugin_manager
         manager = get_plugin_manager()
         manager.activate_installed_plugins()
+
+    def _check_locale(self):
+        if not self._locale_error:
+            return
+
+        from stoqlib.lib.message import warning
+        warning(self._locale_error[0], str(self._locale_error[1]))
 
     def _load_key_bindings(self):
         from stoqlib.gui.keybindings import load_user_keybindings
