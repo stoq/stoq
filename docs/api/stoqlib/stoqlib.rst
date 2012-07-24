@@ -49,3 +49,5 @@ Subpackages
     stoqlib.lib
     stoqlib.net
     stoqlib.reporting
+    stoqlib.test
+

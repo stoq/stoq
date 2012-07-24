@@ -9,10 +9,10 @@ net Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`paymentcharts` Module
----------------------------
+:mod:`gtk2reactor` Module
+-------------------------
 
-.. automodule:: stoqlib.net.paymentcharts
+.. automodule:: stoqlib.net.gtk2reactor
     :members:
     :undoc-members:
     :show-inheritance:

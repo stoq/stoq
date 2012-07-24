@@ -33,14 +33,6 @@ base Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`infobar` Module
----------------------
-
-.. automodule:: stoqlib.gui.base.infobar
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`lists` Module
 -------------------
 

@@ -57,6 +57,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`feedbackdialog` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.dialogs.feedbackdialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`importerdialog` Module
 ----------------------------
 
@@ -77,6 +85,14 @@ dialogs Package
 -------------------------
 
 .. automodule:: stoqlib.gui.dialogs.loandetails
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`manufacturerdialog` Module
+--------------------------------
+
+.. automodule:: stoqlib.gui.dialogs.manufacturerdialog
     :members:
     :undoc-members:
     :show-inheritance:
@@ -149,14 +165,6 @@ dialogs Package
 -----------------------------------
 
 .. automodule:: stoqlib.gui.dialogs.productcountingdialog
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`productimage` Module
---------------------------
-
-.. automodule:: stoqlib.gui.dialogs.productimage
     :members:
     :undoc-members:
     :show-inheritance:
@@ -237,6 +245,14 @@ dialogs Package
 -------------------------
 
 .. automodule:: stoqlib.gui.dialogs.saledetails
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`sellableimage` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.dialogs.sellableimage
     :members:
     :undoc-members:
     :show-inheritance:

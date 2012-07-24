@@ -81,6 +81,14 @@ domain Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`image` Module
+-------------------
+
+.. automodule:: stoqlib.domain.image
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`interfaces` Module
 ------------------------
 
@@ -287,4 +295,5 @@ Subpackages
 .. toctree::
 
     stoqlib.domain.payment
+    stoqlib.domain.test
 

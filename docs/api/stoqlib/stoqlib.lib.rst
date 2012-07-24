@@ -129,6 +129,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`decorators` Module
+------------------------
+
+.. automodule:: stoqlib.lib.decorators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`defaults` Module
 ----------------------
 
@@ -177,14 +185,6 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`imageutils` Module
-------------------------
-
-.. automodule:: stoqlib.lib.imageutils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`interfaces` Module
 ------------------------
 
@@ -205,6 +205,14 @@ lib Package
 ---------------------
 
 .. automodule:: stoqlib.lib.invoice
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`kiwilibrary` Module
+-------------------------
+
+.. automodule:: stoqlib.lib.kiwilibrary
     :members:
     :undoc-members:
     :show-inheritance:
@@ -352,3 +360,11 @@ lib Package
     :members:
     :undoc-members:
     :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+
+    stoqlib.lib.test
+

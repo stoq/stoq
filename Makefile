@@ -5,8 +5,10 @@ SCHEMADIR=/mondo/htdocs/stoq.com.br/devel/schema/
 JS_AD="http://pagead2.googlesyndication.com/pagead/show_ads.js"
 
 apidocs:
-	make -C docs/api/stoq pickle html devhelp
-	make -C docs/api/stoqlib pickle html devhelp
+	sphinx-apidoc -f -T stoq/ -o docs/api/stoq
+	make -C docs/api/stoq pickle html
+	sphinx-apidoc -f -T stoqlib/ -o docs/api/stoqlib
+	make -C docs/api/stoqlib pickle html
 
 schemadocs:
 	schemaspy -t pgsql -host anthem -db $(USER) -u $(USER) -s public -o $(SCHEMADIR) \

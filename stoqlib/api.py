@@ -122,15 +122,15 @@ class StoqAPI(object):
     @property
     def async(self):
         """Async API for dialog, it's built on-top of
-        twisted and is meant to be used in the following way:
+        twisted and is meant to be used in the following way::
 
-        @api.async
-        def _run_a_dialog(self):
-            model = yield run_dialog(SomeDialog, parent, conn)
+          @api.async
+          def _run_a_dialog(self):
+              model = yield run_dialog(SomeDialog, parent, conn)
 
-        If the function returns a value, you need to use api.asyncReturn, eg:
+        If the function returns a value, you need to use api.asyncReturn, eg::
 
-            api.asyncReturn(model)
+          api.asyncReturn(model)
         """
 
         return inlineCallbacks
@@ -141,30 +141,21 @@ class StoqAPI(object):
     def get_l10n_field(self, conn, field_name, country=None):
         return get_l10n_field(conn, field_name, country=country)
 
-    def for_person_combo(self, resultset):
-        # This is fetching all persons to cache the objects and avoid extra
-        # queries when constructing the combo strings.
-        from stoqlib.domain.person import Person
-        people = list(Person.select((Person.q.id == resultset.sourceClass.q.personID),
-                                    connection=resultset._getConnection()))
-        people  # pyflakes
-        return self.for_combo(resultset)
-
     def for_combo(self, resultset, attr=None, empty=None, sorted=True):
         """
         Prepares the result of a table for inserting into a combo.
         Formats the item and sorts them according to the current locale
 
-        @resultset: a resultset
-        @attr: attribute to use instead of IDescribable
-        @empty: if set, add an initial None item with this parameter as
+        :param resultset: a resultset
+        :param attr: attribute to use instead of :py:class:`~stoqlib.domain.interfaces.IDescribable`
+        :param empty: if set, add an initial None item with this parameter as
           a label
 
-        Example:
+        Example::
 
-        suppliers = Supplier.get_active_suppliers(connection=conn)
-        self.suppliers.prefill(api.for_combo(suppliers))
-
+          categories = SellableCategory.select(connection=self.conn)
+          self.category_combo.prefill(api.for_combo(categories,
+                                      attr='full_description'))
         """
         if attr is not None:
             items = [(getattr(obj, attr), obj) for obj in resultset]
@@ -181,6 +172,26 @@ class StoqAPI(object):
             items.insert(0, (empty, None))
         return items
 
+    def for_person_combo(self, resultset):
+        """
+        This is similar to :py:func:`~stoqlib.api.StoqAPI.for_combo` but takes a class that references a Person,
+        such as a Client, Company, Supplier etc.
+
+        :param resultset: a resultset
+
+        Example::
+
+          suppliers = Supplier.get_active_suppliers(self.conn)
+          self.supplier.prefill(api.for_person_combo(suppliers))
+        """
+        # This is fetching all persons to cache the objects and avoid extra
+        # queries when constructing the combo strings.
+        from stoqlib.domain.person import Person
+        people = list(Person.select((Person.q.id == resultset.sourceClass.q.personID),
+                                    connection=resultset._getConnection()))
+        people  # pyflakes
+        return self.for_combo(resultset)
+
     def escape(self, string):
         """Escapes the text and makes it suitable for use with a
         PangoMarkup, usually via Label.set_markup()"""
@@ -192,7 +203,7 @@ class StoqAPI(object):
         """Prepares to run a standalone test.
         This initializes Stoq and creates a transaction and returns
         an example creator.
-        @returns: a :class:`ExampleCreator
+        :returns: a :class:`ExampleCreator`
         """
         # FIXME: We need to move this into stoqlib
         from stoq.gui.shell import Shell

@@ -24,3 +24,11 @@ drivers Package
     :members:
     :undoc-members:
     :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+
+    stoqlib.drivers.test
+
