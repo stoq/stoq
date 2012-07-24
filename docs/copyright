@@ -64,6 +64,9 @@ Contains code derived from:
 * PythonDecoratorLibrary: <http://wiki.python.org/moin/PythonDecoratorLibrary#Cached_Properties>
   License: MIT
   Files stoqlib/lib/decorators.py
+* SphinxContrib: <https://bitbucket.org/birkenfeld/sphinx-contrib/>
+  License: MIT
+  Files stoqlib/lib/zopeautointerface.py
 
 Stoq pixmaps
 ============
