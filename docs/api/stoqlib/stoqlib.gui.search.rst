@@ -41,6 +41,14 @@ search Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`deliverysearch` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.search.deliverysearch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`eventsearch` Module
 -------------------------
 

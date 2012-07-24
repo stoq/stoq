@@ -17,6 +17,14 @@ importers Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`accounttransactionimporter` Module
+----------------------------------------
+
+.. automodule:: stoqlib.importers.accounttransactionimporter
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`branchimporter` Module
 ----------------------------
 

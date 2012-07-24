@@ -127,8 +127,8 @@ def validate_cpf(cpf):
 def validate_cnpj(cnpj):
     """Validates a cnpj.
 
-    :param cnpj: the cnpj to validate. Can be a string or number. If its a
-    string, only the digits will be used.
+    :param cnpj: the cnpj to validate. Can be a string or number. If it's a
+      string, only the digits will be used.
     """
     cnpj = ''.join(re.findall('\d', str(cnpj)))
 

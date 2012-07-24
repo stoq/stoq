@@ -273,14 +273,6 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`simpleeditor` Module
---------------------------
-
-.. automodule:: stoqlib.gui.editors.simpleeditor
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`stationeditor` Module
 ---------------------------
 
@@ -296,4 +288,11 @@ editors Package
     :members:
     :undoc-members:
     :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+
+    stoqlib.gui.editors.test
 

@@ -25,14 +25,6 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`bootstrap` Module
------------------------
-
-.. automodule:: stoqlib.gui.bootstrap
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`databaseform` Module
 --------------------------
 
@@ -61,6 +53,14 @@ gui Package
 -----------------------
 
 .. automodule:: stoqlib.gui.fieldgrid
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`fields` Module
+--------------------
+
+.. automodule:: stoqlib.gui.fields
     :members:
     :undoc-members:
     :show-inheritance:
@@ -121,6 +121,14 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`logo` Module
+------------------
+
+.. automodule:: stoqlib.gui.logo
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`openbrowser` Module
 -------------------------
 
@@ -161,14 +169,6 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`toolbar` Module
----------------------
-
-.. automodule:: stoqlib.gui.toolbar
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`toolmenuaction` Module
 ----------------------------
 
@@ -196,5 +196,6 @@ Subpackages
     stoqlib.gui.search
     stoqlib.gui.slaves
     stoqlib.gui.templates
+    stoqlib.gui.test
     stoqlib.gui.wizards
 

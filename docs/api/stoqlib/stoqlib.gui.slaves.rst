@@ -25,14 +25,6 @@ slaves Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`categoryslave` Module
----------------------------
-
-.. automodule:: stoqlib.gui.slaves.categoryslave
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`clientslave` Module
 -------------------------
 
@@ -105,14 +97,6 @@ slaves Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`priceslave` Module
-------------------------
-
-.. automodule:: stoqlib.gui.slaves.priceslave
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`productionslave` Module
 -----------------------------
 
@@ -125,14 +109,6 @@ slaves Package
 --------------------------
 
 .. automodule:: stoqlib.gui.slaves.productslave
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`purchaseslave` Module
----------------------------
-
-.. automodule:: stoqlib.gui.slaves.purchaseslave
     :members:
     :undoc-members:
     :show-inheritance:

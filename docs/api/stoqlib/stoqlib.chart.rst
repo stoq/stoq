@@ -9,3 +9,11 @@ chart Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`paymentcharts` Module
+---------------------------
+
+.. automodule:: stoqlib.chart.paymentcharts
+    :members:
+    :undoc-members:
+    :show-inheritance:
+

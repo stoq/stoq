@@ -17,6 +17,14 @@ reporting Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`booklet` Module
+---------------------
+
+.. automodule:: stoqlib.reporting.booklet
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`calls_report` Module
 --------------------------
 
@@ -143,4 +151,5 @@ Subpackages
 .. toctree::
 
     stoqlib.reporting.base
+    stoqlib.reporting.tests
 

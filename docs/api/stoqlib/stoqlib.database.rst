@@ -113,3 +113,10 @@ database Package
     :undoc-members:
     :show-inheritance:
 
+Subpackages
+-----------
+
+.. toctree::
+
+    stoqlib.database.test
+
