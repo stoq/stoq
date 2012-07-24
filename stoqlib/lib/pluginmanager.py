@@ -54,7 +54,7 @@ class PluginDescription(object):
         lang = settings.get('user-locale', None)
         if not lang:
             # Locale comes in a tuple like ('en_US', 'UTF-8')
-            lang = locale.getlocale()[0]
+            lang = locale.getlocale(locale.LC_MESSAGES)[0]
 
         self.long_name = config.get_locale('Plugin', 'Name', lang)
         self.description = config.get_locale('Plugin', 'Description', lang)
