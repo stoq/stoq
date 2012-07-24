@@ -41,8 +41,8 @@ class ContactEditor(BaseEditor):
     model_type = Liaison
 
     fields = dict(
-        name=TextField('Name', mandatory=True, proxy=True),
-        phone_number=TextField('Phone Number', mandatory=True, proxy=True),
+        name=TextField(_('Name'), mandatory=True, proxy=True),
+        phone_number=TextField(_('Phone Number'), mandatory=True, proxy=True),
         )
 
     def __init__(self, conn, model, person):
