@@ -75,7 +75,7 @@ def interface_format_args(obj):
     if isinstance(obj, zope.interface.interface.InterfaceClass):
         if '__init__' in obj:
             sig = interface_format_args(obj.get('__init__'))
-    else:
+    elif hasattr(obj, 'getSignatureString'):
         sig = obj.getSignatureString()
         if sig.startswith('(self, '):
             sig = "(" + sig[7:]
@@ -83,6 +83,8 @@ def interface_format_args(obj):
             sig = "(" + sig[6:]
         elif sig in ("(self)", "(cls)"):
             sig = "()"
+    else:
+        sig = '()'
     return sig
 
 
