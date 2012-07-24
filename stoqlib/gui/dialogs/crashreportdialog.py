@@ -37,6 +37,7 @@ import gtk
 from stoqlib.api import api
 from kiwi.component import get_utility
 from kiwi.ui.dialogs import HIGAlertDialog
+from kiwi.ui.search import HintedEntry
 from twisted.internet import defer, reactor
 
 from stoqlib.gui.base.dialogs import get_current_toplevel
@@ -46,6 +47,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+_DEFAULT_COMMENT = _("Add a comment (comments are not publicly visible)")
+_DEFAULT_EMAIL = _("Enter your email address here")
 _N_TRIES = 3
 
 
@@ -62,12 +65,13 @@ class CrashReportDialog(object):
         self.deferred = defer.Deferred()
 
     def _create_dialog(self):
+        app_info = get_utility(IAppInfo, None)
+
         self._dialog = HIGAlertDialog(parent=self._parent,
                                       flags=gtk.DIALOG_MODAL,
                                       type=gtk.MESSAGE_WARNING)
 
-        app_info = get_utility(IAppInfo, None)
-
+        self._dialog.set_details_label(_("Details ..."))
         self._dialog.set_primary(
             _('We\'r sorry to inform you that an error occurred while '
               'running %s. Please help us improving Stoq by sending a '
@@ -75,27 +79,96 @@ class CrashReportDialog(object):
               'Click on details to see the report text.') % (
             app_info.get('name'), ), bold=False)
 
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        view = gtk.TextView()
-        view.set_size_request(500, 350)
-        view.get_buffer().set_text(self._report_submitter.report)
-        sw.add(view)
-        view.show()
-        self._dialog.set_details_widget(sw)
+        self._create_details()
+        self._create_comments()
+        self._create_email()
+
         self._no_button = self._dialog.add_button(_('No thanks'),
                                                   gtk.RESPONSE_NO)
         self._yes_button = self._dialog.add_button(_('Send report'),
                                                    gtk.RESPONSE_YES)
+
+        self._insert_tracebacks()
+
+    def _create_details(self):
+        sw = gtk.ScrolledWindow()
+        self._dialog.set_details_widget(sw)
+        sw.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        sw.show()
+
+        view = gtk.TextView()
+        sw.add(view)
+        view.set_size_request(500, 350)
+        view.show()
+        self._details_buffer = view.get_buffer()
+
+    def _create_comments(self):
+        sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self._dialog.main_vbox.pack_start(sw, False, False, 6)
+        sw.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        sw.show()
+
+        view = gtk.TextView()
+        view.set_wrap_mode(gtk.WRAP_WORD)
+        view.set_accepts_tab(False)
+        view_style = view.get_style()
+
+        def focus_in(view, event):
+            if self._comments_buffer.props.text != _DEFAULT_COMMENT:
+                return
+            self._comments_buffer.set_text("")
+            view.modify_text(
+                gtk.STATE_NORMAL, view_style.text[gtk.STATE_NORMAL])
+        view.connect('focus-in-event', focus_in)
+
+        def focus_out(view, event):
+            if self._comments_buffer.props.text:
+                return
+            self._comments_buffer.set_text(_DEFAULT_COMMENT)
+            view.modify_text(
+                gtk.STATE_NORMAL, view_style.text[gtk.STATE_INSENSITIVE])
+
+        view.connect('focus-out-event', focus_out)
+        view.set_size_request(-1, 100)
+        sw.add(view)
+        self._comments_buffer = view.get_buffer()
+        self._comments_buffer.create_tag("highlight")
+        self._comments_buffer.insert_with_tags_by_name(
+            self._comments_buffer.get_iter_at_offset(0), _DEFAULT_COMMENT,
+            'highlight')
+        view.modify_text(
+            gtk.STATE_NORMAL, view_style.text[gtk.STATE_INSENSITIVE])
+        view.show()
+
+    def _create_email(self):
+        self._email_entry = HintedEntry()
+        self._email_entry.set_hint(_DEFAULT_EMAIL)
+        self._email_entry.show_hint()
+        self._dialog.main_vbox.pack_start(self._email_entry, False, False, 6)
+        self._email_entry.show()
+
+    def _insert_tracebacks(self):
+        report = self._report_submitter.report
+        lines = [report['log']]
+        for key in sorted(report):
+            # Tracebacks already apear in the log
+            if key in ('tracebacks', 'log'):
+                continue
+            lines.append('%s: %s' % (key, report[key]))
+
+        self._details_buffer.set_text("\n".join(lines))
 
     def _finish(self):
         self._yes_button.set_label(_("Close"))
         self._yes_button.set_sensitive(True)
 
     def _show_report(self, data):
-        label = gtk.LinkButton(
-            data['report-url'],
-            _("Report %s successfully opened") % data['report'])
+        message = data['message']
+        if data.get('report-url'):
+            label = gtk.LinkButton(data['report-url'], message)
+        else:
+            label = gtk.Label(message)
         self._dialog.vbox.pack_start(label)
         label.show()
         self._finish()
@@ -113,6 +186,14 @@ class CrashReportDialog(object):
         if self._parent:
             self._parent.destroy()
 
+        comments = self._comments_buffer.props.text
+        if comments == _DEFAULT_COMMENT:
+            comments = ""
+        self._report_submitter.report['comments'] = comments
+        email = self._email_entry.get_text()
+        if email == _DEFAULT_EMAIL:
+            email = ""
+        self._report_submitter.report['email'] = email
         self._report_submitter.submit()
 
     def _on_dialog__response(self, dialog, response):
@@ -139,7 +220,11 @@ class CrashReportDialog(object):
         self.submitted = True
 
     def _on_report__submitted(self, response, data):
-        self._show_report(data)
+        # If the requested successed but the script failed, data is None.
+        if not data:
+            self._show_error()
+        else:
+            self._show_report(data)
         self.submitted = True
 
 

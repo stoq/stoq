@@ -24,7 +24,8 @@
 """ Crash report logic """
 
 import datetime
-import platform
+import hashlib
+import locale
 import sys
 import time
 import traceback
@@ -48,79 +49,87 @@ _tracebacks = []
 _N_TRIES = 3
 
 
+def _get_revision(module):
+    if not hasattr(module, 'library'):
+        return ''
+
+    if not hasattr(module.library, 'get_revision'):
+        return ''
+
+    revision = module.library.get_revision()
+    if revision is None:
+        return ''
+    return 'r' + revision
+
+
 def collect_report():
+    report = {}
+
+    # Date and uptime
+    report['date'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    report['tz'] = time.tzname
+    report['uptime'] = get_uptime()
+    report['locale'] = locale.getlocale(locale.LC_MESSAGES)
+
+    # Python and System
+    import platform
+    report['architecture'] = platform.architecture()
+    report['distribution'] = platform.dist()
+    report['python_version'] = tuple(sys.version_info)
+    report['system'] = platform.system()
+    report['uname'] = platform.uname()
+
+    # Stoq application
     info = get_utility(IAppInfo, None)
-
-    text = ""
-    text += "Report generated at %s %s\n" % (
-        datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        ' '.join(time.tzname))
-    text += ('-' * 80) + '\n'
-
-    for i, (exctype, value, tb) in enumerate(_tracebacks):
-        text += '\n'.join(traceback.format_exception(exctype, value, tb))
-        if i != len(_tracebacks) - 1:
-            text += '-' * 60
-    text += ('-' * 80) + '\n'
-
-    if info and info.get('log'):
-        text += 'Content of %s:\n' % (info.get('log'), )
-        text += open(info.get('log')).read()
-        text += ('-' * 80) + '\n'
-
-    uptime = get_uptime()
-    text += "Application uptime: %dh%dmin\n" % (uptime / 3600,
-                                                (uptime % 3600) / 60)
-    text += "System: %r (%s)\n" % (platform.system(),
-                                   ' '.join(platform.uname()))
-    text += "Distribution: %s\n" % (' '.join(platform.dist()), )
-    text += "Architecture: %s\n" % (' '.join(platform.architecture()), )
-
-    text += "Python version: %r (%s)\n" % (
-        '.'.join(map(str, sys.version_info)),
-        platform.python_implementation())
-    import gtk
-    text += "PyGTK version: %s\n" % ('.'.join(map(str, gtk.pygtk_version)), )
-    text += "GTK version: %s\n" % ('.'.join(map(str, gtk.gtk_version)), )
-    import reportlab
-    text += "Reportlab version: %s\n" % (reportlab.Version, )
-
-    # Kiwi
-    import kiwi
-    kiwi_version = '.'.join(map(str, kiwi.__version__.version))
-    if hasattr(kiwi, 'library'):
-        if hasattr(kiwi.library, 'get_revision'):
-            revision = kiwi.library.get_revision()
-            if revision is not None:
-                kiwi_version += ' r' + revision
-    text += "Kiwi version: %s\n" % (kiwi_version, )
-
-    # Stoqdrivers
-    import stoqdrivers
-    stoqdrivers_version = '.'.join(map(str, stoqdrivers.__version__))
-    if hasattr(stoqdrivers.library, 'get_revision'):
-            revision = stoqdrivers.library.get_revision()
-            if revision is not None:
-                stoqdrivers_version += ' r' + revision
-    text += "Stoqdrivers version: %s\n" % (stoqdrivers_version, )
-
-    # App version
     if info and info.get('name'):
-        text += "%s version: %s\n" % (info.get('name'),
-                                      info.get('version'))
+        report['app_name'] = info.get('name')
+        report['app_version'] = info.get('ver')
 
-    # Psycopg / Postgres
+    # External dependencies
+    import gtk
+    report['pygtk_version'] = gtk.pygtk_version
+    report['gtk_version'] = gtk.gtk_version
+
+    import kiwi
+    report['kiwi_version'] = kiwi.__version__.version + (_get_revision(kiwi),)
+
     import psycopg2
-    text += "Psycopg version: %20s\n" % (psycopg2.__version__, )
+    try:
+        parts = psycopg2.__version__.split(' ')
+        extra = ' '.join(parts[1:])
+        report['psycopg_version'] = tuple(map(int, parts[0].split('.'))) + (extra,)
+    except:
+        report['psycopg_version'] = psycopg2.__version__
+
+    import reportlab
+    report['reportlab_version'] = reportlab.Version.split('.')
+
+    import stoqdrivers
+    report['stoqdrivers_version'] = stoqdrivers.__version__ + (
+        _get_revision(stoqdrivers),)
+
+    # PostgreSQL database server
     try:
         conn = get_connection()
-        text += "PostgreSQL version: %20s\n" % (
-            conn.queryOne('SELECT version();'))
+        pg_version = conn.queryOne('SHOW server_version;')
         conn.close()
+        report['postgresql_version'] = map(int, pg_version[0].split('.'))
     except StoqlibError:
         pass
-    text += ('-' * 80) + '\n'
-    return text
+
+    # Tracebacks
+    report['tracebacks'] = {}
+    for i, trace in enumerate(_tracebacks):
+        t = ''.join(traceback.format_exception(*trace))
+        # Eliminate duplicates:
+        md5sum = hashlib.md5(t).hexdigest()
+        report['tracebacks'][md5sum] = t
+
+    if info and info.get('log'):
+        report['log'] = open(info.get('log')).read()
+        report['log_name'] = info.get('log')
+
+    return report
 
 
 def collect_traceback(tb, output=True, submit=False):

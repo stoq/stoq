@@ -130,14 +130,19 @@ class Shell(object):
         from stoqlib.lib.kiwilibrary import library
         from stoqlib.lib.interfaces import IAppInfo
         import stoq
+        # FIXME: use only stoq.stoq_version here and all other callsites of
+        # IAppInfo
         stoq_version = stoq.version
+        stoq_ver = stoq.stoq_version
         if hasattr(library, 'get_revision'):
             rev = library.get_revision()
             if rev is not None:
                 stoq_version += ' r' + rev
+                stoq_ver += ('r' + rev,)
         info = AppInfo()
         info.set("name", "Stoq")
         info.set("version", stoq_version)
+        info.set("ver", stoq_ver)
         info.set("log", self._log_filename)
         provide_utility(IAppInfo, info)
 

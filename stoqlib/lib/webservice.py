@@ -186,18 +186,18 @@ class WebService(object):
         return self._do_request('GET', 'version.json', **params)
 
     def bug_report(self, report):
+        report['cnpj'] = self._get_cnpj()
         params = {
-            'cnpj': self._get_cnpj(),
-            'report': report,
+            'report': json.dumps(report)
         }
         if os.environ.get('STOQ_DISABLE_CRASHREPORT'):
             d = Deferred()
-            print >> sys.stderr, params
+            print >> sys.stderr, report
             d.callback({'report-url': '<not submitted>',
                         'report': '<none>'})
             return d
 
-        return self._do_request('POST', 'bugreport.json', **params)
+        return self._do_request('POST', 'v2/bugreport.json', **params)
 
     def tef_request(self, name, email, phone):
         params = {
