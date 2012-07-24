@@ -154,28 +154,33 @@ class IPaymentOperation(Interface):
 
     def payment_create(payment):
         """This is called when a payment is created
+
         :param payment: the created payment
         """
 
     def payment_delete(payment):
         """This is called just before a payment is deleted
+
         :param payment: the payment which is going to be deleted
         """
 
     def create_transaction():
         """If this payment method should create a transaction when
           paid
+
         :returns: True if an AccountTransaction should be created
         """
 
     def selectable(method):
         """This is called to find out if the method should
         be shown in the slave list of payment methods
+
         :returns: True if it should be shown
         """
 
     def creatable(method, payment_type, separate):
         """If it's possible to create new payments of this payment method type
+
         :param method: payment method
         :param payment_type: kind of payment
         :param separate: if it's created separately from a sale/purchase
@@ -183,36 +188,38 @@ class IPaymentOperation(Interface):
         """
 
     def can_cancel(payment):
-        """
-        If it's possible to cancel a payment
+        """If it's possible to cancel a payment
+
         :param payment: the payment to cancel
         """
 
     def can_change_due_date(payment):
-        """
-        If it's possible to change the due date of a payment
+        """If it's possible to change the due date of a payment
+
         :param payment: the payment to change due date
         """
 
     def can_pay(payment):
-        """
-        If it's possible to pay a payable
+        """If it's possible to pay a payable
+
         :param payment: the payment to pay
         """
 
     def can_print(payment):
-        """
-        If it's possible to print this payment
+        """If it's possible to print this payment
+
         :param payment: the payment to print
         """
 
     def print_(payment):
         """Prints this payment
+
         :param payment: the payment to print
         """
 
     def get_constant(payment):
         """This should return a stoqdriver payment method constant
+
         :param payment: the payment whose method we shout return a stoqdrivers
                         constant
         :returns: one :class:`PaymentMethodConstant`
@@ -225,18 +232,21 @@ class IPaymentOperationManager(Interface):
     """
     def get_operation_names():
         """Get the operation names registered in this manager
+
         :returns: payment names
         :rtype: list of strings
         """
 
     def register(name, operation):
         """Register a payment operation.
+
         :param name: name of the payment operation
         :param operation: the payment operation
         :type operation: an object implementing :class:`IPaymentOperation`
         """
     def get(name):
         """Get an operation given a name
+
         :param name: name of the operation
         :returns: the operation
         :rtype operation: an object implementing :class:`IPaymentOperation`
@@ -251,14 +261,17 @@ class IAppInfo(Interface):
     """Store global application data, such as
     name, version.
     """
+
     def set(name, value):
         """Sets a variable to value
+
         :param name: string, variable name
         :param value: value of the key
         """
 
     def get(name):
         """Gets a variable
+
         :param name: name of the variable to fetch
         :returns: the key for @name
         """

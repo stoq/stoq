@@ -295,31 +295,29 @@ class BaseReportTemplate(BaseDocTemplate):
                          margins=DEFAULT_MARGIN, align=flowables.CENTER,
                          extra_row=None, table_line=TABLE_LINE,
                          highlight=tables.HIGHLIGHT_ODD, *args, **kwargs):
-        """ Inserts a report table.
+        """Inserts a report table.
 
-        :param data:       A list of lists, where each nested list represents a
-                           row (naturally, each column of this nested list is a
-                           table column).
-        :type data:        list
-        :param header:     A list of string representing the header of each
-                           column.
-        :type header:      list
-        :param style:      The table style.
-        :type style        TableStyle
-        :param margins:    How much space before and after the table?
-        :type margins      float/int
-        :param align:      The table alignment. One of LEFT, RIGHT, CENTER
-                           constants defined on stoqlib reporting flowables module.
-        :type align:       One of LEFT, RIGHT or CENTER
-        :param extra_row:  An list of strings to be inserted right after
-                           the table.
-        :type extra_row:   list
+        :param data: A list of lists, where each nested list represents a
+          row (naturally, each column of this nested list is a
+          table column).
+        :type data: list
+        :param header: A list of string representing the header of each column.
+        :type header: list
+        :param style: The table style.
+        :type style: TableStyle
+        :param margins: How much space before and after the table?
+        :type margins: float/int
+        :param align: The table alignment. One of LEFT, RIGHT, CENTER
+          constants defined on stoqlib reporting flowables module.
+        :type align: One of LEFT, RIGHT or CENTER
+        :param extra_row:  An list of strings to be inserted right after the table.
+        :type extra_row: list
         :param table_line: Define the type of the line that is inserted between
-                           the table rows.
-        :type table_line:  One of TABLE_LINE or TABLE_LINE_BLANK constants.
-        :param highlight:  Sets the table highlight type.
-        :type highlight:   One of HIGHLIGHT_ODD, HIGHLIGHT_NEVER or HIGHLIGHT_ODD
-                           constants defined on stoqlib reporting tables module.
+          the table rows.
+        :type table_line: One of TABLE_LINE or TABLE_LINE_BLANK constants.
+        :param highlight: Sets the table highlight type.
+        :type highlight: One of HIGHLIGHT_ODD, HIGHLIGHT_NEVER or HIGHLIGHT_ODD
+          constants defined on stoqlib reporting tables module.
         """
         self.add_blank_space(margins)
         table_builder = tables.ReportTableBuilder(data, style, header,
@@ -334,33 +332,30 @@ class BaseReportTemplate(BaseDocTemplate):
                          margins=DEFAULT_MARGIN, align=flowables.CENTER,
                          extra_row=None, table_line=TABLE_LINE, do_header=True,
                          highlight=tables.HIGHLIGHT_ODD, *args, **kwargs):
-        """ Adds a column table.
+        """Adds a column table.
 
-        :param data:       A list of lists, where each nested list represents a
-                           row (naturally, each column of this nested list is a
-                           table column).
-        :type data:        list
-        :param columns:    A list of TableColumn instances representing the
-                           table columns
-        :type columns:     list
-        :param style:      The table style.
-        :type style        TableStyle
-        :param margins:    How much space before and after the table?
-        :type margins:     float/int
-        :param align:      The table alignment. One of LEFT, RIGHT, CENTER
-                           constants defined on stoqlib reporting flowables module.
-        :type align:       One of LEFT, RIGHT or CENTER
-        :param extra_row:  An list of strings to be inserted right after
-                           the table.
-        :type extra_row:   list
+        :param data: A list of lists, where each nested list represents a
+          row (naturally, each column of this nested list is a table column).
+        :type data: list
+        :param columns: A list of TableColumn instances representing the table columns
+        :type columns: list
+        :param style: The table style.
+        :type style: TableStyle
+        :param margins: How much space before and after the table?
+        :type margins: float/int
+        :param align: The table alignment. One of LEFT, RIGHT, CENTER
+          constants defined on stoqlib reporting flowables module.
+        :type align: One of LEFT, RIGHT or CENTER
+        :param extra_row:  An list of strings to be inserted right after the table.
+        :type extra_row: list
         :param table_line: Define the type of the line that is inserted between
-                           the table rows.
-        :type table_line:  One of TABLE_LINE or TABLE_LINE_BLANK constants.
-        :param do_header:  Must the table header be drawed? Defaults to True
-        :type do_header:   bool
-        :param highlight:  Sets the table highlight type.
-        :type highlight:   One of HIGHLIGHT_ODD, HIGHLIGHT_NEVER or HIGHLIGHT_ODD
-                           constants defined on stoqlib reporting tables module.
+          the table rows.
+        :type table_line: One of TABLE_LINE or TABLE_LINE_BLANK constants.
+        :param do_header: Must the table header be drawed? Defaults to True
+        :type do_header: bool
+        :param highlight: Sets the table highlight type.
+        :type highlight: One of HIGHLIGHT_ODD, HIGHLIGHT_NEVER or HIGHLIGHT_ODD
+          constants defined on stoqlib reporting tables module.
         """
         self.add_blank_space(margins)
         table_builder = tables.ColumnTableBuilder(data, columns, style=style,
@@ -378,33 +373,32 @@ class BaseReportTemplate(BaseDocTemplate):
                          extra_row=None, align=flowables.CENTER,
                          table_line=TABLE_LINE, highlight=tables.HIGHLIGHT_ODD,
                          summary_row=None, *args, **kwargs):
-        """ Insert an object table. Its parameters are:
+        """Insert an object table. Its parameters are:
 
-        :param objs:       A instance list, where each instance is a table row.
-        :type objs:        list.
-        :param cols:       A list of ObjectTableColumn, representing the table
-                           columns.
-        :type cols:        list
-        :param expand:     Must be the columns expanded? Defaults to False.
-        :type expand:      bool
-        :param width:      The table width.
-        :type width:       int
-        :param style:      The table style.
-        :type style:       TableStyle
-        :param margins:    How much space before and after the table?
-        :type margins:     int/float
-        :param extra_row:  An list of strings to be inserted right after
-                           the table. This data is included on the report as
-                           a normal data table after this object table.
-        :type extra_row:   list
-        :param align:      The table alignment.
-        :type align:       One of LEFT, RIGHT or CENTER
+        :param objs: A instance list, where each instance is a table row.
+        :type objs: list.
+        :param cols: A list of ObjectTableColumn, representing the table columns.
+        :type cols: list
+        :param expand: Must be the columns expanded? Defaults to False.
+        :type expand: bool
+        :param width: The table width.
+        :type width: int
+        :param style: The table style.
+        :type style: TableStyle
+        :param margins: How much space before and after the table?
+        :type margins: int/float
+        :param extra_row: An list of strings to be inserted right after the table.
+          This data is included on the report as a normal data table after this
+          object table.
+        :type extra_row: list
+        :param align: The table alignment.
+        :type align: One of LEFT, RIGHT or CENTER
         :param table_line: Define the type of the line that is inserted between
-                           the table rows.
-        :type table_line:  One of TABLE_LINE or TABLE_LINE_BLANK constants.
-        :param highlight:  Sets the table highlight type.
-        :type highight:    One of HIGHLIGHT_ODD, HIGHLIGHT_NEVER or HIGHLIGHT_ODD
-                           constants defined on stoqlib reporting tables module.
+          the table rows.
+        :type table_line: One of TABLE_LINE or TABLE_LINE_BLANK constants.
+        :param highlight: Sets the table highlight type.
+        :type highight: One of HIGHLIGHT_ODD, HIGHLIGHT_NEVER or HIGHLIGHT_ODD
+          constants defined on stoqlib reporting tables module.
         """
         assert not (expand and width), \
             'Use only expand _OR_ only width at once'
@@ -443,17 +437,18 @@ class BaseReportTemplate(BaseDocTemplate):
     def add_data_table(self, data, style=TABLE_STYLE, margins=DEFAULT_MARGIN,
                        align=flowables.LEFT, *args, **kwargs):
         """ Insert a data table on the report.
-        :param data:    The data list. It is composed of list of a lists, where
-                        each nested list represents a row. Note that the nested
-                        lists must have all the same length.
-        :type data:     list
-        :param style:   The table style.
-        :type style:    TableStyle
+
+        :param data: The data list. It is composed of list of a lists, where
+          each nested list represents a row. Note that the nested
+          lists must have all the same length.
+        :type data: list
+        :param style: The table style.
+        :type style: TableStyle
         :param margins: How much space before and after the table?
-        :type margins:  float/int
-        :param align:   The table alignment. One of LEFT, RIGHT, CENTER
-                        constants defined on stoqlib reporting flowables module.
-        :type align:    One of LEFT, RIGHT or CENTER
+        :type margins: float/int
+        :param align: The table alignment. One of LEFT, RIGHT, CENTER
+          constants defined on stoqlib reporting flowables module.
+        :type align: One of LEFT, RIGHT or CENTER
         """
         self.add_blank_space(margins)
         table_builder = tables.DataTableBuilder(data, style)

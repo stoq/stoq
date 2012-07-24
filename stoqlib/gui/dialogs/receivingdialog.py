@@ -44,9 +44,10 @@ _ = stoqlib_gettext
 class ReceivingOrderDetailsDialog(BaseEditor):
     """This dialog shows some important details about purchase receiving
     orders like:
-     - history of received products
-     - Invoice Details
-     - Order details such transporter, supplier, etc.
+
+    * history of received products
+    * Invoice Details
+    * Order details such transporter, supplier, etc.
     """
 
     title = _("Receiving Order Details")
@@ -69,7 +70,7 @@ class ReceivingOrderDetailsDialog(BaseEditor):
         total_label = value_format % api.escape(_("Total:"))
         products_summary_label = SummaryLabel(klist=self.product_list,
                                               column='total',
-                                             label=total_label,
+                                              label=total_label,
                                               value_format=value_format)
 
         products_summary_label.show()

@@ -37,8 +37,14 @@ _ = stoqlib_gettext
 class DomainChoiceField(ChoiceField):
     default_overrides = dict(has_add_button=True, has_edit_button=True)
 
+    #: If we have the permission to add new object of this kind
     can_add = gobject.property(type=bool, default=True)
+
+    #: If we have the permission to edit the currently selected object
     can_edit = gobject.property(type=bool, default=True)
+
+    #: If we have the permission to view the details of the currently
+    #: selected object
     can_view = gobject.property(type=bool, default=True)
 
     # Field
@@ -98,6 +104,7 @@ class AddressField(DomainChoiceField):
     default_overrides = DomainChoiceField.default_overrides.copy()
     default_overrides.update(use_entry=True)
 
+    #: The person the address belongs to, must be a :py:class:`stoqlib.domain.person.Person`
     person = gobject.property(type=object, default=None)
 
     # Field
@@ -141,6 +148,9 @@ class AddressField(DomainChoiceField):
 
 
 class PaymentCategoryField(DomainChoiceField):
+    #: This is the type of payment category we will display in this field, it
+    #: it should either be PaymentCategory.TYPE_PAYABLE or
+    #: PaymentCategory.TYPE_RECEIVABLE
     category_type = gobject.property(type=object, default=None)
 
     # Field
@@ -169,6 +179,8 @@ class PersonField(DomainChoiceField):
     default_overrides = DomainChoiceField.default_overrides.copy()
     default_overrides.update(use_entry=True)
 
+    #: This is the type of person we will display in this field, it
+    #: must be a class referencing a :py:class:`stoqlib.domain.person.Person`
     person_type = gobject.property(type=object)
 
     # Field

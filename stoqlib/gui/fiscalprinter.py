@@ -78,15 +78,14 @@ def _flush_interface():
 class FiscalPrinterHelper(gobject.GObject):
     """
 
-    Signals
-    =======
-      - B{till-status-changed} (bool, bool):
-        - Emitted when the status of the till has changed. it can be
-          open/closed, and while open/closed, it can be blocked
+    Signals:
 
-      - B{ecf-changed} (bool):
-        - Emitted fater the check_till method is called, indicating if a
-          ecf printer is present and functional.
+    * *till-status-changed* (bool, bool): Emitted when the status of
+      the till has changed. it can be open/closed, and while open/closed,
+      it can be blocked
+
+    * *ecf-changed* (bool): Emitted fater the check_till method is called,
+      indicating if a ecf printer is present and functional.
 
     """
                                 # Closed, Blocked

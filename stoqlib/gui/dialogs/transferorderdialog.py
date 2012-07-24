@@ -40,9 +40,10 @@ _ = stoqlib_gettext
 class TransferOrderDetailsDialog(BaseEditor):
     """This dialog shows some important details about transfer orders
     like:
-        - The source and destination branches
-        - The transfer quantity of each item
-        - The cost of each item
+
+    * The source and destination branches
+    * The transfer quantity of each item
+    * The cost of each item
     """
 
     title = _(u"Transfer Order Details")

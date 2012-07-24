@@ -326,11 +326,12 @@ def _pop_current_toplevel():
 
 
 def get_dialog(parent, dialog, *args, **kwargs):
-    """ Returns a dialog.
-    - parent: the window which is opening the dialog;
-    - dialog: the dialog class or instance;
-    - *args, **kwargs: the arguments which should be used on dialog
-      instantiation;
+    """Returns a dialog.
+
+    :param parent: the window which is opening the dialog
+    :param dialog: the dialog class or instance
+    :param args: custom positional arguments
+    :param kwargs: custom keyword arguments
     """
     if callable(dialog):
         dialog = dialog(*args, **kwargs)
@@ -350,7 +351,7 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
 
     :param dialog: the dialog class
     :param parent: parent of the dialog
-    :param args: custom positional argument
+    :param args: custom positional arguments
     :param kwargs: custom keyword arguments
     """
 

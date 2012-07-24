@@ -35,10 +35,9 @@ class ProgressDialog(GladeDelegate):
     it'll always be displayed in the center of a screen.
     The progress is pulsating and updated every 100 ms.
 
-    Signals
-    =======
-      - B{cancel} ():
-        - Emitted when a the cancel button is clicked
+    Signals:
+
+    * *cancel* (): Emitted when a the cancel button is clicked
 
     """
     gladefile = "ProgressDialog"
