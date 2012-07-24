@@ -37,7 +37,11 @@ for name, filename in [('Vera', 'Vera.ttf'),
                        ('Vera-I', 'VeraIt.ttf'),
                        ('Vera-BI', 'VeraBI.ttf')]:
     # FIXME: find a way to load a font without extracting a file
-    extracted = environ.get_resource_filename('stoq', 'fonts', filename)
+    try:
+        extracted = environ.get_resource_filename('stoq', 'fonts', filename)
+    except EnvironmentError:
+        # for doc build
+        continue
     pdfmetrics.registerFont(TTFont(name, extracted))
 
 # FIXME: Add support for TTF fonts
