@@ -1,10 +1,5 @@
-.. Stoq documentation master file, created by
-   sphinx-quickstart on Fri Feb 10 16:50:54 2012.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to Stoq's documentation!
-================================
+Stoq API reference
+==================
 
 Contents:
 
@@ -14,7 +9,6 @@ Contents:
    stoq - stoq toplevel module <stoq>
    stoq.gui - applications <stoq.gui>
    stoq.lib - misc <stoq.lib>
-   stoq.tests - tests <stoq.tests>
    stoqlib - stoqlib toplevel module <stoqlib>
    stoqlib.database - database <stoqlib.database>
    stoqlib.domain - domain classes <stoqlib.domain>
