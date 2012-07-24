@@ -160,10 +160,11 @@ class PreferencesEditor(BaseEditor):
     def _prefill_language_combo(self):
         self.language.prefill([
             (_("System default"), None),
+            (_("English"), 'en'),
             (_("English (Australia)"), 'en_AU'),
             (_("English (United Kingdom)"), 'en_GB'),
             (_("English (United States)"), 'en_US'),
-            (_("Portuguese (Portugal)"), 'pt'),
+            (_("Portuguese"), 'pt'),
             (_("Portuguese (Brazil)"), 'pt_BR'),
             ])
 
