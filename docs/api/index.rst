@@ -11,7 +11,11 @@ Contents:
 .. toctree::
    :maxdepth: 1
 
-   stoqlib - toplevel module <stoqlib>
+   stoq - stoq toplevel module <stoq>
+   stoq.gui - applications <stoq.gui>
+   stoq.lib - misc <stoq.lib>
+   stoq.tests - tests <stoq.tests>
+   stoqlib - stoqlib toplevel module <stoqlib>
    stoqlib.database - database <stoqlib.database>
    stoqlib.domain - domain classes <stoqlib.domain>
    stoqlib.drivers - drivers <stoqlib.drivers>
