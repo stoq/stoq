@@ -74,7 +74,7 @@ class StoqAPI(object):
     def trans(self):
         """Creates a new transaction and commits/closes it when done.
 
-        It should be used as:
+        It should be used as::
 
           with api.trans() as trans:
               ...
@@ -82,7 +82,7 @@ class StoqAPI(object):
         When the execution of the with statement has finished this
         will commit the object, close the transaction.
         trans.retval will be used to determine if the transaction
-        should be committed or rolled back (via finish_transaction)
+        should be committed or rolled back (via :py:func:`~stoqlib.api.StoqAPI.finish_transaction`)
         """
         trans = self.new_transaction()
         yield trans
@@ -122,20 +122,28 @@ class StoqAPI(object):
     @property
     def async(self):
         """Async API for dialog, it's built on-top of
-        twisted and is meant to be used in the following way::
+        twisted.It is meant to be used in the following way::
 
           @api.async
           def _run_a_dialog(self):
               model = yield run_dialog(SomeDialog, parent, conn)
 
-        If the function returns a value, you need to use api.asyncReturn, eg::
+        If the function returns a value, you need to use :py:func:`~stoqlib.api.StoqAPI.asyncReturn`, eg::
 
           api.asyncReturn(model)
+
+        :returns: a generator
         """
 
         return inlineCallbacks
 
     def asyncReturn(self, value=None):
+        """An async API that also returns a value,
+        see :py:func:`~stoqlib.api.StoqAPI.async` for more information.
+
+        :param value: the return value, defaults to None
+        :returns: a twisted deferred
+        """
         return returnValue(value)
 
     def get_l10n_field(self, conn, field_name, country=None):
@@ -174,8 +182,10 @@ class StoqAPI(object):
 
     def for_person_combo(self, resultset):
         """
-        This is similar to :py:func:`~stoqlib.api.StoqAPI.for_combo` but takes a class that references a Person,
-        such as a Client, Company, Supplier etc.
+        This is similar to :py:func:`~stoqlib.api.StoqAPI.for_combo` but takes a class that references a :py:class:`~stoqlib.domain.person.Person`,
+        such as a :py:class:`~stoqlib.domain.person.Client`,
+        :py:class:`~stoqlib.domain.person.Company`,
+        :py:class:`~stoqlib.domain.person.Supplier` etc.
 
         :param resultset: a resultset
 
@@ -203,7 +213,8 @@ class StoqAPI(object):
         """Prepares to run a standalone test.
         This initializes Stoq and creates a transaction and returns
         an example creator.
-        :returns: a :class:`ExampleCreator`
+
+        :returns: an :py:class:`~stoqlib.domain.exampledata.ExampleCreator`
         """
         # FIXME: We need to move this into stoqlib
         from stoq.gui.shell import Shell
