@@ -28,25 +28,218 @@
 
   <section id="last-version">
     <title>Novidades da versão 1.4</title>
+    <!--FIXME: Adicionar a data de lançamento antes do release-->
     <p>
       Data do lançamento: TBA
     </p>
+
     <list>
       <title>Principais novidades</title>
       <item>
         <p>
-          TODO
+          Busca sob demanda dos dados nos aplicativos contas a pagar e receber,
+          tornando o acesso a eles muito mais rápido;
+        </p>
+      </item>
+      <item>
+        <p>
+          Melhoria nas consultas dos aplicativos compras e vendas, tornando as
+          buscas muito mais eficientes;
+        </p>
+      </item>
+      <item>
+        <p>
+          Pagamentos feitos na forma crediário (antigo fiado) agora permitem
+          mais de uma parcela e recebimento direto, sem necessidade de criar
+          uma renegociação (somente para parcelas de uma mesma venda);
+        </p>
+      </item>
+      <item>
+        <p>
+          Nova opção para impressão de carnê para pagamentos em crediário (no
+          aplicativo contas a receber ou ao confirmar a venda);
+        </p>
+      </item>
+      <item>
+        <p>
+          Cadastro centralizado de fabricantes, evitando o cadastro incorreto
+          na composição do produto;
+        </p>
+      </item>
+      <item>
+        <p>
+          Correção da formatação de números de telefones;
+        </p>
+      </item>
+      <item>
+        <p>
+          Validação de nome de cidades brasileiras, não sendo permitido o
+          cadastro de cidades inexistentes (esse comportamento pode ser
+          alterado através de um parâmetro do sistema);
+        </p>
+      </item>
+      <item>
+        <p>
+          Correção no processo de geração de cotações de compra a partir do
+          aplicativo produção;
+        </p>
+      </item>
+      <item>
+        <p>
+          Correção na geração de comprovante de pagamentos para contas a pagar
+          sem um fornecedor selecionado;
+        </p>
+      </item>
+      <item>
+        <p>
+          Exibição da lista de novas funcionalidades ao abrir uma nova versão
+          do Stoq;
         </p>
       </item>
     </list>
+
     <list>
       <title>Bugs importantes corrigidos</title>
       <item>
         <p>
-          TODO
+          Pagamentos cancelados não serão mais considerados na impressão de
+          boletos e no cálculo do número máximo de parcelas;
+        </p>
+      </item>
+      <item>
+        <p>
+          Correção dos valores padrão para impostos quando os mesmos não são
+          informados;
+        </p>
+      </item>
+      <item>
+        <p>
+          Corrigidos vários problemas na geração de empréstimos;
+        </p>
+      </item>
+      <item>
+        <p>
+          Botão de edição de venda deve ser desabilitado após a devolução da
+          mesma;
+        </p>
+      </item>
+      <item>
+        <p>
+          Corrigidos alguns problemas ao abrir inventários onde nem todos os
+          produtos estavam sendo adicionados;
+        </p>
+      </item>
+      <item>
+        <p>
+          Corrigidas as opções de editar e buscar no aplicativo Financeiro;
+        </p>
+      </item>
+      <item>
+        <p>
+          Não deve ser possível criar uma venda com boletos ou crediários sem
+          um cliente selecionado;
+        </p>
+      </item>
+      <item>
+        <p>
+          Só deve ser possível remover um teste de qualidade se ele nunca tiver
+          sido utilizado;
+        </p>
+      </item>
+      <item>
+        <p>
+          Correção dos problemas relacionados com o visualizador de imagens no
+          aplicativo Estoque;
+        </p>
+      </item>
+      <item>
+        <p>
+          Correção de posicionamento incorreto da barra de informações em alguns casos (aviso
+          de inventário aberto);
         </p>
       </item>
     </list>
+    <section>
+      <title>Agradecimentos</title>
+      <p>
+        Agradecemos a todos que contribuíram para este lançamento acontecer:
+      </p>
+      <p>
+        Christian Robottom Reis, Gabriel Gerga, João Paulo, Johan Dahlin,
+        Luiz Antonio de Menezes Filho, Lucas Marques da Silva, Ronaldo Maia,
+        Silvio Rangel e Thiago Bellini, as empresas
+        Vztech Tecnologia em Informática LTDA e Gelius-Industria de Moveis LTDA.
+      </p>
+
+      <p>
+        Agradecemos também a todos que contribuíram com traduções ao longo do
+        desenvolvimento:
+      </p>
+      <p>
+        <em>Árabe (ar)</em>: Fo2adz, drsaudi e
+        عبدالله شلي (Abdellah Chelli).
+      </p>
+      <p>
+        <em>Espanhol (es)</em>: Adolfo Jayme Barrientos, Eduardo Alberto Calvo,
+        Jose Luis Tirado, Miguel Valdiri, Badillo, Sergio Meneses e
+        Willy Aguirre.
+      </p>
+      <p>
+        <em>Finlandês (fi)</em>: Tuomas Lähteenmäki.
+      </p>
+      <p>
+        <em>Francês (fr)</em>: El Achèche ANIS, François Laurent,
+        Pierre Slamich e SarahSlean.
+      </p>
+      <p>
+        <em>Grego (el)</em>: Sergios e tzem.
+      </p>
+      <p>
+        <em>Holândes (hr)</em>: Rachid.
+      </p>
+      <p>
+        <em>Inglês australiano (en_AU)</em>: Rafael Neri.
+      </p>
+      <p>
+        <em>Inglês britânico (en_GB)</em>: Anthony Harrington, Johan Dahlin,
+        Rafael Neri e Vibhav Pant.
+      </p>
+      <p>
+        <em>Inglês canadense (en_GB)</em>: Rafael Neri.
+      </p>
+      <p>
+        <em>Italiano (it)</em>: Fidel Nadera, Guybrush88 e simone.sandri.
+      </p>
+      <p>
+        <em>Japonês (ja)</em>: 9APPAT3CH (かっぱてっく).
+      </p>
+      <p>
+        <em>Língua bósnia (bs)</em>: Ajda Marić e Kenan Dervišević.
+      </p>
+      <p>
+        <em>Língua croáta (hr)</em>: Nenad Čubić.
+      </p>
+      <p>
+        <em>Língua húngara (hu)</em>: osiixy.
+      </p>
+      <p>
+        <em>Português (pt)</em>: Rafael Neri, Ronaldo Maia e Tiago Silva.
+      </p>
+      <p>
+        <em>Português brasileiro (pt_BR)</em>: Hriostat, millemiglia,
+        Gabriel Gerga, Johan Dahlin, Rafael Neri, Ronaldo Maia, Thiago Bellini
+        e ruysabino.
+      </p>
+      <p>
+        <em>Russo (ru)</em>: Stepovanyi Ivan.
+      </p>
+      <p>
+        <em>Sueco (sv)</em>: Johan Dahlin.
+      </p>
+      <p>
+        <em>Turco (tr)</em>: Ebubekir KARUL, ahmetturan.
+      </p>
+    </section>
   </section>
 
 </page>
