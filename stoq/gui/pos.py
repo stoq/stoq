@@ -28,9 +28,9 @@ from decimal import Decimal
 
 import pango
 import gtk
-from kiwi.datatypes import currency, converter
 from kiwi.argcheck import argcheck
-from kiwi.datatypes import ValidationError
+from kiwi.currency import currency
+from kiwi.datatypes import converter, ValidationError
 from kiwi.log import Logger
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column

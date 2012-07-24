@@ -26,7 +26,7 @@
 import datetime
 from decimal import Decimal
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 
 from stoqlib.exceptions import TillError
 from stoqlib.database.runtime import get_current_station

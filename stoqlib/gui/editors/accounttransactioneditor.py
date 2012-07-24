@@ -25,7 +25,8 @@
 import datetime
 
 import gtk
-from kiwi.datatypes import currency, ValidationError
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.utils import gsignal
 

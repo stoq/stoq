@@ -27,7 +27,8 @@ from decimal import Decimal
 import sys
 
 import gtk
-from kiwi.datatypes import ValidationError, currency
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
 from kiwi.enums import ListType
 from kiwi.ui.forms import TextField
 from kiwi.ui.widgets.list import Column, SummaryLabel

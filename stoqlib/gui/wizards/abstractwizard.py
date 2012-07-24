@@ -34,7 +34,8 @@ import sys
 
 import gtk
 
-from kiwi.datatypes import ValidationError, currency
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.ui.objectlist import SearchColumn
 from kiwi.python import Settable

@@ -26,7 +26,8 @@
 import datetime
 from decimal import Decimal
 
-from kiwi.datatypes import ValidationError, currency
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api

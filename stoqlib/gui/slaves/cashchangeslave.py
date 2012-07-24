@@ -24,7 +24,8 @@
 """ Slaves for Cash Change """
 
 from kiwi import ValueUnset
-from kiwi.datatypes import currency, ValidationError
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
 from stoqlib.domain.sale import Sale

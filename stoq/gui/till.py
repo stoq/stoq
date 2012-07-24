@@ -29,7 +29,8 @@ from datetime import date
 
 import pango
 import gtk
-from kiwi.datatypes import currency, converter
+from kiwi.currency import currency
+from kiwi.datatypes import converter
 from kiwi.log import Logger
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import Settable

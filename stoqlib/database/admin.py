@@ -33,7 +33,7 @@ import os
 import sys
 
 from kiwi.component import get_utility, provide_utility
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.environ import environ
 from kiwi.log import Logger
 

@@ -24,7 +24,7 @@
 """ Dialog to edit the stock average cost for products on a certain branch """
 
 from kiwi import ValueUnset
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave

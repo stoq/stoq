@@ -27,7 +27,7 @@
 import os
 
 from decimal import Decimal
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.exceptions import IntegrityError

@@ -25,7 +25,8 @@
 
 import datetime
 
-from kiwi.datatypes import currency, ValidationError
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
 
 from stoqdrivers.enum import TaxType
 

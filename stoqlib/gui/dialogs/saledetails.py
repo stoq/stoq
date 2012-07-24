@@ -28,7 +28,7 @@ import datetime
 
 import pango
 import gtk
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
 from stoqlib.domain.person import Client

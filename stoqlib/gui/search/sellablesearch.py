@@ -27,7 +27,7 @@
 from decimal import Decimal
 
 import gtk
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.api import api

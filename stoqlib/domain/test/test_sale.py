@@ -25,7 +25,7 @@
 import datetime
 from decimal import Decimal
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 
 from stoqlib.api import api
 from stoqlib.domain.commission import CommissionSource, Commission

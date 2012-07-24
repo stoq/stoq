@@ -27,7 +27,7 @@ import datetime
 from decimal import Decimal
 
 import gtk
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn, Column
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter

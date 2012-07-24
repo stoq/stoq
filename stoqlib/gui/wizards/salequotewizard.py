@@ -28,7 +28,8 @@ from decimal import Decimal
 import datetime
 
 import gtk
-from kiwi.datatypes import currency, ValidationError
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
 

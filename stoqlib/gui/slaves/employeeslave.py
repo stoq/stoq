@@ -25,10 +25,10 @@
 
 import datetime
 
-from kiwi.datatypes import currency
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.list import Column
-from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
 from stoqlib.domain.account import BankAccount

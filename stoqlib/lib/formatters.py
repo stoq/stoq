@@ -23,7 +23,7 @@
 
 import re
 
-from kiwi.datatypes import format_price
+from kiwi.currency import format_price
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.lib.translation import stoqlib_gettext

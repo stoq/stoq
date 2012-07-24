@@ -32,7 +32,7 @@ import gettext
 
 import pango
 import gtk
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.python import all
 from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn

@@ -33,7 +33,7 @@ differently
 """
 
 from kiwi.argcheck import argcheck
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from zope.interface import implements
 
 from stoqlib.database.orm import IntCol, ForeignKey

@@ -27,7 +27,7 @@ import datetime
 from decimal import Decimal
 
 from kiwi.argcheck import argcheck
-from kiwi.datatypes import currency
+from kiwi.currency import currency
 from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
