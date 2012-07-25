@@ -82,6 +82,16 @@ class Payment(Domain):
     | :obj:`STATUS_CANCELLED` | None                    |
     +-------------------------+-------------------------+
 
+    .. graphviz::
+
+       digraph status {
+         STATUS_PREVIEW -> STATUS_PENDING;
+         STATUS_PENDING -> STATUS_PAID;
+         STATUS_PENDING -> STATUS_CANCELLED;
+         STATUS_PAID -> STATUS_PENDING;
+         STATUS_PAID -> STATUS_CANCELLED;
+       }
+
     Simple sale workflow:
 
     * Creating a sale, status is set to :obj:`STATUS_PREVIEW`
