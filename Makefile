@@ -7,6 +7,9 @@ JS_AD="http://pagead2.googlesyndication.com/pagead/show_ads.js"
 apidocs:
 	make -C docs/api pickle html
 
+upload-apidocs:
+	tar cfJ - -C docs/api/_build/html . | ssh dragon2 "tar xfJ - -C /var/www/stoq.com.br/doc/api"
+
 schemadocs:
 	schemaspy -t pgsql -host anthem -db $(USER) -u $(USER) -s public -o $(SCHEMADIR) \
 	    -X '(.*\.te_created_id)|(.*\.te_modified_id)' -norows
