@@ -290,3 +290,5 @@ epub_copyright = u'2012, Async'
 
 # Allow duplicate toc entries.
 #epub_tocdup = True
+
+autodoc_member_order = 'bysource'
