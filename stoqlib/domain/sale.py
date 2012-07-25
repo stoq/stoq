@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,10 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-""" Sale object and related objects implementation """
+"""
+Domain objects related to the sale process in Stoq.
+
+Sale object and related objects implementation """
 
 import datetime
 from decimal import Decimal
@@ -70,30 +73,39 @@ _ = stoqlib_gettext
 
 
 class SaleItem(Domain):
-    """An item in a sale.
-
-    :param sellable: the kind of item
-    :param sale: the same
-    :param quantity: the quantity of the of sold item in this sale
-    :param price: the price of each individual item
-    :param base_price: original value the *product* had when adding the
-                       sale item
-    :param notes:
-    :param estimated_fix_date:
-    :param completion_date:
+    """An item of a sellable <stoqlib.domain.sellable.Sellable> within a
+    :class:`sale <Sale>`.
+    Contains quantity, price, taxes.
     """
+    #: the quantity of the of sold item in this sale
     quantity = QuantityCol()
+
+    #: original value the :class:`sellable <Sellable> had
+    #: when adding the sale item
     base_price = PriceCol()
+
+    #: averiage cost of the items in this item
     average_cost = PriceCol(default=0)
+
+    #: price of this item
     price = PriceCol()
+
+    #: the :class:`sale <Sale>` for this item
     sale = ForeignKey('Sale')
+
+    #: the :class:`sellable <stoqlib.domain.sellable.Sellable>` for this item
     sellable = ForeignKey('Sellable')
+
+    #: the :class:`delivery <Delivery>` if there is one
     delivery = ForeignKey('Delivery', default=None)
+
     cfop = ForeignKey('CfopData', default=None)
 
-    # This is currently only used by services
+    #: user defined notes, currently only used by services
     notes = UnicodeCol(default=None)
+
     estimated_fix_date = DateTimeCol(default=datetime.datetime.now)
+
     completion_date = DateTimeCol(default=None)
 
     # Taxes
@@ -211,44 +223,56 @@ class SaleItem(Domain):
 
 
 class Delivery(Domain):
-    """Delivery implementation
+    """Delivery, transporting a set of sale items for sale.
 
-    :cvar STATUS_INITIAL: The delivery was created
-    :cvar STATUS_SENT: The delivery was sent to deliver
-    :cvar STATUS_RECEIVED: The delivery was received by the client
+    Involves a :class:`transporter <stoqlib.domain.person.Transporter>` transporting
+    a set of :class:`sale items <SaleItem>` to a receival
+    :class:`address <stoqlib.domain.address.Address>`.
 
-    :attribute status: the delivery status
-    :attribute open_date: the date which the delivery was created
-    :attribute deliver_date: the date which the delivery sent to deliver
-    :attribute receive_date: the date which the delivery received by
-        the client
-    :attribute tracking_code: the delivery tracking code
-    :attribute address: the delivery address
-    :attribute transporter: the delivery
-        :class:`stoqlib.domain.person.PersonAdaptToTransporter`
-    :attrribute delivery_items: list of :class:`SaleItem` which will
-        be delivered
+    Optionally a :obj:`.tracking_code` can be set to track the items.
     """
 
     implements(IContainer)
 
-    (STATUS_INITIAL,
-     STATUS_SENT,
-     STATUS_RECEIVED) = range(3)
+    #: The delivery was created
+    STATUS_INITIAL = 0
+
+    #: sent to deliver
+    STATUS_SENT = 1
+
+    #: received by the client
+    STATUS_RECEIVED = 2
 
     statuses = {STATUS_INITIAL: _("Waiting"),
                 STATUS_SENT: _("Sent"),
                 STATUS_RECEIVED: _("Received")}
 
+    #: the delivery status
     status = IntCol(default=STATUS_INITIAL)
+
+    #: the date which the delivery was created
     open_date = DateTimeCol(default=None)
+
+    #: the date which the delivery sent to deliver
     deliver_date = DateTimeCol(default=None)
+
+    #: the date which the delivery received by the client
     receive_date = DateTimeCol(default=None)
+
+    #: the delivery tracking code, a transporter specific identifer that
+    #: can be used to look up the status of the delivery
     tracking_code = UnicodeCol(default='')
+
+    #: the :class:`address <stoqlib.domain.address.Address>` to deliver to
     address = ForeignKey('Address', default=None)
+
+    # :class:`transporter <stoqlib.domain.person.Transporter>` for this delivery
     transporter = ForeignKey('Transporter', default=None)
+
+    #: :class:`sale item <SaleItem>` for the delivery itself
     service_item = ForeignKey('SaleItem', default=None)
 
+    #: :class:`sale items <SaleItem>` for the items to deliver
     delivery_items = MultipleJoin('SaleItem', joinColumn='delivery_id')
 
     #
@@ -323,22 +347,6 @@ class Delivery(Domain):
 class Sale(Domain, Adaptable):
     """Sale object implementation.
 
-    :cvar STATUS_INITIAL: The sale is opened, products or other sellable items
-      might have been added.
-    :cvar STATUS_ORDERED: The sale is orded, it has sellable items but not any
-      payments yet. This state is mainly used when the parameter
-      CONFIRM_SALES_AT_TILL is enabled.
-    :cvar STATUS_CONFIRMED: The sale has been confirmed and all payments
-      have been registered, but not necessarily paid.
-    :cvar STATUS_CLOSED: All the payments of the sale has been confirmed
-      and the client does not owe anything to us.
-    :cvar STATUS_CANCELLED: The sale has been canceled, this can only happen
-      to an sale which has not yet reached the SALE_CONFIRMED status.
-    :cvar STATUS_RETURNED: The sale has been returned, all the payments made
-      have been canceled and the client has been compensated for
-      everything already paid.
-    :cvar CLIENT_INDIVIDUAL: The sale was done by an individual
-    :cvar CLIENT_COMPANY: The sale was done by a company
     :attribute status: status of the sale
     :attribute client: who we sold the sale to
     :attribute salesperson: who sold the sale
@@ -361,18 +369,60 @@ class Sale(Domain, Adaptable):
     :attribute invoice_number: the sale invoice number.
     :attribute client_category: The :class:`ClientCategory` that was used for price
         determination.
+
+    .. graphviz::
+
+       digraph sale_status {
+         STATUS_QUOTE -> STATUS_INITIAL;
+         STATUS_INITIAL -> STATUS_ORDERED;
+         STATUS_ORDERED -> STATUS_PAID;
+         STATUS_ORDERED -> STATUS_CONFIRMED;
+         STATUS_ORDERED -> STATUS_CANCELLED;
+         STATUS_CONFIRMED -> STATUS_PAID;
+         STATUS_CONFIRMED -> STATUS_CANCELLED;
+         STATUS_PAID -> STATUS_RETURNED;
+         STATUS_CONFIRMED -> STATUS_RENEGOTIATED;
+       }
+
     """
 
     implements(IContainer)
 
-    (STATUS_INITIAL,
-     STATUS_CONFIRMED,
-     STATUS_PAID,
-     STATUS_CANCELLED,
-     STATUS_ORDERED,
-     STATUS_RETURNED,
-     STATUS_QUOTE,
-     STATUS_RENEGOTIATED) = range(8)
+    #: The sale is opened, products or other sellable items might have
+    #: been added.
+    STATUS_INITIAL = 0
+
+    #: The sale has been confirmed and all payments have been registered,
+    #: but not necessarily paid.
+    STATUS_CONFIRMED = 1
+
+    #: All the payments of the sale has been confirmed and
+    #: the client does not owe anything to us. The product stock has been
+    #: decreased and the items delivered.
+    STATUS_PAID = 2
+
+    #: The sale has been canceled, this can only happen
+    #: to an sale which has not yet reached the SALE_CONFIRMED status.
+    STATUS_CANCELLED = 3
+
+    #: The sale is orded, it has sellable items but not any payments yet.
+    #: This state is mainly used when the parameter CONFIRM_SALES_AT_TILL
+    #: is enabled.
+    STATUS_ORDERED = 4
+
+    #: The sale has been returned, all the payments made
+    #: have been canceled and the client has been compensated for
+    #: everything already paid.
+    STATUS_RETURNED = 5
+
+    #: When asking for sale quote this is the initial state that is set before
+    #: reaching the initial state
+    STATUS_QUOTE = 6
+
+    #: A sale that is closed as renegotiated, all payments for this sale
+    #: should be canceled at list point. Another new sale is created with
+    #: the new, renegotiated payments.
+    STATUS_RENEGOTIATED = 7
 
     statuses = {STATUS_INITIAL: _(u'Opened'),
                 STATUS_CONFIRMED: _(u'Confirmed'),
@@ -383,8 +433,13 @@ class Sale(Domain, Adaptable):
                 STATUS_RENEGOTIATED: _(u'Renegotiated'),
                 STATUS_QUOTE: _(u'Quoting')}
 
+    #: status of the sale
     status = IntCol(default=STATUS_INITIAL)
+
+    # FIXME: this doesn't really belong to the sale
+    #: identifier for the coupon of this sale.
     coupon_id = IntCol()
+
     service_invoice_number = IntCol(default=None)
     notes = UnicodeCol(default='')
     open_date = DateTimeCol(default=datetime.datetime.now)
