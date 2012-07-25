@@ -531,6 +531,7 @@ class Sale(Domain, Adaptable):
 
     @classmethod
     def get_status_name(cls, status):
+        """The :obj:`.status` as a translated string"""
         if not status in cls.statuses:
             raise DatabaseInconsistency(_("Invalid status %d") % status)
         return cls.statuses[status]
