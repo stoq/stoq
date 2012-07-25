@@ -32,7 +32,7 @@ from kiwi.argcheck import argcheck
 from zope.interface import implements
 
 from stoqlib.database.orm import PercentCol, PriceCol
-from stoqlib.database.orm import IntCol, ForeignKey, BoolCol, StringCol, UnicodeCol
+from stoqlib.database.orm import IntCol, ForeignKey, BoolCol, StringCol
 from stoqlib.database.orm import const, AND
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
