@@ -164,11 +164,8 @@ def register_payment_methods(trans):
         if pm is None:
             pm = PaymentMethod(connection=trans,
                                method_name=operation_name,
-                               description=None,
                                destination_account=account,
-                               max_installments=1)
-        pm.description = operation.description
-        pm.max_installments = operation.max_installments
+                               max_installments=operation.max_installments)
 
 
 def register_accounts(trans):

@@ -35,6 +35,7 @@ from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import (CheckData, PaymentMethod,
                                            CreditCardData)
+from stoqlib.domain.payment.operation import get_payment_operation
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.person import Person, CreditProvider
@@ -322,10 +323,10 @@ class _BillandCheckPaymentView(Viewable):
         status=Payment.q.status,
         value=Payment.q.value,
         payment_number=Payment.q.payment_number,
+        method_name=PaymentMethod.q.method_name,
         bank_number=BankAccount.q.bank_number,
         branch=BankAccount.q.bank_branch,
         account=BankAccount.q.bank_account,
-        method_description=PaymentMethod.q.description,
     )
 
     joins = [
@@ -345,6 +346,10 @@ class _BillandCheckPaymentView(Viewable):
     @property
     def payment(self):
         return Payment.get(self.id, connection=self.get_connection())
+
+    @property
+    def method_description(self):
+        return get_payment_operation(self.method_name).description
 
 
 class InCheckPaymentView(_BillandCheckPaymentView):
@@ -412,23 +417,3 @@ class PaymentChangeHistoryView(Viewable):
             return converter.as_string(datetime.date, self.new_due_date)
         elif self.new_status:
             return Payment.statuses[self.new_status]
-
-
-class PaymentMethodView(Viewable):
-    columns = dict(
-        id=PaymentMethod.q.id,
-        method_name=PaymentMethod.q.method_name,
-        description=PaymentMethod.q.description,
-        is_active=PaymentMethod.q.is_active
-    )
-
-    @classmethod
-    def get_by_name(cls, conn, name):
-        results = cls.select(PaymentMethod.q.method_name == name,
-                             limit=2,
-                             connection=conn)
-        return results[0]
-
-    @property
-    def method(self):
-        return PaymentMethod.get(self.id, connection=self.get_connection())

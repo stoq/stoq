@@ -129,7 +129,9 @@ class PaymentMethod(Domain):
 
     method_name = StringCol()
     is_active = BoolCol(default=True)
-    description = UnicodeCol()
+    # FIXME: This should not be stored in the DB.
+    #        Create a database patch to remove this column.
+    #description = UnicodeCol()
     daily_penalty = PercentCol(default=0)
     interest = PercentCol(default=0)
     payment_day = IntCol(default=None)
@@ -164,6 +166,10 @@ class PaymentMethod(Domain):
     #
     # Properties
     #
+
+    @property
+    def description(self):
+        return self.operation.description
 
     @property
     def operation(self):
