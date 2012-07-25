@@ -26,6 +26,7 @@
 
 from decimal import Decimal
 import datetime
+import operator
 
 import gtk
 from kiwi.currency import currency
@@ -37,7 +38,8 @@ from stoqlib.api import api
 from stoqlib.database.orm import AND, OR
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.person import ClientCategory, SalesPerson, Client
+from stoqlib.domain.person import (ClientCategory, SalesPerson, Client,
+                                   ClientView)
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.sellable import Sellable
@@ -47,6 +49,7 @@ from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import format_quantity
+from stoqlib.lib.translation import locale_sorted
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -110,8 +113,23 @@ class StartSaleQuoteStep(WizardEditorStep):
         # FIXME: This should not be using a normal ProxyComboEntry,
         #        we need a specialized widget that does the searching
         #        on demand.
-        clients = Client.get_active_clients(self.conn)
-        self.client.prefill(api.for_person_combo(clients))
+
+        # This is to keep the clients in cache
+        clients_cache = list(Client.get_active_clients(self.conn))
+        clients_cache  # pyflakes
+
+        # We are using ClientView here to show the fancy name as well
+        clients = ClientView.get_active_clients(self.conn)
+        items = [(c.get_description(), c.client) for c in clients]
+        items = locale_sorted(items, key=operator.itemgetter(0))
+        self.client.prefill(items)
+
+        # FIXME: The default behaviour of kiwi was to use normal completion,
+        # but kiwi revision 1846 changed that. We should keep normal completion
+        # there (as that was the expected behaviour in other places), but I dont
+        # want to generate a new package just for that - romaia 2012-07-25
+        self.client.entry.set_normal_completion()
+
         # TODO: Implement a has_items() in kiwi
         self.client.set_sensitive(len(self.client.get_model()))
 
