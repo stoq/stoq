@@ -300,7 +300,7 @@ class PosApp(AppWindow):
                                    self.sale_items, self.advanced_search,
                                    self.checkout_button]
         self.register_sensitive_group(self._inventory_widgets,
-                                      lambda: not self.has_open_inventory)
+                                      lambda: not self.has_open_inventory())
 
         self.stoq_logo.set_from_pixbuf(render_logo_pixbuf('pos'))
 

@@ -63,3 +63,24 @@ class cached_property(object):
                 cache = inst._cache = {}
             cache[self.__name__] = (value, now)
         return value
+
+
+class cached_function(object):
+    """Like cached_property but for functions"""
+    def __init__(self, ttl=300):
+        self._cache = {}
+        self.ttl = ttl
+
+    def __call__(self, func):
+        def wraps(*args, **kwargs):
+            now = time.time()
+            try:
+                value, last_update = self._cache[args]
+                if self.ttl > 0 and now - last_update > self.ttl:
+                    raise AttributeError
+                return value
+            except (KeyError, AttributeError):
+                value = func(*args, **kwargs)
+                self._cache[args] = (value, now)
+                return value
+        return wraps
