@@ -6,7 +6,6 @@ domain Package
 
 .. automodule:: stoqlib.domain
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`account` Module
@@ -21,7 +20,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.address
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`base` Module
@@ -29,7 +27,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.base
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`commission` Module
@@ -37,7 +34,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.commission
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`devices` Module
@@ -45,7 +41,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.devices
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`event` Module
@@ -53,7 +48,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.event
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`events` Module
@@ -61,7 +55,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.events
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`exampledata` Module
@@ -69,7 +62,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.exampledata
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`fiscal` Module
@@ -77,7 +69,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.fiscal
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`image` Module
@@ -85,7 +76,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.image
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`interfaces` Module
@@ -93,7 +83,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.interfaces
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`inventory` Module
@@ -101,7 +90,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.inventory
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`invoice` Module
@@ -109,7 +97,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.invoice
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`loan` Module
@@ -117,7 +104,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.loan
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`parameter` Module
@@ -125,7 +111,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.parameter
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`person` Module
@@ -133,7 +118,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.person
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`plugin` Module
@@ -141,7 +125,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.plugin
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`product` Module
@@ -149,7 +132,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.product
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`production` Module
@@ -157,7 +139,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.production
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`profile` Module
@@ -165,7 +146,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.profile
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`purchase` Module
@@ -173,7 +153,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.purchase
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`receiving` Module
@@ -181,7 +160,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.receiving
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`renegotiation` Module
@@ -189,7 +167,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.renegotiation
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`sale` Module
@@ -197,7 +174,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.sale
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`sellable` Module
@@ -205,7 +181,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.sellable
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`service` Module
@@ -213,7 +188,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.service
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`station` Module
@@ -221,7 +195,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.station
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`stockdecrease` Module
@@ -229,7 +202,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.stockdecrease
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`synchronization` Module
@@ -237,7 +209,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.synchronization
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`system` Module
@@ -245,7 +216,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.system
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`taxes` Module
@@ -253,7 +223,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.taxes
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`till` Module
@@ -261,7 +230,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.till
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`transfer` Module
@@ -269,7 +237,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.transfer
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`uiform` Module
@@ -277,7 +244,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.uiform
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`views` Module
@@ -285,7 +251,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.views
     :members:
-    :undoc-members:
     :show-inheritance:
 
 Subpackages
