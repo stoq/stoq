@@ -6,7 +6,6 @@ payment Package
 
 .. automodule:: stoqlib.domain.payment
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`category` Module
