@@ -166,15 +166,16 @@ class SystemParameterEditor(BaseEditor):
         # Images can have field_value as None
         self._block_none_value = False
 
-    def _setup_comboboxentry_slave(self):
+    def _setup_comboboxentry_slave(self, data=None):
         widget = ProxyComboEntry()
         widget.props.sensitive = self.sensitive
         widget.model_attribute = "field_value"
         widget.data_type = unicode
         widget.mandatory = True
-        field_type = sysparam(self.conn).get_parameter_type(self.model.field_name)
-        result = field_type.select(connection=self.conn)
-        data = [(res.get_description(), str(res.id)) for res in result]
+        if not data:
+            field_type = sysparam(self.conn).get_parameter_type(self.model.field_name)
+            result = field_type.select(connection=self.conn)
+            data = [(res.get_description(), str(res.id)) for res in result]
         widget.prefill(data)
         self.proxy.add_widget("field_value", widget)
         self.container.add(widget)
@@ -249,6 +250,8 @@ class SystemParameterEditor(BaseEditor):
         elif issubclass(field_type, basestring):
             if self.constant.multiline:
                 self._setup_text_view_slave()
+            elif self.constant.combo_data:
+                self._setup_comboboxentry_slave(data=self.constant.combo_data)
             else:
                 self._setup_entry_slave()
         else:

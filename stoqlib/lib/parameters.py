@@ -39,6 +39,7 @@ from stoqlib.domain.parameter import ParameterData
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.l10n.l10n import get_l10n_field
 from stoqlib.lib.barcode import BarcodeInfo
+from stoqlib.lib.countries import get_countries
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import (validate_int,
@@ -58,7 +59,7 @@ class DirectoryParameter(object):
 
 class ParameterDetails(object):
     def __init__(self, key, group, short_desc, long_desc, type,
-                 initial=None, options=None, range=None,
+                 initial=None, options=None, combo_data=None, range=None,
                  multiline=False, validator=None, onupgrade=None):
         self.key = key
         self.group = group
@@ -67,6 +68,7 @@ class ParameterDetails(object):
         self.type = type
         self.initial = initial
         self.options = options
+        self.combo_data = combo_data
         self.range = range
         self.multiline = multiline
         self.validator = validator
@@ -279,7 +281,7 @@ _details = [
         _('When adding a new address for a certain person we will always '
           'suggest this country.'),
         # FIXME: When fixing bug 5100, change this to BR
-        str, initial='Brazil'),
+        str, initial='Brazil', combo_data=get_countries()),
 
     ParameterDetails(
         'ALLOW_REGISTER_NEW_LOCATIONS',
