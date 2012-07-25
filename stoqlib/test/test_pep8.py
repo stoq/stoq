@@ -44,7 +44,9 @@ ERRORS = [
     'E231', # E231 missing whitespace after ','/':'
     'E241', # multiple spaces after operator
     'E251', # no spaces around keyword / parameter equals
-    'E262', # inline comment should start with '# '
+    # pep8 needs to be updated to allow the #: syntax that that
+    # sphinx.ext.autodoc uses
+    # 'E262', # inline comment should start with '# '
     'W291', # trailing whitespace
     'W292', # no newline at end of file
     'W293', # blank line contains whitespace
