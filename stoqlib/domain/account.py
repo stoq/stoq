@@ -57,7 +57,7 @@ class BillOption(Domain):
     """List of values for bill (boleto) generation
 
     See also:
-    `schema <http://doc.stoq.com.br/schema/tables/bill_option.html>`_
+    `schema <http://doc.stoq.com.br/schema/tables/bill_option.html>`__
     """
 
     #: option name, such as nosso_numero
@@ -72,7 +72,7 @@ class BankAccount(Domain):
     """Information specific to a bank
 
     See also:
-    `schema <http://doc.stoq.com.br/schema/tables/bank_account.html>`_
+    `schema <http://doc.stoq.com.br/schema/tables/bank_account.html>`__
     """
 
     #: the :class:`account <Account>` for this bank account
@@ -104,8 +104,8 @@ class Account(Domain):
     """An account, a collection of transactions that may be controlled
     by a bank.
 
-    See also: `schema <http://doc.stoq.com.br/schema/tables/account.html>`_,
-    `manual <http://doc.stoq.com.br/manual/account.html>`_
+    See also: `schema <http://doc.stoq.com.br/schema/tables/account.html>`__,
+    `manual <http://doc.stoq.com.br/manual/account.html>`__
     """
 
     TYPE_BANK = 0     #: Bank
@@ -301,8 +301,8 @@ class AccountTransaction(Domain):
     :class:`~stoqlib.domain.payment.payment.Payment`
 
     See also:
-    `schema <http://doc.stoq.com.br/schema/tables/account_transaction.html>`_
-    `manual <http://doc.stoq.com.br/manual/transaction.html>`_
+    `schema <http://doc.stoq.com.br/schema/tables/account_transaction.html>`__
+    `manual <http://doc.stoq.com.br/manual/transaction.html>`__
 
     """
 

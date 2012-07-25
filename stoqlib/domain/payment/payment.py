@@ -90,8 +90,8 @@ class Payment(Domain):
     * Cancelling the payment, status is set to :obj:`STATUS_CANCELLED`
 
     See also:
-    `schema <http://doc.stoq.com.br/schema/tables/payment>`_,
-    `manual <http://doc.stoq.com.br/manual/payment.html>`_
+    `schema <http://doc.stoq.com.br/schema/tables/payment>`__,
+    `manual <http://doc.stoq.com.br/manual/payment.html>`__
     """
 
     #: incoming to the company, accounts receivable, payment from
@@ -545,7 +545,7 @@ class PaymentChangeHistory(Domain):
     should be non-null at a time.
 
     See also:
-    `schema <http://doc.stoq.com.br/schema/tables/payment_change_history>`_
+    `schema <http://doc.stoq.com.br/schema/tables/payment_change_history>`__
     """
 
     #: the changed :class:`payment <stoqlib.domain.payment.payment.Payment>`
@@ -574,7 +574,7 @@ class PaymentFlowHistory(Domain):
     """The flow of payments during a day.
 
     See also:
-    `schema <http://doc.stoq.com.br/schema/tables/payment_flow_history>`_
+    `schema <http://doc.stoq.com.br/schema/tables/payment_flow_history>`__
     """
 
     # FIXME: this class really needs a branch, it doesn't make sense
