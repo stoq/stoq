@@ -170,11 +170,13 @@ class CommissionView(Viewable):
 
     columns = dict(
         id=Sale.q.id,
+        sale_status=Sale.q.status,
         code=Commission.q.id,
         commission_value=Commission.q.value,
-        commission_percentage=Commission.q.value / Sale.q.total_amount * 100,
+        commission_percentage=Commission.q.value / Payment.q.value * 100,
         salesperson_name=Person.q.name,
         payment_id=Payment.q.id,
+        payment_value=Payment.q.value,
         open_date=Sale.q.open_date,
        )
 
@@ -213,8 +215,8 @@ class CommissionView(Viewable):
     def get_payment_amount(self):
         # the returning payment should be shown as negative one
         if self.payment.is_outpayment():
-            return -self.payment.value
-        return self.payment.value
+            return -self.payment_value
+        return self.payment_value
 
     def get_total_amount(self):
         # XXX: No, the sale amount does not change. But I return different
@@ -225,4 +227,4 @@ class CommissionView(Viewable):
         return self.sale.total_amount
 
     def sale_returned(self):
-        return self.sale.status == Sale.STATUS_RETURNED
+        return self.sale_status == Sale.STATUS_RETURNED
