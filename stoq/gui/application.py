@@ -41,7 +41,7 @@ from stoqlib.api import api
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.crashreport import has_tracebacks
-from stoqlib.lib.decorators import cached_property
+from stoqlib.lib.decorators import cached_function
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
@@ -933,7 +933,7 @@ class AppWindow(GladeDelegate):
 
         self.add_ui_actions(ui_string, actions, 'DebugActions')
 
-    @cached_property()
+    @cached_function()
     def has_open_inventory(self):
         return Inventory.has_open(self.conn,
                                   api.get_current_branch(self.conn))
@@ -948,7 +948,7 @@ class AppWindow(GladeDelegate):
         """
         inventory_bar = getattr(self, 'inventory_bar', None)
 
-        if self.has_open_inventory:
+        if self.has_open_inventory():
             if inventory_bar:
                 inventory_bar.show()
             else:
