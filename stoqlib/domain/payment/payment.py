@@ -61,7 +61,7 @@ class Payment(Domain):
 
     * a client and a branch are :obj:`.TYPE_IN`, has a
       :class:`sale <stoqlib.domain.sale.Sale>` associated.
-    * branch and a supplier are :obj:`.TYPE_IN`, has a
+    * branch and a supplier are :obj:`.TYPE_OUT`, has a
       :class:`purchase order <stoqlib.domain.purchase.PurchaseOrder>` associated.
 
     Payments are sometimes referred to installements of Sale/Purchase.
