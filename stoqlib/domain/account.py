@@ -172,7 +172,7 @@ class Account(Domain):
         """Fetch the account assoicated with a station
 
         :param conn: a connection
-        :param station: a :py:class:`stoqlib.domain.station.BranchStation`
+        :param station: a :py:class:`~stoqlib.domain.station.BranchStation`
         :returns: the account
         """
         if station is None:
@@ -266,7 +266,7 @@ class Account(Domain):
     def get_type_label(self, out):
         """Returns the label to show for the increases/decreases
         for transactions of this account.
-        See :py:obj:`Account.account_labels`
+        See :py:obj:`~..account_labels`
 
         :param out: if the transaction is going out
         """
@@ -290,15 +290,15 @@ class AccountTransaction(Domain):
     """Transaction between two accounts.
 
     A transaction is a transfer of money from the
-    :py:obj:`.source_account` to the
-    :py:obj:~.account`.
+    :py:obj:`~.source_account` to the
+    :py:obj:`~.account`.
 
     It removes a negative amount of money from the source and increases
     the account by the same amount.
     There's only one value, but depending on the view it's either negative
     or positive, it can never be zero though.
     A transaction can optionally be tied to a
-    `:py:obj:stoqlib.domain.payment.payment.Payment`
+    :py:obj:`~stoqlib.domain.payment.payment.Payment`
 
 
     See also:
@@ -316,11 +316,10 @@ class AccountTransaction(Domain):
     #        want to store more values, so it might make sense to allow
     #        N values per transaction.
 
-
-    #: destination account, a :py:class:`Account`
+    #: destination :py:class:`account <Account>`
     account = ForeignKey('Account')
 
-    #: source account, a :py:class:`Account`
+    #: source :py:class:`account <Account>`
     source_account = ForeignKey('Account')
 
     #: short human readable summary of the transaction
@@ -335,7 +334,7 @@ class AccountTransaction(Domain):
     #: date the transaction was done
     date = DateTimeCol()
 
-    #: payment (`:py:obj:stoqlib.domain.payment.payment.Payment`)
+    #: :py:obj:`payment <stoqlib.domain.payment.payment.Payment>`
     #: this transaction relates to, can also be None
     payment = ForeignKey('Payment', default=None)
 
