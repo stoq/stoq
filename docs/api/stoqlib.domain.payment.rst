@@ -13,7 +13,6 @@ payment Package
 
 .. automodule:: stoqlib.domain.payment.category
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`comment` Module
@@ -21,7 +20,6 @@ payment Package
 
 .. automodule:: stoqlib.domain.payment.comment
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`group` Module
@@ -29,7 +27,6 @@ payment Package
 
 .. automodule:: stoqlib.domain.payment.group
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`method` Module
@@ -37,7 +34,6 @@ payment Package
 
 .. automodule:: stoqlib.domain.payment.method
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`operation` Module
@@ -45,7 +41,6 @@ payment Package
 
 .. automodule:: stoqlib.domain.payment.operation
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`payment` Module
@@ -53,7 +48,6 @@ payment Package
 
 .. automodule:: stoqlib.domain.payment.payment
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`renegotiation` Module
@@ -61,7 +55,6 @@ payment Package
 
 .. automodule:: stoqlib.domain.payment.renegotiation
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`views` Module
@@ -69,6 +62,5 @@ payment Package
 
 .. automodule:: stoqlib.domain.payment.views
     :members:
-    :undoc-members:
     :show-inheritance:
 

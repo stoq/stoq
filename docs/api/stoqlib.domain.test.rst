@@ -6,7 +6,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`domaintest` Module
@@ -14,7 +13,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.domaintest
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_account` Module
@@ -22,7 +20,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_account
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_address` Module
@@ -30,7 +27,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_address
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_base_domain` Module
@@ -38,7 +34,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_base_domain
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_cat52` Module
@@ -46,7 +41,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_cat52
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_doctests` Module
@@ -54,7 +48,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_doctests
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_domain` Module
@@ -62,7 +55,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_domain
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_event` Module
@@ -70,7 +62,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_event
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_fiscal` Module
@@ -78,7 +69,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_fiscal
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_inventory` Module
@@ -86,7 +76,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_inventory
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_invoice` Module
@@ -94,7 +83,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_invoice
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_loan` Module
@@ -102,7 +90,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_loan
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_nfe` Module
@@ -110,7 +97,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_nfe
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_payment` Module
@@ -118,7 +104,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_payment
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_payment_group` Module
@@ -126,7 +111,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_payment_group
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_payment_method` Module
@@ -134,7 +118,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_payment_method
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_person` Module
@@ -142,7 +125,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_person
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_product` Module
@@ -150,7 +132,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_product
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_production` Module
@@ -158,7 +139,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_production
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_profile` Module
@@ -166,7 +146,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_profile
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_purchase` Module
@@ -174,7 +153,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_purchase
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_receiving` Module
@@ -182,7 +160,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_receiving
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_sale` Module
@@ -190,7 +167,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_sale
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_sellable` Module
@@ -198,7 +174,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_sellable
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_service` Module
@@ -206,7 +181,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_service
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_stockdecrease` Module
@@ -214,7 +188,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_stockdecrease
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_synchronization` Module
@@ -222,7 +195,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_synchronization
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_taxes` Module
@@ -230,7 +202,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_taxes
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_till` Module
@@ -238,7 +209,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_till
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_transaction` Module
@@ -246,7 +216,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_transaction
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_transfer` Module
@@ -254,7 +223,6 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_transfer
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`test_views` Module
@@ -262,6 +230,5 @@ test Package
 
 .. automodule:: stoqlib.domain.test.test_views
     :members:
-    :undoc-members:
     :show-inheritance:
 
