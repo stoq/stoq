@@ -100,8 +100,7 @@ class Payment(Domain):
     * Cancelling the payment, status is set to :obj:`STATUS_CANCELLED`
 
     See also:
-    `schema <http://doc.stoq.com.br/schema/tables/payment.html>`__,
-    `manual <http://doc.stoq.com.br/manual/payment.html>`__
+    `schema <http://doc.stoq.com.br/schema/tables/payment.html>`__
     """
 
     #: incoming to the company, accounts receivable, payment from
