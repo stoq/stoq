@@ -141,7 +141,6 @@ class Payment(Domain):
     #: description payment, usually something like "1/3 Money for Sale 1234"
     description = UnicodeCol(default=None)
 
-
     # FIXME: use const.NOW() instead to avoid server/client date
     #        inconsistencies
 
