@@ -82,13 +82,17 @@ class InitialStockDialog(BaseEditor):
     def _get_columns(self):
         adj = gtk.Adjustment(upper=MAXINT, step_incr=1)
         return [Column("code", title=_(u"Code"), data_type=str,
-                       sorted=True, width=100),
+                       width=100),
                 Column("barcode", title=_(u"Barcode"), data_type=str,
                        width=100),
                 Column("category_description", title=_(u"Category"),
                        data_type=str, width=100),
                 Column("description", title=_(u"Description"),
                        data_type=str, expand=True),
+                Column('manufacturer', title=_("Manufacturer"),
+                       data_type=str, visible=False),
+                Column('model', title=_("Model"),
+                       data_type=str, visible=False),
                 Column("initial_stock", title=_(u"Initial Stock"),
                        data_type=Decimal, format_func=self._format_qty,
                        editable=True, spin_adjustment=adj, width=115)]
