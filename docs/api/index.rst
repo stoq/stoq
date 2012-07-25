@@ -13,7 +13,7 @@ Contents:
    stoqlib.database - database <stoqlib.database>
    stoqlib.domain - domain classes <stoqlib.domain>
    stoqlib.drivers - drivers <stoqlib.drivers>
-   stoqlib.exporters - data exporters <stoqlib.database>
+   stoqlib.exporters - data exporters <stoqlib.exporters>
    stoqlib.gui - Gtk/GNOME ui <stoqlib.gui>
    stoqlib.importers - data importers <stoqlib.importers>
    stoqlib.l10n - Localization <stoqlib.l10n>
