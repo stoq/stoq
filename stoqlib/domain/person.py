@@ -1227,6 +1227,7 @@ class SalesPerson(Domain):
 
     implements(IActive, IDescribable)
 
+    # Not really used right now
     (COMMISSION_GLOBAL,
      COMMISSION_BY_SALESPERSON,
      COMMISSION_BY_SELLABLE,

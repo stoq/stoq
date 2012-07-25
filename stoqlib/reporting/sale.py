@@ -250,23 +250,23 @@ class SalesPersonReport(SearchResultsReport):
     obj_type = CommissionView
     report_name = _("Sales")
 
-    def __init__(self, filename, salesperson_list, salesperson_name,
+    def __init__(self, filename, payments_list, salesperson_name,
                  *args, **kwargs):
         branch = get_current_branch(get_connection()).get_description()
-        self.salesperson_list = salesperson_list
+        self.payments_list = payments_list
 
         if salesperson_name:
-            singular = _("sale from {salesperson} on branch {branch}").format(
+            singular = _("payment for {salesperson} on branch {branch}").format(
                          salesperson=salesperson_name, branch=branch)
-            plural = _("sales from {salesperson} on branch {branch}").format(
+            plural = _("payments for {salesperson} on branch {branch}").format(
                        salesperson=salesperson_name, branch=branch)
         else:
-            singular = _("sale on branch %s") % branch
-            plural = _("sales on branch %s") % branch
+            singular = _("payment on branch %s") % branch
+            plural = _("payments on branch %s") % branch
 
         self.main_object_name = (singular, plural)
 
-        SearchResultsReport.__init__(self, filename, salesperson_list,
+        SearchResultsReport.__init__(self, filename, payments_list,
                                      SalesPersonReport.report_name,
                                      landscape=(salesperson_name is None),
                                      *args, **kwargs)
@@ -274,35 +274,44 @@ class SalesPersonReport(SearchResultsReport):
         self._setup_sales_person_table()
 
     def _get_columns(self):
-        columns = []
+        columns = [OTC(_("Sale"), lambda obj: obj.id, width=80)]
         if self._sales_person is None:
             columns.append(OTC(_("Name"), lambda obj: obj.salesperson_name,
-                           expand=True, truncate=True, width=245))
+                           expand=True, truncate=True))
+
         columns.extend([
-            OTC(_("Total Amount"), lambda obj: get_formatted_price(
+            OTC(_("Sale Total"), lambda obj: get_formatted_price(
                 obj.get_total_amount()), truncate=True, width=105),
-            OTC(_("P/A"), lambda obj: get_formatted_price(
-                obj.get_payment_amount()), truncate=True, width=90),
+            OTC(_("Payment Value"), lambda obj: get_formatted_price(
+                obj.get_payment_amount()), truncate=True, width=190),
             OTC(_("Percentage"), lambda obj: get_formatted_percentage(
                 obj.commission_percentage), truncate=True,
                 width=100),
-            OTC(_("Value"), lambda obj: get_formatted_price(
-                obj.commission_value), truncate=True, width=80),
-            OTC(_("S/P"), lambda obj: format_quantity(obj.quantity_sold()),
+            OTC(_("Commission Value"), lambda obj: get_formatted_price(
+                obj.commission_value), truncate=True, width=180),
+            OTC(_("Items"), lambda obj: format_quantity(obj.quantity_sold()),
                 width=45, truncate=True)])
         return columns
 
     def _setup_sales_person_table(self):
         total_amount = total_payment = total_percentage = total_value = \
             total_sold = 0
-        for commission_view in self.salesperson_list:
-            total_amount += commission_view.get_total_amount()
+
+        sales = {}
+        for commission_view in self.payments_list:
+            # Count sale value only once
+            if commission_view.id not in sales:
+                total_amount += commission_view.get_total_amount()
+                total_sold += commission_view.quantity_sold()
+            if commission_view.sale_returned():
+                total_amount -= commission_view.get_total_amount()
+
             total_payment += commission_view.get_payment_amount()
             total_value += commission_view.commission_value
-            total_sold += commission_view.quantity_sold()
+            sales[commission_view.id] = 1
 
         if total_amount > 0:
-            total_percentage = total_value * 100 / total_amount
+            total_percentage = total_value * 100 / total_payment
         else:
             total_percentage = 0
 
@@ -310,12 +319,11 @@ class SalesPersonReport(SearchResultsReport):
                        get_formatted_price(total_payment),
                        get_formatted_percentage(total_percentage),
                        get_formatted_price(total_value),
-                       format_quantity(total_sold)]
+                       format_quantity(total_sold), '']
 
-        # salesperson_list might have multiples items that refers to the
+        # payments_list might have multiples items that refers to the
         # same sale. This will count the right number of sales.
-        sales_qty = len([s.id for s in self.salesperson_list
-                                    if not s.sale_returned()])
+        sales_qty = len(sales)
 
         text = None
         if self._sales_person is not None:
@@ -325,11 +333,9 @@ class SalesPersonReport(SearchResultsReport):
                 va = total_amount / sales_qty
             text = _("Sold value per sales %s") % (get_formatted_price(va, ))
 
-        self.add_object_table(self.salesperson_list, self._get_columns(),
+        self.add_object_table(self.payments_list, self._get_columns(),
                               summary_row=summary_row)
 
-        self.add_preformatted_text(_("P/A: Payment Amount"))
-        self.add_preformatted_text(_("S/P: Sellables sold per sale"))
         if text:
             self.add_preformatted_text(text)
             self.add_preformatted_text(_("Total of sales: %d") % sales_qty)
