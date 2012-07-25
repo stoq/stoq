@@ -293,7 +293,7 @@ class Payment(Domain):
         """Set a STATUS_PAID payment as STATUS_PENDING.
         This requires clearing paid_date and paid_value
 
-        :param change_entry: an PaymentChangeHistory object,
+        :param change_entry: a :class:`PaymentChangeHistory` object,
           that will hold the changes information
         """
         self._check_status(self.STATUS_PAID, 'set_not_paid')
