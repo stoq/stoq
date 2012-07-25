@@ -32,7 +32,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.lib.parameters import sysparam, DirectoryParameter
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext, dgettext
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -90,6 +90,8 @@ class ParameterSearch(BaseEditor):
             return data.path
         elif isinstance(data, bool):
             return [_("No"), _("Yes")][data]
+        elif obj.field_name == 'COUNTRY_SUGGESTED':
+            return dgettext("iso_3166", data)
         elif isinstance(data, unicode):
             #FIXME: workaround to handle locale specific data
             return _(data)
