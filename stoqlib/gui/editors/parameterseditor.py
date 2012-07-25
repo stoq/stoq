@@ -251,7 +251,7 @@ class SystemParameterEditor(BaseEditor):
             if self.constant.multiline:
                 self._setup_text_view_slave()
             elif self.constant.combo_data:
-                self._setup_comboboxentry_slave(data=self.constant.combo_data)
+                self._setup_comboboxentry_slave(data=self.constant.combo_data())
             else:
                 self._setup_entry_slave()
         else:

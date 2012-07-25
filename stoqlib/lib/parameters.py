@@ -281,7 +281,7 @@ _details = [
         _('When adding a new address for a certain person we will always '
           'suggest this country.'),
         # FIXME: When fixing bug 5100, change this to BR
-        str, initial='Brazil', combo_data=get_countries()),
+        str, initial='Brazil', combo_data=get_countries),
 
     ParameterDetails(
         'ALLOW_REGISTER_NEW_LOCATIONS',
