@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,17 @@
 .. module: stoqlib.domain.account
    :synopsis: accounts, banks, bill options and transactions
 
+This module contains classes centered around account, banks and transactions
+between accounts.
+
+The main class is an :py:class:`Account` holds a set of :py:class:`AccountTransaction`.
+
+For accounts that are banks there's a :py:class:`BankAccount` class for
+the bank specific state and for bill generation there's also
+:py:class:`BillOption`.
+
+Finally there's a :py:class:`AccountTransactionView` that is used by
+the financial application to efficiently display a ledger.
 """
 
 from zope.interface import implements
@@ -43,45 +54,67 @@ _ = stoqlib_gettext
 
 
 class BillOption(Domain):
+    """List of values for bill (boleto) generation
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/bill_option.html>`_
+    """
+
+    #: option name, such as nosso_numero
     option = UnicodeCol()
+    #: value of the option
     value = UnicodeCol()
+    #: the :py:class:`Account` this option belongs to
     bank_account = ForeignKey('BankAccount')
 
 
 class BankAccount(Domain):
     """Information specific to a bank
 
-    :attribute bank_branch: the bank branch where this account lives.
-    :attribute bank_account: an identifier of this account in the branch.
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/bank_account.html>`_
     """
+
+    #: the :py:class:`Account` for this bank account
     account = ForeignKey('Account', default=None)
 
+    # FIXME: This is brazil specific, should probably be replaced by a
+    #        bank reference to a separate class with name in addition to
+    #        the bank number
+    #: an identify for the bank type of this account,
     bank_number = IntCol(default=0)
+
+    #: an identifier for the bank branch/agency which is responsible
+    #: for this
     bank_branch = UnicodeCol(default=None)
+
+    #: an identifier for this bank account
     bank_account = UnicodeCol(default=None)
 
     @property
     def options(self):
+        """Get the bill options for this bank account
+        :returns: a list of :py:class:`BillOption`
+        """
         return BillOption.selectBy(connection=self.get_connection(),
                                    bank_account=self)
 
 
 class Account(Domain):
-    """An account, a collection of transactions
+    """An account, a collection of transactions that may be controlled
+    by a bank.
 
-    :attribute description: name of the account in Stoq
-    :attribute code: code which identifies the account
-    :attribute parent: parent account, can be None
-    :attribute station: for accounts connected to a specific station or None
+    See also: `schema <http://doc.stoq.com.br/schema/tables/account.html>`_,
+    `manual <http://doc.stoq.com.br/manual/account.html>`_
     """
 
-    (TYPE_BANK,
-     TYPE_CASH,
-     TYPE_ASSET,
-     TYPE_CREDIT,
-     TYPE_INCOME,
-     TYPE_EXPENSE,
-     TYPE_EQUITY) = range(7)
+    TYPE_BANK = 0     #: Bank
+    TYPE_CASH = 1     #: Cash/Till
+    TYPE_ASSET = 2    #: Assets, like investement account
+    TYPE_CREDIT = 3   #: Credit
+    TYPE_INCOME = 4   #: Income/Salary
+    TYPE_EXPENSE = 5  #: Expenses
+    TYPE_EQUITY = 6   #: Equity, like unbalanced
 
     account_labels = {
         TYPE_BANK: (_("Deposit"), _("Withdrawal")),
@@ -105,11 +138,22 @@ class Account(Domain):
 
     implements(IDescribable)
 
+    #: name of the account
     description = UnicodeCol(default=None)
+
+    #: code which identifies the account
     code = UnicodeCol(default=None)
+
+    #: parent account, can be None
     parent = ForeignKey('Account', default=None)
+
+    #: the computer tied to this account, mainly for cash accounts
     station = ForeignKey('BranchStation', default=None)
+
+    #: kind of account, one of the TYPE_* defines in this class
     account_type = IntCol(default=None)
+
+    #: bank this account is connected to
     bank = SingleJoin('BankAccount', joinColumn='account_id')
 
     #
@@ -126,8 +170,9 @@ class Account(Domain):
     @classmethod
     def get_by_station(cls, conn, station):
         """Fetch the account assoicated with a station
+
         :param conn: a connection
-        :param station: a BranchStation
+        :param station: a :py:class:`stoqlib.domain.station.BranchStation`
         :returns: the account
         """
         if station is None:
@@ -151,7 +196,8 @@ class Account(Domain):
     @property
     def transactions(self):
         """Returns a list of transactions to this account.
-        Returns: list of AccountTransaction
+
+        :returns: list of :py:class:`AccountTransaction`
         """
         return AccountTransaction.select(
             OR(self.id == AccountTransaction.q.accountID,
@@ -182,6 +228,7 @@ class Account(Domain):
     def remove(self, trans):
         """Remove the current account. This updates all transactions which
         refers to this account and removes them.
+
         :param: a transaction
         """
         if not self.can_remove():
@@ -210,18 +257,28 @@ class Account(Domain):
         self.delete(self.id, connection=trans)
 
     def has_child_accounts(self):
-        """:returns: True if any other accounts has this account as a parent"""
+        """If this account has child accounts
+
+        :returns: True if any other accounts has this account as a parent"""
         return bool(Account.selectBy(connection=self.get_connection(),
                                      parent=self))
 
     def get_type_label(self, out):
         """Returns the label to show for the increases/decreases
         for transactions of this account.
+        See :py:obj:`Account.account_labels`
+
         :param out: if the transaction is going out
         """
         return self.account_labels[self.account_type][int(out)]
 
     def matches(self, account_id):
+        """Check if this account or it's parent account is the same
+        as another account id.
+
+        :param account_id: the account id to compare with
+        :returns: if the accounts matches.
+        """
         if self.id == account_id:
             return True
         if self.parentID and self.parentID == account_id:
@@ -232,20 +289,22 @@ class Account(Domain):
 class AccountTransaction(Domain):
     """Transaction between two accounts.
 
-    A transaction is a transfer of money from the @source_account
-    to the @account. It removes a negative amount of money from the source
-    and increases the account by the same amount.
+    A transaction is a transfer of money from the
+    :py:obj:`.source_account` to the
+    :py:obj:~.account`.
+
+    It removes a negative amount of money from the source and increases
+    the account by the same amount.
     There's only one value, but depending on the view it's either negative
     or positive, it can never be zero though.
-    A transaction can optionally be tied to a Payment
+    A transaction can optionally be tied to a
+    `:py:obj:stoqlib.domain.payment.payment.Payment`
 
-    :attribute account: destination account
-    :attribute source_account: source account
-    :attribute description: short human readable summary of the transaction
-    :attribute code: identifier of this transaction within a account
-    :attribute value: value transfered, positive for credit, negative for debit
-    :attribute date: date the transaction was done
-    :attribute payment: payment this transaction relates to, can be None
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/account_transaction.html>`_
+    `manual <http://doc.stoq.com.br/manual/transaction.html>`_
+
     """
 
     # FIXME: It's way to tricky to calculate the direction and it's
@@ -257,12 +316,27 @@ class AccountTransaction(Domain):
     #        want to store more values, so it might make sense to allow
     #        N values per transaction.
 
+
+    #: destination account, a :py:class:`Account`
     account = ForeignKey('Account')
+
+    #: source account, a :py:class:`Account`
     source_account = ForeignKey('Account')
+
+    #: short human readable summary of the transaction
     description = UnicodeCol()
+
+    #: identifier of this transaction within a account
     code = UnicodeCol()
+
+    #: value transfered, positive for credit, negative for debit
     value = PriceCol(default=0)
+
+    #: date the transaction was done
     date = DateTimeCol()
+
+    #: payment (`:py:obj:stoqlib.domain.payment.payment.Payment`)
+    #: this transaction relates to, can also be None
     payment = ForeignKey('Payment', default=None)
 
     class sqlmeta:
@@ -274,8 +348,9 @@ class AccountTransaction(Domain):
         It's normally used when creating a transaction which represents
         a payment, for instance when you receive a bill or a check from
         a client which will enter a bank account.
+
         :param payment: the payment to create the transaction for.
-        :param account: account where this payment will arrive
+        :param account: account where this transaction will arrive
         :returns: the transaction
         """
         if not payment.is_paid():
@@ -295,6 +370,7 @@ class AccountTransaction(Domain):
 
     def get_other_account(self, account):
         """Get the other end of a transaction
+
         :param account: an account
         :returns: the other end
         """
@@ -307,6 +383,7 @@ class AccountTransaction(Domain):
 
     def set_other_account(self, other, account):
         """Set the other end of a transaction
+
         :param other: an account which we do not want to set
         :param account: the account to set
         """

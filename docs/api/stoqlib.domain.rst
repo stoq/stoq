@@ -14,7 +14,6 @@ domain Package
 
 .. automodule:: stoqlib.domain.account
     :members:
-    :undoc-members:
     :show-inheritance:
 
 :mod:`address` Module
