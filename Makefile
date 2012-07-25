@@ -5,7 +5,7 @@ SCHEMADIR=/mondo/htdocs/stoq.com.br/devel/schema/
 JS_AD="http://pagead2.googlesyndication.com/pagead/show_ads.js"
 
 apidocs:
-	make -C docs/api pickle html
+	make -C docs/api html
 
 upload-apidocs:
 	tar cfJ - -C docs/api/_build/html . | ssh dragon2 "tar xfJ - -C /var/www/stoq.com.br/doc/api"
