@@ -64,7 +64,7 @@ class BillOption(Domain):
     option = UnicodeCol()
     #: value of the option
     value = UnicodeCol()
-    #: the :py:class:`Account` this option belongs to
+    #: the :py:class:`bank account <BankAccount>` this option belongs to
     bank_account = ForeignKey('BankAccount')
 
 
@@ -75,7 +75,7 @@ class BankAccount(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/bank_account.html>`_
     """
 
-    #: the :py:class:`Account` for this bank account
+    #: the :py:class:`account <Account>` for this bank account
     account = ForeignKey('Account', default=None)
 
     # FIXME: This is brazil specific, should probably be replaced by a
@@ -147,13 +147,13 @@ class Account(Domain):
     #: parent account, can be None
     parent = ForeignKey('Account', default=None)
 
-    #: the computer tied to this account, mainly for cash accounts
+    #: the :py:class:`station <stoqlib.domain.station.BranchStation>` tied to this account, mainly for TYPE_CASH accounts
     station = ForeignKey('BranchStation', default=None)
 
     #: kind of account, one of the TYPE_* defines in this class
     account_type = IntCol(default=None)
 
-    #: bank this account is connected to
+    #: :py:class:`bank account <BankAccount>` for this account, used by TYPE_BANK accounts
     bank = SingleJoin('BankAccount', joinColumn='account_id')
 
     #
