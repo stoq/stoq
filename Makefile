@@ -3,6 +3,7 @@ PACKAGE=stoq
 DEBPACKAGE=python-kiwi
 SCHEMADIR=/mondo/htdocs/stoq.com.br/devel/schema/
 JS_AD="http://pagead2.googlesyndication.com/pagead/show_ads.js"
+API_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/api/stoq/
 
 apidocs:
 	make -C docs/api html
@@ -12,7 +13,7 @@ manual:
 	yelp-build html -o docs/manual/pt_BR/_build/html docs/manual/pt_BR
 
 upload-apidocs:
-	tar cfJ - -C docs/api/_build/html . | ssh dragon2 "tar xfJ - -C /var/www/stoq.com.br/doc/api/stoq"
+	cd docs/api/_build/html && rsync -avz --del . $(API_DOC_DIR)
 
 upload-manual:
 	tar cfJ - -C docs/manual/pt_BR/_build/html . | ssh dragon.async.com.br "tar xfJ - -C /var/www/stoq.com.br/doc/manual"
