@@ -8,7 +8,7 @@ apidocs:
 	make -C docs/api html
 
 upload-apidocs:
-	tar cfJ - -C docs/api/_build/html . | ssh dragon2 "tar xfJ - -C /var/www/stoq.com.br/doc/api"
+	tar cfJ - -C docs/api/_build/html . | ssh dragon2 "tar xfJ - -C /var/www/stoq.com.br/doc/api/stoq"
 
 schemadocs:
 	schemaspy -t pgsql -host anthem -db $(USER) -u $(USER) -s public -o $(SCHEMADIR) \
