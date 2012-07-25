@@ -165,7 +165,7 @@ global_resources = dict(
     template='$datadir/template',
     )
 
-PLUGINS = ['ecf', 'nfe', 'books']
+PLUGINS = ['ecf', 'nfe', 'books', 'magento']
 PLUGIN_EXTS = [('csv', '*csv'),
                ('glade', '*.ui'),
                ('sql', '*.sql'),
