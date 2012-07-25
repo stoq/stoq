@@ -47,6 +47,14 @@ Starting point for the domain classes:
 * :py:mod:`stoqlib.domain.invoice`: invoices and fields
 * :py:mod:`stoqlib.domain.loan`: loads
 * :py:mod:`stoqlib.domain.parameter`: configuration parameters
+* :py:mod:`stoqlib.domain.payment`: payment domain classes
+* :py:mod:`stoqlib.domain.payment.category`: user categorization
+* :py:mod:`stoqlib.domain.payment.comment`: annotations
+* :py:mod:`stoqlib.domain.payment.group`: group/set of payments
+* :py:mod:`stoqlib.domain.payment.method`: methods such as money, card, bill etc
+* :py:mod:`stoqlib.domain.payment.operation`: operation
+* :py:mod:`stoqlib.domain.payment.payment`: main payment class
+* :py:mod:`stoqlib.domain.payment.renegotiation`: renegatiation
 * :py:mod:`stoqlib.domain.person`: persons
 * :py:mod:`stoqlib.domain.plugin`: plugins
 * :py:mod:`stoqlib.domain.production`: product manufacturing

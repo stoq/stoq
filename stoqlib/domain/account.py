@@ -26,13 +26,13 @@
 This module contains classes centered around account, banks and transactions
 between accounts.
 
-The main class is an :py:class:`Account` holds a set of :py:class:`AccountTransaction`.
+The main class is an :class:`Account` holds a set of :class:`AccountTransaction`.
 
-For accounts that are banks there's a :py:class:`BankAccount` class for
+For accounts that are banks there's a :class:`BankAccount` class for
 the bank specific state and for bill generation there's also
-:py:class:`BillOption`.
+:class:`BillOption`.
 
-Finally there's a :py:class:`AccountTransactionView` that is used by
+Finally there's a :class:`AccountTransactionView` that is used by
 the financial application to efficiently display a ledger.
 """
 
@@ -64,7 +64,7 @@ class BillOption(Domain):
     option = UnicodeCol()
     #: value of the option
     value = UnicodeCol()
-    #: the :py:class:`bank account <BankAccount>` this option belongs to
+    #: the :class:`bank account <BankAccount>` this option belongs to
     bank_account = ForeignKey('BankAccount')
 
 
@@ -75,7 +75,7 @@ class BankAccount(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/bank_account.html>`_
     """
 
-    #: the :py:class:`account <Account>` for this bank account
+    #: the :class:`account <Account>` for this bank account
     account = ForeignKey('Account', default=None)
 
     # FIXME: This is brazil specific, should probably be replaced by a
@@ -94,7 +94,7 @@ class BankAccount(Domain):
     @property
     def options(self):
         """Get the bill options for this bank account
-        :returns: a list of :py:class:`BillOption`
+        :returns: a list of :class:`BillOption`
         """
         return BillOption.selectBy(connection=self.get_connection(),
                                    bank_account=self)
@@ -147,13 +147,13 @@ class Account(Domain):
     #: parent account, can be None
     parent = ForeignKey('Account', default=None)
 
-    #: the :py:class:`station <stoqlib.domain.station.BranchStation>` tied to this account, mainly for TYPE_CASH accounts
+    #: the :class:`station <stoqlib.domain.station.BranchStation>` tied to this account, mainly for TYPE_CASH accounts
     station = ForeignKey('BranchStation', default=None)
 
     #: kind of account, one of the TYPE_* defines in this class
     account_type = IntCol(default=None)
 
-    #: :py:class:`bank account <BankAccount>` for this account, used by TYPE_BANK accounts
+    #: :class:`bank account <BankAccount>` for this account, used by TYPE_BANK accounts
     bank = SingleJoin('BankAccount', joinColumn='account_id')
 
     #
@@ -172,7 +172,7 @@ class Account(Domain):
         """Fetch the account assoicated with a station
 
         :param conn: a connection
-        :param station: a :py:class:`~stoqlib.domain.station.BranchStation`
+        :param station: a :class:`~stoqlib.domain.station.BranchStation`
         :returns: the account
         """
         if station is None:
@@ -197,7 +197,7 @@ class Account(Domain):
     def transactions(self):
         """Returns a list of transactions to this account.
 
-        :returns: list of :py:class:`AccountTransaction`
+        :returns: list of :class:`AccountTransaction`
         """
         return AccountTransaction.select(
             OR(self.id == AccountTransaction.q.accountID,
@@ -266,7 +266,7 @@ class Account(Domain):
     def get_type_label(self, out):
         """Returns the label to show for the increases/decreases
         for transactions of this account.
-        See :py:obj:`~..account_labels`
+        See :obj:`~..account_labels`
 
         :param out: if the transaction is going out
         """
@@ -290,16 +290,15 @@ class AccountTransaction(Domain):
     """Transaction between two accounts.
 
     A transaction is a transfer of money from the
-    :py:obj:`~.source_account` to the
-    :py:obj:`~.account`.
+    :obj:`~.source_account` to the
+    :obj:`~.account`.
 
     It removes a negative amount of money from the source and increases
     the account by the same amount.
     There's only one value, but depending on the view it's either negative
     or positive, it can never be zero though.
     A transaction can optionally be tied to a
-    :py:obj:`~stoqlib.domain.payment.payment.Payment`
-
+    :class:`~stoqlib.domain.payment.payment.Payment`
 
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/account_transaction.html>`_
@@ -316,10 +315,10 @@ class AccountTransaction(Domain):
     #        want to store more values, so it might make sense to allow
     #        N values per transaction.
 
-    #: destination :py:class:`account <Account>`
+    #: destination :class:`account <Account>`
     account = ForeignKey('Account')
 
-    #: source :py:class:`account <Account>`
+    #: source :class:`account <Account>`
     source_account = ForeignKey('Account')
 
     #: short human readable summary of the transaction
@@ -334,7 +333,7 @@ class AccountTransaction(Domain):
     #: date the transaction was done
     date = DateTimeCol()
 
-    #: :py:obj:`payment <stoqlib.domain.payment.payment.Payment>`
+    #: :class:`payment <stoqlib.domain.payment.payment.Payment>`
     #: this transaction relates to, can also be None
     payment = ForeignKey('Payment', default=None)
 
