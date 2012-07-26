@@ -68,8 +68,6 @@ class SellableUnit(Domain):
                          UnitType.METERS,
                          UnitType.LITERS]
 
-    _inheritable = False
-
     #: The unit description
     description = UnicodeCol()
 

@@ -88,7 +88,6 @@ class EmployeeRole(Domain):
 
     implements(IDescribable)
 
-    _inheritable = False
     name = UnicodeCol(alternateID=True)
 
     #
