@@ -27,6 +27,7 @@ sys.path.insert(0, os.path.abspath('.'))
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.coverage',
     'sphinx.ext.graphviz',
     'sphinx.ext.viewcode',
     # Forked from sphinxcontrib.zopeext
@@ -249,50 +250,19 @@ texinfo_documents = [
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 #texinfo_show_urls = 'footnote'
 
-
-# -- Options for Epub output ---------------------------------------------------
-
-# Bibliographic Dublin Core info.
-epub_title = u'Stoq'
-epub_author = u'Async'
-epub_publisher = u'Async'
-epub_copyright = u'2012, Async'
-
-# The language of the text. It defaults to the language option
-# or en if the language is not set.
-#epub_language = ''
-
-# The scheme of the identifier. Typical schemes are ISBN or URL.
-#epub_scheme = ''
-
-# The unique identifier of the text. This can be a ISBN number
-# or the project homepage.
-#epub_identifier = ''
-
-# A unique identification for the text.
-#epub_uid = ''
-
-# A tuple containing the cover image and cover page html template filenames.
-#epub_cover = ()
-
-# HTML files that should be inserted before the pages created by sphinx.
-# The format is a list of tuples containing the path and title.
-#epub_pre_files = []
-
-# HTML files shat should be inserted after the pages created by sphinx.
-# The format is a list of tuples containing the path and title.
-#epub_post_files = []
-
-# A list of files that should not be packed into the epub file.
-#epub_exclude_files = []
-
-# The depth of the table of contents in toc.ncx.
-#epub_tocdepth = 3
-
-# Allow duplicate toc entries.
-#epub_tocdup = True
+# autodoc
 
 autodoc_member_order = 'bysource'
+
+# coverage
+
+coverage_ignore_modules = [
+    r'stoqlib.database.*',
+    r'stoqlib.domain.exampledata',
+    r'stoqlib.domain.test.*',
+    r'stoqlib.net.*',
+    r'stoqlib.reporting.*',
+]
 
 def setup(app):
     from devhelp2 import Devhelp2Builder
