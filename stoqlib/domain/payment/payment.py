@@ -281,7 +281,7 @@ class Payment(Domain):
         return days_late.days
 
     def set_pending(self):
-        """Set a STATUS_PREVIEW payment as STATUS_PENDING.
+        """Set a :obj:`.STATUS_PREVIEW` payment as :obj:`.STATUS_PENDING`.
         This also means that this is valid payment and its owner
         actually can charge it
         """
@@ -291,7 +291,7 @@ class Payment(Domain):
         PaymentFlowHistory.add_payment(self.get_connection(), self)
 
     def set_not_paid(self, change_entry):
-        """Set a STATUS_PAID payment as STATUS_PENDING.
+        """Set a :obj:`.STATUS_PAID` payment as :obj:`.STATUS_PENDING`.
         This requires clearing paid_date and paid_value
 
         :param change_entry: a :class:`PaymentChangeHistory` object,
@@ -310,7 +310,7 @@ class Payment(Domain):
         self.paid_value = None
 
     def pay(self, paid_date=None, paid_value=None, account=None):
-        """Pay the current payment set its status as STATUS_PAID"""
+        """Pay the current payment set its status as :obj:`.STATUS_PAID`"""
         if self.status != Payment.STATUS_PENDING:
             raise ValueError(_("This payment is already paid."))
         self._check_status(self.STATUS_PENDING, 'pay')
@@ -341,7 +341,7 @@ class Payment(Domain):
         Event.log(Event.TYPE_PAYMENT, msg.capitalize())
 
     def cancel(self, change_entry=None):
-        """Cancel the payment, set it's status to STATUS_CANCELLED
+        """Cancel the payment, set it's status to :obj:`.STATUS_CANCELLED`
         """
         # TODO Check for till entries here and call cancel_till_entry if
         # it's possible. Bug 2598
@@ -456,28 +456,28 @@ class Payment(Domain):
     def is_paid(self):
         """Check if the payment is paid.
 
-        :returns: True if the payment is paid, otherwise False
+        :returns: ``True`` if the payment is paid
         """
         return self.status == Payment.STATUS_PAID
 
     def is_pending(self):
         """Check if the payment is pending.
 
-        :returns: True if the payment is pending, otherwise False
+        :returns: ``True`` if the payment is pending
         """
         return self.status == Payment.STATUS_PENDING
 
     def is_preview(self):
         """Check if the payment is in preview state
 
-        :returns: True if the payment is paid, otherwise False
+        :returns: ``True`` if the payment is paid
         """
         return self.status == Payment.STATUS_PREVIEW
 
     def is_cancelled(self):
         """Check if the payment was cancelled.
 
-        :returns: True if the payment was cancelled, otherwise False.
+        :returns: ``True`` if the payment was cancelled
         """
         return self.status == Payment.STATUS_CANCELLED
 
@@ -505,21 +505,21 @@ class Payment(Domain):
     def is_inpayment(self):
         """Find out if a payment is :obj:`incoming <.TYPE_IN>`
 
-        :returns: True if it's incoming
+        :returns: ``True`` if it's incoming
         """
         return self.payment_type == self.TYPE_IN
 
     def is_outpayment(self):
         """Find out if a payment is :obj:`outgoing <.TYPE_OUT>`
 
-        :returns: True if it's outgoing
+        :returns: ``True`` if it's outgoing
         """
         return self.payment_type == self.TYPE_OUT
 
     def is_separate_payment(self):
         """Find out if this payment is created separately from a
         sale, purchase or renegotiation
-        :returns: True if it's separate.
+        :returns: ``True`` if it's separate.
         """
 
         # FIXME: This is a hack, we should rather store a flag
@@ -542,7 +542,7 @@ class Payment(Domain):
     def is_money(self):
         """Find out if the payment was made with money
 
-        :returns: True if it's a money payment
+        :returns: ``True`` if it's a money payment
         """
         return self.method.method_name == 'money'
 

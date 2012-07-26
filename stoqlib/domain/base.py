@@ -93,36 +93,38 @@ class Domain(ORMObject):
     #
 
     def on_create(self):
-        """Called when C{self} is about to be created on the database
+        """Called when *self* is about to be created on the database
 
-        This hook can be overridden on child classes for improved
-        functionality.
-        @note: A trick you may want to use: Use C{self.get_connection}
-            to get the :class:`stoqlib.runtime.StoqlibTransaction` in which
-            C{self} lives and do your modifications in it.
+        This hook can be overridden on child classes for improved functionality.
+
+        A trick you may want to use: Use :meth:`ORMObject.get_connection` to get the
+        :class:`transaction <stoqlib.database.runtime.StoqlibTransaction>` in which
+        *self* lives and do your modifications in it.
         """
 
     def on_update(self):
-        """Called when C{self} is about to be updated on the database
+        """Called when *self* is about to be updated on the database
 
         This hook can be overridden on child classes for improved
         functionality.
-        @note: A trick you may want to use: Use C{self.get_connection}
-            to get the :class:`stoqlib.runtime.StoqlibTransaction` in which
-            C{self} lives and do your modifications in it.
+
+        A trick you may want to use: Use :meth:`ORMObject.get_connection` to get the
+        :class:`transaction <stoqlib.database.runtime.StoqlibTransaction>` in which
+        *self* lives and do your modifications in it.
         """
 
     def on_delete(self):
-        """Called when C{self} is about to be deleted on the database
+        """Called when *self* is about to be updated on the database
 
         This hook can be overridden on child classes for improved
         functionality.
-        @note: A trick you may want to use: Use C{self.get_connection}
-            to get the :class:`stoqlib.runtime.StoqlibTransaction` in which
-            C{self} lives.
-        @attention: Do not try to modify C{self}, as it was marked as
-            obsolet by :class:`stoqlib.database.orm.ORMObject` and it will
-            result in errors.
+
+        A trick you may want to use: Use :meth:`ORMObject.get_connection` to get the
+        :class:`transaction <stoqlib.database.runtime.StoqlibTransaction>` in which
+        *self* lives and do your modifications in it.
+
+        Do not try to modify *self*, as it was marked as obsolete by
+        :class:`stoqlib.database.orm.ORMObject` and it will result in errors.
         """
 
     def clone(self):

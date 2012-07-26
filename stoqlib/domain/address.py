@@ -62,6 +62,9 @@ class CityLocation(ORMObject):
     @classmethod
     @argcheck(StoqlibTransaction)
     def get_default(cls, trans):
+        """Get a city location representing the default settings
+        :returns: a :class:`city location <CityLocation>`
+        """
         city = sysparam(trans).CITY_SUGGESTED
         state = sysparam(trans).STATE_SUGGESTED
         country = sysparam(trans).COUNTRY_SUGGESTED
@@ -74,6 +77,7 @@ class CityLocation(ORMObject):
         """
         Returns a CityLocation. If it does not exist, create a new
         one and return it.
+
         :param trans: a database transaction
         :param city: city
         :param state: state
@@ -96,6 +100,14 @@ class CityLocation(ORMObject):
 
     @classmethod
     def get_cities_by(cls, conn, state=None, country=None):
+        """Fetch a list of cities given a state and a country.
+
+        :param conn: a database connection
+        :param state: state or None
+        :param country: country or None
+        :returns: a list of cities
+        :rtype: string
+        """
         clause = None
 
         if state:
@@ -130,39 +142,63 @@ class CityLocation(ORMObject):
 class Address(Domain):
     """Class to store person's addresses.
 
-    B{Important Attributes}:
-       - I{is_main_address}: defines if this object stores information
-                             for the main address
     """
 
     implements(IDescribable)
 
+    #: street of the address, something like ``"Wall street"``
     street = UnicodeCol(default='')
+
+    #: streetnumber, eg ``100``
     streetnumber = IntCol(default=None)
+
+    #: district, eg ``"Manhattan"``
     district = UnicodeCol(default='')
+
+    #: postal code, eg ``"12345-678"``
     postal_code = UnicodeCol(default='')
+
+    #: complement, eg ``"apartment 35"``
     complement = UnicodeCol(default='')
+
+    #: defines if this object stores information for the main address
     is_main_address = BoolCol(default=False)
+
+    #: :class:`person <stoqlib.domain.person.Person>` of this address
     person = ForeignKey('Person')
+
+    #: :class:`city location <CityLocation>` of this address
     city_location = ForeignKey('CityLocation')
+
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.get_address_string()
+
+    # Public API
 
     def is_valid_model(self):
         return (self.street and self.district and
                 self.city_location.is_valid_model())
 
     def get_city(self):
+        """:returns: the city of this address"""
         return self.city_location.city
 
     def get_country(self):
+        """:returns: the country of this address"""
         return self.city_location.country
 
     def get_state(self):
+        """:returns: the state of this address"""
         return self.city_location.state
 
     def get_postal_code_number(self):
         """Returns the postal code without any non-numeric characters
+
         :returns: the postal code as a number
-        :rtype: integer
         """
         if not self.postal_code:
             return 0
@@ -170,6 +206,9 @@ class Address(Domain):
                                   if c in '1234567890']))
 
     def get_address_string(self):
+        """Formats the address as a string
+        :returns: the formatted address
+        """
         if self.street and self.streetnumber and self.district:
             return u'%s %s, %s' % (self.street, self.streetnumber,
                                    self.district)
@@ -181,9 +220,6 @@ class Address(Domain):
             return self.street
 
         return u''
-
-    def get_description(self):
-        return self.get_address_string()
 
     def get_details_string(self):
         """ Returns a string like 'postal_code - city - state'.

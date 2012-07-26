@@ -315,6 +315,7 @@ class Product(Domain):
 
     def get_production_cost(self):
         """ Return the production cost of one unit of the Product.
+
         :returns: the production cost
         """
         return self.sellable.cost
@@ -332,7 +333,7 @@ class Product(Domain):
 
         :param product: a possible component of this product
         :returns: True if the given product is one of our component or a
-        component of our components, otherwise False.
+          component of our components, otherwise False.
         """
         for component in self.get_components():
             if product is component.component:
@@ -562,6 +563,7 @@ class Storable(Domain):
     def increase_stock(self, quantity, branch, unit_cost=None):
         """When receiving a product, update the stock reference for this new
         item on a specific branch company.
+
         :param quantity: amount to increase
         :param branch: a branch
         :param cost: optional parameter indicating the unit cost of the new
@@ -602,6 +604,7 @@ class Storable(Domain):
         """When receiving a product, update the stock reference for the sold item
         this on a specific branch company. Returns the stock item that was
         decreased.
+
         :param quantity: amount to decrease
         :param branch: a branch
         """
@@ -634,6 +637,7 @@ class Storable(Domain):
 
     def get_balance_for_branch(self, branch):
         """Return the stock balance for the product in a branch.
+
         :param branch: the branch to get the stock balance for
         :returns: the amount of stock available in the branch
         """
@@ -645,6 +649,7 @@ class Storable(Domain):
 
     def get_stock_items(self):
         """Fetches the stock items available for all branches.
+
         :returns: a sequence of stock items
         """
         return ProductStockItem.selectBy(storable=self,
@@ -652,6 +657,7 @@ class Storable(Domain):
 
     def get_stock_item(self, branch):
         """Fetch a stock item for a specific branch
+
         :returns: a stock item
         """
         return ProductStockItem.selectOneBy(branch=branch,
