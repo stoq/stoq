@@ -345,30 +345,42 @@ class Delivery(Domain):
 
 
 class Sale(Domain, Adaptable):
-    """Sale object implementation.
+    """Sale logic, the process of selling a sellable to a client.
 
-    :attribute status: status of the sale
-    :attribute client: who we sold the sale to
-    :attribute salesperson: who sold the sale
-    :attribute branch: branch where the sale was done
-    :attribute till: The Till operation where this sale lives. Note that every
-       sale and payment generated are always in a till operation
-       which defines a financial history of a store.
-    :attribute open_date: the date sale was created
-    :attribute close_date: the date sale was closed
-    :attribute confirm_date: the date sale was confirmed
-    :attribute cancel_date: the date sale was cancelled
-    :attribute return_date: the date sale was returned
-    :attribute discount_value:
-    :attribute surcharge_value:
-    :attribute total_amount: the total value of all the items in the same
-    :attribute notes: Some optional additional information related to this sale.
-    :attribute coupon_id: the id of the coupon printed by the ECF.
-    :attribute service_invoice_number:
-    :attribute cfop:
-    :attribute invoice_number: the sale invoice number.
-    :attribute client_category: The :class:`ClientCategory` that was used for price
-        determination.
+    A large part of the payment processing logic is done via
+    the :class:`SaleAdaptToPaymentTransaction` adapter.
+
+    * calculates the sale price including discount/interest/markup
+    * creates payments
+    * decreases the stock for products
+    * creates a delivery (optional)
+    * verifies that the client is suitable
+    * creates commissions to the sales person
+    * add money to the till (if paid with money)
+    * calculate taxes and fiscal book entries
+
+    +----------------------------+----------------------------+
+    | **Status**                 | **Can be set to**          |
+    +----------------------------+----------------------------+
+    | :obj:`STATUS_QUOTE`        | :obj:`STATUS_INITIAL`      |
+    +----------------------------+----------------------------+
+    | :obj:`STATUS_INITIAL`      | :obj:`STATUS_ORDERED`,     |
+    +----------------------------+----------------------------+
+    | :obj:`STATUS_ORDERED`      | :obj:`STATUS_PAID`,        |
+    |                            | :obj:`STATUS_CONFIRMED`    |
+    |                            | :obj:`STATUS_CANCELLED`    |
+    +----------------------------+----------------------------+
+    | :obj:`STATUS_CONFIRMED`    | :obj:`STATUS_PAID`         |
+    |                            | :obj:`STATUS_RENEGOTIATED` |
+    +----------------------------+----------------------------+
+    | :obj:`STATUS_CANCELLED`    | None                       |
+    +----------------------------+----------------------------+
+    | :obj:`STATUS_PAID`         | None                       |
+    +----------------------------+----------------------------+
+    | :obj:`STATUS_RENEGOTIATED` | None                       |
+    +----------------------------+----------------------------+
+    | :obj:`STATUS_RETURNED`     | None                       |
+    +----------------------------+----------------------------+
 
     .. graphviz::
 
@@ -437,29 +449,67 @@ class Sale(Domain, Adaptable):
     status = IntCol(default=STATUS_INITIAL)
 
     # FIXME: this doesn't really belong to the sale
-    #: identifier for the coupon of this sale.
+    #: identifier for the coupon of this sale, used by a ECF printer
     coupon_id = IntCol()
 
     service_invoice_number = IntCol(default=None)
+
+    #: Some optional additional information related to this sale.
     notes = UnicodeCol(default='')
+
+    #: the date sale was created, this is always set
     open_date = DateTimeCol(default=datetime.datetime.now)
+
+    #: the date sale was confirmed, or None if it hasn't been confirmed
     confirm_date = DateTimeCol(default=None)
+
+    #: the date sale was paid, or None if it hasn't be paid
     close_date = DateTimeCol(default=None)
+
+    #: the date sale was confirmed, or None if it hasn't been cancelled
     cancel_date = DateTimeCol(default=None)
+
+    #: the date sale was confirmed, or None if it hasn't been returned
     return_date = DateTimeCol(default=None)
+
+    #: date when this sale expires, used by loans
     expire_date = DateTimeCol(default=None)
+
     discount_value = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
+
+    #: the total value of all the items in the same, this is set when
+    #: a sale is confirmed, this is the same as calling
+    #: :obj:`Sale.get_total_sale_amount()` at the time of confirming the sale,
     total_amount = PriceCol(default=0)
+
+    #: invoice number for this sale, appears on bills etc.
     invoice_number = IntCol(default=None)
     operation_nature = UnicodeCol(default='')
+
     cfop = ForeignKey("CfopData")
+
+    #: :class:`client <stoqlib.domain.person.Client>` who this sale was sold to
     client = ForeignKey('Client', default=None)
+
+    #: :class:`sales person <stoqlib.domain.person.SalesPerson>`
+    #: who sold the sale
     salesperson = ForeignKey('SalesPerson')
+
+    #: :class:`branch <stoqlib.domain.person.Branch>` this sale belongs to
     branch = ForeignKey('Branch', default=None)
+
     # FIXME: transporter should only be used on Delivery.
+    #: :class:`transporter <stoqlib.domain.person.Transporter>` transporting
+    #: this sale, in case of a delivery
     transporter = ForeignKey('Transporter', default=None)
+
+    #: the :class:`payment group <stoqlib.domain.payment.group.PaymentGroup`
+    #: of this sale
     group = ForeignKey('PaymentGroup')
+
+    #: the :class:`client category <stoqlib.domain.person.ClientCategory>`
+    #: used for price determination.
     client_category = ForeignKey('ClientCategory', default=None)
 
     def __init__(self, *args, **kwargs):
@@ -529,6 +579,7 @@ class Sale(Domain, Adaptable):
 
     def can_order(self):
         """Only newly created sales can be ordered
+
         :returns: True if the sale can be ordered, otherwise False
         """
         return (self.status == Sale.STATUS_INITIAL or
@@ -536,6 +587,7 @@ class Sale(Domain, Adaptable):
 
     def can_confirm(self):
         """Only ordered sales can be confirmed
+
         :returns: True if the sale can be confirmed, otherwise False
         """
         return (self.status == Sale.STATUS_ORDERED or
@@ -543,18 +595,21 @@ class Sale(Domain, Adaptable):
 
     def can_set_paid(self):
         """Only confirmed sales can be paid
+
         :returns: True if the sale can be set as paid, otherwise False
         """
         return self.status == Sale.STATUS_CONFIRMED
 
     def can_set_not_paid(self):
         """Only confirmed sales can be paid
+
         :returns: True if the sale can be set as paid, otherwise False
         """
         return self.status == Sale.STATUS_PAID
 
     def can_set_renegotiated(self):
         """Only sales with status confirmed can be renegotiated.
+
         :returns: True if the sale can be renegotiated, False otherwise.
         """
         # This should be as simple as:
@@ -565,6 +620,7 @@ class Sale(Domain, Adaptable):
 
     def can_cancel(self):
         """Only ordered, confirmed, paid and quoting sales can be cancelled.
+
         :returns: True if the sale can be cancelled, otherwise False
         """
         return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID,
@@ -572,6 +628,7 @@ class Sale(Domain, Adaptable):
 
     def can_return(self):
         """Only confirmed or paid sales can be returned
+
         :returns: True if the sale can be returned, otherwise False
         """
         return (self.status == Sale.STATUS_CONFIRMED or
@@ -579,6 +636,7 @@ class Sale(Domain, Adaptable):
 
     def can_edit(self):
         """Only quoting sales can be edited.
+
         :returns: True if the sale can be edited, otherwise False
         """
         return self.status == Sale.STATUS_QUOTE
@@ -781,6 +839,7 @@ class Sale(Domain, Adaptable):
     def get_sale_subtotal(self):
         """Fetch the subtotal for the sale, eg the sum of the
         prices for of all items
+
         :returns: subtotal
         """
         total = 0
@@ -791,6 +850,7 @@ class Sale(Domain, Adaptable):
 
     def get_items_total_quantity(self):
         """Fetches the total number of items in the sale
+
         :returns: number of items
         """
         return self.get_items().sum('quantity') or Decimal(0)
@@ -799,6 +859,7 @@ class Sale(Domain, Adaptable):
         """Returns the sale details. The details are composed by the sale
         notes, the items notes, the delivery address and the estimated fix
         date.
+
         :returns: the sale details string.
         """
         details = []
@@ -838,11 +899,12 @@ class Sale(Domain, Adaptable):
             return _(u'Not Specified')
         return self.client.get_name()
 
+    # FIXME: move over to client or person
     def get_client_role(self):
         """Fetches the client role
 
-        :returns: the client role (a Individual or a
-        Company) instance or None if the sale haven't a client.
+        :returns: the client role (a Individual or a Company) instance or
+          None if the sale haven't a client.
         """
         if not self.client:
             return None
@@ -858,6 +920,7 @@ class Sale(Domain, Adaptable):
 
     def only_paid_with_money(self):
         """Find out if the sale is paid using money
+
         :returns: True if the sale was paid with money, otherwise False
         :rtype: bool
         """
