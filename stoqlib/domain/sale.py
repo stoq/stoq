@@ -475,7 +475,20 @@ class Sale(Domain, Adaptable):
     #: date when this sale expires, used by loans
     expire_date = DateTimeCol(default=None)
 
+    #: discount of the sale, in absolute value, for instance::
+    #:
+    #:    sale.total_sale_amount = 150
+    #:    sale.discount_value = 18
+    #:    # the price of the sale will now be 132
+    #:
     discount_value = PriceCol(default=0)
+
+    #: surcharge of the sale, in absolute value, for instance::
+    #:
+    #:    sale.total_sale_amount = 150
+    #:    sale.surcharge_value = 18
+    #:    # the price of the sale will now be 168
+    #:
     surcharge_value = PriceCol(default=0)
 
     #: the total value of all the items in the same, this is set when
@@ -648,7 +661,7 @@ class Sale(Domain, Adaptable):
         Ordering a sale is the first step done after creating it.
         The state of the sale will change to Sale.STATUS_ORDERED.
         To order a sale you need to add sale items to it.
-        A client might also be set for the sale, but it is not necessary.
+        A :class:`client <stoqlib.domain.person.Client>` might also be set for the sale, but it is not necessary.
         """
         assert self.can_order()
 
@@ -762,7 +775,7 @@ class Sale(Domain, Adaptable):
 
     def set_renegotiated(self):
         """Set the sale as renegotiated. The sale payments have been
-        renegotiated and the operations will be done in other payment group."""
+        renegotiated and the operations will be done in other :class:`payment group <stoqlib.domain.payment.group.PaymentGroup>`."""
         assert self.can_set_renegotiated()
 
         self.close_date = const.NOW()
@@ -823,7 +836,7 @@ class Sale(Domain, Adaptable):
 
     def get_total_sale_amount(self):
         """
-        Fetches the total value  paid by the client.
+        Fetches the total value  paid by the :class:`client <stoqlib.domain.person.Client>`.
         It can be calculated as::
 
             Sale total = Sum(product and service prices) + surcharge +
@@ -905,7 +918,7 @@ class Sale(Domain, Adaptable):
         """Fetches the client role
 
         :returns: the client role (a Individual or a Company) instance or
-          None if the sale haven't a client.
+          None if the sale haven't a :class:`client <stoqlib.domain.person.Client>`.
         """
         if not self.client:
             return None
@@ -969,6 +982,9 @@ class Sale(Domain, Adaptable):
 
     @property
     def products(self):
+        """All :class:`sale items <SaleItem>` of this sale that contain
+        :class:`products <stoqlib.domain.product.Product>`.
+        """
         return SaleItem.select(
             AND(SaleItem.q.saleID == self.id,
                 SaleItem.q.sellableID == Product.q.sellableID),
@@ -976,6 +992,9 @@ class Sale(Domain, Adaptable):
 
     @property
     def services(self):
+        """All :class:`sale items <SaleItem>` of this sale that contain
+        :class:`services <stoqlib.domain.service.Service>`.
+        """
         return SaleItem.select(
             AND(SaleItem.q.saleID == self.id,
                 SaleItem.q.sellableID == Service.q.sellableID),
@@ -986,10 +1005,10 @@ class Sale(Domain, Adaptable):
         """Returns all valid payments for this sale
 
         This will return a list of valid payments for this sale, that
-        is, all payments on the payment group that were not cancelled.
-        If you need to get the cancelled too, use self.group.payments.
+        is, all payments on the :class:`payment group <stoqlib.domain.payment.group.PaymentGroup>` that were not cancelled.
+        If you need to get the cancelled too, use :obj:`.group.payments`.
 
-        :returns: a list of :class:`stoqlib.domain.payment.payment.Payment`
+        :returns: a list of :class:`~stoqlib.domain.payment.payment.Payment`
         """
         return self.group.get_valid_payments()
 
@@ -1011,9 +1030,13 @@ class Sale(Domain, Adaptable):
                                    _set_discount_by_percentage,
                                    doc=(
         """Sets a discount by percentage.
-        Note that percentage must be added as an absolute value not as a
-        factor like 1.05 = 5 % of surcharge
-        The correct form is 'percentage = 3' for a discount of 3 %"""
+        Note that percentage must be added as an absolute value, in other
+        words::
+
+            sale.total_sale_amount = 200
+            sale.discount_percentage = 5
+            # the price of the sale will now be be `190`
+        """
         ))
 
     def _get_surcharge_by_percentage(self):
@@ -1033,10 +1056,15 @@ class Sale(Domain, Adaptable):
     surcharge_percentage = property(_get_surcharge_by_percentage,
                                     _set_surcharge_by_percentage,
                                     doc=(
-        """Sets a surcharge by percentage.
-        Note that surcharge must be added as an absolute value not as a
-        factor like 0.97 = 3 % of discount.
-        The correct form is 'percentage = 3' for a surcharge of 3 %"""
+        """Sets a discount by percentage.
+        Note that percentage must be added as an absolute value, in other
+        words::
+
+            sale.total_sale_amount = 200
+            sale.surcharge_percentage = 5
+            # the price of the sale will now be `210`
+
+        """
         ))
 
     #
@@ -1345,7 +1373,7 @@ class SaleView(Viewable):
     :cvar status: the sale status
     :cvar salesperson_name: the salesperson name
     :cvar client_name: the sale client name
-    :cvar client_id: the if of the client table
+    :cvar client_id: the if of the :class:`client <stoqlib.domain.person.Client>` table
     :cvar subtotal: the sum of all items in the sale
     :cvar surcharge_value: the sale surcharge value
     :cvar discount_value: the sale discount value
