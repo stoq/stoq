@@ -59,3 +59,11 @@ def apply_patch(trans):
         UPDATE city_location
             SET country = 'Brazil' WHERE lower(country) = 'brasil';
         """)
+
+    # Since COUNTRY_SUGGESTED was a free field, try to correct it if
+    # some user changed it to Brasil (with 's' instead of 'z').
+    trans.query("""
+        UPDATE parameter_data
+            SET field_value = 'Brazil'
+            WHERE lower(field_value) = 'brasil' AND field_name = 'COUNTRY_SUGGESTED';
+        """)
