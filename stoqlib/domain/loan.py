@@ -119,36 +119,45 @@ class LoanItem(Domain):
 class Loan(Domain):
     """Loan object implementation.
 
-    :cvar STATUS_OPEN: The loan is opened, products or other sellable items
-      might have been added and might not be in stock.
-    :cvar STATUS_CLOSED: All the products or other sellable items have been
-    returned and are available in stock.
-    :attribute status: status of the loan
-    :attribute client: who we loan
-    :attribute responsinble: who is responsible for this loan
-    :attribute branch: branch where the loan was done
-    :attribute open_date: the date loan was created
-    :attribute close_date: the date loan was closed
-    :attribute expire_return_date: the expected date loan will return
-    :attribute notes: Some optional additional information related to this loan.
     """
 
     implements(IContainer)
 
-    (STATUS_OPEN,
-     STATUS_CLOSED) = range(2)
+    #: The loan is opened, products or other sellable items
+    #: might have been added and might not be in stock.
+    STATUS_OPEN = 0
+
+    #: All the products or other sellable items have been
+    #: returned and are available in stock.
+    STATUS_CLOSED = 1
 
     statuses = {STATUS_OPEN: _(u'Opened'),
                 STATUS_CLOSED: _(u'Closed')}
 
+    #: status of the loan
     status = IntCol(default=STATUS_OPEN)
+
+    #: Some optional additional information related to this loan.
     notes = UnicodeCol(default='')
+
+    #: the date loan was created
     open_date = DateTimeCol(default=datetime.datetime.now)
+
+    #: the date loan was closed
     close_date = DateTimeCol(default=None)
+
+    #:expire_date: the expected date loan will return
     expire_date = DateTimeCol(default=None)
+
     removed_by = UnicodeCol(default='')
+
+    #: branch where the loan was done
     branch = ForeignKey('Branch', default=None)
+
+    #: who is responsible for this loan
     responsible = ForeignKey('LoginUser')
+
+    #: who we loan
     client = ForeignKey('Client', default=None)
 
     #
@@ -179,6 +188,7 @@ class Loan(Domain):
 
     def add_sellable(self, sellable, quantity=1, price=None):
         """Adds a new sellable item to a loan
+
         :param sellable: the sellable
         :param quantity: quantity to add, defaults to 1
         :param price: optional, the price, it not set the price

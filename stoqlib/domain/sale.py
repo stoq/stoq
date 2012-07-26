@@ -73,14 +73,14 @@ _ = stoqlib_gettext
 
 
 class SaleItem(Domain):
-    """An item of a sellable <stoqlib.domain.sellable.Sellable> within a
+    """An item of a :class:`sellable <stoqlib.domain.sellable.Sellable>` within a
     :class:`sale <Sale>`.
     Contains quantity, price, taxes.
     """
     #: the quantity of the of sold item in this sale
     quantity = QuantityCol()
 
-    #: original value the :class:`sellable <Sellable>` had
+    #: original value the :class:`sellable <stoqlib.domain.sellable.Sellable>` had
     #: when adding the sale item
     base_price = PriceCol()
 
@@ -99,6 +99,7 @@ class SaleItem(Domain):
     #: the :class:`delivery <Delivery>` if there is one
     delivery = ForeignKey('Delivery', default=None)
 
+    #: the :class:`fiscal entry <stoqlib.domain.fiscal.CfopData>`
     cfop = ForeignKey('CfopData', default=None)
 
     #: user defined notes, currently only used by services
@@ -174,6 +175,9 @@ class SaleItem(Domain):
         return self.sellable.get_description()
 
     def is_service(self):
+        """If this sale item contains a :class:`service <stoqlib.domain.service.Service>`
+        :returns: ``True`` if it's a service
+        """
         service = Service.selectOneBy(sellable=self.sellable,
                                       connection=self.get_connection())
         return service is not None
@@ -183,22 +187,29 @@ class SaleItem(Domain):
 
         If the sale was also printed on a coupon, then we cannot add icms
         details to the NF-e (or at least, we should modify then accordingly)
+
+        :returns: the :class:`icms info <stoqlib.domain.taxes.SaleItemIcms>` or None,
+          if a coupon has been printed for this Sale
         """
-        # If the sale was printed on a
         if self.sale.coupon_id:
             return None
 
         return self.icms_info
 
     def get_nfe_ipi_info(self):
+        """IPI details for this SaleItem
+        :returns: the :class:`ipi info <stoqlib.domain.taxes.SaleItemIpip>`
+        """
         return self.ipi_info
 
     def get_nfe_cfop_code(self):
         """Returns the cfop code to be used on the NF-e
 
         If the sale was also printed on a ECF, then the cfop should be 5.929
-        (if sold to a client in the same state) or 6-929 (if sold to a
+        (if sold to a :class:`client <stoqlib.domain.person.Client>` in the same state) or 6-929 (if sold to a
         client on a different state).
+
+        :returns: the cfop code
         """
         if self.sale.coupon_id:
             # find out if the client is in the same state as we are.
@@ -240,7 +251,7 @@ class Delivery(Domain):
     #: sent to deliver
     STATUS_SENT = 1
 
-    #: received by the client
+    #: received by the :class:`client <stoqlib.domain.person.Client>`
     STATUS_RECEIVED = 2
 
     statuses = {STATUS_INITIAL: _("Waiting"),
@@ -256,7 +267,7 @@ class Delivery(Domain):
     #: the date which the delivery sent to deliver
     deliver_date = DateTimeCol(default=None)
 
-    #: the date which the delivery received by the client
+    #: the date which the delivery received by the :class:`client <stoqlib.domain.person.Client>`
     receive_date = DateTimeCol(default=None)
 
     #: the delivery tracking code, a transporter specific identifer that
@@ -345,7 +356,7 @@ class Delivery(Domain):
 
 
 class Sale(Domain, Adaptable):
-    """Sale logic, the process of selling a sellable to a client.
+    """Sale logic, the process of selling a :class:`sellable <stoqlib.domain.sellable.Sellable>` to a :class:`client <stoqlib.domain.person.Client>`.
 
     A large part of the payment processing logic is done via
     the :class:`SaleAdaptToPaymentTransaction` adapter.
@@ -400,7 +411,7 @@ class Sale(Domain, Adaptable):
 
     implements(IContainer)
 
-    #: The sale is opened, products or other sellable items might have
+    #: The sale is opened, products or other :class:`sellable <stoqlib.domain.sellable.Sellable>` items might have
     #: been added.
     STATUS_INITIAL = 0
 
@@ -409,7 +420,7 @@ class Sale(Domain, Adaptable):
     STATUS_CONFIRMED = 1
 
     #: All the payments of the sale has been confirmed and
-    #: the client does not owe anything to us. The product stock has been
+    #: the :class:`client <stoqlib.domain.person.Client>` does not owe anything to us. The product stock has been
     #: decreased and the items delivered.
     STATUS_PAID = 2
 
@@ -423,7 +434,7 @@ class Sale(Domain, Adaptable):
     STATUS_ORDERED = 4
 
     #: The sale has been returned, all the payments made
-    #: have been canceled and the client has been compensated for
+    #: have been canceled and the :class:`client <stoqlib.domain.person.Client>` has been compensated for
     #: everything already paid.
     STATUS_RETURNED = 5
 
@@ -500,6 +511,7 @@ class Sale(Domain, Adaptable):
     invoice_number = IntCol(default=None)
     operation_nature = UnicodeCol(default='')
 
+    #: the :class:`fiscal entry <stoqlib.domain.fiscal.CfopData>`
     cfop = ForeignKey("CfopData")
 
     #: :class:`client <stoqlib.domain.person.Client>` who this sale was sold to
@@ -784,6 +796,7 @@ class Sale(Domain, Adaptable):
     def cancel(self):
         """Cancel the sale
         You can only cancel an ordered sale.
+        This does not cancel the payments, only the sale items.
         """
         assert self.can_cancel()
 
@@ -852,7 +865,7 @@ class Sale(Domain, Adaptable):
 
     def get_sale_subtotal(self):
         """Fetch the subtotal for the sale, eg the sum of the
-        prices for of all items
+        prices for of all items.
 
         :returns: subtotal
         """
@@ -906,9 +919,16 @@ class Sale(Domain, Adaptable):
         return u'%05d' % self.id
 
     def get_salesperson_name(self):
+        """
+        :returns: the sales person name
+        """
         return self.salesperson.get_description()
 
     def get_client_name(self):
+        """Returns the client name, if a :class:`client <stoqlib.domain.person.Client>` has been provided for this sale
+        :returns: the client name of a place holder string for sales without
+           clients set.
+        """
         if not self.client:
             return _(u'Not Specified')
         return self.client.get_name()
@@ -947,12 +967,14 @@ class Sale(Domain, Adaptable):
                 payment.pay()
 
     def add_sellable(self, sellable, quantity=1, price=None):
-        """Adds a new sellable item to a sale
+        """Adds a new :class:`sellable <stoqlib.domain.sellable.Sellable>` item to a sale
 
         :param sellable: the sellable
         :param quantity: quantity to add, defaults to 1
         :param price: optional, the price, it not set the price
           from the sellable will be used
+        :returns: a :class:`sale item <SaleItem>` for representing the
+          sellable within this sale.
         """
         price = price or sellable.price
         return SaleItem(connection=self.get_connection(),

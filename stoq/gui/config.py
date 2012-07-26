@@ -28,21 +28,22 @@ Stoq Configuration dialogs
 
 Current flow of the database steps:
 
-> WelcomeStep
-> DatabaseLocationStep
-if network database:
-    > DatabaseSettingsStep
-    if has installed db:
-        > FinishInstallationStep
-        break.
-> InstallationModeStep
-> PluginStep
-if activate tef:
-    > TefStep
-> StoqAdminPasswordStep
-> CreateDatabaseStep
-> FinishInstallationStep
+  * :obj:`WelcomeStep`
+  * :obj:`DatabaseLocationStep`
 
+    * :obj:`DatabaseSettingsStep` (iff network database)
+
+      * :obj:`PostgresAdminPasswordStep`
+      * :obj:`FinishInstallationStep` (if an installed database was found)
+
+  * :obj:`InstallationModeStep`
+  * :obj:`PluginStep`
+
+    * :obj:`TefStep` (if tef was activated)
+
+  * :obj:`StoqAdminPasswordStep`
+  * :obj:`CreateDatabaseStep`
+  * :obj:`FinishInstallationStep`
 """
 
 import gettext
