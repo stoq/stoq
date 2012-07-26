@@ -47,7 +47,7 @@ from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      SellableCategory,
                                      SellableTaxConstant)
 from stoqlib.domain.stockdecrease import (StockDecrease, StockDecreaseItem)
-from stoqlib.lib.decorators import cached_property
+from stoqlib.lib.decorators import cached_function
 from stoqlib.lib.validators import is_date_in_interval
 
 
@@ -430,9 +430,9 @@ class SellableCategoryView(Viewable):
         return category_views[0]
 
     def get_suggested_markup(self):
-        return self._suggested_markup
+        return self._suggested_markup()
 
-    @cached_property(ttl=0)
+    @cached_function(ttl=0)
     def _suggested_markup(self):
         category = self
         while category:
@@ -447,7 +447,7 @@ class SellableCategoryView(Viewable):
         if self.commission is not None:
             return self.commission
 
-        source = self._parent_source_commission
+        source = self._parent_source_commission()
         if source:
             return source.direct_value
 
@@ -456,11 +456,11 @@ class SellableCategoryView(Viewable):
         if self.commission is not None:
             return self.installments_commission
 
-        source = self._parent_source_commission
+        source = self._parent_source_commission()
         if source:
             return source.installments_value
 
-    @cached_property(ttl=0)
+    @cached_function(ttl=0)
     def _parent_source_commission(self):
         parent = self.get_parent()
         while parent:
