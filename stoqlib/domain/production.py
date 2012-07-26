@@ -428,7 +428,8 @@ class ProductionMaterial(Domain):
 
     def add_lost(self, quantity):
         """Adds the quantity lost of this material. The maximum quantity that
-        can be lost is given by the formula:
+        can be lost is given by the formula::
+
             - max_lost(quantity) = needed - consumed - lost - quantity
 
         :param quantity: the quantity that was lost.

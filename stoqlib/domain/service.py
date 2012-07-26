@@ -50,6 +50,7 @@ class Service(Domain):
 
     implements(IDescribable)
 
+    #: The :class:`sellable <stoqlib.domain.sellable.Sellable>`
     sellable = ForeignKey('Sellable')
 
     def remove(self):
@@ -115,15 +116,15 @@ class Service(Domain):
 
 class ServiceView(Viewable):
     """Stores information about services
-    Available fields are::
-        id                 - the id of the asellable table
-        barcode            - the sellable barcode
-        status             - the sellable status
-        cost               - the sellable cost
-        price              - the sellable price
-        description        - the sellable description
-        unit               - the unit in case the sellable is not a product
-        service_id         - the id of the service table
+
+    :attribute id: the id of the asellable table
+    :attribute barcode: the sellable barcode
+    :attribute status:  the sellable status
+    :attribute cost: the sellable cost
+    :attribute price: the sellable price
+    :attribute description: the sellable description
+    :attribute unit: the unit in case the sellable is not a product
+    :attribute service_id: the id of the service table
     """
 
     columns = dict(

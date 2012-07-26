@@ -43,12 +43,15 @@ _ = stoqlib_gettext
 class TransferOrderItem(Domain):
     """Transfer order item
 
-    :attribute sellable: The sellable to transfer
-    :attribute transfer_order: The order this item belongs to
-    :attribute quantity: The quantity to transfer
     """
+
+    #: The :class:`sellable <stoqlib.domain.sellable.Sellable>` to transfer
     sellable = ForeignKey('Sellable')
+
+    #: The :class:`transfer order <TransferOrder>` this item belongs to
     transfer_order = ForeignKey('TransferOrder')
+
+    #: The quantity to transfer
     quantity = QuantityCol()
 
     #
@@ -62,15 +65,6 @@ class TransferOrderItem(Domain):
 
 class TransferOrder(Domain):
     """ Transfer Order class
-
-    :attribute open_date: The date the order was created
-    :attribute receival_date: The date the order was received
-    :attribute source_branch: The branch sending the stock
-    :attribute destination_branch: The branch receiving the stock
-    :attribute source_responsible: Employee responsible for the transfer at
-        source branch
-     :attribute destination_responsible: Employee responsible for the transfer at
-        destination branch
     """
     implements(IContainer)
 
@@ -81,11 +75,23 @@ class TransferOrder(Domain):
                 STATUS_CLOSED: _(u'Closed')}
 
     status = IntCol(default=STATUS_PENDING)
+
+    #: The date the order was created
     open_date = DateTimeCol(default=datetime.datetime.now)
+
+    #: The date the order was received
     receival_date = DateTimeCol(default=datetime.datetime.now)
+
+    #: The branch sending the stock
     source_branch = ForeignKey('Branch')
+
+    #: The branch receiving the stock
     destination_branch = ForeignKey('Branch')
+
+    #: Employee responsible for the transfer at source branch
     source_responsible = ForeignKey('Employee')
+
+    #: Employee responsible for the transfer at destination branch
     destination_responsible = ForeignKey('Employee')
 
     #

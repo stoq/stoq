@@ -55,31 +55,34 @@ _ = stoqlib_gettext
 class SellableUnit(Domain):
     """ A class used to represent the sellable unit.
 
-    :cvar SYSTEM_PRIMITIVES: The values on the list are enums used to fill
-      'unit_index' column above. That list is useful for many things,
-      e.g. See if the user can delete the unit. It should not be possible
-      to delete a primitive one.
-    :cvar description: The unit description
-    :cvar unit_index:  This column defines if this object represents a custom
-      product unit (created by the user through the product editor) or
-      a 'native unit', like 'Km', 'Lt' and 'pc'.
-      This data is used mainly to interact with stoqdrivers, since when adding
-      an item in a coupon we need to know if its unit must be specified as
-      a description (using CUSTOM_PM constant) or as an index (using UNIT_*).
-      Also, this is directly related to the DeviceSettings editor.
     :cvar allow_fraction: If the unit allows to be represented in fractions.
       e.g. We can have 1 car, 2 cars, but not 1/2 car.
     """
     implements(IDescribable)
 
+    #: The values on the list are enums used to fill
+    # ``'unit_index'`` column above. That list is useful for many things,
+    # e.g. See if the user can delete the unit. It should not be possible
+    # to delete a primitive one.
     SYSTEM_PRIMITIVES = [UnitType.WEIGHT,
                          UnitType.METERS,
                          UnitType.LITERS]
 
     _inheritable = False
+
+    #: The unit description
     description = UnicodeCol()
-    # Using an int cast on UnitType because
-    # SQLObject doesn't recognize it's type.
+
+    # FIXME: Using an int cast on UnitType because
+    #        SQLObject doesn't recognize it's type.
+    #: This column defines if this object represents a custom product unit
+    #: (created by the user through the product editor) or a *native unit*,
+    #: like ``Km``, ``Lt`` and ``pc``.
+    #:
+    #: This data is used mainly to interact with stoqdrivers, since when adding
+    #: an item in a coupon we need to know if its unit must be specified as
+    #: a description (using ``CUSTOM_PM`` constant) or as an index (using UNIT_*).
+    #: Also, this is directly related to the DeviceSettings editor.
     unit_index = IntCol(default=int(UnitType.CUSTOM))
     allow_fraction = BoolCol(default=True)
 
@@ -128,21 +131,22 @@ class SellableTaxConstant(Domain):
 
 # pylint: disable=E1101
 class SellableCategory(Domain):
-    """ Sellable category. This class can represents a
-    sellable's category as well its base category.
+    """ Sellable category.
 
-    :cvar description: The category description
-    :cvar suggested_markup: Define the suggested markup when calculating the
-       sellable's price.
-    :cvar salesperson_comission: A percentage comission suggested for all the
-       sales which products belongs to this category.
-    :cvar category: base category of this category, None for base categories
-       themselves
+    This class can represents a sellable's category as well its base category.
     """
 
+    #: The category description
     description = UnicodeCol()
+
+    #: Define the suggested markup when calculating the sellable's price.
     suggested_markup = PercentCol(default=0)
+
+    #: A percentage comission suggested for all the sales which products
+    #: belongs to this category.
     salesperson_commission = PercentCol(default=0)
+
+    #: base category of this category, None for base categories themselves
     category = ForeignKey('SellableCategory', default=None)
     tax_constant = ForeignKey('SellableTaxConstant', default=None)
 
@@ -173,7 +177,7 @@ class SellableCategory(Domain):
     def get_children_recursively(self):
         """Return all the children from this category, recursively
 
-        This will return all children recursively, e.g.:
+        This will return all children recursively, e.g.::
 
                       A
                      / \
@@ -181,7 +185,7 @@ class SellableCategory(Domain):
                    / \
                   D   E
 
-        In this example, calling this from A will return set([B, C, D, E])
+        In this example, calling this from A will return ``set([B, C, D, E])``
         """
         children = set(self.children)
 
@@ -197,6 +201,7 @@ class SellableCategory(Domain):
     def get_commission(self):
         """Returns the commission for this category.
         If it's unset, return the value of the base category, if any
+
         :returns: the commission
         """
         if self.category:
@@ -207,6 +212,7 @@ class SellableCategory(Domain):
     def get_markup(self):
         """Returns the markup for this category.
         If it's unset, return the value of the base category, if any
+
         :returns: the markup
         """
         if self.category:
@@ -219,6 +225,7 @@ class SellableCategory(Domain):
     def get_tax_constant(self):
         """Returns the tax constant for this category.
         If it's unset, return the value of the base category, if any
+
         :returns: the tax constant
         """
         if self.category:
@@ -266,15 +273,18 @@ class SellableCategory(Domain):
 class ClientCategoryPrice(Domain):
     """A table that stores special prices for clients based on their
     category.
-
-    :attribute sellable: The sellable that has a special price
-    :attribute category: The category that has the special price
-    :attribute price: The price for this (sellable, category)
-    :attribute max_discount: The max discount that may be applied.
     """
+
+    #: The sellable that has a special price
     sellable = ForeignKey('Sellable')
+
+    #: The category that has the special price
     category = ForeignKey('ClientCategory')
+
+    #: The price for this (sellable, category)
     price = PriceCol(default=0)
+
+    #: The max discount that may be applied.
     max_discount = PercentCol(default=0)
 
     def _get_markup(self):
@@ -301,28 +311,6 @@ class Sellable(Domain):
     or a service. Note that sellable is not actually a concrete item but
     only its reference as a sellable. Concrete items are created by
     IContainer routines.
-
-    :attribute status: status the sellable is in
-    :type status: enum
-    :attribute price: price of sellable
-    :type price: float
-    :attribute description: full description of sallable
-    :type description: string
-    :attribute category: a reference to category table
-    :type category: :class:`SellableCategory`
-    :attribute markup: ((cost/price)-1)*100
-    :type markup: float
-    :attribute cost: final cost of sellable
-    :type cost: float
-    :attribute max_discount: maximum discount allowed
-    :type max_discount: float
-    :attribute commission: commission to pay after selling this sellable
-    :type commission: float
-
-    :attribute on_sale_price: A special price used when we have a "on sale" state
-    :type on_sale_price: float
-    :attribute on_sale_start_date:
-    :attribute on_sale_end_date:
     """
 
     implements(IDescribable)
@@ -337,20 +325,41 @@ class Sellable(Domain):
                 STATUS_CLOSED: _(u'Closed'),
                 STATUS_BLOCKED: _(u'Blocked')}
 
+    #: an internal code identifying the sellable in Stoq
     code = UnicodeCol(default='')
+
+    #: barcode, mostly for products, usually printed and attached to the
+    #: package.
     barcode = UnicodeCol(default='')
+
     # This default status is used when a new sellable is created,
     # so it must be *always* UNAVAILABLE (that means no stock for it).
+    #: status the sellable is in
     status = IntCol(default=STATUS_UNAVAILABLE)
+
+    #: cost of the sellable
     cost = PriceCol(default=0)
+
+    #: price of sellable, how much the client is charged
     base_price = PriceCol(default=0)
+
+    #: full description of sallable
     description = UnicodeCol(default='')
+
+    #: maximum discount allowed
     max_discount = PercentCol(default=0)
+
+    #: commission to pay after selling this sellable
     commission = PercentCol(default=0)
 
     notes = UnicodeCol(default='')
+
+    #: unit of the sellable, kg/l etc
     unit = ForeignKey("SellableUnit", default=None)
+
     image = ForeignKey('Image', default=None)
+
+    #: a reference to category table
     category = ForeignKey('SellableCategory', default=None)
     tax_constant = ForeignKey('SellableTaxConstant', default=None)
 
@@ -359,6 +368,8 @@ class Sellable(Domain):
 
     default_sale_cfop = ForeignKey("CfopData", default=None)
 
+    #: A special price used when we have a "on sale" state, this
+    #: can be used for promotions
     on_sale_price = PriceCol(default=0)
     on_sale_start_date = DateTimeCol(default=None)
     on_sale_end_date = DateTimeCol(default=None)
@@ -436,6 +447,7 @@ class Sellable(Domain):
     def _set_markup(self, markup):
         self.price = self._get_price_by_markup(markup)
 
+    #: ((cost/price)-1)*100
     markup = property(_get_markup, _set_markup)
 
     def _get_price(self):
@@ -469,6 +481,7 @@ class Sellable(Domain):
 
     def can_be_sold(self):
         """Whether the sellable is available and can be sold.
+
         :returns: if the item can be sold
         :rtype: boolean
         """
@@ -479,6 +492,7 @@ class Sellable(Domain):
 
     def is_unavailable(self):
         """Whether the sellable is unavailable.
+
         :returns: if the item is unavailable
         :rtype: boolean
         """
@@ -520,9 +534,9 @@ class Sellable(Domain):
     def can_remove(self):
         """Whether we can delete this sellable from the database.
 
-        False if the product/service was used in some cases below:
-            - Sold or received
-            - The product is in a purchase
+        `False` if the product/service was used in some cases below::
+          - Sold or received
+          - The product is in a purchase
         """
         from stoqlib.domain.sale import SaleItem
         if SaleItem.selectBy(connection=self.get_connection(),
@@ -562,6 +576,7 @@ class Sellable(Domain):
 
     def get_short_description(self):
         """Returns a short description of the current sale
+
         :returns: description
         :rtype: string
         """
@@ -569,6 +584,7 @@ class Sellable(Domain):
 
     def get_suggested_markup(self):
         """Returns the suggested markup for the sellable
+
         :returns: suggested markup
         :rtype: decimal
         """
@@ -584,6 +600,7 @@ class Sellable(Domain):
     def get_category_description(self):
         """Returns the description of this sellables category
         If it's unset, return the constant from the category, if any
+
         :returns: sellable category description
         """
         category = self.category
@@ -592,6 +609,7 @@ class Sellable(Domain):
     def get_tax_constant(self):
         """Returns the tax constant for this sellable.
         If it's unset, return the constant from the category, if any
+
         :returns: the tax constant or None if unset
         """
         if self.tax_constant:
@@ -622,8 +640,7 @@ class Sellable(Domain):
         or the default sellable price.
 
         :param category: a :class:`ClientCategory`
-        :returns: The value that should be used as a price for this
-        sellable.
+        :returns: The value that should be used as a price for this sellable.
         """
         info = self.get_category_price_info(category)
         if info:
@@ -683,9 +700,9 @@ class Sellable(Domain):
         configured for the sellable, otherwise returns False.
 
         :param newprice: The new price that we are trying to sell this
-        sellable for.
+          sellable for.
         :param category: Optionally define a category that we will get the
-        price info from.
+          price info from.
         """
         info = None
         if category:
@@ -790,6 +807,7 @@ class Sellable(Domain):
         """
         Returns unblocked sellable objects, which means the
         available sellables plus the sold ones.
+
         :param conn: a database connection
         :param storable: if True, only return Storables
         :param supplier: a supplier or None, if set limit the returned

@@ -53,28 +53,17 @@ _ = stoqlib_gettext
 class CheckData(Domain):
     """Stores check informations and also a history of possible
     devolutions.
-
-    :attribute bank_data: information about the bank account of this check.
-    :attribute payment: the payment object.
     """
+
+    #: the :class:`payment <stoqlib.domain.payment.Payment>`
     payment = ForeignKey('Payment')
+
+    #: the :class:`bank account <stoqlib.domain.account.BankAccount>`
     bank_account = ForeignKey('BankAccount')
 
 
 class CreditCardData(Domain):
     """Stores CreditCard specific state related to a payment
-
-    :attribute payment: the payment
-    :type payment: :class:`Payment`
-    :attribute card_type:
-    :type card_type: int, > 0, < 3
-    :attribute provider:
-    :type provider: :class:`CreditProvider`
-    :attribute installments: the installments number
-    :type installments: int, >= 1
-    :attribute entrance_value: the value of the first installment
-                          (when installments > 1)
-    :type entrance_value: currency
     """
     (TYPE_CREDIT,
      TYPE_DEBIT,
@@ -91,38 +80,39 @@ class CreditCardData(Domain):
         TYPE_DEBIT_PRE_DATED: _('Debit Card Pre-dated'),
         }
 
+    #: the :class:`payment <stoqlib.domain.payment.Payment>`
     payment = ForeignKey('Payment')
+
+    #: int, > 0, < 3
     card_type = IntCol(default=TYPE_CREDIT)
+
+    # the :class:`credit provider <CreditProvider>` for this class
     provider = ForeignKey('CreditProvider', default=None)
     fee = PercentCol(default=0)
     fee_value = PriceCol(default=0)
     nsu = IntCol(default=None)
     auth = IntCol(default=None)
+
+    #: the number of installments
     installments = IntCol(default=1)
+
+    #: the value of the first installment (when installments > 1)
     entrance_value = PriceCol(default=0)
 
 
 class PaymentMethod(Domain):
     """A PaymentMethod controls how a payments is paid. Example of payment
-    methods are: money, bill, check and credit card.
+    methods are::
+
+    * money
+    * bill
+    * check
+    * credit card
+
     This class consists of the persistent part of a payment method.
     The logic itself for the various different methods are in the
-    PaymentMethodOperation classes. Each PaymentMethod has a PaymentMethodOperation
-    associated.
-    :attribute name:
-    :attribute description:
-    :attribute is_active:
-    :attribute daily_penalty:
-    :attribute interest: a value for the interest. It must always be in the format:
-       0 <= interest <= 100
-    :attribute payment_day: which day in the month is the credit provider going
-      to pay the store? Usually they pay in the same day
-      every month.
-    :attribute closing_day: which day the credit provider stoq counting sales
-      to pay in the payment_day? Sales after this day
-      will be paid only in the next month.
-    :attribute account_destination: destination account for payment
-      methods which creates transactions
+    PaymentMethodOperation classes. Each :class:`PaymentMethod` has a
+    PaymentMethodOperation associated.
     """
 
     implements(IActive, IDescribable)
@@ -133,8 +123,19 @@ class PaymentMethod(Domain):
     #        Create a database patch to remove this column.
     #description = UnicodeCol()
     daily_penalty = PercentCol(default=0)
+
+    #: a value for the interest. It must always be in the format::
+    #:
+    #:  0 <= interest <= 100
+    #:
     interest = PercentCol(default=0)
+
+    #: which day in the month is the credit provider going to pay the store?
+    #: Usually they pay in the same day every month.
     payment_day = IntCol(default=None)
+
+    #: which day the credit provider stoq counting sales to pay in the
+    #: payment_day? Sales after this day will be paid only in the next month.
     closing_day = IntCol(default=None)
     max_installments = IntCol(default=1)
     destination_account = ForeignKey('Account', default=None)
@@ -176,6 +177,7 @@ class PaymentMethod(Domain):
         """Get the operation for this method.
         The operation contains method specific logic when
         creating/deleting a payment.
+
         :return: the operation associated with the method
         :rtype: object implementing IPaymentOperation
         """
@@ -235,6 +237,7 @@ class PaymentMethod(Domain):
                        description=None, base_value=None, till=ValueUnset,
                        payment_number=None):
         """Creates a new payment according to a payment method interface
+
         :param payment_type: the kind of payment, in or out
         :param payment_group: a :class:`PaymentGroup` subclass
         :param value: value of payment
@@ -244,7 +247,7 @@ class PaymentMethod(Domain):
         :param base_value: optional
         :param till: optional
         :param payment_number: optional
-        :returns: a :class:`Payment`
+        :returns: a :class:`payment <stoqlib.domain.payment.Payment>`
         """
         conn = self.get_connection()
 
@@ -302,11 +305,12 @@ class PaymentMethod(Domain):
         the value and dividing it by the number of payments.
         The number of payments is determined by the length of the due_dates
         sequence.
+
         :param payment_type: the kind of payment, in or out
         :param payment_group: a :class:`PaymentGroup` subclass
         :param value: value of payment
         :param due_dates: a list of datetime objects
-        :returns: a list of :class:`Payment`
+        :returns: a list of :class:`payments <stoqlib.domain.payment.Payment>`
         """
         installments = len(due_dates)
         interest = Decimal(0)
@@ -357,13 +361,14 @@ class PaymentMethod(Domain):
     def create_inpayment(self, payment_group, value, due_date=None,
                          description=None, base_value=None, till=ValueUnset):
         """Creates a new inpayment
+
         :param payment_group: a :class:`PaymentGroup` subclass
         :param value: value of payment
         :param due_date: optional, due date of payment
         :param description: optional, description of the payment
         :param base_value: optional
         :param till: optional
-        :returns: a :class:`Payment`
+        :returns: a :class:`payment <stoqlib.domain.payment.Payment>`
         """
         return self.create_payment(Payment.TYPE_IN, payment_group,
                                    value, due_date,
@@ -374,13 +379,14 @@ class PaymentMethod(Domain):
     def create_outpayment(self, payment_group, value, due_date=None,
                           description=None, base_value=None, till=ValueUnset):
         """Creates a new outpayment
+
         :param payment_group: a :class:`PaymentGroup` subclass
         :param value: value of payment
         :param due_date: optional, due date of payment
         :param description: optional, description of the payment
         :param base_value: optional
         :param till: optional
-        :returns: a :class:`Payment`
+        :returns: a :class:`payment <stoqlib.domain.payment.Payment>`
         """
         return self.create_payment(Payment.TYPE_OUT, payment_group,
                                    value, due_date,
@@ -393,10 +399,11 @@ class PaymentMethod(Domain):
         the number of payments.
         The number of payments is determined by the length of the due_dates
         sequence.
+
         :param payment_group: a :class:`PaymentGroup` subclass
         :param value: total value of all payments
         :param due_dates: a list of datetime objects
-        :returns: a list of :class:`Payment`
+        :returns: a list of :class:`payments <stoqlib.domain.payment.Payment>`
         """
         return self.create_payments(Payment.TYPE_IN, payment_group,
                                     value, due_dates)
@@ -408,10 +415,11 @@ class PaymentMethod(Domain):
         the number of payments.
         The number of payments is determined by the length of the due_dates
         sequence.
+
         :param payment_group: a :class:`PaymentGroup` subclass
         :param value: total value of all payments
         :param due_dates: a list of datetime objects
-        :returns: a list of :class:`Payment`
+        :returns: a list of :class:`payments <stoqlib.domain.payment.Payment>`
         """
         return self.create_payments(Payment.TYPE_OUT, payment_group,
                                     value, due_dates)
@@ -426,9 +434,9 @@ class PaymentMethod(Domain):
     @classmethod
     def get_by_name(cls, conn, name):
         """Returns the Payment method associated by the nmae
+
         :param name: name of a payment method
-        :returns: the payment method class
-        :rtype: :class:`PaymentMethod` instance
+        :returns: a :class:`payment methods <PaymentMethod>`
         """
         return PaymentMethod.selectOneBy(connection=conn,
                                          method_name=name)
@@ -437,7 +445,8 @@ class PaymentMethod(Domain):
     def get_creatable_methods(cls, conn, payment_type, separate):
         """Gets a list of methods that are creatable.
         Eg, you can use them to create new payments.
-        :returns: a list of :class:`PaymentMethod` instances
+
+        :returns: a list of :class:`payment methods <PaymentMethod>`
         """
         methods = []
         for method in cls.get_active_methods(conn):
@@ -451,6 +460,7 @@ class PaymentMethod(Domain):
     def selectable(self):
         """Finds out if the method is selectable, eg
         if the user can select it when doing a sale.
-        :returns: True if selectable, otherwise False
+
+        :returns: ``True`` if selectable
         """
         return self.operation.selectable(self)

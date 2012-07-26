@@ -80,7 +80,7 @@ class SaleItem(Domain):
     #: the quantity of the of sold item in this sale
     quantity = QuantityCol()
 
-    #: original value the :class:`sellable <Sellable> had
+    #: original value the :class:`sellable <Sellable>` had
     #: when adding the sale item
     base_price = PriceCol()
 
@@ -594,7 +594,7 @@ class Sale(Domain, Adaptable):
     def can_order(self):
         """Only newly created sales can be ordered
 
-        :returns: True if the sale can be ordered, otherwise False
+        :returns: ``True`` if the sale can be ordered
         """
         return (self.status == Sale.STATUS_INITIAL or
                 self.status == Sale.STATUS_QUOTE)
@@ -602,7 +602,7 @@ class Sale(Domain, Adaptable):
     def can_confirm(self):
         """Only ordered sales can be confirmed
 
-        :returns: True if the sale can be confirmed, otherwise False
+        :returns: ``True`` if the sale can be confirmed
         """
         return (self.status == Sale.STATUS_ORDERED or
                 self.status == Sale.STATUS_QUOTE)
@@ -610,21 +610,21 @@ class Sale(Domain, Adaptable):
     def can_set_paid(self):
         """Only confirmed sales can be paid
 
-        :returns: True if the sale can be set as paid, otherwise False
+        :returns: ``True`` if the sale can be set as paid
         """
         return self.status == Sale.STATUS_CONFIRMED
 
     def can_set_not_paid(self):
         """Only confirmed sales can be paid
 
-        :returns: True if the sale can be set as paid, otherwise False
+        :returns: ``True`` if the sale can be set as paid
         """
         return self.status == Sale.STATUS_PAID
 
     def can_set_renegotiated(self):
         """Only sales with status confirmed can be renegotiated.
 
-        :returns: True if the sale can be renegotiated, False otherwise.
+        :returns: ``True`` if the sale can be renegotiated
         """
         # This should be as simple as:
         # return self.status == Sale.STATUS_CONFIRMED
@@ -635,7 +635,7 @@ class Sale(Domain, Adaptable):
     def can_cancel(self):
         """Only ordered, confirmed, paid and quoting sales can be cancelled.
 
-        :returns: True if the sale can be cancelled, otherwise False
+        :returns: ``True`` if the sale can be cancelled
         """
         return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID,
                                Sale.STATUS_ORDERED, Sale.STATUS_QUOTE)
@@ -643,7 +643,7 @@ class Sale(Domain, Adaptable):
     def can_return(self):
         """Only confirmed or paid sales can be returned
 
-        :returns: True if the sale can be returned, otherwise False
+        :returns: ``True`` if the sale can be returned
         """
         return (self.status == Sale.STATUS_CONFIRMED or
                 self.status == Sale.STATUS_PAID)
@@ -651,7 +651,7 @@ class Sale(Domain, Adaptable):
     def can_edit(self):
         """Only quoting sales can be edited.
 
-        :returns: True if the sale can be edited, otherwise False
+        :returns: ``True`` if the sale can be edited
         """
         return self.status == Sale.STATUS_QUOTE
 
@@ -765,8 +765,8 @@ class Sale(Domain, Adaptable):
         """Mark a sale as not paid. This happens when the user sets a
         previously paid payment as not paid.
 
-        In this case, if the sale status is PAID, it should be set back to
-        CONFIRMED
+        In this case, if the sale status is :obj:`.STATUS_PAID`,
+        it should be set back to :obj:`.STATUS_CONFIRMED`.
         """
         assert self.can_set_not_paid()
 
@@ -935,8 +935,7 @@ class Sale(Domain, Adaptable):
     def only_paid_with_money(self):
         """Find out if the sale is paid using money
 
-        :returns: True if the sale was paid with money, otherwise False
-        :rtype: bool
+        :returns: ``True`` if the sale was paid with money
         """
         if not self.payments:
             return False
@@ -949,6 +948,7 @@ class Sale(Domain, Adaptable):
 
     def add_sellable(self, sellable, quantity=1, price=None):
         """Adds a new sellable item to a sale
+
         :param sellable: the sellable
         :param quantity: quantity to add, defaults to 1
         :param price: optional, the price, it not set the price
