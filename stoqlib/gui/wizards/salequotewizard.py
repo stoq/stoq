@@ -124,12 +124,6 @@ class StartSaleQuoteStep(WizardEditorStep):
         items = locale_sorted(items, key=operator.itemgetter(0))
         self.client.prefill(items)
 
-        # FIXME: The default behaviour of kiwi was to use normal completion,
-        # but kiwi revision 1846 changed that. We should keep normal completion
-        # there (as that was the expected behaviour in other places), but I dont
-        # want to generate a new package just for that - romaia 2012-07-25
-        self.client.entry.set_normal_completion()
-
         # TODO: Implement a has_items() in kiwi
         self.client.set_sensitive(len(self.client.get_model()))
 
