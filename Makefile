@@ -8,14 +8,14 @@ apidocs:
 	make -C docs/api html
 
 manual:
-	mkdir -p html
-	yelp-build html -o html help/pt_BR
+	mkdir -p docs/manual/pt_BR/_build/html
+	yelp-build html -o docs/manual/pt_BR/_build/html docs/manual/pt_BR
 
 upload-apidocs:
 	tar cfJ - -C docs/api/_build/html . | ssh dragon2 "tar xfJ - -C /var/www/stoq.com.br/doc/api/stoq"
 
 upload-manual:
-	tar cfJ - -C html . | ssh dragon2 "tar xfJ - -C /var/www/stoq.com.br/doc/manual"
+	tar cfJ - -C docs/manual/pt_BR/_build/html . | ssh dragon.async.com.br "tar xfJ - -C /var/www/stoq.com.br/doc/manual"
 
 schemadocs:
 	schemaspy -t pgsql -host anthem -db $(USER) -u $(USER) -s public -o $(SCHEMADIR) \
