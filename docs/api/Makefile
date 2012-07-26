@@ -81,13 +81,13 @@ qthelp:
 	@echo "To view the help file:"
 	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/Stoq.qhc"
 
-devhelp:
-	$(SPHINXBUILD) -b devhelp $(ALLSPHINXOPTS) $(BUILDDIR)/devhelp
+devhelp2:
+	$(SPHINXBUILD) -b devhelp2 $(ALLSPHINXOPTS) $(BUILDDIR)/devhelp2
 	@echo
 	@echo "Build finished."
 	@echo "To view the help file:"
-	@echo "# mkdir -p $$HOME/.local/share/devhelp/Stoq"
-	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/Stoq"
+	@echo "# mkdir -p $$HOME/.local/share/devhelp/books"
+	@echo "# ln -s $(BUILDDIR)/devhelp2 $$HOME/.local/share/devhelp/books/Stoq"
 	@echo "# devhelp"
 
 epub:

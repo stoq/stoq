@@ -293,3 +293,7 @@ epub_copyright = u'2012, Async'
 #epub_tocdup = True
 
 autodoc_member_order = 'bysource'
+
+def setup(app):
+    from devhelp2 import Devhelp2Builder
+    app.add_builder(Devhelp2Builder)
