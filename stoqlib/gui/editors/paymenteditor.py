@@ -339,6 +339,7 @@ class OutPaymentEditor(PaymentEditor):
 class LonelyPaymentDetailsDialog(BaseEditor):
     gladefile = 'LonelyPaymentDetailsDialog'
     size = (550, 350)
+    model_type = Payment
     proxy_widgets = ['value',
                      'interest',
                      'paid_value',
