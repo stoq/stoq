@@ -40,7 +40,7 @@ def show_contents(screen=None):
 def show_section(section, screen=None):
     if library.uninstalled:
         root = library.get_root()
-        uri = os.path.join(root, 'help', 'pt_BR')
+        uri = os.path.join(root, 'docs', 'manual', 'pt_BR')
         if section != '':
             uri += '/' + section + '.page'
     else:
