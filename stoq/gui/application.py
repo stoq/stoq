@@ -1403,7 +1403,11 @@ class SearchableAppWindow(AppWindow):
         settings = self._app_settings.setdefault(self.app.name, {})
         filter_states = settings.get('filter-states')
         if filter_states is not None:
+            # Disable auto search to avoid an extra query when restoring the
+            # state
+            self.search.search.set_auto_search(False)
             self.search.search.set_filter_states(filter_states)
+            self.search.search.set_auto_search(True)
         self._loading_filters = False
 
     #
