@@ -154,7 +154,10 @@ class SellableCategoryEditor(BaseEditor):
         self.proxy.update('tax_constant')
 
     def on_category__content_changed(self, widget):
-        self._update_widgets()
+        # slaves was not set yet, we have to wait (setup slaves will call
+        # _update_widgets
+        if hasattr(self, 'commission_slave'):
+            self._update_widgets()
 
     def on_description__validate(self, widget, value):
         if not self.model.check_category_description_exists(value, self.conn):
