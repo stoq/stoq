@@ -300,14 +300,16 @@ class AppWindow(GladeDelegate):
         self.hide_app()
 
         self._check_demo_mode()
-        self._check_version()
         self._update_toolbar_style()
 
         # json will restore tuples as lists. We need to convert them
         # to tuples or the comparison bellow won't work.
         actual_version = tuple(api.user_settings.get('actual-version', (0,)))
         if stoq.stoq_version > actual_version:
+            api.user_settings.set('last-version-check', None)
             self._display_changelog_message()
+
+        self._check_version()
 
         if not stoq.stable and not api.is_developer_mode():
             self._display_unstable_version_message()
