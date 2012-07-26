@@ -51,7 +51,7 @@
           simplesmente clicar aqui:
           <link href="apt:postgresql">instalar o postgresql</link>.
         </p>
-        <note style="advanced">
+        <note style="important">
           <p>
             Neste computador que está servindo como servidor, a menos que ele
             também vá ser utilizado como cliente (isto é, algum usuário vai
