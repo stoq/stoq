@@ -4,6 +4,7 @@ DEBPACKAGE=python-kiwi
 SCHEMADIR=/mondo/htdocs/stoq.com.br/devel/schema/
 JS_AD="http://pagead2.googlesyndication.com/pagead/show_ads.js"
 API_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/api/stoq/
+MANUAL_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/manual/
 
 apidocs:
 	make -C docs/api html
@@ -16,7 +17,7 @@ upload-apidocs:
 	cd docs/api/_build/html && rsync -avz --del . $(API_DOC_DIR)
 
 upload-manual:
-	tar cfJ - -C docs/manual/pt_BR/_build/html . | ssh dragon.async.com.br "tar xfJ - -C /var/www/stoq.com.br/doc/manual"
+	cd docs/manual/pt_BR/_build/html && rsync -avz --del . $(MANUAL_DOC_DIR)
 
 schemadocs:
 	schemaspy -t pgsql -host anthem -db $(USER) -u $(USER) -s public -o $(SCHEMADIR) \
