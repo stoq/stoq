@@ -7,8 +7,15 @@ JS_AD="http://pagead2.googlesyndication.com/pagead/show_ads.js"
 apidocs:
 	make -C docs/api html
 
+manual:
+	mkdir -p html
+	yelp-build html -o html help/pt_BR
+
 upload-apidocs:
 	tar cfJ - -C docs/api/_build/html . | ssh dragon2 "tar xfJ - -C /var/www/stoq.com.br/doc/api/stoq"
+
+upload-manual:
+	tar cfJ - -C html . | ssh dragon2 "tar xfJ - -C /var/www/stoq.com.br/doc/manual"
 
 schemadocs:
 	schemaspy -t pgsql -host anthem -db $(USER) -u $(USER) -s public -o $(SCHEMADIR) \
@@ -16,14 +23,6 @@ schemadocs:
 	sed -i "s|$(JS_AD)||" $(SCHEMADIR)/*html
 	sed -i "s|$(JS_AD)||" $(SCHEMADIR)/tables/*html
 
-
-manual:
-	mkdir html
-	yelp-build html -o html help/pt_BR
-
-web: apidocs
-	scp -r docs/api/stoq/_build/html doc.stoq.com.br:/var/www/stoq.com.br/doc/api/stoq
-	scp -r docs/api/stoqlib/_build/html doc.stoq.com.br:/var/www/stoq.com.br/doc/api/stoqlib
 
 pep8:
 	trial stoqlib.test.test_pep8
