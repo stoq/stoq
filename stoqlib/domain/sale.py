@@ -504,7 +504,7 @@ class Sale(Domain, Adaptable):
     #: this sale, in case of a delivery
     transporter = ForeignKey('Transporter', default=None)
 
-    #: the :class:`payment group <stoqlib.domain.payment.group.PaymentGroup`
+    #: the :class:`payment group <stoqlib.domain.payment.group.PaymentGroup>`
     #: of this sale
     group = ForeignKey('PaymentGroup')
 
