@@ -36,18 +36,21 @@ class InvoicePrinter(Domain):
     connected to a branch station.
     It has a layout assigned which will be used to format the data sent
     to the printer
-    :param device_name: a operating system specific identifier for the
-      device used to send the printer job, /dev/lpX on unix
-    :param description: a human friendly description of the printer, this
-      will appear in interfaces
-    :param station: the station this printer is connected to
-    :param layout: the layout used to format the invoices
     """
     implements(IDescribable)
 
+    #: a operating system specific identifier for the
+    #: device used to send the printer job, /dev/lpX on unix
     device_name = StringCol()
+
+    #: a human friendly description of the printer, this
+    #: will appear in interfaces
     description = UnicodeCol()
+
+    #: the station this printer is connected to
     station = ForeignKey('BranchStation')
+
+    #: the layout used to format the invoices
     layout = ForeignKey('InvoiceLayout')
 
     def get_description(self):
@@ -60,8 +63,8 @@ class InvoicePrinter(Domain):
     @classmethod
     def get_by_station(cls, station, conn):
         """Gets the printer given a station.
-        If there's no invoice printer configured for this station, return
-        None.
+        If there's no invoice printer configured for this station, return None.
+
         :param station: the station
         :param conn: database connection
         :returns: an InvoiceLayout or None
@@ -72,15 +75,17 @@ class InvoicePrinter(Domain):
 
 class InvoiceLayout(Domain):
     """A layout of an invoice.
-    :param description: description of the layout, this is human friendly
-      string which is displayed in interfaces.
-    :param width: the width in units of the layout
-    :param height: the height in units of the layout
     """
     implements(IDescribable)
 
+    #: description of the layout, this is human friendly
+    #: string which is displayed in interfaces.
     description = UnicodeCol()
+
+    #: the width in units of the layout
     width = IntCol()
+
+    #: the height in units of the layout
     height = IntCol()
 
     @property
@@ -90,6 +95,7 @@ class InvoiceLayout(Domain):
     @property
     def fields(self):
         """Fetches all the fields tied to this layout
+
         :returns: a sequence of InvoiceField
         """
         return InvoiceField.selectBy(
@@ -98,6 +104,7 @@ class InvoiceLayout(Domain):
 
     def get_field_by_name(self, name):
         """Fetches an invoice field by using it's name
+
         :param name: name of the field
         """
         return InvoiceField.selectOneBy(
@@ -108,6 +115,7 @@ class InvoiceLayout(Domain):
     def get_description(self):
         """
         Gets the description of the field
+
         :returns: description.
         """
         return self.description
@@ -115,17 +123,23 @@ class InvoiceLayout(Domain):
 
 class InvoiceField(Domain):
     """Represents a field in an InvoiceLayout.
-    :attribute x: x position of the upper left corner of the field
-    :attribute y: y position of the upper left corner of the field
-    :attribute width: the width of the field, must be larger than 0
-    :attribute height: the height of the field, must be larger than 0
-    :attribute field_name: the name of the field, this is used to identify
-      and fetch the data when printing the invoice
-    :attribute layout: the layout this field belongs to
     """
+
+    #: x position of the upper left corner of the field
     x = IntCol()
+
+    #: y position of the upper left corner of the field
     y = IntCol()
+
+    #: the width of the field, must be larger than 0
     width = IntCol()
+
+    #: the height of the field, must be larger than 0
     height = IntCol()
+
+    #: the name of the field, this is used to identify
+    #: and fetch the data when printing the invoice
     field_name = StringCol()
+
+    #: the layout this field belongs to
     layout = ForeignKey('InvoiceLayout')

@@ -207,6 +207,7 @@ class Address(Domain):
 
     def get_address_string(self):
         """Formats the address as a string
+
         :returns: the formatted address
         """
         if self.street and self.streetnumber and self.district:
@@ -222,10 +223,12 @@ class Address(Domain):
         return u''
 
     def get_details_string(self):
-        """ Returns a string like 'postal_code - city - state'.
+        """ Returns a string like ``postal_code - city - state``.
         If city or state are missing, return only postal_code; and
-        if postal_code is missing, return 'city - state', otherwise,
+        if postal_code is missing, return ``city - state``, otherwise,
         return an empty string
+
+        :returns: the detailed string
         """
         details = []
         if self.postal_code:

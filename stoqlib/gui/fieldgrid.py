@@ -128,14 +128,11 @@ class FieldInfo(object):
 class FieldGrid(gtk.Layout):
     """FieldGrid is a Grid like widget which you can add fields to
 
-    Signals
-    =======
-      - B{field-added} (object):
-        - Emitted when a field is added to the grid
-      - B{field-removed} (object):
-        - Emitted when a field is removed from the grid
-      - B{selection-changed} (object):
-        - Emitted when a field is selected or deselected by the user.
+    * **field-added** (object): Emitted when a field is added to the grid
+    * **field-removed** (object): Emitted when a field is removed
+      from the grid
+    * ** selection-changed** (object): Emitted when a field is selected or
+      deselected by the user.
     """
 
     gsignal('selection-changed', object,

@@ -261,8 +261,8 @@ class Inventory(Domain):
     def has_adjusted_items(self):
         """Returns if we already have an item adjusted or not.
 
-        :returns: True if there is one or more items adjusted, False
-        otherwise.
+        :returns: ``True`` if there is one or more items adjusted, False
+          otherwise.
         """
         query = AND(InventoryItem.q.inventoryID == self.id,
                     ISNOTNULL(InventoryItem.q.cfop_dataID),

@@ -158,7 +158,8 @@ class App(object):
                  launcher, name):
         """
         Create a new object App.
-        @param main_window_class: A eAppWindow subclass
+
+        :param main_window_class: A eAppWindow subclass
         """
         if not issubclass(window_class, AppWindow):
             raise TypeError
@@ -191,17 +192,16 @@ class App(object):
 
 class AppWindow(GladeDelegate):
     """ Class for the main window of applications.
-
-    @cvar app_name: This attribute is used when generating titles for
-                    applications.  It's also useful if we get a list of
-                    available applications with the application names
-                    translated. This list is going to be used when
-                    creating new user profiles.
-
     """
 
     app_windows = []
+
+    #: This attribute is used when generating titles for applications.
+    #: It's also useful if we get a list of available applications with
+    #: the application names translated. This list is going to be used when
+    #: creating new user profiles.
     app_name = None
+
     search = None
     gladefile = toplevel_name = ''
     title = ''
@@ -745,7 +745,7 @@ class AppWindow(GladeDelegate):
     def activate(self, params):
         """This is when you switch to an application.
         You should setup widget sensitivity here and refresh lists etc
-        @params: an dictionary with optional parameters.
+        :params params: an dictionary with optional parameters.
         """
 
     def setup_focus(self):
@@ -761,20 +761,20 @@ class AppWindow(GladeDelegate):
     def can_change_application(self):
         """Define if we can change the current application or not.
 
-        @returns: True if we can change the application, False otherwise.
+        :returns: True if we can change the application, False otherwise.
         """
         return True
 
     def can_close_application(self):
         """Define if we can close the current application or not.
 
-        @returns: True if we can close the application, False otherwise.
+        :returns: True if we can close the application, False otherwise.
         """
         return True
 
     def set_open_inventory(self):
         """ Subclasses should overide this if they call
-        check_open_inventory.
+        :obj:`.check_open_inventory`.
 
         This method will be called it there is an open inventory, so the
         application can disable some funcionalities
@@ -812,14 +812,14 @@ class AppWindow(GladeDelegate):
         print_report(report_class, *args, **kwargs)
 
     def set_sensitive(self, widgets, value):
-        """Set the C{widgets} sensitivity based on C{value}
+        """Set the *widgets* sensitivity based on *value*
 
-        @note: if a sensitive group was registered for any widget,
-            it's validation function will be tested and, if C{False}
-            is returned, it will be set insensitive, ignoring C{value}
+        If a sensitive group was registered for any widget,
+        it's validation function will be tested and, if ``False``
+        is returned, it will be set insensitive, ignoring *value*
 
-        @param widgets: a :class:`list` of widgets
-        @param value: either C{True} or C{False}
+        :param widgets: a list of widgets
+        :param value: either `True` or `False`
         """
         # FIXME: Maybe this should ne done on kiwi?
         for widget in widgets:
@@ -835,15 +835,15 @@ class AppWindow(GladeDelegate):
     def register_sensitive_group(self, widgets, validation_func, *args):
         """Register widgets on a sensitive group.
 
-        Everytime self.set_sensitive() is called, if there is any
+        Everytime :obj:`.set_sensitive()` is called, if there is any
         validation function for a given widget on sensitive group,
         then that will be used to decide if it gets sensitive or
         insensitive.
 
-        @param widgets: a :class:`list` of widgets
-        @param validation_func: a function for validation. It should
-            return either C{True} or C{False}.
-        @param args: args that will be passed to C{validation_func}
+        :param widgets: a list of widgets
+        :param validation_func: a function for validation. It should
+            return either ``True`` or ``False``.
+        :param args: args that will be passed to *validation_func*
         """
         assert callable(validation_func)
 
@@ -963,10 +963,11 @@ class AppWindow(GladeDelegate):
 
     def add_info_bar(self, message_type, label, action_widget=None):
         """Show an information bar to the user.
-        @param message_type: message type, a gtk.MessageType
-        @param label: label to display
-        @param action_widget: optional, most likely a button
-        @returns: the infobar
+
+        :param message_type: message type, a gtk.MessageType
+        :param label: label to display
+        :param action_widget: optional, most likely a button
+        :returns: the infobar
         """
         label = gtk.Label(label)
         label.set_use_markup(True)
@@ -1081,20 +1082,21 @@ class AppWindow(GladeDelegate):
     def shutdown_application(self, restart=False):
         """Shutdown the application:
         There are 3 possible outcomes of calling this function, depending
-        on how many windows and applications are open:
-          - Hide application, save state, show launcher
-          - Close window, save state, show launcher
-          - Close window, save global state, terminate application
+        on how many windows and applications are open::
+
+        * Hide application, save state, show launcher
+        * Close window, save state, show launcher
+        * Close window, save global state, terminate application
 
         This function is called in the following situations:
-          - When closing a window (delete-event)
-          - When clicking File->Close in an application
-          - When clicking File->Quit in the launcher
-          - When clicking enable production mode (restart=True)
-          - Pressing Ctrl-w/F5 in an application
-          - Pressing Ctrl-q in the launcher
-          - Pressing Alt-F4 on Win32
-          - Pressing Cmd-q on Mac
+        * When closing a window (delete-event)
+        * When clicking File->Close in an application
+        * When clicking File->Quit in the launcher
+        * When clicking enable production mode (restart=True)
+        * Pressing Ctrl-w/F5 in an application
+        * Pressing Ctrl-q in the launcher
+        * Pressing Alt-F4 on Win32
+        * Pressing Cmd-q on Mac
 
         :returns: True if shutdown was successful, False if not
         """
@@ -1350,15 +1352,15 @@ class AppWindow(GladeDelegate):
 class SearchableAppWindow(AppWindow):
     """
     Base class for applications which main interface consists of a list
-
-    @cvar search_table: The we will query on to perform the search
-    @cvar search_label: Label left of the search entry
-    @cvar report_table: the report class for printing the object list
-        embedded on app.
     """
 
+    #: The we will query on to perform the search
     search_table = None
+
+    #: Label left of the search entry
     search_label = _('Search:')
+
+    #: the report class for printing the object list embedded on app.
     report_table = None
 
     def __init__(self, app):
@@ -1436,7 +1438,7 @@ class SearchableAppWindow(AppWindow):
 
     def set_searchtable(self, search_table):
         """
-        @param search_table:
+        :param search_table:
         """
         self.executer.set_table(search_table)
         self.search_table = search_table
@@ -1456,7 +1458,7 @@ class SearchableAppWindow(AppWindow):
 
     def set_text_field_label(self, label):
         """
-        @param label:
+        :param label:
         """
         search_filter = self.search.get_primary_filter()
         search_filter.set_label(label)

@@ -23,29 +23,33 @@
 ##
 """Person domain classes
 
-The Person domain classes in Stoqlib are special since the normal Person
-class is very small and additional functionality is provided through
-facets (adapters).
+The Person domain classes in Stoqlib are special since the :obj:`Person`
+class is small and additional functionality is provided through
+facets.
 
-There are currently the following Person facets available:
+There are currently the following person facets available:
 
-  - Branch
-  - Client
-  - Company
-  - CreditProvider
-  - Employee
-  - Individual
-  - LoginUser
-  - SalesPerson
-  - Supplier
-  - Transporter
+  * :obj:`Branch` - a physical location within a company
+  * :obj:`Client` - when buying something from a branch
+  * :obj:`Company` - a company, tax entitity
+  * :obj:`CreditProvider` - provides credit credit, for example via a credit card
+  * :obj:`Employee` - works for a branch
+  * :obj:`Individual` - a physical person
+  * :obj:`LoginUser` - can login and use the system
+  * :obj:`SalesPerson` - can sell to clients
+  * :obj:`Supplier` - provides product and services to a branch
+  * :obj:`Transporter` - transports deliveries to/from a branch
 
-To create a new person, just issue the following:
+To create a new person, just issue the following::
 
     >>> from stoqlib.database.runtime import new_transaction
     >>> trans = new_transaction()
 
     >>> person = Person(name="A new person", connection=trans)
+
+Then to add a client, you can will do:
+
+    >>> client = Client(person=person, connection=trans)
 
 """
 
@@ -151,6 +155,8 @@ class Liaison(Domain):
 
     name = UnicodeCol(default='')
     phone_number = UnicodeCol(default='')
+
+    #: the :obj:`person <Person>`
     person = ForeignKey('Person')
 
     #
@@ -175,6 +181,8 @@ class Calls(Domain):
     date = DateTimeCol()
     description = UnicodeCol()
     message = UnicodeCol()
+
+    #: the :obj:`person <Person>`
     person = ForeignKey('Person')
     attendant = ForeignKey('LoginUser')
 
@@ -193,18 +201,38 @@ class Person(Domain):
     (ROLE_INDIVIDUAL,
      ROLE_COMPANY) = range(2)
 
+    #: name of the person, depending on the facets, it can either
+    #: be something like "John Doe" or "Microsoft Corporation"
     name = UnicodeCol()
+
+    #: phone number for this person
     phone_number = UnicodeCol(default='')
+
+    #: cell/mobile number for this person
     mobile_number = UnicodeCol(default='')
+
+    #: fax number for this person
     fax_number = UnicodeCol(default='')
+
+    #: email address
     email = UnicodeCol(default='')
+
+    #: notes about the client
     notes = UnicodeCol(default='')
+
+    #:
     liaisons = MultipleJoin('Liaison', 'person_id')
+
+    #: list of :obj:`addresses <stoqlib.domain.address.Address>`
     addresses = MultipleJoin('Address', 'person_id')
+
+    #:
     calls = MultipleJoin('Calls', 'person_id')
 
     @property
     def address(self):
+        """The :obj:`address <stoqlib.domain.address.Address>` for this person
+        """
         return self.get_main_address()
 
     #
@@ -234,14 +262,28 @@ class Person(Domain):
     #
 
     def get_main_address(self):
+        """The primary :obj:`address <stoqlib.domain.address.Address>`
+        for this person, it normally to be set when the person is entered into
+        the system.
+        """
         return Address.selectOneBy(personID=self.id, is_main_address=True,
                                    connection=self.get_connection())
 
     def get_total_addresses(self):
+        """The total number of :obj:`addresses <stoqlib.domain.address.Address>`
+        for this person
+
+        :returns: the number of addresses
+        """
         return Address.selectBy(personID=self.id,
                                 connection=self.get_connection()).count()
 
     def get_address_string(self):
+        """The primary :obj:`address <stoqlib.domain.address.Address>`
+        for this person formatted as a string.
+
+        :returns: the address
+        """
         address = self.get_main_address()
         if not address:
             return u''
@@ -249,8 +291,8 @@ class Person(Domain):
 
     def get_phone_number_number(self):
         """Returns the phone number without any non-numeric characters
+
         :returns: the phone number as a number
-        :rtype: integer
         """
         if not self.phone_number:
             return 0
@@ -259,8 +301,8 @@ class Person(Domain):
 
     def get_fax_number_number(self):
         """Returns the fax number without any non-numeric characters
+
         :returns: the fax number as a number
-        :rtype: integer
         """
         if not self.fax_number:
             return 0
@@ -268,14 +310,16 @@ class Person(Domain):
                                   if c in '1234567890']))
 
     def get_formatted_phone_number(self):
-        """Returns a dash-separated phone number or an empty string
+        """
+        :returns: a dash-separated phone number or an empty string
         """
         if self.phone_number:
             return format_phone_number(self.phone_number)
         return ""
 
     def get_formatted_fax_number(self):
-        """Returns a dash-separated fax number or an empty string
+        """
+        :Returns: a dash-separated fax number or an empty string
         """
         if self.fax_number:
             return format_phone_number(self.fax_number)
@@ -290,51 +334,61 @@ class Person(Domain):
 
     @property
     def branch(self):
+        """the :obj:`branch <Branch>` facet for this person"""
         return Branch.selectOneBy(person=self,
                                   connection=self.get_connection())
 
     @property
     def client(self):
+        """the :obj:`client <Client>` facet for this person"""
         return Client.selectOneBy(person=self,
                                   connection=self.get_connection())
 
     @property
     def company(self):
+        """the :obj:`company <Company>` facet for this person"""
         return Company.selectOneBy(person=self,
                                    connection=self.get_connection())
 
     @property
     def credit_provider(self):
+        """the :obj:`credit provider <CreditProvider>` facet for this person"""
         return CreditProvider.selectOneBy(person=self,
                                           connection=self.get_connection())
 
     @property
     def employee(self):
+        """the :obj:`employee <Employee>` facet for this person"""
         return Employee.selectOneBy(person=self,
                                     connection=self.get_connection())
 
     @property
     def individual(self):
+        """the :obj:`individual <Individual>` facet for this person"""
         return Individual.selectOneBy(person=self,
                                       connection=self.get_connection())
 
     @property
     def login_user(self):
+        """the :obj:`login user <LoginUser>` facet for this person"""
         return LoginUser.selectOneBy(person=self,
                                      connection=self.get_connection())
 
     @property
     def salesperson(self):
+        """the :obj:`sales person <SalesPerson>` facet for this person"""
         return SalesPerson.selectOneBy(person=self,
                                        connection=self.get_connection())
 
     @property
     def supplier(self):
+        """the :obj:`supplier <Supplier>` facet for this person"""
         return Supplier.selectOneBy(person=self,
                                     connection=self.get_connection())
 
     @property
     def transporter(self):
+        """the :obj:`transporter <Transporter>` facet for this person"""
         return Transporter.selectOneBy(person=self,
                                        connection=self.get_connection())
 
@@ -343,28 +397,8 @@ class Individual(Domain):
     """Being or characteristic of a single person, concerning one
     person exclusively
 
-    :ivar cpf: a number identifiyng the individual for tax reasons
-    :type cpf: string
-    :ivar rg_number: A Brazilian government register which identify an
-      individual
-    :ivar birth_location: where the individual was born
     :type birth_location: CityLocation
-    :ivar occupation: The current job
-    :type occupation: string
-    :ivar martial_status: single, married, divored or widowed
-    :type martial_status: enum
-    :ivar spouse: An individual's partner in marriage - also a
-       reference to another individual
     :type spouse: Individual
-    :ivar father_name: Name of this individuals father
-    :type father_name: string
-    :ivar father_name: Name of this individuals mother
-    :type mother_name: string
-    :ivar rg_expedition_date: When the rg number was issued
-    :type rg_expedition_date: datetime
-    :ivar rg_expedition_date: Where the rg number was issued
-    :type rg_expedition_local: string
-    :ivar gender: male or female
     """
 
     implements(IActive, IDescribable)
@@ -389,19 +423,47 @@ class Individual(Domain):
     genders = {GENDER_MALE: _(u'Male'),
                GENDER_FEMALE: _(u'Female')}
 
+    #: the :obj:`person <Person>`
     person = ForeignKey('Person')
+
+    # FIXME: rename to document
+    #: the national document used to identify this person
     cpf = UnicodeCol(default='')
+
+    #: A Brazilian government register which identify an individual
     rg_number = UnicodeCol(default='')
+
+    #: when this individual was born
     birth_date = DateTimeCol(default=None)
+
+    #: current job
     occupation = UnicodeCol(default='')
+
+    #: martial status, single, married, widow etc
     marital_status = IntCol(default=STATUS_SINGLE)
+
+    #: Name of this individuals father
     father_name = UnicodeCol(default='')
+
+    #: Name of this individuals mother
     mother_name = UnicodeCol(default='')
+
+    #: When the rg number was issued
     rg_expedition_date = DateTimeCol(default=None)
+
+    #: Where the rg number was issued
     rg_expedition_local = UnicodeCol(default='')
+
+    #: male or female
     gender = IntCol(default=None)
+
+    #: the name of the spouse individual's partner in marriage
     spouse_name = UnicodeCol(default='')
+
+    #: the :obj:`location <stoqlib.domain.address.CityLocation>` where
+    #: individual was born
     birth_location = ForeignKey('CityLocation', default=None)
+
     is_active = BoolCol(default=True)
 
     #
@@ -438,8 +500,8 @@ class Individual(Domain):
 
     def get_cpf_number(self):
         """Returns the cpf number without any non-numeric characters
+
         :returns: the cpf number as a number
-        :rtype: integer
         """
         if not self.cpf:
             return 0
@@ -454,22 +516,27 @@ class Individual(Domain):
 
 class Company(Domain):
     """An institution created to conduct business
-
-    :ivar cnpj: a number identifing the company
-    :ivar fancy_name:  The secondary company name
-    :ivar state_registry: Brazilian register number associated with
-       a certain state
     """
 
     implements(IActive, IDescribable)
 
+    #: the :obj:`person <Person>`
     person = ForeignKey('Person')
-    # Cnpj, state_registry and city registry are
-    # Brazil-specific information.
+
+    # FIXME: rename to document
+    #: a number identifing the company
     cnpj = UnicodeCol(default='')
+
+    #: Doing business as (dba) name for this company, a secondary, non-legal
+    #: name of the company.
     fancy_name = UnicodeCol(default='')
+
+    #: Brazilian register number associated with a certain state
     state_registry = UnicodeCol(default='')
+
+    #: Brazilian register number associated with a certain city
     city_registry = UnicodeCol(default='')
+
     is_active = BoolCol(default=True)
 
     #
@@ -496,10 +563,14 @@ class Company(Domain):
     def get_description(self):
         return self.person.name
 
+    #
+    # Public API
+    #
+
     def get_cnpj_number(self):
         """Returns the cnpj number without any non-numeric characters
+
         :returns: the cnpj number as a number
-        :rtype: integer
         """
         if not self.cnpj:
             return 0
@@ -512,9 +583,9 @@ class Company(Domain):
 
     def get_state_registry_number(self):
         """Returns the state registry number without any non-numeric characters
+
         :returns: the state registry number as a number or zero if there is
-                  no state registry.
-        :rtype: integer
+          no state registry.
         """
         if not self.state_registry:
             return 0
@@ -533,11 +604,11 @@ class Company(Domain):
 class ClientCategory(Domain):
     """I am a client category.
     I contain a name
-    :attribute name: category name
     """
 
     implements(IDescribable)
 
+    #: name of the category
     name = UnicodeCol(unique=True)
 
     #
@@ -546,6 +617,10 @@ class ClientCategory(Domain):
 
     def get_description(self):
         return self.name
+
+    #
+    # Public API
+    #
 
     def can_remove(self):
         """ Check if the client category is used in some product."""
@@ -577,6 +652,7 @@ class Client(Domain):
                 STATUS_INSOLVENT: _(u'Insolvent'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
+    #: the :obj:`person <Person>`
     person = ForeignKey('Person')
     status = IntCol(default=STATUS_SOLVENT)
     days_late = IntCol(default=0)
@@ -718,6 +794,7 @@ class Supplier(Domain):
                 STATUS_INACTIVE: _(u'Inactive'),
                 STATUS_BLOCKED: _(u'Blocked')}
 
+    #: the :obj:`person <Person>`
     person = ForeignKey('Person')
     status = IntCol(default=STATUS_ACTIVE)
     product_desc = UnicodeCol(default='')
@@ -829,6 +906,7 @@ class Employee(Domain):
                 STATUS_VACATION: _(u'Vacation'),
                 STATUS_OFF: _(u'Off')}
 
+    #: the :obj:`person <Person>`
     person = ForeignKey('Person')
     admission_date = DateTimeCol(default=None)
     expire_vacation = DateTimeCol(default=None)
@@ -896,24 +974,30 @@ class Employee(Domain):
 
 class LoginUser(Domain):
     """A user that us able to login to the system
-    :param username: username
-    :param pw_hash: a hash (md5) for the user password
-    :param profile: A profile represents a colection of information
-      which represents what this user can do in the system
     """
 
     implements(IActive, IDescribable)
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
+
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
+    #: the :obj:`person <Person>`
     person = ForeignKey('Person')
+
+    #: username, used to login it to the system
     username = UnicodeCol(alternateID=True)
+
+    #: a hash (md5) for the user password
     pw_hash = UnicodeCol()
-    is_active = BoolCol(default=True)
+
+    #: A profile represents a colection of information
+    #: which represents what this user can do in the system
     profile = ForeignKey('UserProfile')
+
+    is_active = BoolCol(default=True)
 
     def _create(self, id, **kw):
         if 'password' in kw:
@@ -985,13 +1069,6 @@ class LoginUser(Domain):
 class Branch(Domain):
     """An administrative division of some larger or more complex
     organization
-
-    :attribute crt: Código de Regime Tributário
-    :ivar manager: An employee which is in charge of this branch
-    1 – Simples Nacional
-    2 – Simples Nacional – excesso de sublimite da receita bruta
-    3 – Regime Normal
-
     """
 
     implements(IActive, IDescribable)
@@ -1002,9 +1079,18 @@ class Branch(Domain):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
+    #: the :obj:`person <Person>`
     person = ForeignKey('Person')
+
+    #: An employee which is in charge of this branch
     manager = ForeignKey('Employee', default=None)
     is_active = BoolCol(default=True)
+
+    #: Brazil specific, "Código de Regime Tributário", one of:
+    #:
+    #: * Simples Nacional
+    #: * Simples Nacional – excesso de sublimite da receita bruta
+    #: * Regime Normal
     crt = IntCol(default=1)
 
     #
@@ -1105,19 +1191,6 @@ class Branch(Domain):
 
 class CreditProvider(Domain):
     """A credit provider
-    :param provider_type: This attribute must be either
-       provider card or provider finance
-    :ivar short_name: A short description of this provider
-    :ivar provider_id: An identification for this provider
-    :ivar open_contract_date: The date when we start working with
-      this provider
-    :ivar monthly_fee: values charged monthly by the credit provider
-    :ivar credit_fee: fee applied by the provider for each payment transaction,
-                       depending on the transaction type
-    :ivar credit_installments_providers_fee: see credit fee
-    :ivar credit_installments_store_fee: see credit fee
-    :ivar debit_fee: see credit fee
-    :ivar debit_pre_dated_fee: see credit fee
      """
 
     implements(IActive, IDescribable)
@@ -1134,22 +1207,43 @@ class CreditProvider(Domain):
         CreditCardData.TYPE_DEBIT_PRE_DATED: 'debit_pre_dated_fee'
     }
 
+    #: This attribute must be either provider card or provider finance
     provider_types = {PROVIDER_CARD: _(u'Card Provider')}
 
+    #: the :obj:`person <Person>`
     person = ForeignKey('Person')
     is_active = BoolCol(default=True)
     provider_type = IntCol(default=PROVIDER_CARD)
+
+    #: A short description of this provider
     short_name = UnicodeCol()
+
+    #: An identification for this provider
     provider_id = UnicodeCol(default='')
+
+    #: The date when we start working with this provider
     open_contract_date = DateTimeCol()
     closing_day = IntCol(default=10)
     payment_day = IntCol(default=10)
     max_installments = IntCol(default=12)
+
+    #: values charged monthly by the credit provider
     monthly_fee = PriceCol(default=0)
+
+    #: fee applied by the provider for each payment transaction,
+    #: depending on the transaction type
     credit_fee = PercentCol(default=0)
+
+    #: see :obj:`.credit_fee`
     credit_installments_store_fee = PercentCol(default=0)
+
+    #: see :obj:`.credit_fee`
     credit_installments_provider_fee = PercentCol(default=0)
+
+    #: see :obj:`.credit_fee`
     debit_fee = PercentCol(default=0)
+
+    #: see :obj:`.credit_fee`
     debit_pre_dated_fee = PercentCol(default=0)
 
     #
@@ -1246,6 +1340,7 @@ class SalesPerson(Domain):
                                                          u'Category'),
                        COMMISSION_BY_SALE_TOTAL: _(u'By Sale Total')}
 
+    #: the :obj:`person <Person>`
     person = ForeignKey('Person')
     comission = PercentCol(default=0)
     comission_type = IntCol(default=COMMISSION_BY_SALESPERSON)
@@ -1297,6 +1392,7 @@ class Transporter(Domain):
 
     implements(IActive, IDescribable)
 
+    #: the :obj:`person <Person>`
     person = ForeignKey('Person')
     is_active = BoolCol(default=True)
     open_contract_date = DateTimeCol(default=datetime.datetime.now)
@@ -1355,13 +1451,14 @@ class EmployeeRoleHistory(Domain):
 
 class ClientView(Viewable):
     """Stores information about clients.
-    Available fields are::
-       id                  - the id of the client table
-       name                - the client name
-       status              - the client financial status
-       cpf                 - the brazil-specific cpf attribute
-       rg_number           - the brazil-specific rg_number attribute
-       phone_number        - the client phone_number
+
+    Available fields are:
+    :attribute id: id of the client table
+    :attribute name: client name
+    :attribute status: client financial status
+    :attribute cpf: brazil-specific cpf attribute
+    :attribute rg: brazil-specific rg_number attribute
+    :attribute phone_number: client phone_number
     """
 
     implements(IDescribable)
