@@ -164,8 +164,7 @@ class BaseAccountWindow(SearchableAppWindow):
                 return payment_view.q.status == Payment.STATUS_PENDING
             elif value == 'late':
                 return AND(
-                    payment_view.q.status != Payment.STATUS_PAID,
-                    payment_view.q.status != Payment.STATUS_CANCELLED,
+                    payment_view.q.status == Payment.STATUS_PENDING,
                     payment_view.q.due_date < const.NOW())
         elif kind == 'category':
             return payment_view.q.category == value
