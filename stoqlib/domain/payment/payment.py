@@ -64,9 +64,10 @@ class Payment(Domain):
     * branch and a supplier are :obj:`.TYPE_OUT`, has a
       :class:`purchase order <stoqlib.domain.purchase.PurchaseOrder>` associated.
 
-    Payments are sometimes referred to installements of Sale/Purchase.
+    Payments are sometimes referred to as *installements*.
 
-    Sales and purchase orders can be accessed via the :obj:`payment group <.group>`
+    Sales and purchase orders can be accessed via the
+    :obj:`payment group <.group>`
 
     +-------------------------+-------------------------+
     | **Status**              | **Can be set to**       |
@@ -144,7 +145,7 @@ class Payment(Domain):
     #: type of payment :obj:`.TYPE_IN` or :obj:`.TYPE_OUT`
     payment_type = IntCol()
 
-    #: status
+    #: status, see :class:`Payment` for more information.
     status = IntCol(default=STATUS_PREVIEW)
 
     #: description payment, usually something like "1/3 Money for Sale 1234"
@@ -200,8 +201,8 @@ class Payment(Domain):
     #: :class:`till <stoqlib.domain.till.Till>` that this payment belongs to
     till = ForeignKey('Till')
 
-    #: :class:`category <stoqlib.domain.payment.category.PaymentCategory>` category of
-    #: this payment
+    #: :class:`category <stoqlib.domain.payment.category.PaymentCategory>` this
+    #: payment belongs to, can be None
     category = ForeignKey('PaymentCategory')
 
     #: list of :class:`comments <stoqlib.domain.payment.comments.PaymentComment>` for
