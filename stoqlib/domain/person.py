@@ -426,8 +426,8 @@ class Individual(Domain):
     #: the :obj:`person <Person>`
     person = ForeignKey('Person')
 
-    # FIXME: rename to document
-    #: the national document used to identify this person
+    # FIXME: rename to "document"
+    #: the national document used to identify this person.
     cpf = UnicodeCol(default='')
 
     #: A Brazilian government register which identify an individual
@@ -603,7 +603,6 @@ class Company(Domain):
 
 class ClientCategory(Domain):
     """I am a client category.
-    I contain a name
     """
 
     implements(IDescribable)
@@ -635,9 +634,6 @@ class ClientCategory(Domain):
 class Client(Domain):
     """An individual or a company who pays for goods or services
 
-    :ivar status: ok, indebted, insolvent, inactive
-    :ivar days_late: How many days is this client indebted
-    :ivar credit_limit: How much the user can spend on store credit
     """
 
     implements(IActive, IDescribable)
@@ -654,9 +650,17 @@ class Client(Domain):
 
     #: the :obj:`person <Person>`
     person = ForeignKey('Person')
+
+    #: ok, indebted, insolvent, inactive
     status = IntCol(default=STATUS_SOLVENT)
+
+    #: How many days is this client indebted
     days_late = IntCol(default=0)
+
+    #: How much the user can spend on store credit
     credit_limit = PriceCol(default=0)
+
+    #: the :obj:`client category <ClientCategory>` for this client
     category = ForeignKey('ClientCategory', default=None)
 
     #
@@ -713,8 +717,8 @@ class Client(Domain):
         return cls.select(cls.q.status == cls.STATUS_SOLVENT, connection=conn)
 
     def get_client_sales(self):
-        """Returns a list of sales from a SaleView tied with the
-        current client
+        """Returns a list of :obj:`sale views <stoqlib.domain.sale.SaleView>`
+        tied with the current client
         """
         from stoqlib.domain.sale import SaleView
         return SaleView.select(SaleView.q.client_id == self.id,
@@ -722,37 +726,39 @@ class Client(Domain):
                                orderBy=SaleView.q.open_date)
 
     def get_client_services(self):
-        """Returns a list of services from SoldServicesView with services
-        consumed by the client
+        """Returns a list of sold
+        :obj:`service views stoqlib.domain.sale.SoldServicesView>` with
+        services consumed by this client
         """
         from stoqlib.domain.sale import SoldServicesView
-        return SoldServicesView.select(SoldServicesView.q.client_id == self.id,
-                               connection=self.get_connection(),
-                               orderBy=SoldServicesView.q.estimated_fix_date)
+        return SoldServicesView.select(
+            SoldServicesView.q.client_id == self.id,
+            connection=self.get_connection(),
+            orderBy=SoldServicesView.q.estimated_fix_date)
 
     def get_client_products(self):
         """Returns a list of products from SoldProductsView with products
         sold to the client
         """
         from stoqlib.domain.sale import SoldProductsView
-        return SoldProductsView.select(SoldProductsView.q.client_id == self.id,
-                               connection=self.get_connection(),)
+        return SoldProductsView.select(
+            SoldProductsView.q.client_id == self.id,
+            connection=self.get_connection(),)
 
     def get_client_payments(self):
         """Returns a list of payment from InPaymentView with client's payments
         """
         from stoqlib.domain.payment.views import InPaymentView
         return InPaymentView.select(
-                               InPaymentView.q.person_id == self.personID,
-                               connection=self.get_connection(),
-                               orderBy=InPaymentView.q.due_date)
+            InPaymentView.q.person_id == self.personID,
+            connection=self.get_connection(),
+            orderBy=InPaymentView.q.due_date)
 
     def get_last_purchase_date(self):
         """Fetch the date of the last purchased item by this client.
         None is returned if there are no sales yet made by the client
 
         :returns: the date of the last purchased item
-        :rtype: datetime.date or None
         """
         from stoqlib.domain.sale import Sale
         max_date = self.get_client_sales().max(Sale.q.open_date)
@@ -778,10 +784,6 @@ class Supplier(Domain):
     """A company or an individual that produces, provides, or furnishes
     an item or service
 
-    :ivar product_desc: A short description telling which products
-        this supplier produces')
-    :ivar status: active/inactive/blocked
-    :ivar product_desc: Basic description of the products of a supplier.
     """
 
     implements(IActive, IDescribable)
@@ -796,8 +798,13 @@ class Supplier(Domain):
 
     #: the :obj:`person <Person>`
     person = ForeignKey('Person')
+
+    #: active/inactive/blocked
     status = IntCol(default=STATUS_ACTIVE)
+
+    #: A short description telling which products this supplier produces
     product_desc = UnicodeCol(default='')
+
     is_active = BoolCol(default=True)
 
     #
@@ -878,20 +885,14 @@ class Employee(Domain):
     or written understanding where the employer gives direction as to
     what tasks are done
 
-    :ivar admission_date: admission_date
-    :ivar expire_vacation: when the vaction expires for this
-    :ivar salary: salary for this employee
-    :ivar status: normal/away/vacation/off
     :ivar registry_number:
     :ivar education_level:
     :ivar dependent_person_number:
 
-    -- This is Brazil-specific information
     :ivar workpermit_data:
     :ivar military_data:
     :ivar voter_data:
     :ivar bank_account:
-    :ivar role: A reference to an employee role object
     """
 
     implements(IActive, IDescribable)
@@ -906,15 +907,27 @@ class Employee(Domain):
                 STATUS_VACATION: _(u'Vacation'),
                 STATUS_OFF: _(u'Off')}
 
+
+    #: normal/away/vacation/off
+    status = IntCol(default=STATUS_NORMAL)
+
     #: the :obj:`person <Person>`
     person = ForeignKey('Person')
-    admission_date = DateTimeCol(default=None)
-    expire_vacation = DateTimeCol(default=None)
+
+    #: salary for this employee
     salary = PriceCol(default=0)
-    status = IntCol(default=STATUS_NORMAL)
+
+    #: when this employeer started working for the branch
+    admission_date = DateTimeCol(default=None)
+
+    #: when the vaction expires for this employee
+    expire_vacation = DateTimeCol(default=None)
+
     registry_number = UnicodeCol(default=None)
     education_level = UnicodeCol(default=None)
     dependent_person_number = IntCol(default=None)
+
+    #: A reference to an employee role object
     role = ForeignKey('EmployeeRole')
     is_active = BoolCol(default=True)
 
