@@ -51,6 +51,9 @@ stoq_version = (major_version, minor_version, micro_version)
 #: stoq version as a string
 version = '.'.join(map(str, stoq_version))
 
+#: stoq version as a string, sans the extra version
+short_version = version[:]
+
 if extra_version:
     stoq_version = stoq_version + (extra_version,)
     version += extra_version
