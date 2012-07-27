@@ -242,7 +242,8 @@ class Shell(object):
         # 2) Depend on a stoqlib version with extra_version < 90
         #
         if stoq.stable:
-            if stoq.extra_version >= FIRST_UNSTABLE_EXTRA_VERSION:
+            if (stoq.extra_version >= FIRST_UNSTABLE_EXTRA_VERSION and
+                not 'rc' in stoq.extra_version):
                 raise SystemExit(
                     "Stable stoq release should set extra_version to %d or lower" % (
                     FIRST_UNSTABLE_EXTRA_VERSION, ))
