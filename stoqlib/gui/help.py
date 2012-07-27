@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -31,6 +31,7 @@ import gtk
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.gui.openbrowser import open_browser
+import stoq
 
 
 def show_contents(screen=None):
@@ -56,5 +57,6 @@ def show_section(section, screen=None):
     try:
         gtk.show_uri(screen, 'ghelp:' + uri, gtk.get_current_event_time())
     except gobject.GError:
-        open_browser('http://doc.stoq.com.br/manual/%s.html' % (
-            section or 'index', ), screen)
+        open_browser('http://doc.stoq.com.br/manual/%s/%s.html' % (
+                stoq.short_version,
+                section or 'index', ), screen)
