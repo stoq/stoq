@@ -25,15 +25,32 @@
 
 program_name = "Stoq"
 website = 'http://www.stoq.com.br'
+
+#: Major version, should only increase when big, important features
+#: are integrated.
 major_version = 1
+
+#: Minor version, increase when doing a new stable release
 minor_version = 4
-micro_version = '0rc2'
-extra_version = 0
+
+#: Micro version, increase when doing a bug fix for a stable release
+micro_version = 0
+
+#: extra version, rc1, rc2, etc goes here.
+extra_version = 'rc2'
+
+#: the date the software was released
 release_date = (2012, 7, 26)
+
+#: if this is a stable release
 stable = True
 
+#: stoq version as a tuple
 stoq_version = (major_version, minor_version, micro_version)
-if extra_version > 0:
-    stoq_version = stoq_version + (extra_version,)
 
+#: stoq version as a string
 version = '.'.join(map(str, stoq_version))
+
+if extra_version:
+    stoq_version = stoq_version + (extra_version,)
+    version += extra_version
