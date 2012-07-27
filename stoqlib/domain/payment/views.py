@@ -214,6 +214,11 @@ class InPaymentView(BasePaymentView):
         renegotiation_id=PaymentRenegotiation.q.id,
         ))
 
+    _count_joins = BasePaymentView._count_joins[:]
+    _count_joins.append(
+        LEFTJOINOn(None, Person,
+                    PaymentGroup.q.payerID == Person.q.id))
+
     joins = BasePaymentView.joins[:]
     joins.extend([
         LEFTJOINOn(None, Person,
@@ -245,6 +250,11 @@ class OutPaymentView(BasePaymentView):
     columns.update(dict(
         supplier_name=Person.q.name,
     ))
+
+    _count_joins = BasePaymentView._count_joins[:]
+    _count_joins.append(
+        LEFTJOINOn(None, Person,
+                   BasePaymentView.PaymentGroup_Sale.q.recipientID == Person.q.id))
 
     joins = BasePaymentView.joins[:]
     joins.extend([
