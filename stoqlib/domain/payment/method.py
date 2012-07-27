@@ -119,9 +119,6 @@ class PaymentMethod(Domain):
 
     method_name = StringCol()
     is_active = BoolCol(default=True)
-    # FIXME: This should not be stored in the DB.
-    #        Create a database patch to remove this column.
-    #description = UnicodeCol()
     daily_penalty = PercentCol(default=0)
 
     #: a value for the interest. It must always be in the format::

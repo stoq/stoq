@@ -327,12 +327,10 @@ def print_sale_invoice(sale_invoice, invoice_printer):
 
 
 def validate_invoice_number(invoice_number, conn):
-    if not invoice_number or invoice_number < 1:
+    if not 0 < invoice_number <= 999999999:
         return ValidationError(
-            _(u'Invoice number should be a positive number.'))
-    if invoice_number > 999999:
-        return ValidationError(
-            _(u'Invoice number must be lesser than 999999.'))
+            _("Invoice number must be between 1 and 999999999"))
+
     sale = Sale.selectOneBy(invoice_number=invoice_number, connection=conn)
     if sale is not None:
         return ValidationError(_(u'Invoice number already used.'))
@@ -1122,6 +1120,6 @@ class F(InvoiceFieldDescription):
     length = 6
 
     def fetch(self, width, height):
-        return '%06d' % self.sale.invoice_number
+        return '%09d' % self.sale.invoice_number
 
 _add_invoice_field(F)

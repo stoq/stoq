@@ -463,6 +463,8 @@ class Sale(Domain, Adaptable):
     #: identifier for the coupon of this sale, used by a ECF printer
     coupon_id = IntCol()
 
+    # FIXME: This doesn't appear to be used anywhere.
+    #        Maybe we should remove it from the database.
     service_invoice_number = IntCol(default=None)
 
     #: Some optional additional information related to this sale.
