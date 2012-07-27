@@ -425,8 +425,10 @@ class PaymentMethod(Domain):
     def get_active_methods(cls, conn):
         """Returns a list of active payment methods
         """
-        return PaymentMethod.selectBy(is_active=True,
-                                      connection=conn).orderBy('description')
+        methods = PaymentMethod.selectBy(is_active=True,
+                                         connection=conn)
+        return locale_sorted(methods,
+                             key=operator.attrgetter('description'))
 
     @classmethod
     def get_by_name(cls, conn, name):
@@ -451,8 +453,7 @@ class PaymentMethod(Domain):
                                               separate):
                 continue
             methods.append(method)
-        return locale_sorted(methods,
-                             key=operator.attrgetter('description'))
+        return methods
 
     def selectable(self):
         """Finds out if the method is selectable, eg
