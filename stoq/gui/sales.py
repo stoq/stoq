@@ -26,15 +26,17 @@
 import gettext
 import decimal
 from datetime import date
+from dateutil.relativedelta import relativedelta
 
 import pango
 import gtk
 from kiwi.currency import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.api import api
+from stoqlib.database.orm import func, AND, OR
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.editors.invoiceeditor import SaleInvoicePrinterDialog
@@ -61,6 +63,30 @@ from stoq.gui.application import SearchableAppWindow
 
 
 _ = gettext.gettext
+
+
+class FilterItem(object):
+    def __init__(self, name, value=None):
+        self.name = name
+        self.value = value
+        self.id = name
+
+
+SALES_FILTERS = {
+    'sold-today': AND(func.DATE(Sale.q.open_date) == date.today(),
+                      OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                         Sale.q.status == Sale.STATUS_PAID)),
+    'sold-7days': AND(func.DATE(Sale.q.open_date) <= date.today(),
+                      func.DATE(Sale.q.open_date) >= date.today() - relativedelta(days=7),
+                      OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                          Sale.q.status == Sale.STATUS_PAID)),
+    'sold-28days': AND(func.DATE(Sale.q.open_date) <= date.today(),
+                       func.DATE(Sale.q.open_date) >= date.today() - relativedelta(days=28),
+                       OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                          Sale.q.status == Sale.STATUS_PAID)),
+    'expired-quotes': AND(func.DATE(Sale.q.expire_date) < date.today(),
+                          Sale.q.status == Sale.STATUS_QUOTE),
+}
 
 
 class SalesApp(SearchableAppWindow):
@@ -194,16 +220,21 @@ class SalesApp(SearchableAppWindow):
 
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'salesperson_name'])
-        status_filter = ComboSearchFilter(_('Show sales with status'),
-                                          self._get_status_values())
-        status_filter.select(Sale.STATUS_CONFIRMED)
+
+        status_filter = ComboSearchFilter(_('Show sales'),
+                                          self._get_filter_options())
+        status_filter.combo.set_row_separator_func(
+                            lambda model, titer: model[titer][0] == 'sep')
+
         self.executer.add_filter_query_callback(
             status_filter, self._get_status_query)
         self.add_filter(status_filter, position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        self._status_col = Column('status_name', title=_('Status'),
-                                  data_type=str, width=80, visible=False)
+        self._status_col = SearchColumn('status_name', title=_('Status'),
+                                        data_type=str, width=80, visible=False,
+                                        search_attribute='status',
+                                        valid_values=self._get_status_values())
 
         cols = [SearchColumn('id', title=_('#'), width=80,
                              format='%05d', data_type=int, sorted=True),
@@ -337,11 +368,36 @@ class SalesApp(SearchableAppWindow):
         items.insert(0, (_('Any'), None))
         return items
 
+    def _get_filter_options(self):
+        options = [
+            (_('All Sales'), None),
+            (_('Sold today'), FilterItem('custom', 'sold-today')),
+            (_('Sold in the last 7 days'), FilterItem('custom', 'sold-7days')),
+            (_('Sold in the last 28 days'), FilterItem('custom', 'sold-28days')),
+            (_('Expired quotes'), FilterItem('custom', 'expired-quotes')),
+            ('sep', None),
+        ]
+
+        for key, value in Sale.statuses.items():
+            if key == Sale.STATUS_ORDERED:
+                continue
+
+            options.append((value, FilterItem('status', key)))
+        return options
+
     def _get_status_query(self, state):
-        self._setup_columns(state.value)
         if state.value is None:
             return SaleView.q.status != Sale.STATUS_ORDERED
-        return SaleView.q.status == state.value
+
+        if state.value.name == 'custom':
+            self._setup_columns(None)
+            return SALES_FILTERS[state.value.value]
+
+        elif state.value.name == 'status':
+            self._setup_columns(state.value.value)
+            return SaleView.q.status == state.value.value
+
+        raise AssertionError(state.value.name, state.value.value)
 
     def _new_sale_quote(self):
         trans = api.new_transaction()
