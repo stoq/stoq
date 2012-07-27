@@ -483,7 +483,7 @@ class Sale(Domain, Adaptable):
     #: the date sale was confirmed, or None if it hasn't been returned
     return_date = DateTimeCol(default=None)
 
-    #: date when this sale expires, used by loans
+    #: date when this sale expires, used by quotes
     expire_date = DateTimeCol(default=None)
 
     #: discount of the sale, in absolute value, for instance::
