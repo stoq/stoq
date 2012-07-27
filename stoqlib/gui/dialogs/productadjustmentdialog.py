@@ -165,9 +165,9 @@ class ProductsAdjustmentDialog(BaseEditor):
         self._update_widgets()
 
     def on_invoice_number__validate(self, widget, value):
-        if not 0 < value < 999999:
-            return ValidationError(_(u'The invoice number must be '
-                                     'between 1 and 999999'))
+        if not 0 < value <= 999999999:
+            return ValidationError(
+                _("Invoice number must be between 1 and 999999999"))
 
     def on_invoice_number__validation_changed(self, widget, value):
         self._update_widgets()

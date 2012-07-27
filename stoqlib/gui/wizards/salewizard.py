@@ -526,11 +526,10 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.cfop.select_item_by_data(cfop)
 
     def on_invoice_number__validate(self, widget, value):
-        if value <= 0:
-            return ValidationError(_(u'Invoice number should be positive.'))
-        if value > 999999999:
-            return ValidationError(_(u'Invoice number should be lesser '
-                                      'than 999999999.'))
+        if not 0 < value <= 999999999:
+            return ValidationError(
+                _("Invoice number must be between 1 and 999999999"))
+
         exists = Sale.select(AND(Sale.q.invoice_number == value,
                                  Sale.q.id != self.model.id),
                              connection=self.conn)

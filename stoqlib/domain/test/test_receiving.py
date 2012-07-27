@@ -54,7 +54,7 @@ class TestReceivingOrder(DomainTest):
         self._testInvoiceNumber(0)
 
     def testInvoiceNumberHigh(self):
-        self._testInvoiceNumber(1000000)
+        self._testInvoiceNumber(1000000000)
 
     def testInvoiceNumberNegative(self):
         self._testInvoiceNumber(-1229)

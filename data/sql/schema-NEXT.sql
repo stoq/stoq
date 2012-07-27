@@ -676,8 +676,8 @@ CREATE TABLE sale (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     coupon_id integer,
-    invoice_number integer CONSTRAINT positive_invoice_number
-        CHECK (invoice_number > 0 AND invoice_number < 999999)
+    invoice_number integer CONSTRAINT valid_invoice_number
+        CHECK (invoice_number > 0 AND invoice_number < 999999999)
         DEFAULT NULL UNIQUE,
     service_invoice_number integer,
     status integer CONSTRAINT valid_status
@@ -880,7 +880,6 @@ CREATE TABLE payment_method (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     method_name text UNIQUE,
-    description text,
     payment_day integer CONSTRAINT valid_payment_day
         CHECK (payment_day >= 1 AND payment_day <= 28),
     closing_day integer CONSTRAINT valid_closing_day
@@ -1097,7 +1096,7 @@ CREATE TABLE receiving_order (
     ipi_total numeric(20, 2),
     freight_type integer DEFAULT 0,
     invoice_number integer CONSTRAINT valid_invoice_number
-       CHECK (invoice_number >= 1 AND invoice_number <= 999999),
+        CHECK (invoice_number > 0 AND invoice_number <= 999999999),
     invoice_total numeric(20, 2),
     cfop_id bigint REFERENCES cfop_data(id),
     responsible_id bigint REFERENCES login_user(id),
@@ -1131,7 +1130,8 @@ CREATE TABLE renegotiation_data (
     reason text,
     paid_total numeric(20, 2)
         CHECK (paid_total >= 0),
-    invoice_number integer,
+    invoice_number integer CONSTRAINT valid_invoice_number
+        CHECK (invoice_number > 0 AND invoice_number <= 999999999),
     penalty_value numeric(20, 2),
     responsible_id bigint REFERENCES person(id),
     new_order_id bigint REFERENCES sale(id),
@@ -1159,8 +1159,8 @@ CREATE TABLE fiscal_book_entry (
     ipi_value numeric(20, 2),
     date timestamp,
     is_reversal boolean,
-    invoice_number integer CONSTRAINT positive_invoice_number
-        CHECK (invoice_number >= 0),
+    invoice_number integer CONSTRAINT valid_invoice_number
+        CHECK (invoice_number > 0 AND invoice_number <= 999999999),
     cfop_id bigint REFERENCES cfop_data(id),
     branch_id bigint REFERENCES branch(id),
     drawee_id bigint REFERENCES person(id),
@@ -1316,8 +1316,8 @@ CREATE TABLE inventory (
         CHECK (status >= 0 and status < 3),
     open_date timestamp NOT NULL,
     close_date timestamp,
-    invoice_number integer CONSTRAINT positive_invoice_number
-        CHECK (invoice_number > 0  and invoice_number < 999999),
+    invoice_number integer CONSTRAINT valid_invoice_number
+        CHECK (invoice_number > 0 AND invoice_number <= 999999999),
     branch_id bigint NOT NULL REFERENCES branch(id)
 );
 

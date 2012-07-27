@@ -196,9 +196,9 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                    title=_('Additional Information'))
 
     def on_invoice_number__validate(self, widget, value):
-        if value < 1 or value > 999999:
-            return ValidationError(_("Receiving order number must be "
-                                     "between 1 and 999999"))
+        if not 0 < value <= 999999999:
+            return ValidationError(
+                _("Invoice number must be between 1 and 999999999"))
 
         trans = api.new_transaction()
         # Using a transaction to do the verification bellow because,
