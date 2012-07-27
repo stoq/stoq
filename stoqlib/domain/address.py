@@ -117,8 +117,8 @@ class CityLocation(ORMObject):
             clause_ = _get_equal_clause(cls.q.country, country)
             clause = AND(clause, clause_) if clause else clause_
 
-        return [result.city for result in
-                cls.select(clause, connection=conn)]
+        return set(result.city for result in
+                   cls.select(clause, connection=conn))
 
     @classmethod
     def exists(cls, conn, city, state, country):
