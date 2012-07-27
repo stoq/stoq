@@ -907,7 +907,6 @@ class Employee(Domain):
                 STATUS_VACATION: _(u'Vacation'),
                 STATUS_OFF: _(u'Off')}
 
-
     #: normal/away/vacation/off
     status = IntCol(default=STATUS_NORMAL)
 
