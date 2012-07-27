@@ -106,6 +106,13 @@ class TestCityLocation(DomainTest):
                                                         state=state,
                                                         country=country))
 
+        # Make sure no duplicates are returned
+        CityLocation.get_or_create(self.trans, 'Sao Carlos', 'SP', 'BR')
+        CityLocation.get_or_create(self.trans, 'Sao Carlos', 'SP', 'BR_')
+        CityLocation.get_or_create(self.trans, 'Sao Carlos', 'SP', 'BR__')
+        cities = list(CityLocation.get_cities_by(self.trans, state='SP'))
+        self.assertEqual(len(cities), len(set(cities)))
+
     def testGetDefault(self):
         location = CityLocation.get_default(self.trans)
         self.failUnless(isinstance(location, CityLocation))
