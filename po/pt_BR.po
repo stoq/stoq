@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-27 11:45-0300\n"
+"POT-Creation-Date: 2012-07-27 13:18-0300\n"
 "PO-Revision-Date: 2012-07-25 21:02+0000\n"
 "Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -258,7 +258,7 @@ msgstr "Situação da filial:"
 #: ../plugins/books/booksdomain.py:60 ../plugins/ecf/ecfdomain.py:207
 #: ../plugins/ecf/ecfprinterdialog.py:309
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:9
-#: ../stoqlib/domain/devices.py:135 ../stoqlib/domain/payment/method.py:157
+#: ../stoqlib/domain/devices.py:135 ../stoqlib/domain/payment/method.py:154
 #: ../stoqlib/domain/person.py:483 ../stoqlib/domain/person.py:556
 #: ../stoqlib/domain/person.py:793 ../stoqlib/domain/person.py:817
 #: ../stoqlib/domain/person.py:941 ../stoqlib/domain/person.py:984
@@ -281,7 +281,7 @@ msgstr "Ativo"
 #: ../data/glade/TransporterDataSlave.ui.h:4
 #: ../data/glade/UserStatusSlave.ui.h:3 ../plugins/books/booksdomain.py:41
 #: ../plugins/books/booksdomain.py:61 ../plugins/ecf/ecfdomain.py:208
-#: ../stoqlib/domain/devices.py:136 ../stoqlib/domain/payment/method.py:158
+#: ../stoqlib/domain/devices.py:136 ../stoqlib/domain/payment/method.py:155
 #: ../stoqlib/domain/person.py:484 ../stoqlib/domain/person.py:557
 #: ../stoqlib/domain/person.py:653 ../stoqlib/domain/person.py:794
 #: ../stoqlib/domain/person.py:818 ../stoqlib/domain/person.py:942
@@ -857,7 +857,7 @@ msgstr ""
 "banco de dados de outra aplicação ou gostaria de customizar o Stoq, não "
 "hesite <a href=\"http://www.stoq.com.br/contato\">entrar em contato</a>."
 
-#: ../data/glade/FinishInstallationStep.ui.h:7 ../stoq/gui/shell.py:476
+#: ../data/glade/FinishInstallationStep.ui.h:7 ../stoq/gui/shell.py:477
 msgid "Enable online services"
 msgstr "Habilitar serviços online"
 
@@ -2037,7 +2037,7 @@ msgid "Status details"
 msgstr "Detalhes do estado"
 
 #: ../data/glade/SaleDetailsDialog.ui.h:20
-#: ../stoqlib/gui/wizards/salewizard.py:628
+#: ../stoqlib/gui/wizards/salewizard.py:627
 msgid "Print booklets"
 msgstr "Imprimir carnês"
 
@@ -3574,17 +3574,17 @@ msgstr "Configurações do magento..."
 msgid "The CNPJ of %s is not valid."
 msgstr "O CNPJ de %s não é válido."
 
-#: ../stoq/daemonmain.py:103 ../stoq/gui/shell.py:334
+#: ../stoq/daemonmain.py:103 ../stoq/gui/shell.py:335
 msgid "Could not open the database config file"
 msgstr "Não foi possível abrir o arquivo de configuração do banco de dados"
 
-#: ../stoq/daemonmain.py:104 ../stoq/gui/shell.py:335
+#: ../stoq/daemonmain.py:104 ../stoq/gui/shell.py:336
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr ""
 "Dados inválidos do arquivo de configuração, obtido erro '%s', do tipo '%s'"
 
-#: ../stoq/daemonmain.py:118 ../stoq/gui/shell.py:349
+#: ../stoq/daemonmain.py:118 ../stoq/gui/shell.py:350
 msgid "Could not connect to the database"
 msgstr "Não foi possível conectar no banco de dados"
 
@@ -6069,30 +6069,30 @@ msgstr ""
 "Não foi possível setar a localização para %s. Tenha certeza de ter instalado "
 "os pacotes para esta localização."
 
-#: ../stoq/gui/shell.py:364
+#: ../stoq/gui/shell.py:365
 msgid "The database version differs from your installed version."
 msgstr "A versão do banco de dados difere da sua versão instalada."
 
-#: ../stoq/gui/shell.py:444
+#: ../stoq/gui/shell.py:445
 msgid "You need to register a company before start using Stoq"
 msgstr "Você precisa registrar uma empresa antes de começar a utilizar o Stoq"
 
-#: ../stoq/gui/shell.py:446
+#: ../stoq/gui/shell.py:447
 msgid ""
 "Could not find a company. You'll need to register one before start using Stoq"
 msgstr ""
 "Não foi possível encontrar uma empresa. Você precisa registrar uma antes de "
 "começar a utilizar o Stoq"
 
-#: ../stoq/gui/shell.py:475
+#: ../stoq/gui/shell.py:476
 msgid "Not right now"
 msgstr "Não agora"
 
-#: ../stoq/gui/shell.py:478
+#: ../stoq/gui/shell.py:479
 msgid "Do you want to enable Stoq online services?"
 msgstr "Você gostaria de habilitar os serviços online do Stoq?"
 
-#: ../stoq/gui/shell.py:702
+#: ../stoq/gui/shell.py:703
 #, python-format
 msgid ""
 "This user lacks credentials \n"
@@ -6903,7 +6903,7 @@ msgstr "Imagem Stoq #%d"
 msgid "Cancelled"
 msgstr "Cancelada"
 
-#: ../stoqlib/domain/loan.py:170 ../stoqlib/domain/sale.py:561
+#: ../stoqlib/domain/loan.py:170 ../stoqlib/domain/sale.py:563
 #: ../stoqlib/domain/stockdecrease.py:123
 #, python-format
 msgid "Invalid status %d"
@@ -6957,23 +6957,23 @@ msgstr "Cartão de Crédito Parcelado administradora"
 msgid "Debit Card Pre-dated"
 msgstr "Cartão de débito pré-datado"
 
-#: ../stoqlib/domain/payment/method.py:196
+#: ../stoqlib/domain/payment/method.py:193
 #, python-format
 msgid ""
 "The number of installments can not be greater than %d for payment method %r"
 msgstr ""
 "O número de parcelas não pode ser maior que %d para a forma de pagamento %r"
 
-#: ../stoqlib/domain/payment/method.py:206
+#: ../stoqlib/domain/payment/method.py:203
 #, python-format
 msgid "Argument interest must be between 0 and 100, got %s"
 msgstr "O argumento do juro deve estar entre 0 e 100,  recebeu %s"
 
-#: ../stoqlib/domain/payment/method.py:213
+#: ../stoqlib/domain/payment/method.py:210
 msgid "The payment_qty argument must be greater than zero"
 msgstr "O argumento payment_qty deve ser maior que zero"
 
-#: ../stoqlib/domain/payment/method.py:266
+#: ../stoqlib/domain/payment/method.py:263
 #, python-format
 msgid ""
 "You can not create more inpayments for this payment group since the maximum "
@@ -6982,7 +6982,7 @@ msgstr ""
 "Você não pode criar mais pagamentos de entrada para este grupo de "
 "pagamentos, já que o máximo permitido para esta forma de pagamento é %d"
 
-#: ../stoqlib/domain/payment/method.py:271
+#: ../stoqlib/domain/payment/method.py:268
 msgid ""
 "You have more inpayments in database than the maximum allowed for this "
 "payment method"
@@ -6990,7 +6990,7 @@ msgstr ""
 "Você tem mais pagamentos de entrada no banco de dados que o máximo permitido "
 "para esta forma de pagamento"
 
-#: ../stoqlib/domain/payment/method.py:355
+#: ../stoqlib/domain/payment/method.py:352
 #, python-format
 msgid "%s/%s %s for %s"
 msgstr "%s/%s %s referente à %s"
@@ -7410,16 +7410,16 @@ msgstr "Enviado"
 msgid "Returned"
 msgstr "Devolvida"
 
-#: ../stoqlib/domain/sale.py:681
+#: ../stoqlib/domain/sale.py:683
 msgid "The sale must have sellable items"
 msgstr "A venda deve ter itens vendáveis"
 
-#: ../stoqlib/domain/sale.py:683
+#: ../stoqlib/domain/sale.py:685
 #, python-format
 msgid "Unable to make sales for clients with status %s"
 msgstr "Incapaz de fazer vendas para clientes com estado %s"
 
-#: ../stoqlib/domain/sale.py:719
+#: ../stoqlib/domain/sale.py:721
 msgid ""
 "Sale {sale_number} to client {client_name} was confirmed with value "
 "{total_value:.2f}."
@@ -7427,7 +7427,7 @@ msgstr ""
 "Venda {sale_number} ao cliente {client_name} foi confirmada com o valor "
 "{total_value:.2f}."
 
-#: ../stoqlib/domain/sale.py:725
+#: ../stoqlib/domain/sale.py:727
 msgid ""
 "Sale {sale_number} without a client was confirmed with value "
 "{total_value:.2f}."
@@ -7435,7 +7435,7 @@ msgstr ""
 "Venda {sale_number}, sem cliente, foi confirmada com o valor "
 "{total_value:.2f}."
 
-#: ../stoqlib/domain/sale.py:740
+#: ../stoqlib/domain/sale.py:742
 #, python-format
 msgid ""
 "You cannot close a sale without paying all the payment. Payment %r is still "
@@ -7444,7 +7444,7 @@ msgstr ""
 "Você não pode fechar uma venda sem ter pago todos os pagamentos. O pagamento "
 "%r ainda não foi pago"
 
-#: ../stoqlib/domain/sale.py:752
+#: ../stoqlib/domain/sale.py:754
 msgid ""
 "Sale {sale_number} to client {client_name} was paid and confirmed with value "
 "{total_value:.2f}."
@@ -7452,7 +7452,7 @@ msgstr ""
 "Venda {sale_number} ao cliente {client_name} foi paga e confirmada com o "
 "valor {total_value:.2f}."
 
-#: ../stoqlib/domain/sale.py:758
+#: ../stoqlib/domain/sale.py:760
 msgid ""
 "Sale {sale_number} without a client was paid and confirmed with value "
 "{total_value:.2f}."
@@ -7460,7 +7460,7 @@ msgstr ""
 "Venda {sale_number}, sem cliente, foi paga e confirmada com o valor "
 "{total_value:.2f}."
 
-#: ../stoqlib/domain/sale.py:764
+#: ../stoqlib/domain/sale.py:766
 msgid ""
 "Sale {sale_number} to client {client_name} was paid with value "
 "{total_value:.2f}."
@@ -7468,13 +7468,13 @@ msgstr ""
 "Venda {sale_number} ao cliente {client_name} foi paga com o valor "
 "{total_value:.2f}."
 
-#: ../stoqlib/domain/sale.py:770
+#: ../stoqlib/domain/sale.py:772
 msgid ""
 "Sale {sale_number} without a client was paid with value {total_value:.2f}."
 msgstr ""
 "Venda {sale_number}, sem cliente, foi paga com o valor {total_value:.2f}."
 
-#: ../stoqlib/domain/sale.py:832
+#: ../stoqlib/domain/sale.py:834
 msgid ""
 "Sale {sale_number} to client {client_name} was returned with value "
 "{total_value:.2f}. Reason: {reason}"
@@ -7482,7 +7482,7 @@ msgstr ""
 "Venda {sale_number} ao cliente {client_name} foi devolvida com o valor "
 "{total_value:.2f}. Razão: {reason}"
 
-#: ../stoqlib/domain/sale.py:839
+#: ../stoqlib/domain/sale.py:841
 msgid ""
 "Sale {sale_number} without a client was returned with value "
 "{total_value:.2f}. Reason: {reason}"
@@ -7490,58 +7490,58 @@ msgstr ""
 "Venda {sale_number}, sem cliente, foi devolvida com o valor "
 "{total_value:.2f}. Razão: {reason}"
 
-#: ../stoqlib/domain/sale.py:894
+#: ../stoqlib/domain/sale.py:896
 #, python-format
 msgid "Sale Details: %s"
 msgstr "Detalhes da venda: %s"
 
-#: ../stoqlib/domain/sale.py:903
+#: ../stoqlib/domain/sale.py:905
 #, python-format
 msgid "Delivery Address: %s"
 msgstr "Endereço de entrega: %s"
 
-#: ../stoqlib/domain/sale.py:910
+#: ../stoqlib/domain/sale.py:912
 #, python-format
 msgid "\"%s\" Notes: %s"
 msgstr "Notas de \"%s\": %s"
 
-#: ../stoqlib/domain/sale.py:913
+#: ../stoqlib/domain/sale.py:915
 #, python-format
 msgid "\"%s\" Estimated Fix Date: %s"
 msgstr "Data estimada de resolução de \"%s\": %s"
 
 #. First line.
-#: ../stoqlib/domain/sale.py:933 ../stoqlib/reporting/purchase.py:196
+#: ../stoqlib/domain/sale.py:935 ../stoqlib/reporting/purchase.py:196
 #: ../stoqlib/reporting/purchase.py:208
 msgid "Not Specified"
 msgstr "Não especificado"
 
-#: ../stoqlib/domain/sale.py:948
+#: ../stoqlib/domain/sale.py:950
 #, python-format
 msgid "The sale %r have a client but no client_role defined."
 msgstr "A venda %r tem um cliente, mas nenhum client_role definido."
 
-#: ../stoqlib/domain/sale.py:1191
+#: ../stoqlib/domain/sale.py:1193
 msgid "You must have at least one payment for each payment group"
 msgstr "Você deve ter pelo menos um pagamento para cada grupo de pagamentos"
 
 #. The sale was not entirely paid, so we have to payback the
 #. till, because the sale amount have already been added in there
-#: ../stoqlib/domain/sale.py:1250
+#: ../stoqlib/domain/sale.py:1252
 #, python-format
 msgid "Debit on Till: Sale %d Returned"
 msgstr "Débito no caixa: Venda %d devolvida"
 
-#: ../stoqlib/domain/sale.py:1260
+#: ../stoqlib/domain/sale.py:1262
 #, python-format
 msgid "%s Money Returned for Sale %d"
 msgstr "%s Dinheiro devolvido da venda %d"
 
-#: ../stoqlib/domain/sale.py:1321
+#: ../stoqlib/domain/sale.py:1323
 msgid "Sale orders must have items, which means products or services"
 msgstr "Pedidos de venda devem ter itens, o que significa produtos ou serviços"
 
-#: ../stoqlib/domain/sale.py:1326
+#: ../stoqlib/domain/sale.py:1328
 msgid "Sale total quantity should never be zero"
 msgstr "O total da quantidade de venda deve nunca ser zero"
 
@@ -8233,9 +8233,11 @@ msgstr "Quantidade registrada"
 msgid "Actual quantity"
 msgstr "Quantidade atual"
 
-#: ../stoqlib/gui/dialogs/productadjustmentdialog.py:169
-msgid "The invoice number must be between 1 and 999999"
-msgstr "O número da nota fiscal deve estar entre 1 e 999999"
+#: ../stoqlib/gui/dialogs/productadjustmentdialog.py:170
+#: ../stoqlib/gui/slaves/receivingslave.py:201
+#: ../stoqlib/gui/wizards/salewizard.py:531 ../stoqlib/lib/invoice.py:332
+msgid "Invoice number must be between 1 and 999999999"
+msgstr "O número da nota fiscal deve estar entre 1 e 999999999"
 
 #: ../stoqlib/gui/dialogs/productadjustmentdialog.py:177
 msgid "Product Adjustment"
@@ -11206,10 +11208,6 @@ msgstr "Este campo não pode ser negativo."
 msgid "Additional Information"
 msgstr "Informações adicionais"
 
-#: ../stoqlib/gui/slaves/receivingslave.py:200
-msgid "Receiving order number must be between 1 and 999999"
-msgstr "O número do pedido de recebimento deve estar entre 1 a 999999"
-
 #: ../stoqlib/gui/slaves/receivingslave.py:214
 #, python-format
 msgid "Invoice %d already exists for supplier %s."
@@ -11437,8 +11435,8 @@ msgstr "Imprimir recibo"
 
 #: ../stoqlib/gui/wizards/loanwizard.py:442
 #: ../stoqlib/gui/wizards/salequotewizard.py:433
-#: ../stoqlib/gui/wizards/salewizard.py:628
-#: ../stoqlib/gui/wizards/salewizard.py:633
+#: ../stoqlib/gui/wizards/salewizard.py:627
+#: ../stoqlib/gui/wizards/salewizard.py:632
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:229
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:293
 msgid "Don't print"
@@ -11707,23 +11705,15 @@ msgstr ""
 "Você precisa de provedores de créditos ativos para usar o pagamento com "
 "cartão."
 
-#: ../stoqlib/gui/wizards/salewizard.py:530
-msgid "Invoice number should be positive."
-msgstr "O número da nota fiscal deve ser positivo."
-
-#: ../stoqlib/gui/wizards/salewizard.py:532
-msgid "Invoice number should be lesser than 999999999."
-msgstr "O número da nota fiscal deve ser menor 999999999."
-
-#: ../stoqlib/gui/wizards/salewizard.py:538 ../stoqlib/lib/invoice.py:338
+#: ../stoqlib/gui/wizards/salewizard.py:537 ../stoqlib/lib/invoice.py:336
 msgid "Invoice number already used."
 msgstr "O número da nota fiscal já existe."
 
-#: ../stoqlib/gui/wizards/salewizard.py:555
+#: ../stoqlib/gui/wizards/salewizard.py:554
 msgid "Sale Checkout"
 msgstr "Confirmar venda"
 
-#: ../stoqlib/gui/wizards/salewizard.py:606
+#: ../stoqlib/gui/wizards/salewizard.py:605
 #, python-format
 msgid ""
 "The invoice number %s is already used. Confirm the sale again to chose "
@@ -11732,15 +11722,15 @@ msgstr ""
 "O número da nota fiscal %s já está sendo usado. Confirme a venda novamente "
 "para escolher outro."
 
-#: ../stoqlib/gui/wizards/salewizard.py:627
+#: ../stoqlib/gui/wizards/salewizard.py:626
 msgid "Do you want to print the booklets for this sale?"
 msgstr "Você gostaria de imprimir os carnês desta venda?"
 
-#: ../stoqlib/gui/wizards/salewizard.py:632
+#: ../stoqlib/gui/wizards/salewizard.py:631
 msgid "Do you want to print the bills for this sale?"
 msgstr "Você gostaria de imprimir os boletos desta venda?"
 
-#: ../stoqlib/gui/wizards/salewizard.py:633
+#: ../stoqlib/gui/wizards/salewizard.py:632
 msgid "Print bills"
 msgstr "Imprimir boletos"
 
@@ -12049,179 +12039,171 @@ msgstr "Meses"
 msgid "Years"
 msgstr "Anos"
 
-#: ../stoqlib/lib/invoice.py:332
-msgid "Invoice number should be a positive number."
-msgstr "O número da Nota Fiscal deve ser positivo."
-
-#: ../stoqlib/lib/invoice.py:335
-msgid "Invoice number must be lesser than 999999."
-msgstr "O número da nota fiscal deve ser menor 999999."
-
-#: ../stoqlib/lib/invoice.py:374
+#: ../stoqlib/lib/invoice.py:372
 msgid "Company document number"
 msgstr "CNPJ"
 
-#: ../stoqlib/lib/invoice.py:386
+#: ../stoqlib/lib/invoice.py:384
 msgid "Outgoing invoice"
 msgstr "Nota fiscal de saída"
 
-#: ../stoqlib/lib/invoice.py:398
+#: ../stoqlib/lib/invoice.py:396
 msgid "Incoming invoice"
 msgstr "Nota fiscal de entrada"
 
-#: ../stoqlib/lib/invoice.py:409
+#: ../stoqlib/lib/invoice.py:407
 msgid "Client name"
 msgstr "Nome do cliente"
 
-#: ../stoqlib/lib/invoice.py:420
+#: ../stoqlib/lib/invoice.py:418
 msgid "Client Address"
 msgstr "Endereço do cliente"
 
-#: ../stoqlib/lib/invoice.py:431
+#: ../stoqlib/lib/invoice.py:429
 msgid "Client's document number"
 msgstr "CPF do cliente"
 
-#: ../stoqlib/lib/invoice.py:448
+#: ../stoqlib/lib/invoice.py:446
 msgid "Client's district"
 msgstr "Bairro do cliente"
 
-#: ../stoqlib/lib/invoice.py:459
+#: ../stoqlib/lib/invoice.py:457
 msgid "Client's postal code"
 msgstr "CEP do cliente"
 
-#: ../stoqlib/lib/invoice.py:470
+#: ../stoqlib/lib/invoice.py:468
 msgid "Client's city"
 msgstr "Cidade do cliente"
 
-#: ../stoqlib/lib/invoice.py:481
+#: ../stoqlib/lib/invoice.py:479
 msgid "Client Phone number"
 msgstr "Telefone do cliente"
 
-#: ../stoqlib/lib/invoice.py:492
+#: ../stoqlib/lib/invoice.py:490
 msgid "Client Fax number"
 msgstr "Número do fax do cliente"
 
-#: ../stoqlib/lib/invoice.py:503
+#: ../stoqlib/lib/invoice.py:501
 msgid "Client Phone/Fax number"
 msgstr "Número telefone/fax do cliente"
 
-#: ../stoqlib/lib/invoice.py:516
+#: ../stoqlib/lib/invoice.py:514
 msgid "Client state abbreviation"
 msgstr "Estado do cliente"
 
-#: ../stoqlib/lib/invoice.py:527
+#: ../stoqlib/lib/invoice.py:525
 msgid "Clients state registry number or document number"
 msgstr "Inscrição estadual ou documento do cliente"
 
-#: ../stoqlib/lib/invoice.py:542 ../stoqlib/reporting/booklet.py:289
+#: ../stoqlib/lib/invoice.py:540 ../stoqlib/reporting/booklet.py:289
 msgid "Emission date"
 msgstr "Data de emissão"
 
-#: ../stoqlib/lib/invoice.py:553
+#: ../stoqlib/lib/invoice.py:551
 msgid "Creation date"
 msgstr "Data de criação"
 
-#: ../stoqlib/lib/invoice.py:564
+#: ../stoqlib/lib/invoice.py:562
 msgid "Creation time"
 msgstr "Hora de criação"
 
-#: ../stoqlib/lib/invoice.py:575
+#: ../stoqlib/lib/invoice.py:573
 msgid "Number of payments"
 msgstr "Número de parcelas"
 
-#: ../stoqlib/lib/invoice.py:586
+#: ../stoqlib/lib/invoice.py:584
 msgid "Payment due dates"
 msgstr "Vencimento dos pagamentos"
 
-#: ../stoqlib/lib/invoice.py:599
+#: ../stoqlib/lib/invoice.py:597
 msgid "Payment values"
 msgstr "Valor dos pagamentos"
 
-#: ../stoqlib/lib/invoice.py:712
+#: ../stoqlib/lib/invoice.py:710
 msgid "Service item code / description"
 msgstr "Código de serviço / Descrição"
 
-#: ../stoqlib/lib/invoice.py:728
+#: ../stoqlib/lib/invoice.py:726
 msgid "Service item description"
 msgstr "Descrição de serviço"
 
-#: ../stoqlib/lib/invoice.py:741
+#: ../stoqlib/lib/invoice.py:739
 msgid "Service item code"
 msgstr "Código de serviço"
 
-#: ../stoqlib/lib/invoice.py:755
+#: ../stoqlib/lib/invoice.py:753
 msgid "Service item unit"
 msgstr "Unidade de serviço"
 
-#: ../stoqlib/lib/invoice.py:768
+#: ../stoqlib/lib/invoice.py:766
 msgid "Service item quantity"
 msgstr "Quantidade de serviço"
 
-#: ../stoqlib/lib/invoice.py:781
+#: ../stoqlib/lib/invoice.py:779
 msgid "Service item price"
 msgstr "Preço do serviço"
 
-#: ../stoqlib/lib/invoice.py:794
+#: ../stoqlib/lib/invoice.py:792
 msgid "Service item total (price * quantity)"
 msgstr "Total de serviço (preço * quantidade)"
 
-#: ../stoqlib/lib/invoice.py:807
+#: ../stoqlib/lib/invoice.py:805
 msgid "Service item tax"
 msgstr "Taxa de serviço"
 
-#: ../stoqlib/lib/invoice.py:929
+#: ../stoqlib/lib/invoice.py:927
 msgid "Product item counter"
 msgstr "Contador de produtos"
 
-#: ../stoqlib/lib/invoice.py:942
+#: ../stoqlib/lib/invoice.py:940
 msgid "Product item code / description"
 msgstr "Código de produto / Descrição"
 
-#: ../stoqlib/lib/invoice.py:958
+#: ../stoqlib/lib/invoice.py:956
 msgid "Product item description"
 msgstr "Descrição de produto"
 
-#: ../stoqlib/lib/invoice.py:971
+#: ../stoqlib/lib/invoice.py:969
 msgid "Product item code"
 msgstr "Código do produtos"
 
-#: ../stoqlib/lib/invoice.py:985
+#: ../stoqlib/lib/invoice.py:983
 msgid "Product item situation"
 msgstr "Situação do produto"
 
-#: ../stoqlib/lib/invoice.py:998
+#: ../stoqlib/lib/invoice.py:996
 msgid "Product item unit"
 msgstr "Unidade do produto"
 
-#: ../stoqlib/lib/invoice.py:1011
+#: ../stoqlib/lib/invoice.py:1009
 msgid "Product item quantity"
 msgstr "Quantidade de produto"
 
-#: ../stoqlib/lib/invoice.py:1024
+#: ../stoqlib/lib/invoice.py:1022
 msgid "Product item price"
 msgstr "Preço do produto"
 
-#: ../stoqlib/lib/invoice.py:1037
+#: ../stoqlib/lib/invoice.py:1035
 msgid "Product item total (price * quantity)"
 msgstr "Total produto (preço * quantidade)"
 
-#: ../stoqlib/lib/invoice.py:1050
+#: ../stoqlib/lib/invoice.py:1048
 msgid "Product item tax"
 msgstr "ICMS do produto"
 
-#: ../stoqlib/lib/invoice.py:1068
+#: ../stoqlib/lib/invoice.py:1066
 msgid "Invoice Type"
 msgstr "Tipo da nota"
 
-#: ../stoqlib/lib/invoice.py:1090
+#: ../stoqlib/lib/invoice.py:1088
 msgid "State registry number"
 msgstr "Inscrição estadual"
 
-#: ../stoqlib/lib/invoice.py:1101
+#: ../stoqlib/lib/invoice.py:1099
 msgid "City registry number"
 msgstr "Inscrição municipal"
 
-#: ../stoqlib/lib/invoice.py:1121
+#: ../stoqlib/lib/invoice.py:1119
 msgid "Invoice number"
 msgstr "Número da nota fiscal"
 
@@ -13636,79 +13618,68 @@ msgid "Transfer Receipt"
 msgstr "Recibo de transferência"
 
 #: ../data/template/transfer.rml.extracted.h:1
-#: ../debian/stoq/usr/share/stoq/template/transfer.rml.extracted.h:1
-#: ../debian/tmp/usr/share/stoq/template/transfer.rml.extracted.h:1
 msgid "TRANSFER RECEIPT"
 msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #: ../data/template/transfer.rml.extracted.h:2
-#: ../debian/stoq/usr/share/stoq/template/transfer.rml.extracted.h:2
-#: ../debian/tmp/usr/share/stoq/template/transfer.rml.extracted.h:2
 msgid "NUMBER:"
 msgstr "NÚMERO:"
 
 #: ../data/template/transfer.rml.extracted.h:3
-#: ../debian/stoq/usr/share/stoq/template/transfer.rml.extracted.h:3
-#: ../debian/tmp/usr/share/stoq/template/transfer.rml.extracted.h:3
 msgid "SOURCE"
 msgstr "ORIGEM"
 
 #: ../data/template/transfer.rml.extracted.h:4
-#: ../debian/stoq/usr/share/stoq/template/transfer.rml.extracted.h:4
-#: ../debian/tmp/usr/share/stoq/template/transfer.rml.extracted.h:4
 msgid "RESPONSIBLE"
 msgstr "RESPONSÁVEL"
 
 #: ../data/template/transfer.rml.extracted.h:5
-#: ../debian/stoq/usr/share/stoq/template/transfer.rml.extracted.h:5
-#: ../debian/tmp/usr/share/stoq/template/transfer.rml.extracted.h:5
 msgid "DESTINATION"
 msgstr "DESTINO"
 
 #: ../data/template/transfer.rml.extracted.h:6
-#: ../debian/stoq/usr/share/stoq/template/transfer.rml.extracted.h:6
-#: ../debian/tmp/usr/share/stoq/template/transfer.rml.extracted.h:6
 msgid "TRANSFER PRODUCTS"
 msgstr "TRANSFERÊNCIA DE PRODUTOS"
 
 #: ../data/template/transfer.rml.extracted.h:7
-#: ../debian/stoq/usr/share/stoq/template/transfer.rml.extracted.h:7
-#: ../debian/tmp/usr/share/stoq/template/transfer.rml.extracted.h:7
 msgid "CODE"
 msgstr "CÓDIGO"
 
 #: ../data/template/transfer.rml.extracted.h:8
-#: ../debian/stoq/usr/share/stoq/template/transfer.rml.extracted.h:8
-#: ../debian/tmp/usr/share/stoq/template/transfer.rml.extracted.h:8
 msgid "DESCRIPTION"
 msgstr "DESCRIÇÃO"
 
 #: ../data/template/transfer.rml.extracted.h:9
-#: ../debian/stoq/usr/share/stoq/template/transfer.rml.extracted.h:9
-#: ../debian/tmp/usr/share/stoq/template/transfer.rml.extracted.h:9
 msgid "QUANTITY"
 msgstr "QUANTIDADE"
 
 #: ../data/template/transfer.rml.extracted.h:10
-#: ../debian/stoq/usr/share/stoq/template/transfer.rml.extracted.h:10
-#: ../debian/tmp/usr/share/stoq/template/transfer.rml.extracted.h:10
 msgid "TOTAL:"
 msgstr "TOTAL:"
 
 #: ../data/template/transfer.rml.extracted.h:11
-#: ../debian/stoq/usr/share/stoq/template/transfer.rml.extracted.h:11
-#: ../debian/tmp/usr/share/stoq/template/transfer.rml.extracted.h:11
 msgid "OPEN:"
 msgstr "ABERTO:"
 
 #: ../data/template/transfer.rml.extracted.h:12
-#: ../debian/stoq/usr/share/stoq/template/transfer.rml.extracted.h:12
-#: ../debian/tmp/usr/share/stoq/template/transfer.rml.extracted.h:12
 msgid "SIGNATURE:"
 msgstr "ASSINATURA:"
 
 #: ../data/template/transfer.rml.extracted.h:13
-#: ../debian/stoq/usr/share/stoq/template/transfer.rml.extracted.h:13
-#: ../debian/tmp/usr/share/stoq/template/transfer.rml.extracted.h:13
 msgid "RECEIVAL:"
 msgstr "RECEBIDO:"
+
+#~ msgid "Receiving order number must be between 1 and 999999"
+#~ msgstr "O número do pedido de recebimento deve estar entre 1 a 999999"
+
+#~ msgid "Invoice number should be positive."
+#~ msgstr "O número da nota fiscal deve ser positivo."
+
+#~ msgid "Invoice number should be lesser than 999999999."
+#~ msgstr "O número da nota fiscal deve ser menor 999999999."
+
+#~ msgid "Invoice number should be a positive number."
+#~ msgstr "O número da Nota Fiscal deve ser positivo."
+
+#~ msgid "Invoice number must be lesser than 999999."
+#~ msgstr "O número da nota fiscal deve ser menor 999999."
