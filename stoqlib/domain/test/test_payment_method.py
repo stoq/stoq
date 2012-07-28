@@ -286,6 +286,18 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         self.assertEquals(methods[2].method_name, 'deposit')
         self.assertEquals(methods[3].method_name, 'money')
 
+    def testGetEditableMethods(self):
+        methods = PaymentMethod.get_editable_methods(self.trans)
+        self.assertTrue(methods)
+        self.assertEquals(len(methods), 7)
+        self.assertEquals(methods[0].method_name, 'bill')
+        self.assertEquals(methods[1].method_name, 'card')
+        self.assertEquals(methods[2].method_name, 'check')
+        self.assertEquals(methods[3].method_name, 'deposit')
+        self.assertEquals(methods[4].method_name, 'money')
+        self.assertEquals(methods[5].method_name, 'multiple')
+        self.assertEquals(methods[6].method_name, 'store_credit')
+
 
 class TestMoney(DomainTest, _TestPaymentMethodsBase):
     method_type = 'money'

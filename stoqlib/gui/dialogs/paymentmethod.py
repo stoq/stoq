@@ -70,12 +70,7 @@ class PaymentMethodsDialog(BasicDialog):
         self.attach_slave("extra_holder", self._toolbar_slave)
 
     def _setup_list(self):
-        # FIXME: Dont let users see online payments for now, to avoid
-        #        confusions with active state. online is an exception to that
-        #        logic.
-        clause = PaymentMethod.q.method_name != 'online'
-        methods = PaymentMethod.select(connection=self.conn,
-                                       clause=clause).orderBy('description')
+        methods = PaymentMethod.get_editable_methods(self.conn)
         self.klist = ObjectList(self._get_columns(), methods,
                                 gtk.SELECTION_BROWSE)
         self.klist.connect("selection-changed",
