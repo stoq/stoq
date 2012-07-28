@@ -455,6 +455,21 @@ class PaymentMethod(Domain):
             methods.append(method)
         return methods
 
+    @classmethod
+    def get_editable_methods(cls, conn):
+        """Gets a list of methods that are editable
+        Eg, you can change the details such as maximum installments etc.
+
+        :returns: a list of :class:`payment methods <PaymentMethod>`
+        """
+        # FIXME: Dont let users see online payments for now, to avoid
+        #        confusions with active state. online is an exception to that
+        #        logic.
+        methods = cls.select(connection=conn,
+                             clause=cls.q.method_name != 'online')
+        return locale_sorted(methods,
+                             key=operator.attrgetter('description'))
+
     def selectable(self):
         """Finds out if the method is selectable, eg
         if the user can select it when doing a sale.
