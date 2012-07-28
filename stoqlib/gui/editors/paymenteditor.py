@@ -167,7 +167,7 @@ class PaymentEditor(BaseEditor):
                 self.payment_type,
                 separate=True)))
         methods.add(self.model.method)
-        self.method.set_sensitive(False)
+        self.method.set_sensitive(not self.edit_mode)
         self.method.prefill(locale_sorted(
             [(m.description, m) for m in methods],
             key=operator.itemgetter(0)))
