@@ -21,7 +21,14 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-""" Loan object and related objects implementation """
+
+"""
+
+This module contains classes for working with loans.
+
+The main class is :class:`Loan` which can hold a
+set of :class:`LoanItem`.
+"""
 
 import datetime
 from decimal import Decimal
@@ -42,22 +49,44 @@ _ = stoqlib_gettext
 
 
 class LoanItem(Domain):
-    """An item in a loan.
+    """An item in a :class:`loan <Loan>`
 
-    :param sellable: the kind of item
-    :param loan: the same
-    :param quantity: the quantity of the of sold item in this loan
-    :param price: the price of each individual item
+    Note that when changing :obj:`~.quantity`, :obj:`~.return_quantity`
+    or :obj:`~.sale_quantity` you will need to call :meth:`.sync_stock`
+    to synchronize the stock (increase or decrease it).
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/loan_item.html>`__
+
     """
-
     # FIXME: Implement lazy updates in here to avoid all the _set_* bellow
 
+    #: The total quantity that was loaned. The product stock for this
+    #: will be decreased when the loan stock is synchonized
     quantity = QuantityCol()
+
+    #: The loadned quantity that was sold. Will increase stock so
+    #: it's decreased correctly when the
+    #: :class:`sale <stoqlib.domain.sale.Sale>` is confirmed
     sale_quantity = QuantityCol(default=Decimal(0))
+
+    #: The loaned quantity that was returned. Will increase stock
     return_quantity = QuantityCol(default=Decimal(0))
+
+    #: price to use for this :obj:`~.sellable` when creating
+    #: a :class:`sale <stoqlib.domain.sale.Sale>`
     price = PriceCol()
+
+    #: :class:`sellable <stoqlib.domain.sellable.Sellable>` that is loaned
+    #: cannot be *None*
     sellable = ForeignKey('Sellable', notNull=True)
+
+    #: :class:`loan <Loan>` this item belongs to
     loan = ForeignKey('Loan')
+
+    def __init__(self, *args, **kwargs):
+        self._diff_quantity = 0
+        super(LoanItem, self).__init__(*args, **kwargs)
 
     @property
     def branch(self):
@@ -66,10 +95,6 @@ class LoanItem(Domain):
     @property
     def storable(self):
         return self.sellable.product_storable
-
-    def __init__(self, *args, **kwargs):
-        self._diff_quantity = 0
-        super(LoanItem, self).__init__(*args, **kwargs)
 
     #
     # ORMObject
@@ -98,6 +123,13 @@ class LoanItem(Domain):
     #
 
     def sync_stock(self):
+        """Synchronizes the stock, increasing/decreasing it accordingly
+
+        When setting :obj:`~.quantity`, :obj:`~.return_quantity`
+        or :obj:`~.sale_quantity` be sure to call this to properly
+        synchronize the stock (increase or decrease it). That counts
+        for object creation too.
+        """
         diff_quantity = self._diff_quantity
 
         if diff_quantity > 0:
@@ -117,36 +149,49 @@ class LoanItem(Domain):
 
 
 class Loan(Domain):
-    """Loan object implementation.
+    """
+    A loan is a collection of sellable items that is being loaned
+    to a client, the items are expected to be returned at some
+    point in the future.
 
+    A loan that can hold a set of :class:`loan items <LoanItem>`
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/loan.html>`__
+    `manual <http://doc.stoq.com.br/manual/loan.html>`__
     """
 
     implements(IContainer)
 
-    #: The loan is opened, products or other sellable items
-    #: might have been added and might not be in stock.
+    #: The request for a loan has been added to the system,
+    #: we know which of the items the client wishes to loan,
+    #: it's not defined if the client has actually picked up
+    #: the items.
     STATUS_OPEN = 0
 
     #: All the products or other sellable items have been
     #: returned and are available in stock.
     STATUS_CLOSED = 1
 
+    # FIXME: This is missing a few states,
+    #        STATUS_LOANED: stock is completely synchronized
     statuses = {STATUS_OPEN: _(u'Opened'),
                 STATUS_CLOSED: _(u'Closed')}
 
     #: status of the loan
     status = IntCol(default=STATUS_OPEN)
 
-    #: Some optional additional information related to this loan.
+    #: notes related to this loan.
     notes = UnicodeCol(default='')
 
-    #: the date loan was created
+    #: date loan was opened
     open_date = DateTimeCol(default=datetime.datetime.now)
 
-    #: the date loan was closed
+    #: date loan was closed
     close_date = DateTimeCol(default=None)
 
-    #:expire_date: the expected date loan will return
+    #: loan expires on this date, we expect the items to
+    #: to be returned by this date
     expire_date = DateTimeCol(default=None)
 
     removed_by = UnicodeCol(default='')
@@ -154,10 +199,13 @@ class Loan(Domain):
     #: branch where the loan was done
     branch = ForeignKey('Branch', default=None)
 
-    #: who is responsible for this loan
+    #: :class:`user <stoqlib.domain.person.LoginUser>` of the system
+    #: that made the loan
+    # FIXME: Should probably be a SalesPerson, we can find the
+    #        LoginUser via te_created.user
     responsible = ForeignKey('LoginUser')
 
-    #: who we loan
+    #: client that loaned the items
     client = ForeignKey('Client', default=None)
 
     #
@@ -186,6 +234,10 @@ class Loan(Domain):
     def remove_item(self, loan_item):
         LoanItem.delete(loan_item.id, connection=self.get_connection())
 
+    #
+    # Public API
+    #
+
     def add_sellable(self, sellable, quantity=1, price=None):
         """Adds a new sellable item to a loan
 
@@ -207,7 +259,9 @@ class Loan(Domain):
 
     def get_total_amount(self):
         """
-        Fetches the total value  paid by the client.
+        Fetches the total value of the loan, that is to be paid by
+        the client.
+
         It can be calculated as::
 
             Sale total = Sum(product and service prices) + surcharge +
@@ -240,6 +294,12 @@ class Loan(Domain):
     #
 
     def sync_stock(self):
+        """Synchronizes the stock of *self*'s :class:`loan items <LoanItem>`
+
+        Just a shortcut to call :meth:`LoanItem.sync_stock` of all of
+        *self*'s :class:`loan items <LoanItem>` instead of having
+        to do that one by one.
+        """
         for loan_item in self.get_items():
             loan_item.sync_stock()
 

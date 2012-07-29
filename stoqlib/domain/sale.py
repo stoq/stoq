@@ -73,15 +73,20 @@ _ = stoqlib_gettext
 
 
 class SaleItem(Domain):
-    """An item of a :class:`sellable <stoqlib.domain.sellable.Sellable>` within a
-    :class:`sale <Sale>`.
-    Contains quantity, price, taxes.
+    """An item of a :class:`sellable <stoqlib.domain.sellable.Sellable>`
+    within a :class:`sale <Sale>`.
+
+    Different from :class:`sellable <stoqlib.domain.sellable.Sellable>`
+    which contains information about the base price, tax, etc, this
+    contains the price in which *self* was sold, it's taxes, the
+    quantity, etc.
     """
+
     #: the quantity of the of sold item in this sale
     quantity = QuantityCol()
 
-    #: original value the :class:`sellable <stoqlib.domain.sellable.Sellable>` had
-    #: when adding the sale item
+    #: original value the :class:`sellable <stoqlib.domain.sellable.Sellable>`
+    # had when adding the sale item
     base_price = PriceCol()
 
     #: averiage cost of the items in this item
@@ -90,27 +95,33 @@ class SaleItem(Domain):
     #: price of this item
     price = PriceCol()
 
-    #: the :class:`sale <Sale>` for this item
+    #: :class:`sale <Sale>` for this item
     sale = ForeignKey('Sale')
 
-    #: the :class:`sellable <stoqlib.domain.sellable.Sellable>` for this item
+    #: :class:`sellable <stoqlib.domain.sellable.Sellable>` for this item
     sellable = ForeignKey('Sellable')
 
-    #: the :class:`delivery <Delivery>` if there is one
+    #: :class:`delivery <Delivery>` or None
     delivery = ForeignKey('Delivery', default=None)
 
-    #: the :class:`fiscal entry <stoqlib.domain.fiscal.CfopData>`
+    #: :class:`fiscal entry <stoqlib.domain.fiscal.CfopData>`
     cfop = ForeignKey('CfopData', default=None)
 
     #: user defined notes, currently only used by services
     notes = UnicodeCol(default=None)
 
+    #: estimated date that *self* will be fixed, currently
+    #: only used by services
     estimated_fix_date = DateTimeCol(default=datetime.datetime.now)
 
+    # FIXME: This doesn't appear to be used anywhere. Maybe we
+    #        should remove it from the database
     completion_date = DateTimeCol(default=None)
 
-    # Taxes
+    #: the :class:`stoqlib.domain.taxes.SaleItemIcms` tax for *self*
     icms_info = ForeignKey('SaleItemIcms')
+
+    #: the :class:`stoqlib.domain.taxes.SaleItemIpi` tax for *self*
     ipi_info = ForeignKey('SaleItemIpi')
 
     def _create(self, id, **kw):
@@ -175,7 +186,9 @@ class SaleItem(Domain):
         return self.sellable.get_description()
 
     def is_service(self):
-        """If this sale item contains a :class:`service <stoqlib.domain.service.Service>`
+        """If this sale item contains a
+        :class:`service <stoqlib.domain.service.Service>`
+
         :returns: ``True`` if it's a service
         """
         service = Service.selectOneBy(sellable=self.sellable,
@@ -188,8 +201,8 @@ class SaleItem(Domain):
         If the sale was also printed on a coupon, then we cannot add icms
         details to the NF-e (or at least, we should modify then accordingly)
 
-        :returns: the :class:`icms info <stoqlib.domain.taxes.SaleItemIcms>` or None,
-          if a coupon has been printed for this Sale
+        :returns: the :class:`icms info <stoqlib.domain.taxes.SaleItemIcms>`
+            or *None*, if a coupon has been printed for this Sale
         """
         if self.sale.coupon_id:
             return None
@@ -198,6 +211,7 @@ class SaleItem(Domain):
 
     def get_nfe_ipi_info(self):
         """IPI details for this SaleItem
+
         :returns: the :class:`ipi info <stoqlib.domain.taxes.SaleItemIpip>`
         """
         return self.ipi_info
@@ -206,8 +220,8 @@ class SaleItem(Domain):
         """Returns the cfop code to be used on the NF-e
 
         If the sale was also printed on a ECF, then the cfop should be 5.929
-        (if sold to a :class:`client <stoqlib.domain.person.Client>` in the same state) or 6-929 (if sold to a
-        client on a different state).
+        (if sold to a :class:`client <stoqlib.domain.person.Client>`
+        in the same state) or 6-929 (if sold to a client on a different state).
 
         :returns: the cfop code
         """
@@ -411,7 +425,8 @@ class Sale(Domain, Adaptable):
 
     implements(IContainer)
 
-    #: The sale is opened, products or other :class:`sellable <stoqlib.domain.sellable.Sellable>` items might have
+    #: The sale is opened, products or other
+    #: :class:`sellable <stoqlib.domain.sellable.Sellable>` items might have
     #: been added.
     STATUS_INITIAL = 0
 
@@ -420,8 +435,9 @@ class Sale(Domain, Adaptable):
     STATUS_CONFIRMED = 1
 
     #: All the payments of the sale has been confirmed and
-    #: the :class:`client <stoqlib.domain.person.Client>` does not owe anything to us. The product stock has been
-    #: decreased and the items delivered.
+    #: the :class:`client <stoqlib.domain.person.Client>` does not owe
+    #: anything to us. The product stock has been decreased and the items
+    #: delivered.
     STATUS_PAID = 2
 
     #: The sale has been canceled, this can only happen
@@ -434,7 +450,8 @@ class Sale(Domain, Adaptable):
     STATUS_ORDERED = 4
 
     #: The sale has been returned, all the payments made
-    #: have been canceled and the :class:`client <stoqlib.domain.person.Client>` has been compensated for
+    #: have been canceled and the
+    #: :class:`client <stoqlib.domain.person.Client>` has been compensated for
     #: everything already paid.
     STATUS_RETURNED = 5
 
@@ -675,7 +692,8 @@ class Sale(Domain, Adaptable):
         Ordering a sale is the first step done after creating it.
         The state of the sale will change to Sale.STATUS_ORDERED.
         To order a sale you need to add sale items to it.
-        A :class:`client <stoqlib.domain.person.Client>` might also be set for the sale, but it is not necessary.
+        A :class:`client <stoqlib.domain.person.Client>` might also
+        be set for the sale, but it is not necessary.
         """
         assert self.can_order()
 
@@ -789,7 +807,8 @@ class Sale(Domain, Adaptable):
 
     def set_renegotiated(self):
         """Set the sale as renegotiated. The sale payments have been
-        renegotiated and the operations will be done in other :class:`payment group <stoqlib.domain.payment.group.PaymentGroup>`."""
+        renegotiated and the operations will be done in other
+        :class:`payment group <stoqlib.domain.payment.group.PaymentGroup>`."""
         assert self.can_set_renegotiated()
 
         self.close_date = const.NOW()
@@ -927,7 +946,10 @@ class Sale(Domain, Adaptable):
         return self.salesperson.get_description()
 
     def get_client_name(self):
-        """Returns the client name, if a :class:`client <stoqlib.domain.person.Client>` has been provided for this sale
+        """Returns the client name, if a
+        :class:`client <stoqlib.domain.person.Client>` has been provided for
+        this sale
+
         :returns: the client name of a place holder string for sales without
            clients set.
         """
@@ -969,7 +991,8 @@ class Sale(Domain, Adaptable):
                 payment.pay()
 
     def add_sellable(self, sellable, quantity=1, price=None):
-        """Adds a new :class:`sellable <stoqlib.domain.sellable.Sellable>` item to a sale
+        """Adds a new :class:`sellable <stoqlib.domain.sellable.Sellable>`
+        item to a sale
 
         :param sellable: the sellable
         :param quantity: quantity to add, defaults to 1
@@ -1029,7 +1052,9 @@ class Sale(Domain, Adaptable):
         """Returns all valid payments for this sale
 
         This will return a list of valid payments for this sale, that
-        is, all payments on the :class:`payment group <stoqlib.domain.payment.group.PaymentGroup>` that were not cancelled.
+        is, all payments on the
+        :class:`payment group <stoqlib.domain.payment.group.PaymentGroup>`
+        that were not cancelled.
         If you need to get the cancelled too, use :obj:`.group.payments`.
 
         :returns: a list of :class:`~stoqlib.domain.payment.payment.Payment`

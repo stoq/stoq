@@ -19,10 +19,8 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-"""
-.. module: stoqlib.domain.account
-   :synopsis: accounts, banks, bill options and transactions
 
+"""
 This module contains classes centered around account, banks and transactions
 between accounts.
 
@@ -62,8 +60,10 @@ class BillOption(Domain):
 
     #: option name, such as nosso_numero
     option = UnicodeCol()
+
     #: value of the option
     value = UnicodeCol()
+
     #: the :class:`bank account <BankAccount>` this option belongs to
     bank_account = ForeignKey('BankAccount')
 
@@ -147,13 +147,15 @@ class Account(Domain):
     #: parent account, can be None
     parent = ForeignKey('Account', default=None)
 
-    #: the :class:`station <stoqlib.domain.station.BranchStation>` tied to this account, mainly for TYPE_CASH accounts
+    #: the :class:`station <stoqlib.domain.station.BranchStation>` tied
+    #: to this account, mainly for TYPE_CASH accounts
     station = ForeignKey('BranchStation', default=None)
 
     #: kind of account, one of the TYPE_* defines in this class
     account_type = IntCol(default=None)
 
-    #: :class:`bank account <BankAccount>` for this account, used by TYPE_BANK accounts
+    #: :class:`bank account <BankAccount>` for this account,
+    #: used by TYPE_BANK accounts
     bank = SingleJoin('BankAccount', joinColumn='account_id')
 
     #
