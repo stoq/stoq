@@ -265,10 +265,10 @@ def ensure_sellable_constants():
 
 def user_has_usesuper(trans):
     """This method checks if the currently logged in postgres user has
-    `usesuper' access which is necessary for certain operations
+    ``usesuper`` access which is necessary for certain operations
 
     :param trans: a database connection
-    :returns: if the user has `usesuper' access
+    :returns: if the user has ``usesuper`` access
     """
 
     results = trans.queryOne(

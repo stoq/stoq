@@ -49,6 +49,7 @@ log = Logger('stoqlib.db.database')
 
 def drop_database(dbname, settings=None):
     """Drops a database.
+
     :param dbname: the name of the database to be dropped.
     :param settings: optionally provide seetings, so that you dont have to
         provide IDatabaseSettings before calling this function.
@@ -83,7 +84,7 @@ _ENTRIES_DELETE_THRESHOLD = 1000
 
 
 def database_exists_and_should_be_dropped(settings, dbname, force):
-    """Return False if it is safe to drop the database
+    """Return ``False`` if it is safe to drop the database
     """
     # We are forcing. No need to check
     if force:
@@ -140,6 +141,7 @@ def database_exists_and_should_be_dropped(settings, dbname, force):
 
 def clean_database(dbname, settings=None, force=False):
     """Cleans a database. If the database does not exist, it will be created.
+
     :param dbname: name of the database.
     :param settings: optionally provide seetings, so that you dont have to
         provide IDatabaseSettings before calling this function.
@@ -171,12 +173,12 @@ def clean_database(dbname, settings=None, force=False):
 
 
 def execute_sql(filename, settings=None):
-    """Inserts Raw SQL commands into the database read from a file.
+    """Inserts raw SQL commands into the database read from a file.
+
     :param filename: filename with SQL commands
     :param settings: optionally provide seetings, so that you dont have to
         provide IDatabaseSettings before calling this function.
-    :returns: return code, 0 if succeeded, positive integer for failure
-    :rtype: int
+    :returns: return code, ``0`` if succeeded, positive integer for failure
     """
     if not settings:
         settings = get_utility(IDatabaseSettings)
@@ -247,7 +249,7 @@ def start_shell(command=None, quiet=False, settings=None):
     """Runs a database shell using the current settings
 
     :param command: tell psql to execute the command string
-    :param quiet: sets psql quiet option (-q)
+    :param quiet: sets psql quiet option (``-q``)
     :param settings: optionally provide seetings, so that you dont have to
         provide IDatabaseSettings before calling this function.
     """
@@ -273,7 +275,8 @@ def start_shell(command=None, quiet=False, settings=None):
 
 def test_local_database():
     """Check and see if we postgres running locally
-    :returns: tuple: (hostname, port)
+
+    :returns: (hostname, port)
     """
 
     # FIXME: We might want to check other ports in the future,
@@ -307,11 +310,11 @@ def test_local_database():
 
 
 def test_connection(settings=None):
-    """Test database connectivity for using command line tools
+    """Test for database connectivity using command line tools
+
     :param settings: optionally provide seetings, so that you dont have to
         provide IDatabaseSettings before calling this function.
-    :returns: True for success, False if connection fails
-    :rtype: bool
+    :returns: `True` if the database connection succeeded.
     """
     if not settings:
         settings = get_utility(IDatabaseSettings)
@@ -339,10 +342,13 @@ def test_connection(settings=None):
 def dump_database(filename, settings=None, schema_only=False,
                   gzip=False, format='custom'):
     """Dump the contents of the current database
+
     :param filename: filename to write the database dump to
     :param settings: optionally provide seetings, so that you dont have to
         provide IDatabaseSettings before calling this function.
     :param schema_only: If only the database schema will be dumped
+    :param gzip: if the dump should be compressed using gzip -9
+    :param format: database dump format, defaults to ``custom``
     """
     if not settings:
         settings = get_utility(IDatabaseSettings)
@@ -370,6 +376,7 @@ def dump_database(filename, settings=None, schema_only=False,
 
 def rename_database(src, dest, settings=None):
     """Renames a database.
+
     :param src: the name of the database we want to rename.
     :param dest: the new database name.
     :param settings: optionally provide seetings, so that you dont have to
@@ -388,6 +395,7 @@ def rename_database(src, dest, settings=None):
 
 def restore_database(dump, settings=None, new_name=None, clean_first=True):
     """Restores the current database.
+
     :param dump: a database dump file to be used to restore the database.
     :param settings: optionally provide seetings, so that you dont have to
         provide IDatabaseSettings before calling this function.
@@ -423,7 +431,8 @@ def restore_database(dump, settings=None, new_name=None, clean_first=True):
 def dump_table(table, filename=None, settings=None):
     """Dump the contents of a table.
     Note this does not include the schema itself, just the data.
-    To get the data call stdout.read() on the returned object.
+    To get the data call `.read()` on the returned object.
+
     :param table: table to write
     :param proc: a Process instance
     :param settings: optionally provide seetings, so that you dont have to
@@ -454,6 +463,13 @@ def dump_table(table, filename=None, settings=None):
 
 
 def query_server_time(conn, settings=None):
+    """Query the server time.
+
+    :param conn: a database connection
+    :param settings: optionally provide seetings, so that you dont have to
+        provide IDatabaseSettings before calling this function.
+    :returns: the server time as a datetime.datetime object.
+    """
     if not settings:
         settings = get_utility(IDatabaseSettings)
     conn = settings.get_default_connection()
@@ -465,6 +481,14 @@ def query_server_time(conn, settings=None):
 
 
 def check_version(conn, settings=None):
+    """Verify that the database version is recent enough to be supported
+    by stoq. Emits a warning if the version isn't recent enough, suitable
+    for usage by an installer.
+
+    :param conn: a database connection
+    :param settings: optionally provide seetings, so that you dont have to
+        provide IDatabaseSettings before calling this function.
+    """
     if not settings:
         settings = get_utility(IDatabaseSettings)
     if settings.rdbms == 'postgres':
