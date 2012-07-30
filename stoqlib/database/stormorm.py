@@ -42,7 +42,6 @@ from weakref import WeakValueDictionary
 from kiwi.db.stormintegration import StormQueryExecuter
 from kiwi.currency import currency
 from psycopg2 import IntegrityError
-
 from storm import expr, Undef
 from storm.base import Storm
 from storm.database import create_database
@@ -62,6 +61,8 @@ from storm.tz import tzutc
 from storm.variables import (Variable, BoolVariable, DateVariable,
                              DateTimeVariable, RawStrVariable, DecimalVariable,
                              IntVariable)
+
+from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
 
 _IGNORED = object()
 
@@ -1023,7 +1024,7 @@ class BLOBCol(PropertyAdapter, RawStr):
 
 class PriceVariable(DecimalVariable):
     def parse_set(self, value, from_db):
-        return currency('%0.2f' % value)
+        return currency('%0.*f' % (DECIMAL_PRECISION, value))
 
 
 class PriceCol(DecimalCol):
@@ -1032,7 +1033,7 @@ class PriceCol(DecimalCol):
 
 class QuantityVariable(DecimalVariable):
     def parse_set(self, value, from_db):
-        return currency('%0.2f' % value)
+        return decimal.Decimal('%0.*f' % (QUANTITY_PRECISION, value))
 
 
 class QuantityCol(DecimalCol):
