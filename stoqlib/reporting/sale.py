@@ -251,10 +251,16 @@ class SalesPersonReport(SearchResultsReport):
     report_name = _("Sales")
 
     def __init__(self, filename, payments_list, salesperson_name,
+                 obj_ids=None,
                  *args, **kwargs):
         branch = get_current_branch(get_connection()).get_description()
         self.payments_list = payments_list
-
+        # This is overridable for testing
+        if obj_ids is None:
+            obj_ids = {}
+            for p in payment_list:
+                obj_ids[p] = p.id
+        self.obj_ids = obj_ids
         if salesperson_name:
             singular = _("payment for {salesperson} on branch {branch}").format(
                          salesperson=salesperson_name, branch=branch)
@@ -274,7 +280,7 @@ class SalesPersonReport(SearchResultsReport):
         self._setup_sales_person_table()
 
     def _get_columns(self):
-        columns = [OTC(_("Sale"), lambda obj: obj.id, width=80)]
+        columns = [OTC(_("Sale"), lambda obj: self.obj_ids[obj.id], width=80)]
         if self._sales_person is None:
             columns.append(OTC(_("Name"), lambda obj: obj.salesperson_name,
                            expand=True, truncate=True))
