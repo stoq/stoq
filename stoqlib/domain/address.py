@@ -84,14 +84,22 @@ class CityLocation(ORMObject):
         :param country: country
         :returns: a :class:`CityLocation` or None
         """
-        location = cls.selectOne(
+        # FIXME: This should use selectOne. See bug 5146
+        location = list(cls.select(
             AND(_get_equal_clause(cls.q.city, city),
                 _get_equal_clause(cls.q.state, state),
                 _get_equal_clause(cls.q.country, country)),
-            connection=trans)
+            connection=trans))
 
-        if location:
-            return location
+        if len(location) == 1:
+            return location[0]
+        elif len(location) > 1:
+            # Choose the best entry from city_location (the one we created)
+            for l in location:
+                if l.city_code:
+                    return l
+            # Otherwise, return any object
+            return location[0]
 
         return cls(city=city,
                    state=state,
@@ -122,11 +130,13 @@ class CityLocation(ORMObject):
 
     @classmethod
     def exists(cls, conn, city, state, country):
-        return bool(cls.selectOne(
+        # FIXME: This should use selectOne, but its possible to register
+        # duplicate city locations (see bug 5146)
+        return bool(cls.select(
             AND(_get_equal_clause(cls.q.city, city),
                 _get_equal_clause(cls.q.state, state),
                 _get_equal_clause(cls.q.country, country)),
-            connection=conn))
+            connection=conn).count())
 
     #
     #  Public API
