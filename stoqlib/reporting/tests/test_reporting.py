@@ -290,8 +290,8 @@ class TestReport(DomainTest):
         commissions = CommissionView.select(connection=self.trans)
         self.checkPDF(SalesPersonReport, list(commissions), salesperson_name,
                       date=datetime.date(2007, 1, 1),
-                      obj_ids={ commissions[0].id: 1,
-                                commissions[1].id: 139})
+                      obj_ids={commissions[0].id: 1,
+                               commissions[1].id: 139})
 
     def testSaleOrderReport(self):
         product = self.create_product(price=100)
