@@ -24,40 +24,16 @@
 
 """ This module test all class in stoq/domain/receiving.py """
 
-import os
-
 from decimal import Decimal
 from kiwi.currency import currency
 
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.database.exceptions import IntegrityError
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.product import ProductStockItem, Storable
 
 
 class TestReceivingOrder(DomainTest):
-
-    def _testInvoiceNumber(self, value):
-        order = self.create_receiving_order()
-        try:
-            order.invoice_number = value
-            if 'STOQLIB_USE_STORM' in os.environ:
-                from storm.store import Store
-                Store.of(order).flush()
-        except IntegrityError, e:
-            self.failUnless('valid_invoice_number' in str(e))
-        else:
-            raise AssertionError
-
-    def testInvoiceNumberLow(self):
-        self._testInvoiceNumber(0)
-
-    def testInvoiceNumberHigh(self):
-        self._testInvoiceNumber(1000000000)
-
-    def testInvoiceNumberNegative(self):
-        self._testInvoiceNumber(-1229)
 
     def testGetTotal(self):
         order = self.create_receiving_order()
