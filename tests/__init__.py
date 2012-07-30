@@ -20,6 +20,6 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
-# This sets up sys.path for us so we can import the right sqlobject
+# This sets up sys.path for us so we can import externals
 import stoqlib
 stoqlib # pyflakes

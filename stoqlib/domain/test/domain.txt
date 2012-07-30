@@ -8,7 +8,7 @@ module has all abstract mixin classes used to build all domain classes.
 
 These classes are mixin for domain components, domain
 interfaces. The component model is based on top of twisted components and
-the persistent layer use SQLObject to store all domain information on SQL
+the persistent layer use Storm to store all domain information on SQL
 database.
 
 Domain is the base class of all domain classes

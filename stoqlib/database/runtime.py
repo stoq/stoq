@@ -34,7 +34,7 @@ from stoqlib.database.interfaces import (
     IDatabaseSettings, IConnection, ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
 from stoqlib.database.orm import ORMObject, Transaction
-from stoqlib.database.orm import sqlIdentifier, const, orm_name
+from stoqlib.database.orm import sqlIdentifier, const
 from stoqlib.exceptions import LoginError, StoqlibError
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -96,10 +96,7 @@ class StoqlibTransaction(Transaction):
             self._reset_pending_objs()
 
     def close(self):
-        if orm_name == 'sqlobject':
-            self._connection.close()
-        else:
-            self.store.close()
+        self.store.close()
         self._obsolete = True
 
     def get(self, obj):
@@ -190,14 +187,7 @@ class StoqlibTransaction(Transaction):
                 # Invalidate the modified objects in other possible related
                 # transactions
                 for trans in self._related_transactions:
-                    klass = type(modified_obj)
-                    # FIXME: This is sqlobject specific
-                    if orm_name == 'sqlobject':
-                        cache = trans.cache.tryGet(modified_obj.id, klass)
-                        if cache:
-                            cache.expire()
-                    else:
-                        trans.remove_from_cache(modified_obj)
+                    trans.remove_from_cache(modified_obj)
 
     def _need_process_pending(self):
         return (any(self._created_object_sets) or

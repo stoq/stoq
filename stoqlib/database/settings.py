@@ -31,12 +31,13 @@ import sys
 import socket
 
 from kiwi.log import Logger
+from storm.uri import URI
 from zope.interface import implements
 
 from stoqlib.database.database import test_local_database
 from stoqlib.database.exceptions import OperationalError
 from stoqlib.database.interfaces import IDatabaseSettings
-from stoqlib.database.orm import connectionForURI, orm_name
+from stoqlib.database.orm import connectionForURI
 from stoqlib.exceptions import ConfigError, DatabaseError
 from stoqlib.lib.osutils import get_username
 from stoqlib.lib.translation import stoqlib_gettext
@@ -123,28 +124,20 @@ class DatabaseSettings(object):
                         _("Could not find a database server on this computer"))
                 host, port = pair
 
-            if orm_name == 'storm':
-                if host is not None:
-                    self.address = host
-                if port is not None:
-                    self.port = port
-                from storm.uri import URI
-                conn_uri = URI(':')
-                conn_uri.database = dbname
-                conn_uri.scheme = self.rdbms
-                conn_uri.host = self.address
-                conn_uri.port = int(self.port)
-                conn_uri.username = self.username
-                conn_uri.password = self.password
-                conn_uri.options['isolation'] = 'read-committed'
-                conn = connectionForURI(conn_uri)
-            else:
-                conn_uri = self._build_uri(dbname)
-                conn = connectionForURI(conn_uri)
-                if host is not None:
-                    conn.dsn_dict['host'] = host
-                if port is not None:
-                    conn.dsn_dict['port'] = port
+            if host is not None:
+                self.address = host
+            if port is not None:
+                self.port = port
+            conn_uri = URI(':')
+            conn_uri.database = dbname
+            conn_uri.scheme = self.rdbms
+            conn_uri.host = self.address
+            conn_uri.port = int(self.port)
+            conn_uri.username = self.username
+            conn_uri.password = self.password
+            conn_uri.options['isolation'] = 'read-committed'
+            conn = connectionForURI(conn_uri)
+
             conn.makeConnection()
         except OperationalError, e:
             log.info('OperationalError: %s' % e)

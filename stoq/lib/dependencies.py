@@ -49,6 +49,7 @@ PYGTKWEBKIT_REQUIRED = (1, 1, 7)
 PYOBJC_REQUIRED = (2, 3)
 PYSERIAL_REQUIRED = (2, 1)
 REPORTLAB_REQUIRED = (2, 4)
+STORM_REQUIRED = (0, 19)
 STOQDRIVERS_REQUIRED = (0, 9, 17)
 TWISTED_CORE_REQUIRED = (10, 0)
 TWISTED_WEB_REQUIRED = (10, 0)
@@ -83,9 +84,10 @@ class DependencyChecker(object):
         self._check_twisted_web(TWISTED_WEB_REQUIRED)
         self._check_xlwt(XLWT_REQUIRED)
 
-        # Postgres
+        # Database
         self._check_psql(PSQL_REQUIRED)
         self._check_psycopg(PSYCOPG_REQUIRED)
+        self._check_storm(STORM_REQUIRED)
 
         # Printing
         # FIXME: might be interesting to allow to run Stoq with printing
@@ -265,6 +267,22 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                 project="psycopg2 - PostgreSQL Database adapter for Python",
                 url='http://www.initd.org/projects/psycopg2',
                 found=psycopg2_version,
+                required=version)
+
+    def _check_storm(self, version):
+        try:
+            import storm
+        except ImportError:
+            self._missing(
+                project="storm -  an object-relational mapper",
+                url='https://storm.canonical.com',
+                version=version)
+
+        if storm.version_info < version:
+            self._too_old(
+                project="storm -  an object-relational mapper",
+                url='https://storm.canonical.com',
+                found=storm.version,
                 required=version)
 
     def _check_stoqdrivers(self, version):

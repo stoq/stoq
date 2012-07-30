@@ -60,7 +60,7 @@ from zope.interface import implements
 
 from kiwi.currency import currency
 
-from stoqlib.database.orm import PriceCol, PercentCol, orm_name
+from stoqlib.database.orm import PriceCol, PercentCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
                                   ForeignKey, MultipleJoin, BoolCol)
 from stoqlib.database.orm import const, OR, AND, INNERJOINOn, LEFTJOINOn, Alias
@@ -872,12 +872,9 @@ class Supplier(Domain):
         if orders.count():
             # The get_client_sales method already returns a sorted list of
             # sales by open_date column
-            if orm_name == 'storm':
-                # pylint: disable=E1101
-                return orders.last().open_date.date()
-                # pylint: enable=E1101
-            else:
-                return orders[-1].open_date.date()
+            # pylint: disable=E1101
+            return orders.last().open_date.date()
+            # pylint: enable=E1101
 
 
 class Employee(Domain):

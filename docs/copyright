@@ -43,9 +43,6 @@ Contains code derived from:
 * PyDispatcher <http://pypi.python.org/pypi/PyDispatcher>
   Licence: BSD
   Files: external/pydispatcher
-* SQLObject: <http://sqlobject.org>
-  Licence: LGPL-v2.1+
-  Files: external/sqlobject
 * trml2pdf <http://pypi.python.org/pypi/trml2pdf>
   Licence: LGPL-v2.1+
   FileS: external/trml2pdf
