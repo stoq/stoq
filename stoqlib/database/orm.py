@@ -293,8 +293,9 @@ class ORMObjectQueryExecuter(QueryExecuter):
     def set_query(self, callback):
         """
         Overrides the default query mechanism.
+
         :param callback: a callable which till take two arguments:
-          (query, connection)
+          query and connection
         """
         if callback is None:
             callback = self._default_query
