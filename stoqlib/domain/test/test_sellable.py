@@ -26,12 +26,12 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 
+from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.product import Storable
 from stoqlib.domain.sellable import (Sellable,
                                      SellableCategory, ClientCategoryPrice)
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import (ProductFullStockView,
                                   ProductFullWithClosedStockView,
                                   ProductClosedStockView)
@@ -293,6 +293,12 @@ class TestSellable(DomainTest):
         # ProductFullStockView and ProductFullWithClosedStock View,
         # but not on ProductClosedStockView.
         sellable = self.create_sellable()
+        results_not_closed = ProductFullStockView.select(connection=self.trans)
+        results_with_closed = ProductFullWithClosedStockView.select(
+                                                         connection=self.trans)
+        results_only_closed = ProductClosedStockView.select(
+                                                         connection=self.trans)
+
         self.assertEqual(len(list(results_not_closed)), count_not_closed + 1L)
         self.assertEqual(len(list(results_with_closed)), count_with_closed + 1L)
         self.assertEqual(len(list(results_only_closed)), count_only_closed)
@@ -307,6 +313,11 @@ class TestSellable(DomainTest):
         # ProductClosedStockViewand ProductFullWithClosedStock View,
         # but not on ProductFullStockView.
         sellable.close()
+        results_not_closed = ProductFullStockView.select(connection=self.trans)
+        results_with_closed = ProductFullWithClosedStockView.select(
+                                                         connection=self.trans)
+        results_only_closed = ProductClosedStockView.select(
+                                                         connection=self.trans)
         self.assertEquals(sellable.status, Sellable.STATUS_CLOSED)
         self.assertTrue(sellable.is_closed())
         self.assertEqual(len(list(results_not_closed)), count_not_closed)
