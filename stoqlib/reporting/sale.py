@@ -258,7 +258,7 @@ class SalesPersonReport(SearchResultsReport):
         # This is overridable for testing
         if obj_ids is None:
             obj_ids = {}
-            for p in payment_list:
+            for p in payments_list:
                 obj_ids[p] = p.id
         self.obj_ids = obj_ids
         if salesperson_name:
