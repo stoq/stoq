@@ -1383,6 +1383,12 @@ class ORMTypeInfo(object):
             other_class = v._remote_key.split('.')[0]
             yield name, other_class
 
+        for name, v in self.orm_type._attr_to_prop.items():
+            if not isinstance(v, ReferenceSet):
+                continue
+            other_class = v._remote_key1.split('.')[0]
+            yield name, other_class
+
 
 orm_name = 'storm'
 
