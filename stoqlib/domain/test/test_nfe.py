@@ -61,7 +61,7 @@ class TestNfeGenerator(DomainTest):
 
     def test_generated_files(self):
         due_date = datetime.datetime(2011, 10, 24)
-        sale = self._create_sale(1666, 1234, 4321, due_date)
+        sale = self._create_sale(1666, due_date=due_date)
         generator = NFeGenerator(sale, self.trans)
 
         # If we generate random cnf, the test will always fail
@@ -71,6 +71,8 @@ class TestNfeGenerator(DomainTest):
         _get_today_date = NFeGenerator._get_today_date
         NFeGenerator._get_today_date = lambda s: due_date
 
+        generator.sale_id = 1234
+        generator.payment_ids = [4321]
         generator.generate()
         NFeIdentification._get_random_cnf = _get_random_cnf
         NFeGenerator._get_today_date = _get_today_date
@@ -92,15 +94,17 @@ class TestNfeGenerator(DomainTest):
         self.failIf(diff, '%s\n%s' % ("Files differ, output:", diff))
 
     def test_invalid_cnpj(self):
-        sale = self._create_sale(2666, 2345, 5432)
+        sale = self._create_sale(2666)
         company = sale.branch.person.company
         company.cnpj = '123.321.678/4567-90'
 
         generator = NFeGenerator(sale, self.trans)
+        generator.sale_id = 2345
+        generator.payment_ids = [5432]
         self.assertRaises(ModelDataError, generator.generate)
 
-    def _create_sale(self, invoice_number, sale_id, payment_id, due_date=None):
-        sale = self.create_sale(sale_id)
+    def _create_sale(self, invoice_number, due_date=None):
+        sale = self.create_sale()
         sale.invoice_number = invoice_number
         sale.branch = get_current_branch(self.trans)
 
@@ -129,12 +133,10 @@ class TestNfeGenerator(DomainTest):
         sale.order()
 
         method = PaymentMethod.get_by_name(self.trans, 'money')
-        payment = method.create_inpayment(sale.group,
-                                           sale.get_sale_subtotal(),
-                                           due_date=due_date)
+        method.create_inpayment(sale.group,
+                                sale.get_sale_subtotal(),
+                                due_date=due_date)
         sale.confirm()
-        # Workaround to avoid differences on nfe because of id
-        payment.id = payment_id
 
         return sale
 
