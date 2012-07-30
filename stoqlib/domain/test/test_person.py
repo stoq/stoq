@@ -244,10 +244,14 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(categories.count(), 0)
 
         category = self.create_client_category('Category')
+        categories = ClientCategory.selectBy(name='Category',
+                                             connection=self.trans)
         self.assertEquals(categories.count(), 1)
 
         self.assertTrue(category.can_remove())
         category.remove()
+        categories = ClientCategory.selectBy(name='Category',
+                                             connection=self.trans)
         self.assertEquals(categories.count(), 0)
 
         sellable = self.create_sellable(price=50)
