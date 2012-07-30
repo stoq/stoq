@@ -88,7 +88,6 @@ def get_tables(policy, pfilter=None):
     :param policy: a SynchronizationPolicy
     :param pfilter: a sequence of states to skip or None to fetch all
     :returns: a list of tables
-    :rtype: list of sqlobject tables
     """
     tables = []
     for table_name, table_policy in policy.tables:

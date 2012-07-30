@@ -80,10 +80,9 @@ First import the function from the right path...
 
 Did it work ? we had before only permission information about POS
 application. Now we should have a lot more. Lets check getting first all the
-profile settings for our last created profile. Note that SQLObject
+profile settings for our last created profile. Note that Storm
 selectBy method is very useful in this case, retrieving all the data of a
-certain table matching with one or more columns.  See `Select-By
-<http://www.sqlobject.org/SQLObject.html#select-by-method>`_.
+certain table matching with one or more columns.
 
 
     >>> items = new_profile.profile_settings

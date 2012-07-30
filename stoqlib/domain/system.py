@@ -44,8 +44,7 @@ class SystemTable(ORMObject):
         """Checks if Stoqlib database is properly installed
         :param conn: a database connection
         """
-        table_name = cls.sqlmeta.table
-        if not conn.tableExists(table_name):
+        if not conn.tableExists('system_table'):
             return False
 
         return bool(cls.select(connection=conn))

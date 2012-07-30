@@ -29,17 +29,15 @@ Database exceptions
 This is just a layer on top of the Python DBAPI we're using to access the
 database
 """
-from sqlobject.dberrors import (Error,
-                                ProgrammingError as _ProgrammingError,
-                                OperationalError as _OperationalError)
 
-from stoqlib.database.orm import IntegrityError
+from psycopg2 import (Error, IntegrityError, OperationalError,
+                      ProgrammingError)
 
 
 PostgreSQLError = Error
-ProgrammingError = _ProgrammingError
-OperationalError = _OperationalError
 IntegrityError = IntegrityError
+OperationalError = OperationalError
+ProgrammingError = ProgrammingError
 
 
 class SQLError(Exception):

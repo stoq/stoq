@@ -18,7 +18,8 @@ Depends: ${misc:Depends}, ${shlibs:Depends}, python, python-gtk2 (>= 2.20),
  python-reportlab (>= 2.4), postgresql-client, python-dateutil (>= 1.4.1),
  python-mako (>= 0.2.5), python-gudev, python-poppler (>= 0.12.1), python-webkit (>= 1.1.7),
  python-twisted-core (>= 10.0.0), python-twisted-web (>= 10.0.0), librsvg2-common,
- python-xlwt (>= 0.7.2), iso-codes (>= 3.12.1-1), python-aptdaemon.gtkwidgets
+ python-xlwt (>= 0.7.2), iso-codes (>= 3.12.1-1), python-aptdaemon.gtkwidgets,
+ python-storm (>= 0.19)
 Description: Stoq the Retail System
  Stoq is a suite of Retail Management System applications.
  It includes the following applications;

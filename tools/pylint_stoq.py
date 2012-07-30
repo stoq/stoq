@@ -1,14 +1,45 @@
 import re
 import os
 
+from kiwi.python import namedAny
 from logilab.astng import MANAGER, From, AssName
 from logilab.astng.builder import ASTNGBuilder
+from storm.info import get_cls_info
+from storm.references import Reference
 
-from kiwi.python import namedAny
-from stoqlib.database.orm import ORMObject, Viewable, ORMTypeInfo
+from stoqlib.database.orm import ORMObject, Viewable
 from stoqlib.lib.parameters import get_all_details
 import stoqlib.domain
 import stoqlib.domain.payment
+
+
+class ORMTypeInfo(object):
+    def __init__(self, orm_type):
+        self.orm_type = orm_type
+
+    def get_column_names(self):
+        info = get_cls_info(self.orm_type)
+        for name, attr in info.attributes.items():
+            yield name
+
+    def get_foreign_columns(self):
+        info = get_cls_info(self.orm_type)
+        for name, attr in info.attributes.items():
+            if not name.endswith('ID'):
+                continue
+
+            name = name[:-2]
+            ref = getattr(self.orm_type, name)
+            other_class = ref._remote_key.split('.')[0]
+            yield name, other_class
+
+    def get_single_joins(self):
+
+        for name, v in self.orm_type._attr_to_prop.items():
+            if not isinstance(v, Reference):
+                continue
+            other_class = v._remote_key.split('.')[0]
+            yield name, other_class
 
 
 class DomainTypeInfo(object):
@@ -81,9 +112,6 @@ class FakeBuilder(object):
 
         orm_ti = dt.orm_classes.get(orm_name)
         for name in sorted(orm_ti.get_column_names()):
-            # Enable this later to detect sqlobject specific api usage
-            #if orm_name == 'sqlobject':
-            #    t += '    def _SO_set_%s(self, value): pass\n' % (name, )
             t += '    def _SO_set_%s(self, value): pass\n' % (name, )
             t += '    %s = None\n' % (name, )
 

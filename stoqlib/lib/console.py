@@ -57,8 +57,7 @@ class Console(object):
             self.ns['now'] = datetime.datetime.now
             self.ns['today'] = datetime.date.today
 
-            for name in ('sqlobject', 'sqlobject.sqlbuilder',
-                         'stoqlib.database.runtime',
+            for name in ('stoqlib.database.runtime',
                          'stoqlib.lib.interfaces',
                          'stoqlib.domain.interfaces'):
                 mod = __import__(name, {}, {}, ' ')

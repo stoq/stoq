@@ -24,7 +24,7 @@
 """ Base routines for domain modules """
 
 # pylint: disable=E1101
-from stoqlib.database.orm import orm_name, ForeignKey
+from stoqlib.database.orm import ForeignKey
 from stoqlib.database.orm import ORMObject, const, AND, ILIKE
 from stoqlib.database.runtime import (StoqlibTransaction,
                                       get_current_user, get_current_station)
@@ -41,9 +41,8 @@ class Domain(ORMObject):
     def __init__(self, *args, **kwargs):
         ORMObject.__init__(self, *args, **kwargs)
 
-    if orm_name == 'storm':
-        def __repr__(self):
-            return '<%s %r>' % (self.__class__.__name__, self.id)
+    def __repr__(self):
+        return '<%s %r>' % (self.__class__.__name__, self.id)
 
     #
     # ORMObject
@@ -138,14 +137,11 @@ class Domain(ORMObject):
         kwargs = {}
         for column in columns:
             # FIXME: Make sure this is cloning correctly
-            if orm_name == 'storm':
-                name = column.name
-                if name == 'id':
-                    continue
-                if name.endswith('_id'):
-                    name = name[:-3]
-            else:
-                name = column.origName
+            name = column.name
+            if name == 'id':
+                continue
+            if name.endswith('_id'):
+                name = name[:-3]
             kwargs[name] = getattr(self, name)
 
         klass = type(self)

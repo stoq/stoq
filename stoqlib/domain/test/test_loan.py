@@ -67,9 +67,7 @@ class TestLoan(DomainTest):
 class TestLoanItem(DomainTest):
 
     def test_sync_stock(self):
-        from stoqlib.database.orm import orm_name
-        if orm_name == 'storm':
-            raise SkipTest('Reimplement Loan without sqlobject: Bug 5147')
+        raise SkipTest('Reimplement Loan without sqlobject: Bug 5147')
 
         loan = self.create_loan()
         product = self.create_product()

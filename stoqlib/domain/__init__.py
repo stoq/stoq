@@ -28,7 +28,7 @@ into a high-level python syntax that can be used by the rest of the application.
 
 An `Object Relational Mapper <http://en.wikipedia.org/wiki/Object-relational_mapping>`_ (ORM)
 is used to translate the `PostgreSQL <http://www.postgresql.org>`_ query statements
-to and from Python syntax. We are currently using the `SQLObject <http://www.sqlobject.org>`_ ORM.
+to and from Python syntax. We are currently using the `Storm <http://storm.canonical.com/>`_ ORM.
 
 Starting point for the domain classes:
 

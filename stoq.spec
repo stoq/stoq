@@ -19,6 +19,7 @@ Requires: python-gudev >= 147
 Requires: python-kiwi >= 1.9.30
 Requires: python-mako >= 0.2.5
 Requires: python-psycopg2 >= 2.0.5
+Requires: python-storm >= 0.19
 Requires: python-reportlab >= 2.4
 Requires: python-zope-interface >= 3.0.1
 Requires: stoqdrivers >= 0.9.14
