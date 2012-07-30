@@ -312,6 +312,10 @@ class CardPaymentView(Viewable):
             return PaymentRenegotiation.get(self.renegotiation_id,
                                             connection=self.get_connection())
 
+    @property
+    def payment(self):
+        return Payment.get(self.id, connection=self.get_connection())
+
     @classmethod
     def select_by_provider(cls, query, provider, having=None, connection=None):
         if provider:
