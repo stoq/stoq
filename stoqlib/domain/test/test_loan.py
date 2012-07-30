@@ -22,10 +22,12 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from twisted.trial.unittest import SkipTest
+
+from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.loan import Loan
 from stoqlib.domain.product import Storable
-from stoqlib.domain.test.domaintest import DomainTest
 
 
 class TestLoan(DomainTest):
@@ -65,6 +67,10 @@ class TestLoan(DomainTest):
 class TestLoanItem(DomainTest):
 
     def test_sync_stock(self):
+        from stoqlib.database.orm import orm_name
+        if orm_name == 'storm':
+            raise SkipTest('Reimplement Loan without sqlobject: Bug 5147')
+
         loan = self.create_loan()
         product = self.create_product()
         storable = Storable(product=product, connection=self.trans)
