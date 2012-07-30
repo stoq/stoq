@@ -20,6 +20,11 @@ import stoq
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('.'))
 
+# So tests.base and external modules always can be imported.
+stoq_dir = os.path.dirname(stoq.__path__[0])
+sys.path.insert(0, stoq_dir)
+sys.path.insert(0, os.path.join(stoq_dir, 'external'))
+
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
