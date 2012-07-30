@@ -77,6 +77,11 @@ class NFeGenerator(object):
     """
     def __init__(self, sale, conn):
         self._sale = sale
+
+        # Fetch the ids so we can override them in the tests
+        self.sale_id = sale.id
+        self.payment_ids = [p.id for p in self._sale.payments]
+
         self.conn = conn
         self.root = ElementTree.Element(
             'NFe', xmlns='http://www.portalfiscal.inf.br/nfe')
@@ -320,13 +325,13 @@ class NFeGenerator(object):
         sale_total = self._sale.get_total_sale_amount()
         items_total = self._sale.get_sale_subtotal()
 
-        fat = NFeInvoice(self._sale.id, items_total,
+        fat = NFeInvoice(self.sale_id, items_total,
                          self._sale.discount_value, sale_total)
         self._nfe_data.append(fat)
 
         payments = self._sale.payments
-        for p in payments:
-            dup = NFeDuplicata(p.id, p.due_date, p.value)
+        for i, p in enumerate(payments):
+            dup = NFeDuplicata(self.payment_ids[i], p.due_date, p.value)
             self._nfe_data.append(dup)
 
     def _add_additional_information(self):
