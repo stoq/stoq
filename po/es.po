@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-07-27 13:18-0300\n"
-"PO-Revision-Date: 2012-07-23 17:46+0000\n"
+"PO-Revision-Date: 2012-07-30 08:25+0000\n"
 "Last-Translator: Jose Luis Tirado <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-07-28 05:02+0000\n"
-"X-Generator: Launchpad (build 15694)\n"
+"X-Launchpad-Export-Date: 2012-07-31 05:02+0000\n"
+"X-Generator: Launchpad (build 15702)\n"
 "Language: es\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -230,7 +230,7 @@ msgstr "Gestor:"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:2
 msgid "Tax Policy:"
-msgstr ""
+msgstr "Política fiscal:"
 
 #: ../data/glade/BranchDetailsSlave.ui.h:3
 msgid "Branch status:"
@@ -489,7 +489,7 @@ msgstr "En comisión de plazos:"
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:1
 msgid "Doing business as:"
-msgstr ""
+msgstr "Hacer negocios como:"
 
 #: ../data/glade/CompanyDocumentsSlave.ui.h:3
 msgid "City Registry:"
@@ -670,7 +670,7 @@ msgstr "Pulse <b>Siguiente</b> para continuar."
 
 #: ../data/glade/DeliveryEditor.ui.h:2
 msgid "Was sent to deliver?"
-msgstr ""
+msgstr "¿Se envío a reparto?"
 
 #: ../data/glade/DeliveryEditor.ui.h:3
 msgid "Was received by client?"
@@ -1190,7 +1190,7 @@ msgstr "Fecha de apertura:"
 #: ../stoqlib/reporting/purchase.py:350
 #: ../stoqlib/reporting/stockdecreasereceipt.py:70
 msgid "Branch:"
-msgstr ""
+msgstr "Sucursal:"
 
 #. Responsible combo
 #: ../data/glade/LoanDetails.ui.h:3
@@ -1636,7 +1636,7 @@ msgstr ""
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:2
 msgid "Current Stock Balance:"
-msgstr ""
+msgstr "Balance del stock actual:"
 
 #: ../data/glade/ProductStockHistoryDialog.ui.h:3
 msgid "Receivings"
@@ -1717,7 +1717,7 @@ msgstr "Estado del pedido:"
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:7
 msgid "Add Produced"
-msgstr ""
+msgstr "Añadir producido"
 
 #: ../data/glade/ProductionDetailsDialog.ui.h:8
 #: ../data/glade/RenegotiationDetailsDialog.ui.h:10
@@ -1773,7 +1773,7 @@ msgstr "_Ajustar"
 
 #: ../data/glade/ProgressDialog.ui.h:1
 msgid "Probing device..."
-msgstr ""
+msgstr "Probando dispositivo..."
 
 #: ../data/glade/PurchaseDetailsDialog.ui.h:2
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:2
@@ -1926,7 +1926,7 @@ msgstr "Cancelar _grupo"
 
 #: ../data/glade/QuoteSupplierStep.ui.h:1
 msgid "Select one or more suppliers to generate quote(s):"
-msgstr ""
+msgstr "Seleccione uno o más proveedores para generar presupuesto(s):"
 
 #: ../data/glade/QuoteSupplierStep.ui.h:2
 msgid "_View Products"
@@ -1934,11 +1934,11 @@ msgstr "_Ver productos"
 
 #: ../data/glade/QuoteSupplierStep.ui.h:3
 msgid "_Missing Products"
-msgstr ""
+msgstr "Productos que _faltan"
 
 #: ../data/glade/QuoteSupplierStep.ui.h:4
 msgid "Include all products in quotes"
-msgstr ""
+msgstr "Incluir todos los productos en presupuestos"
 
 #: ../data/glade/ReceivingInvoiceSlave.ui.h:8
 #: ../data/glade/TransporterDataSlave.ui.h:5
@@ -2059,7 +2059,7 @@ msgstr "Precio:"
 
 #: ../data/glade/SaleQuoteItemEditor.ui.h:5
 msgid "CFOP:"
-msgstr ""
+msgstr "CFOP:"
 
 #: ../data/glade/SaleQuoteItemEditor.ui.h:6
 msgid "Return Quantity:"
@@ -2151,7 +2151,7 @@ msgstr "Situación tributaria:"
 
 #: ../data/glade/SellableCategoryEditor.ui.h:4
 msgid "Suggested markup:"
-msgstr ""
+msgstr "Marcado sugerido:"
 
 #: ../data/glade/SellableCategoryEditor.ui.h:7
 #: ../plugins/magento/gui/slave/magentoslave.py:106
@@ -2223,7 +2223,7 @@ msgstr "Stock:"
 
 #: ../data/glade/SellablePriceDialog.ui.h:1
 msgid "Apply Markup:"
-msgstr ""
+msgstr "Aplicar marcado:"
 
 #: ../data/glade/SellablePriceDialog.ui.h:4
 msgid "on category"
@@ -2239,7 +2239,7 @@ msgstr "0,00"
 
 #: ../data/glade/SellablePriceEditor.ui.h:3
 msgid "Markup:"
-msgstr ""
+msgstr "Marcado:"
 
 #: ../data/glade/SellablePriceEditor.ui.h:5
 #, no-c-format
@@ -2343,7 +2343,7 @@ msgstr "Motivo"
 
 #: ../data/glade/StockTransferFinishStep.ui.h:1
 msgid "Sending branch:"
-msgstr ""
+msgstr "Sucursal de envío:"
 
 #: ../data/glade/StockTransferFinishStep.ui.h:3
 msgid "Sender:"
@@ -2351,7 +2351,7 @@ msgstr "Remitente:"
 
 #: ../data/glade/StockTransferFinishStep.ui.h:4
 msgid "Receiving branch:"
-msgstr ""
+msgstr "Sucursal de recepción:"
 
 #: ../data/glade/StockTransferFinishStep.ui.h:5
 #: ../data/glade/TransferOrderDetails.ui.h:4
@@ -2458,7 +2458,7 @@ msgstr ""
 #. Do not translate $CURRENCY
 #: ../data/glade/TillClosing.ui.h:7
 msgid "Amount Removed ($CURRENCY):"
-msgstr ""
+msgstr "Cantidad eliminada ($CURRENCY):"
 
 #: ../data/glade/TillFiscalOperationsToolbar.ui.h:1
 msgid "Till Out..."
@@ -2467,7 +2467,7 @@ msgstr ""
 #: ../data/glade/TillFiscalOperationsToolbar.ui.h:2
 #: ../stoqlib/gui/fiscalprinter.py:421 ../stoqlib/gui/fiscalprinter.py:428
 msgid "Resume"
-msgstr ""
+msgstr "Reanudar"
 
 #: ../data/glade/TillOpening.ui.h:1 ../stoqlib/gui/editors/tilleditor.py:106
 msgid "Till Opening"
@@ -2476,15 +2476,15 @@ msgstr "Apertura de caja"
 #. Do not translate $CURRENCY
 #: ../data/glade/TillOpening.ui.h:4
 msgid "Cash to add ($CURRENCY):"
-msgstr ""
+msgstr "Efectivo a añadir ($CURRENCY):"
 
 #: ../data/glade/TransferOrderDetails.ui.h:2
 msgid "Source:"
-msgstr ""
+msgstr "Origen:"
 
 #: ../data/glade/TransferOrderDetails.ui.h:5
 msgid "Destination:"
-msgstr ""
+msgstr "Destino:"
 
 #: ../data/glade/TransporterDataSlave.ui.h:1
 msgid "Transporter Status:"
@@ -2496,7 +2496,7 @@ msgstr "<b>Actualizando el esquema de la base de datos</b>"
 
 #: ../data/glade/UpdateWelcomeStep.ui.h:1
 msgid "Update Database"
-msgstr ""
+msgstr "Actualizar base de datos"
 
 #: ../data/glade/UpdateWelcomeStep.ui.h:2
 msgid ""
@@ -2522,23 +2522,23 @@ msgstr ""
 
 #: ../data/glade/UserDetailsSlave.ui.h:2
 msgid "Profile:"
-msgstr ""
+msgstr "Perfil:"
 
 #: ../data/glade/UserDetailsSlave.ui.h:4
 msgid "Change Password..."
-msgstr ""
+msgstr "Cambiar la contraseña..."
 
 #: ../data/glade/UserProfileEditor.ui.h:1
 msgid "Profile Name:"
-msgstr ""
+msgstr "Nombre del perfil:"
 
 #: ../data/glade/UserProfileEditor.ui.h:2
 msgid "Available Applications:"
-msgstr ""
+msgstr "Aplicaciones disponibles:"
 
 #: ../data/glade/WelcomeStep.ui.h:1
 msgid "Welcome to the Stoq installation wizard."
-msgstr ""
+msgstr "Bienvenido al asistente de instalación de Stoq."
 
 #: ../data/glade/WelcomeStep.ui.h:2
 msgid ""
@@ -2552,29 +2552,37 @@ msgid ""
 "database from another application, don't hesitate to <a "
 "href=\"http://www.stoq.com.br/contato\">contact us</a>."
 msgstr ""
+"Gracias por instalar Stoq. Estará listo para usarlo en unos minutos.\n"
+"\n"
+"Este asistente le ayudará a configurar Stoq para crear una base de datos "
+"nueva o conectar con una existente.\n"
+"\n"
+"Si tiene problemas con la instalación o necesita ayuda para importar su base "
+"de datos de otra aplicación, no dude en <a "
+"href=\"http://www.stoq.com.br/contato\">ponerse en contacto con nosotros</a>."
 
 #: ../data/glade/admin.ui.h:1
 msgctxt "yes"
 msgid "launcher"
-msgstr ""
+msgstr "lanzador"
 
 #: ../data/glade/calendar.ui.h:1
 msgid "calendar"
-msgstr ""
+msgstr "calendario"
 
 #: ../data/glade/financial.ui.h:1 ../data/glade/payable.ui.h:1
 msgid "payable"
-msgstr ""
+msgstr "pagadero"
 
 #: ../data/glade/financial.ui.h:2 ../stoq/gui/financial.py:452
 #: ../stoq/gui/financial.py:545 ../stoqlib/lib/parameters.py:515
 #: ../stoqlib/lib/parameters.py:522 ../stoqlib/lib/parameters.py:529
 msgid "Accounts"
-msgstr ""
+msgstr "Cuentas"
 
 #: ../data/glade/inventory.ui.h:1
 msgid "STOQ - Inventory Application"
-msgstr ""
+msgstr "STOQ - Aplicación de inventario"
 
 #: ../data/glade/launcher.ui.h:1
 msgctxt "yes"
@@ -2583,15 +2591,15 @@ msgstr ""
 
 #: ../data/glade/pos.ui.h:1
 msgid "STOQ - POS Application"
-msgstr ""
+msgstr "STOQ - Aplicación de Punto de venta"
 
 #: ../data/glade/pos.ui.h:4
 msgid "Add a product or service by barcode"
-msgstr ""
+msgstr "Añadir un producto o servicio por código de barras"
 
 #: ../data/glade/pos.ui.h:5
 msgid "Search for products and services by barcode or name"
-msgstr ""
+msgstr "Buscar productos o servicios por código de barras o nombre"
 
 #: ../data/glade/pos.ui.h:6 ../stoq/gui/pos.py:294
 msgid "_Checkout"
@@ -2599,15 +2607,15 @@ msgstr ""
 
 #: ../data/glade/pos.ui.h:7
 msgid "_Delivery"
-msgstr ""
+msgstr "_Reparto"
 
 #: ../data/glade/pos.ui.h:9
 msgid "_Remove"
-msgstr ""
+msgstr "_Eliminar"
 
 #: ../data/glade/production.ui.h:1
 msgid "production"
-msgstr ""
+msgstr "producción"
 
 #: ../data/glade/receivable.ui.h:1
 msgid "receivable"
@@ -2616,11 +2624,11 @@ msgstr ""
 #: ../data/glade/sales_app.ui.h:1 ../stoqlib/gui/search/salesearch.py:194
 #: ../stoqlib/reporting/sale.py:169
 msgid "sales"
-msgstr ""
+msgstr "ventas"
 
 #: ../data/glade/stock.ui.h:1
 msgid "STOQ - Stock Application"
-msgstr ""
+msgstr "STOQ - Aplicación de stock"
 
 #: ../data/glade/till.ui.h:1
 msgctxt "yes"
@@ -2653,7 +2661,7 @@ msgstr "<b>Total:</b>"
 #: ../stoqlib/gui/search/purchasesearch.py:69
 #: ../stoqlib/gui/search/receivingsearch.py:72
 msgid "In branch:"
-msgstr ""
+msgstr "En sucursal:"
 
 #. if not items:
 #. raise ValueError('You should have at least one branch at '
@@ -2679,12 +2687,12 @@ msgstr ""
 #: ../stoqlib/gui/search/servicesearch.py:90
 #: ../stoqlib/gui/search/tillsearch.py:106
 msgid "Any"
-msgstr ""
+msgstr "Cualquier"
 
 #: ../plugins/books/bookssearch.py:73 ../stoqlib/gui/search/loansearch.py:61
 #: ../stoqlib/gui/search/productsearch.py:147
 msgid "with status:"
-msgstr ""
+msgstr "con estado:"
 
 #: ../plugins/books/bookssearch.py:83 ../stoq/gui/stock.py:222
 #: ../stoqlib/domain/uiform.py:105
@@ -2695,7 +2703,7 @@ msgstr ""
 #: ../stoqlib/gui/search/servicesearch.py:108
 #: ../stoqlib/gui/wizards/abstractwizard.py:112
 msgid "Barcode"
-msgstr ""
+msgstr "Código de barras"
 
 #. XXX Bug #2430 will improve this part
 #: ../plugins/books/bookssearch.py:85 ../stoq/gui/financial.py:230
@@ -2740,7 +2748,7 @@ msgstr ""
 #: ../stoqlib/reporting/stockdecreasereceipt.py:91
 #: ../stoqlib/reporting/template.py:345
 msgid "Code"
-msgstr ""
+msgstr "Código"
 
 #: ../plugins/books/bookssearch.py:87 ../stoq/gui/payable.py:203
 #: ../stoq/gui/receivable.py:203 ../stoq/gui/stock.py:224
@@ -2775,40 +2783,40 @@ msgstr ""
 #: ../stoqlib/reporting/loanreceipt.py:101
 #: ../stoqlib/reporting/purchase.py:129 ../stoqlib/reporting/purchase.py:325
 msgid "Category"
-msgstr ""
+msgstr "Categoría"
 
 #: ../plugins/books/bookssearch.py:89
 msgid "Subject"
-msgstr ""
+msgstr "Asunto"
 
 #: ../plugins/books/bookssearch.py:90
 msgid "Title"
-msgstr ""
+msgstr "Título"
 
 #: ../plugins/books/bookssearch.py:92
 #: ../stoqlib/gui/dialogs/paymentcommentsdialog.py:17
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 #: ../plugins/books/bookssearch.py:94 ../plugins/books/publishersearch.py:40
 msgid "Publisher"
-msgstr ""
+msgstr "Editorial"
 
 #: ../plugins/books/bookssearch.py:96
 msgid "ISBN"
-msgstr ""
+msgstr "ISBN"
 
 #: ../plugins/books/bookssearch.py:97
 msgid "Volume"
-msgstr ""
+msgstr "Volumen"
 
 #: ../plugins/books/bookssearch.py:99
 msgid "Series"
-msgstr ""
+msgstr "Serie"
 
 #: ../plugins/books/bookssearch.py:101
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 #: ../plugins/books/bookssearch.py:109
 #: ../stoqlib/gui/dialogs/productiondialog.py:233
@@ -2831,7 +2839,7 @@ msgstr ""
 #: ../stoqlib/reporting/product.py:66 ../stoqlib/reporting/purchase.py:138
 #: ../stoqlib/reporting/purchase.py:332 ../stoqlib/reporting/service.py:54
 msgid "Cost"
-msgstr ""
+msgstr "Coste"
 
 #: ../plugins/books/bookssearch.py:112 ../stoq/gui/pos.py:241
 #: ../stoqlib/gui/dialogs/loandetails.py:70
@@ -2846,11 +2854,11 @@ msgstr ""
 #: ../stoqlib/reporting/loanreceipt.py:108 ../stoqlib/reporting/product.py:67
 #: ../stoqlib/reporting/sale.py:105 ../stoqlib/reporting/template.py:348
 msgid "Price"
-msgstr ""
+msgstr "Precio"
 
 #: ../plugins/books/bookssearch.py:115 ../stoqlib/reporting/product.py:68
 msgid "Stock Total"
-msgstr ""
+msgstr "Stock total"
 
 #: ../plugins/books/booksslave.py:44
 msgid "Book Details"
@@ -2862,7 +2870,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:92
 #: ../stoqlib/gui/slaves/productslave.py:146
 msgid "The value must be positive."
-msgstr ""
+msgstr "El valor debe ser positivo."
 
 #: ../plugins/books/booksui.py:80 ../plugins/books/booksui.py:99
 #: ../plugins/books/booksui.py:115
@@ -2871,27 +2879,27 @@ msgstr ""
 
 #: ../plugins/books/booksui.py:84
 msgid "Publishers ..."
-msgstr ""
+msgstr "Editoriales..."
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:1
 msgid "Author:"
-msgstr ""
+msgstr "Autor:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:2
 msgid "Series/Collection:"
-msgstr ""
+msgstr "Serie/colección:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:3
 msgid "Subject:"
-msgstr ""
+msgstr "Asunto:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:4
 msgid "ISBN:"
-msgstr ""
+msgstr "ISBN:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:5
 msgid "Year:"
-msgstr ""
+msgstr "Año:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:6
 msgid "Decorative Finish:"
@@ -2899,39 +2907,39 @@ msgstr ""
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:7
 msgid "Synopsis:"
-msgstr ""
+msgstr "Sinopsis:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:9
 msgid "Publisher:"
-msgstr ""
+msgstr "Editorial:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:10
 msgid "Edition:"
-msgstr ""
+msgstr "Edición:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:12
 msgid "Pages:"
-msgstr ""
+msgstr "Páginas:"
 
 #: ../plugins/books/publishersearch.py:41
 msgid "New Publisher"
-msgstr ""
+msgstr "Nueva editorial"
 
 #: ../plugins/books/publishersearch.py:56
 msgid "Publisher Search"
-msgstr ""
+msgstr "Buscar editorial"
 
 #: ../plugins/books/publishersearch.py:60
 msgid "Publishers matching:"
-msgstr ""
+msgstr "Editoriales coincidentes:"
 
 #: ../plugins/books/publishersearch.py:61
 msgid "publisher"
-msgstr ""
+msgstr "editorial"
 
 #: ../plugins/books/publishersearch.py:61
 msgid "publishers"
-msgstr ""
+msgstr "editoriales"
 
 #: ../plugins/books/publishersearch.py:77
 #: ../plugins/ecf/deviceconstanteditor.py:134 ../stoqlib/domain/uiform.py:83
@@ -2952,32 +2960,32 @@ msgstr ""
 #: ../stoqlib/gui/slaves/liaisonslave.py:41
 #: ../stoqlib/gui/wizards/personwizard.py:104 ../stoqlib/reporting/sale.py:279
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 #: ../plugins/ecf/catgenerator.py:68
 msgid "There must be a printer configured"
-msgstr ""
+msgstr "Debe existir una impresora configurada"
 
 #: ../plugins/ecf/couponprinter.py:110
 msgid "Could not cancel coupon"
-msgstr ""
+msgstr "No se pudo cancelar el cupón"
 
 #: ../plugins/ecf/couponprinter.py:142
 msgid "Could not print summary"
-msgstr ""
+msgstr "No se pudo imprimir el resumen"
 
 #: ../plugins/ecf/couponprinter.py:151 ../plugins/ecf/couponprinter.py:160
 msgid "Could not read memory"
-msgstr ""
+msgstr "No se pudo leer la memoria"
 
 #: ../plugins/ecf/couponprinter.py:169
 #, python-format
 msgid "Invalid serial number for fiscal printer connected to %s"
-msgstr ""
+msgstr "Número de serie no válido para la impresora fiscal conectada a %s"
 
 #: ../plugins/ecf/couponprinter.py:309 ../plugins/ecf/couponprinter.py:318
 msgid "Could not print item"
-msgstr ""
+msgstr "No se pudo imprimir el artículo"
 
 #: ../plugins/ecf/couponprinter.py:358
 #, python-format
@@ -2985,6 +2993,8 @@ msgid ""
 "The payment method used in this sale (%s) is not configured in the fiscal "
 "printer."
 msgstr ""
+"La forma de pago usada en esta venta (%s) no está configurada en la "
+"impresora fiscal."
 
 #: ../plugins/ecf/deviceconstanteditor.py:66
 msgid "Device constant"
@@ -3013,27 +3023,31 @@ msgstr ""
 #: ../stoqlib/reporting/payment.py:183 ../stoqlib/reporting/purchase.py:256
 #: ../stoqlib/reporting/till.py:50
 msgid "Value"
-msgstr ""
+msgstr "Valor"
 
 #: ../plugins/ecf/deviceconstanteditor.py:201
 #: ../stoqlib/gui/search/sellableunitsearch.py:48
 msgid "Units"
-msgstr ""
+msgstr "Unidades"
 
 #: ../plugins/ecf/deviceconstanteditor.py:202 ../plugins/ecf/ecfdomain.py:252
 #: ../plugins/ecf/tests/test_device.py:41
 msgid "Tax"
-msgstr ""
+msgstr "Impuesto"
 
 #: ../plugins/ecf/ecfdomain.py:171
 #, python-format
 msgid "fiscal printer is missing a constant for the custom tax constant '%s'"
 msgstr ""
+"a la impresora fiscal le falta una constante para la constante del impuesto "
+"personalizado «%s»"
 
 #: ../plugins/ecf/ecfdomain.py:178
 #, python-format
 msgid "fiscal printer is missing a constant for tax constant '%s'"
 msgstr ""
+"a la impresora fiscal le falta una constante para la constante del impuesto "
+"«%s»"
 
 #. FIXME: This column should be virtual, waiting for bug #2764
 #: ../plugins/ecf/ecfdomain.py:251 ../stoq/gui/stock.py:237
@@ -3062,7 +3076,7 @@ msgstr ""
 #: ../stoqlib/reporting/production.py:185
 #: ../stoqlib/reporting/production.py:210
 msgid "Unit"
-msgstr ""
+msgstr "Unidad"
 
 #. Payment
 #: ../plugins/ecf/ecfdomain.py:253 ../stoq/gui/payable.py:93
@@ -3074,27 +3088,27 @@ msgstr ""
 #: ../stoqlib/gui/editors/paymenteditor.py:380
 #: ../stoqlib/gui/slaves/paymentslave.py:818
 msgid "Payment"
-msgstr ""
+msgstr "Pago"
 
 #: ../plugins/ecf/ecfmemorydialog.py:37
 msgid "Print Fiscal Memory"
-msgstr ""
+msgstr "Memoria de impresora fiscal"
 
 #: ../plugins/ecf/ecfmemorydialog.py:95
 msgid "Start date must be less than today"
-msgstr ""
+msgstr "La fecha de inicio debe ser anterior al día de hoy"
 
 #: ../plugins/ecf/ecfmemorydialog.py:101
 msgid "End date must be less than today"
-msgstr ""
+msgstr "La fecha de finalización debe ser anterior al día de hoy"
 
 #: ../plugins/ecf/ecfmemorydialog.py:107 ../plugins/ecf/ecfmemorydialog.py:113
 msgid "This number must be positive and greater than 0"
-msgstr ""
+msgstr "Este número debe ser positivo y mayor que 0"
 
 #: ../plugins/ecf/ecfprinterdialog.py:69
 msgid "Fiscal Printer"
-msgstr ""
+msgstr "Impresora fiscal"
 
 #: ../plugins/ecf/ecfprinterdialog.py:124
 #, python-format
@@ -3119,23 +3133,25 @@ msgid ""
 "An ECF Printer was added. You need to restart Stoq before using it. Would "
 "you like to restart it now?"
 msgstr ""
+"Se añadió una impresora ECF. Necesita reiniciar Stoq antes de usarla. "
+"¿Quiere reiniciarla ahora?"
 
 #: ../plugins/ecf/ecfprinterdialog.py:178
 msgid "Restart later"
-msgstr ""
+msgstr "Reiniciar más tarde"
 
 #: ../plugins/ecf/ecfprinterdialog.py:178
 msgid "Restart now"
-msgstr ""
+msgstr "Reiniciar ahora"
 
 #: ../plugins/ecf/ecfprinterdialog.py:188
 #, python-format
 msgid "Could not find a %s printer connected to %s"
-msgstr ""
+msgstr "No se pudo encontrar una impresora %s conectada a %s"
 
 #: ../plugins/ecf/ecfprinterdialog.py:224
 msgid "This printer is already known to the system"
-msgstr ""
+msgstr "Esta impresora ya es conocida por el sistema"
 
 #: ../plugins/ecf/ecfprinterdialog.py:306 ../stoq/gui/stock.py:231
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:94
@@ -3145,41 +3161,41 @@ msgstr ""
 #: ../stoqlib/gui/wizards/abstractwizard.py:120
 #: ../stoqlib/gui/wizards/salequotewizard.py:285
 msgid "Model"
-msgstr ""
+msgstr "Modelo"
 
 #: ../plugins/ecf/ecfprinterdialog.py:307
 msgid "Serial"
-msgstr ""
+msgstr "Número de serie"
 
 #: ../plugins/ecf/ecfprinterdialog.py:308 ../stoqlib/gui/dialogs/devices.py:44
 #: ../stoqlib/gui/editors/stationeditor.py:40
 #: ../stoqlib/gui/search/stationsearch.py:42
 msgid "Computer"
-msgstr ""
+msgstr "Equipo"
 
 #: ../plugins/ecf/ecfprinterdialog.py:323
 msgid "Cant edit a virtual printer"
-msgstr ""
+msgstr "No se puede editar una impresora virtual"
 
 #: ../plugins/ecf/ecfprinterdialog.py:330 ../plugins/ecf/ecfui.py:150
 msgid "Fiscal Printers"
-msgstr ""
+msgstr "Impresoras fiscales"
 
 #: ../plugins/ecf/ecfui.py:96
 msgid "Summary"
-msgstr ""
+msgstr "Resumen"
 
 #: ../plugins/ecf/ecfui.py:122
 msgid "Error opening serial port"
-msgstr ""
+msgstr "Error abriendo puerto serie"
 
 #: ../plugins/ecf/ecfui.py:130
 msgid "This operation requires a connected fiscal printer"
-msgstr ""
+msgstr "Esta operación requiere de una impresora fiscal conectada"
 
 #: ../plugins/ecf/ecfui.py:136
 msgid "Fiscalprinters serial number is different!"
-msgstr ""
+msgstr "¡Los números de serie de las impresoras fiscales son distintos!"
 
 #: ../plugins/ecf/ecfui.py:174 ../plugins/ecf/ecfui.py:201
 #: ../plugins/ecf/ecfui.py:228
@@ -3188,11 +3204,11 @@ msgstr ""
 
 #: ../plugins/ecf/ecfui.py:175
 msgid "Configure fiscal printer..."
-msgstr ""
+msgstr "Configurar impresora fiscal..."
 
 #: ../plugins/ecf/ecfui.py:202 ../plugins/ecf/ecfui.py:229
 msgid "Read Memory"
-msgstr ""
+msgstr "Leer memoria"
 
 #: ../plugins/ecf/ecfui.py:204 ../plugins/ecf/ecfui.py:459
 msgid "Cancel Last Document"
