@@ -313,7 +313,7 @@ class TillApp(SearchableAppWindow):
                                "Until it is opened, it's not possible to "
                                "confirm the sale. Do you want to try again?"),
                              gtk.RESPONSE_YES, _("Try again"), _("Cancel coupon")):
-                    break
+                    return None
 
         return coupon
 
