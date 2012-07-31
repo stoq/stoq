@@ -184,7 +184,7 @@
                 <child>
                   <object class="ProxyEntry" id="invoice_number">
                     <property name="visible">True</property>
-                    <property name="max_length">6</property>
+                    <property name="max_length">9</property>
                     <property name="width_chars">12</property>
                     <property name="xalign">1</property>
                     <property name="primary_icon_activatable">False</property>
