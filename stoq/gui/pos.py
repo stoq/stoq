@@ -714,7 +714,7 @@ class PosApp(AppWindow):
             delivery = None
 
         for fake_sale_item in self.sale_items:
-            sale_item = sale.add_sellable(fake_sale_item.sellable,
+            sale_item = sale.add_sellable(trans.get(fake_sale_item.sellable),
                                           price=fake_sale_item.price,
                                           quantity=fake_sale_item.quantity)
             sale_item.notes = fake_sale_item.notes
