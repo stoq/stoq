@@ -197,8 +197,9 @@ class StoqAPI(object):
         # This is fetching all persons to cache the objects and avoid extra
         # queries when constructing the combo strings.
         from stoqlib.domain.person import Person
-        people = list(Person.select((Person.q.id == resultset.sourceClass.q.personID),
-                                    connection=resultset._getConnection()))
+        people = list(Person.select((
+            Person.q.id == resultset.sourceClass.q.personID),
+                                    connection=resultset._connection))
         people  # pyflakes
         return self.for_combo(resultset)
 
