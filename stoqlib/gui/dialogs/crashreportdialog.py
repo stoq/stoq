@@ -33,13 +33,12 @@ if __name__ == '__main__':
 import os
 
 import gtk
-
-from stoqlib.api import api
 from kiwi.component import get_utility
 from kiwi.ui.dialogs import HIGAlertDialog
 from kiwi.ui.search import HintedEntry
 from twisted.internet import defer, reactor
 
+from stoqlib.api import api
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.lib.crashreport import ReportSubmitter
 from stoqlib.lib.interfaces import IAppInfo
@@ -140,6 +139,7 @@ class CrashReportDialog(object):
         view.modify_text(
             gtk.STATE_NORMAL, view_style.text[gtk.STATE_INSENSITIVE])
         view.show()
+        self._comments_view = view
 
     def _create_email(self):
         self._email_entry = HintedEntry()
@@ -160,17 +160,24 @@ class CrashReportDialog(object):
         self._details_buffer.set_text("\n".join(lines))
 
     def _finish(self):
+        self._dialog.set_primary(
+            _("Thanks for submitting the crash report!\n"
+              "We will use it to make Stoq a better software."),
+            bold=False)
         self._yes_button.set_label(_("Close"))
+        self._comments_view.set_sensitive(False)
+        self._email_entry.set_sensitive(False)
         self._yes_button.set_sensitive(True)
 
     def _show_report(self, data):
-        message = data['message']
-        if data.get('report-url'):
-            label = gtk.LinkButton(data['report-url'], message)
-        else:
-            label = gtk.Label(message)
-        self._dialog.vbox.pack_start(label)
-        label.show()
+        message = data.get('message')
+        if message is not None:
+            if data.get('report-url'):
+                label = gtk.LinkButton(data['report-url'], message)
+            else:
+                label = gtk.Label(message)
+            self._dialog.vbox.pack_start(label)
+            label.show()
         self._finish()
 
     def _show_error(self):
