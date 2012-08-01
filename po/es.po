@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-07-27 13:18-0300\n"
-"PO-Revision-Date: 2012-07-30 08:25+0000\n"
+"PO-Revision-Date: 2012-07-31 08:35+0000\n"
 "Last-Translator: Jose Luis Tirado <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-07-31 05:02+0000\n"
-"X-Generator: Launchpad (build 15702)\n"
+"X-Launchpad-Export-Date: 2012-08-01 04:52+0000\n"
+"X-Generator: Launchpad (build 15719)\n"
 "Language: es\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -549,7 +549,7 @@ msgstr "Nombre abreviado:"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:4
 msgid "Max Installments:"
-msgstr "Máximo de cuotas:"
+msgstr "Máximo de plazos:"
 
 #: ../data/glade/CredProviderDetailsSlave.ui.h:5
 msgid "Payment Day:"
@@ -597,7 +597,7 @@ msgstr "Forma de pago:"
 
 #: ../data/glade/CreditProviderMethodSlave.ui.h:3
 msgid "Number of Installments:"
-msgstr "Número de Cuotas"
+msgstr "Número de plazos:"
 
 #: ../data/glade/DatabaseLocationStep.ui.h:1
 msgid "<b>Database location</b>"
@@ -1086,7 +1086,7 @@ msgstr "Fecha de pago:"
 
 #: ../data/glade/InstallmentConfirmation.ui.h:2
 msgid "Installment value:"
-msgstr ""
+msgstr "Valor del plazo:"
 
 #. Do not translate $CURRENCY
 #: ../data/glade/InstallmentConfirmation.ui.h:4
@@ -1382,7 +1382,7 @@ msgstr "Cuenta por Defecto:"
 
 #: ../data/glade/PaymentMethodEditor.ui.h:2
 msgid "Maximum Installments:"
-msgstr "Plazos Máximos:"
+msgstr "Máximo de plazos:"
 
 #: ../data/glade/PaymentMethodEditor.ui.h:4
 msgid "Daily Penalty:"
@@ -2619,7 +2619,7 @@ msgstr "producción"
 
 #: ../data/glade/receivable.ui.h:1
 msgid "receivable"
-msgstr ""
+msgstr "por cobrar"
 
 #: ../data/glade/sales_app.ui.h:1 ../stoqlib/gui/search/salesearch.py:194
 #: ../stoqlib/reporting/sale.py:169
@@ -2643,7 +2643,7 @@ msgstr "Caja abierta desde 01/01/2006"
 #: ../plugins/books/bookssearch.py:42 ../plugins/books/booksui.py:81
 #: ../plugins/books/booksui.py:100 ../plugins/books/booksui.py:116
 msgid "Book Search"
-msgstr ""
+msgstr "Búsqueda de libro"
 
 #: ../plugins/books/bookssearch.py:51
 msgid "<b>Total:</b>"
@@ -2862,7 +2862,7 @@ msgstr "Stock total"
 
 #: ../plugins/books/booksslave.py:44
 msgid "Book Details"
-msgstr ""
+msgstr "Detalles del libro"
 
 #: ../plugins/books/booksslave.py:84
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:84
@@ -2875,7 +2875,7 @@ msgstr "El valor debe ser positivo."
 #: ../plugins/books/booksui.py:80 ../plugins/books/booksui.py:99
 #: ../plugins/books/booksui.py:115
 msgid "Books"
-msgstr ""
+msgstr "Libros"
 
 #: ../plugins/books/booksui.py:84
 msgid "Publishers ..."
@@ -2998,7 +2998,7 @@ msgstr ""
 
 #: ../plugins/ecf/deviceconstanteditor.py:66
 msgid "Device constant"
-msgstr ""
+msgstr "Constante de dispositivo"
 
 #: ../plugins/ecf/deviceconstanteditor.py:135 ../stoq/gui/financial.py:250
 #: ../stoq/gui/payable.py:199 ../stoq/gui/receivable.py:198
@@ -3113,7 +3113,7 @@ msgstr "Impresora fiscal"
 #: ../plugins/ecf/ecfprinterdialog.py:124
 #, python-format
 msgid "Probing for a %s printer on %s"
-msgstr ""
+msgstr "Probando una impresora %s en %s"
 
 #: ../plugins/ecf/ecfprinterdialog.py:136
 #, python-format
@@ -3127,6 +3127,8 @@ msgid ""
 "The ECF %s is already active for this station. Deactivate that printer "
 "before activating this one."
 msgstr ""
+"El ECF %s ya está activo para esta estación. Desactive esa impresora antes "
+"de activar ésta."
 
 #: ../plugins/ecf/ecfprinterdialog.py:176
 msgid ""
@@ -3200,7 +3202,7 @@ msgstr "¡Los números de serie de las impresoras fiscales son distintos!"
 #: ../plugins/ecf/ecfui.py:174 ../plugins/ecf/ecfui.py:201
 #: ../plugins/ecf/ecfui.py:228
 msgid "ECF"
-msgstr ""
+msgstr "ECF"
 
 #: ../plugins/ecf/ecfui.py:175
 msgid "Configure fiscal printer..."
@@ -3212,35 +3214,37 @@ msgstr "Leer memoria"
 
 #: ../plugins/ecf/ecfui.py:204 ../plugins/ecf/ecfui.py:459
 msgid "Cancel Last Document"
-msgstr ""
+msgstr "Cancelar último documento"
 
 #: ../plugins/ecf/ecfui.py:242
 msgid "It was not possible to communicate with the printer"
-msgstr ""
+msgstr "No fue posible comunicarse con la impresora"
 
 #: ../plugins/ecf/ecfui.py:250
 msgid "The ECF has an open coupon. It will be canceled now."
-msgstr ""
+msgstr "El ECF tiene un cupón abierto. Se cancelará ahora."
 
 #: ../plugins/ecf/ecfui.py:268
 msgid ""
 "It's not possible to emit a read X for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr ""
+"No es posible emitir una lectura X para la impresora configurada.\n"
+"¿Quiere ignorar este error y continuar?"
 
 #: ../plugins/ecf/ecfui.py:271 ../plugins/ecf/ecfui.py:324
 #: ../stoq/gui/inventory.py:99 ../stoq/gui/purchase.py:167
 #: ../stoq/gui/sales.py:176
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: ../plugins/ecf/ecfui.py:272 ../plugins/ecf/ecfui.py:325
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorar"
 
 #: ../plugins/ecf/ecfui.py:273 ../plugins/ecf/ecfui.py:326
 msgid "Try Again"
-msgstr ""
+msgstr "Intentar de nuevo"
 
 #: ../plugins/ecf/ecfui.py:305
 msgid ""
@@ -3248,6 +3252,9 @@ msgid ""
 "invoice file. Go to the admin application and fill the required information "
 "for the ECF."
 msgstr ""
+"Necesita establecer algunos detalles sobre su ECF si quiere guardar el "
+"archivo de facturas paulista. Vaya a la aplicación de adminitración y "
+"rellene la información requerida para el ECF."
 
 #: ../plugins/ecf/ecfui.py:309
 msgid "Cancel Close Till"
@@ -3258,6 +3265,8 @@ msgid ""
 "It's not possible to emit a reduce Z for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr ""
+"No es posible emitir una reducción Z para la impresora configurada.\n"
+"¿Quiere ignorar este error y continuar?"
 
 #: ../plugins/ecf/ecfui.py:442
 msgid "There is no sale nor till entry to cancel"
@@ -3266,44 +3275,48 @@ msgstr "No existe venta ni entrada de caja a cancelar"
 #: ../plugins/ecf/ecfui.py:446
 #, python-format
 msgid "Do you really want to cancel the sale number %d and value %.2f ?"
-msgstr ""
+msgstr "¿Quiere realmente cancelar la venta número %d y de %.2f de valor?"
 
 #: ../plugins/ecf/ecfui.py:450
 #, python-format
 msgid ""
 "Do you really want to cancel the last cash added number %d and value %.2f ?"
 msgstr ""
+"¿Quiere realmente cancelar el último efectivo añadido con número %d y %.2f "
+"de valor?"
 
 #: ../plugins/ecf/ecfui.py:455
 #, python-format
 msgid ""
 "Do you really want to cancel the last cash removed number %d and value %.2f ?"
 msgstr ""
+"¿Quiere realmente cancelar el último efectivo retirado con número %d y %.2f "
+"de valor?"
 
 #: ../plugins/ecf/ecfui.py:460 ../stoqlib/gui/dialogs/pluginsdialog.py:137
 #: ../stoqlib/gui/fiscalprinter.py:142 ../stoqlib/gui/fiscalprinter.py:277
 msgid "Not now"
-msgstr ""
+msgstr "Ahora no"
 
 #: ../plugins/ecf/ecfui.py:467
 msgid "Cash out"
-msgstr ""
+msgstr "Retirar efectivo"
 
 #: ../plugins/ecf/ecfui.py:469
 msgid "Cash in"
-msgstr ""
+msgstr "Introducir efectivo"
 
 #: ../plugins/ecf/ecfui.py:472 ../plugins/ecf/ecfui.py:492
 msgid "Document was cancelled"
-msgstr ""
+msgstr "Se canceló el documento"
 
 #: ../plugins/ecf/ecfui.py:474
 msgid "Cancelling failed, nothing to cancel"
-msgstr ""
+msgstr "Cancelacción fallida, nada que cancelar"
 
 #: ../plugins/ecf/ecfui.py:482
 msgid "Cancel last document"
-msgstr ""
+msgstr "Cancelar el último documento"
 
 #: ../plugins/ecf/ecfui.py:513 ../stoqlib/gui/slaves/saleslave.py:337
 msgid "You do not have this value on till."
@@ -3311,114 +3324,116 @@ msgstr "No tiene este valor en la caja."
 
 #: ../plugins/ecf/ecfui.py:518
 msgid "Cancelling sale failed, nothing to cancel"
-msgstr ""
+msgstr "Cancelación de venta fallida, nada que cancelar"
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:1
 msgid "Printer:"
-msgstr ""
+msgstr "Impresora:"
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:3
 msgid "Serial:"
-msgstr ""
+msgstr "Número de serie:"
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:4
 msgid "User Number:"
-msgstr ""
+msgstr "Número de usuario:"
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:5
 msgid "Register Date:"
-msgstr ""
+msgstr "Fecha de registro:"
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:6
 msgid "Register CRO:"
-msgstr ""
+msgstr "CRO de registro:"
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:7
 msgid ""
 "<b>You can get the following information on a fiscal memory read from the "
 "printer</b>"
 msgstr ""
+"<b>Puede obtener la siguiente información en una lectura de la memoria "
+"fiscal de la impresora</b>"
 
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:8
 msgid "Edit Constants ..."
-msgstr ""
+msgstr "Editar constantes..."
 
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:1
 msgid "Document:"
-msgstr ""
+msgstr "Documento:"
 
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:3
 msgid "CPF"
-msgstr ""
+msgstr "CPF"
 
 #: ../plugins/ecf/glade/PaulistaInvoice.ui.h:4
 msgid "CNPJ"
-msgstr ""
+msgstr "CNPJ"
 
 #: ../plugins/ecf/paulistainvoicedialog.py:40
 msgid "Paulista Invoice"
-msgstr ""
+msgstr "Factura paulista"
 
 #: ../plugins/ecf/paulistainvoicedialog.py:111
 msgid "The CPF is not valid."
-msgstr ""
+msgstr "El CPF no es válido"
 
 #: ../plugins/ecf/paulistainvoicedialog.py:113
 msgid "The CNPJ is not valid."
-msgstr ""
+msgstr "El CNPJ no es válido"
 
 #: ../plugins/magento/domain/magentobase.py:124
 #, python-format
 msgid "    %s: %d records synchronized, %d failing."
-msgstr ""
+msgstr "    %s: %d registros sincronizados, %d fallidos."
 
 #: ../plugins/magento/domain/magentobase.py:127
 #, python-format
 msgid "    %s: %d records synchronized."
-msgstr ""
+msgstr "    %s: %d registros sincronizados."
 
 #. TRANSLATORS: #%d refers to the user's ID on Magento
 #: ../plugins/magento/domain/magentoclient.py:78
 #, python-format
 msgid "Magento user #%s"
-msgstr ""
+msgstr "Usuario de Magento #%s"
 
 #: ../plugins/magento/domain/magentoconfig.py:142
 msgid "Magento e-commerce"
-msgstr ""
+msgstr "e-comercio de Magento"
 
 #: ../plugins/magento/domain/magentoconfig.py:143
 msgid "E-commerce software"
-msgstr ""
+msgstr "Software de e-comercio"
 
 #: ../plugins/magento/domain/magentosale.py:169
 #, python-format
 msgid "Magento sale #%s\n"
-msgstr ""
+msgstr "Venta de Magento #%s\n"
 
 #: ../plugins/magento/glade/MagentoCategorySlave.ui.h:1
 msgid "Can sell:"
-msgstr ""
+msgstr "Puede vender:"
 
 #: ../plugins/magento/glade/MagentoCategorySlave.ui.h:3
 msgid "Meta keywords:"
-msgstr ""
+msgstr "Meta palabras clave:"
 
 #: ../plugins/magento/glade/MagentoConfigEditor.ui.h:1
 msgid "Server URL:"
-msgstr ""
+msgstr "URL del servidor:"
 
 #: ../plugins/magento/glade/MagentoConfigEditor.ui.h:2
 msgid "API User:"
-msgstr ""
+msgstr "Usuario de API:"
 
 #: ../plugins/magento/glade/MagentoConfigEditor.ui.h:3
 msgid "API Key:"
-msgstr ""
+msgstr "Clave de API:"
 
 #: ../plugins/magento/glade/MagentoConfigEditor.ui.h:6
 msgid "TZ Info (GMT):"
-msgstr ""
+msgstr "Informazión zona horaria (GMT):"
 
 #: ../plugins/magento/glade/MagentoConfigEditor.ui.h:7
 msgid "<b>Server configuration</b>"
@@ -3426,16 +3441,16 @@ msgstr "<b>Configuración del servidor</b>"
 
 #: ../plugins/magento/gui/editor/magentoeditor.py:44
 msgid "Magento config"
-msgstr ""
+msgstr "Configuración de Magento"
 
 #: ../plugins/magento/gui/editor/magentoeditor.py:76
 msgid ""
 "Could not validate the connection. Try verifying the url, user and key"
-msgstr ""
+msgstr "No se pudo validar la conexión. Revise la URL, usuario y clave"
 
 #: ../plugins/magento/gui/editor/magentoeditor.py:80
 msgid "An error occurried when trying to validate the connection:"
-msgstr ""
+msgstr "Ocurrió un error al intentar validar la conexión:"
 
 #: ../plugins/magento/gui/search/magentosearch.py:43
 msgid "Magento config search"
@@ -3476,38 +3491,38 @@ msgstr ""
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:86
 #: ../stoqlib/reporting/purchase.py:248
 msgid "#"
-msgstr ""
+msgstr "#"
 
 #: ../plugins/magento/gui/search/magentosearch.py:60
 msgid "Server URL"
-msgstr ""
+msgstr "URL del servidor"
 
 #: ../plugins/magento/gui/slave/magentoslave.py:61
 msgid "Magento"
-msgstr ""
+msgstr "Magento"
 
 #: ../plugins/magento/gui/slave/magentoslave.py:107
 #: ../stoqlib/gui/editors/producteditor.py:388
 #: ../stoqlib/gui/slaves/productionslave.py:284
 msgid "True"
-msgstr ""
+msgstr "Verdadero"
 
 #: ../plugins/magento/gui/slave/magentoslave.py:108
 #: ../stoqlib/gui/slaves/productionslave.py:284
 msgid "False"
-msgstr ""
+msgstr "Falso"
 
 #: ../plugins/magento/magentolib.py:86
 msgid "The url provided is not valid"
-msgstr ""
+msgstr "La URL proporcionada no es válida"
 
 #: ../plugins/magento/magentolib.py:92
 msgid "Access denied for the given user"
-msgstr ""
+msgstr "Acceso denegado para el usuario indicado"
 
 #: ../plugins/magento/magentoplugin.py:171
 msgid "Invalid command given"
-msgstr ""
+msgstr "Indicado comando no válido"
 
 #: ../plugins/magento/magentoplugin.py:371
 msgid "Magento synchronization initialized.."
@@ -3585,7 +3600,7 @@ msgstr "No se pudo conectar a la base de datosInvalid config file settings"
 #: ../stoqlib/reporting/sale.py:182 ../stoqlib/reporting/sale.py:230
 #: ../stoqlib/reporting/sale.py:240
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: ../stoq/gui/accounts.py:81
 msgid "No payments found."
@@ -3610,7 +3625,7 @@ msgstr "No se encontraron pagos pagados."
 
 #: ../stoq/gui/accounts.py:94
 msgid "No payments to receive found."
-msgstr ""
+msgstr "No se encontraron pagos por cobrar."
 
 #: ../stoq/gui/accounts.py:96
 msgid "No payments to pay found."
@@ -3631,7 +3646,7 @@ msgstr "Todos los pagos"
 
 #: ../stoq/gui/admin.py:92
 msgid "Branches"
-msgstr ""
+msgstr "Sucursales"
 
 #: ../stoq/gui/admin.py:93 ../stoqlib/gui/editors/fiscaleditor.py:41
 #: ../stoqlib/gui/editors/fiscaleditor.py:45
@@ -3739,6 +3754,8 @@ msgid ""
 "You must define a manager to this branch before you can create a sintegra "
 "archive"
 msgstr ""
+"Debe definir un gerente para esta sucursal antes de que pueda crear un "
+"archivo sintegra"
 
 #: ../stoq/gui/admin.py:267 ../stoq/lib/applist.py:33
 msgid "Administrative"
@@ -3774,7 +3791,7 @@ msgstr "Usuarios..."
 
 #: ../stoq/gui/admin.py:315
 msgid "Branches..."
-msgstr ""
+msgstr "Sucursales..."
 
 #: ../stoq/gui/admin.py:317
 msgid "Computers..."
@@ -3840,7 +3857,7 @@ msgstr "Crear un nuevo usuario"
 
 #: ../stoq/gui/admin.py:345
 msgid "Admin help"
-msgstr ""
+msgstr "Ayuda de Administración"
 
 #: ../stoq/gui/admin.py:374 ../stoqlib/gui/keybindings.py:82
 msgid "Search for users"
@@ -4032,11 +4049,11 @@ msgstr ""
 #: ../stoq/gui/application.py:505
 #, python-format
 msgid "Welcome to Stoq version %s!"
-msgstr ""
+msgstr "¡Bienvenido a Stoq versión %s!"
 
 #: ../stoq/gui/application.py:507
 msgid "See what's new"
-msgstr ""
+msgstr "Vea las novedades"
 
 #: ../stoq/gui/application.py:520 ../stoq/gui/application.py:1343
 msgid "Enable production mode"
@@ -4089,7 +4106,7 @@ msgstr ""
 
 #: ../stoq/gui/application.py:932
 msgid "Remove settings cache"
-msgstr ""
+msgstr "Eliminar caché de parámetros"
 
 #: ../stoq/gui/application.py:1073
 msgid "Open a new window"
@@ -4176,7 +4193,7 @@ msgstr "MMMM yyyy"
 #. http://arshaw.com/fullcalendar/docs/text/titleFormat/
 #: ../stoq/gui/calendar.py:128
 msgid "MMM d[ yyyy]{ '&#8212;'[ MMM] d yyyy}"
-msgstr ""
+msgstr "MMM d[ yyyy]{ '&#8212;'[ MMM] d yyyy}"
 
 #. day time, eg "Tuesday, Sep 8, 2009" see:
 #. http://arshaw.com/fullcalendar/docs/text/titleFormat/
@@ -4195,163 +4212,164 @@ msgstr "Calendario"
 #. File
 #: ../stoq/gui/calendar.py:279
 msgid "Client call"
-msgstr ""
+msgstr "Llamada de cliente"
 
 #: ../stoq/gui/calendar.py:280
 msgid "Add a new client call"
-msgstr ""
+msgstr "Añadir una nueva llamada de cliente"
 
 #: ../stoq/gui/calendar.py:281
 msgid "Account payable"
-msgstr ""
+msgstr "Cuenta pagadera"
 
 #: ../stoq/gui/calendar.py:282 ../stoqlib/gui/keybindings.py:110
 msgid "Add a new account payable"
-msgstr ""
+msgstr "Añadir una nueva cuenta pagadera"
 
 #: ../stoq/gui/calendar.py:283
 msgid "Account receivable"
-msgstr ""
+msgstr "Cuenta por cobrar"
 
 #: ../stoq/gui/calendar.py:284 ../stoqlib/gui/keybindings.py:112
 msgid "Add a new account receivable"
-msgstr ""
+msgstr "Añadir nueva cuenta por cobrar"
 
 #. View
 #: ../stoq/gui/calendar.py:286
 msgid "Back"
-msgstr ""
+msgstr "Atrás"
 
 #: ../stoq/gui/calendar.py:287 ../stoqlib/gui/keybindings.py:114
 msgid "Go back"
-msgstr ""
+msgstr "Retroceder"
 
 #: ../stoq/gui/calendar.py:288 ../stoq/gui/config.py:526
 msgid "Forward"
-msgstr ""
+msgstr "Adelante"
 
 #: ../stoq/gui/calendar.py:289 ../stoqlib/gui/keybindings.py:116
 msgid "Go forward"
-msgstr ""
+msgstr "Avanzar"
 
 #: ../stoq/gui/calendar.py:290 ../stoq/gui/calendar.py:291
 #: ../stoqlib/gui/keybindings.py:118
 msgid "Show today"
-msgstr ""
+msgstr "Mostrar el día de hoy"
 
 #: ../stoq/gui/calendar.py:292
 msgid "Calendar events"
-msgstr ""
+msgstr "Eventos del calendario"
 
 #: ../stoq/gui/calendar.py:293
 msgid "Display view as"
-msgstr ""
+msgstr "Mostrar vista como"
 
 #: ../stoq/gui/calendar.py:297
 msgid "Calendar help"
-msgstr ""
+msgstr "Ayuda del calendario"
 
 #. TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 #: ../stoq/gui/calendar.py:300 ../stoq/gui/payable.py:68
 msgid "Accounts payable"
-msgstr ""
+msgstr "Cuentas pagaderas"
 
 #: ../stoq/gui/calendar.py:301
 msgid "Show accounts payable in the list"
-msgstr ""
+msgstr "Mostrar las cuentas pagaderas en la lista"
 
 #. TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 #: ../stoq/gui/calendar.py:302 ../stoq/gui/receivable.py:71
 msgid "Accounts receivable"
-msgstr ""
+msgstr "Cuentas por cobrar"
 
 #: ../stoq/gui/calendar.py:303
 msgid "Show accounts receivable in the list"
-msgstr ""
+msgstr "Mostrar las cuentas por cobrar en la lista"
 
 #: ../stoq/gui/calendar.py:305
 msgid "Show purchases in the list"
-msgstr ""
+msgstr "Mostrar compras en la lista"
 
 #: ../stoq/gui/calendar.py:306
 msgid "Client Calls"
-msgstr ""
+msgstr "Llamadas de clientes"
 
 #: ../stoq/gui/calendar.py:307
 msgid "Show client calls in the list"
-msgstr ""
+msgstr "Mostrar las llamadas de clientes en la lista"
 
 #: ../stoq/gui/calendar.py:338
 msgid "View as month"
-msgstr ""
+msgstr "Ver como mes"
 
 #: ../stoq/gui/calendar.py:339
 msgid "Show one month"
-msgstr ""
+msgstr "Mostrar un mes"
 
 #: ../stoq/gui/calendar.py:340
 msgid "View as week"
-msgstr ""
+msgstr "Ver como semana"
 
 #: ../stoq/gui/calendar.py:341
 msgid "Show one week"
-msgstr ""
+msgstr "Mostrar una semana"
 
 #: ../stoq/gui/calendar.py:342
 msgid "View as day"
-msgstr ""
+msgstr "Ver como día"
 
 #: ../stoq/gui/calendar.py:343
 msgid "Show one day"
-msgstr ""
+msgstr "Mostrar un día"
 
 #: ../stoq/gui/calendar.py:347 ../stoqlib/chart/paymentcharts.py:132
 msgid "Month"
-msgstr ""
+msgstr "Mes"
 
 #: ../stoq/gui/calendar.py:348
 msgid "Week"
-msgstr ""
+msgstr "Semana"
 
 #: ../stoq/gui/calendar.py:349 ../stoqlib/chart/paymentcharts.py:234
 #: ../stoqlib/domain/product.py:121
 msgid "Day"
-msgstr ""
+msgstr "Día"
 
 #: ../stoq/gui/calendar.py:382
 msgid "Print this calendar"
-msgstr ""
+msgstr "Imprimir este calendario"
 
 #: ../stoq/gui/config.py:204
 #, python-format
 msgid "The database address '%s' is invalid. Please fix it and try again"
 msgstr ""
+"La dirección de base de datos «%s» no es válida. Corríjala y pruebe de nuevo"
 
 #: ../stoq/gui/config.py:207 ../stoq/gui/config.py:212
 msgid "Invalid database address"
-msgstr ""
+msgstr "Dirección de base de datos no válida"
 
 #: ../stoq/gui/config.py:243
 msgid "Needs Password"
-msgstr ""
+msgstr "Contraseña necesaria"
 
 #: ../stoq/gui/config.py:244
 msgid "Trust"
-msgstr ""
+msgstr "Confiar"
 
 #: ../stoq/gui/config.py:385 ../stoqlib/gui/dialogs/crashreportdialog.py:185
 msgid "Sending..."
-msgstr ""
+msgstr "Enviando..."
 
 #: ../stoq/gui/config.py:403
 #, python-format
 msgid "%s is not a valid email"
-msgstr ""
+msgstr "%s no es un correo electrónico válido"
 
 #: ../stoq/gui/config.py:407
 #, python-format
 msgid "%s is not a valid phone"
-msgstr ""
+msgstr "%s no es un teléfono válido"
 
 #: ../stoq/gui/config.py:455
 msgid "PostgresSQL 'postgres' password"
@@ -4359,7 +4377,7 @@ msgstr ""
 
 #: ../stoq/gui/config.py:458
 msgid "PostgreSQL password"
-msgstr ""
+msgstr "Contraseña PostgreSQL"
 
 #: ../stoq/gui/config.py:461
 msgid ""
@@ -4369,10 +4387,16 @@ msgid ""
 "This is the same password you were asked when you installed PostgreSQL on "
 "this computer."
 msgstr ""
+"Para ser capaz de crear una nueva base de datos Stoq necesita introducir la "
+"contraseña de el usuario <b>postgres</b> para la base de datos PostgreSQL en "
+"la que se está instalando.\n"
+"\n"
+"Es la misma contraseña que se le pidió cuando instaló PostgreSQL en este "
+"equipo."
 
 #: ../stoq/gui/config.py:483 ../stoq/gui/config.py:486
 msgid "Administrator account"
-msgstr ""
+msgstr "Cuenta de administrador"
 
 #: ../stoq/gui/config.py:489
 #, python-format
@@ -4383,18 +4407,25 @@ msgid ""
 "To be able to create other users you need to login with this user in the "
 "admin application and create them."
 msgstr ""
+"Se está añadiendo una cuenta se usuario llamada <b>%s</b> que tendrá "
+"permisos de administrador.\n"
+"\n"
+"Para ser capaz de crear otros usuarios debe conectarse con este usuario en "
+"la aplicación admin y crearlos."
 
 #: ../stoq/gui/config.py:531
 msgid ""
 "The installation guide will now install the packages for you using apt, it "
 "may ask you for your password to continue."
 msgstr ""
+"La guía de instalación instalará ahora los paquetes por usted usando apt, "
+"puede que se le pida su contraseña para continuar."
 
 #. Translators: %s is the string "Forward"
 #: ../stoq/gui/config.py:535
 #, python-format
 msgid "Click %s to begin installing the PostgreSQL server."
-msgstr ""
+msgstr "Pulse %s para comenzar la instalación del servidor PostgreSQL."
 
 #. Translators: %s is the string "Forward"
 #: ../stoq/gui/config.py:540
@@ -4403,33 +4434,39 @@ msgid ""
 "Click %s to continue when you have installed PostgreSQL server on this "
 "computer."
 msgstr ""
+"Pulse %s para continuar cuando haya instalado el servidor PostgreSQL en este "
+"equipo."
 
 #: ../stoq/gui/config.py:563
 msgid "Please wait while the package installation is completing."
-msgstr ""
+msgstr "Espere mientras se completa la instalación del paquete."
 
 #: ../stoq/gui/config.py:575
 msgid "You need to install PostgreSQL before moving forward"
-msgstr ""
+msgstr "Debe instalar PostgreSQL antes de seguir adelante"
 
 #: ../stoq/gui/config.py:585
 msgid "Something went wrong while trying to install the PostgreSQL server."
-msgstr ""
+msgstr "Algo falló durante la instalación del servidor PostgreSQL"
 
 #: ../stoq/gui/config.py:588
 msgid ""
 "Sorry, something went wrong while installing PostgreSQL, try again manually "
 "or go back and configure Stoq to connect to another."
 msgstr ""
+"Algo fallo durante la instalación de PostgreSQL. Inténtelo de nuevo "
+"manualmente o retroceda y configure Stoq para que se conecte a otra base de "
+"datos."
 
 #: ../stoq/gui/config.py:603
 msgid "Authorization failed, try again or connect to another database"
 msgstr ""
+"Autorización fallida. Inténtelo de nuevo o conecte con otra base de datos."
 
 #: ../stoq/gui/config.py:640
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
-msgstr ""
+msgstr "Stoq requiere de PostgreSQL 8.1 o superior, pero se encontró %s"
 
 #: ../stoq/gui/config.py:647
 #, python-format
@@ -5016,7 +5053,7 @@ msgstr "Editar cuotas..."
 #: ../stoq/gui/payable.py:102 ../stoq/gui/receivable.py:116
 #: ../stoqlib/gui/keybindings.py:158 ../stoqlib/gui/keybindings.py:290
 msgid "Edit the selected payment installments"
-msgstr "Editar las cuotas de los pagos seleccionados"
+msgstr "Editar los plazos de los pagos seleccionados"
 
 #: ../stoq/gui/payable.py:105 ../stoq/gui/receivable.py:104
 #: ../stoqlib/gui/keybindings.py:160 ../stoqlib/gui/keybindings.py:282
@@ -6843,6 +6880,7 @@ msgstr ""
 msgid ""
 "The number of installments can not be greater than %d for payment method %r"
 msgstr ""
+"El número de plazos no puede ser superior a %d para la forma de pago %r"
 
 #: ../stoqlib/domain/payment/method.py:203
 #, python-format
@@ -10130,7 +10168,7 @@ msgstr ""
 
 #: ../stoqlib/gui/search/categorysearch.py:71
 msgid "Installments Commission (%)"
-msgstr ""
+msgstr "Comisión de los plazos (%)"
 
 #: ../stoqlib/gui/search/commissionsearch.py:45
 msgid "Search for Commissions"
@@ -10893,7 +10931,7 @@ msgstr ""
 
 #: ../stoqlib/gui/slaves/paymentslave.py:151
 msgid "Expected installment due date must be set to a future date"
-msgstr ""
+msgstr "La fecha de vencimiento del plazo esperada debe ser una fecha futura"
 
 #: ../stoqlib/gui/slaves/paymentslave.py:156
 msgid "The value must be a positive number"
@@ -10922,21 +10960,21 @@ msgstr ""
 
 #: ../stoqlib/gui/slaves/paymentslave.py:587
 msgid "The number of installments cannot be 0"
-msgstr ""
+msgstr "El número de plazos no puede ser 0"
 
 #: ../stoqlib/gui/slaves/paymentslave.py:592
 #, python-format
 msgid "The number of installments must be less then %d"
-msgstr ""
+msgstr "El número de plazos debe ser menor que %d"
 
 #: ../stoqlib/gui/slaves/paymentslave.py:602
 msgid "Expected first installment date must be set to a future date"
-msgstr ""
+msgstr "La fecha esperada del primer plazo debe ser una fecha futura"
 
 #: ../stoqlib/gui/slaves/paymentslave.py:806
 #, python-format
 msgid "Number of installments must be greater than %d and lower than %d"
-msgstr ""
+msgstr "El número de plazos debe ser mayor que %d y menor que %d"
 
 #: ../stoqlib/gui/slaves/paymentslave.py:1040
 #, python-format
@@ -12784,7 +12822,7 @@ msgstr ""
 
 #: ../stoqlib/reporting/booklet.py:159 ../stoqlib/reporting/booklet.py:302
 msgid "Installment"
-msgstr ""
+msgstr "Plazo"
 
 #: ../stoqlib/reporting/booklet.py:183
 msgid "Drawee's Receipt"
@@ -12804,7 +12842,7 @@ msgstr ""
 
 #: ../stoqlib/reporting/booklet.py:292
 msgid "Installments total"
-msgstr ""
+msgstr "Plazos totales"
 
 #: ../stoqlib/reporting/booklet.py:294
 msgid "Document value"
@@ -13095,11 +13133,11 @@ msgstr ""
 #: ../stoqlib/reporting/purchase.py:238
 #, python-format
 msgid "Payments: %d installments"
-msgstr ""
+msgstr "Pagos: %d plazos"
 
 #: ../stoqlib/reporting/purchase.py:241
 msgid "Payments: 1 installment"
-msgstr ""
+msgstr "Pagos: 1 plazo"
 
 #: ../stoqlib/reporting/purchase.py:243
 msgid "There are no payments defined for this order."
