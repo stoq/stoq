@@ -1479,7 +1479,7 @@ class SaleView(Viewable):
 
     @property
     def sale(self):
-        return Sale.get(self.id)
+        return Sale.get(self.id, self.get_connection())
 
     #
     # Public API

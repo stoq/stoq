@@ -208,4 +208,4 @@ class TransferOrderView(Viewable):
 
     @property
     def transfer_order(self):
-        return TransferOrder.get(self.id)
+        return TransferOrder.get(self.id, self.get_connection())

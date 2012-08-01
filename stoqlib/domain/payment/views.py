@@ -176,7 +176,7 @@ class BasePaymentView(Viewable):
     @property
     def purchase(self):
         if self.purchase_id:
-            return PurchaseOrder.get(self.purchase_id)
+            return PurchaseOrder.get(self.purchase_id, self.get_connection())
 
     @property
     def operation(self):
@@ -187,7 +187,7 @@ class BasePaymentView(Viewable):
     @property
     def sale(self):
         if self.sale_id:
-            return Sale.get(self.sale_id)
+            return Sale.get(self.sale_id, self.get_connection())
 
     @classmethod
     def select_pending(cls, due_date=None, connection=None):
