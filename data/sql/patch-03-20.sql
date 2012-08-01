@@ -11,6 +11,8 @@ ALTER TABLE receiving_order ADD CONSTRAINT valid_invoice_number
     CHECK (invoice_number > 0 AND invoice_number < 999999999);
 
 -- renegotiation_data
+UPDATE renegotiation_data SET invoice_number = NULL
+    WHERE invoice_number <= 0 or invoice_number >= 999999999;
 ALTER TABLE renegotiation_data ADD CONSTRAINT valid_invoice_number
     CHECK (invoice_number > 0 AND invoice_number < 999999999);
 
