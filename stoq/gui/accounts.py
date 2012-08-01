@@ -113,6 +113,19 @@ class BaseAccountWindow(SearchableAppWindow):
 
         self.search.set_message(msg)
 
+    def print_report(self, report_class, *args, **kwargs):
+        if api.sysparam(self.conn).SMART_LIST_LOADING:
+            # When using smart lists, not all objects may be loaded yet.
+            results = self.results.get_selected_rows()
+            if not results:
+                # FIXME: Kiwi should have an api to do this
+                results = list(self.search.search._lazy_updater._model._result)
+
+            args = list(args)
+            args[1] = results
+
+        SearchableAppWindow.print_report(self, report_class, *args, **kwargs)
+
     #
     # Public API
     #
