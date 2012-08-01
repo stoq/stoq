@@ -688,7 +688,7 @@ class PurchaseItemView(Viewable):
 
     @property
     def purchase_item(self):
-        return PurchaseItem.get(self.id)
+        return PurchaseItem.get(self.id, self.get_connection())
 
 
 #
@@ -797,7 +797,7 @@ class PurchaseOrderView(Viewable):
 
     @property
     def purchase(self):
-        return PurchaseOrder.get(self.id)
+        return PurchaseOrder.get(self.id, self.get_connection())
 
     #
     # Public API

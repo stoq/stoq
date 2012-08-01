@@ -74,7 +74,7 @@ class WebView(gtk.ScrolledWindow):
     def _dialog_payment_details(self, id):
         from stoqlib.domain.payment.payment import Payment
         trans = api.new_transaction()
-        payment = trans.get(Payment.get(int(id)))
+        payment = Payment.get(int(id), trans)
         dialog_class = get_dialog_for_payment(payment)
         retval = run_dialog(dialog_class, self.app, trans, payment)
         if api.finish_transaction(trans, retval):
@@ -86,7 +86,7 @@ class WebView(gtk.ScrolledWindow):
         from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 
         trans = api.new_transaction()
-        purchase = trans.get(PurchaseOrder.get(int(id)))
+        purchase = PurchaseOrder.get(int(id), trans)
         retval = run_dialog(PurchaseDetailsDialog, self.app, trans, purchase)
         if api.finish_transaction(trans, retval):
             self.refresh()
@@ -97,7 +97,7 @@ class WebView(gtk.ScrolledWindow):
         from stoqlib.gui.editors.callseditor import CallsEditor
 
         trans = api.new_transaction()
-        model = trans.get(Calls.get(int(id)))
+        model = Calls.get(int(id), trans)
         retval = run_dialog(CallsEditor, self.app, trans, model, None, None)
         if api.finish_transaction(trans, retval):
             self.refresh()
