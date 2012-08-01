@@ -186,6 +186,32 @@ class TestSellable(DomainTest):
         self.failUnless(sellable.markup == 0,
                         "Expected markup %r, got %r" % (0, sellable.markup))
 
+    def test_get_unblocked_sellables(self):
+        # Sellable and query without supplier
+        sellable = self.create_sellable()
+        available = Sellable.get_unblocked_sellables(self.trans)
+        self.assertTrue(sellable in list(available))
+
+        # Sellable without supplier, but querying with one
+        supplier = self.create_supplier()
+        available = Sellable.get_unblocked_sellables(self.trans,
+                                                     supplier=supplier)
+        self.assertFalse(sellable in list(available))
+
+
+        # Relate the two
+        from stoqlib.domain.product import ProductSupplierInfo
+        ProductSupplierInfo(connection=self.trans,
+                            supplier=supplier,
+                            product=sellable.product,
+                            is_main_supplier=True)
+
+        # Now the sellable should appear in the results
+        available = Sellable.get_unblocked_sellables(self.trans,
+                                                     supplier=supplier)
+        self.assertTrue(sellable in list(available))
+
+
     def testIsValidQuantity(self):
         sellable = self.create_sellable()
         unit = self.create_sellable_unit()
