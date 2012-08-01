@@ -198,7 +198,6 @@ class TestSellable(DomainTest):
                                                      supplier=supplier)
         self.assertFalse(sellable in list(available))
 
-
         # Relate the two
         from stoqlib.domain.product import ProductSupplierInfo
         ProductSupplierInfo(connection=self.trans,
@@ -210,7 +209,6 @@ class TestSellable(DomainTest):
         available = Sellable.get_unblocked_sellables(self.trans,
                                                      supplier=supplier)
         self.assertTrue(sellable in list(available))
-
 
     def testIsValidQuantity(self):
         sellable = self.create_sellable()
