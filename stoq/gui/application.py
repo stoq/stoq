@@ -1370,7 +1370,7 @@ class SearchableAppWindow(AppWindow):
         self._loading_filters = False
 
         conn = api.get_connection()
-        self.executer = ORMObjectQueryExecuter()
+        self.executer = ORMObjectQueryExecuter(conn)
         # FIXME: Remove this limit, but we need to migrate all existing
         #        searches to use lazy lists first. That in turn require
         #        us to rewrite the queries in such a way that count(*)
