@@ -190,6 +190,44 @@ class TestProductFullStockView(DomainTest):
             None, connection=self.trans)
         self.assertEquals(results[0].price, 10)
 
+    def test_with_unblocked_sellables_query(self):
+        # This is used in the purchase wizard and breaks storm
+        from stoqlib.domain.product import ProductSupplierInfo
+        from stoqlib.domain.sellable import Sellable
+
+        p1 = self.create_product()
+        supplier = self.create_supplier()
+
+        # Product should appear when querying without a supplier
+        query = Sellable.get_unblocked_sellables_query(self.trans)
+        results = ProductFullStockView.select(query, connection=self.trans)
+        self.assertTrue(p1.id in [p.product_id for p in results])
+
+        # But should not appear when querying with a supplier
+        query = Sellable.get_unblocked_sellables_query(self.trans,
+                                                       supplier=supplier)
+        results = ProductFullStockView.select(query, connection=self.trans)
+        self.assertFalse(p1.id in [p.id for p in results])
+
+        # Now relate the two
+        ProductSupplierInfo(connection=self.trans,
+                            supplier=supplier,
+                            product=p1,
+                            is_main_supplier=True)
+
+        # And it should appear now
+        query = Sellable.get_unblocked_sellables_query(self.trans,
+                                                       supplier=supplier)
+        results = ProductFullStockView.select(query, connection=self.trans)
+        self.assertTrue(p1.id in [s.product_id for s in results])
+
+        # But should not appear for a different supplier
+        other_supplier = self.create_supplier()
+        query = Sellable.get_unblocked_sellables_query(self.trans,
+                                                       supplier=other_supplier)
+        results = ProductFullStockView.select(query, connection=self.trans)
+        self.assertFalse(p1.id in [s.product_id for s in results])
+
 
 class TestProductComponentView(DomainTest):
     def testSellable(self):

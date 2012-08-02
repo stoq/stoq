@@ -973,6 +973,53 @@ class Viewable(Declarative):
                       group_by=cls.group_by or Undef)
 
     @classmethod
+    def _get_tables_for_query(cls, tables, query):
+        """This method will check the joins defined in the viewable and the
+        query specified to see if there is any table used in the clause that is
+        not in the joins.
+
+        We should avoid using implicit joins, but until we fix all uses of it,
+        this will make it work. FIX:
+
+        - ProductFullStockView with Sellable.get_unblocked_sellables_query
+        """
+        # This is a AND or OR
+        if isinstance(query, expr.CompoundExpr):
+            for e in query.exprs:
+                cls._get_tables_for_query(tables, e)
+
+        # This is a == or <= or =>, etc..
+        elif isinstance(query, expr.BinaryExpr):
+            for e in [query.expr1, query.expr2]:
+                if not isinstance(e, PropertyColumn):
+                    continue
+
+                q_table = e.cls
+                # See if the table this property if from is in the list of
+                # tables. Else, add it
+                for table in tables:
+                    if isinstance(table, expr.JoinExpr):
+                        if isinstance(table.right, expr.Alias):
+                            # XXX: I am not sure if this is correct. If the join
+                            # is an alias, we should query that using the alias
+                            # and not the origianl table name
+                            #table = table.right.expr
+                            pass
+                        else:
+                            table = table.right
+
+                    if table == q_table:
+                        break
+                else:
+                    # Adding just the table. storm is smart enougth to add the
+                    # query for the join
+                    tables.append(q_table)
+        elif query:
+            raise AssertionError(query)
+
+        return tables
+
+    @classmethod
     def select(cls, clause=None, having=None, connection=None, orderBy=None):
         attributes, columns = zip(*cls.columns.items())
 
@@ -990,6 +1037,9 @@ class Viewable(Declarative):
         if clauses:
             clauses = [AND(*clauses)]
 
+        # Pass a copy since _get_tables_for_query will modify the list
+        tables = cls._get_tables_for_query(cls.tables[:], clause)
+
         def _load_view_objects(result, values):
             instance = cls()
             instance._connection = connection
@@ -1002,7 +1052,7 @@ class Viewable(Declarative):
                 setattr(instance, attribute, value)
             return instance
 
-        results = store.using(*cls.tables).find(columns, *clauses)
+        results = store.using(*tables).find(columns, *clauses)
         if cls.group_by:
             results = results.group_by(*cls.group_by)
         if orderBy:
