@@ -124,7 +124,7 @@ class TransactionPage(object):
     def _create_search(self):
         self.search = TransactionSearchContainer(
             self, columns=self._get_columns(self.model.kind))
-        self.query = ORMObjectQueryExecuter()
+        self.query = ORMObjectQueryExecuter(self.app.conn)
         self.search.set_query_executer(self.query)
         self.search.results.connect('row-activated', self._on_row__activated)
         self.results = self.search.results
