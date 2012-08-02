@@ -80,7 +80,7 @@ from stoqlib.gui.processview import ProcessView
 from stoqlib.lib.configparser import StoqConfig
 from stoqlib.lib.formatters import raw_phone_number
 from stoqlib.lib.kiwilibrary import library
-from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.message import error, warning, yesno
 from stoqlib.lib.osutils import read_registry_key
 from stoqlib.lib.validators import validate_email
 from stoqlib.lib.webservice import WebService
@@ -962,11 +962,15 @@ class FirstTimeConfigWizard(BaseWizard):
         parser = get_option_parser()
         db_options, unused_args = parser.parse_args(dbargs)
         self.config.set_from_options(db_options)
-        setup(self.config,
-              options=self.options,
-              check_schema=True,
-              register_station=False,
-              load_plugins=False)
+        try:
+            setup(self.config,
+                  options=self.options,
+                  check_schema=True,
+                  register_station=False,
+                  load_plugins=False)
+        except DatabaseInconsistency as err:
+            error(_('The database version differs from your installed '
+                    'version.'), str(err))
 
     def connect_for_settings(self, step):
         # Try to connect, we don't care if we can connect,
