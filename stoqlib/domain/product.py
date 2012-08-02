@@ -576,10 +576,11 @@ class Storable(Domain):
         stock_item = self.get_stock_item(branch)
         # If the stock_item is missing create a new one
         if stock_item is None:
+            conn = self.get_connection()
             stock_item = ProductStockItem(
                 storable=self,
-                branch=branch,
-                connection=self.get_connection())
+                branch=conn.get(branch),
+                connection=conn)
 
         # Unit cost must be updated here as
         # 1) we need the stock item which might not exist

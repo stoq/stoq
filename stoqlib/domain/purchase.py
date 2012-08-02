@@ -180,9 +180,9 @@ class PurchaseOrder(Domain, Adaptable):
     responsible = ForeignKey('LoginUser')
     group = ForeignKey('PaymentGroup')
 
-    def __init__(self, *args, **kwargs):
+    def _init(self, *args, **kwargs):
         self.addFacet(IPaymentTransaction)
-        Domain.__init__(self, *args, **kwargs)
+        Domain._init(self, *args, **kwargs)
 
     #
     # IContainer Implementation
