@@ -556,9 +556,9 @@ class Sale(Domain, Adaptable):
     #: used for price determination.
     client_category = ForeignKey('ClientCategory', default=None)
 
-    def __init__(self, *args, **kwargs):
+    def _init(self, *args, **kwargs):
         self.addFacet(IPaymentTransaction)
-        Domain.__init__(self, *args, **kwargs)
+        Domain._init(self, *args, **kwargs)
     #
     # ORMObject hooks
     #
