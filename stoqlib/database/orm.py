@@ -1063,6 +1063,13 @@ class Viewable(Declarative):
         results.orderBy = results.order_by
         return results
 
+    @classmethod
+    def get(cls, obj_id, connection):
+        obj = cls.select(cls.id.expr == obj_id, connection=connection)[0]
+        if obj is None:
+            raise SQLObjectNotFound("Object not found")
+        return obj
+
 
 class Field(SQL):
     def __init__(self, table, column):
