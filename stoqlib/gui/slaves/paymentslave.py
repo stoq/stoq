@@ -763,8 +763,8 @@ class CardMethodSlave(BaseEditorSlave):
         else:
             minimum = 1
 
-        self.installments_number.set_range(minimum, maximum)
         self.installments_number.set_sensitive(maximum != 1)
+        self.installments_number.set_range(minimum, maximum)
 
     def _setup_payments(self):
         provider = self.model.provider
