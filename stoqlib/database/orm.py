@@ -529,6 +529,7 @@ class SQLObjectResultSet(object):
         self._distinct = distinct
         self._selectAlso = selectAlso
         self._connection = connection
+        assert connection
         # FIXME: Fix stoqlib.api.for_combo to not use this property
         self.sourceClass = cls
 
@@ -539,6 +540,7 @@ class SQLObjectResultSet(object):
         self._finished_result_set = None
 
     def _copy(self, **kwargs):
+        kwargs.setdefault('connection', self._connection)
         copy = self.__class__(self._cls, **kwargs)
         for name, value in self.__dict__.iteritems():
             if name[1:] not in kwargs and name != "_finished_result_set":
