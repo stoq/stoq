@@ -442,10 +442,10 @@ class MagentoImage(MagentoBaseSyncUp):
             returnValue(retval)
 
         image_data = self._get_data()
-        image_description = self.image.get_description()
+        image_description = self.image.get_description().encode('utf-8')
         image_data.update({
             'file': {
-                'name': urllib.quote(image_description.encode('utf-8')),
+                'name': urllib.quote(image_description, safe=''),
                 'content': self.image.get_base64_encoded(),
                 # All of our images are stored as png
                 'mime': 'image/png',
