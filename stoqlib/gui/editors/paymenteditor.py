@@ -144,7 +144,10 @@ class PaymentEditor(BaseEditor):
     def on_confirm(self):
         self.model.base_value = self.model.value
         person = self.person.get_selected_data()
-        if person is not None and person is not ValueUnset:
+        if (person is not None and person is not ValueUnset and
+            # FIXME: PersonField should never let get_selected_data()
+            #        return anything different from None and the model.
+            person != ""):
             setattr(self.model.group,
                     self.person_attribute,
                     person.person)
