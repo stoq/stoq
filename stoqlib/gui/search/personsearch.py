@@ -93,7 +93,7 @@ class EmployeeSearch(BasePersonSearch):
 
     def _get_role_values(self):
         items = [(role.name, role.name) for role in
-                 EmployeeRole.select()]
+                 EmployeeRole.select(connection=self.conn)]
         items.insert(0, (_('Any'), None))
         return items
 
