@@ -739,7 +739,9 @@ class PosApp(AppWindow):
             assert self._coupon
 
             ordered = self._coupon.confirm(sale, trans)
-            if not api.finish_transaction(trans, ordered):
+            # Dont call finish_transaction here, since confirm() above did it
+            # already
+            if not ordered:
                 # FIXME: Move to TEF plugin
                 manager = get_plugin_manager()
                 if manager.is_active('tef'):
