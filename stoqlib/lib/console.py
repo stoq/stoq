@@ -47,6 +47,7 @@ class Console(object):
             self.ns[table.__name__] = table
 
         self.ns['conn'] = self.conn
+        self.ns['store'] = self.conn.store
         self.ns['trans'] = self.trans
         self.ns['sysparam'] = api.sysparam
         self.ns['api'] = api
