@@ -216,7 +216,8 @@ class PayableApp(BaseAccountWindow):
         self.search.refresh()
         if trans.committed:
             self._update_filter_items()
-            self.select_result(OutPaymentView.get(trans.retval.id))
+            self.select_result(OutPaymentView.get(trans.retval.id,
+                                                  connection=self.conn))
 
     #
     # Public API
