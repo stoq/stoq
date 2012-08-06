@@ -50,6 +50,18 @@ def diff_files(orig, new, verbose=False):
                          verbose=verbose)
 
 
+def diff_lines(orig_lines, new_lines, short='<stdin>', verbose=False):
+    """Diff two files.
+
+    @return: True i the files differ otherwise False
+    :rtype: bool
+    """
+    return _diff(orig_lines,
+                 new_lines,
+                 short=short,
+                 verbose=verbose)
+
+
 def diff_strings(orig, new, verbose=False):
     """Diff two strings.
 
