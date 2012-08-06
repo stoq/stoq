@@ -72,12 +72,14 @@ class TestPaymentEditor(GUITest):
 
     def testShow(self):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT)
+        payment.due_date = datetime.date(2012, 1, 1)
         payment.group = self.create_payment_group()
         editor = OutPaymentEditor(self.trans, payment)
 
         self.check_editor(editor, 'editor-out-payment-show')
 
         payment = self.create_payment(payment_type=Payment.TYPE_IN)
+        payment.due_date = datetime.date(2012, 1, 1)
         payment.group = self.create_payment_group()
         editor = InPaymentEditor(self.trans, payment)
 
