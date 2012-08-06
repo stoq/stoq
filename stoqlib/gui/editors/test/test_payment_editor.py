@@ -105,6 +105,31 @@ class TestPaymentEditor(GUITest):
         self.check_editor(editor, 'editor-out-payment-show-purchase',
                           ignores=[p.group.get_description()])
 
+    def testValidateConfirm(self):
+        editor = OutPaymentEditor(self.trans)
+        self.assertEquals(editor.model.description, '')
+        self.assertEquals(editor.model.value, 0)
+        self.assertEquals(editor.model.due_date, None)
+        self.assertFalse(editor.validate_confirm())
+
+        editor.description.update("Empty description")
+        self.assertFalse(editor.validate_confirm())
+
+        editor.value.update(100)
+        self.assertFalse(editor.validate_confirm())
+
+        editor.due_date.update(datetime.date(2015, 1, 1))
+        self.assertTrue(editor.validate_confirm())
+
+        editor.repeat.update(INTERVALTYPE_WEEK)
+        self.assertFalse(editor.validate_confirm())
+
+        editor.end_date.update(datetime.date(2015, 1, 10))
+        self.assertTrue(editor.validate_confirm())
+
+        editor.end_date.update(datetime.date(2014, 1, 10))
+        self.assertFalse(editor.validate_confirm())
+
 
 if __name__ == '__main__':
     from stoqlib.api import api
