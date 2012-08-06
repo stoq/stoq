@@ -17,7 +17,7 @@ GtkDialog(main_dialog.toplevel): hidden
               ProxyLabel(value_lbl, 3 4 0 1): 'Value:'
               ProxyEntry(value, 3 4 1 2): '10.00', insensitive
               ProxyLabel(due_date_lbl, 4 5 0 1): 'Due date:'
-              ProxyDateEntry(due_date, 4 5 1 2): datetime.date(2012, 8, 6), insensitive
+              ProxyDateEntry(due_date, 4 5 1 2): datetime.date(2012, 1, 1), insensitive
               ProxyLabel(category_lbl, 5 6 0 1): 'Category:'
               ProxyComboBox(category, 5 6 1 2): None
               GtkButton(category_add_button, 5 6 2 3): 
