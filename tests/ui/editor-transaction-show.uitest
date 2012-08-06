@@ -1,0 +1,29 @@
+GtkDialog(main_dialog.toplevel): hidden, sensitive
+  GtkVBox(main_dialog._main_vbox): sensitive
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): sensitive
+      GtkEventBox(main_dialog.header): sensitive
+      GtkEventBox(main_dialog.main, expand=True, fill=True): sensitive
+        GtkTable(toplevel): sensitive
+          GtkLabel(label3, 0 1 0 1): 'Account:', sensitive
+          ProxyComboBox(account, 0 1 1 2): <Account 5>, sensitive
+          GtkButton(add_account, 0 1 2 3): sensitive
+          GtkLabel(label1, 1 2 0 1): 'Description:', sensitive
+          ProxyEntry(description, 1 2 1 2): 'Test Account Transaction', sensitive
+          GtkLabel(label4, 2 3 0 1): 'Date:', sensitive
+          ProxyDateEntry(date, 2 3 1 2): datetime.date(2012, 1, 1), sensitive
+          GtkLabel(label2, 3 4 0 1): 'Code:', sensitive
+          ProxyEntry(code, 3 4 1 2): 'Code', sensitive
+          GtkLabel(label5, 4 5 0 1): 'Value:', sensitive
+          ProxyEntry(value, 4 5 1 2): '1.00', sensitive
+          GtkHBox(hbox1, 5 6 1 2): sensitive
+            ProxyRadioButton(is_incoming, expand=True, fill=True): 'Receive', sensitive
+            ProxyRadioButton(is_outgoing, expand=True, fill=True): 'Spend', sensitive
+      GtkHBox(fill=True): sensitive
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): sensitive
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): sensitive
+        GtkEventBox(main_dialog.notice, fill=True): sensitive
+        GtkEventBox(main_dialog.details_holder, pack-end): sensitive
+    GtkHButtonBox(fill=True, pack-end): sensitive
+      GtkButton(): 'Show Payment'
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel', sensitive
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', sensitive
