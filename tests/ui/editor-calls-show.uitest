@@ -1,0 +1,28 @@
+GtkDialog(main_dialog.toplevel): hidden
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkTable(table1): 
+          GtkLabel(label5, 0 1 0 1): 'Person:'
+          GtkHBox(hbox1, 0 1 1 2): 
+            ProxyComboEntry(person_combo, expand=True, fill=True): %% FILTERED BY UNITTEST %%, insensitive
+            GtkButton(details_button, fill=True): hidden
+          GtkLabel(label1, 1 2 0 1): 'Date:'
+          ProxyDateEntry(date, 1 2 1 2): datetime.date(2011, 1, 1)
+          GtkLabel(label2, 2 3 0 1): 'Attendant:'
+          ProxyComboEntry(attendant, 2 3 1 2): %% FILTERED BY UNITTEST %%
+          GtkLabel(label3, 3 4 0 1): 'Description:'
+          ProxyEntry(description, 3 4 1 2): 'Test call'
+          GtkLabel(label4, 4 5 0 1): 'Message:'
+          GtkScrolledWindow(scrolledwindow1, 4 5 1 2): 
+            ProxyTextView(message): 
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(main_dialog.help_button): 'gtk-help'
