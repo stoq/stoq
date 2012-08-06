@@ -15,7 +15,7 @@ GtkDialog(main_dialog.toplevel): hidden, sensitive
               GtkButton(person_add_button, 2 3 2 3): sensitive
               GtkButton(person_edit_button, 2 3 3 4): 
               ProxyLabel(value_lbl, 3 4 0 1): 'Value:', sensitive
-              ProxyEntry(value, 3 4 1 2): '0,00', sensitive
+              ProxyEntry(value, 3 4 1 2): '0.00', sensitive
               ProxyLabel(due_date_lbl, 4 5 0 1): 'Due date:', sensitive
               ProxyDateEntry(due_date, 4 5 1 2): None, sensitive
               ProxyLabel(category_lbl, 5 6 0 1): 'Category:', sensitive
