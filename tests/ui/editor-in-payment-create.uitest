@@ -1,38 +1,38 @@
-GtkDialog(main_dialog.toplevel): hidden, sensitive
-  GtkVBox(main_dialog._main_vbox): sensitive
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): sensitive
-      GtkEventBox(main_dialog.header): sensitive
-      GtkEventBox(main_dialog.main, expand=True, fill=True): sensitive
-        GtkEventBox(): sensitive
-          GtkAlignment(): sensitive
-            GtkTable(): sensitive
-              ProxyLabel(method_lbl, 0 1 0 1): 'Method:', sensitive
-              ProxyComboBox(method, 0 1 1 2): <PaymentMethod 3>, sensitive
-              ProxyLabel(description_lbl, 1 2 0 1): 'Description:', sensitive
-              ProxyEntry(description, 1 2 1 2): '', sensitive
-              ProxyLabel(person_lbl, 2 3 0 1): 'Payer:', sensitive
-              ProxyComboEntry(person, 2 3 1 2): None, sensitive
-              GtkButton(person_add_button, 2 3 2 3): sensitive
-              GtkButton(person_edit_button, 2 3 3 4): 
-              ProxyLabel(value_lbl, 3 4 0 1): 'Value:', sensitive
-              ProxyEntry(value, 3 4 1 2): '0.00', sensitive
-              ProxyLabel(due_date_lbl, 4 5 0 1): 'Due date:', sensitive
-              ProxyDateEntry(due_date, 4 5 1 2): None, sensitive
-              ProxyLabel(category_lbl, 5 6 0 1): 'Category:', sensitive
-              ProxyComboBox(category, 5 6 1 2): None, sensitive
-              GtkButton(category_add_button, 5 6 2 3): sensitive
-              GtkButton(category_edit_button, 5 6 3 4): 
-              ProxyLabel(repeat_lbl, 6 7 0 1): 'Repeat:', sensitive
-              ProxyComboBox(repeat, 6 7 1 2): -1, sensitive
-              ProxyLabel(end_date_lbl, 7 8 0 1): 'End date:', sensitive
-              ProxyDateEntry(end_date, 7 8 1 2): None
-      GtkHBox(fill=True): sensitive
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): sensitive
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): sensitive
-        GtkEventBox(main_dialog.notice, fill=True): sensitive
-        GtkEventBox(main_dialog.details_holder, pack-end): sensitive
-    GtkHButtonBox(fill=True, pack-end): sensitive
-      GtkButton(details_button): 'Details', sensitive
-      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel', sensitive
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
-      GtkButton(main_dialog.help_button): 'gtk-help', sensitive
+GtkDialog(main_dialog.toplevel): hidden
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkEventBox(): 
+          GtkAlignment(): 
+            GtkTable(): 
+              ProxyLabel(method_lbl, 0 1 0 1): 'Method:'
+              ProxyComboBox(method, 0 1 1 2): <PaymentMethod 3>
+              ProxyLabel(description_lbl, 1 2 0 1): 'Description:'
+              ProxyEntry(description, 1 2 1 2): ''
+              ProxyLabel(person_lbl, 2 3 0 1): 'Payer:'
+              ProxyComboEntry(person, 2 3 1 2): None
+              GtkButton(person_add_button, 2 3 2 3): 
+              GtkButton(person_edit_button, 2 3 3 4): insensitive
+              ProxyLabel(value_lbl, 3 4 0 1): 'Value:'
+              ProxyEntry(value, 3 4 1 2): '0.00'
+              ProxyLabel(due_date_lbl, 4 5 0 1): 'Due date:'
+              ProxyDateEntry(due_date, 4 5 1 2): None
+              ProxyLabel(category_lbl, 5 6 0 1): 'Category:'
+              ProxyComboBox(category, 5 6 1 2): None
+              GtkButton(category_add_button, 5 6 2 3): 
+              GtkButton(category_edit_button, 5 6 3 4): insensitive
+              ProxyLabel(repeat_lbl, 6 7 0 1): 'Repeat:'
+              ProxyComboBox(repeat, 6 7 1 2): -1
+              ProxyLabel(end_date_lbl, 7 8 0 1): 'End date:'
+              ProxyDateEntry(end_date, 7 8 1 2): None, insensitive
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(details_button): 'Details'
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
+      GtkButton(main_dialog.help_button): 'gtk-help'

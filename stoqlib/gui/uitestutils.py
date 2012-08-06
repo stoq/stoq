@@ -93,8 +93,8 @@ GtkWindow(PaymentEditor):
 
         if not widget.get_visible():
             props.append('hidden')
-        if widget.get_sensitive():
-            props.append('sensitive')
+        if not widget.get_sensitive():
+            props.append('insensitive')
         if isinstance(widget, gtk.Entry):
             text = widget.get_text()
             props.insert(0, repr(text))
