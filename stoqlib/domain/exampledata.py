@@ -451,9 +451,9 @@ class ExampleCreator(object):
 
     def create_city_location(self):
         from stoqlib.domain.address import CityLocation
-        return CityLocation(country='Groenlandia',
-                            city='Acapulco',
-                            state='Wisconsin',
+        return CityLocation(country='United States',
+                            city='Los Angeles',
+                            state='Californa',
                             connection=self.trans)
 
     def create_address(self):
