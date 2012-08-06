@@ -70,6 +70,19 @@ class TestPaymentEditor(GUITest):
         editor.repeat.update(INTERVALTYPE_ONCE)
         self.assertNotSensitive(editor, ['end_date'])
 
+    def testShow(self):
+        payment = self.create_payment(payment_type=Payment.TYPE_OUT)
+        payment.group = self.create_payment_group()
+        editor = OutPaymentEditor(self.trans, payment)
+
+        self.check_editor(editor, 'editor-out-payment-show')
+
+        payment = self.create_payment(payment_type=Payment.TYPE_IN)
+        payment.group = self.create_payment_group()
+        editor = InPaymentEditor(self.trans, payment)
+
+        self.check_editor(editor, 'editor-in-payment-show')
+
     def testShowFromSale(self):
         sale = self.create_sale()
         self.add_payments(sale, method_type='money')
