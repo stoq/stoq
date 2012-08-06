@@ -225,7 +225,7 @@ class PaymentEditor(BaseEditor):
         due_date = self.due_date.get_date()
         if end_date and due_date:
             if end_date < due_date:
-                self.end_date.set_invalid(_("End date must be before start date"))
+                self.end_date.set_invalid(_("End date cannot be before start date"))
             else:
                 self.end_date.set_valid()
                 self.refresh_ok(self.is_valid)
