@@ -25,10 +25,13 @@
 import datetime
 import unittest
 
+import mock
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.editors.paymenteditor import (InPaymentEditor,
                                                OutPaymentEditor,
+                                               LonelyPaymentDetailsDialog,
                                                INTERVALTYPE_ONCE)
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.lib.translation import stoqlib_gettext
@@ -91,9 +94,12 @@ class TestPaymentEditor(GUITest):
 
         p = sale.payments[0]
         p.due_date = datetime.date(2012, 1, 1)
+
         editor = InPaymentEditor(self.trans, p)
         self.check_editor(editor, 'editor-in-payment-show-sale',
                           ignores=[p.group.get_description()])
+
+        self.assertTrue(editor.model.group.sale)
 
     def testShowFromPurchase(self):
         purchase = self.create_purchase_order()
@@ -129,6 +135,63 @@ class TestPaymentEditor(GUITest):
 
         editor.end_date.update(datetime.date(2014, 1, 10))
         self.assertFalse(editor.validate_confirm())
+
+    @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
+    def testShowLonelyDialogOut(self, run_dialog):
+        payment = self.create_payment(payment_type=Payment.TYPE_OUT)
+        payment.due_date = datetime.date(2012, 1, 1)
+        payment.group = self.create_payment_group()
+        editor = OutPaymentEditor(self.trans, payment)
+
+        editor.details_button.clicked()
+        run_dialog.assert_called_once_with(LonelyPaymentDetailsDialog, editor,
+                                           editor.conn, editor.model)
+
+    @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
+    def testShowLonelyDialogIn(self, run_dialog):
+        payment = self.create_payment(payment_type=Payment.TYPE_IN)
+        payment.due_date = datetime.date(2012, 1, 1)
+        payment.group = self.create_payment_group()
+        editor = InPaymentEditor(self.trans, payment)
+
+        editor.details_button.clicked()
+        run_dialog.assert_called_once_with(LonelyPaymentDetailsDialog, editor,
+                                           editor.conn, editor.model)
+
+    @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
+    def testShowPurchaseDialog(self, run_dialog):
+        purchase = self.create_purchase_order()
+        self.add_payments(purchase, method_type='money')
+
+        p = purchase.payments[0]
+        p.due_date = datetime.date(2012, 1, 1)
+        editor = OutPaymentEditor(self.trans, p)
+
+        editor.details_button.clicked()
+        run_dialog.assert_called_once_with(PurchaseDetailsDialog, editor,
+                                           editor.conn, purchase)
+
+    @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
+    def testShowSaleDialog(self, run_dialog):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+        self.add_payments(sale, method_type='money')
+        sale.confirm()
+
+        p = sale.payments[0]
+        p.due_date = datetime.date(2012, 1, 1)
+
+        editor = InPaymentEditor(self.trans, p)
+
+        editor.details_button.clicked()
+        # FIXME: for Viewable comparision in Storm"
+        #from stoqlib.domain.sale import SaleView
+        #from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+        #sale_view = SaleView.get(editor.model.group.sale.id, connection=self.trans)
+        #run_dialog.assert_called_once_with(SaleDetailsDialog, editor,
+        #                                   editor.conn, sale_view)
+        run_dialog.assert_called_once()
 
 
 if __name__ == '__main__':
