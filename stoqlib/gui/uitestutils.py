@@ -23,9 +23,11 @@
 ##
 
 import os
+import pprint
 
 import gobject
 import gtk
+from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.combo import ProxyComboBox, ProxyComboEntry
 from kiwi.ui.widgets.entry import ProxyDateEntry
 
@@ -112,6 +114,17 @@ GtkWindow(PaymentEditor):
             recurse = False
         if isinstance(widget, ProxyDateEntry):
             props.insert(0, repr(widget.get_date()))
+            recurse = False
+        if isinstance(widget, ObjectList):
+            # New indent is:
+            #   old indentation + 'ObjectList('
+            rows_indent = (indent * 2) + len(gobject.type_name(widget) + '(')
+
+            def x(a, b):
+                return cmp(repr(a), repr(b))
+            props.insert(0, pprint.pformat(
+                list(sorted(widget, cmp=x)),
+                indent=rows_indent))
             recurse = False
 
         self.output += "%s%s(%s): %s\n" % (
