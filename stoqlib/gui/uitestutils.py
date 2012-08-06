@@ -197,7 +197,8 @@ class GUITest(DomainTest):
         lines = [(line + '\n') for line in text.split('\n')][:-1]
         expected = open(filename).readlines()
         difference = diff_lines(expected,
-                                lines)
+                                lines,
+                                short=filename)
         if difference:
             self.fail('ui test %s failed:\n%s' % (
                 ui_test_name, difference))

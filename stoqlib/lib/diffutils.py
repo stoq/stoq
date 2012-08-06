@@ -62,7 +62,7 @@ def diff_lines(orig_lines, new_lines, short='<stdin>', verbose=False):
                  verbose=verbose)
 
 
-def diff_strings(orig, new, verbose=False):
+def diff_strings(orig, new, short='<input>', verbose=False):
     """Diff two strings.
 
     @return: True i the files differ otherwise False
@@ -73,7 +73,7 @@ def diff_strings(orig, new, verbose=False):
 
     return _diff(_tolines(orig),
                  _tolines(new),
-                 short='<input>',
+                 short=short,
                  verbose=verbose)
 
 
