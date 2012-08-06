@@ -62,9 +62,9 @@ INTERVALTYPE_QUARTERLY = 11
 
 
 class PaymentEditor(BaseEditor):
-    title = _("Payment")
     confirm_widgets = ['due_date']
     model_type = Payment
+    model_name = _('payment')
 
     # Override in subclass
     person_type = None
