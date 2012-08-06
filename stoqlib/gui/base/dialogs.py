@@ -209,11 +209,11 @@ class BasicDialog(GladeDelegate, RunnableView):
             show_section(section)
 
         self.action_area.set_layout(gtk.BUTTONBOX_END)
-        button = gtk.Button(stock=gtk.STOCK_HELP)
-        button.connect('clicked', on_help__clicked)
-        self.action_area.add(button)
-        self.action_area.set_child_secondary(button, True)
-        button.show()
+        self.help_button = gtk.Button(stock=gtk.STOCK_HELP)
+        self.help_button.connect('clicked', on_help__clicked)
+        self.action_area.add(self.help_button)
+        self.action_area.set_child_secondary(self.help_button, True)
+        self.help_button.show()
 
     #
     # Public API
