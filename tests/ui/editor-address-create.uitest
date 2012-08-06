@@ -1,35 +1,35 @@
-GtkDialog(main_dialog.toplevel): hidden, sensitive
-  GtkVBox(main_dialog._main_vbox): sensitive
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): sensitive
-      GtkEventBox(main_dialog.header): sensitive
-      GtkEventBox(main_dialog.main, expand=True, fill=True): sensitive
-        GtkVBox(toplevel): sensitive
-          GtkEventBox(main_holder, expand=True, fill=True): sensitive
-            GtkTable(): sensitive
-              GtkLabel(0 1 0 1): 'Street:', sensitive
-              ProxyEntry(0 1 1 4): '', sensitive
-              GtkHBox(1 2 0 1): sensitive
-                GtkLabel(expand=True, fill=True): sensitive
-                ProxyCheckButton(expand=True, fill=True): 'Number:', sensitive
-              GtkHBox(1 2 1 2): sensitive
-                ProxyEntry(fill=True): 'N/A'
-                GtkLabel(expand=True, fill=True): 'Postal Code:', sensitive
-                ProxyEntry(fill=True): '     -   ', sensitive
-              GtkLabel(1 2 2 3): 'District:', sensitive
-              ProxyEntry(1 2 3 4): '', sensitive
-              GtkLabel(2 3 0 1): 'Complement:', sensitive
-              ProxyEntry(2 3 1 2): '', sensitive
-              GtkLabel(2 3 2 3): 'City:', sensitive
-              ProxyEntry(2 3 3 4): 'S\xc3\xa3o Carlos', sensitive
-              GtkLabel(3 4 0 1): 'State:', sensitive
-              ProxyEntry(3 4 1 2): 'SP', sensitive
-              GtkLabel(3 4 2 3): 'Country:', sensitive
-              ProxyComboEntry(3 4 3 4): 'Brazil', sensitive
-      GtkHBox(fill=True): sensitive
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): sensitive
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): sensitive
-        GtkEventBox(main_dialog.notice, fill=True): sensitive
-        GtkEventBox(main_dialog.details_holder, pack-end): sensitive
-    GtkHButtonBox(fill=True, pack-end): sensitive
-      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel', sensitive
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+GtkDialog(main_dialog.toplevel): hidden
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkVBox(toplevel): 
+          GtkEventBox(main_holder, expand=True, fill=True): 
+            GtkTable(): 
+              GtkLabel(0 1 0 1): 'Street:'
+              ProxyEntry(0 1 1 4): ''
+              GtkHBox(1 2 0 1): 
+                GtkLabel(expand=True, fill=True): 
+                ProxyCheckButton(expand=True, fill=True): 'Number:'
+              GtkHBox(1 2 1 2): 
+                ProxyEntry(fill=True): 'N/A', insensitive
+                GtkLabel(expand=True, fill=True): 'Postal Code:'
+                ProxyEntry(fill=True): '     -   '
+              GtkLabel(1 2 2 3): 'District:'
+              ProxyEntry(1 2 3 4): ''
+              GtkLabel(2 3 0 1): 'Complement:'
+              ProxyEntry(2 3 1 2): ''
+              GtkLabel(2 3 2 3): 'City:'
+              ProxyEntry(2 3 3 4): 'S\xc3\xa3o Carlos'
+              GtkLabel(3 4 0 1): 'State:'
+              ProxyEntry(3 4 1 2): 'SP'
+              GtkLabel(3 4 2 3): 'Country:'
+              ProxyComboEntry(3 4 3 4): 'Brazil'
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive

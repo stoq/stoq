@@ -1,17 +1,17 @@
-GtkDialog(main_dialog.toplevel): hidden, sensitive
-  GtkVBox(main_dialog._main_vbox): sensitive
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): sensitive
-      GtkEventBox(main_dialog.header): sensitive
-      GtkEventBox(main_dialog.main, expand=True, fill=True): sensitive
-        GtkTable(table): sensitive
-          GtkLabel(label1, 0 1 0 1): 'Account name:', sensitive
-          ProxyEntry(description, 0 1 1 2): '', sensitive
-          GtkLabel(label2, 1 2 0 1): 'Account code:', sensitive
-          ProxyEntry(code, 1 2 1 2): '', sensitive
-          GtkLabel(label4, 2 3 0 1): 'Type:', sensitive
-          ProxyComboBox(account_type, 2 3 1 2): 1, sensitive
-          GtkLabel(label3, 3 4 0 1): 'Parent:', sensitive
-          GtkVBox(tree_box, 3 4 1 2): sensitive
+GtkDialog(main_dialog.toplevel): hidden
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkTable(table): 
+          GtkLabel(label1, 0 1 0 1): 'Account name:'
+          ProxyEntry(description, 0 1 1 2): ''
+          GtkLabel(label2, 1 2 0 1): 'Account code:'
+          ProxyEntry(code, 1 2 1 2): ''
+          GtkLabel(label4, 2 3 0 1): 'Type:'
+          ProxyComboBox(account_type, 2 3 1 2): 1
+          GtkLabel(label3, 3 4 0 1): 'Parent:'
+          GtkVBox(tree_box, 3 4 1 2): 
             ObjectTree(parent_accounts, expand=True, fill=True): [                      <AccountView Aluguel>,
                        <AccountView Assets>,
                        <AccountView Banco do Brasil>,
@@ -28,14 +28,14 @@ GtkDialog(main_dialog.toplevel): hidden, sensitive
                        <AccountView Telefonia>,
                        <AccountView Tills>,
                        <Settable description='Accounts Payable', id=-1, kind='payable', parent=None, selectable=False, total=None>,
-                       <Settable description='Accounts Receivable', id=-2, kind='receivable', parent=None, selectable=False, total=None>], sensitive
-            GtkLabel(label5, fill=True): 'Hold control to remove selection.', sensitive
-      GtkHBox(fill=True): sensitive
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): sensitive
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): sensitive
-        GtkEventBox(main_dialog.notice, fill=True): sensitive
-        GtkEventBox(main_dialog.details_holder, pack-end): sensitive
-    GtkHButtonBox(fill=True, pack-end): sensitive
-      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel', sensitive
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
-      GtkButton(_test_button): 'Print a test bill'
+                       <Settable description='Accounts Receivable', id=-2, kind='receivable', parent=None, selectable=False, total=None>]
+            GtkLabel(label5, fill=True): 'Hold control to remove selection.'
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
+      GtkButton(_test_button): 'Print a test bill', insensitive
