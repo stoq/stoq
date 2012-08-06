@@ -1,4 +1,4 @@
-GtkDialog(main_dialog.toplevel): hidden
+GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "transaction"'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
