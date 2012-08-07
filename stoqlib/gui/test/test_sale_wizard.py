@@ -44,7 +44,8 @@ class TestConfirmSaleWizard(GUITest):
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('check')
-        wizard.go_to_next()
+        self.assertTrue(wizard.next_button.props.sensitive)
+        wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-check',
                           ignores=[repr(datetime.date.today())])
 
@@ -54,7 +55,8 @@ class TestConfirmSaleWizard(GUITest):
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('bill')
-        wizard.go_to_next()
+        self.assertTrue(wizard.next_button.props.sensitive)
+        wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-bill',
                           ignores=[repr(datetime.date.today())])
 
@@ -64,7 +66,8 @@ class TestConfirmSaleWizard(GUITest):
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('card')
-        wizard.go_to_next()
+        self.assertTrue(wizard.next_button.props.sensitive)
+        wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-card',
                           ignores=[repr(datetime.date.today())])
 
@@ -74,7 +77,8 @@ class TestConfirmSaleWizard(GUITest):
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('deposit')
-        wizard.go_to_next()
+        self.assertTrue(wizard.next_button.props.sensitive)
+        wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-deposit',
                           ignores=[repr(datetime.date.today())])
 
@@ -86,6 +90,7 @@ class TestConfirmSaleWizard(GUITest):
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('store_credit')
-        wizard.go_to_next()
+        self.assertTrue(wizard.next_button.props.sensitive)
+        wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-store-credit',
                           ignores=[repr(datetime.date.today())])
