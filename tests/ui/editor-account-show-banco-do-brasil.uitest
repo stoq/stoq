@@ -39,7 +39,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Account"'
           ProxyEntry(bank_branch, 7 8 1 2): ''
           GtkLabel(8 9 0 1): 'Account:'
           ProxyEntry(bank_account, 8 9 1 2): ''
-          GtkLabel(9 10 0 1): '&lt;i&gt;Convenio&lt;/i&gt;:'
+          GtkLabel(9 10 0 1): '<i>Convenio</i>:'
           ProxyEntry(option0, 9 10 1 2): ''
       GtkHBox(fill=True): 
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
