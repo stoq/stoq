@@ -32,25 +32,20 @@ from stoqlib.gui.uitestutils import GUITest
 class TestAccountEditor(GUITest):
     def testCreate(self):
         editor = AccountEditor(self.trans)
-
-        # Model
-        self.assertTrue(isinstance(editor.model, Account))
-
-        # FIXME: In the long run this should be moved into the domain,
-        #        Like Domain.create_empty() or so
-        self.assertEquals(editor.model.account_type, Account.TYPE_CASH)
-        self.assertEquals(editor.model.description, '')
-
         self.check_editor(editor, 'editor-account-create')
 
-        editor.description.update('Updated description')
-
-        self.check_editor(editor, 'editor-account-create-can-confirm')
+    def testConfirm(self):
+        editor = AccountEditor(self.trans)
+        self.assertFalse(editor.validate_confirm())
+        editor.description.update('Account name')
+        self.assertTrue(editor.validate_confirm())
+        editor.main_dialog.confirm()
+        self.check_editor(editor, 'editor-account-confirm',
+                          [editor.retval])
 
     def testShow(self):
         account = self.create_account()
         editor = AccountEditor(self.trans, account)
-
         self.check_editor(editor, 'editor-account-show')
 
     def testShowBancoDoBrasil(self):

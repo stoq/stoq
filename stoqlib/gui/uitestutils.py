@@ -31,6 +31,7 @@ from kiwi.interfaces import IValidatableProxyWidget
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.combo import ProxyComboBox, ProxyComboEntry
 from kiwi.ui.widgets.entry import ProxyDateEntry
+from storm.info import get_cls_info
 
 import stoq
 from stoqlib.domain.test.domaintest import DomainTest
@@ -171,12 +172,35 @@ GtkWindow(PaymentEditor):
         self._add_namespace(editor.__dict__)
         self._add_namespace(editor.main_dialog.__dict__, 'main_dialog.')
 
+        self.output += 'editor: %s\n' % (editor.__class__.__name__, )
         self._dump_widget(editor.main_dialog.get_toplevel())
 
     def dump_wizard(self, wizard):
         self._add_namespace(wizard.__dict__)
 
+        self.output += 'wizard: %s\n' % (wizard.__class__.__name__, )
         self._dump_widget(wizard.get_toplevel())
+
+    def dump_models(self, models):
+        if not models:
+            return
+        self.output += '\n'
+        for model in models:
+            self._dump_model(model)
+
+    def _dump_model(self, model):
+        if model is None:
+            self.output += 'model: None\n'
+            return
+        model_type = type(model)
+        self.output += 'model: %s\n' % (model_type.__name__, )
+        info = get_cls_info(model_type)
+        for col in info.columns:
+            if col.name.endswith('_id') or col.name == 'id':
+                continue
+            self.output += '  %s: %r\n' % (col.name,
+                                           getattr(model, col.name, None))
+        self.output += '\n'
 
 
 class GUITest(DomainTest):
@@ -199,14 +223,16 @@ class GUITest(DomainTest):
                 self.fail("%s.%s should not be sensitive" % (
                     dialog.__class__.__name__, attr))
 
-    def check_wizard(self, wizard, ui_test_name, ignores=[]):
+    def check_wizard(self, wizard, ui_test_name, models=[], ignores=[]):
         dumper = GUIDumper()
         dumper.dump_wizard(wizard)
+        dumper.dump_models(models)
         self._check_filename(dumper, ui_test_name, ignores)
 
-    def check_editor(self, editor, ui_test_name, ignores=[]):
+    def check_editor(self, editor, ui_test_name, models=[], ignores=[]):
         dumper = GUIDumper()
         dumper.dump_editor(editor)
+        dumper.dump_models(models)
         self._check_filename(dumper, ui_test_name, ignores)
 
     def _check_filename(self, dumper, ui_test_name, ignores=[]):

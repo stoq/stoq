@@ -1,3 +1,4 @@
+editor: AccountEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Add Account'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
@@ -5,7 +6,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Account'
       GtkEventBox(main_dialog.main, expand=True, fill=True): 
         GtkTable(table): 
           GtkLabel(label1, 0 1 0 1): 'Account name:'
-          ProxyEntry(description, 0 1 1 2): 'Updated description'
+          ProxyEntry(description, 0 1 1 2): 'Account name'
           GtkLabel(label2, 1 2 0 1): 'Account code:'
           ProxyEntry(code, 1 2 1 2): ''
           GtkLabel(label4, 2 3 0 1): 'Type:'
@@ -39,3 +40,9 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Account'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
       GtkButton(_test_button): 'Print a test bill', insensitive
+
+model: Account
+  account_type: 1
+  code: None
+  description: u'Account name'
+

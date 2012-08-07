@@ -1,4 +1,4 @@
-editor: InPaymentEditor
+editor: OutPaymentEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Add payment'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
@@ -10,23 +10,23 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add payment'
               ProxyLabel(method_lbl, 0 1 0 1): 'Method:'
               ProxyComboBox(method, 0 1 1 2): <PaymentMethod 3>
               ProxyLabel(description_lbl, 1 2 0 1): 'Description:'
-              ProxyEntry(description, 1 2 1 2): '', mandatory
-              ProxyLabel(person_lbl, 2 3 0 1): 'Payer:'
+              ProxyEntry(description, 1 2 1 2): 'Payment name'
+              ProxyLabel(person_lbl, 2 3 0 1): 'Recipient:'
               ProxyComboEntry(person, 2 3 1 2): None
               GtkButton(person_add_button, 2 3 2 3): 
               GtkButton(person_edit_button, 2 3 3 4): insensitive
               ProxyLabel(value_lbl, 3 4 0 1): 'Value:'
-              ProxyEntry(value, 3 4 1 2): '0.00', mandatory
+              ProxyEntry(value, 3 4 1 2): '100.00'
               ProxyLabel(due_date_lbl, 4 5 0 1): 'Due date:'
-              ProxyDateEntry(due_date, 4 5 1 2): None, mandatory
+              ProxyDateEntry(due_date, 4 5 1 2): datetime.date(2015, 1, 1)
               ProxyLabel(category_lbl, 5 6 0 1): 'Category:'
               ProxyComboBox(category, 5 6 1 2): None
               GtkButton(category_add_button, 5 6 2 3): 
               GtkButton(category_edit_button, 5 6 3 4): insensitive
               ProxyLabel(repeat_lbl, 6 7 0 1): 'Repeat:'
-              ProxyComboBox(repeat, 6 7 1 2): -1
+              ProxyComboBox(repeat, 6 7 1 2): 1
               ProxyLabel(end_date_lbl, 7 8 0 1): 'End date:'
-              ProxyDateEntry(end_date, 7 8 1 2): None, insensitive
+              ProxyDateEntry(end_date, 7 8 1 2): datetime.date(2015, 1, 10)
       GtkHBox(fill=True): 
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
@@ -35,5 +35,41 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add payment'
     GtkHButtonBox(fill=True, pack-end): 
       GtkButton(details_button): 'Details'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
       GtkButton(main_dialog.help_button): 'gtk-help'
+
+model: PaymentGroup
+  status: 0
+
+model: Payment
+  base_value: <currency $100>
+  cancel_date: None
+  description: u'1/2 Payment name'
+  discount: <currency $ 0>
+  due_date: datetime.datetime(2015, 1, 1, 0, 0)
+  interest: <currency $ 0>
+  open_date: datetime.datetime(2012, 8, 7, 0, 0)
+  paid_date: None
+  paid_value: None
+  payment_number: None
+  payment_type: 1
+  penalty: <currency $ 0>
+  status: 1
+  value: <currency $100>
+
+model: Payment
+  base_value: <currency $100>
+  cancel_date: None
+  description: u'2/2 Payment name'
+  discount: <currency $ 0>
+  due_date: datetime.datetime(2015, 1, 8, 0, 0)
+  interest: <currency $ 0>
+  open_date: datetime.datetime(2012, 8, 7, 0, 0)
+  paid_date: None
+  paid_value: None
+  payment_number: None
+  payment_type: 1
+  penalty: <currency $ 0>
+  status: 1
+  value: <currency $100>
+
