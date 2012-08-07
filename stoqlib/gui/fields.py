@@ -186,7 +186,8 @@ class PersonField(DomainChoiceField):
     # Field
 
     def populate(self, person, trans):
-        from stoqlib.domain.person import Client, Supplier, Transporter, SalesPerson
+        from stoqlib.domain.person import (Client, Supplier, Transporter,
+                                           SalesPerson, Branch)
         person_type = self.person_type
         if person_type == Supplier:
             facets = person_type.get_active_suppliers(trans)
@@ -204,8 +205,12 @@ class PersonField(DomainChoiceField):
             facets = person_type.get_active_salespersons(trans)
             self.add_button.set_tooltip_text(_("Add a new sales person"))
             self.edit_button.set_tooltip_text(_("Edit the selected sales person"))
+        elif person_type == Branch:
+            facets = person_type.get_active_branches(trans)
+            self.add_button.set_tooltip_text(_("Add a new branch"))
+            self.edit_button.set_tooltip_text(_("Edit the selected branch"))
         else:
-            raise AssertionError(self.person_class)
+            raise AssertionError(self.person_type)
 
         self.widget.prefill(api.for_person_combo(facets))
 
@@ -214,11 +219,13 @@ class PersonField(DomainChoiceField):
             self.widget.select(person)
 
     def run_dialog(self, trans, person):
-        from stoqlib.domain.person import Client, Supplier, Transporter
-        from stoqlib.gui.editors.personeditor import (ClientEditor,
+        from stoqlib.domain.person import Branch, Client, Supplier, Transporter
+        from stoqlib.gui.editors.personeditor import (BranchEditor,
+                                                      ClientEditor,
                                                       SupplierEditor,
                                                       TransporterEditor)
         editors = {
+            Branch: BranchEditor,
             Client: ClientEditor,
             Supplier: SupplierEditor,
             Transporter: TransporterEditor,
