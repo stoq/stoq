@@ -1,0 +1,52 @@
+GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Account"'
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkTable(table): 
+          GtkLabel(label1, 0 1 0 1): 'Account name:'
+          ProxyEntry(description, 0 1 1 2): 'Test Account'
+          GtkLabel(label2, 1 2 0 1): 'Account code:'
+          ProxyEntry(code, 1 2 1 2): '', insensitive
+          GtkLabel(label4, 2 3 0 1): 'Type:'
+          ProxyComboBox(account_type, 2 3 1 2): 0
+          GtkLabel(label3, 3 4 0 1): 'Parent:'
+          GtkVBox(tree_box, 3 4 1 2): 
+            ObjectTree(parent_accounts, expand=True, fill=True): [                      <AccountView Aluguel>,
+                       <AccountView Assets>,
+                       <AccountView Banco do Brasil>,
+                       <AccountView Banks>,
+                       <AccountView Conta de Investimento>,
+                       <AccountView Equity>,
+                       <AccountView Expenses>,
+                       <AccountView Imbalance>,
+                       <AccountView Impostos>,
+                       <AccountView Income>,
+                       <AccountView Luz>,
+                       <AccountView Saldos Iniciais>,
+                       <AccountView Salários>,
+                       <AccountView Telefonia>,
+                       <AccountView Test Account>,
+                       <AccountView Tills>,
+                       <Settable description='Accounts Payable', id=-1, kind='payable', parent=None, selectable=False, total=None>,
+                       <Settable description='Accounts Receivable', id=-2, kind='receivable', parent=None, selectable=False, total=None>]
+            GtkLabel(label5, fill=True): 'Hold control to remove selection.'
+          GtkLabel(4 5 0 1): 'Bank:'
+          ProxyComboBox(bank_type, 4 5 1 2): 237
+          GtkLabel(6 7 0 1): 'Number:'
+          ProxyEntry(bank_number, 6 7 1 2): '237', insensitive
+          GtkLabel(7 8 0 1): 'Agency:'
+          ProxyEntry(bank_branch, 7 8 1 2): ''
+          GtkLabel(8 9 0 1): 'Account:'
+          ProxyEntry(bank_account, 8 9 1 2): ''
+          GtkLabel(9 10 0 1): '&lt;i&gt;Carteira&lt;/i&gt;:'
+          ProxyEntry(option0, 9 10 1 2): ''
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
+      GtkButton(_test_button): 'Print a test bill', insensitive
