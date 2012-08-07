@@ -9,7 +9,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
               ProxyLabel(method_lbl, 0 1 0 1): 'Method:'
               ProxyComboBox(method, 0 1 1 2): <PaymentMethod 3>, insensitive
               ProxyLabel(description_lbl, 1 2 0 1): 'Description:'
-              ProxyEntry(description, 1 2 1 2): ''
+              ProxyEntry(description, 1 2 1 2): '', mandatory
               ProxyLabel(person_lbl, 2 3 0 1): 'Payer:'
               ProxyComboEntry(person, 2 3 1 2): None, insensitive
               GtkButton(person_add_button, 2 3 2 3): insensitive

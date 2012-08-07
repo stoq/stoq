@@ -7,7 +7,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Address'
           GtkEventBox(main_holder, expand=True, fill=True): 
             GtkTable(): 
               GtkLabel(0 1 0 1): 'Street:'
-              ProxyEntry(0 1 1 4): ''
+              ProxyEntry(0 1 1 4): '', mandatory
               GtkHBox(1 2 0 1): 
                 GtkLabel(expand=True, fill=True): 
                 ProxyCheckButton(expand=True, fill=True): 'Number:'
@@ -16,7 +16,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Address'
                 GtkLabel(expand=True, fill=True): 'Postal Code:'
                 ProxyEntry(fill=True): '     -   '
               GtkLabel(1 2 2 3): 'District:'
-              ProxyEntry(1 2 3 4): ''
+              ProxyEntry(1 2 3 4): '', mandatory
               GtkLabel(2 3 0 1): 'Complement:'
               ProxyEntry(2 3 1 2): ''
               GtkLabel(2 3 2 3): 'City:'

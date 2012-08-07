@@ -14,7 +14,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add transaction'
           GtkLabel(label2, 3 4 0 1): 'Code:'
           ProxyEntry(code, 3 4 1 2): ''
           GtkLabel(label5, 4 5 0 1): 'Value:'
-          ProxyEntry(value, 4 5 1 2): '0.00'
+          ProxyEntry(value, 4 5 1 2): '0.00', mandatory
           GtkHBox(hbox1, 5 6 1 2): 
             ProxyRadioButton(is_incoming, expand=True, fill=True): 'Receive'
             ProxyRadioButton(is_outgoing, expand=True, fill=True): 'Spend'
