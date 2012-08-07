@@ -195,7 +195,7 @@ class AccountEditor(BaseEditor):
     def _add_widget(self, label, widget, options=False):
         n_rows = self.table.props.n_rows
         l = gtk.Label()
-        l.set_markup(api.escape(label))
+        l.set_markup(label)
         l.props.xalign = 1.0
         self.table.resize(n_rows + 1, 2)
         self.table.attach(
@@ -222,7 +222,7 @@ class AccountEditor(BaseEditor):
         self.bank_number = ProxyEntry()
         self.bank_number.props.data_type = int
         self.bank_number.set_sensitive(False)
-        bank_number_lbl = self._add_widget(_("Number:"),
+        bank_number_lbl = self._add_widget(api.escape(_("Number:")),
                                            self.bank_number, options=True)
 
         self.bank_branch = ProxyEntry()
@@ -231,8 +231,8 @@ class AccountEditor(BaseEditor):
         self.bank_branch.props.data_type = 'str'
         self.bank_branch.props.mandatory = True
         self.bank_branch.model_attribute = "bank_branch"
-        bank_branch_lbl = self._add_widget(_("Agency:"),
-                                             self.bank_branch, options=True)
+        bank_branch_lbl = self._add_widget(api.escape(_("Agency:")),
+                                           self.bank_branch, options=True)
         if bank_number is not None:
             bank_branch_lbl.show()
             self.bank_branch.show()
@@ -242,7 +242,8 @@ class AccountEditor(BaseEditor):
         self.bank_account = ProxyEntry()
         self.bank_account.connect('validate', self._on_bank_account__validate,
                                   bank_info)
-        self._add_widget(_("Account:"), self.bank_account, options=True)
+        self._add_widget(api.escape(_("Account:")),
+                         self.bank_account, options=True)
         self.bank_account.model_attribute = "bank_account"
         self.bank_account.props.data_type = 'str'
         if bank_number is not None:
@@ -267,7 +268,7 @@ class AccountEditor(BaseEditor):
                 entry.props.data_type = 'str'
                 entry.connect('validate', self._on_bank_option__validate,
                               bank_info, option)
-                self._add_widget("<i>%s</i>:" % (option.capitalize(), ),
+                self._add_widget("<i>%s</i>:" % (api.escape(option.capitalize()), ),
                                  entry, options=True)
                 entry.show()
                 self._option_fields[option] = entry
@@ -308,7 +309,7 @@ class AccountEditor(BaseEditor):
 
         self.code.set_sensitive(False)
         self.bank_type = ProxyComboBox()
-        self._add_widget(_("Bank:"), self.bank_type)
+        self._add_widget(api.escape(_("Bank:")), self.bank_type)
         self.bank_type.connect('content-changed',
                                self._on_bank_type__content_changed)
         self.bank_type.show()
