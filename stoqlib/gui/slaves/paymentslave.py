@@ -789,7 +789,7 @@ class CardMethodSlave(BaseEditorSlave):
             data = operation.get_card_data_by_payment(payment)
             data.card_type = payment_type
             data.provider = provider
-            data.fee = provider.get_fee_for_payment(provider, data)
+            data.fee = provider.get_fee_for_payment(data)
             data.fee_value = data.fee * payment.value / 100
 
     #
