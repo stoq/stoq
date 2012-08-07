@@ -221,7 +221,7 @@ class BaseMethodSelectionStep(object):
             total = self._get_total_amount()
 
             if credit < total:
-                warning(_(u"Client %s does not have enought credit left.") % \
+                warning(_(u"Client %s does not have enough credit left.") % \
                         client.person.name)
                 return self
 
