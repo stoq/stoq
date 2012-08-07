@@ -97,6 +97,9 @@ class _TemporaryPaymentData(object):
         self.payment_number = payment_number
         self.bank_account = bank_account
 
+    def __repr__(self):
+        return '<_TemporaryPaymentData>'
+
 
 class _TemporaryBankData(object):
     def __init__(self, bank_number=None, bank_branch=None, bank_account=None):

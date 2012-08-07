@@ -1,0 +1,86 @@
+GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
+  GtkVBox(PluggableWizard-vbox): 
+    GtkVBox(vbox1, expand=True, fill=True): 
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): 
+        GtkVBox(): 
+          GtkHBox(fill=True): 
+            GtkVBox(expand=True, fill=True): 
+              GtkTable(fill=True): 
+                ProxyLabel(0 1 0 1): 'Salesperson:'
+                ProxyComboEntry(0 1 1 2): %% FILTERED BY UNITTEST %%, insensitive
+                GtkLabel(1 2 0 1): 'Client:'
+                ProxyComboEntry(1 2 1 2): None
+                GtkButton(1 2 2 3): 
+                GtkButton(1 2 3 4): insensitive
+                GtkLabel(2 3 0 1): 'Transporter:'
+                ProxyComboEntry(2 3 1 2): None
+                GtkButton(2 3 2 3): 
+                GtkLabel(3 4 0 1): 'Operation Nature:', hidden
+                ProxyEntry(3 4 1 2): '', hidden
+            GtkVBox(expand=True, fill=True): 
+              GtkTable(fill=True): 
+                GtkLabel(0 1 0 1): 'Invoice Number:'
+                ProxySpinButton(0 1 1 2): '1004'
+                GtkLabel(1 2 0 1): 'Expire', hidden
+                ProxyDateEntry(1 2 1 2): None, hidden
+                GtkLabel(2 3 0 1): 'C.F.O.P.:', hidden
+                ProxyComboEntry(2 3 1 2): None, hidden
+                GtkButton(2 3 2 3): hidden
+                GtkLabel(3 4 0 1): 'Client Category:', hidden
+                ProxyComboBox(3 4 1 2): None, hidden
+          GtkHSeparator(fill=True): 
+          GtkVBox(fill=True): 
+            GtkHBox(fill=True): 
+              GtkTable(expand=True, fill=True): 
+                ProxyLabel(0 1 0 1): 'Subtotal:'
+                ProxyLabel(0 1 1 2): '<span >R$ 10,00</span>'
+                ProxyLabel(1 2 0 1): 'Total:'
+                ProxyLabel(1 2 1 2): '<span >R$ 10,00</span>'
+              GtkLabel(expand=True, fill=True): 
+              GtkHButtonBox(pack-end): 
+                GtkButton(pack-end): 'Notes...'
+            GtkHBox(expand=True, fill=True): 
+              GtkEventBox(expand=True, fill=True): 
+                GtkVBox(): 
+                  GtkTable(): 
+                    ProxyLabel(0 1 0 1): '<span underline="single">Cash Change</span>'
+                    ProxyLabel(1 2 0 1): 'Received: ($CURRENCY)'
+                    ProxyEntry(1 2 1 2): 'R$ 10,00'
+                    ProxyLabel(2 3 0 1): 'Change:'
+                    ProxyLabel(2 3 1 2): '<span weight="bold">R$ 0,00</span>'
+              GtkExpander(expand=True, fill=True): 
+                GtkEventBox(): 
+                  GtkVBox(): 
+                    GtkHBox(fill=True): 
+                      ProxyLabel(fill=True): 'Discount:'
+                    GtkTable(fill=True): 
+                      ProxyRadioButton(0 1 0 1): 
+                      GtkHBox(0 1 1 2): 
+                        ProxyEntry(fill=True): '0,0'
+                        ProxyLabel(fill=True): '%'
+                      ProxyRadioButton(1 2 0 1): 
+                      GtkHBox(1 2 1 2): 
+                        ProxyEntry(fill=True): '0,00', insensitive
+                        GtkLabel(expand=True, fill=True): 
+                GtkLabel(): 'Order Details'
+          GtkEventBox(fill=True, pack-end): 
+            GtkVBox(): 
+              GtkFrame(expand=True, fill=True): 
+                GtkHBox(): 
+                  GtkRadioButton(padding=6): 'Money'
+                  GtkRadioButton(padding=6): 'Bill', hidden
+                  GtkRadioButton(padding=6): 'Card'
+                  GtkRadioButton(padding=6): 'Check'
+                  GtkRadioButton(padding=6): 'Deposit'
+                  GtkRadioButton(padding=6): 'Store Credit', hidden
+                  GtkRadioButton(padding=6): 'Multiple'
+                GtkLabel(): 'Payment method:'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end): 
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): '_Finish'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
