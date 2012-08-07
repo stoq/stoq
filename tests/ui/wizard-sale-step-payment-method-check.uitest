@@ -28,10 +28,10 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                     ObjectList(expand=True, fill=True): [<_TemporaryPaymentData>]
                     GtkHBox(): 
                       ProxyLabel(expand=True, fill=True): '<span >Difference</span>'
-                      ProxyLabel(fill=True): '<span >R$ 0,00</span>'
+                      ProxyLabel(fill=True): '<span >$ 0.00</span>'
                     GtkHBox(): 
                       ProxyLabel(expand=True, fill=True): 'Total:'
-                      ProxyLabel(fill=True): '<span >R$ 10,00</span>'
+                      ProxyLabel(fill=True): '<span >$10.00</span>'
       ProxyLabel(notification_lbl, fill=True): 
       GtkHBox(hbox1, fill=True, pack-end): 
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 

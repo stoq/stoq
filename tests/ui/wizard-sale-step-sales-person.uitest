@@ -34,9 +34,9 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
             GtkHBox(fill=True): 
               GtkTable(expand=True, fill=True): 
                 ProxyLabel(0 1 0 1): 'Subtotal:'
-                ProxyLabel(0 1 1 2): '<span >R$ 10,00</span>'
+                ProxyLabel(0 1 1 2): '<span >$10.00</span>'
                 ProxyLabel(1 2 0 1): 'Total:'
-                ProxyLabel(1 2 1 2): '<span >R$ 10,00</span>'
+                ProxyLabel(1 2 1 2): '<span >$10.00</span>'
               GtkLabel(expand=True, fill=True): 
               GtkHButtonBox(pack-end): 
                 GtkButton(pack-end): 'Notes...'
@@ -46,9 +46,9 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                   GtkTable(): 
                     ProxyLabel(0 1 0 1): '<span underline="single">Cash Change</span>'
                     ProxyLabel(1 2 0 1): 'Received: ($CURRENCY)'
-                    ProxyEntry(1 2 1 2): 'R$ 10,00'
+                    ProxyEntry(1 2 1 2): '$10.00'
                     ProxyLabel(2 3 0 1): 'Change:'
-                    ProxyLabel(2 3 1 2): '<span weight="bold">R$ 0,00</span>'
+                    ProxyLabel(2 3 1 2): '<span weight="bold">$ 0.00</span>'
               GtkExpander(expand=True, fill=True): 
                 GtkEventBox(): 
                   GtkVBox(): 
@@ -57,11 +57,11 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                     GtkTable(fill=True): 
                       ProxyRadioButton(0 1 0 1): 
                       GtkHBox(0 1 1 2): 
-                        ProxyEntry(fill=True): '0,0'
+                        ProxyEntry(fill=True): '0.0'
                         ProxyLabel(fill=True): '%'
                       ProxyRadioButton(1 2 0 1): 
                       GtkHBox(1 2 1 2): 
-                        ProxyEntry(fill=True): '0,00', insensitive
+                        ProxyEntry(fill=True): '0.00', insensitive
                         GtkLabel(expand=True, fill=True): 
                 GtkLabel(): 'Order Details'
           GtkEventBox(fill=True, pack-end): 
