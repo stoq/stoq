@@ -1,3 +1,4 @@
+editor: CallsEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Call to John"'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 

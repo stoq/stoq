@@ -1,3 +1,4 @@
+wizard: ConfirmSaleWizard
 GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
   GtkVBox(PluggableWizard-vbox): 
     GtkVBox(vbox1, expand=True, fill=True): 

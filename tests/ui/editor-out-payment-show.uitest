@@ -1,3 +1,4 @@
+editor: OutPaymentEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 

@@ -56,6 +56,33 @@ class TestPaymentEditor(GUITest):
         self.assertEquals(editor.model.category, None)
         self.check_editor(editor, 'editor-in-payment-create')
 
+    def testConfirm(self):
+        editor = OutPaymentEditor(self.trans)
+        self.assertFalse(editor.validate_confirm())
+        editor.description.update('Payment name')
+        self.assertFalse(editor.validate_confirm())
+
+        editor.value.update(100)
+        self.assertFalse(editor.validate_confirm())
+
+        editor.due_date.update(datetime.date(2015, 1, 1))
+        self.assertTrue(editor.validate_confirm())
+
+        editor.repeat.update(INTERVALTYPE_WEEK)
+        self.assertFalse(editor.validate_confirm())
+
+        editor.end_date.update(datetime.date(2014, 1, 10))
+        self.assertFalse(editor.validate_confirm())
+
+        editor.end_date.update(datetime.date(2015, 1, 10))
+        self.assertTrue(editor.validate_confirm())
+
+        editor.main_dialog.confirm()
+
+        model = editor.retval
+        self.check_editor(editor, 'editor-payment-confirm',
+                          [model.group] + list(model.group.payments))
+
     def testCreateCategory(self):
         category = PaymentCategory(connection=self.trans,
                                    name='TestCategory',
@@ -110,31 +137,6 @@ class TestPaymentEditor(GUITest):
         editor = OutPaymentEditor(self.trans, p)
         self.check_editor(editor, 'editor-out-payment-show-purchase',
                           ignores=[p.group.get_description()])
-
-    def testValidateConfirm(self):
-        editor = OutPaymentEditor(self.trans)
-        self.assertEquals(editor.model.description, '')
-        self.assertEquals(editor.model.value, 0)
-        self.assertEquals(editor.model.due_date, None)
-        self.assertFalse(editor.validate_confirm())
-
-        editor.description.update("Empty description")
-        self.assertFalse(editor.validate_confirm())
-
-        editor.value.update(100)
-        self.assertFalse(editor.validate_confirm())
-
-        editor.due_date.update(datetime.date(2015, 1, 1))
-        self.assertTrue(editor.validate_confirm())
-
-        editor.repeat.update(INTERVALTYPE_WEEK)
-        self.assertFalse(editor.validate_confirm())
-
-        editor.end_date.update(datetime.date(2015, 1, 10))
-        self.assertTrue(editor.validate_confirm())
-
-        editor.end_date.update(datetime.date(2014, 1, 10))
-        self.assertFalse(editor.validate_confirm())
 
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
     def testShowLonelyDialogOut(self, run_dialog):
