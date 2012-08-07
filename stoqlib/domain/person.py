@@ -71,7 +71,6 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import IDescribable, IActive
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.payment.method import CreditCardData
 from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.system import TransactionEntry
@@ -1206,16 +1205,6 @@ class CreditProvider(Domain):
 
     (PROVIDER_CARD, ) = range(1)
 
-    cards_type = {
-        CreditCardData.TYPE_CREDIT: 'credit_fee',
-        CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE:
-                                                'credit_installments_store_fee',
-        CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER:
-                                             'credit_installments_provider_fee',
-        CreditCardData.TYPE_DEBIT: 'debit_fee',
-        CreditCardData.TYPE_DEBIT_PRE_DATED: 'debit_pre_dated_fee'
-    }
-
     #: This attribute must be either provider card or provider finance
     provider_types = {PROVIDER_CARD: _(u'Card Provider')}
 
@@ -1314,8 +1303,18 @@ class CreditProvider(Domain):
     def get_active_providers(cls, conn):
         return cls.select(cls.q.is_active == True, connection=conn)
 
-    def get_fee_for_payment(self, provider, data):
-        return getattr(self, provider.cards_type[data.card_type])
+    def get_fee_for_payment(self, data):
+        from stoqlib.domain.payment.method import CreditCardData
+        type_property_map = {
+            CreditCardData.TYPE_CREDIT: 'credit_fee',
+            CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE:
+                                                    'credit_installments_store_fee',
+            CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER:
+                                                 'credit_installments_provider_fee',
+            CreditCardData.TYPE_DEBIT: 'debit_fee',
+            CreditCardData.TYPE_DEBIT_PRE_DATED: 'debit_pre_dated_fee'
+        }
+        return getattr(self, type_property_map[data.card_type])
 
 
 class SalesPerson(Domain):
