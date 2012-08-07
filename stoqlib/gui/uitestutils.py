@@ -114,7 +114,7 @@ GtkWindow(PaymentEditor):
                 props.insert(0, repr(lbl))
             recurse = False
         if isinstance(widget, (ProxyComboBox, ProxyComboEntry)):
-            props.insert(0, repr(widget.get_selected_data()))
+            props.insert(0, repr(widget.get_selected()))
             recurse = False
         if isinstance(widget, ProxyDateEntry):
             props.insert(0, repr(widget.get_date()))
@@ -164,6 +164,11 @@ GtkWindow(PaymentEditor):
 
         self._dump_widget(editor.main_dialog.get_toplevel())
 
+    def dump_wizard(self, wizard):
+        self._add_namespace(wizard.__dict__)
+
+        self._dump_widget(wizard.get_toplevel())
+
 
 class GUITest(DomainTest):
     def _get_ui_filename(self, name):
@@ -185,10 +190,17 @@ class GUITest(DomainTest):
                 self.fail("%s.%s should not be sensitive" % (
                     dialog.__class__.__name__, attr))
 
+    def check_wizard(self, wizard, ui_test_name, ignores=[]):
+        dumper = GUIDumper()
+        dumper.dump_wizard(wizard)
+        self._check_filename(dumper, ui_test_name, ignores)
+
     def check_editor(self, editor, ui_test_name, ignores=[]):
         dumper = GUIDumper()
         dumper.dump_editor(editor)
+        self._check_filename(dumper, ui_test_name, ignores)
 
+    def _check_filename(self, dumper, ui_test_name, ignores=[]):
         text = dumper.output
         for ignore in ignores:
             text = text.replace(ignore, '%% FILTERED BY UNITTEST %%')

@@ -250,6 +250,9 @@ class PluggableWizard(GladeDelegate):
 
         self._change_step(self._current.next_step())
 
+    def get_current_step(self):
+        return self._current
+
 
 class BaseWizardStep(WizardStep, GladeSlaveDelegate):
     """A wizard step base class definition"""

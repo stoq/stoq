@@ -1,0 +1,35 @@
+GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
+  GtkVBox(PluggableWizard-vbox): 
+    GtkVBox(vbox1, expand=True, fill=True): 
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): 
+        GtkVBox(): 
+          GtkEventBox(expand=True, fill=True): 
+            GtkVBox(): 
+              GtkFrame(fill=True): 
+                GtkTable(): 
+                  ProxyLabel(0 1 0 1): 'Credit Provider:'
+                  GtkVBox(0 1 1 2): 
+                    ProxyComboBox(fill=True): <CreditProvider 3>
+                  GtkLabel(0 1 2 3): 
+                  ProxyLabel(1 2 0 1): 'Payment Type:'
+                  GtkVBox(1 2 1 2): 
+                    GtkRadioButton(expand=True, fill=True): 'Credit Card'
+                    GtkRadioButton(expand=True, fill=True): 'Debit Card'
+                    GtkRadioButton(expand=True, fill=True): 'Credit Card Installments Store'
+                    GtkRadioButton(expand=True, fill=True): 'Credit Card Installments Provider'
+                    GtkRadioButton(expand=True, fill=True): 'Debit Card Pre-dated'
+                  GtkLabel(1 2 2 3): 
+                  ProxyLabel(2 3 0 1): 'Number of Installments:'
+                  GtkHBox(2 3 1 2): 
+                    ProxySpinButton(expand=True, fill=True): '1', insensitive
+                    GtkLabel(expand=True, fill=True): 
+                  GtkLabel(2 3 2 3): 
+      ProxyLabel(notification_lbl, fill=True): 
+      GtkHBox(hbox1, fill=True, pack-end): 
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): '_Finish'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 

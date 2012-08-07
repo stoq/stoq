@@ -109,6 +109,10 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
     def get_selected_method(self):
         return self._selected_method
 
+    def select_method(self, method_name):
+        widget = self._widgets[method_name]
+        widget.set_active(True)
+
     def method_set_sensitive(self, method_name, sensitive):
         if method_name in self._widgets:
             widget = self._widgets[method_name]
