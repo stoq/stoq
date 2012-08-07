@@ -22,26 +22,26 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.lib.process import Process
-from stoqlib.lib.unittestutils import SourceTest
+import os
+
 from twisted.trial import unittest
 
+import stoqlib
+from stoqlib.lib.process import Process
 
-class TestPylint(SourceTest, unittest.TestCase):
 
-    @classmethod
-    def filename_filter(cls, filename):
-        if (filename.startswith('stoqlib/domain') and
-            not filename.startswith('stoqlib/domain/test')):
-            return True
-        return False
+class TestPylint(unittest.TestCase):
+    def setUp(self):
+        unittest.TestCase.setUp(self)
+        self.root = os.path.dirname(
+            os.path.dirname(stoqlib.__file__)) + '/'
 
-    def check_filename(self, root, filename):
+    def test_stoqlib_domain(self):
         args = ["pylint",
                 "--rcfile=%s/tools/pylint.rcfile" % (self.root,),
                 "--load-plugins", "tools/pylint_stoq",
                 "-E",
-                filename]
+                "stoqlib.domain"]
         p = Process(args)
         retval = p.wait()
         if retval:
