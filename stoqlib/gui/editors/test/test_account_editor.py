@@ -53,6 +53,62 @@ class TestAccountEditor(GUITest):
 
         self.check_editor(editor, 'editor-account-show')
 
+    def testShowBancoDoBrasil(self):
+        account = self.create_account()
+        account.account_type = Account.TYPE_BANK
+        editor = AccountEditor(self.trans, account)
+        editor.bank_type.select_item_by_data(1)
+        editor.bank_type.emit('content_changed')
+        self.check_editor(editor, 'editor-account-show-banco-do-brasil')
+
+    def testShowBanrisul(self):
+        account = self.create_account()
+        account.account_type = Account.TYPE_BANK
+        editor = AccountEditor(self.trans, account)
+        editor.bank_type.select_item_by_data(41)
+        editor.bank_type.emit('content_changed')
+        self.check_editor(editor, 'editor-account-show-banrisul')
+
+    def testShowBradesco(self):
+        account = self.create_account()
+        account.account_type = Account.TYPE_BANK
+        editor = AccountEditor(self.trans, account)
+        editor.bank_type.select_item_by_data(237)
+        editor.bank_type.emit('content_changed')
+        self.check_editor(editor, 'editor-account-show-bradesco')
+
+    def testShowCaixa(self):
+        account = self.create_account()
+        account.account_type = Account.TYPE_BANK
+        editor = AccountEditor(self.trans, account)
+        editor.bank_type.select_item_by_data(104)
+        editor.bank_type.emit('content_changed')
+        self.check_editor(editor, 'editor-account-show-caixa')
+
+    def testShowItau(self):
+        account = self.create_account()
+        account.account_type = Account.TYPE_BANK
+        editor = AccountEditor(self.trans, account)
+        editor.bank_type.select_item_by_data(341)
+        editor.bank_type.emit('content_changed')
+        self.check_editor(editor, 'editor-account-show-itau')
+
+    def testShowReal(self):
+        account = self.create_account()
+        account.account_type = Account.TYPE_BANK
+        editor = AccountEditor(self.trans, account)
+        editor.bank_type.select_item_by_data(356)
+        editor.bank_type.emit('content_changed')
+        self.check_editor(editor, 'editor-account-show-real')
+
+    def testShowSantander(self):
+        account = self.create_account()
+        account.account_type = Account.TYPE_BANK
+        editor = AccountEditor(self.trans, account)
+        editor.bank_type.select_item_by_data(33)
+        editor.bank_type.emit('content_changed')
+        self.check_editor(editor, 'editor-account-show-santander')
+
 
 if __name__ == '__main__':
     from stoqlib.api import api
