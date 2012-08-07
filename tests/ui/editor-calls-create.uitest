@@ -13,7 +13,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Call to John'
           GtkLabel(label2, 2 3 0 1): 'Attendant:'
           ProxyComboEntry(attendant, 2 3 1 2): <LoginUser 1>
           GtkLabel(label3, 3 4 0 1): 'Description:'
-          ProxyEntry(description, 3 4 1 2): ''
+          ProxyEntry(description, 3 4 1 2): '', mandatory
           GtkLabel(label4, 4 5 0 1): 'Message:'
           GtkScrolledWindow(scrolledwindow1, 4 5 1 2): 
             ProxyTextView(message): 

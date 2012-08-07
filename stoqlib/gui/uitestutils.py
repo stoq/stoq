@@ -27,6 +27,7 @@ import pprint
 
 import gobject
 import gtk
+from kiwi.interfaces import IValidatableProxyWidget
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.combo import ProxyComboBox, ProxyComboEntry
 from kiwi.ui.widgets.entry import ProxyDateEntry
@@ -113,6 +114,14 @@ GtkWindow(PaymentEditor):
             if lbl:
                 props.insert(0, repr(lbl))
             recurse = False
+        if IValidatableProxyWidget.providedBy(widget):
+            if (not widget.is_valid() and
+                widget.get_sensitive() and
+                widget.get_visible()):
+                if widget.mandatory:
+                    props.append('mandatory')
+                else:
+                    props.append('invalid')
         if isinstance(widget, (ProxyComboBox, ProxyComboEntry)):
             props.insert(0, repr(widget.get_selected()))
             recurse = False

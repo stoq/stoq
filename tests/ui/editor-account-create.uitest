@@ -5,7 +5,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Account'
       GtkEventBox(main_dialog.main, expand=True, fill=True): 
         GtkTable(table): 
           GtkLabel(label1, 0 1 0 1): 'Account name:'
-          ProxyEntry(description, 0 1 1 2): ''
+          ProxyEntry(description, 0 1 1 2): '', invalid
           GtkLabel(label2, 1 2 0 1): 'Account code:'
           ProxyEntry(code, 1 2 1 2): ''
           GtkLabel(label4, 2 3 0 1): 'Type:'

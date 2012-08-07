@@ -22,7 +22,7 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                       ProxyComboBox(expand=True, fill=True, padding=2): 2, insensitive
                   GtkHBox(1 2 0 2): 
                     GtkLabel(expand=True, fill=True): 'Default Bank:'
-                    ProxyComboEntry(expand=True, fill=True): None
+                    ProxyComboEntry(expand=True, fill=True): None, invalid
                 GtkEventBox(expand=True, fill=True): 
                   GtkVBox(): 
                     ObjectList(expand=True, fill=True): [<_TemporaryPaymentData>]

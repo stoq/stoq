@@ -9,15 +9,15 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add payment'
               ProxyLabel(method_lbl, 0 1 0 1): 'Method:'
               ProxyComboBox(method, 0 1 1 2): <PaymentMethod 3>
               ProxyLabel(description_lbl, 1 2 0 1): 'Description:'
-              ProxyEntry(description, 1 2 1 2): ''
+              ProxyEntry(description, 1 2 1 2): '', mandatory
               ProxyLabel(person_lbl, 2 3 0 1): 'Payer:'
               ProxyComboEntry(person, 2 3 1 2): None
               GtkButton(person_add_button, 2 3 2 3): 
               GtkButton(person_edit_button, 2 3 3 4): insensitive
               ProxyLabel(value_lbl, 3 4 0 1): 'Value:'
-              ProxyEntry(value, 3 4 1 2): '0.00'
+              ProxyEntry(value, 3 4 1 2): '0.00', mandatory
               ProxyLabel(due_date_lbl, 4 5 0 1): 'Due date:'
-              ProxyDateEntry(due_date, 4 5 1 2): None
+              ProxyDateEntry(due_date, 4 5 1 2): None, mandatory
               ProxyLabel(category_lbl, 5 6 0 1): 'Category:'
               ProxyComboBox(category, 5 6 1 2): None
               GtkButton(category_add_button, 5 6 2 3): 

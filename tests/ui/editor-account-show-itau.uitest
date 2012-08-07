@@ -36,9 +36,9 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Account"'
           GtkLabel(6 7 0 1): 'Number:'
           ProxyEntry(bank_number, 6 7 1 2): '341', insensitive
           GtkLabel(7 8 0 1): 'Agency:'
-          ProxyEntry(bank_branch, 7 8 1 2): ''
+          ProxyEntry(bank_branch, 7 8 1 2): '', mandatory
           GtkLabel(8 9 0 1): 'Account:'
-          ProxyEntry(bank_account, 8 9 1 2): ''
+          ProxyEntry(bank_account, 8 9 1 2): '', mandatory
           GtkLabel(9 10 0 1): '<i>Carteira</i>:'
           ProxyEntry(option0, 9 10 1 2): ''
       GtkHBox(fill=True): 
