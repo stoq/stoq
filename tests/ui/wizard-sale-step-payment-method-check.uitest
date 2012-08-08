@@ -20,10 +20,14 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                     GtkHBox(expand=True, fill=True): 
                       ProxyLabel(expand=True, fill=True): 'With intervals of:'
                       ProxySpinButton(expand=True, fill=True): '1', insensitive
-                      ProxyComboBox(expand=True, fill=True, padding=2): 2, insensitive
+                      ProxyComboBox(expand=True, fill=True, padding=2): insensitive
+                          item: 'Days'
+                          item: 'Weeks'
+                          item: 'Months', selected
+                          item: 'Years'
                   GtkHBox(1 2 0 2): 
                     GtkLabel(expand=True, fill=True): 'Default Bank:'
-                    ProxyComboEntry(expand=True, fill=True): None, invalid
+                    ProxyComboEntry(expand=True, fill=True): invalid
                 GtkEventBox(expand=True, fill=True): 
                   GtkVBox(): 
                     ObjectList(expand=True, fill=True): 

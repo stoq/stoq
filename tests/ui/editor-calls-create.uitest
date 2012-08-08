@@ -7,12 +7,18 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Call to John'
         GtkTable(table1): 
           GtkLabel(label5, 0 1 0 1): 'Person:'
           GtkHBox(hbox1, 0 1 1 2): 
-            ProxyComboEntry(person_combo, expand=True, fill=True): %% FILTERED BY UNITTEST %%, insensitive
+            ProxyComboEntry(person_combo, expand=True, fill=True): insensitive
+                item: 'John', selected
             GtkButton(details_button, fill=True): hidden
           GtkLabel(label1, 1 2 0 1): 'Date:'
           ProxyDateEntry(date, 1 2 1 2): date.today()
           GtkLabel(label2, 2 3 0 1): 'Attendant:'
-          ProxyComboEntry(attendant, 2 3 1 2): <LoginUser 1>
+          ProxyComboEntry(attendant, 2 3 1 2): 
+              item: 'Administrator', selected
+              item: 'Cleusa Blanc Ferreira Norbiato'
+              item: 'Deivis Alexandre Junior'
+              item: 'Maria Aparecida Ardana'
+              item: 'Osvaldo Denadai Marin'
           GtkLabel(label3, 3 4 0 1): 'Description:'
           ProxyEntry(description, 3 4 1 2): '', mandatory
           GtkLabel(label4, 4 5 0 1): 'Message:'

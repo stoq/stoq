@@ -9,13 +9,24 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
             GtkVBox(expand=True, fill=True): 
               GtkTable(fill=True): 
                 ProxyLabel(0 1 0 1): 'Salesperson:'
-                ProxyComboEntry(0 1 1 2): %% FILTERED BY UNITTEST %%, insensitive
+                ProxyComboEntry(0 1 1 2): insensitive
+                    item: 'Administrator'
+                    item: 'Cleusa Blanc Ferreira Norbiato'
+                    item: 'Deivis Alexandre Junior'
+                    item: 'Maria Aparecida Ardana'
+                    item: 'Osvaldo Denadai Marin'
+                    item: 'SalesPerson', selected
                 GtkLabel(1 2 0 1): 'Client:'
-                ProxyComboEntry(1 2 1 2): None
+                ProxyComboEntry(1 2 1 2): 
+                    item: 'Alessandra Almeida Itaber\xc3\xa1'
+                    item: 'Franciso Elisio de Lima Junior'
+                    item: 'Luis Sergio da Silva Marin'
+                    item: 'Vitalina Claudino'
                 GtkButton(1 2 2 3): 
                 GtkButton(1 2 3 4): insensitive
                 GtkLabel(2 3 0 1): 'Transporter:'
-                ProxyComboEntry(2 3 1 2): None
+                ProxyComboEntry(2 3 1 2): 
+                    item: 'Jos\xc3\xa9 Carlos de Carvalho'
                 GtkButton(2 3 2 3): 
                 GtkLabel(3 4 0 1): 'Operation Nature:', hidden
                 ProxyEntry(3 4 1 2): '', hidden
@@ -26,10 +37,10 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                 GtkLabel(1 2 0 1): 'Expire', hidden
                 ProxyDateEntry(1 2 1 2): None, hidden
                 GtkLabel(2 3 0 1): 'C.F.O.P.:', hidden
-                ProxyComboEntry(2 3 1 2): None, hidden
+                ProxyComboEntry(2 3 1 2): hidden
                 GtkButton(2 3 2 3): hidden
                 GtkLabel(3 4 0 1): 'Client Category:', hidden
-                ProxyComboBox(3 4 1 2): None, hidden
+                ProxyComboBox(3 4 1 2): hidden
           GtkHSeparator(fill=True): 
           GtkVBox(fill=True): 
             GtkHBox(fill=True): 

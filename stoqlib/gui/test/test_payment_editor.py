@@ -89,8 +89,7 @@ class TestPaymentEditor(GUITest):
                                    category_type=PaymentCategory.TYPE_RECEIVABLE)
         editor = InPaymentEditor(self.trans, category=category.name)
 
-        self.check_editor(editor, 'editor-in-payment-create-with-category',
-                          ignores=[repr(category)])
+        self.check_editor(editor, 'editor-in-payment-create-with-category')
 
     def testEndDateSensitivity(self):
         editor = InPaymentEditor(self.trans)

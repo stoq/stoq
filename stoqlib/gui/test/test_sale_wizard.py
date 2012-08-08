@@ -31,10 +31,7 @@ class TestConfirmSaleWizard(GUITest):
         sale = self.create_sale()
         self.add_product(sale)
         wizard = ConfirmSaleWizard(self.trans, sale)
-        step = wizard.get_current_step()
-
-        self.check_wizard(wizard, 'wizard-sale-step-sales-person',
-                          ignores=[str(step.salesperson.get_selected())])
+        self.check_wizard(wizard, 'wizard-sale-step-sales-person')
 
     def testStepPaymentMethodCheck(self):
         sale = self.create_sale()

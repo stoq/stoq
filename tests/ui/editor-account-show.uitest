@@ -10,7 +10,14 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Account"'
           GtkLabel(label2, 1 2 0 1): 'Account code:'
           ProxyEntry(code, 1 2 1 2): ''
           GtkLabel(label4, 2 3 0 1): 'Type:'
-          ProxyComboBox(account_type, 2 3 1 2): 1
+          ProxyComboBox(account_type, 2 3 1 2): 
+              item: 'Bank'
+              item: 'Cash', selected
+              item: 'Asset'
+              item: 'Credit'
+              item: 'Income'
+              item: 'Expense'
+              item: 'Equity'
           GtkLabel(label3, 3 4 0 1): 'Parent:'
           GtkVBox(tree_box, 3 4 1 2): 
             ObjectTree(parent_accounts, expand=True, fill=True): 
