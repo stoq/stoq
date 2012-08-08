@@ -48,7 +48,7 @@ model: Payment
   discount: <currency $ 0>
   due_date: datetime.datetime(2015, 1, 1, 0, 0)
   interest: <currency $ 0>
-  open_date: datetime.datetime(2012, 8, 7, 0, 0)
+  open_date: datetime.today()
   paid_date: None
   paid_value: None
   payment_number: None
@@ -64,7 +64,7 @@ model: Payment
   discount: <currency $ 0>
   due_date: datetime.datetime(2015, 1, 8, 0, 0)
   interest: <currency $ 0>
-  open_date: datetime.datetime(2012, 8, 7, 0, 0)
+  open_date: datetime.today()
   paid_date: None
   paid_value: None
   payment_number: None

@@ -34,14 +34,14 @@ class TestAccountTransactionEditor(GUITest):
         account = self.create_account()
         editor = AccountTransactionEditor(self.trans, None, account)
 
-        editor.date.update(datetime.date(2012, 1, 1))
+        editor.date.update(datetime.date.today())
         self.check_editor(editor, 'editor-transaction-create')
 
     def testShow(self):
         account = self.create_account()
         transaction = self.create_account_transaction(account)
         editor = AccountTransactionEditor(self.trans, transaction, account)
-        editor.date.update(datetime.date(2012, 1, 1))
+        editor.date.update(datetime.date.today())
 
         self.check_editor(editor, 'editor-transaction-show')
 

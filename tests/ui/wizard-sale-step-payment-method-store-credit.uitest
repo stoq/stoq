@@ -16,7 +16,7 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                   GtkHBox(0 1 2 3): 
                     GtkHBox(expand=True, fill=True): 
                       ProxyLabel(expand=True, fill=True): 'Start at:'
-                      ProxyDateEntry(expand=True, fill=True): %% FILTERED BY UNITTEST %%
+                      ProxyDateEntry(expand=True, fill=True): date.today()
                     GtkHBox(expand=True, fill=True): 
                       ProxyLabel(expand=True, fill=True): 'With intervals of:'
                       ProxySpinButton(expand=True, fill=True): '1', insensitive
@@ -26,7 +26,12 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                     ProxyComboEntry(expand=True, fill=True): None, hidden
                 GtkEventBox(expand=True, fill=True): 
                   GtkVBox(): 
-                    ObjectList(expand=True, fill=True): [<_TemporaryPaymentData>]
+                    ObjectList(expand=True, fill=True): 
+                        column: title='Description', expand
+                        column: title='Number'
+                        column: title='Due date'
+                        column: title='Value'
+                        row: u'1/1 Store Credit for sale %% FILTERED BY UNITTEST %%', None, date.today(), <currency $10>
                     GtkHBox(): 
                       ProxyLabel(expand=True, fill=True): '<span >Difference</span>'
                       ProxyLabel(fill=True): '<span >$ 0.00</span>'

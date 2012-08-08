@@ -13,24 +13,20 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Account"'
           ProxyComboBox(account_type, 2 3 1 2): 0
           GtkLabel(label3, 3 4 0 1): 'Parent:'
           GtkVBox(tree_box, 3 4 1 2): 
-            ObjectTree(parent_accounts, expand=True, fill=True): [                      <AccountView Aluguel>,
-                       <AccountView Assets>,
-                       <AccountView Banco do Brasil>,
-                       <AccountView Banks>,
-                       <AccountView Conta de Investimento>,
-                       <AccountView Equity>,
-                       <AccountView Expenses>,
-                       <AccountView Imbalance>,
-                       <AccountView Impostos>,
-                       <AccountView Income>,
-                       <AccountView Luz>,
-                       <AccountView Saldos Iniciais>,
-                       <AccountView Salários>,
-                       <AccountView Telefonia>,
-                       <AccountView Test Account>,
-                       <AccountView Tills>,
-                       <Settable description='Accounts Payable', id=-1, kind='payable', parent=None, selectable=False, total=None>,
-                       <Settable description='Accounts Receivable', id=-2, kind='receivable', parent=None, selectable=False, total=None>]
+            ObjectTree(parent_accounts, expand=True, fill=True): 
+                column: title='Account name', expand
+                row: 'Accounts Payable'
+                row: 'Accounts Receivable'
+                row: u'Assets'
+                row: u'Banks'
+                row: u'Conta de Investimento'
+                row: u'Equity'
+                row: u'Expenses'
+                row: u'Imbalance'
+                row: u'Income'
+                row: u'Saldos Iniciais'
+                row: u'Test Account'
+                row: u'Tills'
             GtkLabel(label5, fill=True): 'Hold control to remove selection.'
           GtkLabel(4 5 0 1): 'Bank:'
           ProxyComboBox(bank_type, 4 5 1 2): 104

@@ -22,11 +22,12 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
 import os
-import pprint
 
 import gobject
 import gtk
+from kiwi.accessor import kgetattr
 from kiwi.interfaces import IValidatableProxyWidget
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.combo import ProxyComboBox, ProxyComboEntry
@@ -72,6 +73,8 @@ GtkWindow(PaymentEditor):
         recurse = True
         line_props = []
         props = []
+        extra_output = ''
+        spaces = (' ' * (indent * 2))
         name = self._items.get(hash(widget), '')
         if name:
             line_props.append(name)
@@ -132,21 +135,31 @@ GtkWindow(PaymentEditor):
         if isinstance(widget, ObjectList):
             # New indent is:
             #   old indentation + 'ObjectList('
-            rows_indent = (indent * 2) + len(gobject.type_name(widget) + '(')
+            for column in widget.get_columns():
+                col = []
+                col.append('title=%r' % (column.title))
+                if not column.visible:
+                    col.append('hidden')
+                if column.expand:
+                    col.append('expand')
+                extra_output += spaces + '    column: ' + ', '.join(col) + '\n'
 
-            def x(a, b):
-                return cmp(repr(a), repr(b))
-            props.insert(0, pprint.pformat(
-                list(sorted(widget, cmp=x)),
-                indent=rows_indent))
+            model = widget.get_model()
+            for row in model:
+                inst = row[0]
+                cols = []
+                for column in widget.get_columns():
+                    cols.append(repr(kgetattr(inst, column.attribute, None)))
+                extra_output += spaces + '    row: ' + ', '.join(cols) + '\n'
             recurse = False
 
         self.output += "%s%s(%s): %s\n" % (
-            (' ' * (indent * 2)),
+            spaces,
             gobject.type_name(widget),
             ', '.join(line_props),
             ', '.join(props))
-
+        if extra_output:
+            self.output += extra_output
         if not recurse:
             return
         self._dump_children(widget, indent)
@@ -239,6 +252,12 @@ class GUITest(DomainTest):
         text = dumper.output
         for ignore in ignores:
             text = text.replace(ignore, '%% FILTERED BY UNITTEST %%')
+
+        today = datetime.date.today()
+        text = text.replace(repr(today), 'date.today()')
+        text = text.replace(
+            repr(datetime.datetime(today.year, today.month, today.day)),
+            'datetime.today()')
 
         filename = self._get_ui_filename(ui_test_name)
         if not os.path.exists(filename):
