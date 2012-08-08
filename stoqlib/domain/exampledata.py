@@ -516,13 +516,16 @@ class ExampleCreator(object):
                          group=quote_group,
                          purchase=purchase_order)
 
-    def create_purchase_order_item(self):
+    def create_purchase_order_item(self, order=None):
+        if not order:
+            order = self.create_purchase_order()
+
         from stoqlib.domain.purchase import PurchaseItem
         return PurchaseItem(connection=self.trans,
                             quantity=8, quantity_received=0,
                             cost=125, base_cost=125,
                             sellable=self.create_sellable(),
-                            order=self.create_purchase_order())
+                            order=order)
 
     def create_production_order(self):
         from stoqlib.domain.production import ProductionOrder

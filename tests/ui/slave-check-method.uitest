@@ -1,0 +1,40 @@
+slave: CheckMethodSlave
+GtkFrame(frame1): 
+  GtkVBox(vbox1): 
+    GtkTable(table1, fill=True): 
+      GtkHBox(hbox1): 
+        ProxyLabel(installments_number_lbl, expand=True, fill=True): 'Installments:'
+        ProxySpinButton(installments_number, expand=True, fill=True): '1'
+      ProxyLabel(kiwilabel2): 
+      GtkHBox(hbox5): 
+        GtkHBox(hbox2, expand=True, fill=True): 
+          ProxyLabel(first_duedate_lbl, expand=True, fill=True): 'Start at:'
+          ProxyDateEntry(first_duedate, expand=True, fill=True): date.today()
+        GtkHBox(hbox3, expand=True, fill=True): 
+          ProxyLabel(intervals_lbl, expand=True, fill=True): 'With intervals of:'
+          ProxySpinButton(intervals, expand=True, fill=True): '1', insensitive
+          ProxyComboBox(interval_type_combo, expand=True, fill=True, padding=2): insensitive
+              item: 'Days'
+              item: 'Weeks'
+              item: 'Months', selected
+              item: 'Years'
+      GtkHBox(hbox4): 
+        GtkLabel(bank_label, expand=True, fill=True): 'Default Bank:'
+        ProxyComboEntry(bank_combo, expand=True, fill=True): invalid
+    GtkEventBox(slave_holder, expand=True, fill=True): 
+      GtkVBox(): 
+        ObjectList(expand=True, fill=True): 
+            column: title='Description', expand
+            column: title='Bank ID'
+            column: title='Bank branch'
+            column: title='Bank account'
+            column: title='Number'
+            column: title='Due date'
+            column: title='Value'
+            row: u'1/1 Check for %% FILTERED BY UNITTEST %%', None, None, None, None, date.today(), <currency $200>
+        GtkHBox(): 
+          ProxyLabel(expand=True, fill=True): '<span >Difference</span>'
+          ProxyLabel(fill=True): '<span >$ 0.00</span>'
+        GtkHBox(): 
+          ProxyLabel(expand=True, fill=True): 'Total:'
+          ProxyLabel(fill=True): '<span >$200.00</span>'
