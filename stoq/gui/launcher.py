@@ -55,10 +55,10 @@ class Launcher(AppWindow):
     app_name = _('Stoq')
     gladefile = 'launcher'
 
-    def __init__(self, options, shell):
+    def __init__(self, options, shell, conn=None):
         self.shell = shell
         app = LauncherApp(self, options)
-        AppWindow.__init__(self, app)
+        AppWindow.__init__(self, app, conn=conn)
 
     #
     # AppWindow
