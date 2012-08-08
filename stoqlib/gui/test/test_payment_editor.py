@@ -99,6 +99,15 @@ class TestPaymentEditor(GUITest):
         editor.repeat.update(INTERVALTYPE_ONCE)
         self.assertNotSensitive(editor, ['end_date'])
 
+    def testValueValidation(self):
+        editor = InPaymentEditor(self.trans)
+        self.assertEquals(str(editor.value.emit('validate', None)),
+                          "The value must be greater than zero.")
+
+        self.assertEquals(str(editor.value.emit('validate', -1)),
+                          "The value must be greater than zero.")
+        self.assertFalse(editor.value.emit('validate', 10))
+
     def testShow(self):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT)
         payment.group = self.create_payment_group()
