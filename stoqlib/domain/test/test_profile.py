@@ -67,14 +67,6 @@ class TestProfileSettings(DomainTest):
         update_profile_applications(self.trans, new_profile)
         items = new_profile.profile_settings
 
-    def test_create_profile_template(self):
-        profile_name = 'Boss'
-        table = UserProfile
-        self.boss_profile = table.create_profile_template(self.trans,
-                                                          profile_name,
-                                                          has_full_permission=True)
-        self.failIf(self.boss_profile.profile_settings)
-
     def test_check_app_permission(self):
         profile = UserProfile(connection=self.trans, name='boss')
         profile.add_application_reference('test_application', True)
