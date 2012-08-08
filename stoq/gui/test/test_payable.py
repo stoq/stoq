@@ -24,6 +24,7 @@
 
 from kiwi.component import provide_utility
 import mock
+from twisted.trial.unittest import SkipTest
 
 from stoqlib.api import api
 from stoqlib.gui.uitestutils import GUITest
@@ -50,6 +51,7 @@ class TestPayable(GUITest):
         return app
 
     def testInitial(self):
+        raise SkipTest("Breaks other tests")
         api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app('payable')
         self.check_wizard(app.main_window, 'app-payable')
