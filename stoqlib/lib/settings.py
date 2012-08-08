@@ -153,7 +153,11 @@ class UserSettings(object):
         log.info("Migrating settings from Stoq.conf")
 
         # Migrate from old configuration settings
-        config = get_utility(IStoqConfig)
+        try:
+            config = get_utility(IStoqConfig)
+        except NotImplementedError:
+            # For unittests, migrating jenkins from old to new settings
+            return
 
         self.set('hide-demo-warning',
                  config.get('UI', 'hide_demo_warning') == 'True')

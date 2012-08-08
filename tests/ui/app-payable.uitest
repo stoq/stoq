@@ -22,44 +22,25 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
       GtkMenuToolButton(): 
         GtkHBox(): 
           GtkButton(expand=True, fill=True): 
-            GtkHBox(): 
-              GtkImage(fill=True): 
-              GtkLabel(expand=True, fill=True, pack-end): 'New'
           GtkToggleButton(pack-end): 
-            GtkArrow(): 
       GtkMenuToolButton(): 
         GtkHBox(): 
           GtkButton(expand=True, fill=True): 
-            GtkHBox(): 
-              GtkImage(fill=True): 
-              GtkLabel(expand=True, fill=True, pack-end): 'Search'
           GtkToggleButton(pack-end): 
-            GtkArrow(): 
       GtkSeparatorToolItem(): 
       GtkToolButton(): 
         GtkButton(): 
-          GtkHBox(): 
-            GtkImage(expand=True, fill=True): 
       GtkToolButton(): hidden
         GtkButton(): 
-          GtkHBox(): 
-            GtkImage(expand=True, fill=True): 
       GtkSeparatorToolItem(): hidden
       GtkSeparatorToolItem(): hidden
       GtkSeparatorToolItem(): 
       GtkToolButton(): insensitive
         GtkButton(): 
-          GtkHBox(): 
-            GtkImage(fill=True): 
-            GtkLabel(expand=True, fill=True, pack-end): 'Pay'
       GtkToolButton(): insensitive
         GtkButton(): 
-          GtkHBox(): 
-            GtkImage(expand=True, fill=True): 
       GtkToolButton(): insensitive
         GtkButton(): 
-          GtkHBox(): 
-            GtkImage(expand=True, fill=True): 
     GtkVBox(expand=True, fill=True): hidden
       GtkScrolledWindow(expand=True, fill=True): 
         GtkIconView(): 
@@ -84,10 +65,6 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
                         item: 'Does Not Contain'
                     kiwi+ui+search+HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
-                    GtkAlignment(): 
-                      GtkHBox(): 
-                        GtkImage(): hidden
-                        GtkLabel(pack-end): '_Find'
               ObjectList(results, expand=True, fill=True, pack-end): 
                   column: title='#'
                   column: title='Description', expand
@@ -111,10 +88,6 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
             GtkLabel(expand=True, fill=True): 'User: Administrator   |   Computer: cotovia'
             GtkVSeparator(): 
             GtkButton(): 'Feedback'
-              GtkAlignment(): 
-                GtkHBox(): 
-                  GtkImage(): 
-                  GtkLabel(pack-end): 'Feedback'
             GtkVSeparator(): 
         GtkHBox(pack-end): 
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
