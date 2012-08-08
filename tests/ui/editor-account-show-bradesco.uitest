@@ -10,7 +10,14 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Account"'
           GtkLabel(label2, 1 2 0 1): 'Account code:'
           ProxyEntry(code, 1 2 1 2): '', insensitive
           GtkLabel(label4, 2 3 0 1): 'Type:'
-          ProxyComboBox(account_type, 2 3 1 2): 0
+          ProxyComboBox(account_type, 2 3 1 2): 
+              item: 'Bank', selected
+              item: 'Cash'
+              item: 'Asset'
+              item: 'Credit'
+              item: 'Income'
+              item: 'Expense'
+              item: 'Equity'
           GtkLabel(label3, 3 4 0 1): 'Parent:'
           GtkVBox(tree_box, 3 4 1 2): 
             ObjectTree(parent_accounts, expand=True, fill=True): 
@@ -29,7 +36,15 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Account"'
                 row: u'Tills'
             GtkLabel(label5, fill=True): 'Hold control to remove selection.'
           GtkLabel(4 5 0 1): 'Bank:'
-          ProxyComboBox(bank_type, 4 5 1 2): 237
+          ProxyComboBox(bank_type, 4 5 1 2): 
+              item: 'Generic'
+              item: 'Banrisul'
+              item: 'Bradesco', selected
+              item: 'Banco do Brasil'
+              item: 'Caixa Econ\xc3\xb4mica Federal'
+              item: 'Banco Ita\xc3\xba'
+              item: 'Banco Real'
+              item: 'Banco Santander'
           GtkLabel(6 7 0 1): 'Number:'
           ProxyEntry(bank_number, 6 7 1 2): '237', insensitive
           GtkLabel(7 8 0 1): 'Agency:'

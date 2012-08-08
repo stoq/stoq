@@ -8,11 +8,16 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
           GtkAlignment(): 
             GtkTable(): 
               ProxyLabel(method_lbl, 0 1 0 1): 'Method:'
-              ProxyComboBox(method, 0 1 1 2): <PaymentMethod 3>, insensitive
+              ProxyComboBox(method, 0 1 1 2): insensitive
+                  item: 'Money', selected
               ProxyLabel(description_lbl, 1 2 0 1): 'Description:'
               ProxyEntry(description, 1 2 1 2): '1/1 Money for %% FILTERED BY UNITTEST %%'
               ProxyLabel(person_lbl, 2 3 0 1): 'Payer:'
-              ProxyComboEntry(person, 2 3 1 2): None, insensitive
+              ProxyComboEntry(person, 2 3 1 2): insensitive
+                  item: 'Alessandra Almeida Itaber\xc3\xa1'
+                  item: 'Franciso Elisio de Lima Junior'
+                  item: 'Luis Sergio da Silva Marin'
+                  item: 'Vitalina Claudino'
               GtkButton(person_add_button, 2 3 2 3): insensitive
               GtkButton(person_edit_button, 2 3 3 4): insensitive
               ProxyLabel(value_lbl, 3 4 0 1): 'Value:'
@@ -20,11 +25,17 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
               ProxyLabel(due_date_lbl, 4 5 0 1): 'Due date:'
               ProxyDateEntry(due_date, 4 5 1 2): date.today(), insensitive
               ProxyLabel(category_lbl, 5 6 0 1): 'Category:'
-              ProxyComboBox(category, 5 6 1 2): None
+              ProxyComboBox(category, 5 6 1 2): 
+                  item: 'No category', selected
               GtkButton(category_add_button, 5 6 2 3): 
               GtkButton(category_edit_button, 5 6 3 4): insensitive
               ProxyLabel(repeat_lbl, 6 7 0 1): 'Repeat:'
-              ProxyComboBox(repeat, 6 7 1 2): -1, insensitive
+              ProxyComboBox(repeat, 6 7 1 2): insensitive
+                  item: 'Once', selected
+                  item: 'Weekly'
+                  item: 'Biweekly'
+                  item: 'Monthly'
+                  item: 'Quarterly'
               ProxyLabel(end_date_lbl, 7 8 0 1): 'End date:'
               ProxyDateEntry(end_date, 7 8 1 2): None, insensitive
       GtkHBox(fill=True): 

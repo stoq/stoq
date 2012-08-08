@@ -6,7 +6,23 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "transaction"'
       GtkEventBox(main_dialog.main, expand=True, fill=True): 
         GtkTable(toplevel): 
           GtkLabel(label3, 0 1 0 1): 'Account:'
-          ProxyComboBox(account, 0 1 1 2): <Account 5>
+          ProxyComboBox(account, 0 1 1 2): 
+              item: 'Assets'
+              item: 'Banks'
+              item: 'Banks:Banco do Brasil'
+              item: 'Conta de Investimento'
+              item: 'Equity'
+              item: 'Expenses'
+              item: 'Expenses:Aluguel'
+              item: 'Expenses:Impostos'
+              item: 'Expenses:Luz'
+              item: 'Expenses:Sal\xc3\xa1rios'
+              item: 'Expenses:Telefonia'
+              item: 'Imbalance', selected
+              item: 'Income'
+              item: 'Saldos Iniciais'
+              item: 'Test Account'
+              item: 'Tills'
           GtkButton(add_account, 0 1 2 3): 
           GtkLabel(label1, 1 2 0 1): 'Description:'
           ProxyEntry(description, 1 2 1 2): 'Test Account Transaction'

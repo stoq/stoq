@@ -127,7 +127,12 @@ GtkWindow(PaymentEditor):
                 else:
                     props.append('invalid')
         if isinstance(widget, (ProxyComboBox, ProxyComboEntry)):
-            props.insert(0, repr(widget.get_selected()))
+            selected = widget.get_selected_label()
+            for label in widget.get_model_strings():
+                line = [repr(label)]
+                if label == selected:
+                    line.append('selected')
+                extra_output += spaces + '    item: ' + ', '.join(line) + '\n'
             recurse = False
         if isinstance(widget, ProxyDateEntry):
             props.insert(0, repr(widget.get_date()))
