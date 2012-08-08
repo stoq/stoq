@@ -41,8 +41,17 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Account'
         GtkEventBox(main_dialog.details_holder, pack-end): 
     GtkHButtonBox(fill=True, pack-end): 
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+        GtkAlignment(): 
+          GtkHBox(): 
+            GtkImage(): hidden
+            GtkLabel(pack-end): '_Cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+        GtkAlignment(): 
+          GtkHBox(): 
+            GtkImage(): hidden
+            GtkLabel(pack-end): '_OK'
       GtkButton(_test_button): 'Print a test bill', insensitive
+        GtkLabel(): 'Print a test bill'
 
 model: Account
   account_type: 1

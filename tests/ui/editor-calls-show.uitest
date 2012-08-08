@@ -10,6 +10,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Call to John"'
             ProxyComboEntry(person_combo, expand=True, fill=True): insensitive
                 item: 'John', selected
             GtkButton(details_button, fill=True): hidden
+              GtkImage(image1): 
           GtkLabel(label1): 'Date:'
           ProxyDateEntry(date): datetime.date(2011, 1, 1)
           GtkLabel(label2): 'Attendant:'
@@ -32,5 +33,17 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Call to John"'
         GtkEventBox(main_dialog.details_holder, pack-end): 
     GtkHButtonBox(fill=True, pack-end): 
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+        GtkAlignment(): 
+          GtkHBox(): 
+            GtkImage(): hidden
+            GtkLabel(pack-end): '_Cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+        GtkAlignment(): 
+          GtkHBox(): 
+            GtkImage(): hidden
+            GtkLabel(pack-end): '_OK'
       GtkButton(main_dialog.help_button): 'gtk-help'
+        GtkAlignment(): 
+          GtkHBox(): 
+            GtkImage(): hidden
+            GtkLabel(pack-end): '_Help'
