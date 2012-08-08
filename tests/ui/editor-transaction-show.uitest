@@ -24,6 +24,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "transaction"'
               item: 'Test Account'
               item: 'Tills'
           GtkButton(add_account): 
+            GtkImage(image1): 
           GtkLabel(label1): 'Description:'
           ProxyEntry(description): 'Test Account Transaction'
           GtkLabel(label4): 'Date:'
@@ -34,7 +35,9 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "transaction"'
           ProxyEntry(value): '1.00'
           GtkHBox(hbox1): 
             ProxyRadioButton(is_incoming, expand=True, fill=True): 'Receive'
+              GtkLabel(): 'Receive'
             ProxyRadioButton(is_outgoing, expand=True, fill=True): 'Spend'
+              GtkLabel(): 'Spend'
       GtkHBox(fill=True): 
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
@@ -42,5 +45,14 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "transaction"'
         GtkEventBox(main_dialog.details_holder, pack-end): 
     GtkHButtonBox(fill=True, pack-end): 
       GtkButton(): 'Show Payment', insensitive
+        GtkLabel(): 'Show Payment'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+        GtkAlignment(): 
+          GtkHBox(): 
+            GtkImage(): hidden
+            GtkLabel(pack-end): '_Cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+        GtkAlignment(): 
+          GtkHBox(): 
+            GtkImage(): hidden
+            GtkLabel(pack-end): '_OK'

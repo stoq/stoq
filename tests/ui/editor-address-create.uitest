@@ -12,6 +12,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Address'
               GtkHBox(): 
                 GtkLabel(expand=True, fill=True): 
                 ProxyCheckButton(expand=True, fill=True): 'Number:'
+                  GtkLabel(): 'Number:'
               GtkHBox(): 
                 ProxyEntry(fill=True): 'N/A', insensitive
                 GtkLabel(expand=True, fill=True): 'Postal Code:'
@@ -286,4 +287,12 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Address'
         GtkEventBox(main_dialog.details_holder, pack-end): 
     GtkHButtonBox(fill=True, pack-end): 
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+        GtkAlignment(): 
+          GtkHBox(): 
+            GtkImage(): hidden
+            GtkLabel(pack-end): '_Cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
+        GtkAlignment(): 
+          GtkHBox(): 
+            GtkImage(): hidden
+            GtkLabel(pack-end): '_OK'

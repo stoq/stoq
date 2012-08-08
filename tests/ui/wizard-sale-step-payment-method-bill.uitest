@@ -46,7 +46,20 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
       GtkHBox(hbox1, fill=True, pack-end): 
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
           GtkButton(cancel_button): 'gtk-cancel'
+            GtkAlignment(): 
+              GtkHBox(): 
+                GtkImage(): hidden
+                GtkLabel(pack-end): '_Cancel'
           GtkButton(previous_button): 'gtk-go-back'
+            GtkAlignment(): 
+              GtkHBox(): 
+                GtkImage(): hidden
+                GtkLabel(pack-end): '_Back'
           GtkButton(next_button): '_Finish'
+            GtkLabel(): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
+            GtkAlignment(): 
+              GtkHBox(): 
+                GtkImage(): hidden
+                GtkLabel(pack-end): '_OK'
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
