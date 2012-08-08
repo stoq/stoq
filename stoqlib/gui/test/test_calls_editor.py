@@ -35,7 +35,7 @@ class TestCallsEditor(GUITest):
         person = self.create_person()
         editor = CallsEditor(self.trans, None, person, None)
         self.assertTrue(isinstance(editor.model, Calls))
-        editor.date.update(datetime.date(2012, 1, 1))
+        editor.date.update(datetime.date.today())
 
         self.check_editor(editor, 'editor-calls-create',
                           ignores=[str(person)])

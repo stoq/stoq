@@ -102,14 +102,12 @@ class TestPaymentEditor(GUITest):
 
     def testShow(self):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT)
-        payment.due_date = datetime.date(2012, 1, 1)
         payment.group = self.create_payment_group()
         editor = OutPaymentEditor(self.trans, payment)
 
         self.check_editor(editor, 'editor-out-payment-show')
 
         payment = self.create_payment(payment_type=Payment.TYPE_IN)
-        payment.due_date = datetime.date(2012, 1, 1)
         payment.group = self.create_payment_group()
         editor = InPaymentEditor(self.trans, payment)
 
@@ -120,7 +118,6 @@ class TestPaymentEditor(GUITest):
         self.add_payments(sale, method_type='money')
 
         p = sale.payments[0]
-        p.due_date = datetime.date(2012, 1, 1)
 
         editor = InPaymentEditor(self.trans, p)
         self.check_editor(editor, 'editor-in-payment-show-sale',
@@ -133,7 +130,6 @@ class TestPaymentEditor(GUITest):
         self.add_payments(purchase, method_type='money')
 
         p = purchase.payments[0]
-        p.due_date = datetime.date(2012, 1, 1)
         editor = OutPaymentEditor(self.trans, p)
         self.check_editor(editor, 'editor-out-payment-show-purchase',
                           ignores=[p.group.get_description()])
@@ -141,7 +137,6 @@ class TestPaymentEditor(GUITest):
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
     def testShowLonelyDialogOut(self, run_dialog):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT)
-        payment.due_date = datetime.date(2012, 1, 1)
         payment.group = self.create_payment_group()
         editor = OutPaymentEditor(self.trans, payment)
 
@@ -152,7 +147,6 @@ class TestPaymentEditor(GUITest):
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
     def testShowLonelyDialogIn(self, run_dialog):
         payment = self.create_payment(payment_type=Payment.TYPE_IN)
-        payment.due_date = datetime.date(2012, 1, 1)
         payment.group = self.create_payment_group()
         editor = InPaymentEditor(self.trans, payment)
 
@@ -166,7 +160,6 @@ class TestPaymentEditor(GUITest):
         self.add_payments(purchase, method_type='money')
 
         p = purchase.payments[0]
-        p.due_date = datetime.date(2012, 1, 1)
         editor = OutPaymentEditor(self.trans, p)
 
         editor.details_button.clicked()
@@ -182,7 +175,6 @@ class TestPaymentEditor(GUITest):
         sale.confirm()
 
         p = sale.payments[0]
-        p.due_date = datetime.date(2012, 1, 1)
 
         editor = InPaymentEditor(self.trans, p)
 

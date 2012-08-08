@@ -22,8 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 
@@ -47,7 +45,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertTrue(wizard.next_button.props.sensitive)
         wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-check',
-                          ignores=[repr(datetime.date.today())])
+                          ignores=['%05d' % (sale.id, )])
 
     def testStepPaymentMethodBill(self):
         sale = self.create_sale()
@@ -58,7 +56,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertTrue(wizard.next_button.props.sensitive)
         wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-bill',
-                          ignores=[repr(datetime.date.today())])
+                          ignores=['%05d' % (sale.id, )])
 
     def testStepPaymentMethodCard(self):
         sale = self.create_sale()
@@ -69,7 +67,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertTrue(wizard.next_button.props.sensitive)
         wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-card',
-                          ignores=[repr(datetime.date.today())])
+                          ignores=['%05d' % (sale.id, )])
 
     def testStepPaymentMethodDeposit(self):
         sale = self.create_sale()
@@ -80,7 +78,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertTrue(wizard.next_button.props.sensitive)
         wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-deposit',
-                          ignores=[repr(datetime.date.today())])
+                          ignores=['%05d' % (sale.id, )])
 
     def testStepPaymentMethodStoreCredit(self):
         sale = self.create_sale()
@@ -93,4 +91,4 @@ class TestConfirmSaleWizard(GUITest):
         self.assertTrue(wizard.next_button.props.sensitive)
         wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-store-credit',
-                          ignores=[repr(datetime.date.today())])
+                          ignores=['%05d' % (sale.id, )])

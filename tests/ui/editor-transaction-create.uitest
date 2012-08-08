@@ -11,7 +11,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add transaction'
           GtkLabel(label1, 1 2 0 1): 'Description:'
           ProxyEntry(description, 1 2 1 2): ''
           GtkLabel(label4, 2 3 0 1): 'Date:'
-          ProxyDateEntry(date, 2 3 1 2): datetime.date(2012, 1, 1)
+          ProxyDateEntry(date, 2 3 1 2): date.today()
           GtkLabel(label2, 3 4 0 1): 'Code:'
           ProxyEntry(code, 3 4 1 2): ''
           GtkLabel(label5, 4 5 0 1): 'Value:'

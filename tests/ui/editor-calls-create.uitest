@@ -10,7 +10,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Call to John'
             ProxyComboEntry(person_combo, expand=True, fill=True): %% FILTERED BY UNITTEST %%, insensitive
             GtkButton(details_button, fill=True): hidden
           GtkLabel(label1, 1 2 0 1): 'Date:'
-          ProxyDateEntry(date, 1 2 1 2): datetime.date(2012, 1, 1)
+          ProxyDateEntry(date, 1 2 1 2): date.today()
           GtkLabel(label2, 2 3 0 1): 'Attendant:'
           ProxyComboEntry(attendant, 2 3 1 2): <LoginUser 1>
           GtkLabel(label3, 3 4 0 1): 'Description:'
