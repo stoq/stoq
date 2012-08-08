@@ -196,6 +196,12 @@ GtkWindow(PaymentEditor):
         self.output += 'wizard: %s\n' % (wizard.__class__.__name__, )
         self._dump_widget(wizard.get_toplevel())
 
+    def dump_slave(self, slave):
+        self._add_namespace(slave.__dict__)
+
+        self.output += 'slave: %s\n' % (slave.__class__.__name__, )
+        self._dump_widget(slave.get_toplevel())
+
     def dump_app(self, app):
         self._add_namespace(app.__dict__)
 
@@ -230,6 +236,20 @@ class GUITest(DomainTest):
             os.path.dirname(os.path.dirname(stoq.__file__)),
             'tests', 'ui', name + '.uitest')
 
+    def assertInvalid(self, dialog, attributes):
+        for attr in attributes:
+            value = getattr(dialog, attr)
+            if value.is_valid():
+                self.fail("%s.%s should be invalid" % (
+                    dialog.__class__.__name__, attr))
+
+    def assertValid(self, dialog, attributes):
+        for attr in attributes:
+            value = getattr(dialog, attr)
+            if not value.is_valid():
+                self.fail("%s.%s should be valid" % (
+                    dialog.__class__.__name__, attr))
+
     def assertSensitive(self, dialog, attributes):
         for attr in attributes:
             value = getattr(dialog, attr)
@@ -253,6 +273,12 @@ class GUITest(DomainTest):
     def check_editor(self, editor, ui_test_name, models=[], ignores=[]):
         dumper = GUIDumper()
         dumper.dump_editor(editor)
+        dumper.dump_models(models)
+        self._check_filename(dumper, ui_test_name, ignores)
+
+    def check_slave(self, slave, ui_test_name, models=[], ignores=[]):
+        dumper = GUIDumper()
+        dumper.dump_slave(slave)
         dumper.dump_models(models)
         self._check_filename(dumper, ui_test_name, ignores)
 
