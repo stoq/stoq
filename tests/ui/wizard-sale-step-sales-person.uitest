@@ -8,47 +8,47 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
           GtkHBox(fill=True): 
             GtkVBox(expand=True, fill=True): 
               GtkTable(fill=True): 
-                ProxyLabel(0 1 0 1): 'Salesperson:'
-                ProxyComboEntry(0 1 1 2): insensitive
+                ProxyLabel(): 'Salesperson:'
+                ProxyComboEntry(): insensitive
                     item: 'Administrator'
                     item: 'Cleusa Blanc Ferreira Norbiato'
                     item: 'Deivis Alexandre Junior'
                     item: 'Maria Aparecida Ardana'
                     item: 'Osvaldo Denadai Marin'
                     item: 'SalesPerson', selected
-                GtkLabel(1 2 0 1): 'Client:'
-                ProxyComboEntry(1 2 1 2): 
+                GtkLabel(): 'Client:'
+                ProxyComboEntry(): 
                     item: 'Alessandra Almeida Itaber\xc3\xa1'
                     item: 'Franciso Elisio de Lima Junior'
                     item: 'Luis Sergio da Silva Marin'
                     item: 'Vitalina Claudino'
-                GtkButton(1 2 2 3): 
-                GtkButton(1 2 3 4): insensitive
-                GtkLabel(2 3 0 1): 'Transporter:'
-                ProxyComboEntry(2 3 1 2): 
+                GtkButton(): 
+                GtkButton(): insensitive
+                GtkLabel(): 'Transporter:'
+                ProxyComboEntry(): 
                     item: 'Jos\xc3\xa9 Carlos de Carvalho'
-                GtkButton(2 3 2 3): 
-                GtkLabel(3 4 0 1): 'Operation Nature:', hidden
-                ProxyEntry(3 4 1 2): '', hidden
+                GtkButton(): 
+                GtkLabel(): 'Operation Nature:', hidden
+                ProxyEntry(): '', hidden
             GtkVBox(expand=True, fill=True): 
               GtkTable(fill=True): 
-                GtkLabel(0 1 0 1): 'Invoice Number:'
-                ProxySpinButton(0 1 1 2): '1004'
-                GtkLabel(1 2 0 1): 'Expire', hidden
-                ProxyDateEntry(1 2 1 2): None, hidden
-                GtkLabel(2 3 0 1): 'C.F.O.P.:', hidden
-                ProxyComboEntry(2 3 1 2): hidden
-                GtkButton(2 3 2 3): hidden
-                GtkLabel(3 4 0 1): 'Client Category:', hidden
-                ProxyComboBox(3 4 1 2): hidden
+                GtkLabel(): 'Invoice Number:'
+                ProxySpinButton(): '1004'
+                GtkLabel(): 'Expire', hidden
+                ProxyDateEntry(): None, hidden
+                GtkLabel(): 'C.F.O.P.:', hidden
+                ProxyComboEntry(): hidden
+                GtkButton(): hidden
+                GtkLabel(): 'Client Category:', hidden
+                ProxyComboBox(): hidden
           GtkHSeparator(fill=True): 
           GtkVBox(fill=True): 
             GtkHBox(fill=True): 
               GtkTable(expand=True, fill=True): 
-                ProxyLabel(0 1 0 1): 'Subtotal:'
-                ProxyLabel(0 1 1 2): '<span >$10.00</span>'
-                ProxyLabel(1 2 0 1): 'Total:'
-                ProxyLabel(1 2 1 2): '<span >$10.00</span>'
+                ProxyLabel(): 'Subtotal:'
+                ProxyLabel(): '<span >$10.00</span>'
+                ProxyLabel(): 'Total:'
+                ProxyLabel(): '<span >$10.00</span>'
               GtkLabel(expand=True, fill=True): 
               GtkHButtonBox(pack-end): 
                 GtkButton(pack-end): 'Notes...'
@@ -56,23 +56,23 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
               GtkEventBox(expand=True, fill=True): 
                 GtkVBox(): 
                   GtkTable(): 
-                    ProxyLabel(0 1 0 1): '<span underline="single">Cash Change</span>'
-                    ProxyLabel(1 2 0 1): 'Received: ($CURRENCY)'
-                    ProxyEntry(1 2 1 2): '$10.00'
-                    ProxyLabel(2 3 0 1): 'Change:'
-                    ProxyLabel(2 3 1 2): '<span weight="bold">$ 0.00</span>'
+                    ProxyLabel(): '<span underline="single">Cash Change</span>'
+                    ProxyLabel(): 'Received: ($CURRENCY)'
+                    ProxyEntry(): '$10.00'
+                    ProxyLabel(): 'Change:'
+                    ProxyLabel(): '<span weight="bold">$ 0.00</span>'
               GtkExpander(expand=True, fill=True): 
                 GtkEventBox(): 
                   GtkVBox(): 
                     GtkHBox(fill=True): 
                       ProxyLabel(fill=True): 'Discount:'
                     GtkTable(fill=True): 
-                      ProxyRadioButton(0 1 0 1): 
-                      GtkHBox(0 1 1 2): 
+                      ProxyRadioButton(): 
+                      GtkHBox(): 
                         ProxyEntry(fill=True): '0.0'
                         ProxyLabel(fill=True): '%'
-                      ProxyRadioButton(1 2 0 1): 
-                      GtkHBox(1 2 1 2): 
+                      ProxyRadioButton(): 
+                      GtkHBox(): 
                         ProxyEntry(fill=True): '0.00', insensitive
                         GtkLabel(expand=True, fill=True): 
                 GtkLabel(): 'Order Details'

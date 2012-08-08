@@ -9,8 +9,8 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
             GtkVBox(): 
               GtkFrame(fill=True): 
                 GtkTable(): 
-                  ProxyLabel(0 1 0 1): 'Credit Provider:'
-                  GtkVBox(0 1 1 2): 
+                  ProxyLabel(): 'Credit Provider:'
+                  GtkVBox(): 
                     ProxyComboBox(fill=True): 
                         item: 'AMEX', selected
                         item: 'BANRISUL'
@@ -20,20 +20,20 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                         item: 'PAGGO'
                         item: 'REDECARD'
                         item: 'VISANET'
-                  GtkLabel(0 1 2 3): 
-                  ProxyLabel(1 2 0 1): 'Payment Type:'
-                  GtkVBox(1 2 1 2): 
+                  GtkLabel(): 
+                  ProxyLabel(): 'Payment Type:'
+                  GtkVBox(): 
                     GtkRadioButton(expand=True, fill=True): 'Credit Card'
                     GtkRadioButton(expand=True, fill=True): 'Debit Card'
                     GtkRadioButton(expand=True, fill=True): 'Credit Card Installments Store'
                     GtkRadioButton(expand=True, fill=True): 'Credit Card Installments Provider'
                     GtkRadioButton(expand=True, fill=True): 'Debit Card Pre-dated'
-                  GtkLabel(1 2 2 3): 
-                  ProxyLabel(2 3 0 1): 'Number of Installments:'
-                  GtkHBox(2 3 1 2): 
+                  GtkLabel(): 
+                  ProxyLabel(): 'Number of Installments:'
+                  GtkHBox(): 
                     ProxySpinButton(expand=True, fill=True): '1', insensitive
                     GtkLabel(expand=True, fill=True): 
-                  GtkLabel(2 3 2 3): 
+                  GtkLabel(): 
       ProxyLabel(notification_lbl, fill=True): 
       GtkHBox(hbox1, fill=True, pack-end): 
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 

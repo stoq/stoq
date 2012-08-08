@@ -7,25 +7,25 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Address"'
         GtkVBox(toplevel): 
           GtkEventBox(main_holder, expand=True, fill=True): 
             GtkTable(): 
-              GtkLabel(0 1 0 1): 'Street:'
-              ProxyEntry(0 1 1 4): 'Mainstreet'
-              GtkHBox(1 2 0 1): 
+              GtkLabel(): 'Street:'
+              ProxyEntry(): 'Mainstreet'
+              GtkHBox(): 
                 GtkLabel(expand=True, fill=True): 
                 ProxyCheckButton(expand=True, fill=True): 'Number:'
-              GtkHBox(1 2 1 2): 
+              GtkHBox(): 
                 ProxyEntry(fill=True): '138'
                 GtkLabel(expand=True, fill=True): 'Postal Code:'
                 ProxyEntry(fill=True): '12345-678'
-              GtkLabel(1 2 2 3): 'District:'
-              ProxyEntry(1 2 3 4): 'Cidade Araci'
-              GtkLabel(2 3 0 1): 'Complement:'
-              ProxyEntry(2 3 1 2): 'Compl'
-              GtkLabel(2 3 2 3): 'City:'
-              ProxyEntry(2 3 3 4): 'Los Angeles'
-              GtkLabel(3 4 0 1): 'State:'
-              ProxyEntry(3 4 1 2): 'Californa'
-              GtkLabel(3 4 2 3): 'Country:'
-              ProxyComboEntry(3 4 3 4): 
+              GtkLabel(): 'District:'
+              ProxyEntry(): 'Cidade Araci'
+              GtkLabel(): 'Complement:'
+              ProxyEntry(): 'Compl'
+              GtkLabel(): 'City:'
+              ProxyEntry(): 'Los Angeles'
+              GtkLabel(): 'State:'
+              ProxyEntry(): 'Californa'
+              GtkLabel(): 'Country:'
+              ProxyComboEntry(): 
                   item: 'Afghanistan'
                   item: 'Albania'
                   item: 'Algeria'

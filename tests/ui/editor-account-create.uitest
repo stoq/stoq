@@ -5,12 +5,12 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Account'
       GtkEventBox(main_dialog.header): 
       GtkEventBox(main_dialog.main, expand=True, fill=True): 
         GtkTable(table): 
-          GtkLabel(label1, 0 1 0 1): 'Account name:'
-          ProxyEntry(description, 0 1 1 2): '', invalid
-          GtkLabel(label2, 1 2 0 1): 'Account code:'
-          ProxyEntry(code, 1 2 1 2): ''
-          GtkLabel(label4, 2 3 0 1): 'Type:'
-          ProxyComboBox(account_type, 2 3 1 2): 
+          GtkLabel(label1): 'Account name:'
+          ProxyEntry(description): '', invalid
+          GtkLabel(label2): 'Account code:'
+          ProxyEntry(code): ''
+          GtkLabel(label4): 'Type:'
+          ProxyComboBox(account_type): 
               item: 'Bank'
               item: 'Cash', selected
               item: 'Asset'
@@ -18,8 +18,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Account'
               item: 'Income'
               item: 'Expense'
               item: 'Equity'
-          GtkLabel(label3, 3 4 0 1): 'Parent:'
-          GtkVBox(tree_box, 3 4 1 2): 
+          GtkLabel(label3): 'Parent:'
+          GtkVBox(tree_box): 
             ObjectTree(parent_accounts, expand=True, fill=True): 
                 column: title='Account name', expand
                 row: 'Accounts Payable'

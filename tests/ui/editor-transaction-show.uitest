@@ -5,8 +5,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "transaction"'
       GtkEventBox(main_dialog.header): 
       GtkEventBox(main_dialog.main, expand=True, fill=True): 
         GtkTable(toplevel): 
-          GtkLabel(label3, 0 1 0 1): 'Account:'
-          ProxyComboBox(account, 0 1 1 2): 
+          GtkLabel(label3): 'Account:'
+          ProxyComboBox(account): 
               item: 'Assets'
               item: 'Banks'
               item: 'Banks:Banco do Brasil'
@@ -23,16 +23,16 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "transaction"'
               item: 'Saldos Iniciais'
               item: 'Test Account'
               item: 'Tills'
-          GtkButton(add_account, 0 1 2 3): 
-          GtkLabel(label1, 1 2 0 1): 'Description:'
-          ProxyEntry(description, 1 2 1 2): 'Test Account Transaction'
-          GtkLabel(label4, 2 3 0 1): 'Date:'
-          ProxyDateEntry(date, 2 3 1 2): date.today()
-          GtkLabel(label2, 3 4 0 1): 'Code:'
-          ProxyEntry(code, 3 4 1 2): 'Code'
-          GtkLabel(label5, 4 5 0 1): 'Value:'
-          ProxyEntry(value, 4 5 1 2): '1.00'
-          GtkHBox(hbox1, 5 6 1 2): 
+          GtkButton(add_account): 
+          GtkLabel(label1): 'Description:'
+          ProxyEntry(description): 'Test Account Transaction'
+          GtkLabel(label4): 'Date:'
+          ProxyDateEntry(date): date.today()
+          GtkLabel(label2): 'Code:'
+          ProxyEntry(code): 'Code'
+          GtkLabel(label5): 'Value:'
+          ProxyEntry(value): '1.00'
+          GtkHBox(hbox1): 
             ProxyRadioButton(is_incoming, expand=True, fill=True): 'Receive'
             ProxyRadioButton(is_outgoing, expand=True, fill=True): 'Spend'
       GtkHBox(fill=True): 
