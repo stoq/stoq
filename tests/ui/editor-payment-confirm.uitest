@@ -7,37 +7,37 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add payment'
         GtkEventBox(): 
           GtkAlignment(): 
             GtkTable(): 
-              ProxyLabel(method_lbl, 0 1 0 1): 'Method:'
-              ProxyComboBox(method, 0 1 1 2): 
+              ProxyLabel(method_lbl): 'Method:'
+              ProxyComboBox(method): 
                   item: 'Bill'
                   item: 'Check'
                   item: 'Deposit'
                   item: 'Money', selected
-              ProxyLabel(description_lbl, 1 2 0 1): 'Description:'
-              ProxyEntry(description, 1 2 1 2): 'Payment name'
-              ProxyLabel(person_lbl, 2 3 0 1): 'Recipient:'
-              ProxyComboEntry(person, 2 3 1 2): 
+              ProxyLabel(description_lbl): 'Description:'
+              ProxyEntry(description): 'Payment name'
+              ProxyLabel(person_lbl): 'Recipient:'
+              ProxyComboEntry(person): 
                   item: 'Cia de Roupas S\xc3\xa3o Carlos'
-              GtkButton(person_add_button, 2 3 2 3): 
-              GtkButton(person_edit_button, 2 3 3 4): insensitive
-              ProxyLabel(value_lbl, 3 4 0 1): 'Value:'
-              ProxyEntry(value, 3 4 1 2): '100.00'
-              ProxyLabel(due_date_lbl, 4 5 0 1): 'Due date:'
-              ProxyDateEntry(due_date, 4 5 1 2): datetime.date(2015, 1, 1)
-              ProxyLabel(category_lbl, 5 6 0 1): 'Category:'
-              ProxyComboBox(category, 5 6 1 2): 
+              GtkButton(person_add_button): 
+              GtkButton(person_edit_button): insensitive
+              ProxyLabel(value_lbl): 'Value:'
+              ProxyEntry(value): '100.00'
+              ProxyLabel(due_date_lbl): 'Due date:'
+              ProxyDateEntry(due_date): datetime.date(2015, 1, 1)
+              ProxyLabel(category_lbl): 'Category:'
+              ProxyComboBox(category): 
                   item: 'No category', selected
-              GtkButton(category_add_button, 5 6 2 3): 
-              GtkButton(category_edit_button, 5 6 3 4): insensitive
-              ProxyLabel(repeat_lbl, 6 7 0 1): 'Repeat:'
-              ProxyComboBox(repeat, 6 7 1 2): 
+              GtkButton(category_add_button): 
+              GtkButton(category_edit_button): insensitive
+              ProxyLabel(repeat_lbl): 'Repeat:'
+              ProxyComboBox(repeat): 
                   item: 'Once'
                   item: 'Weekly', selected
                   item: 'Biweekly'
                   item: 'Monthly'
                   item: 'Quarterly'
-              ProxyLabel(end_date_lbl, 7 8 0 1): 'End date:'
-              ProxyDateEntry(end_date, 7 8 1 2): datetime.date(2015, 1, 10)
+              ProxyLabel(end_date_lbl): 'End date:'
+              ProxyDateEntry(end_date): datetime.date(2015, 1, 10)
       GtkHBox(fill=True): 
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 

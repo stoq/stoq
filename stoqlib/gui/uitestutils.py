@@ -92,9 +92,6 @@ GtkWindow(PaymentEditor):
                     line_props.append('padding=%d' % (padding, ))
                 if pack_type == gtk.PACK_END:
                     line_props.append('pack-end')
-            elif isinstance(parent, gtk.Table):
-                table_props = _get_table_packing_properties(parent, widget)
-                line_props.append('%d %d %d %d' % table_props)
 
         if not widget.get_visible():
             props.append('hidden')

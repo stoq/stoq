@@ -9,11 +9,11 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
             GtkFrame(): 
               GtkVBox(): 
                 GtkTable(fill=True): 
-                  GtkHBox(0 1 0 1): 
+                  GtkHBox(): 
                     ProxyLabel(expand=True, fill=True): 'Installments:'
                     ProxySpinButton(expand=True, fill=True): '1'
-                  ProxyLabel(0 1 1 2): 
-                  GtkHBox(0 1 2 3): 
+                  ProxyLabel(): 
+                  GtkHBox(): 
                     GtkHBox(expand=True, fill=True): 
                       ProxyLabel(expand=True, fill=True): 'Start at:'
                       ProxyDateEntry(expand=True, fill=True): date.today()
@@ -25,7 +25,7 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                           item: 'Weeks'
                           item: 'Months', selected
                           item: 'Years'
-                  GtkHBox(1 2 0 2): 
+                  GtkHBox(): 
                     GtkLabel(expand=True, fill=True): 'Default Bank:'
                     ProxyComboEntry(expand=True, fill=True): invalid
                 GtkEventBox(expand=True, fill=True): 
