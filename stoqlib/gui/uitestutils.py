@@ -109,7 +109,7 @@ GtkWindow(PaymentEditor):
             lbl = widget.get_label()
             if lbl:
                 props.insert(0, repr(lbl))
-            recurse = True
+            recurse = False
         if isinstance(widget, gtk.Label):
             lbl = widget.get_label()
             if lbl:

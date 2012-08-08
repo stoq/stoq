@@ -19,13 +19,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
                   item: 'Luis Sergio da Silva Marin'
                   item: 'Vitalina Claudino'
               GtkButton(person_add_button): insensitive
-                GtkAlignment(): 
-                  GtkHBox(): 
-                    GtkImage(): 
               GtkButton(person_edit_button): insensitive
-                GtkAlignment(): 
-                  GtkHBox(): 
-                    GtkImage(): 
               ProxyLabel(value_lbl): 'Value:'
               ProxyEntry(value): '10.00', insensitive
               ProxyLabel(due_date_lbl): 'Due date:'
@@ -34,13 +28,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
               ProxyComboBox(category): 
                   item: 'No category', selected
               GtkButton(category_add_button): 
-                GtkAlignment(): 
-                  GtkHBox(): 
-                    GtkImage(): 
               GtkButton(category_edit_button): insensitive
-                GtkAlignment(): 
-                  GtkHBox(): 
-                    GtkImage(): 
               ProxyLabel(repeat_lbl): 'Repeat:'
               ProxyComboBox(repeat): insensitive
                   item: 'Once', selected
@@ -57,19 +45,6 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
         GtkEventBox(main_dialog.details_holder, pack-end): 
     GtkHButtonBox(fill=True, pack-end): 
       GtkButton(details_button): 'Details'
-        GtkLabel(): 'Details'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
-        GtkAlignment(): 
-          GtkHBox(): 
-            GtkImage(): hidden
-            GtkLabel(pack-end): '_Cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
-        GtkAlignment(): 
-          GtkHBox(): 
-            GtkImage(): hidden
-            GtkLabel(pack-end): '_OK'
       GtkButton(main_dialog.help_button): 'gtk-help'
-        GtkAlignment(): 
-          GtkHBox(): 
-            GtkImage(): hidden
-            GtkLabel(pack-end): '_Help'
