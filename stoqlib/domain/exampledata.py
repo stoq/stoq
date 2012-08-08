@@ -487,6 +487,14 @@ class ExampleCreator(object):
         from stoqlib.domain.profile import UserProfile
         return UserProfile(connection=self.trans, name='assistant')
 
+    def create_profile_settings(self, user_profile=None, app='admin'):
+        from stoqlib.domain.profile import ProfileSettings
+        if not user_profile:
+            user_profile = self.create_user_profile()
+        return ProfileSettings(connection=self.trans, app_dir_name=app,
+                               has_permission=True,
+                               user_profile=user_profile)
+
     def create_purchase_order(self):
         from stoqlib.domain.purchase import PurchaseOrder
         group = self.create_payment_group()

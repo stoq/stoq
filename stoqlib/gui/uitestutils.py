@@ -196,6 +196,12 @@ GtkWindow(PaymentEditor):
         self.output += 'wizard: %s\n' % (wizard.__class__.__name__, )
         self._dump_widget(wizard.get_toplevel())
 
+    def dump_app(self, app):
+        self._add_namespace(app.__dict__)
+
+        self.output += 'app: %s\n' % (app.__class__.__name__, )
+        self._dump_widget(app.get_toplevel())
+
     def dump_models(self, models):
         if not models:
             return
