@@ -259,7 +259,8 @@ class GUITest(DomainTest):
     def assertSensitive(self, dialog, attributes):
         for attr in attributes:
             value = getattr(dialog, attr)
-            if not value.get_sensitive():
+            # If the widget is sensitive, we also expect it to be visible
+            if not value.get_sensitive() or not value.get_visible():
                 self.fail("%s.%s should be sensitive" % (
                     dialog.__class__.__name__, attr))
 
@@ -268,6 +269,13 @@ class GUITest(DomainTest):
             value = getattr(dialog, attr)
             if value.get_sensitive():
                 self.fail("%s.%s should not be sensitive" % (
+                    dialog.__class__.__name__, attr))
+
+    def assertNotVisible(self, dialog, attributes):
+        for attr in attributes:
+            value = getattr(dialog, attr)
+            if value.get_visible():
+                self.fail("%s.%s should not be visible" % (
                     dialog.__class__.__name__, attr))
 
     def check_wizard(self, wizard, ui_test_name, models=[], ignores=[]):

@@ -1,0 +1,89 @@
+editor: SaleDetailsDialog
+GtkDialog(main_dialog.toplevel): hidden, title='Sale Details'
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkVBox(toplevel): 
+          GtkTable(table1, fill=True): 
+            GtkLabel(label9): '<b>Sale Number:</b>'
+            ProxyLabel(order_number): '<span >00123</span>'
+            GtkLabel(label14): 'Invoice Number:'
+            ProxyLabel(invoice_number): '<span ></span>'
+            GtkLabel(label1): 'Open Date:'
+            ProxyLabel(open_date_lbl): '<span >12/01/10</span>'
+            GtkLabel(label5): 'Client:'
+            GtkHBox(hbox1): 
+              ProxyLabel(client_lbl, expand=True, fill=True): '<span >Client</span>'
+              GtkButton(details_button, fill=True): 
+            GtkLabel(label6): 'Status:'
+            GtkHBox(hbox2): 
+              ProxyLabel(status_lbl, expand=True, fill=True): '<span >Opened</span>'
+              GtkButton(status_details_button, fill=True): hidden
+            GtkLabel(label2): 'Salesperson:'
+            ProxyLabel(salesperson_lbl): '<span >SalesPerson</span>'
+          GtkNotebook(details_notebook, expand=True, fill=True): 
+            GtkVBox(vbox): 
+              GtkVBox(items_vbox, expand=True, fill=True): 
+                ObjectList(items_list, expand=True, fill=True): 
+                    column: title='Code'
+                    column: title='Description', expand
+                    column: title='Quantity'
+                    column: title='Price'
+                    column: title='Total'
+                    row: u'', u'Description', u'1.000 ', <currency $100>, <currency $100>
+                    row: u'', u'Description', u'1.000 ', <currency $100>, <currency $100>
+              GtkTable(table2, fill=True): 
+                GtkLabel(label4): 'Subtotal:'
+                ProxyLabel(subtotal_lbl): '<span >$200.00</span>'
+                GtkLabel(label8): 'Discount:'
+                ProxyLabel(discount_lbl): '<span >$15.00</span>'
+                GtkLabel(label7): 'Surcharge:'
+                ProxyLabel(surcharge_lbl): '<span >$8.00</span>'
+                GtkLabel(label3): 'Total:'
+                ProxyLabel(total_lbl): '<span >$193.00</span>'
+            GtkVBox(payments_vbox): 
+              ObjectList(payments_list, expand=True, fill=True): 
+                  column: title='#'
+                  column: title='Type'
+                  column: title='Description', expand
+                  column: title='Due date'
+                  column: title='Paid date'
+                  column: title='Status'
+                  column: title='Value'
+                  column: title='Paid value'
+                  row: 999, 'Money', u'1/1 Money for sale 00123', datetime.datetime(2010, 12, 1, 0, 0), None, u'Preview', <currency $193>, None
+              GtkTable(table4, fill=True): 
+                GtkLabel(label13): 'Discount:'
+                ProxyLabel(total_discount): '<span >$ 0.00</span>'
+                GtkLabel(label11): 'Penalty:'
+                ProxyLabel(total_penalty): '<span >$ 0.00</span>'
+                ProxyLabel(kiwilabel16): 'Total Paid:'
+                ProxyLabel(total_paid): '<span >$ 0.00</span>'
+                GtkLabel(label12): 'Interest:'
+                ProxyLabel(total_interest): '<span >$ 0.00</span>'
+                GtkLabel(label10): 'Total:'
+                ProxyLabel(total_value): '<span >$193.00</span>'
+            GtkVBox(vbox3): 
+              ObjectList(payments_info_list, expand=True, fill=True): 
+                  column: title='When'
+                  column: title='Payment', expand
+                  column: title='Changed'
+                  column: title='From'
+                  column: title='To'
+                  column: title='Reason', expand
+            GtkVBox(vbox2): 
+              GtkScrolledWindow(scrolledwindow1, expand=True, fill=True): 
+                ProxyTextView(notes): invalid
+          GtkHButtonBox(hbuttonbox1, fill=True): 
+            GtkButton(print_booklets): 'Print booklets', hidden
+            GtkButton(print_bills): 'Print Bills', hidden
+            GtkButton(print_button): 'gtk-print'
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', hidden

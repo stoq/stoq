@@ -821,10 +821,10 @@ class ExampleCreator(object):
         from stoqlib.domain.purchase import PurchaseOrder
         method = self.get_payment_method(method_type)
         if isinstance(obj, Sale):
-            total = obj.get_sale_subtotal()
+            total = obj.get_total_sale_amount()
             payment = method.create_inpayment(obj.group, obj.branch, total)
         elif isinstance(obj, PurchaseOrder):
-            total = obj.get_purchase_subtotal()
+            total = obj.get_purchase_total()
             payment = method.create_outpayment(obj.group, obj.branch, total)
         else:
             raise ValueError(obj)
