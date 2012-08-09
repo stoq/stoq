@@ -49,7 +49,7 @@ class TestPaymentGroup(DomainTest):
         sale.add_sellable(sellable, price=150)
 
         method = PaymentMethod.get_by_name(self.trans, 'bill')
-        payment = method.create_inpayment(sale.group, Decimal(10))
+        payment = method.create_inpayment(sale.group, sale.branch, Decimal(10))
         self.assertEqual(payment.status, Payment.STATUS_PREVIEW)
         sale.group.confirm()
         self.assertEqual(payment.status, Payment.STATUS_PENDING)
@@ -66,8 +66,8 @@ class TestPaymentGroup(DomainTest):
                          connection=self.trans)
 
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        method.create_inpayment(sale.group, Decimal(100))
-        method.create_inpayment(sale.group, Decimal(200))
+        method.create_inpayment(sale.group, sale.branch, Decimal(100))
+        method.create_inpayment(sale.group, sale.branch, Decimal(200))
         self.failIf(Commission.selectBy(sale=sale, connection=self.trans))
         sale.confirm()
         self.failUnless(Commission.selectBy(sale=sale, connection=self.trans))
@@ -98,9 +98,9 @@ class TestPaymentGroup(DomainTest):
                          connection=self.trans)
 
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        method.create_inpayment(sale.group, Decimal(300))
-        method.create_inpayment(sale.group, Decimal(450))
-        method.create_inpayment(sale.group, Decimal(150))
+        method.create_inpayment(sale.group, sale.branch, Decimal(300))
+        method.create_inpayment(sale.group, sale.branch, Decimal(450))
+        method.create_inpayment(sale.group, sale.branch, Decimal(150))
         self.failIf(Commission.selectBy(sale=sale, connection=self.trans))
 
         sale.confirm()
@@ -138,9 +138,9 @@ class TestPaymentGroup(DomainTest):
 
         sale.order()
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        payment1 = method.create_inpayment(sale.group, Decimal(300))
-        payment2 = method.create_inpayment(sale.group, Decimal(450))
-        payment3 = method.create_inpayment(sale.group, Decimal(150))
+        payment1 = method.create_inpayment(sale.group, sale.branch, Decimal(300))
+        payment2 = method.create_inpayment(sale.group, sale.branch, Decimal(450))
+        payment3 = method.create_inpayment(sale.group, sale.branch, Decimal(150))
         sale.confirm()
 
         # the commissions are created after the payment
@@ -170,7 +170,7 @@ class TestPaymentGroup(DomainTest):
         storable.increase_stock(100, get_current_branch(self.trans))
         sale.order()
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        method.create_inpayment(sale.group, Decimal(900))
+        method.create_inpayment(sale.group, sale.branch, Decimal(900))
         sale.confirm()
         self.assertEqual(group.get_total_value(), 3 * 300)
 
@@ -186,7 +186,7 @@ class TestPaymentGroup(DomainTest):
         storable.increase_stock(100, get_current_branch(self.trans))
         sale.order()
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        inpayment = method.create_inpayment(sale.group, Decimal(900))
+        inpayment = method.create_inpayment(sale.group, sale.branch, Decimal(900))
         inpayment.discount = 10
         sale.confirm()
         self.assertEqual(group.get_total_discount(), 10)
@@ -203,7 +203,7 @@ class TestPaymentGroup(DomainTest):
         storable.increase_stock(100, get_current_branch(self.trans))
         sale.order()
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        inpayment = method.create_inpayment(sale.group, Decimal(900))
+        inpayment = method.create_inpayment(sale.group, sale.branch, Decimal(900))
         inpayment.interest = 15
         sale.confirm()
         self.assertEqual(group.get_total_interest(), 15)
@@ -220,7 +220,7 @@ class TestPaymentGroup(DomainTest):
         storable.increase_stock(100, get_current_branch(self.trans))
         sale.order()
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        inpayment = method.create_inpayment(sale.group, Decimal(900))
+        inpayment = method.create_inpayment(sale.group, sale.branch, Decimal(900))
         inpayment.penalty = 25
         sale.confirm()
         self.assertEqual(group.get_total_penalty(), 25)

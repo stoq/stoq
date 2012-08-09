@@ -204,9 +204,10 @@ class PaymentListSlave(GladeSlaveDelegate):
     gladefile = 'PaymentListSlave'
     gsignal('payment-edited')
 
-    def __init__(self, payment_type, group, method, total_value,
+    def __init__(self, payment_type, group, branch, method, total_value,
                  editor_class, parent):
         self.parent = parent
+        self.branch = branch
         self.payment_type = payment_type
         self.group = group
         self.total_value = total_value
@@ -342,6 +343,7 @@ class PaymentListSlave(GladeSlaveDelegate):
                                          p.due_date.day)
             payment = self.method.create_payment(payment_type=self.payment_type,
                                                  payment_group=self.group,
+                                                 branch=self.branch,
                                                  value=p.value,
                                                  due_date=due_date,
                                                  description=p.description,
@@ -455,6 +457,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     def _setup_payment_list(self):
         self.payment_list = PaymentListSlave(self.payment_type,
                                              self.payment_group,
+                                             self.order.branch,
                                              self.method,
                                              self.total_value,
                                              self.data_editor_class,
@@ -782,9 +785,11 @@ class CardMethodSlave(BaseEditorSlave):
 
         if isinstance(self._order, PurchaseOrder):
             payments = self.method.create_outpayments(self._payment_group,
-                                                     self.total_value, due_dates)
+                                                      self.model.branch,
+                                                      self.total_value, due_dates)
         else:
             payments = self.method.create_inpayments(self._payment_group,
+                                                     self.model.branch,
                                                      self.total_value, due_dates)
 
         operation = self.method.operation
@@ -1117,10 +1122,10 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         if isinstance(self.model, PurchaseOrder):
             payment = self._method.create_outpayment(
-                self.model.group, payment_value)
+                self.model.group, self.model.branch, payment_value)
         else:
             payment = self._method.create_inpayment(
-                self.model.group, payment_value)
+                self.model.group, self.model.branch, payment_value)
         # We have to modify the payment, so the fiscal printer can calculate
         # and print the change.
         payment.base_value = self._holder.value

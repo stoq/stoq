@@ -92,7 +92,7 @@ class PurchaseImporter(CSVImporter):
                          order=purchase)
 
         method = PaymentMethod.get_by_name(trans, data.payment_method)
-        method.create_outpayment(purchase.group, purchase.get_purchase_total(),
+        method.create_outpayment(purchase.group, branch, purchase.get_purchase_total(),
                                  self.parse_date(data.due_date))
         purchase.confirm()
 

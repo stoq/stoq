@@ -40,20 +40,20 @@ class _TestPaymentMethod:
     def createInPayment(self, till=ValueUnset):
         sale = self.create_sale()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        return method.create_inpayment(sale.group, Decimal(100),
+        return method.create_inpayment(sale.group, sale.branch, Decimal(100),
                                        till=till)
 
     def createOutPayment(self, till=ValueUnset):
         purchase = self.create_purchase_order()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        return method.create_outpayment(purchase.group, Decimal(100),
+        return method.create_outpayment(purchase.group, purchase.branch, Decimal(100),
                                         till=till)
 
     def createInPayments(self, no=3):
         sale = self.create_sale()
         d = datetime.datetime.today()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        payments = method.create_inpayments(sale.group, Decimal(100),
+        payments = method.create_inpayments(sale.group, sale.branch, Decimal(100),
                                             [d] * no)
         return payments
 
@@ -61,7 +61,7 @@ class _TestPaymentMethod:
         purchase = self.create_purchase_order()
         d = datetime.datetime.today()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        payments = method.create_outpayments(purchase.group, Decimal(100),
+        payments = method.create_outpayments(purchase.group, purchase.branch, Decimal(100),
                                              [d] * no)
         return payments
 
@@ -75,7 +75,7 @@ class _TestPaymentMethod:
 
         value = Decimal(100)
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        return method.create_payment(payment_type, order.group, value)
+        return method.create_payment(payment_type, order.group, order.branch, value)
 
     def createPayments(self, payment_type, no=3):
         if payment_type == Payment.TYPE_OUT:
@@ -88,7 +88,7 @@ class _TestPaymentMethod:
         value = Decimal(100)
         due_dates = [datetime.datetime.today()] * no
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        return method.create_payments(payment_type, order.group, value, due_dates)
+        return method.create_payments(payment_type, order.group, order.branch, value, due_dates)
 
 
 class _TestPaymentMethodsBase(_TestPaymentMethod):
@@ -324,7 +324,7 @@ class TestCheck(DomainTest, _TestPaymentMethodsBase):
     def testBank(self):
         sale = self.create_sale()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        payment = method.create_outpayment(sale.group, Decimal(10))
+        payment = method.create_outpayment(sale.group, sale.branch, Decimal(10))
         check_data = method.operation.get_check_data_by_payment(payment)
         check_data.bank_account.bank_number = 123
         self.assertEquals(payment.bank_account_number, 123)

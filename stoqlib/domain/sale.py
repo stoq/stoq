@@ -1283,7 +1283,7 @@ class SaleAdaptToPaymentTransaction(object):
 
         money = PaymentMethod.get_by_name(conn, 'money')
         payment = money.create_outpayment(
-            self.sale.group, paid_value,
+            self.sale.group, self.sale.branch, paid_value,
             description=_('%s Money Returned for Sale %d') % (
             '1/1', self.sale.id), till=till)
         payment.set_pending()

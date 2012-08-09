@@ -190,6 +190,12 @@ class Payment(Domain):
     #: number of the payment
     payment_number = UnicodeCol(default=None)
 
+    #: :class:`branch <stoqlib.domain.person.Branch>` associated with this
+    #: payment. For a :obj:`.TYPE_IN` payment, this is the branch that will
+    #: receive the money. For a :obj:`.TYPE_IN` payment, this is the branch that
+    #: will make the payment
+    branch = ForeignKey('Branch', notNull=True)
+
     #: :class:`payment method <stoqlib.domain.payment.method.PaymentMethod>` for this
     #: payment
     method = ForeignKey('PaymentMethod')
@@ -588,6 +594,11 @@ class PaymentFlowHistory(Domain):
 
     # FIXME: this class really needs a branch, it doesn't make sense
     #        without one.
+    #: :class:`branch <stoqlib.domain.person.Branch>` associated with this
+    #: payment. For a :obj:`.TYPE_IN` payment, this is the branch that will
+    #: receive the money. For a :obj:`.TYPE_IN` payment, this is the branch that
+    #: will make the payment
+    #branch = ForeignKey('Branch')
 
     #: date this entry represent
     history_date = DateTimeCol(default=datetime.datetime.now)

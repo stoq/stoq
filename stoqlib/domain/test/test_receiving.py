@@ -97,7 +97,7 @@ class TestReceivingOrder(DomainTest):
         purchase_item = purchase_order.add_item(product.sellable, 1)
         purchase_order.status = purchase_order.ORDER_PENDING
         method = PaymentMethod.get_by_name(self.trans, 'money')
-        method.create_outpayment(purchase_order.group,
+        method.create_outpayment(purchase_order.group, purchase_order.branch,
                                  purchase_order.get_purchase_total())
         purchase_order.confirm()
 
@@ -120,7 +120,7 @@ class TestReceivingOrder(DomainTest):
         sale.add_sellable(product.sellable)
         sale.order()
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        method.create_inpayment(sale.group, Decimal(100))
+        method.create_inpayment(sale.group, sale.branch, Decimal(100))
         sale.confirm()
         self.assertEquals(product_stock_item.quantity, 0)
 

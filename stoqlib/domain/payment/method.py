@@ -38,6 +38,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.person import Branch
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DatabaseInconsistency, PaymentMethodError
 from stoqlib.lib.defaults import quantize
@@ -228,15 +229,19 @@ class PaymentMethod(Domain):
     #       they don't really belong to the method itself.
     #       They should either go into the group or to a separate payment
     #       factory singleton.
-    @argcheck(int, PaymentGroup, Decimal, datetime.datetime,
+    @argcheck(int, PaymentGroup, Branch, Decimal, datetime.datetime,
               basestring, basestring, object, basestring)
-    def create_payment(self, payment_type, payment_group, value, due_date=None,
-                       description=None, base_value=None, till=ValueUnset,
-                       payment_number=None):
+    def create_payment(self, payment_type, payment_group, branch, value,
+                       due_date=None, description=None, base_value=None,
+                       till=ValueUnset, payment_number=None):
         """Creates a new payment according to a payment method interface
 
         :param payment_type: the kind of payment, in or out
         :param payment_group: a :class:`PaymentGroup` subclass
+        :param branch: the :class:`branch <stoqlib.domain.person.Branch>'
+          associated with the payment, for incoming payments this is the
+          branch receiving the payment and for outgoing payments this is the
+          branch sending the payment.
         :param value: value of payment
         :param due_date: optional, due date of payment
         :param details: optional
@@ -282,6 +287,7 @@ class PaymentMethod(Domain):
                 raise AssertionError(payment_type)
 
         payment = Payment(connection=conn,
+                          branch=branch,
                           payment_type=payment_type,
                           due_date=due_date,
                           value=value,
@@ -295,8 +301,8 @@ class PaymentMethod(Domain):
         self.operation.payment_create(payment)
         return payment
 
-    @argcheck(int, PaymentGroup, Decimal, object)
-    def create_payments(self, payment_type, group, value, due_dates):
+    @argcheck(int, PaymentGroup, Branch, Decimal, object)
+    def create_payments(self, payment_type, group, branch, value, due_dates):
         """Creates new payments
         The values of the individual payments are calculated by taking
         the value and dividing it by the number of payments.
@@ -305,6 +311,10 @@ class PaymentMethod(Domain):
 
         :param payment_type: the kind of payment, in or out
         :param payment_group: a :class:`PaymentGroup` subclass
+        :param branch: the :class:`branch <stoqlib.domain.person.Branch>'
+          associated with the payments, for incoming payments this is the
+          branch receiving the payment and for outgoing payments this is the
+          branch sending the payment.
         :param value: value of payment
         :param due_dates: a list of datetime objects
         :returns: a list of :class:`payments <stoqlib.domain.payment.Payment>`
@@ -325,7 +335,7 @@ class PaymentMethod(Domain):
         payments_total = Decimal(0)
         for i, due_date in enumerate(due_dates):
             payment = self.create_payment(payment_type,
-                group, normalized_value, due_date,
+                group, branch, normalized_value, due_date,
                 description=self.describe_payment(group, i + 1, installments))
             payments.append(payment)
             payments_total += normalized_value
@@ -353,13 +363,15 @@ class PaymentMethod(Domain):
                                         self.get_description(),
                                         payment_group.get_description())
 
-    @argcheck(PaymentGroup, Decimal, datetime.datetime,
+    @argcheck(PaymentGroup, Branch, Decimal, datetime.datetime,
               basestring, Decimal, object)
-    def create_inpayment(self, payment_group, value, due_date=None,
+    def create_inpayment(self, payment_group, branch, value, due_date=None,
                          description=None, base_value=None, till=ValueUnset):
         """Creates a new inpayment
 
         :param payment_group: a :class:`PaymentGroup` subclass
+        :param branch: the :class:`branch <stoqlib.domain.person.Branch>'
+          that will receive the payment created.
         :param value: value of payment
         :param due_date: optional, due date of payment
         :param description: optional, description of the payment
@@ -368,16 +380,18 @@ class PaymentMethod(Domain):
         :returns: a :class:`payment <stoqlib.domain.payment.Payment>`
         """
         return self.create_payment(Payment.TYPE_IN, payment_group,
-                                   value, due_date,
+                                   branch, value, due_date,
                                    description, base_value, till)
 
-    @argcheck(PaymentGroup, Decimal, datetime.datetime,
+    @argcheck(PaymentGroup, Branch, Decimal, datetime.datetime,
               basestring, Decimal, object)
-    def create_outpayment(self, payment_group, value, due_date=None,
+    def create_outpayment(self, payment_group, branch, value, due_date=None,
                           description=None, base_value=None, till=ValueUnset):
         """Creates a new outpayment
 
         :param payment_group: a :class:`PaymentGroup` subclass
+        :param branch: the :class:`branch <stoqlib.domain.person.Branch>'
+          that will pay the payment created.
         :param value: value of payment
         :param due_date: optional, due date of payment
         :param description: optional, description of the payment
@@ -386,11 +400,11 @@ class PaymentMethod(Domain):
         :returns: a :class:`payment <stoqlib.domain.payment.Payment>`
         """
         return self.create_payment(Payment.TYPE_OUT, payment_group,
-                                   value, due_date,
+                                   branch, value, due_date,
                                    description, base_value, till)
 
-    @argcheck(PaymentGroup, Decimal, object)
-    def create_inpayments(self, payment_group, value, due_dates):
+    @argcheck(PaymentGroup, Branch, Decimal, object)
+    def create_inpayments(self, payment_group, branch, value, due_dates):
         """Creates a list of new inpayments, the values of the individual
         payments are calculated by taking the value and dividing it by
         the number of payments.
@@ -398,15 +412,17 @@ class PaymentMethod(Domain):
         sequence.
 
         :param payment_group: a :class:`PaymentGroup` subclass
+        :param branch: the :class:`branch <stoqlib.domain.person.Branch>'
+          that will receive the payments created.
         :param value: total value of all payments
         :param due_dates: a list of datetime objects
         :returns: a list of :class:`payments <stoqlib.domain.payment.Payment>`
         """
         return self.create_payments(Payment.TYPE_IN, payment_group,
-                                    value, due_dates)
+                                    branch, value, due_dates)
 
-    @argcheck(PaymentGroup, Decimal, object)
-    def create_outpayments(self, payment_group, value, due_dates):
+    @argcheck(PaymentGroup, Branch, Decimal, object)
+    def create_outpayments(self, payment_group, branch, value, due_dates):
         """Creates a list of new outpayments, the values of the individual
         payments are calculated by taking the value and dividing it by
         the number of payments.
@@ -414,12 +430,14 @@ class PaymentMethod(Domain):
         sequence.
 
         :param payment_group: a :class:`PaymentGroup` subclass
+        :param branch: the :class:`branch <stoqlib.domain.person.Branch>'
+          that will pay the payments created.
         :param value: total value of all payments
         :param due_dates: a list of datetime objects
         :returns: a list of :class:`payments <stoqlib.domain.payment.Payment>`
         """
         return self.create_payments(Payment.TYPE_OUT, payment_group,
-                                    value, due_dates)
+                                    branch, value, due_dates)
 
     @classmethod
     def get_active_methods(cls, conn):

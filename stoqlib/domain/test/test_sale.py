@@ -349,7 +349,7 @@ class TestSale(DomainTest):
         balance_initial = till.get_balance()
 
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        payment = method.create_inpayment(sale.group, Decimal(300))
+        payment = method.create_inpayment(sale.group, sale.branch, Decimal(300))
         sale.confirm()
         self.failUnless(sale.can_return())
 
@@ -384,9 +384,9 @@ class TestSale(DomainTest):
 
         # Add 3 check payments of 100 each
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        payment1 = method.create_inpayment(sale.group, Decimal(100))
-        method.create_inpayment(sale.group, Decimal(100))
-        method.create_inpayment(sale.group, Decimal(100))
+        payment1 = method.create_inpayment(sale.group, sale.branch, Decimal(100))
+        method.create_inpayment(sale.group, sale.branch, Decimal(100))
+        method.create_inpayment(sale.group, sale.branch, Decimal(100))
         sale.confirm()
 
         # Pay the first payment.
@@ -432,9 +432,9 @@ class TestSale(DomainTest):
 
         # Add 3 check payments of 100 each
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        payment1 = method.create_inpayment(sale.group, Decimal(100))
-        method.create_inpayment(sale.group, Decimal(100))
-        method.create_inpayment(sale.group, Decimal(100))
+        payment1 = method.create_inpayment(sale.group, sale.branch, Decimal(100))
+        method.create_inpayment(sale.group, sale.branch, Decimal(100))
+        method.create_inpayment(sale.group, sale.branch, Decimal(100))
         sale.confirm()
 
         # We should have three payments in the sale

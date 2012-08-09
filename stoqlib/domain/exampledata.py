@@ -694,6 +694,7 @@ class ExampleCreator(object):
         if not date:
             date = datetime.date.today()
         return Payment(group=None,
+                       branch=self.create_branch(),
                        open_date=date,
                        due_date=date,
                        value=Decimal(10),
@@ -814,10 +815,10 @@ class ExampleCreator(object):
         method = self.get_payment_method(method_type)
         if isinstance(obj, Sale):
             total = obj.get_sale_subtotal()
-            payment = method.create_inpayment(obj.group, total)
+            payment = method.create_inpayment(obj.group, obj.branch, total)
         elif isinstance(obj, PurchaseOrder):
             total = obj.get_purchase_subtotal()
-            payment = method.create_outpayment(obj.group, total)
+            payment = method.create_outpayment(obj.group, obj.branch, total)
         else:
             raise ValueError(obj)
 

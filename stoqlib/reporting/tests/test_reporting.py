@@ -163,7 +163,8 @@ class TestReport(DomainTest):
 
         method = PaymentMethod.get_by_name(self.trans, 'money')
         group = self.create_payment_group()
-        payment = method.create_inpayment(group, Decimal(100))
+        branch = self.create_branch()
+        payment = method.create_inpayment(group, branch, Decimal(100))
         payment.description = "Test receivable account"
         payment.group.payer = payer.person
         payment.set_pending()
@@ -180,7 +181,8 @@ class TestReport(DomainTest):
 
         method = PaymentMethod.get_by_name(self.trans, 'money')
         group = self.create_payment_group()
-        payment = method.create_outpayment(group, Decimal(100))
+        branch = self.create_branch()
+        payment = method.create_outpayment(group, branch, Decimal(100))
         payment.description = "Test payable account"
         payment.group.recipient = drawee.person
         payment.set_pending()
@@ -225,7 +227,7 @@ class TestReport(DomainTest):
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=100)
         method = PaymentMethod.get_by_name(self.trans, 'bill')
-        payment = method.create_inpayment(sale.group, Decimal(100))
+        payment = method.create_inpayment(sale.group, sale.branch, Decimal(100))
         TillEntry(value=25, id=20,
                   description="Cash In",
                   payment=None,
@@ -280,7 +282,7 @@ class TestReport(DomainTest):
 
         method = PaymentMethod.get_by_name(self.trans, 'money')
         till = Till.get_last_opened(self.trans)
-        method.create_inpayment(sale.group,
+        method.create_inpayment(sale.group, sale.branch,
                                 sale.get_sale_subtotal(),
                                 till=till)
         sale.confirm()
