@@ -196,6 +196,12 @@ GtkWindow(PaymentEditor):
         self.output += 'wizard: %s\n' % (wizard.__class__.__name__, )
         self._dump_widget(wizard.get_toplevel())
 
+    def dump_dialog(self, dialog):
+        self._add_namespace(dialog.__dict__)
+
+        self.output += 'dialog: %s\n' % (dialog.__class__.__name__, )
+        self._dump_widget(dialog.get_toplevel())
+
     def dump_slave(self, slave):
         self._add_namespace(slave.__dict__)
 
@@ -273,6 +279,12 @@ class GUITest(DomainTest):
     def check_editor(self, editor, ui_test_name, models=[], ignores=[]):
         dumper = GUIDumper()
         dumper.dump_editor(editor)
+        dumper.dump_models(models)
+        self._check_filename(dumper, ui_test_name, ignores)
+
+    def check_dialog(self, dialog, ui_test_name, models=[], ignores=[]):
+        dumper = GUIDumper()
+        dumper.dump_dialog(dialog)
         dumper.dump_models(models)
         self._check_filename(dumper, ui_test_name, ignores)
 

@@ -33,12 +33,17 @@ from kiwi.ui.search import DateSearchFilter
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.domain.system import SystemTable
 from stoqlib.gui.base.dialogs import BasicDialog
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.dateutils import get_month_names
 from stoqlib.lib.message import warning
 from stoqlib.lib.sintegra import SintegraError
 from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
-from stoqlib.lib.dateconstants import get_month_names
+from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
+
+
+# This can be mocked
+def _today():
+    return datetime.date.today()
 
 
 class SintegraDialog(BasicDialog):
@@ -95,7 +100,7 @@ class SintegraDialog(BasicDialog):
         # Start is the first day of the month
         # End is the last day of the month
         start = initial_date + relativedelta(day=1)
-        end = datetime.date.today() + relativedelta(day=31)
+        end = _today() + relativedelta(day=31)
         intervals = []
         while start < end:
             intervals.append((start, start + relativedelta(day=31)))
