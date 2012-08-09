@@ -105,6 +105,9 @@ GtkWindow(PaymentEditor):
             text = widget.get_text()
             props.insert(0, repr(text))
             recurse = False
+        if isinstance(widget, gtk.ToggleButton):
+            if widget.get_active():
+                props.append('active')
         if isinstance(widget, gtk.Button):
             lbl = widget.get_label()
             if lbl:

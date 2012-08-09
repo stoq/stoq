@@ -28,7 +28,7 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
             GtkHBox(): 
               GtkRadioButton(expand=True, fill=True): 'CIF (Cost Insurance Freight)'
             GtkHBox(): 
-              GtkRadioButton(expand=True, fill=True): 'FOB (Free On Board)'
+              GtkRadioButton(expand=True, fill=True): 'FOB (Free On Board)', active
             ProxyLabel(): 'Expected Freight:'
             GtkHBox(): 
               GtkHBox(fill=True): 
