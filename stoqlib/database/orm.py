@@ -697,6 +697,12 @@ class SQLObjectResultSet(object):
         result_set = self._result_set
         return result_set.max(attribute)
 
+    def min(self, attribute):
+        if isinstance(attribute, basestring):
+            attribute = SQL(attribute)
+        result_set = self._result_set
+        return result_set.min(attribute)
+
     def filterBy(self, **kwargs):
         return self._copy(by=kwargs)
 
