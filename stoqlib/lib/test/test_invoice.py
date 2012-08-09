@@ -57,7 +57,7 @@ def compare_invoice_file(invoice, basename):
 class InvoiceTest(DomainTest):
     def _add_payments(self, sale):
         method = PaymentMethod.get_by_name(self.trans, 'money')
-        payment = method.create_inpayment(sale.group,
+        payment = method.create_inpayment(sale.group, sale.branch,
                                           sale.get_sale_subtotal())
         payment.due_date = datetime.datetime(2000, 1, 1)
 

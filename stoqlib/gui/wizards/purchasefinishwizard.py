@@ -227,6 +227,7 @@ class PurchaseFinishWizard(BaseWizard):
         today = datetime.date.today()
 
         payment = Payment(open_date=today,
+                          branch=self.purchase.branch,
                           description=description,
                           value=value,
                           base_value=value,

@@ -173,7 +173,8 @@ class BaseMethodSelectionStep(object):
     def setup_cash_payment(self, total=None):
         money_method = PaymentMethod.get_by_name(self.conn, 'money')
         total = total or self._get_total_amount()
-        return money_method.create_inpayment(self.model.group, total)
+        return money_method.create_inpayment(self.model.group,
+                                             self.model.branch, total)
 
     #
     # WizardStep hooks

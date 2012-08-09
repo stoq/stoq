@@ -36,6 +36,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 class TestPayment(DomainTest):
     def test_new(self):
         payment = Payment(value=currency(10), due_date=datetime.datetime.now(),
+                          branch=self.create_branch(),
                           method=None,
                           group=None,
                           till=None,
@@ -50,6 +51,7 @@ class TestPayment(DomainTest):
     def testGetPenalty(self):
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
+                          branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
                           open_date=datetime.datetime.now(),
                           method=method,
@@ -89,6 +91,7 @@ class TestPayment(DomainTest):
     def testGetInterest(self):
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
+                          branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
                           method=method,
                           group=None,
@@ -126,6 +129,7 @@ class TestPayment(DomainTest):
     def testIsPaid(self):
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
+                          branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
                           method=method,
                           group=None,
@@ -142,6 +146,7 @@ class TestPayment(DomainTest):
     def testIsCancelled(self):
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
+                          branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
                           method=method,
                           group=None,
@@ -160,6 +165,7 @@ class TestPayment(DomainTest):
     def testGetPaidDateString(self):
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
+                          branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
                           method=method,
                           group=None,
@@ -176,6 +182,7 @@ class TestPayment(DomainTest):
     def testGetOpenDateString(self):
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
+                          branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
                           method=method,
                           group=None,
@@ -189,6 +196,7 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.trans, 'check')
         open_date = due_date = self._get_relative_day(-4)
         payment = Payment(value=currency(100),
+                          branch=self.create_branch(),
                           due_date=due_date,
                           open_date=open_date,
                           method=method,
@@ -205,6 +213,7 @@ class TestPayment(DomainTest):
     def testCancel(self):
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
+                          branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
                           method=method,
                           group=None,

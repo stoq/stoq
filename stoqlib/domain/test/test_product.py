@@ -187,7 +187,7 @@ class TestProduct(DomainTest):
         sale.add_sellable(product.sellable, quantity=1, price=10)
 
         method = PaymentMethod.get_by_name(self.trans, 'money')
-        method.create_inpayment(sale.group, sale.get_sale_subtotal())
+        method.create_inpayment(sale.group, sale.branch, sale.get_sale_subtotal())
 
         sale.order()
         sale.confirm()
@@ -355,7 +355,7 @@ class TestProductHistory(DomainTest):
         sale_item = sale.add_sellable(sellable, quantity=5)
 
         method = PaymentMethod.get_by_name(self.trans, 'money')
-        method.create_inpayment(sale.group, sale.get_sale_subtotal())
+        method.create_inpayment(sale.group, sale.branch, sale.get_sale_subtotal())
 
         self.failIf(ProductHistory.selectOneBy(connection=self.trans,
                                                sellable=sellable))

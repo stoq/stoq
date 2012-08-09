@@ -43,7 +43,7 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
-from stoqlib.domain.person import Client, Supplier
+from stoqlib.domain.person import Client, Supplier, Branch
 from stoqlib.domain.sale import SaleView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
@@ -73,6 +73,8 @@ class PaymentEditor(BaseEditor):
     # FIXME: Person should really be a proxy_widget attribute,
     # but it breaks when displaying an existing payment
     fields = dict(
+        branch=PersonField(_('Branch'), proxy=True, person_type=Branch,
+                           can_add=False, can_edit=False),
         method=ChoiceField(_('Method')),
         description=TextField(_('Description'), proxy=True, mandatory=True),
         person=PersonField(proxy=True),
@@ -106,9 +108,11 @@ class PaymentEditor(BaseEditor):
     def create_model(self, trans):
         group = PaymentGroup(connection=trans)
         money = PaymentMethod.get_by_name(trans, 'money')
+        branch = api.get_current_branch(trans)
         # Set status to PENDING now, to avoid calling set_pending on
         # on_confirm for payments that shoud not have its status changed.
         return Payment(open_date=datetime.date.today(),
+                       branch=branch,
                        status=Payment.STATUS_PENDING,
                        description='',
                        value=currency(0),
@@ -193,7 +197,7 @@ class PaymentEditor(BaseEditor):
         self.end_date.set_sensitive(False)
         if self.edit_mode:
             for field_name in ['value', 'due_date', 'person',
-                               'repeat', 'end_date']:
+                               'repeat', 'end_date', 'branch']:
                 field = self.fields[field_name]
                 field.can_add = False
                 field.can_edit = False
@@ -284,6 +288,7 @@ class PaymentEditor(BaseEditor):
         self.model.description = '1/%d %s' % (n_dates, description)
         for i, date in enumerate(dates):
             Payment(open_date=self.model.open_date,
+                    branch=self.model.branch,
                     payment_type=self.model.payment_type,
                     status=self.model.status,
                     description='%d/%d %s' % (i + 2, n_dates,

@@ -78,7 +78,7 @@ class TestBooklet(DomainTest):
         sale.order()
         method = PaymentMethod.get_by_name(self.trans, 'store_credit')
         method.max_installments = 12
-        method.create_inpayments(sale.group,
+        method.create_inpayments(sale.group, sale.branch,
                                  value=sale.get_total_sale_amount(),
                                  due_dates=due_dates)
         sale.confirm()

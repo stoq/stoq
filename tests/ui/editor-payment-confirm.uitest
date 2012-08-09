@@ -7,6 +7,12 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add payment'
         GtkEventBox(): 
           GtkAlignment(): 
             GtkTable(): 
+              ProxyLabel(branch_lbl): 'Branch:'
+              ProxyComboEntry(branch): 
+                  item: 'Moda Stoq', selected
+                  item: 'Stoq Elite Fashion'
+              GtkButton(branch_add_button): insensitive
+              GtkButton(branch_edit_button): 
               ProxyLabel(method_lbl): 'Method:'
               ProxyComboBox(method): 
                   item: 'Bill'

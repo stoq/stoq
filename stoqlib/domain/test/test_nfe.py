@@ -133,7 +133,7 @@ class TestNfeGenerator(DomainTest):
         sale.order()
 
         method = PaymentMethod.get_by_name(self.trans, 'money')
-        method.create_inpayment(sale.group,
+        method.create_inpayment(sale.group, sale.branch,
                                 sale.get_sale_subtotal(),
                                 due_date=due_date)
         sale.confirm()
