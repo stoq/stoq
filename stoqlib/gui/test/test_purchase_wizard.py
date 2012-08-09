@@ -62,4 +62,3 @@ class TestPurchaseWizard(GUITest):
         self.check_wizard(wizard, 'wizard-purchase-finish-step',
                           models=models,
                           ignores=[str(wizard.model.id)])
-
