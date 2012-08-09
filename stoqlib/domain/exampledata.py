@@ -358,8 +358,9 @@ class ExampleCreator(object):
                                 component=component,
                                 connection=self.trans)
 
-    def create_sellable(self, price=None):
+    def create_sellable(self, price=None, product=True):
         from stoqlib.domain.product import Product
+        from stoqlib.domain.service import Service
         from stoqlib.domain.sellable import Sellable
         tax_constant = sysparam(self.trans).DEFAULT_PRODUCT_TAX_CONSTANT
         if price is None:
@@ -369,7 +370,10 @@ class ExampleCreator(object):
                             price=price,
                             description="Description",
                             connection=self.trans)
-        Product(sellable=sellable, connection=self.trans)
+        if product:
+            Product(sellable=sellable, connection=self.trans)
+        else:
+            Service(sellable=sellable, connection=self.trans)
         return sellable
 
     def create_sellable_unit(self, description=u'', allow_fraction=True):
@@ -405,9 +409,9 @@ class ExampleCreator(object):
                     connection=self.trans,
                     **extra_args)
 
-    def create_sale_item(self, sale=None):
+    def create_sale_item(self, sale=None, product=True):
         from stoqlib.domain.sale import SaleItem
-        sellable = self.create_sellable()
+        sellable = self.create_sellable(product=product)
         return SaleItem(connection=self.trans,
                         quantity=1,
                         price=100,
@@ -874,11 +878,11 @@ class ExampleCreator(object):
                                 station=self.create_station(),
                                 connection=self.trans)
 
-    def create_call(self):
+    def create_call(self, person=None):
         from stoqlib.domain.person import Calls
         return Calls(date=datetime.date(2011, 1, 1),
                      message="Test call message",
-                     person=self.create_person(),
+                     person=person or self.create_person(),
                      attendant=self.create_user(),
                      description="Test call",
                      connection=self.trans)
