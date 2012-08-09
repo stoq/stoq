@@ -193,7 +193,7 @@ class ProductStockHistoryDialog(BaseEditor):
                         data_type=Decimal)]
 
     def _get_decrease_columns(self):
-        return [Column("id", title=_("#"), data_type=int,
+        return [Column("decrease_id", title=_("#"), data_type=int,
                         justify=gtk.JUSTIFY_RIGHT, sorted=True),
                 Column("date", title=_("Date"), data_type=datetime.date,
                         justify=gtk.JUSTIFY_RIGHT),
