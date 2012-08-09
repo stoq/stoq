@@ -231,8 +231,13 @@ GtkWindow(PaymentEditor):
         for col in info.columns:
             if col.name.endswith('_id') or col.name == 'id':
                 continue
-            self.output += '  %s: %r\n' % (col.name,
-                                           getattr(model, col.name, None))
+            value = getattr(model, col.name, None)
+            if isinstance(value, datetime.datetime):
+                # Strip hours/minutes/seconds so today() works
+                value = datetime.datetime(value.year,
+                                          value.month,
+                                          value.day)
+            self.output += '  %s: %r\n' % (col.name, value)
         self.output += '\n'
 
 

@@ -1,0 +1,57 @@
+wizard: PurchaseWizard
+GtkDialog(PluggableWizard): hidden, title='New Order'
+  GtkVBox(PluggableWizard-vbox): 
+    GtkVBox(vbox1, expand=True, fill=True): 
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): 
+        GtkVBox(): 
+          GtkTable(fill=True): 
+            GtkHBox(): 
+              ProxyLabel(expand=True, fill=True): 'Item:'
+              GtkEntry(expand=True, fill=True): ''
+              GtkButton(): 
+            ProxyLabel(): 'Quantity:'
+            ProxySpinButton(): '0.000', insensitive
+            ProxyLabel(): '<span weight="bold"></span>'
+            ProxyLabel(): 'Cost:'
+            ProxySpinButton(): '0.00', insensitive
+            GtkButton(): insensitive
+            ProxyLabel(): '<span ></span>'
+            GtkLabel(): 'Minimum:'
+            ProxyLabel(): '<span >0.0</span>'
+            GtkLabel(): 'Stock:'
+            ProxyLabel(): '<span >0.0</span>'
+          GtkEventBox(expand=True, fill=True): 
+            GtkVBox(): 
+              GtkVBox(expand=True, fill=True): 
+                ObjectList(expand=True, fill=True): 
+                    column: title='Code'
+                    column: title='Description'
+                    column: title='Category', hidden
+                    column: title='Quantity'
+                    column: title='Expected Receival', hidden
+                    column: title='Unit'
+                    column: title='Cost'
+                    column: title='Total'
+                    row: u'', u'Description', u'', Decimal('1.000'), None, u'', <currency $125>, <currency $125>
+                GtkHBox(fill=True): 
+                  GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
+                  GtkLabel(): '<b>$125.00</b>'
+              GtkHBox(fill=True): 
+                GtkAlignment(fill=True): 
+                  GtkHButtonBox(): 
+                    GtkButton(): hidden
+                    GtkButton(): insensitive
+                    GtkButton(): insensitive
+                GtkHBox(expand=True, fill=True): hidden
+                  GtkLabel(expand=True, fill=True): 
+                  GtkButton(fill=True): 'Details'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end): 
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+          GtkButton(): 'gtk-help'
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
