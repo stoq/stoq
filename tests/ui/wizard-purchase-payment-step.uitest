@@ -1,0 +1,62 @@
+wizard: PurchaseWizard
+GtkDialog(PluggableWizard): hidden, title='New Order'
+  GtkVBox(PluggableWizard-vbox): 
+    GtkVBox(vbox1, expand=True, fill=True): 
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): 
+        GtkVBox(): 
+          GtkEventBox(fill=True): 
+            GtkVBox(): 
+              GtkFrame(expand=True, fill=True): 
+                GtkHBox(): 
+                  GtkRadioButton(padding=6): 'Money'
+                  GtkRadioButton(padding=6): 'Bill'
+                  GtkRadioButton(padding=6): 'Check'
+                  GtkRadioButton(padding=6): 'Deposit'
+                GtkLabel(): 'Payment method:'
+          GtkEventBox(expand=True, fill=True): 
+            GtkFrame(): 
+              GtkVBox(): 
+                GtkTable(fill=True): 
+                  GtkHBox(): 
+                    ProxyLabel(expand=True, fill=True): 'Installments:'
+                    ProxySpinButton(expand=True, fill=True): '1'
+                  ProxyLabel(): 
+                  GtkHBox(): 
+                    GtkHBox(expand=True, fill=True): 
+                      ProxyLabel(expand=True, fill=True): 'Start at:'
+                      ProxyDateEntry(expand=True, fill=True): date.today()
+                    GtkHBox(expand=True, fill=True): 
+                      ProxyLabel(expand=True, fill=True): 'With intervals of:'
+                      ProxySpinButton(expand=True, fill=True): '1', insensitive
+                      ProxyComboBox(expand=True, fill=True, padding=2): insensitive
+                          item: 'Days'
+                          item: 'Weeks'
+                          item: 'Months', selected
+                          item: 'Years'
+                  GtkHBox(): 
+                    GtkLabel(expand=True, fill=True): 'Default Bank:', hidden
+                    ProxyComboEntry(expand=True, fill=True): hidden
+                GtkEventBox(expand=True, fill=True): 
+                  GtkVBox(): 
+                    ObjectList(expand=True, fill=True): 
+                        column: title='Description', expand
+                        column: title='Number'
+                        column: title='Due date'
+                        column: title='Value'
+                        row: u'1/1 Bill for order %% FILTERED BY UNITTEST %%', None, date.today(), <currency $125>
+                    GtkHBox(): 
+                      ProxyLabel(expand=True, fill=True): '<span >Difference</span>'
+                      ProxyLabel(fill=True): '<span >$ 0.00</span>'
+                    GtkHBox(): 
+                      ProxyLabel(expand=True, fill=True): 'Total:'
+                      ProxyLabel(fill=True): '<span >$125.00</span>'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end): 
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+          GtkButton(): 'gtk-help'
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 

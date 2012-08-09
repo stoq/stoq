@@ -1,0 +1,46 @@
+wizard: PurchaseWizard
+GtkDialog(PluggableWizard): hidden, title='New Order'
+  GtkVBox(PluggableWizard-vbox): 
+    GtkVBox(vbox1, expand=True, fill=True): 
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): 
+        GtkVBox(): 
+          GtkTable(fill=True): 
+            ProxyLabel(): 'Open Date:'
+            ProxyDateEntry(): date.today(), insensitive
+            ProxyLabel(): 'Order Number:'
+            ProxyLabel(): '<span >%% FILTERED BY UNITTEST %%</span>'
+            ProxyLabel(): 
+            ProxyLabel(): 'Branch:'
+            ProxyComboEntry(): 
+                item: 'Moda Stoq', selected
+                item: 'Stoq Elite Fashion'
+            ProxyLabel(): 
+            ProxyLabel(): 
+            ProxyLabel(): 'Supplier:'
+            ProxyComboEntry(): 
+                item: 'Cia de Roupas S\xc3\xa3o Carlos', selected
+            GtkHBox(): 
+              GtkButton(fill=True): 
+              GtkButton(fill=True): 
+            GtkCheckButton(): 'Show products from all suppliers'
+            ProxyLabel(): 'Freight Type:'
+            GtkHBox(): 
+              GtkRadioButton(expand=True, fill=True): 'CIF (Cost Insurance Freight)'
+            GtkHBox(): 
+              GtkRadioButton(expand=True, fill=True): 'FOB (Free On Board)'
+            ProxyLabel(): 'Expected Freight:'
+            GtkHBox(): 
+              GtkHBox(fill=True): 
+                ProxyLabel(expand=True, fill=True): '$CURRENCY'
+                ProxyEntry(fill=True): '0.0'
+              ProxyLabel(expand=True, fill=True): 
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end): 
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+          GtkButton(): 'gtk-help'
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
