@@ -11,7 +11,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Address"'
               ProxyEntry(): 'Mainstreet'
               GtkHBox(): 
                 GtkLabel(expand=True, fill=True): 
-                ProxyCheckButton(expand=True, fill=True): 'Number:'
+                ProxyCheckButton(expand=True, fill=True): 'Number:', active
               GtkHBox(): 
                 ProxyEntry(fill=True): '138'
                 GtkLabel(expand=True, fill=True): 'Postal Code:'

@@ -18,7 +18,7 @@ GtkVBox(toplevel):
       GtkVBox(types_box): 
         GtkRadioButton(_radio_group, expand=True, fill=True): 'Credit Card'
         GtkRadioButton(expand=True, fill=True): 'Debit Card'
-        GtkRadioButton(expand=True, fill=True): 'Credit Card Installments Store'
+        GtkRadioButton(expand=True, fill=True): 'Credit Card Installments Store', active
         GtkRadioButton(expand=True, fill=True): 'Credit Card Installments Provider'
         GtkRadioButton(expand=True, fill=True): 'Debit Card Pre-dated'
       GtkLabel(label2): 

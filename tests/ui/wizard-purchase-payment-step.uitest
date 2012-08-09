@@ -10,7 +10,7 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
               GtkFrame(expand=True, fill=True): 
                 GtkHBox(): 
                   GtkRadioButton(padding=6): 'Money'
-                  GtkRadioButton(padding=6): 'Bill'
+                  GtkRadioButton(padding=6): 'Bill', active
                   GtkRadioButton(padding=6): 'Check'
                   GtkRadioButton(padding=6): 'Deposit'
                 GtkLabel(): 'Payment method:'

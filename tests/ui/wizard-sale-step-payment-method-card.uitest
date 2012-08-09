@@ -23,7 +23,7 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                   GtkLabel(): 
                   ProxyLabel(): 'Payment Type:'
                   GtkVBox(): 
-                    GtkRadioButton(expand=True, fill=True): 'Credit Card'
+                    GtkRadioButton(expand=True, fill=True): 'Credit Card', active
                     GtkRadioButton(expand=True, fill=True): 'Debit Card'
                     GtkRadioButton(expand=True, fill=True): 'Credit Card Installments Store'
                     GtkRadioButton(expand=True, fill=True): 'Credit Card Installments Provider'

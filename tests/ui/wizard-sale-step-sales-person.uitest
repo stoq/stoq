@@ -67,7 +67,7 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                     GtkHBox(fill=True): 
                       ProxyLabel(fill=True): 'Discount:'
                     GtkTable(fill=True): 
-                      ProxyRadioButton(): 
+                      ProxyRadioButton(): active
                       GtkHBox(): 
                         ProxyEntry(fill=True): '0.0'
                         ProxyLabel(fill=True): '%'
@@ -80,7 +80,7 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
             GtkVBox(): 
               GtkFrame(expand=True, fill=True): 
                 GtkHBox(): 
-                  GtkRadioButton(padding=6): 'Money'
+                  GtkRadioButton(padding=6): 'Money', active
                   GtkRadioButton(padding=6): 'Bill', hidden
                   GtkRadioButton(padding=6): 'Card'
                   GtkRadioButton(padding=6): 'Check'
