@@ -387,7 +387,7 @@ class ExampleCreator(object):
         return SellableCategory(description="Category",
                                 connection=self.trans)
 
-    def create_sale(self, id_=None):
+    def create_sale(self, id_=None, branch=None):
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.till import Till
         till = Till.get_current(self.trans)
@@ -395,7 +395,6 @@ class ExampleCreator(object):
             till = self.create_till()
             till.open_till()
         salesperson = self.create_sales_person()
-        branch = self.create_branch()
         group = self.create_payment_group()
         extra_args = dict()
         if id_:
@@ -403,7 +402,8 @@ class ExampleCreator(object):
 
         return Sale(coupon_id=0,
                     open_date=const.NOW(),
-                    salesperson=salesperson, branch=branch,
+                    salesperson=salesperson,
+                    branch=branch or self.create_branch(),
                     cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
                     group=group,
                     connection=self.trans,
@@ -438,17 +438,14 @@ class ExampleCreator(object):
                                    price=100,
                                    connection=self.trans)
 
-    def create_stock_decrease(self):
+    def create_stock_decrease(self, branch=None, user=None):
         from stoqlib.domain.stockdecrease import StockDecrease
 
-        branch = self.create_branch()
-        user = self.create_user()
         employee = self.create_employee()
         cfop = self.create_cfop_data()
-
-        return StockDecrease(responsible=user,
+        return StockDecrease(responsible=user or self.create_user(),
                              removed_by=employee,
-                             branch=branch,
+                             branch=branch or self.create_branch(),
                              status=StockDecrease.STATUS_INITIAL,
                              cfop=cfop,
                              connection=self.trans)
@@ -499,14 +496,14 @@ class ExampleCreator(object):
                                has_permission=True,
                                user_profile=user_profile)
 
-    def create_purchase_order(self):
+    def create_purchase_order(self, supplier=None, branch=None):
         from stoqlib.domain.purchase import PurchaseOrder
         group = self.create_payment_group()
-        return PurchaseOrder(supplier=self.create_supplier(),
-                              branch=self.create_branch(),
-                              group=group,
-                              responsible=get_current_user(self.trans),
-                              connection=self.trans)
+        return PurchaseOrder(supplier=supplier or self.create_supplier(),
+                             branch=branch or self.create_branch(),
+                             group=group,
+                             responsible=get_current_user(self.trans),
+                             connection=self.trans)
 
     def create_quote_group(self):
         from stoqlib.domain.purchase import QuoteGroup
@@ -584,7 +581,7 @@ class ExampleCreator(object):
         return CfopData(connection=self.trans, code=u'123',
                         description=u'test')
 
-    def create_receiving_order(self, purchase_order=None):
+    def create_receiving_order(self, purchase_order=None, branch=None, user=None):
         from stoqlib.domain.receiving import ReceivingOrder
         if purchase_order is None:
             purchase_order = self.create_purchase_order()
@@ -593,9 +590,9 @@ class ExampleCreator(object):
         return ReceivingOrder(connection=self.trans,
                               invoice_number=222,
                               supplier=purchase_order.supplier,
-                              responsible=self.create_user(),
+                              responsible=user or self.create_user(),
                               purchase=purchase_order,
-                              branch=self.create_branch(),
+                              branch=branch or self.create_branch(),
                               cfop=cfop)
 
     def create_receiving_order_item(self, receiving_order=None, sellable=None,
@@ -726,10 +723,10 @@ class ExampleCreator(object):
                              branch=None,
                              connection=self.trans)
 
-    def create_transfer_order(self):
+    def create_transfer_order(self, source_branch=None, dest_branch=None):
         from stoqlib.domain.transfer import TransferOrder
-        source_branch = self.create_branch("Source")
-        dest_branch = self.create_branch("Dest")
+        source_branch = source_branch or self.create_branch("Source")
+        dest_branch = dest_branch or self.create_branch("Dest")
         source_resp = self.create_employee("Ipswich")
         dest_resp = self.create_employee("Bolton")
         return TransferOrder(source_branch=source_branch,
@@ -738,17 +735,19 @@ class ExampleCreator(object):
                              destination_responsible=dest_resp,
                              connection=self.trans)
 
-    def create_transfer_order_item(self, order=None, quantity=5):
+    def create_transfer_order_item(self, order=None, quantity=5, sellable=None):
         from stoqlib.domain.product import Product, Storable
         from stoqlib.domain.sellable import Sellable
         from stoqlib.domain.transfer import TransferOrderItem
         if not order:
             order = self.create_transfer_order()
-        sellable = self.create_sellable()
-        sellable.status = Sellable.STATUS_AVAILABLE
+        if not sellable:
+            sellable = self.create_sellable()
+            sellable.status = Sellable.STATUS_AVAILABLE
         product = Product.selectOneBy(sellable=sellable, connection=self.trans)
-        storable = Storable(product=product, connection=self.trans)
-        storable.increase_stock(quantity, order.source_branch)
+        if not product.storable:
+            storable = Storable(product=product, connection=self.trans)
+            storable.increase_stock(quantity, order.source_branch)
         return TransferOrderItem(sellable=sellable,
                                  transfer_order=order,
                                  quantity=quantity,
@@ -774,23 +773,27 @@ class ExampleCreator(object):
                              inventory=inventory,
                              connection=self.trans)
 
-    def create_loan(self):
+    def create_loan(self, branch=None):
         from stoqlib.domain.loan import Loan
         user = self.create_user()
         return Loan(responsible=user,
-                    branch=self.create_branch(),
+                    branch=branch or self.create_branch(),
                     connection=self.trans)
 
-    def create_loan_item(self):
+    def create_loan_item(self, loan=None, product=None, quantity=1):
         from stoqlib.domain.loan import LoanItem
         from stoqlib.domain.product import Storable
-        loan = self.create_loan()
-        sellable = self.create_sellable()
-        storable = Storable(product=sellable.product,
-                            connection=self.trans)
-        storable.increase_stock(10, loan.branch)
+        loan = loan or self.create_loan()
+        if not product:
+            sellable = self.create_sellable()
+            storable = Storable(product=sellable.product,
+                                connection=self.trans)
+            storable.increase_stock(10, loan.branch)
+        else:
+            sellable = product.sellable
+            storable = product.storable
         return LoanItem(loan=loan, sellable=sellable, price=10,
-                        quantity=1, connection=self.trans)
+                        quantity=quantity, connection=self.trans)
 
     def get_payment_method(self, name='money'):
         from stoqlib.domain.payment.method import PaymentMethod

@@ -572,10 +572,11 @@ class StockDecreaseItemsView(Viewable):
     """
     columns = dict(
         id=StockDecreaseItem.q.id,
-        date=StockDecrease.q.confirm_date,
-        removed_by_name=Person.q.name,
         quantity=StockDecreaseItem.q.quantity,
         sellable=StockDecreaseItem.q.sellableID,
+        decrease_id=StockDecrease.q.id,
+        date=StockDecrease.q.confirm_date,
+        removed_by_name=Person.q.name,
         unit_description=SellableUnit.q.description,
     )
 
