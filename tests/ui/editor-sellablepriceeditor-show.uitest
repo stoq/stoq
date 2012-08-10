@@ -1,0 +1,50 @@
+editor: SellablePriceEditor
+GtkDialog(main_dialog.toplevel): hidden, title='Price settings'
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkVBox(toplevel): 
+          GtkTable(table2, fill=True): 
+            GtkLabel(label1): 'Base Cost:'
+            ProxyLabel(cost): '<span >$125.00</span>'
+            GtkLabel(label2): 'Markup:'
+            ProxySpinButton(markup): '-92.00'
+            GtkLabel(label10): '%  '
+            ProxyLabel(label4): 'Sale Price ($CURRENCY):'
+            ProxyEntry(price): '10.00'
+            GtkLabel(label11): 'Max Discount:'
+            ProxySpinButton(max_discount): '0.00'
+            GtkLabel(label12): '%'
+          GtkHSeparator(hseparator2, fill=True): 
+          GtkEventBox(on_sale_holder, fill=True): 
+            GtkVBox(): 
+              ProxyLabel(fill=True): '<u>Currently on Sale:</u>'
+              GtkTable(fill=True): 
+                ProxyLabel(): 'Price ($CURRENCY):'
+                GtkHBox(): 
+                  ProxyEntry(expand=True, fill=True): '0.00'
+                ProxyLabel(): 'From:'
+                ProxyDateEntry(): None
+                ProxyLabel(): 'To:'
+                ProxyDateEntry(): None
+          GtkEventBox(on_commission_data_holder, expand=True, fill=True): 
+            GtkVBox(): 
+              ProxyCheckButton(padding=5): ' No Commission', active
+              GtkTable(fill=True): 
+                GtkLabel(): 'Direct sale commission:'
+                GtkHBox(): 
+                  ProxySpinButton(expand=True, fill=True): '0.00', insensitive
+                  GtkLabel(padding=6): '%'
+                GtkLabel(): 'In installments commission:'
+                GtkHBox(): 
+                  ProxySpinButton(expand=True, fill=True): '0.00', insensitive
+                  GtkLabel(padding=6): '%'
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

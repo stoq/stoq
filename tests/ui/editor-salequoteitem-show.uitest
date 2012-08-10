@@ -1,0 +1,161 @@
+editor: SaleQuoteItemEditor
+GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Sale Quote Item"'
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkNotebook(toplevel): 
+          GtkVBox(vbox1): 
+            GtkTable(table1): 
+              GtkLabel(label3): 'Order:'
+              GtkLabel(sale): '%% FILTERED BY UNITTEST %%'
+              GtkLabel(label2): 'Description:'
+              ProxyLabel(description): '<span >Description</span>'
+              GtkLabel(sale_quantity_lbl): 'Sale Quantity:', hidden
+              ProxySpinButton(sale_quantity): '', hidden
+              GtkLabel(return_quantity_lbl): 'Return Quantity:', hidden
+              ProxySpinButton(return_quantity): '', hidden
+              GtkLabel(label4): 'Price:'
+              ProxyEntry(price): '100.00'
+              GtkLabel(label5): 'Quantity:'
+              ProxySpinButton(quantity): '1.00'
+              GtkLabel(cfop_label): 'CFOP:'
+              ProxyComboEntry(cfop): 
+                  item: '5.102 Venda de Mercadoria Adquirida', selected
+                  item: '5.202 Devolucao'
+                  item: '1.102 Compra para Comercializacao'
+                  item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
+              GtkLabel(label6): 'Total:'
+              ProxyLabel(total): '<span >$100.00</span>'
+          GtkEventBox(): 
+            GtkTable(): 
+              GtkLabel(): 'CST:'
+              ProxyComboBox(): insensitive
+                  item: None, selected
+                  item: '00 - Tributada Integralmente'
+                  item: '10 - Tributada e com cobran\xc3\xa7a de ICMS por subst. trib.'
+                  item: '20 - Com redu\xc3\xa7\xc3\xa3o de BC'
+                  item: '30 - Isenta ou n\xc3\xa3o trib. e com cobran\xc3\xa7a de ICMS por subst. trib.'
+                  item: '40 - Isenta'
+                  item: '41 - N\xc3\xa3o tributada'
+                  item: '50 - Suspens\xc3\xa3o'
+                  item: '51 - Deferimento'
+                  item: '60 - ICMS cobrado anteriormente por subst. trib.'
+                  item: '70 - Com redu\xc3\xa7\xc3\xa3o da BC cobran\xc3\xa7a do ICMS por subst. trib.'
+                  item: '90 - Outros'
+              GtkLabel(): 'CSOSN:'
+              ProxyComboBox(): 
+                  item: None, selected
+                  item: '101 - Tributada com permiss\xc3\xa3o de cr\xc3\xa9dito'
+                  item: '102 - Tributada sem permiss\xc3\xa3o de cr\xc3\xa9dito'
+                  item: '103 - Isen\xc3\xa7\xc3\xa3o do ICMS para faixa de receita bruta'
+                  item: '201 - Tributada com permiss\xc3\xa3o de cr\xc3\xa9dito e com cobran\xc3\xa7a do ICMS por ST'
+                  item: '202 - Tributada sem permiss\xc3\xa3o de cr\xc3\xa9dito e com cobran\xc3\xa7a do ICMS por ST'
+                  item: '203 - Isen\xc3\xa7\xc3\xa3o do ICMS para faixa de receita bruta e com cobran\xc3\xa7a do ICMS por ST'
+                  item: '300 - Imune'
+                  item: '400 - N\xc3\xa3o tributada'
+                  item: '500 - ICMS cobrado anteriormente por ST ou por antecipa\xc3\xa7\xc3\xa3o'
+              GtkLabel(): 'Origin:'
+              ProxyComboBox(): insensitive
+                  item: None, selected
+                  item: '0 - Nacional'
+                  item: '1 - Estrangeira - importa\xc3\xa7\xc3\xa3o direta'
+                  item: '2 - Estrangeira - adquirida no mercado interno'
+              GtkLabel(): 'Modalidade BC ICMS ST:'
+              ProxyComboBox(): insensitive
+                  item: None, selected
+                  item: '0 - Pre\xc3\xa7o tabelado ou m\xc3\xa1ximo sugerido'
+                  item: '1 - Lista negativa (valor)'
+                  item: '2 - Lista positiva (valor)'
+                  item: '3 - Lista neutra (valor)'
+                  item: '4 - Margem Valor Agregado (%)'
+                  item: '5 - Pauta (valor)'
+              GtkLabel(): 'Modalidade BC ICMS:'
+              ProxyComboBox(): insensitive
+                  item: None, selected
+                  item: '0 - Margem do valor agregado (%)'
+                  item: '1 - Pauta (Valor)'
+                  item: '2 - Pre\xc3\xa7o tabelado m\xc3\xa1ximo (valor)'
+                  item: '3 - Valor da opera\xc3\xa7\xc3\xa3o'
+              GtkLabel(): 'Al\xc3\xadquota ICMS ST:'
+              ProxySpinButton(): '', insensitive
+              GtkLabel(): 'Al\xc3\xadquota ICMS:'
+              ProxySpinButton(): '', insensitive
+              GtkLabel(): '% Redu\xc3\xa7\xc3\xa3o BC ICMS ST:'
+              ProxySpinButton(): '', insensitive
+              GtkLabel(): '% Redu\xc3\xa7\xc3\xa3o BC ICMS'
+              ProxySpinButton(): '', insensitive
+              GtkLabel(): '% MVA ICMS ST:'
+              ProxySpinButton(): '', insensitive
+              ProxyCheckButton(): 'Incluir IPI na BC', insensitive, active
+              ProxyCheckButton(): 'Incluir IPI na BC ST', insensitive, active
+              GtkLabel(): 'BC ICMS:'
+              ProxyEntry(): '', insensitive
+              GtkLabel(): 'BC ICMS ST:'
+              ProxyEntry(): '', insensitive
+              GtkLabel(): 'ICMS:'
+              ProxyEntry(): '', insensitive
+              GtkLabel(): 'ICMS ST:'
+              ProxyEntry(): '', insensitive
+              GtkLabel(): '<b>Simples Nacional</b>'
+              GtkLabel(): 'Al\xc3\xadquota ICMS SN:'
+              ProxySpinButton(): '', insensitive
+              GtkLabel(): 'BC ICMS ST Retido:'
+              ProxyEntry(): '', insensitive
+              GtkLabel(): 'Al\xc3\xadquota v\xc3\xa1lida at\xc3\xa9:', hidden
+              ProxyDateEntry(): None, hidden, insensitive
+              GtkLabel(): 'ICMS ST Retido:'
+              ProxyEntry(): '', insensitive
+              GtkLabel(): 'Valor ICMS SN:'
+              ProxyEntry(): '', insensitive
+          GtkEventBox(): 
+            GtkTable(): 
+              GtkLabel(): 'CST:'
+              ProxyComboBox(): 
+                  item: None, selected
+                  item: '00 - Entrada com recupera\xc3\xa7\xc3\xa3o de cr\xc3\xa9dito'
+                  item: '01 - Entrada tributada com al\xc3\xadquota zero'
+                  item: '02 - Entrada isenta'
+                  item: '03 - Entrada n\xc3\xa3o-tributada'
+                  item: '04 - Entrada imune'
+                  item: '05 - Entrada com suspens\xc3\xa3o'
+                  item: '49 - Outras entradas'
+                  item: '50 - Sa\xc3\xadda tributada'
+                  item: '51 - Sa\xc3\xadda tributada com al\xc3\xadquota zero'
+                  item: '52 - Sa\xc3\xadda isenta'
+                  item: '53 - Sa\xc3\xadda n\xc3\xa3o-tributada'
+                  item: '54 - Sa\xc3\xadda imune'
+                  item: '55 - Sa\xc3\xadda com suspens\xc3\xa3o'
+                  item: '99 - Outras sa\xc3\xaddas'
+              GtkLabel(): 'Classe de Enquadramento\nPara cigarros e bebidas:'
+              ProxyEntry(): '', insensitive
+              GtkLabel(): 'CNPJ do Produtor:'
+              ProxyEntry(): '', insensitive
+              GtkLabel(): 'C\xc3\xb3digo do selo\nde controle IPI:'
+              ProxyEntry(): '', insensitive
+              GtkLabel(): 'Quantidade do\nselo de controle:'
+              ProxySpinButton(): '', insensitive
+              GtkLabel(): 'C\xc3\xb3digo de enquadramento\nlegal do ipi:'
+              ProxyEntry(): '', insensitive
+              GtkLabel(): 'C\xc3\xa1lculo do IPI:'
+              ProxyComboBox(): insensitive
+                  item: 'Por al\xc3\xadquota', selected
+                  item: 'Valor por unidade'
+              GtkLabel(): 'BC IPI:'
+              ProxyEntry(): '', insensitive
+              GtkLabel(): 'Al\xc3\xadquota do IPI:'
+              ProxySpinButton(): '', insensitive
+              GtkLabel(): 'Valor por unidade\ntribut\xc3\xa1vel:'
+              ProxyEntry(): '', insensitive
+              GtkLabel(): 'Quantidade total:'
+              ProxyEntry(): '', insensitive
+              GtkLabel(): 'Valor do IPI'
+              ProxyEntry(): '0.00', insensitive
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

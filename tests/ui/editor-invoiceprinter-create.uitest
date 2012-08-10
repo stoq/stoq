@@ -1,0 +1,25 @@
+editor: InvoicePrinterEditor
+GtkDialog(main_dialog.toplevel): hidden, title='Add Invoice Printers'
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkTable(table1): 
+          GtkLabel(label1): 'Description:'
+          ProxyEntry(description): 'Untitled Printer'
+          GtkLabel(label2): 'Device name:'
+          ProxyEntry(device_name): '/dev/lp0'
+          GtkLabel(label3): 'Computer:'
+          ProxyComboBox(station): 
+              item: 'Stoqlib station', selected
+          GtkLabel(label4): 'Layout:'
+          ProxyComboBox(layout): 
+              item: 'Standard Invoice', selected
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

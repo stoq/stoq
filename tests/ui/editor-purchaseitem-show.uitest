@@ -1,0 +1,32 @@
+editor: PurchaseItemEditor
+GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Purchase Item"'
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkVBox(toplevel): 
+          GtkTable(table1): 
+            GtkLabel(order_lbl): 'Order:'
+            GtkLabel(order): '%% FILTERED BY UNITTEST %%'
+            GtkLabel(label2): 'Description:'
+            ProxyLabel(description): '<span >Description</span>'
+            GtkLabel(sold_lbl): 'Sold Quantity:', hidden
+            ProxySpinButton(quantity_sold): '0', hidden
+            GtkLabel(returned_lbl): 'Returned Quantity:', hidden
+            ProxySpinButton(quantity_returned): '0', hidden
+            GtkLabel(cost_lbl): 'Cost:'
+            ProxySpinButton(cost): '125.00'
+            GtkLabel(label5): 'Quantity:'
+            ProxySpinButton(quantity): '8.00'
+            GtkLabel(expected_lbl): 'Expected receival:'
+            ProxyDateEntry(expected_receival_date): None, mandatory
+            GtkLabel(total_lbl): 'Total:'
+            ProxyLabel(total): '<span >$1000.00</span>'
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive

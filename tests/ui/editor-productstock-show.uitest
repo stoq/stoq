@@ -1,0 +1,65 @@
+editor: ProductStockEditor
+GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Product"'
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkVBox(toplevel): 
+          GtkEventBox(place_holder, expand=True, fill=True): 
+            GtkVBox(): 
+              GtkTable(expand=True, fill=True): 
+                GtkEventBox(): 
+                  GtkTable(): 
+                    GtkLabel(): 'Manufacturer:', hidden
+                    ProxyComboEntry(): hidden
+                        item: ''
+                    GtkLabel(): 'Model:', hidden
+                    ProxyEntry(): '', hidden
+                    GtkLabel(): 'Width:'
+                    ProxySpinButton(): '0'
+                    GtkLabel(): 'Weight:'
+                    GtkHBox(): 
+                      ProxySpinButton(expand=True, fill=True): '0.000'
+                      GtkLabel(fill=True): 'Kg'
+                    GtkLabel(): 'Depth:'
+                    ProxySpinButton(): '0'
+                    GtkLabel(): 'Height:'
+                    ProxySpinButton(): '0'
+                    GtkLabel(): 'Part-Number:', hidden
+                    ProxyEntry(): '', hidden
+                    GtkLabel(): '<b>Stock Details</b>'
+                    GtkLabel(): 'Location:'
+                    ProxyEntry(): ''
+                    GtkLabel(): 'Minimum:', hidden
+                    GtkHBox(): hidden
+                      ProxySpinButton(expand=True, fill=True): '0.00', invalid
+                      GtkLabel(fill=True): 'Unit(s)'
+                    GtkLabel(): 'Maximum:', hidden
+                    GtkHBox(): hidden
+                      ProxySpinButton(expand=True, fill=True): '0.00', invalid
+                      GtkLabel(fill=True): 'Unit(s)'
+                    GtkLabel(): '<b>Mercosul Details</b>'
+                    GtkLabel(): 'NCM:'
+                    ProxyEntry(): ''
+                    GtkLabel(): 'EX TIPI:'
+                    ProxyEntry(): ''
+                    GtkLabel(): 'G\xc3\xaanero:'
+                    ProxyEntry(): ''
+                GtkLabel(): 'Details:'
+                GtkScrolledWindow(): 
+                  ProxyTextView(): 
+                GtkVBox(): 
+                  GtkEventBox(expand=True, fill=True): 
+                    GtkHBox(): 
+                      GtkVSeparator(): 
+                      GtkEventBox(expand=True, fill=True): 
+                        GtkImage(): 
+              GtkLabel(fill=True): 'Right-click image for more options'
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
