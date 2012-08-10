@@ -32,8 +32,9 @@ class TestPurchaseWizard(GUITest):
         purchase = wizard.model
 
         # Start Step
-        self.check_wizard(wizard, 'wizard-purchase-start-step',
-                          ignores=[purchase.get_order_number_str()])
+        start_step = wizard.get_current_step()
+        start_step.order_number.update("12345")
+        self.check_wizard(wizard, 'wizard-purchase-start-step')
         self.assertSensitive(wizard, ['next_button'])
         wizard.next_button.clicked()
 
@@ -59,6 +60,7 @@ class TestPurchaseWizard(GUITest):
         models.extend(purchase.payments)
         models.append(purchase.group)
 
+        p = list(purchase.payments)[0]
+        p.description = p.description.rsplit(' ', 1)[0]
         self.check_wizard(wizard, 'wizard-purchase-finish-step',
-                          models=models,
-                          ignores=[str(wizard.model.id)])
+                          models=models)

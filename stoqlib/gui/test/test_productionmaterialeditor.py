@@ -31,5 +31,5 @@ class TestProductionMaterialEditor(GUITest):
     def testShow(self):
         material = self.create_production_material()
         editor = ProductionMaterialEditor(self.trans, material)
-        self.check_editor(editor, 'editor-productionmaterial-show',
-                          ignores=["%04d" % material.order.id])
+        editor.order_number.update("12345")
+        self.check_editor(editor, 'editor-productionmaterial-show')

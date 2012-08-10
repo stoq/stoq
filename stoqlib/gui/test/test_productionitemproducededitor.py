@@ -31,5 +31,5 @@ class TestProductionItemProducedEditor(GUITest):
     def testCreate(self):
         production_item = self.create_production_item()
         editor = ProductionItemProducedEditor(self.trans, production_item)
-        self.check_editor(editor, 'editor-productionitemproduced-create',
-                          ignores=["%04d" % production_item.order.id])
+        editor.order_number.set_text("12345")
+        self.check_editor(editor, 'editor-productionitemproduced-create')

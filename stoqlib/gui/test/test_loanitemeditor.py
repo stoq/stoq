@@ -31,5 +31,5 @@ class TestLoanItemEditor(GUITest):
     def testShow(self):
         loan_item = self.create_loan_item()
         editor = LoanItemEditor(self.trans, loan_item)
-        self.check_editor(editor, 'editor-loanitem-show',
-                          ignores=["%04d" % editor.model.loan.id])
+        editor.sale.set_label("12345")
+        self.check_editor(editor, 'editor-loanitem-show')

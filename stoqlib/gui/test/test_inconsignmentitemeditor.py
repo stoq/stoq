@@ -33,5 +33,5 @@ class TestInConsignmentItemEditor(GUITest):
         item = self.create_purchase_order_item()
         item.order.status = PurchaseOrder.ORDER_CONSIGNED
         editor = InConsignmentItemEditor(self.trans, item)
-        self.check_editor(editor, 'editor-inconsignmentitem-create',
-            ignores=["%04d" % item.order.id])
+        editor.order.set_label("12345")
+        self.check_editor(editor, 'editor-inconsignmentitem-create')

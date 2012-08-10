@@ -6,7 +6,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Produce Items'
       GtkEventBox(main_dialog.main, expand=True, fill=True): 
         GtkTable(table1): 
           GtkLabel(label1): 'Production:'
-          ProxyLabel(order_number): '<span >%% FILTERED BY UNITTEST %%</span>'
+          ProxyLabel(order_number): '<span >12345</span>'
           GtkLabel(label2): 'Description:'
           ProxyLabel(description): '<span >Description</span>'
           GtkLabel(location_content): 'Location:', hidden

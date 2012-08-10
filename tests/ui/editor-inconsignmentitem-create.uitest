@@ -7,7 +7,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Purchase Item"'
         GtkVBox(toplevel): 
           GtkTable(table1): 
             GtkLabel(order_lbl): 'Order:'
-            GtkLabel(order): '%% FILTERED BY UNITTEST %%'
+            GtkLabel(order): '12345'
             GtkLabel(label2): 'Description:'
             ProxyLabel(description): '<span >Description</span>'
             GtkLabel(sold_lbl): 'Sold Quantity:'

@@ -31,6 +31,5 @@ class TestPurchaseItemEditor(GUITest):
     def testShow(self):
         item = self.create_purchase_order_item()
         editor = PurchaseItemEditor(self.trans, item)
-        self.check_editor(
-            editor, 'editor-purchaseitem-show',
-            ignores=["%04d" % item.order.id])
+        editor.order.set_label("12345")
+        self.check_editor(editor, 'editor-purchaseitem-show')

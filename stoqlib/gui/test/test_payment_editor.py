@@ -129,8 +129,8 @@ class TestPaymentEditor(GUITest):
         p = sale.payments[0]
 
         editor = InPaymentEditor(self.trans, p)
-        self.check_editor(editor, 'editor-in-payment-show-sale',
-                          ignores=[p.group.get_description()])
+        editor.description.update(p.description.rsplit(' ', 1)[0])
+        self.check_editor(editor, 'editor-in-payment-show-sale')
 
         self.assertTrue(editor.model.group.sale)
 
@@ -140,8 +140,8 @@ class TestPaymentEditor(GUITest):
 
         p = purchase.payments[0]
         editor = OutPaymentEditor(self.trans, p)
-        self.check_editor(editor, 'editor-out-payment-show-purchase',
-                          ignores=[p.group.get_description()])
+        editor.description.update(p.description.rsplit(' ', 1)[0])
+        self.check_editor(editor, 'editor-out-payment-show-purchase')
 
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
     def testShowLonelyDialogOut(self, run_dialog):

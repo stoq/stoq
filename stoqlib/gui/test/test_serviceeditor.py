@@ -30,5 +30,5 @@ from stoqlib.gui.editors.serviceeditor import ServiceEditor
 class TestServiceEditor(GUITest):
     def testCreate(self):
         editor = ServiceEditor(self.trans)
-        self.check_editor(editor, 'editor-service-create',
-                          ignores=[str(editor.model.sellable.id)])
+        editor.code.update("12345")
+        self.check_editor(editor, 'editor-service-create')
