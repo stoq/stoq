@@ -81,7 +81,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Purchase Details'
                 ProxyLabel(kiwilabel5): 'Transporter:'
                 ProxyLabel(transporter_name): '<span ></span>'
                 ProxyLabel(kiwilabel7): 'Expected Receival Date:'
-                ProxyLabel(expected_receival_date): '<span >08/09/12</span>'
+                ProxyLabel(expected_receival_date): '<span >YYYY-MM-DD</span>'
                 GtkHSeparator(hseparator1): 
                 ProxyLabel(kiwilabel9): 'Agreed Freight Type:'
                 ProxyLabel(freight_type): '<span >FOB</span>'
