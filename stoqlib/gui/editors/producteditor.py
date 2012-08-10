@@ -376,7 +376,7 @@ class QualityTestEditor(BaseEditor):
     proxy_widgets = ['description', 'test_type']
     confirm_widgets = ['description']
 
-    def __init__(self, conn, model, product):
+    def __init__(self, conn, model=None, product=None):
         self._product = product
         BaseEditor.__init__(self, conn=conn, model=model)
 
@@ -618,7 +618,7 @@ class ProductEditor(SellableEditor):
 
     _model_created = False
 
-    def __init__(self, conn, model, visual_mode=False):
+    def __init__(self, conn, model=None, visual_mode=False):
         SellableEditor.__init__(self, conn, model, visual_mode=visual_mode)
         # This can't be done in setup_slaves() as we need to access
         # self.main_dialog when setting up the quality test slave

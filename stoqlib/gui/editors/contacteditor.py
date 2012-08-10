@@ -45,7 +45,7 @@ class ContactEditor(BaseEditor):
         phone_number=TextField(_('Phone Number'), mandatory=True, proxy=True),
         )
 
-    def __init__(self, conn, model, person):
+    def __init__(self, conn, model=None, person=None):
         self.person = person
         BaseEditor.__init__(self, conn, model)
         self.set_description(self.model.name)

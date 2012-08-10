@@ -44,7 +44,7 @@ class UserProfileEditor(BaseEditor):
     proxy_widgets = ('profile_name', )
     help_section = 'user-profile'
 
-    def __init__(self, conn, model, visual_mode=False):
+    def __init__(self, conn, model=None, visual_mode=False):
         BaseEditor.__init__(self, conn, model, visual_mode)
         self.set_description(self.model.name)
 
