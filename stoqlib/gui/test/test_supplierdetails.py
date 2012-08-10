@@ -27,6 +27,7 @@ import unittest
 
 import mock
 from stoqlib.database.runtime import StoqlibTransaction
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
 from stoqlib.gui.editors.personeditor import SupplierEditor
 from stoqlib.gui.uitestutils import GUITest
@@ -51,6 +52,7 @@ class TestSupplierDetails(GUITest):
         payment = self.add_payments(order, date=date)
         payment.id = 999
         payment.group.payer = supplier.person
+        payment.status = Payment.STATUS_PAID
 
         dialog = SupplierDetailsDialog(self.trans, supplier)
         self.check_editor(dialog, 'dialog-supplier-details')

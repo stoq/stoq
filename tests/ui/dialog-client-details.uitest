@@ -11,7 +11,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Client Details'
             GtkLabel(label3): 'Status:'
             ProxyLabel(status): '<span >Solvent</span>'
             GtkLabel(label2): 'Last Purchase Date:'
-            ProxyLabel(last_purchase_date): '<span >08/09/12</span>'
+            ProxyLabel(last_purchase_date): '<span >YYYY-MM-DD</span>'
             GtkHBox(hbox1): 
               GtkButton(further_details_button, fill=True): 'Further Details'
           GtkNotebook(notebook2, expand=True, fill=True): 

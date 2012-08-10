@@ -108,13 +108,14 @@ class TestPaymentEditor(GUITest):
                           "The value must be greater than zero.")
         self.assertFalse(editor.value.emit('validate', 10))
 
-    def testShow(self):
+    def testShowOut(self):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT)
         payment.group = self.create_payment_group()
         editor = OutPaymentEditor(self.trans, payment)
 
         self.check_editor(editor, 'editor-out-payment-show')
 
+    def testShowIn(self):
         payment = self.create_payment(payment_type=Payment.TYPE_IN)
         payment.group = self.create_payment_group()
         editor = InPaymentEditor(self.trans, payment)

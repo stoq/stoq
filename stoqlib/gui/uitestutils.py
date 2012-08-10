@@ -317,6 +317,7 @@ class GUITest(DomainTest):
 
         today = datetime.date.today()
         text = text.replace(repr(today), 'date.today()')
+        text = text.replace(today.strftime('%x'), "YYYY-MM-DD")
         text = text.replace(
             repr(datetime.datetime(today.year, today.month, today.day)),
             'datetime.today()')
