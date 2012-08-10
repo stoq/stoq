@@ -240,6 +240,7 @@ class ExampleCreator(object):
             'SellableUnit': self.create_sellable_unit,
             'Service': self.create_service,
             'StockDecrease': self.create_stock_decrease,
+            'StockDecreaseItem': self.create_stock_decrease_item,
             'Till': self.create_till,
             'UserProfile': self.create_user_profile,
             'ProductionOrder': self.create_production_order,
@@ -257,6 +258,9 @@ class ExampleCreator(object):
             'BankAccount': self.create_bank_account,
             'QuoteGroup': self.create_quote_group,
             'Quotation': self.create_quotation,
+            'InvoicePrinter': self.create_invoice_printer,
+            'Delivery': self.create_delivery,
+            'Liaison': self.create_liaison,
             }
         if isinstance(model_type, basestring):
             model_name = model_type
@@ -437,6 +441,13 @@ class ExampleCreator(object):
                                    category=self.create_client_category(),
                                    price=100,
                                    connection=self.trans)
+
+    def create_stock_decrease_item(self):
+        from stoqlib.domain.stockdecrease import StockDecreaseItem
+        return StockDecreaseItem(stock_decrease=self.create_stock_decrease(),
+                                 sellable=self.create_sellable(),
+                                 quantity=1,
+                                 connection=self.trans)
 
     def create_stock_decrease(self, branch=None, user=None):
         from stoqlib.domain.stockdecrease import StockDecrease
@@ -901,3 +912,22 @@ class ExampleCreator(object):
                                 sellable=sellable,
                                 installments_value=1,
                                 connection=self.trans)
+
+    def create_invoice_printer(self):
+        from stoqlib.domain.invoice import InvoicePrinter
+        return InvoicePrinter(device_name='/dev/ttyS0',
+                              description='Invoice Printer',
+                              connection=self.trans)
+
+    def create_delivery(self):
+        from stoqlib.domain.sale import Delivery
+        return Delivery(estimated_fix_date=datetime.datetime.now(),
+                        notes='',
+                        connection=self.trans)
+
+    def create_liaison(self):
+        from stoqlib.domain.person import Liaison
+        return Liaison(connection=self.trans,
+                       person=self.create_person(),
+                       name='name',
+                       phone_number='12345678')
