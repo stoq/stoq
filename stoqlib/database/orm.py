@@ -707,6 +707,13 @@ class SQLObjectResultSet(object):
         return self._copy(by=kwargs)
 
     def filter(self, clause):
+        clauses = []
+        if self._clause:
+            clauses.append(self._clause)
+        if clause:
+            clauses.append(clause)
+
+        clause = And(clauses)
         return self._copy(clause=clause)
 
 
