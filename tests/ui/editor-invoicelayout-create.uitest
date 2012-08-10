@@ -1,0 +1,103 @@
+editor: InvoiceLayoutEditor
+GtkDialog(main_dialog.toplevel): hidden, title='Add Invoice Layouts'
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkVBox(toplevel): 
+          GtkAlignment(alignment7, fill=True): 
+            GtkHBox(main_hbox): 
+              GtkLabel(label1, fill=True): 'Description:'
+              ProxyEntry(description, fill=True): 'Untitled'
+              GtkLabel(label2, fill=True): 'Width:'
+              ProxySpinButton(width, fill=True): '80'
+              GtkLabel(label3, fill=True): 'Height:'
+              ProxySpinButton(height, fill=True): '40'
+          GtkHPaned(hpaned, expand=True, fill=True): 
+            GtkVBox(left_vbox): 
+              GtkFrame(frame1, fill=True): 
+                GtkHBox(hbox1): 
+                  GtkVBox(vbox3, fill=True, padding=2): 
+                    GtkLabel(label4, expand=True, fill=True): 'Name:'
+                    GtkLabel(label5, expand=True, fill=True): 'Position:'
+                    GtkLabel(label6, fill=True): 'Size:'
+                  GtkVBox(vbox4, expand=True, fill=True): 
+                    ProxyLabel(field_name, expand=True, fill=True): 
+                    ProxyLabel(field_pos, expand=True, fill=True): 
+                    ProxyLabel(field_size, expand=True, fill=True): 
+                GtkLabel(): 'Field:'
+              ObjectList(expand=True, fill=True, pack-end): 
+                  column: title='Description'
+                  column: title='Len'
+                  row: 'ADDITIONAL_SALE_NOTES', -1
+                  row: 'BASE_DE_CALCULO_ICMS', 1
+                  row: 'BASE_DE_CALCULO_ICMS_SUBST', 1
+                  row: 'BASE_DE_CALCULO_ISS', 1
+                  row: 'CFOP', 4
+                  row: 'City registry number', 14
+                  row: 'Client Address', 34
+                  row: "Client's city", 34
+                  row: "Client's district", 15
+                  row: "Client's document number", 14
+                  row: 'Client Fax number', 12
+                  row: 'Client name', 35
+                  row: 'Client Phone number', 12
+                  row: 'Client Phone/Fax number', 12
+                  row: "Client's postal code", 8
+                  row: 'Client state abbreviation', 2
+                  row: 'Clients state registry number or document number', 14
+                  row: 'Company document number', 4
+                  row: 'Incoming invoice', 1
+                  row: 'INSCR_ESTADUAL_SUBSTITUTO_TRIB', 4
+                  row: u'Invoice number', 6
+                  row: 'Invoice Type', 10
+                  row: 'Creation date', 10
+                  row: 'Creation time', 8
+                  row: 'Emission date', 10
+                  row: 'Outgoing invoice', 1
+                  row: 'Payment due dates', 1
+                  row: 'Number of payments', 4
+                  row: 'Payment values', 1
+                  row: 'Product item code', 5
+                  row: 'Product item code / description', 35
+                  row: 'Product item situation', 1
+                  row: 'Product item unit', 2
+                  row: 'Product item counter', 3
+                  row: 'Product item description', 30
+                  row: 'Product item price', 5
+                  row: 'Product item quantity', 5
+                  row: 'Product item tax', 2
+                  row: 'Product item total (price * quantity)', 7
+                  row: 'SALESPERSON_NAME', 1
+                  row: 'SALE_NUMBER', 1
+                  row: 'Service item code', 5
+                  row: 'Service item code / description', 35
+                  row: 'Service item unit', 2
+                  row: 'Service item description', 30
+                  row: 'Service item price', 5
+                  row: 'Service item quantity', 5
+                  row: 'Service item tax', 2
+                  row: 'Service item total (price * quantity)', 7
+                  row: 'State registry number', 14
+                  row: 'VALOR_DESPESAS', 1
+                  row: 'VALOR_FRETE', 1
+                  row: 'VALOR_ICMS', 1
+                  row: 'VALOR_ICMS_SUBST', 1
+                  row: 'VALOR_IPI', 1
+                  row: 'VALOR_ISS', 1
+                  row: 'VALOR_SEGURO', 1
+                  row: 'VALOR_TOTAL_NOTA', 1
+                  row: 'VALOR_TOTAL_PRODUTOS', 1
+                  row: 'VALOR_TOTAL_SERVICOS', 1
+            GtkScrolledWindow(sw): 
+              GtkViewport(viewport1): 
+                stoqlib+gui+fieldgrid+FieldGrid(grid): 
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(): 'gtk-print-preview'
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

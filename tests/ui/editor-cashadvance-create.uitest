@@ -1,0 +1,32 @@
+editor: CashAdvanceEditor
+GtkDialog(main_dialog.toplevel): hidden, title='Add Cash Advance'
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkVBox(toplevel): 
+          GtkEventBox(base_cash_holder, fill=True): 
+            GtkTable(): 
+              GtkLabel(): 'Date:'
+              ProxyLabel(): '<span >YYYY-MM-DD</span>'
+              GtkLabel(): 'Balance:'
+              ProxyLabel(): '<span >$ 0.00</span>'
+              ProxyLabel(): 'Cash Amount ($CURRENCY):'
+              ProxyEntry(): '0.00', mandatory
+          GtkTable(table, expand=True, fill=True): 
+            GtkLabel(employee_lbl): 'Credit for Employee:'
+            GtkLabel(label): 
+            ProxyComboEntry(employee_combo): mandatory
+                item: 'Administrator', selected
+                item: 'Cleusa Blanc Ferreira Norbiato'
+                item: 'Deivis Alexandre Junior'
+                item: 'Maria Aparecida Ardana'
+                item: 'Osvaldo Denadai Marin'
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive

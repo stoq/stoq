@@ -1,0 +1,21 @@
+editor: TillOpeningEditor
+GtkDialog(main_dialog.toplevel): hidden, title='Till Opening'
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkVBox(toplevel): 
+          GtkTable(table1, fill=True): 
+            GtkLabel(label1): 'Balance:'
+            ProxyLabel(balance): '<span >$ 0.00</span>'
+            ProxyLabel(label2): 'Cash to add ($CURRENCY):'
+            ProxyEntry(value): '0.00'
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(main_dialog.help_button): 'gtk-help'

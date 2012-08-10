@@ -1,0 +1,33 @@
+editor: LoanItemEditor
+GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Loan Item"'
+  GtkVBox(main_dialog._main_vbox): 
+    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
+      GtkEventBox(main_dialog.header): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+        GtkNotebook(toplevel): 
+          GtkVBox(vbox1): 
+            GtkTable(table1): 
+              GtkLabel(label3): 'Order:'
+              GtkLabel(sale): '%% FILTERED BY UNITTEST %%'
+              GtkLabel(label2): 'Description:'
+              ProxyLabel(description): '<span >Description</span>'
+              GtkLabel(sale_quantity_lbl): 'Sale Quantity:', hidden
+              ProxySpinButton(sale_quantity): '0', hidden
+              GtkLabel(return_quantity_lbl): 'Return Quantity:', hidden
+              ProxySpinButton(return_quantity): '0', hidden
+              GtkLabel(label4): 'Price:'
+              ProxyEntry(price): '10.00'
+              GtkLabel(label5): 'Quantity:'
+              ProxySpinButton(quantity): '1.00'
+              GtkLabel(cfop_label): 'CFOP:', hidden
+              ProxyComboEntry(cfop): hidden
+              GtkLabel(label6): 'Total:'
+              ProxyLabel(total): '<span >$10.00</span>'
+      GtkHBox(fill=True): 
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
+        GtkEventBox(main_dialog.notice, fill=True): 
+        GtkEventBox(main_dialog.details_holder, pack-end): 
+    GtkHButtonBox(fill=True, pack-end): 
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
