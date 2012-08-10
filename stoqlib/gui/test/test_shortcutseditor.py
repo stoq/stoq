@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from twisted.trial.unittest import SkipTest
 
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.shortcutseditor import ShortcutsEditor
@@ -29,5 +30,6 @@ from stoqlib.gui.editors.shortcutseditor import ShortcutsEditor
 
 class TestShortcutsEditor(GUITest):
     def testCreate(self):
+        raise SkipTest("Only on first run are the profiles included")
         editor = ShortcutsEditor()
         self.check_dialog(editor, 'dialog-shortcuts-show')
