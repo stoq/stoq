@@ -36,6 +36,7 @@ from storm.info import get_cls_info
 
 import stoq
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.countries import countries
 from stoqlib.lib.diffutils import diff_lines
 
 
@@ -128,7 +129,13 @@ GtkWindow(PaymentEditor):
                     props.append('invalid')
         if isinstance(widget, (ProxyComboBox, ProxyComboEntry)):
             selected = widget.get_selected_label()
-            for label in widget.get_model_strings():
+            labels = widget.get_model_strings()
+            if (labels and labels[0] == 'Afghanistan' and
+                sorted(labels) == sorted(countries)):
+                labels = [selected,
+                          '... %d more countries ...' % (len(countries) - 1)]
+
+            for label in labels:
                 line = [repr(label)]
                 if label == selected:
                     line.append('selected')
