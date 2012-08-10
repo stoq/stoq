@@ -8,7 +8,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Product"'
           GtkVBox(sellable_tab): 
             GtkTable(table, fill=True): 
               GtkLabel(code_lbl): 'Code:'
-              ProxyEntry(code): '%% FILTERED BY UNITTEST %%'
+              ProxyEntry(code): '12345'
               GtkLabel(label8): 'Status:'
               ProxyComboBox(statuses_combo): insensitive
                   item: 'Available'

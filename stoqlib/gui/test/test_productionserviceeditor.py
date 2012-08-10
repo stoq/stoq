@@ -31,5 +31,5 @@ class TestProductionServiceEditor(GUITest):
     def testShow(self):
         service = self.create_production_service()
         editor = ProductionServiceEditor(self.trans, service)
-        self.check_editor(editor, 'editor-productionservice-show',
-                          ignores=["%04d" % service.order.id])
+        editor.order_number.set_label("12345")
+        self.check_editor(editor, 'editor-productionservice-show')

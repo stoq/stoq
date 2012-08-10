@@ -62,7 +62,7 @@ model: PurchaseItem
 model: Payment
   base_value: <currency $125>
   cancel_date: None
-  description: u'1/1 Bill for order %% FILTERED BY UNITTEST %%'
+  description: u'1/1 Bill for order'
   discount: <currency $ 0>
   due_date: datetime.today()
   interest: <currency $ 0>

@@ -31,5 +31,5 @@ class TestProductionProductEditor(GUITest):
     def testShow(self):
         product = self.create_product()
         editor = ProductionProductEditor(self.trans, product)
-        self.check_editor(editor, 'editor-productionproduct-show',
-                          ignores=[str(product.sellable.code)])
+        editor.code.update("12345")
+        self.check_editor(editor, 'editor-productionproduct-show')

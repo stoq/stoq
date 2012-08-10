@@ -9,7 +9,7 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
             ProxyLabel(): 'Open Date:'
             ProxyDateEntry(): date.today(), insensitive
             ProxyLabel(): 'Order Number:'
-            ProxyLabel(): '<span >%% FILTERED BY UNITTEST %%</span>'
+            ProxyLabel(): '<span >12345</span>'
             ProxyLabel(): 
             ProxyLabel(): 'Branch:'
             ProxyComboEntry(): 

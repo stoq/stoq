@@ -30,11 +30,11 @@ from stoqlib.gui.editors.producteditor import ProductEditor
 class TestProductEditor(GUITest):
     def testCreate(self):
         editor = ProductEditor(self.trans)
-        self.check_editor(editor, 'editor-product-create',
-                          ignores=[str(editor.model.sellable.id)])
+        editor.code.update("12345")
+        self.check_editor(editor, 'editor-product-create')
 
     def testShow(self):
         product = self.create_product()
         editor = ProductEditor(self.trans, product)
-        self.check_editor(editor, 'editor-product-show',
-                          ignores=[str(editor.model.sellable.id)])
+        editor.code.update("12345")
+        self.check_editor(editor, 'editor-product-show')

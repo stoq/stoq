@@ -30,8 +30,7 @@ from stoqlib.gui.editors.receivingeditor import ReceivingItemEditor
 class TestReceivingItemEditor(GUITest):
     def testShow(self):
         item = self.create_receiving_order_item()
-        item.receiving_order.id = 12345
         editor = ReceivingItemEditor(self.trans, item)
-        self.check_editor(
-            editor, 'editor-receivingitem-show',
-            ignores=[item.receiving_order.purchase.get_order_number_str()])
+        editor.receiving_order.set_label("12345")
+        editor.purchase_order.set_label("12345")
+        self.check_editor(editor, 'editor-receivingitem-show')
