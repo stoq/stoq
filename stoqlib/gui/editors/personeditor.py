@@ -229,7 +229,7 @@ class EmployeeRoleEditor(BaseEditor):
         name=TextField(_('Name'), proxy=True, mandatory=True),
         )
 
-    def __init__(self, conn, model, visual_mode=False):
+    def __init__(self, conn, model=None, visual_mode=False):
         BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
         self.set_description(self.model.name)
 

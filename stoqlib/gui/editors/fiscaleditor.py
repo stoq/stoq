@@ -47,7 +47,7 @@ class CfopEditor(BaseEditor):
         description=TextField(_('Description'), mandatory=True, proxy=True),
         )
 
-    def __init__(self, conn, model, visual_mode=False):
+    def __init__(self, conn, model=None, visual_mode=False):
         BaseEditor.__init__(self, conn, model, visual_mode)
         self.set_description(self.model.code)
 
