@@ -202,7 +202,9 @@ GtkWindow(PaymentEditor):
 
     def dump_wizard(self, wizard):
         self._add_namespace(wizard.__dict__)
-
+        step = wizard.get_current_step()
+        if step:
+            self._add_namespace(step.__dict__)
         self.output += 'wizard: %s\n' % (wizard.__class__.__name__, )
         self._dump_widget(wizard.get_toplevel())
 

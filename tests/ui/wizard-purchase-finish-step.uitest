@@ -4,26 +4,26 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
     GtkVBox(vbox1, expand=True, fill=True): 
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): 
-        GtkVBox(): 
-          GtkTable(expand=True, fill=True): 
-            GtkLabel(): 'Salesperson Name:'
-            ProxyEntry(): ''
-            GtkLabel(): 'Transporter:'
-            GtkHBox(): 
-              ProxyComboEntry(expand=True, fill=True): 
+        GtkVBox(toplevel): 
+          GtkTable(table, expand=True, fill=True): 
+            GtkLabel(label1): 'Salesperson Name:'
+            ProxyEntry(salesperson_name): ''
+            GtkLabel(label2): 'Transporter:'
+            GtkHBox(hbox2): 
+              ProxyComboEntry(transporter, expand=True, fill=True): 
                   item: 'Jos\xc3\xa9 Carlos de Carvalho'
-              GtkButton(fill=True): 
-              GtkButton(): 
-            GtkLabel(): 'Expected Receival Date:'
-            GtkHBox(): 
-              ProxyDateEntry(fill=True): date.today()
-              ProxyLabel(expand=True, fill=True): 
-            GtkLabel(): 'Notes'
-            GtkScrolledWindow(): 
-              ProxyTextView(): 
-            GtkAlignment(): 
-              GtkButton(): 'gtk-print'
-            GtkCheckButton(): 'Receive all products now.'
+              GtkButton(add_transporter, fill=True): 
+              GtkButton(edit_transporter): 
+            GtkLabel(label3): 'Expected Receival Date:'
+            GtkHBox(hbox1): 
+              ProxyDateEntry(expected_receival_date, fill=True): date.today()
+              ProxyLabel(kiwilabel5, expand=True, fill=True): 
+            GtkLabel(label4): 'Notes'
+            GtkScrolledWindow(scrolled_notes_window): 
+              ProxyTextView(notes): 
+            GtkAlignment(alignment1): 
+              GtkButton(print_button): 'gtk-print'
+            GtkCheckButton(receive_now): 'Receive all products now.'
       ProxyLabel(notification_lbl, fill=True): 
       GtkHBox(hbox1, fill=True, pack-end): 
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
