@@ -22,9 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.domain.product import Storable
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
+from stoqlib.domain.product import Storable
 
 
 class TestPurchaseWizard(GUITest):
