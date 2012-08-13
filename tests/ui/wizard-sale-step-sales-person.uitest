@@ -4,56 +4,56 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
     GtkVBox(vbox1, expand=True, fill=True): 
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): 
-        GtkVBox(toplevel): 
-          GtkHBox(hbox1, fill=True): 
-            GtkVBox(vbox3, expand=True, fill=True): 
-              GtkTable(table3, fill=True): 
-                ProxyLabel(salesperson_lbl): 'Salesperson:'
-                ProxyComboEntry(salesperson): insensitive
+        GtkVBox(step.toplevel): 
+          GtkHBox(step.hbox1, fill=True): 
+            GtkVBox(step.vbox3, expand=True, fill=True): 
+              GtkTable(step.table3, fill=True): 
+                ProxyLabel(step.salesperson_lbl): 'Salesperson:'
+                ProxyComboEntry(step.salesperson): insensitive
                     item: 'Administrator'
                     item: 'Cleusa Blanc Ferreira Norbiato'
                     item: 'Deivis Alexandre Junior'
                     item: 'Maria Aparecida Ardana'
                     item: 'Osvaldo Denadai Marin'
                     item: 'SalesPerson', selected
-                GtkLabel(label1): 'Client:'
-                ProxyComboEntry(client): 
+                GtkLabel(step.label1): 'Client:'
+                ProxyComboEntry(step.client): 
                     item: 'Alessandra Almeida Itaber\xc3\xa1'
                     item: 'Franciso Elisio de Lima Junior'
                     item: 'Luis Sergio da Silva Marin'
                     item: 'Vitalina Claudino'
-                GtkButton(create_client): 
-                GtkButton(client_details): insensitive
-                GtkLabel(transporter_lbl): 'Transporter:'
-                ProxyComboEntry(transporter): 
+                GtkButton(step.create_client): 
+                GtkButton(step.client_details): insensitive
+                GtkLabel(step.transporter_lbl): 'Transporter:'
+                ProxyComboEntry(step.transporter): 
                     item: 'Jos\xc3\xa9 Carlos de Carvalho'
-                GtkButton(create_transporter): 
-                GtkLabel(nature_lbl): 'Operation Nature:', hidden
-                ProxyEntry(operation_nature): '', hidden
-            GtkVBox(vbox4, expand=True, fill=True): 
-              GtkTable(table4, fill=True): 
-                GtkLabel(invoice_number_label): 'Invoice Number:'
-                ProxySpinButton(invoice_number): '1004'
-                GtkLabel(expire_label): 'Expire', hidden
-                ProxyDateEntry(expire_date): None, hidden
-                GtkLabel(cfop_lbl): 'C.F.O.P.:', hidden
-                ProxyComboEntry(cfop): hidden
-                GtkButton(create_cfop): hidden
-                GtkLabel(client_category_lbl): 'Client Category:', hidden
-                ProxyComboBox(client_category): hidden
-          GtkHSeparator(hseparator1, fill=True): 
-          GtkVBox(total_box, fill=True): 
-            GtkHBox(hbox2, fill=True): 
-              GtkTable(table1, expand=True, fill=True): 
-                ProxyLabel(kiwilabel3): 'Subtotal:'
-                ProxyLabel(subtotal_lbl): '<span >$10.00</span>'
-                ProxyLabel(kiwilabel5): 'Total:'
-                ProxyLabel(total_lbl): '<span >$10.00</span>'
-              GtkLabel(label3, expand=True, fill=True): 
-              GtkHButtonBox(hbuttonbox1, pack-end): 
-                GtkButton(notes_button, pack-end): 'Notes...'
-            GtkHBox(hbox4, expand=True, fill=True): 
-              GtkEventBox(cash_change_holder, expand=True, fill=True): 
+                GtkButton(step.create_transporter): 
+                GtkLabel(step.nature_lbl): 'Operation Nature:', hidden
+                ProxyEntry(step.operation_nature): '', hidden
+            GtkVBox(step.vbox4, expand=True, fill=True): 
+              GtkTable(step.table4, fill=True): 
+                GtkLabel(step.invoice_number_label): 'Invoice Number:'
+                ProxySpinButton(step.invoice_number): '1004'
+                GtkLabel(step.expire_label): 'Expire', hidden
+                ProxyDateEntry(step.expire_date): None, hidden
+                GtkLabel(step.cfop_lbl): 'C.F.O.P.:', hidden
+                ProxyComboEntry(step.cfop): hidden
+                GtkButton(step.create_cfop): hidden
+                GtkLabel(step.client_category_lbl): 'Client Category:', hidden
+                ProxyComboBox(step.client_category): hidden
+          GtkHSeparator(step.hseparator1, fill=True): 
+          GtkVBox(step.total_box, fill=True): 
+            GtkHBox(step.hbox2, fill=True): 
+              GtkTable(step.table1, expand=True, fill=True): 
+                ProxyLabel(step.kiwilabel3): 'Subtotal:'
+                ProxyLabel(step.subtotal_lbl): '<span >$10.00</span>'
+                ProxyLabel(step.kiwilabel5): 'Total:'
+                ProxyLabel(step.total_lbl): '<span >$10.00</span>'
+              GtkLabel(step.label3, expand=True, fill=True): 
+              GtkHButtonBox(step.hbuttonbox1, pack-end): 
+                GtkButton(step.notes_button, pack-end): 'Notes...'
+            GtkHBox(step.hbox4, expand=True, fill=True): 
+              GtkEventBox(step.cash_change_holder, expand=True, fill=True): 
                 GtkVBox(): 
                   GtkTable(): 
                     ProxyLabel(): '<span underline="single">Cash Change</span>'
@@ -61,8 +61,8 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                     ProxyEntry(): '$10.00'
                     ProxyLabel(): 'Change:'
                     ProxyLabel(): '<span weight="bold">$ 0.00</span>'
-              GtkExpander(subtotal_expander, expand=True, fill=True): 
-                GtkEventBox(discount_surcharge_slave): 
+              GtkExpander(step.subtotal_expander, expand=True, fill=True): 
+                GtkEventBox(step.discount_surcharge_slave): 
                   GtkVBox(): 
                     GtkHBox(fill=True): 
                       ProxyLabel(fill=True): 'Discount:'
@@ -75,8 +75,8 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                       GtkHBox(): 
                         ProxyEntry(fill=True): '0.00', insensitive
                         GtkLabel(expand=True, fill=True): 
-                GtkLabel(label2): 'Order Details'
-          GtkEventBox(select_method_holder, fill=True, pack-end): 
+                GtkLabel(step.label2): 'Order Details'
+          GtkEventBox(step.select_method_holder, fill=True, pack-end): 
             GtkVBox(): 
               GtkFrame(expand=True, fill=True): 
                 GtkHBox(): 

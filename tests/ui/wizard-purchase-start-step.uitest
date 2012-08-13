@@ -4,37 +4,37 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
     GtkVBox(vbox1, expand=True, fill=True): 
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): 
-        GtkVBox(toplevel): 
-          GtkTable(table, fill=True): 
-            ProxyLabel(kiwilabel1): 'Open Date:'
-            ProxyDateEntry(open_date): date.today(), insensitive
-            ProxyLabel(kiwilabel3): 'Order Number:'
-            ProxyLabel(order_number): '<span >12345</span>'
-            ProxyLabel(kiwilabel15): 
-            ProxyLabel(kiwilabel4): 'Branch:'
-            ProxyComboEntry(branch): 
+        GtkVBox(step.toplevel): 
+          GtkTable(step.table, fill=True): 
+            ProxyLabel(step.kiwilabel1): 'Open Date:'
+            ProxyDateEntry(step.open_date): date.today(), insensitive
+            ProxyLabel(step.kiwilabel3): 'Order Number:'
+            ProxyLabel(step.order_number): '<span >12345</span>'
+            ProxyLabel(step.kiwilabel15): 
+            ProxyLabel(step.kiwilabel4): 'Branch:'
+            ProxyComboEntry(step.branch): 
                 item: 'Moda Stoq', selected
                 item: 'Stoq Elite Fashion'
-            ProxyLabel(kiwilabel12): 
-            ProxyLabel(kiwilabel14): 
-            ProxyLabel(kiwilabel2): 'Supplier:'
-            ProxyComboEntry(supplier): 
+            ProxyLabel(step.kiwilabel12): 
+            ProxyLabel(step.kiwilabel14): 
+            ProxyLabel(step.kiwilabel2): 'Supplier:'
+            ProxyComboEntry(step.supplier): 
                 item: 'Cia de Roupas S\xc3\xa3o Carlos', selected
-            GtkHBox(supplier_buttons): 
-              GtkButton(add_supplier, fill=True): 
-              GtkButton(edit_supplier, fill=True): 
-            GtkCheckButton(all_products): 'Show products from all suppliers'
-            ProxyLabel(kiwilabel5): 'Freight Type:'
-            GtkHBox(radio_hbox): 
-              GtkRadioButton(cif_radio, expand=True, fill=True): 'CIF (Cost Insurance Freight)'
-            GtkHBox(hbox2): 
-              GtkRadioButton(fob_radio, expand=True, fill=True): 'FOB (Free On Board)', active
-            ProxyLabel(kiwilabel6): 'Expected Freight:'
-            GtkHBox(hbox3): 
-              GtkHBox(hbox1, fill=True): 
-                ProxyLabel(kiwilabel7, expand=True, fill=True): '$CURRENCY'
-                ProxyEntry(expected_freight, fill=True): '0.0'
-              ProxyLabel(kiwilabel8, expand=True, fill=True): 
+            GtkHBox(step.supplier_buttons): 
+              GtkButton(step.add_supplier, fill=True): 
+              GtkButton(step.edit_supplier, fill=True): 
+            GtkCheckButton(step.all_products): 'Show products from all suppliers'
+            ProxyLabel(step.kiwilabel5): 'Freight Type:'
+            GtkHBox(step.radio_hbox): 
+              GtkRadioButton(step.cif_radio, expand=True, fill=True): 'CIF (Cost Insurance Freight)'
+            GtkHBox(step.hbox2): 
+              GtkRadioButton(step.fob_radio, expand=True, fill=True): 'FOB (Free On Board)', active
+            ProxyLabel(step.kiwilabel6): 'Expected Freight:'
+            GtkHBox(step.hbox3): 
+              GtkHBox(step.hbox1, fill=True): 
+                ProxyLabel(step.kiwilabel7, expand=True, fill=True): '$CURRENCY'
+                ProxyEntry(step.expected_freight, fill=True): '0.0'
+              ProxyLabel(step.kiwilabel8, expand=True, fill=True): 
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end): 
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 

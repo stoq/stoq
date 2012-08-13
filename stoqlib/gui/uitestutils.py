@@ -204,7 +204,7 @@ GtkWindow(PaymentEditor):
         self._add_namespace(wizard)
         step = wizard.get_current_step()
         if step:
-            self._add_namespace(step)
+            self._add_namespace(step, 'step.')
         self.output += 'wizard: %s\n' % (wizard.__class__.__name__, )
         self._dump_widget(wizard.get_toplevel())
 

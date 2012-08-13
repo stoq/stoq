@@ -4,8 +4,8 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
     GtkVBox(vbox1, expand=True, fill=True): 
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): 
-        GtkVBox(toplevel): 
-          GtkEventBox(method_select_holder, fill=True): 
+        GtkVBox(step.toplevel): 
+          GtkEventBox(step.method_select_holder, fill=True): 
             GtkVBox(): 
               GtkFrame(expand=True, fill=True): 
                 GtkHBox(): 
@@ -14,7 +14,7 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
                   GtkRadioButton(padding=6): 'Check'
                   GtkRadioButton(padding=6): 'Deposit'
                 GtkLabel(): 'Payment method:'
-          GtkEventBox(method_slave_holder, expand=True, fill=True): 
+          GtkEventBox(step.method_slave_holder, expand=True, fill=True): 
             GtkFrame(): 
               GtkVBox(): 
                 GtkTable(fill=True): 
