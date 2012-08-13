@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Call to John'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave CallsEditor is attached
         GtkTable(table1): 
           GtkLabel(label5): 'Person:'
           GtkHBox(hbox1): 

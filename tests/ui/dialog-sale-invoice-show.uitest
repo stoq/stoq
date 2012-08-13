@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Sale Invoice Dialog'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave SaleInvoicePrinterDialog is attached
         GtkHBox(toplevel): 
           GtkLabel(label1, expand=True, fill=True): '<b>Invoice Number:</b>'
           ProxySpinButton(invoice_number): '1004'

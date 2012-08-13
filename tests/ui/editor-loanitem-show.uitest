@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Loan Item"'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave LoanItemEditor is attached
         GtkNotebook(toplevel): 
           GtkVBox(vbox1): 
             GtkTable(table1): 

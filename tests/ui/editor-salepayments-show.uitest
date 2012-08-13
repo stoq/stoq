@@ -3,39 +3,39 @@ GtkDialog(main_dialog.toplevel): hidden, title='Payments Editor'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave SalePaymentsEditor is attached
         GtkVBox(toplevel): 
-          GtkEventBox(place_holder, expand=True, fill=True): 
-            GtkVBox(): 
-              GtkHBox(fill=True): 
-                GtkLabel(): '<b>Method:</b>'
-                GtkHBox(expand=True, fill=True): 
+          GtkEventBox(place_holder, expand=True, fill=True): slave MultipleMethodSlave is attached
+            GtkVBox(toplevel): 
+              GtkHBox(hbox1, fill=True): 
+                GtkLabel(label1): '<b>Method:</b>'
+                GtkHBox(methods_box, expand=True, fill=True): 
                   GtkRadioButton(expand=True, fill=True): 'Money', active
                   GtkRadioButton(expand=True, fill=True): 'Card'
                   GtkRadioButton(expand=True, fill=True): 'Check'
                   GtkRadioButton(expand=True, fill=True): 'Deposit'
-                GtkHBox(fill=True): 
-                  ProxyLabel(fill=True): '$CURRENCY:'
-                  ProxyEntry(fill=True): '0.0', insensitive
-                  GtkButton(fill=True): 'gtk-add', insensitive
-              GtkHBox(expand=True, fill=True): 
-                GtkVBox(expand=True, fill=True): 
-                  ObjectList(expand=True, fill=True): 
+                GtkHBox(hbox2, fill=True): 
+                  ProxyLabel(currency, fill=True): '$CURRENCY:'
+                  ProxyEntry(base_value, fill=True): '0.0', insensitive
+                  GtkButton(add_button, fill=True): 'gtk-add', insensitive
+              GtkHBox(hbox3, expand=True, fill=True): 
+                GtkVBox(vbox2, expand=True, fill=True): 
+                  ObjectList(payments, expand=True, fill=True): 
                       column: title='Description', expand
                       column: title='Status'
                       column: title='Value'
                       column: title='Due date'
-                  GtkTable(fill=True): 
-                    GtkLabel(): 'Payments:'
-                    ProxyLabel(): '<span weight="bold">$ 0.00</span>'
-                    GtkLabel(): 'Total:'
-                    ProxyLabel(): '<span weight="bold">$ 0.00</span>'
-                    GtkHSeparator(): 
-                    GtkHSeparator(): 
-                    GtkLabel(): 'Change:'
-                    ProxyLabel(): '<span weight="bold">$ 0.00</span>'
-                GtkVBox(fill=True): 
-                  GtkButton(fill=True): 'gtk-remove', insensitive
+                  GtkTable(footer_table, fill=True): 
+                    GtkLabel(label11): 'Payments:'
+                    ProxyLabel(received_value): '<span weight="bold">$ 0.00</span>'
+                    GtkLabel(label12): 'Total:'
+                    ProxyLabel(total_value): '<span weight="bold">$ 0.00</span>'
+                    GtkHSeparator(hseparator1): 
+                    GtkHSeparator(hseparator2): 
+                    GtkLabel(missing_change): 'Change:'
+                    ProxyLabel(missing_value): '<span weight="bold">$ 0.00</span>'
+                GtkVBox(vbox3, fill=True): 
+                  GtkButton(remove_button, fill=True): 'gtk-remove', insensitive
       GtkHBox(fill=True): 
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 

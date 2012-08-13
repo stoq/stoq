@@ -3,7 +3,7 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
   GtkVBox(PluggableWizard-vbox): 
     GtkVBox(vbox1, expand=True, fill=True): 
       ProxyLabel(header_lbl, fill=True): hidden
-      GtkEventBox(slave_area, expand=True, fill=True): 
+      GtkEventBox(slave_area, expand=True, fill=True): slave SalesPersonStep is attached
         GtkVBox(step.toplevel): 
           GtkHBox(step.hbox1, fill=True): 
             GtkVBox(step.vbox3, expand=True, fill=True): 
@@ -53,33 +53,33 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
               GtkHButtonBox(step.hbuttonbox1, pack-end): 
                 GtkButton(step.notes_button, pack-end): 'Notes...'
             GtkHBox(step.hbox4, expand=True, fill=True): 
-              GtkEventBox(step.cash_change_holder, expand=True, fill=True): 
-                GtkVBox(): 
-                  GtkTable(): 
-                    ProxyLabel(): '<span underline="single">Cash Change</span>'
-                    ProxyLabel(): 'Received: ($CURRENCY)'
-                    ProxyEntry(): '$10.00'
-                    ProxyLabel(): 'Change:'
-                    ProxyLabel(): '<span weight="bold">$ 0.00</span>'
+              GtkEventBox(step.cash_change_holder, expand=True, fill=True): slave CashChangeSlave is attached
+                GtkVBox(toplevel): 
+                  GtkTable(table1): 
+                    ProxyLabel(title_lbl): '<span underline="single">Cash Change</span>'
+                    ProxyLabel(kiwilabel1): 'Received: ($CURRENCY)'
+                    ProxyEntry(received_value): '$10.00'
+                    ProxyLabel(kiwilabel2): 'Change:'
+                    ProxyLabel(change_value_lbl): '<span weight="bold">$ 0.00</span>'
               GtkExpander(step.subtotal_expander, expand=True, fill=True): 
-                GtkEventBox(step.discount_surcharge_slave): 
-                  GtkVBox(): 
-                    GtkHBox(fill=True): 
-                      ProxyLabel(fill=True): 'Discount:'
-                    GtkTable(fill=True): 
-                      ProxyRadioButton(): active
-                      GtkHBox(): 
-                        ProxyEntry(fill=True): '0.0'
-                        ProxyLabel(fill=True): '%'
-                      ProxyRadioButton(): 
-                      GtkHBox(): 
-                        ProxyEntry(fill=True): '0.00', insensitive
-                        GtkLabel(expand=True, fill=True): 
+                GtkEventBox(step.discount_surcharge_slave): slave SaleDiscountSlave is attached
+                  GtkVBox(toplevel): 
+                    GtkHBox(hbox6, fill=True): 
+                      ProxyLabel(kiwilabel9, fill=True): 'Discount:'
+                    GtkTable(table1, fill=True): 
+                      ProxyRadioButton(discount_perc_ck): active
+                      GtkHBox(hbox2): 
+                        ProxyEntry(discount_perc, fill=True): '0.0'
+                        ProxyLabel(kiwilabel1, fill=True): '%'
+                      ProxyRadioButton(discount_value_ck): 
+                      GtkHBox(hbox4): 
+                        ProxyEntry(discount_value, fill=True): '0.00', insensitive
+                        GtkLabel(label4, expand=True, fill=True): 
                 GtkLabel(step.label2): 'Order Details'
-          GtkEventBox(step.select_method_holder, fill=True, pack-end): 
-            GtkVBox(): 
-              GtkFrame(expand=True, fill=True): 
-                GtkHBox(): 
+          GtkEventBox(step.select_method_holder, fill=True, pack-end): slave SelectPaymentMethodSlave is attached
+            GtkVBox(toplevel): 
+              GtkFrame(frame1, expand=True, fill=True): 
+                GtkHBox(methods_box): 
                   GtkRadioButton(padding=6): 'Money', active
                   GtkRadioButton(padding=6): 'Bill', hidden
                   GtkRadioButton(padding=6): 'Card'

@@ -30,6 +30,7 @@ import gtk
 from kiwi.accessor import kgetattr
 from kiwi.interfaces import IValidatableProxyWidget
 from kiwi.ui.objectlist import ObjectList
+from kiwi.ui.views import SlaveView
 from kiwi.ui.widgets.combo import ProxyComboBox, ProxyComboEntry
 from kiwi.ui.widgets.entry import ProxyDateEntry
 from storm.info import get_cls_info
@@ -61,6 +62,7 @@ GtkWindow(PaymentEditor):
 
     def __init__(self):
         self._items = {}
+        self._slave_holders = {}
         self.output = ''
 
     def _add_namespace(self, obj, prefix=''):
@@ -69,6 +71,12 @@ GtkWindow(PaymentEditor):
                 self._items[hash(value)] = prefix + attr
             except TypeError:
                 continue
+
+        if isinstance(obj, SlaveView):
+            for name, slave in obj.slaves.items():
+                self._add_namespace(slave)
+                holder = slave.get_toplevel().get_parent()
+                self._slave_holders[holder] = type(slave).__name__
 
     def _dump_widget(self, widget, indent=0):
         recurse = True
@@ -165,6 +173,10 @@ GtkWindow(PaymentEditor):
                 extra_output += spaces + '    row: ' + ', '.join(cols) + '\n'
             recurse = False
 
+        if isinstance(widget, gtk.EventBox):
+            slave_name = self._slave_holders.get(widget)
+            if slave_name:
+                props.append('slave %s is attached' % (slave_name, ))
         self.output += "%s%s(%s): %s\n" % (
             spaces,
             gobject.type_name(widget),

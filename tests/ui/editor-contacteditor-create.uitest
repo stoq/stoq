@@ -4,8 +4,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
       GtkEventBox(main_dialog.main, expand=True, fill=True): 
-        GtkEventBox(): 
-          GtkAlignment(): 
+        GtkEventBox(): slave BasicForm is attached
+          GtkAlignment(toplevel): 
             GtkTable(): 
               ProxyLabel(name_lbl): 'Name:'
               ProxyEntry(name): '', mandatory

@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Price settings'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave SellablePriceEditor is attached
         GtkVBox(toplevel): 
           GtkTable(table2, fill=True): 
             GtkLabel(label1): 'Base Cost:'
@@ -17,29 +17,29 @@ GtkDialog(main_dialog.toplevel): hidden, title='Price settings'
             ProxySpinButton(max_discount): '0.00'
             GtkLabel(label12): '%'
           GtkHSeparator(hseparator2, fill=True): 
-          GtkEventBox(on_sale_holder, fill=True): 
-            GtkVBox(): 
-              ProxyLabel(fill=True): '<u>Currently on Sale:</u>'
-              GtkTable(fill=True): 
-                ProxyLabel(): 'Price ($CURRENCY):'
-                GtkHBox(): 
-                  ProxyEntry(expand=True, fill=True): '0.00'
-                ProxyLabel(): 'From:'
-                ProxyDateEntry(): None
-                ProxyLabel(): 'To:'
-                ProxyDateEntry(): None
-          GtkEventBox(on_commission_data_holder, expand=True, fill=True): 
-            GtkVBox(): 
-              ProxyCheckButton(padding=5): ' No Commission', active
-              GtkTable(fill=True): 
-                GtkLabel(): 'Direct sale commission:'
-                GtkHBox(): 
-                  ProxySpinButton(expand=True, fill=True): '0.00', insensitive
-                  GtkLabel(padding=6): '%'
-                GtkLabel(): 'In installments commission:'
-                GtkHBox(): 
-                  ProxySpinButton(expand=True, fill=True): '0.00', insensitive
-                  GtkLabel(padding=6): '%'
+          GtkEventBox(on_sale_holder, fill=True): slave OnSaleInfoSlave is attached
+            GtkVBox(toplevel): 
+              ProxyLabel(kiwilabel1, fill=True): '<u>Currently on Sale:</u>'
+              GtkTable(table1, fill=True): 
+                ProxyLabel(price_label): 'Price ($CURRENCY):'
+                GtkHBox(hbox1): 
+                  ProxyEntry(on_sale_price, expand=True, fill=True): '0.00'
+                ProxyLabel(start_date_label): 'From:'
+                ProxyDateEntry(on_sale_start_date): None
+                ProxyLabel(kiwilabel4): 'To:'
+                ProxyDateEntry(on_sale_end_date): None
+          GtkEventBox(on_commission_data_holder, expand=True, fill=True): slave CommissionSlave is attached
+            GtkVBox(toplevel): 
+              ProxyCheckButton(commission_check_btn, padding=5): ' No Commission', active
+              GtkTable(table1, fill=True): 
+                GtkLabel(label1): 'Direct sale commission:'
+                GtkHBox(hbox6): 
+                  ProxySpinButton(commission_spin, expand=True, fill=True): '0.00', insensitive
+                  GtkLabel(label3, padding=6): '%'
+                GtkLabel(label2): 'In installments commission:'
+                GtkHBox(hbox7): 
+                  ProxySpinButton(commission_inst_spin, expand=True, fill=True): '0.00', insensitive
+                  GtkLabel(label4, padding=6): '%'
       GtkHBox(fill=True): 
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 

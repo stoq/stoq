@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Service'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave ServiceEditor is attached
         GtkNotebook(toplevel): 
           GtkVBox(sellable_tab): 
             GtkTable(table, fill=True): 
@@ -76,28 +76,28 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Service'
                 ProxyRadioButton(consignment_yes_button, expand=True, fill=True): 'Yes'
                 ProxyRadioButton(consignment_no_button, expand=True, fill=True): 'No', active
               ProxyLabel(requires_weighing_label): '<span size="small"></span>'
-              GtkEventBox(slave_holder): 
-                GtkVBox(): 
-                  GtkTable(expand=True, fill=True): 
-                    GtkEventBox(): 
-                    GtkLabel(): 'Details:'
-                    GtkScrolledWindow(): 
-                      ProxyTextView(): 
-                    GtkVBox(): 
-                      GtkEventBox(expand=True, fill=True): 
-                        GtkHBox(): 
-                          GtkVSeparator(): 
-                          GtkEventBox(expand=True, fill=True): 
-                            GtkImage(): 
-                  GtkLabel(fill=True): 'Right-click image for more options'
-          GtkEventBox(): 
-            GtkVBox(): 
-              GtkHBox(fill=True): 
-                GtkLabel(fill=True): 'Category:'
-                ProxyComboEntry(expand=True, fill=True): mandatory
-                GtkButton(fill=True): 'gtk-add', insensitive
-              GtkVBox(expand=True, fill=True): 
-                kiwi+ui+listdialog+ListContainer(expand=True, fill=True): 
+              GtkEventBox(slave_holder): slave SellableDetailsSlave is attached
+                GtkVBox(toplevel): 
+                  GtkTable(table1, expand=True, fill=True): 
+                    GtkEventBox(details_holder): 
+                    GtkLabel(notes_lbl): 'Details:'
+                    GtkScrolledWindow(scrolledwindow1): 
+                      ProxyTextView(notes): 
+                    GtkVBox(vbox2): 
+                      GtkEventBox(sellable_image_holder, expand=True, fill=True): slave ImageSlave is attached
+                        GtkHBox(toplevel): 
+                          GtkVSeparator(separator): 
+                          GtkEventBox(eventbox, expand=True, fill=True): 
+                            GtkImage(image): 
+                  GtkLabel(label1, fill=True): 'Right-click image for more options'
+          GtkEventBox(): slave CategoryPriceSlave is attached
+            GtkVBox(toplevel): 
+              GtkHBox(hbox1, fill=True): 
+                GtkLabel(model_name_label, fill=True): 'Category:'
+                ProxyComboEntry(target_combo, expand=True, fill=True): mandatory
+                GtkButton(add_button, fill=True): 'gtk-add', insensitive
+              GtkVBox(model_vbox, expand=True, fill=True): 
+                kiwi+ui+listdialog+ListContainer(relations_list, expand=True, fill=True): 
                   GtkVBox(expand=True, fill=True, padding=6): 
                     ObjectList(expand=True, fill=True): 
                         column: title='Category', expand

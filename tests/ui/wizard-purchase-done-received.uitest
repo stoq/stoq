@@ -3,56 +3,56 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
   GtkVBox(PluggableWizard-vbox): 
     GtkVBox(vbox1, expand=True, fill=True): 
       ProxyLabel(header_lbl, fill=True): hidden
-      GtkEventBox(slave_area, expand=True, fill=True): 
+      GtkEventBox(slave_area, expand=True, fill=True): slave ReceivingInvoiceStep is attached
         GtkVBox(step.toplevel): 
-          GtkEventBox(step.place_holder, expand=True, fill=True): 
-            GtkVBox(): 
-              GtkTable(fill=True): 
-                GtkLabel(): 'Branch:'
-                ProxyLabel(): '<span >Moda Stoq</span>'
-                ProxyLabel(): 'Products Total ($CURRENCY):'
-                ProxyLabel(): '<span >$125.00</span>'
-                ProxyLabel(): 'Supplier:'
-                ProxyLabel(): '<span >Cia de Roupas S\xc3\xa3o Carlos</span>'
-                ProxyLabel(): 'Freight ($CURRENCY):'
-                ProxyEntry(): '0.00'
-                GtkLabel(): 'Order Number:'
-                ProxyLabel(): '<span >12345</span>'
-                ProxyLabel(): 'IPI ($CURRENCY):'
-                ProxyEntry(): '0.00'
-                GtkLabel(): 'Invoice Number:'
-                GtkHBox(): 
-                  ProxyEntry(fill=True): '67890'
-                  GtkLabel(expand=True, fill=True): 
-                ProxyLabel(): 'ICMS Total ($CURRENCY):'
-                ProxyEntry(): '0.00'
-                GtkLabel(): 'C.F.O.P.:'
-                ProxyComboEntry(): 
+          GtkEventBox(step.place_holder, expand=True, fill=True): slave ReceivingInvoiceSlave is attached
+            GtkVBox(toplevel): 
+              GtkTable(table, fill=True): 
+                GtkLabel(label10): 'Branch:'
+                ProxyLabel(branch): '<span >Moda Stoq</span>'
+                ProxyLabel(kiwilabel4): 'Products Total ($CURRENCY):'
+                ProxyLabel(products_total): '<span >$125.00</span>'
+                ProxyLabel(purchase_supplier_label): 'Supplier:'
+                ProxyLabel(supplier_label): '<span >Cia de Roupas S\xc3\xa3o Carlos</span>'
+                ProxyLabel(kiwilabel54): 'Freight ($CURRENCY):'
+                ProxyEntry(freight): '0.00'
+                GtkLabel(purchase_number_label): 'Order Number:'
+                ProxyLabel(order_number): '<span >12345</span>'
+                ProxyLabel(kiwilabel6): 'IPI ($CURRENCY):'
+                ProxyEntry(ipi): '0.00'
+                GtkLabel(label8): 'Invoice Number:'
+                GtkHBox(invoice_hbox): 
+                  ProxyEntry(invoice_number, fill=True): '67890'
+                  GtkLabel(label1, expand=True, fill=True): 
+                ProxyLabel(kiwilabel200): 'ICMS Total ($CURRENCY):'
+                ProxyEntry(icms_total): '0.00'
+                GtkLabel(label9): 'C.F.O.P.:'
+                ProxyComboEntry(cfop): 
                     item: '1.102 Compra para Comercializacao', selected
                     item: '5.102 Venda de Mercadoria Adquirida'
                     item: '5.202 Devolucao'
                     item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
-                ProxyLabel(): 'Discount ($CURRENCY):'
-                ProxyEntry(): '0.00'
-                GtkLabel(): 'Transporter:'
-                ProxyComboEntry(): 
+                ProxyLabel(discount_label): 'Discount ($CURRENCY):'
+                ProxyEntry(discount_value): '0.00'
+                GtkLabel(label2): 'Transporter:'
+                ProxyComboEntry(transporter): 
                     item: 'Jos\xc3\xa9 Carlos de Carvalho'
-                ProxyLabel(): 'Secure ($CURRENCY):'
-                ProxyEntry(): '0.00'
-                GtkLabel(): 'Responsible:'
-                ProxyLabel(): '<span >Administrator</span>'
-                ProxyLabel(): 'Others Expenditures ($CURRENCY):'
-                ProxyEntry(): '0.00'
-                GtkLabel(): 'Freight:'
-                ProxyComboBox(): 
+                ProxyLabel(kiwilabel2): 'Secure ($CURRENCY):'
+                ProxyEntry(secure_value): '0.00'
+                GtkLabel(label4): 'Responsible:'
+                ProxyLabel(responsible_name): '<span >Administrator</span>'
+                ProxyLabel(kiwilabel3): 'Others Expenditures ($CURRENCY):'
+                ProxyEntry(expense_value): '0.00'
+                GtkLabel(label3): 'Freight:'
+                ProxyComboBox(freight_combo): 
                     item: 'FOB - Freight value on a new payment'
                     item: 'FOB - Freight value on installments', selected
                     item: 'CIF - Freight value is unknown'
                     item: 'CIF - Freight value highlighted on invoice'
-                ProxyLabel(): 'Invoice Total ($CURRENCY):'
-                ProxyLabel(): '<span weight="bold">$125.00</span>'
-                GtkHButtonBox(): 
-                  GtkButton(): 'Notes...'
+                ProxyLabel(kiwilabel11): 'Invoice Total ($CURRENCY):'
+                ProxyLabel(total): '<span weight="bold">$125.00</span>'
+                GtkHButtonBox(notes_box): 
+                  GtkButton(notes_button): 'Notes...'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end): 
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 

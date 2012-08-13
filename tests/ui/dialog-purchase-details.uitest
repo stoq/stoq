@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Purchase Details'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave PurchaseDetailsDialog is attached
         GtkVBox(toplevel): 
           GtkTable(table1, fill=True): 
             GtkLabel(label1): 'Open Date:'

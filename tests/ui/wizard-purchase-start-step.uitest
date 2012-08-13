@@ -3,7 +3,7 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
   GtkVBox(PluggableWizard-vbox): 
     GtkVBox(vbox1, expand=True, fill=True): 
       ProxyLabel(header_lbl, fill=True): hidden
-      GtkEventBox(slave_area, expand=True, fill=True): 
+      GtkEventBox(slave_area, expand=True, fill=True): slave StartPurchaseStep is attached
         GtkVBox(step.toplevel): 
           GtkTable(step.table, fill=True): 
             ProxyLabel(step.kiwilabel1): 'Open Date:'

@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave SellableCategoryEditor is attached
         GtkNotebook(toplevel): 
           GtkTable(table2): 
             GtkLabel(label5): 'Description:'
@@ -39,18 +39,18 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
             ProxySpinButton(suggested_markup): '0.00'
             GtkLabel(label2): '%'
             GtkCheckButton(markup_check): 'Get from parent', insensitive
-          GtkEventBox(): 
-            GtkVBox(): 
-              ProxyCheckButton(padding=5): 'Get from parent', insensitive
-              GtkTable(fill=True): 
-                GtkLabel(): 'Direct sale commission:'
-                GtkHBox(): 
-                  ProxySpinButton(expand=True, fill=True): '0.00'
-                  GtkLabel(padding=6): '%'
-                GtkLabel(): 'In installments commission:'
-                GtkHBox(): 
-                  ProxySpinButton(expand=True, fill=True): '0.00'
-                  GtkLabel(padding=6): '%'
+          GtkEventBox(): slave CategoryCommissionSlave is attached
+            GtkVBox(toplevel): 
+              ProxyCheckButton(commission_check_btn, padding=5): 'Get from parent', insensitive
+              GtkTable(table1, fill=True): 
+                GtkLabel(label1): 'Direct sale commission:'
+                GtkHBox(hbox6): 
+                  ProxySpinButton(commission_spin, expand=True, fill=True): '0.00'
+                  GtkLabel(label3, padding=6): '%'
+                GtkLabel(label2): 'In installments commission:'
+                GtkHBox(hbox7): 
+                  ProxySpinButton(commission_inst_spin, expand=True, fill=True): '0.00'
+                  GtkLabel(label4, padding=6): '%'
       GtkHBox(fill=True): 
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 

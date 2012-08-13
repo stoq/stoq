@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Product Unit'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave SellableUnitEditor is attached
         GtkTable(table1): 
           GtkLabel(description_lbl): 'Description:'
           ProxyEntry(description): ''

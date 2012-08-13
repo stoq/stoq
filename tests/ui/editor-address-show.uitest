@@ -3,29 +3,29 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Address"'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave AddressEditor is attached
         GtkVBox(toplevel): 
-          GtkEventBox(main_holder, expand=True, fill=True): 
-            GtkTable(): 
-              GtkLabel(): 'Street:'
-              ProxyEntry(): 'Mainstreet'
-              GtkHBox(): 
-                GtkLabel(expand=True, fill=True): 
-                ProxyCheckButton(expand=True, fill=True): 'Number:', active
-              GtkHBox(): 
-                ProxyEntry(fill=True): '138'
-                GtkLabel(expand=True, fill=True): 'Postal Code:'
-                ProxyEntry(fill=True): '12345-678'
-              GtkLabel(): 'District:'
-              ProxyEntry(): 'Cidade Araci'
-              GtkLabel(): 'Complement:'
-              ProxyEntry(): 'Compl'
-              GtkLabel(): 'City:'
-              ProxyEntry(): 'Los Angeles'
-              GtkLabel(): 'State:'
-              ProxyEntry(): 'Californa'
-              GtkLabel(): 'Country:'
-              ProxyComboEntry(): 
+          GtkEventBox(main_holder, expand=True, fill=True): slave AddressSlave is attached
+            GtkTable(table2): 
+              GtkLabel(address_lbl): 'Street:'
+              ProxyEntry(street): 'Mainstreet'
+              GtkHBox(hbox2): 
+                GtkLabel(label8, expand=True, fill=True): 
+                ProxyCheckButton(streetnumber_check, expand=True, fill=True): 'Number:', active
+              GtkHBox(hbox1): 
+                ProxyEntry(streetnumber, fill=True): '138'
+                GtkLabel(postal_code_lbl, expand=True, fill=True): 'Postal Code:'
+                ProxyEntry(postal_code, fill=True): '12345-678'
+              GtkLabel(district_lbl): 'District:'
+              ProxyEntry(district): 'Cidade Araci'
+              GtkLabel(complement_lbl): 'Complement:'
+              ProxyEntry(complement): 'Compl'
+              GtkLabel(city_lbl): 'City:'
+              ProxyEntry(city): 'Los Angeles'
+              GtkLabel(state_lbl): 'State:'
+              ProxyEntry(state): 'Californa'
+              GtkLabel(country_lbl): 'Country:'
+              ProxyComboEntry(country): 
                   item: 'United States', selected
                   item: '... 252 more countries ...'
       GtkHBox(fill=True): 
