@@ -253,11 +253,12 @@ GtkWindow(PaymentEditor):
         self.output += '\n'
 
 
+stoq_dir = os.path.dirname(os.path.dirname(stoq.__file__))
+
+
 class GUITest(DomainTest):
     def _get_ui_filename(self, name):
-        return os.path.join(
-            os.path.dirname(os.path.dirname(stoq.__file__)),
-            'tests', 'ui', name + '.uitest')
+        return os.path.join(stoq_dir, 'tests', 'ui', name + '.uitest')
 
     def assertInvalid(self, dialog, attributes):
         for attr in attributes:
@@ -341,7 +342,7 @@ class GUITest(DomainTest):
         expected = open(filename).readlines()
         difference = diff_lines(expected,
                                 lines,
-                                short=filename)
+                                short=filename[len(stoq_dir) + 1:])
         if difference:
             self.fail('ui test %s failed:\n%s' % (
                 ui_test_name, difference))
