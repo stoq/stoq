@@ -44,7 +44,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Account'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
       GtkButton(_test_button): 'Print a test bill', insensitive
 
-model: Account
+model: Account<1>
   account_type: 1
   code: None
   description: u'Account name'

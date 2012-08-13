@@ -230,25 +230,38 @@ GtkWindow(PaymentEditor):
         if not models:
             return
         self.output += '\n'
+        counter = 1
+        ns = {}
         for model in models:
-            self._dump_model(model)
+            model_name = '%s<%d>' % (type(model).__name__,
+                                     counter)
+            ns[model] = model_name
+            counter += 1
+        for model in models:
+            self._dump_model(ns, model)
 
-    def _dump_model(self, model):
+    def _dump_model(self, ns, model):
         if model is None:
             self.output += 'model: None\n'
             return
-        model_type = type(model)
-        self.output += 'model: %s\n' % (model_type.__name__, )
-        info = get_cls_info(model_type)
+        self.output += 'model: %s\n' % (ns[model], )
+        info = get_cls_info(type(model))
         for col in info.columns:
-            if col.name.endswith('_id') or col.name == 'id':
+            if col.name == 'id':
                 continue
+            if col.name.endswith('_id'):
+                value = getattr(model, col.name[:-3], None)
+                if value in ns:
+                    self.output += '  %s: %s\n' % (col.name, ns[value])
+                continue
+
             value = getattr(model, col.name, None)
             if isinstance(value, datetime.datetime):
                 # Strip hours/minutes/seconds so today() works
                 value = datetime.datetime(value.year,
                                           value.month,
                                           value.day)
+
             self.output += '  %s: %r\n' % (col.name, value)
         self.output += '\n'
 

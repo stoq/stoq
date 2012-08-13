@@ -34,7 +34,7 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
           GtkButton(help_button): 'gtk-help'
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
 
-model: PurchaseOrder
+model: PurchaseOrder<1>
   confirm_date: None
   consigned: False
   discount_value: <currency $ 0>
@@ -42,6 +42,7 @@ model: PurchaseOrder
   expected_pay_date: datetime.today()
   expected_receival_date: datetime.today()
   freight_type: 0
+  group_id: PaymentGroup<4>
   notes: u''
   open_date: datetime.today()
   quote_deadline: None
@@ -50,21 +51,23 @@ model: PurchaseOrder
   status: 2
   surcharge_value: <currency $ 0>
 
-model: PurchaseItem
+model: PurchaseItem<2>
   base_cost: <currency $125>
   cost: <currency $125>
   expected_receival_date: None
+  order_id: PurchaseOrder<1>
   quantity: Decimal('1.000')
   quantity_received: Decimal('0.000')
   quantity_returned: Decimal('0.000')
   quantity_sold: Decimal('0.000')
 
-model: Payment
+model: Payment<3>
   base_value: <currency $125>
   cancel_date: None
   description: u'1/1 Bill for order'
   discount: <currency $ 0>
   due_date: datetime.today()
+  group_id: PaymentGroup<4>
   interest: <currency $ 0>
   open_date: datetime.today()
   paid_date: None
@@ -75,6 +78,6 @@ model: Payment
   status: 0
   value: <currency $125>
 
-model: PaymentGroup
+model: PaymentGroup<4>
   status: 0
 

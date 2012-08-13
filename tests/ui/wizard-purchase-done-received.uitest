@@ -63,7 +63,7 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
           GtkButton(help_button): 'gtk-help'
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
 
-model: PurchaseOrder
+model: PurchaseOrder<1>
   confirm_date: datetime.today()
   consigned: False
   discount_value: <currency $ 0>
@@ -71,6 +71,7 @@ model: PurchaseOrder
   expected_pay_date: datetime.today()
   expected_receival_date: datetime.today()
   freight_type: 0
+  group_id: PaymentGroup<4>
   notes: u''
   open_date: datetime.today()
   quote_deadline: None
@@ -79,21 +80,23 @@ model: PurchaseOrder
   status: 4
   surcharge_value: <currency $ 0>
 
-model: PurchaseItem
+model: PurchaseItem<2>
   base_cost: <currency $125>
   cost: <currency $125>
   expected_receival_date: None
+  order_id: PurchaseOrder<1>
   quantity: Decimal('1.000')
   quantity_received: Decimal('1.000')
   quantity_returned: Decimal('0.000')
   quantity_sold: Decimal('0.000')
 
-model: Payment
+model: Payment<3>
   base_value: <currency $125>
   cancel_date: None
   description: u'1/1 Bill for order'
   discount: <currency $ 0>
   due_date: datetime.today()
+  group_id: PaymentGroup<4>
   interest: <currency $ 0>
   open_date: datetime.today()
   paid_date: None
@@ -104,10 +107,10 @@ model: Payment
   status: 1
   value: <currency $125>
 
-model: PaymentGroup
+model: PaymentGroup<4>
   status: 0
 
-model: ReceivingOrder
+model: ReceivingOrder<5>
   confirm_date: None
   discount_value: <currency $ 0>
   expense_value: <currency $ 0>
@@ -118,16 +121,19 @@ model: ReceivingOrder
   invoice_total: <currency $125>
   ipi_total: <currency $ 0>
   notes: u''
+  purchase_id: PurchaseOrder<1>
   receival_date: datetime.today()
   secure_value: <currency $ 0>
   status: 0
   surcharge_value: <currency $ 0>
 
-model: ReceivingOrderItem
+model: ReceivingOrderItem<6>
   cost: <currency $125>
+  purchase_item_id: PurchaseItem<2>
   quantity: Decimal('1.000')
+  receiving_order_id: ReceivingOrder<5>
 
-model: ProductStockItem
+model: ProductStockItem<7>
   quantity: Decimal('1.000')
   stock_cost: <currency $125>
 

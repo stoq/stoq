@@ -55,15 +55,16 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add payment'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
       GtkButton(main_dialog.help_button): 'gtk-help'
 
-model: PaymentGroup
+model: PaymentGroup<1>
   status: 0
 
-model: Payment
+model: Payment<2>
   base_value: <currency $100>
   cancel_date: None
   description: u'1/2 Payment name'
   discount: <currency $ 0>
   due_date: datetime.datetime(2015, 1, 1, 0, 0)
+  group_id: PaymentGroup<1>
   interest: <currency $ 0>
   open_date: datetime.today()
   paid_date: None
@@ -74,12 +75,13 @@ model: Payment
   status: 1
   value: <currency $100>
 
-model: Payment
+model: Payment<3>
   base_value: <currency $100>
   cancel_date: None
   description: u'2/2 Payment name'
   discount: <currency $ 0>
   due_date: datetime.datetime(2015, 1, 8, 0, 0)
+  group_id: PaymentGroup<1>
   interest: <currency $ 0>
   open_date: datetime.today()
   paid_date: None
