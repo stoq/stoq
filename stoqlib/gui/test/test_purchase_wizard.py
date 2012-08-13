@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from stoqlib.domain.product import Storable
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 
@@ -38,6 +39,7 @@ class TestPurchaseWizard(GUITest):
     def _check_item_step(self, uitest=''):
         item_step = self.wizard.get_current_step()
         product = self.create_product()
+        Storable(product=product, connection=self.trans)
         item_step.sellable_selected(product.sellable)
         self.assertSensitive(item_step, ['add_sellable_button'])
         item_step.add_sellable_button.clicked()
@@ -85,6 +87,15 @@ class TestPurchaseWizard(GUITest):
         self.assertSensitive(self.wizard, ['next_button'])
         self.wizard.next_button.clicked()
 
+        receiving_step = self.wizard.get_current_step()
+        receiving_step.invoice_slave.order_number.update("12345")
+        receiving_step.invoice_slave.invoice_number.update(67890)
+
+        self.check_wizard(self.wizard, 'wizard-purchase-invoice-step')
+
+        self.assertSensitive(self.wizard, ['next_button'])
+        self.wizard.next_button.clicked()
+
         purchase = self.wizard.model
         models = [purchase]
         models.extend(purchase.get_items())
@@ -94,16 +105,10 @@ class TestPurchaseWizard(GUITest):
         receive = self.wizard.receiving_model
         models.append(receive)
         models.extend(receive.get_items())
-
+        for item in receive.get_items():
+            models.extend(list(item.sellable.product_storable.get_stock_items()))
         p = list(purchase.payments)[0]
         p.description = p.description.rsplit(' ', 1)[0]
 
-        receiving_step = self.wizard.get_current_step()
-        receiving_step.invoice_slave.order_number.update("12345")
-        receiving_step.invoice_slave.invoice_number.update(67890)
-
-        self.check_wizard(self.wizard, 'wizard-purchase-invoice-step',
+        self.check_wizard(self.wizard, 'wizard-purchase-done-received',
                           models=models)
-
-        self.assertSensitive(self.wizard, ['next_button'])
-        self.wizard.next_button.clicked()

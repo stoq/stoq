@@ -62,3 +62,72 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
+
+model: PurchaseOrder
+  confirm_date: datetime.today()
+  consigned: False
+  discount_value: <currency $ 0>
+  expected_freight: <currency $ 0>
+  expected_pay_date: datetime.today()
+  expected_receival_date: datetime.today()
+  freight_type: 0
+  notes: u''
+  open_date: datetime.today()
+  quote_deadline: None
+  receival_date: None
+  salesperson_name: u''
+  status: 4
+  surcharge_value: <currency $ 0>
+
+model: PurchaseItem
+  base_cost: <currency $125>
+  cost: <currency $125>
+  expected_receival_date: None
+  quantity: Decimal('1.000')
+  quantity_received: Decimal('1.000')
+  quantity_returned: Decimal('0.000')
+  quantity_sold: Decimal('0.000')
+
+model: Payment
+  base_value: <currency $125>
+  cancel_date: None
+  description: u'1/1 Bill for order'
+  discount: <currency $ 0>
+  due_date: datetime.today()
+  interest: <currency $ 0>
+  open_date: datetime.today()
+  paid_date: None
+  paid_value: None
+  payment_number: None
+  payment_type: 1
+  penalty: <currency $ 0>
+  status: 1
+  value: <currency $125>
+
+model: PaymentGroup
+  status: 0
+
+model: ReceivingOrder
+  confirm_date: None
+  discount_value: <currency $ 0>
+  expense_value: <currency $ 0>
+  freight_total: <currency $ 0>
+  freight_type: 1
+  icms_total: <currency $ 0>
+  invoice_number: 67890
+  invoice_total: <currency $125>
+  ipi_total: <currency $ 0>
+  notes: u''
+  receival_date: datetime.today()
+  secure_value: <currency $ 0>
+  status: 0
+  surcharge_value: <currency $ 0>
+
+model: ReceivingOrderItem
+  cost: <currency $125>
+  quantity: Decimal('1.000')
+
+model: ProductStockItem
+  quantity: Decimal('1.000')
+  stock_cost: <currency $125>
+
