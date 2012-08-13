@@ -4,24 +4,24 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
     GtkVBox(vbox1, expand=True, fill=True): 
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): 
-        GtkVBox(): 
-          GtkTable(fill=True): 
-            GtkHBox(): 
-              ProxyLabel(expand=True, fill=True): 'Item:'
-              GtkEntry(expand=True, fill=True): ''
-              GtkButton(): 
-            ProxyLabel(): 'Quantity:'
-            ProxySpinButton(): '0.000', insensitive
-            ProxyLabel(): '<span weight="bold"></span>'
-            ProxyLabel(): 'Cost:'
-            ProxySpinButton(): '0.00', insensitive
-            GtkButton(): insensitive
-            ProxyLabel(): '<span ></span>'
-            GtkLabel(): 'Minimum:'
-            ProxyLabel(): '<span >0.0</span>'
-            GtkLabel(): 'Stock:'
-            ProxyLabel(): '<span >0.0</span>'
-          GtkEventBox(expand=True, fill=True): 
+        GtkVBox(toplevel): 
+          GtkTable(item_table, fill=True): 
+            GtkHBox(hbox2): 
+              ProxyLabel(item_lbl, expand=True, fill=True): 'Item:'
+              GtkEntry(barcode, expand=True, fill=True): ''
+              GtkButton(product_button): 
+            ProxyLabel(kiwilabel2): 'Quantity:'
+            ProxySpinButton(quantity): '0.000', insensitive
+            ProxyLabel(unit_label): '<span weight="bold"></span>'
+            ProxyLabel(cost_label): 'Cost:'
+            ProxySpinButton(cost): '0.00', insensitive
+            GtkButton(add_sellable_button): insensitive
+            ProxyLabel(sellable_description): '<span ></span>'
+            GtkLabel(label1): 'Minimum:'
+            ProxyLabel(minimum_quantity): '<span >0.0</span>'
+            GtkLabel(label2): 'Stock:'
+            ProxyLabel(stock_quantity): '<span >0.0</span>'
+          GtkEventBox(list_holder, expand=True, fill=True): 
             GtkVBox(): 
               GtkVBox(expand=True, fill=True): 
                 ObjectList(expand=True, fill=True): 
@@ -34,7 +34,7 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
                     column: title='Cost'
                     column: title='Total'
                     row: u'', u'Description', u'', Decimal('1.000'), None, u'', <currency $125>, <currency $125>
-                GtkHBox(fill=True): 
+                GtkHBox(summary, fill=True): 
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
                   GtkLabel(): '<b>$125.00</b>'
               GtkHBox(fill=True): 

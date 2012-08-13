@@ -4,8 +4,8 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
     GtkVBox(vbox1, expand=True, fill=True): 
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): 
-        GtkVBox(): 
-          GtkEventBox(expand=True, fill=True): 
+        GtkVBox(toplevel): 
+          GtkEventBox(place_holder, expand=True, fill=True): 
             GtkVBox(): 
               GtkFrame(fill=True): 
                 GtkTable(): 
