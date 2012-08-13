@@ -303,11 +303,11 @@ class BaseWizard(PluggableWizard, RunnableView):
             show_section(section)
 
         self.buttonbox.set_layout(gtk.BUTTONBOX_END)
-        button = gtk.Button(stock=gtk.STOCK_HELP)
-        button.connect('clicked', on_help__clicked)
-        self.buttonbox.add(button)
-        self.buttonbox.set_child_secondary(button, True)
-        button.show()
+        self.help_button = gtk.Button(stock=gtk.STOCK_HELP)
+        self.help_button.connect('clicked', on_help__clicked)
+        self.buttonbox.add(self.help_button)
+        self.buttonbox.set_child_secondary(self.help_button, True)
+        self.help_button.show()
 
     def cancel(self):
         logger.info('Canceling wizard: %s' % self.__class__.__name__)
