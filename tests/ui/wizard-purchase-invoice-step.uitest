@@ -1,0 +1,129 @@
+wizard: PurchaseWizard
+GtkDialog(PluggableWizard): hidden, title='New Order'
+  GtkVBox(PluggableWizard-vbox): 
+    GtkVBox(vbox1, expand=True, fill=True): 
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): 
+        GtkVBox(toplevel): 
+          GtkEventBox(place_holder, expand=True, fill=True): 
+            GtkVBox(): 
+              GtkTable(fill=True): 
+                GtkLabel(): 'Branch:'
+                ProxyLabel(): '<span >Moda Stoq</span>'
+                ProxyLabel(): 'Products Total ($CURRENCY):'
+                ProxyLabel(): '<span >$125.00</span>'
+                ProxyLabel(): 'Supplier:'
+                ProxyLabel(): '<span >Cia de Roupas S\xc3\xa3o Carlos</span>'
+                ProxyLabel(): 'Freight ($CURRENCY):'
+                ProxyEntry(): '0.00'
+                GtkLabel(): 'Order Number:'
+                ProxyLabel(): '<span >12345</span>'
+                ProxyLabel(): 'IPI ($CURRENCY):'
+                ProxyEntry(): '0.00'
+                GtkLabel(): 'Invoice Number:'
+                GtkHBox(): 
+                  ProxyEntry(fill=True): '67890'
+                  GtkLabel(expand=True, fill=True): 
+                ProxyLabel(): 'ICMS Total ($CURRENCY):'
+                ProxyEntry(): '0.00'
+                GtkLabel(): 'C.F.O.P.:'
+                ProxyComboEntry(): 
+                    item: '1.102 Compra para Comercializacao', selected
+                    item: '5.102 Venda de Mercadoria Adquirida'
+                    item: '5.202 Devolucao'
+                    item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
+                ProxyLabel(): 'Discount ($CURRENCY):'
+                ProxyEntry(): '0.00'
+                GtkLabel(): 'Transporter:'
+                ProxyComboEntry(): 
+                    item: 'Jos\xc3\xa9 Carlos de Carvalho'
+                ProxyLabel(): 'Secure ($CURRENCY):'
+                ProxyEntry(): '0.00'
+                GtkLabel(): 'Responsible:'
+                ProxyLabel(): '<span >Administrator</span>'
+                ProxyLabel(): 'Others Expenditures ($CURRENCY):'
+                ProxyEntry(): '0.00'
+                GtkLabel(): 'Freight:'
+                ProxyComboBox(): 
+                    item: 'FOB - Freight value on a new payment'
+                    item: 'FOB - Freight value on installments', selected
+                    item: 'CIF - Freight value is unknown'
+                    item: 'CIF - Freight value highlighted on invoice'
+                ProxyLabel(): 'Invoice Total ($CURRENCY):'
+                ProxyLabel(): '<span weight="bold">$125.00</span>'
+                GtkHButtonBox(): 
+                  GtkButton(): 'Notes...'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end): 
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): '_Finish'
+          GtkButton(ok_button): 'gtk-ok', hidden
+          GtkButton(help_button): 'gtk-help'
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
+
+model: PurchaseOrder
+  confirm_date: datetime.today()
+  consigned: False
+  discount_value: <currency $ 0>
+  expected_freight: <currency $ 0>
+  expected_pay_date: datetime.today()
+  expected_receival_date: datetime.today()
+  freight_type: 0
+  notes: u''
+  open_date: datetime.today()
+  quote_deadline: None
+  receival_date: None
+  salesperson_name: u''
+  status: 3
+  surcharge_value: <currency $ 0>
+
+model: PurchaseItem
+  base_cost: <currency $125>
+  cost: <currency $125>
+  expected_receival_date: None
+  quantity: Decimal('1.000')
+  quantity_received: Decimal('0.000')
+  quantity_returned: Decimal('0.000')
+  quantity_sold: Decimal('0.000')
+
+model: Payment
+  base_value: <currency $125>
+  cancel_date: None
+  description: u'1/1 Bill for order'
+  discount: <currency $ 0>
+  due_date: datetime.today()
+  interest: <currency $ 0>
+  open_date: datetime.today()
+  paid_date: None
+  paid_value: None
+  payment_number: None
+  payment_type: 1
+  penalty: <currency $ 0>
+  status: 1
+  value: <currency $125>
+
+model: PaymentGroup
+  status: 0
+
+model: ReceivingOrder
+  confirm_date: None
+  discount_value: <currency $ 0>
+  expense_value: <currency $ 0>
+  freight_total: <currency $ 0>
+  freight_type: 1
+  icms_total: <currency $ 0>
+  invoice_number: 67890
+  invoice_total: <currency $125>
+  ipi_total: <currency $ 0>
+  notes: u''
+  receival_date: datetime.today()
+  secure_value: <currency $ 0>
+  status: 0
+  surcharge_value: <currency $ 0>
+
+model: ReceivingOrderItem
+  cost: <currency $125>
+  quantity: Decimal('1.000')
+
