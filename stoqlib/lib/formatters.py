@@ -82,14 +82,14 @@ def format_phone_number(phone_number):
     elif digits == 9:
         return '(%s) %s-%s' % (phone[:2], phone[2:5], phone[5:9])
     elif digits == 10:
-        # 0[358]00 XXX-XXX
-        if phone[1] in '358':
+        # 0[3589]00 XXX-XXX
+        if phone[:4] in ['0300', '0500', '0800', '0900']:
             return '%s %s-%s' % (phone[:4], phone[4:7],
                                  phone[7:])
         return '(%s) %s-%s' % (phone[:2], phone[2:6], phone[6:10])
     elif digits == 11:
-        # 0[358]00 XXX-XXXX
-        if phone[1] in '358':
+        # 0[3589]00 XXX-XXX
+        if phone[:4] in ['0300', '0500', '0800', '0900']:
             return '%s %s-%s' % (phone[:4], phone[4:7],
                                  phone[7:])
         if phone[:1] == '0':
