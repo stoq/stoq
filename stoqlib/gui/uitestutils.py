@@ -63,8 +63,8 @@ GtkWindow(PaymentEditor):
         self._items = {}
         self.output = ''
 
-    def _add_namespace(self, namespace, prefix=''):
-        for attr, value in namespace.items():
+    def _add_namespace(self, obj, prefix=''):
+        for attr, value in obj.__dict__.items():
             try:
                 self._items[hash(value)] = prefix + attr
             except TypeError:
@@ -194,34 +194,34 @@ GtkWindow(PaymentEditor):
             self._dump_widget([widget.get_child()], indent)
 
     def dump_editor(self, editor):
-        self._add_namespace(editor.__dict__)
-        self._add_namespace(editor.main_dialog.__dict__, 'main_dialog.')
+        self._add_namespace(editor)
+        self._add_namespace(editor.main_dialog, 'main_dialog.')
 
         self.output += 'editor: %s\n' % (editor.__class__.__name__, )
         self._dump_widget(editor.main_dialog.get_toplevel())
 
     def dump_wizard(self, wizard):
-        self._add_namespace(wizard.__dict__)
+        self._add_namespace(wizard)
         step = wizard.get_current_step()
         if step:
-            self._add_namespace(step.__dict__)
+            self._add_namespace(step)
         self.output += 'wizard: %s\n' % (wizard.__class__.__name__, )
         self._dump_widget(wizard.get_toplevel())
 
     def dump_dialog(self, dialog):
-        self._add_namespace(dialog.__dict__)
+        self._add_namespace(dialog)
 
         self.output += 'dialog: %s\n' % (dialog.__class__.__name__, )
         self._dump_widget(dialog.get_toplevel())
 
     def dump_slave(self, slave):
-        self._add_namespace(slave.__dict__)
+        self._add_namespace(slave)
 
         self.output += 'slave: %s\n' % (slave.__class__.__name__, )
         self._dump_widget(slave.get_toplevel())
 
     def dump_app(self, app):
-        self._add_namespace(app.__dict__)
+        self._add_namespace(app)
 
         self.output += 'app: %s\n' % (app.__class__.__name__, )
         self._dump_widget(app.get_toplevel())
