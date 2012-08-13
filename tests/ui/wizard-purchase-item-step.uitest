@@ -53,5 +53,5 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
-          GtkButton(): 'gtk-help'
+          GtkButton(help_button): 'gtk-help'
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
