@@ -3,13 +3,13 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Delivery"'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave CreateDeliveryEditor is attached
         GtkVBox(toplevel): 
           GtkTable(table2, fill=True): 
             ProxyLabel(label2): 'Delivery cost ($CURRENCY):'
             ProxySpinButton(price): ''
-            GtkEventBox(forms): 
-              GtkAlignment(): 
+            GtkEventBox(forms): slave BasicForm is attached
+              GtkAlignment(toplevel): 
                 GtkTable(): 
                   ProxyLabel(client_lbl): 'Client:'
                   ProxyComboEntry(client): mandatory

@@ -3,15 +3,15 @@ GtkDialog(main_dialog.toplevel): hidden, title='Delivery editor'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave DeliveryEditor is attached
         GtkAlignment(alignment1): 
           GtkVBox(vbox2): 
             GtkHBox(hbox2): 
               GtkLabel(client_lbl): 'Client:'
               ProxyLabel(client_str, expand=True, fill=True): '<span ></span>'
             GtkHSeparator(hseparator2, fill=True): 
-            GtkEventBox(forms): 
-              GtkAlignment(): 
+            GtkEventBox(forms): slave BasicForm is attached
+              GtkAlignment(toplevel): 
                 GtkTable(): 
                   ProxyLabel(transporter_lbl): 'Transporter:'
                   ProxyComboEntry(transporter): 

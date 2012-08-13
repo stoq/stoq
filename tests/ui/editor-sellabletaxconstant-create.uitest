@@ -4,8 +4,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Taxes and Tax rates'
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
       GtkEventBox(main_dialog.main, expand=True, fill=True): 
-        GtkEventBox(): 
-          GtkAlignment(): 
+        GtkEventBox(): slave BasicForm is attached
+          GtkAlignment(toplevel): 
             GtkTable(): 
               ProxyLabel(description_lbl): 'Name:'
               ProxyEntry(description): '', mandatory

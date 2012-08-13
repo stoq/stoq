@@ -3,7 +3,7 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
   GtkVBox(PluggableWizard-vbox): 
     GtkVBox(vbox1, expand=True, fill=True): 
       ProxyLabel(header_lbl, fill=True): hidden
-      GtkEventBox(slave_area, expand=True, fill=True): 
+      GtkEventBox(slave_area, expand=True, fill=True): slave PurchaseItemStep is attached
         GtkVBox(step.toplevel): 
           GtkTable(step.item_table, fill=True): 
             GtkHBox(step.hbox2): 
@@ -21,10 +21,10 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
             ProxyLabel(step.minimum_quantity): '<span >0.0</span>'
             GtkLabel(step.label2): 'Stock:'
             ProxyLabel(step.stock_quantity): '<span >0.0</span>'
-          GtkEventBox(step.list_holder, expand=True, fill=True): 
-            GtkVBox(): 
-              GtkVBox(expand=True, fill=True): 
-                ObjectList(expand=True, fill=True): 
+          GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
+            GtkVBox(toplevel): 
+              GtkVBox(list_vbox, expand=True, fill=True): 
+                ObjectList(klist, expand=True, fill=True): 
                     column: title='Code'
                     column: title='Description'
                     column: title='Category', hidden
@@ -37,15 +37,15 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
                 GtkHBox(step.summary, fill=True): 
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
                   GtkLabel(): '<b>$125.00</b>'
-              GtkHBox(fill=True): 
-                GtkAlignment(fill=True): 
-                  GtkHButtonBox(): 
-                    GtkButton(): hidden
-                    GtkButton(): insensitive
-                    GtkButton(): insensitive
-                GtkHBox(expand=True, fill=True): hidden
-                  GtkLabel(expand=True, fill=True): 
-                  GtkButton(fill=True): 'Details'
+              GtkHBox(hbox1, fill=True): 
+                GtkAlignment(alignment1, fill=True): 
+                  GtkHButtonBox(hbuttonbox1): 
+                    GtkButton(add_button): hidden
+                    GtkButton(delete_button): insensitive
+                    GtkButton(edit_button): insensitive
+                GtkHBox(message_hbox, expand=True, fill=True): hidden
+                  GtkLabel(message_label, expand=True, fill=True): 
+                  GtkButton(message_details_button, fill=True): 'Details'
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end): 
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 

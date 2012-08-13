@@ -4,8 +4,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
       GtkEventBox(main_dialog.main, expand=True, fill=True): 
-        GtkEventBox(): 
-          GtkAlignment(): 
+        GtkEventBox(): slave BasicForm is attached
+          GtkAlignment(toplevel): 
             GtkTable(): 
               ProxyLabel(branch_lbl): 'Branch:'
               ProxyComboEntry(branch): insensitive

@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Card"'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave CardPaymentMethodEditor is attached
         GtkVBox(toplevel): 
           GtkHBox(hbox1, fill=True): 
             ProxyLabel(kiwilabel1, expand=True, fill=True): 'Default Account:'

@@ -3,16 +3,16 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Cash Advance'
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave CashAdvanceEditor is attached
         GtkVBox(toplevel): 
-          GtkEventBox(base_cash_holder, fill=True): 
-            GtkTable(): 
-              GtkLabel(): 'Date:'
-              ProxyLabel(): '<span >YYYY-MM-DD</span>'
-              GtkLabel(): 'Balance:'
-              ProxyLabel(): '<span >$ 0.00</span>'
-              ProxyLabel(): 'Cash Amount ($CURRENCY):'
-              ProxyEntry(): '0.00', mandatory
+          GtkEventBox(base_cash_holder, fill=True): slave RemoveCashSlave is attached
+            GtkTable(table1): 
+              GtkLabel(date_lbl): 'Date:'
+              ProxyLabel(date): '<span >YYYY-MM-DD</span>'
+              GtkLabel(label5): 'Balance:'
+              ProxyLabel(balance): '<span >$ 0.00</span>'
+              ProxyLabel(cash_amount_lbl): 'Cash Amount ($CURRENCY):'
+              ProxyEntry(value): '0.00', mandatory
           GtkTable(table, expand=True, fill=True): 
             GtkLabel(employee_lbl): 'Credit for Employee:'
             GtkLabel(label): 

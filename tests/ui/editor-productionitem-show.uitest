@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Production Item
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave ProductionItemEditor is attached
         GtkTable(table1): 
           GtkLabel(label1): 'Production:'
           ProxyLabel(order_number): '12345'

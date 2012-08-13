@@ -3,7 +3,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Receiving Item"
   GtkVBox(main_dialog._main_vbox): 
     GtkVBox(main_dialog.vbox, expand=True, fill=True): 
       GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave ReceivingItemEditor is attached
         GtkVBox(toplevel): 
           GtkTable(table1): 
             GtkLabel(label3): 'Receiving Order:'
