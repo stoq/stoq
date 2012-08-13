@@ -33,7 +33,7 @@ def _diff(orig, new, short, verbose):
     if not lines:
         return ''
 
-    return ''.join('%s: %s' % (short, line) for line in lines)
+    return ''.join('%s %s' % (short, line) for line in lines)
 
 
 def diff_files(orig, new, verbose=False):
