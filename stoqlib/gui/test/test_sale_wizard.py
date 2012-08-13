@@ -22,16 +22,35 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import gtk
+import mock
+
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 
 
 class TestConfirmSaleWizard(GUITest):
-    def testStepSalesPerson(self):
+    def testCreate(self):
         sale = self.create_sale()
         self.add_product(sale)
         wizard = ConfirmSaleWizard(self.trans, sale)
-        self.check_wizard(wizard, 'wizard-sale-step-sales-person')
+
+        self.assertSensitive(wizard, ['next_button'])
+        wizard.next_button.clicked()
+
+        models = [sale, sale.group]
+        models.extend(sale.payments)
+
+        p = list(sale.payments)[0]
+        p.description = p.description.rsplit(' ', 1)[0]
+
+        for item in sale.get_items():
+            models.extend(list(item.sellable.product_storable.get_stock_items()))
+
+        self.check_wizard(wizard, 'wizard-sale-done-sold',
+                          models=models)
+
+        self.assertEquals(sale.payments[0].method.method_name, 'money')
 
     def testStepPaymentMethodCheck(self):
         sale = self.create_sale()
@@ -44,7 +63,14 @@ class TestConfirmSaleWizard(GUITest):
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-check',
                           ignores=['%05d' % (sale.id, )])
 
-    def testStepPaymentMethodBill(self):
+        self.assertSensitive(wizard, ['next_button'])
+        wizard.next_button.clicked()
+
+        self.assertEquals(sale.payments[0].method.method_name, 'check')
+
+    # FIXME: add a test with a configured bank account
+    @mock.patch('stoqlib.reporting.boleto.warning')
+    def testStepPaymentMethodBill(self, warning):
         sale = self.create_sale()
         self.add_product(sale)
         wizard = ConfirmSaleWizard(self.trans, sale)
@@ -54,6 +80,17 @@ class TestConfirmSaleWizard(GUITest):
         wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-bill',
                           ignores=['%05d' % (sale.id, )])
+
+        self.assertSensitive(wizard, ['next_button'])
+
+        wizard.next_button.clicked()
+        self.assertEquals(sale.payments[0].method.method_name, 'bill')
+
+        warning.assert_called_once_with(
+            'Could not print Bill Report', description=(
+            "Account 'Imbalance' must be a bank account.\n"
+            "You need to configure the bill payment method in "
+            "the admin application and try again"))
 
     def testStepPaymentMethodCard(self):
         sale = self.create_sale()
@@ -66,6 +103,12 @@ class TestConfirmSaleWizard(GUITest):
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-card',
                           ignores=['%05d' % (sale.id, )])
 
+        self.assertSensitive(wizard, ['next_button'])
+
+        # FIXME: verify card payments
+        #wizard.next_button.clicked()
+        #self.assertEquals(sale.payments[0].method.method_name, 'card')
+
     def testStepPaymentMethodDeposit(self):
         sale = self.create_sale()
         self.add_product(sale)
@@ -77,7 +120,15 @@ class TestConfirmSaleWizard(GUITest):
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-deposit',
                           ignores=['%05d' % (sale.id, )])
 
-    def testStepPaymentMethodStoreCredit(self):
+        self.assertSensitive(wizard, ['next_button'])
+        wizard.next_button.clicked()
+
+        self.assertEquals(sale.payments[0].method.method_name, 'deposit')
+
+    @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
+    def testStepPaymentMethodStoreCredit(self, yesno):
+        yesno.return_value = False
+
         sale = self.create_sale()
         self.add_product(sale)
         sale.client = self.create_client()
@@ -89,3 +140,12 @@ class TestConfirmSaleWizard(GUITest):
         wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-store-credit',
                           ignores=['%05d' % (sale.id, )])
+
+        self.assertSensitive(wizard, ['next_button'])
+        wizard.next_button.clicked()
+
+        self.assertEquals(sale.payments[0].method.method_name, 'store_credit')
+
+        yesno.assert_called_once_with(
+            'Do you want to print the booklets for this sale?',
+            gtk.RESPONSE_YES, 'Print booklets', "Don't print")
