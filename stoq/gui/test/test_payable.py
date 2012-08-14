@@ -46,6 +46,7 @@ class TestPayable(GUITest):
         self.options.debug = False
         self.launcher = Launcher(self.options, self.shell, conn=self.trans)
         self.launcher.app.in_ui_test = True
+        self.launcher.add_info_bar = lambda *x: None
         app = App(PayableApp, None, self.options, self.shell, True,
                   self.launcher, app_name)
         app.show()
@@ -54,4 +55,5 @@ class TestPayable(GUITest):
     def testInitial(self):
         api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app('payable')
+        self.launcher.statusbar.push(0, 'Test Statusbar test')
         self.check_dialog(app.main_window, 'app-payable')
