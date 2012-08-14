@@ -170,6 +170,7 @@ class App(object):
         self.embedded = embedded
         self.launcher = launcher
         self.name = name
+        self.in_ui_test = False
 
         # The self should be passed to main_window to let it access
         # shutdown and do_sync methods.
@@ -1036,8 +1037,9 @@ class AppWindow(GladeDelegate):
         self.uimanager.ensure_update()
         self.current_app = app
         self.current_widget = app_window
-        while gtk.events_pending():
-            gtk.main_iteration()
+        if not self.app.in_ui_test:
+            while gtk.events_pending():
+                gtk.main_iteration()
         app_window.show()
         app.toplevel = self.get_toplevel()
         app.setup_focus()
