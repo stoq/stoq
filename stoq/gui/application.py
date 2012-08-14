@@ -208,12 +208,14 @@ class AppWindow(GladeDelegate):
     size = ()
 
     def __init__(self, app, keyactions=None, conn=None):
+        if conn is None:
+            conn = api.get_connection()
         self._action_groups = {}
         self._osx_app = None
         self._sensitive_group = dict()
         self._tool_items = []
         self.app = app
-        self.conn = conn or api.get_connection()
+        self.conn = conn
         self.current_app = None
         self.current_app_widget = None
         self.uimanager = None

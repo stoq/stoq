@@ -51,7 +51,6 @@ class TestPayable(GUITest):
         return app
 
     def testInitial(self):
-        raise SkipTest("Breaks other tests")
         api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app('payable')
-        self.check_wizard(app.main_window, 'app-payable')
+        self.check_dialog(app.main_window, 'app-payable')
