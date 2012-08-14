@@ -118,7 +118,6 @@ def _provide_current_station(station_name=None, branch_name=None):
     station = BranchStation.get_station(trans, branch, station_name)
     if not station:
         station = BranchStation.create(trans, branch, station_name)
-        trans.commit(close=True)
 
     assert station
     assert station.is_active
@@ -217,6 +216,7 @@ def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
     :param station_name:
     :param quick:
     """
+
     # XXX: Rewrite docstring
     try:
         empty = provide_database_settings(
