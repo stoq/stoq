@@ -53,7 +53,7 @@ class TestPayable(GUITest):
         return app
 
     def testInitial(self):
-        raise SkipTest("running this test on anthem via xvfb doesn't work") 
+        raise SkipTest("running this test on anthem via xvfb doesn't work")
         api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app('payable')
         self.launcher.statusbar.push(0, 'Test Statusbar test')
