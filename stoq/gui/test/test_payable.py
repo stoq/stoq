@@ -45,6 +45,7 @@ class TestPayable(GUITest):
         self.options = mock.Mock(spec=['debug'])
         self.options.debug = False
         self.launcher = Launcher(self.options, self.shell, conn=self.trans)
+        self.launcher.app.in_ui_test = True
         app = App(PayableApp, None, self.options, self.shell, True,
                   self.launcher, app_name)
         app.show()
