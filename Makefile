@@ -40,6 +40,10 @@ pylint:
 check:
 	LC_ALL=C LANG=C LANGUAGE=C trial stoq stoqlib
 
+coverage:
+	LC_ALL=C LANG=C LANGUAGE=C trial --coverage stoq stoqlib
+	tools/showcoverage
+
 include async.mk
 
 .PHONY: TAGS
