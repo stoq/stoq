@@ -203,8 +203,8 @@ def provide_utilities(station_name, branch_name=None):
     _provide_domain_slave_mapper()
 
 
-def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
-                        password="", station_name=None, quick=False):
+def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
+                    password="", station_name=None, quick=False):
 
     """
     Test.
