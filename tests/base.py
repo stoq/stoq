@@ -25,7 +25,7 @@
 
 import os
 
-from stoqlib.database.testsuite import bootstrap_testsuite
+from stoqlib.database.testsuite import bootstrap_suite
 
 hostname = os.environ.get('STOQLIB_TEST_HOSTNAME')
 dbname = os.environ.get('STOQLIB_TEST_DBNAME')
@@ -38,7 +38,7 @@ config = os.path.join(os.path.dirname(__file__), 'config.py')
 if os.path.exists(config):
     execfile(config, globals(), locals())
 
-bootstrap_testsuite(address=hostname,
+bootstrap_suite(address=hostname,
                     dbname=dbname,
                     port=port,
                     username=username,
