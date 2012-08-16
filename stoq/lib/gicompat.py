@@ -1,10 +1,9 @@
 import sys
 
-import gi
-from gi.repository import GObject
-
 
 def install_enums(mod, dest=None):
+    from gi.repository import GObject
+
     if dest is None:
         dest = mod
     modname = dest.__name__.rsplit('.', 1)[1].upper()
@@ -50,6 +49,7 @@ _unset = object()
 
 
 def enable_gtk(version='2.0'):
+    import gi
     # set the default encoding like PyGTK
     reload(sys)
     sys.setdefaultencoding('utf-8')
@@ -247,12 +247,14 @@ def enable_gtk(version='2.0'):
 
 
 def enable_vte():
+    import gi
     gi.require_version('Vte', '0.0')
     from gi.repository import Vte
     sys.modules['vte'] = Vte
 
 
 def enable_poppler():
+    import gi
     gi.require_version('Poppler', '0.18')
     from gi.repository import Poppler
     sys.modules['poppler'] = Poppler
@@ -260,6 +262,7 @@ def enable_poppler():
 
 
 def enable_webkit(version='1.0'):
+    import gi
     gi.require_version('WebKit', version)
     from gi.repository import WebKit
     sys.modules['webkit'] = WebKit
@@ -267,6 +270,7 @@ def enable_webkit(version='1.0'):
 
 
 def enable_gudev():
+    import gi
     gi.require_version('GUdev', '1.0')
     from gi.repository import GUdev
     sys.modules['gudev'] = GUdev
