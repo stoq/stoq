@@ -316,14 +316,15 @@ class AppWindow(GladeDelegate):
         if not stoq.stable and not api.is_developer_mode():
             self._display_unstable_version_message()
 
-        # Initial fullscreen state for launcher must be handled
-        # separate since the window is not realized when the state loading
-        # is run in hide_app() the first time.
-        window = self.get_toplevel()
-        window.realize()
-        self.ToggleFullscreen.set_active(
-            self._app_settings.get('show-fullscreen', False))
-        self.ToggleFullscreen.notify('active')
+        if not self.app.in_ui_test:
+            # Initial fullscreen state for launcher must be handled
+            # separate since the window is not realized when the state loading
+            # is run in hide_app() the first time.
+            window = self.get_toplevel()
+            window.realize()
+            self.ToggleFullscreen.set_active(
+                self._app_settings.get('show-fullscreen', False))
+            self.ToggleFullscreen.notify('active')
 
     def _create_shared_actions(self):
         if self.app.name != 'launcher':
