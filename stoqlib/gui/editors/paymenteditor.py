@@ -448,11 +448,11 @@ def get_dialog_for_payment(payment):
     raise TypeError(payment)
 
 
-def test():
+def test():  # pragma nocover
     creator = api.prepare_test()
     retval = run_dialog(InPaymentEditor, None, creator.trans, None)
     api.finish_transaction(creator.trans, retval)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     test()
