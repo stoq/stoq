@@ -19,6 +19,8 @@
 -- Author(s): Stoq Team <stoq-devel@async.com.br>
 --
 
+-- FIXME: Adicionar NOT NULL em todas as colunas branch_id
+
 --
 -- Tables
 --
@@ -623,16 +625,18 @@ CREATE TABLE purchase_item (
 CREATE TABLE quote_group (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    branch_id bigint REFERENCES branch(id)
 );
 
 CREATE TABLE quotation (
-     id serial NOT NULL PRIMARY KEY,
-     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-     purchase_id bigint REFERENCES purchase_order(id),
-     group_id bigint REFERENCES quote_group(id)
+    purchase_id bigint REFERENCES purchase_order(id),
+    branch_id bigint REFERENCES branch(id),
+    group_id bigint REFERENCES quote_group(id)
 );
 
 CREATE TABLE branch_station (
@@ -927,6 +931,7 @@ CREATE TABLE payment (
     method_id bigint REFERENCES payment_method(id),
     group_id bigint REFERENCES payment_group(id),
     till_id bigint REFERENCES till(id),
+    branch_id bigint REFERENCES branch(id),
     category_id bigint REFERENCES payment_category(id)
 );
 
@@ -1146,6 +1151,8 @@ CREATE TABLE till_entry (
     description text,
     value numeric(20, 2),
     till_id bigint NOT NULL REFERENCES till(id),
+    branch_id bigint REFERENCES branch(id),
+    -- FIXME: Should be a reference to payment(id)
     payment_id integer
 );
 

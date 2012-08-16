@@ -249,7 +249,8 @@ class PurchaseApp(SearchableAppWindow):
         self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('#'),
+        return [SearchColumn('identifier', title=_('#'),
+                             long_title=_('Order number'),
                              data_type=int, justify=gtk.JUSTIFY_RIGHT,
                              width=60),
                 Column('status_str', title=_(u'Status'), data_type=str,
@@ -437,7 +438,7 @@ class PurchaseApp(SearchableAppWindow):
 
         if trans.committed:
             self.refresh()
-            self.select_result(PurchaseOrderView.get(trans.retval.id))
+            self.select_result(PurchaseOrderView.get(trans.retval.id, self.conn))
 
     #
     # Kiwi Callbacks

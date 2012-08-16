@@ -71,6 +71,10 @@ class ProductionOrder(Domain):
                 ORDER_QA: _(u'Quality Assurance'),
                 }
 
+    #: A numeric identifier for this object. This value should be used instead of
+    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: the user, in dialogs, lists, reports and such.
+    identifier = IntCol()
     status = IntCol(default=ORDER_OPENED)
     open_date = DateTimeCol(default=datetime.datetime.now)
     expected_start_date = DateTimeCol(default=None)
@@ -197,7 +201,7 @@ class ProductionOrder(Domain):
         return ProductionOrder.statuses[self.status]
 
     def get_order_number(self):
-        return u'%04d' % self.id
+        return u'%04d' % self.identifier
 
     def get_branch_name(self):
         return self.branch.person.name

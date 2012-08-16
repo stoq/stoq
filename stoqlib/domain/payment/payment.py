@@ -145,6 +145,11 @@ class Payment(Domain):
     #: type of payment :obj:`.TYPE_IN` or :obj:`.TYPE_OUT`
     payment_type = IntCol()
 
+    #: A numeric identifier for this object. This value should be used instead of
+    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: the user, in dialogs, lists, reports and such.
+    identifier = IntCol()
+
     #: status, see :class:`Payment` for more information.
     status = IntCol(default=STATUS_PREVIEW)
 
@@ -506,7 +511,7 @@ class Payment(Domain):
         return ""
 
     def get_payment_number_str(self):
-        return u'%05d' % self.id
+        return u'%05d' % self.identifier
 
     def is_inpayment(self):
         """Find out if a payment is :obj:`incoming <.TYPE_IN>`

@@ -79,9 +79,7 @@ class PurchasedItemsSearch(SearchEditor):
         self.set_edit_button_sensitive(selected)
 
     def get_columns(self):
-        return [SearchColumn('product_id', title=_('# '), data_type=int,
-                             sorted=True, format='%03d'),
-                SearchColumn('description', title=_('Description'), data_type=str,
+        return [SearchColumn('description', title=_('Description'), data_type=str,
                              expand=True),
                 SearchColumn('purchased', title=_('Purchased'), data_type=Decimal,
                              width=100),

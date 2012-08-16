@@ -153,7 +153,7 @@ class ProductionApp(SearchableAppWindow):
         self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [SearchColumn('id', title=_(u'# '), sorted=True, data_type=int,
+        return [SearchColumn('identifier', title=_(u'# '), sorted=True, data_type=int,
                              format='%04d', width=80, order=gtk.SORT_DESCENDING),
                 Column('status_string', title=_(u'Status'), data_type=str,
                         visible=False),

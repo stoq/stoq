@@ -60,6 +60,7 @@ class BasePaymentView(Viewable):
     columns = dict(
         # Payment
         id=Payment.q.id,
+        identifier=Payment.q.identifier,
         description=Payment.q.description,
         due_date=Payment.q.due_date,
         status=Payment.q.status,

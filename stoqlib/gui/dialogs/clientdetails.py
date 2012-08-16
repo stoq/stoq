@@ -87,7 +87,7 @@ class ClientDetailsDialog(BaseEditor):
         self.sales_vbox.pack_start(sales_summary_label, False)
 
     def _get_sale_columns(self):
-        return [Column("id", title=_("#"),
+        return [Column("identifier", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
                        format='%04d', width=90, sorted=True),
                 Column("invoice_number", title=_("Invoice #"),
@@ -125,7 +125,7 @@ class ClientDetailsDialog(BaseEditor):
                        width=150, data_type=datetime.date)]
 
     def _get_payments_columns(self):
-        return [Column("id", title=_("#"),
+        return [Column("identifier", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
                        format='%04d', width=50),
                 Column("method_name", title=_("Type"),

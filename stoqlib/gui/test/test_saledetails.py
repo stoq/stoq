@@ -46,7 +46,7 @@ class TestSaleDetails(GUITest):
 
         # new sale
         sale = self.create_sale()
-        sale.id = 123
+        sale.identifier = 123
         sale.client = client
         sale.open_date = today
         sale.discount_value = Decimal('15')
@@ -60,7 +60,7 @@ class TestSaleDetails(GUITest):
 
         # Payments
         payment = self.add_payments(sale, date=today)
-        payment.id = 999
+        payment.identifier = 999
         payment.group.payer = client.person
 
         # SaleDetailsDialog needs a SaleView model

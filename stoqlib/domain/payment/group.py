@@ -220,9 +220,9 @@ class PaymentGroup(Domain):
         if self.sale:
             return _(u'sale %s') % self.sale.get_order_number_str()
         elif self.purchase:
-            return _(u'order %s') % self.purchase.id
+            return _(u'order %s') % self.purchase.identifier
         elif self._renegotiation:
-            return _(u'renegotiation %s') % self._renegotiation.id
+            return _(u'renegotiation %s') % self._renegotiation.identifier
         # FIXME: Add a proper description
         else:
             return ''

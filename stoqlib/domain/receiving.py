@@ -146,6 +146,11 @@ class ReceivingOrder(Domain):
     CIF_FREIGHTS = (FREIGHT_CIF_UNKNOWN,
                     FREIGHT_CIF_INVOICE)
 
+    #: A numeric identifier for this object. This value should be used instead of
+    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: the user, in dialogs, lists, reports and such.
+    identifier = IntCol()
+
     status = IntCol(default=STATUS_PENDING)
     receival_date = DateTimeCol(default=datetime.datetime.now)
     confirm_date = DateTimeCol(default=None)
@@ -255,7 +260,7 @@ class ReceivingOrder(Domain):
 
     @property
     def receiving_number(self):
-        return self.id
+        return self.identifier
 
     @property
     def group(self):
@@ -278,7 +283,7 @@ class ReceivingOrder(Domain):
         return self.transporter.get_description()
 
     def get_receiving_number_str(self):
-        return u"%04d" % self.id
+        return u"%04d" % self.identifier
 
     def get_branch_name(self):
         return self.branch.get_description()

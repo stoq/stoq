@@ -214,8 +214,8 @@ class TestPurchaseOrder(DomainTest):
 class TestQuoteGroup(DomainTest):
 
     def testCancel(self):
-        quote = QuoteGroup(connection=self.trans)
         order = self.create_purchase_order()
+        quote = QuoteGroup(connection=self.trans, branch=order.branch)
         order.status = PurchaseOrder.ORDER_QUOTING
         quote.add_item(order)
 
@@ -224,8 +224,8 @@ class TestQuoteGroup(DomainTest):
         self.assertEqual(order.status, PurchaseOrder.ORDER_CANCELLED)
 
     def testClose(self):
-        quote = QuoteGroup(connection=self.trans)
         order = self.create_purchase_order()
+        quote = QuoteGroup(connection=self.trans, branch=order.branch)
         order.status = PurchaseOrder.ORDER_QUOTING
         quote.add_item(order)
 

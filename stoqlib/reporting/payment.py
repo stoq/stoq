@@ -144,7 +144,7 @@ class PaymentFlowHistoryReport(BaseStoqReport):
 
     def _get_payment_columns(self):
         return [
-            OTC(_(u'# '), lambda obj: '%04d' % obj.id, width=45),
+            OTC(_(u'# '), lambda obj: '%04d' % obj.identifier, width=45),
             OTC(_(u'Status'), lambda obj: '%s' % obj.get_status_str(),
                 width=75),
             OTC(_(u'Description'), lambda obj: '%s' % obj.description,

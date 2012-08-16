@@ -228,23 +228,29 @@ class TestReport(DomainTest):
         sale.add_sellable(sellable, price=100)
         method = PaymentMethod.get_by_name(self.trans, 'bill')
         payment = method.create_inpayment(sale.group, sale.branch, Decimal(100))
-        TillEntry(value=25, id=20,
+        TillEntry(value=25,
+                  identifier=20,
                   description="Cash In",
                   payment=None,
                   till=till,
+                  branch=till.station.branch,
                   date=datetime.date(2007, 1, 1),
                   connection=self.trans)
-        TillEntry(value=-5, id=21,
+        TillEntry(value=-5,
+                  identifier=21,
                   description="Cash Out",
                   payment=None,
                   till=till,
+                  branch=till.station.branch,
                   date=datetime.date(2007, 1, 1),
                   connection=self.trans)
 
-        TillEntry(value=100, id=22,
+        TillEntry(value=100,
+                  identifier=22,
                   description=sellable.get_description(),
                   payment=payment,
                   till=till,
+                  branch=till.station.branch,
                   date=datetime.date(2007, 1, 1),
                   connection=self.trans)
         till_entry = list(TillEntry.selectBy(connection=self.trans, till=till))
@@ -289,11 +295,12 @@ class TestReport(DomainTest):
         sale.set_paid()
 
         salesperson_name = salesperson.person.name
-        commissions = CommissionView.select(connection=self.trans)
-        self.checkPDF(SalesPersonReport, list(commissions), salesperson_name,
-                      date=datetime.date(2007, 1, 1),
-                      obj_ids={commissions[0].id: 1,
-                               commissions[1].id: 139})
+        commissions = list(CommissionView.select(connection=self.trans))
+        commissions[0].identifier = 1
+        commissions[1].identifier = 139
+
+        self.checkPDF(SalesPersonReport, commissions, salesperson_name,
+                      date=datetime.date(2007, 1, 1))
 
     def testSaleOrderReport(self):
         product = self.create_product(price=100)

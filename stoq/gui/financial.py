@@ -245,7 +245,7 @@ class TransactionPage(object):
 
     def _get_payment_columns(self):
         return [Column('due_date', title=_("Due date"), data_type=datetime.date, sorted=True),
-                Column('id', title=_("Code"), data_type=unicode),
+                Column('identifier', title=_("Code"), data_type=int),
                 Column('description', title=_("Description"), data_type=unicode, expand=True),
                 Column('value', title=_("Value"),
                        data_type=currency)]

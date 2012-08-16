@@ -40,7 +40,7 @@ class TestPurchaseDetailsDialog(GUITest):
 
         # New purchase
         order = self.create_purchase_order()
-        order.id = 123
+        order.identifier = 123
         order.supplier = supplier
         order.open_date = date
 
@@ -49,7 +49,7 @@ class TestPurchaseDetailsDialog(GUITest):
 
         # Payments
         payment = self.add_payments(order, date=date)
-        payment.id = 999
+        payment.identifier = 999
         payment.group.payer = supplier.person
 
         dialog = PurchaseDetailsDialog(self.trans, order)

@@ -185,7 +185,8 @@ class TillApp(SearchableAppWindow):
                         columns=['status'])
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('#'), width=60,
+        return [SearchColumn('identifier', title=_('#'), width=60,
+                             long_title=_('Order number'),
                              data_type=int, format='%05d', sorted=True),
                 Column('status_name', title=_(u'Status'), data_type=str,
                         visible=False),

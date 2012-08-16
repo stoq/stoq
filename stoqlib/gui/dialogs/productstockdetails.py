@@ -132,11 +132,11 @@ class ProductStockHistoryDialog(BaseEditor):
         self.decrease_vbox.pack_start(decrease_summary_label, False)
 
     def _get_receiving_columns(self):
-        return [Column("order_id", title=_("#"), data_type=int, sorted=True,
+        return [Column("order_identifier", title=_("#"), data_type=int, sorted=True,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column("receival_date", title=_("Date"),
                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                Column("purchase_id", title=_("Purchase Order"), data_type=str,
+                Column("purchase_identifier", title=_("Purchase Order"), data_type=str,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column("supplier_name", title=_("Supplier"), expand=True,
                        data_type=str),
@@ -147,7 +147,7 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column("unit_description", title=_("Unit"), data_type=str)]
 
     def _get_sale_columns(self):
-        return [Column("sale_id", title=_("#"),
+        return [Column("sale_identifier", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
                        sorted=True),
                 Column("sale_date",
@@ -162,7 +162,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        ]
 
     def _get_transfer_columns(self):
-        return [Column("transfer_order.id", title=_("#"),
+        return [Column("transfer_order.identifier", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
                        sorted=True),
                 Column("transfer_order.open_date",
@@ -178,7 +178,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=Decimal)]
 
     def _get_loan_columns(self):
-        return [Column("loan_id", title=_("Loan"), data_type=int,
+        return [Column("loan_identifier", title=_("Loan"), data_type=int,
                         justify=gtk.JUSTIFY_RIGHT, sorted=True),
                 Column("opened", title=_(u"Opened"),
                         data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
@@ -193,7 +193,7 @@ class ProductStockHistoryDialog(BaseEditor):
                         data_type=Decimal)]
 
     def _get_decrease_columns(self):
-        return [Column("decrease_id", title=_("#"), data_type=int,
+        return [Column("decrease_identifier", title=_("#"), data_type=int,
                         justify=gtk.JUSTIFY_RIGHT, sorted=True),
                 Column("date", title=_("Date"), data_type=datetime.date,
                         justify=gtk.JUSTIFY_RIGHT),
