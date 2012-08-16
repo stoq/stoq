@@ -170,7 +170,6 @@ class App(object):
         self.embedded = embedded
         self.launcher = launcher
         self.name = name
-        self.in_ui_test = False
 
         # The self should be passed to main_window to let it access
         # shutdown and do_sync methods.

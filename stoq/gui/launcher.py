@@ -48,6 +48,7 @@ class LauncherApp(object):
         self.main_window = launcher
         self.options = options
         self.name = 'launcher'
+        self.in_ui_test = False
 
 
 class Launcher(AppWindow):
