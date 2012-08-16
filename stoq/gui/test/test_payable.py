@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import gtk
 from kiwi.component import provide_utility
 import mock
 
@@ -34,6 +35,7 @@ from stoq.gui.payable import PayableApp
 from stoq.lib.applist import ApplicationDescriptions
 
 provide_utility(IApplicationDescriptions, ApplicationDescriptions(), replace=True)
+gtk.set_interactive(False)
 
 
 class TestPayable(GUITest):
