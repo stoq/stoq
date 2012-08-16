@@ -58,3 +58,14 @@ class CreatePaymentStatus(enum):
 class NFeDanfeOrientation(enum):
     (PORTRAIT,
      LANDSCAPE, ) = range(2)
+
+
+class LatePaymentPolicy(enum):
+    """Policy for clients with late payments
+
+    This enum is used by the :class:`parameter
+    <stoqlib.lib.parameters.ParameterDetails>` LATE_PAYMENTS_POLICY.
+    """
+    (ALLOW_SALES,
+     DISALLOW_STORE_CREDIT,
+     DISALLOW_SALES) = range(3)

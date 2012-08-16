@@ -75,8 +75,10 @@ from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.profile import UserProfile
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.enums import LatePaymentPolicy
+from stoqlib.exceptions import DatabaseInconsistency, SellError
 from stoqlib.lib.formatters import raw_phone_number, format_phone_number
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -780,6 +782,45 @@ class Client(Domain):
              connection=self.get_connection()).sum(InPaymentView.q.value) or currency('0.0')
 
         return currency(self.credit_limit - debit)
+
+    def can_purchase(self, method, total_amount):
+        """This method checks the following to see if the client can purchase:
+            - The parameter LATE_PAYMENTS_POLICY,
+            - The payment method to be used,
+            - The total amount of the payment,
+            - The :obj:`.remaining_store_credit` of this client, when necessary.
+
+        :param method: an :class:`payment method
+          <stoqlib.domain.payment.method.PaymentMethod>`
+        :param total_amount: the value of the payment that should be created
+          for this client.
+        :returns: True if user is allowed. Raises an SellError if user is not
+          allowed to purchase.
+        """
+        from stoqlib.domain.payment.views import InPaymentView
+
+        if (method.method_name == 'store_credit' and
+            self.remaining_store_credit < total_amount):
+            raise SellError(_(u'Client %s does not have enough credit '
+                                'left to purchase.') % self.person.name)
+
+        # Client does not have late payments
+        if not InPaymentView.has_late_payments(self.get_connection(),
+                                               self.person):
+            return True
+
+        param = sysparam(self.get_connection()).LATE_PAYMENTS_POLICY
+        if param == LatePaymentPolicy.ALLOW_SALES:
+            return True
+        elif param == LatePaymentPolicy.DISALLOW_SALES:
+            raise SellError(_(u'It is not possible to sell for clients with '
+                               'late payments.'))
+        elif (param == LatePaymentPolicy.DISALLOW_STORE_CREDIT
+              and method.method_name == 'store_credit'):
+            raise SellError(_(u'It is not possible to sell with store credit '
+                               'for clients with late payments.'))
+
+        return True
 
 
 class Supplier(Domain):

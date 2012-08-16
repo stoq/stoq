@@ -36,6 +36,7 @@ from stoqdrivers.enum import TaxType
 from stoqlib.database.orm import ORMObjectNotFound
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.domain.parameter import ParameterData
+from stoqlib.enums import LatePaymentPolicy
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.l10n.l10n import get_l10n_field
 from stoqlib.lib.barcode import BarcodeInfo
@@ -392,6 +393,18 @@ _details = [
         _('Default C.F.O.P. (Fiscal Code of Operations) used when returning '
           'sale orders '),
         'fiscal.CfopData'),
+
+    ParameterDetails(
+        'LATE_PAYMENTS_POLICY',
+        _('Sales'),
+        _('Policy for customers with late payments.'),
+        _('How should Stoq behave when creating a new sale for a client with '
+          'late payments'),
+        int, initial=int(LatePaymentPolicy.ALLOW_SALES),
+        options={int(LatePaymentPolicy.ALLOW_SALES): _('Allow sales'),
+                 int(LatePaymentPolicy.DISALLOW_STORE_CREDIT):
+                    _('Allow sales except with store credit'),
+                 int(LatePaymentPolicy.DISALLOW_SALES): _('Disallow sales')}),
 
     ParameterDetails(
         'DEFAULT_RECEIVING_CFOP',

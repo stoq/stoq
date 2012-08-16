@@ -45,6 +45,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.person import Client, Supplier, Branch
 from stoqlib.domain.sale import SaleView
+from stoqlib.exceptions import SellError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
@@ -334,6 +335,22 @@ class InPaymentEditor(PaymentEditor):
     _person_label = _("Payer:")
     help_section = 'account-receivable'
     category_type = PaymentCategory.TYPE_RECEIVABLE
+
+    def on_person__validate(self, widget, value):
+        if not value:
+            return
+
+        try:
+            #FIXME: model is not being updated correctly
+            value.can_purchase(self.method.read(), self.value.read())
+        except SellError as e:
+            return ValidationError(e)
+
+    def on_method__changed(self, method):
+        self.person.validate(force=True)
+
+    def on_value__changed(self, value):
+        self.person.validate(force=True)
 
 
 class OutPaymentEditor(PaymentEditor):

@@ -42,7 +42,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.sale import Sale
 from stoqlib.enums import CreatePaymentStatus
-from stoqlib.exceptions import StoqlibError
+from stoqlib.exceptions import SellError, StoqlibError
 from stoqlib.lib.message import warning, yesno, marker
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -218,13 +218,9 @@ class BaseMethodSelectionStep(object):
             return None
         elif selected_method.method_name == 'store_credit':
             client = self.model.client
-            credit = client.remaining_store_credit
             total = self._get_total_amount()
 
-            if credit < total:
-                warning(_(u"Client %s does not have enough credit left.") % \
-                        client.person.name)
-                return self
+            assert client.can_purchase(selected_method, total)
 
             step_class = PaymentMethodStep
         elif selected_method.method_name == 'card':
@@ -500,6 +496,23 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self._update_widgets()
         self.discount_slave.update_max_discount()
 
+    def on_payment_method_changed(self, slave, method_name):
+        self.client.validate(force=True)
+        self._update_next_step(method_name)
+
+    def on_client__validate(self, widget, value):
+        if not value:
+            return
+
+        if not hasattr(self, 'pm_slave'):
+            return
+
+        method = self.pm_slave.get_selected_method()
+        try:
+            value.can_purchase(method, self.model.get_total_sale_amount())
+        except SellError as e:
+            return ValidationError(e)
+
     def on_create_client__clicked(self, button):
         self._create_client()
 
@@ -516,6 +529,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def on_discount_slave_changed(self, slave):
         self._update_totals()
+        self.client.validate()
 
     def on_notes_button__clicked(self, *args):
         run_dialog(NoteEditor, self.wizard, self.conn, self.model, 'notes',
