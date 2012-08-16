@@ -24,7 +24,6 @@
 ##
 """Dialog for listing client categories"""
 
-from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import PercentageField
 from kiwi.ui.forms import TextField

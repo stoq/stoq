@@ -77,7 +77,6 @@ from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.profile import UserProfile
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.formatters import raw_phone_number, format_phone_number
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
