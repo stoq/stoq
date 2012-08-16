@@ -11,3 +11,7 @@ MANIFEST
 _build
 _static
 _templates
+.coverage
+coverage.xml
+.noseids
+nosetests.xml

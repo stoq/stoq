@@ -30,7 +30,7 @@ from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.exampledata import ExampleCreator
 
 try:
-    from twisted.trial import unittest
+    import unittest
     unittest # pyflakes
 except:
     import unittest
@@ -48,9 +48,3 @@ class DomainTest(unittest.TestCase, ExampleCreator):
     def tearDown(self):
         self.trans.rollback()
         self.clear()
-
-
-# Ensure that the database settings and etc are available for all
-# the domain tests
-import tests.base
-tests.base # pyflakes

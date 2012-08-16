@@ -43,7 +43,7 @@ class StoqCommandHandler:
             config.load_default()
         if create:
             config.create()
-
+        self._db_settings = config.get_settings()
         setup(config, options, register_station=register_station,
               check_schema=check_schema, load_plugins=load_plugins)
         return config
@@ -344,13 +344,12 @@ class StoqCommandHandler:
 
     def cmd_dump(self, options, output):
         """Create a database dump"""
-        from stoqlib.database.database import dump_database
         self._read_config(options)
 
         if output == '-':
             output = None
-        dump_database(output, gzip=options.gzip,
-                      format=options.format)
+        self._db_settings.dump_database(output, gzip=options.gzip,
+                                        format=options.format)
 
     def opt_dump(self, parser, group):
         group.add_option('-z', '--gzip',
@@ -364,11 +363,9 @@ class StoqCommandHandler:
 
     def cmd_restore(self, options, schema):
         """Restore a database dump"""
-        from stoqlib.database.database import execute_sql
-
         self._read_config(options, register_station=False,
                           check_schema=False)
-        execute_sql(schema)
+        self._db_settings.execute_sql(schema)
 
     def cmd_enable_plugin(self, options, plugin_name):
         """Enable a plugin on Stoq"""
@@ -396,10 +393,9 @@ class StoqCommandHandler:
 
     def cmd_shell(self, options):
         """Drop to a shell for executing SQL queries"""
-        from stoqlib.database.database import start_shell
         self._read_config(options, register_station=False,
                           check_schema=False)
-        start_shell(options.command)
+        self._db_settings.start_shell(options.command)
 
     def opt_shell(self, parser, group):
         group.add_option('-c', '--command',

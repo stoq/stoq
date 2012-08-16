@@ -31,7 +31,6 @@ import sys
 
 from kiwi.component import provide_utility
 from kiwi.log import Logger
-from stoqlib.database.database import check_version
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.orm import orm_enable_debugging, orm_startup
 from stoqlib.database.runtime import (get_connection,
@@ -124,7 +123,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         except DatabaseError, e:
             error(e.short, str(e.msg))
 
-        check_version(conn)
+        config.get_settings().check_version(conn)
 
         if check_schema:
             migration = StoqlibSchemaMigration()

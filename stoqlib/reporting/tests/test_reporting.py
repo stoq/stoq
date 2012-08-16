@@ -29,7 +29,7 @@ import os
 import tempfile
 import sys
 
-from twisted.trial.unittest import SkipTest
+from nose.exc import SkipTest
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.runtime import get_current_branch

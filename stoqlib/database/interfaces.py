@@ -29,22 +29,6 @@ from zope.interface import Attribute
 from zope.interface.interface import Interface
 
 
-class IDatabaseSettings(Interface):
-    """This is an interface to describe all important database settings
-    """
-
-    rdbms = Attribute('name identifying the database type')
-    dbname = Attribute('name identifying the database name')
-    address = Attribute('database address')
-    port = Attribute('database port')
-
-    def get_connection_uri():
-        """
-        Gets a ORM connection URI.
-        :returns: a ORM connection URI.
-        """
-
-
 class IConnection(Interface):
     """This is an interface that describes a database connection
     """

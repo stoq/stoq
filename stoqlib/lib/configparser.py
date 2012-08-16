@@ -29,7 +29,6 @@ import gettext
 import os
 
 from kiwi.component import provide_utility
-from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.exceptions import (FilePermissionError,
@@ -252,7 +251,6 @@ def register_config(config):
     _config = config
 
     try:
-        provide_utility(IDatabaseSettings, config.get_settings(), replace=True)
         provide_utility(IStoqConfig, config, replace=True)
     except NoConfigurationError:
         msg = _(u"Error: Stoq configuration is not avaiable. Check that the "

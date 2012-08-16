@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from twisted.trial.unittest import SkipTest
+from nose.exc import SkipTest
 
 from stoqlib.database.orm import (ORMTestError,
                                   orm_get_columns, orm_get_random,

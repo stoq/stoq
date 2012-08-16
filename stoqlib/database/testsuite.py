@@ -37,14 +37,14 @@ from kiwi.log import Logger
 
 from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.interfaces import (
-    ICurrentBranch, ICurrentBranchStation, ICurrentUser, IDatabaseSettings)
+    ICurrentBranch, ICurrentBranchStation, ICurrentUser)
 from stoqlib.database.orm import AND
 from stoqlib.database.runtime import new_transaction, get_connection
-from stoqlib.database.settings import DatabaseSettings
+from stoqlib.database.settings import db_settings
 from stoqlib.domain.person import Branch, LoginUser, Person
 from stoqlib.domain.station import BranchStation
 from stoqlib.importers.stoqlibexamples import create
-from stoqlib.lib.interfaces import (IApplicationDescriptions, ISystemNotifier)
+from stoqlib.lib.interfaces import IApplicationDescriptions, ISystemNotifier
 from stoqlib.lib.message import DefaultSystemNotifier
 from stoqlib.lib.osutils import get_username
 from stoqlib.lib.parameters import ParameterAccess
@@ -74,20 +74,13 @@ class TestsuiteNotifier(DefaultSystemNotifier):
 
 
 def _provide_database_settings():
-    username = os.environ.get('STOQLIB_TEST_USERNAME',
-                              get_username())
-    hostname = os.environ.get('PGHOST', 'localhost')
-    port = int(os.environ.get('PGPORT', '5432'))
-    dbname = os.environ.get('STOQLIB_TEST_DBNAME',
-                             '%s_test' % username)
-    password = ''
-
-    db_settings = DatabaseSettings(address=hostname,
-                                   port=port,
-                                   dbname=dbname,
-                                   username=username,
-                                   password=password)
-    provide_utility(IDatabaseSettings, db_settings)
+    db_settings.username = os.environ.get('STOQLIB_TEST_USERNAME',
+                                          get_username())
+    db_settings.hostname = os.environ.get('PGHOST', 'localhost')
+    db_settings.port = int(os.environ.get('PGPORT', '5432'))
+    db_settings.dbname = os.environ.get('STOQLIB_TEST_DBNAME',
+                                        '%s_test' % db_settings.username)
+    db_settings.password = ''
 
 
 def _provide_current_user():
@@ -168,10 +161,11 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
     _provide_app_info()
 
-    db_settings = DatabaseSettings(
-        address=address, port=port, dbname=dbname, username=username,
-        password=password)
-    provide_utility(IDatabaseSettings, db_settings)
+    db_settings.address = address
+    db_settings.port = port
+    db_settings.dbname = dbname
+    db_settings.username = username
+    db_settings.password = password
 
     rv = False
     if create:

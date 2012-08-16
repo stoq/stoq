@@ -24,7 +24,7 @@
 
 import os
 
-from twisted.trial import unittest
+import unittest
 
 import stoqlib
 from stoqlib.lib.process import Process

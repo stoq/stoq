@@ -36,9 +36,8 @@ import traceback
 from kiwi.environ import environ
 from kiwi.log import Logger
 
-from stoqlib.database.database import (execute_sql, dump_database,
-                                       restore_database, test_connection)
 from stoqlib.database.runtime import new_transaction, get_connection
+from stoqlib.database.settings import db_settings
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
@@ -102,7 +101,7 @@ class Patch(object):
 
         sql = self._migration.generate_sql_for_patch(self)
         open(temporary, 'a').write(sql)
-        retcode = execute_sql(temporary)
+        retcode = db_settings.execute_sql(temporary)
         if retcode != 0:
             error('Failed to apply %s, psql returned error code: %d' % (
                 os.path.basename(self.filename), retcode))
@@ -184,7 +183,7 @@ class SchemaMigration(object):
                 patches_to_apply.append(patch)
 
             functions = environ.get_resource_filename('stoq', 'sql', 'functions.sql')
-            if execute_sql(functions) != 0:
+            if db_settings.execute_sql(functions) != 0:
                 error('Failed to create functions')
 
             log.info("Applying %d patches" % (len(patches_to_apply), ))
@@ -323,7 +322,7 @@ class StoqlibSchemaMigration(SchemaMigration):
         log.info("Upgrading database (plugins=%r, backup=%r)" % (
             plugins, backup))
 
-        sucess = test_connection()
+        sucess = db_settings.test_connection()
         if not sucess:
             info(_(u'Could not connect to the database using command line '
                     'tool! Aborting.'))
@@ -336,7 +335,7 @@ class StoqlibSchemaMigration(SchemaMigration):
             temporary = tempfile.mktemp(prefix="stoq-dump-")
             log.info("Making a backup to %s" % (temporary, ))
             create_log.info("BACKUP-START:")
-            success = dump_database(temporary)
+            success = db_settings.dump_database(temporary)
             if not success:
                 info(_(u'Could not create backup! Aborting.'))
                 info(_(u'Please contact stoq team to inform this problem.\n'))
@@ -358,7 +357,7 @@ class StoqlibSchemaMigration(SchemaMigration):
                 if backup:
                     log.info("Restoring backup %s" % (temporary, ))
                     create_log.info("RESTORE-START:")
-                    new_name = restore_database(temporary)
+                    new_name = db_settings.restore_database(temporary)
                     create_log.info("RESTORE-DONE:%s" % (new_name, ))
                 return False
         finally:

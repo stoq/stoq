@@ -28,7 +28,7 @@ import locale
 from dateutil import relativedelta
 from dateutil.relativedelta import SU, MO, SA, relativedelta as delta
 
-from twisted.trial import unittest
+import unittest
 
 from stoqlib.gui.base.search import (ThisWeek, LastWeek, NextWeek, ThisMonth,
                                      LastMonth, NextMonth)

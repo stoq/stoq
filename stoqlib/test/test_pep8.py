@@ -29,7 +29,7 @@ Useful to early find syntax errors and other common problems.
 import pep8
 
 from stoqlib.lib.unittestutils import SourceTest
-from twisted.trial import unittest
+import unittest
 
 ERRORS = [
     'E111', # indentation is not a multiple of four

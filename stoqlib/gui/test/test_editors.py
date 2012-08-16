@@ -27,7 +27,7 @@ import gc
 
 from kiwi.component import provide_utility
 from kiwi.python import Settable
-from twisted.trial.unittest import SkipTest
+from nose.exc import SkipTest
 
 from stoqlib.api import api
 from stoqlib.lib.introspection import get_all_classes

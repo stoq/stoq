@@ -31,10 +31,11 @@ from kiwi.component import get_utility, provide_utility, implements
 from kiwi.log import Logger
 
 from stoqlib.database.interfaces import (
-    IDatabaseSettings, IConnection, ITransaction, ICurrentBranch,
+    IConnection, ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
 from stoqlib.database.orm import ORMObject, Transaction
 from stoqlib.database.orm import sqlIdentifier, const
+from stoqlib.database.settings import db_settings
 from stoqlib.exceptions import LoginError, StoqlibError
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -205,20 +206,12 @@ def get_connection():
     Notice that connections are considered read-only inside Stoqlib
     applications. Only transactions can modify objects and should be
     created using new_transaction().
-    This function depends on the IDatabaseSettings utility which must be
-    provided before it can be used.
 
     :returns: a database connection
     """
     conn = get_utility(IConnection, None)
     if conn is None:
-        try:
-            settings = get_utility(IDatabaseSettings)
-        except NotImplementedError:
-            raise StoqlibError(
-                'You need to provide a IDatabaseSettings utility before '
-                'calling get_connection')
-        conn = settings.get_connection()
+        conn = db_settings.get_connection()
         assert conn is not None
 
         # Stoq applications always use transactions explicitly
@@ -275,12 +268,11 @@ def _register_branch(conn, station_name):
 
     trans = new_transaction()
     if not sysparam(trans).DEMO_MODE:
-        settings = get_utility(IDatabaseSettings)
         if yesno(_("The computer '%s' is not registered to the Stoq "
                    "server at %s.\n\n"
                    "Do you want to register it "
                    "(requires administrator access) ?") %
-                 (station_name, settings.address),
+                 (station_name, db_settings.address),
                  gtk.RESPONSE_NO, _("Quit"), _("Register computer")):
             trans.close()
             raise SystemExit

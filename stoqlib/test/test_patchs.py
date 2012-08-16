@@ -26,7 +26,7 @@
 import os
 
 import stoqlib
-from twisted.trial import unittest
+import unittest
 from stoqlib.lib.osutils import list_recursively
 
 _ROOT = os.path.dirname(os.path.dirname(stoqlib.__file__))
