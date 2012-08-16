@@ -284,7 +284,7 @@ class Delivery(Domain):
     #: the date which the delivery received by the :class:`client <stoqlib.domain.person.Client>`
     receive_date = DateTimeCol(default=None)
 
-    #: the delivery tracking code, a transporter specific identifer that
+    #: the delivery tracking code, a transporter specific identifier that
     #: can be used to look up the status of the delivery
     tracking_code = UnicodeCol(default='')
 
@@ -472,6 +472,11 @@ class Sale(Domain, Adaptable):
                 STATUS_RETURNED: _(u'Returned'),
                 STATUS_RENEGOTIATED: _(u'Renegotiated'),
                 STATUS_QUOTE: _(u'Quoting')}
+
+    #: A numeric identifier for this object. This value should be used instead of
+    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: the user, in dialogs, lists, reports and such.
+    identifier = IntCol()
 
     #: status of the sale
     status = IntCol(default=STATUS_INITIAL)
@@ -944,7 +949,8 @@ class Sale(Domain, Adaptable):
         return u'\n'.join(details)
 
     def get_order_number_str(self):
-        return u'%05d' % self.id
+        # FIXME: Add branch acronym name in front
+        return u'%05d' % self.identifier
 
     def get_salesperson_name(self):
         """
@@ -1032,7 +1038,7 @@ class Sale(Domain, Adaptable):
 
     @property
     def order_number(self):
-        return self.id
+        return self.identifier
 
     @property
     def products(self):
@@ -1281,7 +1287,7 @@ class SaleAdaptToPaymentTransaction(object):
         if till_difference > 0 and ecf_last_sale:
             # The sale was not entirely paid, so we have to payback the
             # till, because the sale amount have already been added in there
-            desc = _(u'Debit on Till: Sale %d Returned') % self.sale.id
+            desc = _(u'Debit on Till: Sale %d Returned') % self.sale.identifier
             till.add_debit_entry(till_difference, desc)
         # Update paid value now, penalty stays on till
         paid_value -= penalty_value
@@ -1292,7 +1298,7 @@ class SaleAdaptToPaymentTransaction(object):
         payment = money.create_outpayment(
             self.sale.group, self.sale.branch, paid_value,
             description=_('%s Money Returned for Sale %d') % (
-            '1/1', self.sale.id), till=till)
+            '1/1', self.sale.identifier), till=till)
         payment.set_pending()
         payment.pay()
         self._restore_commission(payment)
@@ -1444,6 +1450,7 @@ class SaleView(Viewable):
 
     columns = dict(
         id=Sale.q.id,
+        identifier=Sale.q.identifier,
         invoice_number=Sale.q.invoice_number,
         coupon_id=Sale.q.coupon_id,
         open_date=Sale.q.open_date,
@@ -1529,7 +1536,7 @@ class SaleView(Viewable):
         return unicode(self.salesperson_name or "")
 
     def get_order_number_str(self):
-        return u"%05d" % self.id
+        return u"%05d" % self.identifier
 
     def get_open_date_as_string(self):
         return self.open_date.strftime("%x")

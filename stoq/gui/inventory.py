@@ -140,7 +140,7 @@ class InventoryApp(SearchableAppWindow):
                         columns=["branchID"])
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('Code'), sorted=True,
+        return [SearchColumn('identifier', title=_('Code'), sorted=True,
                        order=gtk.SORT_DESCENDING,
                        data_type=int, format='%03d', width=80),
                 SearchColumn('status_str', title=_('Status'),

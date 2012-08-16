@@ -72,7 +72,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertTrue(wizard.next_button.props.sensitive)
         wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-check',
-                          ignores=['%05d' % (sale.id, )])
+                          ignores=[sale.get_order_number_str()])
 
         self.assertSensitive(wizard, ['next_button'])
         wizard.next_button.clicked()
@@ -90,7 +90,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertTrue(wizard.next_button.props.sensitive)
         wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-bill',
-                          ignores=['%05d' % (sale.id, )])
+                          ignores=[sale.get_order_number_str()])
 
         self.assertSensitive(wizard, ['next_button'])
 
@@ -112,7 +112,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertTrue(wizard.next_button.props.sensitive)
         wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-card',
-                          ignores=['%05d' % (sale.id, )])
+                          ignores=[sale.get_order_number_str()])
 
         self.assertSensitive(wizard, ['next_button'])
 
@@ -129,7 +129,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertTrue(wizard.next_button.props.sensitive)
         wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-deposit',
-                          ignores=['%05d' % (sale.id, )])
+                          ignores=[sale.get_order_number_str()])
 
         self.assertSensitive(wizard, ['next_button'])
         wizard.next_button.clicked()
@@ -150,7 +150,7 @@ class TestConfirmSaleWizard(GUITest):
         self.assertTrue(wizard.next_button.props.sensitive)
         wizard.next_button.clicked()
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-store-credit',
-                          ignores=['%05d' % (sale.id, )])
+                          ignores=[sale.get_order_number_str()])
 
     def testSaleToClientWithoutCredit(self):
         sale = self.create_sale()

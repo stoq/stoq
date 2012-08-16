@@ -363,7 +363,7 @@ class AccountTransaction(Domain):
                    account=account or payment.method.destination_account,
                    value=value,
                    description=payment.description,
-                   code=str(payment.id),
+                   code=str(payment.identifier),
                    date=payment.paid_date,
                    connection=trans,
                    payment=payment)

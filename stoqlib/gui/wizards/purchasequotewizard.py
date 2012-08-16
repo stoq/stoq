@@ -346,9 +346,9 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         self.remove_button.set_sensitive(False)
 
     def _get_columns(self):
-        return [Column('id', title=_('Quote'), sorted=True,
+        return [Column('identifier', title=_('Quote'), sorted=True,
                         data_type=int, format="%04d"),
-                Column('group_id', title=_('Group'), data_type=int,
+                Column('group_identifier', title=_('Group'), data_type=int,
                         format="%04d"),
                 Column('supplier_name', title=_('Supplier'), data_type=str,
                         width=300),

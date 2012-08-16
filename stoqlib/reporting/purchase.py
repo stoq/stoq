@@ -245,7 +245,7 @@ class PurchaseOrderReport(BaseStoqReport):
         self._add_payment_table(payments)
 
     def _add_payment_table(self, payments):
-        payment_columns = [OTC(_("#"), lambda obj: obj.id, width=40,
+        payment_columns = [OTC(_("#"), lambda obj: obj.identifier, width=40,
                                align=RIGHT),
                            OTC(_("Method"), lambda obj:
                                obj.method.get_description(), width=70),

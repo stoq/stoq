@@ -361,8 +361,8 @@ class TestSellableCategoryView(DomainTest):
 
 class TestQuotationView(DomainTest):
     def testGroupQuotationPurchase(self):
-        quote = QuoteGroup(connection=self.trans)
         order = self.create_purchase_order()
+        quote = QuoteGroup(connection=self.trans, branch=order.branch)
         order.status = PurchaseOrder.ORDER_QUOTING
         quote.add_item(order)
 

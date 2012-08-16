@@ -76,6 +76,11 @@ class TransferOrder(Domain):
 
     status = IntCol(default=STATUS_PENDING)
 
+    #: A numeric identifier for this object. This value should be used instead of
+    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: the user, in dialogs, lists, reports and such.
+    identifier = IntCol()
+
     #: The date the order was created
     open_date = DateTimeCol(default=datetime.datetime.now)
 

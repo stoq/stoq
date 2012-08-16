@@ -104,6 +104,11 @@ class StockDecrease(Domain):
     statuses = {STATUS_INITIAL: _(u'Opened'),
                 STATUS_CONFIRMED: _(u'Confirmed')}
 
+    #: A numeric identifier for this object. This value should be used instead of
+    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: the user, in dialogs, lists, reports and such.
+    identifier = IntCol()
+
     status = IntCol(default=STATUS_INITIAL)
     reason = UnicodeCol(default='')
     notes = UnicodeCol(default='')
@@ -165,7 +170,7 @@ class StockDecrease(Domain):
     #
 
     def get_order_number_str(self):
-        return u'%05d' % self.id
+        return u'%05d' % self.identifier
 
     def get_branch_name(self):
         return self.branch.get_description()
@@ -201,4 +206,4 @@ class StockDecrease(Domain):
 
     @property
     def order_number(self):
-        return self.id
+        return self.identifier

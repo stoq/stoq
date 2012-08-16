@@ -403,6 +403,7 @@ class ExampleCreator(object):
         extra_args = dict()
         if id_:
             extra_args['id'] = id_
+            extra_args['identifier'] = id_
 
         return Sale(coupon_id=0,
                     open_date=const.NOW(),
@@ -731,7 +732,7 @@ class ExampleCreator(object):
     def create_station(self):
         from stoqlib.domain.station import BranchStation
         return BranchStation(name="station",
-                             branch=None,
+                             branch=get_current_branch(self.trans),
                              connection=self.trans)
 
     def create_transfer_order(self, source_branch=None, dest_branch=None):

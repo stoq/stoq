@@ -51,7 +51,7 @@ class TestPurchaseWizard(GUITest):
     def _check_payment_step(self, uitest=''):
         if uitest:
             self.check_wizard(self.wizard, uitest,
-                              ignores=[str(self.wizard.model.id)])
+                              ignores=[str(self.wizard.model.identifier)])
         self.assertSensitive(self.wizard, ['next_button'])
         self.wizard.next_button.clicked()
 

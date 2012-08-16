@@ -41,7 +41,7 @@ class TestSupplierDetails(GUITest):
 
         # Nova venda
         order = self.create_purchase_order()
-        order.id = 123
+        order.identifier = 123
         order.supplier = supplier
         order.open_date = date
 
@@ -50,7 +50,7 @@ class TestSupplierDetails(GUITest):
 
         # Payments
         payment = self.add_payments(order, date=date)
-        payment.id = 999
+        payment.identifier = 999
         payment.group.payer = supplier.person
         payment.status = Payment.STATUS_PAID
 

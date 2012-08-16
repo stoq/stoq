@@ -234,7 +234,7 @@ class ProductWithStockView(ProductFullStockView):
 class _PurchaseItemTotal(Viewable):
     columns = dict(
         id=PurchaseItem.q.sellableID,
-        purchase_id=PurchaseOrder.q.id,
+        purchase_identifier=PurchaseOrder.q.identifier,
         to_receive=const.SUM(PurchaseItem.q.quantity -
                              PurchaseItem.q.quantity_received)
     )
@@ -479,7 +479,8 @@ class QuotationView(Viewable):
         id=Quotation.q.id,
         purchase_id=Quotation.q.purchaseID,
         group_id=Quotation.q.groupID,
-        group_code=Quotation.q.groupID,
+        identifier=Quotation.q.identifier,
+        group_identifier=QuoteGroup.q.identifier,
         open_date=PurchaseOrder.q.open_date,
         deadline=PurchaseOrder.q.quote_deadline,
         supplier_name=Person.q.name,
@@ -575,6 +576,7 @@ class StockDecreaseItemsView(Viewable):
         quantity=StockDecreaseItem.q.quantity,
         sellable=StockDecreaseItem.q.sellableID,
         decrease_id=StockDecrease.q.id,
+        decrease_identifier=StockDecrease.q.identifier,
         date=StockDecrease.q.confirm_date,
         removed_by_name=Person.q.name,
         unit_description=SellableUnit.q.description,
@@ -632,12 +634,13 @@ class PurchasedItemAndStockView(Viewable):
     columns = dict(
         id=PurchaseItem.q.id,
         product_id=Product.q.id,
+        code=Sellable.q.code,
         description=Sellable.q.description,
         purchased=PurchaseItem.q.quantity,
         received=PurchaseItem.q.quantity_received,
         stocked=const.SUM(ProductStockItem.q.quantity),
         expected_receival_date=PurchaseItem.q.expected_receival_date,
-        order_id=PurchaseOrder.q.id,
+        order_identifier=PurchaseOrder.q.identifier,
         purchased_date=PurchaseOrder.q.open_date,
         branch=PurchaseOrder.q.branchID,
     )
@@ -681,7 +684,7 @@ class PurchaseReceivingView(Viewable):
     :cvar receival_date: the date when the receiving order was closed
     :cvar invoice_number: the number of the order that was received
     :cvar invoice_total: the total value of the received order
-    :cvar purchase_id: the id of the received order
+    :cvar purchase_identifier: the identifier of the received order
     :cvar branch_id: the id branch where the order was received
     :cvar purchase_responsible_name: the one who have confirmed the purchase
     :cvar responsible_name: the one who has received the order
@@ -697,7 +700,7 @@ class PurchaseReceivingView(Viewable):
         receival_date=ReceivingOrder.q.receival_date,
         invoice_number=ReceivingOrder.q.invoice_number,
         invoice_total=ReceivingOrder.q.invoice_total,
-        purchase_id=PurchaseOrder.q.id,
+        purchase_identifier=PurchaseOrder.q.identifier,
         branch_id=ReceivingOrder.q.branchID,
         purchase_responsible_name=_PurchaseResponsible.q.name,
         responsible_name=_Responsible.q.name,
@@ -734,6 +737,7 @@ class SaleItemsView(Viewable):
         code=Sellable.q.code,
         description=Sellable.q.description,
         sale_id=SaleItem.q.saleID,
+        sale_identifier=Sale.q.identifier,
         sale_date=Sale.q.open_date,
         client_name=Person.q.name,
         quantity=SaleItem.q.quantity,
@@ -765,8 +769,8 @@ class ReceivingItemView(Viewable):
     already received and the information related to that process.
 
     :cvar id: the id of the receiving item
-    :cvar order_id: the id of the receiving order
-    :cvar purchase_id: the id of the purchase order
+    :cvar order_identifier: the identifier of the receiving order
+    :cvar purchase_identifier: the identifier of the purchase order
     :cvar purchase_item_id: the id of the purchase item
     :cvar sellable_id: the id of the sellable related to the received item
     :cvar invoice_number: the invoice number of the receiving order
@@ -778,8 +782,8 @@ class ReceivingItemView(Viewable):
     """
     columns = dict(
         id=ReceivingOrderItem.q.id,
-        order_id=ReceivingOrder.q.id,
-        purchase_id=ReceivingOrder.q.purchaseID,
+        order_identifier=ReceivingOrder.q.identifier,
+        purchase_identifier=PurchaseOrder.q.identifier,
         purchase_item_id=ReceivingOrderItem.q.purchase_itemID,
         sellable_id=ReceivingOrderItem.q.sellableID,
         invoice_number=ReceivingOrder.q.invoice_number,
@@ -793,6 +797,8 @@ class ReceivingItemView(Viewable):
     joins = [
         LEFTJOINOn(None, ReceivingOrder,
                    ReceivingOrderItem.q.receiving_orderID == ReceivingOrder.q.id),
+        LEFTJOINOn(None, PurchaseOrder,
+                   ReceivingOrder.q.purchaseID == PurchaseOrder.q.id),
         LEFTJOINOn(None, Sellable,
                    ReceivingOrderItem.q.sellableID == Sellable.q.id),
         LEFTJOINOn(None, SellableUnit,
@@ -806,7 +812,7 @@ class ReceivingItemView(Viewable):
 
 class ProductionItemView(Viewable):
     columns = dict(id=ProductionItem.q.id,
-                   order_id=ProductionOrder.q.id,
+                   order_identifier=ProductionOrder.q.identifier,
                    order_status=ProductionOrder.q.status,
                    quantity=ProductionItem.q.quantity,
                    produced=ProductionItem.q.produced,
@@ -874,7 +880,7 @@ class LoanView(Viewable):
 
 class LoanItemView(Viewable):
     columns = dict(id=LoanItem.q.id,
-                   loan_id=Loan.q.id,
+                   loan_identifier=Loan.q.identifier,
                    loan_status=Loan.q.status,
                    opened=Loan.q.open_date,
                    closed=Loan.q.close_date,

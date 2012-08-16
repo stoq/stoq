@@ -259,7 +259,7 @@ GtkWindow(PaymentEditor):
         self.output += 'model: %s\n' % (ns[model], )
         info = get_cls_info(type(model))
         for col in info.columns:
-            if col.name == 'id':
+            if col.name == 'id' or col.name == 'identifier':
                 continue
             if col.name.endswith('_id'):
                 value = getattr(model, col.name[:-3], None)

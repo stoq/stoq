@@ -174,9 +174,8 @@ class ReceivableApp(BaseAccountWindow):
         self.create_main_filter()
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('#'), long_title=_("Payment ID"),
-                             width=60, data_type=int,
-                             format='%04d'),
+        return [SearchColumn('identifier', title=_('#'), long_title=_("Payment ID"),
+                             width=60, data_type=int, format='%04d'),
                 SearchColumn('description', title=_('Description'),
                              data_type=str, ellipsize=pango.ELLIPSIZE_END,
                              expand=True, pack_end=True),

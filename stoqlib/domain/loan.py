@@ -178,6 +178,11 @@ class Loan(Domain):
     statuses = {STATUS_OPEN: _(u'Opened'),
                 STATUS_CLOSED: _(u'Closed')}
 
+    #: A numeric identifier for this object. This value should be used instead of
+    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: the user, in dialogs, lists, reports and such.
+    identifier = IntCol()
+
     #: status of the loan
     status = IntCol(default=STATUS_OPEN)
 
@@ -287,7 +292,7 @@ class Loan(Domain):
         return self.responsible.person.name
 
     def get_order_number_str(self):
-        return u'%05d' % self.id
+        return u'%05d' % self.identifier
 
     #
     # Public API

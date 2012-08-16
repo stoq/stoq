@@ -329,6 +329,7 @@ class Till(Domain):
                          description=description,
                          payment=payment,
                          till=self,
+                         branch=self.station.branch,
                          connection=self.get_connection())
 
 
@@ -349,3 +350,4 @@ class TillEntry(Domain):
     value = PriceCol()
     till = ForeignKey("Till", notNull=True)
     payment = ForeignKey("Payment", default=None)
+    branch = ForeignKey('Branch')

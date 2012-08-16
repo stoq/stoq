@@ -57,6 +57,7 @@ class _TemporaryOutPayment(object):
 
     def __init__(self, payment):
         self.id = payment.id
+        self.identifier = payment.identifier
         self.description = payment.description
         self.method.description = payment.method.description
         self.method.method_name = payment.method.method_name
@@ -142,7 +143,7 @@ class SaleDetailsDialog(BaseEditor):
                                     for p in self.payments_list]))
 
     def _get_payments_columns(self):
-        return [Column('id', "#", data_type=int, width=50,
+        return [Column('identifier', "#", data_type=int, width=50,
                        format='%04d', justify=gtk.JUSTIFY_RIGHT),
                 Column('method.description', _("Type"),
                        data_type=str, width=60),

@@ -44,7 +44,7 @@ class TestProductStockHistoryDialog(GUITest):
 
         # Purchase
         order = self.create_purchase_order(branch=branch)
-        order.id = 111
+        order.identifier = 111
         order.open_date = today
         order.status = PurchaseOrder.ORDER_PENDING
         p_item = order.add_item(product.sellable, 10)
@@ -52,7 +52,7 @@ class TestProductStockHistoryDialog(GUITest):
 
         # Receiving
         receiving = self.create_receiving_order(order, branch, user)
-        receiving.id = 222
+        receiving.identifier = 222
         receiving.receival_date = date
         r_item = self.create_receiving_order_item(receiving, product.sellable, p_item)
         r_item.quantity_received = 8
@@ -69,7 +69,7 @@ class TestProductStockHistoryDialog(GUITest):
         # Transfer from branch to another
         transfer = self.create_transfer_order(source_branch=branch)
         transfer.open_date = date
-        transfer.id = 55
+        transfer.identifier = 55
         t_item = self.create_transfer_order_item(transfer, 2, product.sellable)
         transfer.send_item(t_item)
         transfer.receive(today)
@@ -78,7 +78,7 @@ class TestProductStockHistoryDialog(GUITest):
         transfer = self.create_transfer_order(source_branch=transfer.destination_branch,
                                 dest_branch=branch)
         transfer.open_date = date
-        transfer.id = 66
+        transfer.identifier = 66
         t_item = self.create_transfer_order_item(transfer, 1, product.sellable)
         transfer.send_item(t_item)
         transfer.receive(today)
@@ -91,7 +91,7 @@ class TestProductStockHistoryDialog(GUITest):
 
         # Stock Decrease
         decrease = self.create_stock_decrease(branch, user)
-        decrease.id = 4
+        decrease.identifier = 4
         decrease.confirm_date = date
         decrease.add_sellable(product.sellable)
         decrease.confirm()

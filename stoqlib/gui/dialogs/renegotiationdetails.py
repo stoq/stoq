@@ -52,10 +52,10 @@ class _RenegotiationItem(object):
         self.open_date = parent.open_date
 
         if isinstance(parent, Sale):
-            desc = _("Sale %04d") % (parent.id)
+            desc = _("Sale %04d") % (parent.identifier)
             self.total_amount = parent.total_amount
         elif isinstance(parent, PaymentRenegotiation):
-            desc = _("Renegotiation %04d") % (parent.id)
+            desc = _("Renegotiation %04d") % (parent.identifier)
             self.total_amount = parent.total
 
         self.description = desc
@@ -114,7 +114,7 @@ class RenegotiationDetailsDialog(BaseEditor):
         self._setup_summary_labels()
 
     def _get_payments_columns(self):
-        return [Column('id', "#", data_type=int, width=50,
+        return [Column('identifier', "#", data_type=int, width=50,
                        format='%04d', justify=gtk.JUSTIFY_RIGHT),
                 Column('method.description', _("Type"),
                        data_type=str, width=60),

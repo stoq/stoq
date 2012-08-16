@@ -160,6 +160,11 @@ class PurchaseOrder(Domain, Adaptable):
     freight_types = {FREIGHT_FOB: _(u'FOB'),
                      FREIGHT_CIF: _(u'CIF')}
 
+    #: A numeric identifier for this object. This value should be used instead of
+    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: the user, in dialogs, lists, reports and such.
+    identifier = IntCol()
+
     status = IntCol(default=ORDER_QUOTING)
     open_date = DateTimeCol(default=datetime.datetime.now)
     quote_deadline = DateTimeCol(default=None)
@@ -253,7 +258,7 @@ class PurchaseOrder(Domain, Adaptable):
 
     @property
     def order_number(self):
-        return self.id
+        return self.identifier
 
     @property
     def payments(self):
@@ -427,7 +432,8 @@ class PurchaseOrder(Domain, Adaptable):
         return self.responsible.get_description()
 
     def get_order_number_str(self):
-        return u'%05d' % self.id
+        # FIXME: Add branch acronim here
+        return u'%05d' % self.identifier
 
     def get_purchase_subtotal(self):
         """Get the subtotal of the purchase.
@@ -501,14 +507,20 @@ class PurchaseOrder(Domain, Adaptable):
 
 
 class Quotation(Domain):
+    #: A numeric identifier for this object. This value should be used instead of
+    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: the user, in dialogs, lists, reports and such.
+    identifier = IntCol()
+
     group = ForeignKey('QuoteGroup')
     purchase = ForeignKey('PurchaseOrder')
+    branch = ForeignKey('Branch')
 
     implements(IDescribable)
 
     def get_description(self):
         supplier = self.purchase.supplier.person.name
-        return "Group %04d - %s" % (self.group.id, supplier)
+        return "Group %04d - %s" % (self.group.identifier, supplier)
 
     #
     # Public API
@@ -533,6 +545,13 @@ class QuoteGroup(Domain):
 
     implements(IContainer, IDescribable)
 
+    #: A numeric identifier for this object. This value should be used instead of
+    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: the user, in dialogs, lists, reports and such.
+    identifier = IntCol()
+
+    branch = ForeignKey('Branch')
+
     #
     # IContainer
     #
@@ -556,14 +575,15 @@ class QuoteGroup(Domain):
     @argcheck(PurchaseOrder)
     def add_item(self, item):
         conn = self.get_connection()
-        return Quotation(purchase=item, group=self, connection=conn)
+        return Quotation(purchase=item, group=self, branch=self.branch,
+                         connection=conn)
 
     #
     # IDescribable
     #
 
     def get_description(self):
-        return _(u"quote number %04d" % self.id)
+        return _(u"quote number %04d" % self.identifier)
 
     #
     # Public API
@@ -623,7 +643,7 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
         payment = money.create_inpayment(
             self.purchase.group, self.purchase.branch, paid_value,
             description=_('%s Money Returned for Purchase %d') % (
-            '1/1', self.purchase.id))
+            '1/1', self.purchase.identifier))
         payment.set_pending()
         payment.pay()
 
@@ -744,6 +764,7 @@ class PurchaseOrderView(Viewable):
 
     columns = dict(
         id=PurchaseOrder.q.id,
+        identifier=PurchaseOrder.q.identifier,
         status=PurchaseOrder.q.status,
         open_date=PurchaseOrder.q.open_date,
         quote_deadline=PurchaseOrder.q.quote_deadline,

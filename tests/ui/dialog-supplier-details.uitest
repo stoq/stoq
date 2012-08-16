@@ -21,7 +21,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Supplier Details'
                   column: title='Date'
                   column: title='Status'
                   column: title='Total'
-                  row: 123L, datetime.datetime(2012, 1, 1, 0, 0), u'Quoting', <currency $1000>
+                  row: 123, datetime.datetime(2012, 1, 1, 0, 0), u'Quoting', <currency $1000>
               GtkHBox(fill=True): 
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>$1000.00</b>'

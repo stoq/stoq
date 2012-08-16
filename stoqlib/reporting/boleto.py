@@ -868,8 +868,9 @@ class BillReport(object):
             data_vencimento=payment.due_date.date(),
             data_documento=payment.open_date.date(),
             data_processamento=self.today,
-            nosso_numero=str(payment.id),
-            numero_documento=str(payment.id),
+            # FIXME: Maybe we should add the branch id to this numbers
+            nosso_numero=str(payment.identifier),
+            numero_documento=str(payment.identifier),
             sacado=self._get_sacado(),
             cedente=self._get_cedente(),
             demonstrativo=self._get_demonstrativo(),

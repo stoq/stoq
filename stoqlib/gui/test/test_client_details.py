@@ -39,7 +39,7 @@ class TestClientDetails(GUITest):
         client = self.create_client()
         # Nova venda
         sale = self.create_sale()
-        sale.id = 123
+        sale.identifier = 123
         sale.client = client
         sale.open_date = today
 
@@ -50,7 +50,7 @@ class TestClientDetails(GUITest):
         item.estimated_fix_date = today
         # Payments
         payment = self.add_payments(sale, date=today)
-        payment.id = 999
+        payment.identifier = 999
         payment.group.payer = client.person
         # Call
         self.create_call(client.person)

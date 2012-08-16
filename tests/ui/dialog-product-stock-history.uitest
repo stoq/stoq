@@ -22,7 +22,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Product History'
                   column: title='Invoice'
                   column: title='Quantity'
                   column: title='Unit'
-                  row: 222L, datetime.datetime(2012, 1, 1, 0, 0), 111L, u'Supplier', 222, Decimal('8.000'), None
+                  row: 222, datetime.datetime(2012, 1, 1, 0, 0), 111, u'Supplier', 222, Decimal('8.000'), None
               GtkHBox(fill=True): 
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>8.0</b>'
@@ -33,7 +33,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Product History'
                   column: title='Client', expand
                   column: title='Sold'
                   column: title='Unit'
-                  row: 123L, datetime.today(), None, Decimal('3.000'), None
+                  row: 123, datetime.today(), None, Decimal('3.000'), None
               GtkHBox(fill=True): 
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>3.000</b>'
@@ -69,7 +69,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Product History'
                   column: title='Removed By', expand
                   column: title='Quantity'
                   column: title='Unit'
-                  row: 4L, datetime.datetime(2012, 1, 1, 0, 0), u'SalesPerson', Decimal('1.000'), None
+                  row: 4, datetime.datetime(2012, 1, 1, 0, 0), u'SalesPerson', Decimal('1.000'), None
               GtkHBox(fill=True): 
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                 GtkLabel(): '<b>1.000</b>'

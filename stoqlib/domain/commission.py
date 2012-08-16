@@ -170,6 +170,7 @@ class CommissionView(Viewable):
 
     columns = dict(
         id=Sale.q.id,
+        identifier=Sale.q.identifier,
         sale_status=Sale.q.status,
         code=Commission.q.id,
         commission_value=Commission.q.value,

@@ -236,7 +236,8 @@ class SalesApp(SearchableAppWindow):
                                         search_attribute='status',
                                         valid_values=self._get_status_values())
 
-        cols = [SearchColumn('id', title=_('#'), width=80,
+        cols = [SearchColumn('identifier', title=_('#'), width=80,
+                             long_title=_('Order number'),
                              format='%05d', data_type=int, sorted=True),
                 SearchColumn('open_date', title=_('Open date'), width=120,
                              data_type=date, justify=gtk.JUSTIFY_RIGHT,

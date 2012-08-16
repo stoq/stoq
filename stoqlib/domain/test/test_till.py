@@ -137,7 +137,7 @@ class TestTill(DomainTest):
         payment.till = till
         payment.set_pending()
         TillEntry(description='test', value=payment.value, till=till,
-                  payment=payment, connection=self.trans)
+                  branch=till.station.branch, payment=payment, connection=self.trans)
         payment.pay()
         self.assertEqual(till.get_cash_amount(), old + 5 + payment.value)
 

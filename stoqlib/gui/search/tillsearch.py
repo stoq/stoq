@@ -59,6 +59,7 @@ class TillFiscalOperationsView(Viewable):
 
     columns = dict(
         id=Payment.q.id,
+        identifier=Payment.q.identifier,
         date=Payment.q.open_date,
         description=Payment.q.description,
         value=Payment.q.value,
@@ -111,7 +112,7 @@ class TillFiscalOperationsSearch(SearchDialog):
                         columns=['status'])
 
     def get_columns(self, *args):
-        return [SearchColumn('id', title=_('#'), width=60,
+        return [SearchColumn('identifier', title=_('#'), width=60,
                              justify=gtk.JUSTIFY_RIGHT, format="%05d",
                              data_type=int, sorted=True),
                 SearchColumn('date', title=_('Date'), width=100,
