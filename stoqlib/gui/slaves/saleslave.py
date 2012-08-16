@@ -59,8 +59,10 @@ class SaleDiscountSlave(BaseEditorSlave):
 
     def __init__(self, conn, model, model_type, visual_mode=False):
         self._proxy = None
+        self.model = model
         self.model_type = model_type
-        self.max_discount = sysparam(conn).MAX_SALE_DISCOUNT
+        self.default_max_discount = sysparam(conn).MAX_SALE_DISCOUNT
+        self.max_discount = self.default_max_discount
         BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def setup_widgets(self):
@@ -72,6 +74,17 @@ class SaleDiscountSlave(BaseEditorSlave):
         discount_by_value = not self.discount_perc_ck.get_active()
         self.discount_value.set_sensitive(discount_by_value)
         self.discount_perc.set_sensitive(not discount_by_value)
+
+    def update_max_discount(self):
+        self.max_discount = self.default_max_discount
+
+        client = self.model.client
+        if client and client.category:
+            self.max_discount = max(client.category.max_discount,
+                                    self.default_max_discount)
+
+        self.discount_value.validate()
+        self.discount_perc.validate()
 
     def update_sale_discount(self):
         if self._proxy is None:

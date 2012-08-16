@@ -498,6 +498,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     def on_client__changed(self, entry):
         self.toogle_client_details()
         self._update_widgets()
+        self.discount_slave.update_max_discount()
 
     def on_create_client__clicked(self, button):
         self._create_client()
