@@ -52,6 +52,7 @@ coverage:
 	    --with-xunit \
 	    --cover-package=stoq,stoqlib \
 	    --cover-erase \
+	    --cover-inclusive \
 	    $(TEST_MODULES)
 
 include async.mk
