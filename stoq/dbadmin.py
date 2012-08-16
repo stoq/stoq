@@ -43,6 +43,10 @@ class StoqCommandHandler:
             config.load_default()
         if create:
             config.create()
+
+        # FIXME: This should be removed and we should just import
+        #        the global settings after fixing StoqConfig to
+        #        only update the global settings.
         self._db_settings = config.get_settings()
         setup(config, options, register_station=register_station,
               check_schema=check_schema, load_plugins=load_plugins)
