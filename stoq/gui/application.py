@@ -1039,7 +1039,7 @@ class AppWindow(GladeDelegate):
         if not self.app.in_ui_test:
             while gtk.events_pending():
                 gtk.main_iteration()
-        app_window.show()
+            app_window.show()
         app.toplevel = self.get_toplevel()
         app.setup_focus()
 
