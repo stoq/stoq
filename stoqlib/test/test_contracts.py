@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from twisted.trial import unittest
+import unittest
 from zope.interface import implementedBy
 from zope.interface.verify import verifyClass
 from zope.interface.exceptions import Invalid

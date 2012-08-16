@@ -27,7 +27,7 @@ import decimal
 import os
 import tempfile
 
-from twisted.trial.unittest import SkipTest
+from nose.exc import SkipTest
 
 from stoqlib.api import api
 from stoqlib.domain.payment.method import PaymentMethod

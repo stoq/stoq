@@ -33,7 +33,7 @@ import sys
 import pyflakes
 
 from stoqlib.lib.unittestutils import SourceTest
-from twisted.trial import unittest
+import unittest
 
 
 class TestPyflakes(SourceTest, unittest.TestCase):

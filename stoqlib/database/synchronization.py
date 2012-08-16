@@ -29,17 +29,16 @@ import sets
 import socket
 
 from dateutil.parser import parse
-from kiwi.component import get_utility, provide_utility
+from kiwi.component import provide_utility
 from kiwi.log import Logger
 
 from stoqlib.database.admin import create_base_schema
-from stoqlib.database.database import dump_table
-from stoqlib.database.interfaces import (ICurrentBranchStation, ICurrentBranch,
-                                         IDatabaseSettings)
+from stoqlib.database.interfaces import ICurrentBranchStation, ICurrentBranch
 from stoqlib.database.orm import ORMObjectNotFound, const
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       get_current_branch)
 from stoqlib.database.policy import get_policy_by_name
+from stoqlib.database.settings import db_settings
 from stoqlib.database.tables import get_table_type_by_name
 from stoqlib.domain.person import LoginUser
 from stoqlib.domain.station import BranchStation
@@ -246,16 +245,14 @@ class SynchronizationService(XMLRPCService):
         :returns: an integer representing the insert
         """
         log.info('service.sql_prepare()')
-        settings = get_utility(IDatabaseSettings)
-
         CMD = ("psql -n -h %(address)s -U %(username)s "
                "-p %(port)s %(dbname)s --variable ON_ERROR_STOP=")
 
         cmd = CMD % dict(
-            address=settings.address,
-            username=settings.username,
-            port=settings.port,
-            dbname=settings.dbname)
+            address=db_settings.address,
+            username=db_settings.username,
+            port=db_settings.port,
+            dbname=db_settings.dbname)
 
         noisy = False
         if noisy:
@@ -382,7 +379,7 @@ class SynchronizationClient(object):
     def _dump_tables(self, tables):
         combined = ''
         for table in tables:
-            proc = dump_table(table.sqlmeta.table)
+            proc = db_settings.dump_table(table.sqlmeta.table)
             # This is kind of tricky, only send data when we reached CHUNKSIZE,
             # it saves resources since rpc calls can be expensive
             while True:

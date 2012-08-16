@@ -22,8 +22,4 @@
 
 from stoqlib.lib.doctestloader import create_doctest
 
-# So we can use database connections in doctests.
-import tests.base
-tests.base # pyflakes
-
 doctest = create_doctest('*.txt')

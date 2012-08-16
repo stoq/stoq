@@ -24,7 +24,7 @@
 
 from kiwi.component import provide_utility
 import mock
-from twisted.trial.unittest import SkipTest
+from nose.exc import SkipTest
 
 from stoqlib.api import api
 from stoqlib.gui.uitestutils import GUITest

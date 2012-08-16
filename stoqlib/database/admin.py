@@ -32,7 +32,7 @@ import glob
 import os
 import sys
 
-from kiwi.component import get_utility, provide_utility
+from kiwi.component import provide_utility
 from kiwi.currency import currency
 from kiwi.environ import environ
 from kiwi.log import Logger
@@ -40,12 +40,11 @@ from kiwi.log import Logger
 from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.constants import describe_constant
 
-from stoqlib.database.database import execute_sql, clean_database
-from stoqlib.database.interfaces import (ICurrentBranch, ICurrentUser,
-                                         IDatabaseSettings)
+from stoqlib.database.interfaces import ICurrentBranch, ICurrentUser
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.orm import const
 from stoqlib.database.runtime import get_connection, new_transaction
+from stoqlib.database.settings import db_settings
 from stoqlib.domain.person import (Branch, Company, Employee, EmployeeRole,
                                    Individual, LoginUser, Person, SalesPerson)
 from stoqlib.domain.person import EmployeeRoleHistory
@@ -141,7 +140,7 @@ def populate_initial_data(trans):
 
     log.info('Populating initial data')
     initial_data = environ.find_resource('sql', 'initial.sql')
-    if execute_sql(initial_data) != 0:
+    if db_settings.execute_sql(initial_data) != 0:
         error('Failed to populate initial data')
 
 
@@ -310,22 +309,21 @@ def _get_latest_schema():
 def create_base_schema():
     log.info('Creating base schema')
     create_log.info("SCHEMA")
-    settings = get_utility(IDatabaseSettings)
 
     # Functions
     functions = environ.find_resource('sql', 'functions.sql')
-    if execute_sql(functions) != 0:
+    if db_settings.execute_sql(functions) != 0:
         error('Failed to create functions')
 
     # A Base schema shared between all RDBMS implementations
     schema = _get_latest_schema()
-    if execute_sql(schema) != 0:
+    if db_settings.execute_sql(schema) != 0:
         error('Failed to create base schema')
 
     try:
-        schema = environ.find_resource('sql', '%s-schema.sql' % settings.rdbms)
-        if execute_sql(schema) != 0:
-            error('Failed to create %s specific schema' % (settings.rdbms, ))
+        schema = environ.find_resource('sql', '%s-schema.sql' % db_settings.rdbms)
+        if db_settings.execute_sql(schema) != 0:
+            error('Failed to create %s specific schema' % (db_settings.rdbms, ))
     except EnvironmentError:
         pass
 
@@ -373,8 +371,7 @@ def initialize_system(password=None, testsuite=False,
 
     log.info("Initialize_system")
     try:
-        settings = get_utility(IDatabaseSettings)
-        clean_database(settings.dbname, force=force)
+        db_settings.clean_database(db_settings.dbname, force=force)
         create_base_schema()
         create_log("INIT START")
         trans = new_transaction()

@@ -26,7 +26,7 @@ import datetime
 import os
 import tempfile
 
-from twisted.trial import unittest
+import unittest
 
 import stoqlib
 from stoqlib.api import api

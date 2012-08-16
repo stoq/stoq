@@ -26,8 +26,6 @@
 import datetime
 from decimal import Decimal
 
-from kiwi.component import get_utility
-
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_station,
                                       new_transaction,
@@ -35,7 +33,7 @@ from stoqlib.database.runtime import (get_current_user,
 from stoqlib.domain.person import Person
 from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.database.interfaces import IDatabaseSettings
+from stoqlib.database.settings import db_settings
 
 NAME = 'dummy transaction test'
 
@@ -43,8 +41,7 @@ NAME = 'dummy transaction test'
 def _query_server_time(conn):
     # Be careful, this opens up a new connection, queries the server
     # and closes the connection. That takes ~150ms
-    settings = get_utility(IDatabaseSettings)
-    if settings.rdbms == 'postgres':
+    if db_settings.rdbms == 'postgres':
         return conn.queryAll("SELECT NOW();")[0][0]
     else:
         raise NotImplementedError

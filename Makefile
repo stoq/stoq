@@ -1,10 +1,11 @@
-VERSION=$(shell BUILD=1 python -c "import stoq; print stoq.short_version")
+GVERSION=$(shell BUILD=1 python -c "import stoq; print stoq.short_version")
 PACKAGE=stoq
 DEBPACKAGE=python-kiwi
 SCHEMADIR=/mondo/htdocs/stoq.com.br/devel/schema/
 JS_AD="http://pagead2.googlesyndication.com/pagead/show_ads.js"
 API_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/api/stoq/$(VERSION)/
 MANUAL_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/manual/$(VERSION)/
+TEST_MODULES=stoq stoqlib
 
 apidocs:
 	make -C docs/api html
@@ -27,10 +28,10 @@ schemadocs:
 
 
 pep8:
-	trial stoqlib.test.test_pep8
+	nosetests stoqlib/test/test_pep8.py
 
 pyflakes:
-	trial stoqlib.test.test_pyflakes
+	nosetests stoqlib/test/test_pyflakes.py
 
 pylint:
 	pylint --load-plugins tools/pylint_stoq -E \
@@ -38,11 +39,19 @@ pylint:
 	    stoqlib/domain/payment/*.py
 
 check:
-	LC_ALL=C LANG=C LANGUAGE=C trial stoq stoqlib
+	rm -f .noseids
+	python runtests.py -s -d --failed $(TEST_MODULES)
+
+check-failed:
+	python runtests.py -s -d --failed $(TEST_MODULES)
 
 coverage:
-	LC_ALL=C LANG=C LANGUAGE=C trial --coverage stoq stoqlib
-	tools/showcoverage
+	python runtests.py \
+	    --with-xcoverage \
+	    --with-xunit \
+	    --cover-package=stoq,stoqlib \
+	    --cover-erase \
+	    $(TEST_MODULES)
 
 include async.mk
 

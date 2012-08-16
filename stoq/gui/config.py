@@ -64,10 +64,9 @@ from stoqlib.api import api
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.admin import (USER_ADMIN_DEFAULT_NAME, ensure_admin_user,
                                     create_default_profile_settings)
-from stoqlib.database.database import test_local_database
 from stoqlib.database.interfaces import (ICurrentBranchStation,
                                          ICurrentBranch)
-from stoqlib.database.settings import DatabaseSettings
+from stoqlib.database.settings import DatabaseSettings, test_local_database
 from stoqlib.domain.person import LoginUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.system import SystemTable
