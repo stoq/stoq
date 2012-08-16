@@ -24,11 +24,11 @@
 
 import datetime
 import locale
+import unittest
 
 from dateutil import relativedelta
 from dateutil.relativedelta import SU, MO, SA, relativedelta as delta
-
-import unittest
+from nose.exc import SkipTest
 
 from stoqlib.gui.base.search import (ThisWeek, LastWeek, NextWeek, ThisMonth,
                                      LastMonth, NextMonth)
@@ -80,8 +80,8 @@ class TestDateOptions(unittest.TestCase):
             self.assertEqual(
                 relativedelta.weekday(interval[1].weekday()), SU)
 
-    # Tests disable because they cause segmentation fault in hudson
-    def DISABLED_testThisWeek(self):
+    def testThisWeek(self):
+        raise SkipTest("Segmentation fault in jenkins")
         option = ThisWeek()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -93,7 +93,8 @@ class TestDateOptions(unittest.TestCase):
                                  self._get_week_interval(get_today_date()))
                 self._testWeekday(loc, option.get_interval())
 
-    def DISABLED_testLastWeek(self):
+    def testLastWeek(self):
+        raise SkipTest("Segmentation fault in jenkins")
         option = LastWeek()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -107,7 +108,8 @@ class TestDateOptions(unittest.TestCase):
                                  self._get_week_interval(last_week_day))
                 self._testWeekday(loc, option.get_interval())
 
-    def DISABLED_testNextWeek(self):
+    def testNextWeek(self):
+        raise SkipTest("Segmentation fault in jenkins")
         option = NextWeek()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -121,7 +123,8 @@ class TestDateOptions(unittest.TestCase):
                                  self._get_week_interval(next_week_day))
                 self._testWeekday(loc, option.get_interval())
 
-    def DISABLED_testThisMonth(self):
+    def testThisMonth(self):
+        raise SkipTest("Segmentation fault in jenkins")
         option = ThisMonth()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -133,7 +136,8 @@ class TestDateOptions(unittest.TestCase):
                 self.assertEqual(option.get_interval(),
                                  self._get_month_interval(month_day))
 
-    def DISABLED_testLastMonth(self):
+    def testLastMonth(self):
+        raise SkipTest("Segmentation fault in jenkins")
         option = LastMonth()
         for loc in self._get_locales():
             self._set_locale(loc)
