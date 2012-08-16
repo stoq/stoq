@@ -37,6 +37,7 @@ from stoqlib.enums import LatePaymentPolicy
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 from stoqlib.lib.parameters import sysparam
+from stoqlib.reporting.booklet import BookletReport
 
 
 class TestConfirmSaleWizard(GUITest):
@@ -162,8 +163,9 @@ class TestConfirmSaleWizard(GUITest):
             str(step.client.emit('validate', sale.client)),
             'Client Client does not have enough credit left to purchase.')
 
+    @mock.patch('stoqlib.gui.wizards.salewizard.print_report')
     @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
-    def testSaleToClientWithLatePayments(self, yesno):
+    def testSaleToClientWithLatePayments(self, yesno, print_report):
         #: this parameter allows a client to buy even if he has late payments
         sysparam(self.trans).update_parameter('LATE_PAYMENTS_POLICY',
                                 str(int(LatePaymentPolicy.ALLOW_SALES)))
@@ -255,6 +257,8 @@ class TestConfirmSaleWizard(GUITest):
 
         self.assertSensitive(wizard, ['next_button'])
         wizard.next_button.clicked()
+
+        # finish wizard
         wizard.next_button.clicked()
 
         self.assertEquals(sale.payments[0].method.method_name, 'store_credit')
@@ -262,3 +266,6 @@ class TestConfirmSaleWizard(GUITest):
         yesno.assert_called_once_with(
             'Do you want to print the booklets for this sale?',
             gtk.RESPONSE_YES, 'Print booklets', "Don't print")
+
+        print_report.assert_called_once_with(BookletReport,
+                    list(sale.group.get_payments_by_method_name('store_credit')))
