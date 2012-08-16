@@ -77,6 +77,7 @@ from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.profile import UserProfile
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.formatters import raw_phone_number, format_phone_number
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -608,6 +609,9 @@ class ClientCategory(Domain):
 
     #: name of the category
     name = UnicodeCol(unique=True)
+
+    #: max discount for clients of this category
+    max_discount = PercentCol(default=0)
 
     #
     # IDescribable

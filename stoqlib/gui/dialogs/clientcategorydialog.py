@@ -24,11 +24,14 @@
 ##
 """Dialog for listing client categories"""
 
+from decimal import Decimal
+
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.person import ClientCategory, Client
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.clientcategoryeditor import ClientCategoryEditor
+from stoqlib.lib.formatters import get_formatted_percentage
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -40,7 +43,9 @@ class ClientCategoryListSlave(ModelListSlave):
     model_type = ClientCategory
     columns = [
         Column('name', title=_('Category'),
-                data_type=str, expand=True, sorted=True)
+                data_type=str, expand=True, sorted=True),
+        Column('max_discount', title=_('Max discount'), data_type=Decimal,
+               expand=True, format_func=get_formatted_percentage)
         ]
 
     def delete_model(self, model, trans):

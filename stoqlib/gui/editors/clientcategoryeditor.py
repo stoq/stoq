@@ -24,7 +24,9 @@
 ##
 """Dialog for listing client categories"""
 
+from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
+from kiwi.ui.forms import PercentageField
 from kiwi.ui.forms import TextField
 
 from stoqlib.api import api
@@ -39,10 +41,12 @@ _ = stoqlib_gettext
 class ClientCategoryEditor(BaseEditor):
     model_name = _('Client Category')
     model_type = ClientCategory
-    confirm_widgets = ['name']
+    confirm_widgets = ['name',
+                       'max_discount']
 
     fields = dict(
         name=TextField(_('Name'), proxy=True),
+        max_discount=PercentageField(_('Max Discount'), proxy=True),
         )
 
     def create_model(self, trans):
