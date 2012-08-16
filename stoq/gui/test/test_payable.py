@@ -24,7 +24,6 @@
 
 from kiwi.component import provide_utility
 import mock
-from nose.exc import SkipTest
 
 from stoqlib.api import api
 from stoqlib.gui.uitestutils import GUITest
@@ -53,7 +52,6 @@ class TestPayable(GUITest):
         return app
 
     def testInitial(self):
-        raise SkipTest("running this test on anthem via xvfb doesn't work")
         api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app('payable')
         self.launcher.statusbar.push(0, 'Test Statusbar test')
