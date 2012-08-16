@@ -188,11 +188,15 @@ class StoqConfig:
             username = self.get(database_section, 'dbusername') or username
             port = self.get(database_section, 'port') or port
 
-        # FIXME: This should be done elsewhere
-        from stoqlib.database.settings import DatabaseSettings
-        self._settings = DatabaseSettings(rdbms, address, port,
-                                dbname, username, password)
-        return self._settings
+        # FIXME: This and load_settings() needs to be simplified now when
+        #        we only have one global settings singleton
+        from stoqlib.database.settings import db_settings
+        db_settings.rdbms = rdbms
+        db_settings.address = address
+        db_settings.dbname = dbname
+        db_settings.username = username
+        db_settings.password = password
+        return db_settings
 
     def set_from_options(self, options):
         """
