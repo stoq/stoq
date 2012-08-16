@@ -24,6 +24,8 @@
 """ Test case for stoq/domain/person.py module.  """
 
 import datetime
+from dateutil.relativedelta import relativedelta
+from decimal import Decimal
 
 from kiwi.currency import currency
 
@@ -32,6 +34,8 @@ from stoqlib.domain.person import Calls, Liaison
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.domain.fiscal import CfopData
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Branch, Client, ClientCategory, Company,
                                    CreditProvider, Employee, EmployeeRole,
                                    EmployeeRoleHistory, Individual,
@@ -41,6 +45,9 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.enums import LatePaymentPolicy
+from stoqlib.exceptions import SellError
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -261,6 +268,126 @@ class TestClient(_PersonFacetTest, DomainTest):
                             price=75,
                             connection=self.trans)
         self.assertFalse(category.can_remove())
+
+    def test_can_purchase_allow_all(self):
+        #: This parameter always allows the client to purchase, no matter if he
+        #: has late payments
+        sysparam(self.trans).update_parameter('LATE_PAYMENTS_POLICY',
+                                str(int(LatePaymentPolicy.ALLOW_SALES)))
+
+        client = self.create_client()
+        bill_method = PaymentMethod.get_by_name(self.trans, 'bill')
+        check_method = PaymentMethod.get_by_name(self.trans, 'check')
+        money_method = PaymentMethod.get_by_name(self.trans, 'money')
+        store_credit_method = PaymentMethod.get_by_name(self.trans,
+                                                        'store_credit')
+        today = datetime.date.today()
+
+        # client can pay if he doesn't have any payments
+        client.credit_limit = Decimal("1000")
+        self.assertTrue(client.can_purchase(money_method, currency("200")))
+
+        # client can pay if he has payments that are not overdue
+        payment = self.create_payment(Payment.TYPE_IN, today, method=bill_method)
+        payment.group = self.create_payment_group()
+        payment.group.payer = client.person
+        self.assertTrue(client.can_purchase(check_method, currency("200")))
+
+        # client can pay even if he does have overdue payments
+        payment = self.create_payment(Payment.TYPE_IN,
+                            today - relativedelta(days=1), method=check_method)
+        payment.group = self.create_payment_group()
+        payment.group.payer = client.person
+        self.assertTrue(client.can_purchase(store_credit_method, currency("200")))
+
+        # But he cannot pay if its above the credit limit
+        self.assertRaises(SellError, client.can_purchase, store_credit_method, currency("1001"))
+
+    def test_can_purchase_disallow_store_credit(self):
+        #: This parameter disallows the client to purchase with store credit
+        #: when he has late payments
+        sysparam(self.trans).update_parameter('LATE_PAYMENTS_POLICY',
+                                str(int(LatePaymentPolicy.DISALLOW_STORE_CREDIT)))
+
+        client = self.create_client()
+        bill_method = PaymentMethod.get_by_name(self.trans, 'bill')
+        check_method = PaymentMethod.get_by_name(self.trans, 'check')
+        money_method = PaymentMethod.get_by_name(self.trans, 'money')
+        store_credit_method = PaymentMethod.get_by_name(self.trans,
+                                                        'store_credit')
+        today = datetime.date.today()
+
+        # client can pay if he doesn't have any payments
+        self.assertTrue(client.can_purchase(money_method, currency("0")))
+
+        # client can pay if he has payments that are not overdue
+        payment = self.create_payment(Payment.TYPE_IN, today, method=bill_method)
+        payment.group = self.create_payment_group()
+        payment.group.payer = client.person
+        self.assertTrue(client.can_purchase(money_method, currency("0")))
+
+        # for a client with overdue payments
+        payment = self.create_payment(Payment.TYPE_IN,
+                                      today - relativedelta(days=1),
+                                      method=money_method)
+        payment.status = Payment.STATUS_PENDING
+        payment.group = self.create_payment_group()
+        payment.group.payer = client.person
+        # client can pay if payment method is not store credit
+        self.assertTrue(client.can_purchase(check_method, currency("0")))
+        self.assertTrue(client.can_purchase(money_method, currency("0")))
+        # client can not pay if payment method is store credit
+        self.assertRaises(SellError, client.can_purchase, store_credit_method, currency("0"))
+
+    def test_can_purchase_disallow_all(self):
+        #: This parameter disallows the client to purchase with store credit
+        #: when he has late payments
+        sysparam(self.trans).update_parameter('LATE_PAYMENTS_POLICY',
+                                str(int(LatePaymentPolicy.DISALLOW_SALES)))
+
+        client = self.create_client()
+        bill_method = PaymentMethod.get_by_name(self.trans, 'bill')
+        check_method = PaymentMethod.get_by_name(self.trans, 'check')
+        money_method = PaymentMethod.get_by_name(self.trans, 'money')
+        store_credit_method = PaymentMethod.get_by_name(self.trans,
+                                                        'store_credit')
+        today = datetime.date.today()
+
+        # client can pay if he doesn't have any payments
+        self.assertTrue(client.can_purchase(money_method, currency("0")))
+
+        # client can pay if he has overdue payments
+        payment = self.create_payment(Payment.TYPE_IN, today, method=bill_method)
+        payment.group = self.create_payment_group()
+        payment.group.payer = client.person
+        self.assertTrue(client.can_purchase(check_method, currency("0")))
+
+        # client can not pay if he has overdue payments
+        payment = self.create_payment(Payment.TYPE_IN,
+                                      today - relativedelta(days=1),
+                                      method=bill_method)
+        payment.group = self.create_payment_group()
+        payment.group.payer = client.person
+        payment.status = Payment.STATUS_PENDING
+        self.assertRaises(SellError, client.can_purchase, store_credit_method,
+                                     currency("0"))
+        self.assertRaises(SellError, client.can_purchase, check_method,
+                                     currency("0"))
+        self.assertRaises(SellError, client.can_purchase, money_method,
+                                     currency("0"))
+
+    def test_can_purchase_total_amount(self):
+        method = PaymentMethod.get_by_name(self.trans, 'store_credit')
+
+        # client can not buy if he does not have enough store credit
+        client = self.create_client()
+        client.credit_limit = currency('0')
+        self.assertRaises(SellError, client.can_purchase, method, currency('1'))
+
+        # client can buy if he has enough store credit
+        client.credit_limit = currency('1000')
+        self.assertTrue(client.can_purchase(method, currency('200')))
+        self.assertRaises(SellError, client.can_purchase, method, currency('1001'))
 
 
 class TestSupplier(_PersonFacetTest, DomainTest):

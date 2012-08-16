@@ -244,6 +244,24 @@ class InPaymentView(BasePaymentView):
     def get_parent(self):
         return self.sale or self.renegotiation
 
+    @classmethod
+    def has_late_payments(cls, conn, person):
+        """Checks if the provided person has unpaid payments that are overdue
+
+        :param person: A :class:`person <stoqlib.domain.person.Person>` to
+          check if has late payments
+        :returns: True if the person has overdue payments. False otherwise
+        """
+        query = AND(cls.q.person_id == person.id,
+                    cls.q.status == Payment.STATUS_PENDING,
+                    cls.q.due_date < datetime.date.today())
+
+        late_payments = cls.select(query, connection=conn)
+        if late_payments.any():
+            return True
+
+        return False
+
 
 class OutPaymentView(BasePaymentView):
     columns = BasePaymentView.columns.copy()

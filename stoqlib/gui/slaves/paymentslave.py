@@ -50,6 +50,7 @@ from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.drivers.cheque import get_current_cheque_printer_settings
 from stoqlib.enums import CreatePaymentStatus
+from stoqlib.exceptions import SellError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.interfaces import IDomainSlaveMapper
@@ -1022,6 +1023,13 @@ class MultipleMethodSlave(BaseEditorSlave):
                   payment_method.method_name == 'store_credit'):
                 return
 
+        if self.model.group.payer and payment_method.method_name == 'store_credit':
+            try:
+                self.model.client.can_purchase(payment_method,
+                                    self.model.client.remaining_store_credit)
+            except SellError:
+                return
+
         children = self.methods_box.get_children()
         if children:
             group = children[0]
@@ -1049,14 +1057,15 @@ class MultipleMethodSlave(BaseEditorSlave):
                    'payment method.') % self._method.description)
             return False
 
-        if self._method.method_name == 'store_credit':
-            client = self.model.client
-            credit = client.remaining_store_credit
-            total = self._holder.value
-
-            if credit < total:
-                info(_(u"Client %s does not have enought credit left.") % \
-                     client.person.name)
+        method_values = {self._method: self._holder.value}
+        for i, payment in enumerate(self.model.group.payments.orderBy('id')):
+            method_values.setdefault(payment.method, 0)
+            method_values[payment.method] += payment.value
+        for method, value in method_values.items():
+            try:
+                self.model.client.can_purchase(method, value)
+            except SellError as e:
+                warning(str(e))
                 return False
 
         return True
@@ -1086,7 +1095,7 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         self._update_payment_list()
         # Exigência do TEF: Deve finalizar ao chegar no total da venda.
-        if self.finish_on_total and self._outstanding_value == 0:
+        if self.finish_on_total and self.can_confirm():
             self._wizard.finish()
         # Keep update_view after force_validation, since it can disable
         # next/finish even if validation is ok
@@ -1221,6 +1230,10 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         if not value and self._outstanding_value > 0:
             retval = ValidationError(_(u'You must provide a payment value.'))
+
+        if (self._method.method_name == 'store_credit' and
+                value > self.model.client.remaining_store_credit):
+            retval = ValidationError(_(u'Client does not have enough credit.'))
 
         self._holder.value = value
         self.toggle_new_payments()

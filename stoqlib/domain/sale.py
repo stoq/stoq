@@ -635,6 +635,14 @@ class Sale(Domain, Adaptable):
 
         :returns: ``True`` if the sale can be confirmed
         """
+        if self.client:
+            method_values = {}
+            for p in self.payments:
+                method_values.setdefault(p.method, 0)
+                method_values[p.method] += p.value
+            for method, value in method_values.items():
+                assert self.client.can_purchase(method, value)
+
         return (self.status == Sale.STATUS_ORDERED or
                 self.status == Sale.STATUS_QUOTE)
 
@@ -696,7 +704,6 @@ class Sale(Domain, Adaptable):
         be set for the sale, but it is not necessary.
         """
         assert self.can_order()
-
         if not self.get_items():
             raise SellError(_('The sale must have sellable items'))
         if self.client and not self.client.is_active:
