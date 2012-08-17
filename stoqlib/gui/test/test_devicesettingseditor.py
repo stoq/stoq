@@ -22,14 +22,20 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from nose.exc import SkipTest
-
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.deviceseditor import DeviceSettingsEditor
+from stoqlib.domain.devices import DeviceSettings
 
 
 class TestDeviceSettingsEditor(GUITest):
     def testCreate(self):
-        raise SkipTest("Stations are different on first run")
-        editor = DeviceSettingsEditor(self.trans)
+        station = self.create_station()
+        editor = DeviceSettingsEditor(self.trans, station=station)
         self.check_editor(editor, 'editor-devicesetting-create')
+
+    def testShow(self):
+        station = self.create_station()
+        settings = DeviceSettings(connection=self.trans)
+        editor = DeviceSettingsEditor(self.trans, model=settings,
+                                      station=station)
+        self.check_editor(editor, 'editor-devicesetting-show')
