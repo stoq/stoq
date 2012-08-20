@@ -191,11 +191,12 @@ class StoqConfig:
         # FIXME: This and load_settings() needs to be simplified now when
         #        we only have one global settings singleton
         from stoqlib.database.settings import db_settings
-        db_settings.rdbms = rdbms
-        db_settings.address = address
-        db_settings.dbname = dbname
-        db_settings.username = username
-        db_settings.password = password
+        db_settings.rdbms = rdbms or db_settings.rdbms
+        db_settings.address = address or db_settings.address
+        db_settings.port = port or db_settings.port
+        db_settings.dbname = dbname or db_settings.dbname
+        db_settings.username = username or db_settings.username
+        db_settings.password = password or db_settings.password
         return db_settings
 
     def set_from_options(self, options):
