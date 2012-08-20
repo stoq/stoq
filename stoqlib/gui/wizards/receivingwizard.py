@@ -90,7 +90,7 @@ class PurchaseSelectionStep(BaseWizardStep):
         return PurchaseOrderView.q.status == PurchaseOrder.ORDER_CONFIRMED
 
     def _get_columns(self):
-        return [SearchColumn('id', title=_('Number'), sorted=True,
+        return [SearchColumn('identifier', title=_('Number'), sorted=True,
                              data_type=int, width=80),
                 SearchColumn('open_date', title=_('Date Started'),
                              data_type=datetime.date, width=100),

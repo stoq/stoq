@@ -70,7 +70,7 @@ class SaleSearch(SearchDialog):
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('#'), width=50, data_type=int,
+        return [SearchColumn('identifier', title=_('#'), width=50, data_type=int,
                              sorted=True, order=gtk.SORT_DESCENDING),
                 SearchColumn('open_date', title=_('Date Started'), width=110,
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),

@@ -187,6 +187,7 @@ class TransferOrderView(Viewable):
 
     columns = dict(
         id=TransferOrder.q.id,
+        identifier=TransferOrder.q.identifier,
         open_date=TransferOrder.q.open_date,
         receival_date=TransferOrder.q.receival_date,
         source_branch_id=TransferOrder.q.source_branchID,

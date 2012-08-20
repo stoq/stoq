@@ -52,7 +52,7 @@ class ConsignmentItemSearch(SearchDialog):
                         position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('order_id', title=_(u'Order'), data_type=int,
+        return [SearchColumn('order_identifier', title=_(u'Order'), data_type=int,
                              format='%03d'),
                 SearchColumn('code', title=_(u'Code'), data_type=int,
                              width=40),

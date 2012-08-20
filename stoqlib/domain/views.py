@@ -844,18 +844,21 @@ class LoanView(Viewable):
     PersonResponsible = Alias(Person, 'person_responsible')
     PersonClient = Alias(Person, 'person_client')
 
-    columns = dict(id=Loan.q.id,
-                    status=Loan.q.status,
-                    open_date=Loan.q.open_date,
-                    close_date=Loan.q.close_date,
-                    expire_date=Loan.q.expire_date,
+    columns = dict(
+        id=Loan.q.id,
+        identifier=Loan.q.identifier,
+        status=Loan.q.status,
+        open_date=Loan.q.open_date,
+        close_date=Loan.q.close_date,
+        expire_date=Loan.q.expire_date,
 
-                    removed_by=Loan.q.removed_by,
-                    branch_name=PersonBranch.q.name,
-                    responsible_name=PersonResponsible.q.name,
-                    client_name=PersonClient.q.name,
-                    loaned=const.SUM(LoanItem.q.quantity),
-                    total=const.SUM(LoanItem.q.quantity * LoanItem.q.price), )
+        removed_by=Loan.q.removed_by,
+        branch_name=PersonBranch.q.name,
+        responsible_name=PersonResponsible.q.name,
+        client_name=PersonClient.q.name,
+        loaned=const.SUM(LoanItem.q.quantity),
+        total=const.SUM(LoanItem.q.quantity * LoanItem.q.price),
+    )
     joins = [
         INNERJOINOn(None, LoanItem, Loan.q.id == LoanItem.q.loanID),
         LEFTJOINOn(None, Branch,
@@ -879,21 +882,23 @@ class LoanView(Viewable):
 
 
 class LoanItemView(Viewable):
-    columns = dict(id=LoanItem.q.id,
-                   loan_identifier=Loan.q.identifier,
-                   loan_status=Loan.q.status,
-                   opened=Loan.q.open_date,
-                   closed=Loan.q.close_date,
-                   quantity=LoanItem.q.quantity,
-                   sale_quantity=LoanItem.q.sale_quantity,
-                   return_quantity=LoanItem.q.return_quantity,
-                   price=LoanItem.q.price,
-                   total=LoanItem.q.quantity * LoanItem.q.price,
-                   sellable_id=Sellable.q.id,
-                   code=Sellable.q.code,
-                   category_description=SellableCategory.q.description,
-                   unit_description=SellableUnit.q.description,
-                   description=Sellable.q.description, )
+    columns = dict(
+        id=LoanItem.q.id,
+        loan_identifier=Loan.q.identifier,
+        loan_status=Loan.q.status,
+        opened=Loan.q.open_date,
+        closed=Loan.q.close_date,
+        quantity=LoanItem.q.quantity,
+        sale_quantity=LoanItem.q.sale_quantity,
+        return_quantity=LoanItem.q.return_quantity,
+        price=LoanItem.q.price,
+        total=LoanItem.q.quantity * LoanItem.q.price,
+        sellable_id=Sellable.q.id,
+        code=Sellable.q.code,
+        category_description=SellableCategory.q.description,
+        unit_description=SellableUnit.q.description,
+        description=Sellable.q.description,
+    )
 
     joins = [
         LEFTJOINOn(None, Loan, LoanItem.q.loanID == Loan.q.id),

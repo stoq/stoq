@@ -83,7 +83,7 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
         self.subtotal.update(self._subtotal)
 
     def _get_columns(self):
-        return [Column('id', title=_('#'), data_type=str, format='%04d'),
+        return [Column('identifier', title=_('#'), data_type=str, format='%04d'),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
                 Column('due_date', title=_('Due date'),

@@ -133,7 +133,7 @@ class ProductionQuoteDialog(BaseEditor):
     def _get_columns(self):
         return [Column('selected', title=" ", width=50,
                         data_type=bool, editable=True),
-                Column('obj.id', title=_(u"Order"), data_type=int,
+                Column('obj.identifier', title=_(u"Order"), data_type=int,
                         format="%04d"),
                 Column('obj.description', title=_(u"Description"),
                         data_type=str, sorted=True),
