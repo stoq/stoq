@@ -90,7 +90,7 @@ class TransferOrderSearch(SearchDialog):
         self.add_filter(date_filter, columns=['open_date', 'receival_date'])
 
     def get_columns(self):
-        return [SearchColumn('id', _('#'), data_type=int, width=50),
+        return [SearchColumn('identifier', _('#'), data_type=int, width=50),
                 SearchColumn('open_date', _('Open date'),
                        data_type=datetime.date, sorted=True, width=100),
                 SearchColumn('source_branch_name', _('Source'),

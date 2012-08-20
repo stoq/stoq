@@ -86,7 +86,7 @@ class StockDecreaseSearch(SearchDialog):
         self.add_filter(date_filter, columns=['confirm_date'])
 
     def get_columns(self):
-        return [Column('id', _('#'), data_type=int, width=50),
+        return [Column('identifier', _('#'), data_type=int, width=50),
                 Column('confirm_date', _('Date'),
                        data_type=datetime.date, sorted=True, width=100),
                 Column('branch_name', _('Branch'),

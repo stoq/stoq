@@ -116,9 +116,7 @@ class FiscalBookEntrySearch(SearchDialog):
     #
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('#'), width=80,
-                             data_type=int, sorted=True),
-                SearchColumn('date', title=_('Date'), width=80,
+        return [SearchColumn('date', title=_('Date'), width=80,
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('invoice_number', title=_('Invoice'),
                              data_type=int, width=100),

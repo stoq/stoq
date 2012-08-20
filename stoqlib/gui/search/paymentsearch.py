@@ -73,7 +73,7 @@ class _BaseBillCheckSearch(SearchDialog):
         self.set_searchbar_labels(_(u'Bill or check number:'))
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('#'), data_type=int, sorted=True,
+        return [SearchColumn('identifier', title=_('#'), data_type=int, sorted=True,
                              format='%04d', long_title=_('Id'), width=55),
                 SearchColumn('method_description', title=_(u'Method'),
                              data_type=str, width=90),
@@ -145,7 +145,7 @@ class CardPaymentSearch(SearchDialog):
         self.provider_filter = provider_filter
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('#'), data_type=int,
+        return [SearchColumn('identifier', title=_('#'), data_type=int,
                              sorted=True, format='%04d', long_title=_('Id')),
                 SearchColumn('description', title=_(u'Description'),
                              data_type=str, expand=True),

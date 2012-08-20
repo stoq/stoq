@@ -65,7 +65,7 @@ class CommissionSearch(SearchDialog):
         self._salesperson_filter = salesperson_filter
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('Sale'),
+        return [SearchColumn('identifier', title=_('Sale'),
                              data_type=int, sorted=True),
                 SearchColumn('salesperson_name', title=_('Salesperson'),
                              data_type=str, expand=True),

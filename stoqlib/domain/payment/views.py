@@ -291,6 +291,7 @@ class CardPaymentView(Viewable):
 
     columns = dict(
         id=Payment.q.id,
+        identifier=Payment.q.identifier,
         description=Payment.q.description,
         drawee_name=_DraweePerson.q.name,
         provider_name=_ProviderPerson.q.name,
@@ -351,6 +352,7 @@ class _BillandCheckPaymentView(Viewable):
     """A base view for check and bill payments."""
     columns = dict(
         id=Payment.q.id,
+        identifier=Payment.q.identifier,
         due_date=Payment.q.due_date,
         paid_date=Payment.q.paid_date,
         status=Payment.q.status,

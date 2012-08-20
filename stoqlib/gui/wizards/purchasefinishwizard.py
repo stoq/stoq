@@ -118,7 +118,7 @@ class PurchaseFinishPaymentAdjustStep(WizardEditorStep):
             self.missing_label.set_label(_('Overpaid:'))
 
     def _get_columns(self):
-        return [Column('id', "#", data_type=int, width=50,
+        return [Column('identifier', "#", data_type=int, width=50,
                        format='%04d', justify=gtk.JUSTIFY_RIGHT),
                 Column('description', _("Description"), data_type=str,
                        width=150, expand=True,

@@ -243,7 +243,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
     # Private
 
     def _get_columns(self):
-        return [Column('id', data_type=int, visible=False,
+        return [Column('identifier', _('#'), data_type=int, visible=False,
                        sorted=True),
                 Column('description', _("Description"), data_type=str),
                 Column('due_date', _("Due"), data_type=datetime.date),

@@ -67,6 +67,8 @@ class DeliverySearch(SearchEditor):
                         position=SearchFilterPosition.TOP)
 
     def get_columns(self):
+        # FIXME: Create a view for this and show the sale_identifier instead of
+        # id
         return [Column('id', title=_('#'), data_type=int,
                        order=gtk.SORT_DESCENDING),
                 SearchColumn('status_str', title=_('Status'),

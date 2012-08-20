@@ -64,7 +64,7 @@ class LoanItemSearch(SearchDialog):
                         position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('loan_id', title=_(u'Loan'), data_type=int,
+        return [SearchColumn('loan_identifier', title=_(u'Loan'), data_type=int,
                              format='%03d', sorted=True),
                 SearchColumn('opened', title=_(u'Open date'),
                              data_type=datetime.date, visible=False),
@@ -132,7 +132,7 @@ class LoanSearch(SearchDialog):
         self.add_filter(date_filter, columns=['expire_date', 'open_date'])
 
     def get_columns(self):
-        return [Column('id', _('#'), data_type=int, width=50),
+        return [Column('identifier', _('#'), data_type=int, width=50),
                 Column('open_date', _('Open date'),
                        data_type=datetime.date, sorted=True, width=100),
                 Column('expire_date', _('Expire date'),

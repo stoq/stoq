@@ -77,6 +77,7 @@ class _TemporaryProductComponent(object):
             # data access
             sellable = self.component.sellable
             self.id = sellable.id
+            self.code = sellable.code
             self.description = sellable.get_description()
             self.category = sellable.get_category_description()
             self.unit = sellable.get_unit_description()
@@ -127,7 +128,7 @@ class ProductComponentSlave(BaseEditorSlave):
         self._setup_widgets()
 
     def _get_columns(self):
-        return [Column('id', title=_(u'Code'), data_type=int,
+        return [Column('code', title=_(u'Code'), data_type=int,
                         expander=True, sorted=True),
                 Column('quantity', title=_(u'Quantity'),
                         data_type=Decimal),
@@ -251,7 +252,8 @@ class ProductComponentSlave(BaseEditorSlave):
                     '%s is composed by %s' % (component_desc, product_desc)))
             return
 
-        model = run_dialog(ProductComponentEditor, self, self.conn,
+        toplevel = self.get_toplevel().get_toplevel()
+        model = run_dialog(ProductComponentEditor, toplevel, self.conn,
                            product_component)
         if not model:
             return
