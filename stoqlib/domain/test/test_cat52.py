@@ -50,9 +50,8 @@ def compare_files(sfile, basename):
     sfile.write(output)
     expected = os.path.join(test.__path__[0], expected)
     diff = diff_files(expected, output)
-    #os.unlink(output)
-    if diff:
-        raise AssertionError('%s\n%s' % ("Files differ, output:", diff))
+    os.unlink(output)
+    return diff
 
 
 class Cat52Test(DomainTest):
@@ -132,7 +131,5 @@ class Cat52Test(DomainTest):
         for payment in sale.payments:
             f.add_payment_method(sale, history, payment)
 
-        try:
-            compare_files(f, 'cat52')
-        except AssertionError as e:
-            self.fail(e)
+        diff = compare_files(f, 'cat52')
+        self.failIf(diff, '%s\n%s' % ("Files differ, output:", diff))
