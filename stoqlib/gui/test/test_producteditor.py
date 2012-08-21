@@ -71,8 +71,7 @@ class TestProductProductionEditor(GUITest):
         editor.code.update("12345")
         compslave = editor.component_slave
         compslave.component_combo.select_item_by_data(component.component)
-        self.assertSensitive(compslave, ['add_button'])
-        compslave.add_button.clicked()
+        self.click(compslave.add_button)
 
         run_dialog.assert_called_once()
 
@@ -90,8 +89,7 @@ class TestProductProductionEditor(GUITest):
         editor.code.update("12345")
         compslave = editor.component_slave
         compslave.component_combo.select_item_by_data(component.product)
-        self.assertSensitive(compslave, ['add_button'])
-        compslave.add_button.clicked()
+        self.click(compslave.add_button)
 
         info.assert_called_once_with(
             'You can not add this product as component, '

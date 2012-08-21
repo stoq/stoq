@@ -62,7 +62,7 @@ class TestSupplierDetails(GUITest):
         supplier = self.create_supplier()
 
         dialog = SupplierDetailsDialog(self.trans, supplier)
-        dialog.further_details_button.clicked()
+        self.click(dialog.further_details_button)
 
         args, kwargs = run_dialog.call_args
         editor, d, trans, model = args

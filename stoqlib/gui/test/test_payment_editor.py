@@ -149,7 +149,7 @@ class TestPaymentEditor(GUITest):
         payment.group = self.create_payment_group()
         editor = OutPaymentEditor(self.trans, payment)
 
-        editor.details_button.clicked()
+        self.click(editor.details_button)
         run_dialog.assert_called_once_with(LonelyPaymentDetailsDialog, editor,
                                            editor.conn, editor.model)
 
@@ -159,7 +159,7 @@ class TestPaymentEditor(GUITest):
         payment.group = self.create_payment_group()
         editor = InPaymentEditor(self.trans, payment)
 
-        editor.details_button.clicked()
+        self.click(editor.details_button)
         run_dialog.assert_called_once_with(LonelyPaymentDetailsDialog, editor,
                                            editor.conn, editor.model)
 
@@ -171,7 +171,7 @@ class TestPaymentEditor(GUITest):
         p = purchase.payments[0]
         editor = OutPaymentEditor(self.trans, p)
 
-        editor.details_button.clicked()
+        self.click(editor.details_button)
         run_dialog.assert_called_once_with(PurchaseDetailsDialog, editor,
                                            editor.conn, purchase)
 
@@ -187,7 +187,7 @@ class TestPaymentEditor(GUITest):
 
         editor = InPaymentEditor(self.trans, p)
 
-        editor.details_button.clicked()
+        self.click(editor.details_button)
         # FIXME: for Viewable comparision in Storm"
         #from stoqlib.domain.sale import SaleView
         #from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog

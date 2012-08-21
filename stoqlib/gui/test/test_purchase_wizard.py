@@ -33,27 +33,23 @@ class TestPurchaseWizard(GUITest):
         start_step.order_number.update("12345")
         if uitest:
             self.check_wizard(self.wizard, uitest)
-        self.assertSensitive(self.wizard, ['next_button'])
-        self.wizard.next_button.clicked()
+        self.click(self.wizard.next_button)
 
     def _check_item_step(self, uitest=''):
         item_step = self.wizard.get_current_step()
         product = self.create_product()
         Storable(product=product, connection=self.trans)
         item_step.sellable_selected(product.sellable)
-        self.assertSensitive(item_step, ['add_sellable_button'])
-        item_step.add_sellable_button.clicked()
+        self.click(item_step.add_sellable_button)
         if uitest:
             self.check_wizard(self.wizard, uitest)
-        self.assertSensitive(self.wizard, ['next_button'])
-        self.wizard.next_button.clicked()
+        self.click(self.wizard.next_button)
 
     def _check_payment_step(self, uitest=''):
         if uitest:
             self.check_wizard(self.wizard, uitest,
                               ignores=[str(self.wizard.model.identifier)])
-        self.assertSensitive(self.wizard, ['next_button'])
-        self.wizard.next_button.clicked()
+        self.click(self.wizard.next_button)
 
     def testCreate(self):
         self.wizard = PurchaseWizard(self.trans)
@@ -72,8 +68,7 @@ class TestPurchaseWizard(GUITest):
         self.check_wizard(self.wizard, 'wizard-purchase-finish-step',
                           models=models)
 
-        self.assertSensitive(self.wizard, ['next_button'])
-        self.wizard.next_button.clicked()
+        self.click(self.wizard.next_button)
 
     def testCreateAndReceive(self):
         self.wizard = PurchaseWizard(self.trans)
@@ -84,8 +79,7 @@ class TestPurchaseWizard(GUITest):
         finish_step = self.wizard.get_current_step()
         finish_step.receive_now.set_active(True)
 
-        self.assertSensitive(self.wizard, ['next_button'])
-        self.wizard.next_button.clicked()
+        self.click(self.wizard.next_button)
 
         receiving_step = self.wizard.get_current_step()
         receiving_step.invoice_slave.order_number.update("12345")
@@ -93,8 +87,7 @@ class TestPurchaseWizard(GUITest):
 
         self.check_wizard(self.wizard, 'wizard-purchase-invoice-step')
 
-        self.assertSensitive(self.wizard, ['next_button'])
-        self.wizard.next_button.clicked()
+        self.click(self.wizard.next_button)
 
         purchase = self.wizard.model
         models = [purchase]
