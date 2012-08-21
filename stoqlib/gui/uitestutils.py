@@ -24,6 +24,8 @@
 
 import datetime
 import os
+import sys
+import traceback
 
 import gobject
 import gtk
@@ -282,6 +284,24 @@ stoq_dir = os.path.dirname(os.path.dirname(stoq.__file__))
 
 
 class GUITest(DomainTest):
+    def setUp(self):
+        self._unhandled_exceptions = []
+        self._old_hook = sys.excepthook
+        sys.excepthook = self._except_hook
+        DomainTest.setUp(self)
+
+    def tearDown(self):
+        sys.excepthook = self._old_hook
+
+        if self._unhandled_exceptions:
+            self.fail("Unhandled exceptions: %r" % (
+                self._unhandled_exceptions))
+        DomainTest.tearDown(self)
+
+    def _except_hook(self, exc_type, exc_value, exc_traceback):
+        self._unhandled_exceptions.append((exc_type, exc_value, exc_traceback))
+        traceback.print_exception(exc_type, exc_value, exc_traceback)
+
     def _get_ui_filename(self, name):
         return os.path.join(stoq_dir, 'tests', 'ui', name + '.uitest')
 
