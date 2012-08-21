@@ -694,7 +694,7 @@ class ProductionProductEditor(ProductEditor):
 
     def _is_valid_cost(self, cost):
         if hasattr(self, '_component_slave'):
-            component_cost = self._component_slave.get_component_cost()
+            component_cost = self.component_slave.get_component_cost()
             return cost >= component_cost
         return True
 
@@ -704,12 +704,12 @@ class ProductionProductEditor(ProductEditor):
         return model
 
     def get_extra_tabs(self):
-        self._component_slave = ProductComponentSlave(self.conn, self.model,
+        self.component_slave = ProductComponentSlave(self.conn, self.model,
                                                       self.visual_mode)
         tax_slave = ProductTaxSlave(self.conn, self.model, self.visual_mode)
         quality_slave = ProductQualityTestSlave(self, self.conn, self.model,
                                                 self.visual_mode)
-        return [(_(u'Components'), self._component_slave),
+        return [(_(u'Components'), self.component_slave),
                 (_(u'Taxes'), tax_slave),
                 (_(u'Quality'), quality_slave),
                 ]
@@ -719,13 +719,13 @@ class ProductionProductEditor(ProductEditor):
             info(self._cost_msg)
             return False
 
-        confirm = self._component_slave.validate_confirm()
+        confirm = self.component_slave.validate_confirm()
         if not confirm:
             info(_(u'There is no component in this product.'))
         return confirm
 
     def on_confirm(self):
-        self._component_slave.on_confirm()
+        self.component_slave.on_confirm()
         return self.model
 
     def on_cost__validate(self, widget, value):
