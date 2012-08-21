@@ -129,9 +129,11 @@ class ECFEditor(BaseEditor):
     def can_activate_printer(self):
         serial = self.model.device_serial
         printers = ECFPrinter.selectBy(is_active=True,
-                                       station=get_current_station(self.conn))
+                                       station=get_current_station(self.conn),
+                                       connection=self.conn)
         till = Till.selectOneBy(status=Till.STATUS_OPEN,
-                             station=get_current_station(self.conn))
+                                station=get_current_station(self.conn),
+                                connection=self.conn)
         if till and printers:
             warning(_("You need to close the till opened at %s before "
                       "changing this printer.") % till.opening_date.date())
@@ -322,7 +324,7 @@ class ECFListSlave(ModelListSlave):
         if item.brand == 'virtual':
             info(_("Cant edit a virtual printer"))
             return False
-        return ModelListDialog.edit_item(self, item)
+        return ModelListSlave.edit_item(self, item)
 
 
 class ECFListDialog(ModelListDialog):
