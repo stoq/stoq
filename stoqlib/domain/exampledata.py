@@ -354,9 +354,10 @@ class ExampleCreator(object):
 
         return product
 
-    def create_product_component(self):
+    def create_product_component(self, product=None):
         from stoqlib.domain.product import ProductComponent
-        product = self.create_product()
+        if product is None:
+            product = self.create_product()
         component = self.create_product()
         return ProductComponent(product=product,
                                 component=component,

@@ -22,9 +22,14 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
 
+from stoqlib.database.runtime import get_current_branch
+from stoqlib.domain.product import Storable
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.gui.editors.producteditor import ProductEditor
+from stoqlib.gui.editors.producteditor import (ProductEditor,
+                                               ProductComponentEditor,
+                                               ProductionProductEditor)
 
 
 class TestProductEditor(GUITest):
@@ -38,3 +43,79 @@ class TestProductEditor(GUITest):
         editor = ProductEditor(self.trans, product)
         editor.code.update("12345")
         self.check_editor(editor, 'editor-product-show')
+
+
+class TestProductProductionEditor(GUITest):
+    def testCreate(self):
+        editor = ProductionProductEditor(self.trans)
+        editor.code.update("12345")
+        self.check_editor(editor, 'editor-product-prod-create')
+
+    def testShow(self):
+        component = self.create_product_component()
+        component.component.sellable.code = '4567'
+        editor = ProductionProductEditor(
+            self.trans, component.product)
+        editor.code.update("12345")
+        self.check_editor(editor, 'editor-product-prod-show')
+
+    @mock.patch('stoqlib.gui.editors.producteditor.run_dialog')
+    @mock.patch('stoqlib.gui.editors.producteditor.info')
+    def testEditComponent(self, info, run_dialog):
+        run_dialog.return_value = None
+        component = self.create_product_component()
+        component.component.sellable.code = '4567'
+        branch = get_current_branch(self.trans)
+        storable = Storable(product=component.product, connection=self.trans)
+        component.product.storable.increase_stock(1, branch, unit_cost=10)
+
+        editor = ProductionProductEditor(self.trans, component.product)
+        editor.code.update("12345")
+        compslave = editor.component_slave
+        compslave.component_combo.select_item_by_data(component.component)
+        self.assertSensitive(compslave, ['add_button'])
+        compslave.add_button.clicked()
+
+        run_dialog.assert_called_once_with()
+        info.assert_called_once_with(
+            'You can not add this product as component, '
+            'since Description is composed by Description')
+
+    @mock.patch('stoqlib.gui.editors.producteditor.run_dialog')
+    def testEditComponent(self, run_dialog):
+        run_dialog.return_value = None
+        component = self.create_product_component()
+        component.component.sellable.code = '4567'
+        branch = get_current_branch(self.trans)
+        storable = Storable(product=component.product, connection=self.trans)
+        component.product.storable.increase_stock(1, branch, unit_cost=10)
+
+        editor = ProductionProductEditor(self.trans, component.product)
+        editor.code.update("12345")
+        compslave = editor.component_slave
+        compslave.component_combo.select_item_by_data(component.component)
+        self.assertSensitive(compslave, ['add_button'])
+        compslave.add_button.clicked()
+
+        run_dialog.assert_called_once()
+
+        self.check_editor(editor, 'editor-product-prod-edit')
+
+    @mock.patch('stoqlib.gui.editors.producteditor.info')
+    def testEditComponentEditComposed(self, info):
+        component = self.create_product_component()
+        component.component.sellable.code = '4567'
+        branch = get_current_branch(self.trans)
+        storable = Storable(product=component.component, connection=self.trans)
+        component.component.storable.increase_stock(1, branch, unit_cost=10)
+
+        editor = ProductionProductEditor(self.trans, component.component)
+        editor.code.update("12345")
+        compslave = editor.component_slave
+        compslave.component_combo.select_item_by_data(component.product)
+        self.assertSensitive(compslave, ['add_button'])
+        compslave.add_button.clicked()
+
+        info.assert_called_once_with(
+            'You can not add this product as component, '
+            'since Description is composed by Description')
