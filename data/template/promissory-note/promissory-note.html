@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                      "http://www.w3.org/TR/html4/loose.dtd">
+
+<%page args="title, booklets, template_root, _" />
+
+<html>
+<head>
+  <title>${title}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="${template_root}/promissory-note/promissory-note.css" type="text/css" />
+</head>
+
+<body>
+
+  % for b in booklets:
+
+  <div class="promissory_note">
+    <div class="col1">
+      <span class="title">${_("Promissory Note")}</span>
+
+      <span class="subtitle">${_("Payment local")}</span>
+      <div class="block">
+        <span class="value">${"%s - %s" % (b.drawer, b.drawer_document)}</span><br />
+        <span class="value">${b.drawer_address[0]}</span><br />
+        <span class="value">${b.drawer_address[1]}</span>
+      </div>
+
+      <span class="subtitle">${_("Issuer")}</span>
+      <div class="block">
+        <span class="value">${"%s - %s" % (b.drawee, b.drawee_document)}</span><br />
+        <span class="value">${b.drawee_address[0]}</span><br />
+        <span class="value">${b.drawee_address[1]}</span>
+      </div>
+    </div>
+
+    <div class="col2">
+      <img class="logo" src="${b.logo_path}" />
+      <table class="notes">
+        <tr>
+          <th><span class="subtitle">${_("Number:")}</span></th>
+          <td><span class="value">${"%s/%s" % (b.sale_id, b.payment_id)}</span></td>
+        </tr>
+        <tr>
+          <th><span class="subtitle">${_("Emission date:")}</span></th>
+          <td><span class="value">${b.emission_date_full}</span></td>
+        </tr>
+        <tr>
+          <th><span class="subtitle">${_("Due date:")}</span></th>
+          <td><span class="value">${b.due_date_full}</span></td>
+        </tr>
+        <tr>
+          <th><span class="subtitle">${_("Value:")}</span></th>
+          <td><span class="value">${b.value}</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <br class="clearfix" />
+    <div class="footer">
+      <span class="promisse">
+        ${_("At the due date, I'll pay for this promissory note the amount of "
+            "{value} to {drawer}.").format(value=b.value_full, drawer=b.drawer)}
+      </span>
+      <span class="date">
+        ${_("{emission_city}, {emission_date}").format(
+            emission_city=b.emission_city, emission_date=b.emission_date_full)}
+      </span>
+      <span class="signature">${b.drawee}</span>
+    </div>
+    <br class="clearfix" />
+  </div>
+
+  % endfor
+
+</body>
+</html>

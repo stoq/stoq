@@ -28,6 +28,10 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+# January, 01 2012
+full_date_format = "%B, %d %Y"
+
+
 class CompanyDocument(object):
     label = _('Document')
     entry_mask = None

@@ -26,21 +26,28 @@
 import datetime
 import decimal
 import operator
+import os
 import sys
+import tempfile
 import traceback
 
 from kiwi.currency import currency
 from kiwi.datatypes import converter, ValidationError
+from kiwi.environ import environ
 from kiwi.python import Settable
 from reportlab.lib import colors, pagesizes, utils
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 
+from stoqlib.database.runtime import get_current_branch, get_connection
 from stoqlib.exceptions import ReportError
+from stoqlib.lib.cardinal_formatters import get_price_cardinal
 from stoqlib.lib.crashreport import collect_traceback
-from stoqlib.lib.formatters import format_phone_number
+from stoqlib.lib.formatters import format_phone_number, get_full_date
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.template import render_template
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.reporting.template import get_logotype_path
 
 _ = stoqlib_gettext
 
@@ -358,42 +365,18 @@ class _BookletPDF(object):
         self.pdf_canvas.showPage()
 
 
-class BookletReport(object):
-    title = _("Booklet")
-
-    def __init__(self, filename, payments):
-        self._payments_added = False
-        self._payments = payments
-        self._filename = filename
-        self._pdf = _BookletPDF(self._filename)
-
+class _BaseBookletReport(object):
     #
     #  Public API
     #
 
-    def save(self):
-        self._add_payments()
-
-        try:
-            self._pdf.render()
-        except ValueError:
-            exc = sys.exc_info()
-            tb_str = ''.join(traceback.format_exception(*exc))
-            collect_traceback(exc, submit=True)
-            raise ReportError(tb_str)
-
-        self._pdf.save()
-
-    #
-    #  Private
-    #
-
-    def _add_payments(self):
-        if self._payments_added:
-            return
-
-        payments = sorted(self._payments, key=operator.attrgetter('due_date'))
+    def get_booklets_data(self, payments):
+        payments = sorted(payments, key=operator.attrgetter('due_date'))
         len_payments = len(payments)
+
+        conn = get_connection()
+        logo_path = get_logotype_path(conn)
+        branch = get_current_branch(conn)
 
         for i, payment in zip(range(len_payments), payments):
             if payment.method.method_name != 'store_credit':
@@ -404,6 +387,8 @@ class BookletReport(object):
             drawer_company = self._get_drawer(payment)
             drawer_person = drawer_company.person
             drawee_person = group.payer
+            emission_address = branch.person.get_main_address()
+            emission_location = emission_address.city_location
 
             if sale:
                 sale_id = sale.get_order_number_str()
@@ -413,24 +398,35 @@ class BookletReport(object):
                 sale_id = ''
                 total_value = ''
 
-            self._pdf.add_booklet(Settable(**dict(
+            booklet = Settable(
+                # FIXME: Rename id -> number
                 sale_id=sale_id,
                 payment_id=payment.get_payment_number_str(),
                 installment=self._format_installment(i + 1, len_payments),
                 emission_date=self._format_date(datetime.date.today()),
+                emission_date_full=self._format_date(datetime.date.today(), full=True),
                 due_date=self._format_date(payment.due_date),
+                due_date_full=self._format_date(payment.due_date, full=True),
                 value=self._format_currency(payment.value),
+                value_full=self._format_currency(payment.value, full=True),
                 total_value=total_value,
                 drawer=drawer_company.get_description(),
                 drawee=drawee_person.name,
                 drawer_document=self._get_person_document(drawer_person),
                 drawee_document=self._get_person_document(drawee_person),
                 drawee_phone_number=self._get_person_phone(drawee_person),
+                drawee_address=self._get_person_address(drawee_person),
+                drawer_address=self._get_person_address(drawer_person),
                 instructions=self._get_instructions(payment),
                 demonstrative=self._get_demonstrative(payment),
-                )))
+                emission_city=emission_location.city,
+                logo_path=logo_path,
+                )
+            yield booklet
 
-        self._payments_added = True
+    #
+    #  Private
+    #
 
     def _get_instructions(self, payment):
         conn = payment.get_connection()
@@ -474,21 +470,107 @@ class BookletReport(object):
 
         return phone_number or mobile_number
 
+    def _get_person_address(self, person):
+        address = person.get_main_address()
+        location = address.city_location
+        return (address.get_address_string(),
+                '%s / %s' % (location.city, location.state))
+
     def _format_installment(self, installment, total_installments):
         return _("%s of %s") % (installment, total_installments)
 
-    def _format_currency(self, value):
+    def _format_currency(self, value, full=False):
         if isinstance(value, (int, float)):
             value = decimal.Decimal(value)
+
+        if full:
+            return get_price_cardinal(value)
+
         try:
             return converter.as_string(currency, value)
         except ValidationError:
             return ''
 
-    def _format_date(self, date):
+    def _format_date(self, date, full=False):
         if isinstance(date, datetime.datetime):
             date = date.date()
+
+        if full:
+            return get_full_date(date)
+
         try:
             return converter.as_string(datetime.date, date)
         except ValidationError:
             return ''
+
+
+class BookletReport(_BaseBookletReport):
+    title = _("Booklet")
+
+    def __init__(self, filename, payments):
+        self._payments_added = False
+        self._payments = payments
+        self._pdf = _BookletPDF(filename)
+
+    def save(self):
+        if not self._payments_added:
+            for booklet_data in self.get_booklets_data(self._payments):
+                self._pdf.add_booklet(booklet_data)
+            self._payments_added = True
+
+        try:
+            self._pdf.render()
+        except ValueError:
+            exc = sys.exc_info()
+            tb_str = ''.join(traceback.format_exception(*exc))
+            collect_traceback(exc, submit=True)
+            raise ReportError(tb_str)
+
+        self._pdf.save()
+
+
+class PromissoryNoteReport(_BaseBookletReport):
+    title = _("Promissory Note")
+    template_filename = "promissory-note/promissory-note.html"
+
+    def __init__(self, filename, payments):
+        self._filename = filename
+        self._payments = payments
+
+    def save(self):
+        import gtk
+        import webkit
+
+        window = gtk.OffscreenWindow()
+        view = webkit.WebView()
+        window.add(view)
+
+        template_dirs = environ.get_resource_paths('template')
+        template = render_template(
+            self.template_filename,
+            title=self.title,
+            template_root=template_dirs[0],
+            _=stoqlib_gettext,
+            booklets=self.get_booklets_data(self._payments))
+        with tempfile.NamedTemporaryFile('w', delete=False) as f:
+            f.write(template)
+            f.flush()
+            view.load_uri("file://%s" % f.name)
+            view.connect("load-finished", self._on_webview__load_finish,
+                         f.name)
+
+        gtk.main()
+
+    #
+    #  Callbacks
+    #
+
+    def _on_webview__load_finish(self, view, frame, html_filename):
+        import gtk
+        # FIXME: Find a better way of doing this. This way, we print twice,
+        #        one for this PrintOperation and another for our print dialog.
+        operation = gtk.PrintOperation()
+        operation.set_export_filename(self._filename)
+        operation.connect('done', gtk.main_quit)
+        frame.print_full(operation, gtk.PRINT_OPERATION_ACTION_EXPORT)
+        os.unlink(html_filename)

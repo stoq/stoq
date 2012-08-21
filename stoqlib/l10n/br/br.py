@@ -32,6 +32,10 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+# 01 de janeiro de 2012
+full_date_format = "%d de %B de %Y"
+
+
 #
 # CNPJ - Cadastro Nacional da Pessoa Juridica
 #
