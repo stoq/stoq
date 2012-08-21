@@ -23,6 +23,7 @@
 ##
 
 import datetime
+from dateutil.relativedelta import relativedelta
 
 from kiwi.datatypes import converter
 
@@ -41,6 +42,7 @@ from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.person import Person, CreditProvider
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -253,9 +255,12 @@ class InPaymentView(BasePaymentView):
           check if has late payments
         :returns: True if the person has overdue payments. False otherwise
         """
+        tolerance = sysparam(conn).TOLERANCE_FOR_LATE_PAYMENTS
+
         query = AND(cls.q.person_id == person.id,
                     cls.q.status == Payment.STATUS_PENDING,
-                    cls.q.due_date < datetime.date.today())
+                    cls.q.due_date < datetime.date.today() -
+                                     relativedelta(days=tolerance))
 
         late_payments = cls.select(query, connection=conn)
         if late_payments.any():

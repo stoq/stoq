@@ -395,6 +395,14 @@ _details = [
         'fiscal.CfopData'),
 
     ParameterDetails(
+        'TOLERANCE_FOR_LATE_PAYMENTS',
+        _('Sales'),
+        _('Tolerance for a payment to be considered as a late payment.'),
+        _('How many days Stoq should allow a client to not pay a late '
+          'payment without considering it late.'),
+        int, initial=0, range=(0, 365)),
+
+    ParameterDetails(
         'LATE_PAYMENTS_POLICY',
         _('Sales'),
         _('Policy for customers with late payments.'),

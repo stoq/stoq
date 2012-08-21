@@ -27,12 +27,15 @@ Base class for sharing code between accounts payable and receivable."""
 import gettext
 import urllib
 
+import datetime
+from dateutil.relativedelta import relativedelta
+
 import gtk
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 import pango
 from stoqlib.api import api
-from stoqlib.database.orm import AND, const
+from stoqlib.database.orm import AND
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
@@ -163,9 +166,11 @@ class BaseAccountWindow(SearchableAppWindow):
             elif value == 'not-paid':
                 return payment_view.q.status == Payment.STATUS_PENDING
             elif value == 'late':
+                tolerance = api.sysparam(self.conn).TOLERANCE_FOR_LATE_PAYMENTS
                 return AND(
                     payment_view.q.status == Payment.STATUS_PENDING,
-                    payment_view.q.due_date < const.NOW())
+                    payment_view.q.due_date < datetime.date.today() -
+                                              relativedelta(days=tolerance))
         elif kind == 'category':
             return payment_view.q.category == value
 
