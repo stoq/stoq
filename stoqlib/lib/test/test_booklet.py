@@ -27,16 +27,15 @@ import decimal
 import os
 import tempfile
 
-from nose.exc import SkipTest
-
 from stoqlib.api import api
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib import test
 from stoqlib.lib.diffutils import diff_pdf_htmls
 from stoqlib.lib.pdf import pdftohtml
-from stoqlib.reporting.booklet import BookletReport
+from stoqlib.reporting.booklet import BookletReport, PromissoryNoteReport
 
 
 class TestBooklet(DomainTest):
@@ -55,7 +54,6 @@ class TestBooklet(DomainTest):
             )
 
     def test_booklet_with_sale_pdf(self):
-        raise SkipTest("Port to work with Storm")
         due_dates = [
             datetime.datetime(2012, 01, 05),
             datetime.datetime(2012, 02, 05),
@@ -69,8 +67,13 @@ class TestBooklet(DomainTest):
             ("Banana", 1, decimal.Decimal('5.25')),
             ]
 
-        sale = self.create_sale(666)
-        sale.client = self.create_client()
+        client = self.create_client()
+        client.credit_limit = decimal.Decimal('100000')
+        address = self.create_address()
+        address.person = client.person
+
+        sale = self.create_sale(666, client=client,
+                                branch=get_current_branch(self.trans))
         for description, quantity, price in items:
             sellable = self.add_product(sale, price, quantity)
             sellable.description = description
@@ -84,12 +87,14 @@ class TestBooklet(DomainTest):
         sale.confirm()
 
         for i, payment in zip(range(len(due_dates)), sale.group.payments):
-            payment.id = 66 + i
+            payment.identifier = 66 + i
 
-        self._diff_expected(sale.group.payments, 'with-sale')
+        self._diff_expected(BookletReport, sale.group.payments,
+                            'booklet-with-sale')
+        self._diff_expected(PromissoryNoteReport, sale.group.payments,
+                            'promissory-note-with-sale')
 
     def test_booklet_without_sale_pdf(self):
-        raise SkipTest("Port to work with Storm")
         method = PaymentMethod.get_by_name(self.trans, 'store_credit')
         method.max_installments = 12
         group = self.create_payment_group()
@@ -98,36 +103,42 @@ class TestBooklet(DomainTest):
                                       value=decimal.Decimal('10.5'),
                                       method=method)
         payment.group = group
-        payment.id = 666
+        payment.identifier = 666
 
         client = self.create_client()
+        address = self.create_address()
+        address.person = client.person
+        client.credit_limit = decimal.Decimal('100000')
         group.payer = client.person
 
-        self._diff_expected(group.payments, 'without-sale')
+        self._diff_expected(BookletReport, group.payments,
+                            'booklet-without-sale')
+        self._diff_expected(PromissoryNoteReport, group.payments,
+                            'promissory-note-without-sale')
 
-    def _diff_expected(self, payments, expected_name):
+    def _diff_expected(self, report_class, payments, expected_name):
         basedir = test.__path__[0]
         expected = os.path.join(basedir,
-                                'booklet-%s.pdf.html' % expected_name)
+                                '%s.pdf.html' % expected_name)
         output = os.path.join(basedir,
-                              'booklet-%s-tmp.pdf.html' % expected_name)
+                              '%s-tmp.pdf.html' % expected_name)
 
         def save_report(filename, payments):
-            report = BookletReport(fp_tmp.name, payments)
-            report._add_payments()
-            pdf = report._pdf
-            for booklet in pdf._booklets:
+            report = report_class(filename, payments)
+            for booklet_data in report.booklets_data:
                 date = datetime.date(2012, 01, 01)
-                booklet.emission_date = report._format_date(date)
+                booklet_data.emission_date = report._format_date(date)
+                booklet_data.emission_date_full = report._format_date(date,
+                                                                      full=True)
             report.save()
 
         if not os.path.isfile(expected):
-            with tempfile.NamedTemporaryFile(prefix='stoq-booklet') as fp_tmp:
+            with tempfile.NamedTemporaryFile(prefix=expected_name) as fp_tmp:
                 save_report(fp_tmp.name, payments)
                 with open(expected, 'w') as fp:
                     pdftohtml(fp_tmp.name, fp.name)
             return
-        with tempfile.NamedTemporaryFile(prefix='stoq-booklet') as fp_tmp:
+        with tempfile.NamedTemporaryFile(prefix=expected_name) as fp_tmp:
             save_report(fp_tmp.name, payments)
             with open(output, 'w') as fp:
                 pdftohtml(fp_tmp.name, fp.name)
