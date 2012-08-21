@@ -27,6 +27,7 @@ from kiwi.currency import format_price
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.l10n.l10n import get_l10n_field
+from stoqlib.lib.cardinals.cardinals import get_cardinal_function
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
 
@@ -55,6 +56,13 @@ def get_formatted_percentage(value):
 
 def get_price_format_str():
     return '%%.%sf' % DECIMAL_PRECISION
+
+
+def get_price_as_cardinal(value):
+    function = get_cardinal_function('to_words_as_money')
+    currency_names = get_l10n_field(get_connection(),
+                                    'currency_names')
+    return function(value, currency_names)
 
 
 def get_formatted_price(float_value, symbol=True, precision=DECIMAL_PRECISION):

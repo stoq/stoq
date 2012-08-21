@@ -22,22 +22,42 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 ##
+
 import locale
-from kiwi.datatypes import get_localeconv
 
-LANG = locale.getlocale()[0]
-currency_symbol = get_localeconv()['currency_symbol']
+from kiwi.python import namedAny
 
-if LANG == 'pt_BR':
-    from stoqlib.lib.cardinals_ptbr import to_words_as_money
-    assert to_words_as_money # pyflakes
-    currency_names = ['real', 'reais', 'centavo', 'centavos']
-else:
-    from stoqlib.lib.cardinals_en import to_words_as_money
-    assert to_words_as_money # pyflakes
-    currency_names = ['dollar', 'dollars', 'cent', 'cents']
+from stoqlib.lib.cardinals import generic
 
 
-def get_price_cardinal(price):
-    """Return the price as a cardinal number"""
-    return to_words_as_money(price, currency_names)
+def get_cardinal_module():
+    lang = locale.getlocale()[0]
+    if not lang:
+        # For tests
+        return generic
+
+    # First try the full LANG, like 'pt_BR', 'en_US', etc
+    path = 'stoqlib.lib.cardinals.%s' % (lang, )
+    try:
+        return namedAny(path)
+    except (ImportError, AttributeError):
+        # Then base lang, 'pt', 'en', etc
+        base_lang = lang[:2]
+        path = 'stoqlib.lib.cardinals.%s' % (base_lang, )
+        try:
+            return namedAny(path)
+        except (ImportError, AttributeError):
+            return generic
+
+
+def get_cardinal_function(func_name):
+    module = get_cardinal_module()
+    function = getattr(module, func_name, None)
+
+    if not function:
+        function = getattr(generic, func_name)
+
+    assert function
+    assert callable(function)
+
+    return function

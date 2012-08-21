@@ -32,6 +32,12 @@ _ = stoqlib_gettext
 full_date_format = "%B, %d %Y"
 
 
+# FIXME: We use those as generic for a long time for cardinals formatting.
+#        But, is dollar a good generic currency name?
+currency_names = ("dollar", "dollars",
+                  "cent", "cents")
+
+
 class CompanyDocument(object):
     label = _('Document')
     entry_mask = None
