@@ -55,7 +55,8 @@ from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
-from stoqlib.lib.message import warning
+from stoqlib.lib.message import warning, yesno
+from stoqlib.reporting.booklet import PromissoryNoteReport
 from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.payments_receipt import InPaymentReceipt
 
@@ -564,4 +565,15 @@ class ReceivableApp(BaseAccountWindow):
         payments = [view.payment]
         report = view.operation.print_(payments)
         if report is not None:
-            print_report(report, payments)
+            rv = print_report(report, payments)
+
+            # FIXME: This is a very ugly workaround. We should use operation
+            # for that, but, we can't import gtk on it. Maybe we should
+            # move it to stoqlib.lib instead of stoqlib.domain.
+            if payments[0].method.method_name == 'store_credit':
+                # Just offer to print the promissory note if the user
+                # didn't cancel the booklets print dialog.
+                if rv and yesno(_("Would you like to print a promissory note "
+                                  "for the printed booklet(s)?"),
+                                gtk.RESPONSE_NO, _("Print"), _("Don't print")):
+                    print_report(PromissoryNoteReport, payments)

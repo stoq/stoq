@@ -120,12 +120,14 @@ class GtkPrintDialog(BasicDialog):
                         gtk.RESPONSE_DELETE_EVENT]:
             self._dialog.destroy()
             self._dialog = None
+            return False
         elif response == gtk.RESPONSE_OK:
             self._send_to_printer(self._dialog.get_selected_printer(),
                                   self._dialog.get_settings(),
                                   self._dialog.get_page_setup())
             self._dialog.destroy()
             self._dialog = None
+            return True
         else:
             raise AssertionError("unhandled response: %d" % (response, ))
 
@@ -224,7 +226,9 @@ def print_report(report_class, *args, **kwargs):
         return
 
     dialog = dialog_class(report)
-    dialog.run()
+    rv = dialog.run()
 
     if not poppler:
         os.unlink(report.filename)
+
+    return rv

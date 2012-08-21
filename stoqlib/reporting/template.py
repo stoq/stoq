@@ -57,7 +57,7 @@ SMALL_FONT = ("Vera", 12)
 TEXT_HEIGHT = 13
 
 
-def _get_logotype_path(trans):
+def get_logotype_path(trans):
     logo_domain = sysparam(trans).CUSTOM_LOGO_FOR_REPORTS
     if logo_domain and logo_domain.image:
         pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
@@ -91,7 +91,7 @@ class BaseStoqReport(ReportTemplate):
         timestamp = kwargs.get('do_footer', True)
         ReportTemplate.__init__(self, timestamp=timestamp,
                                 username=self.get_username(), *args, **kwargs)
-        logotype_path = _get_logotype_path(get_connection())
+        logotype_path = get_logotype_path(get_connection())
         self._logotype = ImageReader(logotype_path)
         # The BaseReportTemplate's header_height attribute define the
         # vertical position where the document really must starts be
@@ -395,7 +395,7 @@ class BaseRMLReport(object):
         """
         conn = get_connection()
         branch = get_current_branch(conn)
-        logo = _get_logotype_path(conn)
+        logo = get_logotype_path(conn)
 
         ns['title'] = self.title
         ns['logo'] = logo

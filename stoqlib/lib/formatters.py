@@ -26,10 +26,16 @@ import re
 from kiwi.currency import format_price
 
 from stoqlib.database.runtime import get_connection
+from stoqlib.l10n.l10n import get_l10n_field
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
 
 _ = stoqlib_gettext
+
+
+#
+#  Quantity/Percentage formatters
+#
 
 
 def format_quantity(quantity):
@@ -40,6 +46,11 @@ def format_quantity(quantity):
 
 def get_formatted_percentage(value):
     return "%.*f %%" % (DECIMAL_PRECISION, value)
+
+
+#
+#  Price formatters
+#
 
 
 def get_price_format_str():
@@ -56,6 +67,25 @@ def get_formatted_cost(float_value, symbol=True):
     precision = sysparam(get_connection()).COST_PRECISION_DIGITS
     return get_formatted_price(float_value, symbol=symbol,
                                precision=precision)
+
+
+#
+#  Date formatters
+#
+
+
+def get_full_date(date):
+    """Return a date in it's full format taking l10n in consideration
+
+    For example, for Brazil, it will return something like:
+      01 de janeiro de 2012
+    In the generic case, it will return something like:
+      January 01, 2012
+
+    """
+    full_date_format = get_l10n_field(get_connection(),
+                                      "full_date_format")
+    return date.strftime(full_date_format)
 
 
 #
