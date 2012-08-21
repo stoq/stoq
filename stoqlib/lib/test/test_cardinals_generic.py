@@ -25,7 +25,7 @@
 """ Test for lib/cardinals_en.py module. """
 
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.lib.cardinals_en import to_words, to_words_as_money
+from stoqlib.lib.cardinals.generic import to_words, to_words_as_money
 
 
 class TestParameter(DomainTest):

@@ -26,8 +26,7 @@
 
 
 from stoqlib.api import api
-from stoqlib.lib.cardinal_formatters import get_price_cardinal
-from stoqlib.lib.formatters import get_formatted_price
+from stoqlib.lib.formatters import get_formatted_price, get_price_as_cardinal
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
 from stoqlib.reporting.base.tables import (TableColumn as TC, HIGHLIGHT_NEVER)
@@ -84,7 +83,7 @@ class BasePaymentReceipt(BaseStoqReport):
                 TC('', expand=True, truncate=True)]
 
         data.extend([
-            [_("The importance of:"), get_price_cardinal(value).upper()],
+            [_("The importance of:"), get_price_as_cardinal(value).upper()],
             [_("Referring to:"), self.payment.description],
         ])
 

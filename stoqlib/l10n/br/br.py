@@ -36,6 +36,10 @@ _ = stoqlib_gettext
 full_date_format = "%d de %B de %Y"
 
 
+currency_names = ("real", "reais",
+                  "centavo", "centavos")
+
+
 #
 # CNPJ - Cadastro Nacional da Pessoa Juridica
 #

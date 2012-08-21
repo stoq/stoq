@@ -41,9 +41,9 @@ from reportlab.pdfgen import canvas
 
 from stoqlib.database.runtime import get_current_branch, get_connection
 from stoqlib.exceptions import ReportError
-from stoqlib.lib.cardinal_formatters import get_price_cardinal
 from stoqlib.lib.crashreport import collect_traceback
-from stoqlib.lib.formatters import format_phone_number, get_full_date
+from stoqlib.lib.formatters import (format_phone_number, get_full_date,
+                                    get_price_as_cardinal)
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.template import render_template
 from stoqlib.lib.translation import stoqlib_gettext
@@ -484,7 +484,7 @@ class _BaseBookletReport(object):
             value = decimal.Decimal(value)
 
         if full:
-            return get_price_cardinal(value)
+            return get_price_as_cardinal(value)
 
         try:
             return converter.as_string(currency, value)
