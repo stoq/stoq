@@ -44,8 +44,7 @@ class TestCfopEditor(GUITest):
         self.assertEquals(Inventory.select(connection=self.trans).count(), 0)
         branches = Branch.select(connection=self.trans)
         dialog = OpenInventoryDialog(self.trans, branches)
-        self.assertSensitive(dialog.main_dialog, ['ok_button'])
-        dialog.main_dialog.ok_button.clicked()
+        self.click(dialog.main_dialog.ok_button)
 
         # There should be one open inventory now
         self.assertEquals(Inventory.select(connection=self.trans).count(), 1)
@@ -59,14 +58,14 @@ class TestCfopEditor(GUITest):
         self.assertSensitive(dialog.main_dialog, ['ok_button'])
         self.assertSensitive(dialog, ['unselect_all'])
 
-        dialog.unselect_all.clicked()
+        self.click(dialog.unselect_all)
 
         # Now there are now categories selected. We cannot confirm and unselect
         # all
         self.assertNotSensitive(dialog.main_dialog, ['ok_button'])
         self.assertNotSensitive(dialog, ['unselect_all'])
 
-        dialog.select_all.clicked()
+        self.click(dialog.select_all)
 
         # Status should be back to normal
         self.assertSensitive(dialog.main_dialog, ['ok_button'])

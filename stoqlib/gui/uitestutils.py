@@ -305,6 +305,24 @@ class GUITest(DomainTest):
     def _get_ui_filename(self, name):
         return os.path.join(stoq_dir, 'tests', 'ui', name + '.uitest')
 
+    def click(self, button):
+        """Simulates a click on a button.
+        This verifies that the button is clickable (visible and sensitive) and
+        emits the clicked signal
+        """
+        if not isinstance(button, gtk.Button):
+            raise TypeError("%r must be a button" % (button, ))
+
+        if not button.get_visible():
+            self.fail("button is not visible")
+            return
+
+        if not button.get_sensitive():
+            self.fail("button is not sensitive")
+            return
+
+        button.clicked()
+
     def assertInvalid(self, dialog, attributes):
         for attr in attributes:
             value = getattr(dialog, attr)

@@ -76,7 +76,7 @@ class TestSaleDetails(GUITest):
         model = SaleView.select(Sale.q.id == sale.id, connection=self.trans)[0]
 
         dialog = SaleDetailsDialog(self.trans, model)
-        dialog.details_button.clicked()
+        self.click(dialog.details_button)
 
         args, kwargs = run_dialog.call_args
         editor, parent, trans, model = args
@@ -100,7 +100,8 @@ class TestSaleDetails(GUITest):
 
         # Just make sure we can print the bill
         check_printable.return_value = True
-        dialog.print_bills.clicked()
+        self.click(dialog.print_bills)
+
         print_report.assert_called_once_with(BillReport, [payment])
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.print_report')
@@ -115,7 +116,7 @@ class TestSaleDetails(GUITest):
         self.assertSensitive(dialog, ['print_booklets'])
         self.assertNotVisible(dialog, ['print_bills'])
 
-        dialog.print_booklets.clicked()
+        self.click(dialog.print_booklets)
         print_report.assert_called_once_with(BookletReport, [payment])
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.print_report')
@@ -128,7 +129,7 @@ class TestSaleDetails(GUITest):
         dialog = SaleDetailsDialog(self.trans, model)
         self.assertSensitive(dialog, ['print_button'])
 
-        dialog.print_button.clicked()
+        self.click(dialog.print_button)
         print_report.assert_called_once_with(SaleOrderReport, sale)
 
 

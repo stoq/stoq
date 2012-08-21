@@ -60,8 +60,7 @@ class TestPurchaseDetailsDialog(GUITest):
         order = self.create_purchase_order()
         dialog = PurchaseDetailsDialog(self.trans, order)
 
-        self.assertSensitive(dialog, ['export_csv'])
-        dialog.export_csv.clicked()
+        self.click(dialog.export_csv)
         export.assert_called_once()
 
     @mock.patch('stoqlib.gui.dialogs.purchasedetails.print_report')
@@ -71,13 +70,13 @@ class TestPurchaseDetailsDialog(GUITest):
         self.assertSensitive(dialog, ['print_button'])
 
         # Quote order
-        dialog.print_button.clicked()
+        self.click(dialog.print_button)
         print_report.assert_called_once_with(PurchaseQuoteReport, order)
 
         # Normal order
         print_report.reset_mock()
         order.status = PurchaseOrder.ORDER_PENDING
-        dialog.print_button.clicked()
+        self.click(dialog.print_button)
         print_report.assert_called_once_with(PurchaseOrderReport, order)
 
 

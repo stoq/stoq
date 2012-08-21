@@ -46,8 +46,7 @@ class TestConfirmSaleWizard(GUITest):
         self.add_product(sale)
         wizard = ConfirmSaleWizard(self.trans, sale)
 
-        self.assertSensitive(wizard, ['next_button'])
-        wizard.next_button.clicked()
+        self.click(wizard.next_button)
 
         models = [sale, sale.group]
         models.extend(sale.payments)
@@ -69,13 +68,11 @@ class TestConfirmSaleWizard(GUITest):
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('check')
-        self.assertTrue(wizard.next_button.props.sensitive)
-        wizard.next_button.clicked()
+        self.click(wizard.next_button)
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-check',
                           ignores=[sale.get_order_number_str()])
 
-        self.assertSensitive(wizard, ['next_button'])
-        wizard.next_button.clicked()
+        self.click(wizard.next_button)
 
         self.assertEquals(sale.payments[0].method.method_name, 'check')
 
@@ -87,14 +84,12 @@ class TestConfirmSaleWizard(GUITest):
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('bill')
-        self.assertTrue(wizard.next_button.props.sensitive)
-        wizard.next_button.clicked()
+        self.click(wizard.next_button)
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-bill',
                           ignores=[sale.get_order_number_str()])
 
-        self.assertSensitive(wizard, ['next_button'])
+        self.click(wizard.next_button)
 
-        wizard.next_button.clicked()
         self.assertEquals(sale.payments[0].method.method_name, 'bill')
 
         warning.assert_called_once_with(
@@ -109,15 +104,14 @@ class TestConfirmSaleWizard(GUITest):
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('card')
-        self.assertTrue(wizard.next_button.props.sensitive)
-        wizard.next_button.clicked()
+        self.click(wizard.next_button)
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-card',
                           ignores=[sale.get_order_number_str()])
 
         self.assertSensitive(wizard, ['next_button'])
 
         # FIXME: verify card payments
-        #wizard.next_button.clicked()
+        #self.click(wizard.next_button)
         #self.assertEquals(sale.payments[0].method.method_name, 'card')
 
     def testStepPaymentMethodDeposit(self):
@@ -126,13 +120,11 @@ class TestConfirmSaleWizard(GUITest):
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('deposit')
-        self.assertTrue(wizard.next_button.props.sensitive)
-        wizard.next_button.clicked()
+        self.click(wizard.next_button)
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-deposit',
                           ignores=[sale.get_order_number_str()])
 
-        self.assertSensitive(wizard, ['next_button'])
-        wizard.next_button.clicked()
+        self.click(wizard.next_button)
 
         self.assertEquals(sale.payments[0].method.method_name, 'deposit')
 
@@ -147,8 +139,7 @@ class TestConfirmSaleWizard(GUITest):
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('store_credit')
-        self.assertTrue(wizard.next_button.props.sensitive)
-        wizard.next_button.clicked()
+        self.click(wizard.next_button)
         self.check_wizard(wizard, 'wizard-sale-step-payment-method-store-credit',
                           ignores=[sale.get_order_number_str()])
 
@@ -255,11 +246,10 @@ class TestConfirmSaleWizard(GUITest):
         sale.client = self.create_client()
         sale.client.credit_limit = currency("9000")
 
-        self.assertSensitive(wizard, ['next_button'])
-        wizard.next_button.clicked()
+        self.click(wizard.next_button)
 
         # finish wizard
-        wizard.next_button.clicked()
+        self.click(wizard.next_button)
 
         self.assertEquals(sale.payments[0].method.method_name, 'store_credit')
 
