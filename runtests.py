@@ -1,7 +1,6 @@
 import os
 import re
 import sys
-import termcolor
 
 # The tests require that the environment is currently set to C, to avoid
 # translated strings and use the default date/number/currency formatting
@@ -21,6 +20,27 @@ class Stoq(Plugin):
     def begin(self):
         import tests.base
         tests.base  # pyflakes
+
+
+ATTRIBUTES = dict(bold=1, dark=2, underline=4, blink=5,
+                  reverse=7, concealed=8)
+COLORS = dict(grey=30, red=31, green=32, yellow=33, blue=34,
+              magenta=35, cyan=36, white=37)
+RESET = '\033[0m'
+
+
+def colored(text, color=None, attrs=None):
+    if os.getenv('ANSI_COLORS_DISABLED') is None:
+        fmt_str = '\033[%dm%s'
+        if color is not None:
+            text = fmt_str % (COLORS[color], text)
+
+        if attrs is not None:
+            for attr in attrs:
+                text = fmt_str % (ATTRIBUTES[attr], text)
+
+        text += RESET
+    return text
 
 
 class ColorStream(object):
@@ -47,10 +67,7 @@ class ColorStream(object):
         return getattr(self._stream, key)
 
     def _colorize(self, string, color=None):
-        if not string:
-            return string
-
-        if color is not None:
+        if not string or color is not None:
             return string
 
         color = self._color_map.get(string)
@@ -63,7 +80,7 @@ class ColorStream(object):
                                            self._color_map[key])
                     desc = ":".join(segments[1:])
                     if desc.startswith(" Failure: "):
-                        desc = termcolor.colored(desc, self._color_map[key])
+                        desc = colored(desc, self._color_map[key])
                     return label + desc
             for key, key_color in self._color_map.items():
                 # looking for label=number in the summary
@@ -73,7 +90,7 @@ class ColorStream(object):
                         string = string.replace(
                             match, self._colorize(match, key_color))
         if color is not None:
-            string = termcolor.colored(string, color, attrs=("bold",))
+            string = colored(string, color, attrs=("bold",))
         return string
 
     def write(self, string):
@@ -88,30 +105,15 @@ class YANC(Plugin):
 
     name = "yanc"
 
-    _options = (
-        ("color", "YANC color override - one of on,off [%s]", "store"),
-        )
-
     def options(self, parser, env):
         super(YANC, self).options(parser, env)
-        for name, help, action in self._options:
-            env_opt = "NOSE_YANC_%s" % name.upper()
-            parser.add_option("--yanc-%s" % name.replace("_", "-"),
-                              action=action,
-                              dest="yanc_%s" % name,
-                              default=env.get(env_opt),
-                              help=help % env_opt)
 
     def configure(self, options, conf):
         super(YANC, self).configure(options, conf)
-        for name, help, dummy in self._options:
-            name = "yanc_%s" % name
-            setattr(self, name, getattr(options, name))
-        self.color = self.yanc_color != "off" \
-                         and (self.yanc_color == "on" \
-                             or (hasattr(self.conf, "stream")
-                                 and hasattr(self.conf.stream, "isatty") \
-                                 and self.conf.stream.isatty()))
+        self.color = (
+            hasattr(self.conf, "stream") and
+            hasattr(self.conf.stream, "isatty") and
+            self.conf.stream.isatty())
 
     def begin(self):
         if self.color:
@@ -125,7 +127,6 @@ class YANC(Plugin):
 # The --with-stoq parameter must be the last provided option,
 # specifically, after the --with-coverage module when coverage is enabled
 argv = sys.argv[:] + ['--with-stoq',
-                      '--with-yanc',
-                      '--yanc-color=on']
+                      '--with-yanc']
 
 nose.main(argv=argv, addplugins=[Stoq(), YANC()])
