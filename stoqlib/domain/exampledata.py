@@ -392,7 +392,7 @@ class ExampleCreator(object):
         return SellableCategory(description="Category",
                                 connection=self.trans)
 
-    def create_sale(self, id_=None, branch=None):
+    def create_sale(self, id_=None, branch=None, client=None):
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.till import Till
         till = Till.get_current(self.trans)
@@ -401,6 +401,8 @@ class ExampleCreator(object):
             till.open_till()
         salesperson = self.create_sales_person()
         group = self.create_payment_group()
+        if client:
+            group.payer = client.person
         extra_args = dict()
         if id_:
             extra_args['id'] = id_
@@ -412,6 +414,7 @@ class ExampleCreator(object):
                     branch=branch or self.create_branch(),
                     cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
                     group=group,
+                    client=client,
                     connection=self.trans,
                     **extra_args)
 
@@ -465,10 +468,12 @@ class ExampleCreator(object):
 
     def create_city_location(self):
         from stoqlib.domain.address import CityLocation
-        return CityLocation(country='United States',
-                            city='Los Angeles',
-                            state='Californa',
-                            connection=self.trans)
+        return CityLocation.get_or_create(
+            self.trans,
+            country='United States',
+            city='Los Angeles',
+            state='Californa',
+            )
 
     def create_address(self):
         from stoqlib.domain.address import Address

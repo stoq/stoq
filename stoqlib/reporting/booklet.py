@@ -366,11 +366,11 @@ class _BookletPDF(object):
 
 
 class _BaseBookletReport(object):
-    #
-    #  Public API
-    #
+    def __init__(self, filename, payments):
+        self.filename = filename
+        self.booklets_data = list(self._get_booklets_data(payments))
 
-    def get_booklets_data(self, payments):
+    def _get_booklets_data(self, payments):
         payments = sorted(payments, key=operator.attrgetter('due_date'))
         len_payments = len(payments)
 
@@ -507,35 +507,25 @@ class _BaseBookletReport(object):
 class BookletReport(_BaseBookletReport):
     title = _("Booklet")
 
-    def __init__(self, filename, payments):
-        self._payments_added = False
-        self._payments = payments
-        self._pdf = _BookletPDF(filename)
-
     def save(self):
-        if not self._payments_added:
-            for booklet_data in self.get_booklets_data(self._payments):
-                self._pdf.add_booklet(booklet_data)
-            self._payments_added = True
+        pdf = _BookletPDF(self.filename)
+        for booklet_data in self.booklets_data:
+            pdf.add_booklet(booklet_data)
 
         try:
-            self._pdf.render()
+            pdf.render()
         except ValueError:
             exc = sys.exc_info()
             tb_str = ''.join(traceback.format_exception(*exc))
             collect_traceback(exc, submit=True)
             raise ReportError(tb_str)
 
-        self._pdf.save()
+        pdf.save()
 
 
 class PromissoryNoteReport(_BaseBookletReport):
     title = _("Promissory Note")
     template_filename = "promissory-note/promissory-note.html"
-
-    def __init__(self, filename, payments):
-        self._filename = filename
-        self._payments = payments
 
     def save(self):
         import gtk
@@ -551,7 +541,7 @@ class PromissoryNoteReport(_BaseBookletReport):
             title=self.title,
             template_root=template_dirs[0],
             _=stoqlib_gettext,
-            booklets=self.get_booklets_data(self._payments))
+            booklets=self.booklets_data)
         with tempfile.NamedTemporaryFile('w', delete=False) as f:
             f.write(template)
             f.flush()
@@ -570,7 +560,7 @@ class PromissoryNoteReport(_BaseBookletReport):
         # FIXME: Find a better way of doing this. This way, we print twice,
         #        one for this PrintOperation and another for our print dialog.
         operation = gtk.PrintOperation()
-        operation.set_export_filename(self._filename)
+        operation.set_export_filename(self.filename)
         operation.connect('done', gtk.main_quit)
         frame.print_full(operation, gtk.PRINT_OPERATION_ACTION_EXPORT)
         os.unlink(html_filename)
