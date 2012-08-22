@@ -39,23 +39,23 @@ log = Logger('stoqlib.lib.message')
 class DefaultSystemNotifier:
     implements(ISystemNotifier)
 
-    def _msg(self, name, short, description):
+    def message(self, name, short, description):
         if description:
             print '%s: [%s] %s' % (name, short, description)
         else:
             print '%s: %s' % (name, short)
 
     def info(self, short, description):
-        self._msg('INFO', short, description)
+        self.message('INFO', short, description)
 
     def yesno(self, text, default=-1, *verbs):
-        self._msg('YESNO (%s/%s)' % (verbs[0], verbs[1]), text, '')
+        self.message('YESNO (%s/%s)' % (verbs[0], verbs[1]), text, '')
 
     def warning(self, short, description, *args, **kwargs):
-        self._msg('WARNING', short, description, *args, **kwargs)
+        self.message('WARNING', short, description, *args, **kwargs)
 
     def error(self, short, description):
-        self._msg('ERROR', short, description)
+        self.message('ERROR', short, description)
 
 provide_utility(ISystemNotifier, DefaultSystemNotifier())
 

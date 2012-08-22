@@ -68,9 +68,22 @@ class FakeApplicationDescriptions:
 
 
 class TestsuiteNotifier(DefaultSystemNotifier):
+    def __init__(self):
+        self._messages = []
+
+    def reset(self):
+        messages = self._messages
+        self._messages = []
+        return messages
+
+    def message(self, name, short, description):
+        self._messages.append((name, short, description))
+
     def error(self, short, description):
         DefaultSystemNotifier.error(self, short, description)
         os._exit(1)
+
+test_system_notifier = TestsuiteNotifier()
 
 
 def _provide_database_settings():
@@ -157,7 +170,7 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     # FIXME: This is removing some IDomainSlaveMapper (with breakes
     # PaymentsEditor tests!
     utilities.clean()
-    provide_utility(ISystemNotifier, TestsuiteNotifier(), replace=True)
+    provide_utility(ISystemNotifier, test_system_notifier, replace=True)
     provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
     _provide_app_info()
 

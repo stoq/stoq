@@ -39,6 +39,7 @@ from storm.info import get_cls_info
 
 import stoq
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.database.testsuite import test_system_notifier
 from stoqlib.lib.countries import countries
 from stoqlib.lib.diffutils import diff_lines
 
@@ -288,15 +289,21 @@ class GUITest(DomainTest):
         self._unhandled_exceptions = []
         self._old_hook = sys.excepthook
         sys.excepthook = self._except_hook
+        test_system_notifier.reset()
         DomainTest.setUp(self)
 
     def tearDown(self):
         sys.excepthook = self._old_hook
+        DomainTest.tearDown(self)
+
+        messages = test_system_notifier.reset()
+        if messages:
+            self.fail("Unhandled messages: %r, use @mock.patch()" % (
+                messages, ))
 
         if self._unhandled_exceptions:
             self.fail("Unhandled exceptions: %r" % (
                 self._unhandled_exceptions))
-        DomainTest.tearDown(self)
 
     def _except_hook(self, exc_type, exc_value, exc_traceback):
         self._unhandled_exceptions.append((exc_type, exc_value, exc_traceback))
