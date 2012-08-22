@@ -436,6 +436,22 @@ class SearchDialog(BasicDialog):
 
         return branch_filter
 
+    def create_payment_filter(self, label=None):
+        from stoqlib.domain.payment.method import PaymentMethod
+        methods = PaymentMethod.get_active_methods(self.conn)
+        items = [(_('Any'), None)]
+        for method in methods:
+            if method.method_name == 'multiple':
+                continue
+            items.append((method.description, method))
+
+        if not label:
+            label = _('Method:')
+        payment_filter = ComboSearchFilter(label, items)
+        payment_filter.select(None)
+
+        return payment_filter
+
     def create_provider_filter(self, label=None):
         from stoqlib.domain.person import CreditProvider
         providers = CreditProvider.get_active_providers(self.conn)

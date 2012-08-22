@@ -42,7 +42,7 @@ from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.printing import print_report
 from stoqlib.domain.person import Branch
-from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.domain.sale import Sale, SaleView, SalePaymentMethodView
 from stoqlib.domain.views import SoldItemsByBranchView
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.reporting.sale import SoldItemsByBranchReport
@@ -118,6 +118,26 @@ class SaleSearch(SearchDialog):
             self._update_widgets(self.results.get_selected())
 
 
+class SalesByPaymentMethodSearch(SaleSearch):
+    title = _(u'Search for Sales by Payment Method')
+    search_table = SalePaymentMethodView
+    size = (800, 450)
+
+    def create_filters(self):
+        self.set_text_field_columns(['client_name', 'salesperson_name'])
+        self.set_searchbar_labels(_('Items matching:'))
+        self.executer.set_query(self.executer_query)
+
+        payment_filter = self.create_payment_filter(_('Payment Method:'))
+        self.add_filter(payment_filter, columns=[])
+        self.payment_filter = payment_filter
+
+    def executer_query(self, query, having, conn):
+        method = self.payment_filter.get_state().value
+        return self.search_table.select_by_payment(query, method,
+                                                    connection=conn)
+
+
 class SoldItemsByBranchSearch(SearchDialog):
     title = _(u'Sold Items by Branch')
     search_table = SoldItemsByBranchView
@@ -181,7 +201,7 @@ class SoldItemsByBranchSearch(SearchDialog):
                      filters=self.search.get_search_filters())
 
     #
-    #Callbacks
+    # Callbacks
     #
 
     def on_print_button_clicked(self, widget):
