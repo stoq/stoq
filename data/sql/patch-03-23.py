@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
+from stoqlib.database.settings import db_settings
 
 def apply_patch(trans):
     #
@@ -15,6 +16,14 @@ def apply_patch(trans):
               'receiving_order', 'inventory', 'production_order', 'loan',
               'stock_decrease', 'payment', 'till_entry', 'quote_group',
               'quotation']
+
+    # This may be executed by a different user that created the database.
+    # We cannot recreate the sequence if the table belongs to a different user.
+    # We also have to commmit the transaction so the changes take effect
+    query = """ALTER TABLE %(table)s OWNER TO %(user)s;"""
+    for t in tables + ['transfer_order']:
+        trans.query(query % dict(table=t, user=db_settings.username))
+    trans.commit()
 
     query = """
         ALTER TABLE %(table)s ADD COLUMN identifier serial;
