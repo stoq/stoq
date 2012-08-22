@@ -54,7 +54,7 @@ from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
-from stoqlib.lib.dateutil import get_month_names
+from stoqlib.lib.dateutils import get_month_names
 from stoqlib.lib.message import yesno
 from stoqlib.reporting.payment import AccountTransactionReport
 
