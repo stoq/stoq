@@ -22,18 +22,31 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
+
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.deviceseditor import DeviceSettingsEditor
 from stoqlib.domain.devices import DeviceSettings
 
 
+class _Device(object):
+    def __init__(self, name):
+        self.device_name = name
+
+
 class TestDeviceSettingsEditor(GUITest):
-    def testCreate(self):
+    @mock.patch('stoqlib.gui.editors.deviceseditor.DeviceManager.get_serial_devices')
+    def testCreate(self, get_serial_devices):
+        get_serial_devices.return_value = [_Device('/dev/ttyS0'),
+                                           _Device('/dev/ttyS1')]
         station = self.create_station()
         editor = DeviceSettingsEditor(self.trans, station=station)
         self.check_editor(editor, 'editor-devicesetting-create')
 
-    def testShow(self):
+    @mock.patch('stoqlib.gui.editors.deviceseditor.DeviceManager.get_serial_devices')
+    def testShow(self, get_serial_devices):
+        get_serial_devices.return_value = [_Device('/dev/ttyS0'),
+                                           _Device('/dev/ttyS1')]
         station = self.create_station()
         settings = DeviceSettings(connection=self.trans)
         editor = DeviceSettingsEditor(self.trans, model=settings,
