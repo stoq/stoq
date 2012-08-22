@@ -40,14 +40,13 @@ pylint:
 
 check:
 	rm -f .noseids
-	python runtests.py -v -s -d --failed $(TEST_MODULES)
+	python runtests.py --failed $(TEST_MODULES)
 
 check-failed:
-	python runtests.py -v -s -d --failed $(TEST_MODULES)
+	python runtests.py --failed $(TEST_MODULES)
 
 coverage:
 	python runtests.py \
-            --verbose \
 	    --with-xcoverage \
 	    --with-xunit \
 	    --cover-package=stoq,stoqlib \
