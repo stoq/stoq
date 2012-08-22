@@ -26,6 +26,7 @@ from decimal import Decimal
 import datetime
 import unittest
 
+import gtk
 import mock
 from stoqlib.gui.uitestutils import GUITest
 
@@ -104,8 +105,10 @@ class TestSaleDetails(GUITest):
 
         print_report.assert_called_once_with(BillReport, [payment])
 
+    @mock.patch('stoqlib.gui.dialogs.saledetails.yesno')
     @mock.patch('stoqlib.gui.dialogs.saledetails.print_report')
-    def testPrintBooklet(self, print_report):
+    def testPrintBooklet(self, print_report, yesno):
+        yesno.return_value = False
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
@@ -118,6 +121,9 @@ class TestSaleDetails(GUITest):
 
         self.click(dialog.print_booklets)
         print_report.assert_called_once_with(BookletReport, [payment])
+        yesno.assert_called_once_with(
+            'Would you like to print a promissory note for the printed booklet(s)?',
+            gtk.RESPONSE_NO, 'Print', "Don't print")
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.print_report')
     def testPrintDetails(self, print_report):
