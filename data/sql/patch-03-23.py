@@ -3,6 +3,7 @@
 
 from stoqlib.database.settings import db_settings
 
+
 def apply_patch(trans):
     #
     # ADDING AN IDENTIFIER COLUMN.
