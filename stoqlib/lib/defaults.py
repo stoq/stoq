@@ -46,25 +46,6 @@ MINIMUM_PASSWORD_CHAR_LEN = 6
 #  undefined in Unicode"
 UNKNOWN_CHARACTER = u"\N{REPLACEMENT CHARACTER}"
 
-#
-# Dates and time
-#
-
-(INTERVALTYPE_DAY,
- INTERVALTYPE_WEEK,
- INTERVALTYPE_MONTH,
- INTERVALTYPE_YEAR) = range(4)
-
-interval_types = {INTERVALTYPE_DAY: _('Days'),
-                  INTERVALTYPE_WEEK: _('Weeks'),
-                  INTERVALTYPE_MONTH: _('Months'),
-                  INTERVALTYPE_YEAR: _('Years')}
-
-interval_name = {INTERVALTYPE_DAY: 'days',
-                 INTERVALTYPE_WEEK: 'weeks',
-                 INTERVALTYPE_MONTH: 'months',
-                 INTERVALTYPE_YEAR: 'years'}
-
 # weekday constants
 
 NL_TIME_WEEK_1STDAY = 131174
@@ -84,28 +65,6 @@ def get_libc():
     if _libc is None:
         _libc = ctypes.CDLL(find_library("c"))
     return _libc
-
-
-def calculate_delta_interval(interval_type, intervals):
-    """Get the relativedelta value for a certain INTERVALTYPE_* constant.
-
-    Intervals are useful modes to calculate payment duedates, just sum
-    them with a :class:`datetime.datetime` or L{datetime.date} object.
-
-    :param interval_type: one of the INTERVALTYPE_* above
-    :param intervals: an int representing the number of intervals
-    :returns: a :class:`relativedelta.relativedelta` object
-    """
-    if not interval_type in interval_types:
-        raise KeyError('Invalid interval_type %r argument for '
-                       'calculate_interval function.' % (interval_type, ))
-    if not type(intervals) == int:
-        raise TypeError('Invalid type for intervals argument. It must be '
-                        'integer, got %s' % type(intervals))
-
-    kargs = {interval_name[interval_type]: intervals}
-
-    return relativedelta.relativedelta(**kargs)
 
 
 def get_weekday_start():

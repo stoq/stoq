@@ -31,6 +31,7 @@ from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentFlowHistory
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.dateutils import INTERVALTYPE_MONTH
 
 
 class TestPayment(DomainTest):
@@ -225,6 +226,25 @@ class TestPayment(DomainTest):
         payment.pay()
         payment.cancel()
         self.assertEqual(payment.status, Payment.STATUS_CANCELLED)
+
+    def testCreateRepeatedMonth(self):
+        p = self.create_payment()
+        p.description = 'Rent'
+        p.category = self.create_payment_category()
+        payments = Payment.create_repeated(self.trans, p,
+                                           INTERVALTYPE_MONTH,
+                                           datetime.date(2012, 1, 1),
+                                           datetime.date(2012, 12, 31))
+        self.assertEquals(len(payments), 11)
+        self.assertEquals(p.due_date, datetime.datetime(2012, 1, 1))
+        self.assertEquals(p.description, '1/12 Rent')
+
+        self.assertEquals(payments[0].due_date, datetime.datetime(2012, 2, 1))
+        self.assertEquals(payments[1].due_date, datetime.datetime(2012, 3, 1))
+        self.assertEquals(payments[10].due_date, datetime.datetime(2012, 12, 1))
+
+        self.assertEquals(payments[0].description, '2/12 Rent')
+        self.assertEquals(payments[10].description, '12/12 Rent')
 
 
 class TestPaymentFlowHistory(DomainTest):

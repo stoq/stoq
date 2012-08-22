@@ -26,7 +26,7 @@ from decimal import Decimal
 
 from zope.interface import implements
 
-from stoqlib.lib.defaults import calculate_delta_interval, quantize
+from stoqlib.lib.defaults import quantize
 from stoqlib.lib.interfaces import IPaymentOperation, IPaymentOperationManager
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -100,26 +100,3 @@ def generate_payments_values(value, installments_number,
         payments[-1] += difference
 
     return payments
-
-
-def generate_payments_due_dates(installments_number, first_due_date,
-                                interval, interval_type):
-    """Calculates the due dates of payments
-
-    :param installments_number: the number of installments
-    :param first_due_date: a :class:`datetime.datetime` or L{datetime.date}
-      object containing the first due date
-    :param interval: the interval between due_dates
-    :param interval_type: an interval_type from :class:`stoqlib.lib.defaults`
-    :returns: a list with the due_dates
-    """
-    assert installments_number > 0
-
-    due_dates = []
-    delta = calculate_delta_interval(interval_type, interval)
-    d = first_due_date
-    for i in range(installments_number):
-        due_dates.append(d)
-        d += delta
-
-    return due_dates

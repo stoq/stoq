@@ -31,11 +31,10 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.editors.paymenteditor import (InPaymentEditor,
                                                OutPaymentEditor,
-                                               LonelyPaymentDetailsDialog,
-                                               INTERVALTYPE_ONCE)
+                                               LonelyPaymentDetailsDialog)
 from stoqlib.gui.uitestutils import GUITest
+from stoqlib.lib.dateutils import INTERVALTYPE_WEEK
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import INTERVALTYPE_WEEK
 
 _ = stoqlib_gettext
 
@@ -96,7 +95,7 @@ class TestPaymentEditor(GUITest):
         self.assertNotSensitive(editor, ['end_date'])
         editor.repeat.update(INTERVALTYPE_WEEK)
         self.assertSensitive(editor, ['end_date'])
-        editor.repeat.update(INTERVALTYPE_ONCE)
+        editor.repeat.update(-1)
         self.assertNotSensitive(editor, ['end_date'])
 
     def testValueValidation(self):

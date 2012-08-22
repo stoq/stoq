@@ -46,7 +46,7 @@ from stoqlib.gui.stockicons import (STOQ_CALENDAR_TODAY,
                                     STOQ_CALENDAR_MONTH,
                                     STOQ_CALENDAR_LIST)
 from stoqlib.gui.webview import WebView
-from stoqlib.lib import dateconstants
+from stoqlib.lib import dateutils
 from stoqlib.lib.daemonutils import start_daemon
 from stoqlib.lib.defaults import get_weekday_start
 
@@ -84,10 +84,10 @@ class CalendarView(WebView):
 
     def _startup(self):
         options = {}
-        options['monthNames'] = dateconstants.get_month_names()
-        options['monthNamesShort'] = dateconstants.get_short_month_names()
-        options['dayNames'] = dateconstants.get_day_names()
-        options['dayNamesShort'] = dateconstants.get_short_day_names()
+        options['monthNames'] = dateutils.get_month_names()
+        options['monthNamesShort'] = dateutils.get_short_month_names()
+        options['dayNames'] = dateutils.get_day_names()
+        options['dayNamesShort'] = dateutils.get_short_day_names()
         options['buttonText'] = {"today": _('today'),
                                  "month": _('month'),
                                  "week": _('week'),

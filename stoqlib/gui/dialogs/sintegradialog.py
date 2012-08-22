@@ -33,7 +33,7 @@ from kiwi.ui.search import DateSearchFilter
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.domain.system import SystemTable
 from stoqlib.gui.base.dialogs import BasicDialog
-from stoqlib.lib.dateconstants import get_month_names
+from stoqlib.lib.dateutils import get_month_names
 from stoqlib.lib.message import warning
 from stoqlib.lib.sintegra import SintegraError
 from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator

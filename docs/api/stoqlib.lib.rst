@@ -121,10 +121,10 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`dateconstants` Module
+:mod:`dateutils` Module
 ---------------------------
 
-.. automodule:: stoqlib.lib.dateconstants
+.. automodule:: stoqlib.lib.dateutils
     :members:
     :undoc-members:
     :show-inheritance:
@@ -269,14 +269,6 @@ lib Package
 ---------------------------
 
 .. automodule:: stoqlib.lib.pluginmanager
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`prettydate` Module
-------------------------
-
-.. automodule:: stoqlib.lib.prettydate
     :members:
     :undoc-members:
     :show-inheritance:
