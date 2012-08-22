@@ -29,7 +29,7 @@ Contains code derived from:
   Files: stoqlib/lib/latscii.py
 * prettydate <..>
   License: WTFL license
-  Files: stoqlib/lib/prettydate.py
+  Files: stoqlib/lib/dateutils.py
 * Storm <http://storm.canonical.com>
   License: LGPL-v2.1+
   stoqlib/lib/storm.py

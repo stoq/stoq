@@ -46,6 +46,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
+from stoqlib.lib.dateutils import create_date_interval
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -248,6 +249,50 @@ class Payment(Domain):
         payment.method.operation.payment_delete(payment)
 
         super(cls, Payment).delete(obj_id, connection)
+
+    @classmethod
+    def create_repeated(cls, trans, payment, repeat_type, start_date, end_date):
+        """Create a set of repeated payments.
+        Given a type of interval (*repeat_type*), a start date and an end_date,
+        this creates a list of payments for that interval.
+
+        Note, this will also update the description of the payment that's passed
+        in.
+        :param trans: a database transaction
+        :param payment: the payment to repeat
+        :param repeat_type: the kind of repetition (weekly, monthly etc)
+        :param start_date: the date to start this repetition
+        :param end_date: the date to end this repetition
+        :returns: a list of repeated payments
+        """
+        dates = create_date_interval(interval_type=repeat_type,
+                                     start_date=start_date,
+                                     end_date=end_date)
+        n_dates = dates.count()
+        if n_dates == 1:
+            raise AssertionError
+        description = payment.description
+        payment.description = '1/%d %s' % (n_dates, description)
+        payment.due_date = dates[0]
+
+        payments = []
+        for i, date in enumerate(dates[1:]):
+            p = Payment(open_date=payment.open_date,
+                        branch=payment.branch,
+                        payment_type=payment.payment_type,
+                        status=payment.status,
+                        description='%d/%d %s' % (i + 2, n_dates,
+                                                  description),
+                        value=payment.value,
+                        base_value=payment.base_value,
+                        due_date=date,
+                        method=payment.method,
+                        group=payment.group,
+                        till=payment.till,
+                        category=payment.category,
+                        connection=trans)
+            payments.append(p)
+        return payments
 
     #
     # Properties

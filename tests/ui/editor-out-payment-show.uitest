@@ -36,10 +36,12 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
               ProxyLabel(repeat_lbl): 'Repeat:'
               ProxyComboBox(repeat): insensitive
                   item: 'Once', selected
+                  item: 'Daily'
                   item: 'Weekly'
                   item: 'Biweekly'
                   item: 'Monthly'
                   item: 'Quarterly'
+                  item: 'Yearly'
               ProxyLabel(end_date_lbl): 'End date:'
               ProxyDateEntry(end_date): None, insensitive
       GtkHBox(fill=True): 

@@ -27,8 +27,8 @@ from dateutil.relativedelta import relativedelta
 from kiwi.currency import currency
 
 from stoqlib.chart.chart import Chart
-from stoqlib.lib.dateconstants import (get_month_names,
-                                       get_short_month_names)
+from stoqlib.lib.dateutils import (get_month_names,
+                                   get_short_month_names)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

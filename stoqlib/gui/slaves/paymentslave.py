@@ -54,11 +54,12 @@ from stoqlib.exceptions import SellError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.interfaces import IDomainSlaveMapper
-from stoqlib.lib.defaults import (interval_types, INTERVALTYPE_MONTH,
-                                  DECIMAL_PRECISION)
+from stoqlib.lib.dateutils import (INTERVALTYPE_MONTH,
+                                   get_interval_type_items,
+                                   create_date_interval)
+from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.message import info, warning
-from stoqlib.lib.payment import (generate_payments_values,
-                                          generate_payments_due_dates)
+from stoqlib.lib.payment import generate_payments_values
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -300,7 +301,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         """Add a payment to the list"""
         payment = _TemporaryPaymentData(description,
                                         value,
-                                        due_date,
+                                        due_date.date(),
                                         payment_number,
                                         bank_account)
         self.payment_list.append(payment)
@@ -308,13 +309,14 @@ class PaymentListSlave(GladeSlaveDelegate):
         if refresh:
             self.update_view()
 
-    def add_payments(self, installments_number, first_due_date,
+    def add_payments(self, installments_number, start_date,
                      interval, interval_type):
         values = generate_payments_values(self.total_value,
                                           installments_number)
-        due_dates = generate_payments_due_dates(installments_number,
-                                                first_due_date, interval,
-                                                interval_type)
+        due_dates = create_date_interval(interval_type=interval_type,
+                                         interval=interval,
+                                         count=installments_number,
+                                         start_date=start_date)
         bank_account = None
 
         self.clear_payments()
@@ -480,9 +482,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.intervals.set_range(1, 99)
         self.intervals.set_sensitive(has_installments)
 
-        items = [(label, constant)
-                 for constant, label in interval_types.items()]
-        self.interval_type_combo.prefill(items)
+        interval_types = get_interval_type_items(plural=True)
+        self.interval_type_combo.prefill(interval_types)
         self.interval_type_combo.select_item_by_data(INTERVALTYPE_MONTH)
         self.interval_type_combo.set_sensitive(has_installments)
 

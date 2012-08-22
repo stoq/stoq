@@ -14,10 +14,10 @@ GtkFrame(frame1):
           ProxyLabel(intervals_lbl, expand=True, fill=True): 'With intervals of:'
           ProxySpinButton(intervals, expand=True, fill=True): '1', insensitive
           ProxyComboBox(interval_type_combo, expand=True, fill=True, padding=2): insensitive
-              item: 'Days'
-              item: 'Weeks'
-              item: 'Months', selected
-              item: 'Years'
+              item: 'days'
+              item: 'weeks'
+              item: 'months', selected
+              item: 'years'
       GtkHBox(hbox4): 
         GtkLabel(bank_label, expand=True, fill=True): 'Default Bank:'
         ProxyComboEntry(bank_combo, expand=True, fill=True): invalid
