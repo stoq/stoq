@@ -124,9 +124,22 @@ class YANC(Plugin):
             self.conf.stream = self.conf.stream._stream
 
 
-# The --with-stoq parameter must be the last provided option,
-# specifically, after the --with-coverage module when coverage is enabled
-argv = sys.argv[:] + ['--with-stoq',
-                      '--with-yanc']
+argv = sys.argv[:] + [
+    # Disable capturing of stdout, we often use this for print debugging
+    '--nocapture',
+    # Disable logging capture, kiwi is quite verbose and doesn't give
+    # a lot of useful information
+    '--nologcapture',
+    # Be verbose, one line per test instead of just a dot (like trial)
+    '--verbose',
+    # Detailed errors, useful for tracking down assertEquals
+    '--detailed-errors',
+    # Enable color output
+    '--with-yanc',
+    # Stoq integration plugin, must be the last
+    # provided option, specifically, after the --with-coverage module
+    # when coverage is enabled
+    '--with-stoq',
+    ]
 
 nose.main(argv=argv, addplugins=[Stoq(), YANC()])
