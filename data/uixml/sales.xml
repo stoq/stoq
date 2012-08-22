@@ -37,6 +37,7 @@
   <menu action="SearchMenu">
     <placeholder name="SearchMenuPH">
       <menuitem action="SearchSoldItemsByBranch"/>
+      <menuitem action="SearchSalesByPaymentMethod"/>
       <menuitem action="SearchProduct"/>
       <menuitem action="SearchService"/>
       <menuitem action="SearchDelivery"/>

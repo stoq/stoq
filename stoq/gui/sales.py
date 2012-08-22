@@ -47,7 +47,8 @@ from stoqlib.gui.search.deliverysearch import DeliverySearch
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.salesearch import SoldItemsByBranchSearch
+from stoqlib.gui.search.salesearch import (SoldItemsByBranchSearch,
+                                           SalesByPaymentMethodSearch)
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.stockicons import (STOQ_PRODUCTS, STOQ_SERVICES,
@@ -128,6 +129,10 @@ class SalesApp(SearchableAppWindow):
             ("SearchSoldItemsByBranch", None, _("Sold items by branch..."),
              group.get("search_sold_items_by_branch"),
              _("Search for sold items by branch")),
+            ("SearchSalesByPaymentMethod", None,
+             _("Sales by payment method..."),
+             group.get("search_sales_by_payment"),
+             _("Search for sales by payment method")),
             ("SearchProduct", STOQ_PRODUCTS, _("Products..."),
              group.get("search_products"),
              _("Search for products")),
@@ -493,6 +498,9 @@ class SalesApp(SearchableAppWindow):
 
     def on_SearchSoldItemsByBranch__activate(self, button):
         self.run_dialog(SoldItemsByBranchSearch, self.conn)
+
+    def on_SearchSalesByPaymentMethod__activate(self, button):
+        self.run_dialog(SalesByPaymentMethodSearch, self.conn)
 
     def on_SearchDelivery__activate(self, action):
         self.run_dialog(DeliverySearch, self.conn)

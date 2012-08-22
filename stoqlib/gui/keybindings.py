@@ -304,6 +304,8 @@ _bindings = [
     # Sales application
     ('app.sales.search_sold_items_by_branch', '<Primary><Alt>a',
      _("Search for sold items by branch")),
+    ('app.sales.search_sales_by_payment', '',
+     _("Search for sales by payment method")),
     ('app.sales.search_products', '<Primary><Alt>p',
      _("Search for products")),
     ('app.sales.search_services', '<Primary><Alt>s',

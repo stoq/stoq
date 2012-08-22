@@ -1545,6 +1545,30 @@ class SaleView(Viewable):
         return Sale.get_status_name(self.status)
 
 
+class SalePaymentMethodView(SaleView):
+    # If a sale has more than one payment, it will appear as much times in the
+    # search. Must always be used with select(distinct=True).
+    joins = SaleView.joins[:]
+    joins.append(LEFTJOINOn(None, Payment,
+                 Sale.q.groupID == Payment.q.groupID))
+
+    #
+    # Class Methods
+    #
+
+    @classmethod
+    def select_by_payment(cls, query, method, having=None, connection=None):
+        if method:
+            method_query = Payment.q.method == method
+            if query:
+                query = AND(query, method_query)
+            else:
+                query = method_query
+
+        return cls.select(query, having=having, connection=connection,
+                          distinct=True)
+
+
 class SoldSellableView(Viewable):
     Person_Client = Alias(Person, 'person_client')
     Person_SalesPerson = Alias(Person, 'person_sales_person')
