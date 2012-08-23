@@ -60,6 +60,7 @@ class _MockConfig:
     def flush(self):
         self.flushed = True
 
+
 class FakeDatabaseSettings:
     def __init__(self, trans):
         self.trans = trans
