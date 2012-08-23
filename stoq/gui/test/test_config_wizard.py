@@ -22,12 +22,16 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import os
+import tempfile
+
 import gtk
 import mock
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.gui.uitestutils import GUITest
 
-from stoq.gui.config import FirstTimeConfigWizard
+from stoq.gui.config import (DatabaseSettingsStep,
+                             FirstTimeConfigWizard)
 
 
 class _MockConfig:
@@ -55,6 +59,28 @@ class _MockConfig:
 
     def flush(self):
         self.flushed = True
+
+class FakeDatabaseSettings:
+    def __init__(self, trans):
+        self.trans = trans
+        self.address = 'invalid'
+        self.check = False
+        self.password = ''
+
+    def check_database_address(self):
+        return self.check
+
+    def has_database(self):
+        return False
+
+    def get_command_line_arguments(self):
+        return []
+
+    def get_default_connection(self):
+        class FakeConn:
+            def dbVersion(self):
+                return (8, 4)
+        return FakeConn()
 
 
 class TestConfirmSaleWizard(GUITest):
@@ -151,6 +177,92 @@ class TestConfirmSaleWizard(GUITest):
         yesno.assert_called_once_with(
             'Something went wrong while trying to create the database. Try again?',
             gtk.RESPONSE_NO, 'Change settings', 'Try again')
+
+        step.process_view.emit('finished', 999)
+        warning.assert_called_once_with(
+            "Something went wrong while trying to create the Stoq database")
+
+        step.process_view.emit('finished', 0)
+        create_default_profile_settings.assert_called_once_with()
+        ensure_admin_user.assert_called_once_with('password')
+        self.click(wizard.next_button)
+
+        self.check_wizard(wizard, 'wizard-config-done')
+        self.click(wizard.next_button)
+        self.assertTrue(config.flushed)
+
+    @mock.patch('stoq.gui.config.ensure_admin_user')
+    @mock.patch('stoq.gui.config.create_default_profile_settings')
+    @mock.patch('stoq.gui.config.yesno')
+    @mock.patch('stoq.gui.config.warning')
+    @mock.patch('stoq.gui.config.BranchStation')
+    def testRemote(self,
+                  BranchStation,
+                  warning,
+                  yesno,
+                  create_default_profile_settings,
+                  ensure_admin_user):
+        options = mock.Mock()
+        options.sqldebug = False
+        options.verbose = False
+
+        DatabaseSettingsStep.model_type = FakeDatabaseSettings
+        settings = FakeDatabaseSettings(self.trans)
+        config = _MockConfig(settings)
+        wizard = FirstTimeConfigWizard(options, config)
+
+        # Welcome
+        self.click(wizard.next_button)
+
+        # DatabaseLocationStep
+        step = wizard.get_current_step()
+        step.radio_network.set_active(True)
+        self.click(wizard.next_button)
+
+        # DatabaseSettingsStep, invalid
+        step = wizard.get_current_step()
+        step.address.update('remotehost')
+        step.port.update(12345)
+        step.username.update('username')
+        step.dbname.update('dbname')
+
+        # DatabaseSettingsStep, valid
+        settings.check = True
+        self.click(wizard.next_button)
+
+        # Installation mode
+        self.click(wizard.next_button)
+
+        # Plugins
+        self.click(wizard.next_button)
+
+        # TEF
+        step = wizard.get_current_step()
+        step.name.update('Name')
+        step.email.update('example@example.com')
+        step.phone.update('1212341234')
+        wizard.tef_request_done = True
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        step.password_slave.password.update('foobar')
+        step.password_slave.confirm_password.update('foobar')
+        self.check_wizard(wizard, 'wizard-config-admin-password')
+        fname = tempfile.mktemp()
+        os.environ['PGPASSFILE'] = fname
+        self.click(wizard.next_button)
+        self.assertEquals(open(fname).read(),
+                          'remotehost:12345:dbname:username:\n')
+        step = wizard.get_current_step()
+        yesno.return_value = False
+        step.process_view.emit('finished', 30)
+        self.assertEquals(
+            yesno.call_args_list,
+            [(("The specifed database 'dbname' does not exist.\n"
+               "Do you want to create it?", gtk.RESPONSE_NO, "Don't create",
+               "Create database"), {}),
+             (('Something went wrong while trying to create the database. Try again?',
+               gtk.RESPONSE_NO, 'Change settings', 'Try again'), {})])
 
         step.process_view.emit('finished', 999)
         warning.assert_called_once_with(
