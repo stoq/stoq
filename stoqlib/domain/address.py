@@ -23,7 +23,6 @@
 ##
 
 from kiwi.argcheck import argcheck
-from kiwi.python import strip_accents
 from zope.interface import implements
 
 from stoqlib.database.orm import (ORMObject, AND, UnicodeCol, IntCol,
@@ -37,11 +36,16 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-# strip_accents return str, they should return the same type as the original
-# value
-_get_equal_clause = lambda table, value: (
-    func.stoq_normalize_string(table) ==
-    unicode(strip_accents(value.lower())))
+
+def _get_equal_clause(table, value):
+    # FIXME: Never versions of Psycopg2 treats str as bytes,
+    # We should do the same and enable:
+    #   from __future__ import unicode_literals
+    # and start to convert all APIs to use unicode instead of str.
+    if isinstance(value, str):
+        value = unicode(value, 'utf-8')
+    return (func.stoq_normalize_string(table) ==
+            func.stoq_normalize_string(value))
 
 
 class CityLocation(ORMObject):

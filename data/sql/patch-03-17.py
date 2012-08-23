@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from kiwi.python import strip_accents
-
 from stoqlib.database.orm import func, AND
 from stoqlib.domain.address import CityLocation
 
@@ -18,7 +16,7 @@ def apply_patch(trans):
         clause = AND(
             func.LOWER(CityLocation.q.state) == city_location.state.lower(),
             (func.stoq_normalize_string(CityLocation.q.city) ==
-             strip_accents(city_location.city).lower()))
+             func.stoq_normalize_string(city_location.city)))
         alikes = list(CityLocation.select(clause=clause,
                                           connection=trans))
         if len(alikes) > 1:
