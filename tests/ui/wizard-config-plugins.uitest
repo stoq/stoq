@@ -1,0 +1,25 @@
+wizard: FirstTimeConfigWizard
+GtkDialog(toplevel): hidden, title='Stoq - Installation'
+  GtkVBox(PluggableWizard-vbox): 
+    GtkVBox(vbox1, expand=True, fill=True): 
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave PluginStep is attached
+        GtkVBox(step.toplevel): 
+          GtkLabel(step.label2, fill=True): '<b>Plugins</b>'
+          GtkHSeparator(step.hseparator1, fill=True): 
+          GtkLabel(step.label1, fill=True): 'Once a plugin is activated it will not be possible to disable it.\n\nSelect the plugins you want to enable:'
+          GtkVBox(step.vbox2, fill=True): 
+            ProxyCheckButton(step.enable_ecf, fill=True): 'ECF (Fiscal printer support)', active
+            ProxyCheckButton(step.enable_tef, fill=True): 'TEF (Credit card support)', active
+            ProxyCheckButton(step.enable_nfe, fill=True): 'NF-e (Eletronic Invoices)'
+            GtkLabel(step.label80, fill=True, padding=6): 'If you just want to test Stoq it is recommended to select no plugin.'
+          GtkLabel(step.label4, expand=True, fill=True): 
+          GtkLabel(step.label3, fill=True): 'Select the plugins you would like to enable and then click <b>Forward</b> to continue.'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end): 
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 

@@ -1,0 +1,32 @@
+wizard: FirstTimeConfigWizard
+GtkDialog(toplevel): hidden, title='Stoq - Installation'
+  GtkVBox(PluggableWizard-vbox): 
+    GtkVBox(vbox1, expand=True, fill=True): 
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave TefStep is attached
+        GtkVBox(step.toplevel): 
+          GtkLabel(step.label2, fill=True): '<b>TEF Plugin</b>'
+          GtkHSeparator(step.hseparator1, fill=True): 
+          GtkVBox(step.tef_info_vbox): 
+            GtkLabel(step.label3, fill=True): 'Enabling TEF requires installing additional software.\n\nPlease fill in your details and will contact you within two business days:'
+            GtkTable(step.details_table): 
+              GtkLabel(step.label4): 'Name:'
+              ProxyEntry(step.name): 'Name'
+              GtkLabel(step.label5): 'Email:'
+              ProxyEntry(step.email): 'example@example.com'
+              GtkLabel(step.label6): 'Phone:'
+              GtkHBox(step.hbox1): 
+                ProxyEntry(step.phone, fill=True): '(12) 1234-1234'
+                GtkLabel(step.label1, expand=True, fill=True): 
+          GtkProgressBar(step.send_progress, fill=True): hidden
+          GtkLabel(step.send_error_label, fill=True): 'An error ocurred sending your details. Please <a href="http://www.stoq.com.br/contato">contact us</a>.', hidden
+          GtkLabel(step.label8, expand=True, fill=True): 
+          GtkLabel(step.label7, fill=True): 'Fill in the form above and then click <b>Forward</b> to continue.'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end): 
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
