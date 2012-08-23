@@ -1,6 +1,6 @@
-#   - Some tables (like branch) are weak referenced by parameters. Changing the id
-#   would break the parameter
-
+# XXX
+# Some tables (like branch) are weak referenced by parameters.
+# Changing the id would break the parameter
 
 #: Gets all foreign key references.
 #: The ref_table is the referenced table. The other 3 columns are the constraint
@@ -22,7 +22,6 @@ FROM information_schema.referential_constraints AS rc
 WHERE ccu.table_name != 'transaction_entry' AND ccu.column_name='id';
 """
 
-
 #: This query will remove the old constraint and recreate it as is, but with ON
 #: UPDATE CASCADE
 fix_query = """
@@ -30,6 +29,7 @@ ALTER TABLE %(table_name)s DROP CONSTRAINT %(const_name)s;
 ALTER TABLE %(table_name)s ADD CONSTRAINT %(const_name)s
     FOREIGN KEY (%(column_name)s) REFERENCES %(ref_table)s(id) ON UPDATE CASCADE;
 """
+
 
 def apply_patch(trans):
     references = trans.queryAll(query)
@@ -39,4 +39,3 @@ def apply_patch(trans):
                                      const_name=constraint_name,
                                      column_name=column_name,
                                      ref_table=ref_table))
-
