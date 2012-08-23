@@ -192,17 +192,19 @@ class TestConfirmSaleWizard(GUITest):
         self.click(wizard.next_button)
         self.assertTrue(config.flushed)
 
+    @mock.patch('stoq.gui.config.ProcessView.execute_command')
     @mock.patch('stoq.gui.config.ensure_admin_user')
     @mock.patch('stoq.gui.config.create_default_profile_settings')
     @mock.patch('stoq.gui.config.yesno')
     @mock.patch('stoq.gui.config.warning')
     @mock.patch('stoq.gui.config.BranchStation')
     def testRemote(self,
-                  BranchStation,
-                  warning,
-                  yesno,
-                  create_default_profile_settings,
-                  ensure_admin_user):
+                   BranchStation,
+                   warning,
+                   yesno,
+                   create_default_profile_settings,
+                   ensure_admin_user,
+                   execute_command):
         options = mock.Mock()
         options.sqldebug = False
         options.verbose = False
@@ -245,6 +247,7 @@ class TestConfirmSaleWizard(GUITest):
         wizard.tef_request_done = True
         self.click(wizard.next_button)
 
+        # AdminPassword
         step = wizard.get_current_step()
         step.password_slave.password.update('foobar')
         step.password_slave.confirm_password.update('foobar')
@@ -254,22 +257,16 @@ class TestConfirmSaleWizard(GUITest):
         self.click(wizard.next_button)
         self.assertEquals(open(fname).read(),
                           'remotehost:12345:dbname:username:\n')
+
+        # Installing
         step = wizard.get_current_step()
         yesno.return_value = False
-        step.process_view.emit('finished', 30)
-        self.assertEquals(
-            yesno.call_args_list,
-            [(("The specifed database 'dbname' does not exist.\n"
-               "Do you want to create it?", gtk.RESPONSE_NO, "Don't create",
-               "Create database"), {}),
-             (('Something went wrong while trying to create the database. Try again?',
-               gtk.RESPONSE_NO, 'Change settings', 'Try again'), {})])
-
-        step.process_view.emit('finished', 999)
-        warning.assert_called_once_with(
-            "Something went wrong while trying to create the Stoq database")
-
         step.process_view.emit('finished', 0)
+        yesno.assert_called_once_with(
+            "The specifed database 'dbname' does not exist.\n"
+            "Do you want to create it?", gtk.RESPONSE_NO, "Don't create",
+            "Create database")
+
         create_default_profile_settings.assert_called_once_with()
         ensure_admin_user.assert_called_once_with('password')
         self.click(wizard.next_button)
