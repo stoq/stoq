@@ -24,6 +24,7 @@
 
 import errno
 import fnmatch
+import locale
 import os
 import platform
 
@@ -141,3 +142,20 @@ def find_program(program):
         fullpath = os.path.join(path, program)
         if os.path.exists(fullpath):
             return fullpath
+
+
+def get_system_locale():
+    """Fetches the current locale according to the system.
+
+    :returns: the current locale
+    """
+    # Locale comes in a tuple like ('en_US', 'UTF-8')
+    if _system == 'Linux':
+        lang = locale.getlocale(locale.LC_MESSAGES)
+    elif _system == 'Windows':
+        lang = locale.getlocale(locale.LC_ALL)
+    elif _system == 'Darwin':
+        lang = locale.getlocale(locale.LC_ALL)
+    else:
+        raise SystemExit("unknown system: %s" % (_system, ))
+    return lang[0]
