@@ -1027,6 +1027,7 @@ class FirstTimeConfigWizard(BaseWizard):
         fd = open(pgpass, 'w')
         fd.write('\n'.join(lines))
         fd.write('\n')
+        fd.close()
         os.chmod(pgpass, 0600)
 
     #
