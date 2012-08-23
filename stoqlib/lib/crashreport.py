@@ -69,7 +69,7 @@ def collect_report():
     report['date'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     report['tz'] = time.tzname
     report['uptime'] = get_uptime()
-    report['locale'] = locale.getlocale(locale.LC_MESSAGES)
+    report['locale'] = locale.getlocale(locale.LC_ALL)
 
     # Python and System
     import platform
