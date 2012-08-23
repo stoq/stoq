@@ -44,6 +44,12 @@ class WelcomeDialog(BasicDialog):
 
         self._build_ui()
         self._setup_buttons()
+        self.toplevel.connect('map-event', self._on_toplevel__map_event)
+
+    def _on_toplevel__map_event(self, window, event):
+        # Load the URI here, since it's after run_dialog is called,
+        # otherwise there's no possiblity to hide the dialog if
+        # webkit isn't available
         uri = self.get_uri()
         self._open_uri(uri)
 
@@ -74,7 +80,7 @@ class WelcomeDialog(BasicDialog):
             self._view.load_uri(uri)
             self.ok_button.grab_focus()
         else:
-            open_browser(uri, self.get_screen())
+            open_browser(uri, self.toplevel.get_screen())
             self.toplevel.hide()
 
     def get_uri(self):
