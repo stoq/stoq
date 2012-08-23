@@ -41,7 +41,7 @@ class _MockConfig:
         self.options = options
 
     def get_password(self):
-        pass
+        return 'password'
 
     def load_settings(self, settings):
         pass
@@ -55,7 +55,9 @@ class _MockConfig:
 class TestConfirmSaleWizard(GUITest):
     @mock.patch('stoq.gui.config.ProcessView.execute_command')
     @mock.patch('stoq.gui.config.ensure_admin_user')
-    def testLocal(self, ensure_admin_user, execute_command):
+    @mock.patch('stoq.gui.config.create_default_profile_settings')
+    def testLocal(self, create_default_profile_settings,
+                  ensure_admin_user, execute_command):
         options = mock.Mock()
         options.sqldebug = False
         options.verbose = False
@@ -112,6 +114,8 @@ class TestConfirmSaleWizard(GUITest):
 
         step = wizard.get_current_step()
         step.process_view.emit('finished', 0)
+        create_default_profile_settings.assert_called_once_with()
+        ensure_admin_user.assert_called_once_with('password')
         self.click(wizard.next_button)
 
         self.check_wizard(wizard, 'wizard-config-done')
