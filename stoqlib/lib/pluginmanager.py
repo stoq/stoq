@@ -23,7 +23,6 @@
 ##
 
 import imp
-import locale
 import os
 
 from kiwi.desktopparser import DesktopParser
@@ -35,6 +34,7 @@ from stoqlib.database.runtime import get_connection, new_transaction
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.interfaces import IPlugin, IPluginManager
+from stoqlib.lib.osutils import get_system_locale
 from stoqlib.lib.settings import get_settings
 
 log = Logger('stoq.pluginmanager')
@@ -53,8 +53,7 @@ class PluginDescription(object):
         settings = get_settings()
         lang = settings.get('user-locale', None)
         if not lang:
-            # Locale comes in a tuple like ('en_US', 'UTF-8')
-            lang = locale.getlocale(locale.LC_ALL)[0]
+            lang = get_system_locale()
 
         self.long_name = config.get_locale('Plugin', 'Name', lang)
         self.description = config.get_locale('Plugin', 'Description', lang)

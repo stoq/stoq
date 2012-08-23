@@ -25,7 +25,6 @@
 
 import datetime
 import hashlib
-import locale
 import sys
 import time
 import traceback
@@ -39,6 +38,7 @@ from kiwi.utils import gsignal
 from stoqlib.exceptions import StoqlibError
 from stoqlib.database.runtime import get_connection
 from stoqlib.lib.interfaces import IAppInfo
+from stoqlib.lib.osutils import get_system_locale
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.uptime import get_uptime
 from stoqlib.lib.webservice import WebService
@@ -69,7 +69,7 @@ def collect_report():
     report['date'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     report['tz'] = time.tzname
     report['uptime'] = get_uptime()
-    report['locale'] = locale.getlocale(locale.LC_ALL)
+    report['locale'] = get_system_locale()
 
     # Python and System
     import platform
