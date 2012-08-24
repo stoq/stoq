@@ -25,7 +25,6 @@
 import gtk
 from kiwi.component import provide_utility
 import mock
-from nose.exc import SkipTest
 
 from stoqlib.api import api
 from stoqlib.gui.uitestutils import GUITest
@@ -35,12 +34,15 @@ from stoq.gui.launcher import Launcher
 from stoq.gui.payable import PayableApp
 from stoq.lib.applist import ApplicationDescriptions
 
+import stoq
+
 provide_utility(IApplicationDescriptions, ApplicationDescriptions(), replace=True)
 gtk.set_interactive(False)
 
 
 class TestPayable(GUITest):
     def create_app(self, app_name):
+        api.user_settings.set('actual-version', stoq.stoq_version)
         self.user = api.get_current_user(self.trans)
         self.profile = self.create_profile_settings(self.user.profile, app_name)
         self.shell = mock.Mock()
@@ -55,7 +57,6 @@ class TestPayable(GUITest):
         return app
 
     def testInitial(self):
-        raise SkipTest("running this test on anthem via xvfb doesn't work")
         api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app('payable')
         self.launcher.statusbar.push(0, 'Test Statusbar test')
