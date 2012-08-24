@@ -24,9 +24,14 @@
 ##
 """ General slaves for branch management"""
 
+from kiwi.datatypes import ValidationError
+
 from stoqlib.api import api
 from stoqlib.domain.person import Branch, Employee
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
 
 
 class BranchDetailsSlave(BaseEditorSlave):
@@ -34,7 +39,8 @@ class BranchDetailsSlave(BaseEditorSlave):
     model_type = Branch
     proxy_widgets = ('active_check',
                      'manager',
-                     'crt')
+                     'crt',
+                     'acronym')
 
     crt_options = (
         ('1 - Simples Nacional', 1),
@@ -54,3 +60,12 @@ class BranchDetailsSlave(BaseEditorSlave):
         self._setup_crt_combo()
         self.proxy = self.add_proxy(self.model,
                                     BranchDetailsSlave.proxy_widgets)
+
+    def on_acronym__validate(self, widget, value):
+        # This will allow the user to set an empty value to this field
+        if not value:
+            return
+
+        if self.model.check_acronym_exists(value):
+            return ValidationError(
+                _('A company with this acronym already exists'))

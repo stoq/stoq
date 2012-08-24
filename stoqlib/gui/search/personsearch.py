@@ -342,7 +342,7 @@ class BranchSearch(BasePersonSearch):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['name', 'phone_number'])
+        self.set_text_field_columns(['name', 'acronym', 'phone_number'])
         statuses = [(value, key)
                     for key, value in Branch.statuses.items()]
         statuses.insert(0, (_('Any'), None))
@@ -355,6 +355,8 @@ class BranchSearch(BasePersonSearch):
 
     def get_columns(self):
         return [SearchColumn('name', _('Name'), str, expand=True),
+                SearchColumn('acronym', _('Acronym'), data_type=str,
+                             visible=False),
                 SearchColumn('phone_number', _('Phone Number'), str,
                              width=150),
                 SearchColumn('manager_name', _('Manager'), str,
