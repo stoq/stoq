@@ -30,7 +30,8 @@ import gtk
 from kiwi.enums import ListType
 from kiwi.ui.widgets.list import Column
 from stoqdrivers.interfaces import ICouponPrinter
-from stoqdrivers.printers.base import get_supported_printers_by_iface
+from stoqdrivers.printers.base import (get_supported_printers_by_iface,
+                                       get_baudrate_values)
 from stoqdrivers.enum import PaymentMethodType, TaxType
 
 from stoqlib.database.runtime import get_current_station
@@ -67,7 +68,7 @@ class ECFEditor(BaseEditor):
     gladefile = 'FiscalPrinterDialog'
     model_type = ECFPrinter
     model_name = _('Fiscal Printer')
-    proxy_widgets = ['device_name', 'device_serial', 'is_active',
+    proxy_widgets = ['device_name', 'device_serial', 'is_active', 'baudrate',
                      'user_number', 'register_date', 'register_cro']
 
     def __init__(self, conn, model=None):
@@ -96,6 +97,7 @@ class ECFEditor(BaseEditor):
                            model='FS345',
                            device_name='/dev/ttyS0',
                            device_serial='',
+                           baudrate=9600,
                            station=get_current_station(conn),
                            is_active=True,
                            connection=conn)
@@ -107,6 +109,7 @@ class ECFEditor(BaseEditor):
     def setup_proxies(self):
         self._populate_printers()
         self._populate_serial_ports()
+        self._populate_baudrate()
         self.proxy = self.add_proxy(self.model,
                                     ECFEditor.proxy_widgets)
         self.printer.select_item_by_label(self.model.get_description())
@@ -118,7 +121,8 @@ class ECFEditor(BaseEditor):
         if self.edit_mode:
             return True
         self._status = ECFAsyncPrinterStatus(self.model.device_name,
-                                       self.model.printer_class)
+                                             self.model.printer_class,
+                                             self.model.baudrate)
         self._status.connect('reply', self._printer_status__reply)
         self._status.connect('timeout', self._printer_status__timeout)
         self.progress_dialog.set_label(_("Probing for a %s printer on %s") % (
@@ -193,6 +197,10 @@ class ECFEditor(BaseEditor):
     #
     # Private
     #
+
+    def _populate_baudrate(self):
+        values = get_baudrate_values()
+        self.baudrate.prefill(values)
 
     def _populate_printers(self):
         supported_ifaces = get_supported_printers_by_iface(ICouponPrinter).items()

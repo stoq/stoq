@@ -50,6 +50,7 @@ class ECFPrinter(Domain):
     @param station:
     @param is_active:
     @param constants:
+    @param baudrate:
     @cvar last_sale: reference for the last Sale
     @cvar last_till_entry: reference for the last TillEntry
     @cvar user_number: the current registrer user in the printer
@@ -65,6 +66,7 @@ class ECFPrinter(Domain):
     station = ForeignKey("BranchStation")
     is_active = BoolCol(default=True)
     constants = MultipleJoin('DeviceConstant')
+    baudrate = IntCol()
     last_sale = ForeignKey("Sale", default=None)
     last_till_entry = ForeignKey("TillEntry", default=None)
     user_number = IntCol(default=None)
@@ -184,7 +186,7 @@ class ECFPrinter(Domain):
         if self.brand == 'virtual':
             port = VirtualPort()
         else:
-            port = SerialPort(device=self.device_name)
+            port = SerialPort(device=self.device_name, baudrate=self.baudrate)
         return FiscalPrinter(brand=self.brand, model=self.model, port=port)
 
     def set_user_info(self, user_info):
