@@ -43,7 +43,8 @@ class ECFAsyncPrinterStatus(gobject.GObject):
     gsignal('reply', str)
     gsignal('timeout')
 
-    def __init__(self, device_name, printer_class=None, printer=None, delay=5):
+    def __init__(self, device_name, printer_class=None, baudrate=9600,
+                 printer=None, delay=5):
         """
         @param device_name:
         @param printer_class:
@@ -56,6 +57,7 @@ class ECFAsyncPrinterStatus(gobject.GObject):
         self._reply = ''
         self._device_name = device_name
         self._delay = delay
+        self._baudrate = baudrate
 
         if printer_class:
             port = self._create_port()
@@ -71,7 +73,7 @@ class ECFAsyncPrinterStatus(gobject.GObject):
             gobject.io_add_watch(port, gobject.IO_IN, self._fd_watch_in)
 
     def _create_port(self):
-        port = SerialPort(device=self._device_name)
+        port = SerialPort(device=self._device_name, baudrate=self._baudrate)
         port.nonblocking()
         return port
 

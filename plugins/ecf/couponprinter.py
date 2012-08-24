@@ -190,12 +190,13 @@ class CouponPrinter(object):
             crz = self._driver.get_crz() + 1
 
         trans = new_transaction()
+        printer = trans.get(self._printer)
         doc = ECFDocumentHistory(connection=trans,
-                              printer=self._printer,
-                              type=type,
-                              coo=coo,
-                              gnf=gnf,
-                              crz=crz)
+                                 printer=printer,
+                                 type=type,
+                                 coo=coo,
+                                 gnf=gnf,
+                                 crz=crz)
 
         trans.commit(close=True)
         return doc

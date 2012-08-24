@@ -92,6 +92,7 @@ class Cat52Test(DomainTest):
                         brand='daruma',
                         device_name='test',
                         device_serial='serial',
+                        baudrate=9600,
                         station=station,
                         user_number=1,
                         register_date=today,
