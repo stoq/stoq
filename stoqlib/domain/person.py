@@ -1145,6 +1145,9 @@ class Branch(Domain):
     #: * Regime Normal
     crt = IntCol(default=1)
 
+    #: An acronym that uniquely describes a branch
+    acronym = UnicodeCol(default=None, unique=True)
+
     #
     # IActive
     #
@@ -1173,6 +1176,17 @@ class Branch(Domain):
     #
     # Public API
     #
+
+    def set_acronym(self, value):
+        """Sets the branch acronym.
+
+        :param value: The new acronym for this branch. If an empty string is
+          used, it will be changed to None.
+        """
+        if value == '':
+            value = None
+
+        self.acronym = value
 
     def get_active_stations(self):
         return self.select(
@@ -1213,6 +1227,12 @@ class Branch(Domain):
             AND(self._fetchTIDs(table, timestamp, te_type),
                 BranchStation.q.branchID != self.id),
             connection=trans)
+
+    def check_acronym_exists(self, acronym):
+        """Returns True if we already have a Company with the given acronym
+        in the database.
+        """
+        return self.check_unique_value_exists('acronym', acronym)
 
     # Event
 
@@ -1711,11 +1731,12 @@ class BranchView(Viewable):
 
     columns = dict(
         id=Branch.q.id,
+        acronym=Branch.q.acronym,
+        is_active=Branch.q.is_active,
         person_id=Person.q.id,
         name=Person.q.name,
         phone_number=Person.q.phone_number,
-        is_active=Branch.q.is_active,
-        manager_name=Manager_Person.q.name
+        manager_name=Manager_Person.q.name,
         )
 
     joins = [
