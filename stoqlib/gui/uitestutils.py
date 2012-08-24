@@ -40,8 +40,11 @@ from storm.info import get_cls_info
 import stoq
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.testsuite import test_system_notifier
+from stoqlib.gui.stockicons import register
 from stoqlib.lib.countries import countries
 from stoqlib.lib.diffutils import diff_lines
+
+register()
 
 
 def _get_table_packing_properties(parent, child):
@@ -155,6 +158,23 @@ GtkWindow(PaymentEditor):
         if isinstance(widget, ProxyDateEntry):
             props.insert(0, repr(widget.get_date()))
             recurse = False
+        if isinstance(widget, gtk.IconView):
+            model = widget.get_model()
+            markup_id = widget.get_markup_column()
+            text_id = widget.get_text_column()
+            pixbuf_id = widget.get_pixbuf_column()
+            for row in model:
+                cols = []
+                if markup_id != -1:
+                    cols.append('markup: ' + row[markup_id])
+                if text_id != -1:
+                    cols.append('text: ' + row[text_id])
+                if pixbuf_id != -1:
+                    stock_id = getattr(row[pixbuf_id], 'stock_id', None)
+                    if stock_id:
+                        cols.append('stock: ' + stock_id)
+
+                extra_output += spaces + '    ' + ', '.join(cols) + '\n'
         if isinstance(widget, ObjectList):
             # New indent is:
             #   old indentation + 'ObjectList('
